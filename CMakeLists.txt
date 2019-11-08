@@ -19,6 +19,15 @@ if(MPIEXEC_EXECUTABLE)
 		${MPIEXEC_POSTFLAGS}
 		)
 
+	add_custom_target(test
+		${MPIEXEC_EXECUTABLE}
+		${MPIEXEC_NUMPROC_FLAG}
+		${MPIEXEC_MAX_NUMPROCS}
+		${MPIEXEC_PREFLAGS}
+		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_test
+		${MPIEXEC_POSTFLAGS}
+		)
+
 endif()
 
 add_subdirectory(src/main)

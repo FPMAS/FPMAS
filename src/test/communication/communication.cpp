@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "communication/communication.h"
 #include "mpi.h"
+
 TEST(CommunicationTest, size_test) {
 	Communication communication;
 
