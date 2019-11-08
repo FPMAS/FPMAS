@@ -2,14 +2,14 @@
 #include "mpi.h"
 
 Communication::Communication() {
-	this->_rank=MPI::COMM_WORLD.Get_rank();
-	this->_size=MPI::COMM_WORLD.Get_size();
+	MPI_Comm_rank(MPI_COMM_WORLD, &this->_rank);
+	MPI_Comm_size(MPI_COMM_WORLD, &this->_size);
 }
 
-uint16_t Communication::size() {
+int Communication::size() {
 	return _size;
 }
 
-uint16_t Communication::rank() {
+int Communication::rank() {
 	return _rank;
 }

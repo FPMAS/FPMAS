@@ -1,13 +1,19 @@
+#ifndef COMMUNICATION_H
+#define COMMUNICATION_H
+
 #include <cstdint>
 
 class Communication {
 	private:
-		uint16_t _size;
-		uint16_t _rank;
+		int _size;
+		int _rank;
 	
+		// Custom comunicators
 	public:
 		Communication();
 
-		uint16_t size();
-		uint16_t rank();
+		int size();
+		int rank();
+
 };
+#endif

@@ -5,10 +5,14 @@
 TEST(CommunicationTest, size_test) {
 	Communication communication;
 
-	ASSERT_EQ(MPI::COMM_WORLD.Get_size(), communication.size());
+	int size;
+	MPI_Comm_size(MPI_COMM_WORLD, &size);
+	ASSERT_EQ(size, communication.size());
 }
 TEST(CommunicationTest, rank_test) {
 	Communication communication;
 
-	ASSERT_EQ(MPI::COMM_WORLD.Get_rank(), communication.rank());
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	ASSERT_EQ(rank, communication.rank());
 }
