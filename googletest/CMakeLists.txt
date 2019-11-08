@@ -1,5 +1,8 @@
 # Setup googletest
 
+# generates compile_commands.json, useful for CCLS completion
+set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
+
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 
