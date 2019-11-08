@@ -2,13 +2,28 @@ cmake_minimum_required(VERSION 3.1O)
 
 project(fpmas)
 
+add_subdirectory(googletest)
+
+# MPI setup
+find_package(MPI REQUIRED)
+set(CMAKE_CXX_COMPILER ${MPI_CXX_COMPILER})
+
+if(MPIEXEC_EXECUTABLE)
+	message("-- Found mpiexec : ${MPIEXEC_EXECUTABLE}")
+	add_custom_target(run
+		${MPIEXEC_EXECUTABLE}
+		${MPIEXEC_NUMPROC_FLAG}
+		${MPIEXEC_MAX_NUMPROCS}
+		${MPIEXEC_PREFLAGS}
+		${CMAKE_CURRENT_BINARY_DIR}/src/main/fpmas
+		${MPIEXEC_POSTFLAGS}
+		)
+
+endif()
+
 add_subdirectory(src/main)
 
-# Setup googletest
 add_subdirectory(src/test)
-add_executable(fpmas_test src/test/main.cpp)
-target_link_libraries(fpmas_test gtest_main)
-add_test(NAME fpmas_test COMMAND fpmas_test)
 
 
 # Doxygen
