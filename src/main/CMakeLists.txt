@@ -17,7 +17,7 @@ set(SOURCES
 	communication/communication.cpp
 	)
 
-add_executable(fpmas ${SOURCES})
+add_library(fpmas ${SOURCES})
 
 target_link_libraries(fpmas PUBLIC zoltan)
 
