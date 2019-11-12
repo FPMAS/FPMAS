@@ -5,6 +5,14 @@ set(SOURCES
 	${SOURCES}
 	communication/communication.cpp)
 
+set(SOURCES
+	${SOURCES}
+	environment/graph.cpp)
+
+set(SOURCES
+	${SOURCES}
+	environment/nested_graph.cpp)
+
 add_executable(fpmas_test ${SOURCES})
 
 target_link_libraries(fpmas_test fpmas)

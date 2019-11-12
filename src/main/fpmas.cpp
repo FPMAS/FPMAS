@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 	Zoltan_Initialize(argc, argv, &version);
 
 	//Dynamically create Zoltan object.
-	Zoltan *zz = new Zoltan(MPI::COMM_WORLD);
+	Zoltan *zz = new Zoltan(MPI_COMM_WORLD);
 	zz->Set_Param("DEBUG_LEVEL", "0");
 	zz->Set_Param("LB_METHOD", "GRAPH"); // Simulation parameter?
 	zz->Set_Param("LB_APPROACH", "REPARTITION"); //REPARTITION //REFINE //PARTITION
@@ -25,6 +25,7 @@ int main(int argc, char* argv[]) {
 	zz->Set_Param("RETURN_LISTS", "ALL");
 	zz->Set_Param("CHECK_GRAPH", "0");
 	zz->Set_Param("IMBALANCE_TOL", "1.02");
+
 
 	//Several lines of code would follow, working with zz
 	if(communication.rank() == 0) {

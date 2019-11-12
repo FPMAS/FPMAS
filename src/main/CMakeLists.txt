@@ -17,6 +17,12 @@ set(SOURCES
 	communication/communication.cpp
 	)
 
+# Graph
+set(SOURCES
+	${SOURCES}
+	environment/graph.cpp
+	)
+
 add_library(fpmas ${SOURCES})
 
 target_link_libraries(fpmas PUBLIC zoltan)
