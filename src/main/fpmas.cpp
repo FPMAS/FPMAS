@@ -2,19 +2,22 @@
 
 #include "zoltan_cpp.h"
 #include "communication/communication.h"
+#include <mpi.h>
 
 int main(int argc, char* argv[]) {
-	MPI::Init(argc, argv);
+	MPI_Init(&argc, &argv);
 
 	// Communication
-	Communication communication;
+	// Communication communication;
+	MpiCommunicator mainCommunicator;
 
 	//Initialize the Zoltan library with a C language call
 	float version;
 	Zoltan_Initialize(argc, argv, &version);
 
 	//Dynamically create Zoltan object.
-	Zoltan *zz = new Zoltan(MPI_COMM_WORLD);
+	MpiCommunicator zoltanCommunicator;
+	Zoltan *zz = new Zoltan(zoltanCommunicator.getMpiComm());
 	zz->Set_Param("DEBUG_LEVEL", "0");
 	zz->Set_Param("LB_METHOD", "GRAPH"); // Simulation parameter?
 	zz->Set_Param("LB_APPROACH", "REPARTITION"); //REPARTITION //REFINE //PARTITION
@@ -28,7 +31,7 @@ int main(int argc, char* argv[]) {
 
 
 	//Several lines of code would follow, working with zz
-	if(communication.rank() == 0) {
+	if(mainCommunicator.getRank() == 0) {
 		std::cout << "" << std::endl;
 		std::cout << "███████╗    ██████╗ ███╗   ███╗ █████╗ ███████╗" << std::endl;
 		std::cout << "██╔════╝    ██╔══██╗████╗ ████║██╔══██╗██╔════╝" << std::endl;
@@ -40,7 +43,7 @@ int main(int argc, char* argv[]) {
 		std::cout << "" << std::endl;
 		std::cout << "-------------------------------------------------" << std::endl;
 		//    std::cout << "- NB TimeStep      : " << sparam->getMax_timestep() << std::endl;
-		std::cout << "- NB Proc          : " << communication.size() << std::endl;
+		std::cout << "- NB Proc          : " << mainCommunicator.getSize() << std::endl;
 		//  std::cout << "- NB Total Agent   : " << sparam->getTotal_agent()*communication->getSize() << std::endl;
 		//std::cout << "- Optimisation     : " << sparam->getOptimisation() << std::endl;
 		// if(sparam->getOptimisation() == 1) {
@@ -52,5 +55,5 @@ int main(int argc, char* argv[]) {
 
 	//Explicitly delete the Zoltan object
 	delete zz;
-	MPI::Finalize();
+	MPI_Finalize();
 }

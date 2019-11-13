@@ -19,13 +19,19 @@ if(MPIEXEC_EXECUTABLE)
 		${MPIEXEC_POSTFLAGS}
 		)
 
-	add_custom_target(test
+	add_custom_target(mpi_test
 		${MPIEXEC_EXECUTABLE}
 		${MPIEXEC_NUMPROC_FLAG}
 		${MPIEXEC_MAX_NUMPROCS}
 		${MPIEXEC_PREFLAGS}
-		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_test
+		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_mpi_test
+		"--gtest_filter=Mpi_*"
 		${MPIEXEC_POSTFLAGS}
+		)
+
+	add_custom_target(all_test
+		make local_test
+		COMMAND make mpi_test
 		)
 
 endif()

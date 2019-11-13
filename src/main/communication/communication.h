@@ -4,19 +4,21 @@
 #include <cstdint>
 #include <mpi.h>
 
-class Communication {
+class MpiCommunicator {
 	private:
-		int _size;
-		int _rank;
+		int size;
+		int rank;
 
-		MPI_Group worldGroup;
-
+		MPI_Group group;
+		MPI_Comm comm;
+	
 	public:
-		Communication();
+		MpiCommunicator();
+		MPI_Group getMpiGroup();
+		MPI_Comm getMpiComm();
 
-		int size();
-		int rank();
-		MPI_Group getWorldGroup();
+		int getRank();
+		int getSize();
 
 };
 #endif
