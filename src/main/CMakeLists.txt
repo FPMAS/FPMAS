@@ -26,6 +26,7 @@ set(SOURCES
 add_library(fpmas ${SOURCES})
 
 target_link_libraries(fpmas PUBLIC zoltan)
+target_link_libraries(fpmas PUBLIC nlohmann_json::nlohmann_json)
 
 target_include_directories(
 	fpmas

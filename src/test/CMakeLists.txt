@@ -11,6 +11,10 @@ set(SOURCES
 
 set(SOURCES
 	${SOURCES}
+	environment/serializers.cpp)
+
+set(SOURCES
+	${SOURCES}
 	environment/nested_graph.cpp)
 
 

@@ -36,10 +36,11 @@ if(MPIEXEC_EXECUTABLE)
 
 endif()
 
+find_package(nlohmann_json REQUIRED) 
+
 add_subdirectory(src/main)
 
 add_subdirectory(src/test)
-
 
 # Doxygen
 find_package(Doxygen)

@@ -15,13 +15,12 @@ class GraphItem {
 	protected:
 		GraphItem(std::string);
 	public:
-		std::string getLabel();
+		std::string getLabel() const;
 };
 
 // Arc forward declaration to use in Node
 template<class T> class Node;
 template<class T> class Arc;
-
 
 /**
  * Graph class.
@@ -73,7 +72,7 @@ template<class T> class Node : public GraphItem {
 		std::vector<Arc<T>*> incomingArcs;
 		std::vector<Arc<T>*> outgoingArcs;
 	public:
-		T* getData();
+		T* getData() const;
 		std::vector<Arc<T>*> getIncomingArcs() const;
 		std::vector<Arc<T>*> getOutgoingArcs() const;
 
@@ -136,7 +135,7 @@ template<class T> Node<T>::Node(std::string label, T* data) : GraphItem(label) {
  *
  * @return pointer to node's data
  */
-template<class T> T* Node<T>::getData() {
+template<class T> T* Node<T>::getData() const {
 	return this->data;
 }
 

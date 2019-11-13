@@ -14,6 +14,6 @@ GraphItem::GraphItem(std::string label) : label(label) {
  *
  * @return label of this item
  */
-std::string GraphItem::getLabel() {
+std::string GraphItem::getLabel() const {
 	return this->label;
 }
