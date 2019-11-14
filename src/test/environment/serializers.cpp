@@ -2,6 +2,8 @@
 #include "environment/serializers.h"
 #include <nlohmann/json.hpp>
 
+#include "sample_graph.h"
+
 using nlohmann::json;
 using FPMAS::graph::Graph;
 using FPMAS::graph::Node;
@@ -49,38 +51,9 @@ TEST(GraphSerializer, simple_graph_serialization) {
 	delete n->getData();
 }
 
-class SampleGraphTest : public ::testing::Test {
-
-	protected:
-		Graph<int> simpleGraph;
-		std::vector<int*> data = {
-			new int(1),
-			new int(2),
-			new int(3)
-		};
-
-		void SetUp() override {
-			Node<int>* node1 = simpleGraph.buildNode("1", data[0]);
-			Node<int>* node2 = simpleGraph.buildNode("2", data[1]);
-			Node<int>* node3 = simpleGraph.buildNode("3", data[2]);
-
-			simpleGraph.link(node1, node2, "0");
-			simpleGraph.link(node2, node1, "1");
-			simpleGraph.link(node2, node3, "2");
-
-		}
-
-		void TearDown() override {
-			for(auto d : data) {
-				delete d;
-			}
-		}
-
-};
-
 TEST_F(SampleGraphTest, sample_graph_serialization) {
 
-	json j = simpleGraph;
+	json j = sampleGraph;
 
 	ASSERT_EQ(j.dump(),
 			"{\"arcs\":["
@@ -112,4 +85,27 @@ TEST(GraphSerializer, simple_graph_deserialization) {
 	ASSERT_EQ(*g.getNodes().find("0")->second->getData(), 0);
 
 	delete g.getNodes().find("0")->second->getData();
+}
+
+TEST_F(SampleGraphTest, sample_graph_deserialization) {
+
+	json graph_json = R"(
+			{
+			"arcs":[
+				{"id":"0","link":["1","2"]},
+				{"id":"2","link":["2","3"]},
+				{"id":"1","link":["2","1"]}
+				],
+			"nodes":[
+				{"data":3,"id":"3"},
+				{"data":1,"id":"1"},
+				{"data":2,"id":"2"}
+				]
+			}
+			)"_json;
+
+	Graph<int> graph = graph_json.get<Graph<int>>();
+
+	testSampleGraphStructure(&graph);
+
 }
