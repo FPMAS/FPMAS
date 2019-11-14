@@ -3,6 +3,8 @@
 #include <nlohmann/json.hpp>
 
 using nlohmann::json;
+using FPMAS::graph::Graph;
+using FPMAS::graph::Node;
 
 TEST(NodeSerializer, simple_node_serialization) {
 

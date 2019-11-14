@@ -1,6 +1,8 @@
 #include "gtest/gtest.h"
 #include "communication/communication.h"
 
+using FPMAS::communication::MpiCommunicator;
+
 TEST(Mpi_MpiCommunicatorTest, size_test) {
 	MpiCommunicator comm;
 

@@ -4,21 +4,25 @@
 #include <cstdint>
 #include <mpi.h>
 
-class MpiCommunicator {
-	private:
-		int size;
-		int rank;
+namespace FPMAS {
+	namespace communication {
+		class MpiCommunicator {
+			private:
+				int size;
+				int rank;
 
-		MPI_Group group;
-		MPI_Comm comm;
-	
-	public:
-		MpiCommunicator();
-		MPI_Group getMpiGroup();
-		MPI_Comm getMpiComm();
+				MPI_Group group;
+				MPI_Comm comm;
 
-		int getRank();
-		int getSize();
+			public:
+				MpiCommunicator();
+				MPI_Group getMpiGroup();
+				MPI_Comm getMpiComm();
 
-};
+				int getRank();
+				int getSize();
+
+		};
+	}
+}
 #endif

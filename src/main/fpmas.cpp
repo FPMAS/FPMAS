@@ -4,6 +4,8 @@
 #include "communication/communication.h"
 #include <mpi.h>
 
+using FPMAS::communication::MpiCommunicator;
+
 int main(int argc, char* argv[]) {
 	MPI_Init(&argc, &argv);
 

@@ -1,5 +1,7 @@
 #include "graph.h"
 
+using FPMAS::graph::GraphItem;
+
 /**
  * GraphItem constructor.
  *

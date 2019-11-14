@@ -1,6 +1,10 @@
 #include "gtest/gtest.h"
 #include "environment/graph.h"
 
+using FPMAS::graph::Graph;
+using FPMAS::graph::Node;
+using FPMAS::graph::Arc;
+
 /*
  * Trivial constructor test.
  */

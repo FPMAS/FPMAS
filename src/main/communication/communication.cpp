@@ -1,5 +1,7 @@
 #include "communication.h"
 
+using FPMAS::communication::MpiCommunicator;
+
 MpiCommunicator::MpiCommunicator() {
 	MPI_Group worldGroup;
 	MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);

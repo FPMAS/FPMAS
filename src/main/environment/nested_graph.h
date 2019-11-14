@@ -3,9 +3,14 @@
 
 #include "graph.h"
 
-template<class T> class NestedGraph : public Graph<NestedGraph<T>> {
+namespace FPMAS {
+	namespace graph {
 
-};
+		template<class T> class NestedGraph : public Graph<NestedGraph<T>> {
+
+		};
+	}
+}
 
 #endif
 

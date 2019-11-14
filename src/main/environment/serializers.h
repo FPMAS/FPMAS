@@ -6,8 +6,12 @@
 
 using nlohmann::json;
 
-template<class T> void to_json(json& j, const Node<T>& n) {
-	j = json{{"label", n.getLabel()}, {"data", *n.getData()}};
+namespace FPMAS {
+	namespace graph {
+		template<class T> void to_json(json& j, const FPMAS::graph::Node<T>& n) {
+			j = json{{"label", n.getLabel()}, {"data", *n.getData()}};
+		}
+	}
 };
 
 #endif
