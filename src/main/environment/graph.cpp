@@ -5,17 +5,17 @@ using FPMAS::graph::GraphItem;
 /**
  * GraphItem constructor.
  *
- * @param label graph item label
+ * @param id graph item id
  */
-GraphItem::GraphItem(std::string label) : label(label) {
+GraphItem::GraphItem(std::string id) : id(id) {
 
 }
 
 /**
- * Returns the label of this graph item.
+ * Returns the id of this graph item.
  *
- * @return label of this item
+ * @return id of this item
  */
-std::string GraphItem::getLabel() const {
-	return this->label;
+std::string GraphItem::getId() const {
+	return this->id;
 }

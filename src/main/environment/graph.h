@@ -5,6 +5,8 @@
 #include <vector>
 #include <unordered_map>
 #include <iostream>
+#include <nlohmann/json.hpp>
+#include "serializers.h"
 
 namespace FPMAS {
 	namespace graph {
@@ -13,11 +15,11 @@ namespace FPMAS {
 		 */
 		class GraphItem {
 			private:
-				std::string label;
+				std::string id;
 			protected:
 				GraphItem(std::string);
 			public:
-				std::string getLabel() const;
+				std::string getId() const;
 		};
 
 		// Arc forward declaration to use in Node
@@ -27,14 +29,18 @@ namespace FPMAS {
 		/**
 		 * Graph class.
 		 */
+		template<class T> class Graph;
+		template<class T> void to_json(nlohmann::json&, const Graph<T>&);
 		template<class T> class Graph {
+			template<class S> friend void FPMAS::graph::to_json(nlohmann::json&, const Graph<S>&);
+
 			private:
 				std::unordered_map<std::string, Node<T>*> nodes;
 				std::unordered_map<std::string, Arc<T>*> arcs;
 			public:
 				Node<T>* getNode(std::string) const;
 				Arc<T>* getArc(std::string) const;
-				Node<T>* buildNode(std::string label, T* data);
+				Node<T>* buildNode(std::string id, T* data);
 				Arc<T>* link(Node<T>* source, Node<T>* target, std::string arcLabel);
 				~Graph();
 
@@ -54,8 +60,8 @@ namespace FPMAS {
 			Node<T>* targetNode;
 
 			public:
-			Node<T>* getSourceNode();
-			Node<T>* getTargetNode();
+			Node<T>* getSourceNode() const;
+			Node<T>* getTargetNode() const;
 
 		};
 
@@ -66,7 +72,7 @@ namespace FPMAS {
 			// Grants access to incoming and outgoing arcs lists
 			friend Arc<T>::Arc(std::string, Node<T>*, Node<T>*);
 			// Grants access to private Node constructor
-			friend Node<T>* Graph<T>::buildNode(std::string label, T *data);
+			friend Node<T>* Graph<T>::buildNode(std::string id, T *data);
 
 			private:
 			Node(std::string, T*);
@@ -83,12 +89,12 @@ namespace FPMAS {
 		/**
 		 * Private arc constructor.
 		 *
-		 * @param label arc label
+		 * @param id arc id
 		 * @param sourceNode pointer to the source Node
 		 * @param targetNode pointer to the target Node
 		 */
-		template<class T> Arc<T>::Arc(std::string label, Node<T> * sourceNode, Node<T> * targetNode)
-			: GraphItem(label), sourceNode(sourceNode), targetNode(targetNode) {
+		template<class T> Arc<T>::Arc(std::string id, Node<T> * sourceNode, Node<T> * targetNode)
+			: GraphItem(id), sourceNode(sourceNode), targetNode(targetNode) {
 				this->sourceNode->outgoingArcs.push_back(this);
 				this->targetNode->incomingArcs.push_back(this);
 			};
@@ -102,7 +108,7 @@ namespace FPMAS {
 		 *
 		 * @return pointer to the source node
 		 */
-		template<class T> Node<T>* Arc<T>::getSourceNode() {
+		template<class T> Node<T>* Arc<T>::getSourceNode() const {
 			return this->sourceNode;
 		}
 
@@ -111,7 +117,7 @@ namespace FPMAS {
 		 *
 		 * @return pointer to the target node
 		 */
-		template<class T> Node<T>* Arc<T>::getTargetNode() {
+		template<class T> Node<T>* Arc<T>::getTargetNode() const {
 			return this->targetNode;
 		}
 
@@ -122,13 +128,13 @@ namespace FPMAS {
 		/**
 		 * Node constructor.
 		 *
-		 * Responsability is left to the user to maintain the unicity of labels
+		 * Responsability is left to the user to maintain the unicity of ids
 		 * within each graph.
 		 *
-		 * @param std::string node label
+		 * @param std::string node id
 		 * @param data pointer to node data
 		 */
-		template<class T> Node<T>::Node(std::string label, T* data) : GraphItem(label) {
+		template<class T> Node<T>::Node(std::string id, T* data) : GraphItem(id) {
 			this->data = data;
 		}
 
@@ -164,48 +170,48 @@ namespace FPMAS {
 		/*************/
 
 		/**
-		 * Finds and returns the node associated to the specified label within this
+		 * Finds and returns the node associated to the specified id within this
 		 * graph.
 		 *
-		 * @param label node label
+		 * @param id node id
 		 * @return pointer to associated node
 		 */
-		template<class T> Node<T>* Graph<T>::getNode(std::string label) const {
-			return this->nodes.find(label)->second;
+		template<class T> Node<T>* Graph<T>::getNode(std::string id) const {
+			return this->nodes.find(id)->second;
 		}
 
 		/**
-		 * Finds and returns the arc associated to the specified label within this
+		 * Finds and returns the arc associated to the specified id within this
 		 * graph.
 		 *
-		 * @param label arc label
+		 * @param id arc id
 		 * @return pointer to associated arc
 		 */
-		template<class T> Arc<T>* Graph<T>::getArc(std::string label) const {
-			return this->arcs.find(label)->second;
+		template<class T> Arc<T>* Graph<T>::getArc(std::string id) const {
+			return this->arcs.find(id)->second;
 		}
 
 		/**
-		 * Builds a node with the specify label and data, and adds it to this graph,
+		 * Builds a node with the specify id and data, and adds it to this graph,
 		 * and finally returns the built node.
 		 *
-		 * @param label node label
+		 * @param id node id
 		 * @param data pointer to node data
 		 * @return pointer to build node
 		 */
-		template<class T> Node<T>* Graph<T>::buildNode(std::string label, T *data) {
-			Node<T>* node = new Node<T>(label, data);
-			this->nodes[label] = node;
+		template<class T> Node<T>* Graph<T>::buildNode(std::string id, T *data) {
+			Node<T>* node = new Node<T>(id, data);
+			this->nodes[id] = node;
 			return node;
 		}
 
 		/**
-		 * Builds a directed arc with the specified label from the source node to the
+		 * Builds a directed arc with the specified id from the source node to the
 		 * target node, adds it to the graph and finally returns the built arc.
 		 *
 		 * @param source pointer to source node
 		 * @param target pointer to target node
-		 * @param arcLabel arc label
+		 * @param arcLabel arc id
 		 * @return built arc
 		 */
 		template<class T> Arc<T>* Graph<T>::link(Node<T> *source, Node<T> *target, std::string arcLabel) {
