@@ -49,6 +49,17 @@ namespace FPMAS {
 			};
 
 		}
+
+		template<class T> void from_json(const json& j, FPMAS::graph::Graph<T>& graph) {
+			json nodes = j.at("nodes");
+
+			for(json& node : nodes) {
+				graph.buildNode(
+					node.at("id").get<std::string>(),
+					new T(node.at("data").get<T>())
+					);
+			}
+		}
 	}
 };
 

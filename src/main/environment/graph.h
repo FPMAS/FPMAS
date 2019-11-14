@@ -39,8 +39,11 @@ namespace FPMAS {
 				std::unordered_map<std::string, Arc<T>*> arcs;
 			public:
 				Node<T>* getNode(std::string) const;
+				std::unordered_map<std::string, Node<T>*> getNodes() const;
 				Arc<T>* getArc(std::string) const;
+				std::unordered_map<std::string, Arc<T>*> getArcs() const;
 				Node<T>* buildNode(std::string id, T* data);
+				Node<T>* buildNode(std::string id, T data);
 				Arc<T>* link(Node<T>* source, Node<T>* target, std::string arcLabel);
 				~Graph();
 
@@ -180,6 +183,10 @@ namespace FPMAS {
 			return this->nodes.find(id)->second;
 		}
 
+		template<class T> std::unordered_map<std::string, Node<T>*> Graph<T>::getNodes() const {
+			return this->nodes;
+		}
+
 		/**
 		 * Finds and returns the arc associated to the specified id within this
 		 * graph.
@@ -189,6 +196,10 @@ namespace FPMAS {
 		 */
 		template<class T> Arc<T>* Graph<T>::getArc(std::string id) const {
 			return this->arcs.find(id)->second;
+		}
+
+		template<class T> std::unordered_map<std::string, Arc<T>*> Graph<T>::getArcs() const {
+			return this->arcs;
 		}
 
 		/**

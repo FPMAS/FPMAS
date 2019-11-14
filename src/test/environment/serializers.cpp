@@ -96,3 +96,20 @@ TEST_F(SampleGraphTest, sample_graph_serialization) {
 			);
 
 }
+
+TEST(GraphSerializer, simple_graph_deserialization) {
+	json graph_json = R"(
+		{
+			"arcs":[],
+			"nodes":[{"data":0,"id":"0"}]
+		}
+		)"_json;
+
+	Graph<int> g = graph_json.get<Graph<int>>();
+	ASSERT_EQ(g.getNodes().size(), 1);
+	ASSERT_EQ(g.getNodes().count("0"), 1);
+	ASSERT_EQ(g.getNodes().find("0")->second->getId(), "0");
+	ASSERT_EQ(*g.getNodes().find("0")->second->getData(), 0);
+
+	delete g.getNodes().find("0")->second->getData();
+}
