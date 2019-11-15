@@ -7,7 +7,7 @@ using FPMAS::graph::GraphItem;
  *
  * @param id graph item id
  */
-GraphItem::GraphItem(std::string id) : id(id) {
+GraphItem::GraphItem(unsigned long id) : id(id) {
 
 }
 
@@ -16,6 +16,6 @@ GraphItem::GraphItem(std::string id) : id(id) {
  *
  * @return id of this item
  */
-std::string GraphItem::getId() const {
+unsigned long GraphItem::getId() const {
 	return this->id;
 }

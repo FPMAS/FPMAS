@@ -1,15 +1,12 @@
 
-# Builds the Zoltan library
-add_subdirectory(zoltan)
-
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}/zoltan
-	${CMAKE_CURRENT_SOURCE_DIR}/zoltan/include
-	)
-
 # Main
 set(SOURCES fpmas.cpp)
+
+#utils
+set(SOURCES
+	${SOURCES}
+	utils/config.cpp
+	)
 
 # Communication
 set(SOURCES
@@ -21,6 +18,13 @@ set(SOURCES
 set(SOURCES
 	${SOURCES}
 	environment/graph.cpp
+	)
+
+# Agent
+set(SOURCES
+	${SOURCES}
+	agent/agent_base.cpp
+	agent/agent_container.cpp
 	)
 
 add_library(fpmas ${SOURCES})

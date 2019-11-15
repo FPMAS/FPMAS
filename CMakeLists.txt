@@ -29,6 +29,17 @@ if(MPIEXEC_EXECUTABLE)
 		${MPIEXEC_POSTFLAGS}
 		)
 
+	set(MPIEXEC_MAX_NUMPROCS 1)
+	add_custom_target(mpi_single_proc_test
+		${MPIEXEC_EXECUTABLE}
+		${MPIEXEC_NUMPROC_FLAG}
+		${MPIEXEC_MAX_NUMPROCS}
+		${MPIEXEC_PREFLAGS}
+		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_mpi_test
+		"--gtest_filter=Mpi_*"
+		${MPIEXEC_POSTFLAGS}
+		)
+
 	add_custom_target(all_test
 		make local_test
 		COMMAND make mpi_test
@@ -37,6 +48,15 @@ if(MPIEXEC_EXECUTABLE)
 endif()
 
 find_package(nlohmann_json REQUIRED) 
+
+# Builds the Zoltan library
+add_subdirectory(zoltan)
+
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}/zoltan
+	${CMAKE_CURRENT_SOURCE_DIR}/zoltan/include
+	)
 
 add_subdirectory(src/main)
 
@@ -48,7 +68,7 @@ if(DOXYGEN_FOUND)
 	file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
 	set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
 	set(DOXYGEN_HTML_OUTPUT ".")
-	set(DOXYGEN_EXCLUDE src/main/zoltan)
+	# set(DOXYGEN_EXCLUDE src/main/zoltan)
 	doxygen_add_docs(doc
 		${CMAKE_CURRENT_SOURCE_DIR}/src/main
 		)

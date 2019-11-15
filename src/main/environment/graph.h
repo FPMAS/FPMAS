@@ -17,11 +17,11 @@ namespace FPMAS {
 		 */
 		class GraphItem {
 			private:
-				std::string id;
+				unsigned long id;
 			protected:
-				GraphItem(std::string);
+				GraphItem(unsigned long);
 			public:
-				std::string getId() const;
+				unsigned long getId() const;
 		};
 
 		// Forward declaration
@@ -108,16 +108,17 @@ namespace FPMAS {
 		 * @tparam T associated data type
 		 */
 		template<class T> class Graph {
-			private:
-				std::unordered_map<std::string, Node<T>*> nodes;
-				std::unordered_map<std::string, Arc<T>*> arcs;
+			protected:
+				std::unordered_map<unsigned long, Node<T>*> nodes;
+				std::unordered_map<unsigned long, Arc<T>*> arcs;
 			public:
-				Node<T>* getNode(std::string) const;
-				std::unordered_map<std::string, Node<T>*> getNodes() const;
-				Arc<T>* getArc(std::string) const;
-				std::unordered_map<std::string, Arc<T>*> getArcs() const;
-				Node<T>* buildNode(std::string id, T* data);
-				Arc<T>* link(Node<T>* source, Node<T>* target, std::string arcLabel);
+				Node<T>* getNode(unsigned long) const;
+				std::unordered_map<unsigned long, Node<T>*> getNodes() const;
+				Arc<T>* getArc(unsigned long) const;
+				std::unordered_map<unsigned long, Arc<T>*> getArcs() const;
+				Node<T>* buildNode(unsigned long id, T* data);
+				Node<T>* buildNode(unsigned long id, float weight, T* data);
+				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
 				~Graph();
 
 		};
@@ -130,10 +131,10 @@ namespace FPMAS {
 		template<class T> class Arc : public GraphItem {
 			// Grants access to the Arc constructor
 			friend Node<T>;
-			friend Arc<T>* Graph<T>::link(Node<T>*, Node<T>*, std::string);
+			friend Arc<T>* Graph<T>::link(Node<T>*, Node<T>*, unsigned long);
 
 			private:
-			Arc(std::string, Node<T>*, Node<T>*);
+			Arc(unsigned long, Node<T>*, Node<T>*);
 			Node<T>* sourceNode;
 			Node<T>* targetNode;
 
@@ -150,17 +151,22 @@ namespace FPMAS {
 		 */
 		template<class T> class Node : public GraphItem {
 			// Grants access to incoming and outgoing arcs lists
-			friend Arc<T>::Arc(std::string, Node<T>*, Node<T>*);
+			friend Arc<T>::Arc(unsigned long, Node<T>*, Node<T>*);
 			// Grants access to private Node constructor
-			friend Node<T>* Graph<T>::buildNode(std::string id, T *data);
+			friend Node<T>* Graph<T>::buildNode(unsigned long id, T *data);
+			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
 
 			private:
-			Node(std::string, T*);
+			Node(unsigned long, T*);
+			Node(unsigned long, float, T*);
 			T* data;
+			float weight = 1.;
 			std::vector<Arc<T>*> incomingArcs;
 			std::vector<Arc<T>*> outgoingArcs;
+
 			public:
 			T* getData() const;
+			float getWeight() const;
 			std::vector<Arc<T>*> getIncomingArcs() const;
 			std::vector<Arc<T>*> getOutgoingArcs() const;
 
@@ -173,7 +179,7 @@ namespace FPMAS {
 		 * @param sourceNode pointer to the source Node
 		 * @param targetNode pointer to the target Node
 		 */
-		template<class T> Arc<T>::Arc(std::string id, Node<T> * sourceNode, Node<T> * targetNode)
+		template<class T> Arc<T>::Arc(unsigned long id, Node<T> * sourceNode, Node<T> * targetNode)
 			: GraphItem(id), sourceNode(sourceNode), targetNode(targetNode) {
 				this->sourceNode->outgoingArcs.push_back(this);
 				this->targetNode->incomingArcs.push_back(this);
@@ -211,10 +217,15 @@ namespace FPMAS {
 		 * Responsability is left to the user to maintain the unicity of ids
 		 * within each graph.
 		 *
-		 * @param std::string node id
+		 * @param unsigned long node id
 		 * @param data pointer to node data
 		 */
-		template<class T> Node<T>::Node(std::string id, T* data) : GraphItem(id) {
+		template<class T> Node<T>::Node(unsigned long id, T* data) : GraphItem(id) {
+			this->data = data;
+		}
+
+		template<class T> Node<T>::Node(unsigned long id, float weight, T* data) : GraphItem(id) {
+			this->weight = weight;
 			this->data = data;
 		}
 
@@ -225,6 +236,10 @@ namespace FPMAS {
 		 */
 		template<class T> T* Node<T>::getData() const {
 			return this->data;
+		}
+
+		template<class T> float Node<T>::getWeight() const {
+			return this->weight;
 		}
 
 		/**
@@ -256,7 +271,7 @@ namespace FPMAS {
 		 * @param id node id
 		 * @return pointer to associated node
 		 */
-		template<class T> Node<T>* Graph<T>::getNode(std::string id) const {
+		template<class T> Node<T>* Graph<T>::getNode(unsigned long id) const {
 			return this->nodes.find(id)->second;
 		}
 
@@ -265,7 +280,7 @@ namespace FPMAS {
 		 *
 		 * @return nodes contained in this graph
 		 */
-		template<class T> std::unordered_map<std::string, Node<T>*> Graph<T>::getNodes() const {
+		template<class T> std::unordered_map<unsigned long, Node<T>*> Graph<T>::getNodes() const {
 			return this->nodes;
 		}
 
@@ -276,7 +291,7 @@ namespace FPMAS {
 		 * @param id arc id
 		 * @return pointer to associated arc
 		 */
-		template<class T> Arc<T>* Graph<T>::getArc(std::string id) const {
+		template<class T> Arc<T>* Graph<T>::getArc(unsigned long id) const {
 			return this->arcs.find(id)->second;
 		}
 
@@ -285,7 +300,7 @@ namespace FPMAS {
 		 *
 		 * @return arcs contained in this graph
 		 */
-		template<class T> std::unordered_map<std::string, Arc<T>*> Graph<T>::getArcs() const {
+		template<class T> std::unordered_map<unsigned long, Arc<T>*> Graph<T>::getArcs() const {
 			return this->arcs;
 		}
 
@@ -297,12 +312,25 @@ namespace FPMAS {
 		 * @param data pointer to node data
 		 * @return pointer to build node
 		 */
-		template<class T> Node<T>* Graph<T>::buildNode(std::string id, T *data) {
+		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, T *data) {
 			Node<T>* node = new Node<T>(id, data);
 			this->nodes[id] = node;
 			return node;
 		}
 
+		/**
+		 * Builds a node with the specify id and data, and adds it to this graph,
+		 * and finally returns the built node.
+		 *
+		 * @param id node id
+		 * @param data pointer to node data
+		 * @return pointer to build node
+		 */
+		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data) {
+			Node<T>* node = new Node<T>(id, weight, data);
+			this->nodes[id] = node;
+			return node;
+		}
 		/**
 		 * Builds a directed arc with the specified id from the source node to the
 		 * target node, adds it to the graph and finally returns the built arc.
@@ -312,7 +340,7 @@ namespace FPMAS {
 		 * @param arcLabel arc id
 		 * @return built arc
 		 */
-		template<class T> Arc<T>* Graph<T>::link(Node<T> *source, Node<T> *target, std::string arcLabel) {
+		template<class T> Arc<T>* Graph<T>::link(Node<T> *source, Node<T> *target, unsigned long arcLabel) {
 			Arc<T>* arc = new Arc<T>(arcLabel, source, target);
 			this->arcs[arcLabel] = arc;
 			return arc;

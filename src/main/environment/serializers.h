@@ -54,7 +54,7 @@ namespace FPMAS {
 		 * @param a arc reference
 		 */
 		template<class T> void to_json(json& j, const FPMAS::graph::Arc<T>& a) {
-			std::array<std::string, 2> link = {
+			std::array<unsigned long, 2> link = {
 				a.getSourceNode()->getId(),
 				a.getTargetNode()->getId()
 			};
@@ -157,7 +157,7 @@ namespace FPMAS {
 			json nodes = j.at("nodes");
 			for(json& node : nodes) {
 				graph.buildNode(
-					node.at("id").get<std::string>(),
+					node.at("id").get<unsigned long>(),
 					new T(node.at("data").get<T>())
 					);
 			}
@@ -165,13 +165,13 @@ namespace FPMAS {
 			// Build arcs
 			json arcs = j.at("arcs");
 			for(json& arc : arcs) {
-				std::array<std::string, 2> link =
+				std::array<unsigned long, 2> link =
 					arc.at("link")
-					.get<std::array<std::string, 2>>();
+					.get<std::array<unsigned long, 2>>();
 				graph.link(
 					graph.getNode(link.at(0)),
 					graph.getNode(link.at(1)),
-					arc.at("id").get<std::string>()
+					arc.at("id").get<unsigned long>()
 					);
 			}
 		}

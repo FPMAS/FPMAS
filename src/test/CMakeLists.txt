@@ -17,13 +17,20 @@ set(SOURCES
 	${SOURCES}
 	environment/nested_graph.cpp)
 
+set(SOURCES
+	${SOURCES}
+	environment/distributed_graph.cpp)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
+target_include_directories(fpmas_mpi_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(fpmas_mpi_test fpmas)
+target_link_libraries(fpmas_mpi_test zoltan)
 target_link_libraries(fpmas_mpi_test gtest_main)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})
+target_include_directories(fpmas_local_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(fpmas_local_test fpmas)
+target_link_libraries(fpmas_local_test zoltan)
 target_link_libraries(fpmas_local_test gtest_main)
 
 add_custom_target(local_test

@@ -3,6 +3,7 @@
 #include "zoltan_cpp.h"
 #include "communication/communication.h"
 #include <mpi.h>
+#include "utils/config.h"
 
 using FPMAS::communication::MpiCommunicator;
 
@@ -20,16 +21,7 @@ int main(int argc, char* argv[]) {
 	//Dynamically create Zoltan object.
 	MpiCommunicator zoltanCommunicator;
 	Zoltan *zz = new Zoltan(zoltanCommunicator.getMpiComm());
-	zz->Set_Param("DEBUG_LEVEL", "0");
-	zz->Set_Param("LB_METHOD", "GRAPH"); // Simulation parameter?
-	zz->Set_Param("LB_APPROACH", "REPARTITION"); //REPARTITION //REFINE //PARTITION
-	zz->Set_Param("NUM_GID_ENTRIES", "1");
-	zz->Set_Param("NUM_LID_ENTRIES", "0");
-	zz->Set_Param("OBJ_WEIGHT_DIM", "1");
-	zz->Set_Param("EDGE_WEIGHT_DIM", "0");
-	zz->Set_Param("RETURN_LISTS", "ALL");
-	zz->Set_Param("CHECK_GRAPH", "0");
-	zz->Set_Param("IMBALANCE_TOL", "1.02");
+	FPMAS::config::zoltan_config(zz);
 
 
 	//Several lines of code would follow, working with zz
