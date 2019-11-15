@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['nestedgraph_17',['NestedGraph',['../classNestedGraph.html',1,'']]],
-  ['node_18',['Node',['../classNode.html',1,'']]]
+  ['nestedgraph_25',['NestedGraph',['../classFPMAS_1_1graph_1_1NestedGraph.html',1,'FPMAS::graph']]],
+  ['node_26',['Node',['../classFPMAS_1_1graph_1_1Node.html',1,'FPMAS::graph']]]
 ];

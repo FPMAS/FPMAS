@@ -75,24 +75,35 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cstdint&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;mpi.h&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno"><a class="line" href="classCommunication.html">    7</a></span>&#160;<span class="keyword">class </span><a class="code" href="classCommunication.html">Communication</a> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keywordtype">int</span> _size;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <span class="keywordtype">int</span> _rank;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        MPI_Group worldGroup;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <a class="code" href="classCommunication.html">Communication</a>();</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keywordtype">int</span> size();</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keywordtype">int</span> rank();</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        MPI_Group getWorldGroup();</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;};</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>FPMAS {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">namespace </span>communication {</div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">   14</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                <span class="keywordtype">int</span> size;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <span class="keywordtype">int</span> rank;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                MPI_Group group;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                MPI_Comm comm;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565">MpiCommunicator</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                MPI_Group <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a278439d478d5fb294551027fbcaa19c0">getMpiGroup</a>();</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                MPI_Comm <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a0b50451e3e97184f84cf0b4b30e0014d">getMpiComm</a>();</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                <span class="keywordtype">int</span> <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ab42b4ae3d9c4ba19fd8d274053815721">getRank</a>();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keywordtype">int</span> <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ac39e6d8d2bdd9e410e1f901e8294d478">getSize</a>();</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        };</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    }</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassCommunication_html"><div class="ttname"><a href="classCommunication.html">Communication</a></div><div class="ttdef"><b>Definition:</b> communication.h:7</div></div>
+<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_ac39e6d8d2bdd9e410e1f901e8294d478"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ac39e6d8d2bdd9e410e1f901e8294d478">FPMAS::communication::MpiCommunicator::getSize</a></div><div class="ttdeci">int getSize()</div><div class="ttdef"><b>Definition:</b> communication.cpp:53</div></div>
+<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_a0b50451e3e97184f84cf0b4b30e0014d"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a0b50451e3e97184f84cf0b4b30e0014d">FPMAS::communication::MpiCommunicator::getMpiComm</a></div><div class="ttdeci">MPI_Comm getMpiComm()</div><div class="ttdef"><b>Definition:</b> communication.cpp:24</div></div>
+<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_ab82fc25614dd7bed1acd4bac734af565"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565">FPMAS::communication::MpiCommunicator::MpiCommunicator</a></div><div class="ttdeci">MpiCommunicator()</div><div class="ttdef"><b>Definition:</b> communication.cpp:9</div></div>
+<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_ab42b4ae3d9c4ba19fd8d274053815721"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ab42b4ae3d9c4ba19fd8d274053815721">FPMAS::communication::MpiCommunicator::getRank</a></div><div class="ttdeci">int getRank()</div><div class="ttdef"><b>Definition:</b> communication.cpp:43</div></div>
+<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html">FPMAS::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:14</div></div>
+<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_a278439d478d5fb294551027fbcaa19c0"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a278439d478d5fb294551027fbcaa19c0">FPMAS::communication::MpiCommunicator::getMpiGroup</a></div><div class="ttdeci">MPI_Group getMpiGroup()</div><div class="ttdef"><b>Definition:</b> communication.cpp:33</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

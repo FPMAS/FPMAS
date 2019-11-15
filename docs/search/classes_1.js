@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['communication_23',['Communication',['../classCommunication.html',1,'']]]
+  ['foo_32',['Foo',['../classFoo.html',1,'']]]
 ];

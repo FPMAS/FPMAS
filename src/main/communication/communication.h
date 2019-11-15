@@ -6,6 +6,11 @@
 
 namespace FPMAS {
 	namespace communication {
+		/**
+		 * A convenient wrapper to build MPI groups and communicators from the
+		 * MPI_COMM_WORLD communicator, i.e. groups and communicators
+		 * containing all the processes available.
+		 */
 		class MpiCommunicator {
 			private:
 				int size;

@@ -5,10 +5,12 @@
 #include <vector>
 #include <unordered_map>
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include "serializers.h"
 
 namespace FPMAS {
+	/**
+	 * The FPMAS::graph namespace.
+	 */
 	namespace graph {
 		/**
 		 * A labelled object, super class for Nodes and Arcs.
@@ -22,18 +24,90 @@ namespace FPMAS {
 				std::string getId() const;
 		};
 
-		// Arc forward declaration to use in Node
+		// Forward declaration
 		template<class T> class Node;
 		template<class T> class Arc;
+		template<class T> class Graph;
 
 		/**
 		 * Graph class.
+		 *
+		 * Aditionnaly to the functions defined in the Graph API, it is
+		 * interesting to notice that Graphs object can be json serialized and
+		 * de-serialized using the [JSON for Modern C++
+		 * library](https://github.com/nlohmann/json).
+		 *
+		 * For example, the following code :
+		 *
+		 * ```
+		 *  #include <iostream>
+		 *  #include "environment/graph.h"
+		 *  #include <nlohmann/json.hpp>
+		 *
+		 *  using FPMAS::graph::Graph;
+		 *  using FPMAS::graph::Node;
+		 *
+		 *  int main() {
+		 *  	Graph<int> g;
+		 *		Node<int>* n1 = g.buildNode("0", new int(0));
+		 *		Node<int>* n2 = g.buildNode("1", new int(1));
+		 *		g.link(n1, n2, "0");
+		 *
+		 *		json j = g;
+		 *
+		 *		std::out << j.dump() << std::endl;
+		 *
+		 *		delete n1->getData();
+		 *		delete n2->getData();
+		 *	}
+		 *	```
+		 *  Will print the following json :
+		 *	```
+		 *	{"arcs":[{"id":"0","link":["0","1"]}],"nodes":[{"data":0,"id":"0"},{"data":1,"id":"1"}]}
+		 *	```
+		 *  For more details about how json format used, see the
+		 *  FPMAS::graph::to_json(json&, const Graph<T>&) documentation.
+		 *
+		 *  Graph can also be un-serialized from json files with the same
+		 *  format.
+		 *
+		 *  The following example code will build the graph serialized in the
+		 *  previous example :
+		 *	```
+		 *	#include <iostream>
+		 *	#include "environment/graph.h"
+		 *	#include <nlohmann/json.hpp>
+		 *
+		 *	using FPMAS::graph::Graph;
+		 *	using FPMAS::graph::Node;
+		 *
+		 *	int main() {
+		 *		json graph_json = R"(
+		 *			{
+		 *			"arcs":[
+		 *				{"id":"0","link":["0","1"]}
+		 *				],
+		 *			"nodes":[
+		 *				{"data":0,"id":"0"},
+		 *				{"data":1,"id":"1"}
+		 *				]
+		 *			}
+		 *			)"_json;
+		 *
+		 * 		// Unserialize the graph from the json string
+		 *		Graph<int> graph = graph_json.get<Graph<int>>();
+		 *	}
+		 *	```
+		 *
+		 * For more information about the json unserialization, see the [JSON
+		 * for Modern C++ documentation]
+		 * (https://github.com/nlohmann/json/blob/develop/README.md)
+		 * and the FPMAS::graph::from_json(const json&, Graph<T>&)
+		 * function.
+		 *
+		 * @tparam T associated data type
 		 */
-		template<class T> class Graph;
-		template<class T> void to_json(nlohmann::json&, const Graph<T>&);
 		template<class T> class Graph {
-			template<class S> friend void FPMAS::graph::to_json(nlohmann::json&, const Graph<S>&);
-
 			private:
 				std::unordered_map<std::string, Node<T>*> nodes;
 				std::unordered_map<std::string, Arc<T>*> arcs;
@@ -43,7 +117,6 @@ namespace FPMAS {
 				Arc<T>* getArc(std::string) const;
 				std::unordered_map<std::string, Arc<T>*> getArcs() const;
 				Node<T>* buildNode(std::string id, T* data);
-				Node<T>* buildNode(std::string id, T data);
 				Arc<T>* link(Node<T>* source, Node<T>* target, std::string arcLabel);
 				~Graph();
 
@@ -51,6 +124,8 @@ namespace FPMAS {
 
 		/**
 		 * Graph arc.
+		 *
+		 * @tparam T associated data type
 		 */
 		template<class T> class Arc : public GraphItem {
 			// Grants access to the Arc constructor
@@ -70,6 +145,8 @@ namespace FPMAS {
 
 		/**
 		 * Graph node.
+		 *
+		 * @tparam T associated data type
 		 */
 		template<class T> class Node : public GraphItem {
 			// Grants access to incoming and outgoing arcs lists
@@ -183,6 +260,11 @@ namespace FPMAS {
 			return this->nodes.find(id)->second;
 		}
 
+		/**
+		 * Returns a copy of the nodes map of this graph.
+		 *
+		 * @return nodes contained in this graph
+		 */
 		template<class T> std::unordered_map<std::string, Node<T>*> Graph<T>::getNodes() const {
 			return this->nodes;
 		}
@@ -198,6 +280,11 @@ namespace FPMAS {
 			return this->arcs.find(id)->second;
 		}
 
+		/**
+		 * Returns a copy of the arcs map of this graph.
+		 *
+		 * @return arcs contained in this graph
+		 */
 		template<class T> std::unordered_map<std::string, Arc<T>*> Graph<T>::getArcs() const {
 			return this->arcs;
 		}
