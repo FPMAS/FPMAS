@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['nestedgraph_25',['NestedGraph',['../classFPMAS_1_1graph_1_1NestedGraph.html',1,'FPMAS::graph']]],
-  ['node_26',['Node',['../classFPMAS_1_1graph_1_1Node.html',1,'FPMAS::graph']]]
+  ['mpicommunicator_27',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html',1,'FPMAS::communication::MpiCommunicator'],['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565',1,'FPMAS::communication::MpiCommunicator::MpiCommunicator()']]]
 ];

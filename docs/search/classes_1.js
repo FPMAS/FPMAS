@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['foo_32',['Foo',['../classFoo.html',1,'']]]
+  ['distributedgraph_41',['DistributedGraph',['../classFPMAS_1_1graph_1_1DistributedGraph.html',1,'FPMAS::graph']]]
 ];

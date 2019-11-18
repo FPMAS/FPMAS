@@ -119,6 +119,7 @@ namespace FPMAS {
 				Node<T>* buildNode(unsigned long id, T* data);
 				Node<T>* buildNode(unsigned long id, float weight, T* data);
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
+				Arc<T>* link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel);
 				~Graph();
 
 		};
@@ -344,6 +345,10 @@ namespace FPMAS {
 			Arc<T>* arc = new Arc<T>(arcLabel, source, target);
 			this->arcs[arcLabel] = arc;
 			return arc;
+		}
+
+		template<class T> Arc<T>* Graph<T>::link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel) {
+			return this->link(this->getNode(source_id), this->getNode(target_id), arcLabel);
 		}
 
 		/**

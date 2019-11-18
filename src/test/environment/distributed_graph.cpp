@@ -9,6 +9,9 @@ using FPMAS::graph::DistributedGraph;
 
 using FPMAS::test_utils::assert_contains;
 
+using FPMAS::graph::zoltan_obj_list;
+using FPMAS::graph::zoltan_num_edges_multi_fn;
+
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:
 		static Zoltan* zz;
@@ -25,12 +28,70 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 
 		DistributedGraph<int> dg = DistributedGraph<int>(zz);
 
+		// Fake Zoltan buffers
+		
+		// Node lists
+		unsigned int global_ids[6];
+		unsigned int local_ids[0];
+		float weights[3];
+
+		// Resulting global ids
+		int node1_index;
+		int node2_index;
+		int node3_index;
+
+		// Edge lists
+		int num_edges[3];
+
+		// Error code
+		int err;
+
 		void SetUp() override {
-			dg.buildNode(0ul, 1., data[0]);
-			dg.buildNode(2ul, 2., data[1]);
-			dg.buildNode(85250ul, 3., data[2]);
+			dg.buildNode(0, 1., data[0]);
+			dg.buildNode(2, 2., data[1]);
+			dg.buildNode(85250, 3., data[2]);
+
+			dg.link(0, 2, 0);
+			dg.link(2, 0, 1);
+
+			dg.link(0, 85250, 2);
+
 
 		}
+
+		void write_zoltan_global_ids() {
+			zoltan_obj_list<int>(
+					&dg,
+					2,
+					0,
+					global_ids,
+					local_ids,
+					1,
+					weights,
+					&err
+					);
+
+			// We don't know in which order nodes will be processed internally.
+			// So, for the purpose of the test, we use weights to find which node
+			// correspond to which index in weights and global_ids.
+			assert_contains<float, 3>(weights, 1., &node1_index);
+			assert_contains<float, 3>(weights, 2., &node2_index);
+			assert_contains<float, 3>(weights, 3., &node3_index);
+		}
+
+		void write_zoltan_num_edges() {
+			zoltan_num_edges_multi_fn<int>(
+					&dg,
+					2,
+					0,
+					3,
+					global_ids,
+					local_ids,
+					num_edges,
+					&err
+					);
+		}
+
 
 		static void TearDownTestSuite() {
 			delete zz;
@@ -42,40 +103,70 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 Zoltan* Mpi_ZoltanFunctionsTest::zz = nullptr;
 std::array<int*, 3> Mpi_ZoltanFunctionsTest::data;
 
-using FPMAS::graph::zoltan_obj_list;
 
 TEST_F(Mpi_ZoltanFunctionsTest, obj_list_fn_test) {
 
-	unsigned int global_ids[6];
-	unsigned int local_ids[0]; // unused
+	write_zoltan_global_ids();
 
-	float weights[3];
-	int err;
+	ASSERT_EQ(FPMAS::graph::node_id(&global_ids[2 * node1_index]), 0ul);
+	ASSERT_EQ(FPMAS::graph::node_id(&global_ids[2 * node2_index]), 2ul);
+	ASSERT_EQ(FPMAS::graph::node_id(&global_ids[2 * node3_index]), 85250ul);
+}
 
-	zoltan_obj_list<int>(
+
+TEST_F(Mpi_ZoltanFunctionsTest, obj_num_egdes_multi_test) {
+
+	write_zoltan_global_ids();
+
+	write_zoltan_num_edges();
+
+	// Node 0 has 2 outgoing arcs
+	ASSERT_EQ(num_edges[node1_index], 2);
+	// Node 1 has 1 outgoing arcs
+	ASSERT_EQ(num_edges[node2_index], 1);
+	// Node 2 has 0 outgoing arcs
+	ASSERT_EQ(num_edges[node3_index], 0);
+}
+
+using FPMAS::graph::zoltan_edge_list_multi_fn;
+
+
+TEST_F(Mpi_ZoltanFunctionsTest, obj_edge_list_multi_test) {
+
+	write_zoltan_global_ids();
+
+	write_zoltan_num_edges();
+
+	unsigned int nbor_global_id[6];
+	int nbor_procs[3];
+	float ewgts[3];
+
+	zoltan_edge_list_multi_fn<int>(
 			&dg,
 			2,
 			0,
+			3,
 			global_ids,
 			local_ids,
+			num_edges,
+			nbor_global_id,
+			nbor_procs,
 			1,
-			weights,
+			ewgts,
 			&err
 			);
 
-	// We don't know in which order nodes will be processed internally.
-	// So, for the purpose of the test, we use weights to find which node
-	// correspond to which index in weights and global_ids.
-	int node1_index;
-	assert_contains<float, 3>(weights, 1., &node1_index);
+	int node1_offset = node1_index < node2_index ? 0 : 1;
+	int node2_offset = node1_index < node2_index ? 2 : 0;
 
-	int node2_index;
-	assert_contains<float, 3>(weights, 2., &node2_index);
+	unsigned long node1_edges[] = {
+		FPMAS::graph::node_id(&nbor_global_id[(node1_offset) * 2]),
+		FPMAS::graph::node_id(&nbor_global_id[(node1_offset + 1) * 2]),
+	};
 
-	int node3_index;
-	assert_contains<float, 3>(weights, 3., &node3_index);
+	assert_contains<unsigned long, 2>(node1_edges, 2);
+	assert_contains<unsigned long, 2>(node1_edges, 85250);
 
-	ASSERT_EQ(FPMAS::graph::node_id(global_ids, 2 * node1_index), 0ul);
-	ASSERT_EQ(FPMAS::graph::node_id(global_ids, 2 * node2_index), 2ul);
-	ASSERT_EQ(FPMAS::graph::node_id(global_ids, 2 * node3_index), 85250ul);
+	ASSERT_EQ(FPMAS::graph::node_id(&nbor_global_id[node2_offset * 2]), 0);
+
 }

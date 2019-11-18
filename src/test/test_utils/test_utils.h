@@ -57,25 +57,11 @@ namespace FPMAS {
 		}
 
 		template<class T, int n> void assert_contains(T* array, T value) {
-			for(int i = 0; i < n; i++) {
-				if(array[i] == value) {
-					return;
-				}
-			}
-			FAIL();
+			check_contains<T>(array, n, value);
 		}
 
 		template<class T, int n> void assert_contains(T* array, T value, int* result) {
 			check_contains_result<T>(array, n, value, result);
-			/*
-			for(int i = 0; i < n; i++) {
-				if(array[i] == value) {
-					*result = i;
-					return;
-				}
-			}
-			FAIL();
-			*/
 		}
 
 

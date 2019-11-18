@@ -67,6 +67,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classFPMAS_1_1graph_1_1Graph-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FPMAS::graph::Graph&lt; T &gt; Class Template Reference</div>  </div>
@@ -74,23 +75,46 @@ $(function() {
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="graph_8h_source.html">graph.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for FPMAS::graph::Graph&lt; T &gt;:</div>
+<div class="dyncontent">
+<div class="center"><img src="classFPMAS_1_1graph_1_1Graph__inherit__graph.png" border="0" usemap="#FPMAS_1_1graph_1_1Graph_3_01T_01_4_inherit__map" alt="Inheritance graph"/></div>
+<map name="FPMAS_1_1graph_1_1Graph_3_01T_01_4_inherit__map" id="FPMAS_1_1graph_1_1Graph_3_01T_01_4_inherit__map">
+<area shape="rect" title=" " alt="" coords="5,5,203,32"/>
+<area shape="rect" href="classFPMAS_1_1graph_1_1DistributedGraph.html" title=" " alt="" coords="8,80,200,121"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a10c230fdc2a90bca3697c37da1cb9d0f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a10c230fdc2a90bca3697c37da1cb9d0f">getNode</a> (std::string) const</td></tr>
-<tr class="separator:a10c230fdc2a90bca3697c37da1cb9d0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a657efd48b8a64749bd145c5687623505"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a657efd48b8a64749bd145c5687623505">getNodes</a> () const</td></tr>
-<tr class="separator:a657efd48b8a64749bd145c5687623505"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a84015f5d10ed486f3bd93fce5083f088"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a84015f5d10ed486f3bd93fce5083f088">getArc</a> (std::string) const</td></tr>
-<tr class="separator:a84015f5d10ed486f3bd93fce5083f088"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a240b64deaad56740ac0fd5ef873ff2"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; std::string, <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a0a240b64deaad56740ac0fd5ef873ff2">getArcs</a> () const</td></tr>
-<tr class="separator:a0a240b64deaad56740ac0fd5ef873ff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b9ccfb7a148c0581f35b1f8c4d63a17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a0b9ccfb7a148c0581f35b1f8c4d63a17">buildNode</a> (std::string id, T *data)</td></tr>
-<tr class="separator:a0b9ccfb7a148c0581f35b1f8c4d63a17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3ad5bea0dd75978262f3ecb3065149b4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a3ad5bea0dd75978262f3ecb3065149b4">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *source, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *target, std::string arcLabel)</td></tr>
-<tr class="separator:a3ad5bea0dd75978262f3ecb3065149b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3c9fd0c967ab988b3b8cf7df67543d0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#af3c9fd0c967ab988b3b8cf7df67543d0">getNode</a> (unsigned long) const</td></tr>
+<tr class="separator:af3c9fd0c967ab988b3b8cf7df67543d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace9b1d86daf065f21238a416687774ac"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#ace9b1d86daf065f21238a416687774ac">getNodes</a> () const</td></tr>
+<tr class="separator:ace9b1d86daf065f21238a416687774ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7353f1b492bea8e01776f351909a21fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a7353f1b492bea8e01776f351909a21fa">getArc</a> (unsigned long) const</td></tr>
+<tr class="separator:a7353f1b492bea8e01776f351909a21fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afac40f2d05c85754195bec9f08ffba40"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#afac40f2d05c85754195bec9f08ffba40">getArcs</a> () const</td></tr>
+<tr class="separator:afac40f2d05c85754195bec9f08ffba40"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04f7cc35eaaa8b30b753a4ae01ca00ca"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a04f7cc35eaaa8b30b753a4ae01ca00ca">buildNode</a> (unsigned long id, T *data)</td></tr>
+<tr class="separator:a04f7cc35eaaa8b30b753a4ae01ca00ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae392276cbdfb632d80cd32346039565e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#ae392276cbdfb632d80cd32346039565e">buildNode</a> (unsigned long id, float weight, T *data)</td></tr>
+<tr class="separator:ae392276cbdfb632d80cd32346039565e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3dc0843c430902afd093438870172dc8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *source, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *target, unsigned long arcLabel)</td></tr>
+<tr class="separator:a3dc0843c430902afd093438870172dc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd013d52f89b05493192e4b94ba29ac3"><td class="memItemLeft" align="right" valign="top"><a id="acd013d52f89b05493192e4b94ba29ac3"></a>
+<a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>link</b> (unsigned long source_id, unsigned long target_id, unsigned long arcLabel)</td></tr>
+<tr class="separator:acd013d52f89b05493192e4b94ba29ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a509c69d4811a9540b287a95303c28fe9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">~Graph</a> ()</td></tr>
 <tr class="separator:a509c69d4811a9540b287a95303c28fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a363a7043958ddcd7b3a96f2c6a0fc59f"><td class="memItemLeft" align="right" valign="top"><a id="a363a7043958ddcd7b3a96f2c6a0fc59f"></a>
+std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>nodes</b></td></tr>
+<tr class="separator:a363a7043958ddcd7b3a96f2c6a0fc59f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b248d50f7e69be6a9c3ec2427164b92"><td class="memItemLeft" align="right" valign="top"><a id="a1b248d50f7e69be6a9c3ec2427164b92"></a>
+std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>arcs</b></td></tr>
+<tr class="separator:a1b248d50f7e69be6a9c3ec2427164b92"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;class T&gt;<br />
@@ -175,8 +199,8 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a0b9ccfb7a148c0581f35b1f8c4d63a17"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b9ccfb7a148c0581f35b1f8c4d63a17">&#9670;&nbsp;</a></span>buildNode()</h2>
+<a id="ae392276cbdfb632d80cd32346039565e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae392276cbdfb632d80cd32346039565e">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -186,7 +210,52 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::buildNode </td>
           <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>weight</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Builds a node with the specify id and data, and adds it to this graph, and finally returns the built node.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>node id </td></tr>
+    <tr><td class="paramname">data</td><td>pointer to node data </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to build node </dd></dl>
+
+</div>
+</div>
+<a id="a04f7cc35eaaa8b30b753a4ae01ca00ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04f7cc35eaaa8b30b753a4ae01ca00ca">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::buildNode </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>id</em>, </td>
         </tr>
         <tr>
@@ -214,8 +283,8 @@ template&lt;class T&gt; </div>
 
 </div>
 </div>
-<a id="a84015f5d10ed486f3bd93fce5083f088"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a84015f5d10ed486f3bd93fce5083f088">&#9670;&nbsp;</a></span>getArc()</h2>
+<a id="a7353f1b492bea8e01776f351909a21fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7353f1b492bea8e01776f351909a21fa">&#9670;&nbsp;</a></span>getArc()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -225,7 +294,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::getArc </td>
           <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
+          <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -242,8 +311,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a0a240b64deaad56740ac0fd5ef873ff2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0a240b64deaad56740ac0fd5ef873ff2">&#9670;&nbsp;</a></span>getArcs()</h2>
+<a id="afac40f2d05c85754195bec9f08ffba40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afac40f2d05c85754195bec9f08ffba40">&#9670;&nbsp;</a></span>getArcs()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -251,7 +320,7 @@ template&lt;class T &gt; </div>
 template&lt;class T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt; std::string, <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::getArcs </td>
+          <td class="memname">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::getArcs </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -263,8 +332,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a10c230fdc2a90bca3697c37da1cb9d0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a10c230fdc2a90bca3697c37da1cb9d0f">&#9670;&nbsp;</a></span>getNode()</h2>
+<a id="af3c9fd0c967ab988b3b8cf7df67543d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3c9fd0c967ab988b3b8cf7df67543d0">&#9670;&nbsp;</a></span>getNode()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -274,7 +343,7 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::getNode </td>
           <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
+          <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -291,8 +360,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a657efd48b8a64749bd145c5687623505"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a657efd48b8a64749bd145c5687623505">&#9670;&nbsp;</a></span>getNodes()</h2>
+<a id="ace9b1d86daf065f21238a416687774ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace9b1d86daf065f21238a416687774ac">&#9670;&nbsp;</a></span>getNodes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -300,7 +369,7 @@ template&lt;class T &gt; </div>
 template&lt;class T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt; std::string, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::getNodes </td>
+          <td class="memname">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::getNodes </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -312,8 +381,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a3ad5bea0dd75978262f3ecb3065149b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ad5bea0dd75978262f3ecb3065149b4">&#9670;&nbsp;</a></span>link()</h2>
+<a id="a3dc0843c430902afd093438870172dc8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dc0843c430902afd093438870172dc8">&#9670;&nbsp;</a></span>link()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -335,7 +404,7 @@ template&lt;class T&gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::string&#160;</td>
+          <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>arcLabel</em>&#160;</td>
         </tr>
         <tr>
