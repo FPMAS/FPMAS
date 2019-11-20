@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['node_5fid_77',['node_id',['../namespaceFPMAS_1_1graph.html#a5367d74f0a44f811537e3c37e98b396c',1,'FPMAS::graph']]]
+  ['mpicommunicator_79',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565',1,'FPMAS::communication::MpiCommunicator']]]
 ];

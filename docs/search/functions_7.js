@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['to_5fjson_78',['to_json',['../namespaceFPMAS_1_1graph.html#a684e0901cbfe9324eb609b64c6e27d2a',1,'FPMAS::graph::to_json(json &amp;j, const FPMAS::graph::Node&lt; T &gt; &amp;n)'],['../namespaceFPMAS_1_1graph.html#a7845e5fc71a7e49c43d59b7a83151879',1,'FPMAS::graph::to_json(json &amp;j, const FPMAS::graph::Arc&lt; T &gt; &amp;a)'],['../namespaceFPMAS_1_1graph.html#a4ab1b264c8ae6884f093a029879e1f40',1,'FPMAS::graph::to_json(json &amp;j, const FPMAS::graph::Graph&lt; T &gt; &amp;graph)']]]
+  ['node_5fid_80',['node_id',['../namespaceFPMAS_1_1graph_1_1zoltan.html#afb709f2b7405f51dc4551b8329bacc20',1,'FPMAS::graph::zoltan']]],
+  ['num_5fedges_5fmulti_5ffn_81',['num_edges_multi_fn',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a937b660e9ac3c113a65296e96be151a9',1,'FPMAS::graph::zoltan']]],
+  ['num_5fobj_82',['num_obj',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a39344be7dd34d3e524515f861be5e5a8',1,'FPMAS::graph::zoltan']]]
 ];

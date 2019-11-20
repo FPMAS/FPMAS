@@ -9,10 +9,10 @@ using FPMAS::graph::DistributedGraph;
 
 using FPMAS::test_utils::assert_contains;
 
-using FPMAS::graph::write_zoltan_node_id;
+using FPMAS::graph::zoltan::write_zoltan_node_id;
 
-using FPMAS::graph::zoltan_obj_list;
-using FPMAS::graph::zoltan_num_edges_multi_fn;
+using FPMAS::graph::zoltan::obj_list;
+using FPMAS::graph::zoltan::num_edges_multi_fn;
 
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:
@@ -62,7 +62,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_zoltan_global_ids() {
-			zoltan_obj_list<int>(
+			obj_list<int>(
 					&dg,
 					2,
 					0,
@@ -82,7 +82,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_zoltan_num_edges() {
-			zoltan_num_edges_multi_fn<int>(
+			num_edges_multi_fn<int>(
 					&dg,
 					2,
 					0,
@@ -110,9 +110,9 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_list_fn_test) {
 
 	write_zoltan_global_ids();
 
-	ASSERT_EQ(FPMAS::graph::node_id(&global_ids[2 * node1_index]), 0ul);
-	ASSERT_EQ(FPMAS::graph::node_id(&global_ids[2 * node2_index]), 2ul);
-	ASSERT_EQ(FPMAS::graph::node_id(&global_ids[2 * node3_index]), 85250ul);
+	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&global_ids[2 * node1_index]), 0ul);
+	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&global_ids[2 * node2_index]), 2ul);
+	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&global_ids[2 * node3_index]), 85250ul);
 }
 
 
@@ -130,7 +130,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_num_egdes_multi_test) {
 	ASSERT_EQ(num_edges[node3_index], 0);
 }
 
-using FPMAS::graph::zoltan_edge_list_multi_fn;
+using FPMAS::graph::zoltan::edge_list_multi_fn;
 
 
 TEST_F(Mpi_ZoltanFunctionsTest, obj_edge_list_multi_test) {
@@ -143,7 +143,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_edge_list_multi_test) {
 	int nbor_procs[3];
 	float ewgts[3];
 
-	zoltan_edge_list_multi_fn<int>(
+	edge_list_multi_fn<int>(
 			&dg,
 			2,
 			0,
@@ -162,18 +162,18 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_edge_list_multi_test) {
 	int node2_offset = node1_index < node2_index ? 2 : 0;
 
 	unsigned long node1_edges[] = {
-		FPMAS::graph::node_id(&nbor_global_id[(node1_offset) * 2]),
-		FPMAS::graph::node_id(&nbor_global_id[(node1_offset + 1) * 2]),
+		FPMAS::graph::zoltan::node_id(&nbor_global_id[(node1_offset) * 2]),
+		FPMAS::graph::zoltan::node_id(&nbor_global_id[(node1_offset + 1) * 2]),
 	};
 
 	assert_contains<unsigned long, 2>(node1_edges, 2);
 	assert_contains<unsigned long, 2>(node1_edges, 85250);
 
-	ASSERT_EQ(FPMAS::graph::node_id(&nbor_global_id[node2_offset * 2]), 0);
+	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&nbor_global_id[node2_offset * 2]), 0);
 
 }
 
-using FPMAS::graph::zoltan_obj_size_multi_fn;
+using FPMAS::graph::zoltan::obj_size_multi_fn;
 
 TEST_F(Mpi_ZoltanFunctionsTest, obj_size_multi_test) {
 	unsigned int global_ids[4];
@@ -184,7 +184,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_size_multi_test) {
 
 	int sizes[2];
 
-	zoltan_obj_size_multi_fn<int>(
+	obj_size_multi_fn<int>(
 			&dg,
 			2,
 			0,
@@ -202,7 +202,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_size_multi_test) {
 	ASSERT_EQ(sizes[1], node2_str.dump().size() + 1);
 }
 
-using FPMAS::graph::zoltan_pack_obj_multi_fn;
+using FPMAS::graph::zoltan::pack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanFunctionsTest, pack_obj_multi_test) {
 	unsigned int global_ids[4];
@@ -215,7 +215,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, pack_obj_multi_test) {
 	int sizes[2];
 
 	char buf[sizes[0] + sizes[1]];
-	zoltan_obj_size_multi_fn<int>(
+	obj_size_multi_fn<int>(
 			&dg,
 			2,
 			0,
@@ -232,7 +232,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, pack_obj_multi_test) {
 		sizes[0] + 1
 		};
 
-	zoltan_pack_obj_multi_fn<int>(
+	pack_obj_multi_fn<int>(
 			&dg,
 			2,
 			0,

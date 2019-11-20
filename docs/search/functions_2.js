@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['from_5fjson_58',['from_json',['../namespaceFPMAS_1_1graph.html#a589f87fda6c68d9e8d6bf23489cd66de',1,'FPMAS::graph']]]
+  ['edge_5flist_5fmulti_5ffn_60',['edge_list_multi_fn',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a5f548d71d277072673dcc05411293ab9',1,'FPMAS::graph::zoltan']]]
 ];

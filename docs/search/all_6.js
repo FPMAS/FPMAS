@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mpicommunicator_28',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html',1,'FPMAS::communication::MpiCommunicator'],['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565',1,'FPMAS::communication::MpiCommunicator::MpiCommunicator()']]]
+  ['link_29',['link',['../classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8',1,'FPMAS::graph::Graph::link(Node&lt; T &gt; *source, Node&lt; T &gt; *target, unsigned long arcLabel)'],['../classFPMAS_1_1graph_1_1Graph.html#acd013d52f89b05493192e4b94ba29ac3',1,'FPMAS::graph::Graph::link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel)']]]
 ];
