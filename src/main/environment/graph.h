@@ -9,7 +9,10 @@
 
 namespace FPMAS {
 	/**
-	 * The FPMAS::graph namespace.
+	 * The FPMAS::graph namespace contains Graph, Node and Arc definitions, and
+	 * also the required `to_json` and `from_json` functions used to serialize
+	 * and deserialize those classes as JSON strings using the [JSON for Modern C++
+	 * library](https://github.com/nlohmann/json).
 	 */
 	namespace graph {
 		/**
