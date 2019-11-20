@@ -9,12 +9,9 @@ namespace FPMAS {
 	namespace agent {
 
 		class AgentBase {
-			private:
-				int weight;
 
 			public:
-				AgentBase(int weight);
-				int getWeight() const;
+				AgentBase();
 				virtual void serialize(json& j) const = 0;
 
 

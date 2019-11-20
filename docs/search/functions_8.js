@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7egraph_77',['~Graph',['../classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9',1,'FPMAS::graph::Graph']]]
+  ['write_5fzoltan_5fnode_5fid_79',['write_zoltan_node_id',['../namespaceFPMAS_1_1graph.html#af96f5ff9675b80065f7f9668d4f29cf8',1,'FPMAS::graph']]]
 ];

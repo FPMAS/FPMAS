@@ -67,6 +67,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#friends">Friends</a> &#124;
 <a href="classFPMAS_1_1graph_1_1DistributedGraph-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">FPMAS::graph::DistributedGraph&lt; T &gt; Class Template Reference</div>  </div>
@@ -93,8 +94,7 @@ Collaboration diagram for FPMAS::graph::DistributedGraph&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4eaf58ab83b3ff27449178dcf54e6cca"><td class="memItemLeft" align="right" valign="top"><a id="a4eaf58ab83b3ff27449178dcf54e6cca"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DistributedGraph</b> (Zoltan *)</td></tr>
+<tr class="memitem:a4eaf58ab83b3ff27449178dcf54e6cca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a4eaf58ab83b3ff27449178dcf54e6cca">DistributedGraph</a> (Zoltan *)</td></tr>
 <tr class="separator:a4eaf58ab83b3ff27449178dcf54e6cca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a36d502b364da0ba30d06d45014697443"><td class="memItemLeft" align="right" valign="top"><a id="a36d502b364da0ba30d06d45014697443"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>distribute</b> ()</td></tr>
@@ -114,22 +114,245 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>distribute</b> ()</td
 <tr class="separator:ae392276cbdfb632d80cd32346039565e inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3dc0843c430902afd093438870172dc8 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *source, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *target, unsigned long arcLabel)</td></tr>
 <tr class="separator:a3dc0843c430902afd093438870172dc8 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd013d52f89b05493192e4b94ba29ac3 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="acd013d52f89b05493192e4b94ba29ac3"></a>
-<a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>link</b> (unsigned long source_id, unsigned long target_id, unsigned long arcLabel)</td></tr>
+<tr class="memitem:acd013d52f89b05493192e4b94ba29ac3 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#acd013d52f89b05493192e4b94ba29ac3">link</a> (unsigned long source_id, unsigned long target_id, unsigned long arcLabel)</td></tr>
 <tr class="separator:acd013d52f89b05493192e4b94ba29ac3 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a509c69d4811a9540b287a95303c28fe9 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">~Graph</a> ()</td></tr>
 <tr class="separator:a509c69d4811a9540b287a95303c28fe9 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pro_attribs_classFPMAS_1_1graph_1_1Graph"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classFPMAS_1_1graph_1_1Graph')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph&lt; T &gt;</a></td></tr>
-<tr class="memitem:a363a7043958ddcd7b3a96f2c6a0fc59f inherit pro_attribs_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a363a7043958ddcd7b3a96f2c6a0fc59f"></a>
-std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>nodes</b></td></tr>
-<tr class="separator:a363a7043958ddcd7b3a96f2c6a0fc59f inherit pro_attribs_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1b248d50f7e69be6a9c3ec2427164b92 inherit pro_attribs_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a1b248d50f7e69be6a9c3ec2427164b92"></a>
-std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>arcs</b></td></tr>
-<tr class="separator:a1b248d50f7e69be6a9c3ec2427164b92 inherit pro_attribs_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
+Friends</h2></td></tr>
+<tr class="memitem:a4b13b004478a98762899c640931d3e76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a4b13b004478a98762899c640931d3e76">zoltan_obj_size_multi_fn</a> (void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *)</td></tr>
+<tr class="separator:a4b13b004478a98762899c640931d3e76"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c316ba7bfaf06f1484ced2ac77451ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a9c316ba7bfaf06f1484ced2ac77451ec">zoltan_pack_obj_multi_fn</a> (void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *)</td></tr>
+<tr class="separator:a9c316ba7bfaf06f1484ced2ac77451ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a4eaf58ab83b3ff27449178dcf54e6cca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4eaf58ab83b3ff27449178dcf54e6cca">&#9670;&nbsp;</a></span>DistributedGraph()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">FPMAS::graph::DistributedGraph</a>&lt; T &gt;::<a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> </td>
+          <td>(</td>
+          <td class="paramtype">Zoltan *&#160;</td>
+          <td class="paramname"><em>z</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> constructor.</p>
+<p>A <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> is a special graph instance that can be distributed across available processors through the provided Zoltan instance.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">z</td><td>pointer to an initiliazed zoltan instance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Friends And Related Function Documentation</h2>
+<a id="a4b13b004478a98762899c640931d3e76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b13b004478a98762899c640931d3e76">&#9670;&nbsp;</a></span>zoltan_obj_size_multi_fn</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zoltan_obj_size_multi_fn </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_gid_entries</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_lid_entries</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>global_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>local_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>sizes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>ierr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Computes the buffer sizes required to serialize nodes corresponding to global_ids.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>user data (local <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> instance) </td></tr>
+    <tr><td class="paramname">num_gid_entries</td><td>number of entries used to describe global ids (should be 2) </td></tr>
+    <tr><td class="paramname">num_lid_entries</td><td>number of entries used to describe local ids (should be 0) </td></tr>
+    <tr><td class="paramname">num_ids</td><td>number of nodes to serialize </td></tr>
+    <tr><td class="paramname">global_ids</td><td>global ids of nodes to serialize </td></tr>
+    <tr><td class="paramname">local_ids</td><td>unused </td></tr>
+    <tr><td class="paramname">sizes</td><td>Result : buffer sizes for each node </td></tr>
+    <tr><td class="paramname">ierr</td><td>Result : error code </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9c316ba7bfaf06f1484ced2ac77451ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c316ba7bfaf06f1484ced2ac77451ec">&#9670;&nbsp;</a></span>zoltan_pack_obj_multi_fn</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void zoltan_pack_obj_multi_fn </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_gid_entries</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_lid_entries</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>global_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>local_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>sizes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>idx</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>buf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>ierr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Serializes the input list of nodes as a json string.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>user data (local <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> instance) </td></tr>
+    <tr><td class="paramname">num_gid_entries</td><td>number of entries used to describe global ids (should be 2) </td></tr>
+    <tr><td class="paramname">num_lid_entries</td><td>number of entries used to describe local ids (should be 0) </td></tr>
+    <tr><td class="paramname">num_ids</td><td>number of nodes to pack </td></tr>
+    <tr><td class="paramname">global_ids</td><td>global ids of nodes to pack </td></tr>
+    <tr><td class="paramname">local_ids</td><td>unused </td></tr>
+    <tr><td class="paramname">dest</td><td>destination part numbers </td></tr>
+    <tr><td class="paramname">sizes</td><td>buffer sizes for each object </td></tr>
+    <tr><td class="paramname">idx</td><td>each object starting point in buf </td></tr>
+    <tr><td class="paramname">buf</td><td>communication buffer </td></tr>
+    <tr><td class="paramname">ierr</td><td>error code </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/main/environment/<a class="el" href="distributed__graph_8h_source.html">distributed_graph.h</a></li>
 </ul>

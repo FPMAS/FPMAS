@@ -39,6 +39,15 @@ namespace FPMAS {
 
 		};
 
+		/**
+		 * DistributedGraph constructor.
+		 *
+		 * A DistributedGraph is a special graph instance that can be
+		 * distributed across available processors through the provided Zoltan
+		 * instance.
+		 *
+		 * @param z pointer to an initiliazed zoltan instance
+		 */
 		template<class T> DistributedGraph<T>::DistributedGraph(Zoltan* z)
 			: Graph<T>(), zoltan(z) {
 				zoltan->Set_Num_Obj_Fn(FPMAS::graph::zoltan_num_obj<T>, this);
@@ -76,7 +85,7 @@ namespace FPMAS {
 		 * first part index of the node to query in the `global_ids` array. In
 		 * consequence, `i` should actually always be even.
 		 *
-		 * @param global_ids a pointer to a pair of Zoltan global ids
+		 * @param global_ids an adress to a pair of Zoltan global ids
 		 * @return rebuilt node id
 		 */
 		// Note : Zoltan should be able to directly use unsigned long as ids.
@@ -89,6 +98,16 @@ namespace FPMAS {
 			return ((unsigned long) (global_ids[0] << 16)) | global_ids[1];
 		}
 
+		/**
+		 * Writes zoltan global ids to the specified `global_ids` adress.
+		 *
+		 * The original `unsigned long` is decomposed into 2 `unsigned int` to
+		 * fit the default Zoltan data structure. The written id can then be
+		 * rebuilt using the node_id(const ZOLTAN_ID_PTR) function.
+		 *
+		 * @param node_id node id to write
+		 * @param global_ids adress to a Zoltan global_ids array
+		 */
 		void write_zoltan_node_id(unsigned long node_id, ZOLTAN_ID_PTR global_ids) {
 			global_ids[0] = (node_id & 0xFFFF0000) >> 16 ;
 			global_ids[1] = (node_id & 0xFFFF);

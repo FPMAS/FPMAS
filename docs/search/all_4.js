@@ -14,8 +14,9 @@ var searchData=
   ['getsize_19',['getSize',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ac39e6d8d2bdd9e410e1f901e8294d478',1,'FPMAS::communication::MpiCommunicator']]],
   ['getsourcenode_20',['getSourceNode',['../classFPMAS_1_1graph_1_1Arc.html#a9a80164719cbdf061e9026dc0e0edda5',1,'FPMAS::graph::Arc']]],
   ['gettargetnode_21',['getTargetNode',['../classFPMAS_1_1graph_1_1Arc.html#a99fa2126d02dd806b097645a29f42468',1,'FPMAS::graph::Arc']]],
-  ['graph_22',['Graph',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graph_3c_20fpmas_3a_3aagent_3a_3aagentbase_20_3e_23',['Graph&lt; FPMAS::agent::AgentBase &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graph_3c_20nestedgraph_3c_20t_20_3e_20_3e_24',['Graph&lt; NestedGraph&lt; T &gt; &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graphitem_25',['GraphItem',['../classFPMAS_1_1graph_1_1GraphItem.html',1,'FPMAS::graph::GraphItem'],['../classFPMAS_1_1graph_1_1GraphItem.html#a159dd35b8081e445705818c32eb8d23c',1,'FPMAS::graph::GraphItem::GraphItem()']]]
+  ['getweight_22',['getWeight',['../classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029',1,'FPMAS::graph::Node']]],
+  ['graph_23',['Graph',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graph_3c_20fpmas_3a_3aagent_3a_3aagentbase_20_3e_24',['Graph&lt; FPMAS::agent::AgentBase &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graph_3c_20nestedgraph_3c_20t_20_3e_20_3e_25',['Graph&lt; NestedGraph&lt; T &gt; &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graphitem_26',['GraphItem',['../classFPMAS_1_1graph_1_1GraphItem.html',1,'FPMAS::graph::GraphItem'],['../classFPMAS_1_1graph_1_1GraphItem.html#a159dd35b8081e445705818c32eb8d23c',1,'FPMAS::graph::GraphItem::GraphItem()']]]
 ];

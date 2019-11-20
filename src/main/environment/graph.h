@@ -108,7 +108,7 @@ namespace FPMAS {
 		 * @tparam T associated data type
 		 */
 		template<class T> class Graph {
-			protected:
+			private:
 				std::unordered_map<unsigned long, Node<T>*> nodes;
 				std::unordered_map<unsigned long, Arc<T>*> arcs;
 			public:
@@ -239,6 +239,15 @@ namespace FPMAS {
 			return this->data;
 		}
 
+		/**
+		 * Returns node's weight
+		 *
+		 * Default value set to 1., if weight has not been provided by the
+		 * user. This weight might for example be used by graph partitionning
+		 * functions to distribute the graph.
+		 *
+		 * @return node's weight
+		 */
 		template<class T> float Node<T>::getWeight() const {
 			return this->weight;
 		}
@@ -320,11 +329,12 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Builds a node with the specify id and data, and adds it to this graph,
+		 * Builds a node with the specify id weight and data, and adds it to this graph,
 		 * and finally returns the built node.
 		 *
-		 * @param id node id
-		 * @param data pointer to node data
+		 * @param id node's id
+		 * @param weight node's weight
+		 * @param data pointer to node's data
 		 * @return pointer to build node
 		 */
 		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data) {
@@ -338,17 +348,26 @@ namespace FPMAS {
 		 *
 		 * @param source pointer to source node
 		 * @param target pointer to target node
-		 * @param arcLabel arc id
+		 * @param arc_id arc id
 		 * @return built arc
 		 */
-		template<class T> Arc<T>* Graph<T>::link(Node<T> *source, Node<T> *target, unsigned long arcLabel) {
-			Arc<T>* arc = new Arc<T>(arcLabel, source, target);
-			this->arcs[arcLabel] = arc;
+		template<class T> Arc<T>* Graph<T>::link(Node<T> *source, Node<T> *target, unsigned long arc_id) {
+			Arc<T>* arc = new Arc<T>(arc_id, source, target);
+			this->arcs[arc_id] = arc;
 			return arc;
 		}
 
-		template<class T> Arc<T>* Graph<T>::link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel) {
-			return this->link(this->getNode(source_id), this->getNode(target_id), arcLabel);
+		/**
+		 * Same as link(Node<T>*, Node<T>*, unsigned long), but uses node ids
+		 * instead to retrieve source and target nodes in the current graph.
+		 *
+		 * @param source_id source node id
+		 * @param target_id target node id
+		 * @param arc_id new arc id
+		 * @return built arc
+		 */
+		template<class T> Arc<T>* Graph<T>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {
+			return this->link(this->getNode(source_id), this->getNode(target_id), arc_id);
 		}
 
 		/**
