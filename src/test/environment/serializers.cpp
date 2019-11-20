@@ -12,12 +12,12 @@ using FPMAS::graph::Arc;
 TEST(NodeSerializer, simple_node_serialization) {
 
 	Graph<int> g;
-	Node<int>* node = g.buildNode(0ul, new int(0));
+	Node<int>* node = g.buildNode(85250, new int(0));
 
 	// The node to_json method will be automatically called
 	json j = json{{"node", *node}};
 
-	ASSERT_EQ("{\"node\":{\"data\":0,\"id\":0}}", j.dump());
+	ASSERT_EQ("{\"node\":{\"data\":0,\"id\":85250}}", j.dump());
 
 	delete node->getData();
 
