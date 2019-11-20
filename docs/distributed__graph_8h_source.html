@@ -211,73 +211,73 @@ $(function() {
 <div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        }</div>
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
-<div class="line"><a name="l00251"></a><span class="lineno"><a class="line" href="namespaceFPMAS_1_1graph.html#a0dc109ad0babdaf5fa34bf6a5f219f85">  251</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph.html#a0dc109ad0babdaf5fa34bf6a5f219f85">zoltan_obj_size_multi_fn</a>(</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;                <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                <span class="keywordtype">int</span> num_gid_entries,</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                <span class="keywordtype">int</span> num_lid_entries,</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;                <span class="keywordtype">int</span> num_ids,</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;                ZOLTAN_ID_PTR global_ids,</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;                ZOLTAN_ID_PTR local_ids,</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                <span class="keywordtype">int</span> *sizes,</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                <span class="keywordtype">int</span> *ierr) {</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;            </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            std::unordered_map&lt;unsigned long, Node&lt;T&gt;*&gt; nodes = ((<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data)-&gt;getNodes();</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_ids; i++) {</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* node = nodes.at(<a class="code" href="namespaceFPMAS_1_1graph.html#a5367d74f0a44f811537e3c37e98b396c">node_id</a>(&amp;global_ids[i * num_gid_entries]));</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                json json_node = *node;</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                std::string serial_node = json_node.dump();</div>
+<div class="line"><a name="l00254"></a><span class="lineno"><a class="line" href="namespaceFPMAS_1_1graph.html#a0dc109ad0babdaf5fa34bf6a5f219f85">  254</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph.html#a0dc109ad0babdaf5fa34bf6a5f219f85">zoltan_obj_size_multi_fn</a>(</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;                <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;                <span class="keywordtype">int</span> num_gid_entries,</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;                <span class="keywordtype">int</span> num_lid_entries,</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                ZOLTAN_ID_PTR global_ids,</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                ZOLTAN_ID_PTR local_ids,</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                <span class="keywordtype">int</span> *sizes,</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                <span class="keywordtype">int</span> *ierr) {</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160; </div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;            </div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            std::unordered_map&lt;unsigned long, Node&lt;T&gt;*&gt; nodes = ((<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data)-&gt;getNodes();</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_ids; i++) {</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* node = nodes.at(<a class="code" href="namespaceFPMAS_1_1graph.html#a5367d74f0a44f811537e3c37e98b396c">node_id</a>(&amp;global_ids[i * num_gid_entries]));</div>
 <div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                sizes[i] = serial_node.size() + 1;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                ((<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data)-&gt;node_serialization_cache[node-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()] = serial_node;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            }</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;        }</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
-<div class="line"><a name="l00292"></a><span class="lineno"><a class="line" href="namespaceFPMAS_1_1graph.html#a4eafb109ca960412cae9df6560164826">  292</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph.html#a4eafb109ca960412cae9df6560164826">zoltan_pack_obj_multi_fn</a>(</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;                <span class="keywordtype">int</span> num_gid_entries,</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                <span class="keywordtype">int</span> num_lid_entries,</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                <span class="keywordtype">int</span> num_ids,</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                ZOLTAN_ID_PTR global_ids,</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                ZOLTAN_ID_PTR local_ids,</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                <span class="keywordtype">int</span> *dest,</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                <span class="keywordtype">int</span> *sizes,</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                <span class="keywordtype">int</span> *idx,</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                <span class="keywordtype">char</span> *buf,</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                <span class="keywordtype">int</span> *ierr) {</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160; </div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;            <span class="comment">// The node should actually been already serialized when computing</span></div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;            <span class="comment">// the required buffer size. For efficiency purpose, we temporarily</span></div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;            <span class="comment">// store the result and delete it when it is packed.</span></div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;            std::unordered_map&lt;unsigned long, std::string&gt; serial_cache</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                = ((<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data)-&gt;node_serialization_cache;</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_ids; ++i) {</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                <span class="comment">// Rebuilt node id</span></div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span> = <a class="code" href="namespaceFPMAS_1_1graph.html#a5367d74f0a44f811537e3c37e98b396c">node_id</a>(&amp;global_ids[i * num_gid_entries]);</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                <span class="comment">// Retrieves the serialized node</span></div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                std::string node_str = serial_cache.at(<span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = 0; j &lt; sizes[i] - 1; j++) {</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                    buf[idx[i] + j] = node_str[j];</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                }</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                buf[idx[i] + sizes[i] - 1] = 0; <span class="comment">// str final char</span></div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160; </div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                <span class="comment">// Removes entry from the serialization buffer</span></div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                serial_cache.erase(<span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            }</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160; </div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        }</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                json json_node = *node;</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                std::string serial_node = json_node.dump();</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                sizes[i] = serial_node.size() + 1;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                ((<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data)-&gt;node_serialization_cache[node-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()] = serial_node;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            }</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        }</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
+<div class="line"><a name="l00298"></a><span class="lineno"><a class="line" href="namespaceFPMAS_1_1graph.html#a4eafb109ca960412cae9df6560164826">  298</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph.html#a4eafb109ca960412cae9df6560164826">zoltan_pack_obj_multi_fn</a>(</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                <span class="keywordtype">int</span> num_gid_entries,</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                <span class="keywordtype">int</span> num_lid_entries,</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                ZOLTAN_ID_PTR global_ids,</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                ZOLTAN_ID_PTR local_ids,</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;                <span class="keywordtype">int</span> *dest,</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                <span class="keywordtype">int</span> *sizes,</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                <span class="keywordtype">int</span> *idx,</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;                <span class="keywordtype">char</span> *buf,</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                <span class="keywordtype">int</span> *ierr) {</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160; </div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;            <span class="comment">// The node should actually been already serialized when computing</span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;            <span class="comment">// the required buffer size. For efficiency purpose, we temporarily</span></div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;            <span class="comment">// store the result and delete it when it is packed.</span></div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;            std::unordered_map&lt;unsigned long, std::string&gt; serial_cache</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                = ((<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data)-&gt;node_serialization_cache;</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_ids; ++i) {</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                <span class="comment">// Rebuilt node id</span></div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span> = <a class="code" href="namespaceFPMAS_1_1graph.html#a5367d74f0a44f811537e3c37e98b396c">node_id</a>(&amp;global_ids[i * num_gid_entries]);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160; </div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                <span class="comment">// Retrieves the serialized node</span></div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                std::string node_str = serial_cache.at(<span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = 0; j &lt; sizes[i] - 1; j++) {</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                    buf[idx[i] + j] = node_str[j];</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                }</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                buf[idx[i] + sizes[i] - 1] = 0; <span class="comment">// str final char</span></div>
 <div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160; </div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160; </div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160; </div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    }</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;}</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                <span class="comment">// Removes entry from the serialization buffer</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                serial_cache.erase(<span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;            }</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;        }</div>
 <div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160; </div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160; </div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160; </div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    }</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;}</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespaceFPMAS_1_1graph_html_aae43ede3e2248631f96cd4919fb8aca4"><div class="ttname"><a href="namespaceFPMAS_1_1graph.html#aae43ede3e2248631f96cd4919fb8aca4">FPMAS::graph::zoltan_num_obj</a></div><div class="ttdeci">int zoltan_num_obj(void *data, int *ierr)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:75</div></div>
 <div class="ttc" id="anamespaceFPMAS_1_1graph_html_a5367d74f0a44f811537e3c37e98b396c"><div class="ttname"><a href="namespaceFPMAS_1_1graph.html#a5367d74f0a44f811537e3c37e98b396c">FPMAS::graph::node_id</a></div><div class="ttdeci">unsigned long node_id(const ZOLTAN_ID_PTR global_ids)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:97</div></div>
@@ -288,8 +288,8 @@ $(function() {
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Arc_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Arc.html">FPMAS::graph::Arc</a></div><div class="ttdef"><b>Definition:</b> graph.h:29</div></div>
 <div class="ttc" id="anamespaceFPMAS_1_1graph_html_aa3f15b9175c08da62ca52441fca9d904"><div class="ttname"><a href="namespaceFPMAS_1_1graph.html#aa3f15b9175c08da62ca52441fca9d904">FPMAS::graph::zoltan_num_edges_multi_fn</a></div><div class="ttdeci">void zoltan_num_edges_multi_fn(void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:167</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Node_html_a379ad6759dd3d227b4fff5759d814029"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029">FPMAS::graph::Node::getWeight</a></div><div class="ttdeci">float getWeight() const</div><div class="ttdef"><b>Definition:</b> graph.h:251</div></div>
-<div class="ttc" id="anamespaceFPMAS_1_1graph_html_a0dc109ad0babdaf5fa34bf6a5f219f85"><div class="ttname"><a href="namespaceFPMAS_1_1graph.html#a0dc109ad0babdaf5fa34bf6a5f219f85">FPMAS::graph::zoltan_obj_size_multi_fn</a></div><div class="ttdeci">void zoltan_obj_size_multi_fn(void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:251</div></div>
-<div class="ttc" id="anamespaceFPMAS_1_1graph_html_a4eafb109ca960412cae9df6560164826"><div class="ttname"><a href="namespaceFPMAS_1_1graph.html#a4eafb109ca960412cae9df6560164826">FPMAS::graph::zoltan_pack_obj_multi_fn</a></div><div class="ttdeci">void zoltan_pack_obj_multi_fn(void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:292</div></div>
+<div class="ttc" id="anamespaceFPMAS_1_1graph_html_a0dc109ad0babdaf5fa34bf6a5f219f85"><div class="ttname"><a href="namespaceFPMAS_1_1graph.html#a0dc109ad0babdaf5fa34bf6a5f219f85">FPMAS::graph::zoltan_obj_size_multi_fn</a></div><div class="ttdeci">void zoltan_obj_size_multi_fn(void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:254</div></div>
+<div class="ttc" id="anamespaceFPMAS_1_1graph_html_a4eafb109ca960412cae9df6560164826"><div class="ttname"><a href="namespaceFPMAS_1_1graph.html#a4eafb109ca960412cae9df6560164826">FPMAS::graph::zoltan_pack_obj_multi_fn</a></div><div class="ttdeci">void zoltan_pack_obj_multi_fn(void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:298</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a></div><div class="ttdef"><b>Definition:</b> graph.h:30</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GraphItem_html_a7facd4d4c4b70bc03cd19debf28fd023"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">FPMAS::graph::GraphItem::getId</a></div><div class="ttdeci">unsigned long getId() const</div><div class="ttdef"><b>Definition:</b> graph.cpp:19</div></div>
 <div class="ttc" id="anamespaceFPMAS_1_1graph_html_a0992ca00a024bc76443c5c34dfdb06b6"><div class="ttname"><a href="namespaceFPMAS_1_1graph.html#a0992ca00a024bc76443c5c34dfdb06b6">FPMAS::graph::zoltan_edge_list_multi_fn</a></div><div class="ttdeci">void zoltan_edge_list_multi_fn(void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, ZOLTAN_ID_PTR, int *, int, float *, int *)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:205</div></div>

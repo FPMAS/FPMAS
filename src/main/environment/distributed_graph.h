@@ -239,6 +239,9 @@ namespace FPMAS {
 		 * Computes the buffer sizes required to serialize nodes corresponding
 		 * to global_ids.
 		 *
+		 * For more information about this function, see the [Zoltan
+		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_OBJ_SIZE_MULTI_FN).
+		 *
 		 * @param data user data (local DistributedGraph instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
@@ -276,6 +279,9 @@ namespace FPMAS {
 
 		/**
 		 * Serializes the input list of nodes as a json string.
+		 *
+		 * For more information about this function, see the [Zoltan
+		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_PACK_OBJ_MULTI_FN).
 		 *
 		 * @param data user data (local DistributedGraph instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
