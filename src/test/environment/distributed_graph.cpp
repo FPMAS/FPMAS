@@ -1,9 +1,12 @@
 #include "gtest/gtest.h"
 
+#include "communication/communication.h"
 #include "environment/distributed_graph.h"
 #include "utils/config.h"
 
 #include "test_utils/test_utils.h"
+
+using FPMAS::communication::MpiCommunicator;
 
 using FPMAS::graph::DistributedGraph;
 
@@ -19,10 +22,13 @@ using FPMAS::graph::zoltan::pack_obj_multi_fn;
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:
 		static Zoltan* zz;
+		static MpiCommunicator* mpiCommunicator;
+
 		static std::array<int*, 3> data;
 
 		static void SetUpTestSuite() {
-			zz = new Zoltan(MPI_COMM_WORLD);
+			mpiCommunicator = new MpiCommunicator();
+			zz = new Zoltan(mpiCommunicator->getMpiComm());
 			FPMAS::config::zoltan_config(zz);
 
 			for(int i = 0; i < 3; i++) {
@@ -144,11 +150,13 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 
 		static void TearDownTestSuite() {
 			delete zz;
+			delete mpiCommunicator;
 			for(auto i : data) {
 				delete i;
 			}
 		}
 };
+MpiCommunicator* Mpi_ZoltanFunctionsTest::mpiCommunicator = nullptr;
 Zoltan* Mpi_ZoltanFunctionsTest::zz = nullptr;
 std::array<int*, 3> Mpi_ZoltanFunctionsTest::data;
 
@@ -180,7 +188,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_num_egdes_multi_test) {
 using FPMAS::graph::zoltan::edge_list_multi_fn;
 
 
-TEST_F(Mpi_ZoltanFunctionsTest, obj_edge_list_multi_test) {
+TEST_F(Mpi_ZoltanFunctionsTest, edge_list_multi_test) {
 
 	write_zoltan_global_ids();
 
@@ -217,6 +225,10 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_edge_list_multi_test) {
 	assert_contains<unsigned long, 2>(node1_edges, 85250);
 
 	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&nbor_global_id[node2_offset * 2]), 0);
+
+	for(int i = 0; i < 3; i++) {
+		ASSERT_EQ(ewgts[i], 1.f);
+	}
 
 }
 
@@ -282,4 +294,87 @@ TEST_F(Mpi_ZoltanFunctionsTest, unpack_obj_multi_test) {
 	ASSERT_EQ(*node1->getData(), 2);
 	ASSERT_EQ(node1->getWeight(), 3.f);
 
+}
+
+using FPMAS::graph::zoltan::mid_migrate_pp_fn;
+
+TEST_F(Mpi_ZoltanFunctionsTest, mig_migrate_test) {
+	unsigned int export_global_ids[4];
+	write_zoltan_node_id(0ul, &export_global_ids[0]);
+	write_zoltan_node_id(85250ul, &export_global_ids[2]);
+
+	mid_migrate_pp_fn<int>(
+		&dg,
+		2,
+		0,
+		0,
+		nullptr,
+		nullptr,
+		nullptr,
+		nullptr,
+		2,
+		export_global_ids,
+		nullptr,
+		nullptr,
+		nullptr,
+		&err);
+
+	ASSERT_EQ(dg.getNodes().size(), 1);
+	ASSERT_EQ(dg.getArcs().size(), 0);
+	ASSERT_EQ(dg.getNodes().at(2ul)->getIncomingArcs().size(), 0);
+	ASSERT_EQ(dg.getNodes().at(2ul)->getOutgoingArcs().size(), 0);
+}
+
+
+class Mpi_DistributeGraphTest : public ::testing::Test {
+	protected:
+		static MpiCommunicator* mpiCommunicator;
+		static Zoltan* zz;
+
+		DistributedGraph<int> dg = DistributedGraph<int>(zz);
+		std::vector<int*> data;
+
+		static void SetUpTestSuite() {
+			mpiCommunicator = new MpiCommunicator();
+			zz = new Zoltan(mpiCommunicator->getMpiComm());
+			FPMAS::config::zoltan_config(zz);
+		}
+
+		void SetUp() override {
+			if(mpiCommunicator->getRank() == 0) {
+				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
+					data.push_back(new int(i));
+					dg.buildNode((unsigned long) i, data.back());
+				}
+			}
+		}
+
+		void TearDown() override {
+			for(auto d : data) {
+				delete d;
+			}
+		}
+
+
+		static void TearDownTestSuite() {
+			delete zz;
+			delete mpiCommunicator;
+		}
+};
+
+MpiCommunicator* Mpi_DistributeGraphTest::mpiCommunicator = nullptr;
+Zoltan* Mpi_DistributeGraphTest::zz = nullptr;
+
+TEST_F(Mpi_DistributeGraphTest, distribute_test) {
+	if(mpiCommunicator->getRank() == 0) {
+		ASSERT_EQ(dg.getNodes().size(), mpiCommunicator->getSize());
+	}
+	else {
+		ASSERT_EQ(dg.getNodes().size(), 0);
+	}
+
+	int result = dg.distribute();
+
+	ASSERT_EQ(result, ZOLTAN_OK);
+	ASSERT_EQ(dg.getNodes().size(), 1);
 }

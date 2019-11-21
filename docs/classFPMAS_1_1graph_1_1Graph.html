@@ -104,6 +104,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3dc0843c430902afd093438870172dc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd013d52f89b05493192e4b94ba29ac3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#acd013d52f89b05493192e4b94ba29ac3">link</a> (unsigned long source_id, unsigned long target_id, unsigned long arcLabel)</td></tr>
 <tr class="separator:acd013d52f89b05493192e4b94ba29ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a1eebfcf39565230b36a39bc7be8b28"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a2a1eebfcf39565230b36a39bc7be8b28">removeNode</a> (unsigned long)</td></tr>
+<tr class="separator:a2a1eebfcf39565230b36a39bc7be8b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a509c69d4811a9540b287a95303c28fe9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">~Graph</a> ()</td></tr>
 <tr class="separator:a509c69d4811a9540b287a95303c28fe9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -509,6 +511,34 @@ template&lt;class T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>built arc </dd></dl>
+
+</div>
+</div>
+<a id="a2a1eebfcf39565230b36a39bc7be8b28"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a1eebfcf39565230b36a39bc7be8b28">&#9670;&nbsp;</a></span>removeNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::removeNode </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>node_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes the node that correspond to the specified id from this graph.</p>
+<p>Incoming and outgoing arcs associated to this node are also deleted and unlinked from the corresponding source and target nodes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node_id</td><td>id of the node to delete </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

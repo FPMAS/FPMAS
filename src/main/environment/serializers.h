@@ -77,7 +77,7 @@ namespace nlohmann {
 		/**
 		 * Defines rules to serialize node instances in the following general
 		 * JSON format :
-		 * ```json
+		 * ```{.json}
 		 * {
 		 * 	"id":"<node_id>",
 		 * 	"data":<json_data_representation>,

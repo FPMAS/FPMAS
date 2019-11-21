@@ -148,4 +148,8 @@ TEST_F(SampleGraphTest, sample_graph_deserialization) {
 
 	testSampleGraphStructure(&graph);
 
+	for(auto node : graph.getNodes()) {
+		delete node.second->getData();
+	}
+
 }

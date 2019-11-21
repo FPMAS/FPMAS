@@ -96,9 +96,8 @@ Collaboration diagram for FPMAS::graph::DistributedGraph&lt; T &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4eaf58ab83b3ff27449178dcf54e6cca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a4eaf58ab83b3ff27449178dcf54e6cca">DistributedGraph</a> (Zoltan *)</td></tr>
 <tr class="separator:a4eaf58ab83b3ff27449178dcf54e6cca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36d502b364da0ba30d06d45014697443"><td class="memItemLeft" align="right" valign="top"><a id="a36d502b364da0ba30d06d45014697443"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>distribute</b> ()</td></tr>
-<tr class="separator:a36d502b364da0ba30d06d45014697443"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a187a383bbf0817b60b2e6d53bd00a610"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a187a383bbf0817b60b2e6d53bd00a610">distribute</a> ()</td></tr>
+<tr class="separator:a187a383bbf0817b60b2e6d53bd00a610"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classFPMAS_1_1graph_1_1Graph"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classFPMAS_1_1graph_1_1Graph')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph&lt; T &gt;</a></td></tr>
 <tr class="memitem:af3c9fd0c967ab988b3b8cf7df67543d0 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#af3c9fd0c967ab988b3b8cf7df67543d0">getNode</a> (unsigned long) const</td></tr>
 <tr class="separator:af3c9fd0c967ab988b3b8cf7df67543d0 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,6 +115,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>distribute</b> ()</td
 <tr class="separator:a3dc0843c430902afd093438870172dc8 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd013d52f89b05493192e4b94ba29ac3 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#acd013d52f89b05493192e4b94ba29ac3">link</a> (unsigned long source_id, unsigned long target_id, unsigned long arcLabel)</td></tr>
 <tr class="separator:acd013d52f89b05493192e4b94ba29ac3 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a1eebfcf39565230b36a39bc7be8b28 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a2a1eebfcf39565230b36a39bc7be8b28">removeNode</a> (unsigned long)</td></tr>
+<tr class="separator:a2a1eebfcf39565230b36a39bc7be8b28 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a509c69d4811a9540b287a95303c28fe9 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">~Graph</a> ()</td></tr>
 <tr class="separator:a509c69d4811a9540b287a95303c28fe9 inherit pub_methods_classFPMAS_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -163,6 +164,31 @@ template&lt;class T &gt; </div>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a187a383bbf0817b60b2e6d53bd00a610"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a187a383bbf0817b60b2e6d53bd00a610">&#9670;&nbsp;</a></span>distribute()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">FPMAS::graph::DistributedGraph</a>&lt; T &gt;::distribute </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Distributes the graph accross the processors using Zoltan.</p>
+<p>Nodes are distributed among processors belonging to the MPI communicator used to instanciate the zoltan instance associated to this distributed graph.</p>
+<p>The graph is distributed using <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_interface_lb.html#Zoltan_LB_Partition">Zoltan::LB_Partition</a> and <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_interface_mig.html#Zoltan_Migrate">Zoltan::Migrate</a>. Query functions used are defined in the <a class="el" href="namespaceFPMAS_1_1graph_1_1zoltan.html">FPMAS::graph::zoltan</a> namespace.</p>
+<p>Because of the Zoltan behavior, the current process will block until all other involved process also call the <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a187a383bbf0817b60b2e6d53bd00a610">distribute()</a> function.</p>
+<dl class="section return"><dt>Returns</dt><dd>Zoltan migrate <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_interface.html#Error%20Codes">error code</a> </dd></dl>
 
 </div>
 </div>

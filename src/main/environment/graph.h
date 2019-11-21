@@ -128,6 +128,7 @@ namespace FPMAS {
 				Node<T>* buildNode(unsigned long id, float weight, T* data);
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
 				Arc<T>* link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel);
+				void removeNode(unsigned long);
 				~Graph();
 
 		};
@@ -165,6 +166,8 @@ namespace FPMAS {
 			// Grants access to private Node constructor
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, T *data);
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
+			// Allows removeNode function to remove deleted arcs
+			friend void Graph<T>::removeNode(unsigned long);
 
 			private:
 			Node(unsigned long);
@@ -414,6 +417,65 @@ namespace FPMAS {
 		 */
 		template<class T> Arc<T>* Graph<T>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {
 			return this->link(this->getNode(source_id), this->getNode(target_id), arc_id);
+		}
+
+		/**
+		 * Removes the node that correspond to the specified id from this
+		 * graph.
+		 *
+		 * Incoming and outgoing arcs associated to this node are also deleted
+		 * and unlinked from the corresponding source and target nodes.
+		 *
+		 * @param node_id id of the node to delete
+		 */
+		template<class T> void Graph<T>::removeNode(unsigned long node_id) {
+			Node<T>* node_to_remove = nodes.at(node_id);
+
+			// Deletes incoming arcs
+			for(auto arc : node_to_remove->getIncomingArcs()) {
+				Node<T>* source_node = arc->getSourceNode();
+				std::vector<Arc<T>*>* out_arcs = &source_node->outgoingArcs;
+
+				// Removes the incoming arcs from the outgoingArcs list of the
+				// associated source node
+				for(auto it = out_arcs->begin(); it != out_arcs->end();) {
+					if((*it)->getId() == arc->getId()) {
+						out_arcs->erase(it);
+					}
+					else {
+						it++;
+					}
+				}
+				// Removes the arc from the global arcs index
+				this->arcs.erase(arc->getId());
+				// Deletes the arc
+				delete arc;
+			}
+
+			// Deletes outgoing arcs
+			for(auto arc : node_to_remove->getOutgoingArcs()) {
+				Node<T>* target_node = arc->getTargetNode();
+				std::vector<Arc<T>*>* in_arcs = &target_node->incomingArcs;
+
+				// Removes the outgoing arcs from the incomingArcs list of the
+				// associated target node
+				for(auto it = in_arcs->begin(); it != in_arcs->end();) {
+					if((*it)->getId() == arc->getId()) {
+						in_arcs->erase(it);
+					}
+					else {
+						it++;
+					}
+				}
+				// Removes the arc from the global arcs index
+				this->arcs.erase(arc->getId());
+				// Deletes the arc
+				delete arc;
+			}
+			// Removes the node from the global nodes index
+			nodes.erase(node_id);
+			// Deletes the node
+			delete node_to_remove;
 		}
 
 		/**

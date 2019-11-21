@@ -95,6 +95,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a50cab15816a3ec2dab8e298104bfc555"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
 <tr class="memitem:a50cab15816a3ec2dab8e298104bfc555"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceFPMAS_1_1graph_1_1zoltan.html#a50cab15816a3ec2dab8e298104bfc555">unpack_obj_multi_fn</a> (void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *)</td></tr>
 <tr class="separator:a50cab15816a3ec2dab8e298104bfc555"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a403440ec1e03b1d710e4d02aa246a23a"><td class="memTemplParams" colspan="2">template&lt;class T &gt; </td></tr>
+<tr class="memitem:a403440ec1e03b1d710e4d02aa246a23a"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceFPMAS_1_1graph_1_1zoltan.html#a403440ec1e03b1d710e4d02aa246a23a">mid_migrate_pp_fn</a> (void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *)</td></tr>
+<tr class="separator:a403440ec1e03b1d710e4d02aa246a23a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb709f2b7405f51dc4551b8329bacc20"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceFPMAS_1_1graph_1_1zoltan.html#afb709f2b7405f51dc4551b8329bacc20">node_id</a> (const ZOLTAN_ID_PTR global_ids)</td></tr>
 <tr class="separator:afb709f2b7405f51dc4551b8329bacc20"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54c61678a235e157db35b2cf7a6dfb68"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceFPMAS_1_1graph_1_1zoltan.html#a54c61678a235e157db35b2cf7a6dfb68">write_zoltan_node_id</a> (unsigned long <a class="el" href="namespaceFPMAS_1_1graph_1_1zoltan.html#afb709f2b7405f51dc4551b8329bacc20">node_id</a>, ZOLTAN_ID_PTR global_ids)</td></tr>
@@ -205,6 +208,129 @@ template&lt;class T &gt; </div>
     <tr><td class="paramname">nbor_procs</td><td>Result : processor identifier of each neighbor in nbor_global_id </td></tr>
     <tr><td class="paramname">wgt_dim</td><td>number of edge weights </td></tr>
     <tr><td class="paramname">ewgts</td><td>Result : edge weight for each neighbor </td></tr>
+    <tr><td class="paramname">ierr</td><td>Result : error code </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a403440ec1e03b1d710e4d02aa246a23a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a403440ec1e03b1d710e4d02aa246a23a">&#9670;&nbsp;</a></span>mid_migrate_pp_fn()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void FPMAS::graph::zoltan::mid_migrate_pp_fn </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_gid_entries</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_lid_entries</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_import</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>import_global_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>import_local_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>import_procs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>import_to_part</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_export</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>export_global_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>export_local_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>export_procs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>export_to_part</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>ierr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This function is called by Zoltan during migration, after export and before import of nodes.</p>
+<p>In our context, this functions deletes exported nodes (and associated arcs) from the local <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>user data (local <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> instance) </td></tr>
+    <tr><td class="paramname">num_gid_entries</td><td>number of entries used to describe global ids (should be 2) </td></tr>
+    <tr><td class="paramname">num_lid_entries</td><td>number of entries used to describe local ids (should be 0) </td></tr>
+    <tr><td class="paramname">num_import</td><td>number of nodes to import </td></tr>
+    <tr><td class="paramname">import_global_ids</td><td>imported global ids </td></tr>
+    <tr><td class="paramname">import_local_ids</td><td>imported local ids (unused) </td></tr>
+    <tr><td class="paramname">import_procs</td><td>source processors ids </td></tr>
+    <tr><td class="paramname">import_to_part</td><td>parts to which objects will be imported </td></tr>
+    <tr><td class="paramname">num_export</td><td>number of nodes to export </td></tr>
+    <tr><td class="paramname">export_global_ids</td><td>exported global ids </td></tr>
+    <tr><td class="paramname">export_local_ids</td><td>exported local ids (unused) </td></tr>
+    <tr><td class="paramname">export_procs</td><td>source processors ids </td></tr>
+    <tr><td class="paramname">export_to_part</td><td>parts to which objects will be exported </td></tr>
     <tr><td class="paramname">ierr</td><td>Result : error code </td></tr>
   </table>
   </dd>

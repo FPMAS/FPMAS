@@ -33,6 +33,10 @@ namespace FPMAS {
 			template<class T> void unpack_obj_multi_fn(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
+			template<class T> void mid_migrate_pp_fn(
+					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
+      				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
+					);
 		}
 
 		template<class T> class DistributedGraph : public Graph<T> {
@@ -48,11 +52,12 @@ namespace FPMAS {
 			private:
 				Zoltan* zoltan;
 				std::unordered_map<unsigned long, std::string> node_serialization_cache;
+				
 
 			public:
 				DistributedGraph<T>(Zoltan*);
 
-				void distribute();
+				int distribute();
 
 		};
 
@@ -75,8 +80,92 @@ namespace FPMAS {
 				zoltan->Set_Obj_Size_Multi_Fn(FPMAS::graph::zoltan::obj_size_multi_fn<T>, this);
 				zoltan->Set_Pack_Obj_Multi_Fn(FPMAS::graph::zoltan::pack_obj_multi_fn<T>, this);
 				zoltan->Set_Unpack_Obj_Multi_Fn(FPMAS::graph::zoltan::unpack_obj_multi_fn<T>, this);
+				zoltan->Set_Mid_Migrate_PP_Fn(FPMAS::graph::zoltan::mid_migrate_pp_fn<T>, this);
 
 			}
+
+		/**
+		 * Distributes the graph accross the processors using Zoltan.
+		 *
+		 * Nodes are distributed among processors belonging to the MPI
+		 * communicator used to instanciate the zoltan instance associated to
+		 * this distributed graph.
+		 *
+		 * The graph is distributed using
+		 * [Zoltan::LB_Partition](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_lb.html#Zoltan_LB_Partition)
+		 * and
+		 * [Zoltan::Migrate](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_mig.html#Zoltan_Migrate). Query functions used are defined in the FPMAS::graph::zoltan namespace.
+		 *
+		 * Because of the Zoltan behavior, the current process will block until
+		 * all other involved process also call the distribute() function.
+		 *
+		 * @return Zoltan migrate [error
+		 * code](https://cs.sandia.gov/Zoltan/ug_html/ug_interface.html#Error%20Codes)
+		 */
+		template<class T> int DistributedGraph<T>::distribute() {
+			int changes;
+      		int num_gid_entries;
+			int num_lid_entries;
+			int num_import; 
+			ZOLTAN_ID_PTR import_global_ids;
+			ZOLTAN_ID_PTR import_local_ids;
+			int * import_procs;
+			int * import_to_part;
+			int num_export;
+			ZOLTAN_ID_PTR export_global_ids;
+			ZOLTAN_ID_PTR export_local_ids;
+			int * export_procs;
+			int * export_to_part;
+			
+			this->zoltan->LB_Partition(
+				changes,
+				num_gid_entries,
+				num_lid_entries,
+				num_import,
+				import_global_ids,
+				import_local_ids,
+				import_procs,
+				import_to_part,
+				num_export,
+				export_global_ids,
+				export_local_ids,
+				export_procs,
+				export_to_part
+				);
+
+			int result = ZOLTAN_OK;
+
+			if(changes > 0)
+				result = this->zoltan->Migrate(
+					num_import,
+					import_global_ids,
+					import_local_ids,
+					import_procs,
+					import_to_part,
+					num_export,
+					export_global_ids,
+					export_local_ids,
+					export_procs,
+					export_to_part
+					);
+
+			this->zoltan->LB_Free_Part(
+					&import_global_ids,
+					&import_local_ids,
+					&import_procs,
+					&import_to_part
+					);
+
+			this->zoltan->LB_Free_Part(
+					&export_global_ids,
+					&export_local_ids,
+					&export_procs,
+					&export_to_part
+					);
+
+			return result;
+
+		}
 
 		namespace zoltan {
 
@@ -382,6 +471,50 @@ namespace FPMAS {
 					json json_node = json::parse(&buf[idx[i]]);
 
 					((DistributedGraph<T>*) data)->buildNode(json_node.get<Node<T>>());
+				}
+
+			}
+
+			/**
+			 * This function is called by Zoltan during migration, after export
+			 * and before import of nodes.
+			 *
+			 * In our context, this functions deletes exported nodes (and
+			 * associated arcs) from the local DistributedGraph.
+			 *
+			 * @param data user data (local DistributedGraph instance)
+			 * @param num_gid_entries number of entries used to describe global ids (should be 2)
+			 * @param num_lid_entries number of entries used to describe local ids (should be 0)
+			 * @param num_import number of nodes to import
+			 * @param import_global_ids imported global ids
+			 * @param import_local_ids imported local ids (unused)
+			 * @param import_procs source processors ids
+			 * @param import_to_part parts to which objects will be imported
+			 * @param num_export number of nodes to export
+			 * @param export_global_ids exported global ids
+			 * @param export_local_ids exported local ids (unused)
+			 * @param export_procs source processors ids
+			 * @param export_to_part parts to which objects will be exported
+			 * @param ierr Result : error code
+			 */
+			template<class T> void mid_migrate_pp_fn(
+					void *data,
+					int num_gid_entries,
+					int num_lid_entries,
+					int num_import,
+					ZOLTAN_ID_PTR import_global_ids,
+					ZOLTAN_ID_PTR import_local_ids,
+					int *import_procs,
+					int *import_to_part,
+					int num_export,
+					ZOLTAN_ID_PTR export_global_ids,
+					ZOLTAN_ID_PTR export_local_ids,
+					int *export_procs,
+					int *export_to_part,
+					int *ierr) {
+				for (int i = 0; i < num_export; ++i) {
+					((DistributedGraph<T>*) data)
+						->removeNode(node_id(&export_global_ids[i * num_gid_entries]));
 				}
 
 			}
