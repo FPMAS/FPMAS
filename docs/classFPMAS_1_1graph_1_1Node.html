@@ -98,8 +98,12 @@ Collaboration diagram for FPMAS::graph::Node&lt; T &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac18cfa0d1282196c7023ba4685933208"><td class="memItemLeft" align="right" valign="top">T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208">getData</a> () const</td></tr>
 <tr class="separator:ac18cfa0d1282196c7023ba4685933208"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a566bac7c33cafc607b54894aab95e462"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Node.html#a566bac7c33cafc607b54894aab95e462">setData</a> (T *)</td></tr>
+<tr class="separator:a566bac7c33cafc607b54894aab95e462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a379ad6759dd3d227b4fff5759d814029"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029">getWeight</a> () const</td></tr>
 <tr class="separator:a379ad6759dd3d227b4fff5759d814029"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2db70cace378ab0bccad39d45601c4bc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc">setWeight</a> (float)</td></tr>
+<tr class="separator:a2db70cace378ab0bccad39d45601c4bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0aee3c83aad60ac5b0b6f3b37007c10"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Node.html#ae0aee3c83aad60ac5b0b6f3b37007c10">getIncomingArcs</a> () const</td></tr>
 <tr class="separator:ae0aee3c83aad60ac5b0b6f3b37007c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa66ed1a48a87a731c955b542f71fa7af"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Node.html#aa66ed1a48a87a731c955b542f71fa7af">getOutgoingArcs</a> () const</td></tr>
@@ -110,6 +114,9 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
+<tr class="memitem:af32ff7fc7bc4b65fd46b12740e41a82a"><td class="memItemLeft" align="right" valign="top"><a id="af32ff7fc7bc4b65fd46b12740e41a82a"></a>
+<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>nlohmann::adl_serializer</b> (const json &amp;)</td></tr>
+<tr class="separator:af32ff7fc7bc4b65fd46b12740e41a82a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52dcea6759666ba7f6de9c742aac3eeb"><td class="memItemLeft" align="right" valign="top"><a id="a52dcea6759666ba7f6de9c742aac3eeb"></a>
 <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>Graph</b> (unsigned long id, T *data)</td></tr>
 <tr class="separator:a52dcea6759666ba7f6de9c742aac3eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -217,6 +224,60 @@ template&lt;class T &gt; </div>
 <p>Returns node's weight</p>
 <p>Default value set to 1., if weight has not been provided by the user. This weight might for example be used by graph partitionning functions to distribute the graph.</p>
 <dl class="section return"><dt>Returns</dt><dd>node's weight </dd></dl>
+
+</div>
+</div>
+<a id="a566bac7c33cafc607b54894aab95e462"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a566bac7c33cafc607b54894aab95e462">&#9670;&nbsp;</a></span>setData()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1Node.html">FPMAS::graph::Node</a>&lt; T &gt;::setData </td>
+          <td>(</td>
+          <td class="paramtype">T *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets node's data to the specified value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>pointer to node data </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2db70cace378ab0bccad39d45601c4bc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2db70cace378ab0bccad39d45601c4bc">&#9670;&nbsp;</a></span>setWeight()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1Node.html">FPMAS::graph::Node</a>&lt; T &gt;::setWeight </td>
+          <td>(</td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>weight</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Sets node's weight to the specified value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">weight</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

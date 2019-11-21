@@ -1,3 +1,6 @@
+#ifndef DISTRIBUTED_GRAPH_H
+#define DISTRIBUTED_GRAPH_H
+
 #include "graph.h"
 #include "zoltan_cpp.h"
 
@@ -26,6 +29,10 @@ namespace FPMAS {
 			template<class T> void pack_obj_multi_fn(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
 					);
+
+			template<class T> void unpack_obj_multi_fn(
+					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
+					);
 		}
 
 		template<class T> class DistributedGraph : public Graph<T> {
@@ -34,6 +41,9 @@ namespace FPMAS {
 			friend void zoltan::pack_obj_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
 				);
+			friend void zoltan::unpack_obj_multi_fn<T>(
+					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
+					);
 
 			private:
 				Zoltan* zoltan;
@@ -64,6 +74,7 @@ namespace FPMAS {
 
 				zoltan->Set_Obj_Size_Multi_Fn(FPMAS::graph::zoltan::obj_size_multi_fn<T>, this);
 				zoltan->Set_Pack_Obj_Multi_Fn(FPMAS::graph::zoltan::pack_obj_multi_fn<T>, this);
+				zoltan->Set_Unpack_Obj_Multi_Fn(FPMAS::graph::zoltan::unpack_obj_multi_fn<T>, this);
 
 			}
 
@@ -302,7 +313,7 @@ namespace FPMAS {
 			 * @param sizes buffer sizes for each object
 			 * @param idx each object starting point in buf
 			 * @param buf communication buffer
-			 * @param ierr error code
+			 * @param ierr Result : error code
 			 */
 			template<class T> void pack_obj_multi_fn(
 					void *data,
@@ -338,7 +349,43 @@ namespace FPMAS {
 				}
 
 			}
+
+			/**
+			 *
+			 * Deserializes received nodes to the local distributed graph.
+			 *
+			 * For more information about this function, see the [Zoltan
+			 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_UNPACK_OBJ_MULTI_FN).
+			 *
+			 * @param data user data (local DistributedGraph instance)
+			 * @param num_gid_entries number of entries used to describe global ids (should be 2)
+			 * @param num_ids number of nodes to pack
+			 * @param global_ids item global ids
+			 * @param sizes buffer sizes for each object
+			 * @param idx each object starting point in buf
+			 * @param buf communication buffer
+			 * @param ierr Result : error code
+			 *
+			 */
+			template<class T> void unpack_obj_multi_fn(
+					void *data,
+					int num_gid_entries,
+					int num_ids,
+					ZOLTAN_ID_PTR global_ids,
+					int *sizes,
+					int *idx,
+					char *buf,
+					int *ierr) {
+
+				for (int i = 0; i < num_ids; ++i) {
+					node_id(&global_ids[i * num_gid_entries]);
+					json json_node = &buf[idx[i]];
+
+					((DistributedGraph<T>*) data)->buildNode(json_node.get<Node<T>>());
+				}
+
+			}
 		}
 	}
 }
-
+#endif

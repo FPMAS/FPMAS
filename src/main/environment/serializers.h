@@ -7,17 +7,81 @@
 
 using nlohmann::json;
 
-
 namespace FPMAS {
 	namespace graph {
-
-		// Node
 		template<class T> class Node;
+		template<class T> class Arc;
+		template<class T> class Graph;
+	}
+}
+
+/**
+ * Defines some rules to serialize / deserialize graph objects.
+ */
+namespace nlohmann {
+	using FPMAS::graph::Node;
+
+	/**
+	 * Node serializer.
+	 */
+    template <class T>
+    struct adl_serializer<Node<T>> {
+
+		/**
+		 * Defines rules to deserialize a Node from a JSON string.
+		 *
+		 * The following JSON format can be used to unserialize nodes :
+		 * ```{.json}
+		 * {
+		 * 	"id":"<node_id>",
+		 * 	"data":<json_data_representation>,
+		 * 	"weight":<node_weight>
+		 * }
+		 * ```
+		 * `data` and `weight` fields are both optional, with a default weight
+		 * value set to 1.
+		 *
+		 * If a `data` field is specified, the Node data will be *instanciated
+		 * dynamically using a `new` statement and the copy constructor of the
+		 * specified data type T*.
+		 *
+		 * Some, in this case, memory will internally be allocated by the
+		 * library, so it is *the responsability of the user* to free the data
+		 * field.
+		 *
+		 * To avoid this, the `data` field can be ignored and it is still
+		 * possible to manually associate data to nodes using the
+		 * Node::setData(T*) function.
+		 *
+		 * @param j input json
+		 * @return deserialized json
+		 *
+		 */
+		static Node<T> from_json(const json& j) {
+			Node<T> node = Node<T>(
+					j.at("id").get<unsigned long>()
+					);
+			if(j.contains("data"))
+				node.setData(
+					new T(j.at("data").get<T>())
+				);
+
+			if(j.contains("weight"))
+				node.setWeight(
+					j.at("weight").get<float>()
+					);
+			return node;
+		}
+
 		/**
 		 * Defines rules to serialize node instances in the following general
 		 * JSON format :
 		 * ```json
-		 * {"id":"<node_id>", "data":<json_data_representation>}
+		 * {
+		 * 	"id":"<node_id>",
+		 * 	"data":<json_data_representation>,
+		 * 	"weight":<node_weight>
+		 * }
 		 * ```
 		 * The huge interest of this json implementation is that the [JSON for
 		 * Modern C++ library](https://github.com/nlohmann/json/) will
@@ -33,14 +97,26 @@ namespace FPMAS {
 		 * serialize graphs.
 		 *
 		 * @param j current json reference
-		 * @param n node reference
+		 * @param node node reference
 		 */
-		template<class T> void to_json(json& j, const FPMAS::graph::Node<T>& n) {
-			j = json{{"id", n.getId()}, {"data", *n.getData()}};
+		static void to_json(json& j, const Node<T>& node) {
+			j = json{{"id", node.getId()}, {"data", *node.getData()}};
 		}
 
-		// Arc
-		template<class T> class Arc;
+	};
+
+	using FPMAS::graph::Arc;
+	/**
+	 * Arc serializer.
+	 */
+	template<class T>
+    struct adl_serializer<Arc<T>> {
+		/* Not used for now.
+		static Arc<T> from_json(const json& j) {
+
+		}
+		*/
+
 		/**
 		 * Defines rules to serialize arc instances in the following general
 		 * JSON format :
@@ -51,21 +127,74 @@ namespace FPMAS {
 		 * serialize graphs.
 		 *
 		 * @param j current json reference
-		 * @param a arc reference
+		 * @param arc arc reference
 		 */
-		template<class T> void to_json(json& j, const FPMAS::graph::Arc<T>& a) {
+		static void to_json(json& j, const Arc<T>& arc) {
 			std::array<unsigned long, 2> link = {
-				a.getSourceNode()->getId(),
-				a.getTargetNode()->getId()
+				arc.getSourceNode()->getId(),
+				arc.getTargetNode()->getId()
 			};
 			j = json{
-				{"id", a.getId()},
+				{"id", arc.getId()},
 				{"link", link}
 			};
 		}
 
-		// Graph
-		template<class T> class Graph;
+	};
+
+	using FPMAS::graph::Graph;
+	/**
+	 * Arc serializer.
+	 */
+	template<class T>
+    struct adl_serializer<Graph<T>> {
+
+		/**
+		 * This function defines rules to implicitly serialize graphs as json
+		 * strings using the [JSON for Modern C++
+		 * library](https://github.com/nlohmann/json/). For more information
+		 * about how to serialize objects, see the [JSON library
+		 * documentation](https://github.com/nlohmann/json/blob/develop/README.md#arbitrary-types-conversions)
+		 * and the small example given in the Graph class documentation.
+		 *
+		 * Graph can be deserialized from json with the same format as the one
+		 * described in the to_json(json&, const Graph<T>&) function.
+		 *
+		 * As for the to_json(json&, const Graph<T>&) function, any user data
+		 * type can be properly deserialize as long as the proper [from_json
+		 * function](https://github.com/nlohmann/json/blob/develop/README.md#basic-usage)
+		 * has been defined.
+		 *
+		 * @param j input json
+		 * @return deserialized graph instance
+		 *
+		 */
+		static Graph<T> from_json(const json& j) {
+			Graph<T> graph;
+			// Builds nodes
+			json nodes = j.at("nodes");
+			for(json& node : nodes) {
+				graph.buildNode(
+					node.get<Node<T>>()
+//					node.at("id").get<unsigned long>(),
+//					new T(node.at("data").get<T>())
+					);
+			}
+
+			// Build arcs
+			json arcs = j.at("arcs");
+			for(json& arc : arcs) {
+				std::array<unsigned long, 2> link =
+					arc.at("link")
+					.get<std::array<unsigned long, 2>>();
+				graph.link(
+					graph.getNode(link.at(0)),
+					graph.getNode(link.at(1)),
+					arc.at("id").get<unsigned long>()
+					);
+			}
+			return graph;
+		}
 
 		/**
 		 * This function defines rules to implicitly serialize graphs as json
@@ -118,7 +247,7 @@ namespace FPMAS {
 		 * @param j current json reference
 		 * @param graph graph reference (NOT reference to pointer)
 		 */
-		template<class T> void to_json(json& j, const FPMAS::graph::Graph<T>& graph) {
+		static void to_json(json& j, const Graph<T>& graph) {
 			std::vector<Node<T>> nodes;
 			for(auto n : graph.getNodes()) {
 				nodes.push_back(*n.second);
@@ -133,49 +262,8 @@ namespace FPMAS {
 				{"nodes", nodes},
 				{"arcs", arcs}
 			};
-
 		}
 
-		/**
-		 * This function defines rules to implicitly serialize graphs as json
-		 * strings using the [JSON for Modern C++
-		 * library](https://github.com/nlohmann/json/). For more information
-		 * about how to serialize objects, see the [JSON library
-		 * documentation](https://github.com/nlohmann/json/blob/develop/README.md#arbitrary-types-conversions)
-		 * and the small example given in the Graph class documentation.
-		 *
-		 * Graph can be deserialized from json with the same format as the one
-		 * described in the to_json(json&, const Graph<T>&) function.
-		 *
-		 * As for the to_json(json&, const Graph<T>&) function, any user data
-		 * type can be properly deserialize as long as the proper [from_json
-		 * function](https://github.com/nlohmann/json/blob/develop/README.md#basic-usage)
-		 *
-		 */
-		template<class T> void from_json(const json& j, FPMAS::graph::Graph<T>& graph) {
-			// Builds nodes
-			json nodes = j.at("nodes");
-			for(json& node : nodes) {
-				graph.buildNode(
-					node.at("id").get<unsigned long>(),
-					new T(node.at("data").get<T>())
-					);
-			}
-
-			// Build arcs
-			json arcs = j.at("arcs");
-			for(json& arc : arcs) {
-				std::array<unsigned long, 2> link =
-					arc.at("link")
-					.get<std::array<unsigned long, 2>>();
-				graph.link(
-					graph.getNode(link.at(0)),
-					graph.getNode(link.at(1)),
-					arc.at("id").get<unsigned long>()
-					);
-			}
-		}
-	}
-};
-
+	};
+}
 #endif

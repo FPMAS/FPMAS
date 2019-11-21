@@ -23,6 +23,40 @@ TEST(NodeSerializer, simple_node_serialization) {
 
 }
 
+TEST(NodeSerializer, simple_node_deserialization) {
+
+	json node_json = R"(
+		{"data":0,"id":85250, "weight":2.3}
+		)"_json;
+
+	Node<int> node = node_json.get<Node<int>>();
+
+	ASSERT_EQ(*node.getData(), 0);
+	ASSERT_EQ(node.getId(), 85250ul);
+	ASSERT_EQ(node.getWeight(), 2.3f);
+
+	// In this case, data has been allocated at unserialization time and should
+	// be deleted manually
+	delete node.getData();
+}
+
+TEST(NodeSerializer, node_deserialization_no_data) {
+	// Unserialization without data
+	json node_json = R"(
+		{"id":85250}
+		)"_json;
+
+	Node<int> node = node_json.get<Node<int>>();
+
+	ASSERT_EQ(node.getId(), 85250ul);
+
+	// Data can still be set manually, and no delete is necessary
+	int i = 2;
+	node.setData(&i);
+	ASSERT_EQ(*node.getData(), 2);
+
+}
+
 TEST(ArcSerializer, simple_arc_serializer) {
 	Graph<int> g;
 	Node<int>* n1 = g.buildNode(0ul, new int(0));

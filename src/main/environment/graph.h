@@ -7,6 +7,8 @@
 #include <iostream>
 #include "serializers.h"
 
+#include <nlohmann/json.hpp>
+
 namespace FPMAS {
 	/**
 	 * The FPMAS::graph namespace contains Graph, Node and Arc definitions, and
@@ -22,6 +24,7 @@ namespace FPMAS {
 			private:
 				unsigned long id;
 			protected:
+				GraphItem() {};
 				GraphItem(unsigned long);
 			public:
 				unsigned long getId() const;
@@ -111,9 +114,14 @@ namespace FPMAS {
 		 * @tparam T associated data type
 		 */
 		template<class T> class Graph {
+			friend Graph<T> nlohmann::adl_serializer<Graph<T>>::from_json(const json&);
 			private:
 				std::unordered_map<unsigned long, Node<T>*> nodes;
 				std::unordered_map<unsigned long, Arc<T>*> arcs;
+
+			protected:
+				Node<T>* buildNode(Node<T> node);
+
 			public:
 				Node<T>* getNode(unsigned long) const;
 				std::unordered_map<unsigned long, Node<T>*> getNodes() const;
@@ -154,6 +162,7 @@ namespace FPMAS {
 		 * @tparam T associated data type
 		 */
 		template<class T> class Node : public GraphItem {
+			friend Node<T> nlohmann::adl_serializer<Node<T>>::from_json(const json&);
 			// Grants access to incoming and outgoing arcs lists
 			friend Arc<T>::Arc(unsigned long, Node<T>*, Node<T>*);
 			// Grants access to private Node constructor
@@ -161,6 +170,7 @@ namespace FPMAS {
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
 
 			private:
+			Node(unsigned long);
 			Node(unsigned long, T*);
 			Node(unsigned long, float, T*);
 			T* data;
@@ -170,7 +180,9 @@ namespace FPMAS {
 
 			public:
 			T* getData() const;
+			void setData(T*);
 			float getWeight() const;
+			void setWeight(float);
 			std::vector<Arc<T>*> getIncomingArcs() const;
 			std::vector<Arc<T>*> getOutgoingArcs() const;
 
@@ -215,6 +227,9 @@ namespace FPMAS {
 		/* Node API */
 		/************/
 
+		template<class T> Node<T>::Node(unsigned long id) : GraphItem(id) {
+		}
+
 		/**
 		 * Node constructor.
 		 *
@@ -243,6 +258,15 @@ namespace FPMAS {
 		}
 
 		/**
+		 * Sets node's data to the specified value.
+		 *
+		 * @param data pointer to node data
+		 */
+		template<class T> void Node<T>::setData(T* data) {
+			this->data = data;
+		}
+
+		/**
 		 * Returns node's weight
 		 *
 		 * Default value set to 1., if weight has not been provided by the
@@ -253,6 +277,15 @@ namespace FPMAS {
 		 */
 		template<class T> float Node<T>::getWeight() const {
 			return this->weight;
+		}
+
+		/**
+		 * Sets node's weight to the specified value.
+		 *
+		 * @param weight
+		 */
+		template<class T> void Node<T>::setWeight(float weight) {
+			this->weight = weight;
 		}
 
 		/**
@@ -317,6 +350,19 @@ namespace FPMAS {
 			return this->arcs;
 		}
 
+		/**
+		 * Builds a node by copy from the specified node. Memory is dynamically
+		 * allocated for the node copy, and normally deleted when the graph is
+		 * destroyed.
+		 *
+		 * @param node node to add to the graph
+		 * @return built node (copy of the input node)
+		 */
+		template<class T> Node<T>* Graph<T>::buildNode(Node<T> node) {
+			Node<T>* node_copy = new Node<T>(node);
+			this->nodes[node_copy->getId()] = node_copy;
+			return node_copy;
+		}
 		/**
 		 * Builds a node with the specify id and data, and adds it to this graph,
 		 * and finally returns the built node.

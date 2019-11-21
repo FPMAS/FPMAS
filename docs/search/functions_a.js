@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['to_5fjson_86',['to_json',['../namespaceFPMAS_1_1graph.html#a684e0901cbfe9324eb609b64c6e27d2a',1,'FPMAS::graph::to_json(json &amp;j, const FPMAS::graph::Node&lt; T &gt; &amp;n)'],['../namespaceFPMAS_1_1graph.html#a7845e5fc71a7e49c43d59b7a83151879',1,'FPMAS::graph::to_json(json &amp;j, const FPMAS::graph::Arc&lt; T &gt; &amp;a)'],['../namespaceFPMAS_1_1graph.html#a4ab1b264c8ae6884f093a029879e1f40',1,'FPMAS::graph::to_json(json &amp;j, const FPMAS::graph::Graph&lt; T &gt; &amp;graph)']]]
+  ['setdata_97',['setData',['../classFPMAS_1_1graph_1_1Node.html#a566bac7c33cafc607b54894aab95e462',1,'FPMAS::graph::Node']]],
+  ['setweight_98',['setWeight',['../classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc',1,'FPMAS::graph::Node']]]
 ];
