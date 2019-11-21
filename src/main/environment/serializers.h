@@ -101,7 +101,11 @@ namespace nlohmann {
 		 * @param node node reference
 		 */
 		static void to_json(json& j, const Node<T>& node) {
-			j = json{{"id", node.getId()}, {"data", *node.getData()}};
+			j = json{
+				{"id", node.getId()},
+				{"data", *node.getData()},
+				{"weight", node.getWeight()}
+			};
 		}
 
 	};
@@ -177,8 +181,6 @@ namespace nlohmann {
 			for(json& node : nodes) {
 				graph.buildNode(
 					node.get<Node<T>>()
-//					node.at("id").get<unsigned long>(),
-//					new T(node.at("data").get<T>())
 					);
 			}
 
@@ -216,7 +218,7 @@ namespace nlohmann {
 		 * 		],
 		 * 	"nodes":[
 		 * 		...
-		 * 		{"id":"<node_id>","data":<json_data_representation>},
+		 * 		{"id":"<node_id>","data":<json_data_representation>,"weight":<node_weight>},
 		 * 		...
 		 * 		]
 		 * }

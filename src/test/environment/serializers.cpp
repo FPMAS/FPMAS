@@ -12,21 +12,27 @@ using FPMAS::graph::Arc;
 TEST(NodeSerializer, simple_node_serialization) {
 
 	Graph<int> g;
-	Node<int>* node = g.buildNode(85250, new int(0));
+	Node<int>* node = g.buildNode(85250, 3.2, new int(0));
 
 	// The node to_json method will be automatically called
 	json j = json{{"node", *node}};
 
-	ASSERT_EQ("{\"node\":{\"data\":0,\"id\":85250}}", j.dump());
+	// Note : the float conversion is actually perfectly normal
+	// See https://float.exposed/0x404ccccd
+	ASSERT_EQ("{\"node\":{\"data\":0,\"id\":85250,\"weight\":3.200000047683716}}", j.dump());
 
 	delete node->getData();
+
+}
+
+TEST(NodeSerializer, node_serialization_without_data_or_weight) {
 
 }
 
 TEST(NodeSerializer, simple_node_deserialization) {
 
 	json node_json = R"(
-		{"data":0,"id":85250, "weight":2.3}
+		{"data":0,"id":85250,"weight":2.3}
 		)"_json;
 
 	Node<int> node = node_json.get<Node<int>>();
@@ -80,7 +86,7 @@ TEST(GraphSerializer, simple_graph_serialization) {
 
 	json j = g;
 
-	ASSERT_EQ(j.dump(), "{\"arcs\":[],\"nodes\":[{\"data\":0,\"id\":0}]}");
+	ASSERT_EQ(j.dump(), "{\"arcs\":[],\"nodes\":[{\"data\":0,\"id\":0,\"weight\":1.0}]}");
 
 	delete n->getData();
 }
@@ -96,9 +102,9 @@ TEST_F(SampleGraphTest, sample_graph_serialization) {
 				"{\"id\":1,\"link\":[2,1]}"
 				"],"
 			"\"nodes\":["
-				"{\"data\":3,\"id\":3},"
-				"{\"data\":1,\"id\":1},"
-				"{\"data\":2,\"id\":2}"
+				"{\"data\":3,\"id\":3,\"weight\":1.0},"
+				"{\"data\":1,\"id\":1,\"weight\":1.0},"
+				"{\"data\":2,\"id\":2,\"weight\":1.0}"
 				"]}"
 			);
 

@@ -51,7 +51,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		unsigned int transfer_global_ids[4];
 		int sizes[2];
 		int idx[2];
-		char buf[40];
+		char buf[66];
 
 		// Error code
 		int err;
@@ -103,6 +103,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_migration_sizes() {
+			// Transfer nodes 0 and 85250
 			write_zoltan_node_id(0, &transfer_global_ids[0]);
 			write_zoltan_node_id(85250, &transfer_global_ids[2]);
 
@@ -266,5 +267,19 @@ TEST_F(Mpi_ZoltanFunctionsTest, unpack_obj_multi_test) {
 		idx,
 		buf,
 		&err);
+
+	ASSERT_EQ(g.getNodes().size(), 2);
+
+	ASSERT_EQ(g.getNodes().count(0), 1);
+	FPMAS::graph::Node<int>* node0 = g.getNodes().at(0);
+	ASSERT_EQ(node0->getId(), 0);
+	ASSERT_EQ(*node0->getData(), 0);
+	ASSERT_EQ(node0->getWeight(), 1.f);
+
+	ASSERT_EQ(g.getNodes().count(85250ul), 1);
+	FPMAS::graph::Node<int>* node1 = g.getNodes().at(85250);
+	ASSERT_EQ(node1->getId(), 85250ul);
+	ASSERT_EQ(*node1->getData(), 2);
+	ASSERT_EQ(node1->getWeight(), 3.f);
 
 }

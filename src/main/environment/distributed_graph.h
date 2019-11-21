@@ -379,7 +379,7 @@ namespace FPMAS {
 
 				for (int i = 0; i < num_ids; ++i) {
 					node_id(&global_ids[i * num_gid_entries]);
-					json json_node = &buf[idx[i]];
+					json json_node = json::parse(&buf[idx[i]]);
 
 					((DistributedGraph<T>*) data)->buildNode(json_node.get<Node<T>>());
 				}

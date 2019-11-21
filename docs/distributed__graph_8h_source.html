@@ -299,7 +299,7 @@ $(function() {
 <div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
 <div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_ids; ++i) {</div>
 <div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                    <a class="code" href="namespaceFPMAS_1_1graph_1_1zoltan.html#afb709f2b7405f51dc4551b8329bacc20">node_id</a>(&amp;global_ids[i * num_gid_entries]);</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                    json json_node = &amp;buf[idx[i]];</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                    json json_node = json::parse(&amp;buf[idx[i]]);</div>
 <div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
 <div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                    ((<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data)-&gt;buildNode(json_node.get&lt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>&gt;());</div>
 <div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;                }</div>

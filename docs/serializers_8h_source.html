@@ -109,86 +109,88 @@ $(function() {
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        }</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
 <div class="line"><a name="l00103"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4.html#adb02f0f8581bff021b2154c91a291428">  103</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4.html#adb02f0f8581bff021b2154c91a291428">to_json</a>(json&amp; j, <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>&amp; node) {</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            j = json{{<span class="stringliteral">&quot;id&quot;</span>, node.<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()}, {<span class="stringliteral">&quot;data&quot;</span>, *node.<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208">getData</a>()}};</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        }</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    };</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1Arc.html">FPMAS::graph::Arc</a>;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html">  114</a></span>&#160;    <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt;T&gt;&gt; {</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="comment">/* Not used for now.</span></div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">        static Arc&lt;T&gt; from_json(const json&amp; j) {</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">        }</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment">        */</span></div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">  133</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">to_json</a>(json&amp; j, <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1Arc.html">Arc&lt;T&gt;</a>&amp; arc) {</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            std::array&lt;unsigned long, 2&gt; link = {</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                arc.<a class="code" href="classFPMAS_1_1graph_1_1Arc.html#a9a80164719cbdf061e9026dc0e0edda5">getSourceNode</a>()-&gt;getId(),</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                arc.<a class="code" href="classFPMAS_1_1graph_1_1Arc.html#a99fa2126d02dd806b097645a29f42468">getTargetNode</a>()-&gt;getId()</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            };</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;            j = json{</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                {<span class="stringliteral">&quot;id&quot;</span>, arc.<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()},</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                {<span class="stringliteral">&quot;link&quot;</span>, link}</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            j = json{</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                {<span class="stringliteral">&quot;id&quot;</span>, node.<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()},</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                {<span class="stringliteral">&quot;data&quot;</span>, *node.<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208">getData</a>()},</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                {<span class="stringliteral">&quot;weight&quot;</span>, node.<a class="code" href="classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029">getWeight</a>()}</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            };</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        }</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    };</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1Arc.html">FPMAS::graph::Arc</a>;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html">  118</a></span>&#160;    <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt;T&gt;&gt; {</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="comment">/* Not used for now.</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment">        static Arc&lt;T&gt; from_json(const json&amp; j) {</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment">        }</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="comment">        */</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">  137</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">to_json</a>(json&amp; j, <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1Arc.html">Arc&lt;T&gt;</a>&amp; arc) {</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;            std::array&lt;unsigned long, 2&gt; link = {</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;                arc.<a class="code" href="classFPMAS_1_1graph_1_1Arc.html#a9a80164719cbdf061e9026dc0e0edda5">getSourceNode</a>()-&gt;getId(),</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;                arc.<a class="code" href="classFPMAS_1_1graph_1_1Arc.html#a99fa2126d02dd806b097645a29f42468">getTargetNode</a>()-&gt;getId()</div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;            };</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;        }</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    };</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
-<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html">  151</a></span>&#160;    <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="classFPMAS_1_1graph_1_1Graph.html">Graph</a>&lt;T&gt;&gt; {</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#a0eda60ef245f07de7f52a37df6cb179a">  173</a></span>&#160;        <span class="keyword">static</span> <a class="code" href="classFPMAS_1_1graph_1_1Graph.html">Graph&lt;T&gt;</a> <a class="code" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#a0eda60ef245f07de7f52a37df6cb179a">from_json</a>(<span class="keyword">const</span> json&amp; j) {</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1Graph.html">Graph&lt;T&gt;</a> graph;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            <span class="comment">// Builds nodes</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            json nodes = j.at(<span class="stringliteral">&quot;nodes&quot;</span>);</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            <span class="keywordflow">for</span>(json&amp; node : nodes) {</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#a05e32f77d8d269ae3f7b21db0c36cf7a">buildNode</a>(</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                    node.get&lt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>&gt;()</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="comment">//                  node.at(&quot;id&quot;).get&lt;unsigned long&gt;(),</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="comment">//                  new T(node.at(&quot;data&quot;).get&lt;T&gt;())</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                    );</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            }</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160; </div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            <span class="comment">// Build arcs</span></div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            json arcs = j.at(<span class="stringliteral">&quot;arcs&quot;</span>);</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            <span class="keywordflow">for</span>(json&amp; arc : arcs) {</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                std::array&lt;unsigned long, 2&gt; link =</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                    arc.at(<span class="stringliteral">&quot;link&quot;</span>)</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                    .get&lt;std::array&lt;unsigned long, 2&gt;&gt;();</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8">link</a>(</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                    graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#af3c9fd0c967ab988b3b8cf7df67543d0">getNode</a>(link.at(0)),</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                    graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#af3c9fd0c967ab988b3b8cf7df67543d0">getNode</a>(link.at(1)),</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                    arc.at(<span class="stringliteral">&quot;id&quot;</span>).get&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>&gt;()</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                    );</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;            }</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;            <span class="keywordflow">return</span> graph;</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;        }</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00251"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#ad435d089aa60f5035a212c22c9123429">  251</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#ad435d089aa60f5035a212c22c9123429">to_json</a>(json&amp; j, <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1Graph.html">Graph&lt;T&gt;</a>&amp; graph) {</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            std::vector&lt;Node&lt;T&gt;&gt; nodes;</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> n : graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#ace9b1d86daf065f21238a416687774ac">getNodes</a>()) {</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                nodes.push_back(*n.second);</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            }</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;            std::vector&lt;Arc&lt;T&gt;&gt; arcs;</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> a : graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#afac40f2d05c85754195bec9f08ffba40">getArcs</a>()) {</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                arcs.push_back(*a.second);</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            }</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            j = json{</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                {<span class="stringliteral">&quot;nodes&quot;</span>, nodes},</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                {<span class="stringliteral">&quot;arcs&quot;</span>, arcs}</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            };</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        }</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    };</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;}</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            j = json{</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;                {<span class="stringliteral">&quot;id&quot;</span>, arc.<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()},</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                {<span class="stringliteral">&quot;link&quot;</span>, link}</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;            };</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        }</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    };</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
+<div class="line"><a name="l00155"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html">  155</a></span>&#160;    <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="classFPMAS_1_1graph_1_1Graph.html">Graph</a>&lt;T&gt;&gt; {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#a0eda60ef245f07de7f52a37df6cb179a">  177</a></span>&#160;        <span class="keyword">static</span> <a class="code" href="classFPMAS_1_1graph_1_1Graph.html">Graph&lt;T&gt;</a> <a class="code" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#a0eda60ef245f07de7f52a37df6cb179a">from_json</a>(<span class="keyword">const</span> json&amp; j) {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1Graph.html">Graph&lt;T&gt;</a> graph;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            <span class="comment">// Builds nodes</span></div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            json nodes = j.at(<span class="stringliteral">&quot;nodes&quot;</span>);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            <span class="keywordflow">for</span>(json&amp; node : nodes) {</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#a05e32f77d8d269ae3f7b21db0c36cf7a">buildNode</a>(</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                    node.get&lt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>&gt;()</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                    );</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            }</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            <span class="comment">// Build arcs</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            json arcs = j.at(<span class="stringliteral">&quot;arcs&quot;</span>);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            <span class="keywordflow">for</span>(json&amp; arc : arcs) {</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                std::array&lt;unsigned long, 2&gt; link =</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                    arc.at(<span class="stringliteral">&quot;link&quot;</span>)</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                    .get&lt;std::array&lt;unsigned long, 2&gt;&gt;();</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8">link</a>(</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                    graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#af3c9fd0c967ab988b3b8cf7df67543d0">getNode</a>(link.at(0)),</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                    graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#af3c9fd0c967ab988b3b8cf7df67543d0">getNode</a>(link.at(1)),</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                    arc.at(<span class="stringliteral">&quot;id&quot;</span>).get&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>&gt;()</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                    );</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            }</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;            <span class="keywordflow">return</span> graph;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        }</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00253"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#ad435d089aa60f5035a212c22c9123429">  253</a></span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#ad435d089aa60f5035a212c22c9123429">to_json</a>(json&amp; j, <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1Graph.html">Graph&lt;T&gt;</a>&amp; graph) {</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;            std::vector&lt;Node&lt;T&gt;&gt; nodes;</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> n : graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#ace9b1d86daf065f21238a416687774ac">getNodes</a>()) {</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;                nodes.push_back(*n.second);</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;            }</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            std::vector&lt;Arc&lt;T&gt;&gt; arcs;</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> a : graph.<a class="code" href="classFPMAS_1_1graph_1_1Graph.html#afac40f2d05c85754195bec9f08ffba40">getArcs</a>()) {</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                arcs.push_back(*a.second);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            }</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160; </div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;            j = json{</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;                {<span class="stringliteral">&quot;nodes&quot;</span>, nodes},</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                {<span class="stringliteral">&quot;arcs&quot;</span>, arcs}</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;            };</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        }</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160; </div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    };</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;}</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4_html_ad435d089aa60f5035a212c22c9123429"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#ad435d089aa60f5035a212c22c9123429">nlohmann::adl_serializer&lt; Graph&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const Graph&lt; T &gt; &amp;graph)</div><div class="ttdef"><b>Definition:</b> serializers.h:251</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4_html_ad435d089aa60f5035a212c22c9123429"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#ad435d089aa60f5035a212c22c9123429">nlohmann::adl_serializer&lt; Graph&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const Graph&lt; T &gt; &amp;graph)</div><div class="ttdef"><b>Definition:</b> serializers.h:253</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_ace9b1d86daf065f21238a416687774ac"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#ace9b1d86daf065f21238a416687774ac">FPMAS::graph::Graph::getNodes</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, Node&lt; T &gt; * &gt; getNodes() const</div><div class="ttdef"><b>Definition:</b> graph.h:326</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_afac40f2d05c85754195bec9f08ffba40"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#afac40f2d05c85754195bec9f08ffba40">FPMAS::graph::Graph::getArcs</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, Arc&lt; T &gt; * &gt; getArcs() const</div><div class="ttdef"><b>Definition:</b> graph.h:346</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Node_html_a2db70cace378ab0bccad39d45601c4bc"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc">FPMAS::graph::Node::setWeight</a></div><div class="ttdeci">void setWeight(float)</div><div class="ttdef"><b>Definition:</b> graph.h:284</div></div>
@@ -200,13 +202,14 @@ $(function() {
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Node_html_ac18cfa0d1282196c7023ba4685933208"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208">FPMAS::graph::Node::getData</a></div><div class="ttdeci">T * getData() const</div><div class="ttdef"><b>Definition:</b> graph.h:253</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Arc_html_a99fa2126d02dd806b097645a29f42468"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Arc.html#a99fa2126d02dd806b097645a29f42468">FPMAS::graph::Arc::getTargetNode</a></div><div class="ttdeci">Node&lt; T &gt; * getTargetNode() const</div><div class="ttdef"><b>Definition:</b> graph.h:219</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Arc_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Arc.html">FPMAS::graph::Arc</a></div><div class="ttdef"><b>Definition:</b> graph.h:32</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1Node_html_a379ad6759dd3d227b4fff5759d814029"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029">FPMAS::graph::Node::getWeight</a></div><div class="ttdeci">float getWeight() const</div><div class="ttdef"><b>Definition:</b> graph.h:275</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a></div><div class="ttdef"><b>Definition:</b> graph.h:33</div></div>
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4_html_a0eda60ef245f07de7f52a37df6cb179a"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#a0eda60ef245f07de7f52a37df6cb179a">nlohmann::adl_serializer&lt; Graph&lt; T &gt; &gt;::from_json</a></div><div class="ttdeci">static Graph&lt; T &gt; from_json(const json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializers.h:173</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4_html_a0eda60ef245f07de7f52a37df6cb179a"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#a0eda60ef245f07de7f52a37df6cb179a">nlohmann::adl_serializer&lt; Graph&lt; T &gt; &gt;::from_json</a></div><div class="ttdeci">static Graph&lt; T &gt; from_json(const json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializers.h:177</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GraphItem_html_a7facd4d4c4b70bc03cd19debf28fd023"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">FPMAS::graph::GraphItem::getId</a></div><div class="ttdeci">unsigned long getId() const</div><div class="ttdef"><b>Definition:</b> graph.cpp:19</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_a3dc0843c430902afd093438870172dc8"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8">FPMAS::graph::Graph::link</a></div><div class="ttdeci">Arc&lt; T &gt; * link(Node&lt; T &gt; *source, Node&lt; T &gt; *target, unsigned long arcLabel)</div><div class="ttdef"><b>Definition:</b> graph.h:400</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_af3c9fd0c967ab988b3b8cf7df67543d0"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#af3c9fd0c967ab988b3b8cf7df67543d0">FPMAS::graph::Graph::getNode</a></div><div class="ttdeci">Node&lt; T &gt; * getNode(unsigned long) const</div><div class="ttdef"><b>Definition:</b> graph.h:317</div></div>
 <div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4_html_a742a630c4dcb64d56f2548ad9e10ae42"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4.html#a742a630c4dcb64d56f2548ad9e10ae42">nlohmann::adl_serializer&lt; Node&lt; T &gt; &gt;::from_json</a></div><div class="ttdeci">static Node&lt; T &gt; from_json(const json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializers.h:61</div></div>
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4_html_a8c5592b125b29cdd3a72ffab84e3c482"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">nlohmann::adl_serializer&lt; Arc&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const Arc&lt; T &gt; &amp;arc)</div><div class="ttdef"><b>Definition:</b> serializers.h:133</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4_html_a8c5592b125b29cdd3a72ffab84e3c482"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">nlohmann::adl_serializer&lt; Arc&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const Arc&lt; T &gt; &amp;arc)</div><div class="ttdef"><b>Definition:</b> serializers.h:137</div></div>
 <div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4_html_adb02f0f8581bff021b2154c91a291428"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4.html#adb02f0f8581bff021b2154c91a291428">nlohmann::adl_serializer&lt; Node&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const Node&lt; T &gt; &amp;node)</div><div class="ttdef"><b>Definition:</b> serializers.h:103</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
