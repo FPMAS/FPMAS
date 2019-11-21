@@ -16,7 +16,8 @@ namespace FPMAS {
 }
 
 /**
- * Defines some rules to serialize / deserialize graph objects.
+ * Defines some rules to serialize / deserialize graph objects using the [JSON for Modern C++
+ * library](https://github.com/nlohmann/json).
  */
 namespace nlohmann {
 	using FPMAS::graph::Node;
