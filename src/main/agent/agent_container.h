@@ -4,7 +4,7 @@
 #include "utils/simulation_parameters.h"
 #include "zoltan_cpp.h"
 #include "agent/agent_base.h"
-#include "environment/graph.h"
+#include "environment/graph/base/graph.h"
 
 namespace FPMAS {
 	using graph::Graph;

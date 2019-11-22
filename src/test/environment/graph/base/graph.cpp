@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "environment/graph.h"
+#include "environment/graph/base/graph.h"
 
 #include "sample_graph.h"
 

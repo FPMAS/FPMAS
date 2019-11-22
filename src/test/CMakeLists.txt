@@ -7,19 +7,19 @@ set(SOURCES
 
 set(SOURCES
 	${SOURCES}
-	environment/graph.cpp)
+	environment/graph/base/graph.cpp)
 
 set(SOURCES
 	${SOURCES}
-	environment/serializers.cpp)
+	environment/graph/base/serializers.cpp)
 
 set(SOURCES
 	${SOURCES}
-	environment/nested_graph.cpp)
+	environment/graph/nested_graph.cpp)
 
 set(SOURCES
 	${SOURCES}
-	environment/distributed_graph.cpp)
+	environment/graph/parallel/distributed_graph.cpp)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
 target_include_directories(fpmas_mpi_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

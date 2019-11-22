@@ -1,7 +1,8 @@
 #include "gtest/gtest.h"
 
 #include "communication/communication.h"
-#include "environment/distributed_graph.h"
+#include "environment/graph/parallel/distributed_graph.h"
+#include "environment/graph/parallel/zoltan_fn.h"
 #include "utils/config.h"
 
 #include "test_utils/test_utils.h"

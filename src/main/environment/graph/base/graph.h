@@ -175,6 +175,8 @@ namespace FPMAS {
 			Node(unsigned long, float, T*);
 			T* data;
 			float weight = 1.;
+
+			protected:
 			std::vector<Arc<T>*> incomingArcs;
 			std::vector<Arc<T>*> outgoingArcs;
 

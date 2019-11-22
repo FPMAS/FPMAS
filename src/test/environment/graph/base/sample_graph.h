@@ -2,7 +2,7 @@
 #define SAMPLE_GRAPH_H
 
 #include "gtest/gtest.h"
-#include "environment/graph.h"
+#include "environment/graph/base/graph.h"
 #include "test_utils/test_utils.h"
 
 using FPMAS::graph::Graph;

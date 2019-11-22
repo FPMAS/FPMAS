@@ -1,7 +1,7 @@
 #ifndef NESTED_GRAPH_H
 #define NESTED_GRAPH_H
 
-#include "graph.h"
+#include "base/graph.h"
 
 namespace FPMAS {
 	namespace graph {

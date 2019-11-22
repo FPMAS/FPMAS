@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "environment/nested_graph.h"
+#include "environment/graph/nested_graph.h"
 
 using FPMAS::graph::NestedGraph;
 

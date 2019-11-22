@@ -17,7 +17,7 @@ set(SOURCES
 # Graph
 set(SOURCES
 	${SOURCES}
-	environment/graph.cpp
+	environment/graph/base/graph.cpp
 	)
 
 # Agent
