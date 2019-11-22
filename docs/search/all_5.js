@@ -15,9 +15,10 @@ var searchData=
   ['getsourcenode_26',['getSourceNode',['../classFPMAS_1_1graph_1_1Arc.html#a9a80164719cbdf061e9026dc0e0edda5',1,'FPMAS::graph::Arc']]],
   ['gettargetnode_27',['getTargetNode',['../classFPMAS_1_1graph_1_1Arc.html#a99fa2126d02dd806b097645a29f42468',1,'FPMAS::graph::Arc']]],
   ['getweight_28',['getWeight',['../classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029',1,'FPMAS::graph::Node']]],
-  ['ghostnode_29',['GhostNode',['../classFPMAS_1_1graph_1_1GhostNode.html',1,'FPMAS::graph']]],
-  ['graph_30',['Graph',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graph_3c_20fpmas_3a_3aagent_3a_3aagentbase_20_3e_31',['Graph&lt; FPMAS::agent::AgentBase &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graph_3c_20nestedgraph_3c_20t_20_3e_20_3e_32',['Graph&lt; NestedGraph&lt; T &gt; &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graphitem_33',['GraphItem',['../classFPMAS_1_1graph_1_1GraphItem.html',1,'FPMAS::graph::GraphItem'],['../classFPMAS_1_1graph_1_1GraphItem.html#a159dd35b8081e445705818c32eb8d23c',1,'FPMAS::graph::GraphItem::GraphItem()']]]
+  ['ghostarc_29',['GhostArc',['../classFPMAS_1_1graph_1_1GhostArc.html',1,'FPMAS::graph']]],
+  ['ghostnode_30',['GhostNode',['../classFPMAS_1_1graph_1_1GhostNode.html',1,'FPMAS::graph']]],
+  ['graph_31',['Graph',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graph_3c_20fpmas_3a_3aagent_3a_3aagentbase_20_3e_32',['Graph&lt; FPMAS::agent::AgentBase &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graph_3c_20nestedgraph_3c_20t_20_3e_20_3e_33',['Graph&lt; NestedGraph&lt; T &gt; &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graphitem_34',['GraphItem',['../classFPMAS_1_1graph_1_1GraphItem.html',1,'FPMAS::graph::GraphItem'],['../classFPMAS_1_1graph_1_1GraphItem.html#a159dd35b8081e445705818c32eb8d23c',1,'FPMAS::graph::GraphItem::GraphItem()']]]
 ];

@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['node_5fid_98',['node_id',['../namespaceFPMAS_1_1graph_1_1zoltan.html#afb709f2b7405f51dc4551b8329bacc20',1,'FPMAS::graph::zoltan']]],
-  ['num_5fedges_5fmulti_5ffn_99',['num_edges_multi_fn',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a937b660e9ac3c113a65296e96be151a9',1,'FPMAS::graph::zoltan']]],
-  ['num_5fobj_100',['num_obj',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a39344be7dd34d3e524515f861be5e5a8',1,'FPMAS::graph::zoltan']]]
+  ['mid_5fmigrate_5fpp_5ffn_99',['mid_migrate_pp_fn',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a403440ec1e03b1d710e4d02aa246a23a',1,'FPMAS::graph::zoltan']]],
+  ['mpicommunicator_100',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565',1,'FPMAS::communication::MpiCommunicator']]]
 ];

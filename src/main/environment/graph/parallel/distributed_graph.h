@@ -4,9 +4,15 @@
 #include "../base/graph.h"
 #include "zoltan_cpp.h"
 #include "olz.h"
+#include "zoltan_fn.h"
+
 
 namespace FPMAS {
 	namespace graph {
+
+		template<class T> class GhostNode;
+		template<class T> class GhostArc;
+
 		/**
 		 * The FPMAS::graph::zoltan namespace contains definitions of all the
 		 * required Zoltan query functions to compute and distribute graph
@@ -41,6 +47,7 @@ namespace FPMAS {
 		}
 
 		template<class T> class DistributedGraph : public Graph<T> {
+			friend GhostArc<T>;
 			friend void zoltan::obj_size_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
 			friend void zoltan::pack_obj_multi_fn<T>(
@@ -53,6 +60,10 @@ namespace FPMAS {
 			private:
 				Zoltan* zoltan;
 				std::unordered_map<unsigned long, std::string> node_serialization_cache;
+
+				std::unordered_map<unsigned long, GhostNode<T>*> ghostNodes;
+				std::unordered_map<unsigned long, GhostArc<T>*> ghostArcs;
+				void linkGhostNode(Node<T>*, Node<T>*, unsigned long);
 				
 
 			public:
@@ -60,7 +71,9 @@ namespace FPMAS {
 
 				int distribute();
 
-				GhostNode<T>* buildGhostNode(Node<T> node);
+				GhostNode<T>* buildGhostNode(Node<T> node, int);
+
+				~DistributedGraph<T>();
 
 		};
 
@@ -170,8 +183,33 @@ namespace FPMAS {
 
 		}
 
-		template<class T> GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T> node) {
+		template<class T> GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T> node, int node_proc) {
+			GhostNode<T>* gNode = new GhostNode<T>(node, node_proc);
+			this->ghostNodes[gNode->getId()] = gNode;
 
+			std::vector<Arc<T>*> temp_in_arcs = gNode->incomingArcs;
+			gNode->incomingArcs.clear();	
+			for(auto arc : temp_in_arcs) {
+				Node<T>* localSourceNode = arc->getSourceNode();
+				this->linkGhostNode(localSourceNode, gNode, arc->getId());
+			}
+
+			return gNode;
+
+		}
+
+		template<class T> void DistributedGraph<T>::linkGhostNode(Node<T>* source, Node<T>* target, unsigned long arc_id) {
+			this->ghostArcs[arc_id] =
+				new GhostArc<T>(arc_id, source, target);
+		}
+
+		template<class T> DistributedGraph<T>::~DistributedGraph() {
+			for(auto node : this->ghostNodes) {
+				delete node.second;
+			}
+			for(auto arc : this->ghostArcs) {
+				delete arc.second;
+			}
 		}
 
 

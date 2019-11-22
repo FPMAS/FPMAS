@@ -143,7 +143,7 @@ namespace FPMAS {
 			friend Node<T>;
 			friend Arc<T>* Graph<T>::link(Node<T>*, Node<T>*, unsigned long);
 
-			private:
+			protected:
 			Arc(unsigned long, Node<T>*, Node<T>*);
 			Node<T>* sourceNode;
 			Node<T>* targetNode;
@@ -441,8 +441,9 @@ namespace FPMAS {
 				// Removes the incoming arcs from the outgoingArcs list of the
 				// associated source node
 				for(auto it = out_arcs->begin(); it != out_arcs->end();) {
-					if((*it)->getId() == arc->getId()) {
+					if(*it == arc) {
 						out_arcs->erase(it);
+						it = out_arcs->end();
 					}
 					else {
 						it++;
@@ -462,8 +463,9 @@ namespace FPMAS {
 				// Removes the outgoing arcs from the incomingArcs list of the
 				// associated target node
 				for(auto it = in_arcs->begin(); it != in_arcs->end();) {
-					if((*it)->getId() == arc->getId()) {
+					if(*it == arc) {
 						in_arcs->erase(it);
+						it = in_arcs->end();
 					}
 					else {
 						it++;

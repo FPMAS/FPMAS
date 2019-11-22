@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['pack_5fobj_5fmulti_5ffn_103',['pack_obj_multi_fn',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a0236f126b0007edf2e8ff4225a2570cb',1,'FPMAS::graph::zoltan']]]
+  ['obj_5flist_104',['obj_list',['../namespaceFPMAS_1_1graph_1_1zoltan.html#acebeb6fe7f1523950e2fbf951d1e3737',1,'FPMAS::graph::zoltan']]],
+  ['obj_5fsize_5fmulti_5ffn_105',['obj_size_multi_fn',['../namespaceFPMAS_1_1graph_1_1zoltan.html#ae6582e70019fcc8302769cdfb7945b77',1,'FPMAS::graph::zoltan']]]
 ];

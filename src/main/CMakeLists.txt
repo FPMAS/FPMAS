@@ -20,6 +20,11 @@ set(SOURCES
 	environment/graph/base/graph.cpp
 	)
 
+set(SOURCES
+	${SOURCES}
+	environment/graph/parallel/zoltan_fn.cpp
+	)
+
 # Agent
 set(SOURCES
 	${SOURCES}
