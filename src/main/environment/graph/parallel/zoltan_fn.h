@@ -14,9 +14,9 @@ namespace FPMAS {
 
 		namespace zoltan {
 
-			unsigned long node_id(const ZOLTAN_ID_PTR);
+			unsigned long read_zoltan_id(const ZOLTAN_ID_PTR);
 
-			void write_zoltan_node_id(unsigned long, ZOLTAN_ID_PTR);
+			void write_zoltan_id(unsigned long, ZOLTAN_ID_PTR);
 
 			/**
 			 * Returns the number of nodes currently managed by the current processor
@@ -64,7 +64,7 @@ namespace FPMAS {
 				for(auto n : ((DistributedGraph<T>*) data)->getNodes()) {
 					Node<T>* node = n.second;
 
-					write_zoltan_node_id(node->getId(), &global_ids[2*i]);
+					write_zoltan_id(node->getId(), &global_ids[2*i]);
 
 					obj_wgts[i++] = node->getWeight();
 				}
@@ -97,7 +97,7 @@ namespace FPMAS {
 					) {
 				std::unordered_map<unsigned long, Node<T>*> nodes = ((DistributedGraph<T>*) data)->getNodes();
 				for(int i = 0; i < num_obj; i++) {
-					Node<T>* node = nodes[node_id(&global_ids[2*i])];
+					Node<T>* node = nodes[read_zoltan_id(&global_ids[2*i])];
 					num_edges[i] = node->getOutgoingArcs().size();
 				}
 			}
@@ -141,10 +141,10 @@ namespace FPMAS {
 
 				int neighbor_index = 0;
 				for (int i = 0; i < num_obj; ++i) {
-					Node<T>* node = nodes[node_id(&global_ids[num_gid_entries * i])];
+					Node<T>* node = nodes[read_zoltan_id(&global_ids[num_gid_entries * i])];
 					for(int j = 0; j < node->getOutgoingArcs().size(); j++) {
 						Arc<T>* arc = node->getOutgoingArcs().at(j);
-						write_zoltan_node_id(arc->getTargetNode()->getId(), &nbor_global_id[neighbor_index * num_gid_entries]);
+						write_zoltan_id(arc->getTargetNode()->getId(), &nbor_global_id[neighbor_index * num_gid_entries]);
 
 						// Temporary
 						MPI_Comm_rank(MPI_COMM_WORLD, &nbor_procs[neighbor_index]);
@@ -172,7 +172,7 @@ namespace FPMAS {
 			 * @param sizes Result : buffer sizes for each node
 			 * @param ierr Result : error code
 			 */
-			template<class T> void obj_size_multi_fn(
+			template<class T> void node_obj_size_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -185,7 +185,7 @@ namespace FPMAS {
 
 				std::unordered_map<unsigned long, Node<T>*> nodes = ((DistributedGraph<T>*) data)->getNodes();
 				for (int i = 0; i < num_ids; i++) {
-					Node<T>* node = nodes.at(node_id(&global_ids[i * num_gid_entries]));
+					Node<T>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 					json json_node = *node;
 					std::string serial_node = json_node.dump();
@@ -216,7 +216,7 @@ namespace FPMAS {
 			 * @param buf communication buffer
 			 * @param ierr Result : error code
 			 */
-			template<class T> void pack_obj_multi_fn(
+			template<class T> void node_pack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -229,14 +229,15 @@ namespace FPMAS {
 					char *buf,
 					int *ierr) {
 
-				// The node should actually been already serialized when computing
+				DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
 				std::unordered_map<unsigned long, std::string> serial_cache
-					= ((DistributedGraph<T>*) data)->node_serialization_cache;
+					= graph->node_serialization_cache;
 				for (int i = 0; i < num_ids; ++i) {
 					// Rebuilt node id
-					unsigned long id = node_id(&global_ids[i * num_gid_entries]);
+					unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 					// Retrieves the serialized node
 					std::string node_str = serial_cache.at(id);
@@ -252,7 +253,6 @@ namespace FPMAS {
 			}
 
 			/**
-			 *
 			 * Deserializes received nodes to the local distributed graph.
 			 *
 			 * For more information about this function, see the [Zoltan
@@ -268,7 +268,7 @@ namespace FPMAS {
 			 * @param ierr Result : error code
 			 *
 			 */
-			template<class T> void unpack_obj_multi_fn(
+			template<class T> void node_unpack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_ids,
@@ -279,7 +279,7 @@ namespace FPMAS {
 					int *ierr) {
 
 				for (int i = 0; i < num_ids; ++i) {
-					node_id(&global_ids[i * num_gid_entries]);
+					read_zoltan_id(&global_ids[i * num_gid_entries]);
 					json json_node = json::parse(&buf[idx[i]]);
 
 					((DistributedGraph<T>*) data)->buildNode(json_node.get<Node<T>>());
@@ -309,7 +309,7 @@ namespace FPMAS {
 			 * @param export_to_part parts to which objects will be exported
 			 * @param ierr Result : error code
 			 */
-			template<class T> void mid_migrate_pp_fn(
+			template<class T> void node_mid_migrate_pp_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -324,11 +324,47 @@ namespace FPMAS {
 					int *export_procs,
 					int *export_to_part,
 					int *ierr) {
-				for (int i = 0; i < num_export; ++i) {
-					((DistributedGraph<T>*) data)
-						->removeNode(node_id(&export_global_ids[i * num_gid_entries]));
+
+				DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+
+				std::unordered_map<unsigned long, Node<T>*> nodes = graph->getNodes();
+				std::vector<Arc<T>*> arcsToExport;
+				std::vector<int> procs;
+				std::vector<int> parts;
+
+				for (int i =0; i < num_export; i++) {
+					unsigned long id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
+
+					Node<T>* node = nodes.at(id);
+					for(auto arc : node->getIncomingArcs()) {
+						arcsToExport.push_back(arc);
+						// Arcs will be sent to the proc and part associated to
+						// the current node
+						procs.push_back(export_procs[i]);
+						parts.push_back(export_to_part[i]);
+					}
+					for(auto arc : node->getOutgoingArcs()) {
+						arcsToExport.push_back(arc);
+						// Arcs will be sent to the proc and part associated to
+						// the current node
+						procs.push_back(export_procs[i]);
+						parts.push_back(export_to_part[i]);
+					}
 				}
 
+				graph->export_arcs_num = arcsToExport.size();
+				graph->export_arcs_global_ids = (ZOLTAN_ID_PTR)
+					std::realloc(graph->export_arcs_global_ids, sizeof(unsigned int) * graph->export_arcs_num * num_gid_entries);
+				graph->export_arcs_parts = (int*)
+					std::realloc(graph->export_arcs_parts, sizeof(int) * graph->export_arcs_num);
+				graph->export_arcs_procs = (int*)
+					std::realloc(graph->export_arcs_procs, sizeof(int) * graph->export_arcs_num);
+
+				for(int i = 0; i < graph->export_arcs_num; i++) {
+					write_zoltan_id(arcsToExport.at(i)->getId(), &graph->export_arcs_global_ids[i * num_gid_entries]);
+					graph->export_arcs_procs[i] = procs[i];
+					graph->export_arcs_parts[i] = parts[i];
+				}
 			}
 		}
 	}

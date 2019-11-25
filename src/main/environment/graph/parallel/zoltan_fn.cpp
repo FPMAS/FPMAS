@@ -4,7 +4,7 @@ namespace FPMAS {
 	namespace graph {
 		namespace zoltan {
 			/**
-			 * Convenient function to rebuild a regular node id, as an
+			 * Convenient function to rebuild a regular node or arc id, as an
 			 * unsigned long, from a ZOLTAN_ID_PTR global id array, that actually
 			 * stores 2 unsigned int for each node unsigned long id.
 			 * So, with our configuration, we use 2 unsigned int in Zoltan to
@@ -21,7 +21,7 @@ namespace FPMAS {
 			// compatible with any Zoltan installation.
 			// Passing compile flags to the custom embedded CMake Zoltan
 			// installation might also be possible.
-			unsigned long node_id(const ZOLTAN_ID_PTR global_ids) {
+			unsigned long read_zoltan_id(const ZOLTAN_ID_PTR global_ids) {
 				return ((unsigned long) (global_ids[0] << 16)) | global_ids[1];
 			}
 
@@ -32,12 +32,12 @@ namespace FPMAS {
 			 * fit the default Zoltan data structure. The written id can then be
 			 * rebuilt using the node_id(const ZOLTAN_ID_PTR) function.
 			 *
-			 * @param node_id node id to write
+			 * @param id id to write
 			 * @param global_ids adress to a Zoltan global_ids array
 			 */
-			void write_zoltan_node_id(unsigned long node_id, ZOLTAN_ID_PTR global_ids) {
-				global_ids[0] = (node_id & 0xFFFF0000) >> 16 ;
-				global_ids[1] = (node_id & 0xFFFF);
+			void write_zoltan_id(unsigned long id, ZOLTAN_ID_PTR global_ids) {
+				global_ids[0] = (id & 0xFFFF0000) >> 16 ;
+				global_ids[1] = (id & 0xFFFF);
 			}
 
 

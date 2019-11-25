@@ -19,6 +19,8 @@ namespace FPMAS {
 		 * partitions.
 		 */
 		namespace zoltan {
+			unsigned long read_zoltan_id(ZOLTAN_ID_PTR);
+
 			template<class T> int num_obj(void *data, int* ierr);
 			template<class T> void obj_list(
 					void *, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int, float *, int *
@@ -29,18 +31,18 @@ namespace FPMAS {
 			template<class T> void edge_list_multi_fn(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, ZOLTAN_ID_PTR, int *, int, float *, int *
 					);
-			template<class T> void obj_size_multi_fn(
+			template<class T> void node_obj_size_multi_fn(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
 					); 
 
-			template<class T> void pack_obj_multi_fn(
+			template<class T> void node_pack_obj_multi_fn(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
 					);
 
-			template<class T> void unpack_obj_multi_fn(
+			template<class T> void node_unpack_obj_multi_fn(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
-			template<class T> void mid_migrate_pp_fn(
+			template<class T> void node_mid_migrate_pp_fn(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
       				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
 					);
@@ -48,18 +50,38 @@ namespace FPMAS {
 
 		template<class T> class DistributedGraph : public Graph<T> {
 			friend GhostArc<T>;
-			friend void zoltan::obj_size_multi_fn<T>(
+			friend void zoltan::node_obj_size_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
-			friend void zoltan::pack_obj_multi_fn<T>(
+			friend void zoltan::node_pack_obj_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
 				);
-			friend void zoltan::unpack_obj_multi_fn<T>(
+			friend void zoltan::node_unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
+			friend void zoltan::node_mid_migrate_pp_fn<T>(
+					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
+      				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
+					);
+
 
 			private:
 				Zoltan* zoltan;
+				void setZoltanNodeMigration();
+				void setZoltanArcMigration();
 				std::unordered_map<unsigned long, std::string> node_serialization_cache;
+
+				/*
+				 * Zoltan structures used to manage node and arcs migration
+				 */
+				// Node export buffer
+				int* export_node_procs;
+				int* export_node_parts;
+
+				// Arc migration buffers
+				int export_arcs_num;
+				ZOLTAN_ID_PTR export_arcs_global_ids;
+				int* export_arcs_procs;
+				int* export_arcs_parts;
 
 				std::unordered_map<unsigned long, GhostNode<T>*> ghostNodes;
 				std::unordered_map<unsigned long, GhostArc<T>*> ghostArcs;
@@ -88,17 +110,26 @@ namespace FPMAS {
 		 */
 		template<class T> DistributedGraph<T>::DistributedGraph(Zoltan* z)
 			: Graph<T>(), zoltan(z) {
+				// Initializes Zoltan Node Load Balancing functions
 				zoltan->Set_Num_Obj_Fn(FPMAS::graph::zoltan::num_obj<T>, this);
 				zoltan->Set_Obj_List_Fn(FPMAS::graph::zoltan::obj_list<T>, this);
 				zoltan->Set_Num_Edges_Multi_Fn(FPMAS::graph::zoltan::num_edges_multi_fn<T>, this);
 				zoltan->Set_Edge_List_Multi_Fn(FPMAS::graph::zoltan::edge_list_multi_fn<T>, this);
 
-				zoltan->Set_Obj_Size_Multi_Fn(FPMAS::graph::zoltan::obj_size_multi_fn<T>, this);
-				zoltan->Set_Pack_Obj_Multi_Fn(FPMAS::graph::zoltan::pack_obj_multi_fn<T>, this);
-				zoltan->Set_Unpack_Obj_Multi_Fn(FPMAS::graph::zoltan::unpack_obj_multi_fn<T>, this);
-				zoltan->Set_Mid_Migrate_PP_Fn(FPMAS::graph::zoltan::mid_migrate_pp_fn<T>, this);
+				// Initializes Zoltan Arc migration buffers
+				this->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+				this->export_arcs_parts = (int*) std::malloc(0);
+				this->export_arcs_procs = (int*) std::malloc(0);
+						}
 
-			}
+		template<class T> void DistributedGraph<T>::setZoltanNodeMigration() {
+			zoltan->Set_Obj_Size_Multi_Fn(FPMAS::graph::zoltan::node_obj_size_multi_fn<T>, this);
+			zoltan->Set_Pack_Obj_Multi_Fn(FPMAS::graph::zoltan::node_pack_obj_multi_fn<T>, this);
+			zoltan->Set_Unpack_Obj_Multi_Fn(FPMAS::graph::zoltan::node_unpack_obj_multi_fn<T>, this);
+			zoltan->Set_Mid_Migrate_PP_Fn(FPMAS::graph::zoltan::node_mid_migrate_pp_fn<T>, this);
+		}
+
+
 
 		/**
 		 * Distributes the graph accross the processors using Zoltan.
@@ -130,8 +161,6 @@ namespace FPMAS {
 			int num_export;
 			ZOLTAN_ID_PTR export_global_ids;
 			ZOLTAN_ID_PTR export_local_ids;
-			int * export_procs;
-			int * export_to_part;
 			
 			this->zoltan->LB_Partition(
 				changes,
@@ -145,13 +174,14 @@ namespace FPMAS {
 				num_export,
 				export_global_ids,
 				export_local_ids,
-				export_procs,
-				export_to_part
+				this->export_node_procs,
+				this->export_node_parts
 				);
 
 			int result = ZOLTAN_OK;
 
-			if(changes > 0)
+			if(changes > 0) {
+				this->setZoltanNodeMigration();
 				result = this->zoltan->Migrate(
 					num_import,
 					import_global_ids,
@@ -161,9 +191,15 @@ namespace FPMAS {
 					num_export,
 					export_global_ids,
 					export_local_ids,
-					export_procs,
-					export_to_part
+					this->export_node_procs,
+					this->export_node_parts
 					);
+			}
+
+			for (int i = 0; i < num_export; i++) {
+				this->removeNode(zoltan::read_zoltan_id(&export_global_ids[i * num_gid_entries]));
+			}
+
 
 			this->zoltan->LB_Free_Part(
 					&import_global_ids,
@@ -175,8 +211,8 @@ namespace FPMAS {
 			this->zoltan->LB_Free_Part(
 					&export_global_ids,
 					&export_local_ids,
-					&export_procs,
-					&export_to_part
+					&this->export_node_procs,
+					&this->export_node_parts
 					);
 
 			return result;
@@ -221,6 +257,9 @@ namespace FPMAS {
 			for(auto arc : this->ghostArcs) {
 				delete arc.second;
 			}
+			std::free(this->export_arcs_global_ids);
+			std::free(this->export_arcs_parts);
+			std::free(this->export_arcs_procs);
 		}
 
 

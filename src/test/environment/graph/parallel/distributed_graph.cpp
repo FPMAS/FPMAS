@@ -13,12 +13,12 @@ using FPMAS::graph::DistributedGraph;
 
 using FPMAS::test_utils::assert_contains;
 
-using FPMAS::graph::zoltan::write_zoltan_node_id;
+using FPMAS::graph::zoltan::write_zoltan_id;
 
 using FPMAS::graph::zoltan::obj_list;
 using FPMAS::graph::zoltan::num_edges_multi_fn;
-using FPMAS::graph::zoltan::obj_size_multi_fn;
-using FPMAS::graph::zoltan::pack_obj_multi_fn;
+using FPMAS::graph::zoltan::node_obj_size_multi_fn;
+using FPMAS::graph::zoltan::node_pack_obj_multi_fn;
 
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:
@@ -111,10 +111,10 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 
 		void write_migration_sizes() {
 			// Transfer nodes 0 and 85250
-			write_zoltan_node_id(0, &transfer_global_ids[0]);
-			write_zoltan_node_id(85250, &transfer_global_ids[2]);
+			write_zoltan_id(0, &transfer_global_ids[0]);
+			write_zoltan_id(85250, &transfer_global_ids[2]);
 
-			obj_size_multi_fn<int>(
+			node_obj_size_multi_fn<int>(
 					&dg,
 					2,
 					0,
@@ -134,7 +134,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 			// Unused
 			int dest[2];
 
-			pack_obj_multi_fn<int>(
+			node_pack_obj_multi_fn<int>(
 					&dg,
 					2,
 					0,
@@ -166,9 +166,9 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_list_fn_test) {
 
 	write_zoltan_global_ids();
 
-	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&global_ids[2 * node1_index]), 0ul);
-	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&global_ids[2 * node2_index]), 2ul);
-	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&global_ids[2 * node3_index]), 85250ul);
+	ASSERT_EQ(FPMAS::graph::zoltan::read_zoltan_id(&global_ids[2 * node1_index]), 0ul);
+	ASSERT_EQ(FPMAS::graph::zoltan::read_zoltan_id(&global_ids[2 * node2_index]), 2ul);
+	ASSERT_EQ(FPMAS::graph::zoltan::read_zoltan_id(&global_ids[2 * node3_index]), 85250ul);
 }
 
 
@@ -218,14 +218,14 @@ TEST_F(Mpi_ZoltanFunctionsTest, edge_list_multi_test) {
 	int node2_offset = node1_index < node2_index ? 2 : 0;
 
 	unsigned long node1_edges[] = {
-		FPMAS::graph::zoltan::node_id(&nbor_global_id[(node1_offset) * 2]),
-		FPMAS::graph::zoltan::node_id(&nbor_global_id[(node1_offset + 1) * 2]),
+		FPMAS::graph::zoltan::read_zoltan_id(&nbor_global_id[(node1_offset) * 2]),
+		FPMAS::graph::zoltan::read_zoltan_id(&nbor_global_id[(node1_offset + 1) * 2]),
 	};
 
 	assert_contains<unsigned long, 2>(node1_edges, 2);
 	assert_contains<unsigned long, 2>(node1_edges, 85250);
 
-	ASSERT_EQ(FPMAS::graph::zoltan::node_id(&nbor_global_id[node2_offset * 2]), 0);
+	ASSERT_EQ(FPMAS::graph::zoltan::read_zoltan_id(&nbor_global_id[node2_offset * 2]), 0);
 
 	for(int i = 0; i < 3; i++) {
 		ASSERT_EQ(ewgts[i], 1.f);
@@ -263,7 +263,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, pack_obj_multi_test) {
 		);
 }
 
-using FPMAS::graph::zoltan::unpack_obj_multi_fn;
+using FPMAS::graph::zoltan::node_unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanFunctionsTest, unpack_obj_multi_test) {
 
@@ -271,7 +271,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, unpack_obj_multi_test) {
 	write_communication_buffer();
 
 	DistributedGraph<int> g = DistributedGraph<int>(zz);
-	unpack_obj_multi_fn<int>(
+	node_unpack_obj_multi_fn<int>(
 		&g,
 		2,
 		2,
@@ -297,14 +297,21 @@ TEST_F(Mpi_ZoltanFunctionsTest, unpack_obj_multi_test) {
 
 }
 
-using FPMAS::graph::zoltan::mid_migrate_pp_fn;
+using FPMAS::graph::zoltan::node_mid_migrate_pp_fn;
 
+// Only modify graph private internal structure (set up arc export lists)
+// In consecuence, no real assertion is made there, but the function is still
+// executed to check for memory issues or other runtime errors
 TEST_F(Mpi_ZoltanFunctionsTest, mig_migrate_test) {
 	unsigned int export_global_ids[4];
-	write_zoltan_node_id(0ul, &export_global_ids[0]);
-	write_zoltan_node_id(85250ul, &export_global_ids[2]);
+	write_zoltan_id(0ul, &export_global_ids[0]);
+	write_zoltan_id(85250ul, &export_global_ids[2]);
 
-	mid_migrate_pp_fn<int>(
+	// Fake export info
+	int export_procs[2] = {0, 1};
+	int export_parts[2] = {0, 1};
+
+	node_mid_migrate_pp_fn<int>(
 		&dg,
 		2,
 		0,
@@ -316,14 +323,16 @@ TEST_F(Mpi_ZoltanFunctionsTest, mig_migrate_test) {
 		2,
 		export_global_ids,
 		nullptr,
-		nullptr,
-		nullptr,
+		export_procs,
+		export_parts,
 		&err);
 
+	/*
 	ASSERT_EQ(dg.getNodes().size(), 1);
 	ASSERT_EQ(dg.getArcs().size(), 0);
 	ASSERT_EQ(dg.getNodes().at(2ul)->getIncomingArcs().size(), 0);
 	ASSERT_EQ(dg.getNodes().at(2ul)->getOutgoingArcs().size(), 0);
+	*/
 }
 
 
