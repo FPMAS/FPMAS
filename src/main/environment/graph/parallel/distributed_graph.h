@@ -4,7 +4,9 @@
 #include "../base/graph.h"
 #include "zoltan_cpp.h"
 #include "olz.h"
-#include "zoltan_fn.h"
+#include "zoltan/zoltan_lb.h"
+#include "zoltan/zoltan_utils.h"
+#include "zoltan/zoltan_node_migrate.h"
 
 
 namespace FPMAS {
@@ -13,14 +15,7 @@ namespace FPMAS {
 		template<class T> class GhostNode;
 		template<class T> class GhostArc;
 
-		/**
-		 * The FPMAS::graph::zoltan namespace contains definitions of all the
-		 * required Zoltan query functions to compute and distribute graph
-		 * partitions.
-		 */
 		namespace zoltan {
-			unsigned long read_zoltan_id(ZOLTAN_ID_PTR);
-
 			template<class T> int num_obj(void *data, int* ierr);
 			template<class T> void obj_list(
 					void *, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int, float *, int *
@@ -31,34 +26,36 @@ namespace FPMAS {
 			template<class T> void edge_list_multi_fn(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, ZOLTAN_ID_PTR, int *, int, float *, int *
 					);
-			template<class T> void node_obj_size_multi_fn(
-					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
-					); 
+			namespace node {
+				template<class T> void obj_size_multi_fn(
+						void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
+						); 
 
-			template<class T> void node_pack_obj_multi_fn(
-					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
-					);
+				template<class T> void pack_obj_multi_fn(
+						void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
+						);
 
-			template<class T> void node_unpack_obj_multi_fn(
-					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
-					);
-			template<class T> void node_mid_migrate_pp_fn(
-					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
-      				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
-					);
+				template<class T> void unpack_obj_multi_fn(
+						void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
+						);
+				template<class T> void mid_migrate_pp_fn(
+						void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
+						int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
+						);
+			}
 		}
 
 		template<class T> class DistributedGraph : public Graph<T> {
 			friend GhostArc<T>;
-			friend void zoltan::node_obj_size_multi_fn<T>(
+			friend void zoltan::node::obj_size_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
-			friend void zoltan::node_pack_obj_multi_fn<T>(
+			friend void zoltan::node::pack_obj_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
 				);
-			friend void zoltan::node_unpack_obj_multi_fn<T>(
+			friend void zoltan::node::unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
-			friend void zoltan::node_mid_migrate_pp_fn<T>(
+			friend void zoltan::node::mid_migrate_pp_fn<T>(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
       				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
 					);
@@ -123,10 +120,10 @@ namespace FPMAS {
 						}
 
 		template<class T> void DistributedGraph<T>::setZoltanNodeMigration() {
-			zoltan->Set_Obj_Size_Multi_Fn(FPMAS::graph::zoltan::node_obj_size_multi_fn<T>, this);
-			zoltan->Set_Pack_Obj_Multi_Fn(FPMAS::graph::zoltan::node_pack_obj_multi_fn<T>, this);
-			zoltan->Set_Unpack_Obj_Multi_Fn(FPMAS::graph::zoltan::node_unpack_obj_multi_fn<T>, this);
-			zoltan->Set_Mid_Migrate_PP_Fn(FPMAS::graph::zoltan::node_mid_migrate_pp_fn<T>, this);
+			zoltan->Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<T>, this);
+			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T>, this);
+			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T>, this);
+			zoltan->Set_Mid_Migrate_PP_Fn(zoltan::node::mid_migrate_pp_fn<T>, this);
 		}
 
 
@@ -197,7 +194,7 @@ namespace FPMAS {
 			}
 
 			for (int i = 0; i < num_export; i++) {
-				this->removeNode(zoltan::read_zoltan_id(&export_global_ids[i * num_gid_entries]));
+				this->removeNode(zoltan::utils::read_zoltan_id(&export_global_ids[i * num_gid_entries]));
 			}
 
 

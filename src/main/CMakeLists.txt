@@ -22,7 +22,7 @@ set(SOURCES
 
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/zoltan_fn.cpp
+	environment/graph/parallel/zoltan/zoltan_utils.cpp
 	)
 
 # Agent

@@ -1,14 +1,17 @@
 
 set(SOURCES "")
 
+# Comm
 set(SOURCES
 	${SOURCES}
 	communication/communication.cpp)
 
+# Graph
 set(SOURCES
 	${SOURCES}
 	environment/graph/base/graph.cpp)
 
+# Graph serialization
 set(SOURCES
 	${SOURCES}
 	environment/graph/base/serializers.cpp)
@@ -17,6 +20,17 @@ set(SOURCES
 	${SOURCES}
 	environment/graph/nested_graph.cpp)
 
+# Parallel graph
+## Zoltan
+set(SOURCES
+	${SOURCES}
+	environment/graph/parallel/zoltan/zoltan_lb.cpp)
+
+set(SOURCES
+	${SOURCES}
+	environment/graph/parallel/zoltan/zoltan_node_migrate.cpp)
+
+## Graph
 set(SOURCES
 	${SOURCES}
 	environment/graph/parallel/distributed_graph.cpp)
