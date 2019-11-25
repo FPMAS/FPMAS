@@ -79,6 +79,20 @@ TEST(ArcSerializer, simple_arc_serializer) {
 	delete n2->getData();
 }
 
+TEST(ArcSerializer, simple_arc_deserializer) {
+	json j = R"({
+		"id":2,
+		"link":[0,1]
+		})"_json;
+
+	Arc<int> arc = j;
+	ASSERT_EQ(arc.getSourceNode()->getId(), 0);
+	ASSERT_EQ(arc.getTargetNode()->getId(), 1);
+
+	delete arc.getSourceNode();
+	delete arc.getTargetNode();
+}
+
 TEST(GraphSerializer, simple_graph_serialization) {
 
 	Graph<int> g;

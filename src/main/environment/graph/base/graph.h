@@ -128,6 +128,7 @@ namespace FPMAS {
 				Node<T>* buildNode(unsigned long id, float weight, T* data);
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
 				Arc<T>* link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel);
+				Arc<T>* link(Arc<T>);
 				void removeNode(unsigned long);
 				~Graph();
 
@@ -142,6 +143,7 @@ namespace FPMAS {
 			// Grants access to the Arc constructor
 			friend Node<T>;
 			friend Arc<T>* Graph<T>::link(Node<T>*, Node<T>*, unsigned long);
+			friend Arc<T> nlohmann::adl_serializer<Arc<T>>::from_json(const json&);
 
 			protected:
 			Arc(unsigned long, Node<T>*, Node<T>*);
@@ -161,6 +163,7 @@ namespace FPMAS {
 		 */
 		template<class T> class Node : public GraphItem {
 			friend Node<T> nlohmann::adl_serializer<Node<T>>::from_json(const json&);
+			friend Arc<T> nlohmann::adl_serializer<Arc<T>>::from_json(const json&);
 			// Grants access to incoming and outgoing arcs lists
 			friend Arc<T>::Arc(unsigned long, Node<T>*, Node<T>*);
 			// Grants access to private Node constructor
@@ -419,6 +422,17 @@ namespace FPMAS {
 		 */
 		template<class T> Arc<T>* Graph<T>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {
 			return this->link(this->getNode(source_id), this->getNode(target_id), arc_id);
+		}
+
+		template<class T> Arc<T>* Graph<T>::link(Arc<T> tempArc) {
+			Arc<T>* arc = this->link(
+				this->getNode(tempArc.getSourceNode()->getId()),
+				this->getNode(tempArc.getTargetNode()->getId()),
+				tempArc.getId()
+				);
+			delete tempArc.getSourceNode();
+			delete tempArc.getTargetNode();
+			return arc;
 		}
 
 		/**

@@ -116,11 +116,20 @@ namespace nlohmann {
 	 */
 	template<class T>
     struct adl_serializer<Arc<T>> {
-		/* Not used for now.
 		static Arc<T> from_json(const json& j) {
+			std::array<unsigned long, 2> link =
+				j.at("link")
+				.get<std::array<unsigned long, 2>>();
+			Node<T>* tempSource = new Node<T>(link[0]);
+			Node<T>* tempTarget = new Node<T>(link[1]);
+
+			return Arc<T>(
+				j.at("id"),
+				tempSource,
+				tempTarget
+				);
 
 		}
-		*/
 
 		/**
 		 * Defines rules to serialize arc instances in the following general
@@ -187,6 +196,8 @@ namespace nlohmann {
 			// Build arcs
 			json arcs = j.at("arcs");
 			for(json& arc : arcs) {
+				graph.link(arc.get<Arc<T>>());
+				/*
 				std::array<unsigned long, 2> link =
 					arc.at("link")
 					.get<std::array<unsigned long, 2>>();
@@ -195,6 +206,7 @@ namespace nlohmann {
 					graph.getNode(link.at(1)),
 					arc.at("id").get<unsigned long>()
 					);
+					*/
 			}
 			return graph;
 		}
