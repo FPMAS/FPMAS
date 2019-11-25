@@ -184,14 +184,25 @@ namespace FPMAS {
 		}
 
 		template<class T> GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T> node, int node_proc) {
+			// Copy the gNode from the original node, including arcs data
 			GhostNode<T>* gNode = new GhostNode<T>(node, node_proc);
+			// Register the new GhostNode
 			this->ghostNodes[gNode->getId()] = gNode;
 
+			// Replaces the incomingArcs list by proper GhostArcs
 			std::vector<Arc<T>*> temp_in_arcs = gNode->incomingArcs;
 			gNode->incomingArcs.clear();	
 			for(auto arc : temp_in_arcs) {
 				Node<T>* localSourceNode = arc->getSourceNode();
 				this->linkGhostNode(localSourceNode, gNode, arc->getId());
+			}
+
+			// Replaces the outgoingArcs list by proper GhostArcs
+			std::vector<Arc<T>*> temp_out_arcs = gNode->outgoingArcs;
+			gNode->outgoingArcs.clear();
+			for(auto arc : temp_out_arcs) {
+				Node<T>* localTargetNode = arc->getTargetNode();
+				this->linkGhostNode(gNode, localTargetNode, arc->getId());
 			}
 
 			return gNode;
