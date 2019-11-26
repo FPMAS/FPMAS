@@ -1,6 +1,8 @@
 #ifndef ZOLTAN_NODE_MIGRATE_H
 #define ZOLTAN_NODE_MIGRATE_H
 
+#include <set>
+
 #include "zoltan_cpp.h"
 
 #include "zoltan_utils.h"
@@ -153,11 +155,15 @@ namespace FPMAS {
 				}
 
 				/**
-				 * This function is called by Zoltan during migration, after export
-				 * and before import of nodes.
+				 * This function is called by Zoltan after node imports and
+				 * exports have been performed.
 				 *
-				 * In our context, this functions deletes exported nodes (and
-				 * associated arcs) from the local DistributedGraph.
+				 * In our context, this functions computes arcs that need to be
+				 * sent to each process according to exported nodes, and store
+				 * those information in the proper DistributedGraph buffers.
+				 *
+				 * For each node, all incoming and outgoing arcs are 
+				 * exported.
 				 *
 				 * @param data user data (local DistributedGraph instance)
 				 * @param num_gid_entries number of entries used to describe global ids (should be 2)
@@ -174,7 +180,7 @@ namespace FPMAS {
 				 * @param export_to_part parts to which objects will be exported
 				 * @param ierr Result : error code
 				 */
-				template<class T> void mid_migrate_pp_fn(
+				template<class T> void post_migrate_pp_fn(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -193,6 +199,12 @@ namespace FPMAS {
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 
 					std::unordered_map<unsigned long, Node<T>*> nodes = graph->getNodes();
+					// If target and source nodes of a single arc are both
+					// exported, we should only send the corresponding arc
+					// once. This set allows us to check which arcs are already
+					// registered to be exported.
+					std::set<unsigned long> exportedArcIds;
+
 					std::vector<Arc<T>*> arcsToExport;
 					std::vector<int> procs;
 					std::vector<int> parts;
@@ -202,18 +214,24 @@ namespace FPMAS {
 
 						Node<T>* node = nodes.at(id);
 						for(auto arc : node->getIncomingArcs()) {
-							arcsToExport.push_back(arc);
-							// Arcs will be sent to the proc and part associated to
-							// the current node
-							procs.push_back(export_procs[i]);
-							parts.push_back(export_to_part[i]);
+							if(exportedArcIds.count(arc->getId()) == 0) {
+								exportedArcIds.insert(arc->getId());
+								arcsToExport.push_back(arc);
+								// Arcs will be sent to the proc and part associated to
+								// the current node
+								procs.push_back(export_procs[i]);
+								parts.push_back(export_to_part[i]);
+							}
 						}
 						for(auto arc : node->getOutgoingArcs()) {
-							arcsToExport.push_back(arc);
-							// Arcs will be sent to the proc and part associated to
-							// the current node
-							procs.push_back(export_procs[i]);
-							parts.push_back(export_to_part[i]);
+							if(exportedArcIds.count(arc->getId()) == 0) {
+								exportedArcIds.insert(arc->getId());
+								arcsToExport.push_back(arc);
+								// Arcs will be sent to the proc and part associated to
+								// the current node
+								procs.push_back(export_procs[i]);
+								parts.push_back(export_to_part[i]);
+							}
 						}
 					}
 

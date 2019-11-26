@@ -10,7 +10,7 @@
 
 using FPMAS::communication::MpiCommunicator;
 
-class Mpi_DistributeGraphTest : public ::testing::Test {
+class DistributeGraphTest : public ::testing::Test {
 	protected:
 		static MpiCommunicator* mpiCommunicator;
 		static Zoltan* zz;
@@ -24,6 +24,24 @@ class Mpi_DistributeGraphTest : public ::testing::Test {
 			FPMAS::config::zoltan_config(zz);
 		}
 
+
+		static void TearDownTestSuite() {
+			delete zz;
+			delete mpiCommunicator;
+		}
+
+		void TearDown() override {
+			for(auto d : data) {
+				delete d;
+			}
+		}
+};
+
+MpiCommunicator* DistributeGraphTest::mpiCommunicator = nullptr;
+Zoltan* DistributeGraphTest::zz = nullptr;
+
+class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
+	protected:
 		void SetUp() override {
 			if(mpiCommunicator->getRank() == 0) {
 				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
@@ -32,24 +50,9 @@ class Mpi_DistributeGraphTest : public ::testing::Test {
 				}
 			}
 		}
-
-		void TearDown() override {
-			for(auto d : data) {
-				delete d;
-			}
-		}
-
-
-		static void TearDownTestSuite() {
-			delete zz;
-			delete mpiCommunicator;
-		}
 };
 
-MpiCommunicator* Mpi_DistributeGraphTest::mpiCommunicator = nullptr;
-Zoltan* Mpi_DistributeGraphTest::zz = nullptr;
-
-TEST_F(Mpi_DistributeGraphTest, distribute_test) {
+TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 	if(mpiCommunicator->getRank() == 0) {
 		ASSERT_EQ(dg.getNodes().size(), mpiCommunicator->getSize());
 	}
@@ -61,4 +64,41 @@ TEST_F(Mpi_DistributeGraphTest, distribute_test) {
 
 	ASSERT_EQ(result, ZOLTAN_OK);
 	ASSERT_EQ(dg.getNodes().size(), 1);
+}
+
+class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
+	protected:
+
+		void SetUp() override {
+			if(mpiCommunicator->getRank() == 0) {
+				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
+					data.push_back(new int(2 * i));
+					dg.buildNode((unsigned long) 2 * i, data.back());
+					data.push_back(new int(2 * i + 1));
+					dg.buildNode((unsigned long) 2 * i + 1, data.back());
+
+					dg.link(2 * i, 2 * i + 1, i);
+				}
+			}
+		}
+
+};
+
+TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
+	dg.distribute();
+
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getArcs().size(), 1);
+
+	Arc<int>* arc = dg.getArcs().begin()->second;
+	for(auto node : dg.getNodes()) {
+		if(node.second->getIncomingArcs().size() == 1) {
+			ASSERT_EQ(arc->getTargetNode()->getId(), node.second->getId());
+		}
+		else {
+			ASSERT_EQ(node.second->getIncomingArcs().size(), 0);
+			ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
+			ASSERT_EQ(arc->getSourceNode()->getId(), node.second->getId());
+		}
+	}
 }

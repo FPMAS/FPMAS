@@ -39,7 +39,7 @@ namespace FPMAS {
 				template<class T> void unpack_obj_multi_fn(
 						void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 						);
-				template<class T> void mid_migrate_pp_fn(
+				template<class T> void post_migrate_pp_fn(
 						void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
 						int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
 						);
@@ -59,7 +59,7 @@ namespace FPMAS {
 			friend void zoltan::node::unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
-			friend void zoltan::node::mid_migrate_pp_fn<T>(
+			friend void zoltan::node::post_migrate_pp_fn<T>(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
       				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
 					);
@@ -73,7 +73,7 @@ namespace FPMAS {
 				std::unordered_map<unsigned long, std::string> arc_serialization_cache;
 
 				/*
-				 * Zoltan structures used to manage node and arcs migration
+				 * Zoltan structures used to manage nodes and arcs migration
 				 */
 				// Node export buffer
 				int* export_node_procs;
@@ -128,9 +128,14 @@ namespace FPMAS {
 			zoltan->Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<T>, this);
 			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T>, this);
 			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T>, this);
-			zoltan->Set_Mid_Migrate_PP_Fn(zoltan::node::mid_migrate_pp_fn<T>, this);
+			zoltan->Set_Post_Migrate_PP_Fn(zoltan::node::post_migrate_pp_fn<T>, this);
 		}
 
+		template<class T> void DistributedGraph<T>::setZoltanArcMigration() {
+			zoltan->Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T>, this);
+			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
+			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
+		}
 
 
 		/**
@@ -184,6 +189,7 @@ namespace FPMAS {
 
 			if(changes > 0) {
 				this->setZoltanNodeMigration();
+
 				result = this->zoltan->Migrate(
 					num_import,
 					import_global_ids,
@@ -196,6 +202,45 @@ namespace FPMAS {
 					this->export_node_procs,
 					this->export_node_parts
 					);
+
+				this->setZoltanArcMigration();
+
+				// Unused buffer
+				unsigned int export_arcs_local_ids[0];
+
+				// Arcs to import
+				int import_arcs_num;
+				ZOLTAN_ID_PTR import_arcs_global_ids;
+				ZOLTAN_ID_PTR import_arcs_local_ids;
+				int* import_arcs_procs;
+				int* import_arcs_parts;
+
+				this->zoltan->Invert_Lists(
+					this->export_arcs_num,
+					this->export_arcs_global_ids,
+					export_arcs_local_ids,
+					this->export_arcs_procs,
+					this->export_node_procs,
+					import_arcs_num,
+					import_arcs_global_ids,
+					import_arcs_local_ids,
+					import_arcs_procs,
+					import_arcs_parts
+					);
+
+				this->zoltan->Migrate(
+					import_arcs_num,
+					import_arcs_global_ids,
+					import_arcs_local_ids,
+					import_arcs_procs,
+					import_arcs_parts,
+					this->export_arcs_num,
+					this->export_arcs_global_ids,
+					export_arcs_local_ids,
+					this->export_arcs_procs,
+					this->export_arcs_parts
+					);
+
 			}
 
 			for (int i = 0; i < num_export; i++) {
