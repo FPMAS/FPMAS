@@ -30,6 +30,10 @@ set(SOURCES
 	${SOURCES}
 	environment/graph/parallel/zoltan/zoltan_node_migrate.cpp)
 
+set(SOURCES
+	${SOURCES}
+	environment/graph/parallel/zoltan/zoltan_arc_migrate.cpp)
+
 ## Graph
 set(SOURCES
 	${SOURCES}

@@ -115,6 +115,7 @@ namespace FPMAS {
 			private:
 				std::unordered_map<unsigned long, Node<T>*> nodes;
 				std::unordered_map<unsigned long, Arc<T>*> arcs;
+				void removeArc(Arc<T>*, std::vector<Arc<T>*>*);
 
 			protected:
 				Node<T>* buildNode(Node<T> node);
@@ -129,6 +130,8 @@ namespace FPMAS {
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
 				Arc<T>* link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel);
 				Arc<T>* link(Arc<T>);
+				void unlink(unsigned long);
+				void unlink(Arc<T>*);
 				void removeNode(unsigned long);
 				~Graph();
 
@@ -170,7 +173,7 @@ namespace FPMAS {
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, T *data);
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
 			// Allows removeNode function to remove deleted arcs
-			friend void Graph<T>::removeNode(unsigned long);
+			friend void Graph<T>::unlink(Arc<T>*);
 
 			private:
 			Node(unsigned long);
@@ -435,6 +438,37 @@ namespace FPMAS {
 			return arc;
 		}
 
+		template<class T> void Graph<T>::removeArc(Arc<T>* arc, std::vector<Arc<T>*>* arcList) {
+			for(auto it = arcList->begin(); it != arcList->end();) {
+				if(*it == arc) {
+					arcList->erase(it);
+					it = arcList->end();
+				}
+				else {
+					it++;
+				}
+			}
+		}
+
+		template<class T> void Graph<T>::unlink(unsigned long arcId) {
+			this->unlink(this->arcs.at(arcId));
+		}
+
+		template<class T> void Graph<T>::unlink(Arc<T>* arc) {
+				Node<T>* source_node = arc->getSourceNode();
+				std::vector<Arc<T>*>* out_arcs = &source_node->outgoingArcs;
+
+				// Removes the incoming arcs from the incoming/outgoing
+				// arc lists of target/source nodes.
+				this->removeArc(arc, &arc->getSourceNode()->outgoingArcs);
+				this->removeArc(arc, &arc->getTargetNode()->incomingArcs);
+
+				// Removes the arc from the global arcs index
+				this->arcs.erase(arc->getId());
+				// Deletes the arc
+				delete arc;
+		}
+
 		/**
 		 * Removes the node that correspond to the specified id from this
 		 * graph.
@@ -449,6 +483,8 @@ namespace FPMAS {
 
 			// Deletes incoming arcs
 			for(auto arc : node_to_remove->getIncomingArcs()) {
+				this->unlink(arc);
+				/*
 				Node<T>* source_node = arc->getSourceNode();
 				std::vector<Arc<T>*>* out_arcs = &source_node->outgoingArcs;
 
@@ -467,10 +503,13 @@ namespace FPMAS {
 				this->arcs.erase(arc->getId());
 				// Deletes the arc
 				delete arc;
+				*/
 			}
 
 			// Deletes outgoing arcs
 			for(auto arc : node_to_remove->getOutgoingArcs()) {
+				this->unlink(arc);
+				/*
 				Node<T>* target_node = arc->getTargetNode();
 				std::vector<Arc<T>*>* in_arcs = &target_node->incomingArcs;
 
@@ -489,6 +528,7 @@ namespace FPMAS {
 				this->arcs.erase(arc->getId());
 				// Deletes the arc
 				delete arc;
+				*/
 			}
 			// Removes the node from the global nodes index
 			nodes.erase(node_id);

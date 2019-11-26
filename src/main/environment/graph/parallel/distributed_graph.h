@@ -7,6 +7,7 @@
 #include "zoltan/zoltan_lb.h"
 #include "zoltan/zoltan_utils.h"
 #include "zoltan/zoltan_node_migrate.h"
+#include "zoltan/zoltan_arc_migrate.h"
 
 
 namespace FPMAS {
@@ -49,9 +50,12 @@ namespace FPMAS {
 			friend GhostArc<T>;
 			friend void zoltan::node::obj_size_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
+			friend void zoltan::arc::obj_size_multi_fn<T>(
+				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
 			friend void zoltan::node::pack_obj_multi_fn<T>(
-				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
-				);
+				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
+			friend void zoltan::arc::pack_obj_multi_fn<T>(
+				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
 			friend void zoltan::node::unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
@@ -66,6 +70,7 @@ namespace FPMAS {
 				void setZoltanNodeMigration();
 				void setZoltanArcMigration();
 				std::unordered_map<unsigned long, std::string> node_serialization_cache;
+				std::unordered_map<unsigned long, std::string> arc_serialization_cache;
 
 				/*
 				 * Zoltan structures used to manage node and arcs migration

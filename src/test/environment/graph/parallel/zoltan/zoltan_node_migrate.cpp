@@ -125,14 +125,14 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, pack_obj_multi_test) {
 	write_communication_buffer();
 
 	// Decompose and check buffer data
-	ASSERT_EQ(
-		*&buf[0],
-		*R"({"data":0,"id":0})"
+	ASSERT_STREQ(
+		&buf[0],
+		R"({"data":0,"id":0,"weight":1.0})"
 		);
 
-	ASSERT_EQ(
-		*&buf[idx[1]],
-		*R"({"data":2,"id":85250})"
+	ASSERT_STREQ(
+		&buf[idx[1]],
+		R"({"data":2,"id":85250,"weight":3.0})"
 		);
 }
 
