@@ -17,7 +17,7 @@ set(SOURCES
 # Graph
 set(SOURCES
 	${SOURCES}
-	environment/graph/base/graph.cpp
+	environment/graph/base/graph_item.cpp
 	)
 
 set(SOURCES

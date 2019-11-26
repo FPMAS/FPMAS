@@ -1,6 +1,12 @@
-#include "graph.h"
+#include "graph_item.h"
 
 using FPMAS::graph::GraphItem;
+
+/**
+ * Default GraphItem constructor.
+ */
+GraphItem::GraphItem() {
+}
 
 /**
  * GraphItem constructor.

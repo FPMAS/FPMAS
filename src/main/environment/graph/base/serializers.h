@@ -116,6 +116,29 @@ namespace nlohmann {
 	 */
 	template<class T>
     struct adl_serializer<Arc<T>> {
+
+		/**
+		 * Defines rules to unserialize arcs.
+		 *
+		 * Format used :
+		 * ```{.json}
+		 * {"id":<arc_id>,"link":[<source_node_id>, <target_node_id>]}
+		 * ```
+		 *
+		 * It is very important to node that in order to build a valid Arc
+		 * instance, temporary source and target nodes are created from a
+		 * dynamically allocated memory, and so must be deleted later.
+		 *
+		 * Those nodes actually only contain the IDs respectively defined in
+		 * the `link` field.
+		 *
+		 * As an example, the FPMAS::graph::Graph::link(Arc<T>) function will
+		 * take such an arc as argument, build a real arc from the deserialized
+		 * arc, and correctly delete the temporary fake nodes.
+		 *
+		 * @param j json to deserialize
+		 * @return temporary arc
+		 */
 		static Arc<T> from_json(const json& j) {
 			std::array<unsigned long, 2> link =
 				j.at("link")
@@ -135,7 +158,7 @@ namespace nlohmann {
 		 * Defines rules to serialize arc instances in the following general
 		 * JSON format :
 		 * ```{.json}
-		 * {"id":"<arc_id>","link":["<source_node_id>", "<target_node_id>"]}
+		 * {"id":<arc_id>,"link":[<source_node_id>, <target_node_id>]}
 		 * ```
 		 * The to_json(json&, const Graph<T>&) implicitly uses this function to
 		 * serialize graphs.

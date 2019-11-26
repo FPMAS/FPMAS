@@ -9,25 +9,14 @@
 
 #include <nlohmann/json.hpp>
 
+#include "node.h"
+#include "arc.h"
+
 namespace FPMAS {
 	/**
 	 * The FPMAS::graph namespace contains Graph, Node and Arc definitions.
 	 */
 	namespace graph {
-		/**
-		 * A labelled object, super class for Nodes and Arcs.
-		 */
-		class GraphItem {
-			private:
-				unsigned long id;
-			protected:
-				GraphItem() {};
-				GraphItem(unsigned long);
-			public:
-				unsigned long getId() const;
-		};
-
-		// Forward declaration
 		template<class T> class Node;
 		template<class T> class Arc;
 		template<class T> class Graph;
@@ -52,9 +41,9 @@ namespace FPMAS {
 		 *
 		 *  int main() {
 		 *  	Graph<int> g;
-		 *		Node<int>* n1 = g.buildNode("0", new int(0));
-		 *		Node<int>* n2 = g.buildNode("1", new int(1));
-		 *		g.link(n1, n2, "0");
+		 *		Node<int>* n1 = g.buildNode(0ul, new int(0));
+		 *		Node<int>* n2 = g.buildNode(1ul, new int(1));
+		 *		g.link(n1, n2, 0ul);
 		 *
 		 *		json j = g;
 		 *
@@ -66,7 +55,7 @@ namespace FPMAS {
 		 *	```
 		 *  Will print the following json :
 		 *	```
-		 *	{"arcs":[{"id":"0","link":["0","1"]}],"nodes":[{"data":0,"id":"0"},{"data":1,"id":"1"}]}
+		 *	{"arcs":[{"id":0,"link":["0","1"]}],"nodes":[{"data":0,"id":0},{"data":1,"id":1}]}
 		 *	```
 		 *  For more details about how json format used, see the
 		 *  FPMAS::graph::to_json(json&, const Graph<T>&) documentation.
@@ -88,11 +77,11 @@ namespace FPMAS {
 		 *		json graph_json = R"(
 		 *			{
 		 *			"arcs":[
-		 *				{"id":"0","link":["0","1"]}
+		 *				{"id":0,"link":["0","1"]}
 		 *				],
 		 *			"nodes":[
-		 *				{"data":0,"id":"0"},
-		 *				{"data":1,"id":"1"}
+		 *				{"data":0,"id":0},
+		 *				{"data":1,"id":1}
 		 *				]
 		 *			}
 		 *			)"_json;
@@ -136,187 +125,6 @@ namespace FPMAS {
 				~Graph();
 
 		};
-
-		/**
-		 * Graph arc.
-		 *
-		 * @tparam T associated data type
-		 */
-		template<class T> class Arc : public GraphItem {
-			// Grants access to the Arc constructor
-			friend Node<T>;
-			friend Arc<T>* Graph<T>::link(Node<T>*, Node<T>*, unsigned long);
-			friend Arc<T> nlohmann::adl_serializer<Arc<T>>::from_json(const json&);
-
-			protected:
-			Arc(unsigned long, Node<T>*, Node<T>*);
-			Node<T>* sourceNode;
-			Node<T>* targetNode;
-
-			public:
-			Node<T>* getSourceNode() const;
-			Node<T>* getTargetNode() const;
-
-		};
-
-		/**
-		 * Graph node.
-		 *
-		 * @tparam T associated data type
-		 */
-		template<class T> class Node : public GraphItem {
-			friend Node<T> nlohmann::adl_serializer<Node<T>>::from_json(const json&);
-			friend Arc<T> nlohmann::adl_serializer<Arc<T>>::from_json(const json&);
-			// Grants access to incoming and outgoing arcs lists
-			friend Arc<T>::Arc(unsigned long, Node<T>*, Node<T>*);
-			// Grants access to private Node constructor
-			friend Node<T>* Graph<T>::buildNode(unsigned long id, T *data);
-			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
-			// Allows removeNode function to remove deleted arcs
-			friend void Graph<T>::unlink(Arc<T>*);
-
-			private:
-			Node(unsigned long);
-			Node(unsigned long, T*);
-			Node(unsigned long, float, T*);
-			T* data;
-			float weight = 1.;
-
-			protected:
-			std::vector<Arc<T>*> incomingArcs;
-			std::vector<Arc<T>*> outgoingArcs;
-
-			public:
-			T* getData() const;
-			void setData(T*);
-			float getWeight() const;
-			void setWeight(float);
-			std::vector<Arc<T>*> getIncomingArcs() const;
-			std::vector<Arc<T>*> getOutgoingArcs() const;
-
-		};
-
-		/**
-		 * Private arc constructor.
-		 *
-		 * @param id arc id
-		 * @param sourceNode pointer to the source Node
-		 * @param targetNode pointer to the target Node
-		 */
-		template<class T> Arc<T>::Arc(unsigned long id, Node<T> * sourceNode, Node<T> * targetNode)
-			: GraphItem(id), sourceNode(sourceNode), targetNode(targetNode) {
-				this->sourceNode->outgoingArcs.push_back(this);
-				this->targetNode->incomingArcs.push_back(this);
-			};
-
-		/***********/
-		/* Arc API */
-		/***********/
-
-		/**
-		 * Returns the source node of this arc.
-		 *
-		 * @return pointer to the source node
-		 */
-		template<class T> Node<T>* Arc<T>::getSourceNode() const {
-			return this->sourceNode;
-		}
-
-		/**
-		 * Returns the target node of this arc.
-		 *
-		 * @return pointer to the target node
-		 */
-		template<class T> Node<T>* Arc<T>::getTargetNode() const {
-			return this->targetNode;
-		}
-
-		/************/
-		/* Node API */
-		/************/
-
-		template<class T> Node<T>::Node(unsigned long id) : GraphItem(id) {
-		}
-
-		/**
-		 * Node constructor.
-		 *
-		 * Responsability is left to the user to maintain the unicity of ids
-		 * within each graph.
-		 *
-		 * @param unsigned long node id
-		 * @param data pointer to node data
-		 */
-		template<class T> Node<T>::Node(unsigned long id, T* data) : GraphItem(id) {
-			this->data = data;
-		}
-
-		template<class T> Node<T>::Node(unsigned long id, float weight, T* data) : GraphItem(id) {
-			this->weight = weight;
-			this->data = data;
-		}
-
-		/**
-		 * Returns node's data.
-		 *
-		 * @return pointer to node's data
-		 */
-		template<class T> T* Node<T>::getData() const {
-			return this->data;
-		}
-
-		/**
-		 * Sets node's data to the specified value.
-		 *
-		 * @param data pointer to node data
-		 */
-		template<class T> void Node<T>::setData(T* data) {
-			this->data = data;
-		}
-
-		/**
-		 * Returns node's weight
-		 *
-		 * Default value set to 1., if weight has not been provided by the
-		 * user. This weight might for example be used by graph partitionning
-		 * functions to distribute the graph.
-		 *
-		 * @return node's weight
-		 */
-		template<class T> float Node<T>::getWeight() const {
-			return this->weight;
-		}
-
-		/**
-		 * Sets node's weight to the specified value.
-		 *
-		 * @param weight
-		 */
-		template<class T> void Node<T>::setWeight(float weight) {
-			this->weight = weight;
-		}
-
-		/**
-		 * Returns a vector containing pointers to this node's incoming arcs.
-		 *
-		 * @return pointers to incoming arcs
-		 */
-		template<class T> std::vector<Arc<T>*> Node<T>::getIncomingArcs() const {
-			return this->incomingArcs;
-		}
-
-		/**
-		 * Returns a vector containing pointers to this node's outgoing arcs.
-		 *
-		 * @return pointers to outgoing arcs
-		 */
-		template<class T> std::vector<Arc<T>*> Node<T>::getOutgoingArcs() const {
-			return this->outgoingArcs;
-		}
-
-		/*************/
-		/* Graph API */
-		/*************/
 
 		/**
 		 * Finds and returns the node associated to the specified id within this
@@ -371,6 +179,7 @@ namespace FPMAS {
 			this->nodes[node_copy->getId()] = node_copy;
 			return node_copy;
 		}
+
 		/**
 		 * Builds a node with the specify id and data, and adds it to this graph,
 		 * and finally returns the built node.
@@ -399,6 +208,7 @@ namespace FPMAS {
 			this->nodes[id] = node;
 			return node;
 		}
+
 		/**
 		 * Builds a directed arc with the specified id from the source node to the
 		 * target node, adds it to the graph and finally returns the built arc.
@@ -427,6 +237,26 @@ namespace FPMAS {
 			return this->link(this->getNode(source_id), this->getNode(target_id), arc_id);
 		}
 
+		/**
+		 * Builds a link from the specified temporary arc.
+		 *
+		 * This function **should only be used** with a json deserialized arc.
+		 * Actually, such an arc must dynamically allocate memory for "fake"
+		 * source and target nodes (temporary nodes instantiated with just 
+		 * an ID). In consequence, those nodes are deleted by this function,
+		 * so that the specified temporary arc actually becomes unusable 
+		 * after this function returns.
+		 *
+		 * The new arc is created linking the two actual nodes corresponding to
+		 * the fake nodes ids. If those nodes does not belong to this graph,
+		 * this function produce unexpected behaviors.
+		 *
+		 * See the Arc serializer defined in the ::nlohmann namespace for
+		 * more details.
+		 *
+		 * @param tempArc temporary arc to build from
+		 * @return built arc
+		 */
 		template<class T> Arc<T>* Graph<T>::link(Arc<T> tempArc) {
 			Arc<T>* arc = this->link(
 				this->getNode(tempArc.getSourceNode()->getId()),
@@ -438,6 +268,10 @@ namespace FPMAS {
 			return arc;
 		}
 
+		/**
+		 * Convenient function to remove an arc from an incoming or outgoing
+		 * arc list.
+		 */
 		template<class T> void Graph<T>::removeArc(Arc<T>* arc, std::vector<Arc<T>*>* arcList) {
 			for(auto it = arcList->begin(); it != arcList->end();) {
 				if(*it == arc) {
@@ -450,10 +284,12 @@ namespace FPMAS {
 			}
 		}
 
-		template<class T> void Graph<T>::unlink(unsigned long arcId) {
-			this->unlink(this->arcs.at(arcId));
-		}
-
+		/**
+		 * Removes the specified arc from the graph and the incoming/outgoing
+		 * arc lists of its target/source nodes.
+		 *
+		 * @param arc pointer to the arc to delete
+		 */
 		template<class T> void Graph<T>::unlink(Arc<T>* arc) {
 				Node<T>* source_node = arc->getSourceNode();
 				std::vector<Arc<T>*>* out_arcs = &source_node->outgoingArcs;
@@ -470,6 +306,16 @@ namespace FPMAS {
 		}
 
 		/**
+		 * Same as unlink(Arc<T>*), but retrieving the arc from its ID.
+		 *
+		 * @param arcId id of the arc to delete
+		 */
+		template<class T> void Graph<T>::unlink(unsigned long arcId) {
+			this->unlink(this->arcs.at(arcId));
+		}
+
+
+		/**
 		 * Removes the node that correspond to the specified id from this
 		 * graph.
 		 *
@@ -484,51 +330,11 @@ namespace FPMAS {
 			// Deletes incoming arcs
 			for(auto arc : node_to_remove->getIncomingArcs()) {
 				this->unlink(arc);
-				/*
-				Node<T>* source_node = arc->getSourceNode();
-				std::vector<Arc<T>*>* out_arcs = &source_node->outgoingArcs;
-
-				// Removes the incoming arcs from the outgoingArcs list of the
-				// associated source node
-				for(auto it = out_arcs->begin(); it != out_arcs->end();) {
-					if(*it == arc) {
-						out_arcs->erase(it);
-						it = out_arcs->end();
-					}
-					else {
-						it++;
-					}
-				}
-				// Removes the arc from the global arcs index
-				this->arcs.erase(arc->getId());
-				// Deletes the arc
-				delete arc;
-				*/
 			}
 
 			// Deletes outgoing arcs
 			for(auto arc : node_to_remove->getOutgoingArcs()) {
 				this->unlink(arc);
-				/*
-				Node<T>* target_node = arc->getTargetNode();
-				std::vector<Arc<T>*>* in_arcs = &target_node->incomingArcs;
-
-				// Removes the outgoing arcs from the incomingArcs list of the
-				// associated target node
-				for(auto it = in_arcs->begin(); it != in_arcs->end();) {
-					if(*it == arc) {
-						in_arcs->erase(it);
-						it = in_arcs->end();
-					}
-					else {
-						it++;
-					}
-				}
-				// Removes the arc from the global arcs index
-				this->arcs.erase(arc->getId());
-				// Deletes the arc
-				delete arc;
-				*/
 			}
 			// Removes the node from the global nodes index
 			nodes.erase(node_id);

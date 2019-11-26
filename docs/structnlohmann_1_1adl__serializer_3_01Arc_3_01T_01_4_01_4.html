@@ -77,8 +77,7 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a1da2da4f6a8c0915bebf90e6e9f1eacc"><td class="memItemLeft" align="right" valign="top"><a id="a1da2da4f6a8c0915bebf90e6e9f1eacc"></a>
-static <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>from_json</b> (const json &amp;j)</td></tr>
+<tr class="memitem:a1da2da4f6a8c0915bebf90e6e9f1eacc"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a1da2da4f6a8c0915bebf90e6e9f1eacc">from_json</a> (const json &amp;j)</td></tr>
 <tr class="separator:a1da2da4f6a8c0915bebf90e6e9f1eacc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c5592b125b29cdd3a72ffab84e3c482"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">to_json</a> (json &amp;j, const <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; &amp;arc)</td></tr>
 <tr class="separator:a8c5592b125b29cdd3a72ffab84e3c482"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -89,6 +88,46 @@ struct nlohmann::adl_serializer&lt; Arc&lt; T &gt; &gt;</h3>
 
 <p>Arc serializer. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1da2da4f6a8c0915bebf90e6e9f1eacc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1da2da4f6a8c0915bebf90e6e9f1eacc">&#9670;&nbsp;</a></span>from_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt;T&gt; nlohmann::adl_serializer&lt; <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; &gt;::from_json </td>
+          <td>(</td>
+          <td class="paramtype">const json &amp;&#160;</td>
+          <td class="paramname"><em>j</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defines rules to unserialize arcs.</p>
+<p>Format used : </p><div class="fragment"><div class="line">{&quot;id&quot;:&lt;arc_id&gt;,&quot;link&quot;:[&lt;source_node_id&gt;, &lt;target_node_id&gt;]}</div>
+</div><!-- fragment --><p>It is very important to node that in order to build a valid Arc instance, temporary source and target nodes are created from a dynamically allocated memory, and so must be deleted later.</p>
+<p>Those nodes actually only contain the IDs respectively defined in the <code>link</code> field.</p>
+<p>As an example, the <a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a28bdc9942a87d73e19adf673968edd4b">FPMAS::graph::Graph::link(Arc&lt;T&gt;)</a> function will take such an arc as argument, build a real arc from the deserialized arc, and correctly delete the temporary fake nodes.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">j</td><td>json to deserialize </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>temporary arc </dd></dl>
+
+</div>
+</div>
 <a id="a8c5592b125b29cdd3a72ffab84e3c482"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8c5592b125b29cdd3a72ffab84e3c482">&#9670;&nbsp;</a></span>to_json()</h2>
 
@@ -124,7 +163,7 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Defines rules to serialize arc instances in the following general JSON format : </p><div class="fragment"><div class="line">{&quot;id&quot;:&quot;&lt;arc_id&gt;&quot;,&quot;link&quot;:[&quot;&lt;source_node_id&gt;&quot;, &quot;&lt;target_node_id&gt;&quot;]}</div>
+<p>Defines rules to serialize arc instances in the following general JSON format : </p><div class="fragment"><div class="line">{&quot;id&quot;:&lt;arc_id&gt;,&quot;link&quot;:[&lt;source_node_id&gt;, &lt;target_node_id&gt;]}</div>
 </div><!-- fragment --><p> The to_json(json&amp;, const Graph&lt;T&gt;&amp;) implicitly uses this function to serialize graphs.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

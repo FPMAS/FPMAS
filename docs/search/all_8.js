@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['nestedgraph_39',['NestedGraph',['../classFPMAS_1_1graph_1_1NestedGraph.html',1,'FPMAS::graph']]],
-  ['nlohmann_40',['nlohmann',['../namespacenlohmann.html',1,'']]],
-  ['node_41',['Node',['../classFPMAS_1_1graph_1_1Node.html',1,'FPMAS::graph']]],
-  ['num_5fedges_5fmulti_5ffn_42',['num_edges_multi_fn',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a937b660e9ac3c113a65296e96be151a9',1,'FPMAS::graph::zoltan']]],
-  ['num_5fobj_43',['num_obj',['../namespaceFPMAS_1_1graph_1_1zoltan.html#a39344be7dd34d3e524515f861be5e5a8',1,'FPMAS::graph::zoltan']]]
+  ['mid_5fmigrate_5fpp_5ffn_38',['mid_migrate_pp_fn',['../namespaceFPMAS_1_1graph_1_1zoltan_1_1node.html#aaa4c0eccfb715ba9a46bdf9bd3a218fc',1,'FPMAS::graph::zoltan::node']]],
+  ['mpicommunicator_39',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html',1,'FPMAS::communication::MpiCommunicator'],['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565',1,'FPMAS::communication::MpiCommunicator::MpiCommunicator()']]]
 ];
