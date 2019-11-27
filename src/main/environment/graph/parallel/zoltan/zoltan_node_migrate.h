@@ -205,7 +205,6 @@ namespace FPMAS {
 
 					std::vector<Arc<T>*> arcsToExport;
 					std::vector<int> procs;
-					std::vector<int> parts;
 
 					for (int i =0; i < num_export; i++) {
 						unsigned long id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
@@ -224,7 +223,6 @@ namespace FPMAS {
 								// Arcs will be sent to the proc and part associated to
 								// the current node
 								procs.push_back(export_procs[i]);
-								parts.push_back(export_to_part[i]);
 
 								exportedArcPairs.insert(arc_proc_pair);
 							}
@@ -241,7 +239,6 @@ namespace FPMAS {
 								// Arcs will be sent to the proc and part associated to
 								// the current node
 								procs.push_back(export_procs[i]);
-								parts.push_back(export_to_part[i]);
 
 								exportedArcPairs.insert(arc_proc_pair);
 							}
@@ -250,15 +247,12 @@ namespace FPMAS {
 					graph->export_arcs_num = arcsToExport.size();
 					graph->export_arcs_global_ids = (ZOLTAN_ID_PTR)
 						std::realloc(graph->export_arcs_global_ids, sizeof(unsigned int) * graph->export_arcs_num * num_gid_entries);
-					graph->export_arcs_parts = (int*)
-						std::realloc(graph->export_arcs_parts, sizeof(int) * graph->export_arcs_num);
 					graph->export_arcs_procs = (int*)
 						std::realloc(graph->export_arcs_procs, sizeof(int) * graph->export_arcs_num);
 
 					for(int i = 0; i < graph->export_arcs_num; i++) {
 						write_zoltan_id(arcsToExport.at(i)->getId(), &graph->export_arcs_global_ids[i * num_gid_entries]);
 						graph->export_arcs_procs[i] = procs[i];
-						graph->export_arcs_parts[i] = parts[i];
 					}
 				}
 			}

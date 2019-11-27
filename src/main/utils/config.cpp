@@ -14,6 +14,8 @@ namespace FPMAS {
 			zz->Set_Param("CHECK_GRAPH", "0");
 			zz->Set_Param("IMBALANCE_TOL", "1.02");
 			zz->Set_Param("PHG_EDGE_SIZE_THRESHOLD", "1.0");
+
+			zz->Set_Param("NUM_LOCAL_PARTS", "1");
 		}
 
 	}

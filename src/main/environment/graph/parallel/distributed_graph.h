@@ -93,13 +93,11 @@ namespace FPMAS {
 				 */
 				// Node export buffer
 				int* export_node_procs;
-				int* export_node_parts;
 
 				// Arc migration buffers
 				int export_arcs_num;
 				ZOLTAN_ID_PTR export_arcs_global_ids;
 				int* export_arcs_procs;
-				int* export_arcs_parts;
 
 				std::unordered_map<unsigned long, GhostNode<T>*> ghostNodes;
 				std::unordered_map<unsigned long, GhostArc<T>*> ghostArcs;
@@ -142,7 +140,6 @@ namespace FPMAS {
 
 			// Initializes Zoltan Arc migration buffers
 			this->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
-			this->export_arcs_parts = (int*) std::malloc(0);
 			this->export_arcs_procs = (int*) std::malloc(0);
 		}
 
@@ -197,6 +194,8 @@ namespace FPMAS {
 			int num_import; 
 			ZOLTAN_ID_PTR import_global_ids;
 			ZOLTAN_ID_PTR import_local_ids;
+			int* export_to_part;
+
 			int * import_procs;
 			int * import_to_part;
 			int num_export;
@@ -217,7 +216,7 @@ namespace FPMAS {
 				export_global_ids,
 				export_local_ids,
 				this->export_node_procs,
-				this->export_node_parts
+				export_to_part
 				);
 
 			if(changes > 0) {
@@ -236,7 +235,7 @@ namespace FPMAS {
 					export_global_ids,
 					export_local_ids,
 					this->export_node_procs,
-					this->export_node_parts
+					export_to_part
 					);
 
 				// Prepares Zoltan to migrate arcs associated to the exported
@@ -260,7 +259,7 @@ namespace FPMAS {
 					this->export_arcs_global_ids,
 					export_arcs_local_ids,
 					this->export_arcs_procs,
-					this->export_node_procs,
+					this->export_arcs_procs, // parts = procs
 					import_arcs_num,
 					import_arcs_global_ids,
 					import_arcs_local_ids,
@@ -279,7 +278,7 @@ namespace FPMAS {
 					this->export_arcs_global_ids,
 					export_arcs_local_ids,
 					this->export_arcs_procs,
-					this->export_arcs_parts
+					this->export_arcs_procs // parts = procs
 					);
 
 				// The next steps will remove exported nodes from the local
@@ -348,7 +347,7 @@ namespace FPMAS {
 					&export_global_ids,
 					&export_local_ids,
 					&this->export_node_procs,
-					&this->export_node_parts
+					&export_to_part
 					);
 		}
 
@@ -455,7 +454,6 @@ namespace FPMAS {
 				delete arc.second;
 			}
 			std::free(this->export_arcs_global_ids);
-			std::free(this->export_arcs_parts);
 			std::free(this->export_arcs_procs);
 			delete this->zoltan;
 		}
