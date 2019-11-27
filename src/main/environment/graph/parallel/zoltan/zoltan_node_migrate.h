@@ -50,17 +50,27 @@ namespace FPMAS {
 						int *ierr) {
 
 
+					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 					std::unordered_map<unsigned long, Node<T>*> nodes = ((DistributedGraph<T>*) data)->getNodes();
 					for (int i = 0; i < num_ids; i++) {
 						Node<T>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
-						json json_node = *node;
-						std::string serial_node = json_node.dump();
+						if(graph->node_serialization_cache.count(node->getId()) == 1) {
+							sizes[i] = graph->node_serialization_cache.at(node->getId()).size()+1;
+						}
+						else {
+							json json_node = *node;
 
-						sizes[i] = serial_node.size() + 1;
+							json_node["origin"] = graph->proxy.getOrigin(node->getId());	
 
-						((DistributedGraph<T>*) data)->node_serialization_cache[node->getId()] = serial_node;
+							std::cout << json_node.dump() << std::endl;
 
+							std::string serial_node = json_node.dump();
+
+							sizes[i] = serial_node.size() + 1;
+
+							graph->node_serialization_cache[node->getId()] = serial_node;
+						}
 					}
 
 				}

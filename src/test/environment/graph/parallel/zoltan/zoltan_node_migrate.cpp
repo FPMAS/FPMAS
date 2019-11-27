@@ -30,7 +30,7 @@ class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 		unsigned int transfer_global_ids[4];
 		int sizes[2];
 		int idx[2];
-		char buf[66];
+		char buf[250];
 
 		// Error code
 		int err;
@@ -100,10 +100,13 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, obj_size_multi_test) {
 
 	write_migration_sizes();
 
+	int origin = dg.getMpiCommunicator().getRank();
 	json node1_str = *dg.getNodes().at(0);
+	node1_str["origin"] = origin;
 	ASSERT_EQ(sizes[0], node1_str.dump().size() + 1);
 
 	json node2_str = *dg.getNodes().at(85250);
+	node2_str["origin"] = origin;
 	ASSERT_EQ(sizes[1], node2_str.dump().size() + 1);
 }
 
@@ -113,15 +116,16 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, pack_obj_multi_test) {
 	write_migration_sizes();
 	write_communication_buffer();
 
+	std::string origin = std::to_string(dg.getMpiCommunicator().getRank());
 	// Decompose and check buffer data
 	ASSERT_STREQ(
 		&buf[0],
-		R"({"data":0,"id":0,"weight":1.0})"
+		std::string(R"({"data":0,"id":0,"origin":)" + origin + R"(,"weight":1.0})").c_str()
 		);
 
 	ASSERT_STREQ(
 		&buf[idx[1]],
-		R"({"data":2,"id":85250,"weight":3.0})"
+		std::string(R"({"data":2,"id":85250,"origin":)" + origin + R"(,"weight":3.0})").c_str()
 		);
 }
 

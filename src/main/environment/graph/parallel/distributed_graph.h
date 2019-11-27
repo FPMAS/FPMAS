@@ -129,6 +129,8 @@ namespace FPMAS {
 		 * available cores.
 		 */
 		template<class T> DistributedGraph<T>::DistributedGraph() {
+			proxy.setLocalProc(mpiCommunicator.getRank());
+
 			this->zoltan = new Zoltan(mpiCommunicator.getMpiComm());
 			FPMAS::config::zoltan_config(this->zoltan);
 

@@ -2,6 +2,10 @@
 
 using FPMAS::graph::proxy::Proxy;
 
+void Proxy::setLocalProc(int localProc) {
+	this->localProc = localProc;
+}
+
 void Proxy::setOrigin(unsigned long id, int proc) {
 	this->origins[id] = proc;
 
@@ -10,7 +14,10 @@ void Proxy::setOrigin(unsigned long id, int proc) {
 }
 
 int Proxy::getOrigin(unsigned long id) {
-	return this->origins.at(id);
+	if(this->origins.count(id) == 1)
+		return this->origins.at(id);
+
+	return this->localProc;
 }
 
 int Proxy::getCurrentLocation(unsigned long id) {
