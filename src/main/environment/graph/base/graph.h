@@ -11,6 +11,7 @@
 
 #include "node.h"
 #include "arc.h"
+#include "fossil.h"
 
 namespace FPMAS {
 	/**
@@ -120,9 +121,9 @@ namespace FPMAS {
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
 				Arc<T>* link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel);
 				Arc<T>* link(Arc<T>);
-				void unlink(unsigned long);
-				void unlink(Arc<T>*);
-				void removeNode(unsigned long);
+				Fossil<T> unlink(unsigned long);
+				Fossil<T> unlink(Arc<T>*);
+				Fossil<T> removeNode(unsigned long);
 				~Graph();
 
 		};
@@ -297,7 +298,7 @@ namespace FPMAS {
 		 *
 		 * @param arc pointer to the arc to delete
 		 */
-		template<class T> void Graph<T>::unlink(Arc<T>* arc) {
+		template<class T> Fossil<T> Graph<T>::unlink(Arc<T>* arc) {
 				Node<T>* source_node = arc->getSourceNode();
 				std::vector<Arc<T>*>* out_arcs = &source_node->outgoingArcs;
 
@@ -306,10 +307,19 @@ namespace FPMAS {
 				this->removeArc(arc, &arc->getSourceNode()->outgoingArcs);
 				this->removeArc(arc, &arc->getTargetNode()->incomingArcs);
 
+				Fossil<T> fossil;
 				// Removes the arc from the global arcs index
-				this->arcs.erase(arc->getId());
-				// Deletes the arc
-				delete arc;
+				if(this->arcs.erase(arc->getId()) > 0) {
+					// Deletes the arc only if it was in the standard arcs set.
+					// Arcs can actually have a different nature not handled by
+					// this base class (e.g. : ghost arcs), and in consequence
+					// such special arcs must be managed by corresponding
+					// sub-classes (e.g. : DistributedGraph).
+					delete arc;
+				} else {
+					fossil.arcs.push_back(arc);
+				};
+				return fossil;
 		}
 
 		/**
@@ -317,8 +327,8 @@ namespace FPMAS {
 		 *
 		 * @param arcId id of the arc to delete
 		 */
-		template<class T> void Graph<T>::unlink(unsigned long arcId) {
-			this->unlink(this->arcs.at(arcId));
+		template<class T> Fossil<T> Graph<T>::unlink(unsigned long arcId) {
+			return this->unlink(this->arcs.at(arcId));
 		}
 
 
@@ -331,22 +341,27 @@ namespace FPMAS {
 		 *
 		 * @param node_id id of the node to delete
 		 */
-		template<class T> void Graph<T>::removeNode(unsigned long node_id) {
+		template<class T> Fossil<T> Graph<T>::removeNode(unsigned long node_id) {
 			Node<T>* node_to_remove = nodes.at(node_id);
 
+			Fossil<T> fossil;
 			// Deletes incoming arcs
 			for(auto arc : node_to_remove->getIncomingArcs()) {
-				this->unlink(arc);
+				fossil.merge(this->unlink(arc));
 			}
 
 			// Deletes outgoing arcs
 			for(auto arc : node_to_remove->getOutgoingArcs()) {
-				this->unlink(arc);
+				fossil.merge(this->unlink(arc));
 			}
 			// Removes the node from the global nodes index
-			nodes.erase(node_id);
-			// Deletes the node
-			delete node_to_remove;
+			if(nodes.erase(node_id) > 0) {
+				// Deletes the node
+				delete node_to_remove;
+			} else {
+				fossil.nodes.push_back(node_to_remove);
+			}
+			return fossil;
 		}
 
 		/**

@@ -6,6 +6,7 @@
 #include "graph_item.h"
 #include "graph.h"
 #include "arc.h"
+#include "fossil.h"
 
 namespace FPMAS {
 	namespace graph {
@@ -28,7 +29,7 @@ namespace FPMAS {
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, T *data);
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
 			// Allows removeNode function to remove deleted arcs
-			friend void Graph<T>::unlink(Arc<T>*);
+			friend Fossil<T> Graph<T>::unlink(Arc<T>*);
 
 			private:
 			Node(unsigned long);

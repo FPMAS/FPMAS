@@ -249,13 +249,45 @@ namespace FPMAS {
 
 			}
 
-			for (int i = 0; i < num_export; i++) {
-				unsigned long nodeId = zoltan::utils::read_zoltan_id(&export_global_ids[i * num_gid_entries]);
-				// TODO: proc num
-				this->buildGhostNode(*this->getNode(nodeId), 0);
-				this->removeNode(nodeId);
+			std::set<unsigned long> exportedNodeIds;
+			for(int i = 0; i < num_export; i++) {
+				exportedNodeIds.insert(zoltan::utils::read_zoltan_id(&export_global_ids[i * num_gid_entries]));
 			}
 
+			std::vector<Node<T>*> ghostNodesToBuild;
+			for(auto id : exportedNodeIds) {
+				Node<T>* node = this->getNode(id);
+				bool buildGhost = false;
+				for(auto arc : node->getOutgoingArcs()) {
+					if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
+						buildGhost = true;
+						break;
+					}
+				}
+				if(!buildGhost) {
+					for(auto arc : node->getIncomingArcs()) {
+						if(exportedNodeIds.count(arc->getSourceNode()->getId()) == 0) {
+							buildGhost = true;
+							break;
+						}
+					}
+				}
+				if(buildGhost) {
+					ghostNodesToBuild.push_back(this->getNode(id));
+				}
+			}
+			for(auto node : ghostNodesToBuild) {
+				this->buildGhostNode(*node, 0);
+			}
+			Fossil<T> ghostFossils;
+			for(auto id : exportedNodeIds) {
+				ghostFossils.merge(this->removeNode(id));
+			}
+
+			for(auto arc : ghostFossils.arcs) {
+				this->ghostArcs.erase(arc->getId());
+				delete arc;
+			}
 
 			this->zoltan->LB_Free_Part(
 					&import_global_ids,

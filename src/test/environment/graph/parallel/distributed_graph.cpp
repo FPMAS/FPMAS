@@ -156,13 +156,12 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 	if(mpiCommunicator->getSize() > 1) {
 		ASSERT_EQ(dg.getArcs().size(), 0); 
 		if(mpiCommunicator->getSize() == 2) {
-			ASSERT_GE(dg.getGhostNodes().size(), 1);
-			ASSERT_GE(dg.getGhostArcs().size(), 2);
+			ASSERT_EQ(dg.getGhostNodes().size(), 1);
 		}
 		else {
-			ASSERT_GE(dg.getGhostNodes().size(), 2);
-			ASSERT_GE(dg.getGhostArcs().size(), 2);
+			ASSERT_EQ(dg.getGhostNodes().size(), 2);
 		}
+		ASSERT_EQ(dg.getGhostArcs().size(), 2);
 
 		Node<int>* localNode = dg.getNodes().begin()->second;
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
