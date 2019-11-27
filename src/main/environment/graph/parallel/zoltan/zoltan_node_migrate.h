@@ -63,8 +63,6 @@ namespace FPMAS {
 
 							json_node["origin"] = graph->proxy.getOrigin(node->getId());	
 
-							std::cout << json_node.dump() << std::endl;
-
 							std::string serial_node = json_node.dump();
 
 							sizes[i] = serial_node.size() + 1;
@@ -155,11 +153,17 @@ namespace FPMAS {
 						char *buf,
 						int *ierr) {
 
+					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 					for (int i = 0; i < num_ids; ++i) {
 						read_zoltan_id(&global_ids[i * num_gid_entries]);
 						json json_node = json::parse(&buf[idx[i]]);
 
-						((DistributedGraph<T>*) data)->buildNode(json_node.get<Node<T>>());
+						Node<T> node = json_node.get<Node<T>>();
+						graph->buildNode(node);
+
+						int origin = json_node.at("origin").get<int>();
+						graph->proxy.setOrigin(node.getId(), origin);
+
 					}
 
 				}

@@ -192,12 +192,5 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, post_migrate_test) {
 		export_procs,
 		export_parts,
 		&err);
-
-	/*
-	ASSERT_EQ(dg.getNodes().size(), 1);
-	ASSERT_EQ(dg.getArcs().size(), 0);
-	ASSERT_EQ(dg.getNodes().at(2ul)->getIncomingArcs().size(), 0);
-	ASSERT_EQ(dg.getNodes().at(2ul)->getOutgoingArcs().size(), 0);
-	*/
 }
 

@@ -44,6 +44,10 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 	dg.distribute();
 
 	ASSERT_EQ(dg.getNodes().size(), 1);
+	ASSERT_EQ(dg.getProxy().getOrigin(
+				dg.getNodes().begin()->first
+				),
+			0);
 }
 
 class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {

@@ -15,6 +15,7 @@
 #include "proxy.h"
 
 using FPMAS::communication::MpiCommunicator;
+using FPMAS::graph::proxy::Proxy;
 
 namespace FPMAS {
 	namespace graph {
@@ -81,7 +82,7 @@ namespace FPMAS {
 			private:
 				MpiCommunicator mpiCommunicator;
 				Zoltan* zoltan;
-				graph::proxy::Proxy proxy;
+				Proxy proxy;
 
 				void setZoltanNodeMigration();
 				void setZoltanArcMigration();
@@ -109,6 +110,7 @@ namespace FPMAS {
 			public:
 				DistributedGraph<T>();
 				MpiCommunicator getMpiCommunicator() const;
+				Proxy getProxy() const;
 
 				void distribute();
 				void synchronize();
@@ -153,6 +155,10 @@ namespace FPMAS {
 		 */
 		template<class T> MpiCommunicator DistributedGraph<T>::getMpiCommunicator() const {
 			return this->mpiCommunicator;
+		}
+
+		template<class T> Proxy DistributedGraph<T>::getProxy() const {
+			return this->proxy;
 		}
 
 		/**
