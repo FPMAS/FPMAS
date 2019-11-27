@@ -16,22 +16,15 @@ using FPMAS::graph::zoltan::arc::pack_obj_multi_fn;
 
 class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 	protected:
-		static Zoltan* zz;
-		static MpiCommunicator* mpiCommunicator;
-
 		static std::array<int*, 3> data;
 
 		static void SetUpTestSuite() {
-			mpiCommunicator = new MpiCommunicator();
-			zz = new Zoltan(mpiCommunicator->getMpiComm());
-			FPMAS::config::zoltan_config(zz);
-
 			for(int i = 0; i < 3; i++) {
 				data[i] = new int(i);
 			}
 		}
 
-		DistributedGraph<int> dg = DistributedGraph<int>(zz);
+		DistributedGraph<int> dg = DistributedGraph<int>();
 
 		// Migration
 		unsigned int transfer_arc_global_ids[4];
@@ -96,15 +89,13 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 		}
 
 		static void TearDownTestSuite() {
-			delete zz;
-			delete mpiCommunicator;
+			// delete zz;
+			// delete mpiCommunicator;
 			for(auto i : data) {
 				delete i;
 			}
 		}
 };
-MpiCommunicator* Mpi_ZoltanArcMigrationFunctionsTest::mpiCommunicator = nullptr;
-Zoltan* Mpi_ZoltanArcMigrationFunctionsTest::zz = nullptr;
 std::array<int*, 3> Mpi_ZoltanArcMigrationFunctionsTest::data;
 
 TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, obj_size_multi_test) {

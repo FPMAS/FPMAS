@@ -12,24 +12,8 @@ using FPMAS::communication::MpiCommunicator;
 
 class DistributeGraphTest : public ::testing::Test {
 	protected:
-		static MpiCommunicator* mpiCommunicator;
-		static Zoltan* zz;
-
-		DistributedGraph<int> dg = DistributedGraph<int>(zz);
+		DistributedGraph<int> dg = DistributedGraph<int>();
 		std::vector<int*> data;
-
-		static void SetUpTestSuite() {
-			mpiCommunicator = new MpiCommunicator();
-			zz = new Zoltan(mpiCommunicator->getMpiComm());
-			FPMAS::config::zoltan_config(zz);
-		}
-
-
-		static void TearDownTestSuite() {
-			delete zz;
-			delete mpiCommunicator;
-		}
-
 		void TearDown() override {
 			for(auto d : data) {
 				delete d;
@@ -37,14 +21,11 @@ class DistributeGraphTest : public ::testing::Test {
 		}
 };
 
-MpiCommunicator* DistributeGraphTest::mpiCommunicator = nullptr;
-Zoltan* DistributeGraphTest::zz = nullptr;
-
 class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
 	protected:
 		void SetUp() override {
-			if(mpiCommunicator->getRank() == 0) {
-				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					data.push_back(new int(i));
 					dg.buildNode((unsigned long) i, data.back());
 				}
@@ -53,8 +34,8 @@ class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
 };
 
 TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
-	if(mpiCommunicator->getRank() == 0) {
-		ASSERT_EQ(dg.getNodes().size(), mpiCommunicator->getSize());
+	if(dg.getMpiCommunicator().getRank() == 0) {
+		ASSERT_EQ(dg.getNodes().size(), dg.getMpiCommunicator().getSize());
 	}
 	else {
 		ASSERT_EQ(dg.getNodes().size(), 0);
@@ -70,8 +51,8 @@ class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
 	protected:
 
 		void SetUp() override {
-			if(mpiCommunicator->getRank() == 0) {
-				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					data.push_back(new int(2 * i));
 					dg.buildNode((unsigned long) 2 * i, data.back());
 					data.push_back(new int(2 * i + 1));
@@ -105,14 +86,14 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 
 class Mpi_DistributeGraphWithGhostArcsTest : public DistributeGraphTest {
 		void SetUp() override {
-			if(mpiCommunicator->getRank() == 0) {
-				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					data.push_back(new int(i));
 					dg.buildNode(i, data.back());
 				}
-				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
+				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					// Build a ring across the processors
-					dg.link(i, (i+1) % mpiCommunicator->getSize(), i);
+					dg.link(i, (i+1) % dg.getMpiCommunicator().getSize(), i);
 				}
 			}
 		}
@@ -120,13 +101,13 @@ class Mpi_DistributeGraphWithGhostArcsTest : public DistributeGraphTest {
 
 TEST_F(Mpi_DistributeGraphWithGhostArcsTest, check_graph) {
 	// This test must be performed with at least 2 procs
-	if(mpiCommunicator->getSize() > 1) {
-		if(mpiCommunicator->getRank() == 0) {
-			ASSERT_EQ(dg.getNodes().size(), mpiCommunicator->getSize());
+	if(dg.getMpiCommunicator().getSize() > 1) {
+		if(dg.getMpiCommunicator().getRank() == 0) {
+			ASSERT_EQ(dg.getNodes().size(), dg.getMpiCommunicator().getSize());
 			for(auto node : dg.getNodes()) {
 				ASSERT_EQ(node.second->getIncomingArcs().size(), 1);
 				ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
-				if(mpiCommunicator->getSize() == 2) {
+				if(dg.getMpiCommunicator().getSize() == 2) {
 					// Two nodes with a bidirectionnal link
 					ASSERT_EQ(
 							node.second->getIncomingArcs().at(0)->getSourceNode(),
@@ -153,9 +134,9 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
 	// Must be performed with at least 2 procs
-	if(mpiCommunicator->getSize() > 1) {
+	if(dg.getMpiCommunicator().getSize() > 1) {
 		ASSERT_EQ(dg.getArcs().size(), 0); 
-		if(mpiCommunicator->getSize() == 2) {
+		if(dg.getMpiCommunicator().getSize() == 2) {
 			ASSERT_EQ(dg.getGhostNodes().size(), 1);
 		}
 		else {
@@ -167,12 +148,12 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
 		ASSERT_EQ(
 				localNode->getIncomingArcs().at(0)->getSourceNode()->getId(),
-				(localNode->getId() - 1) % mpiCommunicator->getSize()
+				(localNode->getId() - 1) % dg.getMpiCommunicator().getSize()
 				);
 		ASSERT_EQ(localNode->getOutgoingArcs().size(), 1);
 		ASSERT_EQ(
 				localNode->getOutgoingArcs().at(0)->getTargetNode()->getId(),
-				(localNode->getId() + 1) % mpiCommunicator->getSize()
+				(localNode->getId() + 1) % dg.getMpiCommunicator().getSize()
 				);
 	}
 }

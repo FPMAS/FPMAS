@@ -9,6 +9,10 @@
 #include "zoltan/zoltan_node_migrate.h"
 #include "zoltan/zoltan_arc_migrate.h"
 
+#include "utils/config.h"
+#include "communication/communication.h"
+
+using FPMAS::communication::MpiCommunicator;
 
 namespace FPMAS {
 	namespace graph {
@@ -46,6 +50,10 @@ namespace FPMAS {
 			}
 		}
 
+		/**
+		 * A DistributedGraph is a special graph instance that can be
+		 * distributed across available processors using Zoltan.
+		 */
 		template<class T> class DistributedGraph : public Graph<T> {
 			friend GhostArc<T>;
 			friend void zoltan::node::obj_size_multi_fn<T>(
@@ -69,6 +77,7 @@ namespace FPMAS {
 
 
 			private:
+				MpiCommunicator mpiCommunicator;
 				Zoltan* zoltan;
 				void setZoltanNodeMigration();
 				void setZoltanArcMigration();
@@ -90,13 +99,16 @@ namespace FPMAS {
 
 				std::unordered_map<unsigned long, GhostNode<T>*> ghostNodes;
 				std::unordered_map<unsigned long, GhostArc<T>*> ghostArcs;
-				void linkGhostNode(Node<T>*, Node<T>*, unsigned long);
+				void linkGhostNode(GhostNode<T>*, Node<T>*, unsigned long);
+				void linkGhostNode(Node<T>*, GhostNode<T>*, unsigned long);
+				void linkGhostNode(GhostNode<T>*, GhostNode<T>*, unsigned long);
 				
 
 			public:
-				DistributedGraph<T>(Zoltan*);
+				DistributedGraph<T>();
+				MpiCommunicator getMpiCommunicator() const;
 
-				int distribute();
+				void distribute();
 
 				GhostNode<T>* buildGhostNode(Node<T> node, int);
 
@@ -110,26 +122,38 @@ namespace FPMAS {
 		/**
 		 * DistributedGraph constructor.
 		 *
-		 * A DistributedGraph is a special graph instance that can be
-		 * distributed across available processors through the provided Zoltan
-		 * instance.
-		 *
-		 * @param z pointer to an initiliazed zoltan instance
+		 * Instanciates and configure a new Zoltan instance accross all the
+		 * available cores.
 		 */
-		template<class T> DistributedGraph<T>::DistributedGraph(Zoltan* z)
-			: Graph<T>(), zoltan(z) {
-				// Initializes Zoltan Node Load Balancing functions
-				zoltan->Set_Num_Obj_Fn(FPMAS::graph::zoltan::num_obj<T>, this);
-				zoltan->Set_Obj_List_Fn(FPMAS::graph::zoltan::obj_list<T>, this);
-				zoltan->Set_Num_Edges_Multi_Fn(FPMAS::graph::zoltan::num_edges_multi_fn<T>, this);
-				zoltan->Set_Edge_List_Multi_Fn(FPMAS::graph::zoltan::edge_list_multi_fn<T>, this);
+		template<class T> DistributedGraph<T>::DistributedGraph() {
+			this->zoltan = new Zoltan(mpiCommunicator.getMpiComm());
+			FPMAS::config::zoltan_config(this->zoltan);
 
-				// Initializes Zoltan Arc migration buffers
-				this->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
-				this->export_arcs_parts = (int*) std::malloc(0);
-				this->export_arcs_procs = (int*) std::malloc(0);
-						}
+			// Initializes Zoltan Node Load Balancing functions
+			this->zoltan->Set_Num_Obj_Fn(FPMAS::graph::zoltan::num_obj<T>, this);
+			this->zoltan->Set_Obj_List_Fn(FPMAS::graph::zoltan::obj_list<T>, this);
+			this->zoltan->Set_Num_Edges_Multi_Fn(FPMAS::graph::zoltan::num_edges_multi_fn<T>, this);
+			this->zoltan->Set_Edge_List_Multi_Fn(FPMAS::graph::zoltan::edge_list_multi_fn<T>, this);
 
+			// Initializes Zoltan Arc migration buffers
+			this->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+			this->export_arcs_parts = (int*) std::malloc(0);
+			this->export_arcs_procs = (int*) std::malloc(0);
+		}
+
+		/**
+		 * Returns the MpiCommunicator used by the Zoltan instance of this
+		 * DistrDistributedGraph.
+		 *
+		 * @return mpiCommunicator associated to this graph
+		 */
+		template<class T> MpiCommunicator DistributedGraph<T>::getMpiCommunicator() const {
+			return this->mpiCommunicator;
+		}
+
+		/**
+		 * Configures Zoltan to migrate nodes.
+		 */
 		template<class T> void DistributedGraph<T>::setZoltanNodeMigration() {
 			zoltan->Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<T>, this);
 			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T>, this);
@@ -137,6 +161,9 @@ namespace FPMAS {
 			zoltan->Set_Post_Migrate_PP_Fn(zoltan::node::post_migrate_pp_fn<T>, this);
 		}
 
+		/**
+		 * Configures Zoltan to migrate arcs.
+		 */
 		template<class T> void DistributedGraph<T>::setZoltanArcMigration() {
 			zoltan->Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T>, this);
 			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
@@ -145,24 +172,20 @@ namespace FPMAS {
 
 
 		/**
-		 * Distributes the graph accross the processors using Zoltan.
-		 *
-		 * Nodes are distributed among processors belonging to the MPI
-		 * communicator used to instanciate the zoltan instance associated to
-		 * this distributed graph.
+		 * Distributes the graph accross the available cores using Zoltan.
 		 *
 		 * The graph is distributed using
 		 * [Zoltan::LB_Partition](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_lb.html#Zoltan_LB_Partition)
 		 * and
-		 * [Zoltan::Migrate](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_mig.html#Zoltan_Migrate). Query functions used are defined in the FPMAS::graph::zoltan namespace.
+		 * [Zoltan::Migrate](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_mig.html#Zoltan_Migrate).
+		 * Query functions used are defined in the FPMAS::graph::zoltan namespace.
 		 *
 		 * Because of the Zoltan behavior, the current process will block until
 		 * all other involved process also call the distribute() function.
 		 *
-		 * @return Zoltan migrate [error
-		 * code](https://cs.sandia.gov/Zoltan/ug_html/ug_interface.html#Error%20Codes)
 		 */
-		template<class T> int DistributedGraph<T>::distribute() {
+		// TODO: describe the full migration process
+		template<class T> void DistributedGraph<T>::distribute() {
 			int changes;
       		int num_gid_entries;
 			int num_lid_entries;
@@ -191,12 +214,10 @@ namespace FPMAS {
 				this->export_node_parts
 				);
 
-			int result = ZOLTAN_OK;
-
 			if(changes > 0) {
 				this->setZoltanNodeMigration();
 
-				result = this->zoltan->Migrate(
+				this->zoltan->Migrate(
 					num_import,
 					import_global_ids,
 					import_local_ids,
@@ -302,11 +323,21 @@ namespace FPMAS {
 					&this->export_node_procs,
 					&this->export_node_parts
 					);
-
-			return result;
-
 		}
 
+		/**
+		 * Builds a GhostNode as an exact copy of the specified node.
+		 *
+		 * For each incoming/outgoing arcs of the input nodes, the
+		 * corresponding source/target nodes are linked to the built GhostNode
+		 * with GhostArc s. In other terms, all the arcs linked to the original
+		 * node are duplicated.
+		 *
+		 * The original node can then be safely removed from the graph.
+		 *
+		 * @param node node from which a ghost copy must be created
+		 * @param node_proc proc where the real node lives
+		 */
 		template<class T> GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T> node, int node_proc) {
 			// Copy the gNode from the original node, including arcs data
 			GhostNode<T>* gNode = new GhostNode<T>(node, node_proc);
@@ -333,19 +364,53 @@ namespace FPMAS {
 
 		}
 
-		template<class T> void DistributedGraph<T>::linkGhostNode(Node<T>* source, Node<T>* target, unsigned long arc_id) {
+		/**
+		 * Links the specified nodes with a GhostArc.
+		 */ 
+		template<class T> void DistributedGraph<T>::linkGhostNode(GhostNode<T>* source, Node<T>* target, unsigned long arc_id) {
 			this->ghostArcs[arc_id] =
 				new GhostArc<T>(arc_id, source, target);
 		}
 
+		/**
+		 * Links the specified nodes with a GhostArc.
+		 */ 
+		template<class T> void DistributedGraph<T>::linkGhostNode(Node<T>* source, GhostNode<T>* target, unsigned long arc_id) {
+			this->ghostArcs[arc_id] =
+				new GhostArc<T>(arc_id, source, target);
+		}
+
+		/**
+		 * Links the specified nodes with a GhostArc.
+		 */ 
+		template<class T> void DistributedGraph<T>::linkGhostNode(GhostNode<T>* source, GhostNode<T>* target, unsigned long arc_id) {
+			this->ghostArcs[arc_id] =
+				new GhostArc<T>(arc_id, source, target);
+		}
+
+		/**
+		 * Returns the map of GhostNode s currently living in this graph.
+		 *
+		 * @return ghost nodes
+		 */
 		template<class T> std::unordered_map<unsigned long, GhostNode<T>*> DistributedGraph<T>::getGhostNodes() {
 			return this->ghostNodes;
 		}
 
+		/**
+		 * Returns the map of GhostArc s currently living in this graph.
+		 *
+		 * @return ghost arcs
+		 */
 		template<class T> std::unordered_map<unsigned long, GhostArc<T>*> DistributedGraph<T>::getGhostArcs() {
 			return this->ghostArcs;
 		}
 
+		/**
+		 * DistributedGraph destructor.
+		 *
+		 * `deletes` ghost nodes and arcs, and data associated to Zoltan.
+		 */
 		template<class T> DistributedGraph<T>::~DistributedGraph() {
 			for(auto node : this->ghostNodes) {
 				delete node.second;
@@ -356,6 +421,7 @@ namespace FPMAS {
 			std::free(this->export_arcs_global_ids);
 			std::free(this->export_arcs_parts);
 			std::free(this->export_arcs_procs);
+			delete this->zoltan;
 		}
 
 

@@ -168,6 +168,13 @@ namespace FPMAS {
 			return this->arcs;
 		}
 
+		/**
+		 * Builds a node with the specified id, with a default weight and no
+		 * data.
+		 *
+		 * @param id node id
+		 * @return built node
+		 */
 		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id) {
 			Node<T>* node = new Node<T>(id);
 			this->nodes[id] = node;
@@ -294,9 +301,14 @@ namespace FPMAS {
 
 		/**
 		 * Removes the specified arc from the graph and the incoming/outgoing
-		 * arc lists of its target/source nodes.
+		 * arc lists of its target/source nodes, and finally `deletes` it.
+		 *
+		 * If the arc does not belong to the standard Graph arc register (e.g.
+		 * : it is a GhostArc of a DistributedGraph instance), it is not
+		 * `deleted` but instead added to the returned Fossil.
 		 *
 		 * @param arc pointer to the arc to delete
+		 * @return collected fossil arcs
 		 */
 		template<class T> Fossil<T> Graph<T>::unlink(Arc<T>* arc) {
 				Node<T>* source_node = arc->getSourceNode();
@@ -317,7 +329,7 @@ namespace FPMAS {
 					// sub-classes (e.g. : DistributedGraph).
 					delete arc;
 				} else {
-					fossil.arcs.push_back(arc);
+					fossil.arcs.insert(arc);
 				};
 				return fossil;
 		}
@@ -326,6 +338,7 @@ namespace FPMAS {
 		 * Same as unlink(Arc<T>*), but retrieving the arc from its ID.
 		 *
 		 * @param arcId id of the arc to delete
+		 * @return collected fossil arcs
 		 */
 		template<class T> Fossil<T> Graph<T>::unlink(unsigned long arcId) {
 			return this->unlink(this->arcs.at(arcId));
@@ -336,10 +349,19 @@ namespace FPMAS {
 		 * Removes the node that correspond to the specified id from this
 		 * graph.
 		 *
-		 * Incoming and outgoing arcs associated to this node are also deleted
+		 * Incoming and outgoing arcs associated to this node are also
+		 * `deleted`
 		 * and unlinked from the corresponding source and target nodes.
 		 *
+		 * If the node does not belong to the standard Graph node register (e.g.
+		 * : it is a GhostNode of a DistributedGraph instance), it is not
+		 * `deleted` but instead added to the returned Fossil.
+		 *
+		 * The returned fossil also contains the fossil arcs collected
+		 * unlinking the node's arcs.
+		 *
 		 * @param node_id id of the node to delete
+		 * @return collected fossil
 		 */
 		template<class T> Fossil<T> Graph<T>::removeNode(unsigned long node_id) {
 			Node<T>* node_to_remove = nodes.at(node_id);
@@ -359,7 +381,7 @@ namespace FPMAS {
 				// Deletes the node
 				delete node_to_remove;
 			} else {
-				fossil.nodes.push_back(node_to_remove);
+				fossil.nodes.insert(node_to_remove);
 			}
 			return fossil;
 		}

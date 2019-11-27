@@ -12,21 +12,15 @@ using FPMAS::graph::DistributedGraph;
 
 class Mpi_OlzTest : public ::testing::Test {
 	protected:
-		static Zoltan* zz;
-		static MpiCommunicator* mpiCommunicator;
-
 		static std::array<int*, 3> data;
 	
 		static void SetUpTestSuite() {
-			mpiCommunicator = new MpiCommunicator();
-			zz = new Zoltan(mpiCommunicator->getMpiComm());
-			FPMAS::config::zoltan_config(zz);
 			for (int i = 0; i < 3; ++i) {
 				data[i] = new int(i);
 			}
 		}
 
-		DistributedGraph<int> dg = DistributedGraph<int>(zz);
+		DistributedGraph<int> dg = DistributedGraph<int>();
 
 		void SetUp() override {
 			dg.buildNode(0ul, data[0]);
@@ -39,15 +33,11 @@ class Mpi_OlzTest : public ::testing::Test {
 		}
 
 		static void TearDownTestSuite() {
-			delete zz;
-			delete mpiCommunicator;
 			for(auto d : data) {
 				delete d;
 			}
 		}
 };
-MpiCommunicator* Mpi_OlzTest::mpiCommunicator = nullptr;
-Zoltan* Mpi_OlzTest::zz = nullptr;
 std::array<int*, 3> Mpi_OlzTest::data;
 
 TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {

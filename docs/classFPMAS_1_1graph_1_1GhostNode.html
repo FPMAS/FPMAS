@@ -72,6 +72,8 @@ $(function() {
 <div class="title">FPMAS::graph::GhostNode&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="olz_8h_source.html">olz.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for FPMAS::graph::GhostNode&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -128,7 +130,13 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:ac641fdbdffbf83085fb9d0b08ae0a0c8 inherit pro_attribs_classFPMAS_1_1graph_1_1Node"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Node.html#ac641fdbdffbf83085fb9d0b08ae0a0c8">outgoingArcs</a></td></tr>
 <tr class="separator:ac641fdbdffbf83085fb9d0b08ae0a0c8 inherit pro_attribs_classFPMAS_1_1graph_1_1Node"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class T&gt;<br />
+class FPMAS::graph::GhostNode&lt; T &gt;</h3>
+
+<p><a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> s are used to locally represent nodes that are living on an other processor, to maintain data continuity and the global graph structure.</p>
+<p>They are designed to be used as normal nodes in the graph structure. For example, when looking at nodes linked to a particular node, no difference can be made between nodes really living locally and ghost nodes. </p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/main/environment/graph/parallel/<a class="el" href="distributed__graph_8h_source.html">distributed_graph.h</a></li>
 <li>src/main/environment/graph/parallel/<a class="el" href="olz_8h_source.html">olz.h</a></li>
 </ul>

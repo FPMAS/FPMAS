@@ -15,49 +15,85 @@ using FPMAS::graph::Node;
 
 namespace FPMAS {
 	namespace graph {
+		/**
+		 * GhostNode s are used to locally represent nodes that are living on
+		 * an other processor, to maintain data continuity and the global graph
+		 * structure.
+		 *
+		 * They are designed to be used as normal nodes in the graph structure.
+		 * For example, when looking at nodes linked to a particular node, no
+		 * difference can be made between nodes really living locally and ghost
+		 * nodes.
+		 */
 		template <class T> class GhostNode : public Node<T> {
 
 			friend GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T>, int);
 
 			private:
-				int origin_rank;
-				GhostNode(Node<T>, int);
+				GhostNode(Node<T>);
 
 		};
 
-		template<class T> GhostNode<T>::GhostNode(Node<T> node, int origin_rank)
-			: Node<T>(node), origin_rank(origin_rank) {
-				/*
-				for(auto it = this->outgoingArcs.begin(); it != this->outgoingArcs.end();) {
-					if(local_graph.getNodes().count((*it).getTargetNode()->getId()) < 1) {
-						this->outgoingArcs.erase(it);
-					}
-					else {
-						it++;
-					}
-				}
-				for(auto it = this->incomingArcs.begin(); it != this->incomingArcs.end();) {
-					if(local_graph.getNodes().count((*it).getSourceNode()->getId()) < 1) {
-						this->incomingArcs.erase(it);
-					}
-					else{
-						it++;
-					}
-				}
-				*/
+		/**
+		 * Builds a GhostNode as a copy of the specified node.
+		 *
+		 * @param node original node
+		 */
+		template<class T> GhostNode<T>::GhostNode(Node<T> node)
+			: Node<T>(node) {
 			}
 
+		/**
+		 * GhostArcs should be used to link two nodes when at least one of the
+		 * two nodes is a GhostNode.
+		 *
+		 * They behaves exactly as normal arcs. In consequence, when looking at
+		 * a node outgoing arcs for example, no difference can directly be made
+		 * between local arcs and ghost arcs.
+		 *
+		 */
 		template<class T> class GhostArc : public Arc<T> {
 			friend void DistributedGraph<T>::linkGhostNode(Node<T>*, Node<T>*, unsigned long);
 
 			private:
-				GhostArc(unsigned long, Node<T>*, Node<T>*);
+				GhostArc(unsigned long, GhostNode<T>*, Node<T>*);
+				GhostArc(unsigned long, Node<T>*, GhostNode<T>*);
+				GhostArc(unsigned long, GhostNode<T>*, GhostNode<T>*);
 
 		};
 
-		template<class T> GhostArc<T>::GhostArc(unsigned long arc_id, Node<T>* source, Node<T>* target) : Arc<T>(arc_id, source, target) {
+		/**
+		 * Builds a GhostArc linking the specified nodes. Notice that the
+		 * GhostArc instance is added to the regular incoming arcs list of the
+		 * local target node.
+		 *
+		 * @param arc_id arc id
+		 * @param source pointer to the source ghost node
+		 * @param target pointer to the local target node
+		 */
+		template<class T> GhostArc<T>::GhostArc(unsigned long arc_id, GhostNode<T>* source, Node<T>* target)
+			: Arc<T>(arc_id, source, target) { };
+		/**
+		 * Builds a GhostArc linking the specified nodes. Notice that the
+		 * GhostArc instance is added to the regular outgoing arcs list of the
+		 * local source node.
+		 *
+		 * @param arc_id arc id
+		 * @param source pointer to the local source node
+		 * @param target pointer to the target ghost node
+		 */
+		template<class T> GhostArc<T>::GhostArc(unsigned long arc_id, Node<T>* source, GhostNode<T>* target)
+			: Arc<T>(arc_id, source, target) { };
 
-		};
+		/**
+		 * Builds a GhostArc linking the specified ghost nodes.
+		 *
+		 * @param arc_id arc id
+		 * @param source pointer to the source ghost node
+		 * @param target pointer to the target ghost node
+		 */
+		template<class T> GhostArc<T>::GhostArc(unsigned long arc_id, GhostNode<T>* source, GhostNode<T>* target)
+			: Arc<T>(arc_id, source, target) { };
 	}
 }
 

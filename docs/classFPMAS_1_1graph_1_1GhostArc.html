@@ -72,6 +72,8 @@ $(function() {
 <div class="title">FPMAS::graph::GhostArc&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="olz_8h_source.html">olz.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for FPMAS::graph::GhostArc&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -123,7 +125,13 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a8eaf52ba17406546d6d1b646d1494661 inherit pro_attribs_classFPMAS_1_1graph_1_1Arc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html#a8eaf52ba17406546d6d1b646d1494661">targetNode</a></td></tr>
 <tr class="separator:a8eaf52ba17406546d6d1b646d1494661 inherit pro_attribs_classFPMAS_1_1graph_1_1Arc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class T&gt;<br />
+class FPMAS::graph::GhostArc&lt; T &gt;</h3>
+
+<p>GhostArcs should be used to link two nodes when at least one of the two nodes is a <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>.</p>
+<p>They behaves exactly as normal arcs. In consequence, when looking at a node outgoing arcs for example, no difference can directly be made between local arcs and ghost arcs. </p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/main/environment/graph/parallel/<a class="el" href="distributed__graph_8h_source.html">distributed_graph.h</a></li>
 <li>src/main/environment/graph/parallel/<a class="el" href="olz_8h_source.html">olz.h</a></li>
 </ul>

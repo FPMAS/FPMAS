@@ -16,22 +16,15 @@ using FPMAS::graph::zoltan::node::pack_obj_multi_fn;
 
 class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:
-		static Zoltan* zz;
-		static MpiCommunicator* mpiCommunicator;
-
 		static std::array<int*, 3> data;
 
 		static void SetUpTestSuite() {
-			mpiCommunicator = new MpiCommunicator();
-			zz = new Zoltan(mpiCommunicator->getMpiComm());
-			FPMAS::config::zoltan_config(zz);
-
 			for(int i = 0; i < 3; i++) {
 				data[i] = new int(i);
 			}
 		}
 
-		DistributedGraph<int> dg = DistributedGraph<int>(zz);
+		DistributedGraph<int> dg = DistributedGraph<int>();
 
 		// Migration
 		unsigned int transfer_global_ids[4];
@@ -96,15 +89,11 @@ class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 		}
 
 		static void TearDownTestSuite() {
-			delete zz;
-			delete mpiCommunicator;
 			for(auto i : data) {
 				delete i;
 			}
 		}
 };
-MpiCommunicator* Mpi_ZoltanNodeMigrationFunctionsTest::mpiCommunicator = nullptr;
-Zoltan* Mpi_ZoltanNodeMigrationFunctionsTest::zz = nullptr;
 std::array<int*, 3> Mpi_ZoltanNodeMigrationFunctionsTest::data;
 
 TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, obj_size_multi_test) {
@@ -143,7 +132,7 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	write_migration_sizes();
 	write_communication_buffer();
 
-	DistributedGraph<int> g = DistributedGraph<int>(zz);
+	DistributedGraph<int> g = DistributedGraph<int>();
 	unpack_obj_multi_fn<int>(
 		&g,
 		2,

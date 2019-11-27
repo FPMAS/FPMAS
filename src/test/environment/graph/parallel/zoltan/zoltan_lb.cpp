@@ -21,22 +21,15 @@ using FPMAS::graph::zoltan::num_edges_multi_fn;
 
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:
-		static Zoltan* zz;
-		static MpiCommunicator* mpiCommunicator;
-
 		static std::array<int*, 3> data;
 
 		static void SetUpTestSuite() {
-			mpiCommunicator = new MpiCommunicator();
-			zz = new Zoltan(mpiCommunicator->getMpiComm());
-			FPMAS::config::zoltan_config(zz);
-
 			for(int i = 0; i < 3; i++) {
 				data[i] = new int(i);
 			}
 		}
 
-		DistributedGraph<int> dg = DistributedGraph<int>(zz);
+		DistributedGraph<int> dg = DistributedGraph<int>();
 
 		// Fake Zoltan buffers
 		
@@ -103,15 +96,11 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		static void TearDownTestSuite() {
-			delete zz;
-			delete mpiCommunicator;
 			for(auto i : data) {
 				delete i;
 			}
 		}
 };
-MpiCommunicator* Mpi_ZoltanFunctionsTest::mpiCommunicator = nullptr;
-Zoltan* Mpi_ZoltanFunctionsTest::zz = nullptr;
 std::array<int*, 3> Mpi_ZoltanFunctionsTest::data;
 
 
