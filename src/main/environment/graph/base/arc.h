@@ -71,7 +71,6 @@ namespace FPMAS {
 		template<class T> Node<T>* Arc<T>::getTargetNode() const {
 			return this->targetNode;
 		}
-
 	}
 }
 

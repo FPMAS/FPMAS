@@ -199,11 +199,9 @@ namespace FPMAS {
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 
 					std::unordered_map<unsigned long, Node<T>*> nodes = graph->getNodes();
-					// If target and source nodes of a single arc are both
-					// exported, we should only send the corresponding arc
-					// once. This set allows us to check which arcs are already
-					// registered to be exported.
-					std::set<unsigned long> exportedArcIds;
+					// Set used to ensure that each arc is sent at most once to
+					// each process.
+					std::set<std::pair<unsigned long, int>> exportedArcPairs;
 
 					std::vector<Arc<T>*> arcsToExport;
 					std::vector<int> procs;
@@ -214,27 +212,41 @@ namespace FPMAS {
 
 						Node<T>* node = nodes.at(id);
 						for(auto arc : node->getIncomingArcs()) {
-							if(exportedArcIds.count(arc->getId()) == 0) {
-								exportedArcIds.insert(arc->getId());
+							int dest_proc = export_procs[i];
+							std::pair<unsigned long, int> arc_proc_pair =
+								std::pair<unsigned long, int>(
+										arc->getId(),
+										export_procs[i]
+										);
+
+							if(exportedArcPairs.count(arc_proc_pair) == 0) {
 								arcsToExport.push_back(arc);
 								// Arcs will be sent to the proc and part associated to
 								// the current node
 								procs.push_back(export_procs[i]);
 								parts.push_back(export_to_part[i]);
+
+								exportedArcPairs.insert(arc_proc_pair);
 							}
 						}
 						for(auto arc : node->getOutgoingArcs()) {
-							if(exportedArcIds.count(arc->getId()) == 0) {
-								exportedArcIds.insert(arc->getId());
+							int dest_proc = export_procs[i];
+							std::pair<unsigned long, int> arc_proc_pair =
+								std::pair<unsigned long, int>(
+										arc->getId(),
+										export_procs[i]
+										);
+							if(exportedArcPairs.count(arc_proc_pair) == 0) {
 								arcsToExport.push_back(arc);
 								// Arcs will be sent to the proc and part associated to
 								// the current node
 								procs.push_back(export_procs[i]);
 								parts.push_back(export_to_part[i]);
+
+								exportedArcPairs.insert(arc_proc_pair);
 							}
 						}
 					}
-
 					graph->export_arcs_num = arcsToExport.size();
 					graph->export_arcs_global_ids = (ZOLTAN_ID_PTR)
 						std::realloc(graph->export_arcs_global_ids, sizeof(unsigned int) * graph->export_arcs_num * num_gid_entries);

@@ -59,6 +59,9 @@ namespace FPMAS {
 			friend void zoltan::node::unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
+			friend void zoltan::arc::unpack_obj_multi_fn<T>(
+					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
+					);
 			friend void zoltan::node::post_migrate_pp_fn<T>(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
       				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
@@ -96,6 +99,9 @@ namespace FPMAS {
 				int distribute();
 
 				GhostNode<T>* buildGhostNode(Node<T> node, int);
+
+				std::unordered_map<unsigned long, GhostNode<T>*> getGhostNodes();
+				std::unordered_map<unsigned long, GhostArc<T>*> getGhostArcs();
 
 				~DistributedGraph<T>();
 
@@ -244,7 +250,10 @@ namespace FPMAS {
 			}
 
 			for (int i = 0; i < num_export; i++) {
-				this->removeNode(zoltan::utils::read_zoltan_id(&export_global_ids[i * num_gid_entries]));
+				unsigned long nodeId = zoltan::utils::read_zoltan_id(&export_global_ids[i * num_gid_entries]);
+				// TODO: proc num
+				this->buildGhostNode(*this->getNode(nodeId), 0);
+				this->removeNode(nodeId);
 			}
 
 
@@ -295,6 +304,14 @@ namespace FPMAS {
 		template<class T> void DistributedGraph<T>::linkGhostNode(Node<T>* source, Node<T>* target, unsigned long arc_id) {
 			this->ghostArcs[arc_id] =
 				new GhostArc<T>(arc_id, source, target);
+		}
+
+		template<class T> std::unordered_map<unsigned long, GhostNode<T>*> DistributedGraph<T>::getGhostNodes() {
+			return this->ghostNodes;
+		}
+
+		template<class T> std::unordered_map<unsigned long, GhostArc<T>*> DistributedGraph<T>::getGhostArcs() {
+			return this->ghostArcs;
 		}
 
 		template<class T> DistributedGraph<T>::~DistributedGraph() {

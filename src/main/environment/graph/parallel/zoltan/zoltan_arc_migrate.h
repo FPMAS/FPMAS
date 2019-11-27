@@ -39,16 +39,22 @@ namespace FPMAS {
 						int *ierr) {
 
 
-					std::unordered_map<unsigned long, Arc<T>*> arcs = ((DistributedGraph<T>*) data)->getArcs();
+					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					std::unordered_map<unsigned long, Arc<T>*> arcs = graph->getArcs();
 					for (int i = 0; i < num_ids; i++) {
 						Arc<T>* arc = arcs.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
-						json json_node = *arc;
-						std::string serial_node = json_node.dump();
+						if(graph->arc_serialization_cache.count(arc->getId()) == 1) {
+							sizes[i] = graph->arc_serialization_cache.at(arc->getId()).size() + 1;
+						}
+						else {
+							json json_node = *arc;
+							std::string serial_node = json_node.dump();
 
-						sizes[i] = serial_node.size() + 1;
+							sizes[i] = serial_node.size() + 1;
 
-						((DistributedGraph<T>*) data)->arc_serialization_cache[arc->getId()] = serial_node;
+							graph->arc_serialization_cache[arc->getId()] = serial_node;
+						}
 
 					}
 
@@ -101,15 +107,21 @@ namespace FPMAS {
 							buf[idx[i] + j] = arc_str[j];
 						}
 						buf[idx[i] + sizes[i] - 1] = 0; // str final char
-
-						// Removes entry from the serialization buffer
-						serial_cache.erase(id);
 					}
-
+					serial_cache.clear();
 				}
 
 				/**
-				 * Deserializes received nodes to the local distributed graph.
+				 * Deserializes received arcs to the local distributed graph.
+				 *
+				 * GhostArcs and GhostNodes are built as necessary to reproduce
+				 * the graph structure, even if some imported arcs are linked
+				 * to distant nodes.
+				 *
+				 * However, the data contained in those ghost nodes is not
+				 * received yet : it will eventually be with the next ghost
+				 * node synchronization operation, performed as a new
+				 * Zoltan_Migrate cycle.
 				 *
 				 * For more information about this function, see the [Zoltan
 				 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_UNPACK_OBJ_MULTI_FN).
@@ -134,34 +146,76 @@ namespace FPMAS {
 						char *buf,
 						int *ierr) {
 
+					std::set<unsigned long> ghostNodesIds;
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					
+					unsigned long localNode = graph->getNodes().begin()->first;
+
 					for (int i = 0; i < num_ids; ++i) {
 						read_zoltan_id(&global_ids[i * num_gid_entries]);
-						json json_node = json::parse(&buf[idx[i]]);
+						json json_arc = json::parse(&buf[idx[i]]);
 
 						// Json is unserialized in a temporary arc, with "fake"
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
-						Arc<T> tempArc = json_node.get<Arc<T>>();
-						if(
-							graph->getNodes().count(
+						Arc<T> tempArc = json_arc.get<Arc<T>>();
+						bool sourceNodeIsLocal = graph->getNodes().count(
 									tempArc.getSourceNode()->getId()
-									) > 0
-								&&
-							graph->getNodes().count(
+									) > 0;
+						bool targetNodeIsLocal = graph->getNodes().count(
 									tempArc.getTargetNode()->getId()
-									) > 0
-						  ) {
-							// Imported arc is completely local.
-							// We can built it locally. Fake nodes are deleted
-							// properly by the graph::link(Arc<T> tempArc).
-							((DistributedGraph<T>*) data)->link(tempArc);
-						}
-						else {
-							// TODO: Temporarily save ghost arcs, build ghost
-							// node requests
+									) > 0;
 
+						if(!sourceNodeIsLocal || !targetNodeIsLocal) {
+							// Source or target node is distant : we will
+							// temporarily create a corresponding fake node
+							if(sourceNodeIsLocal) {
+								// The source node of the received arc is
+								// contained in the local graph, so the target
+								// node is distant, and has not been temporarily
+								// created yet.
+
+								// So adds it TEMPORARILY to the graph
+								graph->buildNode(tempArc.getTargetNode()->getId());
+								ghostNodesIds.insert(tempArc.getTargetNode()->getId());
+							}
+							else {
+								// The target node of the received arc is
+								// contained in the local graph, so the source
+								// node is distant, and has not been
+								// temporarily created yet.
+								// So adds it TEMPORARILY to the graph
+								graph->buildNode(tempArc.getSourceNode()->getId());
+								ghostNodesIds.insert(tempArc.getSourceNode()->getId());
+							}
 						}
+						// From there, potentially required temporary fake
+						// nodes (corresponding to distant nodes) have been
+						// created, so now source and target nodes of tempArc
+						// arc local, so we can build it locally.
+						// Source and target nodes of the tempArc are deleted
+						// properly by the graph::link(Arc<T> tempArc).
+						((DistributedGraph<T>*) data)->link(tempArc);
+					} // for(i = 0; i < num_ids; i++)
+
+					for(auto ghostNodeId : ghostNodesIds) {
+						// Builds the ghosts from the temporary nodes added
+						// earlier to the graph. This will also build the
+						// corresponding ghost arc.
+						// See the graph::buildGhostNode doc for more info.
+						// Notice that the created ghost node does not contains
+						// any data, but just represents the associated graph
+						// structure. The corresponding data is eventually
+						// retrieved later when the ghost nodes are
+						// synchronized using a new Zoltan_Migrate cycle.
+
+						//TODO: real proc number handling
+						graph->buildGhostNode(*graph->getNode(ghostNodeId), 0);
+
+						// We can now remove the temporary node and its
+						// associated temporary links
+						graph->removeNode(ghostNodeId);
+
 					}
 
 				}

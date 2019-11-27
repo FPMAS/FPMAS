@@ -102,3 +102,78 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 		}
 	}
 }
+
+class Mpi_DistributeGraphWithGhostArcsTest : public DistributeGraphTest {
+		void SetUp() override {
+			if(mpiCommunicator->getRank() == 0) {
+				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
+					data.push_back(new int(i));
+					dg.buildNode(i, data.back());
+				}
+				for (int i = 0; i < mpiCommunicator->getSize(); ++i) {
+					// Build a ring across the processors
+					dg.link(i, (i+1) % mpiCommunicator->getSize(), i);
+				}
+			}
+		}
+};
+
+TEST_F(Mpi_DistributeGraphWithGhostArcsTest, check_graph) {
+	// This test must be performed with at least 2 procs
+	if(mpiCommunicator->getSize() > 1) {
+		if(mpiCommunicator->getRank() == 0) {
+			ASSERT_EQ(dg.getNodes().size(), mpiCommunicator->getSize());
+			for(auto node : dg.getNodes()) {
+				ASSERT_EQ(node.second->getIncomingArcs().size(), 1);
+				ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
+				if(mpiCommunicator->getSize() == 2) {
+					// Two nodes with a bidirectionnal link
+					ASSERT_EQ(
+							node.second->getIncomingArcs().at(0)->getSourceNode(),
+							node.second->getOutgoingArcs().at(0)->getTargetNode()
+							);
+				} else {
+					// Real ring
+					ASSERT_NE(
+							node.second->getIncomingArcs().at(0)->getSourceNode(),
+							node.second->getOutgoingArcs().at(0)->getTargetNode()
+							);
+				}
+			}
+		}
+		else {
+			ASSERT_EQ(dg.getNodes().size(), 0);
+		}
+	}
+
+};
+
+TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
+	dg.distribute();
+	ASSERT_EQ(dg.getNodes().size(), 1);
+
+	// Must be performed with at least 2 procs
+	if(mpiCommunicator->getSize() > 1) {
+		ASSERT_EQ(dg.getArcs().size(), 0); 
+		if(mpiCommunicator->getSize() == 2) {
+			ASSERT_GE(dg.getGhostNodes().size(), 1);
+			ASSERT_GE(dg.getGhostArcs().size(), 2);
+		}
+		else {
+			ASSERT_GE(dg.getGhostNodes().size(), 2);
+			ASSERT_GE(dg.getGhostArcs().size(), 2);
+		}
+
+		Node<int>* localNode = dg.getNodes().begin()->second;
+		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
+		ASSERT_EQ(
+				localNode->getIncomingArcs().at(0)->getSourceNode()->getId(),
+				(localNode->getId() - 1) % mpiCommunicator->getSize()
+				);
+		ASSERT_EQ(localNode->getOutgoingArcs().size(), 1);
+		ASSERT_EQ(
+				localNode->getOutgoingArcs().at(0)->getTargetNode()->getId(),
+				(localNode->getId() + 1) % mpiCommunicator->getSize()
+				);
+	}
+}

@@ -116,9 +116,8 @@ namespace nlohmann {
 	 */
 	template<class T>
     struct adl_serializer<Arc<T>> {
-
 		/**
-		 * Defines rules to unserialize arcs.
+		 * Defines rules to unserialize Arcs.
 		 *
 		 * Format used :
 		 * ```{.json}
@@ -154,6 +153,7 @@ namespace nlohmann {
 
 		}
 
+
 		/**
 		 * Defines rules to serialize arc instances in the following general
 		 * JSON format :
@@ -181,7 +181,7 @@ namespace nlohmann {
 
 	using FPMAS::graph::Graph;
 	/**
-	 * Arc serializer.
+	 * Graph serializer.
 	 */
 	template<class T>
     struct adl_serializer<Graph<T>> {

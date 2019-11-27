@@ -114,6 +114,7 @@ namespace FPMAS {
 				std::unordered_map<unsigned long, Node<T>*> getNodes() const;
 				Arc<T>* getArc(unsigned long) const;
 				std::unordered_map<unsigned long, Arc<T>*> getArcs() const;
+				Node<T>* buildNode(unsigned long);
 				Node<T>* buildNode(unsigned long id, T* data);
 				Node<T>* buildNode(unsigned long id, float weight, T* data);
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
@@ -166,6 +167,12 @@ namespace FPMAS {
 			return this->arcs;
 		}
 
+		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id) {
+			Node<T>* node = new Node<T>(id);
+			this->nodes[id] = node;
+			return node;
+		}
+			
 		/**
 		 * Builds a node by copy from the specified node. Memory is dynamically
 		 * allocated for the node copy, and normally deleted when the graph is

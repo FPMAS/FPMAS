@@ -24,6 +24,7 @@ namespace FPMAS {
 			// Grants access to incoming and outgoing arcs lists
 			friend Arc<T>::Arc(unsigned long, Node<T>*, Node<T>*);
 			// Grants access to private Node constructor
+			friend Node<T>* Graph<T>::buildNode(unsigned long);
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, T *data);
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
 			// Allows removeNode function to remove deleted arcs
