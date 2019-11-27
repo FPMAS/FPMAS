@@ -6,24 +6,17 @@
 namespace FPMAS {
 	namespace graph {
 		namespace proxy {
-			class Location {
-				public:
-					int proc;
-					int part;
-					Location();
-					Location(int, int);
-			};
 
 			class Proxy {
 				private:
-					std::unordered_map<unsigned long, Location> origins;
+					std::unordered_map<unsigned long, int> origins;
 
-					std::unordered_map<unsigned long, Location> currentLocations;
+					std::unordered_map<unsigned long, int> currentLocations;
 
 				public:
-					void setOrigin(unsigned long, int, int);
-					Location getOrigin(unsigned long);
-					Location getCurrentLocation(unsigned long);
+					void setOrigin(unsigned long, int);
+					int getOrigin(unsigned long);
+					int getCurrentLocation(unsigned long);
 
 
 					// TODO : sync functions
