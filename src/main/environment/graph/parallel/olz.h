@@ -27,7 +27,7 @@ namespace FPMAS {
 		 */
 		template <class T> class GhostNode : public Node<T> {
 
-			friend GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T>, int);
+			friend GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T>);
 
 			private:
 				GhostNode(Node<T>);
@@ -53,7 +53,9 @@ namespace FPMAS {
 		 *
 		 */
 		template<class T> class GhostArc : public Arc<T> {
-			friend void DistributedGraph<T>::linkGhostNode(Node<T>*, Node<T>*, unsigned long);
+			friend void DistributedGraph<T>::linkGhostNode(GhostNode<T>*, Node<T>*, unsigned long);
+			friend void DistributedGraph<T>::linkGhostNode(Node<T>*, GhostNode<T>*, unsigned long);
+			friend void DistributedGraph<T>::linkGhostNode(GhostNode<T>*, GhostNode<T>*, unsigned long);
 
 			private:
 				GhostArc(unsigned long, GhostNode<T>*, Node<T>*);

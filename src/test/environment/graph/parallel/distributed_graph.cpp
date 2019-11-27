@@ -41,9 +41,8 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 		ASSERT_EQ(dg.getNodes().size(), 0);
 	}
 
-	int result = dg.distribute();
+	dg.distribute();
 
-	ASSERT_EQ(result, ZOLTAN_OK);
 	ASSERT_EQ(dg.getNodes().size(), 1);
 }
 

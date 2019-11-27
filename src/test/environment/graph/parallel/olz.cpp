@@ -43,7 +43,7 @@ std::array<int*, 3> Mpi_OlzTest::data;
 TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 	// Builds ghost node from node 2
 	Node<int> node = *(dg.getNode(2ul));	
-	dg.buildGhostNode(node, 0);
+	dg.buildGhostNode(node);
 
 	// Node 0 is linked to the ghost node
 	ASSERT_EQ(dg.getNode(0ul)->getOutgoingArcs().size(), 2);

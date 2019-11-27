@@ -149,8 +149,6 @@ namespace FPMAS {
 					std::set<unsigned long> ghostNodesIds;
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 					
-					unsigned long localNode = graph->getNodes().begin()->first;
-
 					for (int i = 0; i < num_ids; ++i) {
 						read_zoltan_id(&global_ids[i * num_gid_entries]);
 						json json_arc = json::parse(&buf[idx[i]]);
@@ -208,9 +206,7 @@ namespace FPMAS {
 						// structure. The corresponding data is eventually
 						// retrieved later when the ghost nodes are
 						// synchronized using a new Zoltan_Migrate cycle.
-
-						//TODO: real proc number handling
-						graph->buildGhostNode(*graph->getNode(ghostNodeId), 0);
+						graph->buildGhostNode(*graph->getNode(ghostNodeId));
 
 						// We can now remove the temporary node and its
 						// associated temporary links

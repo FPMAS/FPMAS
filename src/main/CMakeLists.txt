@@ -25,6 +25,11 @@ set(SOURCES
 	environment/graph/parallel/zoltan/zoltan_utils.cpp
 	)
 
+# Proxy
+set(SOURCES
+	${SOURCES}
+	environment/graph/parallel/proxy.cpp)
+
 # Agent
 set(SOURCES
 	${SOURCES}

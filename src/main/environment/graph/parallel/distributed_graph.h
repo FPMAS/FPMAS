@@ -12,6 +12,8 @@
 #include "utils/config.h"
 #include "communication/communication.h"
 
+#include "proxy.h"
+
 using FPMAS::communication::MpiCommunicator;
 
 namespace FPMAS {
@@ -79,6 +81,8 @@ namespace FPMAS {
 			private:
 				MpiCommunicator mpiCommunicator;
 				Zoltan* zoltan;
+				graph::proxy::Proxy proxy;
+
 				void setZoltanNodeMigration();
 				void setZoltanArcMigration();
 				std::unordered_map<unsigned long, std::string> node_serialization_cache;
@@ -109,8 +113,9 @@ namespace FPMAS {
 				MpiCommunicator getMpiCommunicator() const;
 
 				void distribute();
+				void synchronize();
 
-				GhostNode<T>* buildGhostNode(Node<T> node, int);
+				GhostNode<T>* buildGhostNode(Node<T> node);
 
 				std::unordered_map<unsigned long, GhostNode<T>*> getGhostNodes();
 				std::unordered_map<unsigned long, GhostArc<T>*> getGhostArcs();
@@ -198,6 +203,7 @@ namespace FPMAS {
 			ZOLTAN_ID_PTR export_global_ids;
 			ZOLTAN_ID_PTR export_local_ids;
 			
+			// Computes Zoltan partitioning
 			this->zoltan->LB_Partition(
 				changes,
 				num_gid_entries,
@@ -215,8 +221,11 @@ namespace FPMAS {
 				);
 
 			if(changes > 0) {
+				// Prepares Zoltan to migrate nodes
 				this->setZoltanNodeMigration();
 
+				// Migrate nodes from the load balancing
+				// Arcs to export are computed in the post_migrate_pp_fn step.
 				this->zoltan->Migrate(
 					num_import,
 					import_global_ids,
@@ -230,6 +239,8 @@ namespace FPMAS {
 					this->export_node_parts
 					);
 
+				// Prepares Zoltan to migrate arcs associated to the exported
+				// nodes.
 				this->setZoltanArcMigration();
 
 				// Unused buffer
@@ -242,6 +253,8 @@ namespace FPMAS {
 				int* import_arcs_procs;
 				int* import_arcs_parts;
 
+				// Computes import/export arcs list from each local arc exports
+				// lists, computing at node export.
 				this->zoltan->Invert_Lists(
 					this->export_arcs_num,
 					this->export_arcs_global_ids,
@@ -255,6 +268,7 @@ namespace FPMAS {
 					import_arcs_parts
 					);
 
+				// Performs arcs migration
 				this->zoltan->Migrate(
 					import_arcs_num,
 					import_arcs_global_ids,
@@ -268,48 +282,61 @@ namespace FPMAS {
 					this->export_arcs_parts
 					);
 
-			}
+				// The next steps will remove exported nodes from the local
+				// graph, creating corresponding ghost nodes when necessary
 
-			std::set<unsigned long> exportedNodeIds;
-			for(int i = 0; i < num_export; i++) {
-				exportedNodeIds.insert(zoltan::utils::read_zoltan_id(&export_global_ids[i * num_gid_entries]));
-			}
-
-			std::vector<Node<T>*> ghostNodesToBuild;
-			for(auto id : exportedNodeIds) {
-				Node<T>* node = this->getNode(id);
-				bool buildGhost = false;
-				for(auto arc : node->getOutgoingArcs()) {
-					if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
-						buildGhost = true;
-						break;
-					}
+				// Computes the set of ids of exported nodes
+				std::set<unsigned long> exportedNodeIds;
+				for(int i = 0; i < num_export; i++) {
+					exportedNodeIds.insert(zoltan::utils::read_zoltan_id(&export_global_ids[i * num_gid_entries]));
 				}
-				if(!buildGhost) {
-					for(auto arc : node->getIncomingArcs()) {
-						if(exportedNodeIds.count(arc->getSourceNode()->getId()) == 0) {
+
+				// Computes which ghost nodes must be created.
+				// For each exported node, a ghost node is created if and only
+				// if at least one local node is still connected to the
+				// exported node.
+				std::vector<Node<T>*> ghostNodesToBuild;
+				for(auto id : exportedNodeIds) {
+					Node<T>* node = this->getNode(id);
+					bool buildGhost = false;
+					for(auto arc : node->getOutgoingArcs()) {
+						if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
 							buildGhost = true;
 							break;
 						}
 					}
+					if(!buildGhost) {
+						for(auto arc : node->getIncomingArcs()) {
+							if(exportedNodeIds.count(arc->getSourceNode()->getId()) == 0) {
+								buildGhost = true;
+								break;
+							}
+						}
+					}
+					if(buildGhost) {
+						ghostNodesToBuild.push_back(this->getNode(id));
+					}
 				}
-				if(buildGhost) {
-					ghostNodesToBuild.push_back(this->getNode(id));
+				// Builds the ghost nodes
+				for(auto node : ghostNodesToBuild) {
+					this->buildGhostNode(*node);
 				}
-			}
-			for(auto node : ghostNodesToBuild) {
-				this->buildGhostNode(*node, 0);
-			}
-			Fossil<T> ghostFossils;
-			for(auto id : exportedNodeIds) {
-				ghostFossils.merge(this->removeNode(id));
+
+				// Remove nodes and collect fossils
+				Fossil<T> ghostFossils;
+				for(auto id : exportedNodeIds) {
+					ghostFossils.merge(this->removeNode(id));
+				}
+
+				// TODO : schema with fossils example
+				// For info, see the Fossil and removeNode docs
+				for(auto arc : ghostFossils.arcs) {
+					this->ghostArcs.erase(arc->getId());
+					delete arc;
+				}
 			}
 
-			for(auto arc : ghostFossils.arcs) {
-				this->ghostArcs.erase(arc->getId());
-				delete arc;
-			}
-
+			// Frees the zoltan buffers
 			this->zoltan->LB_Free_Part(
 					&import_global_ids,
 					&import_local_ids,
@@ -325,6 +352,15 @@ namespace FPMAS {
 					);
 		}
 
+		template<class T> void DistributedGraph<T>::synchronize() {
+			int import_ghosts_num = this->ghostNodes.size(); 
+			ZOLTAN_ID_PTR import_ghosts_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(unsigned int) * import_ghosts_num * 2);
+			ZOLTAN_ID_PTR import_ghosts_local_ids;
+			int* import_ghost_procs = (int*) std::malloc(sizeof(int) * import_ghosts_num);
+			int* import_ghost_parts = (int*) std::malloc(sizeof(int) * import_ghosts_num);
+
+		}
+
 		/**
 		 * Builds a GhostNode as an exact copy of the specified node.
 		 *
@@ -338,9 +374,9 @@ namespace FPMAS {
 		 * @param node node from which a ghost copy must be created
 		 * @param node_proc proc where the real node lives
 		 */
-		template<class T> GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T> node, int node_proc) {
+		template<class T> GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T> node) {
 			// Copy the gNode from the original node, including arcs data
-			GhostNode<T>* gNode = new GhostNode<T>(node, node_proc);
+			GhostNode<T>* gNode = new GhostNode<T>(node);
 			// Register the new GhostNode
 			this->ghostNodes[gNode->getId()] = gNode;
 
