@@ -155,7 +155,6 @@ namespace FPMAS {
 
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 					for (int i = 0; i < num_ids; ++i) {
-						read_zoltan_id(&global_ids[i * num_gid_entries]);
 						json json_node = json::parse(&buf[idx[i]]);
 
 						Node<T> node = json_node.get<Node<T>>();

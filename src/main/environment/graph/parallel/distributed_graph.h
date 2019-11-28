@@ -8,6 +8,7 @@
 #include "zoltan/zoltan_utils.h"
 #include "zoltan/zoltan_node_migrate.h"
 #include "zoltan/zoltan_arc_migrate.h"
+#include "zoltan/zoltan_ghost_node_migrate.h"
 
 #include "utils/config.h"
 #include "communication/communication.h"
@@ -63,14 +64,21 @@ namespace FPMAS {
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
 			friend void zoltan::arc::obj_size_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
+			friend void zoltan::ghost::obj_size_multi_fn<T>(
+				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
 			friend void zoltan::node::pack_obj_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
 			friend void zoltan::arc::pack_obj_multi_fn<T>(
+				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
+			friend void zoltan::ghost::pack_obj_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
 			friend void zoltan::node::unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
 			friend void zoltan::arc::unpack_obj_multi_fn<T>(
+					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
+					);
+			friend void zoltan::ghost::unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
 			friend void zoltan::node::post_migrate_pp_fn<T>(
@@ -86,8 +94,19 @@ namespace FPMAS {
 
 				void setZoltanNodeMigration();
 				void setZoltanArcMigration();
+				void setZoltanGhostNodeMigration();
+
+				// A set of node ids that are currently local and have been
+				// imported from an other proc. Data memory of such a node
+				// (ghost or local) have been allocated dynamically at
+				// deserialization, and this set allows us to delete it when
+				// those nodes are exported / removed.
+				std::set<unsigned long> importedNodeIds;
+
+				// Serialization caches used to pack objects
 				std::unordered_map<unsigned long, std::string> node_serialization_cache;
 				std::unordered_map<unsigned long, std::string> arc_serialization_cache;
+				std::unordered_map<unsigned long, std::string> ghost_node_serialization_cache;
 
 				/*
 				 * Zoltan structures used to manage nodes and arcs migration
@@ -178,6 +197,12 @@ namespace FPMAS {
 			zoltan->Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T>, this);
 			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
 			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
+		}
+
+		template<class T> void DistributedGraph<T>::setZoltanGhostNodeMigration() {
+			zoltan->Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T>, this);
+			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T>, this);
+			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T>, this);
 		}
 
 
@@ -365,6 +390,9 @@ namespace FPMAS {
 			ZOLTAN_ID_PTR import_ghosts_local_ids;
 			int* import_ghost_procs = (int*) std::malloc(sizeof(int) * import_ghosts_num);
 			int* import_ghost_parts = (int*) std::malloc(sizeof(int) * import_ghosts_num);
+
+
+			
 
 		}
 

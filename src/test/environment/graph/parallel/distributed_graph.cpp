@@ -184,3 +184,15 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 				);
 	}
 }
+
+TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) {
+	dg.distribute();
+	ASSERT_EQ(dg.getNodes().size(), 1);
+
+	int local_proc = dg.getMpiCommunicator().getRank();
+	for(auto node : dg.getGhostNodes()) {
+		ASSERT_EQ(dg.getProxy()->getOrigin(node.first), 0);
+		if(dg.getMpiCommunicator().getRank() != 0)
+			ASSERT_NE(dg.getProxy()->getCurrentLocation(node.first), local_proc);
+	}
+}

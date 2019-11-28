@@ -215,8 +215,12 @@ namespace FPMAS {
 								// created yet.
 
 								// So adds it TEMPORARILY to the graph
-								graph->buildNode(tempArc.getTargetNode()->getId());
-								ghostNodesIds.insert(tempArc.getTargetNode()->getId());
+								unsigned long targetId = tempArc.getTargetNode()->getId();
+								graph->buildNode(targetId);
+								ghostNodesIds.insert(targetId);
+								std::array<int, 2> targetLocation = json_arc.at("target").get<std::array<int, 2>>();
+								graph->getProxy()->setOrigin(targetId, targetLocation[0]);
+								graph->getProxy()->setCurrentLocation(targetId, targetLocation[1]);
 							}
 							else {
 								// The target node of the received arc is
@@ -224,8 +228,13 @@ namespace FPMAS {
 								// node is distant, and has not been
 								// temporarily created yet.
 								// So adds it TEMPORARILY to the graph
-								graph->buildNode(tempArc.getSourceNode()->getId());
-								ghostNodesIds.insert(tempArc.getSourceNode()->getId());
+								unsigned long sourceId = tempArc.getSourceNode()->getId();
+								graph->buildNode(sourceId);
+								ghostNodesIds.insert(sourceId);
+								std::array<int, 2> sourceLocation = json_arc.at("source").get<std::array<int, 2>>();
+								graph->getProxy()->setOrigin(sourceId, sourceLocation[0]);
+								graph->getProxy()->setCurrentLocation(sourceId, sourceLocation[1]);
+
 							}
 						}
 						// From there, potentially required temporary fake

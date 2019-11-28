@@ -1,13 +1,10 @@
 #include "gtest/gtest.h"
 
-#include "communication/communication.h"
 #include "environment/graph/parallel/distributed_graph.h"
 #include "environment/graph/parallel/zoltan/zoltan_lb.h"
 #include "utils/config.h"
 
 #include "test_utils/test_utils.h"
-
-using FPMAS::communication::MpiCommunicator;
 
 using FPMAS::graph::zoltan::utils::write_zoltan_id;
 
