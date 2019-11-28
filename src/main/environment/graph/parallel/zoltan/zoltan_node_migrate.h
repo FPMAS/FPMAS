@@ -223,9 +223,14 @@ namespace FPMAS {
 					for (int i =0; i < num_export; i++) {
 						unsigned long id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
 
-						Node<T>* node = nodes.at(id);
-						for(auto arc : node->getIncomingArcs()) {
-							int dest_proc = export_procs[i];
+						Node<T>* exported_node = nodes.at(id);
+						int dest_proc = export_procs[i];
+
+						// Updates Proxy
+						graph->getProxy()->setCurrentLocation(id, dest_proc);
+
+						// Computes arc exports
+						for(auto arc : exported_node->getIncomingArcs()) {
 							std::pair<unsigned long, int> arc_proc_pair =
 								std::pair<unsigned long, int>(
 										arc->getId(),
@@ -241,8 +246,7 @@ namespace FPMAS {
 								exportedArcPairs.insert(arc_proc_pair);
 							}
 						}
-						for(auto arc : node->getOutgoingArcs()) {
-							int dest_proc = export_procs[i];
+						for(auto arc : exported_node->getOutgoingArcs()) {
 							std::pair<unsigned long, int> arc_proc_pair =
 								std::pair<unsigned long, int>(
 										arc->getId(),

@@ -110,7 +110,7 @@ namespace FPMAS {
 			public:
 				DistributedGraph<T>();
 				MpiCommunicator getMpiCommunicator() const;
-				Proxy getProxy() const;
+				Proxy* getProxy();
 
 				void distribute();
 				void synchronize();
@@ -157,8 +157,8 @@ namespace FPMAS {
 			return this->mpiCommunicator;
 		}
 
-		template<class T> Proxy DistributedGraph<T>::getProxy() const {
-			return this->proxy;
+		template<class T> Proxy* DistributedGraph<T>::getProxy() {
+			return &this->proxy;
 		}
 
 		/**

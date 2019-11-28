@@ -49,10 +49,50 @@ namespace FPMAS {
 						}
 						else {
 							json json_node = *arc;
+
+							// One of the two node might be exported while the
+							// other stay local, the two nodes might be
+							// exported to the same proc, or the two nodes
+							// might be exported to different proc.
+							// TODO : origin and location transmission might be
+							// optimized depending on those cases, because this
+							// information might be deduced locally on the
+							// destination proc in some cases. For now, we
+							// always send the information.
+
+							// It is required to send node origin
+							// information to the destination proc, when a
+							// ghost node will be created for target or origin,
+							// to allow the destination proc to fetch those
+							// nodes data
+							unsigned long targetId = arc->getTargetNode()->getId();
+							json_node["target"] = {
+								graph->getProxy()->getOrigin(
+										targetId
+										),
+								graph->getProxy()->getCurrentLocation(
+										targetId
+										)
+							};
+
+							unsigned long sourceId = arc->getSourceNode()->getId();
+							json_node["source"] = {
+								graph->getProxy()->getOrigin(
+										sourceId
+										),
+								graph->getProxy()->getCurrentLocation(
+										sourceId
+										)
+							};
+
+							
+							// Finally, serialize the node with the eventual
+							// aditionnal fields
 							std::string serial_node = json_node.dump();
 
 							sizes[i] = serial_node.size() + 1;
 
+							// Updates the cache
 							graph->arc_serialization_cache[arc->getId()] = serial_node;
 						}
 
@@ -108,6 +148,7 @@ namespace FPMAS {
 						}
 						buf[idx[i] + sizes[i] - 1] = 0; // str final char
 					}
+					// Clears the cache : all objects have been packed
 					serial_cache.clear();
 				}
 

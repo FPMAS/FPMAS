@@ -30,7 +30,7 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 		unsigned int transfer_arc_global_ids[4];
 		int sizes[2];
 		int idx[2];
-		char buf[66];
+		char buf[250];
 
 		// Error code
 		int err;
@@ -102,10 +102,15 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, obj_size_multi_test) {
 
 	write_migration_sizes();
 
+	int current_proc = dg.getMpiCommunicator().getRank();
 	json arc0_str = *dg.getArcs().at(0);
+	arc0_str["source"] = {current_proc, current_proc};
+	arc0_str["target"] = {current_proc, current_proc};
 	ASSERT_EQ(sizes[0], arc0_str.dump().size() + 1);
 
 	json arc2_str = *dg.getArcs().at(2);
+	arc2_str["source"] = {current_proc, current_proc};
+	arc2_str["target"] = {current_proc, current_proc};
 	ASSERT_EQ(sizes[1], arc2_str.dump().size() + 1);
 }
 
@@ -114,15 +119,24 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, pack_obj_multi_test) {
 	write_migration_sizes();
 	write_communication_buffer();
 
+	std::string current_proc = std::to_string(dg.getMpiCommunicator().getRank());
+
 	// Decompose and check buffer data
 	ASSERT_STREQ(
 		&buf[0],
-		R"({"id":0,"link":[0,2]})"
+		std::string(
+			R"({"id":0,"link":[0,2],"source":[)" + current_proc + "," + current_proc + "],"
+			+ R"("target":[)" + current_proc + "," + current_proc + "]}"
+			).c_str()
 		);
 
 	ASSERT_STREQ(
 		&buf[idx[1]],
-		R"({"id":2,"link":[0,85250]})"
+		std::string(
+			R"({"id":2,"link":[0,85250],"source":[)"
+			+ current_proc + "," + current_proc + "],"
+			+ R"("target":[)" + current_proc + "," + current_proc + "]}"
+			).c_str()
 		);
 }
 

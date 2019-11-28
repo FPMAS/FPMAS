@@ -8,9 +8,6 @@ void Proxy::setLocalProc(int localProc) {
 
 void Proxy::setOrigin(unsigned long id, int proc) {
 	this->origins[id] = proc;
-
-	// TODO : THIS IS TEMPORARY
-	this->currentLocations[id] = proc;
 }
 
 int Proxy::getOrigin(unsigned long id) {
@@ -20,6 +17,12 @@ int Proxy::getOrigin(unsigned long id) {
 	return this->localProc;
 }
 
+void Proxy::setCurrentLocation(unsigned long id, int proc) {
+	this->currentLocations[id] = proc;
+}
+
 int Proxy::getCurrentLocation(unsigned long id) {
-	return this->currentLocations.at(id);
+	if(this->currentLocations.count(id) == 1)
+		return this->currentLocations.at(id);
+	return this->localProc;
 }

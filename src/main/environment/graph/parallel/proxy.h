@@ -16,6 +16,7 @@ namespace FPMAS {
 				public:
 					void setLocalProc(int);
 					void setOrigin(unsigned long, int);
+					void setCurrentLocation(unsigned long, int);
 					int getOrigin(unsigned long);
 					int getCurrentLocation(unsigned long);
 

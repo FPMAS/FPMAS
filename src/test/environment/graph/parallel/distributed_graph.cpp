@@ -44,10 +44,34 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 	dg.distribute();
 
 	ASSERT_EQ(dg.getNodes().size(), 1);
-	ASSERT_EQ(dg.getProxy().getOrigin(
+
+	// All nodes come from proc 0
+	ASSERT_EQ(dg.getProxy()->getOrigin(
 				dg.getNodes().begin()->first
 				),
 			0);
+
+	// Proxy must return this proc as location for the local node
+	ASSERT_EQ(dg.getProxy()->getCurrentLocation(
+				dg.getNodes().begin()->first
+				),
+			dg.getMpiCommunicator().getRank()
+			);
+
+	// proc 0 must maintain the currentLocations map for exported nodes
+	if(dg.getMpiCommunicator().getRank() == 0) {
+		for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
+			if(i == dg.getNodes().begin()->first) {
+				// Local node on this proc
+				ASSERT_EQ(dg.getProxy()->getCurrentLocation(i), 0);
+			}
+			else {
+				// Must be located elsewhere
+				ASSERT_NE(dg.getProxy()->getCurrentLocation(i), 0);
+			}
+		}
+
+	}
 }
 
 class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
