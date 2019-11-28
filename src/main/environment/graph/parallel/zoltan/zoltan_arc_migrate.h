@@ -256,7 +256,7 @@ namespace FPMAS {
 						// structure. The corresponding data is eventually
 						// retrieved later when the ghost nodes are
 						// synchronized using a new Zoltan_Migrate cycle.
-						graph->buildGhostNode(*graph->getNode(ghostNodeId));
+						graph->getGhost()->buildNode(*graph->getNode(ghostNodeId));
 
 						// We can now remove the temporary node and its
 						// associated temporary links

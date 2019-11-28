@@ -164,12 +164,12 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 	if(dg.getMpiCommunicator().getSize() > 1) {
 		ASSERT_EQ(dg.getArcs().size(), 0); 
 		if(dg.getMpiCommunicator().getSize() == 2) {
-			ASSERT_EQ(dg.getGhostNodes().size(), 1);
+			ASSERT_EQ(dg.getGhost()->getNodes().size(), 1);
 		}
 		else {
-			ASSERT_EQ(dg.getGhostNodes().size(), 2);
+			ASSERT_EQ(dg.getGhost()->getNodes().size(), 2);
 		}
-		ASSERT_EQ(dg.getGhostArcs().size(), 2);
+		ASSERT_EQ(dg.getGhost()->getArcs().size(), 2);
 
 		Node<int>* localNode = dg.getNodes().begin()->second;
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
@@ -190,7 +190,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) 
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
 	int local_proc = dg.getMpiCommunicator().getRank();
-	for(auto node : dg.getGhostNodes()) {
+	for(auto node : dg.getGhost()->getNodes()) {
 		ASSERT_EQ(dg.getProxy()->getOrigin(node.first), 0);
 		if(dg.getMpiCommunicator().getRank() != 0)
 			ASSERT_NE(dg.getProxy()->getCurrentLocation(node.first), local_proc);

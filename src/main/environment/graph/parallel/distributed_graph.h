@@ -8,7 +8,6 @@
 #include "zoltan/zoltan_utils.h"
 #include "zoltan/zoltan_node_migrate.h"
 #include "zoltan/zoltan_arc_migrate.h"
-#include "zoltan/zoltan_ghost_node_migrate.h"
 
 #include "utils/config.h"
 #include "communication/communication.h"
@@ -23,6 +22,7 @@ namespace FPMAS {
 
 		template<class T> class GhostNode;
 		template<class T> class GhostArc;
+		template<class T> class GhostGraph;
 
 		namespace zoltan {
 			template<class T> int num_obj(void *data, int* ierr);
@@ -59,26 +59,18 @@ namespace FPMAS {
 		 * distributed across available processors using Zoltan.
 		 */
 		template<class T> class DistributedGraph : public Graph<T> {
-			friend GhostArc<T>;
 			friend void zoltan::node::obj_size_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
 			friend void zoltan::arc::obj_size_multi_fn<T>(
-				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
-			friend void zoltan::ghost::obj_size_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
 			friend void zoltan::node::pack_obj_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
 			friend void zoltan::arc::pack_obj_multi_fn<T>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
-			friend void zoltan::ghost::pack_obj_multi_fn<T>(
-				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
 			friend void zoltan::node::unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
 			friend void zoltan::arc::unpack_obj_multi_fn<T>(
-					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
-					);
-			friend void zoltan::ghost::unpack_obj_multi_fn<T>(
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
 			friend void zoltan::node::post_migrate_pp_fn<T>(
@@ -91,22 +83,21 @@ namespace FPMAS {
 				MpiCommunicator mpiCommunicator;
 				Zoltan* zoltan;
 				Proxy proxy;
+				GhostGraph<T> ghost;
 
 				void setZoltanNodeMigration();
 				void setZoltanArcMigration();
-				void setZoltanGhostNodeMigration();
 
 				// A set of node ids that are currently local and have been
 				// imported from an other proc. Data memory of such a node
 				// (ghost or local) have been allocated dynamically at
 				// deserialization, and this set allows us to delete it when
 				// those nodes are exported / removed.
-				std::set<unsigned long> importedNodeIds;
+				// std::set<unsigned long> importedNodeIds;
 
 				// Serialization caches used to pack objects
 				std::unordered_map<unsigned long, std::string> node_serialization_cache;
 				std::unordered_map<unsigned long, std::string> arc_serialization_cache;
-				std::unordered_map<unsigned long, std::string> ghost_node_serialization_cache;
 
 				/*
 				 * Zoltan structures used to manage nodes and arcs migration
@@ -119,26 +110,15 @@ namespace FPMAS {
 				ZOLTAN_ID_PTR export_arcs_global_ids;
 				int* export_arcs_procs;
 
-				std::unordered_map<unsigned long, GhostNode<T>*> ghostNodes;
-				std::unordered_map<unsigned long, GhostArc<T>*> ghostArcs;
-				void linkGhostNode(GhostNode<T>*, Node<T>*, unsigned long);
-				void linkGhostNode(Node<T>*, GhostNode<T>*, unsigned long);
-				void linkGhostNode(GhostNode<T>*, GhostNode<T>*, unsigned long);
-				
+			
 
 			public:
 				DistributedGraph<T>();
 				MpiCommunicator getMpiCommunicator() const;
 				Proxy* getProxy();
+				GhostGraph<T>* getGhost();
 
 				void distribute();
-				void synchronize();
-
-				GhostNode<T>* buildGhostNode(Node<T> node);
-
-				std::unordered_map<unsigned long, GhostNode<T>*> getGhostNodes();
-				std::unordered_map<unsigned long, GhostArc<T>*> getGhostArcs();
-
 				~DistributedGraph<T>();
 
 		};
@@ -149,7 +129,7 @@ namespace FPMAS {
 		 * Instanciates and configure a new Zoltan instance accross all the
 		 * available cores.
 		 */
-		template<class T> DistributedGraph<T>::DistributedGraph() {
+		template<class T> DistributedGraph<T>::DistributedGraph() : ghost(this) {
 			proxy.setLocalProc(mpiCommunicator.getRank());
 
 			this->zoltan = new Zoltan(mpiCommunicator.getMpiComm());
@@ -180,6 +160,10 @@ namespace FPMAS {
 			return &this->proxy;
 		}
 
+		template<class T> GhostGraph<T>* DistributedGraph<T>::getGhost() {
+			return &this->ghost;
+		}
+
 		/**
 		 * Configures Zoltan to migrate nodes.
 		 */
@@ -198,13 +182,6 @@ namespace FPMAS {
 			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
 			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
 		}
-
-		template<class T> void DistributedGraph<T>::setZoltanGhostNodeMigration() {
-			zoltan->Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T>, this);
-			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T>, this);
-			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T>, this);
-		}
-
 
 		/**
 		 * Distributes the graph accross the available cores using Zoltan.
@@ -351,7 +328,7 @@ namespace FPMAS {
 				}
 				// Builds the ghost nodes
 				for(auto node : ghostNodesToBuild) {
-					this->buildGhostNode(*node);
+					this->getGhost()->buildNode(*node);
 				}
 
 				// Remove nodes and collect fossils
@@ -363,8 +340,7 @@ namespace FPMAS {
 				// TODO : schema with fossils example
 				// For info, see the Fossil and removeNode docs
 				for(auto arc : ghostFossils.arcs) {
-					this->ghostArcs.erase(arc->getId());
-					delete arc;
+					this->ghost.clearArc(arc);
 				}
 			}
 
@@ -384,111 +360,12 @@ namespace FPMAS {
 					);
 		}
 
-		template<class T> void DistributedGraph<T>::synchronize() {
-			int import_ghosts_num = this->ghostNodes.size(); 
-			ZOLTAN_ID_PTR import_ghosts_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(unsigned int) * import_ghosts_num * 2);
-			ZOLTAN_ID_PTR import_ghosts_local_ids;
-			int* import_ghost_procs = (int*) std::malloc(sizeof(int) * import_ghosts_num);
-			int* import_ghost_parts = (int*) std::malloc(sizeof(int) * import_ghosts_num);
-
-
-			
-
-		}
-
-		/**
-		 * Builds a GhostNode as an exact copy of the specified node.
-		 *
-		 * For each incoming/outgoing arcs of the input nodes, the
-		 * corresponding source/target nodes are linked to the built GhostNode
-		 * with GhostArc s. In other terms, all the arcs linked to the original
-		 * node are duplicated.
-		 *
-		 * The original node can then be safely removed from the graph.
-		 *
-		 * @param node node from which a ghost copy must be created
-		 * @param node_proc proc where the real node lives
-		 */
-		template<class T> GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T> node) {
-			// Copy the gNode from the original node, including arcs data
-			GhostNode<T>* gNode = new GhostNode<T>(node);
-			// Register the new GhostNode
-			this->ghostNodes[gNode->getId()] = gNode;
-
-			// Replaces the incomingArcs list by proper GhostArcs
-			std::vector<Arc<T>*> temp_in_arcs = gNode->incomingArcs;
-			gNode->incomingArcs.clear();	
-			for(auto arc : temp_in_arcs) {
-				Node<T>* localSourceNode = arc->getSourceNode();
-				this->linkGhostNode(localSourceNode, gNode, arc->getId());
-			}
-
-			// Replaces the outgoingArcs list by proper GhostArcs
-			std::vector<Arc<T>*> temp_out_arcs = gNode->outgoingArcs;
-			gNode->outgoingArcs.clear();
-			for(auto arc : temp_out_arcs) {
-				Node<T>* localTargetNode = arc->getTargetNode();
-				this->linkGhostNode(gNode, localTargetNode, arc->getId());
-			}
-
-			return gNode;
-
-		}
-
-		/**
-		 * Links the specified nodes with a GhostArc.
-		 */ 
-		template<class T> void DistributedGraph<T>::linkGhostNode(GhostNode<T>* source, Node<T>* target, unsigned long arc_id) {
-			this->ghostArcs[arc_id] =
-				new GhostArc<T>(arc_id, source, target);
-		}
-
-		/**
-		 * Links the specified nodes with a GhostArc.
-		 */ 
-		template<class T> void DistributedGraph<T>::linkGhostNode(Node<T>* source, GhostNode<T>* target, unsigned long arc_id) {
-			this->ghostArcs[arc_id] =
-				new GhostArc<T>(arc_id, source, target);
-		}
-
-		/**
-		 * Links the specified nodes with a GhostArc.
-		 */ 
-		template<class T> void DistributedGraph<T>::linkGhostNode(GhostNode<T>* source, GhostNode<T>* target, unsigned long arc_id) {
-			this->ghostArcs[arc_id] =
-				new GhostArc<T>(arc_id, source, target);
-		}
-
-		/**
-		 * Returns the map of GhostNode s currently living in this graph.
-		 *
-		 * @return ghost nodes
-		 */
-		template<class T> std::unordered_map<unsigned long, GhostNode<T>*> DistributedGraph<T>::getGhostNodes() {
-			return this->ghostNodes;
-		}
-
-		/**
-		 * Returns the map of GhostArc s currently living in this graph.
-		 *
-		 * @return ghost arcs
-		 */
-		template<class T> std::unordered_map<unsigned long, GhostArc<T>*> DistributedGraph<T>::getGhostArcs() {
-			return this->ghostArcs;
-		}
-
 		/**
 		 * DistributedGraph destructor.
 		 *
 		 * `deletes` ghost nodes and arcs, and data associated to Zoltan.
 		 */
 		template<class T> DistributedGraph<T>::~DistributedGraph() {
-			for(auto node : this->ghostNodes) {
-				delete node.second;
-			}
-			for(auto arc : this->ghostArcs) {
-				delete arc.second;
-			}
 			std::free(this->export_arcs_global_ids);
 			std::free(this->export_arcs_procs);
 			delete this->zoltan;

@@ -12,11 +12,11 @@ using FPMAS::graph::zoltan::utils::read_zoltan_id;
 
 using FPMAS::graph::Arc;
 using FPMAS::graph::Node;
-using FPMAS::graph::DistributedGraph;
 
 namespace FPMAS {
 	namespace graph {
 
+		template<class T> class DistributedGraph;
 		template<class T> class GhostNode;
 
 		namespace zoltan {
@@ -57,8 +57,8 @@ namespace FPMAS {
 					for (int i = 0; i < num_ids; i++) {
 						Node<T>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
-						if(graph->node_serialization_cache.count(node->getId()) == 1) {
-							sizes[i] = graph->ghost_node_serialization_cache.at(node->getId()).size()+1;
+						if(graph->getGhost()->ghost_node_serialization_cache.count(node->getId()) == 1) {
+							sizes[i] = graph->getGhost()->ghost_node_serialization_cache.at(node->getId()).size()+1;
 						}
 						else {
 							json json_ghost_node = *node;
@@ -67,7 +67,7 @@ namespace FPMAS {
 
 							sizes[i] = serial_node.size() + 1;
 
-							graph->ghost_node_serialization_cache[node->getId()] = serial_node;
+							graph->getGhost()->ghost_node_serialization_cache[node->getId()] = serial_node;
 						}
 					}
 
@@ -109,7 +109,7 @@ namespace FPMAS {
 					// the required buffer size. For efficiency purpose, we temporarily
 					// store the result and delete it when it is packed.
 					std::unordered_map<unsigned long, std::string> serial_cache
-						= graph->ghost_node_serialization_cache;
+						= graph->getGhost()->ghost_node_serialization_cache;
 					for (int i = 0; i < num_ids; ++i) {
 						// Rebuilt node id
 						unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
@@ -159,13 +159,13 @@ namespace FPMAS {
 						int node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 						json json_node = json::parse(&buf[idx[i]]);
 
-						GhostNode<T>* ghost = graph->getGhostNodes().at(node_id);
+						GhostNode<T>* ghost = graph->getGhost()->getNodes().at(node_id);
 						Node<T> node_update = json_node.get<Node<T>>();
 
-						if(graph->importedNodeIds.count(node_id) == 1) {
+						if(graph->getGhost()->importedNodeIds.count(node_id) == 1) {
 							delete ghost->getData();
 						} else {
-							graph->importedNodeIds.insert(node_id);
+							graph->getGhost()->importedNodeIds.insert(node_id);
 						}
 
 						ghost->setData(node_update.getData());

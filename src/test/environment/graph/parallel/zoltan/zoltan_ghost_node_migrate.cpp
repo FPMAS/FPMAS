@@ -121,8 +121,8 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	write_migration_sizes();
 	write_communication_buffer();
 	
-	dg.buildGhostNode(*dg.getNode(0));
-	dg.buildGhostNode(*dg.getNode(1));
+	dg.getGhost()->buildNode(*dg.getNode(0));
+	dg.getGhost()->buildNode(*dg.getNode(1));
 
 	dg.removeNode(0);
 	dg.removeNode(1);
@@ -137,9 +137,9 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 		buf,
 		&err);
 
-	ASSERT_EQ(*dg.getGhostNodes().at(0)->getData(), 8);
-	ASSERT_EQ(dg.getGhostNodes().at(0)->getWeight(), 5.);
+	ASSERT_EQ(*dg.getGhost()->getNodes().at(0)->getData(), 8);
+	ASSERT_EQ(dg.getGhost()->getNodes().at(0)->getWeight(), 5.);
 
-	ASSERT_EQ(*dg.getGhostNodes().at(1)->getData(), 12);
-	ASSERT_EQ(dg.getGhostNodes().at(1)->getWeight(), 4.);
+	ASSERT_EQ(*dg.getGhost()->getNodes().at(1)->getData(), 12);
+	ASSERT_EQ(dg.getGhost()->getNodes().at(1)->getWeight(), 4.);
 }

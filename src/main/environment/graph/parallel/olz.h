@@ -2,15 +2,8 @@
 #define OLZ_H
 
 #include "../base/graph.h"
-#include "distributed_graph.h"
+#include "olz_graph.h"
 
-namespace FPMAS {
-	namespace graph {
-		template<class T> class DistributedGraph;
-	}
-}
-
-using FPMAS::graph::DistributedGraph;
 using FPMAS::graph::Node;
 
 namespace FPMAS {
@@ -27,7 +20,7 @@ namespace FPMAS {
 		 */
 		template <class T> class GhostNode : public Node<T> {
 
-			friend GhostNode<T>* DistributedGraph<T>::buildGhostNode(Node<T>);
+			friend GhostNode<T>* GhostGraph<T>::buildNode(Node<T>);
 
 			private:
 				GhostNode(Node<T>);
@@ -53,9 +46,9 @@ namespace FPMAS {
 		 *
 		 */
 		template<class T> class GhostArc : public Arc<T> {
-			friend void DistributedGraph<T>::linkGhostNode(GhostNode<T>*, Node<T>*, unsigned long);
-			friend void DistributedGraph<T>::linkGhostNode(Node<T>*, GhostNode<T>*, unsigned long);
-			friend void DistributedGraph<T>::linkGhostNode(GhostNode<T>*, GhostNode<T>*, unsigned long);
+			friend void GhostGraph<T>::link(GhostNode<T>*, Node<T>*, unsigned long);
+			friend void GhostGraph<T>::link(Node<T>*, GhostNode<T>*, unsigned long);
+			friend void GhostGraph<T>::link(GhostNode<T>*, GhostNode<T>*, unsigned long);
 
 			private:
 				GhostArc(unsigned long, GhostNode<T>*, Node<T>*);
