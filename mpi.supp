@@ -1,0 +1,349 @@
+{
+   leak
+   Memcheck:Param
+   writev(vector[...])
+   fun:writev
+   fun:OPAL_MCA_PMIX3X_pmix_ptl_base_send_handler
+   fun:opal_libevent2022_event_base_loop
+   obj:/usr/lib/openmpi/openmpi/mca_pmix_pmix3x.so
+   fun:start_thread
+   fun:clone
+}
+{
+   leak
+   Memcheck:User
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:PMPI_Allreduce
+   fun:Zoltan_PHG_Fill_Hypergraph
+   fun:Zoltan_PHG_Build_Hypergraph
+   fun:Zoltan_PHG
+   fun:Zoltan_Graph
+   obj:/usr/lib/libzoltan.so
+   fun:Zoltan_LB_Partition
+   fun:_ZN6Zoltan12LB_PartitionERiS0_S0_S0_RPjS2_RPiS4_S0_S2_S2_S4_S4_
+   fun:_Z6testLBP6Zoltan
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   obj:*
+   obj:*
+   fun:mca_base_framework_components_register
+   fun:mca_base_framework_register
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:strdup
+   obj:*
+   fun:mca_base_framework_components_open
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:calloc
+   fun:ompi_comm_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:calloc
+   fun:ompi_group_allocate
+   fun:ompi_group_union
+   fun:PMPI_Group_union
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:ompi_pml_v_output_open
+   obj:/usr/lib/openmpi/libmpi.so.40.20.2
+   fun:mca_base_framework_components_open
+   obj:/usr/lib/openmpi/libmpi.so.40.20.2
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:opal_libevent2022_event_global_setup_locks_
+   fun:opal_libevent2022_evthread_use_pthreads
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:opal_init
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:opal_libevent2022_evsig_global_setup_locks_
+   fun:opal_libevent2022_event_global_setup_locks_
+   fun:opal_libevent2022_evthread_use_pthreads
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:opal_init
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:opal_libevent2022_evutil_secure_rng_global_setup_locks_
+   fun:opal_libevent2022_event_global_setup_locks_
+   fun:opal_libevent2022_evthread_use_pthreads
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:opal_init
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   obj:*
+   fun:mca_base_framework_components_open
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:ompi_comm_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:ompi_group_allocate_plist_w_procs
+   fun:ompi_group_allocate
+   fun:ompi_group_union
+   fun:PMPI_Group_union
+   
+}
+{
+   leak
+   Memcheck:Param
+   writev(vector[...])
+   fun:writev
+   fun:OPAL_MCA_PMIX3X_pmix_ptl_base_send_handler
+   fun:opal_libevent2022_event_base_loop
+   obj:/usr/lib/openmpi/openmpi/mca_pmix_pmix3x.so
+   fun:start_thread
+   fun:clone
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:strdup
+   obj:*
+   obj:*
+   fun:mca_base_framework_components_register
+   fun:mca_base_framework_register
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:_Znwm
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:malloc
+   fun:strdup
+   obj:*
+   fun:mca_base_framework_components_open
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:calloc
+   fun:ompi_comm_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   fun:calloc
+   fun:ompi_group_allocate
+   fun:ompi_group_union
+   fun:PMPI_Group_union
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:ompi_pml_v_output_open
+   obj:/usr/lib/openmpi/libmpi.so.40.20.2
+   fun:mca_base_framework_components_open
+   obj:/usr/lib/openmpi/libmpi.so.40.20.2
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:opal_libevent2022_event_global_setup_locks_
+   fun:opal_libevent2022_evthread_use_pthreads
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:opal_init
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:opal_libevent2022_evsig_global_setup_locks_
+   fun:opal_libevent2022_event_global_setup_locks_
+   fun:opal_libevent2022_evthread_use_pthreads
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:opal_init
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:opal_libevent2022_evutil_secure_rng_global_setup_locks_
+   fun:opal_libevent2022_event_global_setup_locks_
+   fun:opal_libevent2022_evthread_use_pthreads
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:opal_init
+   fun:orte_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   obj:*
+   fun:mca_base_framework_components_open
+   obj:/usr/lib/openmpi/libopen-pal.so.40.20.2
+   fun:mca_base_framework_open
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:ompi_comm_init
+   fun:ompi_mpi_init
+   fun:PMPI_Init
+   
+}
+{
+   leak
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:calloc
+   fun:ompi_group_allocate_plist_w_procs
+   fun:ompi_group_allocate
+   fun:ompi_group_union
+   fun:PMPI_Group_union
+   
+}

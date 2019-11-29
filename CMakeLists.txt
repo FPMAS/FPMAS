@@ -8,12 +8,17 @@ add_subdirectory(googletest)
 find_package(MPI REQUIRED)
 set(CMAKE_CXX_COMPILER ${MPI_CXX_COMPILER})
 
+set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
+MPI context")
+
+message("Number of used procs : ${N_PROC}")
+
 if(MPIEXEC_EXECUTABLE)
 	message("-- Found mpiexec : ${MPIEXEC_EXECUTABLE}")
 	add_custom_target(run
 		${MPIEXEC_EXECUTABLE}
 		${MPIEXEC_NUMPROC_FLAG}
-		${MPIEXEC_MAX_NUMPROCS}
+		${N_PROC}
 		${MPIEXEC_PREFLAGS}
 		${CMAKE_CURRENT_BINARY_DIR}/src/main/fpmas
 		${MPIEXEC_POSTFLAGS}
@@ -22,27 +27,24 @@ if(MPIEXEC_EXECUTABLE)
 	add_custom_target(mpi_test
 		${MPIEXEC_EXECUTABLE}
 		${MPIEXEC_NUMPROC_FLAG}
-		${MPIEXEC_MAX_NUMPROCS}
+		${N_PROC}
 		${MPIEXEC_PREFLAGS}
 		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_mpi_test
 		"--gtest_filter=Mpi_*"
 		${MPIEXEC_POSTFLAGS}
 		)
 
-	set(MPIEXEC_MAX_NUMPROCS 1)
-	add_custom_target(mpi_single_proc_test
+	add_custom_target(mpi_memcheck
 		${MPIEXEC_EXECUTABLE}
 		${MPIEXEC_NUMPROC_FLAG}
-		${MPIEXEC_MAX_NUMPROCS}
+		${N_PROC}
 		${MPIEXEC_PREFLAGS}
+		"valgrind"
+		"--suppressions=../mpi.supp"
+		"--leak-check=full"
 		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_mpi_test
 		"--gtest_filter=Mpi_*"
 		${MPIEXEC_POSTFLAGS}
-		)
-
-	add_custom_target(all_test
-		make local_test
-		COMMAND make mpi_test
 		)
 
 endif()
