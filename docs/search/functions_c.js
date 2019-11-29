@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['setdata_127',['setData',['../classFPMAS_1_1graph_1_1Node.html#a566bac7c33cafc607b54894aab95e462',1,'FPMAS::graph::Node']]],
-  ['setweight_128',['setWeight',['../classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc',1,'FPMAS::graph::Node']]]
+  ['removenode_141',['removeNode',['../classFPMAS_1_1graph_1_1Graph.html#a0387c8bb1b4ecf39752bd237964ab491',1,'FPMAS::graph::Graph']]]
 ];

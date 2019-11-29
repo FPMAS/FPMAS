@@ -114,7 +114,6 @@ namespace FPMAS {
 				int export_arcs_num;
 				ZOLTAN_ID_PTR export_arcs_global_ids;
 				int* export_arcs_procs;
-
 			
 
 			public:
@@ -145,10 +144,6 @@ namespace FPMAS {
 			this->zoltan->Set_Obj_List_Fn(FPMAS::graph::zoltan::obj_list<T>, this);
 			this->zoltan->Set_Num_Edges_Multi_Fn(FPMAS::graph::zoltan::num_edges_multi_fn<T>, this);
 			this->zoltan->Set_Edge_List_Multi_Fn(FPMAS::graph::zoltan::edge_list_multi_fn<T>, this);
-
-			// Initializes Zoltan Arc migration buffers
-			// this->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
-			// this->export_arcs_procs = (int*) std::malloc(0);
 		}
 
 		/**
@@ -161,10 +156,21 @@ namespace FPMAS {
 			return this->mpiCommunicator;
 		}
 
+		/**
+		 * Returns a pointer to the proxy associated to this DistributedGraph.
+		 *
+		 * @return pointer to the current proxy
+		 */
 		template<class T> Proxy* DistributedGraph<T>::getProxy() {
 			return &this->proxy;
 		}
 
+		/**
+		 * Returns a pointer to the GhostGraph currently associated to this
+		 * DistributedGraph.
+		 *
+		 * @return pointer to the current GhostGraph
+		 */
 		template<class T> GhostGraph<T>* DistributedGraph<T>::getGhost() {
 			return &this->ghost;
 		}

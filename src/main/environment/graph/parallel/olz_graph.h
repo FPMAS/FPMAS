@@ -18,6 +18,17 @@ namespace FPMAS {
 		template<class T> class GhostNode;
 		template<class T> class GhostArc;
 
+		/**
+		 * A GhostGraph is a data structure used by DistributedGraph s to store
+		 * and manage GhostNode s and GhostArc s.
+		 *
+		 * A GhostGraph actually lives within a DistributedGraph, because
+		 * GhostNode can (and should) be linked to regular nodes of the
+		 * DistributedGraph thanks to GhostArc s.
+		 *
+		 * Finally, the GhostGraph can also synchronize GhostNode s data thanks to
+		 * the synchronize() function.
+		 */
 		template<class T> class GhostGraph {
 			friend GhostArc<T>;
 			friend void zoltan::ghost::obj_size_multi_fn<T>(
@@ -57,6 +68,15 @@ namespace FPMAS {
 
 		};
 
+		/**
+		 * Initializes a GhostGraph from the input DistributedGraph.
+		 *
+		 * The DistributedGraph instance will be used by the Zoltan query
+		 * functions used to migrate ghost nodes to fetch data about the local
+		 * graph.
+		 *
+		 * @param origin point to the associated DistributedGraph
+		 */
 		template<class T> GhostGraph<T>::GhostGraph(DistributedGraph<T>* origin) {
 			this->zoltan = new Zoltan(mpiCommunicator.getMpiComm());
 			FPMAS::config::zoltan_config(this->zoltan);
@@ -118,7 +138,6 @@ namespace FPMAS {
 		 * The original node can then be safely removed from the graph.
 		 *
 		 * @param node node from which a ghost copy must be created
-		 * @param node_proc proc where the real node lives
 		 */
 		template<class T> GhostNode<T>* GhostGraph<T>::buildNode(Node<T> node) {
 			// Copy the gNode from the original node, including arcs data
@@ -188,11 +207,24 @@ namespace FPMAS {
 			return this->ghostArcs;
 		}
 
+		/**
+		 * Used to remove and `delete` a ghost arc when it becomes useless.
+		 *
+		 * For exemple, this function is used to delete the ghost arc when the
+		 * linked local node has been deleted or exported.
+		 *
+		 * @param arc pointer to the GhostArc to delete
+		 */
 		template<class T> void GhostGraph<T>::clearArc(Arc<T>* arc) {
 			this->ghostArcs.erase(arc->getId());
 			delete arc;
 		}
 
+		/**
+		 * Deletes data associated to GhostNode s that have been imported from
+		 * other procs, the ghost nodes and arcs maps and the associated Zoltan
+		 * instance.
+		 */
 		template<class T> GhostGraph<T>::~GhostGraph() {
 			for(unsigned long id : this->importedNodeIds) {
 				delete this->ghostNodes.at(id)->getData();

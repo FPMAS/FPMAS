@@ -7,6 +7,18 @@ namespace FPMAS {
 	namespace graph {
 		namespace proxy {
 
+			/**
+			 * The proxy can be used to locate ANY nodes currently accessible
+			 * from the associated DistributedGraph, including GhostNodes.
+			 *
+			 * The corresponding maps are maintained externally at the
+			 * DistributedGraph scale, when nodes are imported and exported
+			 * using Zoltan.
+			 *
+			 * The Proxy must be synchronized at each step to maintain and
+			 * update the current location map using the Zoltan migrations
+			 * functions.
+			 */
 			class Proxy {
 				private:
 					int localProc = 0;

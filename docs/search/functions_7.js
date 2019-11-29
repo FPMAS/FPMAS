@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['merge_118',['merge',['../classFPMAS_1_1graph_1_1Fossil.html#aa3ec9847ac3134a750ea0539025d528c',1,'FPMAS::graph::Fossil']]],
-  ['mpicommunicator_119',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565',1,'FPMAS::communication::MpiCommunicator']]]
+  ['link_132',['link',['../classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8',1,'FPMAS::graph::Graph::link(Node&lt; T &gt; *source, Node&lt; T &gt; *target, unsigned long arcLabel)'],['../classFPMAS_1_1graph_1_1Graph.html#acd013d52f89b05493192e4b94ba29ac3',1,'FPMAS::graph::Graph::link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel)'],['../classFPMAS_1_1graph_1_1Graph.html#a28bdc9942a87d73e19adf673968edd4b',1,'FPMAS::graph::Graph::link(Arc&lt; T &gt;)']]]
 ];
