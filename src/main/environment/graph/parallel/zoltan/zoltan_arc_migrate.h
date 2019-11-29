@@ -135,21 +135,21 @@ namespace FPMAS {
 					// The node should actually be serialized when computing
 					// the required buffer size. For efficiency purpose, we temporarily
 					// store the result and delete it when it is packed.
-					std::unordered_map<unsigned long, std::string> serial_cache
-						= graph->arc_serialization_cache;
+					std::unordered_map<unsigned long, std::string>* serial_cache
+						= &graph->arc_serialization_cache;
 					for (int i = 0; i < num_ids; ++i) {
 						// Rebuilt node id
 						unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 						// Retrieves the serialized node
-						std::string arc_str = serial_cache.at(id);
-						for(int j = 0; j < sizes[i] - 1; j++) {
+						std::string arc_str = serial_cache->at(id);
+						for(int j = 0; j < arc_str.size(); j++) {
 							buf[idx[i] + j] = arc_str[j];
 						}
-						buf[idx[i] + sizes[i] - 1] = 0; // str final char
+						buf[idx[i] + arc_str.size()] = 0; // str final char
 					}
 					// Clears the cache : all objects have been packed
-					serial_cache.clear();
+					serial_cache->clear();
 				}
 
 				/**
@@ -262,6 +262,79 @@ namespace FPMAS {
 						// associated temporary links
 						graph->removeNode(ghostNodeId);
 
+					}
+
+				}
+
+				template<class T> void post_migrate_pp_fn(
+						void *data,
+						int num_gid_entries,
+						int num_lid_entries,
+						int num_import,
+						ZOLTAN_ID_PTR import_global_ids,
+						ZOLTAN_ID_PTR import_local_ids,
+						int *import_procs,
+						int *import_to_part,
+						int num_export,
+						ZOLTAN_ID_PTR export_global_ids,
+						ZOLTAN_ID_PTR export_local_ids,
+						int *export_procs,
+						int *export_to_part,
+						int *ierr) {
+
+					// The next steps will remove exported nodes from the local
+					// graph, creating corresponding ghost nodes when necessary
+					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+
+					// Computes the set of ids of exported nodes
+					std::set<unsigned long> exportedNodeIds;
+					for(int i = 0; i < graph->export_node_num; i++) {
+						exportedNodeIds.insert(zoltan::utils::read_zoltan_id(
+									&graph->export_node_global_ids[i * num_gid_entries])
+								);
+					}
+
+					// Computes which ghost nodes must be created.
+					// For each exported node, a ghost node is created if and only
+					// if at least one local node is still connected to the
+					// exported node.
+					std::vector<Node<T>*> ghostNodesToBuild;
+					for(auto id : exportedNodeIds) {
+						Node<T>* node = graph->getNode(id);
+						bool buildGhost = false;
+						for(auto arc : node->getOutgoingArcs()) {
+							if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
+								buildGhost = true;
+								break;
+							}
+						}
+						if(!buildGhost) {
+							for(auto arc : node->getIncomingArcs()) {
+								if(exportedNodeIds.count(arc->getSourceNode()->getId()) == 0) {
+									buildGhost = true;
+									break;
+								}
+							}
+						}
+						if(buildGhost) {
+							ghostNodesToBuild.push_back(graph->getNode(id));
+						}
+					}
+					// Builds the ghost nodes
+					for(auto node : ghostNodesToBuild) {
+						graph->getGhost()->buildNode(*node);
+					}
+
+					// Remove nodes and collect fossils
+					Fossil<T> ghostFossils;
+					for(auto id : exportedNodeIds) {
+						ghostFossils.merge(graph->removeNode(id));
+					}
+
+					// TODO : schema with fossils example
+					// For info, see the Fossil and removeNode docs
+					for(auto arc : ghostFossils.arcs) {
+						graph->getGhost()->clearArc(arc);
 					}
 
 				}

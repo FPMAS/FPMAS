@@ -67,15 +67,44 @@ namespace FPMAS {
 		}
 
 		template<class T> void GhostGraph<T>::synchronize() {
-			int import_ghosts_num = this->ghostNodes.size(); 
-			ZOLTAN_ID_PTR import_ghosts_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(unsigned int) * import_ghosts_num * 2);
-			ZOLTAN_ID_PTR import_ghosts_local_ids;
-			int* import_ghost_procs = (int*) std::malloc(sizeof(int) * import_ghosts_num);
-			int* import_ghost_parts = (int*) std::malloc(sizeof(int) * import_ghosts_num);
-
-
-			
-
+/*
+ *            int import_ghosts_num = this->ghostNodes.size(); 
+ *            ZOLTAN_ID_PTR import_ghosts_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(unsigned int) * import_ghosts_num * 2);
+ *            ZOLTAN_ID_PTR import_ghosts_local_ids;
+ *            int* import_ghost_procs = (int*) std::malloc(sizeof(int) * import_ghosts_num);
+ *
+ *            int export_ghost_num;
+ *            ZOLTAN_ID_PTR export_ghost_global_ids;
+ *            ZOLTAN_ID_PTR export_ghost_local_ids;
+ *            int* export_ghost_procs;
+ *            int* export_ghost_parts;
+ *
+ *            this->zoltan->Invert_Lists(
+ *                    import_ghosts_num,
+ *                    import_ghosts_global_ids,
+ *                    import_ghosts_local_ids,
+ *                    import_ghost_procs,
+ *                    import_ghost_procs, // proc = part
+ *                    export_ghost_num,
+ *                    export_ghost_global_ids,
+ *                    export_ghost_local_ids,
+ *                    export_ghost_procs,
+ *                    export_ghost_parts
+ *                    );
+ *
+ *            this->zoltan->Migrate(
+ *                    import_ghosts_num,
+ *                    import_ghosts_global_ids,
+ *                    import_ghosts_local_ids,
+ *                    import_ghost_procs,
+ *                    import_ghost_procs, // proc = part
+ *                    export_ghost_num,
+ *                    export_ghost_global_ids,
+ *                    export_ghost_local_ids,
+ *                    export_ghost_procs,
+ *                    export_ghost_parts
+ *                    );
+ */
 		}
 
 		/**

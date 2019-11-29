@@ -108,22 +108,20 @@ namespace FPMAS {
 					// The node should actually be serialized when computing
 					// the required buffer size. For efficiency purpose, we temporarily
 					// store the result and delete it when it is packed.
-					std::unordered_map<unsigned long, std::string> serial_cache
-						= graph->node_serialization_cache;
+					std::unordered_map<unsigned long, std::string>* serial_cache
+						= &graph->node_serialization_cache;
 					for (int i = 0; i < num_ids; ++i) {
 						// Rebuilt node id
 						unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 						// Retrieves the serialized node
-						std::string node_str = serial_cache.at(id);
-						for(int j = 0; j < sizes[i] - 1; j++) {
+						std::string node_str = serial_cache->at(id);
+						for(int j = 0; j < node_str.size(); j++) {
 							buf[idx[i] + j] = node_str[j];
 						}
-						buf[idx[i] + sizes[i] - 1] = 0; // str final char
-
-						// Removes entry from the serialization buffer
-						serial_cache.erase(id);
+						buf[idx[i] + node_str.size()] = 0; // str final char
 					}
+					serial_cache->clear();
 
 				}
 
@@ -262,10 +260,9 @@ namespace FPMAS {
 						}
 					}
 					graph->export_arcs_num = arcsToExport.size();
-					graph->export_arcs_global_ids = (ZOLTAN_ID_PTR)
-						std::realloc(graph->export_arcs_global_ids, sizeof(unsigned int) * graph->export_arcs_num * num_gid_entries);
-					graph->export_arcs_procs = (int*)
-						std::realloc(graph->export_arcs_procs, sizeof(int) * graph->export_arcs_num);
+
+					graph->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(unsigned int) * graph->export_arcs_num * num_gid_entries);
+					graph->export_arcs_procs = (int*) std::malloc(sizeof(int) * graph->export_arcs_num);
 
 					for(int i = 0; i < graph->export_arcs_num; i++) {
 						write_zoltan_id(arcsToExport.at(i)->getId(), &graph->export_arcs_global_ids[i * num_gid_entries]);

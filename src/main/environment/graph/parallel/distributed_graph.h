@@ -77,7 +77,10 @@ namespace FPMAS {
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
       				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
 					);
-
+			friend void zoltan::arc::post_migrate_pp_fn<T>(
+					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
+      				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
+					);
 
 			private:
 				MpiCommunicator mpiCommunicator;
@@ -103,6 +106,8 @@ namespace FPMAS {
 				 * Zoltan structures used to manage nodes and arcs migration
 				 */
 				// Node export buffer
+				int export_node_num;
+				ZOLTAN_ID_PTR export_node_global_ids;
 				int* export_node_procs;
 
 				// Arc migration buffers
@@ -142,8 +147,8 @@ namespace FPMAS {
 			this->zoltan->Set_Edge_List_Multi_Fn(FPMAS::graph::zoltan::edge_list_multi_fn<T>, this);
 
 			// Initializes Zoltan Arc migration buffers
-			this->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
-			this->export_arcs_procs = (int*) std::malloc(0);
+			// this->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+			// this->export_arcs_procs = (int*) std::malloc(0);
 		}
 
 		/**
@@ -181,6 +186,7 @@ namespace FPMAS {
 			zoltan->Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T>, this);
 			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
 			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
+			zoltan->Set_Post_Migrate_PP_Fn(zoltan::arc::post_migrate_pp_fn<T>, this);
 		}
 
 		/**
@@ -201,15 +207,14 @@ namespace FPMAS {
 			int changes;
       		int num_gid_entries;
 			int num_lid_entries;
+
 			int num_import; 
 			ZOLTAN_ID_PTR import_global_ids;
 			ZOLTAN_ID_PTR import_local_ids;
-			int* export_to_part;
-
 			int * import_procs;
 			int * import_to_part;
-			int num_export;
-			ZOLTAN_ID_PTR export_global_ids;
+
+			int* export_to_part;
 			ZOLTAN_ID_PTR export_local_ids;
 			
 			// Computes Zoltan partitioning
@@ -222,8 +227,8 @@ namespace FPMAS {
 				import_local_ids,
 				import_procs,
 				import_to_part,
-				num_export,
-				export_global_ids,
+				this->export_node_num,
+				this->export_node_global_ids,
 				export_local_ids,
 				this->export_node_procs,
 				export_to_part
@@ -241,8 +246,8 @@ namespace FPMAS {
 					import_local_ids,
 					import_procs,
 					import_to_part,
-					num_export,
-					export_global_ids,
+					this->export_node_num,
+					this->export_node_global_ids,
 					export_local_ids,
 					this->export_node_procs,
 					export_to_part
@@ -253,95 +258,23 @@ namespace FPMAS {
 				this->setZoltanArcMigration();
 
 				// Unused buffer
-				unsigned int export_arcs_local_ids[0];
+				ZOLTAN_ID_TYPE export_arcs_local_ids[0];
 
 				// Arcs to import
-				int import_arcs_num;
-				ZOLTAN_ID_PTR import_arcs_global_ids;
-				ZOLTAN_ID_PTR import_arcs_local_ids;
-				int* import_arcs_procs;
-				int* import_arcs_parts;
-
-				// Computes import/export arcs list from each local arc exports
-				// lists, computing at node export.
-				this->zoltan->Invert_Lists(
-					this->export_arcs_num,
-					this->export_arcs_global_ids,
-					export_arcs_local_ids,
-					this->export_arcs_procs,
-					this->export_arcs_procs, // parts = procs
-					import_arcs_num,
-					import_arcs_global_ids,
-					import_arcs_local_ids,
-					import_arcs_procs,
-					import_arcs_parts
-					);
-
-				// Performs arcs migration
 				this->zoltan->Migrate(
-					import_arcs_num,
-					import_arcs_global_ids,
-					import_arcs_local_ids,
-					import_arcs_procs,
-					import_arcs_parts,
+					-1,
+					NULL,
+					NULL,
+					NULL,
+					NULL,
 					this->export_arcs_num,
 					this->export_arcs_global_ids,
 					export_arcs_local_ids,
 					this->export_arcs_procs,
 					this->export_arcs_procs // parts = procs
 					);
-
-				// The next steps will remove exported nodes from the local
-				// graph, creating corresponding ghost nodes when necessary
-
-				// Computes the set of ids of exported nodes
-				std::set<unsigned long> exportedNodeIds;
-				for(int i = 0; i < num_export; i++) {
-					exportedNodeIds.insert(zoltan::utils::read_zoltan_id(&export_global_ids[i * num_gid_entries]));
-				}
-
-				// Computes which ghost nodes must be created.
-				// For each exported node, a ghost node is created if and only
-				// if at least one local node is still connected to the
-				// exported node.
-				std::vector<Node<T>*> ghostNodesToBuild;
-				for(auto id : exportedNodeIds) {
-					Node<T>* node = this->getNode(id);
-					bool buildGhost = false;
-					for(auto arc : node->getOutgoingArcs()) {
-						if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
-							buildGhost = true;
-							break;
-						}
-					}
-					if(!buildGhost) {
-						for(auto arc : node->getIncomingArcs()) {
-							if(exportedNodeIds.count(arc->getSourceNode()->getId()) == 0) {
-								buildGhost = true;
-								break;
-							}
-						}
-					}
-					if(buildGhost) {
-						ghostNodesToBuild.push_back(this->getNode(id));
-					}
-				}
-				// Builds the ghost nodes
-				for(auto node : ghostNodesToBuild) {
-					this->getGhost()->buildNode(*node);
-				}
-
-				// Remove nodes and collect fossils
-				Fossil<T> ghostFossils;
-				for(auto id : exportedNodeIds) {
-					ghostFossils.merge(this->removeNode(id));
-				}
-
-				// TODO : schema with fossils example
-				// For info, see the Fossil and removeNode docs
-				for(auto arc : ghostFossils.arcs) {
-					this->ghost.clearArc(arc);
-				}
+				std::free(this->export_arcs_global_ids);
+				std::free(this->export_arcs_procs);
 			}
 
 			// Frees the zoltan buffers
@@ -353,7 +286,7 @@ namespace FPMAS {
 					);
 
 			this->zoltan->LB_Free_Part(
-					&export_global_ids,
+					&this->export_node_global_ids,
 					&export_local_ids,
 					&this->export_node_procs,
 					&export_to_part
@@ -366,8 +299,8 @@ namespace FPMAS {
 		 * `deletes` ghost nodes and arcs, and data associated to Zoltan.
 		 */
 		template<class T> DistributedGraph<T>::~DistributedGraph() {
-			std::free(this->export_arcs_global_ids);
-			std::free(this->export_arcs_procs);
+			// std::free(this->export_arcs_global_ids);
+			// std::free(this->export_arcs_procs);
 			delete this->zoltan;
 		}
 
