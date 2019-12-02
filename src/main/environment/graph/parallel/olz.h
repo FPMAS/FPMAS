@@ -20,7 +20,7 @@ namespace FPMAS {
 		 */
 		template <class T> class GhostNode : public Node<T> {
 
-			friend GhostNode<T>* GhostGraph<T>::buildNode(Node<T>);
+			friend GhostNode<T>* GhostGraph<T>::buildNode(Node<T>, std::set<unsigned long>);
 
 			private:
 				GhostNode(Node<T>);

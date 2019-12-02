@@ -57,7 +57,7 @@ namespace FPMAS {
 
 				void synchronize();
 
-				GhostNode<T>* buildNode(Node<T> node);
+				GhostNode<T>* buildNode(Node<T> node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
 
 				std::unordered_map<unsigned long, GhostNode<T>*> getNodes();
 				std::unordered_map<unsigned long, GhostArc<T>*> getArcs();
@@ -87,44 +87,29 @@ namespace FPMAS {
 		}
 
 		template<class T> void GhostGraph<T>::synchronize() {
-/*
- *            int import_ghosts_num = this->ghostNodes.size(); 
- *            ZOLTAN_ID_PTR import_ghosts_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(unsigned int) * import_ghosts_num * 2);
- *            ZOLTAN_ID_PTR import_ghosts_local_ids;
- *            int* import_ghost_procs = (int*) std::malloc(sizeof(int) * import_ghosts_num);
- *
- *            int export_ghost_num;
- *            ZOLTAN_ID_PTR export_ghost_global_ids;
- *            ZOLTAN_ID_PTR export_ghost_local_ids;
- *            int* export_ghost_procs;
- *            int* export_ghost_parts;
- *
- *            this->zoltan->Invert_Lists(
- *                    import_ghosts_num,
- *                    import_ghosts_global_ids,
- *                    import_ghosts_local_ids,
- *                    import_ghost_procs,
- *                    import_ghost_procs, // proc = part
- *                    export_ghost_num,
- *                    export_ghost_global_ids,
- *                    export_ghost_local_ids,
- *                    export_ghost_procs,
- *                    export_ghost_parts
- *                    );
- *
- *            this->zoltan->Migrate(
- *                    import_ghosts_num,
- *                    import_ghosts_global_ids,
- *                    import_ghosts_local_ids,
- *                    import_ghost_procs,
- *                    import_ghost_procs, // proc = part
- *                    export_ghost_num,
- *                    export_ghost_global_ids,
- *                    export_ghost_local_ids,
- *                    export_ghost_procs,
- *                    export_ghost_parts
- *                    );
- */
+			int import_ghosts_num = this->ghostNodes.size(); 
+			ZOLTAN_ID_PTR import_ghosts_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(ZOLTAN_ID_TYPE) * import_ghosts_num * 2);
+			ZOLTAN_ID_PTR import_ghosts_local_ids;
+			int* import_ghost_procs = (int*) std::malloc(sizeof(int) * import_ghosts_num);
+
+			int i = 0;
+			for(auto ghost : ghostNodes) {
+				write_zoltan_id(ghost.first, import_ghosts_global_ids[2 * i]);
+
+			}
+
+			this->zoltan->Migrate(
+					import_ghosts_num,
+					import_ghosts_global_ids,
+					import_ghosts_local_ids,
+					import_ghost_procs,
+					import_ghost_procs, // proc = part
+					-1,
+					NULL,
+					NULL,
+					NULL,
+					NULL
+					);
 		}
 
 		/**
@@ -135,11 +120,18 @@ namespace FPMAS {
 		 * with GhostArc s. In other terms, all the arcs linked to the original
 		 * node are duplicated.
 		 *
+		 * A set of node ids to ignore can be used optionally. All the links to
+		 * the nodes specified in this set, incoming or outgoing, will be
+		 * ignored. For example, this is used when exporting nodes to ignore
+		 * links to other nodes that will also be exported, so that no link
+		 * between two ghost nodes will be created.
+		 *
 		 * The original node can then be safely removed from the graph.
 		 *
 		 * @param node node from which a ghost copy must be created
+		 * @param ignoreIds ids of nodes to ignore when building links
 		 */
-		template<class T> GhostNode<T>* GhostGraph<T>::buildNode(Node<T> node) {
+		template<class T> GhostNode<T>* GhostGraph<T>::buildNode(Node<T> node, std::set<unsigned long> ignoreIds) {
 			// Copy the gNode from the original node, including arcs data
 			GhostNode<T>* gNode = new GhostNode<T>(node);
 			// Register the new GhostNode
@@ -150,7 +142,8 @@ namespace FPMAS {
 			gNode->incomingArcs.clear();	
 			for(auto arc : temp_in_arcs) {
 				Node<T>* localSourceNode = arc->getSourceNode();
-				this->link(localSourceNode, gNode, arc->getId());
+				if(ignoreIds.count(localSourceNode->getId()) == 0)
+					this->link(localSourceNode, gNode, arc->getId());
 			}
 
 			// Replaces the outgoingArcs list by proper GhostArcs
@@ -158,7 +151,8 @@ namespace FPMAS {
 			gNode->outgoingArcs.clear();
 			for(auto arc : temp_out_arcs) {
 				Node<T>* localTargetNode = arc->getTargetNode();
-				this->link(gNode, localTargetNode, arc->getId());
+				if(ignoreIds.count(localTargetNode->getId()) == 0)
+					this->link(gNode, localTargetNode, arc->getId());
 			}
 
 			return gNode;

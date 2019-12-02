@@ -322,7 +322,9 @@ namespace FPMAS {
 					}
 					// Builds the ghost nodes
 					for(auto node : ghostNodesToBuild) {
-						graph->getGhost()->buildNode(*node);
+						// exportedNodeIds are ignored when creating links, so
+						// that no link between ghost nodes will be created
+						graph->getGhost()->buildNode(*node, exportedNodeIds);
 					}
 
 					// Remove nodes and collect fossils

@@ -1,14 +1,12 @@
 #include "gtest/gtest.h"
 
-#include "communication/communication.h"
 #include "environment/graph/parallel/distributed_graph.h"
 #include "environment/graph/parallel/zoltan/zoltan_lb.h"
 #include "utils/config.h"
 
 #include "test_utils/test_utils.h"
 
-
-using FPMAS::communication::MpiCommunicator;
+using FPMAS::test_utils::assert_contains;
 
 class DistributeGraphTest : public ::testing::Test {
 	protected:
@@ -195,4 +193,59 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) 
 		if(dg.getMpiCommunicator().getRank() != 0)
 			ASSERT_NE(dg.getProxy()->getCurrentLocation(node.first), local_proc);
 	}
+}
+
+class Mpi_DistributeCompleteGraphTest : public DistributeGraphTest {
+		void SetUp() override {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+					data.push_back(new int(i));
+					dg.buildNode(i, data.back());
+				}
+				int id = 0;
+				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+					for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
+						if(i != j) {
+							dg.link(i, j, id++);
+						}
+					}
+				}
+			}
+		}
+};
+
+/*
+ * In the previous test, each ghost is connected to exactly one local node.
+ * This test checks the ghost node creation when each node is connected to
+ * multiple local nodes (2 in this case)
+ */
+TEST_F(Mpi_DistributeCompleteGraphTest, distribute_graph_with_multiple_ghost_arcs_test) {
+	dg.distribute();
+
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(
+		dg.getGhost()->getNodes().size(),
+		2 * dg.getMpiCommunicator().getSize() - 2
+		);
+
+	for(auto ghostNode : dg.getGhost()->getNodes()) {
+		ASSERT_EQ(ghostNode.second->getOutgoingArcs().size(), 2);
+		ASSERT_EQ(ghostNode.second->getIncomingArcs().size(), 2);
+
+		Node<int>* outNodes[2] = {
+			ghostNode.second->getOutgoingArcs().at(0)->getTargetNode(),
+			ghostNode.second->getOutgoingArcs().at(1)->getTargetNode()
+		};
+		Node<int>* inNodes[2] = {
+			ghostNode.second->getIncomingArcs().at(0)->getSourceNode(),
+			ghostNode.second->getIncomingArcs().at(1)->getSourceNode()
+		};
+
+		for(auto node : dg.getNodes()) {
+			assert_contains<Node<int>*, 2>(outNodes, node.second);
+			assert_contains<Node<int>*, 2>(inNodes, node.second);
+		}
+
+	}
+
 }

@@ -3,6 +3,7 @@
 
 #include "gtest/gtest.h"
 #include <vector>
+#include <array>
 
 namespace FPMAS {
 	namespace test_utils {
@@ -16,7 +17,7 @@ namespace FPMAS {
 
 		}
 
-		template<class T> void check_contains(T* array_begin, int n, T value) {
+		template<class T, int n> void assert_contains(T* array_begin, T value) {
 			for(int i = 0; i < n; i++) {
 				if(array_begin[i] == value) {
 					return;
@@ -26,7 +27,7 @@ namespace FPMAS {
 			FAIL();
 		}
 
-		template<class T> void check_contains_result(T* array_begin, int n, T value, int* result) {
+		template<class T, int n> void assert_contains(T* array_begin, T value, int* result) {
 			for(int i = 0; i < n; i++) {
 				if(array_begin[i] == value) {
 					*result = i;
@@ -36,35 +37,6 @@ namespace FPMAS {
 			print_fail_message(array_begin, n, value);
 			FAIL();
 		}
-
-
-		template<class T> void assert_contains(std::vector<T> v, T a, int* result) {
-			for(int i = 0; i < v.size(); i++) {
-				if(v[i] == a) {
-					*result = i;
-					return;
-				}
-			}
-			FAIL();
-		}
-		template<class T> void assert_contains(std::vector<T> v, T a) {
-			for(int i = 0; i < v.size(); i++) {
-				if(v[i] == a) {
-					return;
-				}
-			}
-			FAIL();
-		}
-
-		template<class T, int n> void assert_contains(T* array, T value) {
-			check_contains<T>(array, n, value);
-		}
-
-		template<class T, int n> void assert_contains(T* array, T value, int* result) {
-			check_contains_result<T>(array, n, value, result);
-		}
-
-
 	}
 }
 #endif

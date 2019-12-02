@@ -83,8 +83,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a999cbdd2c8603938227d56b7cc149364"><td class="memItemLeft" align="right" valign="top"><a id="a999cbdd2c8603938227d56b7cc149364"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>synchronize</b> ()</td></tr>
 <tr class="separator:a999cbdd2c8603938227d56b7cc149364"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19cd658188b2fe23ac76dbfa43f83f82"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a19cd658188b2fe23ac76dbfa43f83f82">buildNode</a> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; node)</td></tr>
-<tr class="separator:a19cd658188b2fe23ac76dbfa43f83f82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08d39709670715e0b983f995f64ffb3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">buildNode</a> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; node, std::set&lt; unsigned long &gt; ignoreIds=std::set&lt; unsigned long &gt;())</td></tr>
+<tr class="separator:a08d39709670715e0b983f995f64ffb3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e097c0f4ba8e76e87e3035e9fc06319"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">getNodes</a> ()</td></tr>
 <tr class="separator:a2e097c0f4ba8e76e87e3035e9fc06319"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43d9ccf7adc75a61449ffb2aad4b2c9a"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">getArcs</a> ()</td></tr>
@@ -163,8 +163,8 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a19cd658188b2fe23ac76dbfa43f83f82"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19cd658188b2fe23ac76dbfa43f83f82">&#9670;&nbsp;</a></span>buildNode()</h2>
+<a id="a08d39709670715e0b983f995f64ffb3a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08d39709670715e0b983f995f64ffb3a">&#9670;&nbsp;</a></span>buildNode()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,17 +175,29 @@ template&lt;class T &gt; </div>
           <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; * <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">FPMAS::graph::GhostGraph</a>&lt; T &gt;::buildNode </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt;&#160;</td>
-          <td class="paramname"><em>node</em></td><td>)</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::set&lt; unsigned long &gt;&#160;</td>
+          <td class="paramname"><em>ignoreIds</em> = <code>std::set&lt;unsigned&#160;long&gt;()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Builds a <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> as an exact copy of the specified node.</p>
 <p>For each incoming/outgoing arcs of the input nodes, the corresponding source/target nodes are linked to the built <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> with <a class="el" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc</a> s. In other terms, all the arcs linked to the original node are duplicated.</p>
+<p>A set of node ids to ignore can be used optionally. All the links to the nodes specified in this set, incoming or outgoing, will be ignored. For example, this is used when exporting nodes to ignore links to other nodes that will also be exported, so that no link between two ghost nodes will be created.</p>
 <p>The original node can then be safely removed from the graph.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">node</td><td>node from which a ghost copy must be created </td></tr>
+    <tr><td class="paramname">ignoreIds</td><td>ids of nodes to ignore when building links </td></tr>
   </table>
   </dd>
 </dl>
