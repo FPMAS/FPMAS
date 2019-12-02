@@ -108,23 +108,21 @@ namespace FPMAS {
 					// The node should actually be serialized when computing
 					// the required buffer size. For efficiency purpose, we temporarily
 					// store the result and delete it when it is packed.
-					std::unordered_map<unsigned long, std::string> serial_cache
-						= graph->getGhost()->ghost_node_serialization_cache;
+					std::unordered_map<unsigned long, std::string>* serial_cache
+						= &graph->getGhost()->ghost_node_serialization_cache;
 					for (int i = 0; i < num_ids; ++i) {
 						// Rebuilt node id
 						unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 						// Retrieves the serialized node
-						std::string node_str = serial_cache.at(id);
+						std::string node_str = serial_cache->at(id);
 						for(int j = 0; j < sizes[i] - 1; j++) {
 							buf[idx[i] + j] = node_str[j];
 						}
 						buf[idx[i] + sizes[i] - 1] = 0; // str final char
-
-						// Removes entry from the serialization buffer
-						serial_cache.erase(id);
 					}
-
+					// Everything has been sent, clears serialization cache
+					serial_cache->clear();
 				}
 
 				/**

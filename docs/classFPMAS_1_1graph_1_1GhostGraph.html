@@ -80,8 +80,7 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af19e5f8af0aa0b0c84cfb3ae005dcc35"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">GhostGraph</a> (<a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>&lt; T &gt; *)</td></tr>
 <tr class="separator:af19e5f8af0aa0b0c84cfb3ae005dcc35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a999cbdd2c8603938227d56b7cc149364"><td class="memItemLeft" align="right" valign="top"><a id="a999cbdd2c8603938227d56b7cc149364"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>synchronize</b> ()</td></tr>
+<tr class="memitem:a999cbdd2c8603938227d56b7cc149364"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a999cbdd2c8603938227d56b7cc149364">synchronize</a> ()</td></tr>
 <tr class="separator:a999cbdd2c8603938227d56b7cc149364"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a08d39709670715e0b983f995f64ffb3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">buildNode</a> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; node, std::set&lt; unsigned long &gt; ignoreIds=std::set&lt; unsigned long &gt;())</td></tr>
 <tr class="separator:a08d39709670715e0b983f995f64ffb3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -112,7 +111,7 @@ class FPMAS::graph::GhostGraph&lt; T &gt;</h3>
 
 <p>A <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph</a> is a data structure used by <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> s to store and manage <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> s and <a class="el" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc</a> s.</p>
 <p>A <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph</a> actually lives within a <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>, because <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> can (and should) be linked to regular nodes of the <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> thanks to <a class="el" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc</a> s.</p>
-<p>Finally, the <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph</a> can also synchronize <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> s data thanks to the synchronize() function. </p>
+<p>Finally, the <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph</a> can also synchronize <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> s data thanks to the <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a999cbdd2c8603938227d56b7cc149364">synchronize()</a> function. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af19e5f8af0aa0b0c84cfb3ae005dcc35"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af19e5f8af0aa0b0c84cfb3ae005dcc35">&#9670;&nbsp;</a></span>GhostGraph()</h2>
@@ -126,7 +125,7 @@ template&lt;class T &gt; </div>
           <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">FPMAS::graph::GhostGraph</a>&lt; T &gt;::<a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph</a> </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>&lt; T &gt; *&#160;</td>
-          <td class="paramname"><em>origin</em></td><td>)</td>
+          <td class="paramname"><em>localGraph</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -135,7 +134,7 @@ template&lt;class T &gt; </div>
 <p>The <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> instance will be used by the Zoltan query functions used to migrate ghost nodes to fetch data about the local graph.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">origin</td><td>point to the associated <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> </td></tr>
+    <tr><td class="paramname">localGraph</td><td>pointer to the origin <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> </td></tr>
   </table>
   </dd>
 </dl>
@@ -271,6 +270,28 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 <p>Returns the map of <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> s currently living in this graph.</p>
 <dl class="section return"><dt>Returns</dt><dd>ghost nodes </dd></dl>
+
+</div>
+</div>
+<a id="a999cbdd2c8603938227d56b7cc149364"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a999cbdd2c8603938227d56b7cc149364">&#9670;&nbsp;</a></span>synchronize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">FPMAS::graph::GhostGraph</a>&lt; T &gt;::synchronize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Synchronizes the GhostNodes contained in this <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph</a>.</p>
+<p>Nodes data and weights are fetched from the procs where each node currently lives, in consequence the Proxy associated to the local <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> must also be up to date.</p>
+<p>Arcs creation and deletion are currently <b>not handled</b> by this function. </p>
 
 </div>
 </div>

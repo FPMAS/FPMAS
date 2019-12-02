@@ -338,7 +338,6 @@ namespace FPMAS {
 					for(auto arc : ghostFossils.arcs) {
 						graph->getGhost()->clearArc(arc);
 					}
-
 				}
 
 			}

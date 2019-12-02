@@ -99,160 +99,169 @@ $(function() {
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                    <span class="keywordtype">void</span> *, <span class="keywordtype">int</span>, <span class="keywordtype">int</span>, ZOLTAN_ID_PTR, <span class="keywordtype">int</span> *, <span class="keywordtype">int</span> *, <span class="keywordtype">char</span> *, <span class="keywordtype">int</span> *</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                    );</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> mpiCommunicator;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                Zoltan* zoltan;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                std::set&lt;unsigned long&gt; importedNodeIds;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                std::unordered_map&lt;unsigned long, std::string&gt; ghost_node_serialization_cache;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                std::unordered_map&lt;unsigned long, GhostNode&lt;T&gt;*&gt; ghostNodes;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                std::unordered_map&lt;unsigned long, GhostArc&lt;T&gt;*&gt; ghostArcs;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                <span class="keywordtype">void</span> link(GhostNode&lt;T&gt;*, <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>*, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <span class="keywordtype">void</span> link(<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>*, GhostNode&lt;T&gt;*, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                <span class="keywordtype">void</span> link(GhostNode&lt;T&gt;*, GhostNode&lt;T&gt;*, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">GhostGraph</a>(DistributedGraph&lt;T&gt;*);</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keywordtype">void</span> synchronize();</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                GhostNode&lt;T&gt;* <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">buildNode</a>(<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a> node, std::set&lt;unsigned long&gt; ignoreIds = std::set&lt;unsigned long&gt;());</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                std::unordered_map&lt;unsigned long, GhostNode&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">getNodes</a>();</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                std::unordered_map&lt;unsigned long, GhostArc&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">getArcs</a>();</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">clearArc</a>(<a class="code" href="classFPMAS_1_1graph_1_1Arc.html">Arc&lt;T&gt;</a>*);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">~GhostGraph</a>();</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        };</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">   80</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">GhostGraph&lt;T&gt;::GhostGraph</a>(<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>* origin) {</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            this-&gt;zoltan = <span class="keyword">new</span> Zoltan(mpiCommunicator.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a0b50451e3e97184f84cf0b4b30e0014d">getMpiComm</a>());</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            FPMAS::config::zoltan_config(this-&gt;zoltan);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            zoltan-&gt;Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn&lt;T&gt;, origin);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            zoltan-&gt;Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn&lt;T&gt;, origin);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            zoltan-&gt;Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn&lt;T&gt;, origin);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph&lt;T&gt;::synchronize</a>() {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <span class="keywordtype">int</span> import_ghosts_num = this-&gt;ghostNodes.size(); </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            ZOLTAN_ID_PTR import_ghosts_global_ids = (ZOLTAN_ID_PTR) std::malloc(<span class="keyword">sizeof</span>(ZOLTAN_ID_TYPE) * import_ghosts_num * 2);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            ZOLTAN_ID_PTR import_ghosts_local_ids;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keywordtype">int</span>* import_ghost_procs = (<span class="keywordtype">int</span>*) std::malloc(<span class="keyword">sizeof</span>(<span class="keywordtype">int</span>) * import_ghosts_num);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            <span class="keywordtype">int</span> i = 0;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> ghost : ghostNodes) {</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                write_zoltan_id(ghost.first, import_ghosts_global_ids[2 * i]);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            }</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            this-&gt;zoltan-&gt;Migrate(</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                    import_ghosts_num,</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                    import_ghosts_global_ids,</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                    import_ghosts_local_ids,</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                    import_ghost_procs,</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                    import_ghost_procs, <span class="comment">// proc = part</span></div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                    -1,</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                    NULL,</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                    NULL,</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                    NULL,</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                    NULL</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                    );</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        }</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">  134</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>* <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">GhostGraph&lt;T&gt;::buildNode</a>(<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a> node, std::set&lt;unsigned long&gt; ignoreIds) {</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;            <span class="comment">// Copy the gNode from the original node, including arcs data</span></div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>* gNode = <span class="keyword">new</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>(node);</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            <span class="comment">// Register the new GhostNode</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;            this-&gt;ghostNodes[gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()] = gNode;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="comment">// Replaces the incomingArcs list by proper GhostArcs</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;            std::vector&lt;Arc&lt;T&gt;*&gt; temp_in_arcs = gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ae6bf6c19561759d659e4fe51c4abe217">incomingArcs</a>;</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ae6bf6c19561759d659e4fe51c4abe217">incomingArcs</a>.clear();    </div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : temp_in_arcs) {</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* localSourceNode = arc-&gt;getSourceNode();</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                <span class="keywordflow">if</span>(ignoreIds.count(localSourceNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()) == 0)</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                    this-&gt;link(localSourceNode, gNode, arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>());</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            }</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            <span class="comment">// Replaces the outgoingArcs list by proper GhostArcs</span></div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;            std::vector&lt;Arc&lt;T&gt;*&gt; temp_out_arcs = gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac641fdbdffbf83085fb9d0b08ae0a0c8">outgoingArcs</a>;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac641fdbdffbf83085fb9d0b08ae0a0c8">outgoingArcs</a>.clear();</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : temp_out_arcs) {</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* localTargetNode = arc-&gt;getTargetNode();</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                <span class="keywordflow">if</span>(ignoreIds.count(localTargetNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()) == 0)</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                    this-&gt;link(gNode, localTargetNode, arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>());</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            }</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                DistributedGraph&lt;T&gt;* localGraph;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> mpiCommunicator;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                Zoltan* zoltan;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                std::set&lt;unsigned long&gt; importedNodeIds;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                std::unordered_map&lt;unsigned long, std::string&gt; ghost_node_serialization_cache;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                std::unordered_map&lt;unsigned long, GhostNode&lt;T&gt;*&gt; ghostNodes;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                std::unordered_map&lt;unsigned long, GhostArc&lt;T&gt;*&gt; ghostArcs;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <span class="keywordtype">void</span> link(GhostNode&lt;T&gt;*, <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>*, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                <span class="keywordtype">void</span> link(<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>*, GhostNode&lt;T&gt;*, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                <span class="keywordtype">void</span> link(GhostNode&lt;T&gt;*, GhostNode&lt;T&gt;*, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">GhostGraph</a>(DistributedGraph&lt;T&gt;*);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a999cbdd2c8603938227d56b7cc149364">synchronize</a>();</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                GhostNode&lt;T&gt;* <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">buildNode</a>(<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a> node, std::set&lt;unsigned long&gt; ignoreIds = std::set&lt;unsigned long&gt;());</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                std::unordered_map&lt;unsigned long, GhostNode&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">getNodes</a>();</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                std::unordered_map&lt;unsigned long, GhostArc&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">getArcs</a>();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">clearArc</a>(<a class="code" href="classFPMAS_1_1graph_1_1Arc.html">Arc&lt;T&gt;</a>*);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">~GhostGraph</a>();</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        };</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">   81</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">GhostGraph&lt;T&gt;::GhostGraph</a>(<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>* localGraph) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            this-&gt;localGraph = localGraph;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            this-&gt;zoltan = <span class="keyword">new</span> Zoltan(mpiCommunicator.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a0b50451e3e97184f84cf0b4b30e0014d">getMpiComm</a>());</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            FPMAS::config::zoltan_config(this-&gt;zoltan);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            zoltan-&gt;Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn&lt;T&gt;, localGraph);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            zoltan-&gt;Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn&lt;T&gt;, localGraph);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            zoltan-&gt;Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn&lt;T&gt;, localGraph);</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        }</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a999cbdd2c8603938227d56b7cc149364">  101</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a999cbdd2c8603938227d56b7cc149364">GhostGraph&lt;T&gt;::synchronize</a>() {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="keywordtype">int</span> import_ghosts_num = this-&gt;ghostNodes.size(); </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            ZOLTAN_ID_PTR import_ghosts_global_ids</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                = (ZOLTAN_ID_PTR) std::malloc(<span class="keyword">sizeof</span>(ZOLTAN_ID_TYPE) * import_ghosts_num * 2);</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            ZOLTAN_ID_PTR import_ghosts_local_ids;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <span class="keywordtype">int</span>* import_ghost_procs</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                = (<span class="keywordtype">int</span>*) std::malloc(<span class="keyword">sizeof</span>(<span class="keywordtype">int</span>) * import_ghosts_num);</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            <span class="keywordtype">int</span> i = 0;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> ghost : ghostNodes) {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                write_zoltan_id(ghost.first, &amp;import_ghosts_global_ids[2 * i]);</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                import_ghost_procs[i] = this-&gt;localGraph-&gt;getProxy()-&gt;getCurrentLocation(ghost.first);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                i++;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            }</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            this-&gt;zoltan-&gt;Migrate(</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                    import_ghosts_num,</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                    import_ghosts_global_ids,</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                    import_ghosts_local_ids,</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                    import_ghost_procs,</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                    import_ghost_procs, <span class="comment">// proc = part</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                    -1,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    NULL,</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    NULL,</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                    NULL,</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                    NULL</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                    );</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            std::free(import_ghosts_global_ids);</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            std::free(import_ghost_procs);</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        }</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
+<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">  152</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>* <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">GhostGraph&lt;T&gt;::buildNode</a>(<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a> node, std::set&lt;unsigned long&gt; ignoreIds) {</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;            <span class="comment">// Copy the gNode from the original node, including arcs data</span></div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>* gNode = <span class="keyword">new</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>(node);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <span class="comment">// Register the new GhostNode</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            this-&gt;ghostNodes[gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()] = gNode;</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            <span class="keywordflow">return</span> gNode;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        }</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph&lt;T&gt;::link</a>(<a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>* source, <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* target, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> arc_id) {</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            this-&gt;ghostArcs[arc_id] =</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                <span class="keyword">new</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc&lt;T&gt;</a>(arc_id, source, target);</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        }</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> GhostGraph&lt;T&gt;::link(<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* source, GhostNode&lt;T&gt;* target, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> arc_id) {</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            this-&gt;ghostArcs[arc_id] =</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                <span class="keyword">new</span> GhostArc&lt;T&gt;(arc_id, source, target);</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        }</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            <span class="comment">// Replaces the incomingArcs list by proper GhostArcs</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            std::vector&lt;Arc&lt;T&gt;*&gt; temp_in_arcs = gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ae6bf6c19561759d659e4fe51c4abe217">incomingArcs</a>;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ae6bf6c19561759d659e4fe51c4abe217">incomingArcs</a>.clear();    </div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : temp_in_arcs) {</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* localSourceNode = arc-&gt;getSourceNode();</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                <span class="keywordflow">if</span>(ignoreIds.count(localSourceNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()) == 0)</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                    this-&gt;link(localSourceNode, gNode, arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>());</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            }</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            <span class="comment">// Replaces the outgoingArcs list by proper GhostArcs</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            std::vector&lt;Arc&lt;T&gt;*&gt; temp_out_arcs = gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac641fdbdffbf83085fb9d0b08ae0a0c8">outgoingArcs</a>;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            gNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac641fdbdffbf83085fb9d0b08ae0a0c8">outgoingArcs</a>.clear();</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : temp_out_arcs) {</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* localTargetNode = arc-&gt;getTargetNode();</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                <span class="keywordflow">if</span>(ignoreIds.count(localTargetNode-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>()) == 0)</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                    this-&gt;link(gNode, localTargetNode, arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>());</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            }</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            <span class="keywordflow">return</span> gNode;</div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> GhostGraph&lt;T&gt;::link(GhostNode&lt;T&gt;* source, GhostNode&lt;T&gt;* target, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> arc_id) {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            this-&gt;ghostArcs[arc_id] =</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                <span class="keyword">new</span> GhostArc&lt;T&gt;(arc_id, source, target);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        }</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
-<div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">  191</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; std::unordered_map&lt;unsigned long, GhostNode&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">GhostGraph&lt;T&gt;::getNodes</a>() {</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            <span class="keywordflow">return</span> this-&gt;ghostNodes;</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        }</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">  200</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; std::unordered_map&lt;unsigned long, GhostArc&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">GhostGraph&lt;T&gt;::getArcs</a>() {</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;            <span class="keywordflow">return</span> this-&gt;ghostArcs;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        }</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html">GhostGraph&lt;T&gt;::link</a>(<a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>* source, <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* target, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> arc_id) {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            this-&gt;ghostArcs[arc_id] =</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                <span class="keyword">new</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc&lt;T&gt;</a>(arc_id, source, target);</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        }</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> GhostGraph&lt;T&gt;::link(<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>* source, GhostNode&lt;T&gt;* target, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> arc_id) {</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            this-&gt;ghostArcs[arc_id] =</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                <span class="keyword">new</span> GhostArc&lt;T&gt;(arc_id, source, target);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;        }</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> GhostGraph&lt;T&gt;::link(GhostNode&lt;T&gt;* source, GhostNode&lt;T&gt;* target, <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> arc_id) {</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;            this-&gt;ghostArcs[arc_id] =</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                <span class="keyword">new</span> GhostArc&lt;T&gt;(arc_id, source, target);</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;        }</div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">  212</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">GhostGraph&lt;T&gt;::clearArc</a>(<a class="code" href="classFPMAS_1_1graph_1_1Arc.html">Arc&lt;T&gt;</a>* arc) {</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;            this-&gt;ghostArcs.erase(arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>());</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;            <span class="keyword">delete</span> arc;</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        }</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">  222</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">GhostGraph&lt;T&gt;::~GhostGraph</a>() {</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span> : this-&gt;importedNodeIds) {</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                <span class="keyword">delete</span> this-&gt;ghostNodes.at(<span class="keywordtype">id</span>)-&gt;getData();</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;            }</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : this-&gt;ghostNodes) {</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                <span class="keyword">delete</span> node.second;</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            }</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : this-&gt;ghostArcs) {</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                <span class="keyword">delete</span> arc.second;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;            }</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;            <span class="keyword">delete</span> zoltan;</div>
+<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">  209</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; std::unordered_map&lt;unsigned long, GhostNode&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">GhostGraph&lt;T&gt;::getNodes</a>() {</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;            <span class="keywordflow">return</span> this-&gt;ghostNodes;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        }</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
+<div class="line"><a name="l00218"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">  218</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; std::unordered_map&lt;unsigned long, GhostArc&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">GhostGraph&lt;T&gt;::getArcs</a>() {</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;            <span class="keywordflow">return</span> this-&gt;ghostArcs;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        }</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
+<div class="line"><a name="l00230"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">  230</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">GhostGraph&lt;T&gt;::clearArc</a>(<a class="code" href="classFPMAS_1_1graph_1_1Arc.html">Arc&lt;T&gt;</a>* arc) {</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;            this-&gt;ghostArcs.erase(arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a>());</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;            <span class="keyword">delete</span> arc;</div>
 <div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        }</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    }</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;}</div>
+<div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">  240</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <a class="code" href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">GhostGraph&lt;T&gt;::~GhostGraph</a>() {</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span> : this-&gt;importedNodeIds) {</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                <span class="keyword">delete</span> this-&gt;ghostNodes.at(<span class="keywordtype">id</span>)-&gt;getData();</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;            }</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : this-&gt;ghostNodes) {</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;                <span class="keyword">delete</span> node.second;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            }</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : this-&gt;ghostArcs) {</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;                <span class="keyword">delete</span> arc.second;</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            }</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="keyword">delete</span> zoltan;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        }</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    }</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a08d39709670715e0b983f995f64ffb3a"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">FPMAS::graph::GhostGraph::buildNode</a></div><div class="ttdeci">GhostNode&lt; T &gt; * buildNode(Node&lt; T &gt; node, std::set&lt; unsigned long &gt; ignoreIds=std::set&lt; unsigned long &gt;())</div><div class="ttdef"><b>Definition:</b> olz_graph.h:134</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_adfdffa4abd923d6cc7536ec25c3529a9"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">FPMAS::graph::GhostGraph::~GhostGraph</a></div><div class="ttdeci">~GhostGraph()</div><div class="ttdef"><b>Definition:</b> olz_graph.h:222</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a08d39709670715e0b983f995f64ffb3a"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a08d39709670715e0b983f995f64ffb3a">FPMAS::graph::GhostGraph::buildNode</a></div><div class="ttdeci">GhostNode&lt; T &gt; * buildNode(Node&lt; T &gt; node, std::set&lt; unsigned long &gt; ignoreIds=std::set&lt; unsigned long &gt;())</div><div class="ttdef"><b>Definition:</b> olz_graph.h:152</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_adfdffa4abd923d6cc7536ec25c3529a9"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">FPMAS::graph::GhostGraph::~GhostGraph</a></div><div class="ttdeci">~GhostGraph()</div><div class="ttdef"><b>Definition:</b> olz_graph.h:240</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Node_html_ac641fdbdffbf83085fb9d0b08ae0a0c8"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Node.html#ac641fdbdffbf83085fb9d0b08ae0a0c8">FPMAS::graph::Node::outgoingArcs</a></div><div class="ttdeci">std::vector&lt; Arc&lt; T &gt; * &gt; outgoingArcs</div><div class="ttdef"><b>Definition:</b> node.h:49</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Node_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Node.html">FPMAS::graph::Node</a></div><div class="ttdef"><b>Definition:</b> arc.h:14</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a999cbdd2c8603938227d56b7cc149364"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a999cbdd2c8603938227d56b7cc149364">FPMAS::graph::GhostGraph::synchronize</a></div><div class="ttdeci">void synchronize()</div><div class="ttdef"><b>Definition:</b> olz_graph.h:101</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1DistributedGraph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1DistributedGraph.html">FPMAS::graph::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:61</div></div>
 <div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_a0b50451e3e97184f84cf0b4b30e0014d"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a0b50451e3e97184f84cf0b4b30e0014d">FPMAS::communication::MpiCommunicator::getMpiComm</a></div><div class="ttdeci">MPI_Comm getMpiComm()</div><div class="ttdef"><b>Definition:</b> communication.cpp:24</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Arc_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Arc.html">FPMAS::graph::Arc</a></div><div class="ttdef"><b>Definition:</b> arc.h:21</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Node_html_ae6bf6c19561759d659e4fe51c4abe217"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Node.html#ae6bf6c19561759d659e4fe51c4abe217">FPMAS::graph::Node::incomingArcs</a></div><div class="ttdeci">std::vector&lt; Arc&lt; T &gt; * &gt; incomingArcs</div><div class="ttdef"><b>Definition:</b> node.h:45</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html">FPMAS::graph::GhostGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:25</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a43d9ccf7adc75a61449ffb2aad4b2c9a"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">FPMAS::graph::GhostGraph::getArcs</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, GhostArc&lt; T &gt; * &gt; getArcs()</div><div class="ttdef"><b>Definition:</b> olz_graph.h:200</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a43d9ccf7adc75a61449ffb2aad4b2c9a"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">FPMAS::graph::GhostGraph::getArcs</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, GhostArc&lt; T &gt; * &gt; getArcs()</div><div class="ttdef"><b>Definition:</b> olz_graph.h:218</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GraphItem_html_a7facd4d4c4b70bc03cd19debf28fd023"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">FPMAS::graph::GraphItem::getId</a></div><div class="ttdeci">unsigned long getId() const</div><div class="ttdef"><b>Definition:</b> graph_item.cpp:25</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a2e097c0f4ba8e76e87e3035e9fc06319"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">FPMAS::graph::GhostGraph::getNodes</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, GhostNode&lt; T &gt; * &gt; getNodes()</div><div class="ttdef"><b>Definition:</b> olz_graph.h:191</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a46fce221c76f1ba7307f4f7a484c4c75"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">FPMAS::graph::GhostGraph::clearArc</a></div><div class="ttdeci">void clearArc(Arc&lt; T &gt; *)</div><div class="ttdef"><b>Definition:</b> olz_graph.h:212</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a2e097c0f4ba8e76e87e3035e9fc06319"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">FPMAS::graph::GhostGraph::getNodes</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, GhostNode&lt; T &gt; * &gt; getNodes()</div><div class="ttdef"><b>Definition:</b> olz_graph.h:209</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_a46fce221c76f1ba7307f4f7a484c4c75"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">FPMAS::graph::GhostGraph::clearArc</a></div><div class="ttdeci">void clearArc(Arc&lt; T &gt; *)</div><div class="ttdef"><b>Definition:</b> olz_graph.h:230</div></div>
 <div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html">FPMAS::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:14</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostArc_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostArc.html">FPMAS::graph::GhostArc</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:24</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostNode_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostNode.html">FPMAS::graph::GhostNode</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:23</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_af19e5f8af0aa0b0c84cfb3ae005dcc35"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">FPMAS::graph::GhostGraph::GhostGraph</a></div><div class="ttdeci">GhostGraph(DistributedGraph&lt; T &gt; *)</div><div class="ttdef"><b>Definition:</b> olz_graph.h:80</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostGraph_html_af19e5f8af0aa0b0c84cfb3ae005dcc35"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35">FPMAS::graph::GhostGraph::GhostGraph</a></div><div class="ttdeci">GhostGraph(DistributedGraph&lt; T &gt; *)</div><div class="ttdef"><b>Definition:</b> olz_graph.h:81</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

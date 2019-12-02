@@ -39,6 +39,7 @@ namespace FPMAS {
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
 			private:
+				DistributedGraph<T>* localGraph;
 				MpiCommunicator mpiCommunicator;
 				Zoltan* zoltan;
 
@@ -75,27 +76,41 @@ namespace FPMAS {
 		 * functions used to migrate ghost nodes to fetch data about the local
 		 * graph.
 		 *
-		 * @param origin point to the associated DistributedGraph
+		 * @param localGraph pointer to the origin DistributedGraph
 		 */
-		template<class T> GhostGraph<T>::GhostGraph(DistributedGraph<T>* origin) {
+		template<class T> GhostGraph<T>::GhostGraph(DistributedGraph<T>* localGraph) {
+			this->localGraph = localGraph;
 			this->zoltan = new Zoltan(mpiCommunicator.getMpiComm());
 			FPMAS::config::zoltan_config(this->zoltan);
 
-			zoltan->Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T>, origin);
-			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T>, origin);
-			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T>, origin);
+			zoltan->Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T>, localGraph);
+			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T>, localGraph);
+			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T>, localGraph);
 		}
 
+		/**
+		 * Synchronizes the GhostNodes contained in this GhostGraph.
+		 *
+		 * Nodes data and weights are fetched from the procs where each node
+		 * currently lives, in consequence the Proxy associated to the local
+		 * DistributedGraph must also be up to date.
+		 *
+		 * Arcs creation and deletion are currently **not handled** by this
+		 * function.
+		 */
 		template<class T> void GhostGraph<T>::synchronize() {
 			int import_ghosts_num = this->ghostNodes.size(); 
-			ZOLTAN_ID_PTR import_ghosts_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(ZOLTAN_ID_TYPE) * import_ghosts_num * 2);
+			ZOLTAN_ID_PTR import_ghosts_global_ids
+				= (ZOLTAN_ID_PTR) std::malloc(sizeof(ZOLTAN_ID_TYPE) * import_ghosts_num * 2);
 			ZOLTAN_ID_PTR import_ghosts_local_ids;
-			int* import_ghost_procs = (int*) std::malloc(sizeof(int) * import_ghosts_num);
+			int* import_ghost_procs
+				= (int*) std::malloc(sizeof(int) * import_ghosts_num);
 
 			int i = 0;
 			for(auto ghost : ghostNodes) {
-				write_zoltan_id(ghost.first, import_ghosts_global_ids[2 * i]);
-
+				write_zoltan_id(ghost.first, &import_ghosts_global_ids[2 * i]);
+				import_ghost_procs[i] = this->localGraph->getProxy()->getCurrentLocation(ghost.first);
+				i++;
 			}
 
 			this->zoltan->Migrate(
@@ -110,6 +125,9 @@ namespace FPMAS {
 					NULL,
 					NULL
 					);
+
+			std::free(import_ghosts_global_ids);
+			std::free(import_ghost_procs);
 		}
 
 		/**
