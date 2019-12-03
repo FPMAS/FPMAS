@@ -42,6 +42,7 @@ if(MPIEXEC_EXECUTABLE)
 		"valgrind"
 		"--suppressions=../mpi.supp"
 		"--leak-check=full"
+		"--show-leak-kinds=all"
 		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_mpi_test
 		"--gtest_filter=Mpi_*"
 		${MPIEXEC_POSTFLAGS}

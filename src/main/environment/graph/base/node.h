@@ -31,10 +31,12 @@ namespace FPMAS {
 			// Allows removeNode function to remove deleted arcs
 			friend Fossil<T> Graph<T>::unlink(Arc<T>*);
 
-			private:
+			protected:
 			Node(unsigned long);
 			Node(unsigned long, T*);
 			Node(unsigned long, float, T*);
+
+			private:
 			T* data;
 			float weight = 1.;
 
@@ -63,22 +65,31 @@ namespace FPMAS {
 		/* Node API */
 		/************/
 
+		/**
+		 * Node constructor.
+		 *
+		 * @param id node id
+		 */
 		template<class T> Node<T>::Node(unsigned long id) : GraphItem(id) {
 		}
 
 		/**
 		 * Node constructor.
 		 *
-		 * Responsability is left to the user to maintain the unicity of ids
-		 * within each graph.
-		 *
-		 * @param unsigned long node id
+		 * @param id node id
 		 * @param data pointer to node data
 		 */
 		template<class T> Node<T>::Node(unsigned long id, T* data) : GraphItem(id) {
 			this->data = data;
 		}
 
+		/**
+		 * Node constructor.
+		 *
+		 * @param id node id
+		 * @param weight node weight
+		 * @param data pointer to node data
+		 */
 		template<class T> Node<T>::Node(unsigned long id, float weight, T* data) : GraphItem(id) {
 			this->weight = weight;
 			this->data = data;

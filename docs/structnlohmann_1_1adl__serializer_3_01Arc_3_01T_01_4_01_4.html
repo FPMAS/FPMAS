@@ -117,7 +117,7 @@ template&lt;class T &gt; </div>
 <p>Format used : </p><div class="fragment"><div class="line">{&quot;id&quot;:&lt;arc_id&gt;,&quot;link&quot;:[&lt;source_node_id&gt;, &lt;target_node_id&gt;]}</div>
 </div><!-- fragment --><p>It is very important to node that in order to build a valid Arc instance, temporary source and target nodes are created from a dynamically allocated memory, and so must be deleted later.</p>
 <p>Those nodes actually only contain the IDs respectively defined in the <code>link</code> field.</p>
-<p>As an example, the <a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a28bdc9942a87d73e19adf673968edd4b">FPMAS::graph::Graph::link(Arc&lt;T&gt;)</a> function will take such an arc as argument, build a real arc from the deserialized arc, and correctly delete the temporary fake nodes.</p>
+<p>As an example, the FPMAS::graph::Graph::link(Arc&lt;T&gt;) function will take such an arc as argument, build a real arc from the deserialized arc, and correctly delete the temporary fake nodes.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">j</td><td>json to deserialize </td></tr>

@@ -4,12 +4,16 @@
 #include "zoltan_cpp.h"
 
 #include "../distributed_graph.h"
+#include "../olz.h"
 
 using FPMAS::graph::Arc;
 using FPMAS::graph::DistributedGraph;
 
 namespace FPMAS {
 	namespace graph {
+
+		template<class T> class GhostNode;
+
 		namespace zoltan {
 			namespace arc {
 				/**
@@ -187,7 +191,6 @@ namespace FPMAS {
 						char *buf,
 						int *ierr) {
 
-					std::set<unsigned long> ghostNodesIds;
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 					
 					for (int i = 0; i < num_ids; ++i) {
@@ -198,72 +201,78 @@ namespace FPMAS {
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
 						Arc<T> tempArc = json_arc.get<Arc<T>>();
+
+						unsigned long sourceId = tempArc.getSourceNode()->getId();
 						bool sourceNodeIsLocal = graph->getNodes().count(
-									tempArc.getSourceNode()->getId()
+								sourceId
 									) > 0;
+
+						unsigned long targetId = tempArc.getTargetNode()->getId();
 						bool targetNodeIsLocal = graph->getNodes().count(
-									tempArc.getTargetNode()->getId()
+									targetId
 									) > 0;
 
 						if(!sourceNodeIsLocal || !targetNodeIsLocal) {
-							// Source or target node is distant : we will
-							// temporarily create a corresponding fake node
+							// Source or target node is distant : a GhostNode must be used.
 							if(sourceNodeIsLocal) {
 								// The source node of the received arc is
 								// contained in the local graph, so the target
-								// node is distant, and has not been temporarily
-								// created yet.
+								// node is distant
+								GhostNode<T>* ghost;
+								if(graph->getGhost()->getNodes().count(targetId) == 0) {
+									// No ghost node as been created yet for
+									// this node (from an other arc imported at
+									// this period, or from an other period)
+									ghost = graph->getGhost()->buildNode(targetId);
 
-								// So adds it TEMPORARILY to the graph
-								unsigned long targetId = tempArc.getTargetNode()->getId();
-								graph->buildNode(targetId);
-								ghostNodesIds.insert(targetId);
-								std::array<int, 2> targetLocation = json_arc.at("target").get<std::array<int, 2>>();
-								graph->getProxy()->setOrigin(targetId, targetLocation[0]);
-								graph->getProxy()->setCurrentLocation(targetId, targetLocation[1]);
+									// Updates the proxy from info received
+									// with arc info, to know where the target
+									// node can be found
+									std::array<int, 2> targetLocation = json_arc.at("target").get<std::array<int, 2>>();
+									graph->getProxy()->setOrigin(targetId, targetLocation[0]);
+									graph->getProxy()->setCurrentLocation(targetId, targetLocation[1]);
+								}
+								else {
+									// Use the existing GhostNode
+									ghost = graph->getGhost()->getNodes().at(targetId);
+								}
+								// Links the ghost node with the local node
+								// using a GhostArc
+								graph->getGhost()->link(graph->getNode(sourceId), ghost, tempArc.getId());
 							}
 							else {
 								// The target node of the received arc is
 								// contained in the local graph, so the source
-								// node is distant, and has not been
-								// temporarily created yet.
-								// So adds it TEMPORARILY to the graph
-								unsigned long sourceId = tempArc.getSourceNode()->getId();
-								graph->buildNode(sourceId);
-								ghostNodesIds.insert(sourceId);
-								std::array<int, 2> sourceLocation = json_arc.at("source").get<std::array<int, 2>>();
-								graph->getProxy()->setOrigin(sourceId, sourceLocation[0]);
-								graph->getProxy()->setCurrentLocation(sourceId, sourceLocation[1]);
+								// node is distant
 
+								// Same process has above
+								GhostNode<T>* ghost;
+								if(graph->getGhost()->getNodes().count(sourceId) == 0) {
+									ghost = graph->getGhost()->buildNode(sourceId);
+
+									std::array<int, 2> sourceLocation = json_arc.at("source").get<std::array<int, 2>>();
+									graph->getProxy()->setOrigin(sourceId, sourceLocation[0]);
+									graph->getProxy()->setCurrentLocation(sourceId, sourceLocation[1]);
+								}
+								else {
+									ghost = graph->getGhost()->getNodes().at(sourceId);
+								}
+								graph->getGhost()->link(ghost, graph->getNode(targetId), tempArc.getId());
 							}
 						}
-						// From there, potentially required temporary fake
-						// nodes (corresponding to distant nodes) have been
-						// created, so now source and target nodes of tempArc
-						// arc local, so we can build it locally.
-						// Source and target nodes of the tempArc are deleted
-						// properly by the graph::link(Arc<T> tempArc).
-						((DistributedGraph<T>*) data)->link(tempArc);
-					} // for(i = 0; i < num_ids; i++)
-
-					for(auto ghostNodeId : ghostNodesIds) {
-						// Builds the ghosts from the temporary nodes added
-						// earlier to the graph. This will also build the
-						// corresponding ghost arc.
-						// See the graph::buildGhostNode doc for more info.
-						// Notice that the created ghost node does not contains
-						// any data, but just represents the associated graph
-						// structure. The corresponding data is eventually
-						// retrieved later when the ghost nodes are
-						// synchronized using a new Zoltan_Migrate cycle.
-						graph->getGhost()->buildNode(*graph->getNode(ghostNodeId));
-
-						// We can now remove the temporary node and its
-						// associated temporary links
-						graph->removeNode(ghostNodeId);
-
+						else {
+							// Both nodes are local, no ghost needs to be used.
+							// tempArc source and targetNodes are automatically
+							// deleted by this function
+							graph->link(
+								sourceId,
+								targetId,
+								tempArc.getId()
+								);
+						}
+						delete tempArc.getSourceNode();
+						delete tempArc.getTargetNode();
 					}
-
 				}
 
 				template<class T> void post_migrate_pp_fn(

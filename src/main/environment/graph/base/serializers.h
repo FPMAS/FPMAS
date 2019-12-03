@@ -219,17 +219,14 @@ namespace nlohmann {
 			// Build arcs
 			json arcs = j.at("arcs");
 			for(json& arc : arcs) {
-				graph.link(arc.get<Arc<T>>());
-				/*
-				std::array<unsigned long, 2> link =
-					arc.at("link")
-					.get<std::array<unsigned long, 2>>();
+				Arc<T> tempArc = arc.get<Arc<T>>();
 				graph.link(
-					graph.getNode(link.at(0)),
-					graph.getNode(link.at(1)),
-					arc.at("id").get<unsigned long>()
+					tempArc.getSourceNode()->getId(),
+					tempArc.getTargetNode()->getId(),
+					tempArc.getId()
 					);
-					*/
+				delete tempArc.getSourceNode();
+				delete tempArc.getTargetNode();
 			}
 			return graph;
 		}

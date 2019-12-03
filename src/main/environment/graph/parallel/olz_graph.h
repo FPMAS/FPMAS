@@ -49,16 +49,18 @@ namespace FPMAS {
 				std::unordered_map<unsigned long, GhostNode<T>*> ghostNodes;
 				std::unordered_map<unsigned long, GhostArc<T>*> ghostArcs;
 
-				void link(GhostNode<T>*, Node<T>*, unsigned long);
-				void link(Node<T>*, GhostNode<T>*, unsigned long);
-				void link(GhostNode<T>*, GhostNode<T>*, unsigned long);
-
 			public:
+
 				GhostGraph(DistributedGraph<T>*);
 
 				void synchronize();
 
+				GhostNode<T>* buildNode(unsigned long);
 				GhostNode<T>* buildNode(Node<T> node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
+
+				void link(GhostNode<T>*, Node<T>*, unsigned long);
+				void link(Node<T>*, GhostNode<T>*, unsigned long);
+				void link(GhostNode<T>*, GhostNode<T>*, unsigned long);
 
 				std::unordered_map<unsigned long, GhostNode<T>*> getNodes();
 				std::unordered_map<unsigned long, GhostArc<T>*> getArcs();
@@ -128,6 +130,20 @@ namespace FPMAS {
 
 			std::free(import_ghosts_global_ids);
 			std::free(import_ghost_procs);
+		}
+
+		/**
+		 * Builds a GhostNode with the specified id and adds it to this ghost
+		 * graph.
+		 *
+		 * @param id node id
+		 */
+		template<class T> GhostNode<T>* GhostGraph<T>::buildNode(unsigned long id) {
+			// Copy the gNode from the original node, including arcs data
+			GhostNode<T>* gNode = new GhostNode<T>(id);
+			// Register the new GhostNode
+			this->ghostNodes[gNode->getId()] = gNode;
+			return gNode;
 		}
 
 		/**

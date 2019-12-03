@@ -20,12 +20,18 @@ namespace FPMAS {
 		 */
 		template <class T> class GhostNode : public Node<T> {
 
+			friend GhostNode<T>* GhostGraph<T>::buildNode(unsigned long);
 			friend GhostNode<T>* GhostGraph<T>::buildNode(Node<T>, std::set<unsigned long>);
 
 			private:
+				GhostNode(unsigned long);
 				GhostNode(Node<T>);
 
 		};
+
+		template<class T> GhostNode<T>::GhostNode(unsigned long id)
+			: Node<T>(id) {
+			}
 
 		/**
 		 * Builds a GhostNode as a copy of the specified node.

@@ -115,15 +115,18 @@ namespace FPMAS {
 				std::unordered_map<unsigned long, Node<T>*> getNodes() const;
 				Arc<T>* getArc(unsigned long) const;
 				std::unordered_map<unsigned long, Arc<T>*> getArcs() const;
+
 				Node<T>* buildNode(unsigned long);
 				Node<T>* buildNode(unsigned long id, T* data);
 				Node<T>* buildNode(unsigned long id, float weight, T* data);
+
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
 				Arc<T>* link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel);
-				Arc<T>* link(Arc<T>);
+
 				Fossil<T> unlink(unsigned long);
 				Fossil<T> unlink(Arc<T>*);
 				Fossil<T> removeNode(unsigned long);
+
 				~Graph();
 
 		};
@@ -250,37 +253,6 @@ namespace FPMAS {
 		 */
 		template<class T> Arc<T>* Graph<T>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {
 			return this->link(this->getNode(source_id), this->getNode(target_id), arc_id);
-		}
-
-		/**
-		 * Builds a link from the specified temporary arc.
-		 *
-		 * This function **should only be used** with a json deserialized arc.
-		 * Actually, such an arc must dynamically allocate memory for "fake"
-		 * source and target nodes (temporary nodes instantiated with just 
-		 * an ID). In consequence, those nodes are deleted by this function,
-		 * so that the specified temporary arc actually becomes unusable 
-		 * after this function returns.
-		 *
-		 * The new arc is created linking the two actual nodes corresponding to
-		 * the fake nodes ids. If those nodes does not belong to this graph,
-		 * this function produce unexpected behaviors.
-		 *
-		 * See the Arc serializer defined in the ::nlohmann namespace for
-		 * more details.
-		 *
-		 * @param tempArc temporary arc to build from
-		 * @return built arc
-		 */
-		template<class T> Arc<T>* Graph<T>::link(Arc<T> tempArc) {
-			Arc<T>* arc = this->link(
-				this->getNode(tempArc.getSourceNode()->getId()),
-				this->getNode(tempArc.getTargetNode()->getId()),
-				tempArc.getId()
-				);
-			delete tempArc.getSourceNode();
-			delete tempArc.getTargetNode();
-			return arc;
 		}
 
 		/**

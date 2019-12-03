@@ -106,8 +106,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3dc0843c430902afd093438870172dc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd013d52f89b05493192e4b94ba29ac3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#acd013d52f89b05493192e4b94ba29ac3">link</a> (unsigned long source_id, unsigned long target_id, unsigned long arcLabel)</td></tr>
 <tr class="separator:acd013d52f89b05493192e4b94ba29ac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a28bdc9942a87d73e19adf673968edd4b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a28bdc9942a87d73e19adf673968edd4b">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt;)</td></tr>
-<tr class="separator:a28bdc9942a87d73e19adf673968edd4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9f1e6f44e89fc0c752e374ce148abd9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Fossil.html">Fossil</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#ab9f1e6f44e89fc0c752e374ce148abd9">unlink</a> (unsigned long)</td></tr>
 <tr class="separator:ab9f1e6f44e89fc0c752e374ce148abd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a94e783aaefb944b1b365dae892d6afd3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1Fossil.html">Fossil</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a94e783aaefb944b1b365dae892d6afd3">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *)</td></tr>
@@ -458,39 +456,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a28bdc9942a87d73e19adf673968edd4b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a28bdc9942a87d73e19adf673968edd4b">&#9670;&nbsp;</a></span>link() <span class="overload">[1/3]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;class T&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; * <a class="el" href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a>&lt; T &gt;::link </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt;&#160;</td>
-          <td class="paramname"><em>tempArc</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Builds a link from the specified temporary arc.</p>
-<p>This function <b>should only be used</b> with a json deserialized arc. Actually, such an arc must dynamically allocate memory for "fake" source and target nodes (temporary nodes instantiated with just an ID). In consequence, those nodes are deleted by this function, so that the specified temporary arc actually becomes unusable after this function returns.</p>
-<p>The new arc is created linking the two actual nodes corresponding to the fake nodes ids. If those nodes does not belong to this graph, this function produce unexpected behaviors.</p>
-<p>See the <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a> serializer defined in the <a class="el" href="namespacenlohmann.html">nlohmann</a> namespace for more details.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">tempArc</td><td>temporary arc to build from </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>built arc </dd></dl>
-
-</div>
-</div>
 <a id="a3dc0843c430902afd093438870172dc8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3dc0843c430902afd093438870172dc8">&#9670;&nbsp;</a></span>link() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3dc0843c430902afd093438870172dc8">&#9670;&nbsp;</a></span>link() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -536,7 +503,7 @@ template&lt;class T&gt; </div>
 </div>
 </div>
 <a id="acd013d52f89b05493192e4b94ba29ac3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acd013d52f89b05493192e4b94ba29ac3">&#9670;&nbsp;</a></span>link() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acd013d52f89b05493192e4b94ba29ac3">&#9670;&nbsp;</a></span>link() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
