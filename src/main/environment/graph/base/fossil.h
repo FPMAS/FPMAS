@@ -10,9 +10,9 @@ namespace FPMAS {
 	namespace graph {
 
 		/**
-		 * Fossils are used to represent Node s and Arc s that do not belong to
-		 * any graph any more, but that should be `deleted` externally for
-		 * some reason.
+		 * FossilArcs are used to represent Arc s that remain partially connected 
+		 * deleting its source and target Node. Those arcs should be deleted
+		 * externally.
 		 *
 		 * For example, they are returned by the Graph<T>::removeNode()
 		 * function. In the case of a base Graph, the Fossil will always be
@@ -29,41 +29,50 @@ namespace FPMAS {
 		 * connected by a GhostArc, the arc can't be erased from the GhostArc
 		 * register, because a base Graph has no information about it. So
 		 * instead, the GhostArc is unlinked as a normal arc, but instead of
-		 * being `deleted` it is added to the returned Fossil instance. The
+		 * being `deleted` it is added to the returned FossilArcs instance. The
 		 * calling DistributedGraph can then handle those fossil arcs, removing
 		 * them from the GhostArc register and properly `deleting` them.
 		 *
 		 * See the DistributedGraph<T>::distribute() and Graph<T>::removeNode()
 		 * functions implementation for concrete usage examples.
 		 */
-		template<class T> class Fossil {
+		template<class T> class FossilArcs {
 			public:
 			/**
-			 * Nodes contained in this fossil.
+			 * Set of arcs that remain partially connected after their target
+			 * nodes have been deleted.
+			 * Trying to access the target node pointer of those arcs will
+			 * raise an error.
 			 */
-			std::set<Node<T>*> nodes;
+			std::set<Arc<T>*> incomingArcs;
+
 			/**
-			 * Arcs contained in this fossil.
+			 * Set of arcs that remain partially connected after their source
+			 * nodes have been deleted.
+			 * Trying to access the source node pointer of those arcs will
+			 * raise an error.
 			 */
-			std::set<Arc<T>*> arcs;
-			void merge(Fossil<T> fossil);
+			std::set<Arc<T>*> outgoingArcs;
+
+			void merge(FossilArcs<T>);
 		};
 
 		/**
-		 * Merge this Fossil with the argument fossil, adding the arcs and
-		 * nodes of the Fossil argument to this fossil. The set structures used
+		 * Merge these FossilArcs with the argument fossil, adding the arcs
+		 * of the Fossil argument to this fossil. The set structures used
 		 * allow to avoid duplicates.
 		 *
-		 * @param fossil Fossil to merge into this fossil
+		 * @param fossil FossilArcs to add to this fossil
 		 */
-		template<class T> void Fossil<T>::merge(Fossil<T> fossil) {
-			for(auto arc : fossil.arcs) {
-				this->arcs.insert(arc);
+		template<class T> void FossilArcs<T>::merge(FossilArcs<T> fossil) {
+			for(auto arc : fossil.incomingArcs) {
+				this->incomingArcs.insert(arc);
 			}
-			for(auto node : fossil.nodes) {
-				this->nodes.insert(node);
+			for(auto arc : fossil.outgoingArcs) {
+				this->outgoingArcs.insert(arc);
 			}
 		}
+
 	}
 }
 #endif

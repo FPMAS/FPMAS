@@ -337,16 +337,14 @@ namespace FPMAS {
 					}
 
 					// Remove nodes and collect fossils
-					Fossil<T> ghostFossils;
+					FossilArcs<T> ghostFossils;
 					for(auto id : exportedNodeIds) {
 						ghostFossils.merge(graph->removeNode(id));
 					}
 
 					// TODO : schema with fossils example
 					// For info, see the Fossil and removeNode docs
-					for(auto arc : ghostFossils.arcs) {
-						graph->getGhost()->clearArc(arc);
-					}
+					graph->getGhost()->clear(ghostFossils);
 				}
 
 			}

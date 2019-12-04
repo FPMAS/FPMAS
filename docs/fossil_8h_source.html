@@ -80,29 +80,32 @@ $(function() {
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>FPMAS {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">namespace </span>graph {</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1Fossil.html">   39</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1Fossil.html">Fossil</a> {</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1FossilArcs.html">   39</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html">FossilArcs</a> {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1Fossil.html#a5a119317156bed7e6037d3cdc2db7221">   44</a></span>&#160;            std::set&lt;Node&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1Fossil.html#a5a119317156bed7e6037d3cdc2db7221">nodes</a>;</div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1Fossil.html#a2b5f485b13e6939b24ec0e8433fa48f0">   48</a></span>&#160;            std::set&lt;Arc&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1Fossil.html#a2b5f485b13e6939b24ec0e8433fa48f0">arcs</a>;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1Fossil.html#aa3ec9847ac3134a750ea0539025d528c">merge</a>(<a class="code" href="classFPMAS_1_1graph_1_1Fossil.html">Fossil&lt;T&gt;</a> fossil);</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        };</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1Fossil.html#aa3ec9847ac3134a750ea0539025d528c">   59</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1Fossil.html#aa3ec9847ac3134a750ea0539025d528c">Fossil&lt;T&gt;::merge</a>(<a class="code" href="classFPMAS_1_1graph_1_1Fossil.html">Fossil&lt;T&gt;</a> fossil) {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : fossil.<a class="code" href="classFPMAS_1_1graph_1_1Fossil.html#a2b5f485b13e6939b24ec0e8433fa48f0">arcs</a>) {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                this-&gt;arcs.insert(arc);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            }</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : fossil.<a class="code" href="classFPMAS_1_1graph_1_1Fossil.html#a5a119317156bed7e6037d3cdc2db7221">nodes</a>) {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                this-&gt;nodes.insert(node);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            }</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        }</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1FossilArcs.html#a7263714c52e5a45731daedf05c1dae34">   47</a></span>&#160;            std::set&lt;Arc&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html#a7263714c52e5a45731daedf05c1dae34">incomingArcs</a>;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1FossilArcs.html#af82edf8747d97973950e67249c2f3e5c">   55</a></span>&#160;            std::set&lt;Arc&lt;T&gt;*&gt; <a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html#af82edf8747d97973950e67249c2f3e5c">outgoingArcs</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html#a832b4d1d8ab8840c914a75645c34a636">merge</a>(<a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html">FossilArcs&lt;T&gt;</a>);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        };</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1FossilArcs.html#a832b4d1d8ab8840c914a75645c34a636">   67</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html#a832b4d1d8ab8840c914a75645c34a636">FossilArcs&lt;T&gt;::merge</a>(<a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html">FossilArcs&lt;T&gt;</a> fossil) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : fossil.<a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html#a7263714c52e5a45731daedf05c1dae34">incomingArcs</a>) {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                this-&gt;incomingArcs.insert(arc);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : fossil.<a class="code" href="classFPMAS_1_1graph_1_1FossilArcs.html#af82edf8747d97973950e67249c2f3e5c">outgoingArcs</a>) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                this-&gt;outgoingArcs.insert(arc);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            }</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        }</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1Fossil_html_a5a119317156bed7e6037d3cdc2db7221"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Fossil.html#a5a119317156bed7e6037d3cdc2db7221">FPMAS::graph::Fossil::nodes</a></div><div class="ttdeci">std::set&lt; Node&lt; T &gt; * &gt; nodes</div><div class="ttdef"><b>Definition:</b> fossil.h:44</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1Fossil_html_aa3ec9847ac3134a750ea0539025d528c"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Fossil.html#aa3ec9847ac3134a750ea0539025d528c">FPMAS::graph::Fossil::merge</a></div><div class="ttdeci">void merge(Fossil&lt; T &gt; fossil)</div><div class="ttdef"><b>Definition:</b> fossil.h:59</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1Fossil_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Fossil.html">FPMAS::graph::Fossil</a></div><div class="ttdef"><b>Definition:</b> fossil.h:39</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1Fossil_html_a2b5f485b13e6939b24ec0e8433fa48f0"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Fossil.html#a2b5f485b13e6939b24ec0e8433fa48f0">FPMAS::graph::Fossil::arcs</a></div><div class="ttdeci">std::set&lt; Arc&lt; T &gt; * &gt; arcs</div><div class="ttdef"><b>Definition:</b> fossil.h:48</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1FossilArcs_html_a832b4d1d8ab8840c914a75645c34a636"><div class="ttname"><a href="classFPMAS_1_1graph_1_1FossilArcs.html#a832b4d1d8ab8840c914a75645c34a636">FPMAS::graph::FossilArcs::merge</a></div><div class="ttdeci">void merge(FossilArcs&lt; T &gt;)</div><div class="ttdef"><b>Definition:</b> fossil.h:67</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1FossilArcs_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1FossilArcs.html">FPMAS::graph::FossilArcs</a></div><div class="ttdef"><b>Definition:</b> fossil.h:39</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1FossilArcs_html_a7263714c52e5a45731daedf05c1dae34"><div class="ttname"><a href="classFPMAS_1_1graph_1_1FossilArcs.html#a7263714c52e5a45731daedf05c1dae34">FPMAS::graph::FossilArcs::incomingArcs</a></div><div class="ttdeci">std::set&lt; Arc&lt; T &gt; * &gt; incomingArcs</div><div class="ttdef"><b>Definition:</b> fossil.h:47</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1FossilArcs_html_af82edf8747d97973950e67249c2f3e5c"><div class="ttname"><a href="classFPMAS_1_1graph_1_1FossilArcs.html#af82edf8747d97973950e67249c2f3e5c">FPMAS::graph::FossilArcs::outgoingArcs</a></div><div class="ttdeci">std::set&lt; Arc&lt; T &gt; * &gt; outgoingArcs</div><div class="ttdef"><b>Definition:</b> fossil.h:55</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

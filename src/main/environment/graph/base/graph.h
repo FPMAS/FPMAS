@@ -123,9 +123,9 @@ namespace FPMAS {
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
 				Arc<T>* link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel);
 
-				Fossil<T> unlink(unsigned long);
-				Fossil<T> unlink(Arc<T>*);
-				Fossil<T> removeNode(unsigned long);
+				bool unlink(unsigned long);
+				bool unlink(Arc<T>*);
+				FossilArcs<T> removeNode(unsigned long);
 
 				~Graph();
 
@@ -277,21 +277,18 @@ namespace FPMAS {
 		 *
 		 * If the arc does not belong to the standard Graph arc register (e.g.
 		 * : it is a GhostArc of a DistributedGraph instance), it is not
-		 * `deleted` but instead added to the returned Fossil.
+		 * `deleted` and `false` is returned.
 		 *
 		 * @param arc pointer to the arc to delete
-		 * @return collected fossil arcs
+		 * @return true iff the arc has been deleted (i.e. it belongs to the
+		 * graph)
 		 */
-		template<class T> Fossil<T> Graph<T>::unlink(Arc<T>* arc) {
-				Node<T>* source_node = arc->getSourceNode();
-				std::vector<Arc<T>*>* out_arcs = &source_node->outgoingArcs;
-
+		template<class T> bool Graph<T>::unlink(Arc<T>* arc) {
 				// Removes the incoming arcs from the incoming/outgoing
 				// arc lists of target/source nodes.
 				this->removeArc(arc, &arc->getSourceNode()->outgoingArcs);
 				this->removeArc(arc, &arc->getTargetNode()->incomingArcs);
 
-				Fossil<T> fossil;
 				// Removes the arc from the global arcs index
 				if(this->arcs.erase(arc->getId()) > 0) {
 					// Deletes the arc only if it was in the standard arcs set.
@@ -300,19 +297,19 @@ namespace FPMAS {
 					// such special arcs must be managed by corresponding
 					// sub-classes (e.g. : DistributedGraph).
 					delete arc;
-				} else {
-					fossil.arcs.insert(arc);
-				};
-				return fossil;
+					return true;
+				}
+				return false;
 		}
 
 		/**
 		 * Same as unlink(Arc<T>*), but retrieving the arc from its ID.
 		 *
 		 * @param arcId id of the arc to delete
-		 * @return collected fossil arcs
+		 * @return true iff the arc has been deleted (i.e. it belongs to the
+		 * graph)
 		 */
-		template<class T> Fossil<T> Graph<T>::unlink(unsigned long arcId) {
+		template<class T> bool Graph<T>::unlink(unsigned long arcId) {
 			return this->unlink(this->arcs.at(arcId));
 		}
 
@@ -325,36 +322,31 @@ namespace FPMAS {
 		 * `deleted`
 		 * and unlinked from the corresponding source and target nodes.
 		 *
-		 * If the node does not belong to the standard Graph node register (e.g.
-		 * : it is a GhostNode of a DistributedGraph instance), it is not
-		 * `deleted` but instead added to the returned Fossil.
-		 *
-		 * The returned fossil also contains the fossil arcs collected
+		 * The returned fossil contains the fossil arcs collected
 		 * unlinking the node's arcs.
 		 *
 		 * @param node_id id of the node to delete
-		 * @return collected fossil
+		 * @return collected fossil arcs
 		 */
-		template<class T> Fossil<T> Graph<T>::removeNode(unsigned long node_id) {
+		template<class T> FossilArcs<T> Graph<T>::removeNode(unsigned long node_id) {
 			Node<T>* node_to_remove = nodes.at(node_id);
 
-			Fossil<T> fossil;
+			FossilArcs<T> fossil;
 			// Deletes incoming arcs
 			for(auto arc : node_to_remove->getIncomingArcs()) {
-				fossil.merge(this->unlink(arc));
+				if(!this->unlink(arc))
+					fossil.incomingArcs.insert(arc);
 			}
 
 			// Deletes outgoing arcs
 			for(auto arc : node_to_remove->getOutgoingArcs()) {
-				fossil.merge(this->unlink(arc));
+				if(!this->unlink(arc))
+					fossil.outgoingArcs.insert(arc);
 			}
 			// Removes the node from the global nodes index
-			if(nodes.erase(node_id) > 0) {
+			nodes.erase(node_id);
 				// Deletes the node
 				delete node_to_remove;
-			} else {
-				fossil.nodes.insert(node_to_remove);
-			}
 			return fossil;
 		}
 

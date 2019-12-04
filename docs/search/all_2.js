@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cleararc_8',['clearArc',['../classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75',1,'FPMAS::graph::GhostGraph']]]
+  ['clear_7',['clear',['../classFPMAS_1_1graph_1_1GhostGraph.html#a9ccacf0a804a287df9c03a3b6c1a50af',1,'FPMAS::graph::GhostGraph']]]
 ];

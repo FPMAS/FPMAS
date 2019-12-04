@@ -96,8 +96,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2e097c0f4ba8e76e87e3035e9fc06319"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43d9ccf7adc75a61449ffb2aad4b2c9a"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a">getArcs</a> ()</td></tr>
 <tr class="separator:a43d9ccf7adc75a61449ffb2aad4b2c9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a46fce221c76f1ba7307f4f7a484c4c75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a46fce221c76f1ba7307f4f7a484c4c75">clearArc</a> (<a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *)</td></tr>
-<tr class="separator:a46fce221c76f1ba7307f4f7a484c4c75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9ccacf0a804a287df9c03a3b6c1a50af"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a9ccacf0a804a287df9c03a3b6c1a50af">clear</a> (<a class="el" href="classFPMAS_1_1graph_1_1FossilArcs.html">FossilArcs</a>&lt; T &gt;)</td></tr>
+<tr class="separator:a9ccacf0a804a287df9c03a3b6c1a50af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adfdffa4abd923d6cc7536ec25c3529a9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#adfdffa4abd923d6cc7536ec25c3529a9">~GhostGraph</a> ()</td></tr>
 <tr class="separator:adfdffa4abd923d6cc7536ec25c3529a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -238,8 +238,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a46fce221c76f1ba7307f4f7a484c4c75"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a46fce221c76f1ba7307f4f7a484c4c75">&#9670;&nbsp;</a></span>clearArc()</h2>
+<a id="a9ccacf0a804a287df9c03a3b6c1a50af"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ccacf0a804a287df9c03a3b6c1a50af">&#9670;&nbsp;</a></span>clear()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -247,19 +247,19 @@ template&lt;class T &gt; </div>
 template&lt;class T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">FPMAS::graph::GhostGraph</a>&lt; T &gt;::clearArc </td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">FPMAS::graph::GhostGraph</a>&lt; T &gt;::clear </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td>
-          <td class="paramname"><em>arc</em></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1FossilArcs.html">FossilArcs</a>&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>fossil</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Used to remove and <code>delete</code> a ghost arc when it becomes useless.</p>
-<p>For exemple, this function is used to delete the ghost arc when the linked local node has been deleted or exported.</p>
+<p>Remove the arcs contained in the specified fossil from these ghost and <code>delete</code> them, along with the orphan ghost nodes resulting from the operation.</p>
+<p>A <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> is considered orphan when the deletion of one of its incoming or outgoing arc makes it completely unconnected. Such a node is useless for the graph structure and should be deleted.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">arc</td><td>pointer to the <a class="el" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc</a> to delete </td></tr>
+    <tr><td class="paramname">fossil</td><td>resulting <a class="el" href="classFPMAS_1_1graph_1_1FossilArcs.html">FossilArcs</a> from removeNode operations performed on the graph, typically when nodes are exported </td></tr>
   </table>
   </dd>
 </dl>

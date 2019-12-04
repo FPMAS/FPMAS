@@ -65,7 +65,7 @@ namespace FPMAS {
 				std::unordered_map<unsigned long, GhostNode<T>*> getNodes();
 				std::unordered_map<unsigned long, GhostArc<T>*> getArcs();
 
-				void clearArc(Arc<T>*);
+				void clear(FossilArcs<T>);
 
 				~GhostGraph();
 
@@ -236,16 +236,40 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Used to remove and `delete` a ghost arc when it becomes useless.
+		 * Remove the arcs contained in the specified fossil from these ghost
+		 * and `delete` them, along with the orphan ghost nodes resulting from
+		 * the operation.
 		 *
-		 * For exemple, this function is used to delete the ghost arc when the
-		 * linked local node has been deleted or exported.
+		 * A GhostNode is considered orphan when the deletion of one of its
+		 * incoming or outgoing arc makes it completely unconnected. Such a
+		 * node is useless for the graph structure and should be deleted.
 		 *
-		 * @param arc pointer to the GhostArc to delete
+		 * @param fossil resulting FossilArcs from removeNode operations performed
+		 * on the graph, typically when nodes are exported
 		 */
-		template<class T> void GhostGraph<T>::clearArc(Arc<T>* arc) {
-			this->ghostArcs.erase(arc->getId());
-			delete arc;
+		template<class T> void GhostGraph<T>::clear(FossilArcs<T> fossil) {
+			for(auto arc : fossil.incomingArcs) {
+				// Source node should be a ghost
+				GhostNode<T>* ghost = (GhostNode<T>*) arc->getSourceNode();
+				if(ghost->getIncomingArcs().size() == 0
+						&& ghost->getOutgoingArcs().size() == 0) {
+					this->ghostNodes.erase(ghost->getId());
+					delete ghost;
+				}
+				this->ghostArcs.erase(arc->getId());
+				delete arc;
+			}
+			for(auto arc : fossil.outgoingArcs) {
+				// Target node should be a ghost
+				GhostNode<T>* ghost = (GhostNode<T>*) arc->getTargetNode();
+				if(ghost->getIncomingArcs().size() == 0
+						&& ghost->getOutgoingArcs().size() == 0) {
+					this->ghostNodes.erase(ghost->getId());
+					delete ghost;
+				}
+				this->ghostArcs.erase(arc->getId());
+				delete arc;
+			}
 		}
 
 		/**

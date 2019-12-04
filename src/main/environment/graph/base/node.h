@@ -29,7 +29,7 @@ namespace FPMAS {
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, T *data);
 			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
 			// Allows removeNode function to remove deleted arcs
-			friend Fossil<T> Graph<T>::unlink(Arc<T>*);
+			friend bool Graph<T>::unlink(Arc<T>*);
 
 			protected:
 			Node(unsigned long);
