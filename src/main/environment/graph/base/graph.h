@@ -345,8 +345,9 @@ namespace FPMAS {
 			}
 			// Removes the node from the global nodes index
 			nodes.erase(node_id);
-				// Deletes the node
-				delete node_to_remove;
+			// Deletes the node
+			delete node_to_remove;
+
 			return fossil;
 		}
 

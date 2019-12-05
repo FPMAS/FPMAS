@@ -46,13 +46,19 @@ namespace FPMAS {
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 					std::unordered_map<unsigned long, Arc<T>*> arcs = graph->getArcs();
 					for (int i = 0; i < num_ids; i++) {
-						Arc<T>* arc = arcs.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+						unsigned long arcId = read_zoltan_id(&global_ids[i * num_gid_entries]);
+						Arc<T>* arc;
+						try {
+						arc = arcs.at(arcId);
+						} catch (const std::exception& e) {
+							arc = graph->getGhost()->getArcs().at(arcId);
+						}
 
 						if(graph->arc_serialization_cache.count(arc->getId()) == 1) {
 							sizes[i] = graph->arc_serialization_cache.at(arc->getId()).size() + 1;
 						}
 						else {
-							json json_node = *arc;
+							json json_arc = *arc;
 
 							// One of the two node might be exported while the
 							// other stay local, the two nodes might be
@@ -70,7 +76,7 @@ namespace FPMAS {
 							// to allow the destination proc to fetch those
 							// nodes data
 							unsigned long targetId = arc->getTargetNode()->getId();
-							json_node["target"] = {
+							json_arc["target"] = {
 								graph->getProxy()->getOrigin(
 										targetId
 										),
@@ -80,7 +86,7 @@ namespace FPMAS {
 							};
 
 							unsigned long sourceId = arc->getSourceNode()->getId();
-							json_node["source"] = {
+							json_arc["source"] = {
 								graph->getProxy()->getOrigin(
 										sourceId
 										),
@@ -92,7 +98,7 @@ namespace FPMAS {
 							
 							// Finally, serialize the node with the eventual
 							// aditionnal fields
-							std::string serial_node = json_node.dump();
+							std::string serial_node = json_arc.dump();
 
 							sizes[i] = serial_node.size() + 1;
 

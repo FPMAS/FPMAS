@@ -223,8 +223,13 @@ namespace FPMAS {
 			int* export_to_part;
 			ZOLTAN_ID_PTR export_local_ids;
 			
+			// Prepares Zoltan to migrate nodes
+			// Must be set up from there, because LB_Partition can call
+			// obj_size_multi_fn when repartitionning
+			this->setZoltanNodeMigration();
+
 			// Computes Zoltan partitioning
-			this->zoltan->LB_Partition(
+			int err = this->zoltan->LB_Partition(
 				changes,
 				num_gid_entries,
 				num_lid_entries,
@@ -240,9 +245,8 @@ namespace FPMAS {
 				export_to_part
 				);
 
+
 			if(changes > 0) {
-				// Prepares Zoltan to migrate nodes
-				this->setZoltanNodeMigration();
 
 				// Migrate nodes from the load balancing
 				// Arcs to export are computed in the post_migrate_pp_fn step.
@@ -297,6 +301,10 @@ namespace FPMAS {
 					&this->export_node_procs,
 					&export_to_part
 					);
+
+			// When called for the first time, PARTITION is used, and so
+			// REPARTITION will be used for all other calls.
+			this->zoltan->Set_Param("LB_APPROACH", "REPARTITION");
 		}
 
 		/**

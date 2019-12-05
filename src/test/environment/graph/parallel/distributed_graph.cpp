@@ -151,6 +151,9 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, check_graph) {
 			ASSERT_EQ(dg.getNodes().size(), 0);
 		}
 	}
+	else {
+		PRINT_2_PROCS_WARNING(check_graph);
+	}
 
 };
 
@@ -246,6 +249,37 @@ TEST_F(Mpi_DistributeCompleteGraphTest, distribute_graph_with_multiple_ghost_arc
 			assert_contains<Node<int>*, 2>(inNodes, node.second);
 		}
 
+	}
+
+}
+
+TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
+	if(dg.getMpiCommunicator().getSize() % 2 == 0) {
+		// Initial distribution
+		dg.distribute();
+
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		if(dg.getMpiCommunicator().getRank() % 2 == 0) {
+			dg.getNodes().begin()->second->setWeight(3.);
+		}
+
+		dg.distribute();
+
+		if(dg.getMpiCommunicator().getRank() % 2 == 0) {
+			ASSERT_EQ(dg.getNodes().size(), 1);
+			ASSERT_EQ(dg.getGhost()->getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 1);
+		}
+		else {
+			ASSERT_EQ(dg.getNodes().size(), 3);
+			ASSERT_EQ(dg.getGhost()->getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 3);
+		}
+		ASSERT_EQ(
+			dg.getGhost()->getArcs().size(), 
+			dg.getNodes().size() * 2 * dg.getGhost()->getNodes().size()
+			);
+	}
+	else {
+		PRINT_PAIR_PROCS_WARNING(weight_load_balancing_test);
 	}
 
 }

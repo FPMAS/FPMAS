@@ -63,3 +63,7 @@ int Proxy::getCurrentLocation(unsigned long id) {
 		return this->currentLocations.at(id);
 	return this->localProc;
 }
+
+void Proxy::setLocal(unsigned long id) {
+	this->currentLocations.erase(id);
+}

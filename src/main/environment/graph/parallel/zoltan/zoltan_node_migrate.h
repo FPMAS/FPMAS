@@ -156,11 +156,15 @@ namespace FPMAS {
 						json json_node = json::parse(&buf[idx[i]]);
 
 						Node<T> node = json_node.get<Node<T>>();
+
+						if(graph->getGhost()->getNodes().count(node.getId()) > 0)
+							graph->getGhost()->removeNode(node.getId());
+
 						graph->buildNode(node);
 
 						int origin = json_node.at("origin").get<int>();
 						graph->proxy.setOrigin(node.getId(), origin);
-
+						graph->proxy.setLocal(node.getId());
 					}
 
 				}

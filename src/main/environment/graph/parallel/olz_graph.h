@@ -62,6 +62,8 @@ namespace FPMAS {
 				void link(Node<T>*, GhostNode<T>*, unsigned long);
 				void link(GhostNode<T>*, GhostNode<T>*, unsigned long);
 
+				void removeNode(unsigned long);
+
 				std::unordered_map<unsigned long, GhostNode<T>*> getNodes();
 				std::unordered_map<unsigned long, GhostArc<T>*> getArcs();
 
@@ -215,6 +217,26 @@ namespace FPMAS {
 		template<class T> void GhostGraph<T>::link(GhostNode<T>* source, GhostNode<T>* target, unsigned long arc_id) {
 			this->ghostArcs[arc_id] =
 				new GhostArc<T>(arc_id, source, target);
+		}
+
+		template<class T> void GhostGraph<T>::removeNode(unsigned long nodeId) {
+			GhostNode<T>* nodeToRemove = this->ghostNodes.at(nodeId);
+			FossilArcs<T> fossil;
+			// Deletes incoming arcs
+			for(auto arc : nodeToRemove->getIncomingArcs()) {
+				if(!localGraph->unlink(arc))
+					fossil.incomingArcs.insert(arc);
+			}
+
+			// Deletes outgoing arcs
+			for(auto arc : nodeToRemove->getOutgoingArcs()) {
+				if(!localGraph->unlink(arc))
+					fossil.outgoingArcs.insert(arc);
+			}
+			this->ghostNodes.erase(nodeToRemove->getId());
+			delete nodeToRemove;
+
+			this->clear(fossil);
 		}
 
 		/**

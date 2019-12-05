@@ -31,6 +31,7 @@ namespace FPMAS {
 					void setCurrentLocation(unsigned long, int);
 					int getOrigin(unsigned long);
 					int getCurrentLocation(unsigned long);
+					void setLocal(unsigned long);
 
 
 					// TODO : sync functions

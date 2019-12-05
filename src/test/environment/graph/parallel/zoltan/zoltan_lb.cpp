@@ -171,6 +171,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, edge_list_multi_test) {
 
 	for(int i = 0; i < 3; i++) {
 		ASSERT_EQ(ewgts[i], 1.f);
+		ASSERT_EQ(nbor_procs[i], dg.getMpiCommunicator().getRank());
 	}
 
 }

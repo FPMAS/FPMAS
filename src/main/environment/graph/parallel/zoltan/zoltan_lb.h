@@ -66,7 +66,7 @@ namespace FPMAS {
 				for(auto n : ((DistributedGraph<T>*) data)->getNodes()) {
 					Node<T>* node = n.second;
 
-					utils::write_zoltan_id(node->getId(), &global_ids[2*i]);
+					utils::write_zoltan_id(node->getId(), &global_ids[i * num_gid_entries]);
 
 					obj_wgts[i++] = node->getWeight();
 				}
@@ -99,7 +99,9 @@ namespace FPMAS {
 					) {
 				std::unordered_map<unsigned long, Node<T>*> nodes = ((DistributedGraph<T>*) data)->getNodes();
 				for(int i = 0; i < num_obj; i++) {
-					Node<T>* node = nodes[utils::read_zoltan_id(&global_ids[2*i])];
+					Node<T>* node = nodes.at(
+							utils::read_zoltan_id(&global_ids[i * num_gid_entries])
+							);
 					num_edges[i] = node->getOutgoingArcs().size();
 				}
 			}
@@ -139,23 +141,27 @@ namespace FPMAS {
 					float *ewgts,
 					int *ierr) {
 
-				std::unordered_map<unsigned long, Node<T>*> nodes = ((DistributedGraph<T>*) data)->getNodes();
+				DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+				std::unordered_map<unsigned long, Node<T>*> nodes = graph->getNodes();
 
 				int neighbor_index = 0;
 				for (int i = 0; i < num_obj; ++i) {
-					Node<T>* node = nodes[utils::read_zoltan_id(&global_ids[num_gid_entries * i])];
+					Node<T>* node = nodes.at(
+							utils::read_zoltan_id(&global_ids[num_gid_entries * i])
+							);
 					for(int j = 0; j < node->getOutgoingArcs().size(); j++) {
 						Arc<T>* arc = node->getOutgoingArcs().at(j);
-						utils::write_zoltan_id(arc->getTargetNode()->getId(), &nbor_global_id[neighbor_index * num_gid_entries]);
+						unsigned long targetId = arc->getTargetNode()->getId(); 
+						utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 
 						// Temporary
-						MPI_Comm_rank(MPI_COMM_WORLD, &nbor_procs[neighbor_index]);
+						// MPI_Comm_rank(MPI_COMM_WORLD, &nbor_procs[neighbor_index]);
+						nbor_procs[neighbor_index] = graph->getProxy()->getCurrentLocation(targetId);
 
 						ewgts[neighbor_index] = 1.;
 						neighbor_index++;
 					}
 				}
-
 			}
 		}
 	}

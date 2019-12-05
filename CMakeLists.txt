@@ -7,6 +7,7 @@ add_subdirectory(googletest)
 # MPI setup
 find_package(MPI REQUIRED)
 set(CMAKE_CXX_COMPILER ${MPI_CXX_COMPILER})
+set(MPI_CXX_COMPILE_OPTIONS "-g")
 
 set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
 MPI context")
