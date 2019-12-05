@@ -173,7 +173,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
 		ASSERT_EQ(
 				localNode->getIncomingArcs().at(0)->getSourceNode()->getId(),
-				(localNode->getId() - 1) % dg.getMpiCommunicator().getSize()
+				(dg.getMpiCommunicator().getSize() + localNode->getId() - 1) % dg.getMpiCommunicator().getSize()
 				);
 		ASSERT_EQ(localNode->getOutgoingArcs().size(), 1);
 		ASSERT_EQ(
