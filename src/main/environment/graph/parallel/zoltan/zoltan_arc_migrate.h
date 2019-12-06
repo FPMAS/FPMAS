@@ -153,10 +153,9 @@ namespace FPMAS {
 
 						// Retrieves the serialized node
 						std::string arc_str = serial_cache->at(id);
-						for(int j = 0; j < arc_str.size(); j++) {
-							buf[idx[i] + j] = arc_str[j];
-						}
-						buf[idx[i] + arc_str.size()] = 0; // str final char
+
+						// Copy str to zoltan buffer
+						std::sprintf(&buf[idx[i]], "%s", arc_str.c_str());
 					}
 					// Clears the cache : all objects have been packed
 					serial_cache->clear();
@@ -200,7 +199,6 @@ namespace FPMAS {
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 					
 					for (int i = 0; i < num_ids; ++i) {
-						read_zoltan_id(&global_ids[i * num_gid_entries]);
 						json json_arc = json::parse(&buf[idx[i]]);
 
 						// Json is unserialized in a temporary arc, with "fake"

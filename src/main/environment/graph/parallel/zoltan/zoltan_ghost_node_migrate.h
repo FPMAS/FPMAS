@@ -116,10 +116,9 @@ namespace FPMAS {
 
 						// Retrieves the serialized node
 						std::string node_str = serial_cache->at(id);
-						for(int j = 0; j < sizes[i] - 1; j++) {
-							buf[idx[i] + j] = node_str[j];
-						}
-						buf[idx[i] + sizes[i] - 1] = 0; // str final char
+
+						// Copy str to zoltan buffer
+						std::sprintf(&buf[idx[i]], "%s", node_str.c_str());
 					}
 					// Everything has been sent, clears serialization cache
 					serial_cache->clear();
