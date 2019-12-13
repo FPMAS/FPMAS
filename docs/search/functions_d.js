@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['setcurrentlocation_142',['setCurrentLocation',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aa01ec84f953d85f5cc4443e203ba4da4',1,'FPMAS::graph::proxy::Proxy']]],
+  ['setcurrentlocation_142',['setCurrentLocation',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a4f15e3c3b5a505d9f4daf3e0980fd24c',1,'FPMAS::graph::proxy::Proxy']]],
   ['setdata_143',['setData',['../classFPMAS_1_1graph_1_1Node.html#a566bac7c33cafc607b54894aab95e462',1,'FPMAS::graph::Node']]],
-  ['setlocalproc_144',['setLocalProc',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aeb810de956395bea0ab1acf1a1b27117',1,'FPMAS::graph::proxy::Proxy']]],
-  ['setorigin_145',['setOrigin',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a1d39d0b59003b8c93dcd264546b9fdf4',1,'FPMAS::graph::proxy::Proxy']]],
+  ['setlocalproc_144',['setLocalProc',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aa932e0af56d8960682800bd2ed9a0c4b',1,'FPMAS::graph::proxy::Proxy']]],
+  ['setorigin_145',['setOrigin',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#abe6bc1726f98ef3e3cda2dd9cd4749ef',1,'FPMAS::graph::proxy::Proxy']]],
   ['setweight_146',['setWeight',['../classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc',1,'FPMAS::graph::Node']]],
   ['synchronize_147',['synchronize',['../classFPMAS_1_1graph_1_1GhostGraph.html#a999cbdd2c8603938227d56b7cc149364',1,'FPMAS::graph::GhostGraph']]]
 ];

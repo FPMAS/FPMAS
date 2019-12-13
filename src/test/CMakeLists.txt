@@ -51,6 +51,11 @@ set(SOURCES
 	${SOURCES}
 	environment/graph/parallel/olz_graph.cpp)
 
+## Proxy
+set(SOURCES
+	${SOURCES}
+	environment/graph/parallel/proxy.cpp)
+
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
 
 target_include_directories(fpmas_mpi_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

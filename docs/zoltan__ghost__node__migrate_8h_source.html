@@ -149,52 +149,51 @@ $(function() {
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                        <span class="comment">// Retrieves the serialized node</span></div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                        std::string node_str = serial_cache-&gt;at(<span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> j = 0; j &lt; sizes[i] - 1; j++) {</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                            buf[idx[i] + j] = node_str[j];</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                        }</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                        buf[idx[i] + sizes[i] - 1] = 0; <span class="comment">// str final char</span></div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    }</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    <span class="comment">// Everything has been sent, clears serialization cache</span></div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                    serial_cache-&gt;clear();</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                }</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="namespaceFPMAS_1_1graph_1_1zoltan_1_1ghost.html#a96a10d91c6a7f5e26b0280542b314aa7">  145</a></span>&#160;                <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph_1_1zoltan_1_1ghost.html#a96a10d91c6a7f5e26b0280542b314aa7">unpack_obj_multi_fn</a>(</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                        <span class="keywordtype">void</span> *data,</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                        <span class="keywordtype">int</span> num_gid_entries,</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                        <span class="keywordtype">int</span> num_ids,</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                        ZOLTAN_ID_PTR global_ids,</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                        <span class="keywordtype">int</span> *sizes,</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                        <span class="keywordtype">int</span> *idx,</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                        <span class="keywordtype">char</span> *buf,</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                        <span class="keywordtype">int</span> *ierr) {</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>* graph = (<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_ids; ++i) {</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                        <span class="keywordtype">int</span> node_id = read_zoltan_id(&amp;global_ids[i * num_gid_entries]);</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                        json json_node = json::parse(&amp;buf[idx[i]]);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                        <a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>* ghost = graph-&gt;<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a990ec334063b0a3032898215cf4ddb36">getGhost</a>()-&gt;getNodes().at(node_id);</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                        <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a> node_update = json_node.get&lt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>&gt;();</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                        <span class="keywordflow">if</span>(graph-&gt;<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a990ec334063b0a3032898215cf4ddb36">getGhost</a>()-&gt;importedNodeIds.count(node_id) == 1) {</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                            <span class="keyword">delete</span> ghost-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208">getData</a>();</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                            graph-&gt;<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a990ec334063b0a3032898215cf4ddb36">getGhost</a>()-&gt;importedNodeIds.insert(node_id);</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                        }</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                        ghost-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#a566bac7c33cafc607b54894aab95e462">setData</a>(node_update.<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208">getData</a>());</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                        ghost-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc">setWeight</a>(node_update.<a class="code" href="classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029">getWeight</a>());</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                    }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                        <span class="comment">// Copy str to zoltan buffer</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                        std::sprintf(&amp;buf[idx[i]], <span class="stringliteral">&quot;%s&quot;</span>, node_str.c_str());</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                    }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    <span class="comment">// Everything has been sent, clears serialization cache</span></div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                    serial_cache-&gt;clear();</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno"><a class="line" href="namespaceFPMAS_1_1graph_1_1zoltan_1_1ghost.html#a96a10d91c6a7f5e26b0280542b314aa7">  144</a></span>&#160;                <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph_1_1zoltan_1_1ghost.html#a96a10d91c6a7f5e26b0280542b314aa7">unpack_obj_multi_fn</a>(</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;                        <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                        <span class="keywordtype">int</span> num_gid_entries,</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;                        <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                        ZOLTAN_ID_PTR global_ids,</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                        <span class="keywordtype">int</span> *sizes,</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                        <span class="keywordtype">int</span> *idx,</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                        <span class="keywordtype">char</span> *buf,</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                        <span class="keywordtype">int</span> *ierr) {</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>* graph = (<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>*) data;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_ids; ++i) {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                        <span class="keywordtype">int</span> node_id = read_zoltan_id(&amp;global_ids[i * num_gid_entries]);</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                        json json_node = json::parse(&amp;buf[idx[i]]);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                        <a class="code" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode&lt;T&gt;</a>* ghost = graph-&gt;<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a990ec334063b0a3032898215cf4ddb36">getGhost</a>()-&gt;getNodes().at(node_id);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                        <a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a> node_update = json_node.get&lt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html">Node&lt;T&gt;</a>&gt;();</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                        <span class="keywordflow">if</span>(graph-&gt;<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a990ec334063b0a3032898215cf4ddb36">getGhost</a>()-&gt;importedNodeIds.count(node_id) == 1) {</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                            <span class="keyword">delete</span> ghost-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208">getData</a>();</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                            graph-&gt;<a class="code" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a990ec334063b0a3032898215cf4ddb36">getGhost</a>()-&gt;importedNodeIds.insert(node_id);</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                        }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                        ghost-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#a566bac7c33cafc607b54894aab95e462">setData</a>(node_update.<a class="code" href="classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208">getData</a>());</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                        ghost-&gt;<a class="code" href="classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc">setWeight</a>(node_update.<a class="code" href="classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029">getWeight</a>());</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                    }</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                }</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            }</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        }</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    }</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;}</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            }</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;        }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    }</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;}</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_ace9b1d86daf065f21238a416687774ac"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#ace9b1d86daf065f21238a416687774ac">FPMAS::graph::Graph::getNodes</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, Node&lt; T &gt; * &gt; getNodes() const</div><div class="ttdef"><b>Definition:</b> graph.h:150</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Node_html_a2db70cace378ab0bccad39d45601c4bc"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc">FPMAS::graph::Node::setWeight</a></div><div class="ttdeci">void setWeight(float)</div><div class="ttdef"><b>Definition:</b> node.h:134</div></div>
@@ -208,7 +207,7 @@ $(function() {
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GraphItem_html_a7facd4d4c4b70bc03cd19debf28fd023"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">FPMAS::graph::GraphItem::getId</a></div><div class="ttdeci">unsigned long getId() const</div><div class="ttdef"><b>Definition:</b> graph_item.cpp:25</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1DistributedGraph_html_a990ec334063b0a3032898215cf4ddb36"><div class="ttname"><a href="classFPMAS_1_1graph_1_1DistributedGraph.html#a990ec334063b0a3032898215cf4ddb36">FPMAS::graph::DistributedGraph::getGhost</a></div><div class="ttdeci">GhostGraph&lt; T &gt; * getGhost()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:174</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GhostNode_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GhostNode.html">FPMAS::graph::GhostNode</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:23</div></div>
-<div class="ttc" id="anamespaceFPMAS_1_1graph_1_1zoltan_1_1ghost_html_a96a10d91c6a7f5e26b0280542b314aa7"><div class="ttname"><a href="namespaceFPMAS_1_1graph_1_1zoltan_1_1ghost.html#a96a10d91c6a7f5e26b0280542b314aa7">FPMAS::graph::zoltan::ghost::unpack_obj_multi_fn</a></div><div class="ttdeci">void unpack_obj_multi_fn(void *data, int num_gid_entries, int num_ids, ZOLTAN_ID_PTR global_ids, int *sizes, int *idx, char *buf, int *ierr)</div><div class="ttdef"><b>Definition:</b> zoltan_ghost_node_migrate.h:145</div></div>
+<div class="ttc" id="anamespaceFPMAS_1_1graph_1_1zoltan_1_1ghost_html_a96a10d91c6a7f5e26b0280542b314aa7"><div class="ttname"><a href="namespaceFPMAS_1_1graph_1_1zoltan_1_1ghost.html#a96a10d91c6a7f5e26b0280542b314aa7">FPMAS::graph::zoltan::ghost::unpack_obj_multi_fn</a></div><div class="ttdeci">void unpack_obj_multi_fn(void *data, int num_gid_entries, int num_ids, ZOLTAN_ID_PTR global_ids, int *sizes, int *idx, char *buf, int *ierr)</div><div class="ttdef"><b>Definition:</b> zoltan_ghost_node_migrate.h:144</div></div>
 <div class="ttc" id="anamespaceFPMAS_1_1graph_1_1zoltan_1_1ghost_html_ac9ced1a0a1b851ef9d9414c4278bee6c"><div class="ttname"><a href="namespaceFPMAS_1_1graph_1_1zoltan_1_1ghost.html#ac9ced1a0a1b851ef9d9414c4278bee6c">FPMAS::graph::zoltan::ghost::pack_obj_multi_fn</a></div><div class="ttdeci">void pack_obj_multi_fn(void *data, int num_gid_entries, int num_lid_entries, int num_ids, ZOLTAN_ID_PTR global_ids, ZOLTAN_ID_PTR local_ids, int *dest, int *sizes, int *idx, char *buf, int *ierr)</div><div class="ttdef"><b>Definition:</b> zoltan_ghost_node_migrate.h:94</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

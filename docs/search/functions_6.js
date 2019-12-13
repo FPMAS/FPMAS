@@ -2,7 +2,7 @@ var searchData=
 [
   ['getarc_109',['getArc',['../classFPMAS_1_1graph_1_1Graph.html#a7353f1b492bea8e01776f351909a21fa',1,'FPMAS::graph::Graph']]],
   ['getarcs_110',['getArcs',['../classFPMAS_1_1graph_1_1Graph.html#afac40f2d05c85754195bec9f08ffba40',1,'FPMAS::graph::Graph::getArcs()'],['../classFPMAS_1_1graph_1_1GhostGraph.html#a43d9ccf7adc75a61449ffb2aad4b2c9a',1,'FPMAS::graph::GhostGraph::getArcs()']]],
-  ['getcurrentlocation_111',['getCurrentLocation',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#addcc7a290115e06805fc37f26ddd1f47',1,'FPMAS::graph::proxy::Proxy']]],
+  ['getcurrentlocation_111',['getCurrentLocation',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#ab80bb2d591e8c6acc2c82a29e2ca632c',1,'FPMAS::graph::proxy::Proxy']]],
   ['getdata_112',['getData',['../classFPMAS_1_1graph_1_1Node.html#ac18cfa0d1282196c7023ba4685933208',1,'FPMAS::graph::Node']]],
   ['getghost_113',['getGhost',['../classFPMAS_1_1graph_1_1DistributedGraph.html#a990ec334063b0a3032898215cf4ddb36',1,'FPMAS::graph::DistributedGraph']]],
   ['getid_114',['getId',['../classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023',1,'FPMAS::graph::GraphItem']]],
@@ -12,7 +12,7 @@ var searchData=
   ['getmpigroup_118',['getMpiGroup',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#a278439d478d5fb294551027fbcaa19c0',1,'FPMAS::communication::MpiCommunicator']]],
   ['getnode_119',['getNode',['../classFPMAS_1_1graph_1_1Graph.html#af3c9fd0c967ab988b3b8cf7df67543d0',1,'FPMAS::graph::Graph']]],
   ['getnodes_120',['getNodes',['../classFPMAS_1_1graph_1_1Graph.html#ace9b1d86daf065f21238a416687774ac',1,'FPMAS::graph::Graph::getNodes()'],['../classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319',1,'FPMAS::graph::GhostGraph::getNodes()']]],
-  ['getorigin_121',['getOrigin',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#af728b798b367907d61e5b665f6e24195',1,'FPMAS::graph::proxy::Proxy']]],
+  ['getorigin_121',['getOrigin',['../classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a9ed05b7afc6980f62916d81657e19c50',1,'FPMAS::graph::proxy::Proxy']]],
   ['getoutgoingarcs_122',['getOutgoingArcs',['../classFPMAS_1_1graph_1_1Node.html#aa66ed1a48a87a731c955b542f71fa7af',1,'FPMAS::graph::Node']]],
   ['getproxy_123',['getProxy',['../classFPMAS_1_1graph_1_1DistributedGraph.html#a4f04757ed9a864a132450e6f5d5ac47e',1,'FPMAS::graph::DistributedGraph']]],
   ['getrank_124',['getRank',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ab42b4ae3d9c4ba19fd8d274053815721',1,'FPMAS::communication::MpiCommunicator']]],

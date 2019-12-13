@@ -73,40 +73,109 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define PROXY</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>FPMAS {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>graph {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">namespace </span>proxy {</div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;zoltan_cpp.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;communication/communication.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html">   22</a></span>&#160;            <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html">Proxy</a> {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                    <span class="keywordtype">int</span> localProc = 0;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                    std::unordered_map&lt;unsigned long, int&gt; origins;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                    std::unordered_map&lt;unsigned long, int&gt; currentLocations;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aeb810de956395bea0ab1acf1a1b27117">setLocalProc</a>(<span class="keywordtype">int</span>);</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a1d39d0b59003b8c93dcd264546b9fdf4">setOrigin</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, <span class="keywordtype">int</span>);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aa01ec84f953d85f5cc4443e203ba4da4">setCurrentLocation</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, <span class="keywordtype">int</span>);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                    <span class="keywordtype">int</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#af728b798b367907d61e5b665f6e24195">getOrigin</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                    <span class="keywordtype">int</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#addcc7a290115e06805fc37f26ddd1f47">getCurrentLocation</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                    <span class="comment">// TODO : sync functions</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            };</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;}</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">using</span> <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">FPMAS::communication::MpiCommunicator</a>;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>FPMAS {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">namespace </span>graph {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">namespace </span>proxy {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph_1_1zoltan_1_1node.html#a2ac83611c805fb4a164451db05a51038">obj_size_multi_fn</a>(</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                    <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                    <span class="keywordtype">int</span> num_gid_entries,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                    <span class="keywordtype">int</span> num_lid_entries,</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                    <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                    ZOLTAN_ID_PTR global_ids,</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                    ZOLTAN_ID_PTR local_ids,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                    <span class="keywordtype">int</span> *sizes,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                    <span class="keywordtype">int</span> *ierr); </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph_1_1zoltan_1_1node.html#ad69b7f20bf702e8506a64f5aa667fe16">pack_obj_multi_fn</a>(</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                    <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                    <span class="keywordtype">int</span> num_gid_entries,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                    <span class="keywordtype">int</span> num_lid_entries,</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                    <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                    ZOLTAN_ID_PTR global_ids,</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                    ZOLTAN_ID_PTR local_ids,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                    <span class="keywordtype">int</span> *dest,</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                    <span class="keywordtype">int</span> *sizes,</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                    <span class="keywordtype">int</span> *idx,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                    <span class="keywordtype">char</span> *buf,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                    <span class="keywordtype">int</span> *ierr); </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="namespaceFPMAS_1_1graph_1_1zoltan_1_1node.html#a52bbdd7719fc3a2a36601c432ab82f8a">unpack_obj_multi_fn</a>(</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                    <span class="keywordtype">void</span> *data,</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                    <span class="keywordtype">int</span> num_gid_entries,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                    <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                    ZOLTAN_ID_PTR global_ids,</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                    <span class="keywordtype">int</span> *sizes,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                    <span class="keywordtype">int</span> *idx,</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                    <span class="keywordtype">char</span> *buf,</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                    <span class="keywordtype">int</span> *ierr); </div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html">   61</a></span>&#160;            <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html">Proxy</a> {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="keyword">friend</span> <span class="keywordtype">void</span> proxy::obj_size_multi_fn(</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                    <span class="keywordtype">void</span> *data, <span class="keywordtype">int</span> num_gid_entries, <span class="keywordtype">int</span> num_lid_entries, <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                    ZOLTAN_ID_PTR global_ids, ZOLTAN_ID_PTR local_ids, <span class="keywordtype">int</span> *sizes, <span class="keywordtype">int</span> *ierr</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                    ); </div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                <span class="keyword">friend</span> <span class="keywordtype">void</span> proxy::pack_obj_multi_fn(</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                    <span class="keywordtype">void</span> *data, <span class="keywordtype">int</span> num_gid_entries, <span class="keywordtype">int</span> num_lid_entries, <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                    ZOLTAN_ID_PTR global_ids, ZOLTAN_ID_PTR local_ids, <span class="keywordtype">int</span> *dest, <span class="keywordtype">int</span> *sizes,</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                    <span class="keywordtype">int</span> *idx, <span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> *ierr</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                    );</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                <span class="keyword">friend</span> <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#ae0eab947a4792a94dc6f69297d623525">unpack_obj_multi_fn</a>(</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                    <span class="keywordtype">void</span> *data, <span class="keywordtype">int</span> num_gid_entries, <span class="keywordtype">int</span> num_ids,</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                    ZOLTAN_ID_PTR global_ids, <span class="keywordtype">int</span> *sizes,</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                    <span class="keywordtype">int</span> *idx, <span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> *ierr</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                    );</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                    <a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> mpiCommunicator;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                    Zoltan* zoltan;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                    <span class="keywordtype">int</span> localProc = 0;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                    std::unordered_map&lt;unsigned long, int&gt; origins;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                    std::unordered_map&lt;unsigned long, int&gt; currentLocations;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                    std::unordered_map&lt;unsigned long, std::string&gt; proxyUpdatesSerializationCache;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                    <span class="comment">// Contains the current key that should be updated at the</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                    <span class="comment">// next synchronize() call</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                    std::set&lt;unsigned long&gt; updates;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html">Proxy</a>();</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aa932e0af56d8960682800bd2ed9a0c4b">setLocalProc</a>(<span class="keywordtype">int</span>);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#abe6bc1726f98ef3e3cda2dd9cd4749ef">setOrigin</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, <span class="keywordtype">int</span>);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a4f15e3c3b5a505d9f4daf3e0980fd24c">setCurrentLocation</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, <span class="keywordtype">int</span>);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                    <span class="keywordtype">int</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a9ed05b7afc6980f62916d81657e19c50">getOrigin</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                    <span class="keywordtype">int</span> <a class="code" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#ab80bb2d591e8c6acc2c82a29e2ca632c">getCurrentLocation</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                    <span class="keywordtype">void</span> setLocal(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, <span class="keywordtype">bool</span> upToDate=<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                    <span class="keywordtype">void</span> synchronize();</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            };</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    }</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_a1d39d0b59003b8c93dcd264546b9fdf4"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a1d39d0b59003b8c93dcd264546b9fdf4">FPMAS::graph::proxy::Proxy::setOrigin</a></div><div class="ttdeci">void setOrigin(unsigned long, int)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:20</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_addcc7a290115e06805fc37f26ddd1f47"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#addcc7a290115e06805fc37f26ddd1f47">FPMAS::graph::proxy::Proxy::getCurrentLocation</a></div><div class="ttdeci">int getCurrentLocation(unsigned long)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:61</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_af728b798b367907d61e5b665f6e24195"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#af728b798b367907d61e5b665f6e24195">FPMAS::graph::proxy::Proxy::getOrigin</a></div><div class="ttdeci">int getOrigin(unsigned long)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:34</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_aeb810de956395bea0ab1acf1a1b27117"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aeb810de956395bea0ab1acf1a1b27117">FPMAS::graph::proxy::Proxy::setLocalProc</a></div><div class="ttdeci">void setLocalProc(int)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:10</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html">FPMAS::graph::proxy::Proxy</a></div><div class="ttdef"><b>Definition:</b> proxy.h:22</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_aa01ec84f953d85f5cc4443e203ba4da4"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aa01ec84f953d85f5cc4443e203ba4da4">FPMAS::graph::proxy::Proxy::setCurrentLocation</a></div><div class="ttdeci">void setCurrentLocation(unsigned long, int)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:48</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_a9ed05b7afc6980f62916d81657e19c50"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a9ed05b7afc6980f62916d81657e19c50">FPMAS::graph::proxy::Proxy::getOrigin</a></div><div class="ttdeci">int getOrigin(unsigned long)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:54</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_abe6bc1726f98ef3e3cda2dd9cd4749ef"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#abe6bc1726f98ef3e3cda2dd9cd4749ef">FPMAS::graph::proxy::Proxy::setOrigin</a></div><div class="ttdeci">void setOrigin(unsigned long, int)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:40</div></div>
+<div class="ttc" id="anamespaceFPMAS_1_1graph_1_1zoltan_1_1node_html_a2ac83611c805fb4a164451db05a51038"><div class="ttname"><a href="namespaceFPMAS_1_1graph_1_1zoltan_1_1node.html#a2ac83611c805fb4a164451db05a51038">FPMAS::graph::zoltan::node::obj_size_multi_fn</a></div><div class="ttdeci">void obj_size_multi_fn(void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *)</div><div class="ttdef"><b>Definition:</b> zoltan_node_migrate.h:42</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_ab80bb2d591e8c6acc2c82a29e2ca632c"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#ab80bb2d591e8c6acc2c82a29e2ca632c">FPMAS::graph::proxy::Proxy::getCurrentLocation</a></div><div class="ttdeci">int getCurrentLocation(unsigned long)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:85</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_ae0eab947a4792a94dc6f69297d623525"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#ae0eab947a4792a94dc6f69297d623525">FPMAS::graph::proxy::Proxy::unpack_obj_multi_fn</a></div><div class="ttdeci">friend void unpack_obj_multi_fn(void *data, int num_gid_entries, int num_ids, ZOLTAN_ID_PTR global_ids, int *sizes, int *idx, char *buf, int *ierr)</div><div class="ttdef"><b>Definition:</b> zoltan_node_migrate.h:144</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html">FPMAS::graph::proxy::Proxy</a></div><div class="ttdef"><b>Definition:</b> proxy.h:61</div></div>
+<div class="ttc" id="anamespaceFPMAS_1_1graph_1_1zoltan_1_1node_html_a52bbdd7719fc3a2a36601c432ab82f8a"><div class="ttname"><a href="namespaceFPMAS_1_1graph_1_1zoltan_1_1node.html#a52bbdd7719fc3a2a36601c432ab82f8a">FPMAS::graph::zoltan::node::unpack_obj_multi_fn</a></div><div class="ttdeci">void unpack_obj_multi_fn(void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *)</div><div class="ttdef"><b>Definition:</b> zoltan_node_migrate.h:144</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_aa932e0af56d8960682800bd2ed9a0c4b"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#aa932e0af56d8960682800bd2ed9a0c4b">FPMAS::graph::proxy::Proxy::setLocalProc</a></div><div class="ttdeci">void setLocalProc(int)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:30</div></div>
+<div class="ttc" id="anamespaceFPMAS_1_1graph_1_1zoltan_1_1node_html_ad69b7f20bf702e8506a64f5aa667fe16"><div class="ttname"><a href="namespaceFPMAS_1_1graph_1_1zoltan_1_1node.html#ad69b7f20bf702e8506a64f5aa667fe16">FPMAS::graph::zoltan::node::pack_obj_multi_fn</a></div><div class="ttdeci">void pack_obj_multi_fn(void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *)</div><div class="ttdef"><b>Definition:</b> zoltan_node_migrate.h:95</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1proxy_1_1Proxy_html_a4f15e3c3b5a505d9f4daf3e0980fd24c"><div class="ttname"><a href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#a4f15e3c3b5a505d9f4daf3e0980fd24c">FPMAS::graph::proxy::Proxy::setCurrentLocation</a></div><div class="ttdeci">void setCurrentLocation(unsigned long, int)</div><div class="ttdef"><b>Definition:</b> proxy.cpp:68</div></div>
+<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html">FPMAS::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:14</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

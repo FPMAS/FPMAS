@@ -224,23 +224,24 @@ $(function() {
 <div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;            }</div>
 <div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;            <span class="comment">// Removes the node from the global nodes index</span></div>
 <div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            nodes.erase(node_id);</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                <span class="comment">// Deletes the node</span></div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                <span class="keyword">delete</span> node_to_remove;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;            <span class="keywordflow">return</span> fossil;</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        }</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160; </div>
-<div class="line"><a name="l00358"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">  358</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <a class="code" href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">Graph&lt;T&gt;::~Graph</a>() {</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : this-&gt;nodes) {</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                <span class="keyword">delete</span> node.second;</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;            }</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : this-&gt;arcs) {</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                <span class="keyword">delete</span> arc.second;</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;            }</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;        }</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    }</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;}</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160; </div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            <span class="comment">// Deletes the node</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;            <span class="keyword">delete</span> node_to_remove;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160; </div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;            <span class="keywordflow">return</span> fossil;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        }</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160; </div>
+<div class="line"><a name="l00359"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">  359</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt; <a class="code" href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">Graph&lt;T&gt;::~Graph</a>() {</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : this-&gt;nodes) {</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                <span class="keyword">delete</span> node.second;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;            }</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : this-&gt;arcs) {</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                <span class="keyword">delete</span> arc.second;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;            }</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;        }</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    }</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;}</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160; </div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_ace9b1d86daf065f21238a416687774ac"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#ace9b1d86daf065f21238a416687774ac">FPMAS::graph::Graph::getNodes</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, Node&lt; T &gt; * &gt; getNodes() const</div><div class="ttdef"><b>Definition:</b> graph.h:150</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_afac40f2d05c85754195bec9f08ffba40"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#afac40f2d05c85754195bec9f08ffba40">FPMAS::graph::Graph::getArcs</a></div><div class="ttdeci">std::unordered_map&lt; unsigned long, Arc&lt; T &gt; * &gt; getArcs() const</div><div class="ttdef"><b>Definition:</b> graph.h:170</div></div>
@@ -256,7 +257,7 @@ $(function() {
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1FossilArcs_html_a7263714c52e5a45731daedf05c1dae34"><div class="ttname"><a href="classFPMAS_1_1graph_1_1FossilArcs.html#a7263714c52e5a45731daedf05c1dae34">FPMAS::graph::FossilArcs::incomingArcs</a></div><div class="ttdeci">std::set&lt; Arc&lt; T &gt; * &gt; incomingArcs</div><div class="ttdef"><b>Definition:</b> fossil.h:47</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1FossilArcs_html_af82edf8747d97973950e67249c2f3e5c"><div class="ttname"><a href="classFPMAS_1_1graph_1_1FossilArcs.html#af82edf8747d97973950e67249c2f3e5c">FPMAS::graph::FossilArcs::outgoingArcs</a></div><div class="ttdeci">std::set&lt; Arc&lt; T &gt; * &gt; outgoingArcs</div><div class="ttdef"><b>Definition:</b> fossil.h:55</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html">FPMAS::graph::Graph</a></div><div class="ttdef"><b>Definition:</b> arc.h:13</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_a509c69d4811a9540b287a95303c28fe9"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">FPMAS::graph::Graph::~Graph</a></div><div class="ttdeci">~Graph()</div><div class="ttdef"><b>Definition:</b> graph.h:358</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_a509c69d4811a9540b287a95303c28fe9"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#a509c69d4811a9540b287a95303c28fe9">FPMAS::graph::Graph::~Graph</a></div><div class="ttdeci">~Graph()</div><div class="ttdef"><b>Definition:</b> graph.h:359</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1GraphItem_html_a7facd4d4c4b70bc03cd19debf28fd023"><div class="ttname"><a href="classFPMAS_1_1graph_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">FPMAS::graph::GraphItem::getId</a></div><div class="ttdeci">unsigned long getId() const</div><div class="ttdef"><b>Definition:</b> graph_item.cpp:25</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_a3dc0843c430902afd093438870172dc8"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8">FPMAS::graph::Graph::link</a></div><div class="ttdeci">Arc&lt; T &gt; * link(Node&lt; T &gt; *source, Node&lt; T &gt; *target, unsigned long arcLabel)</div><div class="ttdef"><b>Definition:</b> graph.h:239</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1Graph_html_aaf79ca7b7e4181062f2839a5401eebf8"><div class="ttname"><a href="classFPMAS_1_1graph_1_1Graph.html#aaf79ca7b7e4181062f2839a5401eebf8">FPMAS::graph::Graph::removeNode</a></div><div class="ttdeci">FossilArcs&lt; T &gt; removeNode(unsigned long)</div><div class="ttdef"><b>Definition:</b> graph.h:331</div></div>

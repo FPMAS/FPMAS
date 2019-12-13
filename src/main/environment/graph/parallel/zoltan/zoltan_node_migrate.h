@@ -61,7 +61,8 @@ namespace FPMAS {
 						else {
 							json json_node = *node;
 
-							json_node["origin"] = graph->proxy.getOrigin(node->getId());	
+							json_node["origin"] = graph->proxy.getOrigin(node->getId());
+							json_node["from"] = graph->getMpiCommunicator().getRank();
 
 							std::string serial_node = json_node.dump();
 

@@ -283,3 +283,55 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 	}
 
 }
+
+class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
+	void SetUp() override {
+		int numProcs = dg.getMpiCommunicator().getSize();
+		// Creates numberProcs + 1 nodes, so that a proc will have two nodes
+		if(dg.getMpiCommunicator().getRank() == 0) {
+			for (int i = 0; i < numProcs + 1; ++i) {
+				data.push_back(new int(i));
+				dg.buildNode(i, data.back());
+			}
+
+			// We don't know which nodes will be on the same proc, so we link each
+			// node to all others
+			unsigned long arcId = 0;
+			for (int i = 0; i < numProcs + 1; ++i) {
+				for (int j = 0; j < numProcs + 1; ++j) {
+					if(i != j)
+						dg.link(i, j, arcId++);
+				}
+			}
+		}
+	}
+};
+/*
+ *
+ *TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
+ *    dg.distribute();
+ *
+ *    for(int i = 0; i < 2; i++) {
+ *        bool procWithTwoNodes = false;
+ *        std::cout << i << " " << dg.getMpiCommunicator().getRank() << " : " << dg.getNodes().size() << std::endl;
+ *        if(dg.getNodes().size() == 2) {
+ *            float total_weight = 0.;
+ *            for(auto node : dg.getNodes())
+ *                total_weight += node.second->getWeight();
+ *
+ *            ASSERT_NE(total_weight, 4.);
+ *            procWithTwoNodes = true;
+ *            // One of the nodes become too heavy
+ *            dg.getNodes().begin()->second->setWeight(
+ *                    3.
+ *                    );
+ *        }
+ *        dg.distribute();
+ *
+ *        if(procWithTwoNodes) {
+ *            ASSERT_EQ(dg.getNodes().size(), 1);
+ *        }
+ *    }
+ *
+ *}
+ */

@@ -133,8 +133,8 @@ namespace FPMAS {
 		 * Instanciates and configure a new Zoltan instance accross all the
 		 * available cores.
 		 */
-		template<class T> DistributedGraph<T>::DistributedGraph() : ghost(this) {
-			proxy.setLocalProc(mpiCommunicator.getRank());
+		template<class T> DistributedGraph<T>::DistributedGraph()
+			: ghost(this), proxy(mpiCommunicator.getRank()) {
 
 			this->zoltan = new Zoltan(mpiCommunicator.getMpiComm());
 			FPMAS::config::zoltan_config(this->zoltan);
