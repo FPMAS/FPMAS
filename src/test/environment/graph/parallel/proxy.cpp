@@ -124,11 +124,13 @@ TEST_F(Mpi_ZoltanProxyTest, pack_obj_multi_fn_test) {
 using FPMAS::graph::proxy::unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanProxyTest, unpack_obj_multi_test) {
+	write_migration_sizes();
+	write_communication_buffer();
 	// Fake proxy
-	Proxy* p = new Proxy(rank+1);
+	Proxy p(rank+1);
 
 	unpack_obj_multi_fn(
-		p,
+		&p,
 		2,
 		3,
 		transfer_global_ids,
@@ -136,9 +138,10 @@ TEST_F(Mpi_ZoltanProxyTest, unpack_obj_multi_test) {
 		idx,
 		buf,
 		&err);
-	ASSERT_EQ(p->getCurrentLocation(0ul), rank);
-	ASSERT_EQ(p->getCurrentLocation(1ul), rank);
-	ASSERT_EQ(p->getCurrentLocation(2ul), 25);
+
+	ASSERT_EQ(p.getCurrentLocation(0ul), rank);
+	ASSERT_EQ(p.getCurrentLocation(1ul), rank);
+	ASSERT_EQ(p.getCurrentLocation(2ul), 25);
 }
 
 class Mpi_SyncProxyTest : public ::testing::Test {
