@@ -219,6 +219,12 @@ namespace FPMAS {
 				new GhostArc<T>(arc_id, source, target);
 		}
 
+		/**
+		 * Removes and deletes the node corresponding to the specified `nodeId` from this
+		 * graph, along with associated arcs.
+		 *
+		 * @param nodeId id of the node to remove
+		 */
 		template<class T> void GhostGraph<T>::removeNode(unsigned long nodeId) {
 			GhostNode<T>* nodeToRemove = this->ghostNodes.at(nodeId);
 			FossilArcs<T> fossil;

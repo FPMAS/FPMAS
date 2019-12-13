@@ -6,5 +6,6 @@ var searchData=
   ['ghost_14',['ghost',['../namespaceFPMAS_1_1graph_1_1zoltan_1_1ghost.html',1,'FPMAS::graph::zoltan']]],
   ['graph_15',['graph',['../namespaceFPMAS_1_1graph.html',1,'FPMAS']]],
   ['node_16',['node',['../namespaceFPMAS_1_1graph_1_1zoltan_1_1node.html',1,'FPMAS::graph::zoltan']]],
-  ['zoltan_17',['zoltan',['../namespaceFPMAS_1_1graph_1_1zoltan.html',1,'FPMAS::graph']]]
+  ['proxy_17',['proxy',['../namespaceFPMAS_1_1graph_1_1proxy.html',1,'FPMAS::graph']]],
+  ['zoltan_18',['zoltan',['../namespaceFPMAS_1_1graph_1_1zoltan.html',1,'FPMAS::graph']]]
 ];

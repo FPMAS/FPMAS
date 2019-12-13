@@ -11,6 +11,9 @@ using FPMAS::communication::MpiCommunicator;
 
 namespace FPMAS {
 	namespace graph {
+		/**
+		 * Namespace containing classes and functions to manage proxies.
+		 */
 		namespace proxy {
 
 			void obj_size_multi_fn(
@@ -68,7 +71,7 @@ namespace FPMAS {
 					ZOLTAN_ID_PTR global_ids, ZOLTAN_ID_PTR local_ids, int *dest, int *sizes,
 					int *idx, char *buf, int *ierr
 					);
-				friend void unpack_obj_multi_fn(
+				friend void proxy::unpack_obj_multi_fn(
 					void *data, int num_gid_entries, int num_ids,
 					ZOLTAN_ID_PTR global_ids, int *sizes,
 					int *idx, char *buf, int *ierr

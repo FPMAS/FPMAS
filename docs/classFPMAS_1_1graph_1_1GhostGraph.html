@@ -92,8 +92,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4f2d7e594ef3fb42854e65acf2e0810a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49266ccea0fce2db91c0d632ea03ca5d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a49266ccea0fce2db91c0d632ea03ca5d">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *, unsigned long)</td></tr>
 <tr class="separator:a49266ccea0fce2db91c0d632ea03ca5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affbad8fc991441b18a060fc367440f6a"><td class="memItemLeft" align="right" valign="top"><a id="affbad8fc991441b18a060fc367440f6a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (unsigned long)</td></tr>
+<tr class="memitem:affbad8fc991441b18a060fc367440f6a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#affbad8fc991441b18a060fc367440f6a">removeNode</a> (unsigned long)</td></tr>
 <tr class="separator:affbad8fc991441b18a060fc367440f6a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2e097c0f4ba8e76e87e3035e9fc06319"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html#a2e097c0f4ba8e76e87e3035e9fc06319">getNodes</a> ()</td></tr>
 <tr class="separator:a2e097c0f4ba8e76e87e3035e9fc06319"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -419,6 +418,33 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Links the specified nodes with a <a class="el" href="classFPMAS_1_1graph_1_1GhostArc.html">GhostArc</a>. </p>
+
+</div>
+</div>
+<a id="affbad8fc991441b18a060fc367440f6a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affbad8fc991441b18a060fc367440f6a">&#9670;&nbsp;</a></span>removeNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1GhostGraph.html">FPMAS::graph::GhostGraph</a>&lt; T &gt;::removeNode </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>nodeId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Removes and deletes the node corresponding to the specified <code>nodeId</code> from this graph, along with associated arcs.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nodeId</td><td>id of the node to remove </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

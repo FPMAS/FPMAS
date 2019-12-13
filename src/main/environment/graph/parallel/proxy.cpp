@@ -11,7 +11,17 @@ using nlohmann::json;
 namespace FPMAS {
 	namespace graph {
 		namespace proxy {
-			Proxy::Proxy(int _localProc) : localProc(_localProc) {
+
+			/**
+			 * Proxy constructor.
+			 *
+			 * The input local proc (i.e. the current MPI rank) of the proxy
+			 * could be computed internally, but passing it as argument allows
+			 * the value to be defined as const.
+			 *
+			 * @param localProc current MPI rank
+			 */
+			Proxy::Proxy(int localProc) : localProc(localProc) {
 				this->zoltan = new Zoltan(this->mpiCommunicator.getMpiComm());
 				// Apply general configuration, even if load balancing won't be used with
 				// this instance
@@ -22,6 +32,12 @@ namespace FPMAS {
 				this->zoltan->Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
 			}
 
+			/**
+			 * Returns the localProc associated to this proxy, that should
+			 * correspond to the current MPI rank.
+			 *
+			 * @return local proc
+			 */
 			int Proxy::getLocalProc() const {
 				return this->localProc;
 			}
@@ -83,6 +99,22 @@ namespace FPMAS {
 				return this->localProc;
 			}
 
+			/**
+			 * Defines the current proc as the current location of the node
+			 * corresponding to the specified id.
+			 *
+			 * A `true` value for upToDate might be used when the next call to
+			 * synchronize() does not need to send update information for this
+			 * node, typically when the node has just been imported locally
+			 * directly from its origin (in this case, the origin already has
+			 * an updated information about the node's current location). In any
+			 * other case, or in case of doubt, let `upToDate` to its default
+			 * `false` value.
+			 *
+			 * @param id id of the local node
+			 * @param upToDate true if no update information needs to be called
+			 * for this node
+			 */
 			void Proxy::setLocal(unsigned long id, bool upToDate) {
 				if(!upToDate)
 					this->updates.insert(id);
@@ -90,6 +122,29 @@ namespace FPMAS {
 				this->currentLocations.erase(id);
 			}
 
+			/**
+			 * Updates proxies data with actual nodes current locations.
+			 *
+			 * Each process will be waiting until everybody calls this
+			 * function.
+			 *
+			 * Updates are performed in two steps.
+			 * 1. Each process sends the current location of its local nodes
+			 * (so that this location is obviously the current process) to the
+			 * corresponding origin processes. In the same step, each origin
+			 * imports locations and updates its current locations table.
+			 *
+			 * 2. For each node not contained in the current process, the proxy
+			 * asks for their current location to the corresponding origin,
+			 * that is now updated from step 1.
+			 *
+			 * This function should be called by all the processes each time a
+			 * node might have migrated somewhere in the global execution, when
+			 * load balancing is performed for example. If this requirement is
+			 * met, the implementation ensures that all the simulation proxies
+			 * contain updated information about each node location, and so
+			 * can contact them or ask their data directly.
+			 */
 			void Proxy::synchronize() {
 				ZOLTAN_ID_TYPE export_global_ids[updates.size() * 2];
 				int export_procs[updates.size()];
@@ -139,7 +194,22 @@ namespace FPMAS {
 						NULL
 						);
 			}
-
+			/**
+			 * Computes the buffer sizes required to serialize proxy entries corresponding
+			 * to global_ids.
+			 *
+			 * For more information about this function, see the [Zoltan
+			 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_OBJ_SIZE_MULTI_FN).
+			 *
+			 * @param data user data (local proxy)
+			 * @param num_gid_entries number of entries used to describe global ids (should be 2)
+			 * @param num_lid_entries number of entries used to describe local ids (should be 0)
+			 * @param num_ids number of entries to serialize
+			 * @param global_ids global ids of nodes to update
+			 * @param local_ids unused
+			 * @param sizes Result : buffer sizes for each proxy entry
+			 * @param ierr Result : error code
+			 */
 			void obj_size_multi_fn(
 					void *data,
 					int num_gid_entries,
@@ -161,6 +231,24 @@ namespace FPMAS {
 				}
 			}
 
+			/**
+			 * Serializes the input list of node locations.
+			 *
+			 * For more information about this function, see the [Zoltan
+			 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_PACK_OBJ_MULTI_FN).
+			 *
+			 * @param data user data (local proxy)
+			 * @param num_gid_entries number of entries used to describe global ids (should be 2)
+			 * @param num_lid_entries number of entries used to describe local ids (should be 0)
+			 * @param num_ids number of proxy entries to pack
+			 * @param global_ids global ids of nodes to update
+			 * @param local_ids unused
+			 * @param dest destination part numbers
+			 * @param sizes buffer sizes for each object
+			 * @param idx each object starting point in buf
+			 * @param buf communication buffer
+			 * @param ierr Result : error code
+			 */
 			void pack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
@@ -182,6 +270,21 @@ namespace FPMAS {
 					}
 			}
 
+			/**
+			 * Deserializes received updates to the local proxy.
+			 *
+			 * For more information about this function, see the [Zoltan
+			 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_UNPACK_OBJ_MULTI_FN).
+			 *
+			 * @param data user data (local proxy)
+			 * @param num_gid_entries number of entries used to describe global ids (should be 2)
+			 * @param num_ids number of nodes to update
+			 * @param global_ids item global ids
+			 * @param sizes buffer sizes for each object
+			 * @param idx each object starting point in buf
+			 * @param buf communication buffer
+			 * @param ierr Result : error code
+			 */
 			void unpack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,

@@ -133,7 +133,7 @@ namespace FPMAS {
 				 *
 				 * @param data user data (local DistributedGraph instance)
 				 * @param num_gid_entries number of entries used to describe global ids (should be 2)
-				 * @param num_ids number of nodes to pack
+				 * @param num_ids number of nodes to unpack
 				 * @param global_ids item global ids
 				 * @param sizes buffer sizes for each object
 				 * @param idx each object starting point in buf
