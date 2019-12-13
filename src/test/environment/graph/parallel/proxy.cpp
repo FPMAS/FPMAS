@@ -75,7 +75,7 @@ class Mpi_ZoltanProxyTest : public ::testing::Test {
 			int dest[2];
 
 			pack_obj_multi_fn(
-					&proxy,
+					proxy,
 					2,
 					0,
 					2,
@@ -103,6 +103,34 @@ TEST_F(Mpi_ZoltanProxyTest, obj_size_multi_fn_test) {
 	ASSERT_EQ(sizes[0], rank_str_size);
 	ASSERT_EQ(sizes[1], rank_str_size);
 
+}
+
+TEST_F(Mpi_ZoltanProxyTest, pack_obj_multi_fn_test) {
+	write_migration_sizes();
+	write_communication_buffer();
+
+	std::string currentRank = std::to_string(rank);
+	ASSERT_STREQ(currentRank.c_str(), &buf[idx[0]]);
+	ASSERT_STREQ(currentRank.c_str(), &buf[idx[1]]);
+}
+
+using FPMAS::graph::proxy::unpack_obj_multi_fn;
+
+TEST_F(Mpi_ZoltanProxyTest, unpack_obj_multi_test) {
+	// Fake proxy
+	Proxy* p = new Proxy(rank+1);
+
+	unpack_obj_multi_fn(
+		p,
+		2,
+		2,
+		transfer_global_ids,
+		sizes,
+		idx,
+		buf,
+		&err);
+	ASSERT_EQ(p->getCurrentLocation(0ul), rank);
+	ASSERT_EQ(p->getCurrentLocation(1ul), rank);
 }
 
 class Mpi_SyncProxyTest : public ::testing::Test {
