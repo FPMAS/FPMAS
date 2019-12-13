@@ -17,8 +17,6 @@ namespace FPMAS {
 				// this instance
 				FPMAS::config::zoltan_config(this->zoltan);
 
-				void * test = (void *) this;
-
 				this->zoltan->Set_Obj_Size_Multi_Fn(obj_size_multi_fn, this);
 				this->zoltan->Set_Pack_Obj_Multi_Fn(pack_obj_multi_fn, this);
 				this->zoltan->Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
@@ -100,6 +98,7 @@ namespace FPMAS {
 				for(auto id : this->updates) {
 					write_zoltan_id(id, &export_global_ids[i * 2]);
 					export_procs[i] = this->getOrigin(id);
+					i++;
 				}
 
 				this->zoltan->Migrate(
@@ -115,6 +114,30 @@ namespace FPMAS {
 						export_procs // proc = part
 						);
 
+				this->updates.clear();
+
+				ZOLTAN_ID_TYPE import_global_ids[currentLocations.size() * 2];
+				int import_procs[currentLocations.size()];
+
+				int j = 0;
+				for(auto loc : currentLocations) {
+					write_zoltan_id(loc.first, &import_global_ids[j * 2]);
+					import_procs[j] = this->getOrigin(loc.first);
+					j++;
+				}
+
+				this->zoltan->Migrate(
+						this->currentLocations.size(),
+						import_global_ids,
+						NULL,
+						import_procs,
+						import_procs, // proc = part
+						-1,
+						NULL,
+						NULL,
+						NULL,
+						NULL
+						);
 			}
 
 			void obj_size_multi_fn(
@@ -132,7 +155,7 @@ namespace FPMAS {
 					unsigned long nodeId = read_zoltan_id(&global_ids[i * num_gid_entries]);
 					// Updates to export are computed so that each proxy only
 					// export updates for nodes currently living in the local proc
-					std::string proxyUpdateStr = std::to_string(proxy->localProc);
+					std::string proxyUpdateStr = std::to_string(proxy->getCurrentLocation(nodeId));
 
 					sizes[i] = proxyUpdateStr.size() + 1;
 				}
@@ -154,7 +177,7 @@ namespace FPMAS {
 					for (int i = 0; i < num_ids; ++i) {
 						// Rebuilt node id
 						unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
-						std::string locStr = std::to_string(proxy->localProc);
+						std::string locStr = std::to_string(proxy->getCurrentLocation(id));
 						std::sprintf(&buf[idx[i]], "%s", locStr.c_str());
 					}
 			}
@@ -175,9 +198,7 @@ namespace FPMAS {
 
 					int currentLocation = std::stoi(std::string(&buf[idx[i]]));
 					proxy->setCurrentLocation(nodeId, currentLocation);
-					
 				}
-
 			}
 		}
 	}
