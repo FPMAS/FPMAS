@@ -15,6 +15,12 @@ namespace FPMAS {
 		template<class T> class GhostNode;
 
 		namespace zoltan {
+			/**
+			 * The zoltan::arc namespace defines functions used to migrate
+			 * arcs using zoltan.
+			 * The arc migration process is only performed right after nodes have
+			 * migrated.
+			 */
 			namespace arc {
 				/**
 				 * Computes the buffer sizes required to serialize nodes corresponding
@@ -167,6 +173,25 @@ namespace FPMAS {
 					serial_cache->clear();
 				}
 
+				/**
+				 * Called once nodes migration is done, after arcs have been
+				 * exported and before arcs are imported.
+				 *
+				 * If nodes have been imported and were already contained in
+				 * the graph as ghost nodes, ghosts are replaced by real nodes
+				 * in this Arc mid migrate process, once arcs linked to the
+				 * ghost nodes have been exported if necessary.
+				 *
+				 * Actually, if the ghost node is removed directly when the
+				 * real node is imported, while arcs have not migrated yet,
+				 * arcs linked to the ghost node will be deleted even if they
+				 * might have been exported in the arc migration process, what
+				 * results in a significant loss of information.
+				 *
+				 * This process should be performed as a "mid" migrate (not
+				 * post), so that imported arcs are built properly on the
+				 * imported nodes, not on the obsolete ghosts.
+				 */
 				template <class T> void mid_migrate_pp_fn(
 						void *data,
 						int num_gid_entries,
@@ -316,6 +341,12 @@ namespace FPMAS {
 					}
 				}
 
+				/**
+				 * Called once nodes and arcs migration processes are done.
+				 *
+				 * This process builds required ghost nodes and deletes useless
+				 * ones according to nodes that were just exported.
+				 */
 				template<class T> void post_migrate_pp_fn(
 						void *data,
 						int num_gid_entries,
