@@ -24,36 +24,6 @@ namespace FPMAS {
 		template<class T> class GhostArc;
 		template<class T> class GhostGraph;
 
-		namespace zoltan {
-			template<class T> int num_obj(void *data, int* ierr);
-			template<class T> void obj_list(
-					void *, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int, float *, int *
-					);
-			template<class T> void num_edges_multi_fn(
-					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
-					);
-			template<class T> void edge_list_multi_fn(
-					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, ZOLTAN_ID_PTR, int *, int, float *, int *
-					);
-			namespace node {
-				template<class T> void obj_size_multi_fn(
-						void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
-						); 
-
-				template<class T> void pack_obj_multi_fn(
-						void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
-						);
-
-				template<class T> void unpack_obj_multi_fn(
-						void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
-						);
-				template<class T> void post_migrate_pp_fn(
-						void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
-						int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
-						);
-			}
-		}
-
 		/**
 		 * A DistributedGraph is a special graph instance that can be
 		 * distributed across available processors using Zoltan.
@@ -74,6 +44,10 @@ namespace FPMAS {
 					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 					);
 			friend void zoltan::node::post_migrate_pp_fn<T>(
+					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
+      				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
+					);
+			friend void zoltan::arc::mid_migrate_pp_fn<T>(
 					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
       				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
 					);
@@ -109,6 +83,11 @@ namespace FPMAS {
 				int export_node_num;
 				ZOLTAN_ID_PTR export_node_global_ids;
 				int* export_node_procs;
+				// When importing nodes, obsolete ghost nodes are stored when
+				// the real node has been imported. It is the safely deleted in
+				// arc::mid_migrate_pp_fn once associated arcs have eventually 
+				// been exported
+				std::set<unsigned long> obsoleteGhosts;
 
 				// Arc migration buffers
 				int export_arcs_num;
@@ -188,6 +167,7 @@ namespace FPMAS {
 		template<class T> void DistributedGraph<T>::setZoltanArcMigration() {
 			zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T>, this);
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
+			zoltan.Set_Mid_Migrate_PP_Fn(zoltan::arc::mid_migrate_pp_fn<T>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
 			zoltan.Set_Post_Migrate_PP_Fn(zoltan::arc::post_migrate_pp_fn<T>, this);
 		}

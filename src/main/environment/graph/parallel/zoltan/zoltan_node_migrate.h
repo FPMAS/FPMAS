@@ -158,7 +158,7 @@ namespace FPMAS {
 						Node<T> node = json_node.get<Node<T>>();
 
 						if(graph->getGhost()->getNodes().count(node.getId()) > 0)
-							graph->getGhost()->removeNode(node.getId());
+							graph->obsoleteGhosts.insert(node.getId());
 
 						graph->buildNode(node);
 
@@ -174,7 +174,7 @@ namespace FPMAS {
 				 * exports have been performed.
 				 *
 				 * In our context, this functions computes arcs that need to be
-				 * sent to each process according to exported nodes, and store
+				 * sent to each process according to exported nodes, and stores
 				 * those information in the proper DistributedGraph buffers.
 				 *
 				 * For each node, all incoming and outgoing arcs are 
@@ -253,6 +253,7 @@ namespace FPMAS {
 										arc->getId(),
 										export_procs[i]
 										);
+
 							if(exportedArcPairs.count(arc_proc_pair) == 0) {
 								arcsToExport.push_back(arc);
 								// Arcs will be sent to the proc and part associated to

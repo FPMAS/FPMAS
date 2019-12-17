@@ -98,12 +98,12 @@ namespace FPMAS {
 							
 							// Finally, serialize the node with the eventual
 							// aditionnal fields
-							std::string serial_node = json_arc.dump();
+							std::string serial_arc = json_arc.dump();
 
-							sizes[i] = serial_node.size() + 1;
+							sizes[i] = serial_arc.size() + 1;
 
 							// Updates the cache
-							graph->arc_serialization_cache[arc->getId()] = serial_node;
+							graph->arc_serialization_cache[arc->getId()] = serial_arc;
 						}
 
 					}
@@ -153,6 +153,12 @@ namespace FPMAS {
 
 						// Retrieves the serialized node
 						std::string arc_str = serial_cache->at(id);
+						Arc<T>* arc;
+						try {
+						arc = graph->getArcs().at(id);
+						} catch (const std::exception& e) {
+							arc = graph->getGhost()->getArcs().at(id);
+						}
 
 						// Copy str to zoltan buffer
 						std::sprintf(&buf[idx[i]], "%s", arc_str.c_str());
@@ -160,6 +166,29 @@ namespace FPMAS {
 					// Clears the cache : all objects have been packed
 					serial_cache->clear();
 				}
+
+				template <class T> void mid_migrate_pp_fn(
+						void *data,
+						int num_gid_entries,
+						int num_lid_entries,
+						int num_import,
+						ZOLTAN_ID_PTR import_global_ids,
+						ZOLTAN_ID_PTR import_local_ids,
+						int *import_procs,
+						int *import_to_part,
+						int num_export,
+						ZOLTAN_ID_PTR export_global_ids,
+						ZOLTAN_ID_PTR export_local_ids,
+						int *export_procs,
+						int *export_to_part,
+						int *ierr) {
+					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					for(auto nodeId : graph->obsoleteGhosts) {
+						graph->getGhost()->removeNode(nodeId);
+					}
+					graph->obsoleteGhosts.clear();
+				}
+
 
 				/**
 				 * Deserializes received arcs to the local distributed graph.
@@ -205,6 +234,8 @@ namespace FPMAS {
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
 						Arc<T> tempArc = json_arc.get<Arc<T>>();
+						
+						
 
 						unsigned long sourceId = tempArc.getSourceNode()->getId();
 						bool sourceNodeIsLocal = graph->getNodes().count(
@@ -244,7 +275,7 @@ namespace FPMAS {
 								// using a GhostArc
 								graph->getGhost()->link(graph->getNode(sourceId), ghost, tempArc.getId());
 							}
-							else {
+							else if (targetNodeIsLocal) {
 								// The target node of the received arc is
 								// contained in the local graph, so the source
 								// node is distant
@@ -262,6 +293,12 @@ namespace FPMAS {
 									ghost = graph->getGhost()->getNodes().at(sourceId);
 								}
 								graph->getGhost()->link(ghost, graph->getNode(targetId), tempArc.getId());
+							}
+							else {
+								throw std::runtime_error(
+										"Invalid arc received : [" + std::to_string(sourceId) + "," + std::to_string(targetId) + "]"
+										);
+
 							}
 						}
 						else {
@@ -335,8 +372,6 @@ namespace FPMAS {
 					}
 					// Builds the ghost nodes
 					for(auto node : ghostNodesToBuild) {
-						// exportedNodeIds are ignored when creating links, so
-						// that no link between ghost nodes will be created
 						graph->getGhost()->buildNode(*node, exportedNodeIds);
 					}
 

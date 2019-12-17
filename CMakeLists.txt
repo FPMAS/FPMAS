@@ -12,7 +12,11 @@ set(MPI_CXX_COMPILE_OPTIONS "-g")
 set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
 MPI context")
 
-message("Number of used procs : ${N_PROC}")
+message("-- Number of used procs : ${N_PROC}")
+if(N_PROC GREATER MPIEXEC_MAX_NUMPROCS)
+	message("-- Enabling hardware threads cpus")
+	set(MPIEXEC_PREFLAGS "--use-hwthread-cpus")
+endif()
 
 if(MPIEXEC_EXECUTABLE)
 	message("-- Found mpiexec : ${MPIEXEC_EXECUTABLE}")

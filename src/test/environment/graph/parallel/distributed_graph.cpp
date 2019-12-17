@@ -262,17 +262,21 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 		if(dg.getMpiCommunicator().getRank() % 2 == 0) {
 			dg.getNodes().begin()->second->setWeight(3.);
 		}
-
+		
 		dg.distribute();
-
-		if(dg.getMpiCommunicator().getRank() % 2 == 0) {
+		if(dg.getNodes().begin()->second->getWeight() == 3.) {
 			ASSERT_EQ(dg.getNodes().size(), 1);
+			ASSERT_EQ(dg.getNodes().begin()->second->getWeight(), 3.);
 			ASSERT_EQ(dg.getGhost()->getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 1);
 		}
 		else {
 			ASSERT_EQ(dg.getNodes().size(), 3);
+			for(auto node : dg.getNodes()) {
+				ASSERT_EQ(node.second->getWeight(), 1.);
+			}
 			ASSERT_EQ(dg.getGhost()->getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 3);
 		}
+
 		ASSERT_EQ(
 			dg.getGhost()->getArcs().size(), 
 			dg.getNodes().size() * 2 * dg.getGhost()->getNodes().size()
