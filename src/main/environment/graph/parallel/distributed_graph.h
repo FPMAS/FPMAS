@@ -17,6 +17,14 @@
 using FPMAS::communication::MpiCommunicator;
 using FPMAS::graph::proxy::Proxy;
 
+#define ZOLTAN_OBJ_SIZE_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
+#define ZOLTAN_PACK_OBJ_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
+#define ZOLTAN_UNPACK_OBJ_ARGS void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
+#define ZOLTAN_MID_POST_MIGRATE_ARGS \
+	void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *, \
+    int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
+
+
 namespace FPMAS {
 	namespace graph {
 
@@ -29,34 +37,32 @@ namespace FPMAS {
 		 * distributed across available processors using Zoltan.
 		 */
 		template<class T> class DistributedGraph : public Graph<T> {
-			friend void zoltan::node::obj_size_multi_fn<T>(
-				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
-			friend void zoltan::arc::obj_size_multi_fn<T>(
-				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
-			friend void zoltan::node::pack_obj_multi_fn<T>(
-				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
-			friend void zoltan::arc::pack_obj_multi_fn<T>(
-				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
-			friend void zoltan::node::unpack_obj_multi_fn<T>(
-					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
-					);
-			friend void zoltan::arc::unpack_obj_multi_fn<T>(
-					void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
-					);
-			friend void zoltan::node::post_migrate_pp_fn<T>(
-					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
-      				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
-					);
-			friend void zoltan::arc::mid_migrate_pp_fn<T>(
-					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
-      				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
-					);
-			friend void zoltan::arc::post_migrate_pp_fn<T>(
-					void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *,
-      				int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
-					);
+			friend void zoltan::node::obj_size_multi_fn<T>(ZOLTAN_OBJ_SIZE_ARGS);
+			friend void zoltan::arc::obj_size_multi_fn<T>(ZOLTAN_OBJ_SIZE_ARGS);
+
+			friend void zoltan::node::pack_obj_multi_fn<T>(ZOLTAN_PACK_OBJ_ARGS);
+			friend void zoltan::arc::pack_obj_multi_fn<T>(ZOLTAN_PACK_OBJ_ARGS);
+
+			friend void zoltan::node::unpack_obj_multi_fn<T>(ZOLTAN_UNPACK_OBJ_ARGS);
+			friend void zoltan::arc::unpack_obj_multi_fn<T>(ZOLTAN_UNPACK_OBJ_ARGS);
+
+			friend void zoltan::node::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::node::post_migrate_pp_fn_olz<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+
+			friend void zoltan::arc::mid_migrate_pp_fn<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::post_migrate_pp_fn_olz<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+
+			public:
+				enum SyncMode {
+					NONE,
+					OLZ
+				};
 
 			private:
+				SyncMode syncMode;
+				ZOLTAN_POST_MIGRATE_PP_FN* node_post_migrate_fn; // Defined according to sync mode
+				ZOLTAN_POST_MIGRATE_PP_FN* arc_post_migrate_fn; // Defined according to sync mode
 				MpiCommunicator mpiCommunicator;
 				Zoltan zoltan;
 				Proxy proxy;
@@ -96,7 +102,7 @@ namespace FPMAS {
 			
 
 			public:
-				DistributedGraph<T>();
+				DistributedGraph<T>(SyncMode syncMode = OLZ);
 				MpiCommunicator getMpiCommunicator() const;
 				Proxy* getProxy();
 				GhostGraph<T>* getGhost();
@@ -110,8 +116,19 @@ namespace FPMAS {
 		 * Instanciates and configure a new Zoltan instance accross all the
 		 * available cores.
 		 */
-		template<class T> DistributedGraph<T>::DistributedGraph()
-			: ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
+		template<class T> DistributedGraph<T>::DistributedGraph(SyncMode syncMode)
+			: syncMode(syncMode), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
+
+			switch(syncMode) {
+				case NONE:
+					this->node_post_migrate_fn = &FPMAS::graph::zoltan::node::post_migrate_pp_fn_no_sync<T>;
+					this->arc_post_migrate_fn = &FPMAS::graph::zoltan::arc::post_migrate_pp_fn_no_sync<T>;
+					break;
+				case OLZ:
+					this->node_post_migrate_fn = &FPMAS::graph::zoltan::node::post_migrate_pp_fn_olz<T>;
+					this->arc_post_migrate_fn = &FPMAS::graph::zoltan::arc::post_migrate_pp_fn_olz<T>;
+					break;
+			}
 
 			FPMAS::config::zoltan_config(&this->zoltan);
 
@@ -158,7 +175,8 @@ namespace FPMAS {
 			zoltan.Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<T>, this);
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T>, this);
-			zoltan.Set_Post_Migrate_PP_Fn(zoltan::node::post_migrate_pp_fn<T>, this);
+			zoltan.Set_Mid_Migrate_PP_Fn(NULL);
+			zoltan.Set_Post_Migrate_PP_Fn(this->node_post_migrate_fn, this);
 		}
 
 		/**
@@ -167,9 +185,16 @@ namespace FPMAS {
 		template<class T> void DistributedGraph<T>::setZoltanArcMigration() {
 			zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T>, this);
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
-			zoltan.Set_Mid_Migrate_PP_Fn(zoltan::arc::mid_migrate_pp_fn<T>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
-			zoltan.Set_Post_Migrate_PP_Fn(zoltan::arc::post_migrate_pp_fn<T>, this);
+
+			if(this->syncMode == OLZ) {
+				zoltan.Set_Mid_Migrate_PP_Fn(zoltan::arc::mid_migrate_pp_fn<T>, this);
+			}
+			else {
+				zoltan.Set_Post_Migrate_PP_Fn(NULL);
+			}
+
+			zoltan.Set_Post_Migrate_PP_Fn(this->arc_post_migrate_fn, this);
 		}
 
 		/**

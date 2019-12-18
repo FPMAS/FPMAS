@@ -162,36 +162,9 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 
 }
 
-using FPMAS::graph::zoltan::node::post_migrate_pp_fn;
-
-// Only modify graph private internal structure (set up arc export lists)
-// In consecuence, no real assertion is made there, but the function is still
-// executed to check for memory issues or other runtime errors
 /*
- *TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, post_migrate_test) {
- *    unsigned int export_global_ids[4];
- *    write_zoltan_id(0ul, &export_global_ids[0]);
- *    write_zoltan_id(85250ul, &export_global_ids[2]);
- *
- *    // Fake export info
- *    int export_procs[2] = {0, 1};
- *    int export_parts[2] = {0, 1};
- *
- *    post_migrate_pp_fn<int>(
- *        &dg,
- *        2,
- *        0,
- *        0,
- *        nullptr,
- *        nullptr,
- *        nullptr,
- *        nullptr,
- *        2,
- *        export_global_ids,
- *        nullptr,
- *        export_procs,
- *        export_parts,
- *        &err);
- *}
- *
+ * post_migrate functions are not tested, because they only change the internal
+ * structure of the DistributedGraph.
+ * Their behavior are indirectly tested through the
+ * DistributedGraph::distribute() functions in the different sync mode cases.
  */

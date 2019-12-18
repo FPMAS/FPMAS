@@ -288,6 +288,50 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 
 }
 
+class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
+	protected:
+		DistributedGraph<int> dg = DistributedGraph<int>(DistributedGraph<int>::SyncMode::NONE);
+		std::vector<int*> data;
+		void TearDown() override {
+			for(auto d : data) {
+				delete d;
+			}
+		}
+
+	void SetUp() override {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+					data.push_back(new int(i));
+					dg.buildNode(i, data.back());
+				}
+				int id = 0;
+				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+					for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
+						if(i != j) {
+							dg.link(i, j, id++);
+						}
+					}
+				}
+			}
+		}
+};
+
+TEST_F(Mpi_DistributeCompleteGraphTest_NoSync, no_sync_distribution) {
+	dg.distribute();
+
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getArcs().size(), 2);
+
+	for (auto node : dg.getNodes()) {
+		ASSERT_EQ(node.second->getIncomingArcs().size(), 1);
+		ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
+	}
+
+	ASSERT_EQ(dg.getGhost()->getNodes().size(), 0);
+	ASSERT_EQ(dg.getGhost()->getArcs().size(), 0);
+
+}
+
 class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
 	void SetUp() override {
 		int numProcs = dg.getMpiCommunicator().getSize();

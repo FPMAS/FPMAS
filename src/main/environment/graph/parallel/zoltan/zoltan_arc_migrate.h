@@ -161,7 +161,7 @@ namespace FPMAS {
 						std::string arc_str = serial_cache->at(id);
 						Arc<T>* arc;
 						try {
-						arc = graph->getArcs().at(id);
+							arc = graph->getArcs().at(id);
 						} catch (const std::exception& e) {
 							arc = graph->getGhost()->getArcs().at(id);
 						}
@@ -260,8 +260,6 @@ namespace FPMAS {
 						// nodes are on this local process or not.
 						Arc<T> tempArc = json_arc.get<Arc<T>>();
 						
-						
-
 						unsigned long sourceId = tempArc.getSourceNode()->getId();
 						bool sourceNodeIsLocal = graph->getNodes().count(
 								sourceId
@@ -347,7 +345,7 @@ namespace FPMAS {
 				 * This process builds required ghost nodes and deletes useless
 				 * ones according to nodes that were just exported.
 				 */
-				template<class T> void post_migrate_pp_fn(
+				template<class T> void post_migrate_pp_fn_olz(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -417,6 +415,30 @@ namespace FPMAS {
 					graph->getGhost()->clear(ghostFossils);
 				}
 
+				template<class T> void post_migrate_pp_fn_no_sync(
+						void *data,
+						int num_gid_entries,
+						int num_lid_entries,
+						int num_import,
+						ZOLTAN_ID_PTR import_global_ids,
+						ZOLTAN_ID_PTR import_local_ids,
+						int *import_procs,
+						int *import_to_part,
+						int num_export,
+						ZOLTAN_ID_PTR export_global_ids,
+						ZOLTAN_ID_PTR export_local_ids,
+						int *export_procs,
+						int *export_to_part,
+						int *ierr) {
+					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+
+					// Removes exported nodes from the local graph
+					for(int i = 0; i < graph->export_node_num; i++) {
+						graph->removeNode(zoltan::utils::read_zoltan_id(
+									&graph->export_node_global_ids[i * num_gid_entries])
+								);
+					}
+				}
 			}
 		}
 	}
