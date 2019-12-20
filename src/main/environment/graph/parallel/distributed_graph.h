@@ -32,6 +32,11 @@ namespace FPMAS {
 		template<class T> class GhostArc;
 		template<class T> class GhostGraph;
 
+		enum SyncMode {
+			NONE,
+			OLZ
+		};
+
 		/**
 		 * A DistributedGraph is a special graph instance that can be
 		 * distributed across available processors using Zoltan.
@@ -52,12 +57,6 @@ namespace FPMAS {
 			friend void zoltan::arc::mid_migrate_pp_fn<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 			friend void zoltan::arc::post_migrate_pp_fn_olz<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
-
-			public:
-				enum SyncMode {
-					NONE,
-					OLZ
-				};
 
 			private:
 				SyncMode syncMode;
@@ -99,10 +98,12 @@ namespace FPMAS {
 				int export_arcs_num;
 				ZOLTAN_ID_PTR export_arcs_global_ids;
 				int* export_arcs_procs;
-			
+				void setUpZoltan();
 
 			public:
 				DistributedGraph<T>(SyncMode syncMode = OLZ);
+				DistributedGraph<T>(std::initializer_list<int>, SyncMode syncMode = OLZ);
+				SyncMode getSyncMode() const;
 				MpiCommunicator getMpiCommunicator() const;
 				Proxy* getProxy();
 				GhostGraph<T>* getGhost();
@@ -110,16 +111,8 @@ namespace FPMAS {
 				void distribute();
 		};
 
-		/**
-		 * DistributedGraph constructor.
-		 *
-		 * Instanciates and configure a new Zoltan instance accross all the
-		 * available cores.
-		 */
-		template<class T> DistributedGraph<T>::DistributedGraph(SyncMode syncMode)
-			: syncMode(syncMode), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
-
-			switch(syncMode) {
+		template<class T> void DistributedGraph<T>::setUpZoltan() {
+			switch(this->syncMode) {
 				case NONE:
 					this->node_post_migrate_fn = &FPMAS::graph::zoltan::node::post_migrate_pp_fn_no_sync<T>;
 					this->arc_post_migrate_fn = &FPMAS::graph::zoltan::arc::post_migrate_pp_fn_no_sync<T>;
@@ -137,6 +130,27 @@ namespace FPMAS {
 			this->zoltan.Set_Obj_List_Fn(FPMAS::graph::zoltan::obj_list<T>, this);
 			this->zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::zoltan::num_edges_multi_fn<T>, this);
 			this->zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::zoltan::edge_list_multi_fn<T>, this);
+		}
+
+		/**
+		 * DistributedGraph constructor.
+		 *
+		 * Instanciates and configure a new Zoltan instance accross all the
+		 * available cores.
+		 */
+
+		template<class T> DistributedGraph<T>::DistributedGraph(SyncMode syncMode)
+			: syncMode(syncMode), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
+				this->setUpZoltan();
+			}
+
+		template<class T> DistributedGraph<T>::DistributedGraph(std::initializer_list<int> ranks, SyncMode syncMode)
+			: syncMode(syncMode), mpiCommunicator(ranks), ghost(this), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
+				this->setUpZoltan();
+			}
+
+		template<class T> SyncMode DistributedGraph<T>::getSyncMode() const {
+			return this->syncMode;
 		}
 
 		/**

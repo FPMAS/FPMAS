@@ -79,7 +79,7 @@ namespace FPMAS {
 
 				private:
 					MpiCommunicator mpiCommunicator;
-					Zoltan zoltan;
+					Zoltan* zoltan;
 					const int localProc;
 					std::unordered_map<unsigned long, int> origins;
 					std::unordered_map<unsigned long, int> currentLocations;
@@ -92,6 +92,7 @@ namespace FPMAS {
 
 				public:
 					Proxy(int localProc);
+					Proxy(int localProc, std::initializer_list<int>);
 					int getLocalProc() const;
 					void setOrigin(unsigned long, int);
 					void setCurrentLocation(unsigned long, int);

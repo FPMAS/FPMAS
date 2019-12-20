@@ -12,6 +12,7 @@
 #include "node.h"
 #include "arc.h"
 #include "fossil.h"
+#include "mpi.h"
 
 namespace FPMAS {
 	/**
@@ -331,21 +332,32 @@ namespace FPMAS {
 		template<class T> FossilArcs<T> Graph<T>::removeNode(unsigned long node_id) {
 			Node<T>* node_to_remove = nodes.at(node_id);
 
+			int rank;
+			MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 			FossilArcs<T> fossil;
 			// Deletes incoming arcs
 			for(auto arc : node_to_remove->getIncomingArcs()) {
+				std::cout << rank << " - Node " << node_id << " in : " << arc->getId() << ", " << arc->getSourceNode()->getId() << std::endl;
 				if(!this->unlink(arc))
 					fossil.incomingArcs.insert(arc);
 			}
 
 			// Deletes outgoing arcs
 			for(auto arc : node_to_remove->getOutgoingArcs()) {
+				std::cout << rank << " - Node " << node_id << " out : "  << arc->getId() << ", " << arc->getTargetNode()->getId() << std::endl;
 				if(!this->unlink(arc))
 					fossil.outgoingArcs.insert(arc);
 			}
+			for(auto arc : fossil.incomingArcs)
+				if(this->nodes.count(arc->getSourceNode()->getId()) > 0)
+					std::cout << rank << " - ERROR in : " << arc->getId() << ", " << arc->getSourceNode()->getId() << std::endl;
+			for(auto arc : fossil.outgoingArcs)
+				if(this->nodes.count(arc->getTargetNode()->getId()) > 0)
+					std::cout << rank << " - ERROR out : " << arc->getId() << ", " << arc->getTargetNode()->getId() << std::endl;
 			// Removes the node from the global nodes index
 			nodes.erase(node_id);
 			// Deletes the node
+			std::cout << "Delete " << node_id << std::endl;
 			delete node_to_remove;
 
 			return fossil;

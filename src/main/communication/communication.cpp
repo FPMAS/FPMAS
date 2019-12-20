@@ -1,4 +1,5 @@
 #include "communication.h"
+#include <cstdarg>
 
 using FPMAS::communication::MpiCommunicator;
 
@@ -10,6 +11,22 @@ MpiCommunicator::MpiCommunicator() {
 	MPI_Group worldGroup;
 	MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);
 	MPI_Group_union(worldGroup, MPI_GROUP_EMPTY, &this->group);
+	MPI_Comm_create(MPI_COMM_WORLD, this->group, &this->comm);
+
+	MPI_Comm_rank(this->comm, &this->rank);
+	MPI_Comm_size(this->comm, &this->size);
+}
+
+MpiCommunicator::MpiCommunicator(std::initializer_list<int> ranks) {
+	int _ranks[ranks.size()];
+	int i = 0;
+	for(auto rank : ranks) {
+		_ranks[i++] = rank;
+	}
+
+	MPI_Group worldGroup;
+	MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);
+	MPI_Group_incl(worldGroup, ranks.size(), _ranks, &this->group);
 	MPI_Comm_create(MPI_COMM_WORLD, this->group, &this->comm);
 
 	MPI_Comm_rank(this->comm, &this->rank);

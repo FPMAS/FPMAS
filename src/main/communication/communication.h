@@ -21,6 +21,7 @@ namespace FPMAS {
 
 			public:
 				MpiCommunicator();
+				MpiCommunicator(std::initializer_list<int>);
 				MPI_Group getMpiGroup();
 				MPI_Comm getMpiComm();
 

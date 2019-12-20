@@ -20,6 +20,31 @@ TEST(Mpi_ProxyTest, build_proxy_test) {
 
 }
 
+TEST(Mpi_ProxyTest, build_proxy_with_ranks) {
+	int global_size;
+	MPI_Comm_size(MPI_COMM_WORLD, &global_size);
+	int current_rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
+
+	if(global_size == 1) {
+		Proxy p (current_rank, {current_rank});
+	}
+	else if(global_size >= 2) {
+		if(!(global_size % 2 == 1 && current_rank == (global_size-1))) {
+			if(current_rank % 2 == 0) {
+				Proxy p (current_rank, {current_rank, (current_rank + 1) % global_size});
+			} else {
+				Proxy p (current_rank, {(global_size + current_rank - 1) % global_size, current_rank});
+			}
+		}
+		else {
+			// MPI requirement : all processes must call MPI_Comm_create, that
+			// is called to build MpiCommunicators used by proxies
+			Proxy p (current_rank, {current_rank});
+		}
+	}
+}
+
 class Mpi_ZoltanProxyTest : public ::testing::Test {
 	protected:
 

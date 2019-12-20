@@ -8,6 +8,52 @@
 
 using FPMAS::test_utils::assert_contains;
 
+TEST(Mpi_DistributedGraph, build_with_ranks_test) {
+	int global_size;
+	MPI_Comm_size(MPI_COMM_WORLD, &global_size);
+	int current_rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
+
+	if(global_size == 1) {
+		DistributedGraph<int> dg {current_rank};
+		ASSERT_EQ(dg.getMpiCommunicator().getSize(), 1);
+		ASSERT_EQ(dg.getMpiCommunicator().getRank(), current_rank);
+	}
+	else if(global_size >= 2) {
+		if(!(global_size % 2 == 1 && current_rank == (global_size-1))) {
+			int size;
+			MPI_Comm_size(MPI_COMM_WORLD, &size);
+			DistributedGraph<int>* dg;
+
+			if(current_rank % 2 == 0) {
+				dg = new DistributedGraph<int> {current_rank, (current_rank + 1) % size};
+				ASSERT_EQ(dg->getMpiCommunicator().getRank(), 0);
+			}
+			else {
+				dg = new DistributedGraph<int> {(size + current_rank - 1) % size, current_rank};
+				ASSERT_EQ(dg->getMpiCommunicator().getRank(), 1);
+			}
+			std::cout << "build ok" << std::endl;
+			ASSERT_EQ(dg->getMpiCommunicator().getSize(), 2);
+			delete dg;
+		}
+		else {
+			DistributedGraph<int> dg {current_rank};
+			ASSERT_EQ(dg.getMpiCommunicator().getSize(), 1);
+			ASSERT_EQ(dg.getMpiCommunicator().getRank(), 0);
+		}
+	}
+}
+
+TEST(Mpi_DistributedGraph, build_with_ranks_and_sync_mode_test) {
+	int current_rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
+
+	using FPMAS::graph::SyncMode::NONE;
+	DistributedGraph<int> dg = DistributedGraph<int>({current_rank}, NONE);
+	ASSERT_EQ(dg.getSyncMode(), NONE); 
+}
+
 class DistributeGraphTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>();
@@ -152,7 +198,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, check_graph) {
 		}
 	}
 	else {
-		PRINT_2_PROCS_WARNING(check_graph);
+		PRINT_MIN_PROCS_WARNING(check_graph, 2);
 	}
 
 };
@@ -290,7 +336,7 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:
-		DistributedGraph<int> dg = DistributedGraph<int>(DistributedGraph<int>::SyncMode::NONE);
+		DistributedGraph<int> dg = DistributedGraph<int>(FPMAS::graph::SyncMode::NONE);
 		std::vector<int*> data;
 		void TearDown() override {
 			for(auto d : data) {
@@ -333,53 +379,57 @@ TEST_F(Mpi_DistributeCompleteGraphTest_NoSync, no_sync_distribution) {
 }
 
 class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
-	void SetUp() override {
-		int numProcs = dg.getMpiCommunicator().getSize();
-		// Creates numberProcs + 1 nodes, so that a proc will have two nodes
-		if(dg.getMpiCommunicator().getRank() == 0) {
-			for (int i = 0; i < numProcs + 1; ++i) {
-				data.push_back(new int(i));
-				dg.buildNode(i, data.back());
-			}
 
-			// We don't know which nodes will be on the same proc, so we link each
-			// node to all others
-			unsigned long arcId = 0;
-			for (int i = 0; i < numProcs + 1; ++i) {
-				for (int j = 0; j < numProcs + 1; ++j) {
-					if(i != j)
-						dg.link(i, j, arcId++);
+	void SetUp() override {
+		if(dg.getMpiCommunicator().getRank() == 0) {
+		for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+			data.push_back(new int(i));
+			dg.buildNode(i, data.back());
+		}
+		int id = 0;
+		for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+			for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
+				if(i != j) {
+					dg.link(i, j, id++);
 				}
 			}
 		}
+		}
 	}
 };
-/*
- *
- *TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
- *    dg.distribute();
- *
- *    for(int i = 0; i < 2; i++) {
- *        bool procWithTwoNodes = false;
- *        std::cout << i << " " << dg.getMpiCommunicator().getRank() << " : " << dg.getNodes().size() << std::endl;
- *        if(dg.getNodes().size() == 2) {
- *            float total_weight = 0.;
- *            for(auto node : dg.getNodes())
- *                total_weight += node.second->getWeight();
- *
- *            ASSERT_NE(total_weight, 4.);
- *            procWithTwoNodes = true;
- *            // One of the nodes become too heavy
- *            dg.getNodes().begin()->second->setWeight(
- *                    3.
- *                    );
- *        }
- *        dg.distribute();
- *
- *        if(procWithTwoNodes) {
- *            ASSERT_EQ(dg.getNodes().size(), 1);
- *        }
- *    }
- *
- *}
- */
+
+TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
+	// Initial distrib
+	dg.distribute();
+	dg.getProxy()->synchronize();
+	ASSERT_EQ(dg.getNodes().size(), 2);
+
+		std::cout << "0 " << dg.getMpiCommunicator().getRank() << " : " << dg.getNodes().size() << std::endl;
+
+	// First round
+	if(dg.getMpiCommunicator().getRank() % 2 == 1)
+		dg.getNodes().begin()->second->setWeight(3.);
+
+	dg.distribute();
+	dg.getProxy()->synchronize();
+	std::cout << "1 " << dg.getMpiCommunicator().getRank() << " : " << dg.getNodes().size() << std::endl;
+	
+	float totalWeight = 0.;
+	for(auto node : dg.getNodes())
+		totalWeight += node.second->getWeight();
+	ASSERT_LE(totalWeight, 3.);
+
+	// Second round
+		for(auto node : dg.getNodes()) {
+			if(node.second->getWeight() == 3.)
+				node.second->setWeight(1.);
+		}
+	dg.distribute();
+	// dg.getProxy()->synchronize();
+	totalWeight = 0.;
+	for(auto node : dg.getNodes())
+		totalWeight += node.second->getWeight();
+	std::cout << "2 " << dg.getMpiCommunicator().getRank() << " : " << dg.getNodes().size() << " - " << totalWeight << std::endl;
+	ASSERT_LE(totalWeight, 2.);
+
+}

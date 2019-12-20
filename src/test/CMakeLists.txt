@@ -41,7 +41,9 @@ set(SOURCES
 ## Graph
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/distributed_graph.cpp)
+	environment/graph/parallel/distributed_graph.cpp
+	environment/graph/parallel/distributed_graph_edge_cases.cpp
+	)
 
 set(SOURCES
 	${SOURCES}
