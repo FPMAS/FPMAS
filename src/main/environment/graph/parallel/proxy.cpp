@@ -31,17 +31,13 @@ namespace FPMAS {
 				this->zoltan->Set_Obj_Size_Multi_Fn(obj_size_multi_fn, this);
 				this->zoltan->Set_Pack_Obj_Multi_Fn(pack_obj_multi_fn, this);
 				this->zoltan->Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
-				std::cout << "Proxy ok" << std::endl;
 			}
 
 			Proxy::Proxy(int localProc, std::initializer_list<int> ranks) : localProc(localProc), mpiCommunicator(ranks) {
 
-				std::cout << "build zoltan" << std::endl;
 				int rank;
 				MPI_Comm_rank(this->mpiCommunicator.getMpiComm(), &rank);
-				std::cout << localProc << " " << rank << " " << this->mpiCommunicator.getRank() << std::endl;
 				this->zoltan =  new Zoltan(this->mpiCommunicator.getMpiComm());
-				std::cout << "zoltan ok" << std::endl;
 
 				// Apply general configuration, even if load balancing won't be used with
 				// this instance
@@ -50,7 +46,6 @@ namespace FPMAS {
 				this->zoltan->Set_Obj_Size_Multi_Fn(obj_size_multi_fn, this);
 				this->zoltan->Set_Pack_Obj_Multi_Fn(pack_obj_multi_fn, this);
 				this->zoltan->Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
-				std::cout << "Proxy ok" << std::endl;
 			}
 
 			/**

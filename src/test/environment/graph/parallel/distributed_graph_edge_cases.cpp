@@ -47,13 +47,6 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		}
 		else if(rank == 2) {
 			ASSERT_EQ(dg.getNodes().size(), 2);
-			for(auto node : dg.getNodes()) {
-				std::cout << "n:" << node.first << std::endl;
-				for(auto in : node.second->getIncomingArcs())
-					std::cout << "in:" << in->getId() << std::endl;
-				for(auto out : node.second->getOutgoingArcs())
-					std::cout << "out:" << out->getId() << std::endl;
-			}
 			dg.getGhost()->clear(dg.removeNode(0ul));
 		}
 		dg.distribute();

@@ -209,7 +209,6 @@ namespace FPMAS {
 						int *ierr) {
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 					for(auto nodeId : graph->obsoleteGhosts) {
-						std::cout << graph->getMpiCommunicator().getRank() << " - Delete obsolete ghost " << nodeId << std::endl;
 						graph->getGhost()->removeNode(nodeId);
 					}
 					graph->obsoleteGhosts.clear();
@@ -252,14 +251,30 @@ namespace FPMAS {
 						int *ierr) {
 
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+
+					// The same arc can be imported multiple times from
+					// different procs.
+					// e.g : When nodes 1 and 0 are linked and live on different
+					// procs, and they are both imported to an other proc.
+					// This set records which arcs are imported and is used to
+					// ignore already imported ones.
+					// TODO: this might probably be optimized, removing
+					// duplicates when import / export maps are computed
+					std::set<unsigned long> receivedArcIds;
 					
 					for (int i = 0; i < num_ids; ++i) {
 						json json_arc = json::parse(&buf[idx[i]]);
+
+						// Unserialize and process the arc only if it has not
+						// been imported already.
+						if(receivedArcIds.count(json_arc.at("id").get<unsigned long>()) == 0) {
 
 						// Json is unserialized in a temporary arc, with "fake"
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
 						Arc<T> tempArc = json_arc.get<Arc<T>>();
+
+						receivedArcIds.insert(tempArc.getId());
 						
 						unsigned long sourceId = tempArc.getSourceNode()->getId();
 						bool sourceNodeIsLocal = graph->getNodes().count(
@@ -295,7 +310,6 @@ namespace FPMAS {
 									// Use the existing GhostNode
 									ghost = graph->getGhost()->getNodes().at(targetId);
 								}
-								std::cout << graph->getMpiCommunicator().getRank() << " - link ghost " << sourceId << "," << ghost->getId() << std::endl;
 								// Links the ghost node with the local node
 								// using a GhostArc
 								graph->getGhost()->link(graph->getNode(sourceId), ghost, tempArc.getId());
@@ -317,7 +331,6 @@ namespace FPMAS {
 								else {
 									ghost = graph->getGhost()->getNodes().at(sourceId);
 								}
-								std::cout << graph->getMpiCommunicator().getRank() << " - link ghost " << ghost->getId() << "," << targetId << std::endl;
 								graph->getGhost()->link(ghost, graph->getNode(targetId), tempArc.getId());
 							}
 							else {
@@ -331,7 +344,6 @@ namespace FPMAS {
 							// Both nodes are local, no ghost needs to be used.
 							// tempArc source and targetNodes are automatically
 							// deleted by this function
-							std::cout << graph->getMpiCommunicator().getRank() << " - link " << sourceId << "," << targetId << std::endl;
 							graph->link(
 								sourceId,
 								targetId,
@@ -340,6 +352,7 @@ namespace FPMAS {
 						}
 						delete tempArc.getSourceNode();
 						delete tempArc.getTargetNode();
+					}
 					}
 				}
 
@@ -369,17 +382,12 @@ namespace FPMAS {
 					// graph, creating corresponding ghost nodes when necessary
 					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
 
-					for(auto node : graph->getNodes()) {
-						std::cout << graph->getMpiCommunicator().getRank() << " - node " << node.first << std::endl;
-					}
 					// Computes the set of ids of exported nodes
 					std::set<unsigned long> exportedNodeIds;
 					for(int i = 0; i < graph->export_node_num; i++) {
 						exportedNodeIds.insert(zoltan::utils::read_zoltan_id(
 									&graph->export_node_global_ids[i * num_gid_entries])
 								);
-						std::cout << graph->getMpiCommunicator().getRank() << " - export " << zoltan::utils::read_zoltan_id(
-									&graph->export_node_global_ids[i * num_gid_entries]) << std::endl;
 					}
 
 					// Computes which ghost nodes must be created.
@@ -413,19 +421,15 @@ namespace FPMAS {
 						graph->getGhost()->buildNode(*node, exportedNodeIds);
 					}
 
-					std::cout << graph->getMpiCommunicator().getRank() << " - Delete nodes" << std::endl;
 					// Remove nodes and collect fossils
 					FossilArcs<T> ghostFossils;
 					for(auto id : exportedNodeIds) {
 						ghostFossils.merge(graph->removeNode(id));
 					}
-					std::cout << graph->getMpiCommunicator().getRank() << " - Deleted nodes" << std::endl;
 
 					// TODO : schema with fossils example
 					// For info, see the Fossil and removeNode docs
-					std::cout << graph->getMpiCommunicator().getRank() << " - Delete ghost nodes" << std::endl;
 					graph->getGhost()->clear(ghostFossils);
-					std::cout << graph->getMpiCommunicator().getRank() << " - Deleted ghost nodes" << std::endl;
 				}
 
 				template<class T> void post_migrate_pp_fn_no_sync(

@@ -42,14 +42,11 @@ TEST(Mpi_MpiCommunicatorTest, build_from_ranks_test) {
 		if(!(global_size % 2 == 1 && current_rank == (global_size-1))) {
 			MpiCommunicator* comm;
 			if(current_rank % 2 == 0) {
-				std::cout << current_rank << ", " << (current_rank + 1) % global_size << std::endl;
 				comm = new MpiCommunicator {current_rank, (current_rank + 1) % global_size};
 			}
 			else {
-				std::cout << (current_rank - 1) % global_size << ", " << current_rank << std::endl;
 				comm = new MpiCommunicator {(current_rank - 1) % global_size, current_rank};
 			}
-			std::cout << current_rank << " build ok" << std::endl;
 
 			int comm_size;
 			MPI_Comm_size(comm->getMpiComm(), &comm_size);
@@ -65,7 +62,6 @@ TEST(Mpi_MpiCommunicatorTest, build_from_ranks_test) {
 			// MPI requirement : all processes must call MPI_Comm_create
 			MpiCommunicator comm {global_size - 1};
 		}
-		std::cout << current_rank << " ok" << std::endl;
 	}
 
 }

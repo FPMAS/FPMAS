@@ -282,11 +282,9 @@ namespace FPMAS {
 				if(ghost->getIncomingArcs().size() == 0
 						&& ghost->getOutgoingArcs().size() == 0) {
 					this->ghostNodes.erase(ghost->getId());
-					std::cout << this->localGraph->getMpiCommunicator().getRank() << " - delete n " << ghost->getId() << std::endl;
 					delete ghost;
 				}
 				this->ghostArcs.erase(arc->getId());
-				std::cout << this->localGraph->getMpiCommunicator().getRank() << " - delete " << arc->getId() << std::endl;
 				delete arc;
 			}
 			for(auto arc : fossil.outgoingArcs) {
@@ -295,11 +293,9 @@ namespace FPMAS {
 				if(ghost->getIncomingArcs().size() == 0
 						&& ghost->getOutgoingArcs().size() == 0) {
 					this->ghostNodes.erase(ghost->getId());
-					std::cout << this->localGraph->getMpiCommunicator().getRank() << " - delete n " << ghost->getId() << std::endl;
 					delete ghost;
 				}
 				this->ghostArcs.erase(arc->getId());
-				std::cout << this->localGraph->getMpiCommunicator().getRank() << " - delete " << arc->getId() << std::endl;
 				delete arc;
 			}
 		}

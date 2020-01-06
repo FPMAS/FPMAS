@@ -33,7 +33,6 @@ TEST(Mpi_DistributedGraph, build_with_ranks_test) {
 				dg = new DistributedGraph<int> {(size + current_rank - 1) % size, current_rank};
 				ASSERT_EQ(dg->getMpiCommunicator().getRank(), 1);
 			}
-			std::cout << "build ok" << std::endl;
 			ASSERT_EQ(dg->getMpiCommunicator().getSize(), 2);
 			delete dg;
 		}
@@ -404,15 +403,12 @@ TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
 	dg.getProxy()->synchronize();
 	ASSERT_EQ(dg.getNodes().size(), 2);
 
-		std::cout << "0 " << dg.getMpiCommunicator().getRank() << " : " << dg.getNodes().size() << std::endl;
-
 	// First round
 	if(dg.getMpiCommunicator().getRank() % 2 == 1)
 		dg.getNodes().begin()->second->setWeight(3.);
 
 	dg.distribute();
 	dg.getProxy()->synchronize();
-	std::cout << "1 " << dg.getMpiCommunicator().getRank() << " : " << dg.getNodes().size() << std::endl;
 	
 	float totalWeight = 0.;
 	for(auto node : dg.getNodes())
@@ -429,7 +425,6 @@ TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
 	totalWeight = 0.;
 	for(auto node : dg.getNodes())
 		totalWeight += node.second->getWeight();
-	std::cout << "2 " << dg.getMpiCommunicator().getRank() << " : " << dg.getNodes().size() << " - " << totalWeight << std::endl;
 	ASSERT_LE(totalWeight, 2.);
 
 }
