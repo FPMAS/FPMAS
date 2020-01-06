@@ -17,6 +17,31 @@ MpiCommunicator::MpiCommunicator() {
 	MPI_Comm_size(this->comm, &this->size);
 }
 
+/**
+ * Builds an MPI group and the associated communicator that contains the ranks
+ * specified as arguments.
+ *
+ * ```cpp
+ * MpiCommunicator comm {0, 1, 2};
+ * ```
+ *
+ * Notice that such calls must follow the same requirements as the
+ * `MPI_Comm_create` function. In consequence, **all the current procs** must
+ * perform a call to this function to be valid.
+ *
+ * ```cpp
+ * int current_ranks;
+ * MPI_Comm_rank(&current_rank);
+ *
+ * if(current_rank < 3) {
+ * 	MpiCommunicator comm {0, 1, 2};
+ * } else {
+ * 	MpiCommunicator comm {current_rank};
+ * }
+ * ```
+ *
+ * @param ranks ranks to include in the group / communicator
+ */
 MpiCommunicator::MpiCommunicator(std::initializer_list<int> ranks) {
 	int _ranks[ranks.size()];
 	int i = 0;

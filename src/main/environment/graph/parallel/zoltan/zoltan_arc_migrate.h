@@ -357,7 +357,8 @@ namespace FPMAS {
 				}
 
 				/**
-				 * Called once nodes and arcs migration processes are done.
+				 * Called once nodes and arcs migration processes are done when
+				 * using the SyncMode::OLZ synchronization mode.
 				 *
 				 * This process builds required ghost nodes and deletes useless
 				 * ones according to nodes that were just exported.
@@ -432,6 +433,13 @@ namespace FPMAS {
 					graph->getGhost()->clear(ghostFossils);
 				}
 
+				/**
+				 * Called once nodes and arcs migration processes are done when
+				 * using the SyncMode::NONE synchronization mode.
+				 *
+				 * In this mode, the only thing to do is deleting the exported
+				 * nodes from the local graph.
+				 */
 				template<class T> void post_migrate_pp_fn_no_sync(
 						void *data,
 						int num_gid_entries,

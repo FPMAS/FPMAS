@@ -19,13 +19,14 @@ var searchData=
   ['getrank_36',['getRank',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ab42b4ae3d9c4ba19fd8d274053815721',1,'FPMAS::communication::MpiCommunicator']]],
   ['getsize_37',['getSize',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#ac39e6d8d2bdd9e410e1f901e8294d478',1,'FPMAS::communication::MpiCommunicator']]],
   ['getsourcenode_38',['getSourceNode',['../classFPMAS_1_1graph_1_1Arc.html#a9a80164719cbdf061e9026dc0e0edda5',1,'FPMAS::graph::Arc']]],
-  ['gettargetnode_39',['getTargetNode',['../classFPMAS_1_1graph_1_1Arc.html#a99fa2126d02dd806b097645a29f42468',1,'FPMAS::graph::Arc']]],
-  ['getweight_40',['getWeight',['../classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029',1,'FPMAS::graph::Node']]],
-  ['ghostarc_41',['GhostArc',['../classFPMAS_1_1graph_1_1GhostArc.html',1,'FPMAS::graph']]],
-  ['ghostgraph_42',['GhostGraph',['../classFPMAS_1_1graph_1_1GhostGraph.html',1,'FPMAS::graph::GhostGraph&lt; T &gt;'],['../classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35',1,'FPMAS::graph::GhostGraph::GhostGraph()']]],
-  ['ghostnode_43',['GhostNode',['../classFPMAS_1_1graph_1_1GhostNode.html',1,'FPMAS::graph']]],
-  ['graph_44',['Graph',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graph_3c_20fpmas_3a_3aagent_3a_3aagentbase_20_3e_45',['Graph&lt; FPMAS::agent::AgentBase &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graph_3c_20nestedgraph_3c_20t_20_3e_20_3e_46',['Graph&lt; NestedGraph&lt; T &gt; &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
-  ['graphitem_47',['GraphItem',['../classFPMAS_1_1graph_1_1GraphItem.html',1,'FPMAS::graph::GraphItem'],['../classFPMAS_1_1graph_1_1GraphItem.html#afd23b425d0bc751537344c36590ce229',1,'FPMAS::graph::GraphItem::GraphItem()'],['../classFPMAS_1_1graph_1_1GraphItem.html#a159dd35b8081e445705818c32eb8d23c',1,'FPMAS::graph::GraphItem::GraphItem(unsigned long)']]]
+  ['getsyncmode_39',['getSyncMode',['../classFPMAS_1_1graph_1_1DistributedGraph.html#a5a7fe8bd8819e22b3fd85f94d9893def',1,'FPMAS::graph::DistributedGraph']]],
+  ['gettargetnode_40',['getTargetNode',['../classFPMAS_1_1graph_1_1Arc.html#a99fa2126d02dd806b097645a29f42468',1,'FPMAS::graph::Arc']]],
+  ['getweight_41',['getWeight',['../classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029',1,'FPMAS::graph::Node']]],
+  ['ghostarc_42',['GhostArc',['../classFPMAS_1_1graph_1_1GhostArc.html',1,'FPMAS::graph']]],
+  ['ghostgraph_43',['GhostGraph',['../classFPMAS_1_1graph_1_1GhostGraph.html',1,'FPMAS::graph::GhostGraph&lt; T &gt;'],['../classFPMAS_1_1graph_1_1GhostGraph.html#af19e5f8af0aa0b0c84cfb3ae005dcc35',1,'FPMAS::graph::GhostGraph::GhostGraph()']]],
+  ['ghostnode_44',['GhostNode',['../classFPMAS_1_1graph_1_1GhostNode.html',1,'FPMAS::graph']]],
+  ['graph_45',['Graph',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graph_3c_20fpmas_3a_3aagent_3a_3aagentbase_20_3e_46',['Graph&lt; FPMAS::agent::AgentBase &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graph_3c_20nestedgraph_3c_20t_20_3e_20_3e_47',['Graph&lt; NestedGraph&lt; T &gt; &gt;',['../classFPMAS_1_1graph_1_1Graph.html',1,'FPMAS::graph']]],
+  ['graphitem_48',['GraphItem',['../classFPMAS_1_1graph_1_1GraphItem.html',1,'FPMAS::graph::GraphItem'],['../classFPMAS_1_1graph_1_1GraphItem.html#afd23b425d0bc751537344c36590ce229',1,'FPMAS::graph::GraphItem::GraphItem()'],['../classFPMAS_1_1graph_1_1GraphItem.html#a159dd35b8081e445705818c32eb8d23c',1,'FPMAS::graph::GraphItem::GraphItem(unsigned long)']]]
 ];

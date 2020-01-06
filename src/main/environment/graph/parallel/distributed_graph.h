@@ -32,8 +32,28 @@ namespace FPMAS {
 		template<class T> class GhostArc;
 		template<class T> class GhostGraph;
 
+		/**
+		 * Describes the different graph synchronization modes available.
+		 *
+		 * Once the synchronization mode has been setup, required operations
+		 * when migrating nodes are automatically performed.
+		 */
 		enum SyncMode {
+			/**
+			 * In this mode, no overlapping zone is used.
+			 *
+			 * When a node is exported, its connections with nodes that are not
+			 * exported on the same process are lost.
+			 */
 			NONE,
+			/**
+			 * In this mode, overlapping zones (represented as a "ghost graph")
+			 * are built and synchronized on each proc.
+			 *
+			 * When a node is exported, ghost arcs and nodes are built to keep
+			 * consistency across processes, and ghost nodes data is fetched
+			 * at each GhostGraph::synchronize() call.
+			 */
 			OLZ
 		};
 
@@ -133,22 +153,34 @@ namespace FPMAS {
 		}
 
 		/**
-		 * DistributedGraph constructor.
-		 *
-		 * Instanciates and configure a new Zoltan instance accross all the
-		 * available cores.
+		 * Builds a DistributedGraph hover all the available procs, using the
+		 * specified synchronization mode (default to OLZ).
+		 * 
+		 * @param syncMode synchronization mode
 		 */
-
 		template<class T> DistributedGraph<T>::DistributedGraph(SyncMode syncMode)
 			: syncMode(syncMode), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
 
+		/**
+		 * Builds a DistributedGraph hover the specified procs, using the
+		 * specified synchronization mode (default to OLZ).
+		 *
+		 * @param ranks ranks of the procs on which the DistributedGraph is
+		 * built
+		 * @param syncMode synchronization mode
+		 */
 		template<class T> DistributedGraph<T>::DistributedGraph(std::initializer_list<int> ranks, SyncMode syncMode)
 			: syncMode(syncMode), mpiCommunicator(ranks), ghost(this), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
 
+		/**
+		 * Returns the current synchronization mode.
+		 *
+		 * @return synchronization mode
+		 */
 		template<class T> SyncMode DistributedGraph<T>::getSyncMode() const {
 			return this->syncMode;
 		}

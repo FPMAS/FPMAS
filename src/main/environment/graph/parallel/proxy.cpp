@@ -33,6 +33,16 @@ namespace FPMAS {
 				this->zoltan->Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
 			}
 
+			/**
+			 * Builds a proxy managing the specified ranks.
+			 *
+			 * Because the proxy instanciates a new MpiCommunicator, this
+			 * constructor follows the same requirements as
+			 * MpiCommunicator(std::initializer_list<int>).
+			 *
+			 * @param localProc current MPI rank
+			 * @param ranks ranks to include in this proxy
+			 */
 			Proxy::Proxy(int localProc, std::initializer_list<int> ranks) : localProc(localProc), mpiCommunicator(ranks) {
 
 				int rank;
