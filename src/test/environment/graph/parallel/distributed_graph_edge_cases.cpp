@@ -2,6 +2,18 @@
 #include "environment/graph/parallel/distributed_graph.h"
 #include "test_utils/test_utils.h"
 
+/*
+ * Illustrates a specific import case that caused a bug, because the same arc
+ * was imported twice at the same proc.
+ *
+ * This happens notably in the following case, reproduced in this test :
+ * - nodes 0 and 1 are linked and lives in distinct procs
+ * - they are both imported to an other proc
+ * - in consecuence, because each original proc does not know that the other
+ *   node will also be imported to the destination proc, the arc connecting the
+ *   two nodes (represented as a ghost arc on both original process) is
+ *   imported twice to the destination proc.
+ */
 TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 	int rank, size;
 	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
@@ -48,6 +60,14 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		else if(rank == 2) {
 			ASSERT_EQ(dg.getNodes().size(), 2);
 			dg.getGhost()->clear(dg.removeNode(0ul));
+
+			// Checks that the node has been correctly removed with the
+			// associated arc
+			ASSERT_EQ(dg.getNodes().size(), 1);
+			ASSERT_EQ(dg.getNodes().begin()->second->getIncomingArcs().size(), 0);
+			ASSERT_EQ(dg.getArcs().size(), 0);
+			ASSERT_EQ(dg.getGhost()->getNodes().size(), 0);
+			ASSERT_EQ(dg.getGhost()->getArcs().size(), 0);
 		}
 		dg.distribute();
 	}
