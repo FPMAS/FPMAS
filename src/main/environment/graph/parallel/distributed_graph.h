@@ -153,7 +153,7 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Builds a DistributedGraph hover all the available procs, using the
+		 * Builds a DistributedGraph over all the available procs, using the
 		 * specified synchronization mode (default to OLZ).
 		 * 
 		 * @param syncMode synchronization mode
@@ -164,7 +164,7 @@ namespace FPMAS {
 			}
 
 		/**
-		 * Builds a DistributedGraph hover the specified procs, using the
+		 * Builds a DistributedGraph over the specified procs, using the
 		 * specified synchronization mode (default to OLZ).
 		 *
 		 * @param ranks ranks of the procs on which the DistributedGraph is
