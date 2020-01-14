@@ -26,7 +26,6 @@ namespace FPMAS {
 			private:
 				GhostNode(unsigned long);
 				GhostNode(Node<T>);
-
 		};
 
 		template<class T> GhostNode<T>::GhostNode(unsigned long id)

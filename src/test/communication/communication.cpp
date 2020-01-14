@@ -1,3 +1,6 @@
+#include <thread>
+#include <chrono>
+
 #include "gtest/gtest.h"
 #include "communication/communication.h"
 
@@ -63,5 +66,31 @@ TEST(Mpi_MpiCommunicatorTest, build_from_ranks_test) {
 			MpiCommunicator comm {global_size - 1};
 		}
 	}
+
+}
+
+TEST(Mpi_TerminationTest, simple_termination_test) {
+	MpiCommunicator comm;
+
+	comm.terminate();
+
+}
+
+using namespace std::chrono_literals;
+
+TEST(Mpi_TerminationTest, termination_test_with_delay) {
+	MpiCommunicator comm;
+
+	auto start = std::chrono::system_clock::now();
+	if(comm.getRank() == 0) {
+		std::this_thread::sleep_for(1s);
+	}
+
+	comm.terminate();
+	auto end = std::chrono::system_clock::now();
+
+	std::chrono::duration delay = end - start;
+
+	ASSERT_GE(delay, 1s);
 
 }

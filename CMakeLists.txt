@@ -4,6 +4,8 @@ project(fpmas)
 
 add_subdirectory(googletest)
 
+set(CMAKE_CXX_STANDARD 17)
+
 # MPI setup
 find_package(MPI REQUIRED)
 set(CMAKE_CXX_COMPILER ${MPI_CXX_COMPILER})
