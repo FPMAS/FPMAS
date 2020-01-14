@@ -5,6 +5,8 @@
 #include <string>
 #include <mpi.h>
 
+#include "resource_handler.h"
+
 namespace FPMAS {
 	namespace communication {
 		enum State {
@@ -30,16 +32,12 @@ namespace FPMAS {
 		 * containing all the processes available.
 		 */
 		class MpiCommunicator {
-			private:
+			protected:
 				int size;
 				int rank;
-				State state = State::ACTIVE;
-				Color color = Color::WHITE;
 
 				MPI_Group group;
 				MPI_Comm comm;
-
-				void send(std::string, int, Tag);
 
 			public:
 				MpiCommunicator();
@@ -49,10 +47,29 @@ namespace FPMAS {
 
 				int getRank() const;
 				int getSize() const;
+
+
+		};
+
+		class TerminableMpiCommunicator : public MpiCommunicator {
+			private:
+				State state = State::ACTIVE;
+				Color color = Color::WHITE;
+
+				ResourceHandler* resourceHandler;
+
+				void send(std::string, int, Tag);
+				void respondToRead(int, unsigned long);
+
+			public:
+				TerminableMpiCommunicator(ResourceHandler*);
+				TerminableMpiCommunicator(ResourceHandler*, std::initializer_list<int>);
+
 				State getState() const;
 
-				void terminate();
+				std::string read(unsigned long, int);
 
+				void terminate();
 
 		};
 	}

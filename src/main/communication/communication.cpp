@@ -2,6 +2,7 @@
 #include <cstdarg>
 
 using FPMAS::communication::MpiCommunicator;
+using FPMAS::communication::TerminableMpiCommunicator;
 using FPMAS::communication::Tag;
 
 /**
@@ -97,11 +98,46 @@ int MpiCommunicator::getSize() const {
 	return this->size;
 }
 
-void send(std::string message, int destination, Tag tag) {
+TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceHandler* resourceHandler)
+	: resourceHandler(resourceHandler) {};
+
+TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceHandler* resourceHandler, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceHandler(resourceHandler) {};
+
+std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
+	MPI_Request req;
+	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->comm, &req);
+
+	int request_sent;
+	MPI_Status request_status;
+	MPI_Test(&req, &request_sent, &request_status);
+
+	int read_flag;
+	MPI_Status read_status;
+	while(request_sent == 0) {
+		MPI_Iprobe(MPI_ANY_SOURCE, Tag::READ, this->comm, &read_flag, &read_status);
+		if(read_flag > 0) {
+			unsigned long id;
+			MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, read_status.MPI_SOURCE, Tag::READ, this->comm, &read_status);
+			this->respondToRead(read_status.MPI_SOURCE, id);
+		}
+		MPI_Test(&req, &request_sent, &request_status);
+	}
+	int count;
+	MPI_Get_count(&request_status, MPI_CHAR, &count);
+	char data[count];
+	MPI_Recv(&data, count, MPI_CHAR, location, Tag::READ, this->comm, &request_status);
+
+	return std::string(data);
 
 }
 
-void MpiCommunicator::terminate() {
+void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id) {
+	this->color = Color::BLACK;
+	std::string data = this->resourceHandler->getResource(id);
+	MPI_Ssend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::READ, this->comm);
+}
+
+void TerminableMpiCommunicator::terminate() {
 	this->state = State::PASSIVE;
 	bool end = false;
 	int token;
@@ -146,10 +182,19 @@ void MpiCommunicator::terminate() {
 				end = true;
 				break;
 
-			default:
+			case READ:
+				this->state = State::ACTIVE;
+
+				int id;
 				int count;
 				MPI_Get_count(&status, MPI_INT, &count);
-				this->state = State::ACTIVE;
+
+				MPI_Recv(&id, count, MPI_UNSIGNED_LONG, status.MPI_SOURCE, Tag::READ, this->comm, &status);
+
+				this->respondToRead(status.MPI_SOURCE, id);
+				break;
+
+			default:
 				
 				// Handle ACQUIRE and READ messages
 				// If send response, become active and black color
