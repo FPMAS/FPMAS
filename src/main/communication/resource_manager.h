@@ -5,7 +5,7 @@
 
 namespace FPMAS {
 	namespace communication {
-		class ResourceHandler {
+		class ResourceManager {
 			public:
 				virtual std::string getResource(unsigned long) = 0;
 		};

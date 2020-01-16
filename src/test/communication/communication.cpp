@@ -6,9 +6,9 @@ using namespace std::chrono_literals;
 #include "gtest/gtest.h"
 #include "test_utils/test_utils.h"
 #include "communication/communication.h"
-#include "communication/resource_handler.h"
+#include "communication/resource_manager.h"
 
-using FPMAS::communication::ResourceHandler;
+using FPMAS::communication::ResourceManager;
 using FPMAS::communication::MpiCommunicator;
 using FPMAS::communication::TerminableMpiCommunicator;
 
@@ -75,7 +75,7 @@ TEST(Mpi_MpiCommunicatorTest, build_from_ranks_test) {
 
 }
 
-class TestResourceHandler : public ResourceHandler {
+class TestResourceHandler : public ResourceManager {
 	public:
 		std::chrono::milliseconds delay;
 		TestResourceHandler() : delay(0) {

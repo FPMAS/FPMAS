@@ -5,7 +5,7 @@
 #include <string>
 #include <mpi.h>
 
-#include "resource_handler.h"
+#include "resource_manager.h"
 
 namespace FPMAS {
 	namespace communication {
@@ -48,7 +48,6 @@ namespace FPMAS {
 				int getRank() const;
 				int getSize() const;
 
-
 		};
 
 		class TerminableMpiCommunicator : public MpiCommunicator {
@@ -56,18 +55,19 @@ namespace FPMAS {
 				State state = State::ACTIVE;
 				Color color = Color::WHITE;
 
-				ResourceHandler* resourceHandler;
+				ResourceManager* resourceManager;
 
 				void send(std::string, int, Tag);
 				void respondToRead(int, unsigned long);
 
 			public:
-				TerminableMpiCommunicator(ResourceHandler*);
-				TerminableMpiCommunicator(ResourceHandler*, std::initializer_list<int>);
+				TerminableMpiCommunicator(ResourceManager*);
+				TerminableMpiCommunicator(ResourceManager*, std::initializer_list<int>);
 
 				State getState() const;
 
 				std::string read(unsigned long, int);
+				std::string acquire(unsigned long, int);
 
 				void terminate();
 

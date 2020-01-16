@@ -98,10 +98,10 @@ int MpiCommunicator::getSize() const {
 	return this->size;
 }
 
-TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceHandler* resourceHandler)
-	: resourceHandler(resourceHandler) {};
+TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceManager)
+	: resourceManager(resourceManager) {};
 
-TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceHandler* resourceHandler, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceHandler(resourceHandler) {};
+TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceManager, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceManager(resourceManager) {};
 
 std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 	MPI_Request req;
@@ -133,7 +133,7 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 
 void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id) {
 	this->color = Color::BLACK;
-	std::string data = this->resourceHandler->getResource(id);
+	std::string data = this->resourceManager->getResource(id);
 	MPI_Ssend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::READ, this->comm);
 }
 
