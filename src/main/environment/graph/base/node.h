@@ -26,18 +26,18 @@ namespace FPMAS {
 			friend Arc<T>::Arc(unsigned long, Node<T>*, Node<T>*);
 			// Grants access to private Node constructor
 			friend Node<T>* Graph<T>::buildNode(unsigned long);
-			friend Node<T>* Graph<T>::buildNode(unsigned long id, T *data);
-			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data);
+			friend Node<T>* Graph<T>::buildNode(unsigned long id, T data);
+			friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T data);
 			// Allows removeNode function to remove deleted arcs
 			friend bool Graph<T>::unlink(Arc<T>*);
 
 			protected:
 			Node(unsigned long);
-			Node(unsigned long, T*);
-			Node(unsigned long, float, T*);
+			Node(unsigned long, T);
+			Node(unsigned long, float, T);
 
 			private:
-			T* data;
+			T data;
 			float weight = 1.;
 
 			protected:
@@ -51,8 +51,8 @@ namespace FPMAS {
 			std::vector<Arc<T>*> outgoingArcs;
 
 			public:
-			T* getData() const;
-			void setData(T*);
+			T getData() const;
+			void setData(T);
 			float getWeight() const;
 			void setWeight(float);
 			std::vector<Arc<T>*> getIncomingArcs() const;
@@ -79,7 +79,7 @@ namespace FPMAS {
 		 * @param id node id
 		 * @param data pointer to node data
 		 */
-		template<class T> Node<T>::Node(unsigned long id, T* data) : GraphItem(id) {
+		template<class T> Node<T>::Node(unsigned long id, T data) : GraphItem(id) {
 			this->data = data;
 		}
 
@@ -90,7 +90,7 @@ namespace FPMAS {
 		 * @param weight node weight
 		 * @param data pointer to node data
 		 */
-		template<class T> Node<T>::Node(unsigned long id, float weight, T* data) : GraphItem(id) {
+		template<class T> Node<T>::Node(unsigned long id, float weight, T data) : GraphItem(id) {
 			this->weight = weight;
 			this->data = data;
 		}
@@ -100,7 +100,7 @@ namespace FPMAS {
 		 *
 		 * @return pointer to node's data
 		 */
-		template<class T> T* Node<T>::getData() const {
+		template<class T> T Node<T>::getData() const {
 			return this->data;
 		}
 
@@ -109,7 +109,7 @@ namespace FPMAS {
 		 *
 		 * @param data pointer to node data
 		 */
-		template<class T> void Node<T>::setData(T* data) {
+		template<class T> void Node<T>::setData(T data) {
 			this->data = data;
 		}
 

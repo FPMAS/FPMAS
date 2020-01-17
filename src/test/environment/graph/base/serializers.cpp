@@ -12,7 +12,7 @@ using FPMAS::graph::Arc;
 TEST(NodeSerializer, simple_node_serialization) {
 
 	Graph<int> g;
-	Node<int>* node = g.buildNode(85250, 3.2, new int(0));
+	Node<int>* node = g.buildNode(85250, 3.2, 0);
 
 	// The node to_json method will be automatically called
 	json j = json{{"node", *node}};
@@ -21,7 +21,7 @@ TEST(NodeSerializer, simple_node_serialization) {
 	// See https://float.exposed/0x404ccccd
 	ASSERT_EQ("{\"node\":{\"data\":0,\"id\":85250,\"weight\":3.200000047683716}}", j.dump());
 
-	delete node->getData();
+	// delete node->getData();
 
 }
 
@@ -37,13 +37,13 @@ TEST(NodeSerializer, simple_node_deserialization) {
 
 	Node<int> node = node_json.get<Node<int>>();
 
-	ASSERT_EQ(*node.getData(), 0);
+	ASSERT_EQ(node.getData(), 0);
 	ASSERT_EQ(node.getId(), 85250ul);
 	ASSERT_EQ(node.getWeight(), 2.3f);
 
 	// In this case, data has been allocated at unserialization time and should
 	// be deleted manually
-	delete node.getData();
+	// delete node.getData();
 }
 
 TEST(NodeSerializer, node_deserialization_no_data) {
@@ -56,17 +56,15 @@ TEST(NodeSerializer, node_deserialization_no_data) {
 
 	ASSERT_EQ(node.getId(), 85250ul);
 
-	// Data can still be set manually, and no delete is necessary
-	int i = 2;
-	node.setData(&i);
-	ASSERT_EQ(*node.getData(), 2);
+	node.setData(2);
+	ASSERT_EQ(node.getData(), 2);
 
 }
 
 TEST(ArcSerializer, simple_arc_serializer) {
 	Graph<int> g;
-	Node<int>* n1 = g.buildNode(0ul, new int(0));
-	Node<int>* n2 = g.buildNode(1ul, new int(1));
+	Node<int>* n1 = g.buildNode(0ul, 0);
+	Node<int>* n2 = g.buildNode(1ul, 1);
 	g.link(n1, n2, 0ul);
 
 	Arc<int>* a = n1->getOutgoingArcs()[0];
@@ -75,8 +73,8 @@ TEST(ArcSerializer, simple_arc_serializer) {
 
 	ASSERT_EQ(j.dump(), "{\"id\":0,\"link\":[0,1]}");
 
-	delete n1->getData();
-	delete n2->getData();
+	// delete n1->getData();
+	// delete n2->getData();
 }
 
 TEST(ArcSerializer, simple_arc_deserializer) {
@@ -96,13 +94,13 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 TEST(GraphSerializer, simple_graph_serialization) {
 
 	Graph<int> g;
-	Node<int>* n = g.buildNode(0ul, new int(0));
+	Node<int>* n = g.buildNode(0ul, 0);
 
 	json j = g;
 
 	ASSERT_EQ(j.dump(), "{\"arcs\":[],\"nodes\":[{\"data\":0,\"id\":0,\"weight\":1.0}]}");
 
-	delete n->getData();
+	// delete n->getData();
 }
 
 TEST_F(SampleGraphTest, sample_graph_serialization) {
@@ -136,9 +134,9 @@ TEST(GraphSerializer, simple_graph_deserialization) {
 	ASSERT_EQ(g.getNodes().size(), 1);
 	ASSERT_EQ(g.getNodes().count(0ul), 1);
 	ASSERT_EQ(g.getNodes().find(0ul)->second->getId(), 0ul);
-	ASSERT_EQ(*g.getNodes().find(0ul)->second->getData(), 0);
+	ASSERT_EQ(g.getNodes().find(0ul)->second->getData(), 0);
 
-	delete g.getNodes().find(0ul)->second->getData();
+	// delete g.getNodes().find(0ul)->second->getData();
 }
 
 TEST_F(SampleGraphTest, sample_graph_deserialization) {
@@ -163,7 +161,7 @@ TEST_F(SampleGraphTest, sample_graph_deserialization) {
 	testSampleGraphStructure(&graph);
 
 	for(auto node : graph.getNodes()) {
-		delete node.second->getData();
+		// delete node.second->getData();
 	}
 
 }

@@ -52,7 +52,7 @@ namespace nlohmann {
 		 *
 		 * To avoid this, the `data` field can be ignored and it is still
 		 * possible to manually associate data to nodes using the
-		 * Node::setData(T*) function.
+		 * Node::setData(T) function.
 		 *
 		 * @param j input json
 		 * @return deserialized json
@@ -64,7 +64,7 @@ namespace nlohmann {
 					);
 			if(j.contains("data"))
 				node.setData(
-					new T(j.at("data").get<T>())
+					T(j.at("data").get<T>())
 				);
 
 			if(j.contains("weight"))
@@ -103,7 +103,7 @@ namespace nlohmann {
 		static void to_json(json& j, const Node<T>& node) {
 			j = json{
 				{"id", node.getId()},
-				{"data", *node.getData()},
+				{"data", node.getData()},
 				{"weight", node.getWeight()}
 			};
 		}

@@ -7,13 +7,6 @@ using FPMAS::graph::zoltan::ghost::pack_obj_multi_fn;
 
 class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:
-		static std::array<int*, 2> data;
-
-		static void SetUpTestSuite() {
-			data[0] = new int(1);
-			data[1] = new int(-2);
-		}
-
 		DistributedGraph<int> dg = DistributedGraph<int>();
 
 		// Migration
@@ -26,8 +19,8 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 		int err;
 
 		void SetUp() override {
-			dg.buildNode(0ul, 1.5, data[0]);
-			dg.buildNode(1ul, 2., data[1]);
+			dg.buildNode(0ul, 1.5, 1);
+			dg.buildNode(1ul, 2., -2);
 		}
 
 		void write_migration_sizes() {
@@ -69,14 +62,7 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 					&err
 					);
 		}
-
-		static void TearDownTestSuite() {
-			delete data[0];
-			delete data[1];
-		}
-
 };
-std::array<int*, 2> Mpi_ZoltanGhostNodeMigrationFunctionsTest::data;
 
 TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, obj_size_multi_test) {
 
@@ -110,12 +96,10 @@ using FPMAS::graph::zoltan::ghost::unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 
-	int data0 = 8;
-	dg.getNode(0)->setData(&data0);
+	dg.getNode(0)->setData(8);
 	dg.getNode(0)->setWeight(5.);
 
-	int data1 = 12;
-	dg.getNode(1)->setData(&data1);
+	dg.getNode(1)->setData(12);
 	dg.getNode(1)->setWeight(4.);
 
 	write_migration_sizes();
@@ -137,9 +121,9 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 		buf,
 		&err);
 
-	ASSERT_EQ(*dg.getGhost()->getNodes().at(0)->getData(), 8);
+	ASSERT_EQ(dg.getGhost()->getNodes().at(0)->getData(), 8);
 	ASSERT_EQ(dg.getGhost()->getNodes().at(0)->getWeight(), 5.);
 
-	ASSERT_EQ(*dg.getGhost()->getNodes().at(1)->getData(), 12);
+	ASSERT_EQ(dg.getGhost()->getNodes().at(1)->getData(), 12);
 	ASSERT_EQ(dg.getGhost()->getNodes().at(1)->getWeight(), 4.);
 }

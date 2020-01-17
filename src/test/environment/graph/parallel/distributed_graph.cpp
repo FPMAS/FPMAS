@@ -56,12 +56,6 @@ TEST(Mpi_DistributedGraph, build_with_ranks_and_sync_mode_test) {
 class DistributeGraphTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>();
-		std::vector<int*> data;
-		void TearDown() override {
-			for(auto d : data) {
-				delete d;
-			}
-		}
 };
 
 class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
@@ -69,8 +63,7 @@ class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					data.push_back(new int(i));
-					dg.buildNode((unsigned long) i, data.back());
+					dg.buildNode((unsigned long) i, i);
 				}
 			}
 		}
@@ -123,10 +116,8 @@ class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					data.push_back(new int(2 * i));
-					dg.buildNode((unsigned long) 2 * i, data.back());
-					data.push_back(new int(2 * i + 1));
-					dg.buildNode((unsigned long) 2 * i + 1, data.back());
+					dg.buildNode((unsigned long) 2 * i, 2*i);
+					dg.buildNode((unsigned long) 2 * i + 1, 2*i);
 
 					dg.link(2 * i, 2 * i + 1, i);
 				}
@@ -158,8 +149,7 @@ class Mpi_DistributeGraphWithGhostArcsTest : public DistributeGraphTest {
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					data.push_back(new int(i));
-					dg.buildNode(i, data.back());
+					dg.buildNode(i, i);
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					// Build a ring across the processors
@@ -247,8 +237,7 @@ class Mpi_DistributeCompleteGraphTest : public DistributeGraphTest {
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-					data.push_back(new int(i));
-					dg.buildNode(i, data.back());
+					dg.buildNode(i, i);
 				}
 				int id = 0;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
@@ -336,18 +325,11 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>(FPMAS::graph::SyncMode::NONE);
-		std::vector<int*> data;
-		void TearDown() override {
-			for(auto d : data) {
-				delete d;
-			}
-		}
 
 	void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-					data.push_back(new int(i));
-					dg.buildNode(i, data.back());
+					dg.buildNode(i, i);
 				}
 				int id = 0;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
@@ -382,8 +364,7 @@ class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
 	void SetUp() override {
 		if(dg.getMpiCommunicator().getRank() == 0) {
 		for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-			data.push_back(new int(i));
-			dg.buildNode(i, data.back());
+			dg.buildNode(i, i);
 		}
 		int id = 0;
 		for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {

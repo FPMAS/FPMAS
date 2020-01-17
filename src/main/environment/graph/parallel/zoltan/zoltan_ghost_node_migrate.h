@@ -160,7 +160,7 @@ namespace FPMAS {
 						Node<T> node_update = json_node.get<Node<T>>();
 
 						if(graph->getGhost()->importedNodeIds.count(node_id) == 1) {
-							delete ghost->getData();
+							// delete ghost->getData();
 						} else {
 							graph->getGhost()->importedNodeIds.insert(node_id);
 						}

@@ -13,7 +13,7 @@ namespace FPMAS {
 		class AgentContainer {
 
 			private:
-				Graph<AgentBase> g;
+				Graph<AgentBase*> g;
 
 			public:
 				AgentContainer(SimulationParameters*, Zoltan*);

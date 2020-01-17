@@ -307,7 +307,7 @@ namespace FPMAS {
 		 */
 		template<class T> GhostGraph<T>::~GhostGraph() {
 			for(unsigned long id : this->importedNodeIds) {
-				delete this->ghostNodes.at(id)->getData();
+				// delete this->ghostNodes.at(id)->getData();
 			}
 			for(auto node : this->ghostNodes) {
 				delete node.second;

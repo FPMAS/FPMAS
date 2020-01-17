@@ -118,8 +118,8 @@ namespace FPMAS {
 				std::unordered_map<unsigned long, Arc<T>*> getArcs() const;
 
 				Node<T>* buildNode(unsigned long);
-				Node<T>* buildNode(unsigned long id, T* data);
-				Node<T>* buildNode(unsigned long id, float weight, T* data);
+				Node<T>* buildNode(unsigned long id, T data);
+				Node<T>* buildNode(unsigned long id, float weight, T data);
 
 				Arc<T>* link(Node<T>* source, Node<T>* target, unsigned long arcLabel);
 				Arc<T>* link(unsigned long source_id, unsigned long target_id, unsigned long arcLabel);
@@ -207,7 +207,7 @@ namespace FPMAS {
 		 * @param data pointer to node data
 		 * @return pointer to build node
 		 */
-		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, T *data) {
+		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, T data) {
 			Node<T>* node = new Node<T>(id, data);
 			this->nodes[id] = node;
 			return node;
@@ -222,7 +222,7 @@ namespace FPMAS {
 		 * @param data pointer to node's data
 		 * @return pointer to build node
 		 */
-		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T *data) {
+		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T data) {
 			Node<T>* node = new Node<T>(id, weight, data);
 			this->nodes[id] = node;
 			return node;
@@ -332,8 +332,6 @@ namespace FPMAS {
 		template<class T> FossilArcs<T> Graph<T>::removeNode(unsigned long node_id) {
 			Node<T>* node_to_remove = nodes.at(node_id);
 
-			int rank;
-			MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 			FossilArcs<T> fossil;
 			// Deletes incoming arcs
 			for(auto arc : node_to_remove->getIncomingArcs()) {

@@ -16,14 +16,6 @@ using FPMAS::graph::zoltan::arc::pack_obj_multi_fn;
 
 class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 	protected:
-		static std::array<int*, 3> data;
-
-		static void SetUpTestSuite() {
-			for(int i = 0; i < 3; i++) {
-				data[i] = new int(i);
-			}
-		}
-
 		DistributedGraph<int> dg = DistributedGraph<int>();
 
 		// Migration
@@ -36,9 +28,9 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 		int err;
 
 		void SetUp() override {
-			dg.buildNode(0, 1., data[0]);
-			dg.buildNode(2, 2., data[1]);
-			dg.buildNode(85250, 3., data[2]);
+			dg.buildNode(0, 1., 0);
+			dg.buildNode(2, 2., 1);
+			dg.buildNode(85250, 3., 2);
 
 			dg.link(0, 2, 0);
 			dg.link(2, 0, 1);
@@ -87,16 +79,7 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 					&err
 					);
 		}
-
-		static void TearDownTestSuite() {
-			// delete zz;
-			// delete mpiCommunicator;
-			for(auto i : data) {
-				delete i;
-			}
-		}
 };
-std::array<int*, 3> Mpi_ZoltanArcMigrationFunctionsTest::data;
 
 TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, obj_size_multi_test) {
 
