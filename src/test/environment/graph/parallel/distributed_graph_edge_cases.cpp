@@ -48,7 +48,6 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		}
 
 		dg.distribute();
-		dg.getProxy()->synchronize();
 
 		if(rank == 0) {
 			dg.getNodes().begin()->second->setWeight(1.);

@@ -381,7 +381,6 @@ class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
 TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
 	// Initial distrib
 	dg.distribute();
-	dg.getProxy()->synchronize();
 	ASSERT_EQ(dg.getNodes().size(), 2);
 
 	// First round
@@ -389,7 +388,6 @@ TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
 		dg.getNodes().begin()->second->setWeight(3.);
 
 	dg.distribute();
-	dg.getProxy()->synchronize();
 	
 	float totalWeight = 0.;
 	for(auto node : dg.getNodes())
@@ -403,7 +401,6 @@ TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
 	}
 
 	dg.distribute();
-	// dg.getProxy()->synchronize();
 	totalWeight = 0.;
 	for(auto node : dg.getNodes())
 		totalWeight += node.second->getWeight();

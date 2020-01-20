@@ -350,6 +350,9 @@ namespace FPMAS {
 					&export_to_part
 					);
 
+			// Updates nodes locations according to last migrations
+			this->proxy.synchronize();
+
 			// When called for the first time, PARTITION is used, and so
 			// REPARTITION will be used for all other calls.
 			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
