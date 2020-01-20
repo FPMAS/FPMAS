@@ -391,11 +391,10 @@ namespace FPMAS {
 								);
 					}
 
-					// Computes which ghost nodes must be created.
+					// Builds ghost nodes when necessary.
 					// For each exported node, a ghost node is created if and only
 					// if at least one local node is still connected to the
 					// exported node.
-					std::vector<Node<T>*> ghostNodesToBuild;
 					for(auto id : exportedNodeIds) {
 						Node<T>* node = graph->getNode(id);
 						bool buildGhost = false;
@@ -414,12 +413,8 @@ namespace FPMAS {
 							}
 						}
 						if(buildGhost) {
-							ghostNodesToBuild.push_back(graph->getNode(id));
+							graph->getGhost()->buildNode(*node, exportedNodeIds);
 						}
-					}
-					// Builds the ghost nodes
-					for(auto node : ghostNodesToBuild) {
-						graph->getGhost()->buildNode(*node, exportedNodeIds);
 					}
 
 					// Remove nodes and collect fossils

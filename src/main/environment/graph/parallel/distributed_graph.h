@@ -172,7 +172,7 @@ namespace FPMAS {
 		 * @param syncMode synchronization mode
 		 */
 		template<class T> DistributedGraph<T>::DistributedGraph(std::initializer_list<int> ranks, SyncMode syncMode)
-			: syncMode(syncMode), mpiCommunicator(ranks), ghost(this), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
+			: syncMode(syncMode), mpiCommunicator(ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
 

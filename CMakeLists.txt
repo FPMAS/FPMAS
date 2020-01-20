@@ -47,7 +47,7 @@ if(MPIEXEC_EXECUTABLE)
 		${N_PROC}
 		${MPIEXEC_PREFLAGS}
 		"valgrind"
-		"--suppressions=../mpi.supp"
+		"--suppressions=../mpi_init.supp"
 		"--leak-check=full"
 		"--show-leak-kinds=all"
 		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_mpi_test

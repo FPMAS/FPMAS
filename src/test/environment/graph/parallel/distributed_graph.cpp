@@ -62,7 +62,7 @@ class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
 	protected:
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
-				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
+				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					dg.buildNode((unsigned long) i, i);
 				}
 			}
@@ -363,17 +363,17 @@ class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
 
 	void SetUp() override {
 		if(dg.getMpiCommunicator().getRank() == 0) {
-		for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-			dg.buildNode(i, i);
-		}
-		int id = 0;
-		for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-			for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
-				if(i != j) {
-					dg.link(i, j, id++);
+			for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+				dg.buildNode(i, i);
+			}
+			int id = 0;
+			for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+				for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
+					if(i != j) {
+						dg.link(i, j, id++);
+					}
 				}
 			}
-		}
 		}
 	}
 };
@@ -397,15 +397,15 @@ TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
 	ASSERT_LE(totalWeight, 3.);
 
 	// Second round
-		for(auto node : dg.getNodes()) {
-			if(node.second->getWeight() == 3.)
-				node.second->setWeight(1.);
-		}
+	for(auto node : dg.getNodes()) {
+		if(node.second->getWeight() == 3.)
+			node.second->setWeight(1.);
+	}
+
 	dg.distribute();
 	// dg.getProxy()->synchronize();
 	totalWeight = 0.;
 	for(auto node : dg.getNodes())
 		totalWeight += node.second->getWeight();
 	ASSERT_LE(totalWeight, 2.);
-
 }

@@ -42,15 +42,11 @@ namespace nlohmann {
 		 * `data` and `weight` fields are both optional, with a default weight
 		 * value set to 1.
 		 *
-		 * If a `data` field is specified, the Node data will be *instanciated
-		 * dynamically using a `new` statement and the copy constructor of the
-		 * specified data type T*.
+		 * If a `data` field is specified, the Node data will be unserialized
+		 * using the proper nlohmann deserialization function. It might be the
+		 * responsability of the user to define those function.
 		 *
-		 * Some, in this case, memory will internally be allocated by the
-		 * library, so it is *the responsability of the user* to free the data
-		 * field.
-		 *
-		 * To avoid this, the `data` field can be ignored and it is still
+		 * Else, the `data` field can be ignored and it is still
 		 * possible to manually associate data to nodes using the
 		 * Node::setData(T) function.
 		 *
@@ -64,7 +60,7 @@ namespace nlohmann {
 					);
 			if(j.contains("data"))
 				node.setData(
-					T(j.at("data").get<T>())
+					j.at("data").get<T>()
 				);
 
 			if(j.contains("weight"))
@@ -266,7 +262,7 @@ namespace nlohmann {
 		 * Note that a reference to the graph object, not a reference to the
 		 * pointer, must be used as argument.
 		 * ```{.cpp}
-		 * Graph<T> g = new Graph<T>();
+		 * Graph<T>* g = new Graph<T>();
 		 *
 		 * // Do processing to build the graph
 		 *

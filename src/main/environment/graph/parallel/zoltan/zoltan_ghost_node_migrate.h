@@ -159,12 +159,6 @@ namespace FPMAS {
 						GhostNode<T>* ghost = graph->getGhost()->getNodes().at(node_id);
 						Node<T> node_update = json_node.get<Node<T>>();
 
-						if(graph->getGhost()->importedNodeIds.count(node_id) == 1) {
-							// delete ghost->getData();
-						} else {
-							graph->getGhost()->importedNodeIds.insert(node_id);
-						}
-
 						ghost->setData(node_update.getData());
 						ghost->setWeight(node_update.getWeight());
 					}

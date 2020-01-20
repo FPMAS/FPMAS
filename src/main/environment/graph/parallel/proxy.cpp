@@ -22,15 +22,15 @@ namespace FPMAS {
 			 * @param localProc current MPI rank
 			 */
 			Proxy::Proxy(int localProc) : localProc(localProc) {
-				this->zoltan =  new Zoltan(this->mpiCommunicator.getMpiComm());
+				this->zoltan = Zoltan(this->mpiCommunicator.getMpiComm());
 
 				// Apply general configuration, even if load balancing won't be used with
 				// this instance
-				FPMAS::config::zoltan_config(zoltan);
+				FPMAS::config::zoltan_config(&this->zoltan);
 
-				this->zoltan->Set_Obj_Size_Multi_Fn(obj_size_multi_fn, this);
-				this->zoltan->Set_Pack_Obj_Multi_Fn(pack_obj_multi_fn, this);
-				this->zoltan->Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
+				this->zoltan.Set_Obj_Size_Multi_Fn(obj_size_multi_fn, this);
+				this->zoltan.Set_Pack_Obj_Multi_Fn(pack_obj_multi_fn, this);
+				this->zoltan.Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
 			}
 
 			/**
@@ -47,15 +47,15 @@ namespace FPMAS {
 
 				int rank;
 				MPI_Comm_rank(this->mpiCommunicator.getMpiComm(), &rank);
-				this->zoltan =  new Zoltan(this->mpiCommunicator.getMpiComm());
+				this->zoltan = Zoltan(this->mpiCommunicator.getMpiComm());
 
 				// Apply general configuration, even if load balancing won't be used with
 				// this instance
-				FPMAS::config::zoltan_config(zoltan);
+				FPMAS::config::zoltan_config(&zoltan);
 
-				this->zoltan->Set_Obj_Size_Multi_Fn(obj_size_multi_fn, this);
-				this->zoltan->Set_Pack_Obj_Multi_Fn(pack_obj_multi_fn, this);
-				this->zoltan->Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
+				this->zoltan.Set_Obj_Size_Multi_Fn(obj_size_multi_fn, this);
+				this->zoltan.Set_Pack_Obj_Multi_Fn(pack_obj_multi_fn, this);
+				this->zoltan.Set_Unpack_Obj_Multi_Fn(unpack_obj_multi_fn, this);
 			}
 
 			/**
@@ -182,7 +182,7 @@ namespace FPMAS {
 					i++;
 				}
 
-				this->zoltan->Migrate(
+				this->zoltan.Migrate(
 						-1,
 						NULL,
 						NULL,
@@ -207,7 +207,7 @@ namespace FPMAS {
 					j++;
 				}
 
-				this->zoltan->Migrate(
+				this->zoltan.Migrate(
 						this->currentLocations.size(),
 						import_global_ids,
 						NULL,

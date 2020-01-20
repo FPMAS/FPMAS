@@ -1,0 +1,24 @@
+{
+   mpi_init_reachable
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:PMPI_Init
+   ...
+}
+{
+   mpi_init_definite
+   Memcheck:Leak
+   match-leak-kinds: definite
+   ...
+   fun:PMPI_Init
+   ...
+}
+{
+   mpi_init_indirect
+   Memcheck:Leak
+   match-leak-kinds: indirect
+   ...
+   fun:PMPI_Init
+   ...
+}

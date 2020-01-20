@@ -17,6 +17,8 @@ MpiCommunicator::MpiCommunicator() {
 
 	MPI_Comm_rank(this->comm, &this->rank);
 	MPI_Comm_size(this->comm, &this->size);
+
+	MPI_Group_free(&worldGroup);
 }
 
 /**
@@ -58,6 +60,34 @@ MpiCommunicator::MpiCommunicator(std::initializer_list<int> ranks) {
 
 	MPI_Comm_rank(this->comm, &this->rank);
 	MPI_Comm_size(this->comm, &this->size);
+
+	MPI_Group_free(&worldGroup);
+}
+
+MpiCommunicator::MpiCommunicator(const MpiCommunicator& from) {
+	this->comm = from.comm;
+	this->comm_references = from.comm_references + 1;
+
+	MPI_Comm_group(this->comm, &this->group);
+
+	MPI_Comm_rank(this->comm, &this->rank);
+	MPI_Comm_size(this->comm, &this->size);
+
+}
+
+MpiCommunicator& MpiCommunicator::operator=(MpiCommunicator other) {
+	MPI_Group_free(&this->group);
+
+	this->comm = other.comm;
+	this->comm_references = other.comm_references;
+
+	MPI_Comm_group(this->comm, &this->group);
+
+	MPI_Comm_rank(this->comm, &this->rank);
+	MPI_Comm_size(this->comm, &this->size);
+
+
+	return *this;
 }
 
 /**
@@ -96,6 +126,12 @@ int MpiCommunicator::getRank() const {
  */
 int MpiCommunicator::getSize() const {
 	return this->size;
+}
+
+MpiCommunicator::~MpiCommunicator() {
+	MPI_Group_free(&this->group);
+	if(this->comm_references == 1)
+		MPI_Comm_free(&this->comm);
 }
 
 TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceManager)
@@ -202,5 +238,4 @@ void TerminableMpiCommunicator::terminate() {
 		}
 
 	}
-
 }

@@ -41,9 +41,9 @@ namespace FPMAS {
 			private:
 				DistributedGraph<T>* localGraph;
 				MpiCommunicator mpiCommunicator;
-				Zoltan* zoltan;
+				Zoltan zoltan;
 
-				std::set<unsigned long> importedNodeIds;
+				void initialize();
 
 				std::unordered_map<unsigned long, std::string> ghost_node_serialization_cache;
 				std::unordered_map<unsigned long, GhostNode<T>*> ghostNodes;
@@ -52,6 +52,7 @@ namespace FPMAS {
 			public:
 
 				GhostGraph(DistributedGraph<T>*);
+				GhostGraph(DistributedGraph<T>*, std::initializer_list<int>);
 
 				void synchronize();
 
@@ -73,6 +74,14 @@ namespace FPMAS {
 
 		};
 
+		template<class T> void GhostGraph<T>::initialize() {
+			FPMAS::config::zoltan_config(&this->zoltan);
+
+			zoltan.Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T>, localGraph);
+			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T>, localGraph);
+			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T>, localGraph);
+		}
+
 		/**
 		 * Initializes a GhostGraph from the input DistributedGraph.
 		 *
@@ -82,14 +91,14 @@ namespace FPMAS {
 		 *
 		 * @param localGraph pointer to the origin DistributedGraph
 		 */
-		template<class T> GhostGraph<T>::GhostGraph(DistributedGraph<T>* localGraph) {
-			this->localGraph = localGraph;
-			this->zoltan = new Zoltan(mpiCommunicator.getMpiComm());
-			FPMAS::config::zoltan_config(this->zoltan);
+		template<class T> GhostGraph<T>::GhostGraph(DistributedGraph<T>* localGraph)
+			: localGraph(localGraph), zoltan(mpiCommunicator.getMpiComm()) {
+			this->initialize();
+		}
 
-			zoltan->Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T>, localGraph);
-			zoltan->Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T>, localGraph);
-			zoltan->Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T>, localGraph);
+		template<class T> GhostGraph<T>::GhostGraph(DistributedGraph<T>* localGraph, std::initializer_list<int> ranks)
+			: localGraph(localGraph), mpiCommunicator(ranks), zoltan(mpiCommunicator.getMpiComm()) {
+			this->initialize();
 		}
 
 		/**
@@ -117,7 +126,7 @@ namespace FPMAS {
 				i++;
 			}
 
-			this->zoltan->Migrate(
+			this->zoltan.Migrate(
 					import_ghosts_num,
 					import_ghosts_global_ids,
 					import_ghosts_local_ids,
@@ -178,7 +187,14 @@ namespace FPMAS {
 			gNode->incomingArcs.clear();	
 			for(auto arc : temp_in_arcs) {
 				Node<T>* localSourceNode = arc->getSourceNode();
-				if(ignoreIds.count(localSourceNode->getId()) == 0)
+				// Builds the ghost arc if :
+				if(
+					// The source node is not ignored (i.e. it is exported in the
+					// current epoch)
+					ignoreIds.count(localSourceNode->getId()) == 0
+					// AND it is not an already built ghost node
+					&& this->getNodes().count(localSourceNode->getId()) == 0
+					)
 					this->link(localSourceNode, gNode, arc->getId());
 			}
 
@@ -187,7 +203,9 @@ namespace FPMAS {
 			gNode->outgoingArcs.clear();
 			for(auto arc : temp_out_arcs) {
 				Node<T>* localTargetNode = arc->getTargetNode();
-				if(ignoreIds.count(localTargetNode->getId()) == 0)
+				// Same as above
+				if(ignoreIds.count(localTargetNode->getId()) == 0
+						&& this->getNodes().count(localTargetNode->getId()) == 0)
 					this->link(gNode, localTargetNode, arc->getId());
 			}
 
@@ -285,7 +303,7 @@ namespace FPMAS {
 					delete ghost;
 				}
 				this->ghostArcs.erase(arc->getId());
-				delete arc;
+				delete (GhostArc<T>*) arc;
 			}
 			for(auto arc : fossil.outgoingArcs) {
 				// Target node should be a ghost
@@ -296,26 +314,20 @@ namespace FPMAS {
 					delete ghost;
 				}
 				this->ghostArcs.erase(arc->getId());
-				delete arc;
+				delete (GhostArc<T>*) arc;
 			}
 		}
 
 		/**
-		 * Deletes data associated to GhostNode s that have been imported from
-		 * other procs, the ghost nodes and arcs maps and the associated Zoltan
-		 * instance.
+		 * Deletes ghost nodes and arcs remaining in this graph.
 		 */
 		template<class T> GhostGraph<T>::~GhostGraph() {
-			for(unsigned long id : this->importedNodeIds) {
-				// delete this->ghostNodes.at(id)->getData();
-			}
 			for(auto node : this->ghostNodes) {
 				delete node.second;
 			}
 			for(auto arc : this->ghostArcs) {
 				delete arc.second;
 			}
-			delete zoltan;
 		}
 
 
