@@ -5,9 +5,19 @@
 
 namespace FPMAS {
 	namespace communication {
+		/**
+		 * An abstract class that must be implemented to provide application
+		 * dependent serialized data to the TerminableMpiCommunicator.
+		 */
 		class ResourceManager {
 			public:
-				virtual std::string getResource(unsigned long) = 0;
+				/**
+				 * Returns serialized data that correspond to the specified id.
+				 *
+				 * @param id data id
+				 * @return serialized data
+				 */
+				virtual std::string getResource(unsigned long id) = 0;
 		};
 	}
 }

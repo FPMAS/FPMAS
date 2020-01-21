@@ -6,17 +6,22 @@
 #include "zoltan_cpp.h"
 
 #include "zoltan_utils.h"
-#include "../distributed_graph.h"
+#include "../sync_data.h"
+#include "../../base/node.h"
 
 using FPMAS::graph::zoltan::utils::write_zoltan_id;
 using FPMAS::graph::zoltan::utils::read_zoltan_id;
 
-using FPMAS::graph::Arc;
-using FPMAS::graph::Node;
-using FPMAS::graph::DistributedGraph;
-
 namespace FPMAS {
 	namespace graph {
+
+		template<class T, template<typename> class S> class DistributedGraph;
+
+		using synchro::None;
+		using synchro::SyncData;
+		using synchro::LocalData;
+		using synchro::GhostData;
+
 		namespace zoltan {
 			/**
 			 * The zoltan::node namespace defines functions used to migrate
@@ -304,7 +309,7 @@ namespace FPMAS {
 				 * @param export_to_part parts to which objects will be exported
 				 * @param ierr Result : error code
 				 */
-				template<class T, template<typename> class S = GhostData> void post_migrate_pp_fn_no_sync(
+				template<class T> void post_migrate_pp_fn_no_sync(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -320,7 +325,7 @@ namespace FPMAS {
 						int *export_to_part,
 						int *ierr) {
 
-					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+					DistributedGraph<T, None>* graph = (DistributedGraph<T, None>*) data;
 
 					std::vector<Arc<SyncData<T>>*> arcsToExport;
 					std::vector<int> procs; // Arcs destination procs

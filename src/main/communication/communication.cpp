@@ -64,6 +64,13 @@ MpiCommunicator::MpiCommunicator(std::initializer_list<int> ranks) {
 	MPI_Group_free(&worldGroup);
 }
 
+/**
+ * MpiCommunicator copy constructor.
+ *
+ * Allows a correct MPI resources management.
+ *
+ * @param from MpiCommunicator to copy from
+ */
 MpiCommunicator::MpiCommunicator(const MpiCommunicator& from) {
 	this->comm = from.comm;
 	this->comm_references = from.comm_references + 1;
@@ -74,7 +81,13 @@ MpiCommunicator::MpiCommunicator(const MpiCommunicator& from) {
 	MPI_Comm_size(this->comm, &this->size);
 
 }
-
+/**
+ * MpiCommunicator copy assignment.
+ *
+ * Allows a correct MPI resources management.
+ *
+ * @param from MpiCommunicator to assign to this
+ */
 MpiCommunicator& MpiCommunicator::operator=(MpiCommunicator other) {
 	MPI_Group_free(&this->group);
 
@@ -128,20 +141,47 @@ int MpiCommunicator::getSize() const {
 	return this->size;
 }
 
+/**
+ * MpiCommunicator destructor.
+ *
+ * Properly releases acquired MPI resources.
+ */
 MpiCommunicator::~MpiCommunicator() {
 	MPI_Group_free(&this->group);
 	if(this->comm_references == 1)
 		MPI_Comm_free(&this->comm);
 }
 
+/**
+ * Builds a TerminableMpiCommunicator containing all the procs available in
+ * MPI_COMM_WORLD.
+ *
+ * @param resourceManager pointer to the ResourceManager instance that will be
+ * used to query serialized data.
+ */
 TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceManager)
 	: resourceManager(resourceManager) {};
 
+/**
+ * Builds a TerminableMpiCommunicator containing all the procs corresponding to
+ * the provided ranks in MPI_COMM_WORLD.
+ *
+ * @param resourceManager pointer to the ResourceManager instance that will be
+ * used to query serialized data.
+ */
 TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceManager, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceManager(resourceManager) {};
 
+/**
+ * Performs a synchronized read operation of the data corresponding to id on
+ * the proc at the provided location, and returns the read serialized data.
+ *
+ * @param id id of the data to read
+ * @param int location
+ * @return read serialized data
+ */
 std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 	MPI_Request req;
-	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->comm, &req);
+	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->getMpiComm(), &req);
 
 	int request_sent;
 	MPI_Status request_status;
@@ -150,10 +190,10 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 	int read_flag;
 	MPI_Status read_status;
 	while(request_sent == 0) {
-		MPI_Iprobe(MPI_ANY_SOURCE, Tag::READ, this->comm, &read_flag, &read_status);
+		MPI_Iprobe(MPI_ANY_SOURCE, Tag::READ, this->getMpiComm(), &read_flag, &read_status);
 		if(read_flag > 0) {
 			unsigned long id;
-			MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, read_status.MPI_SOURCE, Tag::READ, this->comm, &read_status);
+			MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, read_status.MPI_SOURCE, Tag::READ, this->getMpiComm(), &read_status);
 			this->respondToRead(read_status.MPI_SOURCE, id);
 		}
 		MPI_Test(&req, &request_sent, &request_status);
@@ -161,60 +201,75 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 	int count;
 	MPI_Get_count(&request_status, MPI_CHAR, &count);
 	char data[count];
-	MPI_Recv(&data, count, MPI_CHAR, location, Tag::READ, this->comm, &request_status);
+	MPI_Recv(&data, count, MPI_CHAR, location, Tag::READ, this->getMpiComm(), &request_status);
 
 	return std::string(data);
 
 }
 
+/*
+ * Sends a read response to the destination proc, reading data using the
+ * resourceManager.
+ */
 void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id) {
 	this->color = Color::BLACK;
 	std::string data = this->resourceManager->getResource(id);
-	MPI_Ssend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::READ, this->comm);
+	MPI_Ssend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::READ, this->getMpiComm());
 }
 
+/**
+ * Implements the Dijkstra-Feijen-Gasteren termination algorithm.
+ *
+ * This function must be called when the process using this communicator is
+ * done with read and acquire operations to other procs. When terminate() is
+ * called, it will enter a PASSIVE mode where it is only able to respond to
+ * other procs READ and ACQUIRE requests (ie ACTIVE processes that have not
+ * terminated yet).
+ *
+ * Returns only when all the processes have terminated their process.
+ */
 void TerminableMpiCommunicator::terminate() {
 	this->state = State::PASSIVE;
 	bool end = false;
 	int token;
 
-	if(this->rank == 0) {
+	if(this->getRank() == 0) {
 		this->color = Color::WHITE;
 		token = Color::WHITE;
-		MPI_Send(&token, 1, MPI_INT, this->size - 1, Tag::TOKEN, this->comm);
+		MPI_Send(&token, 1, MPI_INT, this->getSize() - 1, Tag::TOKEN, this->getMpiComm());
 	}
 
 	MPI_Status status;
 	while(!end) {
-		MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, this->comm, &status);
+		MPI_Probe(MPI_ANY_SOURCE, MPI_ANY_TAG, this->getMpiComm(), &status);
 		int tag;
 
 		switch(status.MPI_TAG) {
 			case TOKEN:
-				MPI_Recv(&token, 1, MPI_INT, status.MPI_SOURCE, TOKEN, this->comm, &status);
-				if(this->rank == 0) {
+				MPI_Recv(&token, 1, MPI_INT, status.MPI_SOURCE, TOKEN, this->getMpiComm(), &status);
+				if(this->getRank() == 0) {
 					if(token == Color::WHITE && this->color == Color::WHITE) {
 						end = true;
-						for (int i = 1; i < this->size; ++i) {
-							MPI_Ssend(NULL, 0, MPI_INT, i, Tag::END, this->comm);	
+						for (int i = 1; i < this->getSize(); ++i) {
+							MPI_Ssend(NULL, 0, MPI_INT, i, Tag::END, this->getMpiComm());	
 						}
 					} else {
 						this->color = Color::WHITE;
 						token = Color::WHITE;
-						MPI_Send(&token, 1, MPI_INT, this->size - 1, Tag::TOKEN, this->comm);
+						MPI_Send(&token, 1, MPI_INT, this->getSize() - 1, Tag::TOKEN, this->getMpiComm());
 					}
 				}
 				else {
 					if(this->color == Color::BLACK) {
 						token = Color::BLACK;
 					}
-					MPI_Send(&token, 1, MPI_INT, this->rank - 1, Tag::TOKEN, this->comm);
+					MPI_Send(&token, 1, MPI_INT, this->getRank() - 1, Tag::TOKEN, this->getMpiComm());
 					this->color = Color::WHITE;
 				}
 				break;
 			
 			case END:
-				MPI_Recv(NULL, 0, MPI_INT, status.MPI_SOURCE, Tag::END, this->comm, &status);
+				MPI_Recv(NULL, 0, MPI_INT, status.MPI_SOURCE, Tag::END, this->getMpiComm(), &status);
 				end = true;
 				break;
 
@@ -225,7 +280,7 @@ void TerminableMpiCommunicator::terminate() {
 				int count;
 				MPI_Get_count(&status, MPI_INT, &count);
 
-				MPI_Recv(&id, count, MPI_UNSIGNED_LONG, status.MPI_SOURCE, Tag::READ, this->comm, &status);
+				MPI_Recv(&id, count, MPI_UNSIGNED_LONG, status.MPI_SOURCE, Tag::READ, this->getMpiComm(), &status);
 
 				this->respondToRead(status.MPI_SOURCE, id);
 				break;

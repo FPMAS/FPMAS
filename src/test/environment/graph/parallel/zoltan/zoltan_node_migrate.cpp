@@ -11,7 +11,10 @@ using FPMAS::graph::zoltan::utils::write_zoltan_id;
 using FPMAS::graph::zoltan::node::obj_size_multi_fn;
 using FPMAS::graph::zoltan::node::pack_obj_multi_fn;
 
-using FPMAS::graph::LocalData;
+using FPMAS::graph::synchro::SyncData;
+using FPMAS::graph::synchro::LocalData;
+
+using FPMAS::graph::DistributedGraph;
 
 class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:

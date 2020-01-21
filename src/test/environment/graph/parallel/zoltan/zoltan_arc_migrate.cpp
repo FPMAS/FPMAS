@@ -14,6 +14,8 @@ using FPMAS::graph::zoltan::utils::write_zoltan_id;
 using FPMAS::graph::zoltan::arc::obj_size_multi_fn;
 using FPMAS::graph::zoltan::arc::pack_obj_multi_fn;
 
+using FPMAS::graph::DistributedGraph;
+
 class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>();

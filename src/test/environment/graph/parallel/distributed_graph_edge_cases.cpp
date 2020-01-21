@@ -2,6 +2,8 @@
 #include "environment/graph/parallel/distributed_graph.h"
 #include "test_utils/test_utils.h"
 
+using FPMAS::graph::DistributedGraph;
+
 /*
  * Illustrates a specific import case that caused a bug, because the same arc
  * was imported twice at the same proc.

@@ -337,7 +337,7 @@ namespace FPMAS {
 		/**
 		 * Graph destructor.
 		 *
-		 * Deletes nodes and arcs built in this graph.
+		 * Deletes nodes and arcs remaining in this graph.
 		 */
 		template<class T> Graph<T>::~Graph() {
 			for(auto node : this->nodes) {

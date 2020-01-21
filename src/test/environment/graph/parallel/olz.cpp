@@ -5,10 +5,13 @@
 #include "environment/graph/parallel/olz.h"
 #include "communication/communication.h"
 #include "utils/config.h"
+#include "environment/graph/parallel/distributed_graph.h"
 
 using FPMAS::communication::MpiCommunicator;
 
 using FPMAS::graph::DistributedGraph;
+
+using FPMAS::graph::synchro::SyncData;
 
 class Mpi_OlzTest : public ::testing::Test {
 	protected:

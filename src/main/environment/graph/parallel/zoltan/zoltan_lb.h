@@ -4,20 +4,16 @@
 #include "zoltan_cpp.h"
 
 #include "zoltan_utils.h"
-#include "../distributed_graph.h"
 #include "../sync_data.h"
+#include "../../base/node.h"
 
 namespace FPMAS {
 	namespace graph {
 
 		template<class T, template<typename> class S> class DistributedGraph;
 
-		template<class T> class GhostData;
-		template<class T> class SyncData;
-
-		using graph::DistributedGraph;
-		using graph::GhostData;
-		using graph::SyncData;
+		using graph::synchro::GhostData;
+		using graph::synchro::SyncData;
 
 		/**
 		 * The FPMAS::graph::zoltan namespace contains definitions of all the

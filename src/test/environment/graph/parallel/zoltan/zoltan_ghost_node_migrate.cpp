@@ -5,6 +5,8 @@
 using FPMAS::graph::zoltan::ghost::obj_size_multi_fn;
 using FPMAS::graph::zoltan::ghost::pack_obj_multi_fn;
 
+using FPMAS::graph::DistributedGraph;
+
 class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>();

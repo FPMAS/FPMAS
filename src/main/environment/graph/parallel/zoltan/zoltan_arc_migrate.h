@@ -3,16 +3,20 @@
 
 #include "zoltan_cpp.h"
 
-#include "../distributed_graph.h"
 #include "../olz.h"
 
 using FPMAS::graph::Arc;
-using FPMAS::graph::DistributedGraph;
 
 namespace FPMAS {
 	namespace graph {
 
+		template<class T, template<typename> class S> class DistributedGraph;
 		template<class T, template<typename> class S> class GhostNode;
+
+		using synchro::None;
+		using synchro::SyncData;
+		using synchro::LocalData;
+		using synchro::GhostData;
 
 		namespace zoltan {
 			/**
@@ -52,7 +56,7 @@ namespace FPMAS {
 					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 					std::unordered_map<unsigned long, Arc<SyncData<T>>*> arcs = graph->getArcs();
 					for (int i = 0; i < num_ids; i++) {
-						unsigned long arcId = read_zoltan_id(&global_ids[i * num_gid_entries]);
+						unsigned long arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
 						Arc<SyncData<T>>* arc;
 						try {
 						arc = arcs.at(arcId);
@@ -155,7 +159,7 @@ namespace FPMAS {
 						= &graph->arc_serialization_cache;
 					for (int i = 0; i < num_ids; ++i) {
 						// Rebuilt node id
-						unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
+						unsigned long id = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 						// Retrieves the serialized node
 						std::string arc_str = serial_cache->at(id);
@@ -435,7 +439,7 @@ namespace FPMAS {
 				 * In this mode, the only thing to do is deleting the exported
 				 * nodes from the local graph.
 				 */
-				template<class T, template<typename> class S = GhostData> void post_migrate_pp_fn_no_sync(
+				template<class T> void post_migrate_pp_fn_no_sync(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -450,7 +454,7 @@ namespace FPMAS {
 						int *export_procs,
 						int *export_to_part,
 						int *ierr) {
-					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+					DistributedGraph<T, None>* graph = (DistributedGraph<T, None>*) data;
 
 					// Removes exported nodes from the local graph
 					for(int i = 0; i < graph->export_node_num; i++) {

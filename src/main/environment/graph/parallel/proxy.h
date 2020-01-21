@@ -1,5 +1,5 @@
 #ifndef PROXY_H
-#define PROXY
+#define PROXY_H
 
 #include <unordered_map>
 #include <set>

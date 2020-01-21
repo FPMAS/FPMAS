@@ -89,11 +89,9 @@ Inheritance diagram for FPMAS::communication::MpiCommunicator:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab82fc25614dd7bed1acd4bac734af565"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565">MpiCommunicator</a> ()</td></tr>
 <tr class="separator:ab82fc25614dd7bed1acd4bac734af565"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a51f594583bae1be5362cf132f59b7c60"><td class="memItemLeft" align="right" valign="top"><a id="a51f594583bae1be5362cf132f59b7c60"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>MpiCommunicator</b> (const <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp;)</td></tr>
+<tr class="memitem:a51f594583bae1be5362cf132f59b7c60"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a51f594583bae1be5362cf132f59b7c60">MpiCommunicator</a> (const <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp;)</td></tr>
 <tr class="separator:a51f594583bae1be5362cf132f59b7c60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a450aa7b94bf8d93f6d223e7a75ca05e7"><td class="memItemLeft" align="right" valign="top"><a id="a450aa7b94bf8d93f6d223e7a75ca05e7"></a>
-<a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator=</b> (<a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a>)</td></tr>
+<tr class="memitem:a450aa7b94bf8d93f6d223e7a75ca05e7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a450aa7b94bf8d93f6d223e7a75ca05e7">operator=</a> (<a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a>)</td></tr>
 <tr class="separator:a450aa7b94bf8d93f6d223e7a75ca05e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86d104f340d96ea59e6830178eb8572d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a86d104f340d96ea59e6830178eb8572d">MpiCommunicator</a> (std::initializer_list&lt; int &gt;)</td></tr>
 <tr class="separator:a86d104f340d96ea59e6830178eb8572d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,6 +103,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac7d10cf3e871ef257c73e62f7ca46b7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a495c24b8543d5fd329e5d2956f13b16d"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a> () const</td></tr>
 <tr class="separator:a495c24b8543d5fd329e5d2956f13b16d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3fdffe436d300a447ee0f189b0e7d4c0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a3fdffe436d300a447ee0f189b0e7d4c0">~MpiCommunicator</a> ()</td></tr>
+<tr class="separator:a3fdffe436d300a447ee0f189b0e7d4c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -128,7 +128,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>comm_references</b> = 
 <div class="textblock"><p>A convenient wrapper to build MPI groups and communicators from the MPI_COMM_WORLD communicator, i.e. groups and communicators containing all the processes available. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab82fc25614dd7bed1acd4bac734af565"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab82fc25614dd7bed1acd4bac734af565">&#9670;&nbsp;</a></span>MpiCommunicator() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab82fc25614dd7bed1acd4bac734af565">&#9670;&nbsp;</a></span>MpiCommunicator() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,8 +145,34 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>comm_references</b> = 
 
 </div>
 </div>
+<a id="a51f594583bae1be5362cf132f59b7c60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a51f594583bae1be5362cf132f59b7c60">&#9670;&nbsp;</a></span>MpiCommunicator() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MpiCommunicator::MpiCommunicator </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp;&#160;</td>
+          <td class="paramname"><em>from</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> copy constructor.</p>
+<p>Allows a correct MPI resources management.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">from</td><td><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> to copy from </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a86d104f340d96ea59e6830178eb8572d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86d104f340d96ea59e6830178eb8572d">&#9670;&nbsp;</a></span>MpiCommunicator() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a86d104f340d96ea59e6830178eb8572d">&#9670;&nbsp;</a></span>MpiCommunicator() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -177,6 +203,25 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>comm_references</b> = 
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a3fdffe436d300a447ee0f189b0e7d4c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3fdffe436d300a447ee0f189b0e7d4c0">&#9670;&nbsp;</a></span>~MpiCommunicator()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">MpiCommunicator::~MpiCommunicator </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> destructor.</p>
+<p>Properly releases acquired MPI resources. </p>
 
 </div>
 </div>
@@ -254,6 +299,32 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>comm_references</b> = 
 </div><div class="memdoc">
 <p>Returns the rank of this communicator, in the meaning of MPI communicator sizes.</p>
 <dl class="section return"><dt>Returns</dt><dd>MPI communicator size </dd></dl>
+
+</div>
+</div>
+<a id="a450aa7b94bf8d93f6d223e7a75ca05e7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a450aa7b94bf8d93f6d223e7a75ca05e7">&#9670;&nbsp;</a></span>operator=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp; MpiCommunicator::operator= </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a>&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> copy assignment.</p>
+<p>Allows a correct MPI resources management.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">from</td><td><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> to assign to this </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

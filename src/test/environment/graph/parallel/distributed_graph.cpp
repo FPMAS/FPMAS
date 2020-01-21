@@ -7,7 +7,11 @@
 #include "test_utils/test_utils.h"
 
 using FPMAS::test_utils::assert_contains;
-using FPMAS::graph::GhostData;
+using FPMAS::graph::synchro::GhostData;
+
+using FPMAS::graph::DistributedGraph;
+
+using FPMAS::graph::synchro::SyncData;
 
 TEST(Mpi_DistributedGraph, build_with_ranks_test) {
 	int global_size;
@@ -49,9 +53,10 @@ TEST(Mpi_DistributedGraph, build_with_ranks_and_sync_mode_test) {
 	int current_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
 
-	using FPMAS::graph::SyncMode::NONE;
-	DistributedGraph<int> dg = DistributedGraph<int>({current_rank}, NONE);
-	ASSERT_EQ(dg.getSyncMode(), NONE); 
+	using FPMAS::graph::synchro::None;
+	DistributedGraph<int, None> dg = DistributedGraph<int, None>({current_rank});
+
+	// TODO: Assert idea?
 }
 
 class DistributeGraphTest : public ::testing::Test {
@@ -323,9 +328,10 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 
 }
 
+using FPMAS::graph::synchro::None;
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:
-		DistributedGraph<int> dg = DistributedGraph<int>(FPMAS::graph::SyncMode::NONE);
+		DistributedGraph<int, None> dg = DistributedGraph<int, None>();
 
 	void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {

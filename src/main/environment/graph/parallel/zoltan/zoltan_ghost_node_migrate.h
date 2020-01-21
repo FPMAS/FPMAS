@@ -4,23 +4,24 @@
 #include "zoltan_cpp.h"
 
 #include "zoltan_utils.h"
-#include "../distributed_graph.h"
 #include "../olz.h"
 #include "../sync_data.h"
 
-using FPMAS::graph::zoltan::utils::write_zoltan_id;
-using FPMAS::graph::zoltan::utils::read_zoltan_id;
-
-using FPMAS::graph::Arc;
-using FPMAS::graph::Node;
 
 namespace FPMAS {
 	namespace graph {
 
 		template<class T, template<typename> class S> class DistributedGraph;
-		template<class T, template<typename> class S> class GhostNode;
+
+		using synchro::SyncData;
+		using synchro::LocalData;
+		using synchro::GhostData;
+
+		using synchro::GhostNode;
 
 		namespace zoltan {
+			using utils::write_zoltan_id;
+			using utils::read_zoltan_id;
 			/**
 			 * The zoltan::ghost namespace defines functions used to migrate
 			 * ghost nodes data using zoltan.

@@ -2,6 +2,9 @@
 
 #include "environment/graph/parallel/distributed_graph.h"
 
+using FPMAS::graph::DistributedGraph;
+using FPMAS::graph::synchro::SyncData;
+
 class Mpi_SynchronizeGhostTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>();

@@ -72,13 +72,51 @@ $(function() {
 <div class="title">FPMAS::communication::ResourceManager Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="resource__manager_8h_source.html">resource_manager.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a141b774981476bfaf6715231ed2a6203"><td class="memItemLeft" align="right" valign="top"><a id="a141b774981476bfaf6715231ed2a6203"></a>
-virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><b>getResource</b> (unsigned long)=0</td></tr>
-<tr class="separator:a141b774981476bfaf6715231ed2a6203"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f347096bddb00ef23b135f74a0ae2f4"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a7f347096bddb00ef23b135f74a0ae2f4">getResource</a> (unsigned long id)=0</td></tr>
+<tr class="separator:a7f347096bddb00ef23b135f74a0ae2f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>An abstract class that must be implemented to provide application dependent serialized data to the <a class="el" href="classFPMAS_1_1communication_1_1TerminableMpiCommunicator.html">TerminableMpiCommunicator</a>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7f347096bddb00ef23b135f74a0ae2f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f347096bddb00ef23b135f74a0ae2f4">&#9670;&nbsp;</a></span>getResource()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::string FPMAS::communication::ResourceManager::getResource </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns serialized data that correspond to the specified id.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>data id </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>serialized data </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/main/communication/<a class="el" href="resource__manager_8h_source.html">resource_manager.h</a></li>
 </ul>

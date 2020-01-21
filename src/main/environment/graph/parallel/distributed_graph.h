@@ -4,6 +4,7 @@
 #include "../base/graph.h"
 #include "zoltan_cpp.h"
 #include "olz.h"
+#include "olz_graph.h"
 #include "zoltan/zoltan_lb.h"
 #include "zoltan/zoltan_utils.h"
 #include "zoltan/zoltan_node_migrate.h"
@@ -15,53 +16,27 @@
 #include "sync_data.h"
 #include "proxy.h"
 
-using FPMAS::communication::MpiCommunicator;
-using FPMAS::graph::proxy::Proxy;
-using FPMAS::graph::SyncData;
-
-#define ZOLTAN_OBJ_SIZE_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
-#define ZOLTAN_PACK_OBJ_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
-#define ZOLTAN_UNPACK_OBJ_ARGS void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
-#define ZOLTAN_MID_POST_MIGRATE_ARGS \
-	void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *, \
-    int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *
-
-
 namespace FPMAS {
+	using communication::MpiCommunicator;
+
 	namespace graph {
 
-		template<class T, template<typename> class S> class GhostNode;
-		template<class T, template<typename> class S> class GhostArc;
-		template<class T, template<typename> class S> class GhostGraph;
+		using proxy::Proxy;
+		using synchro::SyncData;
+		using synchro::LocalData;
+		using synchro::GhostData;
 
-		/**
-		 * Describes the different graph synchronization modes available.
-		 *
-		 * Once the synchronization mode has been setup, required operations
-		 * when migrating nodes are automatically performed.
-		 */
-		enum SyncMode {
-			/**
-			 * In this mode, no overlapping zone is used.
-			 *
-			 * When a node is exported, its connections with nodes that are not
-			 * exported on the same process are lost.
-			 */
-			NONE,
-			/**
-			 * In this mode, overlapping zones (represented as a "ghost graph")
-			 * are built and synchronized on each proc.
-			 *
-			 * When a node is exported, ghost arcs and nodes are built to keep
-			 * consistency across processes, and ghost nodes data is fetched
-			 * at each GhostGraph::synchronize() call.
-			 */
-			OLZ
-		};
+		using synchro::GhostGraph;
+
+		using synchro::SyncData;
+		using synchro::LocalData;
+		using synchro::GhostData;
 
 		/**
 		 * A DistributedGraph is a special graph instance that can be
 		 * distributed across available processors using Zoltan.
+		 *
+		 * @tparam T associated data type
 		 */
 		template<class T, template<typename> class S = GhostData> class DistributedGraph : public Graph<SyncData<T>> {
 			friend void zoltan::node::obj_size_multi_fn<T, S>(ZOLTAN_OBJ_SIZE_ARGS);
@@ -73,17 +48,14 @@ namespace FPMAS {
 			friend void zoltan::node::unpack_obj_multi_fn<T, S>(ZOLTAN_UNPACK_OBJ_ARGS);
 			friend void zoltan::arc::unpack_obj_multi_fn<T, S>(ZOLTAN_UNPACK_OBJ_ARGS);
 
-			friend void zoltan::node::post_migrate_pp_fn_no_sync<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::node::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 			friend void zoltan::node::post_migrate_pp_fn_olz<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
 			friend void zoltan::arc::mid_migrate_pp_fn<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 			friend void zoltan::arc::post_migrate_pp_fn_olz<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
-			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
 			private:
-				SyncMode syncMode;
-				ZOLTAN_POST_MIGRATE_PP_FN* node_post_migrate_fn; // Defined according to sync mode
-				ZOLTAN_POST_MIGRATE_PP_FN* arc_post_migrate_fn; // Defined according to sync mode
 				MpiCommunicator mpiCommunicator;
 				Zoltan zoltan;
 				Proxy proxy;
@@ -111,7 +83,7 @@ namespace FPMAS {
 				ZOLTAN_ID_PTR export_node_global_ids;
 				int* export_node_procs;
 				// When importing nodes, obsolete ghost nodes are stored when
-				// the real node has been imported. It is the safely deleted in
+				// the real node has been imported. It is safely deleted in
 				// arc::mid_migrate_pp_fn once associated arcs have eventually 
 				// been exported
 				std::set<unsigned long> obsoleteGhosts;
@@ -123,9 +95,8 @@ namespace FPMAS {
 				void setUpZoltan();
 
 			public:
-				DistributedGraph<T, S>(SyncMode syncMode = OLZ);
-				DistributedGraph<T, S>(std::initializer_list<int>, SyncMode syncMode = OLZ);
-				SyncMode getSyncMode() const;
+				DistributedGraph<T, S>();
+				DistributedGraph<T, S>(std::initializer_list<int>);
 				MpiCommunicator getMpiCommunicator() const;
 				Proxy* getProxy();
 				GhostGraph<T, S>* getGhost();
@@ -137,17 +108,6 @@ namespace FPMAS {
 		};
 
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::setUpZoltan() {
-			switch(this->syncMode) {
-				case NONE:
-					this->node_post_migrate_fn = &FPMAS::graph::zoltan::node::post_migrate_pp_fn_no_sync<T>;
-					this->arc_post_migrate_fn = &FPMAS::graph::zoltan::arc::post_migrate_pp_fn_no_sync<T>;
-					break;
-				case OLZ:
-					this->node_post_migrate_fn = &FPMAS::graph::zoltan::node::post_migrate_pp_fn_olz<T>;
-					this->arc_post_migrate_fn = &FPMAS::graph::zoltan::arc::post_migrate_pp_fn_olz<T>;
-					break;
-			}
-
 			FPMAS::config::zoltan_config(&this->zoltan);
 
 			// Initializes Zoltan Node Load Balancing functions
@@ -163,8 +123,8 @@ namespace FPMAS {
 		 * 
 		 * @param syncMode synchronization mode
 		 */
-		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph(SyncMode syncMode)
-			: syncMode(syncMode), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
+		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph()
+			: ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
 
@@ -176,19 +136,10 @@ namespace FPMAS {
 		 * built
 		 * @param syncMode synchronization mode
 		 */
-		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph(std::initializer_list<int> ranks, SyncMode syncMode)
-			: syncMode(syncMode), mpiCommunicator(ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
+		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph(std::initializer_list<int> ranks)
+			: mpiCommunicator(ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
-
-		/**
-		 * Returns the current synchronization mode.
-		 *
-		 * @return synchronization mode
-		 */
-		template<class T, template<typename> class S> SyncMode DistributedGraph<T, S>::getSyncMode() const {
-			return this->syncMode;
-		}
 
 		/**
 		 * Returns the MpiCommunicator used by the Zoltan instance of this
@@ -227,7 +178,7 @@ namespace FPMAS {
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T>, this);
 			zoltan.Set_Mid_Migrate_PP_Fn(NULL);
-			zoltan.Set_Post_Migrate_PP_Fn(this->node_post_migrate_fn, this);
+			zoltan.Set_Post_Migrate_PP_Fn(S<T>::config.node_post_migrate_fn, this);
 		}
 
 		/**
@@ -238,14 +189,8 @@ namespace FPMAS {
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
 
-			if(this->syncMode == OLZ) {
-				zoltan.Set_Mid_Migrate_PP_Fn(zoltan::arc::mid_migrate_pp_fn<T>, this);
-			}
-			else {
-				zoltan.Set_Post_Migrate_PP_Fn(NULL);
-			}
-
-			zoltan.Set_Post_Migrate_PP_Fn(this->arc_post_migrate_fn, this);
+			zoltan.Set_Mid_Migrate_PP_Fn(S<T>::config.arc_mid_migrate_fn, this);
+			zoltan.Set_Post_Migrate_PP_Fn(S<T>::config.arc_post_migrate_fn, this);
 		}
 
 		template<class T, template<typename> class S> Node<SyncData<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, T data) {
