@@ -18,18 +18,18 @@ namespace FPMAS {
 		 * difference can be made between nodes really living locally and ghost
 		 * nodes.
 		 */
-		template <class T> class GhostNode : public Node<T> {
+		template <class T, template<typename> class S = GhostData> class GhostNode : public Node<SyncData<T>> {
 
-			friend GhostNode<T>* GhostGraph<T>::buildNode(unsigned long);
-			friend GhostNode<T>* GhostGraph<T>::buildNode(Node<T>, std::set<unsigned long>);
+			friend GhostNode<T, S>* GhostGraph<T>::buildNode(unsigned long);
+			friend GhostNode<T, S>* GhostGraph<T>::buildNode(Node<SyncData<T>>, std::set<unsigned long>);
 
 			private:
 				GhostNode(unsigned long);
-				GhostNode(Node<T>);
+				GhostNode(Node<SyncData<T>>);
 		};
 
-		template<class T> GhostNode<T>::GhostNode(unsigned long id)
-			: Node<T>(id) {
+		template<class T, template<typename> class S> GhostNode<T, S>::GhostNode(unsigned long id)
+			: Node<SyncData<T>>(id) {
 			}
 
 		/**
@@ -37,8 +37,8 @@ namespace FPMAS {
 		 *
 		 * @param node original node
 		 */
-		template<class T> GhostNode<T>::GhostNode(Node<T> node)
-			: Node<T>(node) {
+		template<class T, template<typename> class S> GhostNode<T, S>::GhostNode(Node<SyncData<T>> node)
+			: Node<SyncData<T>>(node.getId(), node.getWeight(), S<T>(node.data().get())) {
 			}
 
 		/**
@@ -50,15 +50,13 @@ namespace FPMAS {
 		 * between local arcs and ghost arcs.
 		 *
 		 */
-		template<class T> class GhostArc : public Arc<T> {
-			friend void GhostGraph<T>::link(GhostNode<T>*, Node<T>*, unsigned long);
-			friend void GhostGraph<T>::link(Node<T>*, GhostNode<T>*, unsigned long);
-			friend void GhostGraph<T>::link(GhostNode<T>*, GhostNode<T>*, unsigned long);
+		template<class T, template<typename> class S = GhostData> class GhostArc : public Arc<SyncData<T>> {
+			friend void GhostGraph<T, S>::link(GhostNode<T, S>*, Node<SyncData<T>>*, unsigned long);
+			friend void GhostGraph<T, S>::link(Node<SyncData<T>>*, GhostNode<T, S>*, unsigned long);
 
 			private:
-				GhostArc(unsigned long, GhostNode<T>*, Node<T>*);
-				GhostArc(unsigned long, Node<T>*, GhostNode<T>*);
-				GhostArc(unsigned long, GhostNode<T>*, GhostNode<T>*);
+				GhostArc(unsigned long, GhostNode<T, S>*, Node<SyncData<T>>*);
+				GhostArc(unsigned long, Node<SyncData<T>>*, GhostNode<T, S>*);
 
 		};
 
@@ -71,8 +69,9 @@ namespace FPMAS {
 		 * @param source pointer to the source ghost node
 		 * @param target pointer to the local target node
 		 */
-		template<class T> GhostArc<T>::GhostArc(unsigned long arc_id, GhostNode<T>* source, Node<T>* target)
-			: Arc<T>(arc_id, source, target) { };
+		template<class T, template<typename> class S> GhostArc<T, S>::GhostArc(unsigned long arc_id, GhostNode<T, S>* source, Node<SyncData<T>>* target)
+			: Arc<SyncData<T>>(arc_id, (Node<SyncData<T>>*) source, target) { };
+
 		/**
 		 * Builds a GhostArc linking the specified nodes. Notice that the
 		 * GhostArc instance is added to the regular outgoing arcs list of the
@@ -82,18 +81,9 @@ namespace FPMAS {
 		 * @param source pointer to the local source node
 		 * @param target pointer to the target ghost node
 		 */
-		template<class T> GhostArc<T>::GhostArc(unsigned long arc_id, Node<T>* source, GhostNode<T>* target)
-			: Arc<T>(arc_id, source, target) { };
+		template<class T, template<typename> class S> GhostArc<T, S>::GhostArc(unsigned long arc_id, Node<SyncData<T>>* source, GhostNode<T, S>* target)
+			: Arc<SyncData<T>>(arc_id, source, (Node<SyncData<T>>*) target) { };
 
-		/**
-		 * Builds a GhostArc linking the specified ghost nodes.
-		 *
-		 * @param arc_id arc id
-		 * @param source pointer to the source ghost node
-		 * @param target pointer to the target ghost node
-		 */
-		template<class T> GhostArc<T>::GhostArc(unsigned long arc_id, GhostNode<T>* source, GhostNode<T>* target)
-			: Arc<T>(arc_id, source, target) { };
 	}
 }
 

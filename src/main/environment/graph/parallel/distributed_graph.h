@@ -12,10 +12,12 @@
 #include "utils/config.h"
 #include "communication/communication.h"
 
+#include "sync_data.h"
 #include "proxy.h"
 
 using FPMAS::communication::MpiCommunicator;
 using FPMAS::graph::proxy::Proxy;
+using FPMAS::graph::SyncData;
 
 #define ZOLTAN_OBJ_SIZE_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
 #define ZOLTAN_PACK_OBJ_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
@@ -28,9 +30,9 @@ using FPMAS::graph::proxy::Proxy;
 namespace FPMAS {
 	namespace graph {
 
-		template<class T> class GhostNode;
-		template<class T> class GhostArc;
-		template<class T> class GhostGraph;
+		template<class T, template<typename> class S> class GhostNode;
+		template<class T, template<typename> class S> class GhostArc;
+		template<class T, template<typename> class S> class GhostGraph;
 
 		/**
 		 * Describes the different graph synchronization modes available.
@@ -61,22 +63,22 @@ namespace FPMAS {
 		 * A DistributedGraph is a special graph instance that can be
 		 * distributed across available processors using Zoltan.
 		 */
-		template<class T> class DistributedGraph : public Graph<T> {
-			friend void zoltan::node::obj_size_multi_fn<T>(ZOLTAN_OBJ_SIZE_ARGS);
-			friend void zoltan::arc::obj_size_multi_fn<T>(ZOLTAN_OBJ_SIZE_ARGS);
+		template<class T, template<typename> class S = GhostData> class DistributedGraph : public Graph<SyncData<T>> {
+			friend void zoltan::node::obj_size_multi_fn<T, S>(ZOLTAN_OBJ_SIZE_ARGS);
+			friend void zoltan::arc::obj_size_multi_fn<T, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
-			friend void zoltan::node::pack_obj_multi_fn<T>(ZOLTAN_PACK_OBJ_ARGS);
-			friend void zoltan::arc::pack_obj_multi_fn<T>(ZOLTAN_PACK_OBJ_ARGS);
+			friend void zoltan::node::pack_obj_multi_fn<T, S>(ZOLTAN_PACK_OBJ_ARGS);
+			friend void zoltan::arc::pack_obj_multi_fn<T, S>(ZOLTAN_PACK_OBJ_ARGS);
 
-			friend void zoltan::node::unpack_obj_multi_fn<T>(ZOLTAN_UNPACK_OBJ_ARGS);
-			friend void zoltan::arc::unpack_obj_multi_fn<T>(ZOLTAN_UNPACK_OBJ_ARGS);
+			friend void zoltan::node::unpack_obj_multi_fn<T, S>(ZOLTAN_UNPACK_OBJ_ARGS);
+			friend void zoltan::arc::unpack_obj_multi_fn<T, S>(ZOLTAN_UNPACK_OBJ_ARGS);
 
-			friend void zoltan::node::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
-			friend void zoltan::node::post_migrate_pp_fn_olz<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::node::post_migrate_pp_fn_no_sync<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::node::post_migrate_pp_fn_olz<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
-			friend void zoltan::arc::mid_migrate_pp_fn<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
-			friend void zoltan::arc::post_migrate_pp_fn_olz<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
-			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::mid_migrate_pp_fn<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::post_migrate_pp_fn_olz<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
 			private:
 				SyncMode syncMode;
@@ -85,7 +87,7 @@ namespace FPMAS {
 				MpiCommunicator mpiCommunicator;
 				Zoltan zoltan;
 				Proxy proxy;
-				GhostGraph<T> ghost;
+				GhostGraph<T, S> ghost;
 
 				void setZoltanNodeMigration();
 				void setZoltanArcMigration();
@@ -121,17 +123,20 @@ namespace FPMAS {
 				void setUpZoltan();
 
 			public:
-				DistributedGraph<T>(SyncMode syncMode = OLZ);
-				DistributedGraph<T>(std::initializer_list<int>, SyncMode syncMode = OLZ);
+				DistributedGraph<T, S>(SyncMode syncMode = OLZ);
+				DistributedGraph<T, S>(std::initializer_list<int>, SyncMode syncMode = OLZ);
 				SyncMode getSyncMode() const;
 				MpiCommunicator getMpiCommunicator() const;
 				Proxy* getProxy();
-				GhostGraph<T>* getGhost();
+				GhostGraph<T, S>* getGhost();
+
+				Node<SyncData<T>>* buildNode(unsigned long id, T data);
+				Node<SyncData<T>>* buildNode(unsigned long id, float weight, T data);
 
 				void distribute();
 		};
 
-		template<class T> void DistributedGraph<T>::setUpZoltan() {
+		template<class T, template<typename> class S> void DistributedGraph<T, S>::setUpZoltan() {
 			switch(this->syncMode) {
 				case NONE:
 					this->node_post_migrate_fn = &FPMAS::graph::zoltan::node::post_migrate_pp_fn_no_sync<T>;
@@ -158,7 +163,7 @@ namespace FPMAS {
 		 * 
 		 * @param syncMode synchronization mode
 		 */
-		template<class T> DistributedGraph<T>::DistributedGraph(SyncMode syncMode)
+		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph(SyncMode syncMode)
 			: syncMode(syncMode), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
@@ -171,7 +176,7 @@ namespace FPMAS {
 		 * built
 		 * @param syncMode synchronization mode
 		 */
-		template<class T> DistributedGraph<T>::DistributedGraph(std::initializer_list<int> ranks, SyncMode syncMode)
+		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph(std::initializer_list<int> ranks, SyncMode syncMode)
 			: syncMode(syncMode), mpiCommunicator(ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
@@ -181,7 +186,7 @@ namespace FPMAS {
 		 *
 		 * @return synchronization mode
 		 */
-		template<class T> SyncMode DistributedGraph<T>::getSyncMode() const {
+		template<class T, template<typename> class S> SyncMode DistributedGraph<T, S>::getSyncMode() const {
 			return this->syncMode;
 		}
 
@@ -191,7 +196,7 @@ namespace FPMAS {
 		 *
 		 * @return mpiCommunicator associated to this graph
 		 */
-		template<class T> MpiCommunicator DistributedGraph<T>::getMpiCommunicator() const {
+		template<class T, template<typename> class S> MpiCommunicator DistributedGraph<T, S>::getMpiCommunicator() const {
 			return this->mpiCommunicator;
 		}
 
@@ -200,7 +205,7 @@ namespace FPMAS {
 		 *
 		 * @return pointer to the current proxy
 		 */
-		template<class T> Proxy* DistributedGraph<T>::getProxy() {
+		template<class T, template<typename> class S> Proxy* DistributedGraph<T, S>::getProxy() {
 			return &this->proxy;
 		}
 
@@ -210,14 +215,14 @@ namespace FPMAS {
 		 *
 		 * @return pointer to the current GhostGraph
 		 */
-		template<class T> GhostGraph<T>* DistributedGraph<T>::getGhost() {
+		template<class T, template<typename> class S> GhostGraph<T, S>* DistributedGraph<T, S>::getGhost() {
 			return &this->ghost;
 		}
 
 		/**
 		 * Configures Zoltan to migrate nodes.
 		 */
-		template<class T> void DistributedGraph<T>::setZoltanNodeMigration() {
+		template<class T, template<typename> class S> void DistributedGraph<T, S>::setZoltanNodeMigration() {
 			zoltan.Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<T>, this);
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T>, this);
@@ -228,7 +233,7 @@ namespace FPMAS {
 		/**
 		 * Configures Zoltan to migrate arcs.
 		 */
-		template<class T> void DistributedGraph<T>::setZoltanArcMigration() {
+		template<class T, template<typename> class S> void DistributedGraph<T, S>::setZoltanArcMigration() {
 			zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T>, this);
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
@@ -241,6 +246,14 @@ namespace FPMAS {
 			}
 
 			zoltan.Set_Post_Migrate_PP_Fn(this->arc_post_migrate_fn, this);
+		}
+
+		template<class T, template<typename> class S> Node<SyncData<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, T data) {
+			return Graph<SyncData<T>>::buildNode(id, LocalData<T>(data));
+		}
+
+		template<class T, template<typename> class S> Node<SyncData<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, float weight, T data) {
+			return Graph<SyncData<T>>::buildNode(id, weight, LocalData<T>(data));
 		}
 
 		/**
@@ -257,7 +270,7 @@ namespace FPMAS {
 		 *
 		 */
 		// TODO: describe the full migration process
-		template<class T> void DistributedGraph<T>::distribute() {
+		template<class T, template<typename> class S> void DistributedGraph<T, S>::distribute() {
 			int changes;
       		int num_gid_entries;
 			int num_lid_entries;

@@ -11,6 +11,8 @@ using FPMAS::graph::zoltan::utils::write_zoltan_id;
 using FPMAS::graph::zoltan::node::obj_size_multi_fn;
 using FPMAS::graph::zoltan::node::pack_obj_multi_fn;
 
+using FPMAS::graph::LocalData;
+
 class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>();
@@ -134,15 +136,15 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	ASSERT_EQ(g.getNodes().size(), 2);
 
 	ASSERT_EQ(g.getNodes().count(0), 1);
-	FPMAS::graph::Node<int>* node0 = g.getNodes().at(0);
+	FPMAS::graph::Node<SyncData<int>>* node0 = g.getNodes().at(0);
 	ASSERT_EQ(node0->getId(), 0);
-	ASSERT_EQ(node0->getData(), 0);
+	ASSERT_EQ(node0->data().get(), 0);
 	ASSERT_EQ(node0->getWeight(), 1.f);
 
 	ASSERT_EQ(g.getNodes().count(85250ul), 1);
-	FPMAS::graph::Node<int>* node1 = g.getNodes().at(85250);
+	FPMAS::graph::Node<SyncData<int>>* node1 = g.getNodes().at(85250);
 	ASSERT_EQ(node1->getId(), 85250ul);
-	ASSERT_EQ(node1->getData(), 2);
+	ASSERT_EQ(node1->data().get(), 2);
 	ASSERT_EQ(node1->getWeight(), 3.f);
 
 }

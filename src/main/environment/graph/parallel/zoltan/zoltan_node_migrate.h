@@ -39,7 +39,7 @@ namespace FPMAS {
 				 * @param sizes Result : buffer sizes for each node
 				 * @param ierr Result : error code
 				 */
-				template<class T> void obj_size_multi_fn(
+				template<class T, template<typename> class S = GhostData> void obj_size_multi_fn(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -50,10 +50,10 @@ namespace FPMAS {
 						int *ierr) {
 
 
-					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
-					std::unordered_map<unsigned long, Node<T>*> nodes = ((DistributedGraph<T>*) data)->getNodes();
+					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+					std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes = graph->getNodes();
 					for (int i = 0; i < num_ids; i++) {
-						Node<T>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+						Node<SyncData<T>>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 						if(graph->node_serialization_cache.count(node->getId()) == 1) {
 							sizes[i] = graph->node_serialization_cache.at(node->getId()).size()+1;
@@ -92,7 +92,7 @@ namespace FPMAS {
 				 * @param buf communication buffer
 				 * @param ierr Result : error code
 				 */
-				template<class T> void pack_obj_multi_fn(
+				template<class T, template<typename> class S = GhostData> void pack_obj_multi_fn(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -105,7 +105,7 @@ namespace FPMAS {
 						char *buf,
 						int *ierr) {
 
-					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 					// The node should actually be serialized when computing
 					// the required buffer size. For efficiency purpose, we temporarily
 					// store the result and delete it when it is packed.
@@ -140,7 +140,7 @@ namespace FPMAS {
 				 * @param ierr Result : error code
 				 *
 				 */
-				template<class T> void unpack_obj_multi_fn(
+				template<class T, template<typename> class S = GhostData> void unpack_obj_multi_fn(
 						void *data,
 						int num_gid_entries,
 						int num_ids,
@@ -150,16 +150,20 @@ namespace FPMAS {
 						char *buf,
 						int *ierr) {
 
-					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 					for (int i = 0; i < num_ids; i++) {
 						json json_node = json::parse(&buf[idx[i]]);
 
-						Node<T> node = json_node.get<Node<T>>();
+						Node<LocalData<T>> node = json_node.get<Node<LocalData<T>>>();
 
 						if(graph->getGhost()->getNodes().count(node.getId()) > 0)
 							graph->obsoleteGhosts.insert(node.getId());
 
-						graph->buildNode(node);
+						graph->buildNode(
+								node.getId(),
+								node.getWeight(),
+								node.data().get()
+								);
 
 						int origin = json_node.at("origin").get<int>();
 						graph->proxy.setOrigin(node.getId(), origin);
@@ -194,7 +198,7 @@ namespace FPMAS {
 				 * @param export_to_part parts to which objects will be exported
 				 * @param ierr Result : error code
 				 */
-				template<class T> void post_migrate_pp_fn_olz(
+				template<class T, template<typename> class S = GhostData> void post_migrate_pp_fn_olz(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -210,20 +214,20 @@ namespace FPMAS {
 						int *export_to_part,
 						int *ierr) {
 
-					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 
-					std::unordered_map<unsigned long, Node<T>*> nodes = graph->getNodes();
+					std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes = graph->getNodes();
 					// Set used to ensure that each arc is sent at most once to
 					// each process.
 					std::set<std::pair<unsigned long, int>> exportedArcPairs;
 
-					std::vector<Arc<T>*> arcsToExport;
+					std::vector<Arc<SyncData<T>>*> arcsToExport;
 					std::vector<int> procs; // Arcs destination procs
 
 					for (int i =0; i < num_export; i++) {
 						unsigned long id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
 
-						Node<T>* exported_node = nodes.at(id);
+						Node<SyncData<T>>* exported_node = nodes.at(id);
 						int dest_proc = export_procs[i];
 
 						// Updates Proxy
@@ -300,7 +304,7 @@ namespace FPMAS {
 				 * @param export_to_part parts to which objects will be exported
 				 * @param ierr Result : error code
 				 */
-				template<class T> void post_migrate_pp_fn_no_sync(
+				template<class T, template<typename> class S = GhostData> void post_migrate_pp_fn_no_sync(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -316,9 +320,9 @@ namespace FPMAS {
 						int *export_to_part,
 						int *ierr) {
 
-					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 
-					std::vector<Arc<T>*> arcsToExport;
+					std::vector<Arc<SyncData<T>>*> arcsToExport;
 					std::vector<int> procs; // Arcs destination procs
 
 					std::unordered_map<unsigned long, int> nodeDestinations;
@@ -328,7 +332,7 @@ namespace FPMAS {
 					}
 
 					for (auto nodeDest : nodeDestinations) {
-						Node<T>* exported_node = graph->getNodes().at(nodeDest.first);
+						Node<SyncData<T>>* exported_node = graph->getNodes().at(nodeDest.first);
 
 						// Updates Proxy for consistency, even if should no ghost are used
 						graph->getProxy()->setCurrentLocation(nodeDest.first, nodeDest.second);

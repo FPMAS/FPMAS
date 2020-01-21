@@ -29,14 +29,14 @@ class SampleGraphTest : public ::testing::Test {
 
 		static void testSampleGraphStructure(Graph<int>* sampleGraph) {
 			Node<int>* node1 = sampleGraph->getNode(1ul);
-			ASSERT_EQ(node1->getData(), 1);
+			ASSERT_EQ(node1->data(), 1);
 			ASSERT_EQ(node1->getIncomingArcs().size(), 1);
 			ASSERT_EQ(node1->getIncomingArcs().at(0), sampleGraph->getArc(1ul));
 			ASSERT_EQ(node1->getOutgoingArcs().size(), 1);
 			ASSERT_EQ(node1->getOutgoingArcs().at(0), sampleGraph->getArc(0ul));
 
 			Node<int>* node2 = sampleGraph->getNode(2ul);
-			ASSERT_EQ(node2->getData(), 2);
+			ASSERT_EQ(node2->data(), 2);
 			ASSERT_EQ(node2->getIncomingArcs().size(), 1);
 			ASSERT_EQ(node2->getIncomingArcs().at(0), sampleGraph->getArc(0ul));
 			ASSERT_EQ(node2->getOutgoingArcs().size(), 2);
@@ -49,7 +49,7 @@ class SampleGraphTest : public ::testing::Test {
 			assert_contains<Arc<int>*, 2>(outArcs, sampleGraph->getArc(2ul));
 
 			Node<int>* node3 = sampleGraph->getNode(3ul);
-			ASSERT_EQ(node3->getData(), 3);
+			ASSERT_EQ(node3->data(), 3);
 			ASSERT_EQ(node3->getIncomingArcs().size(), 1);
 			ASSERT_EQ(node3->getIncomingArcs().at(0), sampleGraph->getArc(2ul));
 			ASSERT_EQ(node3->getOutgoingArcs().size(), 0);

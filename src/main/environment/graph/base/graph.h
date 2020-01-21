@@ -108,9 +108,6 @@ namespace FPMAS {
 				std::unordered_map<unsigned long, Arc<T>*> arcs;
 				void removeArc(Arc<T>*, std::vector<Arc<T>*>*);
 
-			protected:
-				Node<T>* buildNode(Node<T> node);
-
 			public:
 				Node<T>* getNode(unsigned long) const;
 				std::unordered_map<unsigned long, Node<T>*> getNodes() const;
@@ -184,28 +181,14 @@ namespace FPMAS {
 			this->nodes[id] = node;
 			return node;
 		}
-			
-		/**
-		 * Builds a node by copy from the specified node. Memory is dynamically
-		 * allocated for the node copy, and normally deleted when the graph is
-		 * destroyed.
-		 *
-		 * @param node node to add to the graph
-		 * @return built node (copy of the input node)
-		 */
-		template<class T> Node<T>* Graph<T>::buildNode(Node<T> node) {
-			Node<T>* node_copy = new Node<T>(node);
-			this->nodes[node_copy->getId()] = node_copy;
-			return node_copy;
-		}
 
 		/**
 		 * Builds a node with the specify id and data, and adds it to this graph,
 		 * and finally returns the built node.
 		 *
 		 * @param id node id
-		 * @param data pointer to node data
-		 * @return pointer to build node
+		 * @param data node's data
+		 * @return pointer to built node
 		 */
 		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, T data) {
 			Node<T>* node = new Node<T>(id, data);
@@ -219,7 +202,7 @@ namespace FPMAS {
 		 *
 		 * @param id node's id
 		 * @param weight node's weight
-		 * @param data pointer to node's data
+		 * @param data node's data
 		 * @return pointer to build node
 		 */
 		template<class T> Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T data) {

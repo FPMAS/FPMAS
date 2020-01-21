@@ -6,6 +6,7 @@
 #include "zoltan_utils.h"
 #include "../distributed_graph.h"
 #include "../olz.h"
+#include "../sync_data.h"
 
 using FPMAS::graph::zoltan::utils::write_zoltan_id;
 using FPMAS::graph::zoltan::utils::read_zoltan_id;
@@ -16,8 +17,8 @@ using FPMAS::graph::Node;
 namespace FPMAS {
 	namespace graph {
 
-		template<class T> class DistributedGraph;
-		template<class T> class GhostNode;
+		template<class T, template<typename> class S> class DistributedGraph;
+		template<class T, template<typename> class S> class GhostNode;
 
 		namespace zoltan {
 			/**
@@ -41,7 +42,7 @@ namespace FPMAS {
 				 * @param sizes Result : buffer sizes for each node
 				 * @param ierr Result : error code
 				 */
-				template<class T> void obj_size_multi_fn(
+				template<class T, template<typename> class S = GhostData> void obj_size_multi_fn(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -52,10 +53,10 @@ namespace FPMAS {
 						int *ierr) {
 
 
-					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
-					std::unordered_map<unsigned long, Node<T>*> nodes = ((DistributedGraph<T>*) data)->getNodes();
+					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+					std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes = graph->getNodes();
 					for (int i = 0; i < num_ids; i++) {
-						Node<T>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+						Node<SyncData<T>>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 						if(graph->getGhost()->ghost_node_serialization_cache.count(node->getId()) == 1) {
 							sizes[i] = graph->getGhost()->ghost_node_serialization_cache.at(node->getId()).size()+1;
@@ -91,7 +92,7 @@ namespace FPMAS {
 				 * @param buf communication buffer
 				 * @param ierr Result : error code
 				 */
-				template<class T> void pack_obj_multi_fn(
+				template<class T, template<typename> class S = GhostData> void pack_obj_multi_fn(
 						void *data,
 						int num_gid_entries,
 						int num_lid_entries,
@@ -104,7 +105,7 @@ namespace FPMAS {
 						char *buf,
 						int *ierr) {
 
-					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 					// The node should actually be serialized when computing
 					// the required buffer size. For efficiency purpose, we temporarily
 					// store the result and delete it when it is packed.
@@ -141,7 +142,7 @@ namespace FPMAS {
 				 * @param ierr Result : error code
 				 *
 				 */
-				template<class T> void unpack_obj_multi_fn(
+				template<class T, template<typename> class S = GhostData> void unpack_obj_multi_fn(
 						void *data,
 						int num_gid_entries,
 						int num_ids,
@@ -151,15 +152,15 @@ namespace FPMAS {
 						char *buf,
 						int *ierr) {
 
-					DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
+					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 					for (int i = 0; i < num_ids; ++i) {
 						int node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 						json json_node = json::parse(&buf[idx[i]]);
 
-						GhostNode<T>* ghost = graph->getGhost()->getNodes().at(node_id);
-						Node<T> node_update = json_node.get<Node<T>>();
+						GhostNode<T, S>* ghost = graph->getGhost()->getNodes().at(node_id);
+						Node<LocalData<T>> node_update = json_node.get<Node<LocalData<T>>>();
 
-						ghost->setData(node_update.getData());
+						ghost->data().get() = node_update.data().get();
 						ghost->setWeight(node_update.getWeight());
 					}
 

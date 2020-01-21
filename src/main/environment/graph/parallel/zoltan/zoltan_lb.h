@@ -5,13 +5,19 @@
 
 #include "zoltan_utils.h"
 #include "../distributed_graph.h"
+#include "../sync_data.h"
 
 namespace FPMAS {
 	namespace graph {
 
-		template<class T> class DistributedGraph;
+		template<class T, template<typename> class S> class DistributedGraph;
+
+		template<class T> class GhostData;
+		template<class T> class SyncData;
 
 		using graph::DistributedGraph;
+		using graph::GhostData;
+		using graph::SyncData;
 
 		/**
 		 * The FPMAS::graph::zoltan namespace contains definitions of all the
@@ -32,8 +38,8 @@ namespace FPMAS {
 			 * @param ierr Result : error code
 			 * @return numbe of nodes managed by the current process
 			 */
-			template<class T> int num_obj(void *data, int* ierr) {
-				return ((DistributedGraph<T>*) data)->getNodes().size();
+			template<class T, template<typename> class S = GhostData> int num_obj(void *data, int* ierr) {
+				return ((DistributedGraph<T, S>*) data)->getNodes().size();
 			}
 
 			/**
@@ -52,7 +58,7 @@ namespace FPMAS {
 			 * @param obj_wgts Result : weights list
 			 * @param ierr Result : error code
 			 */
-			template<class T> void obj_list(
+			template<class T, template<typename> class S = GhostData> void obj_list(
 					void *data,
 					int num_gid_entries, 
 					int num_lid_entries,
@@ -63,8 +69,8 @@ namespace FPMAS {
 					int *ierr
 					) {
 				int i = 0;
-				for(auto n : ((DistributedGraph<T>*) data)->getNodes()) {
-					Node<T>* node = n.second;
+				for(auto n : ((DistributedGraph<T, S>*) data)->getNodes()) {
+					Node<SyncData<T>>* node = n.second;
 
 					utils::write_zoltan_id(node->getId(), &global_ids[i * num_gid_entries]);
 
@@ -87,7 +93,7 @@ namespace FPMAS {
 			 * @param num_edges Result : number of outgoing arc for each node
 			 * @param ierr Result : error code
 			 */
-			template<class T> void num_edges_multi_fn(
+			template<class T, template<typename> class S = GhostData> void num_edges_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -97,9 +103,10 @@ namespace FPMAS {
 					int *num_edges,
 					int *ierr
 					) {
-				std::unordered_map<unsigned long, Node<T>*> nodes = ((DistributedGraph<T>*) data)->getNodes();
+				std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes
+					= ((DistributedGraph<T, S>*) data)->getNodes();
 				for(int i = 0; i < num_obj; i++) {
-					Node<T>* node = nodes.at(
+					Node<SyncData<T>>* node = nodes.at(
 							utils::read_zoltan_id(&global_ids[i * num_gid_entries])
 							);
 					num_edges[i] = node->getOutgoingArcs().size();
@@ -127,7 +134,7 @@ namespace FPMAS {
 			 * @param ewgts Result : edge weight for each neighbor
 			 * @param ierr Result : error code
 			 */
-			template<class T> void edge_list_multi_fn(
+			template<class T, template<typename> class S = GhostData> void edge_list_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -141,16 +148,16 @@ namespace FPMAS {
 					float *ewgts,
 					int *ierr) {
 
-				DistributedGraph<T>* graph = (DistributedGraph<T>*) data;
-				std::unordered_map<unsigned long, Node<T>*> nodes = graph->getNodes();
+				DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+				std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes = graph->getNodes();
 
 				int neighbor_index = 0;
 				for (int i = 0; i < num_obj; ++i) {
-					Node<T>* node = nodes.at(
+					Node<SyncData<T>>* node = nodes.at(
 							utils::read_zoltan_id(&global_ids[num_gid_entries * i])
 							);
 					for(int j = 0; j < node->getOutgoingArcs().size(); j++) {
-						Arc<T>* arc = node->getOutgoingArcs().at(j);
+						Arc<SyncData<T>>* arc = node->getOutgoingArcs().at(j);
 						unsigned long targetId = arc->getTargetNode()->getId(); 
 						utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 

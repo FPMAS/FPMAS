@@ -37,7 +37,7 @@ namespace FPMAS {
 			Node(unsigned long, float, T);
 
 			private:
-			T data;
+			T _data;
 			float weight = 1.;
 
 			protected:
@@ -51,19 +51,15 @@ namespace FPMAS {
 			std::vector<Arc<T>*> outgoingArcs;
 
 			public:
-			T getData() const;
-			void setData(T);
+			T& data();
+			const T& data() const;
+
 			float getWeight() const;
 			void setWeight(float);
 			std::vector<Arc<T>*> getIncomingArcs() const;
 			std::vector<Arc<T>*> getOutgoingArcs() const;
 
 		};
-
-
-		/************/
-		/* Node API */
-		/************/
 
 		/**
 		 * Node constructor.
@@ -79,8 +75,7 @@ namespace FPMAS {
 		 * @param id node id
 		 * @param data pointer to node data
 		 */
-		template<class T> Node<T>::Node(unsigned long id, T data) : GraphItem(id) {
-			this->data = data;
+		template<class T> Node<T>::Node(unsigned long id, T data) : GraphItem(id), _data(data) {
 		}
 
 		/**
@@ -88,29 +83,27 @@ namespace FPMAS {
 		 *
 		 * @param id node id
 		 * @param weight node weight
-		 * @param data pointer to node data
+		 * @param data node data
 		 */
-		template<class T> Node<T>::Node(unsigned long id, float weight, T data) : GraphItem(id) {
-			this->weight = weight;
-			this->data = data;
+		template<class T> Node<T>::Node(unsigned long id, float weight, T data) : GraphItem(id), weight(weight), _data(data) {
 		}
 
 		/**
-		 * Returns node's data.
+		 * Reference to node's data.
 		 *
-		 * @return pointer to node's data
+		 * @return reference to node's data
 		 */
-		template<class T> T Node<T>::getData() const {
-			return this->data;
+		template<class T> T& Node<T>::data() {
+			return this->_data;
 		}
 
 		/**
-		 * Sets node's data to the specified value.
+		 * Const feference to node's data.
 		 *
-		 * @param data pointer to node data
+		 * @return const reference to node's data
 		 */
-		template<class T> void Node<T>::setData(T data) {
-			this->data = data;
+		template<class T> const T& Node<T>::data() const {
+			return this->_data;
 		}
 
 		/**

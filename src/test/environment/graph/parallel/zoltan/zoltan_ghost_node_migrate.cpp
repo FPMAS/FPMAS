@@ -96,10 +96,10 @@ using FPMAS::graph::zoltan::ghost::unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 
-	dg.getNode(0)->setData(8);
+	dg.getNode(0)->data().get() = 8;
 	dg.getNode(0)->setWeight(5.);
 
-	dg.getNode(1)->setData(12);
+	dg.getNode(1)->data().get() = 12;
 	dg.getNode(1)->setWeight(4.);
 
 	write_migration_sizes();
@@ -121,9 +121,9 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 		buf,
 		&err);
 
-	ASSERT_EQ(dg.getGhost()->getNodes().at(0)->getData(), 8);
+	ASSERT_EQ(dg.getGhost()->getNodes().at(0)->data().get(), 8);
 	ASSERT_EQ(dg.getGhost()->getNodes().at(0)->getWeight(), 5.);
 
-	ASSERT_EQ(dg.getGhost()->getNodes().at(1)->getData(), 12);
+	ASSERT_EQ(dg.getGhost()->getNodes().at(1)->data().get(), 12);
 	ASSERT_EQ(dg.getGhost()->getNodes().at(1)->getWeight(), 4.);
 }

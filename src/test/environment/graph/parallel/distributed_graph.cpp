@@ -7,6 +7,7 @@
 #include "test_utils/test_utils.h"
 
 using FPMAS::test_utils::assert_contains;
+using FPMAS::graph::GhostData;
 
 TEST(Mpi_DistributedGraph, build_with_ranks_test) {
 	int global_size;
@@ -132,7 +133,7 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_EQ(dg.getArcs().size(), 1);
 
-	Arc<int>* arc = dg.getArcs().begin()->second;
+	Arc<SyncData<int>>* arc = dg.getArcs().begin()->second;
 	for(auto node : dg.getNodes()) {
 		if(node.second->getIncomingArcs().size() == 1) {
 			ASSERT_EQ(arc->getTargetNode()->getId(), node.second->getId());
@@ -207,7 +208,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 		}
 		ASSERT_EQ(dg.getGhost()->getArcs().size(), 2);
 
-		Node<int>* localNode = dg.getNodes().begin()->second;
+		Node<SyncData<int>>* localNode = dg.getNodes().begin()->second;
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
 		ASSERT_EQ(
 				localNode->getIncomingArcs().at(0)->getSourceNode()->getId(),
@@ -269,18 +270,18 @@ TEST_F(Mpi_DistributeCompleteGraphTest, distribute_graph_with_multiple_ghost_arc
 		ASSERT_EQ(ghostNode.second->getOutgoingArcs().size(), 2);
 		ASSERT_EQ(ghostNode.second->getIncomingArcs().size(), 2);
 
-		Node<int>* outNodes[2] = {
+		Node<SyncData<int>>* outNodes[2] = {
 			ghostNode.second->getOutgoingArcs().at(0)->getTargetNode(),
 			ghostNode.second->getOutgoingArcs().at(1)->getTargetNode()
 		};
-		Node<int>* inNodes[2] = {
+		Node<SyncData<int>>* inNodes[2] = {
 			ghostNode.second->getIncomingArcs().at(0)->getSourceNode(),
 			ghostNode.second->getIncomingArcs().at(1)->getSourceNode()
 		};
 
 		for(auto node : dg.getNodes()) {
-			assert_contains<Node<int>*, 2>(outNodes, node.second);
-			assert_contains<Node<int>*, 2>(inNodes, node.second);
+			assert_contains<Node<SyncData<int>>*, 2>(outNodes, node.second);
+			assert_contains<Node<SyncData<int>>*, 2>(inNodes, node.second);
 		}
 
 	}

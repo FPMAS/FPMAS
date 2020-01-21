@@ -59,9 +59,7 @@ namespace nlohmann {
 					j.at("id").get<unsigned long>()
 					);
 			if(j.contains("data"))
-				node.setData(
-					j.at("data").get<T>()
-				);
+				node.data() = j.at("data").get<T>();
 
 			if(j.contains("weight"))
 				node.setWeight(
@@ -97,9 +95,10 @@ namespace nlohmann {
 		 * @param node node reference
 		 */
 		static void to_json(json& j, const Node<T>& node) {
+			json data = node.data();
 			j = json{
 				{"id", node.getId()},
-				{"data", node.getData()},
+				{"data", data},
 				{"weight", node.getWeight()}
 			};
 		}
@@ -207,8 +206,11 @@ namespace nlohmann {
 			// Builds nodes
 			json nodes = j.at("nodes");
 			for(json& node : nodes) {
+				Node<T> n = node.get<Node<T>>();
 				graph.buildNode(
-					node.get<Node<T>>()
+					n.getId(),
+					n.getWeight(),
+					n.data()
 					);
 			}
 

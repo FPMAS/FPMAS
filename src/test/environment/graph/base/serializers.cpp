@@ -21,8 +21,6 @@ TEST(NodeSerializer, simple_node_serialization) {
 	// See https://float.exposed/0x404ccccd
 	ASSERT_EQ("{\"node\":{\"data\":0,\"id\":85250,\"weight\":3.200000047683716}}", j.dump());
 
-	// delete node->getData();
-
 }
 
 TEST(NodeSerializer, node_serialization_without_data_or_weight) {
@@ -37,13 +35,9 @@ TEST(NodeSerializer, simple_node_deserialization) {
 
 	Node<int> node = node_json.get<Node<int>>();
 
-	ASSERT_EQ(node.getData(), 0);
+	ASSERT_EQ(node.data(), 0);
 	ASSERT_EQ(node.getId(), 85250ul);
 	ASSERT_EQ(node.getWeight(), 2.3f);
-
-	// In this case, data has been allocated at unserialization time and should
-	// be deleted manually
-	// delete node.getData();
 }
 
 TEST(NodeSerializer, node_deserialization_no_data) {
@@ -56,9 +50,8 @@ TEST(NodeSerializer, node_deserialization_no_data) {
 
 	ASSERT_EQ(node.getId(), 85250ul);
 
-	node.setData(2);
-	ASSERT_EQ(node.getData(), 2);
-
+	node.data() = 2;
+	ASSERT_EQ(node.data(), 2);
 }
 
 TEST(ArcSerializer, simple_arc_serializer) {
@@ -72,9 +65,6 @@ TEST(ArcSerializer, simple_arc_serializer) {
 	json j = *a;
 
 	ASSERT_EQ(j.dump(), "{\"id\":0,\"link\":[0,1]}");
-
-	// delete n1->getData();
-	// delete n2->getData();
 }
 
 TEST(ArcSerializer, simple_arc_deserializer) {
@@ -99,8 +89,6 @@ TEST(GraphSerializer, simple_graph_serialization) {
 	json j = g;
 
 	ASSERT_EQ(j.dump(), "{\"arcs\":[],\"nodes\":[{\"data\":0,\"id\":0,\"weight\":1.0}]}");
-
-	// delete n->getData();
 }
 
 TEST_F(SampleGraphTest, sample_graph_serialization) {
@@ -134,9 +122,7 @@ TEST(GraphSerializer, simple_graph_deserialization) {
 	ASSERT_EQ(g.getNodes().size(), 1);
 	ASSERT_EQ(g.getNodes().count(0ul), 1);
 	ASSERT_EQ(g.getNodes().find(0ul)->second->getId(), 0ul);
-	ASSERT_EQ(g.getNodes().find(0ul)->second->getData(), 0);
-
-	// delete g.getNodes().find(0ul)->second->getData();
+	ASSERT_EQ(g.getNodes().find(0ul)->second->data(), 0);
 }
 
 TEST_F(SampleGraphTest, sample_graph_deserialization) {
@@ -159,9 +145,4 @@ TEST_F(SampleGraphTest, sample_graph_deserialization) {
 	Graph<int> graph = graph_json.get<Graph<int>>();
 
 	testSampleGraphStructure(&graph);
-
-	for(auto node : graph.getNodes()) {
-		// delete node.second->getData();
-	}
-
 }
