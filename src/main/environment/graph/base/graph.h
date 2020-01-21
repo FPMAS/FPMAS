@@ -43,16 +43,13 @@ namespace FPMAS {
 		 *
 		 *  int main() {
 		 *  	Graph<int> g;
-		 *		Node<int>* n1 = g.buildNode(0ul, new int(0));
-		 *		Node<int>* n2 = g.buildNode(1ul, new int(1));
+		 *		Node<int>* n1 = g.buildNode(0ul, 0);
+		 *		Node<int>* n2 = g.buildNode(1ul, 1);
 		 *		g.link(n1, n2, 0ul);
 		 *
 		 *		json j = g;
 		 *
 		 *		std::out << j.dump() << std::endl;
-		 *
-		 *		delete n1->getData();
-		 *		delete n2->getData();
 		 *	}
 		 *	```
 		 *  Will print the following json :
@@ -109,9 +106,10 @@ namespace FPMAS {
 				void removeArc(Arc<T>*, std::vector<Arc<T>*>*);
 
 			public:
-				Node<T>* getNode(unsigned long) const;
+				Node<T>* getNode(unsigned long);
 				std::unordered_map<unsigned long, Node<T>*> getNodes() const;
-				Arc<T>* getArc(unsigned long) const;
+
+				Arc<T>* getArc(unsigned long);
 				std::unordered_map<unsigned long, Arc<T>*> getArcs() const;
 
 				Node<T>* buildNode(unsigned long);
@@ -136,7 +134,7 @@ namespace FPMAS {
 		 * @param id node id
 		 * @return pointer to associated node
 		 */
-		template<class T> Node<T>* Graph<T>::getNode(unsigned long id) const {
+		template<class T> Node<T>* Graph<T>::getNode(unsigned long id) {
 			return this->nodes.find(id)->second;
 		}
 
@@ -156,7 +154,7 @@ namespace FPMAS {
 		 * @param id arc id
 		 * @return pointer to associated arc
 		 */
-		template<class T> Arc<T>* Graph<T>::getArc(unsigned long id) const {
+		template<class T> Arc<T>* Graph<T>::getArc(unsigned long id) {
 			return this->arcs.find(id)->second;
 		}
 
