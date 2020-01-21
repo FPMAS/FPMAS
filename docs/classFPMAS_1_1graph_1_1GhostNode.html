@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: FPMAS::graph::GhostNode&lt; T &gt; Class Template Reference</title>
+<title>fpmas: FPMAS::graph::GhostNode&lt; T, S &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,7 +69,7 @@ $(function() {
 <a href="#friends">Friends</a> &#124;
 <a href="classFPMAS_1_1graph_1_1GhostNode-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::graph::GhostNode&lt; T &gt; Class Template Reference</div>  </div>
+<div class="title">FPMAS::graph::GhostNode&lt; T, S &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -77,16 +77,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a91ac46d7ad83d24cc799544cd452999b"><td class="memItemLeft" align="right" valign="top"><a id="a91ac46d7ad83d24cc799544cd452999b"></a>
-<a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (unsigned long)</td></tr>
-<tr class="separator:a91ac46d7ad83d24cc799544cd452999b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a50e754ab9dc9f0d32b6cd7d6f79c3668"><td class="memItemLeft" align="right" valign="top"><a id="a50e754ab9dc9f0d32b6cd7d6f79c3668"></a>
-<a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt;, std::set&lt; unsigned long &gt;)</td></tr>
-<tr class="separator:a50e754ab9dc9f0d32b6cd7d6f79c3668"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5664907ced3dd9b3fb749736f48505f"><td class="memItemLeft" align="right" valign="top"><a id="af5664907ced3dd9b3fb749736f48505f"></a>
+<a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (unsigned long)</td></tr>
+<tr class="separator:af5664907ced3dd9b3fb749736f48505f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81050b5b7881483f65eeaeb73cdc471a"><td class="memItemLeft" align="right" valign="top"><a id="a81050b5b7881483f65eeaeb73cdc471a"></a>
+<a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, std::set&lt; unsigned long &gt;)</td></tr>
+<tr class="separator:a81050b5b7881483f65eeaeb73cdc471a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;class T&gt;<br />
-class FPMAS::graph::GhostNode&lt; T &gt;</h3>
+<div class="textblock"><h3>template&lt;class T, template&lt; typename &gt; class S = GhostData&gt;<br />
+class FPMAS::graph::GhostNode&lt; T, S &gt;</h3>
 
 <p><a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a> s are used to locally represent nodes that are living on an other processor, to maintain data continuity and the global graph structure.</p>
 <p>They are designed to be used as normal nodes in the graph structure. For example, when looking at nodes linked to a particular node, no difference can be made between nodes really living locally and ghost nodes. </p>

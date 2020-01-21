@@ -120,9 +120,8 @@ template&lt;class T &gt; </div>
 <div class="line">    &quot;weight&quot;:&lt;node_weight&gt;</div>
 <div class="line">}</div>
 </div><!-- fragment --><p><code>data</code> and <code>weight</code> fields are both optional, with a default weight value set to 1.</p>
-<p>If a <code>data</code> field is specified, the Node data will be <em>instanciated dynamically using a <code>new</code> statement and the copy constructor of the specified data type T</em>.</p>
-<p>Some, in this case, memory will internally be allocated by the library, so it is <em>the responsability of the user</em> to free the data field.</p>
-<p>To avoid this, the <code>data</code> field can be ignored and it is still possible to manually associate data to nodes using the <a class="el" href="classFPMAS_1_1graph_1_1Node.html#a566bac7c33cafc607b54894aab95e462">Node::setData(T*)</a> function.</p>
+<p>If a <code>data</code> field is specified, the Node data will be unserialized using the proper nlohmann deserialization function. It might be the responsability of the user to define those function.</p>
+<p>Else, the <code>data</code> field can be ignored and it is still possible to manually associate data to nodes using the Node::setData(T) function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">j</td><td>input json </td></tr>

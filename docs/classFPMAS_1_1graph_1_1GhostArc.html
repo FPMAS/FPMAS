@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: FPMAS::graph::GhostArc&lt; T &gt; Class Template Reference</title>
+<title>fpmas: FPMAS::graph::GhostArc&lt; T, S &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -69,7 +69,7 @@ $(function() {
 <a href="#friends">Friends</a> &#124;
 <a href="classFPMAS_1_1graph_1_1GhostArc-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::graph::GhostArc&lt; T &gt; Class Template Reference</div>  </div>
+<div class="title">FPMAS::graph::GhostArc&lt; T, S &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -77,19 +77,16 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:a6d11fb89749d36325eab9303f0c072f2"><td class="memItemLeft" align="right" valign="top"><a id="a6d11fb89749d36325eab9303f0c072f2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (<a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *, unsigned long)</td></tr>
-<tr class="separator:a6d11fb89749d36325eab9303f0c072f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26051eba9afae737e3b5fbc4eaa07201"><td class="memItemLeft" align="right" valign="top"><a id="a26051eba9afae737e3b5fbc4eaa07201"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; T &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *, unsigned long)</td></tr>
-<tr class="separator:a26051eba9afae737e3b5fbc4eaa07201"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a787e05b6c602b210fd2b017a55017165"><td class="memItemLeft" align="right" valign="top"><a id="a787e05b6c602b210fd2b017a55017165"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (<a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T &gt; *, unsigned long)</td></tr>
-<tr class="separator:a787e05b6c602b210fd2b017a55017165"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf2ed1fccd09026692369c627010140c"><td class="memItemLeft" align="right" valign="top"><a id="acf2ed1fccd09026692369c627010140c"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (<a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T, S &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt; *, unsigned long)</td></tr>
+<tr class="separator:acf2ed1fccd09026692369c627010140c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac90b44ea8b97a0c215ff4381b75ea8b"><td class="memItemLeft" align="right" valign="top"><a id="aac90b44ea8b97a0c215ff4381b75ea8b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (<a class="el" href="classFPMAS_1_1graph_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt; *, <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>&lt; T, S &gt; *, unsigned long)</td></tr>
+<tr class="separator:aac90b44ea8b97a0c215ff4381b75ea8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;class T&gt;<br />
-class FPMAS::graph::GhostArc&lt; T &gt;</h3>
+<div class="textblock"><h3>template&lt;class T, template&lt; typename &gt; class S = GhostData&gt;<br />
+class FPMAS::graph::GhostArc&lt; T, S &gt;</h3>
 
 <p>GhostArcs should be used to link two nodes when at least one of the two nodes is a <a class="el" href="classFPMAS_1_1graph_1_1GhostNode.html">GhostNode</a>.</p>
 <p>They behaves exactly as normal arcs. In consequence, when looking at a node outgoing arcs for example, no difference can directly be made between local arcs and ghost arcs. </p>

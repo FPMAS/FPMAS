@@ -107,10 +107,10 @@ namespace FPMAS {
 
 			public:
 				Node<T>* getNode(unsigned long);
-				std::unordered_map<unsigned long, Node<T>*> getNodes() const;
+				const std::unordered_map<unsigned long, Node<T>*>& getNodes() const;
 
 				Arc<T>* getArc(unsigned long);
-				std::unordered_map<unsigned long, Arc<T>*> getArcs() const;
+				const std::unordered_map<unsigned long, Arc<T>*>& getArcs() const;
 
 				Node<T>* buildNode(unsigned long);
 				Node<T>* buildNode(unsigned long id, T data);
@@ -139,11 +139,11 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Returns a copy of the nodes map of this graph.
+		 * Returns a const reference to the nodes map of this graph.
 		 *
 		 * @return nodes contained in this graph
 		 */
-		template<class T> std::unordered_map<unsigned long, Node<T>*> Graph<T>::getNodes() const {
+		template<class T> const std::unordered_map<unsigned long, Node<T>*>& Graph<T>::getNodes() const {
 			return this->nodes;
 		}
 
@@ -159,11 +159,11 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Returns a copy of the arcs map of this graph.
+		 * Returns a const reference to the arcs map of this graph.
 		 *
 		 * @return arcs contained in this graph
 		 */
-		template<class T> std::unordered_map<unsigned long, Arc<T>*> Graph<T>::getArcs() const {
+		template<class T> const std::unordered_map<unsigned long, Arc<T>*>& Graph<T>::getArcs() const {
 			return this->arcs;
 		}
 

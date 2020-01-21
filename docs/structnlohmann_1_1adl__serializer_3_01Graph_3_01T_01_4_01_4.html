@@ -176,7 +176,7 @@ template&lt;class T &gt; </div>
 <div class="line">}</div>
 </div><!-- fragment --><p>Notice that the real serialized version does not contains any indentation, line breaks or spaces.</p>
 <p>Any custom data type can be easily serialized, as explained in the to_json(json&amp;, const Node&lt;T&gt;&amp;) function, allowing the user to serialize any custom graph without having to know about the internal serialization processes.</p>
-<p>Note that a reference to the graph object, not a reference to the pointer, must be used as argument. </p><div class="fragment"><div class="line">Graph&lt;T&gt; g = <span class="keyword">new</span> Graph&lt;T&gt;();</div>
+<p>Note that a reference to the graph object, not a reference to the pointer, must be used as argument. </p><div class="fragment"><div class="line">Graph&lt;T&gt;* g = <span class="keyword">new</span> Graph&lt;T&gt;();</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Do processing to build the graph</span></div>
 <div class="line"> </div>

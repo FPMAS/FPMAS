@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mpicommunicator_100',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html',1,'FPMAS::communication']]]
+  ['localdata_115',['LocalData',['../classFPMAS_1_1graph_1_1LocalData.html',1,'FPMAS::graph']]]
 ];

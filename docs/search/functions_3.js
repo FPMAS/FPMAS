@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['distribute_115',['distribute',['../classFPMAS_1_1graph_1_1DistributedGraph.html#a36d502b364da0ba30d06d45014697443',1,'FPMAS::graph::DistributedGraph']]],
-  ['distributedgraph_116',['DistributedGraph',['../classFPMAS_1_1graph_1_1DistributedGraph.html#aca3baf324bccb93ef0bc5b9415ff1d02',1,'FPMAS::graph::DistributedGraph::DistributedGraph(SyncMode syncMode=OLZ)'],['../classFPMAS_1_1graph_1_1DistributedGraph.html#aeb2b10b37302f3a12b16d3ba713f10fb',1,'FPMAS::graph::DistributedGraph::DistributedGraph(std::initializer_list&lt; int &gt;, SyncMode syncMode=OLZ)']]]
+  ['data_134',['data',['../classFPMAS_1_1graph_1_1Node.html#ae0f1de716943128bf106f19e35749172',1,'FPMAS::graph::Node']]],
+  ['distribute_135',['distribute',['../classFPMAS_1_1graph_1_1DistributedGraph.html#abda45ae3c3b5c434bcec7380c82ca8ed',1,'FPMAS::graph::DistributedGraph']]],
+  ['distributedgraph_136',['DistributedGraph',['../classFPMAS_1_1graph_1_1DistributedGraph.html#a1ccefaa45e51543d6f3506c997041000',1,'FPMAS::graph::DistributedGraph::DistributedGraph(SyncMode syncMode=OLZ)'],['../classFPMAS_1_1graph_1_1DistributedGraph.html#a6bfa0234f611d99910a05e80b45a293a',1,'FPMAS::graph::DistributedGraph::DistributedGraph(std::initializer_list&lt; int &gt;, SyncMode syncMode=OLZ)']]]
 ];
