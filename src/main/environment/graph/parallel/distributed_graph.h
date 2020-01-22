@@ -142,10 +142,7 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Builds a DistributedGraph over all the available procs, using the
-		 * specified synchronization mode (default to OLZ).
-		 * 
-		 * @param syncMode synchronization mode
+		 * Builds a DistributedGraph over all the available procs.
 		 */
 		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph()
 			: ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
@@ -153,12 +150,10 @@ namespace FPMAS {
 			}
 
 		/**
-		 * Builds a DistributedGraph over the specified procs, using the
-		 * specified synchronization mode (default to OLZ).
+		 * Builds a DistributedGraph over the specified procs.
 		 *
 		 * @param ranks ranks of the procs on which the DistributedGraph is
 		 * built
-		 * @param syncMode synchronization mode
 		 */
 		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph(std::initializer_list<int> ranks)
 			: mpiCommunicator(ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {

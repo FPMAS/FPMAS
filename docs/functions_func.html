@@ -73,8 +73,8 @@ $(function() {
 <h3><a id="index_b"></a>- b -</h3><ul>
 <li>buildNode()
 : <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html#a7e445a1d790e7b1f3aa1cddfedad383c">FPMAS::graph::DistributedGraph&lt; T, S &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a5152495bdce7c2d7e446396c882b42fa">FPMAS::graph::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#ab8775caf236d33b332766316cd9286f1">FPMAS::graph::synchro::GhostGraph&lt; T, S &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1Graph.html#afe0ecd5a74a3ea2cd76bd12a17f4cd80">FPMAS::graph::Graph&lt; T &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#aeed745b72d04305903b2a88a0d6d0881">FPMAS::graph::synchro::GhostGraph&lt; T, S &gt;</a>
 </li>
 </ul>
 
@@ -103,12 +103,16 @@ $(function() {
 <li>from_json()
 : <a class="el" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a1da2da4f6a8c0915bebf90e6e9f1eacc">nlohmann::adl_serializer&lt; Arc&lt; T &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#a0eda60ef245f07de7f52a37df6cb179a">nlohmann::adl_serializer&lt; Graph&lt; T &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01LocalData_3_01T_01_4_01_4.html#a60bc45e61c3b1f64ba1d45b8b9d403c5">nlohmann::adl_serializer&lt; LocalData&lt; T &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4.html#a742a630c4dcb64d56f2548ad9e10ae42">nlohmann::adl_serializer&lt; Node&lt; T &gt; &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_g"></a>- g -</h3><ul>
+<li>get()
+: <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1SyncData.html#a8c3e78629e90f379545bb1fcaa110f7d">FPMAS::graph::synchro::SyncData&lt; T &gt;</a>
+</li>
 <li>getArc()
 : <a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a226f5cc6b4407e2f368c60759d5b9ec5">FPMAS::graph::Graph&lt; T &gt;</a>
 </li>
@@ -174,6 +178,9 @@ $(function() {
 <li>getWeight()
 : <a class="el" href="classFPMAS_1_1graph_1_1Node.html#a379ad6759dd3d227b4fff5759d814029">FPMAS::graph::Node&lt; T &gt;</a>
 </li>
+<li>GhostData()
+: <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostData.html#acf236d640295af615c119592331393e7">FPMAS::graph::synchro::GhostData&lt; T &gt;</a>
+</li>
 <li>GhostGraph()
 : <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#a8e12603fd7b88c6bc73de908da278c21">FPMAS::graph::synchro::GhostGraph&lt; T, S &gt;</a>
 </li>
@@ -186,7 +193,10 @@ $(function() {
 <h3><a id="index_l"></a>- l -</h3><ul>
 <li>link()
 : <a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a3dc0843c430902afd093438870172dc8">FPMAS::graph::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#a9d7aa1e3f3cd0fec5213105cf830274c">FPMAS::graph::synchro::GhostGraph&lt; T, S &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#af6cb441a16785ffe6186352a7c223145">FPMAS::graph::synchro::GhostGraph&lt; T, S &gt;</a>
+</li>
+<li>LocalData()
+: <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1LocalData.html#ab85fd8a09c9b9438246aaf96604f53ca">FPMAS::graph::synchro::LocalData&lt; T &gt;</a>
 </li>
 </ul>
 
@@ -196,7 +206,7 @@ $(function() {
 : <a class="el" href="classFPMAS_1_1graph_1_1FossilArcs.html#a832b4d1d8ab8840c914a75645c34a636">FPMAS::graph::FossilArcs&lt; T &gt;</a>
 </li>
 <li>MpiCommunicator()
-: <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565">FPMAS::communication::MpiCommunicator</a>
+: <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a86d104f340d96ea59e6830178eb8572d">FPMAS::communication::MpiCommunicator</a>
 </li>
 </ul>
 
@@ -246,6 +256,9 @@ $(function() {
 <li>setWeight()
 : <a class="el" href="classFPMAS_1_1graph_1_1Node.html#a2db70cace378ab0bccad39d45601c4bc">FPMAS::graph::Node&lt; T &gt;</a>
 </li>
+<li>SyncData()
+: <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1SyncData.html#a035fa36ddab1f452323ef1585adca3c0">FPMAS::graph::synchro::SyncData&lt; T &gt;</a>
+</li>
 <li>synchronize()
 : <a class="el" href="classFPMAS_1_1graph_1_1proxy_1_1Proxy.html#ad75d3a0bc75e284abc0718e2c0fd55ab">FPMAS::graph::proxy::Proxy</a>
 , <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#aa7a290e269725421c594f60290739059">FPMAS::graph::synchro::GhostGraph&lt; T, S &gt;</a>
@@ -264,6 +277,7 @@ $(function() {
 : <a class="el" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">nlohmann::adl_serializer&lt; Arc&lt; T &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#ad435d089aa60f5035a212c22c9123429">nlohmann::adl_serializer&lt; Graph&lt; T &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4.html#adb02f0f8581bff021b2154c91a291428">nlohmann::adl_serializer&lt; Node&lt; T &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01SyncData_3_01T_01_4_01_4.html#a0b2f361848c3a7bdf3f57136b4fd6df6">nlohmann::adl_serializer&lt; SyncData&lt; T &gt; &gt;</a>
 </li>
 </ul>
 
@@ -271,6 +285,13 @@ $(function() {
 <h3><a id="index_u"></a>- u -</h3><ul>
 <li>unlink()
 : <a class="el" href="classFPMAS_1_1graph_1_1Graph.html#a54571daf0a70817f45fb157bd84bfa9c">FPMAS::graph::Graph&lt; T &gt;</a>
+</li>
+</ul>
+
+
+<h3><a id="index_z"></a>- z -</h3><ul>
+<li>zoltan_query_functions()
+: <a class="el" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#aed5edc04d597e4f26cb248c9677408cf">FPMAS::graph::zoltan::utils::zoltan_query_functions</a>
 </li>
 </ul>
 

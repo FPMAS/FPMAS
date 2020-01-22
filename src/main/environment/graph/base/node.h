@@ -51,7 +51,17 @@ namespace FPMAS {
 			std::vector<Arc<T>*> outgoingArcs;
 
 			public:
+			/**
+			 * Reference to node's data.
+			 *
+			 * @return reference to node's data
+			 */
 			T& data();
+			/**
+			 * Const feference to node's data.
+			 *
+			 * @return const reference to node's data
+			 */
 			const T& data() const;
 
 			float getWeight() const;
@@ -88,20 +98,11 @@ namespace FPMAS {
 		template<class T> Node<T>::Node(unsigned long id, float weight, T data) : GraphItem(id), weight(weight), _data(data) {
 		}
 
-		/**
-		 * Reference to node's data.
-		 *
-		 * @return reference to node's data
-		 */
+
 		template<class T> T& Node<T>::data() {
 			return this->_data;
 		}
 
-		/**
-		 * Const feference to node's data.
-		 *
-		 * @return const reference to node's data
-		 */
 		template<class T> const T& Node<T>::data() const {
 			return this->_data;
 		}

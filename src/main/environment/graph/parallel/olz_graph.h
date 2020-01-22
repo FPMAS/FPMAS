@@ -79,6 +79,9 @@ namespace FPMAS {
 
 			};
 
+			/*
+			 * Initializes zoltan parameters and zoltan ghost migration query functions.
+			 */
 			template<class T, template<typename> class S> void GhostGraph<T, S>::initialize() {
 				FPMAS::config::zoltan_config(&this->zoltan);
 
@@ -91,7 +94,7 @@ namespace FPMAS {
 			 * Initializes a GhostGraph from the input DistributedGraph.
 			 *
 			 * The DistributedGraph instance will be used by the Zoltan query
-			 * functions used to migrate ghost nodes to fetch data about the local
+			 * functions to migrate ghost nodes to fetch data about the local
 			 * graph.
 			 *
 			 * @param localGraph pointer to the origin DistributedGraph
@@ -102,6 +105,18 @@ namespace FPMAS {
 				this->initialize();
 			}
 
+			/**
+			 * Initializes a GhostGraph from the input DistributedGraph over
+			 * the specified procs.
+			 *
+			 * The DistributedGraph instance will be used by the Zoltan query
+			 * functions to migrate ghost nodes to fetch data about the local
+			 * graph.
+			 *
+			 * @param localGraph pointer to the origin DistributedGraph
+			 * @param ranks ranks of the procs on which the GhostGraph is
+			 * built
+			 */
 			template<class T, template<typename> class S> GhostGraph<T, S>::GhostGraph(
 					DistributedGraph<T, S>* localGraph, std::initializer_list<int> ranks
 					) : localGraph(localGraph), mpiCommunicator(ranks), zoltan(mpiCommunicator.getMpiComm()) {

@@ -72,16 +72,57 @@ $(function() {
 <div class="title">nlohmann::adl_serializer&lt; LocalData&lt; T &gt; &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="sync__data_8h_source.html">sync_data.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a60bc45e61c3b1f64ba1d45b8b9d403c5"><td class="memItemLeft" align="right" valign="top"><a id="a60bc45e61c3b1f64ba1d45b8b9d403c5"></a>
-static <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1LocalData.html">LocalData</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>from_json</b> (const json &amp;j)</td></tr>
+<tr class="memitem:a60bc45e61c3b1f64ba1d45b8b9d403c5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1LocalData.html">LocalData</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01LocalData_3_01T_01_4_01_4.html#a60bc45e61c3b1f64ba1d45b8b9d403c5">from_json</a> (const json &amp;j)</td></tr>
 <tr class="separator:a60bc45e61c3b1f64ba1d45b8b9d403c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78bc11d6a648bd6737662b31d70a00e4"><td class="memItemLeft" align="right" valign="top"><a id="a78bc11d6a648bd6737662b31d70a00e4"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> (json &amp;j, const <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1LocalData.html">LocalData</a>&lt; T &gt; &amp;data)</td></tr>
-<tr class="separator:a78bc11d6a648bd6737662b31d70a00e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class T&gt;<br />
+struct nlohmann::adl_serializer&lt; LocalData&lt; T &gt; &gt;</h3>
+
+<p>Defines unserialization rules for LocalData. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a60bc45e61c3b1f64ba1d45b8b9d403c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60bc45e61c3b1f64ba1d45b8b9d403c5">&#9670;&nbsp;</a></span>from_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1LocalData.html">LocalData</a>&lt;T&gt; nlohmann::adl_serializer&lt; <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1LocalData.html">LocalData</a>&lt; T &gt; &gt;::from_json </td>
+          <td>(</td>
+          <td class="paramtype">const json &amp;&#160;</td>
+          <td class="paramname"><em>j</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Unserializes the provided json as a LocalData instance.</p>
+<p>This function is automatically called by the nlohmann library.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">j</td><td>reference to the json instance to unserialize </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>unserialized local data </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/main/environment/graph/parallel/<a class="el" href="sync__data_8h_source.html">sync_data.h</a></li>
 </ul>

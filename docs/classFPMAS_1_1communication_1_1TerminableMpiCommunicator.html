@@ -178,6 +178,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>acquire</b> (u
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">resourceManager</td><td>pointer to the <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html">ResourceManager</a> instance that will be used to query serialized data. </td></tr>
+    <tr><td class="paramname">ranks</td><td>ranks to include in the group / communicator </td></tr>
   </table>
   </dd>
 </dl>
@@ -214,7 +215,7 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><b>acquire</b> (u
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>id of the data to read </td></tr>
-    <tr><td class="paramname">int</td><td>location </td></tr>
+    <tr><td class="paramname">location</td><td>rank of the data location </td></tr>
   </table>
   </dd>
 </dl>

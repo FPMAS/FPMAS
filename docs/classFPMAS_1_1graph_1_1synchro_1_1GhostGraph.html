@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>FPMAS</b></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph.html">graph</a></li><li class="navelem"><b>synchro</b></li><li class="navelem"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html">GhostGraph</a></li>  </ul>
+<li class="navelem"><b>FPMAS</b></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph.html">graph</a></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph_1_1synchro.html">synchro</a></li><li class="navelem"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html">GhostGraph</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -80,8 +80,7 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8e12603fd7b88c6bc73de908da278c21"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#a8e12603fd7b88c6bc73de908da278c21">GhostGraph</a> (<a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S &gt; *)</td></tr>
 <tr class="separator:a8e12603fd7b88c6bc73de908da278c21"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4320110a77f2ab26ab74fb13427c4ea9"><td class="memItemLeft" align="right" valign="top"><a id="a4320110a77f2ab26ab74fb13427c4ea9"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>GhostGraph</b> (<a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S &gt; *, std::initializer_list&lt; int &gt;)</td></tr>
+<tr class="memitem:a4320110a77f2ab26ab74fb13427c4ea9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#a4320110a77f2ab26ab74fb13427c4ea9">GhostGraph</a> (<a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S &gt; *, std::initializer_list&lt; int &gt;)</td></tr>
 <tr class="separator:a4320110a77f2ab26ab74fb13427c4ea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa7a290e269725421c594f60290739059"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#aa7a290e269725421c594f60290739059">synchronize</a> ()</td></tr>
 <tr class="separator:aa7a290e269725421c594f60290739059"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,7 +124,7 @@ class FPMAS::graph::synchro::GhostGraph&lt; T, S &gt;</h3>
 <p>Finally, the <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html">GhostGraph</a> can also synchronize <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostNode.html">GhostNode</a> s data thanks to the <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html#aa7a290e269725421c594f60290739059">synchronize()</a> function. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8e12603fd7b88c6bc73de908da278c21"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8e12603fd7b88c6bc73de908da278c21">&#9670;&nbsp;</a></span>GhostGraph()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e12603fd7b88c6bc73de908da278c21">&#9670;&nbsp;</a></span>GhostGraph() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -142,10 +141,49 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Initializes a <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html">GhostGraph</a> from the input <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>.</p>
-<p>The <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> instance will be used by the Zoltan query functions used to migrate ghost nodes to fetch data about the local graph.</p>
+<p>The <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> instance will be used by the Zoltan query functions to migrate ghost nodes to fetch data about the local graph.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">localGraph</td><td>pointer to the origin <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4320110a77f2ab26ab74fb13427c4ea9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4320110a77f2ab26ab74fb13427c4ea9">&#9670;&nbsp;</a></span>GhostGraph() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html">FPMAS::graph::synchro::GhostGraph</a>&lt; T, S &gt;::<a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html">GhostGraph</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S &gt; *&#160;</td>
+          <td class="paramname"><em>localGraph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::initializer_list&lt; int &gt;&#160;</td>
+          <td class="paramname"><em>ranks</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Initializes a <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html">GhostGraph</a> from the input <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> over the specified procs.</p>
+<p>The <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> instance will be used by the Zoltan query functions to migrate ghost nodes to fetch data about the local graph.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">localGraph</td><td>pointer to the origin <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> </td></tr>
+    <tr><td class="paramname">ranks</td><td>ranks of the procs on which the <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1GhostGraph.html">GhostGraph</a> is built </td></tr>
   </table>
   </dd>
 </dl>

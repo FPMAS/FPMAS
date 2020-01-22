@@ -77,6 +77,7 @@ find_package(Doxygen)
 if(DOXYGEN_FOUND)
 	file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
 	set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
+	set(DOXYGEN_MACRO_EXPANSION "YES")
 	set(DOXYGEN_HTML_OUTPUT ".")
 	# set(DOXYGEN_EXCLUDE src/main/zoltan)
 	doxygen_add_docs(doc

@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>FPMAS</b></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph.html">graph</a></li><li class="navelem"><b>synchro</b></li><li class="navelem"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1None.html">None</a></li>  </ul>
+<li class="navelem"><b>FPMAS</b></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph.html">graph</a></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph_1_1synchro.html">synchro</a></li><li class="navelem"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1None.html">None</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -72,13 +72,21 @@ $(function() {
 <div class="title">FPMAS::graph::synchro::None&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="sync__data_8h_source.html">sync_data.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a506d748842658e7b4296cadc18614c61"><td class="memItemLeft" align="right" valign="top">const static <a class="el" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html">zoltan::utils::zoltan_query_functions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1None.html#a506d748842658e7b4296cadc18614c61">config</a></td></tr>
 <tr class="separator:a506d748842658e7b4296cadc18614c61"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Data Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;class T&gt;<br />
+class FPMAS::graph::synchro::None&lt; T &gt;</h3>
+
+<p>Synchronisation mode that can be used as a template argument for a <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>, where no synchronization or overlapping zone is used.</p>
+<p>When a node is exported, its connections with nodes that are not exported on the same process are lost. </p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
 <a id="a506d748842658e7b4296cadc18614c61"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a506d748842658e7b4296cadc18614c61">&#9670;&nbsp;</a></span>config</h2>
 
@@ -100,8 +108,7 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>In this mode, no overlapping zone is used.</p>
-<p>When a node is exported, its connections with nodes that are not exported on the same process are lost. </p>
+<p>Zoltan config associated to the <a class="el" href="classFPMAS_1_1graph_1_1synchro_1_1None.html">None</a> synchronization mode. </p>
 
 </div>
 </div>

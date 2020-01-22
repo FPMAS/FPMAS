@@ -78,8 +78,8 @@ $(function() {
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#define ZOLTAN_PACK_OBJ_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define ZOLTAN_UNPACK_OBJ_ARGS void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#define ZOLTAN_MID_POST_MIGRATE_ARGS \</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">    void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR , int *, \</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">    int *, int , ZOLTAN_ID_PTR , ZOLTAN_ID_PTR , int *, int *,int *</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">    void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, \</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">    int *, int , ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>FPMAS {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">namespace </span>graph {</div>
@@ -90,28 +90,33 @@ $(function() {
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <span class="keywordtype">void</span> write_zoltan_id(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, ZOLTAN_ID_PTR);</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html">   22</a></span>&#160;            <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html">zoltan_query_functions</a> {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                ZOLTAN_POST_MIGRATE_PP_FN* node_post_migrate_fn;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                ZOLTAN_POST_MIGRATE_PP_FN* arc_post_migrate_fn;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                ZOLTAN_MID_MIGRATE_PP_FN* arc_mid_migrate_fn;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html">zoltan_query_functions</a>(</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                        ZOLTAN_POST_MIGRATE_PP_FN* node_post_migrate_fn,</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                        ZOLTAN_POST_MIGRATE_PP_FN* arc_post_migrate_fn,</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                        ZOLTAN_MID_MIGRATE_PP_FN* arc_mid_migrate_fn</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                        ) :</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                    node_post_migrate_fn(node_post_migrate_fn),</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                    arc_post_migrate_fn(arc_post_migrate_fn),</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                    arc_mid_migrate_fn(arc_mid_migrate_fn) {}</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            };</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        }</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;}</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html">   29</a></span>&#160;            <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html">zoltan_query_functions</a> {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a2df65c0fd390e5b3f280797f08dd25d3">   34</a></span>&#160;                    ZOLTAN_POST_MIGRATE_PP_FN* <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a2df65c0fd390e5b3f280797f08dd25d3">node_post_migrate_fn</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#ac28cd56a51d2972eeeec1427bd2dc6d8">   38</a></span>&#160;                    ZOLTAN_POST_MIGRATE_PP_FN* <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#ac28cd56a51d2972eeeec1427bd2dc6d8">arc_post_migrate_fn</a>;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a14d77d389b69e477383ca0ef2d44e0d1">   42</a></span>&#160;                    ZOLTAN_MID_MIGRATE_PP_FN* <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a14d77d389b69e477383ca0ef2d44e0d1">arc_mid_migrate_fn</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#aed5edc04d597e4f26cb248c9677408cf">   51</a></span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#aed5edc04d597e4f26cb248c9677408cf">zoltan_query_functions</a>(</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                            ZOLTAN_POST_MIGRATE_PP_FN* <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a2df65c0fd390e5b3f280797f08dd25d3">node_post_migrate_fn</a>,</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                            ZOLTAN_POST_MIGRATE_PP_FN* <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#ac28cd56a51d2972eeeec1427bd2dc6d8">arc_post_migrate_fn</a>,</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                            ZOLTAN_MID_MIGRATE_PP_FN* <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a14d77d389b69e477383ca0ef2d44e0d1">arc_mid_migrate_fn</a></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                            ) :</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                        <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a2df65c0fd390e5b3f280797f08dd25d3">node_post_migrate_fn</a>(<a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a2df65c0fd390e5b3f280797f08dd25d3">node_post_migrate_fn</a>),</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                        <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#ac28cd56a51d2972eeeec1427bd2dc6d8">arc_post_migrate_fn</a>(<a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#ac28cd56a51d2972eeeec1427bd2dc6d8">arc_post_migrate_fn</a>),</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                        <a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a14d77d389b69e477383ca0ef2d44e0d1">arc_mid_migrate_fn</a>(<a class="code" href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a14d77d389b69e477383ca0ef2d44e0d1">arc_mid_migrate_fn</a>) {}</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            };</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html">FPMAS::graph::zoltan::utils::zoltan_query_functions</a></div><div class="ttdef"><b>Definition:</b> zoltan_utils.h:22</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions_html_aed5edc04d597e4f26cb248c9677408cf"><div class="ttname"><a href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#aed5edc04d597e4f26cb248c9677408cf">FPMAS::graph::zoltan::utils::zoltan_query_functions::zoltan_query_functions</a></div><div class="ttdeci">zoltan_query_functions(ZOLTAN_POST_MIGRATE_PP_FN *node_post_migrate_fn, ZOLTAN_POST_MIGRATE_PP_FN *arc_post_migrate_fn, ZOLTAN_MID_MIGRATE_PP_FN *arc_mid_migrate_fn)</div><div class="ttdef"><b>Definition:</b> zoltan_utils.h:51</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions_html_a2df65c0fd390e5b3f280797f08dd25d3"><div class="ttname"><a href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a2df65c0fd390e5b3f280797f08dd25d3">FPMAS::graph::zoltan::utils::zoltan_query_functions::node_post_migrate_fn</a></div><div class="ttdeci">ZOLTAN_POST_MIGRATE_PP_FN * node_post_migrate_fn</div><div class="ttdef"><b>Definition:</b> zoltan_utils.h:34</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html">FPMAS::graph::zoltan::utils::zoltan_query_functions</a></div><div class="ttdef"><b>Definition:</b> zoltan_utils.h:29</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions_html_a14d77d389b69e477383ca0ef2d44e0d1"><div class="ttname"><a href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a14d77d389b69e477383ca0ef2d44e0d1">FPMAS::graph::zoltan::utils::zoltan_query_functions::arc_mid_migrate_fn</a></div><div class="ttdeci">ZOLTAN_MID_MIGRATE_PP_FN * arc_mid_migrate_fn</div><div class="ttdef"><b>Definition:</b> zoltan_utils.h:42</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions_html_ac28cd56a51d2972eeeec1427bd2dc6d8"><div class="ttname"><a href="classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#ac28cd56a51d2972eeeec1427bd2dc6d8">FPMAS::graph::zoltan::utils::zoltan_query_functions::arc_post_migrate_fn</a></div><div class="ttdeci">ZOLTAN_POST_MIGRATE_PP_FN * arc_post_migrate_fn</div><div class="ttdef"><b>Definition:</b> zoltan_utils.h:38</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

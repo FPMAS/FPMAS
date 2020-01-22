@@ -3,8 +3,8 @@ var indexSectionsWithContent =
   0: "abcdefgilmnoprstuz~",
   1: "adfglmnprstz",
   2: "fn",
-  3: "abcdefglmnoprstu~",
-  4: "ciost"
+  3: "abcdefglmnoprstuz~",
+  4: "acdinost"
 };
 
 var indexSectionNames =

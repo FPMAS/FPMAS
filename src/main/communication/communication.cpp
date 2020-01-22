@@ -86,7 +86,7 @@ MpiCommunicator::MpiCommunicator(const MpiCommunicator& from) {
  *
  * Allows a correct MPI resources management.
  *
- * @param from MpiCommunicator to assign to this
+ * @param other MpiCommunicator to assign to this
  */
 MpiCommunicator& MpiCommunicator::operator=(MpiCommunicator other) {
 	MPI_Group_free(&this->group);
@@ -168,6 +168,7 @@ TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceMa
  *
  * @param resourceManager pointer to the ResourceManager instance that will be
  * used to query serialized data.
+ * @param ranks ranks to include in the group / communicator
  */
 TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceManager, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceManager(resourceManager) {};
 
@@ -176,7 +177,7 @@ TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceMa
  * the proc at the provided location, and returns the read serialized data.
  *
  * @param id id of the data to read
- * @param int location
+ * @param location rank of the data location
  * @return read serialized data
  */
 std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
