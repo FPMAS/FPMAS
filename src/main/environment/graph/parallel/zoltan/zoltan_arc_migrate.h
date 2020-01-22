@@ -61,7 +61,7 @@ namespace FPMAS {
 						try {
 						arc = arcs.at(arcId);
 						} catch (const std::exception& e) {
-							arc = graph->getGhost()->getArcs().at(arcId);
+							arc = graph->getGhost().getArcs().at(arcId);
 						}
 
 						if(graph->arc_serialization_cache.count(arc->getId()) == 1) {
@@ -87,20 +87,20 @@ namespace FPMAS {
 							// nodes data
 							unsigned long targetId = arc->getTargetNode()->getId();
 							json_arc["target"] = {
-								graph->getProxy()->getOrigin(
+								graph->getProxy().getOrigin(
 										targetId
 										),
-								graph->getProxy()->getCurrentLocation(
+								graph->getProxy().getCurrentLocation(
 										targetId
 										)
 							};
 
 							unsigned long sourceId = arc->getSourceNode()->getId();
 							json_arc["source"] = {
-								graph->getProxy()->getOrigin(
+								graph->getProxy().getOrigin(
 										sourceId
 										),
-								graph->getProxy()->getCurrentLocation(
+								graph->getProxy().getCurrentLocation(
 										sourceId
 										)
 							};
@@ -167,7 +167,7 @@ namespace FPMAS {
 						try {
 							arc = graph->getArcs().at(id);
 						} catch (const std::exception& e) {
-							arc = graph->getGhost()->getArcs().at(id);
+							arc = graph->getGhost().getArcs().at(id);
 						}
 
 						// Copy str to zoltan buffer
@@ -213,7 +213,7 @@ namespace FPMAS {
 						int *ierr) {
 					DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 					for(auto nodeId : graph->obsoleteGhosts) {
-						graph->getGhost()->removeNode(nodeId);
+						graph->getGhost().removeNode(nodeId);
 					}
 					graph->obsoleteGhosts.clear();
 				}
@@ -297,26 +297,26 @@ namespace FPMAS {
 								// contained in the local graph, so the target
 								// node is distant
 								GhostNode<T, S>* ghost;
-								if(graph->getGhost()->getNodes().count(targetId) == 0) {
+								if(graph->getGhost().getNodes().count(targetId) == 0) {
 									// No ghost node as been created yet for
 									// this node (from an other arc imported at
 									// this period, or from an other period)
-									ghost = graph->getGhost()->buildNode(targetId);
+									ghost = graph->getGhost().buildNode(targetId);
 
 									// Updates the proxy from info received
 									// with arc info, to know where the target
 									// node can be found
 									std::array<int, 2> targetLocation = json_arc.at("target").get<std::array<int, 2>>();
-									graph->getProxy()->setOrigin(targetId, targetLocation[0]);
-									graph->getProxy()->setCurrentLocation(targetId, targetLocation[1]);
+									graph->getProxy().setOrigin(targetId, targetLocation[0]);
+									graph->getProxy().setCurrentLocation(targetId, targetLocation[1]);
 								}
 								else {
 									// Use the existing GhostNode
-									ghost = graph->getGhost()->getNodes().at(targetId);
+									ghost = graph->getGhost().getNodes().at(targetId);
 								}
 								// Links the ghost node with the local node
 								// using a GhostArc
-								graph->getGhost()->link(graph->getNode(sourceId), ghost, tempArc.getId());
+								graph->getGhost().link(graph->getNode(sourceId), ghost, tempArc.getId());
 							}
 							else if (targetNodeIsLocal) {
 								// The target node of the received arc is
@@ -325,17 +325,17 @@ namespace FPMAS {
 
 								// Same process has above
 								GhostNode<T, S>* ghost;
-								if(graph->getGhost()->getNodes().count(sourceId) == 0) {
-									ghost = graph->getGhost()->buildNode(sourceId);
+								if(graph->getGhost().getNodes().count(sourceId) == 0) {
+									ghost = graph->getGhost().buildNode(sourceId);
 
 									std::array<int, 2> sourceLocation = json_arc.at("source").get<std::array<int, 2>>();
-									graph->getProxy()->setOrigin(sourceId, sourceLocation[0]);
-									graph->getProxy()->setCurrentLocation(sourceId, sourceLocation[1]);
+									graph->getProxy().setOrigin(sourceId, sourceLocation[0]);
+									graph->getProxy().setCurrentLocation(sourceId, sourceLocation[1]);
 								}
 								else {
-									ghost = graph->getGhost()->getNodes().at(sourceId);
+									ghost = graph->getGhost().getNodes().at(sourceId);
 								}
-								graph->getGhost()->link(ghost, graph->getNode(targetId), tempArc.getId());
+								graph->getGhost().link(ghost, graph->getNode(targetId), tempArc.getId());
 							}
 							else {
 								throw std::runtime_error(
@@ -417,7 +417,7 @@ namespace FPMAS {
 							}
 						}
 						if(buildGhost) {
-							graph->getGhost()->buildNode(*node, exportedNodeIds);
+							graph->getGhost().buildNode(*node, exportedNodeIds);
 						}
 					}
 
@@ -429,7 +429,7 @@ namespace FPMAS {
 
 					// TODO : schema with fossils example
 					// For info, see the Fossil and removeNode docs
-					graph->getGhost()->clear(ghostFossils);
+					graph->getGhost().clear(ghostFossils);
 				}
 
 				/**

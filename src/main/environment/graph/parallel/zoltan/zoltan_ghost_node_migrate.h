@@ -59,8 +59,8 @@ namespace FPMAS {
 					for (int i = 0; i < num_ids; i++) {
 						Node<SyncData<T>>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
-						if(graph->getGhost()->ghost_node_serialization_cache.count(node->getId()) == 1) {
-							sizes[i] = graph->getGhost()->ghost_node_serialization_cache.at(node->getId()).size()+1;
+						if(graph->getGhost().ghost_node_serialization_cache.count(node->getId()) == 1) {
+							sizes[i] = graph->getGhost().ghost_node_serialization_cache.at(node->getId()).size()+1;
 						}
 						else {
 							json json_ghost_node = *node;
@@ -69,7 +69,7 @@ namespace FPMAS {
 
 							sizes[i] = serial_node.size() + 1;
 
-							graph->getGhost()->ghost_node_serialization_cache[node->getId()] = serial_node;
+							graph->getGhost().ghost_node_serialization_cache[node->getId()] = serial_node;
 						}
 					}
 
@@ -111,7 +111,7 @@ namespace FPMAS {
 					// the required buffer size. For efficiency purpose, we temporarily
 					// store the result and delete it when it is packed.
 					std::unordered_map<unsigned long, std::string>* serial_cache
-						= &graph->getGhost()->ghost_node_serialization_cache;
+						= &graph->getGhost().ghost_node_serialization_cache;
 					for (int i = 0; i < num_ids; ++i) {
 						// Rebuilt node id
 						unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
@@ -158,7 +158,7 @@ namespace FPMAS {
 						int node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 						json json_node = json::parse(&buf[idx[i]]);
 
-						GhostNode<T, S>* ghost = graph->getGhost()->getNodes().at(node_id);
+						GhostNode<T, S>* ghost = graph->getGhost().getNodes().at(node_id);
 						Node<LocalData<T>> node_update = json_node.get<Node<LocalData<T>>>();
 
 						ghost->data().get() = node_update.data().get();

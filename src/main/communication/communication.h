@@ -63,8 +63,8 @@ namespace FPMAS {
 				MpiCommunicator(const MpiCommunicator&);
 				MpiCommunicator& operator=(MpiCommunicator);
 				MpiCommunicator(std::initializer_list<int>);
-				MPI_Group getMpiGroup();
-				MPI_Comm getMpiComm();
+				MPI_Group getMpiGroup() const;
+				MPI_Comm getMpiComm() const;
 
 				int getRank() const;
 				int getSize() const;

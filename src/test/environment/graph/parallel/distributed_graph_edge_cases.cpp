@@ -30,20 +30,20 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		DistributedGraph<int> dg = DistributedGraph<int>({0, 1, 2});
 		if(rank == 0) {
 			dg.buildNode(0ul, 1);
-			dg.getGhost()->buildNode(1ul);
-			dg.getProxy()->setOrigin(1ul, 0);
-			dg.getProxy()->setCurrentLocation(1ul, 1);
-			dg.getGhost()->link(dg.getNodes().at(0ul), dg.getGhost()->getNodes().at(1ul), 0ul);
+			dg.getGhost().buildNode(1ul);
+			dg.getProxy().setOrigin(1ul, 0);
+			dg.getProxy().setCurrentLocation(1ul, 1);
+			dg.getGhost().link(dg.getNodes().at(0ul), dg.getGhost().getNodes().at(1ul), 0ul);
 
 			dg.buildNode(2ul, 1);
 			dg.getNodes().at(2ul)->setWeight(10.);
 		}
 		else if(rank == 1) {
 			dg.buildNode(1ul, 1);
-			dg.getGhost()->buildNode(0ul);
-			dg.getProxy()->setOrigin(0ul, 0);
-			dg.getProxy()->setCurrentLocation(0ul, 0);
-			dg.getGhost()->link(dg.getGhost()->getNodes().at(0ul), dg.getNodes().at(1ul), 0ul);
+			dg.getGhost().buildNode(0ul);
+			dg.getProxy().setOrigin(0ul, 0);
+			dg.getProxy().setCurrentLocation(0ul, 0);
+			dg.getGhost().link(dg.getGhost().getNodes().at(0ul), dg.getNodes().at(1ul), 0ul);
 
 			dg.buildNode(3ul, 1);
 			dg.getNodes().at(3ul)->setWeight(10.);
@@ -59,15 +59,15 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		}
 		else if(rank == 2) {
 			ASSERT_EQ(dg.getNodes().size(), 2);
-			dg.getGhost()->clear(dg.removeNode(0ul));
+			dg.getGhost().clear(dg.removeNode(0ul));
 
 			// Checks that the node has been correctly removed with the
 			// associated arc
 			ASSERT_EQ(dg.getNodes().size(), 1);
 			ASSERT_EQ(dg.getNodes().begin()->second->getIncomingArcs().size(), 0);
 			ASSERT_EQ(dg.getArcs().size(), 0);
-			ASSERT_EQ(dg.getGhost()->getNodes().size(), 0);
-			ASSERT_EQ(dg.getGhost()->getArcs().size(), 0);
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+			ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
 		}
 		dg.distribute();
 	}

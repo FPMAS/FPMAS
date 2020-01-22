@@ -88,13 +88,13 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
 	// All nodes come from proc 0
-	ASSERT_EQ(dg.getProxy()->getOrigin(
+	ASSERT_EQ(dg.getProxy().getOrigin(
 				dg.getNodes().begin()->first
 				),
 			0);
 
 	// Proxy must return this proc as location for the local node
-	ASSERT_EQ(dg.getProxy()->getCurrentLocation(
+	ASSERT_EQ(dg.getProxy().getCurrentLocation(
 				dg.getNodes().begin()->first
 				),
 			dg.getMpiCommunicator().getRank()
@@ -105,11 +105,11 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 		for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 			if(i == dg.getNodes().begin()->first) {
 				// Local node on this proc
-				ASSERT_EQ(dg.getProxy()->getCurrentLocation(i), 0);
+				ASSERT_EQ(dg.getProxy().getCurrentLocation(i), 0);
 			}
 			else {
 				// Must be located elsewhere
-				ASSERT_NE(dg.getProxy()->getCurrentLocation(i), 0);
+				ASSERT_NE(dg.getProxy().getCurrentLocation(i), 0);
 			}
 		}
 
@@ -206,12 +206,12 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 	if(dg.getMpiCommunicator().getSize() > 1) {
 		ASSERT_EQ(dg.getArcs().size(), 0); 
 		if(dg.getMpiCommunicator().getSize() == 2) {
-			ASSERT_EQ(dg.getGhost()->getNodes().size(), 1);
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 1);
 		}
 		else {
-			ASSERT_EQ(dg.getGhost()->getNodes().size(), 2);
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
 		}
-		ASSERT_EQ(dg.getGhost()->getArcs().size(), 2);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
 
 		Node<SyncData<int>>* localNode = dg.getNodes().begin()->second;
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
@@ -232,10 +232,10 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) 
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
 	int local_proc = dg.getMpiCommunicator().getRank();
-	for(auto node : dg.getGhost()->getNodes()) {
-		ASSERT_EQ(dg.getProxy()->getOrigin(node.first), 0);
+	for(auto node : dg.getGhost().getNodes()) {
+		ASSERT_EQ(dg.getProxy().getOrigin(node.first), 0);
 		if(dg.getMpiCommunicator().getRank() != 0)
-			ASSERT_NE(dg.getProxy()->getCurrentLocation(node.first), local_proc);
+			ASSERT_NE(dg.getProxy().getCurrentLocation(node.first), local_proc);
 	}
 }
 
@@ -267,11 +267,11 @@ TEST_F(Mpi_DistributeCompleteGraphTest, distribute_graph_with_multiple_ghost_arc
 
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_EQ(
-		dg.getGhost()->getNodes().size(),
+		dg.getGhost().getNodes().size(),
 		2 * dg.getMpiCommunicator().getSize() - 2
 		);
 
-	for(auto ghostNode : dg.getGhost()->getNodes()) {
+	for(auto ghostNode : dg.getGhost().getNodes()) {
 		ASSERT_EQ(ghostNode.second->getOutgoingArcs().size(), 2);
 		ASSERT_EQ(ghostNode.second->getIncomingArcs().size(), 2);
 
@@ -307,19 +307,19 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 		if(dg.getNodes().begin()->second->getWeight() == 3.) {
 			ASSERT_EQ(dg.getNodes().size(), 1);
 			ASSERT_EQ(dg.getNodes().begin()->second->getWeight(), 3.);
-			ASSERT_EQ(dg.getGhost()->getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 1);
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 1);
 		}
 		else {
 			ASSERT_EQ(dg.getNodes().size(), 3);
 			for(auto node : dg.getNodes()) {
 				ASSERT_EQ(node.second->getWeight(), 1.);
 			}
-			ASSERT_EQ(dg.getGhost()->getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 3);
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 3);
 		}
 
 		ASSERT_EQ(
-			dg.getGhost()->getArcs().size(), 
-			dg.getNodes().size() * 2 * dg.getGhost()->getNodes().size()
+			dg.getGhost().getArcs().size(), 
+			dg.getNodes().size() * 2 * dg.getGhost().getNodes().size()
 			);
 	}
 	else {
@@ -361,8 +361,8 @@ TEST_F(Mpi_DistributeCompleteGraphTest_NoSync, no_sync_distribution) {
 		ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
 	}
 
-	ASSERT_EQ(dg.getGhost()->getNodes().size(), 0);
-	ASSERT_EQ(dg.getGhost()->getArcs().size(), 0);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
 
 }
 

@@ -20,7 +20,7 @@ class Mpi_SynchronizeGhostTest : public ::testing::Test {
 				}
 			}
 			dg.distribute();
-			dg.getGhost()->synchronize();
+			dg.getGhost().synchronize();
 		}
 };
 
@@ -35,9 +35,9 @@ TEST_F(Mpi_SynchronizeGhostTest, synchronize_ghost_test) {
 	localNode->data().get() = localNode->getId() + 1;
 	localNode->setWeight(2.);
 
-	dg.getGhost()->synchronize();
+	dg.getGhost().synchronize();
 
-	for(auto node : dg.getGhost()->getNodes()) {
+	for(auto node : dg.getGhost().getNodes()) {
 		ASSERT_EQ(node.second->data().get(), node.first + 1);
 		ASSERT_EQ(node.second->getWeight(), 2.);
 	}

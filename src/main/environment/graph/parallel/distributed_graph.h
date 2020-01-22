@@ -32,11 +32,32 @@ namespace FPMAS {
 		using synchro::LocalData;
 		using synchro::GhostData;
 
-		/**
-		 * A DistributedGraph is a special graph instance that can be
+		/** A DistributedGraph is a special graph instance that can be
 		 * distributed across available processors using Zoltan.
 		 *
+		 * The synchronization mode can be set up thanks to an optional
+		 * template parameter. Actually, the specified class represents the
+		 * wrapper of data located on an other proc. Possible values are :
+		 *
+		 * - FPMAS::graph::synchro::None : no distant data representation. It
+		 *   is not possible to access data from nodes on other procs. In
+		 *   consequence, some arcs may be deleted when the graph is
+		 *   distributed, what results in information loss.
+		 *
+		 * - FPMAS::graph::synchro::GhostData : Distant nodes are represented
+		 *   as "ghosts", that can be punctually synchronized using the
+		 *   GhostGraph::synchronize() function. When called, this function
+		 *   asks updates to other procs and updates its local "ghost" data. In
+		 *   this mode, no information is lost about the graph connectivity.
+		 *   However, information accessed in the ghost nodes might not be up
+		 *   to date. It is interesting to note that from a local node, there
+		 *   is no difference between local or ghost nodes when exploring the
+		 *   graph through incoming or outgoing arcs lists.
+		 *
+		 * - HardSyncData : TODO
+		 *
 		 * @tparam T associated data type
+		 * @tparam S synchronization mode
 		 */
 		template<class T, template<typename> class S = GhostData> class DistributedGraph : public Graph<SyncData<T>> {
 			friend void zoltan::node::obj_size_multi_fn<T, S>(ZOLTAN_OBJ_SIZE_ARGS);
@@ -97,9 +118,9 @@ namespace FPMAS {
 			public:
 				DistributedGraph<T, S>();
 				DistributedGraph<T, S>(std::initializer_list<int>);
-				MpiCommunicator getMpiCommunicator() const;
-				Proxy* getProxy();
-				GhostGraph<T, S>* getGhost();
+				const MpiCommunicator& getMpiCommunicator() const;
+				Proxy& getProxy();
+				GhostGraph<T, S>& getGhost();
 
 				Node<SyncData<T>>* buildNode(unsigned long id, T data);
 				Node<SyncData<T>>* buildNode(unsigned long id, float weight, T data);
@@ -107,6 +128,9 @@ namespace FPMAS {
 				void distribute();
 		};
 
+		/*
+		 * Initializes zoltan parameters and zoltan lb query functions.
+		 */
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::setUpZoltan() {
 			FPMAS::config::zoltan_config(&this->zoltan);
 
@@ -142,32 +166,31 @@ namespace FPMAS {
 			}
 
 		/**
-		 * Returns the MpiCommunicator used by the Zoltan instance of this
-		 * DistrDistributedGraph.
+		 * Returns a reference to the MpiCommunicator used by this DistributedGraph.
 		 *
-		 * @return mpiCommunicator associated to this graph
+		 * @return const reference to the mpiCommunicator associated to this graph
 		 */
-		template<class T, template<typename> class S> MpiCommunicator DistributedGraph<T, S>::getMpiCommunicator() const {
+		template<class T, template<typename> class S> const MpiCommunicator& DistributedGraph<T, S>::getMpiCommunicator() const {
 			return this->mpiCommunicator;
 		}
 
 		/**
-		 * Returns a pointer to the proxy associated to this DistributedGraph.
+		 * Returns a reference to the proxy associated to this DistributedGraph.
 		 *
-		 * @return pointer to the current proxy
+		 * @return reference to the current proxy
 		 */
-		template<class T, template<typename> class S> Proxy* DistributedGraph<T, S>::getProxy() {
-			return &this->proxy;
+		template<class T, template<typename> class S> Proxy& DistributedGraph<T, S>::getProxy() {
+			return this->proxy;
 		}
 
 		/**
-		 * Returns a pointer to the GhostGraph currently associated to this
+		 * Returns a reference to the GhostGraph currently associated to this
 		 * DistributedGraph.
 		 *
-		 * @return pointer to the current GhostGraph
+		 * @return reference to the current GhostGraph
 		 */
-		template<class T, template<typename> class S> GhostGraph<T, S>* DistributedGraph<T, S>::getGhost() {
-			return &this->ghost;
+		template<class T, template<typename> class S> GhostGraph<T, S>& DistributedGraph<T, S>::getGhost() {
+			return this->ghost;
 		}
 
 		/**
@@ -193,10 +216,29 @@ namespace FPMAS {
 			zoltan.Set_Post_Migrate_PP_Fn(S<T>::config.arc_post_migrate_fn, this);
 		}
 
+		/**
+		 * Builds a node with the specified id and data.
+		 *
+		 * The specified data is implicitly wrapped in a LocalData instance,
+		 * for synchronization purpose.
+		 *
+		 * @param id node id
+		 * @param data node data (wrapped in a LocalData<T> instance)
+		 */
 		template<class T, template<typename> class S> Node<SyncData<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, T data) {
 			return Graph<SyncData<T>>::buildNode(id, LocalData<T>(data));
 		}
 
+		/**
+		 * Builds a node with the specified id, weight and data.
+		 *
+		 * The specified data is implicitly wrapped in a LocalData instance,
+		 * for synchronization purpose.
+		 *
+		 * @param id node id
+		 * @param weight node weight
+		 * @param data node data (wrapped in a LocalData<T> instance)
+		 */
 		template<class T, template<typename> class S> Node<SyncData<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, float weight, T data) {
 			return Graph<SyncData<T>>::buildNode(id, weight, LocalData<T>(data));
 		}
@@ -210,11 +252,17 @@ namespace FPMAS {
 		 * [Zoltan::Migrate](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_mig.html#Zoltan_Migrate).
 		 * Query functions used are defined in the FPMAS::graph::zoltan namespace.
 		 *
-		 * Because of the Zoltan behavior, the current process will block until
-		 * all other involved process also call the distribute() function.
+		 * The current process will block until all other involved procs also
+		 * call the distribute() function.
+		 *
+		 * The distribution process is organized as follow :
+		 *
+		 * 1. Compute partitions
+		 * 2. Migrate nodes
+		 * 3. Migrate associated arcs, and build ghost nodes if necessary
+		 * 4. Update nodes locations within each Proxy instance
 		 *
 		 */
-		// TODO: describe the full migration process
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::distribute() {
 			int changes;
       		int num_gid_entries;

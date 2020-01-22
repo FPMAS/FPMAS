@@ -161,7 +161,7 @@ namespace FPMAS {
 
 						Node<LocalData<T>> node = json_node.get<Node<LocalData<T>>>();
 
-						if(graph->getGhost()->getNodes().count(node.getId()) > 0)
+						if(graph->getGhost().getNodes().count(node.getId()) > 0)
 							graph->obsoleteGhosts.insert(node.getId());
 
 						graph->buildNode(
@@ -236,7 +236,7 @@ namespace FPMAS {
 						int dest_proc = export_procs[i];
 
 						// Updates Proxy
-						graph->getProxy()->setCurrentLocation(id, dest_proc);
+						graph->getProxy().setCurrentLocation(id, dest_proc);
 
 						// Computes arc exports
 						for(auto arc : exported_node->getIncomingArcs()) {
@@ -340,7 +340,7 @@ namespace FPMAS {
 						Node<SyncData<T>>* exported_node = graph->getNodes().at(nodeDest.first);
 
 						// Updates Proxy for consistency, even if should no ghost are used
-						graph->getProxy()->setCurrentLocation(nodeDest.first, nodeDest.second);
+						graph->getProxy().setCurrentLocation(nodeDest.first, nodeDest.second);
 
 						// Computes arc exports
 						// We only need to check incoming arcs for each node :

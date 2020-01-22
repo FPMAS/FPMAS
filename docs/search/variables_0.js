@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['incomingarcs_197',['incomingArcs',['../classFPMAS_1_1graph_1_1FossilArcs.html#a7263714c52e5a45731daedf05c1dae34',1,'FPMAS::graph::FossilArcs::incomingArcs()'],['../classFPMAS_1_1graph_1_1Node.html#ae6bf6c19561759d659e4fe51c4abe217',1,'FPMAS::graph::Node::incomingArcs()']]]
+  ['config_201',['config',['../classFPMAS_1_1graph_1_1synchro_1_1None.html#a506d748842658e7b4296cadc18614c61',1,'FPMAS::graph::synchro::None::config()'],['../classFPMAS_1_1graph_1_1synchro_1_1GhostData.html#a2c41714c851589792d35af0b63f1a307',1,'FPMAS::graph::synchro::GhostData::config()']]]
 ];

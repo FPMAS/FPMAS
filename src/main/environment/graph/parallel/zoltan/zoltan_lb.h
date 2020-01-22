@@ -159,7 +159,7 @@ namespace FPMAS {
 
 						// Temporary
 						// MPI_Comm_rank(MPI_COMM_WORLD, &nbor_procs[neighbor_index]);
-						nbor_procs[neighbor_index] = graph->getProxy()->getCurrentLocation(targetId);
+						nbor_procs[neighbor_index] = graph->getProxy().getCurrentLocation(targetId);
 
 						ewgts[neighbor_index] = 1.;
 						neighbor_index++;

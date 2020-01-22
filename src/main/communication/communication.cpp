@@ -108,7 +108,7 @@ MpiCommunicator& MpiCommunicator::operator=(MpiCommunicator other) {
  *
  * @return associated MPI communicator
  */
-MPI_Comm MpiCommunicator::getMpiComm() {
+MPI_Comm MpiCommunicator::getMpiComm() const {
 	return this->comm;
 }
 
@@ -117,7 +117,7 @@ MPI_Comm MpiCommunicator::getMpiComm() {
  *
  * @return associated MPI group
  */
-MPI_Group MpiCommunicator::getMpiGroup() {
+MPI_Group MpiCommunicator::getMpiGroup() const {
 	return this->group;
 }
 

@@ -129,7 +129,7 @@ namespace FPMAS {
 				int i = 0;
 				for(auto ghost : ghostNodes) {
 					zoltan::utils::write_zoltan_id(ghost.first, &import_ghosts_global_ids[2 * i]);
-					import_ghost_procs[i] = this->localGraph->getProxy()->getCurrentLocation(ghost.first);
+					import_ghost_procs[i] = this->localGraph->getProxy().getCurrentLocation(ghost.first);
 					i++;
 				}
 
