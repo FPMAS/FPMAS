@@ -10,55 +10,49 @@
 	void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, \
     int *, int , ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *
 
-namespace FPMAS {
-	namespace graph {
-		namespace zoltan {
-			namespace utils {
+namespace FPMAS::graph::parallel::zoltan::utils {
 
-			unsigned long read_zoltan_id(const ZOLTAN_ID_PTR);
+	unsigned long read_zoltan_id(const ZOLTAN_ID_PTR);
 
-			void write_zoltan_id(unsigned long, ZOLTAN_ID_PTR);
+	void write_zoltan_id(unsigned long, ZOLTAN_ID_PTR);
 
+
+	/**
+	 * A pack of zoltan query functions that vary depending on the
+	 * synchronization mode used.
+	 *
+	 * Possible used functions are defined in FPMAS::graph::zoltan.
+	 */
+	class zoltan_query_functions {
+		public:
+			/**
+			 * Node post migrate function.
+			 */
+			ZOLTAN_POST_MIGRATE_PP_FN* node_post_migrate_fn;
+			/**
+			 * Arc post migrate function.
+			 */
+			ZOLTAN_POST_MIGRATE_PP_FN* arc_post_migrate_fn;
+			/**
+			 * Arc mid migrate function.
+			 */
+			ZOLTAN_MID_MIGRATE_PP_FN* arc_mid_migrate_fn;
 
 			/**
-			 * A pack of zoltan query functions that vary depending on the
-			 * synchronization mode used.
+			 * Constructor.
 			 *
-			 * Possible used functions are defined in FPMAS::graph::zoltan.
+			 * @param node_post_migrate_fn Node post migrate function
+			 * @param arc_post_migrate_fn Arc post migrate function
+			 * @param arc_mid_migrate_fn Arc mid migrate function
 			 */
-			class zoltan_query_functions {
-				public:
-					/**
-					 * Node post migrate function.
-					 */
-					ZOLTAN_POST_MIGRATE_PP_FN* node_post_migrate_fn;
-					/**
-					 * Arc post migrate function.
-					 */
-					ZOLTAN_POST_MIGRATE_PP_FN* arc_post_migrate_fn;
-					/**
-					 * Arc mid migrate function.
-					 */
-					ZOLTAN_MID_MIGRATE_PP_FN* arc_mid_migrate_fn;
-
-					/**
-					 * Constructor.
-					 *
-					 * @param node_post_migrate_fn Node post migrate function
-					 * @param arc_post_migrate_fn Arc post migrate function
-					 * @param arc_mid_migrate_fn Arc mid migrate function
-					 */
-					zoltan_query_functions(
-							ZOLTAN_POST_MIGRATE_PP_FN* node_post_migrate_fn,
-							ZOLTAN_POST_MIGRATE_PP_FN* arc_post_migrate_fn,
-							ZOLTAN_MID_MIGRATE_PP_FN* arc_mid_migrate_fn
-							) :
-						node_post_migrate_fn(node_post_migrate_fn),
-						arc_post_migrate_fn(arc_post_migrate_fn),
-						arc_mid_migrate_fn(arc_mid_migrate_fn) {}
-			};
-			}
-		}
-	}
+			zoltan_query_functions(
+					ZOLTAN_POST_MIGRATE_PP_FN* node_post_migrate_fn,
+					ZOLTAN_POST_MIGRATE_PP_FN* arc_post_migrate_fn,
+					ZOLTAN_MID_MIGRATE_PP_FN* arc_mid_migrate_fn
+					) :
+				node_post_migrate_fn(node_post_migrate_fn),
+				arc_post_migrate_fn(arc_post_migrate_fn),
+				arc_mid_migrate_fn(arc_mid_migrate_fn) {}
+	};
 }
 #endif

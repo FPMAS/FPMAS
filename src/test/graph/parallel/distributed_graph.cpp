@@ -7,11 +7,11 @@
 #include "test_utils/test_utils.h"
 
 using FPMAS::test_utils::assert_contains;
-using FPMAS::graph::synchro::GhostData;
+using FPMAS::graph::parallel::synchro::GhostData;
 
-using FPMAS::graph::DistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::SyncData;
 
 TEST(Mpi_DistributedGraph, build_with_ranks_test) {
 	int global_size;
@@ -53,7 +53,7 @@ TEST(Mpi_DistributedGraph, build_with_ranks_and_sync_mode_test) {
 	int current_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
 
-	using FPMAS::graph::synchro::None;
+	using FPMAS::graph::parallel::synchro::None;
 	DistributedGraph<int, None> dg = DistributedGraph<int, None>({current_rank});
 
 	// TODO: Assert idea?
@@ -328,7 +328,7 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 
 }
 
-using FPMAS::graph::synchro::None;
+using FPMAS::graph::parallel::synchro::None;
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:
 		DistributedGraph<int, None> dg = DistributedGraph<int, None>();

@@ -4,12 +4,12 @@
 
 #include "mpi.h"
 
-using FPMAS::graph::proxy::Proxy;
-using FPMAS::graph::zoltan::utils::read_zoltan_id;
-using FPMAS::graph::zoltan::utils::write_zoltan_id;
+using FPMAS::graph::parallel::proxy::Proxy;
+using FPMAS::graph::parallel::zoltan::utils::read_zoltan_id;
+using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 
-using FPMAS::graph::proxy::obj_size_multi_fn;
-using FPMAS::graph::proxy::pack_obj_multi_fn;
+using FPMAS::graph::parallel::proxy::obj_size_multi_fn;
+using FPMAS::graph::parallel::proxy::pack_obj_multi_fn;
 
 TEST(Mpi_ProxyTest, build_proxy_test) {
 	int local_rank;
@@ -146,7 +146,7 @@ TEST_F(Mpi_ZoltanProxyTest, pack_obj_multi_fn_test) {
 	ASSERT_STREQ("25", &buf[idx[2]]);
 }
 
-using FPMAS::graph::proxy::unpack_obj_multi_fn;
+using FPMAS::graph::parallel::proxy::unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanProxyTest, unpack_obj_multi_test) {
 	write_migration_sizes();

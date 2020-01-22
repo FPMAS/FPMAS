@@ -9,15 +9,15 @@
 
 using FPMAS::communication::MpiCommunicator;
 
-using FPMAS::graph::DistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 
 using FPMAS::test_utils::assert_contains;
 
-using FPMAS::graph::zoltan::utils::read_zoltan_id;
-using FPMAS::graph::zoltan::utils::write_zoltan_id;
+using FPMAS::graph::parallel::zoltan::utils::read_zoltan_id;
+using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 
-using FPMAS::graph::zoltan::obj_list;
-using FPMAS::graph::zoltan::num_edges_multi_fn;
+using FPMAS::graph::parallel::zoltan::obj_list;
+using FPMAS::graph::parallel::zoltan::num_edges_multi_fn;
 
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:
@@ -113,7 +113,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_num_egdes_multi_test) {
 	ASSERT_EQ(num_edges[node3_index], 0);
 }
 
-using FPMAS::graph::zoltan::edge_list_multi_fn;
+using FPMAS::graph::parallel::zoltan::edge_list_multi_fn;
 
 
 TEST_F(Mpi_ZoltanFunctionsTest, edge_list_multi_test) {

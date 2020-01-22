@@ -6,15 +6,15 @@
 
 #include "test_utils/test_utils.h"
 
-using FPMAS::graph::zoltan::utils::write_zoltan_id;
+using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 
-using FPMAS::graph::zoltan::node::obj_size_multi_fn;
-using FPMAS::graph::zoltan::node::pack_obj_multi_fn;
+using FPMAS::graph::parallel::zoltan::node::obj_size_multi_fn;
+using FPMAS::graph::parallel::zoltan::node::pack_obj_multi_fn;
 
-using FPMAS::graph::synchro::SyncData;
-using FPMAS::graph::synchro::LocalData;
+using FPMAS::graph::parallel::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::LocalData;
 
-using FPMAS::graph::DistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 
 class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:
@@ -118,7 +118,7 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, pack_obj_multi_test) {
 		);
 }
 
-using FPMAS::graph::zoltan::node::unpack_obj_multi_fn;
+using FPMAS::graph::parallel::zoltan::node::unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 

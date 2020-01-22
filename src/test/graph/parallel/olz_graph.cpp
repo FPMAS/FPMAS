@@ -2,8 +2,8 @@
 
 #include "graph/parallel/distributed_graph.h"
 
-using FPMAS::graph::DistributedGraph;
-using FPMAS::graph::synchro::SyncData;
+using FPMAS::graph::parallel::DistributedGraph;
+using FPMAS::graph::parallel::synchro::SyncData;
 
 class Mpi_SynchronizeGhostTest : public ::testing::Test {
 	protected:

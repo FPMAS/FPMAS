@@ -2,10 +2,10 @@
 
 #include "graph/parallel/distributed_graph.h"
 
-using FPMAS::graph::zoltan::ghost::obj_size_multi_fn;
-using FPMAS::graph::zoltan::ghost::pack_obj_multi_fn;
+using FPMAS::graph::parallel::zoltan::ghost::obj_size_multi_fn;
+using FPMAS::graph::parallel::zoltan::ghost::pack_obj_multi_fn;
 
-using FPMAS::graph::DistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 
 class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:
@@ -27,8 +27,8 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 
 		void write_migration_sizes() {
 			// Transfer nodes 0 and 85250
-			write_zoltan_id(0, &transfer_global_ids[0]);
-			write_zoltan_id(1, &transfer_global_ids[2]);
+			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(0, &transfer_global_ids[0]);
+			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(1, &transfer_global_ids[2]);
 
 			obj_size_multi_fn<int>(
 					&dg,
@@ -94,7 +94,7 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, pack_obj_multi_test) {
 
 }
 
-using FPMAS::graph::zoltan::ghost::unpack_obj_multi_fn;
+using FPMAS::graph::parallel::zoltan::ghost::unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 

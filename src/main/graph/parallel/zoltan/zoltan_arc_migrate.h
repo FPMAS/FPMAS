@@ -8,7 +8,7 @@
 using FPMAS::graph::base::Arc;
 using FPMAS::graph::base::FossilArcs;
 
-namespace FPMAS::graph {
+namespace FPMAS::graph::parallel {
 
 	template<class T, template<typename> class S> class DistributedGraph;
 	template<class T, template<typename> class S> class GhostNode;

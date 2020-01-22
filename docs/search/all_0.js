@@ -9,6 +9,6 @@ var searchData=
   ['agentcontainer_6',['AgentContainer',['../classFPMAS_1_1agent_1_1AgentContainer.html',1,'FPMAS::agent']]],
   ['arc_7',['Arc',['../classFPMAS_1_1graph_1_1base_1_1Arc.html',1,'FPMAS::graph::base::Arc&lt; T &gt;'],['../classFPMAS_1_1graph_1_1base_1_1Arc.html#a14ca974ae4fc34d1d31f54394041e715',1,'FPMAS::graph::base::Arc::Arc()']]],
   ['arc_3c_20syncdata_3c_20t_20_3e_20_3e_8',['Arc&lt; SyncData&lt; T &gt; &gt;',['../classFPMAS_1_1graph_1_1base_1_1Arc.html',1,'FPMAS::graph::base']]],
-  ['arc_5fmid_5fmigrate_5ffn_9',['arc_mid_migrate_fn',['../classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a14d77d389b69e477383ca0ef2d44e0d1',1,'FPMAS::graph::zoltan::utils::zoltan_query_functions']]],
-  ['arc_5fpost_5fmigrate_5ffn_10',['arc_post_migrate_fn',['../classFPMAS_1_1graph_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#ac28cd56a51d2972eeeec1427bd2dc6d8',1,'FPMAS::graph::zoltan::utils::zoltan_query_functions']]]
+  ['arc_5fmid_5fmigrate_5ffn_9',['arc_mid_migrate_fn',['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a5955785324c491e8494690a58014a8fc',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions']]],
+  ['arc_5fpost_5fmigrate_5ffn_10',['arc_post_migrate_fn',['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a5aa0ef2a9b06ae77fcfc61bd477b862d',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions']]]
 ];

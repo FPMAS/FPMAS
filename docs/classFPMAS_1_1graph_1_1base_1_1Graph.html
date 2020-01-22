@@ -81,8 +81,8 @@ Inheritance diagram for FPMAS::graph::base::Graph&lt; T &gt;:</div>
  <div class="center">
   <img src="classFPMAS_1_1graph_1_1base_1_1Graph.png" usemap="#FPMAS::graph::base::Graph_3C_20T_20_3E_map" alt=""/>
   <map id="FPMAS::graph::base::Graph_3C_20T_20_3E_map" name="FPMAS::graph::base::Graph_3C_20T_20_3E_map">
-<area href="classFPMAS_1_1graph_1_1DistributedGraph.html" alt="FPMAS::graph::DistributedGraph&lt; T, GhostData &gt;" shape="rect" coords="0,56,294,80"/>
-<area href="classFPMAS_1_1graph_1_1DistributedGraph.html" alt="FPMAS::graph::DistributedGraph&lt; T, S &gt;" shape="rect" coords="304,56,598,80"/>
+<area href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html" alt="FPMAS::graph::parallel::DistributedGraph&lt; T, GhostData &gt;" shape="rect" coords="0,56,342,80"/>
+<area href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html" alt="FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;" shape="rect" coords="352,56,694,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -517,7 +517,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Removes the specified arc from the graph and the incoming/outgoing arc lists of its target/source nodes, and finally <code>deletes</code> it.</p>
-<p>If the arc does not belong to the standard <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a> arc register (e.g. : it is a GhostArc of a <a class="el" href="classFPMAS_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> instance), it is not <code>deleted</code> and <code>false</code> is returned.</p>
+<p>If the arc does not belong to the standard <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a> arc register (e.g. : it is a GhostArc of a DistributedGraph instance), it is not <code>deleted</code> and <code>false</code> is returned.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arc</td><td>pointer to the arc to delete </td></tr>

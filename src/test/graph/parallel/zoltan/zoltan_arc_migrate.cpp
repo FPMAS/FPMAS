@@ -9,12 +9,12 @@
 
 using FPMAS::communication::MpiCommunicator;
 
-using FPMAS::graph::zoltan::utils::write_zoltan_id;
+using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 
-using FPMAS::graph::zoltan::arc::obj_size_multi_fn;
-using FPMAS::graph::zoltan::arc::pack_obj_multi_fn;
+using FPMAS::graph::parallel::zoltan::arc::obj_size_multi_fn;
+using FPMAS::graph::parallel::zoltan::arc::pack_obj_multi_fn;
 
-using FPMAS::graph::DistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 
 class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 	protected:
@@ -125,7 +125,7 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, pack_obj_multi_test) {
 		);
 }
 
-using FPMAS::graph::zoltan::arc::unpack_obj_multi_fn;
+using FPMAS::graph::parallel::zoltan::arc::unpack_obj_multi_fn;
 
 /*
  * Unpack test, with source and target nodes of the unpacked arcs contained in

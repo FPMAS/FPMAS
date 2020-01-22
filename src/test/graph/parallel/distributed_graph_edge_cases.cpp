@@ -2,7 +2,7 @@
 #include "graph/parallel/distributed_graph.h"
 #include "test_utils/test_utils.h"
 
-using FPMAS::graph::DistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 
 /*
  * Illustrates a specific import case that caused a bug, because the same arc

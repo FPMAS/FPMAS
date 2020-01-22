@@ -8,6 +8,10 @@
 #include "resource_manager.h"
 
 namespace FPMAS {
+	/**
+	 * The FPMAS::communication namespace contains low level MPI features
+	 * required by communication processes.
+	 */
 	namespace communication {
 		enum State {
 			ACTIVE,

@@ -7,58 +7,57 @@
 
 using nlohmann::json;
 
-namespace FPMAS {
-	namespace graph {
-		namespace zoltan {
-			namespace node {
-				template<class T> void post_migrate_pp_fn_no_sync(
+namespace FPMAS::graph::parallel {
+	namespace zoltan {
+		namespace node {
+			template<class T> void post_migrate_pp_fn_no_sync(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
-				);
-				template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
+					);
+			template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
-				);
+					);
 
-			}
-			namespace arc {
-				template<class T> void post_migrate_pp_fn_no_sync(
-					ZOLTAN_MID_POST_MIGRATE_ARGS
-				);
-				template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
-					ZOLTAN_MID_POST_MIGRATE_ARGS
-				);
-				template <class T, template<typename> class S> void mid_migrate_pp_fn(
-					ZOLTAN_MID_POST_MIGRATE_ARGS
-				);
-			}
 		}
-		/**
-		 * The synchro namespace defines data structures used to manage
-		 * data synchronization accross processes.
-		 */
-		namespace synchro {
+		namespace arc {
+			template<class T> void post_migrate_pp_fn_no_sync(
+					ZOLTAN_MID_POST_MIGRATE_ARGS
+					);
+			template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
+					ZOLTAN_MID_POST_MIGRATE_ARGS
+					);
+			template <class T, template<typename> class S> void mid_migrate_pp_fn(
+					ZOLTAN_MID_POST_MIGRATE_ARGS
+					);
+		}
+	}
+	/**
+	 * The synchro namespace defines data structures used to manage
+	 * data synchronization accross processes.
+	 */
+	namespace synchro {
 
-			/**
-			 * Synchronisation mode that can be used as a template argument for
-			 * a DistributedGraph, where no synchronization or overlapping zone
-			 * is used.
-			 *
-			 * When a node is exported, its connections with nodes that are not
-			 * exported on the same process are lost.
-			 */
-			template<class T> class None {
-				public:
-					/**
-					 * Zoltan config associated to the None synchronization
-					 * mode.
-					 */
-					const static zoltan::utils::zoltan_query_functions config;
-			};
-			template<class T> const zoltan::utils::zoltan_query_functions None<T>::config
-				 (
-						&FPMAS::graph::zoltan::node::post_migrate_pp_fn_no_sync<T>,
-						&FPMAS::graph::zoltan::arc::post_migrate_pp_fn_no_sync<T>,
-						NULL
-						);
+		/**
+		 * Synchronisation mode that can be used as a template argument for
+		 * a DistributedGraph, where no synchronization or overlapping zone
+		 * is used.
+		 *
+		 * When a node is exported, its connections with nodes that are not
+		 * exported on the same process are lost.
+		 */
+		template<class T> class None {
+			public:
+				/**
+				 * Zoltan config associated to the None synchronization
+				 * mode.
+				 */
+				const static zoltan::utils::zoltan_query_functions config;
+		};
+		template<class T> const zoltan::utils::zoltan_query_functions None<T>::config
+			(
+			 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T>,
+			 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T>,
+			 NULL
+			);
 
 
 		/**
@@ -190,11 +189,11 @@ namespace FPMAS {
 
 		};
 		template<class T> const zoltan::utils::zoltan_query_functions GhostData<T>::config
-			 (
-					&FPMAS::graph::zoltan::node::post_migrate_pp_fn_olz<T, GhostData>,
-					&FPMAS::graph::zoltan::arc::post_migrate_pp_fn_olz<T, GhostData>,
-					&FPMAS::graph::zoltan::arc::mid_migrate_pp_fn<T, GhostData>
-					);
+			(
+			 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, GhostData>,
+			 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, GhostData>,
+			 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, GhostData>
+			);
 
 		/**
 		 * Default constructor.
@@ -209,12 +208,11 @@ namespace FPMAS {
 		 */
 		template<class T> GhostData<T>::GhostData(T data)
 			: LocalData<T>(data) {}
-		}
 	}
 }
 
 namespace nlohmann {
-	using FPMAS::graph::synchro::SyncData;
+	using FPMAS::graph::parallel::synchro::SyncData;
 
 	/**
 	 * Any SyncData instance (and so instances of extending classes) can be
@@ -240,7 +238,7 @@ namespace nlohmann {
 
 	};
 
-	using FPMAS::graph::synchro::LocalData;
+	using FPMAS::graph::parallel::synchro::LocalData;
 
 	/**
 	 * Defines unserialization rules for LocalData.

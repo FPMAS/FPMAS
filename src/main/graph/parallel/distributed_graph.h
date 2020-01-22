@@ -20,15 +20,13 @@ namespace FPMAS {
 	using communication::MpiCommunicator;
 	using graph::base::Graph;
 
-	namespace graph {
+	/**
+	 * The FPMAS::graph::parallel contains all features relative to the
+	 * parallelization and synchronization of a graph structure.
+	 */
+	namespace graph::parallel {
 
 		using proxy::Proxy;
-		using synchro::SyncData;
-		using synchro::LocalData;
-		using synchro::GhostData;
-
-		using synchro::GhostGraph;
-
 		using synchro::SyncData;
 		using synchro::LocalData;
 		using synchro::GhostData;
@@ -136,10 +134,10 @@ namespace FPMAS {
 			FPMAS::config::zoltan_config(&this->zoltan);
 
 			// Initializes Zoltan Node Load Balancing functions
-			this->zoltan.Set_Num_Obj_Fn(FPMAS::graph::zoltan::num_obj<T>, this);
-			this->zoltan.Set_Obj_List_Fn(FPMAS::graph::zoltan::obj_list<T>, this);
-			this->zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::zoltan::num_edges_multi_fn<T>, this);
-			this->zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::zoltan::edge_list_multi_fn<T>, this);
+			this->zoltan.Set_Num_Obj_Fn(FPMAS::graph::parallel::zoltan::num_obj<T>, this);
+			this->zoltan.Set_Obj_List_Fn(FPMAS::graph::parallel::zoltan::obj_list<T>, this);
+			this->zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::parallel::zoltan::num_edges_multi_fn<T>, this);
+			this->zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::parallel::zoltan::edge_list_multi_fn<T>, this);
 		}
 
 		/**

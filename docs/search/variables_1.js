@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['config_212',['config',['../classFPMAS_1_1graph_1_1synchro_1_1None.html#a506d748842658e7b4296cadc18614c61',1,'FPMAS::graph::synchro::None::config()'],['../classFPMAS_1_1graph_1_1synchro_1_1GhostData.html#a2c41714c851589792d35af0b63f1a307',1,'FPMAS::graph::synchro::GhostData::config()']]]
+  ['config_216',['config',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1None.html#a844145a7cda934ba183d8f3a1b986190',1,'FPMAS::graph::parallel::synchro::None::config()'],['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostData.html#a4d709b0035b814509289954122ac1e6a',1,'FPMAS::graph::parallel::synchro::GhostData::config()']]]
 ];
