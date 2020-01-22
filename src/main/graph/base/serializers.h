@@ -7,12 +7,10 @@
 
 using nlohmann::json;
 
-namespace FPMAS {
-	namespace graph {
-		template<class T> class Node;
-		template<class T> class Arc;
-		template<class T> class Graph;
-	}
+namespace FPMAS::graph::base {
+	template<class T> class Node;
+	template<class T> class Arc;
+	template<class T> class Graph;
 }
 
 /**
@@ -20,7 +18,7 @@ namespace FPMAS {
  * library](https://github.com/nlohmann/json).
  */
 namespace nlohmann {
-	using FPMAS::graph::Node;
+	using FPMAS::graph::base::Node;
 
 	/**
 	 * Node serializer.
@@ -105,7 +103,7 @@ namespace nlohmann {
 
 	};
 
-	using FPMAS::graph::Arc;
+	using FPMAS::graph::base::Arc;
 	/**
 	 * Arc serializer.
 	 */
@@ -174,7 +172,7 @@ namespace nlohmann {
 
 	};
 
-	using FPMAS::graph::Graph;
+	using FPMAS::graph::base::Graph;
 	/**
 	 * Graph serializer.
 	 */

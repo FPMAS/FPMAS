@@ -18,6 +18,7 @@
 
 namespace FPMAS {
 	using communication::MpiCommunicator;
+	using graph::base::Graph;
 
 	namespace graph {
 

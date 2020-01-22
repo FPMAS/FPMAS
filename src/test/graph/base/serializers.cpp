@@ -5,9 +5,9 @@
 #include "sample_graph.h"
 
 using nlohmann::json;
-using FPMAS::graph::Graph;
-using FPMAS::graph::Node;
-using FPMAS::graph::Arc;
+using FPMAS::graph::base::Graph;
+using FPMAS::graph::base::Node;
+using FPMAS::graph::base::Arc;
 
 TEST(NodeSerializer, simple_node_serialization) {
 

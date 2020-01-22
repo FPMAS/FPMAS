@@ -5,9 +5,9 @@
 #include "graph/base/graph.h"
 #include "test_utils/test_utils.h"
 
-using FPMAS::graph::Graph;
-using FPMAS::graph::Node;
-using FPMAS::graph::Arc;
+using FPMAS::graph::base::Graph;
+using FPMAS::graph::base::Node;
+using FPMAS::graph::base::Arc;
 
 using FPMAS::test_utils::assert_contains;
 

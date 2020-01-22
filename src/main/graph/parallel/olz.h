@@ -4,7 +4,8 @@
 #include "../base/graph.h"
 #include "synchro/sync_data.h"
 
-using FPMAS::graph::Node;
+using FPMAS::graph::base::Node;
+using FPMAS::graph::base::Arc;
 
 namespace FPMAS {
 	namespace graph {

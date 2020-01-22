@@ -3,9 +3,9 @@
 
 #include "sample_graph.h"
 
-using FPMAS::graph::Graph;
-using FPMAS::graph::Node;
-using FPMAS::graph::Arc;
+using FPMAS::graph::base::Graph;
+using FPMAS::graph::base::Node;
+using FPMAS::graph::base::Arc;
 
 /*
  * Trivial constructor test.

@@ -7,7 +7,7 @@
 #include "graph/base/graph.h"
 
 namespace FPMAS {
-	using graph::Graph;
+	using graph::base::Graph;
 	namespace agent {
 
 		class AgentContainer {

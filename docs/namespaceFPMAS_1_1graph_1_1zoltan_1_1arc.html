@@ -196,7 +196,7 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Called once nodes migration is done, after arcs have been exported and before arcs are imported.</p>
-<p>If nodes have been imported and were already contained in the graph as ghost nodes, ghosts are replaced by real nodes in this <a class="el" href="classFPMAS_1_1graph_1_1Arc.html">Arc</a> mid migrate process, once arcs linked to the ghost nodes have been exported if necessary.</p>
+<p>If nodes have been imported and were already contained in the graph as ghost nodes, ghosts are replaced by real nodes in this Arc mid migrate process, once arcs linked to the ghost nodes have been exported if necessary.</p>
 <p>Actually, if the ghost node is removed directly when the real node is imported, while arcs have not migrated yet, arcs linked to the ghost node will be deleted even if they might have been exported in the arc migration process, what results in a significant loss of information.</p>
 <p>This process should be performed as a "mid" migrate (not post), so that imported arcs are built properly on the imported nodes, not on the obsolete ghosts. </p>
 

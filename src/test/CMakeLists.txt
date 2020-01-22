@@ -16,10 +16,6 @@ set(SOURCES
 	${SOURCES}
 	graph/base/serializers.cpp)
 
-set(SOURCES
-	${SOURCES}
-	graph/nested_graph.cpp)
-
 # Parallel graph
 ## Zoltan
 set(SOURCES
