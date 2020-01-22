@@ -9,54 +9,54 @@ set(SOURCES
 # Graph
 set(SOURCES
 	${SOURCES}
-	environment/graph/base/graph.cpp)
+	graph/base/graph.cpp)
 
 # Graph serialization
 set(SOURCES
 	${SOURCES}
-	environment/graph/base/serializers.cpp)
+	graph/base/serializers.cpp)
 
 set(SOURCES
 	${SOURCES}
-	environment/graph/nested_graph.cpp)
+	graph/nested_graph.cpp)
 
 # Parallel graph
 ## Zoltan
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/zoltan/zoltan_lb.cpp)
+	graph/parallel/zoltan/zoltan_lb.cpp)
 
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/zoltan/zoltan_node_migrate.cpp)
+	graph/parallel/zoltan/zoltan_node_migrate.cpp)
 
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/zoltan/zoltan_arc_migrate.cpp)
+	graph/parallel/zoltan/zoltan_arc_migrate.cpp)
 
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/zoltan/zoltan_ghost_node_migrate.cpp)
+	graph/parallel/zoltan/zoltan_ghost_node_migrate.cpp)
 
 ## Graph
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/distributed_graph.cpp
-	environment/graph/parallel/distributed_graph_edge_cases.cpp
+	graph/parallel/distributed_graph.cpp
+	graph/parallel/distributed_graph_edge_cases.cpp
 	)
 
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/olz.cpp)
+	graph/parallel/olz.cpp)
 
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/olz_graph.cpp)
+	graph/parallel/olz_graph.cpp)
 
 ## Proxy
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/proxy.cpp)
+	graph/parallel/proxy/proxy.cpp)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
 target_include_directories(fpmas_mpi_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -17,18 +17,18 @@ set(SOURCES
 # Graph
 set(SOURCES
 	${SOURCES}
-	environment/graph/base/graph_item.cpp
+	graph/base/graph_item.cpp
 	)
 
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/zoltan/zoltan_utils.cpp
+	graph/parallel/zoltan/zoltan_utils.cpp
 	)
 
 # Proxy
 set(SOURCES
 	${SOURCES}
-	environment/graph/parallel/proxy.cpp)
+	graph/parallel/proxy/proxy.cpp)
 
 # Agent
 set(SOURCES
