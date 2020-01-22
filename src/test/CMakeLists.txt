@@ -49,6 +49,15 @@ set(SOURCES
 	${SOURCES}
 	graph/parallel/olz_graph.cpp)
 
+### synchro
+set(SOURCES
+	${SOURCES}
+	graph/parallel/synchro/none.cpp)
+
+set(SOURCES
+	${SOURCES}
+	graph/parallel/synchro/ghost_data.cpp)
+
 ## Proxy
 set(SOURCES
 	${SOURCES}
