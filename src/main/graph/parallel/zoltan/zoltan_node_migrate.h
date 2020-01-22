@@ -7,6 +7,7 @@
 
 #include "zoltan_utils.h"
 #include "../synchro/sync_data.h"
+#include "../synchro/none.h"
 #include "../../base/node.h"
 
 
