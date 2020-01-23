@@ -12,12 +12,13 @@
 
 #include "utils/config.h"
 #include "communication/communication.h"
+#include "communication/resource_manager.h"
 
 #include "synchro/sync_data.h"
 #include "proxy/proxy.h"
 
 namespace FPMAS {
-	using communication::MpiCommunicator;
+	using communication::TerminableMpiCommunicator;
 	using graph::base::Graph;
 
 	/**
@@ -28,6 +29,7 @@ namespace FPMAS {
 
 		using proxy::Proxy;
 		using synchro::SyncData;
+		using synchro::SyncDataPtr;
 		using synchro::LocalData;
 		using synchro::GhostData;
 
@@ -58,7 +60,7 @@ namespace FPMAS {
 		 * @tparam T associated data type
 		 * @tparam S synchronization mode
 		 */
-		template<class T, template<typename> class S = GhostData> class DistributedGraph : public Graph<SyncData<T>> {
+		template<class T, template<typename> class S = GhostData> class DistributedGraph : public Graph<SyncDataPtr<T>>, communication::ResourceManager {
 			friend void zoltan::node::obj_size_multi_fn<T, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<T, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
@@ -76,7 +78,7 @@ namespace FPMAS {
 			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
 			private:
-				MpiCommunicator mpiCommunicator;
+				TerminableMpiCommunicator mpiCommunicator;
 				Zoltan zoltan;
 				Proxy proxy;
 				GhostGraph<T, S> ghost;
@@ -117,12 +119,14 @@ namespace FPMAS {
 			public:
 				DistributedGraph<T, S>();
 				DistributedGraph<T, S>(std::initializer_list<int>);
-				const MpiCommunicator& getMpiCommunicator() const;
+				TerminableMpiCommunicator& getMpiCommunicator();
 				Proxy& getProxy();
 				GhostGraph<T, S>& getGhost();
 
-				Node<SyncData<T>>* buildNode(unsigned long id, T data);
-				Node<SyncData<T>>* buildNode(unsigned long id, float weight, T data);
+				Node<SyncDataPtr<T>>* buildNode(unsigned long id, T data);
+				Node<SyncDataPtr<T>>* buildNode(unsigned long id, float weight, T data);
+
+				std::string getResource(unsigned long) const override;
 
 				void distribute();
 		};
@@ -144,7 +148,7 @@ namespace FPMAS {
 		 * Builds a DistributedGraph over all the available procs.
 		 */
 		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph()
-			: ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
+			: mpiCommunicator(this), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
 
@@ -155,7 +159,7 @@ namespace FPMAS {
 		 * built
 		 */
 		template<class T, template<typename> class S> DistributedGraph<T, S>::DistributedGraph(std::initializer_list<int> ranks)
-			: mpiCommunicator(ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
+			: mpiCommunicator(this, ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
 
@@ -164,7 +168,7 @@ namespace FPMAS {
 		 *
 		 * @return const reference to the mpiCommunicator associated to this graph
 		 */
-		template<class T, template<typename> class S> const MpiCommunicator& DistributedGraph<T, S>::getMpiCommunicator() const {
+		template<class T, template<typename> class S> TerminableMpiCommunicator& DistributedGraph<T, S>::getMpiCommunicator() {
 			return this->mpiCommunicator;
 		}
 
@@ -219,8 +223,8 @@ namespace FPMAS {
 		 * @param id node id
 		 * @param data node data (wrapped in a LocalData<T> instance)
 		 */
-		template<class T, template<typename> class S> Node<SyncData<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, T data) {
-			return Graph<SyncData<T>>::buildNode(id, LocalData<T>(data));
+		template<class T, template<typename> class S> Node<SyncDataPtr<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, T data) {
+			return Graph<SyncDataPtr<T>>::buildNode(id, SyncDataPtr<T>(new LocalData<T>(data)));
 		}
 
 		/**
@@ -233,8 +237,12 @@ namespace FPMAS {
 		 * @param weight node weight
 		 * @param data node data (wrapped in a LocalData<T> instance)
 		 */
-		template<class T, template<typename> class S> Node<SyncData<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, float weight, T data) {
-			return Graph<SyncData<T>>::buildNode(id, weight, LocalData<T>(data));
+		template<class T, template<typename> class S> Node<SyncDataPtr<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, float weight, T data) {
+			return Graph<SyncDataPtr<T>>::buildNode(id, weight, SyncDataPtr<T>(new LocalData<T>(data)));
+		}
+
+		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getResource(unsigned long id) const {
+			return nlohmann::json(*this->getNodes().at(id)).dump();
 		}
 
 		/**

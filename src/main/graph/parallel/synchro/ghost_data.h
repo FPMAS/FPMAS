@@ -27,8 +27,8 @@ namespace FPMAS::graph::parallel::synchro {
 	 */
 	template<class T> class GhostData : public LocalData<T> {
 		public:
-			GhostData();
-			GhostData(T);
+			GhostData(TerminableMpiCommunicator&);
+			GhostData(TerminableMpiCommunicator&, T);
 
 			/**
 			 * Defines the Zoltan configuration used manage and migrate
@@ -47,7 +47,7 @@ namespace FPMAS::graph::parallel::synchro {
 	/**
 	 * Default constructor.
 	 */
-	template<class T> GhostData<T>::GhostData()
+	template<class T> GhostData<T>::GhostData(TerminableMpiCommunicator&)
 		: LocalData<T>() {}
 
 	/**
@@ -55,7 +55,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 *
 	 * @param data data to wrap
 	 */
-	template<class T> GhostData<T>::GhostData(T data)
+	template<class T> GhostData<T>::GhostData(TerminableMpiCommunicator&, T data)
 		: LocalData<T>(data) {}
 }
 #endif

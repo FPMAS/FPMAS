@@ -3,7 +3,7 @@
 #include "graph/parallel/distributed_graph.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::SyncDataPtr;
 
 class Mpi_SynchronizeGhostTest : public ::testing::Test {
 	protected:
@@ -27,18 +27,18 @@ class Mpi_SynchronizeGhostTest : public ::testing::Test {
 TEST_F(Mpi_SynchronizeGhostTest, synchronize_ghost_test) {
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
-	Node<SyncData<int>>* localNode = dg.getNodes().begin()->second;
-	ASSERT_EQ(localNode->data().get(), localNode->getId());
+	Node<SyncDataPtr<int>>* localNode = dg.getNodes().begin()->second;
+	ASSERT_EQ(localNode->data()->get(), localNode->getId());
 	
 	// In a real scenario, data would be an object and some fields would be
 	// updated, we won't recreate a complete object each time
-	localNode->data().get() = localNode->getId() + 1;
+	localNode->data()->get() = localNode->getId() + 1;
 	localNode->setWeight(2.);
 
 	dg.getGhost().synchronize();
 
 	for(auto node : dg.getGhost().getNodes()) {
-		ASSERT_EQ(node.second->data().get(), node.first + 1);
+		ASSERT_EQ(node.second->data()->get(), node.first + 1);
 		ASSERT_EQ(node.second->getWeight(), 2.);
 	}
 }

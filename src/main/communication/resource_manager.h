@@ -17,7 +17,7 @@ namespace FPMAS {
 				 * @param id data id
 				 * @return serialized data
 				 */
-				virtual std::string getResource(unsigned long id) = 0;
+				virtual std::string getResource(unsigned long id) const = 0;
 		};
 	}
 }

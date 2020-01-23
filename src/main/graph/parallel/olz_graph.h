@@ -61,17 +61,17 @@ namespace FPMAS::graph::parallel {
 		void synchronize();
 
 		GhostNode<T, S>* buildNode(unsigned long);
-		GhostNode<T, S>* buildNode(Node<SyncData<T>> node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
+		GhostNode<T, S>* buildNode(Node<SyncDataPtr<T>> node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
 
-		void link(GhostNode<T, S>*, Node<SyncData<T>>*, unsigned long);
-		void link(Node<SyncData<T>>*, GhostNode<T, S>*, unsigned long);
+		void link(GhostNode<T, S>*, Node<SyncDataPtr<T>>*, unsigned long);
+		void link(Node<SyncDataPtr<T>>*, GhostNode<T, S>*, unsigned long);
 
 		void removeNode(unsigned long);
 
 		std::unordered_map<unsigned long, GhostNode<T, S>*> getNodes();
 		std::unordered_map<unsigned long, GhostArc<T, S>*> getArcs();
 
-		void clear(FossilArcs<SyncData<T>>);
+		void clear(FossilArcs<SyncDataPtr<T>>);
 
 		~GhostGraph();
 
@@ -171,7 +171,7 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<class T, template<typename> class S> GhostNode<T, S>* GhostGraph<T, S>::buildNode(unsigned long id) {
 		// Copy the gNode from the original node, including arcs data
-		GhostNode<T, S>* gNode = new GhostNode<T, S>(id);
+		GhostNode<T, S>* gNode = new GhostNode<T, S>(this->localGraph->getMpiCommunicator(), id);
 		// Register the new GhostNode
 		this->ghostNodes[gNode->getId()] = gNode;
 		return gNode;
@@ -196,16 +196,16 @@ namespace FPMAS::graph::parallel {
 	 * @param node node from which a ghost copy must be created
 	 * @param ignoreIds ids of nodes to ignore when building links
 	 */
-	template<class T, template<typename> class S> GhostNode<T, S>* GhostGraph<T, S>::buildNode(Node<SyncData<T>> node, std::set<unsigned long> ignoreIds) {
+	template<class T, template<typename> class S> GhostNode<T, S>* GhostGraph<T, S>::buildNode(Node<SyncDataPtr<T>> node, std::set<unsigned long> ignoreIds) {
 		// Copy the gNode from the original node, including arcs data
-		GhostNode<T, S>* gNode = new GhostNode<T, S>(node);
+		GhostNode<T, S>* gNode = new GhostNode<T, S>(this->localGraph->getMpiCommunicator(), node);
 		// Register the new GhostNode
 		this->ghostNodes[gNode->getId()] = gNode;
 
 		// Replaces the incomingArcs list by proper GhostArcs
 		gNode->incomingArcs.clear();	
 		for(auto arc : node.getIncomingArcs()) {
-			Node<SyncData<T>>* localSourceNode = arc->getSourceNode();
+			Node<SyncDataPtr<T>>* localSourceNode = arc->getSourceNode();
 			// Builds the ghost arc if :
 			if(
 					// The source node is not ignored (i.e. it is exported in the
@@ -220,7 +220,7 @@ namespace FPMAS::graph::parallel {
 		// Replaces the outgoingArcs list by proper GhostArcs
 		gNode->outgoingArcs.clear();
 		for(auto arc : node.getOutgoingArcs()) {
-			Node<SyncData<T>>* localTargetNode = arc->getTargetNode();
+			Node<SyncDataPtr<T>>* localTargetNode = arc->getTargetNode();
 			// Same as above
 			if(ignoreIds.count(localTargetNode->getId()) == 0
 					&& this->getNodes().count(localTargetNode->getId()) == 0)
@@ -234,7 +234,7 @@ namespace FPMAS::graph::parallel {
 	/**
 	 * Links the specified nodes with a GhostArc.
 	 */ 
-	template<class T, template<typename> class S> void GhostGraph<T, S>::link(GhostNode<T, S>* source, Node<SyncData<T>>* target, unsigned long arc_id) {
+	template<class T, template<typename> class S> void GhostGraph<T, S>::link(GhostNode<T, S>* source, Node<SyncDataPtr<T>>* target, unsigned long arc_id) {
 		this->ghostArcs[arc_id] =
 			new GhostArc<T, S>(arc_id, source, target);
 	}
@@ -242,7 +242,7 @@ namespace FPMAS::graph::parallel {
 	/**
 	 * Links the specified nodes with a GhostArc.
 	 */ 
-	template<class T, template<typename> class S> void GhostGraph<T, S>::link(Node<SyncData<T>>* source, GhostNode<T, S>* target, unsigned long arc_id) {
+	template<class T, template<typename> class S> void GhostGraph<T, S>::link(Node<SyncDataPtr<T>>* source, GhostNode<T, S>* target, unsigned long arc_id) {
 		this->ghostArcs[arc_id] =
 			new GhostArc<T, S>(arc_id, source, target);
 	}
@@ -255,7 +255,7 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<class T, template<typename> class S> void GhostGraph<T, S>::removeNode(unsigned long nodeId) {
 		GhostNode<T, S>* nodeToRemove = this->ghostNodes.at(nodeId);
-		FossilArcs<SyncData<T>> fossil;
+		FossilArcs<SyncDataPtr<T>> fossil;
 		// Deletes incoming arcs
 		for(auto arc : nodeToRemove->getIncomingArcs()) {
 			if(!localGraph->unlink(arc))
@@ -303,7 +303,7 @@ namespace FPMAS::graph::parallel {
 	 * @param fossil resulting FossilArcs from removeNode operations performed
 	 * on the graph, typically when nodes are exported
 	 */
-	template<class T, template<typename> class S> void GhostGraph<T, S>::clear(FossilArcs<SyncData<T>> fossil) {
+	template<class T, template<typename> class S> void GhostGraph<T, S>::clear(FossilArcs<SyncDataPtr<T>> fossil) {
 		for(auto arc : fossil.incomingArcs) {
 			// Source node should be a ghost
 			GhostNode<T, S>* ghost = (GhostNode<T, S>*) arc->getSourceNode();

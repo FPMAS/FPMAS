@@ -81,7 +81,7 @@ class TestResourceHandler : public ResourceManager {
 		TestResourceHandler() : delay(0) {
 		}
 
-		std::string getResource(unsigned long id) {
+		std::string getResource(unsigned long id) const {
 			std::this_thread::sleep_for(this->delay);
 			return std::to_string(id);
 		}

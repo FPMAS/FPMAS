@@ -11,7 +11,7 @@ using FPMAS::graph::parallel::synchro::GhostData;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::parallel::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::SyncDataPtr;
 
 TEST(Mpi_DistributedGraph, build_with_ranks_test) {
 	int global_size;
@@ -138,7 +138,7 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_EQ(dg.getArcs().size(), 1);
 
-	Arc<SyncData<int>>* arc = dg.getArcs().begin()->second;
+	Arc<SyncDataPtr<int>>* arc = dg.getArcs().begin()->second;
 	for(auto node : dg.getNodes()) {
 		if(node.second->getIncomingArcs().size() == 1) {
 			ASSERT_EQ(arc->getTargetNode()->getId(), node.second->getId());

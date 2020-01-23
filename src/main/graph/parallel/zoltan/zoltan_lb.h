@@ -5,6 +5,7 @@
 
 #include "zoltan_utils.h"
 #include "../synchro/sync_data.h"
+#include "../synchro/ghost_data.h"
 #include "../../base/node.h"
 
 using FPMAS::graph::base::Node;
@@ -15,7 +16,7 @@ namespace FPMAS::graph::parallel {
 	template<class T, template<typename> class S> class DistributedGraph;
 
 	using synchro::GhostData;
-	using synchro::SyncData;
+	using synchro::SyncDataPtr;
 
 	/**
 	 * The FPMAS::graph::zoltan namespace contains definitions of all the
@@ -68,7 +69,7 @@ namespace FPMAS::graph::parallel {
 				) {
 			int i = 0;
 			for(auto n : ((DistributedGraph<T, S>*) data)->getNodes()) {
-				Node<SyncData<T>>* node = n.second;
+				Node<SyncDataPtr<T>>* node = n.second;
 
 				utils::write_zoltan_id(node->getId(), &global_ids[i * num_gid_entries]);
 
@@ -101,10 +102,10 @@ namespace FPMAS::graph::parallel {
 				int *num_edges,
 				int *ierr
 				) {
-			std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes
+			std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes
 				= ((DistributedGraph<T, S>*) data)->getNodes();
 			for(int i = 0; i < num_obj; i++) {
-				Node<SyncData<T>>* node = nodes.at(
+				Node<SyncDataPtr<T>>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[i * num_gid_entries])
 						);
 				num_edges[i] = node->getOutgoingArcs().size();
@@ -147,15 +148,15 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 			DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
-			std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes = graph->getNodes();
+			std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes = graph->getNodes();
 
 			int neighbor_index = 0;
 			for (int i = 0; i < num_obj; ++i) {
-				Node<SyncData<T>>* node = nodes.at(
+				Node<SyncDataPtr<T>>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[num_gid_entries * i])
 						);
 				for(int j = 0; j < node->getOutgoingArcs().size(); j++) {
-					Arc<SyncData<T>>* arc = node->getOutgoingArcs().at(j);
+					Arc<SyncDataPtr<T>>* arc = node->getOutgoingArcs().at(j);
 					unsigned long targetId = arc->getTargetNode()->getId(); 
 					utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 

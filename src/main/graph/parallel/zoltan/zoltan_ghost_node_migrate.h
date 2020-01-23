@@ -12,7 +12,7 @@ namespace FPMAS::graph::parallel {
 
 	template<class T, template<typename> class S> class DistributedGraph;
 
-	using synchro::SyncData;
+	using synchro::SyncDataPtr;
 	using synchro::LocalData;
 	using synchro::GhostData;
 
@@ -52,9 +52,9 @@ namespace FPMAS::graph::parallel {
 
 
 				DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
-				std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes = graph->getNodes();
+				std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes = graph->getNodes();
 				for (int i = 0; i < num_ids; i++) {
-					Node<SyncData<T>>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+					Node<SyncDataPtr<T>>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 					if(graph->getGhost().ghost_node_serialization_cache.count(node->getId()) == 1) {
 						sizes[i] = graph->getGhost().ghost_node_serialization_cache.at(node->getId()).size()+1;
@@ -158,7 +158,10 @@ namespace FPMAS::graph::parallel {
 					GhostNode<T, S>* ghost = graph->getGhost().getNodes().at(node_id);
 					Node<LocalData<T>> node_update = json_node.get<Node<LocalData<T>>>();
 
-					ghost->data().get() = node_update.data().get();
+					ghost->data() // SyncDataPtr
+						-> // ptr to SyncData<T>
+						get() // reference to T
+						= node_update.data().get();
 					ghost->setWeight(node_update.getWeight());
 				}
 

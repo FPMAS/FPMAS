@@ -58,6 +58,10 @@ set(SOURCES
 	${SOURCES}
 	graph/parallel/synchro/ghost_data.cpp)
 
+set(SOURCES
+	${SOURCES}
+	graph/parallel/synchro/hard_sync_data.cpp)
+
 ## Proxy
 set(SOURCES
 	${SOURCES}

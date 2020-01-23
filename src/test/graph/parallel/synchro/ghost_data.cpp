@@ -6,7 +6,7 @@
 #include "graph/parallel/synchro/sync_data.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::SyncDataPtr;
 
 class Mpi_DistributeGraphWithGhostArcsTest : public ::testing::Test {
 	protected:
@@ -74,7 +74,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 		}
 		ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
 
-		Node<SyncData<int>>* localNode = dg.getNodes().begin()->second;
+		Node<SyncDataPtr<int>>* localNode = dg.getNodes().begin()->second;
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
 		ASSERT_EQ(
 				localNode->getIncomingArcs().at(0)->getSourceNode()->getId(),
@@ -85,6 +85,9 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 				localNode->getOutgoingArcs().at(0)->getTargetNode()->getId(),
 				(localNode->getId() + 1) % dg.getMpiCommunicator().getSize()
 				);
+	}
+	else {
+		PRINT_MIN_PROCS_WARNING(check_graph, 2);
 	}
 }
 
@@ -140,18 +143,18 @@ TEST_F(Mpi_DistributeCompleteGraphTest, distribute_graph_with_multiple_ghost_arc
 		ASSERT_EQ(ghostNode.second->getOutgoingArcs().size(), 2);
 		ASSERT_EQ(ghostNode.second->getIncomingArcs().size(), 2);
 
-		Node<SyncData<int>>* outNodes[2] = {
+		Node<SyncDataPtr<int>>* outNodes[2] = {
 			ghostNode.second->getOutgoingArcs().at(0)->getTargetNode(),
 			ghostNode.second->getOutgoingArcs().at(1)->getTargetNode()
 		};
-		Node<SyncData<int>>* inNodes[2] = {
+		Node<SyncDataPtr<int>>* inNodes[2] = {
 			ghostNode.second->getIncomingArcs().at(0)->getSourceNode(),
 			ghostNode.second->getIncomingArcs().at(1)->getSourceNode()
 		};
 
 		for(auto node : dg.getNodes()) {
-			FPMAS::test_utils::assert_contains<Node<SyncData<int>>*, 2>(outNodes, node.second);
-			FPMAS::test_utils::assert_contains<Node<SyncData<int>>*, 2>(inNodes, node.second);
+			FPMAS::test_utils::assert_contains<Node<SyncDataPtr<int>>*, 2>(outNodes, node.second);
+			FPMAS::test_utils::assert_contains<Node<SyncDataPtr<int>>*, 2>(inNodes, node.second);
 		}
 
 	}

@@ -11,7 +11,7 @@ using FPMAS::communication::MpiCommunicator;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::parallel::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::SyncDataPtr;
 
 class Mpi_OlzTest : public ::testing::Test {
 	protected:
@@ -30,7 +30,7 @@ class Mpi_OlzTest : public ::testing::Test {
 
 TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 	// Builds ghost node from node 2
-	Node<SyncData<int>> node = *(dg.getNode(2ul));	
+	Node<SyncDataPtr<int>> node = *(dg.getNode(2ul));	
 	dg.getGhost().buildNode(node);
 
 	// Node 0 is linked to the ghost node
@@ -53,7 +53,7 @@ TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 
 	// Ghost node data is accessible from node 0
 	ASSERT_EQ(
-			dg.getNode(0ul)->getOutgoingArcs().at(0)->getTargetNode()->data().get(),
+			dg.getNode(0ul)->getOutgoingArcs().at(0)->getTargetNode()->data()->get(),
 			2
 			);
 	ASSERT_EQ(
@@ -63,7 +63,7 @@ TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 
 	// Ghost node data is accessible from node 1
 	ASSERT_EQ(
-			dg.getNode(1ul)->getIncomingArcs().at(0)->getSourceNode()->data().get(),
+			dg.getNode(1ul)->getIncomingArcs().at(0)->getSourceNode()->data()->get(),
 			2
 			);
 	ASSERT_EQ(

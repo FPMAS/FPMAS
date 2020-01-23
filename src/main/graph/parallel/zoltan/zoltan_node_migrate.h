@@ -7,6 +7,8 @@
 
 #include "zoltan_utils.h"
 #include "../synchro/sync_data.h"
+#include "../synchro/local_data.h"
+#include "../synchro/ghost_data.h"
 #include "../synchro/none.h"
 #include "../../base/node.h"
 
@@ -19,7 +21,7 @@ namespace FPMAS::graph::parallel {
 	template<class T, template<typename> class S> class DistributedGraph;
 
 	using synchro::None;
-	using synchro::SyncData;
+	using synchro::SyncDataPtr;
 	using synchro::LocalData;
 	using synchro::GhostData;
 
@@ -59,9 +61,9 @@ namespace FPMAS::graph::parallel {
 
 
 			DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
-			std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes = graph->getNodes();
+			std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes = graph->getNodes();
 			for (int i = 0; i < num_ids; i++) {
-				Node<SyncData<T>>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+				Node<SyncDataPtr<T>>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 				if(graph->node_serialization_cache.count(node->getId()) == 1) {
 					sizes[i] = graph->node_serialization_cache.at(node->getId()).size()+1;
@@ -224,18 +226,18 @@ namespace FPMAS::graph::parallel {
 
 			DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
 
-			std::unordered_map<unsigned long, Node<SyncData<T>>*> nodes = graph->getNodes();
+			std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes = graph->getNodes();
 			// Set used to ensure that each arc is sent at most once to
 			// each process.
 			std::set<std::pair<unsigned long, int>> exportedArcPairs;
 
-			std::vector<Arc<SyncData<T>>*> arcsToExport;
+			std::vector<Arc<SyncDataPtr<T>>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			for (int i =0; i < num_export; i++) {
 				unsigned long id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
 
-				Node<SyncData<T>>* exported_node = nodes.at(id);
+				Node<SyncDataPtr<T>>* exported_node = nodes.at(id);
 				int dest_proc = export_procs[i];
 
 				// Updates Proxy
@@ -330,7 +332,7 @@ namespace FPMAS::graph::parallel {
 
 			DistributedGraph<T, None>* graph = (DistributedGraph<T, None>*) data;
 
-			std::vector<Arc<SyncData<T>>*> arcsToExport;
+			std::vector<Arc<SyncDataPtr<T>>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			std::unordered_map<unsigned long, int> nodeDestinations;
@@ -340,7 +342,7 @@ namespace FPMAS::graph::parallel {
 			}
 
 			for (auto nodeDest : nodeDestinations) {
-				Node<SyncData<T>>* exported_node = graph->getNodes().at(nodeDest.first);
+				Node<SyncDataPtr<T>>* exported_node = graph->getNodes().at(nodeDest.first);
 
 				// Updates Proxy for consistency, even if should no ghost are used
 				graph->getProxy().setCurrentLocation(nodeDest.first, nodeDest.second);

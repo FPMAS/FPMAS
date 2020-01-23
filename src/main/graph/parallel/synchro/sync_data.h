@@ -4,8 +4,9 @@
 #include <nlohmann/json.hpp>
 #include "zoltan_cpp.h"
 #include "../zoltan/zoltan_utils.h"
+#include "communication/communication.h"
 
-using nlohmann::json;
+using FPMAS::communication::TerminableMpiCommunicator;
 
 namespace FPMAS::graph::parallel {
 	namespace zoltan {
@@ -57,9 +58,12 @@ namespace FPMAS::graph::parallel {
 				 * Local representation of wrapped data.
 				 */
 				T data;
-			public:
 				SyncData();
 				SyncData(T);
+				SyncData(TerminableMpiCommunicator&);
+				SyncData(TerminableMpiCommunicator&, T);
+
+			public:
 
 				/**
 				 * Returns a reference to the wrapped data. (default behavior)
@@ -88,12 +92,18 @@ namespace FPMAS::graph::parallel {
 		template<class T> SyncData<T>::SyncData() {
 		}
 
+		template<class T> SyncData<T>::SyncData(TerminableMpiCommunicator&) {
+		}
+
+		template<class T> SyncData<T>::SyncData(T data) : data(data) {
+		}
+
 		/**
 		 * Builds a SyncData instance initialized with the specified data.
 		 *
 		 * @param data data to wrap.
 		 */
-		template<class T> SyncData<T>::SyncData(T data) : data(data) {
+		template<class T> SyncData<T>::SyncData(TerminableMpiCommunicator&, T data) : data(data) {
 		}
 
 
@@ -105,11 +115,47 @@ namespace FPMAS::graph::parallel {
 		template<class T> const T& SyncData<T>::get() const {
 			return data;
 		}
+
+		template<class T> class SyncDataPtr {
+			private:
+				SyncData<T>* syncData;
+				bool toDelete = true;
+
+			public:
+				SyncDataPtr();
+				SyncDataPtr(SyncData<T>*);
+				SyncDataPtr(SyncDataPtr&);
+				SyncData<T>* const operator->();
+				const SyncData<T>* const operator->() const;
+				~SyncDataPtr();
+
+		};
+
+		template<class T> SyncDataPtr<T>::SyncDataPtr(){
+			toDelete=false;
+		}
+		template<class T> SyncDataPtr<T>::SyncDataPtr(SyncData<T>* syncData)
+			: syncData(syncData) {}
+		template<class T> SyncDataPtr<T>::SyncDataPtr(SyncDataPtr<T>& from) {
+			from.toDelete = false;
+			this->syncData = from.syncData;
+		}
+
+		template<class T> SyncData<T>* const SyncDataPtr<T>::operator->() {
+			return this->syncData;
+		}
+		template<class T> const SyncData<T>* const SyncDataPtr<T>::operator->() const {
+			return this->syncData;
+		}
+		template<class T> SyncDataPtr<T>::~SyncDataPtr() {
+			if(toDelete)
+				delete syncData;
+		}
 	}
 }
 
 namespace nlohmann {
-	using FPMAS::graph::parallel::synchro::SyncData;
+	using FPMAS::graph::parallel::synchro::SyncDataPtr;
 
 	/**
 	 * Any SyncData instance (and so instances of extending classes) can be
@@ -120,7 +166,7 @@ namespace nlohmann {
 	 * but must be unserialized as a concrete LocalData instance for example.
 	 */
     template <class T>
-    struct adl_serializer<SyncData<T>> {
+    struct adl_serializer<SyncDataPtr<T>> {
 		/**
 		 * Serializes the data wrapped in the provided SyncData instance.
 		 *
@@ -129,8 +175,8 @@ namespace nlohmann {
 		 * @param j json to serialize to
 		 * @param data reference to SyncData to serialize
 		 */
-		static void to_json(json& j, const SyncData<T>& data) {
-			j = data.get();
+		static void to_json(json& j, const SyncDataPtr<T>& data) {
+			j = data->get();
 		}
 
 	};
