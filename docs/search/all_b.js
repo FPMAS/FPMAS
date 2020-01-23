@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['obj_5flist_76',['obj_list',['../namespaceFPMAS_1_1graph_1_1parallel_1_1zoltan.html#a9d21b2eb7290eb4ba63d120010f49ab3',1,'FPMAS::graph::parallel::zoltan']]],
-  ['obj_5fsize_5fmulti_5ffn_77',['obj_size_multi_fn',['../namespaceFPMAS_1_1graph_1_1parallel_1_1proxy.html#a0d41d7978da7b541e3b55e6037ea7c17',1,'FPMAS::graph::parallel::proxy::obj_size_multi_fn()'],['../namespaceFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1arc.html#a99f5641758080492983ff6ea1ffcd23a',1,'FPMAS::graph::parallel::zoltan::arc::obj_size_multi_fn()'],['../namespaceFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1ghost.html#a29ce771fbfa97a8fab439af74edaaad9',1,'FPMAS::graph::parallel::zoltan::ghost::obj_size_multi_fn()'],['../namespaceFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1node.html#afa179cc2460b1a09b13225dd9e162233',1,'FPMAS::graph::parallel::zoltan::node::obj_size_multi_fn()']]],
-  ['operator_3d_78',['operator=',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#a450aa7b94bf8d93f6d223e7a75ca05e7',1,'FPMAS::communication::MpiCommunicator']]],
-  ['outgoingarcs_79',['outgoingArcs',['../classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#a1ed3f895139435bb41cf91e3f4c70550',1,'FPMAS::graph::base::FossilArcs::outgoingArcs()'],['../classFPMAS_1_1graph_1_1base_1_1Node.html#a64560b12d4b07d3f4c178f38320c7384',1,'FPMAS::graph::base::Node::outgoingArcs()']]]
+  ['nlohmann_70',['nlohmann',['../namespacenlohmann.html',1,'']]],
+  ['node_71',['Node',['../classFPMAS_1_1graph_1_1base_1_1Node.html',1,'FPMAS::graph::base::Node&lt; T &gt;'],['../classFPMAS_1_1graph_1_1base_1_1Node.html#a2f4cc9fafd1df79bb1b4af81d3bb67fc',1,'FPMAS::graph::base::Node::Node(unsigned long)'],['../classFPMAS_1_1graph_1_1base_1_1Node.html#a5528586225f2d9ed0a1e5597417f102a',1,'FPMAS::graph::base::Node::Node(unsigned long, T)'],['../classFPMAS_1_1graph_1_1base_1_1Node.html#a5fab66c0442a252fe6aba8c5d52b6892',1,'FPMAS::graph::base::Node::Node(unsigned long, float, T)']]],
+  ['node_3c_20syncdataptr_3c_20t_20_3e_20_3e_72',['Node&lt; SyncDataPtr&lt; T &gt; &gt;',['../classFPMAS_1_1graph_1_1base_1_1Node.html',1,'FPMAS::graph::base']]],
+  ['node_5fpost_5fmigrate_5ffn_73',['node_post_migrate_fn',['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#a2e39cf658243a71ad77e6c8f060938ac',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions']]],
+  ['none_74',['None',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1None.html',1,'FPMAS::graph::parallel::synchro']]],
+  ['num_5fedges_5fmulti_5ffn_75',['num_edges_multi_fn',['../namespaceFPMAS_1_1graph_1_1parallel_1_1zoltan.html#a13ea376f9b6859b513b29849103d3f0b',1,'FPMAS::graph::parallel::zoltan']]],
+  ['num_5fobj_76',['num_obj',['../namespaceFPMAS_1_1graph_1_1parallel_1_1zoltan.html#a9de4b6e5a8f8e84bafd2e2e6a511bc1b',1,'FPMAS::graph::parallel::zoltan']]]
 ];

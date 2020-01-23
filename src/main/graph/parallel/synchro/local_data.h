@@ -4,8 +4,7 @@
 #include "sync_data.h"
 
 namespace FPMAS::graph::parallel::synchro {
-	// TODO : all the constructors might be defined private, because the
-	// user is never supposed to manually instanciate wrappers.
+
 	/**
 	 * Wrapper used for local nodes of a DistributedGraph.
 	 *
@@ -23,6 +22,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 */
 	template<class T> LocalData<T>::LocalData()
 		: SyncData<T>() {}
+
 	/**
 	 * Builds a LocalData instance initialized with the specified data.
 	 *

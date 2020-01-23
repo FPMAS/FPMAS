@@ -60,8 +60,7 @@ namespace FPMAS::graph::parallel {
 				T data;
 				SyncData();
 				SyncData(T);
-				SyncData(TerminableMpiCommunicator&);
-				SyncData(TerminableMpiCommunicator&, T);
+
 
 			public:
 
@@ -92,30 +91,46 @@ namespace FPMAS::graph::parallel {
 		template<class T> SyncData<T>::SyncData() {
 		}
 
-		template<class T> SyncData<T>::SyncData(TerminableMpiCommunicator&) {
-		}
-
-		template<class T> SyncData<T>::SyncData(T data) : data(data) {
-		}
-
 		/**
 		 * Builds a SyncData instance initialized with the specified data.
 		 *
 		 * @param data data to wrap.
 		 */
-		template<class T> SyncData<T>::SyncData(TerminableMpiCommunicator&, T data) : data(data) {
+		template<class T> SyncData<T>::SyncData(T data) : data(data) {
 		}
 
-
+		/**
+		 * Default getter, returns a reference to the wrapped data.
+		 *
+		 * @return reference to wrapped data
+		 */
 		template<class T> T& SyncData<T>::get() {
 			return data;
 		}
 
-
+		/**
+		 * Default const getter, returns a const reference to the wrapped data.
+		 *
+		 * @return const reference to wrapped data
+		 */
 		template<class T> const T& SyncData<T>::get() const {
 			return data;
 		}
 
+		/**
+		 * Smart pointer used as node data to store SyncData<T> instances in
+		 * the DistributedGraph.
+		 */
+		/*
+		 * Using SyncData<T>* pointers directly has Node data in the
+		 * DistributedGraph (and in the GhostGraph) would require extra memory
+		 * management and storage at the Graph scale to manually delete (and copy, and
+		 * assign, etc) node data. Using this smart pointer instead avoid this,
+		 * because its destructor is automatically and properly called as
+		 * defined at the Graph scale as nodes are created or deleted.
+		 * An std::shared_ptr<SyncData<T>*> might have been used, but would not
+		 * have been optimal.
+		 */
 		template<class T> class SyncDataPtr {
 			private:
 				SyncData<T>* syncData;
@@ -131,22 +146,65 @@ namespace FPMAS::graph::parallel {
 
 		};
 
+		/**
+		 * Default constructor.
+		 *
+		 * Builds a void SyncDataPtr instance.
+		 */
 		template<class T> SyncDataPtr<T>::SyncDataPtr(){
 			toDelete=false;
 		}
+
+		/**
+		 * Builds a SyncDataPtr instance that manages the provided SyncData
+		 * pointer.
+		 *
+		 * @param syncData SyncData<T> pointer
+		 */
 		template<class T> SyncDataPtr<T>::SyncDataPtr(SyncData<T>* syncData)
 			: syncData(syncData) {}
+
+		/**
+		 * Copy constructor.
+		 *
+		 * Gives the ownership of the managed pointer to this instance : the
+		 * managed pointer will be deleted when this instance will be.
+		 *
+		 * @param from Other instance to take the pointer from
+		 */
 		template<class T> SyncDataPtr<T>::SyncDataPtr(SyncDataPtr<T>& from) {
+			from.syncData = nullptr;
 			from.toDelete = false;
 			this->syncData = from.syncData;
 		}
 
+		/**
+		 * Member of pointer operator, that allows easy access to the
+		 * SyncData<T> pointer contained in this SyncDataPtr.
+		 *
+		 * The return pointer is `const` so that the internal pointer can't be
+		 * changed externally.
+		 *
+		 * @return const pointer to the managed SyncData<T> instance
+		 */
 		template<class T> SyncData<T>* const SyncDataPtr<T>::operator->() {
 			return this->syncData;
 		}
+
+		/**
+		 * Const version of the member of pointer operator.
+		 *
+		 * @return const pointer to the const SyncData<T> instance
+		 */
 		template<class T> const SyncData<T>* const SyncDataPtr<T>::operator->() const {
 			return this->syncData;
 		}
+
+		/**
+		 * SyncDataPtr destructor.
+		 *
+		 * Deletes the managed pointer if this instance has ownership over it.
+		 */
 		template<class T> SyncDataPtr<T>::~SyncDataPtr() {
 			if(toDelete)
 				delete syncData;

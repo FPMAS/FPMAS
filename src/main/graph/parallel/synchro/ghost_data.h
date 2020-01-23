@@ -26,6 +26,9 @@ namespace FPMAS::graph::parallel::synchro {
 	 *
 	 */
 	template<class T> class GhostData : public LocalData<T> {
+		private:
+			TerminableMpiCommunicator& mpiComm;
+
 		public:
 			GhostData(TerminableMpiCommunicator&);
 			GhostData(TerminableMpiCommunicator&, T);
@@ -45,17 +48,24 @@ namespace FPMAS::graph::parallel::synchro {
 		);
 
 	/**
-	 * Default constructor.
+	 * Builds a GhostData instance with the provided MpiCommunicator.
+	 *
+	 * @param mpiComm MPI Communicator associated to the containing
+	 * DistributedGraph
 	 */
-	template<class T> GhostData<T>::GhostData(TerminableMpiCommunicator&)
-		: LocalData<T>() {}
+	// The mpiCommunicator is not used for the GhostData mode, but the
+	// constructors are defined to allow template genericity
+	template<class T> GhostData<T>::GhostData(TerminableMpiCommunicator& mpiComm)
+		: mpiComm(mpiComm) {}
 
 	/**
 	 * Builds a GhostData instance initialized with the specified data.
 	 *
 	 * @param data data to wrap
+	 * @param mpiComm MPI Communicator associated to the containing
+	 * DistributedGraph
 	 */
-	template<class T> GhostData<T>::GhostData(TerminableMpiCommunicator&, T data)
-		: LocalData<T>(data) {}
+	template<class T> GhostData<T>::GhostData(TerminableMpiCommunicator& mpiComm, T data)
+		: LocalData<T>(data), mpiComm(mpiComm) {}
 }
 #endif

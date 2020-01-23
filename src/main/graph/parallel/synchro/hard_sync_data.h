@@ -8,18 +8,15 @@ using FPMAS::communication::TerminableMpiCommunicator;
 
 namespace FPMAS::graph::parallel::synchro {
 
-	template<class T> class HardSyncData : public SyncData<T> {
-		private:
-			TerminableMpiCommunicator& mpiComm;
-
+	template<class T> class HardSyncData : public GhostData<T> {
 		public:
 			HardSyncData(TerminableMpiCommunicator&);
 			HardSyncData(TerminableMpiCommunicator&, T);
 
 	};
 
-	template<class T> HardSyncData<T>::HardSyncData(TerminableMpiCommunicator& mpiComm) : mpiComm(mpiComm) {}
+	template<class T> HardSyncData<T>::HardSyncData(TerminableMpiCommunicator& mpiComm) : GhostData<T>(mpiComm) {}
 
-	template<class T> HardSyncData<T>::HardSyncData(TerminableMpiCommunicator& mpiComm, T data) : SyncData<T>(data), mpiComm(mpiComm) {}
+	template<class T> HardSyncData<T>::HardSyncData(TerminableMpiCommunicator& mpiComm, T data) : GhostData<T>(mpiComm, data) {}
 }
 #endif
