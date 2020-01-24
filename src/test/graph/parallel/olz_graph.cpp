@@ -32,7 +32,7 @@ TEST_F(Mpi_SynchronizeGhostTest, synchronize_ghost_test) {
 	
 	// In a real scenario, data would be an object and some fields would be
 	// updated, we won't recreate a complete object each time
-	localNode->data()->get() = localNode->getId() + 1;
+	localNode->data()->acquire() = localNode->getId() + 1;
 	localNode->setWeight(2.);
 
 	dg.getGhost().synchronize();

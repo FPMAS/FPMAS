@@ -3,6 +3,9 @@
 
 #include "../zoltan/zoltan_utils.h"
 #include "../zoltan/zoltan_node_migrate.h"
+#include "graph/parallel/proxy/proxy.h"
+
+using FPMAS::graph::parallel::proxy::Proxy;
 
 namespace FPMAS::graph::parallel::synchro {
 	/**
@@ -13,13 +16,18 @@ namespace FPMAS::graph::parallel::synchro {
 	 * When a node is exported, its connections with nodes that are not
 	 * exported on the same process are lost.
 	 */
-	template<class T> class None {
+	template<class T> class None : public SyncData<T> {
 		public:
 			/**
 			 * Zoltan config associated to the None synchronization
 			 * mode.
 			 */
 			const static zoltan::utils::zoltan_query_functions config;
+
+			None(unsigned long, TerminableMpiCommunicator&, const Proxy&) {};
+			None(unsigned long, TerminableMpiCommunicator&, const Proxy&, T) {};
+
+			static void termination(DistributedGraph<T, None>* dg) {}
 	};
 	template<class T> const zoltan::utils::zoltan_query_functions None<T>::config
 		(

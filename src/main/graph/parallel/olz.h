@@ -27,17 +27,17 @@ namespace FPMAS::graph::parallel {
 	 * difference can be made between nodes really living locally and ghost
 	 * nodes.
 	 */
-	template <class T, template<typename> class S = GhostData> class GhostNode : public Node<SyncDataPtr<T>> {
+	template <class T, template<typename> class S> class GhostNode : public Node<SyncDataPtr<T>> {
 		friend GhostNode<T, S>* GhostGraph<T, S>::buildNode(unsigned long);
 		friend GhostNode<T, S>* GhostGraph<T, S>::buildNode(Node<SyncDataPtr<T>>, std::set<unsigned long>);
 
 		private:
-		GhostNode(TerminableMpiCommunicator&, unsigned long);
-		GhostNode(TerminableMpiCommunicator&, Node<SyncDataPtr<T>>);
+		GhostNode(TerminableMpiCommunicator&, Proxy&, unsigned long);
+		GhostNode(TerminableMpiCommunicator&, Proxy&, Node<SyncDataPtr<T>>);
 	};
 
-	template<class T, template<typename> class S> GhostNode<T, S>::GhostNode(TerminableMpiCommunicator& mpiComm, unsigned long id)
-		: Node<SyncDataPtr<T>>(id, 1., SyncDataPtr<T>(new S<T>(mpiComm))) {
+	template<class T, template<typename> class S> GhostNode<T, S>::GhostNode(TerminableMpiCommunicator& mpiComm, Proxy& proxy, unsigned long id)
+		: Node<SyncDataPtr<T>>(id, 1., SyncDataPtr<T>(new S<T>(id, mpiComm, proxy))) {
 		}
 
 	/**
@@ -45,8 +45,8 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param node original node
 	 */
-	template<class T, template<typename> class S> GhostNode<T, S>::GhostNode(TerminableMpiCommunicator& mpiComm, Node<SyncDataPtr<T>> node)
-		: Node<SyncDataPtr<T>>(node.getId(), node.getWeight(), SyncDataPtr<T>(new S<T>(mpiComm, node.data()->get()))) {
+	template<class T, template<typename> class S> GhostNode<T, S>::GhostNode(TerminableMpiCommunicator& mpiComm, Proxy& proxy, Node<SyncDataPtr<T>> node)
+		: Node<SyncDataPtr<T>>(node.getId(), node.getWeight(), SyncDataPtr<T>(new S<T>(node.getId(), mpiComm, proxy, node.data()->get()))) {
 		}
 
 	/**

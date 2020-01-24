@@ -26,6 +26,9 @@ namespace FPMAS {
 	 * parallelization and synchronization of a graph structure.
 	 */
 	namespace graph::parallel {
+		namespace synchro {
+			template<class T> class GhostData;
+		}
 
 		using proxy::Proxy;
 		using synchro::SyncData;
@@ -83,7 +86,7 @@ namespace FPMAS {
 				Proxy proxy;
 				GhostGraph<T, S> ghost;
 
-				void setZoltanNodeMigration();
+			void setZoltanNodeMigration();
 				void setZoltanArcMigration();
 
 				// A set of node ids that are currently local and have been
@@ -129,6 +132,7 @@ namespace FPMAS {
 				std::string getResource(unsigned long) const override;
 
 				void distribute();
+				void synchronize();
 		};
 
 		/*
@@ -138,10 +142,10 @@ namespace FPMAS {
 			FPMAS::config::zoltan_config(&this->zoltan);
 
 			// Initializes Zoltan Node Load Balancing functions
-			this->zoltan.Set_Num_Obj_Fn(FPMAS::graph::parallel::zoltan::num_obj<T>, this);
-			this->zoltan.Set_Obj_List_Fn(FPMAS::graph::parallel::zoltan::obj_list<T>, this);
-			this->zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::parallel::zoltan::num_edges_multi_fn<T>, this);
-			this->zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::parallel::zoltan::edge_list_multi_fn<T>, this);
+			this->zoltan.Set_Num_Obj_Fn(FPMAS::graph::parallel::zoltan::num_obj<T, S>, this);
+			this->zoltan.Set_Obj_List_Fn(FPMAS::graph::parallel::zoltan::obj_list<T, S>, this);
+			this->zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::parallel::zoltan::num_edges_multi_fn<T, S>, this);
+			this->zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::parallel::zoltan::edge_list_multi_fn<T, S>, this);
 		}
 
 		/**
@@ -195,9 +199,9 @@ namespace FPMAS {
 		 * Configures Zoltan to migrate nodes.
 		 */
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::setZoltanNodeMigration() {
-			zoltan.Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<T>, this);
-			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T>, this);
-			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T>, this);
+			zoltan.Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<T, S>, this);
+			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T, S>, this);
+			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T, S>, this);
 			zoltan.Set_Mid_Migrate_PP_Fn(NULL);
 			zoltan.Set_Post_Migrate_PP_Fn(S<T>::config.node_post_migrate_fn, this);
 		}
@@ -206,9 +210,9 @@ namespace FPMAS {
 		 * Configures Zoltan to migrate arcs.
 		 */
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::setZoltanArcMigration() {
-			zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T>, this);
-			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T>, this);
-			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T>, this);
+			zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T, S>, this);
+			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T, S>, this);
+			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, S>, this);
 
 			zoltan.Set_Mid_Migrate_PP_Fn(S<T>::config.arc_mid_migrate_fn, this);
 			zoltan.Set_Post_Migrate_PP_Fn(S<T>::config.arc_post_migrate_fn, this);
@@ -242,7 +246,7 @@ namespace FPMAS {
 		}
 
 		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getResource(unsigned long id) const {
-			return nlohmann::json(*this->getNodes().at(id)).dump();
+			return json(this->getNodes().at(id)->data()->get()).dump();
 		}
 
 		/**
@@ -364,7 +368,15 @@ namespace FPMAS {
 			// When called for the first time, PARTITION is used, and so
 			// REPARTITION will be used for all other calls.
 			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
+
+			this->synchronize();
 		}
+
+	template<class T, template<typename> class S> void DistributedGraph<T, S>::synchronize() {
+		this->mpiCommunicator.terminate();
+		S<T>::termination(this);
 	}
 }
+	}
+
 #endif

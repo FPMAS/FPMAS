@@ -17,7 +17,6 @@ namespace FPMAS::graph::parallel {
 	using synchro::None;
 	using synchro::SyncDataPtr;
 	using synchro::LocalData;
-	using synchro::GhostData;
 
 	namespace zoltan {
 		/**
@@ -43,7 +42,7 @@ namespace FPMAS::graph::parallel {
 			 * @param sizes Result : buffer sizes for each node
 			 * @param ierr Result : error code
 			 */
-			template<class T, template<typename> class S = GhostData> void obj_size_multi_fn(
+			template<class T, template<typename> class S> void obj_size_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -139,7 +138,7 @@ namespace FPMAS::graph::parallel {
 			 * @param buf communication buffer
 			 * @param ierr Result : error code
 			 */
-			template<class T, template<typename> class S = GhostData> void pack_obj_multi_fn(
+			template<class T, template<typename> class S> void pack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -197,7 +196,7 @@ namespace FPMAS::graph::parallel {
 			 * post), so that imported arcs are built properly on the
 			 * imported nodes, not on the obsolete ghosts.
 			 */
-			template <class T, template<typename> class S = GhostData> void mid_migrate_pp_fn(
+			template <class T, template<typename> class S> void mid_migrate_pp_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -245,7 +244,7 @@ namespace FPMAS::graph::parallel {
 			 * @param ierr Result : error code
 			 *
 			 */
-			template<class T, template<typename> class S = GhostData> void unpack_obj_multi_fn(
+			template<class T, template<typename> class S> void unpack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_ids,
@@ -368,7 +367,7 @@ namespace FPMAS::graph::parallel {
 			 * This process builds required ghost nodes and deletes useless
 			 * ones according to nodes that were just exported.
 			 */
-			template<class T, template<typename> class S = GhostData> void post_migrate_pp_fn_olz(
+			template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,

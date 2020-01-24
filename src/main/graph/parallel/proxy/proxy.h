@@ -95,8 +95,8 @@ namespace FPMAS::graph::parallel {
 			int getLocalProc() const;
 			void setOrigin(unsigned long, int);
 			void setCurrentLocation(unsigned long, int);
-			int getOrigin(unsigned long);
-			int getCurrentLocation(unsigned long);
+			int getOrigin(unsigned long) const;
+			int getCurrentLocation(unsigned long) const;
 			void setLocal(unsigned long, bool upToDate=false);
 
 			void synchronize();

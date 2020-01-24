@@ -1,11 +1,14 @@
 #include "gtest/gtest.h"
 
 #include "graph/parallel/distributed_graph.h"
+#include "graph/parallel/synchro/ghost_data.h"
 
 using FPMAS::graph::parallel::zoltan::ghost::obj_size_multi_fn;
 using FPMAS::graph::parallel::zoltan::ghost::pack_obj_multi_fn;
 
 using FPMAS::graph::parallel::DistributedGraph;
+
+using FPMAS::graph::parallel::synchro::GhostData;
 
 class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:
@@ -30,7 +33,7 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(0, &transfer_global_ids[0]);
 			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(1, &transfer_global_ids[2]);
 
-			obj_size_multi_fn<int>(
+			obj_size_multi_fn<int, GhostData>(
 					&dg,
 					2,
 					0,
@@ -50,7 +53,7 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 			// Unused
 			int dest[2];
 
-			pack_obj_multi_fn<int>(
+			pack_obj_multi_fn<int, GhostData>(
 					&dg,
 					2,
 					0,
@@ -98,10 +101,10 @@ using FPMAS::graph::parallel::zoltan::ghost::unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 
-	dg.getNode(0)->data()->get() = 8;
+	dg.getNode(0)->data()->acquire() = 8;
 	dg.getNode(0)->setWeight(5.);
 
-	dg.getNode(1)->data()->get() = 12;
+	dg.getNode(1)->data()->acquire() = 12;
 	dg.getNode(1)->setWeight(4.);
 
 	write_migration_sizes();
@@ -113,7 +116,7 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	dg.removeNode(0);
 	dg.removeNode(1);
 
-	unpack_obj_multi_fn<int>(
+	unpack_obj_multi_fn<int, GhostData>(
 		&dg,
 		2,
 		2,

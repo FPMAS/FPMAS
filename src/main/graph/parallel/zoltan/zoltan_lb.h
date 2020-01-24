@@ -5,7 +5,6 @@
 
 #include "zoltan_utils.h"
 #include "../synchro/sync_data.h"
-#include "../synchro/ghost_data.h"
 #include "../../base/node.h"
 
 using FPMAS::graph::base::Node;
@@ -15,7 +14,6 @@ namespace FPMAS::graph::parallel {
 
 	template<class T, template<typename> class S> class DistributedGraph;
 
-	using synchro::GhostData;
 	using synchro::SyncDataPtr;
 
 	/**
@@ -37,7 +35,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ierr Result : error code
 		 * @return numbe of nodes managed by the current process
 		 */
-		template<class T, template<typename> class S = GhostData> int num_obj(void *data, int* ierr) {
+		template<class T, template<typename> class S> int num_obj(void *data, int* ierr) {
 			return ((DistributedGraph<T, S>*) data)->getNodes().size();
 		}
 
@@ -57,7 +55,7 @@ namespace FPMAS::graph::parallel {
 		 * @param obj_wgts Result : weights list
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S = GhostData> void obj_list(
+		template<class T, template<typename> class S> void obj_list(
 				void *data,
 				int num_gid_entries, 
 				int num_lid_entries,
@@ -92,7 +90,7 @@ namespace FPMAS::graph::parallel {
 		 * @param num_edges Result : number of outgoing arc for each node
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S = GhostData> void num_edges_multi_fn(
+		template<class T, template<typename> class S> void num_edges_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -133,7 +131,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ewgts Result : edge weight for each neighbor
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S = GhostData> void edge_list_multi_fn(
+		template<class T, template<typename> class S> void edge_list_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,

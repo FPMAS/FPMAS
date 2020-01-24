@@ -4,6 +4,7 @@
 #include "graph/parallel/distributed_graph.h"
 #include "graph/parallel/zoltan/zoltan_lb.h"
 #include "utils/config.h"
+#include "graph/parallel/synchro/ghost_data.h"
 
 #include "test_utils/test_utils.h"
 
@@ -15,6 +16,8 @@ using FPMAS::graph::parallel::zoltan::arc::obj_size_multi_fn;
 using FPMAS::graph::parallel::zoltan::arc::pack_obj_multi_fn;
 
 using FPMAS::graph::parallel::DistributedGraph;
+
+using FPMAS::graph::parallel::synchro::GhostData;
 
 class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 	protected:
@@ -47,7 +50,7 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 			write_zoltan_id(0, &transfer_arc_global_ids[0]);
 			write_zoltan_id(2, &transfer_arc_global_ids[2]);
 
-			obj_size_multi_fn<int>(
+			obj_size_multi_fn<int, GhostData>(
 					&dg,
 					2,
 					0,
@@ -67,7 +70,7 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 			// Unused
 			int dest[2];
 
-			pack_obj_multi_fn<int>(
+			pack_obj_multi_fn<int, GhostData>(
 					&dg,
 					2,
 					0,
@@ -138,7 +141,7 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, local_nodes_unpack_obj_multi_test) {
 
 	dg.unlink(0ul);
 	dg.unlink(2ul);
-	unpack_obj_multi_fn<int>(
+	unpack_obj_multi_fn<int, GhostData>(
 		&dg,
 		2,
 		2,

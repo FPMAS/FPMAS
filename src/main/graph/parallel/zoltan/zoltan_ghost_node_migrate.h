@@ -6,15 +6,17 @@
 #include "zoltan_utils.h"
 #include "../olz.h"
 #include "../synchro/sync_data.h"
+#include "graph/base/node.h"
 
+using FPMAS::graph::base::Node;
 
 namespace FPMAS::graph::parallel {
 
 	template<class T, template<typename> class S> class DistributedGraph;
+	template <class T, template<typename> class S> class GhostNode;
 
 	using synchro::SyncDataPtr;
 	using synchro::LocalData;
-	using synchro::GhostData;
 
 	namespace zoltan {
 		using utils::write_zoltan_id;
@@ -40,7 +42,7 @@ namespace FPMAS::graph::parallel {
 			 * @param sizes Result : buffer sizes for each node
 			 * @param ierr Result : error code
 			 */
-			template<class T, template<typename> class S = GhostData> void obj_size_multi_fn(
+			template<class T, template<typename> class S> void obj_size_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -90,7 +92,7 @@ namespace FPMAS::graph::parallel {
 			 * @param buf communication buffer
 			 * @param ierr Result : error code
 			 */
-			template<class T, template<typename> class S = GhostData> void pack_obj_multi_fn(
+			template<class T, template<typename> class S> void pack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -140,7 +142,7 @@ namespace FPMAS::graph::parallel {
 			 * @param ierr Result : error code
 			 *
 			 */
-			template<class T, template<typename> class S = GhostData> void unpack_obj_multi_fn(
+			template<class T, template<typename> class S> void unpack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_ids,
@@ -160,8 +162,8 @@ namespace FPMAS::graph::parallel {
 
 					ghost->data() // SyncDataPtr
 						-> // ptr to SyncData<T>
-						get() // reference to T
-						= node_update.data().get();
+						acquire() // reference to T
+						= node_update.data().read();
 					ghost->setWeight(node_update.getWeight());
 				}
 

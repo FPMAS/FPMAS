@@ -1,6 +1,7 @@
 #ifndef SYNC_DATA_H
 #define SYNC_DATA_H
 
+#include <memory>
 #include <nlohmann/json.hpp>
 #include "zoltan_cpp.h"
 #include "../zoltan/zoltan_utils.h"
@@ -64,6 +65,8 @@ namespace FPMAS::graph::parallel {
 
 			public:
 
+				virtual const T& get() const;
+
 				/**
 				 * Returns a reference to the wrapped data. (default behavior)
 				 *
@@ -72,7 +75,7 @@ namespace FPMAS::graph::parallel {
 				 *
 				 * @return reference to wrapped data
 				 */
-				virtual T& get();
+				virtual T& acquire();
 
 				/**
 				 * Returns a const reference to the wrapped data. (default behavior)
@@ -82,7 +85,7 @@ namespace FPMAS::graph::parallel {
 				 *
 				 * @return const reference to wrapped data
 				 */
-				virtual const T& get() const;
+				virtual const T& read() ;
 		};
 
 		/**
@@ -99,12 +102,16 @@ namespace FPMAS::graph::parallel {
 		template<class T> SyncData<T>::SyncData(T data) : data(data) {
 		}
 
+		template<class T> const T& SyncData<T>::get() const {
+			return this->data;
+		}
+
 		/**
 		 * Default getter, returns a reference to the wrapped data.
 		 *
 		 * @return reference to wrapped data
 		 */
-		template<class T> T& SyncData<T>::get() {
+		template<class T> T& SyncData<T>::acquire() {
 			return data;
 		}
 
@@ -113,7 +120,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @return const reference to wrapped data
 		 */
-		template<class T> const T& SyncData<T>::get() const {
+		template<class T> const T& SyncData<T>::read() {
 			return data;
 		}
 
@@ -133,18 +140,19 @@ namespace FPMAS::graph::parallel {
 		 */
 		template<class T> class SyncDataPtr {
 			private:
-				SyncData<T>* syncData;
-				bool toDelete = true;
+				std::shared_ptr<SyncData<T>> syncData;
+				//int refs = 0;
+				// SyncDataPtr(const SyncDataPtr&);
 
 			public:
 				SyncDataPtr();
 				SyncDataPtr(SyncData<T>*);
-				SyncDataPtr(SyncDataPtr&);
 				SyncData<T>* const operator->();
 				const SyncData<T>* const operator->() const;
 				~SyncDataPtr();
 
 		};
+
 
 		/**
 		 * Default constructor.
@@ -152,7 +160,6 @@ namespace FPMAS::graph::parallel {
 		 * Builds a void SyncDataPtr instance.
 		 */
 		template<class T> SyncDataPtr<T>::SyncDataPtr(){
-			toDelete=false;
 		}
 
 		/**
@@ -162,7 +169,7 @@ namespace FPMAS::graph::parallel {
 		 * @param syncData SyncData<T> pointer
 		 */
 		template<class T> SyncDataPtr<T>::SyncDataPtr(SyncData<T>* syncData)
-			: syncData(syncData) {}
+			: syncData(std::shared_ptr<SyncData<T>>(syncData)) {}
 
 		/**
 		 * Copy constructor.
@@ -172,11 +179,12 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @param from Other instance to take the pointer from
 		 */
-		template<class T> SyncDataPtr<T>::SyncDataPtr(SyncDataPtr<T>& from) {
-			from.syncData = nullptr;
-			from.toDelete = false;
-			this->syncData = from.syncData;
-		}
+		/*
+		 *template<class T> SyncDataPtr<T>::SyncDataPtr(const SyncDataPtr<T>& from) {
+		 *    this->syncData = from.syncData;
+		 *    // this->refs = from.refs + 1;
+		 *}
+		 */
 
 		/**
 		 * Member of pointer operator, that allows easy access to the
@@ -188,7 +196,7 @@ namespace FPMAS::graph::parallel {
 		 * @return const pointer to the managed SyncData<T> instance
 		 */
 		template<class T> SyncData<T>* const SyncDataPtr<T>::operator->() {
-			return this->syncData;
+			return this->syncData.get();
 		}
 
 		/**
@@ -197,7 +205,7 @@ namespace FPMAS::graph::parallel {
 		 * @return const pointer to the const SyncData<T> instance
 		 */
 		template<class T> const SyncData<T>* const SyncDataPtr<T>::operator->() const {
-			return this->syncData;
+			return this->syncData.get();
 		}
 
 		/**
@@ -206,8 +214,11 @@ namespace FPMAS::graph::parallel {
 		 * Deletes the managed pointer if this instance has ownership over it.
 		 */
 		template<class T> SyncDataPtr<T>::~SyncDataPtr() {
-			if(toDelete)
-				delete syncData;
+			/*
+			 *this->refs -= 1;
+			 *if(refs == 0)
+			 *    delete syncData;
+			 */
 		}
 	}
 }

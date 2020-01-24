@@ -86,7 +86,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 *
 	 * @param id node id
 	 */
-	int Proxy::getOrigin(unsigned long id) {
+	int Proxy::getOrigin(unsigned long id) const {
 		if(this->origins.count(id) == 1)
 			return this->origins.at(id);
 
@@ -117,7 +117,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 *
 	 * @param id node id
 	 */
-	int Proxy::getCurrentLocation(unsigned long id) {
+	int Proxy::getCurrentLocation(unsigned long id) const {
 		if(this->currentLocations.count(id) == 1)
 			return this->currentLocations.at(id);
 		return this->localProc;

@@ -33,7 +33,7 @@ namespace FPMAS::graph::parallel {
 	 * Finally, the GhostGraph can also synchronize GhostNode s data thanks to
 	 * the synchronize() function.
 	 */
-	template<class T, template<typename> class S = GhostData> class GhostGraph {
+	template<class T, template<typename> class S> class GhostGraph {
 		friend GhostArc<T, S>;
 		friend void zoltan::ghost::obj_size_multi_fn<T, S>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
@@ -83,9 +83,9 @@ namespace FPMAS::graph::parallel {
 	template<class T, template<typename> class S> void GhostGraph<T, S>::initialize() {
 		FPMAS::config::zoltan_config(&this->zoltan);
 
-		zoltan.Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T>, localGraph);
-		zoltan.Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T>, localGraph);
-		zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T>, localGraph);
+		zoltan.Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T, S>, localGraph);
+		zoltan.Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T, S>, localGraph);
+		zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T, S>, localGraph);
 	}
 
 	/**
@@ -171,7 +171,11 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<class T, template<typename> class S> GhostNode<T, S>* GhostGraph<T, S>::buildNode(unsigned long id) {
 		// Copy the gNode from the original node, including arcs data
-		GhostNode<T, S>* gNode = new GhostNode<T, S>(this->localGraph->getMpiCommunicator(), id);
+		GhostNode<T, S>* gNode = new GhostNode<T, S>(
+				this->localGraph->getMpiCommunicator(),
+				this->localGraph->getProxy(),
+				id
+				);
 		// Register the new GhostNode
 		this->ghostNodes[gNode->getId()] = gNode;
 		return gNode;
@@ -198,7 +202,11 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<class T, template<typename> class S> GhostNode<T, S>* GhostGraph<T, S>::buildNode(Node<SyncDataPtr<T>> node, std::set<unsigned long> ignoreIds) {
 		// Copy the gNode from the original node, including arcs data
-		GhostNode<T, S>* gNode = new GhostNode<T, S>(this->localGraph->getMpiCommunicator(), node);
+		GhostNode<T, S>* gNode = new GhostNode<T, S>(
+				this->localGraph->getMpiCommunicator(),
+				this->localGraph->getProxy(),
+				node
+				);
 		// Register the new GhostNode
 		this->ghostNodes[gNode->getId()] = gNode;
 
