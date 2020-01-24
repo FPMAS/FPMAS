@@ -2,7 +2,10 @@
 #include "graph/parallel/distributed_graph.h"
 #include "test_utils/test_utils.h"
 
+#include "graph/parallel/synchro/hard_sync_data.h"
+
 using FPMAS::graph::parallel::DistributedGraph;
+using FPMAS::graph::parallel::synchro::HardSyncData;
 
 /*
  * Illustrates a specific import case that caused a bug, because the same arc
@@ -27,7 +30,7 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 	}
 
 	if(rank == 0 || rank == 1 || rank == 2) {
-		DistributedGraph<int> dg = DistributedGraph<int>({0, 1, 2});
+		DistributedGraph<int, HardSyncData> dg = DistributedGraph<int, HardSyncData>({0, 1, 2});
 		if(rank == 0) {
 			dg.buildNode(0ul, 1);
 			dg.getGhost().buildNode(1ul);
@@ -72,7 +75,7 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		dg.distribute();
 	}
 	else {
-		DistributedGraph<int> dg = DistributedGraph<int>({rank});
+		DistributedGraph<int, HardSyncData> dg = DistributedGraph<int, HardSyncData>({rank});
 	}
 
 }

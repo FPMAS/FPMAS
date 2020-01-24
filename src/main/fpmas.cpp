@@ -41,6 +41,7 @@ int main(int argc, char* argv[]) {
 }
 
 void buildGraph(DistributedGraph<int, SYNCHRO>& dg) {
+
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 			dg.buildNode(i, 5);
@@ -50,27 +51,29 @@ void buildGraph(DistributedGraph<int, SYNCHRO>& dg) {
 			dg.link(i, (i+1) % dg.getMpiCommunicator().getSize(), i);
 		}
 	}
-
 	dg.distribute();
-	// dg.getGhost().synchronize();
 }
 
 using namespace std::chrono_literals;
 
 void process(DistributedGraph<int, SYNCHRO>& dg) {
+
+	// FIRST ITERATION
 	int sum1 = 0;
 	for(auto node : dg.getNodes()) {
 		std::cout << "[" << dg.getMpiCommunicator().getRank() << "] local Node : " << node.first << std::endl;
-		node.second->data()->acquire() = node.first;
 
-		// Fake processing on odd nodes
+		// Writes data on the local node
+		node.second->data()->acquire() = node.first; // Complete reassignment, but any member function could be called
+
+		// Fake processing time on odd nodes
 		if(dg.getMpiCommunicator().getRank() % 2)
 			std::this_thread::sleep_for(1s);
 
 		for(auto arc : node.second->getOutgoingArcs()) {
 			sum1 += arc->getTargetNode() // Node<SyncDataPtr<int>>
-				->data() //SyncData<int>
-				->read();
+				->data() // SyncData<int>
+				->read(); // Read distant node
 		}
 	}
 	dg.synchronize();
@@ -78,6 +81,7 @@ void process(DistributedGraph<int, SYNCHRO>& dg) {
 	PRINT_SPACE()
 	std::cout << "[" << dg.getMpiCommunicator().getRank() << "] sum 1 : " << sum1 << std::endl;
 
+	// SECOND ITERATION
 	int sum2 = 0;
 	for(auto node : dg.getNodes()) {
 		for(auto arc : node.second->getOutgoingArcs()) {
