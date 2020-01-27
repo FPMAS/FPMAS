@@ -182,7 +182,6 @@ TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceMa
  */
 std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 	MPI_Request req;
-	std::cout << "\e[32m[" << this->getRank() << "] ask " << id << " to " << location << "\e[0m" << std::endl;
 	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->getMpiComm(), &req);
 
 	int request_sent;
@@ -195,7 +194,6 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 		MPI_Iprobe(MPI_ANY_SOURCE, Tag::READ, this->getMpiComm(), &read_flag, &read_status);
 		if(read_flag > 0) {
 			unsigned long id;
-			std::cout << "\e[32m[" << this->getRank() << "] rcv req\e[0m" << std::endl;
 			MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, read_status.MPI_SOURCE, Tag::READ, this->getMpiComm(), &read_status);
 			this->respondToRead(read_status.MPI_SOURCE, id);
 		}
@@ -208,7 +206,6 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 	char data[count];
 	MPI_Recv(&data, count, MPI_CHAR, location, Tag::READ, this->getMpiComm(), &request_status);
 
-	std::cout << "\e[32m[" << this->getRank() << "] rcv " << id << " : " << data << "\e[0m" << std::endl;
 	return std::string(data);
 
 }
@@ -220,10 +217,13 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id) {
 	this->color = Color::BLACK;
 	std::string data = this->resourceManager->getResource(id);
-	std::cout << "\e[32m[" << this->getRank() << "] send " << id << " : " << data << "\e[0m" << std::endl;
 	MPI_Request req;
 	// TODO : asynchronous send : is this a pb?
 	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::READ, this->getMpiComm(), &req);
+}
+
+std::string TerminableMpiCommunicator::acquire(unsigned long id, int location) {
+
 }
 
 /**
