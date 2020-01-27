@@ -172,21 +172,9 @@ TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceMa
  */
 TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceManager* resourceManager, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceManager(resourceManager) {};
 
-/**
- * Performs a synchronized read operation of the data corresponding to id on
- * the proc at the provided location, and returns the read serialized data.
- *
- * @param id id of the data to read
- * @param location rank of the data location
- * @return read serialized data
- */
-std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
-	MPI_Request req;
-	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->getMpiComm(), &req);
-
+void TerminableMpiCommunicator::waitSent(MPI_Request* req, MPI_Status* status) {
 	int request_sent;
-	MPI_Status request_status;
-	MPI_Test(&req, &request_sent, &request_status);
+	MPI_Test(req, &request_sent, status);
 
 	int read_flag;
 	MPI_Status read_status;
@@ -197,14 +185,34 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 			MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, read_status.MPI_SOURCE, Tag::READ, this->getMpiComm(), &read_status);
 			this->respondToRead(read_status.MPI_SOURCE, id);
 		}
-		MPI_Test(&req, &request_sent, &request_status);
+		MPI_Test(req, &request_sent, status);
 	}
+}
+/**
+ * Performs a synchronized read operation of the data corresponding to id on
+ * the proc at the provided location, and returns the read serialized data.
+ *
+ * @param id id of the data to read
+ * @param location rank of the data location
+ * @return read serialized data
+ */
+std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
+	// Starts non-blocking synchronous send
+	MPI_Request req;
+	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->getMpiComm(), &req);
 
-	MPI_Probe(location, Tag::READ, this->getMpiComm(), &request_status);
+	// Keep responding to other READ / ACQUIRE request to avoid deadlock,
+	// until the request has been received
+	MPI_Status send_status;
+	this->waitSent(&req, &send_status);
+
+	// The request has been received : it is assumed that the receiving proc is
+	// now responding so we can safely wait for response without deadlocking
+	MPI_Probe(location, Tag::READ, this->getMpiComm(), &send_status);
 	int count;
-	MPI_Get_count(&request_status, MPI_CHAR, &count);
+	MPI_Get_count(&send_status, MPI_CHAR, &count);
 	char data[count];
-	MPI_Recv(&data, count, MPI_CHAR, location, Tag::READ, this->getMpiComm(), &request_status);
+	MPI_Recv(&data, count, MPI_CHAR, location, Tag::READ, this->getMpiComm(), &send_status);
 
 	return std::string(data);
 
@@ -224,6 +232,7 @@ void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id)
 
 std::string TerminableMpiCommunicator::acquire(unsigned long id, int location) {
 
+	return std::string();
 }
 
 /**

@@ -93,6 +93,7 @@ namespace FPMAS {
 				ResourceManager* resourceManager;
 
 				void send(std::string, int, Tag);
+				void waitSent(MPI_Request*, MPI_Status*);
 				void respondToRead(int, unsigned long);
 
 			public:
