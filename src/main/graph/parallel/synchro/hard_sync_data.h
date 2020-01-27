@@ -8,8 +8,20 @@ using FPMAS::communication::TerminableMpiCommunicator;
 
 namespace FPMAS::graph::parallel::synchro {
 
+	/**
+	 * Hard synchronization mode, that can be used thanks to the second
+	 * template parameter of the DistributedGraph<T, S> class.
+	 *
+	 * In this mode, the graph structure is preserved accross procs as a
+	 * "ghost" graph, like in the GhostData mode.
+	 *
+	 * However, "ghost" data in not fetched automatically, but directly queried
+	 * to the proc where the wrapped data is currently located, each time
+	 * read() or acquire() is called. A Readers-Writers algorithm manages data
+	 * access to avoid concurrency issues.
+	 */
 	template<class T> class HardSyncData : public SyncData<T> {
-		protected:
+		private:
 			unsigned long id;
 			TerminableMpiCommunicator& mpiComm;
 			const Proxy& proxy;
@@ -20,8 +32,17 @@ namespace FPMAS::graph::parallel::synchro {
 
 			const T& read() override;
 
+			/**
+			 * Defines the Zoltan configuration used manage and migrate
+			 * GhostNode s and GhostArc s.
+			 */
 			const static zoltan::utils::zoltan_query_functions config;
 
+			/**
+			 * Termination function used at the end of each
+			 * DistributedGraph<T,S>::synchronize() call : does not do anything
+			 * in this mode.
+			 */
 			static void termination(DistributedGraph<T, HardSyncData>* dg) {}
 	};
 	template<class T> const zoltan::utils::zoltan_query_functions HardSyncData<T>::config
@@ -31,6 +52,13 @@ namespace FPMAS::graph::parallel::synchro {
 		 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, HardSyncData>
 		);
 
+	/**
+	 * HardSyncData constructor.
+	 *
+	 * @param id wrapped data id
+	 * @param mpiComm MPI communicator used to communicate with data sources
+	 * @param proxy proxy used to locate data
+	 */
 	template<class T> HardSyncData<T>::HardSyncData(
 			unsigned long id,
 			TerminableMpiCommunicator& mpiComm,
@@ -38,13 +66,31 @@ namespace FPMAS::graph::parallel::synchro {
 		: id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
 
+	/**
+	 * HardSyncData constructor.
+	 *
+	 * @param id wrapped data id
+	 * @param mpiComm MPI communicator used to communicate with data sources
+	 * @param proxy proxy used to locate data
+	 * @param data associated data instance
+	 */
 	template<class T> HardSyncData<T>::HardSyncData(
 			unsigned long id,
 			TerminableMpiCommunicator& mpiComm,
-			const Proxy& proxy, T data)
+			const Proxy& proxy,
+			T data)
 		: SyncData<T>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
 
+	/**
+	 * Performs a `read` operation on the proc where the wrapped data is
+	 * currently located.
+	 *
+	 * Data is returned as a const reference so that it is not allowed to write
+	 * on data returned by the `read` operation.
+	 *
+	 * @return const reference to the distant data
+	 */
 	template<class T> const T& HardSyncData<T>::read() {
 		this->data = ((nlohmann::json) nlohmann::json::parse(
 				this->mpiComm.read(

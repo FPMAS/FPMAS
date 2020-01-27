@@ -81,58 +81,58 @@ namespace FPMAS {
 			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
 			private:
-				TerminableMpiCommunicator mpiCommunicator;
-				Zoltan zoltan;
-				Proxy proxy;
-				GhostGraph<T, S> ghost;
+			TerminableMpiCommunicator mpiCommunicator;
+			Zoltan zoltan;
+			Proxy proxy;
+			GhostGraph<T, S> ghost;
 
 			void setZoltanNodeMigration();
-				void setZoltanArcMigration();
+			void setZoltanArcMigration();
 
-				// A set of node ids that are currently local and have been
-				// imported from an other proc. Data memory of such a node
-				// (ghost or local) have been allocated dynamically at
-				// deserialization, and this set allows us to delete it when
-				// those nodes are exported / removed.
-				// std::set<unsigned long> importedNodeIds;
+			// A set of node ids that are currently local and have been
+			// imported from an other proc. Data memory of such a node
+			// (ghost or local) have been allocated dynamically at
+			// deserialization, and this set allows us to delete it when
+			// those nodes are exported / removed.
+			// std::set<unsigned long> importedNodeIds;
 
-				// Serialization caches used to pack objects
-				std::unordered_map<unsigned long, std::string> node_serialization_cache;
-				std::unordered_map<unsigned long, std::string> arc_serialization_cache;
+			// Serialization caches used to pack objects
+			std::unordered_map<unsigned long, std::string> node_serialization_cache;
+			std::unordered_map<unsigned long, std::string> arc_serialization_cache;
 
-				/*
-				 * Zoltan structures used to manage nodes and arcs migration
-				 */
-				// Node export buffer
-				int export_node_num;
-				ZOLTAN_ID_PTR export_node_global_ids;
-				int* export_node_procs;
-				// When importing nodes, obsolete ghost nodes are stored when
-				// the real node has been imported. It is safely deleted in
-				// arc::mid_migrate_pp_fn once associated arcs have eventually 
-				// been exported
-				std::set<unsigned long> obsoleteGhosts;
+			/*
+			 * Zoltan structures used to manage nodes and arcs migration
+			 */
+			// Node export buffer
+			int export_node_num;
+			ZOLTAN_ID_PTR export_node_global_ids;
+			int* export_node_procs;
+			// When importing nodes, obsolete ghost nodes are stored when
+			// the real node has been imported. It is safely deleted in
+			// arc::mid_migrate_pp_fn once associated arcs have eventually 
+			// been exported
+			std::set<unsigned long> obsoleteGhosts;
 
-				// Arc migration buffers
-				int export_arcs_num;
-				ZOLTAN_ID_PTR export_arcs_global_ids;
-				int* export_arcs_procs;
-				void setUpZoltan();
+			// Arc migration buffers
+			int export_arcs_num;
+			ZOLTAN_ID_PTR export_arcs_global_ids;
+			int* export_arcs_procs;
+			void setUpZoltan();
 
 			public:
-				DistributedGraph<T, S>();
-				DistributedGraph<T, S>(std::initializer_list<int>);
-				TerminableMpiCommunicator& getMpiCommunicator();
-				Proxy& getProxy();
-				GhostGraph<T, S>& getGhost();
+			DistributedGraph<T, S>();
+			DistributedGraph<T, S>(std::initializer_list<int>);
+			TerminableMpiCommunicator& getMpiCommunicator();
+			Proxy& getProxy();
+			GhostGraph<T, S>& getGhost();
 
-				Node<SyncDataPtr<T>>* buildNode(unsigned long id, T data);
-				Node<SyncDataPtr<T>>* buildNode(unsigned long id, float weight, T data);
+			Node<SyncDataPtr<T>>* buildNode(unsigned long id, T data);
+			Node<SyncDataPtr<T>>* buildNode(unsigned long id, float weight, T data);
 
-				std::string getResource(unsigned long) const override;
+			std::string getResource(unsigned long) const override;
 
-				void distribute();
-				void synchronize();
+			void distribute();
+			void synchronize();
 		};
 
 		/*
@@ -271,7 +271,7 @@ namespace FPMAS {
 		 */
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::distribute() {
 			int changes;
-      		int num_gid_entries;
+			int num_gid_entries;
 			int num_lid_entries;
 
 			int num_import; 
@@ -282,7 +282,7 @@ namespace FPMAS {
 
 			int* export_to_part;
 			ZOLTAN_ID_PTR export_local_ids;
-			
+
 			// Prepares Zoltan to migrate nodes
 			// Must be set up from there, because LB_Partition can call
 			// obj_size_multi_fn when repartitionning
@@ -290,27 +290,9 @@ namespace FPMAS {
 
 			// Computes Zoltan partitioning
 			int err = this->zoltan.LB_Partition(
-				changes,
-				num_gid_entries,
-				num_lid_entries,
-				num_import,
-				import_global_ids,
-				import_local_ids,
-				import_procs,
-				import_to_part,
-				this->export_node_num,
-				this->export_node_global_ids,
-				export_local_ids,
-				this->export_node_procs,
-				export_to_part
-				);
-
-
-			if(changes > 0) {
-
-				// Migrate nodes from the load balancing
-				// Arcs to export are computed in the post_migrate_pp_fn step.
-				this->zoltan.Migrate(
+					changes,
+					num_gid_entries,
+					num_lid_entries,
 					num_import,
 					import_global_ids,
 					import_local_ids,
@@ -323,6 +305,24 @@ namespace FPMAS {
 					export_to_part
 					);
 
+
+			if(changes > 0) {
+
+				// Migrate nodes from the load balancing
+				// Arcs to export are computed in the post_migrate_pp_fn step.
+				this->zoltan.Migrate(
+						num_import,
+						import_global_ids,
+						import_local_ids,
+						import_procs,
+						import_to_part,
+						this->export_node_num,
+						this->export_node_global_ids,
+						export_local_ids,
+						this->export_node_procs,
+						export_to_part
+						);
+
 				// Prepares Zoltan to migrate arcs associated to the exported
 				// nodes.
 				this->setZoltanArcMigration();
@@ -332,17 +332,17 @@ namespace FPMAS {
 
 				// Arcs to import
 				this->zoltan.Migrate(
-					-1,
-					NULL,
-					NULL,
-					NULL,
-					NULL,
-					this->export_arcs_num,
-					this->export_arcs_global_ids,
-					export_arcs_local_ids,
-					this->export_arcs_procs,
-					this->export_arcs_procs // parts = procs
-					);
+						-1,
+						NULL,
+						NULL,
+						NULL,
+						NULL,
+						this->export_arcs_num,
+						this->export_arcs_global_ids,
+						export_arcs_local_ids,
+						this->export_arcs_procs,
+						this->export_arcs_procs // parts = procs
+						);
 				std::free(this->export_arcs_global_ids);
 				std::free(this->export_arcs_procs);
 			}
@@ -372,11 +372,17 @@ namespace FPMAS {
 			this->synchronize();
 		}
 
-	template<class T, template<typename> class S> void DistributedGraph<T, S>::synchronize() {
-		this->mpiCommunicator.terminate();
-		S<T>::termination(this);
+		/**
+		 * Synchronizes the DistributedGraph instances, calling the
+		 * TerminableMpiCommunicator::terminate() method and extra processing
+		 * that might be required by the synchronization mode S (eg :
+		 * synchronize the ghost graph data for the GhostData mode).
+		 */
+		template<class T, template<typename> class S> void DistributedGraph<T, S>::synchronize() {
+			this->mpiCommunicator.terminate();
+			S<T>::termination(this);
+		}
 	}
 }
-	}
 
 #endif

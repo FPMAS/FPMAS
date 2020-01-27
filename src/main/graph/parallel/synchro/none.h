@@ -24,9 +24,22 @@ namespace FPMAS::graph::parallel::synchro {
 			 */
 			const static zoltan::utils::zoltan_query_functions config;
 
+			/**
+			 * Unused constructor, defined for synchronization mode API
+			 * compatibility.
+			 */
 			None(unsigned long, TerminableMpiCommunicator&, const Proxy&) {};
+			/**
+			 * Unused constructor, defined for synchronization mode API
+			 * compatibility.
+			 */
 			None(unsigned long, TerminableMpiCommunicator&, const Proxy&, T) {};
 
+			/**
+			 * Termination function used at the end of each
+			 * DistributedGraph<T,S>::synchronize() call : does not do anything
+			 * in this mode.
+			 */
 			static void termination(DistributedGraph<T, None>* dg) {}
 	};
 	template<class T> const zoltan::utils::zoltan_query_functions None<T>::config

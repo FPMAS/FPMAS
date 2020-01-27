@@ -102,6 +102,12 @@ namespace FPMAS::graph::parallel {
 		template<class T> SyncData<T>::SyncData(T data) : data(data) {
 		}
 
+		/**
+		 * A direct const access reference to the wrapped data as it is currently
+		 * physically represented is this SyncData instance.
+		 *
+		 * @return const reference to the current data
+		 */
 		template<class T> const T& SyncData<T>::get() const {
 			return this->data;
 		}
@@ -141,15 +147,28 @@ namespace FPMAS::graph::parallel {
 		template<class T> class SyncDataPtr {
 			private:
 				std::shared_ptr<SyncData<T>> syncData;
-				//int refs = 0;
-				// SyncDataPtr(const SyncDataPtr&);
 
 			public:
 				SyncDataPtr();
 				SyncDataPtr(SyncData<T>*);
+
+				/**
+				 * Member of pointer operator, that allows easy access to the
+				 * SyncData<T> pointer contained in this SyncDataPtr.
+				 *
+				 * The return pointer is `const` so that the internal pointer can't be
+				 * changed externally.
+				 *
+				 * @return const pointer to the managed SyncData<T> instance
+				 */
 				SyncData<T>* const operator->();
+
+				/**
+				 * Const version of the member of pointer operator.
+				 *
+				 * @return const pointer to the const SyncData<T> instance
+				 */
 				const SyncData<T>* const operator->() const;
-				~SyncDataPtr();
 
 		};
 
@@ -171,54 +190,12 @@ namespace FPMAS::graph::parallel {
 		template<class T> SyncDataPtr<T>::SyncDataPtr(SyncData<T>* syncData)
 			: syncData(std::shared_ptr<SyncData<T>>(syncData)) {}
 
-		/**
-		 * Copy constructor.
-		 *
-		 * Gives the ownership of the managed pointer to this instance : the
-		 * managed pointer will be deleted when this instance will be.
-		 *
-		 * @param from Other instance to take the pointer from
-		 */
-		/*
-		 *template<class T> SyncDataPtr<T>::SyncDataPtr(const SyncDataPtr<T>& from) {
-		 *    this->syncData = from.syncData;
-		 *    // this->refs = from.refs + 1;
-		 *}
-		 */
-
-		/**
-		 * Member of pointer operator, that allows easy access to the
-		 * SyncData<T> pointer contained in this SyncDataPtr.
-		 *
-		 * The return pointer is `const` so that the internal pointer can't be
-		 * changed externally.
-		 *
-		 * @return const pointer to the managed SyncData<T> instance
-		 */
 		template<class T> SyncData<T>* const SyncDataPtr<T>::operator->() {
 			return this->syncData.get();
 		}
 
-		/**
-		 * Const version of the member of pointer operator.
-		 *
-		 * @return const pointer to the const SyncData<T> instance
-		 */
 		template<class T> const SyncData<T>* const SyncDataPtr<T>::operator->() const {
 			return this->syncData.get();
-		}
-
-		/**
-		 * SyncDataPtr destructor.
-		 *
-		 * Deletes the managed pointer if this instance has ownership over it.
-		 */
-		template<class T> SyncDataPtr<T>::~SyncDataPtr() {
-			/*
-			 *this->refs -= 1;
-			 *if(refs == 0)
-			 *    delete syncData;
-			 */
 		}
 	}
 }

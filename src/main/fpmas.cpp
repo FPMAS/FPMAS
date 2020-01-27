@@ -18,9 +18,9 @@ using FPMAS::graph::parallel::synchro::None;
 using FPMAS::graph::parallel::synchro::GhostData;
 using FPMAS::graph::parallel::synchro::HardSyncData;
 
-#define SYNCHRO None
+// #define SYNCHRO None
 // #define SYNCHRO GhostData
-// #define SYNCHRO HardSyncData
+#define SYNCHRO HardSyncData
 
 void init(int argc, char* argv[]);
 void process(DistributedGraph<int, SYNCHRO>& dg);

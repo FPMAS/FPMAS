@@ -12,7 +12,9 @@ namespace FPMAS::graph::parallel {
 	template<class T, template<typename> class S> class DistributedGraph;
 
 	using parallel::DistributedGraph;
-	namespace synchro {
+}
+
+	namespace FPMAS::graph::parallel::synchro {
 
 		/**
 		 * Synchronisation mode used as default by the DistributedGraph, and
@@ -23,7 +25,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * When a node is exported, ghost arcs and nodes are built to keep
 		 * consistency across processes, and ghost nodes data is fetched
-		 * at each GhostGraph::synchronize() call.
+		 * at each DistributedGraph<T, S>::synchronize() call.
 		 *
 		 * Getters used are actually the defaults provided by SyncData and
 		 * LocalData, because once data has been fetched from other procs, it
@@ -33,6 +35,7 @@ namespace FPMAS::graph::parallel {
 		 * other LocalData. However, modifications **won't be reported** to the
 		 * origin proc, and will be overriden at the next synchronization.
 		 *
+		 * @tparam wrapped data type
 		 */
 		template<class T> class GhostData : public SyncData<T> {
 
@@ -45,6 +48,11 @@ namespace FPMAS::graph::parallel {
 				 */
 				const static zoltan::utils::zoltan_query_functions config;
 
+				/**
+				 * Termination function used at the end of each
+				 * DistributedGraph<T,S>::synchronize() call. In this mode,
+				 * ghost data is automatically updated from other procs.
+				 */
 				static void termination(DistributedGraph<T, GhostData>* dg) {
 					dg->getGhost().synchronize();
 				}
@@ -60,8 +68,11 @@ namespace FPMAS::graph::parallel {
 		/**
 		 * Builds a GhostData instance with the provided MpiCommunicator.
 		 *
+		 * @param id data id
 		 * @param mpiComm MPI Communicator associated to the containing
 		 * DistributedGraph
+		 * @param proxy graph proxy
+		 *
 		 */
 		// The mpiCommunicator is not used for the GhostData mode, but the
 		// constructors are defined to allow template genericity
@@ -74,9 +85,11 @@ namespace FPMAS::graph::parallel {
 		/**
 		 * Builds a GhostData instance initialized with the specified data.
 		 *
+		 * @param id data id
 		 * @param data data to wrap
 		 * @param mpiComm MPI Communicator associated to the containing
 		 * DistributedGraph
+		 * @param proxy graph proxy
 		 */
 		template<class T> GhostData<T>::GhostData(
 				unsigned long id,
@@ -86,5 +99,4 @@ namespace FPMAS::graph::parallel {
 			: SyncData<T>(data) {
 			}
 	}
-}
 #endif
