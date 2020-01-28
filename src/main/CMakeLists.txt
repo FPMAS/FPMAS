@@ -13,6 +13,10 @@ set(SOURCES
 	${SOURCES}
 	communication/communication.cpp
 	)
+set(SOURCES
+	${SOURCES}
+	communication/readers_writers.cpp
+	)
 
 # Graph
 set(SOURCES

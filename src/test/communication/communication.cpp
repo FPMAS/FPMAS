@@ -8,7 +8,7 @@ using namespace std::chrono_literals;
 #include "communication/communication.h"
 #include "communication/resource_manager.h"
 
-using FPMAS::communication::ResourceManager;
+using FPMAS::communication::ResourceContainer;
 using FPMAS::communication::MpiCommunicator;
 using FPMAS::communication::TerminableMpiCommunicator;
 
@@ -75,15 +75,27 @@ TEST(Mpi_MpiCommunicatorTest, build_from_ranks_test) {
 
 }
 
-class TestResourceHandler : public ResourceManager {
+class TestResourceHandler : public ResourceContainer {
 	public:
-		std::chrono::milliseconds delay;
-		TestResourceHandler() : delay(0) {
+		std::unordered_map<unsigned long, unsigned long> data;
+
+		TestResourceHandler() {
+			int current_rank;
+			MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
+			int size;
+			MPI_Comm_size(MPI_COMM_WORLD, &size);
+			for (int i = 0; i < size; i++) {
+				if(i != current_rank)
+					data[i] = i;
+			}
 		}
 
-		std::string getResource(unsigned long id) const {
-			std::this_thread::sleep_for(this->delay);
-			return std::to_string(id);
+		std::string getData(unsigned long id) const override {
+			return std::to_string(data.at(id));
+		}
+
+		void updateData(unsigned long id, std::string data_str) override {
+			this->data[id] = std::stoul(data_str);
 		}
 
 };
@@ -95,7 +107,7 @@ class Mpi_TerminationTest : public ::testing::Test {
 };
 
 TEST_F(Mpi_TerminationTest, simple_termination_test) {
-	TerminableMpiCommunicator comm(&handler);
+	TerminableMpiCommunicator comm(handler);
 
 	comm.terminate();
 
@@ -103,7 +115,7 @@ TEST_F(Mpi_TerminationTest, simple_termination_test) {
 
 
 TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
-	TerminableMpiCommunicator comm(&handler);
+	TerminableMpiCommunicator comm(handler);
 
 	auto start = std::chrono::system_clock::now();
 	if(comm.getRank() == 0) {
@@ -120,7 +132,7 @@ TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
 }
 
 TEST_F(Mpi_TerminationTest, read_from_passive_procs_test) {
-	TerminableMpiCommunicator comm(&handler);
+	TerminableMpiCommunicator comm(handler);
 
 	if(comm.getSize() >= 2) {
 		if(comm.getRank() % 2 == 0 && comm.getRank() != comm.getSize() - 1) {
@@ -137,7 +149,7 @@ TEST_F(Mpi_TerminationTest, read_from_passive_procs_test) {
 }
 
 TEST_F(Mpi_TerminationTest, read_from_active_procs_test) {
-	TerminableMpiCommunicator comm(&handler);
+	TerminableMpiCommunicator comm(handler);
 
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
@@ -164,4 +176,32 @@ TEST_F(Mpi_TerminationTest, read_from_active_procs_test) {
 		PRINT_MIN_PROCS_WARNING(read_from_passive_procs_test, 3);
 	}
 
+}
+
+TEST_F(Mpi_TerminationTest, acquire_from_passive_procs_test) {
+	TerminableMpiCommunicator comm(handler);
+
+	if(comm.getSize() >= 2) {
+		if(comm.getRank() % 2 == 0 && comm.getRank() != comm.getSize() - 1) {
+			// Ensures that even procs enter passive mode
+			std::this_thread::sleep_for(100ms);
+
+			std::cout << "[" << comm.getRank() << "] acquire" << std::endl;
+			std::string data_str = comm.acquire(comm.getRank(), comm.getRank() + 1);
+			std::cout << "[" << comm.getRank() << "] acquired" << std::endl;
+			ASSERT_EQ(data_str, std::to_string(comm.getRank()));
+
+			this->handler.data[comm.getRank()] = std::stoul(data_str);
+			this->handler.data[comm.getRank()] = comm.getRank() + 1;
+
+			std::cout << "[" << comm.getRank() << "] give back" << std::endl;
+			comm.giveBack(comm.getRank(), comm.getRank() + 1);
+		}
+		comm.terminate();
+		if(comm.getRank() % 2 == 1)
+			ASSERT_EQ(this->handler.data.at(comm.getRank() - 1), comm.getRank());
+
+	} else {
+		PRINT_MIN_PROCS_WARNING(read_from_passive_procs_test, 2);
+	}
 }

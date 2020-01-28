@@ -4,8 +4,10 @@
 #include <cstdint>
 #include <string>
 #include <mpi.h>
+#include <unordered_map>
 
 #include "resource_manager.h"
+#include "readers_writers.h"
 
 namespace FPMAS {
 	/**
@@ -20,7 +22,10 @@ namespace FPMAS {
 
 		enum Tag : int {
 			READ,
+			READ_RESPONSE,
 			ACQUIRE,
+			ACQUIRE_RESPONSE,
+			ACQUIRE_GIVE_BACK,
 			TOKEN,
 			END
 		};
@@ -90,20 +95,30 @@ namespace FPMAS {
 				State state = State::ACTIVE;
 				Color color = Color::WHITE;
 
-				ResourceManager* resourceManager;
+				ResourceContainer& resourceContainer;
+				ResourceManager resourceManager;
+				
 
 				void send(std::string, int, Tag);
-				void waitSent(MPI_Request*, MPI_Status*);
+				void waitSendRequest(MPI_Request*);
+
 				void respondToRead(int, unsigned long);
+				void respondToAcquire(int, unsigned long);
+
+				void handleIncomingRequests();
+				void waitForReading(unsigned long);
+				void waitForAcquire(unsigned long);
 
 			public:
-				TerminableMpiCommunicator(ResourceManager*);
-				TerminableMpiCommunicator(ResourceManager*, std::initializer_list<int>);
+				TerminableMpiCommunicator(ResourceContainer&);
+				TerminableMpiCommunicator(ResourceContainer&, std::initializer_list<int>);
 
 				State getState() const;
 
 				std::string read(unsigned long, int);
+
 				std::string acquire(unsigned long, int);
+				void giveBack(unsigned long, int);
 
 				void terminate();
 

@@ -9,7 +9,7 @@ namespace FPMAS {
 		 * An abstract class that must be implemented to provide application
 		 * dependent serialized data to the TerminableMpiCommunicator.
 		 */
-		class ResourceManager {
+		class ResourceContainer {
 			public:
 				/**
 				 * Returns serialized data that correspond to the specified id.
@@ -17,7 +17,8 @@ namespace FPMAS {
 				 * @param id data id
 				 * @return serialized data
 				 */
-				virtual std::string getResource(unsigned long id) const = 0;
+				virtual std::string getData(unsigned long id) const = 0;
+				virtual void updateData(unsigned long id, std::string data) = 0;
 		};
 	}
 }
