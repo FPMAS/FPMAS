@@ -12,7 +12,7 @@
 
 #include "utils/config.h"
 #include "communication/communication.h"
-#include "communication/resource_manager.h"
+#include "communication/resource_container.h"
 
 #include "synchro/sync_data.h"
 #include "proxy/proxy.h"
