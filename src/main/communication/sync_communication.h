@@ -35,7 +35,7 @@ namespace FPMAS::communication {
 		 * communicators.
 		 *
 		 */
-		class TerminableMpiCommunicator : public MpiCommunicator {
+		class SyncMpiCommunicator : public MpiCommunicator {
 			private:
 				State state = State::ACTIVE;
 				Color color = Color::WHITE;
@@ -54,8 +54,8 @@ namespace FPMAS::communication {
 				void waitForAcquire(unsigned long);
 
 			public:
-				TerminableMpiCommunicator(ResourceContainer&);
-				TerminableMpiCommunicator(ResourceContainer&, std::initializer_list<int>);
+				SyncMpiCommunicator(ResourceContainer&);
+				SyncMpiCommunicator(ResourceContainer&, std::initializer_list<int>);
 
 				State getState() const;
 

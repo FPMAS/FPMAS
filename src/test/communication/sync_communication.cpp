@@ -8,7 +8,7 @@ using namespace std::chrono_literals;
 #include "communication/sync_communication.h"
 #include "communication/resource_container.h"
 
-using FPMAS::communication::TerminableMpiCommunicator;
+using FPMAS::communication::SyncMpiCommunicator;
 using FPMAS::communication::ResourceContainer;
 
 class TestResourceHandler : public ResourceContainer {
@@ -37,7 +37,7 @@ class TestResourceHandler : public ResourceContainer {
 class Mpi_TerminationTest : public ::testing::Test {
 	protected:
 		TestResourceHandler handler;
-		TerminableMpiCommunicator comm;
+		SyncMpiCommunicator comm;
 
 		Mpi_TerminationTest() : comm(handler) {}
 

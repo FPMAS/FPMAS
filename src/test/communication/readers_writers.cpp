@@ -11,7 +11,7 @@
 
 using namespace std::chrono_literals;
 
-using FPMAS::communication::TerminableMpiCommunicator;
+using FPMAS::communication::SyncMpiCommunicator;
 
 class TestResourceHandler : public FPMAS::communication::ResourceContainer {
 	public:
@@ -38,7 +38,7 @@ class TestResourceHandler : public FPMAS::communication::ResourceContainer {
 class Mpi_TestReadersWriters : public ::testing::Test {
 	public:
 		TestResourceHandler handler;
-		TerminableMpiCommunicator comm;
+		SyncMpiCommunicator comm;
 
 		Mpi_TestReadersWriters() : comm(handler) {}
 

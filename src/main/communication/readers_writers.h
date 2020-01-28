@@ -8,7 +8,7 @@
 namespace FPMAS::communication {
 
 
-	class TerminableMpiCommunicator;
+	class SyncMpiCommunicator;
 
 	class ReadersWriters {
 		private:
@@ -29,7 +29,7 @@ namespace FPMAS::communication {
 	};
 
 	class ResourceManager {
-		friend TerminableMpiCommunicator;
+		friend SyncMpiCommunicator;
 		private:
 			std::set<unsigned long> locallyAcquired;
 			std::unordered_map<unsigned long, std::vector<int>> pendingReads;

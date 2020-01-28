@@ -7,7 +7,7 @@
 #include "../zoltan/zoltan_utils.h"
 #include "communication/sync_communication.h"
 
-using FPMAS::communication::TerminableMpiCommunicator;
+using FPMAS::communication::SyncMpiCommunicator;
 
 namespace FPMAS::graph::parallel {
 	namespace zoltan {

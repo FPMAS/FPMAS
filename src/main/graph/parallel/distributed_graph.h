@@ -18,7 +18,7 @@
 #include "proxy/proxy.h"
 
 namespace FPMAS {
-	using communication::TerminableMpiCommunicator;
+	using communication::SyncMpiCommunicator;
 	using graph::base::Graph;
 
 	/**
@@ -81,7 +81,7 @@ namespace FPMAS {
 			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
 			private:
-			TerminableMpiCommunicator mpiCommunicator;
+			SyncMpiCommunicator mpiCommunicator;
 			Zoltan zoltan;
 			Proxy proxy;
 			GhostGraph<T, S> ghost;
@@ -122,7 +122,7 @@ namespace FPMAS {
 			public:
 			DistributedGraph<T, S>();
 			DistributedGraph<T, S>(std::initializer_list<int>);
-			TerminableMpiCommunicator& getMpiCommunicator();
+			SyncMpiCommunicator& getMpiCommunicator();
 			Proxy& getProxy();
 			GhostGraph<T, S>& getGhost();
 
@@ -173,7 +173,7 @@ namespace FPMAS {
 		 *
 		 * @return const reference to the mpiCommunicator associated to this graph
 		 */
-		template<class T, template<typename> class S> TerminableMpiCommunicator& DistributedGraph<T, S>::getMpiCommunicator() {
+		template<class T, template<typename> class S> SyncMpiCommunicator& DistributedGraph<T, S>::getMpiCommunicator() {
 			return this->mpiCommunicator;
 		}
 
@@ -379,7 +379,7 @@ namespace FPMAS {
 
 		/**
 		 * Synchronizes the DistributedGraph instances, calling the
-		 * TerminableMpiCommunicator::terminate() method and extra processing
+		 * SyncMpiCommunicator::terminate() method and extra processing
 		 * that might be required by the synchronization mode S (eg :
 		 * synchronize the ghost graph data for the GhostData mode).
 		 */

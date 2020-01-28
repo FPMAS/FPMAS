@@ -2,29 +2,29 @@
 
 #include "nlohmann/json.hpp"
 
-using FPMAS::communication::TerminableMpiCommunicator;
+using FPMAS::communication::SyncMpiCommunicator;
 using FPMAS::communication::Tag;
 /**
- * Builds a TerminableMpiCommunicator containing all the procs available in
+ * Builds a SyncMpiCommunicator containing all the procs available in
  * MPI_COMM_WORLD.
  *
  * @param resourceManager pointer to the ResourceManager instance that will be
  * used to query serialized data.
  */
-TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceContainer& resourceContainer)
+SyncMpiCommunicator::SyncMpiCommunicator(ResourceContainer& resourceContainer)
 	: resourceContainer(resourceContainer) {};
 
 /**
- * Builds a TerminableMpiCommunicator containing all the procs corresponding to
+ * Builds a SyncMpiCommunicator containing all the procs corresponding to
  * the provided ranks in MPI_COMM_WORLD.
  *
  * @param resourceManager pointer to the ResourceManager instance that will be
  * used to query serialized data.
  * @param ranks ranks to include in the group / communicator
  */
-TerminableMpiCommunicator::TerminableMpiCommunicator(ResourceContainer& resourceContainer, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceContainer(resourceContainer) {};
+SyncMpiCommunicator::SyncMpiCommunicator(ResourceContainer& resourceContainer, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceContainer(resourceContainer) {};
 
-void TerminableMpiCommunicator::handleIncomingRequests() {
+void SyncMpiCommunicator::handleIncomingRequests() {
 	int flag;
 	MPI_Status req_status;
 
@@ -69,7 +69,7 @@ void TerminableMpiCommunicator::handleIncomingRequests() {
 	}
 }
 
-void TerminableMpiCommunicator::waitSendRequest(MPI_Request* req) {
+void SyncMpiCommunicator::waitSendRequest(MPI_Request* req) {
 	MPI_Status send_status;
 	int request_sent;
 	MPI_Test(req, &request_sent, &send_status);
@@ -89,7 +89,7 @@ void TerminableMpiCommunicator::waitSendRequest(MPI_Request* req) {
  * @param location rank of the data location
  * @return read serialized data
  */
-std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
+std::string SyncMpiCommunicator::read(unsigned long id, int location) {
 	if(location == this->getRank()) {
 		// The local process needs to wait as any other proc to access its own
 		// resources.
@@ -122,7 +122,7 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 
 }
 
-void TerminableMpiCommunicator::waitForReading(unsigned long id) {
+void SyncMpiCommunicator::waitForReading(unsigned long id) {
 	std::cout << "[" << this->getRank() << "] wait for reading " << id << std::endl;
 	const ReadersWriters& rw = this->resourceManager.get(id);
 	while(!rw.isAvailableForReading()) {
@@ -136,7 +136,7 @@ void TerminableMpiCommunicator::waitForReading(unsigned long id) {
  * Sends a read response to the destination proc, reading data using the
  * resourceManager.
  */
-void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id) {
+void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
 	if(this->resourceManager.isLocallyAcquired(id) > 0) {
 		this->resourceManager.addPendingRead(id, destination);
 		return;
@@ -156,7 +156,7 @@ void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id)
 	this->resourceManager.releaseRead(id);
 }
 
-std::string TerminableMpiCommunicator::acquire(unsigned long id, int location) {
+std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 	if(location == this->getRank()) {
 		// The local process needs to wait as any other proc to access its own
 		// resources.
@@ -182,7 +182,7 @@ std::string TerminableMpiCommunicator::acquire(unsigned long id, int location) {
 	return std::string(data);
 }
 
-void TerminableMpiCommunicator::giveBack(unsigned long id, int location) {
+void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
 	if(location == this->getRank()) {
 		// No update needed, because modifications are already local.
 		this->resourceManager.releaseWrite(id);
@@ -213,7 +213,7 @@ void TerminableMpiCommunicator::giveBack(unsigned long id, int location) {
 	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, location, Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &req);
 }
 
-void TerminableMpiCommunicator::waitForAcquire(unsigned long id) {
+void SyncMpiCommunicator::waitForAcquire(unsigned long id) {
 	std::cout << "[" << this->getRank() << "] wait for acquiring " << id << std::endl;
 	const ReadersWriters& rw = this->resourceManager.get(id);
 	while(!rw.isAvailableForWriting()) {
@@ -223,7 +223,7 @@ void TerminableMpiCommunicator::waitForAcquire(unsigned long id) {
 	this->resourceManager.initWrite(id);
 }
 
-void TerminableMpiCommunicator::respondToAcquire(int destination, unsigned long id) {
+void SyncMpiCommunicator::respondToAcquire(int destination, unsigned long id) {
 	if(this->resourceManager.isLocallyAcquired(id) > 0) {
 		this->resourceManager.addPendingAcquire(id, destination);
 		return;
@@ -255,7 +255,7 @@ void TerminableMpiCommunicator::respondToAcquire(int destination, unsigned long 
  *
  * Returns only when all the processes have terminated their process.
  */
-void TerminableMpiCommunicator::terminate() {
+void SyncMpiCommunicator::terminate() {
 	this->state = State::PASSIVE;
 	bool end = false;
 	int token;

@@ -4,7 +4,7 @@
 #include "ghost_data.h"
 #include "communication/communication.h"
 
-using FPMAS::communication::TerminableMpiCommunicator;
+using FPMAS::communication::SyncMpiCommunicator;
 
 namespace FPMAS::graph::parallel::synchro {
 
@@ -23,12 +23,12 @@ namespace FPMAS::graph::parallel::synchro {
 	template<class T> class HardSyncData : public SyncData<T> {
 		private:
 			unsigned long id;
-			TerminableMpiCommunicator& mpiComm;
+			SyncMpiCommunicator& mpiComm;
 			const Proxy& proxy;
 
 		public:
-			HardSyncData(unsigned long, TerminableMpiCommunicator&, const Proxy&);
-			HardSyncData(unsigned long, TerminableMpiCommunicator&, const Proxy&, T);
+			HardSyncData(unsigned long, SyncMpiCommunicator&, const Proxy&);
+			HardSyncData(unsigned long, SyncMpiCommunicator&, const Proxy&, T);
 
 			const T& read() override;
 
@@ -61,7 +61,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 */
 	template<class T> HardSyncData<T>::HardSyncData(
 			unsigned long id,
-			TerminableMpiCommunicator& mpiComm,
+			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy)
 		: id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
@@ -76,7 +76,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 */
 	template<class T> HardSyncData<T>::HardSyncData(
 			unsigned long id,
-			TerminableMpiCommunicator& mpiComm,
+			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy,
 			T data)
 		: SyncData<T>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
