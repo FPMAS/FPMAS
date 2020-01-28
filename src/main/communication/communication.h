@@ -6,7 +6,7 @@
 #include <mpi.h>
 #include <unordered_map>
 
-#include "resource_manager.h"
+#include "resource_container.h"
 #include "readers_writers.h"
 
 namespace FPMAS {
