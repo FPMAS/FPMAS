@@ -105,7 +105,6 @@ namespace FPMAS {
 				void respondToRead(int, unsigned long);
 				void respondToAcquire(int, unsigned long);
 
-				void handleIncomingRequests();
 				void waitForReading(unsigned long);
 				void waitForAcquire(unsigned long);
 
@@ -114,6 +113,8 @@ namespace FPMAS {
 				TerminableMpiCommunicator(ResourceContainer&, std::initializer_list<int>);
 
 				State getState() const;
+
+				void handleIncomingRequests();
 
 				std::string read(unsigned long, int);
 

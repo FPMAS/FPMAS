@@ -1,6 +1,8 @@
 #ifndef READERS_WRITERS_H
 #define READERS_WRITERS_H
 
+#include <set>
+#include <vector>
 #include <unordered_map>
 
 namespace FPMAS::communication {
@@ -27,7 +29,16 @@ namespace FPMAS::communication {
 	};
 
 	class ResourceManager {
+		friend TerminableMpiCommunicator;
 		private:
+			std::set<unsigned long> locallyAcquired;
+			std::unordered_map<unsigned long, std::vector<int>> pendingReads;
+			std::unordered_map<unsigned long, std::vector<int>> pendingAcquires;
+
+			bool isLocallyAcquired(unsigned long) const;
+			void addPendingRead(unsigned long id, int destination);
+			void addPendingAcquire(unsigned long id, int destination);
+
 			std::unordered_map<unsigned long, ReadersWriters> readersWriters;
 
 		public:
@@ -35,7 +46,7 @@ namespace FPMAS::communication {
 			void releaseRead(unsigned long);
 			void initWrite(unsigned long);
 			void releaseWrite(unsigned long);
-			const ReadersWriters& get(unsigned long) const;
+			const ReadersWriters& get(unsigned long);
 
 	};
 

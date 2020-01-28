@@ -101,19 +101,18 @@ class TestResourceHandler : public ResourceContainer {
 class Mpi_TerminationTest : public ::testing::Test {
 	protected:
 		TestResourceHandler handler;
+		TerminableMpiCommunicator comm;
+
+		Mpi_TerminationTest() : comm(handler) {}
 
 };
 
 TEST_F(Mpi_TerminationTest, simple_termination_test) {
-	TerminableMpiCommunicator comm(handler);
-
 	comm.terminate();
-
 }
 
 
 TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
-	TerminableMpiCommunicator comm(handler);
 
 	auto start = std::chrono::system_clock::now();
 	if(comm.getRank() == 0) {
@@ -127,6 +126,24 @@ TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
 
 	ASSERT_GE(delay, 1s);
 
+}
+
+TEST_F(Mpi_TerminationTest, self_read) {
+	std::string data = comm.read(comm.getRank(), comm.getRank());
+	ASSERT_EQ(data, std::to_string(comm.getRank()));
+
+	comm.terminate();
+}
+
+TEST_F(Mpi_TerminationTest, self_acquire) {
+	std::string data = comm.acquire(comm.getRank(), comm.getRank());
+	this->handler.data[comm.getRank()] = std::stoul(data);
+	this->handler.data[comm.getRank()] = 10;
+	comm.giveBack(comm.getRank(), comm.getRank());
+
+	ASSERT_EQ(this->handler.data[comm.getRank()], 10);
+
+	comm.terminate();
 }
 
 /**
@@ -146,13 +163,12 @@ TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
  * concurrency access is assumed is those examples (ie multiple procs trying to
  * access the same ressource). This is tested in the readers_writers.cpp test serie.
  */
+
 /**
  * Tests if its possible to read a data from a passive proc (ie a proc waiting
  * for termination after terminate() has been called.
  */
 TEST_F(Mpi_TerminationTest, read_from_passive_procs_test) {
-	TerminableMpiCommunicator comm(handler);
-
 	if(comm.getSize() >= 2) {
 		// Each even proc asks for data to proc + 1 (if it exists)
 		if(comm.getRank() % 2 == 0 && comm.getRank() != comm.getSize() - 1) {
@@ -174,8 +190,6 @@ TEST_F(Mpi_TerminationTest, read_from_passive_procs_test) {
  * acquisition (ie a proc waiting for a response after acquie() has been called)
  */
 TEST_F(Mpi_TerminationTest, read_from_acquiring_procs_test) {
-	TerminableMpiCommunicator comm(handler);
-
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
 			// Delays the acquire request reception from 0
@@ -200,7 +214,7 @@ TEST_F(Mpi_TerminationTest, read_from_acquiring_procs_test) {
 		comm.terminate();
 	}
 	else {
-		PRINT_MIN_PROCS_WARNING(read_from_passive_procs_test, 3);
+		PRINT_MIN_PROCS_WARNING(read_from_acquiring_procs_test, 3);
 	}
 
 }
@@ -210,8 +224,6 @@ TEST_F(Mpi_TerminationTest, read_from_acquiring_procs_test) {
  * reading (ie a proc waiting for a response after read() has been called)
  */
 TEST_F(Mpi_TerminationTest, read_from_reading_procs_test) {
-	TerminableMpiCommunicator comm(handler);
-
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
 			// Delays the read request reception from 0
@@ -234,7 +246,7 @@ TEST_F(Mpi_TerminationTest, read_from_reading_procs_test) {
 		comm.terminate();
 	}
 	else {
-		PRINT_MIN_PROCS_WARNING(read_from_passive_procs_test, 3);
+		PRINT_MIN_PROCS_WARNING(read_from_reading_procs_test, 3);
 	}
 
 }
@@ -244,8 +256,6 @@ TEST_F(Mpi_TerminationTest, read_from_reading_procs_test) {
  * for termination after terminate() has been called.
  */
 TEST_F(Mpi_TerminationTest, acquire_from_passive_procs_test) {
-	TerminableMpiCommunicator comm(handler);
-
 	if(comm.getSize() >= 2) {
 		// Each even proc asks for data to proc + 1 (if it exists)
 		if(comm.getRank() % 2 == 0 && comm.getRank() != comm.getSize() - 1) {
@@ -269,7 +279,7 @@ TEST_F(Mpi_TerminationTest, acquire_from_passive_procs_test) {
 			ASSERT_EQ(this->handler.data.at(comm.getRank() - 1), comm.getRank());
 
 	} else {
-		PRINT_MIN_PROCS_WARNING(read_from_passive_procs_test, 2);
+		PRINT_MIN_PROCS_WARNING(acquire_from_passive_procs_test, 2);
 	}
 }
 
@@ -278,8 +288,6 @@ TEST_F(Mpi_TerminationTest, acquire_from_passive_procs_test) {
  * reading (ie a proc waiting for a response after read() has been called)
  */
 TEST_F(Mpi_TerminationTest, acquire_from_reading_procs_test) {
-	TerminableMpiCommunicator comm(handler);
-
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
 			// Delays the read request reception from 0
@@ -309,7 +317,7 @@ TEST_F(Mpi_TerminationTest, acquire_from_reading_procs_test) {
 		comm.terminate();
 	}
 	else {
-		PRINT_MIN_PROCS_WARNING(read_from_passive_procs_test, 3);
+		PRINT_MIN_PROCS_WARNING(acquire_from_reading_procs_test, 3);
 	}
 
 }
@@ -319,8 +327,6 @@ TEST_F(Mpi_TerminationTest, acquire_from_reading_procs_test) {
  * acquisition (ie a proc waiting for a response after acquire() has been called)
  */
 TEST_F(Mpi_TerminationTest, acquire_from_acquiring_procs_test) {
-	TerminableMpiCommunicator comm(handler);
-
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
 			// Delays the acquire request reception from 0
@@ -351,7 +357,7 @@ TEST_F(Mpi_TerminationTest, acquire_from_acquiring_procs_test) {
 		comm.terminate();
 	}
 	else {
-		PRINT_MIN_PROCS_WARNING(read_from_passive_procs_test, 3);
+		PRINT_MIN_PROCS_WARNING(acquire_from_acquiring_procs_test, 3);
 	}
 
 }

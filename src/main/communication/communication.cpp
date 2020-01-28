@@ -216,7 +216,6 @@ void TerminableMpiCommunicator::handleIncomingRequests() {
 
 		this->resourceManager.releaseWrite(id);
 	}
-
 }
 
 void TerminableMpiCommunicator::waitSendRequest(MPI_Request* req) {
@@ -240,9 +239,20 @@ void TerminableMpiCommunicator::waitSendRequest(MPI_Request* req) {
  * @return read serialized data
  */
 std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
+	if(location == this->getRank()) {
+		// The local process needs to wait as any other proc to access its own
+		// resources.
+		this->waitForReading(id);
+
+		std::string data = this->resourceContainer.getData(id);
+
+		this->resourceManager.releaseRead(id);
+		return data;
+	}
 	// Starts non-blocking synchronous send
 	MPI_Request req;
 	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->getMpiComm(), &req);
+	std::cout << "[" << this->getRank() << "] read req sent " << id << " from " << location << std::endl;
 
 	// Keep responding to other READ / ACQUIRE request to avoid deadlock,
 	// until the request has been received
@@ -262,10 +272,13 @@ std::string TerminableMpiCommunicator::read(unsigned long id, int location) {
 }
 
 void TerminableMpiCommunicator::waitForReading(unsigned long id) {
+	std::cout << "[" << this->getRank() << "] wait for reading " << id << std::endl;
 	const ReadersWriters& rw = this->resourceManager.get(id);
 	while(!rw.isAvailableForReading()) {
 		this->handleIncomingRequests();
 	}
+	this->resourceManager.initRead(id);
+	std::cout << "[" << this->getRank() << "] reading " << id << std::endl;
 }
 
 /*
@@ -273,10 +286,11 @@ void TerminableMpiCommunicator::waitForReading(unsigned long id) {
  * resourceManager.
  */
 void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id) {
+	if(this->resourceManager.isLocallyAcquired(id) > 0) {
+		this->resourceManager.addPendingRead(id, destination);
+		return;
+	}
 	this->color = Color::BLACK;
-
-	// Initialize the read request in the resourceManager
-	this->resourceManager.initRead(id);
 
 	// Wait for an eventual writing to id to finish
 	this->waitForReading(id);
@@ -292,6 +306,13 @@ void TerminableMpiCommunicator::respondToRead(int destination, unsigned long id)
 }
 
 std::string TerminableMpiCommunicator::acquire(unsigned long id, int location) {
+	if(location == this->getRank()) {
+		// The local process needs to wait as any other proc to access its own
+		// resources.
+		this->waitForAcquire(id);
+		this->resourceManager.locallyAcquired.insert(id);
+		return this->resourceContainer.getData(id);
+	}
 	// Starts non-blocking synchronous send
 	MPI_Request req;
 	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::ACQUIRE, this->getMpiComm(), &req);
@@ -311,6 +332,25 @@ std::string TerminableMpiCommunicator::acquire(unsigned long id, int location) {
 }
 
 void TerminableMpiCommunicator::giveBack(unsigned long id, int location) {
+	if(location == this->getRank()) {
+		// No update needed, because modifications are already local.
+		this->resourceManager.releaseWrite(id);
+		this->resourceManager.locallyAcquired.erase(id);
+
+		for(auto proc : this->resourceManager.pendingReads[id])
+			this->respondToRead(proc, id);
+		this->resourceManager.pendingReads.erase(id);
+		assert(this->resourceManager.pendingReads.count(id) == 0);
+
+		for(auto proc : this->resourceManager.pendingAcquires[id])
+			this->respondToAcquire(proc, id);
+		this->resourceManager.pendingAcquires.erase(id);
+		assert(this->resourceManager.pendingAcquires.count(id) == 0);
+
+		std::cout << "[" << this->getRank() << "] given back " << id << std::endl;
+		return;
+	}
+
 	// Perform the response
 	nlohmann::json update = {
 		{"id", id},
@@ -323,16 +363,21 @@ void TerminableMpiCommunicator::giveBack(unsigned long id, int location) {
 }
 
 void TerminableMpiCommunicator::waitForAcquire(unsigned long id) {
+	std::cout << "[" << this->getRank() << "] wait for acquiring " << id << std::endl;
 	const ReadersWriters& rw = this->resourceManager.get(id);
 	while(!rw.isAvailableForWriting()) {
 		this->handleIncomingRequests();
 	}
+	std::cout << "[" << this->getRank() << "] acquired " << id << std::endl;
+	this->resourceManager.initWrite(id);
 }
 
 void TerminableMpiCommunicator::respondToAcquire(int destination, unsigned long id) {
+	if(this->resourceManager.isLocallyAcquired(id) > 0) {
+		this->resourceManager.addPendingAcquire(id, destination);
+		return;
+	}
 	this->color = Color::BLACK;
-
-	this->resourceManager.initWrite(id);
 
 	std::cout << "[" << this->getRank() << "] wait acquire " << id << " for " << destination << std::endl;
 	this->waitForAcquire(id);

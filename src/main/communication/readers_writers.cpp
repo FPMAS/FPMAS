@@ -23,15 +23,27 @@ namespace FPMAS::communication {
 	}
 
 	bool ReadersWriters::isAvailableForReading() const {
-		return !writing;
+		return reading || !writing;
 	}
 
 	bool ReadersWriters::isAvailableForWriting() const {
-		return !reading;
+		return !reading && !writing;
 	}
 
 	bool ReadersWriters::isFree() const {
 		return !reading && !writing;
+	}
+
+	bool ResourceManager::isLocallyAcquired(unsigned long id) const {
+		return this->locallyAcquired.count(id) > 0;
+	}
+
+	void ResourceManager::addPendingRead(unsigned long id, int destination) {
+		this->pendingReads[id].push_back(destination);
+	}
+
+	void ResourceManager::addPendingAcquire(unsigned long id, int destination) {
+		this->pendingAcquires[id].push_back(destination);
 	}
 
 	void ResourceManager::initRead(unsigned long id) {
@@ -56,7 +68,7 @@ namespace FPMAS::communication {
 			this->readersWriters.erase(id);
 	}
 
-	const ReadersWriters& ResourceManager::get(unsigned long id) const {
-		return this->readersWriters.at(id);
+	const ReadersWriters& ResourceManager::get(unsigned long id) {
+		return this->readersWriters[id];
 	}
 }
