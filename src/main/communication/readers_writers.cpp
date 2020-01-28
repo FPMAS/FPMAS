@@ -1,4 +1,5 @@
 #include "readers_writers.h"
+#include <iostream>
 
 namespace FPMAS::communication {
 
@@ -51,10 +52,7 @@ namespace FPMAS::communication {
 	}
 
 	void ResourceManager::releaseRead(unsigned long id) {
-		ReadersWriters& rw = this->readersWriters[id];
-		rw.releaseRead();
-		if(rw.isFree())
-			this->readersWriters.erase(id);
+		this->readersWriters[id].releaseRead();
 	}
 
 	void ResourceManager::initWrite(unsigned long id) {
@@ -62,13 +60,14 @@ namespace FPMAS::communication {
 	}
 
 	void ResourceManager::releaseWrite(unsigned long id) {
-		ReadersWriters& rw = this->readersWriters[id];
-		rw.releaseWrite();
-		if(rw.isFree())
-			this->readersWriters.erase(id);
+		this->readersWriters[id].releaseWrite();
 	}
 
 	const ReadersWriters& ResourceManager::get(unsigned long id) {
 		return this->readersWriters[id];
+	}
+
+	void ResourceManager::clear() {
+		this->readersWriters.clear();
 	}
 }

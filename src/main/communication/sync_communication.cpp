@@ -191,12 +191,10 @@ void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
 		for(auto proc : this->resourceManager.pendingReads[id])
 			this->respondToRead(proc, id);
 		this->resourceManager.pendingReads.erase(id);
-		assert(this->resourceManager.pendingReads.count(id) == 0);
 
 		for(auto proc : this->resourceManager.pendingAcquires[id])
 			this->respondToAcquire(proc, id);
 		this->resourceManager.pendingAcquires.erase(id);
-		assert(this->resourceManager.pendingAcquires.count(id) == 0);
 
 		std::cout << "[" << this->getRank() << "] given back " << id << std::endl;
 		return;
@@ -304,4 +302,5 @@ void SyncMpiCommunicator::terminate() {
 		// Handles READ or ACQUIRE requests
 		this->handleIncomingRequests();
 	}
+	this->resourceManager.clear();
 }

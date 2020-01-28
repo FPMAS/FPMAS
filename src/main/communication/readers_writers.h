@@ -48,6 +48,8 @@ namespace FPMAS::communication {
 			void releaseWrite(unsigned long);
 			const ReadersWriters& get(unsigned long);
 
+			void clear();
+
 	};
 
 }
