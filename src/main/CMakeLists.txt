@@ -13,6 +13,12 @@ set(SOURCES
 	${SOURCES}
 	communication/communication.cpp
 	)
+
+set(SOURCES
+	${SOURCES}
+	communication/sync_communication.cpp
+	)
+
 set(SOURCES
 	${SOURCES}
 	communication/readers_writers.cpp

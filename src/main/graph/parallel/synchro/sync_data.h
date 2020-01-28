@@ -5,7 +5,7 @@
 #include <nlohmann/json.hpp>
 #include "zoltan_cpp.h"
 #include "../zoltan/zoltan_utils.h"
-#include "communication/communication.h"
+#include "communication/sync_communication.h"
 
 using FPMAS::communication::TerminableMpiCommunicator;
 
