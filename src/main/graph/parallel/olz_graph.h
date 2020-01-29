@@ -69,7 +69,9 @@ namespace FPMAS::graph::parallel {
 		void removeNode(unsigned long);
 
 		std::unordered_map<unsigned long, GhostNode<T, S>*> getNodes();
+		const GhostNode<T, S>* getNode(unsigned long) const;
 		std::unordered_map<unsigned long, GhostArc<T, S>*> getArcs();
+		const GhostArc<T, S>* getArc(unsigned long) const;
 
 		void clear(FossilArcs<SyncDataPtr<T>>);
 
@@ -288,6 +290,14 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<class T, template<typename> class S> std::unordered_map<unsigned long, GhostNode<T, S>*> GhostGraph<T, S>::getNodes() {
 		return this->ghostNodes;
+	}
+
+	template<class T, template<typename> class S> const GhostNode<T, S>* GhostGraph<T, S>::getNode(unsigned long id) const {
+		return this->ghostNodes.at(id);
+	}
+
+	template<class T, template<typename> class S> const GhostArc<T, S>* GhostGraph<T, S>::getArc(unsigned long id) const {
+		return this->ghostArcs.at(id);
 	}
 
 	/**

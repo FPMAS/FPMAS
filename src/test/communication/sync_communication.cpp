@@ -24,7 +24,11 @@ class TestResourceHandler : public ResourceContainer {
 					data[i] = i;
 		}
 
-		std::string getData(unsigned long id) const override {
+		std::string getLocalData(unsigned long id) const override {
+			return std::to_string(data.at(id));
+		}
+
+		std::string getUpdatedData(unsigned long id) const override {
 			return std::to_string(data.at(id));
 		}
 

@@ -17,7 +17,8 @@ namespace FPMAS {
 				 * @param id data id
 				 * @return serialized data
 				 */
-				virtual std::string getData(unsigned long id) const = 0;
+				virtual std::string getLocalData(unsigned long id) const = 0;
+				virtual std::string getUpdatedData(unsigned long id) const = 0;
 				virtual void updateData(unsigned long id, std::string data) = 0;
 		};
 	}

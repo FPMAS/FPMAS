@@ -95,7 +95,7 @@ std::string SyncMpiCommunicator::read(unsigned long id, int location) {
 		// resources.
 		this->waitForReading(id);
 
-		std::string data = this->resourceContainer.getData(id);
+		std::string data = this->resourceContainer.getLocalData(id);
 
 		this->resourceManager.releaseRead(id);
 		return data;
@@ -147,7 +147,7 @@ void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
 	this->waitForReading(id);
 
 	// Perform the response
-	std::string data = this->resourceContainer.getData(id);
+	std::string data = this->resourceContainer.getLocalData(id);
 	MPI_Request req;
 	// TODO : asynchronous send : is this a pb? => probably not.
 	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::READ_RESPONSE, this->getMpiComm(), &req);
@@ -158,11 +158,12 @@ void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
 
 std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 	if(location == this->getRank()) {
+		std::cout << "[" << location << "] acquiring local data " << id << std::endl;
 		// The local process needs to wait as any other proc to access its own
 		// resources.
 		this->waitForAcquire(id);
 		this->resourceManager.locallyAcquired.insert(id);
-		return this->resourceContainer.getData(id);
+		return this->resourceContainer.getLocalData(id);
 	}
 	// Starts non-blocking synchronous send
 	MPI_Request req;
@@ -203,7 +204,7 @@ void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
 	// Perform the response
 	nlohmann::json update = {
 		{"id", id},
-		{"data", this->resourceContainer.getData(id)}
+		{"data", this->resourceContainer.getUpdatedData(id)}
 	};
 	std::string data = update.dump();
 	MPI_Request req;
@@ -232,7 +233,7 @@ void SyncMpiCommunicator::respondToAcquire(int destination, unsigned long id) {
 	this->waitForAcquire(id);
 	std::cout << "[" << this->getRank() << "] respond acquire ready" << std::endl;
 
-	std::string data = this->resourceContainer.getData(id);
+	std::string data = this->resourceContainer.getLocalData(id);
 	std::cout << "[" << this->getRank() << "] respond data : " << data << std::endl;
 
 	MPI_Request req;

@@ -122,14 +122,20 @@ namespace FPMAS {
 			public:
 			DistributedGraph<T, S>();
 			DistributedGraph<T, S>(std::initializer_list<int>);
+
 			SyncMpiCommunicator& getMpiCommunicator();
+			const SyncMpiCommunicator& getMpiCommunicator() const;
+
 			Proxy& getProxy();
+
 			GhostGraph<T, S>& getGhost();
+			const GhostGraph<T, S>& getGhost() const;
 
 			Node<SyncDataPtr<T>>* buildNode(unsigned long id, T data);
 			Node<SyncDataPtr<T>>* buildNode(unsigned long id, float weight, T data);
 
-			std::string getData(unsigned long) const override;
+			std::string getLocalData(unsigned long) const override;
+			std::string getUpdatedData(unsigned long) const override;
 			void updateData(unsigned long, std::string) override;
 
 			void distribute();
@@ -177,6 +183,9 @@ namespace FPMAS {
 			return this->mpiCommunicator;
 		}
 
+		template<class T, template<typename> class S> const SyncMpiCommunicator& DistributedGraph<T, S>::getMpiCommunicator() const {
+			return this->mpiCommunicator;
+		}
 		/**
 		 * Returns a reference to the proxy associated to this DistributedGraph.
 		 *
@@ -193,6 +202,10 @@ namespace FPMAS {
 		 * @return reference to the current GhostGraph
 		 */
 		template<class T, template<typename> class S> GhostGraph<T, S>& DistributedGraph<T, S>::getGhost() {
+			return this->ghost;
+		}
+
+		template<class T, template<typename> class S> const GhostGraph<T, S>& DistributedGraph<T, S>::getGhost() const {
 			return this->ghost;
 		}
 
@@ -246,11 +259,18 @@ namespace FPMAS {
 			return Graph<SyncDataPtr<T>>::buildNode(id, weight, SyncDataPtr<T>(new LocalData<T>(data)));
 		}
 
-		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getData(unsigned long id) const {
+		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getLocalData(unsigned long id) const {
+			std::cout << "[" << getMpiCommunicator().getRank() << "] getLocalData " << id << " " << this->getNodes().count(id) << std::endl;
 			return json(this->getNodes().at(id)->data()->get()).dump();
 		}
 
+		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getUpdatedData(unsigned long id) const {
+			std::cout << "[" << getMpiCommunicator().getRank() << "] getUpdatedData " << id << " " << this->getNodes().count(id) << std::endl;
+			return json(this->getGhost().getNode(id)->data()->get()).dump();
+		}
+
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::updateData(unsigned long id, std::string data) {
+			std::cout << "updateData " << id << ":" << data << " " << this->getNodes().count(id) << std::endl;
 			this->getNodes().at(id)->data()->acquire() = json::parse(data).get<T>();
 		}
 

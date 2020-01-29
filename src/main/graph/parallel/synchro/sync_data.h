@@ -86,6 +86,8 @@ namespace FPMAS::graph::parallel {
 				 * @return const reference to wrapped data
 				 */
 				virtual const T& read() ;
+
+				virtual void release();
 		};
 
 		/**
@@ -130,6 +132,8 @@ namespace FPMAS::graph::parallel {
 			return data;
 		}
 
+		template<class T> void SyncData<T>::release() {}
+
 		/**
 		 * Smart pointer used as node data to store SyncData<T> instances in
 		 * the DistributedGraph.
@@ -141,8 +145,7 @@ namespace FPMAS::graph::parallel {
 		 * assign, etc) node data. Using this smart pointer instead avoid this,
 		 * because its destructor is automatically and properly called as
 		 * defined at the Graph scale as nodes are created or deleted.
-		 * An std::shared_ptr<SyncData<T>*> might have been used, but would not
-		 * have been optimal.
+		 * TODO: Might be optimized thanks to move semantics?
 		 */
 		template<class T> class SyncDataPtr {
 			private:

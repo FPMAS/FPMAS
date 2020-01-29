@@ -31,6 +31,8 @@ namespace FPMAS::graph::parallel::synchro {
 			HardSyncData(unsigned long, SyncMpiCommunicator&, const Proxy&, T);
 
 			const T& read() override;
+			T& acquire() override;
+			void release() override;
 
 			/**
 			 * Defines the Zoltan configuration used manage and migrate
@@ -99,6 +101,23 @@ namespace FPMAS::graph::parallel::synchro {
 					)
 				)).get<T>();
 		return this->data;
+	}
+
+	template<class T> T& HardSyncData<T>::acquire() {
+		this->data = ((nlohmann::json) nlohmann::json::parse(
+				this->mpiComm.acquire(
+					this->id,
+					this->proxy.getCurrentLocation(this->id)
+					)
+				)).get<T>();
+		return this->data;
+	}
+
+	template<class T> void HardSyncData<T>::release() {
+		this->mpiComm.giveBack(
+				this->id,
+				this->proxy.getCurrentLocation(this->id)
+				);
 	}
 }
 #endif
