@@ -1,6 +1,8 @@
 #ifndef DISTRIBUTED_GRAPH_H
 #define DISTRIBUTED_GRAPH_H
 
+#include "utils/log.h"
+
 #include "../base/graph.h"
 #include "zoltan_cpp.h"
 #include "olz.h"
@@ -260,17 +262,17 @@ namespace FPMAS {
 		}
 
 		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getLocalData(unsigned long id) const {
-			std::cout << "[" << getMpiCommunicator().getRank() << "] getLocalData " << id << " " << this->getNodes().count(id) << std::endl;
+			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getLocalData %lu", id);
 			return json(this->getNodes().at(id)->data()->get()).dump();
 		}
 
 		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getUpdatedData(unsigned long id) const {
-			std::cout << "[" << getMpiCommunicator().getRank() << "] getUpdatedData " << id << " " << this->getNodes().count(id) << std::endl;
+			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getUpdatedData %lu", id);
 			return json(this->getGhost().getNode(id)->data()->get()).dump();
 		}
 
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::updateData(unsigned long id, std::string data) {
-			std::cout << "updateData " << id << ":" << data << " " << this->getNodes().count(id) << std::endl;
+			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "updateData %lu : %s", id, data.c_str());
 			this->getNodes().at(id)->data()->acquire() = json::parse(data).get<T>();
 		}
 

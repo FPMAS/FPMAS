@@ -1,3 +1,5 @@
+#include "utils/log.h"
+
 #include "sync_communication.h"
 
 #include "nlohmann/json.hpp"
@@ -33,7 +35,7 @@ void SyncMpiCommunicator::handleIncomingRequests() {
 	if(flag > 0) {
 		unsigned long id;
 		MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, req_status.MPI_SOURCE, Tag::READ, this->getMpiComm(), &req_status);
-		std::cout << "[" << this->getRank() << "] read req : " << id << std::endl;
+		FPMAS_LOGD(this->getRank(), "RECV", "read request %lu from %i", id, req_status.MPI_SOURCE);
 		this->respondToRead(req_status.MPI_SOURCE, id);
 	}
 
@@ -42,7 +44,7 @@ void SyncMpiCommunicator::handleIncomingRequests() {
 	if(flag > 0) {
 		unsigned long id;
 		MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, req_status.MPI_SOURCE, Tag::ACQUIRE, this->getMpiComm(), &req_status);
-		std::cout << "[" << this->getRank() << "] acquire req : " << id << std::endl;
+		FPMAS_LOGD(this->getRank(), "RECV", "acquire request %lu from %i", id, req_status.MPI_SOURCE);
 		this->respondToAcquire(req_status.MPI_SOURCE, id);
 	}
 
@@ -55,7 +57,7 @@ void SyncMpiCommunicator::handleIncomingRequests() {
 		MPI_Recv(&data, count, MPI_CHAR, req_status.MPI_SOURCE, Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &req_status);
 
 		std::string update_str (data);
-		std::cout << "[" << this->getRank() << "] given back : " << update_str << std::endl;
+		FPMAS_LOGD(this->getRank(), "RECV", "given back from %i : %s", req_status.MPI_SOURCE, update_str.c_str());
 		nlohmann::json update_json = nlohmann::json::parse(update_str);
 		unsigned long id = 
 				update_json.at("id").get<unsigned long>();
@@ -91,6 +93,7 @@ void SyncMpiCommunicator::waitSendRequest(MPI_Request* req) {
  */
 std::string SyncMpiCommunicator::read(unsigned long id, int location) {
 	if(location == this->getRank()) {
+		FPMAS_LOGD(location, "READ", "reading local data %lu", id);
 		// The local process needs to wait as any other proc to access its own
 		// resources.
 		this->waitForReading(id);
@@ -100,10 +103,10 @@ std::string SyncMpiCommunicator::read(unsigned long id, int location) {
 		this->resourceManager.releaseRead(id);
 		return data;
 	}
+	FPMAS_LOGD(this->getRank(), "READ", "reading data %lu from %i", id, location);
 	// Starts non-blocking synchronous send
 	MPI_Request req;
 	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->getMpiComm(), &req);
-	std::cout << "[" << this->getRank() << "] read req sent " << id << " from " << location << std::endl;
 
 	// Keep responding to other READ / ACQUIRE request to avoid deadlock,
 	// until the request has been received
@@ -123,13 +126,13 @@ std::string SyncMpiCommunicator::read(unsigned long id, int location) {
 }
 
 void SyncMpiCommunicator::waitForReading(unsigned long id) {
-	std::cout << "[" << this->getRank() << "] wait for reading " << id << std::endl;
+	FPMAS_LOGV(this->getRank(), "READ", "wait for reading %lu", id);
 	const ReadersWriters& rw = this->resourceManager.get(id);
 	while(!rw.isAvailableForReading()) {
 		this->handleIncomingRequests();
 	}
 	this->resourceManager.initRead(id);
-	std::cout << "[" << this->getRank() << "] reading " << id << std::endl;
+	FPMAS_LOGV(this->getRank(), "READ", "reading %lu", id);
 }
 
 /*
@@ -151,6 +154,7 @@ void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
 	MPI_Request req;
 	// TODO : asynchronous send : is this a pb? => probably not.
 	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::READ_RESPONSE, this->getMpiComm(), &req);
+	FPMAS_LOGD(this->getRank(), "READ", "send read data %lu to %i : %s", id, destination, data.c_str());
 
 	// Release the resource in the resourceManager
 	this->resourceManager.releaseRead(id);
@@ -158,13 +162,14 @@ void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
 
 std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 	if(location == this->getRank()) {
-		std::cout << "[" << location << "] acquiring local data " << id << std::endl;
+		FPMAS_LOGD(location, "ACQUIRE", "acquiring local data %lu", id);
 		// The local process needs to wait as any other proc to access its own
 		// resources.
 		this->waitForAcquire(id);
 		this->resourceManager.locallyAcquired.insert(id);
 		return this->resourceContainer.getLocalData(id);
 	}
+	FPMAS_LOGD(this->getRank(), "ACQUIRE", "acquiring data %lu from %i", id, location);
 	// Starts non-blocking synchronous send
 	MPI_Request req;
 	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::ACQUIRE, this->getMpiComm(), &req);
@@ -179,6 +184,7 @@ std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 	MPI_Get_count(&read_response_status, MPI_CHAR, &count);
 	char data[count];
 	MPI_Recv(&data, count, MPI_CHAR, location, Tag::ACQUIRE_RESPONSE, this->getMpiComm(), &read_response_status);
+	FPMAS_LOGD(this->getRank(), "ACQUIRE", "acquired data %lu from %i : %s", id, location, data);
 
 	return std::string(data);
 }
@@ -197,7 +203,7 @@ void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
 			this->respondToAcquire(proc, id);
 		this->resourceManager.pendingAcquires.erase(id);
 
-		std::cout << "[" << this->getRank() << "] given back " << id << std::endl;
+		FPMAS_LOGD(this->getRank(), "ACQUIRE", "locally given back %lu", id);
 		return;
 	}
 
@@ -207,18 +213,19 @@ void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
 		{"data", this->resourceContainer.getUpdatedData(id)}
 	};
 	std::string data = update.dump();
+	FPMAS_LOGD(this->getRank(), "ACQUIRE", "giving back to %i : %s", location, data.c_str());
 	MPI_Request req;
 	// TODO : asynchronous send : is this a pb? => probably not.
 	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, location, Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &req);
 }
 
 void SyncMpiCommunicator::waitForAcquire(unsigned long id) {
-	std::cout << "[" << this->getRank() << "] wait for acquiring " << id << std::endl;
+	FPMAS_LOGV(this->getRank(), "ACQUIRE", "wait for acquiring %lu", id);
 	const ReadersWriters& rw = this->resourceManager.get(id);
 	while(!rw.isAvailableForWriting()) {
 		this->handleIncomingRequests();
 	}
-	std::cout << "[" << this->getRank() << "] acquired " << id << std::endl;
+	FPMAS_LOGV(this->getRank(), "ACQUIRE", "acquired %lu", id);
 	this->resourceManager.initWrite(id);
 }
 
@@ -229,12 +236,9 @@ void SyncMpiCommunicator::respondToAcquire(int destination, unsigned long id) {
 	}
 	this->color = Color::BLACK;
 
-	std::cout << "[" << this->getRank() << "] wait acquire " << id << " for " << destination << std::endl;
 	this->waitForAcquire(id);
-	std::cout << "[" << this->getRank() << "] respond acquire ready" << std::endl;
-
 	std::string data = this->resourceContainer.getLocalData(id);
-	std::cout << "[" << this->getRank() << "] respond data : " << data << std::endl;
+	FPMAS_LOGD(this->getRank(), "ACQUIRE", "send acquired data %lu to %i : %s", id, destination, data.c_str());
 
 	MPI_Request req;
 	// TODO : asynchronous send : is this a pb? => probably not.

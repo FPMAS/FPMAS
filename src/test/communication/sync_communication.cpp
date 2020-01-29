@@ -202,15 +202,12 @@ TEST_F(Mpi_TerminationTest, acquire_from_passive_procs_test) {
 			// Ensures that even procs enter passive mode
 			std::this_thread::sleep_for(100ms);
 
-			std::cout << "[" << comm.getRank() << "] acquire" << std::endl;
 			std::string data_str = comm.acquire(comm.getRank(), comm.getRank() + 1);
-			std::cout << "[" << comm.getRank() << "] acquired" << std::endl;
 			ASSERT_EQ(data_str, std::to_string(comm.getRank()));
 
 			this->handler.data[comm.getRank()] = std::stoul(data_str);
 			this->handler.data[comm.getRank()] = comm.getRank() + 1;
 
-			std::cout << "[" << comm.getRank() << "] give back" << std::endl;
 			comm.giveBack(comm.getRank(), comm.getRank() + 1);
 		}
 		// Odd procs immediatly enter passive mode

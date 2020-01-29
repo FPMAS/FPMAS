@@ -8,6 +8,11 @@ set(SOURCES
 	utils/config.cpp
 	)
 
+set(SOURCES
+	${SOURCES}
+	utils/log.cpp
+	)
+
 # Communication
 set(SOURCES
 	${SOURCES}

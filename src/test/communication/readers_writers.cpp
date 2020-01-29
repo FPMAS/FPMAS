@@ -149,7 +149,6 @@ TEST_F(Mpi_TestReadersWriters, external_read_while_self_acquire) {
 			// Waits for the read request from 1
 			MPI_Status status;
 			MPI_Probe(1, FPMAS::communication::Tag::READ, comm.getMpiComm(), &status);
-			std::cout << "[0] handle incoming" << std::endl;
 			// Receives and handle the read, but the resource is not available
 			comm.handleIncomingRequests();
 

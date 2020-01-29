@@ -13,6 +13,8 @@ set(MPI_CXX_COMPILE_OPTIONS -g -O0)
 
 set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
 MPI context")
+set(LOG_LEVEL 0 CACHE STRING "Log level")
+add_compile_definitions(LOG_LEVEL=${LOG_LEVEL})
 
 message("-- Number of used procs : ${N_PROC}")
 if(N_PROC GREATER MPIEXEC_MAX_NUMPROCS)
