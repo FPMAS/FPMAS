@@ -54,6 +54,7 @@ namespace FPMAS::graph::parallel {
 		 * @tparam T wrapped data type
 		 */
 		template <class T> class SyncData {
+
 			protected:
 				/**
 				 * Local representation of wrapped data.
@@ -65,7 +66,8 @@ namespace FPMAS::graph::parallel {
 
 			public:
 
-				virtual const T& get() const;
+				const T& get() const;
+				T& get();
 
 				/**
 				 * Returns a reference to the wrapped data. (default behavior)
@@ -111,6 +113,10 @@ namespace FPMAS::graph::parallel {
 		 * @return const reference to the current data
 		 */
 		template<class T> const T& SyncData<T>::get() const {
+			return this->data;
+		}
+
+		template<class T> T& SyncData<T>::get() {
 			return this->data;
 		}
 

@@ -12,7 +12,6 @@ using FPMAS::graph::base::Arc;
 namespace FPMAS::graph::parallel {
 
 	using synchro::SyncDataPtr;
-	using synchro::LocalData;
 	using synchro::GhostData;
 
 	template<class T, template<typename> class S> class GhostGraph;

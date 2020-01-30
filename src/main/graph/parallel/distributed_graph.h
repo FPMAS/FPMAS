@@ -35,7 +35,6 @@ namespace FPMAS {
 		using proxy::Proxy;
 		using synchro::SyncData;
 		using synchro::SyncDataPtr;
-		using synchro::LocalData;
 		using synchro::GhostData;
 
 		/** A DistributedGraph is a special graph instance that can be
@@ -244,7 +243,7 @@ namespace FPMAS {
 		 * @param data node data (wrapped in a LocalData<T> instance)
 		 */
 		template<class T, template<typename> class S> Node<SyncDataPtr<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, T data) {
-			return Graph<SyncDataPtr<T>>::buildNode(id, SyncDataPtr<T>(new LocalData<T>(data)));
+			return Graph<SyncDataPtr<T>>::buildNode(id, SyncDataPtr<T>(new S<T>(id, this->getMpiCommunicator(), this->getProxy(), data)));
 		}
 
 		/**
@@ -258,7 +257,7 @@ namespace FPMAS {
 		 * @param data node data (wrapped in a LocalData<T> instance)
 		 */
 		template<class T, template<typename> class S> Node<SyncDataPtr<T>>* DistributedGraph<T, S>::buildNode(unsigned long id, float weight, T data) {
-			return Graph<SyncDataPtr<T>>::buildNode(id, weight, SyncDataPtr<T>(new LocalData<T>(data)));
+			return Graph<SyncDataPtr<T>>::buildNode(id, weight, SyncDataPtr<T>(new S<T>(id, this->getMpiCommunicator(), this->getProxy(), data)));
 		}
 
 		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getLocalData(unsigned long id) const {
@@ -273,7 +272,7 @@ namespace FPMAS {
 
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::updateData(unsigned long id, std::string data) {
 			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "updateData %lu : %s", id, data.c_str());
-			this->getNodes().at(id)->data()->acquire() = json::parse(data).get<T>();
+			this->getNodes().at(id)->data()->get() = json::parse(data).get<T>();
 		}
 
 		/**
