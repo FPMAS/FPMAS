@@ -23,30 +23,38 @@ enum State {
 
 class Agent {
 	private:
+		// Attributes
 		std::string label;
 		Role role;
 		State state = ALIVE;
 		int energy = 0;
+
+		// Actions
 		void eat(Agent&);
 		void die();
+
+		// Behaviors
 		void prey_behavior(NEIGHBORS) {};
 		void predator_behavior(NEIGHBORS);
 
 
 	public:
-		static int currentRank() {
-			int rank;
-			MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-			return rank;
-		}
+		// MPI Rank
+		static int currentRank();
+
+		// Constructors
 		Agent() {};
 		Agent(std::string label, Role role) : label(label), role(role) {}
 		Agent(std::string label, Role role, State state, int energy) : label(label), role(role), state(state), energy(energy) {}
-		void act(NEIGHBORS perceived_neighbors);
+
+		// Getters
 		const std::string getLabel() const;
 		const Role getRole() const;
 		const State getState() const;
 		int getEnergy() const;
+
+		// Action
+		void act(NEIGHBORS perceived_neighbors);
 
 };
 #endif

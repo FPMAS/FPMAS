@@ -1,5 +1,11 @@
 #include "prey_predator.h"
 
+int Agent::currentRank() {
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	return rank;
+}
+
 const std::string Agent::getLabel() const {
 	return label;
 }
@@ -18,6 +24,7 @@ int Agent::getEnergy() const {
 
 void Agent::eat(Agent& prey) {
 	FPMAS_LOGW(currentRank(), "PREDATOR", "%s eats %s", this->getLabel().c_str(), prey.getLabel().c_str());
+
 	prey.die();
 	energy++;
 }
@@ -27,14 +34,15 @@ void Agent::die() {
 }
 void Agent::predator_behavior(NEIGHBORS neighbors) {
 	for(auto node : neighbors) {
-		if(node->data()->read().role == PREY) {
-			Agent& neighbor = node->data()->acquire();
-			FPMAS_LOGW(currentRank(), "PREDATOR", "%s tries to eat %s!", label.c_str(), neighbor.label.c_str());
-			if(neighbor.state == ALIVE) {
-				this->eat(neighbor);
+		FPMAS_LOGI(currentRank(), "PREDATOR", "reading node %lu", node->getId());
+		Agent agent = node->data()->read();
+		if(agent.role == PREY) {
+			FPMAS_LOGW(currentRank(), "PREDATOR", "%s tries to eat %s!", label.c_str(), agent.label.c_str());
+			Agent& prey = node->data()->acquire();
+			if(prey.state == ALIVE) {
+				this->eat(prey);
 			} else {
-				FPMAS_LOGW(currentRank(), "PREDATOR", "%s missed %s...", label.c_str(), neighbor.label.c_str());
-
+				FPMAS_LOGW(currentRank(), "PREDATOR", "%s missed %s...", label.c_str(), prey.label.c_str());
 			}
 			node->data()->release();
 		}

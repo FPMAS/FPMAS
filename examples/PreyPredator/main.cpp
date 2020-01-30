@@ -24,7 +24,7 @@ int main(int argc, char* argv[]) {
 		FPMAS_LOGI(dg.getMpiCommunicator().getRank(), "MAIN", "Done...");
 
 		for(auto node : dg.getNodes()) {
-			FPMAS_LOGI(dg.getMpiCommunicator().getRank(), "MAIN", "Executing agent %lu", node.first);
+			FPMAS_LOGI(dg.getMpiCommunicator().getRank(), "MAIN", "Executing local agent %lu", node.first);
 			node.second->data()->acquire().act(
 					node.second->outNeighbors()
 					);
