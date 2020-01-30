@@ -71,8 +71,9 @@ include_directories(
 	)
 
 add_subdirectory(src/main)
-
 add_subdirectory(src/test)
+
+add_subdirectory(examples)
 
 # Doxygen
 find_package(Doxygen)

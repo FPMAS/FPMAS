@@ -23,24 +23,39 @@ using FPMAS::graph::parallel::synchro::HardSyncData;
 #define SYNCHRO HardSyncData
 
 void init(int argc, char* argv[]);
-void process(DistributedGraph<int, SYNCHRO>& dg);
-void buildGraph(DistributedGraph<int, SYNCHRO>& dg);
+template<template<typename> class S> void process(DistributedGraph<int, S>& dg);
+template<template<typename> class S> void buildGraph(DistributedGraph<int, S>& dg);
 
 
 int main(int argc, char* argv[]) {
 	init(argc, argv);
 
 	{
-		DistributedGraph<int, SYNCHRO> dg;
-		buildGraph(dg);
-
-		process(dg);
+		// NONE Mode
+		DistributedGraph<int, None> dg;
+		if(dg.getMpiCommunicator().getRank()==0) std::cout << "===== NONE Mode ======" << std::endl;
+		buildGraph<None>(dg);
+		process<None>(dg);
+	}
+	{
+		// GHOST Mode
+		DistributedGraph<int, GhostData> dg;
+		if(dg.getMpiCommunicator().getRank()==0) std::cout << "\n===== GHOST Mode =====" << std::endl;
+		buildGraph<GhostData>(dg);
+		process<GhostData>(dg);
+	}
+	{
+		// HARD_SYNC Mode
+		DistributedGraph<int, HardSyncData> dg;
+		if(dg.getMpiCommunicator().getRank()==0) std::cout << "\n=== HARD_SYNC Mode ===" << std::endl;
+		buildGraph<HardSyncData>(dg);
+		process<HardSyncData>(dg);
 	}
 
 	MPI_Finalize();
 }
 
-void buildGraph(DistributedGraph<int, SYNCHRO>& dg) {
+template<template<typename> class S> void buildGraph(DistributedGraph<int, S>& dg) {
 
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
@@ -56,7 +71,7 @@ void buildGraph(DistributedGraph<int, SYNCHRO>& dg) {
 
 using namespace std::chrono_literals;
 
-void process(DistributedGraph<int, SYNCHRO>& dg) {
+template<template<typename> class S> void process(DistributedGraph<int, S>& dg) {
 
 	// FIRST ITERATION
 	int sum1 = 0;
