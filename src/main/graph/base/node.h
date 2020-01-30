@@ -66,7 +66,9 @@ namespace FPMAS::graph::base {
 		float getWeight() const;
 		void setWeight(float);
 		std::vector<Arc<T>*> getIncomingArcs() const;
+		std::vector<Node<T>*> inNeighbors() const;
 		std::vector<Arc<T>*> getOutgoingArcs() const;
+		std::vector<Node<T>*> outNeighbors() const;
 
 	};
 
@@ -137,6 +139,13 @@ namespace FPMAS::graph::base {
 		return this->incomingArcs;
 	}
 
+	template<class T> std::vector<Node<T>*> Node<T>::inNeighbors() const {
+		std::vector<Node<T>*> neighbors;
+		for(auto arc : this->incomingArcs)
+			neighbors.push_back(arc->getSourceNode());
+		return neighbors;
+	}
+
 	/**
 	 * Returns a vector containing pointers to this node's outgoing arcs.
 	 *
@@ -144,6 +153,13 @@ namespace FPMAS::graph::base {
 	 */
 	template<class T> std::vector<Arc<T>*> Node<T>::getOutgoingArcs() const {
 		return this->outgoingArcs;
+	}
+
+	template<class T> std::vector<Node<T>*> Node<T>::outNeighbors() const {
+		std::vector<Node<T>*> neighbors;
+		for(auto arc : this->outgoingArcs)
+			neighbors.push_back(arc->getTargetNode());
+		return neighbors;
 	}
 }
 
