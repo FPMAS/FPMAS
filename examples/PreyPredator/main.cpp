@@ -1,7 +1,7 @@
 #include "serializer.h"
 #include "prey_predator.h"
 
-#define PREDATOR_COUNT 5
+#define PREDATOR_COUNT 3
 
 void init(int argc, char* argv[]);
 int main(int argc, char* argv[]) {
@@ -25,9 +25,12 @@ int main(int argc, char* argv[]) {
 
 		for(auto node : dg.getNodes()) {
 			FPMAS_LOGI(dg.getMpiCommunicator().getRank(), "MAIN", "Executing local agent %lu", node.first);
-			node.second->data()->acquire().act(
-					node.second->outNeighbors()
-					);
+			// Acquiring the local agents is important, because the local
+			// process might update the agent state, so other procs can't have
+			// access to it while it's acting.
+			node.second->data()->acquire()
+				.act(node.second->outNeighbors()); // Process agent
+			// Releases the current agent
 			node.second->data()->release();
 		}
 		dg.synchronize();

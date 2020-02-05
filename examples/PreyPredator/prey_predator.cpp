@@ -35,15 +35,26 @@ void Agent::die() {
 void Agent::predator_behavior(NEIGHBORS neighbors) {
 	for(auto node : neighbors) {
 		FPMAS_LOGI(currentRank(), "PREDATOR", "reading node %lu", node->getId());
+		// Reads the neighbor data : instantaneous if local, block until
+		// reception otherwise.
 		Agent agent = node->data()->read();
 		if(agent.role == PREY) {
 			FPMAS_LOGW(currentRank(), "PREDATOR", "%s tries to eat %s!", label.c_str(), agent.label.c_str());
+			// If the read agent is a PREY, we want to modify its internal
+			// state so we need to acquire it
 			Agent& prey = node->data()->acquire();
+			// The state of the PREY must be read while data is ACQUIRED!
+			// This ensures that no other predator can concurrently eat the prey
 			if(prey.state == ALIVE) {
+				// If its alive, this predator eats the prey.
+				// If other predators were waiting to try to eat the prey, they
+				// will receive an "eaten" prey when it is released from this
+				// proc.
 				this->eat(prey);
 			} else {
 				FPMAS_LOGW(currentRank(), "PREDATOR", "%s missed %s...", label.c_str(), prey.label.c_str());
 			}
+			// Releases the prey for other procs
 			node->data()->release();
 		}
 	}
