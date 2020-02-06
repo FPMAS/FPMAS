@@ -124,13 +124,39 @@ namespace FPMAS {
 			DistributedGraph<T, S>();
 			DistributedGraph<T, S>(std::initializer_list<int>);
 
+			/**
+			 * Returns a reference to the SyncMpiCommunicator used by this DistributedGraph.
+			 *
+			 * @return reference to the SyncMpiCommunicator associated to this graph
+			 */
 			SyncMpiCommunicator& getMpiCommunicator();
+
+			/**
+			 * Returns a const reference to the MpiCommunicator used by this
+			 * DistributedGraph.
+			 *
+			 * @return const reference to the mpiCommunicator associated to this graph
+			 */
 			const SyncMpiCommunicator& getMpiCommunicator() const;
 
-			Proxy& getProxy();
 
+			/**
+			 * Returns a reference to the GhostGraph currently associated to this
+			 * DistributedGraph.
+			 *
+			 * @return reference to the current GhostGraph
+			 */
 			GhostGraph<T, S>& getGhost();
+
+			/**
+			 * Returns a const reference to the GhostGraph currently associated to this
+			 * DistributedGraph.
+			 *
+			 * @return const reference to the current GhostGraph
+			 */
 			const GhostGraph<T, S>& getGhost() const;
+
+			Proxy& getProxy();
 
 			Node<SyncDataPtr<T>>* buildNode(unsigned long id, T data);
 			Node<SyncDataPtr<T>>* buildNode(unsigned long id, float weight, T data);
@@ -175,11 +201,7 @@ namespace FPMAS {
 				this->setUpZoltan();
 			}
 
-		/**
-		 * Returns a reference to the MpiCommunicator used by this DistributedGraph.
-		 *
-		 * @return const reference to the mpiCommunicator associated to this graph
-		 */
+
 		template<class T, template<typename> class S> SyncMpiCommunicator& DistributedGraph<T, S>::getMpiCommunicator() {
 			return this->mpiCommunicator;
 		}
@@ -196,12 +218,6 @@ namespace FPMAS {
 			return this->proxy;
 		}
 
-		/**
-		 * Returns a reference to the GhostGraph currently associated to this
-		 * DistributedGraph.
-		 *
-		 * @return reference to the current GhostGraph
-		 */
 		template<class T, template<typename> class S> GhostGraph<T, S>& DistributedGraph<T, S>::getGhost() {
 			return this->ghost;
 		}
@@ -260,19 +276,48 @@ namespace FPMAS {
 			return Graph<SyncDataPtr<T>>::buildNode(id, weight, SyncDataPtr<T>(new S<T>(id, this->getMpiCommunicator(), this->getProxy(), data)));
 		}
 
+		/**
+		 * ResourceContainer implementation.
+		 *
+		 * Serializes the *local node* corresponding to id.
+		 *
+		 * @return serialized data contained in the node corresponding to id
+		 */
 		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getLocalData(unsigned long id) const {
 			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getLocalData %lu", id);
 			return json(this->getNodes().at(id)->data()->get()).dump();
 		}
 
+		/**
+		 * ResourceContainer implementation.
+		 *
+		 * Serializes the *ghost data* corresponding to id.
+		 * If the current proc modifies distant data that it has acquired, such
+		 * data will actually be contained in a GhostNode and modifications
+		 * will be applied within the GhostNode.
+		 *
+		 * @return serialized updates to the data corresponding to id
+		 */
 		template<class T, template<typename> class S> std::string DistributedGraph<T, S>::getUpdatedData(unsigned long id) const {
 			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getUpdatedData %lu", id);
 			return json(this->getGhost().getNode(id)->data()->get()).dump();
 		}
 
+		/**
+		 * ResourceContainer implementation.
+		 *
+		 * Updates local data corresponding to id, unserializing it from the
+		 * specified string.
+		 *
+		 * This is called in HardSync mode when data has been
+		 * released from an other proc.
+		 *
+		 * @param id local data id
+		 * @param data serialized updates
+		 */
 		template<class T, template<typename> class S> void DistributedGraph<T, S>::updateData(unsigned long id, std::string data) {
 			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "updateData %lu : %s", id, data.c_str());
-			this->getNodes().at(id)->data()->get() = json::parse(data).get<T>();
+			this->getNodes().at(id)->data()->update(json::parse(data).get<T>());
 		}
 
 		/**

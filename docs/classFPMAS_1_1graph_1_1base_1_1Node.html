@@ -90,8 +90,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2899fc016dc04619d0561966c6613a58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2c784ebe18c2bb850de19ae71ac3392"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#ad2c784ebe18c2bb850de19ae71ac3392">getIncomingArcs</a> () const</td></tr>
 <tr class="separator:ad2c784ebe18c2bb850de19ae71ac3392"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbe903a064aaac7cd0194eef8f0c0689"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#afbe903a064aaac7cd0194eef8f0c0689">inNeighbors</a> () const</td></tr>
+<tr class="separator:afbe903a064aaac7cd0194eef8f0c0689"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd8979dd04100c75a36f9a0a4a5d8db4"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#afd8979dd04100c75a36f9a0a4a5d8db4">getOutgoingArcs</a> () const</td></tr>
 <tr class="separator:afd8979dd04100c75a36f9a0a4a5d8db4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adeb813cef1a800d13399cce379f14e72"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#adeb813cef1a800d13399cce379f14e72">outNeighbors</a> () const</td></tr>
+<tr class="separator:adeb813cef1a800d13399cce379f14e72"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -368,6 +372,42 @@ template&lt;class T &gt; </div>
 <p>Returns node's weight</p>
 <p>Default value set to 1., if weight has not been provided by the user. This weight might for example be used by graph partitionning functions to distribute the graph.</p>
 <dl class="section return"><dt>Returns</dt><dd>node's weight </dd></dl>
+
+</div>
+</div>
+<a id="afbe903a064aaac7cd0194eef8f0c0689"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbe903a064aaac7cd0194eef8f0c0689">&#9670;&nbsp;</a></span>inNeighbors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">FPMAS::graph::base::Node</a>&lt; T &gt;::inNeighbors</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the incoming neighbors list of this node, computed as source nodes of each incoming arc.</p>
+<dl class="section return"><dt>Returns</dt><dd>incoming neighbors list </dd></dl>
+
+</div>
+</div>
+<a id="adeb813cef1a800d13399cce379f14e72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adeb813cef1a800d13399cce379f14e72">&#9670;&nbsp;</a></span>outNeighbors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">FPMAS::graph::base::Node</a>&lt; T &gt;::outNeighbors</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns the outgoing neighbors list of this node, computed as target nodes of each outgoing arc.</p>
+<dl class="section return"><dt>Returns</dt><dd>outgoing neighbors list </dd></dl>
 
 </div>
 </div>

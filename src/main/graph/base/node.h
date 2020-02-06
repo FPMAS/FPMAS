@@ -139,6 +139,12 @@ namespace FPMAS::graph::base {
 		return this->incomingArcs;
 	}
 
+	/**
+	 * Returns the incoming neighbors list of this node, computed as source
+	 * nodes of each incoming arc.
+	 *
+	 * @return incoming neighbors list
+	 */
 	template<class T> std::vector<Node<T>*> Node<T>::inNeighbors() const {
 		std::vector<Node<T>*> neighbors;
 		for(auto arc : this->incomingArcs)
@@ -155,6 +161,12 @@ namespace FPMAS::graph::base {
 		return this->outgoingArcs;
 	}
 
+	/**
+	 * Returns the outgoing neighbors list of this node, computed as target
+	 * nodes of each outgoing arc.
+	 *
+	 * @return outgoing neighbors list
+	 */
 	template<class T> std::vector<Node<T>*> Node<T>::outNeighbors() const {
 		std::vector<Node<T>*> neighbors;
 		for(auto arc : this->outgoingArcs)

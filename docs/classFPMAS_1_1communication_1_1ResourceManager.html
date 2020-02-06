@@ -69,68 +69,34 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classFPMAS_1_1communication_1_1ResourceManager-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::communication::ResourceManager Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">FPMAS::communication::ResourceManager Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p><code>#include &lt;<a class="el" href="resource__manager_8h_source.html">resource_manager.h</a>&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for FPMAS::communication::ResourceManager:</div>
-<div class="dyncontent">
-<div class="center"><img src="classFPMAS_1_1communication_1_1ResourceManager__inherit__graph.png" border="0" usemap="#FPMAS_1_1communication_1_1ResourceManager_inherit__map" alt="Inheritance graph"/></div>
-<map name="FPMAS_1_1communication_1_1ResourceManager_inherit__map" id="FPMAS_1_1communication_1_1ResourceManager_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,50,181,91"/>
-<area shape="rect" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html" title=" " alt="" coords="242,5,411,61"/>
-<area shape="rect" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html" title=" " alt="" coords="229,86,424,127"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a50960eac9d605eb2294472baef4bfb0f"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a50960eac9d605eb2294472baef4bfb0f">getResource</a> (unsigned long id) const =0</td></tr>
-<tr class="separator:a50960eac9d605eb2294472baef4bfb0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad66731028a665ef83a84a6b53c379b29"><td class="memItemLeft" align="right" valign="top"><a id="ad66731028a665ef83a84a6b53c379b29"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>initRead</b> (unsigned long)</td></tr>
+<tr class="separator:ad66731028a665ef83a84a6b53c379b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d9fa7a5c399bb27d9e04940bec6bbb8"><td class="memItemLeft" align="right" valign="top"><a id="a3d9fa7a5c399bb27d9e04940bec6bbb8"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>releaseRead</b> (unsigned long)</td></tr>
+<tr class="separator:a3d9fa7a5c399bb27d9e04940bec6bbb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a029f2930eed5cf6d7c912cddde55541f"><td class="memItemLeft" align="right" valign="top"><a id="a029f2930eed5cf6d7c912cddde55541f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>initWrite</b> (unsigned long)</td></tr>
+<tr class="separator:a029f2930eed5cf6d7c912cddde55541f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac99a3fddb99e262d3b7a31307109e5b9"><td class="memItemLeft" align="right" valign="top"><a id="ac99a3fddb99e262d3b7a31307109e5b9"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>releaseWrite</b> (unsigned long)</td></tr>
+<tr class="separator:ac99a3fddb99e262d3b7a31307109e5b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bb2119e2afd3ac72878fc4ee50f2751"><td class="memItemLeft" align="right" valign="top"><a id="a6bb2119e2afd3ac72878fc4ee50f2751"></a>
+const <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> (unsigned long)</td></tr>
+<tr class="separator:a6bb2119e2afd3ac72878fc4ee50f2751"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac46e1400854e901d61eee798da04d4eb"><td class="memItemLeft" align="right" valign="top"><a id="ac46e1400854e901d61eee798da04d4eb"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()</td></tr>
+<tr class="separator:ac46e1400854e901d61eee798da04d4eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>An abstract class that must be implemented to provide application dependent serialized data to the <a class="el" href="classFPMAS_1_1communication_1_1TerminableMpiCommunicator.html">TerminableMpiCommunicator</a>. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a50960eac9d605eb2294472baef4bfb0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50960eac9d605eb2294472baef4bfb0f">&#9670;&nbsp;</a></span>getResource()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::string FPMAS::communication::ResourceManager::getResource </td>
-          <td>(</td>
-          <td class="paramtype">unsigned long&#160;</td>
-          <td class="paramname"><em>id</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns serialized data that correspond to the specified id.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">id</td><td>data id </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>serialized data </dd></dl>
-
-<p>Implemented in <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a55238567102d8a92514fc28e0f095b8e">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>, and <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a55238567102d8a92514fc28e0f095b8e">FPMAS::graph::parallel::DistributedGraph&lt; T, GhostData &gt;</a>.</p>
-
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/main/communication/<a class="el" href="resource__manager_8h_source.html">resource_manager.h</a></li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>src/main/communication/<a class="el" href="readers__writers_8h_source.html">readers_writers.h</a></li>
+<li>src/main/communication/readers_writers.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

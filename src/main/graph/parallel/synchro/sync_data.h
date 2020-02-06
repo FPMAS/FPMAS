@@ -63,11 +63,9 @@ namespace FPMAS::graph::parallel {
 				SyncData();
 				SyncData(T);
 
-
 			public:
-
 				const T& get() const;
-				T& get();
+				void update(T data);
 
 				/**
 				 * Returns a reference to the wrapped data. (default behavior)
@@ -116,8 +114,20 @@ namespace FPMAS::graph::parallel {
 			return this->data;
 		}
 
-		template<class T> T& SyncData<T>::get() {
-			return this->data;
+		/**
+		 * Updates internal data with the provided value.
+		 *
+		 * This function *should not* be used directly by a user, the proper
+		 * way to edit data being acquire() -> perform some modifications ->
+		 * release().
+		 *
+		 * This function is only used internally to actually updating data once
+		 * it has been released.
+		 *
+		 * @param data updated data
+		 */
+		template<class T> void SyncData<T>::update(T data) {
+			this->data = data;
 		}
 
 		/**
@@ -138,6 +148,9 @@ namespace FPMAS::graph::parallel {
 			return data;
 		}
 
+		/**
+		 * Releases data, allowing other procs to acquire and read it.
+		 */
 		template<class T> void SyncData<T>::release() {}
 
 		/**

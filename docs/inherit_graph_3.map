@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
 <area shape="rect" id="node1" href="$classFPMAS_1_1communication_1_1MpiCommunicator.html" title=" " alt="" coords="5,5,181,47"/>
-<area shape="rect" id="node2" href="$classFPMAS_1_1communication_1_1TerminableMpiCommunicator.html" title=" " alt="" coords="229,5,452,47"/>
+<area shape="rect" id="node2" href="$classFPMAS_1_1communication_1_1SyncMpiCommunicator.html" title=" " alt="" coords="229,5,411,47"/>
 </map>

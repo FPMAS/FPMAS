@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['acquire_0',['acquire',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a342ea648ba7599439e4e9a5b86a5bd75',1,'FPMAS::graph::parallel::synchro::SyncData']]],
+  ['acquire_0',['acquire',['../classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#ad3a2ddde03e20572a0219b5b9c9642b8',1,'FPMAS::communication::SyncMpiCommunicator::acquire()'],['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#aef7608f04d37444a444e3211e9add613',1,'FPMAS::graph::parallel::synchro::HardSyncData::acquire()'],['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a342ea648ba7599439e4e9a5b86a5bd75',1,'FPMAS::graph::parallel::synchro::SyncData::acquire()']]],
   ['adl_5fserializer_3c_20arc_3c_20t_20_3e_20_3e_1',['adl_serializer&lt; Arc&lt; T &gt; &gt;',['../structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html',1,'nlohmann']]],
   ['adl_5fserializer_3c_20graph_3c_20t_20_3e_20_3e_2',['adl_serializer&lt; Graph&lt; T &gt; &gt;',['../structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html',1,'nlohmann']]],
   ['adl_5fserializer_3c_20localdata_3c_20t_20_3e_20_3e_3',['adl_serializer&lt; LocalData&lt; T &gt; &gt;',['../structnlohmann_1_1adl__serializer_3_01LocalData_3_01T_01_4_01_4.html',1,'nlohmann']]],

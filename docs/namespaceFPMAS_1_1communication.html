@@ -77,9 +77,13 @@ $(function() {
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceContainer.html">ResourceContainer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html">ResourceManager</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1TerminableMpiCommunicator.html">TerminableMpiCommunicator</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
@@ -88,10 +92,16 @@ Enumerations</h2></td></tr>
 <b>PASSIVE</b>
  }</td></tr>
 <tr class="separator:a11ad0ee805e468b43f478b9f0937fc12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a85fade337ceb55f853d39699643fd577"><td class="memItemLeft" align="right" valign="top"><a id="a85fade337ceb55f853d39699643fd577"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Tag</b> : int { <b>READ</b>, 
+<tr class="memitem:a85fade337ceb55f853d39699643fd577"><td class="memItemLeft" align="right" valign="top"><a id="a85fade337ceb55f853d39699643fd577"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Tag</b> : int { <br />
+&#160;&#160;<b>READ</b>, 
+<b>READ_RESPONSE</b>, 
 <b>ACQUIRE</b>, 
+<b>ACQUIRE_RESPONSE</b>, 
+<br />
+&#160;&#160;<b>ACQUIRE_GIVE_BACK</b>, 
 <b>TOKEN</b>, 
 <b>END</b>
+<br />
  }</td></tr>
 <tr class="separator:a85fade337ceb55f853d39699643fd577"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4831523e38a55f0c958745475cbee2e5"><td class="memItemLeft" align="right" valign="top"><a id="a4831523e38a55f0c958745475cbee2e5"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Color</b> : int { <b>WHITE</b> = 0, 

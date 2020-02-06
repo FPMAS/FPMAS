@@ -10,7 +10,7 @@ using FPMAS::communication::Tag;
  * Builds a SyncMpiCommunicator containing all the procs available in
  * MPI_COMM_WORLD.
  *
- * @param resourceManager pointer to the ResourceManager instance that will be
+ * @param resourceContainer pointer to the ResourceContainer instance that will be
  * used to query serialized data.
  */
 SyncMpiCommunicator::SyncMpiCommunicator(ResourceContainer& resourceContainer)
@@ -20,12 +20,24 @@ SyncMpiCommunicator::SyncMpiCommunicator(ResourceContainer& resourceContainer)
  * Builds a SyncMpiCommunicator containing all the procs corresponding to
  * the provided ranks in MPI_COMM_WORLD.
  *
- * @param resourceManager pointer to the ResourceManager instance that will be
+ * @param resourceContainer pointer to the ResourceContainer instance that will be
  * used to query serialized data.
  * @param ranks ranks to include in the group / communicator
  */
 SyncMpiCommunicator::SyncMpiCommunicator(ResourceContainer& resourceContainer, std::initializer_list<int> ranks) : MpiCommunicator(ranks), resourceContainer(resourceContainer) {};
 
+/**
+ * Performs a reception cycle to handle.
+ *
+ * This function should not be used by the user, but is left public because it
+ * might be useful for unit testing.
+ *
+ * A call to this function will receive and handle at most one of each of the
+ * following requests types :
+ * - read request
+ * - acquire request
+ * - given back data
+ */
 void SyncMpiCommunicator::handleIncomingRequests() {
 	int flag;
 	MPI_Status req_status;
@@ -160,6 +172,14 @@ void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
 	this->resourceManager.releaseRead(id);
 }
 
+/**
+ * Performs a synchronized acquire operation of the data corresponding to id on
+ * the proc at the provided location, and returns the acquired serialized data.
+ *
+ * @param id id of the data to read
+ * @param location rank of the data location
+ * @return acquired serialized data
+ */
 std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 	if(location == this->getRank()) {
 		FPMAS_LOGD(location, "ACQUIRE", "acquiring local data %lu", id);
@@ -189,6 +209,13 @@ std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 	return std::string(data);
 }
 
+/**
+ * Gives back a previously acquired data to location proc, sending potential
+ * updates that occured while data was locally acquired.
+ *
+ * @param id id of the data to read
+ * @param location rank of the data location
+ */
 void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
 	if(location == this->getRank()) {
 		// No update needed, because modifications are already local.

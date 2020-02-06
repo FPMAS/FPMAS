@@ -292,10 +292,22 @@ namespace FPMAS::graph::parallel {
 		return this->ghostNodes;
 	}
 
+	/**
+	 * Returns a const pointer to the GhostNode corresponding to the specified
+	 * id.
+	 *
+	 * @return const pointer to GhostNode
+	 */
 	template<class T, template<typename> class S> const GhostNode<T, S>* GhostGraph<T, S>::getNode(unsigned long id) const {
 		return this->ghostNodes.at(id);
 	}
 
+	/**
+	 * Returns a const pointer to the GhostArc corresponding to the specified
+	 * id.
+	 *
+	 * @return const pointer to GhostArc
+	 */
 	template<class T, template<typename> class S> const GhostArc<T, S>* GhostGraph<T, S>::getArc(unsigned long id) const {
 		return this->ghostArcs.at(id);
 	}

@@ -103,6 +103,8 @@ namespace FPMAS::graph::parallel::synchro {
 		return this->data;
 	}
 
+	// TODO: This needs to be optimize!! no need to serialize when data is
+	// local...
 	template<class T> T& HardSyncData<T>::acquire() {
 		this->data = ((nlohmann::json) nlohmann::json::parse(
 				this->mpiComm.acquire(
