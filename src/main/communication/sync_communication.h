@@ -36,6 +36,7 @@ namespace FPMAS::communication {
 		 *
 		 */
 		class SyncMpiCommunicator : public MpiCommunicator {
+			friend ReadersWriters;
 			private:
 				State state = State::ACTIVE;
 				Color color = Color::WHITE;
@@ -47,8 +48,11 @@ namespace FPMAS::communication {
 				void send(std::string, int, Tag);
 				void waitSendRequest(MPI_Request*);
 
+				void handleRead(int, unsigned long);
 				void respondToRead(int, unsigned long);
+				void handleAcquire(int, unsigned long);
 				void respondToAcquire(int, unsigned long);
+				void handleGiveBack(std::string);
 
 				void waitForReading(unsigned long);
 				void waitForAcquire(unsigned long);

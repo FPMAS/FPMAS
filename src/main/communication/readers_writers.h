@@ -4,33 +4,31 @@
 #include <set>
 #include <vector>
 #include <unordered_map>
+#include <queue>
 
 namespace FPMAS::communication {
-
-
 	class SyncMpiCommunicator;
 
 	class ReadersWriters {
 		private:
-			int readCount = 0;
-			bool reading = false;
-			bool writing = false;
+			unsigned long id;
+			std::queue<int> read_requests;
+			std::queue<int> write_requests;
+			SyncMpiCommunicator* comm;
+			bool locked = false;
 
 		public:
-			void initRead();
-			void initWrite();
-			void releaseRead();
-			void releaseWrite();
-
-			bool isAvailableForReading() const;
-			bool isAvailableForWriting() const;
-			bool isFree() const;
-
+			ReadersWriters(unsigned long id, SyncMpiCommunicator* comm) : id(id), comm(comm) {}
+			void read(int destination);
+			void write(int destination);
+			void release();
+			bool isLocked() const;
 	};
 
 	class ResourceManager {
 		friend SyncMpiCommunicator;
 		private:
+			SyncMpiCommunicator* comm;
 			std::set<unsigned long> locallyAcquired;
 			std::unordered_map<unsigned long, std::vector<int>> pendingReads;
 			std::unordered_map<unsigned long, std::vector<int>> pendingAcquires;
@@ -40,15 +38,15 @@ namespace FPMAS::communication {
 			void addPendingAcquire(unsigned long id, int destination);
 
 			std::unordered_map<unsigned long, ReadersWriters> readersWriters;
+			void clear();
 
 		public:
-			void initRead(unsigned long);
-			void releaseRead(unsigned long);
-			void initWrite(unsigned long);
-			void releaseWrite(unsigned long);
+			ResourceManager(SyncMpiCommunicator* comm) : comm(comm) {};
+			void read(unsigned long, int);
+			void write(unsigned long, int);
+			void release(unsigned long);
 			const ReadersWriters& get(unsigned long);
 
-			void clear();
 
 	};
 
