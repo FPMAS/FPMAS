@@ -41,13 +41,6 @@ set(SOURCES
 	${SOURCES}
 	graph/parallel/proxy/proxy.cpp)
 
-# Agent
-set(SOURCES
-	${SOURCES}
-	agent/agent_base.cpp
-	agent/agent_container.cpp
-	)
-
 add_library(fpmas ${SOURCES})
 
 target_link_libraries(fpmas PUBLIC zoltan)
