@@ -313,7 +313,6 @@ void SyncMpiCommunicator::handleGiveBack(std::string data) {
  */
 void SyncMpiCommunicator::terminate() {
 	this->state = State::PASSIVE;
-	bool end = false;
 	int token;
 
 	if(this->getRank() == 0) {
@@ -324,17 +323,17 @@ void SyncMpiCommunicator::terminate() {
 
 	int flag;
 	MPI_Status status;
-	while(!end) {
+	while(true) {
 		// Check for TOKEN
 		MPI_Iprobe(MPI_ANY_SOURCE, Tag::TOKEN, this->getMpiComm(), &flag, &status);
 		if(flag > 0) {
 			MPI_Recv(&token, 1, MPI_INT, status.MPI_SOURCE, TOKEN, this->getMpiComm(), &status);
 			if(this->getRank() == 0) {
 				if(token == Color::WHITE && this->color == Color::WHITE) {
-					end = true;
 					for (int i = 1; i < this->getSize(); ++i) {
 						MPI_Ssend(NULL, 0, MPI_INT, i, Tag::END, this->getMpiComm());	
 					}
+					return;
 				} else {
 					this->color = Color::WHITE;
 					token = Color::WHITE;
@@ -354,7 +353,6 @@ void SyncMpiCommunicator::terminate() {
 		MPI_Iprobe(MPI_ANY_SOURCE, Tag::END, this->getMpiComm(), &flag, &status);
 		if(flag > 0) {
 			MPI_Recv(NULL, 0, MPI_INT, status.MPI_SOURCE, Tag::END, this->getMpiComm(), &status);
-			end = true;
 			this->resourceManager.clear();
 			return;
 		}
