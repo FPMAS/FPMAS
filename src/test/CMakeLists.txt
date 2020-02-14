@@ -19,6 +19,10 @@ set(SOURCES
 	${SOURCES}
 	graph/base/graph.cpp)
 
+set(SOURCES
+	${SOURCES}
+	graph/base/multi_graph.cpp)
+
 # Graph serialization
 set(SOURCES
 	${SOURCES}

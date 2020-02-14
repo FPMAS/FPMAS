@@ -259,11 +259,11 @@ namespace FPMAS {
 		/**
 		 * Builds a node with the specified id and data.
 		 *
-		 * The specified data is implicitly wrapped in a LocalData instance,
+		 * The specified data is implicitly wrapped in a SyncData instance,
 		 * for synchronization purpose.
 		 *
 		 * @param id node id
-		 * @param data node data (wrapped in a LocalData<T> instance)
+		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N> Node<SyncDataPtr<NODE_PARAMS_SPEC>>* DistributedGraph<T, S, LayerType, N>::buildNode(unsigned long id, T data) {
 			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>>::buildNode(id, SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(id, this->getMpiCommunicator(), this->getProxy(), data)));
@@ -272,12 +272,12 @@ namespace FPMAS {
 		/**
 		 * Builds a node with the specified id, weight and data.
 		 *
-		 * The specified data is implicitly wrapped in a LocalData instance,
+		 * The specified data is implicitly wrapped in a SyncData instance,
 		 * for synchronization purpose.
 		 *
 		 * @param id node id
 		 * @param weight node weight
-		 * @param data node data (wrapped in a LocalData<T> instance)
+		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N> Node<SyncDataPtr<NODE_PARAMS_SPEC>>* DistributedGraph<T, S, LayerType, N>::buildNode(unsigned long id, float weight, T data) {
 			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>>::buildNode(id, weight, SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(id, this->getMpiCommunicator(), this->getProxy(), data)));

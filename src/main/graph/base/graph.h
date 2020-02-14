@@ -204,7 +204,7 @@ namespace FPMAS {
 			 * @return pointer to built node
 			 */
 			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T data) {
-				NODE* node = new Node(id, data);
+				NODE* node = new NODE(id, data);
 				this->nodes[id] = node;
 				return node;
 			}
@@ -219,7 +219,7 @@ namespace FPMAS {
 			 * @return pointer to build node
 			 */
 			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T data) {
-				NODE* node = new Node(id, weight, data);
+				NODE* node = new NODE(id, weight, data);
 				this->nodes[id] = node;
 				return node;
 			}
