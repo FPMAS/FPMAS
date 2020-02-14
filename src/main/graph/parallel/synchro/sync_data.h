@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <nlohmann/json.hpp>
+#include "utils/macros.h"
 #include "zoltan_cpp.h"
 #include "../zoltan/zoltan_utils.h"
 #include "communication/sync_communication.h"
@@ -12,22 +13,22 @@ using FPMAS::communication::SyncMpiCommunicator;
 namespace FPMAS::graph::parallel {
 	namespace zoltan {
 		namespace node {
-			template<class T> void post_migrate_pp_fn_no_sync(
+			template<NODE_PARAMS> void post_migrate_pp_fn_no_sync(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
-			template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
+			template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_olz(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
 
 		}
 		namespace arc {
-			template<class T> void post_migrate_pp_fn_no_sync(
+			template<NODE_PARAMS> void post_migrate_pp_fn_no_sync(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
-			template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
+			template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_olz(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
-			template <class T, template<typename> class S> void mid_migrate_pp_fn(
+			template <NODE_PARAMS, SYNC_MODE> void mid_migrate_pp_fn(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
 		}
@@ -53,7 +54,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @tparam T wrapped data type
 		 */
-		template <class T> class SyncData {
+		template <NODE_PARAMS> class SyncData {
 
 			protected:
 				/**
@@ -93,7 +94,7 @@ namespace FPMAS::graph::parallel {
 		/**
 		 * Default constructor.
 		 */
-		template<class T> SyncData<T>::SyncData() {
+		template<NODE_PARAMS> SyncData<NODE_PARAMS_SPEC>::SyncData() {
 		}
 
 		/**
@@ -101,7 +102,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @param data data to wrap.
 		 */
-		template<class T> SyncData<T>::SyncData(T data) : data(data) {
+		template<NODE_PARAMS> SyncData<NODE_PARAMS_SPEC>::SyncData(T data) : data(data) {
 		}
 
 		/**
@@ -110,7 +111,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @return const reference to the current data
 		 */
-		template<class T> const T& SyncData<T>::get() const {
+		template<NODE_PARAMS> const T& SyncData<NODE_PARAMS_SPEC>::get() const {
 			return this->data;
 		}
 
@@ -126,7 +127,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @param data updated data
 		 */
-		template<class T> void SyncData<T>::update(T data) {
+		template<NODE_PARAMS> void SyncData<NODE_PARAMS_SPEC>::update(T data) {
 			this->data = data;
 		}
 
@@ -135,7 +136,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @return reference to wrapped data
 		 */
-		template<class T> T& SyncData<T>::acquire() {
+		template<NODE_PARAMS> T& SyncData<NODE_PARAMS_SPEC>::acquire() {
 			return data;
 		}
 
@@ -144,21 +145,21 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @return const reference to wrapped data
 		 */
-		template<class T> const T& SyncData<T>::read() {
+		template<NODE_PARAMS> const T& SyncData<NODE_PARAMS_SPEC>::read() {
 			return data;
 		}
 
 		/**
 		 * Releases data, allowing other procs to acquire and read it.
 		 */
-		template<class T> void SyncData<T>::release() {}
+		template<NODE_PARAMS> void SyncData<NODE_PARAMS_SPEC>::release() {}
 
 		/**
-		 * Smart pointer used as node data to store SyncData<T> instances in
+		 * Smart pointer used as node data to store SyncData<NODE_PARAMS_SPEC> instances in
 		 * the DistributedGraph.
 		 */
 		/*
-		 * Using SyncData<T>* pointers directly has Node data in the
+		 * Using SyncData<NODE_PARAMS_SPEC>* pointers directly has Node data in the
 		 * DistributedGraph (and in the GhostGraph) would require extra memory
 		 * management and storage at the Graph scale to manually delete (and copy, and
 		 * assign, etc) node data. Using this smart pointer instead avoid this,
@@ -166,31 +167,31 @@ namespace FPMAS::graph::parallel {
 		 * defined at the Graph scale as nodes are created or deleted.
 		 * TODO: Might be optimized thanks to move semantics?
 		 */
-		template<class T> class SyncDataPtr {
+		template<NODE_PARAMS> class SyncDataPtr {
 			private:
-				std::shared_ptr<SyncData<T>> syncData;
+				std::shared_ptr<SyncData<NODE_PARAMS_SPEC>> syncData;
 
 			public:
 				SyncDataPtr();
-				SyncDataPtr(SyncData<T>*);
+				SyncDataPtr(SyncData<NODE_PARAMS_SPEC>*);
 
 				/**
 				 * Member of pointer operator, that allows easy access to the
-				 * SyncData<T> pointer contained in this SyncDataPtr.
+				 * SyncData<NODE_PARAMS_SPEC> pointer contained in this SyncDataPtr.
 				 *
 				 * The return pointer is `const` so that the internal pointer can't be
 				 * changed externally.
 				 *
-				 * @return const pointer to the managed SyncData<T> instance
+				 * @return const pointer to the managed SyncData<NODE_PARAMS_SPEC> instance
 				 */
-				SyncData<T>* const operator->();
+				SyncData<NODE_PARAMS_SPEC>* const operator->();
 
 				/**
 				 * Const version of the member of pointer operator.
 				 *
-				 * @return const pointer to the const SyncData<T> instance
+				 * @return const pointer to the const SyncData<NODE_PARAMS_SPEC> instance
 				 */
-				const SyncData<T>* const operator->() const;
+				const SyncData<NODE_PARAMS_SPEC>* const operator->() const;
 
 		};
 
@@ -200,23 +201,23 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * Builds a void SyncDataPtr instance.
 		 */
-		template<class T> SyncDataPtr<T>::SyncDataPtr(){
+		template<NODE_PARAMS> SyncDataPtr<NODE_PARAMS_SPEC>::SyncDataPtr(){
 		}
 
 		/**
 		 * Builds a SyncDataPtr instance that manages the provided SyncData
 		 * pointer.
 		 *
-		 * @param syncData SyncData<T> pointer
+		 * @param syncData SyncData<NODE_PARAMS_SPEC> pointer
 		 */
-		template<class T> SyncDataPtr<T>::SyncDataPtr(SyncData<T>* syncData)
-			: syncData(std::shared_ptr<SyncData<T>>(syncData)) {}
+		template<NODE_PARAMS> SyncDataPtr<NODE_PARAMS_SPEC>::SyncDataPtr(SyncData<NODE_PARAMS_SPEC>* syncData)
+			: syncData(std::shared_ptr<SyncData<NODE_PARAMS_SPEC>>(syncData)) {}
 
-		template<class T> SyncData<T>* const SyncDataPtr<T>::operator->() {
+		template<NODE_PARAMS> SyncData<NODE_PARAMS_SPEC>* const SyncDataPtr<NODE_PARAMS_SPEC>::operator->() {
 			return this->syncData.get();
 		}
 
-		template<class T> const SyncData<T>* const SyncDataPtr<T>::operator->() const {
+		template<NODE_PARAMS> const SyncData<NODE_PARAMS_SPEC>* const SyncDataPtr<NODE_PARAMS_SPEC>::operator->() const {
 			return this->syncData.get();
 		}
 	}
@@ -233,8 +234,8 @@ namespace nlohmann {
 	 * instance, because this data wrapper is not supposed to be used directly,
 	 * but must be unserialized as a concrete LocalData instance for example.
 	 */
-    template <class T>
-    struct adl_serializer<SyncDataPtr<T>> {
+    template <NODE_PARAMS>
+    struct adl_serializer<SyncDataPtr<NODE_PARAMS_SPEC>> {
 		/**
 		 * Serializes the data wrapped in the provided SyncData instance.
 		 *
@@ -243,7 +244,7 @@ namespace nlohmann {
 		 * @param j json to serialize to
 		 * @param data reference to SyncData to serialize
 		 */
-		static void to_json(json& j, const SyncDataPtr<T>& data) {
+		static void to_json(json& j, const SyncDataPtr<NODE_PARAMS_SPEC>& data) {
 			j = data->get();
 		}
 

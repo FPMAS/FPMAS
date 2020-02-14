@@ -23,8 +23,8 @@ using FPMAS::graph::parallel::synchro::HardSyncData;
 #define SYNCHRO HardSyncData
 
 void init(int argc, char* argv[]);
-template<template<typename> class S> void process(DistributedGraph<int, S>& dg);
-template<template<typename> class S> void buildGraph(DistributedGraph<int, S>& dg);
+template<SYNC_MODE> void process(DistributedGraph<int, S>& dg);
+template<SYNC_MODE> void buildGraph(DistributedGraph<int, S>& dg);
 
 
 int main(int argc, char* argv[]) {
@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 	MPI_Finalize();
 }
 
-template<template<typename> class S> void buildGraph(DistributedGraph<int, S>& dg) {
+template<SYNC_MODE> void buildGraph(DistributedGraph<int, S>& dg) {
 
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
@@ -71,7 +71,7 @@ template<template<typename> class S> void buildGraph(DistributedGraph<int, S>& d
 
 using namespace std::chrono_literals;
 
-template<template<typename> class S> void process(DistributedGraph<int, S>& dg) {
+template<SYNC_MODE> void process(DistributedGraph<int, S>& dg) {
 
 	// FIRST ITERATION
 	int sum1 = 0;

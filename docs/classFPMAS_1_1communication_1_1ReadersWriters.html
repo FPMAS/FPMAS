@@ -75,27 +75,21 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:af66f8357c34037b5dbf33242e2757b1d"><td class="memItemLeft" align="right" valign="top"><a id="af66f8357c34037b5dbf33242e2757b1d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initRead</b> ()</td></tr>
-<tr class="separator:af66f8357c34037b5dbf33242e2757b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a75f2b5ab702595c9eb0f2add6a72805e"><td class="memItemLeft" align="right" valign="top"><a id="a75f2b5ab702595c9eb0f2add6a72805e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initWrite</b> ()</td></tr>
-<tr class="separator:a75f2b5ab702595c9eb0f2add6a72805e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:affb67dc56eea4107e0d7ca25c4598ef2"><td class="memItemLeft" align="right" valign="top"><a id="affb67dc56eea4107e0d7ca25c4598ef2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>releaseRead</b> ()</td></tr>
-<tr class="separator:affb67dc56eea4107e0d7ca25c4598ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65347b525f1b1725b45fdd03f2dbd34e"><td class="memItemLeft" align="right" valign="top"><a id="a65347b525f1b1725b45fdd03f2dbd34e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>releaseWrite</b> ()</td></tr>
-<tr class="separator:a65347b525f1b1725b45fdd03f2dbd34e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a630de02fc6b4c5e5a94e154f4a84a27f"><td class="memItemLeft" align="right" valign="top"><a id="a630de02fc6b4c5e5a94e154f4a84a27f"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isAvailableForReading</b> () const</td></tr>
-<tr class="separator:a630de02fc6b4c5e5a94e154f4a84a27f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02f145f1a5548486d6bd4134c421a258"><td class="memItemLeft" align="right" valign="top"><a id="a02f145f1a5548486d6bd4134c421a258"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isAvailableForWriting</b> () const</td></tr>
-<tr class="separator:a02f145f1a5548486d6bd4134c421a258"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40083e7255b92132a97591c0eef51be9"><td class="memItemLeft" align="right" valign="top"><a id="a40083e7255b92132a97591c0eef51be9"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isFree</b> () const</td></tr>
-<tr class="separator:a40083e7255b92132a97591c0eef51be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29c8504a1be3bd75b1fa2a20beb1ad53"><td class="memItemLeft" align="right" valign="top"><a id="a29c8504a1be3bd75b1fa2a20beb1ad53"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>ReadersWriters</b> (unsigned long id, <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> *comm)</td></tr>
+<tr class="separator:a29c8504a1be3bd75b1fa2a20beb1ad53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ec4281d04ca641ca888812a246ae254"><td class="memItemLeft" align="right" valign="top"><a id="a2ec4281d04ca641ca888812a246ae254"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> (int destination)</td></tr>
+<tr class="separator:a2ec4281d04ca641ca888812a246ae254"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a506ced81602cc96620fdd280ca27e4df"><td class="memItemLeft" align="right" valign="top"><a id="a506ced81602cc96620fdd280ca27e4df"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (int destination)</td></tr>
+<tr class="separator:a506ced81602cc96620fdd280ca27e4df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ebc42f73dc486965d526bcf0046c4f2"><td class="memItemLeft" align="right" valign="top"><a id="a3ebc42f73dc486965d526bcf0046c4f2"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>release</b> ()</td></tr>
+<tr class="separator:a3ebc42f73dc486965d526bcf0046c4f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6b9f2b825db3cd44c0506dd025e6c1a"><td class="memItemLeft" align="right" valign="top"><a id="ab6b9f2b825db3cd44c0506dd025e6c1a"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>isLocked</b> () const</td></tr>
+<tr class="separator:ab6b9f2b825db3cd44c0506dd025e6c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/main/communication/<a class="el" href="readers__writers_8h_source.html">readers_writers.h</a></li>

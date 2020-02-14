@@ -18,7 +18,7 @@ enum State {
 	ALIVE, DEAD
 };
 
-#define NEIGHBORS std::vector<Node<SyncDataPtr<Agent>>*>
+#define NEIGHBORS std::vector<Node<SyncDataPtr<Agent, DefaultLayer, 1>, DefaultLayer, 1>*>
 
 
 class Agent {

@@ -9,7 +9,7 @@ using FPMAS::graph::parallel::proxy::Proxy;
 
 
 namespace FPMAS::graph::parallel {
-	template<class T, template<typename> class S> class DistributedGraph;
+	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
 
 	using parallel::DistributedGraph;
 }
@@ -37,7 +37,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @tparam wrapped data type
 		 */
-		template<class T> class GhostData : public SyncData<T> {
+		template<NODE_PARAMS> class GhostData : public SyncData<NODE_PARAMS_SPEC> {
 
 			public:
 				GhostData(unsigned long, SyncMpiCommunicator&, const Proxy&);
@@ -53,16 +53,16 @@ namespace FPMAS::graph::parallel {
 				 * DistributedGraph<T,S>::synchronize() call. In this mode,
 				 * ghost data is automatically updated from other procs.
 				 */
-				static void termination(DistributedGraph<T, GhostData>* dg) {
+				static void termination(DistributedGraph<T, GhostData, LayerType, N>* dg) {
 					dg->getGhost().synchronize();
 				}
 
 		};
-		template<class T> const zoltan::utils::zoltan_query_functions GhostData<T>::config
+		template<NODE_PARAMS> const zoltan::utils::zoltan_query_functions GhostData<NODE_PARAMS_SPEC>::config
 			(
-			 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, GhostData>,
-			 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, GhostData>,
-			 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, GhostData>
+			 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, GhostData>,
+			 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, GhostData>,
+			 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<NODE_PARAMS_SPEC, GhostData>
 			);
 
 		/**
@@ -76,7 +76,7 @@ namespace FPMAS::graph::parallel {
 		 */
 		// The mpiCommunicator is not used for the GhostData mode, but the
 		// constructors are defined to allow template genericity
-		template<class T> GhostData<T>::GhostData(
+		template<NODE_PARAMS> GhostData<NODE_PARAMS_SPEC>::GhostData(
 				unsigned long id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy) {
@@ -91,12 +91,12 @@ namespace FPMAS::graph::parallel {
 		 * DistributedGraph
 		 * @param proxy graph proxy
 		 */
-		template<class T> GhostData<T>::GhostData(
+		template<NODE_PARAMS> GhostData<NODE_PARAMS_SPEC>::GhostData(
 				unsigned long id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				T data)
-			: SyncData<T>(data) {
+			: SyncData<NODE_PARAMS_SPEC>(data) {
 			}
 	}
 #endif

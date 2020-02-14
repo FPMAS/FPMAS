@@ -5,6 +5,7 @@
 
 #include "zoltan_cpp.h"
 
+#include "utils/macros.h"
 #include "zoltan_utils.h"
 #include "../synchro/sync_data.h"
 #include "../synchro/local_data.h"
@@ -17,7 +18,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<class T, template<typename> class S> class DistributedGraph;
+	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
 
 	using synchro::None;
 	using synchro::SyncDataPtr;
@@ -47,7 +48,7 @@ namespace FPMAS::graph::parallel {
 		 * @param sizes Result : buffer sizes for each node
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S> void obj_size_multi_fn(
+		template<NODE_PARAMS, SYNC_MODE> void obj_size_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -58,10 +59,10 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 
-			DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
-			std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes = graph->getNodes();
+			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+			std::unordered_map<unsigned long, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> nodes = graph->getNodes();
 			for (int i = 0; i < num_ids; i++) {
-				Node<SyncDataPtr<T>>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 				if(graph->node_serialization_cache.count(node->getId()) == 1) {
 					sizes[i] = graph->node_serialization_cache.at(node->getId()).size()+1;
@@ -100,7 +101,7 @@ namespace FPMAS::graph::parallel {
 		 * @param buf communication buffer
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S> void pack_obj_multi_fn(
+		template<NODE_PARAMS, SYNC_MODE> void pack_obj_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -113,7 +114,7 @@ namespace FPMAS::graph::parallel {
 				char *buf,
 				int *ierr) {
 
-			DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
 			// The node should actually be serialized when computing
 			// the required buffer size. For efficiency purpose, we temporarily
 			// store the result and delete it when it is packed.
@@ -148,7 +149,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ierr Result : error code
 		 *
 		 */
-		template<class T, template<typename> class S> void unpack_obj_multi_fn(
+		template<NODE_PARAMS, SYNC_MODE> void unpack_obj_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_ids,
@@ -158,11 +159,11 @@ namespace FPMAS::graph::parallel {
 				char *buf,
 				int *ierr) {
 
-			DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
 			for (int i = 0; i < num_ids; i++) {
 				json json_node = json::parse(&buf[idx[i]]);
 
-				Node<LocalData<T>> node = json_node.get<Node<LocalData<T>>>();
+				Node<LocalData<NODE_PARAMS_SPEC>, LayerType, N> node = json_node.get<Node<LocalData<NODE_PARAMS_SPEC>, LayerType, N>>();
 
 				if(graph->getGhost().getNodes().count(node.getId()) > 0)
 					graph->obsoleteGhosts.insert(node.getId());
@@ -206,7 +207,7 @@ namespace FPMAS::graph::parallel {
 		 * @param export_to_part parts to which objects will be exported
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
+		template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_olz(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -222,20 +223,20 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
 
-			std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes = graph->getNodes();
+			std::unordered_map<unsigned long, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> nodes = graph->getNodes();
 			// Set used to ensure that each arc is sent at most once to
 			// each process.
 			std::set<std::pair<unsigned long, int>> exportedArcPairs;
 
-			std::vector<Arc<SyncDataPtr<T>>*> arcsToExport;
+			std::vector<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			for (int i =0; i < num_export; i++) {
 				unsigned long id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
 
-				Node<SyncDataPtr<T>>* exported_node = nodes.at(id);
+				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* exported_node = nodes.at(id);
 				int dest_proc = export_procs[i];
 
 				// Updates Proxy
@@ -312,7 +313,7 @@ namespace FPMAS::graph::parallel {
 		 * @param export_to_part parts to which objects will be exported
 		 * @param ierr Result : error code
 		 */
-		template<class T> void post_migrate_pp_fn_no_sync(
+		template<NODE_PARAMS> void post_migrate_pp_fn_no_sync(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -328,9 +329,9 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraph<T, None>* graph = (DistributedGraph<T, None>*) data;
+			DistributedGraph<T, None, LayerType, N>* graph =(DistributedGraph<T, None, LayerType, N>*) data;
 
-			std::vector<Arc<SyncDataPtr<T>>*> arcsToExport;
+			std::vector<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			std::unordered_map<unsigned long, int> nodeDestinations;
@@ -340,7 +341,7 @@ namespace FPMAS::graph::parallel {
 			}
 
 			for (auto nodeDest : nodeDestinations) {
-				Node<SyncDataPtr<T>>* exported_node = graph->getNodes().at(nodeDest.first);
+				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* exported_node = graph->getNodes().at(nodeDest.first);
 
 				// Updates Proxy for consistency, even if should no ghost are used
 				graph->getProxy().setCurrentLocation(nodeDest.first, nodeDest.second);

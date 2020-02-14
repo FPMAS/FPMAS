@@ -108,10 +108,10 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a8d5bbe54966a93c3389ff3788b727c4f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a8d5bbe54966a93c3389ff3788b727c4f">incomingArcs</a></td></tr>
-<tr class="separator:a8d5bbe54966a93c3389ff3788b727c4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64560b12d4b07d3f4c178f38320c7384"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a64560b12d4b07d3f4c178f38320c7384">outgoingArcs</a></td></tr>
-<tr class="separator:a64560b12d4b07d3f4c178f38320c7384"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab33edb3972b4cbaa3f2a7aff18511632"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#ab33edb3972b4cbaa3f2a7aff18511632">defaultIncomingArcs</a></td></tr>
+<tr class="separator:ab33edb3972b4cbaa3f2a7aff18511632"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab77b17cf8230ced5991ab5c485fe882"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#aab77b17cf8230ced5991ab5c485fe882">defaultoutgoingArcs</a></td></tr>
+<tr class="separator:aab77b17cf8230ced5991ab5c485fe882"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -294,7 +294,7 @@ template&lt;class T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Reference to node's data.</p>
+<p>List of pointers to incoming arcs. List of pointers to outgoing arcs. Reference to node's data.</p>
 <dl class="section return"><dt>Returns</dt><dd>reference to node's data </dd></dl>
 
 </div>
@@ -439,8 +439,8 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a8d5bbe54966a93c3389ff3788b727c4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8d5bbe54966a93c3389ff3788b727c4f">&#9670;&nbsp;</a></span>incomingArcs</h2>
+<a id="ab33edb3972b4cbaa3f2a7aff18511632"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab33edb3972b4cbaa3f2a7aff18511632">&#9670;&nbsp;</a></span>defaultIncomingArcs</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -451,7 +451,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt;T&gt;*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">FPMAS::graph::base::Node</a>&lt; T &gt;::incomingArcs</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt;T&gt;*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">FPMAS::graph::base::Node</a>&lt; T &gt;::defaultIncomingArcs</td>
         </tr>
       </table>
   </td>
@@ -460,12 +460,15 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>List of pointers to incoming arcs. </p>
+<ul>
+<li>List of pointers to default incoming arcs. <br  />
+ </li>
+</ul>
 
 </div>
 </div>
-<a id="a64560b12d4b07d3f4c178f38320c7384"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64560b12d4b07d3f4c178f38320c7384">&#9670;&nbsp;</a></span>outgoingArcs</h2>
+<a id="aab77b17cf8230ced5991ab5c485fe882"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab77b17cf8230ced5991ab5c485fe882">&#9670;&nbsp;</a></span>defaultoutgoingArcs</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -476,7 +479,7 @@ template&lt;class T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt;T&gt;*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">FPMAS::graph::base::Node</a>&lt; T &gt;::outgoingArcs</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt;T&gt;*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">FPMAS::graph::base::Node</a>&lt; T &gt;::defaultoutgoingArcs</td>
         </tr>
       </table>
   </td>
@@ -485,7 +488,10 @@ template&lt;class T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>List of pointers to outgoing arcs. </p>
+<ul>
+<li>List of pointers to default outgoing arcs. <br  />
+ </li>
+</ul>
 
 </div>
 </div>

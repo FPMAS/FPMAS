@@ -35,7 +35,7 @@ namespace FPMAS::graph::base {
 	 * See the DistributedGraph<T>::distribute() and Graph<T>::removeNode()
 	 * functions implementation for concrete usage examples.
 	 */
-	template<class T> class FossilArcs {
+	template<class A> class FossilArcs {
 		public:
 			/**
 			 * Set of arcs that remain partially connected after their target
@@ -43,7 +43,7 @@ namespace FPMAS::graph::base {
 			 * Trying to access the target node pointer of those arcs will
 			 * raise an error.
 			 */
-			std::set<Arc<T>*> incomingArcs;
+			std::set<A*> incomingArcs;
 
 			/**
 			 * Set of arcs that remain partially connected after their source
@@ -51,9 +51,9 @@ namespace FPMAS::graph::base {
 			 * Trying to access the source node pointer of those arcs will
 			 * raise an error.
 			 */
-			std::set<Arc<T>*> outgoingArcs;
+			std::set<A*> outgoingArcs;
 
-			void merge(FossilArcs<T>);
+			void merge(FossilArcs<A>);
 	};
 
 	/**

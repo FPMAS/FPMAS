@@ -138,7 +138,7 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_EQ(dg.getArcs().size(), 1);
 
-	Arc<SyncDataPtr<int>>* arc = dg.getArcs().begin()->second;
+	Arc<SyncDataPtr<int, DefaultLayer, 1>>* arc = dg.getArcs().begin()->second;
 	for(auto node : dg.getNodes()) {
 		if(node.second->getIncomingArcs().size() == 1) {
 			ASSERT_EQ(arc->getTargetNode()->getId(), node.second->getId());

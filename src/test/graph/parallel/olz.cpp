@@ -30,7 +30,7 @@ class Mpi_OlzTest : public ::testing::Test {
 
 TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 	// Builds ghost node from node 2
-	Node<SyncDataPtr<int>> node = *(dg.getNode(2ul));	
+	Node<SyncDataPtr<int, DefaultLayer, 1>> node = *(dg.getNode(2ul));	
 	dg.getGhost().buildNode(node);
 
 	// Node 0 is linked to the ghost node

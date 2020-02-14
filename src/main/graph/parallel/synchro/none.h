@@ -6,6 +6,21 @@
 #include "graph/parallel/proxy/proxy.h"
 
 using FPMAS::graph::parallel::proxy::Proxy;
+/*
+ *namespace FPMAS::graph::parallel::zoltan {
+ *        namespace node {
+ *            template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_no_sync(
+ *                    ZOLTAN_MID_POST_MIGRATE_ARGS
+ *                    );
+ *        }
+ *        namespace arc {
+ *            template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_no_sync(
+ *                    ZOLTAN_MID_POST_MIGRATE_ARGS
+ *                    );
+ *        }
+ *    }
+ */
+
 
 namespace FPMAS::graph::parallel::synchro {
 	/**
@@ -16,7 +31,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * When a node is exported, its connections with nodes that are not
 	 * exported on the same process are lost.
 	 */
-	template<class T> class None : public SyncData<T> {
+	template<NODE_PARAMS> class None : public SyncData<NODE_PARAMS_SPEC> {
 		public:
 			/**
 			 * Zoltan config associated to the None synchronization
@@ -40,12 +55,12 @@ namespace FPMAS::graph::parallel::synchro {
 			 * DistributedGraph<T,S>::synchronize() call : does not do anything
 			 * in this mode.
 			 */
-			static void termination(DistributedGraph<T, None>* dg) {}
+			static void termination(DistributedGraph<T, None, LayerType, N>* dg) {}
 	};
-	template<class T> const zoltan::utils::zoltan_query_functions None<T>::config
+	template<NODE_PARAMS> const zoltan::utils::zoltan_query_functions None<NODE_PARAMS_SPEC>::config
 		(
-		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T>,
-		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T>,
+		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<NODE_PARAMS_SPEC>,
+		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<NODE_PARAMS_SPEC>,
 		 NULL
 		);
 }

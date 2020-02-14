@@ -2,33 +2,41 @@
 #define NODE_H
 
 #include <nlohmann/json.hpp>
+#include <array>
 
 #include "graph_item.h"
 #include "graph.h"
 #include "arc.h"
 #include "fossil.h"
+#include "layer.h"
 
 namespace FPMAS::graph::base {
 
-	template<class T> class Graph;
-	template<class T> class Arc;
+	template<NODE_PARAMS> class Node;
+	template<NODE_PARAMS> class Graph;
+	template<NODE_PARAMS> class Arc;
 
 	/**
 	 * Graph node.
 	 *
 	 * @tparam T associated data type
 	 */
-	template<class T> class Node : public GraphItem {
-		friend Node<T> nlohmann::adl_serializer<Node<T>>::from_json(const json&);
-		friend Arc<T> nlohmann::adl_serializer<Arc<T>>::from_json(const json&);
+	template<
+		class T,
+		typename LayerType = DefaultLayer,
+		int N = 1
+	>
+	class Node : public GraphItem {
+		friend NODE nlohmann::adl_serializer<NODE>::from_json(const json&);
+		friend ARC nlohmann::adl_serializer<ARC>::from_json(const json&);
 		// Grants access to incoming and outgoing arcs lists
-		friend Arc<T>::Arc(unsigned long, Node<T>*, Node<T>*);
+		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerType);
 		// Grants access to private Node constructor
-		friend Node<T>* Graph<T>::buildNode(unsigned long);
-		friend Node<T>* Graph<T>::buildNode(unsigned long id, T data);
-		friend Node<T>* Graph<T>::buildNode(unsigned long id, float weight, T data);
+		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long);
+		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T data);
+		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T data);
 		// Allows removeNode function to remove deleted arcs
-		friend bool Graph<T>::unlink(Arc<T>*);
+		friend bool Graph<NODE_PARAMS_SPEC>::unlink(ARC*);
 
 		protected:
 		Node(unsigned long);
@@ -38,16 +46,18 @@ namespace FPMAS::graph::base {
 		private:
 		T _data;
 		float weight = 1.;
+		std::array<Layer<NODE_PARAMS_SPEC>, N> layers;
+		Layer<NODE_PARAMS_SPEC>& layer(LayerType layer);
 
-		protected:
+		// protected:
 		/**
 		 * List of pointers to incoming arcs.
 		 */
-		std::vector<Arc<T>*> incomingArcs;
+		// std::vector<ARC*> incomingArcs;
 		/**
 		 * List of pointers to outgoing arcs.
 		 */
-		std::vector<Arc<T>*> outgoingArcs;
+		// std::vector<ARC*> outgoingArcs;
 
 		public:
 		/**
@@ -65,10 +75,13 @@ namespace FPMAS::graph::base {
 
 		float getWeight() const;
 		void setWeight(float);
-		std::vector<Arc<T>*> getIncomingArcs() const;
-		std::vector<Node<T>*> inNeighbors() const;
-		std::vector<Arc<T>*> getOutgoingArcs() const;
-		std::vector<Node<T>*> outNeighbors() const;
+
+		const Layer<NODE_PARAMS_SPEC>& layer(LayerType layer) const;
+
+		std::vector<ARC*> getIncomingArcs() const;
+		std::vector<NODE*> inNeighbors() const;
+		std::vector<ARC*> getOutgoingArcs() const;
+		std::vector<NODE*> outNeighbors() const;
 
 	};
 
@@ -77,7 +90,10 @@ namespace FPMAS::graph::base {
 	 *
 	 * @param id node id
 	 */
-	template<class T> Node<T>::Node(unsigned long id) : GraphItem(id) {
+	template<NODE_PARAMS> NODE::Node(unsigned long id) : GraphItem(id) {
+		for (int i = 0; i < N; i++) {
+			this->layers[i] = Layer<NODE_PARAMS_SPEC>();
+		}
 	}
 
 	/**
@@ -86,7 +102,7 @@ namespace FPMAS::graph::base {
 	 * @param id node id
 	 * @param data pointer to node data
 	 */
-	template<class T> Node<T>::Node(unsigned long id, T data) : GraphItem(id), _data(data) {
+	template<NODE_PARAMS> NODE::Node(unsigned long id, T data) : GraphItem(id), _data(data) {
 	}
 
 	/**
@@ -96,15 +112,15 @@ namespace FPMAS::graph::base {
 	 * @param weight node weight
 	 * @param data node data
 	 */
-	template<class T> Node<T>::Node(unsigned long id, float weight, T data) : GraphItem(id), weight(weight), _data(data) {
+	template<NODE_PARAMS> NODE::Node(unsigned long id, float weight, T data) : GraphItem(id), weight(weight), _data(data) {
 	}
 
 
-	template<class T> T& Node<T>::data() {
+	template<NODE_PARAMS> T& NODE::data() {
 		return this->_data;
 	}
 
-	template<class T> const T& Node<T>::data() const {
+	template<NODE_PARAMS> const T& NODE::data() const {
 		return this->_data;
 	}
 
@@ -117,7 +133,7 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return node's weight
 	 */
-	template<class T> float Node<T>::getWeight() const {
+	template<NODE_PARAMS> float NODE::getWeight() const {
 		return this->weight;
 	}
 
@@ -126,8 +142,16 @@ namespace FPMAS::graph::base {
 	 *
 	 * @param weight
 	 */
-	template<class T> void Node<T>::setWeight(float weight) {
+	template<NODE_PARAMS> void NODE::setWeight(float weight) {
 		this->weight = weight;
+	}
+
+	template<NODE_PARAMS> Layer<NODE_PARAMS_SPEC>& NODE::layer(LayerType layer) {
+		return this->layers[layer];
+	}
+
+	template<NODE_PARAMS> const Layer<NODE_PARAMS_SPEC>& NODE::layer(LayerType layer) const {
+		return this->layers[layer];
 	}
 
 	/**
@@ -135,8 +159,8 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return pointers to incoming arcs
 	 */
-	template<class T> std::vector<Arc<T>*> Node<T>::getIncomingArcs() const {
-		return this->incomingArcs;
+	template<NODE_PARAMS> std::vector<ARC*> NODE::getIncomingArcs() const {
+		return this->layers[0].getIncomingArcs();
 	}
 
 	/**
@@ -145,9 +169,9 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return incoming neighbors list
 	 */
-	template<class T> std::vector<Node<T>*> Node<T>::inNeighbors() const {
-		std::vector<Node<T>*> neighbors;
-		for(auto arc : this->incomingArcs)
+	template<NODE_PARAMS> std::vector<NODE*> NODE::inNeighbors() const {
+		std::vector<NODE*> neighbors;
+		for(auto arc : this->layers[0].getIncomingArcs())
 			neighbors.push_back(arc->getSourceNode());
 		return neighbors;
 	}
@@ -157,8 +181,8 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return pointers to outgoing arcs
 	 */
-	template<class T> std::vector<Arc<T>*> Node<T>::getOutgoingArcs() const {
-		return this->outgoingArcs;
+	template<NODE_PARAMS> std::vector<ARC*> NODE::getOutgoingArcs() const {
+		return this->layers[0].getOutgoingArcs();
 	}
 
 	/**
@@ -167,12 +191,13 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return outgoing neighbors list
 	 */
-	template<class T> std::vector<Node<T>*> Node<T>::outNeighbors() const {
-		std::vector<Node<T>*> neighbors;
-		for(auto arc : this->outgoingArcs)
+	template<NODE_PARAMS> std::vector<NODE*> NODE::outNeighbors() const {
+		std::vector<NODE*> neighbors;
+		for(auto arc : this->layers[0].getOutgoingArcs())
 			neighbors.push_back(arc->getTargetNode());
 		return neighbors;
 	}
+
 }
 
 #endif

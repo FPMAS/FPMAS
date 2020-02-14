@@ -20,7 +20,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * read() or acquire() is called. A Readers-Writers algorithm manages data
 	 * access to avoid concurrency issues.
 	 */
-	template<class T> class HardSyncData : public SyncData<T> {
+	template<NODE_PARAMS> class HardSyncData : public SyncData<NODE_PARAMS_SPEC> {
 		private:
 			unsigned long id;
 			SyncMpiCommunicator& mpiComm;
@@ -45,13 +45,13 @@ namespace FPMAS::graph::parallel::synchro {
 			 * DistributedGraph<T,S>::synchronize() call : does not do anything
 			 * in this mode.
 			 */
-			static void termination(DistributedGraph<T, HardSyncData>* dg) {}
+			static void termination(DistributedGraph<T, HardSyncData, LayerType, N>* dg) {}
 	};
-	template<class T> const zoltan::utils::zoltan_query_functions HardSyncData<T>::config
+	template<NODE_PARAMS> const zoltan::utils::zoltan_query_functions HardSyncData<NODE_PARAMS_SPEC>::config
 		(
-		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, HardSyncData>,
-		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, HardSyncData>,
-		 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, HardSyncData>
+		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, HardSyncData>,
+		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, HardSyncData>,
+		 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<NODE_PARAMS_SPEC, HardSyncData>
 		);
 
 	/**
@@ -61,7 +61,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * @param mpiComm MPI communicator used to communicate with data sources
 	 * @param proxy proxy used to locate data
 	 */
-	template<class T> HardSyncData<T>::HardSyncData(
+	template<NODE_PARAMS> HardSyncData<NODE_PARAMS_SPEC>::HardSyncData(
 			unsigned long id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy)
@@ -76,12 +76,12 @@ namespace FPMAS::graph::parallel::synchro {
 	 * @param proxy proxy used to locate data
 	 * @param data associated data instance
 	 */
-	template<class T> HardSyncData<T>::HardSyncData(
+	template<NODE_PARAMS> HardSyncData<NODE_PARAMS_SPEC>::HardSyncData(
 			unsigned long id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy,
 			T data)
-		: SyncData<T>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
+		: SyncData<NODE_PARAMS_SPEC>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
 
 	/**
@@ -93,7 +93,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 *
 	 * @return const reference to the distant data
 	 */
-	template<class T> const T& HardSyncData<T>::read() {
+	template<NODE_PARAMS> const T& HardSyncData<NODE_PARAMS_SPEC>::read() {
 		this->data = ((nlohmann::json) nlohmann::json::parse(
 				this->mpiComm.read(
 					this->id,
@@ -105,7 +105,7 @@ namespace FPMAS::graph::parallel::synchro {
 
 	// TODO: This needs to be optimize!! no need to serialize when data is
 	// local...
-	template<class T> T& HardSyncData<T>::acquire() {
+	template<NODE_PARAMS> T& HardSyncData<NODE_PARAMS_SPEC>::acquire() {
 		this->data = ((nlohmann::json) nlohmann::json::parse(
 				this->mpiComm.acquire(
 					this->id,
@@ -115,7 +115,7 @@ namespace FPMAS::graph::parallel::synchro {
 		return this->data;
 	}
 
-	template<class T> void HardSyncData<T>::release() {
+	template<NODE_PARAMS> void HardSyncData<NODE_PARAMS_SPEC>::release() {
 		this->mpiComm.giveBack(
 				this->id,
 				this->proxy.getCurrentLocation(this->id)

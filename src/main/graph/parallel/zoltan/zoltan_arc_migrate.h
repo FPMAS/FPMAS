@@ -11,8 +11,8 @@ using FPMAS::graph::base::FossilArcs;
 
 namespace FPMAS::graph::parallel {
 
-	template<class T, template<typename> class S> class DistributedGraph;
-	template<class T, template<typename> class S> class GhostNode;
+	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
+	template<NODE_PARAMS, SYNC_MODE> class GhostNode;
 
 	using synchro::None;
 	using synchro::SyncDataPtr;
@@ -42,7 +42,7 @@ namespace FPMAS::graph::parallel {
 			 * @param sizes Result : buffer sizes for each node
 			 * @param ierr Result : error code
 			 */
-			template<class T, template<typename> class S> void obj_size_multi_fn(
+			template<NODE_PARAMS, SYNC_MODE> void obj_size_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -53,11 +53,11 @@ namespace FPMAS::graph::parallel {
 					int *ierr) {
 
 
-				DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
-				std::unordered_map<unsigned long, Arc<SyncDataPtr<T>>*> arcs = graph->getArcs();
+				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+				std::unordered_map<unsigned long, Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> arcs = graph->getArcs();
 				for (int i = 0; i < num_ids; i++) {
 					unsigned long arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
-					Arc<SyncDataPtr<T>>* arc;
+					Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* arc;
 					try {
 						arc = arcs.at(arcId);
 					} catch (const std::exception& e) {
@@ -138,7 +138,7 @@ namespace FPMAS::graph::parallel {
 			 * @param buf communication buffer
 			 * @param ierr Result : error code
 			 */
-			template<class T, template<typename> class S> void pack_obj_multi_fn(
+			template<NODE_PARAMS, SYNC_MODE> void pack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -151,7 +151,7 @@ namespace FPMAS::graph::parallel {
 					char *buf,
 					int *ierr) {
 
-				DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
@@ -163,7 +163,7 @@ namespace FPMAS::graph::parallel {
 
 					// Retrieves the serialized node
 					std::string arc_str = serial_cache->at(id);
-					Arc<SyncDataPtr<T>>* arc;
+					Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* arc;
 					try {
 						arc = graph->getArcs().at(id);
 					} catch (const std::exception& e) {
@@ -196,7 +196,7 @@ namespace FPMAS::graph::parallel {
 			 * post), so that imported arcs are built properly on the
 			 * imported nodes, not on the obsolete ghosts.
 			 */
-			template <class T, template<typename> class S> void mid_migrate_pp_fn(
+			template <NODE_PARAMS, SYNC_MODE> void mid_migrate_pp_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -211,7 +211,7 @@ namespace FPMAS::graph::parallel {
 					int *export_procs,
 					int *export_to_part,
 					int *ierr) {
-				DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
 				for(auto nodeId : graph->obsoleteGhosts) {
 					graph->getGhost().removeNode(nodeId);
 				}
@@ -244,7 +244,7 @@ namespace FPMAS::graph::parallel {
 			 * @param ierr Result : error code
 			 *
 			 */
-			template<class T, template<typename> class S> void unpack_obj_multi_fn(
+			template<NODE_PARAMS, SYNC_MODE> void unpack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_ids,
@@ -254,7 +254,7 @@ namespace FPMAS::graph::parallel {
 					char *buf,
 					int *ierr) {
 
-				DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
 
 				// The same arc can be imported multiple times from
 				// different procs.
@@ -276,7 +276,7 @@ namespace FPMAS::graph::parallel {
 						// Json is unserialized in a temporary arc, with "fake"
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
-						Arc<SyncDataPtr<T>> tempArc = json_arc.get<Arc<SyncDataPtr<T>>>();
+						Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> tempArc = json_arc.get<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>>();
 
 						receivedArcIds.insert(tempArc.getId());
 
@@ -296,7 +296,7 @@ namespace FPMAS::graph::parallel {
 								// The source node of the received arc is
 								// contained in the local graph, so the target
 								// node is distant
-								GhostNode<T, S>* ghost;
+								GhostNode<NODE_PARAMS_SPEC, S>* ghost;
 								if(graph->getGhost().getNodes().count(targetId) == 0) {
 									// No ghost node as been created yet for
 									// this node (from an other arc imported at
@@ -324,7 +324,7 @@ namespace FPMAS::graph::parallel {
 								// node is distant
 
 								// Same process has above
-								GhostNode<T, S>* ghost;
+								GhostNode<NODE_PARAMS_SPEC, S>* ghost;
 								if(graph->getGhost().getNodes().count(sourceId) == 0) {
 									ghost = graph->getGhost().buildNode(sourceId);
 
@@ -367,7 +367,7 @@ namespace FPMAS::graph::parallel {
 			 * This process builds required ghost nodes and deletes useless
 			 * ones according to nodes that were just exported.
 			 */
-			template<class T, template<typename> class S> void post_migrate_pp_fn_olz(
+			template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_olz(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -385,7 +385,7 @@ namespace FPMAS::graph::parallel {
 
 				// The next steps will remove exported nodes from the local
 				// graph, creating corresponding ghost nodes when necessary
-				DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
+				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
 
 				// Computes the set of ids of exported nodes
 				std::set<unsigned long> exportedNodeIds;
@@ -400,7 +400,7 @@ namespace FPMAS::graph::parallel {
 				// if at least one local node is still connected to the
 				// exported node.
 				for(auto id : exportedNodeIds) {
-					Node<SyncDataPtr<T>>* node = graph->getNode(id);
+					Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* node = graph->getNode(id);
 					bool buildGhost = false;
 					for(auto arc : node->getOutgoingArcs()) {
 						if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
@@ -422,7 +422,7 @@ namespace FPMAS::graph::parallel {
 				}
 
 				// Remove nodes and collect fossils
-				FossilArcs<SyncDataPtr<T>> ghostFossils;
+				FossilArcs<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>> ghostFossils;
 				for(auto id : exportedNodeIds) {
 					ghostFossils.merge(graph->removeNode(id));
 				}
@@ -439,7 +439,7 @@ namespace FPMAS::graph::parallel {
 			 * In this mode, the only thing to do is deleting the exported
 			 * nodes from the local graph.
 			 */
-			template<class T> void post_migrate_pp_fn_no_sync(
+			template<NODE_PARAMS> void post_migrate_pp_fn_no_sync(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -454,7 +454,7 @@ namespace FPMAS::graph::parallel {
 					int *export_procs,
 					int *export_to_part,
 					int *ierr) {
-				DistributedGraph<T, None>* graph = (DistributedGraph<T, None>*) data;
+				DistributedGraph<T, None, LayerType, N>* graph = (DistributedGraph<T, None, LayerType, N>*) data;
 
 				// Removes exported nodes from the local graph
 				for(int i = 0; i < graph->export_node_num; i++) {

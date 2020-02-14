@@ -3,6 +3,7 @@
 
 #include "zoltan_cpp.h"
 
+#include "utils/macros.h"
 #include "zoltan_utils.h"
 #include "../synchro/sync_data.h"
 #include "../../base/node.h"
@@ -12,7 +13,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<class T, template<typename> class S> class DistributedGraph;
+	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
 
 	using synchro::SyncDataPtr;
 
@@ -35,8 +36,8 @@ namespace FPMAS::graph::parallel {
 		 * @param ierr Result : error code
 		 * @return numbe of nodes managed by the current process
 		 */
-		template<class T, template<typename> class S> int num_obj(void *data, int* ierr) {
-			return ((DistributedGraph<T, S>*) data)->getNodes().size();
+		template<NODE_PARAMS, SYNC_MODE> int num_obj(void *data, int* ierr) {
+			return ((DistributedGraph<T, S, LayerType, N>*) data)->getNodes().size();
 		}
 
 		/**
@@ -55,7 +56,7 @@ namespace FPMAS::graph::parallel {
 		 * @param obj_wgts Result : weights list
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S> void obj_list(
+		template<NODE_PARAMS, SYNC_MODE> void obj_list(
 				void *data,
 				int num_gid_entries, 
 				int num_lid_entries,
@@ -66,8 +67,8 @@ namespace FPMAS::graph::parallel {
 				int *ierr
 				) {
 			int i = 0;
-			for(auto n : ((DistributedGraph<T, S>*) data)->getNodes()) {
-				Node<SyncDataPtr<T>>* node = n.second;
+			for(auto n : ((DistributedGraph<T, S, LayerType, N>*) data)->getNodes()) {
+				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* node = n.second;
 
 				utils::write_zoltan_id(node->getId(), &global_ids[i * num_gid_entries]);
 
@@ -90,7 +91,7 @@ namespace FPMAS::graph::parallel {
 		 * @param num_edges Result : number of outgoing arc for each node
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S> void num_edges_multi_fn(
+		template<NODE_PARAMS, SYNC_MODE> void num_edges_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -100,10 +101,10 @@ namespace FPMAS::graph::parallel {
 				int *num_edges,
 				int *ierr
 				) {
-			std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes
-				= ((DistributedGraph<T, S>*) data)->getNodes();
+			std::unordered_map<unsigned long, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> nodes
+				= ((DistributedGraph<T, S, LayerType, N>*) data)->getNodes();
 			for(int i = 0; i < num_obj; i++) {
-				Node<SyncDataPtr<T>>* node = nodes.at(
+				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[i * num_gid_entries])
 						);
 				num_edges[i] = node->getOutgoingArcs().size();
@@ -131,7 +132,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ewgts Result : edge weight for each neighbor
 		 * @param ierr Result : error code
 		 */
-		template<class T, template<typename> class S> void edge_list_multi_fn(
+		template<NODE_PARAMS, SYNC_MODE> void edge_list_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -145,16 +146,16 @@ namespace FPMAS::graph::parallel {
 				float *ewgts,
 				int *ierr) {
 
-			DistributedGraph<T, S>* graph = (DistributedGraph<T, S>*) data;
-			std::unordered_map<unsigned long, Node<SyncDataPtr<T>>*> nodes = graph->getNodes();
+			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+			std::unordered_map<unsigned long, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> nodes = graph->getNodes();
 
 			int neighbor_index = 0;
 			for (int i = 0; i < num_obj; ++i) {
-				Node<SyncDataPtr<T>>* node = nodes.at(
+				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[num_gid_entries * i])
 						);
 				for(int j = 0; j < node->getOutgoingArcs().size(); j++) {
-					Arc<SyncDataPtr<T>>* arc = node->getOutgoingArcs().at(j);
+					Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* arc = node->getOutgoingArcs().at(j);
 					unsigned long targetId = arc->getTargetNode()->getId(); 
 					utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 
