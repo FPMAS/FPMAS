@@ -11,7 +11,7 @@
 namespace FPMAS {
 	namespace test_utils {
 
-		template<class T> void print_fail_message(T* array_begin, int n, T value) {
+		template<class T> void print_fail_message(T const * array_begin, int n, const T value) {
 			std::cout << "Value " << value << " not found." << std::endl;
 			std::cout << "Current values :" << std::endl;
 			for(int i=0; i < n; i++) {
@@ -20,7 +20,7 @@ namespace FPMAS {
 
 		}
 
-		template<class T, int n> void assert_contains(T* array_begin, T value) {
+		template<class T, int n> void assert_contains(T const * array_begin, T value) {
 			for(int i = 0; i < n; i++) {
 				if(array_begin[i] == value) {
 					return;
@@ -30,7 +30,7 @@ namespace FPMAS {
 			FAIL();
 		}
 
-		template<class T, int n> void assert_contains(T* array_begin, T value, int* result) {
+		template<class T, int n> void assert_contains(T const * array_begin, const T value, int* result) {
 			for(int i = 0; i < n; i++) {
 				if(array_begin[i] == value) {
 					*result = i;

@@ -35,6 +35,8 @@ namespace FPMAS::graph::base {
 		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long);
 		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T data);
 		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T data);
+		// Grants access to layers
+		friend FossilArcs<ARC> Graph<NODE_PARAMS_SPEC>::removeNode(unsigned long);
 		// Allows removeNode function to remove deleted arcs
 		friend bool Graph<NODE_PARAMS_SPEC>::unlink(ARC*);
 

@@ -120,9 +120,11 @@ namespace FPMAS {
 
 					public:
 					NODE* getNode(unsigned long);
+					const NODE* getNode(unsigned long) const;
 					const std::unordered_map<unsigned long, NODE*>& getNodes() const;
 
 					ARC* getArc(unsigned long);
+					const ARC* getArc(unsigned long) const;
 					const std::unordered_map<unsigned long, ARC*>& getArcs() const;
 
 					NODE* buildNode(unsigned long);
@@ -153,6 +155,9 @@ namespace FPMAS {
 				return this->nodes.find(id)->second;
 			}
 
+			template<NODE_PARAMS> const NODE* Graph<NODE_PARAMS_SPEC>::getNode(unsigned long id) const {
+				return this->nodes.find(id)->second;
+			}
 			/**
 			 * Returns a const reference to the nodes map of this graph.
 			 *
@@ -173,6 +178,9 @@ namespace FPMAS {
 				return this->arcs.find(id)->second;
 			}
 
+			template<NODE_PARAMS> const ARC* Graph<NODE_PARAMS_SPEC>::getArc(unsigned long id) const {
+				return this->arcs.find(id)->second;
+			}
 			/**
 			 * Returns a const reference to the arcs map of this graph.
 			 *
@@ -338,15 +346,19 @@ namespace FPMAS {
 
 				FossilArcs<ARC> fossil;
 				// Deletes incoming arcs
-				for(auto arc : node_to_remove->getIncomingArcs()) {
-					if(!this->unlink(arc))
-						fossil.incomingArcs.insert(arc);
+				for(auto layer : node_to_remove->layers) {
+					for(auto arc : layer.getIncomingArcs()) {
+						if(!this->unlink(arc))
+							fossil.incomingArcs.insert(arc);
+					}
 				}
 
 				// Deletes outgoing arcs
-				for(auto arc : node_to_remove->getOutgoingArcs()) {
-					if(!this->unlink(arc))
-						fossil.outgoingArcs.insert(arc);
+				for(auto layer : node_to_remove->layers) {
+					for(auto arc : layer.getOutgoingArcs()) {
+						if(!this->unlink(arc))
+							fossil.outgoingArcs.insert(arc);
+					}
 				}
 
 				// Removes the node from the global nodes index

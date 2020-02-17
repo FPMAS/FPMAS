@@ -18,8 +18,15 @@ using FPMAS::graph::base::Arc;
 using FPMAS::test_utils::assert_contains;
 
 class SampleMultiGraphTest : public ::testing::Test {
-	protected:
+	private:
 		Graph<int, TestLayer, 3> sampleMultiGraph;
+	protected:
+		const Graph<int, TestLayer, 3>& getConstMultiGraph() const {
+			return sampleMultiGraph;
+		}
+		Graph<int, TestLayer, 3>& getMultiGraph() {
+			return sampleMultiGraph;
+		}
 
 		/*
 		 * Layer 0 (default) :
@@ -46,10 +53,10 @@ class SampleMultiGraphTest : public ::testing::Test {
 
 			// Layer 2
 			sampleMultiGraph.link(node1, node4, 5, LAYER_2);
-			sampleMultiGraph.link(node4, node2, 5, LAYER_2);
+			sampleMultiGraph.link(node4, node2, 6, LAYER_2);
 		}
 
-		static void testSampleGraphStructure(Graph<int, TestLayer, 3>& sampleMultiGraph) {
+		static void testSampleGraphStructure(const Graph<int, TestLayer, 3>& sampleMultiGraph) {
 			// NODE 1
 			const Node<int, TestLayer, 3>* node1 = sampleMultiGraph.getNode(1ul);
 			ASSERT_EQ(node1->layer(LAYER_0).getIncomingArcs(), node1->getIncomingArcs());
@@ -72,11 +79,11 @@ class SampleMultiGraphTest : public ::testing::Test {
 			ASSERT_EQ(node3->getIncomingArcs().size(), 2);
 			assert_contains<Arc<int, TestLayer, 3>*, 2>(
 					node3->getIncomingArcs().data(),
-					sampleMultiGraph.getArc(0)
+					const_cast<Arc<int, TestLayer, 3>*>(sampleMultiGraph.getArc(0))
 					);
 			assert_contains<Arc<int, TestLayer, 3>*, 2>(
 					node3->getIncomingArcs().data(),
-					sampleMultiGraph.getArc(2)
+					const_cast<Arc<int, TestLayer, 3>*>(sampleMultiGraph.getArc(2))
 					);
 			ASSERT_EQ(node3->getOutgoingArcs().size(), 1);
 			ASSERT_EQ(node3->getOutgoingArcs().at(0)->getTargetNode()->getId(), 1);
