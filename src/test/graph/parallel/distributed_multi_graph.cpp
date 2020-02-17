@@ -38,12 +38,9 @@ TEST_F(Mpi_DistributeMultiGraphWithArcTest, distribute_with_arc_test) {
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_LT(dg.getArcs().size(), dg.getMpiCommunicator().getSize());
 
-	std::cout << "hey there" << std::endl;
-
 	for(auto node : dg.getNodes()) {
 		const Node<SyncDataPtr<int, TestLayer, 2>, TestLayer, 2>* node_ptr = node.second;
 		if(node.first % 2 == 0) {
-			ASSERT_EQ(dg.getNodes().count(node.first + 1), 1);
 			// Source node
 			if((node.first / 2) % 2 == 0) {
 				// i pair => default layer
@@ -58,7 +55,6 @@ TEST_F(Mpi_DistributeMultiGraphWithArcTest, distribute_with_arc_test) {
 			}
 		}
 		else {
-			ASSERT_EQ(dg.getNodes().count(node.first - 1), 1);
 			// Target node
 			if(((node.first - 1) / 2) % 2 == 0) {
 				// i pair => default layer
