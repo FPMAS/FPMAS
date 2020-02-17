@@ -102,23 +102,23 @@ namespace FPMAS {
 			 * for Modern C++ documentation]
 			 * (https://github.com/nlohmann/json/blob/develop/README.md)
 			 * and the FPMAS::graph::from_json(const json&, Graph<NODE_PARAMS_SPEC>&)
-			* function.
-				*
-				* @tparam T associated data type
-				*/
-				template<
-					class T,
-					typename LayerType = DefaultLayer,
-					int N = 1
-					>
-				class Graph {
-					friend Graph<NODE_PARAMS_SPEC> nlohmann::adl_serializer<Graph<NODE_PARAMS_SPEC>>::from_json(const json&);
-					private:
+			 * function.
+			 *
+			 * @tparam T associated data type
+			 */
+			template<
+				class T,
+				typename LayerType = DefaultLayer,
+				int N = 1
+				>
+			class Graph {
+				friend Graph<NODE_PARAMS_SPEC> nlohmann::adl_serializer<Graph<NODE_PARAMS_SPEC>>::from_json(const json&);
+				private:
 					std::unordered_map<unsigned long, NODE*> nodes;
 					std::unordered_map<unsigned long, ARC*> arcs;
 					void removeArc(ARC*, std::vector<ARC*>*);
 
-					public:
+				public:
 					NODE* getNode(unsigned long);
 					const NODE* getNode(unsigned long) const;
 					const std::unordered_map<unsigned long, NODE*>& getNodes() const;

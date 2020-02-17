@@ -47,7 +47,7 @@ namespace FPMAS::graph::base {
 
 		private:
 		T _data;
-		float weight = 1.;
+		float weight;
 		std::array<Layer<NODE_PARAMS_SPEC>, N> layers;
 		Layer<NODE_PARAMS_SPEC>& layer(LayerType layer);
 
@@ -92,10 +92,7 @@ namespace FPMAS::graph::base {
 	 *
 	 * @param id node id
 	 */
-	template<NODE_PARAMS> NODE::Node(unsigned long id) : GraphItem(id) {
-		for (int i = 0; i < N; i++) {
-			this->layers[i] = Layer<NODE_PARAMS_SPEC>();
-		}
+	template<NODE_PARAMS> NODE::Node(unsigned long id) : NODE(id, 1., T()) {
 	}
 
 	/**
@@ -104,7 +101,7 @@ namespace FPMAS::graph::base {
 	 * @param id node id
 	 * @param data pointer to node data
 	 */
-	template<NODE_PARAMS> NODE::Node(unsigned long id, T data) : GraphItem(id), _data(data) {
+	template<NODE_PARAMS> NODE::Node(unsigned long id, T data) : NODE(id, 1., data) {
 	}
 
 	/**
@@ -114,7 +111,10 @@ namespace FPMAS::graph::base {
 	 * @param weight node weight
 	 * @param data node data
 	 */
-	template<NODE_PARAMS> NODE::Node(unsigned long id, float weight, T data) : GraphItem(id), weight(weight), _data(data) {
+	template<NODE_PARAMS> NODE::Node(unsigned long id, float weight, T data) : GraphItem(id), _data(data), weight(weight) {
+		for (int i = 0; i < N; i++) {
+			this->layers[i] = Layer<NODE_PARAMS_SPEC>();
+		}
 	}
 
 

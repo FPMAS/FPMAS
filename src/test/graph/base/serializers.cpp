@@ -54,26 +54,36 @@ TEST(NodeSerializer, node_deserialization_no_data) {
 	ASSERT_EQ(node.data(), 2);
 }
 
-TEST(ArcSerializer, simple_arc_serializer) {
-	Graph<int> g;
-	Node<int>* n1 = g.buildNode(0ul, 0);
-	Node<int>* n2 = g.buildNode(1ul, 1);
-	g.link(n1, n2, 0ul);
+enum TestLayer {
+	_Default = 0,
+	Test = 1
+};
 
-	Arc<int>* a = n1->getOutgoingArcs()[0];
+TEST(ArcSerializer, simple_arc_serializer) {
+	Graph<int, TestLayer, 2> g;
+	Node<int, TestLayer, 2>* n1 = g.buildNode(0ul, 0);
+	Node<int, TestLayer, 2>* n2 = g.buildNode(1ul, 1);
+	g.link(n1, n2, 0ul, TestLayer::Test);
+
+	std::cout << "hey" << std::endl;
+	const Node<int, TestLayer, 2>* n = g.getNode(0ul);
+	Arc<int, TestLayer, 2>* a = n->layer(TestLayer::Test).getOutgoingArcs()[0];
 
 	json j = *a;
 
-	ASSERT_EQ(j.dump(), "{\"id\":0,\"link\":[0,1]}");
+	ASSERT_EQ(j.dump(), "{\"id\":0,\"layer\":1,\"link\":[0,1]}");
 }
 
 TEST(ArcSerializer, simple_arc_deserializer) {
 	json j = R"({
 		"id":2,
+		"layer":1,
 		"link":[0,1]
 		})"_json;
 
-	Arc<int> arc = j;
+	Arc<int, TestLayer, 2> arc = j;
+	ASSERT_EQ(arc.getId(), 2);
+	ASSERT_EQ(arc.layer, TestLayer::Test);
 	ASSERT_EQ(arc.getSourceNode()->getId(), 0);
 	ASSERT_EQ(arc.getTargetNode()->getId(), 1);
 
@@ -97,9 +107,9 @@ TEST_F(SampleGraphTest, sample_graph_serialization) {
 
 	ASSERT_EQ(j.dump(),
 			"{\"arcs\":["
-				"{\"id\":2,\"link\":[2,3]},"
-				"{\"id\":0,\"link\":[1,2]},"
-				"{\"id\":1,\"link\":[2,1]}"
+				"{\"id\":2,\"layer\":0,\"link\":[2,3]},"
+				"{\"id\":0,\"layer\":0,\"link\":[1,2]},"
+				"{\"id\":1,\"layer\":0,\"link\":[2,1]}"
 				"],"
 			"\"nodes\":["
 				"{\"data\":3,\"id\":3,\"weight\":1.0},"
@@ -130,9 +140,9 @@ TEST_F(SampleGraphTest, sample_graph_deserialization) {
 	json graph_json = R"(
 			{
 			"arcs":[
-				{"id":0,"link":[1,2]},
-				{"id":2,"link":[2,3]},
-				{"id":1,"link":[2,1]}
+				{"id":0,"layer":0,"link":[1,2]},
+				{"id":2,"layer":0,"link":[2,3]},
+				{"id":1,"layer":0,"link":[2,1]}
 				],
 			"nodes":[
 				{"data":3,"id":3},

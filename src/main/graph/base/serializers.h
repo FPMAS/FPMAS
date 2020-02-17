@@ -141,7 +141,8 @@ namespace nlohmann {
 			return Arc<T, LayerType, N>(
 				j.at("id"),
 				tempSource,
-				tempTarget
+				tempTarget,
+				j.at("layer").get<LayerType>()
 				);
 
 		}
@@ -166,7 +167,8 @@ namespace nlohmann {
 			};
 			j = json{
 				{"id", arc.getId()},
-				{"link", link}
+				{"link", link},
+				{"layer", arc.layer}
 			};
 		}
 
