@@ -27,7 +27,7 @@ class Mpi_SynchronizeGhostTest : public ::testing::Test {
 TEST_F(Mpi_SynchronizeGhostTest, synchronize_ghost_test) {
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
-	Node<SyncDataPtr<int, DefaultLayer, 1>>* localNode = dg.getNodes().begin()->second;
+	auto localNode = dg.getNodes().begin()->second;
 	ASSERT_EQ(localNode->data()->get(), localNode->getId());
 	
 	// In a real scenario, data would be an object and some fields would be

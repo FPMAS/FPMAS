@@ -74,7 +74,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 		}
 		ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
 
-		Node<SyncDataPtr<int, DefaultLayer, 1>>* localNode = dg.getNodes().begin()->second;
+		auto localNode = dg.getNodes().begin()->second;
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
 		ASSERT_EQ(
 				localNode->getIncomingArcs().at(0)->getSourceNode()->getId(),
@@ -143,18 +143,18 @@ TEST_F(Mpi_DistributeCompleteGraphTest, distribute_graph_with_multiple_ghost_arc
 		ASSERT_EQ(ghostNode.second->getOutgoingArcs().size(), 2);
 		ASSERT_EQ(ghostNode.second->getIncomingArcs().size(), 2);
 
-		Node<SyncDataPtr<int, DefaultLayer, 1>>* outNodes[2] = {
+		Node<SyncDataPtr<int, DefaultLayer, 1>, DefaultLayer, 1>* outNodes[2] = {
 			ghostNode.second->getOutgoingArcs().at(0)->getTargetNode(),
 			ghostNode.second->getOutgoingArcs().at(1)->getTargetNode()
 		};
-		Node<SyncDataPtr<int, DefaultLayer, 1>>* inNodes[2] = {
+		Node<SyncDataPtr<int, DefaultLayer, 1>, DefaultLayer, 1>* inNodes[2] = {
 			ghostNode.second->getIncomingArcs().at(0)->getSourceNode(),
 			ghostNode.second->getIncomingArcs().at(1)->getSourceNode()
 		};
 
 		for(auto node : dg.getNodes()) {
-			FPMAS::test_utils::assert_contains<Node<SyncDataPtr<int, DefaultLayer, 1>>*, 2>(outNodes, node.second);
-			FPMAS::test_utils::assert_contains<Node<SyncDataPtr<int, DefaultLayer, 1>>*, 2>(inNodes, node.second);
+			FPMAS::test_utils::assert_contains<Node<SyncDataPtr<int, DefaultLayer, 1>, DefaultLayer, 1>*, 2>(outNodes, node.second);
+			FPMAS::test_utils::assert_contains<Node<SyncDataPtr<int, DefaultLayer, 1>, DefaultLayer, 1>*, 2>(inNodes, node.second);
 		}
 
 	}

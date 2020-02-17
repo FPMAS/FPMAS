@@ -316,7 +316,7 @@ namespace FPMAS::graph::parallel {
 								}
 								// Links the ghost node with the local node
 								// using a GhostArc
-								graph->getGhost().link(graph->getNode(sourceId), ghost, tempArc.getId());
+								graph->getGhost().link(graph->getNode(sourceId), ghost, tempArc.getId(), tempArc.layer);
 							}
 							else if (targetNodeIsLocal) {
 								// The target node of the received arc is
@@ -335,7 +335,7 @@ namespace FPMAS::graph::parallel {
 								else {
 									ghost = graph->getGhost().getNodes().at(sourceId);
 								}
-								graph->getGhost().link(ghost, graph->getNode(targetId), tempArc.getId());
+								graph->getGhost().link(ghost, graph->getNode(targetId), tempArc.getId(), tempArc.layer);
 							}
 							else {
 								throw std::runtime_error(
@@ -351,7 +351,8 @@ namespace FPMAS::graph::parallel {
 							graph->link(
 									sourceId,
 									targetId,
-									tempArc.getId()
+									tempArc.getId(),
+									tempArc.layer
 									);
 						}
 						delete tempArc.getSourceNode();

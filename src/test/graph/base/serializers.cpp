@@ -12,7 +12,7 @@ using FPMAS::graph::base::Arc;
 TEST(NodeSerializer, simple_node_serialization) {
 
 	Graph<int> g;
-	Node<int>* node = g.buildNode(85250, 3.2, 0);
+	auto node = g.buildNode(85250, 3.2, 0);
 
 	// The node to_json method will be automatically called
 	json j = json{{"node", *node}};
@@ -33,7 +33,7 @@ TEST(NodeSerializer, simple_node_deserialization) {
 		{"data":0,"id":85250,"weight":2.3}
 		)"_json;
 
-	Node<int> node = node_json.get<Node<int>>();
+	Node<int, DefaultLayer, 1> node = node_json.get<Node<int, DefaultLayer, 1>>();
 
 	ASSERT_EQ(node.data(), 0);
 	ASSERT_EQ(node.getId(), 85250ul);
@@ -46,7 +46,7 @@ TEST(NodeSerializer, node_deserialization_no_data) {
 		{"id":85250}
 		)"_json;
 
-	Node<int> node = node_json.get<Node<int>>();
+	Node<int, DefaultLayer, 1> node = node_json.get<Node<int, DefaultLayer, 1>>();
 
 	ASSERT_EQ(node.getId(), 85250ul);
 
@@ -94,7 +94,7 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 TEST(GraphSerializer, simple_graph_serialization) {
 
 	Graph<int> g;
-	Node<int>* n = g.buildNode(0ul, 0);
+	Node<int, DefaultLayer, 1>* n = g.buildNode(0ul, 0);
 
 	json j = g;
 

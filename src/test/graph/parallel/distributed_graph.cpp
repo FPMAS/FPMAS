@@ -61,7 +61,7 @@ TEST(Mpi_DistributedGraph, build_with_ranks_and_sync_mode_test) {
 
 class DistributeGraphTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int> dg = DistributedGraph<int>();
+		DistributedGraph<int> dg;
 };
 
 class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
@@ -138,7 +138,7 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_EQ(dg.getArcs().size(), 1);
 
-	Arc<SyncDataPtr<int, DefaultLayer, 1>>* arc = dg.getArcs().begin()->second;
+	auto arc = dg.getArcs().begin()->second;
 	for(auto node : dg.getNodes()) {
 		if(node.second->getIncomingArcs().size() == 1) {
 			ASSERT_EQ(arc->getTargetNode()->getId(), node.second->getId());

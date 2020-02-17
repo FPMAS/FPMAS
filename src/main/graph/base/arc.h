@@ -18,11 +18,7 @@ namespace FPMAS::graph::base {
 	 *
 	 * @tparam T associated data type
 	 */
-	template<
-		class T,
-		typename LayerType = DefaultLayer,
-		int N = 1
-		>
+	template<NODE_PARAMS>
 	class Arc : public GraphItem {
 		// Grants access to the Arc constructor
 		friend NODE;

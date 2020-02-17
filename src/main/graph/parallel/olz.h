@@ -27,26 +27,45 @@ namespace FPMAS::graph::parallel {
 	 * nodes.
 	 */
 	template <NODE_PARAMS, SYNC_MODE> class GhostNode : public Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> {
-		friend GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>::buildNode(unsigned long);
-		friend GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>::buildNode(Node<SyncDataPtr<NODE_PARAMS_SPEC>>, std::set<unsigned long>);
+		friend GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>
+			::buildNode(unsigned long);
+		friend GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>
+			::buildNode(Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>, std::set<unsigned long>);
 
 		private:
 		GhostNode(SyncMpiCommunicator&, Proxy&, unsigned long);
-		GhostNode(SyncMpiCommunicator&, Proxy&, Node<SyncDataPtr<NODE_PARAMS_SPEC>>);
+		GhostNode(SyncMpiCommunicator&, Proxy&, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>);
 	};
 
-	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, unsigned long id)
-		: Node<SyncDataPtr<NODE_PARAMS_SPEC>>(id, 1., SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(id, mpiComm, proxy))) {
-		}
+	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>
+		::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, unsigned long id)
+		: Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>(
+				id,
+				1.,
+				SyncDataPtr<NODE_PARAMS_SPEC>(
+					new S<NODE_PARAMS_SPEC>(id, mpiComm, proxy)
+				)
+			) {}
 
 	/**
 	 * Builds a GhostNode as a copy of the specified node.
 	 *
 	 * @param node original node
 	 */
-	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, Node<SyncDataPtr<NODE_PARAMS_SPEC>> node)
-		: Node<SyncDataPtr<NODE_PARAMS_SPEC>>(node.getId(), node.getWeight(), SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(node.getId(), mpiComm, proxy, node.data()->get()))) {
-		}
+	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>
+		::GhostNode(
+			SyncMpiCommunicator& mpiComm,
+			Proxy& proxy,
+			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> node
+			)
+		: Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>(
+			node.getId(),
+			node.getWeight(),
+			SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(
+				node.getId(), mpiComm, proxy, node.data()->get()
+				)
+			)
+		) {}
 
 	/**
 	 * GhostArcs should be used to link two nodes when at least one of the
@@ -58,13 +77,28 @@ namespace FPMAS::graph::parallel {
 	 *
 	 */
 	template<NODE_PARAMS, SYNC_MODE> class GhostArc : public Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> {
-
-		friend void GhostGraph<NODE_PARAMS_SPEC, S>::link(GhostNode<NODE_PARAMS_SPEC, S>*, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*, unsigned long);
-		friend void GhostGraph<NODE_PARAMS_SPEC, S>::link(Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*, GhostNode<NODE_PARAMS_SPEC, S>*, unsigned long);
+		friend void GhostGraph<NODE_PARAMS_SPEC, S>::link(
+				GhostNode<NODE_PARAMS_SPEC, S>*,
+				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*,
+				unsigned long,
+				LayerType);
+		friend void GhostGraph<NODE_PARAMS_SPEC, S>::link(
+				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*,
+				GhostNode<NODE_PARAMS_SPEC, S>*,
+				unsigned long,
+				LayerType);
 
 		private:
-		GhostArc(unsigned long, GhostNode<NODE_PARAMS_SPEC, S>*, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*);
-		GhostArc(unsigned long, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*, GhostNode<NODE_PARAMS_SPEC, S>*);
+		GhostArc(
+			unsigned long,
+			GhostNode<NODE_PARAMS_SPEC, S>*,
+			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*,
+			LayerType);
+		GhostArc(
+			unsigned long,
+			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*,
+			GhostNode<NODE_PARAMS_SPEC, S>*,
+			LayerType);
 
 	};
 
@@ -80,9 +114,10 @@ namespace FPMAS::graph::parallel {
 	template<NODE_PARAMS, SYNC_MODE> GhostArc<NODE_PARAMS_SPEC, S>::GhostArc(
 			unsigned long arc_id,
 			GhostNode<NODE_PARAMS_SPEC, S>* source,
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* target
+			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* target,
+			LayerType layer
 			)
-		: Arc<SyncDataPtr<NODE_PARAMS_SPEC>>(arc_id, source, target) { };
+		: Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>(arc_id, source, target, layer) { };
 
 	/**
 	 * Builds a GhostArc linking the specified nodes. Notice that the
@@ -96,9 +131,10 @@ namespace FPMAS::graph::parallel {
 	template<NODE_PARAMS, SYNC_MODE> GhostArc<NODE_PARAMS_SPEC, S>::GhostArc(
 			unsigned long arc_id,
 			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* source,
-			GhostNode<NODE_PARAMS_SPEC, S>* target
+			GhostNode<NODE_PARAMS_SPEC, S>* target,
+			LayerType layer
 			)
-		: Arc<SyncDataPtr<NODE_PARAMS_SPEC>>(arc_id, source, target) { };
+		: Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>(arc_id, source, target, layer) { };
 
 }
 

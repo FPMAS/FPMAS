@@ -21,11 +21,7 @@ namespace FPMAS::graph::base {
 	 *
 	 * @tparam T associated data type
 	 */
-	template<
-		class T,
-		typename LayerType = DefaultLayer,
-		int N = 1
-	>
+	template<NODE_PARAMS>
 	class Node : public GraphItem {
 		friend NODE nlohmann::adl_serializer<NODE>::from_json(const json&);
 		friend ARC nlohmann::adl_serializer<ARC>::from_json(const json&);
@@ -51,16 +47,6 @@ namespace FPMAS::graph::base {
 		std::array<Layer<NODE_PARAMS_SPEC>, N> layers;
 		Layer<NODE_PARAMS_SPEC>& layer(LayerType layer);
 
-		// protected:
-		/**
-		 * List of pointers to incoming arcs.
-		 */
-		// std::vector<ARC*> incomingArcs;
-		/**
-		 * List of pointers to outgoing arcs.
-		 */
-		// std::vector<ARC*> outgoingArcs;
-
 		public:
 		/**
 		 * Reference to node's data.
@@ -79,6 +65,7 @@ namespace FPMAS::graph::base {
 		void setWeight(float);
 
 		const Layer<NODE_PARAMS_SPEC>& layer(LayerType layer) const;
+		const std::array<Layer<NODE_PARAMS_SPEC>, N> getLayers() const;
 
 		std::vector<ARC*> getIncomingArcs() const;
 		std::vector<NODE*> inNeighbors() const;
@@ -156,6 +143,9 @@ namespace FPMAS::graph::base {
 		return this->layers[layer];
 	}
 
+	template<NODE_PARAMS> const std::array<Layer<NODE_PARAMS_SPEC>, N> NODE::getLayers() const {
+		return this->layers;
+	}
 	/**
 	 * Returns a vector containing pointers to this node's incoming arcs.
 	 *

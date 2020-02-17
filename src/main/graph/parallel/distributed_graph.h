@@ -71,7 +71,7 @@ namespace FPMAS {
 			typename LayerType = DefaultLayer,
 			int N = 1
 			>
-		class DistributedGraph : public Graph<SyncDataPtr<NODE_PARAMS_SPEC>>, communication::ResourceContainer {
+		class DistributedGraph : public Graph<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>, communication::ResourceContainer {
 			friend void zoltan::node::obj_size_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
@@ -165,8 +165,8 @@ namespace FPMAS {
 
 			Proxy& getProxy();
 
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>>* buildNode(unsigned long id, T data);
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>>* buildNode(unsigned long id, float weight, T data);
+			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* buildNode(unsigned long id, T data);
+			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* buildNode(unsigned long id, float weight, T data);
 
 			std::string getLocalData(unsigned long) const override;
 			std::string getUpdatedData(unsigned long) const override;
@@ -265,8 +265,10 @@ namespace FPMAS {
 		 * @param id node id
 		 * @param data node data
 		 */
-		template<class T, SYNC_MODE, typename LayerType, int N> Node<SyncDataPtr<NODE_PARAMS_SPEC>>* DistributedGraph<T, S, LayerType, N>::buildNode(unsigned long id, T data) {
-			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>>
+		template<class T, SYNC_MODE, typename LayerType, int N>
+		Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
+		::buildNode(unsigned long id, T data) {
+			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>
 				::buildNode(
 					id,
 					SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(
@@ -287,8 +289,10 @@ namespace FPMAS {
 		 * @param weight node weight
 		 * @param data node data
 		 */
-		template<class T, SYNC_MODE, typename LayerType, int N> Node<SyncDataPtr<NODE_PARAMS_SPEC>>* DistributedGraph<T, S, LayerType, N>::buildNode(unsigned long id, float weight, T data) {
-			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>>
+		template<class T, SYNC_MODE, typename LayerType, int N>
+		Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
+		::buildNode(unsigned long id, float weight, T data) {
+			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>
 				::buildNode(
 					id,
 					weight,

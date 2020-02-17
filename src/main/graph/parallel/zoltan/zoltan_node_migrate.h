@@ -236,43 +236,47 @@ namespace FPMAS::graph::parallel {
 			for (int i =0; i < num_export; i++) {
 				unsigned long id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
 
-				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* exported_node = nodes.at(id);
+				auto exported_node = nodes.at(id);
 				int dest_proc = export_procs[i];
 
 				// Updates Proxy
 				graph->getProxy().setCurrentLocation(id, dest_proc);
 
 				// Computes arc exports
-				for(auto arc : exported_node->getIncomingArcs()) {
-					std::pair<unsigned long, int> arc_proc_pair =
-						std::pair<unsigned long, int>(
-								arc->getId(),
-								export_procs[i]
-								);
+				for(auto layer : exported_node->getLayers()) {
+					for(auto arc : layer.getIncomingArcs()) {
+						std::pair<unsigned long, int> arc_proc_pair =
+							std::pair<unsigned long, int>(
+									arc->getId(),
+									export_procs[i]
+									);
 
-					if(exportedArcPairs.count(arc_proc_pair) == 0) {
-						arcsToExport.push_back(arc);
-						// Arcs will be sent to the proc and part associated to
-						// the current node
-						procs.push_back(export_procs[i]);
+						if(exportedArcPairs.count(arc_proc_pair) == 0) {
+							arcsToExport.push_back(arc);
+							// Arcs will be sent to the proc and part associated to
+							// the current node
+							procs.push_back(export_procs[i]);
 
-						exportedArcPairs.insert(arc_proc_pair);
+							exportedArcPairs.insert(arc_proc_pair);
+						}
 					}
 				}
-				for(auto arc : exported_node->getOutgoingArcs()) {
-					std::pair<unsigned long, int> arc_proc_pair =
-						std::pair<unsigned long, int>(
-								arc->getId(),
-								export_procs[i]
-								);
+				for(auto layer : exported_node->getLayers()) {
+					for(auto arc : layer.getOutgoingArcs()) {
+						std::pair<unsigned long, int> arc_proc_pair =
+							std::pair<unsigned long, int>(
+									arc->getId(),
+									export_procs[i]
+									);
 
-					if(exportedArcPairs.count(arc_proc_pair) == 0) {
-						arcsToExport.push_back(arc);
-						// Arcs will be sent to the proc and part associated to
-						// the current node
-						procs.push_back(export_procs[i]);
+						if(exportedArcPairs.count(arc_proc_pair) == 0) {
+							arcsToExport.push_back(arc);
+							// Arcs will be sent to the proc and part associated to
+							// the current node
+							procs.push_back(export_procs[i]);
 
-						exportedArcPairs.insert(arc_proc_pair);
+							exportedArcPairs.insert(arc_proc_pair);
+						}
 					}
 				}
 			}
@@ -341,27 +345,29 @@ namespace FPMAS::graph::parallel {
 			}
 
 			for (auto nodeDest : nodeDestinations) {
-				Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* exported_node = graph->getNodes().at(nodeDest.first);
+				auto exported_node = graph->getNodes().at(nodeDest.first);
 
 				// Updates Proxy for consistency, even if should no ghost are used
 				graph->getProxy().setCurrentLocation(nodeDest.first, nodeDest.second);
 
 				// Computes arc exports
 				// We only need to check incoming arcs for each node :
-				// this insure that each arc is exported exactly once
+				// this ensures that each arc is exported exactly once
 				// if necessary. Indeed, the required outgoing arcs for
 				// each node will be exported as incoming arcs of
 				// corresponding target nodes, or ignored otherwise,
 				// what is the required behavior.
-				for(auto arc : exported_node->getIncomingArcs()) {
-					unsigned long sourceId = arc->getSourceNode()->getId();
-					if(nodeDestinations.count(sourceId) > 0 // The source is also exported
-							&& nodeDestinations.at(sourceId) == nodeDest.second// The source is exported to the same proc as the target node
-					  ) {
-						arcsToExport.push_back(arc);
-						// Arcs will be sent to the proc and part associated to
-						// the current node
-						procs.push_back(nodeDest.second);
+				for(auto layer : exported_node->getLayers()) {
+					for(auto arc : layer.getIncomingArcs()) {
+						unsigned long sourceId = arc->getSourceNode()->getId();
+						if(nodeDestinations.count(sourceId) > 0 // The source is also exported
+								&& nodeDestinations.at(sourceId) == nodeDest.second// The source is exported to the same proc as the target node
+						) {
+							arcsToExport.push_back(arc);
+							// Arcs will be sent to the proc and part associated to
+							// the current node
+							procs.push_back(nodeDest.second);
+						}
 					}
 				}
 			}

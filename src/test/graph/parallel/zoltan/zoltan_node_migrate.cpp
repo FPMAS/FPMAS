@@ -142,13 +142,13 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	ASSERT_EQ(g.getNodes().size(), 2);
 
 	ASSERT_EQ(g.getNodes().count(0), 1);
-	FPMAS::graph::base::Node<SyncDataPtr<int, DefaultLayer, 1>>* node0 = g.getNodes().at(0);
+	FPMAS::graph::base::Node<SyncDataPtr<int, DefaultLayer, 1>, DefaultLayer, 1>* node0 = g.getNodes().at(0);
 	ASSERT_EQ(node0->getId(), 0);
 	ASSERT_EQ(node0->data()->get(), 0);
 	ASSERT_EQ(node0->getWeight(), 1.f);
 
 	ASSERT_EQ(g.getNodes().count(85250ul), 1);
-	FPMAS::graph::base::Node<SyncDataPtr<int, DefaultLayer, 1>>* node1 = g.getNodes().at(85250);
+	FPMAS::graph::base::Node<SyncDataPtr<int, DefaultLayer, 1>, DefaultLayer, 1>* node1 = g.getNodes().at(85250);
 	ASSERT_EQ(node1->getId(), 85250ul);
 	ASSERT_EQ(node1->data()->get(), 2);
 	ASSERT_EQ(node1->getWeight(), 3.f);

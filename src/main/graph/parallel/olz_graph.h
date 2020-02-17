@@ -62,10 +62,10 @@ namespace FPMAS::graph::parallel {
 		void synchronize();
 
 		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(unsigned long);
-		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(Node<SyncDataPtr<NODE_PARAMS_SPEC>> node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
+		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
 
-		void link(GhostNode<NODE_PARAMS_SPEC, S>*, Node<SyncDataPtr<NODE_PARAMS_SPEC>>*, unsigned long);
-		void link(Node<SyncDataPtr<NODE_PARAMS_SPEC>>*, GhostNode<NODE_PARAMS_SPEC, S>*, unsigned long);
+		void link(GhostNode<NODE_PARAMS_SPEC, S>*, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*, unsigned long, LayerType);
+		void link(Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*, GhostNode<NODE_PARAMS_SPEC, S>*, unsigned long, LayerType);
 
 		void removeNode(unsigned long);
 
@@ -203,7 +203,8 @@ namespace FPMAS::graph::parallel {
 	 * @param node node from which a ghost copy must be created
 	 * @param ignoreIds ids of nodes to ignore when building links
 	 */
-	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>::buildNode(Node<SyncDataPtr<NODE_PARAMS_SPEC>> node, std::set<unsigned long> ignoreIds) {
+	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>
+		::buildNode(Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> node, std::set<unsigned long> ignoreIds) {
 		// Builds the gNode from the original node data
 		GhostNode<NODE_PARAMS_SPEC, S>* gNode = new GhostNode<NODE_PARAMS_SPEC, S>(
 				this->localGraph->getMpiCommunicator(),
@@ -216,7 +217,7 @@ namespace FPMAS::graph::parallel {
 		// Replaces the incomingArcs list by proper GhostArcs
 		// gNode->incomingArcs.clear();	
 		for(auto arc : node.getIncomingArcs()) {
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>>* localSourceNode = arc->getSourceNode();
+			auto localSourceNode = arc->getSourceNode();
 			// Builds the ghost arc if :
 			if(
 					// The source node is not ignored (i.e. it is exported in the
@@ -225,17 +226,17 @@ namespace FPMAS::graph::parallel {
 					// AND it is not an already built ghost node
 					&& this->getNodes().count(localSourceNode->getId()) == 0
 			  )
-				this->link(localSourceNode, gNode, arc->getId());
+				this->link(localSourceNode, gNode, arc->getId(), arc->layer);
 		}
 
 		// Replaces the outgoingArcs list by proper GhostArcs
 		// gNode->outgoingArcs.clear();
 		for(auto arc : node.getOutgoingArcs()) {
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>>* localTargetNode = arc->getTargetNode();
+			auto localTargetNode = arc->getTargetNode();
 			// Same as above
 			if(ignoreIds.count(localTargetNode->getId()) == 0
 					&& this->getNodes().count(localTargetNode->getId()) == 0)
-				this->link(gNode, localTargetNode, arc->getId());
+				this->link(gNode, localTargetNode, arc->getId(), arc->layer);
 		}
 
 		return gNode;
@@ -245,17 +246,27 @@ namespace FPMAS::graph::parallel {
 	/**
 	 * Links the specified nodes with a GhostArc.
 	 */ 
-	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::link(GhostNode<NODE_PARAMS_SPEC, S>* source, Node<SyncDataPtr<NODE_PARAMS_SPEC>>* target, unsigned long arc_id) {
+	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::link(
+			GhostNode<NODE_PARAMS_SPEC, S>* source,
+			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* target,
+			unsigned long arc_id,
+			LayerType layer
+			) {
 		this->ghostArcs[arc_id] =
-			new GhostArc<NODE_PARAMS_SPEC, S>(arc_id, source, target);
+			new GhostArc<NODE_PARAMS_SPEC, S>(arc_id, source, target, layer);
 	}
 
 	/**
 	 * Links the specified nodes with a GhostArc.
 	 */ 
-	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::link(Node<SyncDataPtr<NODE_PARAMS_SPEC>>* source, GhostNode<NODE_PARAMS_SPEC, S>* target, unsigned long arc_id) {
+	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::link(
+			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* source,
+			GhostNode<NODE_PARAMS_SPEC, S>* target,
+			unsigned long arc_id,
+			LayerType layer
+			) {
 		this->ghostArcs[arc_id] =
-			new GhostArc<NODE_PARAMS_SPEC, S>(arc_id, source, target);
+			new GhostArc<NODE_PARAMS_SPEC, S>(arc_id, source, target, layer);
 	}
 
 	/**

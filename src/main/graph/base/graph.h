@@ -261,7 +261,7 @@ namespace FPMAS {
 			 * @return built arc
 			 */
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id, LayerType layer) {
-				return link(this->getNode(source_id), this->getNode(target_id), arc_id);
+				return link(this->getNode(source_id), this->getNode(target_id), arc_id, layer);
 			}
 
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {

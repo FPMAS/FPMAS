@@ -36,7 +36,7 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 			dg.getGhost().buildNode(1ul);
 			dg.getProxy().setOrigin(1ul, 0);
 			dg.getProxy().setCurrentLocation(1ul, 1);
-			dg.getGhost().link(dg.getNodes().at(0ul), dg.getGhost().getNodes().at(1ul), 0ul);
+			dg.getGhost().link(dg.getNodes().at(0ul), dg.getGhost().getNodes().at(1ul), 0ul, DefaultLayer::Default);
 
 			dg.buildNode(2ul, 1);
 			dg.getNodes().at(2ul)->setWeight(10.);
@@ -46,7 +46,7 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 			dg.getGhost().buildNode(0ul);
 			dg.getProxy().setOrigin(0ul, 0);
 			dg.getProxy().setCurrentLocation(0ul, 0);
-			dg.getGhost().link(dg.getGhost().getNodes().at(0ul), dg.getNodes().at(1ul), 0ul);
+			dg.getGhost().link(dg.getGhost().getNodes().at(0ul), dg.getNodes().at(1ul), 0ul, DefaultLayer::Default);
 
 			dg.buildNode(3ul, 1);
 			dg.getNodes().at(3ul)->setWeight(10.);

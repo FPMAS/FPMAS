@@ -41,12 +41,12 @@ class SampleGraphTest : public ::testing::Test {
 			ASSERT_EQ(node2->getIncomingArcs().at(0), sampleGraph->getArc(0ul));
 			ASSERT_EQ(node2->getOutgoingArcs().size(), 2);
 
-			Arc<int>* outArcs[2] = {
+			Arc<int, DefaultLayer, 1>* outArcs[2] = {
 				node2->getOutgoingArcs().at(0),
 				node2->getOutgoingArcs().at(1)
 			};
-			assert_contains<Arc<int>*, 2>(outArcs, sampleGraph->getArc(1ul));
-			assert_contains<Arc<int>*, 2>(outArcs, sampleGraph->getArc(2ul));
+			assert_contains<Arc<int, DefaultLayer, 1>*, 2>(outArcs, sampleGraph->getArc(1ul));
+			assert_contains<Arc<int, DefaultLayer, 1>*, 2>(outArcs, sampleGraph->getArc(2ul));
 
 			auto node3 = sampleGraph->getNode(3ul);
 			ASSERT_EQ(node3->data(), 3);
