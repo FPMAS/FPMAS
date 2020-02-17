@@ -266,7 +266,15 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N> Node<SyncDataPtr<NODE_PARAMS_SPEC>>* DistributedGraph<T, S, LayerType, N>::buildNode(unsigned long id, T data) {
-			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>>::buildNode(id, SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(id, this->getMpiCommunicator(), this->getProxy(), data)));
+			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>>
+				::buildNode(
+					id,
+					SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(
+							id,
+							this->getMpiCommunicator(),
+							this->getProxy(),
+							data))
+					);
 		}
 
 		/**
@@ -280,7 +288,16 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N> Node<SyncDataPtr<NODE_PARAMS_SPEC>>* DistributedGraph<T, S, LayerType, N>::buildNode(unsigned long id, float weight, T data) {
-			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>>::buildNode(id, weight, SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(id, this->getMpiCommunicator(), this->getProxy(), data)));
+			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>>
+				::buildNode(
+					id,
+					weight,
+					SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(
+							id,
+							this->getMpiCommunicator(),
+							this->getProxy(),
+							data))
+					);
 		}
 
 		/**

@@ -113,7 +113,7 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[0],
 		std::string(
-			R"({"id":0,"link":[0,2],"source":[)" + current_proc + "," + current_proc + "],"
+			R"({"id":0,"layer":0,"link":[0,2],"source":[)" + current_proc + "," + current_proc + "],"
 			+ R"("target":[)" + current_proc + "," + current_proc + "]}"
 			).c_str()
 		);
@@ -121,7 +121,7 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[idx[1]],
 		std::string(
-			R"({"id":2,"link":[0,85250],"source":[)"
+			R"({"id":2,"layer":0,"link":[0,85250],"source":[)"
 			+ current_proc + "," + current_proc + "],"
 			+ R"("target":[)" + current_proc + "," + current_proc + "]}"
 			).c_str()
