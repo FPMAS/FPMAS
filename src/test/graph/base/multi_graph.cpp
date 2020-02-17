@@ -44,3 +44,15 @@ TEST_F(SampleMultiGraphTest, removeNodeTest) {
 	ASSERT_EQ(getConstMultiGraph().getNode(4)->layer(LAYER_2).getOutgoingArcs().size(), 1);
 
 }
+
+TEST_F(SampleMultiGraphTest, unlinkTest) {
+	getMultiGraph().unlink(3ul);
+
+	ASSERT_EQ(getConstMultiGraph().getArcs().size(), 6);
+	// Layer 0
+	ASSERT_EQ(getConstMultiGraph().getNode(3)->layer(LAYER_0).getOutgoingArcs().size(), 1);
+	ASSERT_EQ(getConstMultiGraph().getNode(3)->layer(LAYER_0).getIncomingArcs().size(), 2);
+	// Layer 1
+	ASSERT_EQ(getConstMultiGraph().getNode(3)->layer(LAYER_1).getOutgoingArcs().size(), 0);
+	ASSERT_EQ(getConstMultiGraph().getNode(4)->layer(LAYER_1).getIncomingArcs().size(), 0);
+}
