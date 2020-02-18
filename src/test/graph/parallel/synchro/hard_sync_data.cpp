@@ -95,37 +95,35 @@ TEST_F(Mpi_HardSyncDistGraphAcquireTest, race_condition_test) {
 				);
 	}
 }
-/*
- *
- *TEST_F(Mpi_HardSyncDistGraphAcquireTest, heavy_race_condition_test) {
- *    for(auto node : dg.getNodes()) {
- *        // Actually, each node has 0 or 1 outgoing arc
- *        for(auto arc : node.second->getOutgoingArcs()) {
- *            for (int i = 0; i < 50; ++i) {
- *                // It is important to get the REFERENCE to the internal data
- *                int& data = arc->getTargetNode()->data()->acquire();
- *                // Updates the referenced data
- *                data++;
- *                // Gives updates back
- *                arc->getTargetNode()->data()->release();
- *            }
- *        }
- *    }
- *    dg.synchronize();
- *
- *    // Node where the sum is stored
- *    unsigned long sum_node = dg.getMpiCommunicator().getSize() - 1;
- *    // Sum value
- *    unsigned long sum = 50 * (dg.getMpiCommunicator().getSize() - 1);
- *    // Looking for the graph (ie the proc) where N-1 is located
- *    if(dg.getNodes().count(sum_node)) {
- *        // Asserts the sum has been performed correctly, and that local data is
- *        // updated.
- *        ASSERT_EQ(
- *                dg.getNodes().at(sum_node)->data()->read(),
- *                sum
- *                );
- *    }
- *
- *}
- */
+
+TEST_F(Mpi_HardSyncDistGraphAcquireTest, heavy_race_condition_test) {
+	for(auto node : dg.getNodes()) {
+		// Actually, each node has 0 or 1 outgoing arc
+		for(auto arc : node.second->getOutgoingArcs()) {
+			for (int i = 0; i < 500; ++i) {
+				// It is important to get the REFERENCE to the internal data
+				int& data = arc->getTargetNode()->data()->acquire();
+				// Updates the referenced data
+				data++;
+				// Gives updates back
+				arc->getTargetNode()->data()->release();
+			}
+		}
+	}
+	dg.synchronize();
+
+	// Node where the sum is stored
+	unsigned long sum_node = dg.getMpiCommunicator().getSize() - 1;
+	// Sum value
+	unsigned long sum = 500 * (dg.getMpiCommunicator().getSize() - 1);
+	// Looking for the graph (ie the proc) where N-1 is located
+	if(dg.getNodes().count(sum_node)) {
+		// Asserts the sum has been performed correctly, and that local data is
+		// updated.
+		ASSERT_EQ(
+				dg.getNodes().at(sum_node)->data()->read(),
+				sum
+				);
+	}
+
+}
