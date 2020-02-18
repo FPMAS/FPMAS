@@ -67,15 +67,23 @@ TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
 	ASSERT_GE(delay, 1s);
 
 }
+class Mpi_ReadAcquireTest : public ::testing::Test {
+	protected:
+		TestResourceHandler handler;
+		SyncMpiCommunicator comm;
 
-TEST_F(Mpi_TerminationTest, self_read) {
+		Mpi_ReadAcquireTest() : comm(handler) {}
+
+};
+
+TEST_F(Mpi_ReadAcquireTest, self_read) {
 	std::string data = comm.read(comm.getRank(), comm.getRank());
 	ASSERT_EQ(data, std::to_string(comm.getRank()));
 
 	comm.terminate();
 }
 
-TEST_F(Mpi_TerminationTest, self_acquire) {
+TEST_F(Mpi_ReadAcquireTest, self_acquire) {
 	std::string data = comm.acquire(comm.getRank(), comm.getRank());
 	this->handler.data[comm.getRank()] = std::stoul(data);
 	this->handler.data[comm.getRank()] = 10;
@@ -108,7 +116,7 @@ TEST_F(Mpi_TerminationTest, self_acquire) {
  * Tests if its possible to read a data from a passive proc (ie a proc waiting
  * for termination after terminate() has been called.
  */
-TEST_F(Mpi_TerminationTest, read_from_passive_procs_test) {
+TEST_F(Mpi_ReadAcquireTest, read_from_passive_procs_test) {
 	if(comm.getSize() >= 2) {
 		// Each even proc asks for data to proc + 1 (if it exists)
 		if(comm.getRank() % 2 == 0 && comm.getRank() != comm.getSize() - 1) {
@@ -129,7 +137,7 @@ TEST_F(Mpi_TerminationTest, read_from_passive_procs_test) {
  * Tests if its possible to read a data from an active proc performing an
  * acquisition (ie a proc waiting for a response after acquie() has been called)
  */
-TEST_F(Mpi_TerminationTest, read_from_acquiring_procs_test) {
+TEST_F(Mpi_ReadAcquireTest, read_from_acquiring_procs_test) {
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
 			// Delays the acquire request reception from 0
@@ -163,7 +171,7 @@ TEST_F(Mpi_TerminationTest, read_from_acquiring_procs_test) {
  * Tests if its possible to read a data from an active proc performing a
  * reading (ie a proc waiting for a response after read() has been called)
  */
-TEST_F(Mpi_TerminationTest, read_from_reading_procs_test) {
+TEST_F(Mpi_ReadAcquireTest, read_from_reading_procs_test) {
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
 			// Delays the read request reception from 0
@@ -195,7 +203,7 @@ TEST_F(Mpi_TerminationTest, read_from_reading_procs_test) {
  * Tests if its possible to acquire a data from a passive proc (ie a proc waiting
  * for termination after terminate() has been called.
  */
-TEST_F(Mpi_TerminationTest, acquire_from_passive_procs_test) {
+TEST_F(Mpi_ReadAcquireTest, acquire_from_passive_procs_test) {
 	if(comm.getSize() >= 2) {
 		// Each even proc asks for data to proc + 1 (if it exists)
 		if(comm.getRank() % 2 == 0 && comm.getRank() != comm.getSize() - 1) {
@@ -224,7 +232,7 @@ TEST_F(Mpi_TerminationTest, acquire_from_passive_procs_test) {
  * Tests if it's possible to acquire a data from an active proc performing a
  * reading (ie a proc waiting for a response after read() has been called)
  */
-TEST_F(Mpi_TerminationTest, acquire_from_reading_procs_test) {
+TEST_F(Mpi_ReadAcquireTest, acquire_from_reading_procs_test) {
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
 			// Delays the read request reception from 0
@@ -263,7 +271,7 @@ TEST_F(Mpi_TerminationTest, acquire_from_reading_procs_test) {
  * Tests if it's possible to acquire a data from an active proc performing an
  * acquisition (ie a proc waiting for a response after acquire() has been called)
  */
-TEST_F(Mpi_TerminationTest, acquire_from_acquiring_procs_test) {
+TEST_F(Mpi_ReadAcquireTest, acquire_from_acquiring_procs_test) {
 	if(comm.getSize() >= 3) {
 		if(comm.getRank() == 1) {
 			// Delays the acquire request reception from 0
@@ -297,4 +305,54 @@ TEST_F(Mpi_TerminationTest, acquire_from_acquiring_procs_test) {
 		PRINT_MIN_PROCS_WARNING(acquire_from_acquiring_procs_test, 3);
 	}
 
+}
+
+class TestRaceConditionResourceHandler : public ResourceContainer {
+	public:
+		int data = 0;
+
+		std::string getLocalData(unsigned long id) const override {
+			return std::to_string(data);
+		}
+
+		std::string getUpdatedData(unsigned long id) const override {
+			return std::to_string(data);
+		}
+
+		void updateData(unsigned long id, std::string data_str) override {
+			this->data = std::stoi(data_str);
+		}
+
+};
+
+class Mpi_RaceConditionTest : public ::testing::Test {
+	protected:
+		TestRaceConditionResourceHandler handler;
+		SyncMpiCommunicator comm;
+
+		Mpi_RaceConditionTest() : comm(handler) {}
+
+};
+TEST_F(Mpi_RaceConditionTest, heavy_race_condition_test) {
+	if(comm.getRank() != 0) {
+		for (int i = 0; i < 500; i++) {
+			std::string data = comm.acquire(1, 0);
+			handler.updateData(1, std::to_string(std::stoi(data) + 1));
+			comm.giveBack(1, 0);
+		}
+	}
+	comm.terminate();
+	if(comm.getRank() == 0)
+		ASSERT_EQ(std::stoi(handler.getLocalData(1)), 500 * (comm.getSize() - 1));
+}
+
+TEST_F(Mpi_RaceConditionTest, heavy_race_condition_test_including_local) {
+	for (int i = 0; i < 500; i++) {
+		std::string data = comm.acquire(1, 0);
+		handler.updateData(1, std::to_string(std::stoi(data) + 1));
+		comm.giveBack(1, 0);
+	}
+	comm.terminate();
+	if(comm.getRank() == 0)
+		ASSERT_EQ(std::stoi(handler.getLocalData(1)), 500 * comm.getSize());
 }

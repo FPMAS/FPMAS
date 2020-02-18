@@ -35,7 +35,8 @@ namespace FPMAS::communication {
 			FPMAS_LOGV(this->comm->getRank(), "RW", "data %lu : respond to waitin write from proc %i", this->id, this->write_requests.front());
 			this->comm->respondToAcquire(this->write_requests.front(), this->id);
 			this->write_requests.pop();
-		} else {
+		}
+		if(this->write_requests.empty()) {
 			FPMAS_LOGV(this->comm->getRank(), "RW", "release data %lu", this->id);
 			this->locked = false;
 		}
@@ -91,6 +92,11 @@ namespace FPMAS::communication {
 	}
 
 	void ResourceManager::clear() {
+		for(auto rw : readersWriters) {
+			if(rw.second.isLocked()) {
+				throw std::runtime_error("resource locked!!");
+			}
+		}
 		this->readersWriters.clear();
 	}
 }

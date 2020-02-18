@@ -66,7 +66,7 @@ class Mpi_HardSyncDistGraphAcquireTest : public ::testing::Test {
  * asserts that each proc as an exclusive access to N-1, to prevent race
  * conditions.
  */
-TEST_F(Mpi_HardSyncDistGraphAcquireTest, concurrent_acquires_test) {
+TEST_F(Mpi_HardSyncDistGraphAcquireTest, race_condition_test) {
 	// We don't know which node is on which process, but it doesn't matter
 	for(auto node : dg.getNodes()) {
 		// Actually, each node has 0 or 1 outgoing arc
@@ -82,7 +82,7 @@ TEST_F(Mpi_HardSyncDistGraphAcquireTest, concurrent_acquires_test) {
 	dg.synchronize();
 
 	// Node where the sum is stored
-	unsigned long sum_node = dg.getMpiCommunicator().getSize() - 1;
+	int sum_node = dg.getMpiCommunicator().getSize() - 1;
 	// Sum value
 	unsigned long sum = dg.getMpiCommunicator().getSize() - 1;
 	// Looking for the graph (ie the proc) where N-1 is located
@@ -95,3 +95,37 @@ TEST_F(Mpi_HardSyncDistGraphAcquireTest, concurrent_acquires_test) {
 				);
 	}
 }
+/*
+ *
+ *TEST_F(Mpi_HardSyncDistGraphAcquireTest, heavy_race_condition_test) {
+ *    for(auto node : dg.getNodes()) {
+ *        // Actually, each node has 0 or 1 outgoing arc
+ *        for(auto arc : node.second->getOutgoingArcs()) {
+ *            for (int i = 0; i < 50; ++i) {
+ *                // It is important to get the REFERENCE to the internal data
+ *                int& data = arc->getTargetNode()->data()->acquire();
+ *                // Updates the referenced data
+ *                data++;
+ *                // Gives updates back
+ *                arc->getTargetNode()->data()->release();
+ *            }
+ *        }
+ *    }
+ *    dg.synchronize();
+ *
+ *    // Node where the sum is stored
+ *    unsigned long sum_node = dg.getMpiCommunicator().getSize() - 1;
+ *    // Sum value
+ *    unsigned long sum = 50 * (dg.getMpiCommunicator().getSize() - 1);
+ *    // Looking for the graph (ie the proc) where N-1 is located
+ *    if(dg.getNodes().count(sum_node)) {
+ *        // Asserts the sum has been performed correctly, and that local data is
+ *        // updated.
+ *        ASSERT_EQ(
+ *                dg.getNodes().at(sum_node)->data()->read(),
+ *                sum
+ *                );
+ *    }
+ *
+ *}
+ */

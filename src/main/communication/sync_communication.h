@@ -6,19 +6,19 @@
 #include "readers_writers.h"
 
 namespace FPMAS::communication {
-		enum State {
-			ACTIVE,
-			PASSIVE
+		enum Tag : int {
+			READ = 0x00,
+			READ_RESPONSE = 0x01,
+			ACQUIRE = 0x02,
+			ACQUIRE_RESPONSE = 0x03,
+			ACQUIRE_GIVE_BACK = 0x04,
+			TOKEN = 0x05,
+			END = 0x06
 		};
 
-		enum Tag : int {
-			READ,
-			READ_RESPONSE,
-			ACQUIRE,
-			ACQUIRE_RESPONSE,
-			ACQUIRE_GIVE_BACK,
-			TOKEN,
-			END
+		enum Epoch : int {
+			EVEN = 0x00,
+			ODD = 0x10
 		};
 
 		enum Color : int {
@@ -38,8 +38,8 @@ namespace FPMAS::communication {
 		class SyncMpiCommunicator : public MpiCommunicator {
 			friend ReadersWriters;
 			private:
-				State state = State::ACTIVE;
-				Color color = Color::WHITE;
+				Epoch epoch = EVEN;
+				Color color = WHITE;
 
 				ResourceContainer& resourceContainer;
 				ResourceManager resourceManager;
@@ -60,8 +60,6 @@ namespace FPMAS::communication {
 			public:
 				SyncMpiCommunicator(ResourceContainer&);
 				SyncMpiCommunicator(ResourceContainer&, std::initializer_list<int>);
-
-				State getState() const;
 
 				void handleIncomingRequests();
 

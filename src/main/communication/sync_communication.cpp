@@ -44,30 +44,30 @@ void SyncMpiCommunicator::handleIncomingRequests() {
 	MPI_Status req_status;
 
 	// Check read request
-	MPI_Iprobe(MPI_ANY_SOURCE, Tag::READ, this->getMpiComm(), &flag, &req_status);
+	MPI_Iprobe(MPI_ANY_SOURCE, epoch | Tag::READ, this->getMpiComm(), &flag, &req_status);
 	if(flag > 0) {
 		unsigned long id;
-		MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, req_status.MPI_SOURCE, Tag::READ, this->getMpiComm(), &req_status);
+		MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, req_status.MPI_SOURCE, epoch | Tag::READ, this->getMpiComm(), &req_status);
 		FPMAS_LOGD(this->getRank(), "RECV", "read request %lu from %i", id, req_status.MPI_SOURCE);
 		this->handleRead(req_status.MPI_SOURCE, id);
 	}
 
 	// Check acquire request
-	MPI_Iprobe(MPI_ANY_SOURCE, Tag::ACQUIRE, this->getMpiComm(), &flag, &req_status);
+	MPI_Iprobe(MPI_ANY_SOURCE, epoch | Tag::ACQUIRE, this->getMpiComm(), &flag, &req_status);
 	if(flag > 0) {
 		unsigned long id;
-		MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, req_status.MPI_SOURCE, Tag::ACQUIRE, this->getMpiComm(), &req_status);
+		MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, req_status.MPI_SOURCE, epoch | Tag::ACQUIRE, this->getMpiComm(), &req_status);
 		FPMAS_LOGD(this->getRank(), "RECV", "acquire request %lu from %i", id, req_status.MPI_SOURCE);
 		this->handleAcquire(req_status.MPI_SOURCE, id);
 	}
 
 	// Check acquire give back
-	MPI_Iprobe(MPI_ANY_SOURCE, Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &flag, &req_status);
+	MPI_Iprobe(MPI_ANY_SOURCE, epoch | Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &flag, &req_status);
 	if(flag > 0) {
 		int count;
 		MPI_Get_count(&req_status, MPI_CHAR, &count);
 		char data[count];
-		MPI_Recv(&data, count, MPI_CHAR, req_status.MPI_SOURCE, Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &req_status);
+		MPI_Recv(&data, count, MPI_CHAR, req_status.MPI_SOURCE, epoch | Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &req_status);
 
 		FPMAS_LOGD(this->getRank(), "RECV", "given back from %i : %s", req_status.MPI_SOURCE, data);
 		this->handleGiveBack(data);
@@ -105,9 +105,11 @@ std::string SyncMpiCommunicator::read(unsigned long id, int location) {
 		// The local process needs to wait as any other proc to access its own
 		// resources.
 		const ReadersWriters& rw = this->resourceManager.get(id);
-		while(rw.isLocked())
+		int i = 0;
+		while(rw.isLocked()) {
 			// Responds to request until data is given back
 			this->handleIncomingRequests();
+		}
 
 		std::string data = this->resourceContainer.getLocalData(id);
 
@@ -116,7 +118,7 @@ std::string SyncMpiCommunicator::read(unsigned long id, int location) {
 	FPMAS_LOGD(this->getRank(), "READ", "reading data %lu from %i", id, location);
 	// Starts non-blocking synchronous send
 	MPI_Request req;
-	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::READ, this->getMpiComm(), &req);
+	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, epoch | Tag::READ, this->getMpiComm(), &req);
 
 	// Keep responding to other READ / ACQUIRE request to avoid deadlock,
 	// until the request has been received
@@ -125,11 +127,11 @@ std::string SyncMpiCommunicator::read(unsigned long id, int location) {
 	// The request has been received : it is assumed that the receiving proc is
 	// now responding so we can safely wait for response without deadlocking
 	MPI_Status read_response_status;
-	MPI_Probe(location, Tag::READ_RESPONSE, this->getMpiComm(), &read_response_status);
+	MPI_Probe(location, epoch | Tag::READ_RESPONSE, this->getMpiComm(), &read_response_status);
 	int count;
 	MPI_Get_count(&read_response_status, MPI_CHAR, &count);
 	char data[count];
-	MPI_Recv(&data, count, MPI_CHAR, location, Tag::READ_RESPONSE, this->getMpiComm(), &read_response_status);
+	MPI_Recv(&data, count, MPI_CHAR, location, epoch | Tag::READ_RESPONSE, this->getMpiComm(), &read_response_status);
 
 	return std::string(data);
 
@@ -161,13 +163,12 @@ void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
 		this->resourceManager.addPendingRead(id, destination);
 		return;
 	}
-	this->color = Color::BLACK;
 
 	// Perform the response
 	std::string data = this->resourceContainer.getLocalData(id);
 	MPI_Request req;
 	// TODO : asynchronous send : is this a pb? => probably not.
-	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::READ_RESPONSE, this->getMpiComm(), &req);
+	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, destination, epoch | Tag::READ_RESPONSE, this->getMpiComm(), &req);
 	FPMAS_LOGD(this->getRank(), "READ", "send read data %lu to %i : %s", id, destination, data.c_str());
 }
 
@@ -194,18 +195,18 @@ std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 	FPMAS_LOGD(this->getRank(), "ACQUIRE", "acquiring data %lu from %i", id, location);
 	// Starts non-blocking synchronous send
 	MPI_Request req;
-	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, Tag::ACQUIRE, this->getMpiComm(), &req);
+	MPI_Issend(&id, 1, MPI_UNSIGNED_LONG, location, epoch | Tag::ACQUIRE, this->getMpiComm(), &req);
 
 	this->waitSendRequest(&req);
 
 	// The request has been received : it is assumed that the receiving proc is
 	// now responding so we can safely wait for response without deadlocking
 	MPI_Status read_response_status;
-	MPI_Probe(location, Tag::ACQUIRE_RESPONSE, this->getMpiComm(), &read_response_status);
+	MPI_Probe(location, epoch | Tag::ACQUIRE_RESPONSE, this->getMpiComm(), &read_response_status);
 	int count;
 	MPI_Get_count(&read_response_status, MPI_CHAR, &count);
 	char data[count];
-	MPI_Recv(&data, count, MPI_CHAR, location, Tag::ACQUIRE_RESPONSE, this->getMpiComm(), &read_response_status);
+	MPI_Recv(&data, count, MPI_CHAR, location, epoch | Tag::ACQUIRE_RESPONSE, this->getMpiComm(), &read_response_status);
 	FPMAS_LOGD(this->getRank(), "ACQUIRE", "acquired data %lu from %i : %s", id, location, data);
 
 	return std::string(data);
@@ -238,7 +239,7 @@ void SyncMpiCommunicator::respondToAcquire(int destination, unsigned long id) {
 
 	MPI_Request req;
 	// TODO : asynchronous send : is this a pb? => probably not.
-	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, destination, Tag::ACQUIRE_RESPONSE, this->getMpiComm(), &req);
+	MPI_Isend(data.c_str(), data.length() + 1, MPI_CHAR, destination, epoch | Tag::ACQUIRE_RESPONSE, this->getMpiComm(), &req);
 }
 
 /**
@@ -275,7 +276,7 @@ void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
 	FPMAS_LOGD(this->getRank(), "ACQUIRE", "giving back to %i : %s", location, data.c_str());
 	MPI_Request req;
 	// TODO : asynchronous send : is this a pb? => maybe.
-	MPI_Issend(data.c_str(), data.length() + 1, MPI_CHAR, location, Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &req);
+	MPI_Issend(data.c_str(), data.length() + 1, MPI_CHAR, location, epoch | Tag::ACQUIRE_GIVE_BACK, this->getMpiComm(), &req);
 
 	this->waitSendRequest(&req);
 }
@@ -312,7 +313,6 @@ void SyncMpiCommunicator::handleGiveBack(std::string data) {
  * Returns only when all the processes have terminated their process.
  */
 void SyncMpiCommunicator::terminate() {
-	this->state = State::PASSIVE;
 	int token;
 
 	if(this->getRank() == 0) {
@@ -333,6 +333,14 @@ void SyncMpiCommunicator::terminate() {
 					for (int i = 1; i < this->getSize(); ++i) {
 						MPI_Ssend(NULL, 0, MPI_INT, i, Tag::END, this->getMpiComm());	
 					}
+					switch(this->epoch) {
+						case EVEN:
+							this->epoch = ODD;
+							break;
+						default:
+							this->epoch = EVEN;
+					}
+					this->resourceManager.clear();
 					return;
 				} else {
 					this->color = Color::WHITE;
@@ -353,6 +361,13 @@ void SyncMpiCommunicator::terminate() {
 		MPI_Iprobe(MPI_ANY_SOURCE, Tag::END, this->getMpiComm(), &flag, &status);
 		if(flag > 0) {
 			MPI_Recv(NULL, 0, MPI_INT, status.MPI_SOURCE, Tag::END, this->getMpiComm(), &status);
+			switch(this->epoch) {
+				case EVEN:
+					this->epoch = ODD;
+					break;
+				default:
+					this->epoch = EVEN;
+			}
 			this->resourceManager.clear();
 			return;
 		}
