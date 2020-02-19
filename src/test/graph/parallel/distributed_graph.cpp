@@ -90,32 +90,33 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test_manual_par
 TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		ASSERT_EQ(dg.getNodes().size(), dg.getMpiCommunicator().getSize());
-	}
-	else {
+	} else {
 		ASSERT_EQ(dg.getNodes().size(), 0);
 	}
 
 	dg.distribute();
 
-	ASSERT_LE(dg.getNodes().size(), dg.getMpiCommunicator().getSize());
-
-	// All nodes come from proc 0
-	ASSERT_EQ(dg.getProxy().getOrigin(
-				dg.getNodes().begin()->first
-				),
-			0);
+	if(dg.getMpiCommunicator().getSize() > 1)
+		ASSERT_LT(dg.getNodes().size(), dg.getMpiCommunicator().getSize());
 
 	// Proxy must return this proc as location for the local node
-	ASSERT_EQ(dg.getProxy().getCurrentLocation(
-				dg.getNodes().begin()->first
-				),
-			dg.getMpiCommunicator().getRank()
-			);
+	for(auto node : dg.getNodes()) {
+		// All nodes come from proc 0
+		ASSERT_EQ(dg.getProxy().getOrigin(
+					dg.getNodes().begin()->first
+					),
+				0);
+		ASSERT_EQ(dg.getProxy().getCurrentLocation(
+					node.first
+					),
+				dg.getMpiCommunicator().getRank()
+				);
+	}
 
 	// proc 0 must maintain the currentLocations map for exported nodes
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
-			if(i == dg.getNodes().begin()->first) {
+			if(dg.getNodes().count(i) > 0) {
 				// Local node on this proc
 				ASSERT_EQ(dg.getProxy().getCurrentLocation(i), 0);
 			}
@@ -130,7 +131,6 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 
 class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
 	protected:
-
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
@@ -179,8 +179,9 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test_manual_partition
 TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 	dg.distribute();
 
-	// Assert that at least some nodes have been migrated.
-	ASSERT_LT(dg.getNodes().size(), 2 * dg.getMpiCommunicator().getSize());
+	if(dg.getMpiCommunicator().getSize() > 1)
+		// Assert that at least some nodes have been migrated.
+		ASSERT_LT(dg.getNodes().size(), 2 * dg.getMpiCommunicator().getSize());
 }
 
 class Mpi_DistributeCompleteGraphTest : public DistributeGraphTest {
@@ -205,6 +206,9 @@ class Mpi_DistributeCompleteGraphTest : public DistributeGraphTest {
 };
 
 
+/*
+ * Assert that modifying nodes weight updates partitions
+ */
 TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 	if(dg.getMpiCommunicator().getSize() % 2 == 0) {
 		// Initial distribution
@@ -240,7 +244,7 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 
 }
 
-class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
+class Mpi_DynamicLoadBalancingTest : public DistributeGraphTest {
 
 	protected:
 		std::unordered_map<unsigned long, std::pair<int, int>> init_partition;
@@ -262,7 +266,12 @@ class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
 		}
 };
 
-TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
+/*
+ * Assert that load balancing functions can be called multiple times
+ * while weights are updated
+ * (dynamic load balancing)
+ */
+TEST_F(Mpi_DynamicLoadBalancingTest, dynamic_lb_test) {
 	// Initial distrib
 	dg.distribute(init_partition);
 	ASSERT_EQ(dg.getNodes().size(), 2);

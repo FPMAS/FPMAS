@@ -10,13 +10,15 @@ using FPMAS::graph::parallel::synchro::SyncDataPtr;
 
 class Mpi_DistributeGraphWithGhostArcsTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int> dg = DistributedGraph<int>();
+		DistributedGraph<int> dg;
+		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 	
 	public:
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					dg.buildNode(i, i);
+					partition[i] = std::pair(0, i);
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					// Build a ring across the processors
@@ -60,7 +62,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, check_graph) {
 };
 
 TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
-	dg.distribute();
+	dg.distribute(partition);
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
 	// Must be performed with at least 2 procs
@@ -92,7 +94,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 }
 
 TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) {
-	dg.distribute();
+	dg.distribute(partition);
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
 	int local_proc = dg.getMpiCommunicator().getRank();
@@ -106,12 +108,14 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) 
 class Mpi_DistributeCompleteGraphWithGhostTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
+		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 	public:
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
 					dg.buildNode(i, i);
+					partition[i] = std::pair(0, i / 2);
 				}
 				int id = 0;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
@@ -131,7 +135,7 @@ class Mpi_DistributeCompleteGraphWithGhostTest : public ::testing::Test {
  * multiple local nodes (2 in this case)
  */
 TEST_F(Mpi_DistributeCompleteGraphWithGhostTest, distribute_graph_with_multiple_ghost_arcs_test) {
-	dg.distribute();
+	dg.distribute(partition);
 
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_EQ(

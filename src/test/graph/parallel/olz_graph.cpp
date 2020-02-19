@@ -7,19 +7,21 @@ using FPMAS::graph::parallel::synchro::SyncDataPtr;
 
 class Mpi_SynchronizeGhostTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int> dg = DistributedGraph<int>();
+		DistributedGraph<int> dg;
+		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					dg.buildNode(i, i);
+					partition[i] = std::pair(0, i);
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					// Build a ring across the processors
 					dg.link(i, (i+1) % dg.getMpiCommunicator().getSize(), i);
 				}
 			}
-			dg.distribute();
+			dg.distribute(partition);
 			dg.getGhost().synchronize();
 		}
 };

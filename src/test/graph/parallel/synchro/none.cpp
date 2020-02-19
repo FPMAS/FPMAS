@@ -8,12 +8,14 @@ using FPMAS::graph::parallel::synchro::None;
 
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:
-		DistributedGraph<int, None> dg = DistributedGraph<int, None>();
+		DistributedGraph<int, None> dg;
+		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 	void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
 					dg.buildNode(i, i);
+					partition[i] = std::pair(0, i / 2);
 				}
 				int id = 0;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
@@ -28,7 +30,7 @@ class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 };
 
 TEST_F(Mpi_DistributeCompleteGraphTest_NoSync, no_sync_distribution) {
-	dg.distribute();
+	dg.distribute(partition);
 
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_EQ(dg.getArcs().size(), 2);

@@ -15,40 +15,46 @@ TEST(Mpi_HardSyncDistGraph, build_test) {
 
 class Mpi_HardSyncDistGraphReadTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, HardSyncData> dg = DistributedGraph<int, HardSyncData>();
+		DistributedGraph<int, HardSyncData> dg;
+		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					dg.buildNode(i, i);
+					partition[i] = std::pair(0, i);
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					// Build a ring across the processors
 					dg.link(i, (i+1) % dg.getMpiCommunicator().getSize(), i);
 				}
 			}
-			dg.distribute();
+			dg.distribute(partition);
 		}
 };
 
 TEST_F(Mpi_HardSyncDistGraphReadTest, simple_read_test) {
-	ASSERT_GE(dg.getGhost().getNodes().size(), 1);
+	if(dg.getMpiCommunicator().getSize() > 1)
+		ASSERT_GE(dg.getGhost().getNodes().size(), 1);
+
 	for(auto ghost : dg.getGhost().getNodes()) {
 		ghost.second->data()->read();
 		ASSERT_EQ(ghost.second->data()->read(), ghost.first);
 	}
-	dg.getMpiCommunicator().terminate();
+	dg.synchronize();
 };
 
 class Mpi_HardSyncDistGraphAcquireTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, HardSyncData> dg = DistributedGraph<int, HardSyncData>();
+		DistributedGraph<int, HardSyncData> dg;
+		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				// Builds N node
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					dg.buildNode(i, i, 0);
+					partition[i] = std::pair(0, i);
 				}
 				// Each node is connected to node N-1, except N-1 itself
 				for (int i = 0; i < dg.getMpiCommunicator().getSize() - 1; ++i) {
@@ -56,7 +62,7 @@ class Mpi_HardSyncDistGraphAcquireTest : public ::testing::Test {
 						dg.link(i, dg.getMpiCommunicator().getSize() - 1, i);
 				}
 			}
-			dg.distribute();
+			dg.distribute(partition);
 		}
 };
 
@@ -96,6 +102,9 @@ TEST_F(Mpi_HardSyncDistGraphAcquireTest, race_condition_test) {
 	}
 }
 
+/*
+ * Same as before, but with 500 acquires by proc
+ */
 TEST_F(Mpi_HardSyncDistGraphAcquireTest, heavy_race_condition_test) {
 	for(auto node : dg.getNodes()) {
 		// Actually, each node has 0 or 1 outgoing arc
@@ -125,5 +134,4 @@ TEST_F(Mpi_HardSyncDistGraphAcquireTest, heavy_race_condition_test) {
 				sum
 				);
 	}
-
 }
