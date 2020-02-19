@@ -216,27 +216,31 @@ namespace FPMAS::graph::parallel {
 
 		// Replaces the incomingArcs list by proper GhostArcs
 		// gNode->incomingArcs.clear();	
-		for(auto arc : node.getIncomingArcs()) {
-			auto localSourceNode = arc->getSourceNode();
-			// Builds the ghost arc if :
-			if(
-					// The source node is not ignored (i.e. it is exported in the
-					// current epoch)
-					ignoreIds.count(localSourceNode->getId()) == 0
-					// AND it is not an already built ghost node
-					&& this->getNodes().count(localSourceNode->getId()) == 0
-			  )
-				this->link(localSourceNode, gNode, arc->getId(), arc->layer);
+		for(auto layer : node.getLayers()) {
+			for(auto arc : layer.getIncomingArcs()) {
+				auto localSourceNode = arc->getSourceNode();
+				// Builds the ghost arc if :
+				if(
+						// The source node is not ignored (i.e. it is exported in the
+						// current epoch)
+						ignoreIds.count(localSourceNode->getId()) == 0
+						// AND it is not an already built ghost node
+						&& this->getNodes().count(localSourceNode->getId()) == 0
+				  )
+					this->link(localSourceNode, gNode, arc->getId(), arc->layer);
+			}
 		}
 
 		// Replaces the outgoingArcs list by proper GhostArcs
 		// gNode->outgoingArcs.clear();
-		for(auto arc : node.getOutgoingArcs()) {
-			auto localTargetNode = arc->getTargetNode();
-			// Same as above
-			if(ignoreIds.count(localTargetNode->getId()) == 0
-					&& this->getNodes().count(localTargetNode->getId()) == 0)
-				this->link(gNode, localTargetNode, arc->getId(), arc->layer);
+		for(auto layer : node.getLayers()) {
+			for(auto arc : layer.getOutgoingArcs()) {
+				auto localTargetNode = arc->getTargetNode();
+				// Same as above
+				if(ignoreIds.count(localTargetNode->getId()) == 0
+						&& this->getNodes().count(localTargetNode->getId()) == 0)
+					this->link(gNode, localTargetNode, arc->getId(), arc->layer);
+			}
 		}
 
 		return gNode;

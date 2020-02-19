@@ -403,17 +403,21 @@ namespace FPMAS::graph::parallel {
 				for(auto id : exportedNodeIds) {
 					Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* node = graph->getNode(id);
 					bool buildGhost = false;
-					for(auto arc : node->getOutgoingArcs()) {
-						if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
-							buildGhost = true;
-							break;
+					for(auto layer : node->getLayers()) {
+						for(auto arc : layer.getOutgoingArcs()) {
+							if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
+								buildGhost = true;
+								break;
+							}
 						}
 					}
 					if(!buildGhost) {
-						for(auto arc : node->getIncomingArcs()) {
-							if(exportedNodeIds.count(arc->getSourceNode()->getId()) == 0) {
-								buildGhost = true;
-								break;
+						for(auto layer : node->getLayers()) {
+							for(auto arc : layer.getIncomingArcs()) {
+								if(exportedNodeIds.count(arc->getSourceNode()->getId()) == 0) {
+									buildGhost = true;
+									break;
+								}
 							}
 						}
 					}
