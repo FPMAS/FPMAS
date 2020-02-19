@@ -346,8 +346,6 @@ namespace FPMAS::graph::parallel {
 						}
 						else {
 							// Both nodes are local, no ghost needs to be used.
-							// tempArc source and targetNodes are automatically
-							// deleted by this function
 							graph->link(
 									sourceId,
 									targetId,

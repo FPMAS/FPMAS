@@ -94,15 +94,9 @@ namespace FPMAS {
 			Proxy proxy;
 			GhostGraph<NODE_PARAMS_SPEC, S> ghost;
 
+			void distribute(int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int*, int*, ZOLTAN_ID_PTR, int*);
 			void setZoltanNodeMigration();
 			void setZoltanArcMigration();
-
-			// A set of node ids that are currently local and have been
-			// imported from an other proc. Data memory of such a node
-			// (ghost or local) have been allocated dynamically at
-			// deserialization, and this set allows us to delete it when
-			// those nodes are exported / removed.
-			// std::set<unsigned long> importedNodeIds;
 
 			// Serialization caches used to pack objects
 			std::unordered_map<unsigned long, std::string> node_serialization_cache;
@@ -173,6 +167,7 @@ namespace FPMAS {
 			void updateData(unsigned long, std::string) override;
 
 			void distribute();
+			void distribute(std::unordered_map<unsigned long, std::pair<int, int>>);
 			void synchronize();
 		};
 
@@ -348,63 +343,16 @@ namespace FPMAS {
 			this->getNodes().at(id)->data()->update(json::parse(data).get<T>());
 		}
 
-		/**
-		 * Distributes the graph accross the available cores using Zoltan.
-		 *
-		 * The graph is distributed using
-		 * [Zoltan::LB_Partition](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_lb.html#Zoltan_LB_Partition)
-		 * and
-		 * [Zoltan::Migrate](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_mig.html#Zoltan_Migrate).
-		 * Query functions used are defined in the FPMAS::graph::zoltan namespace.
-		 *
-		 * The current process will block until all other involved procs also
-		 * call the distribute() function.
-		 *
-		 * The distribution process is organized as follow :
-		 *
-		 * 1. Compute partitions
-		 * 2. Migrate nodes
-		 * 3. Migrate associated arcs, and build ghost nodes if necessary
-		 * 4. Update nodes locations within each Proxy instance
-		 *
-		 */
-		template<class T, SYNC_MODE, typename LayerType, int N> void DistributedGraph<T, S, LayerType, N>::distribute() {
-			int changes;
-			int num_gid_entries;
-			int num_lid_entries;
-
-			int num_import; 
-			ZOLTAN_ID_PTR import_global_ids;
-			ZOLTAN_ID_PTR import_local_ids;
-			int * import_procs;
-			int * import_to_part;
-
-			int* export_to_part;
-			ZOLTAN_ID_PTR export_local_ids;
-
-			// Prepares Zoltan to migrate nodes
-			// Must be set up from there, because LB_Partition can call
-			// obj_size_multi_fn when repartitionning
-			this->setZoltanNodeMigration();
-
-			// Computes Zoltan partitioning
-			int err = this->zoltan.LB_Partition(
-					changes,
-					num_gid_entries,
-					num_lid_entries,
-					num_import,
-					import_global_ids,
-					import_local_ids,
-					import_procs,
-					import_to_part,
-					this->export_node_num,
-					this->export_node_global_ids,
-					export_local_ids,
-					this->export_node_procs,
-					export_to_part
-					);
-
-
+		template<class T, SYNC_MODE, typename LayerType, int N> void DistributedGraph<T, S, LayerType, N>::distribute(
+			int changes,
+			int num_import,
+			ZOLTAN_ID_PTR import_global_ids,
+			ZOLTAN_ID_PTR import_local_ids,
+			int* import_procs,
+			int* import_to_part,
+			ZOLTAN_ID_PTR export_local_ids,
+			int* export_to_part
+			) {
 			if(changes > 0) {
 
 				// Migrate nodes from the load balancing
@@ -469,7 +417,139 @@ namespace FPMAS {
 			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
 
 			this->synchronize();
+
 		}
+		template<class T, SYNC_MODE, typename LayerType, int N> void DistributedGraph<T, S, LayerType, N>::distribute(
+				std::unordered_map<unsigned long, std::pair<int, int>> partition
+				) {
+
+			// Import lists
+			int num_import = 0;
+			ZOLTAN_ID_PTR import_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+			int* import_procs = (int*) std::malloc(0);
+
+			// Export lists
+			this->export_node_num = 0;
+			this->export_node_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+			this->export_node_procs = (int*) std::malloc(0);
+
+			for(auto item : partition) {
+				if(item.second.first == this->getMpiCommunicator().getRank()) {
+					if(item.second.second != this->getMpiCommunicator().getRank()) {
+						this->export_node_num++;
+						this->export_node_global_ids = (ZOLTAN_ID_PTR)
+							std::realloc(this->export_node_global_ids, 2 * this->export_node_num * sizeof(ZOLTAN_ID_TYPE));
+
+						write_zoltan_id(item.first, &this->export_node_global_ids[2*(this->export_node_num-1)]);
+						this->export_node_procs = (int*)
+							std::realloc(this->export_node_procs, this->export_node_num * sizeof(int));
+						this->export_node_procs[this->export_node_num-1] = item.second.second;
+					}
+
+				} else {
+					if(item.second.second == this->getMpiCommunicator().getRank()) {
+						num_import++;
+						import_global_ids = (ZOLTAN_ID_PTR)
+							std::realloc(import_global_ids, 2 * num_import * sizeof(ZOLTAN_ID_TYPE));
+						write_zoltan_id(item.first, &import_global_ids[2*(num_import-1)]);
+						import_procs = (int*)
+							std::realloc(import_procs, num_import * sizeof(int));
+						import_procs[num_import-1] = item.second.first;
+
+					}
+
+				}
+			}
+			int* import_to_part = (int*) std::malloc(num_import * sizeof(int));
+			for (int i = 0; i < num_import; ++i) {
+				import_to_part[i] = import_procs[i];
+			}
+			int* export_to_part = (int*) std::malloc(this->export_node_num * sizeof(int));
+			for (int i = 0; i < this->export_node_num; ++i) {
+				export_to_part[i] = this->export_node_procs[i];
+			}
+
+			ZOLTAN_ID_PTR import_local_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+			ZOLTAN_ID_PTR export_local_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+
+			this->setZoltanNodeMigration();
+
+			this->distribute(
+					1,
+					num_import,
+					import_global_ids,
+					import_local_ids,
+					import_procs,
+					import_to_part,
+					export_local_ids,
+					export_to_part);
+		}
+		/**
+		 * Distributes the graph accross the available cores using Zoltan.
+		 *
+		 * The graph is distributed using
+		 * [Zoltan::LB_Partition](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_lb.html#Zoltan_LB_Partition)
+		 * and
+		 * [Zoltan::Migrate](https://cs.sandia.gov/Zoltan/ug_html/ug_interface_mig.html#Zoltan_Migrate).
+		 * Query functions used are defined in the FPMAS::graph::zoltan namespace.
+		 *
+		 * The current process will block until all other involved procs also
+		 * call the distribute() function.
+		 *
+		 * The distribution process is organized as follow :
+		 *
+		 * 1. Compute partitions
+		 * 2. Migrate nodes
+		 * 3. Migrate associated arcs, and build ghost nodes if necessary
+		 * 4. Update nodes locations within each Proxy instance
+		 *
+		 */
+		template<class T, SYNC_MODE, typename LayerType, int N> void DistributedGraph<T, S, LayerType, N>::distribute() {
+			int changes;
+			int num_gid_entries;
+			int num_lid_entries;
+
+			int num_import; 
+			ZOLTAN_ID_PTR import_global_ids;
+			ZOLTAN_ID_PTR import_local_ids;
+			int * import_procs;
+			int * import_to_part;
+
+			int* export_to_part;
+			ZOLTAN_ID_PTR export_local_ids;
+
+			// Prepares Zoltan to migrate nodes
+			// Must be set up from there, because LB_Partition can call
+			// obj_size_multi_fn when repartitionning
+			this->setZoltanNodeMigration();
+
+			// Computes Zoltan partitioning
+			int err = this->zoltan.LB_Partition(
+					changes,
+					num_gid_entries,
+					num_lid_entries,
+					num_import,
+					import_global_ids,
+					import_local_ids,
+					import_procs,
+					import_to_part,
+					this->export_node_num,
+					this->export_node_global_ids,
+					export_local_ids,
+					this->export_node_procs,
+					export_to_part
+					);
+			this->distribute(
+				changes,
+				num_import,
+				import_global_ids,
+				import_local_ids,
+				import_procs,
+				import_to_part,
+				export_local_ids,
+				export_to_part);
+
+				}
 
 		/**
 		 * Synchronizes the DistributedGraph instances, calling the

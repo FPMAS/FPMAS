@@ -103,9 +103,9 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) 
 	}
 }
 
-class Mpi_DistributeCompleteGraphTest : public ::testing::Test {
+class Mpi_DistributeCompleteGraphWithGhostTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int> dg = DistributedGraph<int>();
+		DistributedGraph<int> dg;
 
 	public:
 		void SetUp() override {
@@ -130,7 +130,7 @@ class Mpi_DistributeCompleteGraphTest : public ::testing::Test {
  * This test checks the ghost node creation when each node is connected to
  * multiple local nodes (2 in this case)
  */
-TEST_F(Mpi_DistributeCompleteGraphTest, distribute_graph_with_multiple_ghost_arcs_test) {
+TEST_F(Mpi_DistributeCompleteGraphWithGhostTest, distribute_graph_with_multiple_ghost_arcs_test) {
 	dg.distribute();
 
 	ASSERT_EQ(dg.getNodes().size(), 2);

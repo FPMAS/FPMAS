@@ -75,6 +75,18 @@ class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
 		}
 };
 
+TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test_manual_partition) {
+	std::unordered_map<unsigned long, std::pair<int, int>> partition;
+	for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
+		partition[i] = std::pair(0, i);
+	}
+	dg.distribute(partition);
+	ASSERT_EQ(dg.getNodes().size(), 1);
+	ASSERT_EQ(dg.getNodes().begin()->first, dg.getMpiCommunicator().getRank());
+	ASSERT_EQ(dg.getNodes().begin()->second->getId(), dg.getMpiCommunicator().getRank());
+	ASSERT_EQ(dg.getNodes().begin()->second->data()->read(), dg.getMpiCommunicator().getRank());
+}
+
 TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		ASSERT_EQ(dg.getNodes().size(), dg.getMpiCommunicator().getSize());
@@ -85,7 +97,7 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 
 	dg.distribute();
 
-	ASSERT_EQ(dg.getNodes().size(), 1);
+	ASSERT_LE(dg.getNodes().size(), dg.getMpiCommunicator().getSize());
 
 	// All nodes come from proc 0
 	ASSERT_EQ(dg.getProxy().getOrigin(
@@ -132,8 +144,16 @@ class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
 
 };
 
-TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
-	dg.distribute();
+/*
+ * Forces partition with 2 connected nodes by proc
+ */
+TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test_manual_partition) {
+	std::unordered_map<unsigned long, std::pair<int, int>> partition;
+	for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
+		partition[2*i] = std::pair(0, i);
+		partition[2*i+1] = std::pair(0, i);
+	}
+	dg.distribute(partition);
 
 	ASSERT_EQ(dg.getNodes().size(), 2);
 	ASSERT_EQ(dg.getArcs().size(), 1);
@@ -149,13 +169,27 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 			ASSERT_EQ(arc->getSourceNode()->getId(), node.second->getId());
 		}
 	}
+
+};
+
+/*
+ * Relaxed distribution.
+ * The fact that the graph structure is saved is checked by the previous test.
+ */
+TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
+	dg.distribute();
+
+	// Assert that at least some nodes have been migrated.
+	ASSERT_LT(dg.getNodes().size(), 2 * dg.getMpiCommunicator().getSize());
 }
 
 class Mpi_DistributeCompleteGraphTest : public DistributeGraphTest {
 	protected:
+		std::unordered_map<unsigned long, std::pair<int, int>> init_partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+					init_partition[i] = std::pair(0, i / 2);
 					dg.buildNode(i, i);
 				}
 				int id = 0;
@@ -169,10 +203,12 @@ class Mpi_DistributeCompleteGraphTest : public DistributeGraphTest {
 			}
 		}
 };
+
+
 TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 	if(dg.getMpiCommunicator().getSize() % 2 == 0) {
 		// Initial distribution
-		dg.distribute();
+		dg.distribute(init_partition);
 
 		ASSERT_EQ(dg.getNodes().size(), 2);
 		if(dg.getMpiCommunicator().getRank() % 2 == 0) {
@@ -206,26 +242,29 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 
 class Mpi_DynamicLoadBalancingProxyTest : public DistributeGraphTest {
 
-	void SetUp() override {
-		if(dg.getMpiCommunicator().getRank() == 0) {
-			for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-				dg.buildNode(i, i);
-			}
-			int id = 0;
-			for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-				for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
-					if(i != j) {
-						dg.link(i, j, id++);
+	protected:
+		std::unordered_map<unsigned long, std::pair<int, int>> init_partition;
+		void SetUp() override {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+					init_partition[i] = std::pair(0, i / 2);
+					dg.buildNode(i, i);
+				}
+				int id = 0;
+				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
+					for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
+						if(i != j) {
+							dg.link(i, j, id++);
+						}
 					}
 				}
 			}
 		}
-	}
 };
 
 TEST_F(Mpi_DynamicLoadBalancingProxyTest, dynamic_lb_proxy_test) {
 	// Initial distrib
-	dg.distribute();
+	dg.distribute(init_partition);
 	ASSERT_EQ(dg.getNodes().size(), 2);
 
 	// First round
