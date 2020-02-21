@@ -14,7 +14,7 @@ using FPMAS::communication::Tag;
  * used to query serialized data.
  */
 SyncMpiCommunicator::SyncMpiCommunicator(ResourceContainer& resourceContainer)
-	: resourceManager(this), resourceContainer(resourceContainer) {};
+	: resourceManager(*this), resourceContainer(resourceContainer) {};
 
 /**
  * Builds a SyncMpiCommunicator containing all the procs corresponding to
@@ -25,7 +25,7 @@ SyncMpiCommunicator::SyncMpiCommunicator(ResourceContainer& resourceContainer)
  * @param ranks ranks to include in the group / communicator
  */
 SyncMpiCommunicator::SyncMpiCommunicator(ResourceContainer& resourceContainer, std::initializer_list<int> ranks)
-	: MpiCommunicator(ranks), resourceManager(this), resourceContainer(resourceContainer) {};
+	: MpiCommunicator(ranks), resourceManager(*this), resourceContainer(resourceContainer) {};
 
 /**
  * Performs a reception cycle to handle.
@@ -144,10 +144,6 @@ std::string SyncMpiCommunicator::read(unsigned long id, int location) {
  * queue otherwise.
  */
 void SyncMpiCommunicator::handleRead(int destination, unsigned long id) {
-	if(this->resourceManager.isLocallyAcquired(id) > 0) {
-		this->resourceManager.addPendingRead(id, destination);
-		return;
-	}
 	this->color = Color::BLACK;
 
 	// Transmit request to the resource manager
@@ -159,11 +155,6 @@ void SyncMpiCommunicator::handleRead(int destination, unsigned long id) {
  * resourceManager.
  */
 void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
-	if(this->resourceManager.isLocallyAcquired(id) > 0) {
-		this->resourceManager.addPendingRead(id, destination);
-		return;
-	}
-
 	// Perform the response
 	std::string data = this->resourceContainer.getLocalData(id);
 	MPI_Request req;
@@ -189,7 +180,8 @@ std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 		while(rw.isLocked())
 			this->handleIncomingRequests();
 
-		this->resourceManager.locallyAcquired.insert(id);
+		this->resourceManager.lock(id);
+		//this->resourceManager.locallyAcquired.insert(id);
 		return this->resourceContainer.getLocalData(id);
 	}
 	FPMAS_LOGD(this->getRank(), "ACQUIRE", "acquiring data %lu from %i", id, location);
@@ -219,10 +211,6 @@ std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
  * queue otherwise.
  */
 void SyncMpiCommunicator::handleAcquire(int destination, unsigned long id) {
-	if(this->resourceManager.isLocallyAcquired(id) > 0) {
-		this->resourceManager.addPendingAcquire(id, destination);
-		return;
-	}
 	this->color = Color::BLACK;
 
 	this->resourceManager.write(id, destination);
@@ -253,16 +241,6 @@ void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
 	if(location == this->getRank()) {
 		// No update needed, because modifications are already local.
 		this->resourceManager.release(id);
-		this->resourceManager.locallyAcquired.erase(id);
-
-		for(auto proc : this->resourceManager.pendingReads[id])
-			this->handleRead(proc, id);
-		this->resourceManager.pendingReads.erase(id);
-
-		for(auto proc : this->resourceManager.pendingAcquires[id])
-			this->handleAcquire(proc, id);
-		this->resourceManager.pendingAcquires.erase(id);
-
 		FPMAS_LOGD(this->getRank(), "ACQUIRE", "locally given back %lu", id);
 		return;
 	}
