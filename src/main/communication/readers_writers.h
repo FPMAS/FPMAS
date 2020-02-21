@@ -100,6 +100,7 @@ namespace FPMAS::communication {
 			 * The request is put in a waiting queue if the resource is
 			 * currently locked.
 			 *
+			 * @param id resource id
 			 * @param destination destination proc
 			 */
 			void read(unsigned long id, int destination);
@@ -114,12 +115,15 @@ namespace FPMAS::communication {
 			 * On response, the resource is acquired by the destination that
 			 * must later give it back to release() the resource.
 			 *
+			 * @param id resource id
 			 * @param destination destination proc
 			 */
 			void write(unsigned long id, int destination);
 
 			/**
 			 * Releases the locked resource, and respond to pending requests.
+			 *
+			 * @param id resource id
 			 */
 			void release(unsigned long id);
 

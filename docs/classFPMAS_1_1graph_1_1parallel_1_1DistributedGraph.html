@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt; Class Template Reference</title>
+<title>fpmas: FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,89 +70,99 @@ $(function() {
 <a href="#friends">Friends</a> &#124;
 <a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt; Class Template Reference</div>  </div>
+<div class="title">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="distributed__graph_8h_source.html">distributed_graph.h</a>&gt;</code></p>
 <div class="dynheader">
-Inheritance diagram for FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;:</div>
+Inheritance diagram for FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;:</div>
 <div class="dyncontent">
-<div class="center"><img src="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph__inherit__graph.png" border="0" usemap="#FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01S_01_4_inherit__map" alt="Inheritance graph"/></div>
-<map name="FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01S_01_4_inherit__map" id="FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01S_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="229,50,424,91"/>
-<area shape="rect" href="classFPMAS_1_1graph_1_1base_1_1Graph.html" title=" " alt="" coords="11,5,175,61"/>
-<area shape="rect" href="classFPMAS_1_1communication_1_1ResourceContainer.html" title=" " alt="" coords="5,86,181,127"/>
+<div class="center"><img src="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph__inherit__graph.png" border="0" usemap="#FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01SYNC__MODE_00_01LayerType_00_01N_01_4_inherit__map" alt="Inheritance graph"/></div>
+<map name="FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01SYNC__MODE_00_01LayerType_00_01N_01_4_inherit__map" id="FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01SYNC__MODE_00_01LayerType_00_01N_01_4_inherit__map">
+<area shape="rect" title=" " alt="" coords="248,53,463,109"/>
+<area shape="rect" href="classFPMAS_1_1graph_1_1base_1_1Graph.html" title=" " alt="" coords="5,5,200,76"/>
+<area shape="rect" href="classFPMAS_1_1communication_1_1ResourceContainer.html" title=" " alt="" coords="15,100,191,141"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
-Collaboration diagram for FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;:</div>
+Collaboration diagram for FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;:</div>
 <div class="dyncontent">
-<div class="center"><img src="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph__coll__graph.png" border="0" usemap="#FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01S_01_4_coll__map" alt="Collaboration graph"/></div>
-<map name="FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01S_01_4_coll__map" id="FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01S_01_4_coll__map">
-<area shape="rect" title=" " alt="" coords="229,50,424,91"/>
-<area shape="rect" href="classFPMAS_1_1graph_1_1base_1_1Graph.html" title=" " alt="" coords="11,5,175,61"/>
-<area shape="rect" href="classFPMAS_1_1communication_1_1ResourceContainer.html" title=" " alt="" coords="5,86,181,127"/>
+<div class="center"><img src="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph__coll__graph.png" border="0" usemap="#FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01SYNC__MODE_00_01LayerType_00_01N_01_4_coll__map" alt="Collaboration graph"/></div>
+<map name="FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01SYNC__MODE_00_01LayerType_00_01N_01_4_coll__map" id="FPMAS_1_1graph_1_1parallel_1_1DistributedGraph_3_01T_00_01SYNC__MODE_00_01LayerType_00_01N_01_4_coll__map">
+<area shape="rect" title=" " alt="" coords="248,53,463,109"/>
+<area shape="rect" href="classFPMAS_1_1graph_1_1base_1_1Graph.html" title=" " alt="" coords="5,5,200,76"/>
+<area shape="rect" href="classFPMAS_1_1communication_1_1ResourceContainer.html" title=" " alt="" coords="15,100,191,141"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a94cb1b4c204535a50c87bd50c6841a80"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a94cb1b4c204535a50c87bd50c6841a80">DistributedGraph</a> ()</td></tr>
-<tr class="separator:a94cb1b4c204535a50c87bd50c6841a80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d875a191d4eebd283956572f46a8a2f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a5d875a191d4eebd283956572f46a8a2f">DistributedGraph</a> (std::initializer_list&lt; int &gt;)</td></tr>
-<tr class="separator:a5d875a191d4eebd283956572f46a8a2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a258ba78c66195fa2faee2e29aa0bd6f6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a258ba78c66195fa2faee2e29aa0bd6f6">getMpiCommunicator</a> ()</td></tr>
-<tr class="separator:a258ba78c66195fa2faee2e29aa0bd6f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78f3f56237393dafadf2220707d46d2a"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a78f3f56237393dafadf2220707d46d2a">getMpiCommunicator</a> () const</td></tr>
-<tr class="separator:a78f3f56237393dafadf2220707d46d2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8cf975007a3dcc02ca689c124990d2b6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a>&lt; T, S &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a8cf975007a3dcc02ca689c124990d2b6">getGhost</a> ()</td></tr>
-<tr class="separator:a8cf975007a3dcc02ca689c124990d2b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:addafca36bc3486b072d0ecd582a79209"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a>&lt; T, S &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#addafca36bc3486b072d0ecd582a79209">getGhost</a> () const</td></tr>
-<tr class="separator:addafca36bc3486b072d0ecd582a79209"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9f9803fede5a6a3db61c40ae49a1cb1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#af9f9803fede5a6a3db61c40ae49a1cb1">getProxy</a> ()</td></tr>
-<tr class="separator:af9f9803fede5a6a3db61c40ae49a1cb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a13cd2933b268a85ef41a17bb61897bb1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; T &gt; &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a13cd2933b268a85ef41a17bb61897bb1">buildNode</a> (unsigned long id, T data)</td></tr>
-<tr class="separator:a13cd2933b268a85ef41a17bb61897bb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abb313bdfa4ee563e390c87d51219ebeb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; T &gt; &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abb313bdfa4ee563e390c87d51219ebeb">buildNode</a> (unsigned long id, float weight, T data)</td></tr>
-<tr class="separator:abb313bdfa4ee563e390c87d51219ebeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ccf875c4cd9bd9fa544fc715bd2b42f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a4ccf875c4cd9bd9fa544fc715bd2b42f">getLocalData</a> (unsigned long) const override</td></tr>
-<tr class="separator:a4ccf875c4cd9bd9fa544fc715bd2b42f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6c9e91fbf09be9c97a1399e19126fdb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#af6c9e91fbf09be9c97a1399e19126fdb">getUpdatedData</a> (unsigned long) const override</td></tr>
-<tr class="separator:af6c9e91fbf09be9c97a1399e19126fdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a642e32a0383d1584325561f5e7dc9f60"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a642e32a0383d1584325561f5e7dc9f60">updateData</a> (unsigned long, std::string) override</td></tr>
-<tr class="separator:a642e32a0383d1584325561f5e7dc9f60"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48b87050d24c3ea32011951f3ba1e8a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a48b87050d24c3ea32011951f3ba1e8a5">distribute</a> ()</td></tr>
-<tr class="separator:a48b87050d24c3ea32011951f3ba1e8a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48e618246d013ea14471e1b026107565"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a48e618246d013ea14471e1b026107565">synchronize</a> ()</td></tr>
-<tr class="separator:a48e618246d013ea14471e1b026107565"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph&lt; T &gt;</a></td></tr>
-<tr class="memitem:ab034ec6b2286cae441865f29cd7f2a1d inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ab034ec6b2286cae441865f29cd7f2a1d">getNode</a> (unsigned long)</td></tr>
-<tr class="separator:ab034ec6b2286cae441865f29cd7f2a1d inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56ce0e9462bda0a691ab869390106e06 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">const std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a56ce0e9462bda0a691ab869390106e06">getNodes</a> () const</td></tr>
-<tr class="separator:a56ce0e9462bda0a691ab869390106e06 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a613cf0852c239ab5330b6a53ef9f8259 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a613cf0852c239ab5330b6a53ef9f8259">getArc</a> (unsigned long)</td></tr>
-<tr class="separator:a613cf0852c239ab5330b6a53ef9f8259 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fe59fe07efaed4bd89432ed5025c1a7 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">const std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a2fe59fe07efaed4bd89432ed5025c1a7">getArcs</a> () const</td></tr>
-<tr class="separator:a2fe59fe07efaed4bd89432ed5025c1a7 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44531aa7fa877f09c810f54e0a7ad0e1 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a44531aa7fa877f09c810f54e0a7ad0e1">buildNode</a> (unsigned long)</td></tr>
-<tr class="separator:a44531aa7fa877f09c810f54e0a7ad0e1 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d17c9878a70091fd96e73b4cee48757 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0d17c9878a70091fd96e73b4cee48757">buildNode</a> (unsigned long id, T data)</td></tr>
-<tr class="separator:a0d17c9878a70091fd96e73b4cee48757 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ee150a71dba2f6a75bfab181e3d358b inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a1ee150a71dba2f6a75bfab181e3d358b">buildNode</a> (unsigned long id, float weight, T data)</td></tr>
-<tr class="separator:a1ee150a71dba2f6a75bfab181e3d358b inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a599565b095e6a48715f965284159109c inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a599565b095e6a48715f965284159109c">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; *source, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T &gt; *target, unsigned long arcLabel)</td></tr>
-<tr class="separator:a599565b095e6a48715f965284159109c inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6f567cc8bf434f59ca93d30ef0c5930 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aa6f567cc8bf434f59ca93d30ef0c5930">link</a> (unsigned long source_id, unsigned long target_id, unsigned long arcLabel)</td></tr>
-<tr class="separator:aa6f567cc8bf434f59ca93d30ef0c5930 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64985f48905fbb5b56779726de8a43f3 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a64985f48905fbb5b56779726de8a43f3">unlink</a> (unsigned long)</td></tr>
-<tr class="separator:a64985f48905fbb5b56779726de8a43f3 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7e84e4635250c8f1c6cd14648123f938 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a7e84e4635250c8f1c6cd14648123f938">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; *)</td></tr>
-<tr class="separator:a7e84e4635250c8f1c6cd14648123f938 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acbcb557b07b6f8ca3a5cae2cb7da0b19 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#acbcb557b07b6f8ca3a5cae2cb7da0b19">removeNode</a> (unsigned long)</td></tr>
-<tr class="separator:acbcb557b07b6f8ca3a5cae2cb7da0b19 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7d582c70ecc1862da8e5b1a19bd6154 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aa7d582c70ecc1862da8e5b1a19bd6154">~Graph</a> ()</td></tr>
-<tr class="separator:aa7d582c70ecc1862da8e5b1a19bd6154 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7f2eecd1e54076134c24245486e6bde"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab7f2eecd1e54076134c24245486e6bde">DistributedGraph</a> ()</td></tr>
+<tr class="separator:ab7f2eecd1e54076134c24245486e6bde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab098891e43be806e1dec2e276070d22b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab098891e43be806e1dec2e276070d22b">DistributedGraph</a> (std::initializer_list&lt; int &gt;)</td></tr>
+<tr class="separator:ab098891e43be806e1dec2e276070d22b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c05ec8cf58945431199fe4a1ae025b0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a0c05ec8cf58945431199fe4a1ae025b0">getMpiCommunicator</a> ()</td></tr>
+<tr class="separator:a0c05ec8cf58945431199fe4a1ae025b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afbd76bda3a3555737a3ed1de45eb4b14"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#afbd76bda3a3555737a3ed1de45eb4b14">getMpiCommunicator</a> () const</td></tr>
+<tr class="separator:afbd76bda3a3555737a3ed1de45eb4b14"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6ec3e9c30bc7c9148931a33168eb2c4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a>&lt; NODE_PARAMS_SPEC, S &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac6ec3e9c30bc7c9148931a33168eb2c4">getGhost</a> ()</td></tr>
+<tr class="separator:ac6ec3e9c30bc7c9148931a33168eb2c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0da501ccc2f4469710ad611c442c9048"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a>&lt; NODE_PARAMS_SPEC, S &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a0da501ccc2f4469710ad611c442c9048">getGhost</a> () const</td></tr>
+<tr class="separator:a0da501ccc2f4469710ad611c442c9048"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8eb8df0c74cd110dbfb4d0ee70d867ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a8eb8df0c74cd110dbfb4d0ee70d867ce">getProxy</a> ()</td></tr>
+<tr class="separator:a8eb8df0c74cd110dbfb4d0ee70d867ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30eb1314a86a80c3c74854585f954cc7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a30eb1314a86a80c3c74854585f954cc7">buildNode</a> (unsigned long id, T data)</td></tr>
+<tr class="separator:a30eb1314a86a80c3c74854585f954cc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af68cc97d91ea46761ab20c5e7daee64b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#af68cc97d91ea46761ab20c5e7daee64b">buildNode</a> (unsigned long id, float weight, T data)</td></tr>
+<tr class="separator:af68cc97d91ea46761ab20c5e7daee64b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c8c8cce5c60c713e479a3a0b332c9eb"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a0c8c8cce5c60c713e479a3a0b332c9eb">getLocalData</a> (unsigned long) const override</td></tr>
+<tr class="separator:a0c8c8cce5c60c713e479a3a0b332c9eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad13c84f8189f97c024985e87073b8a13"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ad13c84f8189f97c024985e87073b8a13">getUpdatedData</a> (unsigned long) const override</td></tr>
+<tr class="separator:ad13c84f8189f97c024985e87073b8a13"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a453a76401aa37e64985b55b01082c035"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a453a76401aa37e64985b55b01082c035">updateData</a> (unsigned long, std::string) override</td></tr>
+<tr class="separator:a453a76401aa37e64985b55b01082c035"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f8ae7b0936b758b5532edafcb1b26f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a4f8ae7b0936b758b5532edafcb1b26f7">distribute</a> ()</td></tr>
+<tr class="separator:a4f8ae7b0936b758b5532edafcb1b26f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a53521fd41ee9940ddb728002790cb5ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a53521fd41ee9940ddb728002790cb5ba">distribute</a> (std::unordered_map&lt; unsigned long, std::pair&lt; int, int &gt;&gt;)</td></tr>
+<tr class="separator:a53521fd41ee9940ddb728002790cb5ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a427e1a8f63bc154465e513b2048f9415"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a427e1a8f63bc154465e513b2048f9415">synchronize</a> ()</td></tr>
+<tr class="separator:a427e1a8f63bc154465e513b2048f9415"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a></td></tr>
+<tr class="memitem:a6214653461a7750c4a8a4bd3f539f71c inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">NODE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a6214653461a7750c4a8a4bd3f539f71c">getNode</a> (unsigned long)</td></tr>
+<tr class="separator:a6214653461a7750c4a8a4bd3f539f71c inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa37e9300e6232c2bcca3b09daa9d3af1 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">const NODE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aa37e9300e6232c2bcca3b09daa9d3af1">getNode</a> (unsigned long) const</td></tr>
+<tr class="separator:aa37e9300e6232c2bcca3b09daa9d3af1 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af74a598df11f6f06f0c580b31fb1afa3 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">const std::unordered_map&lt; unsigned long, NODE * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#af74a598df11f6f06f0c580b31fb1afa3">getNodes</a> () const</td></tr>
+<tr class="separator:af74a598df11f6f06f0c580b31fb1afa3 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac990a35cba9a3ad3315026bdd8772d4 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">ARC *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aac990a35cba9a3ad3315026bdd8772d4">getArc</a> (unsigned long)</td></tr>
+<tr class="separator:aac990a35cba9a3ad3315026bdd8772d4 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7943da2d679f2dcd04e80d11d1f4f029 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">const ARC *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a7943da2d679f2dcd04e80d11d1f4f029">getArc</a> (unsigned long) const</td></tr>
+<tr class="separator:a7943da2d679f2dcd04e80d11d1f4f029 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af7c0cec8d50b898047c9d369fe525ca6 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">const std::unordered_map&lt; unsigned long, ARC * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#af7c0cec8d50b898047c9d369fe525ca6">getArcs</a> () const</td></tr>
+<tr class="separator:af7c0cec8d50b898047c9d369fe525ca6 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33520b84c4476f116026f47fd9959356 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">NODE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a33520b84c4476f116026f47fd9959356">buildNode</a> (unsigned long)</td></tr>
+<tr class="separator:a33520b84c4476f116026f47fd9959356 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92366bed3ad535f4db446137b4da0cc5 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">NODE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a92366bed3ad535f4db446137b4da0cc5">buildNode</a> (unsigned long id, T data)</td></tr>
+<tr class="separator:a92366bed3ad535f4db446137b4da0cc5 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adec838fa4d070d1143c1b9e4fe996b38 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">NODE *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#adec838fa4d070d1143c1b9e4fe996b38">buildNode</a> (unsigned long id, float weight, T data)</td></tr>
+<tr class="separator:adec838fa4d070d1143c1b9e4fe996b38 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2286475bf1711fc088bc556ddb095d0 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">ARC *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae2286475bf1711fc088bc556ddb095d0">link</a> (NODE *, NODE *, unsigned long)</td></tr>
+<tr class="separator:ae2286475bf1711fc088bc556ddb095d0 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21c1d36543b456f98919672bd9be2459 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">ARC *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a21c1d36543b456f98919672bd9be2459">link</a> (NODE *, NODE *, unsigned long, LayerType)</td></tr>
+<tr class="separator:a21c1d36543b456f98919672bd9be2459 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5aecd67f4a63e75f67b1311fba91c74b inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">ARC *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a5aecd67f4a63e75f67b1311fba91c74b">link</a> (unsigned long, unsigned long, unsigned long)</td></tr>
+<tr class="separator:a5aecd67f4a63e75f67b1311fba91c74b inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fb06b65f2e64d19fa8b4ff2de365339 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">ARC *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a1fb06b65f2e64d19fa8b4ff2de365339">link</a> (unsigned long, unsigned long, unsigned long, LayerType)</td></tr>
+<tr class="separator:a1fb06b65f2e64d19fa8b4ff2de365339 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac93387546e20cd8d3b5031ac33298efa inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ac93387546e20cd8d3b5031ac33298efa">unlink</a> (unsigned long)</td></tr>
+<tr class="separator:ac93387546e20cd8d3b5031ac33298efa inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a652a8e4b3ec7534b2071d7724864a3a6 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a652a8e4b3ec7534b2071d7724864a3a6">unlink</a> (ARC *)</td></tr>
+<tr class="separator:a652a8e4b3ec7534b2071d7724864a3a6 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4dc4b506e5483bee791c537c8ec680ae inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; ARC &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4dc4b506e5483bee791c537c8ec680ae">removeNode</a> (unsigned long)</td></tr>
+<tr class="separator:a4dc4b506e5483bee791c537c8ec680ae inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81dc759e22bdf4780ba351467763cbd8 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a81dc759e22bdf4780ba351467763cbd8">~Graph</a> ()</td></tr>
+<tr class="separator:a81dc759e22bdf4780ba351467763cbd8 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -191,14 +201,14 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>zoltan::arc::post_mig
 <tr class="separator:a9c42011f878e3dda218c4636828afcd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;class T, template&lt; typename &gt; class S = GhostData&gt;<br />
-class FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</h3>
+<div class="textblock"><h3>template&lt;class T, SYNC_MODE = GhostData, typename LayerType = DefaultLayer, int N = 1&gt;<br />
+class FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</h3>
 
 <p>A <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> is a special graph instance that can be distributed across available processors using Zoltan.</p>
 <p>The synchronization mode can be set up thanks to an optional template parameter. Actually, the specified class represents the wrapper of data located on an other proc. Possible values are :</p>
 <ul>
 <li>FPMAS::graph::synchro::None : no distant data representation. It is not possible to access data from nodes on other procs. In consequence, some arcs may be deleted when the graph is distributed, what results in information loss.</li>
-<li>FPMAS::graph::synchro::GhostData : Distant nodes are represented as "ghosts", that can be punctually synchronized using the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a565efa80060be8f3cad3560895499835">GhostGraph::synchronize()</a> function. When called, this function asks updates to other procs and updates its local "ghost" data. In this mode, no information is lost about the graph connectivity. However, information accessed in the ghost nodes might not be up to date. It is interesting to note that from a local node, there is no difference between local or ghost nodes when exploring the graph through incoming or outgoing arcs lists.</li>
+<li>FPMAS::graph::synchro::GhostData : Distant nodes are represented as "ghosts", that can be punctually synchronized using the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a8987678b5e273185047969fbc891f10c">GhostGraph::synchronize()</a> function. When called, this function asks updates to other procs and updates its local "ghost" data. In this mode, no information is lost about the graph connectivity. However, information accessed in the ghost nodes might not be up to date. It is interesting to note that from a local node, there is no difference between local or ghost nodes when exploring the graph through incoming or outgoing arcs lists.</li>
 <li>HardSyncData : TODO</li>
 </ul>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
@@ -209,16 +219,16 @@ class FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</h3>
   </dd>
 </dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a94cb1b4c204535a50c87bd50c6841a80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94cb1b4c204535a50c87bd50c6841a80">&#9670;&nbsp;</a></span>DistributedGraph() <span class="overload">[1/2]</span></h2>
+<a id="ab7f2eecd1e54076134c24245486e6bde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7f2eecd1e54076134c24245486e6bde">&#9670;&nbsp;</a></span>DistributedGraph() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a></td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -226,16 +236,16 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 
 </div>
 </div>
-<a id="a5d875a191d4eebd283956572f46a8a2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d875a191d4eebd283956572f46a8a2f">&#9670;&nbsp;</a></span>DistributedGraph() <span class="overload">[2/2]</span></h2>
+<a id="ab098891e43be806e1dec2e276070d22b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab098891e43be806e1dec2e276070d22b">&#9670;&nbsp;</a></span>DistributedGraph() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> </td>
           <td>(</td>
           <td class="paramtype">std::initializer_list&lt; int &gt;&#160;</td>
           <td class="paramname"><em>ranks</em></td><td>)</td>
@@ -254,16 +264,16 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="abb313bdfa4ee563e390c87d51219ebeb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abb313bdfa4ee563e390c87d51219ebeb">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[1/2]</span></h2>
+<a id="af68cc97d91ea46761ab20c5e7daee64b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af68cc97d91ea46761ab20c5e7daee64b">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; T &gt; &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::buildNode </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::buildNode </td>
           <td>(</td>
           <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -288,28 +298,28 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Builds a node with the specified id, weight and data.</p>
-<p>The specified data is implicitly wrapped in a LocalData instance, for synchronization purpose.</p>
+<p>The specified data is implicitly wrapped in a SyncData instance, for synchronization purpose.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>node id </td></tr>
     <tr><td class="paramname">weight</td><td>node weight </td></tr>
-    <tr><td class="paramname">data</td><td>node data (wrapped in a LocalData&lt;T&gt; instance) </td></tr>
+    <tr><td class="paramname">data</td><td>node data </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a13cd2933b268a85ef41a17bb61897bb1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a13cd2933b268a85ef41a17bb61897bb1">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[2/2]</span></h2>
+<a id="a30eb1314a86a80c3c74854585f954cc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30eb1314a86a80c3c74854585f954cc7">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; T &gt; &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::buildNode </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::buildNode </td>
           <td>(</td>
           <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -328,33 +338,33 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Builds a node with the specified id and data.</p>
-<p>The specified data is implicitly wrapped in a LocalData instance, for synchronization purpose.</p>
+<p>The specified data is implicitly wrapped in a SyncData instance, for synchronization purpose.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>node id </td></tr>
-    <tr><td class="paramname">data</td><td>node data (wrapped in a LocalData&lt;T&gt; instance) </td></tr>
+    <tr><td class="paramname">data</td><td>node data </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a48b87050d24c3ea32011951f3ba1e8a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48b87050d24c3ea32011951f3ba1e8a5">&#9670;&nbsp;</a></span>distribute()</h2>
+<a id="a4f8ae7b0936b758b5532edafcb1b26f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f8ae7b0936b758b5532edafcb1b26f7">&#9670;&nbsp;</a></span>distribute() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::distribute</td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::distribute</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Distributes the graph accross the available cores using Zoltan.</p>
 <p>The graph is distributed using <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_interface_lb.html#Zoltan_LB_Partition">Zoltan::LB_Partition</a> and <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_interface_mig.html#Zoltan_Migrate">Zoltan::Migrate</a>. Query functions used are defined in the FPMAS::graph::zoltan namespace.</p>
-<p>The current process will block until all other involved procs also call the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a48b87050d24c3ea32011951f3ba1e8a5">distribute()</a> function.</p>
+<p>The current process will block until all other involved procs also call the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a4f8ae7b0936b758b5532edafcb1b26f7">distribute()</a> function.</p>
 <p>The distribution process is organized as follow :</p>
 <ol type="1">
 <li>Compute partitions</li>
@@ -365,16 +375,48 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 
 </div>
 </div>
-<a id="a8cf975007a3dcc02ca689c124990d2b6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8cf975007a3dcc02ca689c124990d2b6">&#9670;&nbsp;</a></span>getGhost() <span class="overload">[1/2]</span></h2>
+<a id="a53521fd41ee9940ddb728002790cb5ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a53521fd41ee9940ddb728002790cb5ba">&#9670;&nbsp;</a></span>distribute() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a>&lt; T, S &gt; &amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::getGhost</td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::distribute </td>
+          <td>(</td>
+          <td class="paramtype">std::unordered_map&lt; unsigned long, std::pair&lt; int, int &gt;&gt;&#160;</td>
+          <td class="paramname"><em>partition</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Distributed the graph accross the available cored using the specified partition.</p>
+<p>The partition is built as follow :</p><ul>
+<li><code>{node_id : {current_location, new_location}}</code></li>
+<li><em>The same partition must be passed to all the procs</em> (that must all call the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a4f8ae7b0936b758b5532edafcb1b26f7">distribute()</a> function)</li>
+<li>If a node's id is not specified, its location is unchanged.</li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">partition</td><td>new partition </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac6ec3e9c30bc7c9148931a33168eb2c4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6ec3e9c30bc7c9148931a33168eb2c4">&#9670;&nbsp;</a></span>getGhost() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a>&lt; NODE_PARAMS_SPEC, S &gt; &amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::getGhost</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -383,16 +425,16 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 
 </div>
 </div>
-<a id="addafca36bc3486b072d0ecd582a79209"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#addafca36bc3486b072d0ecd582a79209">&#9670;&nbsp;</a></span>getGhost() <span class="overload">[2/2]</span></h2>
+<a id="a0da501ccc2f4469710ad611c442c9048"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0da501ccc2f4469710ad611c442c9048">&#9670;&nbsp;</a></span>getGhost() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S = GhostData&gt; </div>
+template&lt;class T , SYNC_MODE  = GhostData, typename LayerType  = DefaultLayer, int N = 1&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a>&lt;T, S&gt;&amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::getGhost </td>
+          <td class="memname">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a>&lt;NODE_PARAMS_SPEC, S&gt;&amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::getGhost </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -404,19 +446,19 @@ template&lt;class T , template&lt; typename &gt; class S = GhostData&gt; </div>
 
 </div>
 </div>
-<a id="a4ccf875c4cd9bd9fa544fc715bd2b42f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4ccf875c4cd9bd9fa544fc715bd2b42f">&#9670;&nbsp;</a></span>getLocalData()</h2>
+<a id="a0c8c8cce5c60c713e479a3a0b332c9eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c8c8cce5c60c713e479a3a0b332c9eb">&#9670;&nbsp;</a></span>getLocalData()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::getLocalData </td>
+          <td class="memname">std::string <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::getLocalData </td>
           <td>(</td>
           <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
@@ -437,16 +479,16 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 
 </div>
 </div>
-<a id="a258ba78c66195fa2faee2e29aa0bd6f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a258ba78c66195fa2faee2e29aa0bd6f6">&#9670;&nbsp;</a></span>getMpiCommunicator() <span class="overload">[1/2]</span></h2>
+<a id="a0c05ec8cf58945431199fe4a1ae025b0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c05ec8cf58945431199fe4a1ae025b0">&#9670;&nbsp;</a></span>getMpiCommunicator() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::getMpiCommunicator</td>
+          <td class="memname">const <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::getMpiCommunicator</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -455,16 +497,16 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 
 </div>
 </div>
-<a id="a78f3f56237393dafadf2220707d46d2a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78f3f56237393dafadf2220707d46d2a">&#9670;&nbsp;</a></span>getMpiCommunicator() <span class="overload">[2/2]</span></h2>
+<a id="afbd76bda3a3555737a3ed1de45eb4b14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbd76bda3a3555737a3ed1de45eb4b14">&#9670;&nbsp;</a></span>getMpiCommunicator() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S = GhostData&gt; </div>
+template&lt;class T , SYNC_MODE  = GhostData, typename LayerType  = DefaultLayer, int N = 1&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::getMpiCommunicator </td>
+          <td class="memname">const <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::getMpiCommunicator </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -476,16 +518,16 @@ template&lt;class T , template&lt; typename &gt; class S = GhostData&gt; </div>
 
 </div>
 </div>
-<a id="af9f9803fede5a6a3db61c40ae49a1cb1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af9f9803fede5a6a3db61c40ae49a1cb1">&#9670;&nbsp;</a></span>getProxy()</h2>
+<a id="a8eb8df0c74cd110dbfb4d0ee70d867ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8eb8df0c74cd110dbfb4d0ee70d867ce">&#9670;&nbsp;</a></span>getProxy()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::getProxy</td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::getProxy</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -494,19 +536,19 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 
 </div>
 </div>
-<a id="af6c9e91fbf09be9c97a1399e19126fdb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6c9e91fbf09be9c97a1399e19126fdb">&#9670;&nbsp;</a></span>getUpdatedData()</h2>
+<a id="ad13c84f8189f97c024985e87073b8a13"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad13c84f8189f97c024985e87073b8a13">&#9670;&nbsp;</a></span>getUpdatedData()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::string <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::getUpdatedData </td>
+          <td class="memname">std::string <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::getUpdatedData </td>
           <td>(</td>
           <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
@@ -527,16 +569,16 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 
 </div>
 </div>
-<a id="a48e618246d013ea14471e1b026107565"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a48e618246d013ea14471e1b026107565">&#9670;&nbsp;</a></span>synchronize()</h2>
+<a id="a427e1a8f63bc154465e513b2048f9415"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a427e1a8f63bc154465e513b2048f9415">&#9670;&nbsp;</a></span>synchronize()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::synchronize</td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::synchronize</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -544,19 +586,19 @@ template&lt;class T , template&lt; typename &gt; class S&gt; </div>
 
 </div>
 </div>
-<a id="a642e32a0383d1584325561f5e7dc9f60"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a642e32a0383d1584325561f5e7dc9f60">&#9670;&nbsp;</a></span>updateData()</h2>
+<a id="a453a76401aa37e64985b55b01082c035"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a453a76401aa37e64985b55b01082c035">&#9670;&nbsp;</a></span>updateData()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T , template&lt; typename &gt; class S&gt; </div>
+template&lt;class T , SYNC_MODE , typename LayerType , int N&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, S &gt;::updateData </td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, LayerType, N &gt;::updateData </td>
           <td>(</td>
           <td class="paramtype">unsigned long&#160;</td>
           <td class="paramname"><em>id</em>, </td>

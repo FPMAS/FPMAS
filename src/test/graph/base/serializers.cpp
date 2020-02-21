@@ -65,7 +65,6 @@ TEST(ArcSerializer, simple_arc_serializer) {
 	Node<int, TestLayer, 2>* n2 = g.buildNode(1ul, 1);
 	g.link(n1, n2, 0ul, TestLayer::Test);
 
-	std::cout << "hey" << std::endl;
 	const Node<int, TestLayer, 2>* n = g.getNode(0ul);
 	Arc<int, TestLayer, 2>* a = n->layer(TestLayer::Test).getOutgoingArcs()[0];
 

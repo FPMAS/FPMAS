@@ -16,6 +16,17 @@ namespace FPMAS::graph::base {
 	template<NODE_PARAMS> class Node;
 	template<NODE_PARAMS> class Graph;
 
+	/**
+	 * Class representing a Layer of a Graph.
+	 *
+	 * Layers instances are used by each node to represent their _incoming_ and
+	 * _outgoing_ arcs according to layers defined in the specified `LayerType`
+	 * enum.
+	 *
+	 * @tparam T associated data type
+	 * @tparam LayerType enum describing the available layers
+	 * @tparam N number of layers
+	 */
 	template<NODE_PARAMS> class Layer {
 		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerType);
 		// Allows removeNode function to remove deleted arcs

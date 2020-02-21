@@ -1,4 +1,4 @@
-<map id="FPMAS::graph::base::Arc&lt; T &gt;" name="FPMAS::graph::base::Arc&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,156,136"/>
-<area shape="rect" id="node2" href="$classFPMAS_1_1graph_1_1base_1_1GraphItem.html" title=" " alt="" coords="5,5,156,47"/>
+<map id="FPMAS::graph::base::Arc&lt; NODE_PARAMS &gt;" name="FPMAS::graph::base::Arc&lt; NODE_PARAMS &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="5,95,185,136"/>
+<area shape="rect" id="node2" href="$classFPMAS_1_1graph_1_1base_1_1GraphItem.html" title=" " alt="" coords="20,5,171,47"/>
 </map>

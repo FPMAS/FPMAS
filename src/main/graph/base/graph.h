@@ -32,79 +32,39 @@ namespace FPMAS {
 			template<NODE_PARAMS> class Graph;
 
 			/**
-			 * Graph class.
+			 * Layered Graph class.
 			 *
-			 * Aditionnaly to the functions defined in the Graph API, it is
-			 * interesting to notice that Graphs object can be json serialized and
-			 * de-serialized using the [JSON for Modern C++
-			 * library](https://github.com/nlohmann/json).
+			 * A layered Graph is a graph where each Node can simultaneously
+			 * belong to several layers, so that each layer can be explored
+			 * independently from each node.
 			 *
-			 * For example, the following code :
+			 * Layered are represented as predefined arc types defined in the
+			 * LayerType enum parameter. Each node then manages lists of
+			 * _incoming_ and _outgoing_ arcs for each type.
 			 *
-			 * ```
-			 *  #include <iostream>
-			 *  #include "graph.h"
-			 *  #include <nlohmann/json.hpp>
+			 * Because layer types are provided at compile time as template
+			 * parameters, managing the several layers can be done in constant
+			 * time whatever the numbe of layers is.
 			 *
-			 *  using FPMAS::graph::Graph;
-			 *  using FPMAS::graph::Node;
-			 *
-			 *  int main() {
-			 *  	Graph<int> g;
-			 *		Node<int>* n1 = g.buildNode(0ul, 0);
-			 *		Node<int>* n2 = g.buildNode(1ul, 1);
-			 *		g.link(n1, n2, 0ul);
-			 *
-			 *		json j = g;
-			 *
-			 *		std::out << j.dump() << std::endl;
-			 *	}
-			 *	```
-			 *  Will print the following json :
-			 *	```
-			 *	{"arcs":[{"id":0,"link":["0","1"]}],"nodes":[{"data":0,"id":0},{"data":1,"id":1}]}
-			 *	```
-			 *  For more details about how json format used, see the
-			 *  FPMAS::graph::to_json(json&, const Graph<NODE_PARAMS_SPEC>&) documentation.
-			 *
-			 *  Graph can also be un-serialized from json files with the same
-			 *  format.
-			 *
-			 *  The following example code will build the graph serialized in the
-			 *  previous example :
-			 *	```
-			 *	#include <iostream>
-			 *	#include "graph.h"
-			 *	#include <nlohmann/json.hpp>
-			 *
-			 *	using FPMAS::graph::Graph;
-			 *	using FPMAS::graph::Node;
-			 *
-			 *	int main() {
-			 *		json graph_json = R"(
-			 *			{
-			 *			"arcs":[
-			 *				{"id":0,"link":["0","1"]}
-			 *				],
-			 *			"nodes":[
-			 *				{"data":0,"id":0},
-			 *				{"data":1,"id":1}
-			 *				]
-			 *			}
-			 *			)"_json;
-			 *
-			 * 		// Unserialize the graph from the json string
-			 *		Graph<int> graph = graph_json.get<Graph<int>>();
-			 *	}
-			 *	```
-			 *
-			 * For more information about the json unserialization, see the [JSON
-			 * for Modern C++ documentation]
-			 * (https://github.com/nlohmann/json/blob/develop/README.md)
-			 * and the FPMAS::graph::from_json(const json&, Graph<NODE_PARAMS_SPEC>&)
-			 * function.
+			 * In order to be valid, the `LayerType` and `N` template
+			 * parameters must follow some constraints :
+			 * - `LayerType` must be an enum using integers as underlying type,
+			 *   assigning positive values to each layer, starting from 0. The
+			 *   associated index can be thought as the level of each layer.
+			 *   Here is a valid example :
+			 *   \code{.cpp}
+			 *   enum ExampleLayer {
+			 *   	DEFAULT = 0,
+			 *   	COMMUNICATION = 1,
+			 *   	ROAD_GRAPH = 2
+			 *   }
+			 *   \endcode
+			 * - `N` must be equal to the number of layers defined by
+			 *   `LayerType` (in the example, `N = 3`)
 			 *
 			 * @tparam T associated data type
+			 * @tparam LayerType enum describing the available layers
+			 * @tparam N number of layers
 			 */
 			template<
 				class T,
@@ -145,18 +105,25 @@ namespace FPMAS {
 				};
 
 			/**
-			 * Finds and returns the node associated to the specified id within this
+			 * Returns a pointer to the node associated to the specified id within this
 			 * graph.
 			 *
 			 * @param id node id
 			 * @return pointer to associated node
 			 */
 			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::getNode(unsigned long id) {
-				return this->nodes.find(id)->second;
+				return this->nodes.at(id);
 			}
 
+			/**
+			 * Returns a const pointer to the node associated to the specified id within this
+			 * graph.
+			 *
+			 * @param id node id
+			 * @return const pointer to associated node
+			 */
 			template<NODE_PARAMS> const NODE* Graph<NODE_PARAMS_SPEC>::getNode(unsigned long id) const {
-				return this->nodes.find(id)->second;
+				return this->nodes.at(id);
 			}
 			/**
 			 * Returns a const reference to the nodes map of this graph.
@@ -168,19 +135,27 @@ namespace FPMAS {
 			}
 
 			/**
-			 * Finds and returns the arc associated to the specified id within this
+			 * Returns a pointer to the arc associated to the specified id within this
 			 * graph.
 			 *
 			 * @param id arc id
 			 * @return pointer to associated arc
 			 */
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::getArc(unsigned long id) {
-				return this->arcs.find(id)->second;
+				return this->arcs.at(id);
 			}
 
+			/**
+			 * Returns a const pointer to the arc associated to the specified id within this
+			 * graph.
+			 *
+			 * @param id arc id
+			 * @return const pointer to associated arc
+			 */
 			template<NODE_PARAMS> const ARC* Graph<NODE_PARAMS_SPEC>::getArc(unsigned long id) const {
-				return this->arcs.find(id)->second;
+				return this->arcs.at(id);
 			}
+
 			/**
 			 * Returns a const reference to the arcs map of this graph.
 			 *
@@ -191,11 +166,11 @@ namespace FPMAS {
 			}
 
 			/**
-			 * Builds a node with the specified id, with a default weight and no
-			 * data.
+			 * Builds a node with the specified id, a default weight and no
+			 * data, adds it to this graph, and finally returns the built node.
 			 *
 			 * @param id node id
-			 * @return built node
+			 * @return pointer to built node
 			 */
 			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id) {
 				NODE* node = new NODE(id);
@@ -204,7 +179,7 @@ namespace FPMAS {
 			}
 
 			/**
-			 * Builds a node with the specify id and data, and adds it to this graph,
+			 * Builds a node with the specify id and data, adds it to this graph,
 			 * and finally returns the built node.
 			 *
 			 * @param id node id
@@ -218,8 +193,8 @@ namespace FPMAS {
 			}
 
 			/**
-			 * Builds a node with the specify id weight and data, and adds it to this graph,
-			 * and finally returns the built node.
+			 * Builds a node with the specify id, weight and data, adds it to this graph,
+			 * and finally returns a pointer to the built node.
 			 *
 			 * @param id node's id
 			 * @param weight node's weight
@@ -233,13 +208,14 @@ namespace FPMAS {
 			}
 
 			/**
-			 * Builds a directed arc with the specified id from the source node to the
-			 * target node, adds it to the graph and finally returns the built arc.
+			 * Builds a directed arc in the specified layer with the specified id from the source node to the
+			 * target node, adds it to the graph and finally returns a pointer to the built arc.
 			 *
 			 * @param source pointer to source node
 			 * @param target pointer to target node
 			 * @param arc_id arc id
-			 * @return built arc
+			 * @param layer layer on which the arc should be built
+			 * @return pointer to built arc
 			 */
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(NODE *source, NODE *target, unsigned long arc_id, LayerType layer) {
 				ARC* arc = new ARC(arc_id, source, target, layer);
@@ -247,28 +223,47 @@ namespace FPMAS {
 				return arc;
 			}
 
+			/**
+			 * Builds a directed arc in the default layer with the specified id from the source node to the
+			 * target node, adds it to the graph and finally returns a pointer to the built arc.
+			 *
+			 * @param source pointer to source node
+			 * @param target pointer to target node
+			 * @param arc_id arc id
+			 * @return pointer to built arc
+			 */
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(NODE *source, NODE *target, unsigned long arc_id){
 				return link(source, target, arc_id, LayerType(0));
 			}
 
 			/**
-			 * Same as link(NODE*, NODE*, unsigned long), but uses node ids
-			 * instead to retrieve source and target nodes in the current graph.
+			 * Same as link(NODE*, NODE*, unsigned long, LayerType), but uses node ids
+			 * instead to get source and target nodes in the current graph.
 			 *
 			 * @param source_id source node id
 			 * @param target_id target node id
 			 * @param arc_id new arc id
+			 * @param layer layer on which the arc should be built
 			 * @return built arc
 			 */
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id, LayerType layer) {
 				return link(this->getNode(source_id), this->getNode(target_id), arc_id, layer);
 			}
 
+			/**
+			 * Same as link(NODE*, NODE*, unsigned long), but uses node ids
+			 * instead to get source and target nodes in the current graph.
+			 *
+			 * @param source_id source node id
+			 * @param target_id target node id
+			 * @param arc_id new arc id
+			 * @return built arc
+			 */
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {
 				return link(source_id, target_id, arc_id, LayerType(0));
 			}
 
-			/**
+			/*
 			 * Convenient function to remove an arc from an incoming or outgoing
 			 * arc list.
 			 */
@@ -316,7 +311,7 @@ namespace FPMAS {
 			}
 
 			/**
-			 * Same as unlink(ARC*), but retrieving the arc from its ID.
+			 * Same as unlink(ARC*), but gets the arc from its ID.
 			 *
 			 * @param arcId id of the arc to delete
 			 * @return true iff the arc has been deleted (i.e. it belongs to the
@@ -328,21 +323,22 @@ namespace FPMAS {
 
 
 			/**
-			 * Removes the node that correspond to the specified id from this
+			 * Removes the Node that correspond to the specified id from this
 			 * graph.
 			 *
 			 * Incoming and outgoing arcs associated to this node are also
-			 * `deleted`
-			 * and unlinked from the corresponding source and target nodes.
+			 * removed and unlinked from the corresponding source and target
+			 * nodes.
 			 *
-			 * The returned fossil contains the fossil arcs collected
-			 * unlinking the node's arcs.
+			 * The returned fossil contains the fossil arcs collected unlinking
+			 * the node's arcs.
 			 *
 			 * @param node_id id of the node to delete
 			 * @return collected fossil arcs
 			 */
-			template<NODE_PARAMS> FossilArcs<ARC> Graph<NODE_PARAMS_SPEC>::removeNode(unsigned long node_id) {
-				NODE* node_to_remove = nodes.at(node_id);
+			template<NODE_PARAMS> FossilArcs<ARC>
+				Graph<NODE_PARAMS_SPEC>::removeNode(unsigned long node_id) {
+					NODE* node_to_remove = nodes.at(node_id);
 
 				FossilArcs<ARC> fossil;
 				// Deletes incoming arcs

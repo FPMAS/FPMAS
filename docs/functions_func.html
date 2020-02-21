@@ -66,81 +66,86 @@ $(function() {
 <h3><a id="index_a"></a>- a -</h3><ul>
 <li>acquire()
 : <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#ad3a2ddde03e20572a0219b5b9c9642b8">FPMAS::communication::SyncMpiCommunicator</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#aef7608f04d37444a444e3211e9add613">FPMAS::graph::parallel::synchro::HardSyncData&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a342ea648ba7599439e4e9a5b86a5bd75">FPMAS::graph::parallel::synchro::SyncData&lt; T &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#af4d913d37a9d546ca216e94a731238b7">FPMAS::graph::parallel::synchro::HardSyncData&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#ae522ea45ceef6662f9ad376664e363ba">FPMAS::graph::parallel::synchro::SyncData&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>Arc()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html#a14ca974ae4fc34d1d31f54394041e715">FPMAS::graph::base::Arc&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html#ae1969e106744b99b45d1da202d06070a">FPMAS::graph::base::Arc&lt; NODE_PARAMS &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_b"></a>- b -</h3><ul>
 <li>buildNode()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a44531aa7fa877f09c810f54e0a7ad0e1">FPMAS::graph::base::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abb313bdfa4ee563e390c87d51219ebeb">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a81ab3b09dd03bfc14ff149bb89aea8e8">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a33520b84c4476f116026f47fd9959356">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a30eb1314a86a80c3c74854585f954cc7">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#acf6e5dfb1084845559d419be2a6b8ff0">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_c"></a>- c -</h3><ul>
 <li>clear()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a5f7038c9f576608a7d21d9ffdcc87f29">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a8dc1dfe917a28e1b6cfab5feaf694b25">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_d"></a>- d -</h3><ul>
 <li>data()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#afd570e774029f7997dc0b7e50b284bd2">FPMAS::graph::base::Node&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a7a4b93308683485324ed21433b2c3459">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>distribute()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a48b87050d24c3ea32011951f3ba1e8a5">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a4f8ae7b0936b758b5532edafcb1b26f7">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
 </li>
 <li>DistributedGraph()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a94cb1b4c204535a50c87bd50c6841a80">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab7f2eecd1e54076134c24245486e6bde">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_f"></a>- f -</h3><ul>
 <li>from_json()
-: <a class="el" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a1da2da4f6a8c0915bebf90e6e9f1eacc">nlohmann::adl_serializer&lt; Arc&lt; T &gt; &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#a0eda60ef245f07de7f52a37df6cb179a">nlohmann::adl_serializer&lt; Graph&lt; T &gt; &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01LocalData_3_01T_01_4_01_4.html#a60bc45e61c3b1f64ba1d45b8b9d403c5">nlohmann::adl_serializer&lt; LocalData&lt; T &gt; &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4.html#a742a630c4dcb64d56f2548ad9e10ae42">nlohmann::adl_serializer&lt; Node&lt; T &gt; &gt;</a>
+: <a class="el" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_00_01LayerType_00_01N_01_4_01_4.html#a8eb4b58c610dcd33d5078a73e1579818">nlohmann::adl_serializer&lt; Arc&lt; T, LayerType, N &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_00_01LayerType_00_01N_01_4_01_4.html#a9527a2121bd04549706a8a3320006910">nlohmann::adl_serializer&lt; Graph&lt; T, LayerType, N &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01LocalData_3_01NODE__PARAMS__SPEC_01_4_01_4.html#ad2c1463024ca84bf332cd4c364fcea0b">nlohmann::adl_serializer&lt; LocalData&lt; NODE_PARAMS_SPEC &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_00_01LayerType_00_01N_01_4_01_4.html#aaa320a1b7a5e456f30d324e1eb500b73">nlohmann::adl_serializer&lt; Node&lt; T, LayerType, N &gt; &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_g"></a>- g -</h3><ul>
 <li>get()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#af54f9619d76f0255c736d9d1e26407d1">FPMAS::graph::parallel::synchro::SyncData&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#ae861d4012ea2108cfed96e906198a7ac">FPMAS::communication::ResourceManager</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#aac142f241078353199407fc43aa9fd12">FPMAS::graph::parallel::synchro::SyncData&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>getArc()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a613cf0852c239ab5330b6a53ef9f8259">FPMAS::graph::base::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ada6c2f008959182e99abde1018eba7a7">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aac990a35cba9a3ad3315026bdd8772d4">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a61bb5ae94b4a3ecf962875a402c3b601">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 <li>getArcs()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a2fe59fe07efaed4bd89432ed5025c1a7">FPMAS::graph::base::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ad7d9c7c772644ad1b36883449ea1b376">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#af7c0cec8d50b898047c9d369fe525ca6">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a73ffed44a680d7e7aadff147aee611a3">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 <li>getCurrentLocation()
 : <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html#af4ff3d0e22aa7d489b9713054847ede8">FPMAS::graph::parallel::proxy::Proxy</a>
 </li>
 <li>getGhost()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#addafca36bc3486b072d0ecd582a79209">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac6ec3e9c30bc7c9148931a33168eb2c4">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
 </li>
 <li>getId()
 : <a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">FPMAS::graph::base::GraphItem</a>
 </li>
 <li>getIncomingArcs()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#ad2c784ebe18c2bb850de19ae71ac3392">FPMAS::graph::base::Node&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a7affe12b7fa653570549f09fa8adc145">FPMAS::graph::base::Layer&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#ad3d9ee5037e4e2de7f89734bfedb56d1">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
+</li>
+<li>getLayers()
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#ae464446e17b0a7436b3f552ea379b3d6">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>getLocalData()
 : <a class="el" href="classFPMAS_1_1communication_1_1ResourceContainer.html#a822a15bb4e7029c620651213848d840c">FPMAS::communication::ResourceContainer</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a4ccf875c4cd9bd9fa544fc715bd2b42f">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a0c8c8cce5c60c713e479a3a0b332c9eb">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
 </li>
 <li>getLocalProc()
 : <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html#a0b90abd4c342da8219e3b317875e95a3">FPMAS::graph::parallel::proxy::Proxy</a>
@@ -149,27 +154,28 @@ $(function() {
 : <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ad9972825dbde03f82eb5d57dd604e127">FPMAS::communication::MpiCommunicator</a>
 </li>
 <li>getMpiCommunicator()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a78f3f56237393dafadf2220707d46d2a">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a0c05ec8cf58945431199fe4a1ae025b0">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
 </li>
 <li>getMpiGroup()
 : <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ac1c5370d260e7f052aefff7f63448025">FPMAS::communication::MpiCommunicator</a>
 </li>
 <li>getNode()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ab034ec6b2286cae441865f29cd7f2a1d">FPMAS::graph::base::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a972c637a43a4638dbc963cdf7b2ca856">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a6214653461a7750c4a8a4bd3f539f71c">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ae25006b4d1981dde3e5a97fcc843ba0f">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 <li>getNodes()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a56ce0e9462bda0a691ab869390106e06">FPMAS::graph::base::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#aae3f83ce76932acd46ee8c640202c750">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#af74a598df11f6f06f0c580b31fb1afa3">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a676181f88c5294e072a39bd065ba0e67">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 <li>getOrigin()
 : <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html#ae32ea09361e39373cff62ba1de5ea244">FPMAS::graph::parallel::proxy::Proxy</a>
 </li>
 <li>getOutgoingArcs()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#afd8979dd04100c75a36f9a0a4a5d8db4">FPMAS::graph::base::Node&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a527d9dd4764ad1f333c2e96a59b8680d">FPMAS::graph::base::Layer&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a472e55de7a733b7a439a4b1bba004b9d">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>getProxy()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#af9f9803fede5a6a3db61c40ae49a1cb1">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a8eb8df0c74cd110dbfb4d0ee70d867ce">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
 </li>
 <li>getRank()
 : <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ac7d10cf3e871ef257c73e62f7ca46b7e">FPMAS::communication::MpiCommunicator</a>
@@ -178,29 +184,29 @@ $(function() {
 : <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">FPMAS::communication::MpiCommunicator</a>
 </li>
 <li>getSourceNode()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html#a9671097d11e061b9009fa34fa58e9f2b">FPMAS::graph::base::Arc&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html#aa40865909526538c014a5ec8d280d906">FPMAS::graph::base::Arc&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>getTargetNode()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html#a522b31d6397ed13a83b12c8f96eb1053">FPMAS::graph::base::Arc&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html#a079ea8e9d8f0b0d2791f644365b90212">FPMAS::graph::base::Arc&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>getUpdatedData()
 : <a class="el" href="classFPMAS_1_1communication_1_1ResourceContainer.html#ab7441be8a062ed41a79300123a75a1c2">FPMAS::communication::ResourceContainer</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#af6c9e91fbf09be9c97a1399e19126fdb">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ad13c84f8189f97c024985e87073b8a13">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
 </li>
 <li>getWeight()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#ae7211b28353f1e2e2b7f6a034725af32">FPMAS::graph::base::Node&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#acc21fcf4186fb6640f2348bf25eadd8f">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>GhostData()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostData.html#a58f980ea54574b3a42ea277e095fe3c5">FPMAS::graph::parallel::synchro::GhostData&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostData.html#a2605eba6ca6fb985103e9678309a1e63">FPMAS::graph::parallel::synchro::GhostData&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>GhostGraph()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ab3f97eac08e5788917325848c268bfa5">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ac228fc01911a329fdf1d4725a06f8440">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 <li>giveBack()
 : <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#ad7865a8fb3614aaa33cf68be6d98d7dc">FPMAS::communication::SyncMpiCommunicator</a>
 </li>
 <li>GraphItem()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#a159dd35b8081e445705818c32eb8d23c">FPMAS::graph::base::GraphItem</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#afd23b425d0bc751537344c36590ce229">FPMAS::graph::base::GraphItem</a>
 </li>
 </ul>
 
@@ -210,58 +216,66 @@ $(function() {
 : <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#a91ba6747711be359c0a95cfc4be85839">FPMAS::communication::SyncMpiCommunicator</a>
 </li>
 <li>HardSyncData()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#a37237c27ecc87a74895ba3b60bdd9e03">FPMAS::graph::parallel::synchro::HardSyncData&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#abd627306e9bd53905f16e5e9099cfe07">FPMAS::graph::parallel::synchro::HardSyncData&lt; NODE_PARAMS &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_i"></a>- i -</h3><ul>
 <li>inNeighbors()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#afbe903a064aaac7cd0194eef8f0c0689">FPMAS::graph::base::Node&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a196ae3eb064784b802efa4df75725240">FPMAS::graph::base::Layer&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a557c8c86920612a680e89175c2640695">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
+</li>
+<li>isLocked()
+: <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html#ab6b9f2b825db3cd44c0506dd025e6c1a">FPMAS::communication::ReadersWriters</a>
 </li>
 </ul>
 
 
 <h3><a id="index_l"></a>- l -</h3><ul>
+<li>layer()
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#abe75be4bb4252fd7706a145bae6848dd">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
+</li>
 <li>link()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a599565b095e6a48715f965284159109c">FPMAS::graph::base::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#aef53945d98c02a929906827d0a8637d8">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae2286475bf1711fc088bc556ddb095d0">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ab3337c5b4548ad0b61c490d09658d4ac">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 <li>LocalData()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1LocalData.html#a337873c500cc14ac24969cf10ed86cb2">FPMAS::graph::parallel::synchro::LocalData&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1LocalData.html#ab9a3a46552733e04192d339049b2bd34">FPMAS::graph::parallel::synchro::LocalData&lt; NODE_PARAMS &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_m"></a>- m -</h3><ul>
 <li>merge()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#ae26f5cf1e2bd168f572271ff5547a42c">FPMAS::graph::base::FossilArcs&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#a0696dc196ebec39712d929990b99b5b7">FPMAS::graph::base::FossilArcs&lt; A &gt;</a>
 </li>
 <li>MpiCommunicator()
-: <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a86d104f340d96ea59e6830178eb8572d">FPMAS::communication::MpiCommunicator</a>
+: <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ab82fc25614dd7bed1acd4bac734af565">FPMAS::communication::MpiCommunicator</a>
 </li>
 </ul>
 
 
 <h3><a id="index_n"></a>- n -</h3><ul>
 <li>Node()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a2f4cc9fafd1df79bb1b4af81d3bb67fc">FPMAS::graph::base::Node&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a072254101f9c2b0567db92dae7cc41fa">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>None()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1None.html#a3a8b393e363eca03b5c0aae3ddbe7ef7">FPMAS::graph::parallel::synchro::None&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1None.html#adc25e27dd9dfa620cc5d806626bf2398">FPMAS::graph::parallel::synchro::None&lt; NODE_PARAMS &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_o"></a>- o -</h3><ul>
 <li>operator-&gt;()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html#af6369521565ec7dfa33fddd57d3c29cf">FPMAS::graph::parallel::synchro::SyncDataPtr&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html#aa8a1b0683a68fac784f838ccd78d296b">FPMAS::graph::parallel::synchro::SyncDataPtr&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>operator=()
 : <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a450aa7b94bf8d93f6d223e7a75ca05e7">FPMAS::communication::MpiCommunicator</a>
 </li>
 <li>outNeighbors()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#adeb813cef1a800d13399cce379f14e72">FPMAS::graph::base::Node&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a68fed8b403d91b2d35694afb3efe40e3">FPMAS::graph::base::Layer&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a48f605447ee51d0a851598fd1d9dc1d0">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
 </li>
 </ul>
 
@@ -275,17 +289,27 @@ $(function() {
 
 <h3><a id="index_r"></a>- r -</h3><ul>
 <li>read()
-: <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#a6da41f0d37a1217ac16e4ad2ba602d80">FPMAS::communication::SyncMpiCommunicator</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#a3ba18a398193ec8452d7e5609ab84400">FPMAS::graph::parallel::synchro::HardSyncData&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#ad947558452bdee9da364eec112afd1f0">FPMAS::graph::parallel::synchro::SyncData&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html#a2ec4281d04ca641ca888812a246ae254">FPMAS::communication::ReadersWriters</a>
+, <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#aa42307a81f86594ccaec13bac76b6626">FPMAS::communication::ResourceManager</a>
+, <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#a6da41f0d37a1217ac16e4ad2ba602d80">FPMAS::communication::SyncMpiCommunicator</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#a6f1fa31e8eacc68e2d595263d0c746be">FPMAS::graph::parallel::synchro::HardSyncData&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a87d3a7cacffde63a1cb4fafe99f9abb2">FPMAS::graph::parallel::synchro::SyncData&lt; NODE_PARAMS &gt;</a>
+</li>
+<li>ReadersWriters()
+: <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html#a8f783693a1c58fadf387a7f46b8afc0b">FPMAS::communication::ReadersWriters</a>
 </li>
 <li>release()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#a4da47148a13652547403b5274c449412">FPMAS::graph::parallel::synchro::HardSyncData&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a94fca36b2ce3ea9588ec055016c95440">FPMAS::graph::parallel::synchro::SyncData&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html#a3ebc42f73dc486965d526bcf0046c4f2">FPMAS::communication::ReadersWriters</a>
+, <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#aba453e43c8ed450678855502e3a44641">FPMAS::communication::ResourceManager</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#ac129a7f94d8842c2af507be7a54aa626">FPMAS::graph::parallel::synchro::HardSyncData&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a154ae47422da0cd6a8216ee7b4bbace7">FPMAS::graph::parallel::synchro::SyncData&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>removeNode()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#acbcb557b07b6f8ca3a5cae2cb7da0b19">FPMAS::graph::base::Graph&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a33ba01b18cced88a107d5c145b01a51d">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4dc4b506e5483bee791c537c8ec680ae">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a4a14da1ef8e113700e1ac0eb815ec746">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
+</li>
+<li>ResourceManager()
+: <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a4d7d907413c6b9787753a4887acf3cde">FPMAS::communication::ResourceManager</a>
 </li>
 </ul>
 
@@ -301,21 +325,21 @@ $(function() {
 : <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html#a599bab0819fb0dd336120fa954571ac2">FPMAS::graph::parallel::proxy::Proxy</a>
 </li>
 <li>setWeight()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a2899fc016dc04619d0561966c6613a58">FPMAS::graph::base::Node&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html#a99738c7da6edb3cfbec6851f31633f7f">FPMAS::graph::base::Node&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>SyncData()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a9355ebf5294af2c36d415dfa0f46c7ba">FPMAS::graph::parallel::synchro::SyncData&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#aa21b0ed98809c48c8038d3178745d27d">FPMAS::graph::parallel::synchro::SyncData&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>SyncDataPtr()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html#ac442d24e50ed2e8893416283a05d2dc9">FPMAS::graph::parallel::synchro::SyncDataPtr&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html#a8961449718bad19b67db404765cd254e">FPMAS::graph::parallel::synchro::SyncDataPtr&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>synchronize()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a48e618246d013ea14471e1b026107565">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a565efa80060be8f3cad3560895499835">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a427e1a8f63bc154465e513b2048f9415">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a8987678b5e273185047969fbc891f10c">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 , <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html#ac74c37de9fac6cba1cc92273145aed35">FPMAS::graph::parallel::proxy::Proxy</a>
 </li>
 <li>SyncMpiCommunicator()
-: <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#a6aca894f1cf2be2457460f225262840b">FPMAS::communication::SyncMpiCommunicator</a>
+: <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#abe3e94c59f426834064c4b1f912c9db3">FPMAS::communication::SyncMpiCommunicator</a>
 </li>
 </ul>
 
@@ -325,29 +349,37 @@ $(function() {
 : <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#ab536c74e610b4cabde0b319af81cf6af">FPMAS::communication::SyncMpiCommunicator</a>
 </li>
 <li>termination()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostData.html#a0e410dbd2fe50ea2567570f8eb373889">FPMAS::graph::parallel::synchro::GhostData&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#a7b80a5397b385d021e619d57c4d3c4ec">FPMAS::graph::parallel::synchro::HardSyncData&lt; T &gt;</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1None.html#a1a6b71c8c090c52c0c94f5df1ee3b61e">FPMAS::graph::parallel::synchro::None&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostData.html#a90bca3a6b635faef2e31b7d83dea2959">FPMAS::graph::parallel::synchro::GhostData&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html#ab22ee74f063c7218f4ea761f0ae39759">FPMAS::graph::parallel::synchro::HardSyncData&lt; NODE_PARAMS &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1None.html#a2eb0c084aacfdcdb23300378776a870c">FPMAS::graph::parallel::synchro::None&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>to_json()
-: <a class="el" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_01_4_01_4.html#a8c5592b125b29cdd3a72ffab84e3c482">nlohmann::adl_serializer&lt; Arc&lt; T &gt; &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_01_4_01_4.html#ad435d089aa60f5035a212c22c9123429">nlohmann::adl_serializer&lt; Graph&lt; T &gt; &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_01_4_01_4.html#adb02f0f8581bff021b2154c91a291428">nlohmann::adl_serializer&lt; Node&lt; T &gt; &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01SyncDataPtr_3_01T_01_4_01_4.html#a2f52169d5337c12fc18bbc8862672888">nlohmann::adl_serializer&lt; SyncDataPtr&lt; T &gt; &gt;</a>
+: <a class="el" href="structnlohmann_1_1adl__serializer_3_01Arc_3_01T_00_01LayerType_00_01N_01_4_01_4.html#a43f9cb96fcb78045c8f05c32598e920e">nlohmann::adl_serializer&lt; Arc&lt; T, LayerType, N &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01Graph_3_01T_00_01LayerType_00_01N_01_4_01_4.html#a856394b2f9c7bdbb95bed22e0525b902">nlohmann::adl_serializer&lt; Graph&lt; T, LayerType, N &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01Node_3_01T_00_01LayerType_00_01N_01_4_01_4.html#ace2019c20ed600375105e1cb1438abea">nlohmann::adl_serializer&lt; Node&lt; T, LayerType, N &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01SyncDataPtr_3_01NODE__PARAMS__SPEC_01_4_01_4.html#a63a25d832c3d3d3a756f148628ef0d8c">nlohmann::adl_serializer&lt; SyncDataPtr&lt; NODE_PARAMS_SPEC &gt; &gt;</a>
 </li>
 </ul>
 
 
 <h3><a id="index_u"></a>- u -</h3><ul>
 <li>unlink()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a64985f48905fbb5b56779726de8a43f3">FPMAS::graph::base::Graph&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ac93387546e20cd8d3b5031ac33298efa">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
 </li>
 <li>update()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a85ea59dc5c3b64fe96eb8dd8bb9725f8">FPMAS::graph::parallel::synchro::SyncData&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html#a9c407bafb4bd40585421ab1749abe73a">FPMAS::graph::parallel::synchro::SyncData&lt; NODE_PARAMS &gt;</a>
 </li>
 <li>updateData()
 : <a class="el" href="classFPMAS_1_1communication_1_1ResourceContainer.html#aefa7dc008698bc083d9d5e69bd59441a">FPMAS::communication::ResourceContainer</a>
-, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a642e32a0383d1584325561f5e7dc9f60">FPMAS::graph::parallel::DistributedGraph&lt; T, S &gt;</a>
+, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a453a76401aa37e64985b55b01082c035">FPMAS::graph::parallel::DistributedGraph&lt; T, SYNC_MODE, LayerType, N &gt;</a>
+</li>
+</ul>
+
+
+<h3><a id="index_w"></a>- w -</h3><ul>
+<li>write()
+: <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html#a506ced81602cc96620fdd280ca27e4df">FPMAS::communication::ReadersWriters</a>
+, <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#ae6b109c9ff5660d2c48fcb930a45b647">FPMAS::communication::ResourceManager</a>
 </li>
 </ul>
 
@@ -361,10 +393,10 @@ $(function() {
 
 <h3><a id="index__7E"></a>- ~ -</h3><ul>
 <li>~GhostGraph()
-: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#afeac97e97d9ec021b2aaf31fe7f7ff65">FPMAS::graph::parallel::GhostGraph&lt; T, S &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#aa5c88c7e46fdb001336c2ede2e7a3efb">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</a>
 </li>
 <li>~Graph()
-: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aa7d582c70ecc1862da8e5b1a19bd6154">FPMAS::graph::base::Graph&lt; T &gt;</a>
+: <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a81dc759e22bdf4780ba351467763cbd8">FPMAS::graph::base::Graph&lt; T, LayerType, N &gt;</a>
 </li>
 <li>~MpiCommunicator()
 : <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a3fdffe436d300a447ee0f189b0e7d4c0">FPMAS::communication::MpiCommunicator</a>

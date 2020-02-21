@@ -53,7 +53,7 @@ namespace FPMAS::graph::base {
 			 */
 			std::set<A*> outgoingArcs;
 
-			void merge(FossilArcs<A>);
+			void merge(FossilArcs<A> fossil);
 	};
 
 	/**

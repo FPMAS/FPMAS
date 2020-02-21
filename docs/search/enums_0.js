@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['syncmode_201',['SyncMode',['../namespaceFPMAS_1_1graph.html#aee6a045540a5fdbd1563b2c5951821fc',1,'FPMAS::graph']]]
+  ['color_265',['Color',['../namespaceFPMAS_1_1communication.html#a4831523e38a55f0c958745475cbee2e5',1,'FPMAS::communication']]]
 ];

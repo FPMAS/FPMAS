@@ -6,6 +6,10 @@
 #include "readers_writers.h"
 
 namespace FPMAS::communication {
+
+	/**
+	 * Tags used to smartly manage MPI communications.
+	 */
 		enum Tag : int {
 			READ = 0x00,
 			READ_RESPONSE = 0x01,
@@ -16,11 +20,18 @@ namespace FPMAS::communication {
 			END = 0x06
 		};
 
+		/**
+		 * Used to smartly manage message reception to prevent message mixing
+		 * accross several time steps.
+		 */
 		enum Epoch : int {
 			EVEN = 0x00,
 			ODD = 0x10
 		};
 
+		/**
+		 * Used by the termination algorithm.
+		 */
 		enum Color : int {
 			WHITE = 0,
 			BLACK = 1

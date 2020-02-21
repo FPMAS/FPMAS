@@ -173,6 +173,12 @@ void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
  */
 std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
 	if(location == this->getRank()) {
+		// TODO : This management is bad, because the local proc is not added
+		// to the waiting queue as any other incoming request.
+		// It would be better to :
+		// - add the local request to the queue as any other
+		// - wait() responding to requests, at the resource manager scale
+		// - handle the fact that data is local is the respond functions
 		FPMAS_LOGD(location, "ACQUIRE", "acquiring local data %lu", id);
 		// The local process needs to wait as any other proc to access its own
 		// resources.

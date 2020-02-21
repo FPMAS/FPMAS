@@ -83,6 +83,11 @@ namespace FPMAS::communication {
 		return this->readersWriters.at(id);
 	}
 
+	/*
+	 * Manually locks the local resource.
+	 * Used by the SyncMpiCommunicator to lock local resources without
+	 * unwinding all the communication stack.
+	 */
 	void ResourceManager::lock(unsigned long id) {
 		this->readersWriters.at(id).lock();
 	}

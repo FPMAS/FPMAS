@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: FPMAS::graph::base::FossilArcs&lt; T &gt; Class Template Reference</title>
+<title>fpmas: FPMAS::graph::base::FossilArcs&lt; A &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,7 +70,7 @@ $(function() {
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="classFPMAS_1_1graph_1_1base_1_1FossilArcs-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::graph::base::FossilArcs&lt; T &gt; Class Template Reference</div>  </div>
+<div class="title">FPMAS::graph::base::FossilArcs&lt; A &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -78,37 +78,37 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae26f5cf1e2bd168f572271ff5547a42c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#ae26f5cf1e2bd168f572271ff5547a42c">merge</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; T &gt;)</td></tr>
-<tr class="separator:ae26f5cf1e2bd168f572271ff5547a42c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0696dc196ebec39712d929990b99b5b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#a0696dc196ebec39712d929990b99b5b7">merge</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; A &gt; fossil)</td></tr>
+<tr class="separator:a0696dc196ebec39712d929990b99b5b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ad6ce7757818366d2b27f2ed2fdd884c2"><td class="memItemLeft" align="right" valign="top">std::set&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#ad6ce7757818366d2b27f2ed2fdd884c2">incomingArcs</a></td></tr>
-<tr class="separator:ad6ce7757818366d2b27f2ed2fdd884c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1ed3f895139435bb41cf91e3f4c70550"><td class="memItemLeft" align="right" valign="top">std::set&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#a1ed3f895139435bb41cf91e3f4c70550">outgoingArcs</a></td></tr>
-<tr class="separator:a1ed3f895139435bb41cf91e3f4c70550"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38bc615ce44c4d7717f106e38318e2dc"><td class="memItemLeft" align="right" valign="top">std::set&lt; A * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#a38bc615ce44c4d7717f106e38318e2dc">incomingArcs</a></td></tr>
+<tr class="separator:a38bc615ce44c4d7717f106e38318e2dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af43235eb00e57d7e1b1c932d038f30e2"><td class="memItemLeft" align="right" valign="top">std::set&lt; A * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html#af43235eb00e57d7e1b1c932d038f30e2">outgoingArcs</a></td></tr>
+<tr class="separator:af43235eb00e57d7e1b1c932d038f30e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;class T&gt;<br />
-class FPMAS::graph::base::FossilArcs&lt; T &gt;</h3>
+<div class="textblock"><h3>template&lt;class A&gt;<br />
+class FPMAS::graph::base::FossilArcs&lt; A &gt;</h3>
 
 <p><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a> are used to represent <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a> s that remain partially connected deleting its source and target <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>. Those arcs should be deleted externally.</p>
-<p>For example, they are returned by the <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#acbcb557b07b6f8ca3a5cae2cb7da0b19">Graph&lt;T&gt;::removeNode()</a> function. In the case of a base <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a>, the Fossil will always be void.</p>
-<p>A particular use case for example occurs within the DistributedGraph. Normally, when <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#acbcb557b07b6f8ca3a5cae2cb7da0b19">Graph&lt;T&gt;::removeNode()</a> is called, all the arcs connected to the node are erased from the graph arcs register, and <code>deleted</code> by the same function. However, a distributed graph maintains GhostNode s and GhostArc s registers, and such items can be connected to "normal" nodes. In consequence, when <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#acbcb557b07b6f8ca3a5cae2cb7da0b19">Graph&lt;T&gt;::removeNode()</a> is called on a normal node connected by a GhostArc, the arc can't be erased from the GhostArc register, because a base <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a> has no information about it. So instead, the GhostArc is unlinked as a normal arc, but instead of being <code>deleted</code> it is added to the returned <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a> instance. The calling DistributedGraph can then handle those fossil arcs, removing them from the GhostArc register and properly <code>deleting</code> them.</p>
-<p>See the DistributedGraph&lt;T&gt;::distribute() and <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#acbcb557b07b6f8ca3a5cae2cb7da0b19">Graph&lt;T&gt;::removeNode()</a> functions implementation for concrete usage examples. </p>
+<p>For example, they are returned by the <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4dc4b506e5483bee791c537c8ec680ae">Graph&lt;T&gt;::removeNode()</a> function. In the case of a base <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a>, the Fossil will always be void.</p>
+<p>A particular use case for example occurs within the DistributedGraph. Normally, when <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4dc4b506e5483bee791c537c8ec680ae">Graph&lt;T&gt;::removeNode()</a> is called, all the arcs connected to the node are erased from the graph arcs register, and <code>deleted</code> by the same function. However, a distributed graph maintains GhostNode s and GhostArc s registers, and such items can be connected to "normal" nodes. In consequence, when <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4dc4b506e5483bee791c537c8ec680ae">Graph&lt;T&gt;::removeNode()</a> is called on a normal node connected by a GhostArc, the arc can't be erased from the GhostArc register, because a base <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a> has no information about it. So instead, the GhostArc is unlinked as a normal arc, but instead of being <code>deleted</code> it is added to the returned <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a> instance. The calling DistributedGraph can then handle those fossil arcs, removing them from the GhostArc register and properly <code>deleting</code> them.</p>
+<p>See the DistributedGraph&lt;T&gt;::distribute() and <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4dc4b506e5483bee791c537c8ec680ae">Graph&lt;T&gt;::removeNode()</a> functions implementation for concrete usage examples. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ae26f5cf1e2bd168f572271ff5547a42c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae26f5cf1e2bd168f572271ff5547a42c">&#9670;&nbsp;</a></span>merge()</h2>
+<a id="a0696dc196ebec39712d929990b99b5b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0696dc196ebec39712d929990b99b5b7">&#9670;&nbsp;</a></span>merge()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class A &gt; </div>
       <table class="memname">
         <tr>
           <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FPMAS::graph::base::FossilArcs</a>&lt; T &gt;::merge </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; T &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; A &gt;&#160;</td>
           <td class="paramname"><em>fossil</em></td><td>)</td>
           <td></td>
         </tr>
@@ -125,16 +125,16 @@ template&lt;class T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="ad6ce7757818366d2b27f2ed2fdd884c2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad6ce7757818366d2b27f2ed2fdd884c2">&#9670;&nbsp;</a></span>incomingArcs</h2>
+<a id="a38bc615ce44c4d7717f106e38318e2dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a38bc615ce44c4d7717f106e38318e2dc">&#9670;&nbsp;</a></span>incomingArcs</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class A &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::set&lt;<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt;T&gt;*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FPMAS::graph::base::FossilArcs</a>&lt; T &gt;::incomingArcs</td>
+          <td class="memname">std::set&lt;A*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FPMAS::graph::base::FossilArcs</a>&lt; A &gt;::incomingArcs</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -142,16 +142,16 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a1ed3f895139435bb41cf91e3f4c70550"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1ed3f895139435bb41cf91e3f4c70550">&#9670;&nbsp;</a></span>outgoingArcs</h2>
+<a id="af43235eb00e57d7e1b1c932d038f30e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af43235eb00e57d7e1b1c932d038f30e2">&#9670;&nbsp;</a></span>outgoingArcs</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;class T &gt; </div>
+template&lt;class A &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::set&lt;<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt;T&gt;*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FPMAS::graph::base::FossilArcs</a>&lt; T &gt;::outgoingArcs</td>
+          <td class="memname">std::set&lt;A*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FPMAS::graph::base::FossilArcs</a>&lt; A &gt;::outgoingArcs</td>
         </tr>
       </table>
 </div><div class="memdoc">

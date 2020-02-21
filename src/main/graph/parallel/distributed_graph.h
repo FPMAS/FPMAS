@@ -419,6 +419,19 @@ namespace FPMAS {
 			this->synchronize();
 
 		}
+
+		/**
+		 * Distributed the graph accross the available cored using the
+		 * specified partition.
+		 *
+		 * The partition is built as follow :
+		 * - `{node_id : {current_location, new_location}}`
+		 * - *The same partition must be passed to all the procs* (that must
+		 *   all call the distribute() function)
+		 * - If a node's id is not specified, its location is unchanged.
+		 *
+		 * @param partition new partition
+		 */
 		template<class T, SYNC_MODE, typename LayerType, int N> void DistributedGraph<T, S, LayerType, N>::distribute(
 				std::unordered_map<unsigned long, std::pair<int, int>> partition
 				) {

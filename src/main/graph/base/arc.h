@@ -17,6 +17,8 @@ namespace FPMAS::graph::base {
 	 * Graph arc.
 	 *
 	 * @tparam T associated data type
+	 * @tparam LayerType enum describing the available layers
+	 * @tparam N number of layers
 	 */
 	template<NODE_PARAMS>
 	class Arc : public GraphItem {
@@ -39,18 +41,23 @@ namespace FPMAS::graph::base {
 		NODE* targetNode;
 
 		public:
+		/**
+		 * Layer of this arc.
+		 */
 		const LayerType layer;
+
 		NODE* getSourceNode() const;
 		NODE* getTargetNode() const;
 
 	};
 
 	/**
-	 * Private arc constructor.
+	 * Arc constructor.
 	 *
 	 * @param id arc id
 	 * @param sourceNode pointer to the source Node
 	 * @param targetNode pointer to the target Node
+	 * @param layer arc layer
 	 */
 	template<NODE_PARAMS> Arc<NODE_PARAMS_SPEC>::Arc(unsigned long id, NODE* sourceNode, NODE* targetNode, LayerType layer)
 		: GraphItem(id), sourceNode(sourceNode), targetNode(targetNode), layer(layer) {
@@ -58,11 +65,19 @@ namespace FPMAS::graph::base {
 			this->targetNode->layer(layer).incomingArcs.push_back(this);
 		};
 
+	/**
+	 * Arc constructor for the default layer (layer associated to the value `0`
+	 * in the `LayerType` enum).
+	 *
+	 * @param id arc id
+	 * @param sourceNode pointer to the source Node
+	 * @param targetNode pointer to the target Node
+	 */
 	template<NODE_PARAMS> Arc<NODE_PARAMS_SPEC>::Arc(unsigned long id, NODE* sourceNode, NODE* targetNode) : Arc(id, sourceNode, targetNode, LayerType(0)) {
 
 	}
 	/**
-	 * Returns the source node of this arc.
+	 * Returns a pointer to the source node of this arc.
 	 *
 	 * @return pointer to the source node
 	 */
@@ -71,7 +86,7 @@ namespace FPMAS::graph::base {
 	}
 
 	/**
-	 * Returns the target node of this arc.
+	 * Returns a pointer to the target node of this arc.
 	 *
 	 * @return pointer to the target node
 	 */

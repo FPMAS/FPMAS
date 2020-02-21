@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zoltan_5fquery_5ffunctions_235',['zoltan_query_functions',['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#aadbe73d57b89a6c5fb30224503f3defa',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions']]]
+  ['write_250',['write',['../classFPMAS_1_1communication_1_1ReadersWriters.html#a506ced81602cc96620fdd280ca27e4df',1,'FPMAS::communication::ReadersWriters::write()'],['../classFPMAS_1_1communication_1_1ResourceManager.html#ae6b109c9ff5660d2c48fcb930a45b647',1,'FPMAS::communication::ResourceManager::write()']]]
 ];

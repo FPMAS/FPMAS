@@ -72,25 +72,178 @@ $(function() {
 <div class="title">FPMAS::communication::ResourceManager Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="readers__writers_8h_source.html">readers_writers.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3967e7b41c82fbaccf8315fd4e9f8316"><td class="memItemLeft" align="right" valign="top"><a id="a3967e7b41c82fbaccf8315fd4e9f8316"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>ResourceManager</b> (<a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> *comm)</td></tr>
-<tr class="separator:a3967e7b41c82fbaccf8315fd4e9f8316"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abe55b82fefb1c7f9490d6f5acf369207"><td class="memItemLeft" align="right" valign="top"><a id="abe55b82fefb1c7f9490d6f5acf369207"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> (unsigned long, int)</td></tr>
-<tr class="separator:abe55b82fefb1c7f9490d6f5acf369207"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f5ecd61a76ffbbf7ae9ae681b61ff48"><td class="memItemLeft" align="right" valign="top"><a id="a4f5ecd61a76ffbbf7ae9ae681b61ff48"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (unsigned long, int)</td></tr>
-<tr class="separator:a4f5ecd61a76ffbbf7ae9ae681b61ff48"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab65eb2f29b4e3a5f5d37e70aa91948e7"><td class="memItemLeft" align="right" valign="top"><a id="ab65eb2f29b4e3a5f5d37e70aa91948e7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>release</b> (unsigned long)</td></tr>
-<tr class="separator:ab65eb2f29b4e3a5f5d37e70aa91948e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6bb2119e2afd3ac72878fc4ee50f2751"><td class="memItemLeft" align="right" valign="top"><a id="a6bb2119e2afd3ac72878fc4ee50f2751"></a>
-const <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>get</b> (unsigned long)</td></tr>
-<tr class="separator:a6bb2119e2afd3ac72878fc4ee50f2751"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d7d907413c6b9787753a4887acf3cde"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a4d7d907413c6b9787753a4887acf3cde">ResourceManager</a> (<a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;comm)</td></tr>
+<tr class="separator:a4d7d907413c6b9787753a4887acf3cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa42307a81f86594ccaec13bac76b6626"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#aa42307a81f86594ccaec13bac76b6626">read</a> (unsigned long id, int destination)</td></tr>
+<tr class="separator:aa42307a81f86594ccaec13bac76b6626"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6b109c9ff5660d2c48fcb930a45b647"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#ae6b109c9ff5660d2c48fcb930a45b647">write</a> (unsigned long id, int destination)</td></tr>
+<tr class="separator:ae6b109c9ff5660d2c48fcb930a45b647"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba453e43c8ed450678855502e3a44641"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#aba453e43c8ed450678855502e3a44641">release</a> (unsigned long id)</td></tr>
+<tr class="separator:aba453e43c8ed450678855502e3a44641"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae861d4012ea2108cfed96e906198a7ac"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#ae861d4012ea2108cfed96e906198a7ac">get</a> (unsigned long id) const</td></tr>
+<tr class="separator:ae861d4012ea2108cfed96e906198a7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Class managing concurrent read / write access to a set of resources, each represented by a given id. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a4d7d907413c6b9787753a4887acf3cde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d7d907413c6b9787753a4887acf3cde">&#9670;&nbsp;</a></span>ResourceManager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">FPMAS::communication::ResourceManager::ResourceManager </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html">ResourceManager</a> constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comm</td><td>reference to the MPI communicator </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae861d4012ea2108cfed96e906198a7ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae861d4012ea2108cfed96e906198a7ac">&#9670;&nbsp;</a></span>get()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a> &amp; FPMAS::communication::ResourceManager::get </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns a const reference to the <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a> instance currently managing the specified resource. </p>
+
+</div>
+</div>
+<a id="aa42307a81f86594ccaec13bac76b6626"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa42307a81f86594ccaec13bac76b6626">&#9670;&nbsp;</a></span>read()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FPMAS::communication::ResourceManager::read </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>destination</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Performs a read operation on the specified resource for the specified destination.</p>
+<p>The request is put in a waiting queue if the resource is currently locked.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>resource id </td></tr>
+    <tr><td class="paramname">destination</td><td>destination proc </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aba453e43c8ed450678855502e3a44641"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba453e43c8ed450678855502e3a44641">&#9670;&nbsp;</a></span>release()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FPMAS::communication::ResourceManager::release </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Releases the locked resource, and respond to pending requests.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>resource id </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae6b109c9ff5660d2c48fcb930a45b647"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6b109c9ff5660d2c48fcb930a45b647">&#9670;&nbsp;</a></span>write()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void FPMAS::communication::ResourceManager::write </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>destination</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Performs a write operation on the local resource for the specified destination.</p>
+<p>The request is put in a waiting queue if the resource is currently locked.</p>
+<p>On response, the resource is acquired by the destination that must later give it back to <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#aba453e43c8ed450678855502e3a44641">release()</a> the resource.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>resource id </td></tr>
+    <tr><td class="paramname">destination</td><td>destination proc </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/main/communication/<a class="el" href="readers__writers_8h_source.html">readers_writers.h</a></li>
 <li>src/main/communication/readers_writers.cpp</li>

@@ -1,4 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classFPMAS_1_1graph_1_1base_1_1Node.html" title=" " alt="" coords="5,5,164,61"/>
-<area shape="rect" id="node2" href="$classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html" title=" " alt="" coords="212,13,381,54"/>
+<area shape="rect" id="node1" href="$classFPMAS_1_1graph_1_1base_1_1GraphItem.html" title=" " alt="" coords="5,60,156,101"/>
+<area shape="rect" id="node2" href="$classFPMAS_1_1graph_1_1base_1_1Arc.html" title=" " alt="" coords="204,5,388,76"/>
+<area shape="rect" id="node4" href="$classFPMAS_1_1graph_1_1base_1_1Arc.html" title=" " alt="" coords="206,100,386,141"/>
+<area shape="rect" id="node3" href="$classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html" title=" " alt="" coords="436,13,643,69"/>
 </map>
