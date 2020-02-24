@@ -39,8 +39,8 @@ namespace FPMAS::graph::base {
 		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerType);
 		// Grants access to private Node constructor
 		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long);
-		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T data);
-		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T data);
+		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T&& data);
+		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T&& data);
 		// Grants access to layers
 		friend FossilArcs<ARC> Graph<NODE_PARAMS_SPEC>::removeNode(unsigned long);
 		// Allows removeNode function to remove deleted arcs
@@ -61,7 +61,7 @@ namespace FPMAS::graph::base {
 		 * @param id node id
 		 * @param data pointer to node data
 		 */
-		Node(unsigned long id, T data);
+		Node(unsigned long id, T&& data);
 
 		/**
 		 * Node constructor.
@@ -70,7 +70,7 @@ namespace FPMAS::graph::base {
 		 * @param weight node weight
 		 * @param data node data
 		 */
-		Node(unsigned long id, float weight, T data);
+		Node(unsigned long id, float weight, T&& data);
 
 		private:
 		T _data;
@@ -165,10 +165,10 @@ namespace FPMAS::graph::base {
 	template<NODE_PARAMS> Node<NODE_PARAMS_SPEC>::Node(unsigned long id) : NODE(id, 1., T()) {
 	}
 
-	template<NODE_PARAMS> Node<NODE_PARAMS_SPEC>::Node(unsigned long id, T data) : NODE(id, 1., data) {
+	template<NODE_PARAMS> Node<NODE_PARAMS_SPEC>::Node(unsigned long id, T&& data) : NODE(id, 1., std::move(data)) {
 	}
 
-	template<NODE_PARAMS> Node<NODE_PARAMS_SPEC>::Node(unsigned long id, float weight, T data) : GraphItem(id), _data(data), weight(weight) {
+	template<NODE_PARAMS> Node<NODE_PARAMS_SPEC>::Node(unsigned long id, float weight, T&& data) : GraphItem(id), _data(std::move(data)), weight(weight) {
 		for (int i = 0; i < N; i++) {
 			this->layers[i] = Layer<NODE_PARAMS_SPEC>();
 		}

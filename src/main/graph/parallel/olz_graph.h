@@ -62,10 +62,10 @@ namespace FPMAS::graph::parallel {
 		void synchronize();
 
 		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(unsigned long);
-		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
+		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(const Node<std::unique_ptr<SyncData<T>>, LayerType, N>& node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
 
-		void link(GhostNode<NODE_PARAMS_SPEC, S>*, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*, unsigned long, LayerType);
-		void link(Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*, GhostNode<NODE_PARAMS_SPEC, S>*, unsigned long, LayerType);
+		void link(GhostNode<NODE_PARAMS_SPEC, S>*, Node<std::unique_ptr<SyncData<T>>, LayerType, N>*, unsigned long, LayerType);
+		void link(Node<std::unique_ptr<SyncData<T>>, LayerType, N>*, GhostNode<NODE_PARAMS_SPEC, S>*, unsigned long, LayerType);
 
 		void removeNode(unsigned long);
 
@@ -74,7 +74,7 @@ namespace FPMAS::graph::parallel {
 		std::unordered_map<unsigned long, GhostArc<NODE_PARAMS_SPEC, S>*> getArcs();
 		const GhostArc<NODE_PARAMS_SPEC, S>* getArc(unsigned long) const;
 
-		void clear(FossilArcs<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>>);
+		void clear(FossilArcs<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>>);
 
 		~GhostGraph();
 
@@ -204,7 +204,7 @@ namespace FPMAS::graph::parallel {
 	 * @param ignoreIds ids of nodes to ignore when building links
 	 */
 	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>
-		::buildNode(Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> node, std::set<unsigned long> ignoreIds) {
+		::buildNode(const Node<std::unique_ptr<SyncData<T>>, LayerType, N>& node, std::set<unsigned long> ignoreIds) {
 		// Builds the gNode from the original node data
 		GhostNode<NODE_PARAMS_SPEC, S>* gNode = new GhostNode<NODE_PARAMS_SPEC, S>(
 				this->localGraph->getMpiCommunicator(),
@@ -252,7 +252,7 @@ namespace FPMAS::graph::parallel {
 	 */ 
 	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::link(
 			GhostNode<NODE_PARAMS_SPEC, S>* source,
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* target,
+			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* target,
 			unsigned long arc_id,
 			LayerType layer
 			) {
@@ -264,7 +264,7 @@ namespace FPMAS::graph::parallel {
 	 * Links the specified nodes with a GhostArc.
 	 */ 
 	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::link(
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* source,
+			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* source,
 			GhostNode<NODE_PARAMS_SPEC, S>* target,
 			unsigned long arc_id,
 			LayerType layer
@@ -281,7 +281,7 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::removeNode(unsigned long nodeId) {
 		GhostNode<NODE_PARAMS_SPEC, S>* nodeToRemove = this->ghostNodes.at(nodeId);
-		FossilArcs<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>> fossil;
+		FossilArcs<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>> fossil;
 		// Deletes incoming arcs
 		for(auto arc : nodeToRemove->getIncomingArcs()) {
 			if(!localGraph->unlink(arc))
@@ -349,7 +349,7 @@ namespace FPMAS::graph::parallel {
 	 * @param fossil resulting FossilArcs from removeNode operations performed
 	 * on the graph, typically when nodes are exported
 	 */
-	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::clear(FossilArcs<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>> fossil) {
+	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::clear(FossilArcs<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>> fossil) {
 		for(auto arc : fossil.incomingArcs) {
 			// Source node should be a ghost
 			GhostNode<NODE_PARAMS_SPEC, S>* ghost = (GhostNode<NODE_PARAMS_SPEC, S>*) arc->getSourceNode();

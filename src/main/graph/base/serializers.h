@@ -53,17 +53,11 @@ namespace nlohmann {
 		 *
 		 */
 		static Node<T, LayerType, N> from_json(const json& j) {
-			Node<T, LayerType, N> node = Node<T, LayerType, N>(
-					j.at("id").get<unsigned long>()
+			return Node<T, LayerType, N>(
+					j.at("id").get<unsigned long>(),
+					j.at("weight").get<float>(),
+					j.at("data").get<T>()
 					);
-			if(j.contains("data"))
-				node.data() = j.at("data").get<T>();
-
-			if(j.contains("weight"))
-				node.setWeight(
-					j.at("weight").get<float>()
-					);
-			return node;
 		}
 
 		/**
@@ -210,7 +204,7 @@ namespace nlohmann {
 				graph.buildNode(
 					n.getId(),
 					n.getWeight(),
-					n.data()
+					std::move(n.data())
 					);
 			}
 

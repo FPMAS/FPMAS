@@ -11,7 +11,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * Wrapped data is truely local, and getters used are the defaults
 	 * defined in SyncData.
 	 */
-	template<NODE_PARAMS> class LocalData : public SyncData<NODE_PARAMS_SPEC> {
+	template<class T> class LocalData : public SyncData<T> {
 		public:
 			LocalData();
 			LocalData(T);
@@ -20,16 +20,16 @@ namespace FPMAS::graph::parallel::synchro {
 	/**
 	 * Default constructor.
 	 */
-	template<NODE_PARAMS> LocalData<NODE_PARAMS_SPEC>::LocalData()
-		: SyncData<NODE_PARAMS_SPEC>() {}
+	template<class T> LocalData<T>::LocalData()
+		: SyncData<T>() {}
 
 	/**
 	 * Builds a LocalData instance initialized with the specified data.
 	 *
 	 * @param data data to wrap
 	 */
-	template<NODE_PARAMS> LocalData<NODE_PARAMS_SPEC>::LocalData(T data)
-		: SyncData<NODE_PARAMS_SPEC>(data) {}
+	template<class T> LocalData<T>::LocalData(T data)
+		: SyncData<T>(data) {}
 }
 
 namespace nlohmann {
@@ -38,8 +38,8 @@ namespace nlohmann {
 	/**
 	 * Defines unserialization rules for LocalData.
 	 */
-    template <NODE_PARAMS>
-    struct adl_serializer<LocalData<NODE_PARAMS_SPEC>> {
+    template <class T>
+    struct adl_serializer<LocalData<T>> {
 		/**
 		 * Unserializes the provided json as a LocalData instance.
 		 *
@@ -48,8 +48,8 @@ namespace nlohmann {
 		 * @param j reference to the json instance to unserialize
 		 * @return unserialized local data
 		 */
-		static LocalData<NODE_PARAMS_SPEC> from_json(const json& j) {
-			return LocalData<NODE_PARAMS_SPEC>(j.get<T>());
+		static LocalData<T> from_json(const json& j) {
+			return LocalData<T>(j.get<T>());
 		}
 	};
 }

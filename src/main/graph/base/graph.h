@@ -88,8 +88,8 @@ namespace FPMAS {
 					const std::unordered_map<unsigned long, ARC*>& getArcs() const;
 
 					NODE* buildNode(unsigned long);
-					NODE* buildNode(unsigned long id, T data);
-					NODE* buildNode(unsigned long id, float weight, T data);
+					NODE* buildNode(unsigned long id, T&& data);
+					NODE* buildNode(unsigned long id, float weight, T&& data);
 
 					ARC* link(NODE*, NODE*, unsigned long);
 					ARC* link(NODE*, NODE*, unsigned long, LayerType);
@@ -186,8 +186,8 @@ namespace FPMAS {
 			 * @param data node's data
 			 * @return pointer to built node
 			 */
-			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T data) {
-				NODE* node = new NODE(id, data);
+			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T&& data) {
+				NODE* node = new NODE(id, std::move(data));
 				this->nodes[id] = node;
 				return node;
 			}
@@ -201,8 +201,8 @@ namespace FPMAS {
 			 * @param data node's data
 			 * @return pointer to build node
 			 */
-			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T data) {
-				NODE* node = new NODE(id, weight, data);
+			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T&& data) {
+				NODE* node = new NODE(id, weight, std::move(data));
 				this->nodes[id] = node;
 				return node;
 			}

@@ -15,7 +15,7 @@ namespace FPMAS::graph::parallel {
 	template<NODE_PARAMS, SYNC_MODE> class GhostNode;
 
 	using synchro::None;
-	using synchro::SyncDataPtr;
+	using synchro::SyncData;
 	using synchro::LocalData;
 
 	namespace zoltan {
@@ -54,10 +54,10 @@ namespace FPMAS::graph::parallel {
 
 
 				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
-				std::unordered_map<unsigned long, Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> arcs = graph->getArcs();
+				std::unordered_map<unsigned long, Arc<std::unique_ptr<SyncData<T>>, LayerType, N>*> arcs = graph->getArcs();
 				for (int i = 0; i < num_ids; i++) {
 					unsigned long arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
-					Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* arc;
+					Arc<std::unique_ptr<SyncData<T>>, LayerType, N>* arc;
 					try {
 						arc = arcs.at(arcId);
 					} catch (const std::exception& e) {
@@ -163,7 +163,7 @@ namespace FPMAS::graph::parallel {
 
 					// Retrieves the serialized node
 					std::string arc_str = serial_cache->at(id);
-					Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* arc;
+					Arc<std::unique_ptr<SyncData<T>>, LayerType, N>* arc;
 					try {
 						arc = graph->getArcs().at(id);
 					} catch (const std::exception& e) {
@@ -276,7 +276,7 @@ namespace FPMAS::graph::parallel {
 						// Json is unserialized in a temporary arc, with "fake"
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
-						Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N> tempArc = json_arc.get<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>>();
+						Arc<std::unique_ptr<SyncData<T>>, LayerType, N> tempArc = json_arc.get<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>>();
 
 						receivedArcIds.insert(tempArc.getId());
 
@@ -399,7 +399,7 @@ namespace FPMAS::graph::parallel {
 				// if at least one local node is still connected to the
 				// exported node.
 				for(auto id : exportedNodeIds) {
-					Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* node = graph->getNode(id);
+					Node<std::unique_ptr<SyncData<T>>, LayerType, N>* node = graph->getNode(id);
 					bool buildGhost = false;
 					for(auto layer : node->getLayers()) {
 						for(auto arc : layer.getOutgoingArcs()) {
@@ -425,7 +425,7 @@ namespace FPMAS::graph::parallel {
 				}
 
 				// Remove nodes and collect fossils
-				FossilArcs<Arc<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>> ghostFossils;
+				FossilArcs<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>> ghostFossils;
 				for(auto id : exportedNodeIds) {
 					ghostFossils.merge(graph->removeNode(id));
 				}

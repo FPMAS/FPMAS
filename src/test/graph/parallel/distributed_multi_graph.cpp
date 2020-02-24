@@ -4,7 +4,7 @@
 #include "test_utils/test_utils.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::SyncDataPtr;
+using FPMAS::graph::parallel::synchro::SyncData;
 using FPMAS::graph::parallel::synchro::GhostData;
 using FPMAS::graph::parallel::synchro::None;
 
@@ -44,7 +44,7 @@ TEST_F(Mpi_DistributeMultiGraphNoneSynchroTest, distribute_none_synchro_test) {
 	ASSERT_EQ(dg.getArcs().size(), 1);
 
 	for(auto node : dg.getNodes()) {
-		const Node<SyncDataPtr<int, TestLayer, 2>, TestLayer, 2>* node_ptr = node.second;
+		const Node<std::unique_ptr<SyncData<int>>, TestLayer, 2>* node_ptr = node.second;
 		if(node.first % 2 == 0) {
 			// Source node
 			if((node.first / 2) % 2 == 0) {
@@ -106,7 +106,7 @@ TEST_F(Mpi_DistributeMultiGraphWithArcTest, distribute_with_arc_test) {
 	ASSERT_EQ(dg.getArcs().size(), 1);
 
 	for(auto node : dg.getNodes()) {
-		const Node<SyncDataPtr<int, TestLayer, 2>, TestLayer, 2>* node_ptr = node.second;
+		const Node<std::unique_ptr<SyncData<int>>, TestLayer, 2>* node_ptr = node.second;
 		if(node.first % 2 == 0) {
 			// Source node
 			if((node.first / 2) % 2 == 0) {
@@ -169,7 +169,7 @@ TEST_F(Mpi_DistributeMultiGraphWithGhostArcTest, distribute_with_ghost_arc_test)
 		ASSERT_EQ(dg.getNodes().size(), 1);
 
 		for(auto node : dg.getNodes()) {
-			const Node<SyncDataPtr<int, TestLayer, 2>, TestLayer, 2>* const_node = node.second;
+			const Node<std::unique_ptr<SyncData<int>>, TestLayer, 2>* const_node = node.second;
 			if(node.first % 2 == 0) {
 				ASSERT_EQ(const_node->getOutgoingArcs().size(), 1);
 				ASSERT_EQ(const_node->getIncomingArcs().size(), 0);

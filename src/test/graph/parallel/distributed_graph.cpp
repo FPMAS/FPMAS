@@ -11,8 +11,6 @@ using FPMAS::graph::parallel::synchro::GhostData;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::parallel::synchro::SyncDataPtr;
-
 TEST(Mpi_DistributedGraph, build_with_ranks_test) {
 	int global_size;
 	MPI_Comm_size(MPI_COMM_WORLD, &global_size);

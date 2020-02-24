@@ -3,7 +3,6 @@
 #include "graph/parallel/distributed_graph.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::SyncDataPtr;
 
 class Mpi_SynchronizeGhostTest : public ::testing::Test {
 	protected:

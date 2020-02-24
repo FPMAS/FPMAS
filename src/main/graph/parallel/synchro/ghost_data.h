@@ -37,7 +37,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @tparam wrapped data type
 		 */
-		template<NODE_PARAMS> class GhostData : public SyncData<NODE_PARAMS_SPEC> {
+		template<class T> class GhostData : public SyncData<T> {
 
 			public:
 				GhostData(unsigned long, SyncMpiCommunicator&, const Proxy&);
@@ -46,19 +46,19 @@ namespace FPMAS::graph::parallel {
 				 * Defines the Zoltan configuration used manage and migrate
 				 * GhostNode s and GhostArc s.
 				 */
-				const static zoltan::utils::zoltan_query_functions config;
+				template <typename LayerType, int N> const static zoltan::utils::zoltan_query_functions config;
 
 				/**
 				 * Termination function used at the end of each
 				 * DistributedGraph<T,S>::synchronize() call. In this mode,
 				 * ghost data is automatically updated from other procs.
 				 */
-				static void termination(DistributedGraph<T, GhostData, LayerType, N>* dg) {
+				template<typename LayerType, int N> static void termination(DistributedGraph<T, GhostData, LayerType, N>* dg) {
 					dg->getGhost().synchronize();
 				}
 
 		};
-		template<NODE_PARAMS> const zoltan::utils::zoltan_query_functions GhostData<NODE_PARAMS_SPEC>::config
+		template<class T> template<typename LayerType, int N> const zoltan::utils::zoltan_query_functions GhostData<T>::config
 			(
 			 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, GhostData>,
 			 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, GhostData>,
@@ -76,7 +76,7 @@ namespace FPMAS::graph::parallel {
 		 */
 		// The mpiCommunicator is not used for the GhostData mode, but the
 		// constructors are defined to allow template genericity
-		template<NODE_PARAMS> GhostData<NODE_PARAMS_SPEC>::GhostData(
+		template<class T> GhostData<T>::GhostData(
 				unsigned long id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy) {
@@ -91,12 +91,12 @@ namespace FPMAS::graph::parallel {
 		 * DistributedGraph
 		 * @param proxy graph proxy
 		 */
-		template<NODE_PARAMS> GhostData<NODE_PARAMS_SPEC>::GhostData(
+		template<class T> GhostData<T>::GhostData(
 				unsigned long id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				T data)
-			: SyncData<NODE_PARAMS_SPEC>(data) {
+			: SyncData<T>(data) {
 			}
 	}
 #endif

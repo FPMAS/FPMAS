@@ -15,7 +15,7 @@ namespace FPMAS::graph::parallel {
 	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
 	template<NODE_PARAMS, SYNC_MODE> class GhostNode;
 
-	using synchro::SyncDataPtr;
+	using synchro::SyncData;
 	using synchro::LocalData;
 
 	namespace zoltan {
@@ -54,9 +54,9 @@ namespace FPMAS::graph::parallel {
 
 
 				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
-				std::unordered_map<unsigned long, Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>*> nodes = graph->getNodes();
+				std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, LayerType, N>*> nodes = graph->getNodes();
 				for (int i = 0; i < num_ids; i++) {
-					Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+					Node<std::unique_ptr<SyncData<T>>, LayerType, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 					if(graph->getGhost().ghost_node_serialization_cache.count(node->getId()) == 1) {
 						sizes[i] = graph->getGhost().ghost_node_serialization_cache.at(node->getId()).size()+1;
@@ -158,7 +158,7 @@ namespace FPMAS::graph::parallel {
 					json json_node = json::parse(&buf[idx[i]]);
 
 					GhostNode<NODE_PARAMS_SPEC, S>* ghost = graph->getGhost().getNodes().at(node_id);
-					Node<LocalData<NODE_PARAMS_SPEC>, LayerType, N> node_update = json_node.get<Node<LocalData<NODE_PARAMS_SPEC>, LayerType, N>>();
+					Node<LocalData<T>, LayerType, N> node_update = json_node.get<Node<LocalData<T>, LayerType, N>>();
 
 					ghost->data() // SyncDataPtr
 						-> // ptr to SyncData<T>

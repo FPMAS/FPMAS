@@ -30,12 +30,11 @@ namespace FPMAS {
 	 */
 	namespace graph::parallel {
 		namespace synchro {
-			template<NODE_PARAMS> class GhostData;
+			template<class T> class GhostData;
 		}
 
 		using proxy::Proxy;
 		using synchro::SyncData;
-		using synchro::SyncDataPtr;
 		using synchro::GhostData;
 
 		/** A DistributedGraph is a special graph instance that can be
@@ -71,7 +70,7 @@ namespace FPMAS {
 			typename LayerType = DefaultLayer,
 			int N = 1
 			>
-		class DistributedGraph : public Graph<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>, communication::ResourceContainer {
+		class DistributedGraph : public Graph<std::unique_ptr<SyncData<T>>, LayerType, N>, communication::ResourceContainer {
 			friend void zoltan::node::obj_size_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
@@ -159,8 +158,8 @@ namespace FPMAS {
 
 			Proxy& getProxy();
 
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* buildNode(unsigned long id, T data);
-			Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* buildNode(unsigned long id, float weight, T data);
+			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* buildNode(unsigned long id, T data);
+			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* buildNode(unsigned long id, float weight, T data);
 
 			std::string getLocalData(unsigned long) const override;
 			std::string getUpdatedData(unsigned long) const override;
@@ -236,7 +235,7 @@ namespace FPMAS {
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<NODE_PARAMS_SPEC, S>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<NODE_PARAMS_SPEC, S>, this);
 			zoltan.Set_Mid_Migrate_PP_Fn(NULL);
-			zoltan.Set_Post_Migrate_PP_Fn(S<NODE_PARAMS_SPEC>::config.node_post_migrate_fn, this);
+			zoltan.Set_Post_Migrate_PP_Fn((S<T>::template config<LayerType,N>).node_post_migrate_fn, this);
 		}
 
 		/**
@@ -247,8 +246,8 @@ namespace FPMAS {
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<NODE_PARAMS_SPEC, S>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<NODE_PARAMS_SPEC, S>, this);
 
-			zoltan.Set_Mid_Migrate_PP_Fn(S<NODE_PARAMS_SPEC>::config.arc_mid_migrate_fn, this);
-			zoltan.Set_Post_Migrate_PP_Fn(S<NODE_PARAMS_SPEC>::config.arc_post_migrate_fn, this);
+			zoltan.Set_Mid_Migrate_PP_Fn((S<T>::template config<LayerType,N>).arc_mid_migrate_fn, this);
+			zoltan.Set_Post_Migrate_PP_Fn((S<T>::template config<LayerType,N>).arc_post_migrate_fn, this);
 		}
 
 		/**
@@ -261,12 +260,12 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N>
-		Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
+		Node<std::unique_ptr<SyncData<T>>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
 		::buildNode(unsigned long id, T data) {
-			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>
+			return Graph<std::unique_ptr<SyncData<T>>, LayerType, N>
 				::buildNode(
 					id,
-					SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(
+					std::unique_ptr<SyncData<T>>(new S<T>(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
@@ -285,13 +284,13 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N>
-		Node<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
+		Node<std::unique_ptr<SyncData<T>>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
 		::buildNode(unsigned long id, float weight, T data) {
-			return Graph<SyncDataPtr<NODE_PARAMS_SPEC>, LayerType, N>
+			return Graph<std::unique_ptr<SyncData<T>>, LayerType, N>
 				::buildNode(
 					id,
 					weight,
-					SyncDataPtr<NODE_PARAMS_SPEC>(new S<NODE_PARAMS_SPEC>(
+					std::unique_ptr<SyncData<T>>(new S<T>(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
@@ -572,7 +571,7 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N> void DistributedGraph<T, S, LayerType, N>::synchronize() {
 			this->mpiCommunicator.terminate();
-			S<NODE_PARAMS_SPEC>::termination(this);
+			S<T>::template termination<LayerType, N>(this);
 		}
 	}
 }

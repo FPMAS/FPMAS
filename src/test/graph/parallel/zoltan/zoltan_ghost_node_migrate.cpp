@@ -29,7 +29,7 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 		}
 
 		void write_migration_sizes() {
-			// Transfer nodes 0 and 85250
+			// Transfer nodes 0 and 1
 			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(0, &transfer_global_ids[0]);
 			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(1, &transfer_global_ids[2]);
 
@@ -73,6 +73,7 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, obj_size_multi_test) {
 
 	write_migration_sizes();
 
+	json ghost_str = *dg.getNode(0);
 	json ghost0_str = *dg.getNodes().at(0);
 	ASSERT_EQ(sizes[0], ghost0_str.dump().size() + 1);
 

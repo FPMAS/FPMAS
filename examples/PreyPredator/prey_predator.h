@@ -7,7 +7,7 @@
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::base::Node;
 using FPMAS::graph::parallel::synchro::HardSyncData;
-using FPMAS::graph::parallel::synchro::SyncDataPtr;
+using FPMAS::graph::parallel::synchro::SyncData;
 
 enum Role {
 	PREY,
@@ -18,7 +18,7 @@ enum State {
 	ALIVE, DEAD
 };
 
-#define NEIGHBORS std::vector<Node<SyncDataPtr<Agent, DefaultLayer, 1>, DefaultLayer, 1>*>
+#define NEIGHBORS std::vector<Node<std::unique_ptr<SyncData<Agent>>, DefaultLayer, 1>*>
 
 
 class Agent {

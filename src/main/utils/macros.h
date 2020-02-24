@@ -7,6 +7,6 @@
 #define ARC Arc<NODE_PARAMS_SPEC>
 // #define GRAPH FPMAS::graph::base::Graph<T, LayerType, N>
 
-#define SYNC_MODE template<class, typename, int> class S
+#define SYNC_MODE template<class> class S
 
 #endif

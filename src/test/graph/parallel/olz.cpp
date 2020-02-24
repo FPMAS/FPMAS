@@ -11,8 +11,6 @@ using FPMAS::communication::MpiCommunicator;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::parallel::synchro::SyncDataPtr;
-
 class Mpi_OlzTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>();
