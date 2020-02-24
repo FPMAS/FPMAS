@@ -80,6 +80,11 @@ set(SOURCES
 	${SOURCES}
 	graph/parallel/proxy/proxy.cpp)
 
+# Environment
+set(SOURCES
+	${SOURCES}
+	environment/grid.cpp)
+
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
 target_include_directories(fpmas_mpi_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(fpmas_mpi_test fpmas)

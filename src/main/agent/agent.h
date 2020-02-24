@@ -7,6 +7,22 @@ namespace FPMAS::agent {
 	class Agent {
 		public:
 			virtual void act() = 0;
+			virtual ~Agent() {};
+
+	};
+
+	class AgentPtr {
+		Agent* agent;
+
+		public:
+			AgentPtr(Agent*);
+			AgentPtr(const AgentPtr&) = delete;
+			AgentPtr& operator=(const AgentPtr&) = delete;
+
+			AgentPtr(AgentPtr&&);
+			AgentPtr& operator=(AgentPtr&&);
+
+			~AgentPtr();
 
 	};
 
