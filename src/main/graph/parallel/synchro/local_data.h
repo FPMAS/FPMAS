@@ -14,7 +14,8 @@ namespace FPMAS::graph::parallel::synchro {
 	template<class T> class LocalData : public SyncData<T> {
 		public:
 			LocalData();
-			LocalData(T);
+			LocalData(const T&);
+			LocalData(T&&);
 	};
 
 	/**
@@ -28,7 +29,10 @@ namespace FPMAS::graph::parallel::synchro {
 	 *
 	 * @param data data to wrap
 	 */
-	template<class T> LocalData<T>::LocalData(T data)
+	template<class T> LocalData<T>::LocalData(T&& data)
+		: SyncData<T>(std::move(data)) {}
+
+	template<class T> LocalData<T>::LocalData(const T& data)
 		: SyncData<T>(data) {}
 }
 

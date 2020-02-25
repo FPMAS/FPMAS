@@ -21,7 +21,7 @@ using FPMAS::graph::parallel::synchro::GhostData;
 
 class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int> dg = DistributedGraph<int>();
+		DistributedGraph<int> dg;
 
 		// Migration
 		unsigned int transfer_arc_global_ids[4];

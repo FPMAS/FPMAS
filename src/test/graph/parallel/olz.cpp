@@ -68,5 +68,6 @@ TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 			dg.getNode(1ul)->getIncomingArcs().at(0)->getSourceNode()->getId(),
 			2ul
 			);
+	dg.synchronize();
 
 }

@@ -163,20 +163,22 @@ namespace FPMAS::graph::parallel {
 			for (int i = 0; i < num_ids; i++) {
 				json json_node = json::parse(&buf[idx[i]]);
 
-				Node<LocalData<T>, LayerType, N> node = json_node.get<Node<LocalData<T>, LayerType, N>>();
+				// Node<LocalData<T>, LayerType, N> node = json_node.get<Node<LocalData<T>, LayerType, N>>();
 
-				if(graph->getGhost().getNodes().count(node.getId()) > 0)
-					graph->obsoleteGhosts.insert(node.getId());
+				unsigned long id = json_node.at("id").get<unsigned long>();
+
+				if(graph->getGhost().getNodes().count(id) > 0)
+					graph->obsoleteGhosts.insert(id);
 
 				graph->buildNode(
-						node.getId(),
-						node.getWeight(),
-						node.data().get()
+						id,
+						json_node.at("weight").get<float>(),
+						json_node.at("data").get<T>()
 						);
 
 				int origin = json_node.at("origin").get<int>();
-				graph->proxy.setOrigin(node.getId(), origin);
-				graph->proxy.setLocal(node.getId());
+				graph->proxy.setOrigin(id, origin);
+				graph->proxy.setLocal(id);
 			}
 
 		}

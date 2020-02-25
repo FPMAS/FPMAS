@@ -54,6 +54,7 @@ namespace FPMAS::graph::parallel {
 
 
 				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "obj_size_multi_fn");
 				std::unordered_map<unsigned long, Arc<std::unique_ptr<SyncData<T>>, LayerType, N>*> arcs = graph->getArcs();
 				for (int i = 0; i < num_ids; i++) {
 					unsigned long arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
@@ -152,6 +153,7 @@ namespace FPMAS::graph::parallel {
 					int *ierr) {
 
 				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "pack_obj_multi_fn");
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
@@ -212,6 +214,7 @@ namespace FPMAS::graph::parallel {
 					int *export_to_part,
 					int *ierr) {
 				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "mid_migrate");
 				for(auto nodeId : graph->obsoleteGhosts) {
 					graph->getGhost().removeNode(nodeId);
 				}
@@ -255,6 +258,7 @@ namespace FPMAS::graph::parallel {
 					int *ierr) {
 
 				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "unpack_obj_multi_fn");
 
 				// The same arc can be imported multiple times from
 				// different procs.
@@ -357,6 +361,7 @@ namespace FPMAS::graph::parallel {
 						delete tempArc.getTargetNode();
 					}
 				}
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "unpack_obj_multi_fn : done");
 			}
 
 			/**
@@ -385,6 +390,7 @@ namespace FPMAS::graph::parallel {
 				// The next steps will remove exported nodes from the local
 				// graph, creating corresponding ghost nodes when necessary
 				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_olz");
 
 				// Computes the set of ids of exported nodes
 				std::set<unsigned long> exportedNodeIds;
@@ -433,6 +439,7 @@ namespace FPMAS::graph::parallel {
 				// TODO : schema with fossils example
 				// For info, see the Fossil and removeNode docs
 				graph->getGhost().clear(ghostFossils);
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_olz : done");
 			}
 
 			/**
@@ -458,6 +465,7 @@ namespace FPMAS::graph::parallel {
 					int *export_to_part,
 					int *ierr) {
 				DistributedGraph<T, None, LayerType, N>* graph = (DistributedGraph<T, None, LayerType, N>*) data;
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_no_sync");
 
 				// Removes exported nodes from the local graph
 				for(int i = 0; i < graph->export_node_num; i++) {
@@ -465,6 +473,7 @@ namespace FPMAS::graph::parallel {
 								&graph->export_node_global_ids[i * num_gid_entries])
 							);
 				}
+				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_no_sync : done");
 			}
 		}
 	}

@@ -3,8 +3,8 @@
 
 using FPMAS::environment::grid::Grid;
 
-TEST(GridTest, build_test) {
-//	Grid grid(10, 10);
+TEST(Mpi_GridTest, build_test) {
+	Grid grid(10, 10);
 	
 
 }

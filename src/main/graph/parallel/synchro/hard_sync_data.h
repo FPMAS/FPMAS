@@ -28,7 +28,8 @@ namespace FPMAS::graph::parallel::synchro {
 
 		public:
 			HardSyncData(unsigned long, SyncMpiCommunicator&, const Proxy&);
-			HardSyncData(unsigned long, SyncMpiCommunicator&, const Proxy&, T);
+			HardSyncData(unsigned long, SyncMpiCommunicator&, const Proxy&, const T&);
+			HardSyncData(unsigned long, SyncMpiCommunicator&, const Proxy&, T&&);
 
 			const T& read() override;
 			T& acquire() override;
@@ -80,7 +81,15 @@ namespace FPMAS::graph::parallel::synchro {
 			unsigned long id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy,
-			T data)
+			T&& data)
+		: SyncData<T>(std::move(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
+		}
+
+	template<class T> HardSyncData<T>::HardSyncData(
+			unsigned long id,
+			SyncMpiCommunicator& mpiComm,
+			const Proxy& proxy,
+			const T& data)
 		: SyncData<T>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
 

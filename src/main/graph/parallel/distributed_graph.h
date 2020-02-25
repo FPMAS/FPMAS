@@ -158,8 +158,10 @@ namespace FPMAS {
 
 			Proxy& getProxy();
 
-			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* buildNode(unsigned long id, T data);
-			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* buildNode(unsigned long id, float weight, T data);
+			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* buildNode(unsigned long id, T&& data);
+			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* buildNode(unsigned long id, T& data);
+			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* buildNode(unsigned long id, float weight, T&& data);
+			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* buildNode(unsigned long id, float weight, T& data);
 
 			std::string getLocalData(unsigned long) const override;
 			std::string getUpdatedData(unsigned long) const override;
@@ -261,7 +263,21 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N>
 		Node<std::unique_ptr<SyncData<T>>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
-		::buildNode(unsigned long id, T data) {
+		::buildNode(unsigned long id, T&& data) {
+			return Graph<std::unique_ptr<SyncData<T>>, LayerType, N>
+				::buildNode(
+					id,
+					std::unique_ptr<SyncData<T>>(new S<T>(
+							id,
+							this->getMpiCommunicator(),
+							this->getProxy(),
+							std::move(data)))
+					);
+		}
+
+		template<class T, SYNC_MODE, typename LayerType, int N>
+		Node<std::unique_ptr<SyncData<T>>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
+		::buildNode(unsigned long id, T& data) {
 			return Graph<std::unique_ptr<SyncData<T>>, LayerType, N>
 				::buildNode(
 					id,
@@ -285,7 +301,22 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, typename LayerType, int N>
 		Node<std::unique_ptr<SyncData<T>>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
-		::buildNode(unsigned long id, float weight, T data) {
+		::buildNode(unsigned long id, float weight, T&& data) {
+			return Graph<std::unique_ptr<SyncData<T>>, LayerType, N>
+				::buildNode(
+					id,
+					weight,
+					std::unique_ptr<SyncData<T>>(new S<T>(
+							id,
+							this->getMpiCommunicator(),
+							this->getProxy(),
+							std::move(data)))
+					);
+		}
+
+		template<class T, SYNC_MODE, typename LayerType, int N>
+		Node<std::unique_ptr<SyncData<T>>, LayerType, N>* DistributedGraph<T, S, LayerType, N>
+		::buildNode(unsigned long id, float weight, T& data) {
 			return Graph<std::unique_ptr<SyncData<T>>, LayerType, N>
 				::buildNode(
 					id,
@@ -297,7 +328,6 @@ namespace FPMAS {
 							data))
 					);
 		}
-
 		/**
 		 * ResourceContainer implementation.
 		 *
@@ -354,6 +384,7 @@ namespace FPMAS {
 			) {
 			if(changes > 0) {
 
+				FPMAS_LOGV(mpiCommunicator.getRank(), "Dist", "Zoltan Node migration...");
 				// Migrate nodes from the load balancing
 				// Arcs to export are computed in the post_migrate_pp_fn step.
 				this->zoltan.Migrate(
@@ -368,6 +399,7 @@ namespace FPMAS {
 						this->export_node_procs,
 						export_to_part
 						);
+				FPMAS_LOGV(mpiCommunicator.getRank(), "Dist", "Zoltan Node migration done.");
 
 				// Prepares Zoltan to migrate arcs associated to the exported
 				// nodes.
@@ -376,6 +408,7 @@ namespace FPMAS {
 				// Unused buffer
 				ZOLTAN_ID_TYPE export_arcs_local_ids[0];
 
+				FPMAS_LOGV(mpiCommunicator.getRank(), "Dist", "Zoltan Arc migration...");
 				// Arcs to import
 				this->zoltan.Migrate(
 						-1,
@@ -389,6 +422,7 @@ namespace FPMAS {
 						this->export_arcs_procs,
 						this->export_arcs_procs // parts = procs
 						);
+				FPMAS_LOGV(mpiCommunicator.getRank(), "Dist", "Zoltan Arc migration done.");
 				std::free(this->export_arcs_global_ids);
 				std::free(this->export_arcs_procs);
 			}
@@ -410,10 +444,6 @@ namespace FPMAS {
 
 			// Updates nodes locations according to last migrations
 			this->proxy.synchronize();
-
-			// When called for the first time, PARTITION is used, and so
-			// REPARTITION will be used for all other calls.
-			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
 
 			this->synchronize();
 
@@ -561,7 +591,11 @@ namespace FPMAS {
 				export_local_ids,
 				export_to_part);
 
-				}
+
+			// When called for the first time, PARTITION is used, and so
+			// REPARTITION will be used for all other calls.
+			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
+		}
 
 		/**
 		 * Synchronizes the DistributedGraph instances, calling the

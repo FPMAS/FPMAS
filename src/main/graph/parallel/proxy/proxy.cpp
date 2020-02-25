@@ -1,5 +1,6 @@
 #include "proxy.h"
 #include "utils/config.h"
+#include "utils/log.h"
 #include "../zoltan/zoltan_utils.h"
 #include <nlohmann/json.hpp>
 
@@ -118,8 +119,9 @@ namespace FPMAS::graph::parallel::proxy {
 	 * @param id node id
 	 */
 	int Proxy::getCurrentLocation(unsigned long id) const {
-		if(this->currentLocations.count(id) == 1)
+		if(this->currentLocations.count(id) == 1) {
 			return this->currentLocations.at(id);
+		}
 		return this->localProc;
 	}
 
@@ -170,6 +172,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 * can contact them or ask their data directly.
 	 */
 	void Proxy::synchronize() {
+		FPMAS_LOGV(this->localProc, "PROXY", "Synchronizing...");
 		ZOLTAN_ID_TYPE export_global_ids[updates.size() * 2];
 		int export_procs[updates.size()];
 
@@ -217,6 +220,7 @@ namespace FPMAS::graph::parallel::proxy {
 				NULL,
 				NULL
 				);
+		FPMAS_LOGV(this->localProc, "PROXY", "Done.");
 	}
 
 	/**

@@ -160,10 +160,10 @@ namespace FPMAS::graph::parallel {
 					GhostNode<NODE_PARAMS_SPEC, S>* ghost = graph->getGhost().getNodes().at(node_id);
 					Node<LocalData<T>, LayerType, N> node_update = json_node.get<Node<LocalData<T>, LayerType, N>>();
 
-					ghost->data() // SyncDataPtr
+					ghost->data() // std::unique_ptr
 						-> // ptr to SyncData<T>
 						acquire() // reference to T
-						= node_update.data().read();
+						= std::move(node_update.data().acquire());
 					ghost->setWeight(node_update.getWeight());
 				}
 

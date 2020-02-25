@@ -62,7 +62,7 @@ namespace FPMAS::graph::parallel {
 			node.getId(),
 			node.getWeight(),
 			std::unique_ptr<SyncData<T>>(new S<T>(
-				node.getId(), mpiComm, proxy, node.data()->get()
+				node.getId(), mpiComm, proxy, std::move(node.data()->get())
 				)
 			)
 		) {}

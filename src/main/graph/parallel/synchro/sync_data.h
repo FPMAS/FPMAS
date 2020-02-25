@@ -63,11 +63,12 @@ namespace FPMAS::graph::parallel {
 				 */
 				T data;
 				SyncData();
-				SyncData(T);
+				SyncData(const T&);
+				SyncData(T&&);
 
 			public:
 				const T& get() const;
-				void update(T data);
+				void update(T&& data);
 
 				/**
 				 * Returns a reference to the wrapped data. (default behavior)
@@ -103,7 +104,9 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @param data data to wrap.
 		 */
-		template<class T> SyncData<T>::SyncData(T data) : data(data) {
+		template<class T> SyncData<T>::SyncData(T&& data) : data(std::move(data)) {
+		}
+		template<class T> SyncData<T>::SyncData(const T& data) : data(data) {
 		}
 
 		/**
@@ -128,8 +131,8 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @param data updated data
 		 */
-		template<class T> void SyncData<T>::update(T data) {
-			this->data = data;
+		template<class T> void SyncData<T>::update(T&& data) {
+			this->data = std::move(data);
 		}
 
 		/**

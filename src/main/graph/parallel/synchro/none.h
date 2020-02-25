@@ -33,7 +33,8 @@ namespace FPMAS::graph::parallel::synchro {
 			 * Unused constructor, defined for synchronization mode API
 			 * compatibility.
 			 */
-			None(unsigned long, SyncMpiCommunicator&, const Proxy&, T) {};
+			None(unsigned long, SyncMpiCommunicator&, const Proxy&, T&&) {};
+			None(unsigned long, SyncMpiCommunicator&, const Proxy&, const T&) {};
 
 			/**
 			 * Termination function used at the end of each
