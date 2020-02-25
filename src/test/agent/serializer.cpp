@@ -38,7 +38,7 @@ void to_json(json& j, const Sheep& w) {
 }
 void from_json(const json&, Sheep&) {}
 
-TEST(SerializerTest, serialize) {
+TEST(AgentSerializerTest, serialize) {
 	std::unique_ptr<PreyPredAgent> wolf_ptr(new Wolf());
 	std::unique_ptr<PreyPredAgent> sheep_ptr(new Sheep());
 
@@ -52,4 +52,18 @@ TEST(SerializerTest, serialize) {
 	ASSERT_EQ(j_sheep.size(), 2);
 	ASSERT_EQ(j_sheep.at("type").get<AgentTypes>(), SHEEP);
 	ASSERT_EQ(j_sheep.at("agent").at("role").get<std::string>(), "SHEEP");
+}
+
+TEST(AgentSerializerTest, unserialize) {
+	std::unique_ptr<PreyPredAgent> agent_ptr;
+	json j_wolf = R"({"agent":{"role":"WOLF"},"type":0})"_json;
+
+	agent_ptr = j_wolf.get<std::unique_ptr<PreyPredAgent>>();
+	ASSERT_EQ(agent_ptr->getType(), WOLF);
+
+	json j_sheep = R"({"agent":{"role":"SHEEP"},"type":1})"_json;
+
+	agent_ptr = j_sheep.get<std::unique_ptr<PreyPredAgent>>();
+	ASSERT_EQ(agent_ptr->getType(), SHEEP);
+
 }
