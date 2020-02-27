@@ -5,16 +5,22 @@
 #include <vector>
 #include <array>
 
-enum DefaultLayer {
-	Default = 0
-};
-static const std::array<DefaultLayer, 1> DefaultLayers = { Default };
-
-
 namespace FPMAS::graph::base {
 	template<NODE_PARAMS> class Arc;
 	template<NODE_PARAMS> class Node;
 	template<NODE_PARAMS> class Graph;
+
+/*
+ *
+ *    template<LayerId... layers> class LayerTypesTemplate {
+ *    static constexpr std::array<LayerId, sizeof...(layers)> types = {layers...};
+ *    static_assert(std::max<int>(
+ *                std::initializer_list<int>({layers...}), [](const int& s1, const int& s2) {
+ *                                 return s1 < s2;
+ *                             }) <= sizeof...(layers),
+ *            "Compile time error : the maximum values of layers must be less than their count.");
+ *    };
+ */
 
 	/**
 	 * Class representing a Layer of a Graph.
@@ -28,7 +34,8 @@ namespace FPMAS::graph::base {
 	 * @tparam N number of layers
 	 */
 	template<NODE_PARAMS> class Layer {
-		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerType);
+
+		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerId);
 		// Allows removeNode function to remove deleted arcs
 		friend bool Graph<NODE_PARAMS_SPEC>::unlink(ARC*);
 

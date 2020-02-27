@@ -9,7 +9,7 @@ using FPMAS::graph::parallel::proxy::Proxy;
 
 
 namespace FPMAS::graph::parallel {
-	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	using parallel::DistributedGraph;
 }
@@ -47,19 +47,19 @@ namespace FPMAS::graph::parallel {
 				 * Defines the Zoltan configuration used manage and migrate
 				 * GhostNode s and GhostArc s.
 				 */
-				template <typename LayerType, int N> const static zoltan::utils::zoltan_query_functions config;
+				template <int N> const static zoltan::utils::zoltan_query_functions config;
 
 				/**
 				 * Termination function used at the end of each
 				 * DistributedGraph<T,S>::synchronize() call. In this mode,
 				 * ghost data is automatically updated from other procs.
 				 */
-				template<typename LayerType, int N> static void termination(DistributedGraph<T, GhostData, LayerType, N>* dg) {
+				template<int N> static void termination(DistributedGraph<T, GhostData, N>* dg) {
 					dg->getGhost().synchronize();
 				}
 
 		};
-		template<class T> template<typename LayerType, int N> const zoltan::utils::zoltan_query_functions GhostData<T>::config
+		template<class T> template<int N> const zoltan::utils::zoltan_query_functions GhostData<T>::config
 			(
 			 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, GhostData>,
 			 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, GhostData>,

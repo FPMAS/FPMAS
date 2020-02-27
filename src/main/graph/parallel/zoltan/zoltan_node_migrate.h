@@ -18,7 +18,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	using synchro::SyncData;
 	using synchro::None;
@@ -59,10 +59,10 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 
-			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
-			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, LayerType, N>*> nodes = graph->getNodes();
+			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
 			for (int i = 0; i < num_ids; i++) {
-				Node<std::unique_ptr<SyncData<T>>, LayerType, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+				Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 				if(graph->node_serialization_cache.count(node->getId()) == 1) {
 					sizes[i] = graph->node_serialization_cache.at(node->getId()).size()+1;
@@ -114,7 +114,7 @@ namespace FPMAS::graph::parallel {
 				char *buf,
 				int *ierr) {
 
-			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 			// The node should actually be serialized when computing
 			// the required buffer size. For efficiency purpose, we temporarily
 			// store the result and delete it when it is packed.
@@ -159,11 +159,11 @@ namespace FPMAS::graph::parallel {
 				char *buf,
 				int *ierr) {
 
-			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 			for (int i = 0; i < num_ids; i++) {
 				json json_node = json::parse(&buf[idx[i]]);
 
-				// Node<LocalData<T>, LayerType, N> node = json_node.get<Node<LocalData<T>, LayerType, N>>();
+				// Node<LocalData<T>, N> node = json_node.get<Node<LocalData<T>, N>>();
 
 				unsigned long id = json_node.at("id").get<unsigned long>();
 
@@ -225,14 +225,14 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 
-			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, LayerType, N>*> nodes = graph->getNodes();
+			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
 			// Set used to ensure that each arc is sent at most once to
 			// each process.
 			std::set<std::pair<unsigned long, int>> exportedArcPairs;
 
-			std::vector<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>*> arcsToExport;
+			std::vector<Arc<std::unique_ptr<SyncData<T>>, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			for (int i =0; i < num_export; i++) {
@@ -335,9 +335,9 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraph<T, None, LayerType, N>* graph =(DistributedGraph<T, None, LayerType, N>*) data;
+			DistributedGraph<T, None, N>* graph =(DistributedGraph<T, None, N>*) data;
 
-			std::vector<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>*> arcsToExport;
+			std::vector<Arc<std::unique_ptr<SyncData<T>>, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			std::unordered_map<unsigned long, int> nodeDestinations;

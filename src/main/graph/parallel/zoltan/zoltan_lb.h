@@ -13,7 +13,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	using synchro::SyncData;
 
@@ -37,7 +37,7 @@ namespace FPMAS::graph::parallel {
 		 * @return numbe of nodes managed by the current process
 		 */
 		template<NODE_PARAMS, SYNC_MODE> int num_obj(void *data, int* ierr) {
-			return ((DistributedGraph<T, S, LayerType, N>*) data)->getNodes().size();
+			return ((DistributedGraph<T, S, N>*) data)->getNodes().size();
 		}
 
 		/**
@@ -67,8 +67,8 @@ namespace FPMAS::graph::parallel {
 				int *ierr
 				) {
 			int i = 0;
-			for(auto n : ((DistributedGraph<T, S, LayerType, N>*) data)->getNodes()) {
-				Node<std::unique_ptr<SyncData<T>>, LayerType, N>* node = n.second;
+			for(auto n : ((DistributedGraph<T, S, N>*) data)->getNodes()) {
+				Node<std::unique_ptr<SyncData<T>>, N>* node = n.second;
 
 				utils::write_zoltan_id(node->getId(), &global_ids[i * num_gid_entries]);
 
@@ -101,10 +101,10 @@ namespace FPMAS::graph::parallel {
 				int *num_edges,
 				int *ierr
 				) {
-			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, LayerType, N>*> nodes
-				= ((DistributedGraph<T, S, LayerType, N>*) data)->getNodes();
+			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, N>*> nodes
+				= ((DistributedGraph<T, S, N>*) data)->getNodes();
 			for(int i = 0; i < num_obj; i++) {
-				Node<std::unique_ptr<SyncData<T>>, LayerType, N>* node = nodes.at(
+				Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[i * num_gid_entries])
 						);
 				num_edges[i] = node->getOutgoingArcs().size();
@@ -146,16 +146,16 @@ namespace FPMAS::graph::parallel {
 				float *ewgts,
 				int *ierr) {
 
-			DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
-			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, LayerType, N>*> nodes = graph->getNodes();
+			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
 
 			int neighbor_index = 0;
 			for (int i = 0; i < num_obj; ++i) {
-				Node<std::unique_ptr<SyncData<T>>, LayerType, N>* node = nodes.at(
+				Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[num_gid_entries * i])
 						);
 				for(int j = 0; j < node->getOutgoingArcs().size(); j++) {
-					Arc<std::unique_ptr<SyncData<T>>, LayerType, N>* arc = node->getOutgoingArcs().at(j);
+					Arc<std::unique_ptr<SyncData<T>>, N>* arc = node->getOutgoingArcs().at(j);
 					unsigned long targetId = arc->getTargetNode()->getId(); 
 					utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 

@@ -22,7 +22,7 @@ namespace FPMAS::graph::parallel::synchro {
 			 * Zoltan config associated to the None synchronization
 			 * mode.
 			 */
-			template<typename LayerType, int N> const static zoltan::utils::zoltan_query_functions config;
+			template<int N> const static zoltan::utils::zoltan_query_functions config;
 
 			/**
 			 * Unused constructor, defined for synchronization mode API
@@ -41,9 +41,9 @@ namespace FPMAS::graph::parallel::synchro {
 			 * DistributedGraph<T,S>::synchronize() call : does not do anything
 			 * in this mode.
 			 */
-			template<typename LayerType, int N> static void termination(DistributedGraph<T, None, LayerType, N>* dg) {}
+			template<int N> static void termination(DistributedGraph<T, None, N>* dg) {}
 	};
-	template<class T> template<typename LayerType, int N> const zoltan::utils::zoltan_query_functions None<T>::config
+	template<class T> template<int N> const zoltan::utils::zoltan_query_functions None<T>::config
 		(
 		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<NODE_PARAMS_SPEC>,
 		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<NODE_PARAMS_SPEC>,

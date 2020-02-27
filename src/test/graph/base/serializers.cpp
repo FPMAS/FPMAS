@@ -33,7 +33,7 @@ TEST(NodeSerializer, simple_node_deserialization) {
 		{"data":0,"id":85250,"weight":2.3}
 		)"_json;
 
-	Node<int, DefaultLayer, 1> node = node_json.get<Node<int, DefaultLayer, 1>>();
+	Node<int, 1> node = node_json.get<Node<int, 1>>();
 
 	ASSERT_EQ(node.data(), 0);
 	ASSERT_EQ(node.getId(), 85250ul);
@@ -62,13 +62,13 @@ enum TestLayer {
 };
 
 TEST(ArcSerializer, simple_arc_serializer) {
-	Graph<int, TestLayer, 2> g;
-	Node<int, TestLayer, 2>* n1 = g.buildNode(0ul, 0);
-	Node<int, TestLayer, 2>* n2 = g.buildNode(1ul, 1);
+	Graph<int, 2> g;
+	Node<int, 2>* n1 = g.buildNode(0ul, 0);
+	Node<int, 2>* n2 = g.buildNode(1ul, 1);
 	g.link(n1, n2, 0ul, TestLayer::Test);
 
-	const Node<int, TestLayer, 2>* n = g.getNode(0ul);
-	Arc<int, TestLayer, 2>* a = n->layer(TestLayer::Test).getOutgoingArcs()[0];
+	const Node<int, 2>* n = g.getNode(0ul);
+	Arc<int, 2>* a = n->layer(TestLayer::Test).getOutgoingArcs()[0];
 
 	json j = *a;
 
@@ -82,7 +82,7 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 		"link":[0,1]
 		})"_json;
 
-	Arc<int, TestLayer, 2> arc = j;
+	Arc<int, 2> arc = j;
 	ASSERT_EQ(arc.getId(), 2);
 	ASSERT_EQ(arc.layer, TestLayer::Test);
 	ASSERT_EQ(arc.getSourceNode()->getId(), 0);
@@ -95,7 +95,7 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 TEST(GraphSerializer, simple_graph_serialization) {
 
 	Graph<int> g;
-	Node<int, DefaultLayer, 1>* n = g.buildNode(0ul, 0);
+	Node<int, 1>* n = g.buildNode(0ul, 0);
 
 	json j = g;
 

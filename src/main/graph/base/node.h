@@ -15,6 +15,7 @@ namespace FPMAS::graph::base {
 	template<NODE_PARAMS> class Node;
 	template<NODE_PARAMS> class Graph;
 	template<NODE_PARAMS> class Arc;
+	template<NODE_PARAMS> class Layer;
 
 	/**
 	 * Graph node.
@@ -36,7 +37,7 @@ namespace FPMAS::graph::base {
 		friend NODE nlohmann::adl_serializer<NODE>::from_json(const json&);
 		friend ARC nlohmann::adl_serializer<ARC>::from_json(const json&);
 		// Grants access to incoming and outgoing arcs lists
-		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerType);
+		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerId);
 		// Grants access to private Node constructor
 		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long);
 		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T&& data);
@@ -76,7 +77,7 @@ namespace FPMAS::graph::base {
 		T _data;
 		float weight;
 		std::array<Layer<NODE_PARAMS_SPEC>, N> layers;
-		Layer<NODE_PARAMS_SPEC>& layer(LayerType layer);
+		Layer<NODE_PARAMS_SPEC>& layer(LayerId layer);
 
 		public:
 		/**
@@ -115,7 +116,7 @@ namespace FPMAS::graph::base {
 		 *
 		 * @return const reference to layer
 		 */
-		const Layer<NODE_PARAMS_SPEC>& layer(LayerType layer) const;
+		const Layer<NODE_PARAMS_SPEC>& layer(LayerId layer) const;
 
 		/**
 		 * Returns a const reference to the complete array of layers associated to
@@ -190,11 +191,11 @@ namespace FPMAS::graph::base {
 		this->weight = weight;
 	}
 
-	template<NODE_PARAMS> Layer<NODE_PARAMS_SPEC>& Node<NODE_PARAMS_SPEC>::layer(LayerType layer) {
+	template<NODE_PARAMS> Layer<NODE_PARAMS_SPEC>& Node<NODE_PARAMS_SPEC>::layer(LayerId layer) {
 		return this->layers[layer];
 	}
 
-	template<NODE_PARAMS> const Layer<NODE_PARAMS_SPEC>& Node<NODE_PARAMS_SPEC>::layer(LayerType layer) const {
+	template<NODE_PARAMS> const Layer<NODE_PARAMS_SPEC>& Node<NODE_PARAMS_SPEC>::layer(LayerId layer) const {
 		return this->layers[layer];
 	}
 

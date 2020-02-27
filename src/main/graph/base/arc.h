@@ -25,12 +25,12 @@ namespace FPMAS::graph::base {
 		// Grants access to the Arc constructor
 		friend NODE;
 		friend Layer<NODE_PARAMS_SPEC>;
-		friend Arc<NODE_PARAMS_SPEC>* Graph<NODE_PARAMS_SPEC>::link(NODE*, NODE*, unsigned long, LayerType);
+		friend Arc<NODE_PARAMS_SPEC>* Graph<NODE_PARAMS_SPEC>::link(NODE*, NODE*, unsigned long, LayerId);
 		friend Arc<NODE_PARAMS_SPEC> nlohmann::adl_serializer<Arc<NODE_PARAMS_SPEC>>::from_json(const json&);
 
 		protected:
 		Arc(unsigned long, NODE*, NODE*);
-		Arc(unsigned long, NODE*, NODE*, LayerType layer);
+		Arc(unsigned long, NODE*, NODE*, LayerId layer);
 		/**
 		 * Pointer to source Node.
 		 */
@@ -44,7 +44,7 @@ namespace FPMAS::graph::base {
 		/**
 		 * Layer of this arc.
 		 */
-		const LayerType layer;
+		const LayerId layer;
 
 		NODE* getSourceNode() const;
 		NODE* getTargetNode() const;
@@ -59,7 +59,7 @@ namespace FPMAS::graph::base {
 	 * @param targetNode pointer to the target Node
 	 * @param layer arc layer
 	 */
-	template<NODE_PARAMS> Arc<NODE_PARAMS_SPEC>::Arc(unsigned long id, NODE* sourceNode, NODE* targetNode, LayerType layer)
+	template<NODE_PARAMS> Arc<NODE_PARAMS_SPEC>::Arc(unsigned long id, NODE* sourceNode, NODE* targetNode, LayerId layer)
 		: GraphItem(id), sourceNode(sourceNode), targetNode(targetNode), layer(layer) {
 			this->sourceNode->layer(layer).outgoingArcs.push_back(this);
 			this->targetNode->layer(layer).incomingArcs.push_back(this);
@@ -73,7 +73,7 @@ namespace FPMAS::graph::base {
 	 * @param sourceNode pointer to the source Node
 	 * @param targetNode pointer to the target Node
 	 */
-	template<NODE_PARAMS> Arc<NODE_PARAMS_SPEC>::Arc(unsigned long id, NODE* sourceNode, NODE* targetNode) : Arc(id, sourceNode, targetNode, LayerType(0)) {
+	template<NODE_PARAMS> Arc<NODE_PARAMS_SPEC>::Arc(unsigned long id, NODE* sourceNode, NODE* targetNode) : Arc(id, sourceNode, targetNode, DefaultLayer) {
 
 	}
 	/**

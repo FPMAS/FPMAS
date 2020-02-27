@@ -4,6 +4,7 @@
 
 #include "graph/parallel/synchro/hard_sync_data.h"
 
+using FPMAS::graph::base::DefaultLayer;
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::synchro::HardSyncData;
 
@@ -35,14 +36,14 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		dg.getProxy().setOrigin(1ul, 0);
 		dg.getProxy().setCurrentLocation(1ul, 1);
 		dg.getGhost().buildNode(1ul);
-		dg.getGhost().link(dg.getNodes().at(0ul), dg.getGhost().getNodes().at(1ul), 0ul, DefaultLayer::Default);
+		dg.getGhost().link(dg.getNodes().at(0ul), dg.getGhost().getNodes().at(1ul), 0ul, DefaultLayer);
 	}
 	else if(dg.getMpiCommunicator().getRank() == 1) {
 		dg.buildNode(1ul, 1);
 		dg.getProxy().setOrigin(0ul, 0);
 		dg.getProxy().setCurrentLocation(0ul, 0);
 		dg.getGhost().buildNode(0ul);
-		dg.getGhost().link(dg.getGhost().getNodes().at(0ul), dg.getNodes().at(1ul), 0ul, DefaultLayer::Default);
+		dg.getGhost().link(dg.getGhost().getNodes().at(0ul), dg.getNodes().at(1ul), 0ul, DefaultLayer);
 	}
 
 	dg.distribute({

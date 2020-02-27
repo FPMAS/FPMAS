@@ -39,16 +39,16 @@ namespace FPMAS::graph::parallel::synchro {
 			 * Defines the Zoltan configuration used manage and migrate
 			 * GhostNode s and GhostArc s.
 			 */
-			template<typename LayerType, int N> const static zoltan::utils::zoltan_query_functions config;
+			template<int N> const static zoltan::utils::zoltan_query_functions config;
 
 			/**
 			 * Termination function used at the end of each
 			 * DistributedGraph<T,S>::synchronize() call : does not do anything
 			 * in this mode.
 			 */
-			template<typename LayerType, int N> static void termination(DistributedGraph<T, HardSyncData, LayerType, N>* dg) {}
+			template<int N> static void termination(DistributedGraph<T, HardSyncData, N>* dg) {}
 	};
-	template<class T> template<typename LayerType, int N> const zoltan::utils::zoltan_query_functions HardSyncData<T>::config
+	template<class T> template<int N> const zoltan::utils::zoltan_query_functions HardSyncData<T>::config
 		(
 		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, HardSyncData>,
 		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, HardSyncData>,

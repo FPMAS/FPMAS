@@ -19,12 +19,12 @@ using FPMAS::test_utils::assert_contains;
 
 class SampleMultiGraphTest : public ::testing::Test {
 	private:
-		Graph<int, TestLayer, 3> sampleMultiGraph;
+		Graph<int, 3> sampleMultiGraph;
 	protected:
-		const Graph<int, TestLayer, 3>& getConstMultiGraph() const {
+		const Graph<int, 3>& getConstMultiGraph() const {
 			return sampleMultiGraph;
 		}
-		Graph<int, TestLayer, 3>& getMultiGraph() {
+		Graph<int, 3>& getMultiGraph() {
 			return sampleMultiGraph;
 		}
 
@@ -56,9 +56,9 @@ class SampleMultiGraphTest : public ::testing::Test {
 			sampleMultiGraph.link(node4, node2, 6, LAYER_2);
 		}
 
-		static void testSampleGraphStructure(const Graph<int, TestLayer, 3>& sampleMultiGraph) {
+		static void testSampleGraphStructure(const Graph<int, 3>& sampleMultiGraph) {
 			// NODE 1
-			const Node<int, TestLayer, 3>* node1 = sampleMultiGraph.getNode(1ul);
+			const Node<int, 3>* node1 = sampleMultiGraph.getNode(1ul);
 			ASSERT_EQ(node1->layer(LAYER_0).getIncomingArcs(), node1->getIncomingArcs());
 			ASSERT_EQ(node1->layer(LAYER_0).getOutgoingArcs(), node1->getOutgoingArcs());
 
@@ -75,15 +75,15 @@ class SampleMultiGraphTest : public ::testing::Test {
 			ASSERT_EQ(node1->layer(LAYER_2).getOutgoingArcs().at(0)->getTargetNode()->getId(), 4);
 
 			// NODE 3
-			const Node<int, TestLayer, 3>* node3 = sampleMultiGraph.getNode(3ul);
+			const Node<int, 3>* node3 = sampleMultiGraph.getNode(3ul);
 			ASSERT_EQ(node3->getIncomingArcs().size(), 2);
-			assert_contains<Arc<int, TestLayer, 3>*, 2>(
+			assert_contains<Arc<int, 3>*, 2>(
 					node3->getIncomingArcs().data(),
-					const_cast<Arc<int, TestLayer, 3>*>(sampleMultiGraph.getArc(0))
+					const_cast<Arc<int, 3>*>(sampleMultiGraph.getArc(0))
 					);
-			assert_contains<Arc<int, TestLayer, 3>*, 2>(
+			assert_contains<Arc<int, 3>*, 2>(
 					node3->getIncomingArcs().data(),
-					const_cast<Arc<int, TestLayer, 3>*>(sampleMultiGraph.getArc(2))
+					const_cast<Arc<int, 3>*>(sampleMultiGraph.getArc(2))
 					);
 			ASSERT_EQ(node3->getOutgoingArcs().size(), 1);
 			ASSERT_EQ(node3->getOutgoingArcs().at(0)->getTargetNode()->getId(), 1);
@@ -94,7 +94,7 @@ class SampleMultiGraphTest : public ::testing::Test {
 			ASSERT_EQ(node3->layer(LAYER_1).getOutgoingArcs().at(0)->getTargetNode()->getId(), 4);
 
 			// NODE 4
-			const Node<int, TestLayer, 3>* node4 = sampleMultiGraph.getNode(4ul);
+			const Node<int, 3>* node4 = sampleMultiGraph.getNode(4ul);
 			ASSERT_EQ(node4->layer(LAYER_2).getOutgoingArcs().size(), 1);
 			ASSERT_EQ(node4->layer(LAYER_2).getOutgoingArcs().at(0)->getTargetNode()->getId(), 2);
 			ASSERT_EQ(node4->layer(LAYER_2).getIncomingArcs().size(), 1);

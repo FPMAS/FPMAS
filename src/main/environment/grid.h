@@ -11,13 +11,13 @@ using FPMAS::agent::Agent;
 
 namespace FPMAS::environment {
 	enum GridLayer {
-		GRID = 0,
-		DEFAULT = 1
+		DEFAULT = 0,
+		GRID = 1
 	};
 
-	template<SYNC_MODE, typename LayerType, int N, typename... AgentTypes>
+	template<SYNC_MODE, int N, typename... AgentTypes>
 	class Environment
-	: public DistributedGraph<std::unique_ptr<Agent<AgentTypes...>>, S, LayerType, N> {
+	: public DistributedGraph<std::unique_ptr<Agent<AgentTypes...>>, S, N> {
 		public:
 			void step();
 
@@ -31,13 +31,13 @@ namespace FPMAS::environment {
 		};
 
 		// T = agent
-		template<SYNC_MODE = GhostData, typename LayerType = GridLayer, int N = 2> class Grid : public Environment<S, LayerType, N, Cell> {
+		template<SYNC_MODE = GhostData, int N = 1> class Grid : public Environment<S, N+1, Cell> {
 			public:
 				Grid(int width, int height);
 
 		};
 
-		template<SYNC_MODE, typename LayerType, int N> Grid<S, LayerType, N>::Grid(int width, int height) {
+		template<SYNC_MODE, int N> Grid<S, N>::Grid(int width, int height) {
 			int id=0;
 			for(int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {

@@ -4,8 +4,9 @@
 #include<string>
 #include<unordered_map>
 
-#include "communication/communication.h"
 #include "utils/config.h"
+
+#include "communication/communication.h"
 
 #include "olz.h"
 #include "../base/node.h"
@@ -13,12 +14,13 @@
 #include "zoltan/zoltan_ghost_node_migrate.h"
 
 using FPMAS::communication::MpiCommunicator;
+using FPMAS::graph::base::LayerId;
 using FPMAS::graph::base::FossilArcs;
 using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	template<NODE_PARAMS, SYNC_MODE> class GhostNode;
 	template<NODE_PARAMS, SYNC_MODE> class GhostArc;
@@ -44,7 +46,7 @@ namespace FPMAS::graph::parallel {
 				void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 				);
 		private:
-		DistributedGraph<T, S, LayerType, N>* localGraph;
+		DistributedGraph<T, S, N>* localGraph;
 		MpiCommunicator mpiCommunicator;
 		Zoltan zoltan;
 
@@ -56,16 +58,16 @@ namespace FPMAS::graph::parallel {
 
 		public:
 
-		GhostGraph(DistributedGraph<T, S, LayerType, N>*);
-		GhostGraph(DistributedGraph<T, S, LayerType, N>*, std::initializer_list<int>);
+		GhostGraph(DistributedGraph<T, S, N>*);
+		GhostGraph(DistributedGraph<T, S, N>*, std::initializer_list<int>);
 
 		void synchronize();
 
 		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(unsigned long);
-		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(const Node<std::unique_ptr<SyncData<T>>, LayerType, N>& node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
+		GhostNode<NODE_PARAMS_SPEC, S>* buildNode(const Node<std::unique_ptr<SyncData<T>>, N>& node, std::set<unsigned long> ignoreIds = std::set<unsigned long>());
 
-		void link(GhostNode<NODE_PARAMS_SPEC, S>*, Node<std::unique_ptr<SyncData<T>>, LayerType, N>*, unsigned long, LayerType);
-		void link(Node<std::unique_ptr<SyncData<T>>, LayerType, N>*, GhostNode<NODE_PARAMS_SPEC, S>*, unsigned long, LayerType);
+		void link(GhostNode<NODE_PARAMS_SPEC, S>*, Node<std::unique_ptr<SyncData<T>>, N>*, unsigned long, LayerId);
+		void link(Node<std::unique_ptr<SyncData<T>>, N>*, GhostNode<NODE_PARAMS_SPEC, S>*, unsigned long, LayerId);
 
 		void removeNode(unsigned long);
 
@@ -74,7 +76,7 @@ namespace FPMAS::graph::parallel {
 		std::unordered_map<unsigned long, GhostArc<NODE_PARAMS_SPEC, S>*> getArcs();
 		const GhostArc<NODE_PARAMS_SPEC, S>* getArc(unsigned long) const;
 
-		void clear(FossilArcs<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>>);
+		void clear(FossilArcs<Arc<std::unique_ptr<SyncData<T>>, N>>);
 
 		~GhostGraph();
 
@@ -101,7 +103,7 @@ namespace FPMAS::graph::parallel {
 	 * @param localGraph pointer to the origin DistributedGraph
 	 */
 	template<NODE_PARAMS, SYNC_MODE> GhostGraph<NODE_PARAMS_SPEC, S>::GhostGraph(
-			DistributedGraph<T, S, LayerType, N>* localGraph
+			DistributedGraph<T, S, N>* localGraph
 			) : localGraph(localGraph), zoltan(mpiCommunicator.getMpiComm()) {
 		this->initialize();
 	}
@@ -119,7 +121,7 @@ namespace FPMAS::graph::parallel {
 	 * built
 	 */
 	template<NODE_PARAMS, SYNC_MODE> GhostGraph<NODE_PARAMS_SPEC, S>::GhostGraph(
-			DistributedGraph<T, S, LayerType, N>* localGraph, std::initializer_list<int> ranks
+			DistributedGraph<T, S, N>* localGraph, std::initializer_list<int> ranks
 			) : localGraph(localGraph), mpiCommunicator(ranks), zoltan(mpiCommunicator.getMpiComm()) {
 		this->initialize();
 	}
@@ -204,7 +206,7 @@ namespace FPMAS::graph::parallel {
 	 * @param ignoreIds ids of nodes to ignore when building links
 	 */
 	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>
-		::buildNode(const Node<std::unique_ptr<SyncData<T>>, LayerType, N>& node, std::set<unsigned long> ignoreIds) {
+		::buildNode(const Node<std::unique_ptr<SyncData<T>>, N>& node, std::set<unsigned long> ignoreIds) {
 		// Builds the gNode from the original node data
 		GhostNode<NODE_PARAMS_SPEC, S>* gNode = new GhostNode<NODE_PARAMS_SPEC, S>(
 				this->localGraph->getMpiCommunicator(),
@@ -252,9 +254,9 @@ namespace FPMAS::graph::parallel {
 	 */ 
 	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::link(
 			GhostNode<NODE_PARAMS_SPEC, S>* source,
-			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* target,
+			Node<std::unique_ptr<SyncData<T>>, N>* target,
 			unsigned long arc_id,
-			LayerType layer
+			LayerId layer
 			) {
 		this->ghostArcs[arc_id] =
 			new GhostArc<NODE_PARAMS_SPEC, S>(arc_id, source, target, layer);
@@ -264,10 +266,10 @@ namespace FPMAS::graph::parallel {
 	 * Links the specified nodes with a GhostArc.
 	 */ 
 	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::link(
-			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* source,
+			Node<std::unique_ptr<SyncData<T>>, N>* source,
 			GhostNode<NODE_PARAMS_SPEC, S>* target,
 			unsigned long arc_id,
-			LayerType layer
+			LayerId layer
 			) {
 		this->ghostArcs[arc_id] =
 			new GhostArc<NODE_PARAMS_SPEC, S>(arc_id, source, target, layer);
@@ -281,7 +283,7 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::removeNode(unsigned long nodeId) {
 		GhostNode<NODE_PARAMS_SPEC, S>* nodeToRemove = this->ghostNodes.at(nodeId);
-		FossilArcs<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>> fossil;
+		FossilArcs<Arc<std::unique_ptr<SyncData<T>>, N>> fossil;
 		// Deletes incoming arcs
 		for(auto arc : nodeToRemove->getIncomingArcs()) {
 			if(!localGraph->unlink(arc))
@@ -349,7 +351,7 @@ namespace FPMAS::graph::parallel {
 	 * @param fossil resulting FossilArcs from removeNode operations performed
 	 * on the graph, typically when nodes are exported
 	 */
-	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::clear(FossilArcs<Arc<std::unique_ptr<SyncData<T>>, LayerType, N>> fossil) {
+	template<NODE_PARAMS, SYNC_MODE> void GhostGraph<NODE_PARAMS_SPEC, S>::clear(FossilArcs<Arc<std::unique_ptr<SyncData<T>>, N>> fossil) {
 		for(auto arc : fossil.incomingArcs) {
 			// Source node should be a ghost
 			GhostNode<NODE_PARAMS_SPEC, S>* ghost = (GhostNode<NODE_PARAMS_SPEC, S>*) arc->getSourceNode();

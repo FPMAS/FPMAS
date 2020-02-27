@@ -67,8 +67,7 @@ namespace FPMAS {
 			 * @tparam N number of layers
 			 */
 			template<
-				class T,
-				typename LayerType = DefaultLayer,
+				typename T,
 				int N = 1
 				>
 			class Graph {
@@ -92,9 +91,9 @@ namespace FPMAS {
 					NODE* buildNode(unsigned long id, float weight, T&& data);
 
 					ARC* link(NODE*, NODE*, unsigned long);
-					ARC* link(NODE*, NODE*, unsigned long, LayerType);
+					ARC* link(NODE*, NODE*, unsigned long, LayerId);
 					ARC* link(unsigned long, unsigned long, unsigned long);
-					ARC* link(unsigned long, unsigned long, unsigned long, LayerType);
+					ARC* link(unsigned long, unsigned long, unsigned long, LayerId);
 
 					bool unlink(unsigned long);
 					bool unlink(ARC*);
@@ -217,7 +216,7 @@ namespace FPMAS {
 			 * @param layer layer on which the arc should be built
 			 * @return pointer to built arc
 			 */
-			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(NODE *source, NODE *target, unsigned long arc_id, LayerType layer) {
+			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(NODE *source, NODE *target, unsigned long arc_id, LayerId layer) {
 				ARC* arc = new ARC(arc_id, source, target, layer);
 				this->arcs[arc_id] = arc;
 				return arc;
@@ -233,7 +232,7 @@ namespace FPMAS {
 			 * @return pointer to built arc
 			 */
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(NODE *source, NODE *target, unsigned long arc_id){
-				return link(source, target, arc_id, LayerType(0));
+				return link(source, target, arc_id, DefaultLayer);
 			}
 
 			/**
@@ -246,7 +245,7 @@ namespace FPMAS {
 			 * @param layer layer on which the arc should be built
 			 * @return built arc
 			 */
-			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id, LayerType layer) {
+			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id, LayerId layer) {
 				return link(this->getNode(source_id), this->getNode(target_id), arc_id, layer);
 			}
 
@@ -260,7 +259,7 @@ namespace FPMAS {
 			 * @return built arc
 			 */
 			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {
-				return link(source_id, target_id, arc_id, LayerType(0));
+				return link(source_id, target_id, arc_id, DefaultLayer);
 			}
 
 			/*

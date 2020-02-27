@@ -147,18 +147,18 @@ TEST_F(Mpi_DistributeCompleteGraphWithGhostTest, distribute_graph_with_multiple_
 		ASSERT_EQ(ghostNode.second->getOutgoingArcs().size(), 2);
 		ASSERT_EQ(ghostNode.second->getIncomingArcs().size(), 2);
 
-		Node<std::unique_ptr<SyncData<int>>, DefaultLayer, 1>* outNodes[2] = {
+		Node<std::unique_ptr<SyncData<int>>, 1>* outNodes[2] = {
 			ghostNode.second->getOutgoingArcs().at(0)->getTargetNode(),
 			ghostNode.second->getOutgoingArcs().at(1)->getTargetNode()
 		};
-		Node<std::unique_ptr<SyncData<int>>, DefaultLayer, 1>* inNodes[2] = {
+		Node<std::unique_ptr<SyncData<int>>, 1>* inNodes[2] = {
 			ghostNode.second->getIncomingArcs().at(0)->getSourceNode(),
 			ghostNode.second->getIncomingArcs().at(1)->getSourceNode()
 		};
 
 		for(auto node : dg.getNodes()) {
-			FPMAS::test_utils::assert_contains<Node<std::unique_ptr<SyncData<int>>, DefaultLayer, 1>*, 2>(outNodes, node.second);
-			FPMAS::test_utils::assert_contains<Node<std::unique_ptr<SyncData<int>>, DefaultLayer, 1>*, 2>(inNodes, node.second);
+			FPMAS::test_utils::assert_contains<Node<std::unique_ptr<SyncData<int>>, 1>*, 2>(outNodes, node.second);
+			FPMAS::test_utils::assert_contains<Node<std::unique_ptr<SyncData<int>>, 1>*, 2>(inNodes, node.second);
 		}
 
 	}

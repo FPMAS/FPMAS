@@ -11,6 +11,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
+	using base::LayerId;
 	using synchro::SyncData;
 	using synchro::GhostData;
 
@@ -26,20 +27,20 @@ namespace FPMAS::graph::parallel {
 	 * difference can be made between nodes really living locally and ghost
 	 * nodes.
 	 */
-	template <NODE_PARAMS, SYNC_MODE> class GhostNode : public Node<std::unique_ptr<SyncData<T>>, LayerType, N> {
+	template <NODE_PARAMS, SYNC_MODE> class GhostNode : public Node<std::unique_ptr<SyncData<T>>, N> {
 		friend GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>
 			::buildNode(unsigned long);
 		friend GhostNode<NODE_PARAMS_SPEC, S>* GhostGraph<NODE_PARAMS_SPEC, S>
-			::buildNode(const Node<std::unique_ptr<SyncData<T>>, LayerType, N>&, std::set<unsigned long>);
+			::buildNode(const Node<std::unique_ptr<SyncData<T>>, N>&, std::set<unsigned long>);
 
 		private:
 		GhostNode(SyncMpiCommunicator&, Proxy&, unsigned long);
-		GhostNode(SyncMpiCommunicator&, Proxy&, const Node<std::unique_ptr<SyncData<T>>, LayerType, N>&);
+		GhostNode(SyncMpiCommunicator&, Proxy&, const Node<std::unique_ptr<SyncData<T>>, N>&);
 	};
 
 	template<NODE_PARAMS, SYNC_MODE> GhostNode<NODE_PARAMS_SPEC, S>
 		::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, unsigned long id)
-		: Node<std::unique_ptr<SyncData<T>>, LayerType, N>(
+		: Node<std::unique_ptr<SyncData<T>>, N>(
 				id,
 				1.,
 				std::unique_ptr<SyncData<T>>(
@@ -56,9 +57,9 @@ namespace FPMAS::graph::parallel {
 		::GhostNode(
 			SyncMpiCommunicator& mpiComm,
 			Proxy& proxy,
-			const Node<std::unique_ptr<SyncData<T>>, LayerType, N>& node
+			const Node<std::unique_ptr<SyncData<T>>, N>& node
 			)
-		: Node<std::unique_ptr<SyncData<T>>, LayerType, N>(
+		: Node<std::unique_ptr<SyncData<T>>, N>(
 			node.getId(),
 			node.getWeight(),
 			std::unique_ptr<SyncData<T>>(new S<T>(
@@ -76,29 +77,29 @@ namespace FPMAS::graph::parallel {
 	 * between local arcs and ghost arcs.
 	 *
 	 */
-	template<NODE_PARAMS, SYNC_MODE> class GhostArc : public Arc<std::unique_ptr<SyncData<T>>, LayerType, N> {
+	template<NODE_PARAMS, SYNC_MODE> class GhostArc : public Arc<std::unique_ptr<SyncData<T>>, N> {
 		friend void GhostGraph<NODE_PARAMS_SPEC, S>::link(
 				GhostNode<NODE_PARAMS_SPEC, S>*,
-				Node<std::unique_ptr<SyncData<T>>, LayerType, N>*,
+				Node<std::unique_ptr<SyncData<T>>, N>*,
 				unsigned long,
-				LayerType);
+				LayerId);
 		friend void GhostGraph<NODE_PARAMS_SPEC, S>::link(
-				Node<std::unique_ptr<SyncData<T>>, LayerType, N>*,
+				Node<std::unique_ptr<SyncData<T>>, N>*,
 				GhostNode<NODE_PARAMS_SPEC, S>*,
 				unsigned long,
-				LayerType);
+				LayerId);
 
 		private:
 		GhostArc(
 			unsigned long,
 			GhostNode<NODE_PARAMS_SPEC, S>*,
-			Node<std::unique_ptr<SyncData<T>>, LayerType, N>*,
-			LayerType);
+			Node<std::unique_ptr<SyncData<T>>, N>*,
+			LayerId);
 		GhostArc(
 			unsigned long,
-			Node<std::unique_ptr<SyncData<T>>, LayerType, N>*,
+			Node<std::unique_ptr<SyncData<T>>, N>*,
 			GhostNode<NODE_PARAMS_SPEC, S>*,
-			LayerType);
+			LayerId);
 
 	};
 
@@ -114,10 +115,10 @@ namespace FPMAS::graph::parallel {
 	template<NODE_PARAMS, SYNC_MODE> GhostArc<NODE_PARAMS_SPEC, S>::GhostArc(
 			unsigned long arc_id,
 			GhostNode<NODE_PARAMS_SPEC, S>* source,
-			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* target,
-			LayerType layer
+			Node<std::unique_ptr<SyncData<T>>, N>* target,
+			LayerId layer
 			)
-		: Arc<std::unique_ptr<SyncData<T>>, LayerType, N>(arc_id, source, target, layer) { };
+		: Arc<std::unique_ptr<SyncData<T>>, N>(arc_id, source, target, layer) { };
 
 	/**
 	 * Builds a GhostArc linking the specified nodes. Notice that the
@@ -130,11 +131,11 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<NODE_PARAMS, SYNC_MODE> GhostArc<NODE_PARAMS_SPEC, S>::GhostArc(
 			unsigned long arc_id,
-			Node<std::unique_ptr<SyncData<T>>, LayerType, N>* source,
+			Node<std::unique_ptr<SyncData<T>>, N>* source,
 			GhostNode<NODE_PARAMS_SPEC, S>* target,
-			LayerType layer
+			LayerId layer
 			)
-		: Arc<std::unique_ptr<SyncData<T>>, LayerType, N>(arc_id, source, target, layer) { };
+		: Arc<std::unique_ptr<SyncData<T>>, N>(arc_id, source, target, layer) { };
 
 }
 

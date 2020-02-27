@@ -12,7 +12,7 @@ using FPMAS::graph::base::Node;
 
 namespace FPMAS::graph::parallel {
 
-	template<class T, SYNC_MODE, typename LayerType, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 	template<NODE_PARAMS, SYNC_MODE> class GhostNode;
 
 	using synchro::SyncData;
@@ -53,10 +53,10 @@ namespace FPMAS::graph::parallel {
 					int *ierr) {
 
 
-				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
-				std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, LayerType, N>*> nodes = graph->getNodes();
+				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+				std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
 				for (int i = 0; i < num_ids; i++) {
-					Node<std::unique_ptr<SyncData<T>>, LayerType, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+					Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 					if(graph->getGhost().ghost_node_serialization_cache.count(node->getId()) == 1) {
 						sizes[i] = graph->getGhost().ghost_node_serialization_cache.at(node->getId()).size()+1;
@@ -105,7 +105,7 @@ namespace FPMAS::graph::parallel {
 					char *buf,
 					int *ierr) {
 
-				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
@@ -152,13 +152,13 @@ namespace FPMAS::graph::parallel {
 					char *buf,
 					int *ierr) {
 
-				DistributedGraph<T, S, LayerType, N>* graph = (DistributedGraph<T, S, LayerType, N>*) data;
+				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 				for (int i = 0; i < num_ids; ++i) {
 					int node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 					json json_node = json::parse(&buf[idx[i]]);
 
 					GhostNode<NODE_PARAMS_SPEC, S>* ghost = graph->getGhost().getNodes().at(node_id);
-					Node<LocalData<T>, LayerType, N> node_update = json_node.get<Node<LocalData<T>, LayerType, N>>();
+					Node<LocalData<T>, N> node_update = json_node.get<Node<LocalData<T>, N>>();
 
 					ghost->data() // std::unique_ptr
 						-> // ptr to SyncData<T>

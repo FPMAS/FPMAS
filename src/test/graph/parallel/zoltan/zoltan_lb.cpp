@@ -58,7 +58,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_zoltan_global_ids() {
-			obj_list<int, DefaultLayer, 1, GhostData>(
+			obj_list<int, 1, GhostData>(
 					&dg,
 					2,
 					0,
@@ -78,7 +78,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_zoltan_num_edges() {
-			num_edges_multi_fn<int, DefaultLayer, 1, GhostData>(
+			num_edges_multi_fn<int, 1, GhostData>(
 					&dg,
 					2,
 					0,
@@ -129,7 +129,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, edge_list_multi_test) {
 	int nbor_procs[3];
 	float ewgts[3];
 
-	edge_list_multi_fn<int, DefaultLayer, 1, GhostData>(
+	edge_list_multi_fn<int, 1, GhostData>(
 			&dg,
 			2,
 			0,

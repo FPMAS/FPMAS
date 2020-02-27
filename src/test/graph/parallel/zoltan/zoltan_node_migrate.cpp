@@ -50,7 +50,7 @@ class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 			write_zoltan_id(0, &transfer_global_ids[0]);
 			write_zoltan_id(85250, &transfer_global_ids[2]);
 
-			obj_size_multi_fn<int, DefaultLayer, 1, GhostData>(
+			obj_size_multi_fn<int, 1, GhostData>(
 					&dg,
 					2,
 					0,
@@ -70,7 +70,7 @@ class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 			// Unused
 			int dest[2];
 
-			pack_obj_multi_fn<int, DefaultLayer, 1, GhostData>(
+			pack_obj_multi_fn<int, 1, GhostData>(
 					&dg,
 					2,
 					0,
@@ -129,7 +129,7 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	write_communication_buffer();
 
 	DistributedGraph<int> g = DistributedGraph<int>();
-	unpack_obj_multi_fn<int, DefaultLayer, 1, GhostData>(
+	unpack_obj_multi_fn<int, 1, GhostData>(
 		&g,
 		2,
 		2,
@@ -142,13 +142,13 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	ASSERT_EQ(g.getNodes().size(), 2);
 
 	ASSERT_EQ(g.getNodes().count(0), 1);
-	FPMAS::graph::base::Node<std::unique_ptr<SyncData<int>>, DefaultLayer, 1>* node0 = g.getNodes().at(0);
+	FPMAS::graph::base::Node<std::unique_ptr<SyncData<int>>, 1>* node0 = g.getNodes().at(0);
 	ASSERT_EQ(node0->getId(), 0);
 	ASSERT_EQ(node0->data()->get(), 0);
 	ASSERT_EQ(node0->getWeight(), 1.f);
 
 	ASSERT_EQ(g.getNodes().count(85250ul), 1);
-	FPMAS::graph::base::Node<std::unique_ptr<SyncData<int>>, DefaultLayer, 1>* node1 = g.getNodes().at(85250);
+	FPMAS::graph::base::Node<std::unique_ptr<SyncData<int>>, 1>* node1 = g.getNodes().at(85250);
 	ASSERT_EQ(node1->getId(), 85250ul);
 	ASSERT_EQ(node1->data()->get(), 2);
 	ASSERT_EQ(node1->getWeight(), 3.f);
