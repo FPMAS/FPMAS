@@ -5,15 +5,38 @@ namespace FPMAS::graph::base {
 	/**
 	 * A labelled object, super class for Nodes and Arcs.
 	 */
-	class GraphItem {
+	template<typename id_t> class GraphItem {
 		private:
-			unsigned long id;
+			id_t id;
 		protected:
 			GraphItem();
-			GraphItem(unsigned long);
+			GraphItem(id_t);
 		public:
-			unsigned long getId() const;
+			id_t getId() const;
 	};
+	/**
+	 * Default GraphItem constructor.
+	 */
+	template<typename id_t> GraphItem<id_t>::GraphItem() {
+	}
+
+	/**
+	 * GraphItem constructor.
+	 *
+	 * @param id graph item id
+	 */
+	template<typename id_t> GraphItem<id_t>::GraphItem(id_t id) : id(id) {
+
+	}
+
+	/**
+	 * Returns the id of this graph item.
+	 *
+	 * @return id of this item
+	 */
+	template<typename id_t> id_t GraphItem<id_t>::getId() const {
+		return this->id;
+	}
 }
 
 #endif

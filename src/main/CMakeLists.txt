@@ -28,11 +28,6 @@ set(SOURCES
 # Graph
 set(SOURCES
 	${SOURCES}
-	graph/base/graph_item.cpp
-	)
-
-set(SOURCES
-	${SOURCES}
 	graph/parallel/zoltan/zoltan_utils.cpp
 	)
 

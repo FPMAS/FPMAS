@@ -4,12 +4,14 @@
 #include <unordered_map>
 #include <set>
 
+#include "utils/macros.h"
 #include "zoltan_cpp.h"
 #include "communication/communication.h"
 
 using FPMAS::communication::MpiCommunicator;
 
 namespace FPMAS::graph::parallel {
+	using base::NodeId;
 	/**
 	 * Namespace containing classes and functions to manage proxies.
 	 */
@@ -80,24 +82,24 @@ namespace FPMAS::graph::parallel {
 			MpiCommunicator mpiCommunicator;
 			Zoltan zoltan;
 			const int localProc;
-			std::unordered_map<unsigned long, int> origins;
-			std::unordered_map<unsigned long, int> currentLocations;
+			std::unordered_map<NodeId, int> origins;
+			std::unordered_map<NodeId, int> currentLocations;
 
-			std::unordered_map<unsigned long, std::string> proxyUpdatesSerializationCache;
+			std::unordered_map<NodeId, std::string> proxyUpdatesSerializationCache;
 
 			// Contains the current key that should be updated at the
 			// next synchronize() call
-			std::set<unsigned long> updates;
+			std::set<NodeId> updates;
 
 			public:
 			Proxy(int localProc);
 			Proxy(int localProc, std::initializer_list<int>);
 			int getLocalProc() const;
-			void setOrigin(unsigned long, int);
-			void setCurrentLocation(unsigned long, int);
-			int getOrigin(unsigned long) const;
-			int getCurrentLocation(unsigned long) const;
-			void setLocal(unsigned long, bool upToDate=false);
+			void setOrigin(NodeId, int);
+			void setCurrentLocation(NodeId, int);
+			int getOrigin(NodeId) const;
+			int getCurrentLocation(NodeId) const;
+			void setLocal(NodeId, bool upToDate=false);
 
 			void synchronize();
 

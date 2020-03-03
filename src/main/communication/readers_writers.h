@@ -5,6 +5,9 @@
 #include <vector>
 #include <unordered_map>
 #include <queue>
+#include "utils/macros.h"
+
+using FPMAS::graph::base::NodeId;
 
 namespace FPMAS::communication {
 	class ResourceManager;
@@ -17,7 +20,7 @@ namespace FPMAS::communication {
 	class ReadersWriters {
 		friend ResourceManager;
 		private:
-			unsigned long id;
+			NodeId id;
 			std::queue<int> read_requests;
 			std::queue<int> write_requests;
 			SyncMpiCommunicator& comm;
@@ -31,7 +34,7 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param comm reference to the MPI communicator
 			 */
-			ReadersWriters(unsigned long id, SyncMpiCommunicator& comm) : id(id), comm(comm) {}
+			ReadersWriters(NodeId id, SyncMpiCommunicator& comm) : id(id), comm(comm) {}
 
 			/**
 			 * Performs a read operation on the local resource for the
@@ -80,9 +83,9 @@ namespace FPMAS::communication {
 		friend SyncMpiCommunicator;
 		private:
 			SyncMpiCommunicator& comm;
-			mutable std::unordered_map<unsigned long, ReadersWriters> readersWriters;
+			mutable std::unordered_map<NodeId, ReadersWriters> readersWriters;
 
-			void lock(unsigned long id);
+			void lock(NodeId id);
 			void clear();
 
 		public:
@@ -103,7 +106,7 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param destination destination proc
 			 */
-			void read(unsigned long id, int destination);
+			void read(NodeId id, int destination);
 
 			/**
 			 * Performs a write operation on the local resource for the
@@ -118,20 +121,20 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param destination destination proc
 			 */
-			void write(unsigned long id, int destination);
+			void write(NodeId id, int destination);
 
 			/**
 			 * Releases the locked resource, and respond to pending requests.
 			 *
 			 * @param id resource id
 			 */
-			void release(unsigned long id);
+			void release(NodeId id);
 
 			/**
 			 * Returns a const reference to the ReadersWriters instance
 			 * currently managing the specified resource.
 			 */
-			const ReadersWriters& get(unsigned long id) const;
+			const ReadersWriters& get(NodeId id) const;
 
 	};
 

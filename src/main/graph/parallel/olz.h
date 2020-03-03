@@ -10,6 +10,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
+	using base::ArcId;
 	using base::LayerId;
 	using synchro::SyncData;
 	using synchro::GhostData;
@@ -28,17 +29,17 @@ namespace FPMAS::graph::parallel {
 	 */
 	template <typename T, int N, SYNC_MODE> class GhostNode : public Node<std::unique_ptr<SyncData<T>>, N> {
 		friend GhostNode<T, N, S>* GhostGraph<T, N, S>
-			::buildNode(unsigned long);
+			::buildNode(NodeId);
 		friend GhostNode<T, N, S>* GhostGraph<T, N, S>
-			::buildNode(const Node<std::unique_ptr<SyncData<T>>, N>&, std::set<unsigned long>);
+			::buildNode(const Node<std::unique_ptr<SyncData<T>>, N>&, std::set<NodeId>);
 
 		private:
-		GhostNode(SyncMpiCommunicator&, Proxy&, unsigned long);
+		GhostNode(SyncMpiCommunicator&, Proxy&, NodeId);
 		GhostNode(SyncMpiCommunicator&, Proxy&, const Node<std::unique_ptr<SyncData<T>>, N>&);
 	};
 
 	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>
-		::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, unsigned long id)
+		::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, NodeId id)
 		: Node<std::unique_ptr<SyncData<T>>, N>(
 				id,
 				1.,
@@ -80,22 +81,22 @@ namespace FPMAS::graph::parallel {
 		friend void GhostGraph<T, N, S>::link(
 				GhostNode<T, N, S>*,
 				Node<std::unique_ptr<SyncData<T>>, N>*,
-				unsigned long,
+				ArcId,
 				LayerId);
 		friend void GhostGraph<T, N, S>::link(
 				Node<std::unique_ptr<SyncData<T>>, N>*,
 				GhostNode<T, N, S>*,
-				unsigned long,
+				ArcId,
 				LayerId);
 
 		private:
 		GhostArc(
-			unsigned long,
+			ArcId,
 			GhostNode<T, N, S>*,
 			Node<std::unique_ptr<SyncData<T>>, N>*,
 			LayerId);
 		GhostArc(
-			unsigned long,
+			ArcId,
 			Node<std::unique_ptr<SyncData<T>>, N>*,
 			GhostNode<T, N, S>*,
 			LayerId);
@@ -112,7 +113,7 @@ namespace FPMAS::graph::parallel {
 	 * @param target pointer to the local target node
 	 */
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>::GhostArc(
-			unsigned long arc_id,
+			ArcId arc_id,
 			GhostNode<T, N, S>* source,
 			Node<std::unique_ptr<SyncData<T>>, N>* target,
 			LayerId layer
@@ -129,7 +130,7 @@ namespace FPMAS::graph::parallel {
 	 * @param target pointer to the target ghost node
 	 */
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>::GhostArc(
-			unsigned long arc_id,
+			ArcId arc_id,
 			Node<std::unique_ptr<SyncData<T>>, N>* source,
 			GhostNode<T, N, S>* target,
 			LayerId layer

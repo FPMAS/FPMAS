@@ -52,7 +52,7 @@ namespace FPMAS::graph::parallel {
 
 
 				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
-				std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
+				std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
 				for (int i = 0; i < num_ids; i++) {
 					Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
@@ -107,11 +107,11 @@ namespace FPMAS::graph::parallel {
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
-				std::unordered_map<unsigned long, std::string>* serial_cache
+				std::unordered_map<NodeId, std::string>* serial_cache
 					= &graph->getGhost().ghost_node_serialization_cache;
 				for (int i = 0; i < num_ids; ++i) {
 					// Rebuilt node id
-					unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
+					NodeId id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 					// Retrieves the serialized node
 					std::string node_str = serial_cache->at(id);

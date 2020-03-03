@@ -19,6 +19,8 @@ namespace FPMAS::graph::base {
  * library](https://github.com/nlohmann/json).
  */
 namespace nlohmann {
+	using FPMAS::graph::base::NodeId;
+	using FPMAS::graph::base::ArcId;
 	using FPMAS::graph::base::LayerId;
 	using FPMAS::graph::base::Node;
 
@@ -56,7 +58,7 @@ namespace nlohmann {
 		 */
 		static Node<T, N> from_json(const json& j) {
 			return Node<T, N>(
-					j.at("id").get<unsigned long>(),
+					j.at("id").get<NodeId>(),
 					j.at("weight").get<float>(),
 					j.at("data").get<T>()
 					);
@@ -128,14 +130,14 @@ namespace nlohmann {
 		 * @return temporary arc
 		 */
 		static Arc<T, N> from_json(const json& j) {
-			std::array<unsigned long, 2> link =
+			std::array<NodeId, 2> link =
 				j.at("link")
-				.get<std::array<unsigned long, 2>>();
+				.get<std::array<NodeId, 2>>();
 			Node<T, N>* tempSource = new Node<T, N>(link[0]);
 			Node<T, N>* tempTarget = new Node<T, N>(link[1]);
 
 			return Arc<T, N>(
-				j.at("id"),
+				j.at("id").get<ArcId>(),
 				tempSource,
 				tempTarget,
 				j.at("layer").get<LayerId>()
@@ -157,7 +159,7 @@ namespace nlohmann {
 		 * @param arc arc reference
 		 */
 		static void to_json(json& j, const Arc<T, N>& arc) {
-			std::array<unsigned long, 2> link = {
+			std::array<NodeId, 2> link = {
 				arc.getSourceNode()->getId(),
 				arc.getTargetNode()->getId()
 			};

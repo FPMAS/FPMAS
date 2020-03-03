@@ -54,9 +54,9 @@ namespace FPMAS::graph::parallel {
 
 				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "obj_size_multi_fn");
-				std::unordered_map<unsigned long, Arc<std::unique_ptr<SyncData<T>>, N>*> arcs = graph->getArcs();
+				std::unordered_map<ArcId, Arc<std::unique_ptr<SyncData<T>>, N>*> arcs = graph->getArcs();
 				for (int i = 0; i < num_ids; i++) {
-					unsigned long arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
+					ArcId arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
 					Arc<std::unique_ptr<SyncData<T>>, N>* arc;
 					try {
 						arc = arcs.at(arcId);
@@ -85,7 +85,7 @@ namespace FPMAS::graph::parallel {
 						// ghost node will be created for target or origin,
 						// to allow the destination proc to fetch those
 						// nodes data
-						unsigned long targetId = arc->getTargetNode()->getId();
+						NodeId targetId = arc->getTargetNode()->getId();
 						json_arc["target"] = {
 							graph->getProxy().getOrigin(
 									targetId
@@ -95,7 +95,7 @@ namespace FPMAS::graph::parallel {
 									)
 						};
 
-						unsigned long sourceId = arc->getSourceNode()->getId();
+						NodeId sourceId = arc->getSourceNode()->getId();
 						json_arc["source"] = {
 							graph->getProxy().getOrigin(
 									sourceId
@@ -156,11 +156,11 @@ namespace FPMAS::graph::parallel {
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
-				std::unordered_map<unsigned long, std::string>* serial_cache
+				std::unordered_map<ArcId, std::string>* serial_cache
 					= &graph->arc_serialization_cache;
 				for (int i = 0; i < num_ids; ++i) {
-					// Rebuilt node id
-					unsigned long id = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
+					// Rebuilt arc id
+					ArcId id = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 					// Retrieves the serialized node
 					std::string arc_str = serial_cache->at(id);
@@ -267,14 +267,14 @@ namespace FPMAS::graph::parallel {
 				// ignore already imported ones.
 				// TODO: this might probably be optimized, removing
 				// duplicates when import / export maps are computed
-				std::set<unsigned long> receivedArcIds;
+				std::set<ArcId> receivedArcIds;
 
 				for (int i = 0; i < num_ids; ++i) {
 					json json_arc = json::parse(&buf[idx[i]]);
 
 					// Unserialize and process the arc only if it has not
 					// been imported already.
-					if(receivedArcIds.count(json_arc.at("id").get<unsigned long>()) == 0) {
+					if(receivedArcIds.count(json_arc.at("id").get<ArcId>()) == 0) {
 
 						// Json is unserialized in a temporary arc, with "fake"
 						// nodes that just contains ID. We don't know yet which
@@ -283,12 +283,12 @@ namespace FPMAS::graph::parallel {
 
 						receivedArcIds.insert(tempArc.getId());
 
-						unsigned long sourceId = tempArc.getSourceNode()->getId();
+						NodeId sourceId = tempArc.getSourceNode()->getId();
 						bool sourceNodeIsLocal = graph->getNodes().count(
 								sourceId
 								) > 0;
 
-						unsigned long targetId = tempArc.getTargetNode()->getId();
+						NodeId targetId = tempArc.getTargetNode()->getId();
 						bool targetNodeIsLocal = graph->getNodes().count(
 								targetId
 								) > 0;
@@ -392,7 +392,7 @@ namespace FPMAS::graph::parallel {
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_olz");
 
 				// Computes the set of ids of exported nodes
-				std::set<unsigned long> exportedNodeIds;
+				std::set<NodeId> exportedNodeIds;
 				for(int i = 0; i < graph->export_node_num; i++) {
 					exportedNodeIds.insert(zoltan::utils::read_zoltan_id(
 								&graph->export_node_global_ids[i * num_gid_entries])

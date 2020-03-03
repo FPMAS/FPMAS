@@ -22,7 +22,7 @@ namespace FPMAS::graph::base {
 	 */
 	template<typename T, int N> class Layer {
 
-		friend Arc<T, N>::Arc(unsigned long, Node<T, N>*, Node<T, N>*, LayerId);
+		friend Arc<T, N>::Arc(ArcId, Node<T, N>*, Node<T, N>*, LayerId);
 		// Allows removeNode function to remove deleted arcs
 		friend bool Graph<T, N>::unlink(Arc<T, N>*);
 

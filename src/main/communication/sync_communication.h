@@ -59,14 +59,14 @@ namespace FPMAS::communication {
 				void send(std::string, int, Tag);
 				void waitSendRequest(MPI_Request*);
 
-				void handleRead(int, unsigned long);
-				void respondToRead(int, unsigned long);
-				void handleAcquire(int, unsigned long);
-				void respondToAcquire(int, unsigned long);
+				void handleRead(int, NodeId);
+				void respondToRead(int, NodeId);
+				void handleAcquire(int, NodeId);
+				void respondToAcquire(int, NodeId);
 				void handleGiveBack(std::string);
 
-				void waitForReading(unsigned long);
-				void waitForAcquire(unsigned long);
+				void waitForReading(NodeId);
+				void waitForAcquire(NodeId);
 
 			public:
 				SyncMpiCommunicator(ResourceContainer&);
@@ -74,10 +74,10 @@ namespace FPMAS::communication {
 
 				void handleIncomingRequests();
 
-				std::string read(unsigned long, int);
+				std::string read(NodeId, int);
 
-				std::string acquire(unsigned long, int);
-				void giveBack(unsigned long, int);
+				std::string acquire(NodeId, int);
+				void giveBack(NodeId, int);
 
 				void terminate();
 

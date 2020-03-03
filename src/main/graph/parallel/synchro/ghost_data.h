@@ -38,9 +38,9 @@ namespace FPMAS::graph::parallel {
 		template<class T> class GhostData : public SyncData<T> {
 
 			public:
-				GhostData(unsigned long, SyncMpiCommunicator&, const Proxy&);
-				GhostData(unsigned long, SyncMpiCommunicator&, const Proxy&, const T&);
-				GhostData(unsigned long, SyncMpiCommunicator&, const Proxy&, T&&);
+				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&);
+				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
+				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
 				/**
 				 * Defines the Zoltan configuration used to manage and migrate
 				 * GhostNode s and GhostArc s.
@@ -76,7 +76,7 @@ namespace FPMAS::graph::parallel {
 		// The mpiCommunicator is not used for the GhostData mode, but the
 		// constructors are defined to allow template genericity
 		template<class T> GhostData<T>::GhostData(
-				unsigned long id,
+				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy) {
 		}
@@ -91,7 +91,7 @@ namespace FPMAS::graph::parallel {
 		 * @param proxy graph proxy
 		 */
 		template<class T> GhostData<T>::GhostData(
-				unsigned long id,
+				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				T&& data)
@@ -99,7 +99,7 @@ namespace FPMAS::graph::parallel {
 			}
 
 		template<class T> GhostData<T>::GhostData(
-				unsigned long id,
+				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				const T& data)

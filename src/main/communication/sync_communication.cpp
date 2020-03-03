@@ -46,7 +46,7 @@ void SyncMpiCommunicator::handleIncomingRequests() {
 	// Check read request
 	MPI_Iprobe(MPI_ANY_SOURCE, epoch | Tag::READ, this->getMpiComm(), &flag, &req_status);
 	if(flag > 0) {
-		unsigned long id;
+		NodeId id;
 		MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, req_status.MPI_SOURCE, epoch | Tag::READ, this->getMpiComm(), &req_status);
 		FPMAS_LOGD(this->getRank(), "RECV", "read request %lu from %i", id, req_status.MPI_SOURCE);
 		this->handleRead(req_status.MPI_SOURCE, id);
@@ -55,7 +55,7 @@ void SyncMpiCommunicator::handleIncomingRequests() {
 	// Check acquire request
 	MPI_Iprobe(MPI_ANY_SOURCE, epoch | Tag::ACQUIRE, this->getMpiComm(), &flag, &req_status);
 	if(flag > 0) {
-		unsigned long id;
+		NodeId id;
 		MPI_Recv(&id, 1, MPI_UNSIGNED_LONG, req_status.MPI_SOURCE, epoch | Tag::ACQUIRE, this->getMpiComm(), &req_status);
 		FPMAS_LOGD(this->getRank(), "RECV", "acquire request %lu from %i", id, req_status.MPI_SOURCE);
 		this->handleAcquire(req_status.MPI_SOURCE, id);
@@ -99,7 +99,7 @@ void SyncMpiCommunicator::waitSendRequest(MPI_Request* req) {
  * @param location rank of the data location
  * @return read serialized data
  */
-std::string SyncMpiCommunicator::read(unsigned long id, int location) {
+std::string SyncMpiCommunicator::read(NodeId id, int location) {
 	if(location == this->getRank()) {
 		FPMAS_LOGD(location, "READ", "reading local data %lu", id);
 		// The local process needs to wait as any other proc to access its own
@@ -143,7 +143,7 @@ std::string SyncMpiCommunicator::read(unsigned long id, int location) {
  * will respond immediately if the resource is available or put the request in an waiting
  * queue otherwise.
  */
-void SyncMpiCommunicator::handleRead(int destination, unsigned long id) {
+void SyncMpiCommunicator::handleRead(int destination, NodeId id) {
 	this->color = Color::BLACK;
 
 	// Transmit request to the resource manager
@@ -154,7 +154,7 @@ void SyncMpiCommunicator::handleRead(int destination, unsigned long id) {
  * Sends a read response to the destination proc, reading data using the
  * resourceManager.
  */
-void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
+void SyncMpiCommunicator::respondToRead(int destination, NodeId id) {
 	// Perform the response
 	std::string data = this->resourceContainer.getLocalData(id);
 	MPI_Request req;
@@ -171,7 +171,7 @@ void SyncMpiCommunicator::respondToRead(int destination, unsigned long id) {
  * @param location rank of the data location
  * @return acquired serialized data
  */
-std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
+std::string SyncMpiCommunicator::acquire(NodeId id, int location) {
 	if(location == this->getRank()) {
 		// TODO : This management is bad, because the local proc is not added
 		// to the waiting queue as any other incoming request.
@@ -216,7 +216,7 @@ std::string SyncMpiCommunicator::acquire(unsigned long id, int location) {
  * will respond if the resource immediately is available or put the request in an waiting
  * queue otherwise.
  */
-void SyncMpiCommunicator::handleAcquire(int destination, unsigned long id) {
+void SyncMpiCommunicator::handleAcquire(int destination, NodeId id) {
 	this->color = Color::BLACK;
 
 	this->resourceManager.write(id, destination);
@@ -227,7 +227,7 @@ void SyncMpiCommunicator::handleAcquire(int destination, unsigned long id) {
  * Sends an acquire response to the destination proc, reading data using the
  * resourceManager.
  */
-void SyncMpiCommunicator::respondToAcquire(int destination, unsigned long id) {
+void SyncMpiCommunicator::respondToAcquire(int destination, NodeId id) {
 	std::string data = this->resourceContainer.getLocalData(id);
 	FPMAS_LOGD(this->getRank(), "ACQUIRE", "send acquired data %lu to %i : %s", id, destination, data.c_str());
 
@@ -243,7 +243,7 @@ void SyncMpiCommunicator::respondToAcquire(int destination, unsigned long id) {
  * @param id id of the data to read
  * @param location rank of the data location
  */
-void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
+void SyncMpiCommunicator::giveBack(NodeId id, int location) {
 	if(location == this->getRank()) {
 		// No update needed, because modifications are already local.
 		this->resourceManager.release(id);
@@ -270,8 +270,8 @@ void SyncMpiCommunicator::giveBack(unsigned long id, int location) {
  */
 void SyncMpiCommunicator::handleGiveBack(std::string data) {
 		nlohmann::json update_json = nlohmann::json::parse(data);
-		unsigned long id = 
-				update_json.at("id").get<unsigned long>();
+		NodeId id = 
+				update_json.at("id").get<NodeId>();
 
 		// Updates local data
 		this->resourceContainer.updateData(

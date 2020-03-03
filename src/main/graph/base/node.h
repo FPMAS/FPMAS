@@ -33,17 +33,17 @@ namespace FPMAS::graph::base {
 	 * @tparam N number of layers
 	 */
 	template<typename T, int N>
-	class Node : public GraphItem {
+	class Node : public GraphItem<NodeId> {
 		friend Node<T, N> nlohmann::adl_serializer<Node<T, N>>::from_json(const json&);
 		friend Arc<T, N> nlohmann::adl_serializer<Arc<T, N>>::from_json(const json&);
 		// Grants access to incoming and outgoing arcs lists
-		friend Arc<T, N>::Arc(unsigned long, Node<T, N>*, Node<T, N>*, LayerId);
+		friend Arc<T, N>::Arc(ArcId, Node<T, N>*, Node<T, N>*, LayerId);
 		// Grants access to private Node constructor
-		friend Node<T, N>* Graph<T, N>::buildNode(unsigned long);
-		friend Node<T, N>* Graph<T, N>::buildNode(unsigned long id, T&& data);
-		friend Node<T, N>* Graph<T, N>::buildNode(unsigned long id, float weight, T&& data);
+		friend Node<T, N>* Graph<T, N>::buildNode(NodeId);
+		friend Node<T, N>* Graph<T, N>::buildNode(NodeId id, T&& data);
+		friend Node<T, N>* Graph<T, N>::buildNode(NodeId id, float weight, T&& data);
 		// Grants access to layers
-		friend FossilArcs<Arc<T, N>> Graph<T, N>::removeNode(unsigned long);
+		friend FossilArcs<Arc<T, N>> Graph<T, N>::removeNode(NodeId);
 		// Allows removeNode function to remove deleted arcs
 		friend bool Graph<T, N>::unlink(Arc<T, N>*);
 
@@ -54,7 +54,7 @@ namespace FPMAS::graph::base {
 		 *
 		 * @param id node id
 		 */
-		Node(unsigned long id);
+		Node(NodeId id);
 
 		/**
 		 * Node constructor.
@@ -62,7 +62,7 @@ namespace FPMAS::graph::base {
 		 * @param id node id
 		 * @param data pointer to node data
 		 */
-		Node(unsigned long id, T&& data);
+		Node(NodeId id, T&& data);
 
 		/**
 		 * Node constructor.
@@ -71,7 +71,7 @@ namespace FPMAS::graph::base {
 		 * @param weight node weight
 		 * @param data node data
 		 */
-		Node(unsigned long id, float weight, T&& data);
+		Node(NodeId id, float weight, T&& data);
 
 		private:
 		T _data;
@@ -163,13 +163,13 @@ namespace FPMAS::graph::base {
 
 	};
 
-	template<typename T, int N> Node<T, N>::Node(unsigned long id) : Node<T, N>(id, 1., T()) {
+	template<typename T, int N> Node<T, N>::Node(NodeId id) : Node<T, N>(id, 1., T()) {
 	}
 
-	template<typename T, int N> Node<T, N>::Node(unsigned long id, T&& data) : Node<T, N>(id, 1., std::move(data)) {
+	template<typename T, int N> Node<T, N>::Node(NodeId id, T&& data) : Node<T, N>(id, 1., std::move(data)) {
 	}
 
-	template<typename T, int N> Node<T, N>::Node(unsigned long id, float weight, T&& data) : GraphItem(id), _data(std::move(data)), weight(weight) {
+	template<typename T, int N> Node<T, N>::Node(NodeId id, float weight, T&& data) : GraphItem(id), _data(std::move(data)), weight(weight) {
 		for (int i = 0; i < N; i++) {
 			this->layers[i] = Layer<T, N>();
 		}

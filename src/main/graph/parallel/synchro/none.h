@@ -28,13 +28,13 @@ namespace FPMAS::graph::parallel::synchro {
 			 * Unused constructor, defined for synchronization mode API
 			 * compatibility.
 			 */
-			None(unsigned long, SyncMpiCommunicator&, const Proxy&) {};
+			None(NodeId, SyncMpiCommunicator&, const Proxy&) {};
 			/**
 			 * Unused constructor, defined for synchronization mode API
 			 * compatibility.
 			 */
-			None(unsigned long, SyncMpiCommunicator&, const Proxy&, T&&) {};
-			None(unsigned long, SyncMpiCommunicator&, const Proxy&, const T&) {};
+			None(NodeId, SyncMpiCommunicator&, const Proxy&, T&&) {};
+			None(NodeId, SyncMpiCommunicator&, const Proxy&, const T&) {};
 
 			/**
 			 * Termination function used at the end of each

@@ -19,6 +19,9 @@ namespace FPMAS::graph::parallel {
 
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
+	using base::NodeId;
+	using base::ArcId;
+
 	using synchro::SyncData;
 	using synchro::None;
 
@@ -58,7 +61,7 @@ namespace FPMAS::graph::parallel {
 
 
 			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
-			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
+			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
 			for (int i = 0; i < num_ids; i++) {
 				Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
@@ -116,11 +119,11 @@ namespace FPMAS::graph::parallel {
 			// The node should actually be serialized when computing
 			// the required buffer size. For efficiency purpose, we temporarily
 			// store the result and delete it when it is packed.
-			std::unordered_map<unsigned long, std::string>* serial_cache
+			std::unordered_map<NodeId, std::string>* serial_cache
 				= &graph->node_serialization_cache;
 			for (int i = 0; i < num_ids; ++i) {
 				// Rebuilt node id
-				unsigned long id = read_zoltan_id(&global_ids[i * num_gid_entries]);
+				NodeId id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 				// Retrieves the serialized node
 				std::string node_str = serial_cache->at(id);
 
@@ -163,7 +166,7 @@ namespace FPMAS::graph::parallel {
 
 				// Node<LocalData<T>, N> node = json_node.get<Node<LocalData<T>, N>>();
 
-				unsigned long id = json_node.at("id").get<unsigned long>();
+				NodeId id = json_node.at("id").get<NodeId>();
 
 				if(graph->getGhost().getNodes().count(id) > 0)
 					graph->obsoleteGhosts.insert(id);
@@ -225,16 +228,16 @@ namespace FPMAS::graph::parallel {
 
 			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 
-			std::unordered_map<unsigned long, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
+			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
 			// Set used to ensure that each arc is sent at most once to
 			// each process.
-			std::set<std::pair<unsigned long, int>> exportedArcPairs;
+			std::set<std::pair<ArcId, int>> exportedArcPairs;
 
 			std::vector<Arc<std::unique_ptr<SyncData<T>>, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			for (int i =0; i < num_export; i++) {
-				unsigned long id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
+				NodeId id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
 
 				auto exported_node = nodes.at(id);
 				int dest_proc = export_procs[i];
@@ -245,8 +248,8 @@ namespace FPMAS::graph::parallel {
 				// Computes arc exports
 				for(auto layer : exported_node->getLayers()) {
 					for(auto arc : layer.getIncomingArcs()) {
-						std::pair<unsigned long, int> arc_proc_pair =
-							std::pair<unsigned long, int>(
+						std::pair<ArcId, int> arc_proc_pair =
+							std::pair<ArcId, int>(
 									arc->getId(),
 									export_procs[i]
 									);
@@ -263,8 +266,8 @@ namespace FPMAS::graph::parallel {
 				}
 				for(auto layer : exported_node->getLayers()) {
 					for(auto arc : layer.getOutgoingArcs()) {
-						std::pair<unsigned long, int> arc_proc_pair =
-							std::pair<unsigned long, int>(
+						std::pair<ArcId, int> arc_proc_pair =
+							std::pair<ArcId, int>(
 									arc->getId(),
 									export_procs[i]
 									);
@@ -338,7 +341,7 @@ namespace FPMAS::graph::parallel {
 			std::vector<Arc<std::unique_ptr<SyncData<T>>, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
-			std::unordered_map<unsigned long, int> nodeDestinations;
+			std::unordered_map<NodeId, int> nodeDestinations;
 
 			for (int i = 0; i < num_export; i++) {
 				nodeDestinations[read_zoltan_id(&export_global_ids[i * num_gid_entries])] = export_procs[i];
@@ -359,7 +362,7 @@ namespace FPMAS::graph::parallel {
 				// what is the required behavior.
 				for(auto layer : exported_node->getLayers()) {
 					for(auto arc : layer.getIncomingArcs()) {
-						unsigned long sourceId = arc->getSourceNode()->getId();
+						NodeId sourceId = arc->getSourceNode()->getId();
 						if(nodeDestinations.count(sourceId) > 0 // The source is also exported
 								&& nodeDestinations.at(sourceId) == nodeDest.second// The source is exported to the same proc as the target node
 						) {

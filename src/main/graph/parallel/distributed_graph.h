@@ -33,6 +33,8 @@ namespace FPMAS {
 			template<class T> class GhostData;
 		}
 
+		using base::NodeId;
+		using base::ArcId;
 		using proxy::Proxy;
 		using synchro::SyncData;
 		using synchro::GhostData;
@@ -93,8 +95,8 @@ namespace FPMAS {
 			void setZoltanArcMigration();
 
 			// Serialization caches used to pack objects
-			std::unordered_map<unsigned long, std::string> node_serialization_cache;
-			std::unordered_map<unsigned long, std::string> arc_serialization_cache;
+			std::unordered_map<NodeId, std::string> node_serialization_cache;
+			std::unordered_map<ArcId, std::string> arc_serialization_cache;
 
 			/*
 			 * Zoltan structures used to manage nodes and arcs migration
@@ -107,7 +109,7 @@ namespace FPMAS {
 			// the real node has been imported. It is safely deleted in
 			// arc::mid_migrate_pp_fn once associated arcs have eventually 
 			// been exported
-			std::set<unsigned long> obsoleteGhosts;
+			std::set<NodeId> obsoleteGhosts;
 
 			// Arc migration buffers
 			int export_arcs_num;
@@ -153,17 +155,17 @@ namespace FPMAS {
 
 			Proxy& getProxy();
 
-			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(unsigned long id, T&& data);
-			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(unsigned long id, T& data);
-			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(unsigned long id, float weight, T&& data);
-			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(unsigned long id, float weight, T& data);
+			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId, T&& data);
+			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, T& data);
+			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, float weight, T&& data);
+			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, float weight, T& data);
 
 			std::string getLocalData(unsigned long) const override;
 			std::string getUpdatedData(unsigned long) const override;
 			void updateData(unsigned long, std::string) override;
 
 			void distribute();
-			void distribute(std::unordered_map<unsigned long, std::pair<int, int>>);
+			void distribute(std::unordered_map<NodeId, std::pair<int, int>>);
 			void synchronize();
 		};
 
@@ -258,7 +260,7 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
-		::buildNode(unsigned long id, T&& data) {
+		::buildNode(NodeId id, T&& data) {
 			return Graph<std::unique_ptr<SyncData<T>>, N>
 				::buildNode(
 					id,
@@ -272,7 +274,7 @@ namespace FPMAS {
 
 		template<class T, SYNC_MODE, int N>
 		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
-		::buildNode(unsigned long id, T& data) {
+		::buildNode(NodeId id, T& data) {
 			return Graph<std::unique_ptr<SyncData<T>>, N>
 				::buildNode(
 					id,
@@ -296,7 +298,7 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
-		::buildNode(unsigned long id, float weight, T&& data) {
+		::buildNode(NodeId id, float weight, T&& data) {
 			return Graph<std::unique_ptr<SyncData<T>>, N>
 				::buildNode(
 					id,
@@ -311,7 +313,7 @@ namespace FPMAS {
 
 		template<class T, SYNC_MODE, int N>
 		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
-		::buildNode(unsigned long id, float weight, T& data) {
+		::buildNode(NodeId id, float weight, T& data) {
 			return Graph<std::unique_ptr<SyncData<T>>, N>
 				::buildNode(
 					id,
@@ -457,7 +459,7 @@ namespace FPMAS {
 		 * @param partition new partition
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::distribute(
-				std::unordered_map<unsigned long, std::pair<int, int>> partition
+				std::unordered_map<NodeId, std::pair<int, int>> partition
 				) {
 
 			// Import lists
