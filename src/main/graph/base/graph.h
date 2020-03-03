@@ -27,9 +27,9 @@ namespace FPMAS {
 		 * The FPMAS::graph namespace contains Graph, Node and Arc definitions.
 		 */
 		namespace base {
-			template<NODE_PARAMS> class Node;
-			template<NODE_PARAMS> class Arc;
-			template<NODE_PARAMS> class Graph;
+			template<typename T, int N> class Node;
+			template<typename T, int N> class Arc;
+			template<typename T, int N> class Graph;
 
 			/**
 			 * Layered Graph class.
@@ -71,33 +71,33 @@ namespace FPMAS {
 				int N = 1
 				>
 			class Graph {
-				friend Graph<NODE_PARAMS_SPEC> nlohmann::adl_serializer<Graph<NODE_PARAMS_SPEC>>::from_json(const json&);
+				friend Graph<T, N> nlohmann::adl_serializer<Graph<T, N>>::from_json(const json&);
 				private:
-					std::unordered_map<unsigned long, NODE*> nodes;
-					std::unordered_map<unsigned long, ARC*> arcs;
-					void removeArc(ARC*, std::vector<ARC*>*);
+					std::unordered_map<unsigned long, Node<T, N>*> nodes;
+					std::unordered_map<unsigned long, Arc<T, N>*> arcs;
+					void removeArc(Arc<T, N>*, std::vector<Arc<T, N>*>*);
 
 				public:
-					NODE* getNode(unsigned long);
-					const NODE* getNode(unsigned long) const;
-					const std::unordered_map<unsigned long, NODE*>& getNodes() const;
+					Node<T, N>* getNode(unsigned long);
+					const Node<T, N>* getNode(unsigned long) const;
+					const std::unordered_map<unsigned long, Node<T, N>*>& getNodes() const;
 
-					ARC* getArc(unsigned long);
-					const ARC* getArc(unsigned long) const;
-					const std::unordered_map<unsigned long, ARC*>& getArcs() const;
+					Arc<T, N>* getArc(unsigned long);
+					const Arc<T, N>* getArc(unsigned long) const;
+					const std::unordered_map<unsigned long, Arc<T, N>*>& getArcs() const;
 
-					NODE* buildNode(unsigned long);
-					NODE* buildNode(unsigned long id, T&& data);
-					NODE* buildNode(unsigned long id, float weight, T&& data);
+					Node<T, N>* buildNode(unsigned long);
+					Node<T, N>* buildNode(unsigned long id, T&& data);
+					Node<T, N>* buildNode(unsigned long id, float weight, T&& data);
 
-					ARC* link(NODE*, NODE*, unsigned long);
-					ARC* link(NODE*, NODE*, unsigned long, LayerId);
-					ARC* link(unsigned long, unsigned long, unsigned long);
-					ARC* link(unsigned long, unsigned long, unsigned long, LayerId);
+					Arc<T, N>* link(Node<T, N>*, Node<T, N>*, unsigned long);
+					Arc<T, N>* link(Node<T, N>*, Node<T, N>*, unsigned long, LayerId);
+					Arc<T, N>* link(unsigned long, unsigned long, unsigned long);
+					Arc<T, N>* link(unsigned long, unsigned long, unsigned long, LayerId);
 
 					bool unlink(unsigned long);
-					bool unlink(ARC*);
-					FossilArcs<ARC> removeNode(unsigned long);
+					bool unlink(Arc<T, N>*);
+					FossilArcs<Arc<T, N>> removeNode(unsigned long);
 
 					~Graph();
 
@@ -110,7 +110,7 @@ namespace FPMAS {
 			 * @param id node id
 			 * @return pointer to associated node
 			 */
-			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::getNode(unsigned long id) {
+			template<typename T, int N> Node<T, N>* Graph<T, N>::getNode(unsigned long id) {
 				return this->nodes.at(id);
 			}
 
@@ -121,7 +121,7 @@ namespace FPMAS {
 			 * @param id node id
 			 * @return const pointer to associated node
 			 */
-			template<NODE_PARAMS> const NODE* Graph<NODE_PARAMS_SPEC>::getNode(unsigned long id) const {
+			template<typename T, int N> const Node<T, N>* Graph<T, N>::getNode(unsigned long id) const {
 				return this->nodes.at(id);
 			}
 			/**
@@ -129,7 +129,7 @@ namespace FPMAS {
 			 *
 			 * @return nodes contained in this graph
 			 */
-			template<NODE_PARAMS> const std::unordered_map<unsigned long, NODE*>& Graph<NODE_PARAMS_SPEC>::getNodes() const {
+			template<typename T, int N> const std::unordered_map<unsigned long, Node<T, N>*>& Graph<T, N>::getNodes() const {
 				return this->nodes;
 			}
 
@@ -140,7 +140,7 @@ namespace FPMAS {
 			 * @param id arc id
 			 * @return pointer to associated arc
 			 */
-			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::getArc(unsigned long id) {
+			template<typename T, int N> Arc<T, N>* Graph<T, N>::getArc(unsigned long id) {
 				return this->arcs.at(id);
 			}
 
@@ -151,7 +151,7 @@ namespace FPMAS {
 			 * @param id arc id
 			 * @return const pointer to associated arc
 			 */
-			template<NODE_PARAMS> const ARC* Graph<NODE_PARAMS_SPEC>::getArc(unsigned long id) const {
+			template<typename T, int N> const Arc<T, N>* Graph<T, N>::getArc(unsigned long id) const {
 				return this->arcs.at(id);
 			}
 
@@ -160,7 +160,7 @@ namespace FPMAS {
 			 *
 			 * @return arcs contained in this graph
 			 */
-			template<NODE_PARAMS> const std::unordered_map<unsigned long, ARC*>& Graph<NODE_PARAMS_SPEC>::getArcs() const {
+			template<typename T, int N> const std::unordered_map<unsigned long, Arc<T, N>*>& Graph<T, N>::getArcs() const {
 				return this->arcs;
 			}
 
@@ -171,8 +171,8 @@ namespace FPMAS {
 			 * @param id node id
 			 * @return pointer to built node
 			 */
-			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id) {
-				NODE* node = new NODE(id);
+			template<typename T, int N> Node<T, N>* Graph<T, N>::buildNode(unsigned long id) {
+				Node<T, N>* node = new Node<T, N>(id);
 				this->nodes[id] = node;
 				return node;
 			}
@@ -185,8 +185,8 @@ namespace FPMAS {
 			 * @param data node's data
 			 * @return pointer to built node
 			 */
-			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T&& data) {
-				NODE* node = new NODE(id, std::move(data));
+			template<typename T, int N> Node<T, N>* Graph<T, N>::buildNode(unsigned long id, T&& data) {
+				Node<T, N>* node = new Node<T, N>(id, std::move(data));
 				this->nodes[id] = node;
 				return node;
 			}
@@ -200,8 +200,8 @@ namespace FPMAS {
 			 * @param data node's data
 			 * @return pointer to build node
 			 */
-			template<NODE_PARAMS> NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T&& data) {
-				NODE* node = new NODE(id, weight, std::move(data));
+			template<typename T, int N> Node<T, N>* Graph<T, N>::buildNode(unsigned long id, float weight, T&& data) {
+				Node<T, N>* node = new Node<T, N>(id, weight, std::move(data));
 				this->nodes[id] = node;
 				return node;
 			}
@@ -216,8 +216,8 @@ namespace FPMAS {
 			 * @param layer layer on which the arc should be built
 			 * @return pointer to built arc
 			 */
-			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(NODE *source, NODE *target, unsigned long arc_id, LayerId layer) {
-				ARC* arc = new ARC(arc_id, source, target, layer);
+			template<typename T, int N> Arc<T, N>* Graph<T, N>::link(Node<T, N> *source, Node<T, N> *target, unsigned long arc_id, LayerId layer) {
+				Arc<T, N>* arc = new Arc<T, N>(arc_id, source, target, layer);
 				this->arcs[arc_id] = arc;
 				return arc;
 			}
@@ -231,12 +231,12 @@ namespace FPMAS {
 			 * @param arc_id arc id
 			 * @return pointer to built arc
 			 */
-			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(NODE *source, NODE *target, unsigned long arc_id){
+			template<typename T, int N> Arc<T, N>* Graph<T, N>::link(Node<T, N> *source, Node<T, N> *target, unsigned long arc_id){
 				return link(source, target, arc_id, DefaultLayer);
 			}
 
 			/**
-			 * Same as link(NODE*, NODE*, unsigned long, LayerType), but uses node ids
+			 * Same as link(Node<T, N>*, Node<T, N>*, unsigned long, LayerType), but uses node ids
 			 * instead to get source and target nodes in the current graph.
 			 *
 			 * @param source_id source node id
@@ -245,12 +245,12 @@ namespace FPMAS {
 			 * @param layer layer on which the arc should be built
 			 * @return built arc
 			 */
-			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id, LayerId layer) {
+			template<typename T, int N> Arc<T, N>* Graph<T, N>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id, LayerId layer) {
 				return link(this->getNode(source_id), this->getNode(target_id), arc_id, layer);
 			}
 
 			/**
-			 * Same as link(NODE*, NODE*, unsigned long), but uses node ids
+			 * Same as link(Node<T, N>*, Node<T, N>*, unsigned long), but uses node ids
 			 * instead to get source and target nodes in the current graph.
 			 *
 			 * @param source_id source node id
@@ -258,7 +258,7 @@ namespace FPMAS {
 			 * @param arc_id new arc id
 			 * @return built arc
 			 */
-			template<NODE_PARAMS> ARC* Graph<NODE_PARAMS_SPEC>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {
+			template<typename T, int N> Arc<T, N>* Graph<T, N>::link(unsigned long source_id, unsigned long target_id, unsigned long arc_id) {
 				return link(source_id, target_id, arc_id, DefaultLayer);
 			}
 
@@ -266,7 +266,7 @@ namespace FPMAS {
 			 * Convenient function to remove an arc from an incoming or outgoing
 			 * arc list.
 			 */
-			template<NODE_PARAMS> void Graph<NODE_PARAMS_SPEC>::removeArc(ARC* arc, std::vector<ARC*>* arcList) {
+			template<typename T, int N> void Graph<T, N>::removeArc(Arc<T, N>* arc, std::vector<Arc<T, N>*>* arcList) {
 				for(auto it = arcList->begin(); it != arcList->end();) {
 					if(*it == arc) {
 						arcList->erase(it);
@@ -290,7 +290,7 @@ namespace FPMAS {
 			 * @return true iff the arc has been deleted (i.e. it belongs to the
 			 * graph)
 			 */
-			template<NODE_PARAMS> bool Graph<NODE_PARAMS_SPEC>::unlink(ARC* arc) {
+			template<typename T, int N> bool Graph<T, N>::unlink(Arc<T, N>* arc) {
 				// Removes the incoming arcs from the incoming/outgoing
 				// arc lists of target/source nodes.
 				this->removeArc(arc, &arc->getSourceNode()->layer(arc->layer).outgoingArcs);
@@ -310,13 +310,13 @@ namespace FPMAS {
 			}
 
 			/**
-			 * Same as unlink(ARC*), but gets the arc from its ID.
+			 * Same as unlink(Arc<T, N>*), but gets the arc from its ID.
 			 *
 			 * @param arcId id of the arc to delete
 			 * @return true iff the arc has been deleted (i.e. it belongs to the
 			 * graph)
 			 */
-			template<NODE_PARAMS> bool Graph<NODE_PARAMS_SPEC>::unlink(unsigned long arcId) {
+			template<typename T, int N> bool Graph<T, N>::unlink(unsigned long arcId) {
 				return this->unlink(this->arcs.at(arcId));
 			}
 
@@ -335,11 +335,11 @@ namespace FPMAS {
 			 * @param node_id id of the node to delete
 			 * @return collected fossil arcs
 			 */
-			template<NODE_PARAMS> FossilArcs<ARC>
-				Graph<NODE_PARAMS_SPEC>::removeNode(unsigned long node_id) {
-					NODE* node_to_remove = nodes.at(node_id);
+			template<typename T, int N> FossilArcs<Arc<T, N>>
+				Graph<T, N>::removeNode(unsigned long node_id) {
+					Node<T, N>* node_to_remove = nodes.at(node_id);
 
-				FossilArcs<ARC> fossil;
+				FossilArcs<Arc<T, N>> fossil;
 				// Deletes incoming arcs
 				for(auto layer : node_to_remove->layers) {
 					for(auto arc : layer.getIncomingArcs()) {
@@ -369,7 +369,7 @@ namespace FPMAS {
 			 *
 			 * Deletes nodes and arcs remaining in this graph.
 			 */
-			template<NODE_PARAMS> Graph<NODE_PARAMS_SPEC>::~Graph() {
+			template<typename T, int N> Graph<T, N>::~Graph() {
 				for(auto node : this->nodes) {
 					delete node.second;
 				}

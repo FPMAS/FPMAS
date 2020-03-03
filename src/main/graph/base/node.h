@@ -12,10 +12,10 @@
 
 namespace FPMAS::graph::base {
 
-	template<NODE_PARAMS> class Node;
-	template<NODE_PARAMS> class Graph;
-	template<NODE_PARAMS> class Arc;
-	template<NODE_PARAMS> class Layer;
+	template<typename T, int N> class Node;
+	template<typename T, int N> class Graph;
+	template<typename T, int N> class Arc;
+	template<typename T, int N> class Layer;
 
 	/**
 	 * Graph node.
@@ -32,20 +32,20 @@ namespace FPMAS::graph::base {
 	 * @tparam LayerType enum describing the available layers
 	 * @tparam N number of layers
 	 */
-	template<NODE_PARAMS>
+	template<typename T, int N>
 	class Node : public GraphItem {
-		friend NODE nlohmann::adl_serializer<NODE>::from_json(const json&);
-		friend ARC nlohmann::adl_serializer<ARC>::from_json(const json&);
+		friend Node<T, N> nlohmann::adl_serializer<Node<T, N>>::from_json(const json&);
+		friend Arc<T, N> nlohmann::adl_serializer<Arc<T, N>>::from_json(const json&);
 		// Grants access to incoming and outgoing arcs lists
-		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerId);
+		friend Arc<T, N>::Arc(unsigned long, Node<T, N>*, Node<T, N>*, LayerId);
 		// Grants access to private Node constructor
-		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long);
-		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, T&& data);
-		friend NODE* Graph<NODE_PARAMS_SPEC>::buildNode(unsigned long id, float weight, T&& data);
+		friend Node<T, N>* Graph<T, N>::buildNode(unsigned long);
+		friend Node<T, N>* Graph<T, N>::buildNode(unsigned long id, T&& data);
+		friend Node<T, N>* Graph<T, N>::buildNode(unsigned long id, float weight, T&& data);
 		// Grants access to layers
-		friend FossilArcs<ARC> Graph<NODE_PARAMS_SPEC>::removeNode(unsigned long);
+		friend FossilArcs<Arc<T, N>> Graph<T, N>::removeNode(unsigned long);
 		// Allows removeNode function to remove deleted arcs
-		friend bool Graph<NODE_PARAMS_SPEC>::unlink(ARC*);
+		friend bool Graph<T, N>::unlink(Arc<T, N>*);
 
 		protected:
 
@@ -76,8 +76,8 @@ namespace FPMAS::graph::base {
 		private:
 		T _data;
 		float weight;
-		std::array<Layer<NODE_PARAMS_SPEC>, N> layers;
-		Layer<NODE_PARAMS_SPEC>& layer(LayerId layer);
+		std::array<Layer<T, N>, N> layers;
+		Layer<T, N>& layer(LayerId layer);
 
 		public:
 		/**
@@ -116,7 +116,7 @@ namespace FPMAS::graph::base {
 		 *
 		 * @return const reference to layer
 		 */
-		const Layer<NODE_PARAMS_SPEC>& layer(LayerId layer) const;
+		const Layer<T, N>& layer(LayerId layer) const;
 
 		/**
 		 * Returns a const reference to the complete array of layers associated to
@@ -124,7 +124,7 @@ namespace FPMAS::graph::base {
 		 *
 		 * @return const reference to this node's layers std::array
 		 */
-		const std::array<Layer<NODE_PARAMS_SPEC>, N>& getLayers() const;
+		const std::array<Layer<T, N>, N>& getLayers() const;
 
 		/**
 		 * Returns a vector containing pointers to this node's incoming arcs on the
@@ -133,7 +133,7 @@ namespace FPMAS::graph::base {
 		 *
 		 * @return pointers to incoming arcs
 		 */
-		std::vector<ARC*> getIncomingArcs() const;
+		std::vector<Arc<T, N>*> getIncomingArcs() const;
 		/**
 		 * Returns the incoming neighbors list of this node, computed as source
 		 * nodes of each incoming arc on the
@@ -142,7 +142,7 @@ namespace FPMAS::graph::base {
 		 *
 		 * @return incoming neighbors list
 		 */
-		std::vector<NODE*> inNeighbors() const;
+		std::vector<Node<T, N>*> inNeighbors() const;
 		/**
 		 * Returns a vector containing pointers to this node's outgoing arcs on the
 		 * default layer (layer associated to the value `0` in the `LayerType`
@@ -150,7 +150,7 @@ namespace FPMAS::graph::base {
 		 *
 		 * @return pointers to outgoing arcs
 		 */
-		std::vector<ARC*> getOutgoingArcs() const;
+		std::vector<Arc<T, N>*> getOutgoingArcs() const;
 		/**
 		 * Returns the outgoing neighbors list of this node, computed as target
 		 * nodes of each outgoing arc on the
@@ -159,68 +159,68 @@ namespace FPMAS::graph::base {
 		 *
 		 * @return outgoing neighbors list
 		 */
-		std::vector<NODE*> outNeighbors() const;
+		std::vector<Node<T, N>*> outNeighbors() const;
 
 	};
 
-	template<NODE_PARAMS> Node<NODE_PARAMS_SPEC>::Node(unsigned long id) : NODE(id, 1., T()) {
+	template<typename T, int N> Node<T, N>::Node(unsigned long id) : Node<T, N>(id, 1., T()) {
 	}
 
-	template<NODE_PARAMS> Node<NODE_PARAMS_SPEC>::Node(unsigned long id, T&& data) : NODE(id, 1., std::move(data)) {
+	template<typename T, int N> Node<T, N>::Node(unsigned long id, T&& data) : Node<T, N>(id, 1., std::move(data)) {
 	}
 
-	template<NODE_PARAMS> Node<NODE_PARAMS_SPEC>::Node(unsigned long id, float weight, T&& data) : GraphItem(id), _data(std::move(data)), weight(weight) {
+	template<typename T, int N> Node<T, N>::Node(unsigned long id, float weight, T&& data) : GraphItem(id), _data(std::move(data)), weight(weight) {
 		for (int i = 0; i < N; i++) {
-			this->layers[i] = Layer<NODE_PARAMS_SPEC>();
+			this->layers[i] = Layer<T, N>();
 		}
 	}
 
-	template<NODE_PARAMS> T& Node<NODE_PARAMS_SPEC>::data() {
+	template<typename T, int N> T& Node<T, N>::data() {
 		return this->_data;
 	}
 
-	template<NODE_PARAMS> const T& Node<NODE_PARAMS_SPEC>::data() const {
+	template<typename T, int N> const T& Node<T, N>::data() const {
 		return this->_data;
 	}
 
-	template<NODE_PARAMS> float Node<NODE_PARAMS_SPEC>::getWeight() const {
+	template<typename T, int N> float Node<T, N>::getWeight() const {
 		return this->weight;
 	}
 
-	template<NODE_PARAMS> void Node<NODE_PARAMS_SPEC>::setWeight(float weight) {
+	template<typename T, int N> void Node<T, N>::setWeight(float weight) {
 		this->weight = weight;
 	}
 
-	template<NODE_PARAMS> Layer<NODE_PARAMS_SPEC>& Node<NODE_PARAMS_SPEC>::layer(LayerId layer) {
+	template<typename T, int N> Layer<T, N>& Node<T, N>::layer(LayerId layer) {
 		return this->layers[layer];
 	}
 
-	template<NODE_PARAMS> const Layer<NODE_PARAMS_SPEC>& Node<NODE_PARAMS_SPEC>::layer(LayerId layer) const {
+	template<typename T, int N> const Layer<T, N>& Node<T, N>::layer(LayerId layer) const {
 		return this->layers[layer];
 	}
 
-	template<NODE_PARAMS> const std::array<Layer<NODE_PARAMS_SPEC>, N>& Node<NODE_PARAMS_SPEC>::getLayers() const {
+	template<typename T, int N> const std::array<Layer<T, N>, N>& Node<T, N>::getLayers() const {
 		return this->layers;
 	}
 
-	template<NODE_PARAMS> std::vector<ARC*> Node<NODE_PARAMS_SPEC>::getIncomingArcs() const {
+	template<typename T, int N> std::vector<Arc<T, N>*> Node<T, N>::getIncomingArcs() const {
 		return this->layers[0].getIncomingArcs();
 	}
 
 
-	template<NODE_PARAMS> std::vector<NODE*> Node<NODE_PARAMS_SPEC>::inNeighbors() const {
-		std::vector<NODE*> neighbors;
+	template<typename T, int N> std::vector<Node<T, N>*> Node<T, N>::inNeighbors() const {
+		std::vector<Node<T, N>*> neighbors;
 		for(auto arc : this->layers[0].getIncomingArcs())
 			neighbors.push_back(arc->getSourceNode());
 		return neighbors;
 	}
 
-	template<NODE_PARAMS> std::vector<ARC*> Node<NODE_PARAMS_SPEC>::getOutgoingArcs() const {
+	template<typename T, int N> std::vector<Arc<T, N>*> Node<T, N>::getOutgoingArcs() const {
 		return this->layers[0].getOutgoingArcs();
 	}
 
-	template<NODE_PARAMS> std::vector<NODE*> Node<NODE_PARAMS_SPEC>::outNeighbors() const {
-		std::vector<NODE*> neighbors;
+	template<typename T, int N> std::vector<Node<T, N>*> Node<T, N>::outNeighbors() const {
+		std::vector<Node<T, N>*> neighbors;
 		for(auto arc : this->layers[0].getOutgoingArcs())
 			neighbors.push_back(arc->getTargetNode());
 		return neighbors;

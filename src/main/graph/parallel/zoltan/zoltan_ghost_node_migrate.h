@@ -13,7 +13,7 @@ using FPMAS::graph::base::Node;
 namespace FPMAS::graph::parallel {
 
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
-	template<NODE_PARAMS, SYNC_MODE> class GhostNode;
+	template<typename T, int N, SYNC_MODE> class GhostNode;
 
 	using synchro::SyncData;
 	using synchro::LocalData;
@@ -42,7 +42,7 @@ namespace FPMAS::graph::parallel {
 			 * @param sizes Result : buffer sizes for each node
 			 * @param ierr Result : error code
 			 */
-			template<NODE_PARAMS, SYNC_MODE> void obj_size_multi_fn(
+			template<typename T, int N, SYNC_MODE> void obj_size_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -92,7 +92,7 @@ namespace FPMAS::graph::parallel {
 			 * @param buf communication buffer
 			 * @param ierr Result : error code
 			 */
-			template<NODE_PARAMS, SYNC_MODE> void pack_obj_multi_fn(
+			template<typename T, int N, SYNC_MODE> void pack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -142,7 +142,7 @@ namespace FPMAS::graph::parallel {
 			 * @param ierr Result : error code
 			 *
 			 */
-			template<NODE_PARAMS, SYNC_MODE> void unpack_obj_multi_fn(
+			template<typename T, int N, SYNC_MODE> void unpack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_ids,
@@ -157,7 +157,7 @@ namespace FPMAS::graph::parallel {
 					int node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 					json json_node = json::parse(&buf[idx[i]]);
 
-					GhostNode<NODE_PARAMS_SPEC, S>* ghost = graph->getGhost().getNodes().at(node_id);
+					GhostNode<T, N, S>* ghost = graph->getGhost().getNodes().at(node_id);
 					Node<LocalData<T>, N> node_update = json_node.get<Node<LocalData<T>, N>>();
 
 					ghost->data() // std::unique_ptr

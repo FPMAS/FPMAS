@@ -48,7 +48,7 @@ namespace FPMAS::graph::parallel {
 		 * @param sizes Result : buffer sizes for each node
 		 * @param ierr Result : error code
 		 */
-		template<NODE_PARAMS, SYNC_MODE> void obj_size_multi_fn(
+		template<typename T, int N, SYNC_MODE> void obj_size_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -101,7 +101,7 @@ namespace FPMAS::graph::parallel {
 		 * @param buf communication buffer
 		 * @param ierr Result : error code
 		 */
-		template<NODE_PARAMS, SYNC_MODE> void pack_obj_multi_fn(
+		template<typename T, int N, SYNC_MODE> void pack_obj_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -149,7 +149,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ierr Result : error code
 		 *
 		 */
-		template<NODE_PARAMS, SYNC_MODE> void unpack_obj_multi_fn(
+		template<typename T, int N, SYNC_MODE> void unpack_obj_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_ids,
@@ -209,7 +209,7 @@ namespace FPMAS::graph::parallel {
 		 * @param export_to_part parts to which objects will be exported
 		 * @param ierr Result : error code
 		 */
-		template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_olz(
+		template<typename T, int N, SYNC_MODE> void post_migrate_pp_fn_olz(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -319,7 +319,7 @@ namespace FPMAS::graph::parallel {
 		 * @param export_to_part parts to which objects will be exported
 		 * @param ierr Result : error code
 		 */
-		template<NODE_PARAMS> void post_migrate_pp_fn_no_sync(
+		template<typename T, int N> void post_migrate_pp_fn_no_sync(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,

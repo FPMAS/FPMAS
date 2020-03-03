@@ -45,8 +45,8 @@ namespace FPMAS::graph::parallel::synchro {
 	};
 	template<class T> template<int N> const zoltan::utils::zoltan_query_functions None<T>::config
 		(
-		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<NODE_PARAMS_SPEC>,
-		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<NODE_PARAMS_SPEC>,
+		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T, N>,
+		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T, N>,
 		 NULL
 		);
 }

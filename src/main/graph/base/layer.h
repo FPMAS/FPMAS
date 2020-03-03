@@ -6,21 +6,9 @@
 #include <array>
 
 namespace FPMAS::graph::base {
-	template<NODE_PARAMS> class Arc;
-	template<NODE_PARAMS> class Node;
-	template<NODE_PARAMS> class Graph;
-
-/*
- *
- *    template<LayerId... layers> class LayerTypesTemplate {
- *    static constexpr std::array<LayerId, sizeof...(layers)> types = {layers...};
- *    static_assert(std::max<int>(
- *                std::initializer_list<int>({layers...}), [](const int& s1, const int& s2) {
- *                                 return s1 < s2;
- *                             }) <= sizeof...(layers),
- *            "Compile time error : the maximum values of layers must be less than their count.");
- *    };
- */
+	template<typename T, int N> class Arc;
+	template<typename T, int N> class Node;
+	template<typename T, int N> class Graph;
 
 	/**
 	 * Class representing a Layer of a Graph.
@@ -30,30 +18,29 @@ namespace FPMAS::graph::base {
 	 * enum.
 	 *
 	 * @tparam T associated data type
-	 * @tparam LayerType enum describing the available layers
 	 * @tparam N number of layers
 	 */
-	template<NODE_PARAMS> class Layer {
+	template<typename T, int N> class Layer {
 
-		friend ARC::Arc(unsigned long, NODE*, NODE*, LayerId);
+		friend Arc<T, N>::Arc(unsigned long, Node<T, N>*, Node<T, N>*, LayerId);
 		// Allows removeNode function to remove deleted arcs
-		friend bool Graph<NODE_PARAMS_SPEC>::unlink(ARC*);
+		friend bool Graph<T, N>::unlink(Arc<T, N>*);
 
 		protected:
 			/**
 			 * List of pointers to incoming arcs.
 			 */
-			std::vector<ARC*> incomingArcs;
+			std::vector<Arc<T, N>*> incomingArcs;
 			/**
 			 * List of pointers to outgoing arcs.
 			 */
-			std::vector<ARC*> outgoingArcs;
+			std::vector<Arc<T, N>*> outgoingArcs;
 
 		public:
-			std::vector<ARC*> getIncomingArcs() const;
-			std::vector<NODE*> inNeighbors() const;
-			std::vector<ARC*> getOutgoingArcs() const;
-			std::vector<NODE*> outNeighbors() const;
+			std::vector<Arc<T, N>*> getIncomingArcs() const;
+			std::vector<Node<T, N>*> inNeighbors() const;
+			std::vector<Arc<T, N>*> getOutgoingArcs() const;
+			std::vector<Node<T, N>*> outNeighbors() const;
 
 	};
 
@@ -62,7 +49,7 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return pointers to incoming arcs
 	 */
-	template<NODE_PARAMS> std::vector<ARC*> Layer<NODE_PARAMS_SPEC>::getIncomingArcs() const {
+	template<typename T, int N> std::vector<Arc<T, N>*> Layer<T, N>::getIncomingArcs() const {
 		return this->incomingArcs;
 	}
 
@@ -72,8 +59,8 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return incoming neighbors list
 	 */
-	template<NODE_PARAMS> std::vector<NODE*> Layer<NODE_PARAMS_SPEC>::inNeighbors() const {
-		std::vector<NODE*> neighbors;
+	template<typename T, int N> std::vector<Node<T, N>*> Layer<T, N>::inNeighbors() const {
+		std::vector<Node<T, N>*> neighbors;
 		for(auto arc : this->incomingArcs)
 			neighbors.push_back(arc->getSourceNode());
 		return neighbors;
@@ -84,7 +71,7 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return pointers to outgoing arcs
 	 */
-	template<NODE_PARAMS> std::vector<ARC*> Layer<NODE_PARAMS_SPEC>::getOutgoingArcs() const {
+	template<typename T, int N> std::vector<Arc<T, N>*> Layer<T, N>::getOutgoingArcs() const {
 		return this->outgoingArcs;
 	}
 
@@ -94,8 +81,8 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return outgoing neighbors list
 	 */
-	template<NODE_PARAMS> std::vector<NODE*> Layer<NODE_PARAMS_SPEC>::outNeighbors() const {
-		std::vector<NODE*> neighbors;
+	template<typename T, int N> std::vector<Node<T, N>*> Layer<T, N>::outNeighbors() const {
+		std::vector<Node<T, N>*> neighbors;
 		for(auto arc : this->outgoingArcs)
 			neighbors.push_back(arc->getTargetNode());
 		return neighbors;

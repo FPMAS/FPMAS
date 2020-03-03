@@ -12,7 +12,7 @@ using FPMAS::graph::base::FossilArcs;
 namespace FPMAS::graph::parallel {
 
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
-	template<NODE_PARAMS, SYNC_MODE> class GhostNode;
+	template<typename T, int N, SYNC_MODE> class GhostNode;
 
 	using synchro::None;
 	using synchro::SyncData;
@@ -42,7 +42,7 @@ namespace FPMAS::graph::parallel {
 			 * @param sizes Result : buffer sizes for each node
 			 * @param ierr Result : error code
 			 */
-			template<NODE_PARAMS, SYNC_MODE> void obj_size_multi_fn(
+			template<typename T, int N, SYNC_MODE> void obj_size_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -139,7 +139,7 @@ namespace FPMAS::graph::parallel {
 			 * @param buf communication buffer
 			 * @param ierr Result : error code
 			 */
-			template<NODE_PARAMS, SYNC_MODE> void pack_obj_multi_fn(
+			template<typename T, int N, SYNC_MODE> void pack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -198,7 +198,7 @@ namespace FPMAS::graph::parallel {
 			 * post), so that imported arcs are built properly on the
 			 * imported nodes, not on the obsolete ghosts.
 			 */
-			template <NODE_PARAMS, SYNC_MODE> void mid_migrate_pp_fn(
+			template <typename T, int N, SYNC_MODE> void mid_migrate_pp_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -247,7 +247,7 @@ namespace FPMAS::graph::parallel {
 			 * @param ierr Result : error code
 			 *
 			 */
-			template<NODE_PARAMS, SYNC_MODE> void unpack_obj_multi_fn(
+			template<typename T, int N, SYNC_MODE> void unpack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_ids,
@@ -300,7 +300,7 @@ namespace FPMAS::graph::parallel {
 								// The source node of the received arc is
 								// contained in the local graph, so the target
 								// node is distant
-								GhostNode<NODE_PARAMS_SPEC, S>* ghost;
+								GhostNode<T, N, S>* ghost;
 								if(graph->getGhost().getNodes().count(targetId) == 0) {
 									// No ghost node as been created yet for
 									// this node (from an other arc imported at
@@ -328,7 +328,7 @@ namespace FPMAS::graph::parallel {
 								// node is distant
 
 								// Same process has above
-								GhostNode<NODE_PARAMS_SPEC, S>* ghost;
+								GhostNode<T, N, S>* ghost;
 								if(graph->getGhost().getNodes().count(sourceId) == 0) {
 									ghost = graph->getGhost().buildNode(sourceId);
 
@@ -371,7 +371,7 @@ namespace FPMAS::graph::parallel {
 			 * This process builds required ghost nodes and deletes useless
 			 * ones according to nodes that were just exported.
 			 */
-			template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_olz(
+			template<typename T, int N, SYNC_MODE> void post_migrate_pp_fn_olz(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -449,7 +449,7 @@ namespace FPMAS::graph::parallel {
 			 * In this mode, the only thing to do is deleting the exported
 			 * nodes from the local graph.
 			 */
-			template<NODE_PARAMS> void post_migrate_pp_fn_no_sync(
+			template<typename T, int N> void post_migrate_pp_fn_no_sync(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,

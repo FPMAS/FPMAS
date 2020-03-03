@@ -70,27 +70,27 @@ namespace FPMAS {
 			int N = 1
 			>
 		class DistributedGraph : public Graph<std::unique_ptr<SyncData<T>>, N>, communication::ResourceContainer {
-			friend void zoltan::node::obj_size_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_OBJ_SIZE_ARGS);
-			friend void zoltan::arc::obj_size_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_OBJ_SIZE_ARGS);
+			friend void zoltan::node::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
+			friend void zoltan::arc::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
-			friend void zoltan::node::pack_obj_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_PACK_OBJ_ARGS);
-			friend void zoltan::arc::pack_obj_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_PACK_OBJ_ARGS);
+			friend void zoltan::node::pack_obj_multi_fn<T, N, S>(ZOLTAN_PACK_OBJ_ARGS);
+			friend void zoltan::arc::pack_obj_multi_fn<T, N, S>(ZOLTAN_PACK_OBJ_ARGS);
 
-			friend void zoltan::node::unpack_obj_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_UNPACK_OBJ_ARGS);
-			friend void zoltan::arc::unpack_obj_multi_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_UNPACK_OBJ_ARGS);
+			friend void zoltan::node::unpack_obj_multi_fn<T, N, S>(ZOLTAN_UNPACK_OBJ_ARGS);
+			friend void zoltan::arc::unpack_obj_multi_fn<T, N, S>(ZOLTAN_UNPACK_OBJ_ARGS);
 
-			friend void zoltan::node::post_migrate_pp_fn_no_sync<NODE_PARAMS_SPEC>(ZOLTAN_MID_POST_MIGRATE_ARGS);
-			friend void zoltan::node::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::node::post_migrate_pp_fn_no_sync<T, N>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::node::post_migrate_pp_fn_olz<T, N, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
-			friend void zoltan::arc::mid_migrate_pp_fn<NODE_PARAMS_SPEC, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
-			friend void zoltan::arc::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
-			friend void zoltan::arc::post_migrate_pp_fn_no_sync<NODE_PARAMS_SPEC>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::mid_migrate_pp_fn<T, N, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::post_migrate_pp_fn_olz<T, N, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
+			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T, N>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
 			private:
 			SyncMpiCommunicator mpiCommunicator;
 			Zoltan zoltan;
 			Proxy proxy;
-			GhostGraph<NODE_PARAMS_SPEC, S> ghost;
+			GhostGraph<T, N, S> ghost;
 
 			void distribute(int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int*, int*, ZOLTAN_ID_PTR, int*);
 			void setZoltanNodeMigration();
@@ -145,7 +145,7 @@ namespace FPMAS {
 			 *
 			 * @return reference to the current GhostGraph
 			 */
-			GhostGraph<NODE_PARAMS_SPEC, S>& getGhost();
+			GhostGraph<T, N, S>& getGhost();
 
 			/**
 			 * Returns a const reference to the GhostGraph currently associated to this
@@ -153,7 +153,7 @@ namespace FPMAS {
 			 *
 			 * @return const reference to the current GhostGraph
 			 */
-			const GhostGraph<NODE_PARAMS_SPEC, S>& getGhost() const;
+			const GhostGraph<T, N, S>& getGhost() const;
 
 			Proxy& getProxy();
 
@@ -178,10 +178,10 @@ namespace FPMAS {
 			FPMAS::config::zoltan_config(&this->zoltan);
 
 			// Initializes Zoltan Node Load Balancing functions
-			this->zoltan.Set_Num_Obj_Fn(FPMAS::graph::parallel::zoltan::num_obj<NODE_PARAMS_SPEC, S>, this);
-			this->zoltan.Set_Obj_List_Fn(FPMAS::graph::parallel::zoltan::obj_list<NODE_PARAMS_SPEC, S>, this);
-			this->zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::parallel::zoltan::num_edges_multi_fn<NODE_PARAMS_SPEC, S>, this);
-			this->zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::parallel::zoltan::edge_list_multi_fn<NODE_PARAMS_SPEC, S>, this);
+			this->zoltan.Set_Num_Obj_Fn(FPMAS::graph::parallel::zoltan::num_obj<T, N, S>, this);
+			this->zoltan.Set_Obj_List_Fn(FPMAS::graph::parallel::zoltan::obj_list<T, N, S>, this);
+			this->zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::parallel::zoltan::num_edges_multi_fn<T, N, S>, this);
+			this->zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::parallel::zoltan::edge_list_multi_fn<T, N, S>, this);
 		}
 
 		/**
@@ -220,11 +220,11 @@ namespace FPMAS {
 			return this->proxy;
 		}
 
-		template<class T, SYNC_MODE, int N> GhostGraph<NODE_PARAMS_SPEC, S>& DistributedGraph<T, S, N>::getGhost() {
+		template<class T, SYNC_MODE, int N> GhostGraph<T, N, S>& DistributedGraph<T, S, N>::getGhost() {
 			return this->ghost;
 		}
 
-		template<class T, SYNC_MODE, int N> const GhostGraph<NODE_PARAMS_SPEC, S>& DistributedGraph<T, S, N>::getGhost() const {
+		template<class T, SYNC_MODE, int N> const GhostGraph<T, N, S>& DistributedGraph<T, S, N>::getGhost() const {
 			return this->ghost;
 		}
 
@@ -232,9 +232,9 @@ namespace FPMAS {
 		 * Configures Zoltan to migrate nodes.
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::setZoltanNodeMigration() {
-			zoltan.Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<NODE_PARAMS_SPEC, S>, this);
-			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<NODE_PARAMS_SPEC, S>, this);
-			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<NODE_PARAMS_SPEC, S>, this);
+			zoltan.Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn<T, N, S>, this);
+			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T, N, S>, this);
+			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T, N, S>, this);
 			zoltan.Set_Mid_Migrate_PP_Fn(NULL);
 			zoltan.Set_Post_Migrate_PP_Fn((S<T>::template config<N>).node_post_migrate_fn, this);
 		}
@@ -243,9 +243,9 @@ namespace FPMAS {
 		 * Configures Zoltan to migrate arcs.
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::setZoltanArcMigration() {
-			zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<NODE_PARAMS_SPEC, S>, this);
-			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<NODE_PARAMS_SPEC, S>, this);
-			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<NODE_PARAMS_SPEC, S>, this);
+			zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T, N, S>, this);
+			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T, N, S>, this);
+			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, N, S>, this);
 
 			zoltan.Set_Mid_Migrate_PP_Fn((S<T>::template config<N>).arc_mid_migrate_fn, this);
 			zoltan.Set_Post_Migrate_PP_Fn((S<T>::template config<N>).arc_post_migrate_fn, this);

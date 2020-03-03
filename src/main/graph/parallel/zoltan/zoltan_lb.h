@@ -36,7 +36,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ierr Result : error code
 		 * @return numbe of nodes managed by the current process
 		 */
-		template<NODE_PARAMS, SYNC_MODE> int num_obj(void *data, int* ierr) {
+		template<typename T, int N, SYNC_MODE> int num_obj(void *data, int* ierr) {
 			return ((DistributedGraph<T, S, N>*) data)->getNodes().size();
 		}
 
@@ -56,7 +56,7 @@ namespace FPMAS::graph::parallel {
 		 * @param obj_wgts Result : weights list
 		 * @param ierr Result : error code
 		 */
-		template<NODE_PARAMS, SYNC_MODE> void obj_list(
+		template<typename T, int N, SYNC_MODE> void obj_list(
 				void *data,
 				int num_gid_entries, 
 				int num_lid_entries,
@@ -91,7 +91,7 @@ namespace FPMAS::graph::parallel {
 		 * @param num_edges Result : number of outgoing arc for each node
 		 * @param ierr Result : error code
 		 */
-		template<NODE_PARAMS, SYNC_MODE> void num_edges_multi_fn(
+		template<typename T, int N, SYNC_MODE> void num_edges_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -132,7 +132,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ewgts Result : edge weight for each neighbor
 		 * @param ierr Result : error code
 		 */
-		template<NODE_PARAMS, SYNC_MODE> void edge_list_multi_fn(
+		template<typename T, int N, SYNC_MODE> void edge_list_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,

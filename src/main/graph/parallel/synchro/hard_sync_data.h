@@ -50,9 +50,9 @@ namespace FPMAS::graph::parallel::synchro {
 	};
 	template<class T> template<int N> const zoltan::utils::zoltan_query_functions HardSyncData<T>::config
 		(
-		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, HardSyncData>,
-		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<NODE_PARAMS_SPEC, HardSyncData>,
-		 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<NODE_PARAMS_SPEC, HardSyncData>
+		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, HardSyncData>,
+		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, HardSyncData>,
+		 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, HardSyncData>
 		);
 
 	/**

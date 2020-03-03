@@ -14,22 +14,22 @@ using FPMAS::communication::SyncMpiCommunicator;
 namespace FPMAS::graph::parallel {
 	namespace zoltan {
 		namespace node {
-			template<NODE_PARAMS> void post_migrate_pp_fn_no_sync(
+			template<typename T, int N> void post_migrate_pp_fn_no_sync(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
-			template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_olz(
+			template<typename T, int N, SYNC_MODE> void post_migrate_pp_fn_olz(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
 
 		}
 		namespace arc {
-			template<NODE_PARAMS> void post_migrate_pp_fn_no_sync(
+			template<typename T, int N> void post_migrate_pp_fn_no_sync(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
-			template<NODE_PARAMS, SYNC_MODE> void post_migrate_pp_fn_olz(
+			template<typename T, int N, SYNC_MODE> void post_migrate_pp_fn_olz(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
-			template<NODE_PARAMS, SYNC_MODE> void mid_migrate_pp_fn(
+			template<typename T, int N, SYNC_MODE> void mid_migrate_pp_fn(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
 		}
