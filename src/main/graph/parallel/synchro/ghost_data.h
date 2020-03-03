@@ -11,9 +11,8 @@ namespace FPMAS::graph::parallel {
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	using parallel::DistributedGraph;
-}
 
-	namespace FPMAS::graph::parallel::synchro {
+	namespace synchro {
 
 		/**
 		 * Synchronisation mode used as default by the DistributedGraph, and
@@ -43,7 +42,7 @@ namespace FPMAS::graph::parallel {
 				GhostData(unsigned long, SyncMpiCommunicator&, const Proxy&, const T&);
 				GhostData(unsigned long, SyncMpiCommunicator&, const Proxy&, T&&);
 				/**
-				 * Defines the Zoltan configuration used manage and migrate
+				 * Defines the Zoltan configuration used to manage and migrate
 				 * GhostNode s and GhostArc s.
 				 */
 				template <int N> const static zoltan::utils::zoltan_query_functions config;
@@ -108,4 +107,5 @@ namespace FPMAS::graph::parallel {
 			}
 
 	}
+}
 #endif

@@ -217,7 +217,6 @@ namespace FPMAS::graph::parallel {
 		this->ghostNodes[gNode->getId()] = gNode;
 
 		// Replaces the incomingArcs list by proper GhostArcs
-		// gNode->incomingArcs.clear();	
 		for(auto layer : node.getLayers()) {
 			for(auto arc : layer.getIncomingArcs()) {
 				auto localSourceNode = arc->getSourceNode();
@@ -234,7 +233,6 @@ namespace FPMAS::graph::parallel {
 		}
 
 		// Replaces the outgoingArcs list by proper GhostArcs
-		// gNode->outgoingArcs.clear();
 		for(auto layer : node.getLayers()) {
 			for(auto arc : layer.getOutgoingArcs()) {
 				auto localTargetNode = arc->getTargetNode();

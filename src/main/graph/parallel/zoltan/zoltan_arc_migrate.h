@@ -443,7 +443,7 @@ namespace FPMAS::graph::parallel {
 
 			/**
 			 * Called once nodes and arcs migration processes are done when
-			 * using the SyncMode::NONE synchronization mode.
+			 * using the synchro::None synchronization mode.
 			 *
 			 * In this mode, the only thing to do is deleting the exported
 			 * nodes from the local graph.

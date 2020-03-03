@@ -64,11 +64,7 @@ namespace FPMAS {
 		 * @tparam T associated data type
 		 * @tparam S synchronization mode
 		 */
-		template<
-			typename T,
-			SYNC_MODE = GhostData,
-			int N = 1
-			>
+		template<typename T, SYNC_MODE = GhostData, int N = 1>
 		class DistributedGraph : public Graph<std::unique_ptr<SyncData<T>>, N>, communication::ResourceContainer {
 			friend void zoltan::node::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);

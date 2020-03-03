@@ -66,10 +66,7 @@ namespace FPMAS {
 			 * @tparam LayerType enum describing the available layers
 			 * @tparam N number of layers
 			 */
-			template<
-				typename T,
-				int N = 1
-				>
+			template<typename T, int N = 1>
 			class Graph {
 				friend Graph<T, N> nlohmann::adl_serializer<Graph<T, N>>::from_json(const json&);
 				private:
