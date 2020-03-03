@@ -56,6 +56,7 @@ namespace FPMAS::graph::parallel {
 		 * @tparam T wrapped data type
 		 */
 		template <class T> class SyncData {
+			friend nlohmann::adl_serializer<SyncData<T>>;
 
 			protected:
 				/**
@@ -185,6 +186,9 @@ namespace nlohmann {
 			j = data->get();
 		}
 
+		static SyncData<T> from_json(const json& j) {
+			return SyncData<T>(j.get<T>());
+		}
 	};
 }
 

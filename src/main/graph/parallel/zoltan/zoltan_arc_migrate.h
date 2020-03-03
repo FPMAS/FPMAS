@@ -16,7 +16,6 @@ namespace FPMAS::graph::parallel {
 
 	using synchro::None;
 	using synchro::SyncData;
-	using synchro::LocalData;
 
 	namespace zoltan {
 		/**

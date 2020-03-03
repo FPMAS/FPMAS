@@ -8,7 +8,6 @@
 #include "utils/macros.h"
 #include "zoltan_utils.h"
 #include "../synchro/sync_data.h"
-#include "../synchro/local_data.h"
 #include "../synchro/none.h"
 #include "../../base/node.h"
 
@@ -22,7 +21,6 @@ namespace FPMAS::graph::parallel {
 
 	using synchro::SyncData;
 	using synchro::None;
-	using synchro::LocalData;
 
 	using zoltan::utils::write_zoltan_id;
 	using zoltan::utils::read_zoltan_id;

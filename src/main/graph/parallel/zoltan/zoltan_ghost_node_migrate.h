@@ -12,11 +12,9 @@ using FPMAS::graph::base::Node;
 
 namespace FPMAS::graph::parallel {
 
+	using synchro::SyncData;
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 	template<typename T, int N, SYNC_MODE> class GhostNode;
-
-	using synchro::SyncData;
-	using synchro::LocalData;
 
 	namespace zoltan {
 		using utils::write_zoltan_id;
@@ -158,13 +156,15 @@ namespace FPMAS::graph::parallel {
 					json json_node = json::parse(&buf[idx[i]]);
 
 					GhostNode<T, N, S>* ghost = graph->getGhost().getNodes().at(node_id);
-					Node<LocalData<T>, N> node_update = json_node.get<Node<LocalData<T>, N>>();
+
+					T data = json_node.at("data").get<T>();
+					float weight = json_node.at("weight").get<float>();
 
 					ghost->data() // std::unique_ptr
 						-> // ptr to SyncData<T>
 						acquire() // reference to T
-						= std::move(node_update.data().acquire());
-					ghost->setWeight(node_update.getWeight());
+						= std::move(data);
+					ghost->setWeight(weight);
 				}
 
 			}

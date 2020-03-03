@@ -3,7 +3,6 @@
 
 #include "../base/graph.h"
 #include "synchro/sync_data.h"
-#include "synchro/local_data.h"
 #include "synchro/ghost_data.h"
 
 using FPMAS::graph::base::Node;

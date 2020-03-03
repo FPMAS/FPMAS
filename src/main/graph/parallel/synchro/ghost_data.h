@@ -1,7 +1,6 @@
 #ifndef GHOST_DATA_H
 #define GHOST_DATA_H
 
-#include "local_data.h"
 #include "../proxy/proxy.h"
 #include "../distributed_graph.h"
 

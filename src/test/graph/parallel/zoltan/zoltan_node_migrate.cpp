@@ -13,7 +13,6 @@ using FPMAS::graph::parallel::zoltan::node::obj_size_multi_fn;
 using FPMAS::graph::parallel::zoltan::node::pack_obj_multi_fn;
 
 using FPMAS::graph::parallel::synchro::SyncData;
-using FPMAS::graph::parallel::synchro::LocalData;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
