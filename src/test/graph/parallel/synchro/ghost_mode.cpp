@@ -3,7 +3,6 @@
 #include "test_utils/test_utils.h"
 
 #include "graph/parallel/distributed_graph.h"
-#include "graph/parallel/synchro/sync_data.h"
 
 using FPMAS::graph::parallel::synchro::SyncData;
 using FPMAS::graph::parallel::DistributedGraph;

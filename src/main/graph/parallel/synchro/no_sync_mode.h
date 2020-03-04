@@ -8,6 +8,7 @@
 using FPMAS::graph::parallel::proxy::Proxy;
 
 namespace FPMAS::graph::parallel::synchro {
+
 	/**
 	 * Synchronisation mode that can be used as a template argument for
 	 * a DistributedGraph, where no synchronization or overlapping zone
@@ -16,38 +17,39 @@ namespace FPMAS::graph::parallel::synchro {
 	 * When a node is exported, its connections with nodes that are not
 	 * exported on the same process are lost.
 	 */
-	template<class T> class None : public SyncData<T> {
+    template<class T> class NoSyncData : public SyncData<T> {
 		public:
 			/**
-			 * Zoltan config associated to the None synchronization
-			 * mode.
+			 * Unused constructor, defined for synchronization mode API
+			 * compatibility.
 			 */
-			template<int N> const static zoltan::utils::zoltan_query_functions config;
-
+			NoSyncData(NodeId, SyncMpiCommunicator&, const Proxy&) {};
 			/**
 			 * Unused constructor, defined for synchronization mode API
 			 * compatibility.
 			 */
-			None(NodeId, SyncMpiCommunicator&, const Proxy&) {};
-			/**
-			 * Unused constructor, defined for synchronization mode API
-			 * compatibility.
-			 */
-			None(NodeId, SyncMpiCommunicator&, const Proxy&, T&&) {};
-			None(NodeId, SyncMpiCommunicator&, const Proxy&, const T&) {};
-
-			/**
-			 * Termination function used at the end of each
-			 * DistributedGraph<T,S>::synchronize() call : does not do anything
-			 * in this mode.
-			 */
-			template<int N> static void termination(DistributedGraph<T, None, N>* dg) {}
+			NoSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, T&& data) :
+				SyncData<T>(std::move(data)) {};
+			NoSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, const T& data) :
+				SyncData<T>(data) {};
 	};
-	template<class T> template<int N> const zoltan::utils::zoltan_query_functions None<T>::config
-		(
+	//template<class T> template<int N> const zoltan::utils::zoltan_query_functions None<T>::config
+		//(
+		 //&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T, N>,
+		 //&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T, N>,
+		 //NULL
+		/*);*/
+
+	template<typename T, int N> class NoSyncMode : public SyncMode<NoSyncMode, NoSyncData, T, N> {
+		public:
+		NoSyncMode();
+	};
+
+	template<typename T, int N> NoSyncMode<T,N>::NoSyncMode()
+		: SyncMode<NoSyncMode, NoSyncData, T, N>(zoltan_query_functions(
 		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T, N>,
 		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T, N>,
 		 NULL
-		);
+		 )) {};
 }
 #endif

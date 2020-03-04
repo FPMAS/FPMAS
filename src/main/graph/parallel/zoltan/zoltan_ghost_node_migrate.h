@@ -5,7 +5,7 @@
 
 #include "zoltan_utils.h"
 #include "../olz.h"
-#include "../synchro/sync_data.h"
+#include "../synchro/sync_mode.h"
 #include "graph/base/node.h"
 
 using FPMAS::graph::base::Node;

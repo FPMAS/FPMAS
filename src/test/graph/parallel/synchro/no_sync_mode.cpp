@@ -4,11 +4,11 @@
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::parallel::synchro::None;
+using FPMAS::graph::parallel::synchro::NoSyncMode;
 
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:
-		DistributedGraph<int, None> dg;
+		DistributedGraph<int, NoSyncMode> dg;
 		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 	void SetUp() override {

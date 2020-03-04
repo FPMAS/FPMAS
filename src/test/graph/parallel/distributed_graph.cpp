@@ -7,7 +7,7 @@
 #include "test_utils/test_utils.h"
 
 using FPMAS::test_utils::assert_contains;
-using FPMAS::graph::parallel::synchro::GhostData;
+using FPMAS::graph::parallel::synchro::GhostMode;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
@@ -51,8 +51,8 @@ TEST(Mpi_DistributedGraph, build_with_ranks_and_sync_mode_test) {
 	int current_rank;
 	MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
 
-	using FPMAS::graph::parallel::synchro::None;
-	DistributedGraph<int, None> dg = DistributedGraph<int, None>({current_rank});
+	using FPMAS::graph::parallel::synchro::NoSyncMode;
+	DistributedGraph<int, NoSyncMode> dg = DistributedGraph<int, NoSyncMode>({current_rank});
 
 	// TODO: Assert idea?
 }

@@ -8,7 +8,7 @@ int main(int argc, char* argv[]) {
 	init(argc, argv);
 
 	{
-		DistributedGraph<Agent, HardSyncData> dg;
+		DistributedGraph<Agent, HardSyncMode> dg;
 
 		if(dg.getMpiCommunicator().getRank() == 0) {
 			FPMAS_LOGI(0, "MAIN", "Building graph...");

@@ -4,7 +4,7 @@
 #include "zoltan_cpp.h"
 
 #include "../olz.h"
-#include "../synchro/none.h"
+#include "../synchro/no_sync_mode.h"
 
 using FPMAS::graph::base::Arc;
 using FPMAS::graph::base::FossilArcs;
@@ -14,7 +14,7 @@ namespace FPMAS::graph::parallel {
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 	template<typename T, int N, SYNC_MODE> class GhostNode;
 
-	using synchro::None;
+	using synchro::NoSyncMode;
 	using synchro::SyncData;
 
 	namespace zoltan {
@@ -463,7 +463,7 @@ namespace FPMAS::graph::parallel {
 					int *export_procs,
 					int *export_to_part,
 					int *ierr) {
-				DistributedGraph<T, None, N>* graph = (DistributedGraph<T, None, N>*) data;
+				DistributedGraph<T, NoSyncMode, N>* graph = (DistributedGraph<T, NoSyncMode, N>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_no_sync");
 
 				// Removes exported nodes from the local graph

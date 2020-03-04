@@ -5,8 +5,8 @@
 
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::synchro::SyncData;
-using FPMAS::graph::parallel::synchro::GhostData;
-using FPMAS::graph::parallel::synchro::None;
+using FPMAS::graph::parallel::synchro::GhostMode;
+using FPMAS::graph::parallel::synchro::NoSyncMode;
 
 enum TestLayer {
 	DEFAULT = 0,
@@ -15,7 +15,7 @@ enum TestLayer {
 
 class Mpi_DistributeMultiGraphNoneSynchroTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, None, 2> dg;
+		DistributedGraph<int, NoSyncMode, 2> dg;
 		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 		void SetUp() override {
@@ -78,7 +78,7 @@ TEST_F(Mpi_DistributeMultiGraphNoneSynchroTest, distribute_none_synchro_test) {
 
 class Mpi_DistributeMultiGraphWithArcTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, GhostData, 2> dg;
+		DistributedGraph<int, GhostMode, 2> dg;
 		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
@@ -140,7 +140,7 @@ TEST_F(Mpi_DistributeMultiGraphWithArcTest, distribute_with_arc_test) {
 
 class Mpi_DistributeMultiGraphWithGhostArcTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, GhostData, 2> dg;
+		DistributedGraph<int, GhostMode, 2> dg;
 		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {

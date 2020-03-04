@@ -1,21 +1,21 @@
 #include "gtest/gtest.h"
 
 #include "graph/parallel/distributed_graph.h"
-#include "graph/parallel/synchro/hard_sync_data.h"
+#include "graph/parallel/synchro/hard_sync_mode.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::HardSyncData;
+using FPMAS::graph::parallel::synchro::HardSyncMode;
 
 
 TEST(Mpi_HardSyncDistGraph, build_test) {
-	DistributedGraph<int, HardSyncData> dg;
+	DistributedGraph<int, HardSyncMode> dg;
 	dg.getGhost().buildNode(2);
 
 }
 
 class Mpi_HardSyncDistGraphReadTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, HardSyncData> dg;
+		DistributedGraph<int, HardSyncMode> dg;
 		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 		void SetUp() override {
@@ -46,7 +46,7 @@ TEST_F(Mpi_HardSyncDistGraphReadTest, simple_read_test) {
 
 class Mpi_HardSyncDistGraphAcquireTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, HardSyncData> dg;
+		DistributedGraph<int, HardSyncMode> dg;
 		std::unordered_map<unsigned long, std::pair<int, int>> partition;
 
 		void SetUp() override {

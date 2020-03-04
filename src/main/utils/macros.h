@@ -8,6 +8,6 @@ namespace FPMAS::graph::base {
 	static constexpr int DefaultLayer = 0;
 }
 
-#define SYNC_MODE template<class> class S
+#define SYNC_MODE template<typename, int> class S
 
 #endif

@@ -2,11 +2,11 @@
 #define PREY_PREDATOR_H
 
 #include "graph/parallel/distributed_graph.h"
-#include "graph/parallel/synchro/hard_sync_data.h"
+#include "graph/parallel/synchro/hard_sync_mode.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::base::Node;
-using FPMAS::graph::parallel::synchro::HardSyncData;
+using FPMAS::graph::parallel::synchro::HardSyncMode;
 using FPMAS::graph::parallel::synchro::SyncData;
 
 enum Role {

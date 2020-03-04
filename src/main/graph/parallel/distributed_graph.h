@@ -8,7 +8,6 @@
 #include "olz.h"
 #include "olz_graph.h"
 #include "zoltan/zoltan_lb.h"
-#include "zoltan/zoltan_utils.h"
 #include "zoltan/zoltan_node_migrate.h"
 #include "zoltan/zoltan_arc_migrate.h"
 
@@ -16,8 +15,7 @@
 #include "communication/communication.h"
 #include "communication/resource_container.h"
 
-#include "synchro/sync_data.h"
-#include "proxy/proxy.h"
+#include "synchro/sync_mode.h"
 
 
 namespace FPMAS {
@@ -30,14 +28,15 @@ namespace FPMAS {
 	 */
 	namespace graph::parallel {
 		namespace synchro {
-			template<class T> class GhostData;
+			//template<class T> class GhostData;
+			template<typename, int> class GhostMode; 
 		}
 
 		using base::NodeId;
 		using base::ArcId;
 		using proxy::Proxy;
 		using synchro::SyncData;
-		using synchro::GhostData;
+		using synchro::GhostMode;
 
 		/** A DistributedGraph is a special graph instance that can be
 		 * distributed across available processors using Zoltan.
@@ -66,7 +65,7 @@ namespace FPMAS {
 		 * @tparam T associated data type
 		 * @tparam S synchronization mode
 		 */
-		template<typename T, SYNC_MODE = GhostData, int N = 1>
+		template<typename T, SYNC_MODE = GhostMode, int N = 1>
 		class DistributedGraph : public Graph<std::unique_ptr<SyncData<T>>, N>, communication::ResourceContainer {
 			friend void zoltan::node::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
@@ -88,6 +87,7 @@ namespace FPMAS {
 			SyncMpiCommunicator mpiCommunicator;
 			Zoltan zoltan;
 			Proxy proxy;
+			S<T, N> syncMode;
 			GhostGraph<T, N, S> ghost;
 
 			void distribute(int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int*, int*, ZOLTAN_ID_PTR, int*);
@@ -159,6 +159,9 @@ namespace FPMAS {
 			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, T& data);
 			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, float weight, T&& data);
 			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, float weight, T& data);
+
+			Arc<std::unique_ptr<SyncData<T>>, N>* link(NodeId, NodeId, ArcId);
+			Arc<std::unique_ptr<SyncData<T>>, N>* link(NodeId, NodeId, ArcId, LayerId);
 
 			std::string getLocalData(unsigned long) const override;
 			std::string getUpdatedData(unsigned long) const override;
@@ -234,7 +237,7 @@ namespace FPMAS {
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn<T, N, S>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn<T, N, S>, this);
 			zoltan.Set_Mid_Migrate_PP_Fn(NULL);
-			zoltan.Set_Post_Migrate_PP_Fn((S<T>::template config<N>).node_post_migrate_fn, this);
+			zoltan.Set_Post_Migrate_PP_Fn(syncMode.config().node_post_migrate_fn, this);
 		}
 
 		/**
@@ -245,8 +248,8 @@ namespace FPMAS {
 			zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T, N, S>, this);
 			zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, N, S>, this);
 
-			zoltan.Set_Mid_Migrate_PP_Fn((S<T>::template config<N>).arc_mid_migrate_fn, this);
-			zoltan.Set_Post_Migrate_PP_Fn((S<T>::template config<N>).arc_post_migrate_fn, this);
+			zoltan.Set_Mid_Migrate_PP_Fn(syncMode.config().arc_mid_migrate_fn, this);
+			zoltan.Set_Post_Migrate_PP_Fn(syncMode.config().arc_post_migrate_fn, this);
 		}
 
 		/**
@@ -264,11 +267,12 @@ namespace FPMAS {
 			return Graph<std::unique_ptr<SyncData<T>>, N>
 				::buildNode(
 					id,
-					std::unique_ptr<SyncData<T>>(new S<T>(
+					std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
-							std::move(data)))
+							std::move(data)
+						))
 					);
 		}
 
@@ -278,11 +282,12 @@ namespace FPMAS {
 			return Graph<std::unique_ptr<SyncData<T>>, N>
 				::buildNode(
 					id,
-					std::unique_ptr<SyncData<T>>(new S<T>(
+					std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
-							data))
+							data
+						))
 					);
 		}
 
@@ -303,11 +308,12 @@ namespace FPMAS {
 				::buildNode(
 					id,
 					weight,
-					std::unique_ptr<SyncData<T>>(new S<T>(
+					std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
-							std::move(data)))
+							std::move(data)
+						))
 					);
 		}
 
@@ -318,13 +324,57 @@ namespace FPMAS {
 				::buildNode(
 					id,
 					weight,
-					std::unique_ptr<SyncData<T>>(new S<T>(
+					std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
-							data))
+							data
+						))
 					);
 		}
+
+		template<class T, SYNC_MODE, int N>
+		Arc<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
+		::link(NodeId source, NodeId target, ArcId arcId) {
+			return this->link(source, target, arcId, base::DefaultLayer);
+		}
+
+		template<class T, SYNC_MODE, int N>
+		Arc<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
+		::link(NodeId source, NodeId target, ArcId arcId, LayerId layerId) {
+			if(this->getNodes().count(source) > 0) {
+				Node<std::unique_ptr<SyncData<T>>, N>* sourceNode
+					= this->getNode(source);
+				if(this->getNodes().count(target) > 0) {
+					Node<std::unique_ptr<SyncData<T>>, N>* targetNode
+						= this->getNode(target);
+					// Source and Target are local, completely local operation
+					return this->Graph<std::unique_ptr<SyncData<T>>, N>::link(
+						sourceNode, targetNode, arcId, layerId
+						);
+				} else {
+					GhostNode<T, N, S>* targetNode
+						= this->getGhost().getNode(target);
+					// S::link(source, target, arcId, layerId);
+					return this->getGhost().link(
+						sourceNode, targetNode, arcId, layerId
+						);
+					// S::linked(source, target, arcId, layerId);
+				}
+			} else {
+				GhostNode<T, N, S>* sourceNode
+					= this->getGhost().getNode(source);
+				Node<std::unique_ptr<SyncData<T>>, N>* targetNode
+					= this->getNode(target);
+				// S::link(source, target, arcId, layerId);
+				return this->getGhost().link(
+						sourceNode, targetNode, arcId, layerId
+						);
+				// S::linked(source, target, arcId, layerId);
+			}
+		}
+
+
 		/**
 		 * ResourceContainer implementation.
 		 *
@@ -602,7 +652,7 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::synchronize() {
 			this->mpiCommunicator.terminate();
-			S<T>::template termination<N>(this);
+			syncMode.termination(*this);
 		}
 	}
 }

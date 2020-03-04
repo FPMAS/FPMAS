@@ -4,7 +4,7 @@
 #include "graph/parallel/distributed_graph.h"
 #include "graph/parallel/zoltan/zoltan_lb.h"
 #include "utils/config.h"
-#include "graph/parallel/synchro/ghost_data.h"
+#include "graph/parallel/synchro/ghost_mode.h"
 
 #include "test_utils/test_utils.h"
 
@@ -20,7 +20,7 @@ using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 using FPMAS::graph::parallel::zoltan::obj_list;
 using FPMAS::graph::parallel::zoltan::num_edges_multi_fn;
 
-using FPMAS::graph::parallel::synchro::GhostData;
+using FPMAS::graph::parallel::synchro::GhostMode;
 
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:
@@ -58,7 +58,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_zoltan_global_ids() {
-			obj_list<int, 1, GhostData>(
+			obj_list<int, 1, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -78,7 +78,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_zoltan_num_edges() {
-			num_edges_multi_fn<int, 1, GhostData>(
+			num_edges_multi_fn<int, 1, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -129,7 +129,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, edge_list_multi_test) {
 	int nbor_procs[3];
 	float ewgts[3];
 
-	edge_list_multi_fn<int, 1, GhostData>(
+	edge_list_multi_fn<int, 1, GhostMode>(
 			&dg,
 			2,
 			0,

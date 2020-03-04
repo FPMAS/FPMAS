@@ -61,15 +61,15 @@ set(SOURCES
 ### synchro
 set(SOURCES
 	${SOURCES}
-	graph/parallel/synchro/none.cpp)
+	graph/parallel/synchro/no_sync_mode.cpp)
 
 set(SOURCES
 	${SOURCES}
-	graph/parallel/synchro/ghost_data.cpp)
+	graph/parallel/synchro/ghost_mode.cpp)
 
 set(SOURCES
 	${SOURCES}
-	graph/parallel/synchro/hard_sync_data.cpp)
+	graph/parallel/synchro/hard_sync_mode.cpp)
 
 ## Proxy
 set(SOURCES

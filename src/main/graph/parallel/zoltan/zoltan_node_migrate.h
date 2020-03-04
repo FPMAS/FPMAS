@@ -7,8 +7,8 @@
 
 #include "utils/macros.h"
 #include "zoltan_utils.h"
-#include "../synchro/sync_data.h"
-#include "../synchro/none.h"
+#include "../synchro/sync_mode.h"
+#include "../synchro/no_sync_mode.h"
 #include "../../base/node.h"
 
 
@@ -23,7 +23,7 @@ namespace FPMAS::graph::parallel {
 	using base::ArcId;
 
 	using synchro::SyncData;
-	using synchro::None;
+	using synchro::NoSyncMode;
 
 	using zoltan::utils::write_zoltan_id;
 	using zoltan::utils::read_zoltan_id;
@@ -336,7 +336,7 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraph<T, None, N>* graph =(DistributedGraph<T, None, N>*) data;
+			DistributedGraph<T, NoSyncMode, N>* graph =(DistributedGraph<T, NoSyncMode, N>*) data;
 
 			std::vector<Arc<std::unique_ptr<SyncData<T>>, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs

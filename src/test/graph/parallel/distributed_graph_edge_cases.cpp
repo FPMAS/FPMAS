@@ -2,11 +2,11 @@
 #include "graph/parallel/distributed_graph.h"
 #include "test_utils/test_utils.h"
 
-#include "graph/parallel/synchro/hard_sync_data.h"
+#include "graph/parallel/synchro/hard_sync_mode.h"
 
 using FPMAS::graph::base::DefaultLayer;
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::HardSyncData;
+using FPMAS::graph::parallel::synchro::HardSyncMode;
 
 /*
  * Illustrates a specific import case that caused a bug, because the same arc
@@ -28,7 +28,7 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		PRINT_MIN_PROCS_WARNING(duplicate_imported_arc_bug, 3)
 			return;
 	}
-	DistributedGraph<int, HardSyncData> dg;
+	DistributedGraph<int, HardSyncMode> dg;
 
 	//DistributedGraph<int, HardSyncData> dg = DistributedGraph<int, HardSyncData>({0, 1, 2});
 	if(dg.getMpiCommunicator().getRank() == 0) {

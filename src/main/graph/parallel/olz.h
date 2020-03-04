@@ -2,8 +2,7 @@
 #define OLZ_H
 
 #include "../base/graph.h"
-#include "synchro/sync_data.h"
-#include "synchro/ghost_data.h"
+#include "synchro/ghost_mode.h"
 
 using FPMAS::graph::base::Node;
 using FPMAS::graph::base::Arc;
@@ -31,11 +30,11 @@ namespace FPMAS::graph::parallel {
 		friend GhostNode<T, N, S>* GhostGraph<T, N, S>
 			::buildNode(NodeId);
 		friend GhostNode<T, N, S>* GhostGraph<T, N, S>
-			::buildNode(const Node<std::unique_ptr<SyncData<T>>, N>&, std::set<NodeId>);
+			::buildNode(Node<std::unique_ptr<SyncData<T>>, N>&, std::set<NodeId>);
 
 		private:
 		GhostNode(SyncMpiCommunicator&, Proxy&, NodeId);
-		GhostNode(SyncMpiCommunicator&, Proxy&, const Node<std::unique_ptr<SyncData<T>>, N>&);
+		GhostNode(SyncMpiCommunicator&, Proxy&, Node<std::unique_ptr<SyncData<T>>, N>&);
 	};
 
 	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>
@@ -44,8 +43,8 @@ namespace FPMAS::graph::parallel {
 				id,
 				1.,
 				std::unique_ptr<SyncData<T>>(
-					new S<T>(id, mpiComm, proxy)
-				)
+					S<T,N>::wrap(id, mpiComm, proxy)
+				)	
 			) {}
 
 	/**
@@ -57,13 +56,13 @@ namespace FPMAS::graph::parallel {
 		::GhostNode(
 			SyncMpiCommunicator& mpiComm,
 			Proxy& proxy,
-			const Node<std::unique_ptr<SyncData<T>>, N>& node
+			Node<std::unique_ptr<SyncData<T>>, N>& node
 			)
 		: Node<std::unique_ptr<SyncData<T>>, N>(
 			node.getId(),
 			node.getWeight(),
-			std::unique_ptr<SyncData<T>>(new S<T>(
-				node.getId(), mpiComm, proxy, std::move(node.data()->get())
+			std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
+				node.getId(), mpiComm, proxy, std::move(node.data()->move())
 				)
 			)
 		) {}
@@ -78,12 +77,12 @@ namespace FPMAS::graph::parallel {
 	 *
 	 */
 	template<typename T, int N, SYNC_MODE> class GhostArc : public Arc<std::unique_ptr<SyncData<T>>, N> {
-		friend void GhostGraph<T, N, S>::link(
+		friend GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 				GhostNode<T, N, S>*,
 				Node<std::unique_ptr<SyncData<T>>, N>*,
 				ArcId,
 				LayerId);
-		friend void GhostGraph<T, N, S>::link(
+		friend GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 				Node<std::unique_ptr<SyncData<T>>, N>*,
 				GhostNode<T, N, S>*,
 				ArcId,

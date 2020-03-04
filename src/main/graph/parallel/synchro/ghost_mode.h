@@ -1,6 +1,7 @@
 #ifndef GHOST_DATA_H
 #define GHOST_DATA_H
 
+#include "../synchro/sync_mode.h"
 #include "../proxy/proxy.h"
 #include "../distributed_graph.h"
 
@@ -36,6 +37,7 @@ namespace FPMAS::graph::parallel {
 		 * @tparam wrapped data type
 		 */
 		template<class T> class GhostData : public SyncData<T> {
+			
 
 			public:
 				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&);
@@ -45,24 +47,29 @@ namespace FPMAS::graph::parallel {
 				 * Defines the Zoltan configuration used to manage and migrate
 				 * GhostNode s and GhostArc s.
 				 */
-				template <int N> const static zoltan::utils::zoltan_query_functions config;
+				//template <int N> const static zoltan::utils::zoltan_query_functions config;
 
 				/**
 				 * Termination function used at the end of each
 				 * DistributedGraph<T,S>::synchronize() call. In this mode,
 				 * ghost data is automatically updated from other procs.
 				 */
-				template<int N> static void termination(DistributedGraph<T, GhostData, N>* dg) {
-					dg->getGhost().synchronize();
-				}
+				/*
+				 *template<int N> static void termination(DistributedGraph<T, GhostData, N>* dg) {
+				 *    dg->getGhost().synchronize();
+				 *}
+				 */
+				
 
 		};
-		template<class T> template<int N> const zoltan::utils::zoltan_query_functions GhostData<T>::config
-			(
-			 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, GhostData>,
-			 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, GhostData>,
-			 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, GhostData>
-			);
+		/*
+		 *template<class T> template<int N> const zoltan::utils::zoltan_query_functions GhostData<T>::config
+		 *    (
+		 *     &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, GhostData>,
+		 *     &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, GhostData>,
+		 *     &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, GhostData>
+		 *    );
+		 */
 
 		/**
 		 * Builds a GhostData instance with the provided MpiCommunicator.
@@ -105,6 +112,24 @@ namespace FPMAS::graph::parallel {
 				const T& data)
 			: SyncData<T>(data) {
 			}
+
+		template<typename T, int N> class GhostMode : public SyncMode<GhostMode, GhostData, T, N> {
+			public:
+			GhostMode();
+			void termination(DistributedGraph<T, GhostMode, N>& dg);
+		};
+
+		template<typename T, int N> GhostMode<T,N>::GhostMode() :
+			SyncMode<GhostMode, GhostData, T,N>(zoltan_query_functions(
+					&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, GhostMode>,
+					&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, GhostMode>,
+					&FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, GhostMode>
+					))
+		{}
+
+		template<typename T, int N> void GhostMode<T, N>::termination(DistributedGraph<T, GhostMode, N>& dg) {
+			dg.getGhost().synchronize();
+		}
 
 	}
 }

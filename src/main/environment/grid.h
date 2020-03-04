@@ -5,7 +5,7 @@
 #include "graph/parallel/distributed_graph.h"
 #include "agent/agent.h"
 
-using FPMAS::graph::parallel::synchro::GhostData;
+using FPMAS::graph::parallel::synchro::GhostMode;
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::agent::Agent;
 
@@ -31,7 +31,7 @@ namespace FPMAS::environment {
 		};
 
 		// T = agent
-		template<SYNC_MODE = GhostData, int N = 1> class Grid : public Environment<S, N+1, Cell> {
+		template<SYNC_MODE = GhostMode, int N = 1> class Grid : public Environment<S, N+1, Cell> {
 			public:
 				Grid(int width, int height);
 

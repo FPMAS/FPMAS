@@ -1,5 +1,5 @@
-#ifndef SYNC_DATA_H
-#define SYNC_DATA_H
+#ifndef SYNC_MODE_H
+#define SYNC_MODE_H
 
 #include <memory>
 #include <nlohmann/json.hpp>
@@ -7,8 +7,10 @@
 #include "zoltan_cpp.h"
 #include "../zoltan/zoltan_utils.h"
 #include "communication/sync_communication.h"
+#include "../proxy/proxy.h"
 #include "graph/base/node.h"
 
+using FPMAS::graph::parallel::proxy::Proxy;
 using FPMAS::communication::SyncMpiCommunicator;
 
 namespace FPMAS::graph::parallel {
@@ -35,12 +37,74 @@ namespace FPMAS::graph::parallel {
 		}
 	}
 
-	/**
-	 * The synchro namespace defines data structures used to manage
-	 * data synchronization accross processes.
-	 */
-	namespace synchro {
+	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
+	namespace synchro {
+		using parallel::zoltan::utils::zoltan_query_functions;
+
+		template<
+			template<typename, int> class Mode,
+			template<typename> class Wrapper,
+			typename T,
+			int N
+		> class SyncMode {
+			private:
+				zoltan_query_functions _config;
+			public:
+
+				SyncMode(zoltan_query_functions config) : _config(config) {}
+
+				const zoltan_query_functions& config() const;
+
+				virtual void termination(DistributedGraph<T, Mode, N>& dg) {};
+
+				static Wrapper<T>*
+					wrap(NodeId, SyncMpiCommunicator&, const Proxy&);
+				static Wrapper<T>*
+					wrap(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
+				static Wrapper<T>*
+					wrap(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
+			};
+		template<
+			template<typename, int> class Mode,
+			template<typename> class Wrapper,
+			typename T,
+			int N
+				> const zoltan_query_functions& SyncMode<Mode, Wrapper, T, N>::config() const {
+					return _config;
+				}
+		template<
+			template<typename, int> class Mode,
+			template<typename> class Wrapper,
+			typename T,
+			int N
+				> Wrapper<T>* SyncMode<Mode, Wrapper, T, N>::wrap(
+						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy
+						) {
+					return new Wrapper<T>(id, comm, proxy);
+				}
+
+		template<
+			template<typename, int> class Mode,
+			template<typename> class Wrapper,
+			typename T,
+			int N
+				> Wrapper<T>* SyncMode<Mode, Wrapper, T, N>::wrap(
+						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, const T& data
+						) {
+					return new Wrapper<T>(id, comm, proxy, data);
+				}
+
+		template<
+			template<typename, int> class Mode,
+			template<typename> class Wrapper,
+			typename T,
+			int N
+				> Wrapper<T>* SyncMode<Mode, Wrapper, T, N>::wrap(
+						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
+						) {
+					return new Wrapper<T>(id, comm, proxy, std::move(data));
+				}
 
 		/**
 		 * Abstract wrapper for data contained in a DistributedGraph.
@@ -57,41 +121,41 @@ namespace FPMAS::graph::parallel {
 		 */
 		template <class T> class SyncData {
 			friend nlohmann::adl_serializer<SyncData<T>>;
-
 			protected:
-				/**
-				 * Local representation of wrapped data.
-				 */
-				T data;
-				SyncData();
-				SyncData(const T&);
-				SyncData(T&&);
+			/**
+			 * Local representation of wrapped data.
+			 */
+			T data;
+			SyncData();
+			SyncData(const T&);
+			SyncData(T&&);
 
 			public:
-				const T& get() const;
-				void update(T&& data);
+			const T& get() const;
+			T&& move();
+			void update(T&& data);
 
-				/**
-				 * Returns a reference to the wrapped data. (default behavior)
-				 *
-				 * Should be overriden by extending classes to perform an acquire operation
-				 * on the wrapped data.
-				 *
-				 * @return reference to wrapped data
-				 */
-				virtual T& acquire();
+			/**
+			 * Returns a reference to the wrapped data. (default behavior)
+			 *
+			 * Should be overriden by extending classes to perform an acquire operation
+			 * on the wrapped data.
+			 *
+			 * @return reference to wrapped data
+			 */
+			virtual T& acquire();
 
-				/**
-				 * Returns a const reference to the wrapped data. (default behavior)
-				 *
-				 * Should be overriden by extending classes to perform a read operation
-				 * on the wrapped data.
-				 *
-				 * @return const reference to wrapped data
-				 */
-				virtual const T& read() ;
+			/**
+			 * Returns a const reference to the wrapped data. (default behavior)
+			 *
+			 * Should be overriden by extending classes to perform a read operation
+			 * on the wrapped data.
+			 *
+			 * @return const reference to wrapped data
+			 */
+			virtual const T& read() ;
 
-				virtual void release();
+			virtual void release();
 		};
 
 		/**
@@ -118,6 +182,10 @@ namespace FPMAS::graph::parallel {
 		 */
 		template<class T> const T& SyncData<T>::get() const {
 			return this->data;
+		}
+
+		template<class T> T&& SyncData<T>::move() {
+			return std::move(this->data);
 		}
 
 		/**
@@ -158,9 +226,9 @@ namespace FPMAS::graph::parallel {
 		 * Releases data, allowing other procs to acquire and read it.
 		 */
 		template<class T> void SyncData<T>::release() {}
+
 	}
 }
-
 
 namespace nlohmann {
 	using FPMAS::graph::parallel::synchro::SyncData;
@@ -172,24 +240,25 @@ namespace nlohmann {
 	 * instance, because this data wrapper is not supposed to be used directly,
 	 * but must be unserialized as a concrete LocalData instance for example.
 	 */
-    template <class T>
-    struct adl_serializer<std::unique_ptr<SyncData<T>>> {
-		/**
-		 * Serializes the data wrapped in the provided SyncData instance.
-		 *
-		 * This function is automatically called by the nlohmann library.
-		 *
-		 * @param j json to serialize to
-		 * @param data reference to SyncData to serialize
-		 */
-		static void to_json(json& j, const std::unique_ptr<SyncData<T>>& data) {
-			j = data->get();
-		}
+	template <class T>
+		struct adl_serializer<std::unique_ptr<SyncData<T>>> {
+			/**
+			 * Serializes the data wrapped in the provided SyncData instance.
+			 *
+			 * This function is automatically called by the nlohmann library.
+			 *
+			 * @param j json to serialize to
+			 * @param data reference to SyncData to serialize
+			 */
+			static void to_json(json& j, const std::unique_ptr<SyncData<T>>& data) {
+				j = data->get();
+			}
 
-		static SyncData<T> from_json(const json& j) {
-			return SyncData<T>(j.get<T>());
-		}
-	};
+			static SyncData<T> from_json(const json& j) {
+				return SyncData<T>(j.get<T>());
+			}
+		};
 }
+
 
 #endif

@@ -7,16 +7,16 @@
 #include "utils/config.h"
 
 #include "graph/parallel/distributed_graph.h"
-#include "graph/parallel/synchro/none.h"
-#include "graph/parallel/synchro/ghost_data.h"
-#include "graph/parallel/synchro/hard_sync_data.h"
+#include "graph/parallel/synchro/no_sync_mode.h"
+#include "graph/parallel/synchro/ghost_mode.h"
+#include "graph/parallel/synchro/hard_sync_mode.h"
 
 #define PRINT_SPACE() if(dg.getMpiCommunicator().getRank() == 0){std::cout << std::endl;}else{std::this_thread::sleep_for(10ms);}
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::None;
-using FPMAS::graph::parallel::synchro::GhostData;
-using FPMAS::graph::parallel::synchro::HardSyncData;
+using FPMAS::graph::parallel::synchro::NoSyncMode;
+using FPMAS::graph::parallel::synchro::GhostMode;
+using FPMAS::graph::parallel::synchro::HardSyncMode;
 
 // #define SYNCHRO None
 // #define SYNCHRO GhostData
@@ -32,24 +32,24 @@ int main(int argc, char* argv[]) {
 
 	{
 		// NONE Mode
-		DistributedGraph<int, None> dg;
+		DistributedGraph<int, NoSyncMode> dg;
 		if(dg.getMpiCommunicator().getRank()==0) std::cout << "===== NONE Mode ======" << std::endl;
-		buildGraph<None>(dg);
-		process<None>(dg);
+		buildGraph<NoSyncMode>(dg);
+		process<NoSyncMode>(dg);
 	}
 	{
 		// GHOST Mode
-		DistributedGraph<int, GhostData> dg;
+		DistributedGraph<int, GhostMode> dg;
 		if(dg.getMpiCommunicator().getRank()==0) std::cout << "\n===== GHOST Mode =====" << std::endl;
-		buildGraph<GhostData>(dg);
-		process<GhostData>(dg);
+		buildGraph<GhostMode>(dg);
+		process<GhostMode>(dg);
 	}
 	{
 		// HARD_SYNC Mode
-		DistributedGraph<int, HardSyncData> dg;
+		DistributedGraph<int, HardSyncMode> dg;
 		if(dg.getMpiCommunicator().getRank()==0) std::cout << "\n=== HARD_SYNC Mode ===" << std::endl;
-		buildGraph<HardSyncData>(dg);
-		process<HardSyncData>(dg);
+		buildGraph<HardSyncMode>(dg);
+		process<HardSyncMode>(dg);
 	}
 
 	MPI_Finalize();

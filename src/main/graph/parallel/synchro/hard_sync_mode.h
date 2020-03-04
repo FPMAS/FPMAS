@@ -1,7 +1,6 @@
 #ifndef HARD_SYNC_DATA
 #define HARD_SYNC_DATA
 
-#include "ghost_data.h"
 #include "communication/communication.h"
 
 using FPMAS::communication::SyncMpiCommunicator;
@@ -40,20 +39,7 @@ namespace FPMAS::graph::parallel::synchro {
 			 * GhostNode s and GhostArc s.
 			 */
 			template<int N> const static zoltan::utils::zoltan_query_functions config;
-
-			/**
-			 * Termination function used at the end of each
-			 * DistributedGraph<T,S>::synchronize() call : does not do anything
-			 * in this mode.
-			 */
-			template<int N> static void termination(DistributedGraph<T, HardSyncData, N>* dg) {}
 	};
-	template<class T> template<int N> const zoltan::utils::zoltan_query_functions HardSyncData<T>::config
-		(
-		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, HardSyncData>,
-		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, HardSyncData>,
-		 &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, HardSyncData>
-		);
 
 	/**
 	 * HardSyncData constructor.
@@ -130,5 +116,19 @@ namespace FPMAS::graph::parallel::synchro {
 				this->proxy.getCurrentLocation(this->id)
 				);
 	}
+
+	template<typename T, int N> class HardSyncMode : public SyncMode<HardSyncMode, HardSyncData, T, N> {
+		public:
+			HardSyncMode();
+
+	};
+
+	template<typename T, int N> HardSyncMode<T, N>::HardSyncMode()
+		: SyncMode<HardSyncMode, HardSyncData, T, N>(zoltan_query_functions(
+				&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, HardSyncMode>,
+				&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, HardSyncMode>,
+				&FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, HardSyncMode>
+		 )) {}
+
 }
 #endif
