@@ -43,33 +43,8 @@ namespace FPMAS::graph::parallel {
 				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&);
 				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
 				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
-				/**
-				 * Defines the Zoltan configuration used to manage and migrate
-				 * GhostNode s and GhostArc s.
-				 */
-				//template <int N> const static zoltan::utils::zoltan_query_functions config;
-
-				/**
-				 * Termination function used at the end of each
-				 * DistributedGraph<T,S>::synchronize() call. In this mode,
-				 * ghost data is automatically updated from other procs.
-				 */
-				/*
-				 *template<int N> static void termination(DistributedGraph<T, GhostData, N>* dg) {
-				 *    dg->getGhost().synchronize();
-				 *}
-				 */
-				
 
 		};
-		/*
-		 *template<class T> template<int N> const zoltan::utils::zoltan_query_functions GhostData<T>::config
-		 *    (
-		 *     &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, GhostData>,
-		 *     &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, GhostData>,
-		 *     &FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, GhostData>
-		 *    );
-		 */
 
 		/**
 		 * Builds a GhostData instance with the provided MpiCommunicator.

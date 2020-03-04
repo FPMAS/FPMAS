@@ -46,22 +46,5 @@ namespace FPMAS::agent {
 	};
 
 }
-/*
- *
- *    class AgentPtr {
- *        Agent* agent;
- *
- *        public:
- *            AgentPtr(Agent*);
- *            AgentPtr(const AgentPtr&) = delete;
- *            AgentPtr& operator=(const AgentPtr&) = delete;
- *
- *            AgentPtr(AgentPtr&&);
- *            AgentPtr& operator=(AgentPtr&&);
- *
- *            ~AgentPtr();
- *
- *    };
- */
 
 #endif

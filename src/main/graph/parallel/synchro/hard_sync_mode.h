@@ -33,12 +33,6 @@ namespace FPMAS::graph::parallel::synchro {
 			const T& read() override;
 			T& acquire() override;
 			void release() override;
-
-			/**
-			 * Defines the Zoltan configuration used manage and migrate
-			 * GhostNode s and GhostArc s.
-			 */
-			template<int N> const static zoltan::utils::zoltan_query_functions config;
 	};
 
 	/**
