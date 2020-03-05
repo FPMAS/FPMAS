@@ -4,15 +4,11 @@ set(SOURCES "")
 # Comm
 set(SOURCES
 	${SOURCES}
-	communication/communication.cpp)
-
-set(SOURCES
-	${SOURCES}
-	communication/sync_communication.cpp)
-
-set(SOURCES
-	${SOURCES}
-	communication/readers_writers.cpp)
+	communication/communication.cpp
+	communication/sync_communication.cpp
+	communication/readers_writers.cpp
+	communication/migrate.cpp
+	)
 
 # Graph
 set(SOURCES
