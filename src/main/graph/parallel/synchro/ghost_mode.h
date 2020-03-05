@@ -7,7 +7,6 @@
 
 using FPMAS::graph::parallel::proxy::Proxy;
 
-
 namespace FPMAS::graph::parallel {
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
@@ -38,7 +37,6 @@ namespace FPMAS::graph::parallel {
 		 */
 		template<class T> class GhostData : public SyncData<T> {
 			
-
 			public:
 				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&);
 				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
@@ -88,10 +86,27 @@ namespace FPMAS::graph::parallel {
 			: SyncData<T>(data) {
 			}
 
+		struct NodeIdPairHash {
+			std::size_t operator()(std::pair<NodeId, NodeId> const& pair) const {
+				std::size_t h1 = std::hash<NodeId>()(pair.first);
+				std::size_t h2 = std::hash<NodeId>()(pair.second);
+				return h1 ^ h2;
+			}
+		};
+
 		template<typename T, int N> class GhostMode : public SyncMode<GhostMode, GhostData, T, N> {
+			private:
+				std::unordered_map<
+					std::pair<NodeId, NodeId>,
+					Arc<std::unique_ptr<SyncData<T>>, N>*,
+					NodeIdPairHash
+				> linkBuffer;
+
 			public:
 			GhostMode();
 			void termination(DistributedGraph<T, GhostMode, N>& dg);
+			void initLink(NodeId, NodeId, ArcId, LayerId);
+			void notifyLinked(Arc<std::unique_ptr<SyncData<T>>,N>*);
 		};
 
 		template<typename T, int N> GhostMode<T,N>::GhostMode() :
@@ -104,6 +119,19 @@ namespace FPMAS::graph::parallel {
 
 		template<typename T, int N> void GhostMode<T, N>::termination(DistributedGraph<T, GhostMode, N>& dg) {
 			dg.getGhost().synchronize();
+		}
+
+		template<typename T, int N> void GhostMode<T, N>::initLink(NodeId source, NodeId target, ArcId, LayerId) {
+			// Clear unlink buffer
+
+		}
+
+		template<typename T, int N> void GhostMode<T, N>::notifyLinked(
+				Arc<std::unique_ptr<SyncData<T>>,N>* arc) {
+			linkBuffer[std::make_pair(
+					arc->getSourceNode()->getId(), arc->getTargetNode()->getId()
+					)]
+				= arc;
 		}
 
 	}

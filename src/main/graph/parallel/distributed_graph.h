@@ -355,22 +355,24 @@ namespace FPMAS {
 				} else {
 					GhostNode<T, N, S>* targetNode
 						= this->getGhost().getNode(target);
-					// S::link(source, target, arcId, layerId);
-					return this->getGhost().link(
+					syncMode.initLink(source, target, arcId, layerId);
+					auto arc = this->getGhost().link(
 						sourceNode, targetNode, arcId, layerId
 						);
-					// S::linked(source, target, arcId, layerId);
+					syncMode.notifyLinked(arc);
+					return arc;
 				}
 			} else {
 				GhostNode<T, N, S>* sourceNode
 					= this->getGhost().getNode(source);
 				Node<std::unique_ptr<SyncData<T>>, N>* targetNode
 					= this->getNode(target);
-				// S::link(source, target, arcId, layerId);
-				return this->getGhost().link(
+				syncMode.initLink(source, target, arcId, layerId);
+				auto arc = this->getGhost().link(
 						sourceNode, targetNode, arcId, layerId
 						);
-				// S::linked(source, target, arcId, layerId);
+				syncMode.notifyLinked(arc);
+				return arc;
 			}
 		}
 
