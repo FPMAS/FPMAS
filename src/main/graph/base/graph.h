@@ -176,7 +176,10 @@ namespace FPMAS {
 
 			/**
 			 * Builds a node with the specify id and data, adds it to this graph,
-			 * and finally returns the built node.
+			 * and finally returns the built node. This functions ensures that
+			 * data instances that are MoveConstructible and MoveAssignable but not
+			 * either CopyConstructible or CopyAssignable, such as std::unique_ptr
+			 * instances, can be used in the DistributedGraph.
 			 *
 			 * @param id node id
 			 * @param data node's data
@@ -190,7 +193,10 @@ namespace FPMAS {
 
 			/**
 			 * Builds a node with the specify id, weight and data, adds it to this graph,
-			 * and finally returns a pointer to the built node.
+			 * and finally returns a pointer to the built node. This functions ensures that
+			 * data instances that are MoveConstructible and MoveAssignable but not
+			 * either CopyConstructible or CopyAssignable, such as std::unique_ptr
+			 * instances, can be used in the DistributedGraph.
 			 *
 			 * @param id node's id
 			 * @param weight node's weight

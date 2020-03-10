@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: FPMAS::graph::base::GraphItem Class Reference</title>
+<title>fpmas: FPMAS::graph::base::GraphItem&lt; id_t &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,52 +70,43 @@ $(function() {
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classFPMAS_1_1graph_1_1base_1_1GraphItem-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::graph::base::GraphItem Class Reference</div>  </div>
+<div class="title">FPMAS::graph::base::GraphItem&lt; id_t &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="graph__item_8h_source.html">graph_item.h</a>&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for FPMAS::graph::base::GraphItem:</div>
-<div class="dyncontent">
-<div class="center"><img src="classFPMAS_1_1graph_1_1base_1_1GraphItem__inherit__graph.png" border="0" usemap="#FPMAS_1_1graph_1_1base_1_1GraphItem_inherit__map" alt="Inheritance graph"/></div>
-<map name="FPMAS_1_1graph_1_1base_1_1GraphItem_inherit__map" id="FPMAS_1_1graph_1_1base_1_1GraphItem_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,60,156,101"/>
-<area shape="rect" href="classFPMAS_1_1graph_1_1base_1_1Arc.html" title=" " alt="" coords="204,5,388,76"/>
-<area shape="rect" href="classFPMAS_1_1graph_1_1base_1_1Arc.html" title=" " alt="" coords="206,100,386,141"/>
-<area shape="rect" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html" title=" " alt="" coords="436,13,643,69"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7facd4d4c4b70bc03cd19debf28fd023"><td class="memItemLeft" align="right" valign="top">unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#a7facd4d4c4b70bc03cd19debf28fd023">getId</a> () const</td></tr>
-<tr class="separator:a7facd4d4c4b70bc03cd19debf28fd023"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4837f92a0b348f7e6cdd2cdb2b75f7d"><td class="memItemLeft" align="right" valign="top">id_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#ab4837f92a0b348f7e6cdd2cdb2b75f7d">getId</a> () const</td></tr>
+<tr class="separator:ab4837f92a0b348f7e6cdd2cdb2b75f7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:afd23b425d0bc751537344c36590ce229"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#afd23b425d0bc751537344c36590ce229">GraphItem</a> ()</td></tr>
-<tr class="separator:afd23b425d0bc751537344c36590ce229"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a159dd35b8081e445705818c32eb8d23c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#a159dd35b8081e445705818c32eb8d23c">GraphItem</a> (unsigned long)</td></tr>
-<tr class="separator:a159dd35b8081e445705818c32eb8d23c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2762e22c27ffaf34993dc9c9aa877e08"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#a2762e22c27ffaf34993dc9c9aa877e08">GraphItem</a> ()</td></tr>
+<tr class="separator:a2762e22c27ffaf34993dc9c9aa877e08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a740aded0087c3a7e2ea72dfeb18e962e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#a740aded0087c3a7e2ea72dfeb18e962e">GraphItem</a> (id_t)</td></tr>
+<tr class="separator:a740aded0087c3a7e2ea72dfeb18e962e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A labelled object, super class for Nodes and Arcs. </p>
+<div class="textblock"><h3>template&lt;typename id_t&gt;<br />
+class FPMAS::graph::base::GraphItem&lt; id_t &gt;</h3>
+
+<p>A labelled object, super class for Nodes and Arcs. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="afd23b425d0bc751537344c36590ce229"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd23b425d0bc751537344c36590ce229">&#9670;&nbsp;</a></span>GraphItem() <span class="overload">[1/2]</span></h2>
+<a id="a2762e22c27ffaf34993dc9c9aa877e08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2762e22c27ffaf34993dc9c9aa877e08">&#9670;&nbsp;</a></span>GraphItem() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename id_t &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">GraphItem::GraphItem </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html">FPMAS::graph::base::GraphItem</a>&lt; id_t &gt;::<a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html">GraphItem</a></td>
         </tr>
       </table>
   </td>
@@ -128,19 +119,21 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a159dd35b8081e445705818c32eb8d23c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a159dd35b8081e445705818c32eb8d23c">&#9670;&nbsp;</a></span>GraphItem() <span class="overload">[2/2]</span></h2>
+<a id="a740aded0087c3a7e2ea72dfeb18e962e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a740aded0087c3a7e2ea72dfeb18e962e">&#9670;&nbsp;</a></span>GraphItem() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename id_t &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">GraphItem::GraphItem </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html">FPMAS::graph::base::GraphItem</a>&lt; id_t &gt;::<a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html">GraphItem</a> </td>
           <td>(</td>
-          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramtype">id_t&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td></td>
         </tr>
@@ -162,17 +155,16 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7facd4d4c4b70bc03cd19debf28fd023"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7facd4d4c4b70bc03cd19debf28fd023">&#9670;&nbsp;</a></span>getId()</h2>
+<a id="ab4837f92a0b348f7e6cdd2cdb2b75f7d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4837f92a0b348f7e6cdd2cdb2b75f7d">&#9670;&nbsp;</a></span>getId()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename id_t &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">unsigned long GraphItem::getId </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
+          <td class="memname">id_t <a class="el" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html">FPMAS::graph::base::GraphItem</a>&lt; id_t &gt;::getId</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -181,9 +173,8 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/main/graph/base/<a class="el" href="graph__item_8h_source.html">graph_item.h</a></li>
-<li>src/main/graph/base/graph_item.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

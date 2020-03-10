@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['hardsyncdata_143',['HardSyncData',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1HardSyncData.html',1,'FPMAS::graph::parallel::synchro']]]
+  ['fossilarcs_163',['FossilArcs',['../classFPMAS_1_1graph_1_1base_1_1FossilArcs.html',1,'FPMAS::graph::base']]]
 ];

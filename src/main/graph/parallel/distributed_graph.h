@@ -255,8 +255,11 @@ namespace FPMAS {
 		/**
 		 * Builds a node with the specified id and data.
 		 *
-		 * The specified data is implicitly wrapped in a SyncData instance,
-		 * for synchronization purpose.
+		 * The specified data is moved and implicitly wrapped in a SyncData
+		 * instance, for synchronization purpose. This functions ensures that
+		 * data instances that are MoveConstructible and MoveAssignable but not
+		 * either CopyConstructible or CopyAssignable, such as std::unique_ptr
+		 * instances, can be used in the DistributedGraph.
 		 *
 		 * @param id node id
 		 * @param data node data
@@ -276,6 +279,15 @@ namespace FPMAS {
 					);
 		}
 
+		/**
+		 * Builds a node with the specified id and data.
+		 *
+		 * The specified data is copied and implicitly wrapped in a SyncData
+		 * instance, for synchronization purpose.
+		 *
+		 * @param id node id
+		 * @param data node data
+		 */
 		template<class T, SYNC_MODE, int N>
 		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
 		::buildNode(NodeId id, T& data) {
@@ -294,8 +306,11 @@ namespace FPMAS {
 		/**
 		 * Builds a node with the specified id, weight and data.
 		 *
-		 * The specified data is implicitly wrapped in a SyncData instance,
-		 * for synchronization purpose.
+		 * The specified data is moved and implicitly wrapped in a SyncData
+		 * instance, for synchronization purpose. This functions ensures that
+		 * data instances that are MoveConstructible and MoveAssignable but not
+		 * either CopyConstructible or CopyAssignable, such as std::unique_ptr
+		 * instances, can be used in the DistributedGraph.
 		 *
 		 * @param id node id
 		 * @param weight node weight
@@ -317,6 +332,16 @@ namespace FPMAS {
 					);
 		}
 
+		/**
+		 * Builds a node with the specified id, weight and data.
+		 *
+		 * The specified data is copied and implicitly wrapped in a SyncData
+		 * instance, for synchronization purpose.
+		 *
+		 * @param id node id
+		 * @param weight node weight
+		 * @param data node data
+		 */
 		template<class T, SYNC_MODE, int N>
 		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
 		::buildNode(NodeId id, float weight, T& data) {
@@ -333,12 +358,47 @@ namespace FPMAS {
 					);
 		}
 
+		/**
+		 * Links the specified source and target node within this
+		 * DistributedGraph on the given layer on the DefaultLayer.
+		 *
+		 * Same as `link(source, target, arcId, base::DefaultLayer)`.
+		 *
+		 * @param source source node id
+		 * @param target target node id
+		 * @param arcId new arc id
+		 * @return pointer to the created arc
+		 *
+		 * @see link(NodeId, NodeId, ArcId, LayerId)
+		 */
 		template<class T, SYNC_MODE, int N>
 		Arc<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
 		::link(NodeId source, NodeId target, ArcId arcId) {
 			return this->link(source, target, arcId, base::DefaultLayer);
 		}
 
+		/**
+		 * Links the specified source and target node within this
+		 * DistributedGraph on the given layer.
+		 *
+		 * Source and target might refer to local nodes or ghost nodes. If at
+		 * least one of the two nodes is a ghost node, the request is
+		 * transmetted through the synchro::SyncMode S to handle distant
+		 * linking, through the implementation of the
+		 * synchro::SyncMode::initLink() and synchro::SyncMode::notifyLinked()
+		 * functions.
+		 *
+		 * In consequence, this function can be used to link two nodes distant
+		 * from this process, each one potentially living on two different
+		 * procs. However, those two nodes **must** be represented as GhostNode
+		 * s at the scale of this DistributedGraph instance.
+		 *
+		 * @param source source node id
+		 * @param target target node id
+		 * @param arcId new arc id
+		 * @param layerId id of the Layer on which nodes should be linked
+		 * @return pointer to the created arc
+		 */
 		template<class T, SYNC_MODE, int N>
 		Arc<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
 		::link(NodeId source, NodeId target, ArcId arcId, LayerId layerId) {
@@ -446,6 +506,10 @@ namespace FPMAS {
 			this->getNodes().at(id)->data()->update(json::parse(data).get<T>());
 		}
 
+		/*
+		 * private distribute functions, calling low level zoltan migration
+		 * functions.
+		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::distribute(
 			int changes,
 			int num_import,
@@ -674,7 +738,8 @@ namespace FPMAS {
 		/**
 		 * Synchronizes the DistributedGraph instances, calling the
 		 * SyncMpiCommunicator::terminate() method and extra processing
-		 * that might be required by the synchronization mode S (eg :
+		 * that might be required by the synchronization mode S, implemented
+		 * through the synchro::SyncMode::termination() function. (eg :
 		 * synchronize the ghost graph data for the GhostData mode).
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::synchronize() {

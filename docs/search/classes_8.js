@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['proxy_150',['Proxy',['../classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html',1,'FPMAS::graph::parallel::proxy']]]
+  ['mpicommunicator_183',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html',1,'FPMAS::communication']]]
 ];

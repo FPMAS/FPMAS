@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt; Class Template Reference</title>
+<title>fpmas: FPMAS::graph::parallel::GhostGraph&lt; T, N, SYNC_MODE &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,7 +70,7 @@ $(function() {
 <a href="#friends">Friends</a> &#124;
 <a href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt; Class Template Reference</div>  </div>
+<div class="title">FPMAS::graph::parallel::GhostGraph&lt; T, N, SYNC_MODE &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -78,34 +78,38 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac228fc01911a329fdf1d4725a06f8440"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ac228fc01911a329fdf1d4725a06f8440">GhostGraph</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S, LayerType, N &gt; *)</td></tr>
-<tr class="separator:ac228fc01911a329fdf1d4725a06f8440"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3d37642874a5b28305066c4391a46de9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a3d37642874a5b28305066c4391a46de9">GhostGraph</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S, LayerType, N &gt; *, std::initializer_list&lt; int &gt;)</td></tr>
-<tr class="separator:a3d37642874a5b28305066c4391a46de9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8987678b5e273185047969fbc891f10c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a8987678b5e273185047969fbc891f10c">synchronize</a> ()</td></tr>
-<tr class="separator:a8987678b5e273185047969fbc891f10c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf6e5dfb1084845559d419be2a6b8ff0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#acf6e5dfb1084845559d419be2a6b8ff0">buildNode</a> (unsigned long)</td></tr>
-<tr class="separator:acf6e5dfb1084845559d419be2a6b8ff0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a028fd1586860c1ef4136e5c48065bfe5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a028fd1586860c1ef4136e5c48065bfe5">buildNode</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; node, std::set&lt; unsigned long &gt; ignoreIds=std::set&lt; unsigned long &gt;())</td></tr>
-<tr class="separator:a028fd1586860c1ef4136e5c48065bfe5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab3337c5b4548ad0b61c490d09658d4ac"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ab3337c5b4548ad0b61c490d09658d4ac">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; *, unsigned long, LayerType)</td></tr>
-<tr class="separator:ab3337c5b4548ad0b61c490d09658d4ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7514c8fc72e0b94e7c30e21b89f70ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#aa7514c8fc72e0b94e7c30e21b89f70ba">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; *, unsigned long, LayerType)</td></tr>
-<tr class="separator:aa7514c8fc72e0b94e7c30e21b89f70ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a14da1ef8e113700e1ac0eb815ec746"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a4a14da1ef8e113700e1ac0eb815ec746">removeNode</a> (unsigned long)</td></tr>
-<tr class="separator:a4a14da1ef8e113700e1ac0eb815ec746"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a676181f88c5294e072a39bd065ba0e67"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a676181f88c5294e072a39bd065ba0e67">getNodes</a> ()</td></tr>
-<tr class="separator:a676181f88c5294e072a39bd065ba0e67"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae25006b4d1981dde3e5a97fcc843ba0f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ae25006b4d1981dde3e5a97fcc843ba0f">getNode</a> (unsigned long) const</td></tr>
-<tr class="separator:ae25006b4d1981dde3e5a97fcc843ba0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73ffed44a680d7e7aadff147aee611a3"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; NODE_PARAMS_SPEC, S &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a73ffed44a680d7e7aadff147aee611a3">getArcs</a> ()</td></tr>
-<tr class="separator:a73ffed44a680d7e7aadff147aee611a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61bb5ae94b4a3ecf962875a402c3b601"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; NODE_PARAMS_SPEC, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a61bb5ae94b4a3ecf962875a402c3b601">getArc</a> (unsigned long) const</td></tr>
-<tr class="separator:a61bb5ae94b4a3ecf962875a402c3b601"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8dc1dfe917a28e1b6cfab5feaf694b25"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a8dc1dfe917a28e1b6cfab5feaf694b25">clear</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt;&gt;)</td></tr>
-<tr class="separator:a8dc1dfe917a28e1b6cfab5feaf694b25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5c88c7e46fdb001336c2ede2e7a3efb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#aa5c88c7e46fdb001336c2ede2e7a3efb">~GhostGraph</a> ()</td></tr>
-<tr class="separator:aa5c88c7e46fdb001336c2ede2e7a3efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d6320b3ee17dbb0d8130264f9ee67d6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a9d6320b3ee17dbb0d8130264f9ee67d6">GhostGraph</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S, N &gt; *)</td></tr>
+<tr class="separator:a9d6320b3ee17dbb0d8130264f9ee67d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43011f0fe2109c38724e918fc9429b47"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a43011f0fe2109c38724e918fc9429b47">GhostGraph</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S, N &gt; *, std::initializer_list&lt; int &gt;)</td></tr>
+<tr class="separator:a43011f0fe2109c38724e918fc9429b47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23edd8566ed609213a24a92a901d7673"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a23edd8566ed609213a24a92a901d7673">synchronize</a> ()</td></tr>
+<tr class="separator:a23edd8566ed609213a24a92a901d7673"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a206b61c4c8d7d6d8f3afef7860ca496f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a206b61c4c8d7d6d8f3afef7860ca496f">buildNode</a> (NodeId)</td></tr>
+<tr class="separator:a206b61c4c8d7d6d8f3afef7860ca496f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04c74f0e0324c77b15f0824f5ea914c1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a04c74f0e0324c77b15f0824f5ea914c1">buildNode</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt; &amp;node, std::set&lt; NodeId &gt; ignoreIds=std::set&lt; NodeId &gt;())</td></tr>
+<tr class="separator:a04c74f0e0324c77b15f0824f5ea914c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a284feab4419f9fcdc568b12f31395677"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a284feab4419f9fcdc568b12f31395677">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt; *, ArcId, LayerId)</td></tr>
+<tr class="separator:a284feab4419f9fcdc568b12f31395677"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7dcf03c5fe4b9c79ac5b3b899042a549"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a7dcf03c5fe4b9c79ac5b3b899042a549">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *, ArcId, LayerId)</td></tr>
+<tr class="separator:a7dcf03c5fe4b9c79ac5b3b899042a549"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6f7350873ba34a8b7202ad382954c5c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#aa6f7350873ba34a8b7202ad382954c5c">link</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *, ArcId, LayerId)</td></tr>
+<tr class="separator:aa6f7350873ba34a8b7202ad382954c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8628beeba23eb0e4ca4fc237f0f50caf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a8628beeba23eb0e4ca4fc237f0f50caf">removeNode</a> (NodeId)</td></tr>
+<tr class="separator:a8628beeba23eb0e4ca4fc237f0f50caf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b9309783988fd9b02324a41a91c4fa6"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; NodeId, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a0b9309783988fd9b02324a41a91c4fa6">getNodes</a> ()</td></tr>
+<tr class="separator:a0b9309783988fd9b02324a41a91c4fa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af060a2a04add117db0dddd6502986cae"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#af060a2a04add117db0dddd6502986cae">getNode</a> (NodeId)</td></tr>
+<tr class="separator:af060a2a04add117db0dddd6502986cae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad8670ce01ccc453e6dca49c0263fc8f2"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#ad8670ce01ccc453e6dca49c0263fc8f2">getNode</a> (NodeId) const</td></tr>
+<tr class="separator:ad8670ce01ccc453e6dca49c0263fc8f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa5330381e9e5e4465f739f1b528ed8dc"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; ArcId, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#aa5330381e9e5e4465f739f1b528ed8dc">getArcs</a> ()</td></tr>
+<tr class="separator:aa5330381e9e5e4465f739f1b528ed8dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0d2b0a4733754370c1b728ad81a9dfa3"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a0d2b0a4733754370c1b728ad81a9dfa3">getArc</a> (ArcId) const</td></tr>
+<tr class="separator:a0d2b0a4733754370c1b728ad81a9dfa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7af81a2dba7609de5a8a681645672cba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a7af81a2dba7609de5a8a681645672cba">clear</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt;&gt;)</td></tr>
+<tr class="separator:a7af81a2dba7609de5a8a681645672cba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe501506e1cb6f51997a028e5e676efb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#abe501506e1cb6f51997a028e5e676efb">~GhostGraph</a> ()</td></tr>
+<tr class="separator:abe501506e1cb6f51997a028e5e676efb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
@@ -120,25 +124,25 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>zoltan::ghost::unpack
 <tr class="separator:ac675311ab29a58b1c287d96b4c5e88a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;NODE_PARAMS, SYNC_MODE&gt;<br />
-class FPMAS::graph::parallel::GhostGraph&lt; NODE_PARAMS, SYNC_MODE &gt;</h3>
+<div class="textblock"><h3>template&lt;typename T, int N, SYNC_MODE&gt;<br />
+class FPMAS::graph::parallel::GhostGraph&lt; T, N, SYNC_MODE &gt;</h3>
 
 <p>A <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a> is a data structure used by <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> s to store and manage <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> s and <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a> s.</p>
 <p>A <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a> actually lives within a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>, because <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> can (and should) be linked to regular nodes of the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> thanks to <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a> s.</p>
-<p>Finally, the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a> can also synchronize <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> s data thanks to the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a8987678b5e273185047969fbc891f10c">synchronize()</a> function. </p>
+<p>Finally, the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a> can also synchronize <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> s data thanks to the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#a23edd8566ed609213a24a92a901d7673">synchronize()</a> function. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ac228fc01911a329fdf1d4725a06f8440"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac228fc01911a329fdf1d4725a06f8440">&#9670;&nbsp;</a></span>GhostGraph() <span class="overload">[1/2]</span></h2>
+<a id="a9d6320b3ee17dbb0d8130264f9ee67d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9d6320b3ee17dbb0d8130264f9ee67d6">&#9670;&nbsp;</a></span>GhostGraph() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a> </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S, LayerType, N &gt; *&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S, N &gt; *&#160;</td>
           <td class="paramname"><em>localGraph</em></td><td>)</td>
           <td></td>
         </tr>
@@ -155,18 +159,18 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 
 </div>
 </div>
-<a id="a3d37642874a5b28305066c4391a46de9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3d37642874a5b28305066c4391a46de9">&#9670;&nbsp;</a></span>GhostGraph() <span class="overload">[2/2]</span></h2>
+<a id="a43011f0fe2109c38724e918fc9429b47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a43011f0fe2109c38724e918fc9429b47">&#9670;&nbsp;</a></span>GhostGraph() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a> </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S, LayerType, N &gt; *&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, S, N &gt; *&#160;</td>
           <td class="paramname"><em>localGraph</em>, </td>
         </tr>
         <tr>
@@ -194,16 +198,16 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 
 </div>
 </div>
-<a id="aa5c88c7e46fdb001336c2ede2e7a3efb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5c88c7e46fdb001336c2ede2e7a3efb">&#9670;&nbsp;</a></span>~GhostGraph()</h2>
+<a id="abe501506e1cb6f51997a028e5e676efb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe501506e1cb6f51997a028e5e676efb">&#9670;&nbsp;</a></span>~GhostGraph()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::~<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a></td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::~<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -212,25 +216,25 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a028fd1586860c1ef4136e5c48065bfe5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a028fd1586860c1ef4136e5c48065bfe5">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[1/2]</span></h2>
+<a id="a04c74f0e0324c77b15f0824f5ea914c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04c74f0e0324c77b15f0824f5ea914c1">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::buildNode </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::buildNode </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt; &amp;&#160;</td>
           <td class="paramname"><em>node</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::set&lt; unsigned long &gt;&#160;</td>
-          <td class="paramname"><em>ignoreIds</em> = <code>std::set&lt;unsigned&#160;long&gt;()</code>&#160;</td>
+          <td class="paramtype">std::set&lt; NodeId &gt;&#160;</td>
+          <td class="paramname"><em>ignoreIds</em> = <code>std::set&lt;NodeId&gt;()</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -253,18 +257,18 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 
 </div>
 </div>
-<a id="acf6e5dfb1084845559d419be2a6b8ff0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acf6e5dfb1084845559d419be2a6b8ff0">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[2/2]</span></h2>
+<a id="a206b61c4c8d7d6d8f3afef7860ca496f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a206b61c4c8d7d6d8f3afef7860ca496f">&#9670;&nbsp;</a></span>buildNode() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::buildNode </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::buildNode </td>
           <td>(</td>
-          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramtype">NodeId&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td></td>
         </tr>
@@ -280,24 +284,24 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 
 </div>
 </div>
-<a id="a8dc1dfe917a28e1b6cfab5feaf694b25"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8dc1dfe917a28e1b6cfab5feaf694b25">&#9670;&nbsp;</a></span>clear()</h2>
+<a id="a7af81a2dba7609de5a8a681645672cba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7af81a2dba7609de5a8a681645672cba">&#9670;&nbsp;</a></span>clear()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::clear </td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::clear </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt;&gt;&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt;&gt;&#160;</td>
           <td class="paramname"><em>fossil</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Remove the arcs contained in the specified fossil from these ghost and <code>delete</code> them, along with the orphan ghost nodes resulting from the operation.</p>
+<p>Removes the arcs contained in the specified fossil from these ghost and <code>delete</code> them, along with the orphan ghost nodes resulting from the operation.</p>
 <p>A <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> is considered orphan when the deletion of one of its incoming or outgoing arc makes it completely unconnected. Such a node is useless for the graph structure and should be deleted.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -308,38 +312,38 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 
 </div>
 </div>
-<a id="a61bb5ae94b4a3ecf962875a402c3b601"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a61bb5ae94b4a3ecf962875a402c3b601">&#9670;&nbsp;</a></span>getArc()</h2>
+<a id="a0d2b0a4733754370c1b728ad81a9dfa3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d2b0a4733754370c1b728ad81a9dfa3">&#9670;&nbsp;</a></span>getArc()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; NODE_PARAMS_SPEC, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::getArc </td>
+          <td class="memname">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::getArc </td>
           <td>(</td>
-          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramtype">ArcId&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a const pointer to the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a> corresponding to the specified id.</p>
-<dl class="section return"><dt>Returns</dt><dd>const pointer to <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a> </dd></dl>
+<p>Returns a pointer to the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a> corresponding to the specified id.</p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a> </dd></dl>
 
 </div>
 </div>
-<a id="a73ffed44a680d7e7aadff147aee611a3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a73ffed44a680d7e7aadff147aee611a3">&#9670;&nbsp;</a></span>getArcs()</h2>
+<a id="aa5330381e9e5e4465f739f1b528ed8dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5330381e9e5e4465f739f1b528ed8dc">&#9670;&nbsp;</a></span>getArcs()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; NODE_PARAMS_SPEC, S &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::getArcs</td>
+          <td class="memname">std::unordered_map&lt; ArcId, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::getArcs</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -348,38 +352,60 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 
 </div>
 </div>
-<a id="ae25006b4d1981dde3e5a97fcc843ba0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae25006b4d1981dde3e5a97fcc843ba0f">&#9670;&nbsp;</a></span>getNode()</h2>
+<a id="af060a2a04add117db0dddd6502986cae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af060a2a04add117db0dddd6502986cae">&#9670;&nbsp;</a></span>getNode() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::getNode </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::getNode </td>
           <td>(</td>
-          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns a pointer to the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> corresponding to the specified id.</p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> </dd></dl>
+
+</div>
+</div>
+<a id="ad8670ce01ccc453e6dca49c0263fc8f2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad8670ce01ccc453e6dca49c0263fc8f2">&#9670;&nbsp;</a></span>getNode() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::getNode </td>
+          <td>(</td>
+          <td class="paramtype">NodeId&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Returns a const pointer to the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> corresponding to the specified id.</p>
-<dl class="section return"><dt>Returns</dt><dd>const pointer to <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> </dd></dl>
+<p>Returns a pointer to the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> corresponding to the specified id.</p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> </dd></dl>
 
 </div>
 </div>
-<a id="a676181f88c5294e072a39bd065ba0e67"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a676181f88c5294e072a39bd065ba0e67">&#9670;&nbsp;</a></span>getNodes()</h2>
+<a id="a0b9309783988fd9b02324a41a91c4fa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b9309783988fd9b02324a41a91c4fa6">&#9670;&nbsp;</a></span>getNodes()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::unordered_map&lt; unsigned long, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::getNodes</td>
+          <td class="memname">std::unordered_map&lt; NodeId, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::getNodes</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -388,36 +414,36 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 
 </div>
 </div>
-<a id="ab3337c5b4548ad0b61c490d09658d4ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab3337c5b4548ad0b61c490d09658d4ac">&#9670;&nbsp;</a></span>link() <span class="overload">[1/2]</span></h2>
+<a id="aa6f7350873ba34a8b7202ad382954c5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6f7350873ba34a8b7202ad382954c5c">&#9670;&nbsp;</a></span>link() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::link </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::link </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; *&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *&#160;</td>
           <td class="paramname"><em>source</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; *&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *&#160;</td>
           <td class="paramname"><em>target</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned long&#160;</td>
-          <td class="paramname"><em>arc_id</em>, </td>
+          <td class="paramtype">ArcId&#160;</td>
+          <td class="paramname"><em>arcId</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">LayerType&#160;</td>
+          <td class="paramtype">LayerId&#160;</td>
           <td class="paramname"><em>layer</em>&#160;</td>
         </tr>
         <tr>
@@ -427,40 +453,50 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Links the specified nodes with a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>. </p>
+<p>Links the specified nodes with a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>pointer to source <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> </td></tr>
+    <tr><td class="paramname">target</td><td>pointer to target <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> </td></tr>
+    <tr><td class="paramname">arcId</td><td>id of the new arc </td></tr>
+    <tr><td class="paramname">layer</td><td>arc layer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the created arc </dd></dl>
 
 </div>
 </div>
-<a id="aa7514c8fc72e0b94e7c30e21b89f70ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7514c8fc72e0b94e7c30e21b89f70ba">&#9670;&nbsp;</a></span>link() <span class="overload">[2/2]</span></h2>
+<a id="a284feab4419f9fcdc568b12f31395677"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a284feab4419f9fcdc568b12f31395677">&#9670;&nbsp;</a></span>link() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::link </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::link </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncDataPtr.html">SyncDataPtr</a>&lt; NODE_PARAMS_SPEC &gt;, LayerType, N &gt; *&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *&#160;</td>
           <td class="paramname"><em>source</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; NODE_PARAMS_SPEC, S &gt; *&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt; *&#160;</td>
           <td class="paramname"><em>target</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned long&#160;</td>
-          <td class="paramname"><em>arc_id</em>, </td>
+          <td class="paramtype">ArcId&#160;</td>
+          <td class="paramname"><em>arcId</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">LayerType&#160;</td>
+          <td class="paramtype">LayerId&#160;</td>
           <td class="paramname"><em>layer</em>&#160;</td>
         </tr>
         <tr>
@@ -470,22 +506,85 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Links the specified nodes with a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>. </p>
+<p>Links the specified nodes with a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>pointer to source <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> </td></tr>
+    <tr><td class="paramname">target</td><td>pointer to local synchronized target Node </td></tr>
+    <tr><td class="paramname">arcId</td><td>id of the new arc </td></tr>
+    <tr><td class="paramname">layer</td><td>arc layer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the created arc </dd></dl>
 
 </div>
 </div>
-<a id="a4a14da1ef8e113700e1ac0eb815ec746"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a14da1ef8e113700e1ac0eb815ec746">&#9670;&nbsp;</a></span>removeNode()</h2>
+<a id="a7dcf03c5fe4b9c79ac5b3b899042a549"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7dcf03c5fe4b9c79ac5b3b899042a549">&#9670;&nbsp;</a></span>link() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::removeNode </td>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>&lt; T, N, S &gt; * <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::link </td>
           <td>(</td>
-          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt; *&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a>&lt; T, N, S &gt; *&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ArcId&#160;</td>
+          <td class="paramname"><em>arcId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LayerId&#160;</td>
+          <td class="paramname"><em>layer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Links the specified nodes with a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>pointer to local synchronized source Node </td></tr>
+    <tr><td class="paramname">target</td><td>pointer to target <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode</a> </td></tr>
+    <tr><td class="paramname">arcId</td><td>id of the new arc </td></tr>
+    <tr><td class="paramname">layer</td><td>arc layer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the created arc </dd></dl>
+
+</div>
+</div>
+<a id="a8628beeba23eb0e4ca4fc237f0f50caf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8628beeba23eb0e4ca4fc237f0f50caf">&#9670;&nbsp;</a></span>removeNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::removeNode </td>
+          <td>(</td>
+          <td class="paramtype">NodeId&#160;</td>
           <td class="paramname"><em>nodeId</em></td><td>)</td>
           <td></td>
         </tr>
@@ -501,16 +600,16 @@ template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
 
 </div>
 </div>
-<a id="a8987678b5e273185047969fbc891f10c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8987678b5e273185047969fbc891f10c">&#9670;&nbsp;</a></span>synchronize()</h2>
+<a id="a23edd8566ed609213a24a92a901d7673"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23edd8566ed609213a24a92a901d7673">&#9670;&nbsp;</a></span>synchronize()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS , SYNC_MODE &gt; </div>
+template&lt;typename T , int N, SYNC_MODE &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; NODE_PARAMS, SYNC_MODE &gt;::synchronize</td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph</a>&lt; T, N, SYNC_MODE &gt;::synchronize</td>
         </tr>
       </table>
 </div><div class="memdoc">

@@ -199,6 +199,10 @@ namespace FPMAS::graph::parallel {
 				virtual void initLink(NodeId, NodeId, ArcId, LayerId) {}
 				virtual void notifyLinked(Arc<std::unique_ptr<SyncData<T>>,N>*) {}
 
+				/**
+				 * A synchronization mode dependent termination function,
+				 * called at each DistributedGraph::synchronize() call.
+				 */
 				virtual void termination() {};
 
 				static Wrapper<T>*

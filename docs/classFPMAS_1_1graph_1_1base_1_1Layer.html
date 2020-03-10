@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: FPMAS::graph::base::Layer&lt; NODE_PARAMS &gt; Class Template Reference</title>
+<title>fpmas: FPMAS::graph::base::Layer&lt; T, N &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -71,7 +71,7 @@ $(function() {
 <a href="#friends">Friends</a> &#124;
 <a href="classFPMAS_1_1graph_1_1base_1_1Layer-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::graph::base::Layer&lt; NODE_PARAMS &gt; Class Template Reference</div>  </div>
+<div class="title">FPMAS::graph::base::Layer&lt; T, N &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -79,53 +79,52 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7affe12b7fa653570549f09fa8adc145"><td class="memItemLeft" align="right" valign="top">std::vector&lt; ARC * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a7affe12b7fa653570549f09fa8adc145">getIncomingArcs</a> () const</td></tr>
-<tr class="separator:a7affe12b7fa653570549f09fa8adc145"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a196ae3eb064784b802efa4df75725240"><td class="memItemLeft" align="right" valign="top">std::vector&lt; NODE * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a196ae3eb064784b802efa4df75725240">inNeighbors</a> () const</td></tr>
-<tr class="separator:a196ae3eb064784b802efa4df75725240"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a527d9dd4764ad1f333c2e96a59b8680d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; ARC * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a527d9dd4764ad1f333c2e96a59b8680d">getOutgoingArcs</a> () const</td></tr>
-<tr class="separator:a527d9dd4764ad1f333c2e96a59b8680d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68fed8b403d91b2d35694afb3efe40e3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; NODE * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a68fed8b403d91b2d35694afb3efe40e3">outNeighbors</a> () const</td></tr>
-<tr class="separator:a68fed8b403d91b2d35694afb3efe40e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d214ab1977fc76550f9bc7257f9368a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a1d214ab1977fc76550f9bc7257f9368a">getIncomingArcs</a> () const</td></tr>
+<tr class="separator:a1d214ab1977fc76550f9bc7257f9368a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5738f0416f98f430468a082adf559330"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T, N &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a5738f0416f98f430468a082adf559330">inNeighbors</a> () const</td></tr>
+<tr class="separator:a5738f0416f98f430468a082adf559330"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0761b2bda7a76f01e8a770a9eb2823a9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a0761b2bda7a76f01e8a770a9eb2823a9">getOutgoingArcs</a> () const</td></tr>
+<tr class="separator:a0761b2bda7a76f01e8a770a9eb2823a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a92d3e0bcd621772fe892a7b02b91fff2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T, N &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a92d3e0bcd621772fe892a7b02b91fff2">outNeighbors</a> () const</td></tr>
+<tr class="separator:a92d3e0bcd621772fe892a7b02b91fff2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a0ff9ab178a66e074d2379ec47c9d0eeb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; ARC * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a0ff9ab178a66e074d2379ec47c9d0eeb">incomingArcs</a></td></tr>
-<tr class="separator:a0ff9ab178a66e074d2379ec47c9d0eeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a58c4868171d158e56110d3800744b4a1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; ARC * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#a58c4868171d158e56110d3800744b4a1">outgoingArcs</a></td></tr>
-<tr class="separator:a58c4868171d158e56110d3800744b4a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab09dc434077bb4726e5e3f15c9068159"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#ab09dc434077bb4726e5e3f15c9068159">incomingArcs</a></td></tr>
+<tr class="separator:ab09dc434077bb4726e5e3f15c9068159"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa40337edf4ec6b9dceb213ff66d96405"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html#aa40337edf4ec6b9dceb213ff66d96405">outgoingArcs</a></td></tr>
+<tr class="separator:aa40337edf4ec6b9dceb213ff66d96405"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 Friends</h2></td></tr>
-<tr class="memitem:ac90bbb6abafda7052e238f7da8be073c"><td class="memItemLeft" align="right" valign="top"><a id="ac90bbb6abafda7052e238f7da8be073c"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>Graph</b> (ARC *)</td></tr>
-<tr class="separator:ac90bbb6abafda7052e238f7da8be073c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9d5589198c83e1f96795d6dece81106"><td class="memItemLeft" align="right" valign="top"><a id="ab9d5589198c83e1f96795d6dece81106"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>Graph</b> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *)</td></tr>
+<tr class="separator:ab9d5589198c83e1f96795d6dece81106"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;NODE_PARAMS&gt;<br />
-class FPMAS::graph::base::Layer&lt; NODE_PARAMS &gt;</h3>
+<div class="textblock"><h3>template&lt;typename T, int N&gt;<br />
+class FPMAS::graph::base::Layer&lt; T, N &gt;</h3>
 
 <p>Class representing a <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">Layer</a> of a <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a>.</p>
 <p>Layers instances are used by each node to represent their <em>incoming</em> and <em>outgoing</em> arcs according to layers defined in the specified <code>LayerType</code> enum.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>associated data type </td></tr>
-    <tr><td class="paramname">LayerType</td><td>enum describing the available layers </td></tr>
     <tr><td class="paramname">N</td><td>number of layers </td></tr>
   </table>
   </dd>
 </dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7affe12b7fa653570549f09fa8adc145"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7affe12b7fa653570549f09fa8adc145">&#9670;&nbsp;</a></span>getIncomingArcs()</h2>
+<a id="a1d214ab1977fc76550f9bc7257f9368a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d214ab1977fc76550f9bc7257f9368a">&#9670;&nbsp;</a></span>getIncomingArcs()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS &gt; </div>
+template&lt;typename T , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; ARC * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; NODE_PARAMS &gt;::getIncomingArcs</td>
+          <td class="memname">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; T, N &gt;::getIncomingArcs</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -134,16 +133,16 @@ template&lt;NODE_PARAMS &gt; </div>
 
 </div>
 </div>
-<a id="a527d9dd4764ad1f333c2e96a59b8680d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a527d9dd4764ad1f333c2e96a59b8680d">&#9670;&nbsp;</a></span>getOutgoingArcs()</h2>
+<a id="a0761b2bda7a76f01e8a770a9eb2823a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0761b2bda7a76f01e8a770a9eb2823a9">&#9670;&nbsp;</a></span>getOutgoingArcs()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS &gt; </div>
+template&lt;typename T , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; ARC * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; NODE_PARAMS &gt;::getOutgoingArcs</td>
+          <td class="memname">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; T, N &gt;::getOutgoingArcs</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -152,16 +151,16 @@ template&lt;NODE_PARAMS &gt; </div>
 
 </div>
 </div>
-<a id="a196ae3eb064784b802efa4df75725240"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a196ae3eb064784b802efa4df75725240">&#9670;&nbsp;</a></span>inNeighbors()</h2>
+<a id="a5738f0416f98f430468a082adf559330"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5738f0416f98f430468a082adf559330">&#9670;&nbsp;</a></span>inNeighbors()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS &gt; </div>
+template&lt;typename T , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; NODE * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; NODE_PARAMS &gt;::inNeighbors</td>
+          <td class="memname">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T, N &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; T, N &gt;::inNeighbors</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -170,16 +169,16 @@ template&lt;NODE_PARAMS &gt; </div>
 
 </div>
 </div>
-<a id="a68fed8b403d91b2d35694afb3efe40e3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68fed8b403d91b2d35694afb3efe40e3">&#9670;&nbsp;</a></span>outNeighbors()</h2>
+<a id="a92d3e0bcd621772fe892a7b02b91fff2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a92d3e0bcd621772fe892a7b02b91fff2">&#9670;&nbsp;</a></span>outNeighbors()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS &gt; </div>
+template&lt;typename T , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; NODE * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; NODE_PARAMS &gt;::outNeighbors</td>
+          <td class="memname">std::vector&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; T, N &gt; * &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; T, N &gt;::outNeighbors</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -189,19 +188,19 @@ template&lt;NODE_PARAMS &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
-<a id="a0ff9ab178a66e074d2379ec47c9d0eeb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0ff9ab178a66e074d2379ec47c9d0eeb">&#9670;&nbsp;</a></span>incomingArcs</h2>
+<a id="ab09dc434077bb4726e5e3f15c9068159"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab09dc434077bb4726e5e3f15c9068159">&#9670;&nbsp;</a></span>incomingArcs</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS &gt; </div>
+template&lt;typename T , int N&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;ARC*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; NODE_PARAMS &gt;::incomingArcs</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt;T, N&gt;*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; T, N &gt;::incomingArcs</td>
         </tr>
       </table>
   </td>
@@ -214,19 +213,19 @@ template&lt;NODE_PARAMS &gt; </div>
 
 </div>
 </div>
-<a id="a58c4868171d158e56110d3800744b4a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a58c4868171d158e56110d3800744b4a1">&#9670;&nbsp;</a></span>outgoingArcs</h2>
+<a id="aa40337edf4ec6b9dceb213ff66d96405"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa40337edf4ec6b9dceb213ff66d96405">&#9670;&nbsp;</a></span>outgoingArcs</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;NODE_PARAMS &gt; </div>
+template&lt;typename T , int N&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;ARC*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; NODE_PARAMS &gt;::outgoingArcs</td>
+          <td class="memname">std::vector&lt;<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt;T, N&gt;*&gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Layer.html">FPMAS::graph::base::Layer</a>&lt; T, N &gt;::outgoingArcs</td>
         </tr>
       </table>
   </td>

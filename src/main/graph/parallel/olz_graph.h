@@ -252,6 +252,12 @@ namespace FPMAS::graph::parallel {
 
 	/**
 	 * Links the specified nodes with a GhostArc.
+	 *
+	 * @param source pointer to source GhostNode
+	 * @param target pointer to local synchronized target Node
+	 * @param arcId id of the new arc
+	 * @param layer arc layer
+	 * @return pointer to the created arc
 	 */ 
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 			GhostNode<T, N, S>* source,
@@ -264,6 +270,12 @@ namespace FPMAS::graph::parallel {
 
 	/**
 	 * Links the specified nodes with a GhostArc.
+	 *
+	 * @param source pointer to local synchronized source Node
+	 * @param target pointer to target GhostNode
+	 * @param arcId id of the new arc
+	 * @param layer arc layer
+	 * @return pointer to the created arc
 	 */ 
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 			Node<std::unique_ptr<SyncData<T>>, N>* source,
@@ -275,6 +287,15 @@ namespace FPMAS::graph::parallel {
 			new GhostArc<T, N, S>(arcId, source, target, layer);
 	}
 
+	/**
+	 * Links the specified nodes with a GhostArc.
+	 *
+	 * @param source pointer to source GhostNode
+	 * @param target pointer to target GhostNode
+	 * @param arcId id of the new arc
+	 * @param layer arc layer
+	 * @return pointer to the created arc
+	 */
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 			GhostNode<T, N, S>* source,
 			GhostNode<T, N, S>* target,
@@ -320,24 +341,30 @@ namespace FPMAS::graph::parallel {
 	}
 
 	/**
-	 * Returns a const pointer to the GhostNode corresponding to the specified
+	 * Returns a pointer to the GhostNode corresponding to the specified
 	 * id.
 	 *
-	 * @return const pointer to GhostNode
+	 * @return pointer to GhostNode
 	 */
 	template<typename T, int N, SYNC_MODE> const GhostNode<T, N, S>* GhostGraph<T, N, S>::getNode(NodeId id) const {
 		return this->ghostNodes.at(id);
 	}
 
+	/**
+	 * Returns a pointer to the GhostNode corresponding to the specified
+	 * id.
+	 *
+	 * @return pointer to GhostNode
+	 */
 	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>::getNode(NodeId id) {
 		return this->ghostNodes.at(id);
 	}
 
 	/**
-	 * Returns a const pointer to the GhostArc corresponding to the specified
+	 * Returns a pointer to the GhostArc corresponding to the specified
 	 * id.
 	 *
-	 * @return const pointer to GhostArc
+	 * @return pointer to GhostArc
 	 */
 	template<typename T, int N, SYNC_MODE> const GhostArc<T, N, S>* GhostGraph<T, N, S>::getArc(ArcId id) const {
 		return this->ghostArcs.at(id);
@@ -353,7 +380,7 @@ namespace FPMAS::graph::parallel {
 	}
 
 	/**
-	 * Remove the arcs contained in the specified fossil from these ghost
+	 * Removes the arcs contained in the specified fossil from these ghost
 	 * and `delete` them, along with the orphan ghost nodes resulting from
 	 * the operation.
 	 *
