@@ -69,6 +69,7 @@ namespace FPMAS::graph::parallel {
 
 		GhostArc<T, N, S>* link(GhostNode<T, N, S>*, Node<std::unique_ptr<SyncData<T>>, N>*, ArcId, LayerId);
 		GhostArc<T, N, S>* link(Node<std::unique_ptr<SyncData<T>>, N>*, GhostNode<T, N, S>*, ArcId, LayerId);
+		GhostArc<T, N, S>* link(GhostNode<T, N, S>*, GhostNode<T, N, S>*, ArcId, LayerId);
 
 		void removeNode(NodeId);
 
@@ -255,10 +256,10 @@ namespace FPMAS::graph::parallel {
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 			GhostNode<T, N, S>* source,
 			Node<std::unique_ptr<SyncData<T>>, N>* target,
-			ArcId arc_id,
+			ArcId arcId,
 			LayerId layer
 			) {
-		return this->ghostArcs[arc_id] = new GhostArc<T, N, S>(arc_id, source, target, layer);
+		return this->ghostArcs[arcId] = new GhostArc<T, N, S>(arcId, source, target, layer);
 	}
 
 	/**
@@ -267,11 +268,20 @@ namespace FPMAS::graph::parallel {
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 			Node<std::unique_ptr<SyncData<T>>, N>* source,
 			GhostNode<T, N, S>* target,
-			ArcId arc_id,
+			ArcId arcId,
 			LayerId layer
 			) {
-		return this->ghostArcs[arc_id] =
-			new GhostArc<T, N, S>(arc_id, source, target, layer);
+		return this->ghostArcs[arcId] =
+			new GhostArc<T, N, S>(arcId, source, target, layer);
+	}
+
+	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
+			GhostNode<T, N, S>* source,
+			GhostNode<T, N, S>* target,
+			ArcId arcId,
+			LayerId layer) {
+		return this->ghostArcs[arcId] =
+			new GhostArc<T, N, S>(arcId, source, target, layer);
 	}
 
 	/**

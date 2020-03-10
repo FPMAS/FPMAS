@@ -105,7 +105,6 @@ namespace FPMAS::graph::parallel {
 									)
 						};
 
-
 						// Finally, serialize the node with the eventual
 						// aditionnal fields
 						std::string serial_arc = json_arc.dump();

@@ -87,6 +87,11 @@ namespace FPMAS::graph::parallel {
 				GhostNode<T, N, S>*,
 				ArcId,
 				LayerId);
+		friend GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
+				GhostNode<T, N, S>*,
+				GhostNode<T, N, S>*,
+				ArcId,
+				LayerId);
 
 		private:
 		GhostArc(
@@ -99,6 +104,11 @@ namespace FPMAS::graph::parallel {
 			Node<std::unique_ptr<SyncData<T>>, N>*,
 			GhostNode<T, N, S>*,
 			LayerId);
+		GhostArc(
+			ArcId,
+			GhostNode<T, N, S>*,
+			GhostNode<T, N, S>*,
+			LayerId);
 
 	};
 
@@ -107,34 +117,42 @@ namespace FPMAS::graph::parallel {
 	 * GhostArc instance is added to the regular incoming arcs list of the
 	 * local target node.
 	 *
-	 * @param arc_id arc id
+	 * @param arcId arc id
 	 * @param source pointer to the source ghost node
 	 * @param target pointer to the local target node
 	 */
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>::GhostArc(
-			ArcId arc_id,
+			ArcId arcId,
 			GhostNode<T, N, S>* source,
 			Node<std::unique_ptr<SyncData<T>>, N>* target,
 			LayerId layer
 			)
-		: Arc<std::unique_ptr<SyncData<T>>, N>(arc_id, source, target, layer) { };
+		: Arc<std::unique_ptr<SyncData<T>>, N>(arcId, source, target, layer) { };
 
 	/**
 	 * Builds a GhostArc linking the specified nodes. Notice that the
 	 * GhostArc instance is added to the regular outgoing arcs list of the
 	 * local source node.
 	 *
-	 * @param arc_id arc id
+	 * @param arcId arc id
 	 * @param source pointer to the local source node
 	 * @param target pointer to the target ghost node
 	 */
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>::GhostArc(
-			ArcId arc_id,
+			ArcId arcId,
 			Node<std::unique_ptr<SyncData<T>>, N>* source,
 			GhostNode<T, N, S>* target,
 			LayerId layer
 			)
-		: Arc<std::unique_ptr<SyncData<T>>, N>(arc_id, source, target, layer) { };
+		: Arc<std::unique_ptr<SyncData<T>>, N>(arcId, source, target, layer) { };
+
+	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>::GhostArc(
+			ArcId arcId,
+			GhostNode<T, N, S>* source,
+			GhostNode<T, N, S>* target,
+			LayerId layer
+			)
+		: Arc<std::unique_ptr<SyncData<T>>, N>(arcId, source, target, layer) { };
 
 }
 

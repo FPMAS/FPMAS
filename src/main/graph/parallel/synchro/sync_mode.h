@@ -29,6 +29,15 @@ namespace FPMAS::graph::parallel {
 
 		}
 		namespace arc {
+			template<typename T, int N, SYNC_MODE> void obj_size_multi_fn(
+					ZOLTAN_OBJ_SIZE_ARGS
+					);
+			template<typename T, int N, SYNC_MODE> void pack_obj_multi_fn(
+					ZOLTAN_PACK_OBJ_ARGS
+					);
+			template<typename T, int N, SYNC_MODE> void unpack_obj_multi_fn(
+					ZOLTAN_UNPACK_OBJ_ARGS
+					);
 			template<typename T, int N> void post_migrate_pp_fn_no_sync(
 					ZOLTAN_MID_POST_MIGRATE_ARGS
 					);
@@ -176,16 +185,21 @@ namespace FPMAS::graph::parallel {
 		> class SyncMode {
 			private:
 				zoltan_query_functions _config;
+			protected:
+				DistributedGraph<T, Mode, N>& dg;
 			public:
 
-				SyncMode(zoltan_query_functions config) : _config(config) {}
+				SyncMode(
+					zoltan_query_functions config,
+					DistributedGraph<T, Mode, N>& dg
+					) : _config(config), dg(dg) {}
 
 				const zoltan_query_functions& config() const;
 
 				virtual void initLink(NodeId, NodeId, ArcId, LayerId) {}
 				virtual void notifyLinked(Arc<std::unique_ptr<SyncData<T>>,N>*) {}
 
-				virtual void termination(DistributedGraph<T, Mode, N>& dg) {};
+				virtual void termination() {};
 
 				static Wrapper<T>*
 					wrap(NodeId, SyncMpiCommunicator&, const Proxy&);

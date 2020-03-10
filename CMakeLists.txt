@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 17)
 # MPI setup
 find_package(MPI REQUIRED)
 set(CMAKE_CXX_COMPILER ${MPI_CXX_COMPILER})
-set(MPI_CXX_COMPILE_OPTIONS -g -O0)
+add_compile_options(-g -O0)
 
 set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
 MPI context")

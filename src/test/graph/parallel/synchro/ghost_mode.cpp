@@ -161,5 +161,222 @@ TEST_F(Mpi_DistributeCompleteGraphWithGhostTest, distribute_graph_with_multiple_
 		}
 
 	}
+}
+
+class Mpi_DynamicLinkTest : public ::testing::Test {
+	protected:
+		DistributedGraph<int> dg;
+		std::unordered_map<unsigned long, std::pair<int, int>> partition;
+	
+	public:
+		void SetUp() override {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
+					dg.buildNode(2*i, 2*i);
+					dg.buildNode(2*i+1, 2*i+1);
+					partition[2*i] = std::pair(0, i);
+					partition[2*i+1] = std::pair(0, i);
+				}
+				for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
+					dg.link(
+						2*i+1,
+						2*((i+1)%dg.getMpiCommunicator().getSize()),
+						i
+						);
+				}
+			}
+		}
+};
+
+using FPMAS::graph::base::DefaultLayer;
+
+TEST_F(Mpi_DynamicLinkTest, local_link) {
+	dg.distribute(partition);
+
+	int i = dg.getMpiCommunicator().getRank();
+	dg.link(2*i, 2*i+1, dg.getMpiCommunicator().getSize() + i);
+
+	ASSERT_EQ(dg.getArcs().size(), 1);
+	const Node<std::unique_ptr<SyncData<int>>, 1>* node = dg.getNode(2*i);
+	ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 1);
+}
+
+/*
+ * i = current rank
+ * On each proc, we have the following setup :
+ * 	[2*i]<----(2*(i-1)+1)
+ *
+ * 	[2*i+1]-->(2*(i+1))
+ * Then, we link the local node [2*i] to (2*(i+1)) so that, in the final setup,
+ * we have 2 new arcs :
+ * [2*i]------>(2*(i+1)) : arcs that need to be exported
+ * (2*(i-1))-->[2*i]     : arc that should be imported
+ *
+ * Moreover, if N_proc > 2, the ghost node (2*(i-1)) must be created.
+ *
+ */
+TEST_F(Mpi_DynamicLinkTest, ghost_target_link) {
+	if(dg.getMpiCommunicator().getSize() > 1) {
+		// Initial partitioning, 2 nodes per process
+		// Even node has an incoming ghost
+		// Odd node has an outgoing ghost
+		dg.distribute(partition);
+
+		int i = dg.getMpiCommunicator().getRank();
+		const Node<std::unique_ptr<SyncData<int>>, 1>* node = dg.getNode(2*i);
+		ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 0);
+		ASSERT_EQ(node->layer(DefaultLayer).getIncomingArcs().size(), 1);
+
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().count(2*((i+1)%dg.getMpiCommunicator().getSize())), 1);
+		// Links pair node to the other pair ghost node
+		dg.link(
+			2*i,
+			2*((i+1)%dg.getMpiCommunicator().getSize()),
+			dg.getMpiCommunicator().getSize() + i
+			);
+		// Migrates new link
+		dg.synchronize();
+
+		// Checks that the arc has locally been created
+		ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 1);
+
+		if(dg.getMpiCommunicator().getSize() > 2) {
+			// Checks that the new ghost node has been created if necessary
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 3);
+		} else {
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+		}
+
+		// Checks that an arc has been imported
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 4);
+		ASSERT_EQ(node->layer(DefaultLayer).getIncomingArcs().size(), 2);
+	} else {
+		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+	}
+}
+
+TEST_F(Mpi_DynamicLinkTest, ghost_source_link) {
+	if(dg.getMpiCommunicator().getSize() > 1) {
+		// Initial partitioning, 2 nodes per process
+		// Even node has an incoming ghost
+		// Odd node has an outgoing ghost
+		dg.distribute(partition);
+
+		int i = dg.getMpiCommunicator().getRank();
+		const Node<std::unique_ptr<SyncData<int>>, 1>* node = dg.getNode(2*i);
+		ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 0);
+		ASSERT_EQ(node->layer(DefaultLayer).getIncomingArcs().size(), 1);
+
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().count(2*((i+1)%dg.getMpiCommunicator().getSize())), 1);
+		// Links pair ghost to pair node
+		dg.link(
+			2*((i+1)%dg.getMpiCommunicator().getSize()),
+			2*i,
+			dg.getMpiCommunicator().getSize() + i
+			);
+		// Migrates new link
+		dg.synchronize();
+
+		// Checks that the arc has locally been created
+		ASSERT_EQ(node->layer(DefaultLayer).getIncomingArcs().size(), 2);
+
+		if(dg.getMpiCommunicator().getSize() > 2) {
+			// Checks that the new ghost node has been created if necessary
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 3);
+		} else {
+			ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+		}
+
+		// Checks that an arc has been imported
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 4);
+		ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 1);
+	} else {
+		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+	}
+}
+
+class Mpi_DynamicGhostLinkTest : public ::testing::Test {
+	protected:
+		DistributedGraph<int> dg;
+		std::unordered_map<unsigned long, std::pair<int, int>> partition;
+	
+	public:
+		void SetUp() override {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
+					dg.buildNode(3*i, 0);
+					dg.buildNode(3*i+1, 0);
+					dg.buildNode(3*i+2, 0);
+					partition[3*i] = std::pair(0, i);
+					partition[3*i+1] = std::pair(0, i);
+					partition[3*i+2] = std::pair(0, i);
+				}
+				for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
+					dg.link(
+						3*i+1,
+						3*((i+1)%dg.getMpiCommunicator().getSize()),
+						3*i
+						);
+					dg.link(
+						3*((i+1)%dg.getMpiCommunicator().getSize())+2,
+						3*i+1,
+						3*i+1
+						);
+				}
+			}
+			dg.distribute(partition);
+		}
+};
+
+TEST_F(Mpi_DynamicGhostLinkTest, ghost_source_and_target_link) {
+	if(dg.getMpiCommunicator().getSize() >= 2) {
+		// Original local graph structure
+		ASSERT_EQ(dg.getNodes().size(), 3);
+		ASSERT_EQ(dg.getArcs().size(), 0);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 3);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 4);
+
+		// link 3(i+1) -> 3(i+2), that are two ghost nodes
+		int i = dg.getMpiCommunicator().getRank();
+		dg.link(
+			3*((i+1)%dg.getMpiCommunicator().getSize()),
+			3*((i+1)%dg.getMpiCommunicator().getSize())+2,
+			3*((i+1)%dg.getMpiCommunicator().getSize())+2
+			);
+		// Checks that the created arc is a ghost arc
+		ASSERT_EQ(dg.getArcs().size(), 0);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 5);
+
+		// Synchronize : the new local arc should be eported, and a distant arc
+		// should be imported
+		dg.synchronize();
+
+		// Checks that local ghost data is not altered (no need to create new
+		// ghost nodes, etc...)
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 3);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 5);
+
+		// Checks the imported arc structure
+		ASSERT_EQ(dg.getArcs().size(), 1);
+		ASSERT_EQ(dg.getNode(3*i)->getOutgoingArcs().size(), 1); // new arc
+		ASSERT_EQ(dg.getNode(3*i)->getIncomingArcs().size(), 1); // ghost arc
+		ASSERT_EQ(dg.getNode(3*i+2)->getIncomingArcs().size(), 1); // new arc
+		ASSERT_EQ(dg.getNode(3*i+2)->getOutgoingArcs().size(), 1); // ghost arc
+		ASSERT_EQ(
+			dg.getNode(3*i)->getOutgoingArcs()[0]->getId(),
+			dg.getNode(3*i+2)->getIncomingArcs()[0]->getId()
+			);
+
+		// Checks the imported arc id
+		ASSERT_EQ(
+			dg.getNode(3*i)->getOutgoingArcs()[0]->getId(),
+			3*i+2
+			);
+
+	} else {
+		PRINT_MIN_PROCS_WARNING(ghost_source_and_target_link, 2);
+	}
 
 }

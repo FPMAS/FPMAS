@@ -113,16 +113,16 @@ namespace FPMAS::graph::parallel::synchro {
 
 	template<typename T, int N> class HardSyncMode : public SyncMode<HardSyncMode, HardSyncData, T, N> {
 		public:
-			HardSyncMode();
+			HardSyncMode(DistributedGraph<T, HardSyncMode, N>&);
 
 	};
 
-	template<typename T, int N> HardSyncMode<T, N>::HardSyncMode()
+	template<typename T, int N> HardSyncMode<T, N>::HardSyncMode(DistributedGraph<T, HardSyncMode, N>& dg)
 		: SyncMode<HardSyncMode, HardSyncData, T, N>(zoltan_query_functions(
 				&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, HardSyncMode>,
 				&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, HardSyncMode>,
 				&FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, HardSyncMode>
-		 )) {}
+		 ), dg) {}
 
 }
 #endif

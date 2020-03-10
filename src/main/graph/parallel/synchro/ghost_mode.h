@@ -1,6 +1,7 @@
 #ifndef GHOST_DATA_H
 #define GHOST_DATA_H
 
+#include "utils/config.h"
 #include "../synchro/sync_mode.h"
 #include "../proxy/proxy.h"
 #include "../distributed_graph.h"
@@ -10,6 +11,7 @@ using FPMAS::graph::parallel::proxy::Proxy;
 namespace FPMAS::graph::parallel {
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
+	using zoltan::utils::write_zoltan_id;
 	using parallel::DistributedGraph;
 
 	namespace synchro {
@@ -96,29 +98,84 @@ namespace FPMAS::graph::parallel {
 
 		template<typename T, int N> class GhostMode : public SyncMode<GhostMode, GhostData, T, N> {
 			private:
+				Zoltan zoltan;
 				std::unordered_map<
 					std::pair<NodeId, NodeId>,
 					Arc<std::unique_ptr<SyncData<T>>, N>*,
 					NodeIdPairHash
 				> linkBuffer;
+				int computeArcExportCount();
 
 			public:
-			GhostMode();
-			void termination(DistributedGraph<T, GhostMode, N>& dg);
+			GhostMode(DistributedGraph<T, GhostMode, N>&);
+			void termination();
 			void initLink(NodeId, NodeId, ArcId, LayerId);
 			void notifyLinked(Arc<std::unique_ptr<SyncData<T>>,N>*);
 		};
 
-		template<typename T, int N> GhostMode<T,N>::GhostMode() :
+		template<typename T, int N> GhostMode<T,N>::GhostMode(DistributedGraph<T, GhostMode, N>& dg) :
 			SyncMode<GhostMode, GhostData, T,N>(zoltan_query_functions(
 					&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, GhostMode>,
 					&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, GhostMode>,
 					&FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, GhostMode>
-					))
-		{}
+					),
+					dg)
+		{
+			FPMAS::config::zoltan_config(&this->zoltan);
+		}
 
-		template<typename T, int N> void GhostMode<T, N>::termination(DistributedGraph<T, GhostMode, N>& dg) {
-			dg.getGhost().synchronize();
+		template<typename T, int N> int GhostMode<T, N>::computeArcExportCount() {
+			int n = 0;
+			for(auto item : linkBuffer) {
+				if(!this->dg.getProxy().isLocal(item.first.first) && !this->dg.getProxy().isLocal(item.first.second)) {
+					n+=2;
+				} else {
+					n+=1;
+				}
+			}
+			return n;
+		}
+
+		template<typename T, int N> void GhostMode<T, N>::termination() {
+			if(linkBuffer.size() > 0) {
+				zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T, N, GhostMode>, &this->dg);
+				zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T, N, GhostMode>, &this->dg);
+				zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, N, GhostMode>, &this->dg);
+
+				int export_arcs_num = this->computeArcExportCount();
+				ZOLTAN_ID_TYPE export_arcs_global_ids[2*export_arcs_num];
+				int export_arcs_procs[export_arcs_num];
+				ZOLTAN_ID_TYPE export_arcs_local_ids[0];
+
+				int i=0;
+				for(auto item : linkBuffer) {
+					if(!this->dg.getProxy().isLocal(item.first.first)) {
+						write_zoltan_id(item.second->getId(), &export_arcs_global_ids[2*i]);
+						export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(item.first.first);
+						i++;
+					}
+					if(!this->dg.getProxy().isLocal(item.first.second)) {
+						write_zoltan_id(item.second->getId(), &export_arcs_global_ids[2*i]);
+						export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(item.first.second);
+						i++;
+					}
+				}
+
+				this->zoltan.Migrate(
+						-1,
+						NULL,
+						NULL,
+						NULL,
+						NULL,
+						export_arcs_num,
+						export_arcs_global_ids,
+						export_arcs_local_ids,
+						export_arcs_procs,
+						export_arcs_procs // parts = procs
+						);
+			}
+
+			this->dg.getGhost().synchronize();
 		}
 
 		template<typename T, int N> void GhostMode<T, N>::initLink(NodeId source, NodeId target, ArcId, LayerId) {

@@ -100,6 +100,7 @@ namespace FPMAS::graph::parallel {
 			int getOrigin(NodeId) const;
 			int getCurrentLocation(NodeId) const;
 			void setLocal(NodeId, bool upToDate=false);
+			bool isLocal(NodeId);
 
 			void synchronize();
 

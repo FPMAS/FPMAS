@@ -36,14 +36,14 @@ namespace FPMAS::graph::parallel::synchro {
 
 	template<typename T, int N> class NoSyncMode : public SyncMode<NoSyncMode, NoSyncData, T, N> {
 		public:
-		NoSyncMode();
+		NoSyncMode(DistributedGraph<T, NoSyncMode, N>&);
 	};
 
-	template<typename T, int N> NoSyncMode<T,N>::NoSyncMode()
+	template<typename T, int N> NoSyncMode<T,N>::NoSyncMode(DistributedGraph<T, NoSyncMode, N>& dg)
 		: SyncMode<NoSyncMode, NoSyncData, T, N>(zoltan_query_functions(
 		 &FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T, N>,
 		 &FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T, N>,
 		 NULL
-		 )) {};
+		 ), dg) {};
 }
 #endif

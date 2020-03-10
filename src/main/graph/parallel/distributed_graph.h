@@ -189,7 +189,7 @@ namespace FPMAS {
 		 * Builds a DistributedGraph over all the available procs.
 		 */
 		template<class T, SYNC_MODE, int N> DistributedGraph<T, S, N>::DistributedGraph()
-			: mpiCommunicator(*this), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
+			: syncMode(*this), mpiCommunicator(*this), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
 
@@ -200,7 +200,7 @@ namespace FPMAS {
 		 * built
 		 */
 		template<class T, SYNC_MODE, int N> DistributedGraph<T, S, N>::DistributedGraph(std::initializer_list<int> ranks)
-			: mpiCommunicator(*this, ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
+			: syncMode(*this), mpiCommunicator(*this, ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
 				this->setUpZoltan();
 			}
 
@@ -343,19 +343,22 @@ namespace FPMAS {
 		Arc<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
 		::link(NodeId source, NodeId target, ArcId arcId, LayerId layerId) {
 			if(this->getNodes().count(source) > 0) {
+				// Source is local
 				Node<std::unique_ptr<SyncData<T>>, N>* sourceNode
 					= this->getNode(source);
 				if(this->getNodes().count(target) > 0) {
+					// Source and Target are local, completely local operation
 					Node<std::unique_ptr<SyncData<T>>, N>* targetNode
 						= this->getNode(target);
-					// Source and Target are local, completely local operation
 					return this->Graph<std::unique_ptr<SyncData<T>>, N>::link(
 						sourceNode, targetNode, arcId, layerId
 						);
 				} else {
+					// Target is distant
 					GhostNode<T, N, S>* targetNode
 						= this->getGhost().getNode(target);
 					syncMode.initLink(source, target, arcId, layerId);
+					// link local -> distant
 					auto arc = this->getGhost().link(
 						sourceNode, targetNode, arcId, layerId
 						);
@@ -363,16 +366,38 @@ namespace FPMAS {
 					return arc;
 				}
 			} else {
-				GhostNode<T, N, S>* sourceNode
-					= this->getGhost().getNode(source);
-				Node<std::unique_ptr<SyncData<T>>, N>* targetNode
-					= this->getNode(target);
-				syncMode.initLink(source, target, arcId, layerId);
-				auto arc = this->getGhost().link(
-						sourceNode, targetNode, arcId, layerId
-						);
-				syncMode.notifyLinked(arc);
-				return arc;
+				// Source is distant
+				if(this->getNodes().count(target) > 0) {
+					// Source is local
+					GhostNode<T, N, S>* sourceNode
+						= this->getGhost().getNode(source);
+					Node<std::unique_ptr<SyncData<T>>, N>* targetNode
+						= this->getNode(target);
+					syncMode.initLink(source, target, arcId, layerId);
+					// link distant -> local
+					auto arc = this->getGhost().link(
+							sourceNode, targetNode, arcId, layerId
+							);
+					syncMode.notifyLinked(arc);
+					return arc;
+				}
+				else {
+					// Source and target are distant
+					// Allowed only if the two nodes are ghosts on this graph
+					// TODO: better exception handling
+					GhostNode<T, N, S>* sourceNode
+						= this->getGhost().getNode(source);
+					GhostNode<T, N, S>* targetNode
+						= this->getGhost().getNode(target);
+
+					syncMode.initLink(source, target, arcId, layerId);
+					// link distant -> distant
+					auto arc = this->getGhost().link(
+							sourceNode, targetNode, arcId, layerId
+							);
+					syncMode.notifyLinked(arc);
+					return arc;
+				}
 			}
 		}
 
@@ -654,7 +679,7 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::synchronize() {
 			this->mpiCommunicator.terminate();
-			syncMode.termination(*this);
+			syncMode.termination();
 		}
 	}
 }
