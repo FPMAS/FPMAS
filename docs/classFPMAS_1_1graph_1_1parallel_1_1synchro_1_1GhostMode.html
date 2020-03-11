@@ -72,22 +72,164 @@ $(function() {
 <div class="title">FPMAS::graph::parallel::synchro::GhostMode&lt; T, N &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="ghost__mode_8h_source.html">ghost_mode.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ac0e5e5e5bcd5e7405e81c978a7b0f009"><td class="memItemLeft" align="right" valign="top"><a id="ac0e5e5e5bcd5e7405e81c978a7b0f009"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>GhostMode</b> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a>, N &gt; &amp;)</td></tr>
+<tr class="memitem:ac0e5e5e5bcd5e7405e81c978a7b0f009"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html#ac0e5e5e5bcd5e7405e81c978a7b0f009">GhostMode</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a>, N &gt; &amp;)</td></tr>
 <tr class="separator:ac0e5e5e5bcd5e7405e81c978a7b0f009"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a41b26ddd3066c629b0747bc26a84b9dd"><td class="memItemLeft" align="right" valign="top"><a id="a41b26ddd3066c629b0747bc26a84b9dd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>termination</b> ()</td></tr>
+<tr class="memitem:a41b26ddd3066c629b0747bc26a84b9dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html#a41b26ddd3066c629b0747bc26a84b9dd">termination</a> ()</td></tr>
 <tr class="separator:a41b26ddd3066c629b0747bc26a84b9dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25fc6207a69482f150b6bf5b8d710e76"><td class="memItemLeft" align="right" valign="top"><a id="a25fc6207a69482f150b6bf5b8d710e76"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>initLink</b> (NodeId, NodeId, ArcId, LayerId)</td></tr>
+<tr class="memitem:a25fc6207a69482f150b6bf5b8d710e76"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html#a25fc6207a69482f150b6bf5b8d710e76">initLink</a> (NodeId, NodeId, ArcId, LayerId)</td></tr>
 <tr class="separator:a25fc6207a69482f150b6bf5b8d710e76"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3a1e0ecacd8e87c9e4eb3ce58c51948d"><td class="memItemLeft" align="right" valign="top"><a id="a3a1e0ecacd8e87c9e4eb3ce58c51948d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>notifyLinked</b> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt; *)</td></tr>
-<tr class="separator:a3a1e0ecacd8e87c9e4eb3ce58c51948d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa60b0b5a79612df658b177468824b74"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html#aaa60b0b5a79612df658b177468824b74">notifyLinked</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T, N, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a> &gt;&gt;, N &gt; *)</td></tr>
+<tr class="separator:aaa60b0b5a79612df658b177468824b74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T, int N&gt;<br />
+class FPMAS::graph::parallel::synchro::GhostMode&lt; T, N &gt;</h3>
+
+<p>Synchronisation mode used as default by the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>.</p>
+<p>In this mode, overlapping zones (represented as a "ghost graph") are built and synchronized on each proc.</p>
+<p>When a node is exported, ghost arcs and nodes are built to keep consistency across processes, and ghost nodes data is fetched at each <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">DistributedGraph::synchronize()</a> call.</p>
+<p>Read and Acquire operations can directly access fetched data locally.</p>
+<p>In consequence, such "ghost" data can be read and written as any other local data. However, modifications <b>won't be reported</b> to the origin proc, and will be overriden at the next synchronization.</p>
+<p>Moreover, this mode allows to link or unlink nodes, according to the semantics defined in the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>. Such graph modifications are imported and exported at each <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">DistributedGraph::synchronize()</a> call.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">wrapped</td><td>data type </td></tr>
+    <tr><td class="paramname">N</td><td>layers count </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ac0e5e5e5bcd5e7405e81c978a7b0f009"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0e5e5e5bcd5e7405e81c978a7b0f009">&#9670;&nbsp;</a></span>GhostMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , int N&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">FPMAS::graph::parallel::synchro::GhostMode</a>&lt; T, N &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a>&lt; T, N &gt;, N &gt; &amp;&#160;</td>
+          <td class="paramname"><em>dg</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a> constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dg</td><td>reference to the parent <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a25fc6207a69482f150b6bf5b8d710e76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a25fc6207a69482f150b6bf5b8d710e76">&#9670;&nbsp;</a></span>initLink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , int N&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">FPMAS::graph::parallel::synchro::GhostMode</a>&lt; T, N &gt;::initLink </td>
+          <td>(</td>
+          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ArcId&#160;</td>
+          <td class="paramname"><em>arcId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LayerId&#160;</td>
+          <td class="paramname"><em>layer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Initializes a distant link operation from <code>source</code> to <code>target</code> on the given <code>layer</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>source node id </td></tr>
+    <tr><td class="paramname">target</td><td>target node id </td></tr>
+    <tr><td class="paramname">arcId</td><td>new arc id </td></tr>
+    <tr><td class="paramname">layer</td><td>layer id </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aaa60b0b5a79612df658b177468824b74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa60b0b5a79612df658b177468824b74">&#9670;&nbsp;</a></span>notifyLinked()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , int N&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">FPMAS::graph::parallel::synchro::GhostMode</a>&lt; T, N &gt;::notifyLinked </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T, N, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a>&lt; T, N &gt; &gt;&gt;, N &gt; *&#160;</td>
+          <td class="paramname"><em>arc</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Called once a new distant <code>arc</code> has been created locally.</p>
+<p>The created <code>arc</code> is added to an internal buffer and migrated once <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html#a41b26ddd3066c629b0747bc26a84b9dd">termination()</a> is called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arc</td><td>pointer to the new arc to export </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a41b26ddd3066c629b0747bc26a84b9dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41b26ddd3066c629b0747bc26a84b9dd">&#9670;&nbsp;</a></span>termination()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , int N&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">FPMAS::graph::parallel::synchro::GhostMode</a>&lt; T, N &gt;::termination</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Called at each <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">DistributedGraph::synchronize()</a> call.</p>
+<p>Exports / imports link and unlink arcs, and fetch updated ghost data from other procs. </p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/main/graph/parallel/<a class="el" href="distributed__graph_8h_source.html">distributed_graph.h</a></li>
 <li>src/main/graph/parallel/synchro/<a class="el" href="ghost__mode_8h_source.html">ghost_mode.h</a></li>

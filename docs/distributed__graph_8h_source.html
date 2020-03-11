@@ -95,532 +95,531 @@ $(function() {
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespaceFPMAS_1_1graph_1_1parallel.html">   29</a></span>&#160;    <span class="keyword">namespace </span>graph::parallel {</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        <span class="keyword">namespace </span>synchro {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <span class="comment">//template&lt;class T&gt; class GhostData;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">   32</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span>, <span class="keywordtype">int</span>&gt; <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a>; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        }</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">using</span> base::NodeId;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">using</span> base::ArcId;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">proxy::Proxy</a>;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">synchro::SyncData</a>;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">synchro::GhostMode</a>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, SYNC_MODE = GhostMode, <span class="keywordtype">int</span> N = 1&gt;</div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">   69</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> : <span class="keyword">public</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a>&lt;std::unique_ptr&lt;SyncData&lt;T&gt;&gt;, N&gt;, <a class="code" href="classFPMAS_1_1communication_1_1ResourceContainer.html">communication::ResourceContainer</a> {</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::obj_size_multi_fn&lt;T, N, S&gt;(ZOLTAN_OBJ_SIZE_ARGS);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::obj_size_multi_fn&lt;T, N, S&gt;(ZOLTAN_OBJ_SIZE_ARGS);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::pack_obj_multi_fn&lt;T, N, S&gt;(ZOLTAN_PACK_OBJ_ARGS);</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::pack_obj_multi_fn&lt;T, N, S&gt;(ZOLTAN_PACK_OBJ_ARGS);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::unpack_obj_multi_fn&lt;T, N, S&gt;(ZOLTAN_UNPACK_OBJ_ARGS);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::unpack_obj_multi_fn&lt;T, N, S&gt;(ZOLTAN_UNPACK_OBJ_ARGS);</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::post_migrate_pp_fn_no_sync&lt;T, N&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::post_migrate_pp_fn_olz&lt;T, N, S&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::mid_migrate_pp_fn&lt;T, N, S&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::post_migrate_pp_fn_olz&lt;T, N, S&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::post_migrate_pp_fn_no_sync&lt;T, N&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> mpiCommunicator;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            Zoltan zoltan;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> proxy;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            S&lt;T, N&gt; syncMode;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a> ghost;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">distribute</a>(<span class="keywordtype">int</span>, <span class="keywordtype">int</span>, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, <span class="keywordtype">int</span>*, <span class="keywordtype">int</span>*, ZOLTAN_ID_PTR, <span class="keywordtype">int</span>*);</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keywordtype">void</span> setZoltanNodeMigration();</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            <span class="keywordtype">void</span> setZoltanArcMigration();</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <span class="comment">// Serialization caches used to pack objects</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            std::unordered_map&lt;NodeId, std::string&gt; node_serialization_cache;</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            std::unordered_map&lt;ArcId, std::string&gt; arc_serialization_cache;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            <span class="comment">/*</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment">             * Zoltan structures used to manage nodes and arcs migration</span></div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="comment">             */</span></div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            <span class="comment">// Node export buffer</span></div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="keywordtype">int</span> export_node_num;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            ZOLTAN_ID_PTR export_node_global_ids;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            <span class="keywordtype">int</span>* export_node_procs;</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="comment">// When importing nodes, obsolete ghost nodes are stored when</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            <span class="comment">// the real node has been imported. It is safely deleted in</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            <span class="comment">// arc::mid_migrate_pp_fn once associated arcs have eventually </span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            <span class="comment">// been exported</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            std::set&lt;NodeId&gt; obsoleteGhosts;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            <span class="comment">// Arc migration buffers</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            <span class="keywordtype">int</span> export_arcs_num;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            ZOLTAN_ID_PTR export_arcs_global_ids;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            <span class="keywordtype">int</span>* export_arcs_procs;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            <span class="keywordtype">void</span> setUpZoltan();</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a>();</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a>(std::initializer_list&lt;int&gt;);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;            <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abe83850da147db6f360f65223498fcbe">getMpiCommunicator</a>();</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abe83850da147db6f360f65223498fcbe">getMpiCommunicator</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">   31</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span>, <span class="keywordtype">int</span>&gt; <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">GhostMode</a>; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        }</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">using</span> base::NodeId;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">using</span> base::ArcId;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">proxy::Proxy</a>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">synchro::SyncData</a>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">synchro::GhostMode</a>;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, SYNC_MODE = GhostMode, <span class="keywordtype">int</span> N = 1&gt;</div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">   68</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> : <span class="keyword">public</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a>&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;&gt;, N&gt;, <a class="code" href="classFPMAS_1_1communication_1_1ResourceContainer.html">communication::ResourceContainer</a> {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::obj_size_multi_fn&lt;T, N, S&gt;(ZOLTAN_OBJ_SIZE_ARGS);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::obj_size_multi_fn&lt;T, N, S&gt;(ZOLTAN_OBJ_SIZE_ARGS);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::pack_obj_multi_fn&lt;T, N, S&gt;(ZOLTAN_PACK_OBJ_ARGS);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::pack_obj_multi_fn&lt;T, N, S&gt;(ZOLTAN_PACK_OBJ_ARGS);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::unpack_obj_multi_fn&lt;T, N, S&gt;(ZOLTAN_UNPACK_OBJ_ARGS);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::unpack_obj_multi_fn&lt;T, N, S&gt;(ZOLTAN_UNPACK_OBJ_ARGS);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::post_migrate_pp_fn_no_sync&lt;T, N&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::node::post_migrate_pp_fn_olz&lt;T, N, S&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::mid_migrate_pp_fn&lt;T, N, S&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::post_migrate_pp_fn_olz&lt;T, N, S&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keyword">friend</span> <span class="keywordtype">void</span> zoltan::arc::post_migrate_pp_fn_no_sync&lt;T, N&gt;(ZOLTAN_MID_POST_MIGRATE_ARGS);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> mpiCommunicator;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            Zoltan zoltan;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> proxy;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            S&lt;T, N&gt; syncMode;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a> ghost;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">distribute</a>(<span class="keywordtype">int</span>, <span class="keywordtype">int</span>, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, <span class="keywordtype">int</span>*, <span class="keywordtype">int</span>*, ZOLTAN_ID_PTR, <span class="keywordtype">int</span>*);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keywordtype">void</span> setZoltanNodeMigration();</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keywordtype">void</span> setZoltanArcMigration();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="comment">// Serialization caches used to pack objects</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            std::unordered_map&lt;NodeId, std::string&gt; node_serialization_cache;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            std::unordered_map&lt;ArcId, std::string&gt; arc_serialization_cache;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            <span class="comment">/*</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="comment">             * Zoltan structures used to manage nodes and arcs migration</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment">             */</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="comment">// Node export buffer</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            <span class="keywordtype">int</span> export_node_num;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            ZOLTAN_ID_PTR export_node_global_ids;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <span class="keywordtype">int</span>* export_node_procs;</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            <span class="comment">// When importing nodes, obsolete ghost nodes are stored when</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="comment">// the real node has been imported. It is safely deleted in</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            <span class="comment">// arc::mid_migrate_pp_fn once associated arcs have eventually </span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            <span class="comment">// been exported</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            std::set&lt;NodeId&gt; obsoleteGhosts;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            <span class="comment">// Arc migration buffers</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            <span class="keywordtype">int</span> export_arcs_num;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            ZOLTAN_ID_PTR export_arcs_global_ids;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            <span class="keywordtype">int</span>* export_arcs_procs;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            <span class="keywordtype">void</span> setUpZoltan();</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a>();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a>(std::initializer_list&lt;int&gt;);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abe83850da147db6f360f65223498fcbe">getMpiCommunicator</a>();</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abe83850da147db6f360f65223498fcbe">getMpiCommunicator</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a37a1487def7d53845ed78bd64ee52f1f">getGhost</a>();</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a37a1487def7d53845ed78bd64ee52f1f">getGhost</a>() <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a53023aa0ccd0144f6386b75c75b5c9a4">getProxy</a>();</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a3deb4cd09a017d0895b1c9e6b5a82e07">buildNode</a>(NodeId, T&amp;&amp; data);</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a3deb4cd09a017d0895b1c9e6b5a82e07">buildNode</a>(NodeId <span class="keywordtype">id</span>, T&amp; data);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a3deb4cd09a017d0895b1c9e6b5a82e07">buildNode</a>(NodeId <span class="keywordtype">id</span>, <span class="keywordtype">float</span> weight, T&amp;&amp; data);</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a3deb4cd09a017d0895b1c9e6b5a82e07">buildNode</a>(NodeId <span class="keywordtype">id</span>, <span class="keywordtype">float</span> weight, T&amp; data);</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160; </div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac3de232f85d45a057af93db2e06701ee">link</a>(NodeId, NodeId, ArcId);</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac3de232f85d45a057af93db2e06701ee">link</a>(NodeId, NodeId, ArcId, LayerId);</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            std::string <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a82bc76b952f8458542ee5f7fa88a9948">getLocalData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            std::string <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac5bef6c6e4473084105c973b12acdcfe">getUpdatedData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a5e9a6550c2cd3f1dcf4715d0011b2a3a">updateData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, std::string) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">distribute</a>();</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">distribute</a>(std::unordered_map&lt;NodeId, std::pair&lt;int, int&gt;&gt;);</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">synchronize</a>();</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;        };</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;        <span class="comment">/*</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="comment">         * Initializes zoltan parameters and zoltan lb query functions.</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="comment">         */</span></div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::setUpZoltan</a>() {</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            FPMAS::config::zoltan_config(&amp;this-&gt;zoltan);</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            <span class="comment">// Initializes Zoltan Node Load Balancing functions</span></div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            this-&gt;zoltan.Set_Num_Obj_Fn(FPMAS::graph::parallel::zoltan::num_obj&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            this-&gt;zoltan.Set_Obj_List_Fn(FPMAS::graph::parallel::zoltan::obj_list&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            this-&gt;zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::parallel::zoltan::num_edges_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;            this-&gt;zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::parallel::zoltan::edge_list_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        }</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
-<div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a1e6c591dfa39e9d80186d7e5c617cc57">  191</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::DistributedGraph</a>()</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;            : syncMode(*this), mpiCommunicator(*this), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                this-&gt;setUpZoltan();</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;            }</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a6836c95e9e77eb71451865aa166dd065">  202</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::DistributedGraph</a>(std::initializer_list&lt;int&gt; ranks)</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            : syncMode(*this), mpiCommunicator(*this, ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                this-&gt;setUpZoltan();</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            }</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a37a1487def7d53845ed78bd64ee52f1f">getGhost</a>();</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;            <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a37a1487def7d53845ed78bd64ee52f1f">getGhost</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a53023aa0ccd0144f6386b75c75b5c9a4">getProxy</a>();</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ae57d08f39dffc31129969d0654eafc5c">buildNode</a>(NodeId, T&amp;&amp; data);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ae57d08f39dffc31129969d0654eafc5c">buildNode</a>(NodeId <span class="keywordtype">id</span>, T&amp; data);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ae57d08f39dffc31129969d0654eafc5c">buildNode</a>(NodeId <span class="keywordtype">id</span>, <span class="keywordtype">float</span> weight, T&amp;&amp; data);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ae57d08f39dffc31129969d0654eafc5c">buildNode</a>(NodeId <span class="keywordtype">id</span>, <span class="keywordtype">float</span> weight, T&amp; data);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac7f7c0316ec54170e5815e4cdb1fde45">link</a>(NodeId, NodeId, ArcId);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac7f7c0316ec54170e5815e4cdb1fde45">link</a>(NodeId, NodeId, ArcId, LayerId);</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            std::string <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a82bc76b952f8458542ee5f7fa88a9948">getLocalData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            std::string <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac5bef6c6e4473084105c973b12acdcfe">getUpdatedData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a5e9a6550c2cd3f1dcf4715d0011b2a3a">updateData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>, std::string) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160; </div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">distribute</a>();</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">distribute</a>(std::unordered_map&lt;NodeId, std::pair&lt;int, int&gt;&gt;);</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">synchronize</a>();</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        };</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="comment">/*</span></div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="comment">         * Initializes zoltan parameters and zoltan lb query functions.</span></div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;<span class="comment">         */</span></div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::setUpZoltan</a>() {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            FPMAS::config::zoltan_config(&amp;this-&gt;zoltan);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;            <span class="comment">// Initializes Zoltan Node Load Balancing functions</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            this-&gt;zoltan.Set_Num_Obj_Fn(FPMAS::graph::parallel::zoltan::num_obj&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;            this-&gt;zoltan.Set_Obj_List_Fn(FPMAS::graph::parallel::zoltan::obj_list&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            this-&gt;zoltan.Set_Num_Edges_Multi_Fn(FPMAS::graph::parallel::zoltan::num_edges_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            this-&gt;zoltan.Set_Edge_List_Multi_Fn(FPMAS::graph::parallel::zoltan::edge_list_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        }</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
+<div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a1e6c591dfa39e9d80186d7e5c617cc57">  190</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::DistributedGraph</a>()</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;            : syncMode(*this), mpiCommunicator(*this), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                this-&gt;setUpZoltan();</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            }</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
+<div class="line"><a name="l00201"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a6836c95e9e77eb71451865aa166dd065">  201</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::DistributedGraph</a>(std::initializer_list&lt;int&gt; ranks)</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;            : syncMode(*this), mpiCommunicator(*this, ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                this-&gt;setUpZoltan();</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            }</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
-<div class="line"><a name="l00208"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abe83850da147db6f360f65223498fcbe">  208</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getMpiCommunicator</a>() {</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            <span class="keywordflow">return</span> this-&gt;mpiCommunicator;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        }</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getMpiCommunicator</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;            <span class="keywordflow">return</span> this-&gt;mpiCommunicator;</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        }</div>
-<div class="line"><a name="l00220"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a53023aa0ccd0144f6386b75c75b5c9a4">  220</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getProxy</a>() {</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;            <span class="keywordflow">return</span> this-&gt;proxy;</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        }</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
-<div class="line"><a name="l00224"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a37a1487def7d53845ed78bd64ee52f1f">  224</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getGhost</a>() {</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;            <span class="keywordflow">return</span> this-&gt;ghost;</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        }</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160; </div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getGhost</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;            <span class="keywordflow">return</span> this-&gt;ghost;</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        }</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> DistributedGraph&lt;T, S, N&gt;::setZoltanNodeMigration() {</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;            zoltan.Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;            zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;            zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;            zoltan.Set_Mid_Migrate_PP_Fn(NULL);</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            zoltan.Set_Post_Migrate_PP_Fn(syncMode.config().node_post_migrate_fn, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        }</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> DistributedGraph&lt;T, S, N&gt;::setZoltanArcMigration() {</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;            zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            zoltan.Set_Mid_Migrate_PP_Fn(syncMode.config().arc_mid_migrate_fn, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            zoltan.Set_Post_Migrate_PP_Fn(syncMode.config().arc_post_migrate_fn, <span class="keyword">this</span>);</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        }</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160; </div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* DistributedGraph&lt;T, S, N&gt;</div>
-<div class="line"><a name="l00269"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a3deb4cd09a017d0895b1c9e6b5a82e07">  269</a></span>&#160;        ::buildNode(NodeId <span class="keywordtype">id</span>, T&amp;&amp; data) {</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                ::buildNode(</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                    <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                    std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData&lt;T&gt;</a>&gt;(S&lt;T,N&gt;::wrap(</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                            <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                            this-&gt;getMpiCommunicator(),</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                            this-&gt;getProxy(),</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                            std::move(data)</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                        ))</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                    );</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        }</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160; </div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
-<div class="line"><a name="l00293"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a521a7062a1e748a863d8ff1bc22cad9e">  293</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::buildNode</a>(NodeId <span class="keywordtype">id</span>, T&amp; data) {</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                ::buildNode(</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                    <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                    std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData&lt;T&gt;</a>&gt;(S&lt;T,N&gt;::wrap(</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                            <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                            this-&gt;getMpiCommunicator(),</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                            this-&gt;getProxy(),</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                            data</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                        ))</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                    );</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;        }</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
-<div class="line"><a name="l00321"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#afc293c910b901a1dc07ff471a0320c8e">  321</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::buildNode</a>(NodeId <span class="keywordtype">id</span>, <span class="keywordtype">float</span> weight, T&amp;&amp; data) {</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                ::buildNode(</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                    <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                    weight,</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                    std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData&lt;T&gt;</a>&gt;(S&lt;T,N&gt;::wrap(</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                            <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                            this-&gt;getMpiCommunicator(),</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                            this-&gt;getProxy(),</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                            std::move(data)</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                        ))</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                    );</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        }</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160; </div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
-<div class="line"><a name="l00347"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a35784d08b622a11c3dbe0751a02cdc5b">  347</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::buildNode</a>(NodeId <span class="keywordtype">id</span>, <span class="keywordtype">float</span> weight, T&amp; data) {</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                ::buildNode(</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                    <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                    weight,</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                    std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData&lt;T&gt;</a>&gt;(S&lt;T,N&gt;::wrap(</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                            <span class="keywordtype">id</span>,</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                            this-&gt;getMpiCommunicator(),</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                            this-&gt;getProxy(),</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                            data</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                        ))</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                    );</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        }</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
-<div class="line"><a name="l00376"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac3de232f85d45a057af93db2e06701ee">  376</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::link</a>(NodeId source, NodeId target, ArcId arcId) {</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;            <span class="keywordflow">return</span> this-&gt;link(source, target, arcId, base::DefaultLayer);</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;        }</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
-<div class="line"><a name="l00404"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#aa9fa3047847f2f53b62aad13838824ac">  404</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::link</a>(NodeId source, NodeId target, ArcId arcId, LayerId layerId) {</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;            <span class="keywordflow">if</span>(this-&gt;getNodes().count(source) &gt; 0) {</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                <span class="comment">// Source is local</span></div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* sourceNode</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                    = this-&gt;getNode(source);</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                <span class="keywordflow">if</span>(this-&gt;getNodes().count(target) &gt; 0) {</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                    <span class="comment">// Source and Target are local, completely local operation</span></div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* targetNode</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                        = this-&gt;getNode(target);</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;::link(</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                        sourceNode, targetNode, arcId, layerId</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                        );</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                    <span class="comment">// Target is distant</span></div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode&lt;T, N, S&gt;</a>* targetNode</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                        = this-&gt;getGhost().getNode(target);</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                    syncMode.initLink(source, target, arcId, layerId);</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                    <span class="comment">// link local -&gt; distant</span></div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                    <span class="keyword">auto</span> arc = this-&gt;getGhost().link(</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                        sourceNode, targetNode, arcId, layerId</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                        );</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                    syncMode.notifyLinked(arc);</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                    <span class="keywordflow">return</span> arc;</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                }</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;            } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                <span class="comment">// Source is distant</span></div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                <span class="keywordflow">if</span>(this-&gt;getNodes().count(target) &gt; 0) {</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                    <span class="comment">// Source is local</span></div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode&lt;T, N, S&gt;</a>* sourceNode</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                        = this-&gt;getGhost().getNode(source);</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T&gt;</a>&gt;, N&gt;* targetNode</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                        = this-&gt;getNode(target);</div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                    syncMode.initLink(source, target, arcId, layerId);</div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                    <span class="comment">// link distant -&gt; local</span></div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                    <span class="keyword">auto</span> arc = this-&gt;getGhost().link(</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                            sourceNode, targetNode, arcId, layerId</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                            );</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                    syncMode.notifyLinked(arc);</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                    <span class="keywordflow">return</span> arc;</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;                }</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;                <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;                    <span class="comment">// Source and target are distant</span></div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;                    <span class="comment">// Allowed only if the two nodes are ghosts on this graph</span></div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                    <span class="comment">// TODO: better exception handling</span></div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode&lt;T, N, S&gt;</a>* sourceNode</div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                        = this-&gt;getGhost().getNode(source);</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode&lt;T, N, S&gt;</a>* targetNode</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;                        = this-&gt;getGhost().getNode(target);</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160; </div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                    syncMode.initLink(source, target, arcId, layerId);</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                    <span class="comment">// link distant -&gt; distant</span></div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;                    <span class="keyword">auto</span> arc = this-&gt;getGhost().link(</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;                            sourceNode, targetNode, arcId, layerId</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;                            );</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;                    syncMode.notifyLinked(arc);</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;                    <span class="keywordflow">return</span> arc;</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;                }</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;            }</div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        }</div>
+<div class="line"><a name="l00207"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abe83850da147db6f360f65223498fcbe">  207</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getMpiCommunicator</a>() {</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;            <span class="keywordflow">return</span> this-&gt;mpiCommunicator;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        }</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getMpiCommunicator</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;            <span class="keywordflow">return</span> this-&gt;mpiCommunicator;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        }</div>
+<div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a53023aa0ccd0144f6386b75c75b5c9a4">  219</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getProxy</a>() {</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;            <span class="keywordflow">return</span> this-&gt;proxy;</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        }</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
+<div class="line"><a name="l00223"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a37a1487def7d53845ed78bd64ee52f1f">  223</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getGhost</a>() {</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;            <span class="keywordflow">return</span> this-&gt;ghost;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        }</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">GhostGraph&lt;T, N, S&gt;</a>&amp; <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getGhost</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;            <span class="keywordflow">return</span> this-&gt;ghost;</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        }</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> DistributedGraph&lt;T, S, N&gt;::setZoltanNodeMigration() {</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;            zoltan.Set_Obj_Size_Multi_Fn(zoltan::node::obj_size_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;            zoltan.Set_Pack_Obj_Multi_Fn(zoltan::node::pack_obj_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;            zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::node::unpack_obj_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;            zoltan.Set_Mid_Migrate_PP_Fn(NULL);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;            zoltan.Set_Post_Migrate_PP_Fn(syncMode.config().node_post_migrate_fn, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        }</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> DistributedGraph&lt;T, S, N&gt;::setZoltanArcMigration() {</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;            zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn&lt;T, N, S&gt;, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            zoltan.Set_Mid_Migrate_PP_Fn(syncMode.config().arc_mid_migrate_fn, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            zoltan.Set_Post_Migrate_PP_Fn(syncMode.config().arc_post_migrate_fn, <span class="keyword">this</span>);</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        }</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* DistributedGraph&lt;T, S, N&gt;</div>
+<div class="line"><a name="l00268"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ae57d08f39dffc31129969d0654eafc5c">  268</a></span>&#160;        ::buildNode(NodeId <span class="keywordtype">id</span>, T&amp;&amp; data) {</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                ::buildNode(</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                    <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                    std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData&lt;T,N,S&gt;</a>&gt;(S&lt;T,N&gt;::wrap(</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                            <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                            this-&gt;getMpiCommunicator(),</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                            this-&gt;getProxy(),</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                            std::move(data)</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                        ))</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                    );</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        }</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
+<div class="line"><a name="l00292"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#aa18933b8734e4e854541beb629ca2925">  292</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::buildNode</a>(NodeId <span class="keywordtype">id</span>, T&amp; data) {</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;                ::buildNode(</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                    <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                    std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData&lt;T,N,S&gt;</a>&gt;(S&lt;T,N&gt;::wrap(</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                            <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                            this-&gt;getMpiCommunicator(),</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                            this-&gt;getProxy(),</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                            data</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                        ))</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                    );</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;        }</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160; </div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
+<div class="line"><a name="l00320"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#afb42bb21cf64fbf3bc31ffb08d4501a7">  320</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::buildNode</a>(NodeId <span class="keywordtype">id</span>, <span class="keywordtype">float</span> weight, T&amp;&amp; data) {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                ::buildNode(</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                    <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                    weight,</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                    std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData&lt;T,N,S&gt;</a>&gt;(S&lt;T,N&gt;::wrap(</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                            <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                            this-&gt;getMpiCommunicator(),</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                            this-&gt;getProxy(),</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                            std::move(data)</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                        ))</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                    );</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        }</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160; </div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
+<div class="line"><a name="l00346"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a19746771546e8b8e5f70fa6b72b5a1e5">  346</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::buildNode</a>(NodeId <span class="keywordtype">id</span>, <span class="keywordtype">float</span> weight, T&amp; data) {</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;            <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                ::buildNode(</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                    <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                    weight,</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                    std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData&lt;T,N,S&gt;</a>&gt;(S&lt;T,N&gt;::wrap(</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                            <span class="keywordtype">id</span>,</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                            this-&gt;getMpiCommunicator(),</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                            this-&gt;getProxy(),</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                            data</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                        ))</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                    );</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;        }</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160; </div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
+<div class="line"><a name="l00375"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac7f7c0316ec54170e5815e4cdb1fde45">  375</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::link</a>(NodeId source, NodeId target, ArcId arcId) {</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;            <span class="keywordflow">return</span> this-&gt;link(source, target, arcId, base::DefaultLayer);</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;        }</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt;</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;</a></div>
+<div class="line"><a name="l00403"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a23ba0ac6d0ae198efda8fc88e89b0e88">  403</a></span>&#160;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">		::link</a>(NodeId source, NodeId target, ArcId arcId, LayerId layerId) {</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;            <span class="keywordflow">if</span>(this-&gt;getNodes().count(source) &gt; 0) {</div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;                <span class="comment">// Source is local</span></div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* sourceNode</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                    = this-&gt;getNode(source);</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                <span class="keywordflow">if</span>(this-&gt;getNodes().count(target) &gt; 0) {</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                    <span class="comment">// Source and Target are local, completely local operation</span></div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* targetNode</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                        = this-&gt;getNode(target);</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                    <span class="keywordflow">return</span> this-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;::link(</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                        sourceNode, targetNode, arcId, layerId</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                        );</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                    <span class="comment">// Target is distant</span></div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode&lt;T, N, S&gt;</a>* targetNode</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;                        = this-&gt;getGhost().getNode(target);</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;                    syncMode.initLink(source, target, arcId, layerId);</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                    <span class="comment">// link local -&gt; distant</span></div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;                    <span class="keyword">auto</span> arc = this-&gt;getGhost().link(</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                        sourceNode, targetNode, arcId, layerId</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                        );</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                    syncMode.notifyLinked(arc);</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                    <span class="keywordflow">return</span> arc;</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                }</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;            } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                <span class="comment">// Source is distant</span></div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                <span class="keywordflow">if</span>(this-&gt;getNodes().count(target) &gt; 0) {</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                    <span class="comment">// Source is local</span></div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode&lt;T, N, S&gt;</a>* sourceNode</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                        = this-&gt;getGhost().getNode(source);</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;</a>&gt;, N&gt;* targetNode</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                        = this-&gt;getNode(target);</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                    syncMode.initLink(source, target, arcId, layerId);</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;                    <span class="comment">// link distant -&gt; local</span></div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;                    <span class="keyword">auto</span> arc = this-&gt;getGhost().link(</div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                            sourceNode, targetNode, arcId, layerId</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                            );</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                    syncMode.notifyLinked(arc);</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;                    <span class="keywordflow">return</span> arc;</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;                }</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;                <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;                    <span class="comment">// Source and target are distant</span></div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;                    <span class="comment">// Allowed only if the two nodes are ghosts on this graph</span></div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;                    <span class="comment">// TODO: better exception handling</span></div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode&lt;T, N, S&gt;</a>* sourceNode</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;                        = this-&gt;getGhost().getNode(source);</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">GhostNode&lt;T, N, S&gt;</a>* targetNode</div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;                        = this-&gt;getGhost().getNode(target);</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160; </div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;                    syncMode.initLink(source, target, arcId, layerId);</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                    <span class="comment">// link distant -&gt; distant</span></div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                    <span class="keyword">auto</span> arc = this-&gt;getGhost().link(</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;                            sourceNode, targetNode, arcId, layerId</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;                            );</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;                    syncMode.notifyLinked(arc);</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;                    <span class="keywordflow">return</span> arc;</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;                }</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;            }</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;        }</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160; </div>
 <div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160; </div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160; </div>
-<div class="line"><a name="l00472"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a82bc76b952f8458542ee5f7fa88a9948">  472</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; std::string <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getLocalData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span>)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;            FPMAS_LOGV(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;getLocalData %lu&quot;</span>, <span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;            <span class="keywordflow">return</span> json(this-&gt;getNodes().at(<span class="keywordtype">id</span>)-&gt;data()-&gt;get()).dump();</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;        }</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160; </div>
-<div class="line"><a name="l00487"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac5bef6c6e4473084105c973b12acdcfe">  487</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; std::string <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getUpdatedData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span>)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            FPMAS_LOGV(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;getUpdatedData %lu&quot;</span>, <span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;            <span class="keywordflow">return</span> json(this-&gt;getGhost().getNode(<span class="keywordtype">id</span>)-&gt;data()-&gt;get()).dump();</div>
-<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;        }</div>
-<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160; </div>
-<div class="line"><a name="l00504"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a5e9a6550c2cd3f1dcf4715d0011b2a3a">  504</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::updateData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span>, std::string data) {</div>
-<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;            FPMAS_LOGV(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;updateData %lu : %s&quot;</span>, <span class="keywordtype">id</span>, data.c_str());</div>
-<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;            this-&gt;getNodes().at(<span class="keywordtype">id</span>)-&gt;data()-&gt;update(json::parse(data).get&lt;T&gt;());</div>
-<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;        }</div>
-<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160; </div>
-<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;        <span class="comment">/*</span></div>
-<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;<span class="comment">         * private distribute functions, calling low level zoltan migration</span></div>
-<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;<span class="comment">         * functions.</span></div>
-<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;<span class="comment">         */</span></div>
-<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::distribute</a>(</div>
-<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;            <span class="keywordtype">int</span> changes,</div>
-<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;            <span class="keywordtype">int</span> num_import,</div>
-<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;            ZOLTAN_ID_PTR import_global_ids,</div>
-<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;            ZOLTAN_ID_PTR import_local_ids,</div>
-<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;            <span class="keywordtype">int</span>* import_procs,</div>
-<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;            <span class="keywordtype">int</span>* import_to_part,</div>
-<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;            ZOLTAN_ID_PTR export_local_ids,</div>
-<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;            <span class="keywordtype">int</span>* export_to_part</div>
-<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;            ) {</div>
-<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160;            <span class="keywordflow">if</span>(changes &gt; 0) {</div>
-<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160; </div>
-<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                FPMAS_LOGV(mpiCommunicator.getRank(), <span class="stringliteral">&quot;Dist&quot;</span>, <span class="stringliteral">&quot;Zoltan Node migration...&quot;</span>);</div>
-<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;                <span class="comment">// Migrate nodes from the load balancing</span></div>
-<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;                <span class="comment">// Arcs to export are computed in the post_migrate_pp_fn step.</span></div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;                this-&gt;zoltan.Migrate(</div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;                        num_import,</div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;                        import_global_ids,</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;                        import_local_ids,</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;                        import_procs,</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;                        import_to_part,</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;                        this-&gt;export_node_num,</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;                        this-&gt;export_node_global_ids,</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;                        export_local_ids,</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;                        this-&gt;export_node_procs,</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;                        export_to_part</div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;                        );</div>
-<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;                FPMAS_LOGV(mpiCommunicator.getRank(), <span class="stringliteral">&quot;Dist&quot;</span>, <span class="stringliteral">&quot;Zoltan Node migration done.&quot;</span>);</div>
-<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160; </div>
-<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;                <span class="comment">// Prepares Zoltan to migrate arcs associated to the exported</span></div>
-<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;                <span class="comment">// nodes.</span></div>
-<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160;                this-&gt;setZoltanArcMigration();</div>
-<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160; </div>
-<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;                <span class="comment">// Unused buffer</span></div>
-<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160;                ZOLTAN_ID_TYPE export_arcs_local_ids[0];</div>
-<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160; </div>
-<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;                FPMAS_LOGV(mpiCommunicator.getRank(), <span class="stringliteral">&quot;Dist&quot;</span>, <span class="stringliteral">&quot;Zoltan Arc migration...&quot;</span>);</div>
-<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;                <span class="comment">// Arcs to import</span></div>
-<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;                this-&gt;zoltan.Migrate(</div>
-<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;                        -1,</div>
+<div class="line"><a name="l00471"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a82bc76b952f8458542ee5f7fa88a9948">  471</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; std::string <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getLocalData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span>)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;            FPMAS_LOGV(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;getLocalData %lu&quot;</span>, <span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;            <span class="keywordflow">return</span> json(this-&gt;getNodes().at(<span class="keywordtype">id</span>)-&gt;data()-&gt;get()).dump();</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;        }</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160; </div>
+<div class="line"><a name="l00486"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac5bef6c6e4473084105c973b12acdcfe">  486</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; std::string <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::getUpdatedData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span>)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            FPMAS_LOGV(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;getUpdatedData %lu&quot;</span>, <span class="keywordtype">id</span>);</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            <span class="keywordflow">return</span> json(this-&gt;getGhost().getNode(<span class="keywordtype">id</span>)-&gt;data()-&gt;get()).dump();</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;        }</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160; </div>
+<div class="line"><a name="l00503"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a5e9a6550c2cd3f1dcf4715d0011b2a3a">  503</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::updateData</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">id</span>, std::string data) {</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;            FPMAS_LOGV(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;updateData %lu : %s&quot;</span>, <span class="keywordtype">id</span>, data.c_str());</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160;            this-&gt;getNodes().at(<span class="keywordtype">id</span>)-&gt;data()-&gt;update(json::parse(data).get&lt;T&gt;());</div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;        }</div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160; </div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;        <span class="comment">/*</span></div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;<span class="comment">         * private distribute functions, calling low level zoltan migration</span></div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;<span class="comment">         * functions.</span></div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160;<span class="comment">         */</span></div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::distribute</a>(</div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;            <span class="keywordtype">int</span> changes,</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;            <span class="keywordtype">int</span> num_import,</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;            ZOLTAN_ID_PTR import_global_ids,</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;            ZOLTAN_ID_PTR import_local_ids,</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;            <span class="keywordtype">int</span>* import_procs,</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;            <span class="keywordtype">int</span>* import_to_part,</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;            ZOLTAN_ID_PTR export_local_ids,</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160;            <span class="keywordtype">int</span>* export_to_part</div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;            ) {</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;            <span class="keywordflow">if</span>(changes &gt; 0) {</div>
+<div class="line"><a name="l00523"></a><span class="lineno">  523</span>&#160; </div>
+<div class="line"><a name="l00524"></a><span class="lineno">  524</span>&#160;                FPMAS_LOGV(mpiCommunicator.getRank(), <span class="stringliteral">&quot;Dist&quot;</span>, <span class="stringliteral">&quot;Zoltan Node migration...&quot;</span>);</div>
+<div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160;                <span class="comment">// Migrate nodes from the load balancing</span></div>
+<div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;                <span class="comment">// Arcs to export are computed in the post_migrate_pp_fn step.</span></div>
+<div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;                this-&gt;zoltan.Migrate(</div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;                        num_import,</div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;                        import_global_ids,</div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;                        import_local_ids,</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;                        import_procs,</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;                        import_to_part,</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;                        this-&gt;export_node_num,</div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;                        this-&gt;export_node_global_ids,</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;                        export_local_ids,</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;                        this-&gt;export_node_procs,</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;                        export_to_part</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;                        );</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;                FPMAS_LOGV(mpiCommunicator.getRank(), <span class="stringliteral">&quot;Dist&quot;</span>, <span class="stringliteral">&quot;Zoltan Node migration done.&quot;</span>);</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160; </div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160;                <span class="comment">// Prepares Zoltan to migrate arcs associated to the exported</span></div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;                <span class="comment">// nodes.</span></div>
+<div class="line"><a name="l00543"></a><span class="lineno">  543</span>&#160;                this-&gt;setZoltanArcMigration();</div>
+<div class="line"><a name="l00544"></a><span class="lineno">  544</span>&#160; </div>
+<div class="line"><a name="l00545"></a><span class="lineno">  545</span>&#160;                <span class="comment">// Unused buffer</span></div>
+<div class="line"><a name="l00546"></a><span class="lineno">  546</span>&#160;                ZOLTAN_ID_TYPE export_arcs_local_ids[0];</div>
+<div class="line"><a name="l00547"></a><span class="lineno">  547</span>&#160; </div>
+<div class="line"><a name="l00548"></a><span class="lineno">  548</span>&#160;                FPMAS_LOGV(mpiCommunicator.getRank(), <span class="stringliteral">&quot;Dist&quot;</span>, <span class="stringliteral">&quot;Zoltan Arc migration...&quot;</span>);</div>
+<div class="line"><a name="l00549"></a><span class="lineno">  549</span>&#160;                <span class="comment">// Arcs to import</span></div>
+<div class="line"><a name="l00550"></a><span class="lineno">  550</span>&#160;                this-&gt;zoltan.Migrate(</div>
+<div class="line"><a name="l00551"></a><span class="lineno">  551</span>&#160;                        -1,</div>
+<div class="line"><a name="l00552"></a><span class="lineno">  552</span>&#160;                        NULL,</div>
 <div class="line"><a name="l00553"></a><span class="lineno">  553</span>&#160;                        NULL,</div>
 <div class="line"><a name="l00554"></a><span class="lineno">  554</span>&#160;                        NULL,</div>
 <div class="line"><a name="l00555"></a><span class="lineno">  555</span>&#160;                        NULL,</div>
-<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;                        NULL,</div>
-<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;                        this-&gt;export_arcs_num,</div>
-<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;                        this-&gt;export_arcs_global_ids,</div>
-<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;                        export_arcs_local_ids,</div>
-<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;                        this-&gt;export_arcs_procs,</div>
-<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;                        this-&gt;export_arcs_procs <span class="comment">// parts = procs</span></div>
-<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;                        );</div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;                FPMAS_LOGV(mpiCommunicator.getRank(), <span class="stringliteral">&quot;Dist&quot;</span>, <span class="stringliteral">&quot;Zoltan Arc migration done.&quot;</span>);</div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;                std::free(this-&gt;export_arcs_global_ids);</div>
-<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;                std::free(this-&gt;export_arcs_procs);</div>
-<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;            }</div>
-<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160; </div>
-<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;            <span class="comment">// Frees the zoltan buffers</span></div>
-<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;            this-&gt;zoltan.LB_Free_Part(</div>
-<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;                    &amp;import_global_ids,</div>
-<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;                    &amp;import_local_ids,</div>
-<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;                    &amp;import_procs,</div>
-<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;                    &amp;import_to_part</div>
-<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;                    );</div>
-<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160; </div>
-<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;            this-&gt;zoltan.LB_Free_Part(</div>
-<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;                    &amp;this-&gt;export_node_global_ids,</div>
-<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;                    &amp;export_local_ids,</div>
-<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;                    &amp;this-&gt;export_node_procs,</div>
-<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;                    &amp;export_to_part</div>
-<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160;                    );</div>
-<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160; </div>
-<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;            <span class="comment">// Updates nodes locations according to last migrations</span></div>
-<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160;            this-&gt;proxy.synchronize();</div>
-<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160; </div>
-<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160;            this-&gt;synchronize();</div>
-<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160; </div>
-<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;        }</div>
-<div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160; </div>
-<div class="line"><a name="l00602"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a076a73b765c0b29392a0244f51e0c763">  602</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::distribute</a>(</div>
-<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;                std::unordered_map&lt;NodeId, std::pair&lt;int, int&gt;&gt; partition</div>
-<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160;                ) {</div>
-<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160; </div>
-<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;            <span class="comment">// Import lists</span></div>
-<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;            <span class="keywordtype">int</span> num_import = 0;</div>
-<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;            ZOLTAN_ID_PTR import_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);</div>
-<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160;            <span class="keywordtype">int</span>* import_procs = (<span class="keywordtype">int</span>*) std::malloc(0);</div>
-<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160; </div>
-<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;            <span class="comment">// Export lists</span></div>
-<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;            this-&gt;export_node_num = 0;</div>
-<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;            this-&gt;export_node_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);</div>
-<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160;            this-&gt;export_node_procs = (<span class="keywordtype">int</span>*) std::malloc(0);</div>
-<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160; </div>
-<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : partition) {</div>
-<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;                <span class="keywordflow">if</span>(item.second.first == this-&gt;getMpiCommunicator().getRank()) {</div>
-<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;                    <span class="keywordflow">if</span>(item.second.second != this-&gt;getMpiCommunicator().getRank()) {</div>
-<div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;                        this-&gt;export_node_num++;</div>
-<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;                        this-&gt;export_node_global_ids = (ZOLTAN_ID_PTR)</div>
-<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;                            std::realloc(this-&gt;export_node_global_ids, 2 * this-&gt;export_node_num * <span class="keyword">sizeof</span>(ZOLTAN_ID_TYPE));</div>
-<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160; </div>
-<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;                        write_zoltan_id(item.first, &amp;this-&gt;export_node_global_ids[2*(this-&gt;export_node_num-1)]);</div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;                        this-&gt;export_node_procs = (<span class="keywordtype">int</span>*)</div>
-<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;                            std::realloc(this-&gt;export_node_procs, this-&gt;export_node_num * <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
-<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;                        this-&gt;export_node_procs[this-&gt;export_node_num-1] = item.second.second;</div>
-<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;                    }</div>
-<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160; </div>
-<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;                    <span class="keywordflow">if</span>(item.second.second == this-&gt;getMpiCommunicator().getRank()) {</div>
-<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;                        num_import++;</div>
-<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;                        import_global_ids = (ZOLTAN_ID_PTR)</div>
-<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;                            std::realloc(import_global_ids, 2 * num_import * <span class="keyword">sizeof</span>(ZOLTAN_ID_TYPE));</div>
-<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;                        write_zoltan_id(item.first, &amp;import_global_ids[2*(num_import-1)]);</div>
-<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;                        import_procs = (<span class="keywordtype">int</span>*)</div>
-<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;                            std::realloc(import_procs, num_import * <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
-<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;                        import_procs[num_import-1] = item.second.first;</div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160; </div>
-<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;                    }</div>
-<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160; </div>
-<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;                }</div>
-<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;            }</div>
-<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;            <span class="keywordtype">int</span>* import_to_part = (<span class="keywordtype">int</span>*) std::malloc(num_import * <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_import; ++i) {</div>
-<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;                import_to_part[i] = import_procs[i];</div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;            }</div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;            <span class="keywordtype">int</span>* export_to_part = (<span class="keywordtype">int</span>*) std::malloc(this-&gt;export_node_num * <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; this-&gt;export_node_num; ++i) {</div>
-<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;                export_to_part[i] = this-&gt;export_node_procs[i];</div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;            }</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160; </div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;            ZOLTAN_ID_PTR import_local_ids = (ZOLTAN_ID_PTR) std::malloc(0);</div>
-<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;            ZOLTAN_ID_PTR export_local_ids = (ZOLTAN_ID_PTR) std::malloc(0);</div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160; </div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;            this-&gt;setZoltanNodeMigration();</div>
-<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160; </div>
-<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;            this-&gt;distribute(</div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;                    1,</div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;                    num_import,</div>
-<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;                    import_global_ids,</div>
-<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;                    import_local_ids,</div>
-<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;                    import_procs,</div>
-<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;                    import_to_part,</div>
-<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;                    export_local_ids,</div>
-<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;                    export_to_part);</div>
-<div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160;        }</div>
-<div class="line"><a name="l00687"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">  687</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::distribute</a>() {</div>
-<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;            <span class="keywordtype">int</span> changes;</div>
-<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;            <span class="keywordtype">int</span> num_gid_entries;</div>
-<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;            <span class="keywordtype">int</span> num_lid_entries;</div>
-<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160; </div>
-<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;            <span class="keywordtype">int</span> num_import; </div>
-<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;            ZOLTAN_ID_PTR import_global_ids;</div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;            ZOLTAN_ID_PTR import_local_ids;</div>
-<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;            <span class="keywordtype">int</span> * import_procs;</div>
-<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;            <span class="keywordtype">int</span> * import_to_part;</div>
-<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160; </div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;            <span class="keywordtype">int</span>* export_to_part;</div>
-<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;            ZOLTAN_ID_PTR export_local_ids;</div>
-<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160; </div>
-<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;            <span class="comment">// Prepares Zoltan to migrate nodes</span></div>
-<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;            <span class="comment">// Must be set up from there, because LB_Partition can call</span></div>
-<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;            <span class="comment">// obj_size_multi_fn when repartitionning</span></div>
-<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;            this-&gt;setZoltanNodeMigration();</div>
-<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160; </div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;            <span class="comment">// Computes Zoltan partitioning</span></div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;            <span class="keywordtype">int</span> err = this-&gt;zoltan.LB_Partition(</div>
-<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;                    changes,</div>
-<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;                    num_gid_entries,</div>
-<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;                    num_lid_entries,</div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;                    num_import,</div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;                    import_global_ids,</div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;                    import_local_ids,</div>
-<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;                    import_procs,</div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;                    import_to_part,</div>
-<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;                    this-&gt;export_node_num,</div>
-<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;                    this-&gt;export_node_global_ids,</div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;                    export_local_ids,</div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;                    this-&gt;export_node_procs,</div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;                    export_to_part</div>
-<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;                    );</div>
-<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;            this-&gt;distribute(</div>
-<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;                changes,</div>
-<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;                num_import,</div>
-<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;                import_global_ids,</div>
-<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;                import_local_ids,</div>
-<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;                import_procs,</div>
-<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;                import_to_part,</div>
-<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;                export_local_ids,</div>
-<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;                export_to_part);</div>
+<div class="line"><a name="l00556"></a><span class="lineno">  556</span>&#160;                        this-&gt;export_arcs_num,</div>
+<div class="line"><a name="l00557"></a><span class="lineno">  557</span>&#160;                        this-&gt;export_arcs_global_ids,</div>
+<div class="line"><a name="l00558"></a><span class="lineno">  558</span>&#160;                        export_arcs_local_ids,</div>
+<div class="line"><a name="l00559"></a><span class="lineno">  559</span>&#160;                        this-&gt;export_arcs_procs,</div>
+<div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;                        this-&gt;export_arcs_procs <span class="comment">// parts = procs</span></div>
+<div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;                        );</div>
+<div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;                FPMAS_LOGV(mpiCommunicator.getRank(), <span class="stringliteral">&quot;Dist&quot;</span>, <span class="stringliteral">&quot;Zoltan Arc migration done.&quot;</span>);</div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;                std::free(this-&gt;export_arcs_global_ids);</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;                std::free(this-&gt;export_arcs_procs);</div>
+<div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;            }</div>
+<div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160; </div>
+<div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;            <span class="comment">// Frees the zoltan buffers</span></div>
+<div class="line"><a name="l00568"></a><span class="lineno">  568</span>&#160;            this-&gt;zoltan.LB_Free_Part(</div>
+<div class="line"><a name="l00569"></a><span class="lineno">  569</span>&#160;                    &amp;import_global_ids,</div>
+<div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;                    &amp;import_local_ids,</div>
+<div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;                    &amp;import_procs,</div>
+<div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;                    &amp;import_to_part</div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;                    );</div>
+<div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160; </div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;            this-&gt;zoltan.LB_Free_Part(</div>
+<div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;                    &amp;this-&gt;export_node_global_ids,</div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;                    &amp;export_local_ids,</div>
+<div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;                    &amp;this-&gt;export_node_procs,</div>
+<div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;                    &amp;export_to_part</div>
+<div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;                    );</div>
+<div class="line"><a name="l00581"></a><span class="lineno">  581</span>&#160; </div>
+<div class="line"><a name="l00582"></a><span class="lineno">  582</span>&#160;            <span class="comment">// Updates nodes locations according to last migrations</span></div>
+<div class="line"><a name="l00583"></a><span class="lineno">  583</span>&#160;            this-&gt;proxy.synchronize();</div>
+<div class="line"><a name="l00584"></a><span class="lineno">  584</span>&#160; </div>
+<div class="line"><a name="l00585"></a><span class="lineno">  585</span>&#160;            this-&gt;synchronize();</div>
+<div class="line"><a name="l00586"></a><span class="lineno">  586</span>&#160; </div>
+<div class="line"><a name="l00587"></a><span class="lineno">  587</span>&#160;        }</div>
+<div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160; </div>
+<div class="line"><a name="l00601"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a076a73b765c0b29392a0244f51e0c763">  601</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::distribute</a>(</div>
+<div class="line"><a name="l00602"></a><span class="lineno">  602</span>&#160;                std::unordered_map&lt;NodeId, std::pair&lt;int, int&gt;&gt; partition</div>
+<div class="line"><a name="l00603"></a><span class="lineno">  603</span>&#160;                ) {</div>
+<div class="line"><a name="l00604"></a><span class="lineno">  604</span>&#160; </div>
+<div class="line"><a name="l00605"></a><span class="lineno">  605</span>&#160;            <span class="comment">// Import lists</span></div>
+<div class="line"><a name="l00606"></a><span class="lineno">  606</span>&#160;            <span class="keywordtype">int</span> num_import = 0;</div>
+<div class="line"><a name="l00607"></a><span class="lineno">  607</span>&#160;            ZOLTAN_ID_PTR import_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);</div>
+<div class="line"><a name="l00608"></a><span class="lineno">  608</span>&#160;            <span class="keywordtype">int</span>* import_procs = (<span class="keywordtype">int</span>*) std::malloc(0);</div>
+<div class="line"><a name="l00609"></a><span class="lineno">  609</span>&#160; </div>
+<div class="line"><a name="l00610"></a><span class="lineno">  610</span>&#160;            <span class="comment">// Export lists</span></div>
+<div class="line"><a name="l00611"></a><span class="lineno">  611</span>&#160;            this-&gt;export_node_num = 0;</div>
+<div class="line"><a name="l00612"></a><span class="lineno">  612</span>&#160;            this-&gt;export_node_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);</div>
+<div class="line"><a name="l00613"></a><span class="lineno">  613</span>&#160;            this-&gt;export_node_procs = (<span class="keywordtype">int</span>*) std::malloc(0);</div>
+<div class="line"><a name="l00614"></a><span class="lineno">  614</span>&#160; </div>
+<div class="line"><a name="l00615"></a><span class="lineno">  615</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : partition) {</div>
+<div class="line"><a name="l00616"></a><span class="lineno">  616</span>&#160;                <span class="keywordflow">if</span>(item.second.first == this-&gt;getMpiCommunicator().getRank()) {</div>
+<div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;                    <span class="keywordflow">if</span>(item.second.second != this-&gt;getMpiCommunicator().getRank()) {</div>
+<div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;                        this-&gt;export_node_num++;</div>
+<div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;                        this-&gt;export_node_global_ids = (ZOLTAN_ID_PTR)</div>
+<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;                            std::realloc(this-&gt;export_node_global_ids, 2 * this-&gt;export_node_num * <span class="keyword">sizeof</span>(ZOLTAN_ID_TYPE));</div>
+<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160; </div>
+<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;                        write_zoltan_id(item.first, &amp;this-&gt;export_node_global_ids[2*(this-&gt;export_node_num-1)]);</div>
+<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;                        this-&gt;export_node_procs = (<span class="keywordtype">int</span>*)</div>
+<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;                            std::realloc(this-&gt;export_node_procs, this-&gt;export_node_num * <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;                        this-&gt;export_node_procs[this-&gt;export_node_num-1] = item.second.second;</div>
+<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;                    }</div>
+<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160; </div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;                    <span class="keywordflow">if</span>(item.second.second == this-&gt;getMpiCommunicator().getRank()) {</div>
+<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;                        num_import++;</div>
+<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;                        import_global_ids = (ZOLTAN_ID_PTR)</div>
+<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;                            std::realloc(import_global_ids, 2 * num_import * <span class="keyword">sizeof</span>(ZOLTAN_ID_TYPE));</div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;                        write_zoltan_id(item.first, &amp;import_global_ids[2*(num_import-1)]);</div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;                        import_procs = (<span class="keywordtype">int</span>*)</div>
+<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;                            std::realloc(import_procs, num_import * <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;                        import_procs[num_import-1] = item.second.first;</div>
+<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160; </div>
+<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;                    }</div>
+<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160; </div>
+<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;                }</div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;            }</div>
+<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;            <span class="keywordtype">int</span>* import_to_part = (<span class="keywordtype">int</span>*) std::malloc(num_import * <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; num_import; ++i) {</div>
+<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;                import_to_part[i] = import_procs[i];</div>
+<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;            }</div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;            <span class="keywordtype">int</span>* export_to_part = (<span class="keywordtype">int</span>*) std::malloc(this-&gt;export_node_num * <span class="keyword">sizeof</span>(<span class="keywordtype">int</span>));</div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; this-&gt;export_node_num; ++i) {</div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;                export_to_part[i] = this-&gt;export_node_procs[i];</div>
+<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;            }</div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160; </div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;            ZOLTAN_ID_PTR import_local_ids = (ZOLTAN_ID_PTR) std::malloc(0);</div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;            ZOLTAN_ID_PTR export_local_ids = (ZOLTAN_ID_PTR) std::malloc(0);</div>
+<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160; </div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;            this-&gt;setZoltanNodeMigration();</div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160; </div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;            this-&gt;distribute(</div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;                    1,</div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;                    num_import,</div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;                    import_global_ids,</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;                    import_local_ids,</div>
+<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;                    import_procs,</div>
+<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;                    import_to_part,</div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;                    export_local_ids,</div>
+<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;                    export_to_part);</div>
+<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;        }</div>
+<div class="line"><a name="l00686"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">  686</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::distribute</a>() {</div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;            <span class="keywordtype">int</span> changes;</div>
+<div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160;            <span class="keywordtype">int</span> num_gid_entries;</div>
+<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;            <span class="keywordtype">int</span> num_lid_entries;</div>
+<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160; </div>
+<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;            <span class="keywordtype">int</span> num_import; </div>
+<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;            ZOLTAN_ID_PTR import_global_ids;</div>
+<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;            ZOLTAN_ID_PTR import_local_ids;</div>
+<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;            <span class="keywordtype">int</span> * import_procs;</div>
+<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;            <span class="keywordtype">int</span> * import_to_part;</div>
+<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160; </div>
+<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;            <span class="keywordtype">int</span>* export_to_part;</div>
+<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;            ZOLTAN_ID_PTR export_local_ids;</div>
+<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160; </div>
+<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;            <span class="comment">// Prepares Zoltan to migrate nodes</span></div>
+<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;            <span class="comment">// Must be set up from there, because LB_Partition can call</span></div>
+<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;            <span class="comment">// obj_size_multi_fn when repartitionning</span></div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;            this-&gt;setZoltanNodeMigration();</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160; </div>
+<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;            <span class="comment">// Computes Zoltan partitioning</span></div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;            <span class="keywordtype">int</span> err = this-&gt;zoltan.LB_Partition(</div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;                    changes,</div>
+<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;                    num_gid_entries,</div>
+<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;                    num_lid_entries,</div>
+<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;                    num_import,</div>
+<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;                    import_global_ids,</div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;                    import_local_ids,</div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;                    import_procs,</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;                    import_to_part,</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;                    this-&gt;export_node_num,</div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;                    this-&gt;export_node_global_ids,</div>
+<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;                    export_local_ids,</div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;                    this-&gt;export_node_procs,</div>
+<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;                    export_to_part</div>
+<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;                    );</div>
+<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;            this-&gt;distribute(</div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;                changes,</div>
+<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;                num_import,</div>
+<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;                import_global_ids,</div>
+<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;                import_local_ids,</div>
+<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;                import_procs,</div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;                import_to_part,</div>
+<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;                export_local_ids,</div>
+<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;                export_to_part);</div>
+<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160; </div>
 <div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160; </div>
-<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160; </div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;            <span class="comment">// When called for the first time, PARTITION is used, and so</span></div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;            <span class="comment">// REPARTITION will be used for all other calls.</span></div>
-<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;            this-&gt;zoltan.Set_Param(<span class="stringliteral">&quot;LB_APPROACH&quot;</span>, <span class="stringliteral">&quot;REPARTITION&quot;</span>);</div>
-<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;        }</div>
-<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160; </div>
-<div class="line"><a name="l00745"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">  745</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::synchronize</a>() {</div>
-<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;            this-&gt;mpiCommunicator.terminate();</div>
-<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;            syncMode.termination();</div>
-<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;        }</div>
-<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;    }</div>
-<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;}</div>
-<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160; </div>
-<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;            <span class="comment">// When called for the first time, PARTITION is used, and so</span></div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;            <span class="comment">// REPARTITION will be used for all other calls.</span></div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;            this-&gt;zoltan.Set_Param(<span class="stringliteral">&quot;LB_APPROACH&quot;</span>, <span class="stringliteral">&quot;REPARTITION&quot;</span>);</div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;        }</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160; </div>
+<div class="line"><a name="l00744"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">  744</a></span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">class</span> T, SYNC_MODE, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph&lt;T, S, N&gt;::synchronize</a>() {</div>
+<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;            this-&gt;mpiCommunicator.terminate();</div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;            syncMode.termination();</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;        }</div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;    }</div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;}</div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160; </div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1GhostGraph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html">FPMAS::graph::parallel::GhostGraph&lt; T, N, S &gt;</a></div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a3deb4cd09a017d0895b1c9e6b5a82e07"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a3deb4cd09a017d0895b1c9e6b5a82e07">FPMAS::graph::parallel::DistributedGraph::buildNode</a></div><div class="ttdeci">Node&lt; std::unique_ptr&lt; SyncData&lt; T &gt; &gt;, N &gt; * buildNode(NodeId, T &amp;&amp;data)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:269</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Node_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Node.html">FPMAS::graph::base::Node</a></div><div class="ttdef"><b>Definition:</b> graph.h:30</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_ac5bef6c6e4473084105c973b12acdcfe"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac5bef6c6e4473084105c973b12acdcfe">FPMAS::graph::parallel::DistributedGraph::getUpdatedData</a></div><div class="ttdeci">std::string getUpdatedData(unsigned long) const override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:487</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_ac5bef6c6e4473084105c973b12acdcfe"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac5bef6c6e4473084105c973b12acdcfe">FPMAS::graph::parallel::DistributedGraph::getUpdatedData</a></div><div class="ttdeci">std::string getUpdatedData(unsigned long) const override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:486</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1GhostNode_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1GhostNode.html">FPMAS::graph::parallel::GhostNode</a></div><div class="ttdef"><b>Definition:</b> olz.h:29</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a53023aa0ccd0144f6386b75c75b5c9a4"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a53023aa0ccd0144f6386b75c75b5c9a4">FPMAS::graph::parallel::DistributedGraph::getProxy</a></div><div class="ttdeci">Proxy &amp; getProxy()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:220</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a64b0bf3845c8ae4441682243aa700197"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">FPMAS::graph::parallel::DistributedGraph::synchronize</a></div><div class="ttdeci">void synchronize()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:745</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a37a1487def7d53845ed78bd64ee52f1f"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a37a1487def7d53845ed78bd64ee52f1f">FPMAS::graph::parallel::DistributedGraph::getGhost</a></div><div class="ttdeci">GhostGraph&lt; T, N, S &gt; &amp; getGhost()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:224</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_abe83850da147db6f360f65223498fcbe"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abe83850da147db6f360f65223498fcbe">FPMAS::graph::parallel::DistributedGraph::getMpiCommunicator</a></div><div class="ttdeci">SyncMpiCommunicator &amp; getMpiCommunicator()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:208</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:69</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a53023aa0ccd0144f6386b75c75b5c9a4"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a53023aa0ccd0144f6386b75c75b5c9a4">FPMAS::graph::parallel::DistributedGraph::getProxy</a></div><div class="ttdeci">Proxy &amp; getProxy()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:219</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a64b0bf3845c8ae4441682243aa700197"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a64b0bf3845c8ae4441682243aa700197">FPMAS::graph::parallel::DistributedGraph::synchronize</a></div><div class="ttdeci">void synchronize()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:744</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_ae57d08f39dffc31129969d0654eafc5c"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ae57d08f39dffc31129969d0654eafc5c">FPMAS::graph::parallel::DistributedGraph::buildNode</a></div><div class="ttdeci">Node&lt; std::unique_ptr&lt; SyncData&lt; T, N, S &gt; &gt;, N &gt; * buildNode(NodeId, T &amp;&amp;data)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:268</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a37a1487def7d53845ed78bd64ee52f1f"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a37a1487def7d53845ed78bd64ee52f1f">FPMAS::graph::parallel::DistributedGraph::getGhost</a></div><div class="ttdeci">GhostGraph&lt; T, N, S &gt; &amp; getGhost()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:223</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_abe83850da147db6f360f65223498fcbe"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#abe83850da147db6f360f65223498fcbe">FPMAS::graph::parallel::DistributedGraph::getMpiCommunicator</a></div><div class="ttdeci">SyncMpiCommunicator &amp; getMpiCommunicator()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:207</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:68</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">FPMAS::graph::parallel::proxy::Proxy</a></div><div class="ttdef"><b>Definition:</b> proxy.h:65</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Arc_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Arc.html">FPMAS::graph::base::Arc</a></div><div class="ttdef"><b>Definition:</b> arc.h:23</div></div>
 <div class="ttc" id="aclassFPMAS_1_1communication_1_1ResourceContainer_html"><div class="ttname"><a href="classFPMAS_1_1communication_1_1ResourceContainer.html">FPMAS::communication::ResourceContainer</a></div><div class="ttdef"><b>Definition:</b> resource_container.h:12</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">FPMAS::graph::parallel::synchro::SyncData</a></div><div class="ttdef"><b>Definition:</b> sync_mode.h:72</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a5e9a6550c2cd3f1dcf4715d0011b2a3a"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a5e9a6550c2cd3f1dcf4715d0011b2a3a">FPMAS::graph::parallel::DistributedGraph::updateData</a></div><div class="ttdeci">void updateData(unsigned long, std::string) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:504</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">FPMAS::graph::parallel::synchro::SyncData</a></div><div class="ttdef"><b>Definition:</b> sync_mode.h:77</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a5e9a6550c2cd3f1dcf4715d0011b2a3a"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a5e9a6550c2cd3f1dcf4715d0011b2a3a">FPMAS::graph::parallel::DistributedGraph::updateData</a></div><div class="ttdeci">void updateData(unsigned long, std::string) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:503</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a></div><div class="ttdef"><b>Definition:</b> arc.h:14</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_ab5d589d6f06daf643e9264cae4777db0"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">FPMAS::graph::parallel::DistributedGraph::distribute</a></div><div class="ttdeci">void distribute()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:687</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">FPMAS::graph::parallel::synchro::GhostMode</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:32</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_ac3de232f85d45a057af93db2e06701ee"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac3de232f85d45a057af93db2e06701ee">FPMAS::graph::parallel::DistributedGraph::link</a></div><div class="ttdeci">Arc&lt; std::unique_ptr&lt; SyncData&lt; T &gt; &gt;, N &gt; * link(NodeId, NodeId, ArcId)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:376</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a82bc76b952f8458542ee5f7fa88a9948"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a82bc76b952f8458542ee5f7fa88a9948">FPMAS::graph::parallel::DistributedGraph::getLocalData</a></div><div class="ttdeci">std::string getLocalData(unsigned long) const override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:472</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_ab5d589d6f06daf643e9264cae4777db0"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ab5d589d6f06daf643e9264cae4777db0">FPMAS::graph::parallel::DistributedGraph::distribute</a></div><div class="ttdeci">void distribute()</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:686</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_ac7f7c0316ec54170e5815e4cdb1fde45"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac7f7c0316ec54170e5815e4cdb1fde45">FPMAS::graph::parallel::DistributedGraph::link</a></div><div class="ttdeci">Arc&lt; std::unique_ptr&lt; SyncData&lt; T, N, S &gt; &gt;, N &gt; * link(NodeId, NodeId, ArcId)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:375</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1GhostMode.html">FPMAS::graph::parallel::synchro::GhostMode</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:31</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html_a82bc76b952f8458542ee5f7fa88a9948"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a82bc76b952f8458542ee5f7fa88a9948">FPMAS::graph::parallel::DistributedGraph::getLocalData</a></div><div class="ttdeci">std::string getLocalData(unsigned long) const override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:471</div></div>
 <div class="ttc" id="aclassFPMAS_1_1communication_1_1SyncMpiCommunicator_html"><div class="ttname"><a href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">FPMAS::communication::SyncMpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> sync_communication.h:49</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

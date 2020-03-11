@@ -148,6 +148,12 @@ namespace FPMAS::graph::parallel::proxy {
 		this->currentLocations.erase(id);
 	}
 
+	/**
+	 * Returns true iff data corresponding to `id` is located on the current
+	 * proc.
+	 *
+	 * @return true iff data is local
+	 */
 	bool Proxy::isLocal(NodeId id) {
 		return this->getCurrentLocation(id) == this->getLocalProc();
 	}

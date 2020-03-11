@@ -15,27 +15,17 @@ namespace FPMAS::graph::parallel {
 	using parallel::DistributedGraph;
 
 	namespace synchro {
+		template<
+			template<typename, int> class,
+			template<typename, int, SYNC_MODE> class,
+			typename, int
+		> class SyncMode;
 
 		/**
-		 * Synchronisation mode used as default by the DistributedGraph, and
-		 * wrapper for distant data represented as "ghosts".
+		 * Data wrapper for the GhostMode.
 		 *
-		 * In this mode, overlapping zones (represented as a "ghost graph")
-		 * are built and synchronized on each proc.
-		 *
-		 * When a node is exported, ghost arcs and nodes are built to keep
-		 * consistency across processes, and ghost nodes data is fetched
-		 * at each DistributedGraph<T, S>::synchronize() call.
-		 *
-		 * Getters used are actually the defaults provided by SyncData and
-		 * LocalData, because once data has been fetched from other procs, it
-		 * can be accessed locally.
-		 *
-		 * In consequence, such "ghost" data can be read and written as any
-		 * other LocalData. However, modifications **won't be reported** to the
-		 * origin proc, and will be overriden at the next synchronization.
-		 *
-		 * @tparam wrapped data type
+		 * @tparam T wrapped data type
+		 * @tparam N layers count
 		 */
 		template<typename T, int N, SYNC_MODE> class GhostData : public SyncData<T,N,S> {
 			
@@ -47,7 +37,7 @@ namespace FPMAS::graph::parallel {
 		};
 
 		/**
-		 * Builds a GhostData instance with the provided MpiCommunicator.
+		 * Builds a GhostData instance.
 		 *
 		 * @param id data id
 		 * @param mpiComm MPI Communicator associated to the containing
@@ -64,10 +54,10 @@ namespace FPMAS::graph::parallel {
 		}
 
 		/**
-		 * Builds a GhostData instance initialized with the specified data.
+		 * Builds a GhostData instance initialized with the moved specified data.
 		 *
 		 * @param id data id
-		 * @param data data to wrap
+		 * @param data rvalue to data to wrap
 		 * @param mpiComm MPI Communicator associated to the containing
 		 * DistributedGraph
 		 * @param proxy graph proxy
@@ -80,6 +70,15 @@ namespace FPMAS::graph::parallel {
 			: SyncData<T,N,S>(std::move(data)) {
 			}
 
+		/**
+		 * Builds a GhostData instance initialized with a copy of the specified data.
+		 *
+		 * @param id data id
+		 * @param data data to wrap
+		 * @param mpiComm MPI Communicator associated to the containing
+		 * DistributedGraph
+		 * @param proxy graph proxy
+		 */
 		template<typename T, int N, SYNC_MODE> GhostData<T,N,S>::GhostData(
 				NodeId id,
 				SyncMpiCommunicator& mpiComm,
@@ -88,7 +87,13 @@ namespace FPMAS::graph::parallel {
 			: SyncData<T,N,S>(data) {
 			}
 
+		/**
+		 * Hash function object used to hase NodeId pairs.
+		 */
 		struct NodeIdPairHash {
+			/**
+			 * Hash operator.
+			 */
 			std::size_t operator()(std::pair<NodeId, NodeId> const& pair) const {
 				std::size_t h1 = std::hash<NodeId>()(pair.first);
 				std::size_t h2 = std::hash<NodeId>()(pair.second);
@@ -96,6 +101,31 @@ namespace FPMAS::graph::parallel {
 			}
 		};
 
+		/**
+		 * Synchronisation mode used as default by the DistributedGraph.
+		 *
+		 * In this mode, overlapping zones (represented as a "ghost graph")
+		 * are built and synchronized on each proc.
+		 *
+		 * When a node is exported, ghost arcs and nodes are built to keep
+		 * consistency across processes, and ghost nodes data is fetched
+		 * at each DistributedGraph::synchronize() call.
+		 *
+		 * Read and Acquire operations can directly access fetched data
+		 * locally.
+		 *
+		 * In consequence, such "ghost" data can be read and written as any
+		 * other local data. However, modifications **won't be reported** to the
+		 * origin proc, and will be overriden at the next synchronization.
+		 *
+		 * Moreover, this mode allows to link or unlink nodes, according to the
+		 * semantics defined in the DistributedGraph. Such graph modifications
+		 * are imported and exported at each DistributedGraph::synchronize()
+		 * call.
+		 *
+		 * @tparam wrapped data type
+		 * @tparam N layers count
+		 */
 		template<typename T, int N> class GhostMode : public SyncMode<GhostMode, GhostData, T, N> {
 			private:
 				Zoltan zoltan;
@@ -113,6 +143,11 @@ namespace FPMAS::graph::parallel {
 			void notifyLinked(Arc<std::unique_ptr<SyncData<T,N,GhostMode>>,N>*);
 		};
 
+		/**
+		 * GhostMode constructor.
+		 *
+		 * @param dg reference to the parent DistributedGraph
+		 */
 		template<typename T, int N> GhostMode<T,N>::GhostMode(DistributedGraph<T, GhostMode, N>& dg) :
 			SyncMode<GhostMode, GhostData, T,N>(zoltan_query_functions(
 					&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, GhostMode>,
@@ -124,6 +159,9 @@ namespace FPMAS::graph::parallel {
 			FPMAS::config::zoltan_config(&this->zoltan);
 		}
 
+		/*
+		 * Private computation to determine how many arcs need to be exported.
+		 */
 		template<typename T, int N> int GhostMode<T, N>::computeArcExportCount() {
 			int n = 0;
 			for(auto item : linkBuffer) {
@@ -136,6 +174,12 @@ namespace FPMAS::graph::parallel {
 			return n;
 		}
 
+		/**
+		 * Called at each DistributedGraph::synchronize() call.
+		 *
+		 * Exports / imports link and unlink arcs, and fetch updated ghost data
+		 * from other procs.
+		 */
 		template<typename T, int N> void GhostMode<T, N>::termination() {
 			if(linkBuffer.size() > 0) {
 				zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T, N, GhostMode>, &this->dg);
@@ -178,11 +222,28 @@ namespace FPMAS::graph::parallel {
 			this->dg.getGhost().synchronize();
 		}
 
-		template<typename T, int N> void GhostMode<T, N>::initLink(NodeId source, NodeId target, ArcId, LayerId) {
+		/**
+		 * Initializes a distant link operation from `source` to `target` on
+		 * the given `layer`.
+		 *
+		 * @param source source node id
+		 * @param target target node id
+		 * @param arcId new arc id
+		 * @param layer layer id
+		 */
+		template<typename T, int N> void GhostMode<T, N>::initLink(NodeId source, NodeId target, ArcId arcId, LayerId layer) {
 			// Clear unlink buffer
 
 		}
 
+		/**
+		 * Called once a new distant `arc` has been created locally.
+		 *
+		 * The created `arc` is added to an internal buffer and migrated once
+		 * termination() is called.
+		 *
+		 * @param arc pointer to the new arc to export
+		 */
 		template<typename T, int N> void GhostMode<T, N>::notifyLinked(
 				Arc<std::unique_ptr<SyncData<T,N,GhostMode>>,N>* arc) {
 			linkBuffer[std::make_pair(

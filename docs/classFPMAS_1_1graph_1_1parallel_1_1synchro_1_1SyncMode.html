@@ -86,23 +86,23 @@ const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1
 <tr class="memitem:aa9d0ad39efd65f104fea0207d390eaea"><td class="memItemLeft" align="right" valign="top"><a id="aa9d0ad39efd65f104fea0207d390eaea"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>initLink</b> (NodeId, NodeId, ArcId, LayerId)</td></tr>
 <tr class="separator:aa9d0ad39efd65f104fea0207d390eaea"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd2d6d44523780a64ffcc7434f82b72f"><td class="memItemLeft" align="right" valign="top"><a id="afd2d6d44523780a64ffcc7434f82b72f"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>notifyLinked</b> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T &gt;&gt;, N &gt; *)</td></tr>
-<tr class="separator:afd2d6d44523780a64ffcc7434f82b72f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7a10d3dbd953eb1b800e18b89e9d77b"><td class="memItemLeft" align="right" valign="top"><a id="ad7a10d3dbd953eb1b800e18b89e9d77b"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>notifyLinked</b> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncData.html">SyncData</a>&lt; T, N, Mode &gt;&gt;, N &gt; *)</td></tr>
+<tr class="separator:ad7a10d3dbd953eb1b800e18b89e9d77b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a31596a3247020cb89141e35138d527aa"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1SyncMode.html#a31596a3247020cb89141e35138d527aa">termination</a> ()</td></tr>
 <tr class="separator:a31596a3247020cb89141e35138d527aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a4355ea994735a4ac5f3713f6fbb0fb2c"><td class="memItemLeft" align="right" valign="top"><a id="a4355ea994735a4ac5f3713f6fbb0fb2c"></a>
-static Wrapper&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>wrap</b> (NodeId, <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;, const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp;)</td></tr>
-<tr class="separator:a4355ea994735a4ac5f3713f6fbb0fb2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a251000fb65a85d496fe71a1803d83731"><td class="memItemLeft" align="right" valign="top"><a id="a251000fb65a85d496fe71a1803d83731"></a>
-static Wrapper&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>wrap</b> (NodeId, <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;, const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp;, const T &amp;)</td></tr>
-<tr class="separator:a251000fb65a85d496fe71a1803d83731"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af95c18f8cea869eb86b7a3d6a24abe5c"><td class="memItemLeft" align="right" valign="top"><a id="af95c18f8cea869eb86b7a3d6a24abe5c"></a>
-static Wrapper&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>wrap</b> (NodeId, <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;, const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp;, T &amp;&amp;)</td></tr>
-<tr class="separator:af95c18f8cea869eb86b7a3d6a24abe5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66cd2df7a870f2bc400f27813a199bce"><td class="memItemLeft" align="right" valign="top"><a id="a66cd2df7a870f2bc400f27813a199bce"></a>
+static Wrapper&lt; T, N, Mode &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>wrap</b> (NodeId, <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;, const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp;)</td></tr>
+<tr class="separator:a66cd2df7a870f2bc400f27813a199bce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9efcce866cca27ada550215f37636e8a"><td class="memItemLeft" align="right" valign="top"><a id="a9efcce866cca27ada550215f37636e8a"></a>
+static Wrapper&lt; T, N, Mode &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>wrap</b> (NodeId, <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;, const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp;, const T &amp;)</td></tr>
+<tr class="separator:a9efcce866cca27ada550215f37636e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafc8f70f47fcd2e7649d9b1a44652335"><td class="memItemLeft" align="right" valign="top"><a id="aafc8f70f47fcd2e7649d9b1a44652335"></a>
+static Wrapper&lt; T, N, Mode &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>wrap</b> (NodeId, <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;, const <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html">Proxy</a> &amp;, T &amp;&amp;)</td></tr>
+<tr class="separator:aafc8f70f47fcd2e7649d9b1a44652335"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -117,7 +117,7 @@ Protected Attributes</h2></td></tr>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename, int &gt; class Mode, template&lt; typename &gt; class Wrapper, typename T , int N&gt; </div>
+template&lt;template&lt; typename, int &gt; class Mode, template&lt; typename, int, SYNC_MODE &gt; class Wrapper, typename T , int N&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -139,7 +139,8 @@ template&lt;template&lt; typename, int &gt; class Mode, template&lt; typename &g
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>src/main/graph/parallel/synchro/<a class="el" href="ghost__mode_8h_source.html">ghost_mode.h</a></li>
 <li>src/main/graph/parallel/synchro/<a class="el" href="sync__mode_8h_source.html">sync_mode.h</a></li>
 </ul>
 </div><!-- contents -->
