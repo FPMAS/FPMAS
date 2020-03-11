@@ -22,8 +22,8 @@ namespace FPMAS::graph::parallel {
 	using base::NodeId;
 	using base::ArcId;
 
-	using synchro::SyncData;
-	using synchro::NoSyncMode;
+	using synchro::wrappers::SyncData;
+	using synchro::modes::NoSyncMode;
 
 	using zoltan::utils::write_zoltan_id;
 	using zoltan::utils::read_zoltan_id;

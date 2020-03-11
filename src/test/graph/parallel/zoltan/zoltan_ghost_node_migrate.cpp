@@ -8,7 +8,7 @@ using FPMAS::graph::parallel::zoltan::ghost::pack_obj_multi_fn;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::parallel::synchro::GhostMode;
+using FPMAS::graph::parallel::synchro::modes::GhostMode;
 
 class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:

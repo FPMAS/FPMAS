@@ -27,15 +27,15 @@ namespace FPMAS {
 	 * parallelization and synchronization of a graph structure.
 	 */
 	namespace graph::parallel {
-		namespace synchro {
+		namespace synchro::modes {
 			template<typename, int> class GhostMode; 
 		}
 
 		using base::NodeId;
 		using base::ArcId;
 		using proxy::Proxy;
-		using synchro::SyncData;
-		using synchro::GhostMode;
+		using synchro::wrappers::SyncData;
+		using synchro::modes::GhostMode;
 
 		/** A DistributedGraph is a special graph instance that can be
 		 * distributed across available processors using Zoltan.

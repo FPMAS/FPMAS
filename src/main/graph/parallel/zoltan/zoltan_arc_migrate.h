@@ -14,8 +14,8 @@ namespace FPMAS::graph::parallel {
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 	template<typename T, int N, SYNC_MODE> class GhostNode;
 
-	using synchro::NoSyncMode;
-	using synchro::SyncData;
+	using synchro::modes::NoSyncMode;
+	using synchro::wrappers::SyncData;
 
 	namespace zoltan {
 		/**

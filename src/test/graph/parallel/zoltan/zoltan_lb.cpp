@@ -20,7 +20,7 @@ using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 using FPMAS::graph::parallel::zoltan::obj_list;
 using FPMAS::graph::parallel::zoltan::num_edges_multi_fn;
 
-using FPMAS::graph::parallel::synchro::GhostMode;
+using FPMAS::graph::parallel::synchro::modes::GhostMode;
 
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:

@@ -12,11 +12,11 @@ using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 using FPMAS::graph::parallel::zoltan::node::obj_size_multi_fn;
 using FPMAS::graph::parallel::zoltan::node::pack_obj_multi_fn;
 
-using FPMAS::graph::parallel::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::wrappers::SyncData;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::parallel::synchro::GhostMode;
+using FPMAS::graph::parallel::synchro::modes::GhostMode;
 
 class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 	protected:

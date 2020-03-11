@@ -16,7 +16,7 @@ namespace FPMAS::graph::parallel {
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	using base::NodeId;
-	using synchro::SyncData;
+	using synchro::wrappers::SyncData;
 
 	/**
 	 * The FPMAS::graph::zoltan namespace contains definitions of all the

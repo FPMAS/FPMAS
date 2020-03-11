@@ -4,7 +4,7 @@
 #include "graph/parallel/synchro/hard_sync_mode.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::HardSyncMode;
+using FPMAS::graph::parallel::synchro::modes::HardSyncMode;
 
 
 TEST(Mpi_HardSyncDistGraph, build_test) {

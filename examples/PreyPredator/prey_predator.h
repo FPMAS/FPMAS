@@ -6,8 +6,8 @@
 
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::base::Node;
-using FPMAS::graph::parallel::synchro::HardSyncMode;
-using FPMAS::graph::parallel::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::modes::HardSyncMode;
+using FPMAS::graph::parallel::synchro::wrappers::SyncData;
 
 enum Role {
 	PREY,

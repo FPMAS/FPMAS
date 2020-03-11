@@ -60,215 +60,309 @@ namespace FPMAS::graph::parallel {
 		using parallel::GhostNode;
 		using parallel::zoltan::utils::zoltan_query_functions;
 
-
 		/**
-		 * Abstract wrapper for data contained in a DistributedGraph.
-		 *
-		 * Getters are used to access data in a completely generic way.
-		 *
-		 * Extending classes, that define how synchronization is really
-		 * handled, implement different behaviors for those getters, depending
-		 * on the fact that the data in truly local or located on an other
-		 * process. However, those mechanics remains fully transparent for the
-		 * user at the graph / node scale.
-		 *
-		 * @tparam T wrapped data type
+		 * Data wrappers used by the respective synchronization modes.
 		 */
-		template <typename T, int N, SYNC_MODE> class SyncData {
-			friend nlohmann::adl_serializer<std::unique_ptr<SyncData<T, N, S>>>;
-			friend std::string DistributedGraph<T,S,N>::getLocalData(unsigned long) const;
-			friend std::string DistributedGraph<T,S,N>::getUpdatedData(unsigned long) const;
-			friend GhostNode<T,N,S>::GhostNode(
-					SyncMpiCommunicator&,
-					Proxy&,
-					Node<std::unique_ptr<SyncData<T,N,S>>, N>&
-					);
-			protected:
-			/**
-			 * Local wrapped data instance.
-			 */
-			T data;
-			SyncData();
-			SyncData(const T&);
-			SyncData(T&&);
-			T& get();
-			const T& get() const;
-
-			public:
-			void update(T&& data);
+		namespace wrappers {
 
 			/**
-			 * Returns a reference to the wrapped data. (default behavior)
+			 * Abstract wrapper for data contained in a DistributedGraph.
 			 *
-			 * Should be overriden by extending classes to perform an acquire operation
-			 * on the wrapped data.
+			 * Getters are used to access data in a completely generic way.
+			 *
+			 * Extending classes, that define how synchronization is really
+			 * handled, implement different behaviors for those getters, depending
+			 * on the fact that the data in truly local or located on an other
+			 * process. However, those mechanics remains fully transparent for the
+			 * user at the graph / node scale.
+			 *
+			 * @tparam T wrapped data type
+			 */
+			template <typename T, int N, SYNC_MODE> class SyncData {
+				friend nlohmann::adl_serializer<std::unique_ptr<SyncData<T, N, S>>>;
+				friend std::string DistributedGraph<T,S,N>::getLocalData(unsigned long) const;
+				friend std::string DistributedGraph<T,S,N>::getUpdatedData(unsigned long) const;
+				friend GhostNode<T,N,S>::GhostNode(
+						SyncMpiCommunicator&,
+						Proxy&,
+						Node<std::unique_ptr<SyncData<T,N,S>>, N>&
+						);
+				protected:
+				/**
+				 * Local wrapped data instance.
+				 */
+				T data;
+				SyncData();
+				SyncData(const T&);
+				SyncData(T&&);
+				/**
+				 * A proteced direct access reference to the wrapped data as it is currently
+				 * physically represented is this SyncData instance.
+				 *
+				 * @return reference to the current data
+				 */
+				T& get();
+				/**
+				 * A proteced direct access reference to the wrapped data as it is currently
+				 * physically represented is this SyncData instance.
+				 *
+				 * @return reference to the current data
+				 */
+				const T& get() const;
+
+				public:
+				void update(T&& data);
+
+				/**
+				 * Returns a reference to the wrapped data. (default behavior)
+				 *
+				 * Should be overriden by extending classes to perform an acquire operation
+				 * on the wrapped data.
+				 *
+				 * @return reference to wrapped data
+				 */
+				virtual T& acquire();
+
+				/**
+				 * Returns a const reference to the wrapped data. (default behavior)
+				 *
+				 * Should be overriden by extending classes to perform a read operation
+				 * on the wrapped data.
+				 *
+				 * @return const reference to wrapped data
+				 */
+				virtual const T& read() ;
+
+				virtual void release();
+			};
+
+			/**
+			 * Default constructor.
+			 */
+			template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData() {
+			}
+
+			/**
+			 * Builds a SyncData instance initialized moving the specified data to this wrapper.
+			 *
+			 * @param data rvalue to data to wrap.
+			 */
+			template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData(T&& data) : data(std::move(data)) {
+			}
+
+			/**
+			 * Builds a SyncData instance initialized copying the specified data to this wrapper.
+			 *
+			 * @param data data to wrap.
+			 */
+			template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData(const T& data) : data(data) {
+			}
+
+			
+			template<typename T, int N, SYNC_MODE> const T& SyncData<T,N,S>::get() const {
+				return this->data;
+			}
+			
+			template<typename T, int N, SYNC_MODE> T& SyncData<T,N,S>::get() {
+				return this->data;
+			}
+
+			/**
+			 * Updates internal data with the provided value.
+			 *
+			 * This function *should not* be used directly by a user, the proper
+			 * way to edit data being acquire() -> perform some modifications ->
+			 * release().
+			 *
+			 * This function is only used internally to actually updating data once
+			 * it has been released.
+			 *
+			 * @param data updated data
+			 */
+			template<typename T, int N, SYNC_MODE> void SyncData<T,N,S>::update(T&& data) {
+				this->data = std::move(data);
+			}
+
+			/**
+			 * Default getter, returns a reference to the wrapped data.
 			 *
 			 * @return reference to wrapped data
 			 */
-			virtual T& acquire();
+			template<typename T, int N, SYNC_MODE> T& SyncData<T,N,S>::acquire() {
+				return data;
+			}
 
 			/**
-			 * Returns a const reference to the wrapped data. (default behavior)
-			 *
-			 * Should be overriden by extending classes to perform a read operation
-			 * on the wrapped data.
+			 * Default const getter, returns a const reference to the wrapped data.
 			 *
 			 * @return const reference to wrapped data
 			 */
-			virtual const T& read() ;
+			template<typename T, int N, SYNC_MODE> const T& SyncData<T,N,S>::read() {
+				return data;
+			}
 
-			virtual void release();
-		};
-
-		/**
-		 * Default constructor.
-		 */
-		template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData() {
+			/**
+			 * Releases data, allowing other procs to acquire and read it.
+			 */
+			template<typename T, int N, SYNC_MODE> void SyncData<T,N,S>::release() {}
 		}
 
 		/**
-		 * Builds a SyncData instance initialized with the specified data.
-		 *
-		 * @param data data to wrap.
+		 * Contains class templates that might be used as synchronization mode.
 		 */
-		template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData(T&& data) : data(std::move(data)) {
+		namespace modes {
+
+			/**
+			 * Abstact generic SyncMode class template.
+			 *
+			 * @tparam Mode implementing concrete class (GhostMode, NoSyncMode,
+			 * HardSyncMode...)
+			 * @tparam Wrapper associated data wrapper (wrappers::GhostData,
+			 * wrappers::NoSyncData, wrappers::HardSyncData...)
+			 * @tparam T wrapped data type
+			 * @tparam N layers count
+			 *
+			 * @see wrappers
+			 * @see wrappers::SyncData
+			 */
+			template<
+				template<typename, int> class Mode,
+				template<typename, int> class Wrapper,
+				typename T,
+				int N
+					> class SyncMode {
+						private:
+							zoltan_query_functions _config;
+						protected:
+							/**
+							 * Reference to the parent DistributedGraph
+							 * instance.
+							 */
+							DistributedGraph<T, Mode, N>& dg;
+
+							/**
+							 * SyncMode constructor.
+							 *
+							 * @param config zoltan configuration associated to
+							 * this mode
+							 * @param dg parent DistributedGraph
+							 */
+							SyncMode(
+									zoltan_query_functions config,
+									DistributedGraph<T, Mode, N>& dg
+									) : _config(config), dg(dg) {}
+
+						public:
+							const zoltan_query_functions& config() const;
+
+							/**
+							 * Synchronization mode dependent link request
+							 * initialization.
+							 *
+							 * Called by the DistributedGraph before creating a
+							 * new distant Arc, to acquire required resources
+							 * for example.
+							 *
+							 * @param source source node id
+							 * @param target target node id
+							 * @param arcId new arc id
+							 * @param layer layer id
+							 */
+							virtual void initLink(
+									NodeId source,
+									NodeId target,
+									ArcId arcId,
+									LayerId layer) {}
+
+							/**
+							 * Synchronization mode dependent linked
+							 * notification.
+							 *
+							 * Called after a new distant Arc has been created in the
+							 * DistributedGraph, to export it to distant procs
+							 * for example.
+							 *
+							 * @param arc pointer to the new arc
+							 */
+							virtual void notifyLinked(
+								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,N>* arc
+								) {}
+
+							/**
+							 * A synchronization mode dependent termination function,
+							 * called at each DistributedGraph::synchronize() call.
+							 */
+							virtual void termination() {};
+
+							static Wrapper<T,N>*
+								wrap(NodeId, SyncMpiCommunicator&, const Proxy&);
+							static Wrapper<T,N>*
+								wrap(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
+							static Wrapper<T,N>*
+								wrap(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
+					};
+
+			/**
+			 * Returns the Zoltan query functions associated to this
+			 * synchronization mode.
+			 *
+			 * @return Zoltan configuration
+			 */
+			template<
+				template<typename, int> class Mode,
+				template<typename, int> class Wrapper,
+				typename T,
+				int N
+					> const zoltan_query_functions& SyncMode<Mode, Wrapper, T, N>::config() const {
+						return _config;
+					}
+
+			/**
+			 * Wraps the specified data in a new `Wrapper` instance.
+			 */
+			template<
+				template<typename, int> class Mode,
+				template<typename, int> class Wrapper,
+				typename T,
+				int N
+					> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
+							NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy
+							) {
+						return new Wrapper<T,N>(id, comm, proxy);
+					}
+			/**
+			 * Wraps the specified data in a new `Wrapper` instance.
+			 */
+			template<
+				template<typename, int> class Mode,
+				template<typename, int> class Wrapper,
+				typename T,
+				int N
+					> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
+							NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, const T& data
+							) {
+						return new Wrapper<T,N>(id, comm, proxy, data);
+					}
+			/**
+			 * Wraps the specified data in a new `Wrapper` instance.
+			 */
+			template<
+				template<typename, int> class Mode,
+				template<typename, int> class Wrapper,
+				typename T,
+				int N
+					> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
+							NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
+							) {
+						return new Wrapper<T,N>(id, comm, proxy, std::move(data));
+					}
+
 		}
-		template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData(const T& data) : data(data) {
-		}
-
-		/**
-		 * A private direct access reference to the wrapped data as it is currently
-		 * physically represented is this SyncData instance.
-		 *
-		 * @return reference to the current data
-		 */
-		template<typename T, int N, SYNC_MODE> const T& SyncData<T,N,S>::get() const {
-			return this->data;
-		}
-		template<typename T, int N, SYNC_MODE> T& SyncData<T,N,S>::get() {
-			return this->data;
-		}
-
-		/**
-		 * Updates internal data with the provided value.
-		 *
-		 * This function *should not* be used directly by a user, the proper
-		 * way to edit data being acquire() -> perform some modifications ->
-		 * release().
-		 *
-		 * This function is only used internally to actually updating data once
-		 * it has been released.
-		 *
-		 * @param data updated data
-		 */
-		template<typename T, int N, SYNC_MODE> void SyncData<T,N,S>::update(T&& data) {
-			this->data = std::move(data);
-		}
-
-		/**
-		 * Default getter, returns a reference to the wrapped data.
-		 *
-		 * @return reference to wrapped data
-		 */
-		template<typename T, int N, SYNC_MODE> T& SyncData<T,N,S>::acquire() {
-			return data;
-		}
-
-		/**
-		 * Default const getter, returns a const reference to the wrapped data.
-		 *
-		 * @return const reference to wrapped data
-		 */
-		template<typename T, int N, SYNC_MODE> const T& SyncData<T,N,S>::read() {
-			return data;
-		}
-
-		/**
-		 * Releases data, allowing other procs to acquire and read it.
-		 */
-		template<typename T, int N, SYNC_MODE> void SyncData<T,N,S>::release() {}
-
-		template<
-			template<typename, int> class Mode,
-			template<typename, int> class Wrapper,
-			typename T,
-			int N
-		> class SyncMode {
-			private:
-				zoltan_query_functions _config;
-			protected:
-				DistributedGraph<T, Mode, N>& dg;
-			public:
-
-				SyncMode(
-					zoltan_query_functions config,
-					DistributedGraph<T, Mode, N>& dg
-					) : _config(config), dg(dg) {}
-
-				const zoltan_query_functions& config() const;
-
-				virtual void initLink(NodeId, NodeId, ArcId, LayerId) {}
-				virtual void notifyLinked(Arc<std::unique_ptr<SyncData<T,N,Mode>>,N>*) {}
-
-				/**
-				 * A synchronization mode dependent termination function,
-				 * called at each DistributedGraph::synchronize() call.
-				 */
-				virtual void termination() {};
-
-				static Wrapper<T,N>*
-					wrap(NodeId, SyncMpiCommunicator&, const Proxy&);
-				static Wrapper<T,N>*
-					wrap(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
-				static Wrapper<T,N>*
-					wrap(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
-			};
-		template<
-			template<typename, int> class Mode,
-			template<typename, int> class Wrapper,
-			typename T,
-			int N
-				> const zoltan_query_functions& SyncMode<Mode, Wrapper, T, N>::config() const {
-					return _config;
-				}
-		template<
-			template<typename, int> class Mode,
-			template<typename, int> class Wrapper,
-			typename T,
-			int N
-				> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
-						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy
-						) {
-					return new Wrapper<T,N>(id, comm, proxy);
-				}
-
-		template<
-			template<typename, int> class Mode,
-			template<typename, int> class Wrapper,
-			typename T,
-			int N
-				> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
-						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, const T& data
-						) {
-					return new Wrapper<T,N>(id, comm, proxy, data);
-				}
-
-		template<
-			template<typename, int> class Mode,
-			template<typename, int> class Wrapper,
-			typename T,
-			int N
-				> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
-						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
-						) {
-					return new Wrapper<T,N>(id, comm, proxy, std::move(data));
-				}
-
 	}
 }
 
 namespace nlohmann {
-	using FPMAS::graph::parallel::synchro::SyncData;
+	using FPMAS::graph::parallel::synchro::wrappers::SyncData;
 	/**
 	 * Any SyncData instance (and so instances of extending classes) can be
 	 * json serialized to perform node migrations or data request responses.

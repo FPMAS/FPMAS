@@ -4,7 +4,7 @@
 
 #include "graph/parallel/distributed_graph.h"
 
-using FPMAS::graph::parallel::synchro::SyncData;
+using FPMAS::graph::parallel::synchro::wrappers::SyncData;
 using FPMAS::graph::parallel::DistributedGraph;
 
 class Mpi_DistributeGraphWithGhostArcsTest : public ::testing::Test {

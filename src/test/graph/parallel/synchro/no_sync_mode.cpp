@@ -4,7 +4,7 @@
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::graph::parallel::synchro::NoSyncMode;
+using FPMAS::graph::parallel::synchro::modes::NoSyncMode;
 
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:

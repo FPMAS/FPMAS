@@ -6,7 +6,7 @@
 
 using FPMAS::graph::base::DefaultLayer;
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::HardSyncMode;
+using FPMAS::graph::parallel::synchro::modes::HardSyncMode;
 
 /*
  * Illustrates a specific import case that caused a bug, because the same arc

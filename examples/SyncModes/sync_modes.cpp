@@ -14,9 +14,9 @@
 #define PRINT_SPACE() if(dg.getMpiCommunicator().getRank() == 0){std::cout << std::endl;}else{std::this_thread::sleep_for(10ms);}
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::NoSyncMode;
-using FPMAS::graph::parallel::synchro::GhostMode;
-using FPMAS::graph::parallel::synchro::HardSyncMode;
+using FPMAS::graph::parallel::synchro::modes::NoSyncMode;
+using FPMAS::graph::parallel::synchro::modes::GhostMode;
+using FPMAS::graph::parallel::synchro::modes::HardSyncMode;
 
 // #define SYNCHRO None
 // #define SYNCHRO GhostData

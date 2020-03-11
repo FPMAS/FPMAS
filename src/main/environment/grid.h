@@ -5,7 +5,7 @@
 #include "graph/parallel/distributed_graph.h"
 #include "agent/agent.h"
 
-using FPMAS::graph::parallel::synchro::GhostMode;
+using FPMAS::graph::parallel::synchro::modes::GhostMode;
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::agent::Agent;
 

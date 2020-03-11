@@ -12,7 +12,7 @@ using FPMAS::graph::base::Node;
 
 namespace FPMAS::graph::parallel {
 
-	using synchro::SyncData;
+	using synchro::wrappers::SyncData;
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 	template<typename T, int N, SYNC_MODE> class GhostNode;
 

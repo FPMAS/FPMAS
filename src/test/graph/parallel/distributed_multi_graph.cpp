@@ -4,9 +4,9 @@
 #include "test_utils/test_utils.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::synchro::SyncData;
-using FPMAS::graph::parallel::synchro::GhostMode;
-using FPMAS::graph::parallel::synchro::NoSyncMode;
+using FPMAS::graph::parallel::synchro::wrappers::SyncData;
+using FPMAS::graph::parallel::synchro::modes::GhostMode;
+using FPMAS::graph::parallel::synchro::modes::NoSyncMode;
 
 enum TestLayer {
 	DEFAULT = 0,

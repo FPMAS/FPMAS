@@ -11,8 +11,8 @@ namespace FPMAS::graph::parallel {
 
 	using base::ArcId;
 	using base::LayerId;
-	using synchro::SyncData;
-	using synchro::GhostData;
+	using synchro::wrappers::SyncData;
+	using synchro::wrappers::GhostData;
 
 	template<typename T, int N, SYNC_MODE> class GhostGraph;
 
