@@ -17,9 +17,10 @@ namespace FPMAS::graph::parallel {
 	namespace synchro {
 		template<
 			template<typename, int> class,
-			template<typename, int, SYNC_MODE> class,
+			template<typename, int> class,
 			typename, int
 		> class SyncMode;
+		template<typename, int> class GhostMode;
 
 		/**
 		 * Data wrapper for the GhostMode.
@@ -27,7 +28,7 @@ namespace FPMAS::graph::parallel {
 		 * @tparam T wrapped data type
 		 * @tparam N layers count
 		 */
-		template<typename T, int N, SYNC_MODE> class GhostData : public SyncData<T,N,S> {
+		template<typename T, int N> class GhostData : public SyncData<T,N,GhostMode> {
 			
 			public:
 				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&);
@@ -47,7 +48,7 @@ namespace FPMAS::graph::parallel {
 		 */
 		// The mpiCommunicator is not used for the GhostData mode, but the
 		// constructors are defined to allow template genericity
-		template<typename T, int N, SYNC_MODE> GhostData<T,N,S>::GhostData(
+		template<typename T, int N> GhostData<T,N>::GhostData(
 				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy) {
@@ -62,12 +63,12 @@ namespace FPMAS::graph::parallel {
 		 * DistributedGraph
 		 * @param proxy graph proxy
 		 */
-		template<typename T, int N, SYNC_MODE> GhostData<T,N,S>::GhostData(
+		template<typename T, int N> GhostData<T,N>::GhostData(
 				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				T&& data)
-			: SyncData<T,N,S>(std::move(data)) {
+			: SyncData<T,N,GhostMode>(std::move(data)) {
 			}
 
 		/**
@@ -79,12 +80,12 @@ namespace FPMAS::graph::parallel {
 		 * DistributedGraph
 		 * @param proxy graph proxy
 		 */
-		template<typename T, int N, SYNC_MODE> GhostData<T,N,S>::GhostData(
+		template<typename T, int N> GhostData<T,N>::GhostData(
 				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				const T& data)
-			: SyncData<T,N,S>(data) {
+			: SyncData<T,N,GhostMode>(data) {
 			}
 
 		/**

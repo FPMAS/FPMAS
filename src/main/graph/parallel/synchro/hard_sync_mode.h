@@ -9,6 +9,8 @@ using FPMAS::communication::SyncMpiCommunicator;
 
 namespace FPMAS::graph::parallel::synchro {
 
+	template<typename T, int N> class HardSyncMode;
+
 	/**
 	 * Hard synchronization mode, that can be used thanks to the second
 	 * template parameter of the DistributedGraph<T, S> class.
@@ -21,7 +23,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * read() or acquire() is called. A Readers-Writers algorithm manages data
 	 * access to avoid concurrency issues.
 	 */
-	template<typename T, int N, SYNC_MODE> class HardSyncData : public SyncData<T,N,S> {
+	template<typename T, int N> class HardSyncData : public SyncData<T,N,HardSyncMode> {
 		private:
 			NodeId id;
 			SyncMpiCommunicator& mpiComm;
@@ -44,7 +46,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * @param mpiComm MPI communicator used to communicate with data sources
 	 * @param proxy proxy used to locate data
 	 */
-	template<typename T, int N, SYNC_MODE> HardSyncData<T,N,S>::HardSyncData(
+	template<typename T, int N> HardSyncData<T,N>::HardSyncData(
 			NodeId id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy)
@@ -59,20 +61,20 @@ namespace FPMAS::graph::parallel::synchro {
 	 * @param proxy proxy used to locate data
 	 * @param data associated data instance
 	 */
-	template<typename T, int N, SYNC_MODE> HardSyncData<T,N,S>::HardSyncData(
+	template<typename T, int N> HardSyncData<T,N>::HardSyncData(
 			NodeId id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy,
 			T&& data)
-		: SyncData<T,N,S>(std::move(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
+		: SyncData<T,N,HardSyncMode>(std::move(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
 
-	template<typename T, int N, SYNC_MODE> HardSyncData<T,N,S>::HardSyncData(
+	template<typename T, int N> HardSyncData<T,N>::HardSyncData(
 			NodeId id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy,
 			const T& data)
-		: SyncData<T,N,S>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
+		: SyncData<T,N,HardSyncMode>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
 
 	/**
@@ -84,7 +86,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 *
 	 * @return const reference to the distant data
 	 */
-	template<typename T, int N, SYNC_MODE> const T& HardSyncData<T,N,S>::read() {
+	template<typename T, int N> const T& HardSyncData<T,N>::read() {
 		this->data = ((nlohmann::json) nlohmann::json::parse(
 				this->mpiComm.read(
 					this->id,
@@ -96,7 +98,7 @@ namespace FPMAS::graph::parallel::synchro {
 
 	// TODO: This needs to be optimize!! no need to serialize when data is
 	// local...
-	template<typename T, int N, SYNC_MODE> T& HardSyncData<T,N,S>::acquire() {
+	template<typename T, int N> T& HardSyncData<T,N>::acquire() {
 		this->data = ((nlohmann::json) nlohmann::json::parse(
 				this->mpiComm.acquire(
 					this->id,
@@ -106,7 +108,7 @@ namespace FPMAS::graph::parallel::synchro {
 		return this->data;
 	}
 
-	template<typename T, int N, SYNC_MODE> void HardSyncData<T,N,S>::release() {
+	template<typename T, int N> void HardSyncData<T,N>::release() {
 		this->mpiComm.giveBack(
 				this->id,
 				this->proxy.getCurrentLocation(this->id)

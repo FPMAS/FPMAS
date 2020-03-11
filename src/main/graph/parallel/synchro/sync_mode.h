@@ -190,7 +190,7 @@ namespace FPMAS::graph::parallel {
 
 		template<
 			template<typename, int> class Mode,
-			template<typename, int, SYNC_MODE> class Wrapper,
+			template<typename, int> class Wrapper,
 			typename T,
 			int N
 		> class SyncMode {
@@ -216,16 +216,16 @@ namespace FPMAS::graph::parallel {
 				 */
 				virtual void termination() {};
 
-				static Wrapper<T,N,Mode>*
+				static Wrapper<T,N>*
 					wrap(NodeId, SyncMpiCommunicator&, const Proxy&);
-				static Wrapper<T,N,Mode>*
+				static Wrapper<T,N>*
 					wrap(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
-				static Wrapper<T,N,Mode>*
+				static Wrapper<T,N>*
 					wrap(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
 			};
 		template<
 			template<typename, int> class Mode,
-			template<typename, int, SYNC_MODE> class Wrapper,
+			template<typename, int> class Wrapper,
 			typename T,
 			int N
 				> const zoltan_query_functions& SyncMode<Mode, Wrapper, T, N>::config() const {
@@ -233,35 +233,35 @@ namespace FPMAS::graph::parallel {
 				}
 		template<
 			template<typename, int> class Mode,
-			template<typename, int, SYNC_MODE> class Wrapper,
+			template<typename, int> class Wrapper,
 			typename T,
 			int N
-				> Wrapper<T,N,Mode>* SyncMode<Mode, Wrapper, T, N>::wrap(
+				> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
 						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy
 						) {
-					return new Wrapper<T,N,Mode>(id, comm, proxy);
+					return new Wrapper<T,N>(id, comm, proxy);
 				}
 
 		template<
 			template<typename, int> class Mode,
-			template<typename, int, SYNC_MODE> class Wrapper,
+			template<typename, int> class Wrapper,
 			typename T,
 			int N
-				> Wrapper<T,N,Mode>* SyncMode<Mode, Wrapper, T, N>::wrap(
+				> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
 						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, const T& data
 						) {
-					return new Wrapper<T,N,Mode>(id, comm, proxy, data);
+					return new Wrapper<T,N>(id, comm, proxy, data);
 				}
 
 		template<
 			template<typename, int> class Mode,
-			template<typename, int, SYNC_MODE> class Wrapper,
+			template<typename, int> class Wrapper,
 			typename T,
 			int N
-				> Wrapper<T,N,Mode>* SyncMode<Mode, Wrapper, T, N>::wrap(
+				> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
 						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
 						) {
-					return new Wrapper<T,N,Mode>(id, comm, proxy, std::move(data));
+					return new Wrapper<T,N>(id, comm, proxy, std::move(data));
 				}
 
 	}

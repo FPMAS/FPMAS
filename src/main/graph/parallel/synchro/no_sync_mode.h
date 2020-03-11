@@ -9,6 +9,8 @@ using FPMAS::graph::parallel::proxy::Proxy;
 
 namespace FPMAS::graph::parallel::synchro {
 
+	template<typename T, int N> class NoSyncMode;
+
 	/**
 	 * Synchronisation mode that can be used as a template argument for
 	 * a DistributedGraph, where no synchronization or overlapping zone
@@ -17,7 +19,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * When a node is exported, its connections with nodes that are not
 	 * exported on the same process are lost.
 	 */
-    template<class T, int N, SYNC_MODE> class NoSyncData : public SyncData<T,N,S> {
+    template<class T, int N> class NoSyncData : public SyncData<T,N,NoSyncMode> {
 		public:
 			/**
 			 * Unused constructor, defined for synchronization mode API
@@ -29,9 +31,9 @@ namespace FPMAS::graph::parallel::synchro {
 			 * compatibility.
 			 */
 			NoSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, T&& data) :
-				SyncData<T,N,S>(std::move(data)) {};
+				SyncData<T,N,NoSyncMode>(std::move(data)) {};
 			NoSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, const T& data) :
-				SyncData<T,N,S>(data) {};
+				SyncData<T,N,NoSyncMode>(data) {};
 	};
 
 	template<typename T, int N> class NoSyncMode : public SyncMode<NoSyncMode, NoSyncData, T, N> {
