@@ -9,15 +9,18 @@
 #include "communication/sync_communication.h"
 #include "../proxy/proxy.h"
 #include "graph/base/node.h"
+#include "../olz.h"
 
 
-using FPMAS::graph::base::Arc;
-using FPMAS::graph::base::ArcId;
-using FPMAS::graph::base::LayerId;
-using FPMAS::graph::parallel::proxy::Proxy;
 using FPMAS::communication::SyncMpiCommunicator;
 
 namespace FPMAS::graph::parallel {
+	using base::Node;
+	using base::Arc;
+	using base::ArcId;
+	using base::LayerId;
+	using proxy::Proxy;
+
 	namespace zoltan {
 		namespace node {
 			template<typename T, int N> void post_migrate_pp_fn_no_sync(
@@ -50,9 +53,11 @@ namespace FPMAS::graph::parallel {
 		}
 	}
 
+	template<typename T, int N, SYNC_MODE> class GhostNode;
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	namespace synchro {
+		using parallel::GhostNode;
 		using parallel::zoltan::utils::zoltan_query_functions;
 
 
@@ -69,20 +74,27 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @tparam T wrapped data type
 		 */
-		template <class T> class SyncData {
-			friend nlohmann::adl_serializer<SyncData<T>>;
+		template <typename T, int N, SYNC_MODE> class SyncData {
+			friend nlohmann::adl_serializer<std::unique_ptr<SyncData<T, N, S>>>;
+			friend std::string DistributedGraph<T,S,N>::getLocalData(unsigned long) const;
+			friend std::string DistributedGraph<T,S,N>::getUpdatedData(unsigned long) const;
+			friend GhostNode<T,N,S>::GhostNode(
+					SyncMpiCommunicator&,
+					Proxy&,
+					Node<std::unique_ptr<SyncData<T,N,S>>, N>&
+					);
 			protected:
 			/**
-			 * Local representation of wrapped data.
+			 * Local wrapped data instance.
 			 */
 			T data;
 			SyncData();
 			SyncData(const T&);
 			SyncData(T&&);
+			T& get();
+			const T& get() const;
 
 			public:
-			const T& get() const;
-			T&& move();
 			void update(T&& data);
 
 			/**
@@ -111,7 +123,7 @@ namespace FPMAS::graph::parallel {
 		/**
 		 * Default constructor.
 		 */
-		template<class T> SyncData<T>::SyncData() {
+		template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData() {
 		}
 
 		/**
@@ -119,23 +131,22 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @param data data to wrap.
 		 */
-		template<class T> SyncData<T>::SyncData(T&& data) : data(std::move(data)) {
+		template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData(T&& data) : data(std::move(data)) {
 		}
-		template<class T> SyncData<T>::SyncData(const T& data) : data(data) {
+		template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData(const T& data) : data(data) {
 		}
 
 		/**
-		 * A direct const access reference to the wrapped data as it is currently
+		 * A private direct access reference to the wrapped data as it is currently
 		 * physically represented is this SyncData instance.
 		 *
-		 * @return const reference to the current data
+		 * @return reference to the current data
 		 */
-		template<class T> const T& SyncData<T>::get() const {
+		template<typename T, int N, SYNC_MODE> const T& SyncData<T,N,S>::get() const {
 			return this->data;
 		}
-
-		template<class T> T&& SyncData<T>::move() {
-			return std::move(this->data);
+		template<typename T, int N, SYNC_MODE> T& SyncData<T,N,S>::get() {
+			return this->data;
 		}
 
 		/**
@@ -150,7 +161,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @param data updated data
 		 */
-		template<class T> void SyncData<T>::update(T&& data) {
+		template<typename T, int N, SYNC_MODE> void SyncData<T,N,S>::update(T&& data) {
 			this->data = std::move(data);
 		}
 
@@ -159,7 +170,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @return reference to wrapped data
 		 */
-		template<class T> T& SyncData<T>::acquire() {
+		template<typename T, int N, SYNC_MODE> T& SyncData<T,N,S>::acquire() {
 			return data;
 		}
 
@@ -168,18 +179,18 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @return const reference to wrapped data
 		 */
-		template<class T> const T& SyncData<T>::read() {
+		template<typename T, int N, SYNC_MODE> const T& SyncData<T,N,S>::read() {
 			return data;
 		}
 
 		/**
 		 * Releases data, allowing other procs to acquire and read it.
 		 */
-		template<class T> void SyncData<T>::release() {}
+		template<typename T, int N, SYNC_MODE> void SyncData<T,N,S>::release() {}
 
 		template<
 			template<typename, int> class Mode,
-			template<typename> class Wrapper,
+			template<typename, int, SYNC_MODE> class Wrapper,
 			typename T,
 			int N
 		> class SyncMode {
@@ -197,7 +208,7 @@ namespace FPMAS::graph::parallel {
 				const zoltan_query_functions& config() const;
 
 				virtual void initLink(NodeId, NodeId, ArcId, LayerId) {}
-				virtual void notifyLinked(Arc<std::unique_ptr<SyncData<T>>,N>*) {}
+				virtual void notifyLinked(Arc<std::unique_ptr<SyncData<T,N,Mode>>,N>*) {}
 
 				/**
 				 * A synchronization mode dependent termination function,
@@ -205,16 +216,16 @@ namespace FPMAS::graph::parallel {
 				 */
 				virtual void termination() {};
 
-				static Wrapper<T>*
+				static Wrapper<T,N,Mode>*
 					wrap(NodeId, SyncMpiCommunicator&, const Proxy&);
-				static Wrapper<T>*
+				static Wrapper<T,N,Mode>*
 					wrap(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
-				static Wrapper<T>*
+				static Wrapper<T,N,Mode>*
 					wrap(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
 			};
 		template<
 			template<typename, int> class Mode,
-			template<typename> class Wrapper,
+			template<typename, int, SYNC_MODE> class Wrapper,
 			typename T,
 			int N
 				> const zoltan_query_functions& SyncMode<Mode, Wrapper, T, N>::config() const {
@@ -222,35 +233,35 @@ namespace FPMAS::graph::parallel {
 				}
 		template<
 			template<typename, int> class Mode,
-			template<typename> class Wrapper,
+			template<typename, int, SYNC_MODE> class Wrapper,
 			typename T,
 			int N
-				> Wrapper<T>* SyncMode<Mode, Wrapper, T, N>::wrap(
+				> Wrapper<T,N,Mode>* SyncMode<Mode, Wrapper, T, N>::wrap(
 						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy
 						) {
-					return new Wrapper<T>(id, comm, proxy);
+					return new Wrapper<T,N,Mode>(id, comm, proxy);
 				}
 
 		template<
 			template<typename, int> class Mode,
-			template<typename> class Wrapper,
+			template<typename, int, SYNC_MODE> class Wrapper,
 			typename T,
 			int N
-				> Wrapper<T>* SyncMode<Mode, Wrapper, T, N>::wrap(
+				> Wrapper<T,N,Mode>* SyncMode<Mode, Wrapper, T, N>::wrap(
 						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, const T& data
 						) {
-					return new Wrapper<T>(id, comm, proxy, data);
+					return new Wrapper<T,N,Mode>(id, comm, proxy, data);
 				}
 
 		template<
 			template<typename, int> class Mode,
-			template<typename> class Wrapper,
+			template<typename, int, SYNC_MODE> class Wrapper,
 			typename T,
 			int N
-				> Wrapper<T>* SyncMode<Mode, Wrapper, T, N>::wrap(
+				> Wrapper<T,N,Mode>* SyncMode<Mode, Wrapper, T, N>::wrap(
 						NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
 						) {
-					return new Wrapper<T>(id, comm, proxy, std::move(data));
+					return new Wrapper<T,N,Mode>(id, comm, proxy, std::move(data));
 				}
 
 	}
@@ -266,8 +277,8 @@ namespace nlohmann {
 	 * instance, because this data wrapper is not supposed to be used directly,
 	 * but must be unserialized as a concrete LocalData instance for example.
 	 */
-	template <class T>
-		struct adl_serializer<std::unique_ptr<SyncData<T>>> {
+	template <typename T, int N, SYNC_MODE>
+		struct adl_serializer<std::unique_ptr<SyncData<T,N,S>>> {
 			/**
 			 * Serializes the data wrapped in the provided SyncData instance.
 			 *
@@ -276,12 +287,12 @@ namespace nlohmann {
 			 * @param j json to serialize to
 			 * @param data reference to SyncData to serialize
 			 */
-			static void to_json(json& j, const std::unique_ptr<SyncData<T>>& data) {
+			static void to_json(json& j, const std::unique_ptr<SyncData<T,N,S>>& data) {
 				j = data->get();
 			}
 
-			static SyncData<T> from_json(const json& j) {
-				return SyncData<T>(j.get<T>());
+			static SyncData<T,N,S> from_json(const json& j) {
+				return SyncData<T,N,S>(j.get<T>());
 			}
 		};
 }

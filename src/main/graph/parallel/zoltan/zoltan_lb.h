@@ -69,7 +69,7 @@ namespace FPMAS::graph::parallel {
 				) {
 			int i = 0;
 			for(auto n : ((DistributedGraph<T, S, N>*) data)->getNodes()) {
-				Node<std::unique_ptr<SyncData<T>>, N>* node = n.second;
+				Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = n.second;
 
 				utils::write_zoltan_id(node->getId(), &global_ids[i * num_gid_entries]);
 
@@ -102,10 +102,10 @@ namespace FPMAS::graph::parallel {
 				int *num_edges,
 				int *ierr
 				) {
-			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T>>, N>*> nodes
+			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes
 				= ((DistributedGraph<T, S, N>*) data)->getNodes();
 			for(int i = 0; i < num_obj; i++) {
-				Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(
+				Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[i * num_gid_entries])
 						);
 				num_edges[i] = node->getOutgoingArcs().size();
@@ -148,15 +148,15 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
-			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
+			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes = graph->getNodes();
 
 			int neighbor_index = 0;
 			for (int i = 0; i < num_obj; ++i) {
-				Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(
+				Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[num_gid_entries * i])
 						);
 				for(int j = 0; j < node->getOutgoingArcs().size(); j++) {
-					Arc<std::unique_ptr<SyncData<T>>, N>* arc = node->getOutgoingArcs().at(j);
+					Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc = node->getOutgoingArcs().at(j);
 					NodeId targetId = arc->getTargetNode()->getId(); 
 					utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 

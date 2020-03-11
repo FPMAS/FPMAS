@@ -28,7 +28,6 @@ namespace FPMAS {
 	 */
 	namespace graph::parallel {
 		namespace synchro {
-			//template<class T> class GhostData;
 			template<typename, int> class GhostMode; 
 		}
 
@@ -66,7 +65,7 @@ namespace FPMAS {
 		 * @tparam S synchronization mode
 		 */
 		template<typename T, SYNC_MODE = GhostMode, int N = 1>
-		class DistributedGraph : public Graph<std::unique_ptr<SyncData<T>>, N>, communication::ResourceContainer {
+		class DistributedGraph : public Graph<std::unique_ptr<SyncData<T,N,S>>, N>, communication::ResourceContainer {
 			friend void zoltan::node::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
@@ -155,13 +154,13 @@ namespace FPMAS {
 
 			Proxy& getProxy();
 
-			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId, T&& data);
-			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, T& data);
-			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, float weight, T&& data);
-			Node<std::unique_ptr<SyncData<T>>, N>* buildNode(NodeId id, float weight, T& data);
+			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId, T&& data);
+			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, T& data);
+			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, T&& data);
+			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, T& data);
 
-			Arc<std::unique_ptr<SyncData<T>>, N>* link(NodeId, NodeId, ArcId);
-			Arc<std::unique_ptr<SyncData<T>>, N>* link(NodeId, NodeId, ArcId, LayerId);
+			Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId);
+			Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId, LayerId);
 
 			std::string getLocalData(unsigned long) const override;
 			std::string getUpdatedData(unsigned long) const override;
@@ -265,12 +264,12 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
-		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
+		Node<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraph<T, S, N>
 		::buildNode(NodeId id, T&& data) {
-			return Graph<std::unique_ptr<SyncData<T>>, N>
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
 				::buildNode(
 					id,
-					std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
+					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
@@ -289,12 +288,12 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
-		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
+		Node<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraph<T, S, N>
 		::buildNode(NodeId id, T& data) {
-			return Graph<std::unique_ptr<SyncData<T>>, N>
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
 				::buildNode(
 					id,
-					std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
+					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
@@ -317,13 +316,13 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
-		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
+		Node<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraph<T, S, N>
 		::buildNode(NodeId id, float weight, T&& data) {
-			return Graph<std::unique_ptr<SyncData<T>>, N>
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
 				::buildNode(
 					id,
 					weight,
-					std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
+					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
@@ -343,13 +342,13 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
-		Node<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
+		Node<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraph<T, S, N>
 		::buildNode(NodeId id, float weight, T& data) {
-			return Graph<std::unique_ptr<SyncData<T>>, N>
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
 				::buildNode(
 					id,
 					weight,
-					std::unique_ptr<SyncData<T>>(S<T,N>::wrap(
+					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
 							id,
 							this->getMpiCommunicator(),
 							this->getProxy(),
@@ -372,7 +371,7 @@ namespace FPMAS {
 		 * @see link(NodeId, NodeId, ArcId, LayerId)
 		 */
 		template<class T, SYNC_MODE, int N>
-		Arc<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
+		Arc<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraph<T, S, N>
 		::link(NodeId source, NodeId target, ArcId arcId) {
 			return this->link(source, target, arcId, base::DefaultLayer);
 		}
@@ -400,17 +399,17 @@ namespace FPMAS {
 		 * @return pointer to the created arc
 		 */
 		template<class T, SYNC_MODE, int N>
-		Arc<std::unique_ptr<SyncData<T>>, N>* DistributedGraph<T, S, N>
+		Arc<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraph<T, S, N>
 		::link(NodeId source, NodeId target, ArcId arcId, LayerId layerId) {
 			if(this->getNodes().count(source) > 0) {
 				// Source is local
-				Node<std::unique_ptr<SyncData<T>>, N>* sourceNode
+				Node<std::unique_ptr<SyncData<T,N,S>>, N>* sourceNode
 					= this->getNode(source);
 				if(this->getNodes().count(target) > 0) {
 					// Source and Target are local, completely local operation
-					Node<std::unique_ptr<SyncData<T>>, N>* targetNode
+					Node<std::unique_ptr<SyncData<T,N,S>>, N>* targetNode
 						= this->getNode(target);
-					return this->Graph<std::unique_ptr<SyncData<T>>, N>::link(
+					return this->Graph<std::unique_ptr<SyncData<T,N,S>>, N>::link(
 						sourceNode, targetNode, arcId, layerId
 						);
 				} else {
@@ -431,7 +430,7 @@ namespace FPMAS {
 					// Source is local
 					GhostNode<T, N, S>* sourceNode
 						= this->getGhost().getNode(source);
-					Node<std::unique_ptr<SyncData<T>>, N>* targetNode
+					Node<std::unique_ptr<SyncData<T,N,S>>, N>* targetNode
 						= this->getNode(target);
 					syncMode.initLink(source, target, arcId, layerId);
 					// link distant -> local

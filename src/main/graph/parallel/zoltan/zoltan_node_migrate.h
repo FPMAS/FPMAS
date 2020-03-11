@@ -61,9 +61,9 @@ namespace FPMAS::graph::parallel {
 
 
 			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
-			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
+			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes = graph->getNodes();
 			for (int i = 0; i < num_ids; i++) {
-				Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+				Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 				if(graph->node_serialization_cache.count(node->getId()) == 1) {
 					sizes[i] = graph->node_serialization_cache.at(node->getId()).size()+1;
@@ -228,12 +228,12 @@ namespace FPMAS::graph::parallel {
 
 			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 
-			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
+			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes = graph->getNodes();
 			// Set used to ensure that each arc is sent at most once to
 			// each process.
 			std::set<std::pair<ArcId, int>> exportedArcPairs;
 
-			std::vector<Arc<std::unique_ptr<SyncData<T>>, N>*> arcsToExport;
+			std::vector<Arc<std::unique_ptr<SyncData<T,N,S>>, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			for (int i =0; i < num_export; i++) {
@@ -338,7 +338,7 @@ namespace FPMAS::graph::parallel {
 
 			DistributedGraph<T, NoSyncMode, N>* graph =(DistributedGraph<T, NoSyncMode, N>*) data;
 
-			std::vector<Arc<std::unique_ptr<SyncData<T>>, N>*> arcsToExport;
+			std::vector<Arc<std::unique_ptr<SyncData<T,N,NoSyncMode>>, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			std::unordered_map<NodeId, int> nodeDestinations;

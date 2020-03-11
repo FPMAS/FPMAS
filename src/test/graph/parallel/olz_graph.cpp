@@ -29,7 +29,7 @@ TEST_F(Mpi_SynchronizeGhostTest, synchronize_ghost_test) {
 	ASSERT_EQ(dg.getNodes().size(), 1);
 
 	auto localNode = dg.getNodes().begin()->second;
-	ASSERT_EQ(localNode->data()->get(), localNode->getId());
+	ASSERT_EQ(localNode->data()->read(), localNode->getId());
 	
 	// In a real scenario, data would be an object and some fields would be
 	// updated, we won't recreate a complete object each time
@@ -39,7 +39,7 @@ TEST_F(Mpi_SynchronizeGhostTest, synchronize_ghost_test) {
 	dg.getGhost().synchronize();
 
 	for(auto node : dg.getGhost().getNodes()) {
-		ASSERT_EQ(node.second->data()->get(), node.first + 1);
+		ASSERT_EQ(node.second->data()->read(), node.first + 1);
 		ASSERT_EQ(node.second->getWeight(), 2.);
 	}
 }

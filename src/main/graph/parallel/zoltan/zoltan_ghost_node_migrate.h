@@ -52,9 +52,9 @@ namespace FPMAS::graph::parallel {
 
 
 				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
-				std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T>>, N>*> nodes = graph->getNodes();
+				std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes = graph->getNodes();
 				for (int i = 0; i < num_ids; i++) {
-					Node<std::unique_ptr<SyncData<T>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+					Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 					if(graph->getGhost().ghost_node_serialization_cache.count(node->getId()) == 1) {
 						sizes[i] = graph->getGhost().ghost_node_serialization_cache.at(node->getId()).size()+1;

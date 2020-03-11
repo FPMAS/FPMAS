@@ -17,7 +17,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * When a node is exported, its connections with nodes that are not
 	 * exported on the same process are lost.
 	 */
-    template<class T> class NoSyncData : public SyncData<T> {
+    template<class T, int N, SYNC_MODE> class NoSyncData : public SyncData<T,N,S> {
 		public:
 			/**
 			 * Unused constructor, defined for synchronization mode API
@@ -29,9 +29,9 @@ namespace FPMAS::graph::parallel::synchro {
 			 * compatibility.
 			 */
 			NoSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, T&& data) :
-				SyncData<T>(std::move(data)) {};
+				SyncData<T,N,S>(std::move(data)) {};
 			NoSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, const T& data) :
-				SyncData<T>(data) {};
+				SyncData<T,N,S>(data) {};
 	};
 
 	template<typename T, int N> class NoSyncMode : public SyncMode<NoSyncMode, NoSyncData, T, N> {

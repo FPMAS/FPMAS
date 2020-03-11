@@ -37,7 +37,7 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * @tparam wrapped data type
 		 */
-		template<class T> class GhostData : public SyncData<T> {
+		template<typename T, int N, SYNC_MODE> class GhostData : public SyncData<T,N,S> {
 			
 			public:
 				GhostData(NodeId, SyncMpiCommunicator&, const Proxy&);
@@ -57,7 +57,7 @@ namespace FPMAS::graph::parallel {
 		 */
 		// The mpiCommunicator is not used for the GhostData mode, but the
 		// constructors are defined to allow template genericity
-		template<class T> GhostData<T>::GhostData(
+		template<typename T, int N, SYNC_MODE> GhostData<T,N,S>::GhostData(
 				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy) {
@@ -72,20 +72,20 @@ namespace FPMAS::graph::parallel {
 		 * DistributedGraph
 		 * @param proxy graph proxy
 		 */
-		template<class T> GhostData<T>::GhostData(
+		template<typename T, int N, SYNC_MODE> GhostData<T,N,S>::GhostData(
 				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				T&& data)
-			: SyncData<T>(std::move(data)) {
+			: SyncData<T,N,S>(std::move(data)) {
 			}
 
-		template<class T> GhostData<T>::GhostData(
+		template<typename T, int N, SYNC_MODE> GhostData<T,N,S>::GhostData(
 				NodeId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				const T& data)
-			: SyncData<T>(data) {
+			: SyncData<T,N,S>(data) {
 			}
 
 		struct NodeIdPairHash {
@@ -101,7 +101,7 @@ namespace FPMAS::graph::parallel {
 				Zoltan zoltan;
 				std::unordered_map<
 					std::pair<NodeId, NodeId>,
-					Arc<std::unique_ptr<SyncData<T>>, N>*,
+					Arc<std::unique_ptr<SyncData<T,N,GhostMode>>, N>*,
 					NodeIdPairHash
 				> linkBuffer;
 				int computeArcExportCount();
@@ -110,7 +110,7 @@ namespace FPMAS::graph::parallel {
 			GhostMode(DistributedGraph<T, GhostMode, N>&);
 			void termination();
 			void initLink(NodeId, NodeId, ArcId, LayerId);
-			void notifyLinked(Arc<std::unique_ptr<SyncData<T>>,N>*);
+			void notifyLinked(Arc<std::unique_ptr<SyncData<T,N,GhostMode>>,N>*);
 		};
 
 		template<typename T, int N> GhostMode<T,N>::GhostMode(DistributedGraph<T, GhostMode, N>& dg) :
@@ -184,7 +184,7 @@ namespace FPMAS::graph::parallel {
 		}
 
 		template<typename T, int N> void GhostMode<T, N>::notifyLinked(
-				Arc<std::unique_ptr<SyncData<T>>,N>* arc) {
+				Arc<std::unique_ptr<SyncData<T,N,GhostMode>>,N>* arc) {
 			linkBuffer[std::make_pair(
 					arc->getSourceNode()->getId(), arc->getTargetNode()->getId()
 					)]

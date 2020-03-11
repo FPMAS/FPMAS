@@ -127,9 +127,9 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 		buf,
 		&err);
 
-	ASSERT_EQ(dg.getGhost().getNodes().at(0)->data()->get(), 8);
+	ASSERT_EQ(dg.getGhost().getNodes().at(0)->data()->read(), 8);
 	ASSERT_EQ(dg.getGhost().getNodes().at(0)->getWeight(), 5.);
 
-	ASSERT_EQ(dg.getGhost().getNodes().at(1)->data()->get(), 12);
+	ASSERT_EQ(dg.getGhost().getNodes().at(1)->data()->read(), 12);
 	ASSERT_EQ(dg.getGhost().getNodes().at(1)->getWeight(), 4.);
 }

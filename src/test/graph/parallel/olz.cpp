@@ -51,7 +51,7 @@ TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 
 	// Ghost node data is accessible from node 0
 	ASSERT_EQ(
-			dg.getNode(0ul)->getOutgoingArcs().at(0)->getTargetNode()->data()->get(),
+			dg.getNode(0ul)->getOutgoingArcs().at(0)->getTargetNode()->data()->read(),
 			2
 			);
 	ASSERT_EQ(
@@ -61,7 +61,7 @@ TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 
 	// Ghost node data is accessible from node 1
 	ASSERT_EQ(
-			dg.getNode(1ul)->getIncomingArcs().at(0)->getSourceNode()->data()->get(),
+			dg.getNode(1ul)->getIncomingArcs().at(0)->getSourceNode()->data()->read(),
 			2
 			);
 	ASSERT_EQ(

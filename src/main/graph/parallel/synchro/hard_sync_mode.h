@@ -1,7 +1,9 @@
 #ifndef HARD_SYNC_DATA
 #define HARD_SYNC_DATA
 
-#include "communication/communication.h"
+#include "utils/macros.h"
+#include "sync_mode.h"
+#include "communication/sync_communication.h"
 
 using FPMAS::communication::SyncMpiCommunicator;
 
@@ -19,7 +21,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * read() or acquire() is called. A Readers-Writers algorithm manages data
 	 * access to avoid concurrency issues.
 	 */
-	template<class T> class HardSyncData : public SyncData<T> {
+	template<typename T, int N, SYNC_MODE> class HardSyncData : public SyncData<T,N,S> {
 		private:
 			NodeId id;
 			SyncMpiCommunicator& mpiComm;
@@ -42,7 +44,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 * @param mpiComm MPI communicator used to communicate with data sources
 	 * @param proxy proxy used to locate data
 	 */
-	template<class T> HardSyncData<T>::HardSyncData(
+	template<typename T, int N, SYNC_MODE> HardSyncData<T,N,S>::HardSyncData(
 			NodeId id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy)
@@ -57,20 +59,20 @@ namespace FPMAS::graph::parallel::synchro {
 	 * @param proxy proxy used to locate data
 	 * @param data associated data instance
 	 */
-	template<class T> HardSyncData<T>::HardSyncData(
+	template<typename T, int N, SYNC_MODE> HardSyncData<T,N,S>::HardSyncData(
 			NodeId id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy,
 			T&& data)
-		: SyncData<T>(std::move(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
+		: SyncData<T,N,S>(std::move(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
 
-	template<class T> HardSyncData<T>::HardSyncData(
+	template<typename T, int N, SYNC_MODE> HardSyncData<T,N,S>::HardSyncData(
 			NodeId id,
 			SyncMpiCommunicator& mpiComm,
 			const Proxy& proxy,
 			const T& data)
-		: SyncData<T>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
+		: SyncData<T,N,S>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
 		}
 
 	/**
@@ -82,7 +84,7 @@ namespace FPMAS::graph::parallel::synchro {
 	 *
 	 * @return const reference to the distant data
 	 */
-	template<class T> const T& HardSyncData<T>::read() {
+	template<typename T, int N, SYNC_MODE> const T& HardSyncData<T,N,S>::read() {
 		this->data = ((nlohmann::json) nlohmann::json::parse(
 				this->mpiComm.read(
 					this->id,
@@ -94,7 +96,7 @@ namespace FPMAS::graph::parallel::synchro {
 
 	// TODO: This needs to be optimize!! no need to serialize when data is
 	// local...
-	template<class T> T& HardSyncData<T>::acquire() {
+	template<typename T, int N, SYNC_MODE> T& HardSyncData<T,N,S>::acquire() {
 		this->data = ((nlohmann::json) nlohmann::json::parse(
 				this->mpiComm.acquire(
 					this->id,
@@ -104,7 +106,7 @@ namespace FPMAS::graph::parallel::synchro {
 		return this->data;
 	}
 
-	template<class T> void HardSyncData<T>::release() {
+	template<typename T, int N, SYNC_MODE> void HardSyncData<T,N,S>::release() {
 		this->mpiComm.giveBack(
 				this->id,
 				this->proxy.getCurrentLocation(this->id)

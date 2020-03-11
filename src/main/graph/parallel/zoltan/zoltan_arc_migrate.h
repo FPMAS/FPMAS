@@ -54,10 +54,10 @@ namespace FPMAS::graph::parallel {
 
 				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "obj_size_multi_fn");
-				std::unordered_map<ArcId, Arc<std::unique_ptr<SyncData<T>>, N>*> arcs = graph->getArcs();
+				std::unordered_map<ArcId, Arc<std::unique_ptr<SyncData<T,N,S>>, N>*> arcs = graph->getArcs();
 				for (int i = 0; i < num_ids; i++) {
 					ArcId arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
-					Arc<std::unique_ptr<SyncData<T>>, N>* arc;
+					Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc;
 					try {
 						arc = arcs.at(arcId);
 					} catch (const std::exception& e) {
@@ -163,7 +163,7 @@ namespace FPMAS::graph::parallel {
 
 					// Retrieves the serialized node
 					std::string arc_str = serial_cache->at(id);
-					Arc<std::unique_ptr<SyncData<T>>, N>* arc;
+					Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc;
 					try {
 						arc = graph->getArcs().at(id);
 					} catch (const std::exception& e) {
@@ -278,7 +278,7 @@ namespace FPMAS::graph::parallel {
 						// Json is unserialized in a temporary arc, with "fake"
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
-						Arc<std::unique_ptr<SyncData<T>>, N> tempArc = json_arc.get<Arc<std::unique_ptr<SyncData<T>>, N>>();
+						Arc<std::unique_ptr<SyncData<T,N,S>>, N> tempArc = json_arc.get<Arc<std::unique_ptr<SyncData<T,N,S>>, N>>();
 
 						receivedArcIds.insert(tempArc.getId());
 
@@ -403,7 +403,7 @@ namespace FPMAS::graph::parallel {
 				// if at least one local node is still connected to the
 				// exported node.
 				for(auto id : exportedNodeIds) {
-					Node<std::unique_ptr<SyncData<T>>, N>* node = graph->getNode(id);
+					Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = graph->getNode(id);
 					bool buildGhost = false;
 					for(auto layer : node->getLayers()) {
 						for(auto arc : layer.getOutgoingArcs()) {
@@ -429,7 +429,7 @@ namespace FPMAS::graph::parallel {
 				}
 
 				// Remove nodes and collect fossils
-				FossilArcs<Arc<std::unique_ptr<SyncData<T>>, N>> ghostFossils;
+				FossilArcs<Arc<std::unique_ptr<SyncData<T,N,S>>, N>> ghostFossils;
 				for(auto id : exportedNodeIds) {
 					ghostFossils.merge(graph->removeNode(id));
 				}
