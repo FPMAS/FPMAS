@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['layer_186',['Layer',['../classFPMAS_1_1graph_1_1base_1_1Layer.html',1,'FPMAS::graph::base']]]
+  ['mpicommunicator_186',['MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html',1,'FPMAS::communication']]]
 ];

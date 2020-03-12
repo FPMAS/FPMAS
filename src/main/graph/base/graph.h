@@ -11,10 +11,11 @@
 
 #include <nlohmann/json.hpp>
 
+#include "utils/log.h"
+#include "exceptions.h"
 #include "node.h"
 #include "arc.h"
 #include "layer.h"
-#include "fossil.h"
 #include "mpi.h"
 
 namespace FPMAS {
@@ -42,29 +43,12 @@ namespace FPMAS {
 			 * LayerType enum parameter. Each node then manages lists of
 			 * _incoming_ and _outgoing_ arcs for each type.
 			 *
-			 * Because layer types are provided at compile time as template
-			 * parameters, managing the several layers can be done in constant
+			 * Because the layer count is provided at compile time as a template
+			 * argument, managing the several layers can be done in constant
 			 * time whatever the numbe of layers is.
 			 *
-			 * In order to be valid, the `LayerType` and `N` template
-			 * parameters must follow some constraints :
-			 * - `LayerType` must be an enum using integers as underlying type,
-			 *   assigning positive values to each layer, starting from 0. The
-			 *   associated index can be thought as the level of each layer.
-			 *   Here is a valid example :
-			 *   \code{.cpp}
-			 *   enum ExampleLayer {
-			 *   	DEFAULT = 0,
-			 *   	COMMUNICATION = 1,
-			 *   	ROAD_GRAPH = 2
-			 *   }
-			 *   \endcode
-			 * - `N` must be equal to the number of layers defined by
-			 *   `LayerType` (in the example, `N = 3`)
-			 *
 			 * @tparam T associated data type
-			 * @tparam LayerType enum describing the available layers
-			 * @tparam N number of layers
+			 * @tparam N layers count
 			 */
 			template<typename T, int N = 1>
 			class Graph {
@@ -92,9 +76,9 @@ namespace FPMAS {
 					Arc<T, N>* link(NodeId, NodeId, ArcId);
 					Arc<T, N>* link(NodeId, NodeId, ArcId, LayerId);
 
-					bool unlink(ArcId);
-					bool unlink(Arc<T, N>*);
-					FossilArcs<Arc<T, N>> removeNode(NodeId);
+					void unlink(ArcId);
+					void unlink(Arc<T, N>*);
+					void removeNode(NodeId);
 
 					~Graph();
 
@@ -269,17 +253,19 @@ namespace FPMAS {
 			 * Convenient function to remove an arc from an incoming or outgoing
 			 * arc list.
 			 */
-			template<typename T, int N> void Graph<T, N>::removeArc(Arc<T, N>* arc, std::vector<Arc<T, N>*>* arcList) {
-				for(auto it = arcList->begin(); it != arcList->end();) {
-					if(*it == arc) {
-						arcList->erase(it);
-						it = arcList->end();
-					}
-					else {
-						it++;
-					}
-				}
-			}
+			/*
+			 *template<typename T, int N> void Graph<T, N>::removeArc(Arc<T, N>* arc, std::vector<Arc<T, N>*>* arcList) {
+			 *    for(auto it = arcList->begin(); it != arcList->end();) {
+			 *        if(*it == arc) {
+			 *            arcList->erase(it);
+			 *            it = arcList->end();
+			 *        }
+			 *        else {
+			 *            it++;
+			 *        }
+			 *    }
+			 *}
+			 */
 
 			/**
 			 * Removes the specified arc from the graph and the incoming/outgoing
@@ -293,23 +279,16 @@ namespace FPMAS {
 			 * @return true iff the arc has been deleted (i.e. it belongs to the
 			 * graph)
 			 */
-			template<typename T, int N> bool Graph<T, N>::unlink(Arc<T, N>* arc) {
+			template<typename T, int N> void Graph<T, N>::unlink(Arc<T, N>* arc) {
+				if(this->arcs.count(arc->getId()) < 1)
+					throw exceptions::arc_out_of_graph(arc->getId());
+
 				// Removes the incoming arcs from the incoming/outgoing
 				// arc lists of target/source nodes.
-				this->removeArc(arc, &arc->getSourceNode()->layer(arc->layer).outgoingArcs);
-				this->removeArc(arc, &arc->getTargetNode()->layer(arc->layer).incomingArcs);
+				arc->unlink();
 
-				// Removes the arc from the global arcs index
-				if(this->arcs.erase(arc->getId()) > 0) {
-					// Deletes the arc only if it was in the standard arcs set.
-					// Arcs can actually have a different nature not handled by
-					// this base class (e.g. : ghost arcs), and in consequence
-					// such special arcs must be managed by corresponding
-					// sub-classes (e.g. : DistributedGraph).
-					delete arc;
-					return true;
-				}
-				return false;
+				this->arcs.erase(arc->getId());
+				delete arc;
 			}
 
 			/**
@@ -319,8 +298,12 @@ namespace FPMAS {
 			 * @return true iff the arc has been deleted (i.e. it belongs to the
 			 * graph)
 			 */
-			template<typename T, int N> bool Graph<T, N>::unlink(ArcId arcId) {
-				return this->unlink(this->arcs.at(arcId));
+			template<typename T, int N> void Graph<T, N>::unlink(ArcId arcId) {
+				try {
+					this->unlink(this->arcs.at(arcId));
+				} catch (std::out_of_range) {
+					throw exceptions::arc_out_of_graph(arcId);
+				}
 			}
 
 
@@ -335,36 +318,56 @@ namespace FPMAS {
 			 * The returned fossil contains the fossil arcs collected unlinking
 			 * the node's arcs.
 			 *
-			 * @param node_id id of the node to delete
+			 * @param nodeId id of the node to delete
 			 * @return collected fossil arcs
 			 */
-			template<typename T, int N> FossilArcs<Arc<T, N>>
-				Graph<T, N>::removeNode(NodeId node_id) {
-					Node<T, N>* node_to_remove = nodes.at(node_id);
-
-				FossilArcs<Arc<T, N>> fossil;
-				// Deletes incoming arcs
-				for(auto layer : node_to_remove->layers) {
-					for(auto arc : layer.getIncomingArcs()) {
-						if(!this->unlink(arc))
-							fossil.incomingArcs.insert(arc);
-					}
+			template<typename T, int N> void Graph<T, N>::removeNode(NodeId nodeId) {
+				FPMAS_LOGD(-1, "GRAPH", "Removing node %lu", nodeId);
+				Node<T, N>* node_to_remove;
+				try {
+					node_to_remove = nodes.at(nodeId);
+				} catch(std::out_of_range) {
+					throw exceptions::node_out_of_graph(nodeId);
 				}
 
-				// Deletes outgoing arcs
-				for(auto layer : node_to_remove->layers) {
+				// Deletes incoming arcs
+				for(auto& layer : node_to_remove->layers) {
+					for(auto arc : layer.getIncomingArcs()) {
+						try {
+							FPMAS_LOGV(
+									-1,
+									"GRAPH",
+									"Unlink incoming arc %lu",
+									arc->getId()
+									);
+							this->unlink(arc);
+						} catch (exceptions::arc_out_of_graph e) {
+							FPMAS_LOGE(-1, "GRAPH", "Error unlinking incoming arc : %s", e.what());
+							throw;
+						}
+					}
+					// Deletes outgoing arcs
 					for(auto arc : layer.getOutgoingArcs()) {
-						if(!this->unlink(arc))
-							fossil.outgoingArcs.insert(arc);
+						try {
+							FPMAS_LOGV(
+									-1,
+									"GRAPH",
+									"Unlink outgoing arc %lu",
+									arc->getId()
+									);
+							this->unlink(arc);
+						} catch (exceptions::arc_out_of_graph e) {
+							FPMAS_LOGE(-1, "GRAPH", "Error unlinking outgoing arc : %s", e.what());
+							throw;
+						}
 					}
 				}
 
 				// Removes the node from the global nodes index
-				nodes.erase(node_id);
+				nodes.erase(nodeId);
 				// Deletes the node
 				delete node_to_remove;
-
-				return fossil;
+				FPMAS_LOGD(-1, "GRAPH", "Node %lu removed.", nodeId);
 			}
 
 			/**

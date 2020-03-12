@@ -119,12 +119,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a83ecf0d91f81acaf53f15032fb1198f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4402db8fc9189ea4954129de0ee38f3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4402db8fc9189ea4954129de0ee38f3a">link</a> (NodeId, NodeId, ArcId, LayerId)</td></tr>
 <tr class="separator:a4402db8fc9189ea4954129de0ee38f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a303c3e180834f9947c8ccc5314c84c08"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a303c3e180834f9947c8ccc5314c84c08">unlink</a> (ArcId)</td></tr>
-<tr class="separator:a303c3e180834f9947c8ccc5314c84c08"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae6d774bfc5f9494d71dc079b167a275f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae6d774bfc5f9494d71dc079b167a275f">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *)</td></tr>
-<tr class="separator:ae6d774bfc5f9494d71dc079b167a275f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5044dd11cbe8cef010e9c1139cdb1bc2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a5044dd11cbe8cef010e9c1139cdb1bc2">removeNode</a> (NodeId)</td></tr>
-<tr class="separator:a5044dd11cbe8cef010e9c1139cdb1bc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae17884b3044eeb9e3f47a15080cb7b5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">unlink</a> (ArcId)</td></tr>
+<tr class="separator:ae17884b3044eeb9e3f47a15080cb7b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedecc3d074502fb7caebfc0209f9aa46"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aedecc3d074502fb7caebfc0209f9aa46">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *)</td></tr>
+<tr class="separator:aedecc3d074502fb7caebfc0209f9aa46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ad9f56275aebb75e0996e95894630b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">removeNode</a> (NodeId)</td></tr>
+<tr class="separator:a0ad9f56275aebb75e0996e95894630b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4362441de64b5eec689c645dd4640d1e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e">~Graph</a> ()</td></tr>
 <tr class="separator:a4362441de64b5eec689c645dd4640d1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -141,21 +141,11 @@ class FPMAS::graph::base::Graph&lt; T, N &gt;</h3>
 <p>Layered <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a> class.</p>
 <p>A layered <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a> is a graph where each <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a> can simultaneously belong to several layers, so that each layer can be explored independently from each node.</p>
 <p>Layered are represented as predefined arc types defined in the LayerType enum parameter. Each node then manages lists of <em>incoming</em> and <em>outgoing</em> arcs for each type.</p>
-<p>Because layer types are provided at compile time as template parameters, managing the several layers can be done in constant time whatever the numbe of layers is.</p>
-<p>In order to be valid, the <code>LayerType</code> and <code>N</code> template parameters must follow some constraints :</p><ul>
-<li><code>LayerType</code> must be an enum using integers as underlying type, assigning positive values to each layer, starting from 0. The associated index can be thought as the level of each layer. Here is a valid example : <div class="fragment"><div class="line"><span class="keyword">enum</span> ExampleLayer {</div>
-<div class="line">  DEFAULT = 0,</div>
-<div class="line">  COMMUNICATION = 1,</div>
-<div class="line">  ROAD_GRAPH = 2</div>
-<div class="line">}</div>
-</div><!-- fragment --></li>
-<li><code>N</code> must be equal to the number of layers defined by <code>LayerType</code> (in the example, <code>N = 3</code>)</li>
-</ul>
+<p>Because the layer count is provided at compile time as a template argument, managing the several layers can be done in constant time whatever the numbe of layers is.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>associated data type </td></tr>
-    <tr><td class="paramname">LayerType</td><td>enum describing the available layers </td></tr>
-    <tr><td class="paramname">N</td><td>number of layers </td></tr>
+    <tr><td class="paramname">N</td><td>layers count </td></tr>
   </table>
   </dd>
 </dl>
@@ -638,8 +628,8 @@ template&lt;typename T , int N&gt; </div>
 
 </div>
 </div>
-<a id="a5044dd11cbe8cef010e9c1139cdb1bc2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5044dd11cbe8cef010e9c1139cdb1bc2">&#9670;&nbsp;</a></span>removeNode()</h2>
+<a id="a0ad9f56275aebb75e0996e95894630b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ad9f56275aebb75e0996e95894630b6">&#9670;&nbsp;</a></span>removeNode()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -647,10 +637,10 @@ template&lt;typename T , int N&gt; </div>
 template&lt;typename T , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1FossilArcs.html">FossilArcs</a>&lt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; &gt; <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a>&lt; T, N &gt;::removeNode </td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a>&lt; T, N &gt;::removeNode </td>
           <td>(</td>
           <td class="paramtype">NodeId&#160;</td>
-          <td class="paramname"><em>node_id</em></td><td>)</td>
+          <td class="paramname"><em>nodeId</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -660,7 +650,7 @@ template&lt;typename T , int N&gt; </div>
 <p>The returned fossil contains the fossil arcs collected unlinking the node's arcs.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">node_id</td><td>id of the node to delete </td></tr>
+    <tr><td class="paramname">nodeId</td><td>id of the node to delete </td></tr>
   </table>
   </dd>
 </dl>
@@ -668,8 +658,8 @@ template&lt;typename T , int N&gt; </div>
 
 </div>
 </div>
-<a id="ae6d774bfc5f9494d71dc079b167a275f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae6d774bfc5f9494d71dc079b167a275f">&#9670;&nbsp;</a></span>unlink() <span class="overload">[1/2]</span></h2>
+<a id="aedecc3d074502fb7caebfc0209f9aa46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aedecc3d074502fb7caebfc0209f9aa46">&#9670;&nbsp;</a></span>unlink() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -677,7 +667,7 @@ template&lt;typename T , int N&gt; </div>
 template&lt;typename T , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a>&lt; T, N &gt;::unlink </td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a>&lt; T, N &gt;::unlink </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *&#160;</td>
           <td class="paramname"><em>arc</em></td><td>)</td>
@@ -697,8 +687,8 @@ template&lt;typename T , int N&gt; </div>
 
 </div>
 </div>
-<a id="a303c3e180834f9947c8ccc5314c84c08"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a303c3e180834f9947c8ccc5314c84c08">&#9670;&nbsp;</a></span>unlink() <span class="overload">[2/2]</span></h2>
+<a id="ae17884b3044eeb9e3f47a15080cb7b5b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae17884b3044eeb9e3f47a15080cb7b5b">&#9670;&nbsp;</a></span>unlink() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -706,7 +696,7 @@ template&lt;typename T , int N&gt; </div>
 template&lt;typename T , int N&gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">bool <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a>&lt; T, N &gt;::unlink </td>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a>&lt; T, N &gt;::unlink </td>
           <td>(</td>
           <td class="paramtype">ArcId&#160;</td>
           <td class="paramname"><em>arcId</em></td><td>)</td>
@@ -714,7 +704,7 @@ template&lt;typename T , int N&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Same as <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae6d774bfc5f9494d71dc079b167a275f">unlink(Arc&lt;T, N&gt;*)</a>, but gets the arc from its ID.</p>
+<p>Same as <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aedecc3d074502fb7caebfc0209f9aa46">unlink(Arc&lt;T, N&gt;*)</a>, but gets the arc from its ID.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arcId</td><td>id of the arc to delete </td></tr>

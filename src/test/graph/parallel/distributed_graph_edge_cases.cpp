@@ -53,7 +53,7 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 
 	if(dg.getMpiCommunicator().getRank() == 2) {
 		ASSERT_EQ(dg.getNodes().size(), 2);
-		dg.getGhost().clear(dg.removeNode(0ul));
+		dg.removeNode(0ul);
 
 		// Checks that the node has been correctly removed with the
 		// associated arc

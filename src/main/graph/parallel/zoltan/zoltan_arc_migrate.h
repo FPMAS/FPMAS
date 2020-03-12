@@ -7,7 +7,6 @@
 #include "../synchro/no_sync_mode.h"
 
 using FPMAS::graph::base::Arc;
-using FPMAS::graph::base::FossilArcs;
 
 namespace FPMAS::graph::parallel {
 
@@ -424,19 +423,17 @@ namespace FPMAS::graph::parallel {
 						}
 					}
 					if(buildGhost) {
+						FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Building ghost node %lu", node->getId());
 						graph->getGhost().buildNode(*node, exportedNodeIds);
 					}
 				}
 
-				// Remove nodes and collect fossils
-				FossilArcs<Arc<std::unique_ptr<SyncData<T,N,S>>, N>> ghostFossils;
+				// Remove nodes
 				for(auto id : exportedNodeIds) {
-					ghostFossils.merge(graph->removeNode(id));
+					FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Removing exported node %lu", id);
+					graph->removeNode(id);
 				}
 
-				// TODO : schema with fossils example
-				// For info, see the Fossil and removeNode docs
-				graph->getGhost().clear(ghostFossils);
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_olz : done");
 			}
 

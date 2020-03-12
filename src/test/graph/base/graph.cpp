@@ -1,4 +1,6 @@
 #include "gtest/gtest.h"
+
+#include "graph/base/exceptions.h"
 #include "graph/base/graph.h"
 
 #include "sample_graph.h"
@@ -66,4 +68,21 @@ TEST_F(SampleGraphTest, unlinkArcById) {
 	checkUnlinkArc(sampleGraph);
 }
 
+using FPMAS::graph::base::exceptions::arc_out_of_graph;
 
+TEST(GraphExceptions, unlink_exception) {
+	Graph<int, 1> graph_1;
+	Graph<int, 1> graph_2;
+
+	graph_1.buildNode(0);
+	graph_1.buildNode(1);
+	auto arc = graph_1.link(
+		graph_1.buildNode(0),
+		graph_1.buildNode(1),
+		1
+		);
+
+	ASSERT_THROW(graph_2.unlink(arc), arc_out_of_graph);
+	ASSERT_THROW(graph_2.unlink(1), arc_out_of_graph);
+
+}

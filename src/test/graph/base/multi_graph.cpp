@@ -5,9 +5,7 @@ TEST_F(SampleMultiGraphTest, buildTest) {
 }
 
 TEST_F(SampleMultiGraphTest, removeNodeTest) {
-	auto fossil = getMultiGraph().removeNode(3ul);
-	ASSERT_EQ(fossil.incomingArcs.size(), 0);
-	ASSERT_EQ(fossil.outgoingArcs.size(), 0);
+	getMultiGraph().removeNode(3ul);
 	ASSERT_EQ(getMultiGraph().getArcs().size(), 2);
 
 	// Node 1

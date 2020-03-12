@@ -18,8 +18,8 @@ using FPMAS::communication::MpiCommunicator;
 namespace FPMAS::graph::parallel {
 	using base::ArcId;
 	using base::LayerId;
-	using base::FossilArcs;
 	using base::Arc;
+	using base::Graph;
 
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
@@ -46,6 +46,8 @@ namespace FPMAS::graph::parallel {
 		friend void zoltan::ghost::unpack_obj_multi_fn<T, N, S>(
 				void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 				);
+		friend DistributedGraph<T,S,N>;
+
 		private:
 		DistributedGraph<T, S, N>* localGraph;
 		MpiCommunicator mpiCommunicator;
@@ -56,6 +58,8 @@ namespace FPMAS::graph::parallel {
 		std::unordered_map<NodeId, std::string> ghost_node_serialization_cache;
 		std::unordered_map<NodeId, GhostNode<T, N, S>*> ghostNodes;
 		std::unordered_map<ArcId, GhostArc<T, N, S>*> ghostArcs;
+
+		void deleteArc(GhostArc<T, N, S>*);
 
 		public:
 
@@ -79,7 +83,7 @@ namespace FPMAS::graph::parallel {
 		std::unordered_map<ArcId, GhostArc<T, N, S>*> getArcs();
 		const GhostArc<T, N, S>* getArc(ArcId) const;
 
-		void clear(FossilArcs<Arc<std::unique_ptr<SyncData<T,N,S>>, N>>);
+		void clear(GhostNode<T,N,S>*);
 
 		~GhostGraph();
 
@@ -210,45 +214,63 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>
 		::buildNode(Node<std::unique_ptr<SyncData<T,N,S>>, N>& node, std::set<NodeId> ignoreIds) {
-		// Builds the gNode from the original node data
-		GhostNode<T, N, S>* gNode = new GhostNode<T, N, S>(
-				this->localGraph->getMpiCommunicator(),
-				this->localGraph->getProxy(),
-				node
-				);
-		// Register the new GhostNode
-		this->ghostNodes[gNode->getId()] = gNode;
+			FPMAS_LOGD(
+					this->mpiCommunicator.getRank(),
+					"GHOST_GRAPH",
+					"Building ghost node %lu",
+					node.getId()
+					);
+			// Builds the gNode from the original node data
+			GhostNode<T, N, S>* gNode = new GhostNode<T, N, S>(
+					this->localGraph->getMpiCommunicator(),
+					this->localGraph->getProxy(),
+					node
+					);
+			// Register the new GhostNode
+			this->ghostNodes[gNode->getId()] = gNode;
 
-		// Replaces the incomingArcs list by proper GhostArcs
-		for(auto layer : node.getLayers()) {
-			for(auto arc : layer.getIncomingArcs()) {
-				auto localSourceNode = arc->getSourceNode();
-				// Builds the ghost arc if :
-				if(
-						// The source node is not ignored (i.e. it is exported in the
-						// current epoch)
-						ignoreIds.count(localSourceNode->getId()) == 0
-						// AND it is not an already built ghost node
-						&& this->getNodes().count(localSourceNode->getId()) == 0
-				  )
-					this->link(localSourceNode, gNode, arc->getId(), arc->layer);
+			for(auto& layer : node.getLayers()) {
+				// Replaces the incomingArcs list by proper GhostArcs
+				for(auto arc : layer.getIncomingArcs()) {
+					auto localSourceNode = arc->getSourceNode();
+					// Builds the ghost arc if :
+					if(
+							// The source node is not ignored (i.e. it is exported in the
+							// current epoch)
+							ignoreIds.count(localSourceNode->getId()) == 0
+							// AND it is not an already built ghost node
+							&& this->getNodes().count(localSourceNode->getId()) == 0
+					  ) {
+						FPMAS_LOGV(
+								this->mpiCommunicator.getRank(),
+								"GHOST_GRAPH",
+								"Ghost linking %lu : (%lu, %lu)",
+								arc->getId(), localSourceNode->getId(), gNode->getId()
+								);
+						this->link(localSourceNode, gNode, arc->getId(), arc->layer);
+					}
+				}
+
+				// Replaces the outgoingArcs list by proper GhostArcs
+				for(auto arc : layer.getOutgoingArcs()) {
+					auto localTargetNode = arc->getTargetNode();
+					// Same as above
+					if(ignoreIds.count(localTargetNode->getId()) == 0
+							&& this->getNodes().count(localTargetNode->getId()) == 0) {
+						FPMAS_LOGV(
+								this->mpiCommunicator.getRank(),
+								"GHOST_GRAPH",
+								"Ghost linking %lu : (%lu, %lu)",
+								arc->getId(), gNode->getId(), localTargetNode->getId()
+								);
+						this->link(gNode, localTargetNode, arc->getId(), arc->layer);
+					}
+				}
 			}
+
+			return gNode;
+
 		}
-
-		// Replaces the outgoingArcs list by proper GhostArcs
-		for(auto layer : node.getLayers()) {
-			for(auto arc : layer.getOutgoingArcs()) {
-				auto localTargetNode = arc->getTargetNode();
-				// Same as above
-				if(ignoreIds.count(localTargetNode->getId()) == 0
-						&& this->getNodes().count(localTargetNode->getId()) == 0)
-					this->link(gNode, localTargetNode, arc->getId(), arc->layer);
-			}
-		}
-
-		return gNode;
-
-	}
 
 	/**
 	 * Links the specified nodes with a GhostArc.
@@ -312,23 +334,28 @@ namespace FPMAS::graph::parallel {
 	 * @param nodeId id of the node to remove
 	 */
 	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::removeNode(NodeId nodeId) {
-		GhostNode<T, N, S>* nodeToRemove = this->ghostNodes.at(nodeId);
-		FossilArcs<Arc<std::unique_ptr<SyncData<T,N,S>>, N>> fossil;
-		// Deletes incoming arcs
-		for(auto arc : nodeToRemove->getIncomingArcs()) {
-			if(!localGraph->unlink(arc))
-				fossil.incomingArcs.insert(arc);
+		GhostNode<T, N, S>* nodeToRemove;
+		try {
+			nodeToRemove = this->ghostNodes.at(nodeId);
+		} catch(std::out_of_range) {
+			throw FPMAS::graph::base::exceptions::node_out_of_graph(nodeId);
 		}
 
-		// Deletes outgoing arcs
-		for(auto arc : nodeToRemove->getOutgoingArcs()) {
-			if(!localGraph->unlink(arc))
-				fossil.outgoingArcs.insert(arc);
+		for(auto& layer : nodeToRemove->getLayers()) {
+			// Deletes incoming ghost arcs
+			for(auto arc : layer.getIncomingArcs()) {
+				arc->unlink();
+				this->deleteArc((GhostArc<T,N,S>*) arc);
+			}
+
+			// Deletes outgoing arcs
+			for(auto arc : layer.getOutgoingArcs()) {
+				arc->unlink();
+				this->deleteArc((GhostArc<T,N,S>*) arc);
+			}
 		}
 		this->ghostNodes.erase(nodeToRemove->getId());
 		delete nodeToRemove;
-
-		this->clear(fossil);
 	}
 
 	/**
@@ -379,43 +406,31 @@ namespace FPMAS::graph::parallel {
 		return this->ghostArcs;
 	}
 
-	/**
-	 * Removes the arcs contained in the specified fossil from these ghost
-	 * and `delete` them, along with the orphan ghost nodes resulting from
-	 * the operation.
-	 *
-	 * A GhostNode is considered orphan when the deletion of one of its
-	 * incoming or outgoing arc makes it completely unconnected. Such a
-	 * node is useless for the graph structure and should be deleted.
-	 *
-	 * @param fossil resulting FossilArcs from removeNode operations performed
-	 * on the graph, typically when nodes are exported
-	 */
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::clear(FossilArcs<Arc<std::unique_ptr<SyncData<T,N,S>>, N>> fossil) {
-		for(auto arc : fossil.incomingArcs) {
-			// Source node should be a ghost
-			GhostNode<T, N, S>* ghost = (GhostNode<T, N, S>*) arc->getSourceNode();
-			if(ghost->getIncomingArcs().size() == 0
-					&& ghost->getOutgoingArcs().size() == 0) {
-				this->ghostNodes.erase(ghost->getId());
-				delete ghost;
+	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::clear(GhostNode<T,N,S>* ghost) {
+		bool toDelete = true;
+		for(auto& layer : ghost->getLayers()) {
+			if(layer.getIncomingArcs().size() > 0
+					|| layer.getOutgoingArcs().size() > 0) {
+				toDelete = false;
+				break;
 			}
-			this->ghostArcs.erase(arc->getId());
-			delete (GhostArc<T, N, S>*) arc;
 		}
-		for(auto arc : fossil.outgoingArcs) {
-			// Target node should be a ghost
-			GhostNode<T, N, S>* ghost = (GhostNode<T, N, S>*) arc->getTargetNode();
-			if(ghost->getIncomingArcs().size() == 0
-					&& ghost->getOutgoingArcs().size() == 0) {
-				this->ghostNodes.erase(ghost->getId());
-				delete ghost;
-			}
-			this->ghostArcs.erase(arc->getId());
-			delete (GhostArc<T, N, S>*) arc;
+		if(toDelete) {
+			FPMAS_LOGD(
+				this->mpiCommunicator.getRank(),
+				"GHOST_GRAPH", "Clearing orphan node %lu",
+				ghost->getId()
+				);
+			this->ghostNodes.erase(ghost->getId());
+			delete ghost;
 		}
 	}
 
+	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::deleteArc(GhostArc<T, N, S>* arc) {
+		this->ghostArcs.erase(arc->getId());
+		delete arc;
+	}
+	
 	/**
 	 * Deletes ghost nodes and arcs remaining in this graph.
 	 */

@@ -105,71 +105,56 @@ $(function() {
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>(); i++) {</div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            sendcounts[i] = data_pack[i].size();</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            sdispls[i] = current_sdispls;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            std::cout &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;: &quot;</span> &lt;&lt; data_pack[i] &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            std::cout &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;:scount &quot;</span> &lt;&lt; sendcounts[i] &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            std::cout &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;:sdispls &quot;</span> &lt;&lt; sdispls[i] &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            current_sdispls += sendcounts[i];</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            size_buffer[i] = sendcounts[i];</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">char</span> send_buffer[current_sdispls];</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>(); i++) {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            std::cout &lt;&lt; data_pack[i].c_str() &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            std::strncpy(&amp;send_buffer[sdispls[i]], data_pack[i].c_str(), sendcounts[i]);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; current_sdispls; i++){</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            std::cout &lt;&lt; send_buffer[i];</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        }</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        std::cout &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="comment">// Sends size / displs to each rank, and receive recvs size / displs from</span></div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="comment">// each rank.</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        MPI_Alltoall(MPI_IN_PLACE, 0, MPI_INT, size_buffer, 1, MPI_INT, comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ad9972825dbde03f82eb5d57dd604e127">getMpiComm</a>());</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        <span class="keywordtype">int</span> recvcounts[comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>()];</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordtype">int</span> rdispls[comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>()];</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        <span class="keywordtype">int</span> current_rdispls = 0;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>(); i++) {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            recvcounts[i] = size_buffer[i];</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            std::cout &lt;&lt; <span class="stringliteral">&quot;[&quot;</span> &lt;&lt; comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ac7d10cf3e871ef257c73e62f7ca46b7e">getRank</a>() &lt;&lt; <span class="stringliteral">&quot;]&quot;</span> &lt;&lt; i &lt;&lt; <span class="stringliteral">&quot;: rcount &quot;</span> &lt;&lt; recvcounts[i] &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            rdispls[i] = current_rdispls;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            current_rdispls += recvcounts[i];</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        }</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordtype">char</span> recv_buffer[current_rdispls];</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        MPI_Alltoallv(</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            send_buffer, sendcounts, sdispls, MPI_CHAR,</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            recv_buffer, recvcounts, rdispls, MPI_CHAR,</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ad9972825dbde03f82eb5d57dd604e127">getMpiComm</a>()</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            );</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; current_rdispls; i++) {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            std::cout &lt;&lt; recv_buffer[i];</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        std::cout &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        std::unordered_map&lt;int, std::string&gt; data_unpack;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>(); i++) {</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keywordflow">if</span>(recvcounts[i] &gt; 0)</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                data_unpack[i]= std::string(&amp;recv_buffer[rdispls[i]], recvcounts[i]);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        }</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        std::unordered_map&lt;int, std::vector&lt;T&gt;&gt; import_map;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : data_unpack) {</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            import_map[item.first] = json::parse(data_unpack[item.first])</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                .get&lt;std::vector&lt;T&gt;&gt;();</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        }</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;        <span class="keywordflow">return</span> import_map;</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    }</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            current_sdispls += sendcounts[i];</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            size_buffer[i] = sendcounts[i];</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        }</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordtype">char</span> send_buffer[current_sdispls];</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>(); i++) {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            std::strncpy(&amp;send_buffer[sdispls[i]], data_pack[i].c_str(), sendcounts[i]);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="comment">// Sends size / displs to each rank, and receive recvs size / displs from</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="comment">// each rank.</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        MPI_Alltoall(MPI_IN_PLACE, 0, MPI_INT, size_buffer, 1, MPI_INT, comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ad9972825dbde03f82eb5d57dd604e127">getMpiComm</a>());</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keywordtype">int</span> recvcounts[comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>()];</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        <span class="keywordtype">int</span> rdispls[comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>()];</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        <span class="keywordtype">int</span> current_rdispls = 0;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>(); i++) {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            recvcounts[i] = size_buffer[i];</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            rdispls[i] = current_rdispls;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            current_rdispls += recvcounts[i];</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        }</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordtype">char</span> recv_buffer[current_rdispls];</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        MPI_Alltoallv(</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            send_buffer, sendcounts, sdispls, MPI_CHAR,</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            recv_buffer, recvcounts, rdispls, MPI_CHAR,</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ad9972825dbde03f82eb5d57dd604e127">getMpiComm</a>()</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            );</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        std::unordered_map&lt;int, std::string&gt; data_unpack;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 0; i &lt; comm.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">getSize</a>(); i++) {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keywordflow">if</span>(recvcounts[i] &gt; 0)</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                data_unpack[i]= std::string(&amp;recv_buffer[rdispls[i]], recvcounts[i]);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        std::unordered_map&lt;int, std::vector&lt;T&gt;&gt; import_map;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : data_unpack) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            import_map[item.first] = json::parse(data_unpack[item.first])</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                .get&lt;std::vector&lt;T&gt;&gt;();</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="keywordflow">return</span> import_map;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespaceFPMAS_1_1communication_html"><div class="ttname"><a href="namespaceFPMAS_1_1communication.html">FPMAS::communication</a></div><div class="ttdef"><b>Definition:</b> communication.h:14</div></div>
 <div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_ad9972825dbde03f82eb5d57dd604e127"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ad9972825dbde03f82eb5d57dd604e127">FPMAS::communication::MpiCommunicator::getMpiComm</a></div><div class="ttdeci">MPI_Comm getMpiComm() const</div><div class="ttdef"><b>Definition:</b> communication.cpp:110</div></div>
-<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_ac7d10cf3e871ef257c73e62f7ca46b7e"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ac7d10cf3e871ef257c73e62f7ca46b7e">FPMAS::communication::MpiCommunicator::getRank</a></div><div class="ttdeci">int getRank() const</div><div class="ttdef"><b>Definition:</b> communication.cpp:129</div></div>
 <div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html">FPMAS::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:20</div></div>
 <div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_a495c24b8543d5fd329e5d2956f13b16d"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#a495c24b8543d5fd329e5d2956f13b16d">FPMAS::communication::MpiCommunicator::getSize</a></div><div class="ttdeci">int getSize() const</div><div class="ttdef"><b>Definition:</b> communication.cpp:139</div></div>
 <!-- start footer part -->

@@ -1,6 +1,7 @@
 #ifndef LAYER_H
 #define LAYER_H
 
+#include <iostream>
 #include "utils/macros.h"
 #include <vector>
 #include <array>
@@ -21,10 +22,10 @@ namespace FPMAS::graph::base {
 	 * @tparam N number of layers
 	 */
 	template<typename T, int N> class Layer {
-
 		friend Arc<T, N>::Arc(ArcId, Node<T, N>*, Node<T, N>*, LayerId);
 		// Allows removeNode function to remove deleted arcs
-		friend bool Graph<T, N>::unlink(Arc<T, N>*);
+		friend void Arc<T, N>::unlink();
+		//friend void Graph<T, N>::unlink(Arc<T, N>*);
 
 		protected:
 			/**
@@ -41,7 +42,6 @@ namespace FPMAS::graph::base {
 			std::vector<Node<T, N>*> inNeighbors() const;
 			std::vector<Arc<T, N>*> getOutgoingArcs() const;
 			std::vector<Node<T, N>*> outNeighbors() const;
-
 	};
 
 	/**

@@ -34,22 +34,14 @@ namespace FPMAS::communication {
 		for (int i = 0; i < comm.getSize(); i++) {
 			sendcounts[i] = data_pack[i].size();
 			sdispls[i] = current_sdispls;
-			std::cout << i << ": " << data_pack[i] << std::endl;
-			std::cout << i << ":scount " << sendcounts[i] << std::endl;
-			std::cout << i << ":sdispls " << sdispls[i] << std::endl;
 			current_sdispls += sendcounts[i];
 
 			size_buffer[i] = sendcounts[i];
 		}
 		char send_buffer[current_sdispls];
 		for(int i = 0; i < comm.getSize(); i++) {
-			std::cout << data_pack[i].c_str() << std::endl;
 			std::strncpy(&send_buffer[sdispls[i]], data_pack[i].c_str(), sendcounts[i]);
 		}
-		for(int i = 0; i < current_sdispls; i++){
-			std::cout << send_buffer[i];
-		}
-		std::cout << std::endl;
 
 		// Sends size / displs to each rank, and receive recvs size / displs from
 		// each rank.
@@ -60,7 +52,6 @@ namespace FPMAS::communication {
 		int current_rdispls = 0;
 		for (int i = 0; i < comm.getSize(); i++) {
 			recvcounts[i] = size_buffer[i];
-			std::cout << "[" << comm.getRank() << "]" << i << ": rcount " << recvcounts[i] << std::endl;
 			rdispls[i] = current_rdispls;
 			current_rdispls += recvcounts[i];
 		}
@@ -72,11 +63,6 @@ namespace FPMAS::communication {
 			recv_buffer, recvcounts, rdispls, MPI_CHAR,
 			comm.getMpiComm()
 			);
-
-		for(int i = 0; i < current_rdispls; i++) {
-			std::cout << recv_buffer[i];
-		}
-		std::cout << std::endl;
 
 		std::unordered_map<int, std::string> data_unpack;
 		for (int i = 0; i < comm.getSize(); i++) {

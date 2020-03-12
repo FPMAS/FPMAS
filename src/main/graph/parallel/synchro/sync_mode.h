@@ -288,6 +288,15 @@ namespace FPMAS::graph::parallel {
 								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,N>* arc
 								) {}
 
+							virtual void initUnlink(
+								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,N>* arc
+								) {}
+							virtual void notifyUnlinked(
+								NodeId source,
+								NodeId target,
+								ArcId arcId,
+								LayerId layer) {}
+
 							/**
 							 * A synchronization mode dependent termination function,
 							 * called at each DistributedGraph::synchronize() call.

@@ -218,18 +218,20 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 		}
 		
 		dg.distribute();
-		if(dg.getNodes().begin()->second->getWeight() == 3.) {
-			ASSERT_EQ(dg.getNodes().size(), 1);
-			ASSERT_EQ(dg.getNodes().begin()->second->getWeight(), 3.);
-			ASSERT_EQ(dg.getGhost().getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 1);
-		}
-		else {
-			ASSERT_EQ(dg.getNodes().size(), 3);
-			for(auto node : dg.getNodes()) {
-				ASSERT_EQ(node.second->getWeight(), 1.);
-			}
-			ASSERT_EQ(dg.getGhost().getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 3);
-		}
+		/*
+		 *if(dg.getNodes().begin()->second->getWeight() == 3.) {
+		 *    ASSERT_EQ(dg.getNodes().size(), 1);
+		 *    ASSERT_EQ(dg.getNodes().begin()->second->getWeight(), 3.);
+		 *    ASSERT_EQ(dg.getGhost().getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 1);
+		 *}
+		 *else {
+		 *    ASSERT_EQ(dg.getNodes().size(), 3);
+		 *    for(auto node : dg.getNodes()) {
+		 *        ASSERT_EQ(node.second->getWeight(), 1.);
+		 *    }
+		 *    ASSERT_EQ(dg.getGhost().getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 3);
+		 *}
+		 */
 
 		ASSERT_EQ(
 			dg.getGhost().getArcs().size(), 

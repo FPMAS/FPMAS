@@ -7,7 +7,6 @@
 #include "graph_item.h"
 #include "graph.h"
 #include "arc.h"
-#include "fossil.h"
 #include "layer.h"
 
 namespace FPMAS::graph::base {
@@ -38,14 +37,14 @@ namespace FPMAS::graph::base {
 		friend Arc<T, N> nlohmann::adl_serializer<Arc<T, N>>::from_json(const json&);
 		// Grants access to incoming and outgoing arcs lists
 		friend Arc<T, N>::Arc(ArcId, Node<T, N>*, Node<T, N>*, LayerId);
+		friend void Arc<T, N>::unlink();
 		// Grants access to private Node constructor
 		friend Node<T, N>* Graph<T, N>::buildNode(NodeId);
 		friend Node<T, N>* Graph<T, N>::buildNode(NodeId id, T&& data);
 		friend Node<T, N>* Graph<T, N>::buildNode(NodeId id, float weight, T&& data);
-		// Grants access to layers
-		friend FossilArcs<Arc<T, N>> Graph<T, N>::removeNode(NodeId);
-		// Allows removeNode function to remove deleted arcs
-		friend bool Graph<T, N>::unlink(Arc<T, N>*);
+
+		// Allows graph to delete arcs from incoming / outgoing arcs lists
+		friend void Graph<T, N>::removeNode(NodeId nodeId);
 
 		protected:
 

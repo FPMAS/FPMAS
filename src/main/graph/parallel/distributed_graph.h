@@ -159,8 +159,11 @@ namespace FPMAS {
 			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, T&& data);
 			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, T& data);
 
+			void removeNode(NodeId);
+
 			Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId);
 			Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId, LayerId);
+			void unlink(ArcId);
 
 			std::string getLocalData(unsigned long) const override;
 			std::string getUpdatedData(unsigned long) const override;
@@ -357,6 +360,57 @@ namespace FPMAS {
 					);
 		}
 
+		template<typename T, SYNC_MODE, int N>
+		void DistributedGraph<T, S, N>::removeNode(NodeId nodeId) {
+			FPMAS_LOGD(
+					this->mpiCommunicator.getRank(),
+					"DIST_GRAPH",
+					"Removing local node %lu",
+					nodeId
+					);
+			Node<std::unique_ptr<SyncData<T,N,S>>, N>* nodeToRemove;
+			try {
+				nodeToRemove = this->getNodes().at(nodeId);
+			} catch (std::out_of_range) {
+				throw base::exceptions::node_out_of_graph(nodeId);
+			}
+			for(auto& layer : nodeToRemove->getLayers()) {
+				for(auto arc : layer.getIncomingArcs()) {
+					FPMAS_LOGV(
+							this->mpiCommunicator.getRank(),
+							"DIST_GRAPH",
+							"Unlink incoming arc %lu",
+							arc->getId()
+							);
+					this->unlink(arc->getId());
+				}
+				for(auto arc : layer.getOutgoingArcs()) {
+					FPMAS_LOGV(
+							this->mpiCommunicator.getRank(),
+							"DIST_GRAPH",
+							"Unlink outgoing arc %lu",
+							arc->getId()
+							);
+					this->unlink(arc->getId());
+				}
+			}
+			FPMAS_LOGV(
+					this->mpiCommunicator.getRank(),
+					"DIST_GRAPH",
+					"Node %lu unlinked.",
+					nodeId
+					);
+			// TODO : improve this function using virtual unlink
+			// TODO : distant removeNode
+			this->Graph<std::unique_ptr<SyncData<T,N,S>>,N>::removeNode(nodeId);
+			FPMAS_LOGD(
+					this->mpiCommunicator.getRank(),
+					"DIST_GRAPH",
+					"Node %lu removed.",
+					nodeId
+					);
+		}
+
 		/**
 		 * Links the specified source and target node within this
 		 * DistributedGraph on the given layer on the DefaultLayer.
@@ -461,6 +515,45 @@ namespace FPMAS {
 		}
 
 
+		template<typename T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::unlink(
+				ArcId arcId
+			) {
+			if(this->getArcs().count(arcId) > 0) {
+				FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking local arc %lu", arcId);
+				// Arc is local
+				this->Graph<std::unique_ptr<SyncData<T,N,S>>, N>::unlink(arcId);
+			} else {
+				FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking ghost arc %lu", arcId);
+				Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc;
+				try {
+					arc = this->getGhost().getArcs().at(arcId);
+				} catch (std::out_of_range) {
+					FPMAS_LOGE(
+						this->mpiCommunicator.getRank(),
+						"DIST_GRAPH", "%s",
+						FPMAS::graph::base::exceptions::arc_out_of_graph(arcId).what()
+						);
+				}
+				NodeId source = arc->getSourceNode()->getId();
+				NodeId target = arc->getTargetNode()->getId();
+				ArcId arcId = arc->getId();
+				LayerId layer = arc->layer;
+
+				this->syncMode.initUnlink(arc);
+				arc->unlink();
+				if(this->getNodes().count(source) == 0) {
+					this->getGhost().clear((GhostNode<T,N,S>*) arc->getSourceNode());
+				}
+				if(this->getNodes().count(target) == 0) {
+					this->getGhost().clear((GhostNode<T,N,S>*) arc->getTargetNode());
+				}
+				this->getGhost().deleteArc((GhostArc<T,N,S>*) arc);
+				this->syncMode.notifyUnlinked(source, target, arcId, layer);
+			}
+			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinked arc %lu", arcId);
+		}
+
+
 		/**
 		 * ResourceContainer implementation.
 		 *
@@ -521,7 +614,7 @@ namespace FPMAS {
 			) {
 			if(changes > 0) {
 
-				FPMAS_LOGV(mpiCommunicator.getRank(), "Dist", "Zoltan Node migration...");
+				FPMAS_LOGV(mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Node migration...");
 				// Migrate nodes from the load balancing
 				// Arcs to export are computed in the post_migrate_pp_fn step.
 				this->zoltan.Migrate(
@@ -536,7 +629,7 @@ namespace FPMAS {
 						this->export_node_procs,
 						export_to_part
 						);
-				FPMAS_LOGV(mpiCommunicator.getRank(), "Dist", "Zoltan Node migration done.");
+				FPMAS_LOGV(mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Node migration done.");
 
 				// Prepares Zoltan to migrate arcs associated to the exported
 				// nodes.
@@ -545,7 +638,7 @@ namespace FPMAS {
 				// Unused buffer
 				ZOLTAN_ID_TYPE export_arcs_local_ids[0];
 
-				FPMAS_LOGV(mpiCommunicator.getRank(), "Dist", "Zoltan Arc migration...");
+				FPMAS_LOGV(mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Arc migration...");
 				// Arcs to import
 				this->zoltan.Migrate(
 						-1,
@@ -559,7 +652,7 @@ namespace FPMAS {
 						this->export_arcs_procs,
 						this->export_arcs_procs // parts = procs
 						);
-				FPMAS_LOGV(mpiCommunicator.getRank(), "Dist", "Zoltan Arc migration done.");
+				FPMAS_LOGV(mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Arc migration done.");
 				std::free(this->export_arcs_global_ids);
 				std::free(this->export_arcs_procs);
 			}
@@ -579,11 +672,14 @@ namespace FPMAS {
 					&export_to_part
 					);
 
+			FPMAS_LOGV(mpiCommunicator.getRank(), "DIST_GRAPH", "Synchronizing proxy...");
 			// Updates nodes locations according to last migrations
 			this->proxy.synchronize();
 
+			FPMAS_LOGV(mpiCommunicator.getRank(), "DIST_GRAPH", "Synchronizing graph...");
 			this->synchronize();
 
+			FPMAS_LOGV(mpiCommunicator.getRank(), "DIST_GRAPH", "Migration done.");
 		}
 
 		/**
@@ -701,6 +797,8 @@ namespace FPMAS {
 			// Must be set up from there, because LB_Partition can call
 			// obj_size_multi_fn when repartitionning
 			this->setZoltanNodeMigration();
+
+			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Computing Load Balancing...");
 
 			// Computes Zoltan partitioning
 			int err = this->zoltan.LB_Partition(
