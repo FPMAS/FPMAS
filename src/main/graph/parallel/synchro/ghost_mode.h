@@ -127,20 +127,21 @@ namespace FPMAS::graph::parallel {
 					/**
 					 * Hash function object used to hase NodeId pairs.
 					 */
-					struct NodeIdPairHash {
-						std::size_t operator()(std::pair<NodeId, NodeId> const& pair) const {
-							std::size_t h1 = std::hash<NodeId>()(pair.first);
-							std::size_t h2 = std::hash<NodeId>()(pair.second);
-							return h1 ^ h2;
-						}
-					};
+					/*
+					 *struct NodeIdPairHash {
+					 *    std::size_t operator()(std::pair<NodeId, NodeId> const& pair) const {
+					 *        std::size_t h1 = std::hash<NodeId>()(pair.first);
+					 *        std::size_t h2 = std::hash<NodeId>()(pair.second);
+					 *        return h1 ^ h2;
+					 *    }
+					 *};
+					 */
 
 					Zoltan zoltan;
 					std::unordered_map<
-						std::pair<NodeId, NodeId>,
-						GhostArc<T, N, GhostMode>*,
-						NodeIdPairHash
-							> linkBuffer;
+						ArcId,
+						GhostArc<T, N, GhostMode>*
+						> linkBuffer;
 					int computeArcExportCount();
 
 				public:
@@ -172,9 +173,15 @@ namespace FPMAS::graph::parallel {
 			template<typename T, int N> int GhostMode<T, N>::computeArcExportCount() {
 				int n = 0;
 				for(auto item : linkBuffer) {
-					if(!this->dg.getProxy().isLocal(item.first.first) && !this->dg.getProxy().isLocal(item.first.second)) {
+					if(!this->dg.getProxy().isLocal(
+								item.second->getSourceNode()->getId()
+							) && !this->dg.getProxy().isLocal(
+								item.second->getTargetNode()->getId()
+							)) {
+						// The link must be exported to the two procs
 						n+=2;
 					} else {
+						// Sent only to target or source location proc
 						n+=1;
 					}
 				}
@@ -200,14 +207,16 @@ namespace FPMAS::graph::parallel {
 
 					int i=0;
 					for(auto item : linkBuffer) {
-						if(!this->dg.getProxy().isLocal(item.first.first)) {
-							write_zoltan_id(item.second->getId(), &export_arcs_global_ids[2*i]);
-							export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(item.first.first);
+						NodeId sourceId = item.second->getSourceNode()->getId();
+						if(!this->dg.getProxy().isLocal(sourceId)) {
+							write_zoltan_id(item.first, &export_arcs_global_ids[2*i]);
+							export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(sourceId);
 							i++;
 						}
-						if(!this->dg.getProxy().isLocal(item.first.second)) {
-							write_zoltan_id(item.second->getId(), &export_arcs_global_ids[2*i]);
-							export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(item.first.second);
+						NodeId targetId = item.second->getTargetNode()->getId();
+						if(!this->dg.getProxy().isLocal(targetId)) {
+							write_zoltan_id(item.first, &export_arcs_global_ids[2*i]);
+							export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(targetId);
 							i++;
 						}
 					}
@@ -227,8 +236,10 @@ namespace FPMAS::graph::parallel {
 				}
 
 				for(auto item : linkBuffer) {
-					if(!this->dg.getProxy().isLocal(item.first.first)
-							&& !this->dg.getProxy().isLocal(item.first.second)) {
+					NodeId sourceId = item.second->getSourceNode()->getId();
+					NodeId targetId = item.second->getTargetNode()->getId();
+					if(!this->dg.getProxy().isLocal(sourceId)
+							&& !this->dg.getProxy().isLocal(targetId)) {
 						item.second->unlink();
 						this->dg.getGhost().deleteArc(item.second);
 					}
@@ -262,9 +273,7 @@ namespace FPMAS::graph::parallel {
 			 */
 			template<typename T, int N> void GhostMode<T, N>::notifyLinked(
 					Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,N>* arc) {
-				linkBuffer[std::make_pair(
-						arc->getSourceNode()->getId(), arc->getTargetNode()->getId()
-						)]
+				linkBuffer[arc->getId()]
 					= (GhostArc<T,N,GhostMode>*) arc;
 			}
 
