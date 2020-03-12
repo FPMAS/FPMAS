@@ -124,25 +124,13 @@ namespace FPMAS::graph::parallel {
 			 */
 			template<typename T, int N> class GhostMode : public SyncMode<GhostMode, wrappers::GhostData, T, N> {
 				private:
-					/**
-					 * Hash function object used to hase NodeId pairs.
-					 */
-					/*
-					 *struct NodeIdPairHash {
-					 *    std::size_t operator()(std::pair<NodeId, NodeId> const& pair) const {
-					 *        std::size_t h1 = std::hash<NodeId>()(pair.first);
-					 *        std::size_t h2 = std::hash<NodeId>()(pair.second);
-					 *        return h1 ^ h2;
-					 *    }
-					 *};
-					 */
-
 					Zoltan zoltan;
 					std::unordered_map<
 						ArcId,
 						GhostArc<T, N, GhostMode>*
 						> linkBuffer;
 					int computeArcExportCount();
+					void migrateLinks();
 
 				public:
 					GhostMode(DistributedGraph<T, GhostMode, N>&);
@@ -165,6 +153,9 @@ namespace FPMAS::graph::parallel {
 						dg)
 			{
 				FPMAS::config::zoltan_config(&this->zoltan);
+				zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T, N, GhostMode>, &this->dg);
+				zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T, N, GhostMode>, &this->dg);
+				zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, N, GhostMode>, &this->dg);
 			}
 
 			/*
@@ -195,11 +186,40 @@ namespace FPMAS::graph::parallel {
 			 * from other procs.
 			 */
 			template<typename T, int N> void GhostMode<T, N>::termination() {
-				if(linkBuffer.size() > 0) {
-					zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T, N, GhostMode>, &this->dg);
-					zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T, N, GhostMode>, &this->dg);
-					zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, N, GhostMode>, &this->dg);
+				this->migrateLinks();
+				this->dg.getGhost().synchronize();
+			}
 
+			/**
+			 * Initializes a distant link operation from `source` to `target` on
+			 * the given `layer`.
+			 *
+			 * @param source source node id
+			 * @param target target node id
+			 * @param arcId new arc id
+			 * @param layer layer id
+			 */
+			template<typename T, int N> void GhostMode<T, N>::initLink(NodeId source, NodeId target, ArcId arcId, LayerId layer) {
+				// Clear unlink buffer
+
+			}
+
+			/**
+			 * Called once a new distant `arc` has been created locally.
+			 *
+			 * The created `arc` is added to an internal buffer and migrated once
+			 * termination() is called.
+			 *
+			 * @param arc pointer to the new arc to export
+			 */
+			template<typename T, int N> void GhostMode<T, N>::notifyLinked(
+					Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,N>* arc) {
+				linkBuffer[arc->getId()]
+					= (GhostArc<T,N,GhostMode>*) arc;
+			}
+
+			template<typename T, int N> void GhostMode<T, N>::migrateLinks() {
+				if(linkBuffer.size() > 0) {
 					int export_arcs_num = this->computeArcExportCount();
 					ZOLTAN_ID_TYPE export_arcs_global_ids[2*export_arcs_num];
 					int export_arcs_procs[export_arcs_num];
@@ -245,36 +265,6 @@ namespace FPMAS::graph::parallel {
 					}
 				}
 				linkBuffer.clear();
-
-				this->dg.getGhost().synchronize();
-			}
-
-			/**
-			 * Initializes a distant link operation from `source` to `target` on
-			 * the given `layer`.
-			 *
-			 * @param source source node id
-			 * @param target target node id
-			 * @param arcId new arc id
-			 * @param layer layer id
-			 */
-			template<typename T, int N> void GhostMode<T, N>::initLink(NodeId source, NodeId target, ArcId arcId, LayerId layer) {
-				// Clear unlink buffer
-
-			}
-
-			/**
-			 * Called once a new distant `arc` has been created locally.
-			 *
-			 * The created `arc` is added to an internal buffer and migrated once
-			 * termination() is called.
-			 *
-			 * @param arc pointer to the new arc to export
-			 */
-			template<typename T, int N> void GhostMode<T, N>::notifyLinked(
-					Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,N>* arc) {
-				linkBuffer[arc->getId()]
-					= (GhostArc<T,N,GhostMode>*) arc;
 			}
 
 		}
