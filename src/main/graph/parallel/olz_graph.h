@@ -38,6 +38,7 @@ namespace FPMAS::graph::parallel {
 	 * the synchronize() function.
 	 */
 	template<typename T, int N, SYNC_MODE> class GhostGraph {
+		friend S<T, N>;
 		friend GhostArc<T, N, S>;
 		friend void zoltan::ghost::obj_size_multi_fn<T, N, S>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 

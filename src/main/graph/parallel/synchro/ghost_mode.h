@@ -5,10 +5,12 @@
 #include "../synchro/sync_mode.h"
 #include "../proxy/proxy.h"
 #include "../distributed_graph.h"
+#include "../olz.h"
 
 using FPMAS::graph::parallel::proxy::Proxy;
 
 namespace FPMAS::graph::parallel {
+	template<typename T, int N, SYNC_MODE> class GhostArc;
 	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	using zoltan::utils::write_zoltan_id;
@@ -95,7 +97,6 @@ namespace FPMAS::graph::parallel {
 
 		namespace modes {
 
-
 			/**
 			 * Synchronisation mode used as default by the DistributedGraph.
 			 *
@@ -137,7 +138,7 @@ namespace FPMAS::graph::parallel {
 					Zoltan zoltan;
 					std::unordered_map<
 						std::pair<NodeId, NodeId>,
-						Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>, N>*,
+						GhostArc<T, N, GhostMode>*,
 						NodeIdPairHash
 							> linkBuffer;
 					int computeArcExportCount();
@@ -225,6 +226,15 @@ namespace FPMAS::graph::parallel {
 							);
 				}
 
+				for(auto item : linkBuffer) {
+					if(!this->dg.getProxy().isLocal(item.first.first)
+							&& !this->dg.getProxy().isLocal(item.first.second)) {
+						item.second->unlink();
+						this->dg.getGhost().deleteArc(item.second);
+					}
+				}
+				linkBuffer.clear();
+
 				this->dg.getGhost().synchronize();
 			}
 
@@ -255,7 +265,7 @@ namespace FPMAS::graph::parallel {
 				linkBuffer[std::make_pair(
 						arc->getSourceNode()->getId(), arc->getTargetNode()->getId()
 						)]
-					= arc;
+					= (GhostArc<T,N,GhostMode>*) arc;
 			}
 
 		}

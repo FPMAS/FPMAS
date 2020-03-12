@@ -358,7 +358,8 @@ TEST_F(Mpi_DynamicGhostLinkTest, ghost_source_and_target_link) {
 		// Checks that local ghost data is not altered (no need to create new
 		// ghost nodes, etc...)
 		ASSERT_EQ(dg.getGhost().getNodes().size(), 3);
-		ASSERT_EQ(dg.getGhost().getArcs().size(), 5);
+		// The GhostNode -> GhostNode link should be deleted
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 4);
 
 		// Checks the imported arc structure
 		ASSERT_EQ(dg.getArcs().size(), 1);
