@@ -288,9 +288,15 @@ namespace FPMAS::graph::parallel {
 								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,N>* arc
 								) {}
 
+							/**
+							 * fs
+							 */
 							virtual void initUnlink(
 								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,N>* arc
 								) {}
+							/**
+							 * sdf
+							 */
 							virtual void notifyUnlinked(
 								NodeId source,
 								NodeId target,

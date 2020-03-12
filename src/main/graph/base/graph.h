@@ -77,7 +77,7 @@ namespace FPMAS {
 					Arc<T, N>* link(NodeId, NodeId, ArcId, LayerId);
 
 					void unlink(ArcId);
-					void unlink(Arc<T, N>*);
+					virtual void unlink(Arc<T, N>*);
 					void removeNode(NodeId);
 
 					~Graph();
@@ -249,24 +249,6 @@ namespace FPMAS {
 				return link(source_id, target_id, arc_id, DefaultLayer);
 			}
 
-			/*
-			 * Convenient function to remove an arc from an incoming or outgoing
-			 * arc list.
-			 */
-			/*
-			 *template<typename T, int N> void Graph<T, N>::removeArc(Arc<T, N>* arc, std::vector<Arc<T, N>*>* arcList) {
-			 *    for(auto it = arcList->begin(); it != arcList->end();) {
-			 *        if(*it == arc) {
-			 *            arcList->erase(it);
-			 *            it = arcList->end();
-			 *        }
-			 *        else {
-			 *            it++;
-			 *        }
-			 *    }
-			 *}
-			 */
-
 			/**
 			 * Removes the specified arc from the graph and the incoming/outgoing
 			 * arc lists of its target/source nodes, and finally `deletes` it.
@@ -280,7 +262,7 @@ namespace FPMAS {
 			 * graph)
 			 */
 			template<typename T, int N> void Graph<T, N>::unlink(Arc<T, N>* arc) {
-				if(this->arcs.count(arc->getId()) < 1)
+				if(this->arcs.count(arc->getId()) == 0)
 					throw exceptions::arc_out_of_graph(arc->getId());
 
 				// Removes the incoming arcs from the incoming/outgoing
@@ -315,11 +297,7 @@ namespace FPMAS {
 			 * removed and unlinked from the corresponding source and target
 			 * nodes.
 			 *
-			 * The returned fossil contains the fossil arcs collected unlinking
-			 * the node's arcs.
-			 *
 			 * @param nodeId id of the node to delete
-			 * @return collected fossil arcs
 			 */
 			template<typename T, int N> void Graph<T, N>::removeNode(NodeId nodeId) {
 				FPMAS_LOGD(-1, "GRAPH", "Removing node %lu", nodeId);

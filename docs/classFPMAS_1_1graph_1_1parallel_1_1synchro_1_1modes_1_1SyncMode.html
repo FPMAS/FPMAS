@@ -86,11 +86,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a51eafe2c24a51944c3b875f703a3fd9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaabc7c63becc02d4a24cf6f0146b38e5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#aaabc7c63becc02d4a24cf6f0146b38e5">notifyLinked</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">wrappers::SyncData</a>&lt; T, N, Mode &gt;&gt;, N &gt; *arc)</td></tr>
 <tr class="separator:aaabc7c63becc02d4a24cf6f0146b38e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a807b17127dcee02b0fae8a3d2f8d2987"><td class="memItemLeft" align="right" valign="top"><a id="a807b17127dcee02b0fae8a3d2f8d2987"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>initUnlink</b> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">wrappers::SyncData</a>&lt; T, N, Mode &gt;&gt;, N &gt; *arc)</td></tr>
+<tr class="memitem:a807b17127dcee02b0fae8a3d2f8d2987"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#a807b17127dcee02b0fae8a3d2f8d2987">initUnlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">wrappers::SyncData</a>&lt; T, N, Mode &gt;&gt;, N &gt; *arc)</td></tr>
 <tr class="separator:a807b17127dcee02b0fae8a3d2f8d2987"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09499e942150447fcf3589387604844d"><td class="memItemLeft" align="right" valign="top"><a id="a09499e942150447fcf3589387604844d"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>notifyUnlinked</b> (NodeId source, NodeId target, ArcId arcId, LayerId layer)</td></tr>
+<tr class="memitem:a09499e942150447fcf3589387604844d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#a09499e942150447fcf3589387604844d">notifyUnlinked</a> (NodeId source, NodeId target, ArcId arcId, LayerId layer)</td></tr>
 <tr class="separator:a09499e942150447fcf3589387604844d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8d6e518e97dd8f6bf7dbeed5b6aee5e5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#a8d6e518e97dd8f6bf7dbeed5b6aee5e5">termination</a> ()</td></tr>
 <tr class="separator:a8d6e518e97dd8f6bf7dbeed5b6aee5e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -258,6 +256,35 @@ template&lt;template&lt; typename, int &gt; class Mode, template&lt; typename, i
 
 </div>
 </div>
+<a id="a807b17127dcee02b0fae8a3d2f8d2987"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a807b17127dcee02b0fae8a3d2f8d2987">&#9670;&nbsp;</a></span>initUnlink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename, int &gt; class Mode, template&lt; typename, int &gt; class Wrapper, typename T , int N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html">FPMAS::graph::parallel::synchro::modes::SyncMode</a>&lt; Mode, Wrapper, T, N &gt;::initUnlink </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">wrappers::SyncData</a>&lt; T, N, Mode &gt;&gt;, N &gt; *&#160;</td>
+          <td class="paramname"><em>arc</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>fs </p>
+
+</div>
+</div>
 <a id="aaabc7c63becc02d4a24cf6f0146b38e5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaabc7c63becc02d4a24cf6f0146b38e5">&#9670;&nbsp;</a></span>notifyLinked()</h2>
 
@@ -291,6 +318,57 @@ template&lt;template&lt; typename, int &gt; class Mode, template&lt; typename, i
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a09499e942150447fcf3589387604844d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a09499e942150447fcf3589387604844d">&#9670;&nbsp;</a></span>notifyUnlinked()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename, int &gt; class Mode, template&lt; typename, int &gt; class Wrapper, typename T , int N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html">FPMAS::graph::parallel::synchro::modes::SyncMode</a>&lt; Mode, Wrapper, T, N &gt;::notifyUnlinked </td>
+          <td>(</td>
+          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ArcId&#160;</td>
+          <td class="paramname"><em>arcId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LayerId&#160;</td>
+          <td class="paramname"><em>layer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>sdf </p>
 
 </div>
 </div>

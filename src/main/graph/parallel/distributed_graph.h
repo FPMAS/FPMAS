@@ -159,11 +159,10 @@ namespace FPMAS {
 			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, T&& data);
 			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, T& data);
 
-			void removeNode(NodeId);
-
 			Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId);
 			Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId, LayerId);
 			void unlink(ArcId);
+			void unlink(Arc<std::unique_ptr<SyncData<T,N,S>>, N>*) override;
 
 			std::string getLocalData(unsigned long) const override;
 			std::string getUpdatedData(unsigned long) const override;
@@ -360,57 +359,6 @@ namespace FPMAS {
 					);
 		}
 
-		template<typename T, SYNC_MODE, int N>
-		void DistributedGraph<T, S, N>::removeNode(NodeId nodeId) {
-			FPMAS_LOGD(
-					this->mpiCommunicator.getRank(),
-					"DIST_GRAPH",
-					"Removing local node %lu",
-					nodeId
-					);
-			Node<std::unique_ptr<SyncData<T,N,S>>, N>* nodeToRemove;
-			try {
-				nodeToRemove = this->getNodes().at(nodeId);
-			} catch (std::out_of_range) {
-				throw base::exceptions::node_out_of_graph(nodeId);
-			}
-			for(auto& layer : nodeToRemove->getLayers()) {
-				for(auto arc : layer.getIncomingArcs()) {
-					FPMAS_LOGV(
-							this->mpiCommunicator.getRank(),
-							"DIST_GRAPH",
-							"Unlink incoming arc %lu",
-							arc->getId()
-							);
-					this->unlink(arc->getId());
-				}
-				for(auto arc : layer.getOutgoingArcs()) {
-					FPMAS_LOGV(
-							this->mpiCommunicator.getRank(),
-							"DIST_GRAPH",
-							"Unlink outgoing arc %lu",
-							arc->getId()
-							);
-					this->unlink(arc->getId());
-				}
-			}
-			FPMAS_LOGV(
-					this->mpiCommunicator.getRank(),
-					"DIST_GRAPH",
-					"Node %lu unlinked.",
-					nodeId
-					);
-			// TODO : improve this function using virtual unlink
-			// TODO : distant removeNode
-			this->Graph<std::unique_ptr<SyncData<T,N,S>>,N>::removeNode(nodeId);
-			FPMAS_LOGD(
-					this->mpiCommunicator.getRank(),
-					"DIST_GRAPH",
-					"Node %lu removed.",
-					nodeId
-					);
-		}
-
 		/**
 		 * Links the specified source and target node within this
 		 * DistributedGraph on the given layer on the DefaultLayer.
@@ -514,26 +462,74 @@ namespace FPMAS {
 			}
 		}
 
-
-		template<typename T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::unlink(
-				ArcId arcId
-			) {
-			if(this->getArcs().count(arcId) > 0) {
-				FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking local arc %lu", arcId);
-				// Arc is local
-				this->Graph<std::unique_ptr<SyncData<T,N,S>>, N>::unlink(arcId);
-			} else {
-				FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking ghost arc %lu", arcId);
-				Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc;
+		/**
+		 * Unlinks the arc with the specified id.
+		 *
+		 * If the arc is local, the operation is completely local.  Else, if
+		 * the arc is a GhostArc, distant operations might apply.  See
+		 * unlink(Arc<std::unique_ptr<SyncData<T,N,S>>,N>*) for more information.
+		 *
+		 * @param arcId id of the arc to unlink. (might be a local arc, or a
+		 * ghost arc)
+		 */
+		template<typename T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::unlink(ArcId arcId) {
+			try {
+				this->unlink(this->getArcs().at(arcId));
+			} catch (std::out_of_range) {
 				try {
-					arc = this->getGhost().getArcs().at(arcId);
+					this->unlink(this->getGhost().getArcs().at(arcId));
 				} catch (std::out_of_range) {
 					FPMAS_LOGE(
-						this->mpiCommunicator.getRank(),
-						"DIST_GRAPH", "%s",
-						FPMAS::graph::base::exceptions::arc_out_of_graph(arcId).what()
-						);
+							this->mpiCommunicator.getRank(),
+							"DIST_GRAPH", "%s",
+							FPMAS::graph::base::exceptions::arc_out_of_graph(arcId).what()
+							);
 				}
+			}
+		}
+
+		/**
+		 * Unlinks the specified arc within this DistributedGraph instance.
+		 *
+		 * The specified arc pointer might point to a local Arc, or to a
+		 * GhostArc. This allows to directly unlink arcs from incoming /
+		 * outgoing arcs lists of nodes without considering if they are local
+		 * or distant. For example, the following code is perfectly valid and
+		 * does not depend on the current location of `arc->getSourceNode()`.
+		 *
+		 * ```cpp
+		 * DistributedGraph<int> dg;
+		 *
+		 * // ...
+		 *
+		 * for(auto arc : dg.getNode(1)->getIncomingArcs()) {
+		 * 	if(arc->getSourceNode()->data()->read() > 10) {
+		 * 		dg.unlink(arc);
+		 * 	}
+		 * }
+		 * ```
+		 * If the arc is local, the operation is performed completely locally.
+		 * If the arc links a distant node (i.e. is a GhostArc), some
+		 * additionnal distant operation might apply depending on the current
+		 * SyncMode used.
+		 *
+		 * More precisely :
+		 *   1. synchro::modes::SyncMode::initUnlink is called
+		 *   2. The `arc` is locally unlinked and deleted
+		 *   3. synchro::modes::SyncMode::notifyUnlinked is called
+		 *
+		 * @param arc pointer to the arc to unlink (might be a local Arc or distant
+		 * GhostArc)
+		 */
+		template<typename T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::unlink(
+				Arc<std::unique_ptr<SyncData<T,N,S>>,N>* arc
+			) {
+			try {
+				FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking local arc %lu", arc->getId());
+				// Arc is local
+				this->Graph<std::unique_ptr<SyncData<T,N,S>>, N>::unlink(arc);
+			} catch(base::exceptions::arc_out_of_graph e) {
+				FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking ghost arc %lu", arc->getId());
 				NodeId source = arc->getSourceNode()->getId();
 				NodeId target = arc->getTargetNode()->getId();
 				ArcId arcId = arc->getId();
@@ -550,7 +546,7 @@ namespace FPMAS {
 				this->getGhost().deleteArc((GhostArc<T,N,S>*) arc);
 				this->syncMode.notifyUnlinked(source, target, arcId, layer);
 			}
-			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinked arc %lu", arcId);
+			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinked arc %lu", arc->getId());
 		}
 
 

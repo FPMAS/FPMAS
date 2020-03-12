@@ -123,7 +123,7 @@ $(function() {
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;T, N&gt;</a>* <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a5a198c12fc6dd3e9a3b6f8a5103d38e7">link</a>(NodeId, NodeId, ArcId, LayerId);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">unlink</a>(ArcId);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">unlink</a>(<a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;T, N&gt;</a>*);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                    <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">unlink</a>(<a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;T, N&gt;</a>*);</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                    <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">removeNode</a>(NodeId);</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                    <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e">~Graph</a>();</div>
@@ -189,119 +189,101 @@ $(function() {
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;                <span class="keywordflow">return</span> link(source_id, target_id, arc_id, DefaultLayer);</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            }</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            <span class="comment">/*</span></div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;<span class="comment">             * Convenient function to remove an arc from an incoming or outgoing</span></div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment">             * arc list.</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="comment">             */</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;            <span class="comment">/*</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;<span class="comment">             *template&lt;typename T, int N&gt; void Graph&lt;T, N&gt;::removeArc(Arc&lt;T, N&gt;* arc, std::vector&lt;Arc&lt;T, N&gt;*&gt;* arcList) {</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="comment">             *    for(auto it = arcList-&gt;begin(); it != arcList-&gt;end();) {</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="comment">             *        if(*it == arc) {</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="comment">             *            arcList-&gt;erase(it);</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="comment">             *            it = arcList-&gt;end();</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="comment">             *        }</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="comment">             *        else {</span></div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="comment">             *            it++;</span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="comment">             *        }</span></div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="comment">             *    }</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="comment">             *}</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="comment">             */</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160; </div>
-<div class="line"><a name="l00282"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aedecc3d074502fb7caebfc0209f9aa46">  282</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">Graph&lt;T, N&gt;::unlink</a>(<a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;T, N&gt;</a>* arc) {</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;                <span class="keywordflow">if</span>(this-&gt;arcs.count(arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#ab4837f92a0b348f7e6cdd2cdb2b75f7d">getId</a>()) &lt; 1)</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">exceptions::arc_out_of_graph</a>(arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#ab4837f92a0b348f7e6cdd2cdb2b75f7d">getId</a>());</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160; </div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;                <span class="comment">// Removes the incoming arcs from the incoming/outgoing</span></div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;                <span class="comment">// arc lists of target/source nodes.</span></div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;                arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html#af9388372b06974a984127f85e3f4514d">unlink</a>();</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160; </div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                this-&gt;arcs.erase(arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#ab4837f92a0b348f7e6cdd2cdb2b75f7d">getId</a>());</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;                <span class="keyword">delete</span> arc;</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            }</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
-<div class="line"><a name="l00301"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">  301</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">Graph&lt;T, N&gt;::unlink</a>(ArcId arcId) {</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                    this-&gt;unlink(this-&gt;arcs.at(arcId));</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                } <span class="keywordflow">catch</span> (std::out_of_range) {</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">exceptions::arc_out_of_graph</a>(arcId);</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                }</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;            }</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160; </div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160; </div>
-<div class="line"><a name="l00324"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">  324</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">Graph&lt;T, N&gt;::removeNode</a>(NodeId nodeId) {</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                FPMAS_LOGD(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Removing node %lu&quot;</span>, nodeId);</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;T, N&gt;</a>* node_to_remove;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                    node_to_remove = nodes.at(nodeId);</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                } <span class="keywordflow">catch</span>(std::out_of_range) {</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">exceptions::node_out_of_graph</a>(nodeId);</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                }</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160; </div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                <span class="comment">// Deletes incoming arcs</span></div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; layer : node_to_remove-&gt;layers) {</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : layer.getIncomingArcs()) {</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                        <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                            FPMAS_LOGV(</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                                    -1,</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                                    <span class="stringliteral">&quot;GRAPH&quot;</span>,</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                                    <span class="stringliteral">&quot;Unlink incoming arc %lu&quot;</span>,</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                                    arc-&gt;getId()</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                                    );</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;                            this-&gt;unlink(arc);</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                        } <span class="keywordflow">catch</span> (<a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">exceptions::arc_out_of_graph</a> e) {</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                            FPMAS_LOGE(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Error unlinking incoming arc : %s&quot;</span>, e.what());</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                            <span class="keywordflow">throw</span>;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                        }</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                    }</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;                    <span class="comment">// Deletes outgoing arcs</span></div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : layer.getOutgoingArcs()) {</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;                        <span class="keywordflow">try</span> {</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;                            FPMAS_LOGV(</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;                                    -1,</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;                                    <span class="stringliteral">&quot;GRAPH&quot;</span>,</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                                    <span class="stringliteral">&quot;Unlink outgoing arc %lu&quot;</span>,</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                                    arc-&gt;getId()</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                                    );</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                            this-&gt;unlink(arc);</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                        } <span class="keywordflow">catch</span> (<a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">exceptions::arc_out_of_graph</a> e) {</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                            FPMAS_LOGE(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Error unlinking outgoing arc : %s&quot;</span>, e.what());</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                            <span class="keywordflow">throw</span>;</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                        }</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;                    }</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;                }</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160; </div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                <span class="comment">// Removes the node from the global nodes index</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                nodes.erase(nodeId);</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;                <span class="comment">// Deletes the node</span></div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;                <span class="keyword">delete</span> node_to_remove;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;                FPMAS_LOGD(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Node %lu removed.&quot;</span>, nodeId);</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;            }</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160; </div>
-<div class="line"><a name="l00378"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e">  378</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e">Graph&lt;T, N&gt;::~Graph</a>() {</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : this-&gt;nodes) {</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                    <span class="keyword">delete</span> node.second;</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                }</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : this-&gt;arcs) {</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;                    <span class="keyword">delete</span> arc.second;</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;                }</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;            }</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        }</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    }</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;}</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aedecc3d074502fb7caebfc0209f9aa46">  264</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">Graph&lt;T, N&gt;::unlink</a>(<a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc&lt;T, N&gt;</a>* arc) {</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;                <span class="keywordflow">if</span>(this-&gt;arcs.count(arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#ab4837f92a0b348f7e6cdd2cdb2b75f7d">getId</a>()) == 0)</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">exceptions::arc_out_of_graph</a>(arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#ab4837f92a0b348f7e6cdd2cdb2b75f7d">getId</a>());</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160; </div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                <span class="comment">// Removes the incoming arcs from the incoming/outgoing</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                <span class="comment">// arc lists of target/source nodes.</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1Arc.html#af9388372b06974a984127f85e3f4514d">unlink</a>();</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                this-&gt;arcs.erase(arc-&gt;<a class="code" href="classFPMAS_1_1graph_1_1base_1_1GraphItem.html#ab4837f92a0b348f7e6cdd2cdb2b75f7d">getId</a>());</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                <span class="keyword">delete</span> arc;</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            }</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
+<div class="line"><a name="l00283"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">  283</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">Graph&lt;T, N&gt;::unlink</a>(ArcId arcId) {</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;                    this-&gt;unlink(this-&gt;arcs.at(arcId));</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;                } <span class="keywordflow">catch</span> (std::out_of_range) {</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">exceptions::arc_out_of_graph</a>(arcId);</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;                }</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            }</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
+<div class="line"><a name="l00302"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">  302</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keywordtype">int</span> N&gt; <span class="keywordtype">void</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">Graph&lt;T, N&gt;::removeNode</a>(NodeId nodeId) {</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                FPMAS_LOGD(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Removing node %lu&quot;</span>, nodeId);</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node&lt;T, N&gt;</a>* node_to_remove;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;                <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                    node_to_remove = nodes.at(nodeId);</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                } <span class="keywordflow">catch</span>(std::out_of_range) {</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">exceptions::node_out_of_graph</a>(nodeId);</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                }</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160; </div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                <span class="comment">// Deletes incoming arcs</span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; layer : node_to_remove-&gt;layers) {</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : layer.getIncomingArcs()) {</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                            FPMAS_LOGV(</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                                    -1,</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                                    <span class="stringliteral">&quot;GRAPH&quot;</span>,</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                                    <span class="stringliteral">&quot;Unlink incoming arc %lu&quot;</span>,</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                                    arc-&gt;getId()</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                                    );</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                            this-&gt;unlink(arc);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                        } <span class="keywordflow">catch</span> (<a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">exceptions::arc_out_of_graph</a> e) {</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                            FPMAS_LOGE(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Error unlinking incoming arc : %s&quot;</span>, e.what());</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                            <span class="keywordflow">throw</span>;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                        }</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                    }</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                    <span class="comment">// Deletes outgoing arcs</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : layer.getOutgoingArcs()) {</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                        <span class="keywordflow">try</span> {</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                            FPMAS_LOGV(</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                                    -1,</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                                    <span class="stringliteral">&quot;GRAPH&quot;</span>,</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                                    <span class="stringliteral">&quot;Unlink outgoing arc %lu&quot;</span>,</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                                    arc-&gt;getId()</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                                    );</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                            this-&gt;unlink(arc);</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                        } <span class="keywordflow">catch</span> (<a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">exceptions::arc_out_of_graph</a> e) {</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                            FPMAS_LOGE(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Error unlinking outgoing arc : %s&quot;</span>, e.what());</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                            <span class="keywordflow">throw</span>;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                        }</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                    }</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                }</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                <span class="comment">// Removes the node from the global nodes index</span></div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;                nodes.erase(nodeId);</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;                <span class="comment">// Deletes the node</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;                <span class="keyword">delete</span> node_to_remove;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;                FPMAS_LOGD(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Node %lu removed.&quot;</span>, nodeId);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;            }</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160; </div>
+<div class="line"><a name="l00356"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e">  356</a></span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e">Graph&lt;T, N&gt;::~Graph</a>() {</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : this-&gt;nodes) {</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                    <span class="keyword">delete</span> node.second;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;                }</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : this-&gt;arcs) {</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                    <span class="keyword">delete</span> arc.second;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                }</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;            }</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;        }</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    }</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;}</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_ae17884b3044eeb9e3f47a15080cb7b5b"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">FPMAS::graph::base::Graph::unlink</a></div><div class="ttdeci">void unlink(ArcId)</div><div class="ttdef"><b>Definition:</b> graph.h:301</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_ae17884b3044eeb9e3f47a15080cb7b5b"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">FPMAS::graph::base::Graph::unlink</a></div><div class="ttdeci">void unlink(ArcId)</div><div class="ttdef"><b>Definition:</b> graph.h:283</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a8d309eb75039c9b1153e4f99eecb8d79"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a8d309eb75039c9b1153e4f99eecb8d79">FPMAS::graph::base::Graph::getArcs</a></div><div class="ttdeci">const std::unordered_map&lt; ArcId, Arc&lt; T, N &gt; * &gt; &amp; getArcs() const</div><div class="ttdef"><b>Definition:</b> graph.h:144</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">FPMAS::graph::base::exceptions::node_out_of_graph</a></div><div class="ttdef"><b>Definition:</b> exceptions.h:18</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a31255ce8e4b18bf1db303241aba27d22"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a31255ce8e4b18bf1db303241aba27d22">FPMAS::graph::base::Graph::getNodes</a></div><div class="ttdeci">const std::unordered_map&lt; NodeId, Node&lt; T, N &gt; * &gt; &amp; getNodes() const</div><div class="ttdef"><b>Definition:</b> graph.h:113</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Node_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Node.html">FPMAS::graph::base::Node</a></div><div class="ttdef"><b>Definition:</b> graph.h:31</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a0ad9f56275aebb75e0996e95894630b6"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">FPMAS::graph::base::Graph::removeNode</a></div><div class="ttdeci">void removeNode(NodeId)</div><div class="ttdef"><b>Definition:</b> graph.h:324</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a0ad9f56275aebb75e0996e95894630b6"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">FPMAS::graph::base::Graph::removeNode</a></div><div class="ttdeci">void removeNode(NodeId)</div><div class="ttdef"><b>Definition:</b> graph.h:302</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Arc_html_af9388372b06974a984127f85e3f4514d"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Arc.html#af9388372b06974a984127f85e3f4514d">FPMAS::graph::base::Arc::unlink</a></div><div class="ttdeci">void unlink()</div><div class="ttdef"><b>Definition:</b> arc.h:89</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">FPMAS::graph::base::exceptions::arc_out_of_graph</a></div><div class="ttdef"><b>Definition:</b> exceptions.h:11</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a11e5fd69f111ba1dce33d935384867d7"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a11e5fd69f111ba1dce33d935384867d7">FPMAS::graph::base::Graph::buildNode</a></div><div class="ttdeci">Node&lt; T, N &gt; * buildNode(NodeId)</div><div class="ttdef"><b>Definition:</b> graph.h:155</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Arc_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Arc.html">FPMAS::graph::base::Arc</a></div><div class="ttdef"><b>Definition:</b> arc.h:23</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a4362441de64b5eec689c645dd4640d1e"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e">FPMAS::graph::base::Graph::~Graph</a></div><div class="ttdeci">~Graph()</div><div class="ttdef"><b>Definition:</b> graph.h:378</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a4362441de64b5eec689c645dd4640d1e"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e">FPMAS::graph::base::Graph::~Graph</a></div><div class="ttdeci">~Graph()</div><div class="ttdef"><b>Definition:</b> graph.h:356</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a5a198c12fc6dd3e9a3b6f8a5103d38e7"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a5a198c12fc6dd3e9a3b6f8a5103d38e7">FPMAS::graph::base::Graph::link</a></div><div class="ttdeci">Arc&lt; T, N &gt; * link(Node&lt; T, N &gt; *, Node&lt; T, N &gt; *, ArcId)</div><div class="ttdef"><b>Definition:</b> graph.h:221</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html_a4b3a0843960a35c7de29344985a7ef50"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a4b3a0843960a35c7de29344985a7ef50">FPMAS::graph::base::Graph::getArc</a></div><div class="ttdeci">Arc&lt; T, N &gt; * getArc(ArcId)</div><div class="ttdef"><b>Definition:</b> graph.h:124</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1Graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a></div><div class="ttdef"><b>Definition:</b> arc.h:14</div></div>

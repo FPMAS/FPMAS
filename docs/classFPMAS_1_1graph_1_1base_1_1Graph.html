@@ -121,7 +121,7 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4402db8fc9189ea4954129de0ee38f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae17884b3044eeb9e3f47a15080cb7b5b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">unlink</a> (ArcId)</td></tr>
 <tr class="separator:ae17884b3044eeb9e3f47a15080cb7b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedecc3d074502fb7caebfc0209f9aa46"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aedecc3d074502fb7caebfc0209f9aa46">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *)</td></tr>
+<tr class="memitem:aedecc3d074502fb7caebfc0209f9aa46"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aedecc3d074502fb7caebfc0209f9aa46">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *)</td></tr>
 <tr class="separator:aedecc3d074502fb7caebfc0209f9aa46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ad9f56275aebb75e0996e95894630b6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">removeNode</a> (NodeId)</td></tr>
 <tr class="separator:a0ad9f56275aebb75e0996e95894630b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -647,14 +647,12 @@ template&lt;typename T , int N&gt; </div>
 </div><div class="memdoc">
 <p>Removes the <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a> that correspond to the specified id from this graph.</p>
 <p>Incoming and outgoing arcs associated to this node are also removed and unlinked from the corresponding source and target nodes.</p>
-<p>The returned fossil contains the fossil arcs collected unlinking the node's arcs.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">nodeId</td><td>id of the node to delete </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>collected fossil arcs </dd></dl>
 
 </div>
 </div>
@@ -665,6 +663,9 @@ template&lt;typename T , int N&gt; </div>
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename T , int N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">FPMAS::graph::base::Graph</a>&lt; T, N &gt;::unlink </td>
@@ -674,6 +675,11 @@ template&lt;typename T , int N&gt; </div>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Removes the specified arc from the graph and the incoming/outgoing arc lists of its target/source nodes, and finally <code>deletes</code> it.</p>
 <p>If the arc does not belong to the standard <a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html">Graph</a> arc register (e.g. : it is a GhostArc of a DistributedGraph instance), it is not <code>deleted</code> and <code>false</code> is returned.</p>

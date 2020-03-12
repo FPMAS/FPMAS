@@ -110,16 +110,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:afb42bb21cf64fbf3bc31ffb08d4501a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a19746771546e8b8e5f70fa6b72b5a1e5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Node.html">Node</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">SyncData</a>&lt; T, N, S &gt; &gt;, N &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a19746771546e8b8e5f70fa6b72b5a1e5">buildNode</a> (NodeId id, float weight, T &amp;data)</td></tr>
 <tr class="separator:a19746771546e8b8e5f70fa6b72b5a1e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87a661d5f498d6705c330f5a73810788"><td class="memItemLeft" align="right" valign="top"><a id="a87a661d5f498d6705c330f5a73810788"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (NodeId)</td></tr>
-<tr class="separator:a87a661d5f498d6705c330f5a73810788"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac7f7c0316ec54170e5815e4cdb1fde45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">SyncData</a>&lt; T, N, S &gt; &gt;, N &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac7f7c0316ec54170e5815e4cdb1fde45">link</a> (NodeId, NodeId, ArcId)</td></tr>
 <tr class="separator:ac7f7c0316ec54170e5815e4cdb1fde45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23ba0ac6d0ae198efda8fc88e89b0e88"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">SyncData</a>&lt; T, N, S &gt; &gt;, N &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a23ba0ac6d0ae198efda8fc88e89b0e88">link</a> (NodeId, NodeId, ArcId, LayerId)</td></tr>
 <tr class="separator:a23ba0ac6d0ae198efda8fc88e89b0e88"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0945fbd8c299b55e3b313e91daee014f"><td class="memItemLeft" align="right" valign="top"><a id="a0945fbd8c299b55e3b313e91daee014f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (ArcId)</td></tr>
+<tr class="memitem:a0945fbd8c299b55e3b313e91daee014f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a0945fbd8c299b55e3b313e91daee014f">unlink</a> (ArcId)</td></tr>
 <tr class="separator:a0945fbd8c299b55e3b313e91daee014f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac674aba83535c4c21be042c86bdecb54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac674aba83535c4c21be042c86bdecb54">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">SyncData</a>&lt; T, N, S &gt;&gt;, N &gt; *) override</td></tr>
+<tr class="separator:ac674aba83535c4c21be042c86bdecb54"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82bc76b952f8458542ee5f7fa88a9948"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#a82bc76b952f8458542ee5f7fa88a9948">getLocalData</a> (unsigned long) const override</td></tr>
 <tr class="separator:a82bc76b952f8458542ee5f7fa88a9948"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5bef6c6e4473084105c973b12acdcfe"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac5bef6c6e4473084105c973b12acdcfe">getUpdatedData</a> (unsigned long) const override</td></tr>
@@ -161,7 +159,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (ArcId)</t
 <tr class="separator:a4402db8fc9189ea4954129de0ee38f3a inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae17884b3044eeb9e3f47a15080cb7b5b inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#ae17884b3044eeb9e3f47a15080cb7b5b">unlink</a> (ArcId)</td></tr>
 <tr class="separator:ae17884b3044eeb9e3f47a15080cb7b5b inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aedecc3d074502fb7caebfc0209f9aa46 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aedecc3d074502fb7caebfc0209f9aa46">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *)</td></tr>
+<tr class="memitem:aedecc3d074502fb7caebfc0209f9aa46 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#aedecc3d074502fb7caebfc0209f9aa46">unlink</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; T, N &gt; *)</td></tr>
 <tr class="separator:aedecc3d074502fb7caebfc0209f9aa46 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ad9f56275aebb75e0996e95894630b6 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Graph.html#a0ad9f56275aebb75e0996e95894630b6">removeNode</a> (NodeId)</td></tr>
 <tr class="separator:a0ad9f56275aebb75e0996e95894630b6 inherit pub_methods_classFPMAS_1_1graph_1_1base_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -775,6 +773,85 @@ template&lt;class T , SYNC_MODE , int N&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Synchronizes the <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> instances, calling the <a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#ab536c74e610b4cabde0b319af81cf6af">SyncMpiCommunicator::terminate()</a> method and extra processing that might be required by the synchronization mode S, implemented through the synchro::SyncMode::termination() function. (eg : synchronize the ghost graph data for the GhostData mode). </p>
+
+</div>
+</div>
+<a id="ac674aba83535c4c21be042c86bdecb54"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac674aba83535c4c21be042c86bdecb54">&#9670;&nbsp;</a></span>unlink() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , SYNC_MODE , int N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, N &gt;::unlink </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">SyncData</a>&lt; T, N, S &gt;&gt;, N &gt; *&#160;</td>
+          <td class="paramname"><em>arc</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Unlinks the specified arc within this <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> instance.</p>
+<p>The specified arc pointer might point to a local Arc, or to a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>. This allows to directly unlink arcs from incoming / outgoing arcs lists of nodes without considering if they are local or distant. For example, the following code is perfectly valid and does not depend on the current location of <code>arc-&gt;getSourceNode()</code>.</p>
+<div class="fragment"><div class="line">DistributedGraph&lt;int&gt; dg;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// ...</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> arc : dg.getNode(1)-&gt;getIncomingArcs()) {</div>
+<div class="line">    <span class="keywordflow">if</span>(arc-&gt;getSourceNode()-&gt;data()-&gt;read() &gt; 10) {</div>
+<div class="line">        dg.unlink(arc);</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+</div><!-- fragment --><p>If the arc is local, the operation is performed completely locally. If the arc links a distant node (i.e. its a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>), some additionnal distant operation might apply depending on the current SyncMode used.</p>
+<p>More precisely :</p><ol type="1">
+<li><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#a807b17127dcee02b0fae8a3d2f8d2987">synchro::modes::SyncMode::initUnlink</a> is called</li>
+<li>The <code>arc</code> is locally unlinked and deleted</li>
+<li><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#a09499e942150447fcf3589387604844d">synchro::modes::SyncMode::notifyUnlinked</a> is called</li>
+</ol>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arc</td><td>pointer to the arc to unlink (might be a local Arc or distant <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0945fbd8c299b55e3b313e91daee014f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0945fbd8c299b55e3b313e91daee014f">&#9670;&nbsp;</a></span>unlink() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , SYNC_MODE , int N&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>&lt; T, SYNC_MODE, N &gt;::unlink </td>
+          <td>(</td>
+          <td class="paramtype">ArcId&#160;</td>
+          <td class="paramname"><em>arcId</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Unlinks the arc with the specified id.</p>
+<p>If the arc is local, the operation is completely local. Else, if the arc is a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1GhostArc.html">GhostArc</a>, distant operations might apply. See <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html#ac674aba83535c4c21be042c86bdecb54">unlink(Arc&lt;std::unique_ptr&lt;SyncData&lt;T,N,S&gt;&gt;,N&gt;*)</a> for more information.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arcId</td><td>id of the arc to unlink. (might be a local arc, or a ghost arc) </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
