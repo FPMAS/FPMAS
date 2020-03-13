@@ -60,7 +60,6 @@ namespace FPMAS::graph::parallel {
 		std::unordered_map<NodeId, GhostNode<T, N, S>*> ghostNodes;
 		std::unordered_map<ArcId, GhostArc<T, N, S>*> ghostArcs;
 
-		void deleteArc(GhostArc<T, N, S>*);
 
 		public:
 
@@ -75,6 +74,7 @@ namespace FPMAS::graph::parallel {
 		GhostArc<T, N, S>* link(GhostNode<T, N, S>*, Node<std::unique_ptr<SyncData<T,N,S>>, N>*, ArcId, LayerId);
 		GhostArc<T, N, S>* link(Node<std::unique_ptr<SyncData<T,N,S>>, N>*, GhostNode<T, N, S>*, ArcId, LayerId);
 		GhostArc<T, N, S>* link(GhostNode<T, N, S>*, GhostNode<T, N, S>*, ArcId, LayerId);
+		void unlink(GhostArc<T, N, S>*);
 
 		void removeNode(NodeId);
 
@@ -346,13 +346,15 @@ namespace FPMAS::graph::parallel {
 			// Deletes incoming ghost arcs
 			for(auto arc : layer.getIncomingArcs()) {
 				arc->unlink();
-				this->deleteArc((GhostArc<T,N,S>*) arc);
+				this->ghostArcs.erase(arc->getId());
+				delete arc;
 			}
 
 			// Deletes outgoing arcs
 			for(auto arc : layer.getOutgoingArcs()) {
 				arc->unlink();
-				this->deleteArc((GhostArc<T,N,S>*) arc);
+				this->ghostArcs.erase(arc->getId());
+				delete arc;
 			}
 		}
 		this->ghostNodes.erase(nodeToRemove->getId());
@@ -427,7 +429,19 @@ namespace FPMAS::graph::parallel {
 		}
 	}
 
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::deleteArc(GhostArc<T, N, S>* arc) {
+	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::unlink(GhostArc<T, N, S>* arc) {
+		FPMAS_LOGD(
+			this->localGraph->getMpiCommunicator().getRank(),
+			"GHOST_GRAPH", "Unlinking ghost arc %lu",
+			arc->getId()
+			);
+		arc->unlink();
+		if(this->localGraph->getNodes().count(arc->getSourceNode()->getId()) == 0) {
+			this->clear((GhostNode<T,N,S>*) arc->getSourceNode());
+		}
+		if(this->localGraph->getNodes().count(arc->getTargetNode()->getId()) == 0) {
+this->clear((GhostNode<T,N,S>*) arc->getTargetNode());
+		}
 		this->ghostArcs.erase(arc->getId());
 		delete arc;
 	}

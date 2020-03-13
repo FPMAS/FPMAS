@@ -383,3 +383,84 @@ TEST_F(Mpi_DynamicGhostLinkTest, ghost_source_and_target_link) {
 	}
 
 }
+
+/*
+ * Distant unlink using arc id
+ */
+TEST_F(Mpi_DynamicLinkTest, unlink_with_id) {
+	dg.distribute(partition);
+
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+	ASSERT_EQ(dg.getArcs().size(), 0);
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
+
+	int i = dg.getMpiCommunicator().getRank();
+	dg.unlink(i);
+
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 1);
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 1);
+
+	dg.synchronize();
+
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+	ASSERT_EQ(dg.getArcs().size(), 0);
+}
+
+/*
+ * Distant unlink using arc ptr
+ */
+TEST_F(Mpi_DynamicLinkTest, unlink_with_arc_ptr) {
+	dg.distribute(partition);
+
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+	ASSERT_EQ(dg.getArcs().size(), 0);
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
+
+	int i = dg.getMpiCommunicator().getRank();
+	dg.unlink(*dg.getNode(2*i+1)->getOutgoingArcs().begin());
+
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 1);
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 1);
+
+	dg.synchronize();
+
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+	ASSERT_EQ(dg.getArcs().size(), 0);
+}
+
+/*
+ * The same arc might be unlinked from different procs in the same epoch.
+ * In that case, the arc should be unlinked exactly once from other procs with
+ * no error.
+ */
+TEST_F(Mpi_DynamicLinkTest, multiple_unlink) {
+	dg.distribute(partition);
+
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+	ASSERT_EQ(dg.getArcs().size(), 0);
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
+
+	for(auto arc : dg.getGhost().getArcs()) {
+		dg.unlink(arc.second);
+	}
+
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+
+	dg.synchronize();
+
+	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
+	ASSERT_EQ(dg.getNodes().size(), 2);
+	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+	ASSERT_EQ(dg.getArcs().size(), 0);
+}

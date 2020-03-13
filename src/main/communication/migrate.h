@@ -14,17 +14,71 @@ using FPMAS::communication::MpiCommunicator;
 
 namespace FPMAS::communication {
 
-	template<typename T, typename Data = std::nullptr_t > std::unordered_map<int, std::vector<T>> migrate(
-			std::unordered_map<int, std::vector<T>> export_map,
+	// PreMigrate
+	template<typename T, typename Data> class PreMigrate {
+		public:
+			virtual void operator()(Data&, std::unordered_map<int, std::vector<T>>) = 0;
+	};
+
+	template<typename T, typename Data> class voidPreMigrate : public PreMigrate<T, Data> {
+		public:
+			void operator()(Data&, std::unordered_map<int, std::vector<T>>) override {}
+	};
+
+	// MidMigrate
+	template<typename T, typename Data> class MidMigrate {
+		public:
+			virtual void operator()(Data&, std::unordered_map<int, std::vector<T>>) = 0;
+	};
+
+	template<typename T, typename Data> class voidMidMigrate : public MidMigrate<T, Data> {
+		public:
+			void operator()(Data&, std::unordered_map<int, std::vector<T>>) override {}
+	};
+
+	// PostMigrate
+	template<typename T, typename Data> class PostMigrate {
+		public:
+			virtual void operator()(
+				Data&,
+				std::unordered_map<int, std::vector<T>> exportMap,
+				std::unordered_map<int, std::vector<T>> importMap
+				) = 0;
+	};
+
+	template<typename T, typename Data> class voidPostMigrate : public PostMigrate<T, Data> {
+		public:
+			void operator()(
+				Data&,
+				std::unordered_map<int, std::vector<T>>,
+				std::unordered_map<int, std::vector<T>>
+			) override {}
+	};
+	
+
+	template<
+		typename T,
+		typename Data,
+		typename PreMigrateFunc = voidPreMigrate<T, Data>,
+		typename MidMigrateFunc = voidMidMigrate<T, Data>,
+		typename PostMigrateFunc = voidPostMigrate<T, Data>
+		> std::unordered_map<int, std::vector<T>> migrate(
+			std::unordered_map<int, std::vector<T>> exportMap,
 			MpiCommunicator& comm,
-			Data data = nullptr 
+			Data& data
 			) {
+
+		PreMigrateFunc()(data, exportMap);
+
 		// Pack
 		std::unordered_map<int, std::string> data_pack;
-		for(auto item : export_map) {
+		for(auto item : exportMap) {
 			data_pack[item.first] = json(item.second).dump();
 		}
 
+		MidMigrateFunc()(data, exportMap);
+
+		// Migrate
 		int sendcounts[comm.getSize()];
 		int sdispls[comm.getSize()];
 
@@ -70,13 +124,16 @@ namespace FPMAS::communication {
 				data_unpack[i]= std::string(&recv_buffer[rdispls[i]], recvcounts[i]);
 		}
 
-		std::unordered_map<int, std::vector<T>> import_map;
+		std::unordered_map<int, std::vector<T>> importMap;
 		for(auto item : data_unpack) {
-			import_map[item.first] = json::parse(data_unpack[item.first])
+			importMap[item.first] = json::parse(data_unpack[item.first])
 				.get<std::vector<T>>();
 		}
 
-		return import_map;
+		// Post migrate
+		PostMigrateFunc()(data, exportMap, importMap);
+
+		return importMap;
 	}
 }
 

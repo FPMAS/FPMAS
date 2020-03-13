@@ -431,7 +431,7 @@ namespace FPMAS::graph::parallel {
 				// Remove nodes
 				for(auto id : exportedNodeIds) {
 					FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Removing exported node %lu", id);
-					graph->removeNode(id);
+					graph->removeExportedNode(id);
 				}
 
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_olz : done");

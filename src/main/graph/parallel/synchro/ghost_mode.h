@@ -6,6 +6,7 @@
 #include "../proxy/proxy.h"
 #include "../distributed_graph.h"
 #include "../olz.h"
+#include "migration/unlink.h"
 
 using FPMAS::graph::parallel::proxy::Proxy;
 
@@ -119,7 +120,7 @@ namespace FPMAS::graph::parallel {
 			 * are imported and exported at each DistributedGraph::synchronize()
 			 * call.
 			 *
-			 * @tparam wrapped data type
+			 * @tparam T wrapped data type
 			 * @tparam N layers count
 			 */
 			template<typename T, int N> class GhostMode : public SyncMode<GhostMode, wrappers::GhostData, T, N> {
@@ -129,14 +130,20 @@ namespace FPMAS::graph::parallel {
 						ArcId,
 						GhostArc<T, N, GhostMode>*
 						> linkBuffer;
+					std::unordered_map<int, std::vector<ArcId>> unlinkBuffer;
 					int computeArcExportCount();
 					void migrateLinks();
+					void migrateUnlinks();
 
 				public:
 					GhostMode(DistributedGraph<T, GhostMode, N>&);
-					void termination();
-					void initLink(NodeId, NodeId, ArcId, LayerId);
-					void notifyLinked(Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,N>*);
+					void termination() override;
+
+					void notifyLinked(
+						Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,N>*
+						) override;
+
+					void notifyUnlinked(NodeId, NodeId, ArcId, LayerId) override;
 			};
 
 			/**
@@ -158,27 +165,7 @@ namespace FPMAS::graph::parallel {
 				zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, N, GhostMode>, &this->dg);
 			}
 
-			/*
-			 * Private computation to determine how many arcs need to be exported.
-			 */
-			template<typename T, int N> int GhostMode<T, N>::computeArcExportCount() {
-				int n = 0;
-				for(auto item : linkBuffer) {
-					if(!this->dg.getProxy().isLocal(
-								item.second->getSourceNode()->getId()
-							) && !this->dg.getProxy().isLocal(
-								item.second->getTargetNode()->getId()
-							)) {
-						// The link must be exported to the two procs
-						n+=2;
-					} else {
-						// Sent only to target or source location proc
-						n+=1;
-					}
-				}
-				return n;
-			}
-
+			
 			/**
 			 * Called at each DistributedGraph::synchronize() call.
 			 *
@@ -187,21 +174,8 @@ namespace FPMAS::graph::parallel {
 			 */
 			template<typename T, int N> void GhostMode<T, N>::termination() {
 				this->migrateLinks();
+				this->migrateUnlinks();
 				this->dg.getGhost().synchronize();
-			}
-
-			/**
-			 * Initializes a distant link operation from `source` to `target` on
-			 * the given `layer`.
-			 *
-			 * @param source source node id
-			 * @param target target node id
-			 * @param arcId new arc id
-			 * @param layer layer id
-			 */
-			template<typename T, int N> void GhostMode<T, N>::initLink(NodeId source, NodeId target, ArcId arcId, LayerId layer) {
-				// Clear unlink buffer
-
 			}
 
 			/**
@@ -216,6 +190,28 @@ namespace FPMAS::graph::parallel {
 					Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,N>* arc) {
 				linkBuffer[arc->getId()]
 					= (GhostArc<T,N,GhostMode>*) arc;
+			}
+
+			template<typename T, int N> void GhostMode<T, N>::notifyUnlinked(
+					NodeId source, NodeId target, ArcId arcId, LayerId layer
+					) {
+				FPMAS_LOGD(
+					this->dg.getMpiCommunicator().getRank(),
+					"GHOST_MODE", "Unlinking %lu : (%lu, %lu)",
+					arcId, source, target
+					);
+				this->linkBuffer.erase(arcId);
+				if(!this->dg.getProxy().isLocal(source)) {
+					this->unlinkBuffer[
+						this->dg.getProxy().getCurrentLocation(source)
+					].push_back(arcId);
+				}
+				if(!this->dg.getProxy().isLocal(target)) {
+					this->unlinkBuffer[
+						this->dg.getProxy().getCurrentLocation(target)
+					].push_back(arcId);
+				}
+
 			}
 
 			template<typename T, int N> void GhostMode<T, N>::migrateLinks() {
@@ -260,11 +256,38 @@ namespace FPMAS::graph::parallel {
 					NodeId targetId = item.second->getTargetNode()->getId();
 					if(!this->dg.getProxy().isLocal(sourceId)
 							&& !this->dg.getProxy().isLocal(targetId)) {
-						item.second->unlink();
-						this->dg.getGhost().deleteArc(item.second);
+						this->dg.getGhost().unlink((GhostArc<T,N,GhostMode>*) item.second);
 					}
 				}
 				linkBuffer.clear();
+			}
+
+			/*
+			 * Private computation to determine how many arcs need to be exported.
+			 */
+			template<typename T, int N> int GhostMode<T, N>::computeArcExportCount() {
+				int n = 0;
+				for(auto item : linkBuffer) {
+					if(!this->dg.getProxy().isLocal(
+								item.second->getSourceNode()->getId()
+							) && !this->dg.getProxy().isLocal(
+								item.second->getTargetNode()->getId()
+							)) {
+						// The link must be exported to the two procs
+						n+=2;
+					} else {
+						// Sent only to target or source location proc
+						n+=1;
+					}
+				}
+				return n;
+			}
+
+			template<typename T, int N> void GhostMode<T, N>::migrateUnlinks() {
+				synchro::migrateUnlink<T, N>(
+					this->unlinkBuffer, this->dg
+					);
+				this->unlinkBuffer.clear();
 			}
 
 		}

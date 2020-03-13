@@ -115,10 +115,14 @@ namespace FPMAS {
 			ZOLTAN_ID_PTR export_arcs_global_ids;
 			int* export_arcs_procs;
 			void setUpZoltan();
+			void removeExportedNode(NodeId);
 
 			public:
 			DistributedGraph<T, S, N>();
 			DistributedGraph<T, S, N>(std::initializer_list<int>);
+
+			DistributedGraph<T, S, N>(const DistributedGraph<T,S,N>&) = delete;
+			DistributedGraph<T, S, N>& operator=(const DistributedGraph<T, S, N>&) = delete;
 
 			/**
 			 * Returns a reference to the SyncMpiCommunicator used by this DistributedGraph.
@@ -359,6 +363,30 @@ namespace FPMAS {
 					);
 		}
 
+		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>
+			::removeExportedNode(NodeId id) {
+				auto nodeToRemove = this->getNodes().at(id);
+				for(auto& layer : nodeToRemove->getLayers()) {
+					for(auto arc : layer.getIncomingArcs()) {
+						try {
+							this->Graph<std::unique_ptr<SyncData<T, N, S>>, N>
+								::unlink(arc);
+						} catch(base::exceptions::arc_out_of_graph) {
+							this->getGhost().unlink((GhostArc<T,N,S>*) arc);
+						}
+					}
+					for(auto arc : layer.getOutgoingArcs()) {
+						try {
+							this->Graph<std::unique_ptr<SyncData<T, N, S>>, N>
+								::unlink(arc);
+						} catch(base::exceptions::arc_out_of_graph) {
+							this->getGhost().unlink((GhostArc<T,N,S>*) arc);
+						}
+					}
+				}
+				this->removeNode(id);
+			}
+
 		/**
 		 * Links the specified source and target node within this
 		 * DistributedGraph on the given layer on the DefaultLayer.
@@ -524,29 +552,23 @@ namespace FPMAS {
 		template<typename T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::unlink(
 				Arc<std::unique_ptr<SyncData<T,N,S>>,N>* arc
 			) {
+			ArcId id = arc->getId();
+			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking arc %lu", id);
 			try {
-				FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking local arc %lu", arc->getId());
 				// Arc is local
 				this->Graph<std::unique_ptr<SyncData<T,N,S>>, N>::unlink(arc);
 			} catch(base::exceptions::arc_out_of_graph e) {
-				FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking ghost arc %lu", arc->getId());
 				NodeId source = arc->getSourceNode()->getId();
 				NodeId target = arc->getTargetNode()->getId();
 				ArcId arcId = arc->getId();
 				LayerId layer = arc->layer;
 
 				this->syncMode.initUnlink(arc);
-				arc->unlink();
-				if(this->getNodes().count(source) == 0) {
-					this->getGhost().clear((GhostNode<T,N,S>*) arc->getSourceNode());
-				}
-				if(this->getNodes().count(target) == 0) {
-					this->getGhost().clear((GhostNode<T,N,S>*) arc->getTargetNode());
-				}
-				this->getGhost().deleteArc((GhostArc<T,N,S>*) arc);
+
+				this->getGhost().unlink((GhostArc<T,N,S>*) arc);
 				this->syncMode.notifyUnlinked(source, target, arcId, layer);
 			}
-			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinked arc %lu", arc->getId());
+			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinked arc %lu", id);
 		}
 
 
