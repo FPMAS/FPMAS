@@ -21,6 +21,23 @@ namespace FPMAS {
 		namespace synchro::modes {
 			template<typename, int> class GhostMode; 
 		}
+
+		/**
+		 * Defines basic items and interfaces of a distributed Graph structure.
+		 *
+		 * Functions that are only local, such as the buildNode functions, are
+		 * implemented by this base.
+		 *
+		 * Any distributed Graph implementation should then provide specific
+		 * functions that might perform distant operations, usually depending
+		 * on the synchronization mode used :
+		 * - link(NodeId, NodeId, ArcId, LayerId)
+		 * - unlink(Arc<std::unique_ptr<SyncData<T,N,S>>, N>*)
+		 * - distribute()
+		 * - distribute(std::unordered_map<NodeId, std::pair<int, int>>)
+		 * - synchronize()
+		 *
+		 */
 		template<typename T, SYNC_MODE, int N>
 		class DistributedGraphBase : public Graph<std::unique_ptr<SyncData<T,N,S>>, N>, communication::ResourceContainer {
 			friend void zoltan::node::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
@@ -50,6 +67,8 @@ namespace FPMAS {
 			// arc::mid_migrate_pp_fn once associated arcs have eventually 
 			// been exported
 			std::set<NodeId> obsoleteGhosts;
+			void setUpZoltan();
+			void removeExportedNode(NodeId);
 
 			protected:
 			SyncMpiCommunicator mpiCommunicator;
@@ -58,7 +77,6 @@ namespace FPMAS {
 			S<T, N> syncMode;
 			GhostGraph<T, N, S> ghost;
 
-			void setUpZoltan();
 			void setZoltanNodeMigration();
 			void setZoltanArcMigration();
 
@@ -74,8 +92,6 @@ namespace FPMAS {
 			int export_arcs_num;
 			ZOLTAN_ID_PTR export_arcs_global_ids;
 			int* export_arcs_procs;
-			void removeExportedNode(NodeId);
-
 
 			public:
 
@@ -130,13 +146,67 @@ namespace FPMAS {
 			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, const T& data);
 
 			Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId);
-			virtual Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId, LayerId) = 0;
 			void unlink(ArcId);
+
+			/**
+			 * Links the specified source and target node within this
+			 * DistributedGraph on the given layer.
+			 *
+			 * @param source source node id
+			 * @param target target node id
+			 * @param arcId new arc id
+			 * @param layerId id of the Layer on which nodes should be linked
+			 * @return pointer to the created arc
+			 */
+			virtual Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(
+					NodeId, NodeId, ArcId, LayerId
+					) = 0;
+			/**
+			 * Unlinks the specified arc within this DistributedGraph instance.
+			 *
+			 * The specified arc pointer might point to a local Arc, or to a
+			 * GhostArc. This allows to directly unlink arcs from incoming /
+			 * outgoing arcs lists of nodes without considering if they are local
+			 * or distant. For example, the following code is perfectly valid and
+			 * does not depend on the current location of `arc->getSourceNode()`.
+			 *
+			 * ```cpp
+			 * DistributedGraph<int> dg;
+			 *
+			 * // ...
+			 *
+			 * for(auto arc : dg.getNode(1)->getIncomingArcs()) {
+			 * 	if(arc->getSourceNode()->data()->read() > 10) {
+			 * 		dg.unlink(arc);
+			 * 	}
+			 * }
+			 * ```
+			 * @param arc pointer to the arc to unlink (might be a local Arc or distant
+			 * GhostArc)
+			 */
 			virtual void unlink(Arc<std::unique_ptr<SyncData<T,N,S>>, N>*) override = 0;
 
+			/**
+			 * Distributes the graph accross the available cores performing a
+			 * load balancing.
+			 */
 			virtual void distribute() = 0;
+
+			/**
+			 * Distributes the graph accross the available cores using the
+			 * specified partition.
+			 *
+			 * The partition is built as follow :
+			 * - `{node_id : {current_location, new_location}}`
+			 * - *The same partition must be passed to all the procs* (that must
+			 *   all call the distribute() function)
+			 * - If a node's id is not specified, its location is unchanged.
+			 *
+			 * @param partition new partition
+			 */
 			virtual void distribute(std::unordered_map<NodeId, std::pair<int, int>>) = 0;
-			virtual void synchronize() = 0;
+
+			virtual void synchronize();
 
 		};
 		/**
@@ -436,7 +506,15 @@ namespace FPMAS {
 				}
 				this->removeNode(id);
 			}
-
+		/**
+		 * Synchronizes the DistributedGraph instances, calling the
+		 * SyncMpiCommunicator::terminate() method.
+		 *
+		 * Can be overriden to perform extra processing.
+		 */
+		template<class T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::synchronize() {
+			this->mpiCommunicator.terminate();
+		}
 
 
 	}

@@ -56,6 +56,9 @@ namespace FPMAS::graph::parallel {
 	template<typename T, int N, SYNC_MODE> class GhostNode;
 	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
 
+	/**
+	 * Contains synchronization modes and data wrappers implementations.
+	 */
 	namespace synchro {
 		using parallel::GhostNode;
 		using parallel::zoltan::utils::zoltan_query_functions;

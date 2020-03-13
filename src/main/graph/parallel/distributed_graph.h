@@ -186,23 +186,6 @@ namespace FPMAS {
 		/**
 		 * Unlinks the specified arc within this DistributedGraph instance.
 		 *
-		 * The specified arc pointer might point to a local Arc, or to a
-		 * GhostArc. This allows to directly unlink arcs from incoming /
-		 * outgoing arcs lists of nodes without considering if they are local
-		 * or distant. For example, the following code is perfectly valid and
-		 * does not depend on the current location of `arc->getSourceNode()`.
-		 *
-		 * ```cpp
-		 * DistributedGraph<int> dg;
-		 *
-		 * // ...
-		 *
-		 * for(auto arc : dg.getNode(1)->getIncomingArcs()) {
-		 * 	if(arc->getSourceNode()->data()->read() > 10) {
-		 * 		dg.unlink(arc);
-		 * 	}
-		 * }
-		 * ```
 		 * If the arc is local, the operation is performed completely locally.
 		 * If the arc links a distant node (i.e. is a GhostArc), some
 		 * additionnal distant operation might apply depending on the current
@@ -323,14 +306,8 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Distributed the graph accross the available cored using the
-		 * specified partition.
-		 *
-		 * The partition is built as follow :
-		 * - `{node_id : {current_location, new_location}}`
-		 * - *The same partition must be passed to all the procs* (that must
-		 *   all call the distribute() function)
-		 * - If a node's id is not specified, its location is unchanged.
+		 * DistributedGraphBase::distribute(std::unordered_map<NodeId,
+		 * std::pair<int, int>>) implementation.
 		 *
 		 * @param partition new partition
 		 */
@@ -480,7 +457,7 @@ namespace FPMAS {
 		 * synchronize the ghost graph data for the GhostData mode).
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::synchronize() {
-			this->mpiCommunicator.terminate();
+			this->DistributedGraphBase<T, S, N>::synchronize();
 			this->syncMode.termination();
 		}
 	}

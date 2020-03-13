@@ -76,7 +76,13 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MidMigrate.html">MidMigrate</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1PostMigrate.html">PostMigrate</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1PreMigrate.html">PreMigrate</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -85,6 +91,12 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html">ResourceManager</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1voidMidMigrate.html">voidMidMigrate</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1voidPostMigrate.html">voidPostMigrate</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1voidPreMigrate.html">voidPreMigrate</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
@@ -112,10 +124,10 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ad2f148af7f7895c960912f7c58946d84"><td class="memTemplParams" colspan="2"><a id="ad2f148af7f7895c960912f7c58946d84"></a>
-template&lt;typename T , typename Data  = std::nullptr_t&gt; </td></tr>
-<tr class="memitem:ad2f148af7f7895c960912f7c58946d84"><td class="memTemplItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>migrate</b> (std::unordered_map&lt; int, std::vector&lt; T &gt;&gt; export_map, <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp;comm, Data data=nullptr)</td></tr>
-<tr class="separator:ad2f148af7f7895c960912f7c58946d84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c24dafc12ef31d047a82adaa0ef66d2"><td class="memTemplParams" colspan="2"><a id="a0c24dafc12ef31d047a82adaa0ef66d2"></a>
+template&lt;typename T , typename Data , typename PreMigrateFunc  = voidPreMigrate&lt;T, Data&gt;, typename MidMigrateFunc  = voidMidMigrate&lt;T, Data&gt;, typename PostMigrateFunc  = voidPostMigrate&lt;T, Data&gt;&gt; </td></tr>
+<tr class="memitem:a0c24dafc12ef31d047a82adaa0ef66d2"><td class="memTemplItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>migrate</b> (std::unordered_map&lt; int, std::vector&lt; T &gt;&gt; exportMap, <a class="el" href="classFPMAS_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp;comm, Data &amp;data)</td></tr>
+<tr class="separator:a0c24dafc12ef31d047a82adaa0ef66d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="namespaceFPMAS_1_1communication.html">FPMAS::communication</a> namespace contains low level MPI features required by communication processes. </p>

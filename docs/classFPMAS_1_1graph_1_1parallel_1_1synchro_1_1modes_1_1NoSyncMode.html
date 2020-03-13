@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>FPMAS</b></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph.html">graph</a></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph_1_1parallel.html">parallel</a></li><li class="navelem"><b>synchro</b></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes.html">modes</a></li><li class="navelem"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">NoSyncMode</a></li>  </ul>
+<li class="navelem"><b>FPMAS</b></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph.html">graph</a></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph_1_1parallel.html">parallel</a></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph_1_1parallel_1_1synchro.html">synchro</a></li><li class="navelem"><a class="el" href="namespaceFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes.html">modes</a></li><li class="navelem"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">NoSyncMode</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -77,19 +77,19 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a85407a956ee0adaf24651bae7ea4f33f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html#a85407a956ee0adaf24651bae7ea4f33f">NoSyncMode</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">NoSyncMode</a>, N &gt; &amp;)</td></tr>
-<tr class="separator:a85407a956ee0adaf24651bae7ea4f33f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8262bf5e80a685f2e0e1c15e09d4409"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html#af8262bf5e80a685f2e0e1c15e09d4409">NoSyncMode</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html">DistributedGraphBase</a>&lt; T, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">NoSyncMode</a>, N &gt; &amp;)</td></tr>
+<tr class="separator:af8262bf5e80a685f2e0e1c15e09d4409"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T, int N&gt;<br />
 class FPMAS::graph::parallel::synchro::modes::NoSyncMode&lt; T, N &gt;</h3>
 
-<p>Synchronisation mode that can be used as a template argument for a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>, where no synchronization or overlapping zone is used.</p>
+<p>Synchronisation mode that can be used as a template argument for a <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html">DistributedGraphBase</a>, where no synchronization or overlapping zone is used.</p>
 <p>When a node is exported, its connections with nodes that are not exported on the same process are lost.</p>
 <p>In consequence, it is also implicitly impossible to create or destroy distant links. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a85407a956ee0adaf24651bae7ea4f33f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a85407a956ee0adaf24651bae7ea4f33f">&#9670;&nbsp;</a></span>NoSyncMode()</h2>
+<a id="af8262bf5e80a685f2e0e1c15e09d4409"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8262bf5e80a685f2e0e1c15e09d4409">&#9670;&nbsp;</a></span>NoSyncMode()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -99,7 +99,7 @@ template&lt;typename T , int N&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">FPMAS::graph::parallel::synchro::modes::NoSyncMode</a>&lt; T, N &gt;::<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">NoSyncMode</a> </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt; T, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">NoSyncMode</a>&lt; T, N &gt;, N &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html">DistributedGraphBase</a>&lt; T, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">NoSyncMode</a>&lt; T, N &gt;, N &gt; &amp;&#160;</td>
           <td class="paramname"><em>dg</em></td><td>)</td>
           <td></td>
         </tr>
@@ -108,7 +108,7 @@ template&lt;typename T , int N&gt; </div>
 <p><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1NoSyncMode.html">NoSyncMode</a> constructor.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">dg</td><td>parent <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> </td></tr>
+    <tr><td class="paramname">dg</td><td>parent <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html">DistributedGraphBase</a> </td></tr>
   </table>
   </dd>
 </dl>

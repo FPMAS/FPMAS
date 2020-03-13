@@ -10,6 +10,9 @@
 	void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, \
     int *, int , ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *
 
+/**
+ * Zoltan utility functions.
+ */
 namespace FPMAS::graph::parallel::zoltan::utils {
 
 	unsigned long read_zoltan_id(const ZOLTAN_ID_PTR);
