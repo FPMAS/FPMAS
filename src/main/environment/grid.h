@@ -24,25 +24,77 @@ namespace FPMAS::environment {
 	};
 
 	namespace grid {
+		static constexpr int GridLayer = 1;
 		class Cell : public Agent<Cell> {
 			private:
+				int _x;
+				int _y;
 				void act() override {};
-
+			public:
+				Cell(){}
+				Cell(int x, int y) : _x(x), _y(y) {}
+				int x() const {
+					return _x;
+				}
+				int y() const {
+					return _y;
+				}
 		};
 
 		// T = agent
-		template<SYNC_MODE = GhostMode, int N = 1> class Grid : public Environment<S, N+1, Cell> {
+		template<int W, int H, SYNC_MODE = GhostMode, int N = 1> class Grid : public Environment<S, N+1, Cell> {
 			public:
-				Grid(int width, int height);
+				static NodeId id(int x, int y) {
+					return y * W + x;
+				};
+				Grid();
 
 		};
 
-		template<SYNC_MODE, int N> Grid<S, N>::Grid(int width, int height) {
-			int id=0;
-			for(int i = 0; i < width; i++) {
-				for (int j = 0; j < height; j++) {
+		template<int W, int H, SYNC_MODE, int N> Grid<W, H, S, N>::Grid() {
+			for(int i = 0; i < W; i++) {
+				for (int j = 0; j < H; j++) {
 					// Build cell
-					this->buildNode(id++, std::move(std::unique_ptr<Agent<Cell>>(new Cell())));
+					this->buildNode(
+						id(i, j),
+						std::unique_ptr<Agent<Cell>>(new Cell(i, j))
+						);
+				}
+			}
+			int arcId = 0;
+			for(auto node : this->getNodes()) {
+				const Cell& cell = dynamic_cast<Cell&>(*node.second->data()->read());
+				if(cell.x() > 0) {
+					this->link(
+							node.first,
+							id(cell.x() - 1, cell.y()),
+							arcId++,
+							GridLayer
+							);
+				}
+				if(cell.x() < W - 1) {
+					this->link(
+							node.first,
+							id(cell.x() + 1, cell.y()),
+							arcId++,
+							GridLayer
+							);
+				}
+				if(cell.y() > 0) {
+					this->link(
+							node.first,
+							id(cell.x(), cell.y() - 1),
+							arcId++,
+							GridLayer
+							);
+				}
+				if(cell.y() < H - 1) {
+					this->link(
+							node.first,
+							id(cell.x(), cell.y() + 1),
+							arcId++,
+							GridLayer
+							);
 				}
 			}
 		}
@@ -56,10 +108,13 @@ namespace nlohmann {
 		struct adl_serializer<Cell> {
 			static void to_json(json& j, const Cell& value) {
 				// calls the "to_json" method in T's namespace
+				j["x"] = value.x();
+				j["y"] = value.y();
 			}
 
 			static void from_json(const json& j, Cell& value) {
 				// same thing, but with the "from_json" method
+				value = Cell(j.at("x").get<int>(), j.at("y").get<int>());
 			}
 		};
 }

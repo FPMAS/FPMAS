@@ -193,6 +193,7 @@ class Mpi_DynamicLinkTest : public ::testing::Test {
 using FPMAS::graph::base::DefaultLayer;
 
 TEST_F(Mpi_DynamicLinkTest, local_link) {
+	if(dg.getMpiCommunicator().getSize() > 1) {
 	dg.distribute(partition);
 
 	int i = dg.getMpiCommunicator().getRank();
@@ -201,6 +202,9 @@ TEST_F(Mpi_DynamicLinkTest, local_link) {
 	ASSERT_EQ(dg.getArcs().size(), 1);
 	const auto* node = dg.getNode(2*i);
 	ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 1);
+	} else {
+		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+	}
 }
 
 /*
@@ -388,52 +392,60 @@ TEST_F(Mpi_DynamicGhostLinkTest, ghost_source_and_target_link) {
  * Distant unlink using arc id
  */
 TEST_F(Mpi_DynamicLinkTest, unlink_with_id) {
-	dg.distribute(partition);
+	if(dg.getMpiCommunicator().getSize() > 1) {
+		dg.distribute(partition);
 
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
-	ASSERT_EQ(dg.getArcs().size(), 0);
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+		ASSERT_EQ(dg.getArcs().size(), 0);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
 
-	int i = dg.getMpiCommunicator().getRank();
-	dg.unlink(i);
+		int i = dg.getMpiCommunicator().getRank();
+		dg.unlink(i);
 
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 1);
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 1);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 1);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 1);
 
-	dg.synchronize();
+		dg.synchronize();
 
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
-	ASSERT_EQ(dg.getArcs().size(), 0);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+		ASSERT_EQ(dg.getArcs().size(), 0);
+	} else {
+		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+	}
 }
 
 /*
  * Distant unlink using arc ptr
  */
 TEST_F(Mpi_DynamicLinkTest, unlink_with_arc_ptr) {
-	dg.distribute(partition);
+	if(dg.getMpiCommunicator().getSize() > 1) {
+		dg.distribute(partition);
 
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
-	ASSERT_EQ(dg.getArcs().size(), 0);
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+		ASSERT_EQ(dg.getArcs().size(), 0);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
 
-	int i = dg.getMpiCommunicator().getRank();
-	dg.unlink(*dg.getNode(2*i+1)->getOutgoingArcs().begin());
+		int i = dg.getMpiCommunicator().getRank();
+		dg.unlink(*dg.getNode(2*i+1)->getOutgoingArcs().begin());
 
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 1);
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 1);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 1);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 1);
 
-	dg.synchronize();
+		dg.synchronize();
 
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
-	ASSERT_EQ(dg.getArcs().size(), 0);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+		ASSERT_EQ(dg.getArcs().size(), 0);
+	} else {
+		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+	}
 }
 
 /*
@@ -442,25 +454,29 @@ TEST_F(Mpi_DynamicLinkTest, unlink_with_arc_ptr) {
  * no error.
  */
 TEST_F(Mpi_DynamicLinkTest, multiple_unlink) {
-	dg.distribute(partition);
+	if(dg.getMpiCommunicator().getSize() > 1) {
+		dg.distribute(partition);
 
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
-	ASSERT_EQ(dg.getArcs().size(), 0);
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
+		ASSERT_EQ(dg.getArcs().size(), 0);
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
 
-	for(auto arc : dg.getGhost().getArcs()) {
-		dg.unlink(arc.second);
+		for(auto arc : dg.getGhost().getArcs()) {
+			dg.unlink(arc.second);
+		}
+
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+
+		dg.synchronize();
+
+		ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
+		ASSERT_EQ(dg.getArcs().size(), 0);
+	} else {
+		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
 	}
-
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
-
-	dg.synchronize();
-
-	ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
-	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
-	ASSERT_EQ(dg.getArcs().size(), 0);
 }
