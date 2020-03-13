@@ -42,7 +42,7 @@ namespace FPMAS::environment {
 			for(int i = 0; i < width; i++) {
 				for (int j = 0; j < height; j++) {
 					// Build cell
-					this->buildNode(id++, std::unique_ptr<Agent<Cell>>(new Cell()));
+					this->buildNode(id++, std::move(std::unique_ptr<Agent<Cell>>(new Cell())));
 				}
 			}
 		}

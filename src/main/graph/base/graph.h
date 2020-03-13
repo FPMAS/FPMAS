@@ -170,7 +170,7 @@ namespace FPMAS {
 			 * @return pointer to built node
 			 */
 			template<typename T, int N> Node<T, N>* Graph<T, N>::buildNode(NodeId id, T&& data) {
-				Node<T, N>* node = new Node<T, N>(id, std::move(data));
+				Node<T, N>* node = new Node<T, N>(id, std::forward<T>(data));
 				this->nodes[id] = node;
 				return node;
 			}
@@ -188,7 +188,7 @@ namespace FPMAS {
 			 * @return pointer to build node
 			 */
 			template<typename T, int N> Node<T, N>* Graph<T, N>::buildNode(NodeId id, float weight, T&& data) {
-				Node<T, N>* node = new Node<T, N>(id, weight, std::move(data));
+				Node<T, N>* node = new Node<T, N>(id, weight, std::forward<T>(data));
 				this->nodes[id] = node;
 				return node;
 			}

@@ -21,18 +21,18 @@ namespace FPMAS::graph::parallel {
 	using base::Arc;
 	using base::Graph;
 
-	template<typename T, SYNC_MODE, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
 
 	template<typename T, int N, SYNC_MODE> class GhostNode;
 	template<typename T, int N, SYNC_MODE> class GhostArc;
 
 	/**
-	 * A GhostGraph is a data structure used by DistributedGraph s to store
+	 * A GhostGraph is a data structure used by DistributedGraphBase s to store
 	 * and manage GhostNode s and GhostArc s.
 	 *
-	 * A GhostGraph actually lives within a DistributedGraph, because
+	 * A GhostGraph actually lives within a DistributedGraphBase, because
 	 * GhostNode can (and should) be linked to regular nodes of the
-	 * DistributedGraph thanks to GhostArc s.
+	 * DistributedGraphBase thanks to GhostArc s.
 	 *
 	 * Finally, the GhostGraph can also synchronize GhostNode s data thanks to
 	 * the synchronize() function.
@@ -47,10 +47,10 @@ namespace FPMAS::graph::parallel {
 		friend void zoltan::ghost::unpack_obj_multi_fn<T, N, S>(
 				void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 				);
-		friend DistributedGraph<T,S,N>;
+		friend DistributedGraphBase<T,S,N>;
 
 		private:
-		DistributedGraph<T, S, N>* localGraph;
+		DistributedGraphBase<T, S, N>* localGraph;
 		MpiCommunicator mpiCommunicator;
 		Zoltan zoltan;
 
@@ -63,8 +63,8 @@ namespace FPMAS::graph::parallel {
 
 		public:
 
-		GhostGraph(DistributedGraph<T, S, N>*);
-		GhostGraph(DistributedGraph<T, S, N>*, std::initializer_list<int>);
+		GhostGraph(DistributedGraphBase<T, S, N>*);
+		GhostGraph(DistributedGraphBase<T, S, N>*, std::initializer_list<int>);
 
 		void synchronize();
 
@@ -102,34 +102,34 @@ namespace FPMAS::graph::parallel {
 	}
 
 	/**
-	 * Initializes a GhostGraph from the input DistributedGraph.
+	 * Initializes a GhostGraph from the input DistributedGraphBase.
 	 *
-	 * The DistributedGraph instance will be used by the Zoltan query
+	 * The DistributedGraphBase instance will be used by the Zoltan query
 	 * functions to migrate ghost nodes to fetch data about the local
 	 * graph.
 	 *
-	 * @param localGraph pointer to the origin DistributedGraph
+	 * @param localGraph pointer to the origin DistributedGraphBase
 	 */
 	template<typename T, int N, SYNC_MODE> GhostGraph<T, N, S>::GhostGraph(
-			DistributedGraph<T, S, N>* localGraph
+			DistributedGraphBase<T, S, N>* localGraph
 			) : localGraph(localGraph), zoltan(mpiCommunicator.getMpiComm()) {
 		this->initialize();
 	}
 
 	/**
-	 * Initializes a GhostGraph from the input DistributedGraph over
+	 * Initializes a GhostGraph from the input DistributedGraphBase over
 	 * the specified procs.
 	 *
-	 * The DistributedGraph instance will be used by the Zoltan query
+	 * The DistributedGraphBase instance will be used by the Zoltan query
 	 * functions to migrate ghost nodes to fetch data about the local
 	 * graph.
 	 *
-	 * @param localGraph pointer to the origin DistributedGraph
+	 * @param localGraph pointer to the origin DistributedGraphBase
 	 * @param ranks ranks of the procs on which the GhostGraph is
 	 * built
 	 */
 	template<typename T, int N, SYNC_MODE> GhostGraph<T, N, S>::GhostGraph(
-			DistributedGraph<T, S, N>* localGraph, std::initializer_list<int> ranks
+			DistributedGraphBase<T, S, N>* localGraph, std::initializer_list<int> ranks
 			) : localGraph(localGraph), mpiCommunicator(ranks), zoltan(mpiCommunicator.getMpiComm()) {
 		this->initialize();
 	}
@@ -139,7 +139,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * Nodes data and weights are fetched from the procs where each node
 	 * currently lives, in consequence the Proxy associated to the local
-	 * DistributedGraph must also be up to date.
+	 * DistributedGraphBase must also be up to date.
 	 *
 	 * Arcs creation and deletion are currently **not handled** by this
 	 * function.

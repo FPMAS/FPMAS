@@ -165,10 +165,10 @@ namespace FPMAS::graph::base {
 	template<typename T, int N> Node<T, N>::Node(NodeId id) : Node<T, N>(id, 1., T()) {
 	}
 
-	template<typename T, int N> Node<T, N>::Node(NodeId id, T&& data) : Node<T, N>(id, 1., std::move(data)) {
+	template<typename T, int N> Node<T, N>::Node(NodeId id, T&& data) : Node<T, N>(id, 1., std::forward<T>(data)) {
 	}
 
-	template<typename T, int N> Node<T, N>::Node(NodeId id, float weight, T&& data) : GraphItem(id), _data(std::move(data)), weight(weight) {
+	template<typename T, int N> Node<T, N>::Node(NodeId id, float weight, T&& data) : GraphItem(id), _data(std::forward<T>(data)), weight(weight) {
 		for (int i = 0; i < N; i++) {
 			this->layers[i] = Layer<T, N>();
 		}

@@ -54,7 +54,7 @@ namespace FPMAS::graph::parallel {
 	}
 
 	template<typename T, int N, SYNC_MODE> class GhostNode;
-	template<typename T, SYNC_MODE, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
 
 	namespace synchro {
 		using parallel::GhostNode;
@@ -66,7 +66,7 @@ namespace FPMAS::graph::parallel {
 		namespace wrappers {
 
 			/**
-			 * Abstract wrapper for data contained in a DistributedGraph.
+			 * Abstract wrapper for data contained in a DistributedGraphBase.
 			 *
 			 * Getters are used to access data in a completely generic way.
 			 *
@@ -80,8 +80,8 @@ namespace FPMAS::graph::parallel {
 			 */
 			template <typename T, int N, SYNC_MODE> class SyncData {
 				friend nlohmann::adl_serializer<std::unique_ptr<SyncData<T, N, S>>>;
-				friend std::string DistributedGraph<T,S,N>::getLocalData(unsigned long) const;
-				friend std::string DistributedGraph<T,S,N>::getUpdatedData(unsigned long) const;
+				friend std::string DistributedGraphBase<T,S,N>::getLocalData(unsigned long) const;
+				friend std::string DistributedGraphBase<T,S,N>::getUpdatedData(unsigned long) const;
 				friend GhostNode<T,N,S>::GhostNode(
 						SyncMpiCommunicator&,
 						Proxy&,
@@ -147,7 +147,7 @@ namespace FPMAS::graph::parallel {
 			 *
 			 * @param data rvalue to data to wrap.
 			 */
-			template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData(T&& data) : data(std::move(data)) {
+			template<typename T, int N, SYNC_MODE> SyncData<T,N,S>::SyncData(T&& data) : data(std::forward<T>(data)) {
 			}
 
 			/**
@@ -180,7 +180,7 @@ namespace FPMAS::graph::parallel {
 			 * @param data updated data
 			 */
 			template<typename T, int N, SYNC_MODE> void SyncData<T,N,S>::update(T&& data) {
-				this->data = std::move(data);
+				this->data = std::forward<T>(data);
 			}
 
 			/**
@@ -235,21 +235,21 @@ namespace FPMAS::graph::parallel {
 							zoltan_query_functions _config;
 						protected:
 							/**
-							 * Reference to the parent DistributedGraph
+							 * Reference to the parent DistributedGraphBase
 							 * instance.
 							 */
-							DistributedGraph<T, Mode, N>& dg;
+							DistributedGraphBase<T, Mode, N>& dg;
 
 							/**
 							 * SyncMode constructor.
 							 *
 							 * @param config zoltan configuration associated to
 							 * this mode
-							 * @param dg parent DistributedGraph
+							 * @param dg parent DistributedGraphBase
 							 */
 							SyncMode(
 									zoltan_query_functions config,
-									DistributedGraph<T, Mode, N>& dg
+									DistributedGraphBase<T, Mode, N>& dg
 									) : _config(config), dg(dg) {}
 
 						public:
@@ -259,7 +259,7 @@ namespace FPMAS::graph::parallel {
 							 * Synchronization mode dependent link request
 							 * initialization.
 							 *
-							 * Called by the DistributedGraph before creating a
+							 * Called by the DistributedGraphBase before creating a
 							 * new distant Arc, to acquire required resources
 							 * for example.
 							 *
@@ -279,7 +279,7 @@ namespace FPMAS::graph::parallel {
 							 * notification.
 							 *
 							 * Called after a new distant Arc has been created in the
-							 * DistributedGraph, to export it to distant procs
+							 * DistributedGraphBase, to export it to distant procs
 							 * for example.
 							 *
 							 * @param arc pointer to the new arc
@@ -305,7 +305,7 @@ namespace FPMAS::graph::parallel {
 
 							/**
 							 * A synchronization mode dependent termination function,
-							 * called at each DistributedGraph::synchronize() call.
+							 * called at each DistributedGraphBase::synchronize() call.
 							 */
 							virtual void termination() {};
 
@@ -369,7 +369,7 @@ namespace FPMAS::graph::parallel {
 					> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
 							NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
 							) {
-						return new Wrapper<T,N>(id, comm, proxy, std::move(data));
+						return new Wrapper<T,N>(id, comm, proxy, std::forward<T>(data));
 					}
 
 		}

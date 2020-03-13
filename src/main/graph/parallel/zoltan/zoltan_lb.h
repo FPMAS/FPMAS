@@ -13,7 +13,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<typename T, SYNC_MODE, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
 
 	using base::NodeId;
 	using synchro::wrappers::SyncData;
@@ -27,28 +27,28 @@ namespace FPMAS::graph::parallel {
 
 		/**
 		 * Returns the number of nodes currently managed by the current processor
-		 * (i.e. the number of nodes contained in the local DistributedGraph
+		 * (i.e. the number of nodes contained in the local DistributedGraphBase
 		 * instance).
 		 *
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_OBJ_FN).
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param ierr Result : error code
 		 * @return numbe of nodes managed by the current process
 		 */
 		template<typename T, int N, SYNC_MODE> int num_obj(void *data, int* ierr) {
-			return ((DistributedGraph<T, S, N>*) data)->getNodes().size();
+			return ((DistributedGraphBase<T, S, N>*) data)->getNodes().size();
 		}
 
 		/**
 		 * Lists node ids contained on the current process (i.e. in the
-		 * DistributedGraph instance associated to the process).
+		 * DistributedGraphBase instance associated to the process).
 		 *
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_OBJ_LIST_FN).
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param global_ids Result : global ids assigned to processor
@@ -68,7 +68,7 @@ namespace FPMAS::graph::parallel {
 				int *ierr
 				) {
 			int i = 0;
-			for(auto n : ((DistributedGraph<T, S, N>*) data)->getNodes()) {
+			for(auto n : ((DistributedGraphBase<T, S, N>*) data)->getNodes()) {
 				Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = n.second;
 
 				utils::write_zoltan_id(node->getId(), &global_ids[i * num_gid_entries]);
@@ -83,7 +83,7 @@ namespace FPMAS::graph::parallel {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_obj number of objects IDs in global_ids
@@ -103,7 +103,7 @@ namespace FPMAS::graph::parallel {
 				int *ierr
 				) {
 			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes
-				= ((DistributedGraph<T, S, N>*) data)->getNodes();
+				= ((DistributedGraphBase<T, S, N>*) data)->getNodes();
 			for(int i = 0; i < num_obj; i++) {
 				Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = nodes.at(
 						utils::read_zoltan_id(&global_ids[i * num_gid_entries])
@@ -119,7 +119,7 @@ namespace FPMAS::graph::parallel {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_obj number of objects IDs in global_ids
@@ -147,7 +147,7 @@ namespace FPMAS::graph::parallel {
 				float *ewgts,
 				int *ierr) {
 
-			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes = graph->getNodes();
 
 			int neighbor_index = 0;

@@ -17,7 +17,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<typename T, SYNC_MODE, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
 
 	using base::NodeId;
 	using base::ArcId;
@@ -40,7 +40,7 @@ namespace FPMAS::graph::parallel {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_OBJ_SIZE_MULTI_FN).
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_ids number of nodes to serialize
@@ -60,7 +60,7 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 
-			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes = graph->getNodes();
 			for (int i = 0; i < num_ids; i++) {
 				Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
@@ -90,7 +90,7 @@ namespace FPMAS::graph::parallel {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_PACK_OBJ_MULTI_FN).
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_ids number of nodes to pack
@@ -115,7 +115,7 @@ namespace FPMAS::graph::parallel {
 				char *buf,
 				int *ierr) {
 
-			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 			// The node should actually be serialized when computing
 			// the required buffer size. For efficiency purpose, we temporarily
 			// store the result and delete it when it is packed.
@@ -140,7 +140,7 @@ namespace FPMAS::graph::parallel {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_UNPACK_OBJ_MULTI_FN).
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_ids number of nodes to unpack
 		 * @param global_ids item global ids
@@ -160,7 +160,7 @@ namespace FPMAS::graph::parallel {
 				char *buf,
 				int *ierr) {
 
-			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 			for (int i = 0; i < num_ids; i++) {
 				json json_node = json::parse(&buf[idx[i]]);
 
@@ -174,7 +174,7 @@ namespace FPMAS::graph::parallel {
 				graph->buildNode(
 						id,
 						json_node.at("weight").get<float>(),
-						json_node.at("data").get<T>()
+						std::move(json_node.at("data").get<T>())
 						);
 
 				int origin = json_node.at("origin").get<int>();
@@ -190,12 +190,12 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * In our context, this functions computes arcs that need to be
 		 * sent to each process according to exported nodes, and stores
-		 * those information in the proper DistributedGraph buffers.
+		 * those information in the proper DistributedGraphBase buffers.
 		 *
 		 * For each node, all incoming and outgoing arcs are 
 		 * exported.
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_import number of nodes to import
@@ -226,7 +226,7 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 
 			std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes = graph->getNodes();
 			// Set used to ensure that each arc is sent at most once to
@@ -300,12 +300,12 @@ namespace FPMAS::graph::parallel {
 		 *
 		 * In our context, this functions computes arcs that need to be
 		 * sent to each process according to exported nodes, and stores
-		 * those information in the proper DistributedGraph buffers.
+		 * those information in the proper DistributedGraphBase buffers.
 		 *
 		 * For each node, all incoming and outgoing arcs are 
 		 * exported.
 		 *
-		 * @param data user data (local DistributedGraph instance)
+		 * @param data user data (local DistributedGraphBase instance)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_import number of nodes to import
@@ -336,7 +336,7 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraph<T, NoSyncMode, N>* graph =(DistributedGraph<T, NoSyncMode, N>*) data;
+			DistributedGraphBase<T, NoSyncMode, N>* graph =(DistributedGraphBase<T, NoSyncMode, N>*) data;
 
 			std::vector<Arc<std::unique_ptr<SyncData<T,N,NoSyncMode>>, N>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs

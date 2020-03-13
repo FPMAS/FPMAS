@@ -3,7 +3,7 @@
 
 #include "communication/communication.h"
 #include "communication/migrate.h"
-#include "../../distributed_graph.h"
+#include "../../distributed_graph_base.h"
 
 namespace FPMAS::graph::parallel {
 	template<typename T, int N, SYNC_MODE> class GhostArc;
@@ -13,10 +13,10 @@ namespace FPMAS::graph::parallel {
 		}
 		using modes::GhostMode;
 		template<typename T, int N> class UnlinkPostMigrate
-			: public FPMAS::communication::PostMigrate<ArcId, DistributedGraph<T,GhostMode,N>> {
+			: public FPMAS::communication::PostMigrate<ArcId, DistributedGraphBase<T,GhostMode,N>> {
 				public:
 					void operator()(
-							DistributedGraph<T,GhostMode,N>& dg, 
+							DistributedGraphBase<T,GhostMode,N>& dg, 
 							std::unordered_map<int, std::vector<ArcId>> exportMap,
 							std::unordered_map<int, std::vector<ArcId>> importMap
 							) override {
@@ -41,13 +41,13 @@ namespace FPMAS::graph::parallel {
 			};
 		template<typename T, int N> void migrateUnlink(
 				std::unordered_map<int, std::vector<ArcId>> exportMap,
-				DistributedGraph<T,GhostMode,N>& dg
+				DistributedGraphBase<T,GhostMode,N>& dg
 				) {
 			FPMAS::communication::migrate<
 				ArcId,
-			DistributedGraph<T,GhostMode,N>,
-			communication::voidPreMigrate<ArcId, DistributedGraph<T,GhostMode,N>>,
-			communication::voidMidMigrate<ArcId, DistributedGraph<T,GhostMode,N>>,
+			DistributedGraphBase<T,GhostMode,N>,
+			communication::voidPreMigrate<ArcId, DistributedGraphBase<T,GhostMode,N>>,
+			communication::voidMidMigrate<ArcId, DistributedGraphBase<T,GhostMode,N>>,
 			UnlinkPostMigrate<T,N>
 				>(exportMap, dg.getMpiCommunicator(), dg);
 		}

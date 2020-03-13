@@ -4,7 +4,6 @@
 #include "utils/config.h"
 #include "../synchro/sync_mode.h"
 #include "../proxy/proxy.h"
-#include "../distributed_graph.h"
 #include "../olz.h"
 #include "migration/unlink.h"
 
@@ -12,10 +11,10 @@ using FPMAS::graph::parallel::proxy::Proxy;
 
 namespace FPMAS::graph::parallel {
 	template<typename T, int N, SYNC_MODE> class GhostArc;
-	template<typename T, SYNC_MODE, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
 
 	using zoltan::utils::write_zoltan_id;
-	using parallel::DistributedGraph;
+	using parallel::DistributedGraphBase;
 
 	namespace synchro {
 		namespace modes {
@@ -49,7 +48,7 @@ namespace FPMAS::graph::parallel {
 			 *
 			 * @param id data id
 			 * @param mpiComm MPI Communicator associated to the containing
-			 * DistributedGraph
+			 * DistributedGraphBase
 			 * @param proxy graph proxy
 			 *
 			 */
@@ -67,7 +66,7 @@ namespace FPMAS::graph::parallel {
 			 * @param id data id
 			 * @param data rvalue to data to wrap
 			 * @param mpiComm MPI Communicator associated to the containing
-			 * DistributedGraph
+			 * DistributedGraphBase
 			 * @param proxy graph proxy
 			 */
 			template<typename T, int N> GhostData<T,N>::GhostData(
@@ -75,7 +74,7 @@ namespace FPMAS::graph::parallel {
 					SyncMpiCommunicator& mpiComm,
 					const Proxy& proxy,
 					T&& data)
-				: SyncData<T,N,modes::GhostMode>(std::move(data)) {
+				: SyncData<T,N,modes::GhostMode>(std::forward<T>(data)) {
 				}
 
 			/**
@@ -84,7 +83,7 @@ namespace FPMAS::graph::parallel {
 			 * @param id data id
 			 * @param data data to wrap
 			 * @param mpiComm MPI Communicator associated to the containing
-			 * DistributedGraph
+			 * DistributedGraphBase
 			 * @param proxy graph proxy
 			 */
 			template<typename T, int N> GhostData<T,N>::GhostData(
@@ -99,14 +98,14 @@ namespace FPMAS::graph::parallel {
 		namespace modes {
 
 			/**
-			 * Synchronisation mode used as default by the DistributedGraph.
+			 * Synchronisation mode used as default by the DistributedGraphBase.
 			 *
 			 * In this mode, overlapping zones (represented as a "ghost graph")
 			 * are built and synchronized on each proc.
 			 *
 			 * When a node is exported, ghost arcs and nodes are built to keep
 			 * consistency across processes, and ghost nodes data is fetched
-			 * at each DistributedGraph::synchronize() call.
+			 * at each DistributedGraphBase::synchronize() call.
 			 *
 			 * Read and Acquire operations can directly access fetched data
 			 * locally.
@@ -116,8 +115,8 @@ namespace FPMAS::graph::parallel {
 			 * origin proc, and will be overriden at the next synchronization.
 			 *
 			 * Moreover, this mode allows to link or unlink nodes, according to the
-			 * semantics defined in the DistributedGraph. Such graph modifications
-			 * are imported and exported at each DistributedGraph::synchronize()
+			 * semantics defined in the DistributedGraphBase. Such graph modifications
+			 * are imported and exported at each DistributedGraphBase::synchronize()
 			 * call.
 			 *
 			 * @tparam T wrapped data type
@@ -136,7 +135,7 @@ namespace FPMAS::graph::parallel {
 					void migrateUnlinks();
 
 				public:
-					GhostMode(DistributedGraph<T, GhostMode, N>&);
+					GhostMode(DistributedGraphBase<T, GhostMode, N>&);
 					void termination() override;
 
 					void notifyLinked(
@@ -149,9 +148,9 @@ namespace FPMAS::graph::parallel {
 			/**
 			 * GhostMode constructor.
 			 *
-			 * @param dg reference to the parent DistributedGraph
+			 * @param dg reference to the parent DistributedGraphBase
 			 */
-			template<typename T, int N> GhostMode<T,N>::GhostMode(DistributedGraph<T, GhostMode, N>& dg) :
+			template<typename T, int N> GhostMode<T,N>::GhostMode(DistributedGraphBase<T, GhostMode, N>& dg) :
 				SyncMode<GhostMode, wrappers::GhostData, T,N>(zoltan_query_functions(
 							&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, GhostMode>,
 							&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, GhostMode>,
@@ -167,7 +166,7 @@ namespace FPMAS::graph::parallel {
 
 			
 			/**
-			 * Called at each DistributedGraph::synchronize() call.
+			 * Called at each DistributedGraphBase::synchronize() call.
 			 *
 			 * Exports / imports link and unlink arcs, and fetch updated ghost data
 			 * from other procs.

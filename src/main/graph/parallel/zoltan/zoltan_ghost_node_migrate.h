@@ -13,7 +13,7 @@ using FPMAS::graph::base::Node;
 namespace FPMAS::graph::parallel {
 
 	using synchro::wrappers::SyncData;
-	template<typename T, SYNC_MODE, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
 	template<typename T, int N, SYNC_MODE> class GhostNode;
 
 	namespace zoltan {
@@ -31,7 +31,7 @@ namespace FPMAS::graph::parallel {
 			 * For more information about this function, see the [Zoltan
 			 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_OBJ_SIZE_MULTI_FN).
 			 *
-			 * @param data user data (local DistributedGraph instance)
+			 * @param data user data (local DistributedGraphBase instance)
 			 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 			 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 			 * @param num_ids number of ghost node data to serialize
@@ -51,7 +51,7 @@ namespace FPMAS::graph::parallel {
 					int *ierr) {
 
 
-				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 				std::unordered_map<NodeId, Node<std::unique_ptr<SyncData<T,N,S>>, N>*> nodes = graph->getNodes();
 				for (int i = 0; i < num_ids; i++) {
 					Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
@@ -78,7 +78,7 @@ namespace FPMAS::graph::parallel {
 			 * For more information about this function, see the [Zoltan
 			 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_PACK_OBJ_MULTI_FN).
 			 *
-			 * @param data user data (local DistributedGraph instance)
+			 * @param data user data (local DistributedGraphBase instance)
 			 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 			 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 			 * @param num_ids number of nodes to pack
@@ -103,7 +103,7 @@ namespace FPMAS::graph::parallel {
 					char *buf,
 					int *ierr) {
 
-				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
@@ -130,7 +130,7 @@ namespace FPMAS::graph::parallel {
 			 * For more information about this function, see the [Zoltan
 			 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_mig.html#ZOLTAN_UNPACK_OBJ_MULTI_FN).
 			 *
-			 * @param data user data (local DistributedGraph instance)
+			 * @param data user data (local DistributedGraphBase instance)
 			 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 			 * @param num_ids number of nodes to unpack
 			 * @param global_ids item global ids
@@ -150,7 +150,7 @@ namespace FPMAS::graph::parallel {
 					char *buf,
 					int *ierr) {
 
-				DistributedGraph<T, S, N>* graph = (DistributedGraph<T, S, N>*) data;
+				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 				for (int i = 0; i < num_ids; ++i) {
 					int node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 					json json_node = json::parse(&buf[idx[i]]);

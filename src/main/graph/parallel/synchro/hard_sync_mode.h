@@ -64,7 +64,7 @@ namespace FPMAS::graph::parallel::synchro {
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				T&& data)
-			: SyncData<T,N,modes::HardSyncMode>(std::move(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
+			: SyncData<T,N,modes::HardSyncMode>(std::forward<T>(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
 			}
 
 		/**
@@ -126,7 +126,7 @@ namespace FPMAS::graph::parallel::synchro {
 
 		/**
 		 * Hard synchronization mode, that can be used as a template argument
-		 * of the DistributedGraph<T, S> class.
+		 * of the DistributedGraphBase<T, S> class.
 		 *
 		 * In this mode, the graph structure is preserved accross procs as a
 		 * "ghost" graph, like in the GhostMode.
@@ -142,16 +142,16 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<typename T, int N> class HardSyncMode : public SyncMode<HardSyncMode, wrappers::HardSyncData, T, N> {
 			public:
-				HardSyncMode(DistributedGraph<T, HardSyncMode, N>&);
+				HardSyncMode(DistributedGraphBase<T, HardSyncMode, N>&);
 
 		};
 
 		/**
 		 * HardSyncMode constructor.
 		 *
-		 * @param dg parent DistributedGraph
+		 * @param dg parent DistributedGraphBase
 		 */
-		template<typename T, int N> HardSyncMode<T, N>::HardSyncMode(DistributedGraph<T, HardSyncMode, N>& dg)
+		template<typename T, int N> HardSyncMode<T, N>::HardSyncMode(DistributedGraphBase<T, HardSyncMode, N>& dg)
 			: SyncMode<HardSyncMode, wrappers::HardSyncData, T, N>(zoltan_query_functions(
 						&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, HardSyncMode>,
 						&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, HardSyncMode>,

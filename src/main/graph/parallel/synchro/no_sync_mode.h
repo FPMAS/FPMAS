@@ -31,7 +31,7 @@ namespace FPMAS::graph::parallel::synchro {
 				 * NoSyncData constructor.
 				 */
 				NoSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, T&& data) :
-					SyncData<T,N,modes::NoSyncMode>(std::move(data)) {};
+					SyncData<T,N,modes::NoSyncMode>(std::forward<T>(data)) {};
 				/**
 				 * NoSyncData constructor.
 				 */
@@ -44,7 +44,7 @@ namespace FPMAS::graph::parallel::synchro {
 
 		/**
 		 * Synchronisation mode that can be used as a template argument for
-		 * a DistributedGraph, where no synchronization or overlapping zone
+		 * a DistributedGraphBase, where no synchronization or overlapping zone
 		 * is used.
 		 *
 		 * When a node is exported, its connections with nodes that are not
@@ -55,15 +55,15 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<typename T, int N> class NoSyncMode : public SyncMode<NoSyncMode, wrappers::NoSyncData, T, N> {
 			public:
-				NoSyncMode(DistributedGraph<T, NoSyncMode, N>&);
+				NoSyncMode(DistributedGraphBase<T, NoSyncMode, N>&);
 		};
 
 		/**
 		 * NoSyncMode constructor.
 		 *
-		 * @param dg parent DistributedGraph
+		 * @param dg parent DistributedGraphBase
 		 */
-		template<typename T, int N> NoSyncMode<T,N>::NoSyncMode(DistributedGraph<T, NoSyncMode, N>& dg)
+		template<typename T, int N> NoSyncMode<T,N>::NoSyncMode(DistributedGraphBase<T, NoSyncMode, N>& dg)
 			: SyncMode<NoSyncMode, wrappers::NoSyncData, T, N>(zoltan_query_functions(
 						&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T, N>,
 						&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T, N>,
