@@ -18,8 +18,19 @@ namespace FPMAS::agent {
 		public:
 			virtual void act() = 0;
 
+			/*
+			 * Even if they are useless at runtime, `type` and `types` must be
+			 * provided, in order to allow the compiler to deduce T and Ts
+			 * template arguments and perform a "template recursion".
+			 *
+			 * In consequence, T and Ts types must be DefaultConstructible.
+			 */
 			template<typename T, typename... Ts>
-				static void to_json_t(json& j, const std::unique_ptr<Agent<Types...>>& a, T type, Ts... types) {
+				static void to_json_t(
+					json& j,
+					const std::unique_ptr<Agent<Types...>>& a,
+					T type,
+					Ts... types) {
 					if(typeid(*a) == typeid(type)) {
 						j["type"] = AgentSerializer::type_id_map.at(typeid(type));
 						nlohmann::adl_serializer<T>::to_json(j["agent"], dynamic_cast<T&>(*a));
@@ -28,21 +39,33 @@ namespace FPMAS::agent {
 					to_json_t(j, a, types...);
 				}
 				static void to_json_t(json& j, const std::unique_ptr<Agent<Types...>>& a) {
+					// Recursion base case
 				}
 
 
 			template<typename T, typename... Ts>
-				static void from_json_t(const json& j, std::unique_ptr<Agent<Types...>>& agent_ptr, unsigned long type_id, T type, Ts... types) {
-					const nlohmann::TypeInfoRef type_info = (nlohmann::TypeInfoRef) typeid(type);
-					if(type_info.get() == AgentSerializer::id_type_map.at(type_id).get()) {
-						T agent;
-						nlohmann::adl_serializer<T>::from_json(j, agent);
-						agent_ptr = std::unique_ptr<Agent<Types...>>(new T(agent));
+				static void from_json_t(
+					const json& j,
+					std::unique_ptr<Agent<Types...>>& agent_ptr,
+					unsigned long type_id,
+					T type,
+					Ts... types) {
+					const std::type_index type_index
+						= std::type_index(typeid(type));
+					if(type_index == AgentSerializer::id_type_map.at(type_id)) {
+						agent_ptr = std::unique_ptr<Agent<Types...>>(
+							new T(nlohmann::adl_serializer<T>::from_json(j))
+							);
 						return;
 					}
 					from_json_t(j, agent_ptr, type_id, types...);
 				}
-				static void from_json_t(const json& j, std::unique_ptr<Agent<Types...>>& agent_ptr, unsigned long type_id) { }
+				static void from_json_t(
+					const json& j,
+					std::unique_ptr<Agent<Types...>>& agent_ptr,
+					unsigned long type_id) {
+					// Recursion base case
+				}
 	};
 
 }

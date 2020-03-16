@@ -12,20 +12,29 @@ class Wolf : public PreyPredAgent {
 	public:
 		void act() {}
 };
-void to_json(json& j, const Wolf& w) {
-	j["role"] = "WOLF";
-}
-void from_json(const json&, Wolf&) {}
+
+template<>
+struct nlohmann::adl_serializer<Wolf> {
+	static void to_json(json& j, const Wolf& w) {
+		j["role"] = "WOLF";
+	}
+	static Wolf from_json(const json&) {
+		return Wolf();
+	}
+};
 
 class Sheep : public PreyPredAgent {
 	public:
 		void act() {}
 };
 
-void to_json(json& j, const Sheep& w) {
-	j["role"] = "SHEEP";
-}
-void from_json(const json&, Sheep&) {}
+template<>
+struct nlohmann::adl_serializer<Sheep> {
+	static void to_json(json& j, const Sheep& w) {
+		j["role"] = "SHEEP";
+	}
+	static Sheep from_json(const json&) { return Sheep();}
+};
 
 typedef nlohmann::adl_serializer<std::unique_ptr<Agent<Wolf, Sheep>>> test_serializer;
 
@@ -35,14 +44,14 @@ TEST(AgentSerializerTest, test_type_maps) {
 
 	unsigned long wolf_id = test_serializer::type_id_map.at(typeid(Wolf));
 	ASSERT_EQ(
-		test_serializer::id_type_map.at(wolf_id).get(), // Type associated to the generated id
-		((nlohmann::TypeInfoRef) typeid(Wolf)).get() // Actual type
+		test_serializer::id_type_map.at(wolf_id), // Type associated to the generated id
+		std::type_index(typeid(Wolf)) // Actual type
 		);
 
 	unsigned long sheep_id = test_serializer::type_id_map.at(typeid(Sheep));
 	ASSERT_EQ(
-		test_serializer::id_type_map.at(sheep_id).get(),
-		((nlohmann::TypeInfoRef) typeid(Sheep)).get()
+		test_serializer::id_type_map.at(sheep_id),
+		std::type_index(typeid(Sheep))
 		);
 }
 

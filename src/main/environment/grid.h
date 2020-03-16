@@ -27,16 +27,19 @@ namespace FPMAS::environment {
 		static constexpr int GridLayer = 1;
 		class Cell : public Agent<Cell> {
 			private:
-				int _x;
-				int _y;
+				const int _x;
+				const int _y;
 				void act() override {};
 			public:
-				Cell(){}
+				Cell() : _x(0), _y(0) {}
 				Cell(int x, int y) : _x(x), _y(y) {}
-				int x() const {
+
+				Cell(const Cell& other) : Cell(other._x, other._y) {}
+
+				const int x() const {
 					return _x;
 				}
-				int y() const {
+				const int y() const {
 					return _y;
 				}
 		};
@@ -44,7 +47,7 @@ namespace FPMAS::environment {
 		// T = agent
 		template<int W, int H, SYNC_MODE = GhostMode, int N = 1> class Grid : public Environment<S, N+1, Cell> {
 			public:
-				static NodeId id(int x, int y) {
+				static constexpr NodeId id(int x, int y) {
 					return y * W + x;
 				};
 				Grid();
@@ -112,9 +115,9 @@ namespace nlohmann {
 				j["y"] = value.y();
 			}
 
-			static void from_json(const json& j, Cell& value) {
+			static Cell from_json(const json& j) {
 				// same thing, but with the "from_json" method
-				value = Cell(j.at("x").get<int>(), j.at("y").get<int>());
+				return Cell(j.at("x").get<int>(), j.at("y").get<int>());
 			}
 		};
 }
