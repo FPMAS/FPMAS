@@ -4,7 +4,7 @@
 using namespace std::chrono_literals;
 
 #include "gtest/gtest.h"
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 #include "communication/sync_communication.h"
 #include "communication/resource_container.h"
 

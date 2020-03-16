@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "graph/parallel/distributed_graph.h"
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::synchro::wrappers::SyncData;

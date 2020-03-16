@@ -3,13 +3,13 @@
 
 #include "gtest/gtest.h"
 #include "graph/base/graph.h"
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 
 using FPMAS::graph::base::Graph;
 using FPMAS::graph::base::Node;
 using FPMAS::graph::base::Arc;
 
-using FPMAS::test_utils::assert_contains;
+using FPMAS::test::ASSERT_CONTAINS;
 
 class SampleGraphTest : public ::testing::Test {
 
@@ -41,12 +41,8 @@ class SampleGraphTest : public ::testing::Test {
 			ASSERT_EQ(node2->getIncomingArcs().at(0), sampleGraph->getArc(0ul));
 			ASSERT_EQ(node2->getOutgoingArcs().size(), 2);
 
-			Arc<int, 1>* outArcs[2] = {
-				node2->getOutgoingArcs().at(0),
-				node2->getOutgoingArcs().at(1)
-			};
-			assert_contains<Arc<int, 1>*, 2>(outArcs, sampleGraph->getArc(1ul));
-			assert_contains<Arc<int, 1>*, 2>(outArcs, sampleGraph->getArc(2ul));
+			ASSERT_CONTAINS(sampleGraph->getArc(1ul), node2->getOutgoingArcs());
+			ASSERT_CONTAINS(sampleGraph->getArc(2ul), node2->getOutgoingArcs());
 
 			auto node3 = sampleGraph->getNode(3ul);
 			ASSERT_EQ(node3->data(), 3);

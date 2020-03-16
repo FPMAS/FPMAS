@@ -2,7 +2,7 @@
 #define SAMPLE_MULTI_GRAPH_H
 
 #include "gtest/gtest.h"
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 #include "graph/base/graph.h"
 
 enum TestLayer {
@@ -15,7 +15,7 @@ using FPMAS::graph::base::Graph;
 using FPMAS::graph::base::Node;
 using FPMAS::graph::base::Arc;
 
-using FPMAS::test_utils::assert_contains;
+using FPMAS::test::ASSERT_CONTAINS;
 
 class SampleMultiGraphTest : public ::testing::Test {
 	private:
@@ -77,14 +77,9 @@ class SampleMultiGraphTest : public ::testing::Test {
 			// NODE 3
 			const Node<int, 3>* node3 = sampleMultiGraph.getNode(3ul);
 			ASSERT_EQ(node3->getIncomingArcs().size(), 2);
-			assert_contains<Arc<int, 3>*, 2>(
-					node3->getIncomingArcs().data(),
-					const_cast<Arc<int, 3>*>(sampleMultiGraph.getArc(0))
-					);
-			assert_contains<Arc<int, 3>*, 2>(
-					node3->getIncomingArcs().data(),
-					const_cast<Arc<int, 3>*>(sampleMultiGraph.getArc(2))
-					);
+			ASSERT_CONTAINS(sampleMultiGraph.getArc(0), node3->getIncomingArcs());
+			ASSERT_CONTAINS(sampleMultiGraph.getArc(2), node3->getIncomingArcs());
+
 			ASSERT_EQ(node3->getOutgoingArcs().size(), 1);
 			ASSERT_EQ(node3->getOutgoingArcs().at(0)->getTargetNode()->getId(), 1);
 

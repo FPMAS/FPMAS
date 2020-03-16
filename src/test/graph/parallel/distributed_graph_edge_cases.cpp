@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "graph/parallel/distributed_graph.h"
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 
 #include "graph/parallel/synchro/hard_sync_mode.h"
 

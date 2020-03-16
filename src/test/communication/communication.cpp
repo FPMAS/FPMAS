@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 #include "communication/communication.h"
 #include "communication/resource_container.h"
 

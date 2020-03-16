@@ -5,7 +5,7 @@
 #include "graph/parallel/synchro/ghost_mode.h"
 #include "utils/config.h"
 
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 
 using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 

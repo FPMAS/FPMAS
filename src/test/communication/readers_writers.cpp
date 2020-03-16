@@ -7,7 +7,7 @@
 
 #include "communication/resource_container.h"
 #include "communication/sync_communication.h"
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 
 using namespace std::chrono_literals;
 

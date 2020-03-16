@@ -4,9 +4,8 @@
 #include "graph/parallel/zoltan/zoltan_lb.h"
 #include "utils/config.h"
 
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 
-using FPMAS::test_utils::assert_contains;
 using FPMAS::graph::parallel::synchro::modes::GhostMode;
 
 using FPMAS::graph::parallel::DistributedGraph;

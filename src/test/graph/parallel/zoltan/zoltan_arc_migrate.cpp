@@ -6,7 +6,7 @@
 #include "utils/config.h"
 #include "graph/parallel/synchro/ghost_mode.h"
 
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 
 using FPMAS::communication::MpiCommunicator;
 

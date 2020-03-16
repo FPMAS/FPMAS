@@ -6,13 +6,13 @@
 #include "utils/config.h"
 #include "graph/parallel/synchro/ghost_mode.h"
 
-#include "test_utils/test_utils.h"
+#include "utils/test.h"
 
 using FPMAS::communication::MpiCommunicator;
 
 using FPMAS::graph::parallel::DistributedGraph;
 
-using FPMAS::test_utils::assert_contains;
+using FPMAS::test::ASSERT_CONTAINS;
 
 using FPMAS::graph::parallel::zoltan::utils::read_zoltan_id;
 using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
@@ -34,9 +34,13 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		float weights[3];
 
 		// Resulting global ids
-		int node1_index;
-		int node2_index;
-		int node3_index;
+		/*
+		 *int nodeIndex[0ul];
+		 *int nodeIndex[2ul];
+		 *int nodeIndex[85250ul];
+		 */
+
+		std::unordered_map<NodeId, int> nodeIndex;
 
 		// Edge lists
 		int num_edges[3];
@@ -69,12 +73,12 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 					&err
 					);
 
-			// We don't know in which order nodes will be processed internally.
-			// So, for the purpose of the test, we use weights to find which node
-			// correspond to which index in weights and global_ids.
-			assert_contains<float, 3>(weights, 1., &node1_index);
-			assert_contains<float, 3>(weights, 2., &node2_index);
-			assert_contains<float, 3>(weights, 3., &node3_index);
+			// Assumes that nodes are iterated in the same order within
+			// obj_list implementation
+			int index = 0;
+			for(auto node : dg.getNodes()) {
+				nodeIndex[node.first] = index++;
+			}
 		}
 
 		void write_zoltan_num_edges() {
@@ -96,9 +100,9 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_list_fn_test) {
 
 	write_zoltan_global_ids();
 
-	ASSERT_EQ(read_zoltan_id(&global_ids[2 * node1_index]), 0ul);
-	ASSERT_EQ(read_zoltan_id(&global_ids[2 * node2_index]), 2ul);
-	ASSERT_EQ(read_zoltan_id(&global_ids[2 * node3_index]), 85250ul);
+	ASSERT_EQ(read_zoltan_id(&global_ids[2 * nodeIndex[0ul]]), 0ul);
+	ASSERT_EQ(read_zoltan_id(&global_ids[2 * nodeIndex[2ul]]), 2ul);
+	ASSERT_EQ(read_zoltan_id(&global_ids[2 * nodeIndex[85250ul]]), 85250ul);
 }
 
 
@@ -109,11 +113,11 @@ TEST_F(Mpi_ZoltanFunctionsTest, obj_num_egdes_multi_test) {
 	write_zoltan_num_edges();
 
 	// Node 0 has 2 outgoing arcs
-	ASSERT_EQ(num_edges[node1_index], 2);
+	ASSERT_EQ(num_edges[nodeIndex[0ul]], 2);
 	// Node 1 has 1 outgoing arcs
-	ASSERT_EQ(num_edges[node2_index], 1);
+	ASSERT_EQ(num_edges[nodeIndex[2ul]], 1);
 	// Node 2 has 0 outgoing arcs
-	ASSERT_EQ(num_edges[node3_index], 0);
+	ASSERT_EQ(num_edges[nodeIndex[85250ul]], 0);
 }
 
 using FPMAS::graph::parallel::zoltan::edge_list_multi_fn;
@@ -144,16 +148,16 @@ TEST_F(Mpi_ZoltanFunctionsTest, edge_list_multi_test) {
 			&err
 			);
 
-	int node1_offset = node1_index < node2_index ? 0 : 1;
-	int node2_offset = node1_index < node2_index ? 2 : 0;
+	int node1_offset = nodeIndex[0ul] < nodeIndex[2ul] ? 0 : 1;
+	int node2_offset = nodeIndex[0ul] < nodeIndex[2ul] ? 2 : 0;
 
-	unsigned long node1_edges[] = {
+	std::array<unsigned long, 2> node1_edges = {
 		read_zoltan_id(&nbor_global_id[(node1_offset) * 2]),
 		read_zoltan_id(&nbor_global_id[(node1_offset + 1) * 2]),
 	};
 
-	assert_contains<unsigned long, 2>(node1_edges, 2);
-	assert_contains<unsigned long, 2>(node1_edges, 85250);
+	ASSERT_CONTAINS(2, node1_edges);
+	ASSERT_CONTAINS(85250, node1_edges);
 
 	ASSERT_EQ(read_zoltan_id(&nbor_global_id[node2_offset * 2]), 0);
 
