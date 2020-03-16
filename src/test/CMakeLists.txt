@@ -79,7 +79,9 @@ set(SOURCES
 # Environment
 set(SOURCES
 	${SOURCES}
-	environment/grid.cpp)
+	environment/grid.cpp
+	environment/von_neumann.cpp
+	)
 
 # Agent
 set(SOURCES

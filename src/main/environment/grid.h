@@ -1,19 +1,20 @@
 #ifndef GRID_H
 #define GRID_H
 
-
 #include "graph/parallel/distributed_graph.h"
+#include "cell.h"
 #include "agent/agent.h"
+#include "neigborhood.h"
 
 using FPMAS::graph::parallel::synchro::modes::GhostMode;
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::agent::Agent;
 
+#define DEFINE_NEIGHBOR_LAYER(i, N) \
+	static constexpr int Neighbor_##i N+i;
+	
+
 namespace FPMAS::environment {
-	enum GridLayer {
-		DEFAULT = 0,
-		GRID = 1
-	};
 
 	template<SYNC_MODE, int N, typename... AgentTypes>
 	class Environment
@@ -24,39 +25,39 @@ namespace FPMAS::environment {
 	};
 
 	namespace grid {
-		static constexpr int GridLayer = 1;
-		class Cell : public Agent<Cell> {
-			private:
-				const int _x;
-				const int _y;
-				void act() override {};
-			public:
-				Cell() : _x(0), _y(0) {}
-				Cell(int x, int y) : _x(x), _y(y) {}
-
-				Cell(const Cell& other) : Cell(other._x, other._y) {}
-
-				const int x() const {
-					return _x;
-				}
-				const int y() const {
-					return _y;
-				}
-		};
-
 		// T = agent
-		template<int W, int H, SYNC_MODE = GhostMode, int N = 1> class Grid : public Environment<S, N+1, Cell> {
+		template<
+			template<typename, int> class Neighborhood = VonNeumann,
+			int Range = 1,
+			SYNC_MODE = GhostMode,
+			int N = 1> class Grid : public Environment<S, N+Range, Cell> {
+			private:
+				const int _width;
+				const int _height;
+				Neighborhood<Grid<Neighborhood, Range, S, N>, Range> neighborhood;
 			public:
-				static constexpr NodeId id(int x, int y) {
-					return y * W + x;
+				static constexpr int Neighbor_Layer(int d) {
+					return N+d-1;
+				}
+
+				constexpr NodeId id(int x, int y) {
+					return y * _width + x;
 				};
-				Grid();
+				Grid(int width, int height);
+
+				const int width() const {
+					return _width;
+				}
+				const int height() const {
+					return _height;
+				}
 
 		};
 
-		template<int W, int H, SYNC_MODE, int N> Grid<W, H, S, N>::Grid() {
-			for(int i = 0; i < W; i++) {
-				for (int j = 0; j < H; j++) {
+		template<template<typename, int> class Neighborhood, int Range, SYNC_MODE, int N>
+			Grid<Neighborhood, Range, S, N>::Grid(int width, int height): _width(width), _height(height), neighborhood(*this) {
+			for(int i = 0; i < _width; i++) {
+				for (int j = 0; j < _height; j++) {
 					// Build cell
 					this->buildNode(
 						id(i, j),
@@ -67,38 +68,41 @@ namespace FPMAS::environment {
 			int arcId = 0;
 			for(auto node : this->getNodes()) {
 				const Cell& cell = dynamic_cast<Cell&>(*node.second->data()->read());
-				if(cell.x() > 0) {
-					this->link(
-							node.first,
-							id(cell.x() - 1, cell.y()),
-							arcId++,
-							GridLayer
-							);
-				}
-				if(cell.x() < W - 1) {
-					this->link(
-							node.first,
-							id(cell.x() + 1, cell.y()),
-							arcId++,
-							GridLayer
-							);
-				}
-				if(cell.y() > 0) {
-					this->link(
-							node.first,
-							id(cell.x(), cell.y() - 1),
-							arcId++,
-							GridLayer
-							);
-				}
-				if(cell.y() < H - 1) {
-					this->link(
-							node.first,
-							id(cell.x(), cell.y() + 1),
-							arcId++,
-							GridLayer
-							);
-				}
+				neighborhood.linkNeighbors(node.first, cell);
+				/*
+				 *if(cell.x() > 0) {
+				 *    this->link(
+				 *            node.first,
+				 *            id(cell.x() - 1, cell.y()),
+				 *            arcId++,
+				 *            GridLayer
+				 *            );
+				 *}
+				 *if(cell.x() < W - 1) {
+				 *    this->link(
+				 *            node.first,
+				 *            id(cell.x() + 1, cell.y()),
+				 *            arcId++,
+				 *            GridLayer
+				 *            );
+				 *}
+				 *if(cell.y() > 0) {
+				 *    this->link(
+				 *            node.first,
+				 *            id(cell.x(), cell.y() - 1),
+				 *            arcId++,
+				 *            GridLayer
+				 *            );
+				 *}
+				 *if(cell.y() < H - 1) {
+				 *    this->link(
+				 *            node.first,
+				 *            id(cell.x(), cell.y() + 1),
+				 *            arcId++,
+				 *            GridLayer
+				 *            );
+				 *}
+				 */
 			}
 		}
 
