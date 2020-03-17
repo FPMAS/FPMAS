@@ -6,7 +6,7 @@
 using FPMAS::agent::Agent;
 
 namespace FPMAS::environment::grid {
-		class Cell : public Agent<Cell> {
+		template<int N, int Range, typename... AgentTypes> class Cell : public Agent<N+Range, Cell<N, Range, AgentTypes...>, AgentTypes...> {
 			private:
 				const int _x;
 				const int _y;
@@ -15,7 +15,7 @@ namespace FPMAS::environment::grid {
 				Cell() : _x(0), _y(0) {}
 				Cell(int x, int y) : _x(x), _y(y) {}
 
-				Cell(const Cell& other) : Cell(other._x, other._y) {}
+				Cell(const Cell<N, Range, AgentTypes...>& other) : Cell(other._x, other._y) {}
 
 				const int x() const {
 					return _x;

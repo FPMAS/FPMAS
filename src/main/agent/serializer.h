@@ -6,14 +6,14 @@
 #include <tuple>
 
 namespace FPMAS::agent {
-	template<typename...> class Agent;
+	template<int, typename...> class Agent;
 }
 
 namespace nlohmann {
 	using FPMAS::agent::Agent;
 
-	template<typename... Types>
-    struct adl_serializer<std::unique_ptr<Agent<Types...>>> {
+	template<int N, typename... Types>
+    struct adl_serializer<std::unique_ptr<Agent<N, Types...>>> {
 		static const std::unordered_map<std::type_index, unsigned long> type_id_map;
 		static const std::unordered_map<unsigned long, std::type_index> id_type_map;
 
@@ -31,21 +31,21 @@ namespace nlohmann {
 			return map;
 		}
 
-		static void to_json(json& j, const std::unique_ptr<Agent<Types...>>& data) {
-			Agent<Types...>::to_json_t(j, data, Types()...);
+		static void to_json(json& j, const std::unique_ptr<Agent<N, Types...>>& data) {
+			Agent<N, Types...>::to_json_t(j, data, Types()...);
 		}
 
-		static void from_json(const json& j, std::unique_ptr<Agent<Types...>>& agent_ptr) {
-			Agent<Types...>::from_json_t(j, agent_ptr, j.at("type").get<unsigned long>(), Types()...);
+		static void from_json(const json& j, std::unique_ptr<Agent<N, Types...>>& agent_ptr) {
+			Agent<N, Types...>::from_json_t(j, agent_ptr, j.at("type").get<unsigned long>(), Types()...);
 			}
 		};
-	template<typename... Types>
+	template<int N, typename... Types>
 		const std::unordered_map<std::type_index, unsigned long> 
-		adl_serializer<std::unique_ptr<Agent<Types...>>>::type_id_map
+		adl_serializer<std::unique_ptr<Agent<N, Types...>>>::type_id_map
 			= init_type_id_map();
-	template<typename... Types>
+	template<int N, typename... Types>
 		const std::unordered_map<unsigned long, std::type_index> 
-		adl_serializer<std::unique_ptr<Agent<Types...>>>::id_type_map
+		adl_serializer<std::unique_ptr<Agent<N, Types...>>>::id_type_map
 			= init_id_type_map();
 
 }

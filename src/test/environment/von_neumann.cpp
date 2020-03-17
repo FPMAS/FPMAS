@@ -11,7 +11,10 @@ using FPMAS::environment::grid::VonNeumann;
 
 template<int Range> void TestVonNeumannLevel(Grid<VonNeumann, Range>& grid, int level) {
 	for(auto node : grid.getNodes()) {
-		const Cell& cell = dynamic_cast<Cell&>(*node.second->data()->read());
+		const auto& cell
+			= dynamic_cast<typename Grid<VonNeumann, Range>::cell_type&>(
+					*node.second->data()->read()
+			);
 		const auto* node_ptr = node.second;
 		int x = cell.x();
 		int y = cell.y();

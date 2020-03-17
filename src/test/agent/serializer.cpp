@@ -6,7 +6,7 @@ using FPMAS::agent::Agent;
 class Sheep;
 class Wolf;
 
-typedef Agent<Wolf, Sheep> PreyPredAgent;
+typedef Agent<1, Wolf, Sheep> PreyPredAgent;
 
 class Wolf : public PreyPredAgent {
 	public:
@@ -36,7 +36,7 @@ struct nlohmann::adl_serializer<Sheep> {
 	static Sheep from_json(const json&) { return Sheep();}
 };
 
-typedef nlohmann::adl_serializer<std::unique_ptr<Agent<Wolf, Sheep>>> test_serializer;
+typedef nlohmann::adl_serializer<std::unique_ptr<Agent<1, Wolf, Sheep>>> test_serializer;
 
 TEST(AgentSerializerTest, test_type_maps) {
 	ASSERT_EQ(test_serializer::type_id_map.size(), 2);
