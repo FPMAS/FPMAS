@@ -15,8 +15,6 @@ namespace FPMAS::environment::grid {
 					const int _x = 0;
 					const int _y = 0;
 					void act() override {};
-					Cell() {};
-					friend typename agent_type::agent_serializer;
 
 				public:
 					Cell(int x, int y)

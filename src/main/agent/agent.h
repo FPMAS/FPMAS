@@ -61,7 +61,7 @@ namespace FPMAS::agent {
 					unsigned long type_id,
 					AgentType<T> type,
 					AgentType<Ts>... types) {
-					if(std::type_index(typeid(type)) == agent_serializer::id_type_map.at(type_id)) {
+					if(type.type == agent_serializer::id_type_map.at(type_id)) {
 						agent_ptr = std::unique_ptr<agent_type>(
 							new T(nlohmann::adl_serializer<T>::from_json(j))
 							);
