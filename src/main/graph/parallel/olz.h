@@ -4,6 +4,8 @@
 #include "../base/graph.h"
 #include "synchro/ghost_mode.h"
 
+using FPMAS::communication::SyncMpiCommunicator;
+using FPMAS::graph::parallel::proxy::Proxy;
 using FPMAS::graph::base::Node;
 using FPMAS::graph::base::Arc;
 
@@ -11,6 +13,12 @@ namespace FPMAS::graph::parallel {
 
 	using base::ArcId;
 	using base::LayerId;
+
+	namespace synchro::wrappers {
+		template <typename T, int N> class GhostData;
+		template <typename T, int N, SYNC_MODE> class SyncData;
+	}
+
 	using synchro::wrappers::SyncData;
 	using synchro::wrappers::GhostData;
 

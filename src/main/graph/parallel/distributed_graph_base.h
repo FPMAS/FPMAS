@@ -32,7 +32,7 @@ namespace FPMAS {
 		 * functions that might perform distant operations, usually depending
 		 * on the synchronization mode used :
 		 * - link(NodeId, NodeId, ArcId, LayerId)
-		 * - unlink(Arc<std::unique_ptr<SyncData<T,N,S>>, N>*)
+		 * - unlink(arc_ptr)
 		 * - distribute()
 		 * - distribute(std::unordered_map<NodeId, std::pair<int, int>>)
 		 * - synchronize()
@@ -94,6 +94,8 @@ namespace FPMAS {
 			int* export_arcs_procs;
 
 			public:
+			typedef Node<std::unique_ptr<SyncData<T,N,S>>, N>* node_ptr;
+			typedef Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc_ptr;
 
 			DistributedGraphBase<T, S, N>();
 			DistributedGraphBase<T, S, N>(std::initializer_list<int>);
@@ -140,12 +142,12 @@ namespace FPMAS {
 			void updateData(unsigned long, std::string) override;
 
 
-			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId, T&& data);
-			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, T& data);
-			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, T&& data);
-			Node<std::unique_ptr<SyncData<T,N,S>>, N>* buildNode(NodeId id, float weight, const T& data);
+			node_ptr buildNode(NodeId, T&& data);
+			node_ptr buildNode(NodeId id, T& data);
+			node_ptr buildNode(NodeId id, float weight, T&& data);
+			node_ptr buildNode(NodeId id, float weight, const T& data);
 
-			Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId);
+			arc_ptr link(NodeId, NodeId, ArcId);
 			void unlink(ArcId);
 
 			/**
@@ -158,7 +160,7 @@ namespace FPMAS {
 			 * @param layerId id of the Layer on which nodes should be linked
 			 * @return pointer to the created arc
 			 */
-			virtual Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(
+			virtual arc_ptr link(
 					NodeId, NodeId, ArcId, LayerId
 					) = 0;
 			/**
@@ -184,7 +186,7 @@ namespace FPMAS {
 			 * @param arc pointer to the arc to unlink (might be a local Arc or distant
 			 * GhostArc)
 			 */
-			virtual void unlink(Arc<std::unique_ptr<SyncData<T,N,S>>, N>*) override = 0;
+			virtual void unlink(arc_ptr) override = 0;
 
 			/**
 			 * Distributes the graph accross the available cores performing a
@@ -301,7 +303,7 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
-		Node<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraphBase<T, S, N>
+		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
 		::buildNode(NodeId id, T&& data) {
 			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
 				::buildNode(
@@ -325,7 +327,7 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
-		Node<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraphBase<T, S, N>
+		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
 		::buildNode(NodeId id, T& data) {
 			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
 				::buildNode(
@@ -353,7 +355,7 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
-		Node<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraphBase<T, S, N>
+		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
 		::buildNode(NodeId id, float weight, T&& data) {
 			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
 				::buildNode(
@@ -379,7 +381,7 @@ namespace FPMAS {
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
-		Node<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraphBase<T, S, N>
+		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
 		::buildNode(NodeId id, float weight, const T& data) {
 			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
 				::buildNode(
@@ -408,7 +410,7 @@ namespace FPMAS {
 		 * @see link(NodeId, NodeId, ArcId, LayerId)
 		 */
 		template<class T, SYNC_MODE, int N>
-		Arc<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraphBase<T, S, N>
+		typename DistributedGraphBase<T, S, N>::arc_ptr DistributedGraphBase<T, S, N>
 		::link(NodeId source, NodeId target, ArcId arcId) {
 			return this->link(source, target, arcId, base::DefaultLayer);
 		}

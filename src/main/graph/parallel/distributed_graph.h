@@ -66,6 +66,7 @@ namespace FPMAS {
 				void distribute(int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int*, int*, ZOLTAN_ID_PTR, int*);
 
 			public:
+				typedef typename DistributedGraphBase<T, S, N>::arc_ptr arc_ptr;
 				using DistributedGraphBase<T,S,N>::link; // Allows usage of link(NodeId, NodeId, ArcId)
 				using DistributedGraphBase<T,S,N>::unlink; // Allows usage of unlink(ArcId)
 
@@ -75,8 +76,8 @@ namespace FPMAS {
 				DistributedGraph<T, S, N>(const DistributedGraph<T,S,N>&) = delete;
 				DistributedGraph<T, S, N>& operator=(const DistributedGraph<T, S, N>&) = delete;
 
-				Arc<std::unique_ptr<SyncData<T,N,S>>, N>* link(NodeId, NodeId, ArcId, LayerId) override;
-				void unlink(Arc<std::unique_ptr<SyncData<T,N,S>>, N>*) override;
+				arc_ptr link(NodeId, NodeId, ArcId, LayerId) override;
+				void unlink(arc_ptr) override;
 
 				void distribute() override;
 				void distribute(std::unordered_map<NodeId, std::pair<int, int>>) override;
@@ -122,7 +123,7 @@ namespace FPMAS {
 		 * @return pointer to the created arc
 		 */
 		template<class T, SYNC_MODE, int N>
-		Arc<std::unique_ptr<SyncData<T,N,S>>, N>* DistributedGraph<T, S, N>
+		typename DistributedGraph<T, S, N>::arc_ptr DistributedGraph<T, S, N>
 		::link(NodeId source, NodeId target, ArcId arcId, LayerId layerId) {
 			if(this->getNodes().count(source) > 0) {
 				// Source is local
@@ -200,7 +201,7 @@ namespace FPMAS {
 		 * GhostArc)
 		 */
 		template<typename T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::unlink(
-				Arc<std::unique_ptr<SyncData<T,N,S>>,N>* arc
+				arc_ptr arc
 			) {
 			ArcId id = arc->getId();
 			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking arc %lu", id);
