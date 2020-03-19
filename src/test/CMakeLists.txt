@@ -86,7 +86,8 @@ set(SOURCES
 # Agent
 set(SOURCES
 	${SOURCES}
-	agent/serializer.cpp)
+	agent/serializer.cpp
+	agent/perceptions.cpp)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
 target_include_directories(fpmas_mpi_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

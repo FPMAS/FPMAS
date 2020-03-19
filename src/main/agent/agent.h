@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 #include "graph/base/graph.h"
 #include "environment/environment.h"
+#include "agent/perceptions.h"
 #include "serializer.h"
 
 using nlohmann::json;
@@ -26,7 +27,12 @@ namespace FPMAS::agent {
 		public:
 			typedef Environment<S, N, Types...> env_type;
 			typedef typename env_type::agent_type agent_type;
+			typedef typename env_type::node_type node_type;
 			typedef typename env_type::node_ptr node_ptr;
+
+			template<int... layers> Perceptions<node_type, layers...> perceptions(node_ptr node) {
+				return Perceptions<node_type, layers...>(node);
+			}
 
 			virtual void act(node_ptr, env_type&) = 0;
 

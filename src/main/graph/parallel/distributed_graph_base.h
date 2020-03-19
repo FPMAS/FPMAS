@@ -94,6 +94,7 @@ namespace FPMAS {
 			int* export_arcs_procs;
 
 			public:
+			typedef Node<std::unique_ptr<SyncData<T,N,S>>, N> node_type;
 			typedef Node<std::unique_ptr<SyncData<T,N,S>>, N>* node_ptr;
 			typedef Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc_ptr;
 

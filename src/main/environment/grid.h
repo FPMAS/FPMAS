@@ -11,21 +11,28 @@ using FPMAS::graph::parallel::synchro::modes::GhostMode;
 using FPMAS::agent::Agent;
 
 namespace FPMAS::environment::grid {
+	static constexpr int layerCount(int AgentCount, int Range) {
+		return
+			AgentCount+ // User agent
+			Range+ // Cell neighborhood layers count
+			1; // Location layer
+	}
+
 	static constexpr LayerId locationLayer(int N, int Range) {
 		return N+Range;
 	}
-	// T = agent
+
 	template<
 		template<typename, typename, int> class Neighborhood = VonNeumann,
 		int Range = 1,
 		SYNC_MODE = GhostMode,
 		int N = 1, // User provided layers
 		typename... AgentTypes> class Grid
-			: public Environment<S, N+Range+1, Cell<S, N+Range+1, AgentTypes...>, AgentTypes...> {
+			: public Environment<S, layerCount(N, Range), Cell<S, layerCount(N, Range), AgentTypes...>, AgentTypes...> {
 				public:
-					typedef Environment<S, N+Range+1, Cell<S, N+Range+1, AgentTypes...>, AgentTypes...> env_type;
+					typedef Environment<S, layerCount(N, Range), Cell<S, layerCount(N, Range), AgentTypes...>, AgentTypes...> env_type;
 					typedef Grid<Neighborhood, Range, S, N, AgentTypes...> grid_type;
-					typedef Cell<S, N+Range+1, AgentTypes...> cell_type;
+					typedef Cell<S, layerCount(N, Range), AgentTypes...> cell_type;
 
 				private:
 					const int _width;
