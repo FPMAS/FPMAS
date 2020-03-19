@@ -9,12 +9,13 @@ namespace FPMAS::environment::grid {
 		template<SYNC_MODE, int N, typename... AgentTypes> class Cell
 			: public Agent<S, N, Cell<S, N, AgentTypes...>, AgentTypes...> {
 				public:
-					typedef Agent<S, N, Cell<S, N, AgentTypes...>, AgentTypes...> agent_type;
+					typedef Environment<S, N, Cell<S, N, AgentTypes...>, AgentTypes...> env_type;
+					typedef typename env_type::node_ptr node_ptr;
 
 				private:
 					const int _x = 0;
 					const int _y = 0;
-					void act() override {};
+					void act(node_ptr, env_type&) override {};
 
 				public:
 					Cell(int x, int y)

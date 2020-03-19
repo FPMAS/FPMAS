@@ -10,10 +10,12 @@ class Sheep;
 class Wolf;
 
 typedef Agent<GhostMode, 1, Wolf, Sheep> PreyPredAgent;
+typedef typename PreyPredAgent::node_ptr node_ptr;
+typedef typename PreyPredAgent::env_type& env_ref;
 
 class Wolf : public PreyPredAgent {
 	public:
-		void act() {}
+		void act(node_ptr, env_ref) override {}
 };
 
 template<>
@@ -28,7 +30,7 @@ struct nlohmann::adl_serializer<Wolf> {
 
 class Sheep : public PreyPredAgent {
 	public:
-		void act() {}
+		void act(node_ptr, env_ref) override {}
 };
 
 template<>

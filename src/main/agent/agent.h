@@ -18,16 +18,17 @@ namespace FPMAS::agent {
 
 	// functions to handle perceptions might be implemented
 	template<SYNC_MODE, int N, typename... Types> class Agent {
-		protected:
-			typedef Agent<S, N, Types...> agent_type;
-
 		private:
 			typedef nlohmann::adl_serializer<std::unique_ptr<Agent<S, N, Types...>>>
 				agent_serializer;
 			friend agent_serializer;
 
 		public:
-			virtual void act() = 0;
+			typedef Environment<S, N, Types...> env_type;
+			typedef typename env_type::agent_type agent_type;
+			typedef typename env_type::node_ptr node_ptr;
+
+			virtual void act(node_ptr, env_type&) = 0;
 
 			/*
 			 * Even if they are useless at runtime, `type` and `types` must be
