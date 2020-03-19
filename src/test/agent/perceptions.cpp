@@ -30,9 +30,12 @@ class Mpi_PerceptionsTest : public ::testing::Test {
 TEST_F(Mpi_PerceptionsTest, single_layer_perception) {
 	auto perceptions = wolf_1->data()->read()->perceptions<Layer_A>(wolf_1);
 	ASSERT_EQ(perceptions.get().size(), 2);
+	ASSERT_EQ(perceptions.get<Layer_A>().size(), 2);
 }
 
 TEST_F(Mpi_PerceptionsTest, multiple_layer_perception) {
 	auto perceptions = wolf_1->data()->read()->perceptions<Layer_A, Layer_B>(wolf_1);
 	ASSERT_EQ(perceptions.get().size(), 3);
+	ASSERT_EQ(perceptions.get<Layer_A>().size(), 2);
+	ASSERT_EQ(perceptions.get<Layer_B>().size(), 1);
 }

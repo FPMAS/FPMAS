@@ -15,23 +15,35 @@ namespace FPMAS::agent {
 		> class Perception {
 			public:
 			const node_type* node;
-			Perception(node_type* node) : node(node) {}
+			Perception(const node_type* node) : node(node) {}
 		};
 
 	template<
-		typename node_type
+		typename node_type,
+		LayerId layer
+	> class TypedPerception : public Perception<node_type> {
+		public:
+			TypedPerception(const node_type* node)
+				: Perception<node_type>(node) {}
+
+	};
+
+	template<
+		typename node_type,
+		LayerId layer
 	> class PerceptionSet {
 		private:
-			std::vector<Perception<node_type>> set;
+			std::vector<TypedPerception<node_type, layer>> set;
 
 		public:
-			PerceptionSet(const node_type* node, LayerId layer) {
+			PerceptionSet(const node_type* node) {
 				auto neighbors = node->layer(layer).outNeighbors();
 					for(auto neighbor : neighbors) {
-						set.push_back(Perception<node_type>(neighbor));
+						set.push_back(TypedPerception<node_type, layer>(neighbor));
 					}
 			}
-			const std::vector<Perception<node_type>>& get() {
+
+			const std::vector<TypedPerception<node_type, layer>>& get() const {
 				return set;
 			}
 	};
@@ -41,23 +53,29 @@ namespace FPMAS::agent {
 		LayerId... layers
 	> class Perceptions {
 		private:
-			const std::array<PerceptionSet<node_type>, sizeof...(layers)>
+			const std::tuple<PerceptionSet<node_type, layers>...>
 				perceptions;
 			std::vector<Perception<node_type>> concat_perceptions;
 
+			template<LayerId layer> void merge(PerceptionSet<node_type, layer> perception_set, std::vector<Perception<node_type>>& perceptions ) const {
+				for(auto item : perception_set.get()) {
+					perceptions.push_back(item);
+				}
+			};
+
 		public:
 			Perceptions(const node_type* node) :
-				perceptions {PerceptionSet(node,layers)...} {
-				for(auto _perceptions : perceptions) {
-					for(auto item : _perceptions.get()) {
-						concat_perceptions.push_back(item);
-					}
-				}
+				perceptions {PerceptionSet<node_type, layers>(node)...} {
+				(merge(std::get<PerceptionSet<node_type, layers>>(perceptions), concat_perceptions),...);
 			}
 
-			std::vector<Perception<node_type>> get() {
-					return concat_perceptions;
-				}
+			template<LayerId layer> const std::vector<TypedPerception<node_type, layer>>& get() const {
+				return std::get<PerceptionSet<node_type, layer>>(perceptions).get();
+			}
+
+			const std::vector<Perception<node_type>>& get() const {
+				return concat_perceptions;
+			}
 	};
 }
 

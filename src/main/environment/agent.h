@@ -11,6 +11,10 @@ namespace FPMAS::environment::grid {
 		int N,
 		typename... AgentTypes
 	> class GridAgent : public Agent<S, layerCount(N, Range), Cell<S, layerCount(N, Range), AgentTypes...>, AgentTypes...> {
+		/*
+		 *public:
+		 *    void moveTo(Perception<
+		 */
 
 
 	};
