@@ -2,10 +2,12 @@
 #define NEIGHBORHOOD_H
 
 #include "graph/base/graph.h"
-#include "grid.h"
 #include "cell.h"
 
 namespace FPMAS::environment::grid {
+
+	static constexpr int neighborLayer(int userLayers, int d);
+
 	template<
 		typename grid_type,
 		typename cell_type
@@ -34,7 +36,7 @@ namespace FPMAS::environment::grid {
 									nodeId,
 									this->localGrid.id(cell.x() - i, cell.y()),
 									arcId++,
-									grid_type::Neighbor_Layer(i)
+									neighborLayer(grid_type::userLayers, i)
 									);
 						}
 						if(cell.x() < this->localGrid.width() - i) {
@@ -42,7 +44,7 @@ namespace FPMAS::environment::grid {
 									nodeId,
 									this->localGrid.id(cell.x() + i, cell.y()),
 									arcId++,
-									grid_type::Neighbor_Layer(i)
+									neighborLayer(grid_type::userLayers, i)
 									);
 						}
 						if(cell.y() >= i) {
@@ -50,7 +52,7 @@ namespace FPMAS::environment::grid {
 									nodeId,
 									this->localGrid.id(cell.x(), cell.y() - i),
 									arcId++,
-									grid_type::Neighbor_Layer(i)
+									neighborLayer(grid_type::userLayers, i)
 									);
 						}
 						if(cell.y() < this->localGrid.height() - i) {
@@ -58,7 +60,7 @@ namespace FPMAS::environment::grid {
 									nodeId,
 									this->localGrid.id(cell.x(), cell.y() + i),
 									arcId++,
-									grid_type::Neighbor_Layer(i)
+									neighborLayer(grid_type::userLayers, i)
 									);
 						}				
 					}

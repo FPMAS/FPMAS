@@ -6,6 +6,7 @@
 using FPMAS::test::ASSERT_CONTAINS;
 using FPMAS::environment::grid::Grid;
 using FPMAS::environment::grid::Cell;
+using FPMAS::environment::grid::neighborLayer;
 
 using FPMAS::environment::grid::VonNeumann;
 
@@ -18,8 +19,8 @@ template<int Range> void TestVonNeumannLevel(Grid<VonNeumann, Range>& grid, int 
 		const auto* node_ptr = node.second;
 		int x = cell.x();
 		int y = cell.y();
-		const auto& in = node_ptr->layer(Grid<VonNeumann, Range>::Neighbor_Layer(level)).inNeighbors();
-		const auto& out = node_ptr->layer(Grid<VonNeumann, Range>::Neighbor_Layer(level)).outNeighbors();
+		const auto& in = node_ptr->layer(neighborLayer(Grid<VonNeumann, Range>::userLayers, level)).inNeighbors();
+		const auto& out = node_ptr->layer(neighborLayer(Grid<VonNeumann, Range>::userLayers, level)).outNeighbors();
 
 		/*
 		 * Test corners

@@ -11,16 +11,26 @@ using FPMAS::graph::parallel::synchro::modes::GhostMode;
 using FPMAS::agent::Agent;
 
 namespace FPMAS::environment::grid {
-	static constexpr int layerCount(int AgentCount, int Range) {
-		return
-			AgentCount+ // User agent
-			Range+ // Cell neighborhood layers count
-			1; // Location layer
+
+	static constexpr int neighborLayer(int userLayers, int d) {
+		return userLayers+d-1;
 	}
 
-	static constexpr LayerId locationLayer(int N, int Range) {
-		return N+Range;
+	static constexpr int layerCount(int userLayers, int neighborhoodRange) {
+		return
+			userLayers+ // User layers
+			neighborhoodRange+ // Cell neighborhood layers count
+			1+ // Location layer
+			1; // movableTo layer
 	}
+
+	static constexpr LayerId locationLayer(int userLayers, int neighborhoodRange) {
+		return userLayers + neighborhoodRange;
+	}
+
+	static constexpr LayerId movableTo(int userLayers, int neighborhoodRange) {
+		return userLayers+neighborhoodRange+1;
+	};
 
 	template<
 		template<typename, typename, int> class Neighborhood = VonNeumann,
@@ -33,6 +43,7 @@ namespace FPMAS::environment::grid {
 					typedef Environment<S, layerCount(N, Range), Cell<S, layerCount(N, Range), AgentTypes...>, AgentTypes...> env_type;
 					typedef Grid<Neighborhood, Range, S, N, AgentTypes...> grid_type;
 					typedef Cell<S, layerCount(N, Range), AgentTypes...> cell_type;
+					static const int userLayers = N;
 
 				private:
 					const int _width;
@@ -40,10 +51,6 @@ namespace FPMAS::environment::grid {
 					Neighborhood<grid_type, cell_type, Range> neighborhood;
 
 				public:
-					static constexpr int Neighbor_Layer(int d) {
-						return N+d-1;
-					}
-					static constexpr int locationLayer = N+Range;
 
 					constexpr NodeId id(int x, int y) {
 						return y * _width + x;
