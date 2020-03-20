@@ -9,9 +9,9 @@
 using nlohmann::json;
 
 namespace FPMAS::graph::base {
-	template<typename, int> class Node;
-	template<typename, int> class Arc;
-	template<typename, int> class Graph;
+	template<typename, typename, int> class Node;
+	template<typename, typename, int> class Arc;
+	template<typename, typename, int> class Graph;
 }
 
 /**
@@ -19,16 +19,14 @@ namespace FPMAS::graph::base {
  * library](https://github.com/nlohmann/json).
  */
 namespace nlohmann {
-	using FPMAS::graph::base::NodeId;
-	using FPMAS::graph::base::ArcId;
 	using FPMAS::graph::base::LayerId;
 	using FPMAS::graph::base::Node;
 
 	/**
 	 * Node serializer.
 	 */
-    template <typename T, int N>
-    struct adl_serializer<Node<T, N>> {
+    template <typename T, typename IdType, int N>
+    struct adl_serializer<Node<T, IdType, N>> {
 
 		/**
 		 * Defines rules to deserialize a Node from a JSON string.
@@ -56,9 +54,9 @@ namespace nlohmann {
 		 * @return deserialized json
 		 *
 		 */
-		static Node<T, N> from_json(const json& j) {
-			return Node<T, N>(
-					j.at("id").get<NodeId>(),
+		static Node<T, IdType, N> from_json(const json& j) {
+			return Node<T, IdType, N>(
+					j.at("id").get<IdType>(),
 					j.at("weight").get<float>(),
 					j.at("data").get<T>()
 					);
@@ -90,7 +88,7 @@ namespace nlohmann {
 		 * @param j current json reference
 		 * @param node node reference
 		 */
-		static void to_json(json& j, const Node<T, N>& node) {
+		static void to_json(json& j, const Node<T, IdType, N>& node) {
 			json data = node.data();
 			j = json{
 				{"id", node.getId()},
@@ -105,8 +103,8 @@ namespace nlohmann {
 	/**
 	 * Arc serializer.
 	 */
-	template<typename T, int N>
-    struct adl_serializer<Arc<T, N>> {
+	template<typename T, typename IdType, int N>
+    struct adl_serializer<Arc<T, IdType, N>> {
 		/**
 		 * Defines rules to unserialize Arcs.
 		 *
@@ -129,15 +127,15 @@ namespace nlohmann {
 		 * @param j json to deserialize
 		 * @return temporary arc
 		 */
-		static Arc<T, N> from_json(const json& j) {
-			std::array<NodeId, 2> link =
+		static Arc<T, IdType, N> from_json(const json& j) {
+			std::array<IdType, 2> link =
 				j.at("link")
-				.get<std::array<NodeId, 2>>();
-			Node<T, N>* tempSource = new Node<T, N>(link[0]);
-			Node<T, N>* tempTarget = new Node<T, N>(link[1]);
+				.get<std::array<IdType, 2>>();
+			Node<T, IdType, N>* tempSource = new Node<T, IdType, N>(link[0]);
+			Node<T, IdType, N>* tempTarget = new Node<T, IdType, N>(link[1]);
 
-			return Arc<T, N>(
-				j.at("id").get<ArcId>(),
+			return Arc<T, IdType, N>(
+				j.at("id").get<IdType>(),
 				tempSource,
 				tempTarget,
 				j.at("layer").get<LayerId>()
@@ -158,8 +156,8 @@ namespace nlohmann {
 		 * @param j current json reference
 		 * @param arc arc reference
 		 */
-		static void to_json(json& j, const Arc<T, N>& arc) {
-			std::array<NodeId, 2> link = {
+		static void to_json(json& j, const Arc<T, IdType, N>& arc) {
+			std::array<IdType, 2> link = {
 				arc.getSourceNode()->getId(),
 				arc.getTargetNode()->getId()
 			};
@@ -176,8 +174,8 @@ namespace nlohmann {
 	/**
 	 * Graph serializer.
 	 */
-	template<typename T, int N>
-    struct adl_serializer<Graph<T, N>> {
+	template<typename T, typename IdType, int N>
+    struct adl_serializer<Graph<T, IdType, N>> {
 
 		/**
 		 * This function defines rules to implicitly serialize graphs as json
@@ -199,12 +197,12 @@ namespace nlohmann {
 		 * @return deserialized graph instance
 		 *
 		 */
-		static Graph<T, N> from_json(const json& j) {
-			Graph<T, N> graph;
+		static Graph<T, IdType, N> from_json(const json& j) {
+			Graph<T, IdType, N> graph;
 			// Builds nodes
 			json nodes = j.at("nodes");
 			for(json& node : nodes) {
-				Node<T, N> n = node.get<Node<T, N>>();
+				Node<T, IdType, N> n = node.get<Node<T, IdType, N>>();
 				graph.buildNode(
 					n.getId(),
 					n.getWeight(),
@@ -215,7 +213,7 @@ namespace nlohmann {
 			// Build arcs
 			json arcs = j.at("arcs");
 			for(json& arc : arcs) {
-				Arc<T, N> tempArc = arc.get<Arc<T, N>>();
+				Arc<T, IdType, N> tempArc = arc.get<Arc<T, IdType, N>>();
 				graph.link(
 					tempArc.getSourceNode()->getId(),
 					tempArc.getTargetNode()->getId(),
@@ -278,13 +276,13 @@ namespace nlohmann {
 		 * @param j current json reference
 		 * @param graph graph reference (NOT reference to pointer)
 		 */
-		static void to_json(json& j, const Graph<T, N>& graph) {
-			std::vector<Node<T, N>> nodes;
+		static void to_json(json& j, const Graph<T, IdType, N>& graph) {
+			std::vector<Node<T, IdType, N>> nodes;
 			for(auto n : graph.getNodes()) {
 				nodes.push_back(*n.second);
 			}
 
-			std::vector<Arc<T, N>> arcs;
+			std::vector<Arc<T, IdType, N>> arcs;
 			for(auto a : graph.getArcs()) {
 				arcs.push_back(*a.second);
 			}

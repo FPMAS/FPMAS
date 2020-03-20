@@ -21,7 +21,8 @@ namespace FPMAS::environment::grid {
 			userLayers+ // User layers
 			neighborhoodRange+ // Cell neighborhood layers count
 			1+ // Location layer
-			1; // movableTo layer
+			1+ // movableTo layer
+			1; // Perception layer
 	}
 
 	static constexpr LayerId locationLayer(int userLayers, int neighborhoodRange) {
@@ -29,8 +30,12 @@ namespace FPMAS::environment::grid {
 	}
 
 	static constexpr LayerId movableTo(int userLayers, int neighborhoodRange) {
-		return userLayers+neighborhoodRange+1;
-	};
+		return locationLayer(userLayers, neighborhoodRange) + 1;
+	}
+
+	static constexpr LayerId perceptions(int userLayers, int neighborhoodRange) {
+		return movableTo(userLayers, neighborhoodRange) + 1;
+	}
 
 	template<
 		template<typename, typename, int> class Neighborhood = VonNeumann,
@@ -52,7 +57,7 @@ namespace FPMAS::environment::grid {
 
 				public:
 
-					constexpr NodeId id(int x, int y) {
+					constexpr IdType id(int x, int y) {
 						return y * _width + x;
 					};
 					Grid(int width, int height);

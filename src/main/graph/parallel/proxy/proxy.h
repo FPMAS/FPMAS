@@ -11,7 +11,6 @@
 using FPMAS::communication::MpiCommunicator;
 
 namespace FPMAS::graph::parallel {
-	using base::NodeId;
 	/**
 	 * Namespace containing classes and functions to manage proxies.
 	 */
@@ -82,25 +81,25 @@ namespace FPMAS::graph::parallel {
 			MpiCommunicator mpiCommunicator;
 			Zoltan zoltan;
 			const int localProc;
-			std::unordered_map<NodeId, int> origins;
-			std::unordered_map<NodeId, int> currentLocations;
+			std::unordered_map<IdType, int> origins;
+			std::unordered_map<IdType, int> currentLocations;
 
-			std::unordered_map<NodeId, std::string> proxyUpdatesSerializationCache;
+			std::unordered_map<IdType, std::string> proxyUpdatesSerializationCache;
 
 			// Contains the current key that should be updated at the
 			// next synchronize() call
-			std::set<NodeId> updates;
+			std::set<IdType> updates;
 
 			public:
 			Proxy(int localProc);
 			Proxy(int localProc, std::initializer_list<int>);
 			int getLocalProc() const;
-			void setOrigin(NodeId, int);
-			void setCurrentLocation(NodeId, int);
-			int getOrigin(NodeId) const;
-			int getCurrentLocation(NodeId) const;
-			void setLocal(NodeId, bool upToDate=false);
-			bool isLocal(NodeId);
+			void setOrigin(IdType, int);
+			void setCurrentLocation(IdType, int);
+			int getOrigin(IdType) const;
+			int getCurrentLocation(IdType) const;
+			void setLocal(IdType, bool upToDate=false);
+			bool isLocal(IdType);
 
 			void synchronize();
 

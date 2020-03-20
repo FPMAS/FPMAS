@@ -7,7 +7,7 @@
 #include <queue>
 #include "utils/macros.h"
 
-using FPMAS::graph::base::NodeId;
+using FPMAS::graph::parallel::IdType;
 
 namespace FPMAS::communication {
 	class ResourceManager;
@@ -20,7 +20,7 @@ namespace FPMAS::communication {
 	class ReadersWriters {
 		friend ResourceManager;
 		private:
-			NodeId id;
+			IdType id;
 			std::queue<int> read_requests;
 			std::queue<int> write_requests;
 			SyncMpiCommunicator& comm;
@@ -34,7 +34,7 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param comm reference to the MPI communicator
 			 */
-			ReadersWriters(NodeId id, SyncMpiCommunicator& comm) : id(id), comm(comm) {}
+			ReadersWriters(IdType id, SyncMpiCommunicator& comm) : id(id), comm(comm) {}
 
 			/**
 			 * Performs a read operation on the local resource for the
@@ -83,9 +83,9 @@ namespace FPMAS::communication {
 		friend SyncMpiCommunicator;
 		private:
 			SyncMpiCommunicator& comm;
-			mutable std::unordered_map<NodeId, ReadersWriters> readersWriters;
+			mutable std::unordered_map<IdType, ReadersWriters> readersWriters;
 
-			void lock(NodeId id);
+			void lock(IdType id);
 			void clear();
 
 		public:
@@ -106,7 +106,7 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param destination destination proc
 			 */
-			void read(NodeId id, int destination);
+			void read(IdType id, int destination);
 
 			/**
 			 * Performs a write operation on the local resource for the
@@ -121,20 +121,20 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param destination destination proc
 			 */
-			void write(NodeId id, int destination);
+			void write(IdType id, int destination);
 
 			/**
 			 * Releases the locked resource, and respond to pending requests.
 			 *
 			 * @param id resource id
 			 */
-			void release(NodeId id);
+			void release(IdType id);
 
 			/**
 			 * Returns a const reference to the ReadersWriters instance
 			 * currently managing the specified resource.
 			 */
-			const ReadersWriters& get(NodeId id) const;
+			const ReadersWriters& get(IdType id) const;
 
 	};
 

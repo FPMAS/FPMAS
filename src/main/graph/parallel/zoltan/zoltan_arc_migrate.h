@@ -53,10 +53,10 @@ namespace FPMAS::graph::parallel {
 
 				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "obj_size_multi_fn");
-				std::unordered_map<ArcId, Arc<std::unique_ptr<SyncData<T,N,S>>, N>*> arcs = graph->getArcs();
+				std::unordered_map<IdType, Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>*> arcs = graph->getArcs();
 				for (int i = 0; i < num_ids; i++) {
-					ArcId arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
-					Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc;
+					IdType arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
+					Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* arc;
 					try {
 						arc = arcs.at(arcId);
 					} catch (const std::exception& e) {
@@ -84,7 +84,7 @@ namespace FPMAS::graph::parallel {
 						// ghost node will be created for target or origin,
 						// to allow the destination proc to fetch those
 						// nodes data
-						NodeId targetId = arc->getTargetNode()->getId();
+						IdType targetId = arc->getTargetNode()->getId();
 						json_arc["target"] = {
 							graph->getProxy().getOrigin(
 									targetId
@@ -94,7 +94,7 @@ namespace FPMAS::graph::parallel {
 									)
 						};
 
-						NodeId sourceId = arc->getSourceNode()->getId();
+						IdType sourceId = arc->getSourceNode()->getId();
 						json_arc["source"] = {
 							graph->getProxy().getOrigin(
 									sourceId
@@ -154,15 +154,15 @@ namespace FPMAS::graph::parallel {
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
-				std::unordered_map<ArcId, std::string>* serial_cache
+				std::unordered_map<IdType, std::string>* serial_cache
 					= &graph->arc_serialization_cache;
 				for (int i = 0; i < num_ids; ++i) {
 					// Rebuilt arc id
-					ArcId id = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
+					IdType id = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 					// Retrieves the serialized node
 					std::string arc_str = serial_cache->at(id);
-					Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc;
+					Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* arc;
 					try {
 						arc = graph->getArcs().at(id);
 					} catch (const std::exception& e) {
@@ -265,28 +265,28 @@ namespace FPMAS::graph::parallel {
 				// ignore already imported ones.
 				// TODO: this might probably be optimized, removing
 				// duplicates when import / export maps are computed
-				std::set<ArcId> receivedArcIds;
+				std::set<IdType> receivedIdTypes;
 
 				for (int i = 0; i < num_ids; ++i) {
 					json json_arc = json::parse(&buf[idx[i]]);
 
 					// Unserialize and process the arc only if it has not
 					// been imported already.
-					if(receivedArcIds.count(json_arc.at("id").get<ArcId>()) == 0) {
+					if(receivedIdTypes.count(json_arc.at("id").get<IdType>()) == 0) {
 
 						// Json is unserialized in a temporary arc, with "fake"
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
-						Arc<std::unique_ptr<SyncData<T,N,S>>, N> tempArc = json_arc.get<Arc<std::unique_ptr<SyncData<T,N,S>>, N>>();
+						Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N> tempArc = json_arc.get<Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>>();
 
-						receivedArcIds.insert(tempArc.getId());
+						receivedIdTypes.insert(tempArc.getId());
 
-						NodeId sourceId = tempArc.getSourceNode()->getId();
+						IdType sourceId = tempArc.getSourceNode()->getId();
 						bool sourceNodeIsLocal = graph->getNodes().count(
 								sourceId
 								) > 0;
 
-						NodeId targetId = tempArc.getTargetNode()->getId();
+						IdType targetId = tempArc.getTargetNode()->getId();
 						bool targetNodeIsLocal = graph->getNodes().count(
 								targetId
 								) > 0;
@@ -390,9 +390,9 @@ namespace FPMAS::graph::parallel {
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_olz");
 
 				// Computes the set of ids of exported nodes
-				std::set<NodeId> exportedNodeIds;
+				std::set<IdType> exportedIdTypes;
 				for(int i = 0; i < graph->export_node_num; i++) {
-					exportedNodeIds.insert(zoltan::utils::read_zoltan_id(
+					exportedIdTypes.insert(zoltan::utils::read_zoltan_id(
 								&graph->export_node_global_ids[i * num_gid_entries])
 							);
 				}
@@ -401,12 +401,12 @@ namespace FPMAS::graph::parallel {
 				// For each exported node, a ghost node is created if and only
 				// if at least one local node is still connected to the
 				// exported node.
-				for(auto id : exportedNodeIds) {
-					Node<std::unique_ptr<SyncData<T,N,S>>, N>* node = graph->getNode(id);
+				for(auto id : exportedIdTypes) {
+					Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* node = graph->getNode(id);
 					bool buildGhost = false;
 					for(auto layer : node->getLayers()) {
 						for(auto arc : layer.getOutgoingArcs()) {
-							if(exportedNodeIds.count(arc->getTargetNode()->getId()) == 0) {
+							if(exportedIdTypes.count(arc->getTargetNode()->getId()) == 0) {
 								buildGhost = true;
 								break;
 							}
@@ -415,7 +415,7 @@ namespace FPMAS::graph::parallel {
 					if(!buildGhost) {
 						for(auto layer : node->getLayers()) {
 							for(auto arc : layer.getIncomingArcs()) {
-								if(exportedNodeIds.count(arc->getSourceNode()->getId()) == 0) {
+								if(exportedIdTypes.count(arc->getSourceNode()->getId()) == 0) {
 									buildGhost = true;
 									break;
 								}
@@ -424,12 +424,12 @@ namespace FPMAS::graph::parallel {
 					}
 					if(buildGhost) {
 						FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Building ghost node %lu", node->getId());
-						graph->getGhost().buildNode(*node, exportedNodeIds);
+						graph->getGhost().buildNode(*node, exportedIdTypes);
 					}
 				}
 
 				// Remove nodes
-				for(auto id : exportedNodeIds) {
+				for(auto id : exportedIdTypes) {
 					FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Removing exported node %lu", id);
 					graph->removeExportedNode(id);
 				}

@@ -26,7 +26,7 @@ namespace FPMAS::environment::grid {
 	> 
 	class VonNeumann : public Neighborhood<grid_type, cell_type> {
 			private:
-				ArcId arcId = 0;
+				IdType arcId = 0;
 			public:
 				VonNeumann(grid_type& grid) : Neighborhood<grid_type, cell_type>(grid) {}
 				void linkNeighbors(int nodeId, const cell_type& cell) override {

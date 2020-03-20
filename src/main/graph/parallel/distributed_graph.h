@@ -26,8 +26,6 @@ namespace FPMAS {
 			template<typename, int> class GhostMode; 
 		}
 
-		using base::NodeId;
-		using base::ArcId;
 		using proxy::Proxy;
 		using synchro::wrappers::SyncData;
 		using synchro::modes::GhostMode;
@@ -67,8 +65,8 @@ namespace FPMAS {
 
 			public:
 				typedef typename DistributedGraphBase<T, S, N>::arc_ptr arc_ptr;
-				using DistributedGraphBase<T,S,N>::link; // Allows usage of link(NodeId, NodeId, ArcId)
-				using DistributedGraphBase<T,S,N>::unlink; // Allows usage of unlink(ArcId)
+				using DistributedGraphBase<T,S,N>::link; // Allows usage of link(IdType, IdType, IdType)
+				using DistributedGraphBase<T,S,N>::unlink; // Allows usage of unlink(IdType)
 
 				DistributedGraph<T, S, N>();
 				DistributedGraph<T, S, N>(std::initializer_list<int>);
@@ -76,11 +74,11 @@ namespace FPMAS {
 				DistributedGraph<T, S, N>(const DistributedGraph<T,S,N>&) = delete;
 				DistributedGraph<T, S, N>& operator=(const DistributedGraph<T, S, N>&) = delete;
 
-				arc_ptr link(NodeId, NodeId, ArcId, LayerId) override;
+				arc_ptr link(IdType, IdType, IdType, LayerId) override;
 				void unlink(arc_ptr) override;
 
 				void distribute() override;
-				void distribute(std::unordered_map<NodeId, std::pair<int, int>>) override;
+				void distribute(std::unordered_map<IdType, std::pair<int, int>>) override;
 				void synchronize() override;
 		};
 
@@ -124,16 +122,16 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraph<T, S, N>::arc_ptr DistributedGraph<T, S, N>
-		::link(NodeId source, NodeId target, ArcId arcId, LayerId layerId) {
+		::link(IdType source, IdType target, IdType arcId, LayerId layerId) {
 			if(this->getNodes().count(source) > 0) {
 				// Source is local
-				Node<std::unique_ptr<SyncData<T,N,S>>, N>* sourceNode
+				Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* sourceNode
 					= this->getNode(source);
 				if(this->getNodes().count(target) > 0) {
 					// Source and Target are local, completely local operation
-					Node<std::unique_ptr<SyncData<T,N,S>>, N>* targetNode
+					Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* targetNode
 						= this->getNode(target);
-					return this->Graph<std::unique_ptr<SyncData<T,N,S>>, N>::link(
+					return this->Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>::link(
 						sourceNode, targetNode, arcId, layerId
 						);
 				} else {
@@ -154,7 +152,7 @@ namespace FPMAS {
 					// Source is local
 					GhostNode<T, N, S>* sourceNode
 						= this->getGhost().getNode(source);
-					Node<std::unique_ptr<SyncData<T,N,S>>, N>* targetNode
+					Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* targetNode
 						= this->getNode(target);
 					this->syncMode.initLink(source, target, arcId, layerId);
 					// link distant -> local
@@ -203,15 +201,15 @@ namespace FPMAS {
 		template<typename T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::unlink(
 				arc_ptr arc
 			) {
-			ArcId id = arc->getId();
+			IdType id = arc->getId();
 			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking arc %lu", id);
 			try {
 				// Arc is local
-				this->Graph<std::unique_ptr<SyncData<T,N,S>>, N>::unlink(arc);
-			} catch(base::exceptions::arc_out_of_graph e) {
-				NodeId source = arc->getSourceNode()->getId();
-				NodeId target = arc->getTargetNode()->getId();
-				ArcId arcId = arc->getId();
+				this->Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>::unlink(arc);
+			} catch(base::exceptions::arc_out_of_graph<unsigned long> e) {
+				IdType source = arc->getSourceNode()->getId();
+				IdType target = arc->getTargetNode()->getId();
+				IdType arcId = arc->getId();
 				LayerId layer = arc->layer;
 
 				this->syncMode.initUnlink(arc);
@@ -307,13 +305,13 @@ namespace FPMAS {
 		}
 
 		/**
-		 * DistributedGraphBase::distribute(std::unordered_map<NodeId,
+		 * DistributedGraphBase::distribute(std::unordered_map<IdType,
 		 * std::pair<int, int>>) implementation.
 		 *
 		 * @param partition new partition
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::distribute(
-				std::unordered_map<NodeId, std::pair<int, int>> partition
+				std::unordered_map<IdType, std::pair<int, int>> partition
 				) {
 
 			// Import lists

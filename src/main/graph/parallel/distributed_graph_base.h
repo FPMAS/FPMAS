@@ -31,15 +31,15 @@ namespace FPMAS {
 		 * Any distributed Graph implementation should then provide specific
 		 * functions that might perform distant operations, usually depending
 		 * on the synchronization mode used :
-		 * - link(NodeId, NodeId, ArcId, LayerId)
+		 * - link(IdType, IdType, IdType, LayerId)
 		 * - unlink(arc_ptr)
 		 * - distribute()
-		 * - distribute(std::unordered_map<NodeId, std::pair<int, int>>)
+		 * - distribute(std::unordered_map<IdType, std::pair<int, int>>)
 		 * - synchronize()
 		 *
 		 */
 		template<typename T, SYNC_MODE, int N>
-		class DistributedGraphBase : public Graph<std::unique_ptr<SyncData<T,N,S>>, N>, communication::ResourceContainer {
+		class DistributedGraphBase : public Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>, communication::ResourceContainer {
 			friend void zoltan::node::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
@@ -59,16 +59,16 @@ namespace FPMAS {
 			private:
 
 			// Serialization caches used to pack objects
-			std::unordered_map<NodeId, std::string> node_serialization_cache;
-			std::unordered_map<ArcId, std::string> arc_serialization_cache;
+			std::unordered_map<IdType, std::string> node_serialization_cache;
+			std::unordered_map<IdType, std::string> arc_serialization_cache;
 
 			// When importing nodes, obsolete ghost nodes are stored when
 			// the real node has been imported. It is safely deleted in
 			// arc::mid_migrate_pp_fn once associated arcs have eventually 
 			// been exported
-			std::set<NodeId> obsoleteGhosts;
+			std::set<IdType> obsoleteGhosts;
 			void setUpZoltan();
-			void removeExportedNode(NodeId);
+			void removeExportedNode(IdType);
 
 			protected:
 			SyncMpiCommunicator mpiCommunicator;
@@ -94,9 +94,9 @@ namespace FPMAS {
 			int* export_arcs_procs;
 
 			public:
-			typedef Node<std::unique_ptr<SyncData<T,N,S>>, N> node_type;
-			typedef Node<std::unique_ptr<SyncData<T,N,S>>, N>* node_ptr;
-			typedef Arc<std::unique_ptr<SyncData<T,N,S>>, N>* arc_ptr;
+			typedef Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N> node_type;
+			typedef Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* node_ptr;
+			typedef Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* arc_ptr;
 
 			DistributedGraphBase<T, S, N>();
 			DistributedGraphBase<T, S, N>(std::initializer_list<int>);
@@ -143,13 +143,13 @@ namespace FPMAS {
 			void updateData(unsigned long, std::string) override;
 
 
-			node_ptr buildNode(NodeId, T&& data);
-			node_ptr buildNode(NodeId id, T& data);
-			node_ptr buildNode(NodeId id, float weight, T&& data);
-			node_ptr buildNode(NodeId id, float weight, const T& data);
+			node_ptr buildNode(IdType, T&& data);
+			node_ptr buildNode(IdType id, T& data);
+			node_ptr buildNode(IdType id, float weight, T&& data);
+			node_ptr buildNode(IdType id, float weight, const T& data);
 
-			arc_ptr link(NodeId, NodeId, ArcId);
-			void unlink(ArcId);
+			arc_ptr link(IdType, IdType, IdType);
+			void unlink(IdType);
 
 			/**
 			 * Links the specified source and target node within this
@@ -162,7 +162,7 @@ namespace FPMAS {
 			 * @return pointer to the created arc
 			 */
 			virtual arc_ptr link(
-					NodeId, NodeId, ArcId, LayerId
+					IdType, IdType, IdType, LayerId
 					) = 0;
 			/**
 			 * Unlinks the specified arc within this DistributedGraph instance.
@@ -207,7 +207,7 @@ namespace FPMAS {
 			 *
 			 * @param partition new partition
 			 */
-			virtual void distribute(std::unordered_map<NodeId, std::pair<int, int>>) = 0;
+			virtual void distribute(std::unordered_map<IdType, std::pair<int, int>>) = 0;
 
 			virtual void synchronize();
 
@@ -305,8 +305,8 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
-		::buildNode(NodeId id, T&& data) {
-			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
+		::buildNode(IdType id, T&& data) {
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>
 				::buildNode(
 					id,
 					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
@@ -329,8 +329,8 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
-		::buildNode(NodeId id, T& data) {
-			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
+		::buildNode(IdType id, T& data) {
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>
 				::buildNode(
 					id,
 					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
@@ -357,8 +357,8 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
-		::buildNode(NodeId id, float weight, T&& data) {
-			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
+		::buildNode(IdType id, float weight, T&& data) {
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>
 				::buildNode(
 					id,
 					weight,
@@ -383,8 +383,8 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
-		::buildNode(NodeId id, float weight, const T& data) {
-			return Graph<std::unique_ptr<SyncData<T,N,S>>, N>
+		::buildNode(IdType id, float weight, const T& data) {
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>
 				::buildNode(
 					id,
 					weight,
@@ -408,11 +408,11 @@ namespace FPMAS {
 		 * @param arcId new arc id
 		 * @return pointer to the created arc
 		 *
-		 * @see link(NodeId, NodeId, ArcId, LayerId)
+		 * @see link(IdType, IdType, IdType, LayerId)
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T, S, N>::arc_ptr DistributedGraphBase<T, S, N>
-		::link(NodeId source, NodeId target, ArcId arcId) {
+		::link(IdType source, IdType target, IdType arcId) {
 			return this->link(source, target, arcId, base::DefaultLayer);
 		}
 
@@ -426,7 +426,7 @@ namespace FPMAS {
 		 * @param arcId id of the arc to unlink. (might be a local arc, or a
 		 * ghost arc)
 		 */
-		template<typename T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::unlink(ArcId arcId) {
+		template<typename T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::unlink(IdType arcId) {
 			try {
 				this->unlink(this->getArcs().at(arcId));
 			} catch (std::out_of_range) {
@@ -487,22 +487,22 @@ namespace FPMAS {
 		}
 
 		template<class T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>
-			::removeExportedNode(NodeId id) {
+			::removeExportedNode(IdType id) {
 				auto nodeToRemove = this->getNodes().at(id);
 				for(auto& layer : nodeToRemove->getLayers()) {
 					for(auto arc : layer.getIncomingArcs()) {
 						try {
-							this->Graph<std::unique_ptr<SyncData<T, N, S>>, N>
+							this->Graph<std::unique_ptr<SyncData<T, N, S>>, unsigned long, N>
 								::unlink(arc);
-						} catch(base::exceptions::arc_out_of_graph) {
+						} catch(base::exceptions::arc_out_of_graph<IdType>) {
 							this->getGhost().unlink((GhostArc<T,N,S>*) arc);
 						}
 					}
 					for(auto arc : layer.getOutgoingArcs()) {
 						try {
-							this->Graph<std::unique_ptr<SyncData<T, N, S>>, N>
+							this->Graph<std::unique_ptr<SyncData<T, N, S>>, unsigned long, N>
 								::unlink(arc);
-						} catch(base::exceptions::arc_out_of_graph) {
+						} catch(base::exceptions::arc_out_of_graph<IdType>) {
 							this->getGhost().unlink((GhostArc<T,N,S>*) arc);
 						}
 					}

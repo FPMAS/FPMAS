@@ -13,7 +13,7 @@ using FPMAS::graph::base::Arc;
  * Trivial constructor test.
  */
 TEST(GraphTest, buildTest) {
-	Graph<int> graph = Graph<int>();
+	Graph<int, unsigned long> graph = Graph<int, unsigned long>();
 }
 
 TEST_F(SampleGraphTest, buildSimpleGraph) {
@@ -42,7 +42,7 @@ TEST_F(SampleGraphTest, deleteNodeWithSelfLink) {
 
 }
 
-void checkUnlinkArc(Graph<int>& sampleGraph) {
+void checkUnlinkArc(Graph<int, unsigned long>& sampleGraph) {
 	// The arc has been deleted
 	ASSERT_EQ(sampleGraph.getArcs().size(), 2);
 	ASSERT_EQ(sampleGraph.getNode(2ul)->getOutgoingArcs().size(), 1);
@@ -71,8 +71,8 @@ TEST_F(SampleGraphTest, unlinkArcById) {
 using FPMAS::graph::base::exceptions::arc_out_of_graph;
 
 TEST(GraphExceptions, unlink_exception) {
-	Graph<int, 1> graph_1;
-	Graph<int, 1> graph_2;
+	Graph<int, unsigned long> graph_1;
+	Graph<int, unsigned long> graph_2;
 
 	graph_1.buildNode(0);
 	graph_1.buildNode(1);
@@ -82,7 +82,7 @@ TEST(GraphExceptions, unlink_exception) {
 		1
 		);
 
-	ASSERT_THROW(graph_2.unlink(arc), arc_out_of_graph);
-	ASSERT_THROW(graph_2.unlink(1), arc_out_of_graph);
+	ASSERT_THROW(graph_2.unlink(arc), arc_out_of_graph<unsigned long>);
+	ASSERT_THROW(graph_2.unlink(1), arc_out_of_graph<unsigned long>);
 
 }

@@ -33,14 +33,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		unsigned int local_ids[0];
 		float weights[3];
 
-		// Resulting global ids
-		/*
-		 *int nodeIndex[0ul];
-		 *int nodeIndex[2ul];
-		 *int nodeIndex[85250ul];
-		 */
-
-		std::unordered_map<NodeId, int> nodeIndex;
+		std::unordered_map<IdType, int> nodeIndex;
 
 		// Edge lists
 		int num_edges[3];

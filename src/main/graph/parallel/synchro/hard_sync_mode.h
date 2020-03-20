@@ -23,14 +23,14 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<typename T, int N> class HardSyncData : public SyncData<T,N,modes::HardSyncMode> {
 			private:
-				NodeId id;
+				IdType id;
 				SyncMpiCommunicator& mpiComm;
 				const Proxy& proxy;
 
 			public:
-				HardSyncData(NodeId, SyncMpiCommunicator&, const Proxy&);
-				HardSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
-				HardSyncData(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
+				HardSyncData(IdType, SyncMpiCommunicator&, const Proxy&);
+				HardSyncData(IdType, SyncMpiCommunicator&, const Proxy&, const T&);
+				HardSyncData(IdType, SyncMpiCommunicator&, const Proxy&, T&&);
 
 				const T& read() override;
 				T& acquire() override;
@@ -45,7 +45,7 @@ namespace FPMAS::graph::parallel::synchro {
 		 * @param proxy proxy used to locate data
 		 */
 		template<typename T, int N> HardSyncData<T,N>::HardSyncData(
-				NodeId id,
+				IdType id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy)
 			: id(id), mpiComm(mpiComm), proxy(proxy) {
@@ -60,7 +60,7 @@ namespace FPMAS::graph::parallel::synchro {
 		 * @param data rvalue to move to the associated data instance
 		 */
 		template<typename T, int N> HardSyncData<T,N>::HardSyncData(
-				NodeId id,
+				IdType id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				T&& data)
@@ -76,7 +76,7 @@ namespace FPMAS::graph::parallel::synchro {
 		 * @param data associated data instance
 		 */
 		template<typename T, int N> HardSyncData<T,N>::HardSyncData(
-				NodeId id,
+				IdType id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				const T& data)

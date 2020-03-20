@@ -17,7 +17,6 @@ using FPMAS::communication::SyncMpiCommunicator;
 namespace FPMAS::graph::parallel {
 	using base::Node;
 	using base::Arc;
-	using base::ArcId;
 	using base::LayerId;
 	using proxy::Proxy;
 
@@ -88,7 +87,7 @@ namespace FPMAS::graph::parallel {
 				friend GhostNode<T,N,S>::GhostNode(
 						SyncMpiCommunicator&,
 						Proxy&,
-						Node<std::unique_ptr<SyncData<T,N,S>>, N>&
+						Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>&
 						);
 				protected:
 				/**
@@ -272,9 +271,9 @@ namespace FPMAS::graph::parallel {
 							 * @param layer layer id
 							 */
 							virtual void initLink(
-									NodeId source,
-									NodeId target,
-									ArcId arcId,
+									IdType source,
+									IdType target,
+									IdType arcId,
 									LayerId layer) {}
 
 							/**
@@ -288,22 +287,22 @@ namespace FPMAS::graph::parallel {
 							 * @param arc pointer to the new arc
 							 */
 							virtual void notifyLinked(
-								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,N>* arc
+								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,IdType,N>* arc
 								) {}
 
 							/**
 							 * fs
 							 */
 							virtual void initUnlink(
-								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,N>* arc
+								Arc<std::unique_ptr<wrappers::SyncData<T,N,Mode>>,IdType,N>* arc
 								) {}
 							/**
 							 * sdf
 							 */
 							virtual void notifyUnlinked(
-								NodeId source,
-								NodeId target,
-								ArcId arcId,
+								IdType source,
+								IdType target,
+								IdType arcId,
 								LayerId layer) {}
 
 							/**
@@ -313,11 +312,11 @@ namespace FPMAS::graph::parallel {
 							virtual void termination() {};
 
 							static Wrapper<T,N>*
-								wrap(NodeId, SyncMpiCommunicator&, const Proxy&);
+								wrap(IdType, SyncMpiCommunicator&, const Proxy&);
 							static Wrapper<T,N>*
-								wrap(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
+								wrap(IdType, SyncMpiCommunicator&, const Proxy&, const T&);
 							static Wrapper<T,N>*
-								wrap(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
+								wrap(IdType, SyncMpiCommunicator&, const Proxy&, T&&);
 					};
 
 			/**
@@ -344,7 +343,7 @@ namespace FPMAS::graph::parallel {
 				typename T,
 				int N
 					> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
-							NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy
+							IdType id, SyncMpiCommunicator& comm, const Proxy& proxy
 							) {
 						return new Wrapper<T,N>(id, comm, proxy);
 					}
@@ -357,7 +356,7 @@ namespace FPMAS::graph::parallel {
 				typename T,
 				int N
 					> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
-							NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, const T& data
+							IdType id, SyncMpiCommunicator& comm, const Proxy& proxy, const T& data
 							) {
 						return new Wrapper<T,N>(id, comm, proxy, data);
 					}
@@ -370,7 +369,7 @@ namespace FPMAS::graph::parallel {
 				typename T,
 				int N
 					> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
-							NodeId id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
+							IdType id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
 							) {
 						return new Wrapper<T,N>(id, comm, proxy, std::forward<T>(data));
 					}

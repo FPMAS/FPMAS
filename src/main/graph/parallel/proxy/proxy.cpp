@@ -73,7 +73,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 * @param id node id
 	 * @param proc origin rank of the corresponding node
 	 */
-	void Proxy::setOrigin(NodeId id, int proc) {
+	void Proxy::setOrigin(IdType id, int proc) {
 		this->origins[id] = proc;
 	}
 
@@ -87,7 +87,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 *
 	 * @param id node id
 	 */
-	int Proxy::getOrigin(NodeId id) const {
+	int Proxy::getOrigin(IdType id) const {
 		if(this->origins.count(id) == 1)
 			return this->origins.at(id);
 
@@ -101,7 +101,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 * @param id node id
 	 * @param proc current location rank of the corresponding node
 	 */
-	void Proxy::setCurrentLocation(NodeId id, int proc) {
+	void Proxy::setCurrentLocation(IdType id, int proc) {
 		if(proc == this->localProc) {
 			this->setLocal(id);
 		} else {
@@ -118,7 +118,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 *
 	 * @param id node id
 	 */
-	int Proxy::getCurrentLocation(NodeId id) const {
+	int Proxy::getCurrentLocation(IdType id) const {
 		if(this->currentLocations.count(id) == 1) {
 			return this->currentLocations.at(id);
 		}
@@ -141,7 +141,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 * @param upToDate true if no update information needs to be called
 	 * for this node
 	 */
-	void Proxy::setLocal(NodeId id, bool upToDate) {
+	void Proxy::setLocal(IdType id, bool upToDate) {
 		if(!upToDate)
 			this->updates.insert(id);
 
@@ -154,7 +154,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 *
 	 * @return true iff data is local
 	 */
-	bool Proxy::isLocal(NodeId id) {
+	bool Proxy::isLocal(IdType id) {
 		return this->getCurrentLocation(id) == this->getLocalProc();
 	}
 
@@ -261,7 +261,7 @@ namespace FPMAS::graph::parallel::proxy {
 		Proxy* proxy = (Proxy*) data;
 
 		for (int i = 0; i < num_ids; ++i) {
-			NodeId nodeId = read_zoltan_id(&global_ids[i * num_gid_entries]);
+			IdType nodeId = read_zoltan_id(&global_ids[i * num_gid_entries]);
 			// Updates to export are computed so that each proxy only
 			// export updates for nodes currently living in the local proc
 			std::string proxyUpdateStr = std::to_string(proxy->getCurrentLocation(nodeId));
@@ -303,7 +303,7 @@ namespace FPMAS::graph::parallel::proxy {
 		Proxy* proxy = (Proxy*) data;
 		for (int i = 0; i < num_ids; ++i) {
 			// Rebuilt node id
-			NodeId id = read_zoltan_id(&global_ids[i * num_gid_entries]);
+			IdType id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 			std::string locStr = std::to_string(proxy->getCurrentLocation(id));
 			std::sprintf(&buf[idx[i]], "%s", locStr.c_str());
 		}
@@ -336,7 +336,7 @@ namespace FPMAS::graph::parallel::proxy {
 		Proxy* proxy = (Proxy*) data;
 
 		for (int i = 0; i < num_ids; ++i) {
-			NodeId nodeId = read_zoltan_id(&global_ids[i * num_gid_entries]);
+			IdType nodeId = read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 			std::string locStr = std::string(&buf[idx[i]]);
 			int currentLocation = std::stoi(locStr);

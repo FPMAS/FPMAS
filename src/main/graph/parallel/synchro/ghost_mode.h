@@ -37,9 +37,9 @@ namespace FPMAS::graph::parallel {
 			template<typename T, int N> class GhostData : public SyncData<T,N,modes::GhostMode> {
 
 				public:
-					GhostData(NodeId, SyncMpiCommunicator&, const Proxy&);
-					GhostData(NodeId, SyncMpiCommunicator&, const Proxy&, const T&);
-					GhostData(NodeId, SyncMpiCommunicator&, const Proxy&, T&&);
+					GhostData(IdType, SyncMpiCommunicator&, const Proxy&);
+					GhostData(IdType, SyncMpiCommunicator&, const Proxy&, const T&);
+					GhostData(IdType, SyncMpiCommunicator&, const Proxy&, T&&);
 
 			};
 
@@ -55,7 +55,7 @@ namespace FPMAS::graph::parallel {
 			// The mpiCommunicator is not used for the GhostData mode, but the
 			// constructors are defined to allow template genericity
 			template<typename T, int N> GhostData<T,N>::GhostData(
-					NodeId id,
+					IdType id,
 					SyncMpiCommunicator& mpiComm,
 					const Proxy& proxy) {
 			}
@@ -70,7 +70,7 @@ namespace FPMAS::graph::parallel {
 			 * @param proxy graph proxy
 			 */
 			template<typename T, int N> GhostData<T,N>::GhostData(
-					NodeId id,
+					IdType id,
 					SyncMpiCommunicator& mpiComm,
 					const Proxy& proxy,
 					T&& data)
@@ -87,7 +87,7 @@ namespace FPMAS::graph::parallel {
 			 * @param proxy graph proxy
 			 */
 			template<typename T, int N> GhostData<T,N>::GhostData(
-					NodeId id,
+					IdType id,
 					SyncMpiCommunicator& mpiComm,
 					const Proxy& proxy,
 					const T& data)
@@ -126,10 +126,10 @@ namespace FPMAS::graph::parallel {
 				private:
 					Zoltan zoltan;
 					std::unordered_map<
-						ArcId,
+						IdType,
 						GhostArc<T, N, GhostMode>*
 						> linkBuffer;
-					std::unordered_map<int, std::vector<ArcId>> unlinkBuffer;
+					std::unordered_map<int, std::vector<IdType>> unlinkBuffer;
 					int computeArcExportCount();
 					void migrateLinks();
 					void migrateUnlinks();
@@ -139,10 +139,10 @@ namespace FPMAS::graph::parallel {
 					void termination() override;
 
 					void notifyLinked(
-						Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,N>*
+						Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,IdType,N>*
 						) override;
 
-					void notifyUnlinked(NodeId, NodeId, ArcId, LayerId) override;
+					void notifyUnlinked(IdType, IdType, IdType, LayerId) override;
 			};
 
 			/**
@@ -186,13 +186,13 @@ namespace FPMAS::graph::parallel {
 			 * @param arc pointer to the new arc to export
 			 */
 			template<typename T, int N> void GhostMode<T, N>::notifyLinked(
-					Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,N>* arc) {
+					Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,IdType,N>* arc) {
 				linkBuffer[arc->getId()]
 					= (GhostArc<T,N,GhostMode>*) arc;
 			}
 
 			template<typename T, int N> void GhostMode<T, N>::notifyUnlinked(
-					NodeId source, NodeId target, ArcId arcId, LayerId layer
+					IdType source, IdType target, IdType arcId, LayerId layer
 					) {
 				FPMAS_LOGD(
 					this->dg.getMpiCommunicator().getRank(),
@@ -222,13 +222,13 @@ namespace FPMAS::graph::parallel {
 
 					int i=0;
 					for(auto item : linkBuffer) {
-						NodeId sourceId = item.second->getSourceNode()->getId();
+						IdType sourceId = item.second->getSourceNode()->getId();
 						if(!this->dg.getProxy().isLocal(sourceId)) {
 							write_zoltan_id(item.first, &export_arcs_global_ids[2*i]);
 							export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(sourceId);
 							i++;
 						}
-						NodeId targetId = item.second->getTargetNode()->getId();
+						IdType targetId = item.second->getTargetNode()->getId();
 						if(!this->dg.getProxy().isLocal(targetId)) {
 							write_zoltan_id(item.first, &export_arcs_global_ids[2*i]);
 							export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(targetId);
@@ -251,8 +251,8 @@ namespace FPMAS::graph::parallel {
 				}
 
 				for(auto item : linkBuffer) {
-					NodeId sourceId = item.second->getSourceNode()->getId();
-					NodeId targetId = item.second->getTargetNode()->getId();
+					IdType sourceId = item.second->getSourceNode()->getId();
+					IdType targetId = item.second->getTargetNode()->getId();
 					if(!this->dg.getProxy().isLocal(sourceId)
 							&& !this->dg.getProxy().isLocal(targetId)) {
 						this->dg.getGhost().unlink((GhostArc<T,N,GhostMode>*) item.second);

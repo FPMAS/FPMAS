@@ -14,7 +14,7 @@ using FPMAS::test::ASSERT_CONTAINS;
 class SampleGraphTest : public ::testing::Test {
 
 	protected:
-		Graph<int> sampleGraph;
+		Graph<int, unsigned long> sampleGraph;
 
 		void SetUp() override {
 			auto node1 = sampleGraph.buildNode(1ul, 1);
@@ -27,7 +27,7 @@ class SampleGraphTest : public ::testing::Test {
 
 		}
 
-		static void testSampleGraphStructure(Graph<int>* sampleGraph) {
+		static void testSampleGraphStructure(Graph<int, unsigned long>* sampleGraph) {
 			auto node1 = sampleGraph->getNode(1ul);
 			ASSERT_EQ(node1->data(), 1);
 			ASSERT_EQ(node1->getIncomingArcs().size(), 1);

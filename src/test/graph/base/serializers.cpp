@@ -11,7 +11,7 @@ using FPMAS::graph::base::Arc;
 
 TEST(NodeSerializer, simple_node_serialization) {
 
-	Graph<int> g;
+	Graph<int, unsigned long> g;
 	auto node = g.buildNode(85250, 3.2, 0);
 
 	// The node to_json method will be automatically called
@@ -33,7 +33,7 @@ TEST(NodeSerializer, simple_node_deserialization) {
 		{"data":0,"id":85250,"weight":2.3}
 		)"_json;
 
-	Node<int, 1> node = node_json.get<Node<int, 1>>();
+	Node<int, unsigned long, 1> node = node_json.get<Node<int, unsigned long, 1>>();
 
 	ASSERT_EQ(node.data(), 0);
 	ASSERT_EQ(node.getId(), 85250ul);
@@ -62,13 +62,13 @@ enum TestLayer {
 };
 
 TEST(ArcSerializer, simple_arc_serializer) {
-	Graph<int, 2> g;
-	Node<int, 2>* n1 = g.buildNode(0ul, 0);
-	Node<int, 2>* n2 = g.buildNode(1ul, 1);
+	Graph<int, unsigned long, 2> g;
+	auto* n1 = g.buildNode(0ul, 0);
+	auto* n2 = g.buildNode(1ul, 1);
 	g.link(n1, n2, 0ul, TestLayer::Test);
 
-	const Node<int, 2>* n = g.getNode(0ul);
-	Arc<int, 2>* a = n->layer(TestLayer::Test).getOutgoingArcs()[0];
+	const auto* n = g.getNode(0ul);
+	auto* a = n->layer(TestLayer::Test).getOutgoingArcs()[0];
 
 	json j = *a;
 
@@ -82,7 +82,7 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 		"link":[0,1]
 		})"_json;
 
-	Arc<int, 2> arc = j;
+	Arc<int, unsigned long, 2> arc = j;
 	ASSERT_EQ(arc.getId(), 2);
 	ASSERT_EQ(arc.layer, TestLayer::Test);
 	ASSERT_EQ(arc.getSourceNode()->getId(), 0);
@@ -94,8 +94,8 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 
 TEST(GraphSerializer, simple_graph_serialization) {
 
-	Graph<int> g;
-	Node<int, 1>* n = g.buildNode(0ul, 0);
+	Graph<int, unsigned long> g;
+	g.buildNode(0ul, 0);
 
 	json j = g;
 
@@ -129,7 +129,7 @@ TEST(GraphSerializer, simple_graph_deserialization) {
 		}
 		)"_json;
 
-	Graph<int> g = graph_json.get<Graph<int>>();
+	Graph<int, unsigned long> g = graph_json.get<Graph<int, unsigned long>>();
 	ASSERT_EQ(g.getNodes().size(), 1);
 	ASSERT_EQ(g.getNodes().count(0ul), 1);
 	ASSERT_EQ(g.getNodes().at(0ul)->getId(), 0ul);
@@ -153,7 +153,7 @@ TEST_F(SampleGraphTest, sample_graph_deserialization) {
 			}
 			)"_json;
 
-	Graph<int> graph = graph_json.get<Graph<int>>();
+	Graph<int, unsigned long> graph = graph_json.get<Graph<int, unsigned long>>();
 
 	testSampleGraphStructure(&graph);
 }
