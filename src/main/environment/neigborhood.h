@@ -17,7 +17,7 @@ namespace FPMAS::environment::grid {
 
 		public:
 			Neighborhood(grid_type& grid) : localGrid(grid) {}
-			virtual void linkNeighbors(int nodeId, const cell_type&) = 0;
+			virtual void linkNeighbors(DistributedId nodeId, const cell_type*) = 0;
 	};
 	template<
 		typename grid_type,
@@ -25,41 +25,35 @@ namespace FPMAS::environment::grid {
 		int Range
 	> 
 	class VonNeumann : public Neighborhood<grid_type, cell_type> {
-			private:
-				IdType arcId = 0;
 			public:
 				VonNeumann(grid_type& grid) : Neighborhood<grid_type, cell_type>(grid) {}
-				void linkNeighbors(int nodeId, const cell_type& cell) override {
+				void linkNeighbors(DistributedId nodeId, const cell_type* cell) override {
 					for (int i = 1; i <= Range; i++) {
-						if(cell.x() >= i) {
+						if(cell->x() >= i) {
 							this->localGrid.link(
 									nodeId,
-									this->localGrid.id(cell.x() - i, cell.y()),
-									arcId++,
+									this->localGrid.id(cell->x() - i, cell->y()),
 									neighborLayer(grid_type::userLayers, i)
 									);
 						}
-						if(cell.x() < this->localGrid.width() - i) {
+						if(cell->x() < this->localGrid.width() - i) {
 							this->localGrid.link(
 									nodeId,
-									this->localGrid.id(cell.x() + i, cell.y()),
-									arcId++,
+									this->localGrid.id(cell->x() + i, cell->y()),
 									neighborLayer(grid_type::userLayers, i)
 									);
 						}
-						if(cell.y() >= i) {
+						if(cell->y() >= i) {
 							this->localGrid.link(
 									nodeId,
-									this->localGrid.id(cell.x(), cell.y() - i),
-									arcId++,
+									this->localGrid.id(cell->x(), cell->y() - i),
 									neighborLayer(grid_type::userLayers, i)
 									);
 						}
-						if(cell.y() < this->localGrid.height() - i) {
+						if(cell->y() < this->localGrid.height() - i) {
 							this->localGrid.link(
 									nodeId,
-									this->localGrid.id(cell.x(), cell.y() + i),
-									arcId++,
+									this->localGrid.id(cell->x(), cell->y() + i),
 									neighborLayer(grid_type::userLayers, i)
 									);
 						}				

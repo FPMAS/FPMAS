@@ -57,8 +57,8 @@ namespace FPMAS::environment::grid {
 
 				public:
 
-					constexpr IdType id(int x, int y) {
-						return y * _width + x;
+					const DistributedId id(unsigned int x, unsigned int y) {
+						return {this->mpiCommunicator.getRank(), y * _width + x};
 					};
 					Grid(int width, int height);
 
@@ -73,19 +73,32 @@ namespace FPMAS::environment::grid {
 
 	template<template<typename, typename, int> class Neighborhood, int Range, SYNC_MODE, int N, typename... AgentTypes>
 		Grid<Neighborhood, Range, S, N, AgentTypes...>::Grid(int width, int height): _width(width), _height(height), neighborhood(*this) {
-			for(int i = 0; i < _width; i++) {
-				for (int j = 0; j < _height; j++) {
+			/*
+			 * For a 3x2 grid for ex, nodes are built in this order (node ids
+			 * start from 0) :
+			 * - j = 0 : 0 -> 1 -> 2
+			 * - j = 1 : 3 -> 4 -> 5
+			 * From there can be deduced the id(x, y) = y*width+x function.
+			 */
+			std::unordered_map<DistributedId, const cell_type*> cells;
+			for (int j = 0; j < _height; j++) {
+				for(int i = 0; i < _width; i++) {
 					// Build cell
-					this->buildNode(
-							id(i, j),
-							std::unique_ptr<typename env_type::agent_type>(new cell_type(i, j))
+					cell_type* cell = new cell_type(i, j);
+					auto node = this->buildNode(
+							std::unique_ptr<typename env_type::agent_type>(cell)
 							);
+					cells[node->getId()] = cell;
 				}
 			}
-			int arcId = 0;
-			for(auto node : this->getNodes()) {
-				const cell_type& cell = dynamic_cast<cell_type&>(*node.second->data()->read());
-				neighborhood.linkNeighbors(node.first, cell);
+			/*
+			 *for(auto node : this->getNodes()) {
+			 *    const cell_type& cell = dynamic_cast<cell_type&>(*node.second->data()->read());
+			 *    neighborhood.linkNeighbors(node.first, cell);
+			 *}
+			 */
+			for(auto cell : cells) {
+				neighborhood.linkNeighbors(cell.first, cell.second);
 			}
 		}
 

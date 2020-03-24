@@ -18,7 +18,7 @@ enum State {
 	ALIVE, DEAD
 };
 
-#define NEIGHBORS std::vector<Node<std::unique_ptr<SyncData<Agent,1,HardSyncMode>>, unsigned long, 1>*>
+#define NEIGHBORS std::vector<Node<std::unique_ptr<SyncData<Agent,1,HardSyncMode>>, DistributedId, 1>*>
 
 
 class Agent {

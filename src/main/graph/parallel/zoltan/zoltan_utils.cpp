@@ -19,8 +19,12 @@ namespace FPMAS::graph::parallel::zoltan::utils {
 	// compatible with any Zoltan installation.
 	// Passing compile flags to the custom embedded CMake Zoltan
 	// installation might also be possible.
-	unsigned long read_zoltan_id(const ZOLTAN_ID_PTR global_ids) {
-		return ((unsigned long) (global_ids[0] << 16)) | global_ids[1];
+	DistributedId read_zoltan_id(const ZOLTAN_ID_PTR global_ids) {
+		return DistributedId(
+			(int) global_ids[0],
+			(unsigned int) global_ids[1]
+			);
+		//return ((unsigned long) (global_ids[0] << 16)) | global_ids[1];
 	}
 
 	/**
@@ -33,9 +37,11 @@ namespace FPMAS::graph::parallel::zoltan::utils {
 	 * @param id id to write
 	 * @param global_ids adress to a Zoltan global_ids array
 	 */
-	void write_zoltan_id(unsigned long id, ZOLTAN_ID_PTR global_ids) {
-		global_ids[0] = (id & 0xFFFF0000) >> 16 ;
-		global_ids[1] = (id & 0xFFFF);
+	void write_zoltan_id(DistributedId id, ZOLTAN_ID_PTR global_ids) {
+		//global_ids[0] = (id & 0xFFFF0000) >> 16 ;
+		//global_ids[1] = (id & 0xFFFF);
+		global_ids[0] = id._rank;
+		global_ids[1] = id._id;
 	}
 
 

@@ -50,7 +50,7 @@ namespace FPMAS::communication {
 		this->locked = true;
 	}
 
-	void ResourceManager::read(IdType id, int destination) {
+	void ResourceManager::read(DistributedId id, int destination) {
 		if(this->readersWriters.count(id) == 0)
 			this->readersWriters.insert(std::make_pair(
 					id,
@@ -60,7 +60,7 @@ namespace FPMAS::communication {
 		this->readersWriters.at(id).read(destination);
 	}
 
-	void ResourceManager::write(IdType id, int destination) {
+	void ResourceManager::write(DistributedId id, int destination) {
 		if(this->readersWriters.count(id) == 0) {
 			this->readersWriters.emplace(std::make_pair(
 						id,
@@ -70,11 +70,11 @@ namespace FPMAS::communication {
 		this->readersWriters.at(id).write(destination);
 	}
 
-	void ResourceManager::release(IdType id) {
+	void ResourceManager::release(DistributedId id) {
 		this->readersWriters.at(id).release();
 	}
 
-	const ReadersWriters& ResourceManager::get(IdType id) const {
+	const ReadersWriters& ResourceManager::get(DistributedId id) const {
 		if(this->readersWriters.count(id) == 0)
 			this->readersWriters.emplace(std::make_pair(
 						id,
@@ -88,7 +88,7 @@ namespace FPMAS::communication {
 	 * Used by the SyncMpiCommunicator to lock local resources without
 	 * unwinding all the communication stack.
 	 */
-	void ResourceManager::lock(IdType id) {
+	void ResourceManager::lock(DistributedId id) {
 		this->readersWriters.at(id).lock();
 	}
 

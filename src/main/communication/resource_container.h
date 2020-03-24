@@ -2,6 +2,7 @@
 #define RESOURCE_HANDLER_H
 
 #include <string>
+#include "graph/parallel/distributed_id.h"
 
 namespace FPMAS {
 	namespace communication {
@@ -17,7 +18,7 @@ namespace FPMAS {
 				 * @param id data id
 				 * @return serialized data
 				 */
-				virtual std::string getLocalData(unsigned long id) const = 0;
+				virtual std::string getLocalData(DistributedId id) const = 0;
 
 				/**
 				 * Returns serialized data that correspond to updates locally
@@ -27,7 +28,7 @@ namespace FPMAS {
 				 * @param id data id
 				 * @return serialized updated data
 				 */
-				virtual std::string getUpdatedData(unsigned long id) const = 0;
+				virtual std::string getUpdatedData(DistributedId id) const = 0;
 
 				/**
 				 * Updates local data corresponding to id from the specified
@@ -38,7 +39,7 @@ namespace FPMAS {
 				 * send it to the host proc that will update the data with
 				 * updateData().
 				 */
-				virtual void updateData(unsigned long id, std::string data) = 0;
+				virtual void updateData(DistributedId id, std::string data) = 0;
 		};
 	}
 }

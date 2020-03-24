@@ -48,6 +48,7 @@ set(SOURCES
 	graph/parallel/distributed_graph.cpp
 	graph/parallel/distributed_multi_graph.cpp
 	graph/parallel/distributed_graph_edge_cases.cpp
+	graph/parallel/distributed_id.cpp
 	)
 
 set(SOURCES

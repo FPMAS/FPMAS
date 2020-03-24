@@ -15,58 +15,61 @@ class Mpi_OlzTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg = DistributedGraph<int>();
 
+		DistributedId id1;
+		DistributedId id2;
+		DistributedId id3;
+
 		void SetUp() override {
-			dg.buildNode(0ul, 0);
-			dg.buildNode(1ul, 1);
-			dg.buildNode(2ul, 2);
+			id1 = dg.buildNode()->getId();
+			id2 = dg.buildNode()->getId();
+			id3 = dg.buildNode(2)->getId();
 
-			dg.link(0ul, 2ul, 0ul);
-			dg.link(2ul, 1ul, 1ul);
-
+			dg.link(id1, id3);
+			dg.link(id3, id2);
 		}
 };
 
 TEST_F(Mpi_OlzTest, simpleGhostNodeTest) {
 	// Builds ghost node from node 2
-	auto node = dg.getNode(2ul);	
+	auto node = dg.getNode(id3);	
 	dg.getGhost().buildNode(*node);
 
 	// Node 0 is linked to the ghost node
-	ASSERT_EQ(dg.getNode(0ul)->getOutgoingArcs().size(), 2);
+	ASSERT_EQ(dg.getNode(id1)->getOutgoingArcs().size(), 2);
 	// Node 1 is linked to the ghost node
-	ASSERT_EQ(dg.getNode(1ul)->getIncomingArcs().size(), 2);
+	ASSERT_EQ(dg.getNode(id2)->getIncomingArcs().size(), 2);
 	// Nothing has changed for node 2
-	ASSERT_EQ(dg.getNode(2ul)->getIncomingArcs().size(), 1);
-	ASSERT_EQ(dg.getNode(2ul)->getOutgoingArcs().size(), 1);
+	ASSERT_EQ(dg.getNode(id3)->getIncomingArcs().size(), 1);
+	ASSERT_EQ(dg.getNode(id3)->getOutgoingArcs().size(), 1);
 
 	// Removes the real node
-	dg.removeNode(2ul);
+	dg.removeNode(id3);
 
 	// Only the ghost node persist
 	ASSERT_EQ(dg.getNodes().size(), 2);
-	ASSERT_EQ(dg.getNode(0ul)->getOutgoingArcs().size(), 1);
-	ASSERT_EQ(dg.getNode(0ul)->getIncomingArcs().size(), 0);
-	ASSERT_EQ(dg.getNode(1ul)->getIncomingArcs().size(), 1);
-	ASSERT_EQ(dg.getNode(1ul)->getOutgoingArcs().size(), 0);
+	ASSERT_EQ(dg.getNode(id1)->getOutgoingArcs().size(), 1);
+	ASSERT_EQ(dg.getNode(id1)->getIncomingArcs().size(), 0);
+	ASSERT_EQ(dg.getNode(id2)->getIncomingArcs().size(), 1);
+	ASSERT_EQ(dg.getNode(id2)->getOutgoingArcs().size(), 0);
 
 	// Ghost node data is accessible from node 0
 	ASSERT_EQ(
-			dg.getNode(0ul)->getOutgoingArcs().at(0)->getTargetNode()->data()->read(),
+			dg.getNode(id1)->getOutgoingArcs().at(0)->getTargetNode()->data()->read(),
 			2
 			);
 	ASSERT_EQ(
-			dg.getNode(0ul)->getOutgoingArcs().at(0)->getTargetNode()->getId(),
-			2ul
+			dg.getNode(id1)->getOutgoingArcs().at(0)->getTargetNode()->getId(),
+			id3
 			);
 
 	// Ghost node data is accessible from node 1
 	ASSERT_EQ(
-			dg.getNode(1ul)->getIncomingArcs().at(0)->getSourceNode()->data()->read(),
+			dg.getNode(id2)->getIncomingArcs().at(0)->getSourceNode()->data()->read(),
 			2
 			);
 	ASSERT_EQ(
-			dg.getNode(1ul)->getIncomingArcs().at(0)->getSourceNode()->getId(),
-			2ul
+			dg.getNode(id2)->getIncomingArcs().at(0)->getSourceNode()->getId(),
+			id3
 			);
 	dg.synchronize();
 

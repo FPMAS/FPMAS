@@ -176,55 +176,6 @@ namespace nlohmann {
 	 */
 	template<typename T, typename IdType, int N>
     struct adl_serializer<Graph<T, IdType, N>> {
-
-		/**
-		 * This function defines rules to implicitly serialize graphs as json
-		 * strings using the [JSON for Modern C++
-		 * library](https://github.com/nlohmann/json/). For more information
-		 * about how to serialize objects, see the [JSON library
-		 * documentation](https://github.com/nlohmann/json/blob/develop/README.md#arbitrary-types-conversions)
-		 * and the small example given in the Graph class documentation.
-		 *
-		 * Graph can be deserialized from json with the same format as the one
-		 * described in the to_json(json&, const Graph<T>&) function.
-		 *
-		 * As for the to_json(json&, const Graph<T>&) function, any user data
-		 * type can be properly deserialize as long as the proper [from_json
-		 * function](https://github.com/nlohmann/json/blob/develop/README.md#basic-usage)
-		 * has been defined.
-		 *
-		 * @param j input json
-		 * @return deserialized graph instance
-		 *
-		 */
-		static Graph<T, IdType, N> from_json(const json& j) {
-			Graph<T, IdType, N> graph;
-			// Builds nodes
-			json nodes = j.at("nodes");
-			for(json& node : nodes) {
-				Node<T, IdType, N> n = node.get<Node<T, IdType, N>>();
-				graph.buildNode(
-					n.getId(),
-					n.getWeight(),
-					std::move(n.data())
-					);
-			}
-
-			// Build arcs
-			json arcs = j.at("arcs");
-			for(json& arc : arcs) {
-				Arc<T, IdType, N> tempArc = arc.get<Arc<T, IdType, N>>();
-				graph.link(
-					tempArc.getSourceNode()->getId(),
-					tempArc.getTargetNode()->getId(),
-					tempArc.getId()
-					);
-				delete tempArc.getSourceNode();
-				delete tempArc.getTargetNode();
-			}
-			return graph;
-		}
-
 		/**
 		 * This function defines rules to implicitly serialize graphs as json
 		 * strings using the [JSON for Modern C++
@@ -274,7 +225,7 @@ namespace nlohmann {
 		 * ```
 		 *
 		 * @param j current json reference
-		 * @param graph graph reference (NOT reference to pointer)
+		 * @param graph graph reference
 		 */
 		static void to_json(json& j, const Graph<T, IdType, N>& graph) {
 			std::vector<Node<T, IdType, N>> nodes;

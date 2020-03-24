@@ -52,9 +52,12 @@ namespace FPMAS::graph::parallel {
 
 
 				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
-				std::unordered_map<IdType, Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>*> nodes = graph->getNodes();
+				std::unordered_map<
+					DistributedId,
+					Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*
+				> nodes = graph->getNodes();
 				for (int i = 0; i < num_ids; i++) {
-					Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+					Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 					if(graph->getGhost().ghost_node_serialization_cache.count(node->getId()) == 1) {
 						sizes[i] = graph->getGhost().ghost_node_serialization_cache.at(node->getId()).size()+1;
@@ -107,11 +110,11 @@ namespace FPMAS::graph::parallel {
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
 				// store the result and delete it when it is packed.
-				std::unordered_map<IdType, std::string>* serial_cache
+				std::unordered_map<DistributedId, std::string>* serial_cache
 					= &graph->getGhost().ghost_node_serialization_cache;
 				for (int i = 0; i < num_ids; ++i) {
 					// Rebuilt node id
-					IdType id = read_zoltan_id(&global_ids[i * num_gid_entries]);
+					DistributedId id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 
 					// Retrieves the serialized node
 					std::string node_str = serial_cache->at(id);
@@ -152,7 +155,7 @@ namespace FPMAS::graph::parallel {
 
 				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 				for (int i = 0; i < num_ids; ++i) {
-					int node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
+					DistributedId node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 					json json_node = json::parse(&buf[idx[i]]);
 
 					GhostNode<T, N, S>* ghost = graph->getGhost().getNodes().at(node_id);

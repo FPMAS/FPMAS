@@ -6,6 +6,7 @@
 
 #include "utils/macros.h"
 #include "zoltan_cpp.h"
+#include "graph/parallel/distributed_id.h"
 #include "communication/communication.h"
 
 using FPMAS::communication::MpiCommunicator;
@@ -81,25 +82,25 @@ namespace FPMAS::graph::parallel {
 			MpiCommunicator mpiCommunicator;
 			Zoltan zoltan;
 			const int localProc;
-			std::unordered_map<IdType, int> origins;
-			std::unordered_map<IdType, int> currentLocations;
+			std::unordered_map<DistributedId, int> origins;
+			std::unordered_map<DistributedId, int> currentLocations;
 
-			std::unordered_map<IdType, std::string> proxyUpdatesSerializationCache;
+			std::unordered_map<DistributedId, std::string> proxyUpdatesSerializationCache;
 
 			// Contains the current key that should be updated at the
 			// next synchronize() call
-			std::set<IdType> updates;
+			std::set<DistributedId> updates;
 
 			public:
 			Proxy(int localProc);
 			Proxy(int localProc, std::initializer_list<int>);
 			int getLocalProc() const;
-			void setOrigin(IdType, int);
-			void setCurrentLocation(IdType, int);
-			int getOrigin(IdType) const;
-			int getCurrentLocation(IdType) const;
-			void setLocal(IdType, bool upToDate=false);
-			bool isLocal(IdType);
+			void setOrigin(DistributedId, int);
+			void setCurrentLocation(DistributedId, int);
+			int getOrigin(DistributedId) const;
+			int getCurrentLocation(DistributedId) const;
+			void setLocal(DistributedId, bool upToDate=false);
+			bool isLocal(DistributedId);
 
 			void synchronize();
 

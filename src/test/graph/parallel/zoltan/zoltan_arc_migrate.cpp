@@ -32,23 +32,28 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 		// Error code
 		int err;
 
+		DistributedId id1;
+		DistributedId id2;
+		DistributedId id3;
+
+		DistributedId arcId1;
+		DistributedId arcId2;
+
 		void SetUp() override {
-			dg.buildNode(0, 1., 0);
-			dg.buildNode(2, 2., 1);
-			dg.buildNode(85250, 3., 2);
+			id1 = dg.buildNode(1., 0)->getId();
+			id2 = dg.buildNode(2., 1)->getId();
+			id3 = dg.buildNode(3., 2)->getId();
 
-			dg.link(0, 2, 0);
-			dg.link(2, 0, 1);
+			arcId1 = dg.link(id1, id2)->getId();
+			dg.link(id2, id1);
 
-			dg.link(0, 85250, 2);
-
-
+			arcId2 = dg.link(id1, id3)->getId();
 		}
 
 		void write_migration_sizes() {
 			// Transfer arcs 0 and 2
-			write_zoltan_id(0, &transfer_arc_global_ids[0]);
-			write_zoltan_id(2, &transfer_arc_global_ids[2]);
+			write_zoltan_id(arcId1, &transfer_arc_global_ids[0]);
+			write_zoltan_id(arcId2, &transfer_arc_global_ids[2]);
 
 			obj_size_multi_fn<int, 1, GhostMode>(
 					&dg,
@@ -91,12 +96,12 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, obj_size_multi_test) {
 	write_migration_sizes();
 
 	int current_proc = dg.getMpiCommunicator().getRank();
-	json arc0_str = *dg.getArcs().at(0);
+	json arc0_str = *dg.getArcs().at(arcId1);
 	arc0_str["source"] = {current_proc, current_proc};
 	arc0_str["target"] = {current_proc, current_proc};
 	ASSERT_EQ(sizes[0], arc0_str.dump().size() + 1);
 
-	json arc2_str = *dg.getArcs().at(2);
+	json arc2_str = *dg.getArcs().at(arcId2);
 	arc2_str["source"] = {current_proc, current_proc};
 	arc2_str["target"] = {current_proc, current_proc};
 	ASSERT_EQ(sizes[1], arc2_str.dump().size() + 1);
@@ -113,7 +118,11 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[0],
 		std::string(
-			R"({"id":0,"layer":0,"link":[0,2],"source":[)" + current_proc + "," + current_proc + "],"
+			R"({"id":{"id":0,"rank":)" + current_proc 
+			+ R"(},"layer":0,"link":[)"
+			+ R"({"id":0,"rank":)"+current_proc +"},"
+			+ R"({"id":1,"rank":)"+current_proc +"}"
+			+ R"(],"source":[)" + current_proc + "," + current_proc + "],"
 			+ R"("target":[)" + current_proc + "," + current_proc + "]}"
 			).c_str()
 		);
@@ -121,7 +130,11 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[idx[1]],
 		std::string(
-			R"({"id":2,"layer":0,"link":[0,85250],"source":[)"
+			R"({"id":{"id":2,"rank":)" + current_proc
+			+ R"(},"layer":0,"link":[)"
+			+ R"({"id":0,"rank":)"+current_proc +"},"
+			+ R"({"id":2,"rank":)"+current_proc +"}"
+			+ R"(],"source":[)"
 			+ current_proc + "," + current_proc + "],"
 			+ R"("target":[)" + current_proc + "," + current_proc + "]}"
 			).c_str()
@@ -139,8 +152,9 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, local_nodes_unpack_obj_multi_test) {
 	write_migration_sizes();
 	write_communication_buffer();
 
-	dg.unlink(0ul);
-	dg.unlink(2ul);
+	dg.unlink(arcId1);
+	dg.unlink(arcId2);
+	ASSERT_EQ(dg.getArcs().size(), 1);
 	unpack_obj_multi_fn<int, 1, GhostMode>(
 		&dg,
 		2,
@@ -153,16 +167,16 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, local_nodes_unpack_obj_multi_test) {
 
 	ASSERT_EQ(dg.getArcs().size(), 3);
 
-	ASSERT_EQ(dg.getNode(0ul)->getOutgoingArcs().size(), 2);
-	ASSERT_EQ(dg.getNode(2ul)->getIncomingArcs().size(), 1);
-	ASSERT_EQ(dg.getNode(85250ul)->getIncomingArcs().size(), 1);
+	ASSERT_EQ(dg.getNode(id1)->getOutgoingArcs().size(), 2);
+	ASSERT_EQ(dg.getNode(id2)->getIncomingArcs().size(), 1);
+	ASSERT_EQ(dg.getNode(id3)->getIncomingArcs().size(), 1);
 
-	ASSERT_EQ(dg.getNode(2ul)->getIncomingArcs().at(0)->getId(), 0ul);
-	ASSERT_EQ(dg.getArc(0ul)->getSourceNode()->getId(), 0ul);
-	ASSERT_EQ(dg.getArc(0ul)->getTargetNode()->getId(), 2ul);
+	ASSERT_EQ(dg.getNode(id2)->getIncomingArcs().at(0)->getId(), arcId1);
+	ASSERT_EQ(dg.getArc(arcId1)->getSourceNode()->getId(), id1);
+	ASSERT_EQ(dg.getArc(arcId1)->getTargetNode()->getId(), id2);
 
-	ASSERT_EQ(dg.getNode(85250ul)->getIncomingArcs().at(0)->getId(), 2ul);
-	ASSERT_EQ(dg.getArc(2ul)->getSourceNode()->getId(), 0ul);
-	ASSERT_EQ(dg.getArc(2ul)->getTargetNode()->getId(), 85250ul);
+	ASSERT_EQ(dg.getNode(id3)->getIncomingArcs().at(0)->getId(), arcId2);
+	ASSERT_EQ(dg.getArc(arcId2)->getSourceNode()->getId(), id1);
+	ASSERT_EQ(dg.getArc(arcId2)->getTargetNode()->getId(), id3);
 }
 

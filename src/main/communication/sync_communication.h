@@ -37,7 +37,6 @@ namespace FPMAS::communication {
 			BLACK = 1
 		};
 
-
 		/**
 		 * An MpiCommunicator extension that implements the
 		 * Dijkstra-Feijen-Gasteren termination algorithm.
@@ -49,6 +48,8 @@ namespace FPMAS::communication {
 		class SyncMpiCommunicator : public MpiCommunicator {
 			friend ReadersWriters;
 			private:
+				MpiDistributedId distributedIdBuffer;
+
 				Epoch epoch = EVEN;
 				Color color = WHITE;
 
@@ -59,14 +60,14 @@ namespace FPMAS::communication {
 				void send(std::string, int, Tag);
 				void waitSendRequest(MPI_Request*);
 
-				void handleRead(int, IdType);
-				void respondToRead(int, IdType);
-				void handleAcquire(int, IdType);
-				void respondToAcquire(int, IdType);
+				void handleRead(int, DistributedId);
+				void respondToRead(int, DistributedId);
+				void handleAcquire(int, DistributedId);
+				void respondToAcquire(int, DistributedId);
 				void handleGiveBack(std::string);
 
-				void waitForReading(IdType);
-				void waitForAcquire(IdType);
+				void waitForReading(DistributedId);
+				void waitForAcquire(DistributedId);
 
 			public:
 				SyncMpiCommunicator(ResourceContainer&);
@@ -74,10 +75,10 @@ namespace FPMAS::communication {
 
 				void handleIncomingRequests();
 
-				std::string read(IdType, int);
+				std::string read(DistributedId, int);
 
-				std::string acquire(IdType, int);
-				void giveBack(IdType, int);
+				std::string acquire(DistributedId, int);
+				void giveBack(DistributedId, int);
 
 				void terminate();
 

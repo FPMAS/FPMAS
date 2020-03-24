@@ -39,12 +39,13 @@ namespace FPMAS::graph::base {
 		friend Arc<T, IdType, N>::Arc(IdType, Node<T, IdType, N>*, Node<T, IdType, N>*, LayerId);
 		friend void Arc<T, IdType, N>::unlink();
 		// Grants access to private Node constructor
-		friend Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(IdType);
-		friend Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(IdType id, T&& data);
-		friend Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(IdType id, float weight, T&& data);
+		friend Node<T, IdType, N>* Graph<T, IdType, N>::buildNode();
+		friend Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(T&&);
+		friend Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(float, T&&);
+		friend Node<T, IdType, N>* Graph<T, IdType, N>::_buildNode(IdType, float, T&&);
 
 		// Allows graph to delete arcs from incoming / outgoing arcs lists
-		friend void Graph<T, IdType, N>::removeNode(IdType nodeId);
+		friend void Graph<T, IdType, N>::removeNode(IdType);
 
 		protected:
 

@@ -2,14 +2,12 @@
 #define MACROS_H
 
 namespace FPMAS::graph::base {
-	//typedef unsigned long NodeId;
-	//typedef unsigned long ArcId;
 	typedef int LayerId;
-	static constexpr int DefaultLayer = 0;
+	static constexpr LayerId DefaultLayer = 0;
 }
-namespace FPMAS::graph::parallel {
-	typedef unsigned long IdType;
-}
+
+#define MPI_DISTRIBUTED_ID_TYPE \
+	FPMAS::graph::parallel::DistributedId::mpiDistributedIdType
 
 #define SYNC_MODE template<typename, int> class S
 

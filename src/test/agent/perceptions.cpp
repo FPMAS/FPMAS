@@ -12,16 +12,16 @@ class Mpi_PerceptionsTest : public ::testing::Test {
 		node_ptr sheep_2;
 	
 	void SetUp() override {
-		wolf_1 = env.buildNode(0, std::unique_ptr<PreyPredAgent>(new Wolf()));
-		wolf_2 = env.buildNode(1, std::unique_ptr<PreyPredAgent>(new Wolf()));
-		wolf_3 = env.buildNode(2, std::unique_ptr<PreyPredAgent>(new Wolf()));
-		sheep_1 = env.buildNode(3, std::unique_ptr<PreyPredAgent>(new Sheep()));
-		sheep_2 = env.buildNode(4, std::unique_ptr<PreyPredAgent>(new Sheep()));
+		wolf_1 = env.buildNode(std::unique_ptr<PreyPredAgent>(new Wolf()));
+		wolf_2 = env.buildNode(std::unique_ptr<PreyPredAgent>(new Wolf()));
+		wolf_3 = env.buildNode(std::unique_ptr<PreyPredAgent>(new Wolf()));
+		sheep_1 = env.buildNode(std::unique_ptr<PreyPredAgent>(new Sheep()));
+		sheep_2 = env.buildNode(std::unique_ptr<PreyPredAgent>(new Sheep()));
 
-		env.link(wolf_1->getId(), sheep_1->getId(), 0, Layer_A);
-		env.link(wolf_1->getId(), sheep_2->getId(), 1, Layer_A);
-		env.link(wolf_1->getId(), wolf_2->getId(), 2, Layer_B);
-		env.link(wolf_3->getId(), wolf_1->getId(), 2, Layer_B);
+		env.link(wolf_1->getId(), sheep_1->getId(), Layer_A);
+		env.link(wolf_1->getId(), sheep_2->getId(), Layer_A);
+		env.link(wolf_1->getId(), wolf_2->getId(), Layer_B);
+		env.link(wolf_3->getId(), wolf_1->getId(), Layer_B);
 	}
 
 

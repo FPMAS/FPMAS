@@ -23,15 +23,18 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 		// Error code
 		int err;
 
+		DistributedId id1;
+		DistributedId id2;
+
 		void SetUp() override {
-			dg.buildNode(0ul, 1.5, 1);
-			dg.buildNode(1ul, 2., -2);
+			id1 = dg.buildNode(1.5, 1)->getId();
+			id2 = dg.buildNode(2., -2)->getId();
 		}
 
 		void write_migration_sizes() {
 			// Transfer nodes 0 and 1
-			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(0, &transfer_global_ids[0]);
-			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(1, &transfer_global_ids[2]);
+			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(id1, &transfer_global_ids[0]);
+			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(id2, &transfer_global_ids[2]);
 
 			obj_size_multi_fn<int, 1, GhostMode>(
 					&dg,
@@ -73,11 +76,10 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, obj_size_multi_test) {
 
 	write_migration_sizes();
 
-	json ghost_str = *dg.getNode(0);
-	json ghost0_str = *dg.getNodes().at(0);
+	json ghost0_str = *dg.getNodes().at(id1);
 	ASSERT_EQ(sizes[0], ghost0_str.dump().size() + 1);
 
-	json ghost1_str = *dg.getNodes().at(1);
+	json ghost1_str = *dg.getNodes().at(id2);
 	ASSERT_EQ(sizes[1], ghost1_str.dump().size() + 1);
 }
 
@@ -86,14 +88,21 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, pack_obj_multi_test) {
 	write_migration_sizes();
 	write_communication_buffer();
 
+	std::string current_proc = std::to_string(dg.getMpiCommunicator().getRank());
 	ASSERT_STREQ(
 		&buf[0],
-		R"({"data":1,"id":0,"weight":1.5})"
+		std::string(
+			R"({"data":1,"id":{"id":0,"rank":)" + current_proc
+			+ R"(},"weight":1.5})"
+			).c_str()
 		);
 
 	ASSERT_STREQ(
 		&buf[idx[1]],
-		R"({"data":-2,"id":1,"weight":2.0})"
+		std::string(
+			R"({"data":-2,"id":{"id":1,"rank":)" + current_proc
+			+ R"(},"weight":2.0})"
+			).c_str()
 		);
 
 }
@@ -102,20 +111,20 @@ using FPMAS::graph::parallel::zoltan::ghost::unpack_obj_multi_fn;
 
 TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 
-	dg.getNode(0)->data()->acquire() = 8;
-	dg.getNode(0)->setWeight(5.);
+	dg.getNode(id1)->data()->acquire() = 8;
+	dg.getNode(id1)->setWeight(5.);
 
-	dg.getNode(1)->data()->acquire() = 12;
-	dg.getNode(1)->setWeight(4.);
+	dg.getNode(id2)->data()->acquire() = 12;
+	dg.getNode(id2)->setWeight(4.);
 
 	write_migration_sizes();
 	write_communication_buffer();
 	
-	dg.getGhost().buildNode(*dg.getNode(0));
-	dg.getGhost().buildNode(*dg.getNode(1));
+	dg.getGhost().buildNode(*dg.getNode(id1));
+	dg.getGhost().buildNode(*dg.getNode(id2));
 
-	dg.removeNode(0);
-	dg.removeNode(1);
+	dg.removeNode(id1);
+	dg.removeNode(id2);
 
 	unpack_obj_multi_fn<int, 1, GhostMode>(
 		&dg,
@@ -127,9 +136,9 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 		buf,
 		&err);
 
-	ASSERT_EQ(dg.getGhost().getNodes().at(0)->data()->read(), 8);
-	ASSERT_EQ(dg.getGhost().getNodes().at(0)->getWeight(), 5.);
+	ASSERT_EQ(dg.getGhost().getNodes().at(id1)->data()->read(), 8);
+	ASSERT_EQ(dg.getGhost().getNodes().at(id1)->getWeight(), 5.);
 
-	ASSERT_EQ(dg.getGhost().getNodes().at(1)->data()->read(), 12);
-	ASSERT_EQ(dg.getGhost().getNodes().at(1)->getWeight(), 4.);
+	ASSERT_EQ(dg.getGhost().getNodes().at(id2)->data()->read(), 12);
+	ASSERT_EQ(dg.getGhost().getNodes().at(id2)->getWeight(), 4.);
 }

@@ -6,8 +6,9 @@
 #include <unordered_map>
 #include <queue>
 #include "utils/macros.h"
+#include "graph/parallel/distributed_id.h"
 
-using FPMAS::graph::parallel::IdType;
+using FPMAS::graph::parallel::DistributedId;
 
 namespace FPMAS::communication {
 	class ResourceManager;
@@ -20,7 +21,7 @@ namespace FPMAS::communication {
 	class ReadersWriters {
 		friend ResourceManager;
 		private:
-			IdType id;
+			DistributedId id;
 			std::queue<int> read_requests;
 			std::queue<int> write_requests;
 			SyncMpiCommunicator& comm;
@@ -34,7 +35,7 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param comm reference to the MPI communicator
 			 */
-			ReadersWriters(IdType id, SyncMpiCommunicator& comm) : id(id), comm(comm) {}
+			ReadersWriters(DistributedId id, SyncMpiCommunicator& comm) : id(id), comm(comm) {}
 
 			/**
 			 * Performs a read operation on the local resource for the
@@ -83,9 +84,9 @@ namespace FPMAS::communication {
 		friend SyncMpiCommunicator;
 		private:
 			SyncMpiCommunicator& comm;
-			mutable std::unordered_map<IdType, ReadersWriters> readersWriters;
+			mutable std::unordered_map<DistributedId, ReadersWriters> readersWriters;
 
-			void lock(IdType id);
+			void lock(DistributedId id);
 			void clear();
 
 		public:
@@ -106,7 +107,7 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param destination destination proc
 			 */
-			void read(IdType id, int destination);
+			void read(DistributedId id, int destination);
 
 			/**
 			 * Performs a write operation on the local resource for the
@@ -121,20 +122,20 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param destination destination proc
 			 */
-			void write(IdType id, int destination);
+			void write(DistributedId id, int destination);
 
 			/**
 			 * Releases the locked resource, and respond to pending requests.
 			 *
 			 * @param id resource id
 			 */
-			void release(IdType id);
+			void release(DistributedId id);
 
 			/**
 			 * Returns a const reference to the ReadersWriters instance
 			 * currently managing the specified resource.
 			 */
-			const ReadersWriters& get(IdType id) const;
+			const ReadersWriters& get(DistributedId id) const;
 
 	};
 

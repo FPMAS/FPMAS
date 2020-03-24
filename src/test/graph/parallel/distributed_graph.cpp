@@ -59,6 +59,7 @@ TEST(Mpi_DistributedGraph, build_with_ranks_and_sync_mode_test) {
 class DistributeGraphTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
+		std::unordered_map<int, DistributedId> idMap;
 };
 
 class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
@@ -66,21 +67,21 @@ class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
-					dg.buildNode((unsigned long) i, i);
+					idMap[i] = dg.buildNode(i)->getId();
 				}
 			}
 		}
 };
 
 TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test_manual_partition) {
-	std::unordered_map<unsigned long, std::pair<int, int>> partition;
+	std::unordered_map<DistributedId, std::pair<int, int>> partition;
 	for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
-		partition[i] = std::pair(0, i);
+		partition[idMap[i]] = std::pair(0, i);
 	}
 	dg.distribute(partition);
 	ASSERT_EQ(dg.getNodes().size(), 1);
-	ASSERT_EQ(dg.getNodes().begin()->first, dg.getMpiCommunicator().getRank());
-	ASSERT_EQ(dg.getNodes().begin()->second->getId(), dg.getMpiCommunicator().getRank());
+	ASSERT_EQ(dg.getNodes().begin()->first.id(), dg.getMpiCommunicator().getRank());
+	ASSERT_EQ(dg.getNodes().begin()->second->getId().id(), dg.getMpiCommunicator().getRank());
 	ASSERT_EQ(dg.getNodes().begin()->second->data()->read(), dg.getMpiCommunicator().getRank());
 }
 
@@ -113,13 +114,13 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 	// proc 0 must maintain the currentLocations map for exported nodes
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
-			if(dg.getNodes().count(i) > 0) {
+			if(dg.getNodes().count(idMap[i]) > 0) {
 				// Local node on this proc
-				ASSERT_EQ(dg.getProxy().getCurrentLocation(i), 0);
+				ASSERT_EQ(dg.getProxy().getCurrentLocation(idMap[i]), 0);
 			}
 			else {
 				// Must be located elsewhere
-				ASSERT_NE(dg.getProxy().getCurrentLocation(i), 0);
+				ASSERT_NE(dg.getProxy().getCurrentLocation(idMap[i]), 0);
 			}
 		}
 
@@ -131,10 +132,10 @@ class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					dg.buildNode((unsigned long) 2 * i, 2*i);
-					dg.buildNode((unsigned long) 2 * i + 1, 2*i);
+					idMap[2*i] = dg.buildNode()->getId();
+					idMap[2*i+1] = dg.buildNode()->getId();
 
-					dg.link(2 * i, 2 * i + 1, i);
+					dg.link(idMap[2*i], idMap[2*i+1]);
 				}
 			}
 		}
@@ -145,10 +146,10 @@ class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
  * Forces partition with 2 connected nodes by proc
  */
 TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test_manual_partition) {
-	std::unordered_map<unsigned long, std::pair<int, int>> partition;
+	std::unordered_map<DistributedId, std::pair<int, int>> partition;
 	for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
-		partition[2*i] = std::pair(0, i);
-		partition[2*i+1] = std::pair(0, i);
+		partition[idMap[2*i]] = std::pair(0, i);
+		partition[idMap[2*i+1]] = std::pair(0, i);
 	}
 	dg.distribute(partition);
 
@@ -183,18 +184,17 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 
 class Mpi_DistributeCompleteGraphTest : public DistributeGraphTest {
 	protected:
-		std::unordered_map<unsigned long, std::pair<int, int>> init_partition;
+		std::unordered_map<DistributedId, std::pair<int, int>> init_partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-					init_partition[i] = std::pair(0, i / 2);
-					dg.buildNode(i, i);
+					idMap[i] = dg.buildNode()->getId();
+					init_partition[idMap[i]] = std::pair(0, i / 2);
 				}
-				int id = 0;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
 					for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
 						if(i != j) {
-							dg.link(i, j, id++);
+							dg.link(idMap[i], idMap[j]);
 						}
 					}
 				}
@@ -217,20 +217,6 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 		}
 		
 		dg.distribute();
-		/*
-		 *if(dg.getNodes().begin()->second->getWeight() == 3.) {
-		 *    ASSERT_EQ(dg.getNodes().size(), 1);
-		 *    ASSERT_EQ(dg.getNodes().begin()->second->getWeight(), 3.);
-		 *    ASSERT_EQ(dg.getGhost().getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 1);
-		 *}
-		 *else {
-		 *    ASSERT_EQ(dg.getNodes().size(), 3);
-		 *    for(auto node : dg.getNodes()) {
-		 *        ASSERT_EQ(node.second->getWeight(), 1.);
-		 *    }
-		 *    ASSERT_EQ(dg.getGhost().getNodes().size(), 2 * dg.getMpiCommunicator().getSize() - 3);
-		 *}
-		 */
 
 		ASSERT_EQ(
 			dg.getGhost().getArcs().size(), 
@@ -246,18 +232,17 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 class Mpi_DynamicLoadBalancingTest : public DistributeGraphTest {
 
 	protected:
-		std::unordered_map<unsigned long, std::pair<int, int>> init_partition;
+		std::unordered_map<DistributedId, std::pair<int, int>> init_partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-					init_partition[i] = std::pair(0, i / 2);
-					dg.buildNode(i, i);
+					idMap[i] = dg.buildNode()->getId();
+					init_partition[idMap[i]] = std::pair(0, i / 2);
 				}
-				int id = 0;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
 					for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
 						if(i != j) {
-							dg.link(i, j, id++);
+							dg.link(idMap[i], idMap[j]);
 						}
 					}
 				}

@@ -2,6 +2,7 @@
 #define ZOLTAN_UTILS_H
 
 #include "zoltan_cpp.h"
+#include "../distributed_id.h"
 
 #define ZOLTAN_OBJ_SIZE_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
 #define ZOLTAN_PACK_OBJ_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
@@ -10,14 +11,20 @@
 	void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, \
     int *, int , ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *
 
+namespace FPMAS::graph::parallel {
+	class DistributedId;
+}
+
+using FPMAS::graph::parallel::DistributedId;
+
 /**
  * Zoltan utility functions.
  */
 namespace FPMAS::graph::parallel::zoltan::utils {
 
-	unsigned long read_zoltan_id(const ZOLTAN_ID_PTR);
+	DistributedId read_zoltan_id(const ZOLTAN_ID_PTR);
 
-	void write_zoltan_id(unsigned long, ZOLTAN_ID_PTR);
+	void write_zoltan_id(DistributedId, ZOLTAN_ID_PTR);
 
 
 	/**

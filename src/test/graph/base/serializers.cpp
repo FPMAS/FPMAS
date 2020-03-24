@@ -11,15 +11,15 @@ using FPMAS::graph::base::Arc;
 
 TEST(NodeSerializer, simple_node_serialization) {
 
-	Graph<int, unsigned long> g;
-	auto node = g.buildNode(85250, 3.2, 0);
+	Graph<int> g(0ul);
+	auto node = g.buildNode(3.2, 0);
 
 	// The node to_json method will be automatically called
 	json j = json{{"node", *node}};
 
 	// Note : the float conversion is actually perfectly normal
 	// See https://float.exposed/0x404ccccd
-	ASSERT_EQ("{\"node\":{\"data\":0,\"id\":85250,\"weight\":3.200000047683716}}", j.dump());
+	ASSERT_EQ("{\"node\":{\"data\":0,\"id\":0,\"weight\":3.200000047683716}}", j.dump());
 
 }
 
@@ -33,28 +33,12 @@ TEST(NodeSerializer, simple_node_deserialization) {
 		{"data":0,"id":85250,"weight":2.3}
 		)"_json;
 
-	Node<int, unsigned long, 1> node = node_json.get<Node<int, unsigned long, 1>>();
+	Node<int, DefaultId , 1> node = node_json.get<Node<int, DefaultId, 1>>();
 
 	ASSERT_EQ(node.data(), 0);
-	ASSERT_EQ(node.getId(), 85250ul);
+	ASSERT_EQ(node.getId(), DefaultId(85250ul));
 	ASSERT_EQ(node.getWeight(), 2.3f);
 }
-/*
- *
- *TEST(NodeSerializer, node_deserialization_no_data) {
- *    // Unserialization without data
- *    json node_json = R"(
- *        {"id":85250}
- *        )"_json;
- *
- *    Node<int, DefaultLayer, 1> node = node_json.get<Node<int, DefaultLayer, 1>>();
- *
- *    ASSERT_EQ(node.getId(), 85250ul);
- *
- *    node.data() = 2;
- *    ASSERT_EQ(node.data(), 2);
- *}
- */
 
 enum TestLayer {
 	_Default = 0,
@@ -62,13 +46,10 @@ enum TestLayer {
 };
 
 TEST(ArcSerializer, simple_arc_serializer) {
-	Graph<int, unsigned long, 2> g;
-	auto* n1 = g.buildNode(0ul, 0);
-	auto* n2 = g.buildNode(1ul, 1);
-	g.link(n1, n2, 0ul, TestLayer::Test);
-
-	const auto* n = g.getNode(0ul);
-	auto* a = n->layer(TestLayer::Test).getOutgoingArcs()[0];
+	Graph<int, DefaultId, 2> g(0ul);
+	auto* n1 = g.buildNode(0);
+	auto* n2 = g.buildNode(1);
+	auto* a = g.link(n1, n2, TestLayer::Test);
 
 	json j = *a;
 
@@ -82,11 +63,11 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 		"link":[0,1]
 		})"_json;
 
-	Arc<int, unsigned long, 2> arc = j;
-	ASSERT_EQ(arc.getId(), 2);
+	Arc<int, DefaultId, 2> arc = j;
+	ASSERT_EQ(arc.getId(), DefaultId(2));
 	ASSERT_EQ(arc.layer, TestLayer::Test);
-	ASSERT_EQ(arc.getSourceNode()->getId(), 0);
-	ASSERT_EQ(arc.getTargetNode()->getId(), 1);
+	ASSERT_EQ(arc.getSourceNode()->getId(), DefaultId(0));
+	ASSERT_EQ(arc.getTargetNode()->getId(), DefaultId(1));
 
 	delete arc.getSourceNode();
 	delete arc.getTargetNode();
@@ -94,8 +75,8 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 
 TEST(GraphSerializer, simple_graph_serialization) {
 
-	Graph<int, unsigned long> g;
-	g.buildNode(0ul, 0);
+	Graph<int> g(0ul);
+	g.buildNode(0);
 
 	json j = g;
 
@@ -108,52 +89,15 @@ TEST_F(SampleGraphTest, sample_graph_serialization) {
 
 	ASSERT_EQ(j.dump(),
 			"{\"arcs\":["
-				"{\"id\":2,\"layer\":0,\"link\":[2,3]},"
-				"{\"id\":0,\"layer\":0,\"link\":[1,2]},"
-				"{\"id\":1,\"layer\":0,\"link\":[2,1]}"
+				"{\"id\":2,\"layer\":0,\"link\":[1,2]},"
+				"{\"id\":0,\"layer\":0,\"link\":[0,1]},"
+				"{\"id\":1,\"layer\":0,\"link\":[1,0]}"
 				"],"
 			"\"nodes\":["
-				"{\"data\":3,\"id\":3,\"weight\":1.0},"
-				"{\"data\":1,\"id\":1,\"weight\":1.0},"
-				"{\"data\":2,\"id\":2,\"weight\":1.0}"
+				"{\"data\":3,\"id\":2,\"weight\":1.0},"
+				"{\"data\":1,\"id\":0,\"weight\":1.0},"
+				"{\"data\":2,\"id\":1,\"weight\":1.0}"
 				"]}"
 			);
 
-}
-
-TEST(GraphSerializer, simple_graph_deserialization) {
-	json graph_json = R"(
-		{
-			"arcs":[],
-			"nodes":[{"data":0,"id":0,"weight":1.0}]
-		}
-		)"_json;
-
-	Graph<int, unsigned long> g = graph_json.get<Graph<int, unsigned long>>();
-	ASSERT_EQ(g.getNodes().size(), 1);
-	ASSERT_EQ(g.getNodes().count(0ul), 1);
-	ASSERT_EQ(g.getNodes().at(0ul)->getId(), 0ul);
-	ASSERT_EQ(g.getNodes().at(0ul)->data(), 0);
-}
-
-TEST_F(SampleGraphTest, sample_graph_deserialization) {
-
-	json graph_json = R"(
-			{
-			"arcs":[
-				{"id":0,"layer":0,"link":[1,2]},
-				{"id":2,"layer":0,"link":[2,3]},
-				{"id":1,"layer":0,"link":[2,1]}
-				],
-			"nodes":[
-				{"data":3,"id":3,"weight":1.0},
-				{"data":1,"id":1,"weight":1.0},
-				{"data":2,"id":2,"weight":1.0}
-				]
-			}
-			)"_json;
-
-	Graph<int, unsigned long> graph = graph_json.get<Graph<int, unsigned long>>();
-
-	testSampleGraphStructure(&graph);
 }

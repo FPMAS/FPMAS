@@ -13,26 +13,32 @@ using FPMAS::communication::ResourceContainer;
 
 class TestResourceHandler : public ResourceContainer {
 	public:
-		std::unordered_map<unsigned long, unsigned long> data;
+		std::unordered_map<DistributedId, unsigned long> data;
 
 		TestResourceHandler() {
 			int current_rank;
 			MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
 			int size;
 			MPI_Comm_size(MPI_COMM_WORLD, &size);
-			for (int i = 0; i < size; i++)
-					data[i] = i;
+			// Builds a complete data register, so that for any procs i and j,
+			// data[i:j] exists.
+			for (int i = 0; i < size; i++) {
+				DistributedId currentId(i);
+				for (int j = 0; j < size; j++) {
+					data[currentId++] = j;
+				}
+			}
 		}
 
-		std::string getLocalData(unsigned long id) const override {
+		std::string getLocalData(DistributedId id) const override {
 			return std::to_string(data.at(id));
 		}
 
-		std::string getUpdatedData(unsigned long id) const override {
+		std::string getUpdatedData(DistributedId id) const override {
 			return std::to_string(data.at(id));
 		}
 
-		void updateData(unsigned long id, std::string data_str) override {
+		void updateData(DistributedId id, std::string data_str) override {
 			this->data[id] = std::stoul(data_str);
 		}
 
@@ -77,19 +83,19 @@ class Mpi_ReadAcquireTest : public ::testing::Test {
 };
 
 TEST_F(Mpi_ReadAcquireTest, self_read) {
-	std::string data = comm.read(comm.getRank(), comm.getRank());
+	std::string data = comm.read(DistributedId(comm.getRank(), comm.getRank()), comm.getRank());
 	ASSERT_EQ(data, std::to_string(comm.getRank()));
 
 	comm.terminate();
 }
 
 TEST_F(Mpi_ReadAcquireTest, self_acquire) {
-	std::string data = comm.acquire(comm.getRank(), comm.getRank());
-	this->handler.data[comm.getRank()] = std::stoul(data);
-	this->handler.data[comm.getRank()] = 10;
-	comm.giveBack(comm.getRank(), comm.getRank());
+	std::string data = comm.acquire(DistributedId(comm.getRank(), comm.getRank()), comm.getRank());
+	this->handler.data[DistributedId(comm.getRank(), comm.getRank())] = std::stoul(data);
+	this->handler.data[DistributedId(comm.getRank(), comm.getRank())] = 10;
+	comm.giveBack(DistributedId(comm.getRank(), comm.getRank()), comm.getRank());
 
-	ASSERT_EQ(this->handler.data[comm.getRank()], 10);
+	ASSERT_EQ(this->handler.data[DistributedId(comm.getRank(), comm.getRank())], 10);
 
 	comm.terminate();
 }
@@ -123,7 +129,7 @@ TEST_F(Mpi_ReadAcquireTest, read_from_passive_procs_test) {
 			// Ensures that even procs enter passive mode
 			std::this_thread::sleep_for(100ms);
 
-			std::string data = comm.read(comm.getRank(), comm.getRank() + 1);
+			std::string data = comm.read(DistributedId(comm.getRank()+1, comm.getRank()), comm.getRank() + 1);
 			ASSERT_EQ(data, std::to_string(comm.getRank()));
 		}
 		// Odd procs immediatly enter passive mode
@@ -147,17 +153,17 @@ TEST_F(Mpi_ReadAcquireTest, read_from_acquiring_procs_test) {
 			// Will stay active for 500 ms due to proc 1 reception delay
 			// By this time, proc 2 should be able to get its response from
 			// this proc
-			std::string data = comm.acquire(0, 1);
+			std::string data = comm.acquire(DistributedId(1, 0), 1);
 			ASSERT_EQ(data, "0");
 
-			comm.giveBack(0, 1);
+			comm.giveBack(DistributedId(1, 0), 1);
 		}
 		else if (comm.getRank() == 2) {
 			// Ensures that proc 0 has initiated its request
 			std::this_thread::sleep_for(10ms);
 			// Asks data to the currently active proc
-			std::string data = comm.read(2, 0);
-			ASSERT_EQ(data, "2");
+			//std::string data = comm.read(DistributedId(0, 2), 0);
+			//ASSERT_EQ(data, "2");
 		}
 		comm.terminate();
 	}
@@ -181,14 +187,14 @@ TEST_F(Mpi_ReadAcquireTest, read_from_reading_procs_test) {
 			// Will stay active for 500 ms due to proc 1 reception delay
 			// By this time, proc 2 should be able to get its response from
 			// this proc
-			std::string data = comm.read(0, 1);
+			std::string data = comm.read(DistributedId(1, 0), 1);
 			ASSERT_EQ(data, "0");
 		}
 		else if (comm.getRank() == 2) {
 			// Ensures that proc 0 has initiated its request
 			std::this_thread::sleep_for(10ms);
 			// Asks data to the currently active proc
-			std::string data = comm.read(2, 0);
+			std::string data = comm.read(DistributedId(0, 2), 0);
 			ASSERT_EQ(data, "2");
 		}
 		comm.terminate();
@@ -210,18 +216,18 @@ TEST_F(Mpi_ReadAcquireTest, acquire_from_passive_procs_test) {
 			// Ensures that even procs enter passive mode
 			std::this_thread::sleep_for(100ms);
 
-			std::string data_str = comm.acquire(comm.getRank(), comm.getRank() + 1);
+			std::string data_str = comm.acquire(DistributedId(comm.getRank() + 1, comm.getRank()), comm.getRank() + 1);
 			ASSERT_EQ(data_str, std::to_string(comm.getRank()));
 
-			this->handler.data[comm.getRank()] = std::stoul(data_str);
-			this->handler.data[comm.getRank()] = comm.getRank() + 1;
+			this->handler.data[DistributedId(comm.getRank()+1, comm.getRank())] = std::stoul(data_str);
+			this->handler.data[DistributedId(comm.getRank()+1, comm.getRank())] = comm.getRank() + 1;
 
-			comm.giveBack(comm.getRank(), comm.getRank() + 1);
+			comm.giveBack(DistributedId(comm.getRank()+1, comm.getRank()), comm.getRank() + 1);
 		}
 		// Odd procs immediatly enter passive mode
 		comm.terminate();
 		if(comm.getRank() % 2 == 1)
-			ASSERT_EQ(this->handler.data.at(comm.getRank() - 1), comm.getRank());
+			ASSERT_EQ(this->handler.data.at(DistributedId(comm.getRank(), comm.getRank() - 1)), comm.getRank());
 
 	} else {
 		PRINT_MIN_PROCS_WARNING(acquire_from_passive_procs_test, 2);
@@ -242,22 +248,22 @@ TEST_F(Mpi_ReadAcquireTest, acquire_from_reading_procs_test) {
 			// Will stay active, waiting for the reading request, for 500 ms
 			// due to proc 1 reception delay By this time, proc 2 should be
 			// able to get its response from this proc
-			std::string data = comm.read(0, 1);
+			std::string data = comm.read(DistributedId(1, 0), 1);
 			ASSERT_EQ(data, "0");
 
-			ASSERT_EQ(this->handler.data[2], 10);
+			ASSERT_EQ(this->handler.data[DistributedId(0, 2)], 10);
 		}
 		else if (comm.getRank() == 2) {
 			// Ensures that proc 0 has initiated its request
 			std::this_thread::sleep_for(10ms);
 			// Asks data to the currently active proc
-			std::string data = comm.acquire(2, 0);
+			std::string data = comm.acquire(DistributedId(0, 2), 0);
 			ASSERT_EQ(data, "2");
 
-			this->handler.data[2] = std::stoul(data);
-			this->handler.data[2] = 10;
+			this->handler.data[DistributedId(0, 2)] = std::stoul(data);
+			this->handler.data[DistributedId(0, 2)] = 10;
 
-			comm.giveBack(2, 0);
+			comm.giveBack(DistributedId(0, 2), 0);
 		}
 		comm.terminate();
 	}
@@ -281,23 +287,23 @@ TEST_F(Mpi_ReadAcquireTest, acquire_from_acquiring_procs_test) {
 			// Will stay active, waiting for the acquisition request, for 500 ms
 			// due to proc 1 reception delay. By this time, proc 2 should be
 			// able to get its response from this proc
-			std::string data = comm.acquire(0, 1);
+			std::string data = comm.acquire(DistributedId(1, 0), 1);
 			ASSERT_EQ(data, "0");
-			comm.giveBack(0, 1);
+			comm.giveBack(DistributedId(1, 0), 1);
 
-			ASSERT_EQ(this->handler.data[2], 10);
+			ASSERT_EQ(this->handler.data[DistributedId(0, 2)], 10);
 		}
 		else if (comm.getRank() == 2) {
 			// Ensures that proc 0 has initiated its request
 			std::this_thread::sleep_for(10ms);
 			// Asks data to the currently active proc
-			std::string data = comm.acquire(2, 0);
+			std::string data = comm.acquire(DistributedId(0, 2), 0);
 			ASSERT_EQ(data, "2");
 
-			this->handler.data[2] = std::stoul(data);
-			this->handler.data[2] = 10;
+			this->handler.data[DistributedId(0, 2)] = std::stoul(data);
+			this->handler.data[DistributedId(0, 2)] = 10;
 
-			comm.giveBack(2, 0);
+			comm.giveBack(DistributedId(0, 2), 0);
 		}
 		comm.terminate();
 	}
@@ -311,15 +317,15 @@ class TestRaceConditionResourceHandler : public ResourceContainer {
 	public:
 		int data = 0;
 
-		std::string getLocalData(unsigned long id) const override {
+		std::string getLocalData(DistributedId id) const override {
 			return std::to_string(data);
 		}
 
-		std::string getUpdatedData(unsigned long id) const override {
+		std::string getUpdatedData(DistributedId id) const override {
 			return std::to_string(data);
 		}
 
-		void updateData(unsigned long id, std::string data_str) override {
+		void updateData(DistributedId id, std::string data_str) override {
 			this->data = std::stoi(data_str);
 		}
 
@@ -336,23 +342,23 @@ class Mpi_RaceConditionTest : public ::testing::Test {
 TEST_F(Mpi_RaceConditionTest, heavy_race_condition_test) {
 	if(comm.getRank() != 0) {
 		for (int i = 0; i < 500; i++) {
-			std::string data = comm.acquire(1, 0);
-			handler.updateData(1, std::to_string(std::stoi(data) + 1));
-			comm.giveBack(1, 0);
+			std::string data = comm.acquire(DistributedId(0, 1), 0);
+			handler.updateData(DistributedId(0, 1), std::to_string(std::stoi(data) + 1));
+			comm.giveBack(DistributedId(0, 1), 0);
 		}
 	}
 	comm.terminate();
 	if(comm.getRank() == 0)
-		ASSERT_EQ(std::stoi(handler.getLocalData(1)), 500 * (comm.getSize() - 1));
+		ASSERT_EQ(std::stoi(handler.getLocalData(DistributedId(0, 1))), 500 * (comm.getSize() - 1));
 }
 
 TEST_F(Mpi_RaceConditionTest, heavy_race_condition_test_including_local) {
 	for (int i = 0; i < 500; i++) {
-		std::string data = comm.acquire(1, 0);
-		handler.updateData(1, std::to_string(std::stoi(data) + 1));
-		comm.giveBack(1, 0);
+		std::string data = comm.acquire(DistributedId(0, 1), 0);
+		handler.updateData(DistributedId(0, 1), std::to_string(std::stoi(data) + 1));
+		comm.giveBack(DistributedId(0, 1), 0);
 	}
 	comm.terminate();
 	if(comm.getRank() == 0)
-		ASSERT_EQ(std::stoi(handler.getLocalData(1)), 500 * comm.getSize());
+		ASSERT_EQ(std::stoi(handler.getLocalData(DistributedId(0, 1))), 500 * comm.getSize());
 }

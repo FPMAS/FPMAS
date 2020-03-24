@@ -7,6 +7,7 @@
 #include "zoltan/zoltan_node_migrate.h"
 #include "zoltan/zoltan_arc_migrate.h"
 
+#include "distributed_id.h"
 #include "olz_graph.h"
 
 namespace FPMAS {
@@ -31,15 +32,15 @@ namespace FPMAS {
 		 * Any distributed Graph implementation should then provide specific
 		 * functions that might perform distant operations, usually depending
 		 * on the synchronization mode used :
-		 * - link(IdType, IdType, IdType, LayerId)
+		 * - link(DistributedId, DistributedId, DistributedId, LayerId)
 		 * - unlink(arc_ptr)
 		 * - distribute()
-		 * - distribute(std::unordered_map<IdType, std::pair<int, int>>)
+		 * - distribute(std::unordered_map<DistributedId, std::pair<int, int>>)
 		 * - synchronize()
 		 *
 		 */
 		template<typename T, SYNC_MODE, int N>
-		class DistributedGraphBase : public Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>, communication::ResourceContainer {
+		class DistributedGraphBase : public Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>, communication::ResourceContainer {
 			friend void zoltan::node::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<T, N, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
@@ -59,16 +60,16 @@ namespace FPMAS {
 			private:
 
 			// Serialization caches used to pack objects
-			std::unordered_map<IdType, std::string> node_serialization_cache;
-			std::unordered_map<IdType, std::string> arc_serialization_cache;
+			std::unordered_map<DistributedId, std::string> node_serialization_cache;
+			std::unordered_map<DistributedId, std::string> arc_serialization_cache;
 
 			// When importing nodes, obsolete ghost nodes are stored when
 			// the real node has been imported. It is safely deleted in
 			// arc::mid_migrate_pp_fn once associated arcs have eventually 
 			// been exported
-			std::set<IdType> obsoleteGhosts;
+			std::set<DistributedId> obsoleteGhosts;
 			void setUpZoltan();
-			void removeExportedNode(IdType);
+			void removeExportedNode(DistributedId);
 
 			protected:
 			SyncMpiCommunicator mpiCommunicator;
@@ -93,10 +94,29 @@ namespace FPMAS {
 			ZOLTAN_ID_PTR export_arcs_global_ids;
 			int* export_arcs_procs;
 
+			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* _buildNode(DistributedId id, float weight, T&& data) {
+				return this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
+					::_buildNode(
+						id,
+						weight,
+						std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
+							id,
+							this->getMpiCommunicator(),
+							this->getProxy(),
+							std::forward<T>(data)
+						))
+					);
+			}
+
+			Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* _link(DistributedId arcId, DistributedId source, DistributedId target, LayerId layer) {
+				return this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
+					::_link(arcId, source, target, layer);
+			};
+
 			public:
-			typedef Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N> node_type;
-			typedef Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* node_ptr;
-			typedef Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* arc_ptr;
+			typedef Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N> node_type;
+			typedef Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node_ptr;
+			typedef Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* arc_ptr;
 
 			DistributedGraphBase<T, S, N>();
 			DistributedGraphBase<T, S, N>(std::initializer_list<int>);
@@ -138,19 +158,21 @@ namespace FPMAS {
 
 			Proxy& getProxy();
 
-			std::string getLocalData(unsigned long) const override;
-			std::string getUpdatedData(unsigned long) const override;
-			void updateData(unsigned long, std::string) override;
+			std::string getLocalData(DistributedId) const override;
+			std::string getUpdatedData(DistributedId) const override;
+			void updateData(DistributedId, std::string) override;
 
 
-			node_ptr buildNode(IdType, T&& data);
-			node_ptr buildNode(IdType id, T& data);
-			node_ptr buildNode(IdType id, float weight, T&& data);
-			node_ptr buildNode(IdType id, float weight, const T& data);
+			node_ptr buildNode();
+			node_ptr buildNode(T&& data);
+			node_ptr buildNode(T& data);
+			node_ptr buildNode(float weight, T&& data);
+			node_ptr buildNode(float weight, const T& data);
 
-			arc_ptr link(IdType, IdType, IdType);
-			void unlink(IdType);
+			//arc_ptr link(DistributedId, DistributedId);
+			void unlink(DistributedId);
 
+			using Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>::link;
 			/**
 			 * Links the specified source and target node within this
 			 * DistributedGraph on the given layer.
@@ -162,8 +184,8 @@ namespace FPMAS {
 			 * @return pointer to the created arc
 			 */
 			virtual arc_ptr link(
-					IdType, IdType, IdType, LayerId
-					) = 0;
+					DistributedId, DistributedId, LayerId
+					) override = 0;
 			/**
 			 * Unlinks the specified arc within this DistributedGraph instance.
 			 *
@@ -207,7 +229,7 @@ namespace FPMAS {
 			 *
 			 * @param partition new partition
 			 */
-			virtual void distribute(std::unordered_map<IdType, std::pair<int, int>>) = 0;
+			virtual void distribute(std::unordered_map<DistributedId, std::pair<int, int>>) = 0;
 
 			virtual void synchronize();
 
@@ -216,9 +238,18 @@ namespace FPMAS {
 		 * Builds a DistributedGraph over all the available procs.
 		 */
 		template<class T, SYNC_MODE, int N> DistributedGraphBase<T, S, N>::DistributedGraphBase()
-			: syncMode(*this), mpiCommunicator(*this), ghost(this), proxy(mpiCommunicator.getRank()), zoltan(mpiCommunicator.getMpiComm()) {
-				this->setUpZoltan();
-			}
+			:	
+				Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>(),
+				syncMode(*this),
+				mpiCommunicator(*this),
+				ghost(this),
+				proxy(mpiCommunicator.getRank()),
+				zoltan(mpiCommunicator.getMpiComm())
+		{
+			this->currentNodeId = DistributedId(mpiCommunicator.getRank());
+			this->currentArcId = DistributedId(mpiCommunicator.getRank());
+			this->setUpZoltan();
+		}
 
 		/**
 		 * Builds a DistributedGraph over the specified procs.
@@ -227,9 +258,18 @@ namespace FPMAS {
 		 * built
 		 */
 		template<class T, SYNC_MODE, int N> DistributedGraphBase<T, S, N>::DistributedGraphBase(std::initializer_list<int> ranks)
-			: syncMode(*this), mpiCommunicator(*this, ranks), ghost(this, ranks), proxy(mpiCommunicator.getRank(), ranks), zoltan(mpiCommunicator.getMpiComm()) {
-				this->setUpZoltan();
-			}
+			: 
+				Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>(),
+				syncMode(*this),
+				mpiCommunicator(*this, ranks),
+				ghost(this, ranks),
+				proxy(mpiCommunicator.getRank(), ranks),
+				zoltan(mpiCommunicator.getMpiComm())
+		{
+			this->currentNodeId = DistributedId(mpiCommunicator.getRank());
+			this->currentArcId = DistributedId(mpiCommunicator.getRank());
+			this->setUpZoltan();
+		}
 
 		/*
 		 * Initializes zoltan parameters and zoltan lb query functions.
@@ -291,6 +331,20 @@ namespace FPMAS {
 			zoltan.Set_Post_Migrate_PP_Fn(syncMode.config().arc_post_migrate_fn, this);
 		}
 
+		template<class T, SYNC_MODE, int N>
+		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
+		::buildNode() {
+			DistributedId currentId = this->currentNodeId;
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
+				::buildNode(
+					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
+							currentId++,
+							this->getMpiCommunicator(),
+							this->getProxy(),
+							T()
+						))
+					);
+		}
 		/**
 		 * Builds a node with the specified id and data.
 		 *
@@ -305,12 +359,12 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
-		::buildNode(IdType id, T&& data) {
-			return Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>
+		::buildNode(T&& data) {
+			DistributedId currentId = this->currentNodeId;
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
 				::buildNode(
-					id,
 					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
-							id,
+							currentId++,
 							this->getMpiCommunicator(),
 							this->getProxy(),
 							std::forward<T>(data)
@@ -329,12 +383,12 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
-		::buildNode(IdType id, T& data) {
-			return Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>
+		::buildNode(T& data) {
+			DistributedId currentId = this->currentNodeId;
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
 				::buildNode(
-					id,
 					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
-							id,
+							currentId++,
 							this->getMpiCommunicator(),
 							this->getProxy(),
 							data
@@ -357,13 +411,13 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
-		::buildNode(IdType id, float weight, T&& data) {
-			return Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>
+		::buildNode(float weight, T&& data) {
+			DistributedId currentId = this->currentNodeId;
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
 				::buildNode(
-					id,
 					weight,
 					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
-							id,
+							currentId++,
 							this->getMpiCommunicator(),
 							this->getProxy(),
 							std::forward<T>(data)
@@ -383,13 +437,13 @@ namespace FPMAS {
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
-		::buildNode(IdType id, float weight, const T& data) {
-			return Graph<std::unique_ptr<SyncData<T,N,S>>, unsigned long, N>
+		::buildNode(float weight, const T& data) {
+			DistributedId currentId = this->currentNodeId;
+			return Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
 				::buildNode(
-					id,
 					weight,
 					std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
-							id,
+							currentId++,
 							this->getMpiCommunicator(),
 							this->getProxy(),
 							data
@@ -408,13 +462,15 @@ namespace FPMAS {
 		 * @param arcId new arc id
 		 * @return pointer to the created arc
 		 *
-		 * @see link(IdType, IdType, IdType, LayerId)
+		 * @see link(DistributedId, DistributedId, DistributedId, LayerId)
 		 */
-		template<class T, SYNC_MODE, int N>
-		typename DistributedGraphBase<T, S, N>::arc_ptr DistributedGraphBase<T, S, N>
-		::link(IdType source, IdType target, IdType arcId) {
-			return this->link(source, target, arcId, base::DefaultLayer);
-		}
+		/*
+		 *template<class T, SYNC_MODE, int N>
+		 *typename DistributedGraphBase<T, S, N>::arc_ptr DistributedGraphBase<T, S, N>
+		 *::link(DistributedId source, DistributedId target) {
+		 *    return this->link(source, target, base::DefaultLayer);
+		 *}
+		 */
 
 		/**
 		 * Unlinks the arc with the specified id.
@@ -426,7 +482,7 @@ namespace FPMAS {
 		 * @param arcId id of the arc to unlink. (might be a local arc, or a
 		 * ghost arc)
 		 */
-		template<typename T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::unlink(IdType arcId) {
+		template<typename T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::unlink(DistributedId arcId) {
 			try {
 				this->unlink(this->getArcs().at(arcId));
 			} catch (std::out_of_range) {
@@ -449,7 +505,7 @@ namespace FPMAS {
 		 *
 		 * @return serialized data contained in the node corresponding to id
 		 */
-		template<class T, SYNC_MODE, int N> std::string DistributedGraphBase<T, S, N>::getLocalData(unsigned long id) const {
+		template<class T, SYNC_MODE, int N> std::string DistributedGraphBase<T, S, N>::getLocalData(DistributedId id) const {
 			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getLocalData %lu", id);
 			return json(this->getNodes().at(id)->data()->get()).dump();
 		}
@@ -464,7 +520,7 @@ namespace FPMAS {
 		 *
 		 * @return serialized updates to the data corresponding to id
 		 */
-		template<class T, SYNC_MODE, int N> std::string DistributedGraphBase<T, S, N>::getUpdatedData(unsigned long id) const {
+		template<class T, SYNC_MODE, int N> std::string DistributedGraphBase<T, S, N>::getUpdatedData(DistributedId id) const {
 			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getUpdatedData %lu", id);
 			return json(this->getGhost().getNode(id)->data()->get()).dump();
 		}
@@ -481,28 +537,28 @@ namespace FPMAS {
 		 * @param id local data id
 		 * @param data serialized updates
 		 */
-		template<class T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::updateData(unsigned long id, std::string data) {
+		template<class T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::updateData(DistributedId id, std::string data) {
 			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "updateData %lu : %s", id, data.c_str());
 			this->getNodes().at(id)->data()->update(json::parse(data).get<T>());
 		}
 
 		template<class T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>
-			::removeExportedNode(IdType id) {
+			::removeExportedNode(DistributedId id) {
 				auto nodeToRemove = this->getNodes().at(id);
 				for(auto& layer : nodeToRemove->getLayers()) {
 					for(auto arc : layer.getIncomingArcs()) {
 						try {
-							this->Graph<std::unique_ptr<SyncData<T, N, S>>, unsigned long, N>
+							this->Graph<std::unique_ptr<SyncData<T, N, S>>, DistributedId, N>
 								::unlink(arc);
-						} catch(base::exceptions::arc_out_of_graph<IdType>) {
+						} catch(base::exceptions::arc_out_of_graph<DistributedId>) {
 							this->getGhost().unlink((GhostArc<T,N,S>*) arc);
 						}
 					}
 					for(auto arc : layer.getOutgoingArcs()) {
 						try {
-							this->Graph<std::unique_ptr<SyncData<T, N, S>>, unsigned long, N>
+							this->Graph<std::unique_ptr<SyncData<T, N, S>>, DistributedId, N>
 								::unlink(arc);
-						} catch(base::exceptions::arc_out_of_graph<IdType>) {
+						} catch(base::exceptions::arc_out_of_graph<DistributedId>) {
 							this->getGhost().unlink((GhostArc<T,N,S>*) arc);
 						}
 					}

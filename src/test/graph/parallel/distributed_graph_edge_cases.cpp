@@ -32,28 +32,28 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 
 	//DistributedGraph<int, HardSyncData> dg = DistributedGraph<int, HardSyncData>({0, 1, 2});
 	if(dg.getMpiCommunicator().getRank() == 0) {
-		dg.buildNode(0ul, 1);
-		dg.getProxy().setOrigin(1ul, 0);
-		dg.getProxy().setCurrentLocation(1ul, 1);
-		dg.getGhost().buildNode(1ul);
-		dg.getGhost().link(dg.getNodes().at(0ul), dg.getGhost().getNodes().at(1ul), 0ul, DefaultLayer);
+		auto localNode = dg.buildNode();
+		dg.getProxy().setOrigin(DistributedId(1, 0), 1);
+		dg.getProxy().setCurrentLocation(DistributedId(1, 0), 1);
+		auto ghostNode = dg.getGhost().buildNode(DistributedId(1, 0));
+		dg.getGhost().link(localNode, ghostNode, DistributedId(0, 0), DefaultLayer);
 	}
 	else if(dg.getMpiCommunicator().getRank() == 1) {
-		dg.buildNode(1ul, 1);
-		dg.getProxy().setOrigin(0ul, 0);
-		dg.getProxy().setCurrentLocation(0ul, 0);
-		dg.getGhost().buildNode(0ul);
-		dg.getGhost().link(dg.getGhost().getNodes().at(0ul), dg.getNodes().at(1ul), 0ul, DefaultLayer);
+		auto localNode = dg.buildNode();
+		dg.getProxy().setOrigin(DistributedId(0, 0), 0);
+		dg.getProxy().setCurrentLocation(DistributedId(0, 0), 0);
+		auto ghostNode = dg.getGhost().buildNode(DistributedId(0, 0));
+		dg.getGhost().link(ghostNode, localNode, DistributedId(0, 0), DefaultLayer);
 	}
 
 	dg.distribute({
-			{0ul, std::pair(0, 2)},
-			{1ul, std::pair(1, 2)}
+			{DistributedId(0, 0), std::pair(0, 2)},
+			{DistributedId(1, 0), std::pair(1, 2)}
 			});
 
 	if(dg.getMpiCommunicator().getRank() == 2) {
 		ASSERT_EQ(dg.getNodes().size(), 2);
-		dg.removeNode(0ul);
+		dg.removeNode(DistributedId(0, 0));
 
 		// Checks that the node has been correctly removed with the
 		// associated arc
@@ -64,10 +64,4 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 		ASSERT_EQ(dg.getGhost().getArcs().size(), 0);
 	}
 	dg.synchronize();
-	/*
-	 *else {
-	 *    DistributedGraph<int, HardSyncData> dg = DistributedGraph<int, HardSyncData>({rank});
-	 *}
-	 */
-
 }

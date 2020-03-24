@@ -14,40 +14,45 @@ using FPMAS::test::ASSERT_CONTAINS;
 class SampleGraphTest : public ::testing::Test {
 
 	protected:
-		Graph<int, unsigned long> sampleGraph;
+		Graph<int> sampleGraph;
+
+		SampleGraphTest() : sampleGraph(0ul) {}
 
 		void SetUp() override {
-			auto node1 = sampleGraph.buildNode(1ul, 1);
-			auto node2 = sampleGraph.buildNode(2ul, 2);
-			auto node3 = sampleGraph.buildNode(3ul, 3);
+			auto node1 = sampleGraph.buildNode(1);
+			auto node2 = sampleGraph.buildNode(2);
+			auto node3 = sampleGraph.buildNode(3);
 
-			sampleGraph.link(node1, node2, 0ul);
-			sampleGraph.link(node2, node1, 1ul);
-			sampleGraph.link(node2, node3, 2ul);
+			sampleGraph.link(node1, node2);
+			sampleGraph.link(node2, node1);
+			sampleGraph.link(node2, node3);
 
 		}
 
-		static void testSampleGraphStructure(Graph<int, unsigned long>* sampleGraph) {
-			auto node1 = sampleGraph->getNode(1ul);
+		static void testSampleGraphStructure(Graph<int>* sampleGraph) {
+			auto node1 = sampleGraph->getNode(DefaultId(0ul));
+			ASSERT_EQ(node1->getId(), DefaultId(0ul));
 			ASSERT_EQ(node1->data(), 1);
 			ASSERT_EQ(node1->getIncomingArcs().size(), 1);
-			ASSERT_EQ(node1->getIncomingArcs().at(0), sampleGraph->getArc(1ul));
+			ASSERT_EQ(node1->getIncomingArcs().at(0), sampleGraph->getArc(DefaultId(1ul)));
 			ASSERT_EQ(node1->getOutgoingArcs().size(), 1);
-			ASSERT_EQ(node1->getOutgoingArcs().at(0), sampleGraph->getArc(0ul));
+			ASSERT_EQ(node1->getOutgoingArcs().at(0), sampleGraph->getArc(DefaultId(0ul)));
 
-			auto node2 = sampleGraph->getNode(2ul);
+			auto node2 = sampleGraph->getNode(DefaultId(1ul));
+			ASSERT_EQ(node2->getId(), DefaultId(1ul));
 			ASSERT_EQ(node2->data(), 2);
 			ASSERT_EQ(node2->getIncomingArcs().size(), 1);
-			ASSERT_EQ(node2->getIncomingArcs().at(0), sampleGraph->getArc(0ul));
+			ASSERT_EQ(node2->getIncomingArcs().at(0), sampleGraph->getArc(DefaultId(0ul)));
 			ASSERT_EQ(node2->getOutgoingArcs().size(), 2);
 
-			ASSERT_CONTAINS(sampleGraph->getArc(1ul), node2->getOutgoingArcs());
-			ASSERT_CONTAINS(sampleGraph->getArc(2ul), node2->getOutgoingArcs());
+			ASSERT_CONTAINS(sampleGraph->getArc(DefaultId(1ul)), node2->getOutgoingArcs());
+			ASSERT_CONTAINS(sampleGraph->getArc(DefaultId(2ul)), node2->getOutgoingArcs());
 
-			auto node3 = sampleGraph->getNode(3ul);
+			auto node3 = sampleGraph->getNode(DefaultId(2ul));
+			ASSERT_EQ(node3->getId(), DefaultId(2ul));
 			ASSERT_EQ(node3->data(), 3);
 			ASSERT_EQ(node3->getIncomingArcs().size(), 1);
-			ASSERT_EQ(node3->getIncomingArcs().at(0), sampleGraph->getArc(2ul));
+			ASSERT_EQ(node3->getIncomingArcs().at(0), sampleGraph->getArc(DefaultId(2ul)));
 			ASSERT_EQ(node3->getOutgoingArcs().size(), 0);
 		}
 

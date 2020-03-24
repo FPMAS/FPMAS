@@ -10,18 +10,20 @@ using FPMAS::graph::parallel::DistributedGraph;
 class Mpi_DistributeGraphWithGhostArcsTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<unsigned long, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, std::pair<int, int>> partition;
 	
 	public:
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
+				std::unordered_map<int, DistributedId> idMap;
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					dg.buildNode(i, i);
-					partition[i] = std::pair(0, i);
+					auto node = dg.buildNode();
+					partition[node->getId()] = std::pair(0, i);
+					idMap[i] = node->getId();
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					// Build a ring across the processors
-					dg.link(i, (i+1) % dg.getMpiCommunicator().getSize(), i);
+					dg.link(idMap[i], idMap[(i+1) % dg.getMpiCommunicator().getSize()]);
 				}
 			}
 		}
@@ -78,13 +80,13 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_test) {
 		auto localNode = dg.getNodes().begin()->second;
 		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
 		ASSERT_EQ(
-				localNode->getIncomingArcs().at(0)->getSourceNode()->getId(),
-				(dg.getMpiCommunicator().getSize() + localNode->getId() - 1) % dg.getMpiCommunicator().getSize()
+				localNode->getIncomingArcs().at(0)->getSourceNode()->getId().id(),
+				(dg.getMpiCommunicator().getSize() + localNode->getId().id() - 1) % dg.getMpiCommunicator().getSize()
 				);
 		ASSERT_EQ(localNode->getOutgoingArcs().size(), 1);
 		ASSERT_EQ(
-				localNode->getOutgoingArcs().at(0)->getTargetNode()->getId(),
-				(localNode->getId() + 1) % dg.getMpiCommunicator().getSize()
+				localNode->getOutgoingArcs().at(0)->getTargetNode()->getId().id(),
+				(localNode->getId().id() + 1) % dg.getMpiCommunicator().getSize()
 				);
 	}
 	else {
@@ -107,20 +109,21 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) 
 class Mpi_DistributeCompleteGraphWithGhostTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<unsigned long, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, std::pair<int, int>> partition;
 
 	public:
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
+				std::unordered_map<int, DistributedId> idMap;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
-					dg.buildNode(i, i);
-					partition[i] = std::pair(0, i / 2);
+					auto node = dg.buildNode(i);
+					partition[node->getId()] = std::pair(0, i / 2);
+					idMap[i] = node->getId();
 				}
-				int id = 0;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
 					for (int j = 0; j < 2 * dg.getMpiCommunicator().getSize(); ++j) {
 						if(i != j) {
-							dg.link(i, j, id++);
+							dg.link(idMap[i], idMap[j]);
 						}
 					}
 				}
@@ -168,22 +171,21 @@ TEST_F(Mpi_DistributeCompleteGraphWithGhostTest, distribute_graph_with_multiple_
 class Mpi_DynamicLinkTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<unsigned long, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, std::pair<int, int>> partition;
 	
 	public:
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					dg.buildNode(2*i, 2*i);
-					dg.buildNode(2*i+1, 2*i+1);
-					partition[2*i] = std::pair(0, i);
-					partition[2*i+1] = std::pair(0, i);
+					auto node1 = dg.buildNode();
+					auto node2 = dg.buildNode();
+					partition[node1->getId()] = std::pair(0, i);
+					partition[node2->getId()] = std::pair(0, i);
 				}
 				for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					dg.link(
-						2*i+1,
-						2*((i+1)%dg.getMpiCommunicator().getSize()),
-						i
+						DistributedId(0, 2*i+1),
+						DistributedId(0, 2*((i+1)%dg.getMpiCommunicator().getSize()))
 						);
 				}
 			}
@@ -194,16 +196,16 @@ using FPMAS::graph::base::DefaultLayer;
 
 TEST_F(Mpi_DynamicLinkTest, local_link) {
 	if(dg.getMpiCommunicator().getSize() > 1) {
-	dg.distribute(partition);
+		dg.distribute(partition);
 
-	int i = dg.getMpiCommunicator().getRank();
-	dg.link(2*i, 2*i+1, dg.getMpiCommunicator().getSize() + i);
+		int i = dg.getMpiCommunicator().getRank();
+		dg.link(DistributedId(0, 2*i), DistributedId(0, 2*i+1));
 
-	ASSERT_EQ(dg.getArcs().size(), 1);
-	const auto* node = dg.getNode(2*i);
-	ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 1);
+		ASSERT_EQ(dg.getArcs().size(), 1);
+		const auto* node = dg.getNode(DistributedId(0, 2*i));
+		ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 1);
 	} else {
-		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+		PRINT_MIN_PROCS_WARNING(local_link, 2);
 	}
 }
 
@@ -229,17 +231,16 @@ TEST_F(Mpi_DynamicLinkTest, ghost_target_link) {
 		dg.distribute(partition);
 
 		int i = dg.getMpiCommunicator().getRank();
-		const auto* node = dg.getNode(2*i);
+		const auto* node = dg.getNode(DistributedId(0, 2*i));
 		ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 0);
 		ASSERT_EQ(node->layer(DefaultLayer).getIncomingArcs().size(), 1);
 
 		ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
-		ASSERT_EQ(dg.getGhost().getNodes().count(2*((i+1)%dg.getMpiCommunicator().getSize())), 1);
+		ASSERT_EQ(dg.getGhost().getNodes().count(DistributedId(0, 2*((i+1)%dg.getMpiCommunicator().getSize()))), 1);
 		// Links pair node to the other pair ghost node
 		dg.link(
-			2*i,
-			2*((i+1)%dg.getMpiCommunicator().getSize()),
-			dg.getMpiCommunicator().getSize() + i
+			DistributedId(0, 2*i),
+			DistributedId(0, 2*((i+1)%dg.getMpiCommunicator().getSize()))
 			);
 		// Migrates new link
 		dg.synchronize();
@@ -270,17 +271,16 @@ TEST_F(Mpi_DynamicLinkTest, ghost_source_link) {
 		dg.distribute(partition);
 
 		int i = dg.getMpiCommunicator().getRank();
-		const auto* node = dg.getNode(2*i);
+		const auto* node = dg.getNode(DistributedId(0, 2*i));
 		ASSERT_EQ(node->layer(DefaultLayer).getOutgoingArcs().size(), 0);
 		ASSERT_EQ(node->layer(DefaultLayer).getIncomingArcs().size(), 1);
 
 		ASSERT_EQ(dg.getGhost().getNodes().size(), 2);
-		ASSERT_EQ(dg.getGhost().getNodes().count(2*((i+1)%dg.getMpiCommunicator().getSize())), 1);
+		ASSERT_EQ(dg.getGhost().getNodes().count(DistributedId(0, 2*((i+1)%dg.getMpiCommunicator().getSize()))), 1);
 		// Links pair ghost to pair node
 		dg.link(
-			2*((i+1)%dg.getMpiCommunicator().getSize()),
-			2*i,
-			dg.getMpiCommunicator().getSize() + i
+			DistributedId(0, 2*((i+1)%dg.getMpiCommunicator().getSize())),
+			DistributedId(0, 2*i)
 			);
 		// Migrates new link
 		dg.synchronize();
@@ -306,29 +306,28 @@ TEST_F(Mpi_DynamicLinkTest, ghost_source_link) {
 class Mpi_DynamicGhostLinkTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<unsigned long, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, std::pair<int, int>> partition;
 	
 	public:
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					dg.buildNode(3*i, 0);
-					dg.buildNode(3*i+1, 0);
-					dg.buildNode(3*i+2, 0);
-					partition[3*i] = std::pair(0, i);
-					partition[3*i+1] = std::pair(0, i);
-					partition[3*i+2] = std::pair(0, i);
+					DistributedId id1 = dg.buildNode()->getId();
+					DistributedId id2 = dg.buildNode()->getId();
+					DistributedId id3 = dg.buildNode()->getId();
+
+					partition[id1] = std::pair(0, i);
+					partition[id2] = std::pair(0, i);
+					partition[id3] = std::pair(0, i);
 				}
 				for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					dg.link(
-						3*i+1,
-						3*((i+1)%dg.getMpiCommunicator().getSize()),
-						3*i
+						DistributedId(0, 3*i+1),
+						DistributedId(0, 3*((i+1)%dg.getMpiCommunicator().getSize()))
 						);
 					dg.link(
-						3*((i+1)%dg.getMpiCommunicator().getSize())+2,
-						3*i+1,
-						3*i+1
+						DistributedId(0, 3*((i+1)%dg.getMpiCommunicator().getSize())+2),
+						DistributedId(0, 3*i+1)
 						);
 				}
 			}
@@ -347,15 +346,14 @@ TEST_F(Mpi_DynamicGhostLinkTest, ghost_source_and_target_link) {
 		// link 3(i+1) -> 3(i+2), that are two ghost nodes
 		int i = dg.getMpiCommunicator().getRank();
 		dg.link(
-			3*((i+1)%dg.getMpiCommunicator().getSize()),
-			3*((i+1)%dg.getMpiCommunicator().getSize())+2,
-			3*((i+1)%dg.getMpiCommunicator().getSize())+2
+			DistributedId(0, 3*((i+1)%dg.getMpiCommunicator().getSize())),
+			DistributedId(0, 3*((i+1)%dg.getMpiCommunicator().getSize())+2)
 			);
 		// Checks that the created arc is a ghost arc
 		ASSERT_EQ(dg.getArcs().size(), 0);
 		ASSERT_EQ(dg.getGhost().getArcs().size(), 5);
 
-		// Synchronize : the new local arc should be eported, and a distant arc
+		// Synchronize : the new local arc should be exported, and a distant arc
 		// should be imported
 		dg.synchronize();
 
@@ -367,20 +365,31 @@ TEST_F(Mpi_DynamicGhostLinkTest, ghost_source_and_target_link) {
 
 		// Checks the imported arc structure
 		ASSERT_EQ(dg.getArcs().size(), 1);
-		ASSERT_EQ(dg.getNode(3*i)->getOutgoingArcs().size(), 1); // new arc
-		ASSERT_EQ(dg.getNode(3*i)->getIncomingArcs().size(), 1); // ghost arc
-		ASSERT_EQ(dg.getNode(3*i+2)->getIncomingArcs().size(), 1); // new arc
-		ASSERT_EQ(dg.getNode(3*i+2)->getOutgoingArcs().size(), 1); // ghost arc
+		ASSERT_EQ(dg.getNode(DistributedId(0, 3*i))->getOutgoingArcs().size(), 1); // new arc
+		ASSERT_EQ(dg.getNode(DistributedId(0, 3*i))->getIncomingArcs().size(), 1); // ghost arc
+		ASSERT_EQ(dg.getNode(DistributedId(0, 3*i+2))->getIncomingArcs().size(), 1); // new arc
+		ASSERT_EQ(dg.getNode(DistributedId(0, 3*i+2))->getOutgoingArcs().size(), 1); // ghost arc
 		ASSERT_EQ(
-			dg.getNode(3*i)->getOutgoingArcs()[0]->getId(),
-			dg.getNode(3*i+2)->getIncomingArcs()[0]->getId()
+			dg.getNode(DistributedId(0, 3*i))->getOutgoingArcs()[0]->getId(),
+			dg.getNode(DistributedId(0, 3*i+2))->getIncomingArcs()[0]->getId()
 			);
 
-		// Checks the imported arc id
-		ASSERT_EQ(
-			dg.getNode(3*i)->getOutgoingArcs()[0]->getId(),
-			3*i+2
-			);
+		// Checks the imported arc id (from i-1)
+		if(i-1 == 0) {
+			// On proc 0, 2*N arcs had already been created
+			ASSERT_EQ(
+					dg.getNode(DistributedId(0, 3*i))->getOutgoingArcs()[0]->getId(),
+					DistributedId(0, 2*dg.getMpiCommunicator().getSize())
+					);
+		} else {
+			// On other proc, it was the first arc created (so it has an id
+			// [i-1:0]
+			int size = dg.getMpiCommunicator().getSize();
+			ASSERT_EQ(
+					dg.getNode(DistributedId(0, 3*i))->getOutgoingArcs()[0]->getId(),
+					DistributedId((size+i-1)%size, 0)
+					);
+		}
 
 	} else {
 		PRINT_MIN_PROCS_WARNING(ghost_source_and_target_link, 2);
@@ -401,7 +410,7 @@ TEST_F(Mpi_DynamicLinkTest, unlink_with_id) {
 		ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
 
 		int i = dg.getMpiCommunicator().getRank();
-		dg.unlink(i);
+		dg.unlink(DistributedId(0, i));
 
 		ASSERT_EQ(dg.getGhost().getArcs().size(), 1);
 		ASSERT_EQ(dg.getNodes().size(), 2);
@@ -414,7 +423,7 @@ TEST_F(Mpi_DynamicLinkTest, unlink_with_id) {
 		ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
 		ASSERT_EQ(dg.getArcs().size(), 0);
 	} else {
-		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+		PRINT_MIN_PROCS_WARNING(unlink_with_id, 2);
 	}
 }
 
@@ -431,7 +440,7 @@ TEST_F(Mpi_DynamicLinkTest, unlink_with_arc_ptr) {
 		ASSERT_EQ(dg.getGhost().getArcs().size(), 2);
 
 		int i = dg.getMpiCommunicator().getRank();
-		dg.unlink(*dg.getNode(2*i+1)->getOutgoingArcs().begin());
+		dg.unlink(*dg.getNode(DistributedId(0, 2*i+1))->getOutgoingArcs().begin());
 
 		ASSERT_EQ(dg.getGhost().getArcs().size(), 1);
 		ASSERT_EQ(dg.getNodes().size(), 2);
@@ -444,7 +453,7 @@ TEST_F(Mpi_DynamicLinkTest, unlink_with_arc_ptr) {
 		ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
 		ASSERT_EQ(dg.getArcs().size(), 0);
 	} else {
-		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+		PRINT_MIN_PROCS_WARNING(unlink_with_arc_ptr, 2);
 	}
 }
 
@@ -477,6 +486,6 @@ TEST_F(Mpi_DynamicLinkTest, multiple_unlink) {
 		ASSERT_EQ(dg.getGhost().getNodes().size(), 0);
 		ASSERT_EQ(dg.getArcs().size(), 0);
 	} else {
-		PRINT_MIN_PROCS_WARNING(ghost_target_link, 2);
+		PRINT_MIN_PROCS_WARNING(multiple_unlink, 2);
 	}
 }

@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <iostream>
 #include "utils/macros.h"
+#include "default_id.h"
 #include "serializers.h"
 
 #include <nlohmann/json.hpp>
@@ -49,15 +50,25 @@ namespace FPMAS {
 			 * @tparam T associated data type
 			 * @tparam N layers count
 			 */
-			template<typename T, typename IdType, int N = 1>
+			template<typename T, typename IdType=DefaultId, int N = 1>
 			class Graph {
-				friend Graph<T, IdType, N> nlohmann::adl_serializer<Graph<T, IdType, N>>::from_json(const json&);
+				friend Arc<T, IdType, N>;
+				friend Node<T, IdType, N>;
+
 				private:
 					std::unordered_map<IdType, Node<T, IdType, N>*> nodes;
 					std::unordered_map<IdType, Arc<T, IdType, N>*> arcs;
 					void removeArc(Arc<T, IdType, N>*, std::vector<Arc<T, IdType, N>*>*);
 
+				protected:
+					IdType currentNodeId;
+					IdType currentArcId;
+					Graph() {}
+					Node<T, IdType, N>* _buildNode(IdType id, float weight, T&& data);
+					Arc<T, IdType, N>* _link(IdType, IdType, IdType, LayerId);
+
 				public:
+					Graph(IdType initId) : currentNodeId(initId), currentArcId(initId) {}
 					Node<T, IdType, N>* getNode(IdType);
 					const Node<T, IdType, N>* getNode(IdType) const;
 					const std::unordered_map<IdType, Node<T, IdType, N>*>& getNodes() const;
@@ -66,14 +77,14 @@ namespace FPMAS {
 					const Arc<T, IdType, N>* getArc(IdType) const;
 					const std::unordered_map<IdType, Arc<T, IdType, N>*>& getArcs() const;
 
-					Node<T, IdType, N>* buildNode(IdType);
-					Node<T, IdType, N>* buildNode(IdType id, T&& data);
-					Node<T, IdType, N>* buildNode(IdType id, float weight, T&& data);
+					Node<T, IdType, N>* buildNode();
+					Node<T, IdType, N>* buildNode(T&& data);
+					Node<T, IdType, N>* buildNode(float weight, T&& data);
 
-					Arc<T, IdType, N>* link(Node<T, IdType, N>*, Node<T, IdType, N>*, IdType);
-					Arc<T, IdType, N>* link(Node<T, IdType, N>*, Node<T, IdType, N>*, IdType, LayerId);
-					Arc<T, IdType, N>* link(IdType, IdType, IdType);
-					Arc<T, IdType, N>* link(IdType, IdType, IdType, LayerId);
+					Arc<T, IdType, N>* link(Node<T, IdType, N>*, Node<T, IdType, N>*);
+					Arc<T, IdType, N>* link(Node<T, IdType, N>*, Node<T, IdType, N>*, LayerId);
+					Arc<T, IdType, N>* link(IdType, IdType);
+					virtual Arc<T, IdType, N>* link(IdType, IdType, LayerId);
 
 					void unlink(IdType);
 					virtual void unlink(Arc<T, IdType, N>*);
@@ -144,6 +155,14 @@ namespace FPMAS {
 				return this->arcs;
 			}
 
+			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::_buildNode(IdType id, float weight, T&& data) {
+				Node<T, IdType, N>* node = new Node<T, IdType, N>(
+						id, weight, std::forward<T>(data)
+						);
+				this->nodes[id] = node;
+				return node;
+			}
+
 			/**
 			 * Builds a node with the specified id, a default weight and no
 			 * data, adds it to this graph, and finally returns the built node.
@@ -151,9 +170,9 @@ namespace FPMAS {
 			 * @param id node id
 			 * @return pointer to built node
 			 */
-			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(IdType id) {
-				Node<T, IdType, N>* node = new Node<T, IdType, N>(id);
-				this->nodes[id] = node;
+			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::buildNode() {
+				Node<T, IdType, N>* node = new Node<T, IdType, N>(currentNodeId++);
+				this->nodes[node->getId()] = node;
 				return node;
 			}
 
@@ -168,9 +187,9 @@ namespace FPMAS {
 			 * @param data node's data
 			 * @return pointer to built node
 			 */
-			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(IdType id, T&& data) {
-				Node<T, IdType, N>* node = new Node<T, IdType, N>(id, std::forward<T>(data));
-				this->nodes[id] = node;
+			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(T&& data) {
+				Node<T, IdType, N>* node = new Node<T, IdType, N>(currentNodeId++, std::forward<T>(data));
+				this->nodes[node->getId()] = node;
 				return node;
 			}
 
@@ -186,12 +205,22 @@ namespace FPMAS {
 			 * @param data node's data
 			 * @return pointer to build node
 			 */
-			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(IdType id, float weight, T&& data) {
-				Node<T, IdType, N>* node = new Node<T, IdType, N>(id, weight, std::forward<T>(data));
-				this->nodes[id] = node;
+			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(float weight, T&& data) {
+				Node<T, IdType, N>* node = new Node<T, IdType, N>(
+						currentNodeId++, weight, std::forward<T>(data)
+						);
+				this->nodes[node->getId()] = node;
 				return node;
 			}
 
+			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::_link(IdType arcId, IdType source, IdType target, LayerId layer) {
+				Arc<T, IdType, N>* arc = new Arc<T, IdType, N>(
+						arcId, this->getNode(source), this->getNode(target), layer
+						);
+				this->arcs[arcId] = arc;
+				return arc;
+
+			}
 			/**
 			 * Builds a directed arc in the specified layer with the specified id from the source node to the
 			 * target node, adds it to the graph and finally returns a pointer to the built arc.
@@ -202,9 +231,11 @@ namespace FPMAS {
 			 * @param layer layer on which the arc should be built
 			 * @return pointer to built arc
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(Node<T, IdType, N> *source, Node<T, IdType, N> *target, IdType arc_id, LayerId layer) {
-				Arc<T, IdType, N>* arc = new Arc<T, IdType, N>(arc_id, source, target, layer);
-				this->arcs[arc_id] = arc;
+			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(Node<T, IdType, N> *source, Node<T, IdType, N> *target, LayerId layer) {
+				Arc<T, IdType, N>* arc = new Arc<T, IdType, N>(
+						currentArcId++, source, target, layer
+						);
+				this->arcs[arc->getId()] = arc;
 				return arc;
 			}
 
@@ -217,8 +248,8 @@ namespace FPMAS {
 			 * @param arc_id arc id
 			 * @return pointer to built arc
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(Node<T, IdType, N> *source, Node<T, IdType, N> *target, IdType arc_id){
-				return link(source, target, arc_id, DefaultLayer);
+			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(Node<T, IdType, N> *source, Node<T, IdType, N> *target){
+				return link(source, target, DefaultLayer);
 			}
 
 			/**
@@ -231,8 +262,8 @@ namespace FPMAS {
 			 * @param layer layer on which the arc should be built
 			 * @return built arc
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(IdType source_id, IdType target_id, IdType arc_id, LayerId layer) {
-				return link(this->getNode(source_id), this->getNode(target_id), arc_id, layer);
+			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(IdType source_id, IdType target_id, LayerId layer) {
+				return link(this->getNode(source_id), this->getNode(target_id), layer);
 			}
 
 			/**
@@ -244,8 +275,8 @@ namespace FPMAS {
 			 * @param arc_id new arc id
 			 * @return built arc
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(IdType source_id, IdType target_id, IdType arc_id) {
-				return link(source_id, target_id, arc_id, DefaultLayer);
+			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(IdType source_id, IdType target_id) {
+				return link(source_id, target_id, DefaultLayer);
 			}
 
 			/**
@@ -362,6 +393,17 @@ namespace FPMAS {
 			}
 		}
 	}
+}
+
+using FPMAS::graph::base::DefaultId;
+
+namespace std {
+	template<> struct hash<DefaultId> {
+		std::size_t operator()(DefaultId const& id) const noexcept
+		{
+			return std::hash<unsigned long>{}(id.get());
+		}
+	};
 }
 
 #endif

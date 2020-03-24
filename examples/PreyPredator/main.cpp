@@ -12,11 +12,11 @@ int main(int argc, char* argv[]) {
 
 		if(dg.getMpiCommunicator().getRank() == 0) {
 			FPMAS_LOGI(0, "MAIN", "Building graph...");
-			dg.buildNode(0, Agent("Prey", PREY));
+			auto prey = dg.buildNode(0, Agent("Prey", PREY));
 
 			for(int i = 0; i < PREDATOR_COUNT; i++) {
-				dg.buildNode(i+1, Agent("Predator " + std::to_string(i), PREDATOR));
-				dg.link(i+1, 0, i);
+				auto predator = dg.buildNode(i+1, Agent("Predator " + std::to_string(i), PREDATOR));
+				dg.link(predator, prey);
 			}
 		}
 		FPMAS_LOGI(dg.getMpiCommunicator().getRank(), "MAIN", "Distributing graph...");

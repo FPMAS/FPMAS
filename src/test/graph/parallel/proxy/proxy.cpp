@@ -67,21 +67,20 @@ class Mpi_ZoltanProxyTest : public ::testing::Test {
 			MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 			proxy = new Proxy(rank);
 
-			proxy->setOrigin(0ul, rank);
-			proxy->setLocal(0ul);
+			proxy->setOrigin(DistributedId(rank, 0ul), rank);
+			proxy->setLocal(DistributedId(rank, 0ul));
 
-			proxy->setOrigin(1ul, 12);
-			proxy->setLocal(1ul);
+			proxy->setOrigin(DistributedId(12, 1ul), 12);
+			proxy->setLocal(DistributedId(12, 1ul));
 
-			proxy->setOrigin(2ul, rank);
-			proxy->setCurrentLocation(2ul, 25);
+			proxy->setOrigin(DistributedId(rank, 2ul), rank);
+			proxy->setCurrentLocation(DistributedId(rank, 2ul), 25);
 		}
 
 		void write_migration_sizes() {
-			// Transfer nodes 0 and 85250
-			write_zoltan_id(0ul, &transfer_global_ids[0]);
-			write_zoltan_id(1ul, &transfer_global_ids[2]);
-			write_zoltan_id(2ul, &transfer_global_ids[4]);
+			write_zoltan_id(DistributedId(rank, 0ul), &transfer_global_ids[0]);
+			write_zoltan_id(DistributedId(12, 1ul), &transfer_global_ids[2]);
+			write_zoltan_id(DistributedId(rank, 2ul), &transfer_global_ids[4]);
 
 			obj_size_multi_fn(
 					proxy,
@@ -122,9 +121,6 @@ class Mpi_ZoltanProxyTest : public ::testing::Test {
 		void TearDown() override {
 			delete proxy;
 		}
-
-		static void TearDownTestSuite() {
-		}
 };
 
 TEST_F(Mpi_ZoltanProxyTest, obj_size_multi_fn_test) {
@@ -164,9 +160,9 @@ TEST_F(Mpi_ZoltanProxyTest, unpack_obj_multi_test) {
 		buf,
 		&err);
 
-	ASSERT_EQ(p.getCurrentLocation(0ul), rank);
-	ASSERT_EQ(p.getCurrentLocation(1ul), rank);
-	ASSERT_EQ(p.getCurrentLocation(2ul), 25);
+	ASSERT_EQ(p.getCurrentLocation(DistributedId(rank, 0ul)), rank);
+	ASSERT_EQ(p.getCurrentLocation(DistributedId(12, 1ul)), rank);
+	ASSERT_EQ(p.getCurrentLocation(DistributedId(rank, 2ul)), 25);
 }
 
 class Mpi_SyncProxyTest : public ::testing::Test {
@@ -183,7 +179,7 @@ class Mpi_SyncProxyTest : public ::testing::Test {
 
 			// Each nodes are built such as id = origin, for id in [0,size[
 			//
-			// Each local proc owns the node rank+1 where rank is the rank
+			// Each proc owns the node rank+1 where rank is the rank
 			// of the local proc. This ensures that each node is located
 			// exactly on one proc.
 			//
@@ -204,10 +200,10 @@ class Mpi_SyncProxyTest : public ::testing::Test {
 			next_rank = (rank+1) % size;
 
 			// Initializes proxy entries
-			proxy->setOrigin(previous_rank, previous_rank);
-			proxy->setCurrentLocation(previous_rank, -1);
-			proxy->setOrigin(rank, rank);
-			proxy->setOrigin(next_rank, next_rank);
+			proxy->setOrigin(DistributedId(previous_rank, previous_rank), previous_rank);
+			proxy->setCurrentLocation(DistributedId(previous_rank, previous_rank), -1);
+			proxy->setOrigin(DistributedId(rank, rank), rank);
+			proxy->setOrigin(DistributedId(next_rank, next_rank), next_rank);
 
 			if(rank % 2 == 0) {
 				if(rank == 0 && size % 2 == 1) {
@@ -219,22 +215,22 @@ class Mpi_SyncProxyTest : public ::testing::Test {
 					// proxy 0 is even
 					// so updates won't be push. So for this particular
 					// case, we "manually" set the correct location.
-					proxy->setCurrentLocation(rank, previous_rank);
+					proxy->setCurrentLocation(DistributedId(rank, rank), previous_rank);
 				} else {
 					// Outdated information
-					proxy->setCurrentLocation(rank, next_rank);
+					proxy->setCurrentLocation(DistributedId(rank, rank), next_rank);
 				}
-				proxy->setLocal(next_rank, true);
+				proxy->setLocal(DistributedId(next_rank, next_rank), true);
 			}
 			else {
 				// Up to date information, so previous_rank proxy does not
 				// have to push information
-				proxy->setCurrentLocation(rank, previous_rank);
+				proxy->setCurrentLocation(DistributedId(rank, rank), previous_rank);
 
 				// Outdated information for the next_rank proxy :
 				// information needs to be pushed from this odd proxy to
 				// the next proxy
-				proxy->setLocal(next_rank);
+				proxy->setLocal(DistributedId(next_rank, next_rank));
 			}
 
 		}
@@ -248,8 +244,8 @@ class Mpi_SyncProxyTest : public ::testing::Test {
 TEST_F(Mpi_SyncProxyTest, synchronize_proxy_test) {
 	proxy->synchronize();
 
-	ASSERT_EQ(proxy->getCurrentLocation(previous_rank), (size+previous_rank-1) % size);
-	ASSERT_EQ(proxy->getCurrentLocation(rank), previous_rank);
-	ASSERT_EQ(proxy->getCurrentLocation(next_rank), rank);
+	ASSERT_EQ(proxy->getCurrentLocation(DistributedId(previous_rank, previous_rank)), (size+previous_rank-1) % size);
+	ASSERT_EQ(proxy->getCurrentLocation(DistributedId(rank, rank)), previous_rank);
+	ASSERT_EQ(proxy->getCurrentLocation(DistributedId(next_rank, next_rank)), rank);
 
 };

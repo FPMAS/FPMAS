@@ -9,7 +9,7 @@ namespace FPMAS::graph::base::exceptions {
 	class arc_out_of_graph : public std::out_of_range {
 		public:
 			explicit arc_out_of_graph(IdType arcId)
-				: std::out_of_range("Arc " + std::to_string(arcId) + " is not contained in the current graph.")
+				: std::out_of_range("Arc " + std::string(arcId) + " is not contained in the current graph.")
 			{}
 
 	};
@@ -17,7 +17,7 @@ namespace FPMAS::graph::base::exceptions {
 	class node_out_of_graph : public std::out_of_range {
 		public:
 			explicit node_out_of_graph(IdType nodeId)
-				: std::out_of_range("Node " + std::to_string(nodeId) + " is not contained in the current graph.")
+				: std::out_of_range("Node " + std::string(nodeId) + " is not contained in the current graph.")
 			{}
 
 	};

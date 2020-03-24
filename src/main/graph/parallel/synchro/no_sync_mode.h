@@ -26,16 +26,16 @@ namespace FPMAS::graph::parallel::synchro {
 				/**
 				 * NoSyncData constructor.
 				 */
-				NoSyncData(IdType, SyncMpiCommunicator&, const Proxy&) {};
+				NoSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&) {};
 				/**
 				 * NoSyncData constructor.
 				 */
-				NoSyncData(IdType, SyncMpiCommunicator&, const Proxy&, T&& data) :
+				NoSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&, T&& data) :
 					SyncData<T,N,modes::NoSyncMode>(std::forward<T>(data)) {};
 				/**
 				 * NoSyncData constructor.
 				 */
-				NoSyncData(IdType, SyncMpiCommunicator&, const Proxy&, const T& data) :
+				NoSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&, const T& data) :
 					SyncData<T,N,modes::NoSyncMode>(data) {};
 		};
 	}

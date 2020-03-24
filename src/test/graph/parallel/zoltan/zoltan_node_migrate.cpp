@@ -31,23 +31,25 @@ class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 		// Error code
 		int err;
 
+		DistributedId id1;
+		DistributedId id2;
+		DistributedId id3;
+
 		void SetUp() override {
-			dg.buildNode(0, 1., 0);
-			dg.buildNode(2, 2., 1);
-			dg.buildNode(85250, 3., 2);
+			id1 = dg.buildNode(1., 0)->getId();
+			id2 = dg.buildNode(2., 1)->getId();
+			id3 = dg.buildNode(3., 2)->getId();
 
-			dg.link(0, 2, 0);
-			dg.link(2, 0, 1);
+			dg.link(id1, id2)->getId();
+			dg.link(id2, id1);
 
-			dg.link(0, 85250, 2);
-
-
+			dg.link(id1, id3)->getId();
 		}
 
 		void write_migration_sizes() {
 			// Transfer nodes 0 and 85250
-			write_zoltan_id(0, &transfer_global_ids[0]);
-			write_zoltan_id(85250, &transfer_global_ids[2]);
+			write_zoltan_id(id1, &transfer_global_ids[0]);
+			write_zoltan_id(id3, &transfer_global_ids[2]);
 
 			obj_size_multi_fn<int, 1, GhostMode>(
 					&dg,
@@ -90,12 +92,12 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, obj_size_multi_test) {
 	write_migration_sizes();
 
 	int origin = dg.getMpiCommunicator().getRank();
-	json node1_str = *dg.getNodes().at(0);
+	json node1_str = *dg.getNodes().at(id1);
 	node1_str["origin"] = origin;
 	node1_str["from"] = origin;
 	ASSERT_EQ(sizes[0], node1_str.dump().size() + 1);
 
-	json node2_str = *dg.getNodes().at(85250);
+	json node2_str = *dg.getNodes().at(id3);
 	node2_str["origin"] = origin;
 	node2_str["from"] = origin;
 	ASSERT_EQ(sizes[1], node2_str.dump().size() + 1);
@@ -111,12 +113,19 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, pack_obj_multi_test) {
 	// Decompose and check buffer data
 	ASSERT_STREQ(
 		&buf[0],
-		std::string(R"({"data":0,"from":)" + origin + R"(,"id":0,"origin":)" + origin + R"(,"weight":1.0})").c_str()
+		std::string(
+			R"({"data":0,"from":)" + origin
+			+ R"(,"id":{"id":0,"rank":)" + std::to_string(dg.getMpiCommunicator().getRank())
+			+ R"(},"origin":)" + origin + R"(,"weight":1.0})"
+			).c_str()
 		);
 
 	ASSERT_STREQ(
 		&buf[idx[1]],
-		std::string(R"({"data":2,"from":)" + origin + R"(,"id":85250,"origin":)" + origin + R"(,"weight":3.0})").c_str()
+		std::string(R"({"data":2,"from":)" + origin
+		+ R"(,"id":{"id":2,"rank":)" + std::to_string(dg.getMpiCommunicator().getRank())
+		+ R"(},"origin":)" + origin + R"(,"weight":3.0})"
+		).c_str()
 		);
 }
 
@@ -140,16 +149,16 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 
 	ASSERT_EQ(g.getNodes().size(), 2);
 
-	ASSERT_EQ(g.getNodes().count(0), 1);
-	auto node0 = g.getNodes().at(0);
-	ASSERT_EQ(node0->getId(), 0);
+	ASSERT_EQ(g.getNodes().count(id1), 1);
+	auto node0 = g.getNodes().at(id1);
+	ASSERT_EQ(node0->getId(), id1);
 	ASSERT_EQ(node0->data()->read(), 0);
 	ASSERT_EQ(node0->getWeight(), 1.f);
 
-	ASSERT_EQ(g.getNodes().count(85250ul), 1);
+	ASSERT_EQ(g.getNodes().count(id3), 1);
 	//FPMAS::graph::base::Node<std::unique_ptr<SyncData<int>>, 1>* node1 = g.getNodes().at(85250);
-	auto node1 = g.getNodes().at(85250);
-	ASSERT_EQ(node1->getId(), 85250ul);
+	auto node1 = g.getNodes().at(id3);
+	ASSERT_EQ(node1->getId(), id3);
 	ASSERT_EQ(node1->data()->read(), 2);
 	ASSERT_EQ(node1->getWeight(), 3.f);
 

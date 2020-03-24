@@ -33,21 +33,21 @@ namespace FPMAS::graph::parallel {
 	 * difference can be made between nodes really living locally and ghost
 	 * nodes.
 	 */
-	template <typename T, int N, SYNC_MODE> class GhostNode : public Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N> {
+	template <typename T, int N, SYNC_MODE> class GhostNode : public Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N> {
 		friend SyncData<T, N, S>;
 		friend GhostNode<T, N, S>* GhostGraph<T, N, S>
-			::buildNode(IdType);
+			::buildNode(DistributedId);
 		friend GhostNode<T, N, S>* GhostGraph<T, N, S>
-			::buildNode(Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>&, std::set<IdType>);
+			::buildNode(Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>&, std::set<DistributedId>);
 
 		private:
-		GhostNode(SyncMpiCommunicator&, Proxy&, IdType);
-		GhostNode(SyncMpiCommunicator&, Proxy&, Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>&);
+		GhostNode(SyncMpiCommunicator&, Proxy&, DistributedId);
+		GhostNode(SyncMpiCommunicator&, Proxy&, Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>&);
 	};
 
 	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>
-		::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, IdType id)
-		: Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>(
+		::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, DistributedId id)
+		: Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>(
 				id,
 				1.,
 				std::unique_ptr<SyncData<T,N,S>>(
@@ -64,9 +64,9 @@ namespace FPMAS::graph::parallel {
 		::GhostNode(
 			SyncMpiCommunicator& mpiComm,
 			Proxy& proxy,
-			Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>& node
+			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>& node
 			)
-		: Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>(
+		: Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>(
 			node.getId(),
 			node.getWeight(),
 			std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
@@ -84,36 +84,36 @@ namespace FPMAS::graph::parallel {
 	 * between local arcs and ghost arcs.
 	 *
 	 */
-	template<typename T, int N, SYNC_MODE> class GhostArc : public Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N> {
+	template<typename T, int N, SYNC_MODE> class GhostArc : public Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N> {
 		friend GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 				GhostNode<T, N, S>*,
-				Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>*,
-				IdType,
+				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*,
+				DistributedId,
 				LayerId);
 		friend GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
-				Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>*,
+				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*,
 				GhostNode<T, N, S>*,
-				IdType,
+				DistributedId,
 				LayerId);
 		friend GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
 				GhostNode<T, N, S>*,
 				GhostNode<T, N, S>*,
-				IdType,
+				DistributedId,
 				LayerId);
 
 		private:
 		GhostArc(
-			IdType,
+			DistributedId,
 			GhostNode<T, N, S>*,
-			Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>*,
+			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*,
 			LayerId);
 		GhostArc(
-			IdType,
-			Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>*,
+			DistributedId,
+			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*,
 			GhostNode<T, N, S>*,
 			LayerId);
 		GhostArc(
-			IdType,
+			DistributedId,
 			GhostNode<T, N, S>*,
 			GhostNode<T, N, S>*,
 			LayerId);
@@ -130,12 +130,12 @@ namespace FPMAS::graph::parallel {
 	 * @param target pointer to the local target node
 	 */
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>::GhostArc(
-			IdType arcId,
+			DistributedId arcId,
 			GhostNode<T, N, S>* source,
-			Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* target,
+			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* target,
 			LayerId layer
 			)
-		: Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>(arcId, source, target, layer) { };
+		: Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>(arcId, source, target, layer) { };
 
 	/**
 	 * Builds a GhostArc linking the specified nodes. Notice that the
@@ -147,20 +147,20 @@ namespace FPMAS::graph::parallel {
 	 * @param target pointer to the target ghost node
 	 */
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>::GhostArc(
-			IdType arcId,
-			Node<std::unique_ptr<SyncData<T,N,S>>, IdType, N>* source,
+			DistributedId arcId,
+			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* source,
 			GhostNode<T, N, S>* target,
 			LayerId layer
 			)
-		: Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>(arcId, source, target, layer) { };
+		: Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>(arcId, source, target, layer) { };
 
 	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>::GhostArc(
-			IdType arcId,
+			DistributedId arcId,
 			GhostNode<T, N, S>* source,
 			GhostNode<T, N, S>* target,
 			LayerId layer
 			)
-		: Arc<std::unique_ptr<SyncData<T,N,S>>, IdType, N>(arcId, source, target, layer) { };
+		: Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>(arcId, source, target, layer) { };
 
 }
 

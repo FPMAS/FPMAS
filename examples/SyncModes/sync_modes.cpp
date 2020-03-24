@@ -58,12 +58,13 @@ int main(int argc, char* argv[]) {
 template<SYNC_MODE> void buildGraph(DistributedGraph<int, S>& dg) {
 
 	if(dg.getMpiCommunicator().getRank() == 0) {
+		std::unordered_map<int, DistributedId> idMap;
 		for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-			dg.buildNode(i, 5);
+			idMap[i] = dg.buildNode(5)->getId();
 		}
 		for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 			// Build a ring across the processors
-			dg.link(i, (i+1) % dg.getMpiCommunicator().getSize(), i);
+			dg.link(idMap[i], idMap[(i+1) % dg.getMpiCommunicator().getSize()]);
 		}
 	}
 	dg.distribute();
@@ -79,7 +80,7 @@ template<SYNC_MODE> void process(DistributedGraph<int, S>& dg) {
 		std::cout << "[" << dg.getMpiCommunicator().getRank() << "] local Node : " << node.first << std::endl;
 
 		// Writes data on the local node
-		node.second->data()->acquire() = node.first; // Complete reassignment, but any member function could be called
+		node.second->data()->acquire() = node.first.id(); // Complete reassignment, but any member function could be called
 
 		// Fake processing time on odd nodes
 		if(dg.getMpiCommunicator().getRank() % 2)

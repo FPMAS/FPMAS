@@ -9,24 +9,25 @@ using FPMAS::graph::parallel::synchro::modes::HardSyncMode;
 
 TEST(Mpi_HardSyncDistGraph, build_test) {
 	DistributedGraph<int, HardSyncMode> dg;
-	dg.getGhost().buildNode(2);
-
+	dg.getGhost().buildNode(DistributedId(0, 0));
 }
 
 class Mpi_HardSyncDistGraphReadTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, HardSyncMode> dg;
-		std::unordered_map<unsigned long, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, std::pair<int, int>> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
+				std::unordered_map<int, DistributedId> idMap;
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					dg.buildNode(i, i);
-					partition[i] = std::pair(0, i);
+					auto node = dg.buildNode(i);
+					partition[node->getId()] = std::pair(0, i);
+					idMap[i] = node->getId();
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					// Build a ring across the processors
-					dg.link(i, (i+1) % dg.getMpiCommunicator().getSize(), i);
+					dg.link(idMap[i], idMap[(i+1) % dg.getMpiCommunicator().getSize()]);
 				}
 			}
 			dg.distribute(partition);
@@ -39,7 +40,7 @@ TEST_F(Mpi_HardSyncDistGraphReadTest, simple_read_test) {
 
 	for(auto ghost : dg.getGhost().getNodes()) {
 		ghost.second->data()->read();
-		ASSERT_EQ(ghost.second->data()->read(), ghost.first);
+		ASSERT_EQ(ghost.second->data()->read(), ghost.first.id());
 	}
 	dg.synchronize();
 };
@@ -47,19 +48,21 @@ TEST_F(Mpi_HardSyncDistGraphReadTest, simple_read_test) {
 class Mpi_HardSyncDistGraphAcquireTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, HardSyncMode> dg;
-		std::unordered_map<unsigned long, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, std::pair<int, int>> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
+				std::unordered_map<int, DistributedId> idMap;
 				// Builds N node
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					dg.buildNode(i, i, 0);
-					partition[i] = std::pair(0, i);
+					auto node = dg.buildNode();
+					partition[node->getId()] = std::pair(0, i);
+					idMap[i] = node->getId();
 				}
 				// Each node is connected to node N-1, except N-1 itself
 				for (int i = 0; i < dg.getMpiCommunicator().getSize() - 1; ++i) {
 					if(i != dg.getMpiCommunicator().getSize() - 1)
-						dg.link(i, dg.getMpiCommunicator().getSize() - 1, i);
+						dg.link(idMap[i], idMap[dg.getMpiCommunicator().getSize() - 1]);
 				}
 			}
 			dg.distribute(partition);
@@ -88,7 +91,7 @@ TEST_F(Mpi_HardSyncDistGraphAcquireTest, race_condition_test) {
 	dg.synchronize();
 
 	// Node where the sum is stored
-	int sum_node = dg.getMpiCommunicator().getSize() - 1;
+	DistributedId sum_node = DistributedId(0, dg.getMpiCommunicator().getSize() - 1);
 	// Sum value
 	unsigned long sum = dg.getMpiCommunicator().getSize() - 1;
 	// Looking for the graph (ie the proc) where N-1 is located
@@ -122,7 +125,7 @@ TEST_F(Mpi_HardSyncDistGraphAcquireTest, heavy_race_condition_test) {
 	dg.synchronize();
 
 	// Node where the sum is stored
-	unsigned long sum_node = dg.getMpiCommunicator().getSize() - 1;
+	DistributedId sum_node = DistributedId(0, dg.getMpiCommunicator().getSize() - 1);
 	// Sum value
 	unsigned long sum = 500 * (dg.getMpiCommunicator().getSize() - 1);
 	// Looking for the graph (ie the proc) where N-1 is located

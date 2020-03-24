@@ -15,26 +15,28 @@ using FPMAS::communication::SyncMpiCommunicator;
 
 class TestResourceHandler : public FPMAS::communication::ResourceContainer {
 	public:
-		std::unordered_map<unsigned long, unsigned long> data;
+		std::unordered_map<DistributedId, unsigned long> data;
 
 		TestResourceHandler() {
 			int current_rank;
 			MPI_Comm_rank(MPI_COMM_WORLD, &current_rank);
 			int size;
 			MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+			DistributedId currentId = DistributedId(current_rank);
 			for (int i = 0; i < size; i++)
-					data[i] = i;
+					data[currentId++] = i;
 		}
 
-		std::string getLocalData(unsigned long id) const override {
+		std::string getLocalData(DistributedId id) const override {
 			return std::to_string(data.at(id));
 		}
 
-		std::string getUpdatedData(unsigned long id) const override {
+		std::string getUpdatedData(DistributedId id) const override {
 			return std::to_string(data.at(id));
 		}
 
-		void updateData(unsigned long id, std::string data_str) override {
+		void updateData(DistributedId id, std::string data_str) override {
 			this->data[id] = std::stoul(data_str);
 		}
 };
@@ -54,7 +56,7 @@ class Mpi_TestReadersWriters : public ::testing::Test {
 TEST_F(Mpi_TestReadersWriters, test_concurrent_readings) {
 	if(comm.getSize() >= 2) {
 		if(comm.getRank() >= 1) {
-			std::string data = comm.read(0, 0);
+			std::string data = comm.read(DistributedId(0, 0), 0);
 			ASSERT_EQ(data, "0");
 		}
 		comm.terminate();
@@ -72,17 +74,17 @@ TEST_F(Mpi_TestReadersWriters, self_read_while_external_acquire) {
 	if(comm.getSize() >= 2) {
 		if(comm.getRank() == 1) {
 			// Acquires the resource from 0 before 0 itself reads it
-			std::string data = comm.acquire(0, 0);
+			std::string data = comm.acquire(DistributedId(0, 0), 0);
 			ASSERT_EQ(data, "0");
 
 			// Makes the read on 0 to delay
 			std::this_thread::sleep_for(100ms);
 
 			// Updates data
-			this->handler.data[0] = 12;
+			this->handler.data[DistributedId(0, 0)] = 12;
 
 			// Gives back resource to 0 so that it can read it
-			comm.giveBack(0, 0);
+			comm.giveBack(DistributedId(0, 0), 0);
 		}
 		else if (comm.getRank() == 0) {
 			// Ensures that 1 has initiated acquire
@@ -95,7 +97,7 @@ TEST_F(Mpi_TestReadersWriters, self_read_while_external_acquire) {
 			// Now, try to read the local resource acquired by 1 : 
 			// response should be delayed by at least 100ms, waiting for 1 to
 			// give back the resource.
-			std::string data = comm.read(0, 0);
+			std::string data = comm.read(DistributedId(0, 0), 0);
 
 			auto end = std::chrono::system_clock::now();
 
@@ -127,7 +129,7 @@ TEST_F(Mpi_TestReadersWriters, external_read_while_self_acquire) {
 
 			auto start = std::chrono::system_clock::now();
 			// Blocks until 0 gives back the resource to itself
-			std::string data = comm.read(0, 0);
+			std::string data = comm.read(DistributedId(0, 0), 0);
 
 			auto end = std::chrono::system_clock::now();
 
@@ -142,9 +144,9 @@ TEST_F(Mpi_TestReadersWriters, external_read_while_self_acquire) {
 		}
 		else if (comm.getRank() == 0) {
 			// Acquires the local resource before 1 reads it
-			std::string data = comm.acquire(0, 0);
+			std::string data = comm.acquire(DistributedId(0, 0), 0);
 			ASSERT_EQ(data, "0");
-			this->handler.data[0] = 0;
+			this->handler.data[DistributedId(0, 0)] = 0;
 
 			// Waits for the read request from 1
 			MPI_Status status;
@@ -156,10 +158,10 @@ TEST_F(Mpi_TestReadersWriters, external_read_while_self_acquire) {
 			std::this_thread::sleep_for(100ms);
 
 			// Updates data
-			this->handler.data[0] = 12;
+			this->handler.data[DistributedId(0, 0)] = 12;
 
 			// Gives back resource to itself so that 1 can read it
-			comm.giveBack(0, 0);
+			comm.giveBack(DistributedId(0, 0), 0);
 		}
 		comm.terminate();
 	}
@@ -178,19 +180,19 @@ TEST_F(Mpi_TestReadersWriters, acquiring_while_read) {
 		if(comm.getRank() == 1) {
 			for(int i = 0; i < 5; i++) {
 				std::this_thread::sleep_for(10ms);
-				std::string data = comm.read(0, 0);
+				std::string data = comm.read(DistributedId(0, 0), 0);
 			}
 		}
 		else if (comm.getRank() == 2) {
 			std::this_thread::sleep_for(40ms);
-			std::string data = comm.acquire(0, 0);
+			std::string data = comm.acquire(DistributedId(0, 0), 0);
 			ASSERT_EQ(data, "0");
-			this->handler.data[0] = 12;
-			comm.giveBack(0, 0);
+			this->handler.data[DistributedId(0, 0)] = 12;
+			comm.giveBack(DistributedId(0, 0), 0);
 		}
 		comm.terminate();
 		if(comm.getRank() == 0) {
-			ASSERT_EQ(this->handler.data[0], 12);
+			ASSERT_EQ(this->handler.data[DistributedId(0,0)], 12);
 		}
 	}
 	else {
@@ -211,19 +213,19 @@ TEST_F(Mpi_TestReadersWriters, reading_while_acquired) {
 		}
 		else if(comm.getRank() == 1) {
 			// Acquires data befor 2 tries to read it
-			std::string data = comm.acquire(0, 0);
-			this->handler.data[0] = 12;
+			std::string data = comm.acquire(DistributedId(0, 0), 0);
+			this->handler.data[DistributedId(0, 0)] = 12;
 
 			// Holds the resource for at least 200ms
 			std::this_thread::sleep_for(200ms);
 
-			comm.giveBack(0, 0);
+			comm.giveBack(DistributedId(0, 0), 0);
 		}
 		// All other procs are trying to read the data acquired by 1
 		else if (comm.getRank() >= 2) {
 			// Ensures that the read is performed while data is acquired by 1
 			std::this_thread::sleep_for(40ms);
-			std::string data = comm.read(0, 0);
+			std::string data = comm.read({0, 0}, 0);
 
 			// Proof that the read has wait until data was given back by 1
 			ASSERT_EQ(data, "12");
@@ -256,17 +258,17 @@ TEST_F(Mpi_TestReadersWriters, concurrent_acquiring) {
 
 			// Ensures that the data has well been exclusively written by only
 			// one proc at a time
-			ASSERT_EQ(this->handler.data[0], comm.getSize() - 1);
+			ASSERT_EQ(this->handler.data[DistributedId(0, 0)], comm.getSize() - 1);
 		}
 		else {
 			// Acquires the resource from 0
-			std::string data = comm.acquire(0, 0);
+			std::string data = comm.acquire({0, 0}, 0);
 			// Adds 1 to the current value on proc 0
-			this->handler.data[0] = std::stoul(data) + 1;
+			this->handler.data[DistributedId(0, 0)] = std::stoul(data) + 1;
 
 			// Waits before give data back
 			std::this_thread::sleep_for(10ms);
-			comm.giveBack(0, 0);
+			comm.giveBack({0, 0}, 0);
 
 			comm.terminate();
 		}
