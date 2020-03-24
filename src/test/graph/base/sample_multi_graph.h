@@ -54,6 +54,7 @@ class SampleMultiGraphTest : public ::testing::Test {
 			sampleMultiGraph.link(node3, node4, LAYER_1);
 			sampleMultiGraph.link(node4, node3, LAYER_1);
 
+
 			// Layer 2
 			sampleMultiGraph.link(node1, node4, LAYER_2);
 			sampleMultiGraph.link(node4, node2, LAYER_2);

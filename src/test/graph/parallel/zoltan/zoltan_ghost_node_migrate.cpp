@@ -92,16 +92,16 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[0],
 		std::string(
-			R"({"data":1,"id":{"id":0,"rank":)" + current_proc
-			+ R"(},"weight":1.5})"
+			R"({"data":1,"id":[)" + current_proc + R"(,0])"
+			+ R"(,"weight":1.5})"
 			).c_str()
 		);
 
 	ASSERT_STREQ(
 		&buf[idx[1]],
 		std::string(
-			R"({"data":-2,"id":{"id":1,"rank":)" + current_proc
-			+ R"(},"weight":2.0})"
+			R"({"data":-2,"id":[)" + current_proc + R"(,1])"
+			+ R"(,"weight":2.0})"
 			).c_str()
 		);
 

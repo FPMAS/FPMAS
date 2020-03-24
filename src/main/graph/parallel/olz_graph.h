@@ -59,6 +59,7 @@ namespace FPMAS::graph::parallel {
 		std::unordered_map<DistributedId, GhostNode<T, N, S>*> ghostNodes;
 		std::unordered_map<DistributedId, GhostArc<T, N, S>*> ghostArcs;
 
+		void clear(GhostNode<T,N,S>*);
 
 		public:
 
@@ -67,23 +68,44 @@ namespace FPMAS::graph::parallel {
 
 		void synchronize();
 
+		// GhostNode constructors
 		GhostNode<T, N, S>* buildNode(DistributedId);
-		GhostNode<T, N, S>* buildNode(Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>& node, std::set<DistributedId> ignoreIds = std::set<DistributedId>());
-
-		GhostArc<T, N, S>* link(GhostNode<T, N, S>*, Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*, DistributedId, LayerId);
-		GhostArc<T, N, S>* link(Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*, GhostNode<T, N, S>*, DistributedId, LayerId);
-		GhostArc<T, N, S>* link(GhostNode<T, N, S>*, GhostNode<T, N, S>*, DistributedId, LayerId);
-		void unlink(GhostArc<T, N, S>*);
-
+		GhostNode<T, N, S>* buildNode(
+				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>& node,
+				std::set<DistributedId> ignoreIds = std::set<DistributedId>()
+				);
+		// GhostNode destructor
 		void removeNode(DistributedId);
 
+		// GhostArc constructors
+		GhostArc<T, N, S>* link(
+				GhostNode<T, N, S>*,
+				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*,
+				DistributedId, LayerId
+				);
+		GhostArc<T, N, S>* link(
+				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*,
+				GhostNode<T, N, S>*,
+				DistributedId, LayerId
+				);
+		GhostArc<T, N, S>* link(
+				GhostNode<T, N, S>*, GhostNode<T, N, S>*,
+				DistributedId, LayerId
+				);
+		// GhostArc destructor
+		void unlink(GhostArc<T, N, S>*);
+
+
+		// GhostNode getters
 		std::unordered_map<DistributedId, GhostNode<T, N, S>*> getNodes();
 		GhostNode<T, N, S>* getNode(DistributedId);
 		const GhostNode<T, N, S>* getNode(DistributedId) const;
+
+		// GhostArc getters
 		std::unordered_map<DistributedId, GhostArc<T, N, S>*> getArcs();
+		GhostArc<T, N, S>* getArc(DistributedId);
 		const GhostArc<T, N, S>* getArc(DistributedId) const;
 
-		void clear(GhostNode<T,N,S>*);
 
 		~GhostGraph();
 
@@ -181,7 +203,8 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param id node id
 	 */
-	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>::buildNode(DistributedId id) {
+	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>
+		::buildNode(DistributedId id) {
 		// Copy the gNode from the original node, including arcs data
 		GhostNode<T, N, S>* gNode = new GhostNode<T, N, S>(
 				this->localGraph->getMpiCommunicator(),
@@ -213,7 +236,10 @@ namespace FPMAS::graph::parallel {
 	 * @param ignoreIds ids of nodes to ignore when building links
 	 */
 	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>
-		::buildNode(Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>& node, std::set<DistributedId> ignoreIds) {
+		::buildNode(
+			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>& node,
+			std::set<DistributedId> ignoreIds
+			) {
 			FPMAS_LOGD(
 					this->mpiCommunicator.getRank(),
 					"GHOST_GRAPH",
@@ -277,7 +303,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param source pointer to source GhostNode
 	 * @param target pointer to local synchronized target Node
-	 * @param arcId id of the new arc
+	 * @param arcId id of the ghost arc
 	 * @param layer arc layer
 	 * @return pointer to the created arc
 	 */ 
@@ -295,7 +321,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param source pointer to local synchronized source Node
 	 * @param target pointer to target GhostNode
-	 * @param arcId id of the new arc
+	 * @param arcId id of the ghost arc
 	 * @param layer arc layer
 	 * @return pointer to the created arc
 	 */ 
@@ -314,7 +340,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param source pointer to source GhostNode
 	 * @param target pointer to target GhostNode
-	 * @param arcId id of the new arc
+	 * @param arcId id of the ghost arc
 	 * @param layer arc layer
 	 * @return pointer to the created arc
 	 */
@@ -333,7 +359,8 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param nodeId id of the node to remove
 	 */
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::removeNode(DistributedId nodeId) {
+	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>
+		::removeNode(DistributedId nodeId) {
 		GhostNode<T, N, S>* nodeToRemove;
 		try {
 			nodeToRemove = this->ghostNodes.at(nodeId);
@@ -375,7 +402,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @return pointer to GhostNode
 	 */
-	template<typename T, int N, SYNC_MODE> const GhostNode<T, N, S>* GhostGraph<T, N, S>::getNode(DistributedId id) const {
+	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>::getNode(DistributedId id) {
 		return this->ghostNodes.at(id);
 	}
 
@@ -385,8 +412,18 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @return pointer to GhostNode
 	 */
-	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>::getNode(DistributedId id) {
+	template<typename T, int N, SYNC_MODE> const GhostNode<T, N, S>* GhostGraph<T, N, S>::getNode(DistributedId id) const {
 		return this->ghostNodes.at(id);
+	}
+
+	/**
+	 * Returns a pointer to the GhostArc corresponding to the specified
+	 * id.
+	 *
+	 * @return pointer to GhostArc
+	 */
+	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::getArc(DistributedId id) {
+		return this->ghostArcs.at(id);
 	}
 
 	/**
@@ -408,7 +445,16 @@ namespace FPMAS::graph::parallel {
 		return this->ghostArcs;
 	}
 
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::clear(GhostNode<T,N,S>* ghost) {
+	/**
+	 * Removes the specified GhostNode from the graph if it's _orphan_.
+	 *
+	 * A GhostNode is considered "orphan" if it is locally completely
+	 * unconnected.
+	 *
+	 * @param ghost pointer to the removed GhostNode
+	 */
+	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>
+		::clear(GhostNode<T,N,S>* ghost) {
 		bool toDelete = true;
 		for(auto& layer : ghost->getLayers()) {
 			if(layer.getIncomingArcs().size() > 0
@@ -428,7 +474,16 @@ namespace FPMAS::graph::parallel {
 		}
 	}
 
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::unlink(GhostArc<T, N, S>* arc) {
+	/**
+	 * Unlinks and deletes the specified arc from the GhostGraph.
+	 *
+	 * Source and target nodes are eventually removed too if they are _orphan_
+	 * after the deletion of this arc.
+	 *
+	 * @param arc GhostArc to unlink
+	 */
+	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>
+		::unlink(GhostArc<T, N, S>* arc) {
 		FPMAS_LOGD(
 			this->localGraph->getMpiCommunicator().getRank(),
 			"GHOST_GRAPH", "Unlinking ghost arc %lu",
@@ -439,7 +494,7 @@ namespace FPMAS::graph::parallel {
 			this->clear((GhostNode<T,N,S>*) arc->getSourceNode());
 		}
 		if(this->localGraph->getNodes().count(arc->getTargetNode()->getId()) == 0) {
-this->clear((GhostNode<T,N,S>*) arc->getTargetNode());
+			this->clear((GhostNode<T,N,S>*) arc->getTargetNode());
 		}
 		this->ghostArcs.erase(arc->getId());
 		delete arc;

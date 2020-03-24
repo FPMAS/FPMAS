@@ -79,14 +79,14 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a4d7d907413c6b9787753a4887acf3cde"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a4d7d907413c6b9787753a4887acf3cde">ResourceManager</a> (<a class="el" href="classFPMAS_1_1communication_1_1SyncMpiCommunicator.html">SyncMpiCommunicator</a> &amp;comm)</td></tr>
 <tr class="separator:a4d7d907413c6b9787753a4887acf3cde"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f37f84887e938370c4a8520d13b6cf1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a3f37f84887e938370c4a8520d13b6cf1">read</a> (NodeId id, int destination)</td></tr>
-<tr class="separator:a3f37f84887e938370c4a8520d13b6cf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab8d50ca8c0cd156e88d8c72315265262"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#ab8d50ca8c0cd156e88d8c72315265262">write</a> (NodeId id, int destination)</td></tr>
-<tr class="separator:ab8d50ca8c0cd156e88d8c72315265262"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac1a7b062ea0a88a7d21d8700c60f4493"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#ac1a7b062ea0a88a7d21d8700c60f4493">release</a> (NodeId id)</td></tr>
-<tr class="separator:ac1a7b062ea0a88a7d21d8700c60f4493"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7da4c1d640294cb7fc42eaca4201a9dd"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a7da4c1d640294cb7fc42eaca4201a9dd">get</a> (NodeId id) const</td></tr>
-<tr class="separator:a7da4c1d640294cb7fc42eaca4201a9dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad1f8fba8f5d0824b93a31643c26048a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#ad1f8fba8f5d0824b93a31643c26048a5">read</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> id, int destination)</td></tr>
+<tr class="separator:ad1f8fba8f5d0824b93a31643c26048a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2298e153cdcd0fac4a82938b48a8825d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a2298e153cdcd0fac4a82938b48a8825d">write</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> id, int destination)</td></tr>
+<tr class="separator:a2298e153cdcd0fac4a82938b48a8825d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca6658fc7e8ec9dc1de8639590183eb1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#aca6658fc7e8ec9dc1de8639590183eb1">release</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> id)</td></tr>
+<tr class="separator:aca6658fc7e8ec9dc1de8639590183eb1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8704df702878606b694cb70a78d4992e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#a8704df702878606b694cb70a78d4992e">get</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> id) const</td></tr>
+<tr class="separator:a8704df702878606b694cb70a78d4992e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class managing concurrent read / write access to a set of resources, each represented by a given id. </p>
@@ -125,8 +125,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a7da4c1d640294cb7fc42eaca4201a9dd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7da4c1d640294cb7fc42eaca4201a9dd">&#9670;&nbsp;</a></span>get()</h2>
+<a id="a8704df702878606b694cb70a78d4992e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8704df702878606b694cb70a78d4992e">&#9670;&nbsp;</a></span>get()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -134,7 +134,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">const <a class="el" href="classFPMAS_1_1communication_1_1ReadersWriters.html">ReadersWriters</a> &amp; FPMAS::communication::ResourceManager::get </td>
           <td>(</td>
-          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -144,8 +144,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a3f37f84887e938370c4a8520d13b6cf1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f37f84887e938370c4a8520d13b6cf1">&#9670;&nbsp;</a></span>read()</h2>
+<a id="ad1f8fba8f5d0824b93a31643c26048a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1f8fba8f5d0824b93a31643c26048a5">&#9670;&nbsp;</a></span>read()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -153,7 +153,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void FPMAS::communication::ResourceManager::read </td>
           <td>(</td>
-          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>&#160;</td>
           <td class="paramname"><em>id</em>, </td>
         </tr>
         <tr>
@@ -181,8 +181,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ac1a7b062ea0a88a7d21d8700c60f4493"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1a7b062ea0a88a7d21d8700c60f4493">&#9670;&nbsp;</a></span>release()</h2>
+<a id="aca6658fc7e8ec9dc1de8639590183eb1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca6658fc7e8ec9dc1de8639590183eb1">&#9670;&nbsp;</a></span>release()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -190,7 +190,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void FPMAS::communication::ResourceManager::release </td>
           <td>(</td>
-          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>&#160;</td>
           <td class="paramname"><em>id</em></td><td>)</td>
           <td></td>
         </tr>
@@ -206,8 +206,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ab8d50ca8c0cd156e88d8c72315265262"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab8d50ca8c0cd156e88d8c72315265262">&#9670;&nbsp;</a></span>write()</h2>
+<a id="a2298e153cdcd0fac4a82938b48a8825d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2298e153cdcd0fac4a82938b48a8825d">&#9670;&nbsp;</a></span>write()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -215,7 +215,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void FPMAS::communication::ResourceManager::write </td>
           <td>(</td>
-          <td class="paramtype">NodeId&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>&#160;</td>
           <td class="paramname"><em>id</em>, </td>
         </tr>
         <tr>
@@ -233,7 +233,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Performs a write operation on the local resource for the specified destination.</p>
 <p>The request is put in a waiting queue if the resource is currently locked.</p>
-<p>On response, the resource is acquired by the destination that must later give it back to <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#ac1a7b062ea0a88a7d21d8700c60f4493">release()</a> the resource.</p>
+<p>On response, the resource is acquired by the destination that must later give it back to <a class="el" href="classFPMAS_1_1communication_1_1ResourceManager.html#aca6658fc7e8ec9dc1de8639590183eb1">release()</a> the resource.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>resource id </td></tr>

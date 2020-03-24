@@ -118,10 +118,9 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[0],
 		std::string(
-			R"({"id":{"id":0,"rank":)" + current_proc 
-			+ R"(},"layer":0,"link":[)"
-			+ R"({"id":0,"rank":)"+current_proc +"},"
-			+ R"({"id":1,"rank":)"+current_proc +"}"
+			R"({"id":[)" + current_proc + R"(,0])"
+			+ R"(,"layer":0,"link":[[)"
+			+ current_proc +",0],["+ current_proc +",1]"
 			+ R"(],"source":[)" + current_proc + "," + current_proc + "],"
 			+ R"("target":[)" + current_proc + "," + current_proc + "]}"
 			).c_str()
@@ -130,10 +129,9 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[idx[1]],
 		std::string(
-			R"({"id":{"id":2,"rank":)" + current_proc
-			+ R"(},"layer":0,"link":[)"
-			+ R"({"id":0,"rank":)"+current_proc +"},"
-			+ R"({"id":2,"rank":)"+current_proc +"}"
+			R"({"id":[)" + current_proc + R"(,2])"
+			+ R"(,"layer":0,"link":[[)"
+			+ current_proc +",0],["+ current_proc +",2]"
 			+ R"(],"source":[)"
 			+ current_proc + "," + current_proc + "],"
 			+ R"("target":[)" + current_proc + "," + current_proc + "]}"

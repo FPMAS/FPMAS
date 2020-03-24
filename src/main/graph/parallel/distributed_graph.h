@@ -30,29 +30,33 @@ namespace FPMAS {
 		using synchro::wrappers::SyncData;
 		using synchro::modes::GhostMode;
 
-		/** A DistributedGraph is a special graph instance that can be
+		/**
+		 * A DistributedGraph is a special graph instance that can be
 		 * distributed across available processors using Zoltan.
 		 *
 		 * The synchronization mode can be set up thanks to an optional
 		 * template parameter. Actually, the specified class represents the
 		 * wrapper of data located on an other proc. Possible values are :
 		 *
-		 * - FPMAS::graph::synchro::modes::NoSyncMode : no distant data representation. It
-		 *   is not possible to access data from nodes on other procs. In
-		 *   consequence, some arcs may be deleted when the graph is
-		 *   distributed, what results in information loss.
+		 * - FPMAS::graph::parallel::synchro::modes::NoSyncMode :
 		 *
-		 * - FPMAS::graph::synchro::modes::GhostMode : Distant nodes are represented
-		 *   as "ghosts", that can be punctually synchronized using the
-		 *   GhostGraph::synchronize() function. When called, this function
-		 *   asks updates to other procs and updates its local "ghost" data. In
-		 *   this mode, no information is lost about the graph connectivity.
-		 *   However, information accessed in the ghost nodes might not be up
-		 *   to date. It is interesting to note that from a local node, there
-		 *   is no difference between local or ghost nodes when exploring the
-		 *   graph through incoming or outgoing arcs lists.
+		 *   No distant data representation. It is not possible to access data
+		 *   from nodes on other procs. In consequence, some arcs may be
+		 *   deleted when the graph is distributed, what results in information
+		 *   loss.
 		 *
-		 * - FPMAS::graph::synchro::modes::HardSyncMode : TODO
+		 * - FPMAS::graph::parallel::synchro::modes::GhostMode :
+		 *
+		 *   Distant nodes are represented as "ghosts", that can be punctually
+		 *   synchronized using the GhostGraph::synchronize() function. When
+		 *   called, this function asks updates to other procs and updates its
+		 *   local "ghost" data. In this mode, no information is lost about the
+		 *   graph connectivity.  However, information accessed in the ghost
+		 *   nodes might not be up to date. It is interesting to note that from
+		 *   a local node, there is no difference between local or ghost nodes
+		 *   when exploring the graph through incoming or outgoing arcs lists.
+		 *
+		 * - FPMAS::graph::parallel::synchro::modes::HardSyncMode : TODO
 		 *
 		 * @tparam T associated data type
 		 * @tparam S synchronization mode
@@ -64,7 +68,15 @@ namespace FPMAS {
 				void distribute(int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int*, int*, ZOLTAN_ID_PTR, int*);
 
 			public:
+				/**
+				 * Node pointer type.
+				 */
+				typedef typename DistributedGraphBase<T, S, N>::node_ptr node_ptr;
+				/**
+				 * Arc pointer type.
+				 */
 				typedef typename DistributedGraphBase<T, S, N>::arc_ptr arc_ptr;
+
 				using DistributedGraphBase<T,S,N>::link; // Allows usage of link(DistributedId, DistributedId)
 				using DistributedGraphBase<T,S,N>::unlink; // Allows usage of unlink(DistributedId)
 
@@ -74,7 +86,7 @@ namespace FPMAS {
 				DistributedGraph<T, S, N>(const DistributedGraph<T,S,N>&) = delete;
 				DistributedGraph<T, S, N>& operator=(const DistributedGraph<T, S, N>&) = delete;
 
-				arc_ptr link(DistributedId, DistributedId, LayerId) override;
+				arc_ptr link(node_ptr, node_ptr, LayerId) override;
 				void unlink(arc_ptr) override;
 
 				void distribute() override;
@@ -104,62 +116,53 @@ namespace FPMAS {
 		 *
 		 * Source and target might refer to local nodes or ghost nodes. If at
 		 * least one of the two nodes is a ghost node, the request is
-		 * transmetted through the synchro::SyncMode S to handle distant
-		 * linking, through the implementation of the
-		 * synchro::SyncMode::initLink() and synchro::SyncMode::notifyLinked()
-		 * functions.
+		 * transmitted through the currently used synchro::modes::SyncMode.
 		 *
-		 * In consequence, this function can be used to link two nodes distant
-		 * from this process, each one potentially living on two different
-		 * procs. However, those two nodes **must** be represented as GhostNode
-		 * s at the scale of this DistributedGraph instance.
+		 * More precisely :
+		 *   1. synchro::modes::SyncMode::initLink is called
+		 *   2. The two nodes are locally linked
+		 *   3. synchro::modes::SyncMode::notifyLinked is called
+		 *
+		 * In consequence, this function can be used to link two distant nodes,
+		 * each one potentially living on two different procs. However, those
+		 * two nodes **must** be represented as GhostNode s at the scale of
+		 * this DistributedGraph instance.
 		 *
 		 * @param source source node id
 		 * @param target target node id
-		 * @param arcId new arc id
 		 * @param layerId id of the Layer on which nodes should be linked
 		 * @return pointer to the created arc
 		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraph<T, S, N>::arc_ptr DistributedGraph<T, S, N>
-		::link(DistributedId source, DistributedId target, LayerId layerId) {
-			if(this->getNodes().count(source) > 0) {
+		::link(node_ptr source, node_ptr target, LayerId layerId) {
+			if(this->getNodes().count(source->getId()) > 0) {
 				// Source is local
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* sourceNode
-					= this->getNode(source);
-				if(this->getNodes().count(target) > 0) {
+				if(this->getNodes().count(target->getId()) > 0) {
 					// Source and Target are local, completely local operation
-					Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* targetNode
-						= this->getNode(target);
 					return this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>::link(
-						sourceNode, targetNode, layerId
+						source, target, layerId
 						);
 				} else {
 					// Target is distant
-					GhostNode<T, N, S>* targetNode
-						= this->getGhost().getNode(target);
 					DistributedId id = this->currentArcId++;
-					this->syncMode.initLink(source, target, id, layerId);
+					this->syncMode.initLink(source->getId(), target->getId(), id, layerId);
 					// link local -> distant
 					auto arc = this->getGhost().link(
-						sourceNode, targetNode, id, layerId
+						source, (GhostNode<T, N, S>*) target, id, layerId
 						);
 					this->syncMode.notifyLinked(arc);
 					return arc;
 				}
 			} else {
 				// Source is distant
-				if(this->getNodes().count(target) > 0) {
+				if(this->getNodes().count(target->getId()) > 0) {
 					// Source is local
-					GhostNode<T, N, S>* sourceNode
-						= this->getGhost().getNode(source);
-					Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* targetNode
-						= this->getNode(target);
 					DistributedId id = this->currentArcId++;
-					this->syncMode.initLink(source, target, id, layerId);
+					this->syncMode.initLink(source->getId(), target->getId(), id, layerId);
 					// link distant -> local
 					auto arc = this->getGhost().link(
-							sourceNode, targetNode, id, layerId
+							(GhostNode<T, N, S>*) source, target, id, layerId
 							);
 					this->syncMode.notifyLinked(arc);
 					return arc;
@@ -168,30 +171,24 @@ namespace FPMAS {
 					// Source and target are distant
 					// Allowed only if the two nodes are ghosts on this graph
 					// TODO: better exception handling
-					GhostNode<T, N, S>* sourceNode
-						= this->getGhost().getNode(source);
-					GhostNode<T, N, S>* targetNode
-						= this->getGhost().getNode(target);
-
 					DistributedId id = this->currentArcId++;
-					this->syncMode.initLink(source, target, id, layerId);
+					this->syncMode.initLink(source->getId(), target->getId(), id, layerId);
 					// link distant -> distant
 					auto arc = this->getGhost().link(
-							sourceNode, targetNode, id, layerId
+							(GhostNode<T, N, S>*) source, (GhostNode<T, N, S>*) target, id, layerId
 							);
 					this->syncMode.notifyLinked(arc);
 					return arc;
 				}
 			}
 		}
-
 		/**
 		 * Unlinks the specified arc within this DistributedGraph instance.
 		 *
 		 * If the arc is local, the operation is performed completely locally.
 		 * If the arc links a distant node (i.e. is a GhostArc), some
 		 * additionnal distant operation might apply depending on the current
-		 * SyncMode used.
+		 * synchro::modes::SyncMode used.
 		 *
 		 * More precisely :
 		 *   1. synchro::modes::SyncMode::initUnlink is called
@@ -206,10 +203,10 @@ namespace FPMAS {
 			) {
 			DistributedId id = arc->getId();
 			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking arc %lu", id);
-			try {
+			if(this->getArcs().count(arc->getId())>0) {
 				// Arc is local
 				this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>::unlink(arc);
-			} catch(base::exceptions::arc_out_of_graph<DistributedId> e) {
+			} else {
 				DistributedId source = arc->getSourceNode()->getId();
 				DistributedId target = arc->getTargetNode()->getId();
 				DistributedId arcId = arc->getId();
@@ -452,11 +449,13 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Synchronizes the DistributedGraph instances, calling the
-		 * SyncMpiCommunicator::terminate() method and extra processing
-		 * that might be required by the synchronization mode S, implemented
-		 * through the synchro::SyncMode::termination() function. (eg :
-		 * synchronize the ghost graph data for the GhostData mode).
+		 * Synchronizes the DistributedGraph instances.
+		 *
+		 * More precisely:
+		 * 	1. SyncMpiCommunicator::terminate() is called
+		 * 	2. synchro::modes::SyncMode::termination() is called
+		 *
+		 * 	@see synchro::modes::GhostMode::termination()
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::synchronize() {
 			this->DistributedGraphBase<T, S, N>::synchronize();

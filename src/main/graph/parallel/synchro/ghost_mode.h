@@ -191,6 +191,22 @@ namespace FPMAS::graph::parallel {
 					= (GhostArc<T,N,GhostMode>*) arc;
 			}
 
+			/**
+			 * Called once a distant `arc`, linking `source` to `target`, is
+			 * unlinked.
+			 *
+			 * The unlinked arc is added to an internal buffer, and migrated
+			 * once termination() is called.
+			 *
+			 * Additionally, if the unlinked arc is an arc that were created
+			 * but not migrated yet, it is removed from the corresponding
+			 * internal buffer to avoid unnecessary distant operations.
+			 *
+			 * @param source source id
+			 * @param target target id
+			 * @param arcId id of the arc to unlink
+			 * @param layer layer of the unlinked arc
+			 */
 			template<typename T, int N> void GhostMode<T, N>::notifyUnlinked(
 					DistributedId source, DistributedId target, DistributedId arcId, LayerId layer
 					) {

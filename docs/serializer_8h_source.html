@@ -72,80 +72,66 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef AGENT_SERIALIZER_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define AGENT_SERIALIZER_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;nlohmann/json.hpp&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;tuple&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>FPMAS::agent {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>...&gt; <span class="keyword">class </span>Agent;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;}</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="namespacenlohmann.html">   11</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacenlohmann.html">nlohmann</a> {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">FPMAS::agent::Agent</a>;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacenlohmann_1_1type__hash.html">   18</a></span>&#160;    <span class="keyword">namespace </span>type_hash {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="comment">// Reference wrapper to type_info (allows to store reference to type_info</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="comment">// in maps)</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">using</span> TypeInfoRef = std::reference_wrapper&lt;const std::type_info&gt;;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="comment">// type_info Hash function</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="structnlohmann_1_1type__hash_1_1Hasher.html">   24</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structnlohmann_1_1type__hash_1_1Hasher.html">Hasher</a> {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            std::size_t operator()(TypeInfoRef code)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">            </span>{</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                <span class="keywordflow">return</span> code.get().hash_code();</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            }</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        };</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="comment">// type_info EqualTo</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structnlohmann_1_1type__hash_1_1EqualTo.html">   32</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structnlohmann_1_1type__hash_1_1EqualTo.html">EqualTo</a> {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="keywordtype">bool</span> operator()(TypeInfoRef lhs, TypeInfoRef rhs)<span class="keyword"> const</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">            </span>{</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <span class="keywordflow">return</span> lhs.get() == rhs.get();</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            }</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        };</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    }</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">using</span> type_hash::TypeInfoRef;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">using</span> <a class="code" href="structnlohmann_1_1type__hash_1_1Hasher.html">type_hash::Hasher</a>;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">using</span> <a class="code" href="structnlohmann_1_1type__hash_1_1EqualTo.html">type_hash::EqualTo</a>;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Types&gt;</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01std_1_1unique__ptr_3_01Agent_3_01Types_8_8_8_01_4_01_4_01_4.html">   44</a></span>&#160;    <span class="keyword">struct </span>adl_serializer&lt;std::unique_ptr&lt;Agent&lt;Types...&gt;&gt;&gt; {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> std::unordered_map&lt;TypeInfoRef, unsigned long, Hasher, EqualTo&gt; type_id_map;</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> std::unordered_map&lt;unsigned long, TypeInfoRef&gt; id_type_map;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keyword">static</span> std::unordered_map&lt;TypeInfoRef, unsigned long, Hasher, EqualTo&gt; init_type_id_map() {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordtype">int</span> i = 0;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            std::unordered_map&lt;TypeInfoRef, unsigned long, Hasher, EqualTo&gt; map;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            (map.insert(std::make_pair((TypeInfoRef) <span class="keyword">typeid</span>(Types), i++)), ...);</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keywordflow">return</span> map;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        }</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keyword">static</span> std::unordered_map&lt;unsigned long, TypeInfoRef&gt; init_id_type_map() {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordtype">int</span> i = 0;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            std::unordered_map&lt;unsigned long, TypeInfoRef&gt; map;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            (map.insert(std::make_pair(i++, (TypeInfoRef) <span class="keyword">typeid</span>(Types))), ...);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keywordflow">return</span> map;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;        }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> to_json(json&amp; j, <span class="keyword">const</span> std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;Types...&gt;</a>&gt;&amp; data) {</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;Types...&gt;::to_json_t</a>(j, data, Types()...);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        }</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> from_json(<span class="keyword">const</span> json&amp; j, std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;Types...&gt;</a>&gt;&amp; agent_ptr) {</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;Types...&gt;::from_json_t</a>(j, agent_ptr, j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>&gt;(), Types()...);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            }</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        };</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Types&gt; <span class="keyword">const</span> std::unordered_map&lt;TypeInfoRef, unsigned long, Hasher, EqualTo&gt; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        adl_serializer&lt;std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt;Types...&gt;&gt;&gt;::type_id_map = init_type_id_map();</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Types&gt; <span class="keyword">const</span> std::unordered_map&lt;unsigned long, TypeInfoRef&gt; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        adl_serializer&lt;std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt;Types...&gt;&gt;&gt;::id_type_map = init_id_type_map();</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;}</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;utils/macros.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;nlohmann/json.hpp&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;typeindex&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;tuple&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>FPMAS::agent {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">template</span>&lt;SYNC_MODE, int, <span class="keyword">typename</span>...&gt; <span class="keyword">class </span>Agent;</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classFPMAS_1_1agent_1_1AgentType.html">   11</a></span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> A&gt; <span class="keyword">class </span><a class="code" href="classFPMAS_1_1agent_1_1AgentType.html">AgentType</a> {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            <span class="keyword">const</span> std::type_index type;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            <a class="code" href="classFPMAS_1_1agent_1_1AgentType.html">AgentType</a>() : type(<span class="keyword">typeid</span>(A)) {}</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    };</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;}</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="namespacenlohmann.html">   18</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacenlohmann.html">nlohmann</a> {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1agent_1_1AgentType.html">FPMAS::agent::AgentType</a>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">FPMAS::agent::Agent</a>;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    <span class="keyword">template</span>&lt;SYNC_MODE, <span class="keywordtype">int</span> N, <span class="keyword">typename</span>... Types&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01std_1_1unique__ptr_3_01Agent_3_01S_00_01N_00_01Types_8_8_8_01_4_01_4_01_4.html">   23</a></span>&#160;    <span class="keyword">struct </span>adl_serializer&lt;std::unique_ptr&lt;Agent&lt;S, N, Types...&gt;&gt;&gt; {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> std::unordered_map&lt;std::type_index, unsigned long&gt; type_id_map;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;        <span class="keyword">static</span> <span class="keyword">const</span> std::unordered_map&lt;unsigned long, std::type_index&gt; id_type_map;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        <span class="keyword">static</span> std::unordered_map&lt;std::type_index, unsigned long&gt; init_type_id_map() {</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keywordtype">int</span> i = 0;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            std::unordered_map&lt;std::type_index, unsigned long&gt; map;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            (map.insert(std::make_pair(std::type_index(<span class="keyword">typeid</span>(Types)), i++)), ...);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <span class="keywordflow">return</span> map;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        }</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <span class="keyword">static</span> std::unordered_map&lt;unsigned long, std::type_index&gt; init_id_type_map() {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="keywordtype">int</span> i = 0;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            std::unordered_map&lt;unsigned long, std::type_index&gt; map;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            (map.insert(std::make_pair(i++, std::type_index(<span class="keyword">typeid</span>(Types)))), ...);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            <span class="keywordflow">return</span> map;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        }</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> to_json(json&amp; j, <span class="keyword">const</span> std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;S, N, Types...&gt;</a>&gt;&amp; data) {</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;S, N, Types...&gt;::to_json_t</a>(j, data, <a class="code" href="classFPMAS_1_1agent_1_1AgentType.html">AgentType&lt;Types&gt;</a>()...);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        }</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keyword">static</span> <span class="keywordtype">void</span> from_json(<span class="keyword">const</span> json&amp; j, std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;S, N, Types...&gt;</a>&gt;&amp; agent_ptr) {</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;S, N, Types...&gt;::from_json_t</a>(j, agent_ptr, j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;<span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>&gt;(), <a class="code" href="classFPMAS_1_1agent_1_1AgentType.html">AgentType&lt;Types&gt;</a>()...);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        };</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">template</span>&lt;SYNC_MODE, <span class="keywordtype">int</span> N, <span class="keyword">typename</span>... Types&gt;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="keyword">const</span> std::unordered_map&lt;std::type_index, unsigned long&gt; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        adl_serializer&lt;std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt;S, N, Types...&gt;&gt;&gt;::type_id_map</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            = init_type_id_map();</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">template</span>&lt;SYNC_MODE, <span class="keywordtype">int</span> N, <span class="keyword">typename</span>... Types&gt;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        <span class="keyword">const</span> std::unordered_map&lt;unsigned long, std::type_index&gt; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        adl_serializer&lt;std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt;S, N, Types...&gt;&gt;&gt;::id_type_map</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            = init_id_type_map();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;}</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructnlohmann_1_1type__hash_1_1Hasher_html"><div class="ttname"><a href="structnlohmann_1_1type__hash_1_1Hasher.html">nlohmann::type_hash::Hasher</a></div><div class="ttdef"><b>Definition:</b> serializer.h:24</div></div>
-<div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> serializer.h:11</div></div>
-<div class="ttc" id="astructnlohmann_1_1type__hash_1_1EqualTo_html"><div class="ttname"><a href="structnlohmann_1_1type__hash_1_1EqualTo.html">nlohmann::type_hash::EqualTo</a></div><div class="ttdef"><b>Definition:</b> serializer.h:32</div></div>
-<div class="ttc" id="aclassFPMAS_1_1agent_1_1Agent_html"><div class="ttname"><a href="classFPMAS_1_1agent_1_1Agent.html">FPMAS::agent::Agent</a></div><div class="ttdef"><b>Definition:</b> agent.h:14</div></div>
+<div class="ttc" id="aclassFPMAS_1_1agent_1_1AgentType_html"><div class="ttname"><a href="classFPMAS_1_1agent_1_1AgentType.html">FPMAS::agent::AgentType</a></div><div class="ttdef"><b>Definition:</b> serializer.h:11</div></div>
+<div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> serializer.h:18</div></div>
+<div class="ttc" id="aclassFPMAS_1_1agent_1_1Agent_html"><div class="ttname"><a href="classFPMAS_1_1agent_1_1Agent.html">FPMAS::agent::Agent</a></div><div class="ttdef"><b>Definition:</b> agent.h:21</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

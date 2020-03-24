@@ -128,11 +128,13 @@ namespace nlohmann {
 		 * @return temporary arc
 		 */
 		static Arc<T, IdType, N> from_json(const json& j) {
-			std::array<IdType, 2> link =
-				j.at("link")
-				.get<std::array<IdType, 2>>();
-			Node<T, IdType, N>* tempSource = new Node<T, IdType, N>(link[0]);
-			Node<T, IdType, N>* tempTarget = new Node<T, IdType, N>(link[1]);
+			auto link = j.at("link");
+			Node<T, IdType, N>* tempSource = new Node<T, IdType, N>(
+					link[0].template get<IdType>()
+					);
+			Node<T, IdType, N>* tempTarget = new Node<T, IdType, N>(
+					link[1].template get<IdType>()
+					);
 
 			return Arc<T, IdType, N>(
 				j.at("id").get<IdType>(),
@@ -163,7 +165,11 @@ namespace nlohmann {
 			};
 			j = json{
 				{"id", arc.getId()},
-				{"link", link},
+				{"link", {
+					arc.getSourceNode()->getId(),
+					arc.getTargetNode()->getId()
+						 }
+				},
 				{"layer", arc.layer}
 			};
 		}

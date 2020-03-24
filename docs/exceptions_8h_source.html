@@ -75,29 +75,32 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;utils/macros.h&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">using</span> FPMAS::graph::base::ArcId;</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">using</span> FPMAS::graph::base::NodeId;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span>FPMAS::graph::base::exceptions {</div>
-<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">   11</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">arc_out_of_graph</a> : <span class="keyword">public</span> std::out_of_range {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;            <span class="keyword">explicit</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">arc_out_of_graph</a>(ArcId arcId)</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                : std::out_of_range(<span class="stringliteral">&quot;Arc &quot;</span> + std::to_string(arcId) + <span class="stringliteral">&quot; is not contained in the current graph.&quot;</span>)</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            {}</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    };</div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">   18</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">node_out_of_graph</a> : <span class="keyword">public</span> std::out_of_range {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <span class="keyword">explicit</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">node_out_of_graph</a>(NodeId nodeId)</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                : std::out_of_range(<span class="stringliteral">&quot;Node &quot;</span> + std::to_string(nodeId) + <span class="stringliteral">&quot; is not contained in the current graph.&quot;</span>)</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            {}</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    };</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;}</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="namespaceFPMAS_1_1graph_1_1base_1_1exceptions.html">   10</a></span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceFPMAS_1_1graph_1_1base_1_1exceptions.html">FPMAS::graph::base::exceptions</a> {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> IdType&gt;</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">   16</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">arc_out_of_graph</a> : <span class="keyword">public</span> std::out_of_range {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html#a0417bede5b57509f5bcfd0215bf9ed5f">   23</a></span>&#160;            <span class="keyword">explicit</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html#a0417bede5b57509f5bcfd0215bf9ed5f">arc_out_of_graph</a>(IdType arcId)</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                : std::out_of_range(<span class="stringliteral">&quot;Arc &quot;</span> + std::string(arcId) + <span class="stringliteral">&quot; is not contained in the current graph.&quot;</span>)</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            {}</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    };</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> IdType&gt;</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">   34</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">node_out_of_graph</a> : <span class="keyword">public</span> std::out_of_range {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html#a1ba37d10e8fd64efefe0422dcaa58e44">   41</a></span>&#160;            <span class="keyword">explicit</span> <a class="code" href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html#a1ba37d10e8fd64efefe0422dcaa58e44">node_out_of_graph</a>(IdType nodeId)</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                : std::out_of_range(<span class="stringliteral">&quot;Node &quot;</span> + std::string(nodeId) + <span class="stringliteral">&quot; is not contained in the current graph.&quot;</span>)</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            {}</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    };</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;}</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">FPMAS::graph::base::exceptions::node_out_of_graph</a></div><div class="ttdef"><b>Definition:</b> exceptions.h:18</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">FPMAS::graph::base::exceptions::arc_out_of_graph</a></div><div class="ttdef"><b>Definition:</b> exceptions.h:11</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html">FPMAS::graph::base::exceptions::node_out_of_graph</a></div><div class="ttdef"><b>Definition:</b> exceptions.h:34</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html">FPMAS::graph::base::exceptions::arc_out_of_graph</a></div><div class="ttdef"><b>Definition:</b> exceptions.h:16</div></div>
+<div class="ttc" id="anamespaceFPMAS_1_1graph_1_1base_1_1exceptions_html"><div class="ttname"><a href="namespaceFPMAS_1_1graph_1_1base_1_1exceptions.html">FPMAS::graph::base::exceptions</a></div><div class="ttdef"><b>Definition:</b> exceptions.h:10</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph_html_a1ba37d10e8fd64efefe0422dcaa58e44"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1node__out__of__graph.html#a1ba37d10e8fd64efefe0422dcaa58e44">FPMAS::graph::base::exceptions::node_out_of_graph::node_out_of_graph</a></div><div class="ttdeci">node_out_of_graph(IdType nodeId)</div><div class="ttdef"><b>Definition:</b> exceptions.h:41</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph_html_a0417bede5b57509f5bcfd0215bf9ed5f"><div class="ttname"><a href="classFPMAS_1_1graph_1_1base_1_1exceptions_1_1arc__out__of__graph.html#a0417bede5b57509f5bcfd0215bf9ed5f">FPMAS::graph::base::exceptions::arc_out_of_graph::arc_out_of_graph</a></div><div class="ttdeci">arc_out_of_graph(IdType arcId)</div><div class="ttdef"><b>Definition:</b> exceptions.h:23</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

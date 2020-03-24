@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['initlink_286',['initLink',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#a51eafe2c24a51944c3b875f703a3fd9b',1,'FPMAS::graph::parallel::synchro::modes::SyncMode']]],
-  ['initunlink_287',['initUnlink',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#a807b17127dcee02b0fae8a3d2f8d2987',1,'FPMAS::graph::parallel::synchro::modes::SyncMode']]],
-  ['inneighbors_288',['inNeighbors',['../classFPMAS_1_1graph_1_1base_1_1Layer.html#a5738f0416f98f430468a082adf559330',1,'FPMAS::graph::base::Layer::inNeighbors()'],['../classFPMAS_1_1graph_1_1base_1_1Node.html#aba8b35f5109b1e2febcf31696798a28c',1,'FPMAS::graph::base::Node::inNeighbors()']]],
-  ['islocal_289',['isLocal',['../classFPMAS_1_1graph_1_1parallel_1_1proxy_1_1Proxy.html#a5a5ef6c51fadf1098b782a8d9fc8f688',1,'FPMAS::graph::parallel::proxy::Proxy']]],
-  ['islocked_290',['isLocked',['../classFPMAS_1_1communication_1_1ReadersWriters.html#ab6b9f2b825db3cd44c0506dd025e6c1a',1,'FPMAS::communication::ReadersWriters']]]
+  ['handleincomingrequests_345',['handleIncomingRequests',['../classFPMAS_1_1communication_1_1SyncMpiCommunicator.html#a91ba6747711be359c0a95cfc4be85839',1,'FPMAS::communication::SyncMpiCommunicator']]],
+  ['hardsyncdata_346',['HardSyncData',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1HardSyncData.html#a267463fa7f03e544c373ded723b199a5',1,'FPMAS::graph::parallel::synchro::wrappers::HardSyncData::HardSyncData(DistributedId, SyncMpiCommunicator &amp;, const Proxy &amp;)'],['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1HardSyncData.html#a524253d266ce5720b5d1c213f022647a',1,'FPMAS::graph::parallel::synchro::wrappers::HardSyncData::HardSyncData(DistributedId, SyncMpiCommunicator &amp;, const Proxy &amp;, const T &amp;)'],['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1HardSyncData.html#a5d8fb681c3d4c3ed779d6b2d88e8209f',1,'FPMAS::graph::parallel::synchro::wrappers::HardSyncData::HardSyncData(DistributedId, SyncMpiCommunicator &amp;, const Proxy &amp;, T &amp;&amp;)']]],
+  ['hardsyncmode_347',['HardSyncMode',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1HardSyncMode.html#ac6479566bd00b3a6a76660991833b8e2',1,'FPMAS::graph::parallel::synchro::modes::HardSyncMode']]]
 ];

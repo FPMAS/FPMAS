@@ -81,11 +81,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1ee98c60389bbc7e321ad15ad987d772"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98197ba3cd2cccc99db652e31dcc42fb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html#a98197ba3cd2cccc99db652e31dcc42fb">termination</a> () override</td></tr>
 <tr class="separator:a98197ba3cd2cccc99db652e31dcc42fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad53e52da88a28e5ac16e9a4ce2a1deb7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html#ad53e52da88a28e5ac16e9a4ce2a1deb7">notifyLinked</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">wrappers::SyncData</a>&lt; T, N, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">GhostMode</a> &gt;&gt;, N &gt; *) override</td></tr>
-<tr class="separator:ad53e52da88a28e5ac16e9a4ce2a1deb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a628004082e2c0c3f1852411ec31fb3e5"><td class="memItemLeft" align="right" valign="top"><a id="a628004082e2c0c3f1852411ec31fb3e5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>notifyUnlinked</b> (NodeId, NodeId, ArcId, LayerId) override</td></tr>
-<tr class="separator:a628004082e2c0c3f1852411ec31fb3e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accfdd97d1d4d1a5f821b9e3e03e91032"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html#accfdd97d1d4d1a5f821b9e3e03e91032">notifyLinked</a> (<a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">wrappers::SyncData</a>&lt; T, N, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">GhostMode</a> &gt;&gt;, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, N &gt; *) override</td></tr>
+<tr class="separator:accfdd97d1d4d1a5f821b9e3e03e91032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a816249b4771f1ec35543d6d56d1e8780"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html#a816249b4771f1ec35543d6d56d1e8780">notifyUnlinked</a> (<a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, LayerId) override</td></tr>
+<tr class="separator:a816249b4771f1ec35543d6d56d1e8780"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T, int N&gt;<br />
@@ -133,8 +132,8 @@ template&lt;typename T , int N&gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad53e52da88a28e5ac16e9a4ce2a1deb7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad53e52da88a28e5ac16e9a4ce2a1deb7">&#9670;&nbsp;</a></span>notifyLinked()</h2>
+<a id="accfdd97d1d4d1a5f821b9e3e03e91032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accfdd97d1d4d1a5f821b9e3e03e91032">&#9670;&nbsp;</a></span>notifyLinked()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -147,7 +146,7 @@ template&lt;typename T , int N&gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">FPMAS::graph::parallel::synchro::modes::GhostMode</a>&lt; T, N &gt;::notifyLinked </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">wrappers::SyncData</a>&lt; T, N, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">GhostMode</a>&lt; T, N &gt; &gt;&gt;, N &gt; *&#160;</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1base_1_1Arc.html">Arc</a>&lt; std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html">wrappers::SyncData</a>&lt; T, N, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">GhostMode</a>&lt; T, N &gt; &gt;&gt;, <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, N &gt; *&#160;</td>
           <td class="paramname"><em>arc</em></td><td>)</td>
           <td></td>
         </tr>
@@ -163,6 +162,68 @@ template&lt;typename T , int N&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arc</td><td>pointer to the new arc to export </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a816249b4771f1ec35543d6d56d1e8780"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a816249b4771f1ec35543d6d56d1e8780">&#9670;&nbsp;</a></span>notifyUnlinked()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , int N&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">FPMAS::graph::parallel::synchro::modes::GhostMode</a>&lt; T, N &gt;::notifyUnlinked </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>&#160;</td>
+          <td class="paramname"><em>arcId</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">LayerId&#160;</td>
+          <td class="paramname"><em>layer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Called once a distant <code>arc</code>, linking <code>source</code> to <code>target</code>, is unlinked.</p>
+<p>The unlinked arc is added to an internal buffer, and migrated once <a class="el" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html#a98197ba3cd2cccc99db652e31dcc42fb">termination()</a> is called.</p>
+<p>Additionally, if the unlinked arc is an arc that were created but not migrated yet, it is removed from the corresponding internal buffer to avoid unnecessary distant operations.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>source id </td></tr>
+    <tr><td class="paramname">target</td><td>target id </td></tr>
+    <tr><td class="paramname">arcId</td><td>id of the arc to unlink </td></tr>
+    <tr><td class="paramname">layer</td><td>layer of the unlinked arc </td></tr>
   </table>
   </dd>
 </dl>

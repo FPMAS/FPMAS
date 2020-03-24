@@ -32,7 +32,7 @@ namespace FPMAS {
 		 * Any distributed Graph implementation should then provide specific
 		 * functions that might perform distant operations, usually depending
 		 * on the synchronization mode used :
-		 * - link(DistributedId, DistributedId, DistributedId, LayerId)
+		 * - link(node_ptr, node_ptr, LayerId)
 		 * - unlink(arc_ptr)
 		 * - distribute()
 		 * - distribute(std::unordered_map<DistributedId, std::pair<int, int>>)
@@ -57,6 +57,20 @@ namespace FPMAS {
 			friend void zoltan::arc::post_migrate_pp_fn_olz<T, N, S>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 			friend void zoltan::arc::post_migrate_pp_fn_no_sync<T, N>(ZOLTAN_MID_POST_MIGRATE_ARGS);
 
+			public:
+			/**
+			 * Node type.
+			 */
+			typedef Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N> node_type;
+			/**
+			 * Node pointer type.
+			 */
+			typedef Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node_ptr;
+			/**
+			 * Arc pointer type.
+			 */
+			typedef Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* arc_ptr;
+
 			private:
 
 			// Serialization caches used to pack objects
@@ -72,10 +86,25 @@ namespace FPMAS {
 			void removeExportedNode(DistributedId);
 
 			protected:
+			/**
+			 * MpiCommunicator
+			 */
 			SyncMpiCommunicator mpiCommunicator;
+			/**
+			 * Zoltan instance
+			 */
 			Zoltan zoltan;
+			/**
+			 * Proxy
+			 */
 			Proxy proxy;
+			/**
+			 * Current SyncMode
+			 */
 			S<T, N> syncMode;
+			/**
+			 * GhostGraph
+			 */
 			GhostGraph<T, N, S> ghost;
 
 			void setZoltanNodeMigration();
@@ -84,39 +113,33 @@ namespace FPMAS {
 			/*
 			 * Zoltan structures used to manage nodes and arcs migration
 			 */
-			// Node export buffer
+			/**
+			 * Number of nodes to export.
+			 */
 			int export_node_num;
+			/**
+			 * Node ids to export buffer.
+			 */
 			ZOLTAN_ID_PTR export_node_global_ids;
+			/**
+			 * Node export procs buffer.
+			 */
 			int* export_node_procs;
 
-			// Arc migration buffers
+			/**
+			 * Number of nodes to export.
+			 */
 			int export_arcs_num;
+			/**
+			 * Arc ids to export buffer.
+			 */
 			ZOLTAN_ID_PTR export_arcs_global_ids;
+			/**
+			 * Arc export procs buffer.
+			 */
 			int* export_arcs_procs;
 
-			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* _buildNode(DistributedId id, float weight, T&& data) {
-				return this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
-					::_buildNode(
-						id,
-						weight,
-						std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
-							id,
-							this->getMpiCommunicator(),
-							this->getProxy(),
-							std::forward<T>(data)
-						))
-					);
-			}
-
-			Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* _link(DistributedId arcId, DistributedId source, DistributedId target, LayerId layer) {
-				return this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>
-					::_link(arcId, source, target, layer);
-			};
-
 			public:
-			typedef Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N> node_type;
-			typedef Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node_ptr;
-			typedef Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* arc_ptr;
 
 			DistributedGraphBase<T, S, N>();
 			DistributedGraphBase<T, S, N>(std::initializer_list<int>);
@@ -132,10 +155,9 @@ namespace FPMAS {
 			SyncMpiCommunicator& getMpiCommunicator();
 
 			/**
-			 * Returns a const reference to the MpiCommunicator used by this
-			 * DistributedGraph.
+			 * Returns a reference to the SyncMpiCommunicator used by this DistributedGraph.
 			 *
-			 * @return const reference to the mpiCommunicator associated to this graph
+			 * @return reference to the SyncMpiCommunicator associated to this graph
 			 */
 			const SyncMpiCommunicator& getMpiCommunicator() const;
 
@@ -149,43 +171,49 @@ namespace FPMAS {
 			GhostGraph<T, N, S>& getGhost();
 
 			/**
-			 * Returns a const reference to the GhostGraph currently associated to this
+			 * Returns a reference to the GhostGraph currently associated to this
 			 * DistributedGraph.
 			 *
-			 * @return const reference to the current GhostGraph
+			 * @return reference to the current GhostGraph
 			 */
 			const GhostGraph<T, N, S>& getGhost() const;
 
 			Proxy& getProxy();
 
+			// Container implementation
 			std::string getLocalData(DistributedId) const override;
 			std::string getUpdatedData(DistributedId) const override;
 			void updateData(DistributedId, std::string) override;
 
 
+			// Node constructor wrappers
 			node_ptr buildNode();
 			node_ptr buildNode(T&& data);
 			node_ptr buildNode(T& data);
 			node_ptr buildNode(float weight, T&& data);
 			node_ptr buildNode(float weight, const T& data);
 
-			//arc_ptr link(DistributedId, DistributedId);
-			void unlink(DistributedId);
 
+			// import link(DistributedId, DistributedId) and link(node_ptr, node_ptr)
 			using Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>::link;
+
 			/**
 			 * Links the specified source and target node within this
 			 * DistributedGraph on the given layer.
 			 *
 			 * @param source source node id
 			 * @param target target node id
-			 * @param arcId new arc id
 			 * @param layerId id of the Layer on which nodes should be linked
 			 * @return pointer to the created arc
 			 */
 			virtual arc_ptr link(
-					DistributedId, DistributedId, LayerId
+					node_ptr source, node_ptr target, LayerId layerId
 					) override = 0;
+
+			Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* link(
+					DistributedId, DistributedId, LayerId
+					) override;
+
 			/**
 			 * Unlinks the specified arc within this DistributedGraph instance.
 			 *
@@ -209,7 +237,9 @@ namespace FPMAS {
 			 * @param arc pointer to the arc to unlink (might be a local Arc or distant
 			 * GhostArc)
 			 */
-			virtual void unlink(arc_ptr) override = 0;
+			virtual void unlink(arc_ptr arc) override = 0;
+
+			void unlink(DistributedId) override;
 
 			/**
 			 * Distributes the graph accross the available cores performing a
@@ -223,13 +253,13 @@ namespace FPMAS {
 			 *
 			 * The partition is built as follow :
 			 * - `{node_id : {current_location, new_location}}`
-			 * - *The same partition must be passed to all the procs* (that must
-			 *   all call the distribute() function)
+			 * - **The same partition must be passed to all the procs** (and
+			 *   they must all call the distribute() function)
 			 * - If a node's id is not specified, its location is unchanged.
 			 *
 			 * @param partition new partition
 			 */
-			virtual void distribute(std::unordered_map<DistributedId, std::pair<int, int>>) = 0;
+			virtual void distribute(std::unordered_map<DistributedId, std::pair<int, int>> partition) = 0;
 
 			virtual void synchronize();
 
@@ -291,6 +321,7 @@ namespace FPMAS {
 		template<class T, SYNC_MODE, int N> const SyncMpiCommunicator& DistributedGraphBase<T, S, N>::getMpiCommunicator() const {
 			return this->mpiCommunicator;
 		}
+
 		/**
 		 * Returns a reference to the proxy associated to this DistributedGraphBase.
 		 *
@@ -331,6 +362,9 @@ namespace FPMAS {
 			zoltan.Set_Post_Migrate_PP_Fn(syncMode.config().arc_post_migrate_fn, this);
 		}
 
+		/**
+		 * Builds a default node.
+		 */
 		template<class T, SYNC_MODE, int N>
 		typename DistributedGraphBase<T,S,N>::node_ptr DistributedGraphBase<T, S, N>
 		::buildNode() {
@@ -345,16 +379,13 @@ namespace FPMAS {
 						))
 					);
 		}
+
 		/**
-		 * Builds a node with the specified id and data.
+		 * Builds a node with the specified data.
 		 *
 		 * The specified data is moved and implicitly wrapped in a SyncData
-		 * instance, for synchronization purpose. This functions ensures that
-		 * data instances that are MoveConstructible and MoveAssignable but not
-		 * either CopyConstructible or CopyAssignable, such as std::unique_ptr
-		 * instances, can be used in the DistributedGraph.
+		 * instance, for synchronization purpose.
 		 *
-		 * @param id node id
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
@@ -373,12 +404,11 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Builds a node with the specified id and data.
+		 * Builds a node with the specified data.
 		 *
 		 * The specified data is copied and implicitly wrapped in a SyncData
 		 * instance, for synchronization purpose.
 		 *
-		 * @param id node id
 		 * @param data node data
 		 */
 		template<class T, SYNC_MODE, int N>
@@ -397,15 +427,11 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Builds a node with the specified id, weight and data.
+		 * Builds a node with the specified weight and data.
 		 *
 		 * The specified data is moved and implicitly wrapped in a SyncData
-		 * instance, for synchronization purpose. This functions ensures that
-		 * data instances that are MoveConstructible and MoveAssignable but not
-		 * either CopyConstructible or CopyAssignable, such as std::unique_ptr
-		 * instances, can be used in the DistributedGraph.
+		 * instance, for synchronization purpose.
 		 *
-		 * @param id node id
 		 * @param weight node weight
 		 * @param data node data
 		 */
@@ -426,12 +452,11 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Builds a node with the specified id, weight and data.
+		 * Builds a node with the specified weight and data.
 		 *
 		 * The specified data is copied and implicitly wrapped in a SyncData
 		 * instance, for synchronization purpose.
 		 *
-		 * @param id node id
 		 * @param weight node weight
 		 * @param data node data
 		 */
@@ -452,50 +477,59 @@ namespace FPMAS {
 		}
 
 		/**
-		 * Links the specified source and target node within this
-		 * DistributedGraph on the given layer on the DefaultLayer.
-		 *
-		 * Same as `link(source, target, arcId, base::DefaultLayer)`.
-		 *
-		 * @param source source node id
-		 * @param target target node id
-		 * @param arcId new arc id
-		 * @return pointer to the created arc
-		 *
-		 * @see link(DistributedId, DistributedId, DistributedId, LayerId)
-		 */
-		/*
-		 *template<class T, SYNC_MODE, int N>
-		 *typename DistributedGraphBase<T, S, N>::arc_ptr DistributedGraphBase<T, S, N>
-		 *::link(DistributedId source, DistributedId target) {
-		 *    return this->link(source, target, base::DefaultLayer);
-		 *}
-		 */
-
-		/**
 		 * Unlinks the arc with the specified id.
 		 *
-		 * If the arc is local, the operation is completely local.  Else, if
-		 * the arc is a GhostArc, distant operations might apply.  See
-		 * unlink(Arc<std::unique_ptr<SyncData<T,N,S>>,N>*) for more information.
+		 * The Arc instance id retrieved as a local or Ghost arc,
+		 * and the unlinking is performed through the implementation of
+		 * DistributedGraphBase::unlink(arc_ptr).
 		 *
 		 * @param arcId id of the arc to unlink. (might be a local arc, or a
 		 * ghost arc)
+		 * @see DistributedGraph::unlink(arc_ptr)
 		 */
-		template<typename T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::unlink(DistributedId arcId) {
+		template<typename T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>
+			::unlink(DistributedId arcId) {
+			arc_ptr arc;
 			try {
-				this->unlink(this->getArcs().at(arcId));
-			} catch (std::out_of_range) {
-				try {
-					this->unlink(this->getGhost().getArcs().at(arcId));
-				} catch (std::out_of_range) {
-					FPMAS_LOGE(
-							this->mpiCommunicator.getRank(),
-							"DIST_GRAPH", "%s",
-							FPMAS::graph::base::exceptions::arc_out_of_graph(arcId).what()
-							);
-				}
+				arc = this->getArc(arcId);
+			} catch (base::exceptions::arc_out_of_graph<DistributedId>) {
+				arc = this->getGhost().getArc(arcId);
 			}
+			// Calls the pure virtual function, implemented in
+			// DistributedGraph
+			this->unlink(arc);
+		}
+
+		
+		/**
+		 * Links the nodes with the specified id on the given layer.
+		 *
+		 * Source and target nodes are retrieved as local or Ghost nodes,
+		 * and the linking is performed through the implementation of
+		 * DistributedGraphBase::link(node_ptr, node_ptr, LayerId).
+		 *
+		 * @param sourceId source node's id (local or ghost node)
+		 * @param targetId target node's id (local or ghost node)
+		 * @param layerId id of the Layer on which nodes should be linked
+		 *
+		 * @see DistributedGraph::link(node_ptr, node_ptr, LayerId)
+		 */
+		template<class T, SYNC_MODE, int N>
+		Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* DistributedGraphBase<T, S, N>
+		::link(DistributedId sourceId, DistributedId targetId, LayerId layerId) {
+			node_ptr source;
+			node_ptr target;
+			try {
+				source = this->getNode(sourceId);
+			} catch (base::exceptions::node_out_of_graph<DistributedId>) {
+				source = this->getGhost().getNode(sourceId);
+			}
+			try {
+				target = this->getNode(targetId);
+			} catch (base::exceptions::node_out_of_graph<DistributedId>) {
+				target = this->getGhost().getNode(targetId);
+			}
+			return this->link(source, target, layerId);
 		}
 
 		/**
@@ -542,6 +576,13 @@ namespace FPMAS {
 			this->getNodes().at(id)->data()->update(json::parse(data).get<T>());
 		}
 
+		/**
+		 * Removes a Node that has been exported from this graph.
+		 *
+		 * Associated arcs are locally unlinked.
+		 *
+		 * @param id id of the exported node
+		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>
 			::removeExportedNode(DistributedId id) {
 				auto nodeToRemove = this->getNodes().at(id);

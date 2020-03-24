@@ -2,7 +2,14 @@
 #define MACROS_H
 
 namespace FPMAS::graph::base {
+	/**
+	 * Type used to index layers.
+	 */
 	typedef int LayerId;
+
+	/**
+	 * Index of the layer used by default.
+	 */
 	static constexpr LayerId DefaultLayer = 0;
 }
 

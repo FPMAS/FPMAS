@@ -115,16 +115,16 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, pack_obj_multi_test) {
 		&buf[0],
 		std::string(
 			R"({"data":0,"from":)" + origin
-			+ R"(,"id":{"id":0,"rank":)" + std::to_string(dg.getMpiCommunicator().getRank())
-			+ R"(},"origin":)" + origin + R"(,"weight":1.0})"
+			+ R"(,"id":[)" + origin + R"(,0])"
+			+ R"(,"origin":)" + origin + R"(,"weight":1.0})"
 			).c_str()
 		);
 
 	ASSERT_STREQ(
 		&buf[idx[1]],
 		std::string(R"({"data":2,"from":)" + origin
-		+ R"(,"id":{"id":2,"rank":)" + std::to_string(dg.getMpiCommunicator().getRank())
-		+ R"(},"origin":)" + origin + R"(,"weight":3.0})"
+		+ R"(,"id":[)" + origin + R"(,2])"
+		+ R"(,"origin":)" + origin + R"(,"weight":3.0})"
 		).c_str()
 		);
 }

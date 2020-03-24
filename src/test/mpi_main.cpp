@@ -10,12 +10,12 @@ int main(int argc, char **argv) {
 	MPI_Init(&argc, &argv);
 	float v;
 	Zoltan_Initialize(argc, argv, &v);
-	FPMAS::communication::initMpiTypes();
+	FPMAS::communication::createMpiTypes();
 
 	int result;
 	result =  RUN_ALL_TESTS();
 
-	FPMAS::communication::clearMpiTypes();
+	FPMAS::communication::freeMpiTypes();
 	MPI_Finalize();
 	return result;
 }

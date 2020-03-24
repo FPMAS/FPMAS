@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['_7eghostgraph_337',['~GhostGraph',['../classFPMAS_1_1graph_1_1parallel_1_1GhostGraph.html#abe501506e1cb6f51997a028e5e676efb',1,'FPMAS::graph::parallel::GhostGraph']]],
-  ['_7egraph_338',['~Graph',['../classFPMAS_1_1graph_1_1base_1_1Graph.html#a4362441de64b5eec689c645dd4640d1e',1,'FPMAS::graph::base::Graph']]],
-  ['_7empicommunicator_339',['~MpiCommunicator',['../classFPMAS_1_1communication_1_1MpiCommunicator.html#a3fdffe436d300a447ee0f189b0e7d4c0',1,'FPMAS::communication::MpiCommunicator']]]
+  ['zoltan_5fquery_5ffunctions_406',['zoltan_query_functions',['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#aadbe73d57b89a6c5fb30224503f3defa',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions']]]
 ];

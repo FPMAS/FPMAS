@@ -24,8 +24,7 @@ namespace FPMAS::graph::base {
 		// Grants access to the Arc constructor
 		friend Node<T, IdType, N>;
 		friend Layer<T, IdType, N>;
-		friend Arc<T, IdType, N>* Graph<T, IdType, N>::link(Node<T, IdType, N>*, Node<T, IdType, N>*, LayerId);
-		friend Arc<T, IdType, N>* Graph<T, IdType, N>::_link(IdType, IdType, IdType, LayerId);
+		friend Arc<T, IdType, N>* Graph<T, IdType, N>::_link(IdType, Node<T, IdType, N>*, Node<T, IdType, N>*, LayerId);
 		friend Arc<T, IdType, N> nlohmann::adl_serializer<Arc<T, IdType, N>>::from_json(const json&);
 		friend void Graph<T, IdType, N>::unlink(Arc<T, IdType, N> *);
 

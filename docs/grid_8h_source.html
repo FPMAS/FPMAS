@@ -72,77 +72,137 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef GRID_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define GRID_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;graph/parallel/distributed_graph.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;cell.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;environment.h&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;agent/agent.h&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">FPMAS::graph::parallel::synchro::modes::GhostMode</a>;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a>;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">using</span> <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">FPMAS::agent::Agent</a>;</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>FPMAS::environment {</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">enum</span> GridLayer {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        DEFAULT = 0,</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        GRID = 1</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    };</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <span class="keyword">template</span>&lt;SYNC_MODE, <span class="keywordtype">int</span> N, <span class="keyword">typename</span>... AgentTypes&gt;</div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classFPMAS_1_1environment_1_1Environment.html">   19</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classFPMAS_1_1environment_1_1Environment.html">Environment</a></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    : <span class="keyword">public</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a>&lt;std::unique_ptr&lt;Agent&lt;AgentTypes...&gt;&gt;, S, N&gt; {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keywordtype">void</span> step();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    };</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">namespace </span>grid {</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">   27</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a> : <span class="keyword">public</span> <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt;Cell&gt; {</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keywordtype">void</span> act()<span class="keyword"> override </span>{};</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        };</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="comment">// T = agent</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">   34</a></span>&#160;        <span class="keyword">template</span>&lt;SYNC_MODE = GhostMode, <span class="keywordtype">int</span> N = 1&gt; <span class="keyword">class </span><a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">Grid</a> : <span class="keyword">public</span> <a class="code" href="classFPMAS_1_1environment_1_1Environment.html">Environment</a>&lt;S, N+1, Cell&gt; {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">Grid</a>(<span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        };</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;neigborhood.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">using</span> <a class="code" href="namespaceFPMAS_1_1graph_1_1base.html#a0d6c8c2eb1b128e8c79b6e8b30bc6440">FPMAS::graph::base::LayerId</a>;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">using</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">FPMAS::graph::parallel::synchro::modes::GhostMode</a>;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">using</span> <a class="code" href="classFPMAS_1_1agent_1_1Agent.html">FPMAS::agent::Agent</a>;</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>FPMAS::environment::grid {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">static</span> constexpr <span class="keywordtype">int</span> neighborLayer(<span class="keywordtype">int</span> userLayers, <span class="keywordtype">int</span> d) {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;        <span class="keywordflow">return</span> userLayers+d-1;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;    }</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">static</span> constexpr <span class="keywordtype">int</span> layerCount(<span class="keywordtype">int</span> userLayers, <span class="keywordtype">int</span> neighborhoodRange) {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;        <span class="keywordflow">return</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            userLayers+ <span class="comment">// User layers</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            neighborhoodRange+ <span class="comment">// Cell neighborhood layers count</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            1+ <span class="comment">// Location layer</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            1+ <span class="comment">// movableTo layer</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            1; <span class="comment">// Perception layer</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    }</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">static</span> constexpr <a class="code" href="namespaceFPMAS_1_1graph_1_1base.html#a0d6c8c2eb1b128e8c79b6e8b30bc6440">LayerId</a> locationLayer(<span class="keywordtype">int</span> userLayers, <span class="keywordtype">int</span> neighborhoodRange) {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        <span class="keywordflow">return</span> userLayers + neighborhoodRange;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    }</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">static</span> constexpr <a class="code" href="namespaceFPMAS_1_1graph_1_1base.html#a0d6c8c2eb1b128e8c79b6e8b30bc6440">LayerId</a> movableTo(<span class="keywordtype">int</span> userLayers, <span class="keywordtype">int</span> neighborhoodRange) {</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="keywordflow">return</span> locationLayer(userLayers, neighborhoodRange) + 1;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    }</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">static</span> constexpr <a class="code" href="namespaceFPMAS_1_1graph_1_1base.html#a0d6c8c2eb1b128e8c79b6e8b30bc6440">LayerId</a> perceptions(<span class="keywordtype">int</span> userLayers, <span class="keywordtype">int</span> neighborhoodRange) {</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        <span class="keywordflow">return</span> movableTo(userLayers, neighborhoodRange) + 1;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    }</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">template</span>&lt;SYNC_MODE, <span class="keywordtype">int</span> N&gt; <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">Grid&lt;S, N&gt;::Grid</a>(<span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height) {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keywordtype">int</span> <span class="keywordtype">id</span>=0;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; width; i++) {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; height; j++) {</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                    <span class="comment">// Build cell</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                    this-&gt;buildNode(<span class="keywordtype">id</span>++, std::move(std::unique_ptr&lt;<a class="code" href="classFPMAS_1_1agent_1_1Agent.html">Agent&lt;Cell&gt;</a>&gt;(<span class="keyword">new</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>())));</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                }</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">template</span>&lt;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span>, <span class="keyword">typename</span>, <span class="keywordtype">int</span>&gt; <span class="keyword">class </span>Neighborhood = VonNeumann,</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordtype">int</span> Range = 1,</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        SYNC_MODE = <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">GhostMode</a>,</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordtype">int</span> N = 1, <span class="comment">// User provided layers</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">   45</a></span>&#160;        <span class="keyword">typename</span>... AgentTypes&gt; <span class="keyword">class </span><a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">Grid</a></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            : <span class="keyword">public</span> <a class="code" href="classFPMAS_1_1environment_1_1Environment.html">Environment</a>&lt;S, layerCount(N, Range), Cell&lt;S, layerCount(N, Range), AgentTypes...&gt;, AgentTypes...&gt; {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                    <span class="keyword">typedef</span> <a class="code" href="classFPMAS_1_1environment_1_1Environment.html">Environment</a>&lt;S, layerCount(N, Range), <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>&lt;S, layerCount(N, Range), AgentTypes...&gt;, AgentTypes...&gt; <a class="code" href="classFPMAS_1_1environment_1_1Environment.html">env_type</a>;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                    <span class="keyword">typedef</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">Grid</a>&lt;<a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Neighborhood.html">Neighborhood</a>, Range, S, N, AgentTypes...&gt; <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">grid_type</a>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                    <span class="keyword">typedef</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>&lt;S, layerCount(N, Range), AgentTypes...&gt; <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">cell_type</a>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> userLayers = N;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacenlohmann.html">nlohmann</a> {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">FPMAS::environment::grid::Cell</a>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">template</span> &lt;&gt;</div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Cell_01_4.html">   56</a></span>&#160;        <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>&gt; {</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> to_json(json&amp; j, <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>&amp; value) {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="comment">// calls the &quot;to_json&quot; method in T&#39;s namespace</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            }</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> from_json(<span class="keyword">const</span> json&amp; j, <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>&amp; value) {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="comment">// same thing, but with the &quot;from_json&quot; method</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        };</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                    <span class="keyword">const</span> <span class="keywordtype">int</span> _width;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                    <span class="keyword">const</span> <span class="keywordtype">int</span> _height;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;                    <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Neighborhood.html">Neighborhood&lt;grid_type, cell_type, Range&gt;</a> neighborhood;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;                <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                    <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> id(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> x, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> y) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="keywordflow">return</span> {this-&gt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#ad63c78ba24e1bb3ecc4cb8f9cf996263">mpiCommunicator</a>.<a class="code" href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ac7d10cf3e871ef257c73e62f7ca46b7e">getRank</a>(), y * _width + x};</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                    };</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                    <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">Grid</a>(<span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                    <span class="keyword">const</span> <span class="keywordtype">int</span> width()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                        <span class="keywordflow">return</span> _width;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                    }</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                    <span class="keyword">const</span> <span class="keywordtype">int</span> height()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                        <span class="keywordflow">return</span> _height;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                    }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            };</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>, <span class="keyword">typename</span>, <span class="keywordtype">int</span>&gt; <span class="keyword">class </span><a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Neighborhood.html">Neighborhood</a>, <span class="keywordtype">int</span> Range, SYNC_MODE, <span class="keywordtype">int</span> N, <span class="keyword">typename</span>... AgentTypes&gt;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">Grid&lt;Neighborhood, Range, S, N, AgentTypes...&gt;::Grid</a>(<span class="keywordtype">int</span> width, <span class="keywordtype">int</span> height): _width(width), _height(height), neighborhood(*this) {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="comment">/*</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">             * For a 3x2 grid for ex, nodes are built in this order (node ids</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">             * start from 0) :</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment">             * - j = 0 : 0 -&gt; 1 -&gt; 2</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment">             * - j = 1 : 3 -&gt; 4 -&gt; 5</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment">             * From there can be deduced the id(x, y) = y*width+x function.</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">             */</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            std::unordered_map&lt;DistributedId, const cell_type*&gt; cells;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> j = 0; j &lt; _height; j++) {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; _width; i++) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                    <span class="comment">// Build cell</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                    cell_type* cell = <span class="keyword">new</span> cell_type(i, j);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                    <span class="keyword">auto</span> node = this-&gt;<a class="code" href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#ad3ab5d8b912a693f25b754428af47949">buildNode</a>(</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                            std::unique_ptr&lt;typename env_type::agent_type&gt;(cell)</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                            );</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                    cells[node-&gt;getId()] = cell;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            }</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="comment">/*</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="comment">             *for(auto node : this-&gt;getNodes()) {</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment">             *    const cell_type&amp; cell = dynamic_cast&lt;cell_type&amp;&gt;(*node.second-&gt;data()-&gt;read());</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment">             *    neighborhood.linkNeighbors(node.first, cell);</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="comment">             *}</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment">             */</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> cell : cells) {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                neighborhood.linkNeighbors(cell.first, cell.second);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            }</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacenlohmann.html">nlohmann</a> {</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keyword">using</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">FPMAS::environment::grid::Cell</a>;</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keyword">template</span> &lt;SYNC_MODE, <span class="keywordtype">int</span> N, <span class="keyword">typename</span>... AgentTypes&gt;</div>
+<div class="line"><a name="l00110"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01Cell_3_01S_00_01N_00_01AgentTypes_8_8_8_01_4_01_4.html">  110</a></span>&#160;        <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>&lt;S, N, AgentTypes...&gt;&gt; {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> to_json(json&amp; j, <span class="keyword">const</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell&lt;S, N, AgentTypes...&gt;</a>&amp; value) {</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                j[<span class="stringliteral">&quot;x&quot;</span>] = value.x();</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                j[<span class="stringliteral">&quot;y&quot;</span>] = value.y();</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;            }</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            <span class="keyword">static</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>&lt;S, N, AgentTypes...&gt; from_json(<span class="keyword">const</span> json&amp; j) {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="keywordflow">return</span> <a class="code" href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">Cell</a>&lt;S, N, AgentTypes...&gt;(j.at(<span class="stringliteral">&quot;x&quot;</span>).get&lt;<span class="keywordtype">int</span>&gt;(), j.at(<span class="stringliteral">&quot;y&quot;</span>).get&lt;<span class="keywordtype">int</span>&gt;());</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        };</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;}</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassFPMAS_1_1environment_1_1grid_1_1Cell_html"><div class="ttname"><a href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">FPMAS::environment::grid::Cell</a></div><div class="ttdef"><b>Definition:</b> grid.h:27</div></div>
-<div class="ttc" id="aclassFPMAS_1_1environment_1_1Environment_html"><div class="ttname"><a href="classFPMAS_1_1environment_1_1Environment.html">FPMAS::environment::Environment</a></div><div class="ttdef"><b>Definition:</b> grid.h:19</div></div>
-<div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> serializer.h:11</div></div>
+<div class="ttc" id="aclassFPMAS_1_1environment_1_1grid_1_1Neighborhood_html"><div class="ttname"><a href="classFPMAS_1_1environment_1_1grid_1_1Neighborhood.html">FPMAS::environment::grid::Neighborhood</a></div><div class="ttdef"><b>Definition:</b> neigborhood.h:14</div></div>
+<div class="ttc" id="aclassFPMAS_1_1environment_1_1grid_1_1Cell_html"><div class="ttname"><a href="classFPMAS_1_1environment_1_1grid_1_1Cell.html">FPMAS::environment::grid::Cell</a></div><div class="ttdef"><b>Definition:</b> cell.h:9</div></div>
+<div class="ttc" id="anamespaceFPMAS_1_1graph_1_1base_html_a0d6c8c2eb1b128e8c79b6e8b30bc6440"><div class="ttname"><a href="namespaceFPMAS_1_1graph_1_1base.html#a0d6c8c2eb1b128e8c79b6e8b30bc6440">FPMAS::graph::base::LayerId</a></div><div class="ttdeci">int LayerId</div><div class="ttdef"><b>Definition:</b> macros.h:8</div></div>
+<div class="ttc" id="aclassFPMAS_1_1environment_1_1Environment_html"><div class="ttname"><a href="classFPMAS_1_1environment_1_1Environment.html">FPMAS::environment::Environment</a></div><div class="ttdef"><b>Definition:</b> environment.h:17</div></div>
+<div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> serializer.h:18</div></div>
 <div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1GhostMode.html">FPMAS::graph::parallel::synchro::modes::GhostMode</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:26</div></div>
-<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraph_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraph.html">FPMAS::graph::parallel::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:64</div></div>
-<div class="ttc" id="aclassFPMAS_1_1agent_1_1Agent_html"><div class="ttname"><a href="classFPMAS_1_1agent_1_1Agent.html">FPMAS::agent::Agent</a></div><div class="ttdef"><b>Definition:</b> agent.h:14</div></div>
-<div class="ttc" id="aclassFPMAS_1_1environment_1_1grid_1_1Grid_html"><div class="ttname"><a href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">FPMAS::environment::grid::Grid</a></div><div class="ttdef"><b>Definition:</b> grid.h:34</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase_html_ad63c78ba24e1bb3ecc4cb8f9cf996263"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#ad63c78ba24e1bb3ecc4cb8f9cf996263">FPMAS::graph::parallel::DistributedGraphBase&lt; std::unique_ptr&lt; Agent&lt; S, N, AgentTypes... &gt; &gt;, S, N &gt;::mpiCommunicator</a></div><div class="ttdeci">SyncMpiCommunicator mpiCommunicator</div><div class="ttdef"><b>Definition:</b> distributed_graph_base.h:92</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedId_html"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedId.html">FPMAS::graph::parallel::DistributedId</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:59</div></div>
+<div class="ttc" id="aclassFPMAS_1_1communication_1_1MpiCommunicator_html_ac7d10cf3e871ef257c73e62f7ca46b7e"><div class="ttname"><a href="classFPMAS_1_1communication_1_1MpiCommunicator.html#ac7d10cf3e871ef257c73e62f7ca46b7e">FPMAS::communication::MpiCommunicator::getRank</a></div><div class="ttdeci">int getRank() const</div><div class="ttdef"><b>Definition:</b> communication.cpp:129</div></div>
+<div class="ttc" id="aclassFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase_html_ad3ab5d8b912a693f25b754428af47949"><div class="ttname"><a href="classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#ad3ab5d8b912a693f25b754428af47949">FPMAS::graph::parallel::DistributedGraphBase&lt; std::unique_ptr&lt; Agent&lt; S, N, AgentTypes... &gt; &gt;, S, N &gt;::buildNode</a></div><div class="ttdeci">node_ptr buildNode()</div><div class="ttdef"><b>Definition:</b> distributed_graph_base.h:370</div></div>
+<div class="ttc" id="aclassFPMAS_1_1agent_1_1Agent_html"><div class="ttname"><a href="classFPMAS_1_1agent_1_1Agent.html">FPMAS::agent::Agent</a></div><div class="ttdef"><b>Definition:</b> agent.h:21</div></div>
+<div class="ttc" id="aclassFPMAS_1_1environment_1_1grid_1_1Grid_html"><div class="ttname"><a href="classFPMAS_1_1environment_1_1grid_1_1Grid.html">FPMAS::environment::grid::Grid</a></div><div class="ttdef"><b>Definition:</b> grid.h:45</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

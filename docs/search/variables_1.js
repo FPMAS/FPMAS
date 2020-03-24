@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['data_342',['data',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1wrappers_1_1SyncData.html#ac7429c3d99e5a596ba9f627d2cc2ed93',1,'FPMAS::graph::parallel::synchro::wrappers::SyncData']]],
-  ['dg_343',['dg',['../classFPMAS_1_1graph_1_1parallel_1_1synchro_1_1modes_1_1SyncMode.html#aadda1e5b94b7889e7ff5aecee3847c67',1,'FPMAS::graph::parallel::synchro::modes::SyncMode']]]
+  ['currentarcid_412',['currentArcId',['../classFPMAS_1_1graph_1_1base_1_1Graph.html#af534cdf5ccf51f7620b82600f1911c7d',1,'FPMAS::graph::base::Graph']]],
+  ['currentnodeid_413',['currentNodeId',['../classFPMAS_1_1graph_1_1base_1_1Graph.html#a3dfe0b87b565e3bc51ec85c64f24619c',1,'FPMAS::graph::base::Graph']]]
 ];

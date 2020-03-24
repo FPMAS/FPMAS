@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: FPMAS::agent::Agent&lt; Types &gt; Class Template Reference</title>
+<title>fpmas: FPMAS::agent::Agent&lt; SYNC_MODE, N, Types &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -66,39 +66,59 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="classFPMAS_1_1agent_1_1Agent-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">FPMAS::agent::Agent&lt; Types &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">FPMAS::agent::Agent&lt; SYNC_MODE, N, Types &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:af5bbb4627004d2f00909b49bf3345c04"><td class="memItemLeft" align="right" valign="top"><a id="af5bbb4627004d2f00909b49bf3345c04"></a>
+typedef <a class="el" href="classFPMAS_1_1environment_1_1Environment.html">Environment</a>&lt; S, N, Types... &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>env_type</b></td></tr>
+<tr class="separator:af5bbb4627004d2f00909b49bf3345c04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99df2c216af7be54092e9cc105ddb836"><td class="memItemLeft" align="right" valign="top"><a id="a99df2c216af7be54092e9cc105ddb836"></a>
+typedef <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">env_type::agent_type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>agent_type</b></td></tr>
+<tr class="separator:a99df2c216af7be54092e9cc105ddb836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74fd0934647ff4dd01608398302f2f45"><td class="memItemLeft" align="right" valign="top"><a id="a74fd0934647ff4dd01608398302f2f45"></a>
+typedef env_type::node_type&#160;</td><td class="memItemRight" valign="bottom"><b>node_type</b></td></tr>
+<tr class="separator:a74fd0934647ff4dd01608398302f2f45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa12954d13e67f6c05033c666084b17df"><td class="memItemLeft" align="right" valign="top"><a id="aa12954d13e67f6c05033c666084b17df"></a>
+typedef env_type::node_ptr&#160;</td><td class="memItemRight" valign="bottom"><b>node_ptr</b></td></tr>
+<tr class="separator:aa12954d13e67f6c05033c666084b17df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9b00a8de1343c04cba063c3840b9c3d4"><td class="memItemLeft" align="right" valign="top"><a id="a9b00a8de1343c04cba063c3840b9c3d4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>act</b> ()=0</td></tr>
-<tr class="separator:a9b00a8de1343c04cba063c3840b9c3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c29db13bc2641737d8a993560de8195"><td class="memTemplParams" colspan="2"><a id="a1c29db13bc2641737d8a993560de8195"></a>
+template&lt;int... layers&gt; </td></tr>
+<tr class="memitem:a1c29db13bc2641737d8a993560de8195"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classFPMAS_1_1agent_1_1Perceptions.html">Perceptions</a>&lt; node_type, layers... &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>perceptions</b> (node_ptr node)</td></tr>
+<tr class="separator:a1c29db13bc2641737d8a993560de8195"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81cba361b7dfdcfd5f9f56f6e47566cb"><td class="memItemLeft" align="right" valign="top"><a id="a81cba361b7dfdcfd5f9f56f6e47566cb"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>act</b> (node_ptr, <a class="el" href="classFPMAS_1_1environment_1_1Environment.html">env_type</a> &amp;)=0</td></tr>
+<tr class="separator:a81cba361b7dfdcfd5f9f56f6e47566cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a55d31e8e74bd075ba83683b0623cc9aa"><td class="memTemplParams" colspan="2"><a id="a55d31e8e74bd075ba83683b0623cc9aa"></a>
+<tr class="memitem:a1a0f74303364a98a04a9caeb870ff3ed"><td class="memTemplParams" colspan="2"><a id="a1a0f74303364a98a04a9caeb870ff3ed"></a>
 template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:a55d31e8e74bd075ba83683b0623cc9aa"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_json_t</b> (json &amp;j, const std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt; Types... &gt;&gt; &amp;a, T type, Ts... types)</td></tr>
-<tr class="separator:a55d31e8e74bd075ba83683b0623cc9aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d518cd1e693e3429766504c68be3b61"><td class="memItemLeft" align="right" valign="top"><a id="a8d518cd1e693e3429766504c68be3b61"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>to_json_t</b> (json &amp;j, const std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt; Types... &gt;&gt; &amp;a)</td></tr>
-<tr class="separator:a8d518cd1e693e3429766504c68be3b61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a396c2a07a02e6cc830ef5400c8f36a37"><td class="memTemplParams" colspan="2"><a id="a396c2a07a02e6cc830ef5400c8f36a37"></a>
+<tr class="memitem:a1a0f74303364a98a04a9caeb870ff3ed"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_json_t</b> (json &amp;j, const std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">agent_type</a> &gt; &amp;a, <a class="el" href="classFPMAS_1_1agent_1_1AgentType.html">AgentType</a>&lt; T &gt; type, <a class="el" href="classFPMAS_1_1agent_1_1AgentType.html">AgentType</a>&lt; Ts &gt;... types)</td></tr>
+<tr class="separator:a1a0f74303364a98a04a9caeb870ff3ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18c4349f55328a1e1e961eb64d4ac21f"><td class="memItemLeft" align="right" valign="top"><a id="a18c4349f55328a1e1e961eb64d4ac21f"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>to_json_t</b> (json &amp;j, const std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">agent_type</a> &gt; &amp;a)</td></tr>
+<tr class="separator:a18c4349f55328a1e1e961eb64d4ac21f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af885efc392378f4ff1a6d60b027632bc"><td class="memTemplParams" colspan="2"><a id="af885efc392378f4ff1a6d60b027632bc"></a>
 template&lt;typename T , typename... Ts&gt; </td></tr>
-<tr class="memitem:a396c2a07a02e6cc830ef5400c8f36a37"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_json_t</b> (const json &amp;j, std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt; Types... &gt;&gt; &amp;agent_ptr, unsigned long type_id, T type, Ts... types)</td></tr>
-<tr class="separator:a396c2a07a02e6cc830ef5400c8f36a37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6505700684a0fd90b19dbe0d0337c2b"><td class="memItemLeft" align="right" valign="top"><a id="ad6505700684a0fd90b19dbe0d0337c2b"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>from_json_t</b> (const json &amp;j, std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">Agent</a>&lt; Types... &gt;&gt; &amp;agent_ptr, unsigned long type_id)</td></tr>
-<tr class="separator:ad6505700684a0fd90b19dbe0d0337c2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af885efc392378f4ff1a6d60b027632bc"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_json_t</b> (const json &amp;j, std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">agent_type</a> &gt; &amp;agent_ptr, unsigned long type_id, <a class="el" href="classFPMAS_1_1agent_1_1AgentType.html">AgentType</a>&lt; T &gt; type, <a class="el" href="classFPMAS_1_1agent_1_1AgentType.html">AgentType</a>&lt; Ts &gt;... types)</td></tr>
+<tr class="separator:af885efc392378f4ff1a6d60b027632bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada8212550379ab26f5c9b2840643d488"><td class="memItemLeft" align="right" valign="top"><a id="ada8212550379ab26f5c9b2840643d488"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><b>from_json_t</b> (const json &amp;j, std::unique_ptr&lt; <a class="el" href="classFPMAS_1_1agent_1_1Agent.html">agent_type</a> &gt; &amp;agent_ptr, unsigned long type_id)</td></tr>
+<tr class="separator:ada8212550379ab26f5c9b2840643d488"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/main/agent/<a class="el" href="agent_8h_source.html">agent.h</a></li>
+<li>src/main/agent/<a class="el" href="agent_2agent_8h_source.html">agent.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

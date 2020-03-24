@@ -1,4 +1,9 @@
 var searchData=
 [
-  ['layer_345',['layer',['../classFPMAS_1_1graph_1_1base_1_1Arc.html#a44001d539f0bef0cd4fccafe2e3f1969',1,'FPMAS::graph::base::Arc']]]
+  ['export_5farcs_5fglobal_5fids_416',['export_arcs_global_ids',['../classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#a396edd52c3dea79c16ed48e0b6d7109c',1,'FPMAS::graph::parallel::DistributedGraphBase']]],
+  ['export_5farcs_5fnum_417',['export_arcs_num',['../classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#af4b633b229c8287ca1fc9c710635693a',1,'FPMAS::graph::parallel::DistributedGraphBase']]],
+  ['export_5farcs_5fprocs_418',['export_arcs_procs',['../classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#a49e6e5cfcd114554287d81660b0f87c0',1,'FPMAS::graph::parallel::DistributedGraphBase']]],
+  ['export_5fnode_5fglobal_5fids_419',['export_node_global_ids',['../classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#ae109154d1dceec7421c929b2a173c003',1,'FPMAS::graph::parallel::DistributedGraphBase']]],
+  ['export_5fnode_5fnum_420',['export_node_num',['../classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#a928cc9c662059fd8336ea957bb6cf7c9',1,'FPMAS::graph::parallel::DistributedGraphBase']]],
+  ['export_5fnode_5fprocs_421',['export_node_procs',['../classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#a3db80e8487159e74f3e9318b0c08d10d',1,'FPMAS::graph::parallel::DistributedGraphBase']]]
 ];
