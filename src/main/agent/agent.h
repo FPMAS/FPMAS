@@ -17,7 +17,6 @@ using FPMAS::environment::Environment;
 
 namespace FPMAS::agent {
 
-	// functions to handle perceptions might be implemented
 	template<SYNC_MODE, int N, typename... Types> class Agent {
 		private:
 			typedef nlohmann::adl_serializer<std::unique_ptr<Agent<S, N, Types...>>>

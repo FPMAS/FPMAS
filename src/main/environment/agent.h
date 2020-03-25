@@ -41,8 +41,7 @@ namespace FPMAS::environment::grid {
 			}
 
 			// Link location
-			// TODO : I need id management...
-			//env.link(node->getId(), target.node->getIg(), ???, locationLayer(N, Range));
+			env.link(node, target.node, locationLayer(N, Range));
 		}
 }
 
