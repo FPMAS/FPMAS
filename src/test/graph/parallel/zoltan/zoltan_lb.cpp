@@ -17,14 +17,38 @@ using FPMAS::test::ASSERT_CONTAINS;
 using FPMAS::graph::parallel::zoltan::utils::read_zoltan_id;
 using FPMAS::graph::parallel::zoltan::utils::write_zoltan_id;
 
+using FPMAS::graph::parallel::zoltan::num_obj;
 using FPMAS::graph::parallel::zoltan::obj_list;
 using FPMAS::graph::parallel::zoltan::num_edges_multi_fn;
 
 using FPMAS::graph::parallel::synchro::modes::GhostMode;
 
+class FakeDistributedGraph : public DistributedGraph<int> {
+
+	public:
+		FakeDistributedGraph(DistributedId& id1, DistributedId& id2, DistributedId& id3) {
+			id1 = this->buildNode(1.f, 0)->getId();
+			id2 = this->buildNode(2.f, 1)->getId();
+			id3 = this->buildNode(3.f, 2)->getId();
+
+			this->link(id1, id2);
+			this->link(id2, id1);
+
+			this->link(id1, id3);
+
+			this->toBalance.insert(this->getNode(id1));
+			this->toBalance.insert(this->getNode(id2));
+			this->toBalance.insert(this->getNode(id3));
+		}
+};
+
 class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int> dg = DistributedGraph<int>();
+		DistributedId id1;
+		DistributedId id2;
+		DistributedId id3;
+
+		FakeDistributedGraph dg {id1, id2, id3};
 
 		// Fake Zoltan buffers
 		
@@ -41,21 +65,6 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		// Error code
 		int err;
 
-		DistributedId id1;
-		DistributedId id2;
-		DistributedId id3;
-
-		void SetUp() override {
-			id1 = dg.buildNode(1., 0)->getId();
-			id2 = dg.buildNode(2., 1)->getId();
-			id3 = dg.buildNode(3., 2)->getId();
-
-			dg.link(id1, id2)->getId();
-			dg.link(id2, id1)->getId();
-
-			dg.link(id1, id3)->getId();
-		}
-
 		void write_zoltan_global_ids() {
 			obj_list<int, 1, GhostMode>(
 					&dg,
@@ -71,8 +80,9 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 			// Assumes that nodes are iterated in the same order within
 			// obj_list implementation
 			int index = 0;
-			for(auto node : dg.getNodes()) {
-				nodeIndex[node.first] = index++;
+			ASSERT_EQ(dg.getScheduler().get(0).size(), 3);
+			for(auto node : dg.getScheduler().get(0)) {
+				nodeIndex[node->getId()] = index++;
 			}
 		}
 
@@ -90,6 +100,10 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 };
 
+TEST_F(Mpi_ZoltanFunctionsTest, num_obj) {
+	int num = num_obj<int, 1, GhostMode>(&dg, &err);
+	ASSERT_EQ(num, 3);
+}
 
 TEST_F(Mpi_ZoltanFunctionsTest, obj_list_fn_test) {
 

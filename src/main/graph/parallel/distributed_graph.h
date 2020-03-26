@@ -64,9 +64,6 @@ namespace FPMAS {
 		 */
 		template<typename T, SYNC_MODE = GhostMode, int N = 1>
 		class DistributedGraph : public DistributedGraphBase<T, S, N> {
-			private:
-				void distribute(int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int*, int*, ZOLTAN_ID_PTR, int*);
-
 			public:
 				/**
 				 * Node pointer type.
@@ -77,6 +74,11 @@ namespace FPMAS {
 				 */
 				typedef typename DistributedGraphBase<T, S, N>::arc_ptr arc_ptr;
 
+			private:
+				void distribute(int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int*, int*, ZOLTAN_ID_PTR, int*);
+				void balance(int&, int&, int&, ZOLTAN_ID_PTR&, ZOLTAN_ID_PTR&, int*&, int*&, ZOLTAN_ID_PTR&, int*&);
+
+			public:
 				using DistributedGraphBase<T,S,N>::link; // Allows usage of link(DistributedId, DistributedId)
 				using DistributedGraphBase<T,S,N>::unlink; // Allows usage of unlink(DistributedId)
 
@@ -107,7 +109,8 @@ namespace FPMAS {
 		 * @param ranks ranks of the procs on which the DistributedGraph is
 		 * built
 		 */
-		template<class T, SYNC_MODE, int N> DistributedGraph<T, S, N>::DistributedGraph(std::initializer_list<int> ranks)
+		template<class T, SYNC_MODE, int N> DistributedGraph<T, S, N>
+			::DistributedGraph(std::initializer_list<int> ranks)
 			: DistributedGraphBase<T, S, N>(ranks) {}
 
 		/**
@@ -304,6 +307,44 @@ namespace FPMAS {
 			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Migration done.");
 		}
 
+		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::balance(
+				int& changes,
+				int& num_gid_entries,
+				int& num_import,
+				ZOLTAN_ID_PTR& import_global_ids,
+				ZOLTAN_ID_PTR& import_local_ids,
+				int*& import_procs,
+				int*& import_to_part,
+				ZOLTAN_ID_PTR& export_local_ids,
+				int*& export_to_part
+			) {
+
+			// Prepares Zoltan to migrate nodes
+			// Must be set up from there, because LB_Partition can call
+			// obj_size_multi_fn when repartitionning
+			this->setZoltanNodeMigration();
+
+			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Computing Load Balancing...");
+
+			int num_lid_entries;
+
+			// Computes Zoltan partitioning
+			int err = this->zoltan.LB_Partition(
+					changes,
+					num_gid_entries,
+					num_lid_entries,
+					num_import,
+					import_global_ids,
+					import_local_ids,
+					import_procs,
+					import_to_part,
+					this->export_node_num,
+					this->export_node_global_ids,
+					export_local_ids,
+					this->export_node_procs,
+					export_to_part
+					);
+		}
 		/**
 		 * DistributedGraphBase::distribute(std::unordered_map<DistributedId,
 		 * std::pair<int, int>>) implementation.
@@ -348,15 +389,19 @@ namespace FPMAS {
 						import_procs[num_import-1] = item.second.first;
 
 					}
-
 				}
 			}
+			/*
+			 * Imitate the default zoltan behavior : part = owning proc
+			 */
 			int* import_to_part = (int*) std::malloc(num_import * sizeof(int));
 			for (int i = 0; i < num_import; ++i) {
-				import_to_part[i] = import_procs[i];
+				// Part on this proc to which i will be imported
+				import_to_part[i] = this->getMpiCommunicator().getRank();
 			}
 			int* export_to_part = (int*) std::malloc(this->export_node_num * sizeof(int));
 			for (int i = 0; i < this->export_node_num; ++i) {
+				// Part on which i will be exported
 				export_to_part[i] = this->export_node_procs[i];
 			}
 
@@ -398,7 +443,6 @@ namespace FPMAS {
 		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::distribute() {
 			int changes;
 			int num_gid_entries;
-			int num_lid_entries;
 
 			int num_import; 
 			ZOLTAN_ID_PTR import_global_ids;
@@ -409,29 +453,74 @@ namespace FPMAS {
 			int* export_to_part;
 			ZOLTAN_ID_PTR export_local_ids;
 
-			// Prepares Zoltan to migrate nodes
-			// Must be set up from there, because LB_Partition can call
-			// obj_size_multi_fn when repartitionning
-			this->setZoltanNodeMigration();
+			auto periods = this->scheduler.gatherPeriods(
+						this->getMpiCommunicator().getMpiComm());
+			int free=false;
+			for(auto schedule_period : periods) {
+				//this->currentTime = schedule_period;
+				for(auto n : this->scheduler.get(schedule_period)) {
+					this->toBalance.insert(n);
+				}
+				if(free) {
+					// Frees the zoltan buffers
+					this->zoltan.LB_Free_Part(
+							&import_global_ids,
+							&import_local_ids,
+							&import_procs,
+							&import_to_part
+							);
 
-			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Computing Load Balancing...");
-
-			// Computes Zoltan partitioning
-			int err = this->zoltan.LB_Partition(
+					this->zoltan.LB_Free_Part(
+							&this->export_node_global_ids,
+							&export_local_ids,
+							&this->export_node_procs,
+							&export_to_part
+							);
+				}
+				free = true;
+				balance(
 					changes,
 					num_gid_entries,
-					num_lid_entries,
 					num_import,
 					import_global_ids,
 					import_local_ids,
 					import_procs,
 					import_to_part,
-					this->export_node_num,
-					this->export_node_global_ids,
 					export_local_ids,
-					this->export_node_procs,
 					export_to_part
 					);
+				assert(num_gid_entries == 2);
+				auto nodesToFix = this->scheduler.get(schedule_period);
+
+				// By default, fixes the local nodes to this proc
+				// Nodes that are not in the "export list" have implicitly been
+				// assigned to this proc, so they should be fixed to it.
+				for(auto nodeToFix : nodesToFix) {
+					this->fixedVertices[nodeToFix->getId()]
+						= this->getMpiCommunicator().getRank();
+
+				}
+
+				// Nodes to import are not "owned" by this proc, so they will
+				// be fixed as "exported nodes" by their owning procs
+				
+				// Fixes nodes to export to the part where they should have
+				// been exported. Even if they are not exported yet, the next
+				// iterations of the load balancing algorithm will behave as if
+				// they were already on the corresponding procs.
+				for (int i = 0; i < this->export_node_num; i++) {
+					auto nodeId = zoltan::utils::read_zoltan_id(
+							&this->export_node_global_ids[i * num_gid_entries]);
+					if(this->getNodes().count(nodeId) > 0
+						&& nodesToFix.count(this->getNode(nodeId)) > 0) {
+						this->fixedVertices[nodeId] = this->export_node_procs[i];
+					}
+				}
+			}
+			this->fixedVertices.clear();
+			this->toBalance.clear();
+
+			// The final load balancing is migrated in a single operation
 			this->distribute(
 				changes,
 				num_import,
@@ -441,7 +530,6 @@ namespace FPMAS {
 				import_to_part,
 				export_local_ids,
 				export_to_part);
-
 
 			// When called for the first time, PARTITION is used, and so
 			// REPARTITION will be used for all other calls.

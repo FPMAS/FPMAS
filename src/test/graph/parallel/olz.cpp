@@ -22,7 +22,7 @@ class Mpi_OlzTest : public ::testing::Test {
 		void SetUp() override {
 			id1 = dg.buildNode()->getId();
 			id2 = dg.buildNode()->getId();
-			id3 = dg.buildNode(2)->getId();
+			id3 = dg.buildNode(2, 0)->getId();
 
 			dg.link(id1, id3);
 			dg.link(id3, id2);

@@ -10,6 +10,7 @@
 #include "../proxy/proxy.h"
 #include "graph/base/node.h"
 #include "../olz.h"
+#include "../scheduler.h"
 
 
 using FPMAS::communication::SyncMpiCommunicator;
@@ -89,6 +90,10 @@ namespace FPMAS::graph::parallel {
 						Proxy&,
 						Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>&
 						);
+				friend Scheduler<Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>>;
+				private:
+					int _schedule;
+
 				protected:
 				/**
 				 * Local wrapped data instance.
@@ -97,6 +102,9 @@ namespace FPMAS::graph::parallel {
 				SyncData();
 				SyncData(const T&);
 				SyncData(T&&);
+
+				int schedule() const {return _schedule;}
+
 				/**
 				 * A proteced direct access reference to the wrapped data as it is currently
 				 * physically represented is this SyncData instance.
@@ -344,7 +352,7 @@ namespace FPMAS::graph::parallel {
 				int N
 					> Wrapper<T,N>* SyncMode<Mode, Wrapper, T, N>::wrap(
 							DistributedId id, SyncMpiCommunicator& comm, const Proxy& proxy
-							) {
+						) {
 						return new Wrapper<T,N>(id, comm, proxy);
 					}
 			/**
@@ -399,12 +407,15 @@ namespace nlohmann {
 			 * @param data reference to SyncData to serialize
 			 */
 			static void to_json(json& j, const std::unique_ptr<SyncData<T,N,S>>& data) {
-				j = data->get();
+				j["value"] = data->get();
+				j["schedule"] = data->schedule();
 			}
-
-			static SyncData<T,N,S> from_json(const json& j) {
-				return SyncData<T,N,S>(j.get<T>());
-			}
+/*
+ *
+ *            static SyncData<T,N,S> from_json(const json& j) {
+ *                return SyncData<T,N,S>(j.get<T>());
+ *            }
+ */
 		};
 }
 

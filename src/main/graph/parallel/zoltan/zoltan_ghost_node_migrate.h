@@ -158,9 +158,9 @@ namespace FPMAS::graph::parallel {
 					DistributedId node_id = read_zoltan_id(&global_ids[i * num_gid_entries]);
 					json json_node = json::parse(&buf[idx[i]]);
 
-					GhostNode<T, N, S>* ghost = graph->getGhost().getNodes().at(node_id);
+					GhostNode<T, N, S>* ghost = graph->getGhost().getNode(node_id);
 
-					T data = json_node.at("data").get<T>();
+					T data = json_node.at("data").at("value").get<T>();
 					float weight = json_node.at("weight").get<float>();
 
 					ghost->data() // std::unique_ptr

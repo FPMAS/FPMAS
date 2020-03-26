@@ -36,9 +36,9 @@ class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 		DistributedId id3;
 
 		void SetUp() override {
-			id1 = dg.buildNode(1., 0)->getId();
-			id2 = dg.buildNode(2., 1)->getId();
-			id3 = dg.buildNode(3., 2)->getId();
+			id1 = dg.buildNode(1.f, 0)->getId();
+			id2 = dg.buildNode(2.f, 1)->getId();
+			id3 = dg.buildNode(3.f, 2)->getId();
 
 			dg.link(id1, id2)->getId();
 			dg.link(id2, id1);
@@ -114,7 +114,7 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[0],
 		std::string(
-			R"({"data":0,"from":)" + origin
+			R"({"data":{"schedule":0,"value":0},"from":)" + origin
 			+ R"(,"id":[)" + origin + R"(,0])"
 			+ R"(,"origin":)" + origin + R"(,"weight":1.0})"
 			).c_str()
@@ -122,7 +122,7 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, pack_obj_multi_test) {
 
 	ASSERT_STREQ(
 		&buf[idx[1]],
-		std::string(R"({"data":2,"from":)" + origin
+		std::string(R"({"data":{"schedule":0,"value":2},"from":)" + origin
 		+ R"(,"id":[)" + origin + R"(,2])"
 		+ R"(,"origin":)" + origin + R"(,"weight":3.0})"
 		).c_str()

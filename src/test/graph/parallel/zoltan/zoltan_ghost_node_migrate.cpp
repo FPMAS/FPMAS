@@ -27,8 +27,8 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 		DistributedId id2;
 
 		void SetUp() override {
-			id1 = dg.buildNode(1.5, 1)->getId();
-			id2 = dg.buildNode(2., -2)->getId();
+			id1 = dg.buildNode(1.5f, 1)->getId();
+			id2 = dg.buildNode(2.f, -2)->getId();
 		}
 
 		void write_migration_sizes() {
@@ -92,7 +92,7 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[0],
 		std::string(
-			R"({"data":1,"id":[)" + current_proc + R"(,0])"
+			R"({"data":{"schedule":0,"value":1},"id":[)" + current_proc + R"(,0])"
 			+ R"(,"weight":1.5})"
 			).c_str()
 		);
@@ -100,7 +100,7 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, pack_obj_multi_test) {
 	ASSERT_STREQ(
 		&buf[idx[1]],
 		std::string(
-			R"({"data":-2,"id":[)" + current_proc + R"(,1])"
+			R"({"data":{"schedule":0,"value":-2},"id":[)" + current_proc + R"(,1])"
 			+ R"(,"weight":2.0})"
 			).c_str()
 		);

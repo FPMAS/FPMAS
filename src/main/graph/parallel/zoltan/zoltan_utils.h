@@ -4,6 +4,11 @@
 #include "zoltan_cpp.h"
 #include "../distributed_id.h"
 
+#define ZOLTAN_NUM_OBJ_ARGS void*, int*
+#define ZOLTAN_OBJ_LIST_ARGS void*, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int, float *, int *
+#define ZOLTAN_NUM_EDGES_MULTI_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
+#define ZOLTAN_EDGE_LIST_MULTI_ARGS	void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, ZOLTAN_ID_PTR, int *, int, float *, int *ierr
+
 #define ZOLTAN_OBJ_SIZE_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *
 #define ZOLTAN_PACK_OBJ_ARGS void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *
 #define ZOLTAN_UNPACK_OBJ_ARGS void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *

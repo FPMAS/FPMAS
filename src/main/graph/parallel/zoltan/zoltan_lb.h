@@ -14,6 +14,7 @@ using FPMAS::graph::base::Arc;
 namespace FPMAS::graph::parallel {
 
 	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
+	template<typename T, SYNC_MODE, int N> class DistributedGraph;
 
 	using synchro::wrappers::SyncData;
 
@@ -37,7 +38,8 @@ namespace FPMAS::graph::parallel {
 		 * @return numbe of nodes managed by the current process
 		 */
 		template<typename T, int N, SYNC_MODE> int num_obj(void *data, int* ierr) {
-			return ((DistributedGraphBase<T, S, N>*) data)->getNodes().size();
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			return graph->toBalance.size();
 		}
 
 		/**
@@ -66,13 +68,11 @@ namespace FPMAS::graph::parallel {
 				float *obj_wgts,
 				int *ierr
 				) {
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
 			int i = 0;
-			for(auto n : ((DistributedGraphBase<T, S, N>*) data)->getNodes()) {
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node = n.second;
-
-				utils::write_zoltan_id(node->getId(), &global_ids[i * num_gid_entries]);
-
-				obj_wgts[i++] = node->getWeight();
+			for(auto n : graph->toBalance) {
+				utils::write_zoltan_id(n->getId(), &global_ids[i * num_gid_entries]);
+				obj_wgts[i++] = n->getWeight();
 			}
 		}
 
@@ -101,15 +101,19 @@ namespace FPMAS::graph::parallel {
 				int *num_edges,
 				int *ierr
 				) {
-			std::unordered_map<
-				DistributedId,
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*
-			> nodes = ((DistributedGraphBase<T, S, N>*) data)->getNodes();
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			auto currentNodes = graph->toBalance;
 			for(int i = 0; i < num_obj; i++) {
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node = nodes.at(
+				auto node = graph->getNode(
 						utils::read_zoltan_id(&global_ids[i * num_gid_entries])
 						);
-				num_edges[i] = node->getOutgoingArcs().size();
+				int count = 0;
+				for(auto arc : node->getOutgoingArcs()) {
+					if(currentNodes.count(arc->getTargetNode()) > 0) {
+						count++;
+					}
+				}
+				num_edges[i] = count;
 			}
 		}
 
@@ -149,28 +153,48 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
-			std::unordered_map<
-				DistributedId,
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*
-			> nodes = graph->getNodes();
+			auto currentNodes = graph->toBalance;
 
 			int neighbor_index = 0;
 			for (int i = 0; i < num_obj; ++i) {
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node = nodes.at(
+				auto node = graph->getNode(
 						utils::read_zoltan_id(&global_ids[num_gid_entries * i])
 						);
-				for(int j = 0; j < node->getOutgoingArcs().size(); j++) {
-					Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* arc = node->getOutgoingArcs().at(j);
-					DistributedId targetId = arc->getTargetNode()->getId(); 
-					utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
+				for(auto arc : node->getOutgoingArcs()) {
+					if(currentNodes.count(arc->getTargetNode()) > 0) {
+						DistributedId targetId = arc->getTargetNode()->getId(); 
+						utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 
-					// Temporary
-					// MPI_Comm_rank(MPI_COMM_WORLD, &nbor_procs[neighbor_index]);
-					nbor_procs[neighbor_index] = graph->getProxy().getCurrentLocation(targetId);
+						nbor_procs[neighbor_index] = graph->getProxy().getCurrentLocation(targetId);
 
-					ewgts[neighbor_index] = 1.;
-					neighbor_index++;
+						ewgts[neighbor_index] = 1.;
+						neighbor_index++;
+					}
 				}
+			}
+		}
+
+		template<typename T, int N, SYNC_MODE> int num_fixed_obj_fn(
+				void* data, int* ierr
+				) {
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			return graph->fixedVertices.size();
+		}
+
+		template<typename T, int N, SYNC_MODE> void fixed_obj_list_fn(
+			void *data,
+			int num_fixed_obj,
+			int num_gid_entries,
+			ZOLTAN_ID_PTR fixed_gids,
+			int *fixed_parts,
+			int *ierr
+		) {
+			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			int i = 0;
+			for(auto fixedVertice : graph->fixedVertices) {
+				utils::write_zoltan_id(fixedVertice.first, &fixed_gids[i * num_gid_entries]);
+				fixed_parts[i] = fixedVertice.second;
+				i++;
 			}
 		}
 	}

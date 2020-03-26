@@ -51,7 +51,8 @@ namespace FPMAS::graph::parallel {
 				id,
 				1.,
 				std::unique_ptr<SyncData<T,N,S>>(
-					S<T,N>::wrap(id, mpiComm, proxy)
+					S<T,N>::wrap(id, mpiComm, proxy
+					)
 				)	
 			) {}
 

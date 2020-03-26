@@ -165,22 +165,24 @@ namespace FPMAS::graph::parallel {
 			for (int i = 0; i < num_ids; i++) {
 				json json_node = json::parse(&buf[idx[i]]);
 
-				// Node<LocalData<T>, N> node = json_node.get<Node<LocalData<T>, N>>();
-
 				DistributedId id = json_node.at("id").get<DistributedId>();
 
 				if(graph->getGhost().getNodes().count(id) > 0)
 					graph->obsoleteGhosts.insert(id);
 
-				graph->_buildNode(
+				auto node = graph->_buildNode(
 						id,
 						json_node.at("weight").get<float>(),
 						std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
 									id,
 									graph->getMpiCommunicator(),
 									graph->getProxy(),
-									std::move(json_node.at("data").get<T>())
+									std::move(json_node.at("data").at("value").get<T>())
 									))
+						);
+				graph->scheduler.setSchedule(
+						json_node.at("data").at("schedule").get<int>(),
+						node
 						);
 
 				int origin = json_node.at("origin").get<int>();

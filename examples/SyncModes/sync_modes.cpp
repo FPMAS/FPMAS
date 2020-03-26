@@ -60,7 +60,7 @@ template<SYNC_MODE> void buildGraph(DistributedGraph<int, S>& dg) {
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		std::unordered_map<int, DistributedId> idMap;
 		for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-			idMap[i] = dg.buildNode(5)->getId();
+			idMap[i] = dg.buildNode(5, 0)->getId();
 		}
 		for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 			// Build a ring across the processors

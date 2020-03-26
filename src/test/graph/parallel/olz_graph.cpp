@@ -13,7 +13,7 @@ class Mpi_SynchronizeGhostTest : public ::testing::Test {
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
-					idMap[i] = dg.buildNode(i)->getId();
+					idMap[i] = dg.buildNode(i, 0)->getId();
 					partition[idMap[i]] = std::pair(0, i);
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {

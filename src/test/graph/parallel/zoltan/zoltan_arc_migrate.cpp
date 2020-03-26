@@ -40,9 +40,9 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 		DistributedId arcId2;
 
 		void SetUp() override {
-			id1 = dg.buildNode(1., 0)->getId();
-			id2 = dg.buildNode(2., 1)->getId();
-			id3 = dg.buildNode(3., 2)->getId();
+			id1 = dg.buildNode(1.f, 0)->getId();
+			id2 = dg.buildNode(2.f, 1)->getId();
+			id3 = dg.buildNode(3.f, 2)->getId();
 
 			arcId1 = dg.link(id1, id2)->getId();
 			dg.link(id2, id1);

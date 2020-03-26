@@ -59,23 +59,22 @@ set(SOURCES
 	${SOURCES}
 	graph/parallel/olz_graph.cpp)
 
-### synchro
+## synchro
 set(SOURCES
 	${SOURCES}
+	graph/parallel/synchro/ghost_mode.cpp
+	graph/parallel/synchro/hard_sync_mode.cpp
 	graph/parallel/synchro/no_sync_mode.cpp)
-
-set(SOURCES
-	${SOURCES}
-	graph/parallel/synchro/ghost_mode.cpp)
-
-set(SOURCES
-	${SOURCES}
-	graph/parallel/synchro/hard_sync_mode.cpp)
 
 ## Proxy
 set(SOURCES
 	${SOURCES}
 	graph/parallel/proxy/proxy.cpp)
+
+## Scheduler
+set(SOURCES
+	${SOURCES}
+	graph/parallel/scheduler.cpp)
 
 # Environment
 set(SOURCES
@@ -95,12 +94,14 @@ target_include_directories(fpmas_mpi_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(fpmas_mpi_test fpmas)
 target_link_libraries(fpmas_mpi_test zoltan)
 target_link_libraries(fpmas_mpi_test gtest_main)
+target_link_libraries(fpmas_mpi_test gmock_main)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})
 target_include_directories(fpmas_local_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(fpmas_local_test fpmas)
 target_link_libraries(fpmas_local_test zoltan)
 target_link_libraries(fpmas_local_test gtest_main)
+target_link_libraries(fpmas_local_test gmock_main)
 
 add_custom_target(local_test
 	${CMAKE_CURRENT_BINARY_DIR}/fpmas_local_test

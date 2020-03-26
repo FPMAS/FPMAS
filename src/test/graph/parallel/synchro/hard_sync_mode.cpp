@@ -21,7 +21,7 @@ class Mpi_HardSyncDistGraphReadTest : public ::testing::Test {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				std::unordered_map<int, DistributedId> idMap;
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
-					auto node = dg.buildNode(i);
+					auto node = dg.buildNode(i, 0);
 					partition[node->getId()] = std::pair(0, i);
 					idMap[i] = node->getId();
 				}

@@ -67,7 +67,7 @@ class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
-					idMap[i] = dg.buildNode(i)->getId();
+					idMap[i] = dg.buildNode(i, 0)->getId();
 				}
 			}
 		}
@@ -282,4 +282,132 @@ TEST_F(Mpi_DynamicLoadBalancingTest, dynamic_lb_test) {
 	for(auto node : dg.getNodes())
 		totalWeight += node.second->getWeight();
 	ASSERT_LE(totalWeight, 2.);
+}
+
+class Mpi_ScheduledDistributionFromZeroTest : public ::testing::Test {
+	protected:
+		DistributedGraph<int> dg;
+
+		void SetUp() override {
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
+					dg.buildNode(0, 0);
+					dg.buildNode(0, 5);
+				}
+			}
+		}
+};
+
+TEST_F(Mpi_ScheduledDistributionFromZeroTest, distribute) {
+	if(dg.getMpiCommunicator().getSize()%2==0) {
+		dg.distribute();
+
+		ASSERT_EQ(dg.getScheduler().get(0).size(), 1);
+		ASSERT_EQ(dg.getScheduler().get(5).size(), 1);
+	} else {
+		PRINT_PAIR_PROCS_WARNING(Mpi_ScheduledDistributionFromZeroTest.distribute);
+	}
+}
+
+class Mpi_ScheduledDistributionFromZeroWithLinksTest : public Mpi_ScheduledDistributionFromZeroTest {
+	protected:
+		void SetUp() override {
+			Mpi_ScheduledDistributionFromZeroTest::SetUp();
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				auto nodes = dg.getScheduler().get(0);
+				auto previous = *nodes.rbegin();
+				for(auto node : nodes) {
+					dg.link(previous, node);
+					previous = node;
+				}
+
+				nodes = dg.getScheduler().get(5);
+				previous = *nodes.rbegin();
+				for(auto node : nodes) {
+					dg.link(previous, node);
+					previous = node;
+				}
+			}
+		}
+};
+
+TEST_F(Mpi_ScheduledDistributionFromZeroWithLinksTest, distribute) {
+	if(dg.getMpiCommunicator().getSize()%2==0) {
+		for(auto node : dg.getNodes()) {
+			ASSERT_EQ(node.second->getIncomingArcs().size(), 1);
+			ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
+		}
+
+		dg.distribute();
+
+		ASSERT_EQ(dg.getNodes().size(), 2);
+		ASSERT_EQ(dg.getScheduler().get(0).size(), 1);
+		ASSERT_EQ(dg.getScheduler().get(5).size(), 1);
+
+		for(auto node : dg.getNodes()) {
+			ASSERT_EQ(node.second->getIncomingArcs().size(), 1);
+			ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
+		}
+	} else {
+		PRINT_PAIR_PROCS_WARNING(Mpi_ScheduledDistributionFromZeroWithLinksTest.distribute);
+	}
+}
+
+class Mpi_ScheduledDistributionFromAllProcsTest : public ::testing::Test {
+	protected:
+		DistributedGraph<int> dg;
+
+		void SetUp() override {
+			std::unordered_map<DistributedId, std::pair<int, int>> partition;
+			int size = dg.getMpiCommunicator().getSize();
+			if(dg.getMpiCommunicator().getRank() == 0) {
+				for (int i = 0; i < size; i++) {
+					if(i%2==0) {
+						partition[dg.buildNode(0, 0)->getId()] = std::pair(0, i);
+						partition[dg.buildNode(0, 0)->getId()] = std::pair(0, i);
+					} else {
+						partition[dg.buildNode(0, 5)->getId()] = std::pair(0, i);
+						partition[dg.buildNode(0, 5)->getId()] = std::pair(0, i);
+					}
+				}
+				auto nodes = dg.getScheduler().get(0);
+				auto previous = *nodes.rbegin();
+				for(auto node : nodes) {
+					dg.link(previous, node);
+					previous = node;
+				}
+
+				nodes = dg.getScheduler().get(5);
+				previous = *nodes.rbegin();
+				for(auto node : nodes) {
+					dg.link(previous, node);
+					previous = node;
+				}
+			}
+			dg.distribute(partition);
+		}
+};
+
+TEST_F(Mpi_ScheduledDistributionFromAllProcsTest, distribute) {
+	ASSERT_EQ(dg.getNodes().size(), 2);
+
+	if(dg.getMpiCommunicator().getSize()%2==0) {
+		if(dg.getMpiCommunicator().getRank()%2==0) {
+			ASSERT_EQ(dg.getScheduler().get(0).size(), 2);
+		} else {
+			ASSERT_EQ(dg.getScheduler().get(5).size(), 2);
+		}
+		dg.distribute();
+
+		ASSERT_EQ(dg.getScheduler().get(0).size(), 1);
+		ASSERT_EQ(dg.getScheduler().get(5).size(), 1);
+
+		for(auto node : dg.getNodes()) {
+			ASSERT_EQ(node.second->getIncomingArcs().size(), 1);
+			ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
+		}
+	} else {
+		PRINT_PAIR_PROCS_WARNING(Mpi_ScheduledDistributionFromAllProcsTest.distribute);
+	}
+
 }
