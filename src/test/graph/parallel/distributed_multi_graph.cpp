@@ -16,15 +16,15 @@ enum TestLayer {
 class Mpi_DistributeMultiGraphNoneSynchroTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, NoSyncMode, 2> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					auto id1 = dg.buildNode()->getId();
 					auto id2 = dg.buildNode()->getId();
-					partition[id1] = std::pair(0, i);
-					partition[id2] = std::pair(0, i);
+					partition[id1] = i;
+					partition[id2] = i;
 
 					if(i % 2 == 0) {
 						dg.link(id1, id2);
@@ -79,14 +79,14 @@ TEST_F(Mpi_DistributeMultiGraphNoneSynchroTest, distribute_none_synchro_test) {
 class Mpi_DistributeMultiGraphWithArcTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, GhostMode, 2> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					auto id1 = dg.buildNode()->getId();
 					auto id2 = dg.buildNode()->getId();
-					partition[id1] = std::pair(0, i);
-					partition[id2] = std::pair(0, i);
+					partition[id1] = i;
+					partition[id2] = i;
 
 					if(i % 2 == 0) {
 						dg.link(id1, id2);
@@ -141,13 +141,13 @@ TEST_F(Mpi_DistributeMultiGraphWithArcTest, distribute_with_arc_test) {
 class Mpi_DistributeMultiGraphWithGhostArcTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, GhostMode, 2> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 		std::unordered_map<int, DistributedId> idMap;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					idMap[i] = dg.buildNode()->getId();
-					partition[idMap[i]] = std::pair(0, i);
+					partition[idMap[i]] = i;
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					if(i % 2 == 0) {

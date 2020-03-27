@@ -47,8 +47,8 @@ TEST(Mpi_DistributedGraphEdgeCases, duplicate_imported_arc_bug) {
 	}
 
 	dg.distribute({
-			{DistributedId(0, 0), std::pair(0, 2)},
-			{DistributedId(1, 0), std::pair(1, 2)}
+			{DistributedId(0, 0), 2},
+			{DistributedId(1, 0), 2}
 			});
 
 	if(dg.getMpiCommunicator().getRank() == 2) {

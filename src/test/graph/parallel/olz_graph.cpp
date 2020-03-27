@@ -7,14 +7,14 @@ using FPMAS::graph::parallel::DistributedGraph;
 class Mpi_SynchronizeGhostTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 		std::unordered_map<int, DistributedId> idMap;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					idMap[i] = dg.buildNode(i, 0)->getId();
-					partition[idMap[i]] = std::pair(0, i);
+					partition[idMap[i]] = i;
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					// Build a ring across the processors

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['zoltan_200',['zoltan',['../classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#ad71b503b00ab6a039a6c5546936be3a3',1,'FPMAS::graph::parallel::DistributedGraphBase']]],
-  ['zoltan_5fquery_5ffunctions_201',['zoltan_query_functions',['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions'],['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#aadbe73d57b89a6c5fb30224503f3defa',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions::zoltan_query_functions()']]]
+  ['zoltan_202',['zoltan',['../classFPMAS_1_1graph_1_1parallel_1_1DistributedGraphBase.html#ad71b503b00ab6a039a6c5546936be3a3',1,'FPMAS::graph::parallel::DistributedGraphBase']]],
+  ['zoltan_5fquery_5ffunctions_203',['zoltan_query_functions',['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions'],['../classFPMAS_1_1graph_1_1parallel_1_1zoltan_1_1utils_1_1zoltan__query__functions.html#aadbe73d57b89a6c5fb30224503f3defa',1,'FPMAS::graph::parallel::zoltan::utils::zoltan_query_functions::zoltan_query_functions()']]]
 ];

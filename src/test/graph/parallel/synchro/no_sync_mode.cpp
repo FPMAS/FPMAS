@@ -9,14 +9,14 @@ using FPMAS::graph::parallel::synchro::modes::NoSyncMode;
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:
 		DistributedGraph<int, NoSyncMode> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 
 	void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				std::unordered_map<int, DistributedId> idMap;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
 					auto node = dg.buildNode();
-					partition[node->getId()] = std::pair(0, i / 2);
+					partition[node->getId()] = i / 2;
 					idMap[i] = node->getId();
 				}
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {

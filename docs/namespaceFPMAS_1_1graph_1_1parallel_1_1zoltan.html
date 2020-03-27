@@ -98,6 +98,14 @@ Functions</h2></td></tr>
 <tr class="memitem:ab69df0e3ffc64546d096e8b0e1a03dd6"><td class="memTemplParams" colspan="2">template&lt;typename T , int N, SYNC_MODE &gt; </td></tr>
 <tr class="memitem:ab69df0e3ffc64546d096e8b0e1a03dd6"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceFPMAS_1_1graph_1_1parallel_1_1zoltan.html#ab69df0e3ffc64546d096e8b0e1a03dd6">edge_list_multi_fn</a> (void *data, int num_gid_entries, int num_lid_entries, int <a class="el" href="namespaceFPMAS_1_1graph_1_1parallel_1_1zoltan.html#a856585a9e9080b1c590fcdbcc8115f40">num_obj</a>, ZOLTAN_ID_PTR global_ids, ZOLTAN_ID_PTR local_ids, int *num_edges, ZOLTAN_ID_PTR nbor_global_id, int *nbor_procs, int wgt_dim, float *ewgts, int *ierr)</td></tr>
 <tr class="separator:ab69df0e3ffc64546d096e8b0e1a03dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e1c98d74bcd52ed6b11256d9dff9e93"><td class="memTemplParams" colspan="2"><a id="a4e1c98d74bcd52ed6b11256d9dff9e93"></a>
+template&lt;typename T , int N, SYNC_MODE &gt; </td></tr>
+<tr class="memitem:a4e1c98d74bcd52ed6b11256d9dff9e93"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><b>num_fixed_obj_fn</b> (void *data, int *ierr)</td></tr>
+<tr class="separator:a4e1c98d74bcd52ed6b11256d9dff9e93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a519552aa5fe603bd9ae598c2fa5321a4"><td class="memTemplParams" colspan="2"><a id="a519552aa5fe603bd9ae598c2fa5321a4"></a>
+template&lt;typename T , int N, SYNC_MODE &gt; </td></tr>
+<tr class="memitem:a519552aa5fe603bd9ae598c2fa5321a4"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>fixed_obj_list_fn</b> (void *data, int num_fixed_obj, int num_gid_entries, ZOLTAN_ID_PTR fixed_gids, int *fixed_parts, int *ierr)</td></tr>
+<tr class="separator:a519552aa5fe603bd9ae598c2fa5321a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The FPMAS::graph::zoltan namespace contains definitions of all the required Zoltan query functions to compute load balancing partitions based on the current graph nodes. </p>

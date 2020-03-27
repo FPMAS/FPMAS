@@ -37,7 +37,7 @@ namespace FPMAS {
 		 * - link(node_ptr, node_ptr, LayerId)
 		 * - unlink(arc_ptr)
 		 * - distribute()
-		 * - distribute(std::unordered_map<DistributedId, std::pair<int, int>>)
+		 * - distribute(std::unordered_map<DistributedId, int>)
 		 * - synchronize()
 		 *
 		 */
@@ -265,14 +265,21 @@ namespace FPMAS {
 			 * specified partition.
 			 *
 			 * The partition is built as follow :
-			 * - `{node_id : {current_location, new_location}}`
-			 * - **The same partition must be passed to all the procs** (and
-			 *   they must all call the distribute() function)
+			 * - `{node_id : new_location}`, where `new_location` is the mpi
+			 *   rank of the export proc (within the MPI Communicator used
+			 *   by each graph)
+			 * - all procs must call the
+			 *   distribute(std::unordered_map<DistributedId, int>) function
+			 * - each proc only takes into account the node specified in the
+			 *   partition that it owns, i.e. that are currently contained as
+			 *   local nodes in this Graph. Because only one Graph can owned a
+			 *   given Node, this prevent conflicts even if argument partitions
+			 *   are not all equals accross procs.
 			 * - If a node's id is not specified, its location is unchanged.
 			 *
 			 * @param partition new partition
 			 */
-			virtual void distribute(std::unordered_map<DistributedId, std::pair<int, int>> partition) = 0;
+			virtual void distribute(std::unordered_map<DistributedId, int> partition) = 0;
 
 			virtual void synchronize();
 

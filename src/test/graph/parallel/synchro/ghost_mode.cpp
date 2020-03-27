@@ -10,7 +10,7 @@ using FPMAS::graph::parallel::DistributedGraph;
 class Mpi_DistributeGraphWithGhostArcsTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 	
 	public:
 		void SetUp() override {
@@ -18,7 +18,7 @@ class Mpi_DistributeGraphWithGhostArcsTest : public ::testing::Test {
 				std::unordered_map<int, DistributedId> idMap;
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					auto node = dg.buildNode();
-					partition[node->getId()] = std::pair(0, i);
+					partition[node->getId()] = i;
 					idMap[i] = node->getId();
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
@@ -109,7 +109,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) 
 class Mpi_DistributeCompleteGraphWithGhostTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId,int> partition;
 
 	public:
 		void SetUp() override {
@@ -117,7 +117,7 @@ class Mpi_DistributeCompleteGraphWithGhostTest : public ::testing::Test {
 				std::unordered_map<int, DistributedId> idMap;
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
 					auto node = dg.buildNode(i, 0);
-					partition[node->getId()] = std::pair(0, i / 2);
+					partition[node->getId()] = i / 2;
 					idMap[i] = node->getId();
 				}
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
@@ -171,7 +171,7 @@ TEST_F(Mpi_DistributeCompleteGraphWithGhostTest, distribute_graph_with_multiple_
 class Mpi_DynamicLinkTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 	
 	public:
 		void SetUp() override {
@@ -179,8 +179,8 @@ class Mpi_DynamicLinkTest : public ::testing::Test {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					auto node1 = dg.buildNode();
 					auto node2 = dg.buildNode();
-					partition[node1->getId()] = std::pair(0, i);
-					partition[node2->getId()] = std::pair(0, i);
+					partition[node1->getId()] = i;
+					partition[node2->getId()] = i;
 				}
 				for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					dg.link(
@@ -306,7 +306,7 @@ TEST_F(Mpi_DynamicLinkTest, ghost_source_link) {
 class Mpi_DynamicGhostLinkTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 	
 	public:
 		void SetUp() override {
@@ -316,9 +316,9 @@ class Mpi_DynamicGhostLinkTest : public ::testing::Test {
 					DistributedId id2 = dg.buildNode()->getId();
 					DistributedId id3 = dg.buildNode()->getId();
 
-					partition[id1] = std::pair(0, i);
-					partition[id2] = std::pair(0, i);
-					partition[id3] = std::pair(0, i);
+					partition[id1] = i;
+					partition[id2] = i;
+					partition[id3] = i;
 				}
 				for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 					dg.link(

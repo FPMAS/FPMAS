@@ -15,14 +15,14 @@ TEST(Mpi_HardSyncDistGraph, build_test) {
 class Mpi_HardSyncDistGraphReadTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, HardSyncMode> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				std::unordered_map<int, DistributedId> idMap;
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					auto node = dg.buildNode(i, 0);
-					partition[node->getId()] = std::pair(0, i);
+					partition[node->getId()] = i;
 					idMap[i] = node->getId();
 				}
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
@@ -48,7 +48,7 @@ TEST_F(Mpi_HardSyncDistGraphReadTest, simple_read_test) {
 class Mpi_HardSyncDistGraphAcquireTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, HardSyncMode> dg;
-		std::unordered_map<DistributedId, std::pair<int, int>> partition;
+		std::unordered_map<DistributedId, int> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
@@ -56,7 +56,7 @@ class Mpi_HardSyncDistGraphAcquireTest : public ::testing::Test {
 				// Builds N node
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
 					auto node = dg.buildNode();
-					partition[node->getId()] = std::pair(0, i);
+					partition[node->getId()] = i;
 					idMap[i] = node->getId();
 				}
 				// Each node is connected to node N-1, except N-1 itself
