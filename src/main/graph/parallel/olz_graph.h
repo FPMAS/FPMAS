@@ -243,8 +243,8 @@ namespace FPMAS::graph::parallel {
 			FPMAS_LOGD(
 					this->mpiCommunicator.getRank(),
 					"GHOST_GRAPH",
-					"Building ghost node %lu",
-					node.getId()
+					"Building ghost node %s",
+					((std::string) node.getId()).c_str()
 					);
 			// Builds the gNode from the original node data
 			GhostNode<T, N, S>* gNode = new GhostNode<T, N, S>(
@@ -270,8 +270,10 @@ namespace FPMAS::graph::parallel {
 						FPMAS_LOGV(
 								this->mpiCommunicator.getRank(),
 								"GHOST_GRAPH",
-								"Ghost linking %lu : (%lu, %lu)",
-								arc->getId(), localSourceNode->getId(), gNode->getId()
+								"Ghost linking %s : (%s, %s)",
+								ID_C_STR(arc->getId()),
+								ID_C_STR(localSourceNode->getId()),
+								ID_C_STR(gNode->getId())
 								);
 						this->link(localSourceNode, gNode, arc->getId(), arc->layer);
 					}
@@ -286,8 +288,10 @@ namespace FPMAS::graph::parallel {
 						FPMAS_LOGV(
 								this->mpiCommunicator.getRank(),
 								"GHOST_GRAPH",
-								"Ghost linking %lu : (%lu, %lu)",
-								arc->getId(), gNode->getId(), localTargetNode->getId()
+								"Ghost linking %s : (%s, %s)",
+								ID_C_STR(arc->getId()),
+								ID_C_STR(gNode->getId()),
+								ID_C_STR(localTargetNode->getId())
 								);
 						this->link(gNode, localTargetNode, arc->getId(), arc->layer);
 					}
@@ -466,8 +470,8 @@ namespace FPMAS::graph::parallel {
 		if(toDelete) {
 			FPMAS_LOGD(
 				this->mpiCommunicator.getRank(),
-				"GHOST_GRAPH", "Clearing orphan node %lu",
-				ghost->getId()
+				"GHOST_GRAPH", "Clearing orphan node %s",
+				ID_C_STR(ghost->getId())
 				);
 			this->ghostNodes.erase(ghost->getId());
 			delete ghost;
@@ -486,8 +490,8 @@ namespace FPMAS::graph::parallel {
 		::unlink(GhostArc<T, N, S>* arc) {
 		FPMAS_LOGD(
 			this->localGraph->getMpiCommunicator().getRank(),
-			"GHOST_GRAPH", "Unlinking ghost arc %lu",
-			arc->getId()
+			"GHOST_GRAPH", "Unlinking ghost arc %s",
+			ID_C_STR(arc->getId())
 			);
 		arc->unlink();
 		if(this->localGraph->getNodes().count(arc->getSourceNode()->getId()) == 0) {

@@ -187,6 +187,11 @@ namespace FPMAS::graph::parallel {
 			 */
 			template<typename T, int N> void GhostMode<T, N>::notifyLinked(
 					Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,DistributedId,N>* arc) {
+				FPMAS_LOGD(
+					this->dg.getMpiCommunicator().getRank(),
+					"GHOST_MODE", "Linking %s : (%s, %s)",
+					ID_C_STR(arc->getId()), ID_C_STR(arc->getSourceNode()->getId()), ID_C_STR(arc->getTargetNode()->getId())
+					);
 				linkBuffer[arc->getId()]
 					= (GhostArc<T,N,GhostMode>*) arc;
 			}
@@ -212,8 +217,8 @@ namespace FPMAS::graph::parallel {
 					) {
 				FPMAS_LOGD(
 					this->dg.getMpiCommunicator().getRank(),
-					"GHOST_MODE", "Unlinking %lu : (%lu, %lu)",
-					arcId, source, target
+					"GHOST_MODE", "Unlinking %s : (%s, %s)",
+					ID_C_STR(arcId), ID_C_STR(source), ID_C_STR(target)
 					);
 				this->linkBuffer.erase(arcId);
 				if(!this->dg.getProxy().isLocal(source)) {
@@ -230,41 +235,39 @@ namespace FPMAS::graph::parallel {
 			}
 
 			template<typename T, int N> void GhostMode<T, N>::migrateLinks() {
-				if(linkBuffer.size() > 0) {
-					int export_arcs_num = this->computeArcExportCount();
-					ZOLTAN_ID_TYPE export_arcs_global_ids[2*export_arcs_num];
-					int export_arcs_procs[export_arcs_num];
-					ZOLTAN_ID_TYPE export_arcs_local_ids[0];
+				int export_arcs_num = this->computeArcExportCount();
+				ZOLTAN_ID_TYPE export_arcs_global_ids[2*export_arcs_num];
+				int export_arcs_procs[export_arcs_num];
+				ZOLTAN_ID_TYPE export_arcs_local_ids[0];
 
-					int i=0;
-					for(auto item : linkBuffer) {
-						DistributedId sourceId = item.second->getSourceNode()->getId();
-						if(!this->dg.getProxy().isLocal(sourceId)) {
-							write_zoltan_id(item.first, &export_arcs_global_ids[2*i]);
-							export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(sourceId);
-							i++;
-						}
-						DistributedId targetId = item.second->getTargetNode()->getId();
-						if(!this->dg.getProxy().isLocal(targetId)) {
-							write_zoltan_id(item.first, &export_arcs_global_ids[2*i]);
-							export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(targetId);
-							i++;
-						}
+				int i=0;
+				for(auto item : linkBuffer) {
+					DistributedId sourceId = item.second->getSourceNode()->getId();
+					if(!this->dg.getProxy().isLocal(sourceId)) {
+						write_zoltan_id(item.first, &export_arcs_global_ids[2*i]);
+						export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(sourceId);
+						i++;
 					}
-
-					this->zoltan.Migrate(
-							-1,
-							NULL,
-							NULL,
-							NULL,
-							NULL,
-							export_arcs_num,
-							export_arcs_global_ids,
-							export_arcs_local_ids,
-							export_arcs_procs,
-							export_arcs_procs // parts = procs
-							);
+					DistributedId targetId = item.second->getTargetNode()->getId();
+					if(!this->dg.getProxy().isLocal(targetId)) {
+						write_zoltan_id(item.first, &export_arcs_global_ids[2*i]);
+						export_arcs_procs[i] = this->dg.getProxy().getCurrentLocation(targetId);
+						i++;
+					}
 				}
+
+				this->zoltan.Migrate(
+						-1,
+						NULL,
+						NULL,
+						NULL,
+						NULL,
+						export_arcs_num,
+						export_arcs_global_ids,
+						export_arcs_local_ids,
+						export_arcs_procs,
+						export_arcs_procs // parts = procs
+						);
 
 				for(auto item : linkBuffer) {
 					DistributedId sourceId = item.second->getSourceNode()->getId();

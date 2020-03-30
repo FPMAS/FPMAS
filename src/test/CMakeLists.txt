@@ -81,6 +81,7 @@ set(SOURCES
 	${SOURCES}
 	environment/grid.cpp
 	environment/von_neumann.cpp
+	environment/grid_agent.cpp
 	)
 
 # Agent

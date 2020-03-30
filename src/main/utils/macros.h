@@ -1,6 +1,8 @@
 #ifndef MACROS_H
 #define MACROS_H
 
+#define ID_C_STR(id) ((std::string) id).c_str()
+
 namespace FPMAS::graph::base {
 	/**
 	 * Type used to index layers.

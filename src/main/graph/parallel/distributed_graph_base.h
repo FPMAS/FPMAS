@@ -577,7 +577,7 @@ namespace FPMAS {
 		 * @return serialized data contained in the node corresponding to id
 		 */
 		template<class T, SYNC_MODE, int N> std::string DistributedGraphBase<T, S, N>::getLocalData(DistributedId id) const {
-			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getLocalData %lu", id);
+			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getLocalData %s", ID_C_STR(id));
 			return json(this->getNodes().at(id)->data()->get()).dump();
 		}
 
@@ -592,7 +592,7 @@ namespace FPMAS {
 		 * @return serialized updates to the data corresponding to id
 		 */
 		template<class T, SYNC_MODE, int N> std::string DistributedGraphBase<T, S, N>::getUpdatedData(DistributedId id) const {
-			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getUpdatedData %lu", id);
+			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "getUpdatedData %s", ID_C_STR(id));
 			return json(this->getGhost().getNode(id)->data()->get()).dump();
 		}
 
@@ -609,7 +609,7 @@ namespace FPMAS {
 		 * @param data serialized updates
 		 */
 		template<class T, SYNC_MODE, int N> void DistributedGraphBase<T, S, N>::updateData(DistributedId id, std::string data) {
-			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "updateData %lu : %s", id, data.c_str());
+			FPMAS_LOGV(getMpiCommunicator().getRank(), "GRAPH", "updateData %s : %s", ID_C_STR(id), data.c_str());
 			this->getNodes().at(id)->data()->update(json::parse(data).get<T>());
 		}
 

@@ -29,7 +29,7 @@ namespace FPMAS::agent {
 			typedef typename env_type::node_type node_type;
 			typedef typename env_type::node_ptr node_ptr;
 
-			template<int... layers> Perceptions<node_type, layers...> perceptions(node_ptr node) {
+			template<LayerId... layers> Perceptions<node_type, layers...> perceptions(node_ptr node) {
 				return Perceptions<node_type, layers...>(node);
 			}
 
@@ -69,7 +69,7 @@ namespace FPMAS::agent {
 					AgentType<Ts>... types) {
 					if(type.type == agent_serializer::id_type_map.at(type_id)) {
 						agent_ptr = std::unique_ptr<agent_type>(
-							new T(nlohmann::adl_serializer<T>::from_json(j))
+							new T(nlohmann::adl_serializer<T>::from_json(j.at("agent")))
 							);
 						return;
 					}

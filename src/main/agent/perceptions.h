@@ -14,8 +14,8 @@ namespace FPMAS::agent {
 		typename node_type
 		> class Perception {
 			public:
-			const node_type* node;
-			Perception(const node_type* node) : node(node) {}
+			node_type* node;
+			Perception(const node_type* node) : node(const_cast<node_type*>(node)) {}
 		};
 
 	template<

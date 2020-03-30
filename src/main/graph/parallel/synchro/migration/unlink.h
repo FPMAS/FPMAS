@@ -24,8 +24,8 @@ namespace FPMAS::graph::parallel {
 							for(DistributedId arcId : item.second) {
 								FPMAS_LOGD(
 									dg.getMpiCommunicator().getRank(),
-									"UNLINK_MIGRATE", "Imported unlink : %lu",
-									arcId
+									"UNLINK_MIGRATE", "Imported unlink : %s",
+									ID_C_STR(arcId)
 									);
 								try {
 									auto arc = dg.getGhost().getArcs().at(arcId);

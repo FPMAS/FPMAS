@@ -205,7 +205,7 @@ namespace FPMAS {
 				arc_ptr arc
 			) {
 			DistributedId id = arc->getId();
-			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking arc %lu", id);
+			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking arc %s", ID_C_STR(id));
 			if(this->getArcs().count(arc->getId())>0) {
 				// Arc is local
 				this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>::unlink(arc);
@@ -220,7 +220,7 @@ namespace FPMAS {
 				this->getGhost().unlink((GhostArc<T,N,S>*) arc);
 				this->syncMode.notifyUnlinked(source, target, arcId, layer);
 			}
-			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinked arc %lu", id);
+			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinked arc %s", ID_C_STR(id));
 		}
 
 		/*
