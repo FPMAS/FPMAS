@@ -12,48 +12,27 @@ using FPMAS::agent::Agent;
 
 namespace FPMAS::environment::grid {
 
-	static constexpr int neighborLayer(int d) {
-		return d-1;
-	}
-
-	static constexpr LayerId locationLayer(int neighborhoodRange) {
-		return neighborhoodRange;
-	}
-
-	static constexpr LayerId movableTo(int neighborhoodRange) {
-		return locationLayer(neighborhoodRange) + 1;
-	}
-
-	static constexpr LayerId perceptionsLayer(int neighborhoodRange) {
-		return movableTo(neighborhoodRange) + 1;
-	}
-
-	static constexpr LayerId perceivableFromLayer(int neighborhoodRange) {
-		return perceptionsLayer(neighborhoodRange) + 1;
-	}
-
 	template<
-		template<typename, typename, int> class Neighborhood = VonNeumann,
-		int Range = 1,
+		template<typename> class Neighborhood = VonNeumann,
 		SYNC_MODE = GhostMode,
 		typename... AgentTypes> class Grid
-			: public Environment<S, Cell<Range, S, AgentTypes...>, AgentTypes...> {
+			: public Environment<S, Cell<S, AgentTypes...>, AgentTypes...> {
 				public:
-					typedef Environment<S, Cell<Range, S, AgentTypes...>, AgentTypes...> env_type;
-					typedef Grid<Neighborhood, Range, S, AgentTypes...> grid_type;
-					typedef Cell<Range, S, AgentTypes...> cell_type;
+					typedef Environment<S, Cell<S, AgentTypes...>, AgentTypes...> env_type;
+					typedef Grid<Neighborhood, S, AgentTypes...> grid_type;
+					typedef Cell<S, AgentTypes...> cell_type;
 
 				private:
 					const int _width;
 					const int _height;
-					Neighborhood<grid_type, cell_type, Range> neighborhood;
+					Neighborhood<grid_type> neighborhood;
 
 				public:
 
 					const DistributedId id(unsigned int x, unsigned int y) {
 						return {this->mpiCommunicator.getRank(), y * _width + x};
 					};
-					Grid(int width, int height);
+					Grid(int width, int height, unsigned int neighborhoodRange = 1);
 
 					const int width() const {
 						return _width;
@@ -64,8 +43,9 @@ namespace FPMAS::environment::grid {
 
 			};
 
-	template<template<typename, typename, int> class Neighborhood, int Range, SYNC_MODE, typename... AgentTypes>
-		Grid<Neighborhood, Range, S, AgentTypes...>::Grid(int width, int height): _width(width), _height(height), neighborhood(*this) {
+	template<template<typename> class Neighborhood, SYNC_MODE, typename... AgentTypes>
+		Grid<Neighborhood, S, AgentTypes...>::Grid(int width, int height, unsigned int neighborhoodRange)
+			: _width(width), _height(height), neighborhood(*this, neighborhoodRange) {
 			// TODO: replace this hack with a true distributed build
 			if(this->getMpiCommunicator().getRank() == 0) {
 				/*

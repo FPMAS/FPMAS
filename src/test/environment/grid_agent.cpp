@@ -9,11 +9,11 @@
 using FPMAS::environment::grid::Grid;
 using FPMAS::environment::grid::GridAgent;
 using FPMAS::environment::grid::VonNeumann;
-using FPMAS::environment::grid::locationLayer;
-using FPMAS::environment::grid::movableTo;
+using FPMAS::environment::grid::LOCATION;
+using FPMAS::environment::grid::MOVABLE_TO;
 using FPMAS::agent::TypedPerception;
 
-class GridAgentMock : public GridAgent<1, GhostMode, GridAgentMock> {
+class GridAgentMock : public GridAgent<GhostMode, GridAgentMock> {
 	public:
 		MOCK_METHOD(void, act, (node_ptr, env_type&), (override));
 };
@@ -22,7 +22,7 @@ namespace nlohmann {
 	template<>
     struct adl_serializer<GridAgentMock> {
 		static void to_json(json& j, const GridAgentMock& data) {
-			nlohmann::adl_serializer<GridAgent<1, GhostMode, GridAgentMock>>
+			nlohmann::adl_serializer<GridAgent<GhostMode, GridAgentMock>>
 				::to_json(j, data);
 		}
 
@@ -35,7 +35,7 @@ namespace nlohmann {
 
 class Mpi_AgentGridLocalMoveToTest : public ::testing::Test {
 	protected:
-		typedef Grid<VonNeumann, 1, GhostMode, GridAgentMock> grid_type;
+		typedef Grid<VonNeumann, GhostMode, GridAgentMock> grid_type;
 		grid_type grid {5, 1};
 		grid_type::node_type* agentNode;
 		void SetUp() override {
@@ -44,7 +44,7 @@ class Mpi_AgentGridLocalMoveToTest : public ::testing::Test {
 				grid.link(
 						agentNode->getId(),
 						grid.id(1, 0),
-						locationLayer(1)
+						LOCATION
 						);
 
 				ASSERT_EQ(grid.getScheduler().get(0).size(), 1);
@@ -59,15 +59,15 @@ TEST_F(Mpi_AgentGridLocalMoveToTest, manual_move_to) {
 		dynamic_cast<GridAgentMock*>(agentNode->data()->read().get())->moveTo(
 				agentNode,
 				grid,
-				TypedPerception<grid_type::node_type, movableTo(1)>(nextCellNode)
+				TypedPerception<grid_type::node_type, MOVABLE_TO>(nextCellNode)
 				);
 
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(agentNode)->layer(locationLayer(1)).getOutgoingArcs().size(), 1);
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(agentNode)->layer(locationLayer(1)).getIncomingArcs().size(), 0);
-		ASSERT_EQ(nextCellNode->layer(locationLayer(1)).getIncomingArcs().size(), 1);
-		ASSERT_EQ(nextCellNode->layer(locationLayer(1)).getOutgoingArcs().size(), 0);
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(grid.getNode(grid.id(1, 0)))->layer(locationLayer(1)).getIncomingArcs().size(), 0);
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(grid.getNode(grid.id(1, 0)))->layer(locationLayer(1)).getOutgoingArcs().size(), 0);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(agentNode)->layer(LOCATION).getOutgoingArcs().size(), 1);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(agentNode)->layer(LOCATION).getIncomingArcs().size(), 0);
+		ASSERT_EQ(nextCellNode->layer(LOCATION).getIncomingArcs().size(), 1);
+		ASSERT_EQ(nextCellNode->layer(LOCATION).getOutgoingArcs().size(), 0);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(grid.getNode(grid.id(1, 0)))->layer(LOCATION).getIncomingArcs().size(), 0);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(grid.getNode(grid.id(1, 0)))->layer(LOCATION).getOutgoingArcs().size(), 0);
 	}
 }
 
@@ -79,12 +79,12 @@ class Mpi_AgentGridLocalMoveToWithMovableToLinksTest : public Mpi_AgentGridLocal
 				grid.link(
 						agentNode,
 						grid.getNode(grid.id(0, 0)),
-						movableTo(1)
+						MOVABLE_TO
 						);
 				grid.link(
 						agentNode,
 						grid.getNode(grid.id(2, 0)),
-						movableTo(1)
+						MOVABLE_TO
 						);
 			}
 		}
@@ -93,18 +93,18 @@ class Mpi_AgentGridLocalMoveToWithMovableToLinksTest : public Mpi_AgentGridLocal
 TEST_F(Mpi_AgentGridLocalMoveToWithMovableToLinksTest, perception_move_to) {
 	if(grid.getMpiCommunicator().getRank() == 0) {
 		auto* gridAgent = dynamic_cast<GridAgentMock*>(agentNode->data()->read().get());
-		auto potentialDestinations = agentNode->data()->read()->perceptions<movableTo(1)>(agentNode);
+		auto potentialDestinations = agentNode->data()->read()->perceptions<MOVABLE_TO>(agentNode);
 		ASSERT_EQ(potentialDestinations.get().size(), 2);
 
-		auto destination = potentialDestinations.get<movableTo(1)>().at(1);
+		auto destination = potentialDestinations.get<MOVABLE_TO>().at(1);
 		gridAgent->moveTo(agentNode, grid, destination);
 
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(agentNode)->layer(locationLayer(1)).getOutgoingArcs().size(), 1);
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(agentNode)->layer(locationLayer(1)).getIncomingArcs().size(), 0);
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(destination.node)->layer(locationLayer(1)).getIncomingArcs().size(), 1);
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(destination.node)->layer(locationLayer(1)).getOutgoingArcs().size(), 0);
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(grid.getNode(grid.id(1, 0)))->layer(locationLayer(1)).getIncomingArcs().size(), 0);
-		ASSERT_EQ(const_cast<const grid_type::node_type*>(grid.getNode(grid.id(1, 0)))->layer(locationLayer(1)).getOutgoingArcs().size(), 0);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(agentNode)->layer(LOCATION).getOutgoingArcs().size(), 1);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(agentNode)->layer(LOCATION).getIncomingArcs().size(), 0);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(destination.node)->layer(LOCATION).getIncomingArcs().size(), 1);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(destination.node)->layer(LOCATION).getOutgoingArcs().size(), 0);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(grid.getNode(grid.id(1, 0)))->layer(LOCATION).getIncomingArcs().size(), 0);
+		ASSERT_EQ(const_cast<const grid_type::node_type*>(grid.getNode(grid.id(1, 0)))->layer(LOCATION).getOutgoingArcs().size(), 0);
 	}
 }
 
@@ -124,7 +124,7 @@ TEST_F(Mpi_AgentGridLocalMoveToWithMovableToLinksTest, perception_move_to) {
  */
 class Mpi_AgentGridDistantMoveToTest : public ::testing::Test {
 	protected:
-		typedef Grid<VonNeumann, 1, GhostMode, GridAgentMock> grid_type;
+		typedef Grid<VonNeumann, GhostMode, GridAgentMock> grid_type;
 		grid_type* grid;
 
 		// One node per proc
@@ -146,12 +146,12 @@ class Mpi_AgentGridDistantMoveToTest : public ::testing::Test {
 					grid->link(
 							agentNode,
 							grid->getNode(grid->id(0, 0)),
-							locationLayer(1)
+							LOCATION
 							);
 					grid->link(
 							agentNode,
 							grid->getNode(grid->id(1, 0)),
-							movableTo(1)
+							MOVABLE_TO
 							);
 					for(auto node : grid->getNodes()) {
 						partition1[node.first] = node.first.id();
@@ -176,21 +176,21 @@ class Mpi_AgentGridDistantMoveToTest : public ::testing::Test {
 			int rank = grid->getMpiCommunicator().getRank();
 			if(rank==0) {
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, 0}))->layer(locationLayer(1)).getIncomingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, 0}))->layer(LOCATION).getIncomingArcs().size(),
 						1
 						);
 			} else if(rank==1) {
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, 1}))->layer(movableTo(1)).getIncomingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, 1}))->layer(MOVABLE_TO).getIncomingArcs().size(),
 						1
 						);
 			} else if (rank == agentLocation) {
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(locationLayer(1)).getOutgoingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(LOCATION).getOutgoingArcs().size(),
 						1
 						);
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(movableTo(1)).getOutgoingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(MOVABLE_TO).getOutgoingArcs().size(),
 						1
 						);
 			}
@@ -200,29 +200,29 @@ class Mpi_AgentGridDistantMoveToTest : public ::testing::Test {
 			int rank = grid->getMpiCommunicator().getRank();
 			if(rank==0) {
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, 0}))->layer(locationLayer(1)).getIncomingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, 0}))->layer(LOCATION).getIncomingArcs().size(),
 						0
 						);
 			} else if(rank==1) {
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, 1}))->layer(movableTo(1)).getIncomingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, 1}))->layer(MOVABLE_TO).getIncomingArcs().size(),
 						0
 						);
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, 1}))->layer(locationLayer(1)).getIncomingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, 1}))->layer(LOCATION).getIncomingArcs().size(),
 						1
 						);
 			} else if (rank == agentLocation) {
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(locationLayer(1)).getOutgoingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(LOCATION).getOutgoingArcs().size(),
 						1
 						);
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(locationLayer(1)).getOutgoingArcs().at(0)->getTargetNode()->getId(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(LOCATION).getOutgoingArcs().at(0)->getTargetNode()->getId(),
 						DistributedId(0, 1)
 						);
 				ASSERT_EQ(
-						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(movableTo(1)).getOutgoingArcs().size(),
+						const_cast<const grid_type::node_type*>(grid->getNode({0, (unsigned int) rank}))->layer(MOVABLE_TO).getOutgoingArcs().size(),
 						0
 						);
 			}
@@ -232,10 +232,10 @@ class Mpi_AgentGridDistantMoveToTest : public ::testing::Test {
 			if(grid->getMpiCommunicator().getRank() == agentLocation) {
 				auto agentNode = grid->getNode({0, (unsigned int) grid->getMpiCommunicator().getSize()-1});
 				auto* gridAgent = dynamic_cast<GridAgentMock*>(agentNode->data()->read().get());
-				auto potentialDestinations = agentNode->data()->read()->perceptions<movableTo(1)>(agentNode);
+				auto potentialDestinations = agentNode->data()->read()->perceptions<MOVABLE_TO>(agentNode);
 				ASSERT_EQ(potentialDestinations.get().size(), 1);
 
-				auto destination = potentialDestinations.get<movableTo(1)>().at(0);
+				auto destination = potentialDestinations.get<MOVABLE_TO>().at(0);
 				gridAgent->moveTo(agentNode, *grid, destination);
 			}
 			grid->synchronize();

@@ -6,21 +6,21 @@
 using FPMAS::test::ASSERT_CONTAINS;
 using FPMAS::environment::grid::Grid;
 using FPMAS::environment::grid::Cell;
-using FPMAS::environment::grid::neighborLayer;
+using FPMAS::environment::grid::NEIGHBOR_CELL;
 
 using FPMAS::environment::grid::VonNeumann;
 
-template<int Range> void TestVonNeumannLevel(Grid<VonNeumann, Range>& grid, int level) {
+void TestVonNeumannLevel(Grid<VonNeumann>& grid, int level) {
 	for(auto node : grid.getNodes()) {
 		const auto& cell
-			= dynamic_cast<typename Grid<VonNeumann, Range>::cell_type&>(
+			= dynamic_cast<typename Grid<VonNeumann>::cell_type&>(
 					*node.second->data()->read()
 			);
 		const auto* node_ptr = node.second;
-		int x = cell.x();
-		int y = cell.y();
-		const auto& in = node_ptr->layer(neighborLayer(level)).inNeighbors();
-		const auto& out = node_ptr->layer(neighborLayer(level)).outNeighbors();
+		int x = cell.x;
+		int y = cell.y;
+		const auto& in = node_ptr->layer(NEIGHBOR_CELL(level)).inNeighbors();
+		const auto& out = node_ptr->layer(NEIGHBOR_CELL(level)).outNeighbors();
 
 		/*
 		 * Test corners
@@ -126,19 +126,19 @@ template<int Range> void TestVonNeumannLevel(Grid<VonNeumann, Range>& grid, int 
 
 }
 
-template<int Range> void TestVonNeumann(Grid<VonNeumann, Range>& grid) {
-	for(int i = 1; i <= Range; i++) {
-		TestVonNeumannLevel<Range>(grid, i);
+void TestVonNeumann(Grid<VonNeumann>& grid, unsigned int neighborhoodRange) {
+	for(int i = 1; i <= neighborhoodRange; i++) {
+		TestVonNeumannLevel(grid, i);
 	}
 }
 
 TEST(Mpi_GridTest, default_von_neumann) {
 	Grid grid(10, 10);
-	TestVonNeumann<1>(grid);
+	TestVonNeumann(grid, 1);
 }
 
 
 TEST(Mpi_GridTest, von_neumann_2) {
-	Grid<VonNeumann, 2> grid(10, 10);
-	TestVonNeumann<2>(grid);
+	Grid<VonNeumann> grid(10, 10, 2);
+	TestVonNeumann(grid, 2);
 }

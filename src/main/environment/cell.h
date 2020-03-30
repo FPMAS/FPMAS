@@ -2,56 +2,52 @@
 #define CELL_H
 
 #include "agent/agent.h"
+#include "grid_layers.h"
 
 using FPMAS::agent::Agent;
 
 namespace FPMAS::environment::grid {
-		static constexpr LayerId locationLayer(int);
-		static constexpr LayerId movableTo(int);
-		static constexpr LayerId perceptionsLayer(int);
-		static constexpr LayerId perceivableFromLayer(int);
+	class CellBase {
+		public:
+			const int x;
+			const int y;
 
-		template<int Range, SYNC_MODE, typename... AgentTypes> class Cell
-			: public Agent<S, Cell<Range, S, AgentTypes...>, AgentTypes...> {
-				public:
-					typedef Environment<S, Cell<Range, S, AgentTypes...>, AgentTypes...> env_type;
-					typedef typename env_type::node_ptr node_ptr;
-					typedef typename env_type::node_type node_type;
+			CellBase(int x, int y) : x(x), y(y) {}
+	};
 
-				private:
-					const int _x = 0;
-					const int _y = 0;
-					std::set<DistributedId> upToDateAgents;
+	template<SYNC_MODE, typename... AgentTypes> class Cell
+		: public Agent<S, Cell<S, AgentTypes...>, AgentTypes...>, public CellBase {
+			public:
+				typedef Environment<S, Cell<S, AgentTypes...>, AgentTypes...> env_type;
+				typedef typename env_type::node_ptr node_ptr;
+				typedef typename env_type::node_type node_type;
 
-				public:
-					Cell(int x, int y)
-						: _x(x), _y(y) {}
+			private:
+				std::set<DistributedId> upToDateAgents;
 
-					Cell(const Cell<Range, S, AgentTypes...>& other) : Cell(other._x, other._y) {}
+			public:
+				Cell(int x, int y)
+					: CellBase(x, y) {}
 
-					void act(node_ptr, env_type&) override;
+				Cell(const Cell<S, AgentTypes...>& other) : Cell(other._x, other._y) {}
 
-					const int x() const {
-						return _x;
-					}
-					const int y() const {
-						return _y;
-					}
-			};
+				void act(node_ptr, env_type&) override;
 
-		template<int Range, SYNC_MODE, typename... AgentTypes>
-			void Cell<Range, S, AgentTypes...>::act(node_ptr cellNode, env_type& env) {
+		};
+
+	template<SYNC_MODE, typename... AgentTypes>
+		void Cell<S, AgentTypes...>::act(node_ptr cellNode, env_type& env) {
 			std::set<DistributedId> currentAgents;
-			for(auto locationPerception : this->template perceptions<locationLayer(Range)>(cellNode).get()) {
+			for(auto locationPerception : this->template perceptions<LOCATION>(cellNode).get()) {
 				DistributedId nodeId = locationPerception.node->getId();
 				currentAgents.insert(nodeId);
 				if(upToDateAgents.count(nodeId) == 0) {
-					for(auto perceivableFromPerception : this->template perceptions<perceivableFromLayer(Range)>(cellNode).get()) {
-						env.link(locationPerception.node, perceivableFromPerception.node, perceptionsLayer(Range));
+					for(auto perceivableFromPerception : this->template perceptions<PERCEIVABLE_FROM>(cellNode).get()) {
+						env.link(locationPerception.node, perceivableFromPerception.node, PERCEPTIONS);
 					}
-					for(auto otherAgentPerception : this->template perceptions<movableTo(Range)>(cellNode).get()) {
+					for(auto otherAgentPerception : this->template perceptions<MOVABLE_TO>(cellNode).get()) {
 						// For now, assumes perceive == movableTo
-						env.link(otherAgentPerception.node, locationPerception.node, perceptionsLayer(Range));
+						env.link(otherAgentPerception.node, locationPerception.node, PERCEPTIONS);
 					}
 					upToDateAgents.insert(nodeId);
 				}
@@ -69,15 +65,15 @@ namespace FPMAS::environment::grid {
 
 namespace nlohmann {
 	using FPMAS::environment::grid::Cell;
-	template <int Range, SYNC_MODE, typename... AgentTypes>
-		struct adl_serializer<Cell<Range, S, AgentTypes...>> {
-			static void to_json(json& j, const Cell<Range, S, AgentTypes...>& value) {
-				j["x"] = value.x();
-				j["y"] = value.y();
+	template <SYNC_MODE, typename... AgentTypes>
+		struct adl_serializer<Cell<S, AgentTypes...>> {
+			static void to_json(json& j, const Cell<S, AgentTypes...>& value) {
+				j["x"] = value.x;
+				j["y"] = value.y;
 			}
 
-			static Cell<Range, S, AgentTypes...> from_json(const json& j) {
-				return Cell<Range, S, AgentTypes...>(j.at("x").get<int>(), j.at("y").get<int>());
+			static Cell<S, AgentTypes...> from_json(const json& j) {
+				return Cell<S, AgentTypes...>(j.at("x").get<int>(), j.at("y").get<int>());
 			}
 		};
 }
