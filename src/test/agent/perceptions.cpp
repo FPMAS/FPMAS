@@ -4,7 +4,7 @@
 
 class Mpi_PerceptionsTest : public ::testing::Test {
 	protected:
-		Environment<GhostMode, 2, Wolf, Sheep> env;
+		Environment<GhostMode, Wolf, Sheep> env;
 		node_ptr wolf_1;
 		node_ptr wolf_2;
 		node_ptr wolf_3;

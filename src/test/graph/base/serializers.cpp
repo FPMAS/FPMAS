@@ -33,7 +33,7 @@ TEST(NodeSerializer, simple_node_deserialization) {
 		{"data":0,"id":85250,"weight":2.3}
 		)"_json;
 
-	Node<int, DefaultId , 1> node = node_json.get<Node<int, DefaultId, 1>>();
+	Node<int, DefaultId> node = node_json.get<Node<int, DefaultId>>();
 
 	ASSERT_EQ(node.data(), 0);
 	ASSERT_EQ(node.getId(), DefaultId(85250ul));
@@ -46,7 +46,7 @@ enum TestLayer {
 };
 
 TEST(ArcSerializer, simple_arc_serializer) {
-	Graph<int, DefaultId, 2> g(0ul);
+	Graph<int, DefaultId> g(0ul);
 	auto* n1 = g.buildNode(0);
 	auto* n2 = g.buildNode(1);
 	auto* a = g.link(n1, n2, TestLayer::Test);
@@ -63,7 +63,7 @@ TEST(ArcSerializer, simple_arc_deserializer) {
 		"link":[0,1]
 		})"_json;
 
-	Arc<int, DefaultId, 2> arc = j;
+	Arc<int, DefaultId> arc = j;
 	ASSERT_EQ(arc.getId(), DefaultId(2));
 	ASSERT_EQ(arc.layer, TestLayer::Test);
 	ASSERT_EQ(arc.getSourceNode()->getId(), DefaultId(0));

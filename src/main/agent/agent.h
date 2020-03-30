@@ -17,14 +17,14 @@ using FPMAS::environment::Environment;
 
 namespace FPMAS::agent {
 
-	template<SYNC_MODE, int N, typename... Types> class Agent {
+	template<SYNC_MODE, typename... Types> class Agent {
 		private:
-			typedef nlohmann::adl_serializer<std::unique_ptr<Agent<S, N, Types...>>>
+			typedef nlohmann::adl_serializer<std::unique_ptr<Agent<S, Types...>>>
 				agent_serializer;
 			friend agent_serializer;
 
 		public:
-			typedef Environment<S, N, Types...> env_type;
+			typedef Environment<S, Types...> env_type;
 			typedef typename env_type::agent_type agent_type;
 			typedef typename env_type::node_type node_type;
 			typedef typename env_type::node_ptr node_ptr;

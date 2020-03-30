@@ -6,7 +6,7 @@
 
 namespace FPMAS::environment::grid {
 
-	static constexpr int neighborLayer(int userLayers, int d);
+	static constexpr int neighborLayer(int d);
 
 	template<
 		typename grid_type,
@@ -33,28 +33,28 @@ namespace FPMAS::environment::grid {
 							this->localGrid.link(
 									nodeId,
 									this->localGrid.id(cell->x() - i, cell->y()),
-									neighborLayer(grid_type::userLayers, i)
+									neighborLayer(i)
 									);
 						}
 						if(cell->x() < this->localGrid.width() - i) {
 							this->localGrid.link(
 									nodeId,
 									this->localGrid.id(cell->x() + i, cell->y()),
-									neighborLayer(grid_type::userLayers, i)
+									neighborLayer(i)
 									);
 						}
 						if(cell->y() >= i) {
 							this->localGrid.link(
 									nodeId,
 									this->localGrid.id(cell->x(), cell->y() - i),
-									neighborLayer(grid_type::userLayers, i)
+									neighborLayer(i)
 									);
 						}
 						if(cell->y() < this->localGrid.height() - i) {
 							this->localGrid.link(
 									nodeId,
 									this->localGrid.id(cell->x(), cell->y() + i),
-									neighborLayer(grid_type::userLayers, i)
+									neighborLayer(i)
 									);
 						}				
 					}

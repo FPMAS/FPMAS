@@ -19,15 +19,15 @@ using FPMAS::test::ASSERT_CONTAINS;
 
 class SampleMultiGraphTest : public ::testing::Test {
 	private:
-		Graph<int, DefaultId, 3> sampleMultiGraph;
+		Graph<int, DefaultId> sampleMultiGraph;
 	protected:
 
 		SampleMultiGraphTest() : sampleMultiGraph(0ul) {}
 
-		const Graph<int, DefaultId, 3>& getConstMultiGraph() const {
+		const Graph<int, DefaultId>& getConstMultiGraph() const {
 			return sampleMultiGraph;
 		}
-		Graph<int, DefaultId, 3>& getMultiGraph() {
+		Graph<int, DefaultId>& getMultiGraph() {
 			return sampleMultiGraph;
 		}
 
@@ -60,7 +60,7 @@ class SampleMultiGraphTest : public ::testing::Test {
 			sampleMultiGraph.link(node4, node2, LAYER_2);
 		}
 
-		static void testSampleGraphStructure(const Graph<int, DefaultId, 3>& sampleMultiGraph) {
+		static void testSampleGraphStructure(const Graph<int, DefaultId>& sampleMultiGraph) {
 			// NODE 1
 			const auto* node1 = sampleMultiGraph.getNode(DefaultId(0ul));
 			ASSERT_EQ(node1->layer(LAYER_0).getIncomingArcs(), node1->getIncomingArcs());

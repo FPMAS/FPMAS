@@ -18,6 +18,6 @@ namespace FPMAS::graph::base {
 #define MPI_DISTRIBUTED_ID_TYPE \
 	FPMAS::graph::parallel::DistributedId::mpiDistributedIdType
 
-#define SYNC_MODE template<typename, int> class S
+#define SYNC_MODE template<typename> class S
 
 #endif

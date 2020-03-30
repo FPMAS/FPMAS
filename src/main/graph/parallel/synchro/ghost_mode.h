@@ -10,8 +10,8 @@
 using FPMAS::graph::parallel::proxy::Proxy;
 
 namespace FPMAS::graph::parallel {
-	template<typename T, int N, SYNC_MODE> class GhostArc;
-	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
+	template<typename T, SYNC_MODE> class GhostArc;
+	template<typename T, SYNC_MODE> class DistributedGraphBase;
 
 	using zoltan::utils::write_zoltan_id;
 	using parallel::DistributedGraphBase;
@@ -19,11 +19,11 @@ namespace FPMAS::graph::parallel {
 	namespace synchro {
 		namespace modes {
 			template<
-				template<typename, int> class,
-				template<typename, int> class,
-				typename, int
+				template<typename> class,
+				template<typename> class,
+				typename
 					> class SyncMode;
-			template<typename, int> class GhostMode;
+			template<typename> class GhostMode;
 		}
 
 		namespace wrappers {
@@ -34,7 +34,7 @@ namespace FPMAS::graph::parallel {
 			 * @tparam T wrapped data type
 			 * @tparam N layers count
 			 */
-			template<typename T, int N> class GhostData : public SyncData<T,N,modes::GhostMode> {
+			template<typename T> class GhostData : public SyncData<T,modes::GhostMode> {
 
 				public:
 					GhostData(DistributedId, SyncMpiCommunicator&, const Proxy&);
@@ -54,7 +54,7 @@ namespace FPMAS::graph::parallel {
 			 */
 			// The mpiCommunicator is not used for the GhostData mode, but the
 			// constructors are defined to allow template genericity
-			template<typename T, int N> GhostData<T,N>::GhostData(
+			template<typename T> GhostData<T>::GhostData(
 					DistributedId id,
 					SyncMpiCommunicator& mpiComm,
 					const Proxy& proxy) {
@@ -69,12 +69,12 @@ namespace FPMAS::graph::parallel {
 			 * DistributedGraphBase
 			 * @param proxy graph proxy
 			 */
-			template<typename T, int N> GhostData<T,N>::GhostData(
+			template<typename T> GhostData<T>::GhostData(
 					DistributedId id,
 					SyncMpiCommunicator& mpiComm,
 					const Proxy& proxy,
 					T&& data)
-				: SyncData<T,N,modes::GhostMode>(std::forward<T>(data)) {
+				: SyncData<T,modes::GhostMode>(std::forward<T>(data)) {
 				}
 
 			/**
@@ -86,12 +86,12 @@ namespace FPMAS::graph::parallel {
 			 * DistributedGraphBase
 			 * @param proxy graph proxy
 			 */
-			template<typename T, int N> GhostData<T,N>::GhostData(
+			template<typename T> GhostData<T>::GhostData(
 					DistributedId id,
 					SyncMpiCommunicator& mpiComm,
 					const Proxy& proxy,
 					const T& data)
-				: SyncData<T,N,modes::GhostMode>(data) {
+				: SyncData<T,modes::GhostMode>(data) {
 				}
 		}
 
@@ -122,12 +122,12 @@ namespace FPMAS::graph::parallel {
 			 * @tparam T wrapped data type
 			 * @tparam N layers count
 			 */
-			template<typename T, int N> class GhostMode : public SyncMode<GhostMode, wrappers::GhostData, T, N> {
+			template<typename T> class GhostMode : public SyncMode<GhostMode, wrappers::GhostData, T> {
 				private:
 					Zoltan zoltan;
 					std::unordered_map<
 						DistributedId,
-						GhostArc<T, N, GhostMode>*
+						GhostArc<T, GhostMode>*
 						> linkBuffer;
 					std::unordered_map<int, std::vector<DistributedId>> unlinkBuffer;
 					int computeArcExportCount();
@@ -135,11 +135,11 @@ namespace FPMAS::graph::parallel {
 					void migrateUnlinks();
 
 				public:
-					GhostMode(DistributedGraphBase<T, GhostMode, N>&);
+					GhostMode(DistributedGraphBase<T, GhostMode>&);
 					void termination() override;
 
 					void notifyLinked(
-						Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,DistributedId,N>*
+						Arc<std::unique_ptr<wrappers::SyncData<T,GhostMode>>,DistributedId>*
 						) override;
 
 					void notifyUnlinked(DistributedId, DistributedId, DistributedId, LayerId) override;
@@ -150,18 +150,18 @@ namespace FPMAS::graph::parallel {
 			 *
 			 * @param dg reference to the parent DistributedGraphBase
 			 */
-			template<typename T, int N> GhostMode<T,N>::GhostMode(DistributedGraphBase<T, GhostMode, N>& dg) :
-				SyncMode<GhostMode, wrappers::GhostData, T,N>(zoltan_query_functions(
-							&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, GhostMode>,
-							&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, GhostMode>,
-							&FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, GhostMode>
+			template<typename T> GhostMode<T>::GhostMode(DistributedGraphBase<T, GhostMode>& dg) :
+				SyncMode<GhostMode, wrappers::GhostData, T>(zoltan_query_functions(
+							&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, GhostMode>,
+							&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, GhostMode>,
+							&FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, GhostMode>
 							),
 						dg)
 			{
 				FPMAS::config::zoltan_config(&this->zoltan);
-				zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T, N, GhostMode>, &this->dg);
-				zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T, N, GhostMode>, &this->dg);
-				zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, N, GhostMode>, &this->dg);
+				zoltan.Set_Obj_Size_Multi_Fn(zoltan::arc::obj_size_multi_fn<T, GhostMode>, &this->dg);
+				zoltan.Set_Pack_Obj_Multi_Fn(zoltan::arc::pack_obj_multi_fn<T, GhostMode>, &this->dg);
+				zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::arc::unpack_obj_multi_fn<T, GhostMode>, &this->dg);
 			}
 
 			
@@ -171,7 +171,7 @@ namespace FPMAS::graph::parallel {
 			 * Exports / imports link and unlink arcs, and fetch updated ghost data
 			 * from other procs.
 			 */
-			template<typename T, int N> void GhostMode<T, N>::termination() {
+			template<typename T> void GhostMode<T>::termination() {
 				this->migrateLinks();
 				this->migrateUnlinks();
 				this->dg.getGhost().synchronize();
@@ -185,15 +185,15 @@ namespace FPMAS::graph::parallel {
 			 *
 			 * @param arc pointer to the new arc to export
 			 */
-			template<typename T, int N> void GhostMode<T, N>::notifyLinked(
-					Arc<std::unique_ptr<wrappers::SyncData<T,N,GhostMode>>,DistributedId,N>* arc) {
+			template<typename T> void GhostMode<T>::notifyLinked(
+					Arc<std::unique_ptr<wrappers::SyncData<T,GhostMode>>,DistributedId>* arc) {
 				FPMAS_LOGD(
 					this->dg.getMpiCommunicator().getRank(),
 					"GHOST_MODE", "Linking %s : (%s, %s)",
 					ID_C_STR(arc->getId()), ID_C_STR(arc->getSourceNode()->getId()), ID_C_STR(arc->getTargetNode()->getId())
 					);
 				linkBuffer[arc->getId()]
-					= (GhostArc<T,N,GhostMode>*) arc;
+					= (GhostArc<T,GhostMode>*) arc;
 			}
 
 			/**
@@ -212,7 +212,7 @@ namespace FPMAS::graph::parallel {
 			 * @param arcId id of the arc to unlink
 			 * @param layer layer of the unlinked arc
 			 */
-			template<typename T, int N> void GhostMode<T, N>::notifyUnlinked(
+			template<typename T> void GhostMode<T>::notifyUnlinked(
 					DistributedId source, DistributedId target, DistributedId arcId, LayerId layer
 					) {
 				FPMAS_LOGD(
@@ -234,7 +234,7 @@ namespace FPMAS::graph::parallel {
 
 			}
 
-			template<typename T, int N> void GhostMode<T, N>::migrateLinks() {
+			template<typename T> void GhostMode<T>::migrateLinks() {
 				int export_arcs_num = this->computeArcExportCount();
 				ZOLTAN_ID_TYPE export_arcs_global_ids[2*export_arcs_num];
 				int export_arcs_procs[export_arcs_num];
@@ -274,7 +274,7 @@ namespace FPMAS::graph::parallel {
 					DistributedId targetId = item.second->getTargetNode()->getId();
 					if(!this->dg.getProxy().isLocal(sourceId)
 							&& !this->dg.getProxy().isLocal(targetId)) {
-						this->dg.getGhost().unlink((GhostArc<T,N,GhostMode>*) item.second);
+						this->dg.getGhost().unlink((GhostArc<T,GhostMode>*) item.second);
 					}
 				}
 				linkBuffer.clear();
@@ -283,7 +283,7 @@ namespace FPMAS::graph::parallel {
 			/*
 			 * Private computation to determine how many arcs need to be exported.
 			 */
-			template<typename T, int N> int GhostMode<T, N>::computeArcExportCount() {
+			template<typename T> int GhostMode<T>::computeArcExportCount() {
 				int n = 0;
 				for(auto item : linkBuffer) {
 					if(!this->dg.getProxy().isLocal(
@@ -301,8 +301,8 @@ namespace FPMAS::graph::parallel {
 				return n;
 			}
 
-			template<typename T, int N> void GhostMode<T, N>::migrateUnlinks() {
-				synchro::migrateUnlink<T, N>(
+			template<typename T> void GhostMode<T>::migrateUnlinks() {
+				synchro::migrateUnlink<T>(
 					this->unlinkBuffer, this->dg
 					);
 				this->unlinkBuffer.clear();

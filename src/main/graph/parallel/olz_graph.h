@@ -20,10 +20,10 @@ namespace FPMAS::graph::parallel {
 	using base::Arc;
 	using base::Graph;
 
-	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
+	template<typename T, SYNC_MODE> class DistributedGraphBase;
 
-	template<typename T, int N, SYNC_MODE> class GhostNode;
-	template<typename T, int N, SYNC_MODE> class GhostArc;
+	template<typename T, SYNC_MODE> class GhostNode;
+	template<typename T, SYNC_MODE> class GhostArc;
 
 	/**
 	 * A GhostGraph is a data structure used by DistributedGraphBase s to store
@@ -36,75 +36,75 @@ namespace FPMAS::graph::parallel {
 	 * Finally, the GhostGraph can also synchronize GhostNode s data thanks to
 	 * the synchronize() function.
 	 */
-	template<typename T, int N, SYNC_MODE> class GhostGraph {
-		friend S<T, N>;
-		friend GhostArc<T, N, S>;
-		friend void zoltan::ghost::obj_size_multi_fn<T, N, S>(
+	template<typename T, SYNC_MODE> class GhostGraph {
+		friend S<T>;
+		friend GhostArc<T, S>;
+		friend void zoltan::ghost::obj_size_multi_fn<T, S>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *); 
-		friend void zoltan::ghost::pack_obj_multi_fn<T, N, S>(
+		friend void zoltan::ghost::pack_obj_multi_fn<T, S>(
 				void *, int, int, int, ZOLTAN_ID_PTR, ZOLTAN_ID_PTR, int *, int *, int *, char *, int *);
-		friend void zoltan::ghost::unpack_obj_multi_fn<T, N, S>(
+		friend void zoltan::ghost::unpack_obj_multi_fn<T, S>(
 				void *, int, int, ZOLTAN_ID_PTR, int *, int *, char *, int *
 				);
-		friend DistributedGraphBase<T,S,N>;
+		friend DistributedGraphBase<T,S>;
 
 		private:
-		DistributedGraphBase<T, S, N>* localGraph;
+		DistributedGraphBase<T, S>* localGraph;
 		MpiCommunicator mpiCommunicator;
 		Zoltan zoltan;
 
 		void initialize();
 
 		std::unordered_map<DistributedId, std::string> ghost_node_serialization_cache;
-		std::unordered_map<DistributedId, GhostNode<T, N, S>*> ghostNodes;
-		std::unordered_map<DistributedId, GhostArc<T, N, S>*> ghostArcs;
+		std::unordered_map<DistributedId, GhostNode<T, S>*> ghostNodes;
+		std::unordered_map<DistributedId, GhostArc<T, S>*> ghostArcs;
 
-		void clear(GhostNode<T,N,S>*);
+		void clear(GhostNode<T,S>*);
 
 		public:
 
-		GhostGraph(DistributedGraphBase<T, S, N>*);
-		GhostGraph(DistributedGraphBase<T, S, N>*, std::initializer_list<int>);
+		GhostGraph(DistributedGraphBase<T, S>*);
+		GhostGraph(DistributedGraphBase<T, S>*, std::initializer_list<int>);
 
 		void synchronize();
 
 		// GhostNode constructors
-		GhostNode<T, N, S>* buildNode(DistributedId);
-		GhostNode<T, N, S>* buildNode(
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>& node,
+		GhostNode<T, S>* buildNode(DistributedId);
+		GhostNode<T, S>* buildNode(
+				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>& node,
 				std::set<DistributedId> ignoreIds = std::set<DistributedId>()
 				);
 		// GhostNode destructor
 		void removeNode(DistributedId);
 
 		// GhostArc constructors
-		GhostArc<T, N, S>* link(
-				GhostNode<T, N, S>*,
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*,
+		GhostArc<T, S>* link(
+				GhostNode<T, S>*,
+				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>*,
 				DistributedId, LayerId
 				);
-		GhostArc<T, N, S>* link(
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*,
-				GhostNode<T, N, S>*,
+		GhostArc<T, S>* link(
+				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>*,
+				GhostNode<T, S>*,
 				DistributedId, LayerId
 				);
-		GhostArc<T, N, S>* link(
-				GhostNode<T, N, S>*, GhostNode<T, N, S>*,
+		GhostArc<T, S>* link(
+				GhostNode<T, S>*, GhostNode<T, S>*,
 				DistributedId, LayerId
 				);
 		// GhostArc destructor
-		void unlink(GhostArc<T, N, S>*);
+		void unlink(GhostArc<T, S>*);
 
 
 		// GhostNode getters
-		std::unordered_map<DistributedId, GhostNode<T, N, S>*> getNodes();
-		GhostNode<T, N, S>* getNode(DistributedId);
-		const GhostNode<T, N, S>* getNode(DistributedId) const;
+		std::unordered_map<DistributedId, GhostNode<T, S>*> getNodes();
+		GhostNode<T, S>* getNode(DistributedId);
+		const GhostNode<T, S>* getNode(DistributedId) const;
 
 		// GhostArc getters
-		std::unordered_map<DistributedId, GhostArc<T, N, S>*> getArcs();
-		GhostArc<T, N, S>* getArc(DistributedId);
-		const GhostArc<T, N, S>* getArc(DistributedId) const;
+		std::unordered_map<DistributedId, GhostArc<T, S>*> getArcs();
+		GhostArc<T, S>* getArc(DistributedId);
+		const GhostArc<T, S>* getArc(DistributedId) const;
 
 
 		~GhostGraph();
@@ -114,12 +114,12 @@ namespace FPMAS::graph::parallel {
 	/*
 	 * Initializes zoltan parameters and zoltan ghost migration query functions.
 	 */
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::initialize() {
+	template<typename T, SYNC_MODE> void GhostGraph<T, S>::initialize() {
 		FPMAS::config::zoltan_config(&this->zoltan);
 
-		zoltan.Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T, N, S>, localGraph);
-		zoltan.Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T, N, S>, localGraph);
-		zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T, N, S>, localGraph);
+		zoltan.Set_Obj_Size_Multi_Fn(zoltan::ghost::obj_size_multi_fn<T, S>, localGraph);
+		zoltan.Set_Pack_Obj_Multi_Fn(zoltan::ghost::pack_obj_multi_fn<T, S>, localGraph);
+		zoltan.Set_Unpack_Obj_Multi_Fn(zoltan::ghost::unpack_obj_multi_fn<T, S>, localGraph);
 	}
 
 	/**
@@ -131,8 +131,8 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param localGraph pointer to the origin DistributedGraphBase
 	 */
-	template<typename T, int N, SYNC_MODE> GhostGraph<T, N, S>::GhostGraph(
-			DistributedGraphBase<T, S, N>* localGraph
+	template<typename T, SYNC_MODE> GhostGraph<T, S>::GhostGraph(
+			DistributedGraphBase<T, S>* localGraph
 			) : localGraph(localGraph), zoltan(mpiCommunicator.getMpiComm()) {
 		this->initialize();
 	}
@@ -149,8 +149,8 @@ namespace FPMAS::graph::parallel {
 	 * @param ranks ranks of the procs on which the GhostGraph is
 	 * built
 	 */
-	template<typename T, int N, SYNC_MODE> GhostGraph<T, N, S>::GhostGraph(
-			DistributedGraphBase<T, S, N>* localGraph, std::initializer_list<int> ranks
+	template<typename T, SYNC_MODE> GhostGraph<T, S>::GhostGraph(
+			DistributedGraphBase<T, S>* localGraph, std::initializer_list<int> ranks
 			) : localGraph(localGraph), mpiCommunicator(ranks), zoltan(mpiCommunicator.getMpiComm()) {
 		this->initialize();
 	}
@@ -165,7 +165,7 @@ namespace FPMAS::graph::parallel {
 	 * Arcs creation and deletion are currently **not handled** by this
 	 * function.
 	 */
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>::synchronize() {
+	template<typename T, SYNC_MODE> void GhostGraph<T, S>::synchronize() {
 		int import_ghosts_num = this->ghostNodes.size(); 
 		ZOLTAN_ID_PTR import_ghosts_global_ids
 			= (ZOLTAN_ID_PTR) std::malloc(sizeof(ZOLTAN_ID_TYPE) * import_ghosts_num * 2);
@@ -203,10 +203,10 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param id node id
 	 */
-	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>
+	template<typename T, SYNC_MODE> GhostNode<T, S>* GhostGraph<T, S>
 		::buildNode(DistributedId id) {
 		// Copy the gNode from the original node, including arcs data
-		GhostNode<T, N, S>* gNode = new GhostNode<T, N, S>(
+		GhostNode<T, S>* gNode = new GhostNode<T, S>(
 				this->localGraph->getMpiCommunicator(),
 				this->localGraph->getProxy(),
 				id
@@ -235,9 +235,9 @@ namespace FPMAS::graph::parallel {
 	 * @param node node from which a ghost copy must be created
 	 * @param ignoreIds ids of nodes to ignore when building links
 	 */
-	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>
+	template<typename T, SYNC_MODE> GhostNode<T, S>* GhostGraph<T, S>
 		::buildNode(
-			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>& node,
+			Node<std::unique_ptr<SyncData<T,S>>, DistributedId>& node,
 			std::set<DistributedId> ignoreIds
 			) {
 			FPMAS_LOGD(
@@ -247,7 +247,7 @@ namespace FPMAS::graph::parallel {
 					((std::string) node.getId()).c_str()
 					);
 			// Builds the gNode from the original node data
-			GhostNode<T, N, S>* gNode = new GhostNode<T, N, S>(
+			GhostNode<T, S>* gNode = new GhostNode<T, S>(
 					this->localGraph->getMpiCommunicator(),
 					this->localGraph->getProxy(),
 					node
@@ -257,7 +257,7 @@ namespace FPMAS::graph::parallel {
 
 			for(auto& layer : node.getLayers()) {
 				// Replaces the incomingArcs list by proper GhostArcs
-				for(auto arc : layer.getIncomingArcs()) {
+				for(auto arc : layer.second.getIncomingArcs()) {
 					auto localSourceNode = arc->getSourceNode();
 					// Builds the ghost arc if :
 					if(
@@ -280,7 +280,7 @@ namespace FPMAS::graph::parallel {
 				}
 
 				// Replaces the outgoingArcs list by proper GhostArcs
-				for(auto arc : layer.getOutgoingArcs()) {
+				for(auto arc : layer.second.getOutgoingArcs()) {
 					auto localTargetNode = arc->getTargetNode();
 					// Same as above
 					if(ignoreIds.count(localTargetNode->getId()) == 0
@@ -311,13 +311,13 @@ namespace FPMAS::graph::parallel {
 	 * @param layer arc layer
 	 * @return pointer to the created arc
 	 */ 
-	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
-			GhostNode<T, N, S>* source,
-			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* target,
+	template<typename T, SYNC_MODE> GhostArc<T, S>* GhostGraph<T, S>::link(
+			GhostNode<T, S>* source,
+			Node<std::unique_ptr<SyncData<T,S>>, DistributedId>* target,
 			DistributedId arcId,
 			LayerId layer
 			) {
-		return this->ghostArcs[arcId] = new GhostArc<T, N, S>(arcId, source, target, layer);
+		return this->ghostArcs[arcId] = new GhostArc<T, S>(arcId, source, target, layer);
 	}
 
 	/**
@@ -329,14 +329,14 @@ namespace FPMAS::graph::parallel {
 	 * @param layer arc layer
 	 * @return pointer to the created arc
 	 */ 
-	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
-			Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* source,
-			GhostNode<T, N, S>* target,
+	template<typename T, SYNC_MODE> GhostArc<T, S>* GhostGraph<T, S>::link(
+			Node<std::unique_ptr<SyncData<T,S>>, DistributedId>* source,
+			GhostNode<T, S>* target,
 			DistributedId arcId,
 			LayerId layer
 			) {
 		return this->ghostArcs[arcId] =
-			new GhostArc<T, N, S>(arcId, source, target, layer);
+			new GhostArc<T, S>(arcId, source, target, layer);
 	}
 
 	/**
@@ -348,13 +348,13 @@ namespace FPMAS::graph::parallel {
 	 * @param layer arc layer
 	 * @return pointer to the created arc
 	 */
-	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::link(
-			GhostNode<T, N, S>* source,
-			GhostNode<T, N, S>* target,
+	template<typename T, SYNC_MODE> GhostArc<T, S>* GhostGraph<T, S>::link(
+			GhostNode<T, S>* source,
+			GhostNode<T, S>* target,
 			DistributedId arcId,
 			LayerId layer) {
 		return this->ghostArcs[arcId] =
-			new GhostArc<T, N, S>(arcId, source, target, layer);
+			new GhostArc<T, S>(arcId, source, target, layer);
 	}
 
 	/**
@@ -363,9 +363,9 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param nodeId id of the node to remove
 	 */
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>
+	template<typename T, SYNC_MODE> void GhostGraph<T, S>
 		::removeNode(DistributedId nodeId) {
-		GhostNode<T, N, S>* nodeToRemove;
+		GhostNode<T, S>* nodeToRemove;
 		try {
 			nodeToRemove = this->ghostNodes.at(nodeId);
 		} catch(std::out_of_range) {
@@ -374,14 +374,14 @@ namespace FPMAS::graph::parallel {
 
 		for(auto& layer : nodeToRemove->getLayers()) {
 			// Deletes incoming ghost arcs
-			for(auto arc : layer.getIncomingArcs()) {
+			for(auto arc : layer.second.getIncomingArcs()) {
 				arc->unlink();
 				this->ghostArcs.erase(arc->getId());
 				delete arc;
 			}
 
 			// Deletes outgoing arcs
-			for(auto arc : layer.getOutgoingArcs()) {
+			for(auto arc : layer.second.getOutgoingArcs()) {
 				arc->unlink();
 				this->ghostArcs.erase(arc->getId());
 				delete arc;
@@ -396,7 +396,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @return ghost nodes
 	 */
-	template<typename T, int N, SYNC_MODE> std::unordered_map<DistributedId, GhostNode<T, N, S>*> GhostGraph<T, N, S>::getNodes() {
+	template<typename T, SYNC_MODE> std::unordered_map<DistributedId, GhostNode<T, S>*> GhostGraph<T, S>::getNodes() {
 		return this->ghostNodes;
 	}
 
@@ -406,7 +406,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @return pointer to GhostNode
 	 */
-	template<typename T, int N, SYNC_MODE> GhostNode<T, N, S>* GhostGraph<T, N, S>::getNode(DistributedId id) {
+	template<typename T, SYNC_MODE> GhostNode<T, S>* GhostGraph<T, S>::getNode(DistributedId id) {
 		return this->ghostNodes.at(id);
 	}
 
@@ -416,7 +416,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @return pointer to GhostNode
 	 */
-	template<typename T, int N, SYNC_MODE> const GhostNode<T, N, S>* GhostGraph<T, N, S>::getNode(DistributedId id) const {
+	template<typename T, SYNC_MODE> const GhostNode<T, S>* GhostGraph<T, S>::getNode(DistributedId id) const {
 		return this->ghostNodes.at(id);
 	}
 
@@ -426,7 +426,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @return pointer to GhostArc
 	 */
-	template<typename T, int N, SYNC_MODE> GhostArc<T, N, S>* GhostGraph<T, N, S>::getArc(DistributedId id) {
+	template<typename T, SYNC_MODE> GhostArc<T, S>* GhostGraph<T, S>::getArc(DistributedId id) {
 		return this->ghostArcs.at(id);
 	}
 
@@ -436,7 +436,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @return pointer to GhostArc
 	 */
-	template<typename T, int N, SYNC_MODE> const GhostArc<T, N, S>* GhostGraph<T, N, S>::getArc(DistributedId id) const {
+	template<typename T, SYNC_MODE> const GhostArc<T, S>* GhostGraph<T, S>::getArc(DistributedId id) const {
 		return this->ghostArcs.at(id);
 	}
 
@@ -445,7 +445,7 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @return ghost arcs
 	 */
-	template<typename T, int N, SYNC_MODE> std::unordered_map<DistributedId, GhostArc<T, N, S>*> GhostGraph<T, N, S>::getArcs() {
+	template<typename T, SYNC_MODE> std::unordered_map<DistributedId, GhostArc<T, S>*> GhostGraph<T, S>::getArcs() {
 		return this->ghostArcs;
 	}
 
@@ -457,12 +457,12 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param ghost pointer to the removed GhostNode
 	 */
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>
-		::clear(GhostNode<T,N,S>* ghost) {
+	template<typename T, SYNC_MODE> void GhostGraph<T, S>
+		::clear(GhostNode<T,S>* ghost) {
 		bool toDelete = true;
 		for(auto& layer : ghost->getLayers()) {
-			if(layer.getIncomingArcs().size() > 0
-					|| layer.getOutgoingArcs().size() > 0) {
+			if(layer.second.getIncomingArcs().size() > 0
+					|| layer.second.getOutgoingArcs().size() > 0) {
 				toDelete = false;
 				break;
 			}
@@ -486,8 +486,8 @@ namespace FPMAS::graph::parallel {
 	 *
 	 * @param arc GhostArc to unlink
 	 */
-	template<typename T, int N, SYNC_MODE> void GhostGraph<T, N, S>
-		::unlink(GhostArc<T, N, S>* arc) {
+	template<typename T, SYNC_MODE> void GhostGraph<T, S>
+		::unlink(GhostArc<T, S>* arc) {
 		FPMAS_LOGD(
 			this->localGraph->getMpiCommunicator().getRank(),
 			"GHOST_GRAPH", "Unlinking ghost arc %s",
@@ -495,10 +495,10 @@ namespace FPMAS::graph::parallel {
 			);
 		arc->unlink();
 		if(this->localGraph->getNodes().count(arc->getSourceNode()->getId()) == 0) {
-			this->clear((GhostNode<T,N,S>*) arc->getSourceNode());
+			this->clear((GhostNode<T,S>*) arc->getSourceNode());
 		}
 		if(this->localGraph->getNodes().count(arc->getTargetNode()->getId()) == 0) {
-			this->clear((GhostNode<T,N,S>*) arc->getTargetNode());
+			this->clear((GhostNode<T,S>*) arc->getTargetNode());
 		}
 		this->ghostArcs.erase(arc->getId());
 		delete arc;
@@ -507,7 +507,7 @@ namespace FPMAS::graph::parallel {
 	/**
 	 * Deletes ghost nodes and arcs remaining in this graph.
 	 */
-	template<typename T, int N, SYNC_MODE> GhostGraph<T, N, S>::~GhostGraph() {
+	template<typename T, SYNC_MODE> GhostGraph<T, S>::~GhostGraph() {
 		for(auto node : this->ghostNodes) {
 			delete node.second;
 		}

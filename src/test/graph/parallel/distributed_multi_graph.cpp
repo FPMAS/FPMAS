@@ -15,7 +15,7 @@ enum TestLayer {
 
 class Mpi_DistributeMultiGraphNoneSynchroTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, NoSyncMode, 2> dg;
+		DistributedGraph<int, NoSyncMode> dg;
 		std::unordered_map<DistributedId, int> partition;
 
 		void SetUp() override {
@@ -78,7 +78,7 @@ TEST_F(Mpi_DistributeMultiGraphNoneSynchroTest, distribute_none_synchro_test) {
 
 class Mpi_DistributeMultiGraphWithArcTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, GhostMode, 2> dg;
+		DistributedGraph<int, GhostMode> dg;
 		std::unordered_map<DistributedId, int> partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
@@ -140,7 +140,7 @@ TEST_F(Mpi_DistributeMultiGraphWithArcTest, distribute_with_arc_test) {
 
 class Mpi_DistributeMultiGraphWithGhostArcTest : public ::testing::Test {
 	protected:
-		DistributedGraph<int, GhostMode, 2> dg;
+		DistributedGraph<int, GhostMode> dg;
 		std::unordered_map<DistributedId, int> partition;
 		std::unordered_map<int, DistributedId> idMap;
 		void SetUp() override {

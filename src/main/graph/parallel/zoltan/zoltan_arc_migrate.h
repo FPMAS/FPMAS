@@ -10,8 +10,8 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
-	template<typename T, int N, SYNC_MODE> class GhostNode;
+	template<typename T, SYNC_MODE> class DistributedGraphBase;
+	template<typename T, SYNC_MODE> class GhostNode;
 
 	using synchro::modes::NoSyncMode;
 	using synchro::wrappers::SyncData;
@@ -40,7 +40,7 @@ namespace FPMAS::graph::parallel {
 			 * @param sizes Result : buffer sizes for each node
 			 * @param ierr Result : error code
 			 */
-			template<typename T, int N, SYNC_MODE> void obj_size_multi_fn(
+			template<typename T, SYNC_MODE> void obj_size_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -51,12 +51,12 @@ namespace FPMAS::graph::parallel {
 					int *ierr) {
 
 
-				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+				DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "obj_size_multi_fn");
-				std::unordered_map<DistributedId, Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*> arcs = graph->getArcs();
+				std::unordered_map<DistributedId, Arc<std::unique_ptr<SyncData<T,S>>, DistributedId>*> arcs = graph->getArcs();
 				for (int i = 0; i < num_ids; i++) {
 					DistributedId arcId = utils::read_zoltan_id(&global_ids[i * num_gid_entries]);
-					Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* arc;
+					Arc<std::unique_ptr<SyncData<T,S>>, DistributedId>* arc;
 					try {
 						arc = arcs.at(arcId);
 					} catch (const std::exception& e) {
@@ -136,7 +136,7 @@ namespace FPMAS::graph::parallel {
 			 * @param buf communication buffer
 			 * @param ierr Result : error code
 			 */
-			template<typename T, int N, SYNC_MODE> void pack_obj_multi_fn(
+			template<typename T, SYNC_MODE> void pack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -149,7 +149,7 @@ namespace FPMAS::graph::parallel {
 					char *buf,
 					int *ierr) {
 
-				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+				DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "pack_obj_multi_fn");
 				// The node should actually be serialized when computing
 				// the required buffer size. For efficiency purpose, we temporarily
@@ -162,7 +162,7 @@ namespace FPMAS::graph::parallel {
 
 					// Retrieves the serialized node
 					std::string arc_str = serial_cache->at(id);
-					Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* arc;
+					Arc<std::unique_ptr<SyncData<T,S>>, DistributedId>* arc;
 					try {
 						arc = graph->getArcs().at(id);
 					} catch (const std::exception& e) {
@@ -195,7 +195,7 @@ namespace FPMAS::graph::parallel {
 			 * post), so that imported arcs are built properly on the
 			 * imported nodes, not on the obsolete ghosts.
 			 */
-			template <typename T, int N, SYNC_MODE> void mid_migrate_pp_fn(
+			template <typename T, SYNC_MODE> void mid_migrate_pp_fn(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -210,7 +210,7 @@ namespace FPMAS::graph::parallel {
 					int *export_procs,
 					int *export_to_part,
 					int *ierr) {
-				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+				DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "mid_migrate");
 				for(auto nodeId : graph->obsoleteGhosts) {
 					graph->getGhost().removeNode(nodeId);
@@ -244,7 +244,7 @@ namespace FPMAS::graph::parallel {
 			 * @param ierr Result : error code
 			 *
 			 */
-			template<typename T, int N, SYNC_MODE> void unpack_obj_multi_fn(
+			template<typename T, SYNC_MODE> void unpack_obj_multi_fn(
 					void *data,
 					int num_gid_entries,
 					int num_ids,
@@ -254,7 +254,7 @@ namespace FPMAS::graph::parallel {
 					char *buf,
 					int *ierr) {
 
-				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+				DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "unpack_obj_multi_fn");
 
 				// The same arc can be imported multiple times from
@@ -277,7 +277,7 @@ namespace FPMAS::graph::parallel {
 						// Json is unserialized in a temporary arc, with "fake"
 						// nodes that just contains ID. We don't know yet which
 						// nodes are on this local process or not.
-						Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N> tempArc = json_arc.get<Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>>();
+						Arc<std::unique_ptr<SyncData<T,S>>, DistributedId> tempArc = json_arc.get<Arc<std::unique_ptr<SyncData<T,S>>, DistributedId>>();
 
 						receivedIds.insert(tempArc.getId());
 
@@ -297,7 +297,7 @@ namespace FPMAS::graph::parallel {
 								// The source node of the received arc is
 								// contained in the local graph, so the target
 								// node is distant
-								GhostNode<T, N, S>* ghost;
+								GhostNode<T, S>* ghost;
 								if(graph->getGhost().getNodes().count(targetId) == 0) {
 									// No ghost node as been created yet for
 									// this node (from an other arc imported at
@@ -325,7 +325,7 @@ namespace FPMAS::graph::parallel {
 								// node is distant
 
 								// Same process has above
-								GhostNode<T, N, S>* ghost;
+								GhostNode<T, S>* ghost;
 								if(graph->getGhost().getNodes().count(sourceId) == 0) {
 									ghost = graph->getGhost().buildNode(sourceId);
 
@@ -362,7 +362,7 @@ namespace FPMAS::graph::parallel {
 			 * This process builds required ghost nodes and deletes useless
 			 * ones according to nodes that were just exported.
 			 */
-			template<typename T, int N, SYNC_MODE> void post_migrate_pp_fn_olz(
+			template<typename T, SYNC_MODE> void post_migrate_pp_fn_olz(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -380,7 +380,7 @@ namespace FPMAS::graph::parallel {
 
 				// The next steps will remove exported nodes from the local
 				// graph, creating corresponding ghost nodes when necessary
-				DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+				DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_olz");
 
 				// Computes the set of ids of exported nodes
@@ -396,10 +396,10 @@ namespace FPMAS::graph::parallel {
 				// if at least one local node is still connected to the
 				// exported node.
 				for(auto id : exportedIds) {
-					Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node = graph->getNode(id);
+					Node<std::unique_ptr<SyncData<T,S>>, DistributedId>* node = graph->getNode(id);
 					bool buildGhost = false;
-					for(auto layer : node->getLayers()) {
-						for(auto arc : layer.getOutgoingArcs()) {
+					for(auto& layer : node->getLayers()) {
+						for(auto arc : layer.second.getOutgoingArcs()) {
 							if(exportedIds.count(arc->getTargetNode()->getId()) == 0) {
 								buildGhost = true;
 								break;
@@ -407,8 +407,8 @@ namespace FPMAS::graph::parallel {
 						}
 					}
 					if(!buildGhost) {
-						for(auto layer : node->getLayers()) {
-							for(auto arc : layer.getIncomingArcs()) {
+						for(auto& layer : node->getLayers()) {
+							for(auto arc : layer.second.getIncomingArcs()) {
 								if(exportedIds.count(arc->getSourceNode()->getId()) == 0) {
 									buildGhost = true;
 									break;
@@ -438,7 +438,7 @@ namespace FPMAS::graph::parallel {
 			 * In this mode, the only thing to do is deleting the exported
 			 * nodes from the local graph.
 			 */
-			template<typename T, int N> void post_migrate_pp_fn_no_sync(
+			template<typename T> void post_migrate_pp_fn_no_sync(
 					void *data,
 					int num_gid_entries,
 					int num_lid_entries,
@@ -453,7 +453,7 @@ namespace FPMAS::graph::parallel {
 					int *export_procs,
 					int *export_to_part,
 					int *ierr) {
-				DistributedGraphBase<T, NoSyncMode, N>* graph = (DistributedGraphBase<T, NoSyncMode, N>*) data;
+				DistributedGraphBase<T, NoSyncMode>* graph = (DistributedGraphBase<T, NoSyncMode>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_no_sync");
 
 				// Removes exported nodes from the local graph

@@ -13,8 +13,8 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
-	template<typename T, SYNC_MODE, int N> class DistributedGraph;
+	template<typename T, SYNC_MODE> class DistributedGraphBase;
+	template<typename T, SYNC_MODE> class DistributedGraph;
 
 	using synchro::wrappers::SyncData;
 
@@ -37,8 +37,8 @@ namespace FPMAS::graph::parallel {
 		 * @param ierr Result : error code
 		 * @return numbe of nodes managed by the current process
 		 */
-		template<typename T, int N, SYNC_MODE> int num_obj(void *data, int* ierr) {
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+		template<typename T, SYNC_MODE> int num_obj(void *data, int* ierr) {
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			return graph->toBalance.size();
 		}
 
@@ -58,7 +58,7 @@ namespace FPMAS::graph::parallel {
 		 * @param obj_wgts Result : weights list
 		 * @param ierr Result : error code
 		 */
-		template<typename T, int N, SYNC_MODE> void obj_list(
+		template<typename T, SYNC_MODE> void obj_list(
 				void *data,
 				int num_gid_entries, 
 				int num_lid_entries,
@@ -68,7 +68,7 @@ namespace FPMAS::graph::parallel {
 				float *obj_wgts,
 				int *ierr
 				) {
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			int i = 0;
 			for(auto n : graph->toBalance) {
 				utils::write_zoltan_id(n->getId(), &global_ids[i * num_gid_entries]);
@@ -91,7 +91,7 @@ namespace FPMAS::graph::parallel {
 		 * @param num_edges Result : number of outgoing arc for each node
 		 * @param ierr Result : error code
 		 */
-		template<typename T, int N, SYNC_MODE> void num_edges_multi_fn(
+		template<typename T, SYNC_MODE> void num_edges_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -101,7 +101,7 @@ namespace FPMAS::graph::parallel {
 				int *num_edges,
 				int *ierr
 				) {
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			auto currentNodes = graph->toBalance;
 			for(int i = 0; i < num_obj; i++) {
 				auto node = graph->getNode(
@@ -138,7 +138,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ewgts Result : edge weight for each neighbor
 		 * @param ierr Result : error code
 		 */
-		template<typename T, int N, SYNC_MODE> void edge_list_multi_fn(
+		template<typename T, SYNC_MODE> void edge_list_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -152,7 +152,7 @@ namespace FPMAS::graph::parallel {
 				float *ewgts,
 				int *ierr) {
 
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			auto currentNodes = graph->toBalance;
 
 			int neighbor_index = 0;
@@ -174,14 +174,14 @@ namespace FPMAS::graph::parallel {
 			}
 		}
 
-		template<typename T, int N, SYNC_MODE> int num_fixed_obj_fn(
+		template<typename T, SYNC_MODE> int num_fixed_obj_fn(
 				void* data, int* ierr
 				) {
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			return graph->fixedVertices.size();
 		}
 
-		template<typename T, int N, SYNC_MODE> void fixed_obj_list_fn(
+		template<typename T, SYNC_MODE> void fixed_obj_list_fn(
 			void *data,
 			int num_fixed_obj,
 			int num_gid_entries,
@@ -189,7 +189,7 @@ namespace FPMAS::graph::parallel {
 			int *fixed_parts,
 			int *ierr
 		) {
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			int i = 0;
 			for(auto fixedVertice : graph->fixedVertices) {
 				utils::write_zoltan_id(fixedVertice.first, &fixed_gids[i * num_gid_entries]);

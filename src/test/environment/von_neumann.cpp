@@ -19,8 +19,8 @@ template<int Range> void TestVonNeumannLevel(Grid<VonNeumann, Range>& grid, int 
 		const auto* node_ptr = node.second;
 		int x = cell.x();
 		int y = cell.y();
-		const auto& in = node_ptr->layer(neighborLayer(Grid<VonNeumann, Range>::userLayers, level)).inNeighbors();
-		const auto& out = node_ptr->layer(neighborLayer(Grid<VonNeumann, Range>::userLayers, level)).outNeighbors();
+		const auto& in = node_ptr->layer(neighborLayer(level)).inNeighbors();
+		const auto& out = node_ptr->layer(neighborLayer(level)).outNeighbors();
 
 		/*
 		 * Test corners

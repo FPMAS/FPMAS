@@ -13,7 +13,7 @@ class Wolf;
 static const LayerId Layer_A = 0;
 static const LayerId Layer_B = 1;
 
-typedef Agent<GhostMode, 2, Wolf, Sheep> PreyPredAgent;
+typedef Agent<GhostMode, Wolf, Sheep> PreyPredAgent;
 typedef typename PreyPredAgent::node_ptr node_ptr;
 typedef typename PreyPredAgent::env_type& env_ref;
 

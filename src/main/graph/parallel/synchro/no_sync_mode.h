@@ -10,7 +10,7 @@ using FPMAS::graph::parallel::proxy::Proxy;
 namespace FPMAS::graph::parallel::synchro {
 
 	namespace modes {
-		template<typename T, int N> class NoSyncMode;
+		template<typename T> class NoSyncMode;
 	}
 
 	namespace wrappers {
@@ -21,7 +21,7 @@ namespace FPMAS::graph::parallel::synchro {
 		 * @tparam T wrapped data type
 		 * @tparam N layers count
 		 */
-		template<class T, int N> class NoSyncData : public SyncData<T,N,modes::NoSyncMode> {
+		template<class T> class NoSyncData : public SyncData<T,modes::NoSyncMode> {
 			public:
 				/**
 				 * NoSyncData constructor.
@@ -31,12 +31,12 @@ namespace FPMAS::graph::parallel::synchro {
 				 * NoSyncData constructor.
 				 */
 				NoSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&, T&& data) :
-					SyncData<T,N,modes::NoSyncMode>(std::forward<T>(data)) {};
+					SyncData<T,modes::NoSyncMode>(std::forward<T>(data)) {};
 				/**
 				 * NoSyncData constructor.
 				 */
 				NoSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&, const T& data) :
-					SyncData<T,N,modes::NoSyncMode>(data) {};
+					SyncData<T,modes::NoSyncMode>(data) {};
 		};
 	}
 
@@ -53,9 +53,9 @@ namespace FPMAS::graph::parallel::synchro {
 		 * In consequence, it is also implicitly impossible to create or
 		 * destroy distant links.
 		 */
-		template<typename T, int N> class NoSyncMode : public SyncMode<NoSyncMode, wrappers::NoSyncData, T, N> {
+		template<typename T> class NoSyncMode : public SyncMode<NoSyncMode, wrappers::NoSyncData, T> {
 			public:
-				NoSyncMode(DistributedGraphBase<T, NoSyncMode, N>&);
+				NoSyncMode(DistributedGraphBase<T, NoSyncMode>&);
 		};
 
 		/**
@@ -63,10 +63,10 @@ namespace FPMAS::graph::parallel::synchro {
 		 *
 		 * @param dg parent DistributedGraphBase
 		 */
-		template<typename T, int N> NoSyncMode<T,N>::NoSyncMode(DistributedGraphBase<T, NoSyncMode, N>& dg)
-			: SyncMode<NoSyncMode, wrappers::NoSyncData, T, N>(zoltan_query_functions(
-						&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T, N>,
-						&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T, N>,
+		template<typename T> NoSyncMode<T>::NoSyncMode(DistributedGraphBase<T, NoSyncMode>& dg)
+			: SyncMode<NoSyncMode, wrappers::NoSyncData, T>(zoltan_query_functions(
+						&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_no_sync<T>,
+						&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_no_sync<T>,
 						NULL
 						), dg) {};
 	}

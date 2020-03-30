@@ -12,48 +12,36 @@ using FPMAS::agent::Agent;
 
 namespace FPMAS::environment::grid {
 
-	static constexpr int neighborLayer(int userLayers, int d) {
-		return userLayers+d-1;
+	static constexpr int neighborLayer(int d) {
+		return d-1;
 	}
 
-	static constexpr int layerCount(int userLayers, int neighborhoodRange) {
-		return
-			userLayers+ // User layers
-			neighborhoodRange+ // Cell neighborhood layers count
-			1+ // Location layer
-			1+ // movableTo layer
-			1+ // Perception layer
-			1; // perceivableFrom layer
+	static constexpr LayerId locationLayer(int neighborhoodRange) {
+		return neighborhoodRange;
 	}
 
-	static constexpr LayerId locationLayer(int userLayers, int neighborhoodRange) {
-		return userLayers + neighborhoodRange;
+	static constexpr LayerId movableTo(int neighborhoodRange) {
+		return locationLayer(neighborhoodRange) + 1;
 	}
 
-	static constexpr LayerId movableTo(int userLayers, int neighborhoodRange) {
-		return locationLayer(userLayers, neighborhoodRange) + 1;
+	static constexpr LayerId perceptionsLayer(int neighborhoodRange) {
+		return movableTo(neighborhoodRange) + 1;
 	}
 
-	static constexpr LayerId perceptionsLayer(int userLayers, int neighborhoodRange) {
-		return movableTo(userLayers, neighborhoodRange) + 1;
-	}
-
-	static constexpr LayerId perceivableFromLayer(int userLayers, int neighborhoodRange) {
-		return perceptionsLayer(userLayers, neighborhoodRange) + 1;
+	static constexpr LayerId perceivableFromLayer(int neighborhoodRange) {
+		return perceptionsLayer(neighborhoodRange) + 1;
 	}
 
 	template<
 		template<typename, typename, int> class Neighborhood = VonNeumann,
 		int Range = 1,
 		SYNC_MODE = GhostMode,
-		int N = 1, // User provided layers
 		typename... AgentTypes> class Grid
-			: public Environment<S, layerCount(N, Range), Cell<Range, S, layerCount(N, Range), AgentTypes...>, AgentTypes...> {
+			: public Environment<S, Cell<Range, S, AgentTypes...>, AgentTypes...> {
 				public:
-					typedef Environment<S, layerCount(N, Range), Cell<Range, S, layerCount(N, Range), AgentTypes...>, AgentTypes...> env_type;
-					typedef Grid<Neighborhood, Range, S, N, AgentTypes...> grid_type;
-					typedef Cell<Range, S, layerCount(N, Range), AgentTypes...> cell_type;
-					static const int userLayers = N;
+					typedef Environment<S, Cell<Range, S, AgentTypes...>, AgentTypes...> env_type;
+					typedef Grid<Neighborhood, Range, S, AgentTypes...> grid_type;
+					typedef Cell<Range, S, AgentTypes...> cell_type;
 
 				private:
 					const int _width;
@@ -76,8 +64,8 @@ namespace FPMAS::environment::grid {
 
 			};
 
-	template<template<typename, typename, int> class Neighborhood, int Range, SYNC_MODE, int N, typename... AgentTypes>
-		Grid<Neighborhood, Range, S, N, AgentTypes...>::Grid(int width, int height): _width(width), _height(height), neighborhood(*this) {
+	template<template<typename, typename, int> class Neighborhood, int Range, SYNC_MODE, typename... AgentTypes>
+		Grid<Neighborhood, Range, S, AgentTypes...>::Grid(int width, int height): _width(width), _height(height), neighborhood(*this) {
 			// TODO: replace this hack with a true distributed build
 			if(this->getMpiCommunicator().getRank() == 0) {
 				/*

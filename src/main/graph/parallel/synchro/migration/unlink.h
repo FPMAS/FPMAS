@@ -6,17 +6,17 @@
 #include "../../distributed_graph_base.h"
 
 namespace FPMAS::graph::parallel {
-	template<typename T, int N, SYNC_MODE> class GhostArc;
+	template<typename T, SYNC_MODE> class GhostArc;
 	namespace synchro {
 		namespace modes {
-			template<typename, int> class GhostMode;
+			template<typename> class GhostMode;
 		}
 		using modes::GhostMode;
-		template<typename T, int N> class UnlinkPostMigrate
-			: public FPMAS::communication::PostMigrate<DistributedId, DistributedGraphBase<T,GhostMode,N>> {
+		template<typename T> class UnlinkPostMigrate
+			: public FPMAS::communication::PostMigrate<DistributedId, DistributedGraphBase<T,GhostMode>> {
 				public:
 					void operator()(
-							DistributedGraphBase<T,GhostMode,N>& dg, 
+							DistributedGraphBase<T,GhostMode>& dg, 
 							std::unordered_map<int, std::vector<DistributedId>> exportMap,
 							std::unordered_map<int, std::vector<DistributedId>> importMap
 							) override {
@@ -29,7 +29,7 @@ namespace FPMAS::graph::parallel {
 									);
 								try {
 									auto arc = dg.getGhost().getArcs().at(arcId);
-									dg.getGhost().unlink((GhostArc<T,N,GhostMode>*) arc);
+									dg.getGhost().unlink((GhostArc<T,GhostMode>*) arc);
 								} catch (std::out_of_range) {
 									// The arc was already deleted from an
 									// other proc in the same epoch, so ignore
@@ -39,16 +39,16 @@ namespace FPMAS::graph::parallel {
 						}
 					}
 			};
-		template<typename T, int N> void migrateUnlink(
+		template<typename T> void migrateUnlink(
 				std::unordered_map<int, std::vector<DistributedId>> exportMap,
-				DistributedGraphBase<T,GhostMode,N>& dg
+				DistributedGraphBase<T,GhostMode>& dg
 				) {
 			FPMAS::communication::migrate<
 				DistributedId,
-			DistributedGraphBase<T,GhostMode,N>,
-			communication::voidPreMigrate<DistributedId, DistributedGraphBase<T,GhostMode,N>>,
-			communication::voidMidMigrate<DistributedId, DistributedGraphBase<T,GhostMode,N>>,
-			UnlinkPostMigrate<T,N>
+			DistributedGraphBase<T,GhostMode>,
+			communication::voidPreMigrate<DistributedId, DistributedGraphBase<T,GhostMode>>,
+			communication::voidMidMigrate<DistributedId, DistributedGraphBase<T,GhostMode>>,
+			UnlinkPostMigrate<T>
 				>(exportMap, dg.getMpiCommunicator(), dg);
 		}
 	}

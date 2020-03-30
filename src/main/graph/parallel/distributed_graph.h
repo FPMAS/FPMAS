@@ -23,7 +23,7 @@ namespace FPMAS {
 	 */
 	namespace graph::parallel {
 		namespace synchro::modes {
-			template<typename, int> class GhostMode; 
+			template<typename> class GhostMode; 
 		}
 
 		using proxy::Proxy;
@@ -60,33 +60,32 @@ namespace FPMAS {
 		 *
 		 * @tparam T associated data type
 		 * @tparam S synchronization mode
-		 * @tparam N layer count
 		 */
-		template<typename T, SYNC_MODE = GhostMode, int N = 1>
-		class DistributedGraph : public DistributedGraphBase<T, S, N> {
+		template<typename T, SYNC_MODE = GhostMode>
+		class DistributedGraph : public DistributedGraphBase<T, S> {
 			public:
 				/**
 				 * Node pointer type.
 				 */
-				typedef typename DistributedGraphBase<T, S, N>::node_ptr node_ptr;
+				typedef typename DistributedGraphBase<T, S>::node_ptr node_ptr;
 				/**
 				 * Arc pointer type.
 				 */
-				typedef typename DistributedGraphBase<T, S, N>::arc_ptr arc_ptr;
+				typedef typename DistributedGraphBase<T, S>::arc_ptr arc_ptr;
 
 			private:
 				void distributeArcs();
 				void balance(int&, int&, ZOLTAN_ID_PTR&, ZOLTAN_ID_PTR&, int*&, int*&, ZOLTAN_ID_PTR&, int*&);
 
 			public:
-				using DistributedGraphBase<T,S,N>::link; // Allows usage of link(DistributedId, DistributedId)
-				using DistributedGraphBase<T,S,N>::unlink; // Allows usage of unlink(DistributedId)
+				using DistributedGraphBase<T,S>::link; // Allows usage of link(DistributedId, DistributedId)
+				using DistributedGraphBase<T,S>::unlink; // Allows usage of unlink(DistributedId)
 
-				DistributedGraph<T, S, N>();
-				DistributedGraph<T, S, N>(std::initializer_list<int>);
+				DistributedGraph<T, S>();
+				DistributedGraph<T, S>(std::initializer_list<int>);
 
-				DistributedGraph<T, S, N>(const DistributedGraph<T,S,N>&) = delete;
-				DistributedGraph<T, S, N>& operator=(const DistributedGraph<T, S, N>&) = delete;
+				DistributedGraph<T, S>(const DistributedGraph<T,S>&) = delete;
+				DistributedGraph<T, S>& operator=(const DistributedGraph<T, S>&) = delete;
 
 				arc_ptr link(node_ptr, node_ptr, LayerId) override;
 				void unlink(arc_ptr) override;
@@ -99,8 +98,8 @@ namespace FPMAS {
 		/**
 		 * Builds a DistributedGraph over all the available procs.
 		 */
-		template<class T, SYNC_MODE, int N> DistributedGraph<T, S, N>::DistributedGraph()
-			: DistributedGraphBase<T,S,N>() {
+		template<class T, SYNC_MODE> DistributedGraph<T, S>::DistributedGraph()
+			: DistributedGraphBase<T,S>() {
 			}
 
 		/**
@@ -109,9 +108,9 @@ namespace FPMAS {
 		 * @param ranks ranks of the procs on which the DistributedGraph is
 		 * built
 		 */
-		template<class T, SYNC_MODE, int N> DistributedGraph<T, S, N>
+		template<class T, SYNC_MODE> DistributedGraph<T, S>
 			::DistributedGraph(std::initializer_list<int> ranks)
-			: DistributedGraphBase<T, S, N>(ranks) {}
+			: DistributedGraphBase<T, S>(ranks) {}
 
 		/**
 		 * Links the specified source and target node within this
@@ -136,14 +135,14 @@ namespace FPMAS {
 		 * @param layerId id of the Layer on which nodes should be linked
 		 * @return pointer to the created arc
 		 */
-		template<class T, SYNC_MODE, int N>
-		typename DistributedGraph<T, S, N>::arc_ptr DistributedGraph<T, S, N>
+		template<class T, SYNC_MODE>
+		typename DistributedGraph<T, S>::arc_ptr DistributedGraph<T, S>
 		::link(node_ptr source, node_ptr target, LayerId layerId) {
 			if(this->getNodes().count(source->getId()) > 0) {
 				// Source is local
 				if(this->getNodes().count(target->getId()) > 0) {
 					// Source and Target are local, completely local operation
-					return this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>::link(
+					return this->Graph<std::unique_ptr<SyncData<T,S>>, DistributedId>::link(
 						source, target, layerId
 						);
 				} else {
@@ -152,7 +151,7 @@ namespace FPMAS {
 					this->syncMode.initLink(source->getId(), target->getId(), id, layerId);
 					// link local -> distant
 					auto arc = this->getGhost().link(
-						source, (GhostNode<T, N, S>*) target, id, layerId
+						source, (GhostNode<T, S>*) target, id, layerId
 						);
 					this->syncMode.notifyLinked(arc);
 					return arc;
@@ -165,7 +164,7 @@ namespace FPMAS {
 					this->syncMode.initLink(source->getId(), target->getId(), id, layerId);
 					// link distant -> local
 					auto arc = this->getGhost().link(
-							(GhostNode<T, N, S>*) source, target, id, layerId
+							(GhostNode<T, S>*) source, target, id, layerId
 							);
 					this->syncMode.notifyLinked(arc);
 					return arc;
@@ -178,7 +177,7 @@ namespace FPMAS {
 					this->syncMode.initLink(source->getId(), target->getId(), id, layerId);
 					// link distant -> distant
 					auto arc = this->getGhost().link(
-							(GhostNode<T, N, S>*) source, (GhostNode<T, N, S>*) target, id, layerId
+							(GhostNode<T, S>*) source, (GhostNode<T, S>*) target, id, layerId
 							);
 					this->syncMode.notifyLinked(arc);
 					return arc;
@@ -201,14 +200,14 @@ namespace FPMAS {
 		 * @param arc pointer to the arc to unlink (might be a local Arc or distant
 		 * GhostArc)
 		 */
-		template<typename T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::unlink(
+		template<typename T, SYNC_MODE> void DistributedGraph<T, S>::unlink(
 				arc_ptr arc
 			) {
 			DistributedId id = arc->getId();
 			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinking arc %s", ID_C_STR(id));
 			if(this->getArcs().count(arc->getId())>0) {
 				// Arc is local
-				this->Graph<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>::unlink(arc);
+				this->Graph<std::unique_ptr<SyncData<T,S>>, DistributedId>::unlink(arc);
 			} else {
 				DistributedId source = arc->getSourceNode()->getId();
 				DistributedId target = arc->getTargetNode()->getId();
@@ -217,7 +216,7 @@ namespace FPMAS {
 
 				this->syncMode.initUnlink(arc);
 
-				this->getGhost().unlink((GhostArc<T,N,S>*) arc);
+				this->getGhost().unlink((GhostArc<T,S>*) arc);
 				this->syncMode.notifyUnlinked(source, target, arcId, layer);
 			}
 			FPMAS_LOGD(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Unlinked arc %s", ID_C_STR(id));
@@ -227,7 +226,7 @@ namespace FPMAS {
 		 * private distribute functions, calling low level zoltan migration
 		 * functions.
 		 */
-		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::distributeArcs() {
+		template<class T, SYNC_MODE> void DistributedGraph<T, S>::distributeArcs() {
 			// Prepares Zoltan to migrate arcs associated to the exported
 			// nodes.
 			this->setZoltanArcMigration();
@@ -264,7 +263,7 @@ namespace FPMAS {
 			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Migration done.");
 		}
 
-		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::balance(
+		template<class T, SYNC_MODE> void DistributedGraph<T, S>::balance(
 				int& num_gid_entries,
 				int& num_import,
 				ZOLTAN_ID_PTR& import_global_ids,
@@ -308,7 +307,7 @@ namespace FPMAS {
 		 *
 		 * @param partition new partition
 		 */
-		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::distribute(
+		template<class T, SYNC_MODE> void DistributedGraph<T, S>::distribute(
 				std::unordered_map<DistributedId, int> partition
 				) {
 			// Export lists
@@ -378,7 +377,7 @@ namespace FPMAS {
 		 * 4. Update nodes locations within each Proxy instance
 		 *
 		 */
-		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::distribute() {
+		template<class T, SYNC_MODE> void DistributedGraph<T, S>::distribute() {
 			int num_gid_entries;
 
 			int num_import; 
@@ -504,8 +503,8 @@ namespace FPMAS {
 		 *
 		 * 	@see synchro::modes::GhostMode::termination()
 		 */
-		template<class T, SYNC_MODE, int N> void DistributedGraph<T, S, N>::synchronize() {
-			this->DistributedGraphBase<T, S, N>::synchronize();
+		template<class T, SYNC_MODE> void DistributedGraph<T, S>::synchronize() {
+			this->DistributedGraphBase<T, S>::synchronize();
 			this->syncMode.termination();
 		}
 	}

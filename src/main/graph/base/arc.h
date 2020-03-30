@@ -11,7 +11,7 @@
 
 namespace FPMAS::graph::base {
 
-	template<typename, typename, int> class Graph;
+	template<typename, typename> class Graph;
 
 	/**
 	 * Graph arc.
@@ -19,26 +19,26 @@ namespace FPMAS::graph::base {
 	 * @tparam T associated data type
 	 * @tparam N number of layers
 	 */
-	template<typename T, typename IdType, int N>
+	template<typename T, typename IdType>
 	class Arc : public GraphItem<IdType> {
 		// Grants access to the Arc constructor
-		friend Node<T, IdType, N>;
-		friend Layer<T, IdType, N>;
-		friend Arc<T, IdType, N>* Graph<T, IdType, N>::_link(IdType, Node<T, IdType, N>*, Node<T, IdType, N>*, LayerId);
-		friend Arc<T, IdType, N> nlohmann::adl_serializer<Arc<T, IdType, N>>::from_json(const json&);
-		friend void Graph<T, IdType, N>::unlink(Arc<T, IdType, N> *);
+		friend Node<T, IdType>;
+		friend Layer<T, IdType>;
+		friend Arc<T, IdType>* Graph<T, IdType>::_link(IdType, Node<T, IdType>*, Node<T, IdType>*, LayerId);
+		friend Arc<T, IdType> nlohmann::adl_serializer<Arc<T, IdType>>::from_json(const json&);
+		friend void Graph<T, IdType>::unlink(Arc<T, IdType> *);
 
 		protected:
-		Arc(IdType, Node<T, IdType, N>*, Node<T, IdType, N>*);
-		Arc(IdType, Node<T, IdType, N>*, Node<T, IdType, N>*, LayerId layer);
+		Arc(IdType, Node<T, IdType>*, Node<T, IdType>*);
+		Arc(IdType, Node<T, IdType>*, Node<T, IdType>*, LayerId layer);
 		/**
 		 * Pointer to source Node.
 		 */
-		Node<T, IdType, N>* sourceNode;
+		Node<T, IdType>* sourceNode;
 		/**
 		 * Pointer to target Node.
 		 */
-		Node<T, IdType, N>* targetNode;
+		Node<T, IdType>* targetNode;
 
 		public:
 		/**
@@ -46,8 +46,8 @@ namespace FPMAS::graph::base {
 		 */
 		const LayerId layer;
 
-		Node<T, IdType, N>* const getSourceNode() const;
-		Node<T, IdType, N>* const getTargetNode() const;
+		Node<T, IdType>* const getSourceNode() const;
+		Node<T, IdType>* const getTargetNode() const;
 
 		void unlink();
 	};
@@ -60,7 +60,7 @@ namespace FPMAS::graph::base {
 	 * @param targetNode pointer to the target Node
 	 * @param layer arc layer
 	 */
-	template<typename T, typename IdType, int N> Arc<T, IdType, N>::Arc(IdType id, Node<T, IdType, N>* sourceNode, Node<T, IdType, N>* targetNode, LayerId layer)
+	template<typename T, typename IdType> Arc<T, IdType>::Arc(IdType id, Node<T, IdType>* sourceNode, Node<T, IdType>* targetNode, LayerId layer)
 		: GraphItem<IdType>(id), sourceNode(sourceNode), targetNode(targetNode), layer(layer) {
 			this->sourceNode->layer(layer).outgoingArcs.push_back(this);
 			this->targetNode->layer(layer).incomingArcs.push_back(this);
@@ -74,7 +74,7 @@ namespace FPMAS::graph::base {
 	 * @param sourceNode pointer to the source Node
 	 * @param targetNode pointer to the target Node
 	 */
-	template<typename T, typename IdType, int N> Arc<T, IdType, N>::Arc(IdType id, Node<T, IdType, N>* sourceNode, Node<T, IdType, N>* targetNode) : Arc(id, sourceNode, targetNode, DefaultLayer) {
+	template<typename T, typename IdType> Arc<T, IdType>::Arc(IdType id, Node<T, IdType>* sourceNode, Node<T, IdType>* targetNode) : Arc(id, sourceNode, targetNode, DefaultLayer) {
 
 	}
 
@@ -86,7 +86,7 @@ namespace FPMAS::graph::base {
 	 * pointer of this arcs stay valid. In consequence, this function is
 	 * usefull to unlink / delete arcs at the Graph scale.
 	 */
-	template<typename T, typename IdType, int N> void Arc<T, IdType, N>::unlink() {
+	template<typename T, typename IdType> void Arc<T, IdType>::unlink() {
 		auto& sourceArcs = sourceNode->layer(this->layer).outgoingArcs;
 		for(auto it = sourceArcs.begin(); it != sourceArcs.end();) {
 			if(*it == this) {
@@ -111,7 +111,7 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return pointer to the source node
 	 */
-	template<typename T, typename IdType, int N> Node<T, IdType, N>* const Arc<T, IdType, N>::getSourceNode() const {
+	template<typename T, typename IdType> Node<T, IdType>* const Arc<T, IdType>::getSourceNode() const {
 		return this->sourceNode;
 	}
 
@@ -120,7 +120,7 @@ namespace FPMAS::graph::base {
 	 *
 	 * @return pointer to the target node
 	 */
-	template<typename T, typename IdType, int N> Node<T, IdType, N>* const Arc<T, IdType, N>::getTargetNode() const {
+	template<typename T, typename IdType> Node<T, IdType>* const Arc<T, IdType>::getTargetNode() const {
 		return this->targetNode;
 	}
 }

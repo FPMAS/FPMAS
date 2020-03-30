@@ -55,7 +55,7 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 			write_zoltan_id(arcId1, &transfer_arc_global_ids[0]);
 			write_zoltan_id(arcId2, &transfer_arc_global_ids[2]);
 
-			obj_size_multi_fn<int, 1, GhostMode>(
+			obj_size_multi_fn<int, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -75,7 +75,7 @@ class Mpi_ZoltanArcMigrationFunctionsTest : public ::testing::Test {
 			// Unused
 			int dest[2];
 
-			pack_obj_multi_fn<int, 1, GhostMode>(
+			pack_obj_multi_fn<int, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -153,7 +153,7 @@ TEST_F(Mpi_ZoltanArcMigrationFunctionsTest, local_nodes_unpack_obj_multi_test) {
 	dg.unlink(arcId1);
 	dg.unlink(arcId2);
 	ASSERT_EQ(dg.getArcs().size(), 1);
-	unpack_obj_multi_fn<int, 1, GhostMode>(
+	unpack_obj_multi_fn<int, GhostMode>(
 		&dg,
 		2,
 		2,

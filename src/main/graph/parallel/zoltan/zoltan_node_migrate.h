@@ -17,7 +17,7 @@ using FPMAS::graph::base::Arc;
 
 namespace FPMAS::graph::parallel {
 
-	template<typename T, SYNC_MODE, int N> class DistributedGraphBase;
+	template<typename T, SYNC_MODE> class DistributedGraphBase;
 
 	using synchro::wrappers::SyncData;
 	using synchro::modes::NoSyncMode;
@@ -46,7 +46,7 @@ namespace FPMAS::graph::parallel {
 		 * @param sizes Result : buffer sizes for each node
 		 * @param ierr Result : error code
 		 */
-		template<typename T, int N, SYNC_MODE> void obj_size_multi_fn(
+		template<typename T, SYNC_MODE> void obj_size_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -57,13 +57,13 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			std::unordered_map<
 				DistributedId,
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*
+				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>*
 			> nodes = graph->getNodes();
 			for (int i = 0; i < num_ids; i++) {
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>* node
+				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>* node
 					= nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 				if(graph->node_serialization_cache.count(node->getId()) == 1) {
@@ -103,7 +103,7 @@ namespace FPMAS::graph::parallel {
 		 * @param buf communication buffer
 		 * @param ierr Result : error code
 		 */
-		template<typename T, int N, SYNC_MODE> void pack_obj_multi_fn(
+		template<typename T, SYNC_MODE> void pack_obj_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -116,7 +116,7 @@ namespace FPMAS::graph::parallel {
 				char *buf,
 				int *ierr) {
 
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			// The node should actually be serialized when computing
 			// the required buffer size. For efficiency purpose, we temporarily
 			// store the result and delete it when it is packed.
@@ -151,7 +151,7 @@ namespace FPMAS::graph::parallel {
 		 * @param ierr Result : error code
 		 *
 		 */
-		template<typename T, int N, SYNC_MODE> void unpack_obj_multi_fn(
+		template<typename T, SYNC_MODE> void unpack_obj_multi_fn(
 				void *data,
 				int num_gid_entries,
 				int num_ids,
@@ -161,7 +161,7 @@ namespace FPMAS::graph::parallel {
 				char *buf,
 				int *ierr) {
 
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 			for (int i = 0; i < num_ids; i++) {
 				json json_node = json::parse(&buf[idx[i]]);
 
@@ -173,7 +173,7 @@ namespace FPMAS::graph::parallel {
 				auto node = graph->_buildNode(
 						id,
 						json_node.at("weight").get<float>(),
-						std::unique_ptr<SyncData<T,N,S>>(S<T,N>::wrap(
+						std::unique_ptr<SyncData<T,S>>(S<T>::wrap(
 									id,
 									graph->getMpiCommunicator(),
 									graph->getProxy(),
@@ -218,7 +218,7 @@ namespace FPMAS::graph::parallel {
 		 * @param export_to_part parts to which objects will be exported
 		 * @param ierr Result : error code
 		 */
-		template<typename T, int N, SYNC_MODE> void post_migrate_pp_fn_olz(
+		template<typename T, SYNC_MODE> void post_migrate_pp_fn_olz(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -234,17 +234,17 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraphBase<T, S, N>* graph = (DistributedGraphBase<T, S, N>*) data;
+			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
 
 			std::unordered_map<
 				DistributedId,
-				Node<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*
+				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>*
 			> nodes = graph->getNodes();
 			// Set used to ensure that each arc is sent at most once to
 			// each process.
 			std::set<std::pair<DistributedId, int>> exportedArcPairs;
 
-			std::vector<Arc<std::unique_ptr<SyncData<T,N,S>>, DistributedId, N>*> arcsToExport;
+			std::vector<Arc<std::unique_ptr<SyncData<T,S>>, DistributedId>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			for (int i =0; i < num_export; i++) {
@@ -257,8 +257,8 @@ namespace FPMAS::graph::parallel {
 				graph->getProxy().setCurrentLocation(id, dest_proc);
 
 				// Computes arc exports
-				for(auto layer : exported_node->getLayers()) {
-					for(auto arc : layer.getIncomingArcs()) {
+				for(auto& layer : exported_node->getLayers()) {
+					for(auto arc : layer.second.getIncomingArcs()) {
 						std::pair<DistributedId, int> arc_proc_pair =
 							std::pair<DistributedId, int>(
 									arc->getId(),
@@ -275,8 +275,8 @@ namespace FPMAS::graph::parallel {
 						}
 					}
 				}
-				for(auto layer : exported_node->getLayers()) {
-					for(auto arc : layer.getOutgoingArcs()) {
+				for(auto& layer : exported_node->getLayers()) {
+					for(auto arc : layer.second.getOutgoingArcs()) {
 						std::pair<DistributedId, int> arc_proc_pair =
 							std::pair<DistributedId, int>(
 									arc->getId(),
@@ -331,7 +331,7 @@ namespace FPMAS::graph::parallel {
 		 * @param export_to_part parts to which objects will be exported
 		 * @param ierr Result : error code
 		 */
-		template<typename T, int N> void post_migrate_pp_fn_no_sync(
+		template<typename T> void post_migrate_pp_fn_no_sync(
 				void *data,
 				int num_gid_entries,
 				int num_lid_entries,
@@ -347,9 +347,9 @@ namespace FPMAS::graph::parallel {
 				int *export_to_part,
 				int *ierr) {
 
-			DistributedGraphBase<T, NoSyncMode, N>* graph =(DistributedGraphBase<T, NoSyncMode, N>*) data;
+			DistributedGraphBase<T, NoSyncMode>* graph =(DistributedGraphBase<T, NoSyncMode>*) data;
 
-			std::vector<Arc<std::unique_ptr<SyncData<T,N,NoSyncMode>>, DistributedId, N>*> arcsToExport;
+			std::vector<Arc<std::unique_ptr<SyncData<T, NoSyncMode>>, DistributedId>*> arcsToExport;
 			std::vector<int> procs; // Arcs destination procs
 
 			std::unordered_map<DistributedId, int> nodeDestinations;
@@ -371,8 +371,8 @@ namespace FPMAS::graph::parallel {
 				// each node will be exported as incoming arcs of
 				// corresponding target nodes, or ignored otherwise,
 				// what is the required behavior.
-				for(auto layer : exported_node->getLayers()) {
-					for(auto arc : layer.getIncomingArcs()) {
+				for(auto& layer : exported_node->getLayers()) {
+					for(auto arc : layer.second.getIncomingArcs()) {
 						DistributedId sourceId = arc->getSourceNode()->getId();
 						if(nodeDestinations.count(sourceId) > 0 // The source is also exported
 								&& nodeDestinations.at(sourceId) == nodeDest.second// The source is exported to the same proc as the target node

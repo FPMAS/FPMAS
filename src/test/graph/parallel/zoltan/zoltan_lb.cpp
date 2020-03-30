@@ -66,7 +66,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		int err;
 
 		void write_zoltan_global_ids() {
-			obj_list<int, 1, GhostMode>(
+			obj_list<int, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -87,7 +87,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_zoltan_num_edges() {
-			num_edges_multi_fn<int, 1, GhostMode>(
+			num_edges_multi_fn<int, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -101,7 +101,7 @@ class Mpi_ZoltanFunctionsTest : public ::testing::Test {
 };
 
 TEST_F(Mpi_ZoltanFunctionsTest, num_obj) {
-	int num = num_obj<int, 1, GhostMode>(&dg, &err);
+	int num = num_obj<int, GhostMode>(&dg, &err);
 	ASSERT_EQ(num, 3);
 }
 
@@ -142,7 +142,7 @@ TEST_F(Mpi_ZoltanFunctionsTest, edge_list_multi_test) {
 	int nbor_procs[3];
 	float ewgts[3];
 
-	edge_list_multi_fn<int, 1, GhostMode>(
+	edge_list_multi_fn<int, GhostMode>(
 			&dg,
 			2,
 			0,

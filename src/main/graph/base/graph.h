@@ -29,8 +29,8 @@ namespace FPMAS {
 		 * The FPMAS::graph namespace contains Graph, Node and Arc definitions.
 		 */
 		namespace base {
-			template<typename, typename, int N> class Node;
-			template<typename, typename, int N> class Arc;
+			template<typename, typename> class Node;
+			template<typename, typename> class Arc;
 
 			/**
 			 * Layered Graph class.
@@ -65,12 +65,12 @@ namespace FPMAS {
 			 * @tparam IdType type of Nodes and Arcs ids
 			 * @tparam N layers count
 			 */
-			template<typename T, typename IdType=DefaultId, int N = 1>
+			template<typename T, typename IdType=DefaultId>
 			class Graph {
-				typedef Arc<T, IdType, N>* arc_ptr;
-				typedef Node<T, IdType, N>* node_ptr;
-				friend Arc<T, IdType, N>;
-				friend Node<T, IdType, N>;
+				typedef Arc<T, IdType>* arc_ptr;
+				typedef Node<T, IdType>* node_ptr;
+				friend Arc<T, IdType>;
+				friend Node<T, IdType>;
 
 				private:
 					std::unordered_map<IdType, node_ptr> nodes;
@@ -108,12 +108,12 @@ namespace FPMAS {
 
 					// Node getters
 					node_ptr getNode(IdType);
-					const Node<T, IdType, N>* getNode(IdType) const;
+					const Node<T, IdType>* getNode(IdType) const;
 					const std::unordered_map<IdType, node_ptr>& getNodes() const;
 
 					// Arc getters
 					arc_ptr getArc(IdType);
-					const Arc<T, IdType, N>* getArc(IdType) const;
+					const Arc<T, IdType>* getArc(IdType) const;
 					const std::unordered_map<IdType, arc_ptr>& getArcs() const;
 
 					// Node constructors
@@ -149,7 +149,7 @@ namespace FPMAS {
 			 * @throw exceptions::node_out_of_graph if the specified id does
 			 * not correspond to any node
 			 */
-			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::getNode(IdType id) {
+			template<typename T, typename IdType> Node<T, IdType>* Graph<T, IdType>::getNode(IdType id) {
 				try {
 					return this->nodes.at(id);
 				} catch(std::out_of_range) {
@@ -167,7 +167,7 @@ namespace FPMAS {
 			 * @throw exceptions::node_out_of_graph if the specified id does
 			 * not correspond to any node
 			 */
-			template<typename T, typename IdType, int N> const Node<T, IdType, N>* Graph<T, IdType, N>::getNode(IdType id) const {
+			template<typename T, typename IdType> const Node<T, IdType>* Graph<T, IdType>::getNode(IdType id) const {
 				try {
 					return this->nodes.at(id);
 				} catch(std::out_of_range) {
@@ -179,7 +179,7 @@ namespace FPMAS {
 			 *
 			 * @return nodes contained in this graph
 			 */
-			template<typename T, typename IdType, int N> const std::unordered_map<IdType, Node<T, IdType, N>*>& Graph<T, IdType, N>::getNodes() const {
+			template<typename T, typename IdType> const std::unordered_map<IdType, Node<T, IdType>*>& Graph<T, IdType>::getNodes() const {
 				return this->nodes;
 			}
 
@@ -193,7 +193,7 @@ namespace FPMAS {
 			 * @throw exceptions::arc_out_of_graph if the specified id does
 			 * not correspond to any arc
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::getArc(IdType id) {
+			template<typename T, typename IdType> Arc<T, IdType>* Graph<T, IdType>::getArc(IdType id) {
 				try {
 					return this->arcs.at(id);
 				} catch (std::out_of_range) {
@@ -208,7 +208,7 @@ namespace FPMAS {
 			 * @param id arc id
 			 * @return const pointer to associated arc
 			 */
-			template<typename T, typename IdType, int N> const Arc<T, IdType, N>* Graph<T, IdType, N>::getArc(IdType id) const {
+			template<typename T, typename IdType> const Arc<T, IdType>* Graph<T, IdType>::getArc(IdType id) const {
 				try {
 					return this->arcs.at(id);
 				} catch (std::out_of_range) {
@@ -221,7 +221,7 @@ namespace FPMAS {
 			 *
 			 * @return arcs contained in this graph
 			 */
-			template<typename T, typename IdType, int N> const std::unordered_map<IdType, Arc<T, IdType, N>*>& Graph<T, IdType, N>::getArcs() const {
+			template<typename T, typename IdType> const std::unordered_map<IdType, Arc<T, IdType>*>& Graph<T, IdType>::getArcs() const {
 				return this->arcs;
 			}
 
@@ -238,9 +238,9 @@ namespace FPMAS {
 			 * @see buildNode(T&&)
 			 * @see buildNode(weight, T&&)
 			 */
-			template<typename T, typename IdType, int N> Node<T, IdType, N>*
-				Graph<T, IdType, N>::_buildNode(IdType id, float weight, T&& data) {
-				node_ptr node = new Node<T, IdType, N>(
+			template<typename T, typename IdType> Node<T, IdType>*
+				Graph<T, IdType>::_buildNode(IdType id, float weight, T&& data) {
+				node_ptr node = new Node<T, IdType>(
 						id, weight, std::forward<T>(data)
 						);
 				this->nodes[id] = node;
@@ -253,9 +253,9 @@ namespace FPMAS {
 			 *
 			 * @return pointer to built node
 			 */
-			template<typename T, typename IdType, int N> Node<T, IdType, N>*
-				Graph<T, IdType, N>::buildNode() {
-					node_ptr node = new Node<T, IdType, N>(currentNodeId++);
+			template<typename T, typename IdType> Node<T, IdType>*
+				Graph<T, IdType>::buildNode() {
+					node_ptr node = new Node<T, IdType>(currentNodeId++);
 					this->nodes[node->getId()] = node;
 					return node;
 				}
@@ -267,8 +267,8 @@ namespace FPMAS {
 			 * @param data node's data
 			 * @return pointer to built node
 			 */
-			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(T&& data) {
-				node_ptr node = new Node<T, IdType, N>(currentNodeId++, std::forward<T>(data));
+			template<typename T, typename IdType> Node<T, IdType>* Graph<T, IdType>::buildNode(T&& data) {
+				node_ptr node = new Node<T, IdType>(currentNodeId++, std::forward<T>(data));
 				this->nodes[node->getId()] = node;
 				return node;
 			}
@@ -281,8 +281,8 @@ namespace FPMAS {
 			 * @param data rvalue reference to node's data
 			 * @return pointer to build node
 			 */
-			template<typename T, typename IdType, int N> Node<T, IdType, N>* Graph<T, IdType, N>::buildNode(float weight, T&& data) {
-				node_ptr node = new Node<T, IdType, N>(
+			template<typename T, typename IdType> Node<T, IdType>* Graph<T, IdType>::buildNode(float weight, T&& data) {
+				node_ptr node = new Node<T, IdType>(
 						currentNodeId++, weight, std::forward<T>(data)
 						);
 				this->nodes[node->getId()] = node;
@@ -311,11 +311,11 @@ namespace FPMAS {
 			 */
 			// TODO: exception if nodes does not belong to this graph
 			// TODO: exception if bad layer
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>*
-				Graph<T, IdType, N>::_link(
+			template<typename T, typename IdType> Arc<T, IdType>*
+				Graph<T, IdType>::_link(
 					IdType arcId, node_ptr source, node_ptr target, LayerId layer
 					) {
-				arc_ptr arc = new Arc<T, IdType, N>(
+				arc_ptr arc = new Arc<T, IdType>(
 						arcId, source, target, layer
 						);
 				this->arcs[arcId] = arc;
@@ -346,8 +346,8 @@ namespace FPMAS {
 			 * @see link(IdType, IdType)
 			 * @see link(IdType, IdType, LayerId)
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>*
-				Graph<T, IdType, N>::_link(
+			template<typename T, typename IdType> Arc<T, IdType>*
+				Graph<T, IdType>::_link(
 					IdType arcId, IdType source, IdType target, LayerId layer
 					) {
 					try {
@@ -372,8 +372,8 @@ namespace FPMAS {
 			 * @param layer layer on which the arc should be built
 			 * @return pointer to built arc
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>*
-				Graph<T, IdType, N>::link(node_ptr source, node_ptr target, LayerId layer) {
+			template<typename T, typename IdType> Arc<T, IdType>*
+				Graph<T, IdType>::link(node_ptr source, node_ptr target, LayerId layer) {
 				return this->_link(currentArcId++, source, target, layer);
 			}
 
@@ -389,8 +389,8 @@ namespace FPMAS {
 			 * @param target pointer to target node
 			 * @return pointer to built arc
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>*
-				Graph<T, IdType, N>::link(node_ptr source, node_ptr target){
+			template<typename T, typename IdType> Arc<T, IdType>*
+				Graph<T, IdType>::link(node_ptr source, node_ptr target){
 				return this->link(source, target, DefaultLayer);
 			}
 
@@ -406,8 +406,8 @@ namespace FPMAS {
 			 * @throw exceptions::node_out_of_graph iff at least one of the two
 			 * node ids does not correspond to a Node in this Graph
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>*
-				Graph<T, IdType, N>::link(
+			template<typename T, typename IdType> Arc<T, IdType>*
+				Graph<T, IdType>::link(
 						IdType source_id, IdType target_id, LayerId layer
 						) {
 				try {
@@ -433,7 +433,7 @@ namespace FPMAS {
 			 * @throw exceptions::node_out_of_graph iff at least one of the two
 			 * node ids does not correspond to a Node in this Graph
 			 */
-			template<typename T, typename IdType, int N> Arc<T, IdType, N>* Graph<T, IdType, N>::link(IdType source_id, IdType target_id) {
+			template<typename T, typename IdType> Arc<T, IdType>* Graph<T, IdType>::link(IdType source_id, IdType target_id) {
 				try {
 					return this->link(source_id, target_id, DefaultLayer);
 				} catch(exceptions::node_out_of_graph<IdType>) {
@@ -450,7 +450,7 @@ namespace FPMAS {
 			 * not belong to this Graph
 			 */
 			// TODO: improve to not use count
-			template<typename T, typename IdType, int N> void Graph<T, IdType, N>::unlink(arc_ptr arc) {
+			template<typename T, typename IdType> void Graph<T, IdType>::unlink(arc_ptr arc) {
 				if(this->arcs.count(arc->getId()) == 0)
 					throw exceptions::arc_out_of_graph(arc->getId());
 
@@ -469,7 +469,7 @@ namespace FPMAS {
 			 * @throw exceptions::arc_out_of_graph iff the specified arcId does
 			 * not correspond to any Arc in this Graph
 			 */
-			template<typename T, typename IdType, int N> void Graph<T, IdType, N>::unlink(IdType arcId) {
+			template<typename T, typename IdType> void Graph<T, IdType>::unlink(IdType arcId) {
 				try {
 					this->unlink(this->arcs.at(arcId));
 				} catch (std::out_of_range) {
@@ -491,7 +491,7 @@ namespace FPMAS {
 			 * @throw exceptions::node_out_of_graph iff the specified id does
 			 * not correspond to any Node in this Graph
 			 */
-			template<typename T, typename IdType, int N> void Graph<T, IdType, N>::removeNode(IdType nodeId) {
+			template<typename T, typename IdType> void Graph<T, IdType>::removeNode(IdType nodeId) {
 				FPMAS_LOGD(-1, "GRAPH", "Removing node %lu", nodeId);
 				node_ptr node_to_remove;
 				try {
@@ -502,7 +502,7 @@ namespace FPMAS {
 
 				// Deletes incoming arcs
 				for(auto& layer : node_to_remove->layers) {
-					for(auto arc : layer.getIncomingArcs()) {
+					for(auto arc : layer.second.getIncomingArcs()) {
 						try {
 							FPMAS_LOGV(
 									-1,
@@ -517,7 +517,7 @@ namespace FPMAS {
 						}
 					}
 					// Deletes outgoing arcs
-					for(auto arc : layer.getOutgoingArcs()) {
+					for(auto arc : layer.second.getOutgoingArcs()) {
 						try {
 							FPMAS_LOGV(
 									-1,
@@ -545,7 +545,7 @@ namespace FPMAS {
 			 *
 			 * Deletes nodes and arcs remaining in this graph.
 			 */
-			template<typename T, typename IdType, int N> Graph<T, IdType, N>::~Graph() {
+			template<typename T, typename IdType> Graph<T, IdType>::~Graph() {
 				for(auto node : this->nodes) {
 					delete node.second;
 				}

@@ -36,7 +36,7 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(id1, &transfer_global_ids[0]);
 			FPMAS::graph::parallel::zoltan::utils::write_zoltan_id(id2, &transfer_global_ids[2]);
 
-			obj_size_multi_fn<int, 1, GhostMode>(
+			obj_size_multi_fn<int, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -56,7 +56,7 @@ class Mpi_ZoltanGhostNodeMigrationFunctionsTest : public ::testing::Test {
 			// Unused
 			int dest[2];
 
-			pack_obj_multi_fn<int, 1, GhostMode>(
+			pack_obj_multi_fn<int, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -126,7 +126,7 @@ TEST_F(Mpi_ZoltanGhostNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	dg.removeNode(id1);
 	dg.removeNode(id2);
 
-	unpack_obj_multi_fn<int, 1, GhostMode>(
+	unpack_obj_multi_fn<int, GhostMode>(
 		&dg,
 		2,
 		2,

@@ -51,7 +51,7 @@ class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 			write_zoltan_id(id1, &transfer_global_ids[0]);
 			write_zoltan_id(id3, &transfer_global_ids[2]);
 
-			obj_size_multi_fn<int, 1, GhostMode>(
+			obj_size_multi_fn<int, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -71,7 +71,7 @@ class Mpi_ZoltanNodeMigrationFunctionsTest : public ::testing::Test {
 			// Unused
 			int dest[2];
 
-			pack_obj_multi_fn<int, 1, GhostMode>(
+			pack_obj_multi_fn<int, GhostMode>(
 					&dg,
 					2,
 					0,
@@ -137,7 +137,7 @@ TEST_F(Mpi_ZoltanNodeMigrationFunctionsTest, unpack_obj_multi_test) {
 	write_communication_buffer();
 
 	DistributedGraph<int> g = DistributedGraph<int>();
-	unpack_obj_multi_fn<int, 1, GhostMode>(
+	unpack_obj_multi_fn<int, GhostMode>(
 		&g,
 		2,
 		2,

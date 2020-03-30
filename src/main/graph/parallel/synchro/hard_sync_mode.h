@@ -10,7 +10,7 @@ using FPMAS::communication::SyncMpiCommunicator;
 namespace FPMAS::graph::parallel::synchro {
 
 	namespace modes {
-		template<typename T, int N> class HardSyncMode;
+		template<typename T> class HardSyncMode;
 	}
 
 	namespace wrappers {
@@ -21,7 +21,7 @@ namespace FPMAS::graph::parallel::synchro {
 		 * @tparam T wrapped data type
 		 * @tparam N layers count
 		 */
-		template<typename T, int N> class HardSyncData : public SyncData<T,N,modes::HardSyncMode> {
+		template<typename T> class HardSyncData : public SyncData<T,modes::HardSyncMode> {
 			private:
 				DistributedId id;
 				SyncMpiCommunicator& mpiComm;
@@ -44,7 +44,7 @@ namespace FPMAS::graph::parallel::synchro {
 		 * @param mpiComm MPI communicator used to communicate with data sources
 		 * @param proxy proxy used to locate data
 		 */
-		template<typename T, int N> HardSyncData<T,N>::HardSyncData(
+		template<typename T> HardSyncData<T>::HardSyncData(
 				DistributedId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy)
@@ -59,12 +59,12 @@ namespace FPMAS::graph::parallel::synchro {
 		 * @param proxy proxy used to locate data
 		 * @param data rvalue to move to the associated data instance
 		 */
-		template<typename T, int N> HardSyncData<T,N>::HardSyncData(
+		template<typename T> HardSyncData<T>::HardSyncData(
 				DistributedId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				T&& data)
-			: SyncData<T,N,modes::HardSyncMode>(std::forward<T>(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
+			: SyncData<T,modes::HardSyncMode>(std::forward<T>(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
 			}
 
 		/**
@@ -75,12 +75,12 @@ namespace FPMAS::graph::parallel::synchro {
 		 * @param proxy proxy used to locate data
 		 * @param data associated data instance
 		 */
-		template<typename T, int N> HardSyncData<T,N>::HardSyncData(
+		template<typename T> HardSyncData<T>::HardSyncData(
 				DistributedId id,
 				SyncMpiCommunicator& mpiComm,
 				const Proxy& proxy,
 				const T& data)
-			: SyncData<T,N,modes::HardSyncMode>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
+			: SyncData<T,modes::HardSyncMode>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
 			}
 
 		/**
@@ -92,7 +92,7 @@ namespace FPMAS::graph::parallel::synchro {
 		 *
 		 * @return const reference to the distant data
 		 */
-		template<typename T, int N> const T& HardSyncData<T,N>::read() {
+		template<typename T> const T& HardSyncData<T>::read() {
 			this->data = ((nlohmann::json) nlohmann::json::parse(
 						this->mpiComm.read(
 							this->id,
@@ -104,7 +104,7 @@ namespace FPMAS::graph::parallel::synchro {
 
 		// TODO: This needs to be optimize!! no need to serialize when data is
 		// local...
-		template<typename T, int N> T& HardSyncData<T,N>::acquire() {
+		template<typename T> T& HardSyncData<T>::acquire() {
 			this->data = ((nlohmann::json) nlohmann::json::parse(
 						this->mpiComm.acquire(
 							this->id,
@@ -114,7 +114,7 @@ namespace FPMAS::graph::parallel::synchro {
 			return this->data;
 		}
 
-		template<typename T, int N> void HardSyncData<T,N>::release() {
+		template<typename T> void HardSyncData<T>::release() {
 			this->mpiComm.giveBack(
 					this->id,
 					this->proxy.getCurrentLocation(this->id)
@@ -140,9 +140,9 @@ namespace FPMAS::graph::parallel::synchro {
 		 * perform those operations, the two involved nodes must first be
 		 * acquired, and created / destroyed arcs are exported on release.
 		 */
-		template<typename T, int N> class HardSyncMode : public SyncMode<HardSyncMode, wrappers::HardSyncData, T, N> {
+		template<typename T> class HardSyncMode : public SyncMode<HardSyncMode, wrappers::HardSyncData, T> {
 			public:
-				HardSyncMode(DistributedGraphBase<T, HardSyncMode, N>&);
+				HardSyncMode(DistributedGraphBase<T, HardSyncMode>&);
 
 		};
 
@@ -151,11 +151,11 @@ namespace FPMAS::graph::parallel::synchro {
 		 *
 		 * @param dg parent DistributedGraphBase
 		 */
-		template<typename T, int N> HardSyncMode<T, N>::HardSyncMode(DistributedGraphBase<T, HardSyncMode, N>& dg)
-			: SyncMode<HardSyncMode, wrappers::HardSyncData, T, N>(zoltan_query_functions(
-						&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, N, HardSyncMode>,
-						&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, N, HardSyncMode>,
-						&FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, N, HardSyncMode>
+		template<typename T> HardSyncMode<T>::HardSyncMode(DistributedGraphBase<T, HardSyncMode>& dg)
+			: SyncMode<HardSyncMode, wrappers::HardSyncData, T>(zoltan_query_functions(
+						&FPMAS::graph::parallel::zoltan::node::post_migrate_pp_fn_olz<T, HardSyncMode>,
+						&FPMAS::graph::parallel::zoltan::arc::post_migrate_pp_fn_olz<T, HardSyncMode>,
+						&FPMAS::graph::parallel::zoltan::arc::mid_migrate_pp_fn<T, HardSyncMode>
 						), dg) {}
 	}
 
