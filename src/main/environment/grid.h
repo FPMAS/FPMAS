@@ -11,41 +11,40 @@ using FPMAS::graph::parallel::synchro::modes::GhostMode;
 using FPMAS::agent::Agent;
 
 namespace FPMAS::environment::grid {
-
 	template<
-		template<typename> class Neighborhood = VonNeumann,
 		SYNC_MODE = GhostMode,
-		typename... AgentTypes> class Grid
+		typename... AgentTypes
+		> class Grid
 			: public Environment<S, Cell<S, AgentTypes...>, AgentTypes...> {
 				public:
 					typedef Environment<S, Cell<S, AgentTypes...>, AgentTypes...> env_type;
-					typedef Grid<Neighborhood, S, AgentTypes...> grid_type;
+					typedef Grid<S, AgentTypes...> grid_type;
 					typedef Cell<S, AgentTypes...> cell_type;
 
-				private:
-					const int _width;
-					const int _height;
-					Neighborhood<grid_type> neighborhood;
-
 				public:
+					const int width;
+					const int height;
+					const int neighborhoodRange;
 
 					const DistributedId id(unsigned int x, unsigned int y) {
-						return {this->mpiCommunicator.getRank(), y * _width + x};
+						return {this->mpiCommunicator.getRank(), y * width + x};
 					};
-					Grid(int width, int height, unsigned int neighborhoodRange = 1);
+					Grid(int width, int height, Neighborhood<grid_type>* = new VonNeumann<grid_type>(1));
 
-					const int width() const {
-						return _width;
+					template<typename AgentType, typename... Args> typename env_type::node_type* buildAgent(int x, int y, Args... args) {
+						auto agentNode = this->buildNode(std::unique_ptr<typename grid_type::agent_type>(new AgentType(args...)));
+						this->link(
+								agentNode->getId(),
+								id(x, y),
+								LOCATION
+								);
+						return agentNode;
 					}
-					const int height() const {
-						return _height;
-					}
-
 			};
 
-	template<template<typename> class Neighborhood, SYNC_MODE, typename... AgentTypes>
-		Grid<Neighborhood, S, AgentTypes...>::Grid(int width, int height, unsigned int neighborhoodRange)
-			: _width(width), _height(height), neighborhood(*this, neighborhoodRange) {
+	template<SYNC_MODE, typename... AgentTypes>
+		Grid<S, AgentTypes...>::Grid(int width, int height, Neighborhood<grid_type>* neighborhood)
+			: width(width), height(height), neighborhoodRange(neighborhood->range) {
 			// TODO: replace this hack with a true distributed build
 			if(this->getMpiCommunicator().getRank() == 0) {
 				/*
@@ -56,8 +55,8 @@ namespace FPMAS::environment::grid {
 				 * From there can be deduced the id(x, y) = y*width+x function.
 				 */
 				std::unordered_map<DistributedId, const cell_type*> cells;
-				for (int j = 0; j < _height; j++) {
-					for(int i = 0; i < _width; i++) {
+				for (int j = 0; j < height; j++) {
+					for(int i = 0; i < width; i++) {
 						// Build cell
 						cell_type* cell = new cell_type(i, j);
 						auto node = this->buildNode(
@@ -68,9 +67,10 @@ namespace FPMAS::environment::grid {
 					}
 				}
 				for(auto cell : cells) {
-					neighborhood.linkNeighbors(cell.first, cell.second);
+					neighborhood->linkNeighbors(*this, cell.first, cell.second);
 				}
 			}
+			delete neighborhood;
 		}
 
 }

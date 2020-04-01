@@ -77,7 +77,7 @@ namespace FPMAS::graph::base {
 		T _data;
 		float weight;
 		mutable std::unordered_map<LayerId, Layer<T, IdType>> layers;
-		Layer<T, IdType>& layer(LayerId layer);
+		Layer<T, IdType>& _layer(LayerId layer);
 
 		public:
 		/**
@@ -189,7 +189,7 @@ namespace FPMAS::graph::base {
 		this->weight = weight;
 	}
 
-	template<typename T, typename IdType> Layer<T, IdType>& Node<T, IdType>::layer(LayerId layer) {
+	template<typename T, typename IdType> Layer<T, IdType>& Node<T, IdType>::_layer(LayerId layer) {
 		return this->layers[layer];
 	}
 

@@ -2,6 +2,7 @@
 #define PERCEPTIONS_H
 
 #include "utils/macros.h"
+#include "environment/grid_layers.h"
 #include <type_traits>
 #include <tuple>
 #include <vector>
@@ -11,71 +12,59 @@ using FPMAS::graph::base::LayerId;
 namespace FPMAS::agent {
 
 	template<
-		typename node_type
-		> class Perception {
-			public:
-			node_type* node;
-			Perception(const node_type* node) : node(const_cast<node_type*>(node)) {}
-		};
-
-	template<
 		typename node_type,
 		LayerId layer
-	> class TypedPerception : public Perception<node_type> {
+	> class Perception {
+		private:
+			node_type* _node;
 		public:
-			TypedPerception(const node_type* node)
-				: Perception<node_type>(node) {}
+			Perception(const node_type* node) : _node(const_cast<node_type*>(node)) {}
+
+			node_type* node() {
+				return _node;
+			}
+
 
 	};
 
-	template<
-		typename node_type,
-		LayerId layer
-	> class PerceptionSet {
-		private:
-			std::vector<TypedPerception<node_type, layer>> set;
-
-		public:
-			PerceptionSet(const node_type* node) {
+	template<typename node_type> class PerceptionsCollector {
+		protected:
+			template<LayerId layer> std::vector<Perception<node_type, layer>> collectLayer(const node_type* node) {
+				std::vector<Perception<node_type, layer>> perceptions;
 				auto neighbors = node->layer(layer).outNeighbors();
-					for(auto neighbor : neighbors) {
-						set.push_back(TypedPerception<node_type, layer>(neighbor));
-					}
+				for(auto neighbor : neighbors) {
+					perceptions.push_back(Perception<node_type, layer>(neighbor));
+				}
+				return perceptions;
 			}
 
-			const std::vector<TypedPerception<node_type, layer>>& get() const {
-				return set;
+			virtual void collect(const node_type*) = 0;
+
+	};
+
+	template<typename node_type, LayerId layer> class DefaultCollector : public PerceptionsCollector<node_type> {
+		private:
+			std::vector<Perception<node_type, layer>> perceptions;
+		public:
+			DefaultCollector(const node_type* node) {
+				collect(node);
+			}
+
+			void collect(const node_type* node) override {
+				perceptions = this->template collectLayer<layer>(node);
+			}
+
+			std::vector<Perception<node_type, layer>> get() {
+				return perceptions;
 			}
 	};
 
-	template<
-		typename node_type,
-		LayerId... layers
-	> class Perceptions {
-		private:
-			const std::tuple<PerceptionSet<node_type, layers>...>
-				perceptions;
-			std::vector<Perception<node_type>> concat_perceptions;
-
-			template<LayerId layer> void merge(PerceptionSet<node_type, layer> perception_set, std::vector<Perception<node_type>>& perceptions ) const {
-				for(auto item : perception_set.get()) {
-					perceptions.push_back(item);
-				}
-			};
-
+	using FPMAS::environment::grid::MOVABLE_TO;
+	template<typename node_type> class MovableTo : public DefaultCollector<node_type, MOVABLE_TO> {
 		public:
-			Perceptions(const node_type* node) :
-				perceptions {PerceptionSet<node_type, layers>(node)...} {
-				(merge(std::get<PerceptionSet<node_type, layers>>(perceptions), concat_perceptions),...);
-			}
+			MovableTo(const node_type* node)
+				: DefaultCollector<node_type, MOVABLE_TO>(node) {};
 
-			template<LayerId layer> const std::vector<TypedPerception<node_type, layer>>& get() const {
-				return std::get<PerceptionSet<node_type, layer>>(perceptions).get();
-			}
-
-			const std::vector<Perception<node_type>>& get() const {
-				return concat_perceptions;
-			}
 	};
 }
 

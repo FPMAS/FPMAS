@@ -82,6 +82,7 @@ set(SOURCES
 	environment/grid.cpp
 	environment/von_neumann.cpp
 	environment/grid_agent.cpp
+	environment/cell.cpp
 	)
 
 # Agent

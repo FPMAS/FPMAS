@@ -6,12 +6,25 @@
 
 using FPMAS::graph::parallel::synchro::modes::GhostMode;
 using FPMAS::agent::Agent;
+using FPMAS::agent::DefaultCollector;
 
 class Sheep;
 class Wolf;
 
-static const LayerId Layer_A = 0;
-static const LayerId Layer_B = 1;
+static const LayerId LAYER_A = 0;
+static const LayerId LAYER_B = 1;
+
+template<typename node_type> class LayerA : public DefaultCollector<node_type, LAYER_A> {
+	public:
+		LayerA(const node_type* node)
+			: DefaultCollector<node_type, LAYER_A>(node) {};
+};
+
+template<typename node_type> class LayerB : public DefaultCollector<node_type, LAYER_B> {
+	public:
+		LayerB(const node_type* node)
+			: DefaultCollector<node_type, LAYER_B>(node) {};
+};
 
 typedef Agent<GhostMode, Wolf, Sheep> PreyPredAgent;
 typedef typename PreyPredAgent::node_ptr node_ptr;

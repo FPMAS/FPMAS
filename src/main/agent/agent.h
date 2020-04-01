@@ -29,8 +29,8 @@ namespace FPMAS::agent {
 			typedef typename env_type::node_type node_type;
 			typedef typename env_type::node_ptr node_ptr;
 
-			template<LayerId... layers> Perceptions<node_type, layers...> perceptions(node_ptr node) {
-				return Perceptions<node_type, layers...>(node);
+			template<template<typename> class Collector> Collector<node_type> perceive(node_ptr node) {
+				return Collector<node_type>(node);
 			}
 
 			virtual void act(node_ptr, env_type&) = 0;

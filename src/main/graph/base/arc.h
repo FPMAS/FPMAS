@@ -62,8 +62,8 @@ namespace FPMAS::graph::base {
 	 */
 	template<typename T, typename IdType> Arc<T, IdType>::Arc(IdType id, Node<T, IdType>* sourceNode, Node<T, IdType>* targetNode, LayerId layer)
 		: GraphItem<IdType>(id), sourceNode(sourceNode), targetNode(targetNode), layer(layer) {
-			this->sourceNode->layer(layer).outgoingArcs.push_back(this);
-			this->targetNode->layer(layer).incomingArcs.push_back(this);
+			this->sourceNode->_layer(layer).outgoingArcs.push_back(this);
+			this->targetNode->_layer(layer).incomingArcs.push_back(this);
 		};
 
 	/**
@@ -87,7 +87,7 @@ namespace FPMAS::graph::base {
 	 * usefull to unlink / delete arcs at the Graph scale.
 	 */
 	template<typename T, typename IdType> void Arc<T, IdType>::unlink() {
-		auto& sourceArcs = sourceNode->layer(this->layer).outgoingArcs;
+		auto& sourceArcs = sourceNode->_layer(this->layer).outgoingArcs;
 		for(auto it = sourceArcs.begin(); it != sourceArcs.end();) {
 			if(*it == this) {
 				sourceArcs.erase(it);
@@ -96,7 +96,7 @@ namespace FPMAS::graph::base {
 				it++;
 			}
 		}
-		auto& targetArcs = targetNode->layer(this->layer).incomingArcs;
+		auto& targetArcs = targetNode->_layer(this->layer).incomingArcs;
 		for(auto it = targetArcs.begin(); it != targetArcs.end();) {
 			if(*it == this) {
 				targetArcs.erase(it);

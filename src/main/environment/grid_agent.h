@@ -1,11 +1,13 @@
 #ifndef GRID_AGENT_H
 #define GRID_AGENT_H
 
-#include "grid.h"
+#include "agent/agent.h"
+#include "agent/perceptions.h"
 
 namespace FPMAS::environment::grid {
 
-	using agent::TypedPerception;
+	template<SYNC_MODE, typename... AgentTypes> class Cell;
+	using agent::Perception;
 	template<
 		SYNC_MODE,
 		typename... AgentTypes
@@ -15,11 +17,16 @@ namespace FPMAS::environment::grid {
 			typedef typename agent_type::node_type node_type;
 			typedef typename agent_type::env_type& env_ref;
 
+			const int perceptionRange;
+			const int movableRange;
+
+			GridAgent(int movableRange, int perceptionRange)
+				: movableRange(movableRange), perceptionRange(perceptionRange) {}
+
 			void moveTo(
 				node_type*,
 				env_ref env,
-				TypedPerception<node_type, MOVABLE_TO> target);
-
+				Perception<node_type, MOVABLE_TO> target);
 
 	};
 
@@ -27,24 +34,24 @@ namespace FPMAS::environment::grid {
 		void GridAgent<S, AgentTypes...>::moveTo(
 				node_type* node,
 				env_ref env,
-				TypedPerception<node_type, MOVABLE_TO> target
+				Perception<node_type, MOVABLE_TO> target
 			) {
 			// Unlink current location
-			for(auto location : const_cast<const node_type*>(node)
+			for(auto location : node
 					->layer(LOCATION).getOutgoingArcs()) {
 				env.unlink(location);
 			}
 			// Unlink perceptions
-			for(auto perception : const_cast<const node_type*>(node)
+			for(auto perception : node
 					->layer(PERCEPTIONS).getOutgoingArcs()){
 				env.unlink(perception);
 			}
 
 			// Link location
-			env.link(node, target.node, LOCATION);
+			env.link(node, target.node(), LOCATION);
 
 			// Unlink movableTo
-			for(auto movableToArc : const_cast<const node_type*>(node)
+			for(auto movableToArc : node
 					->layer(MOVABLE_TO).getOutgoingArcs()) {
 				env.unlink(movableToArc);
 			}

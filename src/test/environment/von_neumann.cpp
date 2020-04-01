@@ -10,10 +10,10 @@ using FPMAS::environment::grid::NEIGHBOR_CELL;
 
 using FPMAS::environment::grid::VonNeumann;
 
-void TestVonNeumannLevel(Grid<VonNeumann>& grid, int level) {
+void TestVonNeumannLevel(Grid<>& grid, int level) {
 	for(auto node : grid.getNodes()) {
 		const auto& cell
-			= dynamic_cast<typename Grid<VonNeumann>::cell_type&>(
+			= dynamic_cast<typename Grid<>::cell_type&>(
 					*node.second->data()->read()
 			);
 		const auto* node_ptr = node.second;
@@ -26,9 +26,9 @@ void TestVonNeumannLevel(Grid<VonNeumann>& grid, int level) {
 		 * Test corners
 		 */
 		if((x < level && y < level)
-			|| (x >= grid.width() - level && y < level)
-			|| (x < level && y >= grid.height() - level)
-			|| (x >= grid.width() - level && y >= grid.height() - level)
+			|| (x >= grid.width - level && y < level)
+			|| (x < level && y >= grid.height - level)
+			|| (x >= grid.width - level && y >= grid.height - level)
 			) {
 			ASSERT_EQ(in.size(), 2);
 			ASSERT_EQ(out.size(), 2);
@@ -36,7 +36,7 @@ void TestVonNeumannLevel(Grid<VonNeumann>& grid, int level) {
 				ASSERT_CONTAINS(grid.getNode(grid.id(x+level, y)), in);
 				ASSERT_CONTAINS(grid.getNode(grid.id(x+level, y)), out);
 			}
-			if(x >= grid.width() - level) {
+			if(x >= grid.width - level) {
 				ASSERT_CONTAINS(grid.getNode(grid.id(x-level, y)), in);
 				ASSERT_CONTAINS(grid.getNode(grid.id(x-level, y)), out);
 			}
@@ -44,7 +44,7 @@ void TestVonNeumannLevel(Grid<VonNeumann>& grid, int level) {
 				ASSERT_CONTAINS(grid.getNode(grid.id(x, y+level)), in);
 				ASSERT_CONTAINS(grid.getNode(grid.id(x, y+level)), out);
 			}
-			if(y >= grid.height() - level) {
+			if(y >= grid.height - level) {
 				ASSERT_CONTAINS(grid.getNode(grid.id(x, y-level)), in);
 				ASSERT_CONTAINS(grid.getNode(grid.id(x, y-level)), out);
 			}
@@ -65,7 +65,7 @@ void TestVonNeumannLevel(Grid<VonNeumann>& grid, int level) {
 
 		}
 		// Right side
-		else if(x>=grid.width()-level) {
+		else if(x>=grid.width-level) {
 			ASSERT_EQ(in.size(), 3);
 			ASSERT_EQ(out.size(), 3);
 
@@ -93,7 +93,7 @@ void TestVonNeumannLevel(Grid<VonNeumann>& grid, int level) {
 			ASSERT_CONTAINS(grid.getNode(grid.id(x+level, y)), out);
 		}
 		// Top side
-		else if(y>=grid.height()-level) {
+		else if(y>=grid.height-level) {
 			ASSERT_EQ(in.size(), 3);
 			ASSERT_EQ(out.size(), 3);
 
@@ -126,7 +126,7 @@ void TestVonNeumannLevel(Grid<VonNeumann>& grid, int level) {
 
 }
 
-void TestVonNeumann(Grid<VonNeumann>& grid, unsigned int neighborhoodRange) {
+void TestVonNeumann(Grid<>& grid, unsigned int neighborhoodRange) {
 	for(int i = 1; i <= neighborhoodRange; i++) {
 		TestVonNeumannLevel(grid, i);
 	}
@@ -139,6 +139,6 @@ TEST(Mpi_GridTest, default_von_neumann) {
 
 
 TEST(Mpi_GridTest, von_neumann_2) {
-	Grid<VonNeumann> grid(10, 10, 2);
+	Grid<> grid(10, 10, new VonNeumann<Grid<>>(2));
 	TestVonNeumann(grid, 2);
 }
