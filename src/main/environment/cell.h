@@ -39,6 +39,8 @@ namespace FPMAS::environment::grid {
 
 		};
 
+
+
 	template<SYNC_MODE, typename... AgentTypes>
 		void Cell<S, AgentTypes...>::act(node_ptr cellNode, env_type& env) {
 			std::set<DistributedId> currentAgents;

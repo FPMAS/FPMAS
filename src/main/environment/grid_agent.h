@@ -5,6 +5,10 @@
 #include "agent/perceptions.h"
 
 namespace FPMAS::environment::grid {
+	template<
+		SYNC_MODE,
+		typename... AgentTypes
+		> class Grid;
 
 	template<SYNC_MODE, typename... AgentTypes> class Cell;
 	using agent::Perception;
@@ -14,6 +18,7 @@ namespace FPMAS::environment::grid {
 	> class GridAgent : public Agent<S, Cell<S, AgentTypes...>, AgentTypes...> {
 		public:
 			typedef Agent<S, Cell<S, AgentTypes...>, AgentTypes...> agent_type;
+			typedef Grid<S, AgentTypes...> grid_type;
 			typedef typename agent_type::node_type node_type;
 			typedef typename agent_type::env_type& env_ref;
 
@@ -47,7 +52,23 @@ namespace FPMAS::environment::grid {
 				env.unlink(perception);
 			}
 
+			for(auto perceive : node
+					->layer(PERCEIVE).getOutgoingArcs()){
+				env.unlink(perceive);
+			}
+
+			auto& grid
+				= static_cast<const grid_type&>(env);
+			for (int i = 1; i <= grid.neighborhoodRange; i++) {
+				for(auto perceivableFrom : node
+						->layer(PERCEIVABLE_FROM(i)).getOutgoingArcs()){
+					env.unlink(perceivableFrom);
+				}
+			}
+
 			// Link location
+			// Should be performed before unlinking MOVABLE_TO, otherwise the
+			// target might be deleted
 			env.link(node, target.node(), LOCATION);
 
 			// Unlink movableTo
