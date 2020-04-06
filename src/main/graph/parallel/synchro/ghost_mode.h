@@ -35,11 +35,12 @@ namespace FPMAS::graph::parallel {
 			 * @tparam N layers count
 			 */
 			template<typename T> class GhostData : public SyncData<T,modes::GhostMode> {
+				typedef api::communication::RequestHandler request_handler;
 
 				public:
-					GhostData(DistributedId, SyncMpiCommunicator&, const Proxy&);
-					GhostData(DistributedId, SyncMpiCommunicator&, const Proxy&, const T&);
-					GhostData(DistributedId, SyncMpiCommunicator&, const Proxy&, T&&);
+					GhostData(DistributedId, request_handler&, const Proxy&);
+					GhostData(DistributedId, request_handler&, const Proxy&, const T&);
+					GhostData(DistributedId, request_handler&, const Proxy&, T&&);
 
 			};
 
@@ -56,7 +57,7 @@ namespace FPMAS::graph::parallel {
 			// constructors are defined to allow template genericity
 			template<typename T> GhostData<T>::GhostData(
 					DistributedId id,
-					SyncMpiCommunicator& mpiComm,
+					request_handler& requestHandler,
 					const Proxy& proxy) {
 			}
 
@@ -71,7 +72,7 @@ namespace FPMAS::graph::parallel {
 			 */
 			template<typename T> GhostData<T>::GhostData(
 					DistributedId id,
-					SyncMpiCommunicator& mpiComm,
+					request_handler& requestHandler,
 					const Proxy& proxy,
 					T&& data)
 				: SyncData<T,modes::GhostMode>(std::forward<T>(data)) {
@@ -88,7 +89,7 @@ namespace FPMAS::graph::parallel {
 			 */
 			template<typename T> GhostData<T>::GhostData(
 					DistributedId id,
-					SyncMpiCommunicator& mpiComm,
+					request_handler& requestHandler,
 					const Proxy& proxy,
 					const T& data)
 				: SyncData<T,modes::GhostMode>(data) {

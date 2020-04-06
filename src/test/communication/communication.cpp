@@ -1,9 +1,7 @@
 #include "gtest/gtest.h"
 #include "utils/test.h"
 #include "communication/communication.h"
-#include "communication/resource_container.h"
 
-using FPMAS::communication::ResourceContainer;
 using FPMAS::communication::MpiCommunicator;
 
 TEST(Mpi_MpiCommunicatorTest, size_test) {

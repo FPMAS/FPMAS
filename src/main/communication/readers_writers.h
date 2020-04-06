@@ -7,12 +7,12 @@
 #include <queue>
 #include "utils/macros.h"
 #include "graph/parallel/distributed_id.h"
+#include "api/communication/request_handler.h"
 
 using FPMAS::graph::parallel::DistributedId;
 
 namespace FPMAS::communication {
 	class ResourceManager;
-	class SyncMpiCommunicator;
 
 	/**
 	 * Class managing concurrent read / write accesses to the resource
@@ -21,10 +21,12 @@ namespace FPMAS::communication {
 	class ReadersWriters {
 		friend ResourceManager;
 		private:
+			typedef api::communication::RequestHandler request_handler;
+
 			DistributedId id;
 			std::queue<int> read_requests;
 			std::queue<int> write_requests;
-			SyncMpiCommunicator& comm;
+			request_handler& requestHandler;
 			bool locked = false;
 			void lock();
 
@@ -35,7 +37,7 @@ namespace FPMAS::communication {
 			 * @param id resource id
 			 * @param comm reference to the MPI communicator
 			 */
-			ReadersWriters(DistributedId id, SyncMpiCommunicator& comm) : id(id), comm(comm) {}
+			ReadersWriters(DistributedId id, request_handler& requestHandler) : id(id), requestHandler(requestHandler) {}
 
 			/**
 			 * Performs a read operation on the local resource for the
@@ -81,13 +83,10 @@ namespace FPMAS::communication {
 	 * each represented by a given id.
 	 */
 	class ResourceManager {
-		friend SyncMpiCommunicator;
 		private:
-			SyncMpiCommunicator& comm;
+			typedef api::communication::RequestHandler request_handler;
+			request_handler& comm;
 			mutable std::unordered_map<DistributedId, ReadersWriters> readersWriters;
-
-			void lock(DistributedId id);
-			void clear();
 
 		public:
 			/**
@@ -95,7 +94,7 @@ namespace FPMAS::communication {
 			 *
 			 * @param comm reference to the MPI communicator
 			 */
-			ResourceManager(SyncMpiCommunicator& comm) : comm(comm) {};
+			ResourceManager(request_handler& comm) : comm(comm) {};
 
 			/**
 			 * Performs a read operation on the specified resource for the
@@ -137,6 +136,9 @@ namespace FPMAS::communication {
 			 */
 			const ReadersWriters& get(DistributedId id) const;
 
+			void lock(DistributedId id);
+
+			void clear();
 	};
 
 }

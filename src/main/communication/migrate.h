@@ -10,7 +10,6 @@
 #include "communication/communication.h"
 
 using nlohmann::json;
-using FPMAS::communication::MpiCommunicator;
 
 namespace FPMAS::communication {
 

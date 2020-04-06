@@ -23,19 +23,20 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<class T> class NoSyncData : public SyncData<T,modes::NoSyncMode> {
 			public:
+				typedef api::communication::RequestHandler request_handler;
 				/**
 				 * NoSyncData constructor.
 				 */
-				NoSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&) {};
+				NoSyncData(DistributedId, request_handler&, const Proxy&) {};
 				/**
 				 * NoSyncData constructor.
 				 */
-				NoSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&, T&& data) :
+				NoSyncData(DistributedId, request_handler&, const Proxy&, T&& data) :
 					SyncData<T,modes::NoSyncMode>(std::forward<T>(data)) {};
 				/**
 				 * NoSyncData constructor.
 				 */
-				NoSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&, const T& data) :
+				NoSyncData(DistributedId, request_handler&, const Proxy&, const T& data) :
 					SyncData<T,modes::NoSyncMode>(data) {};
 		};
 	}

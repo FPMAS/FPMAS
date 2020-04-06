@@ -6,7 +6,10 @@
 #include <mpi.h>
 #include <unordered_map>
 
+#include "api/communication/communication.h"
+
 namespace FPMAS {
+	using api::communication::Color;
 	/**
 	 * The FPMAS::communication namespace contains low level MPI features
 	 * required by communication processes.
@@ -17,7 +20,7 @@ namespace FPMAS {
 		 * MPI_COMM_WORLD communicator, i.e. groups and communicators
 		 * containing all the processes available.
 		 */
-		class MpiCommunicator {
+		class MpiCommunicator : public virtual api::communication::MpiCommunicator {
 			private:
 				int size;
 				int rank;
@@ -52,8 +55,22 @@ namespace FPMAS {
 				MPI_Group getMpiGroup() const;
 				MPI_Comm getMpiComm() const;
 
-				int getRank() const;
-				int getSize() const;
+				int getRank() const override;
+				int getSize() const override;
+
+				void send(Color token, int destination) override;
+				void sendEnd(int destination) override;
+				void Issend(const DistributedId&, int destination, int tag, MPI_Request*) override;
+				void Issend(const std::string&, int destination, int tag, MPI_Request*) override;
+				void Isend(const std::string&, int destination, int tag, MPI_Request*) override;
+
+				void recvEnd(MPI_Status*) override;
+				void recv(MPI_Status*, Color&) override;
+				void recv(MPI_Status*, std::string&) override;
+				void recv(MPI_Status*, DistributedId&) override;
+
+				void probe(int source, int tag, MPI_Status*) override;
+				int Iprobe(int source, int tag, MPI_Status*) override;
 
 				~MpiCommunicator();
 

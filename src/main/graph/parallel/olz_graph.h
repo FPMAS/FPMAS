@@ -6,14 +6,12 @@
 
 #include "utils/config.h"
 
-#include "communication/communication.h"
+#include "communication/request_handler.h"
 
 #include "olz.h"
 #include "../base/node.h"
 
 #include "zoltan/zoltan_ghost_node_migrate.h"
-
-using FPMAS::communication::MpiCommunicator;
 
 namespace FPMAS::graph::parallel {
 	using base::LayerId;
@@ -50,7 +48,6 @@ namespace FPMAS::graph::parallel {
 
 		private:
 		DistributedGraphBase<T, S>* localGraph;
-		MpiCommunicator mpiCommunicator;
 		Zoltan zoltan;
 
 		void initialize();
@@ -64,7 +61,7 @@ namespace FPMAS::graph::parallel {
 		public:
 
 		GhostGraph(DistributedGraphBase<T, S>*);
-		GhostGraph(DistributedGraphBase<T, S>*, std::initializer_list<int>);
+		//GhostGraph(DistributedGraphBase<T, S>*, std::initializer_list<int>);
 
 		void synchronize();
 
@@ -133,7 +130,7 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<typename T, SYNC_MODE> GhostGraph<T, S>::GhostGraph(
 			DistributedGraphBase<T, S>* localGraph
-			) : localGraph(localGraph), zoltan(mpiCommunicator.getMpiComm()) {
+			) : localGraph(localGraph), zoltan(localGraph->getMpiCommunicator().getMpiComm()) {
 		this->initialize();
 	}
 
@@ -149,11 +146,13 @@ namespace FPMAS::graph::parallel {
 	 * @param ranks ranks of the procs on which the GhostGraph is
 	 * built
 	 */
-	template<typename T, SYNC_MODE> GhostGraph<T, S>::GhostGraph(
-			DistributedGraphBase<T, S>* localGraph, std::initializer_list<int> ranks
-			) : localGraph(localGraph), mpiCommunicator(ranks), zoltan(mpiCommunicator.getMpiComm()) {
-		this->initialize();
-	}
+	/*
+	 *template<typename T, SYNC_MODE> GhostGraph<T, S>::GhostGraph(
+	 *        DistributedGraphBase<T, S>* localGraph, std::initializer_list<int> ranks
+	 *        ) : localGraph(localGraph), (ranks), zoltan(mpiCommunicator.getMpiComm()) {
+	 *    this->initialize();
+	 *}
+	 */
 
 	/**
 	 * Synchronizes the GhostNodes contained in this GhostGraph.
@@ -207,7 +206,7 @@ namespace FPMAS::graph::parallel {
 		::buildNode(DistributedId id) {
 		// Copy the gNode from the original node, including arcs data
 		GhostNode<T, S>* gNode = new GhostNode<T, S>(
-				this->localGraph->getMpiCommunicator(),
+				this->localGraph->getRequestHandler(),
 				this->localGraph->getProxy(),
 				id
 				);
@@ -241,14 +240,14 @@ namespace FPMAS::graph::parallel {
 			std::set<DistributedId> ignoreIds
 			) {
 			FPMAS_LOGD(
-					this->mpiCommunicator.getRank(),
+					this->localGraph->getMpiCommunicator().getRank(),
 					"GHOST_GRAPH",
 					"Building ghost node %s",
 					((std::string) node.getId()).c_str()
 					);
 			// Builds the gNode from the original node data
 			GhostNode<T, S>* gNode = new GhostNode<T, S>(
-					this->localGraph->getMpiCommunicator(),
+					this->localGraph->getRequestHandler(),
 					this->localGraph->getProxy(),
 					node
 					);
@@ -268,7 +267,7 @@ namespace FPMAS::graph::parallel {
 							&& this->getNodes().count(localSourceNode->getId()) == 0
 					  ) {
 						FPMAS_LOGV(
-								this->mpiCommunicator.getRank(),
+								this->localGraph->getMpiCommunicator().getRank(),
 								"GHOST_GRAPH",
 								"Ghost linking %s : (%s, %s)",
 								ID_C_STR(arc->getId()),
@@ -286,7 +285,7 @@ namespace FPMAS::graph::parallel {
 					if(ignoreIds.count(localTargetNode->getId()) == 0
 							&& this->getNodes().count(localTargetNode->getId()) == 0) {
 						FPMAS_LOGV(
-								this->mpiCommunicator.getRank(),
+								this->localGraph->getMpiCommunicator().getRank(),
 								"GHOST_GRAPH",
 								"Ghost linking %s : (%s, %s)",
 								ID_C_STR(arc->getId()),
@@ -469,7 +468,7 @@ namespace FPMAS::graph::parallel {
 		}
 		if(toDelete) {
 			FPMAS_LOGD(
-				this->mpiCommunicator.getRank(),
+				this->localGraph->getMpiCommunicator().getRank(),
 				"GHOST_GRAPH", "Clearing orphan node %s",
 				ID_C_STR(ghost->getId())
 				);

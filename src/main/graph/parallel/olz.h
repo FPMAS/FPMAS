@@ -4,7 +4,6 @@
 #include "../base/graph.h"
 #include "synchro/ghost_mode.h"
 
-using FPMAS::communication::SyncMpiCommunicator;
 using FPMAS::graph::parallel::proxy::Proxy;
 using FPMAS::graph::base::Node;
 using FPMAS::graph::base::Arc;
@@ -34,6 +33,7 @@ namespace FPMAS::graph::parallel {
 	 * nodes.
 	 */
 	template <typename T, SYNC_MODE> class GhostNode : public Node<std::unique_ptr<SyncData<T,S>>, DistributedId> {
+		typedef api::communication::RequestHandler request_handler;
 		friend SyncData<T, S>;
 		friend GhostNode<T, S>* GhostGraph<T, S>
 			::buildNode(DistributedId);
@@ -41,18 +41,17 @@ namespace FPMAS::graph::parallel {
 			::buildNode(Node<std::unique_ptr<SyncData<T,S>>, DistributedId>&, std::set<DistributedId>);
 
 		private:
-		GhostNode(SyncMpiCommunicator&, Proxy&, DistributedId);
-		GhostNode(SyncMpiCommunicator&, Proxy&, Node<std::unique_ptr<SyncData<T,S>>, DistributedId>&);
+		GhostNode(request_handler&, Proxy&, DistributedId);
+		GhostNode(request_handler&, Proxy&, Node<std::unique_ptr<SyncData<T,S>>, DistributedId>&);
 	};
 
 	template<typename T, SYNC_MODE> GhostNode<T, S>
-		::GhostNode(SyncMpiCommunicator& mpiComm, Proxy& proxy, DistributedId id)
+		::GhostNode(request_handler& handler, Proxy& proxy, DistributedId id)
 		: Node<std::unique_ptr<SyncData<T,S>>, DistributedId>(
 				id,
 				1.,
 				std::unique_ptr<SyncData<T,S>>(
-					S<T>::wrap(id, mpiComm, proxy
-					)
+					S<T>::wrap(id, handler, proxy)
 				)	
 			) {}
 
@@ -63,7 +62,7 @@ namespace FPMAS::graph::parallel {
 	 */
 	template<typename T, SYNC_MODE> GhostNode<T, S>
 		::GhostNode(
-			SyncMpiCommunicator& mpiComm,
+			request_handler& handler,
 			Proxy& proxy,
 			Node<std::unique_ptr<SyncData<T,S>>, DistributedId>& node
 			)
@@ -71,7 +70,7 @@ namespace FPMAS::graph::parallel {
 			node.getId(),
 			node.getWeight(),
 			std::unique_ptr<SyncData<T,S>>(S<T>::wrap(
-				node.getId(), mpiComm, proxy, std::move(node.data()->get())
+				node.getId(), handler, proxy, std::move(node.data()->get())
 				)
 			)
 		) {}

@@ -175,7 +175,7 @@ namespace FPMAS::graph::parallel {
 						json_node.at("weight").get<float>(),
 						std::unique_ptr<SyncData<T,S>>(S<T>::wrap(
 									id,
-									graph->getMpiCommunicator(),
+									graph->getRequestHandler(),
 									graph->getProxy(),
 									std::move(json_node.at("data").at("value").get<T>())
 									))

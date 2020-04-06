@@ -35,7 +35,7 @@ namespace FPMAS::communication {
 		unsigned int id;
 	};
 
-	class SyncMpiCommunicator;
+	//class SyncMpiCommunicator;
 }
 
 namespace FPMAS::graph::parallel {
@@ -58,7 +58,7 @@ namespace FPMAS::graph::parallel {
 	 */
 	class DistributedId {
 		friend std::hash<DistributedId>;
-		friend FPMAS::communication::SyncMpiCommunicator;
+		//friend FPMAS::communication::SyncMpiCommunicator;
 		friend DistributedId zoltan::utils::read_zoltan_id(const ZOLTAN_ID_PTR);
 		friend void zoltan::utils::write_zoltan_id(DistributedId, ZOLTAN_ID_PTR);
 		friend nlohmann::adl_serializer<DistributedId>;
@@ -70,8 +70,6 @@ namespace FPMAS::graph::parallel {
 		private:
 			int _rank;
 			unsigned int _id;
-			DistributedId(const MpiDistributedId& mpiId)
-				: _rank(mpiId.rank), _id(mpiId.id) {}
 
 		public:
 			/**
@@ -81,6 +79,9 @@ namespace FPMAS::graph::parallel {
 			 * and freed with FPMAS::communication::freeMpiTypes
 			 */
 			static MPI_Datatype mpiDistributedIdType;
+
+			explicit DistributedId(const MpiDistributedId& mpiId)
+				: _rank(mpiId.rank), _id(mpiId.id) {}
 
 			/**
 			 * Default DistributedId constructor.

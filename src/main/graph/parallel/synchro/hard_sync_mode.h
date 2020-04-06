@@ -3,9 +3,6 @@
 
 #include "utils/macros.h"
 #include "sync_mode.h"
-#include "communication/sync_communication.h"
-
-using FPMAS::communication::SyncMpiCommunicator;
 
 namespace FPMAS::graph::parallel::synchro {
 
@@ -23,14 +20,15 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<typename T> class HardSyncData : public SyncData<T,modes::HardSyncMode> {
 			private:
+				typedef api::communication::RequestHandler request_handler;
 				DistributedId id;
-				SyncMpiCommunicator& mpiComm;
+				request_handler& requestHandler;
 				const Proxy& proxy;
 
 			public:
-				HardSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&);
-				HardSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&, const T&);
-				HardSyncData(DistributedId, SyncMpiCommunicator&, const Proxy&, T&&);
+				HardSyncData(DistributedId, request_handler&, const Proxy&);
+				HardSyncData(DistributedId, request_handler&, const Proxy&, const T&);
+				HardSyncData(DistributedId, request_handler&, const Proxy&, T&&);
 
 				const T& read() override;
 				T& acquire() override;
@@ -46,9 +44,9 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<typename T> HardSyncData<T>::HardSyncData(
 				DistributedId id,
-				SyncMpiCommunicator& mpiComm,
+				request_handler& requestHandler,
 				const Proxy& proxy)
-			: id(id), mpiComm(mpiComm), proxy(proxy) {
+			: id(id), requestHandler(requestHandler), proxy(proxy) {
 			}
 
 		/**
@@ -61,10 +59,10 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<typename T> HardSyncData<T>::HardSyncData(
 				DistributedId id,
-				SyncMpiCommunicator& mpiComm,
+				request_handler& requestHandler,
 				const Proxy& proxy,
 				T&& data)
-			: SyncData<T,modes::HardSyncMode>(std::forward<T>(data)), id(id), mpiComm(mpiComm), proxy(proxy) {
+			: SyncData<T,modes::HardSyncMode>(std::forward<T>(data)), id(id), requestHandler(requestHandler), proxy(proxy) {
 			}
 
 		/**
@@ -77,10 +75,10 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<typename T> HardSyncData<T>::HardSyncData(
 				DistributedId id,
-				SyncMpiCommunicator& mpiComm,
+				request_handler& requestHandler,
 				const Proxy& proxy,
 				const T& data)
-			: SyncData<T,modes::HardSyncMode>(data), id(id), mpiComm(mpiComm), proxy(proxy) {
+			: SyncData<T,modes::HardSyncMode>(data), id(id), requestHandler(requestHandler), proxy(proxy) {
 			}
 
 		/**
@@ -94,7 +92,7 @@ namespace FPMAS::graph::parallel::synchro {
 		 */
 		template<typename T> const T& HardSyncData<T>::read() {
 			this->data = ((nlohmann::json) nlohmann::json::parse(
-						this->mpiComm.read(
+						this->requestHandler.read(
 							this->id,
 							this->proxy.getCurrentLocation(this->id)
 							)
@@ -106,7 +104,7 @@ namespace FPMAS::graph::parallel::synchro {
 		// local...
 		template<typename T> T& HardSyncData<T>::acquire() {
 			this->data = ((nlohmann::json) nlohmann::json::parse(
-						this->mpiComm.acquire(
+						this->requestHandler.acquire(
 							this->id,
 							this->proxy.getCurrentLocation(this->id)
 							)
@@ -115,7 +113,7 @@ namespace FPMAS::graph::parallel::synchro {
 		}
 
 		template<typename T> void HardSyncData<T>::release() {
-			this->mpiComm.giveBack(
+			this->requestHandler.giveBack(
 					this->id,
 					this->proxy.getCurrentLocation(this->id)
 					);

@@ -9,8 +9,6 @@
 #include "graph/parallel/distributed_id.h"
 #include "communication/communication.h"
 
-using FPMAS::communication::MpiCommunicator;
-
 namespace FPMAS::graph::parallel {
 	/**
 	 * Namespace containing classes and functions to manage proxies.
@@ -79,7 +77,7 @@ namespace FPMAS::graph::parallel {
 					);
 
 			private:
-			MpiCommunicator mpiCommunicator;
+			communication::MpiCommunicator mpiCommunicator;
 			Zoltan zoltan;
 			const int localProc;
 			std::unordered_map<DistributedId, int> origins;

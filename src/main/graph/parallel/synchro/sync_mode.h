@@ -6,14 +6,11 @@
 #include "utils/macros.h"
 #include "zoltan_cpp.h"
 #include "../zoltan/zoltan_utils.h"
-#include "communication/sync_communication.h"
+#include "api/communication/request_handler.h"
 #include "../proxy/proxy.h"
 #include "graph/base/node.h"
 #include "../olz.h"
 #include "../scheduler.h"
-
-
-using FPMAS::communication::SyncMpiCommunicator;
 
 namespace FPMAS::graph::parallel {
 	using base::Node;
@@ -86,12 +83,13 @@ namespace FPMAS::graph::parallel {
 				friend std::string DistributedGraphBase<T,S>::getLocalData(DistributedId) const;
 				friend std::string DistributedGraphBase<T,S>::getUpdatedData(DistributedId) const;
 				friend GhostNode<T,S>::GhostNode(
-						SyncMpiCommunicator&,
+						api::communication::RequestHandler&,
 						Proxy&,
 						Node<std::unique_ptr<SyncData<T,S>>, DistributedId>&
 						);
 				friend Scheduler<Node<std::unique_ptr<SyncData<T,S>>, DistributedId>>;
 				private:
+					typedef api::communication::RequestHandler request_handler;
 					int _schedule;
 
 				protected:
@@ -242,7 +240,9 @@ namespace FPMAS::graph::parallel {
 					> class SyncMode {
 						private:
 							zoltan_query_functions _config;
+
 						protected:
+							typedef api::communication::RequestHandler request_handler;
 							/**
 							 * Reference to the parent DistributedGraphBase
 							 * instance.
@@ -319,11 +319,11 @@ namespace FPMAS::graph::parallel {
 							virtual void termination() {};
 
 							static Wrapper<T>*
-								wrap(DistributedId, SyncMpiCommunicator&, const Proxy&);
+								wrap(DistributedId, request_handler&, const Proxy&);
 							static Wrapper<T>*
-								wrap(DistributedId, SyncMpiCommunicator&, const Proxy&, const T&);
+								wrap(DistributedId, request_handler&, const Proxy&, const T&);
 							static Wrapper<T>*
-								wrap(DistributedId, SyncMpiCommunicator&, const Proxy&, T&&);
+								wrap(DistributedId, request_handler&, const Proxy&, T&&);
 					};
 
 			/**
@@ -348,7 +348,7 @@ namespace FPMAS::graph::parallel {
 				template<typename> class Wrapper,
 				typename T
 					> Wrapper<T>* SyncMode<Mode, Wrapper, T>::wrap(
-							DistributedId id, SyncMpiCommunicator& comm, const Proxy& proxy
+							DistributedId id, request_handler& comm, const Proxy& proxy
 						) {
 						return new Wrapper<T>(id, comm, proxy);
 					}
@@ -360,7 +360,7 @@ namespace FPMAS::graph::parallel {
 				template<typename> class Wrapper,
 				typename T
 					> Wrapper<T>* SyncMode<Mode, Wrapper, T>::wrap(
-							DistributedId id, SyncMpiCommunicator& comm, const Proxy& proxy, const T& data
+							DistributedId id, request_handler& comm, const Proxy& proxy, const T& data
 							) {
 						return new Wrapper<T>(id, comm, proxy, data);
 					}
@@ -372,7 +372,7 @@ namespace FPMAS::graph::parallel {
 				template<typename> class Wrapper,
 				typename T
 					> Wrapper<T>* SyncMode<Mode, Wrapper, T>::wrap(
-							DistributedId id, SyncMpiCommunicator& comm, const Proxy& proxy, T&& data
+							DistributedId id, request_handler& comm, const Proxy& proxy, T&& data
 							) {
 						return new Wrapper<T>(id, comm, proxy, std::forward<T>(data));
 					}

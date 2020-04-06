@@ -13,11 +13,7 @@ set(SOURCES
 set(SOURCES
 	${SOURCES}
 	communication/communication.cpp
-	)
-
-set(SOURCES
-	${SOURCES}
-	communication/sync_communication.cpp
+	communication/request_handler.cpp
 	)
 
 set(SOURCES

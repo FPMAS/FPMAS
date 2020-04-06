@@ -11,9 +11,10 @@
 #include "olz_graph.h"
 
 #include "scheduler.h"
+#include "api/communication/resource_handler.h"
+#include "communication/request_handler.h"
 
 namespace FPMAS {
-	using communication::SyncMpiCommunicator;
 	using graph::base::Graph;
 
 	/**
@@ -42,7 +43,9 @@ namespace FPMAS {
 		 *
 		 */
 		template<typename T, SYNC_MODE>
-		class DistributedGraphBase : public Graph<std::unique_ptr<SyncData<T,S>>, DistributedId>, communication::ResourceContainer {
+		class DistributedGraphBase 
+			: public Graph<std::unique_ptr<SyncData<T,S>>, DistributedId>,
+			api::communication::ResourceHandler {
 			friend int zoltan::num_obj<T, S>(ZOLTAN_NUM_OBJ_ARGS);
 			friend void zoltan::obj_list<T, S>(ZOLTAN_OBJ_LIST_ARGS);
 			friend void zoltan::num_edges_multi_fn<T, S>(ZOLTAN_NUM_EDGES_MULTI_ARGS);
@@ -80,6 +83,8 @@ namespace FPMAS {
 			typedef Arc<std::unique_ptr<SyncData<T,S>>, DistributedId>* arc_ptr;
 
 			private:
+			typedef communication::MpiCommunicator mpi_communicator;
+			typedef communication::RequestHandler request_handler;
 
 			// Serialization caches used to pack objects
 			std::unordered_map<DistributedId, std::string> node_serialization_cache;
@@ -97,7 +102,12 @@ namespace FPMAS {
 			/**
 			 * MpiCommunicator
 			 */
-			SyncMpiCommunicator mpiCommunicator;
+			mpi_communicator mpiCommunicator;
+			/**
+			 * RequestHandler
+			 */
+			request_handler requestHandler;
+
 			/**
 			 * Zoltan instance
 			 */
@@ -164,14 +174,18 @@ namespace FPMAS {
 			 *
 			 * @return reference to the SyncMpiCommunicator associated to this graph
 			 */
-			SyncMpiCommunicator& getMpiCommunicator();
+			mpi_communicator& getMpiCommunicator();
 
 			/**
 			 * Returns a reference to the SyncMpiCommunicator used by this DistributedGraph.
 			 *
 			 * @return reference to the SyncMpiCommunicator associated to this graph
 			 */
-			const SyncMpiCommunicator& getMpiCommunicator() const;
+			const mpi_communicator& getMpiCommunicator() const;
+
+			request_handler& getRequestHandler();
+
+			const request_handler& getRequestHandler() const;
 
 
 			/**
@@ -291,7 +305,7 @@ namespace FPMAS {
 			:	
 				Graph<std::unique_ptr<SyncData<T,S>>, DistributedId>(),
 				syncMode(*this),
-				mpiCommunicator(*this),
+				requestHandler(mpiCommunicator, *this),
 				ghost(this),
 				proxy(mpiCommunicator.getRank()),
 				zoltan(mpiCommunicator.getMpiComm())
@@ -311,8 +325,9 @@ namespace FPMAS {
 			: 
 				Graph<std::unique_ptr<SyncData<T,S>>, DistributedId>(),
 				syncMode(*this),
-				mpiCommunicator(*this, ranks),
-				ghost(this, ranks),
+				mpiCommunicator(ranks),
+				requestHandler(mpiCommunicator, *this),
+				ghost(this),
 				proxy(mpiCommunicator.getRank(), ranks),
 				zoltan(mpiCommunicator.getMpiComm())
 		{
@@ -336,13 +351,29 @@ namespace FPMAS {
 			this->zoltan.Set_Edge_List_Multi_Fn(zoltan::edge_list_multi_fn<T, S>, this);
 		}
 
-		template<class T, SYNC_MODE> SyncMpiCommunicator& DistributedGraphBase<T, S>::getMpiCommunicator() {
+		template<class T, SYNC_MODE>
+			typename DistributedGraphBase<T,S>::mpi_communicator&
+			DistributedGraphBase<T, S>::getMpiCommunicator() {
 			return this->mpiCommunicator;
 		}
 
-		template<class T, SYNC_MODE> const SyncMpiCommunicator& DistributedGraphBase<T, S>::getMpiCommunicator() const {
+		template<class T, SYNC_MODE>
+			const typename DistributedGraphBase<T,S>::mpi_communicator&
+			DistributedGraphBase<T, S>::getMpiCommunicator() const {
 			return this->mpiCommunicator;
 		}
+
+		template<class T, SYNC_MODE>
+			typename DistributedGraphBase<T,S>::request_handler&
+			DistributedGraphBase<T, S>::getRequestHandler() {
+				return this->requestHandler;
+			}
+
+		template<class T, SYNC_MODE>
+			const typename DistributedGraphBase<T,S>::request_handler&
+			DistributedGraphBase<T, S>::getRequestHandler() const {
+				return this->requestHandler;
+			}
 
 		/**
 		 * Returns a reference to the proxy associated to this DistributedGraphBase.
@@ -400,8 +431,8 @@ namespace FPMAS {
 				::buildNode(
 					std::unique_ptr<SyncData<T,S>>(S<T>::wrap(
 							currentId++,
-							this->getMpiCommunicator(),
-							this->getProxy(),
+							this->requestHandler,
+							this->proxy,
 							T()
 						))
 					);
@@ -425,8 +456,8 @@ namespace FPMAS {
 				::buildNode(
 					std::unique_ptr<SyncData<T,S>>(S<T>::wrap(
 							currentId++,
-							this->getMpiCommunicator(),
-							this->getProxy(),
+							this->requestHandler,
+							this->proxy,
 							std::forward<T>(data)
 						))
 					);
@@ -450,8 +481,8 @@ namespace FPMAS {
 				::buildNode(
 					std::unique_ptr<SyncData<T,S>>(S<T>::wrap(
 							currentId++,
-							this->getMpiCommunicator(),
-							this->getProxy(),
+							this->requestHandler,
+							this->proxy,
 							data
 						))
 					);
@@ -477,8 +508,8 @@ namespace FPMAS {
 					weight,
 					std::unique_ptr<SyncData<T,S>>(S<T>::wrap(
 							currentId++,
-							this->getMpiCommunicator(),
-							this->getProxy(),
+							this->requestHandler,
+							this->proxy,
 							std::forward<T>(data)
 						))
 					);
@@ -504,8 +535,8 @@ namespace FPMAS {
 					weight,
 					std::unique_ptr<SyncData<T,S>>(S<T>::wrap(
 							currentId++,
-							this->getMpiCommunicator(),
-							this->getProxy(),
+							this->requestHandler,
+							this->proxy,
 							data
 						))
 					);
@@ -651,7 +682,7 @@ namespace FPMAS {
 		 * Can be overriden to perform extra processing.
 		 */
 		template<class T, SYNC_MODE> void DistributedGraphBase<T, S>::synchronize() {
-			this->mpiCommunicator.terminate();
+			this->requestHandler.terminate();
 		}
 
 

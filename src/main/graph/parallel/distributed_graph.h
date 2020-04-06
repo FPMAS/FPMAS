@@ -10,11 +10,9 @@
 
 #include "utils/config.h"
 #include "communication/communication.h"
-#include "communication/resource_container.h"
 
 
 namespace FPMAS {
-	using communication::SyncMpiCommunicator;
 	using graph::base::Graph;
 
 	/**
