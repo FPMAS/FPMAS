@@ -1,5 +1,5 @@
-#ifndef SYNC_COMMUNICATION_API_H
-#define SYNC_COMMUNICATION_API_H
+#ifndef REQUEST_HANDLER_API_H
+#define REQUEST_HANDLER_API_H
 
 #include <string>
 #include "communication.h"
@@ -58,13 +58,6 @@ namespace FPMAS::api::communication {
 			 * `terminate` their own process.
 			 */
 			virtual void terminate() = 0;
-
-			/**
-			 * Returns a reference to the internal MpiCommunicator.
-			 *
-			 * @return reference to the internal MpiCommunicator instance
-			 */
-			virtual const MpiCommunicator& getMpiComm() = 0;
 
 			virtual ~RequestHandler() {};
 	};

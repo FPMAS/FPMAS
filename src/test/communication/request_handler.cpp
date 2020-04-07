@@ -6,6 +6,7 @@
 using namespace std::chrono_literals;
 
 using testing::Return;
+using testing::ReturnRef;
 using testing::ReturnPointee;
 using testing::InSequence;
 using testing::SetArgReferee;
@@ -16,67 +17,23 @@ using testing::AnyNumber;
 
 #include "gtest/gtest.h"
 #include "utils/test.h"
+
+#include "mock_communication.h"
+#include "mock_readers_writers.h"
+
 #include "communication/request_handler.h"
-#include "api/communication/resource_handler.h"
 
 using FPMAS::communication::RequestHandler;
-using FPMAS::api::communication::ResourceHandler;
-using FPMAS::api::communication::Color;
-using FPMAS::api::communication::Tag;
-using FPMAS::api::communication::Epoch;
-
-class MockResourceHandler : public ResourceHandler {
-	public:
-		MOCK_METHOD(std::string, getLocalData, (DistributedId), (const, override));
-		MOCK_METHOD(std::string, getUpdatedData, (DistributedId), (const, override));
-		MOCK_METHOD(void, updateData, (DistributedId, std::string), (override));
-
-};
-
-class MockMpiCommunicator : public virtual FPMAS::api::communication::MpiCommunicator {
-	public:
-		MockMpiCommunicator() {
-
-		}
-		MOCK_METHOD(int, getRank, (), (const, override));
-		MOCK_METHOD(int, getSize, (), (const, override));
-
-		MOCK_METHOD(void, send, (Color, int), (override));
-		MOCK_METHOD(void, sendEnd, (int), (override));
-		MOCK_METHOD(void, Issend, (const DistributedId&, int, int, MPI_Request*), (override));
-		MOCK_METHOD(void, Issend, (const std::string&, int, int, MPI_Request*), (override));
-		MOCK_METHOD(void, Isend, (const std::string&, int, int, MPI_Request*), (override));
-
-		MOCK_METHOD(void, probe, (int, int, MPI_Status*), (override));
-		MOCK_METHOD(int, Iprobe, (int, int, MPI_Status*), (override));
-
-		MOCK_METHOD(void, recvEnd, (MPI_Status*), (override));
-		MOCK_METHOD(void, recv, (MPI_Status*, Color&), (override));
-		MOCK_METHOD(void, recv, (MPI_Status*, std::string&), (override));
-		MOCK_METHOD(void, recv, (MPI_Status*, DistributedId&), (override));
-};
 
 class TerminationTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
-		MockMpiCommunicator comm;
-		RequestHandler requestHandler {comm, handler};
+		MockMpiCommunicator comm {0, 4};
+		RequestHandler<> requestHandler {comm, handler};
 
 };
 
-class RankZeroTerminationTest : public TerminationTest {
-	protected:
-		void SetUp() override {
-			ON_CALL(comm, getRank())
-				.WillByDefault(Return(0));
-			EXPECT_CALL(comm, getRank()).Times(AnyNumber());
-			ON_CALL(comm, getSize())
-				.WillByDefault(Return(4));
-			EXPECT_CALL(comm, getSize()).Times(AnyNumber());
-		}
-};
-
-TEST_F(RankZeroTerminationTest, rank_0_white_tokens) {
+TEST_F(TerminationTest, rank_0_white_tokens) {
 	EXPECT_CALL(comm, send(Color::WHITE, 3))
 		.Times(1);
 
@@ -101,7 +58,7 @@ class Mpi_TerminationTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
 		FPMAS::communication::MpiCommunicator comm;
-		RequestHandler requestHandler {comm, handler};
+		RequestHandler<> requestHandler {comm, handler};
 
 };
 
@@ -126,37 +83,88 @@ TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
 
 class LocalReadAcquireTest : public ::testing::Test {
 	protected:
+		const int RANK = 0;
+		MockReadersWriters readersWriters;
 		MockResourceHandler handler;
-		MockMpiCommunicator comm;
-		RequestHandler requestHandler {comm, handler};
+		MockMpiCommunicator comm {RANK, 16};
+		RequestHandler<MockReadersWritersManager> requestHandler {comm, handler};
 
 		void SetUp() override {
-			EXPECT_CALL(comm, getRank)
-				.WillRepeatedly(Return(4));
-			EXPECT_CALL(comm, getSize)
-				.WillRepeatedly(Return(16));
-			EXPECT_CALL(handler, getLocalData)
-				.WillOnce(Return(std::to_string(comm.getRank())));
+			ON_CALL(comm, Iprobe)
+				.WillByDefault(Return(false));
+			EXPECT_CALL(comm, Iprobe)
+				.Times(AnyNumber());
 
+			EXPECT_CALL(
+				const_cast<MockReadersWritersManager&>(
+					requestHandler.getReadersWritersManager()
+					),
+				AccessOp(DistributedId(0, 0))
+				).WillRepeatedly(ReturnRef(readersWriters));
 		}
 
 };
 
 TEST_F(LocalReadAcquireTest, self_read) {
-	std::string data = requestHandler.read(DistributedId(comm.getRank(), comm.getRank()), comm.getRank());
-	ASSERT_EQ(data, std::to_string(comm.getRank()));
+	EXPECT_CALL(readersWriters, isLocked).WillOnce(Return(false));
+	EXPECT_CALL(handler, getLocalData(DistributedId(RANK, RANK))).WillOnce(Return(std::to_string(RANK)));
+	std::string data = requestHandler.read(DistributedId(RANK, RANK), RANK);
+	ASSERT_EQ(data, std::to_string(RANK));
 }
 
 TEST_F(LocalReadAcquireTest, self_acquire) {
-	std::string data = requestHandler.acquire(DistributedId(comm.getRank(), comm.getRank()), comm.getRank());
+	EXPECT_CALL(readersWriters, isLocked).WillOnce(Return(false));
+	EXPECT_CALL(readersWriters, lock).Times(1);
+
+	EXPECT_CALL(handler, getLocalData(DistributedId(RANK, RANK))).WillOnce(Return(std::to_string(RANK)));
+
+	std::string data = requestHandler.acquire(DistributedId(RANK, RANK), RANK);
 	
 	// No need for those calls, this data should be modified in place
-	EXPECT_CALL(this->handler, getUpdatedData)
+	EXPECT_CALL(handler, getUpdatedData)
 		.Times(0);
-	EXPECT_CALL(this->handler, updateData)
+	EXPECT_CALL(handler, updateData)
 		.Times(0);
+	
+	EXPECT_CALL(readersWriters, release).Times(1);
 
-	requestHandler.giveBack(DistributedId(comm.getRank(), comm.getRank()), comm.getRank());
+	requestHandler.giveBack(DistributedId(RANK, RANK), RANK);
+}
+
+TEST_F(LocalReadAcquireTest, self_read_while_acquired) {
+	EXPECT_CALL(readersWriters, isLocked)
+		.Times(5)
+		.WillOnce(Return(true))
+		.WillOnce(Return(true))
+		.WillOnce(Return(true))
+		.WillOnce(Return(true))
+		.WillOnce(Return(false));
+
+
+	EXPECT_CALL(handler, getLocalData(DistributedId(0, 0)))
+		.WillOnce(Return("5"));
+	auto data = requestHandler.read(DistributedId(0, 0), RANK);
+	ASSERT_EQ(data, "5");
+}
+
+TEST_F(LocalReadAcquireTest, self_acquire_while_acquired) {
+	EXPECT_CALL(readersWriters, isLocked)
+		.Times(5)
+		.WillOnce(Return(true))
+		.WillOnce(Return(true))
+		.WillOnce(Return(true))
+		.WillOnce(Return(true))
+		.WillOnce(Return(false));
+
+	EXPECT_CALL(handler, getLocalData(DistributedId(0, 0)))
+		.WillOnce(Return("5"));
+
+	EXPECT_CALL(readersWriters, lock).Times(1);
+	auto data = requestHandler.acquire(DistributedId(0, 0), RANK);
+
+	EXPECT_CALL(readersWriters, release).Times(1);
+	requestHandler.giveBack(DistributedId(0, 0), RANK);
+
 }
 
 /**
@@ -181,7 +189,7 @@ class Mpi_ReadAcquireTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
 		FPMAS::communication::MpiCommunicator comm;
-		RequestHandler requestHandler {comm, handler};
+		RequestHandler<> requestHandler {comm, handler};
 };
 
 /**
@@ -259,7 +267,6 @@ TEST_F(Mpi_ReadAcquireTest, read_from_acquiring_procs_test) {
 	else {
 		PRINT_MIN_PROCS_WARNING(read_from_acquiring_procs_test, 3);
 	}
-
 }
 
 /**

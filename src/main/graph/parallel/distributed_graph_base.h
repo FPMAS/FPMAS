@@ -84,7 +84,11 @@ namespace FPMAS {
 
 			private:
 			typedef communication::MpiCommunicator mpi_communicator;
-			typedef communication::RequestHandler request_handler;
+			typedef communication::RequestHandler<
+				communication::ReadersWritersManager<
+					communication::FirstReadersWriters
+					>
+				> request_handler;
 
 			// Serialization caches used to pack objects
 			std::unordered_map<DistributedId, std::string> node_serialization_cache;
