@@ -10,6 +10,7 @@
 
 #include "utils/config.h"
 #include "communication/communication.h"
+#include "zoltan/zoltan_load_balancing.h"
 
 
 namespace FPMAS {
@@ -66,6 +67,7 @@ namespace FPMAS {
 				 * Node pointer type.
 				 */
 				typedef typename DistributedGraphBase<T, S>::node_ptr node_ptr;
+				typedef typename DistributedGraphBase<T, S>::node_type node_type;
 				/**
 				 * Arc pointer type.
 				 */
@@ -73,7 +75,7 @@ namespace FPMAS {
 
 			private:
 				void distributeArcs();
-				void balance(int&, int&, ZOLTAN_ID_PTR&, ZOLTAN_ID_PTR&, int*&, int*&, ZOLTAN_ID_PTR&, int*&);
+				//void balance(int&, int&, ZOLTAN_ID_PTR&, ZOLTAN_ID_PTR&, int*&, int*&, ZOLTAN_ID_PTR&, int*&);
 
 			public:
 				using DistributedGraphBase<T,S>::link; // Allows usage of link(DistributedId, DistributedId)
@@ -229,8 +231,19 @@ namespace FPMAS {
 			// nodes.
 			this->setZoltanArcMigration();
 
-			// Unused buffer
+			int export_arcs_num = this->arcExport.size();
+			ZOLTAN_ID_TYPE export_arcs_global_ids[2 * export_arcs_num];
 			ZOLTAN_ID_TYPE export_arcs_local_ids[0];
+			int export_arcs_procs[export_arcs_num];
+
+			int i = 0;
+			for(auto arc : this->arcExport) {
+				zoltan::utils::write_zoltan_id(arc.first, &export_arcs_global_ids[2*i]);
+				export_arcs_procs[i] = arc.second;
+				i++;
+			}
+
+			// Unused buffer
 
 			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Arc migration...");
 			// Arcs to import
@@ -240,16 +253,20 @@ namespace FPMAS {
 					NULL,
 					NULL,
 					NULL,
-					this->export_arcs_num,
-					this->export_arcs_global_ids,
+					export_arcs_num,
+					export_arcs_global_ids,
 					export_arcs_local_ids,
-					this->export_arcs_procs,
-					this->export_arcs_procs // parts = procs
+					export_arcs_procs,
+					export_arcs_procs // parts = procs
 					);
 			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Arc migration done.");
 			// Frees arcs buffers
-			std::free(this->export_arcs_global_ids);
-			std::free(this->export_arcs_procs);
+			/*
+			 *std::free(this->export_arcs_global_ids);
+			 *std::free(this->export_arcs_procs);
+			 */
+			this->arcExport.clear();
+			this->exportedNodes.clear();
 
 			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Synchronizing proxy...");
 			// Updates nodes locations according to last migrations
@@ -260,45 +277,47 @@ namespace FPMAS {
 
 			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Migration done.");
 		}
-
-		template<class T, SYNC_MODE> void DistributedGraph<T, S>::balance(
-				int& num_gid_entries,
-				int& num_import,
-				ZOLTAN_ID_PTR& import_global_ids,
-				ZOLTAN_ID_PTR& import_local_ids,
-				int*& import_procs,
-				int*& import_to_part,
-				ZOLTAN_ID_PTR& export_local_ids,
-				int*& export_to_part
-			) {
-
-			int changes;
-			// Prepares Zoltan to migrate nodes
-			// Must be set up from there, because LB_Partition can call
-			// obj_size_multi_fn when repartitionning
-			this->setZoltanNodeMigration();
-
-			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Computing Load Balancing...");
-
-			int num_lid_entries;
-
-			// Computes Zoltan partitioning
-			int err = this->zoltan.LB_Partition(
-					changes,
-					num_gid_entries,
-					num_lid_entries,
-					num_import,
-					import_global_ids,
-					import_local_ids,
-					import_procs,
-					import_to_part,
-					this->export_node_num,
-					this->export_node_global_ids,
-					export_local_ids,
-					this->export_node_procs,
-					export_to_part
-					);
-		}
+/*
+ *
+ *        template<class T, SYNC_MODE> void DistributedGraph<T, S>::balance(
+ *                int& num_gid_entries,
+ *                int& num_import,
+ *                ZOLTAN_ID_PTR& import_global_ids,
+ *                ZOLTAN_ID_PTR& import_local_ids,
+ *                int*& import_procs,
+ *                int*& import_to_part,
+ *                ZOLTAN_ID_PTR& export_local_ids,
+ *                int*& export_to_part
+ *            ) {
+ *
+ *            int changes;
+ *            // Prepares Zoltan to migrate nodes
+ *            // Must be set up from there, because LB_Partition can call
+ *            // obj_size_multi_fn when repartitionning
+ *            this->setZoltanNodeMigration();
+ *
+ *            FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Computing Load Balancing...");
+ *
+ *            int num_lid_entries;
+ *
+ *            // Computes Zoltan partitioning
+ *            int err = this->zoltan.LB_Partition(
+ *                    changes,
+ *                    num_gid_entries,
+ *                    num_lid_entries,
+ *                    num_import,
+ *                    import_global_ids,
+ *                    import_local_ids,
+ *                    import_procs,
+ *                    import_to_part,
+ *                    this->export_node_num,
+ *                    this->export_node_global_ids,
+ *                    export_local_ids,
+ *                    this->export_node_procs,
+ *                    export_to_part
+ *                    );
+ *        }
+ */
 		/**
 		 * DistributedGraphBase::distribute(std::unordered_map<DistributedId,
 		 * std::pair<int, int>>) implementation.
@@ -309,21 +328,26 @@ namespace FPMAS {
 				std::unordered_map<DistributedId, int> partition
 				) {
 			// Export lists
-			this->export_node_num = 0;
-			this->export_node_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
-			this->export_node_procs = (int*) std::malloc(0);
+			/*
+			 *this->export_node_num = 0;
+			 *this->export_node_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+			 *this->export_node_procs = (int*) std::malloc(0);
+			 */
+			int export_node_num = 0;
+			ZOLTAN_ID_PTR export_node_global_ids = (ZOLTAN_ID_PTR) std::malloc(0);
+			int* export_node_procs = (int*) std::malloc(0);
 
 			for(auto item : partition) {
 				if(this->getNodes().count(item.first) > 0) {
 					if(item.second != this->getMpiCommunicator().getRank()) {
-						this->export_node_num++;
-						this->export_node_global_ids = (ZOLTAN_ID_PTR)
-							std::realloc(this->export_node_global_ids, 2 * this->export_node_num * sizeof(ZOLTAN_ID_TYPE));
+						export_node_num++;
+						export_node_global_ids = (ZOLTAN_ID_PTR)
+							std::realloc(export_node_global_ids, 2 * export_node_num * sizeof(ZOLTAN_ID_TYPE));
 
-						write_zoltan_id(item.first, &this->export_node_global_ids[2*(this->export_node_num-1)]);
-						this->export_node_procs = (int*)
-							std::realloc(this->export_node_procs, this->export_node_num * sizeof(int));
-						this->export_node_procs[this->export_node_num-1] = item.second;
+						write_zoltan_id(item.first, &export_node_global_ids[2*(export_node_num-1)]);
+						export_node_procs = (int*)
+							std::realloc(export_node_procs, export_node_num * sizeof(int));
+						export_node_procs[export_node_num-1] = item.second;
 					}
 				}
 			}
@@ -340,11 +364,11 @@ namespace FPMAS {
 					NULL,
 					NULL,
 					NULL,
-					this->export_node_num,
-					this->export_node_global_ids,
+					export_node_num,
+					export_node_global_ids,
 					export_local_ids,
-					this->export_node_procs,
-					this->export_node_procs // Parts = procs
+					export_node_procs,
+					export_node_procs // Parts = procs
 					);
 			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Node migration done.");
 
@@ -352,8 +376,8 @@ namespace FPMAS {
 
 			// DistributeArcs uses export_node_global_ids, so free the buffers
 			// after
-			std::free(this->export_node_global_ids);
-			std::free(this->export_node_procs);
+			std::free(export_node_global_ids);
+			std::free(export_node_procs);
 		}
 		/**
 		 * Distributes the graph accross the available cores using Zoltan.
@@ -376,60 +400,79 @@ namespace FPMAS {
 		 *
 		 */
 		template<class T, SYNC_MODE> void DistributedGraph<T, S>::distribute() {
-			int num_gid_entries;
-
-			int num_import; 
-			ZOLTAN_ID_PTR import_global_ids;
-			ZOLTAN_ID_PTR import_local_ids;
-			int * import_procs;
-			int * import_to_part;
-
-			int* export_to_part;
-			ZOLTAN_ID_PTR export_local_ids;
+			zoltan::ZoltanLoadBalancing<node_type> zoltanLoadBalancing(
+					this->mpiCommunicator.getMpiComm(), this->proxy);
+/*
+ *
+ *            int num_gid_entries;
+ *
+ *            int num_import; 
+ *            ZOLTAN_ID_PTR import_global_ids;
+ *            ZOLTAN_ID_PTR import_local_ids;
+ *            int * import_procs;
+ *            int * import_to_part;
+ *
+ *            int* export_to_part;
+ *            ZOLTAN_ID_PTR export_local_ids;
+ */
 
 			auto periods = this->scheduler.gatherPeriods(
 						this->getMpiCommunicator().getMpiComm());
-			int free=false;
+			//int free=false;
+
+			std::unordered_map<DistributedId, node_ptr> nodesToBalance;
+			std::unordered_map<DistributedId, int> fixedNodes;
+			std::unordered_map<DistributedId, int> partition;
+
 			for(auto schedule_period : periods) {
 				for(auto n : this->scheduler.get(schedule_period)) {
-					this->toBalance.insert(n);
+					//this->toBalance.insert(n);
+					nodesToBalance[n->getId()] = n;
 				}
-				if(free) {
-					// Frees the zoltan buffers
-					this->zoltan.LB_Free_Part(
-							&import_global_ids,
-							&import_local_ids,
-							&import_procs,
-							&import_to_part
-							);
-
-					this->zoltan.LB_Free_Part(
-							&this->export_node_global_ids,
-							&export_local_ids,
-							&this->export_node_procs,
-							&export_to_part
-							);
-				}
-				free = true;
-				balance(
-					num_gid_entries,
-					num_import,
-					import_global_ids,
-					import_local_ids,
-					import_procs,
-					import_to_part,
-					export_local_ids,
-					export_to_part
-					);
-				assert(num_gid_entries == 2);
+/*
+ *                if(free) {
+ *                    // Frees the zoltan buffers
+ *                    this->zoltan.LB_Free_Part(
+ *                            &import_global_ids,
+ *                            &import_local_ids,
+ *                            &import_procs,
+ *                            &import_to_part
+ *                            );
+ *
+ *                    this->zoltan.LB_Free_Part(
+ *                            &this->export_node_global_ids,
+ *                            &export_local_ids,
+ *                            &this->export_node_procs,
+ *                            &export_to_part
+ *                            );
+ *                }
+ *                free = true;
+ *                balance(
+ *                    num_gid_entries,
+ *                    num_import,
+ *                    import_global_ids,
+ *                    import_local_ids,
+ *                    import_procs,
+ *                    import_to_part,
+ *                    export_local_ids,
+ *                    export_to_part
+ *                    );
+ *                assert(num_gid_entries == 2);
+ */
 				auto nodesToFix = this->scheduler.get(schedule_period);
+ 
+				partition = zoltanLoadBalancing.balance(nodesToBalance, fixedNodes);
 
 				// By default, fixes the local nodes to this proc
 				// Nodes that are not in the "export list" have implicitly been
 				// assigned to this proc, so they should be fixed to it.
 				for(auto nodeToFix : nodesToFix) {
-					this->fixedVertices[nodeToFix->getId()]
-						= this->getMpiCommunicator().getRank();
+					/*
+					 *this->fixedVertices[nodeToFix->getId()]
+					 *    = this->getMpiCommunicator().getRank();
+					 */
+					fixedNodes[nodeToFix->getId()]
+						= this->mpiCommunicator.getRank();
 
 				}
 
@@ -440,56 +483,62 @@ namespace FPMAS {
 				// been exported. Even if they are not exported yet, the next
 				// iterations of the load balancing algorithm will behave as if
 				// they were already on the corresponding procs.
-				for (int i = 0; i < this->export_node_num; i++) {
-					auto nodeId = zoltan::utils::read_zoltan_id(
-							&this->export_node_global_ids[i * num_gid_entries]);
-					if(this->getNodes().count(nodeId) > 0
-						&& nodesToFix.count(this->getNode(nodeId)) > 0) {
-						this->fixedVertices[nodeId] = this->export_node_procs[i];
-					}
+				/*
+				 *for (int i = 0; i < this->export_node_num; i++) {
+				 *    auto nodeId = zoltan::utils::read_zoltan_id(
+				 *            &this->export_node_global_ids[i * num_gid_entries]);
+				 *    if(this->getNodes().count(nodeId) > 0
+				 *        && nodesToFix.count(this->getNode(nodeId)) > 0) {
+				 *        this->fixedVertices[nodeId] = this->export_node_procs[i];
+				 *    }
+				 *}
+				 */
+				for(auto item : partition) {
+					fixedNodes[item.first] = item.second;
 				}
 			}
-			this->fixedVertices.clear();
-			this->toBalance.clear();
+			/*this->fixedVertices.clear();*/
+			//this->toBalance.clear();
 
-			// The final load balancing is migrated in a single operation
-			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Node migration...");
-			// Migrate nodes from the load balancing
-			// Arcs to export are computed in the post_migrate_pp_fn step.
-			this->zoltan.Migrate(
-					num_import,
-					import_global_ids,
-					import_local_ids,
-					import_procs,
-					import_to_part,
-					this->export_node_num,
-					this->export_node_global_ids,
-					export_local_ids,
-					this->export_node_procs,
-					export_to_part
-					);
-			FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Node migration done.");
+			//// The final load balancing is migrated in a single operation
+			//FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Node migration...");
+			//// Migrate nodes from the load balancing
+			//// Arcs to export are computed in the post_migrate_pp_fn step.
+			//this->zoltan.Migrate(
+					//num_import,
+					//import_global_ids,
+					//import_local_ids,
+					//import_procs,
+					//import_to_part,
+					//this->export_node_num,
+					//this->export_node_global_ids,
+					//export_local_ids,
+					//this->export_node_procs,
+					//export_to_part
+					//);
+			//FPMAS_LOGV(this->mpiCommunicator.getRank(), "DIST_GRAPH", "Zoltan Node migration done.");
 
 
-			this->distributeArcs();
+			//this->distributeArcs();
 
-			// Frees node buffers
-			this->zoltan.LB_Free_Part(
-					&import_global_ids,
-					&import_local_ids,
-					&import_procs,
-					&import_to_part
-					);
-			this->zoltan.LB_Free_Part(
-					&this->export_node_global_ids,
-					&export_local_ids,
-					&this->export_node_procs,
-					&export_to_part
-					);
+			//// Frees node buffers
+			//this->zoltan.LB_Free_Part(
+					//&import_global_ids,
+					//&import_local_ids,
+					//&import_procs,
+					//&import_to_part
+					//);
+			//this->zoltan.LB_Free_Part(
+					//&this->export_node_global_ids,
+					//&export_local_ids,
+					//&this->export_node_procs,
+					//&export_to_part
+					//);
 
-			// When called for the first time, PARTITION is used, and so
-			// REPARTITION will be used for all other calls.
-			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
+			//// When called for the first time, PARTITION is used, and so
+			//// REPARTITION will be used for all other calls.
+			/*this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");*/
+			this->distribute(partition);
 		}
 
 		/**

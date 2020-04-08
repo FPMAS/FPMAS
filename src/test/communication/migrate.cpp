@@ -13,8 +13,7 @@ TEST(Mpi_MigrationTest, simple_migration_test) {
 		export_map[i].push_back(comm.getRank());
 	}
 
-	int i = 0;
-	auto import_map = migrate<int, int>(export_map, comm, i);
+	auto import_map = migrate<int>(export_map, comm);
 	ASSERT_EQ(import_map.size(), comm.getSize());
 	for(auto item : import_map) {
 		ASSERT_EQ(item.second.size(), 1);
@@ -35,8 +34,7 @@ TEST(Mpi_MigrationTest, variable_recv_size_migration) {
 			export_map[i].push_back(j);
 		}
 	}
-	int i = 0;
-	auto import_map = migrate<int>(export_map, comm, i);
+	auto import_map = migrate<int>(export_map, comm);
 
 	ASSERT_EQ(import_map.size(), comm.getSize() - 1); // proc 0 doesn't send anything
 	for(auto item : import_map) {
@@ -60,8 +58,7 @@ TEST(Mpi_MigrationTest, variable_send_size_migration) {
 			export_map[i].push_back(j);
 		}
 	}
-	int i = 0;
-	auto import_map = migrate<int, int>(export_map, comm, i);
+	auto import_map = migrate<int>(export_map, comm);
 
 	if(comm.getRank() == 0) {
 		ASSERT_EQ(import_map.size(), 0); // proc 0 doesn't receive anything

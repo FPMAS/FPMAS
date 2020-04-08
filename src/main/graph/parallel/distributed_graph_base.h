@@ -3,7 +3,6 @@
 
 #include "../base/graph.h"
 
-#include "zoltan/zoltan_lb.h"
 #include "zoltan/zoltan_node_migrate.h"
 #include "zoltan/zoltan_arc_migrate.h"
 
@@ -46,12 +45,14 @@ namespace FPMAS {
 		class DistributedGraphBase 
 			: public Graph<std::unique_ptr<SyncData<T,S>>, DistributedId>,
 			api::communication::ResourceHandler {
-			friend int zoltan::num_obj<T, S>(ZOLTAN_NUM_OBJ_ARGS);
-			friend void zoltan::obj_list<T, S>(ZOLTAN_OBJ_LIST_ARGS);
-			friend void zoltan::num_edges_multi_fn<T, S>(ZOLTAN_NUM_EDGES_MULTI_ARGS);
-			friend void zoltan::edge_list_multi_fn<T, S>(ZOLTAN_EDGE_LIST_MULTI_ARGS);
-			friend int zoltan::num_fixed_obj_fn<T, S>(ZOLTAN_NUM_OBJ_ARGS);
-			friend void zoltan::fixed_obj_list_fn<T, S>(void *, int, int, ZOLTAN_ID_PTR, int *, int *);
+			/*
+			 *friend int zoltan::num_obj<T, S>(ZOLTAN_NUM_OBJ_ARGS);
+			 *friend void zoltan::obj_list<T, S>(ZOLTAN_OBJ_LIST_ARGS);
+			 *friend void zoltan::num_edges_multi_fn<T, S>(ZOLTAN_NUM_EDGES_MULTI_ARGS);
+			 *friend void zoltan::edge_list_multi_fn<T, S>(ZOLTAN_EDGE_LIST_MULTI_ARGS);
+			 *friend int zoltan::num_fixed_obj_fn<T, S>(ZOLTAN_NUM_OBJ_ARGS);
+			 *friend void zoltan::fixed_obj_list_fn<T, S>(void *, int, int, ZOLTAN_ID_PTR, int *, int *);
+			 */
 			friend void zoltan::node::obj_size_multi_fn<T, S>(ZOLTAN_OBJ_SIZE_ARGS);
 			friend void zoltan::arc::obj_size_multi_fn<T, S>(ZOLTAN_OBJ_SIZE_ARGS);
 
@@ -99,7 +100,6 @@ namespace FPMAS {
 			// arc::mid_migrate_pp_fn once associated arcs have eventually 
 			// been exported
 			std::set<DistributedId> obsoleteGhosts;
-			void setUpZoltan();
 			void removeExportedNode(DistributedId);
 
 			protected:
@@ -111,11 +111,6 @@ namespace FPMAS {
 			 * RequestHandler
 			 */
 			request_handler requestHandler;
-
-			/**
-			 * Zoltan instance
-			 */
-			Zoltan zoltan;
 			/**
 			 * Proxy
 			 */
@@ -130,40 +125,15 @@ namespace FPMAS {
 			GhostGraph<T, S> ghost;
 
 			Scheduler<node_type> scheduler;
-			std::unordered_map<DistributedId, int> fixedVertices;
-			std::set<node_type*> toBalance;
-
-			virtual void setZoltanNodeMigration();
-			void setZoltanArcMigration();
-
 			/*
-			 * Zoltan structures used to manage nodes and arcs migration
+			 *std::unordered_map<DistributedId, int> fixedVertices;
+			 *std::set<node_type*> toBalance;
 			 */
-			/**
-			 * Number of nodes to export.
-			 */
-			int export_node_num;
-			/**
-			 * Node ids to export buffer.
-			 */
-			ZOLTAN_ID_PTR export_node_global_ids;
-			/**
-			 * Node export procs buffer.
-			 */
-			int* export_node_procs;
-
-			/**
-			 * Number of nodes to export.
-			 */
-			int export_arcs_num;
-			/**
-			 * Arc ids to export buffer.
-			 */
-			ZOLTAN_ID_PTR export_arcs_global_ids;
-			/**
-			 * Arc export procs buffer.
-			 */
-			int* export_arcs_procs;
+			Zoltan zoltan;
+			std::unordered_multimap<DistributedId, int> arcExport;
+			std::set<DistributedId> exportedNodes;
+			void setZoltanNodeMigration();
+			void setZoltanArcMigration();
 
 			public:
 
@@ -314,9 +284,10 @@ namespace FPMAS {
 				proxy(mpiCommunicator.getRank()),
 				zoltan(mpiCommunicator.getMpiComm())
 		{
+			FPMAS::config::zoltan_config(&this->zoltan);
+			
 			this->currentNodeId = DistributedId(mpiCommunicator.getRank());
 			this->currentArcId = DistributedId(mpiCommunicator.getRank());
-			this->setUpZoltan();
 		}
 
 		/**
@@ -335,24 +306,10 @@ namespace FPMAS {
 				proxy(mpiCommunicator.getRank(), ranks),
 				zoltan(mpiCommunicator.getMpiComm())
 		{
-			this->currentNodeId = DistributedId(mpiCommunicator.getRank());
-			this->currentArcId = DistributedId(mpiCommunicator.getRank());
-			this->setUpZoltan();
-		}
-
-		/*
-		 * Initializes zoltan parameters and zoltan lb query functions.
-		 */
-		template<class T, SYNC_MODE> void DistributedGraphBase<T, S>::setUpZoltan() {
 			FPMAS::config::zoltan_config(&this->zoltan);
 
-			// Initializes Zoltan Node Load Balancing functions
-			this->zoltan.Set_Num_Fixed_Obj_Fn(zoltan::num_fixed_obj_fn<T, S>, this);
-			this->zoltan.Set_Fixed_Obj_List_Fn(zoltan::fixed_obj_list_fn<T, S>, this);
-			this->zoltan.Set_Num_Obj_Fn(zoltan::num_obj<T, S>, this);
-			this->zoltan.Set_Obj_List_Fn(zoltan::obj_list<T, S>, this);
-			this->zoltan.Set_Num_Edges_Multi_Fn(zoltan::num_edges_multi_fn<T, S>, this);
-			this->zoltan.Set_Edge_List_Multi_Fn(zoltan::edge_list_multi_fn<T, S>, this);
+			this->currentNodeId = DistributedId(mpiCommunicator.getRank());
+			this->currentArcId = DistributedId(mpiCommunicator.getRank());
 		}
 
 		template<class T, SYNC_MODE>
@@ -400,7 +357,6 @@ namespace FPMAS {
 		template<class T, SYNC_MODE> const GhostGraph<T, S>& DistributedGraphBase<T, S>::getGhost() const {
 			return this->ghost;
 		}
-
 		/**
 		 * Configures Zoltan to migrate nodes.
 		 */

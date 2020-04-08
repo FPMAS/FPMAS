@@ -58,13 +58,10 @@ namespace FPMAS::graph::parallel {
 
 
 			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
-			std::unordered_map<
-				DistributedId,
-				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>*
-			> nodes = graph->getNodes();
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "obj_size_multi_fn");
+			auto nodes = graph->getNodes();
 			for (int i = 0; i < num_ids; i++) {
-				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>* node
-					= nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
+				auto node = nodes.at(read_zoltan_id(&global_ids[i * num_gid_entries]));
 
 				if(graph->node_serialization_cache.count(node->getId()) == 1) {
 					sizes[i] = graph->node_serialization_cache.at(node->getId()).size()+1;
@@ -82,7 +79,7 @@ namespace FPMAS::graph::parallel {
 					graph->node_serialization_cache[node->getId()] = serial_node;
 				}
 			}
-
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "done");
 		}
 
 		/**
@@ -117,6 +114,7 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "pack_obj_multi_fn");
 			// The node should actually be serialized when computing
 			// the required buffer size. For efficiency purpose, we temporarily
 			// store the result and delete it when it is packed.
@@ -133,6 +131,7 @@ namespace FPMAS::graph::parallel {
 			}
 			serial_cache->clear();
 
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "done");
 		}
 
 		/**
@@ -162,6 +161,7 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "unpack_obj_multi_fn");
 			for (int i = 0; i < num_ids; i++) {
 				json json_node = json::parse(&buf[idx[i]]);
 
@@ -189,7 +189,7 @@ namespace FPMAS::graph::parallel {
 				graph->proxy.setOrigin(id, origin);
 				graph->proxy.setLocal(id);
 			}
-
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "done");
 		}
 
 		/**
@@ -235,20 +235,17 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 			DistributedGraphBase<T, S>* graph = (DistributedGraphBase<T, S>*) data;
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "post_migrate_pp_fn_olz");
 
 			std::unordered_map<
 				DistributedId,
 				Node<std::unique_ptr<SyncData<T,S>>, DistributedId>*
 			> nodes = graph->getNodes();
-			// Set used to ensure that each arc is sent at most once to
-			// each process.
-			std::set<std::pair<DistributedId, int>> exportedArcPairs;
-
-			std::vector<Arc<std::unique_ptr<SyncData<T,S>>, DistributedId>*> arcsToExport;
-			std::vector<int> procs; // Arcs destination procs
 
 			for (int i =0; i < num_export; i++) {
 				DistributedId id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
+				std::cout << "export id : " << (std::string) id << std::endl;
+				graph->exportedNodes.insert(id);
 
 				auto exported_node = nodes.at(id);
 				int dest_proc = export_procs[i];
@@ -257,52 +254,18 @@ namespace FPMAS::graph::parallel {
 				graph->getProxy().setCurrentLocation(id, dest_proc);
 
 				// Computes arc exports
-				for(auto& layer : exported_node->getLayers()) {
+				for(const auto& layer : exported_node->getLayers()) {
 					for(auto arc : layer.second.getIncomingArcs()) {
-						std::pair<DistributedId, int> arc_proc_pair =
-							std::pair<DistributedId, int>(
-									arc->getId(),
-									export_procs[i]
-									);
-
-						if(exportedArcPairs.count(arc_proc_pair) == 0) {
-							arcsToExport.push_back(arc);
-							// Arcs will be sent to the proc and part associated to
-							// the current node
-							procs.push_back(export_procs[i]);
-
-							exportedArcPairs.insert(arc_proc_pair);
-						}
+						graph->arcExport.insert(std::make_pair(arc->getId(), dest_proc));
 					}
 				}
-				for(auto& layer : exported_node->getLayers()) {
+				for(const auto& layer : exported_node->getLayers()) {
 					for(auto arc : layer.second.getOutgoingArcs()) {
-						std::pair<DistributedId, int> arc_proc_pair =
-							std::pair<DistributedId, int>(
-									arc->getId(),
-									export_procs[i]
-									);
-
-						if(exportedArcPairs.count(arc_proc_pair) == 0) {
-							arcsToExport.push_back(arc);
-							// Arcs will be sent to the proc and part associated to
-							// the current node
-							procs.push_back(export_procs[i]);
-
-							exportedArcPairs.insert(arc_proc_pair);
-						}
+						graph->arcExport.insert(std::make_pair(arc->getId(), dest_proc));
 					}
 				}
 			}
-			graph->export_arcs_num = arcsToExport.size();
-
-			graph->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(ZOLTAN_ID_TYPE) * graph->export_arcs_num * num_gid_entries);
-			graph->export_arcs_procs = (int*) std::malloc(sizeof(int) * graph->export_arcs_num);
-
-			for(int i = 0; i < graph->export_arcs_num; i++) {
-				write_zoltan_id(arcsToExport.at(i)->getId(), &graph->export_arcs_global_ids[i * num_gid_entries]);
-				graph->export_arcs_procs[i] = procs[i];
-			}
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "done");
 		}
 
 		/**
@@ -348,9 +311,7 @@ namespace FPMAS::graph::parallel {
 				int *ierr) {
 
 			DistributedGraphBase<T, NoSyncMode>* graph =(DistributedGraphBase<T, NoSyncMode>*) data;
-
-			std::vector<Arc<std::unique_ptr<SyncData<T, NoSyncMode>>, DistributedId>*> arcsToExport;
-			std::vector<int> procs; // Arcs destination procs
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "post_migrate_pp_fn_no_sync");
 
 			std::unordered_map<DistributedId, int> nodeDestinations;
 
@@ -360,6 +321,7 @@ namespace FPMAS::graph::parallel {
 
 			for (auto nodeDest : nodeDestinations) {
 				auto exported_node = graph->getNodes().at(nodeDest.first);
+				graph->exportedNodes.insert(nodeDest.first);
 
 				// Updates Proxy for consistency, even if should no ghost are used
 				graph->getProxy().setCurrentLocation(nodeDest.first, nodeDest.second);
@@ -377,23 +339,12 @@ namespace FPMAS::graph::parallel {
 						if(nodeDestinations.count(sourceId) > 0 // The source is also exported
 								&& nodeDestinations.at(sourceId) == nodeDest.second// The source is exported to the same proc as the target node
 						) {
-							arcsToExport.push_back(arc);
-							// Arcs will be sent to the proc and part associated to
-							// the current node
-							procs.push_back(nodeDest.second);
+							graph->arcExport.insert(std::make_pair(arc->getId(), nodeDest.second));
 						}
 					}
 				}
 			}
-			graph->export_arcs_num = arcsToExport.size();
-
-			graph->export_arcs_global_ids = (ZOLTAN_ID_PTR) std::malloc(sizeof(ZOLTAN_ID_TYPE) * graph->export_arcs_num * num_gid_entries);
-			graph->export_arcs_procs = (int*) std::malloc(sizeof(int) * graph->export_arcs_num);
-
-			for(int i = 0; i < graph->export_arcs_num; i++) {
-				write_zoltan_id(arcsToExport.at(i)->getId(), &graph->export_arcs_global_ids[i * num_gid_entries]);
-				graph->export_arcs_procs[i] = procs[i];
-			}
+			FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_NODE", "done");
 		}
 	}
 }

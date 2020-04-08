@@ -63,7 +63,6 @@ namespace FPMAS {
 			 *
 			 * @tparam T associated data type
 			 * @tparam IdType type of Nodes and Arcs ids
-			 * @tparam N layers count
 			 */
 			template<typename T, typename IdType=DefaultId>
 			class Graph {
@@ -492,7 +491,7 @@ namespace FPMAS {
 			 * not correspond to any Node in this Graph
 			 */
 			template<typename T, typename IdType> void Graph<T, IdType>::removeNode(IdType nodeId) {
-				FPMAS_LOGD(-1, "GRAPH", "Removing node %lu", nodeId);
+				FPMAS_LOGD(-1, "GRAPH", "Removing node %s", ID_C_STR(nodeId));
 				node_ptr node_to_remove;
 				try {
 					node_to_remove = nodes.at(nodeId);
@@ -507,8 +506,8 @@ namespace FPMAS {
 							FPMAS_LOGV(
 									-1,
 									"GRAPH",
-									"Unlink incoming arc %lu",
-									arc->getId()
+									"Unlink incoming arc %s",
+									ID_C_STR(arc->getId())
 									);
 							this->unlink(arc);
 						} catch (exceptions::arc_out_of_graph<IdType> e) {
@@ -522,8 +521,8 @@ namespace FPMAS {
 							FPMAS_LOGV(
 									-1,
 									"GRAPH",
-									"Unlink outgoing arc %lu",
-									arc->getId()
+									"Unlink outgoing arc %s",
+									ID_C_STR(arc->getId())
 									);
 							this->unlink(arc);
 						} catch (exceptions::arc_out_of_graph<IdType> e) {
@@ -537,7 +536,7 @@ namespace FPMAS {
 				nodes.erase(nodeId);
 				// Deletes the node
 				delete node_to_remove;
-				FPMAS_LOGD(-1, "GRAPH", "Node %lu removed.", nodeId);
+				FPMAS_LOGD(-1, "GRAPH", "Node %s removed.", ID_C_STR(nodeId));
 			}
 
 			/**

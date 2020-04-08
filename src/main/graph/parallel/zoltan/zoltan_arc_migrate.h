@@ -384,23 +384,17 @@ namespace FPMAS::graph::parallel {
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_olz");
 
 				// Computes the set of ids of exported nodes
-				std::set<DistributedId> exportedIds;
-				for(int i = 0; i < graph->export_node_num; i++) {
-					exportedIds.insert(zoltan::utils::read_zoltan_id(
-								&graph->export_node_global_ids[i * num_gid_entries])
-							);
-				}
 
 				// Builds ghost nodes when necessary.
 				// For each exported node, a ghost node is created if and only
 				// if at least one local node is still connected to the
 				// exported node.
-				for(auto id : exportedIds) {
+				for(auto id : graph->exportedNodes) {
 					Node<std::unique_ptr<SyncData<T,S>>, DistributedId>* node = graph->getNode(id);
 					bool buildGhost = false;
 					for(auto& layer : node->getLayers()) {
 						for(auto arc : layer.second.getOutgoingArcs()) {
-							if(exportedIds.count(arc->getTargetNode()->getId()) == 0) {
+							if(graph->exportedNodes.count(arc->getTargetNode()->getId()) == 0) {
 								buildGhost = true;
 								break;
 							}
@@ -409,7 +403,7 @@ namespace FPMAS::graph::parallel {
 					if(!buildGhost) {
 						for(auto& layer : node->getLayers()) {
 							for(auto arc : layer.second.getIncomingArcs()) {
-								if(exportedIds.count(arc->getSourceNode()->getId()) == 0) {
+								if(graph->exportedNodes.count(arc->getSourceNode()->getId()) == 0) {
 									buildGhost = true;
 									break;
 								}
@@ -417,14 +411,14 @@ namespace FPMAS::graph::parallel {
 						}
 					}
 					if(buildGhost) {
-						FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Building ghost node %lu", node->getId());
-						graph->getGhost().buildNode(*node, exportedIds);
+						FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Building ghost node %s", ID_C_STR(node->getId()));
+						graph->getGhost().buildNode(*node, graph->exportedNodes);
 					}
 				}
 
 				// Remove nodes
-				for(auto id : exportedIds) {
-					FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Removing exported node %lu", id);
+				for(auto id : graph->exportedNodes) {
+					FPMAS_LOGD(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "Removing exported node %s", ID_C_STR(id));
 					graph->removeExportedNode(id);
 				}
 
@@ -456,12 +450,10 @@ namespace FPMAS::graph::parallel {
 				DistributedGraphBase<T, NoSyncMode>* graph = (DistributedGraphBase<T, NoSyncMode>*) data;
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_no_sync");
 
-				// Removes exported nodes from the local graph
-				for(int i = 0; i < graph->export_node_num; i++) {
-					graph->removeNode(zoltan::utils::read_zoltan_id(
-								&graph->export_node_global_ids[i * num_gid_entries])
-							);
+				for(auto node : graph->exportedNodes) {
+					graph->removeNode(node);
 				}
+				// Removes exported nodes from the local graph
 				FPMAS_LOGV(graph->getMpiCommunicator().getRank(), "ZOLTAN_ARC", "post_migrate_pp_fn_no_sync : done");
 			}
 		}

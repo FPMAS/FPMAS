@@ -13,69 +13,19 @@ using nlohmann::json;
 
 namespace FPMAS::communication {
 
-	// PreMigrate
-	template<typename T, typename Data> class PreMigrate {
-		public:
-			virtual void operator()(Data&, std::unordered_map<int, std::vector<T>>) = 0;
-	};
-
-	template<typename T, typename Data> class voidPreMigrate : public PreMigrate<T, Data> {
-		public:
-			void operator()(Data&, std::unordered_map<int, std::vector<T>>) override {}
-	};
-
-	// MidMigrate
-	template<typename T, typename Data> class MidMigrate {
-		public:
-			virtual void operator()(Data&, std::unordered_map<int, std::vector<T>>) = 0;
-	};
-
-	template<typename T, typename Data> class voidMidMigrate : public MidMigrate<T, Data> {
-		public:
-			void operator()(Data&, std::unordered_map<int, std::vector<T>>) override {}
-	};
-
-	// PostMigrate
-	template<typename T, typename Data> class PostMigrate {
-		public:
-			virtual void operator()(
-				Data&,
-				std::unordered_map<int, std::vector<T>> exportMap,
-				std::unordered_map<int, std::vector<T>> importMap
-				) = 0;
-	};
-
-	template<typename T, typename Data> class voidPostMigrate : public PostMigrate<T, Data> {
-		public:
-			void operator()(
-				Data&,
-				std::unordered_map<int, std::vector<T>>,
-				std::unordered_map<int, std::vector<T>>
-			) override {}
-	};
-	
-
 	template<
-		typename T,
-		typename Data,
-		typename PreMigrateFunc = voidPreMigrate<T, Data>,
-		typename MidMigrateFunc = voidMidMigrate<T, Data>,
-		typename PostMigrateFunc = voidPostMigrate<T, Data>
+		typename T
 		> std::unordered_map<int, std::vector<T>> migrate(
 			std::unordered_map<int, std::vector<T>> exportMap,
-			MpiCommunicator& comm,
-			Data& data
+			MpiCommunicator& comm
+			//Data& data
 			) {
-
-		PreMigrateFunc()(data, exportMap);
 
 		// Pack
 		std::unordered_map<int, std::string> data_pack;
 		for(auto item : exportMap) {
 			data_pack[item.first] = json(item.second).dump();
 		}
-
-		MidMigrateFunc()(data, exportMap);
 
 		// Migrate
 		int sendcounts[comm.getSize()];
@@ -128,9 +78,6 @@ namespace FPMAS::communication {
 			importMap[item.first] = json::parse(data_unpack[item.first])
 				.get<std::vector<T>>();
 		}
-
-		// Post migrate
-		PostMigrateFunc()(data, exportMap, importMap);
 
 		return importMap;
 	}
