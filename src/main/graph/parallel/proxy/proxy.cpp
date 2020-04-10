@@ -74,7 +74,6 @@ namespace FPMAS::graph::parallel::proxy {
 	 * @param proc origin rank of the corresponding node
 	 */
 	void Proxy::setOrigin(DistributedId id, int proc) {
-		this->origins[id] = proc;
 	}
 
 	/**
@@ -88,10 +87,7 @@ namespace FPMAS::graph::parallel::proxy {
 	 * @param id node id
 	 */
 	int Proxy::getOrigin(DistributedId id) const {
-		if(this->origins.count(id) == 1)
-			return this->origins.at(id);
-
-		return this->localProc;
+		return id.rank();
 	}
 
 	/**

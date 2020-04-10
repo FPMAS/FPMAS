@@ -1,10 +1,10 @@
 #ifndef ZOLTAN_LOAD_BALANCING_H
 #define ZOLTAN_LOAD_BALANCING_H
 
-#include "zoltan_cpp.h"
 #include "api/graph/parallel/load_balancing.h"
 #include "graph/parallel/proxy/proxy.h"
 #include "utils/config.h"
+#include "zoltan_cpp.h"
 #include "zoltan_lb.h"
 
 namespace FPMAS::graph::parallel::zoltan {
@@ -12,7 +12,7 @@ namespace FPMAS::graph::parallel::zoltan {
 	template<typename NodeType>
 	struct NodesProxyPack {
 		std::unordered_map<DistributedId, NodeType*>* const nodes;
-		const proxy::Proxy* const proxy;
+		const FPMAS::api::graph::parallel::Proxy<DistributedId>* const proxy;
 	};
 
 	template<typename NodeType>

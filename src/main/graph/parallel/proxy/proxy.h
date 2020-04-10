@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <set>
 
+#include "api/graph/parallel/proxy/proxy.h"
 #include "utils/macros.h"
 #include "zoltan_cpp.h"
 #include "graph/parallel/distributed_id.h"
@@ -60,7 +61,7 @@ namespace FPMAS::graph::parallel {
 		 * update the current location map using the Zoltan migrations
 		 * functions.
 		 */
-		class Proxy {
+		class Proxy : public FPMAS::api::graph::parallel::Proxy<DistributedId> {
 			friend void proxy::obj_size_multi_fn(
 					void *data, int num_gid_entries, int num_lid_entries, int num_ids,
 					ZOLTAN_ID_PTR global_ids, ZOLTAN_ID_PTR local_ids, int *sizes, int *ierr
@@ -80,7 +81,6 @@ namespace FPMAS::graph::parallel {
 			communication::MpiCommunicator mpiCommunicator;
 			Zoltan zoltan;
 			const int localProc;
-			std::unordered_map<DistributedId, int> origins;
 			std::unordered_map<DistributedId, int> currentLocations;
 
 			std::unordered_map<DistributedId, std::string> proxyUpdatesSerializationCache;
@@ -93,14 +93,14 @@ namespace FPMAS::graph::parallel {
 			Proxy(int localProc);
 			Proxy(int localProc, std::initializer_list<int>);
 			int getLocalProc() const;
-			void setOrigin(DistributedId, int);
-			void setCurrentLocation(DistributedId, int);
-			int getOrigin(DistributedId) const;
-			int getCurrentLocation(DistributedId) const;
+			void setOrigin(DistributedId, int) override;
+			void setCurrentLocation(DistributedId, int) override;
+			int getOrigin(DistributedId) const override;
+			int getCurrentLocation(DistributedId) const override;
 			void setLocal(DistributedId, bool upToDate=false);
 			bool isLocal(DistributedId);
 
-			void synchronize();
+			void synchronize() override;
 
 		};
 

@@ -26,6 +26,7 @@ namespace FPMAS::api::graph::base {
 
 			arc_type* link(IdType, IdType, LayerId);
 			virtual arc_type* link(Node<T, IdType>*, Node<T, IdType>*, LayerId) = 0;
+			virtual arc_type* link(Node<T, IdType>*, Node<T, IdType>*, LayerId, float weight) = 0;
 
 			void removeNode(IdType);
 			virtual void removeNode(Node<T, IdType>* node) = 0;

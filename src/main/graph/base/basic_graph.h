@@ -53,6 +53,7 @@ namespace FPMAS::graph::base {
 				node_type* buildNode(T&& data, float weight);
 
 				arc_type* link(abstract_node_ptr, abstract_node_ptr, LayerId) override;
+				arc_type* link(abstract_node_ptr, abstract_node_ptr, LayerId, float) override;
 
 				void removeNode(abstract_node_ptr node) override;
 
@@ -159,6 +160,18 @@ namespace FPMAS::graph::base {
 				) {
 				arc_ptr arc = new arc_type(
 						_currentArcId, source, target, layer
+						);
+				this->arcs[_currentArcId] = arc;
+				++_currentArcId;
+				return arc;
+		}
+
+	template<GRAPH_PARAMS>
+		typename BasicGraph<GRAPH_PARAMS_SPEC>::arc_type* BasicGraph<GRAPH_PARAMS_SPEC>::link(
+				abstract_node_ptr source, abstract_node_ptr target, LayerId layer, float weight
+				) {
+				arc_ptr arc = new arc_type(
+						_currentArcId, source, target, layer, weight
 						);
 				this->arcs[_currentArcId] = arc;
 				++_currentArcId;

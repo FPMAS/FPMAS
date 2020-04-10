@@ -46,6 +46,8 @@ namespace FPMAS::graph::base {
 		 */
 		const LayerId layer;
 
+		float getWeight() const {return 1.;};
+
 		Node<T, IdType>* const getSourceNode() const;
 		Node<T, IdType>* const getTargetNode() const;
 

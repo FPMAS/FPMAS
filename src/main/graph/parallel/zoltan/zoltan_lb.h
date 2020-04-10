@@ -105,11 +105,9 @@ namespace FPMAS::graph::parallel {
 						utils::read_zoltan_id(&global_ids[i * num_gid_entries])
 						);
 				int count = 0;
-				for(const auto& layer : node->getLayers()) {
-					for(auto arc : layer.second.getOutgoingArcs()) {
-						if(nodes->count(arc->getTargetNode()->getId()) > 0) {
-							count++;
-						}
+				for(auto arc : node->getOutgoingArcs()) {
+					if(nodes->count(arc->getTargetNode()->getId()) > 0) {
+						count++;
 					}
 				}
 				num_edges[i] = count;
@@ -161,18 +159,16 @@ namespace FPMAS::graph::parallel {
 				auto node = nodes->at(
 						utils::read_zoltan_id(&global_ids[num_gid_entries * i])
 						);
-				for(const auto& layer : node->getLayers()) {
-					for(auto arc : layer.second.getOutgoingArcs()) {
-						if(nodes->count(arc->getTargetNode()->getId()) > 0) {
-							DistributedId targetId = arc->getTargetNode()->getId(); 
-							utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
+				for(auto arc : node->getOutgoingArcs()) {
+					if(nodes->count(arc->getTargetNode()->getId()) > 0) {
+						DistributedId targetId = arc->getTargetNode()->getId(); 
+						utils::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 
-							nbor_procs[neighbor_index]
-								= proxy->getCurrentLocation(targetId);
+						nbor_procs[neighbor_index]
+							= proxy->getCurrentLocation(targetId);
 
-							ewgts[neighbor_index] = 1.;
-							neighbor_index++;
-						}
+						ewgts[neighbor_index] = arc->getWeight();
+						neighbor_index++;
 					}
 				}
 			}
