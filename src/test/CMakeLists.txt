@@ -1,6 +1,12 @@
 
 set(SOURCES "")
 
+# API
+set(SOURCES
+	${SOURCES}
+	api/graph/base/node.cpp
+	)
+
 # Comm
 set(SOURCES
 	${SOURCES}
@@ -13,6 +19,7 @@ set(SOURCES
 # Graph
 set(SOURCES
 	${SOURCES}
+	graph/base/basic_graph.cpp
 	graph/base/graph.cpp)
 
 set(SOURCES

@@ -5,6 +5,7 @@
 #include <array>
 #include "utils/macros.h"
 #include "graph.h"
+#include "api/graph/base/node.h"
 
 using nlohmann::json;
 
@@ -19,7 +20,7 @@ namespace FPMAS::graph::base {
  * library](https://github.com/nlohmann/json).
  */
 namespace nlohmann {
-	using FPMAS::graph::base::LayerId;
+	using FPMAS::api::graph::base::LayerId;
 	using FPMAS::graph::base::Node;
 
 	/**

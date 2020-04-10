@@ -4,6 +4,7 @@
 #include <nlohmann/json.hpp>
 #include <array>
 
+#include "api/graph/base/node.h"
 #include "graph_item.h"
 #include "graph.h"
 #include "arc.h"

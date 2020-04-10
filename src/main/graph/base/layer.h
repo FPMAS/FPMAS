@@ -5,8 +5,12 @@
 #include "utils/macros.h"
 #include <vector>
 #include <array>
+#include "api/graph/base/node.h"
 
 namespace FPMAS::graph::base {
+	using FPMAS::api::graph::base::LayerId;
+	using FPMAS::api::graph::base::DefaultLayer;
+
 	template<typename, typename> class Arc;
 	template<typename, typename> class Node;
 	template<typename, typename> class Graph;
