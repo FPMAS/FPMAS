@@ -20,7 +20,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		FPMAS_LOGI(dg.getMpiCommunicator().getRank(), "MAIN", "Distributing graph...");
-		dg.distribute();
+		dg.balance();
 		FPMAS_LOGI(dg.getMpiCommunicator().getRank(), "MAIN", "Done...");
 
 		for(auto node : dg.getNodes()) {

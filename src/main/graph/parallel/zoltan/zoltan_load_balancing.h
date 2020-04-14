@@ -11,13 +11,19 @@ namespace FPMAS::graph::parallel::zoltan {
 
 	template<typename NodeType>
 	struct NodesProxyPack {
-		std::unordered_map<DistributedId, NodeType*>* const nodes;
+		std::unordered_map<
+			DistributedId, NodeType*, FPMAS::api::graph::base::IdHash<DistributedId>
+		>* const nodes;
 		const FPMAS::api::graph::parallel::Proxy<DistributedId>* const proxy;
 	};
 
 	template<typename NodeType>
 		class ZoltanLoadBalancing : public FPMAS::api::graph::parallel::LoadBalancing<NodeType> {
 			private:
+				typedef FPMAS::api::graph::parallel::LoadBalancing<NodeType> base;
+				using typename base::node_map;
+				using typename base::partition;
+
 				//Zoltan instance
 				Zoltan zoltan;
 
@@ -34,8 +40,8 @@ namespace FPMAS::graph::parallel::zoltan {
 
 				void setUpZoltan();
 
-				std::unordered_map<DistributedId, NodeType*> nodes;
-				std::unordered_map<DistributedId, int> fixedVertices;
+				node_map nodes;
+				partition fixedVertices;
 				const proxy::Proxy& proxy;
 
 				NodesProxyPack<NodeType> nodesProxyPack {&nodes, &proxy};
@@ -59,17 +65,17 @@ namespace FPMAS::graph::parallel::zoltan {
 					return proxy;
 				}
 
-				std::unordered_map<DistributedId, int> balance(
-						std::unordered_map<DistributedId, NodeType*> nodes,
-						std::unordered_map<DistributedId, int> fixedVertices
+				partition balance(
+						node_map nodes,
+						partition fixedVertices
 						) override;
 
 		};
 
-	template<typename NodeType> std::unordered_map<DistributedId, int>
+	template<typename NodeType> typename ZoltanLoadBalancing<NodeType>::partition 
 		ZoltanLoadBalancing<NodeType>::balance(
-			std::unordered_map<DistributedId, NodeType*> nodes,
-			std::unordered_map<DistributedId, int> fixedVertices
+			node_map nodes,
+			partition fixedVertices
 			) {
 			this->nodes = nodes;
 			this->fixedVertices = fixedVertices;
@@ -107,7 +113,7 @@ namespace FPMAS::graph::parallel::zoltan {
 					export_to_part
 					);
 
-			std::unordered_map<DistributedId, int> partition;
+			partition partition;
 			for(int i = 0; i < export_node_num; i++) {
 				partition[zoltan::utils::read_zoltan_id(&export_node_global_ids[i * num_gid_entries])]
 					= export_node_procs[i];

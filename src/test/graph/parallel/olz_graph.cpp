@@ -7,7 +7,7 @@ using FPMAS::graph::parallel::DistributedGraph;
 class Mpi_SynchronizeGhostTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 		std::unordered_map<int, DistributedId> idMap;
 
 		void SetUp() override {

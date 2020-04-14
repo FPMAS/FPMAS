@@ -5,14 +5,22 @@
 #include <unordered_map>
 
 #include "graph/parallel/distributed_id.h"
+#include "api/graph/base/id.h"
 
 namespace FPMAS::api::graph::parallel {
 	template<typename NodeType>
 		class LoadBalancing {
+			protected:
+				typedef FPMAS::api::graph::base::IdHash<DistributedId> node_id_hash;
+
 			public:
-				virtual std::unordered_map<DistributedId, int> balance(
-						std::unordered_map<DistributedId, NodeType*> nodes,
-						std::unordered_map<DistributedId, int> fixedVertices
+				typedef std::unordered_map<DistributedId, int, node_id_hash> partition;
+				typedef std::unordered_map<
+					DistributedId, NodeType*, node_id_hash
+					> node_map;
+				virtual partition balance(
+						node_map nodes,
+						partition fixedVertices
 						) = 0;
 		};
 }

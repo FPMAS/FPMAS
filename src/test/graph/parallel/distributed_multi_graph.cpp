@@ -16,7 +16,7 @@ enum TestLayer {
 class Mpi_DistributeMultiGraphNoneSynchroTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, NoSyncMode> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
@@ -79,7 +79,7 @@ TEST_F(Mpi_DistributeMultiGraphNoneSynchroTest, distribute_none_synchro_test) {
 class Mpi_DistributeMultiGraphWithArcTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, GhostMode> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < dg.getMpiCommunicator().getSize(); ++i) {
@@ -141,7 +141,7 @@ TEST_F(Mpi_DistributeMultiGraphWithArcTest, distribute_with_arc_test) {
 class Mpi_DistributeMultiGraphWithGhostArcTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, GhostMode> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 		std::unordered_map<int, DistributedId> idMap;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {

@@ -2,13 +2,14 @@
 
 #include "api/graph/parallel/mock_distributed_node.h"
 #include "api/graph/parallel/mock_distributed_arc.h"
+#include "api/graph/parallel/mock_load_balancing.h"
 
 #include "graph/parallel/basic_distributed_graph.h"
 
 using FPMAS::graph::parallel::BasicDistributedGraph;
 
 TEST(BasicDistributedGraph, buildNode) {
-	BasicDistributedGraph<MockDistributedNode<int>, MockDistributedArc<int>> graph;
+	BasicDistributedGraph<MockDistributedNode<int>, MockDistributedArc<int>, MockLoadBalancing> graph;
 
 	auto currentId = graph.currentNodeId();
 	auto node = graph.buildNode(2, 0.5, LocationState::LOCAL);
@@ -28,7 +29,7 @@ TEST(BasicDistributedGraph, buildNode) {
 }
 
 TEST(BasicDistributedGraph, local_link) {
-	BasicDistributedGraph<MockDistributedNode<int>, MockDistributedArc<int>> graph;
+	BasicDistributedGraph<MockDistributedNode<int>, MockDistributedArc<int>, MockLoadBalancing> graph;
 
 	MockDistributedNode<int> srcMock;
 	MockDistributedNode<int> tgtMock;

@@ -2,6 +2,7 @@
 #define DISTRIBUTED_GRAPH_IMPL_H
 
 #include "api/graph/parallel/distributed_graph.h"
+
 #include "graph/base/basic_graph.h"
 
 namespace FPMAS::graph::parallel {
@@ -9,18 +10,19 @@ namespace FPMAS::graph::parallel {
 	using FPMAS::api::graph::parallel::LocationState;
 	template<
 		typename DistNodeImpl,
-		typename DistArcImpl
+		typename DistArcImpl,
+		template<typename> class LoadBalancingImpl
 	>
 	class BasicDistributedGraph : 
 		public base::AbstractGraphBase<
-			BasicDistributedGraph<DistNodeImpl, DistArcImpl>,
+			BasicDistributedGraph<DistNodeImpl, DistArcImpl, LoadBalancingImpl>,
 			DistNodeImpl, DistArcImpl>,
 		public api::graph::parallel::DistributedGraph<
-			BasicDistributedGraph<DistNodeImpl, DistArcImpl>,
+			BasicDistributedGraph<DistNodeImpl, DistArcImpl, LoadBalancingImpl>,
 			DistNodeImpl, DistArcImpl
 		> {
 			typedef api::graph::parallel::DistributedGraph<
-				BasicDistributedGraph<DistNodeImpl, DistArcImpl>,
+				BasicDistributedGraph<DistNodeImpl, DistArcImpl, LoadBalancingImpl>,
 				DistNodeImpl, DistArcImpl
 			> dist_graph_base;
 
@@ -29,6 +31,10 @@ namespace FPMAS::graph::parallel {
 			using typename dist_graph_base::arc_type;
 			using typename dist_graph_base::layer_id_type;
 			using typename dist_graph_base::node_map;
+			using typename dist_graph_base::partition;
+
+			private:
+			LoadBalancingImpl<node_type> loadBalancing;
 
 			public:
 			void removeNode(node_type*) {};
@@ -42,9 +48,12 @@ namespace FPMAS::graph::parallel {
 			const node_map& getLocalNodes() const{ return this->getNodes();};
 			const node_map& getDistantNodes() const{ return this->getNodes();};
 
-			void balance(){};
+			void balance() override {
+				this->distribute(loadBalancing.balance(this->getNodes(), {}));
+			};
 
-			void distribute(std::unordered_map<DistributedId, int> partition){};
+			void distribute(
+					partition partition) override{};
 
 			void synchronize(){};
 

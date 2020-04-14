@@ -246,7 +246,7 @@ namespace FPMAS {
 			 * Distributes the graph accross the available cores performing a
 			 * load balancing.
 			 */
-			virtual void distribute() = 0;
+			virtual void balance() = 0;
 
 			/**
 			 * Distributes the graph accross the available cores using the
@@ -267,7 +267,7 @@ namespace FPMAS {
 			 *
 			 * @param partition new partition
 			 */
-			virtual void distribute(std::unordered_map<DistributedId, int> partition) = 0;
+			virtual void distribute(std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition) = 0;
 
 			virtual void synchronize();
 

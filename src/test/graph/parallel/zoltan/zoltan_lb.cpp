@@ -35,7 +35,11 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 		std::vector<MockArc<int, DistributedId>*> outArcs3;
 		MockArc<int, DistributedId>* mockArc3;
 
-		std::unordered_map<DistributedId, MockNode<int, DistributedId>*> nodes;
+		std::unordered_map<
+			DistributedId,
+			MockNode<int, DistributedId>*,
+			FPMAS::api::graph::base::IdHash<DistributedId>
+			> nodes;
 
 		// Fake Zoltan buffers
 		
@@ -44,7 +48,9 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 		unsigned int local_ids[0];
 		float weights[3];
 
-		std::unordered_map<DistributedId, int> nodeIndex;
+		std::unordered_map<
+			DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>
+			> nodeIndex;
 
 		// Edge lists
 		int num_edges[3];

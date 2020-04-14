@@ -9,7 +9,7 @@ using FPMAS::graph::parallel::synchro::modes::NoSyncMode;
 class Mpi_DistributeCompleteGraphTest_NoSync : public ::testing::Test {
 	protected:
 		DistributedGraph<int, NoSyncMode> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 
 	void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {

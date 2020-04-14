@@ -2,6 +2,7 @@
 #define DISTRIBUTED_GRAPH_API_H
 
 #include "api/graph/base/graph.h"
+#include "api/graph/parallel/load_balancing.h"
 #include "api/graph/parallel/distributed_node.h"
 
 #include "graph/parallel/distributed_id.h"
@@ -19,6 +20,7 @@ namespace FPMAS::api::graph::parallel {
 			using typename graph_base::node_map;
 			using typename graph_base::arc_map;
 
+			typedef typename LoadBalancing<DistributedNodeType>::partition partition;
 
 			virtual node_type* importNode(node_type* node) = 0;
 			virtual void exportNode(node_type* node, int rank) = 0;
@@ -30,7 +32,7 @@ namespace FPMAS::api::graph::parallel {
 
 			virtual void balance() = 0;
 
-			virtual void distribute(std::unordered_map<DistributedId, int> partition) = 0;
+			virtual void distribute(partition partition) = 0;
 
 			virtual void synchronize() = 0;
 	};

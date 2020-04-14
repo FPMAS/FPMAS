@@ -67,7 +67,7 @@ template<SYNC_MODE> void buildGraph(DistributedGraph<int, S>& dg) {
 			dg.link(idMap[i], idMap[(i+1) % dg.getMpiCommunicator().getSize()]);
 		}
 	}
-	dg.distribute();
+	dg.balance();
 }
 
 using namespace std::chrono_literals;

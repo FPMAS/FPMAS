@@ -107,13 +107,22 @@ class Mpi_AgentGridDistantMoveToTest : public ::testing::Test {
 		grid_type* grid;
 
 		// One node per proc
-		std::unordered_map<DistributedId, int> partition1;
+		std::unordered_map<
+			DistributedId, int,
+			FPMAS::api::graph::base::IdHash<DistributedId>
+			> partition1;
 
 		// Agent goes on proc 0 (where its "location" is)
-		std::unordered_map<DistributedId, int> partition2;
+		std::unordered_map<
+			DistributedId, int,
+			FPMAS::api::graph::base::IdHash<DistributedId>
+			> partition2;
 
 		// Agent goes on proc 1 (where its "destination" is)
-		std::unordered_map<DistributedId, int> partition3;
+		std::unordered_map<
+			DistributedId, int,
+			FPMAS::api::graph::base::IdHash<DistributedId>
+			> partition3;
 
 		void SetUp() override {
 			int size;

@@ -90,8 +90,11 @@ namespace FPMAS {
 				arc_ptr link(node_ptr, node_ptr, LayerId) override;
 				void unlink(arc_ptr) override;
 
-				void distribute() override;
-				void distribute(std::unordered_map<DistributedId, int>) override;
+				void balance() override;
+				void distribute(
+					std::unordered_map<
+					DistributedId, int,
+					FPMAS::api::graph::base::IdHash<DistributedId>>) override;
 				void synchronize() override;
 		};
 
@@ -325,7 +328,7 @@ namespace FPMAS {
 		 * @param partition new partition
 		 */
 		template<class T, SYNC_MODE> void DistributedGraph<T, S>::distribute(
-				std::unordered_map<DistributedId, int> partition
+				std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition
 				) {
 			// Export lists
 			/*
@@ -399,7 +402,7 @@ namespace FPMAS {
 		 * 4. Update nodes locations within each Proxy instance
 		 *
 		 */
-		template<class T, SYNC_MODE> void DistributedGraph<T, S>::distribute() {
+		template<class T, SYNC_MODE> void DistributedGraph<T, S>::balance() {
 			zoltan::ZoltanLoadBalancing<node_type> zoltanLoadBalancing(
 					this->mpiCommunicator.getMpiComm(), this->proxy);
 /*
@@ -420,9 +423,18 @@ namespace FPMAS {
 						this->getMpiCommunicator().getMpiComm());
 			//int free=false;
 
-			std::unordered_map<DistributedId, node_ptr> nodesToBalance;
-			std::unordered_map<DistributedId, int> fixedNodes;
-			std::unordered_map<DistributedId, int> partition;
+			std::unordered_map<
+				DistributedId, node_ptr,
+				FPMAS::api::graph::base::IdHash<DistributedId>
+			> nodesToBalance;
+			std::unordered_map<
+				DistributedId, int,
+				FPMAS::api::graph::base::IdHash<DistributedId>
+				> fixedNodes;
+			std::unordered_map<
+				DistributedId, int,
+				FPMAS::api::graph::base::IdHash<DistributedId>
+				> partition;
 
 			for(auto schedule_period : periods) {
 				for(auto n : this->scheduler.get(schedule_period)) {

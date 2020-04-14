@@ -15,7 +15,7 @@ TEST(Mpi_HardSyncDistGraph, build_test) {
 class Mpi_HardSyncDistGraphReadTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, HardSyncMode> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
@@ -48,7 +48,7 @@ TEST_F(Mpi_HardSyncDistGraphReadTest, simple_read_test) {
 class Mpi_HardSyncDistGraphAcquireTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int, HardSyncMode> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {

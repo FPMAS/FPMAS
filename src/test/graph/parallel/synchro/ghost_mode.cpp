@@ -10,7 +10,7 @@ using FPMAS::graph::parallel::DistributedGraph;
 class Mpi_DistributeGraphWithGhostArcsTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 	
 	public:
 		void SetUp() override {
@@ -109,7 +109,7 @@ TEST_F(Mpi_DistributeGraphWithGhostArcsTest, distribute_with_ghosts_proxy_test) 
 class Mpi_DistributeCompleteGraphWithGhostTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId,int> partition;
+		std::unordered_map<DistributedId,int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 
 	public:
 		void SetUp() override {
@@ -171,7 +171,7 @@ TEST_F(Mpi_DistributeCompleteGraphWithGhostTest, distribute_graph_with_multiple_
 class Mpi_DynamicLinkTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 	
 	public:
 		void SetUp() override {
@@ -306,7 +306,7 @@ TEST_F(Mpi_DynamicLinkTest, ghost_source_link) {
 class Mpi_DynamicGhostLinkTest : public ::testing::Test {
 	protected:
 		DistributedGraph<int> dg;
-		std::unordered_map<DistributedId, int> partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 	
 	public:
 		void SetUp() override {

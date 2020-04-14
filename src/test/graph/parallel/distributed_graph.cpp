@@ -74,7 +74,7 @@ class Mpi_DistributeGraphWithoutArcTest : public DistributeGraphTest {
 };
 
 TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test_manual_partition) {
-	std::unordered_map<DistributedId, int> partition;
+	std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 	if(dg.getMpiCommunicator().getRank() == 0) {
 		for (int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 			partition[idMap[i]] = i;
@@ -94,7 +94,7 @@ TEST_F(Mpi_DistributeGraphWithoutArcTest, distribute_without_arc_test) {
 		ASSERT_EQ(dg.getNodes().size(), 0);
 	}
 
-	dg.distribute();
+	dg.balance();
 
 	if(dg.getMpiCommunicator().getSize() > 1)
 		ASSERT_LT(dg.getNodes().size(), dg.getMpiCommunicator().getSize());
@@ -148,7 +148,7 @@ class Mpi_DistributeGraphWithArcTest : public DistributeGraphTest {
  * Forces partition with 2 connected nodes by proc
  */
 TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test_manual_partition) {
-	std::unordered_map<DistributedId, int> partition;
+	std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 	if(dg.getMpiCommunicator().getRank()==0) {
 		for(int i = 0; i < dg.getMpiCommunicator().getSize(); i++) {
 			partition[idMap[2*i]] = i;
@@ -179,7 +179,7 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test_manual_partition
  * The fact that the graph structure is saved is checked by the previous test.
  */
 TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
-	dg.distribute();
+	dg.balance();
 
 	if(dg.getMpiCommunicator().getSize() > 1)
 		// Assert that at least some nodes have been migrated.
@@ -188,7 +188,7 @@ TEST_F(Mpi_DistributeGraphWithArcTest, distribute_with_arc_test) {
 
 class Mpi_DistributeCompleteGraphTest : public DistributeGraphTest {
 	protected:
-		std::unordered_map<DistributedId, int> init_partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> init_partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
@@ -220,7 +220,7 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 			dg.getNodes().begin()->second->setWeight(3.);
 		}
 		
-		dg.distribute();
+		dg.balance();
 
 		ASSERT_EQ(
 			dg.getGhost().getArcs().size(), 
@@ -236,7 +236,7 @@ TEST_F(Mpi_DistributeCompleteGraphTest, weight_load_balancing_test) {
 class Mpi_DynamicLoadBalancingTest : public DistributeGraphTest {
 
 	protected:
-		std::unordered_map<DistributedId, int> init_partition;
+		std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> init_partition;
 		void SetUp() override {
 			if(dg.getMpiCommunicator().getRank() == 0) {
 				for (int i = 0; i < 2 * dg.getMpiCommunicator().getSize(); ++i) {
@@ -268,7 +268,7 @@ TEST_F(Mpi_DynamicLoadBalancingTest, dynamic_lb_test) {
 	if(dg.getMpiCommunicator().getRank() % 2 == 1)
 		dg.getNodes().begin()->second->setWeight(3.);
 
-	dg.distribute();
+	dg.balance();
 	
 	float totalWeight = 0.;
 	for(auto node : dg.getNodes())
@@ -281,7 +281,7 @@ TEST_F(Mpi_DynamicLoadBalancingTest, dynamic_lb_test) {
 			node.second->setWeight(1.);
 	}
 
-	dg.distribute();
+	dg.balance();
 	totalWeight = 0.;
 	for(auto node : dg.getNodes())
 		totalWeight += node.second->getWeight();
@@ -304,7 +304,7 @@ class Mpi_ScheduledDistributionFromZeroTest : public ::testing::Test {
 
 TEST_F(Mpi_ScheduledDistributionFromZeroTest, distribute) {
 	if(dg.getMpiCommunicator().getSize()%2==0) {
-		dg.distribute();
+		dg.balance();
 
 		ASSERT_EQ(dg.getScheduler().get(0).size(), 1);
 		ASSERT_EQ(dg.getScheduler().get(5).size(), 1);
@@ -342,7 +342,7 @@ TEST_F(Mpi_ScheduledDistributionFromZeroWithLinksTest, distribute) {
 			ASSERT_EQ(node.second->getOutgoingArcs().size(), 1);
 		}
 
-		dg.distribute();
+		dg.balance();
 
 		ASSERT_EQ(dg.getNodes().size(), 2);
 		ASSERT_EQ(dg.getScheduler().get(0).size(), 1);
@@ -362,7 +362,7 @@ class Mpi_ScheduledDistributionFromAllProcsTest : public ::testing::Test {
 		DistributedGraph<int> dg;
 
 		void SetUp() override {
-			std::unordered_map<DistributedId, int> partition;
+			std::unordered_map<DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>> partition;
 			int size = dg.getMpiCommunicator().getSize();
 			if(size%2==0) {
 				if(dg.getMpiCommunicator().getRank() == 0) {
@@ -402,7 +402,7 @@ TEST_F(Mpi_ScheduledDistributionFromAllProcsTest, distribute) {
 		} else {
 			ASSERT_EQ(dg.getScheduler().get(5).size(), 2);
 		}
-		dg.distribute();
+		dg.balance();
 
 		ASSERT_EQ(dg.getScheduler().get(0).size(), 1);
 		ASSERT_EQ(dg.getScheduler().get(5).size(), 1);
