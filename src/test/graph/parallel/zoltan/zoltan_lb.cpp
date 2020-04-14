@@ -24,15 +24,15 @@ using FPMAS::graph::parallel::zoltan::edge_list_multi_fn;
 class ZoltanLBFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedId id1 {0, 1};
-		std::vector<FPMAS::api::graph::base::Arc<int, DistributedId>*> outArcs1;
+		std::vector<MockArc<int, DistributedId>*> outArcs1;
 		MockArc<int, DistributedId>* mockArc1;
 		MockArc<int, DistributedId>* mockArc2;
 
 		DistributedId id2 {0, 2};
-		std::vector<FPMAS::api::graph::base::Arc<int, DistributedId>*> outArcs2;
+		std::vector<MockArc<int, DistributedId>*> outArcs2;
 
 		DistributedId id3 {2, 3};
-		std::vector<FPMAS::api::graph::base::Arc<int, DistributedId>*> outArcs3;
+		std::vector<MockArc<int, DistributedId>*> outArcs3;
 		MockArc<int, DistributedId>* mockArc3;
 
 		std::unordered_map<DistributedId, MockNode<int, DistributedId>*> nodes;
@@ -57,7 +57,7 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 			nodes[id2] = new MockNode(id2, 1, 2.f);
 			nodes[id3] = new MockNode(id3, 2, 3.f);
 
-			mockArc1 = new MockArc(
+			mockArc1 = new MockArc<int, DistributedId>(
 					DistributedId(0, 0),
 					nodes[id1], nodes[id2],
 					0,
@@ -66,7 +66,7 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 			EXPECT_CALL(*mockArc1, getTargetNode).Times(AnyNumber());
 			outArcs1.push_back(mockArc1);
 
-			mockArc2 = new MockArc(
+			mockArc2 = new MockArc<int, DistributedId>(
 					DistributedId(0, 1),
 					nodes[id1], nodes[id3],
 					1,
@@ -75,7 +75,7 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 			EXPECT_CALL(*mockArc2, getTargetNode).Times(AnyNumber());
 			outArcs1.push_back(mockArc2);
 
-			mockArc3 = new MockArc(
+			mockArc3 = new MockArc<int, DistributedId>(
 					DistributedId(0, 2),
 					nodes[id2], nodes[id1],
 					0,

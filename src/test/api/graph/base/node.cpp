@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
 
-#include "mock_arc.h"
 #include "mock_node.h"
 
 #include "graph/base/basic_id.h"
@@ -20,7 +19,7 @@ TEST(NodeApiTest, in_neighbors_test) {
 	std::array<MockArc<MockData, BasicId>, 10> arcs;
 
 	MockNode<MockData, BasicId> node;
-	std::vector<typename MockNode<MockData, BasicId>::arc_type*> inArcs;
+	std::vector<MockArc<MockData, BasicId>*> inArcs;
 	for(int i = 0; i < 10; i++) {
 		EXPECT_CALL(arcs[i], getTargetNode).Times(0);
 		EXPECT_CALL(arcs[i], getSourceNode)

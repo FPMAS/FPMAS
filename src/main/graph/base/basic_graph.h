@@ -9,121 +9,65 @@
 #include "basic_arc.h"
 
 namespace FPMAS::graph::base {
-	using FPMAS::api::graph::base::LayerId;
+
 	template<
-		typename T,
-		typename IdType,
-		template<typename, typename> class node_type_template = BasicNode,
-		template<typename, typename> class arc_type_template = BasicArc
-	> class BasicGraph : public virtual FPMAS::api::graph::base::
-		Graph<T, IdType, node_type_template, arc_type_template> {
+		typename GraphImplem,
+		typename NodeType,
+		typename ArcType
+	> class AbstractGraphBase : public virtual FPMAS::api::graph::base::
+		Graph<GraphImplem, NodeType, ArcType> {
 			public:
-				typedef FPMAS::api::graph::base::Graph<T, IdType, node_type_template, arc_type_template> graph_base;
-				typedef typename graph_base::node_type node_type;
-				typedef FPMAS::api::graph::base::Node<T, IdType>* abstract_node_ptr;
-				typedef typename graph_base::arc_type arc_type;
-				typedef FPMAS::api::graph::base::Arc<T, IdType>* abstract_arc_ptr;
-				typedef node_type* node_ptr;
-				typedef arc_type* arc_ptr;
-				typedef typename graph_base::id_hash id_hash;
-				typedef std::unordered_map<
-					IdType, node_type*, id_hash
-					> node_map;
-				typedef std::unordered_map<
-					IdType, arc_type*, id_hash
-					> arc_map;
+				typedef FPMAS::api::graph::base::Graph<GraphImplem, NodeType, ArcType> graph_base;
+				using typename graph_base::node_type;
+				using typename graph_base::node_base;
+				using typename graph_base::arc_type;
+				using typename graph_base::arc_base;
+
+				using typename graph_base::node_id_type;
+				using typename graph_base::node_id_hash;
+
+				using typename graph_base::arc_id_type;
+				using typename graph_base::arc_id_hash;
+				
+				using typename graph_base::node_map;
+				using typename graph_base::arc_map;
 
 			private:
 				node_map nodes;
 				arc_map arcs;
 
-			protected:
-				/**
-				 * Current Node Id.
-				 */
-				IdType _currentNodeId;
-				/**
-				 * Current Arc Id.
-				 */
-				IdType _currentArcId;
-
 			public:
-				node_type* buildNode();
-				node_type* buildNode(T&& data);
-				node_type* buildNode(T&& data, float weight);
+				void insert(node_type*) override;
+				void insert(arc_type*) override;
 
-				arc_type* link(abstract_node_ptr, abstract_node_ptr, LayerId) override;
-				arc_type* link(abstract_node_ptr, abstract_node_ptr, LayerId, float) override;
-
-				void removeNode(abstract_node_ptr node) override;
-
-				void unlink(abstract_arc_ptr) override;
-
-				const IdType& currentNodeId() const override {return _currentNodeId;};
-				const IdType& currentArcId() const override {return _currentArcId;};
+				void erase(node_base*) override;
+				void erase(arc_base*) override;
 
 				// Node getters
-				node_type* getNode(IdType) override;
-				const node_type* getNode(IdType) const override;
+				node_type* getNode(node_id_type) override;
+				const node_type* getNode(node_id_type) const override;
 				const node_map& getNodes() const override;
 
 				// Arc getters
-				arc_type* getArc(IdType) override;
-				const arc_type* getArc(IdType) const override;
+				arc_type* getArc(arc_id_type) override;
+				const arc_type* getArc(arc_id_type) const override;
 				const arc_map& getArcs() const override;
 
-				~BasicGraph();
+				~AbstractGraphBase();
 	};
 
-	/**
-	 * Builds a node with a default weight and no data, adds it to this
-	 * graph, and finally returns the built node.
-	 *
-	 * @return pointer to built node
-	 */
-	template<GRAPH_PARAMS> typename BasicGraph<GRAPH_PARAMS_SPEC>::node_ptr
-		BasicGraph<GRAPH_PARAMS_SPEC>::buildNode() {
-			node_ptr node = new node_type(_currentNodeId);
-			this->nodes[_currentNodeId] = node;
-			++_currentNodeId;
-			return node;
+	template<GRAPH_PARAMS>
+		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::insert(node_type* node) {
+			this->nodes.insert({node->getId(), node});
 		}
 
-	/**
-	 * Builds a node with the specified data, adds it to this graph,
-	 * and finally returns the built node.
-	 *
-	 * @param data node's data
-	 * @return pointer to built node
-	 */
-	template<GRAPH_PARAMS> typename BasicGraph<GRAPH_PARAMS_SPEC>::node_ptr
-		BasicGraph<GRAPH_PARAMS_SPEC>::buildNode(T&& data) {
-		node_ptr node = new node_type(_currentNodeId, std::forward<T>(data));
-		this->nodes[_currentNodeId] = node;
-		++_currentNodeId;
-		return node;
-	}
-
-	/**
-	 * Builds a node with the specify id, weight and data, adds it to this graph,
-	 * and finally returns a pointer to the built node.
-	 *
-	 * @param weight node's weight
-	 * @param data rvalue reference to node's data
-	 * @return pointer to build node
-	 */
-	template<GRAPH_PARAMS> typename BasicGraph<GRAPH_PARAMS_SPEC>::node_ptr
-		BasicGraph<GRAPH_PARAMS_SPEC>::buildNode(T&& data, float weight) {
-		node_ptr node = new node_type(
-				_currentNodeId, std::forward<T>(data), weight
-				);
-		this->nodes[_currentNodeId] = node;
-		++_currentNodeId;
-		return node;
-	}
+	template<GRAPH_PARAMS>
+		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::insert(arc_type* arc) {
+			this->arcs.insert({arc->getId(), arc});
+		}
 
 	template<GRAPH_PARAMS>
-		void BasicGraph<GRAPH_PARAMS_SPEC>::removeNode(abstract_node_ptr node) {
+		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::erase(node_base* node) {
 			FPMAS_LOGD(-1, "GRAPH", "Removing node %s", ID_C_STR(node->getId()));
 			// Deletes incoming arcs
 			for(auto* arc : node->getIncomingArcs()) {
@@ -133,7 +77,7 @@ namespace FPMAS::graph::base {
 						"Unlink incoming arc %s",
 						ID_C_STR(arc->getId())
 						);
-				this->unlink(arc);
+				this->erase(arc);
 			}
 			// Deletes outgoing arcs
 			for(auto* arc : node->getOutgoingArcs()) {
@@ -143,7 +87,7 @@ namespace FPMAS::graph::base {
 						"Unlink incoming arc %s",
 						ID_C_STR(arc->getId())
 						);
-				this->unlink(arc);
+				this->erase(arc);
 			}
 
 			auto id = node->getId();
@@ -155,31 +99,7 @@ namespace FPMAS::graph::base {
 		}
 
 	template<GRAPH_PARAMS>
-		typename BasicGraph<GRAPH_PARAMS_SPEC>::arc_type* BasicGraph<GRAPH_PARAMS_SPEC>::link(
-				abstract_node_ptr source, abstract_node_ptr target, LayerId layer
-				) {
-				arc_ptr arc = new arc_type(
-						_currentArcId, source, target, layer
-						);
-				this->arcs[_currentArcId] = arc;
-				++_currentArcId;
-				return arc;
-		}
-
-	template<GRAPH_PARAMS>
-		typename BasicGraph<GRAPH_PARAMS_SPEC>::arc_type* BasicGraph<GRAPH_PARAMS_SPEC>::link(
-				abstract_node_ptr source, abstract_node_ptr target, LayerId layer, float weight
-				) {
-				arc_ptr arc = new arc_type(
-						_currentArcId, source, target, layer, weight
-						);
-				this->arcs[_currentArcId] = arc;
-				++_currentArcId;
-				return arc;
-		}
-
-	template<GRAPH_PARAMS>
-		void BasicGraph<GRAPH_PARAMS_SPEC>::unlink(abstract_arc_ptr arc) {
+		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::erase(arc_base* arc) {
 			// Removes the incoming arcs from the incoming/outgoing
 			// arc lists of target/source nodes.
 			arc->unlink();
@@ -189,43 +109,43 @@ namespace FPMAS::graph::base {
 		}
 
 	template<GRAPH_PARAMS>
-		typename BasicGraph<GRAPH_PARAMS_SPEC>::node_type*
-			BasicGraph<GRAPH_PARAMS_SPEC>::getNode(IdType id) {
+		typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::node_type*
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getNode(node_id_type id) {
 				return this->nodes.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename BasicGraph<GRAPH_PARAMS_SPEC>::node_type*
-			BasicGraph<GRAPH_PARAMS_SPEC>::getNode(IdType id) const {
+		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::node_type*
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getNode(node_id_type id) const {
 				return this->nodes.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename BasicGraph<GRAPH_PARAMS_SPEC>::node_map&
-			BasicGraph<GRAPH_PARAMS_SPEC>::getNodes() const {
+		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::node_map&
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getNodes() const {
 				return this->nodes;
 			}
 
 	template<GRAPH_PARAMS>
-		typename BasicGraph<GRAPH_PARAMS_SPEC>::arc_type*
-			BasicGraph<GRAPH_PARAMS_SPEC>::getArc(IdType id) {
+		typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::arc_type*
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getArc(arc_id_type id) {
 				return this->arcs.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename BasicGraph<GRAPH_PARAMS_SPEC>::arc_type*
-			BasicGraph<GRAPH_PARAMS_SPEC>::getArc(IdType id) const {
+		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::arc_type*
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getArc(arc_id_type id) const {
 				return this->arcs.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename BasicGraph<GRAPH_PARAMS_SPEC>::arc_map&
-			BasicGraph<GRAPH_PARAMS_SPEC>::getArcs() const {
+		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::arc_map&
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getArcs() const {
 				return this->arcs;
 			}
 
 	template<GRAPH_PARAMS>
-		BasicGraph<GRAPH_PARAMS_SPEC>::~BasicGraph() {
+		AbstractGraphBase<GRAPH_PARAMS_SPEC>::~AbstractGraphBase() {
 			for(auto node : this->nodes) {
 				delete node.second;
 			}

@@ -5,44 +5,54 @@
 
 namespace FPMAS::graph::base {
 
-	using FPMAS::api::graph::base::LayerId;
-	template<typename T, typename IdType>
-		class BasicArc : public FPMAS::api::graph::base::Arc<T, IdType> {
+	template<typename IdType, typename NodeType>
+		class BasicArc : public FPMAS::api::graph::base::Arc<IdType, NodeType> {
 			public:
-				using typename FPMAS::api::graph::base::Arc<T, IdType>::abstract_node_ptr;
+				typedef FPMAS::api::graph::base::Arc<IdType, NodeType> arc_base;
+				typedef IdType id_type;
+				typedef NodeType node_type;
+				using typename arc_base::layer_id_type;
 
 			private:
 				IdType id;
-				LayerId layer;
+				layer_id_type layer;
 				float weight;
 
-				abstract_node_ptr source;
-				abstract_node_ptr target;
+				node_type* source;
+				node_type* target;
 
 			public:
-				BasicArc(abstract_node_ptr, abstract_node_ptr, LayerId);
-				BasicArc(abstract_node_ptr, abstract_node_ptr, LayerId, float);
+				BasicArc(node_type*, node_type*, layer_id_type);
+				BasicArc(node_type*, node_type*, layer_id_type, float);
 
-				IdType getId() const {return id;};
-				LayerId getLayer() const {return layer;};
+				IdType getId() const override {return id;};
+				layer_id_type getLayer() const override {return layer;};
 
-				float getWeight() const {return weight;};
-				void setWeight(float weight) {this->weight=weight;};
+				float getWeight() const override {return weight;};
+				void setWeight(float weight) override {this->weight=weight;};
 
-				abstract_node_ptr* const getSourceNode() const {return source;};
-				abstract_node_ptr* const getTargetNode() const {return source;};
+				node_type* const getSourceNode() const override {return source;};
+				node_type* const getTargetNode() const override {return source;};
+
+				void unlink() override;
 		};
 
-	template<typename T, typename IdType>
-		BasicArc<T, IdType>::BasicArc(abstract_node_ptr source, abstract_node_ptr target, LayerId id)
+	template<typename IdType, typename NodeType>
+		BasicArc<IdType, NodeType>::BasicArc(node_type* source, node_type* target, layer_id_type id)
 			: BasicArc(source, target, id, 1.) {
 			}
 
-	template<typename T, typename IdType>
-		BasicArc<T, IdType>::BasicArc(abstract_node_ptr source, abstract_node_ptr target, LayerId id, float weight)
+	template<typename IdType, typename NodeType>
+		BasicArc<IdType, NodeType>::BasicArc(node_type* source, node_type* target, layer_id_type id, float weight)
 			: source(source), target(target), id(id), weight(weight) {
 				source->linkOut(this);
 				target->linkIn(this);
 			}
+
+	template<typename IdType, typename NodeType>
+		void BasicArc<IdType, NodeType>::unlink() {
+			this->getTargetNode()->unlinkIn(this, this->getLayer());
+			this->getSourceNode()->unlinkOut(this, this->getLayer());
+		}
 }
 #endif

@@ -170,6 +170,12 @@ namespace FPMAS::graph::parallel {
 				return "[" + std::to_string(_rank) + ":" + std::to_string(_id) + "]";
 
 			}
+
+			std::size_t hash() const {
+				std::size_t h1 = std::hash<int>{}(_rank);
+				std::size_t h2 = std::hash<unsigned int>{}(_id);
+				return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion)
+			}
 	};
 	inline MPI_Datatype DistributedId::mpiDistributedIdType;
 }
@@ -213,9 +219,7 @@ namespace std {
 		 */
 		std::size_t operator()(DistributedId const& id) const noexcept
 		{
-			std::size_t h1 = std::hash<int>{}(id._rank);
-			std::size_t h2 = std::hash<unsigned int>{}(id._id);
-			return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion)
+			return id.hash();
 		}
 
 	};

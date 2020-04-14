@@ -5,34 +5,32 @@
 
 namespace FPMAS::api::graph::base {
 
+	/**
+	 * Type used to index layers.
+	 */
 	typedef int LayerId;
 
-	template<typename T, typename IdType> class Node;
+	static constexpr LayerId DefaultLayer = 0;
 
-	template<typename T, typename IdType>
+	template<typename IdType, typename NodeType>
 	class Arc {
 		public:
-			typedef FPMAS::api::graph::base::Node<T, IdType> abstract_node_ptr;
+			typedef IdType id_type;
+			typedef NodeType node_type;
+			typedef int layer_id_type;
 
-			virtual IdType getId() const = 0;
-			virtual LayerId getLayer() const = 0;
+			virtual id_type getId() const = 0;
+			virtual layer_id_type getLayer() const = 0;
 
 			virtual float getWeight() const = 0;
 			virtual void setWeight(float weight) = 0;
 
-			virtual Node<T, IdType>* const getSourceNode() const = 0;
-			virtual Node<T, IdType>* const getTargetNode() const = 0;
+			virtual NodeType* const getSourceNode() const = 0;
+			virtual NodeType* const getTargetNode() const = 0;
 
-			void unlink();
+			virtual void unlink() = 0;
 
 			virtual ~Arc() {};
 	};
-
-	template<typename T, typename IdType>
-		void Arc<T, IdType>::unlink() {
-			this->getSourceNode()->unlinkOut(this, this->getLayer());
-			this->getTargetNode()->unlinkIn(this, this->getLayer());
-		}
-
 }
 #endif
