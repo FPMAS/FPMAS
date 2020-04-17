@@ -86,7 +86,6 @@ namespace FPMAS {
 			private:
 			typedef communication::MpiCommunicator mpi_communicator;
 			typedef communication::RequestHandler<
-				mpi_communicator,
 				communication::ReadersWritersManager<
 					communication::FirstReadersWriters
 					>

@@ -42,7 +42,6 @@ namespace FPMAS::api::communication {
 	 *
 	 * Defines operations that might be used by the RequestHandler.
 	 */
-	template<typename Implementation>
 	class MpiCommunicator {
 		public:
 			/**
@@ -168,14 +167,39 @@ namespace FPMAS::api::communication {
 			 * @param id id output
 			 */
 			virtual void recv(MPI_Status* status, DistributedId& id) = 0;
+/*
+ *
+ *            template<typename T> std::unordered_map<int, std::vector<T>>
+ *                migrate(std::unordered_map<int, std::vector<T>> exportMap) {
+ *                    return dynamic_cast<Implementation*>(this)
+ *                        ->Implementation::template _migrate<T>(exportMap);
+ *            }
+ */
 
-			template<typename T> std::unordered_map<int, std::vector<T>>
-				migrate(std::unordered_map<int, std::vector<T>> exportMap) {
-					return dynamic_cast<Implementation*>(this)
-						->Implementation::template _migrate<T>(exportMap);
-			}
+			virtual std::unordered_map<int, std::string>
+				allToAll(std::unordered_map<int, std::string>) = 0;
 
 			virtual ~MpiCommunicator() {};
 	};
+
+	template<typename T> std::unordered_map<int, std::vector<T>>
+		migrate(MpiCommunicator& comm, std::unordered_map<int, std::vector<T>> exportMap) {
+			// Pack
+			std::unordered_map<int, std::string> data_pack;
+			for(auto item : exportMap) {
+				data_pack[item.first] = nlohmann::json(item.second).dump();
+			}
+
+			std::unordered_map<int, std::string> data_unpack
+				= comm.allToAll(data_pack);
+
+			std::unordered_map<int, std::vector<T>> importMap;
+			for(auto item : data_unpack) {
+				importMap[item.first] = nlohmann::json::parse(data_unpack[item.first])
+					.get<std::vector<T>>();
+			}
+			return importMap;
+		}
 }
+
 #endif

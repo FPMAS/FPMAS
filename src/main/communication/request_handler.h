@@ -23,20 +23,13 @@ namespace FPMAS::communication {
 	 *
 	 */
 	template<
-		typename MpiComm,
 		typename ReadersWritersManagerType
 		= communication::ReadersWritersManager<communication::FirstReadersWriters>
 		>
 	class RequestHandler
 		: public api::communication::RequestHandler {
-			static_assert(
-					std::is_base_of<
-					api::communication::MpiCommunicator<MpiComm>, MpiComm
-					>::value,
-				"The specified MpiComm parameter must implements api::communication::MpiCommunicator<MpiComm>.");
-			//typedef api::communication::MpiCommunicator mpi_communicator;
-			//friend ReadersWriters;
-
+			typedef api::communication::MpiCommunicator MpiComm;
+		
 			private:
 			MpiComm& comm;
 			MpiDistributedId distributedIdBuffer;
@@ -84,8 +77,8 @@ namespace FPMAS::communication {
 	 * @param resourceHandler pointer to the ResourceContainer instance that will be
 	 * used to query serialized data.
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	RequestHandler<MpiComm, ReadersWritersManagerType>::RequestHandler(MpiComm& comm, ResourceHandler& resourceHandler)
+	template<typename ReadersWritersManagerType>
+	RequestHandler<ReadersWritersManagerType>::RequestHandler(MpiComm& comm, ResourceHandler& resourceHandler)
 		: readersWritersManager(*this, comm.getRank()), comm(comm), resourceHandler(resourceHandler) {
 		};
 
@@ -101,8 +94,8 @@ namespace FPMAS::communication {
 	 * - acquire request
 	 * - given back data
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::handleIncomingRequests() {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::handleIncomingRequests() {
 		MPI_Status req_status;
 
 		// Check read request
@@ -134,8 +127,8 @@ namespace FPMAS::communication {
 	 * Allows to respond to other request while a request (sent in a synchronous
 	 * message) is sending, in order to avoid deadlock.
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::waitSendRequest(MPI_Request* req) {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::waitSendRequest(MPI_Request* req) {
 		FPMAS_LOGD(this->comm.getRank(), "WAIT", "wait for send");
 		MPI_Status send_status;
 		int request_sent;
@@ -156,8 +149,8 @@ namespace FPMAS::communication {
 	 * @param location rank of the data location
 	 * @return read serialized data
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	std::string RequestHandler<MpiComm, ReadersWritersManagerType>::read(DistributedId id, int location) {
+	template<typename ReadersWritersManagerType>
+	std::string RequestHandler<ReadersWritersManagerType>::read(DistributedId id, int location) {
 		if(location == this->comm.getRank()) {
 			FPMAS_LOGD(location, "READ", "reading local data %s", ID_C_STR(id));
 			// The local process needs to wait as any other proc to access its own
@@ -199,8 +192,8 @@ namespace FPMAS::communication {
 	 * will respond immediately if the resource is available or put the request in an waiting
 	 * queue otherwise.
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::handleRead(int destination, DistributedId id) {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::handleRead(int destination, DistributedId id) {
 		this->color = Color::BLACK;
 
 		// Transmit request to the resource manager
@@ -212,8 +205,8 @@ namespace FPMAS::communication {
 	 * Sends a read response to the destination proc, reading data using the
 	 * resourceManager.
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::respondToRead(int destination, DistributedId id) {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::respondToRead(int destination, DistributedId id) {
 		// Perform the response
 		std::string data = this->resourceHandler.getLocalData(id);
 		MPI_Request req;
@@ -231,8 +224,8 @@ namespace FPMAS::communication {
 	 * @param location rank of the data location
 	 * @return acquired serialized data
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	std::string RequestHandler<MpiComm, ReadersWritersManagerType>::acquire(DistributedId id, int location) {
+	template<typename ReadersWritersManagerType>
+	std::string RequestHandler<ReadersWritersManagerType>::acquire(DistributedId id, int location) {
 		if(location == this->comm.getRank()) {
 			// TODO : This management is bad, because the local proc is not added
 			// to the waiting queue as any other incoming request.
@@ -278,8 +271,8 @@ namespace FPMAS::communication {
 	 * will respond if the resource immediately is available or put the request in an waiting
 	 * queue otherwise.
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::handleAcquire(int destination, DistributedId id) {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::handleAcquire(int destination, DistributedId id) {
 		this->color = Color::BLACK;
 
 		//this->resourceManager.write(id, destination);
@@ -290,8 +283,8 @@ namespace FPMAS::communication {
 	 * Sends an acquire response to the destination proc, reading data using the
 	 * resourceManager.
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::respondToAcquire(int destination, DistributedId id) {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::respondToAcquire(int destination, DistributedId id) {
 		std::string data = this->resourceHandler.getLocalData(id);
 		FPMAS_LOGD(this->comm.getRank(), "ACQUIRE", "send acquired data %s to %i : %s", ID_C_STR(id), destination, data.c_str());
 
@@ -307,8 +300,8 @@ namespace FPMAS::communication {
 	 * @param id id of the data to read
 	 * @param location rank of the data location
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::giveBack(DistributedId id, int location) {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::giveBack(DistributedId id, int location) {
 		if(location == this->comm.getRank()) {
 			// No update needed, because modifications are already local.
 			this->readersWritersManager[id].release();
@@ -333,8 +326,8 @@ namespace FPMAS::communication {
 	/*
 	 * Handles given back data, updating the local resource and releasing it.
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::handleGiveBack(std::string data) {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::handleGiveBack(std::string data) {
 		nlohmann::json update_json = nlohmann::json::parse(data);
 		DistributedId id = 
 			update_json.at("id").get<DistributedId>();
@@ -350,9 +343,9 @@ namespace FPMAS::communication {
 		this->readersWritersManager[id].release();
 	}
 
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	const MpiComm& 
-		RequestHandler<MpiComm, ReadersWritersManagerType>::getMpiComm() {
+	template<typename ReadersWritersManagerType>
+	const api::communication::MpiCommunicator& 
+		RequestHandler<ReadersWritersManagerType>::getMpiComm() {
 		return this->comm;
 	}
 
@@ -368,8 +361,8 @@ namespace FPMAS::communication {
 	 *
 	 * Returns only when all the processes have terminated their process.
 	 */
-	template<typename MpiComm, typename ReadersWritersManagerType>
-	void RequestHandler<MpiComm, ReadersWritersManagerType>::terminate() {
+	template<typename ReadersWritersManagerType>
+	void RequestHandler<ReadersWritersManagerType>::terminate() {
 		Color token;
 
 		if(this->comm.getRank() == 0) {

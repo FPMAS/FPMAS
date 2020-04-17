@@ -29,7 +29,7 @@ class TerminationTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
 		MockMpiCommunicator comm {0, 4};
-		RequestHandler<MockMpiCommunicator> requestHandler {comm, handler};
+		RequestHandler<> requestHandler {comm, handler};
 
 };
 
@@ -58,7 +58,7 @@ class Mpi_TerminationTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
 		FPMAS::communication::MpiCommunicator comm;
-		RequestHandler<FPMAS::communication::MpiCommunicator> requestHandler {comm, handler};
+		RequestHandler<> requestHandler {comm, handler};
 
 };
 
@@ -87,7 +87,7 @@ class LocalReadAcquireTest : public ::testing::Test {
 		MockReadersWriters readersWriters;
 		MockResourceHandler handler;
 		MockMpiCommunicator comm {RANK, 16};
-		RequestHandler<MockMpiCommunicator, MockReadersWritersManager> requestHandler {comm, handler};
+		RequestHandler<MockReadersWritersManager> requestHandler {comm, handler};
 
 		void SetUp() override {
 			ON_CALL(comm, Iprobe)
@@ -189,7 +189,7 @@ class Mpi_ReadAcquireTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
 		FPMAS::communication::MpiCommunicator comm;
-		RequestHandler<FPMAS::communication::MpiCommunicator> requestHandler {comm, handler};
+		RequestHandler<> requestHandler {comm, handler};
 };
 
 /**

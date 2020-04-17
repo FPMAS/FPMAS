@@ -1,6 +1,7 @@
 #ifndef DISTRIBUTED_GRAPH_IMPL_H
 #define DISTRIBUTED_GRAPH_IMPL_H
 
+#include "api/communication/communication.h"
 #include "api/graph/parallel/distributed_graph.h"
 
 #include "graph/base/basic_graph.h"
@@ -59,6 +60,9 @@ namespace FPMAS::graph::parallel {
 			const MpiCommunicatorImpl& getMpiCommunicator() const {
 				return mpiCommunicator;
 			};
+			MpiCommunicatorImpl& getMpiCommunicator() {
+				return mpiCommunicator;
+			};
 
 			void removeNode(node_type*) override {};
 			void unlink(arc_type*) override {};
@@ -78,20 +82,25 @@ namespace FPMAS::graph::parallel {
 
 			void synchronize() override {};
 
-			template<typename... Args> node_type* _buildNode(
-					const DistributedId& id, Args... args) {
-				return new node_type(id, std::forward<Args>(args)..., LocationState::LOCAL);
+			template<typename... Args> node_type* buildNode(Args... args) {
+				auto node = new node_type(
+						this->nodeId++,
+						std::forward<Args>(args)...,
+						LocationState::LOCAL);
+				this->insert(node);
+				return node;
 			}
 
-			template<typename... Args> arc_type* _link(
-					const DistributedId& id,
+			template<typename... Args> arc_type* link(
 					node_base* src, node_base* tgt, layer_id_type layer,
 					Args... args) {
-				return new arc_type(
-						id, src, tgt, layer,
+				auto arc = new arc_type(
+						this->arcId++, src, tgt, layer,
 						std::forward<Args>(args)...,
 						LocationState::LOCAL
 						);
+				this->insert(arc);
+				return arc;
 			}
 		};
 	template<DIST_GRAPH_PARAMS>
@@ -172,8 +181,13 @@ namespace FPMAS::graph::parallel {
 				}
 			}
 			// Serialize and export / import data
-			auto nodeImport = mpiCommunicator.template migrate<DistNodeImpl>(nodeExportMap);
-			auto arcImport = mpiCommunicator.template migrate<DistArcImpl>(arcExportMap);
+			auto nodeImport = 
+				api::communication::migrate(
+						mpiCommunicator, nodeExportMap);
+
+			auto arcImport =
+				api::communication::migrate(
+						mpiCommunicator, arcExportMap);
 
 			for(auto& importNodeListFromProc : nodeImport) {
 				for(auto& importedNode : importNodeListFromProc.second) {

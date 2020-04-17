@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "api/communication/mock_communication.h"
+#include "api/graph/base/graph.h"
 #include "api/graph/parallel/load_balancing.h"
 #include "api/graph/parallel/mock_distributed_node.h"
 #include "api/graph/parallel/mock_distributed_arc.h"
@@ -10,6 +11,8 @@
 
 using ::testing::IsEmpty;
 using ::testing::_;
+using ::testing::AnyOf;
+using ::testing::Eq;
 using ::testing::UnorderedElementsAre;
 using ::testing::IsEmpty;
 using ::testing::Pair;
@@ -17,48 +20,12 @@ using ::testing::NiceMock;
 
 using FPMAS::graph::parallel::BasicDistributedGraph;
 
-
-class DistMockMpiCommunicator : public AbstractMockMpiCommunicator<DistMockMpiCommunicator> {
-
-	template<typename T>
-	using migration_map = std::unordered_map<int, std::vector<T>>;
-
-	public:
-	template<typename T>
-		migration_map<T> _migrate(migration_map<T>) {
-			FPMAS_LOGW(0, "MOCK", "Missing _migrate specialization in DistMockMpiCommunicator");
-			return migration_map<T>();
-		}
-
-	MOCK_METHOD(
-			migration_map<MockDistributedNode<int>>,
-			_migrateNode,
-			(migration_map<MockDistributedNode<int>>), ());
-
-	MOCK_METHOD(
-			migration_map<MockDistributedArc<int>>,
-			_migrateArc,
-			(migration_map<MockDistributedArc<int>>), ());
-};
-
-template<>
-typename DistMockMpiCommunicator::migration_map<MockDistributedNode<int>>
-	DistMockMpiCommunicator::_migrate<MockDistributedNode<int>>(migration_map<MockDistributedNode<int>> exportMap) {
-		return _migrateNode(exportMap);
-}
-
-template<>
-typename DistMockMpiCommunicator::migration_map<MockDistributedArc<int>>
-	DistMockMpiCommunicator::_migrate<MockDistributedArc<int>>(migration_map<MockDistributedArc<int>> exportMap) {
-		return _migrateArc(exportMap);
-}
-
 class BasicDistributedGraphTest : public ::testing::Test {
 	protected:
 		BasicDistributedGraph<
 			MockDistributedNode<int>,
 			MockDistributedArc<int>,
-			DistMockMpiCommunicator,
+			MockMpiCommunicator,
 			MockLoadBalancing> graph;
 
 };
@@ -66,7 +33,7 @@ class BasicDistributedGraphTest : public ::testing::Test {
 TEST_F(BasicDistributedGraphTest, buildNode) {
 
 	auto currentId = graph.currentNodeId();
-	auto node = graph.buildNode(2, 0.5);
+	auto node = FPMAS::api::graph::base::buildNode(graph, 2, 0.5);
 
 	ASSERT_EQ(graph.getNodes().count(currentId), 1);
 	ASSERT_EQ(graph.getNode(currentId), node);
@@ -87,7 +54,7 @@ TEST_F(BasicDistributedGraphTest, local_link) {
 	MockDistributedNode<int> tgtMock;
 
 	auto currentId = graph.currentArcId();
-	auto arc = graph.link(&srcMock, &tgtMock, 14, 0.5);
+	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 
 	ASSERT_EQ(graph.getArcs().count(currentId), 1);
 	ASSERT_EQ(graph.getArc(currentId), arc);
@@ -138,31 +105,29 @@ TEST_F(BasicDistributedGraphPartitionTest, balance) {
 		const_cast<MockLoadBalancing<MockDistributedNode<int>>&>(graph.getLoadBalancing()),
 		balance(graph.getNodes(), IsEmpty()))
 		.WillOnce(Return(fakePartition));
-	EXPECT_CALL(const_cast<DistMockMpiCommunicator&>(graph.getMpiCommunicator()), _migrateNode(_));
-	EXPECT_CALL(const_cast<DistMockMpiCommunicator&>(graph.getMpiCommunicator()), _migrateArc(_));
+	EXPECT_CALL(graph.getMpiCommunicator(), allToAll(_)).Times(2);
 
 	graph.balance();
 }
 
 TEST_F(BasicDistributedGraphPartitionTest, distribute) {
-	// Broken.
-	/*
-	 *auto exportMapMatcher = UnorderedElementsAre(
-	 *    Pair(0, UnorderedElementsAre(*graph.getNode(nodeIds[3]), *graph.getNode(nodeIds[4]))),
-	 *    Pair(1, UnorderedElementsAre(*graph.getNode(nodeIds[1]), *graph.getNode(nodeIds[2])))
-	 *);
-	 */
 	auto exportMapMatcher = UnorderedElementsAre(
-		Pair(0, UnorderedElementsAre(_, _)),
-		Pair(1, UnorderedElementsAre(_, _))
+		Pair(0, AnyOf(
+				Eq(nlohmann::json({*graph.getNode(nodeIds[3]), *graph.getNode(nodeIds[4])}).dump()),
+				Eq(nlohmann::json({*graph.getNode(nodeIds[4]), *graph.getNode(nodeIds[3])}).dump())
+				)),
+		Pair(1, AnyOf(
+				Eq(nlohmann::json({*graph.getNode(nodeIds[1]), *graph.getNode(nodeIds[2])}).dump()),
+				Eq(nlohmann::json({*graph.getNode(nodeIds[2]), *graph.getNode(nodeIds[1])}).dump())
+				))
 	);
 
 	EXPECT_CALL(
-			const_cast<DistMockMpiCommunicator&>(graph.getMpiCommunicator()), _migrateNode(exportMapMatcher))
-	.WillOnce(Return(std::unordered_map<int, std::vector<MockDistributedNode<int>>>()));
-	EXPECT_CALL(const_cast<DistMockMpiCommunicator&>(graph.getMpiCommunicator()),
-			_migrateArc(IsEmpty())).WillOnce(Return(
-				std::unordered_map<int, std::vector<MockDistributedArc<int>>>()
+			graph.getMpiCommunicator(), allToAll(exportMapMatcher))
+	.WillOnce(Return(std::unordered_map<int, std::string>()));
+	EXPECT_CALL(graph.getMpiCommunicator(),
+			allToAll(IsEmpty())).WillOnce(Return(
+				std::unordered_map<int, std::string>()
 				));
 
 	graph.distribute(fakePartition);
@@ -175,21 +140,27 @@ class BasicDistributedGraphImportTest : public ::testing::Test {
 		BasicDistributedGraph<
 			node_mock,
 			arc_mock,
-			DistMockMpiCommunicator,
+			MockMpiCommunicator,
 			MockLoadBalancing> graph;
 		typedef typename decltype(graph)::partition_type partition_type;
 
 
 		std::unordered_map<int, std::vector<node_mock>> importedNodeMocks;
+		std::unordered_map<int, std::string> importedNodePack;
 		std::unordered_map<int, std::vector<arc_mock>> importedArcMocks;
+		std::unordered_map<int, std::string> importedArcPack;
 
 		void distributeTest() {
+			for(auto item : importedNodeMocks) {
+				importedNodePack[item.first] = nlohmann::json(item.second).dump();
+			}
+			for(auto item : importedArcMocks) {
+				importedArcPack[item.first] = nlohmann::json(item.second).dump();
+			}
 			EXPECT_CALL(
-					const_cast<DistMockMpiCommunicator&>(graph.getMpiCommunicator()), _migrateNode(_))
-				.WillOnce(Return(importedNodeMocks));
-			EXPECT_CALL(
-					const_cast<DistMockMpiCommunicator&>(graph.getMpiCommunicator()), _migrateArc(_))
-				.WillOnce(Return(importedArcMocks));
+					graph.getMpiCommunicator(), allToAll)
+				.WillOnce(Return(importedNodePack))
+				.WillOnce(Return(importedArcPack));
 			graph.distribute(partition_type());
 		}
 
@@ -230,8 +201,7 @@ TEST_F(BasicDistributedGraphImportTest, import_local_arc) {
 
 	auto mock = arc_mock(
 		DistributedId(3, 12),
-		new node_mock(src->getId()),
-		new node_mock(tgt->getId()),
+		src, tgt,
 		2, // layer
 		2.6, // weight
 		LocationState::LOCAL // default value

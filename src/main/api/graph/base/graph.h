@@ -62,23 +62,6 @@ namespace FPMAS::api::graph::base {
 			virtual const arc_type* getArc(arc_id_type) const = 0;
 			virtual const arc_map& getArcs() const = 0;
 
-			template<typename... Args> node_type* buildNode(Args... args) {
-				auto node = 
-					dynamic_cast<GraphImplem*>(this)
-					->_buildNode(nodeId++, std::forward<Args>(args)...);
-				this->insert(node);
-				return node;
-			}
-
-			template<typename... Args> arc_type* link(
-					node_base* src, node_base* tgt, layer_id_type layer, Args... args) {
-				auto arc =
-					dynamic_cast<GraphImplem*>(this)->template _link<Args...>(
-							arcId++, src, tgt, layer, args...);
-				this->insert(arc);
-				return arc;
-			}
-
 			virtual void removeNode(node_type*) = 0;
 			void removeNode(const node_id_type& id) {
 				this->removeNode(this->getNode(id));
@@ -91,27 +74,19 @@ namespace FPMAS::api::graph::base {
 		
 			virtual ~Graph() {}
 	};
-/*
- *
- *    template<GRAPH_PARAMS>
- *        typename Graph<GRAPH_PARAMS_SPEC>::arc_type* Graph<GRAPH_PARAMS_SPEC>::link(
- *                IdType source, IdType target, LayerId layer
- *                ) {
- *            return this->link(this->getNode(source), this->getNode(target), layer);
- *        }
- */
 
-/*
- *    template<GRAPH_PARAMS>
- *        void Graph<GRAPH_PARAMS_SPEC>::removeNode(IdType id) {
- *            this->removeNode(this->getNode(id));
- *        }
- *
- *    template<GRAPH_PARAMS>
- *        void Graph<GRAPH_PARAMS_SPEC>::unlink(IdType id) {
- *            this->unlink(this->getArc(id));
- *        }
- */
+	template<typename GraphImpl, typename... Args>
+		typename GraphImpl::node_type* buildNode(GraphImpl& graph, Args... args) {
+			return graph.buildNode(args...);
+		}
 
+	template<typename GraphImpl, typename... Args>
+		typename GraphImpl::arc_type* link(
+				GraphImpl& graph,
+				typename GraphImpl::node_base* src,
+				typename GraphImpl::node_base* tgt,
+				Args... args) {
+			return graph.link(src, tgt, args...);
+		}
 }
 #endif

@@ -22,7 +22,7 @@ template<typename T, typename IdType, typename ArcType>
 class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 				 T, IdType, ArcType
 							 > {
-	private:
+	protected:
 		T _data;
 	public:
 		using typename FPMAS::api::graph::base::Node<
