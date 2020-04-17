@@ -95,10 +95,15 @@ namespace FPMAS::graph::parallel {
 					node_base* src, node_base* tgt, layer_id_type layer,
 					Args... args) {
 				auto arc = new arc_type(
-						this->arcId++, src, tgt, layer,
+						this->arcId++, layer,
 						std::forward<Args>(args)...,
 						LocationState::LOCAL
 						);
+				arc->setSourceNode(src);
+				src->linkOut(arc);
+				arc->setTargetNode(tgt);
+				tgt->linkIn(arc);
+
 				this->insert(arc);
 				return arc;
 			}
@@ -150,10 +155,14 @@ namespace FPMAS::graph::parallel {
 			// TODO : ghosts creation part is nice, but this is not
 			// because it can't adapt to any DistArcImpl type, using a generic
 			// copy constructor.
-			auto arcCopy = new arc_type(
-				arc.getId(),
-				src, tgt, arc.getLayer(), arc.getWeight(), arcLocationState
-				);
+			auto arcCopy = new arc_type(arc);
+			arcCopy->setState(arcLocationState);
+
+			arcCopy->setSourceNode(src);
+			src->linkOut(arcCopy);
+			arcCopy->setTargetNode(tgt);
+			tgt->linkIn(arcCopy);
+
 			this->insert(arcCopy);
 			return arcCopy;
 		}

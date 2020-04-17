@@ -34,11 +34,11 @@ namespace FPMAS::api::graph::base {
 				const std::vector<typename arc_type::node_type*> outNeighbors();
 				const std::vector<typename arc_type::node_type*> outNeighbors(LayerId);
 
-				virtual void linkIn(arc_type* arc, LayerId layer) = 0;
-				virtual void linkOut(arc_type* arc, LayerId layer) = 0;
+				virtual void linkIn(arc_type* arc) = 0;
+				virtual void linkOut(arc_type* arc) = 0;
 
-				virtual void unlinkIn(arc_type* arc, LayerId layer) = 0;
-				virtual void unlinkOut(arc_type* arc, LayerId layer) = 0;
+				virtual void unlinkIn(arc_type* arc) = 0;
+				virtual void unlinkOut(arc_type* arc) = 0;
 
 				virtual ~Node() {}
 		};

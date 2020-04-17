@@ -63,31 +63,29 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 			nodes[id2] = new MockNode(id2, 1, 2.f);
 			nodes[id3] = new MockNode(id3, 2, 3.f);
 
+			// Mock arc id1 -> id2
 			mockArc1 = new MockArc<int, DistributedId>(
-					DistributedId(0, 0),
-					nodes[id1], nodes[id2],
-					0,
-					1.5f
+					DistributedId(0, 0), 0, 1.5f
 					);
-			EXPECT_CALL(*mockArc1, getTargetNode).Times(AnyNumber());
+			EXPECT_CALL(*mockArc1, getSourceNode).WillRepeatedly(Return(nodes[id1]));
+			EXPECT_CALL(*mockArc1, getTargetNode).WillRepeatedly(Return(nodes[id2]));
 			outArcs1.push_back(mockArc1);
 
+			// Mock arc id1 -> id3
 			mockArc2 = new MockArc<int, DistributedId>(
-					DistributedId(0, 1),
-					nodes[id1], nodes[id3],
-					1,
-					3.f
+					DistributedId(0, 1), 1, 3.f
 					);
-			EXPECT_CALL(*mockArc2, getTargetNode).Times(AnyNumber());
+			EXPECT_CALL(*mockArc2, getSourceNode).WillRepeatedly(Return(nodes[id1]));
+			EXPECT_CALL(*mockArc2, getTargetNode).WillRepeatedly(Return(nodes[id3]));
 			outArcs1.push_back(mockArc2);
 
 			mockArc3 = new MockArc<int, DistributedId>(
 					DistributedId(0, 2),
-					nodes[id2], nodes[id1],
 					0,
 					2.f
 					);
-			EXPECT_CALL(*mockArc3, getTargetNode).Times(AnyNumber());
+			EXPECT_CALL(*mockArc3, getSourceNode).WillRepeatedly(Return(nodes[id2]));
+			EXPECT_CALL(*mockArc3, getTargetNode).WillRepeatedly(Return(nodes[id1]));
 			outArcs2.push_back(mockArc3);
 
 			// Assumes that nodes are iterated in the same order within

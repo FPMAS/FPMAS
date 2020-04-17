@@ -16,6 +16,7 @@ using ::testing::Eq;
 using ::testing::UnorderedElementsAre;
 using ::testing::IsEmpty;
 using ::testing::Pair;
+using ::testing::Property;
 using ::testing::NiceMock;
 
 using FPMAS::graph::parallel::BasicDistributedGraph;
@@ -53,18 +54,18 @@ TEST_F(BasicDistributedGraphTest, local_link) {
 	MockDistributedNode<int> srcMock;
 	MockDistributedNode<int> tgtMock;
 
+	typedef typename  MockDistributedNode<int>::arc_type arc_type;
 	auto currentId = graph.currentArcId();
+	EXPECT_CALL(srcMock, linkOut(_));
+	EXPECT_CALL(tgtMock, linkIn(_));
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 
 	ASSERT_EQ(graph.getArcs().count(currentId), 1);
 	ASSERT_EQ(graph.getArc(currentId), arc);
 	ASSERT_EQ(arc->getId(), currentId);
 
-	EXPECT_CALL(*arc, getSourceNode);
-	ASSERT_EQ(arc->getSourceNode(), &srcMock);
-
-	EXPECT_CALL(*arc, getTargetNode);
-	ASSERT_EQ(arc->getTargetNode(), &tgtMock);
+	ASSERT_EQ(arc->src, &srcMock);
+	ASSERT_EQ(arc->tgt, &tgtMock);
 
 	EXPECT_CALL(*arc, getLayer);
 	ASSERT_EQ(arc->getLayer(), 14);
@@ -72,11 +73,7 @@ TEST_F(BasicDistributedGraphTest, local_link) {
 	EXPECT_CALL(*arc, getWeight);
 	ASSERT_EQ(arc->getWeight(), 0.5);
 
-	EXPECT_CALL(*arc, state);
-	ASSERT_EQ(arc->state(), LocationState::LOCAL);
-
-
-
+	ASSERT_EQ(arc->_state, LocationState::LOCAL);
 }
 
 class BasicDistributedGraphPartitionTest : public BasicDistributedGraphTest {
@@ -195,55 +192,114 @@ TEST_F(BasicDistributedGraphImportTest, import_node_with_existing_ghost) {
 	ASSERT_EQ(graph.getNodes().count(mock.getId()), 1);
 }
 
+/*
+ * Test suite for the different cases of arc import when :
+ * - the two nodes exist and are LOCAL
+ * - the two nodes exist, src is DISTANT, tgt is LOCAL
+ * - the two nodes exist, src is LOCAL, tgt is DISTANT
+ */
 class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportTest {
 	protected:
 		MockDistributedNode<int>* src;
 		MockDistributedNode<int>* tgt;
+		MockDistributedNode<int>* mock_src;
+		MockDistributedNode<int>* mock_tgt;
+
 		MockDistributedArc<int>* importedArc;
 
 	void SetUp() override {
 		src = graph.buildNode();
 		tgt = graph.buildNode();
 
-		// Mock to serialize and import (not yet in the graph)
+		mock_src = new MockDistributedNode<int>(src->getId());
+		mock_tgt = new MockDistributedNode<int>(tgt->getId());
 		auto mock = arc_mock(
-				DistributedId(3, 12),
-				src, tgt, // Just copy the ids at serialization
-				2, // layer
-				2.6, // weight
-				LocationState::LOCAL // default value
-				);
+					DistributedId(3, 12),
+					2, // layer
+					2.6, // weight
+					LocationState::LOCAL // default value
+					);
+		mock.src = mock_src;
+		mock.tgt = mock_tgt;
+		ON_CALL(mock, getSourceNode).WillByDefault(Return(mock_src));
+		ON_CALL(mock, getTargetNode).WillByDefault(Return(mock_tgt));
+
+		// Mock to serialize and import from proc 1 (not yet in the graph)
 		importedArcMocks[1].push_back(mock);
+
+		EXPECT_CALL(*src, linkOut(_));
+		EXPECT_CALL(*tgt, linkIn(_));
 	}
 
-	void checkArcData() {
+	void TearDown() override {
+		delete mock_src;
+		delete mock_tgt;
+	}
+
+	void checkArcStructure() {
 		ASSERT_EQ(graph.getArcs().size(), 1);
 		ASSERT_EQ(graph.getArcs().count(DistributedId(3, 12)), 1);
 		importedArc = graph.getArc(DistributedId(3, 12));
-		ASSERT_EQ(importedArc->getSourceNode(), src);
-		ASSERT_EQ(importedArc->getTargetNode(), tgt);
 		ASSERT_EQ(importedArc->getLayer(), 2);
 		ASSERT_EQ(importedArc->getWeight(), 2.6f);
+
+		ASSERT_EQ(importedArc->src, src);
+		ASSERT_EQ(importedArc->tgt, tgt);
 	}
 
 };
 
+// Import arc when the two nodes are LOCAL
 TEST_F(BasicDistributedGraphImportArcTest, import_local_arc) {
 	distributeTest();
-	checkArcData();
-	ASSERT_EQ(importedArc->state(), LocationState::LOCAL);
+	checkArcStructure();
+	ASSERT_EQ(importedArc->_state, LocationState::LOCAL);
 }
 
+
+// Import with DISTANT src
 TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_src) {
 	EXPECT_CALL(*src, state).WillRepeatedly(Return(LocationState::DISTANT));
 	distributeTest();
-	checkArcData();
-	ASSERT_EQ(importedArc->state(), LocationState::DISTANT);
+	checkArcStructure();
+	ASSERT_EQ(importedArc->_state, LocationState::DISTANT);
 }
 
+// Import with DISTANT tgt
 TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_tgt) {
 	EXPECT_CALL(*tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
 	distributeTest();
-	checkArcData();
-	ASSERT_EQ(importedArc->state(), LocationState::DISTANT);
+	checkArcStructure();
+	ASSERT_EQ(importedArc->_state, LocationState::DISTANT);
 }
+
+/*
+ * Special edge case that test the import behavior when the same arc is
+ * imported twice.
+ *
+ * This happens notably in the following case :
+ * - nodes 0 and 1 are linked and lives in distinct procs
+ * - they are both imported to an other proc
+ * - in consecuence, because each original proc does not know that the other
+ *   node will also be imported to the destination proc, the arc connecting the
+ *   two nodes (represented as a ghost arc on both original process) is
+ *   imported twice to the destination proc.
+ *
+ * Obviously, the expected behavior is that no duplicate is created, i.e. the
+ * second import has no effect.
+ */
+TEST_F(BasicDistributedGraphImportArcTest, double_import_edge_case) {
+	auto mock = arc_mock(
+				DistributedId(3, 12),
+				2, 2.6, LocationState::LOCAL
+				);
+	ON_CALL(mock, getSourceNode).WillByDefault(Return(mock_src));
+	ON_CALL(mock, getTargetNode).WillByDefault(Return(mock_tgt));
+
+	// The same arc is imported from proc 2
+	importedArcMocks[2].push_back(mock);
+	distributeTest();
+	checkArcStructure();
+	ASSERT_EQ(importedArc->_state, LocationState::LOCAL);
+}
+

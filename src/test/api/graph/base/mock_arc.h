@@ -5,7 +5,10 @@
 #include "api/graph/base/arc.h"
 
 using ::testing::Return;
+using ::testing::ReturnPointee;
 using ::testing::AnyNumber;
+using ::testing::AtLeast;
+using ::testing::SaveArg;
 using FPMAS::api::graph::base::LayerId;
 
 template<typename T, typename IdType, typename> class AbstractMockNode;
@@ -19,20 +22,51 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 		using typename FPMAS::api::graph::base::Arc<IdType, NodeType>::node_type;
 		using typename FPMAS::api::graph::base::Arc<IdType, NodeType>::id_type;
 
-		AbstractMockArc() {}
-		AbstractMockArc(IdType id, node_type* source, node_type* target, LayerId layer) {
+		/*
+		 * Expectations obvisouly can't be set on an object that haven't been constructed
+		 * yet. But the Graph for example will instantiate Arcs, and so
+		 * MockArcs in this case, internally. But we still want to check some
+		 * properties of those arcs that can be set :
+		 * - when the arc is constructed (id, layer...)
+		 * - using setters (setState...)
+		 * To solve this issue, the general approach is :
+		 * - expect each function call AnyBumber() of times
+		 * - when setters (and constructors) are called, save the value to
+		 *   internal fields (id, src, tgt...)
+		 * - when getters are called, return the saved values
+		 */
+		IdType id;
+		const node_type* src;
+		const node_type* tgt;
+
+		AbstractMockArc() {
+			EXPECT_CALL(*this, setSourceNode)
+				.Times(AnyNumber())
+				// Saves to src
+				.WillRepeatedly(SaveArg<0>(&src));
+			EXPECT_CALL(*this, getSourceNode)
+				.Times(AnyNumber())
+				// Return the pointer pointed by the this->src field (the
+				// pointed pointer might change during execution)
+				.WillRepeatedly(ReturnPointee(const_cast<node_type**>(&src)));
+
+			// idem
+			EXPECT_CALL(*this, setTargetNode)
+				.Times(AnyNumber())
+				.WillRepeatedly(SaveArg<0>(&tgt));
+			EXPECT_CALL(*this, getTargetNode)
+				.Times(AnyNumber())
+				.WillRepeatedly(ReturnPointee(const_cast<node_type**>(&tgt)));
+		}
+		AbstractMockArc(IdType id, LayerId layer) : AbstractMockArc() {
+			this->id = id;
 			ON_CALL(*this, getId).WillByDefault(Return(id));
+
 			EXPECT_CALL(*this, getId).Times(AnyNumber());
-			ON_CALL(*this, getSourceNode).WillByDefault(Return(source));
-			ON_CALL(*this, getTargetNode).WillByDefault(Return(target));
 			ON_CALL(*this, getLayer).WillByDefault(Return(layer));
 		}
-		AbstractMockArc(IdType id, node_type* source, node_type* target, LayerId layer, float weight) {
-			ON_CALL(*this, getId).WillByDefault(Return(id));
-			EXPECT_CALL(*this, getId).Times(AnyNumber());
-			ON_CALL(*this, getSourceNode).WillByDefault(Return(source));
-			ON_CALL(*this, getTargetNode).WillByDefault(Return(target));
-			ON_CALL(*this, getLayer).WillByDefault(Return(layer));
+		AbstractMockArc(IdType id, LayerId layer, float weight)
+			: AbstractMockArc(id, layer) {
 			ON_CALL(*this, getWeight).WillByDefault(Return(weight));
 		}
 
@@ -42,7 +76,10 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 		MOCK_METHOD(float, getWeight, (), (const));
 		MOCK_METHOD(void, setWeight, (float), (override));
 
+		MOCK_METHOD(void, setSourceNode, (const node_type* const), (override));
 		MOCK_METHOD(node_type* const, getSourceNode, (), (const, override));
+
+		MOCK_METHOD(void, setTargetNode, (const node_type* const), (override));
 		MOCK_METHOD(node_type* const, getTargetNode, (), (const, override));
 
 		MOCK_METHOD(void, unlink, (), (override));
@@ -55,48 +92,11 @@ class MockArc : public AbstractMockArc<T, IdType, MockNode<T, IdType>> {
 		using typename mock_arc_base::node_type;
 
 		MockArc() : mock_arc_base() {}
-		MockArc(IdType id, node_type* source, node_type* target, LayerId layer)
-			: mock_arc_base(source, target, layer) {
+		MockArc(IdType id, LayerId layer)
+			: mock_arc_base(id, layer) {
 		}
-		MockArc(IdType id, node_type* source, node_type* target, LayerId layer, float weight)
-			: mock_arc_base(id, source, target, layer, weight) {
+		MockArc(IdType id, LayerId layer, float weight)
+			: mock_arc_base(id, layer, weight) {
 		}
 };
-
-/*
- *template<typename T, typename IdType>
- *class MockArc : public virtual FPMAS::api::graph::base::Arc<
- *                IdType, MockNode<T, IdType> 
- *                            > {
- *    public:
- *        using typename FPMAS::api::graph::base::Arc<IdType, MockNode<T, IdType>>::node_type;
- *        using typename FPMAS::api::graph::base::Arc<IdType, MockNode<T, IdType>>::id_type;
- *
- *        MockArc() {}
- *        MockArc(IdType id, node_type* source, node_type* target, LayerId layer) {
- *            ON_CALL(*this, getId).WillByDefault(Return(id));
- *            ON_CALL(*this, getSourceNode).WillByDefault(Return(source));
- *            ON_CALL(*this, getTargetNode).WillByDefault(Return(target));
- *            ON_CALL(*this, getLayer).WillByDefault(Return(layer));
- *        }
- *        MockArc(IdType id, node_type* source, node_type* target, LayerId layer, float weight) {
- *            ON_CALL(*this, getId).WillByDefault(Return(id));
- *            ON_CALL(*this, getSourceNode).WillByDefault(Return(source));
- *            ON_CALL(*this, getTargetNode).WillByDefault(Return(target));
- *            ON_CALL(*this, getLayer).WillByDefault(Return(layer));
- *            ON_CALL(*this, getWeight).WillByDefault(Return(weight));
- *        }
- *
- *        MOCK_METHOD(id_type, getId, (), (const, override));
- *        MOCK_METHOD(LayerId, getLayer, (), (const, override));
- *
- *        MOCK_METHOD(float, getWeight, (), (const));
- *        MOCK_METHOD(void, setWeight, (float), (override));
- *
- *        MOCK_METHOD(node_type* const, getSourceNode, (), (const, override));
- *        MOCK_METHOD(node_type* const, getTargetNode, (), (const, override));
- *
- *        MOCK_METHOD(void, unlink, (), (override));
- *};
- */
 #endif

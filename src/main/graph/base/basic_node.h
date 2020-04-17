@@ -41,11 +41,11 @@ namespace FPMAS::graph::base {
 				const std::vector<arc_type*> getOutgoingArcs() override;
 				const std::vector<arc_type*> getOutgoingArcs(layer_id_type layer) override;
 
-				void linkIn(arc_type* arc, layer_id_type layer) override;
-				void linkOut(arc_type* arc, layer_id_type layer) override;
+				void linkIn(arc_type* arc) override;
+				void linkOut(arc_type* arc) override;
 
-				void unlinkIn(arc_type* arc, layer_id_type layer) override;
-				void unlinkOut(arc_type* arc, layer_id_type layer) override;
+				void unlinkIn(arc_type* arc) override;
+				void unlinkOut(arc_type* arc) override;
 
 		};
 
@@ -86,23 +86,23 @@ namespace FPMAS::graph::base {
 		}
 	
 	template<typename T, typename IdType, typename ArcType>
-		void BasicNode<T, IdType, ArcType>::linkIn(arc_type* arc, layer_id_type layer) {
-			incomingArcs[layer].push_back(arc);
+		void BasicNode<T, IdType, ArcType>::linkIn(arc_type* arc) {
+			incomingArcs[arc->getLayer()].push_back(arc);
 		}
 
 	template<typename T, typename IdType, typename ArcType>
-		void BasicNode<T, IdType, ArcType>::linkOut(arc_type* arc, layer_id_type layer) {
-			outgoingArcs[layer].push_back(arc);
+		void BasicNode<T, IdType, ArcType>::linkOut(arc_type* arc) {
+			outgoingArcs[arc->getLayer()].push_back(arc);
 		}
 
 	template<typename T, typename IdType, typename ArcType>
-		void BasicNode<T, IdType, ArcType>::unlinkIn(arc_type *arc, layer_id_type layer) {
-			incomingArcs.at(layer).erase(arc);
+		void BasicNode<T, IdType, ArcType>::unlinkIn(arc_type *arc) {
+			incomingArcs.at(arc->getLayer()).erase(arc);
 		}
 
 	template<typename T, typename IdType, typename ArcType>
-		void BasicNode<T, IdType, ArcType>::unlinkOut(arc_type *arc, layer_id_type layer) {
-			outgoingArcs.at(layer).erase(arc);
+		void BasicNode<T, IdType, ArcType>::unlinkOut(arc_type *arc) {
+			outgoingArcs.at(arc->getLayer()).erase(arc);
 		}
 }
 #endif

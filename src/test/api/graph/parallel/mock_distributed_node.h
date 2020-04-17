@@ -23,6 +23,7 @@ class MockDistributedNode :
 	friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T>&);
 
 	public:
+		using typename node_base::arc_type;
 		MockDistributedNode() {}
 		MockDistributedNode(const MockDistributedNode& otherMock):
 			MockDistributedNode(

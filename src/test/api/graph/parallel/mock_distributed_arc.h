@@ -28,35 +28,44 @@ class MockDistributedArc :
 	using typename arc_base::node_type;
 	using typename dist_arc_base::layer_id_type;
 
-	MockDistributedArc() {}
+	// Saved LocationState
+	LocationState _state;
+
+	MockDistributedArc() {
+	}
+
 	MockDistributedArc(const MockDistributedArc& otherMock) :
 		MockDistributedArc(
 				otherMock.getId(),
-				otherMock.getSourceNode(),
-				otherMock.getTargetNode(),
 				otherMock.getLayer(),
 				otherMock.getWeight(),
 				otherMock.state()
 				) {
+			this->src = otherMock.src;
+			this->tgt = otherMock.tgt;
 		}
+
+	// Used internally by nlohmann json
 	MockDistributedArc<int>& operator=(const MockDistributedArc<int>& other) {
+		// Copy saved fields
+		this->id = other.id;
+		this->src = other.src;
+		this->tgt = other.tgt;
+		this->_state = other._state;
 		return *this;
 	}
 
 	MockDistributedArc(
-			const DistributedId& id, node_type* src, node_type* tgt,
-			layer_id_type layer, LocationState state)
-		: arc_base(id, src, tgt, layer) {
-			ON_CALL(*this, state)
-				.WillByDefault(Return(state));
+			const DistributedId& id, layer_id_type layer, LocationState state)
+		: arc_base(id, layer) {
+			_setState(state);
 			this->anyExpectations();
 		}
 	MockDistributedArc(
-			const DistributedId& id, node_type* src, node_type* tgt,
+			const DistributedId& id,
 			layer_id_type layer, float weight, LocationState state)
-		: arc_base(id, src, tgt, layer, weight) {
-			ON_CALL(*this, state)
-				.WillByDefault(Return(state));
+		: arc_base(id, layer, weight) {
+			_setState(state);
 			this->anyExpectations();
 		}
 
@@ -64,9 +73,14 @@ class MockDistributedArc :
 	MOCK_METHOD(LocationState, state, (), (const, override));
 
 	private:
+	void _setState(LocationState state) {
+		EXPECT_CALL(*this, setState)
+			.Times(AnyNumber())
+			.WillRepeatedly(SaveArg<0>(&_state));
+		ON_CALL(*this, state)
+			.WillByDefault(Return(_state));
+	}
 	void anyExpectations() {
-		EXPECT_CALL(*this, getSourceNode()).Times(AnyNumber());
-		EXPECT_CALL(*this, getTargetNode()).Times(AnyNumber());
 		EXPECT_CALL(*this, getWeight()).Times(AnyNumber());
 		EXPECT_CALL(*this, getLayer()).Times(AnyNumber());
 		EXPECT_CALL(*this, state()).Times(AnyNumber());
@@ -76,8 +90,8 @@ class MockDistributedArc :
 template<typename T>
 void to_json(nlohmann::json& j, const MockDistributedArc<T>& mock) {
 	j["id"] = mock.getId();
-	j["src"] = mock.getSourceNode()->getId();
-	j["tgt"] = mock.getTargetNode()->getId();
+	j["src"] = mock.src->getId();
+	j["tgt"] = mock.tgt->getId();
 	j["layer"] = mock.getLayer();
 	j["weight"] = mock.getWeight();
 };
@@ -87,14 +101,14 @@ void from_json(const nlohmann::json& j, MockDistributedArc<T>& mock) {
 	ON_CALL(mock, getId)
 		.WillByDefault(Return(j.at("id").get<DistributedId>()));
 	EXPECT_CALL(mock, getId).Times(AnyNumber());
-	ON_CALL(mock, getSourceNode)
-		.WillByDefault(Return(new MockDistributedNode<T>(
+
+	mock.setSourceNode(new MockDistributedNode<T>(
 						j.at("src").get<DistributedId>()
-						)));
-	ON_CALL(mock, getTargetNode)
-		.WillByDefault(Return(new MockDistributedNode<T>(
+						));
+	mock.setTargetNode(new MockDistributedNode<T>(
 						j.at("tgt").get<DistributedId>()
-						)));
+						));
+
 	ON_CALL(mock, getLayer)
 		.WillByDefault(Return(
 			j.at("layer").get<typename MockDistributedArc<T>::layer_id_type>()

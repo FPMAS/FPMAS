@@ -22,8 +22,8 @@ namespace FPMAS::graph::base {
 				node_type* target;
 
 			public:
-				BasicArc(node_type*, node_type*, layer_id_type);
-				BasicArc(node_type*, node_type*, layer_id_type, float);
+				BasicArc(layer_id_type);
+				BasicArc(layer_id_type, float);
 
 				IdType getId() const override {return id;};
 				layer_id_type getLayer() const override {return layer;};
@@ -31,22 +31,23 @@ namespace FPMAS::graph::base {
 				float getWeight() const override {return weight;};
 				void setWeight(float weight) override {this->weight=weight;};
 
+				void setSourceNode(const node_type* const src) {this->source = src;};
 				node_type* const getSourceNode() const override {return source;};
+
+				void setTargetNode(const node_type* const tgt) {this->target = tgt;};
 				node_type* const getTargetNode() const override {return source;};
 
 				void unlink() override;
 		};
 
 	template<typename IdType, typename NodeType>
-		BasicArc<IdType, NodeType>::BasicArc(node_type* source, node_type* target, layer_id_type id)
-			: BasicArc(source, target, id, 1.) {
+		BasicArc<IdType, NodeType>::BasicArc(layer_id_type id)
+			: BasicArc(id, 1.) {
 			}
 
 	template<typename IdType, typename NodeType>
-		BasicArc<IdType, NodeType>::BasicArc(node_type* source, node_type* target, layer_id_type id, float weight)
-			: source(source), target(target), id(id), weight(weight) {
-				source->linkOut(this);
-				target->linkIn(this);
+		BasicArc<IdType, NodeType>::BasicArc(layer_id_type id, float weight)
+			: id(id), weight(weight) {
 			}
 
 	template<typename IdType, typename NodeType>
