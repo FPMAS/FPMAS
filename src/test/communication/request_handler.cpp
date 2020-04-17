@@ -18,8 +18,8 @@ using testing::AnyNumber;
 #include "gtest/gtest.h"
 #include "utils/test.h"
 
-#include "mock_communication.h"
-#include "mock_readers_writers.h"
+#include "api/communication/mock_communication.h"
+#include "api/communication/mock_readers_writers.h"
 
 #include "communication/request_handler.h"
 
@@ -29,7 +29,7 @@ class TerminationTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
 		MockMpiCommunicator comm {0, 4};
-		RequestHandler<> requestHandler {comm, handler};
+		RequestHandler<MockMpiCommunicator> requestHandler {comm, handler};
 
 };
 
@@ -58,7 +58,7 @@ class Mpi_TerminationTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
 		FPMAS::communication::MpiCommunicator comm;
-		RequestHandler<> requestHandler {comm, handler};
+		RequestHandler<FPMAS::communication::MpiCommunicator> requestHandler {comm, handler};
 
 };
 
@@ -87,7 +87,7 @@ class LocalReadAcquireTest : public ::testing::Test {
 		MockReadersWriters readersWriters;
 		MockResourceHandler handler;
 		MockMpiCommunicator comm {RANK, 16};
-		RequestHandler<MockReadersWritersManager> requestHandler {comm, handler};
+		RequestHandler<MockMpiCommunicator, MockReadersWritersManager> requestHandler {comm, handler};
 
 		void SetUp() override {
 			ON_CALL(comm, Iprobe)
@@ -189,7 +189,7 @@ class Mpi_ReadAcquireTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
 		FPMAS::communication::MpiCommunicator comm;
-		RequestHandler<> requestHandler {comm, handler};
+		RequestHandler<FPMAS::communication::MpiCommunicator> requestHandler {comm, handler};
 };
 
 /**

@@ -18,12 +18,13 @@ class MockResourceHandler : public FPMAS::api::communication::ResourceHandler {
 
 };
 
-class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
+template<typename Implementation>
+class AbstractMockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator<Implementation> {
 	public:
-		MockMpiCommunicator() {
+		AbstractMockMpiCommunicator() {
 		}
 
-		MockMpiCommunicator(int rank, int size) {
+		AbstractMockMpiCommunicator(int rank, int size) {
 			ON_CALL(*this, getRank())
 				.WillByDefault(::testing::Return(rank));
 			EXPECT_CALL(*this, getRank())
@@ -49,6 +50,16 @@ class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
 		MOCK_METHOD(void, recv, (MPI_Status*, Color&), (override));
 		MOCK_METHOD(void, recv, (MPI_Status*, std::string&), (override));
 		MOCK_METHOD(void, recv, (MPI_Status*, DistributedId&), (override));
+};
+
+class MockMpiCommunicator : public AbstractMockMpiCommunicator<MockMpiCommunicator> {
+	public:
+		MockMpiCommunicator() : AbstractMockMpiCommunicator<MockMpiCommunicator>() {
+		}
+
+		MockMpiCommunicator(int rank, int size)
+			: AbstractMockMpiCommunicator<MockMpiCommunicator>(rank, size) {
+		}
 };
 
 #endif

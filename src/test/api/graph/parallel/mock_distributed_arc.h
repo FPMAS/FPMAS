@@ -19,18 +19,46 @@ class MockDistributedArc :
 	public:
 	using typename arc_base::node_type;
 	using typename dist_arc_base::layer_id_type;
-	MockDistributedArc(const DistributedId& id, node_type* src, node_type* tgt, layer_id_type layer, LocationState state)
+
+	MockDistributedArc(const MockDistributedArc& otherMock) :
+		MockDistributedArc(
+				otherMock.getId(),
+				otherMock.getSourceNode(),
+				otherMock.getTargetNode(),
+				otherMock.getLayer(),
+				otherMock.getWeight(),
+				otherMock.state()
+				) {
+		}
+
+	MockDistributedArc(
+			const DistributedId& id, node_type* src, node_type* tgt,
+			layer_id_type layer, LocationState state)
 		: arc_base(id, src, tgt, layer) {
 			ON_CALL(*this, state)
 				.WillByDefault(Return(state));
+			this->disableExpectations();
 		}
-	MockDistributedArc(const DistributedId& id, node_type* src, node_type* tgt, layer_id_type layer, float weight, LocationState state)
+	MockDistributedArc(
+			const DistributedId& id, node_type* src, node_type* tgt,
+			layer_id_type layer, float weight, LocationState state)
 		: arc_base(id, src, tgt, layer, weight) {
 			ON_CALL(*this, state)
 				.WillByDefault(Return(state));
+			this->disableExpectations();
 		}
+
+	MOCK_METHOD(void, setState, (LocationState), (override));
 	MOCK_METHOD(LocationState, state, (), (const, override));
 
+	private:
+	void disableExpectations() {
+		EXPECT_CALL(*this, getSourceNode()).Times(AnyNumber());
+		EXPECT_CALL(*this, getTargetNode()).Times(AnyNumber());
+		EXPECT_CALL(*this, getWeight()).Times(AnyNumber());
+		EXPECT_CALL(*this, getLayer()).Times(AnyNumber());
+		EXPECT_CALL(*this, state()).Times(AnyNumber());
+	}
 };
 
 #endif

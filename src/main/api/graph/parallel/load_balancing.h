@@ -14,13 +14,13 @@ namespace FPMAS::api::graph::parallel {
 				typedef FPMAS::api::graph::base::IdHash<DistributedId> node_id_hash;
 
 			public:
-				typedef std::unordered_map<DistributedId, int, node_id_hash> partition;
+				typedef std::unordered_map<DistributedId, int, node_id_hash> partition_type;
 				typedef std::unordered_map<
 					DistributedId, NodeType*, node_id_hash
 					> node_map;
-				virtual partition balance(
+				virtual partition_type balance(
 						node_map nodes,
-						partition fixedVertices
+						partition_type fixedVertices
 						) = 0;
 		};
 }

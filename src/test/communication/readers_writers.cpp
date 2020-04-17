@@ -7,7 +7,7 @@
 
 #include "api/communication/resource_handler.h"
 #include "communication/readers_writers.h"
-#include "mock_request_handler.h"
+#include "api/communication/mock_request_handler.h"
 #include "utils/test.h"
 
 using ::testing::Assign;

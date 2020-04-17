@@ -20,19 +20,20 @@ namespace FPMAS::api::graph::parallel {
 			using typename graph_base::node_map;
 			using typename graph_base::arc_map;
 
-			typedef typename LoadBalancing<DistributedNodeType>::partition partition;
+			typedef typename LoadBalancing<DistributedNodeType>::partition_type partition_type;
 
-			virtual node_type* importNode(node_type* node) = 0;
-			virtual void exportNode(node_type* node, int rank) = 0;
+		protected:
+			virtual node_type* importNode(const node_type& node) = 0;
+			virtual arc_type* importArc(const arc_type& arc) = 0;
 
-			virtual arc_type* importArc(arc_type* arc) = 0;
+		public:
 
 			virtual const node_map& getLocalNodes() const = 0;
 			virtual const node_map& getDistantNodes() const = 0;
 
 			virtual void balance() = 0;
 
-			virtual void distribute(partition partition) = 0;
+			virtual void distribute(partition_type partition) = 0;
 
 			virtual void synchronize() = 0;
 	};

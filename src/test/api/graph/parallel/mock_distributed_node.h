@@ -18,25 +18,52 @@ class MockDistributedNode :
 
 	public:
 		MockDistributedNode() {}
+		MockDistributedNode(const MockDistributedNode& otherMock):
+			MockDistributedNode(
+					otherMock.getId(), otherMock.data(),
+					otherMock.getWeight(), otherMock.state()
+					){
+				this->disableExpectations();
+			}
+
+		MockDistributedNode(const DistributedId& id)
+			: node_base(id) {
+				this->disableExpectations();
+			}
 		MockDistributedNode(const DistributedId& id, LocationState state)
 			: node_base(id) {
 				ON_CALL(*this, state)
 					.WillByDefault(Return(state));
+				this->disableExpectations();
 			}
-		MockDistributedNode(const DistributedId& id, T&& data, LocationState state)
+		MockDistributedNode(const DistributedId& id, const T& data, LocationState state)
 			: node_base(id, std::move(data)) {
 				ON_CALL(*this, state)
 					.WillByDefault(Return(state));
+				this->disableExpectations();
 			}
-		MockDistributedNode(const DistributedId& id, T&& data, float weight, LocationState state)
+		MockDistributedNode(const DistributedId& id, const T& data, float weight, LocationState state)
 			: node_base(id, std::move(data), weight) {
 				ON_CALL(*this, state)
 					.WillByDefault(Return(state));
+				this->disableExpectations();
 			}
 
 		MOCK_METHOD(int, getLocation, (), (const, override));
 		MOCK_METHOD(void, setLocation, (int), (override));
 
+		MOCK_METHOD(void, setState, (LocationState), (override));
 		MOCK_METHOD(LocationState, state, (), (const, override));
+
+	private:
+		void disableExpectations() {
+			EXPECT_CALL(*this, data()).Times(AnyNumber());
+			EXPECT_CALL(Const(*this), data()).Times(AnyNumber());
+			EXPECT_CALL(*this, getWeight()).Times(AnyNumber());
+			EXPECT_CALL(*this, state()).Times(AnyNumber());
+			EXPECT_CALL(*this, getIncomingArcs()).Times(AnyNumber());
+			EXPECT_CALL(*this, getOutgoingArcs()).Times(AnyNumber());
+		}
+
 };
 #endif

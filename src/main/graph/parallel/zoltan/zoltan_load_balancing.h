@@ -22,7 +22,7 @@ namespace FPMAS::graph::parallel::zoltan {
 			private:
 				typedef FPMAS::api::graph::parallel::LoadBalancing<NodeType> base;
 				using typename base::node_map;
-				using typename base::partition;
+				using typename base::partition_type;
 
 				//Zoltan instance
 				Zoltan zoltan;
@@ -41,7 +41,7 @@ namespace FPMAS::graph::parallel::zoltan {
 				void setUpZoltan();
 
 				node_map nodes;
-				partition fixedVertices;
+				partition_type fixedVertices;
 				const proxy::Proxy& proxy;
 
 				NodesProxyPack<NodeType> nodesProxyPack {&nodes, &proxy};
@@ -65,17 +65,17 @@ namespace FPMAS::graph::parallel::zoltan {
 					return proxy;
 				}
 
-				partition balance(
+				partition_type balance(
 						node_map nodes,
-						partition fixedVertices
+						partition_type fixedVertices
 						) override;
 
 		};
 
-	template<typename NodeType> typename ZoltanLoadBalancing<NodeType>::partition 
+	template<typename NodeType> typename ZoltanLoadBalancing<NodeType>::partition_type
 		ZoltanLoadBalancing<NodeType>::balance(
 			node_map nodes,
-			partition fixedVertices
+			partition_type fixedVertices
 			) {
 			this->nodes = nodes;
 			this->fixedVertices = fixedVertices;
@@ -113,7 +113,7 @@ namespace FPMAS::graph::parallel::zoltan {
 					export_to_part
 					);
 
-			partition partition;
+			partition_type partition;
 			for(int i = 0; i < export_node_num; i++) {
 				partition[zoltan::utils::read_zoltan_id(&export_node_global_ids[i * num_gid_entries])]
 					= export_node_procs[i];

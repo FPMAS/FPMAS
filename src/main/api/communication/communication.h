@@ -42,6 +42,7 @@ namespace FPMAS::api::communication {
 	 *
 	 * Defines operations that might be used by the RequestHandler.
 	 */
+	template<typename Implementation>
 	class MpiCommunicator {
 		public:
 			/**
@@ -167,6 +168,12 @@ namespace FPMAS::api::communication {
 			 * @param id id output
 			 */
 			virtual void recv(MPI_Status* status, DistributedId& id) = 0;
+
+			template<typename T> std::unordered_map<int, std::vector<T>>
+				migrate(std::unordered_map<int, std::vector<T>> exportMap) {
+					return dynamic_cast<Implementation*>(this)
+						->Implementation::template _migrate<T>(exportMap);
+			}
 
 			virtual ~MpiCommunicator() {};
 	};

@@ -64,7 +64,8 @@ namespace FPMAS::api::graph::base {
 
 			template<typename... Args> node_type* buildNode(Args... args) {
 				auto node = 
-					dynamic_cast<GraphImplem*>(this)->template _buildNode<Args...>(nodeId, std::forward<Args>(args)...);
+					dynamic_cast<GraphImplem*>(this)
+					->_buildNode(nodeId++, std::forward<Args>(args)...);
 				this->insert(node);
 				return node;
 			}
@@ -73,7 +74,7 @@ namespace FPMAS::api::graph::base {
 					node_base* src, node_base* tgt, layer_id_type layer, Args... args) {
 				auto arc =
 					dynamic_cast<GraphImplem*>(this)->template _link<Args...>(
-							arcId, src, tgt, layer, args...);
+							arcId++, src, tgt, layer, args...);
 				this->insert(arc);
 				return arc;
 			}

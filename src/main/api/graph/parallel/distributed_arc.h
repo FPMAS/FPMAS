@@ -15,7 +15,9 @@ namespace FPMAS::api::graph::parallel {
 			public:
 				using typename arc_base::node_type;
 				using typename arc_base::layer_id_type;
+
 				virtual LocationState state() const = 0;
+				virtual void setState(LocationState state) = 0;
 		};
 };
 
