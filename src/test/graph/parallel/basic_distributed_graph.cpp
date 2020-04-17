@@ -195,22 +195,55 @@ TEST_F(BasicDistributedGraphImportTest, import_node_with_existing_ghost) {
 	ASSERT_EQ(graph.getNodes().count(mock.getId()), 1);
 }
 
-TEST_F(BasicDistributedGraphImportTest, import_local_arc) {
-	auto src = graph.buildNode();
-	auto tgt = graph.buildNode();
+class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportTest {
+	protected:
+		MockDistributedNode<int>* src;
+		MockDistributedNode<int>* tgt;
+		MockDistributedArc<int>* importedArc;
 
-	auto mock = arc_mock(
-		DistributedId(3, 12),
-		src, tgt,
-		2, // layer
-		2.6, // weight
-		LocationState::LOCAL // default value
-		);
-	importedArcMocks[1].push_back(mock);
+	void SetUp() override {
+		src = graph.buildNode();
+		tgt = graph.buildNode();
 
+		// Mock to serialize and import (not yet in the graph)
+		auto mock = arc_mock(
+				DistributedId(3, 12),
+				src, tgt, // Just copy the ids at serialization
+				2, // layer
+				2.6, // weight
+				LocationState::LOCAL // default value
+				);
+		importedArcMocks[1].push_back(mock);
+	}
+
+	void checkArcData() {
+		ASSERT_EQ(graph.getArcs().size(), 1);
+		ASSERT_EQ(graph.getArcs().count(DistributedId(3, 12)), 1);
+		importedArc = graph.getArc(DistributedId(3, 12));
+		ASSERT_EQ(importedArc->getSourceNode(), src);
+		ASSERT_EQ(importedArc->getTargetNode(), tgt);
+		ASSERT_EQ(importedArc->getLayer(), 2);
+		ASSERT_EQ(importedArc->getWeight(), 2.6f);
+	}
+
+};
+
+TEST_F(BasicDistributedGraphImportArcTest, import_local_arc) {
 	distributeTest();
+	checkArcData();
+	ASSERT_EQ(importedArc->state(), LocationState::LOCAL);
+}
 
-	ASSERT_EQ(graph.getArcs().size(), 1);
-	
+TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_src) {
+	EXPECT_CALL(*src, state).WillRepeatedly(Return(LocationState::DISTANT));
+	distributeTest();
+	checkArcData();
+	ASSERT_EQ(importedArc->state(), LocationState::DISTANT);
+}
 
+TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_tgt) {
+	EXPECT_CALL(*tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
+	distributeTest();
+	checkArcData();
+	ASSERT_EQ(importedArc->state(), LocationState::DISTANT);
 }

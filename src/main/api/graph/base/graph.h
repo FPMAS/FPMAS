@@ -4,15 +4,11 @@
 #include <unordered_map>
 #include "node.h"
 
-//#define GRAPH_PARAMS \
-	//typename T,\
-	//typename IdType
 #define GRAPH_PARAMS \
 	typename GraphImplem,\
 	typename NodeType,\
 	typename ArcType
 
-//#define GRAPH_PARAMS_SPEC T, IdType
 #define GRAPH_PARAMS_SPEC GraphImplem, NodeType, ArcType
 
 namespace FPMAS::api::graph::base {

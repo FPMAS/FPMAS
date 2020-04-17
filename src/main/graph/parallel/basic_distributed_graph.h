@@ -129,6 +129,9 @@ namespace FPMAS::graph::parallel {
 			LocationState arcLocationState = LocationState::LOCAL;
 			if(this->getNodes().count(srcId) > 0) {
 				src = this->getNode(srcId);
+				if(src->state() == LocationState::DISTANT) {
+					arcLocationState = LocationState::DISTANT;
+				}
 			} else {
 				arcLocationState = LocationState::DISTANT;
 				src = new node_type(srcId, LocationState::DISTANT);
@@ -136,6 +139,9 @@ namespace FPMAS::graph::parallel {
 			}
 			if(this->getNodes().count(tgtId) > 0) {
 				tgt = this->getNode(tgtId);
+				if(tgt->state() == LocationState::DISTANT) {
+					arcLocationState = LocationState::DISTANT;
+				}
 			} else {
 				arcLocationState = LocationState::DISTANT;
 				tgt = new node_type(tgtId, LocationState::DISTANT);
