@@ -221,8 +221,6 @@ class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportTes
 					);
 		mock.src = mock_src;
 		mock.tgt = mock_tgt;
-		ON_CALL(mock, getSourceNode).WillByDefault(Return(mock_src));
-		ON_CALL(mock, getTargetNode).WillByDefault(Return(mock_tgt));
 
 		// Mock to serialize and import from proc 1 (not yet in the graph)
 		importedArcMocks[1].push_back(mock);
@@ -293,13 +291,100 @@ TEST_F(BasicDistributedGraphImportArcTest, double_import_edge_case) {
 				DistributedId(3, 12),
 				2, 2.6, LocationState::LOCAL
 				);
-	ON_CALL(mock, getSourceNode).WillByDefault(Return(mock_src));
-	ON_CALL(mock, getTargetNode).WillByDefault(Return(mock_tgt));
+	mock.src = mock_src;
+	mock.tgt = mock_tgt;
 
 	// The same arc is imported from proc 2
 	importedArcMocks[2].push_back(mock);
 	distributeTest();
 	checkArcStructure();
 	ASSERT_EQ(importedArc->_state, LocationState::LOCAL);
+}
+
+class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraphImportTest {
+	protected:
+		MockDistributedNode<int>* localNode;
+		MockDistributedNode<int>* mock_one;
+		MockDistributedNode<int>* mock_two;
+
+		MockDistributedArc<int>* importedArc;
+
+		void SetUp() override {
+			localNode = graph.buildNode();
+
+			mock_one = new MockDistributedNode<int>(localNode->getId());
+			mock_two = new MockDistributedNode<int>(DistributedId(8, 16));
+
+			// This node is not contained is the graph, but will be linked.
+			ASSERT_EQ(graph.getNodes().count(mock_two->getId()), 0);
+		}
+
+		void TearDown() override {
+			delete mock_one;
+			delete mock_two;
+		}
+
+		void checkArcAndGhostStructure() {
+			ASSERT_EQ(graph.getArcs().size(), 1);
+			ASSERT_EQ(graph.getArcs().count(DistributedId(3, 12)), 1);
+			importedArc = graph.getArc(DistributedId(3, 12));
+			ASSERT_EQ(importedArc->getLayer(), 2);
+			ASSERT_EQ(importedArc->getWeight(), 2.6f);
+
+			EXPECT_EQ(graph.getNodes().size(), 2);
+			EXPECT_EQ(graph.getNodes().count(DistributedId(8, 16)), 1);
+			auto ghostNode = graph.getNode(DistributedId(8, 16));
+			EXPECT_EQ(ghostNode->getId(), DistributedId(8, 16));
+			EXPECT_EQ(ghostNode->state(), LocationState::DISTANT);
+		}
+};
+
+TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
+	auto mock = arc_mock(
+					DistributedId(3, 12),
+					2, // layer
+					2.6, // weight
+					LocationState::LOCAL // default value
+					);
+
+	mock.src = mock_one;
+	mock.tgt = mock_two; // This node is node yet contained in the graph
+
+	// Mock to serialize and import from proc 1 (not yet in the graph)
+	importedArcMocks[1].push_back(mock);
+
+	EXPECT_CALL(*localNode, linkIn(_)).Times(0);
+	EXPECT_CALL(*localNode, linkOut(_));
+
+	distributeTest();
+	checkArcAndGhostStructure();
+
+	ASSERT_EQ(importedArc->src, localNode);
+	ASSERT_EQ(importedArc->tgt, graph.getNode(DistributedId(8, 16)));
+}
+
+TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
+	auto mock = arc_mock(
+					DistributedId(3, 12),
+					2, // layer
+					2.6, // weight
+					LocationState::LOCAL // default value
+					);
+
+	mock.src = mock_two; // This node is node yet contained in the graph
+
+	mock.tgt = mock_one;
+
+	// Mock to serialize and import from proc 1 (not yet in the graph)
+	importedArcMocks[1].push_back(mock);
+
+	EXPECT_CALL(*localNode, linkOut(_)).Times(0);
+	EXPECT_CALL(*localNode, linkIn(_));
+
+	distributeTest();
+	checkArcAndGhostStructure();
+
+	ASSERT_EQ(importedArc->tgt, localNode);
+	ASSERT_EQ(importedArc->src, graph.getNode(DistributedId(8, 16)));
 }
 

@@ -66,6 +66,8 @@ class MockDistributedNode :
 		MOCK_METHOD(LocationState, state, (), (const, override));
 
 		void anyExpectations() {
+			EXPECT_CALL(*this, linkIn).Times(AnyNumber());
+			EXPECT_CALL(*this, linkOut).Times(AnyNumber());
 			EXPECT_CALL(*this, data()).Times(AnyNumber());
 			EXPECT_CALL(Const(*this), data()).Times(AnyNumber());
 			EXPECT_CALL(*this, getWeight()).Times(AnyNumber());
