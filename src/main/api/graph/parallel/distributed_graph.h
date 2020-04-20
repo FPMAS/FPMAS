@@ -29,7 +29,6 @@ namespace FPMAS::api::graph::parallel {
 		public:
 
 			virtual const node_map& getLocalNodes() const = 0;
-			virtual const node_map& getDistantNodes() const = 0;
 
 			virtual void balance() = 0;
 

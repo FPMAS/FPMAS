@@ -430,4 +430,15 @@ TEST_F(Mpi_BasicDistributedGraphBalance, distributed_test) {
 	else {
 		ASSERT_EQ(graph.getNodes().size(), 3);
 	}
+	ASSERT_EQ(graph.getLocalNodes().size(), 1);
+	auto localNode = graph.getLocalNodes().begin()->second;
+	if(graph.getMpiCommunicator().getSize() > 1) {
+		ASSERT_EQ(localNode->getOutgoingArcs().size(), 1);
+		ASSERT_EQ(localNode->getOutgoingArcs()[0]->state(), LocationState::DISTANT);
+		ASSERT_EQ(localNode->getOutgoingArcs()[0]->getTargetNode()->state(), LocationState::DISTANT);
+		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
+		ASSERT_EQ(localNode->getIncomingArcs()[0]->state(), LocationState::DISTANT);
+		ASSERT_EQ(localNode->getIncomingArcs()[0]->getSourceNode()->state(), LocationState::DISTANT);
+		ASSERT_EQ(graph.getArcs().size(), 2);
+	}
 }

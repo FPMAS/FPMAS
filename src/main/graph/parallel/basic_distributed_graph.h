@@ -56,6 +56,12 @@ namespace FPMAS::graph::parallel {
 			LoadBalancingImpl<node_type> loadBalancing;
 			MpiCommunicatorImpl mpiCommunicator;
 
+			node_map localNodes;
+
+			void setLocal(node_type*);
+			void setDistant(node_type*);
+			void clear(node_type*);
+
 			public:
 			BasicDistributedGraph() {
 				// Initialization in the body of this (derived) class of the
@@ -83,8 +89,7 @@ namespace FPMAS::graph::parallel {
 
 			arc_type* importArc(const arc_type& arc) override;
 
-			const node_map& getLocalNodes() const override { return this->getNodes();};
-			const node_map& getDistantNodes() const override { return this->getNodes();};
+			const node_map& getLocalNodes() const override { return localNodes;};
 
 			void balance() override {
 				this->distribute(loadBalancing.balance(this->getNodes(), {}));
@@ -99,6 +104,7 @@ namespace FPMAS::graph::parallel {
 						this->nodeId++,
 						std::forward<Args>(args)...
 						);
+				setLocal(node);
 				this->insert(node);
 				return node;
 			}
@@ -124,11 +130,12 @@ namespace FPMAS::graph::parallel {
 			const node_type& node) {
 		if(this->getNodes().count(node.getId())==0) {
 			auto nodeCopy = new node_type(node);
+			setLocal(nodeCopy);
 			this->insert(nodeCopy);
 			return nodeCopy;
 		}
 		auto localNode = this->getNode(node.getId());
-		localNode->setState(LocationState::LOCAL);
+		setLocal(localNode);
 		return localNode;
 	}
 
@@ -191,11 +198,13 @@ namespace FPMAS::graph::parallel {
 	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::distribute(partition_type partition) {
 			// Builds node and arcs export maps
-			std::unordered_map<int, std::vector<DistNodeImpl>> nodeExportMap;
-			std::unordered_map<int, std::vector<DistArcImpl>> arcExportMap;
+			std::vector<node_type*> exportedNodes;
+			std::unordered_map<int, std::vector<node_type>> nodeExportMap;
+			std::unordered_map<int, std::vector<arc_type>> arcExportMap;
 			for(auto item : partition) {
 				if(item.second != mpiCommunicator.getRank()) {
 					auto nodeToExport = this->getNode(item.first);
+					exportedNodes.push_back(nodeToExport);
 					nodeExportMap[item.second].push_back(*nodeToExport);
 					for(auto arc :  nodeToExport->getIncomingArcs()) {
 						// TODO : unefficient, improve this.
@@ -232,6 +241,51 @@ namespace FPMAS::graph::parallel {
 					}
 				}
 			}
+
+			for(auto node : exportedNodes) {
+				setDistant(node);
+			}
+			for(auto node : exportedNodes) {
+				clear(node);
+			}
+			//mpiCommunicator.terminate();
+		}
+
+	template<DIST_GRAPH_PARAMS>
+	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+		::setLocal(node_type* node) {
+			node->setState(LocationState::LOCAL);
+			this->localNodes.insert({node->getId(), node});
+		}
+
+	template<DIST_GRAPH_PARAMS>
+	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+		::setDistant(node_type* node) {
+			node->setState(LocationState::DISTANT);
+			this->localNodes.erase(node->getId());
+			for(auto arc : node->getOutgoingArcs()) {
+				arc->setState(LocationState::DISTANT);
+			}
+			for(auto arc : node->getIncomingArcs()) {
+				arc->setState(LocationState::DISTANT);
+			}
+		}
+
+	template<DIST_GRAPH_PARAMS>
+	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+		::clear(node_type* node) {
+			bool eraseNode = true;
+			for(auto neighbor : node->inNeighbors()) {
+				if(neighbor->state()==LocationState::LOCAL) {
+					return;
+				}
+			}
+			for(auto neighbor : node->outNeighbors()) {
+				if(neighbor->state()==LocationState::LOCAL) {
+					return;
+				}
+			}
+			this->erase(node);
 		}
 }
 #endif
