@@ -22,10 +22,6 @@ namespace FPMAS::api::graph::parallel {
 
 			typedef typename LoadBalancing<DistributedNodeType>::partition_type partition_type;
 
-		protected:
-			virtual node_type* importNode(const node_type& node) = 0;
-			virtual arc_type* importArc(const arc_type& arc) = 0;
-
 		public:
 
 			virtual const node_map& getLocalNodes() const = 0;

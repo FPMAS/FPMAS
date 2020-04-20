@@ -61,6 +61,8 @@ namespace FPMAS::graph::parallel {
 			void setLocal(node_type*);
 			void setDistant(node_type*);
 			void clear(node_type*);
+			node_type* importNode(const node_type& node);
+			arc_type* importArc(const arc_type& arc);
 
 			public:
 			BasicDistributedGraph() {
@@ -84,10 +86,6 @@ namespace FPMAS::graph::parallel {
 
 			void removeNode(node_type*) override {};
 			void unlink(arc_type*) override {};
-
-			node_type* importNode(const node_type& node) override;
-
-			arc_type* importArc(const arc_type& arc) override;
 
 			const node_map& getLocalNodes() const override { return localNodes;};
 
