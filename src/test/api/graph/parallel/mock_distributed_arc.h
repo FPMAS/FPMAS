@@ -91,8 +91,8 @@ class MockDistributedArc :
 template<typename T>
 void to_json(nlohmann::json& j, const MockDistributedArc<T>& mock) {
 	j["id"] = mock.getId();
-	j["src"] = mock.src->getId();
-	j["tgt"] = mock.tgt->getId();
+	j["src"] = mock.getSourceNode()->getId();
+	j["tgt"] = mock.getTargetNode()->getId();
 	j["layer"] = mock.getLayer();
 	j["weight"] = mock.getWeight();
 };
