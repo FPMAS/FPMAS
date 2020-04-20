@@ -24,13 +24,13 @@ namespace FPMAS::api::graph::base {
 				virtual float getWeight() const = 0;
 				virtual void setWeight(float weight) = 0;
 
-				virtual std::vector<arc_type*> getIncomingArcs() = 0;
-				virtual std::vector<arc_type*> getIncomingArcs(layer_id_type id) = 0;
+				virtual const std::vector<arc_type*> getIncomingArcs() = 0;
+				virtual const std::vector<arc_type*> getIncomingArcs(layer_id_type id) = 0;
 				const std::vector<typename arc_type::node_type*> inNeighbors();
 				const std::vector<typename arc_type::node_type*> inNeighbors(LayerId);
 
-				virtual std::vector<arc_type*> getOutgoingArcs() = 0;
-				virtual std::vector<arc_type*> getOutgoingArcs(layer_id_type id) = 0;
+				virtual const std::vector<arc_type*> getOutgoingArcs() = 0;
+				virtual const std::vector<arc_type*> getOutgoingArcs(layer_id_type id) = 0;
 				const std::vector<typename arc_type::node_type*> outNeighbors();
 				const std::vector<typename arc_type::node_type*> outNeighbors(LayerId);
 

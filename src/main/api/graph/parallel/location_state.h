@@ -4,7 +4,7 @@
 #include <iostream>
 
 namespace FPMAS::api::graph::parallel {
-	enum LocationState : bool {
+	enum LocationState {
 		LOCAL,
 		DISTANT
 	};
@@ -17,6 +17,8 @@ namespace FPMAS::api::graph::parallel {
 			case DISTANT:
 				os << "DISTANT";
 				break;
+			default:
+				os << "UNDEFINED";
 		}
 		return os;
 	}

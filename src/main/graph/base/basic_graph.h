@@ -102,7 +102,8 @@ namespace FPMAS::graph::base {
 		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::erase(arc_base* arc) {
 			// Removes the incoming arcs from the incoming/outgoing
 			// arc lists of target/source nodes.
-			arc->unlink();
+			arc->getSourceNode()->unlinkOut(arc);
+			arc->getTargetNode()->unlinkIn(arc);
 
 			this->arcs.erase(arc->getId());
 			delete arc;

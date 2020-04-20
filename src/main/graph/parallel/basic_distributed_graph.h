@@ -29,11 +29,11 @@ namespace FPMAS::graph::parallel {
 			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, DistNodeImpl, DistArcImpl
 		> {
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedNode<typename DistNodeImpl::data_type>, DistNodeImpl>
+					std::is_base_of<api::graph::parallel::DistributedNode<typename DistNodeImpl::data_type, DistArcImpl>, DistNodeImpl>
 					::value, "DistNodeImpl must implement api::graph::parallel::DistributedNode"
 					);
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedArc<typename DistNodeImpl::data_type>, DistArcImpl>
+					std::is_base_of<api::graph::parallel::DistributedArc<typename DistNodeImpl::data_type, DistNodeImpl>, DistArcImpl>
 					::value, "DistArcImpl must implement api::graph::parallel::DistributedArc"
 					);
 			typedef api::graph::parallel::DistributedGraph<
@@ -85,25 +85,23 @@ namespace FPMAS::graph::parallel {
 			template<typename... Args> node_type* buildNode(Args... args) {
 				auto node = new node_type(
 						this->nodeId++,
-						std::forward<Args>(args)...,
-						LocationState::LOCAL);
+						std::forward<Args>(args)...
+						);
 				this->insert(node);
 				return node;
 			}
 
 			template<typename... Args> arc_type* link(
-					node_base* src, node_base* tgt, layer_id_type layer,
+					node_base* const src, node_base* const tgt, layer_id_type layer,
 					Args... args) {
 				auto arc = new arc_type(
 						this->arcId++, layer,
-						std::forward<Args>(args)...,
-						LocationState::LOCAL
+						std::forward<Args>(args)...
 						);
 				arc->setSourceNode(src);
 				src->linkOut(arc);
 				arc->setTargetNode(tgt);
 				tgt->linkIn(arc);
-
 				this->insert(arc);
 				return arc;
 			}
@@ -139,7 +137,8 @@ namespace FPMAS::graph::parallel {
 				}
 			} else {
 				arcLocationState = LocationState::DISTANT;
-				src = new node_type(srcId, LocationState::DISTANT);
+				src = new node_type(srcId);
+				src->setState(LocationState::DISTANT);
 				this->insert(src);
 			}
 			if(this->getNodes().count(tgtId) > 0) {
@@ -149,7 +148,8 @@ namespace FPMAS::graph::parallel {
 				}
 			} else {
 				arcLocationState = LocationState::DISTANT;
-				tgt = new node_type(tgtId, LocationState::DISTANT);
+				tgt = new node_type(tgtId);
+				tgt->setState(LocationState::DISTANT);
 				this->insert(tgt);
 			}
 			// TODO : ghosts creation part is nice, but this is not
@@ -210,10 +210,14 @@ namespace FPMAS::graph::parallel {
 				}
 			}
 			for(auto& importArcListFromProc : arcImport) {
-				for(auto& importedArc : importArcListFromProc.second) {
+				for(const auto& importedArc : importArcListFromProc.second) {
 					this->importArc(importedArc);
-					delete importedArc.getSourceNode();
-					delete importedArc.getTargetNode();
+					if(importedArc.getSourceNode() == importedArc.getTargetNode()) {
+						delete importedArc.getSourceNode();
+					} else {
+						delete importedArc.getSourceNode();
+						delete importedArc.getTargetNode();
+					}
 				}
 			}
 		}

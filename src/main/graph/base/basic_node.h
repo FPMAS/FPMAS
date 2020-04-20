@@ -6,10 +6,10 @@
 namespace FPMAS::graph::base {
 
 	template<typename T, typename IdType, typename ArcType>
-		class BasicNode : public FPMAS::api::graph::base::Node<T, IdType, ArcType> {
+		class BasicNode : public virtual FPMAS::api::graph::base::Node<T, IdType, ArcType> {
 			public:
 				typedef FPMAS::api::graph::base::Node<T, IdType, ArcType> node_type;
-				typedef ArcType arc_type;
+				using typename node_type::arc_type;
 				using typename node_type::layer_id_type;
 
 			private:
@@ -97,12 +97,14 @@ namespace FPMAS::graph::base {
 
 	template<typename T, typename IdType, typename ArcType>
 		void BasicNode<T, IdType, ArcType>::unlinkIn(arc_type *arc) {
-			incomingArcs.at(arc->getLayer()).erase(arc);
+			auto& arcs = incomingArcs.at(arc->getLayer());
+			std::remove(arcs.begin(), arcs.end(), arc);
 		}
 
 	template<typename T, typename IdType, typename ArcType>
 		void BasicNode<T, IdType, ArcType>::unlinkOut(arc_type *arc) {
-			outgoingArcs.at(arc->getLayer()).erase(arc);
+			auto& arcs = outgoingArcs.at(arc->getLayer());
+			std::remove(arcs.begin(), arcs.end(), arc);
 		}
 }
 #endif

@@ -76,13 +76,11 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 		MOCK_METHOD(float, getWeight, (), (const));
 		MOCK_METHOD(void, setWeight, (float), (override));
 
-		MOCK_METHOD(void, setSourceNode, (const node_type* const), (override));
+		MOCK_METHOD(void, setSourceNode, (node_type* const), (override));
 		MOCK_METHOD(node_type* const, getSourceNode, (), (const, override));
 
-		MOCK_METHOD(void, setTargetNode, (const node_type* const), (override));
+		MOCK_METHOD(void, setTargetNode, (node_type* const), (override));
 		MOCK_METHOD(node_type* const, getTargetNode, (), (const, override));
-
-		MOCK_METHOD(void, unlink, (), (override));
 };
 
 template<typename T, typename IdType>

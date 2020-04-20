@@ -6,12 +6,12 @@
 #include "location_state.h"
 
 namespace FPMAS::api::graph::parallel {
-	template<typename T> class DistributedNode;
+	template<typename, typename> class DistributedNode;
 
-	template<typename T>
+	template<typename T, typename DistNodeImpl>
 		class DistributedArc
-		: public virtual FPMAS::api::graph::base::Arc<DistributedId, DistributedNode<T>> {
-			typedef FPMAS::api::graph::base::Arc<DistributedId, DistributedNode<T>> arc_base;
+		: public virtual FPMAS::api::graph::base::Arc<DistributedId, DistNodeImpl> {
+			typedef FPMAS::api::graph::base::Arc<DistributedId, DistNodeImpl> arc_base;
 			public:
 				using typename arc_base::node_type;
 				using typename arc_base::layer_id_type;
@@ -19,6 +19,5 @@ namespace FPMAS::api::graph::parallel {
 				virtual LocationState state() const = 0;
 				virtual void setState(LocationState state) = 0;
 		};
-};
-
+}
 #endif

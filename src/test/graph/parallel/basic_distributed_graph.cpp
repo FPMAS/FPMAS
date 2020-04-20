@@ -7,7 +7,10 @@
 #include "api/graph/parallel/mock_distributed_arc.h"
 #include "api/graph/parallel/mock_load_balancing.h"
 
+#include "communication/communication.h"
 #include "graph/parallel/basic_distributed_graph.h"
+#include "graph/parallel/distributed_arc.h"
+#include "graph/parallel/distributed_node.h"
 
 using ::testing::IsEmpty;
 using ::testing::_;
@@ -164,8 +167,7 @@ class BasicDistributedGraphImportTest : public ::testing::Test {
 };
 
 TEST_F(BasicDistributedGraphImportTest, import_node) {
-	auto mock = node_mock(
-			DistributedId(1, 10), 8, 2.1, LocationState::LOCAL);
+	auto mock = node_mock(DistributedId(1, 10), 8, 2.1);
 
 	importedNodeMocks[1].push_back(mock);
 	distributeTest();
@@ -181,8 +183,7 @@ TEST_F(BasicDistributedGraphImportTest, import_node_with_existing_ghost) {
 	auto node = graph.buildNode(8, 2.1);
 	ON_CALL(*node, state()).WillByDefault(Return(LocationState::DISTANT));
 
-	auto mock = node_mock(
-			node->getId(), 2, 4., LocationState::LOCAL);
+	auto mock = node_mock(node->getId(), 2, 4.);
 
 	importedNodeMocks[1].push_back(mock);
 	EXPECT_CALL(*node, setState(LocationState::LOCAL));
@@ -216,8 +217,7 @@ class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportTes
 		auto mock = arc_mock(
 					DistributedId(3, 12),
 					2, // layer
-					2.6, // weight
-					LocationState::LOCAL // default value
+					2.6 // weight
 					);
 		mock.src = mock_src;
 		mock.tgt = mock_tgt;
@@ -287,10 +287,8 @@ TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_tgt)
  * second import has no effect.
  */
 TEST_F(BasicDistributedGraphImportArcTest, double_import_edge_case) {
-	auto mock = arc_mock(
-				DistributedId(3, 12),
-				2, 2.6, LocationState::LOCAL
-				);
+	auto mock = arc_mock(DistributedId(3, 12), 2, 2.6);
+
 	mock.src = mock_src;
 	mock.tgt = mock_tgt;
 
@@ -330,6 +328,7 @@ class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraph
 			importedArc = graph.getArc(DistributedId(3, 12));
 			ASSERT_EQ(importedArc->getLayer(), 2);
 			ASSERT_EQ(importedArc->getWeight(), 2.6f);
+			ASSERT_EQ(importedArc->_state, LocationState::DISTANT);
 
 			EXPECT_EQ(graph.getNodes().size(), 2);
 			EXPECT_EQ(graph.getNodes().count(DistributedId(8, 16)), 1);
@@ -340,11 +339,9 @@ class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraph
 };
 
 TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
-	auto mock = arc_mock(
-					DistributedId(3, 12),
+	auto mock = arc_mock(DistributedId(3, 12),
 					2, // layer
-					2.6, // weight
-					LocationState::LOCAL // default value
+					2.6 // weight
 					);
 
 	mock.src = mock_one;
@@ -367,8 +364,7 @@ TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 	auto mock = arc_mock(
 					DistributedId(3, 12),
 					2, // layer
-					2.6, // weight
-					LocationState::LOCAL // default value
+					2.6 // weight
 					);
 
 	mock.src = mock_two; // This node is node yet contained in the graph
@@ -388,3 +384,43 @@ TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 	ASSERT_EQ(importedArc->src, graph.getNode(DistributedId(8, 16)));
 }
 
+class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
+	protected:
+		BasicDistributedGraph<
+			FPMAS::graph::parallel::DistributedNode<int>,
+			FPMAS::graph::parallel::DistributedArc<int>,
+			FPMAS::communication::MpiCommunicator,
+			MockLoadBalancing> graph;
+
+		MockLoadBalancing<FPMAS::graph::parallel::DistributedNode<int>>
+			::partition_type partition;
+
+		void SetUp() override {
+			if(graph.getMpiCommunicator().getRank() == 0) {
+				auto firstNode = graph.buildNode();
+				auto prevNode = firstNode;
+				partition[prevNode->getId()] = 0;
+				for(auto i = 1; i < graph.getMpiCommunicator().getSize(); i++) {
+					auto nextNode = graph.buildNode();
+					partition[nextNode->getId()] = i;
+					auto arc = graph.link(prevNode, nextNode, 0);
+					prevNode = nextNode;
+				}
+				graph.link(prevNode, firstNode, 0);
+			}
+		}
+};
+
+TEST_F(Mpi_BasicDistributedGraphBalance, distributed_test) {
+	graph.distribute(partition);
+
+	if(graph.getMpiCommunicator().getSize() == 1) {
+		ASSERT_EQ(graph.getNodes().size(), 1);
+	}
+	else if(graph.getMpiCommunicator().getSize() == 2) {
+		ASSERT_EQ(graph.getNodes().size(), 2);
+	}
+	else {
+		ASSERT_EQ(graph.getNodes().size(), 3);
+	}
+}

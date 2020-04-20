@@ -5,7 +5,6 @@
 
 #include "api/graph/base/mock_arc.h"
 #include "api/graph/parallel/distributed_arc.h"
-#include "api/graph/parallel/mock_distributed_node.h"
 
 using FPMAS::api::graph::parallel::LocationState;
 
@@ -14,13 +13,16 @@ class MockDistributedArc;
 template<typename T>
 void from_json(const nlohmann::json& j, MockDistributedArc<T>& mock);
 
+template<typename>
+class MockDistributedNode;
+
 template<typename T>
 class MockDistributedArc :
-	public FPMAS::api::graph::parallel::DistributedArc<T>,
-	public AbstractMockArc<T, DistributedId, FPMAS::api::graph::parallel::DistributedNode<T>>
+	public FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T>>,
+	public AbstractMockArc<T, DistributedId, MockDistributedNode<T>>
 {
-	typedef AbstractMockArc<T, DistributedId, FPMAS::api::graph::parallel::DistributedNode<T>> arc_base;
-	typedef FPMAS::api::graph::parallel::DistributedArc<T> dist_arc_base;
+	typedef AbstractMockArc<T, DistributedId, MockDistributedNode<T>> arc_base;
+	typedef FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T>> dist_arc_base;
 
 	friend void from_json<T>(const nlohmann::json&, MockDistributedArc<T>&);
 
@@ -29,7 +31,7 @@ class MockDistributedArc :
 	using typename dist_arc_base::layer_id_type;
 
 	// Saved LocationState
-	LocationState _state;
+	LocationState _state = LocationState::LOCAL;
 
 	MockDistributedArc() {
 	}
@@ -38,8 +40,7 @@ class MockDistributedArc :
 		MockDistributedArc(
 				otherMock.getId(),
 				otherMock.getLayer(),
-				otherMock.getWeight(),
-				otherMock.state()
+				otherMock.getWeight()
 				) {
 			this->src = otherMock.src;
 			this->tgt = otherMock.tgt;
@@ -56,16 +57,16 @@ class MockDistributedArc :
 	}
 
 	MockDistributedArc(
-			const DistributedId& id, layer_id_type layer, LocationState state)
+			const DistributedId& id, layer_id_type layer)
 		: arc_base(id, layer) {
-			_setState(state);
+			setUpStateAccess();
 			this->anyExpectations();
 		}
 	MockDistributedArc(
 			const DistributedId& id,
-			layer_id_type layer, float weight, LocationState state)
+			layer_id_type layer, float weight)
 		: arc_base(id, layer, weight) {
-			_setState(state);
+			setUpStateAccess();
 			this->anyExpectations();
 		}
 
@@ -73,12 +74,12 @@ class MockDistributedArc :
 	MOCK_METHOD(LocationState, state, (), (const, override));
 
 	private:
-	void _setState(LocationState state) {
+	void setUpStateAccess() {
 		EXPECT_CALL(*this, setState)
 			.Times(AnyNumber())
 			.WillRepeatedly(SaveArg<0>(&_state));
 		ON_CALL(*this, state)
-			.WillByDefault(Return(_state));
+			.WillByDefault(ReturnPointee(&_state));
 	}
 	void anyExpectations() {
 		EXPECT_CALL(*this, getWeight()).Times(AnyNumber());
@@ -118,5 +119,4 @@ void from_json(const nlohmann::json& j, MockDistributedArc<T>& mock) {
 	mock.anyExpectations();
 
 }
-
 #endif

@@ -25,12 +25,10 @@ namespace FPMAS::api::graph::base {
 			virtual float getWeight() const = 0;
 			virtual void setWeight(float weight) = 0;
 
-			virtual void setSourceNode(const NodeType* const src) = 0;
+			virtual void setSourceNode(NodeType* const src) = 0;
 			virtual NodeType* const getSourceNode() const = 0;
-			virtual void setTargetNode(const NodeType* const src) = 0;
+			virtual void setTargetNode(NodeType* const src) = 0;
 			virtual NodeType* const getTargetNode() const = 0;
-
-			virtual void unlink() = 0;
 
 			virtual ~Arc() {};
 	};
