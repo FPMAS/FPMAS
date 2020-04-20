@@ -6,6 +6,9 @@
 #include "api/communication/resource_handler.h"
 #include "api/communication/communication.h"
 
+using ::testing::Return;
+using ::testing::AnyNumber;
+
 using FPMAS::api::communication::Color;
 using FPMAS::api::communication::Tag;
 using FPMAS::api::communication::Epoch;
@@ -18,21 +21,20 @@ class MockResourceHandler : public FPMAS::api::communication::ResourceHandler {
 
 };
 
+template<int RANK=0, int SIZE=0>
 class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
 	public:
 		MockMpiCommunicator() {
+			ON_CALL(*this, getRank())
+				.WillByDefault(Return(RANK));
+			EXPECT_CALL(*this, getRank())
+				.Times(AnyNumber());
+			ON_CALL(*this, getSize())
+				.WillByDefault(Return(SIZE));
+			EXPECT_CALL(*this, getSize())
+				.Times(AnyNumber());
 		}
 
-		MockMpiCommunicator(int rank, int size) {
-			ON_CALL(*this, getRank())
-				.WillByDefault(::testing::Return(rank));
-			EXPECT_CALL(*this, getRank())
-				.Times(::testing::AnyNumber());
-			ON_CALL(*this, getSize())
-				.WillByDefault(::testing::Return(size));
-			EXPECT_CALL(*this, getSize())
-				.Times(::testing::AnyNumber());
-		}
 		MOCK_METHOD(int, getRank, (), (const, override));
 		MOCK_METHOD(int, getSize, (), (const, override));
 

@@ -36,6 +36,10 @@ namespace FPMAS::graph::base {
 				node_map nodes;
 				arc_map arcs;
 
+			protected:
+				node_id_type nodeId;
+				arc_id_type arcId;
+
 			public:
 				void insert(node_type*) override;
 				void insert(arc_type*) override;
@@ -44,11 +48,13 @@ namespace FPMAS::graph::base {
 				void erase(arc_base*) override;
 
 				// Node getters
+				const node_id_type& currentNodeId() const override {return nodeId;}
 				node_type* getNode(node_id_type) override;
 				const node_type* getNode(node_id_type) const override;
 				const node_map& getNodes() const override;
 
 				// Arc getters
+				const node_id_type& currentArcId() const override {return arcId;}
 				arc_type* getArc(arc_id_type) override;
 				const arc_type* getArc(arc_id_type) const override;
 				const arc_map& getArcs() const override;

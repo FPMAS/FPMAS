@@ -29,14 +29,21 @@ class BasicDistributedGraphTest : public ::testing::Test {
 		BasicDistributedGraph<
 			MockDistributedNode<int>,
 			MockDistributedArc<int>,
-			MockMpiCommunicator,
+			MockMpiCommunicator<7, 10>,
 			MockLoadBalancing> graph;
+
+		void SetUp() override {
+			ON_CALL(graph.getMpiCommunicator(), getRank)
+				.WillByDefault(Return(7));
+			EXPECT_CALL(graph.getMpiCommunicator(), getRank).Times(AnyNumber());
+		}
 
 };
 
 TEST_F(BasicDistributedGraphTest, buildNode) {
 
 	auto currentId = graph.currentNodeId();
+	//ASSERT_EQ(currentId.rank(), 7);
 	auto node = FPMAS::api::graph::base::buildNode(graph, 2, 0.5);
 
 	ASSERT_EQ(graph.getNodes().count(currentId), 1);
@@ -140,7 +147,7 @@ class BasicDistributedGraphImportTest : public ::testing::Test {
 		BasicDistributedGraph<
 			node_mock,
 			arc_mock,
-			MockMpiCommunicator,
+			MockMpiCommunicator<>,
 			MockLoadBalancing> graph;
 		typedef typename decltype(graph)::partition_type partition_type;
 

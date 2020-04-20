@@ -28,7 +28,7 @@ using FPMAS::communication::RequestHandler;
 class TerminationTest : public ::testing::Test {
 	protected:
 		MockResourceHandler handler;
-		MockMpiCommunicator comm {0, 4};
+		MockMpiCommunicator<0, 4> comm;
 		RequestHandler<> requestHandler {comm, handler};
 
 };
@@ -83,10 +83,10 @@ TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
 
 class LocalReadAcquireTest : public ::testing::Test {
 	protected:
-		const int RANK = 0;
+		static const int RANK = 0;
 		MockReadersWriters readersWriters;
 		MockResourceHandler handler;
-		MockMpiCommunicator comm {RANK, 16};
+		MockMpiCommunicator<RANK, 16> comm;
 		RequestHandler<MockReadersWritersManager> requestHandler {comm, handler};
 
 		void SetUp() override {

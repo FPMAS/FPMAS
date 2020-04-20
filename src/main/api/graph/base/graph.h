@@ -37,23 +37,21 @@ namespace FPMAS::api::graph::base {
 
 
 		protected:
-			node_id_type nodeId;
 			virtual void insert(node_type* node) = 0;
 			virtual void insert(arc_type* arc) = 0;
 
-			arc_id_type arcId;
 			virtual void erase(node_base* node) = 0;
 			virtual void erase(arc_base* arc) = 0;
 
 		public:
 			// Node getters
-			const node_id_type& currentNodeId() const {return nodeId;};
+			virtual const node_id_type& currentNodeId() const = 0;
 			virtual node_type* getNode(node_id_type) = 0;
 			virtual const node_type* getNode(node_id_type) const = 0;
 			virtual const node_map& getNodes() const = 0;
 
 			// Arc getters
-			virtual const arc_id_type& currentArcId() const {return arcId;};
+			virtual const arc_id_type& currentArcId() const = 0;
 			virtual arc_type* getArc(arc_id_type) = 0;
 			virtual const arc_type* getArc(arc_id_type) const = 0;
 			virtual const arc_map& getArcs() const = 0;

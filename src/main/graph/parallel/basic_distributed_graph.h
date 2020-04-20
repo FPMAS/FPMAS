@@ -36,6 +36,9 @@ namespace FPMAS::graph::parallel {
 					std::is_base_of<api::graph::parallel::DistributedArc<typename DistNodeImpl::data_type, DistNodeImpl>, DistArcImpl>
 					::value, "DistArcImpl must implement api::graph::parallel::DistributedArc"
 					);
+			typedef base::AbstractGraphBase<
+			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, DistNodeImpl, DistArcImpl>
+			abstract_graph_base;
 			typedef api::graph::parallel::DistributedGraph<
 				BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, DistNodeImpl, DistArcImpl
 			> dist_graph_base;
@@ -54,6 +57,15 @@ namespace FPMAS::graph::parallel {
 			MpiCommunicatorImpl mpiCommunicator;
 
 			public:
+			BasicDistributedGraph() {
+				// Initialization in the body of this (derived) class of the
+				// (base) fields nodeId and arcId, to ensure that
+				// mpiCommunicator is initialized (as a field of this derived
+				// class)
+				this->nodeId = DistributedId(mpiCommunicator.getRank(), 0);
+				this->arcId = DistributedId(mpiCommunicator.getRank(), 0);
+			}
+
 			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
 				return loadBalancing;
 			};

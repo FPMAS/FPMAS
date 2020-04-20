@@ -33,10 +33,10 @@ namespace FPMAS::graph::base {
 				float getWeight() const override {return weight;};
 				void setWeight(float weight) override {this->weight=weight;};
 
-				void setSourceNode(node_type* const src) {this->source = src;};
+				void setSourceNode(node_type* const src) override {this->source = src;};
 				node_type* const getSourceNode() const override {return source;};
 
-				void setTargetNode(node_type* const tgt) {this->target = tgt;};
+				void setTargetNode(node_type* const tgt) override {this->target = tgt;};
 				node_type* const getTargetNode() const override {return target;};
 		};
 }
