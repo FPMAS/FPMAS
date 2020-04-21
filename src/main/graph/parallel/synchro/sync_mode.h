@@ -298,13 +298,13 @@ namespace FPMAS::graph::parallel {
 								) {}
 
 							/**
-							 * fs
+							 * 
 							 */
 							virtual void initUnlink(
 								Arc<std::unique_ptr<wrappers::SyncData<T,Mode>>,DistributedId>* arc
 								) {}
 							/**
-							 * sdf
+							 * 
 							 */
 							virtual void notifyUnlinked(
 								DistributedId source,

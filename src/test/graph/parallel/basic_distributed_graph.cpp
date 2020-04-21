@@ -6,6 +6,8 @@
 #include "api/graph/parallel/mock_distributed_node.h"
 #include "api/graph/parallel/mock_distributed_arc.h"
 #include "api/graph/parallel/mock_load_balancing.h"
+#include "api/graph/parallel/synchro/mock_mutex.h"
+#include "api/graph/parallel/synchro/mock_sync_mode.h"
 
 #include "communication/communication.h"
 #include "graph/parallel/basic_distributed_graph.h"
@@ -30,11 +32,17 @@ using FPMAS::test::ASSERT_CONTAINS;
 class BasicDistributedGraphTest : public ::testing::Test {
 	protected:
 		BasicDistributedGraph<
-			MockDistributedNode<int>,
-			MockDistributedArc<int>,
+			int,
+			MockSyncMode<MockMutex, MockSyncLinker>,
+			MockDistributedNode,
+			MockDistributedArc,
 			MockMpiCommunicator<7, 10>,
 			MockLoadBalancing> graph;
 
+		typedef decltype(graph) graph_type;
+		typedef typename graph_type::node_type node_type; // MockDistributedNode<int, MockMutex>
+		typedef typename graph_type::arc_type arc_type;	//MockDistributedArc<int, MockMutex>
+	
 		void SetUp() override {
 			ON_CALL(graph.getMpiCommunicator(), getRank)
 				.WillByDefault(Return(7));
@@ -64,10 +72,9 @@ TEST_F(BasicDistributedGraphTest, buildNode) {
 }
 
 TEST_F(BasicDistributedGraphTest, local_link) {
-	MockDistributedNode<int> srcMock;
-	MockDistributedNode<int> tgtMock;
+	node_type srcMock;
+	node_type tgtMock;
 
-	typedef typename  MockDistributedNode<int>::arc_type arc_type;
 	auto currentId = graph.currentArcId();
 	EXPECT_CALL(srcMock, linkOut(_));
 	EXPECT_CALL(tgtMock, linkIn(_));
@@ -90,7 +97,8 @@ TEST_F(BasicDistributedGraphTest, local_link) {
 }
 
 class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
-	typedef decltype(graph)::partition_type partition_type;
+	typedef typename graph_type::partition_type partition_type;
+
 	protected:
 		std::array<DistributedId, 5> nodeIds;
 		partition_type fakePartition;
@@ -109,7 +117,7 @@ class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
 
 TEST_F(BasicDistributedGraphDistributeTest, balance) {
 	EXPECT_CALL(
-		const_cast<MockLoadBalancing<MockDistributedNode<int>>&>(graph.getLoadBalancing()),
+		const_cast<MockLoadBalancing<node_type>&>(graph.getLoadBalancing()),
 		balance(graph.getNodes(), IsEmpty()))
 		.WillOnce(Return(fakePartition));
 	EXPECT_CALL(graph.getMpiCommunicator(), allToAll(_)).Times(2);
@@ -132,9 +140,9 @@ TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
 	// Mock node import
 	std::unordered_map<int, std::string> nodeImport;
 	nodeImport[2] = nlohmann::json(
-			std::vector<MockDistributedNode<int>> {
-			MockDistributedNode<int>(DistributedId(2, 5)),
-			MockDistributedNode<int>(DistributedId(4, 3))
+			std::vector<node_type> {
+			node_type(DistributedId(2, 5)),
+			node_type(DistributedId(4, 3))
 			}
 			).dump();
 	EXPECT_CALL(
@@ -156,8 +164,8 @@ TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
 
 class BasicDistributedGraphDistributedWithLinkTest : public BasicDistributedGraphDistributeTest {
 	protected:
-		MockDistributedArc<int>* arc1;
-		MockDistributedArc<int>* arc2;
+		arc_type* arc1;
+		arc_type* arc2;
 		void SetUp() override {
 			this->BasicDistributedGraphDistributeTest::SetUp();
 
@@ -198,9 +206,9 @@ TEST_F(BasicDistributedGraphDistributedWithLinkTest, distributed_with_link_test)
 	);
 
 	std::unordered_map<int, std::string> arcImport;
-	MockDistributedArc<int> importedArc {DistributedId(4, 6), 2};
-	importedArc.src = new MockDistributedNode<int>(DistributedId(4, 8));
-	importedArc.tgt = new MockDistributedNode<int>(DistributedId(3, 2));
+	arc_type importedArc {DistributedId(4, 6), 2};
+	importedArc.src = new node_type(DistributedId(4, 8));
+	importedArc.tgt = new node_type(DistributedId(3, 2));
 	arcImport[3] = nlohmann::json({importedArc}).dump();
 
 	// Mock arc import
@@ -220,19 +228,23 @@ TEST_F(BasicDistributedGraphDistributedWithLinkTest, distributed_with_link_test)
 
 class BasicDistributedGraphImportTest : public ::testing::Test {
 	protected:
-		typedef MockDistributedNode<int> node_mock;
-		typedef MockDistributedArc<int> arc_mock;
 		BasicDistributedGraph<
-			node_mock,
-			arc_mock,
+			int,
+			MockSyncMode<MockMutex, MockSyncLinker>,
+			MockDistributedNode,
+			MockDistributedArc,
 			MockMpiCommunicator<>,
 			MockLoadBalancing> graph;
+
+		typedef decltype(graph) graph_type;
+		typedef typename graph_type::node_type node_type; // MockDistributedNode<int, MockMutex>
+		typedef typename graph_type::arc_type arc_type; // MockDistributedArc<int, MockMutex>
 		typedef typename decltype(graph)::partition_type partition_type;
 
 
-		std::unordered_map<int, std::vector<node_mock>> importedNodeMocks;
+		std::unordered_map<int, std::vector<node_type>> importedNodeMocks;
 		std::unordered_map<int, std::string> importedNodePack;
-		std::unordered_map<int, std::vector<arc_mock>> importedArcMocks;
+		std::unordered_map<int, std::vector<arc_type>> importedArcMocks;
 		std::unordered_map<int, std::string> importedArcPack;
 
 		void distributeTest() {
@@ -252,7 +264,7 @@ class BasicDistributedGraphImportTest : public ::testing::Test {
 };
 
 TEST_F(BasicDistributedGraphImportTest, import_node) {
-	auto mock = node_mock(DistributedId(1, 10), 8, 2.1);
+	auto mock = node_type(DistributedId(1, 10), 8, 2.1);
 
 	importedNodeMocks[1].push_back(mock);
 	distributeTest();
@@ -268,7 +280,7 @@ TEST_F(BasicDistributedGraphImportTest, import_node_with_existing_ghost) {
 	auto node = graph.buildNode(8, 2.1);
 	ON_CALL(*node, state()).WillByDefault(Return(LocationState::DISTANT));
 
-	auto mock = node_mock(node->getId(), 2, 4.);
+	auto mock = node_type(node->getId(), 2, 4.);
 
 	importedNodeMocks[1].push_back(mock);
 	EXPECT_CALL(*node, setState(LocationState::LOCAL));
@@ -286,20 +298,20 @@ TEST_F(BasicDistributedGraphImportTest, import_node_with_existing_ghost) {
  */
 class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportTest {
 	protected:
-		MockDistributedNode<int>* src;
-		MockDistributedNode<int>* tgt;
-		MockDistributedNode<int>* mock_src;
-		MockDistributedNode<int>* mock_tgt;
+		node_type* src;
+		node_type* tgt;
+		node_type* mock_src;
+		node_type* mock_tgt;
 
-		MockDistributedArc<int>* importedArc;
+		arc_type* importedArc;
 
 	void SetUp() override {
 		src = graph.buildNode();
 		tgt = graph.buildNode();
 
-		mock_src = new MockDistributedNode<int>(src->getId());
-		mock_tgt = new MockDistributedNode<int>(tgt->getId());
-		auto mock = arc_mock(
+		mock_src = new node_type(src->getId());
+		mock_tgt = new node_type(tgt->getId());
+		auto mock = arc_type(
 					DistributedId(3, 12),
 					2, // layer
 					2.6 // weight
@@ -372,7 +384,7 @@ TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_tgt)
  * second import has no effect.
  */
 TEST_F(BasicDistributedGraphImportArcTest, double_import_edge_case) {
-	auto mock = arc_mock(DistributedId(3, 12), 2, 2.6);
+	auto mock = arc_type(DistributedId(3, 12), 2, 2.6);
 
 	mock.src = mock_src;
 	mock.tgt = mock_tgt;
@@ -386,17 +398,17 @@ TEST_F(BasicDistributedGraphImportArcTest, double_import_edge_case) {
 
 class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraphImportTest {
 	protected:
-		MockDistributedNode<int>* localNode;
-		MockDistributedNode<int>* mock_one;
-		MockDistributedNode<int>* mock_two;
+		node_type* localNode;
+		node_type* mock_one;
+		node_type* mock_two;
 
-		MockDistributedArc<int>* importedArc;
+		arc_type* importedArc;
 
 		void SetUp() override {
 			localNode = graph.buildNode();
 
-			mock_one = new MockDistributedNode<int>(localNode->getId());
-			mock_two = new MockDistributedNode<int>(DistributedId(8, 16));
+			mock_one = new node_type(localNode->getId());
+			mock_two = new node_type(DistributedId(8, 16));
 
 			// This node is not contained is the graph, but will be linked.
 			ASSERT_EQ(graph.getNodes().count(mock_two->getId()), 0);
@@ -424,7 +436,7 @@ class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraph
 };
 
 TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
-	auto mock = arc_mock(DistributedId(3, 12),
+	auto mock = arc_type(DistributedId(3, 12),
 					2, // layer
 					2.6 // weight
 					);
@@ -446,7 +458,7 @@ TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
 }
 
 TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
-	auto mock = arc_mock(
+	auto mock = arc_type(
 					DistributedId(3, 12),
 					2, // layer
 					2.6 // weight
@@ -472,12 +484,14 @@ TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 	protected:
 		BasicDistributedGraph<
-			FPMAS::graph::parallel::DistributedNode<int>,
-			FPMAS::graph::parallel::DistributedArc<int>,
+			int,
+			MockSyncMode<MockMutex, MockSyncLinker>,
+			FPMAS::graph::parallel::DistributedNode,
+			FPMAS::graph::parallel::DistributedArc,
 			FPMAS::communication::MpiCommunicator,
 			MockLoadBalancing> graph;
 
-		MockLoadBalancing<FPMAS::graph::parallel::DistributedNode<int>>
+		MockLoadBalancing<FPMAS::graph::parallel::DistributedNode<int, MockMutex>>
 			::partition_type partition;
 
 		void SetUp() override {

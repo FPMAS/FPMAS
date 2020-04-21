@@ -2,21 +2,25 @@
 #define DISTRIBUTED_NODE_H
 
 #include "api/graph/parallel/distributed_node.h"
+#include "api/graph/parallel/synchro/mutex.h"
 #include "graph/base/basic_node.h"
 #include "graph/parallel/distributed_arc.h"
 
 namespace FPMAS::graph::parallel {
 
 	using FPMAS::api::graph::parallel::LocationState;
-	template<typename T>
+
+	template<typename T, template<typename> class Mutex>
 	class DistributedNode : 
-		public graph::base::BasicNode<T, DistributedId, DistributedArc<T>>,
-		public api::graph::parallel::DistributedNode<T, DistributedArc<T>> {
-			typedef graph::base::BasicNode<T, DistributedId, DistributedArc<T>> node_base;
+		public graph::base::BasicNode<T, DistributedId, DistributedArc<T, Mutex>>,
+		public api::graph::parallel::DistributedNode<T, DistributedArc<T, Mutex>> {
+			typedef graph::base::BasicNode<T, DistributedId, DistributedArc<T, Mutex>> node_base;
 
 		private:
+			typedef FPMAS::api::graph::parallel::synchro::Mutex<T> mutex_base;
 			LocationState _state = LocationState::LOCAL;
 			int location;
+			Mutex<T> _mutex;
 
 		public:
 			DistributedNode(const DistributedId& id)
@@ -37,16 +41,17 @@ namespace FPMAS::graph::parallel {
 			LocationState state() const override {return _state;}
 			void setState(LocationState state) override {this->_state=state;}
 
+			mutex_base& mutex() override {return _mutex;}
 	};
 }
 
 namespace nlohmann {
 
 	using FPMAS::graph::parallel::DistributedNode;
-	template<typename T>
-		struct adl_serializer<DistributedNode<T>> {
-			static DistributedNode<T> from_json(const json& j) {
-				DistributedNode<T> node {
+	template<typename T, template<typename> class Mutex>
+		struct adl_serializer<DistributedNode<T, Mutex>> {
+			static DistributedNode<T, Mutex> from_json(const json& j) {
+				DistributedNode<T, Mutex> node {
 					j.at("id").get<DistributedId>(),
 					std::move(j.at("data").get<T>()),
 					j.at("weight").get<float>(),
@@ -54,7 +59,7 @@ namespace nlohmann {
 				return node;
 			}
 
-			static void to_json(json& j, const DistributedNode<T>& node) {
+			static void to_json(json& j, const DistributedNode<T, Mutex>& node) {
 				j["id"] = node.getId();
 				j["data"] = node.data();
 				j["weight"] = node.getWeight();

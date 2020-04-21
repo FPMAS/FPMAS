@@ -8,23 +8,23 @@
 
 using FPMAS::api::graph::parallel::LocationState;
 
-template<typename T>
+template<typename T, template<typename> class>
 class MockDistributedArc;
-template<typename T>
-void from_json(const nlohmann::json& j, MockDistributedArc<T>& mock);
+template<typename T, template<typename> class Mutex>
+void from_json(const nlohmann::json& j, MockDistributedArc<T, Mutex>& mock);
 
-template<typename>
+template<typename, template<typename> class>
 class MockDistributedNode;
 
-template<typename T>
+template<typename T, template<typename> class Mutex>
 class MockDistributedArc :
-	public FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T>>,
-	public AbstractMockArc<T, DistributedId, MockDistributedNode<T>>
+	public FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T, Mutex>>,
+	public AbstractMockArc<T, DistributedId, MockDistributedNode<T, Mutex>>
 {
-	typedef AbstractMockArc<T, DistributedId, MockDistributedNode<T>> arc_base;
-	typedef FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T>> dist_arc_base;
+	typedef AbstractMockArc<T, DistributedId, MockDistributedNode<T, Mutex>> arc_base;
+	typedef FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T, Mutex>> dist_arc_base;
 
-	friend void from_json<T>(const nlohmann::json&, MockDistributedArc<T>&);
+	friend void from_json<T>(const nlohmann::json&, MockDistributedArc<T, Mutex>&);
 
 	public:
 	using typename arc_base::node_type;
@@ -47,7 +47,7 @@ class MockDistributedArc :
 		}
 
 	// Used internally by nlohmann json
-	MockDistributedArc<int>& operator=(const MockDistributedArc<int>& other) {
+	MockDistributedArc<int, Mutex>& operator=(const MockDistributedArc<int, Mutex>& other) {
 		// Copy saved fields
 		this->id = other.id;
 		this->src = other.src;
@@ -88,8 +88,8 @@ class MockDistributedArc :
 	}
 };
 
-template<typename T>
-void to_json(nlohmann::json& j, const MockDistributedArc<T>& mock) {
+template<typename T, template<typename> class Mutex>
+void to_json(nlohmann::json& j, const MockDistributedArc<T, Mutex>& mock) {
 	j["id"] = mock.getId();
 	j["src"] = mock.getSourceNode()->getId();
 	j["tgt"] = mock.getTargetNode()->getId();
@@ -97,22 +97,22 @@ void to_json(nlohmann::json& j, const MockDistributedArc<T>& mock) {
 	j["weight"] = mock.getWeight();
 };
 
-template<typename T>
-void from_json(const nlohmann::json& j, MockDistributedArc<T>& mock) {
+template<typename T, template<typename> class Mutex>
+void from_json(const nlohmann::json& j, MockDistributedArc<T, Mutex>& mock) {
 	ON_CALL(mock, getId)
 		.WillByDefault(Return(j.at("id").get<DistributedId>()));
 	EXPECT_CALL(mock, getId).Times(AnyNumber());
 
-	mock.setSourceNode(new MockDistributedNode<T>(
+	mock.setSourceNode(new MockDistributedNode<T, Mutex>(
 						j.at("src").get<DistributedId>()
 						));
-	mock.setTargetNode(new MockDistributedNode<T>(
+	mock.setTargetNode(new MockDistributedNode<T, Mutex>(
 						j.at("tgt").get<DistributedId>()
 						));
 
 	ON_CALL(mock, getLayer)
 		.WillByDefault(Return(
-			j.at("layer").get<typename MockDistributedArc<T>::layer_id_type>()
+			j.at("layer").get<typename MockDistributedArc<T, Mutex>::layer_id_type>()
 		));
 	ON_CALL(mock, getWeight)
 		.WillByDefault(Return(j.at("weight").get<float>()));

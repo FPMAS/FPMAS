@@ -3,6 +3,7 @@
 
 #include "api/graph/base/node.h"
 #include "api/graph/parallel/distributed_arc.h"
+#include "api/graph/parallel/synchro/mutex.h"
 #include "graph/parallel/distributed_id.h"
 
 namespace FPMAS::api::graph::parallel {
@@ -18,6 +19,8 @@ namespace FPMAS::api::graph::parallel {
 
 			virtual LocationState state() const = 0;
 			virtual void setState(LocationState state) = 0;
+
+			virtual synchro::Mutex<T>& mutex() = 0;
 	};
 
 }

@@ -7,12 +7,16 @@
 #include "graph/base/basic_graph.h"
 
 #define DIST_GRAPH_PARAMS\
-	typename DistNodeImpl,\
-	typename DistArcImpl,\
+	typename T,\
+	typename SyncMode,\
+	template<typename, template<typename> class> class DistNodeImpl,\
+	template<typename, template<typename> class> class DistArcImpl,\
 	typename MpiCommunicatorImpl,\
 	template<typename> class LoadBalancingImpl
 
 #define DIST_GRAPH_PARAMS_SPEC\
+	T,\
+	SyncMode,\
 	DistNodeImpl,\
 	DistArcImpl,\
 	MpiCommunicatorImpl,\
@@ -24,23 +28,34 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	class BasicDistributedGraph : 
 		public base::AbstractGraphBase<
-			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, DistNodeImpl, DistArcImpl>,
+			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>,
+			DistNodeImpl<T, SyncMode::template mutex_type>,
+			DistArcImpl<T, SyncMode::template mutex_type>>,
 		public api::graph::parallel::DistributedGraph<
-			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, DistNodeImpl, DistArcImpl
+			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>,
+			DistNodeImpl<T, SyncMode::template mutex_type>,
+			DistArcImpl<T, SyncMode::template mutex_type>
 		> {
+			typedef DistNodeImpl<T, SyncMode::template mutex_type> dist_node_type;
+			typedef DistArcImpl<T, SyncMode::template mutex_type> dist_arc_type;
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedNode<typename DistNodeImpl::data_type, DistArcImpl>, DistNodeImpl>
-					::value, "DistNodeImpl must implement api::graph::parallel::DistributedNode"
+					std::is_base_of<api::graph::parallel::DistributedNode<
+					typename dist_node_type::data_type,
+					dist_arc_type
+					>, dist_node_type>::value,
+					"DistNodeImpl must implement api::graph::parallel::DistributedNode"
 					);
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedArc<typename DistNodeImpl::data_type, DistNodeImpl>, DistArcImpl>
-					::value, "DistArcImpl must implement api::graph::parallel::DistributedArc"
+					std::is_base_of<api::graph::parallel::DistributedArc<
+					typename dist_node_type::data_type, dist_node_type
+					>, dist_arc_type>::value,
+					"DistArcImpl must implement api::graph::parallel::DistributedArc"
 					);
 			typedef base::AbstractGraphBase<
-			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, DistNodeImpl, DistArcImpl>
+			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, dist_node_type, dist_arc_type>
 			abstract_graph_base;
 			typedef api::graph::parallel::DistributedGraph<
-				BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, DistNodeImpl, DistArcImpl
+				BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, dist_node_type, dist_arc_type
 			> dist_graph_base;
 
 			public:

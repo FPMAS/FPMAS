@@ -6,13 +6,13 @@
 
 namespace FPMAS::graph::parallel {
 
-	template<typename> class DistributedNode;
+	template<typename, template<typename> class> class DistributedNode;
 	using api::graph::parallel::LocationState;
-	template<typename T>
+	template<typename T, template<typename> class Mutex>
 		class DistributedArc :
-			public graph::base::BasicArc<DistributedId, DistributedNode<T>>,
-			public FPMAS::api::graph::parallel::DistributedArc<T, DistributedNode<T>> {
-				typedef graph::base::BasicArc<DistributedId, DistributedNode<T>>
+			public graph::base::BasicArc<DistributedId, DistributedNode<T, Mutex>>,
+			public FPMAS::api::graph::parallel::DistributedArc<T, DistributedNode<T, Mutex>> {
+				typedef graph::base::BasicArc<DistributedId, DistributedNode<T, Mutex>>
 					arc_base;
 
 				private:
@@ -37,28 +37,28 @@ namespace FPMAS::graph::parallel {
 namespace nlohmann {
 
 	using FPMAS::graph::parallel::DistributedArc;
-	template<typename T>
-		struct adl_serializer<DistributedArc<T>> {
-			static DistributedArc<T> from_json(const json& j) {
-				DistributedArc<T> arc {
+	template<typename T, template<typename> class Mutex>
+		struct adl_serializer<DistributedArc<T, Mutex>> {
+			static DistributedArc<T, Mutex> from_json(const json& j) {
+				DistributedArc<T, Mutex> arc {
 					j.at("id").get<DistributedId>(),
-					j.at("layer").get<typename DistributedArc<T>::layer_id_type>(),
+					j.at("layer").get<typename DistributedArc<T, Mutex>::layer_id_type>(),
 					j.at("weight").get<float>()
 				};
 				arc.setSourceNode(
-						new FPMAS::graph::parallel::DistributedNode<T>(
+						new FPMAS::graph::parallel::DistributedNode<T, Mutex>(
 							j.at("src").get<DistributedId>()
 							)
 						);
 				arc.setTargetNode(
-						new FPMAS::graph::parallel::DistributedNode<T>(
+						new FPMAS::graph::parallel::DistributedNode<T, Mutex>(
 							j.at("tgt").get<DistributedId>()
 							)
 						);
 				return arc;
 			}
 
-			static void to_json(json& j, const DistributedArc<T>& arc) {
+			static void to_json(json& j, const DistributedArc<T, Mutex>& arc) {
 				j["id"] = arc.getId();
 				j["layer"] = arc.getLayer();
 				j["weight"] = arc.getWeight();
