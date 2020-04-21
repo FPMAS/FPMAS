@@ -84,6 +84,10 @@ class BasicDistributedGraphLinkTest : public BasicDistributedGraphTest {
 		MockMutex<int> srcMutex;
 		node_type tgtMock;
 		MockMutex<int> tgtMutex;
+		DistributedId currentId = graph.currentArcId();
+		arc_type* linkOutArg;
+		arc_type* linkInArg;
+
 	public:
 		void SetUp() override {
 			EXPECT_CALL(srcMock, mutex).WillRepeatedly(ReturnRef(srcMutex));
@@ -96,14 +100,19 @@ class BasicDistributedGraphLinkTest : public BasicDistributedGraphTest {
 			EXPECT_CALL(tgtMutex, unlock);
 			EXPECT_CALL(graph.getSyncLinker(), unlink).Times(0);
 
-			EXPECT_CALL(srcMock, linkOut(_));
-			EXPECT_CALL(tgtMock, linkIn(_));
+			EXPECT_CALL(srcMock, linkOut)
+				.WillOnce(SaveArg<0>(&linkOutArg));
+			EXPECT_CALL(tgtMock, linkIn)
+				.WillOnce(SaveArg<0>(&linkInArg));
 		}
 
-		void checkArcStructure(arc_type* arc, DistributedId expectedArcId) {
-			ASSERT_EQ(graph.getArcs().count(expectedArcId), 1);
-			ASSERT_EQ(graph.getArc(expectedArcId), arc);
-			ASSERT_EQ(arc->getId(), expectedArcId);
+		void checkArcStructure(arc_type* arc) {
+			ASSERT_EQ(linkInArg, arc);
+			ASSERT_EQ(linkOutArg, arc);
+
+			ASSERT_EQ(graph.getArcs().count(currentId), 1);
+			ASSERT_EQ(graph.getArc(currentId), arc);
+			ASSERT_EQ(arc->getId(), currentId);
 
 			ASSERT_EQ(arc->src, &srcMock);
 			ASSERT_EQ(arc->tgt, &tgtMock);
@@ -124,10 +133,9 @@ TEST_F(BasicDistributedGraphLinkTest, local_src_local_tgt) {
 
 	EXPECT_CALL(graph.getSyncLinker(), link).Times(0);
 
-	auto currentId = graph.currentArcId();
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 
-	checkArcStructure(arc, currentId);
+	checkArcStructure(arc);
 
 	ASSERT_EQ(arc->_state, LocationState::LOCAL);
 }
@@ -140,13 +148,12 @@ TEST_F(BasicDistributedGraphLinkTest, local_src_distant_tgt) {
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
 	const arc_type* linkArcArg;
-	auto currentId = graph.currentArcId();
 	EXPECT_CALL(graph.getSyncLinker(), link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 	ASSERT_EQ(linkArcArg, arc);
 
-	checkArcStructure(arc, currentId);
+	checkArcStructure(arc);
 
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 }
@@ -159,13 +166,12 @@ TEST_F(BasicDistributedGraphLinkTest, distant_src_local_tgt) {
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 
 	const arc_type* linkArcArg;
-	auto currentId = graph.currentArcId();
 	EXPECT_CALL(graph.getSyncLinker(), link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 	ASSERT_EQ(linkArcArg, arc);
 
-	checkArcStructure(arc, currentId);
+	checkArcStructure(arc);
 
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 }
@@ -180,15 +186,90 @@ TEST_F(BasicDistributedGraphLinkTest, distant_src_distant_tgt) {
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
 	const arc_type* linkArcArg;
-	auto currentId = graph.currentArcId();
 	EXPECT_CALL(graph.getSyncLinker(), link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 	ASSERT_EQ(linkArcArg, arc);
 
-	checkArcStructure(arc, currentId);
+	checkArcStructure(arc);
 
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
+}
+
+/****************/
+/* Unlink tests */
+/****************/
+class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
+	protected:
+		node_type srcMock;
+		MockMutex<int> srcMutex;
+		node_type tgtMock;
+		MockMutex<int> tgtMutex;
+		arc_type* arc;
+
+	public:
+		void SetUp() override {
+			EXPECT_CALL(srcMock, mutex).WillRepeatedly(ReturnRef(srcMutex));
+			EXPECT_CALL(tgtMock, mutex).WillRepeatedly(ReturnRef(tgtMutex));
+
+			EXPECT_CALL(srcMutex, lock).Times(2);
+			EXPECT_CALL(srcMutex, unlock).Times(2);
+			EXPECT_CALL(tgtMutex, lock).Times(2);
+			EXPECT_CALL(tgtMutex, unlock).Times(2);
+		}
+
+		void link(LocationState srcState, LocationState tgtState) {
+			EXPECT_CALL(srcMock, state).WillRepeatedly(Return(srcState));
+			EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(tgtState));
+
+			EXPECT_CALL(srcMock, linkOut);
+			EXPECT_CALL(tgtMock, linkIn);
+			EXPECT_CALL(graph.getSyncLinker(), link).Times(AnyNumber());
+
+			arc = graph.link(&srcMock, &tgtMock, 0);
+
+			EXPECT_CALL(srcMock, unlinkOut(arc));
+			EXPECT_CALL(tgtMock, unlinkIn(arc));
+		}
+};
+
+TEST_F(BasicDistributedGraphUnlinkTest, local_src_local_tgt) {
+	this->link(LocationState::LOCAL, LocationState::LOCAL);
+	ASSERT_EQ(arc->_state, LocationState::LOCAL);
+
+	EXPECT_CALL(graph.getSyncLinker(), unlink).Times(0);
+
+	graph.unlink(arc);
+
+	ASSERT_EQ(graph.getArcs().size(), 0);
+}
+
+TEST_F(BasicDistributedGraphUnlinkTest, local_src_distant_tgt) {
+	this->link(LocationState::LOCAL, LocationState::DISTANT);
+	ASSERT_EQ(arc->_state, LocationState::DISTANT);
+
+	EXPECT_CALL(
+		const_cast<MockSyncLinker<arc_type>&>(graph.getSyncLinker()),
+		unlink(arc)
+		).Times(1);
+
+	graph.unlink(arc);
+
+	ASSERT_EQ(graph.getArcs().size(), 0);
+}
+
+TEST_F(BasicDistributedGraphUnlinkTest, distant_src_local_tgt) {
+	this->link(LocationState::DISTANT, LocationState::LOCAL);
+	ASSERT_EQ(arc->_state, LocationState::DISTANT);
+
+	EXPECT_CALL(
+		const_cast<MockSyncLinker<arc_type>&>(graph.getSyncLinker()),
+		unlink(arc)
+		).Times(1);
+
+	graph.unlink(arc);
+
+	ASSERT_EQ(graph.getArcs().size(), 0);
 }
 
 /*********************/

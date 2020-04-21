@@ -106,8 +106,9 @@ namespace FPMAS::graph::parallel {
 			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
 				return loadBalancing;
 			};
+
 			void removeNode(node_type*) override {};
-			void unlink(arc_type*) override {};
+			void unlink(arc_type*) override;
 
 			const node_map& getLocalNodes() const override { return localNodes;};
 
@@ -165,6 +166,23 @@ namespace FPMAS::graph::parallel {
 				return arc;
 			}
 		};
+
+	template<DIST_GRAPH_PARAMS>
+	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(arc_type* arc) {
+		auto src = arc->getSourceNode();
+		auto tgt = arc->getTargetNode();
+		src->mutex().lock();
+		tgt->mutex().lock();
+
+		if(arc->state() == LocationState::DISTANT) {
+			syncLinker.unlink(arc);
+		}
+		this->erase(arc);
+
+		src->mutex().unlock();
+		tgt->mutex().unlock();
+	}
+
 	template<DIST_GRAPH_PARAMS>
 	typename BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::node_type*
 	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importNode(
