@@ -66,10 +66,13 @@ namespace FPMAS::graph::parallel {
 			using typename dist_graph_base::layer_id_type;
 			using typename dist_graph_base::node_map;
 			using typename dist_graph_base::partition_type;
+			typedef typename SyncMode::template sync_linker<arc_type> sync_linker_type;
 
 			private:
-			LoadBalancingImpl<node_type> loadBalancing;
 			MpiCommunicatorImpl mpiCommunicator;
+			SyncMode syncMode;
+			sync_linker_type syncLinker;
+			LoadBalancingImpl<node_type> loadBalancing;
 
 			node_map localNodes;
 
@@ -89,9 +92,6 @@ namespace FPMAS::graph::parallel {
 				this->arcId = DistributedId(mpiCommunicator.getRank(), 0);
 			}
 
-			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
-				return loadBalancing;
-			};
 			const MpiCommunicatorImpl& getMpiCommunicator() const {
 				return mpiCommunicator;
 			};
@@ -99,6 +99,13 @@ namespace FPMAS::graph::parallel {
 				return mpiCommunicator;
 			};
 
+			const SyncMode& getSyncMode() const {return syncMode;}
+
+			const sync_linker_type& getSyncLinker() const {return syncLinker;}
+
+			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
+				return loadBalancing;
+			};
 			void removeNode(node_type*) override {};
 			void unlink(arc_type*) override {};
 
@@ -125,6 +132,11 @@ namespace FPMAS::graph::parallel {
 			template<typename... Args> arc_type* link(
 					node_base* const src, node_base* const tgt, layer_id_type layer,
 					Args... args) {
+				// Locks source and target
+				src->mutex().lock();
+				tgt->mutex().lock();
+
+				// Builds the new arc
 				auto arc = new arc_type(
 						this->arcId++, layer,
 						std::forward<Args>(args)...
@@ -133,7 +145,23 @@ namespace FPMAS::graph::parallel {
 				src->linkOut(arc);
 				arc->setTargetNode(tgt);
 				tgt->linkIn(arc);
+				arc->setState(LocationState::LOCAL);
+
+				// If src and tgt is DISTANT, transmit the request to the
+				// SyncLinker, that will handle the request according to its
+				// synchronisation policy
+				if(src->state() == LocationState::DISTANT || tgt->state() == LocationState::DISTANT) {
+					syncLinker.link(arc);
+					arc->setState(LocationState::DISTANT);
+				}
+
+				// Inserts the arc in the Graph
 				this->insert(arc);
+
+				// Unlocks source and target
+				src->mutex().unlock();
+				tgt->mutex().unlock();
+
 				return arc;
 			}
 		};
@@ -261,7 +289,7 @@ namespace FPMAS::graph::parallel {
 			for(auto node : exportedNodes) {
 				clear(node);
 			}
-			//mpiCommunicator.terminate();
+			syncMode.synchronize();
 		}
 
 	template<DIST_GRAPH_PARAMS>

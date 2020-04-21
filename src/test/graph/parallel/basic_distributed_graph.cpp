@@ -25,6 +25,7 @@ using ::testing::IsEmpty;
 using ::testing::Pair;
 using ::testing::Property;
 using ::testing::NiceMock;
+using ::testing::ReturnRefOfCopy;
 
 using FPMAS::graph::parallel::BasicDistributedGraph;
 using FPMAS::test::ASSERT_CONTAINS;
@@ -51,6 +52,9 @@ class BasicDistributedGraphTest : public ::testing::Test {
 
 };
 
+/*
+ * Local buildNode test
+ */
 TEST_F(BasicDistributedGraphTest, buildNode) {
 
 	auto currentId = graph.currentNodeId();
@@ -71,161 +75,130 @@ TEST_F(BasicDistributedGraphTest, buildNode) {
 	ASSERT_EQ(node->getWeight(), .5);
 }
 
-TEST_F(BasicDistributedGraphTest, local_link) {
-	node_type srcMock;
-	node_type tgtMock;
+/**************/
+/* Link tests */
+/**************/
+class BasicDistributedGraphLinkTest : public BasicDistributedGraphTest {
+	protected:
+		node_type srcMock;
+		MockMutex<int> srcMutex;
+		node_type tgtMock;
+		MockMutex<int> tgtMutex;
+	public:
+		void SetUp() override {
+			EXPECT_CALL(srcMock, mutex).WillRepeatedly(ReturnRef(srcMutex));
+			EXPECT_CALL(tgtMock, mutex).WillRepeatedly(ReturnRef(tgtMutex));
+
+
+			EXPECT_CALL(srcMutex, lock);
+			EXPECT_CALL(srcMutex, unlock);
+			EXPECT_CALL(tgtMutex, lock);
+			EXPECT_CALL(tgtMutex, unlock);
+			EXPECT_CALL(graph.getSyncLinker(), unlink).Times(0);
+
+			EXPECT_CALL(srcMock, linkOut(_));
+			EXPECT_CALL(tgtMock, linkIn(_));
+		}
+
+		void checkArcStructure(arc_type* arc, DistributedId expectedArcId) {
+			ASSERT_EQ(graph.getArcs().count(expectedArcId), 1);
+			ASSERT_EQ(graph.getArc(expectedArcId), arc);
+			ASSERT_EQ(arc->getId(), expectedArcId);
+
+			ASSERT_EQ(arc->src, &srcMock);
+			ASSERT_EQ(arc->tgt, &tgtMock);
+
+			EXPECT_CALL(*arc, getLayer);
+			ASSERT_EQ(arc->getLayer(), 14);
+
+			EXPECT_CALL(*arc, getWeight);
+			ASSERT_EQ(arc->getWeight(), 0.5);
+		}
+};
+/*
+ * Local link
+ */
+TEST_F(BasicDistributedGraphLinkTest, local_src_local_tgt) {
+	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
+
+	EXPECT_CALL(graph.getSyncLinker(), link).Times(0);
 
 	auto currentId = graph.currentArcId();
-	EXPECT_CALL(srcMock, linkOut(_));
-	EXPECT_CALL(tgtMock, linkIn(_));
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 
-	ASSERT_EQ(graph.getArcs().count(currentId), 1);
-	ASSERT_EQ(graph.getArc(currentId), arc);
-	ASSERT_EQ(arc->getId(), currentId);
-
-	ASSERT_EQ(arc->src, &srcMock);
-	ASSERT_EQ(arc->tgt, &tgtMock);
-
-	EXPECT_CALL(*arc, getLayer);
-	ASSERT_EQ(arc->getLayer(), 14);
-
-	EXPECT_CALL(*arc, getWeight);
-	ASSERT_EQ(arc->getWeight(), 0.5);
+	checkArcStructure(arc, currentId);
 
 	ASSERT_EQ(arc->_state, LocationState::LOCAL);
 }
 
-class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
-	typedef typename graph_type::partition_type partition_type;
+/*
+ * Local src, distant tgt
+ */
+TEST_F(BasicDistributedGraphLinkTest, local_src_distant_tgt) {
+	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
-	protected:
-		std::array<DistributedId, 5> nodeIds;
-		partition_type fakePartition;
-		void SetUp() override {
-			for(int i=0; i < 5;i++) {
-				auto node = graph.buildNode();
-				nodeIds[i] = node->getId();
-			}
-			fakePartition[nodeIds[0]] = 7;
-			fakePartition[nodeIds[1]] = 1;
-			fakePartition[nodeIds[2]] = 1;
-			fakePartition[nodeIds[3]] = 0;
-			fakePartition[nodeIds[4]] = 0;
-		}
-};
+	const arc_type* linkArcArg;
+	auto currentId = graph.currentArcId();
+	EXPECT_CALL(graph.getSyncLinker(), link)
+		.WillOnce(SaveArg<0>(&linkArcArg));
+	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
+	ASSERT_EQ(linkArcArg, arc);
 
-TEST_F(BasicDistributedGraphDistributeTest, balance) {
-	EXPECT_CALL(
-		const_cast<MockLoadBalancing<node_type>&>(graph.getLoadBalancing()),
-		balance(graph.getNodes(), IsEmpty()))
-		.WillOnce(Return(fakePartition));
-	EXPECT_CALL(graph.getMpiCommunicator(), allToAll(_)).Times(2);
+	checkArcStructure(arc, currentId);
 
-	graph.balance();
+	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 }
 
-TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
-	auto exportMapMatcher = UnorderedElementsAre(
-		Pair(0, AnyOf(
-				Eq(nlohmann::json({*graph.getNode(nodeIds[3]), *graph.getNode(nodeIds[4])}).dump()),
-				Eq(nlohmann::json({*graph.getNode(nodeIds[4]), *graph.getNode(nodeIds[3])}).dump())
-				)),
-		Pair(1, AnyOf(
-				Eq(nlohmann::json({*graph.getNode(nodeIds[1]), *graph.getNode(nodeIds[2])}).dump()),
-				Eq(nlohmann::json({*graph.getNode(nodeIds[2]), *graph.getNode(nodeIds[1])}).dump())
-				))
-	);
+/*
+ * Distant src, local tgt
+ */
+TEST_F(BasicDistributedGraphLinkTest, distant_src_local_tgt) {
+	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 
-	// Mock node import
-	std::unordered_map<int, std::string> nodeImport;
-	nodeImport[2] = nlohmann::json(
-			std::vector<node_type> {
-			node_type(DistributedId(2, 5)),
-			node_type(DistributedId(4, 3))
-			}
-			).dump();
-	EXPECT_CALL(
-			graph.getMpiCommunicator(), allToAll(exportMapMatcher))
-	.WillOnce(Return(nodeImport));
+	const arc_type* linkArcArg;
+	auto currentId = graph.currentArcId();
+	EXPECT_CALL(graph.getSyncLinker(), link)
+		.WillOnce(SaveArg<0>(&linkArcArg));
+	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
+	ASSERT_EQ(linkArcArg, arc);
 
-	// No arc import
-	EXPECT_CALL(graph.getMpiCommunicator(),
-			allToAll(IsEmpty())).WillOnce(Return(
-				std::unordered_map<int, std::string>()
-				));
+	checkArcStructure(arc, currentId);
 
-	graph.distribute(fakePartition);
-	ASSERT_EQ(graph.getNodes().size(), 3);
-	ASSERT_EQ(graph.getNodes().count(nodeIds[0]), 1);
-	ASSERT_EQ(graph.getNodes().count(DistributedId(2, 5)), 1);
-	ASSERT_EQ(graph.getNodes().count(DistributedId(4, 3)), 1);
+	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 }
 
-class BasicDistributedGraphDistributedWithLinkTest : public BasicDistributedGraphDistributeTest {
-	protected:
-		arc_type* arc1;
-		arc_type* arc2;
-		void SetUp() override {
-			this->BasicDistributedGraphDistributeTest::SetUp();
+/*
+ * Distant src, distant tgt
+ */
+// TODO : what should we do with such an arc? Should it be deleted once is has
+// been sent?
+TEST_F(BasicDistributedGraphLinkTest, distant_src_distant_tgt) {
+	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
-			arc1 = graph.link(graph.getNode(nodeIds[0]), graph.getNode(nodeIds[2]), 0);
+	const arc_type* linkArcArg;
+	auto currentId = graph.currentArcId();
+	EXPECT_CALL(graph.getSyncLinker(), link)
+		.WillOnce(SaveArg<0>(&linkArcArg));
+	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
+	ASSERT_EQ(linkArcArg, arc);
 
-			EXPECT_CALL(*graph.getNode(nodeIds[2]), getIncomingArcs())
-				.Times(AnyNumber())
-				.WillRepeatedly(Return(std::vector {arc1}));
+	checkArcStructure(arc, currentId);
 
-			arc2 = graph.link(graph.getNode(nodeIds[3]), graph.getNode(nodeIds[0]), 0);
-			EXPECT_CALL(*graph.getNode(nodeIds[3]), getOutgoingArcs())
-				.Times(AnyNumber())
-				.WillRepeatedly(Return(std::vector {arc2}));
-		}
-
-
-};
-
-TEST_F(BasicDistributedGraphDistributedWithLinkTest, distributed_with_link_test) {
-	auto exportNodeMapMatcher = UnorderedElementsAre(
-			Pair(0, AnyOf(
-					Eq(nlohmann::json({*graph.getNode(nodeIds[3]), *graph.getNode(nodeIds[4])}).dump()),
-					Eq(nlohmann::json({*graph.getNode(nodeIds[4]), *graph.getNode(nodeIds[3])}).dump())
-					)),
-			Pair(1, AnyOf(
-					Eq(nlohmann::json({*graph.getNode(nodeIds[1]), *graph.getNode(nodeIds[2])}).dump()),
-					Eq(nlohmann::json({*graph.getNode(nodeIds[2]), *graph.getNode(nodeIds[1])}).dump())
-					))
-			);
-	// No node import
-	EXPECT_CALL(
-			graph.getMpiCommunicator(), allToAll(exportNodeMapMatcher))
-	.WillOnce(Return(std::unordered_map<int, std::string>()));
-
-	auto exportMapMatcher = UnorderedElementsAre(
-		Pair(0, Eq(nlohmann::json({*arc2}).dump())),
-		Pair(1, Eq(nlohmann::json({*arc1}).dump()))
-	);
-
-	std::unordered_map<int, std::string> arcImport;
-	arc_type importedArc {DistributedId(4, 6), 2};
-	importedArc.src = new node_type(DistributedId(4, 8));
-	importedArc.tgt = new node_type(DistributedId(3, 2));
-	arcImport[3] = nlohmann::json({importedArc}).dump();
-
-	// Mock arc import
-	EXPECT_CALL(graph.getMpiCommunicator(),
-			allToAll(exportMapMatcher)).WillOnce(Return(arcImport));
-
-	graph.distribute(fakePartition);
-
-	ASSERT_EQ(graph.getArcs().size(), 3);
-	ASSERT_EQ(graph.getArcs().count(DistributedId(4, 6)), 1);
-	ASSERT_EQ(graph.getArcs().count(arc1->getId()), 1);
-	ASSERT_EQ(graph.getArcs().count(arc2->getId()), 1);
-
-	delete importedArc.src;
-	delete importedArc.tgt;
+	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 }
 
+/*********************/
+/* Import node tests */
+/*********************/
+/*
+ * Tests suite that test node import process in the following situations :
+ * - node import of a new node
+ * - node import with a ghost corresponding to this node already in the graph
+ */
 class BasicDistributedGraphImportTest : public ::testing::Test {
 	protected:
 		BasicDistributedGraph<
@@ -258,11 +231,15 @@ class BasicDistributedGraphImportTest : public ::testing::Test {
 					graph.getMpiCommunicator(), allToAll)
 				.WillOnce(Return(importedNodePack))
 				.WillOnce(Return(importedArcPack));
+			EXPECT_CALL(graph.getSyncMode(), synchronize).Times(1);
 			graph.distribute(partition_type());
 		}
 
 };
 
+/*
+ * Import new node test
+ */
 TEST_F(BasicDistributedGraphImportTest, import_node) {
 	auto mock = node_type(DistributedId(1, 10), 8, 2.1);
 
@@ -276,6 +253,9 @@ TEST_F(BasicDistributedGraphImportTest, import_node) {
 	ASSERT_EQ(node->state(), LocationState::LOCAL);
 }
 
+/*
+ * Import node with existing ghost test
+ */
 TEST_F(BasicDistributedGraphImportTest, import_node_with_existing_ghost) {
 	auto node = graph.buildNode(8, 2.1);
 	ON_CALL(*node, state()).WillByDefault(Return(LocationState::DISTANT));
@@ -290,6 +270,9 @@ TEST_F(BasicDistributedGraphImportTest, import_node_with_existing_ghost) {
 	ASSERT_EQ(graph.getNodes().count(mock.getId()), 1);
 }
 
+/********************/
+/* Import arc tests */
+/********************/
 /*
  * Test suite for the different cases of arc import when :
  * - the two nodes exist and are LOCAL
@@ -344,7 +327,9 @@ class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportTes
 
 };
 
-// Import arc when the two nodes are LOCAL
+/*
+ * Import arc when the two nodes are LOCAL
+ */
 TEST_F(BasicDistributedGraphImportArcTest, import_local_arc) {
 	distributeTest();
 	checkArcStructure();
@@ -352,7 +337,9 @@ TEST_F(BasicDistributedGraphImportArcTest, import_local_arc) {
 }
 
 
-// Import with DISTANT src
+/*
+ * Import with DISTANT src
+ */
 TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_src) {
 	EXPECT_CALL(*src, state).WillRepeatedly(Return(LocationState::DISTANT));
 	distributeTest();
@@ -360,7 +347,9 @@ TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_src)
 	ASSERT_EQ(importedArc->_state, LocationState::DISTANT);
 }
 
-// Import with DISTANT tgt
+/*
+ * Import with DISTANT tgt
+ */
 TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_tgt) {
 	EXPECT_CALL(*tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
 	distributeTest();
@@ -396,6 +385,16 @@ TEST_F(BasicDistributedGraphImportArcTest, double_import_edge_case) {
 	ASSERT_EQ(importedArc->_state, LocationState::LOCAL);
 }
 
+/*************************************/
+/* Import arc with missing node test */
+/*************************************/
+/*
+ * In the previous test suite, at least one of the two nodes might be DISTANT,
+ * but they already exist in the Graph.
+ * However, Arcs might be imported with a source or target node that has not
+ * been added to the Graph yet (has LOCAL or DISTANT node), and in this case
+ * the missing Node must be created as a new DISTANT node.
+ */
 class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraphImportTest {
 	protected:
 		node_type* localNode;
@@ -435,6 +434,9 @@ class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraph
 		}
 };
 
+/*
+ * LOCAL src, missing tgt
+ */
 TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
 	auto mock = arc_type(DistributedId(3, 12),
 					2, // layer
@@ -457,6 +459,9 @@ TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
 	ASSERT_EQ(importedArc->tgt, graph.getNode(DistributedId(8, 16)));
 }
 
+/*
+ * Missing src, LOCAL tgt
+ */
 TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 	auto mock = arc_type(
 					DistributedId(3, 12),
@@ -481,6 +486,176 @@ TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 	ASSERT_EQ(importedArc->src, graph.getNode(DistributedId(8, 16)));
 }
 
+/********************/
+/* Distribute tests */
+/********************/
+class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
+	typedef typename graph_type::partition_type partition_type;
+
+	protected:
+		std::array<DistributedId, 5> nodeIds;
+		partition_type fakePartition;
+		void SetUp() override {
+			for(int i=0; i < 5;i++) {
+				auto node = graph.buildNode();
+				nodeIds[i] = node->getId();
+			}
+			fakePartition[nodeIds[0]] = 7;
+			fakePartition[nodeIds[1]] = 1;
+			fakePartition[nodeIds[2]] = 1;
+			fakePartition[nodeIds[3]] = 0;
+			fakePartition[nodeIds[4]] = 0;
+			EXPECT_CALL(graph.getSyncMode(), synchronize);
+		}
+};
+
+/*
+ * Balance test.
+ * Checks that load balancing is called and migration is performed.
+ */
+TEST_F(BasicDistributedGraphDistributeTest, balance) {
+	// Should call LoadBalancing on all nodes, without fixed nodes
+	EXPECT_CALL(
+		const_cast<MockLoadBalancing<node_type>&>(graph.getLoadBalancing()),
+		balance(graph.getNodes(), IsEmpty()))
+		.WillOnce(Return(fakePartition));
+	// Migration of nodes + arcs
+	EXPECT_CALL(graph.getMpiCommunicator(), allToAll(_)).Times(2);
+
+	// Actual call
+	graph.balance();
+}
+
+/*
+ * Node distribution test (no arcs)
+ */
+TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
+	auto exportMapMatcher = UnorderedElementsAre(
+		Pair(0, AnyOf(
+				Eq(nlohmann::json({*graph.getNode(nodeIds[3]), *graph.getNode(nodeIds[4])}).dump()),
+				Eq(nlohmann::json({*graph.getNode(nodeIds[4]), *graph.getNode(nodeIds[3])}).dump())
+				)),
+		Pair(1, AnyOf(
+				Eq(nlohmann::json({*graph.getNode(nodeIds[1]), *graph.getNode(nodeIds[2])}).dump()),
+				Eq(nlohmann::json({*graph.getNode(nodeIds[2]), *graph.getNode(nodeIds[1])}).dump())
+				))
+	);
+
+	// Mock node import
+	std::unordered_map<int, std::string> nodeImport;
+	nodeImport[2] = nlohmann::json(
+			std::vector<node_type> {
+			node_type(DistributedId(2, 5)),
+			node_type(DistributedId(4, 3))
+			}
+			).dump();
+	EXPECT_CALL(
+			graph.getMpiCommunicator(), allToAll(exportMapMatcher))
+	.WillOnce(Return(nodeImport));
+
+	// No arc import
+	EXPECT_CALL(graph.getMpiCommunicator(),
+			allToAll(IsEmpty())).WillOnce(Return(
+				std::unordered_map<int, std::string>()
+				));
+
+	graph.distribute(fakePartition);
+	ASSERT_EQ(graph.getNodes().size(), 3);
+	ASSERT_EQ(graph.getNodes().count(nodeIds[0]), 1);
+	ASSERT_EQ(graph.getNodes().count(DistributedId(2, 5)), 1);
+	ASSERT_EQ(graph.getNodes().count(DistributedId(4, 3)), 1);
+}
+
+/****************************/
+/* Distribute test with arc */
+/****************************/
+class BasicDistributedGraphDistributedWithLinkTest : public BasicDistributedGraphDistributeTest {
+	protected:
+		arc_type* arc1;
+		arc_type* arc2;
+		void SetUp() override {
+			this->BasicDistributedGraphDistributeTest::SetUp();
+			// No lock to manage, all links are local
+			MockMutex<int> mockMutex;
+			EXPECT_CALL(mockMutex, lock).Times(AnyNumber());
+			EXPECT_CALL(mockMutex, unlock).Times(AnyNumber());
+
+			EXPECT_CALL(*graph.getNode(nodeIds[0]), mutex)
+				.WillRepeatedly(ReturnRef(mockMutex));
+			EXPECT_CALL(*graph.getNode(nodeIds[2]), mutex)
+				.WillRepeatedly(ReturnRef(mockMutex));
+			EXPECT_CALL(*graph.getNode(nodeIds[3]), mutex)
+				.WillRepeatedly(ReturnRef(mockMutex));
+
+			arc1 = graph.link(graph.getNode(nodeIds[0]), graph.getNode(nodeIds[2]), 0);
+
+			EXPECT_CALL(*graph.getNode(nodeIds[2]), getIncomingArcs())
+				.Times(AnyNumber())
+				.WillRepeatedly(Return(std::vector {arc1}));
+
+			arc2 = graph.link(graph.getNode(nodeIds[3]), graph.getNode(nodeIds[0]), 0);
+			EXPECT_CALL(*graph.getNode(nodeIds[3]), getOutgoingArcs())
+				.Times(AnyNumber())
+				.WillRepeatedly(Return(std::vector {arc2}));
+		}
+
+
+};
+
+/*
+ * Distribute nodes + arcs
+ */
+TEST_F(BasicDistributedGraphDistributedWithLinkTest, distribute_with_link_test) {
+	auto exportNodeMapMatcher = UnorderedElementsAre(
+			Pair(0, AnyOf(
+					Eq(nlohmann::json({*graph.getNode(nodeIds[3]), *graph.getNode(nodeIds[4])}).dump()),
+					Eq(nlohmann::json({*graph.getNode(nodeIds[4]), *graph.getNode(nodeIds[3])}).dump())
+					)),
+			Pair(1, AnyOf(
+					Eq(nlohmann::json({*graph.getNode(nodeIds[1]), *graph.getNode(nodeIds[2])}).dump()),
+					Eq(nlohmann::json({*graph.getNode(nodeIds[2]), *graph.getNode(nodeIds[1])}).dump())
+					))
+			);
+	// No node import
+	EXPECT_CALL(
+			graph.getMpiCommunicator(), allToAll(exportNodeMapMatcher))
+	.WillOnce(Return(std::unordered_map<int, std::string>()));
+
+	auto exportMapMatcher = UnorderedElementsAre(
+		Pair(0, Eq(nlohmann::json({*arc2}).dump())),
+		Pair(1, Eq(nlohmann::json({*arc1}).dump()))
+	);
+
+	std::unordered_map<int, std::string> arcImport;
+	arc_type importedArc {DistributedId(4, 6), 2};
+	importedArc.src = new node_type(DistributedId(4, 8));
+	importedArc.tgt = new node_type(DistributedId(3, 2));
+	arcImport[3] = nlohmann::json({importedArc}).dump();
+
+	// Mock arc import
+	EXPECT_CALL(graph.getMpiCommunicator(),
+			allToAll(exportMapMatcher)).WillOnce(Return(arcImport));
+
+	graph.distribute(fakePartition);
+
+	ASSERT_EQ(graph.getArcs().size(), 3);
+	ASSERT_EQ(graph.getArcs().count(DistributedId(4, 6)), 1);
+	ASSERT_EQ(graph.getArcs().count(arc1->getId()), 1);
+	ASSERT_EQ(graph.getArcs().count(arc2->getId()), 1);
+
+	delete importedArc.src;
+	delete importedArc.tgt;
+}
+
+/*********************************************/
+/* Distribute test (real MPI communications) */
+/*********************************************/
+/*
+ * All the previous tests used locally mocked communications.
+ * In those tests, a real MpiCommunicator and DistributedNode and
+ * DistributedArcs implementations are used to distribute them accross the
+ * available procs.
+ */
 class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 	protected:
 		BasicDistributedGraph<
