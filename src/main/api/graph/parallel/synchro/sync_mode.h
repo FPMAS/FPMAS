@@ -1,5 +1,5 @@
-#ifndef SYNC_MODE_H
-#define SYNC_MODE_H
+#ifndef SYNC_MODE_API_H
+#define SYNC_MODE_API_H
 
 #include <string>
 

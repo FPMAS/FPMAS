@@ -244,7 +244,6 @@ namespace FPMAS::graph::parallel {
 
 			for (int i =0; i < num_export; i++) {
 				DistributedId id = read_zoltan_id(&export_global_ids[i * num_gid_entries]);
-				std::cout << "export id : " << (std::string) id << std::endl;
 				graph->exportedNodes.insert(id);
 
 				auto exported_node = nodes.at(id);

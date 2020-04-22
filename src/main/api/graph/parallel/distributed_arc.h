@@ -1,5 +1,5 @@
-#ifndef DISTRIBUTED_ARC_API
-#define DISTRIBUTED_ARC_API
+#ifndef DISTRIBUTED_ARC_API_H
+#define DISTRIBUTED_ARC_API_H
 
 #include "api/graph/base/arc.h"
 #include "graph/parallel/distributed_id.h"

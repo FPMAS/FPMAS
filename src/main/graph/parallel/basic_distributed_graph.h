@@ -12,6 +12,7 @@
 	template<typename, template<typename> class> class DistNodeImpl,\
 	template<typename, template<typename> class> class DistArcImpl,\
 	typename MpiCommunicatorImpl,\
+	template<typename> class LocationManagerImpl,\
 	template<typename> class LoadBalancingImpl
 
 #define DIST_GRAPH_PARAMS_SPEC\
@@ -20,6 +21,7 @@
 	DistNodeImpl,\
 	DistArcImpl,\
 	MpiCommunicatorImpl,\
+	LocationManagerImpl,\
 	LoadBalancingImpl
 
 namespace FPMAS::graph::parallel {
@@ -72,18 +74,21 @@ namespace FPMAS::graph::parallel {
 			MpiCommunicatorImpl mpiCommunicator;
 			SyncMode syncMode;
 			sync_linker_type syncLinker;
+			LocationManagerImpl<node_type> locationManager;
 			LoadBalancingImpl<node_type> loadBalancing;
 
 			node_map localNodes;
+			node_map distantNodes;
 
 			void setLocal(node_type*);
 			void setDistant(node_type*);
 			void clear(node_type*);
+
 			node_type* importNode(const node_type& node);
 			arc_type* importArc(const arc_type& arc);
 
 			public:
-			BasicDistributedGraph() {
+			BasicDistributedGraph() : locationManager(mpiCommunicator) {
 				// Initialization in the body of this (derived) class of the
 				// (base) fields nodeId and arcId, to ensure that
 				// mpiCommunicator is initialized (as a field of this derived
@@ -103,6 +108,8 @@ namespace FPMAS::graph::parallel {
 
 			const sync_linker_type& getSyncLinker() const {return syncLinker;}
 
+			const LocationManagerImpl<node_type>& getLocationManager() const {return locationManager;}
+
 			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
 				return loadBalancing;
 			};
@@ -111,6 +118,7 @@ namespace FPMAS::graph::parallel {
 			void unlink(arc_type*) override;
 
 			const node_map& getLocalNodes() const override { return localNodes;};
+			const node_map& getDistantNodes() const override { return distantNodes;};
 
 			void balance() override {
 				this->distribute(loadBalancing.balance(this->getNodes(), {}));
@@ -127,6 +135,7 @@ namespace FPMAS::graph::parallel {
 						);
 				setLocal(node);
 				this->insert(node);
+				this->locationManager.addManagedNode(node, mpiCommunicator.getRank());
 				return node;
 			}
 
@@ -216,7 +225,7 @@ namespace FPMAS::graph::parallel {
 			} else {
 				arcLocationState = LocationState::DISTANT;
 				src = new node_type(srcId);
-				src->setState(LocationState::DISTANT);
+				setDistant(src);
 				this->insert(src);
 			}
 			if(this->getNodes().count(tgtId) > 0) {
@@ -227,7 +236,7 @@ namespace FPMAS::graph::parallel {
 			} else {
 				arcLocationState = LocationState::DISTANT;
 				tgt = new node_type(tgtId);
-				tgt->setState(LocationState::DISTANT);
+				setDistant(tgt);
 				this->insert(tgt);
 			}
 			// TODO : ghosts creation part is nice, but this is not
@@ -284,9 +293,11 @@ namespace FPMAS::graph::parallel {
 				api::communication::migrate(
 						mpiCommunicator, arcExportMap);
 
+			node_map importedNodes;
 			for(auto& importNodeListFromProc : nodeImport) {
 				for(auto& importedNode : importNodeListFromProc.second) {
-					this->importNode(importedNode);
+					auto node = this->importNode(importedNode);
+					importedNodes.insert({node->getId(), node});
 				}
 			}
 			for(auto& importArcListFromProc : arcImport) {
@@ -305,8 +316,14 @@ namespace FPMAS::graph::parallel {
 				setDistant(node);
 			}
 			for(auto node : exportedNodes) {
+				FPMAS_LOGD(
+					mpiCommunicator.getRank(),
+					"DIST_GRAPH", "Clear node %s",
+					ID_C_STR(node->getId())
+					);
 				clear(node);
 			}
+			locationManager.updateLocations(importedNodes, distantNodes);
 			syncMode.synchronize();
 		}
 
@@ -315,6 +332,7 @@ namespace FPMAS::graph::parallel {
 		::setLocal(node_type* node) {
 			node->setState(LocationState::LOCAL);
 			this->localNodes.insert({node->getId(), node});
+			this->distantNodes.erase(node->getId());
 		}
 
 	template<DIST_GRAPH_PARAMS>
@@ -322,6 +340,7 @@ namespace FPMAS::graph::parallel {
 		::setDistant(node_type* node) {
 			node->setState(LocationState::DISTANT);
 			this->localNodes.erase(node->getId());
+			this->distantNodes.insert({node->getId(), node});
 			for(auto arc : node->getOutgoingArcs()) {
 				arc->setState(LocationState::DISTANT);
 			}
@@ -334,17 +353,42 @@ namespace FPMAS::graph::parallel {
 	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::clear(node_type* node) {
 			bool eraseNode = true;
-			for(auto neighbor : node->inNeighbors()) {
-				if(neighbor->state()==LocationState::LOCAL) {
-					return;
+			assert(node->state() == LocationState::DISTANT);
+			std::set<arc_type*> obsoleteArcs;
+			for(auto arc : node->getIncomingArcs()) {
+				if(arc->getSourceNode()->state()==LocationState::LOCAL) {
+					eraseNode = false;
+				} else {
+					obsoleteArcs.insert(arc);
 				}
 			}
-			for(auto neighbor : node->outNeighbors()) {
-				if(neighbor->state()==LocationState::LOCAL) {
-					return;
+			for(auto arc : node->getOutgoingArcs()) {
+				if(arc->getTargetNode()->state()==LocationState::LOCAL) {
+					eraseNode = false;
+				} else {
+					obsoleteArcs.insert(arc);
 				}
 			}
-			this->erase(node);
+			if(eraseNode) {
+				FPMAS_LOGD(
+					mpiCommunicator.getRank(),
+					"DIST_GRAPH", "Erasing obsolete node %s",
+					ID_C_STR(node->getId())
+					);
+				this->distantNodes.erase(node->getId());
+				this->erase(node);
+			} else {
+				for(auto arc : obsoleteArcs) {
+					FPMAS_LOGD(
+						mpiCommunicator.getRank(),
+						"DIST_GRAPH", "Erasing obsolete arc %s (%p) (from %s to %s)",
+						ID_C_STR(node->getId()), arc,
+						ID_C_STR(arc->getSourceNode()->getId()),
+						ID_C_STR(arc->getTargetNode()->getId())
+						);
+					this->erase(arc);
+				}
+			}
 		}
 }
 #endif

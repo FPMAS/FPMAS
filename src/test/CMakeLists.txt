@@ -19,6 +19,7 @@ set(SOURCES
 # Graph
 set(SOURCES
 	${SOURCES}
+	graph/base/basic_node.cpp
 	graph/base/basic_graph.cpp
 	graph/base/graph.cpp)
 
@@ -53,6 +54,7 @@ set(SOURCES
 set(SOURCES
 	${SOURCES}
 	graph/parallel/basic_distributed_graph.cpp
+	graph/parallel/location_manager.cpp
 	graph/parallel/distributed_graph.cpp
 	graph/parallel/distributed_multi_graph.cpp
 	graph/parallel/distributed_graph_edge_cases.cpp

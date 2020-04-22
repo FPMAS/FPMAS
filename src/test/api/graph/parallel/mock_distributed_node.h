@@ -7,6 +7,8 @@
 #include "api/graph/parallel/distributed_node.h"
 #include "mock_distributed_arc.h"
 
+using ::testing::_;
+
 using FPMAS::api::graph::parallel::LocationState;
 
 template<typename T, template<typename> class Mutex>
@@ -25,35 +27,45 @@ class MockDistributedNode :
 
 		private:
 		LocationState _state = LocationState::LOCAL;
+		int _location;
 
 		public:
 		using typename node_base::arc_type;
 		MockDistributedNode() {
+			setUpLocationAccess();
+			setUpStateAccess();
 		}
 		MockDistributedNode(const MockDistributedNode& otherMock):
 			MockDistributedNode(
 					otherMock.getId(), otherMock.data(),
 					otherMock.getWeight()
 					){
+				setUpLocationAccess();
+				setUpStateAccess();
 				this->anyExpectations();
 			}
 		MockDistributedNode<int, Mutex>& operator=(const MockDistributedNode<int, Mutex>& other) {
+			setUpLocationAccess();
+			setUpStateAccess();
 			return *this;
 		}
 
 		MockDistributedNode(const DistributedId& id)
 			: node_base(id) {
+				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
 			}
-		
+
 		MockDistributedNode(const DistributedId& id, const T& data)
 			: node_base(id, std::move(data)) {
+				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
 			}
 		MockDistributedNode(const DistributedId& id, const T& data, float weight)
 			: node_base(id, std::move(data), weight) {
+				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
 			}
@@ -65,8 +77,8 @@ class MockDistributedNode :
 		MOCK_METHOD(LocationState, state, (), (const, override));
 
 		MOCK_METHOD(
-			FPMAS::api::graph::parallel::synchro::Mutex<T>&, mutex, (), (override)
-			);
+				FPMAS::api::graph::parallel::synchro::Mutex<T>&, mutex, (), (override)
+				);
 
 		private:
 		void setUpStateAccess() {
@@ -75,16 +87,26 @@ class MockDistributedNode :
 			ON_CALL(*this, state)
 				.WillByDefault(ReturnPointee(&_state));
 		}
+		void setUpLocationAccess() {
+			ON_CALL(*this, setLocation)
+				.WillByDefault(SaveArg<0>(&_location));
+			ON_CALL(*this, getLocation)
+				.WillByDefault(ReturnPointee(&_location));
+		}
 		void anyExpectations() {
 			EXPECT_CALL(*this, linkIn).Times(AnyNumber());
 			EXPECT_CALL(*this, linkOut).Times(AnyNumber());
 			EXPECT_CALL(*this, data()).Times(AnyNumber());
 			EXPECT_CALL(Const(*this), data()).Times(AnyNumber());
-			EXPECT_CALL(*this, getWeight()).Times(AnyNumber());
+			EXPECT_CALL(*this, getWeight).Times(AnyNumber());
 			EXPECT_CALL(*this, setState).Times(AnyNumber());
-			EXPECT_CALL(*this, state()).Times(AnyNumber());
+			EXPECT_CALL(*this, state).Times(AnyNumber());
 			EXPECT_CALL(*this, getIncomingArcs()).Times(AnyNumber());
+			EXPECT_CALL(*this, getIncomingArcs(_)).Times(AnyNumber());
 			EXPECT_CALL(*this, getOutgoingArcs()).Times(AnyNumber());
+			EXPECT_CALL(*this, getOutgoingArcs(_)).Times(AnyNumber());
+			EXPECT_CALL(*this, setLocation).Times(AnyNumber());
+			EXPECT_CALL(*this, getLocation).Times(AnyNumber());
 		}
 
 	};

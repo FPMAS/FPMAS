@@ -1,6 +1,8 @@
 #ifndef BASIC_NODE_H
 #define BASIC_NODE_H
 
+#include "utils/log.h"
+#include "utils/macros.h"
 #include "api/graph/base/node.h"
 
 namespace FPMAS::graph::base {
@@ -87,24 +89,50 @@ namespace FPMAS::graph::base {
 	
 	template<typename T, typename IdType, typename ArcType>
 		void BasicNode<T, IdType, ArcType>::linkIn(arc_type* arc) {
+			FPMAS_LOGV(
+				-1, "NODE", "%s : Linking in arc %s (%p)",
+				ID_C_STR(id),
+				ID_C_STR(arc->getId()), arc
+				);
 			incomingArcs[arc->getLayer()].push_back(arc);
 		}
 
 	template<typename T, typename IdType, typename ArcType>
 		void BasicNode<T, IdType, ArcType>::linkOut(arc_type* arc) {
+			FPMAS_LOGV(
+				-1, "NODE", "%s : Linking out arc %s (%p)",
+				ID_C_STR(id),
+				ID_C_STR(arc->getId()), arc
+				);
 			outgoingArcs[arc->getLayer()].push_back(arc);
 		}
 
 	template<typename T, typename IdType, typename ArcType>
 		void BasicNode<T, IdType, ArcType>::unlinkIn(arc_type *arc) {
+			FPMAS_LOGV(
+				-1, "NODE", "%s : Unlink in arc %s (%p) (from %s)",
+				ID_C_STR(id), ID_C_STR(arc->getId()), arc,
+				ID_C_STR(arc->getSourceNode()->getId())
+				);
 			auto& arcs = incomingArcs.at(arc->getLayer());
-			std::remove(arcs.begin(), arcs.end(), arc);
+			FPMAS_LOGV(-1, "NODE", "%s : Current in arcs size on layer %i: %lu",
+					ID_C_STR(id), arc->getLayer(), arcs.size());
+			arcs.erase(std::remove(arcs.begin(), arcs.end(), arc));
+			FPMAS_LOGV(-1, "NODE", "Done.%i", arcs.size());
 		}
 
 	template<typename T, typename IdType, typename ArcType>
 		void BasicNode<T, IdType, ArcType>::unlinkOut(arc_type *arc) {
+			FPMAS_LOGV(
+				-1, "NODE", "%s : Unlink out arc %s (%p) (to %s)",
+				ID_C_STR(id), ID_C_STR(arc->getId()), arc,
+				ID_C_STR(arc->getTargetNode()->getId())
+				);
 			auto& arcs = outgoingArcs.at(arc->getLayer());
-			std::remove(arcs.begin(), arcs.end(), arc);
+			FPMAS_LOGV(-1, "NODE", "%s : Current out arcs size on layer %i : %lu",
+					ID_C_STR(id), arc->getLayer(), arcs.size());
+			arcs.erase(std::remove(arcs.begin(), arcs.end(), arc));
+			FPMAS_LOGV(-1, "NODE", "Done.%i", arcs.size());
 		}
 }
 #endif

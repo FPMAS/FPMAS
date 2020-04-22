@@ -1,5 +1,5 @@
-#ifndef DISTRIBUTED_NODE_IMPL_H
-#define DISTRIBUTED_NODE_IMPL_H
+#ifndef DISTRIBUTED_ARC_IMPL_H
+#define DISTRIBUTED_ARC_IMPL_H
 
 #include "api/graph/parallel/distributed_arc.h"
 #include "graph/base/basic_arc.h"

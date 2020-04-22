@@ -1,5 +1,5 @@
-#ifndef DISTRIBUTED_NODE_H
-#define DISTRIBUTED_NODE_H
+#ifndef DISTRIBUTED_NODE_IMPL_H
+#define DISTRIBUTED_NODE_IMPL_H
 
 #include "api/graph/parallel/distributed_node.h"
 #include "api/graph/parallel/synchro/mutex.h"

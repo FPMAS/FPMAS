@@ -9,7 +9,7 @@ namespace FPMAS::api::graph::parallel {
 		DISTANT
 	};
 
-	std::ostream& operator<<(std::ostream& os, const LocationState& loc) {
+	inline std::ostream& operator<<(std::ostream& os, const LocationState& loc) {
 		switch(loc) {
 			case LOCAL:
 				os << "LOCAL";

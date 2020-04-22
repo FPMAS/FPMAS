@@ -106,13 +106,21 @@ namespace FPMAS::graph::base {
 
 	template<GRAPH_PARAMS>
 		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::erase(arc_base* arc) {
+			auto id = arc->getId();
+			FPMAS_LOGD(
+					-1, "GRAPH", "Erase arc %s (%p) (from %s to %s)",
+					ID_C_STR(id), arc,
+					ID_C_STR(arc->getSourceNode()->getId()),
+					ID_C_STR(arc->getTargetNode()->getId())
+					);
 			// Removes the incoming arcs from the incoming/outgoing
 			// arc lists of target/source nodes.
 			arc->getSourceNode()->unlinkOut(arc);
 			arc->getTargetNode()->unlinkIn(arc);
 
-			this->arcs.erase(arc->getId());
+			this->arcs.erase(id);
 			delete arc;
+			FPMAS_LOGD(-1, "GRAPH", "Arc %s removed.", ID_C_STR(id));
 		}
 
 	template<GRAPH_PARAMS>

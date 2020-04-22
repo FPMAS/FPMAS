@@ -1,5 +1,5 @@
-#ifndef RESOURCE_HANDLER_H
-#define RESOURCE_HANDLER_H
+#ifndef RESOURCE_HANDLER_API_H
+#define RESOURCE_HANDLER_API_H
 
 #include <string>
 #include "graph/parallel/distributed_id.h"

@@ -25,6 +25,32 @@ TEST(BasicGraphTest, buildDefaultNode) {
 		ASSERT_EQ(graph.getNode(node->getId()), node);
 	}
 }
+
+class BasicGraphEraseArcTest : public ::testing::Test {
+	protected:
+		MockGraphBase<MockNode<MockData, BasicId>, MockArc<MockData, BasicId>> graph;
+		BasicId id;
+		MockNode<MockData, BasicId>* src = new MockNode<MockData, BasicId>(++id);;
+		MockNode<MockData, BasicId>* tgt = new MockNode<MockData, BasicId>(++id);;
+		MockArc<MockData, BasicId>* arc = new MockArc<MockData, BasicId>(++id, 2);
+
+		void SetUp() override {
+			graph.insert(src);
+			graph.insert(tgt);
+			arc->src = src;
+			arc->tgt = tgt;
+			graph.insert(arc);
+		}
+};
+
+TEST_F(BasicGraphEraseArcTest, erase) {
+	EXPECT_CALL(*src, unlinkOut(arc));
+	EXPECT_CALL(*src, unlinkIn).Times(0);
+	EXPECT_CALL(*tgt, unlinkOut).Times(0);
+	EXPECT_CALL(*tgt, unlinkIn(arc));
+
+	graph.erase(arc);
+}
 /*
  *
  *TEST(BasicGraphTest, buildDataNode) {

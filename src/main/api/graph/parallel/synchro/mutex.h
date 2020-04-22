@@ -1,5 +1,5 @@
-#ifndef MUTEX_H
-#define MUTEX_H
+#ifndef MUTEX_API_H
+#define MUTEX_API_H
 
 namespace FPMAS::api::graph::parallel::synchro {
 	template<typename T>

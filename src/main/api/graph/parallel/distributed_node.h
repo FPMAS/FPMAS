@@ -13,7 +13,6 @@ namespace FPMAS::api::graph::parallel {
 		: public virtual FPMAS::api::graph::base::Node<T, DistributedId, DistArcImpl> {
 		typedef FPMAS::api::graph::base::Node<T, DistributedId, DistArcImpl> node_base;
 		public:
-			//using typename node_base::arc_type;
 			virtual int getLocation() const = 0;
 			virtual void setLocation(int) = 0;
 
