@@ -6,6 +6,8 @@
 
 using ::testing::UnorderedElementsAre;
 using ::testing::ElementsAre;
+using ::testing::IsEmpty;
+using ::testing::Key;
 using ::testing::Pair;
 using ::testing::AnyOf;
 
@@ -14,10 +16,74 @@ using FPMAS::graph::parallel::LocationManager;
 class LocationManagerTest : public ::testing::Test {
 	protected:
 		typedef MockDistributedNode<int, MockMutex> node_type;
-		
+
 		typedef typename
 			LocationManager<MockDistributedNode<int, MockMutex>>::node_map
 			node_map;
+		MockMpiCommunicator<2, 5> comm;
+
+		LocationManager<MockDistributedNode<int, MockMutex>>
+			locationManager {comm};
+};
+
+TEST_F(LocationManagerTest, setLocal) {
+	node_type mockNode {DistributedId(5, 4)};
+	EXPECT_CALL(mockNode, setState(LocationState::LOCAL));
+	locationManager.setLocal(&mockNode);
+
+	ASSERT_THAT(
+		locationManager.getLocalNodes(),
+		ElementsAre(Key(DistributedId(5, 4)))
+	);
+}
+
+TEST_F(LocationManagerTest, setDistant) {
+	node_type mockNode {DistributedId(5, 4)};
+	EXPECT_CALL(mockNode, setState(LocationState::DISTANT));
+	locationManager.setDistant(&mockNode);
+
+	ASSERT_THAT(
+		locationManager.getDistantNodes(),
+		ElementsAre(Key(DistributedId(5, 4)))
+	);
+}
+
+TEST_F(LocationManagerTest, removeLocal) {
+	node_type mockNode {DistributedId(5, 4)};
+	EXPECT_CALL(mockNode, setState);
+	locationManager.setLocal(&mockNode);
+
+	locationManager.remove(&mockNode);
+	ASSERT_THAT(locationManager.getLocalNodes(), IsEmpty());
+}
+
+TEST_F(LocationManagerTest, removeDistant) {
+	node_type mockNode {DistributedId(5, 4)};
+	EXPECT_CALL(mockNode, setState);
+	locationManager.setDistant(&mockNode);
+
+	locationManager.remove(&mockNode);
+	ASSERT_THAT(locationManager.getDistantNodes(), IsEmpty());
+}
+
+TEST_F(LocationManagerTest, addManagedNode) {
+	node_type mockNode {DistributedId(2, 0)};
+	locationManager.addManagedNode(&mockNode, 2);
+	ASSERT_THAT(locationManager.getCurrentLocations(), ElementsAre(
+				Pair(DistributedId(2, 0), 2)
+				));
+}
+
+TEST_F(LocationManagerTest, removeManagedNode) {
+	node_type mockNode {DistributedId(2, 0)};
+	locationManager.addManagedNode(&mockNode, 2);
+
+	locationManager.removeManagedNode(&mockNode);
+	ASSERT_THAT(locationManager.getCurrentLocations(), IsEmpty());
+}
+
+class LocationManagerUpdateTest : public LocationManagerTest {
+	protected:
 		typedef
 		std::unordered_map<int, std::vector<DistributedId>>
 		node_id_map;
@@ -26,15 +92,11 @@ class LocationManagerTest : public ::testing::Test {
 		std::unordered_map<int, std::pair<DistributedId, int>>
 		location_map;
 
-		MockMpiCommunicator<2, 5> comm;
 		node_type* nodes[3] = {
 			new node_type(DistributedId(2, 0)),
 			new node_type(DistributedId(2, 1)),
 			new node_type(DistributedId(2, 2))
 		};
-
-		LocationManager<MockDistributedNode<int, MockMutex>>
-			locationManager {comm};
 
 
 		node_map local {
@@ -142,8 +204,11 @@ class LocationManagerTest : public ::testing::Test {
 		}
 };
 
-TEST_F(LocationManagerTest, updateLocations) {
-	locationManager.updateLocations(local, distant);
+TEST_F(LocationManagerUpdateTest, updateLocations) {
+	for(auto node : distant) {
+		locationManager.setDistant(node.second);
+	}
+	locationManager.updateLocations(local);
 
 	auto locationMap = locationManager.getCurrentLocations();
 	ASSERT_EQ(locationMap.at(DistributedId(2, 0)), 1);

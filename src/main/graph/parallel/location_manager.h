@@ -3,20 +3,26 @@
 
 #include "api/communication/communication.h"
 #include "api/graph/parallel/location_manager.h"
+#include "api/graph/parallel/location_state.h"
 
 namespace FPMAS::graph::parallel {
+
+	using FPMAS::api::graph::parallel::LocationState;
 
 	template<typename DistNode>
 		class LocationManager
 		: public FPMAS::api::graph::parallel::LocationManager<DistNode> {
+			public:
+				using typename FPMAS::api::graph::parallel::LocationManager<DistNode>::node_map;
 			private:
 				typedef FPMAS::api::communication::MpiCommunicator MpiComm;
 				MpiComm& communicator;
 				std::unordered_map<DistributedId, int> managedNodesLocations;
 
-			public:
-				using typename FPMAS::api::graph::parallel::LocationManager<DistNode>::node_map;
+				node_map localNodes;
+				node_map distantNodes;
 
+			public:
 				LocationManager(MpiComm& communicator)
 					: communicator(communicator) {}
 
@@ -28,10 +34,14 @@ namespace FPMAS::graph::parallel {
 					this->managedNodesLocations.erase(node->getId());
 				}
 
-				void updateLocations(
-						node_map localNodes,
-						node_map distantNodes
-						) override;
+				void setLocal(DistNode*) override;
+				void setDistant(DistNode*) override;
+				void remove(DistNode*) override;
+
+				const node_map& getLocalNodes() const override {return localNodes;}
+				const node_map& getDistantNodes() const override {return distantNodes;}
+
+				void updateLocations(const node_map& localNodesToUpdate) override;
 
 				const std::unordered_map<DistributedId, int>& getCurrentLocations() const {
 					return managedNodesLocations;
@@ -39,9 +49,40 @@ namespace FPMAS::graph::parallel {
 		};
 
 	template<typename DistNode>
+	void LocationManager<DistNode>::setLocal(DistNode* node) {
+			node->setState(LocationState::LOCAL);
+			this->localNodes.insert({node->getId(), node});
+			this->distantNodes.erase(node->getId());
+		}
+
+	template<typename DistNode>
+	void LocationManager<DistNode>::setDistant(DistNode* node) {
+			node->setState(LocationState::DISTANT);
+			this->localNodes.erase(node->getId());
+			this->distantNodes.insert({node->getId(), node});
+			for(auto arc : node->getOutgoingArcs()) {
+				arc->setState(LocationState::DISTANT);
+			}
+			for(auto arc : node->getIncomingArcs()) {
+				arc->setState(LocationState::DISTANT);
+			}
+		}
+
+	template<typename DistNode>
+	void LocationManager<DistNode>::remove(DistNode* node) {
+		switch(node->state()) {
+			case LocationState::LOCAL:
+				localNodes.erase(node->getId());
+				break;
+			case LocationState::DISTANT:
+				distantNodes.erase(node->getId());
+				break;
+		}
+	}
+
+	template<typename DistNode>
 		void LocationManager<DistNode>::updateLocations(
-				node_map localNodes,
-				node_map distantNodes
+				const node_map& localNodesToUpdate
 				) {
 			// Useful types
 			typedef 
@@ -57,7 +98,7 @@ namespace FPMAS::graph::parallel {
 			 * locations of this origin's nodes
 			 */
 			DistributedIdMap exportedUpdatedLocations;
-			for(auto node : localNodes) {
+			for(auto node : localNodesToUpdate) {
 				// Updates local node field
 				node.second->setLocation(communicator.getRank());
 

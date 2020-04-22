@@ -77,11 +77,6 @@ namespace FPMAS::graph::parallel {
 			LocationManagerImpl<node_type> locationManager;
 			LoadBalancingImpl<node_type> loadBalancing;
 
-			node_map localNodes;
-			node_map distantNodes;
-
-			void setLocal(node_type*);
-			void setDistant(node_type*);
 			void clear(node_type*);
 
 			node_type* importNode(const node_type& node);
@@ -117,9 +112,6 @@ namespace FPMAS::graph::parallel {
 			void removeNode(node_type*) override {};
 			void unlink(arc_type*) override;
 
-			const node_map& getLocalNodes() const override { return localNodes;};
-			const node_map& getDistantNodes() const override { return distantNodes;};
-
 			void balance() override {
 				this->distribute(loadBalancing.balance(this->getNodes(), {}));
 			};
@@ -133,9 +125,9 @@ namespace FPMAS::graph::parallel {
 						this->nodeId++,
 						std::forward<Args>(args)...
 						);
-				setLocal(node);
 				this->insert(node);
-				this->locationManager.addManagedNode(node, mpiCommunicator.getRank());
+				locationManager.setLocal(node);
+				locationManager.addManagedNode(node, mpiCommunicator.getRank());
 				return node;
 			}
 
@@ -185,6 +177,7 @@ namespace FPMAS::graph::parallel {
 
 		if(arc->state() == LocationState::DISTANT) {
 			syncLinker.unlink(arc);
+			// TODO : src and tgt might be cleared
 		}
 		this->erase(arc);
 
@@ -198,12 +191,12 @@ namespace FPMAS::graph::parallel {
 			const node_type& node) {
 		if(this->getNodes().count(node.getId())==0) {
 			auto nodeCopy = new node_type(node);
-			setLocal(nodeCopy);
 			this->insert(nodeCopy);
+			locationManager.setLocal(nodeCopy);
 			return nodeCopy;
 		}
 		auto localNode = this->getNode(node.getId());
-		setLocal(localNode);
+		locationManager.setLocal(localNode);
 		return localNode;
 	}
 
@@ -225,8 +218,8 @@ namespace FPMAS::graph::parallel {
 			} else {
 				arcLocationState = LocationState::DISTANT;
 				src = new node_type(srcId);
-				setDistant(src);
 				this->insert(src);
+				locationManager.setDistant(src);
 			}
 			if(this->getNodes().count(tgtId) > 0) {
 				tgt = this->getNode(tgtId);
@@ -236,8 +229,8 @@ namespace FPMAS::graph::parallel {
 			} else {
 				arcLocationState = LocationState::DISTANT;
 				tgt = new node_type(tgtId);
-				setDistant(tgt);
 				this->insert(tgt);
+				locationManager.setDistant(tgt);
 			}
 			// TODO : ghosts creation part is nice, but this is not
 			// because it can't adapt to any DistArcImpl type, using a generic
@@ -313,7 +306,7 @@ namespace FPMAS::graph::parallel {
 			}
 
 			for(auto node : exportedNodes) {
-				setDistant(node);
+				locationManager.setDistant(node);
 			}
 			for(auto node : exportedNodes) {
 				FPMAS_LOGD(
@@ -323,37 +316,14 @@ namespace FPMAS::graph::parallel {
 					);
 				clear(node);
 			}
-			locationManager.updateLocations(importedNodes, distantNodes);
+			locationManager.updateLocations(importedNodes);
 			syncMode.synchronize();
-		}
-
-	template<DIST_GRAPH_PARAMS>
-	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
-		::setLocal(node_type* node) {
-			node->setState(LocationState::LOCAL);
-			this->localNodes.insert({node->getId(), node});
-			this->distantNodes.erase(node->getId());
-		}
-
-	template<DIST_GRAPH_PARAMS>
-	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
-		::setDistant(node_type* node) {
-			node->setState(LocationState::DISTANT);
-			this->localNodes.erase(node->getId());
-			this->distantNodes.insert({node->getId(), node});
-			for(auto arc : node->getOutgoingArcs()) {
-				arc->setState(LocationState::DISTANT);
-			}
-			for(auto arc : node->getIncomingArcs()) {
-				arc->setState(LocationState::DISTANT);
-			}
 		}
 
 	template<DIST_GRAPH_PARAMS>
 	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::clear(node_type* node) {
 			bool eraseNode = true;
-			assert(node->state() == LocationState::DISTANT);
 			std::set<arc_type*> obsoleteArcs;
 			for(auto arc : node->getIncomingArcs()) {
 				if(arc->getSourceNode()->state()==LocationState::LOCAL) {
@@ -375,7 +345,7 @@ namespace FPMAS::graph::parallel {
 					"DIST_GRAPH", "Erasing obsolete node %s",
 					ID_C_STR(node->getId())
 					);
-				this->distantNodes.erase(node->getId());
+				locationManager.remove(node);
 				this->erase(node);
 			} else {
 				for(auto arc : obsoleteArcs) {

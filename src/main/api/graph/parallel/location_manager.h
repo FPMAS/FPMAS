@@ -12,12 +12,18 @@ namespace FPMAS::api::graph::parallel {
 			typedef 
 				std::unordered_map<DistributedId, DistNode*, FPMAS::api::graph::base::IdHash<DistributedId>>
 				node_map;
+
 			virtual void addManagedNode(DistNode*, int initialLocation) = 0;
 			virtual void removeManagedNode(DistNode*) = 0;
 
+			virtual const node_map& getLocalNodes() const = 0;
+			virtual const node_map& getDistantNodes() const = 0;
+			virtual void setLocal(DistNode* node) = 0;
+			virtual void setDistant(DistNode* node) = 0;
+			virtual void remove(DistNode* node) = 0;
+
 			virtual void updateLocations(
-				node_map localNodes,
-				node_map distantNodes
+				const node_map& localNodesToUpdate
 				) = 0;
 	};
 }
