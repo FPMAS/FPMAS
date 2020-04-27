@@ -1,3 +1,18 @@
+/*********/
+/* Index */
+/*********/
+/*
+ * # local_build_node
+ * # local_link
+ * # unlink_tests
+ * # import_node_tests
+ * # import_arc_tests
+ * # import_arc_with_missing_node_test
+ * # distribute_tests
+ * # distribute_test_with_arc
+ * # distribute_test_real_MPI
+ */
+
 #include "gtest/gtest.h"
 
 #include "api/communication/mock_communication.h"
@@ -18,33 +33,21 @@
 
 #include "utils/test.h"
 
-/*********/
-/* Index */
-/*********/
-/*
- * # local_build_node
- * # local_link
- * # unlink_tests
- * # import_node_tests
- * # import_arc_tests
- * # import_arc_with_missing_node_test
- * # distribute_tests
- * # distribute_test_with_arc
- * # distribute_test_real_MPI
- */
-using ::testing::IsEmpty;
-using ::testing::_;
 using ::testing::AnyOf;
-using ::testing::Eq;
 using ::testing::ElementsAre;
-using ::testing::UnorderedElementsAre;
+using ::testing::Eq;
 using ::testing::IsEmpty;
-using ::testing::SizeIs;
+using ::testing::IsEmpty;
 using ::testing::Key;
+using ::testing::NiceMock;
 using ::testing::Pair;
 using ::testing::Property;
-using ::testing::NiceMock;
+using ::testing::Ref;
 using ::testing::ReturnRefOfCopy;
+using ::testing::Sequence;
+using ::testing::SizeIs;
+using ::testing::UnorderedElementsAre;
+using ::testing::_;
 
 using FPMAS::graph::parallel::BasicDistributedGraph;
 using FPMAS::test::ASSERT_CONTAINS;
@@ -56,7 +59,7 @@ class BasicDistributedGraphTest : public ::testing::Test {
 	protected:
 		BasicDistributedGraph<
 			int,
-			MockSyncMode<MockMutex, MockSyncLinker>,
+			MockSyncMode<>,
 			MockDistributedNode,
 			MockDistributedArc,
 			MockMpiCommunicator<7, 10>,
@@ -282,7 +285,7 @@ TEST_F(BasicDistributedGraphUnlinkTest, local_src_distant_tgt) {
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 
 	EXPECT_CALL(
-		const_cast<MockSyncLinker<arc_type>&>(graph.getSyncLinker()),
+		(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
 		unlink(arc)
 		).Times(1);
 
@@ -296,7 +299,7 @@ TEST_F(BasicDistributedGraphUnlinkTest, distant_src_local_tgt) {
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 
 	EXPECT_CALL(
-		const_cast<MockSyncLinker<arc_type>&>(graph.getSyncLinker()),
+		(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
 		unlink(arc)
 		).Times(1);
 
@@ -317,7 +320,7 @@ class BasicDistributedGraphImportNodeTest : public ::testing::Test {
 	protected:
 		BasicDistributedGraph<
 			int,
-			MockSyncMode<MockMutex, MockSyncLinker>,
+			MockSyncMode<>,
 			MockDistributedNode,
 			MockDistributedArc,
 			MockMpiCommunicator<7, 10>,
@@ -349,7 +352,8 @@ class BasicDistributedGraphImportNodeTest : public ::testing::Test {
 					graph.getMpiCommunicator(), allToAll)
 				.WillOnce(Return(importedNodePack))
 				.WillOnce(Return(importedArcPack));
-			EXPECT_CALL(graph.getSyncMode(), synchronize).Times(1);
+			EXPECT_CALL(graph.getSyncLinker(), synchronize).Times(1);
+			EXPECT_CALL(graph.getDataSync(), synchronize).Times(1);
 			graph.distribute(partition);
 		}
 
@@ -677,9 +681,64 @@ class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
 			fakePartition[nodeIds[2]] = 1;
 			fakePartition[nodeIds[3]] = 0;
 			fakePartition[nodeIds[4]] = 0;
-			EXPECT_CALL(graph.getSyncMode(), synchronize);
+			EXPECT_CALL(graph.getSyncLinker(), synchronize);
+			EXPECT_CALL(graph.getDataSync(), synchronize);
 		}
 };
+
+/*
+ * Check the correct call order of the synchronization steps of the
+ * distribute() function.
+ * 1. Synchronize links (eventually migrates link/unlink operations)
+ * 2. Migrate node / arcs
+ * 3. Synchronize Node locations
+ * 4. Synchronize Node data
+ */
+TEST_F(BasicDistributedGraphTest, distribute_calls) {
+	Sequence s;
+	EXPECT_CALL(
+			(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
+			synchronize(Ref(graph))
+			)
+		.InSequence(s);
+
+	EXPECT_CALL(
+			graph.getMpiCommunicator(), allToAll)
+		.Times(AnyNumber())
+		.InSequence(s);
+	EXPECT_CALL(
+			(const_cast<MockLocationManager<node_type>&>(graph.getLocationManager())),
+			updateLocations(IsEmpty())
+			)
+		.InSequence(s);
+	EXPECT_CALL(
+			(const_cast<MockDataSync<node_type, arc_type>&>(graph.getDataSync())),
+			synchronize(Ref(graph))
+			)
+		.InSequence(s);
+
+	graph.distribute({});
+}
+
+/*
+ * Check the correct call order of the synchronization steps of the
+ * synchronize() function.
+ * 1. Synchronize links (eventually migrates link/unlink operations)
+ * 4. Synchronize Node data
+ */
+TEST_F(BasicDistributedGraphTest, synchronize_calls) {
+	Sequence s;
+	EXPECT_CALL(
+			(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
+			synchronize(Ref(graph)))
+		.InSequence(s);
+	EXPECT_CALL(
+			(const_cast<MockDataSync<node_type, arc_type>&>(graph.getDataSync())),
+			synchronize(Ref(graph)))
+		.InSequence(s);
+
+	graph.synchronize();
+}
 
 /*
  * Balance test.
@@ -865,7 +924,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 	protected:
 		BasicDistributedGraph<
 			int,
-			MockSyncMode<MockMutex, MockSyncLinker>,
+			MockSyncMode<>,
 			FPMAS::graph::parallel::DistributedNode,
 			FPMAS::graph::parallel::DistributedArc,
 			FPMAS::communication::MpiCommunicator,
@@ -897,7 +956,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 };
 
 TEST_F(Mpi_BasicDistributedGraphBalance, distribute_test) {
-	EXPECT_CALL(graph.getSyncMode(), synchronize);
+	EXPECT_CALL(graph.getSyncLinker(), synchronize);
 	graph.distribute(partition);
 
 	if(graph.getMpiCommunicator().getSize() == 1) {

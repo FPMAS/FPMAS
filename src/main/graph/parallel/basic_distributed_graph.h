@@ -64,12 +64,14 @@ namespace FPMAS::graph::parallel {
 			using typename dist_graph_base::layer_id_type;
 			using typename dist_graph_base::node_map;
 			using typename dist_graph_base::partition_type;
-			typedef typename SyncMode::template sync_linker<arc_type> sync_linker_type;
+			typedef typename SyncMode::template sync_linker<node_type, arc_type> sync_linker_type;
+			typedef typename SyncMode::template data_sync<node_type, arc_type> data_sync_type;
 
 			private:
 			MpiCommunicatorImpl mpiCommunicator;
 			SyncMode syncMode;
 			sync_linker_type syncLinker;
+			data_sync_type dataSync;
 			LocationManagerImpl<node_type> locationManager;
 			LoadBalancingImpl<node_type> loadBalancing;
 
@@ -99,6 +101,8 @@ namespace FPMAS::graph::parallel {
 
 			const sync_linker_type& getSyncLinker() const {return syncLinker;}
 
+			const data_sync_type& getDataSync() const {return dataSync;}
+
 			const LocationManagerImpl<node_type>& getLocationManager() const {return locationManager;}
 
 			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
@@ -114,7 +118,7 @@ namespace FPMAS::graph::parallel {
 
 			void distribute(partition_type partition) override;
 
-			void synchronize() override {};
+			void synchronize() override;
 
 			template<typename... Args> node_type* buildNode(Args... args) {
 				auto node = new node_type(
@@ -255,6 +259,9 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::distribute(partition_type partition) {
+
+			syncLinker.synchronize(*this);
+
 			// Builds node and arcs export maps
 			std::vector<node_type*> exportedNodes;
 			std::unordered_map<int, std::vector<node_type>> nodeExportMap;
@@ -314,7 +321,14 @@ namespace FPMAS::graph::parallel {
 				clear(node);
 			}
 			locationManager.updateLocations(importedNodes);
-			syncMode.synchronize();
+			dataSync.synchronize(*this);
+		}
+
+	template<DIST_GRAPH_PARAMS>
+	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+		::synchronize() {
+			syncLinker.synchronize(*this);
+			dataSync.synchronize(*this);
 		}
 
 	template<DIST_GRAPH_PARAMS>
