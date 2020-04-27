@@ -54,4 +54,24 @@ class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
 
 		MOCK_METHOD((std::unordered_map<int, std::string>), allToAll, ((std::unordered_map<int, std::string>)), (override));
 };
+
+template<typename T>
+class MockMpi : public FPMAS::api::communication::Mpi<T> {
+	public:
+		MockMpi(FPMAS::api::communication::MpiCommunicator&) {
+			EXPECT_CALL(*this, migrate).Times(AnyNumber());
+		}
+
+		MOCK_METHOD(
+			(std::unordered_map<int, std::vector<T>>), 
+			migrate,
+			((std::unordered_map<int, std::vector<T>>)),
+			(override)
+			);
+
+};
+
+template<int RANK, int SIZE>
+using MockMpiSetUp = FPMAS::api::communication::MpiSetUp<MockMpiCommunicator<RANK, SIZE>, MockMpi>;
+
 #endif

@@ -2,7 +2,6 @@
 #define UNLINK_MIGRATION_H
 
 #include "communication/communication.h"
-#include "communication/migrate.h"
 #include "../../distributed_graph_base.h"
 
 namespace FPMAS::graph::parallel {
@@ -54,9 +53,8 @@ namespace FPMAS::graph::parallel {
 			 *UnlinkPostMigrate<T>
 			 *    >(exportMap, dg.getMpiCommunicator(), dg);
 			 */
-			auto importMap = FPMAS::communication::migrate<
-				DistributedId
-			>(exportMap, dg.getMpiCommunicator());
+			auto importMap = communication::Mpi<DistributedId>(dg.getMpiCommunicator())
+				.migrate(exportMap);
 			for(auto item : importMap) {
 				for(DistributedId arcId : item.second) {
 					FPMAS_LOGD(

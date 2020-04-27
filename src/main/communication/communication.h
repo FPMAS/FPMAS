@@ -128,6 +128,35 @@ namespace FPMAS {
 				~MpiCommunicator();
 
 		};
+
+		template<typename T>
+			class Mpi : public api::communication::Mpi<T> {
+				private:
+					api::communication::MpiCommunicator& comm;
+				public:
+					Mpi(api::communication::MpiCommunicator& comm) : comm(comm) {}
+					std::unordered_map<int, std::vector<T>>
+						migrate(std::unordered_map<int, std::vector<T>> exportMap);
+			};
+
+		template<typename T> std::unordered_map<int, std::vector<T>>
+			Mpi<T>::migrate(std::unordered_map<int, std::vector<T>> exportMap) {
+				// Pack
+				std::unordered_map<int, std::string> data_pack;
+				for(auto item : exportMap) {
+					data_pack[item.first] = nlohmann::json(item.second).dump();
+				}
+
+				std::unordered_map<int, std::string> data_unpack
+					= comm.allToAll(data_pack);
+
+				std::unordered_map<int, std::vector<T>> importMap;
+				for(auto item : data_unpack) {
+					importMap[item.first] = nlohmann::json::parse(data_unpack[item.first])
+						.get<std::vector<T>>();
+				}
+				return importMap;
+			}
 	}
 }
 #endif

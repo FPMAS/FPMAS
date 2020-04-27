@@ -13,7 +13,6 @@ set(SOURCES
 	communication/communication.cpp
 	communication/request_handler.cpp
 	communication/readers_writers.cpp
-	communication/migrate.cpp
 	)
 
 # Graph

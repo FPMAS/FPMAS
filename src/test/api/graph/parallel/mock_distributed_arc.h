@@ -47,43 +47,43 @@ class MockDistributedArc :
 		}
 
 	// Used internally by nlohmann json
-	MockDistributedArc<int, Mutex>& operator=(const MockDistributedArc<int, Mutex>& other) {
-		// Copy saved fields
-		this->id = other.id;
-		this->src = other.src;
-		this->tgt = other.tgt;
-		this->_state = other._state;
-		return *this;
-	}
+	/*
+	 *MockDistributedArc<int, Mutex>& operator=(const MockDistributedArc<int, Mutex>& other) {
+	 *    // Copy saved fields
+	 *    this->id = other.id;
+	 *    this->src = other.src;
+	 *    this->tgt = other.tgt;
+	 *    this->_state = other._state;
+	 *    return *this;
+	 *}
+	 */
 
 	MockDistributedArc(
 			const DistributedId& id, layer_id_type layer)
 		: arc_base(id, layer) {
-			setUpStateAccess();
-			this->anyExpectations();
+			setUpGetters();
 		}
 	MockDistributedArc(
 			const DistributedId& id,
 			layer_id_type layer, float weight)
 		: arc_base(id, layer, weight) {
-			setUpStateAccess();
-			this->anyExpectations();
+			setUpGetters();
 		}
 
 	MOCK_METHOD(void, setState, (LocationState), (override));
 	MOCK_METHOD(LocationState, state, (), (const, override));
 
+	bool operator==(const MockDistributedArc& other) const {
+		return this->id == other.id;
+	}
+
 	private:
-	void setUpStateAccess() {
+	void setUpGetters() {
 		EXPECT_CALL(*this, setState)
 			.Times(AnyNumber())
 			.WillRepeatedly(SaveArg<0>(&_state));
 		ON_CALL(*this, state)
 			.WillByDefault(ReturnPointee(&_state));
-	}
-	void anyExpectations() {
-		EXPECT_CALL(*this, getWeight()).Times(AnyNumber());
-		EXPECT_CALL(*this, getLayer()).Times(AnyNumber());
 		EXPECT_CALL(*this, state()).Times(AnyNumber());
 	}
 };

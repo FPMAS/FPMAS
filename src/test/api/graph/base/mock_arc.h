@@ -38,8 +38,43 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 		IdType id;
 		const node_type* src;
 		const node_type* tgt;
+		LayerId layer;
+		float weight;
 
 		AbstractMockArc() {
+			setUpGetters();
+		}
+		AbstractMockArc(IdType id, LayerId layer) : id(id), layer(layer) {
+			setUpGetters();
+		}
+		AbstractMockArc(IdType id, LayerId layer, float weight)
+			: id(id), layer(layer), weight(weight) {
+			setUpGetters();
+		}
+
+		MOCK_METHOD(id_type, getId, (), (const, override));
+		MOCK_METHOD(LayerId, getLayer, (), (const, override));
+
+		MOCK_METHOD(float, getWeight, (), (const));
+		MOCK_METHOD(void, setWeight, (float), (override));
+
+		MOCK_METHOD(void, setSourceNode, (node_type* const), (override));
+		MOCK_METHOD(node_type* const, getSourceNode, (), (const, override));
+
+		MOCK_METHOD(void, setTargetNode, (node_type* const), (override));
+		MOCK_METHOD(node_type* const, getTargetNode, (), (const, override));
+
+	private:
+		void setUpGetters() {
+			ON_CALL(*this, getId).WillByDefault(ReturnPointee(&id));
+			EXPECT_CALL(*this, getId).Times(AnyNumber());
+
+			ON_CALL(*this, getLayer).WillByDefault(ReturnPointee(&layer));
+			EXPECT_CALL(*this, getLayer).Times(AnyNumber());
+
+			ON_CALL(*this, getWeight).WillByDefault(ReturnPointee(&weight));
+			EXPECT_CALL(*this, getWeight).Times(AnyNumber());
+
 			EXPECT_CALL(*this, setSourceNode)
 				.Times(AnyNumber())
 				// Saves to src
@@ -57,30 +92,8 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 			EXPECT_CALL(*this, getTargetNode)
 				.Times(AnyNumber())
 				.WillRepeatedly(ReturnPointee(const_cast<node_type**>(&tgt)));
+
 		}
-		AbstractMockArc(IdType id, LayerId layer) : AbstractMockArc() {
-			this->id = id;
-			ON_CALL(*this, getId).WillByDefault(Return(id));
-
-			EXPECT_CALL(*this, getId).Times(AnyNumber());
-			ON_CALL(*this, getLayer).WillByDefault(Return(layer));
-		}
-		AbstractMockArc(IdType id, LayerId layer, float weight)
-			: AbstractMockArc(id, layer) {
-			ON_CALL(*this, getWeight).WillByDefault(Return(weight));
-		}
-
-		MOCK_METHOD(id_type, getId, (), (const, override));
-		MOCK_METHOD(LayerId, getLayer, (), (const, override));
-
-		MOCK_METHOD(float, getWeight, (), (const));
-		MOCK_METHOD(void, setWeight, (float), (override));
-
-		MOCK_METHOD(void, setSourceNode, (node_type* const), (override));
-		MOCK_METHOD(node_type* const, getSourceNode, (), (const, override));
-
-		MOCK_METHOD(void, setTargetNode, (node_type* const), (override));
-		MOCK_METHOD(node_type* const, getTargetNode, (), (const, override));
 };
 
 template<typename T, typename IdType>

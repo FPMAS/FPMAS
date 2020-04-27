@@ -23,45 +23,24 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 							 > {
 	protected:
 		T _data;
+		IdType id;
+		float weight = 1.;
+
 	public:
 		using typename FPMAS::api::graph::base::Node<
 			T, IdType, ArcType>::arc_type;
 
-		AbstractMockNode() {}
-		AbstractMockNode(const IdType& id) {
-			ON_CALL(*this, getId)
-				.WillByDefault(Return(id));
-			EXPECT_CALL(*this, getId).Times(AnyNumber());
-			ON_CALL(*this, data())
-				.WillByDefault(ReturnRef(_data));
-			ON_CALL(Const(*this), data())
-				.WillByDefault(ReturnRef(_data));
-			ON_CALL(*this, getWeight)
-				.WillByDefault(Return(1.));
+		AbstractMockNode() {
+			// Mock initialized without id
 		}
-		AbstractMockNode(const IdType& id, const T& data) : _data(data) {
-			ON_CALL(*this, getId)
-				.WillByDefault(Return(id));
-			EXPECT_CALL(*this, getId).Times(AnyNumber());
-
-			ON_CALL(*this, data())
-				.WillByDefault(ReturnRef(_data));
-			ON_CALL(Const(*this), data())
-				.WillByDefault(ReturnRef(_data));
+		AbstractMockNode(const IdType& id) : id(id) {
+			setUpGetters();
 		}
-		AbstractMockNode(const IdType& id, const T& data, float weight) : _data(data) {
-			ON_CALL(*this, getId)
-				.WillByDefault(Return(id));
-			EXPECT_CALL(*this, getId).Times(AnyNumber());
-
-			ON_CALL(*this, data())
-				.WillByDefault(ReturnRef(_data));
-
-			ON_CALL(Const(*this), data())
-				.WillByDefault(ReturnRef(_data));
-
-			ON_CALL(*this, getWeight)
-				.WillByDefault(Return(weight));
+		AbstractMockNode(const IdType& id, const T& data) : id(id), _data(data) {
+			setUpGetters();
+		}
+		AbstractMockNode(const IdType& id, const T& data, float weight) : id(id), _data(data), weight(weight) {
+			setUpGetters();
 		}
 
 		MOCK_METHOD(IdType, getId, (), (const, override));
@@ -83,6 +62,22 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 
 		MOCK_METHOD(void, unlinkIn, (arc_type*), (override));
 		MOCK_METHOD(void, unlinkOut, (arc_type*), (override));
+
+	private:
+		void setUpGetters() {
+			ON_CALL(*this, getId)
+				.WillByDefault(ReturnPointee(&id));
+			EXPECT_CALL(*this, getId).Times(AnyNumber());
+
+			ON_CALL(*this, data())
+				.WillByDefault(ReturnRef(_data));
+			ON_CALL(Const(*this), data())
+				.WillByDefault(ReturnRef(_data));
+
+			ON_CALL(*this, getWeight)
+				.WillByDefault(ReturnPointee(&weight));
+
+		}
 };
 
 

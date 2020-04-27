@@ -9,7 +9,7 @@ namespace FPMAS::graph::parallel {
 
 	using FPMAS::api::graph::parallel::LocationState;
 
-	template<typename DistNode>
+	template<typename DistNode, template<typename> class Mpi>
 		class LocationManager
 		: public FPMAS::api::graph::parallel::LocationManager<DistNode> {
 			public:
@@ -17,6 +17,8 @@ namespace FPMAS::graph::parallel {
 			private:
 				typedef FPMAS::api::communication::MpiCommunicator MpiComm;
 				MpiComm& communicator;
+				Mpi<DistributedId> distIdMpi {communicator};
+				Mpi<std::pair<DistributedId, int>> locationMpi {communicator};
 				std::unordered_map<DistributedId, int> managedNodesLocations;
 
 				node_map localNodes;
@@ -25,6 +27,9 @@ namespace FPMAS::graph::parallel {
 			public:
 				LocationManager(MpiComm& communicator)
 					: communicator(communicator) {}
+
+				const Mpi<DistributedId>& getDistributedIdMpi() const {return distIdMpi;}
+				const Mpi<std::pair<DistributedId, int>>& getLocationMpi() const {return locationMpi;}
 
 				void addManagedNode(DistNode* node, int initialLocation) override {
 					this->managedNodesLocations[node->getId()] = initialLocation;
@@ -48,15 +53,15 @@ namespace FPMAS::graph::parallel {
 				}
 		};
 
-	template<typename DistNode>
-	void LocationManager<DistNode>::setLocal(DistNode* node) {
+	template<typename DistNode, template<typename> class Mpi>
+	void LocationManager<DistNode, Mpi>::setLocal(DistNode* node) {
 			node->setState(LocationState::LOCAL);
 			this->localNodes.insert({node->getId(), node});
 			this->distantNodes.erase(node->getId());
 		}
 
-	template<typename DistNode>
-	void LocationManager<DistNode>::setDistant(DistNode* node) {
+	template<typename DistNode, template<typename> class Mpi>
+	void LocationManager<DistNode, Mpi>::setDistant(DistNode* node) {
 			node->setState(LocationState::DISTANT);
 			this->localNodes.erase(node->getId());
 			this->distantNodes.insert({node->getId(), node});
@@ -68,8 +73,8 @@ namespace FPMAS::graph::parallel {
 			}
 		}
 
-	template<typename DistNode>
-	void LocationManager<DistNode>::remove(DistNode* node) {
+	template<typename DistNode, template<typename> class Mpi>
+	void LocationManager<DistNode, Mpi>::remove(DistNode* node) {
 		switch(node->state()) {
 			case LocationState::LOCAL:
 				localNodes.erase(node->getId());
@@ -80,8 +85,8 @@ namespace FPMAS::graph::parallel {
 		}
 	}
 
-	template<typename DistNode>
-		void LocationManager<DistNode>::updateLocations(
+	template<typename DistNode, template<typename> class Mpi>
+		void LocationManager<DistNode, Mpi>::updateLocations(
 				const node_map& localNodesToUpdate
 				) {
 			// Useful types
@@ -91,7 +96,6 @@ namespace FPMAS::graph::parallel {
 			typedef 
 			std::unordered_map<int, std::vector<std::pair<DistributedId, int>>>
 			LocationMap;
-			using FPMAS::api::communication::migrate;
 
 			/*
 			 * Step 1 : send updated locations to origins, and receive
@@ -116,7 +120,7 @@ namespace FPMAS::graph::parallel {
 			
 			// Export / import location updates of managedNodesLocations
 			DistributedIdMap importedUpdatedLocations =
-				migrate(communicator, exportedUpdatedLocations);
+				distIdMpi.migrate(exportedUpdatedLocations);
 			// Updates the managedNodesLocations data
 			for(auto list : importedUpdatedLocations) {
 				for(auto nodeId : list.second) {
@@ -151,7 +155,7 @@ namespace FPMAS::graph::parallel {
 			}
 			// Export / import requests
 			DistributedIdMap importedLocationRequests
-				= migrate(communicator, locationRequests);
+				= distIdMpi.migrate(locationRequests);
 
 			// Builds requests response
 			LocationMap exportedLocations;
@@ -166,7 +170,7 @@ namespace FPMAS::graph::parallel {
 
 			// Import / export responses
 			LocationMap importedLocations
-				= migrate(communicator, exportedLocations);
+				= locationMpi.migrate(exportedLocations);
 
 			// Finally, updates the distantNodes locations from the requests
 			// responses

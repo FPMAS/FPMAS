@@ -44,11 +44,6 @@ class MockDistributedNode :
 				setUpStateAccess();
 				this->anyExpectations();
 			}
-		MockDistributedNode<int, Mutex>& operator=(const MockDistributedNode<int, Mutex>& other) {
-			setUpLocationAccess();
-			setUpStateAccess();
-			return *this;
-		}
 
 		MockDistributedNode(const DistributedId& id)
 			: node_base(id) {
@@ -79,6 +74,10 @@ class MockDistributedNode :
 		MOCK_METHOD(
 				FPMAS::api::graph::parallel::synchro::Mutex<T>&, mutex, (), (override)
 				);
+
+		bool operator==(const MockDistributedNode& other) const {
+			return this->id == other.id;
+		}
 
 		private:
 		void setUpStateAccess() {

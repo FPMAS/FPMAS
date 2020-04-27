@@ -174,24 +174,23 @@ namespace FPMAS::api::communication {
 			virtual ~MpiCommunicator() {};
 	};
 
-	template<typename T> std::unordered_map<int, std::vector<T>>
-		migrate(MpiCommunicator& comm, std::unordered_map<int, std::vector<T>> exportMap) {
-			// Pack
-			std::unordered_map<int, std::string> data_pack;
-			for(auto item : exportMap) {
-				data_pack[item.first] = nlohmann::json(item.second).dump();
-			}
+	template<typename T>
+	class Mpi {
+		public:
+			virtual std::unordered_map<int, std::vector<T>>
+				migrate(std::unordered_map<int, std::vector<T>> exportMap) = 0;
+	};
 
-			std::unordered_map<int, std::string> data_unpack
-				= comm.allToAll(data_pack);
+	template<typename MpiCommunicatorImpl, template<typename> class MpiImpl>
+		class MpiSetUp {
+			static_assert(std::is_base_of<MpiCommunicator, MpiCommunicatorImpl>::value);
+			static_assert(std::is_base_of<Mpi<int>, MpiImpl<int>>::value);
 
-			std::unordered_map<int, std::vector<T>> importMap;
-			for(auto item : data_unpack) {
-				importMap[item.first] = nlohmann::json::parse(data_unpack[item.first])
-					.get<std::vector<T>>();
-			}
-			return importMap;
-		}
+			public:
+			typedef MpiCommunicatorImpl communicator;
+			template<typename T>
+				using mpi = MpiImpl<T>;
+		};
 }
 
 #endif

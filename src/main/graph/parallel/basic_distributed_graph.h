@@ -11,7 +11,7 @@
 	typename SyncMode,\
 	template<typename, template<typename> class> class DistNodeImpl,\
 	template<typename, template<typename> class> class DistArcImpl,\
-	typename MpiCommunicatorImpl,\
+	typename MpiSetUp,\
 	template<typename> class LocationManagerImpl,\
 	template<typename> class LoadBalancingImpl
 
@@ -20,7 +20,7 @@
 	SyncMode,\
 	DistNodeImpl,\
 	DistArcImpl,\
-	MpiCommunicatorImpl,\
+	MpiSetUp,\
 	LocationManagerImpl,\
 	LoadBalancingImpl
 
@@ -66,9 +66,15 @@ namespace FPMAS::graph::parallel {
 			using typename dist_graph_base::partition_type;
 			typedef typename SyncMode::template sync_linker<node_type, arc_type> sync_linker_type;
 			typedef typename SyncMode::template data_sync<node_type, arc_type> data_sync_type;
+			typedef typename MpiSetUp::communicator communicator;
+			template<typename Data>
+			using mpi = typename MpiSetUp::template mpi<Data>;
 
 			private:
-			MpiCommunicatorImpl mpiCommunicator;
+			communicator mpiCommunicator;
+			mpi<node_type> nodeMpi {mpiCommunicator};
+			mpi<arc_type> arcMpi {mpiCommunicator};
+
 			SyncMode syncMode;
 			sync_linker_type syncLinker;
 			data_sync_type dataSync;
@@ -92,6 +98,9 @@ namespace FPMAS::graph::parallel {
 			FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() override {
 				return mpiCommunicator;
 			};
+
+			const mpi<node_type>& getNodeMpi() const {return nodeMpi;}
+			const mpi<arc_type>& getArcMpi() const {return arcMpi;}
 
 			void clear(node_type*) override;
 
@@ -282,14 +291,11 @@ namespace FPMAS::graph::parallel {
 					}
 				}
 			}
-			// Serialize and export / import data
-			auto nodeImport = 
-				api::communication::migrate(
-						mpiCommunicator, nodeExportMap);
 
-			auto arcImport =
-				api::communication::migrate(
-						mpiCommunicator, arcExportMap);
+			// Serialize and export / import data
+			auto nodeImport = nodeMpi.migrate(nodeExportMap);
+
+			auto arcImport = arcMpi.migrate(arcExportMap);
 
 			node_map importedNodes;
 			for(auto& importNodeListFromProc : nodeImport) {
