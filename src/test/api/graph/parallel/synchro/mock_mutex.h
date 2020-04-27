@@ -9,6 +9,7 @@ template<typename T>
 class MockMutex : public FPMAS::api::graph::parallel::synchro::Mutex<T> {
 	public:
 		MockMutex() {}
+		MockMutex(T&) {}
 		MockMutex(const MockMutex<T>&) {}
 		MockMutex<T>& operator=(const MockMutex<T>&) {return *this;}
 

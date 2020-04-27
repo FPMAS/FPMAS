@@ -5,11 +5,10 @@
 #include "node.h"
 
 #define GRAPH_PARAMS \
-	typename GraphImplem,\
 	typename NodeType,\
 	typename ArcType
 
-#define GRAPH_PARAMS_SPEC GraphImplem, NodeType, ArcType
+#define GRAPH_PARAMS_SPEC NodeType, ArcType
 
 namespace FPMAS::api::graph::base {
 

@@ -11,13 +11,12 @@
 namespace FPMAS::graph::base {
 
 	template<
-		typename GraphImplem,
 		typename NodeType,
 		typename ArcType
 	> class AbstractGraphBase : public virtual FPMAS::api::graph::base::
-		Graph<GraphImplem, NodeType, ArcType> {
+		Graph<NodeType, ArcType> {
 			public:
-				typedef FPMAS::api::graph::base::Graph<GraphImplem, NodeType, ArcType> graph_base;
+				typedef FPMAS::api::graph::base::Graph<NodeType, ArcType> graph_base;
 				using typename graph_base::node_type;
 				using typename graph_base::node_base;
 				using typename graph_base::arc_type;

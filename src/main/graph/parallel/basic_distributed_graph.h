@@ -30,11 +30,9 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	class BasicDistributedGraph : 
 		public base::AbstractGraphBase<
-			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>,
 			DistNodeImpl<T, SyncMode::template mutex_type>,
 			DistArcImpl<T, SyncMode::template mutex_type>>,
 		public api::graph::parallel::DistributedGraph<
-			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>,
 			DistNodeImpl<T, SyncMode::template mutex_type>,
 			DistArcImpl<T, SyncMode::template mutex_type>
 		> {
@@ -53,11 +51,9 @@ namespace FPMAS::graph::parallel {
 					>, dist_arc_type>::value,
 					"DistArcImpl must implement api::graph::parallel::DistributedArc"
 					);
-			typedef base::AbstractGraphBase<
-			BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, dist_node_type, dist_arc_type>
+			typedef base::AbstractGraphBase<dist_node_type, dist_arc_type>
 			abstract_graph_base;
-			typedef api::graph::parallel::DistributedGraph<
-				BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>, dist_node_type, dist_arc_type
+			typedef api::graph::parallel::DistributedGraph<dist_node_type, dist_arc_type
 			> dist_graph_base;
 
 			public:
@@ -147,7 +143,6 @@ namespace FPMAS::graph::parallel {
 				src->linkOut(arc);
 				arc->setTargetNode(tgt);
 				tgt->linkIn(arc);
-				arc->setState(LocationState::LOCAL);
 
 				// If src and tgt is DISTANT, transmit the request to the
 				// SyncLinker, that will handle the request according to its
@@ -155,6 +150,8 @@ namespace FPMAS::graph::parallel {
 				if(src->state() == LocationState::DISTANT || tgt->state() == LocationState::DISTANT) {
 					syncLinker.link(arc);
 					arc->setState(LocationState::DISTANT);
+				} else {
+					arc->setState(LocationState::LOCAL);
 				}
 
 				// Inserts the arc in the Graph

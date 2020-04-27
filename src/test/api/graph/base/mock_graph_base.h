@@ -6,10 +6,8 @@
 
 template<typename NodeType, typename ArcType>
 class MockGraphBase : 
-	public virtual FPMAS::graph::base::AbstractGraphBase<
-		MockGraphBase<NodeType, ArcType>, NodeType, ArcType> {
-		typedef FPMAS::graph::base::AbstractGraphBase<
-		MockGraphBase<NodeType, ArcType>, NodeType, ArcType>
+	public virtual FPMAS::graph::base::AbstractGraphBase<NodeType, ArcType> {
+		typedef FPMAS::graph::base::AbstractGraphBase<NodeType, ArcType>
 		graph_base;
 		using typename graph_base::node_type;
 		using typename graph_base::arc_type;

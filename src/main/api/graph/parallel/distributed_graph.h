@@ -9,11 +9,11 @@
 
 namespace FPMAS::api::graph::parallel {
 
-	template<typename Implementation, typename DistributedNodeType, typename DistributedArcType>
+	template<typename DistributedNodeType, typename DistributedArcType>
 	class DistributedGraph 
-		: public virtual FPMAS::api::graph::base::Graph<Implementation, DistributedNodeType, DistributedArcType> {
+		: public virtual FPMAS::api::graph::base::Graph<DistributedNodeType, DistributedArcType> {
 		public:
-			typedef FPMAS::api::graph::base::Graph<Implementation, DistributedNodeType, DistributedArcType> graph_base;
+			typedef FPMAS::api::graph::base::Graph<DistributedNodeType, DistributedArcType> graph_base;
 			using typename graph_base::node_type;
 			using typename graph_base::arc_type;
 			using typename graph_base::layer_id_type;

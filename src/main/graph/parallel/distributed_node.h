@@ -24,15 +24,15 @@ namespace FPMAS::graph::parallel {
 
 		public:
 			DistributedNode(const DistributedId& id)
-				: node_base(id) {
+				: node_base(id), _mutex(this->data()) {
 				}
 
 			DistributedNode(const DistributedId& id, T&& data)
-				: node_base(id, std::move(data)) {
+				: node_base(id, std::move(data)), _mutex(this->data()){
 			}
 
 			DistributedNode(const DistributedId& id, T&& data, float weight)
-				: node_base(id, std::move(data), weight) {
+				: node_base(id, std::move(data), weight), _mutex(this->data()){
 			}
 
 			int getLocation() const override {return location;}
