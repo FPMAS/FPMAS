@@ -34,15 +34,13 @@ namespace FPMAS::api::graph::base {
 				arc_id_type, arc_type*, arc_id_hash
 				> arc_map;
 
-
-		protected:
+		public:
 			virtual void insert(node_type* node) = 0;
 			virtual void insert(arc_type* arc) = 0;
 
 			virtual void erase(node_base* node) = 0;
 			virtual void erase(arc_base* arc) = 0;
 
-		public:
 			// Node getters
 			virtual const node_id_type& currentNodeId() const = 0;
 			virtual node_type* getNode(node_id_type) = 0;

@@ -72,6 +72,7 @@ set(SOURCES
 ## synchro
 set(SOURCES
 	${SOURCES}
+	graph/parallel/synchro/ghost/sync_linker.cpp
 	graph/parallel/synchro/ghost_mode.cpp
 	graph/parallel/synchro/hard_sync_mode.cpp
 	graph/parallel/synchro/no_sync_mode.cpp)

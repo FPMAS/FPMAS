@@ -65,15 +65,17 @@ class BasicDistributedGraphTest : public ::testing::Test {
 			MockMpiCommunicator<7, 10>,
 			MockLocationManager,
 			MockLoadBalancing> graph;
+		MockMpiCommunicator<7, 10>& comm =
+			static_cast<MockMpiCommunicator<7, 10>&>(graph.getMpiCommunicator());
 
 		typedef decltype(graph) graph_type;
 		typedef typename graph_type::node_type node_type; // MockDistributedNode<int, MockMutex>
 		typedef typename graph_type::arc_type arc_type;	//MockDistributedArc<int, MockMutex>
 	
 		void SetUp() override {
-			ON_CALL(graph.getMpiCommunicator(), getRank)
+			ON_CALL(comm, getRank)
 				.WillByDefault(Return(7));
-			EXPECT_CALL(graph.getMpiCommunicator(), getRank).Times(AnyNumber());
+			EXPECT_CALL(comm, getRank).Times(AnyNumber());
 		}
 
 };
@@ -349,7 +351,8 @@ class BasicDistributedGraphImportNodeTest : public ::testing::Test {
 				importedArcPack[item.first] = nlohmann::json(item.second).dump();
 			}
 			EXPECT_CALL(
-					graph.getMpiCommunicator(), allToAll)
+					(static_cast<MockMpiCommunicator<7, 10>&>(graph.getMpiCommunicator())),
+					allToAll)
 				.WillOnce(Return(importedNodePack))
 				.WillOnce(Return(importedArcPack));
 			EXPECT_CALL(graph.getSyncLinker(), synchronize).Times(1);
@@ -703,7 +706,7 @@ TEST_F(BasicDistributedGraphTest, distribute_calls) {
 		.InSequence(s);
 
 	EXPECT_CALL(
-			graph.getMpiCommunicator(), allToAll)
+			comm, allToAll)
 		.Times(AnyNumber())
 		.InSequence(s);
 	EXPECT_CALL(
@@ -751,7 +754,7 @@ TEST_F(BasicDistributedGraphDistributeTest, balance) {
 		balance(graph.getNodes(), IsEmpty()))
 		.WillOnce(Return(fakePartition));
 	// Migration of nodes + arcs
-	EXPECT_CALL(graph.getMpiCommunicator(), allToAll(_)).Times(2);
+	EXPECT_CALL(comm, allToAll(_)).Times(2);
 
 	EXPECT_CALL(locationManager, setDistant).Times(AnyNumber());
 	EXPECT_CALL(locationManager, remove).Times(4);
@@ -784,11 +787,11 @@ TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
 			}
 			).dump();
 	EXPECT_CALL(
-			graph.getMpiCommunicator(), allToAll(exportMapMatcher))
+			comm, allToAll(exportMapMatcher))
 	.WillOnce(Return(nodeImport));
 
 	// No arc import
-	EXPECT_CALL(graph.getMpiCommunicator(),
+	EXPECT_CALL(comm,
 			allToAll(IsEmpty())).WillOnce(Return(
 				std::unordered_map<int, std::string>()
 				));
@@ -881,7 +884,7 @@ TEST_F(BasicDistributedGraphDistributedWithLinkTest, distribute_with_link_test) 
 			);
 	// No node import
 	EXPECT_CALL(
-			graph.getMpiCommunicator(), allToAll(exportNodeMapMatcher))
+			comm, allToAll(exportNodeMapMatcher))
 	.WillOnce(Return(std::unordered_map<int, std::string>()));
 
 	auto exportArcMapMatcher = UnorderedElementsAre(
@@ -896,7 +899,7 @@ TEST_F(BasicDistributedGraphDistributedWithLinkTest, distribute_with_link_test) 
 	arcImport[3] = nlohmann::json({importedArc}).dump();
 
 	// Mock arc import
-	EXPECT_CALL(graph.getMpiCommunicator(),
+	EXPECT_CALL(comm,
 			allToAll(exportArcMapMatcher)).WillOnce(Return(arcImport));
 
 	EXPECT_CALL(locationManager, updateLocations(IsEmpty()));

@@ -75,10 +75,6 @@ namespace FPMAS::graph::parallel {
 			LocationManagerImpl<node_type> locationManager;
 			LoadBalancingImpl<node_type> loadBalancing;
 
-			void clear(node_type*);
-
-			node_type* importNode(const node_type& node);
-			arc_type* importArc(const arc_type& arc);
 
 			public:
 			BasicDistributedGraph() : locationManager(mpiCommunicator) {
@@ -90,12 +86,17 @@ namespace FPMAS::graph::parallel {
 				this->arcId = DistributedId(mpiCommunicator.getRank(), 0);
 			}
 
-			const MpiCommunicatorImpl& getMpiCommunicator() const {
+			const FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() const override {
 				return mpiCommunicator;
 			};
-			MpiCommunicatorImpl& getMpiCommunicator() {
+			FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() override {
 				return mpiCommunicator;
 			};
+
+			void clear(node_type*) override;
+
+			node_type* importNode(const node_type& node) override;
+			arc_type* importArc(const arc_type& arc) override;
 
 			const SyncMode& getSyncMode() const {return syncMode;}
 
