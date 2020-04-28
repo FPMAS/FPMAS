@@ -1,7 +1,7 @@
 #ifndef DISTRIBUTED_GRAPH_API_H
 #define DISTRIBUTED_GRAPH_API_H
 
-#include "api/communication/communication.h"
+//#include "api/communication/communication.h"
 #include "api/graph/base/graph.h"
 #include "api/graph/parallel/load_balancing.h"
 #include "api/graph/parallel/distributed_node.h"
@@ -24,8 +24,8 @@ namespace FPMAS::api::graph::parallel {
 			typedef typename LoadBalancing<DistributedNodeType>::partition_type partition_type;
 
 		public:
-			virtual FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() = 0;
-			virtual const FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
+			//virtual FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() = 0;
+			//virtual const FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
 
 			virtual node_type* importNode(const node_type&) = 0;
 			virtual arc_type* importArc(const arc_type&) = 0;

@@ -40,13 +40,22 @@ namespace FPMAS::graph::parallel::synchro {
 		std::vector<const ArcType*> linkBuffer;
 		std::vector<const ArcType*> unlinkBuffer;
 
+		FPMAS::api::communication::MpiCommunicator& comm;
+		Mpi<ArcType> arcMpi;
+		Mpi<DistributedId> distIdMpi;
 		public:
+			GhostSyncLinker(FPMAS::api::communication::MpiCommunicator& comm)
+				: comm(comm), arcMpi(comm), distIdMpi(comm) {}
+
 			void link(const ArcType*) override;
 			void unlink(const ArcType*) override;
 
 			void synchronize(
 				FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>& graph
 				) override;
+
+			const Mpi<ArcType>& getArcMpi() const {return arcMpi;}
+			const Mpi<DistributedId>& getDistIdMpi() const {return distIdMpi;}
 	};
 
 	template<typename NodeType, typename ArcType, template<typename> class Mpi>
@@ -67,27 +76,29 @@ namespace FPMAS::graph::parallel::synchro {
 	void GhostSyncLinker<NodeType, ArcType, Mpi>::synchronize(
 			FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>& graph
 			) {
-		auto& comm = graph.getMpiCommunicator();
+		//auto& comm = graph.getMpiCommunicator();
 		int currentLocation = comm.getRank();
 		/*
 		 * Migrate links
 		 */
 		std::unordered_map<int, std::vector<ArcType>> linkMigration;
 		for(auto arc : linkBuffer) {
-			int srcLocation = arc->getSourceNode()->getLocation();
-			if(srcLocation != currentLocation) {
-				linkMigration[srcLocation].push_back(*arc);
+			auto src = arc->getSourceNode();
+			if(src->state() == LocationState::DISTANT) {
+				linkMigration[src->getLocation()].push_back(*arc);
 			}
-			int tgtLocation = arc->getTargetNode()->getLocation();
-			if(tgtLocation != currentLocation) {
-				linkMigration[tgtLocation].push_back(*arc);
+			auto tgt = arc->getTargetNode();
+			if(tgt->state() == LocationState::DISTANT) {
+				linkMigration[tgt->getLocation()].push_back(*arc);
 			}
 		}
-		linkMigration = Mpi<ArcType>(comm).migrate(linkMigration);
+		linkMigration = arcMpi.migrate(linkMigration);
 
 		for(auto importList : linkMigration) {
 			for (const auto& arc : importList.second) {
 				graph.importArc(arc);
+				delete arc.getSourceNode();
+				delete arc.getTargetNode();
 			}
 		}
 
@@ -95,17 +106,17 @@ namespace FPMAS::graph::parallel::synchro {
 		 * Migrate unlinks
 		 */
 		std::unordered_map<int, std::vector<DistributedId>> unlinkMigration;
-		for(auto arc : linkBuffer) {
-			int srcLocation = arc->getSourceNode()->getLocation();
-			if(srcLocation != currentLocation) {
-				unlinkMigration[srcLocation].push_back(arc->getId());
+		for(auto arc : unlinkBuffer) {
+			auto src = arc->getSourceNode();
+			if(src->state() == LocationState::DISTANT) {
+				unlinkMigration[src->getLocation()].push_back(arc->getId());
 			}
-			int tgtLocation = arc->getTargetNode()->getLocation();
-			if(tgtLocation != currentLocation) {
-				unlinkMigration[tgtLocation].push_back(arc->getId());
+			auto tgt = arc->getTargetNode();
+			if(tgt->state() == LocationState::DISTANT) {
+				unlinkMigration[tgt->getLocation()].push_back(arc->getId());
 			}
 		}
-		unlinkMigration = Mpi<DistributedId>(comm).migrate(unlinkMigration);
+		unlinkMigration = distIdMpi.migrate(unlinkMigration);
 		for(auto importList : unlinkMigration) {
 			for(DistributedId id : importList.second) {
 				if(graph.getArcs().count(id) > 0) {

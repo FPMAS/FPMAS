@@ -1,6 +1,7 @@
 #ifndef MOCK_SYNC_MODE_H
 #define MOCK_SYNC_MODE_H
 
+#include "api/communication/communication.h"
 #include "api/graph/parallel/synchro/sync_mode.h"
 #include "mock_mutex.h"
 
@@ -16,6 +17,8 @@ class MockDataSync : public FPMAS::api::graph::parallel::synchro::DataSync<NodeT
 template<typename NodeType, typename ArcType>
 class MockSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<NodeType, ArcType> {
 	public:
+		MockSyncLinker(FPMAS::api::communication::MpiCommunicator&) {}
+
 		MOCK_METHOD(void, link, (const ArcType*), (override));
 		MOCK_METHOD(void, unlink, (const ArcType*), (override));
 		MOCK_METHOD(void, synchronize, (

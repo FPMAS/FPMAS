@@ -83,7 +83,7 @@ namespace FPMAS::graph::parallel {
 
 
 			public:
-			BasicDistributedGraph() : locationManager(mpiCommunicator) {
+			BasicDistributedGraph() : locationManager(mpiCommunicator), syncLinker(mpiCommunicator) {
 				// Initialization in the body of this (derived) class of the
 				// (base) fields nodeId and arcId, to ensure that
 				// mpiCommunicator is initialized (as a field of this derived
@@ -92,10 +92,10 @@ namespace FPMAS::graph::parallel {
 				this->arcId = DistributedId(mpiCommunicator.getRank(), 0);
 			}
 
-			const FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() const override {
+			const communicator& getMpiCommunicator() const {
 				return mpiCommunicator;
 			};
-			FPMAS::api::communication::MpiCommunicator& getMpiCommunicator() override {
+			communicator& getMpiCommunicator() {
 				return mpiCommunicator;
 			};
 

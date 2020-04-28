@@ -2,7 +2,6 @@
 #define SYNC_MODE_API_H
 
 #include <string>
-#include "api/communication/communication.h"
 #include "api/graph/parallel/distributed_graph.h"
 
 namespace FPMAS::api::graph::parallel::synchro {
