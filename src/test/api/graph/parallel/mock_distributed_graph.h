@@ -10,24 +10,18 @@ class MockDistributedGraph :
 	public MockGraphBase<DistNode, DistArc>,
 	public FPMAS::api::graph::parallel::DistributedGraph<DistNode, DistArc> {
 
-	typedef FPMAS::api::graph::parallel::DistributedGraph<DistNode, DistArc>
-		graph_base;
-	using typename graph_base::node_type;
-	using typename graph_base::arc_type;
-	using typename graph_base::partition_type;
+		typedef FPMAS::api::graph::parallel::DistributedGraph<DistNode, DistArc>
+			graph_base;
+		public:
+		using typename graph_base::node_type;
+		using typename graph_base::node_map;
+		using typename graph_base::arc_type;
+		using typename graph_base::arc_map;
+		using typename graph_base::partition_type;
 
-	public:
-/*
- *        MOCK_METHOD(
- *            FPMAS::api::communication::MpiCommunicator&,
- *            getMpiCommunicator,
- *            (), (override));
- *
- *        MOCK_METHOD(
- *            const FPMAS::api::communication::MpiCommunicator&,
- *            getMpiCommunicator,
- *            (), (const, override));
- */
+		MOCK_METHOD(
+				const FPMAS::api::graph::parallel::LocationManager<DistNode>&,
+				getLocationManager, (), (const, override));
 
 		MOCK_METHOD(node_type*, importNode, (const node_type&), (override));
 		MOCK_METHOD(arc_type*, importArc, (const arc_type&), (override));
@@ -36,6 +30,6 @@ class MockDistributedGraph :
 		MOCK_METHOD(void, balance, (), (override));
 		MOCK_METHOD(void, distribute, (partition_type), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
-};
+	};
 
 #endif

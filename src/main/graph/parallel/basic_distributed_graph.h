@@ -113,11 +113,12 @@ namespace FPMAS::graph::parallel {
 
 			const data_sync_type& getDataSync() const {return dataSync;}
 
-			const LocationManagerImpl<node_type>& getLocationManager() const {return locationManager;}
-
 			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
 				return loadBalancing;
 			};
+
+			const FPMAS::api::graph::parallel::LocationManager<node_type>&
+				getLocationManager() const override {return locationManager;}
 
 			void removeNode(node_type*) override {};
 			void unlink(arc_type*) override;

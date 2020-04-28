@@ -87,7 +87,10 @@ TEST_F(BasicDistributedGraphTest, buildNode) {
 
 	node_type* addManagedNodeArg;
 	MockLocationManager<node_type>& locationManager
-		= const_cast<MockLocationManager<node_type>&>(graph.getLocationManager());
+		= const_cast<MockLocationManager<node_type>&>(
+			static_cast<const MockLocationManager<node_type>&>(
+				graph.getLocationManager()
+				));
 	EXPECT_CALL(locationManager, addManagedNode(_, 7))
 		.WillOnce(SaveArg<0>(&addManagedNodeArg));
 	node_type* setLocalArg;
@@ -335,7 +338,9 @@ class BasicDistributedGraphImportNodeTest : public ::testing::Test {
 		typedef typename decltype(graph)::partition_type partition_type;
 
 		MockLocationManager<node_type>& locationManager
-			= const_cast<MockLocationManager<node_type>&>(graph.getLocationManager());
+			= const_cast<MockLocationManager<node_type>&>(
+					static_cast<const MockLocationManager<node_type>&>(graph.getLocationManager())
+					);
 
 		partition_type partition;
 		std::unordered_map<int, std::vector<node_type>> importedNodeMocks;
@@ -657,8 +662,9 @@ class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
 		partition_type fakePartition;
 		MockLocationManager<node_type>& locationManager
 			= const_cast<MockLocationManager<node_type>&>(
+				static_cast<const MockLocationManager<node_type>&>(
 					graph.getLocationManager()
-					);
+					));
 		void SetUp() override {
 			EXPECT_CALL(locationManager, addManagedNode).Times(5);
 			EXPECT_CALL(locationManager, setLocal).Times(5);
@@ -697,7 +703,9 @@ TEST_F(BasicDistributedGraphTest, distribute_calls) {
 		.Times(AnyNumber())
 		.InSequence(s);
 	EXPECT_CALL(
-			(const_cast<MockLocationManager<node_type>&>(graph.getLocationManager())),
+			(const_cast<MockLocationManager<node_type>&>(
+				static_cast<const MockLocationManager<node_type>&>(
+						graph.getLocationManager()))),
 			updateLocations(IsEmpty())
 			)
 		.InSequence(s);
