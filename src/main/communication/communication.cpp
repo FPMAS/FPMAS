@@ -90,7 +90,7 @@ namespace FPMAS::communication {
 	 *
 	 * @param other FPMAS::communication::MpiCommunicator to assign to this
 	 */
-	MpiCommunicator& FPMAS::communication::MpiCommunicator::operator=(MpiCommunicator other) {
+	MpiCommunicator& FPMAS::communication::MpiCommunicator::operator=(const MpiCommunicator& other) {
 		MPI_Group_free(&this->group);
 
 		this->comm = other.comm;
@@ -147,6 +147,10 @@ namespace FPMAS::communication {
 		MPI_Send(&token, 1, MPI_INT, destination, Tag::TOKEN, this->getMpiComm());
 	}
 
+	void MpiCommunicator::send(const std::string& str, int destination, int tag) {
+		MPI_Send(str.c_str(), str.size() +1, MPI_CHAR, destination, tag, this->getMpiComm());
+	}
+
 	void MpiCommunicator::sendEnd(int destination) {
 		MPI_Send(NULL, 0, MPI_INT, destination, Tag::END, this->getMpiComm());
 	}
@@ -166,27 +170,35 @@ namespace FPMAS::communication {
 		MPI_Isend(str.c_str(), str.length() + 1, MPI_CHAR, destination, tag, this->getMpiComm(), req);
 	}
 
-	void MpiCommunicator::probe(int source, int tag, MPI_Status * status) {
+	void MpiCommunicator::probe(int source, int tag, MPI_Status* status) {
 		MPI_Probe(source, tag, this->getMpiComm(), status);
 	}
 
-	int MpiCommunicator::Iprobe(int source, int tag, MPI_Status* status) {
+	bool MpiCommunicator::Iprobe(int source, int tag, MPI_Status* status) {
 		int flag;
 		MPI_Iprobe(source, tag, this->getMpiComm(), &flag, status);
-		return flag;
+		return flag > 0;
 	}
 
-	void MpiCommunicator::recvEnd(MPI_Status* status) {
+	bool MpiCommunicator::test(MPI_Request* req) {
+		MPI_Status status;
+		int flag;
+		MPI_Test(req, &flag, &status);
+		return flag > 0;
+	}
+
+	void MpiCommunicator::recv(MPI_Status* status) {
 		MPI_Recv(NULL, 0, MPI_INT, status->MPI_SOURCE, status->MPI_TAG, this->getMpiComm(), status);
 	}
 
-	void MpiCommunicator::recv(MPI_Status * status, Color& data) {
+	void MpiCommunicator::recv(MPI_Status* status, Color& data) {
 		int _data;
+		MPI_Status _status;
 		MPI_Recv(&_data, 1, MPI_INT, status->MPI_SOURCE, status->MPI_TAG, this->getMpiComm(), status);
 		data = Color(_data);
 	}
 
-	void MpiCommunicator::recv(MPI_Status * status, std::string& str) {
+	void MpiCommunicator::recv(MPI_Status* status, std::string& str) {
 		int count;
 		MPI_Get_count(status, MPI_CHAR, &count);
 		char data[count];
@@ -194,7 +206,7 @@ namespace FPMAS::communication {
 		str = std::string(data);
 	}
 
-	void MpiCommunicator::recv(MPI_Status * status, DistributedId& id) {
+	void MpiCommunicator::recv(MPI_Status* status, DistributedId& id) {
 		MpiDistributedId mpi_id;
 		MPI_Recv(&mpi_id, 1, MPI_DISTRIBUTED_ID_TYPE, status->MPI_SOURCE, status->MPI_TAG, this->getMpiComm(), status);
 		id = DistributedId(mpi_id);

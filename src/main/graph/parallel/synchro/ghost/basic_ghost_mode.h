@@ -6,7 +6,7 @@
 #include "api/graph/parallel/synchro/mutex.h"
 #include "communication/communication.h"
 
-namespace FPMAS::graph::parallel::synchro {
+namespace FPMAS::graph::parallel::synchro::ghost {
 
 	using api::graph::parallel::LocationState;
 
@@ -20,7 +20,7 @@ namespace FPMAS::graph::parallel::synchro {
 			// TODO: Exceptions when multiple lock
 			const T& read() override {return data;};
 			T& acquire() override {return data;};
-			void release(T&&) override {};
+			void release() override {};
 
 			void lock() override {};
 			void unlock() override {};

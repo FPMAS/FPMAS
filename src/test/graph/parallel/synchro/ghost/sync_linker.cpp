@@ -1,4 +1,4 @@
-#include "graph/parallel/synchro/basic_ghost_mode.h"
+#include "graph/parallel/synchro/ghost/basic_ghost_mode.h"
 
 #include "api/communication/mock_communication.h"
 #include "api/graph/parallel/mock_distributed_node.h"
@@ -13,7 +13,7 @@ using ::testing::Pair;
 using ::testing::Pointee;
 using ::testing::UnorderedElementsAre;
 
-using FPMAS::graph::parallel::synchro::GhostSyncLinker;
+using FPMAS::graph::parallel::synchro::ghost::GhostSyncLinker;
 
 class GhostSyncLinkerTest : public ::testing::Test {
 	protected:

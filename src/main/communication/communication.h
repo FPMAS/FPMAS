@@ -50,7 +50,7 @@ namespace FPMAS {
 			public:
 				MpiCommunicator();
 				MpiCommunicator(const MpiCommunicator&);
-				MpiCommunicator& operator=(MpiCommunicator);
+				MpiCommunicator& operator=(const MpiCommunicator&);
 				MpiCommunicator(std::initializer_list<int>);
 				MPI_Group getMpiGroup() const;
 				MPI_Comm getMpiComm() const;
@@ -59,18 +59,21 @@ namespace FPMAS {
 				int getSize() const override;
 
 				void send(Color token, int destination) override;
+				void send(const std::string&, int destination, int tag) override;
 				void sendEnd(int destination) override;
 				void Issend(const DistributedId&, int destination, int tag, MPI_Request*) override;
 				void Issend(const std::string&, int destination, int tag, MPI_Request*) override;
 				void Isend(const std::string&, int destination, int tag, MPI_Request*) override;
 
-				void recvEnd(MPI_Status*) override;
+				void recv(MPI_Status*) override;
 				void recv(MPI_Status*, Color&) override;
 				void recv(MPI_Status*, std::string&) override;
 				void recv(MPI_Status*, DistributedId&) override;
 
 				void probe(int source, int tag, MPI_Status*) override;
-				int Iprobe(int source, int tag, MPI_Status*) override;
+				bool Iprobe(int source, int tag, MPI_Status*) override;
+
+				bool test(MPI_Request*) override;
 
 				std::unordered_map<int, std::string> 
 					allToAll (
@@ -135,8 +138,13 @@ namespace FPMAS {
 					api::communication::MpiCommunicator& comm;
 				public:
 					Mpi(api::communication::MpiCommunicator& comm) : comm(comm) {}
+
 					std::unordered_map<int, std::vector<T>>
-						migrate(std::unordered_map<int, std::vector<T>> exportMap);
+						migrate(std::unordered_map<int, std::vector<T>> exportMap) override;
+
+					void send(const T&, int, int) override;
+					void Issend(const T&, int, int, MPI_Request*) override;
+					T recv(MPI_Status*) override;
 			};
 
 		template<typename T> std::unordered_map<int, std::vector<T>>
@@ -156,6 +164,24 @@ namespace FPMAS {
 						.get<std::vector<T>>();
 				}
 				return importMap;
+			}
+
+		template<typename T>
+			void Mpi<T>::send(const T& data, int destination, int tag) {
+				comm.send(
+					nlohmann::json(data).dump(), destination, tag);
+			}
+		template<typename T>
+			void Mpi<T>::Issend(const T& data, int destination, int tag, MPI_Request* req) {
+				comm.Issend(
+					nlohmann::json(data).dump(), destination, tag, req);
+			}
+
+		template<typename T>
+			T Mpi<T>::recv(MPI_Status* status) {
+				std::string data;
+				comm.recv(status, data);
+				return nlohmann::json(data).get<T>();
 			}
 	}
 }

@@ -36,6 +36,20 @@ namespace FPMAS::api::communication {
 		WHITE = 0,
 		BLACK = 1
 	};
+/*
+ *
+ *    struct MpiRequest {
+ *        int destination;
+ *        int tag;
+ *    };
+ *
+ *    struct MpiStatus {
+ *        int source;
+ *        int tag;
+ *        int char_count;
+ *    };
+ */
+
 
 	/**
 	 * MpiCommunicator interface.
@@ -103,6 +117,9 @@ namespace FPMAS::api::communication {
 			virtual void Isend(
 					const std::string&, int destination, int tag, MPI_Request*) = 0;
 
+			virtual void send(
+					const std::string&, int destination, int tag) = 0;
+
 			/**
 			 * Blocking probe.
 			 *
@@ -125,7 +142,7 @@ namespace FPMAS::api::communication {
 			 * @param tag recv tag
 			 * @param status MPI status
 			 */
-			virtual int Iprobe(int source, int tag, MPI_Status* status) = 0;
+			virtual bool Iprobe(int source, int tag, MPI_Status* status) = 0;
 
 			/**
 			 * Receives the message corresponding to status.
@@ -138,7 +155,7 @@ namespace FPMAS::api::communication {
 			virtual void recv(MPI_Status* status, Color& data) = 0;
 
 			/**
-			 * Receives an END message.
+			 * Receives a message without data.
 			 *
 			 * Completes an eventually synchronous send operation.
 			 *
@@ -146,7 +163,7 @@ namespace FPMAS::api::communication {
 			 *
 			 * @param status ready to receive MPI status
 			 */
-			virtual void recvEnd(MPI_Status* status) = 0;
+			virtual void recv(MPI_Status* status) = 0;
 
 			/**
 			 * Receives the message corresponding to status.
@@ -168,6 +185,8 @@ namespace FPMAS::api::communication {
 			 */
 			virtual void recv(MPI_Status* status, DistributedId& id) = 0;
 
+			virtual bool test(MPI_Request*) = 0;
+
 			virtual std::unordered_map<int, std::string>
 				allToAll(std::unordered_map<int, std::string>) = 0;
 
@@ -179,6 +198,10 @@ namespace FPMAS::api::communication {
 		public:
 			virtual std::unordered_map<int, std::vector<T>>
 				migrate(std::unordered_map<int, std::vector<T>> exportMap) = 0;
+
+			virtual void send(const T&, int destination, int tag) = 0;
+			virtual void Issend(const T&, int destination, int tag, MPI_Request* req) = 0;
+			virtual T recv(MPI_Status*) = 0;
 	};
 
 	template<typename MpiCommunicatorImpl, template<typename> class MpiImpl>

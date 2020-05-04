@@ -10,8 +10,6 @@ using ::testing::Return;
 using ::testing::AnyNumber;
 
 using FPMAS::api::communication::Color;
-using FPMAS::api::communication::Tag;
-using FPMAS::api::communication::Epoch;
 
 class MockResourceHandler : public FPMAS::api::communication::ResourceHandler {
 	public:
@@ -39,15 +37,17 @@ class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
 		MOCK_METHOD(int, getSize, (), (const, override));
 
 		MOCK_METHOD(void, send, (Color, int), (override));
+		MOCK_METHOD(void, send, (const std::string&, int, int), (override));
 		MOCK_METHOD(void, sendEnd, (int), (override));
 		MOCK_METHOD(void, Issend, (const DistributedId&, int, int, MPI_Request*), (override));
 		MOCK_METHOD(void, Issend, (const std::string&, int, int, MPI_Request*), (override));
 		MOCK_METHOD(void, Isend, (const std::string&, int, int, MPI_Request*), (override));
 
 		MOCK_METHOD(void, probe, (int, int, MPI_Status*), (override));
-		MOCK_METHOD(int, Iprobe, (int, int, MPI_Status*), (override));
+		MOCK_METHOD(bool, Iprobe, (int, int, MPI_Status*), (override));
+		MOCK_METHOD(bool, test, (MPI_Request*), (override));
 
-		MOCK_METHOD(void, recvEnd, (MPI_Status*), (override));
+		MOCK_METHOD(void, recv, (MPI_Status*), (override));
 		MOCK_METHOD(void, recv, (MPI_Status*, Color&), (override));
 		MOCK_METHOD(void, recv, (MPI_Status*, std::string&), (override));
 		MOCK_METHOD(void, recv, (MPI_Status*, DistributedId&), (override));
@@ -68,6 +68,9 @@ class MockMpi : public FPMAS::api::communication::Mpi<T> {
 			((std::unordered_map<int, std::vector<T>>)),
 			(override)
 			);
+		MOCK_METHOD(void, send, (const T&, int, int), (override));
+		MOCK_METHOD(void, Issend, (const T&, int, int, MPI_Request*), (override));
+		MOCK_METHOD(T, recv, (MPI_Status*), (override));
 
 };
 

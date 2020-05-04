@@ -17,7 +17,7 @@ namespace FPMAS::graph::parallel {
 			typedef graph::base::BasicNode<T, DistributedId, DistributedArc<T, Mutex>> node_base;
 
 		private:
-			typedef FPMAS::api::graph::parallel::synchro::Mutex<T> mutex_base;
+			//typedef FPMAS::api::graph::parallel::synchro::Mutex<T> mutex_base;
 			LocationState _state = LocationState::LOCAL;
 			int location;
 			Mutex<T> _mutex;
@@ -41,7 +41,7 @@ namespace FPMAS::graph::parallel {
 			LocationState state() const override {return _state;}
 			void setState(LocationState state) override {this->_state=state;}
 
-			mutex_base& mutex() override {return _mutex;}
+			Mutex<T>& mutex() override {return _mutex;}
 	};
 }
 

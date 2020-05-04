@@ -23,6 +23,7 @@ using testing::AnyNumber;
 
 #include "communication/request_handler.h"
 
+using FPMAS::api::communication::Tag;
 using FPMAS::communication::RequestHandler;
 
 class TerminationTest : public ::testing::Test {

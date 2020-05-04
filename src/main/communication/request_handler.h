@@ -409,7 +409,7 @@ namespace FPMAS::communication {
 			// Check for END
 			if(this->comm.getRank() > 0 && this->comm.Iprobe(MPI_ANY_SOURCE, Tag::END, &status) > 0) {
 				int end;
-				this->comm.recvEnd(&status);
+				this->comm.recv(&status);
 				switch(this->epoch) {
 					case Epoch::EVEN:
 						this->epoch = Epoch::ODD;

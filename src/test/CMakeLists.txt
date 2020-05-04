@@ -73,6 +73,8 @@ set(SOURCES
 	${SOURCES}
 	graph/parallel/synchro/ghost/data_sync.cpp
 	graph/parallel/synchro/ghost/sync_linker.cpp
+	graph/parallel/synchro/hard/hard_sync_mutex.cpp
+	graph/parallel/synchro/hard/mutex_client.cpp
 	graph/parallel/synchro/ghost_mode.cpp
 	graph/parallel/synchro/hard_sync_mode.cpp
 	graph/parallel/synchro/no_sync_mode.cpp)
