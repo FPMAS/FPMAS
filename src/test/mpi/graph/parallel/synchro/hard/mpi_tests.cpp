@@ -19,26 +19,26 @@ using FPMAS::graph::parallel::synchro::hard::TerminationAlgorithm;
  */
 class Mpi_MutexServerRaceCondition : public ::testing::Test {
 	protected:
-		static const int NUM_ACQUIRE = 10;
-	MpiCommunicator comm;
-	TerminationAlgorithm<int> termination {comm};
+		static const int NUM_ACQUIRE = 500;
+		MpiCommunicator comm;
+		TerminationAlgorithm<int, TypedMpi> termination {comm};
 
-	int data = 0;
-	LocationState state = LocationState::DISTANT;
-	int location = 0;
+		int data = 0;
+		LocationState state = LocationState::DISTANT;
+		int location = 0;
 
-	MutexServer<int, TypedMpi> server {comm};
-	MutexClient<int, TypedMpi> client {comm, server};
-	HardSyncMutex<int> mutex {DistributedId(3, 6), data, state, location, client, server};
+		MutexServer<int, TypedMpi> server {comm};
+		MutexClient<int, TypedMpi> client {comm, server};
+		HardSyncMutex<int> mutex {DistributedId(3, 6), data, state, location, client, server};
 
 
-	void SetUp() override {
-		client.manage(DistributedId(3, 6), &mutex);
-		server.manage(DistributedId(3, 6), &mutex);
-		if(comm.getRank() == 0) {
-			state = LocationState::LOCAL;
+		void SetUp() override {
+			client.manage(DistributedId(3, 6), &mutex);
+			server.manage(DistributedId(3, 6), &mutex);
+			if(comm.getRank() == 0) {
+				state = LocationState::LOCAL;
+			}
 		}
-	}
 };
 
 TEST_F(Mpi_MutexServerRaceCondition, acquire_race_condition) {
@@ -47,10 +47,7 @@ TEST_F(Mpi_MutexServerRaceCondition, acquire_race_condition) {
 		data++;
 		mutex.release();
 	}
-	for(int i = 0; i < 10000; i++) {
-		server.handleIncomingRequests();
-	}
-	//termination.terminate(server);
+	termination.terminate(server);
 
 	if(comm.getRank() == 0) {
 		ASSERT_EQ(data, comm.getSize() * NUM_ACQUIRE);

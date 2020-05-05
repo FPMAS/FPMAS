@@ -2,6 +2,7 @@ set(SOURCES
 	communication/communication.cpp
 	graph/parallel/distributed_id.cpp
 	graph/parallel/distributed_graph.cpp
+	graph/parallel/synchro/hard/termination.cpp
 	graph/parallel/synchro/hard/mpi_tests.cpp
 	)
 
