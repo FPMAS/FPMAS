@@ -36,7 +36,8 @@ class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
 		MOCK_METHOD(int, getRank, (), (const, override));
 		MOCK_METHOD(int, getSize, (), (const, override));
 
-		MOCK_METHOD(void, send, (Color, int), (override));
+		MOCK_METHOD(void, send, (int, int), (override));
+		MOCK_METHOD(void, send, (Color, int, int), (override));
 		MOCK_METHOD(void, send, (const std::string&, int, int), (override));
 		MOCK_METHOD(void, sendEnd, (int), (override));
 		MOCK_METHOD(void, Issend, (const DistributedId&, int, int, MPI_Request*), (override));

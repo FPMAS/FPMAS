@@ -7,18 +7,16 @@
 
 template<typename T>
 class MockMutex : public virtual FPMAS::api::graph::parallel::synchro::Mutex<T> {
-	protected:
-		MOCK_METHOD(void, _lock, (), (override));
-		MOCK_METHOD(void, _unlock, (), (override));
-
 	public:
 		MockMutex() {}
 		MockMutex(T&) {}
 		MockMutex(const MockMutex<T>&) {}
 		MockMutex<T>& operator=(const MockMutex<T>&) {return *this;}
 
-		//MOCK_METHOD(DistributedId, id, (), (const, override));
-		MOCK_METHOD(const T&, data, (), (override));
+		MOCK_METHOD(void, _lock, (), (override));
+		MOCK_METHOD(void, _unlock, (), (override));
+
+		MOCK_METHOD(T&, data, (), (override));
 
 		MOCK_METHOD(const T&, read, (), (override));
 		MOCK_METHOD(T&, acquire, (), (override));

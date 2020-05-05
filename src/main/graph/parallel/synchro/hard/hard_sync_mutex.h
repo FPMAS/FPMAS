@@ -11,12 +11,13 @@
 namespace FPMAS::graph::parallel::synchro::hard {
 
 	using FPMAS::api::graph::parallel::LocationState;
+	using FPMAS::api::graph::parallel::synchro::hard::Request;
+	using FPMAS::api::graph::parallel::synchro::hard::RequestType;
+
 	template<typename T>
 		class HardSyncMutex
 			: public FPMAS::api::graph::parallel::synchro::hard::HardSyncMutex<T> {
 			private:
-				typedef FPMAS::api::graph::parallel::synchro::hard::Request
-					request_t;
 				typedef FPMAS::api::graph::parallel::synchro::hard::MutexClient<T>
 					mutex_client_t;
 				typedef FPMAS::api::graph::parallel::synchro::hard::MutexServer<T>
@@ -29,8 +30,9 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				bool _locked = false;
 				mutex_client_t& mutexClient;
 				mutex_server_t& mutexServer;
-				std::queue<request_t> _readRequests;
-				std::queue<request_t> _acquireRequests;
+				std::queue<Request> readRequests;
+				std::queue<Request> lockRequests;
+				std::queue<Request> acquireRequests;
 
 				void _lock() override {_locked=true;}
 				void _unlock() override {_locked=false;}
@@ -43,10 +45,10 @@ namespace FPMAS::graph::parallel::synchro::hard {
 					_id(id), _data(data), state(state), location(location),
 					mutexClient(mutexClient), mutexServer(mutexServer) {}
 
-				std::queue<request_t>& readRequests() override {return _readRequests;}
-				std::queue<request_t>& acquireRequests() override {return _acquireRequests;}
+				void pushRequest(Request request) override;
+				std::queue<Request> requestsToProcess() override;
 
-				const T& data() override {return _data;}
+				T& data() override {return _data;}
 				const T& read() override;
 				T& acquire() override;
 				void release() override;
@@ -59,8 +61,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T>
 		const T& HardSyncMutex<T>::read() {
 			if(state == LocationState::LOCAL) {
-				request_t req = request_t(_id, -1);
-				_readRequests.push(req);
+				Request req = Request(_id, Request::LOCAL, RequestType::READ);
+				pushRequest(req);
 				mutexServer.wait(req);
 				return _data;
 			}
@@ -71,19 +73,25 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T>
 		T& HardSyncMutex<T>::acquire() {
 			if(state==LocationState::LOCAL) {
-				request_t req = request_t(_id, -1);
-				_readRequests.push(req);
-				mutexServer.wait(req);
+				if(_locked) {
+					Request req = Request(_id, Request::LOCAL, RequestType::ACQUIRE);
+					pushRequest(req);
+					mutexServer.wait(req);
+				}
+				this->_locked = true;
 				return _data;
 			}
 			_data = mutexClient.acquire(_id, location);
+			std::cout << "acquired data : " << _data << std::endl;
 			return _data;
 		};
 
 	template<typename T>
 		void HardSyncMutex<T>::release() {
+			std::cout << "release" << std::endl;
 			if(state==LocationState::LOCAL) {
 				mutexServer.notify(_id);
+				this->_locked = false;
 				return;
 			}
 			mutexClient.release(_id, location);
@@ -92,9 +100,12 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T>
 		void HardSyncMutex<T>::lock() {
 			if(state==LocationState::LOCAL) {
-				auto req = request_t(_id, -1);
-				_acquireRequests.push(req);
-				mutexServer.wait(req);
+				if(_locked) {
+					Request req = Request(_id, Request::LOCAL, RequestType::LOCK);
+					pushRequest(req);
+					mutexServer.wait(req);
+				}
+				this->_locked = true;
 				return;
 			}
 			mutexClient.lock(_id, location);
@@ -104,10 +115,52 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		void HardSyncMutex<T>::unlock() {
 			if(state==LocationState::LOCAL) {
 				mutexServer.notify(_id);
+				this->_locked = false;
 				return;
 			}
 			mutexClient.unlock(_id, location);
 		}
+
+	template<typename T>
+		void HardSyncMutex<T>::pushRequest(Request request) {
+			switch(request.type) {
+				case RequestType::READ :
+					readRequests.push(request);
+					break;
+				case RequestType::LOCK :
+					lockRequests.push(request);
+					break;
+				case RequestType::ACQUIRE :
+					acquireRequests.push(request);
+			}
+		}
+
+	template<typename T>
+		std::queue<Request> HardSyncMutex<T>::requestsToProcess() {
+			std::queue<Request> requests;
+			if(_locked) {
+				return requests;
+			}
+			while(!readRequests.empty()) {
+				Request readRequest = readRequests.front();
+				requests.push(readRequest);
+				readRequests.pop();
+				if(readRequest.source == Request::LOCAL) {
+					// Immediately returns, so that the last request processed
+					// is the local request
+					return requests;
+				}
+			}
+			if(!lockRequests.empty()) {
+				requests.push(lockRequests.front());
+				lockRequests.pop();
+			}
+			else if(!acquireRequests.empty()) {
+				requests.push(acquireRequests.front());
+				acquireRequests.pop();
+			}
+			return requests;
+		};
 }
 
 #endif

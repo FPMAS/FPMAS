@@ -75,6 +75,8 @@ set(SOURCES
 	graph/parallel/synchro/ghost/sync_linker.cpp
 	graph/parallel/synchro/hard/hard_sync_mutex.cpp
 	graph/parallel/synchro/hard/mutex_client.cpp
+	graph/parallel/synchro/hard/mutex_server.cpp
+	graph/parallel/synchro/hard/mpi_tests.cpp
 	graph/parallel/synchro/ghost_mode.cpp
 	graph/parallel/synchro/hard_sync_mode.cpp
 	graph/parallel/synchro/no_sync_mode.cpp)

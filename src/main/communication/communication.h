@@ -58,7 +58,8 @@ namespace FPMAS {
 				int getRank() const override;
 				int getSize() const override;
 
-				void send(Color token, int destination) override;
+				void send(int destination, int tag) override;
+				void send(Color token, int destination, int tag) override;
 				void send(const std::string&, int destination, int tag) override;
 				void sendEnd(int destination) override;
 				void Issend(const DistributedId&, int destination, int tag, MPI_Request*) override;
@@ -181,7 +182,8 @@ namespace FPMAS {
 			T Mpi<T>::recv(MPI_Status* status) {
 				std::string data;
 				comm.recv(status, data);
-				return nlohmann::json(data).get<T>();
+				std::cout << "recv " << data << std::endl;
+				return nlohmann::json::parse(data).get<T>();
 			}
 	}
 }

@@ -10,6 +10,8 @@ using ::testing::ElementsAre;
 using ::testing::UnorderedElementsAre;
 using ::testing::Pair;
 using ::testing::AnyOf;
+using ::testing::Contains;
+using ::testing::IsEmpty;
 
 TEST(Mpi_MpiCommunicatorTest, size_test) {
 	MpiCommunicator comm;
@@ -72,6 +74,34 @@ TEST(Mpi_MpiCommunicatorTest, build_from_ranks_test) {
 		}
 	}
 
+}
+
+TEST(Mpi_MpiCommunicatorTest, probe_any_source) {
+	MpiCommunicator comm;
+	if(comm.getSize() > 1) {
+		if(comm.getRank() == 0) {
+			std::vector<int> ranks;
+			for(int i = 1; i < comm.getSize(); i++) {
+				ranks.push_back(i);
+			}
+			MPI_Status status;
+			for(int i = 1; i < comm.getSize(); i++) {
+				bool recv = comm.Iprobe(MPI_ANY_SOURCE, 4, &status);
+				while(!recv) {
+					recv = comm.Iprobe(MPI_ANY_SOURCE, 4, &status);
+				}
+				ASSERT_EQ(status.MPI_TAG, 4);
+				ASSERT_THAT(ranks, Contains(status.MPI_SOURCE));
+				ranks.erase(std::remove(ranks.begin(), ranks.end(), status.MPI_SOURCE));
+				std::string data;
+				comm.recv(&status, data);
+			}
+			ASSERT_THAT(ranks, IsEmpty());
+		}
+		else {
+			comm.send("123", 0, 4);
+		}
+	}
 }
 
 class MigrateTest : public ::testing::Test {

@@ -3,6 +3,8 @@
 #include "api/graph/parallel/synchro/hard/mock_hard_sync_mutex.h"
 #include "graph/parallel/synchro/hard/hard_sync_mutex.h"
 
+using ::testing::AllOf;
+using ::testing::Field;
 using ::testing::SizeIs;
 using ::testing::IsEmpty;
 using ::testing::NotNull;
@@ -26,7 +28,9 @@ class HardSyncMutexTest : public ::testing::Test {
 TEST_F(HardSyncMutexTest, local_read) {
 	state = LocationState::LOCAL;
 
+	EXPECT_CALL(mockMutexServer, wait(AllOf(
+		Field(&Request::id, id),
+		Field(&Request::source, -1)
+		)));
 	ASSERT_EQ(hardSyncMutex.read(), 14);
-	ASSERT_THAT(hardSyncMutex.readRequests(), SizeIs(1));
-	ASSERT_THAT(hardSyncMutex.acquireRequests(), IsEmpty());
 }

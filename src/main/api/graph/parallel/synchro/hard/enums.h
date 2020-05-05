@@ -19,5 +19,13 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 		TOKEN = 0x08,
 		END = 0x09
 	};
+
+	/**
+	 * Used by the termination algorithm.
+	 */
+	enum Color : int {
+		WHITE = 0,
+		BLACK = 1
+	};
 }
 #endif

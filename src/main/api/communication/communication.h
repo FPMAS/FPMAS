@@ -36,20 +36,6 @@ namespace FPMAS::api::communication {
 		WHITE = 0,
 		BLACK = 1
 	};
-/*
- *
- *    struct MpiRequest {
- *        int destination;
- *        int tag;
- *    };
- *
- *    struct MpiStatus {
- *        int source;
- *        int tag;
- *        int char_count;
- *    };
- */
-
 
 	/**
 	 * MpiCommunicator interface.
@@ -71,12 +57,20 @@ namespace FPMAS::api::communication {
 			virtual int getSize() const = 0;
 
 			/**
+			 * Sends a void message to destination, with the given tag.
+			 *
+			 * @param destination destination rank
+			 * @param tag message tag
+			 */
+			virtual void send(int destination, int tag) = 0;
+
+			/**
 			 * Sends a colored token to the destination proc.
 			 *
 			 * @param token token color
 			 * @param destination destination rank
 			 */
-			virtual void send(Color token, int destination) = 0;
+			virtual void send(Color token, int destination, int tag) = 0;
 
 			/**
 			 * Sends an END message to the destination proc.

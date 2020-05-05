@@ -5,6 +5,7 @@
 #include "api/graph/parallel/synchro/mock_mutex.h"
 #include "api/graph/parallel/synchro/hard/hard_sync_mutex.h"
 
+using FPMAS::api::graph::parallel::synchro::hard::Epoch;
 using FPMAS::api::graph::parallel::synchro::hard::Request;
 
 template<typename T>
@@ -12,9 +13,9 @@ class MockHardSyncMutex :
 	public FPMAS::api::graph::parallel::synchro::hard::HardSyncMutex<T>,
 	public MockMutex<T> {
 		public:
-			MOCK_METHOD(std::queue<Request>&, readRequests, (), (override));
-			MOCK_METHOD(std::queue<Request>&, acquireRequests, (), (override));
+			MOCK_METHOD(void, pushRequest, (Request), (override));
 
+			MOCK_METHOD(std::queue<Request>, requestsToProcess, (), (override));
 	};
 
 template<typename T>
@@ -37,6 +38,9 @@ template<typename T>
 class MockMutexServer
 	: public FPMAS::api::graph::parallel::synchro::hard::MutexServer<T> {
 		public:
+			MOCK_METHOD(void, setEpoch, (Epoch), (override));
+			MOCK_METHOD(Epoch, getEpoch, (), (const, override));
+
 			MOCK_METHOD(void, manage,
 					(DistributedId, FPMAS::api::graph::parallel::synchro::hard::HardSyncMutex<T>*),
 					(override));

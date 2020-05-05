@@ -23,6 +23,7 @@ using testing::AnyNumber;
 
 #include "communication/request_handler.h"
 
+using ::testing::TypedEq;
 using FPMAS::api::communication::Tag;
 using FPMAS::communication::RequestHandler;
 
@@ -35,7 +36,7 @@ class TerminationTest : public ::testing::Test {
 };
 
 TEST_F(TerminationTest, rank_0_white_tokens) {
-	EXPECT_CALL(comm, send(Color::WHITE, 3))
+	EXPECT_CALL(comm, send(TypedEq<Color>(Color::WHITE), 3, Tag::TOKEN))
 		.Times(1);
 
 	EXPECT_CALL(comm, Iprobe(1, Tag::TOKEN, _))

@@ -12,7 +12,7 @@ namespace FPMAS::api::graph::parallel::synchro {
 
 		public:
 			//virtual DistributedId id() const = 0;
-			virtual const T& data() = 0;
+			virtual T& data() = 0;
 
 			virtual const T& read() = 0;
 			virtual T& acquire() = 0;
