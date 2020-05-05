@@ -38,7 +38,7 @@ if(MPIEXEC_EXECUTABLE)
 		${MPIEXEC_NUMPROC_FLAG}
 		${N_PROC}
 		${MPIEXEC_PREFLAGS}
-		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_mpi_test
+		${CMAKE_CURRENT_BINARY_DIR}/src/test/mpi/fpmas_mpi_test
 		"--gtest_filter=Mpi_*"
 		${MPIEXEC_POSTFLAGS}
 		)
@@ -52,7 +52,7 @@ if(MPIEXEC_EXECUTABLE)
 		"--suppressions=../mpi_init.supp"
 		"--leak-check=full"
 		"--show-leak-kinds=all"
-		${CMAKE_CURRENT_BINARY_DIR}/src/test/fpmas_mpi_test
+		${CMAKE_CURRENT_BINARY_DIR}/src/test/mpi/fpmas_mpi_test
 		"--gtest_filter=Mpi_*"
 		${MPIEXEC_POSTFLAGS}
 		)
