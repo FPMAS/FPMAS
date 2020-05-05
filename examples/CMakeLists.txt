@@ -1,2 +1,2 @@
-add_subdirectory(SyncModes)
-add_subdirectory(PreyPredator)
+#add_subdirectory(SyncModes)
+#add_subdirectory(PreyPredator)

@@ -3,7 +3,7 @@
 
 #include "gmock/gmock.h"
 
-#include "api/communication/resource_handler.h"
+//#include "api/communication/resource_handler.h"
 #include "api/communication/communication.h"
 
 using ::testing::Return;
@@ -11,13 +11,15 @@ using ::testing::AnyNumber;
 
 using FPMAS::api::communication::Color;
 
-class MockResourceHandler : public FPMAS::api::communication::ResourceHandler {
-	public:
-		MOCK_METHOD(std::string, getLocalData, (DistributedId), (const, override));
-		MOCK_METHOD(std::string, getUpdatedData, (DistributedId), (const, override));
-		MOCK_METHOD(void, updateData, (DistributedId, std::string), (override));
-
-};
+/*
+ *class MockResourceHandler : public FPMAS::api::communication::ResourceHandler {
+ *    public:
+ *        MOCK_METHOD(std::string, getLocalData, (DistributedId), (const, override));
+ *        MOCK_METHOD(std::string, getUpdatedData, (DistributedId), (const, override));
+ *        MOCK_METHOD(void, updateData, (DistributedId, std::string), (override));
+ *
+ *};
+ */
 
 template<int RANK=0, int SIZE=0>
 class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {

@@ -11,8 +11,8 @@ set(SOURCES
 set(SOURCES
 	${SOURCES}
 	communication/communication.cpp
-	communication/request_handler.cpp
-	communication/readers_writers.cpp
+	#communication/request_handler.cpp
+	#communication/readers_writers.cpp
 	)
 
 # Graph
@@ -20,53 +20,54 @@ set(SOURCES
 	${SOURCES}
 	graph/base/basic_node.cpp
 	graph/base/basic_graph.cpp
-	graph/base/graph.cpp)
+	#graph/base/graph.cpp
+	)
 
-set(SOURCES
-	${SOURCES}
-	graph/base/multi_graph.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/base/multi_graph.cpp)
 
 # Graph serialization
-set(SOURCES
-	${SOURCES}
-	graph/base/serializers.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/base/serializers.cpp)
 
 # Parallel graph
 ## Zoltan
-set(SOURCES
-	${SOURCES}
-	graph/parallel/zoltan/zoltan_lb.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/zoltan/zoltan_lb.cpp)
 
-set(SOURCES
-	${SOURCES}
-	graph/parallel/zoltan/zoltan_node_migrate.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/zoltan/zoltan_node_migrate.cpp)
 
-set(SOURCES
-	${SOURCES}
-	graph/parallel/zoltan/zoltan_arc_migrate.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/zoltan/zoltan_arc_migrate.cpp)
 
-set(SOURCES
-	${SOURCES}
-	graph/parallel/zoltan/zoltan_ghost_node_migrate.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/zoltan/zoltan_ghost_node_migrate.cpp)
 
 ## Graph
 set(SOURCES
 	${SOURCES}
 	graph/parallel/basic_distributed_graph.cpp
 	graph/parallel/location_manager.cpp
-	graph/parallel/distributed_graph.cpp
-	graph/parallel/distributed_multi_graph.cpp
-	graph/parallel/distributed_graph_edge_cases.cpp
+	#graph/parallel/distributed_graph.cpp
+	#graph/parallel/distributed_multi_graph.cpp
+	#graph/parallel/distributed_graph_edge_cases.cpp
 	graph/parallel/distributed_id.cpp
 	)
 
-set(SOURCES
-	${SOURCES}
-	graph/parallel/olz.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/olz.cpp)
 
-set(SOURCES
-	${SOURCES}
-	graph/parallel/olz_graph.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/olz_graph.cpp)
 
 ## synchro
 set(SOURCES
@@ -77,34 +78,35 @@ set(SOURCES
 	graph/parallel/synchro/hard/mutex_client.cpp
 	graph/parallel/synchro/hard/mutex_server.cpp
 	graph/parallel/synchro/hard/mpi_tests.cpp
-	graph/parallel/synchro/ghost_mode.cpp
-	graph/parallel/synchro/hard_sync_mode.cpp
-	graph/parallel/synchro/no_sync_mode.cpp)
-
-## Proxy
-set(SOURCES
-	${SOURCES}
-	graph/parallel/proxy/proxy.cpp)
-
-## Scheduler
-set(SOURCES
-	${SOURCES}
-	graph/parallel/scheduler.cpp)
-
-# Environment
-set(SOURCES
-	${SOURCES}
-	environment/grid.cpp
-	environment/von_neumann.cpp
-	environment/grid_agent.cpp
-	environment/cell.cpp
+	#graph/parallel/synchro/ghost_mode.cpp
+	#graph/parallel/synchro/hard_sync_mode.cpp
+	#graph/parallel/synchro/no_sync_mode.cpp
 	)
 
+## Proxy
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/proxy/proxy.cpp)
+
+## Scheduler
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/scheduler.cpp)
+
+# Environment
+#set(SOURCES
+	#${SOURCES}
+	#environment/grid.cpp
+	#environment/von_neumann.cpp
+	#environment/grid_agent.cpp
+	#environment/cell.cpp
+	#)
+
 # Agent
-set(SOURCES
-	${SOURCES}
-	agent/serializer.cpp
-	agent/perceptions.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#agent/serializer.cpp
+	#agent/perceptions.cpp)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
 target_include_directories(fpmas_mpi_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

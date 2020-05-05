@@ -13,13 +13,13 @@ set(SOURCES
 set(SOURCES
 	${SOURCES}
 	communication/communication.cpp
-	communication/request_handler.cpp
+	#communication/request_handler.cpp
 	)
 
-set(SOURCES
-	${SOURCES}
-	communication/readers_writers.cpp
-	)
+#set(SOURCES
+	#${SOURCES}
+	#communication/readers_writers.cpp
+	#)
 
 # Graph
 set(SOURCES
@@ -28,9 +28,9 @@ set(SOURCES
 	)
 
 # Proxy
-set(SOURCES
-	${SOURCES}
-	graph/parallel/proxy/proxy.cpp)
+#set(SOURCES
+	#${SOURCES}
+	#graph/parallel/proxy/proxy.cpp)
 
 add_library(fpmas ${SOURCES})
 
