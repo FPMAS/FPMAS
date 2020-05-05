@@ -29,10 +29,10 @@ class Mpi_MutexServerRaceCondition : public ::testing::Test {
 
 		MutexServer<int, TypedMpi> server {comm};
 		MutexClient<int, TypedMpi> client {comm, server};
-		HardSyncMutex<int> mutex {DistributedId(3, 6), data, state, location, client, server};
-
+		HardSyncMutex<int> mutex {data};
 
 		void SetUp() override {
+			mutex.setUp(DistributedId(3, 6), state, location, client, server);
 			client.manage(DistributedId(3, 6), &mutex);
 			server.manage(DistributedId(3, 6), &mutex);
 			if(comm.getRank() == 0) {

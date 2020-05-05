@@ -22,10 +22,11 @@ class GhostSyncLinkerTest : public ::testing::Test {
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mockComm;
-		GhostSyncLinker<node_type, arc_type,MockMpi>
-			linker {mockComm};
-
 		MockDistributedGraph<node_type, arc_type> mockedGraph;
+
+		GhostSyncLinker<node_type, arc_type,MockMpi>
+			linker {mockComm, mockedGraph};
+
 
 		DistributedId arc1_id = DistributedId(3, 12);
 		DistributedId arc2_id = DistributedId(0, 7);
@@ -92,7 +93,7 @@ TEST_F(GhostSyncLinkerTest, export_link) {
 	EXPECT_CALL(const_cast<MockMpi<arc_type>&>(linker.getArcMpi()), migrate(exportArcMatcher));
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(IsEmpty()));
 
-	linker.synchronize(mockedGraph);
+	linker.synchronize();
 
 	delete arc1.src;
 	delete arc1.tgt;
@@ -116,7 +117,7 @@ TEST_F(GhostSyncLinkerTest, import_link) {
 	EXPECT_CALL(mockedGraph, importArc(arc2));
 	EXPECT_CALL(mockedGraph, importArc(arc3));
 
-	linker.synchronize(mockedGraph);
+	linker.synchronize();
 }
 
 TEST_F(GhostSyncLinkerTest, import_export_link) {
@@ -138,7 +139,7 @@ TEST_F(GhostSyncLinkerTest, import_export_link) {
 	EXPECT_CALL(mockedGraph, importArc(arc1));
 	EXPECT_CALL(mockedGraph, importArc(arc3));
 
-	linker.synchronize(mockedGraph);
+	linker.synchronize();
 
 	delete arc2.src;
 	delete arc2.tgt;
@@ -165,7 +166,7 @@ TEST_F(GhostSyncLinkerTest, export_unlink) {
 	EXPECT_CALL(const_cast<MockMpi<arc_type>&>(linker.getArcMpi()), migrate(IsEmpty()));
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(exportIdMatcher));
 
-	linker.synchronize(mockedGraph);
+	linker.synchronize();
 
 	delete arc1.src;
 	delete arc1.tgt;
@@ -219,7 +220,7 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc3.src))));
 	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc3.tgt))));
 
-	linker.synchronize(mockedGraph);
+	linker.synchronize();
 
 	delete arc1.src;
 	delete arc1.tgt;
@@ -271,7 +272,7 @@ TEST_F(GhostSyncLinkerTest, import_export_unlink) {
 	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc3.src))));
 	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc3.tgt))));
 
-	linker.synchronize(mockedGraph);
+	linker.synchronize();
 
 	delete arc1.src;
 	delete arc1.tgt;

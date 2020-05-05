@@ -21,12 +21,13 @@ class GhostDataSyncTest : public ::testing::Test {
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mockComm;
+		MockDistributedGraph<node_type, arc_type> mockedGraph;
+
 		GhostDataSync<node_type, arc_type, MockMpi>
-			dataSync {mockComm};
+			dataSync {mockComm, mockedGraph};
 
 		MockLocationManager<node_type> locationManager {mockComm};
 
-		MockDistributedGraph<node_type, arc_type> mockedGraph;
 
 		std::array<node_type*, 4> nodes {
 			new node_type(DistributedId(2, 0), 1, 2.8),
@@ -86,7 +87,7 @@ TEST_F(GhostDataSyncTest, export_data) {
 		);
 	EXPECT_CALL(const_cast<MockMpi<node_type>&>(dataSync.getNodeMpi()), migrate(exportDataMatcher));
 
-	dataSync.synchronize(mockedGraph);
+	dataSync.synchronize();
 }
 
 TEST_F(GhostDataSyncTest, import_test) {
@@ -129,7 +130,7 @@ TEST_F(GhostDataSyncTest, import_test) {
 	EXPECT_CALL(*nodes[2], setWeight(7.2));
 	EXPECT_CALL(*nodes[3], setWeight(2.2));
 
-	dataSync.synchronize(mockedGraph);
+	dataSync.synchronize();
 
 	ASSERT_EQ(nodes[1]->data(), 12);
 	ASSERT_EQ(nodes[2]->data(), 56);

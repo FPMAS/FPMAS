@@ -22,7 +22,11 @@ class HardSyncMutexTest : public ::testing::Test {
 		MockMutexClient<int> mockMutexClient;
 		MockMutexServer<int> mockMutexServer;
 
-		HardSyncMutex<int> hardSyncMutex {id, data, state, location, mockMutexClient, mockMutexServer};
+		HardSyncMutex<int> hardSyncMutex {data};
+
+		void SetUp() {
+			hardSyncMutex.setUp(id, state, location, mockMutexClient, mockMutexServer);
+		}
 };
 
 TEST_F(HardSyncMutexTest, local_read) {

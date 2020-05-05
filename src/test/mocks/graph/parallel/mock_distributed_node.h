@@ -26,12 +26,14 @@ class MockDistributedNode :
 		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T, Mutex>&);
 
 		private:
+		Mutex<T> _mutex;
 		LocationState _state = LocationState::LOCAL;
 		int _location;
 
 		public:
 		using typename node_base::arc_type;
 		MockDistributedNode() {
+			setUpDefaultMutex();
 			setUpLocationAccess();
 			setUpStateAccess();
 		}
@@ -40,6 +42,7 @@ class MockDistributedNode :
 					otherMock.getId(), otherMock.data(),
 					otherMock.getWeight()
 					){
+				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
@@ -47,6 +50,7 @@ class MockDistributedNode :
 
 		MockDistributedNode(const DistributedId& id)
 			: node_base(id) {
+				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
@@ -54,12 +58,14 @@ class MockDistributedNode :
 
 		MockDistributedNode(const DistributedId& id, const T& data)
 			: node_base(id, std::move(data)) {
+				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
 			}
 		MockDistributedNode(const DistributedId& id, const T& data, float weight)
 			: node_base(id, std::move(data), weight) {
+				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
@@ -71,15 +77,19 @@ class MockDistributedNode :
 		MOCK_METHOD(void, setState, (LocationState), (override));
 		MOCK_METHOD(LocationState, state, (), (const, override));
 
-		MOCK_METHOD(
-				FPMAS::api::graph::parallel::synchro::Mutex<T>&, mutex, (), (override)
-				);
+		MOCK_METHOD(Mutex<T>&, mutex, (), (override));
 
 		bool operator==(const MockDistributedNode& other) const {
 			return this->id == other.id;
 		}
 
 		private:
+		void setUpDefaultMutex() {
+			ON_CALL(*this, mutex)
+				.WillByDefault(ReturnRef(_mutex));
+			EXPECT_CALL(*this, mutex).Times(AnyNumber());
+		}
+
 		void setUpStateAccess() {
 			ON_CALL(*this, setState)
 				.WillByDefault(SaveArg<0>(&_state));

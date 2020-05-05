@@ -38,6 +38,7 @@ namespace FPMAS::graph::parallel {
 		> {
 			typedef DistNodeImpl<T, SyncMode::template mutex_type> dist_node_type;
 			typedef DistArcImpl<T, SyncMode::template mutex_type> dist_arc_type;
+			typedef typename SyncMode::template sync_mode_runtime<T, dist_node_type, dist_arc_type> sync_mode_runtime;
 			static_assert(
 					std::is_base_of<api::graph::parallel::DistributedNode<
 					typename dist_node_type::data_type,
@@ -64,8 +65,8 @@ namespace FPMAS::graph::parallel {
 			using typename dist_graph_base::layer_id_type;
 			using typename dist_graph_base::node_map;
 			using typename dist_graph_base::partition_type;
-			typedef typename SyncMode::template sync_linker<node_type, arc_type> sync_linker_type;
-			typedef typename SyncMode::template data_sync<node_type, arc_type> data_sync_type;
+			//typedef typename SyncMode<T>::template sync_linker<node_type, arc_type> sync_linker_type;
+			//typedef typename SyncMode<T>::template data_sync<node_type, arc_type> data_sync_type;
 			typedef typename MpiSetUp::communicator communicator;
 			template<typename Data>
 			using mpi = typename MpiSetUp::template mpi<Data>;
@@ -75,15 +76,15 @@ namespace FPMAS::graph::parallel {
 			mpi<node_type> nodeMpi {mpiCommunicator};
 			mpi<arc_type> arcMpi {mpiCommunicator};
 
-			SyncMode syncMode;
-			sync_linker_type syncLinker;
-			data_sync_type dataSync;
+			sync_mode_runtime syncModeRuntime;
+			//sync_linker_type syncLinker;
+			//data_sync_type dataSync;
 			LocationManagerImpl<node_type> locationManager;
 			LoadBalancingImpl<node_type> loadBalancing;
 
 
 			public:
-			BasicDistributedGraph() : locationManager(mpiCommunicator), syncLinker(mpiCommunicator) {
+			BasicDistributedGraph() : locationManager(mpiCommunicator) /*, syncLinker(mpiCommunicator)*/ {
 				// Initialization in the body of this (derived) class of the
 				// (base) fields nodeId and arcId, to ensure that
 				// mpiCommunicator is initialized (as a field of this derived
@@ -107,11 +108,11 @@ namespace FPMAS::graph::parallel {
 			node_type* importNode(const node_type& node) override;
 			arc_type* importArc(const arc_type& arc) override;
 
-			const SyncMode& getSyncMode() const {return syncMode;}
+			const sync_mode_runtime& getSyncModeRuntime() const {return syncModeRuntime;}
 
-			const sync_linker_type& getSyncLinker() const {return syncLinker;}
+			//const sync_linker_type& getSyncLinker() const {return syncLinker;}
 
-			const data_sync_type& getDataSync() const {return dataSync;}
+			//const data_sync_type& getDataSync() const {return dataSync;}
 
 			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
 				return loadBalancing;
@@ -132,13 +133,14 @@ namespace FPMAS::graph::parallel {
 			void synchronize() override;
 
 			template<typename... Args> node_type* buildNode(Args... args) {
-				auto node = new node_type(
+				node_type* node = new node_type(
 						this->nodeId++,
 						std::forward<Args>(args)...
 						);
 				this->insert(node);
 				locationManager.setLocal(node);
 				locationManager.addManagedNode(node, mpiCommunicator.getRank());
+				syncModeRuntime.setUp(node->mutex());
 				return node;
 			}
 
@@ -163,7 +165,7 @@ namespace FPMAS::graph::parallel {
 				// SyncLinker, that will handle the request according to its
 				// synchronisation policy
 				if(src->state() == LocationState::DISTANT || tgt->state() == LocationState::DISTANT) {
-					syncLinker.link(arc);
+					syncModeRuntime.getSyncLinker().link(arc);
 					arc->setState(LocationState::DISTANT);
 				} else {
 					arc->setState(LocationState::LOCAL);
@@ -188,7 +190,7 @@ namespace FPMAS::graph::parallel {
 		tgt->mutex().lock();
 
 		if(arc->state() == LocationState::DISTANT) {
-			syncLinker.unlink(arc);
+			syncModeRuntime.getSyncLinker().unlink(arc);
 			// TODO : src and tgt might be cleared
 		}
 		this->erase(arc);
@@ -205,6 +207,7 @@ namespace FPMAS::graph::parallel {
 			auto nodeCopy = new node_type(node);
 			this->insert(nodeCopy);
 			locationManager.setLocal(nodeCopy);
+			syncModeRuntime.setUp(nodeCopy->mutex());
 			return nodeCopy;
 		}
 		auto localNode = this->getNode(node.getId());
@@ -232,6 +235,7 @@ namespace FPMAS::graph::parallel {
 				src = new node_type(srcId);
 				this->insert(src);
 				locationManager.setDistant(src);
+				syncModeRuntime.setUp(src->mutex());
 			}
 			if(this->getNodes().count(tgtId) > 0) {
 				tgt = this->getNode(tgtId);
@@ -243,6 +247,7 @@ namespace FPMAS::graph::parallel {
 				tgt = new node_type(tgtId);
 				this->insert(tgt);
 				locationManager.setDistant(tgt);
+				syncModeRuntime.setUp(tgt->mutex());
 			}
 			// TODO : ghosts creation part is nice, but this is not
 			// because it can't adapt to any DistArcImpl type, using a generic
@@ -271,7 +276,7 @@ namespace FPMAS::graph::parallel {
 	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::distribute(partition_type partition) {
 
-			syncLinker.synchronize(*this);
+			syncModeRuntime.getSyncLinker().synchronize();
 
 			// Builds node and arcs export maps
 			std::vector<node_type*> exportedNodes;
@@ -329,14 +334,14 @@ namespace FPMAS::graph::parallel {
 				clear(node);
 			}
 			locationManager.updateLocations(importedNodes);
-			dataSync.synchronize(*this);
+			syncModeRuntime.getDataSync().synchronize();
 		}
 
 	template<DIST_GRAPH_PARAMS>
 	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::synchronize() {
-			syncLinker.synchronize(*this);
-			dataSync.synchronize(*this);
+			syncModeRuntime.getSyncLinker().synchronize();
+			syncModeRuntime.getDataSync().synchronize();
 		}
 
 	template<DIST_GRAPH_PARAMS>

@@ -56,17 +56,27 @@ class BasicDistributedGraphTest : public ::testing::Test {
 			MockMpiSetUp<7, 10>,
 			MockLocationManager,
 			MockLoadBalancing> graph;
+
 		MockMpiCommunicator<7, 10>& comm =
 			static_cast<MockMpiCommunicator<7, 10>&>(graph.getMpiCommunicator());
+
+		MockSyncLinker<MockDistributedArc<int, MockMutex>> mockSyncLinker {comm};
+		MockDataSync mockDataSync;
+
 
 		typedef decltype(graph) graph_type;
 		typedef typename graph_type::node_type node_type; // MockDistributedNode<int, MockMutex>
 		typedef typename graph_type::arc_type arc_type;	//MockDistributedArc<int, MockMutex>
 	
 		void SetUp() override {
-			ON_CALL(comm, getRank)
-				.WillByDefault(Return(7));
-			EXPECT_CALL(comm, getRank).Times(AnyNumber());
+			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker)
+				.WillByDefault(ReturnRef(mockSyncLinker));
+			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker)
+				.Times(AnyNumber());
+			ON_CALL(graph.getSyncModeRuntime(), getDataSync)
+				.WillByDefault(ReturnRef(mockDataSync));
+			EXPECT_CALL(graph.getSyncModeRuntime(), getDataSync)
+				.Times(AnyNumber());
 		}
 
 };
@@ -87,6 +97,8 @@ TEST_F(BasicDistributedGraphTest, buildNode) {
 	node_type* setLocalArg;
 	EXPECT_CALL(locationManager, setLocal(_))
 		.WillOnce(SaveArg<0>(&setLocalArg));
+
+	EXPECT_CALL(graph.getSyncModeRuntime(), setUp);
 
 	auto currentId = graph.currentNodeId();
 	ASSERT_EQ(currentId.rank(), 7);
@@ -123,6 +135,8 @@ class BasicDistributedGraphLinkTest : public BasicDistributedGraphTest {
 
 	public:
 		void SetUp() override {
+			BasicDistributedGraphTest::SetUp();
+
 			EXPECT_CALL(srcMock, mutex).WillRepeatedly(ReturnRef(srcMutex));
 			EXPECT_CALL(tgtMock, mutex).WillRepeatedly(ReturnRef(tgtMutex));
 
@@ -130,7 +144,7 @@ class BasicDistributedGraphLinkTest : public BasicDistributedGraphTest {
 			EXPECT_CALL(srcMutex, unlock);
 			EXPECT_CALL(tgtMutex, lock);
 			EXPECT_CALL(tgtMutex, unlock);
-			EXPECT_CALL(graph.getSyncLinker(), unlink).Times(0);
+			EXPECT_CALL(mockSyncLinker, unlink).Times(0);
 
 			EXPECT_CALL(srcMock, linkOut)
 				.WillOnce(SaveArg<0>(&linkOutArg));
@@ -163,7 +177,7 @@ TEST_F(BasicDistributedGraphLinkTest, local_src_local_tgt) {
 	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 
-	EXPECT_CALL(graph.getSyncLinker(), link).Times(0);
+	EXPECT_CALL(mockSyncLinker, link).Times(0);
 
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 
@@ -180,7 +194,7 @@ TEST_F(BasicDistributedGraphLinkTest, local_src_distant_tgt) {
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
 	const arc_type* linkArcArg;
-	EXPECT_CALL(graph.getSyncLinker(), link)
+	EXPECT_CALL(mockSyncLinker, link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 	ASSERT_EQ(linkArcArg, arc);
@@ -198,7 +212,7 @@ TEST_F(BasicDistributedGraphLinkTest, distant_src_local_tgt) {
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 
 	const arc_type* linkArcArg;
-	EXPECT_CALL(graph.getSyncLinker(), link)
+	EXPECT_CALL(mockSyncLinker, link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 	ASSERT_EQ(linkArcArg, arc);
@@ -218,7 +232,7 @@ TEST_F(BasicDistributedGraphLinkTest, distant_src_distant_tgt) {
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
 	const arc_type* linkArcArg;
-	EXPECT_CALL(graph.getSyncLinker(), link)
+	EXPECT_CALL(mockSyncLinker, link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 	ASSERT_EQ(linkArcArg, arc);
@@ -241,6 +255,8 @@ class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
 
 	public:
 		void SetUp() override {
+			BasicDistributedGraphTest::SetUp();
+
 			EXPECT_CALL(srcMock, mutex).WillRepeatedly(ReturnRef(srcMutex));
 			EXPECT_CALL(tgtMock, mutex).WillRepeatedly(ReturnRef(tgtMutex));
 
@@ -256,7 +272,7 @@ class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
 
 			EXPECT_CALL(srcMock, linkOut);
 			EXPECT_CALL(tgtMock, linkIn);
-			EXPECT_CALL(graph.getSyncLinker(), link).Times(AnyNumber());
+			EXPECT_CALL(mockSyncLinker, link).Times(AnyNumber());
 
 			arc = graph.link(&srcMock, &tgtMock, 0);
 
@@ -269,7 +285,7 @@ TEST_F(BasicDistributedGraphUnlinkTest, local_src_local_tgt) {
 	this->link(LocationState::LOCAL, LocationState::LOCAL);
 	ASSERT_EQ(arc->_state, LocationState::LOCAL);
 
-	EXPECT_CALL(graph.getSyncLinker(), unlink).Times(0);
+	EXPECT_CALL(mockSyncLinker, unlink).Times(0);
 
 	graph.unlink(arc);
 
@@ -281,7 +297,8 @@ TEST_F(BasicDistributedGraphUnlinkTest, local_src_distant_tgt) {
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 
 	EXPECT_CALL(
-		(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
+		//(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
+		mockSyncLinker,
 		unlink(arc)
 		).Times(1);
 
@@ -295,7 +312,8 @@ TEST_F(BasicDistributedGraphUnlinkTest, distant_src_local_tgt) {
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 
 	EXPECT_CALL(
-		(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
+		//(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
+		mockSyncLinker,
 		unlink(arc)
 		).Times(1);
 
@@ -312,18 +330,8 @@ TEST_F(BasicDistributedGraphUnlinkTest, distant_src_local_tgt) {
  * - node import of a new node
  * - node import with a ghost corresponding to this node already in the graph
  */
-class BasicDistributedGraphImportNodeTest : public ::testing::Test {
+class BasicDistributedGraphImportNodeTest : public BasicDistributedGraphTest {
 	protected:
-		BasicDistributedGraph<
-			int,
-			MockSyncMode<>,
-			MockDistributedNode,
-			MockDistributedArc,
-			MockMpiSetUp<7, 10>,
-			MockLocationManager,
-			MockLoadBalancing> graph;
-
-		typedef decltype(graph) graph_type;
 		typedef typename graph_type::node_type node_type; // MockDistributedNode<int, MockMutex>
 		typedef typename graph_type::arc_type arc_type; // MockDistributedArc<int, MockMutex>
 		typedef typename decltype(graph)::partition_type partition_type;
@@ -335,9 +343,11 @@ class BasicDistributedGraphImportNodeTest : public ::testing::Test {
 
 		partition_type partition;
 		std::unordered_map<int, std::vector<node_type>> importedNodeMocks;
-		//std::unordered_map<int, std::string> importedNodePack;
 		std::unordered_map<int, std::vector<arc_type>> importedArcMocks;
-		//std::unordered_map<int, std::string> importedArcPack;
+		
+		void SetUp() override {
+			BasicDistributedGraphTest::SetUp();
+		}
 
 		void distributeTest() {
 			EXPECT_CALL(
@@ -348,8 +358,8 @@ class BasicDistributedGraphImportNodeTest : public ::testing::Test {
 					(const_cast<MockMpi<arc_type>&>(graph.getArcMpi())),
 					migrate
 					).WillOnce(Return(importedArcMocks));
-			EXPECT_CALL(graph.getSyncLinker(), synchronize).Times(1);
-			EXPECT_CALL(graph.getDataSync(), synchronize).Times(1);
+			EXPECT_CALL(mockSyncLinker, synchronize).Times(1);
+			EXPECT_CALL(mockDataSync, synchronize).Times(1);
 			graph.distribute(partition);
 		}
 
@@ -368,7 +378,7 @@ TEST_F(BasicDistributedGraphImportNodeTest, import_node) {
 	EXPECT_CALL(locationManager,updateLocations(localNodesMatcher));
 	EXPECT_CALL(locationManager, setLocal(_))
 		.WillOnce(SaveArg<0>(&setLocalArg));
-
+	EXPECT_CALL(graph.getSyncModeRuntime(), setUp);
 
 	distributeTest();
 
@@ -386,6 +396,7 @@ TEST_F(BasicDistributedGraphImportNodeTest, import_node) {
 TEST_F(BasicDistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 	EXPECT_CALL(locationManager, addManagedNode);
 	EXPECT_CALL(locationManager, setLocal);
+	EXPECT_CALL(graph.getSyncModeRuntime(), setUp);
 	auto node = graph.buildNode(8, 2.1);
 	ON_CALL(*node, state()).WillByDefault(Return(LocationState::DISTANT));
 
@@ -426,8 +437,11 @@ class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportNod
 		arc_type* importedArc;
 
 	void SetUp() override {
+		BasicDistributedGraphImportNodeTest::SetUp();
+
 		EXPECT_CALL(locationManager, addManagedNode).Times(2);
 		EXPECT_CALL(locationManager, setLocal).Times(2);
+		EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(2);
 		src = graph.buildNode();
 		tgt = graph.buildNode();
 
@@ -545,6 +559,9 @@ class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraph
 		arc_type* importedArc;
 
 		void SetUp() override {
+			BasicDistributedGraphTest::SetUp();
+
+			EXPECT_CALL(graph.getSyncModeRuntime(), setUp);
 			EXPECT_CALL(locationManager, addManagedNode);
 			EXPECT_CALL(locationManager, setLocal);
 			localNode = graph.buildNode();
@@ -554,6 +571,9 @@ class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraph
 
 			// This node is not contained is the graph, but will be linked.
 			ASSERT_EQ(graph.getNodes().count(mock_two->getId()), 0);
+
+			// SetUp should be call once for the created tgt or src
+			EXPECT_CALL(graph.getSyncModeRuntime(), setUp);
 		}
 
 		void checkArcAndGhostStructure() {
@@ -657,8 +677,11 @@ class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
 					graph.getLocationManager()
 					));
 		void SetUp() override {
+			BasicDistributedGraphTest::SetUp();
+
 			EXPECT_CALL(locationManager, addManagedNode).Times(5);
 			EXPECT_CALL(locationManager, setLocal).Times(5);
+			EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(5);
 			for(int i=0; i < 5;i++) {
 				auto node = graph.buildNode();
 				nodeIds[i] = node->getId();
@@ -668,8 +691,8 @@ class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
 			fakePartition[nodeIds[2]] = 1;
 			fakePartition[nodeIds[3]] = 0;
 			fakePartition[nodeIds[4]] = 0;
-			EXPECT_CALL(graph.getSyncLinker(), synchronize);
-			EXPECT_CALL(graph.getDataSync(), synchronize);
+			EXPECT_CALL(mockSyncLinker, synchronize);
+			EXPECT_CALL(mockDataSync, synchronize);
 		}
 };
 
@@ -684,8 +707,9 @@ class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
 TEST_F(BasicDistributedGraphTest, distribute_calls) {
 	Sequence s;
 	EXPECT_CALL(
-			(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
-			synchronize(Ref(graph))
+			//(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
+			mockSyncLinker,
+			synchronize()
 			)
 		.InSequence(s);
 
@@ -701,8 +725,9 @@ TEST_F(BasicDistributedGraphTest, distribute_calls) {
 			)
 		.InSequence(s);
 	EXPECT_CALL(
-			(const_cast<MockDataSync<node_type, arc_type>&>(graph.getDataSync())),
-			synchronize(Ref(graph))
+			//(const_cast<MockDataSync<node_type, arc_type>&>(graph.getDataSync())),
+			mockDataSync,
+			synchronize()
 			)
 		.InSequence(s);
 
@@ -718,12 +743,14 @@ TEST_F(BasicDistributedGraphTest, distribute_calls) {
 TEST_F(BasicDistributedGraphTest, synchronize_calls) {
 	Sequence s;
 	EXPECT_CALL(
-			(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
-			synchronize(Ref(graph)))
+			//(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
+			mockSyncLinker,
+			synchronize())
 		.InSequence(s);
 	EXPECT_CALL(
-			(const_cast<MockDataSync<node_type, arc_type>&>(graph.getDataSync())),
-			synchronize(Ref(graph)))
+			//(const_cast<MockDataSync<node_type, arc_type>&>(graph.getDataSync())),
+			mockDataSync,
+			synchronize())
 		.InSequence(s);
 
 	graph.synchronize();
@@ -793,6 +820,7 @@ TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
 	EXPECT_CALL(locationManager, setLocal(_))
 		.WillOnce(SaveArg<0>(&setLocalArgs[0]))
 		.WillOnce(SaveArg<0>(&setLocalArgs[1]));
+	EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(2);
 	
 	EXPECT_CALL(locationManager, updateLocations(UnorderedElementsAre(
 					Pair(DistributedId(2, 5), _),
@@ -818,7 +846,8 @@ class BasicDistributedGraphDistributedWithLinkTest : public BasicDistributedGrap
 		arc_type* arc1;
 		arc_type* arc2;
 		void SetUp() override {
-			this->BasicDistributedGraphDistributeTest::SetUp();
+			BasicDistributedGraphDistributeTest::SetUp();
+
 			// No lock to manage, all links are local
 			MockMutex<int> mockMutex;
 			EXPECT_CALL(mockMutex, lock).Times(AnyNumber());
@@ -880,6 +909,8 @@ TEST_F(BasicDistributedGraphDistributedWithLinkTest, distribute_with_link_test) 
 	};
 	arcImport[3][0].src = new node_type(DistributedId(4, 8));
 	arcImport[3][0].tgt = new node_type(DistributedId(3, 2));
+
+	EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(2);
 
 	// Mock arc import
 	EXPECT_CALL(

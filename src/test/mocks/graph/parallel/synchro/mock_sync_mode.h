@@ -5,40 +5,35 @@
 #include "api/graph/parallel/synchro/sync_mode.h"
 #include "mock_mutex.h"
 
-template<typename NodeType, typename ArcType>
-class MockDataSync : public FPMAS::api::graph::parallel::synchro::DataSync<NodeType, ArcType> {
+class MockDataSync : public FPMAS::api::graph::parallel::synchro::DataSync {
 	public:
-		MOCK_METHOD(void, synchronize, (
-				(FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>)&
-				), (override));
+		MOCK_METHOD(void, synchronize, (), (override));
 
 };
 
-template<typename NodeType, typename ArcType>
-class MockSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<NodeType, ArcType> {
+template<typename ArcType>
+class MockSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<ArcType> {
 	public:
 		MockSyncLinker(FPMAS::api::communication::MpiCommunicator&) {}
 
 		MOCK_METHOD(void, link, (const ArcType*), (override));
 		MOCK_METHOD(void, unlink, (const ArcType*), (override));
-		MOCK_METHOD(void, synchronize, (
-				(FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>)&
-				), (override));
+		MOCK_METHOD(void, synchronize, (), (override));
 
 };
 
+template<typename Node, typename Arc, typename Mutex>
+class MockSyncModeRuntime : public FPMAS::api::graph::parallel::synchro::SyncModeRuntime<Node, Arc, Mutex> {
+	public:
+		MOCK_METHOD(void, setUp, (Mutex&), (override));
+		MOCK_METHOD(FPMAS::api::graph::parallel::synchro::SyncLinker<Arc>&, getSyncLinker, (), (override));
+		MOCK_METHOD(FPMAS::api::graph::parallel::synchro::DataSync&, getDataSync, (), (override));
+
+};
 template<
 	template<typename> class Mutex = MockMutex,
-	template<typename, typename> class SyncLinker = MockSyncLinker,
-	template<typename, typename> class DataSync = MockDataSync>
-class MockSyncMode : public FPMAS::api::graph::parallel::synchro::SyncMode<Mutex, SyncLinker, DataSync> {
-	/*
-	 *public:
-	 *    MOCK_METHOD(void, synchronize, (
-	 *        FPMAS::api::communication::MpiCommunicator&,
-	 *        (FPMS::api::graph::parallel::DistributedGraph<NodeType, ArcType>&)
-	 *    ), (override));
-	 */
+	template<typename, typename, typename> class Runtime = MockSyncModeRuntime>
+class MockSyncMode : public FPMAS::api::graph::parallel::synchro::SyncMode<Mutex, Runtime> {
 
 };
 

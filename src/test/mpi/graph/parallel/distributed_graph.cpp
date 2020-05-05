@@ -12,6 +12,7 @@ using FPMAS::api::graph::parallel::LocationState;
 using FPMAS::graph::parallel::BasicDistributedGraph;
 
 using ::testing::AnyNumber;
+using ::testing::ReturnRef;
 using ::testing::SizeIs;
 
 /****************************/
@@ -39,11 +40,25 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 			location_manager,
 			MockLoadBalancing> graph;
 
+		MockSyncLinker<FPMAS::graph::parallel::DistributedArc<int, MockMutex>> mockSyncLinker {graph.getMpiCommunicator()};
+		MockDataSync mockDataSync;
+
 		MockLoadBalancing<FPMAS::graph::parallel::DistributedNode<int, MockMutex>>
 			::partition_type partition;
 
 		void SetUp() override {
+			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker)
+				.WillByDefault(ReturnRef(mockSyncLinker));
+			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker)
+				.Times(AnyNumber());
+			ON_CALL(graph.getSyncModeRuntime(), getDataSync)
+				.WillByDefault(ReturnRef(mockDataSync));
+			EXPECT_CALL(graph.getSyncModeRuntime(), getDataSync)
+				.Times(AnyNumber());
+
 			if(graph.getMpiCommunicator().getRank() == 0) {
+				EXPECT_CALL(graph.getSyncModeRuntime(), setUp)
+					.Times(graph.getMpiCommunicator().getSize());
 				auto firstNode = graph.buildNode();
 				EXPECT_CALL(firstNode->mutex(), lock).Times(AnyNumber());
 				EXPECT_CALL(firstNode->mutex(), unlock).Times(AnyNumber());
@@ -60,11 +75,22 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 				}
 				graph.link(prevNode, firstNode, 0);
 			}
+			else if(graph.getMpiCommunicator().getSize() == 2) {
+				// 1 local node + 1 distant nodes will be created
+				EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(2);
+			} else {
+				// 1 local node + 2 distant nodes will be created
+				EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(3);
+			}
 		}
 };
 
 TEST_F(Mpi_BasicDistributedGraphBalance, distribute_test) {
-	EXPECT_CALL(graph.getSyncLinker(), synchronize);
+	{
+		::testing::InSequence s;
+		EXPECT_CALL(mockSyncLinker, synchronize);
+		EXPECT_CALL(mockDataSync, synchronize);
+	}
 	graph.distribute(partition);
 
 	if(graph.getMpiCommunicator().getSize() == 1) {
