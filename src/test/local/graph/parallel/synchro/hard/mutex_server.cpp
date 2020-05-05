@@ -87,16 +87,6 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 					status->MPI_TAG = tag;
 				}
 		};
-		class MockRecv {
-			private:
-				DistributedId id;
-			public:
-				MockRecv(DistributedId id)
-					: id(id) {}
-				void operator()(MPI_Status*, DistributedId& id) {
-					id = this->id;
-				}
-		};
 		std::vector<MockHardSyncMutex<int>*> mocks;
 
 
@@ -122,12 +112,12 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::READ, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			EXPECT_CALL(comm, recv(
+			EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(server.getIdMpi()), recv(
 					Pointee(AllOf(
 						Field(&MPI_Status::MPI_SOURCE, source),
-						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::READ))),
-					A<DistributedId&>()))
-				.WillOnce(Invoke(MockRecv(id)));
+						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::READ)))
+					))
+				.WillOnce(Return(id));
 
 			EXPECT_CALL(
 				const_cast<MockMpi<int>&>(server.getDataMpi()),
@@ -138,12 +128,12 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::ACQUIRE, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			EXPECT_CALL(comm, recv(
+			EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(server.getIdMpi()), recv(
 					Pointee(AllOf(
 						Field(&MPI_Status::MPI_SOURCE, source),
-						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::ACQUIRE))),
-					A<DistributedId&>()))
-				.WillOnce(Invoke(MockRecv(id)));
+						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::ACQUIRE)))
+					))
+				.WillOnce(Return(id));
 
 			EXPECT_CALL(
 				const_cast<MockMpi<int>&>(server.getDataMpi()),
@@ -174,12 +164,12 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::LOCK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			EXPECT_CALL(comm, recv(
+			EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(server.getIdMpi()), recv(
 					Pointee(AllOf(
 						Field(&MPI_Status::MPI_SOURCE, source),
-						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::LOCK))),
-					A<DistributedId&>()))
-				.WillOnce(Invoke(MockRecv(id)));
+						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::LOCK)))
+					))
+				.WillOnce(Return(id));
 
 			EXPECT_CALL(comm, send(source, Epoch::EVEN | Tag::LOCK_RESPONSE));
 			EXPECT_CALL(*mock, _lock);
@@ -195,13 +185,13 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::UNLOCK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			EXPECT_CALL(comm,
+			EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(server.getIdMpi()),
 				recv(Pointee(AllOf(
 					Field(&MPI_Status::MPI_SOURCE, source),
 					Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::UNLOCK)
-					)), A<DistributedId&>())
+					)))
 				)
-				.WillOnce(Invoke(MockRecv(id)));
+				.WillOnce(Return(id));
 
 			EXPECT_CALL(*mock, _unlock);
 		}

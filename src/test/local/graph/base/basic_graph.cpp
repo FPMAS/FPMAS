@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
+#include "graph/base/basic_graph.h"
 #include "graph/base/basic_id.h"
-#include "../mocks/graph/base/mock_graph_base.h"
 #include "../mocks/graph/base/mock_node.h"
 #include "../mocks/graph/base/mock_arc.h"
 
@@ -12,8 +12,26 @@ using ::testing::AtLeast;
 
 using FPMAS::graph::base::BasicId;
 
+template<typename NodeType, typename ArcType>
+class MockAbstractGraphBase : 
+	public virtual FPMAS::graph::base::AbstractGraphBase<NodeType, ArcType> {
+		typedef FPMAS::graph::base::AbstractGraphBase<NodeType, ArcType>
+		graph_base;
+		using typename graph_base::node_type;
+		using typename graph_base::node_id_type;
+		using typename graph_base::node_map;
+
+		using typename graph_base::arc_type;
+		using typename graph_base::arc_id_type;
+		using typename graph_base::arc_map;
+
+		public:
+			MOCK_METHOD(void, removeNode, (node_type*), (override));
+			MOCK_METHOD(void, unlink, (arc_type*), (override));
+
+};
 TEST(BasicGraphTest, buildDefaultNode) {
-	MockGraphBase<MockNode<MockData, BasicId>, MockArc<MockData, BasicId>> graph;
+	MockAbstractGraphBase<MockNode<MockData, BasicId>, MockArc<MockData, BasicId>> graph;
 
 	BasicId id;
 	for (int i = 0; i < 10; ++i) {
@@ -28,7 +46,7 @@ TEST(BasicGraphTest, buildDefaultNode) {
 
 class BasicGraphEraseArcTest : public ::testing::Test {
 	protected:
-		MockGraphBase<MockNode<MockData, BasicId>, MockArc<MockData, BasicId>> graph;
+		MockAbstractGraphBase<MockNode<MockData, BasicId>, MockArc<MockData, BasicId>> graph;
 		BasicId id;
 		MockNode<MockData, BasicId>* src = new MockNode<MockData, BasicId>(++id);;
 		MockNode<MockData, BasicId>* tgt = new MockNode<MockData, BasicId>(++id);;

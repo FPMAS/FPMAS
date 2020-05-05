@@ -2,12 +2,12 @@
 #define MOCK_GRAPH_BASE_H
 #include "gmock/gmock.h"
 
-#include "graph/base/basic_graph.h"
+#include "api/graph/base/graph.h"
 
 template<typename NodeType, typename ArcType>
 class MockGraphBase : 
-	public virtual FPMAS::graph::base::AbstractGraphBase<NodeType, ArcType> {
-		typedef FPMAS::graph::base::AbstractGraphBase<NodeType, ArcType>
+	public virtual FPMAS::api::graph::base::Graph<NodeType, ArcType> {
+		typedef FPMAS::api::graph::base::Graph<NodeType, ArcType>
 		graph_base;
 		using typename graph_base::node_type;
 		using typename graph_base::node_id_type;

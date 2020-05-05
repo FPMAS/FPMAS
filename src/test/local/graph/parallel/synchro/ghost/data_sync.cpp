@@ -59,43 +59,6 @@ class GhostDataSyncTest : public ::testing::Test {
 		}
 };
 
-//class Foo {
-	//private:
-		//int data;
-
-	//public:
-		//Foo() {}
-		//Foo(const Foo& other) {
-			//std::cout << "copy construct" << std::endl;
-		//}
-		//Foo& operator=(const Foo& other) = delete;
-		/*
-		 *Foo& operator=(const Foo& other) {
-		 *    std::cout << "copy assign" << std::endl;
-		 *    return *this;
-		 *}
-		 */
-//};
-
-//TEST(TEST_FOO, foo) {
-	//Foo i;
-	//Foo& j = i;
-	//{
-		//Foo k;
-		//j = k;
-	//}
-//}
-
-//TEST(TEST_REF, ref_test) {
-	//int i = 10;
-	//int& j = i;
-	//{
-		//int k = 8;
-		//j = k;
-	//}
-	//std::cout << j << std::endl;
-/*}*/
-
 TEST_F(GhostDataSyncTest, export_data) {
 	node_map graphNodes {
 		{DistributedId(2, 0), nodes[0]},

@@ -27,6 +27,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				Epoch epoch = Epoch::EVEN;
 				std::unordered_map<DistributedId, hard_sync_mutex*> mutexMap;
 				comm_t& comm;
+				Mpi<DistributedId> idMpi {comm};
 				Mpi<T> dataMpi {comm};
 				Mpi<DataUpdatePack<T>> dataUpdateMpi {comm};
 
@@ -53,6 +54,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				public:
 				MutexServer(comm_t& comm) : comm(comm) {}
 
+				const Mpi<DistributedId>& getIdMpi() const {return idMpi;}
 				const Mpi<T>& getDataMpi() const {return dataMpi;}
 				const Mpi<DataUpdatePack<T>>& getDataUpdateMpi() const {return dataUpdateMpi;}
 
@@ -82,24 +84,21 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 		// Check read request
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::READ, &req_status)) {
-			DistributedId id;
-			comm.recv(&req_status, id);
+			DistributedId id = idMpi.recv(&req_status);
 			FPMAS_LOGD(this->comm.getRank(), "RECV", "read request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
 			this->handleRead(id, req_status.MPI_SOURCE);
 		}
 
 		// Check acquire request
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::ACQUIRE, &req_status)) {
-			DistributedId id;
-			comm.recv(&req_status, id);
+			DistributedId id = idMpi.recv(&req_status);
 			FPMAS_LOGD(this->comm.getRank(), "RECV", "acquire request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
 			this->handleAcquire(id, req_status.MPI_SOURCE);
 		}
 		
 		// Check lock
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LOCK, &req_status)) {
-			DistributedId id;
-			comm.recv(&req_status, id);
+			DistributedId id = idMpi.recv(&req_status);
 			FPMAS_LOGD(this->comm.getRank(), "RECV", "lock request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
 			this->handleLock(id, req_status.MPI_SOURCE);
 		}
@@ -130,8 +129,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	
 		// Check unlock
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK, &req_status)) {
-			DistributedId id;
-			comm.recv(&req_status, id);
+			DistributedId id = idMpi.recv(&req_status);
 
 			this->handleUnlock(id);
 		}
@@ -322,8 +320,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	
 		// Check unlock
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK, &req_status)) {
-			DistributedId id;
-			comm.recv(&req_status, id);
+			DistributedId id = idMpi.recv(&req_status);
 
 			if(this->handleUnlock(id, requestToWait)) {
 				return true;

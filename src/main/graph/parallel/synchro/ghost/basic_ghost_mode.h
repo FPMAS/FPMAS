@@ -176,9 +176,9 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 	}
 
 	template<typename DistArc, typename DistNode>
-		using DefaultGhostDataSync = GhostDataSync<DistNode, DistArc, communication::Mpi>;
+		using DefaultGhostDataSync = GhostDataSync<DistNode, DistArc, communication::TypedMpi>;
 	template<typename DistArc, typename DistNode>
-		using DefaultGhostSyncLinker = GhostSyncLinker<DistNode, DistArc, communication::Mpi>;
+		using DefaultGhostSyncLinker = GhostSyncLinker<DistNode, DistArc, communication::TypedMpi>;
 
 
 	template<template<typename> class Mpi>

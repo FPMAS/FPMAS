@@ -82,13 +82,11 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				return _data;
 			}
 			_data = mutexClient.acquire(_id, location);
-			std::cout << "acquired data : " << _data << std::endl;
 			return _data;
 		};
 
 	template<typename T>
 		void HardSyncMutex<T>::release() {
-			std::cout << "release" << std::endl;
 			if(state==LocationState::LOCAL) {
 				mutexServer.notify(_id);
 				this->_locked = false;

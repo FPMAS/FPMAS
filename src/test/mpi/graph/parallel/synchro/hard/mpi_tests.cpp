@@ -7,7 +7,7 @@
 #include "communication/communication.h"
 
 using FPMAS::api::graph::parallel::LocationState;
-using FPMAS::communication::Mpi;
+using FPMAS::communication::TypedMpi;
 using FPMAS::communication::MpiCommunicator;
 using FPMAS::graph::parallel::synchro::hard::HardSyncMutex;
 using FPMAS::graph::parallel::synchro::hard::MutexClient;
@@ -27,8 +27,8 @@ class Mpi_MutexServerRaceCondition : public ::testing::Test {
 	LocationState state = LocationState::DISTANT;
 	int location = 0;
 
-	MutexServer<int, Mpi> server {comm};
-	MutexClient<int, Mpi> client {comm, server};
+	MutexServer<int, TypedMpi> server {comm};
+	MutexClient<int, TypedMpi> client {comm, server};
 	HardSyncMutex<int> mutex {DistributedId(3, 6), data, state, location, client, server};
 
 

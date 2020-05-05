@@ -28,6 +28,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				Epoch epoch = Epoch::EVEN;
 				std::unordered_map<DistributedId, hard_sync_mutex*> mutexMap;
 				comm_t& comm;
+				Mpi<DistributedId> idMpi {comm};
 				Mpi<T> dataMpi {comm};
 				Mpi<DataUpdatePack<T>> dataUpdateMpi {comm};
 				mutex_server_base& mutexServer;
@@ -38,6 +39,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				MutexClient(comm_t& comm, mutex_server_base& mutexServer)
 					: comm(comm), mutexServer(mutexServer) {}
 
+				const Mpi<DistributedId>& getIdMpi() const {return idMpi;}
 				const Mpi<T>& getDataMpi() const {return dataMpi;}
 				const Mpi<DataUpdatePack<T>>& getDataUpdateMpi() const {return dataUpdateMpi;}
 
@@ -61,7 +63,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			FPMAS_LOGD(this->comm.getRank(), "READ", "reading data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
-			this->comm.Issend(id, location, epoch | Tag::READ, &req);
+			this->idMpi.Issend(id, location, epoch | Tag::READ, &req);
 
 			// Keep responding to other READ / ACQUIRE request to avoid deadlock,
 			// until the request has been received
@@ -80,7 +82,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			FPMAS_LOGD(this->comm.getRank(), "ACQUIRE", "acquiring data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
-			this->comm.Issend(id, location, epoch | Tag::ACQUIRE, &req);
+			this->idMpi.Issend(id, location, epoch | Tag::ACQUIRE, &req);
 
 			this->waitSendRequest(&req);
 
@@ -101,9 +103,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 */
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::release(DistributedId id, int location) {
-		std::cout << "release " << id << std::endl;
 		DataUpdatePack<T> update {id, mutexMap.at(id)->data()};
-		std::cout << "ok" << std::endl;
 
 		MPI_Request req;
 		dataUpdateMpi.Issend(update, location, epoch | Tag::RELEASE, &req);
@@ -114,7 +114,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::lock(DistributedId id, int location) {
 		MPI_Request req;
-		this->comm.Issend(id, location, epoch | Tag::LOCK, &req);
+		this->idMpi.Issend(id, location, epoch | Tag::LOCK, &req);
 
 		this->waitSendRequest(&req);
 
@@ -129,7 +129,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::unlock(DistributedId id, int location) {
 		MPI_Request req;
-		this->comm.Issend(id, location, epoch | Tag::UNLOCK, &req);
+		this->idMpi.Issend(id, location, epoch | Tag::UNLOCK, &req);
 
 		this->waitSendRequest(&req);
 	}

@@ -7,37 +7,6 @@
 namespace FPMAS::api::communication {
 
 	/**
-	 * Used to smartly manage message reception to prevent message mixing
-	 * accross several time steps.
-	 */
-	enum Epoch : int {
-		EVEN = 0x00,
-		ODD = 0x10
-	};
-
-
-	/**
-	 * Tags used to smartly manage MPI communications.
-	 */
-	enum Tag : int {
-		READ = 0x00,
-		READ_RESPONSE = 0x01,
-		ACQUIRE = 0x02,
-		ACQUIRE_RESPONSE = 0x03,
-		ACQUIRE_GIVE_BACK = 0x04,
-		TOKEN = 0x05,
-		END = 0x06
-	};
-
-	/**
-	 * Used by the termination algorithm.
-	 */
-	enum Color : int {
-		WHITE = 0,
-		BLACK = 1
-	};
-
-	/**
 	 * MpiCommunicator interface.
 	 *
 	 * Defines operations that might be used by the RequestHandler.
@@ -56,64 +25,14 @@ namespace FPMAS::api::communication {
 			 */
 			virtual int getSize() const = 0;
 
-			/**
-			 * Sends a void message to destination, with the given tag.
-			 *
-			 * @param destination destination rank
-			 * @param tag message tag
-			 */
+			
+			virtual void send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) = 0;
 			virtual void send(int destination, int tag) = 0;
 
-			/**
-			 * Sends a colored token to the destination proc.
-			 *
-			 * @param token token color
-			 * @param destination destination rank
-			 */
-			virtual void send(Color token, int destination, int tag) = 0;
-
-			/**
-			 * Sends an END message to the destination proc.
-			 *
-			 * @param destination destination rank
-			 */
-			virtual void sendEnd(int destination) = 0;
-
-			/**
-			 * Asynchronous non-blocking send for a DistributedId.
-			 *
-			 * @param id id to send
-			 * @param destination destination rank
-			 * @param tag send tag
-			 * @param req MPI request
-			 */
 			virtual void Issend(
-					const DistributedId& id, int destination, int tag, MPI_Request* req) = 0;
-			/**
-			 * Synchronous non-blocking send for an std::string.
-			 *
-			 * @param str std::string to send
-			 * @param destination destination rank
-			 * @param tag send tag
-			 * @param req MPI request
-			 */
-			virtual void Issend(
-					const std::string& str, int destination, int tag, MPI_Request* req) = 0;
-
-			/**
-			 * Asynchronous non-blocking send for an std::string.
-			 *
-			 * @param str std::string to send
-			 * @param destination destination rank
-			 * @param tag send tag
-			 * @param req MPI request
-			 */
-			virtual void Isend(
-					const std::string&, int destination, int tag, MPI_Request*) = 0;
-
-			virtual void send(
-					const std::string&, int destination, int tag) = 0;
-
+					const void* data, int count, MPI_Datatype datatype, int destination, int tag, MPI_Request* req) = 0;
+			virtual void Issend(int destination, int tag, MPI_Request* req) = 0;
+			
 			/**
 			 * Blocking probe.
 			 *
@@ -138,15 +57,6 @@ namespace FPMAS::api::communication {
 			 */
 			virtual bool Iprobe(int source, int tag, MPI_Status* status) = 0;
 
-			/**
-			 * Receives the message corresponding to status.
-			 *
-			 * status should have been passed to a previous probe request.
-			 *
-			 * @param status ready to receive MPI status
-			 * @param data data output
-			 */
-			virtual void recv(MPI_Status* status, Color& data) = 0;
 
 			/**
 			 * Receives a message without data.
@@ -159,25 +69,7 @@ namespace FPMAS::api::communication {
 			 */
 			virtual void recv(MPI_Status* status) = 0;
 
-			/**
-			 * Receives the message corresponding to status.
-			 *
-			 * status should have been passed to a previous probe request.
-			 *
-			 * @param status ready to receive MPI status
-			 * @param string string output
-			 */
-			virtual void recv(MPI_Status* status, std::string& string) = 0;
-
-			/**
-			 * Receives the message corresponding to status.
-			 *
-			 * status should have been passed to a previous probe request.
-			 *
-			 * @param status ready to receive MPI status
-			 * @param id id output
-			 */
-			virtual void recv(MPI_Status* status, DistributedId& id) = 0;
+			virtual void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) = 0;
 
 			virtual bool test(MPI_Request*) = 0;
 
@@ -188,7 +80,7 @@ namespace FPMAS::api::communication {
 	};
 
 	template<typename T>
-	class Mpi {
+	class TypedMpi {
 		public:
 			virtual std::unordered_map<int, std::vector<T>>
 				migrate(std::unordered_map<int, std::vector<T>> exportMap) = 0;
@@ -196,17 +88,19 @@ namespace FPMAS::api::communication {
 			virtual void send(const T&, int destination, int tag) = 0;
 			virtual void Issend(const T&, int destination, int tag, MPI_Request* req) = 0;
 			virtual T recv(MPI_Status*) = 0;
+
+			virtual ~TypedMpi() {};
 	};
 
-	template<typename MpiCommunicatorImpl, template<typename> class MpiImpl>
+	template<typename MpiCommunicatorImpl, template<typename> class TypedMpiImpl>
 		class MpiSetUp {
 			static_assert(std::is_base_of<MpiCommunicator, MpiCommunicatorImpl>::value);
-			static_assert(std::is_base_of<Mpi<int>, MpiImpl<int>>::value);
+			static_assert(std::is_base_of<TypedMpi<int>, TypedMpiImpl<int>>::value);
 
 			public:
 			typedef MpiCommunicatorImpl communicator;
 			template<typename T>
-				using mpi = MpiImpl<T>;
+				using mpi = TypedMpiImpl<T>;
 		};
 }
 

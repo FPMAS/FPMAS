@@ -5,7 +5,7 @@ using ::testing::Contains;
 using ::testing::IsEmpty;
 
 using FPMAS::communication::MpiCommunicator;
-using FPMAS::communication::Mpi;
+using FPMAS::communication::TypedMpi;
 
 TEST(Mpi_MpiCommunicatorTest, size_test) {
 	MpiCommunicator comm;
@@ -87,20 +87,19 @@ TEST(Mpi_MpiCommunicatorTest, probe_any_source) {
 				ASSERT_EQ(status.MPI_TAG, 4);
 				ASSERT_THAT(ranks, Contains(status.MPI_SOURCE));
 				ranks.erase(std::remove(ranks.begin(), ranks.end(), status.MPI_SOURCE));
-				std::string data;
-				comm.recv(&status, data);
+				comm.recv(NULL, 0, MPI_INT, status.MPI_SOURCE, 4, MPI_STATUS_IGNORE);
 			}
 			ASSERT_THAT(ranks, IsEmpty());
 		}
 		else {
-			comm.send("123", 0, 4);
+			comm.send(0, 4);
 		}
 	}
 }
 
 TEST(Mpi_MigrationTest, simple_migration_test) {
 	MpiCommunicator comm;
-	Mpi<int> mpi {comm};
+	TypedMpi<int> mpi {comm};
 	
 	std::unordered_map<int, std::vector<int>> export_map;
 	for (int i = 0; i < comm.getSize(); i++) {
@@ -121,7 +120,7 @@ TEST(Mpi_MigrationTest, simple_migration_test) {
 //   - receives different amount of data from each proc
 TEST(Mpi_MigrationTest, variable_recv_size_migration) {
 	MpiCommunicator comm;
-	Mpi<int> mpi {comm};
+	TypedMpi<int> mpi {comm};
 
 	std::unordered_map<int, std::vector<int>> export_map;
 	for(int i = 0; i < comm.getSize(); i++) {
@@ -146,7 +145,7 @@ TEST(Mpi_MigrationTest, variable_recv_size_migration) {
 //   - receives the same amount of data from other
 TEST(Mpi_MigrationTest, variable_send_size_migration) {
 	MpiCommunicator comm;
-	Mpi<int> mpi {comm};
+	TypedMpi<int> mpi {comm};
 
 	std::unordered_map<int, std::vector<int>> export_map;
 	for(int i = 0; i < comm.getSize(); i++) {

@@ -1,12 +1,13 @@
 #ifndef TERMINATION_H
 #define TERMINATION_H
 
+#include "communication/communication.h"
 #include "api/communication/communication.h"
 #include "api/graph/parallel/synchro/hard/hard_sync_mutex.h"
 
 namespace FPMAS::graph::parallel::synchro::hard {
 
-	using api::communication::Color;
+	using api::graph::parallel::synchro::hard::Color;
 	using api::graph::parallel::synchro::hard::Tag;
 	using api::graph::parallel::synchro::hard::Epoch;
 
@@ -17,6 +18,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				typedef FPMAS::api::graph::parallel::synchro::hard::MutexServer<T> mutex_server;
 			private:
 				comm_t& comm;
+				communication::TypedMpi<Color> colorMpi {comm};
 				Color color;
 
 				void toggleEpoch(mutex_server& server);
@@ -44,7 +46,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			if(this->comm.getRank() == 0) {
 				this->color = Color::WHITE;
 				token = Color::WHITE;
-				this->comm.send(token, this->comm.getSize() - 1, Tag::TOKEN);
+				this->colorMpi.send(token, this->comm.getSize() - 1, Tag::TOKEN);
 			}
 
 			int sup_rank = (this->comm.getRank() + 1) % this->comm.getSize();
@@ -52,25 +54,25 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			while(true) {
 				// Check for TOKEN
 				if(this->comm.Iprobe(sup_rank, Tag::TOKEN, &status) > 0) {
-					this->comm.recv(&status, token);
+					token = this->colorMpi.recv(&status);
 					if(this->comm.getRank() == 0) {
 						if(token == Color::WHITE && this->color == Color::WHITE) {
 							for (int i = 1; i < this->comm.getSize(); ++i) {
-								this->comm.sendEnd(i);
+								this->comm.send(i, Tag::END);
 							}
 							toggleEpoch(mutexServer);
 							return;
 						} else {
 							this->color = Color::WHITE;
 							token = Color::WHITE;
-							this->comm.send(token, this->comm.getSize() - 1, Tag::TOKEN);
+							this->colorMpi.send(token, this->comm.getSize() - 1, Tag::TOKEN);
 						}
 					}
 					else {
 						if(this->color == Color::BLACK) {
 							token = Color::BLACK;
 						}
-						this->comm.send(token, this->comm.getRank() - 1, Tag::TOKEN);
+						this->colorMpi.send(token, this->comm.getRank() - 1, Tag::TOKEN);
 						this->color = Color::WHITE;
 					}
 				}

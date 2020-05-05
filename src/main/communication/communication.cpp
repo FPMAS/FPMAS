@@ -5,8 +5,6 @@
 #include "utils/macros.h"
 
 namespace FPMAS::communication {
-	using FPMAS::api::communication::Tag;
-
 	/**
 	 * Builds an MPI group and the associated communicator as a copy of the
 	 * MPI_COMM_WORLD communicator.
@@ -143,36 +141,63 @@ namespace FPMAS::communication {
 		return this->size;
 	}
 
+/*
+ *    void MpiCommunicator::send(int destination, int tag) {
+ *        MPI_Send(NULL, 0, MPI_CHAR, destination, tag, this->comm);
+ *
+ *    }
+ *
+ *    void MpiCommunicator::send(Color token, int destination, int tag) {
+ *        MPI_Send(&token, 1, MPI_INT, destination, tag, this->comm);
+ *    }
+ *
+ *    void MpiCommunicator::send(const std::string& str, int destination, int tag) {
+ *        MPI_Send(str.c_str(), str.size() +1, MPI_CHAR, destination, tag, this->comm);
+ *    }
+ *
+ *    void MpiCommunicator::sendEnd(int destination) {
+ *        MPI_Send(NULL, 0, MPI_INT, destination, Tag::END, this->comm);
+ *    }
+ *
+ *    void MpiCommunicator::Issend(const DistributedId& id, int destination, int tag, MPI_Request* req) {
+ *        MpiDistributedId mpi_id;
+ *        mpi_id.rank = id.rank();
+ *        mpi_id.id = id.id();
+ *        MPI_Issend(&mpi_id, 1, MPI_DISTRIBUTED_ID_TYPE, destination, tag, this->comm, req);
+ *    }
+ *
+ *    void MpiCommunicator::Issend(const std::string& str, int destination, int tag, MPI_Request* req) {
+ *        MPI_Issend(str.c_str(), str.length() + 1, MPI_CHAR, destination, tag, this->comm, req);
+ *    }
+ *
+ *    void MpiCommunicator::Isend(const std::string& str, int destination, int tag, MPI_Request* req) {
+ *        MPI_Isend(str.c_str(), str.length() + 1, MPI_CHAR, destination, tag, this->comm, req);
+ *    }
+ */
+	void MpiCommunicator::send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) {
+		MPI_Send(data, count, datatype, destination, tag, this->comm);
+	}
+
 	void MpiCommunicator::send(int destination, int tag) {
 		MPI_Send(NULL, 0, MPI_CHAR, destination, tag, this->comm);
-
 	}
 
-	void MpiCommunicator::send(Color token, int destination, int tag) {
-		MPI_Send(&token, 1, MPI_INT, destination, tag, this->comm);
+	void MpiCommunicator::Issend(
+			const void* data, int count, MPI_Datatype datatype, int destination, int tag, MPI_Request* req) {
+		MPI_Issend(data, count, datatype, destination, tag, this->comm, req);
 	}
 
-	void MpiCommunicator::send(const std::string& str, int destination, int tag) {
-		MPI_Send(str.c_str(), str.size() +1, MPI_CHAR, destination, tag, this->comm);
+	void MpiCommunicator::Issend(int destination, int tag, MPI_Request* req) {
+		MPI_Issend(NULL, 0, MPI_CHAR, destination, tag, this->comm, req);
 	}
 
-	void MpiCommunicator::sendEnd(int destination) {
-		MPI_Send(NULL, 0, MPI_INT, destination, Tag::END, this->comm);
+	void MpiCommunicator::recv(MPI_Status* status) {
+		MPI_Recv(NULL, 0, MPI_INT, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
 	}
 
-	void MpiCommunicator::Issend(const DistributedId& id, int destination, int tag, MPI_Request* req) {
-		MpiDistributedId mpi_id;
-		mpi_id.rank = id.rank();
-		mpi_id.id = id.id();
-		MPI_Issend(&mpi_id, 1, MPI_DISTRIBUTED_ID_TYPE, destination, tag, this->comm, req);
-	}
-
-	void MpiCommunicator::Issend(const std::string& str, int destination, int tag, MPI_Request* req) {
-		MPI_Issend(str.c_str(), str.length() + 1, MPI_CHAR, destination, tag, this->comm, req);
-	}
-
-	void MpiCommunicator::Isend(const std::string& str, int destination, int tag, MPI_Request* req) {
-		MPI_Isend(str.c_str(), str.length() + 1, MPI_CHAR, destination, tag, this->comm, req);
+	void MpiCommunicator::recv(
+		void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) {
+		MPI_Recv(buffer, count, datatype, source, tag, this->comm, status);
 	}
 
 	void MpiCommunicator::probe(int source, int tag, MPI_Status* status) {
@@ -192,30 +217,28 @@ namespace FPMAS::communication {
 		return flag > 0;
 	}
 
-	void MpiCommunicator::recv(MPI_Status* status) {
-		MPI_Recv(NULL, 0, MPI_INT, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
-	}
-
-	void MpiCommunicator::recv(MPI_Status* status, Color& data) {
-		int _data;
-		MPI_Status _status;
-		MPI_Recv(&_data, 1, MPI_INT, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
-		data = Color(_data);
-	}
-
-	void MpiCommunicator::recv(MPI_Status* status, std::string& str) {
-		int count;
-		MPI_Get_count(status, MPI_CHAR, &count);
-		char data[count];
-		MPI_Recv(&data, count, MPI_CHAR, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
-		str = std::string(data);
-	}
-
-	void MpiCommunicator::recv(MPI_Status* status, DistributedId& id) {
-		MpiDistributedId mpi_id;
-		MPI_Recv(&mpi_id, 1, MPI_DISTRIBUTED_ID_TYPE, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
-		id = DistributedId(mpi_id);
-	}
+/*
+ *    void MpiCommunicator::recv(MPI_Status* status, Color& data) {
+ *        int _data;
+ *        MPI_Status _status;
+ *        MPI_Recv(&_data, 1, MPI_INT, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
+ *        data = Color(_data);
+ *    }
+ *
+ *    void MpiCommunicator::recv(MPI_Status* status, std::string& str) {
+ *        int count;
+ *        MPI_Get_count(status, MPI_CHAR, &count);
+ *        char data[count];
+ *        MPI_Recv(&data, count, MPI_CHAR, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
+ *        str = std::string(data);
+ *    }
+ *
+ *    void MpiCommunicator::recv(MPI_Status* status, DistributedId& id) {
+ *        MpiDistributedId mpi_id;
+ *        MPI_Recv(&mpi_id, 1, MPI_DISTRIBUTED_ID_TYPE, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
+ *        id = DistributedId(mpi_id);
+ *    }
+ */
 
 	/**
 	 * FPMAS::communication::MpiCommunicator destructor.

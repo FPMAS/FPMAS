@@ -3,7 +3,7 @@
 #include "../mocks/communication/mock_communication.h"
 #include "communication/communication.h"
 
-using FPMAS::communication::Mpi;
+using FPMAS::communication::TypedMpi;
 
 using ::testing::ElementsAre;
 using ::testing::UnorderedElementsAre;
@@ -20,7 +20,7 @@ class MigrateTest : public ::testing::Test {
 };
 
 TEST_F(MigrateTest, migrate_int) {
-	Mpi<int> mpi {comm};
+	TypedMpi<int> mpi {comm};
 	std::unordered_map<int, std::vector<int>> exportMap =
 	{ {1, {4, 8, 7}}, {6, {2, 3}}};
 	auto exportMapMatcher = UnorderedElementsAre(
@@ -73,7 +73,7 @@ void from_json(const nlohmann::json& j, FakeType& o) {
 }
 
 TEST_F(MigrateTest, migrate_fake_test) {
-	Mpi<FakeType> mpi {comm};
+	TypedMpi<FakeType> mpi {comm};
 	FakeType fake1 {2, "hello", 4.5};
 	FakeType fake2 {-1, "world", .6};
 	FakeType fake3 {0, "foo", 8};

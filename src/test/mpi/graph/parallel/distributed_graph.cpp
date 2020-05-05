@@ -26,7 +26,7 @@ using ::testing::SizeIs;
 class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 	protected:
 		template<typename NodeType>
-		using location_manager = FPMAS::graph::parallel::LocationManager<NodeType, FPMAS::communication::Mpi>;
+		using location_manager = FPMAS::graph::parallel::LocationManager<NodeType, FPMAS::communication::TypedMpi>;
 		BasicDistributedGraph<
 			int,
 			MockSyncMode<>,
@@ -34,7 +34,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 			FPMAS::graph::parallel::DistributedArc,
 			FPMAS::api::communication::MpiSetUp<
 				FPMAS::communication::MpiCommunicator,
-				FPMAS::communication::Mpi
+				FPMAS::communication::TypedMpi
 				>,
 			location_manager,
 			MockLoadBalancing> graph;

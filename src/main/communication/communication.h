@@ -9,7 +9,6 @@
 #include "api/communication/communication.h"
 
 namespace FPMAS {
-	using api::communication::Color;
 	/**
 	 * The FPMAS::communication namespace contains low level MPI features
 	 * required by communication processes.
@@ -58,18 +57,15 @@ namespace FPMAS {
 				int getRank() const override;
 				int getSize() const override;
 
-				void send(int destination, int tag) override;
-				void send(Color token, int destination, int tag) override;
-				void send(const std::string&, int destination, int tag) override;
-				void sendEnd(int destination) override;
-				void Issend(const DistributedId&, int destination, int tag, MPI_Request*) override;
-				void Issend(const std::string&, int destination, int tag, MPI_Request*) override;
-				void Isend(const std::string&, int destination, int tag, MPI_Request*) override;
+				void send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) override;
+				void Issend(
+					const void* data, int count, MPI_Datatype datatype, int destination, int tag, MPI_Request* req) override;
 
-				void recv(MPI_Status*) override;
-				void recv(MPI_Status*, Color&) override;
-				void recv(MPI_Status*, std::string&) override;
-				void recv(MPI_Status*, DistributedId&) override;
+				void send(int destination, int tag) override;
+				void Issend(int destination, int tag, MPI_Request* req) override;
+
+				void recv(MPI_Status* status) override;
+				void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) override;
 
 				void probe(int source, int tag, MPI_Status*) override;
 				bool Iprobe(int source, int tag, MPI_Status*) override;
@@ -134,11 +130,11 @@ namespace FPMAS {
 		};
 
 		template<typename T>
-			class Mpi : public api::communication::Mpi<T> {
+			class TypedMpi : public api::communication::TypedMpi<T> {
 				private:
 					api::communication::MpiCommunicator& comm;
 				public:
-					Mpi(api::communication::MpiCommunicator& comm) : comm(comm) {}
+					TypedMpi(api::communication::MpiCommunicator& comm) : comm(comm) {}
 
 					std::unordered_map<int, std::vector<T>>
 						migrate(std::unordered_map<int, std::vector<T>> exportMap) override;
@@ -149,7 +145,7 @@ namespace FPMAS {
 			};
 
 		template<typename T> std::unordered_map<int, std::vector<T>>
-			Mpi<T>::migrate(std::unordered_map<int, std::vector<T>> exportMap) {
+			TypedMpi<T>::migrate(std::unordered_map<int, std::vector<T>> exportMap) {
 				// Pack
 				std::unordered_map<int, std::string> data_pack;
 				for(auto item : exportMap) {
@@ -168,21 +164,25 @@ namespace FPMAS {
 			}
 
 		template<typename T>
-			void Mpi<T>::send(const T& data, int destination, int tag) {
-				comm.send(
-					nlohmann::json(data).dump(), destination, tag);
+			void TypedMpi<T>::send(const T& data, int destination, int tag) {
+				std::string str = nlohmann::json(data).dump();
+				comm.send(str.c_str(), str.size()+1, MPI_CHAR, destination, tag);
 			}
 		template<typename T>
-			void Mpi<T>::Issend(const T& data, int destination, int tag, MPI_Request* req) {
-				comm.Issend(
-					nlohmann::json(data).dump(), destination, tag, req);
+			void TypedMpi<T>::Issend(const T& data, int destination, int tag, MPI_Request* req) {
+				std::string str = nlohmann::json(data).dump();
+				comm.Issend(str.c_str(), str.size()+1, MPI_CHAR, destination, tag, req);
 			}
 
 		template<typename T>
-			T Mpi<T>::recv(MPI_Status* status) {
-				std::string data;
-				comm.recv(status, data);
-				std::cout << "recv " << data << std::endl;
+			T TypedMpi<T>::recv(MPI_Status* status) {
+				int count;
+				MPI_Get_count(status, MPI_CHAR, &count);
+				char* buffer = (char*) std::malloc(count * sizeof(char));
+				comm.recv(buffer, count, MPI_CHAR, status->MPI_SOURCE, status->MPI_TAG, MPI_STATUS_IGNORE);
+
+				std::string data (buffer, count);
+				std::free(buffer);
 				return nlohmann::json::parse(data).get<T>();
 			}
 	}

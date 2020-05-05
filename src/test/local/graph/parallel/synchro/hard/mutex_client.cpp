@@ -60,7 +60,9 @@ TEST_F(MutexClientTest, read) {
 		InSequence seq;
 
 		// 1 : sends the request
-		EXPECT_CALL(comm, Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::READ, _));
+		EXPECT_CALL(
+			const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
+			Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::READ, _));
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 		// 3 : Probe for read response
@@ -91,7 +93,9 @@ TEST_F(MutexClientTest, acquire) {
 		InSequence seq;
 
 		// 1 : sends the request
-		EXPECT_CALL(comm, Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::ACQUIRE, _));
+		EXPECT_CALL(
+			const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
+			Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::ACQUIRE, _));
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 		// 3 : Probe for read response
@@ -135,7 +139,9 @@ TEST_F(MutexClientTest, lock) {
 	{
 		InSequence seq;
 		// 1 : Lock request
-		EXPECT_CALL(comm, Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::LOCK, _));
+		EXPECT_CALL(
+			const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
+			Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::LOCK, _));
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 		// 3 : Probe for read response
@@ -154,7 +160,9 @@ TEST_F(MutexClientTest, unlock) {
 		InSequence seq;
 
 		// 1 : sends the request
-		EXPECT_CALL(comm, Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::UNLOCK, _));
+		EXPECT_CALL(
+			const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
+			Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::UNLOCK, _));
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 	}
@@ -176,7 +184,9 @@ class MutexClientDeadlockTest : public MutexClientTest {
 		void SetUp(Tag sendTag, Tag recvTag) {
 			// 1 : sends the request
 			Expectation issendExpectation =
-				EXPECT_CALL(comm, Issend(DistributedId(7, 3), 5, Epoch::EVEN | sendTag, _))
+				EXPECT_CALL(
+					const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
+					Issend(DistributedId(7, 3), 5, Epoch::EVEN | sendTag, _))
 				.InSequence(seq);
 
 			// Perform at least a reception cycle
@@ -307,7 +317,9 @@ TEST_F(MutexClientDeadlockTest, unlock) {
 
 	Sequence seq;
 	// Sends the request
-	Expectation issend = EXPECT_CALL(comm, Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::UNLOCK, _))
+	Expectation issend = EXPECT_CALL(
+			const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
+			Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::UNLOCK, _))
 		.InSequence(seq);
 	Expectation handle = EXPECT_CALL(mockMutexServer, handleIncomingRequests)
 		.Times(AtLeast(1))

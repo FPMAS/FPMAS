@@ -20,12 +20,10 @@ namespace nlohmann {
     template <typename T>
     struct adl_serializer<DataUpdatePack<T>> {
         static DataUpdatePack<T> from_json(const json& j) {
-			std::cout << "from : " << j.dump() << std::endl;
             return {j[0].get<DistributedId>(), j[1].get<T>()};
         }
 
         static void to_json(json& j, const DataUpdatePack<T>& data) {
-			std::cout << "to : " << j.dump() << std::endl;
             j = json::array({data.id, data.updatedData});
         }
     };
