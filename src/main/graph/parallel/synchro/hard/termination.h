@@ -11,26 +11,26 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	using api::graph::parallel::synchro::hard::Tag;
 	using api::graph::parallel::synchro::hard::Epoch;
 
-	template<typename T, template<typename> class TypedMpi>
+	template<template<typename> class TypedMpi>
 		class TerminationAlgorithm
-			: public FPMAS::api::graph::parallel::synchro::hard::TerminationAlgorithm<T> {
+			: public FPMAS::api::graph::parallel::synchro::hard::TerminationAlgorithm {
 				typedef FPMAS::api::communication::MpiCommunicator comm_t;
-				typedef FPMAS::api::graph::parallel::synchro::hard::MutexServer<T> mutex_server;
+				typedef FPMAS::api::graph::parallel::synchro::hard::Server server_t;
 			private:
 				comm_t& comm;
 				TypedMpi<Color> colorMpi {comm};
 				Color color;
 
-				void toggleEpoch(mutex_server& server);
+				void toggleEpoch(server_t& server);
 
 			public:
 				TerminationAlgorithm(comm_t& comm) : comm(comm) {}
 				const TypedMpi<Color>& getColorMpi() const {return colorMpi;}
-				void terminate(mutex_server& mutexServer) override;
+				void terminate(server_t& mutexServer) override;
 		};
 
-	template<typename T, template<typename> class TypedMpi>
-		void TerminationAlgorithm<T, TypedMpi>::toggleEpoch(mutex_server& server) {
+	template<template<typename> class TypedMpi>
+		void TerminationAlgorithm<TypedMpi>::toggleEpoch(server_t& server) {
 			switch(server.getEpoch()) {
 				case Epoch::EVEN:
 					server.setEpoch(Epoch::ODD);
@@ -40,8 +40,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			}
 		}
 
-	template<typename T, template<typename> class TypedMpi>
-		void TerminationAlgorithm<T, TypedMpi>::terminate(mutex_server& mutexServer) {
+	template<template<typename> class TypedMpi>
+		void TerminationAlgorithm<TypedMpi>::terminate(server_t& mutexServer) {
 			Color token;
 
 			if(this->comm.getRank() == 0) {

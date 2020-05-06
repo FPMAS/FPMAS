@@ -16,7 +16,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		class HardSyncRuntime : public FPMAS::api::graph::parallel::synchro::SyncModeRuntime<Node, Arc, Mutex> {
 
 			typedef FPMAS::graph::parallel::synchro::hard::TerminationAlgorithm<
-				typename Node::data_type, communication::TypedMpi>
+				communication::TypedMpi>
 				termination_algorithm;
 			MutexServer<typename Node::data_type, communication::TypedMpi> mutexServer;
 			MutexClient<typename Node::data_type, communication::TypedMpi> mutexClient;

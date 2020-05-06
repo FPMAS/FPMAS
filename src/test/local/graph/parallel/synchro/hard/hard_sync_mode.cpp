@@ -25,13 +25,13 @@ class HardDataSyncTest : public ::testing::Test {
 		HardDataSync<
 			MockDistributedNode<int, MockMutex>,
 			MockDistributedArc<int, MockMutex>,
-			MockTerminationAlgorithm<int>> dataSync {comm, mutexServer};
+			MockTerminationAlgorithm> dataSync {comm, mutexServer};
 
 };
 
 TEST_F(HardDataSyncTest, synchronize) {
 	EXPECT_CALL(
-		const_cast<MockTerminationAlgorithm<int>&>(dataSync.getTerminationAlgorithm()),
+		const_cast<MockTerminationAlgorithm&>(dataSync.getTerminationAlgorithm()),
 		terminate(Ref(mutexServer))
 		);
 	dataSync.synchronize();

@@ -40,32 +40,35 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 
 	template<typename T> class HardSyncMutex;
 
+	class Server {
+		public:
+			virtual void setEpoch(Epoch) = 0;
+			virtual Epoch getEpoch() const = 0;
+
+			virtual void handleIncomingRequests() = 0;
+	};
+
 	template<typename T>
-		class MutexServer {
+		class MutexServer : public virtual Server {
 			friend HardSyncMutex<T>;
 			protected:
 			void lock(HardSyncMutex<T>* mutex) {mutex->_lock();}
 			void unlock(HardSyncMutex<T>* mutex) {mutex->_unlock();}
 			public:
-			virtual void setEpoch(Epoch) = 0;
-			virtual Epoch getEpoch() const = 0;
-
 			virtual void manage(DistributedId id, HardSyncMutex<T>*) = 0;
 			virtual void remove(DistributedId id) = 0;
 
 			virtual void wait(const Request& req) = 0;
 			virtual void notify(DistributedId) = 0;
 
-			virtual void handleIncomingRequests() = 0;
 
 			virtual ~MutexServer() {}
 		};
 
-	template<typename T>
-		class TerminationAlgorithm {
-			public:
-				virtual void terminate(MutexServer<T>& mutexServer) = 0;
-		};
+	class TerminationAlgorithm {
+		public:
+			virtual void terminate(Server& server) = 0;
+	};
 
 
 }

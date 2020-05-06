@@ -12,7 +12,7 @@ class TerminationTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<0, 4> comm;
 		MockMutexServer<int> mutexServer;
-		TerminationAlgorithm<int, MockMpi> termination {comm};
+		TerminationAlgorithm<MockMpi> termination {comm};
 };
 
 TEST_F(TerminationTest, rank_0_white_tokens) {

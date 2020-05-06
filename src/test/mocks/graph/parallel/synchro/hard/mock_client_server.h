@@ -6,13 +6,15 @@
 
 using FPMAS::api::graph::parallel::synchro::hard::Epoch;
 
-template<typename T>
-class MockTerminationAlgorithm : public FPMAS::api::graph::parallel::synchro::hard::TerminationAlgorithm<T> {
+class MockTerminationAlgorithm : public FPMAS::api::graph::parallel::synchro::hard::TerminationAlgorithm {
 	public:
 		template<typename... Args>
 			MockTerminationAlgorithm(Args&...) {}
 
-		MOCK_METHOD(void, terminate, (FPMAS::api::graph::parallel::synchro::hard::MutexServer<T>&), (override));
+		MOCK_METHOD(
+			void, terminate,
+			(FPMAS::api::graph::parallel::synchro::hard::Server&),
+			(override));
 
 };
 

@@ -17,7 +17,7 @@ class Mpi_TerminationTest : public ::testing::Test {
 	protected:
 		FPMAS::communication::MpiCommunicator comm;
 		MockMutexServer<int> mutexServer;
-		TerminationAlgorithm<int, FPMAS::communication::TypedMpi> termination {comm};
+		TerminationAlgorithm<FPMAS::communication::TypedMpi> termination {comm};
 
 		void SetUp() override {
 			EXPECT_CALL(mutexServer, getEpoch).WillRepeatedly(Return(Epoch::EVEN));

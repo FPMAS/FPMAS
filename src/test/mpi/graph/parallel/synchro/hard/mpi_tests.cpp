@@ -21,7 +21,7 @@ class Mpi_MutexServerRaceCondition : public ::testing::Test {
 	protected:
 		static const int NUM_ACQUIRE = 500;
 		MpiCommunicator comm;
-		TerminationAlgorithm<int, TypedMpi> termination {comm};
+		TerminationAlgorithm<TypedMpi> termination {comm};
 
 		int data = 0;
 		LocationState state = LocationState::DISTANT;
