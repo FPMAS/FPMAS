@@ -24,7 +24,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 					mutex_server_t;
 
 				DistributedId id;
-				T& _data;
+				std::reference_wrapper<T> _data;
 				LocationState* state;
 				int* location;
 				bool _locked = false;
@@ -39,7 +39,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				void _unlock() override {_locked=false;}
 
 			public:
-				HardSyncMutex(T& data) : _data(data) {}
+				HardSyncMutex(T& data) : _data(std::ref(data)) {}
 
 				void setUp(
 					DistributedId id,
@@ -75,7 +75,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				mutexServer->wait(req);
 				return _data;
 			}
-			_data = mutexClient->read(id, *location);
+			_data.get() = mutexClient->read(id, *location);
 			return _data;
 		};
 
@@ -90,7 +90,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				this->_locked = true;
 				return _data;
 			}
-			_data = mutexClient->acquire(id, *location);
+			_data.get() = mutexClient->acquire(id, *location);
 			return _data;
 		};
 
@@ -101,7 +101,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				this->_locked = false;
 				return;
 			}
-			mutexClient->release(id, *location);
+			mutexClient->release(id, _data, *location);
 		}
 
 	template<typename T>

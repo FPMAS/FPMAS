@@ -3,7 +3,7 @@
 #include <thread>
 #include <chrono>
 
-#include "../mocks/graph/parallel/synchro/hard/mock_hard_sync_mutex.h"
+#include "../mocks/graph/parallel/synchro/hard/mock_client_server.h"
 #include "communication/communication.h"
 
 using namespace std::chrono_literals;

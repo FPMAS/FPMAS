@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "../mocks/graph/parallel/synchro/hard/mock_hard_sync_mutex.h"
+#include "../mocks/graph/parallel/synchro/hard/mock_client_server.h"
 #include "graph/parallel/synchro/hard/hard_sync_mutex.h"
 
 using ::testing::AllOf;
@@ -12,6 +12,7 @@ using ::testing::WhenDynamicCastTo;
 
 using FPMAS::api::graph::parallel::LocationState;
 using FPMAS::graph::parallel::synchro::hard::HardSyncMutex;
+using FPMAS::api::graph::parallel::synchro::hard::Request;
 
 class HardSyncMutexTest : public ::testing::Test {
 	protected:

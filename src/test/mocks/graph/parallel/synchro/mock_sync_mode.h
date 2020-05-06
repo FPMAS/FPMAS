@@ -25,7 +25,11 @@ class MockSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<A
 template<typename Node, typename Arc, typename Mutex>
 class MockSyncModeRuntime : public FPMAS::api::graph::parallel::synchro::SyncModeRuntime<Node, Arc, Mutex> {
 	public:
-		MOCK_METHOD(void, setUp, (Mutex&), (override));
+		MockSyncModeRuntime(
+			FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>&,
+			FPMAS::api::communication::MpiCommunicator&) {}
+
+		MOCK_METHOD(void, setUp, (DistributedId, Mutex&), (override));
 		MOCK_METHOD(FPMAS::api::graph::parallel::synchro::SyncLinker<Arc>&, getSyncLinker, (), (override));
 		MOCK_METHOD(FPMAS::api::graph::parallel::synchro::DataSync&, getDataSync, (), (override));
 

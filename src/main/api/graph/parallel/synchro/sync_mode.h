@@ -42,7 +42,7 @@ namespace FPMAS::api::graph::parallel::synchro {
 	template<typename Node, typename Arc, typename Mutex>
 		class SyncModeRuntime {
 			public:
-				virtual void setUp(Mutex&) = 0;
+				virtual void setUp(DistributedId id, Mutex&) = 0;
 				virtual SyncLinker<Arc>& getSyncLinker() = 0;
 				virtual DataSync& getDataSync() = 0;
 		};

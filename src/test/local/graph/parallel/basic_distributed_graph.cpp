@@ -67,6 +67,7 @@ class BasicDistributedGraphTest : public ::testing::Test {
 		typedef decltype(graph) graph_type;
 		typedef typename graph_type::node_type node_type; // MockDistributedNode<int, MockMutex>
 		typedef typename graph_type::arc_type arc_type;	//MockDistributedArc<int, MockMutex>
+		typedef typename graph_type::sync_mode_runtime sync_mode_runtime;
 	
 		void SetUp() override {
 			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker)
@@ -98,10 +99,11 @@ TEST_F(BasicDistributedGraphTest, buildNode) {
 	EXPECT_CALL(locationManager, setLocal(_))
 		.WillOnce(SaveArg<0>(&setLocalArg));
 
-	EXPECT_CALL(graph.getSyncModeRuntime(), setUp);
 
 	auto currentId = graph.currentNodeId();
 	ASSERT_EQ(currentId.rank(), 7);
+	EXPECT_CALL(const_cast<sync_mode_runtime&>(graph.getSyncModeRuntime()), setUp(currentId, _));
+
 	auto node = FPMAS::api::graph::base::buildNode(graph, 2, 0.5);
 	ASSERT_EQ(addManagedNodeArg, node);
 	ASSERT_EQ(setLocalArg, node);
@@ -378,7 +380,10 @@ TEST_F(BasicDistributedGraphImportNodeTest, import_node) {
 	EXPECT_CALL(locationManager,updateLocations(localNodesMatcher));
 	EXPECT_CALL(locationManager, setLocal(_))
 		.WillOnce(SaveArg<0>(&setLocalArg));
-	EXPECT_CALL(graph.getSyncModeRuntime(), setUp);
+	EXPECT_CALL(
+		const_cast<sync_mode_runtime&>(graph.getSyncModeRuntime()),
+		setUp(DistributedId(1, 10), _)
+		);
 
 	distributeTest();
 
@@ -396,7 +401,10 @@ TEST_F(BasicDistributedGraphImportNodeTest, import_node) {
 TEST_F(BasicDistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 	EXPECT_CALL(locationManager, addManagedNode);
 	EXPECT_CALL(locationManager, setLocal);
-	EXPECT_CALL(graph.getSyncModeRuntime(), setUp);
+	EXPECT_CALL(
+		const_cast<sync_mode_runtime&>(graph.getSyncModeRuntime()),
+		setUp(graph.currentNodeId(), _)
+		);
 	auto node = graph.buildNode(8, 2.1);
 	ON_CALL(*node, state()).WillByDefault(Return(LocationState::DISTANT));
 

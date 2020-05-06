@@ -1,6 +1,6 @@
 #include "graph/parallel/synchro/hard/termination.h"
 #include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/parallel/synchro/hard/mock_hard_sync_mutex.h"
+#include "../mocks/graph/parallel/synchro/hard/mock_client_server.h"
 
 using ::testing::_;
 

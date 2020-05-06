@@ -18,6 +18,7 @@
 
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/graph/parallel/synchro/hard/mock_hard_sync_mutex.h"
+#include "../mocks/graph/parallel/synchro/hard/mock_client_server.h"
 
 using ::testing::A;
 using ::testing::AllOf;
@@ -54,8 +55,6 @@ class MutexClientTest : public ::testing::Test {
  * mutex_client_test_read
  */
 TEST_F(MutexClientTest, read) {
-	mutexClient.manage(DistributedId(1, 24), &localHardSyncMutex);
-	mutexClient.manage(DistributedId(7, 3), &distantHardSyncMutex);
 	{
 		InSequence seq;
 
@@ -87,8 +86,6 @@ TEST_F(MutexClientTest, read) {
  * distant resource has been acquired.
  */
 TEST_F(MutexClientTest, acquire) {
-	mutexClient.manage(DistributedId(7, 3), &distantHardSyncMutex);
-
 	{
 		InSequence seq;
 
@@ -112,9 +109,8 @@ TEST_F(MutexClientTest, acquire) {
  * mutex_client_test_release
  */
 TEST_F(MutexClientTest, release) {
-	mutexClient.manage(DistributedId(7, 3), &distantHardSyncMutex);
 	int data = 42;
-	EXPECT_CALL(distantHardSyncMutex, data).WillRepeatedly(ReturnRef(data));
+	//EXPECT_CALL(distantHardSyncMutex, data).WillRepeatedly(ReturnRef(data));
 	{
 		InSequence seq;
 
@@ -129,7 +125,7 @@ TEST_F(MutexClientTest, release) {
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 	}
 	// Actual read call
-	mutexClient.release(DistributedId(7, 3), 5);
+	mutexClient.release(DistributedId(7, 3), data, 5);
 }
 
 /*
@@ -176,10 +172,6 @@ class MutexClientDeadlockTest : public MutexClientTest {
 	protected:
 		Sequence seq;
 		Expectation serverHandleIncomingExpectation;
-
-		void SetUp() override {
-			mutexClient.manage(DistributedId(7, 3), &distantHardSyncMutex);
-		}
 
 		void SetUp(Tag sendTag, Tag recvTag) {
 			// 1 : sends the request
@@ -265,7 +257,7 @@ TEST_F(MutexClientDeadlockTest, acquire) {
  */
 TEST_F(MutexClientDeadlockTest, release) {
 	int data = 42;
-	EXPECT_CALL(distantHardSyncMutex, data).WillRepeatedly(ReturnRef(data));
+	//EXPECT_CALL(distantHardSyncMutex, data).WillRepeatedly(ReturnRef(data));
 
 	// Sends the request
 	Expectation issend = EXPECT_CALL(
@@ -292,7 +284,7 @@ TEST_F(MutexClientDeadlockTest, release) {
 		.WillOnce(Return(true));
 
 	// Actual read call
-	mutexClient.release(DistributedId(7, 3), 5);
+	mutexClient.release(DistributedId(7, 3), data, 5);
 }
 
 /*

@@ -36,9 +36,11 @@ namespace FPMAS::graph::parallel {
 			DistNodeImpl<T, SyncMode::template mutex_type>,
 			DistArcImpl<T, SyncMode::template mutex_type>
 		> {
+			public:
 			typedef DistNodeImpl<T, SyncMode::template mutex_type> dist_node_type;
 			typedef DistArcImpl<T, SyncMode::template mutex_type> dist_arc_type;
 			typedef typename SyncMode::template sync_mode_runtime<T, dist_node_type, dist_arc_type> sync_mode_runtime;
+
 			static_assert(
 					std::is_base_of<api::graph::parallel::DistributedNode<
 					typename dist_node_type::data_type,
@@ -84,7 +86,7 @@ namespace FPMAS::graph::parallel {
 
 
 			public:
-			BasicDistributedGraph() : locationManager(mpiCommunicator) /*, syncLinker(mpiCommunicator)*/ {
+			BasicDistributedGraph() : locationManager(mpiCommunicator), syncModeRuntime(*this, mpiCommunicator) /*, syncLinker(mpiCommunicator)*/ {
 				// Initialization in the body of this (derived) class of the
 				// (base) fields nodeId and arcId, to ensure that
 				// mpiCommunicator is initialized (as a field of this derived
@@ -140,7 +142,7 @@ namespace FPMAS::graph::parallel {
 				this->insert(node);
 				locationManager.setLocal(node);
 				locationManager.addManagedNode(node, mpiCommunicator.getRank());
-				syncModeRuntime.setUp(node->mutex());
+				syncModeRuntime.setUp(node->getId(), node->mutex());
 				return node;
 			}
 
@@ -207,7 +209,7 @@ namespace FPMAS::graph::parallel {
 			auto nodeCopy = new node_type(node);
 			this->insert(nodeCopy);
 			locationManager.setLocal(nodeCopy);
-			syncModeRuntime.setUp(nodeCopy->mutex());
+			syncModeRuntime.setUp(nodeCopy->getId(), nodeCopy->mutex());
 			return nodeCopy;
 		}
 		auto localNode = this->getNode(node.getId());
@@ -235,7 +237,7 @@ namespace FPMAS::graph::parallel {
 				src = new node_type(srcId);
 				this->insert(src);
 				locationManager.setDistant(src);
-				syncModeRuntime.setUp(src->mutex());
+				syncModeRuntime.setUp(src->getId(), src->mutex());
 			}
 			if(this->getNodes().count(tgtId) > 0) {
 				tgt = this->getNode(tgtId);
@@ -247,7 +249,7 @@ namespace FPMAS::graph::parallel {
 				tgt = new node_type(tgtId);
 				this->insert(tgt);
 				locationManager.setDistant(tgt);
-				syncModeRuntime.setUp(tgt->mutex());
+				syncModeRuntime.setUp(tgt->getId(), tgt->mutex());
 			}
 			// TODO : ghosts creation part is nice, but this is not
 			// because it can't adapt to any DistArcImpl type, using a generic

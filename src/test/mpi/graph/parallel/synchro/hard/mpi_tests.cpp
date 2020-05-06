@@ -33,7 +33,6 @@ class Mpi_MutexServerRaceCondition : public ::testing::Test {
 
 		void SetUp() override {
 			mutex.setUp(DistributedId(3, 6), state, location, client, server);
-			client.manage(DistributedId(3, 6), &mutex);
 			server.manage(DistributedId(3, 6), &mutex);
 			if(comm.getRank() == 0) {
 				state = LocationState::LOCAL;

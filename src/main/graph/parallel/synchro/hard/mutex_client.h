@@ -26,7 +26,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 				private:
 				Epoch epoch = Epoch::EVEN;
-				std::unordered_map<DistributedId, hard_sync_mutex*> mutexMap;
+				//std::unordered_map<DistributedId, hard_sync_mutex*> mutexMap;
 				comm_t& comm;
 				Mpi<DistributedId> idMpi {comm};
 				Mpi<T> dataMpi {comm};
@@ -43,16 +43,18 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				const Mpi<T>& getDataMpi() const {return dataMpi;}
 				const Mpi<DataUpdatePack<T>>& getDataUpdateMpi() const {return dataUpdateMpi;}
 
-				void manage(DistributedId id, hard_sync_mutex* mutex) override {
-					mutexMap.insert({id, mutex});
-				}
-				void remove(DistributedId id) override {
-					mutexMap.erase(id);
-				}
+				/*
+				 *void manage(DistributedId id, hard_sync_mutex* mutex) override {
+				 *    mutexMap.insert({id, mutex});
+				 *}
+				 *void remove(DistributedId id) override {
+				 *    mutexMap.erase(id);
+				 *}
+				 */
 
 				T read(DistributedId, int location) override;
 				T acquire(DistributedId, int location) override;
-				void release(DistributedId, int location) override;
+				void release(DistributedId, const T& data, int location) override;
 
 				void lock(DistributedId, int location) override;
 				void unlock(DistributedId, int location) override;
@@ -102,8 +104,9 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * @param location rank of the data location
 	 */
 	template<typename T, template<typename> class Mpi>
-	void MutexClient<T, Mpi>::release(DistributedId id, int location) {
-		DataUpdatePack<T> update {id, mutexMap.at(id)->data()};
+	void MutexClient<T, Mpi>::release(DistributedId id, const T& data, int location) {
+		//DataUpdatePack<T> update {id, mutexMap.at(id)->data()};
+		DataUpdatePack<T> update {id, data};
 
 		MPI_Request req;
 		dataUpdateMpi.Issend(update, location, epoch | Tag::RELEASE, &req);
