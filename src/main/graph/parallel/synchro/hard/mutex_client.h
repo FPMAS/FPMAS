@@ -20,7 +20,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 					mutex_client_base;
 				typedef FPMAS::api::graph::parallel::synchro::hard::HardSyncMutex<T>
 					hard_sync_mutex;
-				typedef FPMAS::api::graph::parallel::synchro::hard::Request
+				typedef FPMAS::api::graph::parallel::synchro::hard::MutexRequest
 					request_t;
 				typedef FPMAS::api::communication::MpiCommunicator comm_t;
 

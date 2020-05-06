@@ -5,16 +5,16 @@
 #include "../mock_mutex.h"
 #include "api/graph/parallel/synchro/hard/hard_sync_mutex.h"
 
-using FPMAS::api::graph::parallel::synchro::hard::Request;
+using FPMAS::api::graph::parallel::synchro::hard::MutexRequest;
 
 template<typename T>
 class MockHardSyncMutex :
 	public FPMAS::api::graph::parallel::synchro::hard::HardSyncMutex<T>,
 	public MockMutex<T> {
 		public:
-			MOCK_METHOD(void, pushRequest, (Request), (override));
+			MOCK_METHOD(void, pushRequest, (MutexRequest), (override));
 
-			MOCK_METHOD(std::queue<Request>, requestsToProcess, (), (override));
+			MOCK_METHOD(std::queue<MutexRequest>, requestsToProcess, (), (override));
 	};
 
 #endif

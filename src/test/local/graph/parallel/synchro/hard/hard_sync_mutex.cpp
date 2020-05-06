@@ -12,7 +12,7 @@ using ::testing::WhenDynamicCastTo;
 
 using FPMAS::api::graph::parallel::LocationState;
 using FPMAS::graph::parallel::synchro::hard::HardSyncMutex;
-using FPMAS::api::graph::parallel::synchro::hard::Request;
+using FPMAS::api::graph::parallel::synchro::hard::MutexRequest;
 
 class HardSyncMutexTest : public ::testing::Test {
 	protected:
@@ -34,8 +34,8 @@ TEST_F(HardSyncMutexTest, local_read) {
 	state = LocationState::LOCAL;
 
 	EXPECT_CALL(mockMutexServer, wait(AllOf(
-		Field(&Request::id, id),
-		Field(&Request::source, -1)
+		Field(&MutexRequest::id, id),
+		Field(&MutexRequest::source, -1)
 		)));
 	ASSERT_EQ(hardSyncMutex.read(), 14);
 }

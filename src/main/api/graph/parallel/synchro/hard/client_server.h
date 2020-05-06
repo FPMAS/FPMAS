@@ -5,19 +5,19 @@
 #include "graph/parallel/distributed_id.h"
 
 namespace FPMAS::api::graph::parallel::synchro::hard {
-	enum class RequestType {
+	enum class MutexRequestType {
 		READ, LOCK, ACQUIRE
 	};
-	struct Request {
+	struct MutexRequest {
 		static const int LOCAL = -1;
 		DistributedId id;
 		int source;
-		RequestType type;
+		MutexRequestType type;
 
-		Request(DistributedId id, int source, RequestType type)
+		MutexRequest(DistributedId id, int source, MutexRequestType type)
 			: id(id), source(source), type(type) {}
 
-		bool operator==(const Request& other) const {
+		bool operator==(const MutexRequest& other) const {
 			return
 				(this->type == other.type) &&
 				(this->id == other.id) &&
@@ -58,7 +58,7 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 			virtual void manage(DistributedId id, HardSyncMutex<T>*) = 0;
 			virtual void remove(DistributedId id) = 0;
 
-			virtual void wait(const Request& req) = 0;
+			virtual void wait(const MutexRequest& req) = 0;
 			virtual void notify(DistributedId) = 0;
 
 

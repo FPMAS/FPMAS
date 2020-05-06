@@ -43,7 +43,7 @@ class MockMutexServer
 		MOCK_METHOD(void, remove, (DistributedId), (override));
 
 		MOCK_METHOD(void, wait,
-				(const FPMAS::api::graph::parallel::synchro::hard::Request&),
+				(const FPMAS::api::graph::parallel::synchro::hard::MutexRequest&),
 				(override));
 		MOCK_METHOD(void, notify, (DistributedId), (override));
 

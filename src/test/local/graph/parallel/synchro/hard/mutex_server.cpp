@@ -143,7 +143,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 
 		void expectRelease(
 			int source, DistributedId id, int updatedData,
-			std::queue<Request>& requests, MockHardSyncMutex<int>* mock) {
+			std::queue<MutexRequest>& requests, MockHardSyncMutex<int>* mock) {
 			EXPECT_CALL(*mock, requestsToProcess)
 				.WillOnce(Return(requests));
 
@@ -177,7 +177,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 
 		void expectUnlock(
 			int source, DistributedId id,
-			std::queue<Request>& requests, MockHardSyncMutex<int>* mock) {
+			std::queue<MutexRequest>& requests, MockHardSyncMutex<int>* mock) {
 
 			EXPECT_CALL(*mock, requestsToProcess)
 				.WillOnce(Return(requests));
@@ -227,7 +227,7 @@ TEST_F(MutexServerHandleIncomingRequestsTest, unlocked_acquire) {
  * mutex_server_handle_incoming_requests_test_release_no_waiting_queues
  */
 TEST_F(MutexServerHandleIncomingRequestsTest, release_no_waiting_queues) {
-	std::queue<Request> voidRequests;
+	std::queue<MutexRequest> voidRequests;
 
 	int mutexData = 12;
 	int updatedData = 15;
@@ -251,7 +251,7 @@ TEST_F(MutexServerHandleIncomingRequestsTest, unlocked_lock) {
  * mutex_server_handle_incoming_requests_test_unlock
  */
 TEST_F(MutexServerHandleIncomingRequestsTest, unlock) {
-	std::queue<Request> voidRequests;
+	std::queue<MutexRequest> voidRequests;
 
 	int data = 0; // unused
 	expectUnlock(5, DistributedId(2, 6), voidRequests, mockMutex(DistributedId(2, 6), data));
@@ -269,7 +269,7 @@ TEST_F(MutexServerHandleIncomingRequestsTest, all) {
 	expectAcquire(1, DistributedId(0, 1), mockMutex(DistributedId(0, 1), data[1]));
 	expectLock(2, DistributedId(0, 2), mockMutex(DistributedId(0, 2), data[2]));
 
-	std::queue<Request> voidRequests;
+	std::queue<MutexRequest> voidRequests;
 	expectRelease(3, DistributedId(0, 3), 10, voidRequests, mockMutex(DistributedId(0, 3), data[3]));
 
 	expectUnlock(4, DistributedId(0, 4), voidRequests, mockMutex(DistributedId(0, 4), data[4]));

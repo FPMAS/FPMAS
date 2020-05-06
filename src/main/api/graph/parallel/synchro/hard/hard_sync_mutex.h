@@ -11,8 +11,8 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 		class HardSyncMutex : public virtual synchro::Mutex<T> {
 			friend MutexServer<T>;
 			public:
-				virtual void pushRequest(Request) = 0;
-				virtual std::queue<Request> requestsToProcess() = 0;
+				virtual void pushRequest(MutexRequest) = 0;
+				virtual std::queue<MutexRequest> requestsToProcess() = 0;
 
 				virtual ~HardSyncMutex() {}
 		};
