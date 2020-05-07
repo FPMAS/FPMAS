@@ -157,12 +157,37 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		}
 	}
 
-	template<typename Arc>
+	template<typename Arc, typename TerminationAlgorithm>
 	class HardSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<Arc> {
+		private:
+			typedef FPMAS::api::graph::parallel::synchro::hard::LinkClient<Arc> link_client;
+			typedef FPMAS::api::graph::parallel::synchro::hard::LinkServer link_server;
+
+			FPMAS::api::communication::MpiCommunicator& comm;
+			link_client& linkClient;
+			link_server& linkServer;
+
+			TerminationAlgorithm termination {comm};
+
 		public:
-			void link(const Arc*) override {}
-			void unlink(const Arc*) override {}
-			void synchronize() override {}
+			HardSyncLinker(FPMAS::api::communication::MpiCommunicator& comm, link_client& linkClient, link_server& linkServer)
+				: comm(comm), linkClient(linkClient), linkServer(linkServer) {}
+
+			const TerminationAlgorithm& getTerminationAlgorithm() const {
+				return termination;
+			}
+
+			void link(const Arc* arc) override {
+				linkClient.link(arc);
+			};
+
+			void unlink(const Arc* arc) override {
+				linkClient.unlink(arc);
+			};
+
+			void synchronize() override {
+				termination.terminate(linkServer);
+			};
 
 	};
 }

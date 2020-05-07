@@ -21,26 +21,30 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			MutexServer<typename Node::data_type, communication::TypedMpi> mutexServer;
 			MutexClient<typename Node::data_type, communication::TypedMpi> mutexClient;
 
+			LinkServer<Node, Arc, communication::TypedMpi> linkServer;
+			LinkClient<Arc, communication::TypedMpi> linkClient;
+
 			HardDataSync<Node, Arc, termination_algorithm> dataSync;
-			HardSyncLinker<Arc> syncLinker;
+			HardSyncLinker<Arc, termination_algorithm> syncLinker;
 
 			public:
 				HardSyncRuntime(
 						FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph,
-						FPMAS::api::communication::MpiCommunicator& comm)
-					: mutexServer(comm), mutexClient(comm, mutexServer), dataSync(comm, mutexServer) {}
+						FPMAS::api::communication::MpiCommunicator& comm) :
+					mutexServer(comm), mutexClient(comm, mutexServer),
+					linkServer(comm, graph), linkClient(comm, linkServer),
+					syncLinker(comm, linkClient, linkServer),
+					dataSync(comm, mutexServer) {}
 
 				void setUp(DistributedId id, Mutex& mutex) override {
 					mutexServer.manage(id, &mutex);
 				};
 
 				HardDataSync<Node, Arc, termination_algorithm>& getDataSync() override {return dataSync;};
-				HardSyncLinker<Arc>& getSyncLinker() override {return syncLinker;};
+				HardSyncLinker<Arc, termination_algorithm>& getSyncLinker() override {return syncLinker;};
 		};
 
-	class HardSyncMode : public FPMAS::api::graph::parallel::synchro::SyncMode<HardSyncMutex, HardSyncRuntime> {
-
-	};
+	typedef FPMAS::api::graph::parallel::synchro::SyncMode<HardSyncMutex, HardSyncRuntime> HardSyncMode;
 }
 
 #endif
