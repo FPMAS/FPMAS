@@ -191,6 +191,13 @@ namespace FPMAS::graph::parallel {
 		src->mutex().unlock();
 		tgt->mutex().unlock();
 
+		// TODO : clear usage here is risky, and does not support
+		// multi-threading. It can't be called before src->unlock and
+		// tgt->unlock, because if one of the two nodes is "cleared" in
+		// clear(arc) src->mutex() will seg fault. 
+		//
+		// "clear" functions should globally be improved : what about a custom
+		// GarbageCollector for the graph?
 		this->clear(arc);
 	}
 

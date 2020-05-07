@@ -82,7 +82,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 				int source;
 			public:
 				MockProbe(int source) : source(source) {}
-				void operator()(int source, int tag, MPI_Status* status) {
+				void operator()(int, int tag, MPI_Status* status) {
 					status->MPI_SOURCE = this->source;
 					status->MPI_TAG = tag;
 				}

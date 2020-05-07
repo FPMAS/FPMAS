@@ -27,7 +27,10 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				LinkServer(
 					FPMAS::api::communication::MpiCommunicator& comm,
 					FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph)
-					: comm(comm), graph(graph) {}
+					: comm(comm), idMpi(comm), arcMpi(comm), graph(graph) {}
+
+				Mpi<DistributedId>& getIdMpi() {return idMpi;};
+				Mpi<Arc>& getArcMpi() {return arcMpi;};
 
 				Epoch getEpoch() const override {return epoch;}
 				void setEpoch(Epoch epoch) override {this->epoch = epoch;}
