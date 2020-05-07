@@ -28,6 +28,7 @@
 using ::testing::AnyOf;
 using ::testing::ElementsAre;
 using ::testing::Eq;
+using ::testing::Expectation;
 using ::testing::IsEmpty;
 using ::testing::IsEmpty;
 using ::testing::Key;
@@ -57,17 +58,22 @@ class BasicDistributedGraphTest : public ::testing::Test {
 			MockLocationManager,
 			MockLoadBalancing> graph;
 
-		MockMpiCommunicator<7, 10>& comm =
-			static_cast<MockMpiCommunicator<7, 10>&>(graph.getMpiCommunicator());
-
-		MockSyncLinker<MockDistributedArc<int, MockMutex>> mockSyncLinker {comm};
-		MockDataSync mockDataSync;
-
-
 		typedef decltype(graph) graph_type;
 		typedef typename graph_type::node_type node_type; // MockDistributedNode<int, MockMutex>
 		typedef typename graph_type::arc_type arc_type;	//MockDistributedArc<int, MockMutex>
 		typedef typename graph_type::sync_mode_runtime sync_mode_runtime;
+
+		MockMpiCommunicator<7, 10>& comm =
+			static_cast<MockMpiCommunicator<7, 10>&>(graph.getMpiCommunicator());
+
+		MockLocationManager<node_type>& locationManager
+			= const_cast<MockLocationManager<node_type>&>(
+					graph.getLocationManager()
+					);
+
+		MockSyncLinker<MockDistributedArc<int, MockMutex>> mockSyncLinker {comm};
+		MockDataSync mockDataSync;
+
 	
 		void SetUp() override {
 			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker)
@@ -249,9 +255,9 @@ TEST_F(BasicDistributedGraphLinkTest, distant_src_distant_tgt) {
 /****************/
 class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
 	protected:
-		node_type srcMock;
+		node_type* srcMock = new node_type(DistributedId(0, 0));
 		MockMutex<int> srcMutex;
-		node_type tgtMock;
+		node_type* tgtMock = new node_type(DistributedId(0, 1));
 		MockMutex<int> tgtMutex;
 		arc_type* arc;
 
@@ -259,8 +265,8 @@ class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
 		void SetUp() override {
 			BasicDistributedGraphTest::SetUp();
 
-			EXPECT_CALL(srcMock, mutex).WillRepeatedly(ReturnRef(srcMutex));
-			EXPECT_CALL(tgtMock, mutex).WillRepeatedly(ReturnRef(tgtMutex));
+			EXPECT_CALL(*srcMock, mutex).WillRepeatedly(ReturnRef(srcMutex));
+			EXPECT_CALL(*tgtMock, mutex).WillRepeatedly(ReturnRef(tgtMutex));
 
 			EXPECT_CALL(srcMutex, lock).Times(2);
 			EXPECT_CALL(srcMutex, unlock).Times(2);
@@ -269,17 +275,27 @@ class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
 		}
 
 		void link(LocationState srcState, LocationState tgtState) {
-			EXPECT_CALL(srcMock, state).WillRepeatedly(Return(srcState));
-			EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(tgtState));
+			EXPECT_CALL(*srcMock, state).WillRepeatedly(Return(srcState));
+			EXPECT_CALL(*tgtMock, state).WillRepeatedly(Return(tgtState));
 
-			EXPECT_CALL(srcMock, linkOut);
-			EXPECT_CALL(tgtMock, linkIn);
+			EXPECT_CALL(*srcMock, linkOut);
+			EXPECT_CALL(*tgtMock, linkIn);
 			EXPECT_CALL(mockSyncLinker, link).Times(AnyNumber());
 
-			arc = graph.link(&srcMock, &tgtMock, 0);
+			arc = graph.link(srcMock, tgtMock, 0);
 
-			EXPECT_CALL(srcMock, unlinkOut(arc));
-			EXPECT_CALL(tgtMock, unlinkIn(arc));
+			Expectation unlinkSrc = EXPECT_CALL(*srcMock, unlinkOut(arc));
+			Expectation unlinkTgt = EXPECT_CALL(*tgtMock, unlinkIn(arc));
+
+			/*
+			 * Might be call to clear() DISTANT node after the arc has been
+			 * erased
+			 */
+			EXPECT_CALL(*srcMock, getIncomingArcs()).Times(AnyNumber()).After(unlinkSrc);
+			EXPECT_CALL(*srcMock, getOutgoingArcs()).Times(AnyNumber()).After(unlinkSrc);
+
+			EXPECT_CALL(*tgtMock, getIncomingArcs()).Times(AnyNumber()).After(unlinkTgt);
+			EXPECT_CALL(*tgtMock, getOutgoingArcs()).Times(AnyNumber()).After(unlinkTgt);
 		}
 };
 
@@ -292,36 +308,35 @@ TEST_F(BasicDistributedGraphUnlinkTest, local_src_local_tgt) {
 	graph.unlink(arc);
 
 	ASSERT_EQ(graph.getArcs().size(), 0);
+
+	delete srcMock;
+	delete tgtMock;
 }
 
 TEST_F(BasicDistributedGraphUnlinkTest, local_src_distant_tgt) {
 	this->link(LocationState::LOCAL, LocationState::DISTANT);
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 
-	EXPECT_CALL(
-		//(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
-		mockSyncLinker,
-		unlink(arc)
-		).Times(1);
+	EXPECT_CALL(mockSyncLinker, unlink(arc));
+	EXPECT_CALL(locationManager, remove(tgtMock));
 
 	graph.unlink(arc);
 
 	ASSERT_EQ(graph.getArcs().size(), 0);
+	delete srcMock;
 }
 
 TEST_F(BasicDistributedGraphUnlinkTest, distant_src_local_tgt) {
 	this->link(LocationState::DISTANT, LocationState::LOCAL);
 	ASSERT_EQ(arc->_state, LocationState::DISTANT);
 
-	EXPECT_CALL(
-		//(const_cast<MockSyncLinker<node_type, arc_type>&>(graph.getSyncLinker())),
-		mockSyncLinker,
-		unlink(arc)
-		).Times(1);
+	EXPECT_CALL(mockSyncLinker, unlink(arc));
+	EXPECT_CALL(locationManager, remove(srcMock));
 
 	graph.unlink(arc);
 
 	ASSERT_EQ(graph.getArcs().size(), 0);
+	delete tgtMock;
 }
 
 /*********************/
@@ -337,11 +352,6 @@ class BasicDistributedGraphImportNodeTest : public BasicDistributedGraphTest {
 		typedef typename graph_type::node_type node_type; // MockDistributedNode<int, MockMutex>
 		typedef typename graph_type::arc_type arc_type; // MockDistributedArc<int, MockMutex>
 		typedef typename decltype(graph)::partition_type partition_type;
-
-		MockLocationManager<node_type>& locationManager
-			= const_cast<MockLocationManager<node_type>&>(
-					static_cast<const MockLocationManager<node_type>&>(graph.getLocationManager())
-					);
 
 		partition_type partition;
 		std::unordered_map<int, std::vector<node_type>> importedNodeMocks;

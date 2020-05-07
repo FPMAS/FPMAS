@@ -49,6 +49,13 @@ class MutexClientTest : public ::testing::Test {
 
 		MockHardSyncMutex<int> distantHardSyncMutex;
 		MockHardSyncMutex<int> localHardSyncMutex;
+
+		void SetUp() override {
+			ON_CALL(mockMutexServer, getEpoch)
+				.WillByDefault(Return(Epoch::EVEN));
+			EXPECT_CALL(mockMutexServer, getEpoch).Times(AnyNumber());
+
+		}
 };
 
 /*
@@ -171,27 +178,23 @@ TEST_F(MutexClientTest, unlock) {
 class MutexClientDeadlockTest : public MutexClientTest {
 	protected:
 		Sequence seq;
-		Expectation serverHandleIncomingExpectation;
 
 		void SetUp(Tag sendTag, Tag recvTag) {
 			// 1 : sends the request
-			Expectation issendExpectation =
 				EXPECT_CALL(
 					const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
 					Issend(DistributedId(7, 3), 5, Epoch::EVEN | sendTag, _))
 				.InSequence(seq);
 
-			// Perform at least a reception cycle
-			serverHandleIncomingExpectation =
-				EXPECT_CALL(mockMutexServer, handleIncomingRequests)
-				.Times(AtLeast(1))
-				.After(issendExpectation);
-
 			// 2 : Tests request completion : completes after 20 calls
-			EXPECT_CALL(comm, test(_))
-				.Times(20)
-				.InSequence(seq)
-				.WillRepeatedly(Return(false));
+			for(int i = 0; i < 20; i++) {
+				EXPECT_CALL(comm, test(_))
+					.InSequence(seq)
+					.WillOnce(Return(false));
+				EXPECT_CALL(mockMutexServer, handleIncomingRequests)
+					.Times(AtLeast(1))
+					.InSequence(seq);
+			}
 			EXPECT_CALL(comm, test(_))
 				.InSequence(seq)
 				.WillOnce(Return(true));
@@ -224,7 +227,6 @@ TEST_F(MutexClientDeadlockTest, read) {
 	// Receive read data
 	EXPECT_CALL(const_cast<MockMpi<int>&>(mutexClient.getDataMpi()), recv(_))
 		.InSequence(seq)
-		.After(serverHandleIncomingExpectation)
 		.WillOnce(Return(27));
 
 	// Actual read call
@@ -244,7 +246,6 @@ TEST_F(MutexClientDeadlockTest, acquire) {
 	// Receive acquired data
 	EXPECT_CALL(const_cast<MockMpi<int>&>(mutexClient.getDataMpi()), recv(_))
 		.InSequence(seq)
-		.After(serverHandleIncomingExpectation)
 		.WillOnce(Return(27));
 
 	// Actual acquire call
@@ -257,10 +258,9 @@ TEST_F(MutexClientDeadlockTest, acquire) {
  */
 TEST_F(MutexClientDeadlockTest, release) {
 	int data = 42;
-	//EXPECT_CALL(distantHardSyncMutex, data).WillRepeatedly(ReturnRef(data));
 
 	// Sends the request
-	Expectation issend = EXPECT_CALL(
+	EXPECT_CALL(
 		const_cast<MockMpi<DataUpdatePack<int>>&>(mutexClient.getDataUpdateMpi()),
 		Issend(AllOf(
 			Field(&DataUpdatePack<int>::id, DistributedId(7, 3)),
@@ -268,19 +268,18 @@ TEST_F(MutexClientDeadlockTest, release) {
 			5, Epoch::EVEN | Tag::RELEASE, _))
 		.InSequence(seq);
 
-	Expectation handle = EXPECT_CALL(mockMutexServer, handleIncomingRequests)
-		.Times(AtLeast(1))
-		.After(issend);
 
-	EXPECT_CALL(comm, test(_))
-		.Times(20)
-		.InSequence(seq)
-		.WillRepeatedly(Return(false));
-
+	for(int i = 0; i < 20; i++) {
+		EXPECT_CALL(comm, test(_))
+			.InSequence(seq)
+			.WillOnce(Return(false));
+		EXPECT_CALL(mockMutexServer, handleIncomingRequests)
+			.Times(AtLeast(1))
+			.InSequence(seq);
+	}
 	// Tests request completion : returns true after 20 tests
 	EXPECT_CALL(comm, test(_))
 		.InSequence(seq)
-		.After(handle)
 		.WillOnce(Return(true));
 
 	// Actual read call
@@ -295,8 +294,7 @@ TEST_F(MutexClientDeadlockTest, lock) {
 
 	// Receive acquired data
 	EXPECT_CALL(comm, recv(_))
-		.InSequence(seq)
-		.After(serverHandleIncomingExpectation);
+		.InSequence(seq);
 
 	// Actual lock call
 	mutexClient.lock(DistributedId(7, 3), 5);
@@ -309,23 +307,22 @@ TEST_F(MutexClientDeadlockTest, unlock) {
 
 	Sequence seq;
 	// Sends the request
-	Expectation issend = EXPECT_CALL(
+	EXPECT_CALL(
 			const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
 			Issend(DistributedId(7, 3), 5, Epoch::EVEN | Tag::UNLOCK, _))
 		.InSequence(seq);
-	Expectation handle = EXPECT_CALL(mockMutexServer, handleIncomingRequests)
-		.Times(AtLeast(1))
-		.After(issend);
 
-	EXPECT_CALL(comm, test(_))
-		.Times(20)
-		.InSequence(seq)
-		.WillRepeatedly(Return(false));
-
+	for(int i = 0; i < 20; i++) {
+		EXPECT_CALL(comm, test(_))
+			.InSequence(seq)
+			.WillOnce(Return(false));
+		EXPECT_CALL(mockMutexServer, handleIncomingRequests)
+			.Times(AtLeast(1))
+			.InSequence(seq);
+	}
 	// Tests request completion returns true after 20 tests
 	EXPECT_CALL(comm, test(_))
 		.InSequence(seq)
-		.After(handle)
 		.WillOnce(Return(true));
 
 	// Actual unlock call

@@ -16,6 +16,8 @@ class MockDistributedNode;
 template<typename T, template<typename> class Mutex>
 void from_json(const nlohmann::json& j, MockDistributedNode<T, Mutex>& mock);
 
+template<typename, template<typename> class> class MockDistributedArc;
+
 template<typename T, template<typename> class Mutex>
 class MockDistributedNode :
 	public FPMAS::api::graph::parallel::DistributedNode<T, MockDistributedArc<T, Mutex>>,

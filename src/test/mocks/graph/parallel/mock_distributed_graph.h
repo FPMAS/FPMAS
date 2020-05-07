@@ -25,6 +25,7 @@ class MockDistributedGraph :
 
 		MOCK_METHOD(node_type*, importNode, (const node_type&), (override));
 		MOCK_METHOD(arc_type*, importArc, (const arc_type&), (override));
+		MOCK_METHOD(void, clear, (arc_type*), (override));
 		MOCK_METHOD(void, clear, (node_type*), (override));
 
 		MOCK_METHOD(void, balance, (), (override));

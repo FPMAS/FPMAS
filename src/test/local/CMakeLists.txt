@@ -18,6 +18,7 @@ set(SOURCES
 	graph/parallel/synchro/hard/mutex_server.cpp
 	graph/parallel/synchro/hard/termination.cpp
 	graph/parallel/synchro/hard/hard_sync_mode.cpp
+	graph/parallel/synchro/hard/link_client.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

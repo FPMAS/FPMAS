@@ -50,4 +50,12 @@ class MockMutexServer
 		MOCK_METHOD(void, handleIncomingRequests, (), (override));
 };
 
+class MockLinkServer
+: public FPMAS::api::graph::parallel::synchro::hard::LinkServer {
+	public:
+		MOCK_METHOD(void, setEpoch, (Epoch), (override));
+		MOCK_METHOD(Epoch, getEpoch, (), (const, override));
+
+		MOCK_METHOD(void, handleIncomingRequests, (), (override));
+};
 #endif

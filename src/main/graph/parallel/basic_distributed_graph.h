@@ -67,8 +67,6 @@ namespace FPMAS::graph::parallel {
 			using typename dist_graph_base::layer_id_type;
 			using typename dist_graph_base::node_map;
 			using typename dist_graph_base::partition_type;
-			//typedef typename SyncMode<T>::template sync_linker<node_type, arc_type> sync_linker_type;
-			//typedef typename SyncMode<T>::template data_sync<node_type, arc_type> data_sync_type;
 			typedef typename MpiSetUp::communicator communicator;
 			template<typename Data>
 			using mpi = typename MpiSetUp::template mpi<Data>;
@@ -79,8 +77,6 @@ namespace FPMAS::graph::parallel {
 			mpi<arc_type> arcMpi {mpiCommunicator};
 
 			sync_mode_runtime syncModeRuntime;
-			//sync_linker_type syncLinker;
-			//data_sync_type dataSync;
 			LocationManagerImpl<node_type> locationManager;
 			LoadBalancingImpl<node_type> loadBalancing;
 
@@ -105,6 +101,7 @@ namespace FPMAS::graph::parallel {
 			const mpi<node_type>& getNodeMpi() const {return nodeMpi;}
 			const mpi<arc_type>& getArcMpi() const {return arcMpi;}
 
+			void clear(arc_type*) override;
 			void clear(node_type*) override;
 
 			node_type* importNode(const node_type& node) override;
@@ -112,15 +109,11 @@ namespace FPMAS::graph::parallel {
 
 			const sync_mode_runtime& getSyncModeRuntime() const {return syncModeRuntime;}
 
-			//const sync_linker_type& getSyncLinker() const {return syncLinker;}
-
-			//const data_sync_type& getDataSync() const {return dataSync;}
-
 			const LoadBalancingImpl<node_type>& getLoadBalancing() const {
 				return loadBalancing;
 			};
 
-			const FPMAS::api::graph::parallel::LocationManager<node_type>&
+			const LocationManagerImpl<node_type>&
 				getLocationManager() const override {return locationManager;}
 
 			void removeNode(node_type*) override {};
@@ -195,10 +188,10 @@ namespace FPMAS::graph::parallel {
 			syncModeRuntime.getSyncLinker().unlink(arc);
 			// TODO : src and tgt might be cleared
 		}
-		this->erase(arc);
-
 		src->mutex().unlock();
 		tgt->mutex().unlock();
+
+		this->clear(arc);
 	}
 
 	template<DIST_GRAPH_PARAMS>
@@ -344,6 +337,20 @@ namespace FPMAS::graph::parallel {
 		::synchronize() {
 			syncModeRuntime.getSyncLinker().synchronize();
 			syncModeRuntime.getDataSync().synchronize();
+		}
+
+	template<DIST_GRAPH_PARAMS>
+		void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+		::clear(arc_type* arc) {
+			auto src = arc->getSourceNode();
+			auto tgt = arc->getTargetNode();
+			this->erase(arc);
+			if(src->state() == LocationState::DISTANT) {
+				this->clear(src);
+			}
+			if(tgt->state() == LocationState::DISTANT) {
+				this->clear(tgt);
+			}
 		}
 
 	template<DIST_GRAPH_PARAMS>

@@ -5,6 +5,7 @@
 
 #include "../base/mock_arc.h"
 #include "api/graph/parallel/distributed_arc.h"
+#include "mock_distributed_node.h"
 
 using FPMAS::api::graph::parallel::LocationState;
 
@@ -45,18 +46,6 @@ class MockDistributedArc :
 			this->src = otherMock.src;
 			this->tgt = otherMock.tgt;
 		}
-
-	// Used internally by nlohmann json
-	/*
-	 *MockDistributedArc<int, Mutex>& operator=(const MockDistributedArc<int, Mutex>& other) {
-	 *    // Copy saved fields
-	 *    this->id = other.id;
-	 *    this->src = other.src;
-	 *    this->tgt = other.tgt;
-	 *    this->_state = other._state;
-	 *    return *this;
-	 *}
-	 */
 
 	MockDistributedArc(
 			const DistributedId& id, layer_id_type layer)

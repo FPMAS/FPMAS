@@ -29,6 +29,8 @@ namespace FPMAS::api::graph::parallel {
 
 			virtual node_type* importNode(const node_type&) = 0;
 			virtual arc_type* importArc(const arc_type&) = 0;
+
+			virtual void clear(arc_type*) = 0;
 			virtual void clear(node_type*) = 0;
 
 			virtual void balance() = 0;

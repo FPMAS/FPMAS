@@ -103,5 +103,4 @@ namespace FPMAS::api::communication {
 				using mpi = TypedMpiImpl<T>;
 		};
 }
-
 #endif

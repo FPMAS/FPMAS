@@ -16,8 +16,10 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 		LOCK = 0x05,
 		LOCK_RESPONSE = 0x06,
 		UNLOCK = 0x07,
-		TOKEN = 0x08,
-		END = 0x09
+		LINK = 0x08,
+		UNLINK = 0x09,
+		TOKEN = 0x0A,
+		END = 0x0B
 	};
 
 	/**
@@ -26,6 +28,10 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 	enum Color : int {
 		WHITE = 0,
 		BLACK = 1
+	};
+
+	enum class MutexRequestType {
+		READ, LOCK, ACQUIRE
 	};
 }
 #endif

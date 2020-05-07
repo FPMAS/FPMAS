@@ -25,8 +25,6 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				typedef FPMAS::api::communication::MpiCommunicator comm_t;
 
 				private:
-				Epoch epoch = Epoch::EVEN;
-				//std::unordered_map<DistributedId, hard_sync_mutex*> mutexMap;
 				comm_t& comm;
 				Mpi<DistributedId> idMpi {comm};
 				Mpi<T> dataMpi {comm};
@@ -43,15 +41,6 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				const Mpi<T>& getDataMpi() const {return dataMpi;}
 				const Mpi<DataUpdatePack<T>>& getDataUpdateMpi() const {return dataUpdateMpi;}
 
-				/*
-				 *void manage(DistributedId id, hard_sync_mutex* mutex) override {
-				 *    mutexMap.insert({id, mutex});
-				 *}
-				 *void remove(DistributedId id) override {
-				 *    mutexMap.erase(id);
-				 *}
-				 */
-
 				T read(DistributedId, int location) override;
 				T acquire(DistributedId, int location) override;
 				void release(DistributedId, const T& data, int location) override;
@@ -65,7 +54,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			FPMAS_LOGD(this->comm.getRank(), "READ", "reading data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
-			this->idMpi.Issend(id, location, epoch | Tag::READ, &req);
+			this->idMpi.Issend(id, location, mutexServer.getEpoch() | Tag::READ, &req);
 
 			// Keep responding to other READ / ACQUIRE request to avoid deadlock,
 			// until the request has been received
@@ -74,7 +63,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
 			MPI_Status read_response_status;
-			this->comm.probe(location, epoch | Tag::READ_RESPONSE, &read_response_status);
+			this->comm.probe(location, mutexServer.getEpoch() | Tag::READ_RESPONSE, &read_response_status);
 
 			return dataMpi.recv(&read_response_status);
 		}
@@ -84,14 +73,14 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			FPMAS_LOGD(this->comm.getRank(), "ACQUIRE", "acquiring data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
-			this->idMpi.Issend(id, location, epoch | Tag::ACQUIRE, &req);
+			this->idMpi.Issend(id, location, mutexServer.getEpoch() | Tag::ACQUIRE, &req);
 
 			this->waitSendRequest(&req);
 
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
 			MPI_Status acquire_response_status;
-			this->comm.probe(location, epoch | Tag::ACQUIRE_RESPONSE, &acquire_response_status);
+			this->comm.probe(location, mutexServer.getEpoch() | Tag::ACQUIRE_RESPONSE, &acquire_response_status);
 
 			return dataMpi.recv(&acquire_response_status);
 		}
@@ -109,7 +98,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		DataUpdatePack<T> update {id, data};
 
 		MPI_Request req;
-		dataUpdateMpi.Issend(update, location, epoch | Tag::RELEASE, &req);
+		dataUpdateMpi.Issend(update, location, mutexServer.getEpoch() | Tag::RELEASE, &req);
 
 		this->waitSendRequest(&req);
 	}
@@ -117,14 +106,14 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::lock(DistributedId id, int location) {
 		MPI_Request req;
-		this->idMpi.Issend(id, location, epoch | Tag::LOCK, &req);
+		this->idMpi.Issend(id, location, mutexServer.getEpoch() | Tag::LOCK, &req);
 
 		this->waitSendRequest(&req);
 
 		// The request has been received : it is assumed that the receiving proc is
 		// now responding so we can safely wait for response without deadlocking
 		MPI_Status lock_response_status;
-		this->comm.probe(location, epoch | Tag::LOCK_RESPONSE, &lock_response_status);
+		this->comm.probe(location, mutexServer.getEpoch() | Tag::LOCK_RESPONSE, &lock_response_status);
 
 		comm.recv(&lock_response_status);
 	}
@@ -132,7 +121,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::unlock(DistributedId id, int location) {
 		MPI_Request req;
-		this->idMpi.Issend(id, location, epoch | Tag::UNLOCK, &req);
+		this->idMpi.Issend(id, location, mutexServer.getEpoch() | Tag::UNLOCK, &req);
 
 		this->waitSendRequest(&req);
 	}

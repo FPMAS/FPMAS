@@ -211,14 +211,9 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(IsEmpty()))
 		.WillOnce(Return(importMap));
 
-	EXPECT_CALL(mockedGraph, erase(Matcher<arc_type*>(Pointee(arc1))));
-	EXPECT_CALL(mockedGraph, erase(Matcher<arc_type*>(Pointee(arc2))));
-	EXPECT_CALL(mockedGraph, erase(Matcher<arc_type*>(Pointee(arc3))));
-
-	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc1.src))));
-	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc2.tgt))));
-	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc3.src))));
-	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc3.tgt))));
+	EXPECT_CALL(mockedGraph, clear(&arc1));
+	EXPECT_CALL(mockedGraph, clear(&arc2));
+	EXPECT_CALL(mockedGraph, clear(&arc3));
 
 	linker.synchronize();
 
@@ -265,12 +260,8 @@ TEST_F(GhostSyncLinkerTest, import_export_unlink) {
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(exportIdMatcher))
 		.WillOnce(Return(importMap));
 
-	EXPECT_CALL(mockedGraph, erase(Matcher<arc_type*>(Pointee(arc2))));
-	EXPECT_CALL(mockedGraph, erase(Matcher<arc_type*>(Pointee(arc3))));
-
-	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc2.tgt))));
-	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc3.src))));
-	EXPECT_CALL(mockedGraph, clear(Eq<node_type*>(const_cast<node_type*>(arc3.tgt))));
+	EXPECT_CALL(mockedGraph, clear(&arc2));
+	EXPECT_CALL(mockedGraph, clear(&arc3));
 
 	linker.synchronize();
 

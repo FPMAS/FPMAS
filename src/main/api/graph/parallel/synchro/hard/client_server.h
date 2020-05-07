@@ -5,9 +5,6 @@
 #include "graph/parallel/distributed_id.h"
 
 namespace FPMAS::api::graph::parallel::synchro::hard {
-	enum class MutexRequestType {
-		READ, LOCK, ACQUIRE
-	};
 	struct MutexRequest {
 		static const int LOCAL = -1;
 		DistributedId id;
@@ -38,8 +35,6 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 				virtual ~MutexClient() {}
 		};
 
-	template<typename T> class HardSyncMutex;
-
 	class Server {
 		public:
 			virtual void setEpoch(Epoch) = 0;
@@ -48,6 +43,7 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 			virtual void handleIncomingRequests() = 0;
 	};
 
+	template<typename T> class HardSyncMutex;
 	template<typename T>
 		class MutexServer : public virtual Server {
 			friend HardSyncMutex<T>;
@@ -65,9 +61,23 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 			virtual ~MutexServer() {}
 		};
 
+	template<typename Arc>
+		class LinkClient {
+			public:
+				virtual void link(const Arc*) = 0;
+				virtual void unlink(const Arc*) = 0;
+
+				virtual ~LinkClient() {};
+		};
+
+	class LinkServer : public virtual Server {
+	};
+
 	class TerminationAlgorithm {
 		public:
 			virtual void terminate(Server& server) = 0;
+
+			virtual ~TerminationAlgorithm() {};
 	};
 
 

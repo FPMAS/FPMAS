@@ -158,15 +158,7 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 			for(DistributedId id : importList.second) {
 				if(graph.getArcs().count(id) > 0) {
 					auto arc = graph.getArc(id);
-					auto src = arc->getSourceNode();
-					auto tgt = arc->getTargetNode();
-					graph.erase(graph.getArc(id));
-					if(src->state() == LocationState::DISTANT) {
-						graph.clear(src);
-					}
-					if(tgt->state() == LocationState::DISTANT) {
-						graph.clear(tgt);
-					}
+					graph.clear(arc);
 				}
 			}
 		}
