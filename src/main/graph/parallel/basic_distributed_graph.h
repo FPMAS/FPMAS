@@ -1,8 +1,10 @@
 #ifndef DISTRIBUTED_GRAPH_IMPL_H
 #define DISTRIBUTED_GRAPH_IMPL_H
 
-#include "api/communication/communication.h"
 #include "api/graph/parallel/distributed_graph.h"
+#include "communication/communication.h"
+#include "distributed_node.h"
+#include "location_manager.h"
 
 #include "graph/base/basic_graph.h"
 
@@ -27,6 +29,9 @@
 namespace FPMAS::graph::parallel {
 	
 	using FPMAS::api::graph::parallel::LocationState;
+	
+	typedef api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi> DefaultMpiSetUp;
+
 	template<DIST_GRAPH_PARAMS>
 	class BasicDistributedGraph : 
 		public base::AbstractGraphBase<
@@ -285,17 +290,19 @@ namespace FPMAS::graph::parallel {
 			std::unordered_map<int, std::vector<node_type>> nodeExportMap;
 			std::unordered_map<int, std::vector<arc_type>> arcExportMap;
 			for(auto item : partition) {
-				if(item.second != mpiCommunicator.getRank()) {
-					auto nodeToExport = this->getNode(item.first);
-					exportedNodes.push_back(nodeToExport);
-					nodeExportMap[item.second].push_back(*nodeToExport);
-					for(auto arc :  nodeToExport->getIncomingArcs()) {
-						// TODO : unefficient, improve this.
-						arcExportMap[item.second].push_back(*this->getArc(arc->getId()));
-					}
-					for(auto arc :  nodeToExport->getOutgoingArcs()) {
-						// TODO : unefficient, improve this.
-						arcExportMap[item.second].push_back(*this->getArc(arc->getId()));
+				if(this->getNodes().count(item.first) > 0) {
+					if(item.second != mpiCommunicator.getRank()) {
+						auto nodeToExport = this->getNode(item.first);
+						exportedNodes.push_back(nodeToExport);
+						nodeExportMap[item.second].push_back(*nodeToExport);
+						for(auto arc :  nodeToExport->getIncomingArcs()) {
+							// TODO : unefficient, improve this.
+							arcExportMap[item.second].push_back(*this->getArc(arc->getId()));
+						}
+						for(auto arc :  nodeToExport->getOutgoingArcs()) {
+							// TODO : unefficient, improve this.
+							arcExportMap[item.second].push_back(*this->getArc(arc->getId()));
+						}
 					}
 				}
 			}

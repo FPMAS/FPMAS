@@ -40,7 +40,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 			location_manager,
 			MockLoadBalancing> graph;
 
-		MockSyncLinker<FPMAS::graph::parallel::DistributedArc<int, MockMutex>> mockSyncLinker {graph.getMpiCommunicator()};
+		MockSyncLinker<FPMAS::graph::parallel::DistributedArc<int, MockMutex>> mockSyncLinker;
 		MockDataSync mockDataSync;
 
 		MockLoadBalancing<FPMAS::graph::parallel::DistributedNode<int, MockMutex>>

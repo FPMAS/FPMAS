@@ -49,12 +49,13 @@ using FPMAS::graph::parallel::BasicDistributedGraph;
 /********************/
 class BasicDistributedGraphTest : public ::testing::Test {
 	protected:
+		static const int CURRENT_RANK = 7;
 		BasicDistributedGraph<
 			int,
 			MockSyncMode<>,
 			MockDistributedNode,
 			MockDistributedArc,
-			MockMpiSetUp<7, 10>,
+			MockMpiSetUp<CURRENT_RANK, 10>,
 			MockLocationManager,
 			MockLoadBalancing> graph;
 
@@ -63,15 +64,15 @@ class BasicDistributedGraphTest : public ::testing::Test {
 		typedef typename graph_type::arc_type arc_type;	//MockDistributedArc<int, MockMutex>
 		typedef typename graph_type::sync_mode_runtime sync_mode_runtime;
 
-		MockMpiCommunicator<7, 10>& comm =
-			static_cast<MockMpiCommunicator<7, 10>&>(graph.getMpiCommunicator());
+		MockMpiCommunicator<CURRENT_RANK, 10>& comm =
+			static_cast<MockMpiCommunicator<CURRENT_RANK, 10>&>(graph.getMpiCommunicator());
 
 		MockLocationManager<node_type>& locationManager
 			= const_cast<MockLocationManager<node_type>&>(
 					graph.getLocationManager()
 					);
 
-		MockSyncLinker<MockDistributedArc<int, MockMutex>> mockSyncLinker {comm};
+		MockSyncLinker<MockDistributedArc<int, MockMutex>> mockSyncLinker;
 		MockDataSync mockDataSync;
 
 	
@@ -93,13 +94,13 @@ class BasicDistributedGraphTest : public ::testing::Test {
  */
 TEST_F(BasicDistributedGraphTest, buildNode) {
 
-	node_type* addManagedNodeArg;
 	MockLocationManager<node_type>& locationManager
 		= const_cast<MockLocationManager<node_type>&>(
-			static_cast<const MockLocationManager<node_type>&>(
 				graph.getLocationManager()
-				));
-	EXPECT_CALL(locationManager, addManagedNode(_, 7))
+				);
+
+	node_type* addManagedNodeArg;
+	EXPECT_CALL(locationManager, addManagedNode(_, CURRENT_RANK))
 		.WillOnce(SaveArg<0>(&addManagedNodeArg));
 	node_type* setLocalArg;
 	EXPECT_CALL(locationManager, setLocal(_))
@@ -386,8 +387,9 @@ TEST_F(BasicDistributedGraphImportNodeTest, import_node) {
 		Key(DistributedId(1, 10))
 		);
 
-	node_type* setLocalArg;
 	EXPECT_CALL(locationManager,updateLocations(localNodesMatcher));
+
+	node_type* setLocalArg;
 	EXPECT_CALL(locationManager, setLocal(_))
 		.WillOnce(SaveArg<0>(&setLocalArg));
 	EXPECT_CALL(

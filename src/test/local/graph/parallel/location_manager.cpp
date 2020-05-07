@@ -29,6 +29,8 @@ class LocationManagerTest : public ::testing::Test {
 TEST_F(LocationManagerTest, setLocal) {
 	node_type mockNode {DistributedId(5, 4)};
 	EXPECT_CALL(mockNode, setState(LocationState::LOCAL));
+	EXPECT_CALL(mockNode, setLocation(2));
+
 	locationManager.setLocal(&mockNode);
 
 	ASSERT_THAT(

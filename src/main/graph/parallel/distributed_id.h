@@ -164,6 +164,16 @@ namespace FPMAS::graph::parallel {
 			}
 
 			/**
+			 * Two DistributedId instances are not equal iff their ranks or their
+			 * ids are different.
+			 *
+			 * @return comparison result
+			 */
+			bool operator!=(const DistributedId& other) const {
+				return (other._rank != this->_rank) || (other._id != this->_id);
+			}
+
+			/**
 			 * std::string conversion.
 			 */
 			operator std::string() const {

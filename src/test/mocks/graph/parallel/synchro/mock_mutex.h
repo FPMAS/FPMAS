@@ -5,11 +5,16 @@
 
 #include "api/graph/parallel/synchro/mutex.h"
 
+using ::testing::AnyNumber;
+
 template<typename T>
 class MockMutex : public virtual FPMAS::api::graph::parallel::synchro::Mutex<T> {
 	public:
-		MockMutex() {}
-		MockMutex(T&) {}
+		MockMutex() {
+			EXPECT_CALL(*this, lock).Times(AnyNumber());
+			EXPECT_CALL(*this, unlock).Times(AnyNumber());
+		}
+		MockMutex(T&) : MockMutex() {}
 		MockMutex(const MockMutex<T>&) {}
 		MockMutex<T>& operator=(const MockMutex<T>&) {return *this;}
 

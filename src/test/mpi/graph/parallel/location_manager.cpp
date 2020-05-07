@@ -1,0 +1,105 @@
+#include "graph/parallel/basic_distributed_graph.h"
+
+#include <random>
+#include "../mocks/graph/parallel/mock_load_balancing.h"
+#include "../mocks/graph/parallel/synchro/mock_sync_mode.h"
+
+using ::testing::ReturnRef;
+using ::testing::SizeIs;
+using ::testing::Ge;
+
+using FPMAS::graph::parallel::BasicDistributedGraph;
+using FPMAS::graph::parallel::DistributedNode;
+using FPMAS::graph::parallel::DistributedArc;
+using FPMAS::graph::parallel::DefaultMpiSetUp;
+using FPMAS::graph::parallel::DefaultLocationManager;
+
+class LocationManagerIntegrationTest : public ::testing::Test {
+	protected:
+		inline static const int SEQUENCE_COUNT = 5;
+		inline static const int NODES_COUNT = 20;
+
+		BasicDistributedGraph<
+			int, MockSyncMode<>,
+			DistributedNode,
+			DistributedArc,
+			DefaultMpiSetUp,
+			DefaultLocationManager,
+			MockLoadBalancing
+			> graph;
+
+		MockDataSync dataSync;
+		MockSyncLinker<DistributedArc<int, MockMutex>> syncLinker;
+
+		std::mt19937 engine;
+		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
+		
+		typename decltype(graph)::partition_type partition;
+
+		std::array<std::array<int, SEQUENCE_COUNT>, NODES_COUNT> locationSequences;
+
+		void SetUp() override {
+			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker).WillByDefault(ReturnRef(syncLinker));
+			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker).Times(AnyNumber());
+			ON_CALL(graph.getSyncModeRuntime(), getDataSync).WillByDefault(ReturnRef(dataSync));
+			EXPECT_CALL(graph.getSyncModeRuntime(), getDataSync).Times(AnyNumber());
+
+			for(int i = 0; i < SEQUENCE_COUNT; i++) {
+				for(int j = 0; j < NODES_COUNT ; j++) {
+					locationSequences[j][i] = dist(engine);
+				}
+			}
+
+			EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(AnyNumber());
+			if(graph.getMpiCommunicator().getRank() == 0) {
+				for(int i = 0; i < NODES_COUNT; i++) {
+					graph.buildNode();
+				}
+				for(auto src : graph.getNodes()) {
+					for(auto tgt : graph.getNodes()) {
+						if(src.first != tgt.first) {
+							graph.link(src.second, tgt.second, 0);
+						}
+					}
+				}
+			}
+		}
+		void generatePartition(int i) {
+			partition.clear();
+			for(int j = 0; j < NODES_COUNT; j++) {
+				partition[DistributedId(0, j)] = locationSequences[j][i];
+			}
+		}
+		void checkPartition(int i) {
+			int nodeCount = 0; // Number of nodes that will be contained in the graph after the next distribute call 
+			for(int j = 0; j < NODES_COUNT; j++) {
+				if(locationSequences[j][i] == graph.getMpiCommunicator().getRank())
+					nodeCount++;
+			}
+			ASSERT_THAT(graph.getNodes(), SizeIs(NODES_COUNT));
+			int localNodeCount = 0;
+			for(auto node : graph.getNodes()) {
+				if(node.second->state() == FPMAS::graph::parallel::LocationState::LOCAL) {
+					localNodeCount++;
+				}
+			}
+			ASSERT_EQ(nodeCount, localNodeCount);
+
+			for(auto node : graph.getNodes()) {
+				ASSERT_EQ(node.second->getLocation(), locationSequences[node.first.id()][i]);
+			}
+		}
+
+};
+
+TEST_F(LocationManagerIntegrationTest, location_updates) {
+	for(int i = 0; i < SEQUENCE_COUNT; i++) {
+		{ ::testing::InSequence s;
+		EXPECT_CALL(syncLinker, synchronize);
+		EXPECT_CALL(dataSync, synchronize);
+		}
+		generatePartition(i);
+		graph.distribute(partition);
+		checkPartition(i);
+	}
+}

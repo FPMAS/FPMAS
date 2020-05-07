@@ -1,9 +1,10 @@
 #ifndef LOCATION_MANAGER_H
 #define LOCATION_MANAGER_H
 
-#include "api/communication/communication.h"
 #include "api/graph/parallel/location_manager.h"
 #include "api/graph/parallel/location_state.h"
+
+#include "communication/communication.h"
 
 namespace FPMAS::graph::parallel {
 
@@ -55,6 +56,7 @@ namespace FPMAS::graph::parallel {
 
 	template<typename DistNode, template<typename> class Mpi>
 	void LocationManager<DistNode, Mpi>::setLocal(DistNode* node) {
+			node->setLocation(communicator.getRank());
 			node->setState(LocationState::LOCAL);
 			this->localNodes.insert({node->getId(), node});
 			this->distantNodes.erase(node->getId());
@@ -180,6 +182,9 @@ namespace FPMAS::graph::parallel {
 				}
 			}
 		}
+
+	template<typename Node>
+	using DefaultLocationManager = LocationManager<Node, communication::TypedMpi>;
 }
 
 #endif
