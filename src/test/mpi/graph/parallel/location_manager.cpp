@@ -17,7 +17,7 @@ using FPMAS::graph::parallel::DefaultLocationManager;
 class LocationManagerIntegrationTest : public ::testing::Test {
 	protected:
 		inline static const int SEQUENCE_COUNT = 5;
-		inline static const int NODES_COUNT = 20;
+		inline static const int NODES_COUNT = 50;
 
 		BasicDistributedGraph<
 			int, MockSyncMode<>,
@@ -71,16 +71,19 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			}
 		}
 		void checkPartition(int i) {
+			FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "check %i", i);
 			int nodeCount = 0; // Number of nodes that will be contained in the graph after the next distribute call 
 			for(int j = 0; j < NODES_COUNT; j++) {
 				if(locationSequences[j][i] == graph.getMpiCommunicator().getRank())
 					nodeCount++;
 			}
-			ASSERT_THAT(graph.getNodes(), SizeIs(NODES_COUNT));
+			ASSERT_THAT(graph.getNodes(), SizeIs(nodeCount > 0 ? NODES_COUNT : 0));
 			int localNodeCount = 0;
 			for(auto node : graph.getNodes()) {
 				if(node.second->state() == FPMAS::graph::parallel::LocationState::LOCAL) {
 					localNodeCount++;
+					ASSERT_THAT(node.second->getIncomingArcs(), SizeIs(NODES_COUNT-1));
+					ASSERT_THAT(node.second->getOutgoingArcs(), SizeIs(NODES_COUNT-1));
 				}
 			}
 			ASSERT_EQ(nodeCount, localNodeCount);
@@ -88,6 +91,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			for(auto node : graph.getNodes()) {
 				ASSERT_EQ(node.second->getLocation(), locationSequences[node.first.id()][i]);
 			}
+			FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "done %i", i);
 		}
 
 };
@@ -99,7 +103,10 @@ TEST_F(LocationManagerIntegrationTest, location_updates) {
 		EXPECT_CALL(dataSync, synchronize);
 		}
 		generatePartition(i);
+
+		FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "Dist %i", i);
 		graph.distribute(partition);
+		FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "Dist %i done", i);
 		checkPartition(i);
 	}
 }

@@ -182,9 +182,9 @@ namespace FPMAS::graph::parallel {
 			}
 
 			std::size_t hash() const {
-				std::size_t h1 = std::hash<int>{}(_rank);
-				std::size_t h2 = std::hash<unsigned int>{}(_id);
-				return h1 ^ (h2 << 1); // or use boost::hash_combine (see Discussion)
+				return std::hash<unsigned long int>()(
+						_id + UINT_MAX * (unsigned int) _rank
+					);
 			}
 	};
 	inline MPI_Datatype DistributedId::mpiDistributedIdType;

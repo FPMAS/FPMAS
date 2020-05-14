@@ -288,6 +288,7 @@ namespace FPMAS::graph::parallel {
 			// Builds node and arcs export maps
 			std::vector<node_type*> exportedNodes;
 			std::unordered_map<int, std::vector<node_type>> nodeExportMap;
+			std::unordered_map<int, std::set<DistributedId>> arcIdsToExport;
 			std::unordered_map<int, std::vector<arc_type>> arcExportMap;
 			for(auto item : partition) {
 				if(this->getNodes().count(item.first) > 0) {
@@ -296,14 +297,20 @@ namespace FPMAS::graph::parallel {
 						exportedNodes.push_back(nodeToExport);
 						nodeExportMap[item.second].push_back(*nodeToExport);
 						for(auto arc :  nodeToExport->getIncomingArcs()) {
-							// TODO : unefficient, improve this.
-							arcExportMap[item.second].push_back(*this->getArc(arc->getId()));
+							// Insert or replace in the IDs set
+							arcIdsToExport[item.second].insert(arc->getId());
 						}
 						for(auto arc :  nodeToExport->getOutgoingArcs()) {
-							// TODO : unefficient, improve this.
-							arcExportMap[item.second].push_back(*this->getArc(arc->getId()));
+							// Insert or replace in the IDs set
+							arcIdsToExport[item.second].insert(arc->getId());
 						}
 					}
+				}
+			}
+			// Ensures that each arc is exported once to each process
+			for(auto list : arcIdsToExport) {
+				for(auto id : list.second) {
+					arcExportMap[list.first].push_back(*this->getArc(id));
 				}
 			}
 
