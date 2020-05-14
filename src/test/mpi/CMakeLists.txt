@@ -4,7 +4,7 @@ set(SOURCES
 	graph/parallel/distributed_graph.cpp
 	graph/parallel/location_manager.cpp
 	graph/parallel/synchro/hard/termination.cpp
-	graph/parallel/synchro/hard/mpi_tests.cpp
+	graph/parallel/synchro/hard/hard_sync_mode.cpp
 	)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})

@@ -11,7 +11,6 @@ namespace FPMAS::api::graph::parallel::synchro {
 			virtual void _unlock() = 0;
 
 		public:
-			//virtual DistributedId id() const = 0;
 			virtual T& data() = 0;
 
 			virtual const T& read() = 0;

@@ -1,11 +1,16 @@
-#include "gtest/gtest.h"
+#include "graph/parallel/synchro/hard/hard_sync_mode.h"
 
-#include "graph/parallel/synchro/hard/hard_sync_mutex.h"
-#include "graph/parallel/synchro/hard/mutex_client.h"
-#include "graph/parallel/synchro/hard/mutex_server.h"
-#include "graph/parallel/synchro/hard/termination.h"
-#include "communication/communication.h"
+#include <random>
 
+#include "graph/parallel/basic_distributed_graph.h"
+#include "../mocks/graph/parallel/mock_load_balancing.h"
+
+using FPMAS::graph::parallel::BasicDistributedGraph;
+using FPMAS::graph::parallel::DistributedNode;
+using FPMAS::graph::parallel::DistributedArc;
+using FPMAS::graph::parallel::DefaultMpiSetUp;
+using FPMAS::graph::parallel::DefaultLocationManager;
+using FPMAS::graph::parallel::synchro::hard::HardSyncMode;
 using FPMAS::api::graph::parallel::LocationState;
 using FPMAS::communication::TypedMpi;
 using FPMAS::communication::MpiCommunicator;
@@ -51,4 +56,26 @@ TEST_F(Mpi_MutexServerRaceCondition, acquire_race_condition) {
 	if(comm.getRank() == 0) {
 		ASSERT_EQ(data, comm.getSize() * NUM_ACQUIRE);
 	}
+}
+
+class HardSyncModeIntegrationTest : public ::testing::Test {
+	protected:
+		BasicDistributedGraph<
+			int, HardSyncMode,
+			DistributedNode,
+			DistributedArc,
+			DefaultMpiSetUp,
+			DefaultLocationManager,
+			MockLoadBalancing
+				> graph;
+
+		std::mt19937 engine;
+		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
+		
+		typename decltype(graph)::partition_type partition;
+};
+
+TEST_F(HardSyncModeIntegrationTest, acquire) {
+	// TODO
+
 }

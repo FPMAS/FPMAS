@@ -38,7 +38,6 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 				void _lock() override {_locked=true;}
 				void _unlock() override {_locked=false;}
-
 			public:
 				HardSyncMutex(T& data) : _data(std::ref(data)) {}
 
@@ -59,6 +58,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				std::queue<request_t> requestsToProcess() override;
 
 				T& data() override {return _data;}
+
 				const T& read() override;
 				T& acquire() override;
 				void release() override;
