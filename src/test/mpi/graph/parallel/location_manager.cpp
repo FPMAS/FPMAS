@@ -14,13 +14,32 @@ using FPMAS::graph::parallel::DistributedArc;
 using FPMAS::graph::parallel::DefaultMpiSetUp;
 using FPMAS::graph::parallel::DefaultLocationManager;
 
+template<typename T>
+class FakeMutex : public FPMAS::api::graph::parallel::synchro::Mutex<T> {
+	private:
+		std::reference_wrapper<T> _data;
+		void _lock() override {}
+		void _unlock() override {}
+
+	public:
+		FakeMutex(T& data) : _data(data) {}
+		T& data() override {return _data;}
+		const T& read() override {return _data;}
+		T& acquire() override {return _data;}
+		void release() override {}
+		void lock() override {}
+		void unlock() override {}
+		bool locked() const override {return false;}
+
+};
+
 class LocationManagerIntegrationTest : public ::testing::Test {
 	protected:
 		inline static const int SEQUENCE_COUNT = 5;
-		inline static const int NODES_COUNT = 50;
+		inline static const int NODES_COUNT = 100;
 
 		BasicDistributedGraph<
-			int, MockSyncMode<>,
+			int, MockSyncMode<FakeMutex>,
 			DistributedNode,
 			DistributedArc,
 			DefaultMpiSetUp,
@@ -29,7 +48,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			> graph;
 
 		MockDataSync dataSync;
-		MockSyncLinker<DistributedArc<int, MockMutex>> syncLinker;
+		MockSyncLinker<DistributedArc<int, FakeMutex>> syncLinker;
 
 		std::mt19937 engine;
 		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
