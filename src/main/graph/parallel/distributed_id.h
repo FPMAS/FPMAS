@@ -197,7 +197,7 @@ namespace FPMAS::communication {
 	 * Initializes the static DistributedId::mpiDistributedIdType instance,
 	 * used to send and receive DistributedId through MPI.
 	 */
-	static void createMpiTypes() {
+	inline static void createMpiTypes() {
 		MPI_Datatype types[2] = {MPI_INT, MPI_UNSIGNED};
 		int block[2] = {1, 1};
 		MPI_Aint disp[2] = {
@@ -205,14 +205,13 @@ namespace FPMAS::communication {
 			offsetof(MpiDistributedId, id)
 		};
 		MPI_Type_create_struct(2, block, disp, types, &DistributedId::mpiDistributedIdType);
-		int err = MPI_Type_commit(&DistributedId::mpiDistributedIdType);
-
+		MPI_Type_commit(&DistributedId::mpiDistributedIdType);
 	}
 
 	/**
 	 * Frees the static DistributedId::mpiDistributedIdType instance.
 	 */
-	static void freeMpiTypes() {
+	inline static void freeMpiTypes() {
 		MPI_Type_free(&DistributedId::mpiDistributedIdType);
 	}
 }

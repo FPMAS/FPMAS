@@ -51,7 +51,6 @@ typedef enum {
     } while(0)
 
 static auto start = std::chrono::system_clock::now();
-static char current_time_buffer[18];
 
 void fpmas_log_write(const char* format, ...);
 long current_time();

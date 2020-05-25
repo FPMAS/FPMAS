@@ -29,9 +29,9 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 	template<typename NodeType, typename ArcType, template<typename> class Mpi>
 	class GhostDataSync : public FPMAS::api::graph::parallel::synchro::DataSync {
 		private:
+			FPMAS::api::communication::MpiCommunicator& comm;
 			Mpi<NodeType> nodeMpi;
 			Mpi<DistributedId> distIdMpi;
-			FPMAS::api::communication::MpiCommunicator& comm;
 			FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>& graph;
 
 		public:
@@ -118,7 +118,6 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 
 	template<typename NodeType, typename ArcType, template<typename> class Mpi>
 	void GhostSyncLinker<NodeType, ArcType, Mpi>::synchronize() {
-		int currentLocation = comm.getRank();
 		/*
 		 * Migrate links
 		 */

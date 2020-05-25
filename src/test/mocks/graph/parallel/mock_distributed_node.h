@@ -123,14 +123,14 @@ class MockDistributedNode :
 	};
 
 template<typename T, template<typename> class Mutex>
-void to_json(nlohmann::json& j, const MockDistributedNode<T, Mutex>& mock) {
+inline void to_json(nlohmann::json& j, const MockDistributedNode<T, Mutex>& mock) {
 	j["id"] = mock.getId();
 	j["data"] = mock.data();
 	j["weight"] = mock.getWeight();
-};
+}
 
 template<typename T, template<typename> class Mutex>
-void from_json(const nlohmann::json& j, MockDistributedNode<T, Mutex>& mock) {
+inline void from_json(const nlohmann::json& j, MockDistributedNode<T, Mutex>& mock) {
 	ON_CALL(mock, getId)
 		.WillByDefault(Return(j.at("id").get<DistributedId>()));
 	EXPECT_CALL(mock, getId).Times(AnyNumber());

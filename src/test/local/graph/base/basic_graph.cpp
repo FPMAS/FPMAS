@@ -48,8 +48,8 @@ class BasicGraphEraseArcTest : public ::testing::Test {
 	protected:
 		MockAbstractGraphBase<MockNode<MockData, BasicId>, MockArc<MockData, BasicId>> graph;
 		BasicId id;
-		MockNode<MockData, BasicId>* src = new MockNode<MockData, BasicId>(++id);;
-		MockNode<MockData, BasicId>* tgt = new MockNode<MockData, BasicId>(++id);;
+		MockNode<MockData, BasicId>* src = new MockNode<MockData, BasicId>(++id);
+		MockNode<MockData, BasicId>* tgt = new MockNode<MockData, BasicId>(++id);
 		MockArc<MockData, BasicId>* arc = new MockArc<MockData, BasicId>(++id, 2);
 
 		void SetUp() override {

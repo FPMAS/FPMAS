@@ -133,7 +133,6 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::waitSendRequest(MPI_Request* req) {
 		FPMAS_LOGD(this->comm.getRank(), "WAIT", "wait for send");
-		MPI_Status send_status;
 		bool sent = comm.test(req);
 
 		while(!sent) {

@@ -22,8 +22,8 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 				 T, IdType, ArcType
 							 > {
 	protected:
-		T _data;
 		IdType id;
+		T _data;
 		float weight = 1.;
 
 	public:

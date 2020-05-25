@@ -71,7 +71,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 					EXPECT_CALL(nextNode->mutex(), lock).Times(AnyNumber());
 					EXPECT_CALL(nextNode->mutex(), unlock).Times(AnyNumber());
 					partition[nextNode->getId()] = i;
-					auto arc = graph.link(prevNode, nextNode, 0);
+					graph.link(prevNode, nextNode, 0);
 					prevNode = nextNode;
 				}
 				graph.link(prevNode, firstNode, 0);

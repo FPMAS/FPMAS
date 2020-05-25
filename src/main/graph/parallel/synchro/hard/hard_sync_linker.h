@@ -19,9 +19,10 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			private:
 			Epoch epoch = Epoch::EVEN;
 			FPMAS::api::communication::MpiCommunicator& comm;
-			FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph;
 			Mpi<DistributedId> idMpi;
 			Mpi<Arc> arcMpi;
+
+			FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph;
 
 			public:
 				LinkServer(
@@ -59,12 +60,12 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			typedef FPMAS::api::communication::MpiCommunicator comm_t;
 			typedef FPMAS::api::graph::parallel::synchro::hard::LinkServer link_server;
 			private:
-				link_server& linkServer;
+				comm_t& comm;
 				Mpi<DistributedId> idMpi;
 				Mpi<Arc> arcMpi;
+				link_server& linkServer;
 
 				void waitSendRequest(MPI_Request*);
-				comm_t& comm;
 
 			public:
 				LinkClient(comm_t& comm, link_server& linkServer)
@@ -152,7 +153,6 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 	void LinkClient<T, Mpi>::waitSendRequest(MPI_Request* req) {
 		FPMAS_LOGD(this->comm.getRank(), "WAIT", "wait for send");
-		MPI_Status send_status;
 		bool sent = comm.test(req);
 
 		while(!sent) {

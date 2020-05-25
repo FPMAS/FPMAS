@@ -78,16 +78,16 @@ class MockDistributedArc :
 };
 
 template<typename T, template<typename> class Mutex>
-void to_json(nlohmann::json& j, const MockDistributedArc<T, Mutex>& mock) {
+inline void to_json(nlohmann::json& j, const MockDistributedArc<T, Mutex>& mock) {
 	j["id"] = mock.getId();
 	j["src"] = mock.getSourceNode()->getId();
 	j["tgt"] = mock.getTargetNode()->getId();
 	j["layer"] = mock.getLayer();
 	j["weight"] = mock.getWeight();
-};
+}
 
 template<typename T, template<typename> class Mutex>
-void from_json(const nlohmann::json& j, MockDistributedArc<T, Mutex>& mock) {
+inline void from_json(const nlohmann::json& j, MockDistributedArc<T, Mutex>& mock) {
 	ON_CALL(mock, getId)
 		.WillByDefault(Return(j.at("id").get<DistributedId>()));
 	EXPECT_CALL(mock, getId).Times(AnyNumber());

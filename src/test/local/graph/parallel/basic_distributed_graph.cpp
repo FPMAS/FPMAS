@@ -829,7 +829,6 @@ TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
 			const_cast<MockMpi<arc_type>&>(graph.getArcMpi()), migrate(IsEmpty()))
 		.WillOnce(Return(std::unordered_map<int, std::vector<arc_type>>()));;
 
-	std::array<node_type*, 4> removeArgs;
 	EXPECT_CALL(locationManager, setDistant).Times(AnyNumber());
 	EXPECT_CALL(locationManager, remove(graph.getNode(nodeIds[1])));
 	EXPECT_CALL(locationManager, remove(graph.getNode(nodeIds[2])));

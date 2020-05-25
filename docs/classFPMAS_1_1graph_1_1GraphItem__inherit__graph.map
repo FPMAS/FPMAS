@@ -1,7 +1,0 @@
-<map id="FPMAS::graph::GraphItem" name="FPMAS::graph::GraphItem">
-<area shape="rect" id="node1" title=" " alt="" coords="142,5,331,32"/>
-<area shape="rect" id="node2" href="$classFPMAS_1_1graph_1_1Arc.html" title=" " alt="" coords="34,80,213,107"/>
-<area shape="rect" id="node4" href="$classFPMAS_1_1graph_1_1Node.html" title=" " alt="" coords="255,80,447,107"/>
-<area shape="rect" id="node3" href="$classFPMAS_1_1graph_1_1GhostArc.html" title=" " alt="" coords="5,155,223,181"/>
-<area shape="rect" id="node5" href="$classFPMAS_1_1graph_1_1GhostNode.html" title=" " alt="" coords="247,155,477,181"/>
-</map>

@@ -12,8 +12,9 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			typedef
 			FPMAS::api::graph::parallel::synchro::hard::MutexServer<typename NodeType::data_type>
 				mutex_server;
-			mutex_server& mutexServer;
+
 			TerminationAlgorithm termination;
+			mutex_server& mutexServer;
 
 			public:
 				HardDataSync(FPMAS::api::communication::MpiCommunicator& comm, mutex_server& server)

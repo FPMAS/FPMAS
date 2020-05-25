@@ -18,14 +18,15 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			typedef FPMAS::graph::parallel::synchro::hard::TerminationAlgorithm<
 				communication::TypedMpi>
 				termination_algorithm;
+
 			MutexServer<typename Node::data_type, communication::TypedMpi> mutexServer;
 			MutexClient<typename Node::data_type, communication::TypedMpi> mutexClient;
 
 			LinkServer<Node, Arc, communication::TypedMpi> linkServer;
 			LinkClient<Arc, communication::TypedMpi> linkClient;
 
-			HardDataSync<Node, Arc, termination_algorithm> dataSync;
 			HardSyncLinker<Arc, termination_algorithm> syncLinker;
+			HardDataSync<Node, Arc, termination_algorithm> dataSync;
 
 			public:
 				HardSyncRuntime(

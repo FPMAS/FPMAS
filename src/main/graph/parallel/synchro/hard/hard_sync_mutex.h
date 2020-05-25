@@ -78,7 +78,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			}
 			_data.get() = mutexClient->read(id, *location);
 			return _data;
-		};
+		}
 
 	template<typename T>
 		T& HardSyncMutex<T>::acquire() {
@@ -93,7 +93,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			}
 			_data.get() = mutexClient->acquire(id, *location);
 			return _data;
-		};
+		}
 
 	template<typename T>
 		void HardSyncMutex<T>::release() {
@@ -168,7 +168,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				acquireRequests.pop();
 			}
 			return requests;
-		};
+		}
 }
 
 #endif

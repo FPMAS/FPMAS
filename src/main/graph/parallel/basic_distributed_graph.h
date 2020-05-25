@@ -81,13 +81,13 @@ namespace FPMAS::graph::parallel {
 			mpi<node_type> nodeMpi {mpiCommunicator};
 			mpi<arc_type> arcMpi {mpiCommunicator};
 
-			sync_mode_runtime syncModeRuntime;
 			LocationManagerImpl<node_type> locationManager;
+			sync_mode_runtime syncModeRuntime;
 			LoadBalancingImpl<node_type> loadBalancing;
 
 
 			public:
-			BasicDistributedGraph() : locationManager(mpiCommunicator), syncModeRuntime(*this, mpiCommunicator) /*, syncLinker(mpiCommunicator)*/ {
+			BasicDistributedGraph() : locationManager(mpiCommunicator), syncModeRuntime(*this, mpiCommunicator) {
 				// Initialization in the body of this (derived) class of the
 				// (base) fields nodeId and arcId, to ensure that
 				// mpiCommunicator is initialized (as a field of this derived

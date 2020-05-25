@@ -10,22 +10,21 @@ namespace FPMAS::api::communication {
 			int size;
 			int count;
 			void* buffer;
-			DataPack(int count, size_t data_size) : count(count) {
-				size = data_size * count;
+			DataPack(int count, size_t data_size) : size(data_size*count), count(count) {
 				buffer = std::malloc(size);
 			}
 
-			DataPack() : count(0), size(0) {
+			DataPack() : size(0), count(0) {
 				buffer = std::malloc(0);
 			}
 
 			DataPack(const DataPack& other)
-				: count(other.count), size(other.size) {
+				: size(other.size), count(other.count) {
 				buffer = std::malloc(size);
 				std::memcpy(buffer, other.buffer, size);
 			}
 			DataPack(DataPack&& other)
-				: count(other.count), size(other.size) {
+				: size(other.size), count(other.count) {
 					buffer = other.buffer;
 					other.buffer = std::malloc(0);
 				}
@@ -159,6 +158,6 @@ namespace FPMAS::api::communication {
 				return false;
 		}
 		return true;
-	};
+	}
 }
 #endif

@@ -47,7 +47,7 @@ namespace FPMAS::communication {
 	 * @param ranks ranks to include in the group / communicator
 	 */
 	MpiCommunicator::MpiCommunicator(std::initializer_list<int> ranks) {
-		int _ranks[ranks.size()];
+		int* _ranks = (int*) std::malloc(ranks.size()*sizeof(int));
 		int i = 0;
 		for(auto rank : ranks) {
 			_ranks[i++] = rank;
@@ -62,6 +62,8 @@ namespace FPMAS::communication {
 		MPI_Comm_size(this->comm, &this->size);
 
 		MPI_Group_free(&worldGroup);
+
+		std::free(_ranks);
 	}
 
 	/**
@@ -193,10 +195,10 @@ namespace FPMAS::communication {
 			MPI_Type_size(datatype, &data_size);
 
 			// Migrate
-			int sendcounts[getSize()];
-			int sdispls[getSize()];
+			int* sendcounts = (int*) std::malloc(getSize()*sizeof(int));
+			int* sdispls = (int*) std::malloc(getSize()*sizeof(int));
 
-			int size_buffer[getSize()];
+			int* size_buffer = (int*) std::malloc(getSize()*sizeof(int));
 
 			int current_sdispls = 0;
 			for (int i = 0; i < getSize(); i++) {
@@ -206,6 +208,11 @@ namespace FPMAS::communication {
 
 				size_buffer[i] = sendcounts[i];
 			}
+			
+			// Sends size / displs to each rank, and receive recvs size / displs from
+			// each rank.
+			MPI_Alltoall(MPI_IN_PLACE, 0, MPI_INT, size_buffer, 1, MPI_INT, getMpiComm());
+
 			int type_size;
 			MPI_Type_size(datatype, &type_size);
 
@@ -214,12 +221,8 @@ namespace FPMAS::communication {
 				std::memcpy(&((char*) send_buffer)[sdispls[i]], data_pack[i].buffer, data_pack[i].size);
 			}
 
-			// Sends size / displs to each rank, and receive recvs size / displs from
-			// each rank.
-			MPI_Alltoall(MPI_IN_PLACE, 0, MPI_INT, size_buffer, 1, MPI_INT, getMpiComm());
-
-			int recvcounts[getSize()];
-			int rdispls[getSize()];
+			int* recvcounts = (int*) std::malloc(getSize()*sizeof(int));
+			int* rdispls = (int*) std::malloc(getSize()*sizeof(int));
 			int current_rdispls = 0;
 			for (int i = 0; i < getSize(); i++) {
 				recvcounts[i] = size_buffer[i];
@@ -244,6 +247,14 @@ namespace FPMAS::communication {
 					std::memcpy(dataPack.buffer, &((char*) recv_buffer)[rdispls[i]], dataPack.size);
 				}
 			}
+
+			std::free(sendcounts);
+			std::free(sdispls);
+			std::free(size_buffer);
+			std::free(recvcounts);
+			std::free(rdispls);
+			std::free(send_buffer);
+			std::free(recv_buffer);
 			return imported_data_pack;
 		}
 

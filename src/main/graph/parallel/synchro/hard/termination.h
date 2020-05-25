@@ -80,7 +80,6 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 				// Check for END
 				if(this->comm.getRank() > 0 && this->comm.Iprobe(MPI_ANY_SOURCE, Tag::END, &status) > 0) {
-					int end;
 					this->comm.recv(&status);
 					toggleEpoch(mutexServer);
 					return;
