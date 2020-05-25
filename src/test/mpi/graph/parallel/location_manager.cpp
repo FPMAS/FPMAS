@@ -58,6 +58,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		std::array<std::array<int, SEQUENCE_COUNT>, NODES_COUNT> locationSequences;
 
 		void SetUp() override {
+			EXPECT_CALL(syncLinker, link).Times(AnyNumber());
 			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker).WillByDefault(ReturnRef(syncLinker));
 			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker).Times(AnyNumber());
 			ON_CALL(graph.getSyncModeRuntime(), getDataSync).WillByDefault(ReturnRef(dataSync));

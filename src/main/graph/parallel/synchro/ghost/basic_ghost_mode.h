@@ -100,16 +100,20 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 
 	template<typename NodeType, typename ArcType, template<typename> class Mpi>
 	void GhostSyncLinker<NodeType, ArcType, Mpi>::link(const ArcType * arc) {
-		linkBuffer.push_back(arc);
+		if(arc->state() == LocationState::DISTANT) {
+			linkBuffer.push_back(arc);
+		}
 	}
 
 	template<typename NodeType, typename ArcType, template<typename> class Mpi>
 	void GhostSyncLinker<NodeType, ArcType, Mpi>::unlink(const ArcType * arc) {
-		linkBuffer.erase(
-			std::remove(linkBuffer.begin(), linkBuffer.end(), arc),
-			linkBuffer.end()
-			);
-		unlinkBuffer.push_back(arc);
+		if(arc->state() == LocationState::DISTANT) {
+			linkBuffer.erase(
+					std::remove(linkBuffer.begin(), linkBuffer.end(), arc),
+					linkBuffer.end()
+					);
+			unlinkBuffer.push_back(arc);
+		}
 	}
 
 	template<typename NodeType, typename ArcType, template<typename> class Mpi>

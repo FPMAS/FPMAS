@@ -47,6 +47,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 			::partition_type partition;
 
 		void SetUp() override {
+			EXPECT_CALL(mockSyncLinker, link).Times(AnyNumber());
 			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker)
 				.WillByDefault(ReturnRef(mockSyncLinker));
 			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker)

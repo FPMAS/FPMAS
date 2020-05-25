@@ -186,7 +186,7 @@ TEST_F(BasicDistributedGraphLinkTest, local_src_local_tgt) {
 	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 
-	EXPECT_CALL(mockSyncLinker, link).Times(0);
+	EXPECT_CALL(mockSyncLinker, link);
 
 	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
 
@@ -304,7 +304,7 @@ TEST_F(BasicDistributedGraphUnlinkTest, local_src_local_tgt) {
 	this->link(LocationState::LOCAL, LocationState::LOCAL);
 	ASSERT_EQ(arc->_state, LocationState::LOCAL);
 
-	EXPECT_CALL(mockSyncLinker, unlink).Times(0);
+	EXPECT_CALL(mockSyncLinker, unlink);
 
 	graph.unlink(arc);
 
@@ -872,6 +872,7 @@ class BasicDistributedGraphDistributedWithLinkTest : public BasicDistributedGrap
 			MockMutex<int> mockMutex;
 			EXPECT_CALL(mockMutex, lock).Times(AnyNumber());
 			EXPECT_CALL(mockMutex, unlock).Times(AnyNumber());
+			EXPECT_CALL(mockSyncLinker, link).Times(2);
 
 			EXPECT_CALL(*graph.getNode(nodeIds[0]), mutex)
 				.WillRepeatedly(ReturnRef(mockMutex));

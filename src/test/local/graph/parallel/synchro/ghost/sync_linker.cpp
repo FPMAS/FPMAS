@@ -57,15 +57,22 @@ class GhostSyncLinkerTest : public ::testing::Test {
 			LocationState tgtLocation = (tgtRank == current_rank) ?
 				LocationState::LOCAL : LocationState::DISTANT;
 
-			EXPECT_CALL(*arc.src, state)
+			EXPECT_CALL(*arc.src, state).Times(AnyNumber())
 				.WillRepeatedly(Return(srcLocation));
-			EXPECT_CALL(*arc.src, getLocation)
+			EXPECT_CALL(*arc.src, getLocation).Times(AnyNumber())
 				.WillRepeatedly(Return(srcRank));
 
-			EXPECT_CALL(*arc.tgt, state)
+			EXPECT_CALL(*arc.tgt, state).Times(AnyNumber())
 				.WillRepeatedly(Return(tgtLocation));
-			EXPECT_CALL(*arc.tgt, getLocation)
+			EXPECT_CALL(*arc.tgt, getLocation).Times(AnyNumber())
 				.WillRepeatedly(Return(tgtRank));
+
+			EXPECT_CALL(arc, state).Times(AnyNumber())
+				.WillRepeatedly(Return(
+					srcLocation == LocationState::LOCAL && tgtLocation == LocationState::LOCAL ?
+					LocationState::LOCAL :
+					LocationState::DISTANT
+					));
 		}
 
 };

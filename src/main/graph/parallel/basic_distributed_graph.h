@@ -161,15 +161,24 @@ namespace FPMAS::graph::parallel {
 				arc->setTargetNode(tgt);
 				tgt->linkIn(arc);
 
+				arc->setState(
+						src->state() == LocationState::LOCAL && tgt->state() == LocationState::LOCAL ?
+						LocationState::LOCAL :
+						LocationState::DISTANT
+					);
+				syncModeRuntime.getSyncLinker().link(arc);
+
 				// If src and tgt is DISTANT, transmit the request to the
 				// SyncLinker, that will handle the request according to its
 				// synchronisation policy
-				if(src->state() == LocationState::DISTANT || tgt->state() == LocationState::DISTANT) {
-					syncModeRuntime.getSyncLinker().link(arc);
-					arc->setState(LocationState::DISTANT);
-				} else {
-					arc->setState(LocationState::LOCAL);
-				}
+				/*
+				 *if(src->state() == LocationState::DISTANT || tgt->state() == LocationState::DISTANT) {
+				 *    syncModeRuntime.getSyncLinker().link(arc);
+				 *    arc->setState(LocationState::DISTANT);
+				 *} else {
+				 *    arc->setState(LocationState::LOCAL);
+				 *}
+				 */
 
 				// Inserts the arc in the Graph
 				this->insert(arc);
@@ -189,10 +198,9 @@ namespace FPMAS::graph::parallel {
 		src->mutex().lock();
 		tgt->mutex().lock();
 
-		if(arc->state() == LocationState::DISTANT) {
-			syncModeRuntime.getSyncLinker().unlink(arc);
-			// TODO : src and tgt might be cleared
-		}
+		syncModeRuntime.getSyncLinker().unlink(arc);
+		// TODO : src and tgt might be cleared
+
 		src->mutex().unlock();
 		tgt->mutex().unlock();
 

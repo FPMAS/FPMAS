@@ -79,65 +79,69 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 	template<typename Arc, template<typename> class Mpi>
 		void LinkClient<Arc, Mpi>::link(const Arc* arc) {
-			bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
-			bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
+			if(arc->state() == LocationState::DISTANT) {
+				bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
+				bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
 
-			MPI_Request reqSrc;
-			MPI_Request reqTgt;
-			// Simultaneously initiate the two requests, that are potentially
-			// made to different procs
-			if(distantSrc) {
-				arcMpi.Issend(
-						*arc, arc->getSourceNode()->getLocation(),
-						linkServer.getEpoch() | Tag::LINK, &reqSrc
-						); 
-			}
-			if(distantTgt) {
-				arcMpi.Issend(
-						*arc, arc->getTargetNode()->getLocation(),
-						linkServer.getEpoch() | Tag::LINK, &reqTgt
-						); 
-			}
-			// Sequentially waits for each request : if reqTgt completes
-			// before reqSrc, the second waitSendRequest will immediatly return
-			// so there is no performance issue.
-			if(distantSrc) {
-				waitSendRequest(&reqSrc);
-			}
-			if(distantTgt) {
-				waitSendRequest(&reqTgt);
+				MPI_Request reqSrc;
+				MPI_Request reqTgt;
+				// Simultaneously initiate the two requests, that are potentially
+				// made to different procs
+				if(distantSrc) {
+					arcMpi.Issend(
+							*arc, arc->getSourceNode()->getLocation(),
+							linkServer.getEpoch() | Tag::LINK, &reqSrc
+							); 
+				}
+				if(distantTgt) {
+					arcMpi.Issend(
+							*arc, arc->getTargetNode()->getLocation(),
+							linkServer.getEpoch() | Tag::LINK, &reqTgt
+							); 
+				}
+				// Sequentially waits for each request : if reqTgt completes
+				// before reqSrc, the second waitSendRequest will immediatly return
+				// so there is no performance issue.
+				if(distantSrc) {
+					waitSendRequest(&reqSrc);
+				}
+				if(distantTgt) {
+					waitSendRequest(&reqTgt);
+				}
 			}
 		}
 
 	template<typename Arc, template<typename> class Mpi>
 		void LinkClient<Arc, Mpi>::unlink(const Arc* arc) {
-			bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
-			bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
+			if(arc->state() == LocationState::DISTANT) {
+				bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
+				bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
 
-			MPI_Request reqSrc;
-			MPI_Request reqTgt;
-			// Simultaneously initiate the two requests, that are potentially
-			// made to different procs
-			if(distantSrc) {
-				this->idMpi.Issend(
-						arc->getId(), arc->getSourceNode()->getLocation(),
-						linkServer.getEpoch() | Tag::UNLINK, &reqSrc
-						); 
-			}
-			if(distantTgt) {
-				this->idMpi.Issend(
-						arc->getId(), arc->getTargetNode()->getLocation(),
-						linkServer.getEpoch() | Tag::UNLINK, &reqTgt
-						); 
-			}
-			// Sequentially waits for each request : if reqTgt completes
-			// before reqSrc, the second waitSendRequest will immediatly return
-			// so there is no performance issue.
-			if(distantSrc) {
-				waitSendRequest(&reqSrc);
-			}
-			if(distantTgt) {
-				waitSendRequest(&reqTgt);
+				MPI_Request reqSrc;
+				MPI_Request reqTgt;
+				// Simultaneously initiate the two requests, that are potentially
+				// made to different procs
+				if(distantSrc) {
+					this->idMpi.Issend(
+							arc->getId(), arc->getSourceNode()->getLocation(),
+							linkServer.getEpoch() | Tag::UNLINK, &reqSrc
+							); 
+				}
+				if(distantTgt) {
+					this->idMpi.Issend(
+							arc->getId(), arc->getTargetNode()->getLocation(),
+							linkServer.getEpoch() | Tag::UNLINK, &reqTgt
+							); 
+				}
+				// Sequentially waits for each request : if reqTgt completes
+				// before reqSrc, the second waitSendRequest will immediatly return
+				// so there is no performance issue.
+				if(distantSrc) {
+					waitSendRequest(&reqSrc);
+				}
+				if(distantTgt) {
+					waitSendRequest(&reqTgt);
+				}
 			}
 		}
 
