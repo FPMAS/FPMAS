@@ -38,7 +38,9 @@ class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
 		MOCK_METHOD(bool, Iprobe, (int, int, MPI_Status*), (override));
 		MOCK_METHOD(bool, test, (MPI_Request*), (override));
 
-		MOCK_METHOD((std::unordered_map<int, std::string>), allToAll, ((std::unordered_map<int, std::string>)), (override));
+		MOCK_METHOD(
+			(std::unordered_map<int, FPMAS::api::communication::DataPack>), allToAll,
+			((std::unordered_map<int, FPMAS::api::communication::DataPack>), MPI_Datatype), (override));
 };
 
 template<typename T>

@@ -141,39 +141,6 @@ namespace FPMAS::communication {
 		return this->size;
 	}
 
-/*
- *    void MpiCommunicator::send(int destination, int tag) {
- *        MPI_Send(NULL, 0, MPI_CHAR, destination, tag, this->comm);
- *
- *    }
- *
- *    void MpiCommunicator::send(Color token, int destination, int tag) {
- *        MPI_Send(&token, 1, MPI_INT, destination, tag, this->comm);
- *    }
- *
- *    void MpiCommunicator::send(const std::string& str, int destination, int tag) {
- *        MPI_Send(str.c_str(), str.size() +1, MPI_CHAR, destination, tag, this->comm);
- *    }
- *
- *    void MpiCommunicator::sendEnd(int destination) {
- *        MPI_Send(NULL, 0, MPI_INT, destination, Tag::END, this->comm);
- *    }
- *
- *    void MpiCommunicator::Issend(const DistributedId& id, int destination, int tag, MPI_Request* req) {
- *        MpiDistributedId mpi_id;
- *        mpi_id.rank = id.rank();
- *        mpi_id.id = id.id();
- *        MPI_Issend(&mpi_id, 1, MPI_DISTRIBUTED_ID_TYPE, destination, tag, this->comm, req);
- *    }
- *
- *    void MpiCommunicator::Issend(const std::string& str, int destination, int tag, MPI_Request* req) {
- *        MPI_Issend(str.c_str(), str.length() + 1, MPI_CHAR, destination, tag, this->comm, req);
- *    }
- *
- *    void MpiCommunicator::Isend(const std::string& str, int destination, int tag, MPI_Request* req) {
- *        MPI_Isend(str.c_str(), str.length() + 1, MPI_CHAR, destination, tag, this->comm, req);
- *    }
- */
 	void MpiCommunicator::send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) {
 		MPI_Send(data, count, datatype, destination, tag, this->comm);
 	}
@@ -217,32 +184,13 @@ namespace FPMAS::communication {
 		return flag > 0;
 	}
 
-/*
- *    void MpiCommunicator::recv(MPI_Status* status, Color& data) {
- *        int _data;
- *        MPI_Status _status;
- *        MPI_Recv(&_data, 1, MPI_INT, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
- *        data = Color(_data);
- *    }
- *
- *    void MpiCommunicator::recv(MPI_Status* status, std::string& str) {
- *        int count;
- *        MPI_Get_count(status, MPI_CHAR, &count);
- *        char data[count];
- *        MPI_Recv(&data, count, MPI_CHAR, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
- *        str = std::string(data);
- *    }
- *
- *    void MpiCommunicator::recv(MPI_Status* status, DistributedId& id) {
- *        MpiDistributedId mpi_id;
- *        MPI_Recv(&mpi_id, 1, MPI_DISTRIBUTED_ID_TYPE, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
- *        id = DistributedId(mpi_id);
- *    }
- */
-	std::unordered_map<int, std::string> 
+	std::unordered_map<int, DataPack> 
 		MpiCommunicator::allToAll (
-				std::unordered_map<int, std::string> 
-				data_pack) {
+				std::unordered_map<int, DataPack> 
+				data_pack, MPI_Datatype datatype) {
+
+			int data_size;
+			MPI_Type_size(datatype, &data_size);
 
 			// Migrate
 			int sendcounts[getSize()];
@@ -252,15 +200,18 @@ namespace FPMAS::communication {
 
 			int current_sdispls = 0;
 			for (int i = 0; i < getSize(); i++) {
-				sendcounts[i] = data_pack[i].size();
+				sendcounts[i] = data_pack[i].count;
 				sdispls[i] = current_sdispls;
 				current_sdispls += sendcounts[i];
 
 				size_buffer[i] = sendcounts[i];
 			}
-			char send_buffer[current_sdispls];
+			int type_size;
+			MPI_Type_size(datatype, &type_size);
+
+			void* send_buffer = std::malloc(current_sdispls * type_size);
 			for(int i = 0; i < getSize(); i++) {
-				std::strncpy(&send_buffer[sdispls[i]], data_pack[i].c_str(), sendcounts[i]);
+				std::memcpy(&((char*) send_buffer)[sdispls[i]], data_pack[i].buffer, data_pack[i].size);
 			}
 
 			// Sends size / displs to each rank, and receive recvs size / displs from
@@ -276,20 +227,24 @@ namespace FPMAS::communication {
 				current_rdispls += recvcounts[i];
 			}
 
-			char recv_buffer[current_rdispls];
+			void* recv_buffer = std::malloc(current_rdispls * type_size);
 
 			MPI_Alltoallv(
-					send_buffer, sendcounts, sdispls, MPI_CHAR,
-					recv_buffer, recvcounts, rdispls, MPI_CHAR,
+					send_buffer, sendcounts, sdispls, datatype,
+					recv_buffer, recvcounts, rdispls, datatype,
 					getMpiComm()
 					);
 
-			std::unordered_map<int, std::string> data_unpack;
+			std::unordered_map<int, DataPack> imported_data_pack;
 			for (int i = 0; i < getSize(); i++) {
-				if(recvcounts[i] > 0)
-					data_unpack[i]= std::string(&recv_buffer[rdispls[i]], recvcounts[i]);
+				if(recvcounts[i] > 0) {
+					imported_data_pack[i] = DataPack(recvcounts[i], data_size);
+					DataPack& dataPack = imported_data_pack[i];
+
+					std::memcpy(dataPack.buffer, &((char*) recv_buffer)[rdispls[i]], dataPack.size);
+				}
 			}
-			return data_unpack;
+			return imported_data_pack;
 		}
 
 	/**

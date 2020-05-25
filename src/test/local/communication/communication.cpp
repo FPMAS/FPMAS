@@ -13,19 +13,40 @@ using ::testing::Contains;
 using ::testing::IsEmpty;
 
 
-
 class MigrateTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<3, 8> comm;
+
+		void copy(
+			std::unordered_map<int, std::string>& map,
+			std::unordered_map<int, FPMAS::api::communication::DataPack>& dataPackMap
+			) {
+			for(auto item : map) {
+				dataPackMap[item.first] = buildDataPack(item.second);
+			}
+		}
+
+		FPMAS::api::communication::DataPack buildDataPack(std::string str) {
+			FPMAS::api::communication::DataPack pack {(int) str.size(), sizeof(char)};
+			std::memcpy(pack.buffer, str.data(), str.size());
+			return pack;
+		}
 };
 
 TEST_F(MigrateTest, migrate_int) {
 	TypedMpi<int> mpi {comm};
 	std::unordered_map<int, std::vector<int>> exportMap =
 	{ {1, {4, 8, 7}}, {6, {2, 3}}};
+
 	auto exportMapMatcher = UnorderedElementsAre(
-		Pair(1, AnyOf("[4,8,7]", "[4,7,8]", "[8,4,7]", "[8,7,4]","[7,8,4]","[7,4,8]")),
-		Pair(6, AnyOf("[2,3]", "[3,2]"))
+		Pair(1, AnyOf(
+				buildDataPack("[4,8,7]"),
+				buildDataPack("[4,7,8]"),
+				buildDataPack("[8,4,7]"),
+				buildDataPack("[8,7,4]"),
+				buildDataPack("[7,8,4]"),
+				buildDataPack("[7,4,8]"))),
+		Pair(6, AnyOf(buildDataPack("[2,3]"), buildDataPack("[3,2]")))
 		);
 
 	std::unordered_map<int, std::string> importMap = {
@@ -33,9 +54,12 @@ TEST_F(MigrateTest, migrate_int) {
 		{7, "[1,2,3]"}
 	};
 
+	std::unordered_map<int, FPMAS::api::communication::DataPack> importDataPack;
+	copy(importMap, importDataPack);
+
 	EXPECT_CALL(
-		comm, allToAll(exportMapMatcher))
-		.WillOnce(Return(importMap));
+		comm, allToAll(exportMapMatcher, MPI_CHAR))
+		.WillOnce(Return(importDataPack));
 
 	std::unordered_map<int, std::vector<int>> result
 		= mpi.migrate(exportMap);
@@ -84,10 +108,10 @@ TEST_F(MigrateTest, migrate_fake_test) {
 
 	auto exportMapMatcher = UnorderedElementsAre(
 		Pair(0, AnyOf(
-				nlohmann::json({fake1, fake2}).dump(),
-				nlohmann::json({fake2, fake1}).dump()
+				buildDataPack(nlohmann::json({fake1, fake2}).dump()),
+				buildDataPack(nlohmann::json({fake2, fake1}).dump())
 				)),
-		Pair(3, nlohmann::json({fake3}).dump())
+		Pair(3, buildDataPack(nlohmann::json({fake3}).dump()))
 		);
 
 	FakeType importFake1 {10, "import", 4.2};
@@ -95,8 +119,11 @@ TEST_F(MigrateTest, migrate_fake_test) {
 	std::unordered_map<int, std::string> importMap =
 	{{2, nlohmann::json({importFake1, importFake2}).dump()}};
 
-	EXPECT_CALL(comm, allToAll(exportMapMatcher))
-		.WillOnce(Return(importMap));
+	std::unordered_map<int, FPMAS::api::communication::DataPack> importDataPack;
+	copy(importMap, importDataPack);
+
+	EXPECT_CALL(comm, allToAll(exportMapMatcher, MPI_CHAR))
+		.WillOnce(Return(importDataPack));
 
 	auto result = mpi.migrate(exportMap);
 

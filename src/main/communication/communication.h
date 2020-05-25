@@ -14,6 +14,7 @@ namespace FPMAS {
 	 * required by communication processes.
 	 */
 	namespace communication {
+		using api::communication::DataPack;
 		/**
 		 * A convenient wrapper to build MPI groups and communicators from the
 		 * MPI_COMM_WORLD communicator, i.e. groups and communicators
@@ -72,8 +73,8 @@ namespace FPMAS {
 
 				bool test(MPI_Request*) override;
 
-				std::unordered_map<int, std::string> 
-					allToAll(std::unordered_map<int, std::string> data_pack) override;
+				std::unordered_map<int, DataPack> 
+					allToAll(std::unordered_map<int, DataPack> data_pack, MPI_Datatype datatype) override;
 
 				~MpiCommunicator();
 
@@ -97,17 +98,25 @@ namespace FPMAS {
 		template<typename T> std::unordered_map<int, std::vector<T>>
 			TypedMpi<T>::migrate(std::unordered_map<int, std::vector<T>> exportMap) {
 				// Pack
-				std::unordered_map<int, std::string> data_pack;
+				std::unordered_map<int, DataPack> export_data_pack;
 				for(auto item : exportMap) {
-					data_pack[item.first] = nlohmann::json(item.second).dump();
+					std::string str = nlohmann::json(item.second).dump();
+					DataPack dataPack (str.size(), sizeof(char));
+					std::memcpy(dataPack.buffer, str.data(), str.size() * sizeof(char));
+
+					export_data_pack[item.first] = dataPack;
 				}
 
-				std::unordered_map<int, std::string> data_unpack
-					= comm.allToAll(data_pack);
+				std::unordered_map<int, DataPack> import_data_pack
+					= comm.allToAll(export_data_pack, MPI_CHAR);
 
 				std::unordered_map<int, std::vector<T>> importMap;
-				for(auto item : data_unpack) {
-					importMap[item.first] = nlohmann::json::parse(data_unpack[item.first])
+				for(auto item : import_data_pack) {
+					DataPack& pack = import_data_pack[item.first];
+					std::string import = std::string((char*) pack.buffer, pack.count);
+					importMap[item.first] = nlohmann::json::parse(
+							import
+							)
 						.get<std::vector<T>>();
 				}
 				return importMap;

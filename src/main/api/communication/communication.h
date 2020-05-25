@@ -5,6 +5,52 @@
 #include "graph/parallel/distributed_id.h"
 
 namespace FPMAS::api::communication {
+	class DataPack {
+		public:
+			int size;
+			int count;
+			void* buffer;
+			DataPack(int count, size_t data_size) : count(count) {
+				size = data_size * count;
+				buffer = std::malloc(size);
+			}
+
+			DataPack() : count(0), size(0) {
+				buffer = std::malloc(0);
+			}
+
+			DataPack(const DataPack& other)
+				: count(other.count), size(other.size) {
+				buffer = std::malloc(size);
+				std::memcpy(buffer, other.buffer, size);
+			}
+			DataPack(DataPack&& other)
+				: count(other.count), size(other.size) {
+					buffer = other.buffer;
+					other.buffer = std::malloc(0);
+				}
+
+			DataPack& operator=(const DataPack& other) {
+				std::free(buffer);
+				size = other.size;
+				count = other.count;
+				buffer = std::malloc(size);
+				std::memcpy(buffer, other.buffer, size);
+				return *this;
+			}
+			DataPack& operator=(DataPack&& other) {
+				std::free(buffer);
+				size = other.size;
+				count = other.count;
+				buffer = other.buffer;
+				other.buffer = std::malloc(0);
+				return *this;
+			}
+
+			~DataPack() {
+				std::free(buffer);
+			}
+	};
 
 	/**
 	 * MpiCommunicator interface.
@@ -73,8 +119,8 @@ namespace FPMAS::api::communication {
 
 			virtual bool test(MPI_Request*) = 0;
 
-			virtual std::unordered_map<int, std::string>
-				allToAll(std::unordered_map<int, std::string>) = 0;
+			virtual std::unordered_map<int, DataPack>
+				allToAll(std::unordered_map<int, DataPack>, MPI_Datatype datatype) = 0;
 
 			virtual ~MpiCommunicator() {};
 	};
@@ -102,5 +148,17 @@ namespace FPMAS::api::communication {
 			template<typename T>
 				using mpi = TypedMpiImpl<T>;
 		};
+
+	inline bool operator ==(const FPMAS::api::communication::DataPack& d1, const FPMAS::api::communication::DataPack& d2) {
+		if(d1.count != d2.count)
+			return false;
+		if(d1.size != d2.size)
+			return false;
+		for(int i = 0; i < d1.size; i++) {
+			if(((char*) d1.buffer)[i] != ((char*) d2.buffer)[i])
+				return false;
+		}
+		return true;
+	};
 }
 #endif
