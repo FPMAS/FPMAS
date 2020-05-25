@@ -239,6 +239,58 @@ namespace FPMAS::communication {
  *        id = DistributedId(mpi_id);
  *    }
  */
+	std::unordered_map<int, std::string> 
+		MpiCommunicator::allToAll (
+				std::unordered_map<int, std::string> 
+				data_pack) {
+
+			// Migrate
+			int sendcounts[getSize()];
+			int sdispls[getSize()];
+
+			int size_buffer[getSize()];
+
+			int current_sdispls = 0;
+			for (int i = 0; i < getSize(); i++) {
+				sendcounts[i] = data_pack[i].size();
+				sdispls[i] = current_sdispls;
+				current_sdispls += sendcounts[i];
+
+				size_buffer[i] = sendcounts[i];
+			}
+			char send_buffer[current_sdispls];
+			for(int i = 0; i < getSize(); i++) {
+				std::strncpy(&send_buffer[sdispls[i]], data_pack[i].c_str(), sendcounts[i]);
+			}
+
+			// Sends size / displs to each rank, and receive recvs size / displs from
+			// each rank.
+			MPI_Alltoall(MPI_IN_PLACE, 0, MPI_INT, size_buffer, 1, MPI_INT, getMpiComm());
+
+			int recvcounts[getSize()];
+			int rdispls[getSize()];
+			int current_rdispls = 0;
+			for (int i = 0; i < getSize(); i++) {
+				recvcounts[i] = size_buffer[i];
+				rdispls[i] = current_rdispls;
+				current_rdispls += recvcounts[i];
+			}
+
+			char recv_buffer[current_rdispls];
+
+			MPI_Alltoallv(
+					send_buffer, sendcounts, sdispls, MPI_CHAR,
+					recv_buffer, recvcounts, rdispls, MPI_CHAR,
+					getMpiComm()
+					);
+
+			std::unordered_map<int, std::string> data_unpack;
+			for (int i = 0; i < getSize(); i++) {
+				if(recvcounts[i] > 0)
+					data_unpack[i]= std::string(&recv_buffer[rdispls[i]], recvcounts[i]);
+			}
+			return data_unpack;
+		}
 
 	/**
 	 * FPMAS::communication::MpiCommunicator destructor.
