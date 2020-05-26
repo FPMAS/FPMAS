@@ -9,7 +9,9 @@ set(CMAKE_CXX_STANDARD 17)
 # MPI setup
 find_package(MPI REQUIRED)
 set(CMAKE_CXX_COMPILER ${MPI_CXX_COMPILER})
-add_compile_options(-g -O0 -Wall -Wpedantic)
+
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -Wall -Wpedantic")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
 set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
 MPI context")
@@ -59,16 +61,24 @@ if(MPIEXEC_EXECUTABLE)
 
 endif()
 
-find_package(nlohmann_json REQUIRED) 
+# Nlohmann JSON library
+find_file(JSON nlohmann/json.hpp) 
+if(NOT JSON)
+	message(FATAL_ERROR "nlohman/json library not found.")
+else()
+	message("nlohman/json library found : ${JSON}")
+endif()
 
-# Builds the Zoltan library
-add_subdirectory(zoltan)
+# Zoltan library
+find_library(ZOLTAN zoltan)
+if(NOT ZOLTAN)
+	message(FATAL_ERROR "Zoltan library not found.")
+else()
+	message("Zoltan library found : ${ZOLTAN}")
+endif()
 
-include_directories(
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}/zoltan
-	${CMAKE_CURRENT_SOURCE_DIR}/zoltan/include
-	)
+include_directories(${CMAKE_PREFIX_PATH}/include)
+link_directories(${CMAKE_PREFIX_PATH}/lib)
 
 add_subdirectory(src/main)
 add_subdirectory(src/test)
@@ -89,7 +99,6 @@ if(DOXYGEN_FOUND)
 		${CMAKE_CURRENT_SOURCE_DIR}/src/main
 		)
 endif()
-
 
 # generates compile_commands.json, useful for CCLS completion
 set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
