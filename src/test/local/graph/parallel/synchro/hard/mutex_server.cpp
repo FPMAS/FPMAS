@@ -6,9 +6,37 @@
  *
  * # MutexServerHandleIncomingRequestsTest
  * ## mutex_server_handle_incoming_requests_test_unlocked_read
+ * ## mutex_server_handle_incoming_requests_test_locked_read
+ * ## mutex_server_handle_incoming_requests_test_locked_shared_read
+ *
  * ## mutex_server_handle_incoming_requests_test_unlocked_acquire
- * ## mutex_server_handle_incoming_requests_test_release_no_waiting_queues
+ * ## mutex_server_handle_incoming_requests_test_locked_acquire
+ * ## mutex_server_handle_incoming_requests_test_locked_shared_acquire
+ *
+ * ## mutex_server_handle_incoming_requests_test_release_no_waiting_queue
+ * ## mutex_server_handle_incoming_requests_test_release_with_waiting_queue
+ * ## mutex_server_handle_incoming_requests_test_release_with_pending_lock
+ * ## mutex_server_handle_incoming_requests_test_release_with_pending_acquire
+ *
  * ## mutex_server_handle_incoming_requests_test_unlocked_lock
+ * ## mutex_server_handle_incoming_requests_test_locked_lock
+ * ## mutex_server_handle_incoming_requests_test_locked_shared_lock
+ *
+ * ## mutex_server_handle_incoming_requests_test_unlocked_lock_shared
+ * ## mutex_server_handle_incoming_requests_test_locked_lock_shared
+ * ## mutex_server_handle_incoming_requests_test_locked_shared_lock_shared
+ *
+ * ## mutex_server_handle_incoming_requests_test_unlock_no_waiting_queues
+ * ## mutex_server_handle_incoming_requests_test_unlock_with_waiting_queue
+ * ## mutex_server_handle_incoming_requests_test_unlock_with_pending_lock
+ * ## mutex_server_handle_incoming_requests_test_unlock_with_pending_acquire
+ *
+ * ## mutex_server_handle_incoming_requests_test_partial_unlock_shared
+ * ## mutex_server_handle_incoming_requests_test_last_unlock_shared_no_waiting_queue
+ * ## mutex_server_handle_incoming_requests_test_last_unlock_shared_with_waiting_queue
+ * ## mutex_server_handle_incoming_requests_test_last_unlock_shared_with_pending_lock
+ * ## mutex_server_handle_incoming_requests_test_last_unlock_shared_with_pending_acquire
+ *
  * ## mutex_server_handle_incoming_requests_all
  */
 #include "graph/parallel/synchro/hard/mutex_server.h"
@@ -22,11 +50,13 @@ using ::testing::A;
 using ::testing::An;
 using ::testing::AtLeast;
 using ::testing::DoAll;
+using ::testing::InSequence;
 using ::testing::Invoke;
 using ::testing::Pair;
 using ::testing::ElementsAre;
 using ::testing::Field;
 using ::testing::Pointee;
+using ::testing::Ref;
 using ::testing::Return;
 using ::testing::ReturnRef;
 using ::testing::UnorderedElementsAre;
@@ -35,6 +65,7 @@ using FPMAS::graph::parallel::synchro::hard::Epoch;
 using FPMAS::graph::parallel::synchro::hard::Tag;
 using FPMAS::graph::parallel::synchro::hard::MutexServer;
 using FPMAS::graph::parallel::synchro::hard::DataUpdatePack;
+using FPMAS::graph::parallel::synchro::hard::MutexRequestType;
 
 /*******************/
 /* MutexServerTest */
@@ -104,10 +135,9 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			server.manage(id, mock);
 
 			EXPECT_CALL(*mock, data).WillRepeatedly(ReturnRef(data));
-			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
 			return mock;
 		}
-	
+
 		void expectRead(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::READ, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
@@ -118,10 +148,32 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::READ)))
 					))
 				.WillOnce(Return(id));
+		}
 
+		void expectReadResponse(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			EXPECT_CALL(*mock, _lockShared);
 			EXPECT_CALL(
 				const_cast<MockMpi<int>&>(server.getDataMpi()),
-				send(mock->data(), source, Epoch::EVEN | Tag::READ_RESPONSE));
+				send(Ref(mock->data()), source, Epoch::EVEN | Tag::READ_RESPONSE));
+		}
+	
+		void expectUnlockedRead(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectRead(source, id, mock);
+			
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
+
+			expectReadResponse(source, id, mock);
+		}
+
+		void expectLockedRead(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectRead(source, id, mock);
+
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(true));
+			EXPECT_CALL(*mock, pushRequest(MutexRequest(id, source, MutexRequestType::READ)));
+		}
+
+		void expectLockedSharedRead(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectUnlockedRead(source, id, mock);
 		}
 
 		void expectAcquire(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
@@ -134,11 +186,40 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::ACQUIRE)))
 					))
 				.WillOnce(Return(id));
+		}
 
+		void expectAcquireResponse(int source, DistributedId id, int updatedData, MockHardSyncMutex<int>* mock) {
 			EXPECT_CALL(
 				const_cast<MockMpi<int>&>(server.getDataMpi()),
-				send(mock->data(), source, Epoch::EVEN | Tag::ACQUIRE_RESPONSE));
+				send(updatedData, source, Epoch::EVEN | Tag::ACQUIRE_RESPONSE));
 			EXPECT_CALL(*mock, _lock);
+		}
+
+		void expectUnlockedAcquire(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectAcquire(source, id, mock);
+
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
+			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(0));
+
+			expectAcquireResponse(source, id, mock->data(), mock);
+		}
+
+		void expectLockedAcquire(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectAcquire(source, id, mock);
+
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(true));
+			EXPECT_CALL(*mock, pushRequest(MutexRequest(id, source, MutexRequestType::ACQUIRE)));
+		}
+
+		void expectLockedSharedAcquire(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectAcquire(source, id, mock);
+
+			// The resource is not locked...
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
+			// ... but some threads still have a shared lock
+			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(5));
+
+			EXPECT_CALL(*mock, pushRequest(MutexRequest(id, source, MutexRequestType::ACQUIRE)));
 		}
 
 		void expectRelease(
@@ -147,13 +228,13 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(*mock, requestsToProcess)
 				.WillOnce(Return(requests));
 
-			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::RELEASE, _))
+			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(const_cast<MockMpi<DataUpdatePack<int>>&>(server.getDataUpdateMpi()),
 				recv(Pointee(AllOf(
 					Field(&MPI_Status::MPI_SOURCE, source),
-					Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::RELEASE))))
+					Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::RELEASE_ACQUIRE))))
 				)
 				.WillOnce(Return(DataUpdatePack(id, updatedData)));
 
@@ -170,9 +251,37 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::LOCK)))
 					))
 				.WillOnce(Return(id));
+		}
 
+		void expectLockResponse(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
 			EXPECT_CALL(comm, send(source, Epoch::EVEN | Tag::LOCK_RESPONSE));
 			EXPECT_CALL(*mock, _lock);
+		}
+
+		void expectUnlockedLock(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectLock(source, id, mock);
+			
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
+			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(0));
+
+			expectLockResponse(source, id, mock);
+		}
+
+		void expectLockedLock(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectLock(source, id, mock);
+
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(true));
+
+			EXPECT_CALL(*mock, pushRequest(MutexRequest(id, source, MutexRequestType::LOCK)));
+		}
+
+		void expectLockedSharedLock(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectLock(source, id, mock);
+
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
+			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(5));
+
+			EXPECT_CALL(*mock, pushRequest(MutexRequest(id, source, MutexRequestType::LOCK)));
 		}
 
 		void expectUnlock(
@@ -196,6 +305,66 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(*mock, _unlock);
 		}
 
+		void expectLockShared(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::LOCK_SHARED, _))
+				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
+
+			EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(server.getIdMpi()), recv(
+					Pointee(AllOf(
+						Field(&MPI_Status::MPI_SOURCE, source),
+						Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::LOCK_SHARED)))
+					))
+				.WillOnce(Return(id));
+		}
+
+		void expectLockSharedResponse(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			EXPECT_CALL(*mock, _lockShared);
+			EXPECT_CALL(comm, send(source, Epoch::EVEN | Tag::LOCK_SHARED_RESPONSE));
+		}
+
+		void expectUnlockedLockShared(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectLockShared(source, id, mock);
+
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
+
+			expectLockSharedResponse(source, id, mock);
+		}
+
+		void expectLockedLockShared(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectLockShared(source, id, mock);
+
+			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(true));
+
+			EXPECT_CALL(*mock, pushRequest(MutexRequest(id, source, MutexRequestType::LOCK_SHARED)));
+		}
+
+		void expectLockedSharedLockShared(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
+			expectUnlockedLockShared(source, id, mock);
+		}
+
+		void expectUnlockShared(
+			int source, DistributedId id, int shared_locks,
+			std::queue<MutexRequest>& requests, MockHardSyncMutex<int>* mock) {
+
+			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(shared_locks));
+
+			EXPECT_CALL(*mock, requestsToProcess)
+				.WillOnce(Return(requests));
+
+			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::UNLOCK_SHARED, _))
+				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
+
+			EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(server.getIdMpi()),
+				recv(Pointee(AllOf(
+					Field(&MPI_Status::MPI_SOURCE, source),
+					Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::UNLOCK_SHARED)
+					)))
+				)
+				.WillOnce(Return(id));
+
+			EXPECT_CALL(*mock, _unlockShared);
+		}
+
 		void TearDown() override {
 			for(auto mock : mocks) {
 				delete mock;
@@ -208,7 +377,27 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
  */
 TEST_F(MutexServerHandleIncomingRequestsTest, unlocked_read) {
 	int data = 12;
-	expectRead(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+	expectUnlockedRead(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_locked_read
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, locked_read) {
+	int data = 12;
+	expectLockedRead(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_locked_shared_read
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, locked_shared_read) {
+	int data = 12;
+	expectLockedSharedRead(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
 
 	server.handleIncomingRequests();
 }
@@ -218,15 +407,35 @@ TEST_F(MutexServerHandleIncomingRequestsTest, unlocked_read) {
  */
 TEST_F(MutexServerHandleIncomingRequestsTest, unlocked_acquire) {
 	int data = 12;
-	expectAcquire(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+	expectUnlockedAcquire(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
 
 	server.handleIncomingRequests();
 }
 
 /*
- * mutex_server_handle_incoming_requests_test_release_no_waiting_queues
+ * mutex_server_handle_incoming_requests_test_locked_acquire
  */
-TEST_F(MutexServerHandleIncomingRequestsTest, release_no_waiting_queues) {
+TEST_F(MutexServerHandleIncomingRequestsTest, locked_acquire) {
+	int data = 12;
+	expectLockedAcquire(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_locked_shared_acquire
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, locked_shared_acquire) {
+	int data = 12;
+	expectLockedSharedAcquire(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_release_no_waiting_queue
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, release_no_waiting_queue) {
 	std::queue<MutexRequest> voidRequests;
 
 	int mutexData = 12;
@@ -238,19 +447,131 @@ TEST_F(MutexServerHandleIncomingRequestsTest, release_no_waiting_queues) {
 }
 
 /*
+ * mutex_server_handle_incoming_requests_test_release_with_waiting_queue
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, release_with_waiting_queue) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::READ));
+	requests.push(MutexRequest(mockId, 2, MutexRequestType::LOCK_SHARED));
+	requests.push(MutexRequest(mockId, 5, MutexRequestType::READ));
+
+
+	int mutexData = 12;
+	int updatedData = 15;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectRelease(5, mockId, updatedData, requests, mock);
+	{
+		InSequence s;
+
+		expectReadResponse(3, mockId, mock);
+		expectLockSharedResponse(2, mockId, mock);
+		expectReadResponse(5, mockId, mock);
+	}
+	
+	server.handleIncomingRequests();
+	ASSERT_EQ(mutexData, 15);
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_release_with_pending_lock
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, release_with_pending_lock) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::LOCK));
+
+	int mutexData = 12;
+	int updatedData = 15;
+
+	auto* mock = mockMutex(mockId, mutexData);
+	expectRelease(5, mockId, updatedData, requests, mock);
+
+	expectLockResponse(3, mockId, mock);
+	
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_release_with_pending_acquire
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, release_with_pending_acquire) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::ACQUIRE));
+
+	int mutexData = 12;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectUnlock(5, mockId, requests, mock);
+
+	expectAcquireResponse(3, mockId, 12, mock);
+	
+	server.handleIncomingRequests();
+}
+/*
  * mutex_server_handle_incoming_requests_test_unlocked_lock
  */
 TEST_F(MutexServerHandleIncomingRequestsTest, unlocked_lock) {
 	int data = 0; // unused
-	expectLock(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+	expectUnlockedLock(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
 
 	server.handleIncomingRequests();
 }
 
 /*
- * mutex_server_handle_incoming_requests_test_unlock
+ * mutex_server_handle_incoming_requests_test_locked_lock
  */
-TEST_F(MutexServerHandleIncomingRequestsTest, unlock) {
+TEST_F(MutexServerHandleIncomingRequestsTest, locked_lock) {
+	int data = 0; // unused
+	expectLockedLock(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_locked_shared_lock
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, locked_shared_lock) {
+	int data = 0; // unused
+	expectLockedSharedLock(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_unlocked_lock_shared
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, unlocked_lock_shared) {
+	int data = 0; // unused
+	expectUnlockedLockShared(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_locked_lock_shared
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, locked_lock_shared) {
+	int data = 0; // unused
+	expectLockedLockShared(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_locked_shared_lock_shared
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, locked_shared_lock_shared) {
+	int data = 0; // unused
+	expectLockedSharedLockShared(5, DistributedId(2, 6), mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_unlock_no_waiting_queues
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, unlock_no_waiting_queues) {
 	std::queue<MutexRequest> voidRequests;
 
 	int data = 0; // unused
@@ -260,19 +581,166 @@ TEST_F(MutexServerHandleIncomingRequestsTest, unlock) {
 }
 
 /*
+ * mutex_server_handle_incoming_requests_test_unlock_with_waiting_queue
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, unlock_with_waiting_queue) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::READ));
+	requests.push(MutexRequest(mockId, 2, MutexRequestType::LOCK_SHARED));
+	requests.push(MutexRequest(mockId, 5, MutexRequestType::READ));
+
+
+	int mutexData = 12;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectUnlock(5, mockId, requests, mock);
+	{
+		InSequence s;
+
+		expectReadResponse(3, mockId, mock);
+		expectLockSharedResponse(2, mockId, mock);
+		expectReadResponse(5, mockId, mock);
+	}
+	
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_unlock_with_pending_lock
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, unlock_with_pending_lock) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::LOCK));
+
+	int mutexData = 12;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectUnlock(5, mockId, requests, mock);
+
+	expectLockResponse(3, mockId, mock);
+	
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_unlock_with_pending_acquire
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, unlock_with_pending_acquire) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::ACQUIRE));
+
+	int mutexData = 12;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectUnlock(5, mockId, requests, mock);
+
+	expectAcquireResponse(3, mockId, 12, mock);
+	
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_partial_unlock_shared
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, partial_unlock_shared) {
+	std::queue<MutexRequest> voidRequests;
+
+	int data = 0; // unused
+	expectUnlockShared(5, DistributedId(2, 6), 4, voidRequests, mockMutex(DistributedId(2, 6), data));
+
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_last_unlock_shared_no_waiting_queue
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, last_unlock_shared_no_waiting_queue) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+
+	int mutexData = 12;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectUnlockShared(5, mockId, 0, requests, mock);
+	
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_last_unlock_shared_with_waiting_queue
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, last_unlock_shared_with_waiting_queue) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::READ));
+	requests.push(MutexRequest(mockId, 2, MutexRequestType::LOCK_SHARED));
+	requests.push(MutexRequest(mockId, 5, MutexRequestType::READ));
+
+
+	int mutexData = 12;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectUnlockShared(5, mockId, 0, requests, mock);
+	{
+		InSequence s;
+
+		expectReadResponse(3, mockId, mock);
+		expectLockSharedResponse(2, mockId, mock);
+		expectReadResponse(5, mockId, mock);
+	}
+	
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_last_unlock_shared_with_pending_lock
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, last_unlock_shared_with_pending_lock) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::LOCK));
+
+	int mutexData = 12;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectUnlockShared(5, mockId, 0, requests, mock);
+
+	expectLockResponse(3, mockId, mock);
+	
+	server.handleIncomingRequests();
+}
+
+/*
+ * mutex_server_handle_incoming_requests_test_last_unlock_shared_with_pending_acquire
+ */
+TEST_F(MutexServerHandleIncomingRequestsTest, last_unlock_shared_with_pending_acquire) {
+	DistributedId mockId {2, 6};
+	std::queue<MutexRequest> requests;
+	requests.push(MutexRequest(mockId, 3, MutexRequestType::ACQUIRE));
+
+	int mutexData = 12;
+	auto* mock = mockMutex(mockId, mutexData);
+	expectUnlockShared(5, mockId, 0, requests, mock);
+
+	expectAcquireResponse(3, mockId, 12, mock);
+	
+	server.handleIncomingRequests();
+}
+/*
  * mutex_server_handle_incoming_requests_all
  */
 TEST_F(MutexServerHandleIncomingRequestsTest, all) {
-	std::array<int, 5> data {0, 0, 0, 0, 0};
+	std::array<int, 7> data {0, 0, 0, 0, 0, 0, 0};
 
-	expectRead(0, DistributedId(0, 0), mockMutex(DistributedId(0, 0), data[0]));
-	expectAcquire(1, DistributedId(0, 1), mockMutex(DistributedId(0, 1), data[1]));
-	expectLock(2, DistributedId(0, 2), mockMutex(DistributedId(0, 2), data[2]));
+	expectUnlockedRead(0, DistributedId(0, 0), mockMutex(DistributedId(0, 0), data[0]));
+	expectUnlockedAcquire(1, DistributedId(0, 1), mockMutex(DistributedId(0, 1), data[1]));
+	expectUnlockedLock(2, DistributedId(0, 2), mockMutex(DistributedId(0, 2), data[2]));
 
 	std::queue<MutexRequest> voidRequests;
 	expectRelease(3, DistributedId(0, 3), 10, voidRequests, mockMutex(DistributedId(0, 3), data[3]));
 
 	expectUnlock(4, DistributedId(0, 4), voidRequests, mockMutex(DistributedId(0, 4), data[4]));
+
+	expectUnlockedLockShared(5, DistributedId(0, 5), mockMutex(DistributedId(0, 5), data[5]));
+
+	expectUnlockShared(6, DistributedId(0, 6), 0, voidRequests, mockMutex(DistributedId(0, 6), data[6]));
 
 	server.handleIncomingRequests();
 	ASSERT_EQ(data[3], 10);

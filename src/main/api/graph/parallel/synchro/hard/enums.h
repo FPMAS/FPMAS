@@ -12,14 +12,17 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 		READ_RESPONSE = 0x01,
 		ACQUIRE = 0x02,
 		ACQUIRE_RESPONSE = 0x03,
-		RELEASE = 0x04,
+		RELEASE_ACQUIRE = 0x04,
 		LOCK = 0x05,
 		LOCK_RESPONSE = 0x06,
 		UNLOCK = 0x07,
-		LINK = 0x08,
-		UNLINK = 0x09,
-		TOKEN = 0x0A,
-		END = 0x0B
+		LOCK_SHARED = 0x08,
+		LOCK_SHARED_RESPONSE = 0x09,
+		UNLOCK_SHARED = 0x0A,
+		LINK = 0x0B,
+		UNLINK = 0x0C,
+		TOKEN = 0x0D,
+		END = 0x0E
 	};
 
 	/**
@@ -31,7 +34,7 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 	};
 
 	enum class MutexRequestType {
-		READ, LOCK, ACQUIRE
+		READ, LOCK, ACQUIRE, LOCK_SHARED
 	};
 }
 #endif

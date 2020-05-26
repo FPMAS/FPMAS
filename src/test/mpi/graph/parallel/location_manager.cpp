@@ -20,17 +20,25 @@ class FakeMutex : public FPMAS::api::graph::parallel::synchro::Mutex<T> {
 		std::reference_wrapper<T> _data;
 		void _lock() override {}
 		void _unlock() override {}
+		void _lockShared() override {}
+		void _unlockShared() override {}
 
 	public:
 		FakeMutex(T& data) : _data(data) {}
 		T& data() override {return _data;}
+
 		const T& read() override {return _data;}
+		void releaseRead() override {}
+
 		T& acquire() override {return _data;}
-		void release() override {}
+		void releaseAcquire() override {}
+
 		void lock() override {}
-		void lockShared() override {}
 		void unlock() override {}
 		bool locked() const override {return false;}
+
+		void lockShared() override {}
+		void unlockShared() override {}
 		int lockedShared() const override {return 0;}
 
 };

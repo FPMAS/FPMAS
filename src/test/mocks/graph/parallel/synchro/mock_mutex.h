@@ -19,18 +19,23 @@ class MockMutex : public virtual FPMAS::api::graph::parallel::synchro::Mutex<T> 
 		MockMutex<T>& operator=(const MockMutex<T>&) {return *this;}
 
 		MOCK_METHOD(void, _lock, (), (override));
+		MOCK_METHOD(void, _lockShared, (), (override));
 		MOCK_METHOD(void, _unlock, (), (override));
+		MOCK_METHOD(void, _unlockShared, (), (override));
 
 		MOCK_METHOD(T&, data, (), (override));
 
 		MOCK_METHOD(const T&, read, (), (override));
+		MOCK_METHOD(void, releaseRead, (), (override));
 		MOCK_METHOD(T&, acquire, (), (override));
-		MOCK_METHOD(void, release, (), (override));
+		MOCK_METHOD(void, releaseAcquire, (), (override));
 
 		MOCK_METHOD(void, lock, (), (override));
-		MOCK_METHOD(void, lockShared, (), (override));
 		MOCK_METHOD(void, unlock, (), (override));
 		MOCK_METHOD(bool, locked, (), (const, override));
+
+		MOCK_METHOD(void, lockShared, (), (override));
+		MOCK_METHOD(void, unlockShared, (), (override));
 		MOCK_METHOD(int, lockedShared, (), (const, override));
 };
 

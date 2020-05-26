@@ -127,12 +127,12 @@ TEST_F(MutexClientTest, release) {
 			Issend(AllOf(
 				Field(&DataUpdatePack<int>::id, DistributedId(7, 3)),
 				Field(&DataUpdatePack<int>::updatedData, data)),
-				5, Epoch::EVEN | Tag::RELEASE, _));
+				5, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _));
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 	}
 	// Actual read call
-	mutexClient.release(DistributedId(7, 3), data, 5);
+	mutexClient.releaseAcquire(DistributedId(7, 3), data, 5);
 }
 
 /*
@@ -179,7 +179,7 @@ class MutexClientDeadlockTest : public MutexClientTest {
 	protected:
 		Sequence seq;
 
-		void SetUp(Tag sendTag, Tag recvTag) {
+		void setUp(Tag sendTag, Tag recvTag) {
 			// 1 : sends the request
 				EXPECT_CALL(
 					const_cast<MockMpi<DistributedId>&>(mutexClient.getIdMpi()),
@@ -222,7 +222,7 @@ class MutexClientDeadlockTest : public MutexClientTest {
  *   is complete
  */
 TEST_F(MutexClientDeadlockTest, read) {
-	SetUp(Tag::READ, Tag::READ_RESPONSE);
+	setUp(Tag::READ, Tag::READ_RESPONSE);
 
 	// Receive read data
 	EXPECT_CALL(const_cast<MockMpi<int>&>(mutexClient.getDataMpi()), recv(_))
@@ -241,7 +241,7 @@ TEST_F(MutexClientDeadlockTest, read) {
  *
  */
 TEST_F(MutexClientDeadlockTest, acquire) {
-	SetUp(Tag::ACQUIRE, Tag::ACQUIRE_RESPONSE);
+	setUp(Tag::ACQUIRE, Tag::ACQUIRE_RESPONSE);
 
 	// Receive acquired data
 	EXPECT_CALL(const_cast<MockMpi<int>&>(mutexClient.getDataMpi()), recv(_))
@@ -265,7 +265,7 @@ TEST_F(MutexClientDeadlockTest, release) {
 		Issend(AllOf(
 			Field(&DataUpdatePack<int>::id, DistributedId(7, 3)),
 			Field(&DataUpdatePack<int>::updatedData, data)),
-			5, Epoch::EVEN | Tag::RELEASE, _))
+			5, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _))
 		.InSequence(seq);
 
 
@@ -283,14 +283,14 @@ TEST_F(MutexClientDeadlockTest, release) {
 		.WillOnce(Return(true));
 
 	// Actual read call
-	mutexClient.release(DistributedId(7, 3), data, 5);
+	mutexClient.releaseAcquire(DistributedId(7, 3), data, 5);
 }
 
 /*
  * mutex_client_deadlock_test_lock
  */
 TEST_F(MutexClientDeadlockTest, lock) {
-	SetUp(Tag::LOCK, Tag::LOCK_RESPONSE);
+	setUp(Tag::LOCK, Tag::LOCK_RESPONSE);
 
 	// Receive acquired data
 	EXPECT_CALL(comm, recv(_))

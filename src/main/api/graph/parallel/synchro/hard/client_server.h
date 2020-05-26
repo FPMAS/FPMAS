@@ -26,11 +26,16 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 		class MutexClient {
 			public:
 				virtual T read(DistributedId, int location) = 0;
+				virtual void releaseRead(DistributedId, int location) = 0;
+
 				virtual T acquire(DistributedId, int location) = 0;
-				virtual void release(DistributedId, const T&, int location) = 0;
+				virtual void releaseAcquire(DistributedId, const T&, int location) = 0;
 
 				virtual void lock(DistributedId, int location) = 0;
 				virtual void unlock(DistributedId, int location) = 0;
+
+				virtual void lockShared(DistributedId, int location) = 0;
+				virtual void unlockShared(DistributedId, int location) = 0;
 
 				virtual ~MutexClient() {}
 		};
@@ -49,7 +54,9 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 			friend HardSyncMutex<T>;
 			protected:
 			void lock(HardSyncMutex<T>* mutex) {mutex->_lock();}
+			void lockShared(HardSyncMutex<T>* mutex) {mutex->_lockShared();}
 			void unlock(HardSyncMutex<T>* mutex) {mutex->_unlock();}
+			void unlockShared(HardSyncMutex<T>* mutex) {mutex->_unlockShared();}
 			public:
 			virtual void manage(DistributedId id, HardSyncMutex<T>*) = 0;
 			virtual void remove(DistributedId id) = 0;

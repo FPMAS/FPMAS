@@ -23,11 +23,16 @@ class MockMutexClient
 : public FPMAS::api::graph::parallel::synchro::hard::MutexClient<T> {
 	public:
 		MOCK_METHOD(T, read, (DistributedId, int), (override));
+		MOCK_METHOD(void, releaseRead, (DistributedId, int), (override));
+
 		MOCK_METHOD(T, acquire, (DistributedId, int), (override));
-		MOCK_METHOD(void, release, (DistributedId, const T&, int), (override));
+		MOCK_METHOD(void, releaseAcquire, (DistributedId, const T&, int), (override));
 
 		MOCK_METHOD(void, lock, (DistributedId, int), (override));
 		MOCK_METHOD(void, unlock, (DistributedId, int), (override));
+
+		MOCK_METHOD(void, lockShared, (DistributedId, int), (override));
+		MOCK_METHOD(void, unlockShared, (DistributedId, int), (override));
 };
 
 template<typename T>

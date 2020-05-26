@@ -79,7 +79,7 @@ TEST_F(Mpi_MutexServerRaceCondition, acquire_race_condition) {
 	for(int i = 0; i < NUM_ACQUIRE; i++) {
 		int& data = mutex.acquire();
 		data++;
-		mutex.release();
+		mutex.releaseAcquire();
 	}
 	termination.terminate(server);
 
