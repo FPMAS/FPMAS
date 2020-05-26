@@ -23,7 +23,9 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 			void release() override {};
 
 			void lock() override {};
+			void lockShared() override {};
 			void unlock() override {};
+			int sharedLock() override {return 0;};
 	};
 
 	template<typename NodeType, typename ArcType, template<typename> class Mpi>

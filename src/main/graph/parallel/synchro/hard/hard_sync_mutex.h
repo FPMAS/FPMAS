@@ -29,6 +29,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				LocationState* state;
 				int* location;
 				bool _locked = false;
+				int _locked_shared = 0;
 				mutex_client_t* mutexClient;
 				mutex_server_t* mutexServer;
 
@@ -64,16 +65,20 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				void release() override;
 
 				void lock() override;
+				void lockShared() override {};
 				void unlock() override;
 				bool locked() const override {return _locked;}
+				int lockedShared() const override {return _locked_shared;}
 		};
 
 	template<typename T>
 		const T& HardSyncMutex<T>::read() {
 			if(*state == LocationState::LOCAL) {
-				request_t req = request_t(id, request_t::LOCAL, MutexRequestType::READ);
-				pushRequest(req);
-				mutexServer->wait(req);
+				if(_locked) {
+					request_t req = request_t(id, request_t::LOCAL, MutexRequestType::READ);
+					pushRequest(req);
+					mutexServer->wait(req);
+				}
 				return _data;
 			}
 			_data.get() = mutexClient->read(id, *location);

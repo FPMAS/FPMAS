@@ -28,8 +28,10 @@ class MockMutex : public virtual FPMAS::api::graph::parallel::synchro::Mutex<T> 
 		MOCK_METHOD(void, release, (), (override));
 
 		MOCK_METHOD(void, lock, (), (override));
+		MOCK_METHOD(void, lockShared, (), (override));
 		MOCK_METHOD(void, unlock, (), (override));
 		MOCK_METHOD(bool, locked, (), (const, override));
+		MOCK_METHOD(int, lockedShared, (), (const, override));
 };
 
 #endif

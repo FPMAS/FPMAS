@@ -19,6 +19,36 @@ using FPMAS::graph::parallel::synchro::hard::MutexClient;
 using FPMAS::graph::parallel::synchro::hard::MutexServer;
 using FPMAS::graph::parallel::synchro::hard::TerminationAlgorithm;
 
+class MPI_HardSyncMutexSelfReadTest : public ::testing::Test {
+	protected:
+		MpiCommunicator comm;
+		TerminationAlgorithm<TypedMpi> termination {comm};
+
+		int data = comm.getRank();
+		LocationState state = LocationState::DISTANT;
+		int location = comm.getRank();
+
+		MutexServer<int, TypedMpi> server {comm};
+		MutexClient<int, TypedMpi> client {comm, server};
+		HardSyncMutex<int> mutex {data};
+
+		void SetUp() override {
+			mutex.setUp(DistributedId(3, comm.getRank()), state, location, client, server);
+			server.manage(DistributedId(3, comm.getRank()), &mutex);
+
+			state = LocationState::LOCAL;
+		}
+};
+
+/*
+ * Each proc read a local unlocked data : no communication needs to occur.
+ */
+TEST_F(MPI_HardSyncMutexSelfReadTest, unlocked_read_test) {
+	int read_data = mutex.read();
+
+	ASSERT_EQ(read_data, comm.getRank());
+}
+
 /*
  * mpi_race_condition
  */

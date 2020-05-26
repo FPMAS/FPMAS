@@ -28,8 +28,10 @@ class FakeMutex : public FPMAS::api::graph::parallel::synchro::Mutex<T> {
 		T& acquire() override {return _data;}
 		void release() override {}
 		void lock() override {}
+		void lockShared() override {}
 		void unlock() override {}
 		bool locked() const override {return false;}
+		int lockedShared() const override {return 0;}
 
 };
 

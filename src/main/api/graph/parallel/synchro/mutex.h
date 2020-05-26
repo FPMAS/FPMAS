@@ -18,8 +18,10 @@ namespace FPMAS::api::graph::parallel::synchro {
 			virtual void release() = 0;
 
 			virtual void lock() = 0;
+			virtual void lockShared() = 0;
 			virtual void unlock() = 0;
 			virtual bool locked() const = 0;
+			virtual int lockedShared() const = 0;
 	};
 }
 

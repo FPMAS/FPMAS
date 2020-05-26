@@ -30,12 +30,23 @@ class HardSyncMutexTest : public ::testing::Test {
 		}
 };
 
-TEST_F(HardSyncMutexTest, local_read) {
+TEST_F(HardSyncMutexTest, unlocked_local_read) {
+	state = LocationState::LOCAL;
+
+	EXPECT_CALL(mockMutexServer, wait).Times(0);
+	ASSERT_EQ(hardSyncMutex.read(), 14);
+}
+
+
+TEST_F(HardSyncMutexTest, locked_local_read) {
 	state = LocationState::LOCAL;
 
 	EXPECT_CALL(mockMutexServer, wait(AllOf(
 		Field(&MutexRequest::id, id),
 		Field(&MutexRequest::source, -1)
 		)));
+
+	mockMutexServer.lock(&hardSyncMutex);
+
 	ASSERT_EQ(hardSyncMutex.read(), 14);
 }

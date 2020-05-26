@@ -34,6 +34,8 @@ template<typename T>
 class MockMutexServer
 : public FPMAS::api::graph::parallel::synchro::hard::MutexServer<T> {
 	public:
+		using FPMAS::api::graph::parallel::synchro::hard::MutexServer<T>::lock;
+
 		MOCK_METHOD(void, setEpoch, (Epoch), (override));
 		MOCK_METHOD(Epoch, getEpoch, (), (const, override));
 
