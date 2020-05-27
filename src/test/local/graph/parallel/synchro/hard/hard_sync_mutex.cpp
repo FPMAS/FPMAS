@@ -363,3 +363,102 @@ TEST_F(HardSyncMutexTest, distant_release_lock) {
 
 	hard_sync_mutex.unlock();
 }
+
+/***************/
+/* LOCK_SHARED */
+/***************/
+/*
+ * hard_sync_mutex_unlocked_local_lock_shared
+ */
+TEST_F(HardSyncMutexTest, unlocked_local_lock_shared) {
+	state = LocationState::LOCAL;
+
+	EXPECT_CALL(mock_mutex_server, wait).Times(0);
+
+	hard_sync_mutex.lockShared();
+	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+}
+
+
+/*
+ * hard_sync_mutex_locked_local_lock_shared
+ */
+TEST_F(HardSyncMutexTest, locked_local_lock_shared) {
+	state = LocationState::LOCAL;
+
+	// Simulates lock from other threads
+	mock_mutex_server.lock(&hard_sync_mutex);
+	// The current thread should wait : it is assumed that mutex has been
+	// released upon return.
+	EXPECT_CALL(mock_mutex_server, wait(AllOf(
+		Field(&MutexRequest::id, id),
+		Field(&MutexRequest::source, MutexRequest::LOCAL),
+		Field(&MutexRequest::type, MutexRequestType::LOCK_SHARED)
+		)));
+
+	hard_sync_mutex.lockShared();
+	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+}
+
+/*
+ * hard_sync_mutex_shared_locked_local_lock_shared
+ */
+TEST_F(HardSyncMutexTest, shared_locked_local_lock_shared) {
+	state = LocationState::LOCAL;
+
+	// Simulates shared lock from other threads
+	mock_mutex_server.lockShared(&hard_sync_mutex);
+
+	hard_sync_mutex.lockShared();
+	ASSERT_EQ(hard_sync_mutex.lockedShared(), 2);
+}
+
+/*
+ * hard_sync_mutex_distant_lock_shared
+ */
+TEST_F(HardSyncMutexTest, distant_lock_shared) {
+	state = LocationState::DISTANT;
+
+	EXPECT_CALL(mock_mutex_client, lockShared(id, location));
+
+	hard_sync_mutex.lockShared();
+}
+
+/*
+ * hard_sync_mutex_partial_local_unlock_shared
+ */
+TEST_F(HardSyncMutexTest, partial_local_unlock_shared) {
+	state = LocationState::LOCAL;
+
+	mock_mutex_server.lockShared(&hard_sync_mutex);
+	hard_sync_mutex.lockShared();
+
+	EXPECT_CALL(mock_mutex_server, notify).Times(0);
+
+	hard_sync_mutex.unlockShared();
+	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+}
+
+/*
+ * hard_sync_mutex_last_local_unlock_shared
+ */
+TEST_F(HardSyncMutexTest, last_local_unlock_shared) {
+	state = LocationState::LOCAL;
+
+	hard_sync_mutex.lockShared();
+
+	EXPECT_CALL(mock_mutex_server, notify(id));
+
+	hard_sync_mutex.unlockShared();
+	ASSERT_EQ(hard_sync_mutex.lockedShared(), 0);
+}
+
+/*
+ * hard_sync_mutex_distant_unlock_shared
+ */
+TEST_F(HardSyncMutexTest, distant_unlock_shared) {
+	state = LocationState::DISTANT;
+
+	EXPECT_CALL(mock_mutex_client, unlockShared(id, location));
+	hard_sync_mutex.unlockShared();
+}
