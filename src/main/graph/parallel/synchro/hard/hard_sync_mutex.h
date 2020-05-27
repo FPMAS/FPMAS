@@ -89,6 +89,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 					pushRequest(req);
 					mutex_server->wait(req);
 				}
+				_locked_shared++;
 				return _data;
 			}
 			_data.get() = mutex_client->read(id, *location);
@@ -97,19 +98,19 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T>
 		void HardSyncMutex<T>::releaseRead() {
 			if(*state == LocationState::LOCAL) {
-				this->_locked_shared--;
+				_locked_shared--;
 				if(_locked_shared==0) {
 					mutex_server->notify(id);
 				}
 				return;
 			}
-			//mutex_client->releaseRead(id, *location);
+			mutex_client->releaseRead(id, *location);
 		}
 
 	template<typename T>
 		T& HardSyncMutex<T>::acquire() {
 			if(*state==LocationState::LOCAL) {
-				if(_locked) {
+				if(_locked || _locked_shared > 0) {
 					Request req = Request(id, Request::LOCAL, MutexRequestType::ACQUIRE);
 					pushRequest(req);
 					mutex_server->wait(req);
@@ -134,7 +135,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T>
 		void HardSyncMutex<T>::lock() {
 			if(*state==LocationState::LOCAL) {
-				if(_locked) {
+				if(_locked || _locked_shared > 0) {
 					Request req = Request(id, Request::LOCAL, MutexRequestType::LOCK);
 					pushRequest(req);
 					mutex_server->wait(req);
@@ -158,12 +159,28 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 	template<typename T>
 		void HardSyncMutex<T>::lockShared() {
-
+			if(*state==LocationState::LOCAL) {
+				if(_locked) {
+					Request req = Request(id, Request::LOCAL, MutexRequestType::LOCK_SHARED);
+					pushRequest(req);
+					mutex_server->wait(req);
+				}
+				_locked_shared++;
+				return;
+			}
+			mutex_client->lockShared(id, *location);
 		}
 
 	template<typename T>
 		void HardSyncMutex<T>::unlockShared() {
-
+			if(*state==LocationState::LOCAL) {
+				_locked_shared--;
+				if(_locked_shared==0) {
+					mutex_server->notify(id);
+				}
+				return;
+			}
+			mutex_client->unlockShared(id, *location);
 		}
 
 	template<typename T>

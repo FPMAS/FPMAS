@@ -6,7 +6,7 @@
 
 namespace FPMAS::api::graph::parallel::synchro::hard {
 	struct MutexRequest {
-		static const int LOCAL = -1;
+		inline static const int LOCAL = -1;
 		DistributedId id;
 		int source;
 		MutexRequestType type;

@@ -110,7 +110,6 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 */
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::releaseAcquire(DistributedId id, const T& data, int location) {
-		//DataUpdatePack<T> update {id, mutexMap.at(id)->data()};
 		DataUpdatePack<T> update {id, data};
 
 		MPI_Request req;
