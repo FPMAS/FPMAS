@@ -29,13 +29,13 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				Mpi<DistributedId> id_mpi {comm};
 				Mpi<T> dataMpi {comm};
 				Mpi<DataUpdatePack<T>> data_update_mpi {comm};
-				MutexServerBase& mutexServer;
+				MutexServerBase& mutex_server;
 
 				void waitSendRequest(MPI_Request*);
 
 				public:
-				MutexClient(MpiCommunicator& comm, MutexServerBase& mutexServer)
-					: comm(comm), mutexServer(mutexServer) {}
+				MutexClient(MpiCommunicator& comm, MutexServerBase& mutex_server)
+					: comm(comm), mutex_server(mutex_server) {}
 
 				const Mpi<DistributedId>& getIdMpi() const {return id_mpi;}
 				const Mpi<T>& getDataMpi() const {return dataMpi;}
@@ -59,7 +59,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			FPMAS_LOGD(this->comm.getRank(), "READ", "reading data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
-			this->id_mpi.Issend(id, location, mutexServer.getEpoch() | Tag::READ, &req);
+			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::READ, &req);
 
 			// Keep responding to other READ / ACQUIRE request to avoid deadlock,
 			// until the request has been received
@@ -69,7 +69,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			// now responding so we can safely wait for response without deadlocking
 			// TODO : this is not thread safe.
 			MPI_Status read_response_status;
-			this->comm.probe(location, mutexServer.getEpoch() | Tag::READ_RESPONSE, &read_response_status);
+			this->comm.probe(location, mutex_server.getEpoch() | Tag::READ_RESPONSE, &read_response_status);
 
 			return dataMpi.recv(&read_response_status);
 		}
@@ -78,7 +78,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		void MutexClient<T, Mpi>::releaseRead(DistributedId id, int location) {
 
 			MPI_Request req;
-			id_mpi.Issend(id, location, mutexServer.getEpoch() | Tag::UNLOCK_SHARED, &req);
+			id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK_SHARED, &req);
 
 			this->waitSendRequest(&req);
 		}
@@ -88,7 +88,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			FPMAS_LOGD(this->comm.getRank(), "ACQUIRE", "acquiring data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
-			this->id_mpi.Issend(id, location, mutexServer.getEpoch() | Tag::ACQUIRE, &req);
+			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::ACQUIRE, &req);
 
 			this->waitSendRequest(&req);
 
@@ -96,7 +96,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			// now responding so we can safely wait for response without deadlocking
 			// TODO : this is not thread safe.
 			MPI_Status acquire_response_status;
-			this->comm.probe(location, mutexServer.getEpoch() | Tag::ACQUIRE_RESPONSE, &acquire_response_status);
+			this->comm.probe(location, mutex_server.getEpoch() | Tag::ACQUIRE_RESPONSE, &acquire_response_status);
 
 			return dataMpi.recv(&acquire_response_status);
 		}
@@ -113,7 +113,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		DataUpdatePack<T> update {id, data};
 
 		MPI_Request req;
-		data_update_mpi.Issend(update, location, mutexServer.getEpoch() | Tag::RELEASE_ACQUIRE, &req);
+		data_update_mpi.Issend(update, location, mutex_server.getEpoch() | Tag::RELEASE_ACQUIRE, &req);
 
 		this->waitSendRequest(&req);
 	}
@@ -121,7 +121,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::lock(DistributedId id, int location) {
 		MPI_Request req;
-		this->id_mpi.Issend(id, location, mutexServer.getEpoch() | Tag::LOCK, &req);
+		this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::LOCK, &req);
 
 		this->waitSendRequest(&req);
 
@@ -129,7 +129,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		// now responding so we can safely wait for response without deadlocking
 		// TODO : this is not thread safe.
 		MPI_Status lock_response_status;
-		this->comm.probe(location, mutexServer.getEpoch() | Tag::LOCK_RESPONSE, &lock_response_status);
+		this->comm.probe(location, mutex_server.getEpoch() | Tag::LOCK_RESPONSE, &lock_response_status);
 
 		comm.recv(&lock_response_status);
 	}
@@ -137,7 +137,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 	void MutexClient<T, Mpi>::unlock(DistributedId id, int location) {
 		MPI_Request req;
-		this->id_mpi.Issend(id, location, mutexServer.getEpoch() | Tag::UNLOCK, &req);
+		this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK, &req);
 
 		this->waitSendRequest(&req);
 	}
@@ -145,14 +145,14 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 		void MutexClient<T, Mpi>::lockShared(DistributedId id, int location) {
 			MPI_Request req;
-			this->id_mpi.Issend(id, location, mutexServer.getEpoch() | Tag::LOCK_SHARED, &req);
+			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::LOCK_SHARED, &req);
 
 			this->waitSendRequest(&req);
 
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
 			MPI_Status lock_response_status;
-			this->comm.probe(location, mutexServer.getEpoch() | Tag::LOCK_SHARED_RESPONSE, &lock_response_status);
+			this->comm.probe(location, mutex_server.getEpoch() | Tag::LOCK_SHARED_RESPONSE, &lock_response_status);
 
 			comm.recv(&lock_response_status);
 		}
@@ -160,7 +160,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T, template<typename> class Mpi>
 		void MutexClient<T, Mpi>::unlockShared(DistributedId id, int location) {
 			MPI_Request req;
-			this->id_mpi.Issend(id, location, mutexServer.getEpoch() | Tag::UNLOCK_SHARED, &req);
+			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK_SHARED, &req);
 
 			this->waitSendRequest(&req);
 		}
@@ -174,7 +174,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		bool sent = comm.test(req);
 
 		while(!sent) {
-			mutexServer.handleIncomingRequests();
+			mutex_server.handleIncomingRequests();
 			sent = comm.test(req);
 		}
 	}

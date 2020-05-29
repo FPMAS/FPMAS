@@ -153,7 +153,7 @@ TEST_F(MutexClientTest, release_acquire) {
 			const_cast<MockMpi<DataUpdatePack<int>>&>(mutex_client.getDataUpdateMpi()),
 			Issend(AllOf(
 				Field(&DataUpdatePack<int>::id, id),
-				Field(&DataUpdatePack<int>::updatedData, data)),
+				Field(&DataUpdatePack<int>::updated_data, data)),
 				5, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _));
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
@@ -283,7 +283,7 @@ class MutexClientDeadlockTest : public MutexClientTest {
 					const_cast<MockMpi<DataUpdatePack<int>>&>(mutex_client.getDataUpdateMpi()),
 					Issend(AllOf(
 							Field(&DataUpdatePack<int>::id, id),
-							Field(&DataUpdatePack<int>::updatedData, data)),
+							Field(&DataUpdatePack<int>::updated_data, data)),
 						5, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _))
 				.InSequence(seq);
 

@@ -241,7 +241,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	void MutexServer<T, Mpi>::handleReleaseAcquire(DataUpdatePack<T>& update) {
 		auto* mutex = mutex_map.at(update.id);
 		this->MutexServerBase::unlock(mutex);
-		mutex->data() = update.updatedData;
+		mutex->data() = update.updated_data;
 
 		respondToRequests(mutex);
 	}
@@ -346,7 +346,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	bool MutexServer<T, Mpi>::handleReleaseAcquire(DataUpdatePack<T>& update, const Request& requestToWait) {
 		auto* mutex = mutex_map.at(update.id);
 		this->MutexServerBase::unlock(mutex);
-		mutex->data() = update.updatedData;
+		mutex->data() = update.updated_data;
 
 		return respondToRequests(mutex, requestToWait);
 	}

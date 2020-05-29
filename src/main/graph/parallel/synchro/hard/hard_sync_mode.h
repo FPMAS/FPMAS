@@ -19,30 +19,30 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				communication::TypedMpi>
 				TerminationAlgorithm;
 
-			MutexServer<typename Node::Data, communication::TypedMpi> mutexServer;
-			MutexClient<typename Node::Data, communication::TypedMpi> mutexClient;
+			MutexServer<typename Node::Data, communication::TypedMpi> mutex_server;
+			MutexClient<typename Node::Data, communication::TypedMpi> mutex_client;
 
-			LinkServer<Node, Arc, communication::TypedMpi> linkServer;
-			LinkClient<Arc, communication::TypedMpi> linkClient;
+			LinkServer<Node, Arc, communication::TypedMpi> link_server;
+			LinkClient<Arc, communication::TypedMpi> link_client;
 
-			HardSyncLinker<Arc, TerminationAlgorithm> syncLinker;
-			HardDataSync<Node, Arc, TerminationAlgorithm> dataSync;
+			HardSyncLinker<Arc, TerminationAlgorithm> sync_linker;
+			HardDataSync<Node, Arc, TerminationAlgorithm> data_sync;
 
 			public:
 				HardSyncRuntime(
 						FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph,
 						FPMAS::api::communication::MpiCommunicator& comm) :
-					mutexServer(comm), mutexClient(comm, mutexServer),
-					linkServer(comm, graph), linkClient(comm, linkServer),
-					syncLinker(comm, linkClient, linkServer),
-					dataSync(comm, mutexServer) {}
+					mutex_server(comm), mutex_client(comm, mutex_server),
+					link_server(comm, graph), link_client(comm, link_server),
+					sync_linker(comm, link_client, link_server),
+					data_sync(comm, mutex_server) {}
 
 				void setUp(DistributedId id, Mutex& mutex) override {
-					mutexServer.manage(id, &mutex);
+					mutex_server.manage(id, &mutex);
 				};
 
-				HardDataSync<Node, Arc, TerminationAlgorithm>& getDataSync() override {return dataSync;};
-				HardSyncLinker<Arc, TerminationAlgorithm>& getSyncLinker() override {return syncLinker;};
+				HardDataSync<Node, Arc, TerminationAlgorithm>& getDataSync() override {return data_sync;};
+				HardSyncLinker<Arc, TerminationAlgorithm>& getSyncLinker() override {return sync_linker;};
 		};
 
 	typedef FPMAS::api::graph::parallel::synchro::SyncMode<HardSyncMutex, HardSyncRuntime> HardSyncMode;

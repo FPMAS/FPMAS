@@ -7,10 +7,10 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	template<typename T>
 		struct DataUpdatePack {
 			DistributedId id;
-			T updatedData;
+			T updated_data;
 
 			DataUpdatePack(DistributedId id, const T& data)
-				: id(id), updatedData(data) {}
+				: id(id), updated_data(data) {}
 		};
 
 }
@@ -24,7 +24,7 @@ namespace nlohmann {
         }
 
         static void to_json(json& j, const DataUpdatePack<T>& data) {
-            j = json::array({data.id, data.updatedData});
+            j = json::array({data.id, data.updated_data});
         }
     };
 }

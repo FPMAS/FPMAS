@@ -11,20 +11,20 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		class HardDataSync : public api::graph::parallel::synchro::DataSync {
 			typedef
 			FPMAS::api::graph::parallel::synchro::hard::MutexServer<typename NodeType::Data>
-				mutex_server;
+				MutexServer;
 
 			TerminationAlgorithm termination;
-			mutex_server& mutexServer;
+			MutexServer& mutex_server;
 
 			public:
-				HardDataSync(FPMAS::api::communication::MpiCommunicator& comm, mutex_server& server)
-					: termination(comm), mutexServer(server) {
+				HardDataSync(FPMAS::api::communication::MpiCommunicator& comm, MutexServer& server)
+					: termination(comm), mutex_server(server) {
 				}
 
 				const TerminationAlgorithm& getTerminationAlgorithm() const {return termination;}
 
 				void synchronize() override {
-					termination.terminate(mutexServer);
+					termination.terminate(mutex_server);
 				};
 		};
 

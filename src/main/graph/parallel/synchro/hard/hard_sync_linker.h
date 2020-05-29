@@ -19,8 +19,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			private:
 			Epoch epoch = Epoch::EVEN;
 			FPMAS::api::communication::MpiCommunicator& comm;
-			Mpi<DistributedId> idMpi;
-			Mpi<Arc> arcMpi;
+			Mpi<DistributedId> id_mpi;
+			Mpi<Arc> arc_mpi;
 
 			FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph;
 
@@ -28,10 +28,10 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				LinkServer(
 					FPMAS::api::communication::MpiCommunicator& comm,
 					FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph)
-					: comm(comm), idMpi(comm), arcMpi(comm), graph(graph) {}
+					: comm(comm), id_mpi(comm), arc_mpi(comm), graph(graph) {}
 
-				Mpi<DistributedId>& getIdMpi() {return idMpi;};
-				Mpi<Arc>& getArcMpi() {return arcMpi;};
+				Mpi<DistributedId>& getIdMpi() {return id_mpi;};
+				Mpi<Arc>& getArcMpi() {return arc_mpi;};
 
 				Epoch getEpoch() const override {return epoch;}
 				void setEpoch(Epoch epoch) override {this->epoch = epoch;}
@@ -44,12 +44,12 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			MPI_Status req_status;
 			// Check read request
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LINK, &req_status)) {
-				Arc arc = arcMpi.recv(&req_status);
+				Arc arc = arc_mpi.recv(&req_status);
 				FPMAS_LOGD(this->comm.getRank(), "RECV", "link request from %i", req_status.MPI_SOURCE);
 				graph.importArc(arc);
 			}
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
-				DistributedId unlinkId = idMpi.recv(&req_status);
+				DistributedId unlinkId = id_mpi.recv(&req_status);
 				FPMAS_LOGD(this->comm.getRank(), "RECV", "unlink request %s from %i", ID_C_STR(unlinkId), req_status.MPI_SOURCE);
 				graph.clear(graph.getArc(unlinkId));
 			}
@@ -61,18 +61,18 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			typedef FPMAS::api::graph::parallel::synchro::hard::LinkServer link_server;
 			private:
 				comm_t& comm;
-				Mpi<DistributedId> idMpi;
-				Mpi<Arc> arcMpi;
+				Mpi<DistributedId> id_mpi;
+				Mpi<Arc> arc_mpi;
 				link_server& linkServer;
 
 				void waitSendRequest(MPI_Request*);
 
 			public:
 				LinkClient(comm_t& comm, link_server& linkServer)
-					: comm(comm), idMpi(comm), arcMpi(comm), linkServer(linkServer) {}
+					: comm(comm), id_mpi(comm), arc_mpi(comm), linkServer(linkServer) {}
 
-				Mpi<DistributedId>& getIdMpi() {return idMpi;}
-				Mpi<Arc>& getArcMpi() {return arcMpi;}
+				Mpi<DistributedId>& getIdMpi() {return id_mpi;}
+				Mpi<Arc>& getArcMpi() {return arc_mpi;}
 
 				void link(const Arc*) override;
 				void unlink(const Arc*) override;
@@ -89,13 +89,13 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				// Simultaneously initiate the two requests, that are potentially
 				// made to different procs
 				if(distantSrc) {
-					arcMpi.Issend(
+					arc_mpi.Issend(
 							*arc, arc->getSourceNode()->getLocation(),
 							linkServer.getEpoch() | Tag::LINK, &reqSrc
 							); 
 				}
 				if(distantTgt) {
-					arcMpi.Issend(
+					arc_mpi.Issend(
 							*arc, arc->getTargetNode()->getLocation(),
 							linkServer.getEpoch() | Tag::LINK, &reqTgt
 							); 
@@ -123,13 +123,13 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				// Simultaneously initiate the two requests, that are potentially
 				// made to different procs
 				if(distantSrc) {
-					this->idMpi.Issend(
+					this->id_mpi.Issend(
 							arc->getId(), arc->getSourceNode()->getLocation(),
 							linkServer.getEpoch() | Tag::UNLINK, &reqSrc
 							); 
 				}
 				if(distantTgt) {
-					this->idMpi.Issend(
+					this->id_mpi.Issend(
 							arc->getId(), arc->getTargetNode()->getLocation(),
 							linkServer.getEpoch() | Tag::UNLINK, &reqTgt
 							); 
