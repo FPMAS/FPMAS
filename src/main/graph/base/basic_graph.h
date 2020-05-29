@@ -16,63 +16,61 @@ namespace FPMAS::graph::base {
 	> class AbstractGraphBase : public virtual FPMAS::api::graph::base::
 		Graph<NodeType, ArcType> {
 			public:
-				typedef FPMAS::api::graph::base::Graph<NodeType, ArcType> graph_base;
-				using typename graph_base::node_type;
-				using typename graph_base::node_base;
-				using typename graph_base::arc_type;
-				using typename graph_base::arc_base;
+				typedef FPMAS::api::graph::base::Graph<NodeType, ArcType> GraphBase;
+				using typename GraphBase::NodeBase;
+				using typename GraphBase::ArcBase;
 
-				using typename graph_base::node_id_type;
-				using typename graph_base::node_id_hash;
+				using typename GraphBase::NodeIdType;
+				using typename GraphBase::NodeIdHash;
 
-				using typename graph_base::arc_id_type;
-				using typename graph_base::arc_id_hash;
+				using typename GraphBase::ArcIdType;
+				using typename GraphBase::ArcIdHash;
 				
-				using typename graph_base::node_map;
-				using typename graph_base::arc_map;
+				using typename GraphBase::NodeMap;
+				using typename GraphBase::ArcMap;
 
 			private:
-				node_map nodes;
-				arc_map arcs;
+				NodeMap nodes;
+				ArcMap arcs;
 
 			protected:
-				node_id_type nodeId;
-				arc_id_type arcId;
+				NodeIdType node_id;
+				ArcIdType arc_id;
 
 			public:
-				void insert(node_type*) override;
-				void insert(arc_type*) override;
+				void insert(NodeType*) override;
+				void insert(ArcType*) override;
 
-				void erase(node_base*) override;
-				void erase(arc_base*) override;
+				void erase(NodeBase*) override;
+				void erase(ArcBase*) override;
 
 				// Node getters
-				const node_id_type& currentNodeId() const override {return nodeId;}
-				node_type* getNode(node_id_type) override;
-				const node_type* getNode(node_id_type) const override;
-				const node_map& getNodes() const override;
+				const NodeIdType& currentNodeId() const override {return node_id;}
+				NodeType* getNode(NodeIdType) override;
+				const NodeType* getNode(NodeIdType) const override;
+				const NodeMap& getNodes() const override;
 
 				// Arc getters
-				const node_id_type& currentArcId() const override {return arcId;}
-				arc_type* getArc(arc_id_type) override;
-				const arc_type* getArc(arc_id_type) const override;
-				const arc_map& getArcs() const override;
+				const NodeIdType& currentArcId() const override {return arc_id;}
+				ArcType* getArc(ArcIdType) override;
+				const ArcType* getArc(ArcIdType) const override;
+				const ArcMap& getArcs() const override;
 
 				~AbstractGraphBase();
 	};
 
 	template<GRAPH_PARAMS>
-		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::insert(node_type* node) {
+		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::insert(NodeType* node) {
 			this->nodes.insert({node->getId(), node});
 		}
 
 	template<GRAPH_PARAMS>
-		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::insert(arc_type* arc) {
+		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::insert(ArcType* arc) {
 			this->arcs.insert({arc->getId(), arc});
 		}
 
 	template<GRAPH_PARAMS>
-		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::erase(node_base* node) {
+		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::erase(NodeBase* node) {
 			FPMAS_LOGD(-1, "GRAPH", "Removing node %s", ID_C_STR(node->getId()));
 			// Deletes incoming arcs
 			for(auto* arc : node->getIncomingArcs()) {
@@ -104,7 +102,7 @@ namespace FPMAS::graph::base {
 		}
 
 	template<GRAPH_PARAMS>
-		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::erase(arc_base* arc) {
+		void AbstractGraphBase<GRAPH_PARAMS_SPEC>::erase(ArcBase* arc) {
 			auto id = arc->getId();
 			FPMAS_LOGD(
 					-1, "GRAPH", "Erase arc %s (%p) (from %s to %s)",
@@ -123,37 +121,37 @@ namespace FPMAS::graph::base {
 		}
 
 	template<GRAPH_PARAMS>
-		typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::node_type*
-			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getNode(node_id_type id) {
+		NodeType*
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getNode(NodeIdType id) {
 				return this->nodes.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::node_type*
-			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getNode(node_id_type id) const {
+		const NodeType*
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getNode(NodeIdType id) const {
 				return this->nodes.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::node_map&
+		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::NodeMap&
 			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getNodes() const {
 				return this->nodes;
 			}
 
 	template<GRAPH_PARAMS>
-		typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::arc_type*
-			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getArc(arc_id_type id) {
+		ArcType*
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getArc(ArcIdType id) {
 				return this->arcs.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::arc_type*
-			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getArc(arc_id_type id) const {
+		const ArcType*
+			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getArc(ArcIdType id) const {
 				return this->arcs.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::arc_map&
+		const typename AbstractGraphBase<GRAPH_PARAMS_SPEC>::ArcMap&
 			AbstractGraphBase<GRAPH_PARAMS_SPEC>::getArcs() const {
 				return this->arcs;
 			}

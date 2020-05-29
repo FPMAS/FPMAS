@@ -102,7 +102,7 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 		std::mt19937 engine;
 		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
 		
-		typename decltype(graph)::partition_type partition;
+		typename decltype(graph)::PartitionMap partition;
 };
 
 TEST_F(HardSyncModeIntegrationTest, acquire) {

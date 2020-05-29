@@ -8,34 +8,32 @@ template<typename NodeType, typename ArcType>
 class MockGraphBase : 
 	public virtual FPMAS::api::graph::base::Graph<NodeType, ArcType> {
 		typedef FPMAS::api::graph::base::Graph<NodeType, ArcType>
-		graph_base;
-		using typename graph_base::node_type;
-		using typename graph_base::node_id_type;
-		using typename graph_base::node_map;
+		GraphBase;
+		using typename GraphBase::NodeIdType;
+		using typename GraphBase::NodeMap;
 
-		using typename graph_base::arc_type;
-		using typename graph_base::arc_id_type;
-		using typename graph_base::arc_map;
+		using typename GraphBase::ArcIdType;
+		using typename GraphBase::ArcMap;
 
 		public:
-			MOCK_METHOD(void, insert, (node_type*), (override));
-			MOCK_METHOD(void, insert, (arc_type*), (override));
+			MOCK_METHOD(void, insert, (NodeType*), (override));
+			MOCK_METHOD(void, insert, (ArcType*), (override));
 
-			MOCK_METHOD(void, erase, (node_type*), (override));
-			MOCK_METHOD(void, erase, (arc_type*), (override));
+			MOCK_METHOD(void, erase, (NodeType*), (override));
+			MOCK_METHOD(void, erase, (ArcType*), (override));
 
-			MOCK_METHOD(const node_id_type&, currentNodeId, (), (const, override));
-			MOCK_METHOD(node_type*, getNode, (node_id_type), (override));
-			MOCK_METHOD(const node_type*, getNode, (node_id_type), (const, override));
-			MOCK_METHOD(const node_map&, getNodes, (), (const, override));
+			MOCK_METHOD(const NodeIdType&, currentNodeId, (), (const, override));
+			MOCK_METHOD(NodeType*, getNode, (NodeIdType), (override));
+			MOCK_METHOD(const NodeType*, getNode, (NodeIdType), (const, override));
+			MOCK_METHOD(const NodeMap&, getNodes, (), (const, override));
 
-			MOCK_METHOD(const arc_id_type&, currentArcId, (), (const, override));
-			MOCK_METHOD(arc_type*, getArc, (arc_id_type), (override));
-			MOCK_METHOD(const arc_type*, getArc, (arc_id_type), (const, override));
-			MOCK_METHOD(const arc_map&, getArcs, (), (const, override));
+			MOCK_METHOD(const ArcIdType&, currentArcId, (), (const, override));
+			MOCK_METHOD(ArcType*, getArc, (ArcIdType), (override));
+			MOCK_METHOD(const ArcType*, getArc, (ArcIdType), (const, override));
+			MOCK_METHOD(const ArcMap&, getArcs, (), (const, override));
 
-			MOCK_METHOD(void, removeNode, (node_type*), (override));
-			MOCK_METHOD(void, unlink, (arc_type*), (override));
+			MOCK_METHOD(void, removeNode, (NodeType*), (override));
+			MOCK_METHOD(void, unlink, (ArcType*), (override));
 
 };
 #endif

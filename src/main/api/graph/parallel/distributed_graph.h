@@ -15,26 +15,27 @@ namespace FPMAS::api::graph::parallel {
 	class DistributedGraph 
 		: public virtual FPMAS::api::graph::base::Graph<DistributedNodeType, DistributedArcType> {
 		public:
-			typedef FPMAS::api::graph::base::Graph<DistributedNodeType, DistributedArcType> graph_base;
-			using typename graph_base::node_type;
-			using typename graph_base::arc_type;
-			using typename graph_base::layer_id_type;
-			using typename graph_base::node_map;
-			using typename graph_base::arc_map;
+			typedef FPMAS::api::graph::base::Graph<DistributedNodeType, DistributedArcType> GraphBase;
+			typedef DistributedNodeType NodeType;
+			typedef DistributedArcType ArcType;
 
-			typedef typename LoadBalancing<DistributedNodeType>::partition_type partition_type;
+			using typename GraphBase::LayerIdType;
+			using typename GraphBase::NodeMap;
+			using typename GraphBase::ArcMap;
+
+			typedef typename LoadBalancing<DistributedNodeType>::PartitionMap PartitionMap;
 
 		public:
 			virtual const LocationManager<DistributedNodeType>& getLocationManager() const = 0;
 
-			virtual node_type* importNode(const node_type&) = 0;
-			virtual arc_type* importArc(const arc_type&) = 0;
+			virtual NodeType* importNode(const NodeType&) = 0;
+			virtual ArcType* importArc(const ArcType&) = 0;
 
-			virtual void clear(arc_type*) = 0;
-			virtual void clear(node_type*) = 0;
+			virtual void clear(ArcType*) = 0;
+			virtual void clear(NodeType*) = 0;
 
 			virtual void balance() = 0;
-			virtual void distribute(partition_type partition) = 0;
+			virtual void distribute(PartitionMap partition) = 0;
 			virtual void synchronize() = 0;
 	};
 }

@@ -14,13 +14,13 @@ using FPMAS::api::graph::base::LayerId;
 template<typename T, typename IdType, typename> class AbstractMockNode;
 template<typename T, typename IdType> class MockNode;
 
-template<typename T, typename IdType, typename NodeType>
+template<typename T, typename _IdType, typename _NodeType>
 class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
-				IdType, NodeType 
+				_IdType, _NodeType 
 							> {
 	public:
-		using typename FPMAS::api::graph::base::Arc<IdType, NodeType>::node_type;
-		using typename FPMAS::api::graph::base::Arc<IdType, NodeType>::id_type;
+		using typename FPMAS::api::graph::base::Arc<_IdType, _NodeType>::NodeType;
+		using typename FPMAS::api::graph::base::Arc<_IdType, _NodeType>::IdType;
 
 		/*
 		 * Expectations obvisouly can't be set on an object that haven't been constructed
@@ -36,8 +36,8 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 		 * - when getters are called, return the saved values
 		 */
 		IdType id;
-		const node_type* src;
-		const node_type* tgt;
+		const NodeType* src;
+		const NodeType* tgt;
 		LayerId layer;
 		float weight;
 
@@ -52,17 +52,17 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 			setUpGetters();
 		}
 
-		MOCK_METHOD(id_type, getId, (), (const, override));
+		MOCK_METHOD(IdType, getId, (), (const, override));
 		MOCK_METHOD(LayerId, getLayer, (), (const, override));
 
 		MOCK_METHOD(float, getWeight, (), (const));
 		MOCK_METHOD(void, setWeight, (float), (override));
 
-		MOCK_METHOD(void, setSourceNode, (node_type* const), (override));
-		MOCK_METHOD(node_type* const, getSourceNode, (), (const, override));
+		MOCK_METHOD(void, setSourceNode, (NodeType* const), (override));
+		MOCK_METHOD(NodeType* const, getSourceNode, (), (const, override));
 
-		MOCK_METHOD(void, setTargetNode, (node_type* const), (override));
-		MOCK_METHOD(node_type* const, getTargetNode, (), (const, override));
+		MOCK_METHOD(void, setTargetNode, (NodeType* const), (override));
+		MOCK_METHOD(NodeType* const, getTargetNode, (), (const, override));
 
 	private:
 		void setUpGetters() {
@@ -83,7 +83,7 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 				.Times(AnyNumber())
 				// Return the pointer pointed by the this->src field (the
 				// pointed pointer might change during execution)
-				.WillRepeatedly(ReturnPointee(const_cast<node_type**>(&src)));
+				.WillRepeatedly(ReturnPointee(const_cast<NodeType**>(&src)));
 
 			// idem
 			EXPECT_CALL(*this, setTargetNode)
@@ -91,7 +91,7 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 				.WillRepeatedly(SaveArg<0>(&tgt));
 			EXPECT_CALL(*this, getTargetNode)
 				.Times(AnyNumber())
-				.WillRepeatedly(ReturnPointee(const_cast<node_type**>(&tgt)));
+				.WillRepeatedly(ReturnPointee(const_cast<NodeType**>(&tgt)));
 
 		}
 };
@@ -100,7 +100,7 @@ template<typename T, typename IdType>
 class MockArc : public AbstractMockArc<T, IdType, MockNode<T, IdType>> {
 	public:
 		typedef AbstractMockArc<T, IdType, MockNode<T, IdType>> mock_arc_base;
-		using typename mock_arc_base::node_type;
+		using typename mock_arc_base::NodeType;
 
 		MockArc() : mock_arc_base() {}
 		MockArc(IdType id, LayerId layer)

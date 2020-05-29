@@ -15,26 +15,26 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		class MutexClient :
 			public FPMAS::api::graph::parallel::synchro::hard::MutexClient<T> {
 				typedef FPMAS::api::graph::parallel::synchro::hard::MutexServer<T>
-					mutex_server_base;
+					MutexServerBase;
 				typedef FPMAS::api::graph::parallel::synchro::hard::MutexClient<T>
-					mutex_client_base;
+					MutexClientBase;
 				typedef FPMAS::api::graph::parallel::synchro::hard::HardSyncMutex<T>
-					hard_sync_mutex;
+					HardSyncMutex;
 				typedef FPMAS::api::graph::parallel::synchro::hard::MutexRequest
-					request_t;
-				typedef FPMAS::api::communication::MpiCommunicator comm_t;
+					MutexRequest;
+				typedef FPMAS::api::communication::MpiCommunicator MpiCommunicator;
 
 				private:
-				comm_t& comm;
+				MpiCommunicator& comm;
 				Mpi<DistributedId> id_mpi {comm};
 				Mpi<T> dataMpi {comm};
 				Mpi<DataUpdatePack<T>> data_update_mpi {comm};
-				mutex_server_base& mutexServer;
+				MutexServerBase& mutexServer;
 
 				void waitSendRequest(MPI_Request*);
 
 				public:
-				MutexClient(comm_t& comm, mutex_server_base& mutexServer)
+				MutexClient(MpiCommunicator& comm, MutexServerBase& mutexServer)
 					: comm(comm), mutexServer(mutexServer) {}
 
 				const Mpi<DistributedId>& getIdMpi() const {return id_mpi;}

@@ -18,12 +18,12 @@ class LocationManagerTest : public ::testing::Test {
 		typedef MockDistributedNode<int, MockMutex> node_type;
 
 		typedef typename
-			LocationManager<MockDistributedNode<int, MockMutex>, MockMpi>::node_map
-			node_map;
+			LocationManager<MockDistributedNode<int, MockMutex>, MockMpi>::NodeMap
+			NodeMap;
 		MockMpiCommunicator<2, 5> comm;
 
 		LocationManager<MockDistributedNode<int, MockMutex>, MockMpi>
-			locationManager {comm};
+			location_manager {comm};
 };
 
 TEST_F(LocationManagerTest, setLocal) {
@@ -31,10 +31,10 @@ TEST_F(LocationManagerTest, setLocal) {
 	EXPECT_CALL(mockNode, setState(LocationState::LOCAL));
 	EXPECT_CALL(mockNode, setLocation(2));
 
-	locationManager.setLocal(&mockNode);
+	location_manager.setLocal(&mockNode);
 
 	ASSERT_THAT(
-		locationManager.getLocalNodes(),
+		location_manager.getLocalNodes(),
 		ElementsAre(Key(DistributedId(5, 4)))
 	);
 }
@@ -42,10 +42,10 @@ TEST_F(LocationManagerTest, setLocal) {
 TEST_F(LocationManagerTest, setDistant) {
 	node_type mockNode {DistributedId(5, 4)};
 	EXPECT_CALL(mockNode, setState(LocationState::DISTANT));
-	locationManager.setDistant(&mockNode);
+	location_manager.setDistant(&mockNode);
 
 	ASSERT_THAT(
-		locationManager.getDistantNodes(),
+		location_manager.getDistantNodes(),
 		ElementsAre(Key(DistributedId(5, 4)))
 	);
 }
@@ -53,35 +53,35 @@ TEST_F(LocationManagerTest, setDistant) {
 TEST_F(LocationManagerTest, removeLocal) {
 	node_type mockNode {DistributedId(5, 4)};
 	EXPECT_CALL(mockNode, setState);
-	locationManager.setLocal(&mockNode);
+	location_manager.setLocal(&mockNode);
 
-	locationManager.remove(&mockNode);
-	ASSERT_THAT(locationManager.getLocalNodes(), IsEmpty());
+	location_manager.remove(&mockNode);
+	ASSERT_THAT(location_manager.getLocalNodes(), IsEmpty());
 }
 
 TEST_F(LocationManagerTest, removeDistant) {
 	node_type mockNode {DistributedId(5, 4)};
 	EXPECT_CALL(mockNode, setState);
-	locationManager.setDistant(&mockNode);
+	location_manager.setDistant(&mockNode);
 
-	locationManager.remove(&mockNode);
-	ASSERT_THAT(locationManager.getDistantNodes(), IsEmpty());
+	location_manager.remove(&mockNode);
+	ASSERT_THAT(location_manager.getDistantNodes(), IsEmpty());
 }
 
 TEST_F(LocationManagerTest, addManagedNode) {
 	node_type mockNode {DistributedId(2, 0)};
-	locationManager.addManagedNode(&mockNode, 2);
-	ASSERT_THAT(locationManager.getCurrentLocations(), ElementsAre(
+	location_manager.addManagedNode(&mockNode, 2);
+	ASSERT_THAT(location_manager.getCurrentLocations(), ElementsAre(
 				Pair(DistributedId(2, 0), 2)
 				));
 }
 
 TEST_F(LocationManagerTest, removeManagedNode) {
 	node_type mockNode {DistributedId(2, 0)};
-	locationManager.addManagedNode(&mockNode, 2);
+	location_manager.addManagedNode(&mockNode, 2);
 
-	locationManager.removeManagedNode(&mockNode);
-	ASSERT_THAT(locationManager.getCurrentLocations(), IsEmpty());
+	location_manager.removeManagedNode(&mockNode);
+	ASSERT_THAT(location_manager.getCurrentLocations(), IsEmpty());
 }
 
 class LocationManagerUpdateTest : public LocationManagerTest {
@@ -101,14 +101,14 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 		};
 
 
-		node_map local {
+		NodeMap local {
 			// Node [2, 2], that was previously on proc 7, is now local
 			{DistributedId(2, 2), new node_type(DistributedId(2, 2))},
 			// Other arbitrary node
 			{DistributedId(1, 4), new node_type(DistributedId(1, 4))}
 		};
 		
-		node_map distant {
+		NodeMap distant {
 			// Distant node with this proc has origin
 			{DistributedId(2, 1), new node_type(DistributedId(2, 1))},
 			// Other arbitrary node
@@ -116,9 +116,9 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 		};
 
 		void SetUp() override {
-			locationManager.addManagedNode(nodes[0], 1);
-			locationManager.addManagedNode(nodes[1], 4);
-			locationManager.addManagedNode(nodes[2], 7);
+			location_manager.addManagedNode(nodes[0], 1);
+			location_manager.addManagedNode(nodes[1], 4);
+			location_manager.addManagedNode(nodes[2], 7);
 			delete nodes[0];
 			delete nodes[1];
 			delete nodes[2];
@@ -145,7 +145,7 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 
 			// Mock comm
 			EXPECT_CALL(
-				const_cast<MockMpi<DistributedId>&>(locationManager.getDistributedIdMpi()),
+				const_cast<MockMpi<DistributedId>&>(location_manager.getDistributedIdMpi()),
 				migrate(exportUpdateMatcher)
 				).WillOnce(Return(importMap));
 
@@ -167,7 +167,7 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 
 			// Mock comm
 			EXPECT_CALL(
-				const_cast<MockMpi<DistributedId>&>(locationManager.getDistributedIdMpi()),
+				const_cast<MockMpi<DistributedId>&>(location_manager.getDistributedIdMpi()),
 				migrate(exportRequestsMatcher))
 				.WillOnce(Return(importRequests));
 
@@ -192,7 +192,7 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 
 			// Mock comm
 			EXPECT_CALL(
-				(const_cast<MockMpi<std::pair<DistributedId, int>>&>(locationManager.getLocationMpi())),
+				(const_cast<MockMpi<std::pair<DistributedId, int>>&>(location_manager.getLocationMpi())),
 				migrate(exportResponsesMatcher))
 				.WillOnce(Return(importedResponses));
 		}
@@ -209,11 +209,11 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 
 TEST_F(LocationManagerUpdateTest, updateLocations) {
 	for(auto node : distant) {
-		locationManager.setDistant(node.second);
+		location_manager.setDistant(node.second);
 	}
-	locationManager.updateLocations(local);
+	location_manager.updateLocations(local);
 
-	auto locationMap = locationManager.getCurrentLocations();
+	auto locationMap = location_manager.getCurrentLocations();
 	ASSERT_EQ(locationMap.at(DistributedId(2, 0)), 1);
 	ASSERT_EQ(locationMap.at(DistributedId(2, 1)), 5);
 	ASSERT_EQ(locationMap.at(DistributedId(2, 2)), 2);

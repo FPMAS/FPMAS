@@ -14,7 +14,7 @@ namespace FPMAS::graph::parallel {
 	class DistributedNode : 
 		public graph::base::BasicNode<T, DistributedId, DistributedArc<T, Mutex>>,
 		public api::graph::parallel::DistributedNode<T, DistributedArc<T, Mutex>> {
-			typedef graph::base::BasicNode<T, DistributedId, DistributedArc<T, Mutex>> node_base;
+			typedef graph::base::BasicNode<T, DistributedId, DistributedArc<T, Mutex>> NodeBase;
 
 		private:
 			//typedef FPMAS::api::graph::parallel::synchro::Mutex<T> mutex_base;
@@ -24,15 +24,15 @@ namespace FPMAS::graph::parallel {
 
 		public:
 			DistributedNode(const DistributedId& id)
-				: node_base(id), _mutex(this->data()) {
+				: NodeBase(id), _mutex(this->data()) {
 				}
 
 			DistributedNode(const DistributedId& id, T&& data)
-				: node_base(id, std::move(data)), _mutex(this->data()){
+				: NodeBase(id, std::move(data)), _mutex(this->data()){
 			}
 
 			DistributedNode(const DistributedId& id, T&& data, float weight)
-				: node_base(id, std::move(data), weight), _mutex(this->data()){
+				: NodeBase(id, std::move(data), weight), _mutex(this->data()){
 			}
 
 			int getLocation() const override {return location;}

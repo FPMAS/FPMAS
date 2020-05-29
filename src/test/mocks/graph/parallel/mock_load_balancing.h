@@ -7,14 +7,14 @@
 
 template<typename NodeType>
 class MockLoadBalancing : public FPMAS::api::graph::parallel::LoadBalancing<NodeType> {
-	typedef FPMAS::api::graph::parallel::LoadBalancing<NodeType> base;
-	using typename base::node_map;
+	typedef FPMAS::api::graph::parallel::LoadBalancing<NodeType> Base;
+	using typename Base::NodeMap;
 	public:
-		using typename base::partition_type;
+		using typename Base::PartitionMap;
 		MOCK_METHOD(
-			partition_type,
+			PartitionMap,
 			balance,
-			(node_map, partition_type),
+			(NodeMap, PartitionMap),
 			(override)
 			);
 

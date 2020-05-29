@@ -13,53 +13,51 @@
 namespace FPMAS::api::graph::base {
 
 	template<GRAPH_PARAMS> class Graph {
-		static_assert(std::is_base_of<typename NodeType::arc_type, ArcType>::value);
-		static_assert(std::is_base_of<typename ArcType::node_type, NodeType>::value);
+		static_assert(std::is_base_of<typename NodeType::ArcType, ArcType>::value);
+		static_assert(std::is_base_of<typename ArcType::NodeType, NodeType>::value);
 		public:
-			typedef NodeType node_type;
-			typedef typename ArcType::node_type node_base; // Maybe node_type == node_base, but, in any case, node_type is convertible to node_base.
-			typedef ArcType arc_type;
-			typedef typename NodeType::arc_type arc_base;
+			typedef typename ArcType::NodeType NodeBase; // Maybe NodeType == node_base, but, in any case, NodeType is convertible to node_base.
+			typedef typename NodeType::ArcType ArcBase;
 
-			typedef typename NodeType::id_type node_id_type;
-			typedef typename ArcType::id_type arc_id_type;
-			typedef typename arc_type::layer_id_type layer_id_type;
+			typedef typename NodeType::IdType NodeIdType;
+			typedef typename ArcType::IdType ArcIdType;
+			typedef typename ArcType::LayerIdType LayerIdType;
 
-			typedef FPMAS::api::graph::base::IdHash<typename NodeType::id_type> node_id_hash;
-			typedef FPMAS::api::graph::base::IdHash<typename ArcType::id_type> arc_id_hash;
+			typedef FPMAS::api::graph::base::IdHash<typename NodeType::IdType> NodeIdHash;
+			typedef FPMAS::api::graph::base::IdHash<typename ArcType::IdType> ArcIdHash;
 			typedef std::unordered_map<
-				node_id_type, node_type*, node_id_hash
-				> node_map;
+				NodeIdType, NodeType*, NodeIdHash
+				> NodeMap;
 			typedef std::unordered_map<
-				arc_id_type, arc_type*, arc_id_hash
-				> arc_map;
+				ArcIdType, ArcType*, ArcIdHash
+				> ArcMap;
 
 		public:
-			virtual void insert(node_type* node) = 0;
-			virtual void insert(arc_type* arc) = 0;
+			virtual void insert(NodeType* node) = 0;
+			virtual void insert(ArcType* arc) = 0;
 
-			virtual void erase(node_base* node) = 0;
-			virtual void erase(arc_base* arc) = 0;
+			virtual void erase(NodeBase* node) = 0;
+			virtual void erase(ArcBase* arc) = 0;
 
 			// Node getters
-			virtual const node_id_type& currentNodeId() const = 0;
-			virtual node_type* getNode(node_id_type) = 0;
-			virtual const node_type* getNode(node_id_type) const = 0;
-			virtual const node_map& getNodes() const = 0;
+			virtual const NodeIdType& currentNodeId() const = 0;
+			virtual NodeType* getNode(NodeIdType) = 0;
+			virtual const NodeType* getNode(NodeIdType) const = 0;
+			virtual const NodeMap& getNodes() const = 0;
 
 			// Arc getters
-			virtual const arc_id_type& currentArcId() const = 0;
-			virtual arc_type* getArc(arc_id_type) = 0;
-			virtual const arc_type* getArc(arc_id_type) const = 0;
-			virtual const arc_map& getArcs() const = 0;
+			virtual const ArcIdType& currentArcId() const = 0;
+			virtual ArcType* getArc(ArcIdType) = 0;
+			virtual const ArcType* getArc(ArcIdType) const = 0;
+			virtual const ArcMap& getArcs() const = 0;
 
-			virtual void removeNode(node_type*) = 0;
-			void removeNode(const node_id_type& id) {
+			virtual void removeNode(NodeType*) = 0;
+			void removeNode(const NodeIdType& id) {
 				this->removeNode(this->getNode(id));
 			};
 
-			virtual void unlink(arc_type*) = 0;
-			void unlink(const arc_id_type& id) {
+			virtual void unlink(ArcType*) = 0;
+			void unlink(const ArcIdType& id) {
 				this->unlink(this->getArc(id));
 			}
 		
@@ -67,15 +65,15 @@ namespace FPMAS::api::graph::base {
 	};
 
 	template<typename GraphImpl, typename... Args>
-		typename GraphImpl::node_type* buildNode(GraphImpl& graph, Args... args) {
+		typename GraphImpl::NodeType* buildNode(GraphImpl& graph, Args... args) {
 			return graph.buildNode(args...);
 		}
 
 	template<typename GraphImpl, typename... Args>
-		typename GraphImpl::arc_type* link(
+		typename GraphImpl::ArcType* link(
 				GraphImpl& graph,
-				typename GraphImpl::node_base* src,
-				typename GraphImpl::node_base* tgt,
+				typename GraphImpl::NodeBase* src,
+				typename GraphImpl::NodeBase* tgt,
 				Args... args) {
 			return graph.link(src, tgt, args...);
 		}

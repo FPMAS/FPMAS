@@ -10,17 +10,17 @@ namespace FPMAS::api::graph::base {
 	 */
 	typedef int LayerId;
 
-	static constexpr LayerId DefaultLayer = 0;
+	//inline static constexpr LayerId DEFAULT_LAYER = 0;
 
-	template<typename IdType, typename NodeType>
+	template<typename _IdType, typename _NodeType>
 	class Arc {
 		public:
-			typedef IdType id_type;
-			typedef NodeType node_type;
-			typedef int layer_id_type;
+			typedef _IdType IdType;
+			typedef _NodeType NodeType;
+			typedef int LayerIdType;
 
-			virtual id_type getId() const = 0;
-			virtual layer_id_type getLayer() const = 0;
+			virtual IdType getId() const = 0;
+			virtual LayerIdType getLayer() const = 0;
 
 			virtual float getWeight() const = 0;
 			virtual void setWeight(float weight) = 0;

@@ -16,18 +16,16 @@ template<typename NodeType, typename ArcType>
 class MockAbstractGraphBase : 
 	public virtual FPMAS::graph::base::AbstractGraphBase<NodeType, ArcType> {
 		typedef FPMAS::graph::base::AbstractGraphBase<NodeType, ArcType>
-		graph_base;
-		using typename graph_base::node_type;
-		using typename graph_base::node_id_type;
-		using typename graph_base::node_map;
+		GraphBase;
+		using typename GraphBase::NodeIdType;
+		using typename GraphBase::NodeMap;
 
-		using typename graph_base::arc_type;
-		using typename graph_base::arc_id_type;
-		using typename graph_base::arc_map;
+		using typename GraphBase::ArcIdType;
+		using typename GraphBase::ArcMap;
 
 		public:
-			MOCK_METHOD(void, removeNode, (node_type*), (override));
-			MOCK_METHOD(void, unlink, (arc_type*), (override));
+			MOCK_METHOD(void, removeNode, (NodeType*), (override));
+			MOCK_METHOD(void, unlink, (ArcType*), (override));
 
 };
 TEST(BasicGraphTest, buildDefaultNode) {

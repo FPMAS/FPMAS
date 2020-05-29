@@ -17,9 +17,9 @@ using FPMAS::api::graph::base::LayerId;
 
 class MockData {};
 
-template<typename T, typename IdType, typename ArcType>
+template<typename T, typename IdType, typename _ArcType>
 class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
-				 T, IdType, ArcType
+				 T, IdType, _ArcType
 							 > {
 	protected:
 		IdType id;
@@ -28,7 +28,7 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 
 	public:
 		using typename FPMAS::api::graph::base::Node<
-			T, IdType, ArcType>::arc_type;
+			T, IdType, _ArcType>::ArcType;
 
 		AbstractMockNode() {
 			// Mock initialized without id
@@ -51,17 +51,17 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 		MOCK_METHOD(float, getWeight, (), (const, override));
 		MOCK_METHOD(void, setWeight, (float), (override));
 
-		MOCK_METHOD(const std::vector<arc_type*>, getIncomingArcs, (), (override));
-		MOCK_METHOD(const std::vector<arc_type*>, getIncomingArcs, (LayerId), (override));
+		MOCK_METHOD(const std::vector<ArcType*>, getIncomingArcs, (), (override));
+		MOCK_METHOD(const std::vector<ArcType*>, getIncomingArcs, (LayerId), (override));
 
-		MOCK_METHOD(const std::vector<arc_type*>, getOutgoingArcs, (), (override));
-		MOCK_METHOD(const std::vector<arc_type*>, getOutgoingArcs, (LayerId), (override));
+		MOCK_METHOD(const std::vector<ArcType*>, getOutgoingArcs, (), (override));
+		MOCK_METHOD(const std::vector<ArcType*>, getOutgoingArcs, (LayerId), (override));
 
-		MOCK_METHOD(void, linkIn, (arc_type*), (override));
-		MOCK_METHOD(void, linkOut, (arc_type*), (override));
+		MOCK_METHOD(void, linkIn, (ArcType*), (override));
+		MOCK_METHOD(void, linkOut, (ArcType*), (override));
 
-		MOCK_METHOD(void, unlinkIn, (arc_type*), (override));
-		MOCK_METHOD(void, unlinkOut, (arc_type*), (override));
+		MOCK_METHOD(void, unlinkIn, (ArcType*), (override));
+		MOCK_METHOD(void, unlinkOut, (ArcType*), (override));
 
 	private:
 		void setUpGetters() {

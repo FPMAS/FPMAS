@@ -11,16 +11,16 @@ namespace FPMAS::api::graph::parallel {
 	template<typename NodeType>
 		class LoadBalancing {
 			protected:
-				typedef FPMAS::api::graph::base::IdHash<DistributedId> node_id_hash;
+				typedef FPMAS::api::graph::base::IdHash<DistributedId> NodeIdHash;
 
 			public:
-				typedef std::unordered_map<DistributedId, int, node_id_hash> partition_type;
+				typedef std::unordered_map<DistributedId, int, NodeIdHash> PartitionMap;
 				typedef std::unordered_map<
-					DistributedId, NodeType*, node_id_hash
-					> node_map;
-				virtual partition_type balance(
-						node_map nodes,
-						partition_type fixedVertices
+					DistributedId, NodeType*, NodeIdHash
+					> NodeMap;
+				virtual PartitionMap balance(
+						NodeMap nodes,
+						PartitionMap fixedVertices
 						) = 0;
 		};
 }

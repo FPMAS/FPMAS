@@ -54,9 +54,9 @@ namespace FPMAS::api::graph::parallel::synchro {
 		class SyncMode {
 			public:
 				template<typename T>
-					using mutex_type = Mutex<T>;
+					using MutexType = Mutex<T>;
 				template<typename T, typename Node, typename Arc>
-					using sync_mode_runtime = Runtime<Node, Arc, Mutex<T>>;
+					using SyncModeRuntimeType = Runtime<Node, Arc, Mutex<T>>;
 
 				
 		};

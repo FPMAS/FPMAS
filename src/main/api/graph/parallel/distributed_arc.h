@@ -11,10 +11,10 @@ namespace FPMAS::api::graph::parallel {
 	template<typename T, typename DistNodeImpl>
 		class DistributedArc
 		: public virtual FPMAS::api::graph::base::Arc<DistributedId, DistNodeImpl> {
-			typedef FPMAS::api::graph::base::Arc<DistributedId, DistNodeImpl> arc_base;
+			typedef FPMAS::api::graph::base::Arc<DistributedId, DistNodeImpl> ArcBase;
 			public:
-				using typename arc_base::node_type;
-				using typename arc_base::layer_id_type;
+				using typename ArcBase::NodeType;
+				using typename ArcBase::LayerIdType;
 
 				virtual LocationState state() const = 0;
 				virtual void setState(LocationState state) = 0;

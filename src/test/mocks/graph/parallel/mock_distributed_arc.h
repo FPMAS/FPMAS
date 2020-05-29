@@ -22,14 +22,14 @@ class MockDistributedArc :
 	public FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T, Mutex>>,
 	public AbstractMockArc<T, DistributedId, MockDistributedNode<T, Mutex>>
 {
-	typedef AbstractMockArc<T, DistributedId, MockDistributedNode<T, Mutex>> arc_base;
-	typedef FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T, Mutex>> dist_arc_base;
+	typedef AbstractMockArc<T, DistributedId, MockDistributedNode<T, Mutex>> ArcBase;
+	typedef FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T, Mutex>> DistArcBase;
 
 	friend void from_json<T>(const nlohmann::json&, MockDistributedArc<T, Mutex>&);
 
 	public:
-	using typename arc_base::node_type;
-	using typename dist_arc_base::layer_id_type;
+	using typename ArcBase::NodeType;
+	using typename DistArcBase::LayerIdType;
 
 	// Saved LocationState
 	LocationState _state = LocationState::LOCAL;
@@ -48,14 +48,14 @@ class MockDistributedArc :
 		}
 
 	MockDistributedArc(
-			const DistributedId& id, layer_id_type layer)
-		: arc_base(id, layer) {
+			const DistributedId& id, LayerIdType layer)
+		: ArcBase(id, layer) {
 			setUpGetters();
 		}
 	MockDistributedArc(
 			const DistributedId& id,
-			layer_id_type layer, float weight)
-		: arc_base(id, layer, weight) {
+			LayerIdType layer, float weight)
+		: ArcBase(id, layer, weight) {
 			setUpGetters();
 		}
 
@@ -101,7 +101,7 @@ inline void from_json(const nlohmann::json& j, MockDistributedArc<T, Mutex>& moc
 
 	ON_CALL(mock, getLayer)
 		.WillByDefault(Return(
-			j.at("layer").get<typename MockDistributedArc<T, Mutex>::layer_id_type>()
+			j.at("layer").get<typename MockDistributedArc<T, Mutex>::LayerIdType>()
 		));
 	ON_CALL(mock, getWeight)
 		.WillByDefault(Return(j.at("weight").get<float>()));

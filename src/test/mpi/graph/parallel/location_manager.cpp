@@ -57,21 +57,21 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			MockLoadBalancing
 			> graph;
 
-		MockDataSync dataSync;
-		MockSyncLinker<DistributedArc<int, FakeMutex>> syncLinker;
+		MockDataSync data_sync;
+		MockSyncLinker<DistributedArc<int, FakeMutex>> sync_linker;
 
 		std::mt19937 engine;
 		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
 		
-		typename decltype(graph)::partition_type partition;
+		typename decltype(graph)::PartitionMap partition;
 
 		std::array<std::array<int, SEQUENCE_COUNT>, NODES_COUNT> locationSequences;
 
 		void SetUp() override {
-			EXPECT_CALL(syncLinker, link).Times(AnyNumber());
-			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker).WillByDefault(ReturnRef(syncLinker));
+			EXPECT_CALL(sync_linker, link).Times(AnyNumber());
+			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker).WillByDefault(ReturnRef(sync_linker));
 			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker).Times(AnyNumber());
-			ON_CALL(graph.getSyncModeRuntime(), getDataSync).WillByDefault(ReturnRef(dataSync));
+			ON_CALL(graph.getSyncModeRuntime(), getDataSync).WillByDefault(ReturnRef(data_sync));
 			EXPECT_CALL(graph.getSyncModeRuntime(), getDataSync).Times(AnyNumber());
 
 			for(int i = 0; i < SEQUENCE_COUNT; i++) {
@@ -129,8 +129,8 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 TEST_F(LocationManagerIntegrationTest, location_updates) {
 	for(int i = 0; i < SEQUENCE_COUNT; i++) {
 		{ ::testing::InSequence s;
-		EXPECT_CALL(syncLinker, synchronize);
-		EXPECT_CALL(dataSync, synchronize);
+		EXPECT_CALL(sync_linker, synchronize);
+		EXPECT_CALL(data_sync, synchronize);
 		}
 		generatePartition(i);
 

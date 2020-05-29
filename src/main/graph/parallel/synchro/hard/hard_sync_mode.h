@@ -17,16 +17,16 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 			typedef FPMAS::graph::parallel::synchro::hard::TerminationAlgorithm<
 				communication::TypedMpi>
-				termination_algorithm;
+				TerminationAlgorithm;
 
-			MutexServer<typename Node::data_type, communication::TypedMpi> mutexServer;
-			MutexClient<typename Node::data_type, communication::TypedMpi> mutexClient;
+			MutexServer<typename Node::Data, communication::TypedMpi> mutexServer;
+			MutexClient<typename Node::Data, communication::TypedMpi> mutexClient;
 
 			LinkServer<Node, Arc, communication::TypedMpi> linkServer;
 			LinkClient<Arc, communication::TypedMpi> linkClient;
 
-			HardSyncLinker<Arc, termination_algorithm> syncLinker;
-			HardDataSync<Node, Arc, termination_algorithm> dataSync;
+			HardSyncLinker<Arc, TerminationAlgorithm> syncLinker;
+			HardDataSync<Node, Arc, TerminationAlgorithm> dataSync;
 
 			public:
 				HardSyncRuntime(
@@ -41,8 +41,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 					mutexServer.manage(id, &mutex);
 				};
 
-				HardDataSync<Node, Arc, termination_algorithm>& getDataSync() override {return dataSync;};
-				HardSyncLinker<Arc, termination_algorithm>& getSyncLinker() override {return syncLinker;};
+				HardDataSync<Node, Arc, TerminationAlgorithm>& getDataSync() override {return dataSync;};
+				HardSyncLinker<Arc, TerminationAlgorithm>& getSyncLinker() override {return syncLinker;};
 		};
 
 	typedef FPMAS::api::graph::parallel::synchro::SyncMode<HardSyncMutex, HardSyncRuntime> HardSyncMode;

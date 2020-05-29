@@ -15,31 +15,31 @@ using FPMAS::graph::parallel::synchro::ghost::GhostDataSync;
 
 class GhostDataSyncTest : public ::testing::Test {
 	protected:
-		typedef MockDistributedNode<int, MockMutex> node_type;
-		typedef MockDistributedArc<int, MockMutex> arc_type;
-		typedef typename MockDistributedGraph<node_type, arc_type>::node_map node_map;
+		typedef MockDistributedNode<int, MockMutex> NodeType;
+		typedef MockDistributedArc<int, MockMutex> ArcType;
+		typedef typename MockDistributedGraph<NodeType, ArcType>::NodeMap NodeMap;
 
 		static const int current_rank = 3;
-		MockMpiCommunicator<current_rank, 10> mockComm;
-		MockDistributedGraph<node_type, arc_type> mockedGraph;
+		MockMpiCommunicator<current_rank, 10> mock_comm;
+		MockDistributedGraph<NodeType, ArcType> mocked_graph;
 
-		GhostDataSync<node_type, arc_type, MockMpi>
-			dataSync {mockComm, mockedGraph};
+		GhostDataSync<NodeType, ArcType, MockMpi>
+			dataSync {mock_comm, mocked_graph};
 
-		MockLocationManager<node_type> locationManager {mockComm};
+		MockLocationManager<NodeType> location_manager {mock_comm};
 
 
-		std::array<node_type*, 4> nodes {
-			new node_type(DistributedId(2, 0), 1, 2.8),
-			new node_type(DistributedId(0, 0), 2, 0.1),
-			new node_type(DistributedId(6, 2), 10, 0.4),
-			new node_type(DistributedId(7, 1), 5, 2.3),
+		std::array<NodeType*, 4> nodes {
+			new NodeType(DistributedId(2, 0), 1, 2.8),
+			new NodeType(DistributedId(0, 0), 2, 0.1),
+			new NodeType(DistributedId(6, 2), 10, 0.4),
+			new NodeType(DistributedId(7, 1), 5, 2.3),
 		};
 
 		void SetUp() override {
-			ON_CALL(mockedGraph, getLocationManager)
-				.WillByDefault(ReturnRef(locationManager));
-			EXPECT_CALL(mockedGraph, getLocationManager).Times(AnyNumber());
+			ON_CALL(mocked_graph, getLocationManager)
+				.WillByDefault(ReturnRef(location_manager));
+			EXPECT_CALL(mocked_graph, getLocationManager).Times(AnyNumber());
 		}
 
 		void TearDown() override {
@@ -48,29 +48,29 @@ class GhostDataSyncTest : public ::testing::Test {
 
 		}
 
-		void setUpGraphNodes(node_map& graphNodes) {
-			ON_CALL(mockedGraph, getNodes)
-				.WillByDefault(ReturnRef(graphNodes));
-			EXPECT_CALL(mockedGraph, getNodes).Times(AnyNumber());
+		void setUpGraphNodes(NodeMap& graph_nodes) {
+			ON_CALL(mocked_graph, getNodes)
+				.WillByDefault(ReturnRef(graph_nodes));
+			EXPECT_CALL(mocked_graph, getNodes).Times(AnyNumber());
 
-			for(auto node : graphNodes) {
-				EXPECT_CALL(mockedGraph, getNode(node.first))
+			for(auto node : graph_nodes) {
+				EXPECT_CALL(mocked_graph, getNode(node.first))
 					.WillRepeatedly(Return(node.second));
 			}
 		}
 };
 
 TEST_F(GhostDataSyncTest, export_data) {
-	node_map graphNodes {
+	NodeMap graph_nodes {
 		{DistributedId(2, 0), nodes[0]},
 		{DistributedId(6, 2), nodes[2]},
 		{DistributedId(7, 1), nodes[3]}
 	};
-	setUpGraphNodes(graphNodes);
+	setUpGraphNodes(graph_nodes);
 
-	node_map distantNodes;
-	EXPECT_CALL(locationManager, getDistantNodes)
-		.WillRepeatedly(ReturnRef(distantNodes));
+	NodeMap distant_nodes;
+	EXPECT_CALL(location_manager, getDistantNodes)
+		.WillRepeatedly(ReturnRef(distant_nodes));
 
 	std::unordered_map<int, std::vector<DistributedId>> requests {
 		{0, {DistributedId(2, 0), DistributedId(7, 1)}},
@@ -85,13 +85,13 @@ TEST_F(GhostDataSyncTest, export_data) {
 		Pair(1, ElementsAre(*nodes[0])),
 		Pair(5, ElementsAre(*nodes[2]))
 		);
-	EXPECT_CALL(const_cast<MockMpi<node_type>&>(dataSync.getNodeMpi()), migrate(exportDataMatcher));
+	EXPECT_CALL(const_cast<MockMpi<NodeType>&>(dataSync.getNodeMpi()), migrate(exportDataMatcher));
 
 	dataSync.synchronize();
 }
 
 TEST_F(GhostDataSyncTest, import_test) {
-	node_map graphNodes {
+	NodeMap graph_nodes {
 		{DistributedId(2, 0), nodes[0]},
 		{DistributedId(0, 0), nodes[1]},
 		{DistributedId(6, 2), nodes[2]},
@@ -104,26 +104,26 @@ TEST_F(GhostDataSyncTest, import_test) {
 	EXPECT_CALL(*nodes[3], getLocation)
 		.WillRepeatedly(Return(9));
 
-	node_map distantNodes {
+	NodeMap distant_nodes {
 		{DistributedId(0, 0), nodes[1]},
 		{DistributedId(6, 2), nodes[2]},
 		{DistributedId(7, 1), nodes[3]}
 	};
-	EXPECT_CALL(locationManager, getDistantNodes)
-		.WillRepeatedly(ReturnRef(distantNodes));
+	EXPECT_CALL(location_manager, getDistantNodes)
+		.WillRepeatedly(ReturnRef(distant_nodes));
 
-	setUpGraphNodes(graphNodes);
+	setUpGraphNodes(graph_nodes);
 	auto requestsMatcher = UnorderedElementsAre(
 		Pair(0, UnorderedElementsAre(DistributedId(0, 0), DistributedId(6, 2))),
 		Pair(9, ElementsAre(DistributedId(7, 1)))
 	);
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(dataSync.getDistIdMpi()), migrate(requestsMatcher));
 
-	std::unordered_map<int, std::vector<node_type>> updatedData {
+	std::unordered_map<int, std::vector<NodeType>> updatedData {
 		{0, {{DistributedId(0, 0), 12, 14.6}, {DistributedId(6, 2), 56, 7.2}}},
 		{9, {{DistributedId(7, 1), 125, 2.2}}}
 	};
-	EXPECT_CALL(const_cast<MockMpi<node_type>&>(dataSync.getNodeMpi()), migrate(IsEmpty()))
+	EXPECT_CALL(const_cast<MockMpi<NodeType>&>(dataSync.getNodeMpi()), migrate(IsEmpty()))
 		.WillOnce(Return(updatedData));
 
 	EXPECT_CALL(*nodes[1], setWeight(14.6));

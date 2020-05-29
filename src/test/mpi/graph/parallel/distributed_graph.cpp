@@ -40,20 +40,20 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 			location_manager,
 			MockLoadBalancing> graph;
 
-		MockSyncLinker<FPMAS::graph::parallel::DistributedArc<int, MockMutex>> mockSyncLinker;
-		MockDataSync mockDataSync;
+		MockSyncLinker<FPMAS::graph::parallel::DistributedArc<int, MockMutex>> mock_sync_linker;
+		MockDataSync mock_data_sync;
 
 		MockLoadBalancing<FPMAS::graph::parallel::DistributedNode<int, MockMutex>>
-			::partition_type partition;
+			::PartitionMap partition;
 
 		void SetUp() override {
-			EXPECT_CALL(mockSyncLinker, link).Times(AnyNumber());
+			EXPECT_CALL(mock_sync_linker, link).Times(AnyNumber());
 			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker)
-				.WillByDefault(ReturnRef(mockSyncLinker));
+				.WillByDefault(ReturnRef(mock_sync_linker));
 			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker)
 				.Times(AnyNumber());
 			ON_CALL(graph.getSyncModeRuntime(), getDataSync)
-				.WillByDefault(ReturnRef(mockDataSync));
+				.WillByDefault(ReturnRef(mock_data_sync));
 			EXPECT_CALL(graph.getSyncModeRuntime(), getDataSync)
 				.Times(AnyNumber());
 
@@ -89,8 +89,8 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 TEST_F(Mpi_BasicDistributedGraphBalance, distribute_test) {
 	{
 		::testing::InSequence s;
-		EXPECT_CALL(mockSyncLinker, synchronize);
-		EXPECT_CALL(mockDataSync, synchronize);
+		EXPECT_CALL(mock_sync_linker, synchronize);
+		EXPECT_CALL(mock_data_sync, synchronize);
 	}
 	graph.distribute(partition);
 

@@ -14,7 +14,7 @@ namespace FPMAS::graph::parallel {
 		class LocationManager
 		: public FPMAS::api::graph::parallel::LocationManager<DistNode> {
 			public:
-				using typename FPMAS::api::graph::parallel::LocationManager<DistNode>::node_map;
+				using typename FPMAS::api::graph::parallel::LocationManager<DistNode>::NodeMap;
 			private:
 				typedef FPMAS::api::communication::MpiCommunicator MpiComm;
 				MpiComm& communicator;
@@ -22,8 +22,8 @@ namespace FPMAS::graph::parallel {
 				Mpi<std::pair<DistributedId, int>> locationMpi {communicator};
 				std::unordered_map<DistributedId, int> managedNodesLocations;
 
-				node_map localNodes;
-				node_map distantNodes;
+				NodeMap localNodes;
+				NodeMap distantNodes;
 
 			public:
 				LocationManager(MpiComm& communicator)
@@ -44,10 +44,10 @@ namespace FPMAS::graph::parallel {
 				void setDistant(DistNode*) override;
 				void remove(DistNode*) override;
 
-				const node_map& getLocalNodes() const override {return localNodes;}
-				const node_map& getDistantNodes() const override {return distantNodes;}
+				const NodeMap& getLocalNodes() const override {return localNodes;}
+				const NodeMap& getDistantNodes() const override {return distantNodes;}
 
-				void updateLocations(const node_map& localNodesToUpdate) override;
+				void updateLocations(const NodeMap& localNodesToUpdate) override;
 
 				const std::unordered_map<DistributedId, int>& getCurrentLocations() const {
 					return managedNodesLocations;
@@ -89,7 +89,7 @@ namespace FPMAS::graph::parallel {
 
 	template<typename DistNode, template<typename> class Mpi>
 		void LocationManager<DistNode, Mpi>::updateLocations(
-				const node_map& localNodesToUpdate
+				const NodeMap& localNodesToUpdate
 				) {
 			// Useful types
 			typedef 

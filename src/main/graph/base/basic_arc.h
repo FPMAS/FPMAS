@@ -5,39 +5,38 @@
 
 namespace FPMAS::graph::base {
 
-	template<typename IdType, typename NodeType>
-		class BasicArc : public virtual FPMAS::api::graph::base::Arc<IdType, NodeType> {
+	template<typename IdType, typename _NodeType>
+		class BasicArc : public virtual FPMAS::api::graph::base::Arc<IdType, _NodeType> {
 			public:
-				typedef FPMAS::api::graph::base::Arc<IdType, NodeType> arc_base;
-				using typename arc_base::id_type;
-				using typename arc_base::node_type;
-				using typename arc_base::layer_id_type;
+				typedef FPMAS::api::graph::base::Arc<IdType, _NodeType> ArcBase;
+				using typename ArcBase::NodeType;
+				using typename ArcBase::LayerIdType;
 
 			private:
-				id_type id;
-				layer_id_type layer;
+				IdType id;
+				LayerIdType layer;
 				float weight;
 
-				node_type* source;
-				node_type* target;
+				NodeType* source;
+				NodeType* target;
 
 			public:
-				BasicArc(id_type id, layer_id_type layer) :
+				BasicArc(IdType id, LayerIdType layer) :
 					BasicArc(id, layer, 1.f) {};
-				BasicArc(id_type id, layer_id_type layer, float weight)
+				BasicArc(IdType id, LayerIdType layer, float weight)
 					: id(id), layer(layer), weight(weight) {};
 
-				id_type getId() const override {return id;};
-				layer_id_type getLayer() const override {return layer;};
+				IdType getId() const override {return id;};
+				LayerIdType getLayer() const override {return layer;};
 
 				float getWeight() const override {return weight;};
 				void setWeight(float weight) override {this->weight=weight;};
 
-				void setSourceNode(node_type* const src) override {this->source = src;};
-				node_type* const getSourceNode() const override {return source;};
+				void setSourceNode(NodeType* const src) override {this->source = src;};
+				NodeType* const getSourceNode() const override {return source;};
 
-				void setTargetNode(node_type* const tgt) override {this->target = tgt;};
-				node_type* const getTargetNode() const override {return target;};
+				void setTargetNode(NodeType* const tgt) override {this->target = tgt;};
+				NodeType* const getTargetNode() const override {return target;};
 		};
 }
 #endif

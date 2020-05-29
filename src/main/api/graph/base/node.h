@@ -7,16 +7,16 @@
 
 namespace FPMAS::api::graph::base {
 
-	template<typename T, typename IdType, typename ArcType>
+	template<typename T, typename _IdType, typename _ArcType>
 		class Node {
 			public:
-				typedef T data_type;
-				typedef IdType id_type;
-				typedef ArcType arc_type;
-				typedef typename arc_type::layer_id_type layer_id_type;
+				typedef T Data;
+				typedef _IdType IdType;
+				typedef _ArcType ArcType;
+				typedef typename ArcType::LayerIdType LayerIdType;
 
 
-				virtual id_type getId() const = 0;
+				virtual IdType getId() const = 0;
 
 				virtual T& data() = 0;
 				virtual const T& data() const = 0;
@@ -24,29 +24,29 @@ namespace FPMAS::api::graph::base {
 				virtual float getWeight() const = 0;
 				virtual void setWeight(float weight) = 0;
 
-				virtual const std::vector<arc_type*> getIncomingArcs() = 0;
-				virtual const std::vector<arc_type*> getIncomingArcs(layer_id_type id) = 0;
-				const std::vector<typename arc_type::node_type*> inNeighbors();
-				const std::vector<typename arc_type::node_type*> inNeighbors(LayerId);
+				virtual const std::vector<ArcType*> getIncomingArcs() = 0;
+				virtual const std::vector<ArcType*> getIncomingArcs(LayerIdType id) = 0;
+				const std::vector<typename ArcType::NodeType*> inNeighbors();
+				const std::vector<typename ArcType::NodeType*> inNeighbors(LayerId);
 
-				virtual const std::vector<arc_type*> getOutgoingArcs() = 0;
-				virtual const std::vector<arc_type*> getOutgoingArcs(layer_id_type id) = 0;
-				const std::vector<typename arc_type::node_type*> outNeighbors();
-				const std::vector<typename arc_type::node_type*> outNeighbors(LayerId);
+				virtual const std::vector<ArcType*> getOutgoingArcs() = 0;
+				virtual const std::vector<ArcType*> getOutgoingArcs(LayerIdType id) = 0;
+				const std::vector<typename ArcType::NodeType*> outNeighbors();
+				const std::vector<typename ArcType::NodeType*> outNeighbors(LayerId);
 
-				virtual void linkIn(arc_type* arc) = 0;
-				virtual void linkOut(arc_type* arc) = 0;
+				virtual void linkIn(ArcType* arc) = 0;
+				virtual void linkOut(ArcType* arc) = 0;
 
-				virtual void unlinkIn(arc_type* arc) = 0;
-				virtual void unlinkOut(arc_type* arc) = 0;
+				virtual void unlinkIn(ArcType* arc) = 0;
+				virtual void unlinkOut(ArcType* arc) = 0;
 
 				virtual ~Node() {}
 		};
 
-	template<typename T, typename IdType, typename ArcType>
-		const std::vector<typename Node<T, IdType, ArcType>::arc_type::node_type*>
-		Node<T, IdType, ArcType>::inNeighbors() {
-			std::vector<typename arc_type::node_type*> neighbors;
+	template<typename T, typename _IdType, typename _ArcType>
+		const std::vector<typename Node<T, _IdType, _ArcType>::ArcType::NodeType*>
+		Node<T, _IdType, _ArcType>::inNeighbors() {
+			std::vector<typename ArcType::NodeType*> neighbors;
 			for(auto arc : this->getIncomingArcs()) {
 				neighbors.push_back(arc->getSourceNode());
 			}
@@ -54,29 +54,29 @@ namespace FPMAS::api::graph::base {
 		}
 
 	template<typename T, typename IdType, typename ArcType>
-		const std::vector<typename Node<T, IdType, ArcType>::arc_type::node_type*>
+		const std::vector<typename Node<T, IdType, ArcType>::ArcType::NodeType*>
 		Node<T, IdType, ArcType>::inNeighbors(LayerId layer) {
-			std::vector<typename arc_type::node_type*> neighbors;
+			std::vector<typename ArcType::NodeType*> neighbors;
 			for(auto arc : this->getIncomingArcs(layer)) {
 				neighbors.push_back(arc->getSourceNode());
 			}
 			return neighbors;
 		}
 
-	template<typename T, typename IdType, typename ArcType>
-		const std::vector<typename Node<T, IdType, ArcType>::arc_type::node_type*>
-		Node<T, IdType, ArcType>::outNeighbors() {
-			std::vector<typename arc_type::node_type*> neighbors;
+	template<typename T, typename _IdType, typename _ArcType>
+		const std::vector<typename Node<T, _IdType, _ArcType>::ArcType::NodeType*>
+		Node<T, _IdType, _ArcType>::outNeighbors() {
+			std::vector<typename ArcType::NodeType*> neighbors;
 			for(auto arc : this->getOutgoingArcs()) {
 				neighbors.push_back(arc->getTargetNode());
 			}
 			return neighbors;
 		}
 
-	template<typename T, typename IdType, typename ArcType>
-		const std::vector<typename Node<T, IdType, ArcType>::arc_type::node_type*>
-		Node<T, IdType, ArcType>::outNeighbors(LayerId layer) {
-			std::vector<typename arc_type::node_type*> neighbors;
+	template<typename T, typename _IdType, typename _ArcType>
+		const std::vector<typename Node<T, _IdType, _ArcType>::ArcType::NodeType*>
+		Node<T, _IdType, _ArcType>::outNeighbors(LayerId layer) {
+			std::vector<typename ArcType::NodeType*> neighbors;
 			for(auto arc : this->getOutgoingArcs(layer)) {
 				neighbors.push_back(arc->getTargetNode());
 			}

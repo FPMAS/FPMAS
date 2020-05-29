@@ -24,7 +24,7 @@ class MockDistributedNode :
 	public AbstractMockNode<T, DistributedId, MockDistributedArc<T, Mutex>> {
 
 		typedef AbstractMockNode<T, DistributedId, MockDistributedArc<T, Mutex>>
-			node_base;
+			NodeBase;
 		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T, Mutex>&);
 
 		private:
@@ -33,7 +33,7 @@ class MockDistributedNode :
 		int _location;
 
 		public:
-		using typename node_base::arc_type;
+		using typename NodeBase::ArcType;
 		MockDistributedNode() {
 			setUpDefaultMutex();
 			setUpLocationAccess();
@@ -51,7 +51,7 @@ class MockDistributedNode :
 			}
 
 		MockDistributedNode(const DistributedId& id)
-			: node_base(id) {
+			: NodeBase(id) {
 				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
@@ -59,14 +59,14 @@ class MockDistributedNode :
 			}
 
 		MockDistributedNode(const DistributedId& id, const T& data)
-			: node_base(id, std::move(data)) {
+			: NodeBase(id, std::move(data)) {
 				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
 			}
 		MockDistributedNode(const DistributedId& id, const T& data, float weight)
-			: node_base(id, std::move(data), weight) {
+			: NodeBase(id, std::move(data), weight) {
 				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();

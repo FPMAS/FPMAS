@@ -13,20 +13,20 @@ namespace FPMAS::graph::parallel {
 			public graph::base::BasicArc<DistributedId, DistributedNode<T, Mutex>>,
 			public FPMAS::api::graph::parallel::DistributedArc<T, DistributedNode<T, Mutex>> {
 				typedef graph::base::BasicArc<DistributedId, DistributedNode<T, Mutex>>
-					arc_base;
+					ArcBase;
 
 				private:
 					LocationState _state = LocationState::LOCAL;
 
 				public:
-					using typename arc_base::id_type;
-					using typename arc_base::layer_id_type;
+					using typename ArcBase::IdType;
+					using typename ArcBase::LayerIdType;
 
-					DistributedArc(id_type id, layer_id_type layer)
-						: arc_base(id, layer) {}
+					DistributedArc(IdType id, LayerIdType layer)
+						: ArcBase(id, layer) {}
 
-					DistributedArc(id_type id, layer_id_type layer, float weight)
-						: arc_base(id, layer, weight) {}
+					DistributedArc(IdType id, LayerIdType layer, float weight)
+						: ArcBase(id, layer, weight) {}
 
 					LocationState state() const override {return _state;}
 					void setState(LocationState state) override {this->_state = state;}
@@ -42,7 +42,7 @@ namespace nlohmann {
 			static DistributedArc<T, Mutex> from_json(const json& j) {
 				DistributedArc<T, Mutex> arc {
 					j.at("id").get<DistributedId>(),
-					j.at("layer").get<typename DistributedArc<T, Mutex>::layer_id_type>(),
+					j.at("layer").get<typename DistributedArc<T, Mutex>::LayerIdType>(),
 					j.at("weight").get<float>()
 				};
 				arc.setSourceNode(
