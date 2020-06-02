@@ -1,24 +1,14 @@
-#utils
 set(SOURCES
 	${SOURCES}
+	# Utils
 	utils/config.cpp
-	)
-
-set(SOURCES
-	${SOURCES}
 	utils/log.cpp
-	)
-
-# Communication
-set(SOURCES
-	${SOURCES}
+	# Communication
 	communication/communication.cpp
-	)
-
-# Graph
-set(SOURCES
-	${SOURCES}
+	# Graph
 	graph/parallel/zoltan/zoltan_utils.cpp
+	# Scheduler
+	scheduler/scheduler.cpp
 	)
 
 add_library(fpmas ${SOURCES})

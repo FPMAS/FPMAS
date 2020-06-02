@@ -20,6 +20,10 @@ set(SOURCES
 	graph/parallel/synchro/hard/hard_sync_mode.cpp
 	graph/parallel/synchro/hard/link_client.cpp
 	graph/parallel/synchro/hard/link_server.cpp
+	# Scheduler
+	scheduler/job.cpp
+	scheduler/epoch.cpp
+	scheduler/scheduler.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

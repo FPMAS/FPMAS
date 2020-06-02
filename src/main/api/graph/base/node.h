@@ -53,9 +53,9 @@ namespace FPMAS::api::graph::base {
 			return neighbors;
 		}
 
-	template<typename T, typename IdType, typename ArcType>
-		const std::vector<typename Node<T, IdType, ArcType>::ArcType::NodeType*>
-		Node<T, IdType, ArcType>::inNeighbors(LayerId layer) {
+	template<typename T, typename _IdType, typename _ArcType>
+		const std::vector<typename Node<T, _IdType, _ArcType>::ArcType::NodeType*>
+		Node<T, _IdType, _ArcType>::inNeighbors(LayerId layer) {
 			std::vector<typename ArcType::NodeType*> neighbors;
 			for(auto arc : this->getIncomingArcs(layer)) {
 				neighbors.push_back(arc->getSourceNode());
