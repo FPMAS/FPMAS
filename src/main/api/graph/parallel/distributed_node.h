@@ -9,9 +9,9 @@
 namespace FPMAS::api::graph::parallel {
 
 	template<typename T>
-	class DistributedNode 
-		: public virtual FPMAS::api::graph::base::Node<T, DistributedId, DistributedArc<T>> {
-		typedef FPMAS::api::graph::base::Node<T, DistributedId, DistributedArc<T>> NodeBase;
+	class DistributedNode
+		: public virtual FPMAS::api::graph::base::Node<DistributedId, DistributedArc<T>> {
+		typedef FPMAS::api::graph::base::Node<DistributedId, DistributedArc<T>> NodeBase;
 		public:
 			virtual int getLocation() const = 0;
 			virtual void setLocation(int) = 0;
@@ -20,6 +20,7 @@ namespace FPMAS::api::graph::parallel {
 			virtual void setState(LocationState state) = 0;
 
 			virtual synchro::Mutex<T>& mutex() = 0;
+			virtual const synchro::Mutex<T>& mutex() const = 0;
 	};
 
 }

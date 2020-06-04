@@ -14,6 +14,7 @@ namespace FPMAS::api::graph::parallel::synchro {
 
 		public:
 			virtual T& data() = 0;
+			virtual const T& data() const = 0;
 
 			virtual const T& read() = 0;
 			virtual void releaseRead() = 0;

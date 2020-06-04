@@ -12,12 +12,12 @@ using ::testing::AtLeast;
 
 TEST(NodeApiTest, in_neighbors_test) {
 	// Mock in neighbors nodes
-	std::array<MockNode<MockData, BasicId>, 10> nodes;
+	std::array<MockNode<BasicId>, 10> nodes;
 	// Mock arcs
-	std::array<MockArc<MockData, BasicId>, 10> arcs;
+	std::array<MockArc<BasicId>, 10> arcs;
 
-	MockNode<MockData, BasicId> node;
-	std::vector<MockArc<MockData, BasicId>*> inArcs;
+	MockNode<BasicId> node;
+	std::vector<MockArc<BasicId>*> inArcs;
 	for(int i = 0; i < 10; i++) {
 		EXPECT_CALL(arcs[i], getTargetNode).Times(0);
 		EXPECT_CALL(arcs[i], getSourceNode)

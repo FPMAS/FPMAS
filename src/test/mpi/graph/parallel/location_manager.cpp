@@ -26,6 +26,7 @@ class FakeMutex : public FPMAS::api::graph::parallel::synchro::Mutex<T> {
 	public:
 		FakeMutex(T& data) : _data(data) {}
 		T& data() override {return _data;}
+		const T& data() const override {return _data;}
 
 		const T& read() override {return _data;}
 		void releaseRead() override {}

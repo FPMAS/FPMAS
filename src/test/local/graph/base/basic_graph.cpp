@@ -29,11 +29,11 @@ class MockAbstractGraphBase :
 
 };
 TEST(BasicGraphTest, buildDefaultNode) {
-	MockAbstractGraphBase<MockNode<MockData, BasicId>, MockArc<MockData, BasicId>> graph;
+	MockAbstractGraphBase<MockNode<BasicId>, MockArc<BasicId>> graph;
 
 	BasicId id;
 	for (int i = 0; i < 10; ++i) {
-		auto node = new MockNode<MockData, BasicId>(++id);
+		auto node = new MockNode<BasicId>(++id);
 		EXPECT_CALL(*node, getId).Times(AtLeast(2));
 		graph.insert(node);
 
@@ -44,11 +44,11 @@ TEST(BasicGraphTest, buildDefaultNode) {
 
 class BasicGraphEraseArcTest : public ::testing::Test {
 	protected:
-		MockAbstractGraphBase<MockNode<MockData, BasicId>, MockArc<MockData, BasicId>> graph;
+		MockAbstractGraphBase<MockNode<BasicId>, MockArc<BasicId>> graph;
 		BasicId id;
-		MockNode<MockData, BasicId>* src = new MockNode<MockData, BasicId>(++id);
-		MockNode<MockData, BasicId>* tgt = new MockNode<MockData, BasicId>(++id);
-		MockArc<MockData, BasicId>* arc = new MockArc<MockData, BasicId>(++id, 2);
+		MockNode<BasicId>* src = new MockNode<BasicId>(++id);
+		MockNode<BasicId>* tgt = new MockNode<BasicId>(++id);
+		MockArc<BasicId>* arc = new MockArc<BasicId>(++id, 2);
 
 		void SetUp() override {
 			graph.insert(src);
@@ -67,37 +67,3 @@ TEST_F(BasicGraphEraseArcTest, erase) {
 
 	graph.erase(arc);
 }
-/*
- *
- *TEST(BasicGraphTest, buildDataNode) {
- *    BasicGraph<int, BasicId, MockNode, MockArc> graph;
- *
- *    for (int i = 0; i < 10; ++i) {
- *        auto node = graph.buildNode(std::move(i));
- *        EXPECT_CALL(*node, getId).Times(2);
- *        EXPECT_CALL(*node, data()).Times(1);
- *
- *        ASSERT_EQ(graph.getNodes().size(), i+1);
- *        ASSERT_EQ(graph.getNode(node->getId()), node);
- *
- *        ASSERT_EQ(graph.getNode(node->getId())->data(), i);
- *    }
- *}
- *
- *TEST(BasicGraphTest, buildWeightedDataNode) {
- *    BasicGraph<int, BasicId, MockNode, MockArc> graph;
- *
- *    for (int i = 0; i < 10; ++i) {
- *        auto node = graph.buildNode(std::move(i), 1.5 * i);
- *        EXPECT_CALL(*node, getId).Times(3);
- *        EXPECT_CALL(*node, data()).Times(1);
- *        EXPECT_CALL(*node, getWeight()).Times(1);
- *
- *        ASSERT_EQ(graph.getNodes().size(), i+1);
- *        ASSERT_EQ(graph.getNode(node->getId()), node);
- *
- *        ASSERT_EQ(graph.getNode(node->getId())->data(), i);
- *        ASSERT_EQ(graph.getNode(node->getId())->getWeight(), 1.5 * i);
- *    }
- *}
- */

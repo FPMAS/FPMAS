@@ -17,18 +17,17 @@ using FPMAS::api::graph::base::LayerId;
 
 class MockData {};
 
-template<typename T, typename IdType, typename _ArcType>
+template<typename IdType, typename _ArcType>
 class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
-				 T, IdType, _ArcType
+				 IdType, _ArcType
 							 > {
 	protected:
 		IdType id;
-		T _data;
 		float weight = 1.;
 
 	public:
 		using typename FPMAS::api::graph::base::Node<
-			T, IdType, _ArcType>::ArcType;
+			IdType, _ArcType>::ArcType;
 
 		AbstractMockNode() {
 			// Mock initialized without id
@@ -36,17 +35,11 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 		AbstractMockNode(const IdType& id) : id(id) {
 			setUpGetters();
 		}
-		AbstractMockNode(const IdType& id, const T& data) : id(id), _data(data) {
-			setUpGetters();
-		}
-		AbstractMockNode(const IdType& id, const T& data, float weight) : id(id), _data(data), weight(weight) {
+		AbstractMockNode(const IdType& id, float weight) : id(id), weight(weight) {
 			setUpGetters();
 		}
 
 		MOCK_METHOD(IdType, getId, (), (const, override));
-
-		MOCK_METHOD(T&, data, (), (override));
-		MOCK_METHOD(const T&, data, (), (const, override));
 
 		MOCK_METHOD(float, getWeight, (), (const, override));
 		MOCK_METHOD(void, setWeight, (float), (override));
@@ -69,11 +62,6 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 				.WillByDefault(ReturnPointee(&id));
 			EXPECT_CALL(*this, getId).Times(AnyNumber());
 
-			ON_CALL(*this, data())
-				.WillByDefault(ReturnRef(_data));
-			ON_CALL(Const(*this), data())
-				.WillByDefault(ReturnRef(_data));
-
 			ON_CALL(*this, getWeight)
 				.WillByDefault(ReturnPointee(&weight));
 
@@ -81,19 +69,16 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 };
 
 
-template<typename T, typename IdType>
-class MockNode : public AbstractMockNode<T, IdType, MockArc<T, IdType>> {
+template<typename IdType>
+class MockNode : public AbstractMockNode<IdType, MockArc<IdType>> {
 	public:
-		typedef AbstractMockNode<T, IdType, MockArc<T, IdType>> mock_node_base;
-		MockNode() : mock_node_base() {}
+		typedef AbstractMockNode<IdType, MockArc<IdType>> MockNodeBase;
+		MockNode() : MockNodeBase() {}
 		MockNode(const IdType& id)
-			: mock_node_base(id) {
+			: MockNodeBase(id) {
 		}
-		MockNode(const IdType& id, const T& data)
-			: mock_node_base(id, std::move(data)) {
-		}
-		MockNode(const IdType& id, const T& data, float weight)
-			: mock_node_base(id, std::move(data), weight) {
+		MockNode(const IdType& id, float weight)
+			: MockNodeBase(id, weight) {
 		}
 };
 #endif

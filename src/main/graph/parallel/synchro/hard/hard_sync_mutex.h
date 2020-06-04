@@ -65,6 +65,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				std::queue<Request> requestsToProcess() override;
 
 				T& data() override {return _data;}
+				const T& data() const override {return _data;}
 
 				const T& read() override;
 				void releaseRead() override;

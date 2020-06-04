@@ -11,10 +11,10 @@ using ::testing::AtLeast;
 using ::testing::SaveArg;
 using FPMAS::api::graph::base::LayerId;
 
-template<typename T, typename IdType, typename> class AbstractMockNode;
-template<typename T, typename IdType> class MockNode;
+template<typename IdType, typename> class AbstractMockNode;
+template<typename IdType> class MockNode;
 
-template<typename T, typename _IdType, typename _NodeType>
+template<typename _IdType, typename _NodeType>
 class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 				_IdType, _NodeType 
 							> {
@@ -96,10 +96,10 @@ class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
 		}
 };
 
-template<typename T, typename IdType>
-class MockArc : public AbstractMockArc<T, IdType, MockNode<T, IdType>> {
+template<typename IdType>
+class MockArc : public AbstractMockArc<IdType, MockNode<IdType>> {
 	public:
-		typedef AbstractMockArc<T, IdType, MockNode<T, IdType>> mock_arc_base;
+		typedef AbstractMockArc<IdType, MockNode<IdType>> mock_arc_base;
 		using typename mock_arc_base::NodeType;
 
 		MockArc() : mock_arc_base() {}

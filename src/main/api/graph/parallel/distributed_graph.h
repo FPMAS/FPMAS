@@ -1,7 +1,6 @@
 #ifndef DISTRIBUTED_GRAPH_API_H
 #define DISTRIBUTED_GRAPH_API_H
 
-//#include "api/communication/communication.h"
 #include "api/graph/base/graph.h"
 #include "api/graph/parallel/load_balancing.h"
 #include "api/graph/parallel/location_manager.h"

@@ -19,8 +19,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				communication::TypedMpi>
 				TerminationAlgorithm;
 
-			MutexServer<typename Node::Data, communication::TypedMpi> mutex_server;
-			MutexClient<typename Node::Data, communication::TypedMpi> mutex_client;
+			MutexServer<typename Node::DataType, communication::TypedMpi> mutex_server;
+			MutexClient<typename Node::DataType, communication::TypedMpi> mutex_client;
 
 			LinkServer<Node, Arc, communication::TypedMpi> link_server;
 			LinkClient<Arc, communication::TypedMpi> link_client;

@@ -67,7 +67,7 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 		for(auto list : nodes) {
 			for(auto& node : list.second) {
 				auto localNode = graph.getNode(node.getId());
-				localNode->data() = node.data();
+				localNode->mutex().data() = node.mutex().data();
 				localNode->setWeight(node.getWeight());
 			}
 		}

@@ -12,28 +12,29 @@ namespace FPMAS::graph::parallel {
 
 	template<typename T, template<typename> class Mutex>
 	class DistributedNode : 
-		public graph::base::BasicNode<T, DistributedId, api::graph::parallel::DistributedArc<T>>,
+		public graph::base::BasicNode<DistributedId, api::graph::parallel::DistributedArc<T>>,
 		public api::graph::parallel::DistributedNode<T> {
-			typedef graph::base::BasicNode<T, DistributedId, api::graph::parallel::DistributedArc<T>> NodeBase;
+			typedef graph::base::BasicNode<DistributedId, api::graph::parallel::DistributedArc<T>> NodeBase;
 
 		private:
 			//typedef FPMAS::api::graph::parallel::synchro::Mutex<T> mutex_base;
 			LocationState _state = LocationState::LOCAL;
 			int location;
+			T data;
 			Mutex<T> _mutex;
 
 		public:
 			typedef T DataType;
 			DistributedNode(const DistributedId& id)
-				: NodeBase(id), _mutex(this->data()) {
+				: NodeBase(id), _mutex(data) {
 				}
 
 			DistributedNode(const DistributedId& id, T&& data)
-				: NodeBase(id, std::move(data)), _mutex(this->data()){
+				: NodeBase(id), data(std::move(data)), _mutex(data){
 			}
 
 			DistributedNode(const DistributedId& id, T&& data, float weight)
-				: NodeBase(id, std::move(data), weight), _mutex(this->data()){
+				: NodeBase(id, weight), data(std::move(data)), _mutex(data){
 			}
 
 			int getLocation() const override {return location;}
@@ -43,6 +44,7 @@ namespace FPMAS::graph::parallel {
 			void setState(LocationState state) override {this->_state=state;}
 
 			Mutex<T>& mutex() override {return _mutex;}
+			const Mutex<T>& mutex() const override {return _mutex;}
 	};
 }
 
@@ -52,17 +54,16 @@ namespace nlohmann {
 	template<typename T, template<typename> class Mutex>
 		struct adl_serializer<DistributedNode<T, Mutex>> {
 			static DistributedNode<T, Mutex> from_json(const json& j) {
-				DistributedNode<T, Mutex> node {
+				return {
 					j.at("id").get<DistributedId>(),
 					std::move(j.at("data").get<T>()),
 					j.at("weight").get<float>(),
 				};
-				return node;
 			}
 
 			static void to_json(json& j, const DistributedNode<T, Mutex>& node) {
 				j["id"] = node.getId();
-				j["data"] = node.data();
+				j["data"] = node.mutex().data();
 				j["weight"] = node.getWeight();
 			}
 		};

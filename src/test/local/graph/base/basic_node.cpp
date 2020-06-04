@@ -6,14 +6,14 @@
 using FPMAS::graph::base::BasicNode;
 using FPMAS::graph::base::BasicId;
 
-class BasicMockArc : public AbstractMockArc<int, BasicId, BasicNode<int, BasicId, BasicMockArc>> {
+class BasicMockArc : public AbstractMockArc<BasicId, BasicNode<BasicId, BasicMockArc>> {
 };
 
 class BasicNodeTest : public ::testing::Test {
 	protected:
 		BasicId id;
-		BasicNode<int, BasicId, BasicMockArc> node {++id};
-		BasicNode<int, BasicId, BasicMockArc> otherNode {++id};
+		BasicNode<BasicId, BasicMockArc> node {++id};
+		BasicNode<BasicId, BasicMockArc> otherNode {++id};
 		BasicMockArc arc;
 
 		void SetUp() override {

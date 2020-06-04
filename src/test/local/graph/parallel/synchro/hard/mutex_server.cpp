@@ -134,7 +134,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			mocks.push_back(mock);
 			server.manage(id, mock);
 
-			EXPECT_CALL(*mock, data).WillRepeatedly(ReturnRef(data));
+			EXPECT_CALL(*mock, data()).WillRepeatedly(ReturnRef(data));
 			return mock;
 		}
 

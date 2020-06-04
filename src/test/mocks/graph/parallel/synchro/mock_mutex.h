@@ -24,6 +24,7 @@ class MockMutex : public virtual FPMAS::api::graph::parallel::synchro::Mutex<T> 
 		MOCK_METHOD(void, _unlockShared, (), (override));
 
 		MOCK_METHOD(T&, data, (), (override));
+		MOCK_METHOD(const T&, data, (), (const, override));
 
 		MOCK_METHOD(const T&, read, (), (override));
 		MOCK_METHOD(void, releaseRead, (), (override));
