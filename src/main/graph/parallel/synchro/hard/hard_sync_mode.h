@@ -30,7 +30,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 			public:
 				HardSyncRuntime(
-						FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph,
+						FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>& graph,
 						FPMAS::api::communication::MpiCommunicator& comm) :
 					mutex_server(comm), mutex_client(comm, mutex_server),
 					link_server(comm, graph), link_client(comm, link_server),

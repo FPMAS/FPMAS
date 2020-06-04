@@ -24,7 +24,7 @@ template<typename Node, typename Arc, typename Mutex>
 class MockSyncModeRuntime : public FPMAS::api::graph::parallel::synchro::SyncModeRuntime<Node, Arc, Mutex> {
 	public:
 		MockSyncModeRuntime(
-			FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>&,
+			FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>&,
 			FPMAS::api::communication::MpiCommunicator&) {}
 
 		MOCK_METHOD(void, setUp, (DistributedId, Mutex&), (override));

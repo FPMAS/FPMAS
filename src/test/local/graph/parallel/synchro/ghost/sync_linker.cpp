@@ -11,20 +11,21 @@ using ::testing::IsEmpty;
 using ::testing::Matcher;
 using ::testing::Pair;
 using ::testing::Pointee;
+using ::testing::Property;
 using ::testing::UnorderedElementsAre;
 
 using FPMAS::graph::parallel::synchro::ghost::GhostSyncLinker;
 
 class GhostSyncLinkerTest : public ::testing::Test {
 	protected:
-		typedef MockDistributedNode<int, MockMutex> node_type;
-		typedef MockDistributedArc<int, MockMutex> arc_type;
+		typedef MockDistributedNode<int, MockMutex> MockNode;
+		typedef MockDistributedArc<int, MockMutex> MockArc;
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mockComm;
-		MockDistributedGraph<node_type, arc_type> mockedGraph;
+		MockDistributedGraph<int, MockNode, MockArc> mockedGraph;
 
-		GhostSyncLinker<node_type, arc_type,MockMpi>
+		GhostSyncLinker<MockNode, MockArc, MockMpi>
 			linker {mockComm, mockedGraph};
 
 
@@ -33,38 +34,38 @@ class GhostSyncLinkerTest : public ::testing::Test {
 		DistributedId arc3_id = DistributedId(1, 0);
 
 		// Mocked arcs that can be used in import / export
-		arc_type arc1 {arc1_id, 8};
-		arc_type arc2 {arc2_id, 2};
-		arc_type arc3 {arc3_id, 5};
+		MockArc arc1 {arc1_id, 8};
+		MockArc arc2 {arc2_id, 2};
+		MockArc arc3 {arc3_id, 5};
 
 		void SetUp() override {
 			// Arc1 set up
-			arc1.src = new node_type();
-			arc1.tgt = new node_type();
+			arc1.src = new MockNode();
+			arc1.tgt = new MockNode();
 
 			// Arc2 set up
-			arc2.src = new node_type();
-			arc2.tgt = new node_type();
+			arc2.src = new MockNode();
+			arc2.tgt = new MockNode();
 
 			// Arc3 set up
-			arc3.src = new node_type();
-			arc3.tgt = new node_type();
+			arc3.src = new MockNode();
+			arc3.tgt = new MockNode();
 		}
 		
-		void arcSetUp(arc_type& arc, int srcRank, int tgtRank) {
+		void arcSetUp(MockArc& arc, int srcRank, int tgtRank) {
 			LocationState srcLocation = (srcRank == current_rank) ?
 				LocationState::LOCAL : LocationState::DISTANT;
 			LocationState tgtLocation = (tgtRank == current_rank) ?
 				LocationState::LOCAL : LocationState::DISTANT;
 
-			EXPECT_CALL(*arc.src, state).Times(AnyNumber())
+			EXPECT_CALL(*static_cast<const MockNode*>(arc.src), state).Times(AnyNumber())
 				.WillRepeatedly(Return(srcLocation));
-			EXPECT_CALL(*arc.src, getLocation).Times(AnyNumber())
+			EXPECT_CALL(*static_cast<const MockNode*>(arc.src), getLocation).Times(AnyNumber())
 				.WillRepeatedly(Return(srcRank));
 
-			EXPECT_CALL(*arc.tgt, state).Times(AnyNumber())
+			EXPECT_CALL(*static_cast<const MockNode*>(arc.tgt), state).Times(AnyNumber())
 				.WillRepeatedly(Return(tgtLocation));
-			EXPECT_CALL(*arc.tgt, getLocation).Times(AnyNumber())
+			EXPECT_CALL(*static_cast<const MockNode*>(arc.tgt), getLocation).Times(AnyNumber())
 				.WillRepeatedly(Return(tgtRank));
 
 			EXPECT_CALL(arc, state).Times(AnyNumber())
@@ -97,7 +98,7 @@ TEST_F(GhostSyncLinkerTest, export_link) {
 		Pair(0, UnorderedElementsAre(arc2, arc3))
 		);
 
-	EXPECT_CALL(const_cast<MockMpi<arc_type>&>(linker.getArcMpi()), migrate(exportArcMatcher));
+	EXPECT_CALL(const_cast<MockMpi<MockArc>&>(linker.getArcMpi()), migrate(exportArcMatcher));
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(IsEmpty()));
 
 	linker.synchronize();
@@ -111,18 +112,21 @@ TEST_F(GhostSyncLinkerTest, export_link) {
 }
 
 TEST_F(GhostSyncLinkerTest, import_link) {
-	std::unordered_map<int, std::vector<arc_type>> importMap {
+	std::unordered_map<int, std::vector<MockArc>> importMap {
 		{2, {arc1, arc3}},
 		{4, {arc2}}
 	};
 
-	EXPECT_CALL(const_cast<MockMpi<arc_type>&>(linker.getArcMpi()), migrate(IsEmpty()))
+	EXPECT_CALL(const_cast<MockMpi<MockArc>&>(linker.getArcMpi()), migrate(IsEmpty()))
 		.WillOnce(Return(importMap));
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(IsEmpty()));
 
-	EXPECT_CALL(mockedGraph, importArc(arc1));
-	EXPECT_CALL(mockedGraph, importArc(arc2));
-	EXPECT_CALL(mockedGraph, importArc(arc3));
+	EXPECT_CALL(mockedGraph, importArc(Property(
+			&FPMAS::api::graph::parallel::DistributedArc<int>::getId, arc1.getId())));
+	EXPECT_CALL(mockedGraph, importArc(Property(
+			&FPMAS::api::graph::parallel::DistributedArc<int>::getId, arc2.getId())));
+	EXPECT_CALL(mockedGraph, importArc(Property(
+			&FPMAS::api::graph::parallel::DistributedArc<int>::getId, arc3.getId())));
 
 	linker.synchronize();
 }
@@ -135,16 +139,18 @@ TEST_F(GhostSyncLinkerTest, import_export_link) {
 		);
 	linker.link(&arc2);
 
-	std::unordered_map<int, std::vector<arc_type>> importMap {
+	std::unordered_map<int, std::vector<MockArc>> importMap {
 		{0, {arc1, arc3}}
 	};
 
-	EXPECT_CALL(const_cast<MockMpi<arc_type>&>(linker.getArcMpi()), migrate(exportArcMatcher))
+	EXPECT_CALL(const_cast<MockMpi<MockArc>&>(linker.getArcMpi()), migrate(exportArcMatcher))
 		.WillOnce(Return(importMap));
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(IsEmpty()));
 
-	EXPECT_CALL(mockedGraph, importArc(arc1));
-	EXPECT_CALL(mockedGraph, importArc(arc3));
+	EXPECT_CALL(mockedGraph, importArc(Property(
+			&FPMAS::api::graph::parallel::DistributedArc<int>::getId, arc1.getId())));
+	EXPECT_CALL(mockedGraph, importArc(Property(
+			&FPMAS::api::graph::parallel::DistributedArc<int>::getId, arc3.getId())));
 
 	linker.synchronize();
 
@@ -170,7 +176,7 @@ TEST_F(GhostSyncLinkerTest, export_unlink) {
 		Pair(0, UnorderedElementsAre(arc2_id, arc3_id))
 		);
 
-	EXPECT_CALL(const_cast<MockMpi<arc_type>&>(linker.getArcMpi()), migrate(IsEmpty()));
+	EXPECT_CALL(const_cast<MockMpi<MockArc>&>(linker.getArcMpi()), migrate(IsEmpty()));
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(exportIdMatcher));
 
 	linker.synchronize();
@@ -192,7 +198,10 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 	// Arc3 set up
 	arcSetUp(arc3, 8, 0); // distant src and tgt
 
-	auto arcs = std::unordered_map<DistributedId, arc_type*, FPMAS::api::graph::base::IdHash<DistributedId>> {
+	auto arcs = std::unordered_map<
+			DistributedId,
+			FPMAS::api::graph::parallel::DistributedArc<int>*,
+			FPMAS::api::graph::base::IdHash<DistributedId>> {
 		{arc1_id, &arc1},
 		{arc2_id, &arc2},
 		{arc3_id, &arc3}
@@ -214,7 +223,7 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 		{0, {arc2_id, arc3_id}}
 	};
 
-	EXPECT_CALL(const_cast<MockMpi<arc_type>&>(linker.getArcMpi()), migrate(IsEmpty()));
+	EXPECT_CALL(const_cast<MockMpi<MockArc>&>(linker.getArcMpi()), migrate(IsEmpty()));
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(IsEmpty()))
 		.WillOnce(Return(importMap));
 
@@ -240,7 +249,10 @@ TEST_F(GhostSyncLinkerTest, import_export_unlink) {
 	// Arc3 set up
 	arcSetUp(arc3, 8, 0); // distant src and tgt
 
-	auto arcs = std::unordered_map<DistributedId, arc_type*, FPMAS::api::graph::base::IdHash<DistributedId>> {
+	auto arcs = std::unordered_map<
+			DistributedId,
+			FPMAS::api::graph::parallel::DistributedArc<int>*,
+			FPMAS::api::graph::base::IdHash<DistributedId>> {
 		{arc2_id, &arc2},
 		{arc3_id, &arc3}
 	};
@@ -263,7 +275,7 @@ TEST_F(GhostSyncLinkerTest, import_export_unlink) {
 		{0, {arc2_id, arc3_id}}
 	};
 
-	EXPECT_CALL(const_cast<MockMpi<arc_type>&>(linker.getArcMpi()), migrate(IsEmpty()));
+	EXPECT_CALL(const_cast<MockMpi<MockArc>&>(linker.getArcMpi()), migrate(IsEmpty()));
 	EXPECT_CALL(const_cast<MockMpi<DistributedId>&>(linker.getDistIdMpi()), migrate(exportIdMatcher))
 		.WillOnce(Return(importMap));
 

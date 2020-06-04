@@ -11,22 +11,22 @@
 
 namespace FPMAS::api::graph::parallel {
 
-	template<typename DistributedNodeType, typename DistributedArcType>
+	template<typename T>
 	class DistributedGraph 
-		: public virtual FPMAS::api::graph::base::Graph<DistributedNodeType, DistributedArcType> {
+		: public virtual FPMAS::api::graph::base::Graph<DistributedNode<T>, DistributedArc<T>> {
 		public:
-			typedef FPMAS::api::graph::base::Graph<DistributedNodeType, DistributedArcType> GraphBase;
-			typedef DistributedNodeType NodeType;
-			typedef DistributedArcType ArcType;
+			typedef FPMAS::api::graph::base::Graph<DistributedNode<T>, DistributedArc<T>> GraphBase;
+			typedef DistributedNode<T> NodeType;
+			typedef DistributedArc<T> ArcType;
 
 			using typename GraphBase::LayerIdType;
 			using typename GraphBase::NodeMap;
 			using typename GraphBase::ArcMap;
 
-			typedef typename LoadBalancing<DistributedNodeType>::PartitionMap PartitionMap;
+			typedef typename LoadBalancing<DistributedNode<T>>::PartitionMap PartitionMap;
 
 		public:
-			virtual const LocationManager<DistributedNodeType>& getLocationManager() const = 0;
+			virtual const LocationManager<DistributedNode<T>>& getLocationManager() const = 0;
 
 			virtual NodeType* importNode(const NodeType&) = 0;
 			virtual ArcType* importArc(const ArcType&) = 0;

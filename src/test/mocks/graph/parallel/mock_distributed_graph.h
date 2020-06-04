@@ -5,12 +5,14 @@
 #include "../base/mock_graph_base.h"
 #include "api/graph/parallel/distributed_graph.h"
 
-template<typename DistNode, typename DistArc>
+template<typename T, typename DistNode, typename DistArc>
 class MockDistributedGraph :
-	public MockGraphBase<DistNode, DistArc>,
-	public FPMAS::api::graph::parallel::DistributedGraph<DistNode, DistArc> {
+	public MockGraphBase<
+		FPMAS::api::graph::parallel::DistributedNode<T>,
+		FPMAS::api::graph::parallel::DistributedArc<T>>,
+	public FPMAS::api::graph::parallel::DistributedGraph<T> {
 
-		typedef FPMAS::api::graph::parallel::DistributedGraph<DistNode, DistArc>
+		typedef FPMAS::api::graph::parallel::DistributedGraph<T>
 			GraphBase;
 		public:
 		using typename GraphBase::NodeType;
@@ -20,7 +22,7 @@ class MockDistributedGraph :
 		using typename GraphBase::PartitionMap;
 
 		MOCK_METHOD(
-				const FPMAS::api::graph::parallel::LocationManager<DistNode>&,
+				const FPMAS::api::graph::parallel::LocationManager<FPMAS::api::graph::parallel::DistributedNode<T>>&,
 				getLocationManager, (), (const, override));
 
 		MOCK_METHOD(NodeType*, importNode, (const NodeType&), (override));

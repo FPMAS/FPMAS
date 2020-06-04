@@ -35,34 +35,26 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	class BasicDistributedGraph : 
 		public base::AbstractGraphBase<
-			DistNodeImpl<T, SyncMode::template MutexType>,
-			DistArcImpl<T, SyncMode::template MutexType>>,
-		public api::graph::parallel::DistributedGraph<
-			DistNodeImpl<T, SyncMode::template MutexType>,
-			DistArcImpl<T, SyncMode::template MutexType>
-		> {
+			api::graph::parallel::DistributedNode<T>,
+			api::graph::parallel::DistributedArc<T>>,
+		public api::graph::parallel::DistributedGraph<T>
+		 {
 			public:
 			typedef DistNodeImpl<T, SyncMode::template MutexType> DistNodeType;
 			typedef DistArcImpl<T, SyncMode::template MutexType> DistArcType;
 			typedef typename SyncMode::template SyncModeRuntimeType<T, DistNodeType, DistArcType> SyncModeRuntimeType;
 
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedNode<
-					typename DistNodeType::Data,
-					DistArcType
-					>, DistNodeType>::value,
+					std::is_base_of<api::graph::parallel::DistributedNode<T>, DistNodeType>::value,
 					"DistNodeImpl must implement api::graph::parallel::DistributedNode"
 					);
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedArc<
-					typename DistNodeType::Data, DistNodeType
-					>, DistArcType>::value,
+					std::is_base_of<api::graph::parallel::DistributedArc<T>, DistArcType>::value,
 					"DistArcImpl must implement api::graph::parallel::DistributedArc"
 					);
-			typedef base::AbstractGraphBase<DistNodeType, DistArcType>
+			typedef base::AbstractGraphBase<api::graph::parallel::DistributedNode<T>, api::graph::parallel::DistributedArc<T>>
 			AbstractGraphBase;
-			typedef api::graph::parallel::DistributedGraph<DistNodeType, DistArcType
-			> DistGraphBase;
+			typedef api::graph::parallel::DistributedGraph<T> DistGraphBase;
 
 			public:
 			using typename DistGraphBase::NodeType;
@@ -78,8 +70,8 @@ namespace FPMAS::graph::parallel {
 
 			private:
 			communicator mpi_communicator;
-			mpi<NodeType> nodeMpi {mpi_communicator};
-			mpi<ArcType> arcMpi {mpi_communicator};
+			mpi<DistNodeType> nodeMpi {mpi_communicator};
+			mpi<DistArcType> arcMpi {mpi_communicator};
 
 			LocationManagerImpl<NodeType> location_manager;
 			SyncModeRuntimeType sync_mode_runtime;
@@ -103,8 +95,8 @@ namespace FPMAS::graph::parallel {
 				return mpi_communicator;
 			};
 
-			const mpi<NodeType>& getNodeMpi() const {return nodeMpi;}
-			const mpi<ArcType>& getArcMpi() const {return arcMpi;}
+			const mpi<DistNodeType>& getNodeMpi() const {return nodeMpi;}
+			const mpi<DistArcType>& getArcMpi() const {return arcMpi;}
 
 			void clear(ArcType*) override;
 			void clear(NodeType*) override;
@@ -133,14 +125,14 @@ namespace FPMAS::graph::parallel {
 			void synchronize() override;
 
 			template<typename... Args> NodeType* buildNode(Args... args) {
-				NodeType* node = new NodeType(
+				NodeType* node = new DistNodeType(
 						this->node_id++,
 						std::forward<Args>(args)...
 						);
 				this->insert(node);
 				location_manager.setLocal(node);
 				location_manager.addManagedNode(node, mpi_communicator.getRank());
-				sync_mode_runtime.setUp(node->getId(), node->mutex());
+				sync_mode_runtime.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
 				return node;
 			}
 
@@ -152,7 +144,7 @@ namespace FPMAS::graph::parallel {
 				tgt->mutex().lock();
 
 				// Builds the new arc
-				auto arc = new ArcType(
+				auto arc = new DistArcType(
 						this->arc_id++, layer,
 						std::forward<Args>(args)...
 						);
@@ -198,7 +190,7 @@ namespace FPMAS::graph::parallel {
 		src->mutex().lock();
 		tgt->mutex().lock();
 
-		sync_mode_runtime.getSyncLinker().unlink(arc);
+		sync_mode_runtime.getSyncLinker().unlink(static_cast<DistArcType*>(arc));
 		// TODO : src and tgt might be cleared
 
 		src->mutex().unlock();
@@ -219,7 +211,7 @@ namespace FPMAS::graph::parallel {
 	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importNode(
 			const NodeType& node) {
 		if(this->getNodes().count(node.getId())==0) {
-			auto nodeCopy = new NodeType(node);
+			auto nodeCopy = new DistNodeType(static_cast<const DistNodeType&>(node));
 			this->insert(nodeCopy);
 			location_manager.setLocal(nodeCopy);
 			sync_mode_runtime.setUp(nodeCopy->getId(), nodeCopy->mutex());
@@ -247,10 +239,10 @@ namespace FPMAS::graph::parallel {
 				}
 			} else {
 				arcLocationState = LocationState::DISTANT;
-				src = new NodeType(srcId);
+				src = new DistNodeType(srcId);
 				this->insert(src);
 				location_manager.setDistant(src);
-				sync_mode_runtime.setUp(src->getId(), src->mutex());
+				sync_mode_runtime.setUp(src->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(src->mutex()));
 			}
 			if(this->getNodes().count(tgtId) > 0) {
 				tgt = this->getNode(tgtId);
@@ -259,15 +251,15 @@ namespace FPMAS::graph::parallel {
 				}
 			} else {
 				arcLocationState = LocationState::DISTANT;
-				tgt = new NodeType(tgtId);
+				tgt = new DistNodeType(tgtId);
 				this->insert(tgt);
 				location_manager.setDistant(tgt);
-				sync_mode_runtime.setUp(tgt->getId(), tgt->mutex());
+				sync_mode_runtime.setUp(tgt->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(tgt->mutex()));
 			}
 			// TODO : ghosts creation part is nice, but this is not
 			// because it can't adapt to any DistArcImpl type, using a generic
 			// copy constructor.
-			auto arcCopy = new ArcType(arc);
+			auto arcCopy = new DistArcType(static_cast<const DistArcType&>(arc));
 			arcCopy->setState(arcLocationState);
 
 			arcCopy->setSourceNode(src);
@@ -295,15 +287,15 @@ namespace FPMAS::graph::parallel {
 
 			// Builds node and arcs export maps
 			std::vector<NodeType*> exportedNodes;
-			std::unordered_map<int, std::vector<NodeType>> nodeExportMap;
+			std::unordered_map<int, std::vector<DistNodeType>> nodeExportMap;
 			std::unordered_map<int, std::set<DistributedId>> arcIdsToExport;
-			std::unordered_map<int, std::vector<ArcType>> arcExportMap;
+			std::unordered_map<int, std::vector<DistArcType>> arcExportMap;
 			for(auto item : partition) {
 				if(this->getNodes().count(item.first) > 0) {
 					if(item.second != mpi_communicator.getRank()) {
 						auto nodeToExport = this->getNode(item.first);
 						exportedNodes.push_back(nodeToExport);
-						nodeExportMap[item.second].push_back(*nodeToExport);
+						nodeExportMap[item.second].push_back(*static_cast<DistNodeType*>(nodeToExport));
 						for(auto arc :  nodeToExport->getIncomingArcs()) {
 							// Insert or replace in the IDs set
 							arcIdsToExport[item.second].insert(arc->getId());
@@ -318,7 +310,7 @@ namespace FPMAS::graph::parallel {
 			// Ensures that each arc is exported once to each process
 			for(auto list : arcIdsToExport) {
 				for(auto id : list.second) {
-					arcExportMap[list.first].push_back(*this->getArc(id));
+					arcExportMap[list.first].push_back(*static_cast<DistArcType*>(this->getArc(id)));
 				}
 			}
 

@@ -19,11 +19,11 @@ class MockDistributedNode;
 
 template<typename T, template<typename> class Mutex>
 class MockDistributedArc :
-	public FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T, Mutex>>,
-	public AbstractMockArc<T, DistributedId, MockDistributedNode<T, Mutex>>
+	public FPMAS::api::graph::parallel::DistributedArc<T>,
+	public AbstractMockArc<T, DistributedId, FPMAS::api::graph::parallel::DistributedNode<T>>
 {
-	typedef AbstractMockArc<T, DistributedId, MockDistributedNode<T, Mutex>> ArcBase;
-	typedef FPMAS::api::graph::parallel::DistributedArc<T, MockDistributedNode<T, Mutex>> DistArcBase;
+	typedef AbstractMockArc<T, DistributedId, FPMAS::api::graph::parallel::DistributedNode<T>> ArcBase;
+	typedef FPMAS::api::graph::parallel::DistributedArc<T> DistArcBase;
 
 	friend void from_json<T>(const nlohmann::json&, MockDistributedArc<T, Mutex>&);
 

@@ -61,15 +61,15 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 				EXPECT_CALL(graph.getSyncModeRuntime(), setUp)
 					.Times(graph.getMpiCommunicator().getSize());
 				auto firstNode = graph.buildNode();
-				EXPECT_CALL(firstNode->mutex(), lock).Times(AnyNumber());
-				EXPECT_CALL(firstNode->mutex(), unlock).Times(AnyNumber());
+				EXPECT_CALL(dynamic_cast<MockMutex<int>&>(firstNode->mutex()), lock).Times(AnyNumber());
+				EXPECT_CALL(dynamic_cast<MockMutex<int>&>(firstNode->mutex()), unlock).Times(AnyNumber());
 
 				auto prevNode = firstNode;
 				partition[prevNode->getId()] = 0;
 				for(auto i = 1; i < graph.getMpiCommunicator().getSize(); i++) {
 					auto nextNode = graph.buildNode();
-					EXPECT_CALL(nextNode->mutex(), lock).Times(AnyNumber());
-					EXPECT_CALL(nextNode->mutex(), unlock).Times(AnyNumber());
+					EXPECT_CALL(dynamic_cast<MockMutex<int>&>(nextNode->mutex()), lock).Times(AnyNumber());
+					EXPECT_CALL(dynamic_cast<MockMutex<int>&>(nextNode->mutex()), unlock).Times(AnyNumber());
 					partition[nextNode->getId()] = i;
 					graph.link(prevNode, nextNode, 0);
 					prevNode = nextNode;

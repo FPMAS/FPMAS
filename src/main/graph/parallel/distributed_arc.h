@@ -10,9 +10,9 @@ namespace FPMAS::graph::parallel {
 	using api::graph::parallel::LocationState;
 	template<typename T, template<typename> class Mutex>
 		class DistributedArc :
-			public graph::base::BasicArc<DistributedId, DistributedNode<T, Mutex>>,
-			public FPMAS::api::graph::parallel::DistributedArc<T, DistributedNode<T, Mutex>> {
-				typedef graph::base::BasicArc<DistributedId, DistributedNode<T, Mutex>>
+			public graph::base::BasicArc<DistributedId, api::graph::parallel::DistributedNode<T>>,
+			public FPMAS::api::graph::parallel::DistributedArc<T> {
+				typedef graph::base::BasicArc<DistributedId, api::graph::parallel::DistributedNode<T>>
 					ArcBase;
 
 				private:

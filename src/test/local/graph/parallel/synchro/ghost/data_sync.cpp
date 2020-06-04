@@ -17,16 +17,16 @@ class GhostDataSyncTest : public ::testing::Test {
 	protected:
 		typedef MockDistributedNode<int, MockMutex> NodeType;
 		typedef MockDistributedArc<int, MockMutex> ArcType;
-		typedef typename MockDistributedGraph<NodeType, ArcType>::NodeMap NodeMap;
+		typedef typename MockDistributedGraph<int, NodeType, ArcType>::NodeMap NodeMap;
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
-		MockDistributedGraph<NodeType, ArcType> mocked_graph;
+		MockDistributedGraph<int, NodeType, ArcType> mocked_graph;
 
 		GhostDataSync<NodeType, ArcType, MockMpi>
 			dataSync {mock_comm, mocked_graph};
 
-		MockLocationManager<NodeType> location_manager {mock_comm};
+		MockLocationManager<FPMAS::api::graph::parallel::DistributedNode<int>> location_manager {mock_comm};
 
 
 		std::array<NodeType*, 4> nodes {

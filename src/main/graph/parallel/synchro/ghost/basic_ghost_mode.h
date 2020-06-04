@@ -34,7 +34,7 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 			FPMAS::api::communication::MpiCommunicator& comm;
 			Mpi<NodeType> node_mpi;
 			Mpi<DistributedId> dist_id_mpi;
-			FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>& graph;
+			FPMAS::api::graph::parallel::DistributedGraph<typename NodeType::DataType>& graph;
 
 		public:
 			const Mpi<NodeType>& getNodeMpi() const {return node_mpi;}
@@ -42,7 +42,7 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 
 			GhostDataSync(
 				FPMAS::api::communication::MpiCommunicator& comm,
-				FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>& graph
+				FPMAS::api::graph::parallel::DistributedGraph<typename NodeType::DataType>& graph
 				)
 				: comm(comm), node_mpi(comm), dist_id_mpi(comm), graph(graph) {}
 
@@ -60,7 +60,7 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 		std::unordered_map<int, std::vector<NodeType>> nodes;
 		for(auto list : requests) {
 			for(auto id : list.second) {
-				nodes[list.first].push_back(*graph.getNode(id));
+				nodes[list.first].push_back(*static_cast<NodeType*>(graph.getNode(id)));
 			}
 		}
 		nodes = node_mpi.migrate(nodes);
@@ -83,12 +83,12 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 		FPMAS::api::communication::MpiCommunicator& comm;
 		Mpi<ArcType> arc_mpi;
 		Mpi<DistributedId> dist_id_mpi;
-		FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>& graph;
+		FPMAS::api::graph::parallel::DistributedGraph<typename NodeType::DataType>& graph;
 
 		public:
 			GhostSyncLinker(
 					FPMAS::api::communication::MpiCommunicator& comm,
-					FPMAS::api::graph::parallel::DistributedGraph<NodeType, ArcType>& graph)
+					FPMAS::api::graph::parallel::DistributedGraph<typename NodeType::DataType>& graph)
 				: comm(comm), arc_mpi(comm), dist_id_mpi(comm), graph(graph) {}
 
 			void link(const ArcType*) override;
@@ -177,7 +177,7 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 			public:
 			GhostModeRuntime(
 					FPMAS::api::communication::MpiCommunicator& comm,
-					FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph)
+					FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>& graph)
 				: data_sync(comm, graph), sync_linker(comm, graph) {}
 
 				void setUp(Mutex&) override {};

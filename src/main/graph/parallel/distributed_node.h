@@ -12,9 +12,9 @@ namespace FPMAS::graph::parallel {
 
 	template<typename T, template<typename> class Mutex>
 	class DistributedNode : 
-		public graph::base::BasicNode<T, DistributedId, DistributedArc<T, Mutex>>,
-		public api::graph::parallel::DistributedNode<T, DistributedArc<T, Mutex>> {
-			typedef graph::base::BasicNode<T, DistributedId, DistributedArc<T, Mutex>> NodeBase;
+		public graph::base::BasicNode<T, DistributedId, api::graph::parallel::DistributedArc<T>>,
+		public api::graph::parallel::DistributedNode<T> {
+			typedef graph::base::BasicNode<T, DistributedId, api::graph::parallel::DistributedArc<T>> NodeBase;
 
 		private:
 			//typedef FPMAS::api::graph::parallel::synchro::Mutex<T> mutex_base;
@@ -23,6 +23,7 @@ namespace FPMAS::graph::parallel {
 			Mutex<T> _mutex;
 
 		public:
+			typedef T DataType;
 			DistributedNode(const DistributedId& id)
 				: NodeBase(id), _mutex(this->data()) {
 				}

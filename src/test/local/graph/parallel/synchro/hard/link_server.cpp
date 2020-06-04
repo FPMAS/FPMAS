@@ -9,6 +9,7 @@ using ::testing::DoAll;
 using ::testing::Expectation;
 using ::testing::Invoke;
 using ::testing::Pointee;
+using ::testing::Property;
 using ::testing::Return;
 using ::testing::ReturnPointee;
 
@@ -32,6 +33,7 @@ class LinkServerTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<7, 16> comm;
 		MockDistributedGraph<
+			int,
 			MockDistributedNode<int, MockMutex>,
 			MockDistributedArc<int, MockMutex>
 			> mockGraph;
@@ -56,7 +58,8 @@ class LinkServerTest : public ::testing::Test {
 				.After(probe)
 				.WillOnce(Return(mockArc));
 
-			EXPECT_CALL(mockGraph, importArc(mockArc));
+			EXPECT_CALL(mockGraph, importArc(Property(
+					&FPMAS::api::graph::parallel::DistributedArc<int>::getId, mockArc.getId())));
 		}
 
 		void expectUnlink(int source, DistributedId id) {

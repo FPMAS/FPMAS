@@ -22,12 +22,12 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			Mpi<DistributedId> id_mpi;
 			Mpi<Arc> arc_mpi;
 
-			FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph;
+			FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>& graph;
 
 			public:
 				LinkServer(
 					FPMAS::api::communication::MpiCommunicator& comm,
-					FPMAS::api::graph::parallel::DistributedGraph<Node, Arc>& graph)
+					FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>& graph)
 					: comm(comm), id_mpi(comm), arc_mpi(comm), graph(graph) {}
 
 				Mpi<DistributedId>& getIdMpi() {return id_mpi;};

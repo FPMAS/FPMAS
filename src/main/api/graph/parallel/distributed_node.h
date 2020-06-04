@@ -8,10 +8,10 @@
 
 namespace FPMAS::api::graph::parallel {
 
-	template<typename T, typename DistArcImpl>
+	template<typename T>
 	class DistributedNode 
-		: public virtual FPMAS::api::graph::base::Node<T, DistributedId, DistArcImpl> {
-		typedef FPMAS::api::graph::base::Node<T, DistributedId, DistArcImpl> NodeBase;
+		: public virtual FPMAS::api::graph::base::Node<T, DistributedId, DistributedArc<T>> {
+		typedef FPMAS::api::graph::base::Node<T, DistributedId, DistributedArc<T>> NodeBase;
 		public:
 			virtual int getLocation() const = 0;
 			virtual void setLocation(int) = 0;
