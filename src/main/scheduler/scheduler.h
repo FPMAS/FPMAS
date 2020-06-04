@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <map>
 
 #include "api/scheduler/scheduler.h"
 
@@ -40,25 +41,34 @@ namespace FPMAS::scheduler {
 		public:
 			void submit(api::scheduler::Job*) override;
 			const std::vector<api::scheduler::Job*>& jobs() const override;
+			iterator begin() override;
+			iterator end() override;
+			size_t jobCount() override;
+
 			void clear() override;
 	};
+
+
 
 	class Scheduler : public api::scheduler::Scheduler {
 		private:
 			JID id = 0;
-			std::vector<Job*> jobs;
-			std::vector<Epoch> cycle {1};
-			std::unordered_map<Date, Epoch> unique_epochs;
+			//std::vector<Job*> jobs;
+			//std::vector<Epoch> cycle {1};
+			std::unordered_map<Date, std::vector<FPMAS::api::scheduler::Job*>> unique_jobs;
+			std::map<Date, std::vector<std::pair<Period, FPMAS::api::scheduler::Job*>>>
+				recurring_jobs;
+			std::map<Date, std::vector<std::tuple<Date, Period, FPMAS::api::scheduler::Job*>>>
+				limited_recurring_jobs;
 			void resizeCycle(size_t new_size);
 
 		public:
-			Job& schedule(Date date, ScheduleOverlapPolicy policy) override;
-			Job& schedule(Date date, Period period, ScheduleOverlapPolicy policy) override;
+			void schedule(Date date, FPMAS::api::scheduler::Job*) override;
+			void schedule(Date date, Period period, FPMAS::api::scheduler::Job*) override;
+			void schedule(Date date, Date end, Period period, FPMAS::api::scheduler::Job*) override;
 
-			const Epoch& epoch(Date date) const override;
-
+			void build(Date date, FPMAS::api::scheduler::Epoch&) const override;
 	};
 
 }
-
 #endif

@@ -22,4 +22,15 @@ class MockJob : public FPMAS::api::scheduler::Job {
 		MOCK_METHOD(FPMAS::api::scheduler::Task*, getEnd, (), (const, override));
 
 };
+
+class MockEpoch : public FPMAS::api::scheduler::Epoch {
+	public:
+		MOCK_METHOD(void, submit, (FPMAS::api::scheduler::Job*), (override));
+		MOCK_METHOD(const std::vector<FPMAS::api::scheduler::Job*>&, jobs, (), (const, override));
+		MOCK_METHOD(iterator, begin, (), (override));
+		MOCK_METHOD(iterator, end, (), (override));
+		MOCK_METHOD(size_t, jobCount, (), (override));
+		MOCK_METHOD(void, clear, (), (override));
+};
+
 #endif
