@@ -10,27 +10,28 @@ namespace FPMAS::graph::parallel {
 
 	using FPMAS::api::graph::parallel::LocationState;
 
-	template<typename DistNode, template<typename> class Mpi>
+	template<typename T>
 		class LocationManager
-		: public FPMAS::api::graph::parallel::LocationManager<DistNode> {
+		: public FPMAS::api::graph::parallel::LocationManager<T> {
 			public:
-				using typename FPMAS::api::graph::parallel::LocationManager<DistNode>::NodeMap;
+				using typename FPMAS::api::graph::parallel::LocationManager<T>::NodeMap;
+				using typename FPMAS::api::graph::parallel::LocationManager<T>::DistNode;
+
+				typedef api::communication::MpiCommunicator MpiComm;
+				typedef api::communication::TypedMpi<DistributedId> IdMpi;
+				typedef api::communication::TypedMpi<std::pair<DistributedId, int>> LocationMpi;
 			private:
-				typedef FPMAS::api::communication::MpiCommunicator MpiComm;
-				MpiComm& communicator;
-				Mpi<DistributedId> distIdMpi {communicator};
-				Mpi<std::pair<DistributedId, int>> location_mpi {communicator};
+				MpiComm& comm;
+				IdMpi& id_mpi;
+				LocationMpi& location_mpi;
 				std::unordered_map<DistributedId, int> managed_nodes_locations;
 
 				NodeMap local_nodes;
 				NodeMap distant_nodes;
 
 			public:
-				LocationManager(MpiComm& communicator)
-					: communicator(communicator) {}
-
-				const Mpi<DistributedId>& getDistributedIdMpi() const {return distIdMpi;}
-				const Mpi<std::pair<DistributedId, int>>& getLocationMpi() const {return location_mpi;}
+				LocationManager(MpiComm& comm, IdMpi& id_mpi, LocationMpi& location_mpi)
+					: comm(comm), id_mpi(id_mpi), location_mpi(location_mpi) {}
 
 				void addManagedNode(DistNode* node, int initialLocation) override {
 					this->managed_nodes_locations[node->getId()] = initialLocation;
@@ -54,16 +55,16 @@ namespace FPMAS::graph::parallel {
 				}
 		};
 
-	template<typename DistNode, template<typename> class Mpi>
-	void LocationManager<DistNode, Mpi>::setLocal(DistNode* node) {
-			node->setLocation(communicator.getRank());
+	template<typename T>
+	void LocationManager<T>::setLocal(DistNode* node) {
+			node->setLocation(comm.getRank());
 			node->setState(LocationState::LOCAL);
 			this->local_nodes.insert({node->getId(), node});
 			this->distant_nodes.erase(node->getId());
 		}
 
-	template<typename DistNode, template<typename> class Mpi>
-	void LocationManager<DistNode, Mpi>::setDistant(DistNode* node) {
+	template<typename T>
+	void LocationManager<T>::setDistant(DistNode* node) {
 			node->setState(LocationState::DISTANT);
 			this->local_nodes.erase(node->getId());
 			this->distant_nodes.insert({node->getId(), node});
@@ -75,8 +76,8 @@ namespace FPMAS::graph::parallel {
 			}
 		}
 
-	template<typename DistNode, template<typename> class Mpi>
-	void LocationManager<DistNode, Mpi>::remove(DistNode* node) {
+	template<typename T>
+	void LocationManager<T>::remove(DistNode* node) {
 		switch(node->state()) {
 			case LocationState::LOCAL:
 				local_nodes.erase(node->getId());
@@ -87,8 +88,8 @@ namespace FPMAS::graph::parallel {
 		}
 	}
 
-	template<typename DistNode, template<typename> class Mpi>
-		void LocationManager<DistNode, Mpi>::updateLocations(
+	template<typename T>
+		void LocationManager<T>::updateLocations(
 				const NodeMap& local_nodes_to_update
 				) {
 			// Useful types
@@ -106,9 +107,9 @@ namespace FPMAS::graph::parallel {
 			DistributedIdMap exported_updated_locations;
 			for(auto node : local_nodes_to_update) {
 				// Updates local node field
-				node.second->setLocation(communicator.getRank());
+				node.second->setLocation(comm.getRank());
 
-				if(node.first.rank() != communicator.getRank()) {
+				if(node.first.rank() != comm.getRank()) {
 					// Notify node origin that node is currently on this proc
 					exported_updated_locations[node.first.rank()]
 						.push_back(node.first);
@@ -116,13 +117,13 @@ namespace FPMAS::graph::parallel {
 					// No need to export the new node location to itself :
 					// just locally set this node location to this proc
 					managed_nodes_locations[node.first]
-						= communicator.getRank();
+						= comm.getRank();
 				}
 			}
 			
 			// Export / import location updates of managed_nodes_locations
 			DistributedIdMap imported_updated_locations =
-				distIdMpi.migrate(exported_updated_locations);
+				id_mpi.migrate(exported_updated_locations);
 			// Updates the managed_nodes_locations data
 			for(auto list : imported_updated_locations) {
 				for(auto node_id : list.second) {
@@ -135,7 +136,7 @@ namespace FPMAS::graph::parallel {
 			// location has already been updated and won't be requested to this
 			// proc himself
 			for(auto node : distant_nodes) {
-				if(node.first.rank() == communicator.getRank()) {
+				if(node.first.rank() == comm.getRank()) {
 					node.second->setLocation(
 							managed_nodes_locations[node.first]
 							);
@@ -147,7 +148,7 @@ namespace FPMAS::graph::parallel {
 			 */
 			DistributedIdMap locationRequests;
 			for(auto node : distant_nodes) {
-				if(node.first.rank() != communicator.getRank()) {
+				if(node.first.rank() != comm.getRank()) {
 					// For distant_nodes that has an origin different from this
 					// proc, asks for the current location of node to its
 					// origin proc
@@ -157,7 +158,7 @@ namespace FPMAS::graph::parallel {
 			}
 			// Export / import requests
 			DistributedIdMap importedLocationRequests
-				= distIdMpi.migrate(locationRequests);
+				= id_mpi.migrate(locationRequests);
 
 			// Builds requests response
 			LocationMap exportedLocations;
@@ -182,9 +183,6 @@ namespace FPMAS::graph::parallel {
 				}
 			}
 		}
-
-	template<typename Node>
-	using DefaultLocationManager = LocationManager<Node, communication::TypedMpi>;
 }
 
 #endif

@@ -5,9 +5,11 @@
 #include "../mocks/graph/parallel/synchro/mock_mutex.h"
 #include "../mocks/graph/parallel/synchro/hard/mock_client_server.h"
 
+using ::testing::Property;
 using ::testing::Sequence;
 using ::testing::Ref;
 using ::testing::Expectation;
+using FPMAS::graph::parallel::ArcPtrWrapper;
 using FPMAS::graph::parallel::synchro::hard::Tag;
 using FPMAS::graph::parallel::synchro::hard::LinkClient;
 
@@ -15,156 +17,158 @@ class LinkClientTest : public ::testing::Test {
 	protected:
 		const DistributedId arcId {9, 2};
 		MockMpiCommunicator<7, 16> comm;
-		MockLinkServer mockLinkServer;
-		LinkClient<
-			MockDistributedArc<int, MockMutex>,
-			MockMpi
-			> linkClient {comm, mockLinkServer};
+		MockMpi<DistributedId> id_mpi {comm};
+		MockMpi<ArcPtrWrapper<int>> arc_mpi {comm};
 
-		MockDistributedNode<int, MockMutex> mockSrc;
-		MockDistributedNode<int, MockMutex> mockTgt;
+		MockLinkServer mock_link_server;
+		LinkClient<int> link_client {comm, id_mpi, arc_mpi, mock_link_server};
 
-		MockDistributedArc<int, MockMutex> mockArc;
+		MockDistributedNode<int> mock_src;
+		MockDistributedNode<int> mock_tgt;
+
+		MockDistributedArc<int> mock_arc;
 
 		void SetUp() override {
-			ON_CALL(mockArc, getId)
+			ON_CALL(mock_arc, getId)
 				.WillByDefault(Return(arcId));
-			EXPECT_CALL(mockArc, getId).Times(AnyNumber());
+			EXPECT_CALL(mock_arc, getId).Times(AnyNumber());
 
-			ON_CALL(mockArc, getSourceNode)
-				.WillByDefault(Return(&mockSrc));
-			EXPECT_CALL(mockArc, getSourceNode).Times(AnyNumber());
+			ON_CALL(mock_arc, getSourceNode)
+				.WillByDefault(Return(&mock_src));
+			EXPECT_CALL(mock_arc, getSourceNode).Times(AnyNumber());
 
-			ON_CALL(mockArc, getTargetNode)
-				.WillByDefault(Return(&mockTgt));
-			EXPECT_CALL(mockArc, getTargetNode).Times(AnyNumber());
+			ON_CALL(mock_arc, getTargetNode)
+				.WillByDefault(Return(&mock_tgt));
+			EXPECT_CALL(mock_arc, getTargetNode).Times(AnyNumber());
 
-			ON_CALL(mockLinkServer, getEpoch).WillByDefault(Return(Epoch::EVEN));
-			EXPECT_CALL(mockLinkServer, getEpoch).Times(AnyNumber());
+			ON_CALL(mock_link_server, getEpoch).WillByDefault(Return(Epoch::EVEN));
+			EXPECT_CALL(mock_link_server, getEpoch).Times(AnyNumber());
 		}
 };
 
 // Should not do anything
 TEST_F(LinkClientTest, link_local_src_local_tgt) {
-	EXPECT_CALL(mockSrc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mockTgt, state).Times(AnyNumber())
+	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mockArc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
 
-	EXPECT_CALL(linkClient.getArcMpi(), Issend).Times(0);
+	EXPECT_CALL(arc_mpi, Issend).Times(0);
 
-	linkClient.link(&mockArc);
+	link_client.link(&mock_arc);
 }
 
 TEST_F(LinkClientTest, link_local_src_distant_tgt) {
-	EXPECT_CALL(mockSrc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mockTgt, state).Times(AnyNumber())
+	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mockTgt, getLocation).WillRepeatedly(Return(10));
-	EXPECT_CALL(mockArc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(linkClient.getArcMpi(), Issend(Ref(mockArc), 10, Epoch::EVEN | Tag::LINK, _));
+	EXPECT_CALL(arc_mpi, Issend(Property(&ArcPtrWrapper<int>::get, &mock_arc), 10, Epoch::EVEN | Tag::LINK, _));
 	EXPECT_CALL(comm, test).WillOnce(Return(true));
 
-	linkClient.link(&mockArc);
+	link_client.link(&mock_arc);
 }
 
 TEST_F(LinkClientTest, link_local_tgt_distant_src) {
-	EXPECT_CALL(mockSrc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mockTgt, state).Times(AnyNumber())
+	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mockSrc, getLocation).WillRepeatedly(Return(10));
-	EXPECT_CALL(mockArc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(linkClient.getArcMpi(), Issend(Ref(mockArc), 10, Epoch::EVEN | Tag::LINK, _));
+	EXPECT_CALL(arc_mpi, Issend(Property(&ArcPtrWrapper<int>::get, &mock_arc), 10, Epoch::EVEN | Tag::LINK, _));
 	EXPECT_CALL(comm, test).WillOnce(Return(true));
 
-	linkClient.link(&mockArc);
+	link_client.link(&mock_arc);
 }
 
 TEST_F(LinkClientTest, link_distant_tgt_distant_src) {
-	EXPECT_CALL(mockSrc, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mockTgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mockSrc, getLocation).WillRepeatedly(Return(10));
-	EXPECT_CALL(mockTgt, getLocation).WillRepeatedly(Return(12));
+	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(12));
 
-	EXPECT_CALL(mockArc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(linkClient.getArcMpi(), Issend(Ref(mockArc), 10, Epoch::EVEN | Tag::LINK, _));
-	EXPECT_CALL(linkClient.getArcMpi(), Issend(Ref(mockArc), 12, Epoch::EVEN | Tag::LINK, _));
+	EXPECT_CALL(arc_mpi, Issend(
+				Property(&ArcPtrWrapper<int>::get, &mock_arc), 10, Epoch::EVEN | Tag::LINK, _));
+	EXPECT_CALL(arc_mpi, Issend(
+				Property(&ArcPtrWrapper<int>::get, &mock_arc), 12, Epoch::EVEN | Tag::LINK, _));
 	EXPECT_CALL(comm, test)
 		.WillOnce(Return(true))
 		.WillOnce(Return(true));
 
-	linkClient.link(&mockArc);
+	link_client.link(&mock_arc);
 }
 
 // Should not do anything
 TEST_F(LinkClientTest, unlink_local_src_local_tgt) {
-	EXPECT_CALL(mockSrc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mockTgt, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
-
-	EXPECT_CALL(mockArc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
 
-	EXPECT_CALL(linkClient.getIdMpi(), Issend).Times(0);
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::LOCAL));
 
-	linkClient.unlink(&mockArc);
+	EXPECT_CALL(id_mpi, Issend).Times(0);
+
+	link_client.unlink(&mock_arc);
 }
 
 TEST_F(LinkClientTest, unlink_local_src_distant_tgt) {
-	EXPECT_CALL(mockSrc, state).WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mockTgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mockTgt, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(10));
 
-	EXPECT_CALL(mockArc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(linkClient.getIdMpi(), Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _));
+	EXPECT_CALL(id_mpi, Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _));
 	EXPECT_CALL(comm, test).WillOnce(Return(true));
 
-	linkClient.unlink(&mockArc);
+	link_client.unlink(&mock_arc);
 }
 
 TEST_F(LinkClientTest, unlink_local_tgt_distant_src) {
-	EXPECT_CALL(mockSrc, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mockTgt, state).WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mockSrc, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
 
-	EXPECT_CALL(mockArc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(linkClient.getIdMpi(), Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _));
+	EXPECT_CALL(id_mpi, Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _));
 	EXPECT_CALL(comm, test).WillOnce(Return(true));
 
-	linkClient.unlink(&mockArc);
+	link_client.unlink(&mock_arc);
 }
 
 TEST_F(LinkClientTest, unlink_distant_tgt_distant_src) {
-	EXPECT_CALL(mockSrc, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mockTgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mockSrc, getLocation).WillRepeatedly(Return(10));
-	EXPECT_CALL(mockTgt, getLocation).WillRepeatedly(Return(12));
+	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(12));
 
-	EXPECT_CALL(mockArc, state).Times(AnyNumber())
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(linkClient.getIdMpi(), Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _));
-	EXPECT_CALL(linkClient.getIdMpi(), Issend(arcId, 12, Epoch::EVEN | Tag::UNLINK, _));
+	EXPECT_CALL(id_mpi, Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _));
+	EXPECT_CALL(id_mpi, Issend(arcId, 12, Epoch::EVEN | Tag::UNLINK, _));
 	EXPECT_CALL(comm, test)
 		.WillOnce(Return(true))
 		.WillOnce(Return(true));
 
-	linkClient.unlink(&mockArc);
+	link_client.unlink(&mock_arc);
 }
 
 class LinkClientDeadlockTest : public LinkClientTest {
@@ -174,12 +178,12 @@ class LinkClientDeadlockTest : public LinkClientTest {
 		void SetUp() override {
 			LinkClientTest::SetUp();
 
-			EXPECT_CALL(mockSrc, state).WillRepeatedly(Return(LocationState::DISTANT));
-			EXPECT_CALL(mockTgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-			EXPECT_CALL(mockSrc, getLocation).WillRepeatedly(Return(10));
-			EXPECT_CALL(mockTgt, getLocation).WillRepeatedly(Return(12));
+			EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
+			EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
+			EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+			EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(12));
 
-			EXPECT_CALL(mockArc, state).Times(AnyNumber())
+			EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 				.WillRepeatedly(Return(LocationState::DISTANT));
 		}
 
@@ -192,7 +196,7 @@ class LinkClientDeadlockTest : public LinkClientTest {
 					.InSequence(s1)
 					.WillOnce(Return(false))
 					.RetiresOnSaturation();
-				EXPECT_CALL(mockLinkServer, handleIncomingRequests)
+				EXPECT_CALL(mock_link_server, handleIncomingRequests)
 					.Times(AtLeast(1))
 					.InSequence(s1)
 					.RetiresOnSaturation();
@@ -207,7 +211,7 @@ class LinkClientDeadlockTest : public LinkClientTest {
 					.InSequence(s2)
 					.WillOnce(Return(false))
 					.RetiresOnSaturation();
-				EXPECT_CALL(mockLinkServer, handleIncomingRequests)
+				EXPECT_CALL(mock_link_server, handleIncomingRequests)
 					.Times(AtLeast(1))
 					.InSequence(s2)
 					.RetiresOnSaturation();
@@ -220,23 +224,23 @@ class LinkClientDeadlockTest : public LinkClientTest {
 };
 
 TEST_F(LinkClientDeadlockTest, link) {
-	EXPECT_CALL(linkClient.getArcMpi(), Issend(Ref(mockArc), 10, Epoch::EVEN | Tag::LINK, _))
+	EXPECT_CALL(arc_mpi, Issend(Property(&ArcPtrWrapper<int>::get, &mock_arc), 10, Epoch::EVEN | Tag::LINK, _))
 		.InSequence(s1);
-	EXPECT_CALL(linkClient.getArcMpi(), Issend(Ref(mockArc), 12, Epoch::EVEN | Tag::LINK, _))
+	EXPECT_CALL(arc_mpi, Issend(Property(&ArcPtrWrapper<int>::get, &mock_arc), 12, Epoch::EVEN | Tag::LINK, _))
 		.InSequence(s2);
 
 	waitExpectations();
 
-	linkClient.link(&mockArc);
+	link_client.link(&mock_arc);
 }
 
 TEST_F(LinkClientDeadlockTest, unlink) {
-	EXPECT_CALL(linkClient.getIdMpi(), Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _))
+	EXPECT_CALL(id_mpi, Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _))
 		.InSequence(s1);
-	EXPECT_CALL(linkClient.getIdMpi(), Issend(arcId, 12, Epoch::EVEN | Tag::UNLINK, _))
+	EXPECT_CALL(id_mpi, Issend(arcId, 12, Epoch::EVEN | Tag::UNLINK, _))
 		.InSequence(s2);
 
 	waitExpectations();
 
-	linkClient.unlink(&mockArc);
+	link_client.unlink(&mock_arc);
 }

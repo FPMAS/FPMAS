@@ -2,7 +2,7 @@
 #define CLIENT_SERVER_H
 
 #include "enums.h"
-#include "graph/parallel/distributed_id.h"
+#include "graph/parallel/distributed_arc.h"
 
 namespace FPMAS::api::graph::parallel::synchro::hard {
 	struct MutexRequest {
@@ -68,11 +68,11 @@ namespace FPMAS::api::graph::parallel::synchro::hard {
 			virtual ~MutexServer() {}
 		};
 
-	template<typename Arc>
+	template<typename T>
 		class LinkClient {
 			public:
-				virtual void link(const Arc*) = 0;
-				virtual void unlink(const Arc*) = 0;
+				virtual void link(const FPMAS::api::graph::parallel::DistributedArc<T>*) = 0;
+				virtual void unlink(const FPMAS::api::graph::parallel::DistributedArc<T>*) = 0;
 
 				virtual ~LinkClient() {};
 		};

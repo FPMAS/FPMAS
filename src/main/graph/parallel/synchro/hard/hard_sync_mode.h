@@ -9,40 +9,54 @@
 #include "mutex_server.h"
 #include "mutex_client.h"
 #include "termination.h"
+#include "graph/parallel/distributed_node.h"
 
 namespace FPMAS::graph::parallel::synchro::hard {
 
-	template<typename Node, typename Arc, typename Mutex>
-		class HardSyncRuntime : public FPMAS::api::graph::parallel::synchro::SyncModeRuntime<Node, Arc, Mutex> {
+	template<typename T>
+		class HardSyncRuntime : public FPMAS::api::graph::parallel::synchro::SyncModeRuntime<T> {
 
-			typedef FPMAS::graph::parallel::synchro::hard::TerminationAlgorithm<
+			typedef graph::parallel::synchro::hard::TerminationAlgorithm<
 				communication::TypedMpi>
 				TerminationAlgorithm;
 
-			MutexServer<typename Node::DataType, communication::TypedMpi> mutex_server;
-			MutexClient<typename Node::DataType, communication::TypedMpi> mutex_client;
+			communication::TypedMpi<DistributedId> id_mpi;
+			communication::TypedMpi<T> data_mpi;
+			communication::TypedMpi<DataUpdatePack<T>> data_update_mpi;
+			communication::TypedMpi<parallel::NodePtrWrapper<T>> node_mpi;
+			communication::TypedMpi<parallel::ArcPtrWrapper<T>> arc_mpi;
 
-			LinkServer<Node, Arc, communication::TypedMpi> link_server;
-			LinkClient<Arc, communication::TypedMpi> link_client;
+			MutexServer<T> mutex_server;
+			MutexClient<T> mutex_client;
 
-			HardSyncLinker<Arc, TerminationAlgorithm> sync_linker;
-			HardDataSync<Node, Arc, TerminationAlgorithm> data_sync;
+			LinkServer<T> link_server;
+			LinkClient<T> link_client;
+
+			TerminationAlgorithm termination;
+			HardSyncLinker<T> sync_linker;
+			HardDataSync<T> data_sync;
 
 			public:
 				HardSyncRuntime(
-						FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>& graph,
-						FPMAS::api::communication::MpiCommunicator& comm) :
-					mutex_server(comm), mutex_client(comm, mutex_server),
-					link_server(comm, graph), link_client(comm, link_server),
-					sync_linker(comm, link_client, link_server),
-					data_sync(comm, mutex_server) {}
+						api::graph::parallel::DistributedGraph<T>& graph,
+						api::communication::MpiCommunicator& comm) :
+					id_mpi(comm), data_mpi(comm), data_update_mpi(comm), node_mpi(comm), arc_mpi(comm),
+					mutex_server(comm, id_mpi, data_mpi, data_update_mpi),
+					mutex_client(comm, id_mpi, data_mpi, data_update_mpi, mutex_server),
+					link_server(comm, id_mpi, arc_mpi, graph),
+					link_client(comm, id_mpi, arc_mpi, link_server),
+					termination(comm),
+					sync_linker(link_client, link_server, termination),
+					data_sync(mutex_server, termination) {}
 
-				void setUp(DistributedId id, Mutex& mutex) override {
-					mutex_server.manage(id, &mutex);
+				HardSyncMutex<T>* buildMutex(DistributedId id, T& data) override {
+					HardSyncMutex<T>* mutex = new HardSyncMutex<T>(data);
+					mutex_server.manage(id, mutex);
+					return mutex;
 				};
 
-				HardDataSync<Node, Arc, TerminationAlgorithm>& getDataSync() override {return data_sync;};
-				HardSyncLinker<Arc, TerminationAlgorithm>& getSyncLinker() override {return sync_linker;};
+				HardDataSync<T>& getDataSync() override {return data_sync;};
+				HardSyncLinker<T>& getSyncLinker() override {return sync_linker;};
 		};
 
 	typedef FPMAS::api::graph::parallel::synchro::SyncMode<HardSyncMutex, HardSyncRuntime> HardSyncMode;

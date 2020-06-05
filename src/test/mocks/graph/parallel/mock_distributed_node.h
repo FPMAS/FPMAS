@@ -11,24 +11,25 @@ using ::testing::_;
 
 using FPMAS::api::graph::parallel::LocationState;
 
-template<typename T, template<typename> class Mutex>
+template<typename T>
 class MockDistributedNode;
-template<typename T, template<typename> class Mutex>
-void from_json(const nlohmann::json& j, MockDistributedNode<T, Mutex>& mock);
+template<typename T>
+void from_json(const nlohmann::json& j, MockDistributedNode<T>& mock);
 
-template<typename, template<typename> class> class MockDistributedArc;
+template<typename> class MockDistributedArc;
 
-template<typename T, template<typename> class Mutex>
+template<typename T>
 class MockDistributedNode :
 	public FPMAS::api::graph::parallel::DistributedNode<T>,
 	public AbstractMockNode<DistributedId, FPMAS::api::graph::parallel::DistributedArc<T>> {
 
 		typedef AbstractMockNode<DistributedId, FPMAS::api::graph::parallel::DistributedArc<T>>
 			NodeBase;
-		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T, Mutex>&);
+		typedef FPMAS::api::graph::parallel::synchro::Mutex<T> Mutex;
+		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T>&);
 
 		private:
-		Mutex<T> _mutex;
+		Mutex* _mutex;
 		LocationState _state = LocationState::LOCAL;
 		int _location;
 
@@ -80,8 +81,11 @@ class MockDistributedNode :
 		MOCK_METHOD(void, setState, (LocationState), (override));
 		MOCK_METHOD(LocationState, state, (), (const, override));
 
-		MOCK_METHOD(Mutex<T>&, mutex, (), (override));
-		MOCK_METHOD(const Mutex<T>&, mutex, (), (const, override));
+		MOCK_METHOD(T&, data, (), (override));
+		MOCK_METHOD(const T&, data, (), (const, override));
+		MOCK_METHOD(void, setMutex, (Mutex*), (override));
+		MOCK_METHOD(Mutex&, mutex, (), (override));
+		MOCK_METHOD(const Mutex&, mutex, (), (const, override));
 
 		bool operator==(const MockDistributedNode& other) const {
 			return this->id == other.id;
@@ -89,11 +93,14 @@ class MockDistributedNode :
 
 		private:
 		void setUpDefaultMutex() {
+			ON_CALL(*this, setMutex)
+				.WillByDefault(SaveArg<0>(&_mutex));
+			EXPECT_CALL(*this, setMutex).Times(AnyNumber());
 			ON_CALL(*this, mutex())
-				.WillByDefault(ReturnRef(_mutex));
+				.WillByDefault(ReturnRef(*_mutex));
 			EXPECT_CALL(*this, mutex()).Times(AnyNumber());
 			ON_CALL(Const(*this), mutex())
-				.WillByDefault(ReturnRef(_mutex));
+				.WillByDefault(ReturnRef(*_mutex));
 			EXPECT_CALL(Const(*this), mutex()).Times(AnyNumber());
 		}
 
@@ -115,6 +122,8 @@ class MockDistributedNode :
 			EXPECT_CALL(*this, getWeight).Times(AnyNumber());
 			EXPECT_CALL(*this, setState).Times(AnyNumber());
 			EXPECT_CALL(*this, state).Times(AnyNumber());
+			EXPECT_CALL(*this, data()).Times(AnyNumber());
+			EXPECT_CALL(Const(*this), data()).Times(AnyNumber());
 			EXPECT_CALL(*this, getIncomingArcs()).Times(AnyNumber());
 			EXPECT_CALL(*this, getIncomingArcs(_)).Times(AnyNumber());
 			EXPECT_CALL(*this, getOutgoingArcs()).Times(AnyNumber());
@@ -125,15 +134,15 @@ class MockDistributedNode :
 
 	};
 
-template<typename T, template<typename> class Mutex>
-inline void to_json(nlohmann::json& j, const MockDistributedNode<T, Mutex>& mock) {
+template<typename T>
+inline void to_json(nlohmann::json& j, const MockDistributedNode<T>& mock) {
 	j["id"] = mock.getId();
 	j["data"] = mock.mutex().data();
 	j["weight"] = mock.getWeight();
 }
 
-template<typename T, template<typename> class Mutex>
-inline void from_json(const nlohmann::json& j, MockDistributedNode<T, Mutex>& mock) {
+template<typename T>
+inline void from_json(const nlohmann::json& j, MockDistributedNode<T>& mock) {
 	ON_CALL(mock, getId)
 		.WillByDefault(Return(j.at("id").get<DistributedId>()));
 	EXPECT_CALL(mock, getId).Times(AnyNumber());

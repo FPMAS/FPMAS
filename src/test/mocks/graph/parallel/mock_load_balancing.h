@@ -5,9 +5,9 @@
 
 #include "api/graph/parallel/load_balancing.h"
 
-template<typename NodeType>
-class MockLoadBalancing : public FPMAS::api::graph::parallel::LoadBalancing<NodeType> {
-	typedef FPMAS::api::graph::parallel::LoadBalancing<NodeType> Base;
+template<typename T>
+class MockLoadBalancing : public FPMAS::api::graph::parallel::LoadBalancing<T> {
+	typedef FPMAS::api::graph::parallel::LoadBalancing<T> Base;
 	using typename Base::NodeMap;
 	public:
 		using typename Base::PartitionMap;

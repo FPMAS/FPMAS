@@ -26,8 +26,8 @@ using ::testing::SizeIs;
  */
 class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 	protected:
-		template<typename NodeType>
-		using location_manager = FPMAS::graph::parallel::LocationManager<NodeType, FPMAS::communication::TypedMpi>;
+		template<typename T>
+		using location_manager = FPMAS::graph::parallel::LocationManager<T>;
 		BasicDistributedGraph<
 			int,
 			MockSyncMode<>,
@@ -40,10 +40,10 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 			location_manager,
 			MockLoadBalancing> graph;
 
-		MockSyncLinker<FPMAS::graph::parallel::DistributedArc<int, MockMutex>> mock_sync_linker;
+		MockSyncLinker<int> mock_sync_linker;
 		MockDataSync mock_data_sync;
 
-		MockLoadBalancing<FPMAS::graph::parallel::DistributedNode<int, MockMutex>>
+		MockLoadBalancing<FPMAS::graph::parallel::DistributedNode<int>>
 			::PartitionMap partition;
 
 		void SetUp() override {
@@ -58,7 +58,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 				.Times(AnyNumber());
 
 			if(graph.getMpiCommunicator().getRank() == 0) {
-				EXPECT_CALL(graph.getSyncModeRuntime(), setUp)
+				EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex)
 					.Times(graph.getMpiCommunicator().getSize());
 				auto firstNode = graph.buildNode();
 				EXPECT_CALL(dynamic_cast<MockMutex<int>&>(firstNode->mutex()), lock).Times(AnyNumber());
@@ -78,10 +78,10 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 			}
 			else if(graph.getMpiCommunicator().getSize() == 2) {
 				// 1 local node + 1 distant nodes will be created
-				EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(2);
+				EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(2);
 			} else {
 				// 1 local node + 2 distant nodes will be created
-				EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(3);
+				EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(3);
 			}
 		}
 };

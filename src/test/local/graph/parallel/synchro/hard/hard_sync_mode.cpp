@@ -22,50 +22,41 @@ using FPMAS::graph::parallel::synchro::hard::HardSyncLinker;
 class HardDataSyncTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<2, 4> comm;
-		MockMutexServer<int> mutexServer;
-		HardDataSync<
-			MockDistributedNode<int, MockMutex>,
-			MockDistributedArc<int, MockMutex>,
-			MockTerminationAlgorithm> dataSync {comm, mutexServer};
+		MockMutexServer<int> mutex_server;
+		MockTerminationAlgorithm termination {comm};
+		HardDataSync<int> data_sync {mutex_server, termination};
 
 };
 
 TEST_F(HardDataSyncTest, synchronize) {
-	EXPECT_CALL(
-		const_cast<MockTerminationAlgorithm&>(dataSync.getTerminationAlgorithm()),
-		terminate(Ref(mutexServer))
-		);
-	dataSync.synchronize();
+	EXPECT_CALL(termination, terminate(Ref(mutex_server)));
+	data_sync.synchronize();
 }
 
 class HardSyncLinkerTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<2, 4> comm;
 		MockLinkServer server;
-		MockLinkClient<MockDistributedArc<int, MockMutex>> client;
-		HardSyncLinker<
-			MockDistributedArc<int, MockMutex>,
-			MockTerminationAlgorithm
-		> syncLinker {comm, client, server};
+		MockLinkClient<int> client;
+		MockTerminationAlgorithm termination {comm};
+		HardSyncLinker<int> syncLinker {client, server, termination};
 
 };
 
 TEST_F(HardSyncLinkerTest, link) {
-	MockDistributedArc<int, MockMutex> arc;
+	MockDistributedArc<int> arc;
 	EXPECT_CALL(client, link(&arc));
 	syncLinker.link(&arc);
 }
 
 TEST_F(HardSyncLinkerTest, unlink) {
-	MockDistributedArc<int, MockMutex> arc;
+	MockDistributedArc<int> arc;
 	EXPECT_CALL(client, unlink(&arc));
 	syncLinker.unlink(&arc);
 }
 
 TEST_F(HardSyncLinkerTest, synchronize) {
-	EXPECT_CALL(
-		const_cast<MockTerminationAlgorithm&>(syncLinker.getTerminationAlgorithm()),
-		terminate(Ref(server)));
+	EXPECT_CALL(termination, terminate(Ref(server)));
 
 	syncLinker.synchronize();
 }

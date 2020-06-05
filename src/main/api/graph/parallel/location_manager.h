@@ -3,12 +3,14 @@
 
 #include "api/graph/base/id.h"
 #include "graph/parallel/distributed_id.h"
+#include "api/graph/parallel/distributed_node.h"
 
 namespace FPMAS::api::graph::parallel {
 
-	template<typename DistNode>
+	template<typename T>
 	class LocationManager {
 		public:
+			typedef api::graph::parallel::DistributedNode<T> DistNode;
 			typedef 
 				std::unordered_map<DistributedId, DistNode*, FPMAS::api::graph::base::IdHash<DistributedId>>
 				NodeMap;

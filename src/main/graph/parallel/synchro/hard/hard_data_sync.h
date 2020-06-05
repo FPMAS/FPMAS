@@ -7,21 +7,20 @@
 
 namespace FPMAS::graph::parallel::synchro::hard {
 
-	template<typename NodeType, typename ArcType, typename TerminationAlgorithm>
+	template<typename T>
 		class HardDataSync : public api::graph::parallel::synchro::DataSync {
-			typedef
-			FPMAS::api::graph::parallel::synchro::hard::MutexServer<typename NodeType::DataType>
+			typedef api::graph::parallel::synchro::hard::MutexServer<T>
 				MutexServer;
+			typedef api::graph::parallel::synchro::hard::TerminationAlgorithm
+				TerminationAlgorithm;
 
-			TerminationAlgorithm termination;
 			MutexServer& mutex_server;
+			TerminationAlgorithm& termination;
 
 			public:
-				HardDataSync(FPMAS::api::communication::MpiCommunicator& comm, MutexServer& server)
-					: termination(comm), mutex_server(server) {
+				HardDataSync(MutexServer& server, TerminationAlgorithm& termination)
+					: mutex_server(server), termination(termination) {
 				}
-
-				const TerminationAlgorithm& getTerminationAlgorithm() const {return termination;}
 
 				void synchronize() override {
 					termination.terminate(mutex_server);

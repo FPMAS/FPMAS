@@ -9,7 +9,7 @@ using FPMAS::graph::parallel::BasicDistributedGraph;
 using FPMAS::graph::parallel::DistributedNode;
 using FPMAS::graph::parallel::DistributedArc;
 using FPMAS::graph::parallel::DefaultMpiSetUp;
-using FPMAS::graph::parallel::DefaultLocationManager;
+using FPMAS::graph::parallel::LocationManager;
 using FPMAS::graph::parallel::synchro::hard::HardSyncMode;
 using FPMAS::api::graph::parallel::LocationState;
 using FPMAS::communication::TypedMpi;
@@ -18,18 +18,22 @@ using FPMAS::graph::parallel::synchro::hard::HardSyncMutex;
 using FPMAS::graph::parallel::synchro::hard::MutexClient;
 using FPMAS::graph::parallel::synchro::hard::MutexServer;
 using FPMAS::graph::parallel::synchro::hard::TerminationAlgorithm;
+using FPMAS::graph::parallel::synchro::hard::DataUpdatePack;
 
 class MPI_HardSyncMutexSelfReadTest : public ::testing::Test {
 	protected:
 		MpiCommunicator comm;
 		TerminationAlgorithm<TypedMpi> termination {comm};
+		TypedMpi<DistributedId> id_mpi {comm};
+		TypedMpi<int> data_mpi {comm};
+		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = comm.getRank();
 		LocationState state = LocationState::DISTANT;
 		int location = comm.getRank();
 
-		MutexServer<int, TypedMpi> server {comm};
-		MutexClient<int, TypedMpi> client {comm, server};
+		MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi};
+		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server};
 		HardSyncMutex<int> mutex {data};
 
 		void SetUp() override {
@@ -57,13 +61,16 @@ class Mpi_MutexServerRaceCondition : public ::testing::Test {
 		static const int NUM_ACQUIRE = 500;
 		MpiCommunicator comm;
 		TerminationAlgorithm<TypedMpi> termination {comm};
+		TypedMpi<DistributedId> id_mpi {comm};
+		TypedMpi<int> data_mpi {comm};
+		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = 0;
 		LocationState state = LocationState::DISTANT;
 		int location = 0;
 
-		MutexServer<int, TypedMpi> server {comm};
-		MutexClient<int, TypedMpi> client {comm, server};
+		MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi};
+		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server};
 		HardSyncMutex<int> mutex {data};
 
 		void SetUp() override {
@@ -95,7 +102,7 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 			DistributedNode,
 			DistributedArc,
 			DefaultMpiSetUp,
-			DefaultLocationManager,
+			LocationManager,
 			MockLoadBalancing
 				> graph;
 

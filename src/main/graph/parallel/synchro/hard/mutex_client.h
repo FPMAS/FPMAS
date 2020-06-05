@@ -11,35 +11,37 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	using FPMAS::api::graph::parallel::synchro::hard::Epoch;
 	using FPMAS::api::graph::parallel::synchro::hard::Tag;
 	
-	template<typename T, template<typename> class Mpi>
+	template<typename T>
 		class MutexClient :
-			public FPMAS::api::graph::parallel::synchro::hard::MutexClient<T> {
-				typedef FPMAS::api::graph::parallel::synchro::hard::MutexServer<T>
+			public api::graph::parallel::synchro::hard::MutexClient<T> {
+				typedef api::graph::parallel::synchro::hard::MutexServer<T>
 					MutexServerBase;
-				typedef FPMAS::api::graph::parallel::synchro::hard::MutexClient<T>
+				typedef api::graph::parallel::synchro::hard::MutexClient<T>
 					MutexClientBase;
-				typedef FPMAS::api::graph::parallel::synchro::hard::HardSyncMutex<T>
+				typedef api::graph::parallel::synchro::hard::HardSyncMutex<T>
 					HardSyncMutex;
-				typedef FPMAS::api::graph::parallel::synchro::hard::MutexRequest
+				typedef api::graph::parallel::synchro::hard::MutexRequest
 					MutexRequest;
-				typedef FPMAS::api::communication::MpiCommunicator MpiCommunicator;
+				typedef api::communication::MpiCommunicator MpiCommunicator;
+				typedef api::communication::TypedMpi<DistributedId> IdMpi;
+				typedef api::communication::TypedMpi<T> DataMpi;
+				typedef api::communication::TypedMpi<DataUpdatePack<T>> DataUpdateMpi;
 
 				private:
 				MpiCommunicator& comm;
-				Mpi<DistributedId> id_mpi {comm};
-				Mpi<T> dataMpi {comm};
-				Mpi<DataUpdatePack<T>> data_update_mpi {comm};
+				IdMpi& id_mpi;
+				DataMpi& data_mpi;
+				DataUpdateMpi& data_update_mpi;
 				MutexServerBase& mutex_server;
 
 				void waitSendRequest(MPI_Request*);
 
 				public:
-				MutexClient(MpiCommunicator& comm, MutexServerBase& mutex_server)
-					: comm(comm), mutex_server(mutex_server) {}
-
-				const Mpi<DistributedId>& getIdMpi() const {return id_mpi;}
-				const Mpi<T>& getDataMpi() const {return dataMpi;}
-				const Mpi<DataUpdatePack<T>>& getDataUpdateMpi() const {return data_update_mpi;}
+				MutexClient(
+						MpiCommunicator& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi,
+						MutexServerBase& mutex_server)
+					: comm(comm), id_mpi(id_mpi), data_mpi(data_mpi), data_update_mpi(data_update_mpi),
+					mutex_server(mutex_server) {}
 
 				T read(DistributedId, int location) override;
 				void releaseRead(DistributedId, int location) override;
@@ -54,8 +56,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				void unlockShared(DistributedId, int location) override;
 			};
 
-	template<typename T, template<typename> class Mpi>
-		T MutexClient<T, Mpi>::read(DistributedId id, int location) {
+	template<typename T>
+		T MutexClient<T>::read(DistributedId id, int location) {
 			FPMAS_LOGD(this->comm.getRank(), "READ", "reading data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
@@ -71,11 +73,11 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			MPI_Status read_response_status;
 			this->comm.probe(location, mutex_server.getEpoch() | Tag::READ_RESPONSE, &read_response_status);
 
-			return dataMpi.recv(&read_response_status);
+			return data_mpi.recv(&read_response_status);
 		}
 
-	template<typename T, template<typename> class Mpi>
-		void MutexClient<T, Mpi>::releaseRead(DistributedId id, int location) {
+	template<typename T>
+		void MutexClient<T>::releaseRead(DistributedId id, int location) {
 
 			MPI_Request req;
 			id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK_SHARED, &req);
@@ -83,8 +85,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			this->waitSendRequest(&req);
 		}
 
-	template<typename T, template<typename> class Mpi>
-		T MutexClient<T, Mpi>::acquire(DistributedId id, int location) {
+	template<typename T>
+		T MutexClient<T>::acquire(DistributedId id, int location) {
 			FPMAS_LOGD(this->comm.getRank(), "ACQUIRE", "acquiring data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
@@ -98,7 +100,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			MPI_Status acquire_response_status;
 			this->comm.probe(location, mutex_server.getEpoch() | Tag::ACQUIRE_RESPONSE, &acquire_response_status);
 
-			return dataMpi.recv(&acquire_response_status);
+			return data_mpi.recv(&acquire_response_status);
 		}
 
 	/**
@@ -108,8 +110,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * @param id id of the data to read
 	 * @param location rank of the data location
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexClient<T, Mpi>::releaseAcquire(DistributedId id, const T& data, int location) {
+	template<typename T>
+	void MutexClient<T>::releaseAcquire(DistributedId id, const T& data, int location) {
 		DataUpdatePack<T> update {id, data};
 
 		MPI_Request req;
@@ -118,8 +120,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		this->waitSendRequest(&req);
 	}
 
-	template<typename T, template<typename> class Mpi>
-	void MutexClient<T, Mpi>::lock(DistributedId id, int location) {
+	template<typename T>
+	void MutexClient<T>::lock(DistributedId id, int location) {
 		MPI_Request req;
 		this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::LOCK, &req);
 
@@ -134,16 +136,16 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		comm.recv(&lock_response_status);
 	}
 
-	template<typename T, template<typename> class Mpi>
-	void MutexClient<T, Mpi>::unlock(DistributedId id, int location) {
+	template<typename T>
+	void MutexClient<T>::unlock(DistributedId id, int location) {
 		MPI_Request req;
 		this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK, &req);
 
 		this->waitSendRequest(&req);
 	}
 
-	template<typename T, template<typename> class Mpi>
-		void MutexClient<T, Mpi>::lockShared(DistributedId id, int location) {
+	template<typename T>
+		void MutexClient<T>::lockShared(DistributedId id, int location) {
 			MPI_Request req;
 			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::LOCK_SHARED, &req);
 
@@ -157,8 +159,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			comm.recv(&lock_response_status);
 		}
 
-	template<typename T, template<typename> class Mpi>
-		void MutexClient<T, Mpi>::unlockShared(DistributedId id, int location) {
+	template<typename T>
+		void MutexClient<T>::unlockShared(DistributedId id, int location) {
 			MPI_Request req;
 			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK_SHARED, &req);
 
@@ -168,8 +170,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * Allows to respond to other request while a request (sent in a synchronous
 	 * message) is sending, in order to avoid deadlock.
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexClient<T, Mpi>::waitSendRequest(MPI_Request* req) {
+	template<typename T>
+	void MutexClient<T>::waitSendRequest(MPI_Request* req) {
 		FPMAS_LOGD(this->comm.getRank(), "WAIT", "wait for send");
 		bool sent = comm.test(req);
 

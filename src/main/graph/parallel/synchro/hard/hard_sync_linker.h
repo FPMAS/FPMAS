@@ -13,25 +13,27 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	using api::graph::parallel::synchro::hard::Tag;
 	using api::graph::parallel::LocationState;
 
-	template<typename Node, typename Arc, template<typename> class Mpi>
+	template<typename T>
 	class LinkServer
 		: public FPMAS::api::graph::parallel::synchro::hard::LinkServer {
+			public:
+				typedef api::graph::parallel::DistributedArc<T> ArcApi;
+				typedef api::communication::TypedMpi<ArcPtrWrapper<T>> ArcMpi;
+				typedef api::communication::TypedMpi<DistributedId> IdMpi;
 			private:
 			Epoch epoch = Epoch::EVEN;
-			FPMAS::api::communication::MpiCommunicator& comm;
-			Mpi<DistributedId> id_mpi;
-			Mpi<Arc> arc_mpi;
+			api::communication::MpiCommunicator& comm;
+			IdMpi& id_mpi;
+			ArcMpi& arc_mpi;
 
-			FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>& graph;
+			FPMAS::api::graph::parallel::DistributedGraph<T>& graph;
 
 			public:
 				LinkServer(
-					FPMAS::api::communication::MpiCommunicator& comm,
-					FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>& graph)
-					: comm(comm), id_mpi(comm), arc_mpi(comm), graph(graph) {}
-
-				Mpi<DistributedId>& getIdMpi() {return id_mpi;};
-				Mpi<Arc>& getArcMpi() {return arc_mpi;};
+						api::communication::MpiCommunicator& comm,
+						IdMpi& id_mpi, ArcMpi& arc_mpi,
+						FPMAS::api::graph::parallel::DistributedGraph<T>& graph)
+					:  comm(comm), id_mpi(id_mpi), arc_mpi(arc_mpi), graph(graph) {}
 
 				Epoch getEpoch() const override {return epoch;}
 				void setEpoch(Epoch epoch) override {this->epoch = epoch;}
@@ -39,12 +41,12 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				void handleIncomingRequests() override;
 		};
 
-	template<typename Node, typename Arc, template<typename> class Mpi>
-		void LinkServer<Node, Arc, Mpi>::handleIncomingRequests() {
+	template<typename T>
+		void LinkServer<T>::handleIncomingRequests() {
 			MPI_Status req_status;
 			// Check read request
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LINK, &req_status)) {
-				Arc arc = arc_mpi.recv(&req_status);
+				ArcApi* arc = arc_mpi.recv(&req_status);
 				FPMAS_LOGD(this->comm.getRank(), "RECV", "link request from %i", req_status.MPI_SOURCE);
 				graph.importArc(arc);
 			}
@@ -55,31 +57,34 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			}
 		}
 
-	template<typename Arc, template<typename> class Mpi>
-		class LinkClient : public FPMAS::api::graph::parallel::synchro::hard::LinkClient<Arc> {
-			typedef FPMAS::api::communication::MpiCommunicator comm_t;
-			typedef FPMAS::api::graph::parallel::synchro::hard::LinkServer link_server;
+	template<typename T>
+		class LinkClient : public FPMAS::api::graph::parallel::synchro::hard::LinkClient<T> {
+			typedef FPMAS::api::graph::parallel::synchro::hard::LinkServer LinkServer;
+			public:
+				typedef api::graph::parallel::DistributedArc<T> ArcApi;
+				typedef api::communication::TypedMpi<ArcPtrWrapper<T>> ArcMpi;
+				typedef api::communication::TypedMpi<DistributedId> IdMpi;
+
 			private:
-				comm_t& comm;
-				Mpi<DistributedId> id_mpi;
-				Mpi<Arc> arc_mpi;
-				link_server& linkServer;
+				api::communication::MpiCommunicator& comm;
+				IdMpi& id_mpi;
+				ArcMpi& arc_mpi;
+				LinkServer& link_server;
 
 				void waitSendRequest(MPI_Request*);
 
 			public:
-				LinkClient(comm_t& comm, link_server& linkServer)
-					: comm(comm), id_mpi(comm), arc_mpi(comm), linkServer(linkServer) {}
+				LinkClient(api::communication::MpiCommunicator& comm,
+						IdMpi& id_mpi, ArcMpi& arc_mpi,
+						LinkServer& link_server)
+					: comm(comm), id_mpi(id_mpi), arc_mpi(arc_mpi), link_server(link_server) {}
 
-				Mpi<DistributedId>& getIdMpi() {return id_mpi;}
-				Mpi<Arc>& getArcMpi() {return arc_mpi;}
-
-				void link(const Arc*) override;
-				void unlink(const Arc*) override;
+				void link(const ArcApi*) override;
+				void unlink(const ArcApi*) override;
 		};
 
-	template<typename Arc, template<typename> class Mpi>
-		void LinkClient<Arc, Mpi>::link(const Arc* arc) {
+	template<typename T>
+		void LinkClient<T>::link(const ArcApi* arc) {
 			if(arc->state() == LocationState::DISTANT) {
 				bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
 				bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
@@ -90,14 +95,14 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				// made to different procs
 				if(distantSrc) {
 					arc_mpi.Issend(
-							*arc, arc->getSourceNode()->getLocation(),
-							linkServer.getEpoch() | Tag::LINK, &reqSrc
+							const_cast<ArcApi*>(arc), arc->getSourceNode()->getLocation(),
+							link_server.getEpoch() | Tag::LINK, &reqSrc
 							); 
 				}
 				if(distantTgt) {
 					arc_mpi.Issend(
-							*arc, arc->getTargetNode()->getLocation(),
-							linkServer.getEpoch() | Tag::LINK, &reqTgt
+							const_cast<ArcApi*>(arc), arc->getTargetNode()->getLocation(),
+							link_server.getEpoch() | Tag::LINK, &reqTgt
 							); 
 				}
 				// Sequentially waits for each request : if reqTgt completes
@@ -112,8 +117,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			}
 		}
 
-	template<typename Arc, template<typename> class Mpi>
-		void LinkClient<Arc, Mpi>::unlink(const Arc* arc) {
+	template<typename T>
+		void LinkClient<T>::unlink(const ArcApi* arc) {
 			if(arc->state() == LocationState::DISTANT) {
 				bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
 				bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
@@ -125,13 +130,13 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				if(distantSrc) {
 					this->id_mpi.Issend(
 							arc->getId(), arc->getSourceNode()->getLocation(),
-							linkServer.getEpoch() | Tag::UNLINK, &reqSrc
+							link_server.getEpoch() | Tag::UNLINK, &reqSrc
 							); 
 				}
 				if(distantTgt) {
 					this->id_mpi.Issend(
 							arc->getId(), arc->getTargetNode()->getLocation(),
-							linkServer.getEpoch() | Tag::UNLINK, &reqTgt
+							link_server.getEpoch() | Tag::UNLINK, &reqTgt
 							); 
 				}
 				// Sequentially waits for each request : if reqTgt completes
@@ -150,49 +155,53 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * Allows to respond to other request while a request (sent in a synchronous
 	 * message) is sending, in order to avoid deadlock.
 	 */
-	template<typename T, template<typename> class Mpi>
-	void LinkClient<T, Mpi>::waitSendRequest(MPI_Request* req) {
+	template<typename T>
+	void LinkClient<T>::waitSendRequest(MPI_Request* req) {
 		FPMAS_LOGD(this->comm.getRank(), "WAIT", "wait for send");
 		bool sent = comm.test(req);
 
 		while(!sent) {
-			linkServer.handleIncomingRequests();
+			link_server.handleIncomingRequests();
 			sent = comm.test(req);
 		}
 	}
 
-	template<typename Arc, typename TerminationAlgorithm>
-	class HardSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<Arc> {
+	template<typename T>
+	class HardSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<T> {
+		public:
+			typedef api::graph::parallel::synchro::hard::TerminationAlgorithm
+				TerminationAlgorithm;
+			typedef api::graph::parallel::DistributedArc<T> ArcApi;
+
 		private:
-			typedef FPMAS::api::graph::parallel::synchro::hard::LinkClient<Arc> link_client;
-			typedef FPMAS::api::graph::parallel::synchro::hard::LinkServer link_server;
+			typedef api::graph::parallel::synchro::hard::LinkClient<T> LinkClient;
+			typedef api::graph::parallel::synchro::hard::LinkServer LinkServer;
 
-			FPMAS::api::communication::MpiCommunicator& comm;
-			link_client& linkClient;
-			link_server& linkServer;
+			LinkClient& link_client;
+			LinkServer& link_server;
 
-			TerminationAlgorithm termination {comm};
+			TerminationAlgorithm& termination;
 
 		public:
-			HardSyncLinker(FPMAS::api::communication::MpiCommunicator& comm, link_client& linkClient, link_server& linkServer)
-				: comm(comm), linkClient(linkClient), linkServer(linkServer) {}
+			HardSyncLinker(
+					LinkClient& link_client, LinkServer& link_server, TerminationAlgorithm& termination)
+				: link_client(link_client), link_server(link_server), termination(termination) {}
 
 			const TerminationAlgorithm& getTerminationAlgorithm() const {
 				return termination;
 			}
 
-			void link(const Arc* arc) override {
-				linkClient.link(arc);
+			void link(const ArcApi* arc) override {
+				link_client.link(arc);
 			};
 
-			void unlink(const Arc* arc) override {
-				linkClient.unlink(arc);
+			void unlink(const ArcApi* arc) override {
+				link_client.unlink(arc);
 			};
 
 			void synchronize() override {
-				termination.terminate(linkServer);
+				termination.terminate(link_server);
 			};
-
 	};
 }
 

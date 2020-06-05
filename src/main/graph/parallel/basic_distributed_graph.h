@@ -11,8 +11,8 @@
 #define DIST_GRAPH_PARAMS\
 	typename T,\
 	typename SyncMode,\
-	template<typename, template<typename> class> class DistNodeImpl,\
-	template<typename, template<typename> class> class DistArcImpl,\
+	template<typename> class DistNodeImpl,\
+	template<typename> class DistArcImpl,\
 	typename MpiSetUp,\
 	template<typename> class LocationManagerImpl,\
 	template<typename> class LoadBalancingImpl
@@ -40,9 +40,9 @@ namespace FPMAS::graph::parallel {
 		public api::graph::parallel::DistributedGraph<T>
 		 {
 			public:
-			typedef DistNodeImpl<T, SyncMode::template MutexType> DistNodeType;
-			typedef DistArcImpl<T, SyncMode::template MutexType> DistArcType;
-			typedef typename SyncMode::template SyncModeRuntimeType<T, DistNodeType, DistArcType> SyncModeRuntimeType;
+			typedef DistNodeImpl<T> DistNodeType;
+			typedef DistArcImpl<T> DistArcType;
+			typedef typename SyncMode::template SyncModeRuntimeType<T> SyncModeRuntimeType;
 
 			static_assert(
 					std::is_base_of<api::graph::parallel::DistributedNode<T>, DistNodeType>::value,
@@ -57,10 +57,8 @@ namespace FPMAS::graph::parallel {
 			typedef api::graph::parallel::DistributedGraph<T> DistGraphBase;
 
 			public:
-			using typename DistGraphBase::NodeType;
-			using typename DistGraphBase::NodeBase;
-			using typename DistGraphBase::ArcType;
-			using typename DistGraphBase::ArcBase;
+			typedef api::graph::parallel::DistributedNode<T> NodeType;
+			typedef api::graph::parallel::DistributedArc<T> ArcType;
 			using typename DistGraphBase::LayerIdType;
 			using typename DistGraphBase::NodeMap;
 			using typename DistGraphBase::PartitionMap;
@@ -70,16 +68,20 @@ namespace FPMAS::graph::parallel {
 
 			private:
 			communicator mpi_communicator;
-			mpi<DistNodeType> nodeMpi {mpi_communicator};
-			mpi<DistArcType> arcMpi {mpi_communicator};
+			mpi<DistributedId> id_mpi {mpi_communicator};
+			mpi<std::pair<DistributedId, int>> location_mpi {mpi_communicator};
+			mpi<NodePtrWrapper<T>> node_mpi {mpi_communicator};
+			mpi<ArcPtrWrapper<T>> arc_mpi {mpi_communicator};
 
-			LocationManagerImpl<NodeType> location_manager;
+			LocationManagerImpl<T> location_manager;
 			SyncModeRuntimeType sync_mode_runtime;
-			LoadBalancingImpl<NodeType> load_balancing;
+			LoadBalancingImpl<T> load_balancing;
 
 
 			public:
-			BasicDistributedGraph() : location_manager(mpi_communicator), sync_mode_runtime(*this, mpi_communicator) {
+			BasicDistributedGraph() :
+				location_manager(mpi_communicator, id_mpi, location_mpi),
+				sync_mode_runtime(*this, mpi_communicator) {
 				// Initialization in the body of this (derived) class of the
 				// (base) fields nodeId and arcId, to ensure that
 				// mpi_communicator is initialized (as a field of this derived
@@ -95,22 +97,22 @@ namespace FPMAS::graph::parallel {
 				return mpi_communicator;
 			};
 
-			const mpi<DistNodeType>& getNodeMpi() const {return nodeMpi;}
-			const mpi<DistArcType>& getArcMpi() const {return arcMpi;}
+			const mpi<NodePtrWrapper<T>>& getNodeMpi() const {return node_mpi;}
+			const mpi<ArcPtrWrapper<T>>& getArcMpi() const {return arc_mpi;}
 
 			void clear(ArcType*) override;
 			void clear(NodeType*) override;
 
-			NodeType* importNode(const NodeType& node) override;
-			ArcType* importArc(const ArcType& arc) override;
+			NodeType* importNode(NodeType* node) override;
+			ArcType* importArc(ArcType* arc) override;
 
 			const SyncModeRuntimeType& getSyncModeRuntime() const {return sync_mode_runtime;}
 
-			const LoadBalancingImpl<NodeType>& getLoadBalancing() const {
+			const LoadBalancingImpl<T>& getLoadBalancing() const {
 				return load_balancing;
 			};
 
-			const LocationManagerImpl<NodeType>&
+			const LocationManagerImpl<T>&
 				getLocationManager() const override {return location_manager;}
 
 			void removeNode(NodeType*) override {};
@@ -132,12 +134,13 @@ namespace FPMAS::graph::parallel {
 				this->insert(node);
 				location_manager.setLocal(node);
 				location_manager.addManagedNode(node, mpi_communicator.getRank());
-				sync_mode_runtime.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
+				node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
+				//sync_mode_runtime.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
 				return node;
 			}
 
 			template<typename... Args> ArcType* link(
-					NodeBase* const src, NodeBase* const tgt, LayerIdType layer,
+					NodeType* const src, NodeType* const tgt, LayerIdType layer,
 					Args... args) {
 				// Locks source and target
 				src->mutex().lock();
@@ -208,28 +211,27 @@ namespace FPMAS::graph::parallel {
 
 	template<DIST_GRAPH_PARAMS>
 	typename BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
-	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importNode(
-			const NodeType& node) {
-		if(this->getNodes().count(node.getId())==0) {
-			auto nodeCopy = new DistNodeType(static_cast<const DistNodeType&>(node));
-			this->insert(nodeCopy);
-			location_manager.setLocal(nodeCopy);
-			sync_mode_runtime.setUp(nodeCopy->getId(), nodeCopy->mutex());
-			return nodeCopy;
+	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importNode(NodeType* node) {
+		if(this->getNodes().count(node->getId())==0) {
+			//auto nodeCopy = new DistNodeType(static_cast<const DistNodeType&>(node));
+			this->insert(node);
+			location_manager.setLocal(node);
+			node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
+			//sync_mode_runtime.setUp(nodeCopy->getId(), nodeCopy->mutex());
+			return node;
 		}
-		auto localNode = this->getNode(node.getId());
+		auto localNode = this->getNode(node->getId());
 		location_manager.setLocal(localNode);
 		return localNode;
 	}
 
 	template<DIST_GRAPH_PARAMS>
 	typename BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
-	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importArc(
-			const ArcType& arc) {
-		if(this->getArcs().count(arc.getId())==0) {
-			DistributedId srcId = arc.getSourceNode()->getId();
+	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importArc(ArcType* arc) {
+		if(this->getArcs().count(arc->getId())==0) {
+			DistributedId srcId = arc->getSourceNode()->getId();
 			NodeType* src;
-			DistributedId tgtId =  arc.getTargetNode()->getId();
+			DistributedId tgtId =  arc->getTargetNode()->getId();
 			NodeType* tgt;
 			LocationState arcLocationState = LocationState::LOCAL;
 			if(this->getNodes().count(srcId) > 0) {
@@ -242,7 +244,8 @@ namespace FPMAS::graph::parallel {
 				src = new DistNodeType(srcId);
 				this->insert(src);
 				location_manager.setDistant(src);
-				sync_mode_runtime.setUp(src->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(src->mutex()));
+				src->setMutex(sync_mode_runtime.buildMutex(src->getId(), src->data()));
+				//sync_mode_runtime.setUp(src->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(src->mutex()));
 			}
 			if(this->getNodes().count(tgtId) > 0) {
 				tgt = this->getNode(tgtId);
@@ -254,24 +257,25 @@ namespace FPMAS::graph::parallel {
 				tgt = new DistNodeType(tgtId);
 				this->insert(tgt);
 				location_manager.setDistant(tgt);
-				sync_mode_runtime.setUp(tgt->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(tgt->mutex()));
+				tgt->setMutex(sync_mode_runtime.buildMutex(tgt->getId(), tgt->data()));
+				//sync_mode_runtime.setUp(tgt->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(tgt->mutex()));
 			}
 			// TODO : ghosts creation part is nice, but this is not
 			// because it can't adapt to any DistArcImpl type, using a generic
 			// copy constructor.
-			auto arcCopy = new DistArcType(static_cast<const DistArcType&>(arc));
-			arcCopy->setState(arcLocationState);
+			//auto arcCopy = new DistArcType(static_cast<const DistArcType&>(arc));
+			arc->setState(arcLocationState);
 
-			arcCopy->setSourceNode(src);
-			src->linkOut(arcCopy);
-			arcCopy->setTargetNode(tgt);
-			tgt->linkIn(arcCopy);
+			arc->setSourceNode(src);
+			src->linkOut(arc);
+			arc->setTargetNode(tgt);
+			tgt->linkIn(arc);
 
-			this->insert(arcCopy);
-			return arcCopy;
+			this->insert(arc);
+			return arc;
 		}
 		// In place updates
-		auto localArc = this->getArc(arc.getId());
+		auto localArc = this->getArc(arc->getId());
 		if(localArc->getSourceNode()->state() == LocationState::LOCAL
 				&& localArc->getTargetNode()->state() == LocationState::LOCAL) {
 			localArc->setState(LocationState::LOCAL);
@@ -287,54 +291,57 @@ namespace FPMAS::graph::parallel {
 
 			// Builds node and arcs export maps
 			std::vector<NodeType*> exportedNodes;
-			std::unordered_map<int, std::vector<DistNodeType>> nodeExportMap;
-			std::unordered_map<int, std::set<DistributedId>> arcIdsToExport;
-			std::unordered_map<int, std::vector<DistArcType>> arcExportMap;
+			std::unordered_map<int, std::vector<NodePtrWrapper<int>>> node_export_map;
+			std::unordered_map<int, std::set<DistributedId>> arc_ids_to_export;
+			std::unordered_map<int, std::vector<ArcPtrWrapper<int>>> arc_export_map;
 			for(auto item : partition) {
 				if(this->getNodes().count(item.first) > 0) {
 					if(item.second != mpi_communicator.getRank()) {
-						auto nodeToExport = this->getNode(item.first);
-						exportedNodes.push_back(nodeToExport);
-						nodeExportMap[item.second].push_back(*static_cast<DistNodeType*>(nodeToExport));
-						for(auto arc :  nodeToExport->getIncomingArcs()) {
+						auto node_to_export = this->getNode(item.first);
+						exportedNodes.push_back(node_to_export);
+						node_export_map[item.second].emplace_back(node_to_export);
+						for(auto arc :  node_to_export->getIncomingArcs()) {
 							// Insert or replace in the IDs set
-							arcIdsToExport[item.second].insert(arc->getId());
+							arc_ids_to_export[item.second].insert(arc->getId());
 						}
-						for(auto arc :  nodeToExport->getOutgoingArcs()) {
+						for(auto arc :  node_to_export->getOutgoingArcs()) {
 							// Insert or replace in the IDs set
-							arcIdsToExport[item.second].insert(arc->getId());
+							arc_ids_to_export[item.second].insert(arc->getId());
 						}
 					}
 				}
 			}
 			// Ensures that each arc is exported once to each process
-			for(auto list : arcIdsToExport) {
+			for(auto list : arc_ids_to_export) {
 				for(auto id : list.second) {
-					arcExportMap[list.first].push_back(*static_cast<DistArcType*>(this->getArc(id)));
+					arc_export_map[list.first].emplace_back(this->getArc(id));
 				}
 			}
 
 			// Serialize and export / import data
-			auto nodeImport = nodeMpi.migrate(nodeExportMap);
+			auto node_import = node_mpi.migrate(node_export_map);
 
-			auto arcImport = arcMpi.migrate(arcExportMap);
+			auto arc_import = arc_mpi.migrate(arc_export_map);
 
-			NodeMap importedNodes;
-			for(auto& importNodeListFromProc : nodeImport) {
-				for(auto& importedNode : importNodeListFromProc.second) {
-					auto node = this->importNode(importedNode);
-					importedNodes.insert({node->getId(), node});
+			NodeMap imported_nodes;
+			for(auto& import_node_list_from_proc : node_import) {
+				for(auto& imported_node : import_node_list_from_proc.second) {
+					auto node = this->importNode(imported_node);
+					imported_nodes.insert({node->getId(), node});
 				}
 			}
-			for(auto& importArcListFromProc : arcImport) {
-				for(const auto& importedArc : importArcListFromProc.second) {
-					this->importArc(importedArc);
-					if(importedArc.getSourceNode() == importedArc.getTargetNode()) {
-						delete importedArc.getSourceNode();
-					} else {
-						delete importedArc.getSourceNode();
-						delete importedArc.getTargetNode();
-					}
+			for(auto& import_arc_list_from_proc : arc_import) {
+				for(auto& imported_arc : import_arc_list_from_proc.second) {
+					this->importArc(imported_arc);
+					// TODO : replace this by inserting nodes in importArc
+					/*
+					 *if(imported_arc.getSourceNode() == imported_arc.getTargetNode()) {
+					 *    delete importedArc.getSourceNode();
+					 *} else {
+					 *    delete importedArc.getSourceNode();
+					 *    delete importedArc.getTargetNode();
+					 *}
+					 */
 				}
 			}
 
@@ -349,7 +356,7 @@ namespace FPMAS::graph::parallel {
 					);
 				clear(node);
 			}
-			location_manager.updateLocations(importedNodes);
+			location_manager.updateLocations(imported_nodes);
 			sync_mode_runtime.getDataSync().synchronize();
 		}
 

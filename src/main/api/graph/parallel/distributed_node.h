@@ -19,6 +19,9 @@ namespace FPMAS::api::graph::parallel {
 			virtual LocationState state() const = 0;
 			virtual void setState(LocationState state) = 0;
 
+			virtual T& data() = 0;
+			virtual const T& data() const = 0;
+			virtual void setMutex(synchro::Mutex<T>*) = 0;
 			virtual synchro::Mutex<T>& mutex() = 0;
 			virtual const synchro::Mutex<T>& mutex() const = 0;
 	};

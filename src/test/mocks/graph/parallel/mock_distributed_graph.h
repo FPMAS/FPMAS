@@ -15,18 +15,18 @@ class MockDistributedGraph :
 		typedef FPMAS::api::graph::parallel::DistributedGraph<T>
 			GraphBase;
 		public:
-		using typename GraphBase::NodeType;
+		typedef FPMAS::api::graph::parallel::DistributedNode<T> NodeType;
+		typedef FPMAS::api::graph::parallel::DistributedArc<T> ArcType;
 		using typename GraphBase::NodeMap;
-		using typename GraphBase::ArcType;
 		using typename GraphBase::ArcMap;
 		using typename GraphBase::PartitionMap;
 
 		MOCK_METHOD(
-				const FPMAS::api::graph::parallel::LocationManager<FPMAS::api::graph::parallel::DistributedNode<T>>&,
+				const FPMAS::api::graph::parallel::LocationManager<T>&,
 				getLocationManager, (), (const, override));
 
-		MOCK_METHOD(NodeType*, importNode, (const NodeType&), (override));
-		MOCK_METHOD(ArcType*, importArc, (const ArcType&), (override));
+		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
+		MOCK_METHOD(ArcType*, importArc, (ArcType*), (override));
 		MOCK_METHOD(void, clear, (ArcType*), (override));
 		MOCK_METHOD(void, clear, (NodeType*), (override));
 

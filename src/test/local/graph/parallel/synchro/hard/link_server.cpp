@@ -13,6 +13,7 @@ using ::testing::Property;
 using ::testing::Return;
 using ::testing::ReturnPointee;
 
+using FPMAS::graph::parallel::ArcPtrWrapper;
 using FPMAS::graph::parallel::synchro::hard::Epoch;
 using FPMAS::graph::parallel::synchro::hard::Tag;
 using FPMAS::graph::parallel::synchro::hard::LinkServer;
@@ -32,17 +33,17 @@ class LinkServerTest : public ::testing::Test {
 
 	protected:
 		MockMpiCommunicator<7, 16> comm;
+		MockMpi<DistributedId> id_mpi {comm};
+		MockMpi<ArcPtrWrapper<int>> arc_mpi {comm};
+
 		MockDistributedGraph<
 			int,
-			MockDistributedNode<int, MockMutex>,
-			MockDistributedArc<int, MockMutex>
-			> mockGraph;
+			MockDistributedNode<int>,
+			MockDistributedArc<int>
+			> mock_graph;
 
-		LinkServer<
-			MockDistributedNode<int, MockMutex>,
-			MockDistributedArc<int, MockMutex>,
-			MockMpi
-			> linkServer {comm, mockGraph};
+		LinkServer<int> linkServer
+			{comm, id_mpi, arc_mpi, mock_graph};
 
 		void SetUp() override {
 			ON_CALL(comm, Iprobe).WillByDefault(Return(false));
@@ -53,26 +54,26 @@ class LinkServerTest : public ::testing::Test {
 			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::LINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			MockDistributedArc<int, MockMutex> mockArc {DistributedId(15, 2), 7};
-			EXPECT_CALL(linkServer.getArcMpi(), recv(_))
+			MockDistributedArc<int> mock_arc {DistributedId(15, 2), 7};
+			EXPECT_CALL(arc_mpi, recv(_))
 				.After(probe)
-				.WillOnce(Return(mockArc));
+				.WillOnce(Return(&mock_arc));
 
-			EXPECT_CALL(mockGraph, importArc(Property(
-					&FPMAS::api::graph::parallel::DistributedArc<int>::getId, mockArc.getId())));
+			EXPECT_CALL(mock_graph, importArc(Property(
+					&FPMAS::api::graph::parallel::DistributedArc<int>::getId, mock_arc.getId())));
 		}
 
 		void expectUnlink(int source, DistributedId id) {
-			MockDistributedArc<int, MockMutex> mockArc {id, 7};
-			EXPECT_CALL(mockGraph, getArc(id))
-				.WillRepeatedly(Return(&mockArc));
+			MockDistributedArc<int> mock_arc {id, 7};
+			EXPECT_CALL(mock_graph, getArc(id))
+				.WillRepeatedly(Return(&mock_arc));
 			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::UNLINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			EXPECT_CALL(linkServer.getIdMpi(), recv(_))
+			EXPECT_CALL(id_mpi, recv(_))
 				.After(probe)
 				.WillOnce(Return(id));
-			EXPECT_CALL(mockGraph, clear(&mockArc));
+			EXPECT_CALL(mock_graph, clear(&mock_arc));
 		}
 };
 

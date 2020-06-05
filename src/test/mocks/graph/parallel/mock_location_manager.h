@@ -3,12 +3,17 @@
 #include "gmock/gmock.h"
 #include "api/communication/communication.h"
 
-template<typename DistNode>
-class MockLocationManager : public FPMAS::api::graph::parallel::LocationManager<DistNode> {
+template<typename T>
+class MockLocationManager : public FPMAS::api::graph::parallel::LocationManager<T> {
 	public:
-		using typename FPMAS::api::graph::parallel::LocationManager<DistNode>::NodeMap;
+		using typename FPMAS::api::graph::parallel::LocationManager<T>::DistNode;
+		using typename FPMAS::api::graph::parallel::LocationManager<T>::NodeMap;
 
-		MockLocationManager(FPMAS::api::communication::MpiCommunicator&) {}
+		MockLocationManager(
+				FPMAS::api::communication::MpiCommunicator&,
+				FPMAS::api::communication::TypedMpi<DistributedId>&,
+				FPMAS::api::communication::TypedMpi<std::pair<DistributedId, int>>&
+				) {}
 
 		MOCK_METHOD(void, updateLocations, (const NodeMap&), (override));
 

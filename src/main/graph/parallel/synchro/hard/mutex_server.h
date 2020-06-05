@@ -13,7 +13,7 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 	using FPMAS::api::graph::parallel::synchro::hard::MutexRequestType;
 
-	template<typename T, template<typename> class Mpi>
+	template<typename T>
 		class MutexServer :
 			public FPMAS::api::graph::parallel::synchro::hard::MutexServer<T> {
 				typedef FPMAS::api::graph::parallel::synchro::hard::MutexServer<T>
@@ -22,15 +22,18 @@ namespace FPMAS::graph::parallel::synchro::hard {
 					HardSyncMutex;
 				typedef FPMAS::api::graph::parallel::synchro::hard::MutexRequest
 					Request;
-				typedef FPMAS::api::communication::MpiCommunicator MpiComm;
+				typedef api::communication::MpiCommunicator MpiComm;
+				typedef api::communication::TypedMpi<DistributedId> IdMpi;
+				typedef api::communication::TypedMpi<T> DataMpi;
+				typedef api::communication::TypedMpi<DataUpdatePack<T>> DataUpdateMpi;
 
 				private:
 				Epoch epoch = Epoch::EVEN;
 				std::unordered_map<DistributedId, HardSyncMutex*> mutex_map;
 				MpiComm& comm;
-				Mpi<DistributedId> id_mpi {comm};
-				Mpi<T> data_mpi {comm};
-				Mpi<DataUpdatePack<T>> data_update_mpi {comm};
+				IdMpi& id_mpi;
+				DataMpi& data_mpi;
+				DataUpdateMpi& data_update_mpi;
 
 				void handleIncomingReadAcquireLock();
 
@@ -58,11 +61,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				bool handleUnlockShared(DistributedId id, const Request& requestToWait);
 
 				public:
-				MutexServer(MpiComm& comm) : comm(comm) {}
-
-				const Mpi<DistributedId>& getIdMpi() const {return id_mpi;}
-				const Mpi<T>& getDataMpi() const {return data_mpi;}
-				const Mpi<DataUpdatePack<T>>& getDataUpdateMpi() const {return data_update_mpi;}
+				MutexServer(MpiComm& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi)
+					: comm(comm), id_mpi(id_mpi), data_mpi(data_mpi), data_update_mpi(data_update_mpi) {}
 
 				void setEpoch(Epoch e) override {this->epoch = e;}
 				Epoch getEpoch() const override {return this->epoch;}
@@ -84,8 +84,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 				void notify(DistributedId) override;
 			};
 
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::handleIncomingReadAcquireLock() {
+	template<typename T>
+	void MutexServer<T>::handleIncomingReadAcquireLock() {
 		MPI_Status req_status;
 
 		// Check read request
@@ -128,8 +128,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * - acquire request
 	 * - given back data
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::handleIncomingRequests() {
+	template<typename T>
+	void MutexServer<T>::handleIncomingRequests() {
 		MPI_Status req_status;
 		handleIncomingReadAcquireLock();
 
@@ -161,8 +161,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * will respond immediately if the resource is available or put the request in an waiting
 	 * queue otherwise.
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::handleRead(DistributedId id, int source) {
+	template<typename T>
+	void MutexServer<T>::handleRead(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		if(mutex->locked()) {
 			mutex->pushRequest(Request(id, source, MutexRequestType::READ));
@@ -175,8 +175,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * Sends a read response to the source proc, reading data using the
 	 * resourceManager.
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::respondToRead(DistributedId id, int source) {
+	template<typename T>
+	void MutexServer<T>::respondToRead(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::lockShared(mutex);
 		// Perform the response
@@ -190,8 +190,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * will respond if the resource immediately is available or put the request in an waiting
 	 * queue otherwise.
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::handleAcquire(DistributedId id, int source) {
+	template<typename T>
+	void MutexServer<T>::handleAcquire(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		if(mutex->locked() || mutex->lockedShared() > 0) {
 			mutex->pushRequest(Request(id, source, MutexRequestType::ACQUIRE));
@@ -205,16 +205,16 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * Sends an acquire response to the source proc, reading data using the
 	 * resourceManager.
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::respondToAcquire(DistributedId id, int source) {
+	template<typename T>
+	void MutexServer<T>::respondToAcquire(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::lock(mutex);
 		const T& data = mutex->data();
 		data_mpi.send(data, source, epoch | Tag::ACQUIRE_RESPONSE);
 	}
 
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::respondToRequests(HardSyncMutex* mutex) {
+	template<typename T>
+	void MutexServer<T>::respondToRequests(HardSyncMutex* mutex) {
 		std::queue<Request> requests = mutex->requestsToProcess();
 		while(!requests.empty()) {
 			Request request = requests.front();
@@ -237,8 +237,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		}
 	}
 
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::handleReleaseAcquire(DataUpdatePack<T>& update) {
+	template<typename T>
+	void MutexServer<T>::handleReleaseAcquire(DataUpdatePack<T>& update) {
 		auto* mutex = mutex_map.at(update.id);
 		this->MutexServerBase::unlock(mutex);
 		mutex->data() = update.updated_data;
@@ -252,8 +252,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * will respond if the resource immediately is available or put the request in an waiting
 	 * queue otherwise.
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::handleLock(DistributedId id, int source) {
+	template<typename T>
+	void MutexServer<T>::handleLock(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		if(mutex->locked() || mutex->lockedShared() > 0) {
 			mutex->pushRequest(Request(id, source, MutexRequestType::LOCK));
@@ -267,23 +267,23 @@ namespace FPMAS::graph::parallel::synchro::hard {
 	 * Sends an acquire response to the source proc, reading data using the
 	 * resourceManager.
 	 */
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::respondToLock(DistributedId id, int source) {
+	template<typename T>
+	void MutexServer<T>::respondToLock(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::lock(mutex);
 		comm.send(source, epoch | Tag::LOCK_RESPONSE);
 	}
 
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::handleUnlock(DistributedId id) {
+	template<typename T>
+	void MutexServer<T>::handleUnlock(DistributedId id) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::unlock(mutex);
 
 		respondToRequests(mutex);
 	}
 
-	template<typename T, template<typename> class Mpi>
-		void MutexServer<T, Mpi>::handleLockShared(DistributedId id, int source) {
+	template<typename T>
+		void MutexServer<T>::handleLockShared(DistributedId id, int source) {
 			auto* mutex = mutex_map.at(id);
 			if(mutex->locked()) {
 				mutex->pushRequest(Request(id, source, MutexRequestType::LOCK_SHARED));
@@ -292,15 +292,15 @@ namespace FPMAS::graph::parallel::synchro::hard {
 			}
 		}
 
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::respondToLockShared(DistributedId id, int source) {
+	template<typename T>
+	void MutexServer<T>::respondToLockShared(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::lockShared(mutex);
 		comm.send(source, epoch | Tag::LOCK_SHARED_RESPONSE);
 	}
 
-	template<typename T, template<typename> class Mpi>
-		void MutexServer<T, Mpi>::handleUnlockShared(DistributedId id) {
+	template<typename T>
+		void MutexServer<T>::handleUnlockShared(DistributedId id) {
 			auto* mutex = mutex_map.at(id);
 			this->MutexServerBase::unlockShared(mutex);
 
@@ -312,8 +312,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 
 	/* Wait variants */
 
-	template<typename T, template<typename> class Mpi>
-	bool MutexServer<T, Mpi>::respondToRequests(HardSyncMutex* mutex, const Request& requestToWait) {
+	template<typename T>
+	bool MutexServer<T>::respondToRequests(HardSyncMutex* mutex, const Request& requestToWait) {
 		bool requestToWaitProcessed = false;
 		std::queue<Request> requests = mutex->requestsToProcess();
 		while(!requests.empty()) {
@@ -342,8 +342,8 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		return requestToWaitProcessed;
 	}
 
-	template<typename T, template<typename> class Mpi>
-	bool MutexServer<T, Mpi>::handleReleaseAcquire(DataUpdatePack<T>& update, const Request& requestToWait) {
+	template<typename T>
+	bool MutexServer<T>::handleReleaseAcquire(DataUpdatePack<T>& update, const Request& requestToWait) {
 		auto* mutex = mutex_map.at(update.id);
 		this->MutexServerBase::unlock(mutex);
 		mutex->data() = update.updated_data;
@@ -351,24 +351,24 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		return respondToRequests(mutex, requestToWait);
 	}
 
-	template<typename T, template<typename> class Mpi>
-	bool MutexServer<T, Mpi>::handleUnlock(DistributedId id, const Request& requestToWait) {
+	template<typename T>
+	bool MutexServer<T>::handleUnlock(DistributedId id, const Request& requestToWait) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::unlock(mutex);
 
 		return respondToRequests(mutex, requestToWait);
 	}
 
-	template<typename T, template<typename> class Mpi>
-	bool MutexServer<T, Mpi>::handleUnlockShared(DistributedId id, const Request& requestToWait) {
+	template<typename T>
+	bool MutexServer<T>::handleUnlockShared(DistributedId id, const Request& requestToWait) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::unlockShared(mutex);
 
 		return respondToRequests(mutex, requestToWait);
 	}
 
-	template<typename T, template<typename> class Mpi>
-	bool MutexServer<T, Mpi>::handleIncomingRequests(const Request& requestToWait) {
+	template<typename T>
+	bool MutexServer<T>::handleIncomingRequests(const Request& requestToWait) {
 		handleIncomingReadAcquireLock();
 
 		MPI_Status req_status;
@@ -402,16 +402,16 @@ namespace FPMAS::graph::parallel::synchro::hard {
 		return false;
 	}
 
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::wait(const Request& requestToWait) {
+	template<typename T>
+	void MutexServer<T>::wait(const Request& requestToWait) {
 		bool requestProcessed = false;
 		while(!requestProcessed) {
 			requestProcessed = handleIncomingRequests(requestToWait);
 		}
 	}
 
-	template<typename T, template<typename> class Mpi>
-	void MutexServer<T, Mpi>::notify(DistributedId id) {
+	template<typename T>
+	void MutexServer<T>::notify(DistributedId id) {
 		auto* mutex = mutex_map.at(id);
 		return respondToRequests(mutex);
 	}

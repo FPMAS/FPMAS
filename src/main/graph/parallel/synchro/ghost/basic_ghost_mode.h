@@ -14,6 +14,7 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 	class SingleThreadMutex : public FPMAS::api::graph::parallel::synchro::Mutex<T> {
 		private:
 			T& data;
+
 		public:
 			SingleThreadMutex(T& data) : data(data) {}
 
@@ -28,110 +29,114 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 			int sharedLock() override {return 0;};
 	};
 
-	template<typename NodeType, typename ArcType, template<typename> class Mpi>
+	template<typename T>
 	class GhostDataSync : public FPMAS::api::graph::parallel::synchro::DataSync {
+		public:
+			typedef api::graph::parallel::DistributedNode<T> NodeApi;
+			typedef api::communication::TypedMpi<NodeApi*> NodeMpi;
+
+			typedef api::communication::TypedMpi<DistributedId> IdMpi;
+
 		private:
-			FPMAS::api::communication::MpiCommunicator& comm;
-			Mpi<NodeType> node_mpi;
-			Mpi<DistributedId> dist_id_mpi;
-			FPMAS::api::graph::parallel::DistributedGraph<typename NodeType::DataType>& graph;
+			NodeMpi& node_mpi;
+			IdMpi& id_mpi;
+
+			FPMAS::api::graph::parallel::DistributedGraph<T>& graph;
 
 		public:
-			const Mpi<NodeType>& getNodeMpi() const {return node_mpi;}
-			const Mpi<DistributedId>& getDistIdMpi() const {return dist_id_mpi;}
-
 			GhostDataSync(
-				FPMAS::api::communication::MpiCommunicator& comm,
-				FPMAS::api::graph::parallel::DistributedGraph<typename NodeType::DataType>& graph
+				NodeMpi& node_mpi, IdMpi& id_mpi,
+				FPMAS::api::graph::parallel::DistributedGraph<T>& graph
 				)
-				: comm(comm), node_mpi(comm), dist_id_mpi(comm), graph(graph) {}
+				: node_mpi(node_mpi), id_mpi(id_mpi), graph(graph) {}
 
 			void synchronize() override;
 	};
 
-	template<typename NodeType, typename ArcType, template<typename> class Mpi>
-	void GhostDataSync<NodeType, ArcType, Mpi>::synchronize() {
+	template<typename T>
+	void GhostDataSync<T>::synchronize() {
 		std::unordered_map<int, std::vector<DistributedId>> requests;
 		for(auto node : graph.getLocationManager().getDistantNodes()) {
 			requests[node.second->getLocation()].push_back(node.first);
 		}
-		requests = dist_id_mpi.migrate(requests);
+		requests = id_mpi.migrate(requests);
 
-		std::unordered_map<int, std::vector<NodeType>> nodes;
+		std::unordered_map<int, std::vector<NodeApi*>> nodes;
 		for(auto list : requests) {
 			for(auto id : list.second) {
-				nodes[list.first].push_back(*static_cast<NodeType*>(graph.getNode(id)));
+				nodes[list.first].push_back(graph.getNode(id));
 			}
 		}
 		nodes = node_mpi.migrate(nodes);
 		for(auto list : nodes) {
 			for(auto& node : list.second) {
-				auto localNode = graph.getNode(node.getId());
-				localNode->mutex().data() = node.mutex().data();
-				localNode->setWeight(node.getWeight());
+				auto localNode = graph.getNode(node->getId());
+				localNode->mutex().data() = node->mutex().data();
+				localNode->setWeight(node->getWeight());
 			}
 		}
 	}
 
 
-	template<typename NodeType, typename ArcType, template<typename> class Mpi>
-	class GhostSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<ArcType> {
+	template<typename T>
+	class GhostSyncLinker : public FPMAS::api::graph::parallel::synchro::SyncLinker<T> {
 
-		std::vector<const ArcType*> link_buffer;
-		std::vector<const ArcType*> unlink_buffer;
+		public:
+			typedef api::graph::parallel::DistributedArc<T> ArcApi;
+			typedef api::communication::TypedMpi<ArcApi*> ArcMpi;
+			typedef api::communication::TypedMpi<DistributedId> IdMpi;
+		private:
+		std::vector<ArcApi*> link_buffer;
+		std::vector<ArcApi*> unlink_buffer;
 
-		FPMAS::api::communication::MpiCommunicator& comm;
-		Mpi<ArcType> arc_mpi;
-		Mpi<DistributedId> dist_id_mpi;
-		FPMAS::api::graph::parallel::DistributedGraph<typename NodeType::DataType>& graph;
+		ArcMpi& arc_mpi;
+		IdMpi& id_mpi;
+		FPMAS::api::graph::parallel::DistributedGraph<T>& graph;
 
 		public:
 			GhostSyncLinker(
-					FPMAS::api::communication::MpiCommunicator& comm,
-					FPMAS::api::graph::parallel::DistributedGraph<typename NodeType::DataType>& graph)
-				: comm(comm), arc_mpi(comm), dist_id_mpi(comm), graph(graph) {}
+					ArcMpi& arc_mpi, IdMpi& id_mpi,
+					FPMAS::api::graph::parallel::DistributedGraph<T>& graph)
+				: arc_mpi(arc_mpi), id_mpi(id_mpi), graph(graph) {}
 
-			void link(const ArcType*) override;
-			void unlink(const ArcType*) override;
+			void link(const ArcApi*) override;
+			void unlink(const ArcApi*) override;
 
 			void synchronize() override;
-
-			const Mpi<ArcType>& getArcMpi() const {return arc_mpi;}
-			const Mpi<DistributedId>& getDistIdMpi() const {return dist_id_mpi;}
 	};
 
-	template<typename NodeType, typename ArcType, template<typename> class Mpi>
-	void GhostSyncLinker<NodeType, ArcType, Mpi>::link(const ArcType * arc) {
+	template<typename T>
+	void GhostSyncLinker<T>::link(const ArcApi * arc) {
 		if(arc->state() == LocationState::DISTANT) {
-			link_buffer.push_back(arc);
+			link_buffer.push_back(const_cast<ArcApi*>(arc));
 		}
 	}
 
-	template<typename NodeType, typename ArcType, template<typename> class Mpi>
-	void GhostSyncLinker<NodeType, ArcType, Mpi>::unlink(const ArcType * arc) {
+	template<typename T>
+	void GhostSyncLinker<T>::unlink(const ArcApi * arc) {
 		if(arc->state() == LocationState::DISTANT) {
 			link_buffer.erase(
 					std::remove(link_buffer.begin(), link_buffer.end(), arc),
 					link_buffer.end()
 					);
-			unlink_buffer.push_back(arc);
+			unlink_buffer.push_back(const_cast<ArcApi*>(arc));
 		}
 	}
 
-	template<typename NodeType, typename ArcType, template<typename> class Mpi>
-	void GhostSyncLinker<NodeType, ArcType, Mpi>::synchronize() {
+	template<typename T>
+	void GhostSyncLinker<T>::synchronize() {
 		/*
 		 * Migrate links
 		 */
-		std::unordered_map<int, std::vector<ArcType>> link_migration;
+		std::unordered_map<int, std::vector<ArcApi*>> link_migration;
 		for(auto arc : link_buffer) {
 			auto src = arc->getSourceNode();
 			if(src->state() == LocationState::DISTANT) {
-				link_migration[src->getLocation()].push_back(*arc);
+				link_migration[src->getLocation()].push_back(arc);
 			}
 			auto tgt = arc->getTargetNode();
 			if(tgt->state() == LocationState::DISTANT) {
-				link_migration[tgt->getLocation()].push_back(*arc);
+				link_migration[tgt->getLocation()].push_back(arc);
 			}
 		}
 		link_migration = arc_mpi.migrate(link_migration);
@@ -139,8 +144,9 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 		for(auto importList : link_migration) {
 			for (const auto& arc : importList.second) {
 				graph.importArc(arc);
-				delete arc.getSourceNode();
-				delete arc.getTargetNode();
+				// TODO : remove
+				//delete arc.getSourceNode();
+				//delete arc.getTargetNode();
 			}
 		}
 
@@ -158,7 +164,7 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 				unlink_migration[tgt->getLocation()].push_back(arc->getId());
 			}
 		}
-		unlink_migration = dist_id_mpi.migrate(unlink_migration);
+		unlink_migration = id_mpi.migrate(unlink_migration);
 		for(auto importList : unlink_migration) {
 			for(DistributedId id : importList.second) {
 				if(graph.getArcs().count(id) > 0) {
@@ -169,26 +175,27 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 		}
 	}
 
-	template<typename Node, typename Arc, typename Mutex, template<typename> class Mpi>
-		class GhostModeRuntime : FPMAS::api::graph::parallel::synchro::SyncModeRuntime<Node, Arc, Mutex> {
-			GhostDataSync<Node, Arc, Mpi> data_sync;
-			GhostSyncLinker<Node, Arc, Mpi> sync_linker;
+	template<typename T>
+		class GhostModeRuntime : FPMAS::api::graph::parallel::synchro::SyncModeRuntime<T> {
+			GhostDataSync<T> data_sync;
+			GhostSyncLinker<T> sync_linker;
 
 			public:
+			typedef api::graph::parallel::DistributedNode<T> NodeApi;
+			typedef api::graph::parallel::DistributedArc<T> ArcApi;
 			GhostModeRuntime(
-					FPMAS::api::communication::MpiCommunicator& comm,
-					FPMAS::api::graph::parallel::DistributedGraph<typename Node::DataType>& graph)
-				: data_sync(comm, graph), sync_linker(comm, graph) {}
+					api::communication::TypedMpi<NodeApi*&> node_mpi,
+					api::communication::TypedMpi<ArcApi*>& arc_mpi,
+					api::communication::TypedMpi<DistributedId>& id_mpi,
+					FPMAS::api::graph::parallel::DistributedGraph<T>& graph)
+				: data_sync(node_mpi, id_mpi, graph), sync_linker(arc_mpi, node_mpi, graph) {}
 
-				void setUp(Mutex&) override {};
-				GhostDataSync<Node, Arc, Mpi>& getDataSync() override {return data_sync;}
-				GhostSyncLinker<Node, Arc, Mpi>& getSyncLinker() override {return sync_linker;}
+				SingleThreadMutex<T>& build(DistributedId, T&) override {};
+				GhostDataSync<T>& getDataSync() override {return data_sync;}
+				GhostSyncLinker<T>& getSyncLinker() override {return sync_linker;}
 		};
 
-	template<typename DistArc, typename DistNode, typename Mutex>
-		using DefaultGhostModeRuntime = GhostModeRuntime<DistNode, DistArc, Mutex, communication::TypedMpi>;
-
 	template<typename T>
-		using GhostMode = FPMAS::api::graph::parallel::synchro::SyncMode<SingleThreadMutex, DefaultGhostModeRuntime>;
+		using GhostMode = FPMAS::api::graph::parallel::synchro::SyncMode<SingleThreadMutex, GhostModeRuntime>;
 }
 #endif

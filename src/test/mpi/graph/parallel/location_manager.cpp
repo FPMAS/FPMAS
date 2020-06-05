@@ -11,8 +11,8 @@ using ::testing::Ge;
 using FPMAS::graph::parallel::BasicDistributedGraph;
 using FPMAS::graph::parallel::DistributedNode;
 using FPMAS::graph::parallel::DistributedArc;
+using FPMAS::graph::parallel::LocationManager;
 using FPMAS::graph::parallel::DefaultMpiSetUp;
-using FPMAS::graph::parallel::DefaultLocationManager;
 
 template<typename T>
 class FakeMutex : public FPMAS::api::graph::parallel::synchro::Mutex<T> {
@@ -54,12 +54,12 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			DistributedNode,
 			DistributedArc,
 			DefaultMpiSetUp,
-			DefaultLocationManager,
+			LocationManager,
 			MockLoadBalancing
 			> graph;
 
 		MockDataSync data_sync;
-		MockSyncLinker<DistributedArc<int, FakeMutex>> sync_linker;
+		MockSyncLinker<int> sync_linker;
 
 		std::mt19937 engine;
 		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
@@ -81,7 +81,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 				}
 			}
 
-			EXPECT_CALL(graph.getSyncModeRuntime(), setUp).Times(AnyNumber());
+			EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(AnyNumber());
 			if(graph.getMpiCommunicator().getRank() == 0) {
 				for(int i = 0; i < NODES_COUNT; i++) {
 					graph.buildNode();

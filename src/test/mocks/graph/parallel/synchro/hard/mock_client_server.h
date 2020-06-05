@@ -58,12 +58,13 @@ class MockMutexServer
 		MOCK_METHOD(void, handleIncomingRequests, (), (override));
 };
 
-template<typename Arc>
+template<typename T>
 class MockLinkClient
-: public FPMAS::api::graph::parallel::synchro::hard::LinkClient<Arc> {
+: public FPMAS::api::graph::parallel::synchro::hard::LinkClient<T> {
+	typedef FPMAS::api::graph::parallel::DistributedArc<T> ArcApi;
 	public:
-		MOCK_METHOD(void, link, (const Arc*), (override));
-		MOCK_METHOD(void, unlink, (const Arc*), (override));
+		MOCK_METHOD(void, link, (const ArcApi*), (override));
+		MOCK_METHOD(void, unlink, (const ArcApi*), (override));
 
 };
 
