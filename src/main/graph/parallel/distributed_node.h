@@ -19,11 +19,10 @@ namespace FPMAS::graph::parallel {
 			typedef api::graph::parallel::synchro::Mutex<T> Mutex;
 
 		private:
-			//typedef FPMAS::api::graph::parallel::synchro::Mutex<T> mutex_base;
 			LocationState _state = LocationState::LOCAL;
 			int location;
 			T _data;
-			Mutex* _mutex;
+			Mutex* _mutex = nullptr;
 
 		public:
 			typedef T DataType;
@@ -52,7 +51,10 @@ namespace FPMAS::graph::parallel {
 			Mutex& mutex() override {return *_mutex;}
 			const Mutex& mutex() const override {return *_mutex;}
 
-			~DistributedNode() {}
+			~DistributedNode() {
+				if(_mutex!=nullptr)
+					delete _mutex;
+			}
 	};
 
 	template<typename T>

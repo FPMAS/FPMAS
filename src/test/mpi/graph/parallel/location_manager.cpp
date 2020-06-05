@@ -66,7 +66,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		
 		typename decltype(graph)::PartitionMap partition;
 
-		std::array<std::array<int, SEQUENCE_COUNT>, NODES_COUNT> locationSequences;
+		std::array<std::array<int, SEQUENCE_COUNT>, NODES_COUNT> location_sequences;
 
 		void SetUp() override {
 			EXPECT_CALL(sync_linker, link).Times(AnyNumber());
@@ -77,7 +77,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 
 			for(int i = 0; i < SEQUENCE_COUNT; i++) {
 				for(int j = 0; j < NODES_COUNT ; j++) {
-					locationSequences[j][i] = dist(engine);
+					location_sequences[j][i] = dist(engine);
 				}
 			}
 
@@ -98,14 +98,14 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		void generatePartition(int i) {
 			partition.clear();
 			for(int j = 0; j < NODES_COUNT; j++) {
-				partition[DistributedId(0, j)] = locationSequences[j][i];
+				partition[DistributedId(0, j)] = location_sequences[j][i];
 			}
 		}
 		void checkPartition(int i) {
 			FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "check %i", i);
 			int nodeCount = 0; // Number of nodes that will be contained in the graph after the next distribute call 
 			for(int j = 0; j < NODES_COUNT; j++) {
-				if(locationSequences[j][i] == graph.getMpiCommunicator().getRank())
+				if(location_sequences[j][i] == graph.getMpiCommunicator().getRank())
 					nodeCount++;
 			}
 			ASSERT_THAT(graph.getNodes(), SizeIs(nodeCount > 0 ? NODES_COUNT : 0));
@@ -120,7 +120,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			ASSERT_EQ(nodeCount, localNodeCount);
 
 			for(auto node : graph.getNodes()) {
-				ASSERT_EQ(node.second->getLocation(), locationSequences[node.first.id()][i]);
+				ASSERT_EQ(node.second->getLocation(), location_sequences[node.first.id()][i]);
 			}
 			FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "done %i", i);
 		}
