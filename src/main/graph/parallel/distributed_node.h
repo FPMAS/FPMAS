@@ -51,6 +51,8 @@ namespace FPMAS::graph::parallel {
 			void setMutex(Mutex* mutex) override {_mutex=mutex;}
 			Mutex& mutex() override {return *_mutex;}
 			const Mutex& mutex() const override {return *_mutex;}
+
+			~DistributedNode() {}
 	};
 
 	template<typename T>

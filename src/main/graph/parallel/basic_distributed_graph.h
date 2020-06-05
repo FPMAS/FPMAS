@@ -212,75 +212,125 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	typename BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
 	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importNode(NodeType* node) {
+		// The input node must be a temporary dynamically allocated object.
+		// A representation of the node might already be contained in the
+		// graph, if it were already built as a "distant" node.
+
 		if(this->getNodes().count(node->getId())==0) {
-			//auto nodeCopy = new DistNodeType(static_cast<const DistNodeType&>(node));
+			// The node is not contained in the graph, we need to build a new
+			// one.
+			// But instead of completely building a new node, we can re-use the
+			// temporary input node.
 			this->insert(node);
 			location_manager.setLocal(node);
 			node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
-			//sync_mode_runtime.setUp(nodeCopy->getId(), nodeCopy->mutex());
 			return node;
 		}
-		auto localNode = this->getNode(node->getId());
-		location_manager.setLocal(localNode);
-		return localNode;
+		// A representation of the node was already contained in the graph.
+		// We just need to update its state.
+
+		// Set local representation as local
+		auto local_node = this->getNode(node->getId());
+		location_manager.setLocal(local_node);
+
+		// Deletes unused temporary input node
+		delete node;
+
+		return local_node;
 	}
 
 	template<DIST_GRAPH_PARAMS>
 	typename BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
 	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importArc(ArcType* arc) {
+		// The input arc must be a dynamically allocated object, with temporary
+		// dynamically allocated nodes as source and target.
+		// A representation of the imported arc might already be present in the
+		// graph, for example if it has already been imported as a "distant"
+		// arc with other nodes at other epochs.
+
 		if(this->getArcs().count(arc->getId())==0) {
+			// The arc does not belong to the graph : a new one must be built.
+
 			DistributedId srcId = arc->getSourceNode()->getId();
 			NodeType* src;
 			DistributedId tgtId =  arc->getTargetNode()->getId();
 			NodeType* tgt;
+
 			LocationState arcLocationState = LocationState::LOCAL;
+
 			if(this->getNodes().count(srcId) > 0) {
+				// The source node is already contained in the graph
 				src = this->getNode(srcId);
 				if(src->state() == LocationState::DISTANT) {
+					// At least src is DISTANT, so the imported arc is
+					// necessarily DISTANT.
 					arcLocationState = LocationState::DISTANT;
 				}
+				// Deletes the temporary source node
+				delete arc->getSourceNode();
+
+				// Links the temporary arc with the src contained in the graph
+				arc->setSourceNode(src);
+				src->linkOut(arc);
 			} else {
+				// The source node is not contained in the graph : it must be
+				// built as a DISTANT node.
 				arcLocationState = LocationState::DISTANT;
-				src = new DistNodeType(srcId);
+
+				// Instead of building a new node, we re-use the temporary
+				// source node.
+				src = arc->getSourceNode();
 				this->insert(src);
 				location_manager.setDistant(src);
 				src->setMutex(sync_mode_runtime.buildMutex(src->getId(), src->data()));
-				//sync_mode_runtime.setUp(src->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(src->mutex()));
 			}
 			if(this->getNodes().count(tgtId) > 0) {
+				// The target node is already contained in the graph
 				tgt = this->getNode(tgtId);
 				if(tgt->state() == LocationState::DISTANT) {
+					// At least src is DISTANT, so the imported arc is
+					// necessarily DISTANT.
 					arcLocationState = LocationState::DISTANT;
 				}
+				// Deletes the temporary target node
+				delete arc->getTargetNode();
+
+				// Links the temporary arc with the tgt contained in the graph
+				arc->setTargetNode(tgt);
+				tgt->linkIn(arc);
 			} else {
+				// The target node is not contained in the graph : it must be
+				// built as a DISTANT node.
 				arcLocationState = LocationState::DISTANT;
-				tgt = new DistNodeType(tgtId);
+
+				// Instead of building a new node, we re-use the temporary
+				// target node.
+				tgt = arc->getTargetNode();
 				this->insert(tgt);
 				location_manager.setDistant(tgt);
 				tgt->setMutex(sync_mode_runtime.buildMutex(tgt->getId(), tgt->data()));
-				//sync_mode_runtime.setUp(tgt->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(tgt->mutex()));
 			}
-			// TODO : ghosts creation part is nice, but this is not
-			// because it can't adapt to any DistArcImpl type, using a generic
-			// copy constructor.
-			//auto arcCopy = new DistArcType(static_cast<const DistArcType&>(arc));
+			// Finally, insert the temporary arc into the graph.
 			arc->setState(arcLocationState);
-
-			arc->setSourceNode(src);
-			src->linkOut(arc);
-			arc->setTargetNode(tgt);
-			tgt->linkIn(arc);
-
 			this->insert(arc);
 			return arc;
+		} // if (graph.count(arc_id) > 0)
+
+		// A representation of the arc is already present in the graph : it is
+		// useless to insert it again. We just need to update its state.
+
+		auto local_arc = this->getArc(arc->getId());
+		if(local_arc->getSourceNode()->state() == LocationState::LOCAL
+				&& local_arc->getTargetNode()->state() == LocationState::LOCAL) {
+			local_arc->setState(LocationState::LOCAL);
 		}
-		// In place updates
-		auto localArc = this->getArc(arc->getId());
-		if(localArc->getSourceNode()->state() == LocationState::LOCAL
-				&& localArc->getTargetNode()->state() == LocationState::LOCAL) {
-			localArc->setState(LocationState::LOCAL);
-		}
-		return localArc;
+
+		// Completely deletes temporary items, nothing is re-used
+		delete arc->getSourceNode();
+		delete arc->getTargetNode();
+		delete arc;
+
+		return local_arc;
 	}
 
 	template<DIST_GRAPH_PARAMS>
@@ -333,15 +383,6 @@ namespace FPMAS::graph::parallel {
 			for(auto& import_arc_list_from_proc : arc_import) {
 				for(auto& imported_arc : import_arc_list_from_proc.second) {
 					this->importArc(imported_arc);
-					// TODO : replace this by inserting nodes in importArc
-					/*
-					 *if(imported_arc.getSourceNode() == imported_arc.getTargetNode()) {
-					 *    delete importedArc.getSourceNode();
-					 *} else {
-					 *    delete importedArc.getSourceNode();
-					 *    delete importedArc.getTargetNode();
-					 *}
-					 */
 				}
 			}
 

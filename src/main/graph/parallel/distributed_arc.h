@@ -31,7 +31,6 @@ namespace FPMAS::graph::parallel {
 
 					LocationState state() const override {return _state;}
 					void setState(LocationState state) override {this->_state = state;}
-
 			};
 
 

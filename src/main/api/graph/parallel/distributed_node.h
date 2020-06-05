@@ -24,6 +24,8 @@ namespace FPMAS::api::graph::parallel {
 			virtual void setMutex(synchro::Mutex<T>*) = 0;
 			virtual synchro::Mutex<T>& mutex() = 0;
 			virtual const synchro::Mutex<T>& mutex() const = 0;
+
+			virtual ~DistributedNode() {}
 	};
 
 }

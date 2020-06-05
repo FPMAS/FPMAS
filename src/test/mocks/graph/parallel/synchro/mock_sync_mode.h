@@ -5,7 +5,7 @@
 #include "api/graph/parallel/synchro/sync_mode.h"
 #include "mock_mutex.h"
 
-using ::testing::Return;
+using ::testing::ReturnNew;
 
 class MockDataSync : public FPMAS::api::graph::parallel::synchro::DataSync {
 	public:
@@ -28,7 +28,7 @@ class MockSyncModeRuntime : public FPMAS::api::graph::parallel::synchro::SyncMod
 		MockSyncModeRuntime(
 			FPMAS::api::graph::parallel::DistributedGraph<T>&,
 			FPMAS::api::communication::MpiCommunicator&) {
-			ON_CALL(*this, buildMutex).WillByDefault(Return(new MockMutex<int>));
+			ON_CALL(*this, buildMutex).WillByDefault(ReturnNew<MockMutex<int>>());
 		}
 
 		MOCK_METHOD(MockMutex<T>*, buildMutex, (DistributedId, T&), (override));

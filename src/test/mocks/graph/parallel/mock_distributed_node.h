@@ -18,6 +18,8 @@ void from_json(const nlohmann::json& j, MockDistributedNode<T>& mock);
 
 template<typename> class MockDistributedArc;
 
+ACTION_P(ReturnPointeePointee, ptr) {return **ptr;}
+
 template<typename T>
 class MockDistributedNode :
 	public FPMAS::api::graph::parallel::DistributedNode<T>,
@@ -29,14 +31,18 @@ class MockDistributedNode :
 		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T>&);
 
 		private:
-		Mutex* _mutex;
+		T _data;
 		LocationState _state = LocationState::LOCAL;
 		int _location;
+		FPMAS::api::graph::parallel::synchro::Mutex<int>* null_mutex = nullptr;
+		Mutex** _mutex = &null_mutex;
 
 		public:
 		typedef T DataType;
 		using typename NodeBase::ArcType;
+
 		MockDistributedNode() {
+			setUpDataAccess();
 			setUpDefaultMutex();
 			setUpLocationAccess();
 			setUpStateAccess();
@@ -46,6 +52,7 @@ class MockDistributedNode :
 					otherMock.getId(), otherMock.mutex().data(),
 					otherMock.getWeight()
 					){
+				setUpDataAccess();
 				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
@@ -54,21 +61,24 @@ class MockDistributedNode :
 
 		MockDistributedNode(const DistributedId& id)
 			: NodeBase(id) {
+				setUpDataAccess();
 				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
 			}
 
-		MockDistributedNode(const DistributedId& id, const T& data)
-			: NodeBase(id) {
+		MockDistributedNode(const DistributedId& id, T&& data)
+			: NodeBase(id), _data(std::move(data)) {
+				setUpDataAccess();
 				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
 			}
-		MockDistributedNode(const DistributedId& id, const T& data, float weight)
-			: NodeBase(id, weight) {
+		MockDistributedNode(const DistributedId& id, T&& data, float weight)
+			: NodeBase(id, weight), _data(std::move(data)) {
+				setUpDataAccess();
 				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
@@ -91,16 +101,32 @@ class MockDistributedNode :
 			return this->id == other.id;
 		}
 
+		~MockDistributedNode() {
+			if(*_mutex!=nullptr) {
+				delete *_mutex;
+			}
+		}
+
 		private:
+		void setUpDataAccess() {
+			ON_CALL(*this, data())
+				.WillByDefault(ReturnRef(_data));
+			EXPECT_CALL(*this, data()).Times(AnyNumber());
+
+			ON_CALL(Const(*this), data())
+				.WillByDefault(ReturnRef(_data));
+			EXPECT_CALL(Const(*this), data()).Times(AnyNumber());
+		}
 		void setUpDefaultMutex() {
 			ON_CALL(*this, setMutex)
-				.WillByDefault(SaveArg<0>(&_mutex));
+				.WillByDefault(SaveArg<0>(_mutex));
 			EXPECT_CALL(*this, setMutex).Times(AnyNumber());
+
 			ON_CALL(*this, mutex())
-				.WillByDefault(ReturnRef(*_mutex));
+				.WillByDefault(ReturnPointeePointee(_mutex));
 			EXPECT_CALL(*this, mutex()).Times(AnyNumber());
 			ON_CALL(Const(*this), mutex())
-				.WillByDefault(ReturnRef(*_mutex));
+				.WillByDefault(ReturnPointeePointee(_mutex));
 			EXPECT_CALL(Const(*this), mutex()).Times(AnyNumber());
 		}
 
@@ -131,7 +157,6 @@ class MockDistributedNode :
 			EXPECT_CALL(*this, setLocation).Times(AnyNumber());
 			EXPECT_CALL(*this, getLocation).Times(AnyNumber());
 		}
-
 	};
 
 template<typename T>

@@ -18,6 +18,8 @@ namespace FPMAS::api::graph::parallel {
 
 				virtual LocationState state() const = 0;
 				virtual void setState(LocationState state) = 0;
+
+				virtual ~DistributedArc() {}
 		};
 }
 #endif

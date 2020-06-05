@@ -29,6 +29,8 @@ namespace FPMAS::api::graph::parallel::synchro {
 			virtual void lockShared() = 0;
 			virtual void unlockShared() = 0;
 			virtual int lockedShared() const = 0;
+
+			virtual ~Mutex() {}
 	};
 }
 
