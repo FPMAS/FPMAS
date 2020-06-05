@@ -50,30 +50,27 @@ class LinkServerTest : public ::testing::Test {
 			EXPECT_CALL(comm, Iprobe).Times(AnyNumber());
 		}
 
-		void expectLink(int source) {
+		void expectLink(int source, MockDistributedArc<int>* mock_arc) {
 			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::LINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			MockDistributedArc<int> mock_arc {DistributedId(15, 2), 7};
 			EXPECT_CALL(arc_mpi, recv(_))
 				.After(probe)
-				.WillOnce(Return(&mock_arc));
+				.WillOnce(Return(mock_arc));
 
-			EXPECT_CALL(mock_graph, importArc(Property(
-					&FPMAS::api::graph::parallel::DistributedArc<int>::getId, mock_arc.getId())));
+			EXPECT_CALL(mock_graph, importArc(mock_arc));
 		}
 
-		void expectUnlink(int source, DistributedId id) {
-			MockDistributedArc<int> mock_arc {id, 7};
-			EXPECT_CALL(mock_graph, getArc(id))
-				.WillRepeatedly(Return(&mock_arc));
+		void expectUnlink(int source, MockDistributedArc<int>* mock_arc) {
+			EXPECT_CALL(mock_graph, getArc(mock_arc->getId()))
+				.WillRepeatedly(Return(mock_arc));
 			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::UNLINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(_))
 				.After(probe)
-				.WillOnce(Return(id));
-			EXPECT_CALL(mock_graph, clear(&mock_arc));
+				.WillOnce(Return(mock_arc->getId()));
+			EXPECT_CALL(mock_graph, clear(mock_arc));
 		}
 };
 
@@ -85,20 +82,24 @@ TEST_F(LinkServerTest, epoch) {
 }
 
 TEST_F(LinkServerTest, handleLink) {
-	expectLink(4);
+	MockDistributedArc<int> mock_arc {DistributedId(15, 2), 7};
+	expectLink(4, &mock_arc);
 
 	linkServer.handleIncomingRequests();
 }
 
 TEST_F(LinkServerTest, handleUnlink) {
-	expectUnlink(6, {3, 5});
+	MockDistributedArc<int> mock_arc {{3, 5}, 7};
+	expectUnlink(6, &mock_arc);
 
 	linkServer.handleIncomingRequests();
 }
 
 TEST_F(LinkServerTest, handleAll) {
-	expectLink(4);
-	expectUnlink(6, {3, 5});
+	MockDistributedArc<int> link_mock_arc {{15, 2}, 7};
+	MockDistributedArc<int> unlink_mock_arc {{3, 5}, 7};
+	expectLink(4, &link_mock_arc);
+	expectUnlink(6, &unlink_mock_arc);
 
 	linkServer.handleIncomingRequests();
 }

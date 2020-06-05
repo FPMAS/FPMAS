@@ -67,14 +67,18 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 				nodes[list.first].push_back(graph.getNode(id));
 			}
 		}
+		// TODO : Should use data update packs.
 		nodes = node_mpi.migrate(nodes);
 		for(auto list : nodes) {
 			for(auto& node : list.second) {
 				auto localNode = graph.getNode(node->getId());
-				localNode->mutex().data() = node->mutex().data();
+				localNode->data() = node->data();
 				localNode->setWeight(node->getWeight());
 			}
 		}
+		for(auto node_list : nodes)
+			for(auto node : node_list.second)
+				delete node;
 	}
 
 
@@ -144,9 +148,6 @@ namespace FPMAS::graph::parallel::synchro::ghost {
 		for(auto importList : link_migration) {
 			for (const auto& arc : importList.second) {
 				graph.importArc(arc);
-				// TODO : remove
-				//delete arc.getSourceNode();
-				//delete arc.getTargetNode();
 			}
 		}
 
