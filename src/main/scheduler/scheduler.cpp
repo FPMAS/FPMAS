@@ -12,20 +12,28 @@ namespace FPMAS::scheduler {
 		return _tasks;
 	}
 
-	void Job::setBegin(api::scheduler::Task* task) {
-		this->begin = task;
+	void Job::setBeginTask(api::scheduler::Task* task) {
+		this->_begin = task;
 	}
 
-	api::scheduler::Task* Job::getBegin() const {
-		return begin;
+	api::scheduler::Task* Job::getBeginTask() const {
+		return _begin;
 	}
 
-	void Job::setEnd(api::scheduler::Task* task) {
-		this->end = task;
+	void Job::setEndTask(api::scheduler::Task* task) {
+		this->_end = task;
 	}
 
-	api::scheduler::Task* Job::getEnd() const {
-		return end;
+	api::scheduler::Task* Job::getEndTask() const {
+		return _end;
+	}
+
+	typename Job::TaskIterator Job::begin() {
+		return _tasks.begin();
+	}
+
+	typename Job::TaskIterator Job::end() {
+		return _tasks.end();
 	}
 
 	void Epoch::submit(api::scheduler::Job * job) {
@@ -36,11 +44,11 @@ namespace FPMAS::scheduler {
 		return _jobs;
 	}
 
-	typename Epoch::iterator Epoch::begin() {
+	typename Epoch::JobIterator Epoch::begin() {
 		return _jobs.begin();
 	}
 
-	typename Epoch::iterator Epoch::end() {
+	typename Epoch::JobIterator Epoch::end() {
 		return _jobs.end();
 	}
 

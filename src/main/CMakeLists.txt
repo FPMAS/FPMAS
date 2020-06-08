@@ -9,6 +9,8 @@ set(SOURCES
 	graph/parallel/zoltan/zoltan_utils.cpp
 	# Scheduler
 	scheduler/scheduler.cpp
+	# Runtime
+	runtime/runtime.cpp
 	)
 
 add_library(fpmas ${SOURCES})

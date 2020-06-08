@@ -28,8 +28,8 @@ TEST_F(JobTest, add) {
 TEST_F(JobTest, begin) {
 	MockTask begin;
 
-	job.setBegin(&begin);
-	ASSERT_EQ(job.getBegin(), &begin);
+	job.setBeginTask(&begin);
+	ASSERT_EQ(job.getBeginTask(), &begin);
 
 	// Begin should not be part of the regular task list
 	ASSERT_THAT(job.tasks(), IsEmpty());
@@ -38,8 +38,8 @@ TEST_F(JobTest, begin) {
 TEST_F(JobTest, end) {
 	MockTask end;
 
-	job.setEnd(&end);
-	ASSERT_EQ(job.getEnd(), &end);
+	job.setEndTask(&end);
+	ASSERT_EQ(job.getEndTask(), &end);
 
 	// End should not be part of the regular task list
 	ASSERT_THAT(job.tasks(), IsEmpty());

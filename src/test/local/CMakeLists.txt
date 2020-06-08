@@ -24,6 +24,8 @@ set(SOURCES
 	scheduler/job.cpp
 	scheduler/epoch.cpp
 	scheduler/scheduler.cpp
+	# Runtime
+	runtime/runtime.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

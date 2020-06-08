@@ -8,6 +8,7 @@ namespace FPMAS::api::runtime {
 	class Runtime {
 		public:
 			virtual void execute(Date end) = 0;
+			virtual void execute(Date start, Date end) = 0;
 	};
 }
 #endif

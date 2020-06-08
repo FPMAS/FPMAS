@@ -19,20 +19,22 @@ namespace FPMAS::scheduler {
 			VoidTask voidTask;
 			JID _id;
 			std::vector<api::scheduler::Task*> _tasks;
-			api::scheduler::Task* begin = &voidTask;
-			api::scheduler::Task* end = &voidTask;
+			api::scheduler::Task* _begin = &voidTask;
+			api::scheduler::Task* _end = &voidTask;
 
 		public:
 			Job(JID id) : _id(id) {}
 			JID id() const override;
 			void add(api::scheduler::Task*) override;
 			const std::vector<api::scheduler::Task*>& tasks() const override;
+			TaskIterator begin() override;
+			TaskIterator end() override;
 
-			void setBegin(api::scheduler::Task*) override;
-			void setEnd(api::scheduler::Task*) override;
+			void setBeginTask(api::scheduler::Task*) override;
+			void setEndTask(api::scheduler::Task*) override;
 
-			api::scheduler::Task* getBegin() const override;
-			api::scheduler::Task* getEnd() const override;
+			api::scheduler::Task* getBeginTask() const override;
+			api::scheduler::Task* getEndTask() const override;
 	};
 
 	class Epoch : public api::scheduler::Epoch {
@@ -41,8 +43,8 @@ namespace FPMAS::scheduler {
 		public:
 			void submit(api::scheduler::Job*) override;
 			const std::vector<api::scheduler::Job*>& jobs() const override;
-			iterator begin() override;
-			iterator end() override;
+			JobIterator begin() override;
+			JobIterator end() override;
 			size_t jobCount() override;
 
 			void clear() override;
