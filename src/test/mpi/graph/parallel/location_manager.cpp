@@ -1,4 +1,4 @@
-#include "graph/parallel/basic_distributed_graph.h"
+#include "graph/parallel/distributed_graph.h"
 
 #include <random>
 #include "../mocks/graph/parallel/mock_load_balancing.h"
@@ -8,7 +8,7 @@ using ::testing::ReturnRef;
 using ::testing::SizeIs;
 using ::testing::Ge;
 
-using FPMAS::graph::parallel::BasicDistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::DistributedNode;
 using FPMAS::graph::parallel::DistributedArc;
 using FPMAS::graph::parallel::LocationManager;
@@ -49,7 +49,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		inline static const int SEQUENCE_COUNT = 5;
 		inline static const int NODES_COUNT = 100;
 
-		BasicDistributedGraph<
+		DistributedGraph<
 			int, MockSyncMode<FakeMutex>,
 			DistributedNode,
 			DistributedArc,

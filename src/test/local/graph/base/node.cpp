@@ -1,19 +1,19 @@
-#include "graph/base/basic_node.h"
+#include "graph/base/node.h"
 #include "graph/base/basic_id.h"
 
 #include "../mocks/graph/base/mock_arc.h"
 
-using FPMAS::graph::base::BasicNode;
+using FPMAS::graph::base::Node;
 using FPMAS::graph::base::BasicId;
 
-class BasicMockArc : public AbstractMockArc<BasicId, BasicNode<BasicId, BasicMockArc>> {
+class BasicMockArc : public AbstractMockArc<BasicId, Node<BasicId, BasicMockArc>> {
 };
 
-class BasicNodeTest : public ::testing::Test {
+class NodeTest : public ::testing::Test {
 	protected:
 		BasicId id;
-		BasicNode<BasicId, BasicMockArc> node {++id};
-		BasicNode<BasicId, BasicMockArc> otherNode {++id};
+		Node<BasicId, BasicMockArc> node {++id};
+		Node<BasicId, BasicMockArc> otherNode {++id};
 		BasicMockArc arc;
 
 		void SetUp() override {
@@ -23,19 +23,19 @@ class BasicNodeTest : public ::testing::Test {
 
 };
 
-TEST_F(BasicNodeTest, linkIn) {
+TEST_F(NodeTest, linkIn) {
 	node.linkIn(&arc);
 	ASSERT_EQ(node.getIncomingArcs(4).size(), 1);
 	ASSERT_EQ(node.getIncomingArcs(4)[0], &arc);
 }
 
-TEST_F(BasicNodeTest, linkOut) {
+TEST_F(NodeTest, linkOut) {
 	node.linkOut(&arc);
 	ASSERT_EQ(node.getOutgoingArcs(4).size(), 1);
 	ASSERT_EQ(node.getOutgoingArcs(4)[0], &arc);
 }
 
-TEST_F(BasicNodeTest, unlinkIn) {
+TEST_F(NodeTest, unlinkIn) {
 	node.linkIn(&arc);
 	EXPECT_CALL(arc, getSourceNode).WillRepeatedly(Return(&otherNode));
 	EXPECT_CALL(arc, getTargetNode).WillRepeatedly(Return(&node));
@@ -44,7 +44,7 @@ TEST_F(BasicNodeTest, unlinkIn) {
 	ASSERT_EQ(node.getIncomingArcs(4).size(), 0);
 }
 
-TEST_F(BasicNodeTest, unlinkOut) {
+TEST_F(NodeTest, unlinkOut) {
 	node.linkOut(&arc);
 	EXPECT_CALL(arc, getSourceNode).WillRepeatedly(Return(&node));
 	EXPECT_CALL(arc, getTargetNode).WillRepeatedly(Return(&otherNode));

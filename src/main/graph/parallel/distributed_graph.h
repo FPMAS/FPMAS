@@ -6,7 +6,7 @@
 #include "distributed_node.h"
 #include "location_manager.h"
 
-#include "graph/base/basic_graph.h"
+#include "graph/base/graph.h"
 
 #define DIST_GRAPH_PARAMS\
 	typename T,\
@@ -33,8 +33,8 @@ namespace FPMAS::graph::parallel {
 	typedef api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi> DefaultMpiSetUp;
 
 	template<DIST_GRAPH_PARAMS>
-	class BasicDistributedGraph : 
-		public base::AbstractGraphBase<
+	class DistributedGraph : 
+		public base::Graph<
 			api::graph::parallel::DistributedNode<T>,
 			api::graph::parallel::DistributedArc<T>>,
 		public api::graph::parallel::DistributedGraph<T>
@@ -52,8 +52,8 @@ namespace FPMAS::graph::parallel {
 					std::is_base_of<api::graph::parallel::DistributedArc<T>, DistArcType>::value,
 					"DistArcImpl must implement api::graph::parallel::DistributedArc"
 					);
-			typedef base::AbstractGraphBase<api::graph::parallel::DistributedNode<T>, api::graph::parallel::DistributedArc<T>>
-			AbstractGraphBase;
+			typedef base::Graph<api::graph::parallel::DistributedNode<T>, api::graph::parallel::DistributedArc<T>>
+			Graph;
 			typedef api::graph::parallel::DistributedGraph<T> DistGraphBase;
 
 			public:
@@ -79,7 +79,7 @@ namespace FPMAS::graph::parallel {
 
 
 			public:
-			BasicDistributedGraph() :
+			DistributedGraph() :
 				location_manager(mpi_communicator, id_mpi, location_mpi),
 				sync_mode_runtime(*this, mpi_communicator) {
 				// Initialization in the body of this (derived) class of the
@@ -187,7 +187,7 @@ namespace FPMAS::graph::parallel {
 		};
 
 	template<DIST_GRAPH_PARAMS>
-	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(ArcType* arc) {
+	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(ArcType* arc) {
 		auto src = arc->getSourceNode();
 		auto tgt = arc->getTargetNode();
 		src->mutex().lock();
@@ -210,8 +210,8 @@ namespace FPMAS::graph::parallel {
 	}
 
 	template<DIST_GRAPH_PARAMS>
-	typename BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
-	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importNode(NodeType* node) {
+	typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
+	DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importNode(NodeType* node) {
 		// The input node must be a temporary dynamically allocated object.
 		// A representation of the node might already be contained in the
 		// graph, if it were already built as a "distant" node.
@@ -240,8 +240,8 @@ namespace FPMAS::graph::parallel {
 	}
 
 	template<DIST_GRAPH_PARAMS>
-	typename BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
-	BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importArc(ArcType* arc) {
+	typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
+	DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importArc(ArcType* arc) {
 		// The input arc must be a dynamically allocated object, with temporary
 		// dynamically allocated nodes as source and target.
 		// A representation of the imported arc might already be present in the
@@ -334,7 +334,7 @@ namespace FPMAS::graph::parallel {
 	}
 
 	template<DIST_GRAPH_PARAMS>
-	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::distribute(PartitionMap partition) {
 
 			sync_mode_runtime.getSyncLinker().synchronize();
@@ -402,14 +402,14 @@ namespace FPMAS::graph::parallel {
 		}
 
 	template<DIST_GRAPH_PARAMS>
-	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::synchronize() {
 			sync_mode_runtime.getSyncLinker().synchronize();
 			sync_mode_runtime.getDataSync().synchronize();
 		}
 
 	template<DIST_GRAPH_PARAMS>
-		void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::clear(ArcType* arc) {
 			auto src = arc->getSourceNode();
 			auto tgt = arc->getTargetNode();
@@ -423,7 +423,7 @@ namespace FPMAS::graph::parallel {
 		}
 
 	template<DIST_GRAPH_PARAMS>
-	void BasicDistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::clear(NodeType* node) {
 			bool eraseNode = true;
 			std::set<ArcType*> obsoleteArcs;

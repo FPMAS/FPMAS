@@ -8,7 +8,7 @@
 namespace FPMAS::graph::base {
 
 	template<typename IdType, typename _ArcType>
-		class BasicNode : public virtual FPMAS::api::graph::base::Node<IdType, _ArcType> {
+		class Node : public virtual FPMAS::api::graph::base::Node<IdType, _ArcType> {
 			public:
 				typedef FPMAS::api::graph::base::Node<IdType, _ArcType> NodeType;
 				using typename NodeType::ArcType;
@@ -22,9 +22,9 @@ namespace FPMAS::graph::base {
 				std::unordered_map<LayerIdType, std::vector<ArcType*>> outgoingArcs;
 
 			public:
-				BasicNode(const IdType& id)
+				Node(const IdType& id)
 					: id(id) {}
-				BasicNode(const IdType& id, float weight)
+				Node(const IdType& id, float weight)
 					: id(id), weight(weight) {}
 
 				IdType getId() const override {return id;};
@@ -50,8 +50,8 @@ namespace FPMAS::graph::base {
 		};
 
 	template<typename IdType, typename ArcType>
-		const std::vector<typename BasicNode<IdType, ArcType>::ArcType*>
-			BasicNode<IdType, ArcType>::getIncomingArcs() {
+		const std::vector<typename Node<IdType, ArcType>::ArcType*>
+			Node<IdType, ArcType>::getIncomingArcs() {
 				std::vector<ArcType*> in;
 				for(auto layer : this->incomingArcs) {
 					for(auto* arc : layer.second) {
@@ -62,14 +62,14 @@ namespace FPMAS::graph::base {
 		}
 
 	template<typename IdType, typename ArcType>
-		const std::vector<typename BasicNode<IdType, ArcType>::ArcType*>
-			BasicNode<IdType, ArcType>::getIncomingArcs(LayerIdType id) {
+		const std::vector<typename Node<IdType, ArcType>::ArcType*>
+			Node<IdType, ArcType>::getIncomingArcs(LayerIdType id) {
 				return incomingArcs[id];
 		}
 	
 	template<typename IdType, typename ArcType>
-		const std::vector<typename BasicNode<IdType, ArcType>::ArcType*>
-			BasicNode<IdType, ArcType>::getOutgoingArcs() {
+		const std::vector<typename Node<IdType, ArcType>::ArcType*>
+			Node<IdType, ArcType>::getOutgoingArcs() {
 				std::vector<ArcType*> out;
 				for(auto layer : this->outgoingArcs) {
 					for(auto* arc : layer.second) {
@@ -80,13 +80,13 @@ namespace FPMAS::graph::base {
 		}
 
 	template<typename IdType, typename ArcType>
-		const std::vector<typename BasicNode<IdType, ArcType>::ArcType*>
-			BasicNode<IdType, ArcType>::getOutgoingArcs(LayerIdType id) {
+		const std::vector<typename Node<IdType, ArcType>::ArcType*>
+			Node<IdType, ArcType>::getOutgoingArcs(LayerIdType id) {
 				return outgoingArcs[id];
 		}
 	
 	template<typename IdType, typename ArcType>
-		void BasicNode<IdType, ArcType>::linkIn(ArcType* arc) {
+		void Node<IdType, ArcType>::linkIn(ArcType* arc) {
 			FPMAS_LOGV(
 				-1, "NODE", "%s : Linking in arc %s (%p)",
 				ID_C_STR(id),
@@ -96,7 +96,7 @@ namespace FPMAS::graph::base {
 		}
 
 	template<typename IdType, typename ArcType>
-		void BasicNode<IdType, ArcType>::linkOut(ArcType* arc) {
+		void Node<IdType, ArcType>::linkOut(ArcType* arc) {
 			FPMAS_LOGV(
 				-1, "NODE", "%s : Linking out arc %s (%p)",
 				ID_C_STR(id),
@@ -106,7 +106,7 @@ namespace FPMAS::graph::base {
 		}
 
 	template<typename IdType, typename ArcType>
-		void BasicNode<IdType, ArcType>::unlinkIn(ArcType *arc) {
+		void Node<IdType, ArcType>::unlinkIn(ArcType *arc) {
 			FPMAS_LOGV(
 				-1, "NODE", "%s : Unlink in arc %s (%p) (from %s)",
 				ID_C_STR(id), ID_C_STR(arc->getId()), arc,
@@ -120,7 +120,7 @@ namespace FPMAS::graph::base {
 		}
 
 	template<typename IdType, typename ArcType>
-		void BasicNode<IdType, ArcType>::unlinkOut(ArcType *arc) {
+		void Node<IdType, ArcType>::unlinkOut(ArcType *arc) {
 			FPMAS_LOGV(
 				-1, "NODE", "%s : Unlink out arc %s (%p) (to %s)",
 				ID_C_STR(id), ID_C_STR(arc->getId()), arc,

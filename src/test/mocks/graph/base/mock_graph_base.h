@@ -5,7 +5,7 @@
 #include "api/graph/base/graph.h"
 
 template<typename NodeType, typename ArcType>
-class MockGraphBase : 
+class MockGraph : 
 	public virtual FPMAS::api::graph::base::Graph<NodeType, ArcType> {
 		typedef FPMAS::api::graph::base::Graph<NodeType, ArcType>
 		GraphBase;

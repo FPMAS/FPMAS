@@ -1,5 +1,5 @@
 #include "graph/parallel/synchro/hard/hard_sync_mode.h"
-#include "graph/parallel/basic_distributed_graph.h"
+#include "graph/parallel/distributed_graph.h"
 #include "graph/parallel/distributed_arc.h"
 #include "graph/parallel/distributed_node.h"
 
@@ -14,7 +14,7 @@
 
 using ::testing::Ref;
 
-using FPMAS::graph::parallel::BasicDistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::synchro::hard::HardSyncMode;
 using FPMAS::graph::parallel::synchro::hard::HardDataSync;
 using FPMAS::graph::parallel::synchro::hard::HardSyncLinker;

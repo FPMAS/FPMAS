@@ -1,15 +1,14 @@
-
 #include "../mocks/graph/parallel/mock_load_balancing.h"
 #include "../mocks/graph/parallel/synchro/mock_sync_mode.h"
 #include "communication/communication.h"
-#include "graph/parallel/basic_distributed_graph.h"
+#include "graph/parallel/distributed_graph.h"
 #include "graph/parallel/location_manager.h"
 #include "graph/parallel/distributed_node.h"
 #include "graph/parallel/distributed_arc.h"
 #include "api/graph/parallel/location_state.h"
 
 using FPMAS::api::graph::parallel::LocationState;
-using FPMAS::graph::parallel::BasicDistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 
 using ::testing::AnyNumber;
 using ::testing::ReturnRef;
@@ -28,7 +27,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 	protected:
 		template<typename T>
 		using location_manager = FPMAS::graph::parallel::LocationManager<T>;
-		BasicDistributedGraph<
+		DistributedGraph<
 			int,
 			MockSyncMode<>,
 			FPMAS::graph::parallel::DistributedNode,

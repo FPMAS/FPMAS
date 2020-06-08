@@ -2,7 +2,7 @@
 #define DISTRIBUTED_ARC_IMPL_H
 
 #include "api/graph/parallel/distributed_arc.h"
-#include "graph/base/basic_arc.h"
+#include "graph/base/arc.h"
 #include "utils/ptr_wrapper.h"
 
 namespace FPMAS::graph::parallel {
@@ -11,9 +11,9 @@ namespace FPMAS::graph::parallel {
 	using api::graph::parallel::LocationState;
 	template<typename T>
 		class DistributedArc :
-			public graph::base::BasicArc<DistributedId, api::graph::parallel::DistributedNode<T>>,
+			public graph::base::Arc<DistributedId, api::graph::parallel::DistributedNode<T>>,
 			public FPMAS::api::graph::parallel::DistributedArc<T> {
-				typedef graph::base::BasicArc<DistributedId, api::graph::parallel::DistributedNode<T>>
+				typedef graph::base::Arc<DistributedId, api::graph::parallel::DistributedNode<T>>
 					ArcBase;
 
 				private:

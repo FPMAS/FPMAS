@@ -12,7 +12,7 @@
  * # distribute_test_with_arc
  * # distribute_test_real_MPI
  */
-#include "graph/parallel/basic_distributed_graph.h"
+#include "graph/parallel/distributed_graph.h"
 
 #include "../mocks/communication/mock_communication.h"
 #include "api/graph/base/graph.h"
@@ -42,17 +42,17 @@ using ::testing::SizeIs;
 using ::testing::UnorderedElementsAre;
 using ::testing::_;
 
-using FPMAS::graph::parallel::BasicDistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::NodePtrWrapper;
 using FPMAS::graph::parallel::ArcPtrWrapper;
 
 /********************/
 /* local_build_node */
 /********************/
-class BasicDistributedGraphTest : public ::testing::Test {
+class DistributedGraphTest : public ::testing::Test {
 	protected:
 		static const int CURRENT_RANK = 7;
-		BasicDistributedGraph<
+		DistributedGraph<
 			int,
 			MockSyncMode<>,
 			MockDistributedNode,
@@ -96,7 +96,7 @@ class BasicDistributedGraphTest : public ::testing::Test {
 /*
  * Local buildNode test
  */
-TEST_F(BasicDistributedGraphTest, buildNode) {
+TEST_F(DistributedGraphTest, buildNode) {
 
 	MockLocationManager<int>& location_manager
 		= const_cast<MockLocationManager<int>&>(
@@ -137,7 +137,7 @@ TEST_F(BasicDistributedGraphTest, buildNode) {
 /**************/
 /* local_link */
 /**************/
-class BasicDistributedGraphLinkTest : public BasicDistributedGraphTest {
+class DistributedGraphLinkTest : public DistributedGraphTest {
 	protected:
 		MockNode srcMock;
 		MockMutex<int> srcMutex;
@@ -149,7 +149,7 @@ class BasicDistributedGraphLinkTest : public BasicDistributedGraphTest {
 
 	public:
 		void SetUp() override {
-			BasicDistributedGraphTest::SetUp();
+			DistributedGraphTest::SetUp();
 
 			EXPECT_CALL(srcMock, mutex()).WillRepeatedly(ReturnRef(srcMutex));
 			EXPECT_CALL(Const(srcMock), mutex()).WillRepeatedly(ReturnRef(srcMutex));
@@ -189,7 +189,7 @@ class BasicDistributedGraphLinkTest : public BasicDistributedGraphTest {
 /*
  * Local link
  */
-TEST_F(BasicDistributedGraphLinkTest, local_src_local_tgt) {
+TEST_F(DistributedGraphLinkTest, local_src_local_tgt) {
 	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 
@@ -205,7 +205,7 @@ TEST_F(BasicDistributedGraphLinkTest, local_src_local_tgt) {
 /*
  * Local src, distant tgt
  */
-TEST_F(BasicDistributedGraphLinkTest, local_src_distant_tgt) {
+TEST_F(DistributedGraphLinkTest, local_src_distant_tgt) {
 	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
@@ -223,7 +223,7 @@ TEST_F(BasicDistributedGraphLinkTest, local_src_distant_tgt) {
 /*
  * Distant src, local tgt
  */
-TEST_F(BasicDistributedGraphLinkTest, distant_src_local_tgt) {
+TEST_F(DistributedGraphLinkTest, distant_src_local_tgt) {
 	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 
@@ -243,7 +243,7 @@ TEST_F(BasicDistributedGraphLinkTest, distant_src_local_tgt) {
  */
 // TODO : what should we do with such an arc? Should it be deleted once is has
 // been sent?
-TEST_F(BasicDistributedGraphLinkTest, distant_src_distant_tgt) {
+TEST_F(DistributedGraphLinkTest, distant_src_distant_tgt) {
 	EXPECT_CALL(srcMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
@@ -261,7 +261,7 @@ TEST_F(BasicDistributedGraphLinkTest, distant_src_distant_tgt) {
 /****************/
 /* unlink_tests */
 /****************/
-class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
+class DistributedGraphUnlinkTest : public DistributedGraphTest {
 	protected:
 		MockNode* srcMock = new MockNode(DistributedId(0, 0));
 		MockMutex<int> srcMutex;
@@ -271,7 +271,7 @@ class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
 
 	public:
 		void SetUp() override {
-			BasicDistributedGraphTest::SetUp();
+			DistributedGraphTest::SetUp();
 
 			EXPECT_CALL(*srcMock, mutex()).WillRepeatedly(ReturnRef(srcMutex));
 			EXPECT_CALL(*tgtMock, mutex()).WillRepeatedly(ReturnRef(tgtMutex));
@@ -307,7 +307,7 @@ class BasicDistributedGraphUnlinkTest : public BasicDistributedGraphTest {
 		}
 };
 
-TEST_F(BasicDistributedGraphUnlinkTest, local_src_local_tgt) {
+TEST_F(DistributedGraphUnlinkTest, local_src_local_tgt) {
 	this->link(LocationState::LOCAL, LocationState::LOCAL);
 	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::LOCAL);
 
@@ -321,7 +321,7 @@ TEST_F(BasicDistributedGraphUnlinkTest, local_src_local_tgt) {
 	delete tgtMock;
 }
 
-TEST_F(BasicDistributedGraphUnlinkTest, local_src_distant_tgt) {
+TEST_F(DistributedGraphUnlinkTest, local_src_distant_tgt) {
 	this->link(LocationState::LOCAL, LocationState::DISTANT);
 	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::DISTANT);
 
@@ -334,7 +334,7 @@ TEST_F(BasicDistributedGraphUnlinkTest, local_src_distant_tgt) {
 	delete srcMock;
 }
 
-TEST_F(BasicDistributedGraphUnlinkTest, distant_src_local_tgt) {
+TEST_F(DistributedGraphUnlinkTest, distant_src_local_tgt) {
 	this->link(LocationState::DISTANT, LocationState::LOCAL);
 	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::DISTANT);
 
@@ -355,7 +355,7 @@ TEST_F(BasicDistributedGraphUnlinkTest, distant_src_local_tgt) {
  * - node import of a new node
  * - node import with a ghost corresponding to this node already in the graph
  */
-class BasicDistributedGraphImportNodeTest : public BasicDistributedGraphTest {
+class DistributedGraphImportNodeTest : public DistributedGraphTest {
 	protected:
 		typedef typename GraphType::NodeType NodeType; // MockDistributedNode<int, MockMutex>
 		typedef typename GraphType::ArcType ArcType; // MockDistributedArc<int, MockMutex>
@@ -366,7 +366,7 @@ class BasicDistributedGraphImportNodeTest : public BasicDistributedGraphTest {
 		std::unordered_map<int, std::vector<ArcPtrWrapper<int>>> imported_arc_mocks;
 		
 		void SetUp() override {
-			BasicDistributedGraphTest::SetUp();
+			DistributedGraphTest::SetUp();
 		}
 
 		void distributeTest() {
@@ -388,7 +388,7 @@ class BasicDistributedGraphImportNodeTest : public BasicDistributedGraphTest {
 /*
  * Import new node test
  */
-TEST_F(BasicDistributedGraphImportNodeTest, import_node) {
+TEST_F(DistributedGraphImportNodeTest, import_node) {
 	imported_node_mocks[1].emplace_back(new MockNode(DistributedId(1, 10), 8, 2.1));
 	auto local_nodes_matcher = ElementsAre(
 		Key(DistributedId(1, 10))
@@ -417,7 +417,7 @@ TEST_F(BasicDistributedGraphImportNodeTest, import_node) {
 /*
  * Import node with existing ghost test
  */
-TEST_F(BasicDistributedGraphImportNodeTest, import_node_with_existing_ghost) {
+TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 	EXPECT_CALL(location_manager, addManagedNode);
 	EXPECT_CALL(location_manager, setLocal);
 	EXPECT_CALL(
@@ -454,7 +454,7 @@ TEST_F(BasicDistributedGraphImportNodeTest, import_node_with_existing_ghost) {
  * - the two nodes exist, src is DISTANT, tgt is LOCAL
  * - the two nodes exist, src is LOCAL, tgt is DISTANT
  */
-class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportNodeTest {
+class DistributedGraphImportArcTest : public DistributedGraphImportNodeTest {
 	protected:
 		NodeType* src;
 		NodeType* tgt;
@@ -465,7 +465,7 @@ class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportNod
 		MockArc* mock_arc;
 
 	void SetUp() override {
-		BasicDistributedGraphImportNodeTest::SetUp();
+		DistributedGraphImportNodeTest::SetUp();
 
 		EXPECT_CALL(location_manager, addManagedNode).Times(AnyNumber());
 		EXPECT_CALL(location_manager, setLocal).Times(AnyNumber());
@@ -506,7 +506,7 @@ class BasicDistributedGraphImportArcTest : public BasicDistributedGraphImportNod
 /*
  * Import an arc already contained in the graph, as a distant arc.
  */
-TEST_F(BasicDistributedGraphImportArcTest, import_existing_local_arc) {
+TEST_F(DistributedGraphImportArcTest, import_existing_local_arc) {
 	EXPECT_CALL(*static_cast<MockNode*>(src), state)
 		.WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(mockSyncLinker, link);
@@ -528,7 +528,7 @@ TEST_F(BasicDistributedGraphImportArcTest, import_existing_local_arc) {
 /*
  * Import arc when the two nodes are LOCAL
  */
-TEST_F(BasicDistributedGraphImportArcTest, import_local_arc) {
+TEST_F(DistributedGraphImportArcTest, import_local_arc) {
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
 	distributeTest();
@@ -540,7 +540,7 @@ TEST_F(BasicDistributedGraphImportArcTest, import_local_arc) {
 /*
  * Import with DISTANT src
  */
-TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_src) {
+TEST_F(DistributedGraphImportArcTest, import_arc_with_existing_distant_src) {
 	EXPECT_CALL(*static_cast<MockNode*>(src), state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
@@ -552,7 +552,7 @@ TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_src)
 /*
  * Import with DISTANT tgt
  */
-TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_tgt) {
+TEST_F(DistributedGraphImportArcTest, import_arc_with_existing_distant_tgt) {
 	EXPECT_CALL(*static_cast<MockNode*>(tgt), state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
@@ -576,7 +576,7 @@ TEST_F(BasicDistributedGraphImportArcTest, import_arc_with_existing_distant_tgt)
  * Obviously, the expected behavior is that no duplicate is created, i.e. the
  * second import has no effect.
  */
-TEST_F(BasicDistributedGraphImportArcTest, double_import_edge_case) {
+TEST_F(DistributedGraphImportArcTest, double_import_edge_case) {
 	auto mock = new MockArc(DistributedId(3, 12), 2, 2.6);
 
 	mock->src = new MockNode(src->getId());
@@ -600,7 +600,7 @@ TEST_F(BasicDistributedGraphImportArcTest, double_import_edge_case) {
  * been added to the Graph yet (has LOCAL or DISTANT node), and in this case
  * the missing Node must be created as a new DISTANT node.
  */
-class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraphImportNodeTest {
+class DistributedGraphImportArcWithGhostTest : public DistributedGraphImportNodeTest {
 	protected:
 		NodeType* localNode;
 		NodeType* mock_one;
@@ -609,7 +609,7 @@ class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraph
 		ArcType* importedArc;
 
 		void SetUp() override {
-			BasicDistributedGraphTest::SetUp();
+			DistributedGraphTest::SetUp();
 
 			EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex);
 			EXPECT_CALL(location_manager, addManagedNode);
@@ -644,7 +644,7 @@ class BasicDistributedGraphImportArcWithGhostTest : public BasicDistributedGraph
 /*
  * LOCAL src, missing tgt
  */
-TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
+TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
 	auto mock = new MockArc(DistributedId(3, 12),
 					2, // layer
 					2.6 // weight
@@ -679,7 +679,7 @@ TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
 /*
  * Missing src, LOCAL tgt
  */
-TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
+TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 	auto mock = new MockArc(
 					DistributedId(3, 12),
 					2, // layer
@@ -715,7 +715,7 @@ TEST_F(BasicDistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 /********************/
 /* distribute_tests */
 /********************/
-class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
+class DistributedGraphDistributeTest : public DistributedGraphTest {
 	typedef typename GraphType::PartitionMap PartitionMap;
 
 	protected:
@@ -727,7 +727,7 @@ class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
 					graph.getLocationManager()
 					));
 		void SetUp() override {
-			BasicDistributedGraphTest::SetUp();
+			DistributedGraphTest::SetUp();
 
 			EXPECT_CALL(location_manager, addManagedNode).Times(5);
 			EXPECT_CALL(location_manager, setLocal).Times(5);
@@ -754,7 +754,7 @@ class BasicDistributedGraphDistributeTest : public BasicDistributedGraphTest {
  * 3. Synchronize Node locations
  * 4. Synchronize Node data
  */
-TEST_F(BasicDistributedGraphTest, distribute_calls) {
+TEST_F(DistributedGraphTest, distribute_calls) {
 	Sequence s;
 	EXPECT_CALL(
 			//(const_cast<MockSyncLinker<NodeType, ArcType>&>(graph.getSyncLinker())),
@@ -790,7 +790,7 @@ TEST_F(BasicDistributedGraphTest, distribute_calls) {
  * 1. Synchronize links (eventually migrates link/unlink operations)
  * 4. Synchronize Node data
  */
-TEST_F(BasicDistributedGraphTest, synchronize_calls) {
+TEST_F(DistributedGraphTest, synchronize_calls) {
 	Sequence s;
 	EXPECT_CALL(
 			//(const_cast<MockSyncLinker<NodeType, ArcType>&>(graph.getSyncLinker())),
@@ -810,7 +810,7 @@ TEST_F(BasicDistributedGraphTest, synchronize_calls) {
  * Balance test.
  * Checks that load balancing is called and migration is performed.
  */
-TEST_F(BasicDistributedGraphDistributeTest, balance) {
+TEST_F(DistributedGraphDistributeTest, balance) {
 	// Should call LoadBalancing on all nodes, without fixed nodes
 	EXPECT_CALL(
 		const_cast<MockLoadBalancing<int>&>(graph.getLoadBalancing()),
@@ -832,7 +832,7 @@ TEST_F(BasicDistributedGraphDistributeTest, balance) {
 /*
  * Node distribution test (no arcs)
  */
-TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
+TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 	auto export_map_matcher = UnorderedElementsAre(
 			Pair(0, UnorderedElementsAre(
 					graph.getNode(nodeIds[3]),
@@ -892,12 +892,12 @@ TEST_F(BasicDistributedGraphDistributeTest, distribute_without_link) {
 /****************************/
 /* distribute_test_with_arc */
 /****************************/
-class BasicDistributedGraphDistributedWithLinkTest : public BasicDistributedGraphDistributeTest {
+class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistributeTest {
 	protected:
 		ArcType* arc1;
 		ArcType* arc2;
 		void SetUp() override {
-			BasicDistributedGraphDistributeTest::SetUp();
+			DistributedGraphDistributeTest::SetUp();
 
 			// No lock to manage, all links are local
 			MockMutex<int> mockMutex;
@@ -938,7 +938,7 @@ class BasicDistributedGraphDistributedWithLinkTest : public BasicDistributedGrap
 /*
  * Distribute nodes + arcs
  */
-TEST_F(BasicDistributedGraphDistributedWithLinkTest, distribute_with_link_test) {
+TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
 	auto export_node_map_matcher = UnorderedElementsAre(
 			Pair(0, UnorderedElementsAre(
 					graph.getNode(nodeIds[3]),

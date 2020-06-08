@@ -3,7 +3,7 @@
 
 #include "api/graph/parallel/distributed_node.h"
 #include "api/graph/parallel/synchro/mutex.h"
-#include "graph/base/basic_node.h"
+#include "graph/base/node.h"
 #include "graph/parallel/distributed_arc.h"
 #include "utils/ptr_wrapper.h"
 
@@ -13,9 +13,9 @@ namespace FPMAS::graph::parallel {
 
 	template<typename T>
 	class DistributedNode : 
-		public graph::base::BasicNode<DistributedId, api::graph::parallel::DistributedArc<T>>,
+		public graph::base::Node<DistributedId, api::graph::parallel::DistributedArc<T>>,
 		public api::graph::parallel::DistributedNode<T> {
-			typedef graph::base::BasicNode<DistributedId, api::graph::parallel::DistributedArc<T>> NodeBase;
+			typedef graph::base::Node<DistributedId, api::graph::parallel::DistributedArc<T>> NodeBase;
 			typedef api::graph::parallel::synchro::Mutex<T> Mutex;
 
 		private:

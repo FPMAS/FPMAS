@@ -5,10 +5,10 @@ set(SOURCES
 	communication/communication.cpp
 	# Graph
 	## Base
-	graph/base/basic_node.cpp
-	graph/base/basic_graph.cpp
+	graph/base/node.cpp
+	graph/base/graph.cpp
 	## Parallel
-	graph/parallel/basic_distributed_graph.cpp
+	graph/parallel/distributed_graph.cpp
 	graph/parallel/location_manager.cpp
 	### Synchro
 	graph/parallel/synchro/ghost/data_sync.cpp

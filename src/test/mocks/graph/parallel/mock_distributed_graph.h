@@ -7,7 +7,7 @@
 
 template<typename T, typename DistNode, typename DistArc>
 class MockDistributedGraph :
-	public MockGraphBase<
+	public MockGraph<
 		FPMAS::api::graph::parallel::DistributedNode<T>,
 		FPMAS::api::graph::parallel::DistributedArc<T>>,
 	public FPMAS::api::graph::parallel::DistributedGraph<T> {

@@ -6,7 +6,7 @@
 namespace FPMAS::graph::base {
 
 	template<typename IdType, typename _NodeType>
-		class BasicArc : public virtual FPMAS::api::graph::base::Arc<IdType, _NodeType> {
+		class Arc : public virtual FPMAS::api::graph::base::Arc<IdType, _NodeType> {
 			public:
 				typedef FPMAS::api::graph::base::Arc<IdType, _NodeType> ArcBase;
 				using typename ArcBase::NodeType;
@@ -21,9 +21,9 @@ namespace FPMAS::graph::base {
 				NodeType* target;
 
 			public:
-				BasicArc(IdType id, LayerIdType layer) :
-					BasicArc(id, layer, 1.f) {};
-				BasicArc(IdType id, LayerIdType layer, float weight)
+				Arc(IdType id, LayerIdType layer) :
+					Arc(id, layer, 1.f) {};
+				Arc(IdType id, LayerIdType layer, float weight)
 					: id(id), layer(layer), weight(weight) {};
 
 				IdType getId() const override {return id;};

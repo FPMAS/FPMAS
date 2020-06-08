@@ -2,10 +2,10 @@
 
 #include <random>
 
-#include "graph/parallel/basic_distributed_graph.h"
+#include "graph/parallel/distributed_graph.h"
 #include "../mocks/graph/parallel/mock_load_balancing.h"
 
-using FPMAS::graph::parallel::BasicDistributedGraph;
+using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::DistributedNode;
 using FPMAS::graph::parallel::DistributedArc;
 using FPMAS::graph::parallel::DefaultMpiSetUp;
@@ -97,7 +97,7 @@ TEST_F(Mpi_MutexServerRaceCondition, acquire_race_condition) {
 
 class HardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
-		BasicDistributedGraph<
+		DistributedGraph<
 			int, HardSyncMode,
 			DistributedNode,
 			DistributedArc,
