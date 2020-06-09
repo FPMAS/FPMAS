@@ -6,12 +6,12 @@ namespace FPMAS::runtime {
 		for(Date time = start; time < end; time++) {
 			date = time;
 			scheduler.build(time, epoch);
-			for(api::scheduler::Job* job : epoch) {
-				job->getBeginTask()->run();
+			for(const api::scheduler::Job* job : epoch) {
+				job->getBeginTask().run();
 				for(api::scheduler::Task* task : *job) {
 					task->run();
 				}
-				job->getEndTask()->run();
+				job->getEndTask().run();
 			}
 		}
 	}

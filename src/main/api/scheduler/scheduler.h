@@ -18,31 +18,31 @@ namespace FPMAS {
 
 		class Job {
 			public:
-				typedef std::vector<Task*>::iterator TaskIterator;
+				typedef std::vector<Task*>::const_iterator TaskIterator;
 
 				virtual JID id() const = 0;
-				virtual void add(Task*) = 0;
+				virtual void add(Task&) = 0;
 				virtual const std::vector<Task*>& tasks() const = 0;
-				virtual TaskIterator begin() = 0;
-				virtual TaskIterator end() = 0;
+				virtual TaskIterator begin() const = 0;
+				virtual TaskIterator end() const = 0;
 
-				virtual void setBeginTask(Task*) = 0;
-				virtual Task* getBeginTask() const = 0;
+				virtual void setBeginTask(Task&) = 0;
+				virtual Task& getBeginTask() const = 0;
 
-				virtual void setEndTask(Task*) = 0;
-				virtual Task* getEndTask() const = 0;
+				virtual void setEndTask(Task&) = 0;
+				virtual Task& getEndTask() const = 0;
 
 				virtual ~Job() {}
 		};
 
 		class Epoch {
 			public:
-				typedef std::vector<Job*>::iterator JobIterator;
+				typedef std::vector<const Job*>::const_iterator JobIterator;
 
-				virtual void submit(Job*) = 0;
-				virtual const std::vector<Job*>& jobs() const = 0;
-				virtual JobIterator begin() = 0;
-				virtual JobIterator end() = 0;
+				virtual void submit(const Job&) = 0;
+				virtual const std::vector<const Job*>& jobs() const = 0;
+				virtual JobIterator begin() const = 0;
+				virtual JobIterator end() const = 0;
 				virtual size_t jobCount() = 0;
 
 				virtual void clear() = 0;
@@ -51,9 +51,9 @@ namespace FPMAS {
 
 		class Scheduler {
 			public:
-				virtual void schedule(Date date, Job*) = 0;
-				virtual void schedule(Date date, Period period, Job*) = 0;
-				virtual void schedule(Date date, Date end, Period period, Job*) = 0;
+				virtual void schedule(Date date, const Job&) = 0;
+				virtual void schedule(Date date, Period period, const Job&) = 0;
+				virtual void schedule(Date date, Date end, Period period, const Job&) = 0;
 
 				virtual void build(Date date, Epoch&) const = 0;
 				virtual ~Scheduler() {}

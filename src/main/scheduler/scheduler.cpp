@@ -4,51 +4,51 @@ namespace FPMAS::scheduler {
 
 	JID Job::id() const {return _id;}
 
-	void Job::add(api::scheduler::Task * task) {
-		_tasks.push_back(task);
+	void Job::add(api::scheduler::Task& task) {
+		_tasks.push_back(&task);
 	}
 
 	const std::vector<api::scheduler::Task*>& Job::tasks() const {
 		return _tasks;
 	}
 
-	void Job::setBeginTask(api::scheduler::Task* task) {
-		this->_begin = task;
+	void Job::setBeginTask(api::scheduler::Task& task) {
+		this->_begin = &task;
 	}
 
-	api::scheduler::Task* Job::getBeginTask() const {
-		return _begin;
+	api::scheduler::Task& Job::getBeginTask() const {
+		return *_begin;
 	}
 
-	void Job::setEndTask(api::scheduler::Task* task) {
-		this->_end = task;
+	void Job::setEndTask(api::scheduler::Task& task) {
+		this->_end = &task;
 	}
 
-	api::scheduler::Task* Job::getEndTask() const {
-		return _end;
+	api::scheduler::Task& Job::getEndTask() const {
+		return *_end;
 	}
 
-	typename Job::TaskIterator Job::begin() {
+	typename Job::TaskIterator Job::begin() const {
 		return _tasks.begin();
 	}
 
-	typename Job::TaskIterator Job::end() {
+	typename Job::TaskIterator Job::end() const {
 		return _tasks.end();
 	}
 
-	void Epoch::submit(api::scheduler::Job * job) {
-		_jobs.push_back(job);
+	void Epoch::submit(const api::scheduler::Job& job) {
+		_jobs.push_back(&job);
 	}
 
-	const std::vector<api::scheduler::Job*>& Epoch::jobs() const {
+	const std::vector<const api::scheduler::Job*>& Epoch::jobs() const {
 		return _jobs;
 	}
 
-	typename Epoch::JobIterator Epoch::begin() {
+	typename Epoch::JobIterator Epoch::begin() const {
 		return _jobs.begin();
 	}
 
-	typename Epoch::JobIterator Epoch::end() {
+	typename Epoch::JobIterator Epoch::end() const {
 		return _jobs.end();
 	}
 
@@ -60,16 +60,16 @@ namespace FPMAS::scheduler {
 		_jobs.clear();
 	}
 
-	void Scheduler::schedule(Date date, FPMAS::api::scheduler::Job* job) {
-		unique_jobs[date].push_back(job);
+	void Scheduler::schedule(Date date, const api::scheduler::Job& job) {
+		unique_jobs[date].push_back(&job);
 	}
 
-	void Scheduler::schedule(Date start, Period period, FPMAS::api::scheduler::Job* job) {
-		recurring_jobs[start].push_back({period, job});
+	void Scheduler::schedule(Date start, Period period, const api::scheduler::Job& job) {
+		recurring_jobs[start].push_back({period, &job});
 	}
 
-	void Scheduler::schedule(Date start, Date end, Period period, FPMAS::api::scheduler::Job * job) {
-		limited_recurring_jobs[start].push_back({end, period, job});
+	void Scheduler::schedule(Date start, Date end, Period period, const api::scheduler::Job& job) {
+		limited_recurring_jobs[start].push_back({end, period, &job});
 	}
 
 	void Scheduler::build(Date date, FPMAS::api::scheduler::Epoch& epoch) const {
@@ -77,7 +77,7 @@ namespace FPMAS::scheduler {
 		auto unique = unique_jobs.find(date);
 		if(unique != unique_jobs.end()) {
 			for(auto job : unique->second) {
-				epoch.submit(job);
+				epoch.submit(*job);
 			}
 		}
 		if(recurring_jobs.size() > 0) {
@@ -90,7 +90,7 @@ namespace FPMAS::scheduler {
 				Date start = recurring->first;
 				for(auto job : recurring->second) {
 					if((date-start) % job.first == 0) {
-						epoch.submit(job.second);
+						epoch.submit(*job.second);
 					}
 				}
 			}
@@ -109,7 +109,7 @@ namespace FPMAS::scheduler {
 					auto job_ptr = std::get<2>(job);
 					if(date < end) {
 						if((date-start) % period == 0) {
-							epoch.submit(job_ptr);
+							epoch.submit(*job_ptr);
 						}
 					}
 				}

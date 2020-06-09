@@ -26,6 +26,8 @@ set(SOURCES
 	scheduler/scheduler.cpp
 	# Runtime
 	runtime/runtime.cpp
+	# Model
+	model/model.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

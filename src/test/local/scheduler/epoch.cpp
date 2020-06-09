@@ -4,7 +4,7 @@
 
 using FPMAS::scheduler::Epoch;
 
-using ::testing::UnorderedElementsAreArray;
+using ::testing::UnorderedElementsAre;
 using ::testing::IsEmpty;
 
 class EpochTest : public ::testing::Test {
@@ -14,17 +14,19 @@ class EpochTest : public ::testing::Test {
 };
 
 TEST_F(EpochTest, submit) {
-	std::array<MockJob*, 6> jobs;
-	for(auto job : jobs)
+	std::array<MockJob, 6> jobs;
+	for(auto& job : jobs)
 		epoch.submit(job);
 
-	ASSERT_THAT(epoch.jobs(), UnorderedElementsAreArray(jobs));
+	ASSERT_THAT(epoch.jobs(), UnorderedElementsAre(
+		&jobs[0], &jobs[1], &jobs[2], &jobs[3], &jobs[4], &jobs[5]
+		));
 
 }
 
 TEST_F(EpochTest, clear) {
-	std::array<MockJob*, 6> jobs;
-	for(auto job : jobs)
+	std::array<MockJob, 6> jobs;
+	for(auto& job : jobs)
 		epoch.submit(job);
 
 	epoch.clear();

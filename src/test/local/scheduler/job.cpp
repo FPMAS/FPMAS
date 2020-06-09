@@ -4,7 +4,8 @@
 
 using FPMAS::scheduler::Job;
 
-using ::testing::UnorderedElementsAreArray;
+using ::testing::Ref;
+using ::testing::UnorderedElementsAre;
 using ::testing::IsEmpty;
 
 class JobTest : public ::testing::Test {
@@ -18,18 +19,21 @@ TEST_F(JobTest, id) {
 }
 
 TEST_F(JobTest, add) {
-	std::array<MockTask*, 6> tasks;
-	for(auto task : tasks)
+	std::array<MockTask, 6> tasks;
+	
+	for(auto& task : tasks)
 		job.add(task);
 
-	ASSERT_THAT(job.tasks(), UnorderedElementsAreArray(tasks));
+	ASSERT_THAT(job.tasks(), UnorderedElementsAre(
+				&tasks[0], &tasks[1], &tasks[2], &tasks[3], &tasks[4], &tasks[5]
+				));
 }
 
 TEST_F(JobTest, begin) {
 	MockTask begin;
 
-	job.setBeginTask(&begin);
-	ASSERT_EQ(job.getBeginTask(), &begin);
+	job.setBeginTask(begin);
+	ASSERT_THAT(job.getBeginTask(), Ref(begin));
 
 	// Begin should not be part of the regular task list
 	ASSERT_THAT(job.tasks(), IsEmpty());
@@ -38,8 +42,8 @@ TEST_F(JobTest, begin) {
 TEST_F(JobTest, end) {
 	MockTask end;
 
-	job.setEndTask(&end);
-	ASSERT_EQ(job.getEndTask(), &end);
+	job.setEndTask(end);
+	ASSERT_THAT(job.getEndTask(), Ref(end));
 
 	// End should not be part of the regular task list
 	ASSERT_THAT(job.tasks(), IsEmpty());

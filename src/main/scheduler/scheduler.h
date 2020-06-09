@@ -25,26 +25,26 @@ namespace FPMAS::scheduler {
 		public:
 			Job(JID id) : _id(id) {}
 			JID id() const override;
-			void add(api::scheduler::Task*) override;
+			void add(api::scheduler::Task&) override;
 			const std::vector<api::scheduler::Task*>& tasks() const override;
-			TaskIterator begin() override;
-			TaskIterator end() override;
+			TaskIterator begin() const override;
+			TaskIterator end() const override;
 
-			void setBeginTask(api::scheduler::Task*) override;
-			void setEndTask(api::scheduler::Task*) override;
+			void setBeginTask(api::scheduler::Task&) override;
+			void setEndTask(api::scheduler::Task&) override;
 
-			api::scheduler::Task* getBeginTask() const override;
-			api::scheduler::Task* getEndTask() const override;
+			api::scheduler::Task& getBeginTask() const override;
+			api::scheduler::Task& getEndTask() const override;
 	};
 
 	class Epoch : public api::scheduler::Epoch {
 		private:
-			std::vector<api::scheduler::Job*> _jobs;
+			std::vector<const api::scheduler::Job*> _jobs;
 		public:
-			void submit(api::scheduler::Job*) override;
-			const std::vector<api::scheduler::Job*>& jobs() const override;
-			JobIterator begin() override;
-			JobIterator end() override;
+			void submit(const api::scheduler::Job&) override;
+			const std::vector<const api::scheduler::Job*>& jobs() const override;
+			JobIterator begin() const override;
+			JobIterator end() const override;
 			size_t jobCount() override;
 
 			void clear() override;
@@ -54,17 +54,17 @@ namespace FPMAS::scheduler {
 
 	class Scheduler : public api::scheduler::Scheduler {
 		private:
-			std::unordered_map<Date, std::vector<FPMAS::api::scheduler::Job*>> unique_jobs;
-			std::map<Date, std::vector<std::pair<Period, FPMAS::api::scheduler::Job*>>>
+			std::unordered_map<Date, std::vector<const api::scheduler::Job*>> unique_jobs;
+			std::map<Date, std::vector<std::pair<Period, const api::scheduler::Job*>>>
 				recurring_jobs;
-			std::map<Date, std::vector<std::tuple<Date, Period, FPMAS::api::scheduler::Job*>>>
+			std::map<Date, std::vector<std::tuple<Date, Period, const api::scheduler::Job*>>>
 				limited_recurring_jobs;
 			void resizeCycle(size_t new_size);
 
 		public:
-			void schedule(Date date, FPMAS::api::scheduler::Job*) override;
-			void schedule(Date date, Period period, FPMAS::api::scheduler::Job*) override;
-			void schedule(Date date, Date end, Period period, FPMAS::api::scheduler::Job*) override;
+			void schedule(Date date, const api::scheduler::Job&) override;
+			void schedule(Date date, Period period, const api::scheduler::Job&) override;
+			void schedule(Date date, Date end, Period period, const api::scheduler::Job&) override;
 
 			void build(Date date, FPMAS::api::scheduler::Epoch&) const override;
 	};

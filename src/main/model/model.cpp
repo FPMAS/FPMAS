@@ -5,21 +5,24 @@ namespace FPMAS::model {
 	const JID Model::LB_JID = 0;
 
 	AgentGroup::AgentGroup(AgentGraph& agent_graph, JID job_id)
-		: agent_graph(agent_graph), _job(new scheduler::Job(job_id)) {
-			_job->setEndTask(new SynchronizeGraph(agent_graph));
+		: agent_graph(agent_graph), _job(job_id), sync_graph_task(agent_graph) {
+			_job.setEndTask(sync_graph_task);
 	}
 
 	void AgentGroup::add(api::model::Agent* agent) {
 		_agents.push_back(agent);
-		_job->add(new AgentTask(*agent));
+		_job.add(*new AgentTask(*agent));
 	}
 
 	Model::Model(AgentGraph& graph, LoadBalancingAlgorithm& load_balancing)
-		: _graph(graph), _runtime(_scheduler), _loadBalancingJob(new scheduler::Job(LB_JID)) {
-			_loadBalancingJob->add(new LoadBalancingTask(
-						_graph, load_balancing, _scheduler, _runtime
-						));
+		: _graph(graph), _runtime(_scheduler), _loadBalancingJob(LB_JID), load_balancing_task(_graph, load_balancing, _scheduler, _runtime) {
+			_loadBalancingJob.add(load_balancing_task);
 		}
+
+	Model::~Model() {
+		for(auto group : _groups)
+			delete group;
+	}
 
 	AgentGroup* Model::buildGroup() {
 		AgentGroup* group = new AgentGroup(_graph, job_id++);
@@ -33,7 +36,7 @@ namespace FPMAS::model {
 		ConstNodeMap node_map;
 		PartitionMap fixed_nodes;
 		PartitionMap partition;
-		for(api::scheduler::Job* job : epoch) {
+		for(const api::scheduler::Job* job : epoch) {
 			for(api::scheduler::Task* task : *job) {
 				if(AgentTask* agent_task = dynamic_cast<AgentTask*>(task)) {
 					auto node = agent_task->agent().node();

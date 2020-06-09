@@ -21,13 +21,13 @@ namespace FPMAS::model {
 			}
 	};
 
-	class SynchronizeGraph : public api::scheduler::Task {
+	class SynchronizeGraphTask : public api::scheduler::Task {
 		public:
 			typedef typename api::model::Model::AgentGraph AgentGraph;
 		private:
 			AgentGraph& agent_graph;
 		public:
-			SynchronizeGraph(AgentGraph& agent_graph)
+			SynchronizeGraphTask(AgentGraph& agent_graph)
 				: agent_graph(agent_graph) {}
 
 			void run() override {
@@ -40,13 +40,14 @@ namespace FPMAS::model {
 			typedef typename api::model::Model::AgentGraph AgentGraph;
 		private:
 			AgentGraph& agent_graph;
-			scheduler::Job* _job;
+			scheduler::Job _job;
+			SynchronizeGraphTask sync_graph_task;
 			std::vector<api::model::Agent*> _agents;
 
 		public:
 			AgentGroup(AgentGraph& agent_graph, JID job_id);
 
-			const scheduler::Job* job() const override {return _job;}
+			const scheduler::Job& job() const override {return _job;}
 
 			const std::vector<api::model::Agent*>& agents() const override {return _agents;}
 			void add(api::model::Agent*) override;
@@ -98,7 +99,8 @@ namespace FPMAS::model {
 			AgentGraph& _graph;
 			scheduler::Scheduler _scheduler;
 			runtime::Runtime _runtime;
-			scheduler::Job* _loadBalancingJob;
+			scheduler::Job _loadBalancingJob;
+			LoadBalancingTask load_balancing_task;
 
 			std::vector<api::model::AgentGroup*> _groups;
 			
@@ -113,10 +115,12 @@ namespace FPMAS::model {
 			scheduler::Scheduler& scheduler() override {return _scheduler;}
 			runtime::Runtime& runtime() override {return _runtime;}
 
-			scheduler::Job* loadBalancingJob() const override {return _loadBalancingJob;}
+			const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
 			AgentGroup* buildGroup() override;
 			const std::vector<api::model::AgentGroup*>& groups() const override {return _groups;}
+
+			~Model();
 	};
 };
 #endif
