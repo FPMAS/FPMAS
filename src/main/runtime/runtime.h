@@ -10,6 +10,7 @@ namespace FPMAS::runtime {
 		private:
 			api::scheduler::Scheduler& scheduler;
 			scheduler::Epoch epoch;
+			Date date = 0;
 
 		public:
 			Runtime(api::scheduler::Scheduler& scheduler)
@@ -17,6 +18,7 @@ namespace FPMAS::runtime {
 
 			void run(Date end) override;
 			void run(Date start, Date end) override;
+			Date currentDate() const override {return date;}
 	};
 }
 #endif

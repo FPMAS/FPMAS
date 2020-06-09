@@ -11,6 +11,8 @@ set(SOURCES
 	scheduler/scheduler.cpp
 	# Runtime
 	runtime/runtime.cpp
+	# Model
+	model/model.cpp
 	)
 
 add_library(fpmas ${SOURCES})

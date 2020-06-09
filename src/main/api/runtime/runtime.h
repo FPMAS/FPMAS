@@ -9,6 +9,7 @@ namespace FPMAS::api::runtime {
 		public:
 			virtual void run(Date end) = 0;
 			virtual void run(Date start, Date end) = 0;
+			virtual FPMAS::Date currentDate() const = 0;
 	};
 }
 #endif

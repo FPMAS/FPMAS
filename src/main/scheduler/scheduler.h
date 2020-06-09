@@ -54,9 +54,6 @@ namespace FPMAS::scheduler {
 
 	class Scheduler : public api::scheduler::Scheduler {
 		private:
-			JID id = 0;
-			//std::vector<Job*> jobs;
-			//std::vector<Epoch> cycle {1};
 			std::unordered_map<Date, std::vector<FPMAS::api::scheduler::Job*>> unique_jobs;
 			std::map<Date, std::vector<std::pair<Period, FPMAS::api::scheduler::Job*>>>
 				recurring_jobs;

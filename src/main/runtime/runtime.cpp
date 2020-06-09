@@ -4,6 +4,7 @@ namespace FPMAS::runtime {
 
 	void Runtime::run(Date start, Date end) {
 		for(Date time = start; time < end; time++) {
+			date = time;
 			scheduler.build(time, epoch);
 			for(api::scheduler::Job* job : epoch) {
 				job->getBeginTask()->run();

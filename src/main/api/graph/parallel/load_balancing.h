@@ -18,10 +18,10 @@ namespace FPMAS::api::graph::parallel {
 			public:
 				typedef std::unordered_map<DistributedId, int, NodeIdHash> PartitionMap;
 				typedef std::unordered_map<
-					DistributedId, NodeType*, NodeIdHash
-					> NodeMap;
+					DistributedId, const NodeType*, NodeIdHash
+					> ConstNodeMap;
 				virtual PartitionMap balance(
-						NodeMap nodes,
+						ConstNodeMap nodes,
 						PartitionMap fixedVertices
 						) = 0;
 		};

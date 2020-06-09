@@ -36,8 +36,8 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 				FPMAS::communication::MpiCommunicator,
 				FPMAS::communication::TypedMpi
 				>,
-			location_manager,
-			MockLoadBalancing> graph;
+			location_manager
+			> graph;
 
 		MockSyncLinker<int> mock_sync_linker;
 		MockDataSync mock_data_sync;

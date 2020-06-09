@@ -14,8 +14,7 @@
 	template<typename> class DistNodeImpl,\
 	template<typename> class DistArcImpl,\
 	typename MpiSetUp,\
-	template<typename> class LocationManagerImpl,\
-	template<typename> class LoadBalancingImpl
+	template<typename> class LocationManagerImpl
 
 #define DIST_GRAPH_PARAMS_SPEC\
 	T,\
@@ -23,8 +22,7 @@
 	DistNodeImpl,\
 	DistArcImpl,\
 	MpiSetUp,\
-	LocationManagerImpl,\
-	LoadBalancingImpl
+	LocationManagerImpl
 
 namespace FPMAS::graph::parallel {
 	
@@ -75,7 +73,7 @@ namespace FPMAS::graph::parallel {
 
 			LocationManagerImpl<T> location_manager;
 			SyncModeRuntimeType sync_mode_runtime;
-			LoadBalancingImpl<T> load_balancing;
+			//LoadBalancingImpl<T> load_balancing;
 
 
 			public:
@@ -107,10 +105,12 @@ namespace FPMAS::graph::parallel {
 			ArcType* importArc(ArcType* arc) override;
 
 			const SyncModeRuntimeType& getSyncModeRuntime() const {return sync_mode_runtime;}
-
-			const LoadBalancingImpl<T>& getLoadBalancing() const {
-				return load_balancing;
-			};
+/*
+ *
+ *            const LoadBalancingImpl<T>& getLoadBalancing() const {
+ *                return load_balancing;
+ *            };
+ */
 
 			const LocationManagerImpl<T>&
 				getLocationManager() const override {return location_manager;}
@@ -118,8 +118,12 @@ namespace FPMAS::graph::parallel {
 			void removeNode(NodeType*) override {};
 			void unlink(ArcType*) override;
 
-			void balance() override {
-				this->distribute(load_balancing.balance(this->getNodes(), {}));
+			void balance(api::graph::parallel::LoadBalancing<T>& load_balancing) override {
+				typename api::graph::parallel::LoadBalancing<T>::ConstNodeMap node_map;
+				for(auto node : this->getNodes()) {
+					node_map.insert(node);
+				}
+				this->distribute(load_balancing.balance(node_map, {}));
 			};
 
 			void distribute(PartitionMap partition) override;

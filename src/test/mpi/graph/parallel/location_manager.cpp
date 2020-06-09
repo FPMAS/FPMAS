@@ -54,8 +54,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			DistributedNode,
 			DistributedArc,
 			DefaultMpiSetUp,
-			LocationManager,
-			MockLoadBalancing
+			LocationManager
 			> graph;
 
 		MockDataSync data_sync;

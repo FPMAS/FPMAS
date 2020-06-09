@@ -102,9 +102,8 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 			DistributedNode,
 			DistributedArc,
 			DefaultMpiSetUp,
-			LocationManager,
-			MockLoadBalancing
-				> graph;
+			LocationManager
+			> graph;
 
 		std::mt19937 engine;
 		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};

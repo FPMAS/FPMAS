@@ -58,8 +58,8 @@ class DistributedGraphTest : public ::testing::Test {
 			MockDistributedNode,
 			MockDistributedArc,
 			MockMpiSetUp<CURRENT_RANK, 10>,
-			MockLocationManager,
-			MockLoadBalancing> graph;
+			MockLocationManager
+			> graph;
 
 		typedef decltype(graph) GraphType;
 		typedef MockDistributedNode<int> MockNode;
@@ -811,10 +811,15 @@ TEST_F(DistributedGraphTest, synchronize_calls) {
  * Checks that load balancing is called and migration is performed.
  */
 TEST_F(DistributedGraphDistributeTest, balance) {
+	MockLoadBalancing<int> load_balancing;
+	typename MockLoadBalancing<int>::ConstNodeMap node_map;
+	for(auto node : graph.getNodes())
+		node_map.insert(node);
+
 	// Should call LoadBalancing on all nodes, without fixed nodes
 	EXPECT_CALL(
-		const_cast<MockLoadBalancing<int>&>(graph.getLoadBalancing()),
-		balance(graph.getNodes(), IsEmpty()))
+		load_balancing,
+		balance(node_map, IsEmpty()))
 		.WillOnce(Return(fakePartition));
 	// Migration of nodes + arcs
 	//EXPECT_CALL(comm, allToAll(_)).Times(2);
@@ -826,7 +831,7 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
 	// Actual call
-	graph.balance();
+	graph.balance(load_balancing);
 }
 
 /*
