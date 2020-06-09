@@ -2,20 +2,20 @@
 
 namespace FPMAS::runtime {
 
-	void Runtime::execute(Date start, Date end) {
+	void Runtime::run(Date start, Date end) {
 		for(Date time = start; time < end; time++) {
 			scheduler.build(time, epoch);
 			for(api::scheduler::Job* job : epoch) {
-				job->getBeginTask()->execute();
+				job->getBeginTask()->run();
 				for(api::scheduler::Task* task : *job) {
-					task->execute();
+					task->run();
 				}
-				job->getEndTask()->execute();
+				job->getEndTask()->run();
 			}
 		}
 	}
 
-	void Runtime::execute(Date end) {
-		execute(0, end);
+	void Runtime::run(Date end) {
+		run(0, end);
 	}
 }

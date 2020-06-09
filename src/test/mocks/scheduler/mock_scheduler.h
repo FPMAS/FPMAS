@@ -6,7 +6,7 @@
 
 class MockTask : public FPMAS::api::scheduler::Task {
 	public:
-		MOCK_METHOD(void, execute, (), (override));
+		MOCK_METHOD(void, run, (), (override));
 };
 
 class MockJob : public FPMAS::api::scheduler::Job {

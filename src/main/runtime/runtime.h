@@ -15,8 +15,8 @@ namespace FPMAS::runtime {
 			Runtime(api::scheduler::Scheduler& scheduler)
 				: scheduler(scheduler) {}
 
-			void execute(Date end) override;
-			void execute(Date start, Date end) override;
+			void run(Date end) override;
+			void run(Date start, Date end) override;
 	};
 }
 #endif

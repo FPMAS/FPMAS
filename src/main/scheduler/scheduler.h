@@ -11,7 +11,7 @@ namespace FPMAS::scheduler {
 
 	class VoidTask : public api::scheduler::Task {
 		public:
-			void execute() override {};
+			void run() override {};
 	};
 
 	class Job : public api::scheduler::Job {

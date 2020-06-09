@@ -69,16 +69,16 @@ class RuntimeTest : public ::testing::Test {
 		}
 		void expectTasks(Sequence& sequence, std::vector<FPMAS::api::scheduler::Task*> job_tasks) {
 			Expectation _job_begin = EXPECT_CALL(
-					*mock_tasks[0], execute)
+					*mock_tasks[0], run)
 				.InSequence(sequence);
 			ExpectationSet _job_tasks;
 			for(auto* task : job_tasks)
 				_job_tasks += EXPECT_CALL(
-						*static_cast<MockTask*>(task), execute)
+						*static_cast<MockTask*>(task), run)
 					.After(_job_begin);
 
 			EXPECT_CALL(
-					*mock_tasks[3], execute)
+					*mock_tasks[3], run)
 				.InSequence(sequence)
 				.After(_job_tasks);
 		}
@@ -115,7 +115,7 @@ class MockBuildEpoch {
 		}
 };
 
-TEST_F(RuntimeTest, execute) {
+TEST_F(RuntimeTest, run) {
 	Sequence seq;
 
 	Sequence epoch_0;
@@ -142,6 +142,6 @@ TEST_F(RuntimeTest, execute) {
 	expectTasks(seq, job_0_tasks);
 	expectTasks(seq, job_2_tasks);
 
-	runtime.execute(0, 3);
+	runtime.run(0, 3);
 };
 

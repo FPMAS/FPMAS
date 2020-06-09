@@ -12,7 +12,7 @@ namespace FPMAS {
 
 		class Task {
 			public:
-				virtual void execute() = 0;
+				virtual void run() = 0;
 				virtual ~Task() {}
 		};
 
