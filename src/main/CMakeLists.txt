@@ -1,12 +1,11 @@
 set(SOURCES
 	${SOURCES}
 	# Utils
-	utils/config.cpp
 	utils/log.cpp
 	# Communication
 	communication/communication.cpp
-	# Graph
-	graph/parallel/zoltan/zoltan_utils.cpp
+	# Load balancing
+	load_balancing/zoltan_load_balancing.cpp
 	# Scheduler
 	scheduler/scheduler.cpp
 	# Runtime

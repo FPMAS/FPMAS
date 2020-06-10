@@ -35,11 +35,11 @@ namespace FPMAS::graph::base {
 				float getWeight() const override {return weight;};
 				void setWeight(float weight) override {this->weight = weight;};
 
-				const std::vector<ArcType*> getIncomingArcs() override;
-				const std::vector<ArcType*> getIncomingArcs(LayerIdType layer) override;
+				const std::vector<ArcType*> getIncomingArcs() const override;
+				const std::vector<ArcType*> getIncomingArcs(LayerIdType layer) const override;
 
-				const std::vector<ArcType*> getOutgoingArcs() override;
-				const std::vector<ArcType*> getOutgoingArcs(LayerIdType layer) override;
+				const std::vector<ArcType*> getOutgoingArcs() const override;
+				const std::vector<ArcType*> getOutgoingArcs(LayerIdType layer) const override;
 
 				void linkIn(ArcType* arc) override;
 				void linkOut(ArcType* arc) override;
@@ -51,7 +51,7 @@ namespace FPMAS::graph::base {
 
 	template<typename IdType, typename ArcType>
 		const std::vector<typename Node<IdType, ArcType>::ArcType*>
-			Node<IdType, ArcType>::getIncomingArcs() {
+			Node<IdType, ArcType>::getIncomingArcs() const {
 				std::vector<ArcType*> in;
 				for(auto layer : this->incomingArcs) {
 					for(auto* arc : layer.second) {
@@ -63,13 +63,17 @@ namespace FPMAS::graph::base {
 
 	template<typename IdType, typename ArcType>
 		const std::vector<typename Node<IdType, ArcType>::ArcType*>
-			Node<IdType, ArcType>::getIncomingArcs(LayerIdType id) {
-				return incomingArcs[id];
+			Node<IdType, ArcType>::getIncomingArcs(LayerIdType id) const {
+				try {
+					return incomingArcs.at(id);
+				} catch(std::out_of_range) {
+					return {};
+				}
 		}
 	
 	template<typename IdType, typename ArcType>
 		const std::vector<typename Node<IdType, ArcType>::ArcType*>
-			Node<IdType, ArcType>::getOutgoingArcs() {
+			Node<IdType, ArcType>::getOutgoingArcs() const {
 				std::vector<ArcType*> out;
 				for(auto layer : this->outgoingArcs) {
 					for(auto* arc : layer.second) {
@@ -81,8 +85,12 @@ namespace FPMAS::graph::base {
 
 	template<typename IdType, typename ArcType>
 		const std::vector<typename Node<IdType, ArcType>::ArcType*>
-			Node<IdType, ArcType>::getOutgoingArcs(LayerIdType id) {
-				return outgoingArcs[id];
+			Node<IdType, ArcType>::getOutgoingArcs(LayerIdType id) const {
+				try {
+					return outgoingArcs.at(id);
+				} catch(std::out_of_range) {
+					return {};
+				}
 		}
 	
 	template<typename IdType, typename ArcType>

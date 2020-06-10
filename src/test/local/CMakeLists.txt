@@ -20,6 +20,8 @@ set(SOURCES
 	graph/parallel/synchro/hard/hard_sync_mode.cpp
 	graph/parallel/synchro/hard/link_client.cpp
 	graph/parallel/synchro/hard/link_server.cpp
+	# Load balancing
+	load_balancing/zoltan_load_balancing.cpp
 	# Scheduler
 	scheduler/job.cpp
 	scheduler/epoch.cpp

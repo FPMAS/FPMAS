@@ -44,11 +44,11 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 		MOCK_METHOD(float, getWeight, (), (const, override));
 		MOCK_METHOD(void, setWeight, (float), (override));
 
-		MOCK_METHOD(const std::vector<ArcType*>, getIncomingArcs, (), (override));
-		MOCK_METHOD(const std::vector<ArcType*>, getIncomingArcs, (LayerId), (override));
+		MOCK_METHOD(const std::vector<ArcType*>, getIncomingArcs, (), (const, override));
+		MOCK_METHOD(const std::vector<ArcType*>, getIncomingArcs, (LayerId), (const, override));
 
-		MOCK_METHOD(const std::vector<ArcType*>, getOutgoingArcs, (), (override));
-		MOCK_METHOD(const std::vector<ArcType*>, getOutgoingArcs, (LayerId), (override));
+		MOCK_METHOD(const std::vector<ArcType*>, getOutgoingArcs, (), (const, override));
+		MOCK_METHOD(const std::vector<ArcType*>, getOutgoingArcs, (LayerId), (const, override));
 
 		MOCK_METHOD(void, linkIn, (ArcType*), (override));
 		MOCK_METHOD(void, linkOut, (ArcType*), (override));

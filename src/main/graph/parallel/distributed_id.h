@@ -3,18 +3,13 @@
 
 #include <functional>
 #include <nlohmann/json.hpp>
-#include "zoltan_cpp.h"
-#include "zoltan/zoltan_utils.h"
+#include <mpi.h>
+#include <climits>
 #include "utils/log.h"
 
 
 namespace FPMAS::graph::parallel {
 	class DistributedId;
-}
-
-namespace FPMAS::graph::parallel::zoltan::utils {
-	DistributedId read_zoltan_id(const ZOLTAN_ID_PTR);
-	void write_zoltan_id(DistributedId, ZOLTAN_ID_PTR);
 }
 
 namespace FPMAS::communication {
@@ -59,8 +54,6 @@ namespace FPMAS::graph::parallel {
 	class DistributedId {
 		friend std::hash<DistributedId>;
 		//friend FPMAS::communication::SyncMpiCommunicator;
-		friend DistributedId zoltan::utils::read_zoltan_id(const ZOLTAN_ID_PTR);
-		friend void zoltan::utils::write_zoltan_id(DistributedId, ZOLTAN_ID_PTR);
 		friend nlohmann::adl_serializer<DistributedId>;
 		friend std::ostream& operator<<(std::ostream& os, const DistributedId& id) {
 			os << std::string(id);

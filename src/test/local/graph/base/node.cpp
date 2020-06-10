@@ -3,6 +3,10 @@
 
 #include "../mocks/graph/base/mock_arc.h"
 
+using ::testing::SizeIs;
+using ::testing::IsEmpty;
+using ::testing::ElementsAre;
+
 using FPMAS::graph::base::Node;
 using FPMAS::graph::base::BasicId;
 
@@ -23,16 +27,26 @@ class NodeTest : public ::testing::Test {
 
 };
 
+TEST_F(NodeTest, void_incoming_arcs) {
+	ASSERT_THAT(node.getIncomingArcs(), SizeIs(0));
+	ASSERT_THAT(node.getIncomingArcs(12), SizeIs(0));
+}
+
+TEST_F(NodeTest, void_outgoing_arcs) {
+	ASSERT_THAT(node.getOutgoingArcs(), SizeIs(0));
+	ASSERT_THAT(node.getOutgoingArcs(12), SizeIs(0));
+}
+
 TEST_F(NodeTest, linkIn) {
 	node.linkIn(&arc);
-	ASSERT_EQ(node.getIncomingArcs(4).size(), 1);
-	ASSERT_EQ(node.getIncomingArcs(4)[0], &arc);
+	ASSERT_THAT(node.getIncomingArcs(4), SizeIs(1));
+	ASSERT_THAT(node.getIncomingArcs(4), ElementsAre(&arc));
 }
 
 TEST_F(NodeTest, linkOut) {
 	node.linkOut(&arc);
-	ASSERT_EQ(node.getOutgoingArcs(4).size(), 1);
-	ASSERT_EQ(node.getOutgoingArcs(4)[0], &arc);
+	ASSERT_THAT(node.getOutgoingArcs(4), SizeIs(1));
+	ASSERT_THAT(node.getOutgoingArcs(4), ElementsAre(&arc));
 }
 
 TEST_F(NodeTest, unlinkIn) {
@@ -41,7 +55,7 @@ TEST_F(NodeTest, unlinkIn) {
 	EXPECT_CALL(arc, getTargetNode).WillRepeatedly(Return(&node));
 
 	node.unlinkIn(&arc);
-	ASSERT_EQ(node.getIncomingArcs(4).size(), 0);
+	ASSERT_THAT(node.getIncomingArcs(4), IsEmpty());
 }
 
 TEST_F(NodeTest, unlinkOut) {
@@ -50,5 +64,5 @@ TEST_F(NodeTest, unlinkOut) {
 	EXPECT_CALL(arc, getTargetNode).WillRepeatedly(Return(&otherNode));
 
 	node.unlinkOut(&arc);
-	ASSERT_EQ(node.getOutgoingArcs(4).size(), 0);
+	ASSERT_THAT(node.getOutgoingArcs(4), IsEmpty());
 }

@@ -1,43 +1,38 @@
-#include "gtest/gtest.h"
+#include "../mocks/graph/parallel/mock_distributed_arc.h"
+#include "../mocks/graph/parallel/mock_distributed_node.h"
 
-#include "api/graph/base/mock_arc.h"
-#include "api/graph/base/mock_node.h"
-#include "api/graph/parallel/proxy/mock_proxy.h"
-
-#include "graph/parallel/zoltan/zoltan_load_balancing.h"
-#include "graph/parallel/zoltan/zoltan_utils.h"
-
-#include "utils/test.h"
+#include "load_balancing/zoltan_load_balancing.h"
 
 using ::testing::AtLeast;
 using ::testing::AnyNumber;
-using FPMAS::test::ASSERT_CONTAINS;
 
-using FPMAS::graph::parallel::zoltan::utils::read_zoltan_id;
+using FPMAS::load_balancing::zoltan::read_zoltan_id;
 
-using FPMAS::graph::parallel::zoltan::num_obj;
-using FPMAS::graph::parallel::zoltan::obj_list;
-using FPMAS::graph::parallel::zoltan::num_edges_multi_fn;
-using FPMAS::graph::parallel::zoltan::edge_list_multi_fn;
+using FPMAS::load_balancing::zoltan::num_obj;
+using FPMAS::load_balancing::zoltan::obj_list;
+using FPMAS::load_balancing::zoltan::num_edges_multi_fn;
+using FPMAS::load_balancing::zoltan::edge_list_multi_fn;
+using FPMAS::load_balancing::zoltan::num_fixed_obj_fn;
+using FPMAS::load_balancing::zoltan::fixed_obj_list_fn;
 
 
-class ZoltanLBFunctionsTest : public ::testing::Test {
+class ZoltanFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedId id1 {0, 1};
-		std::vector<MockArc<int, DistributedId>*> outArcs1;
-		MockArc<int, DistributedId>* mockArc1;
-		MockArc<int, DistributedId>* mockArc2;
+		std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*> outArcs1;
+		MockDistributedArc<int>* mockArc1;
+		MockDistributedArc<int>* mockArc2;
 
 		DistributedId id2 {0, 2};
-		std::vector<MockArc<int, DistributedId>*> outArcs2;
+		std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*> outArcs2;
 
 		DistributedId id3 {2, 3};
-		std::vector<MockArc<int, DistributedId>*> outArcs3;
-		MockArc<int, DistributedId>* mockArc3;
+		std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*> outArcs3;
+		MockDistributedArc<int>* mockArc3;
 
 		std::unordered_map<
 			DistributedId,
-			MockNode<int, DistributedId>*,
+			MockDistributedNode<int>*,
 			FPMAS::api::graph::base::IdHash<DistributedId>
 			> nodes;
 
@@ -59,12 +54,12 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 		int err;
 
 		void SetUp() override {
-			nodes[id1] = new MockNode(id1, 0, 1.f);
-			nodes[id2] = new MockNode(id2, 1, 2.f);
-			nodes[id3] = new MockNode(id3, 2, 3.f);
+			nodes[id1] = new MockDistributedNode(id1, 0, 1.f);
+			nodes[id2] = new MockDistributedNode(id2, 1, 2.f);
+			nodes[id3] = new MockDistributedNode(id3, 2, 3.f);
 
 			// Mock arc id1 -> id2
-			mockArc1 = new MockArc<int, DistributedId>(
+			mockArc1 = new MockDistributedArc<int>(
 					DistributedId(0, 0), 0, 1.5f
 					);
 			EXPECT_CALL(*mockArc1, getSourceNode).WillRepeatedly(Return(nodes[id1]));
@@ -72,14 +67,14 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 			outArcs1.push_back(mockArc1);
 
 			// Mock arc id1 -> id3
-			mockArc2 = new MockArc<int, DistributedId>(
+			mockArc2 = new MockDistributedArc<int>(
 					DistributedId(0, 1), 1, 3.f
 					);
 			EXPECT_CALL(*mockArc2, getSourceNode).WillRepeatedly(Return(nodes[id1]));
 			EXPECT_CALL(*mockArc2, getTargetNode).WillRepeatedly(Return(nodes[id3]));
 			outArcs1.push_back(mockArc2);
 
-			mockArc3 = new MockArc<int, DistributedId>(
+			mockArc3 = new MockDistributedArc<int>(
 					DistributedId(0, 2),
 					0,
 					2.f
@@ -109,7 +104,7 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 			EXPECT_CALL(*nodes[id1], getWeight).Times(1);
 			EXPECT_CALL(*nodes[id2], getWeight).Times(1);
 			EXPECT_CALL(*nodes[id3], getWeight).Times(1);
-			obj_list<MockNode<int, DistributedId>>(
+			obj_list<int>(
 					&nodes,
 					2,
 					0,
@@ -133,7 +128,7 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 				EXPECT_CALL(*node.second, getId).Times(AnyNumber());
 			}
 
-			num_edges_multi_fn<MockNode<int, DistributedId>>(
+			num_edges_multi_fn<int>(
 					&nodes,
 					2,
 					0,
@@ -146,12 +141,12 @@ class ZoltanLBFunctionsTest : public ::testing::Test {
 		}
 };
 
-TEST_F(ZoltanLBFunctionsTest, num_obj) {
-	int num = num_obj<MockNode<int, DistributedId>>(&nodes, &err);
+TEST_F(ZoltanFunctionsTest, num_obj) {
+	int num = num_obj<int>(&nodes, &err);
 	ASSERT_EQ(num, 3);
 }
 
-TEST_F(ZoltanLBFunctionsTest, obj_list_fn_test) {
+TEST_F(ZoltanFunctionsTest, obj_list_fn_test) {
 	write_zoltan_global_ids();
 
 	ASSERT_EQ(read_zoltan_id(&global_ids[2 * nodeIndex[id1]]), id1);
@@ -160,7 +155,7 @@ TEST_F(ZoltanLBFunctionsTest, obj_list_fn_test) {
 }
 
 
-TEST_F(ZoltanLBFunctionsTest, obj_num_egdes_multi_test) {
+TEST_F(ZoltanFunctionsTest, obj_num_egdes_multi_test) {
 	write_zoltan_global_ids();
 	write_zoltan_num_edges();
 
@@ -174,31 +169,27 @@ TEST_F(ZoltanLBFunctionsTest, obj_num_egdes_multi_test) {
 
 
 
-TEST_F(ZoltanLBFunctionsTest, edge_list_multi_test) {
+TEST_F(ZoltanFunctionsTest, edge_list_multi_test) {
 	write_zoltan_global_ids();
 	write_zoltan_num_edges();
 
-	MockProxy proxy;
-	EXPECT_CALL(proxy, getCurrentLocation(id1))
+	EXPECT_CALL(*nodes[id1], getLocation())
 		.WillRepeatedly(Return(0));
-	EXPECT_CALL(proxy, getCurrentLocation(id2))
+	EXPECT_CALL(*nodes[id2], getLocation())
 		.WillRepeatedly(Return(3));
-	EXPECT_CALL(proxy, getCurrentLocation(id3))
+	EXPECT_CALL(*nodes[id3], getLocation())
 		.WillRepeatedly(Return(5));
 
 	EXPECT_CALL(*mockArc1, getWeight).Times(AtLeast(1));
 	EXPECT_CALL(*mockArc2, getWeight).Times(AtLeast(1));
 	EXPECT_CALL(*mockArc3, getWeight).Times(AtLeast(1));
 
-	FPMAS::graph::parallel::zoltan::NodesProxyPack<MockNode<int, DistributedId>> pack
-	{&nodes, &proxy};
-
 	unsigned int nbor_global_id[6];
 	int nbor_procs[3];
 	float ewgts[3];
 
-	edge_list_multi_fn<MockNode<int, DistributedId>>(
-			&pack,
+	edge_list_multi_fn<int>(
+			&nodes,
 			2,
 			0,
 			3,
@@ -228,4 +219,43 @@ TEST_F(ZoltanLBFunctionsTest, edge_list_multi_test) {
 	ASSERT_EQ(nbor_procs[node2_offset], 0);
 }
 
+TEST_F(ZoltanFunctionsTest, num_fixed_obj) {
+	int err;
+	int num = num_fixed_obj_fn<int>(&nodes, &err);
 
+	ASSERT_EQ(num, 3);
+}
+
+TEST_F(ZoltanFunctionsTest, fixed_obj_list) {
+	FPMAS::load_balancing::zoltan::PartitionMap<int> map;
+	map[id1] = 7;
+	map[id2] = 2;
+	map[id3] = 3;
+
+	std::unordered_map<DistributedId, int> node_index;
+	// Assumes that nodes are iterated in the same order within
+	// fixed_obj_list implementation
+	int index = 0;
+	for(auto node : map) {
+		node_index[node.first] = index++;
+	}
+
+	unsigned int fixed_ids[6];
+	int fixed_parts[3];
+	fixed_obj_list_fn<int>(
+			&map,
+			3,
+			2,
+			fixed_ids,
+			fixed_parts,
+			&err
+			);
+
+	ASSERT_EQ(read_zoltan_id(&fixed_ids[2 * node_index[id1]]), id1);
+	ASSERT_EQ(read_zoltan_id(&fixed_ids[2 * node_index[id2]]), id2);
+	ASSERT_EQ(read_zoltan_id(&fixed_ids[2 * node_index[id3]]), id3);
+
+	ASSERT_EQ(fixed_parts[node_index[id1]], 7);
+	ASSERT_EQ(fixed_parts[node_index[id2]], 2);
+	ASSERT_EQ(fixed_parts[node_index[id3]], 3);
+}
