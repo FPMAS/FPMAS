@@ -30,8 +30,16 @@ namespace FPMAS::graph::parallel {
 				: NodeBase(id) {
 				}
 
+			DistributedNode(const DistributedId& id, const T& data)
+				: NodeBase(id), _data(data) {
+			}
+
 			DistributedNode(const DistributedId& id, T&& data)
 				: NodeBase(id), _data(std::move(data)) {
+			}
+
+			DistributedNode(const DistributedId& id, const T& data, float weight)
+				: NodeBase(id, weight), _data(data) {
 			}
 
 			DistributedNode(const DistributedId& id, T&& data, float weight)

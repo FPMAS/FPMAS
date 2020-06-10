@@ -34,7 +34,7 @@ class MockDistributedNode :
 		T _data;
 		LocationState _state = LocationState::LOCAL;
 		int _location;
-		FPMAS::api::graph::parallel::synchro::Mutex<int>* null_mutex = nullptr;
+		FPMAS::api::graph::parallel::synchro::Mutex<T>* null_mutex = nullptr;
 		Mutex** _mutex = &null_mutex;
 
 		public:
@@ -68,16 +68,16 @@ class MockDistributedNode :
 				this->anyExpectations();
 			}
 
-		MockDistributedNode(const DistributedId& id, T&& data)
-			: NodeBase(id), _data(std::move(data)) {
+		MockDistributedNode(const DistributedId& id, const T& data)
+			: NodeBase(id), _data(data) {
 				setUpDataAccess();
 				setUpDefaultMutex();
 				setUpLocationAccess();
 				setUpStateAccess();
 				this->anyExpectations();
 			}
-		MockDistributedNode(const DistributedId& id, T&& data, float weight)
-			: NodeBase(id, weight), _data(std::move(data)) {
+		MockDistributedNode(const DistributedId& id, const T& data, float weight)
+			: NodeBase(id, weight), _data(data) {
 				setUpDataAccess();
 				setUpDefaultMutex();
 				setUpLocationAccess();

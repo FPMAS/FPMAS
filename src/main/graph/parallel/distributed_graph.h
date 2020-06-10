@@ -73,7 +73,8 @@ namespace FPMAS::graph::parallel {
 
 			LocationManagerImpl<T> location_manager;
 			SyncModeRuntimeType sync_mode_runtime;
-			//LoadBalancingImpl<T> load_balancing;
+
+			NodeType* buildNode(NodeType*);
 
 
 			public:
@@ -105,12 +106,6 @@ namespace FPMAS::graph::parallel {
 			ArcType* importArc(ArcType* arc) override;
 
 			const SyncModeRuntimeType& getSyncModeRuntime() const {return sync_mode_runtime;}
-/*
- *
- *            const LoadBalancingImpl<T>& getLoadBalancing() const {
- *                return load_balancing;
- *            };
- */
 
 			const LocationManagerImpl<T>&
 				getLocationManager() const override {return location_manager;}
@@ -130,64 +125,11 @@ namespace FPMAS::graph::parallel {
 
 			void synchronize() override;
 
-			template<typename... Args> NodeType* buildNode(Args... args) {
-				NodeType* node = new DistNodeType(
-						this->node_id++,
-						std::forward<Args>(args)...
-						);
-				this->insert(node);
-				location_manager.setLocal(node);
-				location_manager.addManagedNode(node, mpi_communicator.getRank());
-				node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
-				//sync_mode_runtime.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
-				return node;
-			}
 
-			template<typename... Args> ArcType* link(
-					NodeType* const src, NodeType* const tgt, LayerIdType layer,
-					Args... args) {
-				// Locks source and target
-				src->mutex().lock();
-				tgt->mutex().lock();
+			NodeType* buildNode(const T&) override;
+			NodeType* buildNode(T&& = std::move(T())) override;
 
-				// Builds the new arc
-				auto arc = new DistArcType(
-						this->arc_id++, layer,
-						std::forward<Args>(args)...
-						);
-				arc->setSourceNode(src);
-				src->linkOut(arc);
-				arc->setTargetNode(tgt);
-				tgt->linkIn(arc);
-
-				arc->setState(
-						src->state() == LocationState::LOCAL && tgt->state() == LocationState::LOCAL ?
-						LocationState::LOCAL :
-						LocationState::DISTANT
-					);
-				sync_mode_runtime.getSyncLinker().link(arc);
-
-				// If src and tgt is DISTANT, transmit the request to the
-				// SyncLinker, that will handle the request according to its
-				// synchronisation policy
-				/*
-				 *if(src->state() == LocationState::DISTANT || tgt->state() == LocationState::DISTANT) {
-				 *    sync_mode_runtime.getSyncLinker().link(arc);
-				 *    arc->setState(LocationState::DISTANT);
-				 *} else {
-				 *    arc->setState(LocationState::LOCAL);
-				 *}
-				 */
-
-				// Inserts the arc in the Graph
-				this->insert(arc);
-
-				// Unlocks source and target
-				src->mutex().unlock();
-				tgt->mutex().unlock();
-
-				return arc;
-			}
+			ArcType* link(NodeType* const src, NodeType* const tgt, LayerIdType layer) override;
 		};
 
 	template<DIST_GRAPH_PARAMS>
@@ -336,6 +278,79 @@ namespace FPMAS::graph::parallel {
 
 		return local_arc;
 	}
+
+	template<DIST_GRAPH_PARAMS>
+		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(NodeType* node) {
+				this->insert(node);
+				location_manager.setLocal(node);
+				location_manager.addManagedNode(node, mpi_communicator.getRank());
+				node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
+				//sync_mode_runtime.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
+				return node;
+			}
+
+	template<DIST_GRAPH_PARAMS>
+		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(const T& data) {
+				return buildNode(new DistNodeType(
+						this->node_id++, data
+						));
+			}
+
+	template<DIST_GRAPH_PARAMS>
+		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(T&& data) {
+				return buildNode(new DistNodeType(
+						this->node_id++, std::move(data)
+						));
+			}
+
+	template<DIST_GRAPH_PARAMS>
+		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(NodeType* const src, NodeType* const tgt, LayerIdType layer) {
+				// Locks source and target
+				src->mutex().lock();
+				tgt->mutex().lock();
+
+				// Builds the new arc
+				auto arc = new DistArcType(
+						this->arc_id++, layer
+						);
+				arc->setSourceNode(src);
+				src->linkOut(arc);
+				arc->setTargetNode(tgt);
+				tgt->linkIn(arc);
+
+				arc->setState(
+						src->state() == LocationState::LOCAL && tgt->state() == LocationState::LOCAL ?
+						LocationState::LOCAL :
+						LocationState::DISTANT
+						);
+				sync_mode_runtime.getSyncLinker().link(arc);
+
+				// If src and tgt is DISTANT, transmit the request to the
+				// SyncLinker, that will handle the request according to its
+				// synchronisation policy
+				/*
+				 *if(src->state() == LocationState::DISTANT || tgt->state() == LocationState::DISTANT) {
+				 *    sync_mode_runtime.getSyncLinker().link(arc);
+				 *    arc->setState(LocationState::DISTANT);
+				 *} else {
+				 *    arc->setState(LocationState::LOCAL);
+				 *}
+				 */
+
+				// Inserts the arc in the Graph
+				this->insert(arc);
+
+				// Unlocks source and target
+				src->mutex().unlock();
+				tgt->mutex().unlock();
+
+				return arc;
+			}
+
 
 	template<DIST_GRAPH_PARAMS>
 	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>

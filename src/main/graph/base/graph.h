@@ -50,7 +50,7 @@ namespace FPMAS::graph::base {
 				const NodeMap& getNodes() const override;
 
 				// Arc getters
-				const NodeIdType& currentArcId() const override {return arc_id;}
+				const ArcIdType& currentArcId() const override {return arc_id;}
 				ArcType* getArc(ArcIdType) override;
 				const ArcType* getArc(ArcIdType) const override;
 				const ArcMap& getArcs() const override;

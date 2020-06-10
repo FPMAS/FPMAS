@@ -118,7 +118,7 @@ TEST_F(DistributedGraphTest, buildNode) {
 	EXPECT_CALL(const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()), buildMutex(currentId, Eq(2)))
 		.WillOnce(Return(built_mutex));
 
-	auto node = FPMAS::api::graph::base::buildNode(graph, 2, 0.5);
+	auto node = graph.buildNode(2);
 	ASSERT_EQ(add_managed_node_arg, node);
 	ASSERT_EQ(set_local_arg, node);
 
@@ -130,8 +130,6 @@ TEST_F(DistributedGraphTest, buildNode) {
 
 	ASSERT_EQ(&node->mutex(), built_mutex);
 	ASSERT_EQ(node->data(), 2);
-
-	ASSERT_EQ(node->getWeight(), .5);
 }
 
 /**************/
@@ -181,9 +179,6 @@ class DistributedGraphLinkTest : public DistributedGraphTest {
 
 			EXPECT_CALL(*arc, getLayer);
 			ASSERT_EQ(arc->getLayer(), 14);
-
-			EXPECT_CALL(*arc, getWeight);
-			ASSERT_EQ(arc->getWeight(), 0.5);
 		}
 };
 /*
@@ -195,7 +190,7 @@ TEST_F(DistributedGraphLinkTest, local_src_local_tgt) {
 
 	EXPECT_CALL(mockSyncLinker, link);
 
-	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
+	auto arc = graph.link(&srcMock, &tgtMock, 14);
 
 	checkArcStructure(static_cast<MockArc*>(arc));
 
@@ -212,7 +207,7 @@ TEST_F(DistributedGraphLinkTest, local_src_distant_tgt) {
 	const ArcType* linkArcArg;
 	EXPECT_CALL(mockSyncLinker, link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
-	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
+	auto arc = graph.link(&srcMock, &tgtMock, 14);
 	ASSERT_EQ(linkArcArg, arc);
 
 	checkArcStructure(static_cast<MockArc*>(arc));
@@ -230,7 +225,7 @@ TEST_F(DistributedGraphLinkTest, distant_src_local_tgt) {
 	const ArcType* linkArcArg;
 	EXPECT_CALL(mockSyncLinker, link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
-	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
+	auto arc = graph.link(&srcMock, &tgtMock, 14);
 	ASSERT_EQ(linkArcArg, arc);
 
 	checkArcStructure(static_cast<MockArc*>(arc));
@@ -250,7 +245,7 @@ TEST_F(DistributedGraphLinkTest, distant_src_distant_tgt) {
 	const ArcType* linkArcArg;
 	EXPECT_CALL(mockSyncLinker, link)
 		.WillOnce(SaveArg<0>(&linkArcArg));
-	auto arc = FPMAS::api::graph::base::link(graph, &srcMock, &tgtMock, 14, 0.5);
+	auto arc = graph.link(&srcMock, &tgtMock, 14);
 	ASSERT_EQ(linkArcArg, arc);
 
 	checkArcStructure(static_cast<MockArc*>(arc));
@@ -424,7 +419,7 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 		const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()),
 		buildMutex(graph.currentNodeId(), Eq(8))
 		);
-	auto node = graph.buildNode(8, 2.1);
+	auto node = graph.buildNode(8);
 	ON_CALL(*static_cast<MockNode*>(node), state()).WillByDefault(Return(LocationState::DISTANT));
 
 	imported_node_mocks[1].emplace_back(new MockNode(node->getId(), 2, 4.));
@@ -495,7 +490,6 @@ class DistributedGraphImportArcTest : public DistributedGraphImportNodeTest {
 		ASSERT_EQ(graph.getArcs().count(id), 1);
 		imported_arc = graph.getArc(id);
 		ASSERT_EQ(imported_arc->getLayer(), 2);
-		ASSERT_EQ(imported_arc->getWeight(), 2.6f);
 
 		ASSERT_EQ(static_cast<MockArc*>(imported_arc)->src, src);
 		ASSERT_EQ(static_cast<MockArc*>(imported_arc)->tgt, tgt);
@@ -512,7 +506,7 @@ TEST_F(DistributedGraphImportArcTest, import_existing_local_arc) {
 	EXPECT_CALL(mockSyncLinker, link);
 
 	DistributedId id;
-	auto* mocked_existing_arc = graph.link(src, tgt, 2, 2.6f);
+	auto* mocked_existing_arc = graph.link(src, tgt, 2);
 	EXPECT_CALL(*static_cast<MockArc*>(mocked_existing_arc), state)
 		.WillRepeatedly(Return(LocationState::DISTANT));
 	id = mocked_existing_arc->getId();

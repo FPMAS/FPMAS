@@ -7,12 +7,13 @@
 
 namespace FPMAS::api::model {
 	class Agent;
-	typedef api::graph::parallel::DistributedNode<std::unique_ptr<Agent*>> AgentNode;
+	typedef api::graph::parallel::DistributedNode<Agent*> AgentNode;
 
 	class Agent {
 		public:
 			virtual AgentNode* node() = 0;
 			virtual const AgentNode* node() const = 0;
+			virtual void setNode(AgentNode*) = 0;
 
 			virtual void act() = 0;
 
@@ -36,7 +37,7 @@ namespace FPMAS::api::model {
 
 	class Model {
 		public:
-			typedef api::graph::parallel::DistributedGraph<std::unique_ptr<Agent*>> AgentGraph;
+			typedef api::graph::parallel::DistributedGraph<Agent*> AgentGraph;
 
 			virtual AgentGraph& graph() = 0;
 			virtual api::scheduler::Scheduler& scheduler() = 0;

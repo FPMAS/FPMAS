@@ -1,4 +1,5 @@
 #include "model.h"
+#include "graph/parallel/distributed_node.h"
 
 namespace FPMAS::model {
 
@@ -11,7 +12,15 @@ namespace FPMAS::model {
 
 	void AgentGroup::add(api::model::Agent* agent) {
 		_agents.push_back(agent);
-		_job.add(*new AgentTask(*agent));
+		AgentTask& task = agent_tasks.emplace_back(*agent);
+		auto node = agent_graph.buildNode(agent);
+		agent->setNode(node);
+		_job.add(task);
+	}
+
+	AgentGroup::~AgentGroup() {
+		for(auto* agent : _agents)
+			delete agent;
 	}
 
 	Model::Model(AgentGraph& graph, LoadBalancingAlgorithm& load_balancing)

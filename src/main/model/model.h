@@ -42,6 +42,7 @@ namespace FPMAS::model {
 			AgentGraph& agent_graph;
 			scheduler::Job _job;
 			SynchronizeGraphTask sync_graph_task;
+			std::vector<AgentTask> agent_tasks;
 			std::vector<api::model::Agent*> _agents;
 
 		public:
@@ -51,12 +52,14 @@ namespace FPMAS::model {
 
 			const std::vector<api::model::Agent*>& agents() const override {return _agents;}
 			void add(api::model::Agent*) override;
+
+			~AgentGroup();
 	};
 
 	class LoadBalancingTask : public api::scheduler::Task {
 		public:
 			typedef typename api::model::Model::AgentGraph AgentGraph;
-			typedef api::graph::parallel::LoadBalancing<std::unique_ptr<api::model::Agent*>>
+			typedef api::graph::parallel::LoadBalancing<api::model::Agent*>
 				LoadBalancingAlgorithm;
 			typedef typename LoadBalancingAlgorithm::ConstNodeMap ConstNodeMap;
 			typedef typename LoadBalancingAlgorithm::PartitionMap PartitionMap;

@@ -20,10 +20,15 @@ class MockDistributedGraph :
 		using typename GraphBase::NodeMap;
 		using typename GraphBase::ArcMap;
 		using typename GraphBase::PartitionMap;
+		using typename GraphBase::LayerIdType;
 
 		MOCK_METHOD(
 				const FPMAS::api::graph::parallel::LocationManager<T>&,
 				getLocationManager, (), (const, override));
+
+		MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
+		MOCK_METHOD(NodeType*, buildNode, (T&&), (override));
+		MOCK_METHOD(ArcType*, link, (NodeType*, NodeType*, LayerIdType), (override));
 
 		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
 		MOCK_METHOD(ArcType*, importArc, (ArcType*), (override));
