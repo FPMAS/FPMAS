@@ -1,7 +1,7 @@
 #ifndef SCHEDULER_API_H
 #define SCHEDULER_API_H
 
-#include <vector>
+#include "api/graph/parallel/distributed_node.h"
 
 namespace FPMAS {
 	typedef unsigned long Period;
@@ -14,6 +14,12 @@ namespace FPMAS {
 			public:
 				virtual void run() = 0;
 				virtual ~Task() {}
+		};
+
+		template<typename T>
+		class NodeTask : public Task {
+			public:
+				virtual api::graph::parallel::DistributedNode<T>* node() = 0;
 		};
 
 		class Job {

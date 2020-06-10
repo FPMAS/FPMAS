@@ -15,6 +15,8 @@ namespace FPMAS::model {
 				: _agent(agent) {}
 
 			const api::model::Agent& agent() const override {return _agent;}
+			api::graph::parallel::DistributedNode<api::model::Agent*>* node() override
+				{return _agent.node();}
 
 			void run() override {
 				_agent.act();

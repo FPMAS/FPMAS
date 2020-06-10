@@ -20,7 +20,7 @@ namespace FPMAS::api::model {
 			virtual ~Agent(){}
 	};
 
-	class AgentTask : public api::scheduler::Task {
+	class AgentTask : public api::scheduler::NodeTask<Agent*> {
 		public:
 			virtual const Agent& agent() const = 0;
 			virtual ~AgentTask(){}

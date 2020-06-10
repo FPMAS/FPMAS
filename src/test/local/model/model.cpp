@@ -29,18 +29,28 @@ class ModelTest : public ::testing::Test {
 			graph;
 		MockLoadBalancing<AgentPtr> load_balancing;
 
+		FPMAS::scheduler::Scheduler scheduler;
+		FPMAS::runtime::Runtime runtime {scheduler};
+
 		Model model {graph, load_balancing};
 };
 
 TEST_F(ModelTest, graph) {
 	ASSERT_THAT(model.graph(), Ref(graph));
-};
+}
 
 TEST_F(ModelTest, buildGroup) {
 	auto group_1 = model.buildGroup();
 	auto group_2 = model.buildGroup();
 
 	ASSERT_THAT(model.groups(), UnorderedElementsAre(group_1, group_2));
+}
+
+TEST_F(ModelTest, load_balancing_job) {
+	scheduler.schedule(0, model.loadBalancingJob());
+
+	EXPECT_CALL(graph, balance(Ref(load_balancing)));
+	runtime.run(1);
 }
 
 class AgentGroupTest : public ::testing::Test {
@@ -50,6 +60,8 @@ class AgentGroupTest : public ::testing::Test {
 			graph;
 		AgentGroup agent_group {graph, FPMAS::JID(18)};
 
+		FPMAS::scheduler::Scheduler scheduler;
+		FPMAS::runtime::Runtime runtime {scheduler};
 };
 
 TEST_F(AgentGroupTest, job) {
@@ -108,8 +120,6 @@ TEST_F(AgentGroupTest, agent_task) {
 	EXPECT_CALL(*agent2, act)
 		.InSequence(s2);
 
-	FPMAS::scheduler::Scheduler scheduler;
 	scheduler.schedule(0, agent_group.job());
-	FPMAS::runtime::Runtime runtime {scheduler};
 	runtime.run(1);
 }

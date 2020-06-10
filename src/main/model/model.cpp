@@ -42,23 +42,6 @@ namespace FPMAS::model {
 	}
 
 	void LoadBalancingTask::run() {
-		/*
-		 *scheduler::Epoch epoch;
-		 *scheduler.build(runtime.currentDate() + 1, epoch);
-		 *ConstNodeMap node_map;
-		 *PartitionMap fixed_nodes;
-		 *PartitionMap partition;
-		 *for(const api::scheduler::Job* job : epoch) {
-		 *    for(api::scheduler::Task* task : *job) {
-		 *        if(AgentTask* agent_task = dynamic_cast<AgentTask*>(task)) {
-		 *            auto node = agent_task->agent().node();
-		 *            node_map[node->getId()] = node;
-		 *        }
-		 *    }
-		 *    partition = load_balancing.balance(node_map, fixed_nodes);
-		 *    fixed_nodes = partition;
-		 *};
-		 *agent_graph.distribute(partition);
-		 */
+		agent_graph.balance(load_balancing);
 	};
 }
