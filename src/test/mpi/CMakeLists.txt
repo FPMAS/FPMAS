@@ -5,6 +5,7 @@ set(SOURCES
 	graph/parallel/location_manager.cpp
 	synchro/hard/termination.cpp
 	synchro/hard/hard_sync_mode.cpp
+	load_balancing/zoltan_load_balancing.cpp
 	)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})

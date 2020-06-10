@@ -223,11 +223,12 @@ namespace FPMAS::load_balancing {
 
 	template<typename T>
 		class ZoltanLoadBalancing : public FPMAS::api::load_balancing::FixedVerticesLoadBalancing<T> {
-			private:
-				typedef FPMAS::api::load_balancing::LoadBalancing<T> base;
+			public:
+				typedef FPMAS::api::load_balancing::FixedVerticesLoadBalancing<T> base;
 				using typename base::PartitionMap;
 				using typename base::ConstNodeMap;
 
+			private:
 				//Zoltan instance
 				Zoltan zoltan;
 

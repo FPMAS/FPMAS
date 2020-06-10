@@ -36,6 +36,7 @@ class MockDistributedGraph :
 		MOCK_METHOD(void, clear, (NodeType*), (override));
 
 		MOCK_METHOD(void, balance, (FPMAS::api::load_balancing::LoadBalancing<T>&), (override));
+		MOCK_METHOD(void, balance, (FPMAS::api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap), (override));
 		MOCK_METHOD(void, distribute, (PartitionMap), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
 	};

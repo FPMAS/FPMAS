@@ -1,4 +1,4 @@
-#include "synchro/ghost/basic_ghost_mode.h"
+#include "synchro/ghost/ghost_mode.h"
 
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
@@ -23,7 +23,7 @@ class GhostSyncLinkerTest : public ::testing::Test {
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
-		MockMpi<FPMAS::api::graph::parallel::DistributedArc<int>*> arc_mpi {mock_comm};
+		MockMpi<FPMAS::graph::parallel::ArcPtrWrapper<int>> arc_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
 		MockDistributedGraph<int, MockNode, MockArc> mocked_graph;
 
@@ -119,7 +119,7 @@ TEST_F(GhostSyncLinkerTest, export_link) {
 }
 
 TEST_F(GhostSyncLinkerTest, import_link) {
-	std::unordered_map<int, std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*>>
+	std::unordered_map<int, std::vector<FPMAS::graph::parallel::ArcPtrWrapper<int>>>
 		import_map {
 			{2, {arc1, arc3}},
 			{4, {arc2}}
@@ -144,7 +144,7 @@ TEST_F(GhostSyncLinkerTest, import_export_link) {
 		);
 	linker.link(arc2);
 
-	std::unordered_map<int, std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*>>
+	std::unordered_map<int, std::vector<FPMAS::graph::parallel::ArcPtrWrapper<int>>>
 		import_map {
 			{0, {arc1, arc3}}
 		};

@@ -39,6 +39,7 @@ namespace FPMAS::api::graph::parallel {
 			virtual void clear(DistributedNode<T>*) = 0;
 
 			virtual void balance(api::load_balancing::LoadBalancing<T>&) = 0;
+			virtual void balance(api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap fixed_nodes) = 0;
 			virtual void distribute(PartitionMap partition) = 0;
 			virtual void synchronize() = 0;
 	};

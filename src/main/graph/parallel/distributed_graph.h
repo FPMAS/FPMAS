@@ -121,6 +121,14 @@ namespace FPMAS::graph::parallel {
 				this->distribute(load_balancing.balance(node_map));
 			};
 
+			void balance(api::load_balancing::FixedVerticesLoadBalancing<T>& load_balancing, PartitionMap fixed_nodes) override {
+				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
+				for(auto node : this->getNodes()) {
+					node_map.insert(node);
+				}
+				this->distribute(load_balancing.balance(node_map, fixed_nodes));
+			};
+
 			void distribute(PartitionMap partition) override;
 
 			void synchronize() override;
