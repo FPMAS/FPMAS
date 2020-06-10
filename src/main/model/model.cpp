@@ -12,15 +12,17 @@ namespace FPMAS::model {
 
 	void AgentGroup::add(api::model::Agent* agent) {
 		_agents.push_back(agent);
-		AgentTask& task = agent_tasks.emplace_back(*agent);
+		AgentTask*& task = agent_tasks.emplace_back(new AgentTask(*agent));
 		auto node = agent_graph.buildNode(agent);
 		agent->setNode(node);
-		_job.add(task);
+		_job.add(*task);
 	}
 
 	AgentGroup::~AgentGroup() {
 		for(auto* agent : _agents)
 			delete agent;
+		for(auto* agent_task : agent_tasks)
+			delete agent_task;
 	}
 
 	Model::Model(AgentGraph& graph, LoadBalancingAlgorithm& load_balancing)

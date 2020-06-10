@@ -42,11 +42,15 @@ namespace FPMAS::model {
 			AgentGraph& agent_graph;
 			scheduler::Job _job;
 			SynchronizeGraphTask sync_graph_task;
-			std::vector<AgentTask> agent_tasks;
+			std::vector<AgentTask*> agent_tasks;
 			std::vector<api::model::Agent*> _agents;
 
 		public:
 			AgentGroup(AgentGraph& agent_graph, JID job_id);
+			AgentGroup(const AgentGroup&) = delete;
+			AgentGroup(AgentGroup&&) = delete;
+			AgentGroup& operator=(const AgentGroup&) = delete;
+			AgentGroup& operator=(AgentGroup&&) = delete;
 
 			const scheduler::Job& job() const override {return _job;}
 
