@@ -3,10 +3,10 @@
 
 #include "api/communication/communication.h"
 #include "api/graph/base/graph.h"
-#include "api/graph/parallel/load_balancing.h"
 #include "api/graph/parallel/location_manager.h"
 #include "api/graph/parallel/distributed_node.h"
 #include "api/graph/parallel/synchro/sync_mode.h"
+#include "api/load_balancing//load_balancing.h"
 
 #include "graph/parallel/distributed_id.h"
 
@@ -22,7 +22,7 @@ namespace FPMAS::api::graph::parallel {
 			using typename GraphBase::NodeMap;
 			using typename GraphBase::ArcMap;
 
-			typedef typename LoadBalancing<DistributedNode<T>>::PartitionMap PartitionMap;
+			typedef typename api::load_balancing::LoadBalancing<DistributedNode<T>>::PartitionMap PartitionMap;
 
 		public:
 			virtual const LocationManager<T>& getLocationManager() const = 0;
@@ -38,26 +38,9 @@ namespace FPMAS::api::graph::parallel {
 			virtual void clear(DistributedArc<T>*) = 0;
 			virtual void clear(DistributedNode<T>*) = 0;
 
-			virtual void balance(api::graph::parallel::LoadBalancing<T>&) = 0;
+			virtual void balance(api::load_balancing::LoadBalancing<T>&) = 0;
 			virtual void distribute(PartitionMap partition) = 0;
 			virtual void synchronize() = 0;
 	};
-
-/*
- *    template<typename NodeType, typename Graph, typename... Args>
- *        NodeType* buildNode(Graph& graph, Args... args) {
- *            NodeType* node = new NodeType(
- *                    graph.nodeId()++,
- *                    std::forward<Args>(args)...
- *                    );
- *            graph.insert(node);
- *            graph.getLocationManager().setLocal(node);
- *            graph.getLocationManager().addManagedNode(node, graph.getMpiCommunicator().getRank());
- *            node->setMutex(graph.getSyncModeRuntime().buildMutex(node->getId(), node->data()));
- *
- *            return node;
- *        }
- */
 }
-
 #endif

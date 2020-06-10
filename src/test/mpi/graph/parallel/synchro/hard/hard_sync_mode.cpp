@@ -3,7 +3,7 @@
 #include <random>
 
 #include "graph/parallel/distributed_graph.h"
-#include "../mocks/graph/parallel/mock_load_balancing.h"
+#include "../mocks/load_balancing/mock_load_balancing.h"
 
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::DistributedNode;

@@ -1,7 +1,7 @@
 #include "graph/parallel/distributed_graph.h"
 
 #include <random>
-#include "../mocks/graph/parallel/mock_load_balancing.h"
+#include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/graph/parallel/synchro/mock_sync_mode.h"
 
 using ::testing::ReturnRef;

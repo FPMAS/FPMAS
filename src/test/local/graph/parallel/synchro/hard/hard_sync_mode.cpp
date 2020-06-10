@@ -8,7 +8,7 @@
 #include "../mocks/graph/parallel/mock_distributed_arc.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/graph/parallel/mock_location_manager.h"
-#include "../mocks/graph/parallel/mock_load_balancing.h"
+#include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/graph/parallel/synchro/mock_mutex.h"
 #include "../mocks/graph/parallel/synchro/hard/mock_client_server.h"
 

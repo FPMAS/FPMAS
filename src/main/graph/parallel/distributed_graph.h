@@ -113,12 +113,12 @@ namespace FPMAS::graph::parallel {
 			void removeNode(NodeType*) override {};
 			void unlink(ArcType*) override;
 
-			void balance(api::graph::parallel::LoadBalancing<T>& load_balancing) override {
-				typename api::graph::parallel::LoadBalancing<T>::ConstNodeMap node_map;
+			void balance(api::load_balancing::LoadBalancing<T>& load_balancing) override {
+				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
 				for(auto node : this->getNodes()) {
 					node_map.insert(node);
 				}
-				this->distribute(load_balancing.balance(node_map, {}));
+				this->distribute(load_balancing.balance(node_map));
 			};
 
 			void distribute(PartitionMap partition) override;

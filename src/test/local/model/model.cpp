@@ -3,7 +3,7 @@
 #include "../mocks/graph/parallel/mock_distributed_arc.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/graph/parallel/mock_distributed_graph.h"
-#include "../mocks/graph/parallel/mock_load_balancing.h"
+#include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/model/mock_model.h"
 
 using ::testing::An;

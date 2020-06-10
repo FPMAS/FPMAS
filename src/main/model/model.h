@@ -63,7 +63,7 @@ namespace FPMAS::model {
 	class LoadBalancingTask : public api::scheduler::Task {
 		public:
 			typedef typename api::model::Model::AgentGraph AgentGraph;
-			typedef api::graph::parallel::LoadBalancing<api::model::Agent*>
+			typedef api::load_balancing::LoadBalancing<api::model::Agent*>
 				LoadBalancingAlgorithm;
 			typedef typename LoadBalancingAlgorithm::ConstNodeMap ConstNodeMap;
 			typedef typename LoadBalancingAlgorithm::PartitionMap PartitionMap;
@@ -85,20 +85,6 @@ namespace FPMAS::model {
 			void run() override;
 	};
 
-/*
- *    class LoadBalancingJob : public scheduler::Job {
- *        private:
- *            api::scheduler::Scheduler& scheduler;
- *            api::runtime::Runtime& runtime;
- *
- *        public:
- *            LoadBalancingJob(
- *                JID id, api::scheduler::Scheduler& scheduler, api::runtime::Runtime& runtime
- *                ) : scheduler::Job(id), scheduler(scheduler), runtime(runtime) {}
- *
- *    };
- */
-
 	class Model : public api::model::Model {
 		public:
 			typedef typename LoadBalancingTask::LoadBalancingAlgorithm LoadBalancingAlgorithm;
@@ -117,6 +103,10 @@ namespace FPMAS::model {
 		public:
 			static const JID LB_JID;
 			Model(AgentGraph& graph, LoadBalancingAlgorithm& load_balancing);
+			Model(const Model&) = delete;
+			Model(Model&&) = delete;
+			Model& operator=(const Model&) = delete;
+			Model& operator=(Model&&) = delete;
 
 			AgentGraph& graph() override {return _graph;}
 			scheduler::Scheduler& scheduler() override {return _scheduler;}

@@ -16,13 +16,13 @@
 
 #include "../mocks/communication/mock_communication.h"
 #include "api/graph/base/graph.h"
-#include "api/graph/parallel/load_balancing.h"
+#include "api/load_balancing/load_balancing.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/graph/parallel/mock_distributed_arc.h"
-#include "../mocks/graph/parallel/mock_load_balancing.h"
 #include "../mocks/graph/parallel/mock_location_manager.h"
 #include "../mocks/graph/parallel/synchro/mock_mutex.h"
 #include "../mocks/graph/parallel/synchro/mock_sync_mode.h"
+#include "../mocks/load_balancing/mock_load_balancing.h"
 
 
 using ::testing::AnyOf;
@@ -813,7 +813,7 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 	// Should call LoadBalancing on all nodes, without fixed nodes
 	EXPECT_CALL(
 		load_balancing,
-		balance(node_map, IsEmpty()))
+		balance(node_map))
 		.WillOnce(Return(fakePartition));
 	// Migration of nodes + arcs
 	//EXPECT_CALL(comm, allToAll(_)).Times(2);
