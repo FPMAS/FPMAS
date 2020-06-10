@@ -1,5 +1,5 @@
-#include "../mocks/graph/parallel/synchro/mock_sync_mode.h"
-#include "../mocks/load_balancing//mock_load_balancing.h"
+#include "../mocks/synchro/mock_sync_mode.h"
+#include "../mocks/load_balancing/mock_load_balancing.h"
 #include "communication/communication.h"
 #include "graph/parallel/distributed_graph.h"
 #include "graph/parallel/location_manager.h"

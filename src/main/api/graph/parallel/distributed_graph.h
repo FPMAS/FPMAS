@@ -5,8 +5,8 @@
 #include "api/graph/base/graph.h"
 #include "api/graph/parallel/location_manager.h"
 #include "api/graph/parallel/distributed_node.h"
-#include "api/graph/parallel/synchro/sync_mode.h"
-#include "api/load_balancing//load_balancing.h"
+#include "api/load_balancing/load_balancing.h"
+#include "api/synchro/sync_mode.h"
 
 #include "graph/parallel/distributed_id.h"
 

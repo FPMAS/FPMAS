@@ -10,16 +10,16 @@ set(SOURCES
 	## Parallel
 	graph/parallel/distributed_graph.cpp
 	graph/parallel/location_manager.cpp
-	### Synchro
-	graph/parallel/synchro/ghost/data_sync.cpp
-	graph/parallel/synchro/ghost/sync_linker.cpp
-	graph/parallel/synchro/hard/hard_sync_mutex.cpp
-	graph/parallel/synchro/hard/mutex_client.cpp
-	graph/parallel/synchro/hard/mutex_server.cpp
-	graph/parallel/synchro/hard/termination.cpp
-	graph/parallel/synchro/hard/hard_sync_mode.cpp
-	graph/parallel/synchro/hard/link_client.cpp
-	graph/parallel/synchro/hard/link_server.cpp
+	# Synchro
+	synchro/ghost/data_sync.cpp
+	synchro/ghost/sync_linker.cpp
+	synchro/hard/hard_sync_mutex.cpp
+	synchro/hard/mutex_client.cpp
+	synchro/hard/mutex_server.cpp
+	synchro/hard/termination.cpp
+	synchro/hard/hard_sync_mode.cpp
+	synchro/hard/link_client.cpp
+	synchro/hard/link_server.cpp
 	# Load balancing
 	load_balancing/zoltan_load_balancing.cpp
 	# Scheduler

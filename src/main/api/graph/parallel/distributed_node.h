@@ -3,7 +3,7 @@
 
 #include "api/graph/base/node.h"
 #include "api/graph/parallel/distributed_arc.h"
-#include "api/graph/parallel/synchro/mutex.h"
+#include "api/synchro/mutex.h"
 #include "graph/parallel/distributed_id.h"
 
 namespace FPMAS::api::graph::parallel {

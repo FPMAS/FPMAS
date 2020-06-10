@@ -27,14 +27,14 @@ class MockDistributedNode :
 
 		typedef AbstractMockNode<DistributedId, FPMAS::api::graph::parallel::DistributedArc<T>>
 			NodeBase;
-		typedef FPMAS::api::graph::parallel::synchro::Mutex<T> Mutex;
+		typedef FPMAS::api::synchro::Mutex<T> Mutex;
 		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T>&);
 
 		private:
 		T _data;
 		LocationState _state = LocationState::LOCAL;
 		int _location;
-		FPMAS::api::graph::parallel::synchro::Mutex<T>* null_mutex = nullptr;
+		FPMAS::api::synchro::Mutex<T>* null_mutex = nullptr;
 		Mutex** _mutex = &null_mutex;
 
 		public:

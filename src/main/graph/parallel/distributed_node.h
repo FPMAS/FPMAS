@@ -2,7 +2,7 @@
 #define DISTRIBUTED_NODE_IMPL_H
 
 #include "api/graph/parallel/distributed_node.h"
-#include "api/graph/parallel/synchro/mutex.h"
+#include "api/synchro/mutex.h"
 #include "graph/base/node.h"
 #include "graph/parallel/distributed_arc.h"
 #include "utils/ptr_wrapper.h"
@@ -16,7 +16,7 @@ namespace FPMAS::graph::parallel {
 		public graph::base::Node<DistributedId, api::graph::parallel::DistributedArc<T>>,
 		public api::graph::parallel::DistributedNode<T> {
 			typedef graph::base::Node<DistributedId, api::graph::parallel::DistributedArc<T>> NodeBase;
-			typedef api::graph::parallel::synchro::Mutex<T> Mutex;
+			typedef api::synchro::Mutex<T> Mutex;
 
 		private:
 			LocationState _state = LocationState::LOCAL;

@@ -2,7 +2,7 @@
 
 #include <random>
 #include "../mocks/load_balancing/mock_load_balancing.h"
-#include "../mocks/graph/parallel/synchro/mock_sync_mode.h"
+#include "../mocks/synchro/mock_sync_mode.h"
 
 using ::testing::ReturnRef;
 using ::testing::SizeIs;
@@ -15,7 +15,7 @@ using FPMAS::graph::parallel::LocationManager;
 using FPMAS::graph::parallel::DefaultMpiSetUp;
 
 template<typename T>
-class FakeMutex : public FPMAS::api::graph::parallel::synchro::Mutex<T> {
+class FakeMutex : public FPMAS::api::synchro::Mutex<T> {
 	private:
 		std::reference_wrapper<T> _data;
 		void _lock() override {}

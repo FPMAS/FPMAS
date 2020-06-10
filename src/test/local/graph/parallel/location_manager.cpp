@@ -2,7 +2,7 @@
 
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
-#include "../mocks/graph/parallel/synchro/mock_mutex.h"
+#include "../mocks/synchro/mock_mutex.h"
 
 using ::testing::UnorderedElementsAre;
 using ::testing::ElementsAre;
