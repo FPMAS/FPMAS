@@ -22,6 +22,32 @@ using FPMAS::model::AgentTask;
 
 typedef FPMAS::api::model::Agent* AgentPtr;
 
+TEST(AgentTaskTest, build) {
+	MockAgent agent;
+	MockDistributedNode<AgentPtr> node;
+
+	AgentTask agent_task {agent};
+	ON_CALL(agent, node())
+		.WillByDefault(Return(&node));
+	EXPECT_CALL(agent, node()).Times(AnyNumber());
+	ON_CALL(Const(agent), node())
+		.WillByDefault(Return(&node));
+	EXPECT_CALL(Const(agent), node()).Times(AnyNumber());
+
+	ASSERT_THAT(agent_task.agent(), Ref(agent));
+	ASSERT_THAT(agent_task.node(), Eq(&node));
+}
+
+TEST(AgentTaskTest, run) {
+	MockAgent agent;
+	AgentTask agent_task {agent};
+
+	EXPECT_CALL(agent, act);
+
+	agent_task.run();
+
+}
+
 class ModelTest : public ::testing::Test {
 	public:
 		MockDistributedGraph<
