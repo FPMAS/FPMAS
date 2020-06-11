@@ -4,9 +4,9 @@
 #include <vector>
 #include "arc.h"
 #include "id.h"
+#include "api/utils/callback.h"
 
 namespace FPMAS::api::graph::base {
-
 	template<typename _IdType, typename _ArcType>
 		class Node {
 			public:

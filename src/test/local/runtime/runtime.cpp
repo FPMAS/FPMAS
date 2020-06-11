@@ -134,5 +134,4 @@ TEST_F(RuntimeTest, run) {
 	expectTasks(seq, job_2_tasks);
 
 	runtime.run(0, 3);
-};
-
+}

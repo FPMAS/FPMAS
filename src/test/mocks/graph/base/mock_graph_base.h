@@ -22,6 +22,11 @@ class MockGraph :
 			MOCK_METHOD(void, erase, (NodeType*), (override));
 			MOCK_METHOD(void, erase, (ArcType*), (override));
 
+			MOCK_METHOD(void, addCallOnInsertNode, (FPMAS::api::utils::Callback<NodeType*>*), (override));
+			MOCK_METHOD(void, addCallOnEraseNode, (FPMAS::api::utils::Callback<NodeType*>*), (override));
+			MOCK_METHOD(void, addCallOnInsertArc, (FPMAS::api::utils::Callback<ArcType*>*), (override));
+			MOCK_METHOD(void, addCallOnEraseArc, (FPMAS::api::utils::Callback<ArcType*>*), (override));
+
 			MOCK_METHOD(const NodeIdType&, currentNodeId, (), (const, override));
 			MOCK_METHOD(NodeType*, getNode, (NodeIdType), (override));
 			MOCK_METHOD(const NodeType*, getNode, (NodeIdType), (const, override));

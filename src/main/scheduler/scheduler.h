@@ -26,6 +26,7 @@ namespace FPMAS::scheduler {
 			Job(JID id) : _id(id) {}
 			JID id() const override;
 			void add(api::scheduler::Task&) override;
+			void remove(api::scheduler::Task&) override;
 			const std::vector<api::scheduler::Task*>& tasks() const override;
 			TaskIterator begin() const override;
 			TaskIterator end() const override;

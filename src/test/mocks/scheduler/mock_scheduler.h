@@ -13,6 +13,7 @@ class MockJob : public FPMAS::api::scheduler::Job {
 	public:
 		MOCK_METHOD(FPMAS::JID, id, (), (const, override));
 		MOCK_METHOD(void, add, (FPMAS::api::scheduler::Task&), (override));
+		MOCK_METHOD(void, remove, (FPMAS::api::scheduler::Task&), (override));
 		MOCK_METHOD(const std::vector<FPMAS::api::scheduler::Task*>&, tasks, (), (const, override));
 		MOCK_METHOD(TaskIterator, begin, (), (const, override));
 		MOCK_METHOD(TaskIterator, end, (), (const, override));

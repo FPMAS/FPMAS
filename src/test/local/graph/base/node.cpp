@@ -2,6 +2,7 @@
 #include "graph/base/basic_id.h"
 
 #include "../mocks/graph/base/mock_arc.h"
+#include "../mocks/utils/mock_callback.h"
 
 using ::testing::SizeIs;
 using ::testing::IsEmpty;
@@ -66,3 +67,31 @@ TEST_F(NodeTest, unlinkOut) {
 	node.unlinkOut(&arc);
 	ASSERT_THAT(node.getOutgoingArcs(4), IsEmpty());
 }
+
+/*
+ *class NodeCallbackTest : public ::testing::Test {
+ *    protected:
+ *        Node<BasicId, BasicMockArc> node {BasicId()};
+ *
+ *};
+ *
+ *TEST_F(NodeCallbackTest, insert) {
+ *    MockCallback* insert = new MockCallback;
+ *    node.onInsert(insert);
+ *    ASSERT_EQ(node.onInsert(), insert);
+ *
+ *    MockCallback* other_insert = new MockCallback;
+ *    node.onInsert(other_insert);
+ *    ASSERT_EQ(node.onInsert(), other_insert);
+ *}
+ *
+ *TEST_F(NodeCallbackTest, erase) {
+ *    MockCallback* erase = new MockCallback;
+ *    node.onErase(erase);
+ *    ASSERT_EQ(node.onErase(), erase);
+ *
+ *    MockCallback* other_erase = new MockCallback;
+ *    node.onErase(other_erase);
+ *    ASSERT_EQ(node.onErase(), other_erase);
+ *}
+ */

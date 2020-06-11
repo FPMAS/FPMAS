@@ -4,6 +4,7 @@
 #include "graph/base/basic_id.h"
 #include "../mocks/graph/base/mock_node.h"
 #include "../mocks/graph/base/mock_arc.h"
+#include "../mocks/utils/mock_callback.h"
 
 using ::testing::Return;
 using ::testing::ReturnRef;
@@ -28,21 +29,26 @@ class MockGraph :
 			MOCK_METHOD(void, unlink, (ArcType*), (override));
 
 };
-TEST(BasicGraphTest, buildDefaultNode) {
+TEST(GraphBaseTest, buildDefaultNode) {
 	MockGraph<MockNode<BasicId>, MockArc<BasicId>> graph;
 
 	BasicId id;
 	for (int i = 0; i < 10; ++i) {
+		//MockNodeCallback* insert = new MockNodeCallback;
 		auto node = new MockNode<BasicId>(++id);
+
 		EXPECT_CALL(*node, getId).Times(AtLeast(2));
+		//EXPECT_CALL(*insert, call);
+		//graph.addOnInsert(insert);
 		graph.insert(node);
 
 		ASSERT_EQ(graph.getNodes().size(), i+1);
 		ASSERT_EQ(graph.getNode(node->getId()), node);
+		//delete insert;
 	}
 }
 
-class BasicGraphEraseArcTest : public ::testing::Test {
+class GraphBaseEraseArcTest : public ::testing::Test {
 	protected:
 		MockGraph<MockNode<BasicId>, MockArc<BasicId>> graph;
 		BasicId id;
@@ -59,7 +65,7 @@ class BasicGraphEraseArcTest : public ::testing::Test {
 		}
 };
 
-TEST_F(BasicGraphEraseArcTest, erase) {
+TEST_F(GraphBaseEraseArcTest, erase) {
 	EXPECT_CALL(*src, unlinkOut(arc));
 	EXPECT_CALL(*src, unlinkIn).Times(0);
 	EXPECT_CALL(*tgt, unlinkOut).Times(0);

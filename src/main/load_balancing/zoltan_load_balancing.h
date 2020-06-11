@@ -287,7 +287,7 @@ namespace FPMAS::load_balancing {
 			int* export_to_part;
 
 			// Computes Zoltan partitioning
-			int err = this->zoltan.LB_Partition(
+			this->zoltan.LB_Partition(
 					changes,
 					num_gid_entries,
 					num_lid_entries,

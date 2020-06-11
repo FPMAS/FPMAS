@@ -1,4 +1,5 @@
 #include "scheduler.h"
+#include <algorithm>
 
 namespace FPMAS::scheduler {
 
@@ -6,6 +7,10 @@ namespace FPMAS::scheduler {
 
 	void Job::add(api::scheduler::Task& task) {
 		_tasks.push_back(&task);
+	}
+
+	void Job::remove(api::scheduler::Task& task) {
+		_tasks.erase(std::remove(_tasks.begin(), _tasks.end(), &task));
 	}
 
 	const std::vector<api::scheduler::Task*>& Job::tasks() const {

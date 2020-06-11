@@ -7,13 +7,21 @@
 
 namespace FPMAS::api::model {
 	class Agent;
+	class AgentTask;
 	typedef api::graph::parallel::DistributedNode<Agent*> AgentNode;
+	typedef unsigned int GroupId;
 
 	class Agent {
 		public:
+			virtual GroupId groupId() const = 0;
+
 			virtual AgentNode* node() = 0;
 			virtual const AgentNode* node() const = 0;
 			virtual void setNode(AgentNode*) = 0;
+
+			virtual AgentTask* task() = 0; 
+			virtual const AgentTask* task() const = 0; 
+			virtual void setTask(AgentTask* task) = 0;
 
 			virtual void act() = 0;
 
@@ -28,10 +36,13 @@ namespace FPMAS::api::model {
 
 	class AgentGroup {
 		public:
+			virtual GroupId groupId() const = 0;
+
 			virtual void add(Agent*) = 0;
+			virtual void remove(Agent*) = 0;
+			virtual api::scheduler::Job& job() = 0;
 			virtual const api::scheduler::Job& job() const = 0;
 
-			virtual const std::vector<Agent*>& agents() const = 0;
 			virtual ~AgentGroup(){}
 	};
 
@@ -45,8 +56,10 @@ namespace FPMAS::api::model {
 
 			virtual const api::scheduler::Job& loadBalancingJob() const = 0;
 
-			virtual AgentGroup* buildGroup() = 0;
-			virtual const std::vector<AgentGroup*>& groups() const = 0;
+			virtual AgentGroup& buildGroup() = 0;
+			virtual AgentGroup& getGroup(GroupId) = 0;
+			virtual const std::unordered_map<GroupId, AgentGroup*>& groups() const = 0;
+
 			virtual ~Model(){}
 	};
 }

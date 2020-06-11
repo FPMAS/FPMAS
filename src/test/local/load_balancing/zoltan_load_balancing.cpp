@@ -40,7 +40,7 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		
 		// Node lists
 		unsigned int global_ids[6];
-		unsigned int local_ids[0];
+		unsigned int* local_ids;
 		float weights[3];
 
 		std::unordered_map<

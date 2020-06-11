@@ -29,6 +29,11 @@ namespace FPMAS::graph::base {
 				using typename GraphBase::ArcMap;
 
 			private:
+				std::vector<api::utils::Callback<NodeType*>*> insert_node_callbacks;
+				std::vector<api::utils::Callback<NodeType*>*> erase_node_callbacks;
+				std::vector<api::utils::Callback<ArcType*>*> insert_arc_callbacks;
+				std::vector<api::utils::Callback<ArcType*>*> erase_arc_callbacks;
+
 				NodeMap nodes;
 				ArcMap arcs;
 
@@ -42,6 +47,20 @@ namespace FPMAS::graph::base {
 
 				void erase(NodeBase*) override;
 				void erase(ArcBase*) override;
+
+				void addCallOnInsertNode(api::utils::Callback<NodeType*>* callback) override {
+					insert_node_callbacks.push_back(callback);
+				}
+				void addCallOnEraseNode(api::utils::Callback<NodeType*>* callback) override {
+					erase_node_callbacks.push_back(callback);
+				}
+
+				void addCallOnInsertArc(api::utils::Callback<ArcType*>* callback) override {
+					insert_arc_callbacks.push_back(callback);
+				}
+				void addCallOnEraseArc(api::utils::Callback<ArcType*>* callback) override {
+					erase_arc_callbacks.push_back(callback);
+				}
 
 				// Node getters
 				const NodeIdType& currentNodeId() const override {return node_id;}
@@ -61,11 +80,15 @@ namespace FPMAS::graph::base {
 	template<GRAPH_PARAMS>
 		void Graph<GRAPH_PARAMS_SPEC>::insert(NodeType* node) {
 			this->nodes.insert({node->getId(), node});
+			for(auto callback : insert_node_callbacks)
+				callback->call(node);
 		}
 
 	template<GRAPH_PARAMS>
 		void Graph<GRAPH_PARAMS_SPEC>::insert(ArcType* arc) {
 			this->arcs.insert({arc->getId(), arc});
+			for(auto callback : insert_arc_callbacks)
+				callback->call(arc);
 		}
 
 	template<GRAPH_PARAMS>
@@ -95,6 +118,10 @@ namespace FPMAS::graph::base {
 			auto id = node->getId();
 			// Removes the node from the global nodes index
 			nodes.erase(id);
+			// Triggers callbacks
+			for(auto callback : erase_node_callbacks)
+				callback->call(node);
+
 			// Deletes the node
 			delete node;
 			FPMAS_LOGD(-1, "GRAPH", "Node %s removed.", ID_C_STR(id));
@@ -114,7 +141,13 @@ namespace FPMAS::graph::base {
 			arc->getSourceNode()->unlinkOut(arc);
 			arc->getTargetNode()->unlinkIn(arc);
 
+			// Erases arc from the graph
 			this->arcs.erase(id);
+			// Triggers callbacks
+			for(auto callback : erase_arc_callbacks)
+				callback->call(arc);
+
+			// Deletes arc
 			delete arc;
 			FPMAS_LOGD(-1, "GRAPH", "Arc %s removed.", ID_C_STR(id));
 		}

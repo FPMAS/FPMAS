@@ -4,6 +4,7 @@
 #include "utils/log.h"
 #include "utils/macros.h"
 #include "api/graph/base/node.h"
+#include "utils/callback.h"
 
 namespace FPMAS::graph::base {
 
@@ -16,10 +17,9 @@ namespace FPMAS::graph::base {
 
 			private:
 				IdType id;
-				//T _data;
 				float weight = 1.;
-				std::unordered_map<LayerIdType, std::vector<ArcType*>> incomingArcs;
-				std::unordered_map<LayerIdType, std::vector<ArcType*>> outgoingArcs;
+				std::unordered_map<LayerIdType, std::vector<ArcType*>> incoming_arcs;
+				std::unordered_map<LayerIdType, std::vector<ArcType*>> outgoing_arcs;
 
 			public:
 				Node(const IdType& id)
@@ -27,10 +27,12 @@ namespace FPMAS::graph::base {
 				Node(const IdType& id, float weight)
 					: id(id), weight(weight) {}
 
-				IdType getId() const override {return id;};
+				Node(const Node&) = delete;
+				Node(Node&&) = delete;
+				Node& operator=(const Node&) = delete;
+				Node& operator=(Node&&) = delete;
 
-				//T& data() override {return _data;};
-				//const T& data() const override {return _data;};
+				IdType getId() const override {return id;};
 
 				float getWeight() const override {return weight;};
 				void setWeight(float weight) override {this->weight = weight;};
@@ -47,13 +49,14 @@ namespace FPMAS::graph::base {
 				void unlinkIn(ArcType* arc) override;
 				void unlinkOut(ArcType* arc) override;
 
+				virtual ~Node() {}
 		};
 
 	template<typename IdType, typename ArcType>
 		const std::vector<typename Node<IdType, ArcType>::ArcType*>
 			Node<IdType, ArcType>::getIncomingArcs() const {
 				std::vector<ArcType*> in;
-				for(auto layer : this->incomingArcs) {
+				for(auto layer : this->incoming_arcs) {
 					for(auto* arc : layer.second) {
 						in.push_back(arc);
 					}
@@ -65,8 +68,8 @@ namespace FPMAS::graph::base {
 		const std::vector<typename Node<IdType, ArcType>::ArcType*>
 			Node<IdType, ArcType>::getIncomingArcs(LayerIdType id) const {
 				try {
-					return incomingArcs.at(id);
-				} catch(std::out_of_range) {
+					return incoming_arcs.at(id);
+				} catch(std::out_of_range&) {
 					return {};
 				}
 		}
@@ -75,7 +78,7 @@ namespace FPMAS::graph::base {
 		const std::vector<typename Node<IdType, ArcType>::ArcType*>
 			Node<IdType, ArcType>::getOutgoingArcs() const {
 				std::vector<ArcType*> out;
-				for(auto layer : this->outgoingArcs) {
+				for(auto layer : this->outgoing_arcs) {
 					for(auto* arc : layer.second) {
 						out.push_back(arc);
 					}
@@ -87,8 +90,8 @@ namespace FPMAS::graph::base {
 		const std::vector<typename Node<IdType, ArcType>::ArcType*>
 			Node<IdType, ArcType>::getOutgoingArcs(LayerIdType id) const {
 				try {
-					return outgoingArcs.at(id);
-				} catch(std::out_of_range) {
+					return outgoing_arcs.at(id);
+				} catch(std::out_of_range&) {
 					return {};
 				}
 		}
@@ -100,7 +103,7 @@ namespace FPMAS::graph::base {
 				ID_C_STR(id),
 				ID_C_STR(arc->getId()), arc
 				);
-			incomingArcs[arc->getLayer()].push_back(arc);
+			incoming_arcs[arc->getLayer()].push_back(arc);
 		}
 
 	template<typename IdType, typename ArcType>
@@ -110,7 +113,7 @@ namespace FPMAS::graph::base {
 				ID_C_STR(id),
 				ID_C_STR(arc->getId()), arc
 				);
-			outgoingArcs[arc->getLayer()].push_back(arc);
+			outgoing_arcs[arc->getLayer()].push_back(arc);
 		}
 
 	template<typename IdType, typename ArcType>
@@ -120,7 +123,7 @@ namespace FPMAS::graph::base {
 				ID_C_STR(id), ID_C_STR(arc->getId()), arc,
 				ID_C_STR(arc->getSourceNode()->getId())
 				);
-			auto& arcs = incomingArcs.at(arc->getLayer());
+			auto& arcs = incoming_arcs.at(arc->getLayer());
 			FPMAS_LOGV(-1, "NODE", "%s : Current in arcs size on layer %i: %lu",
 					ID_C_STR(id), arc->getLayer(), arcs.size());
 			arcs.erase(std::remove(arcs.begin(), arcs.end(), arc));
@@ -134,7 +137,7 @@ namespace FPMAS::graph::base {
 				ID_C_STR(id), ID_C_STR(arc->getId()), arc,
 				ID_C_STR(arc->getTargetNode()->getId())
 				);
-			auto& arcs = outgoingArcs.at(arc->getLayer());
+			auto& arcs = outgoing_arcs.at(arc->getLayer());
 			FPMAS_LOGV(-1, "NODE", "%s : Current out arcs size on layer %i : %lu",
 					ID_C_STR(id), arc->getLayer(), arcs.size());
 			arcs.erase(std::remove(arcs.begin(), arcs.end(), arc));

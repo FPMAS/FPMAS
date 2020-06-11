@@ -39,6 +39,12 @@ namespace FPMAS::api::graph::base {
 			virtual void erase(NodeBase* node) = 0;
 			virtual void erase(ArcBase* arc) = 0;
 
+			virtual void addCallOnInsertNode(api::utils::Callback<NodeType*>*) = 0;
+			virtual void addCallOnEraseNode(api::utils::Callback<NodeType*>*) = 0;
+
+			virtual void addCallOnInsertArc(api::utils::Callback<ArcType*>*) = 0;
+			virtual void addCallOnEraseArc(api::utils::Callback<ArcType*>*) = 0;
+
 			// Node getters
 			virtual const NodeIdType& currentNodeId() const = 0;
 			virtual NodeType* getNode(NodeIdType) = 0;
@@ -54,7 +60,7 @@ namespace FPMAS::api::graph::base {
 			virtual void removeNode(NodeType*) = 0;
 			void removeNode(const NodeIdType& id) {
 				this->removeNode(this->getNode(id));
-			};
+			}
 
 			virtual void unlink(ArcType*) = 0;
 			void unlink(const ArcIdType& id) {
@@ -64,18 +70,20 @@ namespace FPMAS::api::graph::base {
 			virtual ~Graph() {}
 	};
 
-	template<typename GraphImpl, typename... Args>
-		typename GraphImpl::NodeType* buildNode(GraphImpl& graph, Args... args) {
-			return graph.buildNode(args...);
-		}
-
-	template<typename GraphImpl, typename... Args>
-		typename GraphImpl::ArcType* link(
-				GraphImpl& graph,
-				typename GraphImpl::NodeBase* src,
-				typename GraphImpl::NodeBase* tgt,
-				Args... args) {
-			return graph.link(src, tgt, args...);
-		}
+/*
+ *    template<typename GraphImpl, typename... Args>
+ *        typename GraphImpl::NodeType* buildNode(GraphImpl& graph, Args... args) {
+ *            return graph.buildNode(args...);
+ *        }
+ *
+ *    template<typename GraphImpl, typename... Args>
+ *        typename GraphImpl::ArcType* link(
+ *                GraphImpl& graph,
+ *                typename GraphImpl::NodeBase* src,
+ *                typename GraphImpl::NodeBase* tgt,
+ *                Args... args) {
+ *            return graph.link(src, tgt, args...);
+ *        }
+ */
 }
 #endif

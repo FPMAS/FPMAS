@@ -15,8 +15,10 @@ namespace FPMAS::model {
 				: _agent(agent) {}
 
 			const api::model::Agent& agent() const override {return _agent;}
+
 			api::graph::parallel::DistributedNode<api::model::Agent*>* node() override
 				{return _agent.node();}
+
 
 			void run() override {
 				_agent.act();
@@ -39,27 +41,29 @@ namespace FPMAS::model {
 
 	class AgentGroup : public api::model::AgentGroup {
 		public:
+			typedef api::model::GroupId GroupId;
 			typedef typename api::model::Model::AgentGraph AgentGraph;
 		private:
+			GroupId id;
 			AgentGraph& agent_graph;
 			scheduler::Job _job;
 			SynchronizeGraphTask sync_graph_task;
-			std::vector<AgentTask*> agent_tasks;
-			std::vector<api::model::Agent*> _agents;
 
 		public:
-			AgentGroup(AgentGraph& agent_graph, JID job_id);
-			AgentGroup(const AgentGroup&) = delete;
-			AgentGroup(AgentGroup&&) = delete;
-			AgentGroup& operator=(const AgentGroup&) = delete;
-			AgentGroup& operator=(AgentGroup&&) = delete;
+			AgentGroup(GroupId group_id, AgentGraph& agent_graph, JID job_id);
+			//AgentGroup(const AgentGroup&) = delete;
+			//AgentGroup(AgentGroup&&) = delete;
+			//AgentGroup& operator=(const AgentGroup&) = delete;
+			//AgentGroup& operator=(AgentGroup&&) = delete;
 
+			GroupId groupId() const override {return id;}
+
+			void add(api::model::Agent*) override;
+			void remove(api::model::Agent*) override;
+			scheduler::Job& job() override {return _job;}
 			const scheduler::Job& job() const override {return _job;}
 
-			const std::vector<api::model::Agent*>& agents() const override {return _agents;}
-			void add(api::model::Agent*) override;
-
-			~AgentGroup();
+			//~AgentGroup();
 	};
 
 	class LoadBalancingTask : public api::scheduler::Task {
@@ -87,17 +91,42 @@ namespace FPMAS::model {
 			void run() override;
 	};
 
+	class InsertNodeCallback 
+		: public api::utils::Callback
+		  <api::graph::parallel::DistributedNode<api::model::Agent*>*> {
+		private:
+			api::model::Model& model;
+		public:
+			InsertNodeCallback(api::model::Model& model) : model(model) {}
+
+			void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+	};
+
+	class EraseNodeCallback 
+		: public api::utils::Callback<api::graph::parallel::DistributedNode<api::model::Agent*>*> {
+		private:
+			api::model::Model& model;
+		public:
+			EraseNodeCallback(api::model::Model& model) : model(model) {}
+
+			void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+	};
+
 	class Model : public api::model::Model {
 		public:
+			typedef api::model::GroupId GroupId;
 			typedef typename LoadBalancingTask::LoadBalancingAlgorithm LoadBalancingAlgorithm;
 		private:
+			GroupId gid;
 			AgentGraph& _graph;
 			scheduler::Scheduler _scheduler;
 			runtime::Runtime _runtime;
 			scheduler::Job _loadBalancingJob;
 			LoadBalancingTask load_balancing_task;
+			InsertNodeCallback insert_node_callback {*this};
+			EraseNodeCallback erase_node_callback {*this};
 
-			std::vector<api::model::AgentGroup*> _groups;
+			std::unordered_map<GroupId, api::model::AgentGroup*> _groups;
 			
 			JID job_id = LB_JID + 1;
 			
@@ -116,10 +145,11 @@ namespace FPMAS::model {
 
 			const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
-			AgentGroup* buildGroup() override;
-			const std::vector<api::model::AgentGroup*>& groups() const override {return _groups;}
+			api::model::AgentGroup& buildGroup() override;
+			api::model::AgentGroup& getGroup(GroupId) override;
+			const std::unordered_map<GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
 
 			~Model();
 	};
-};
+}
 #endif

@@ -11,15 +11,25 @@ using ::testing::IsEmpty;
 using ::testing::Return;
 using ::testing::SizeIs;
 using ::testing::AtLeast;
+using ::testing::Return;
+using ::testing::_;
 
 TEST(NodeApiTest, empty_in_neighbors) {
 	MockNode<BasicId> node;
+	EXPECT_CALL(node, getIncomingArcs()).Times(AnyNumber())
+		.WillRepeatedly(Return(std::vector<MockArc<BasicId>*>()));
+	EXPECT_CALL(node, getIncomingArcs(_)).Times(AnyNumber())
+		.WillRepeatedly(Return(std::vector<MockArc<BasicId>*>()));
 	ASSERT_THAT(node.inNeighbors(), IsEmpty());
 	ASSERT_THAT(node.inNeighbors(12), IsEmpty());
 }
 
 TEST(NodeApiTest, empty_out_neighbors) {
 	MockNode<BasicId> node;
+	EXPECT_CALL(node, getOutgoingArcs()).Times(AnyNumber())
+		.WillRepeatedly(Return(std::vector<MockArc<BasicId>*>()));
+	EXPECT_CALL(node, getOutgoingArcs(_)).Times(AnyNumber())
+		.WillRepeatedly(Return(std::vector<MockArc<BasicId>*>()));
 	ASSERT_THAT(node.outNeighbors(), IsEmpty());
 	ASSERT_THAT(node.outNeighbors(12), IsEmpty());
 }

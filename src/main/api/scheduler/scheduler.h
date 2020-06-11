@@ -28,6 +28,7 @@ namespace FPMAS {
 
 				virtual JID id() const = 0;
 				virtual void add(Task&) = 0;
+				virtual void remove(Task&) = 0;
 				virtual const std::vector<Task*>& tasks() const = 0;
 				virtual TaskIterator begin() const = 0;
 				virtual TaskIterator end() const = 0;
