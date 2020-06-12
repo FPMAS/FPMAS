@@ -10,7 +10,6 @@ namespace FPMAS::api::graph::base {
 	template<typename _IdType, typename _ArcType>
 		class Node {
 			public:
-				//typedef T Data;
 				typedef _IdType IdType;
 				typedef _ArcType ArcType;
 				typedef typename ArcType::LayerIdType LayerIdType;

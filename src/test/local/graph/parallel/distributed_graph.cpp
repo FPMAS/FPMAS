@@ -23,6 +23,7 @@
 #include "../mocks/synchro/mock_mutex.h"
 #include "../mocks/synchro/mock_sync_mode.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
+#include "../mocks/utils/mock_callback.h"
 
 
 using ::testing::AnyOf;
@@ -97,12 +98,14 @@ class DistributedGraphTest : public ::testing::Test {
 /*
  * Local buildNode test
  */
-TEST_F(DistributedGraphTest, buildNode) {
+TEST_F(DistributedGraphTest, build_node) {
 
 	MockLocationManager<int>& location_manager
 		= const_cast<MockLocationManager<int>&>(
 				graph.getLocationManager()
 				);
+	auto local_callback = new MockCallback<NodeType*>;
+	graph.addCallOnSetLocal(local_callback);
 
 	NodeType* add_managed_node_arg;
 	EXPECT_CALL(location_manager, addManagedNode(_, CURRENT_RANK))
@@ -110,7 +113,9 @@ TEST_F(DistributedGraphTest, buildNode) {
 	NodeType* set_local_arg;
 	EXPECT_CALL(location_manager, setLocal(_))
 		.WillOnce(SaveArg<0>(&set_local_arg));
-
+	NodeType* local_callback_arg;
+	EXPECT_CALL(*local_callback, call)
+		.WillOnce(SaveArg<0>(&local_callback_arg));
 
 	auto currentId = graph.currentNodeId();
 	ASSERT_EQ(currentId.rank(), 7);
@@ -122,6 +127,7 @@ TEST_F(DistributedGraphTest, buildNode) {
 	auto node = graph.buildNode(2);
 	ASSERT_EQ(add_managed_node_arg, node);
 	ASSERT_EQ(set_local_arg, node);
+	ASSERT_EQ(local_callback_arg, node);
 
 	ASSERT_EQ(graph.getNodes().count(currentId), 1);
 	ASSERT_EQ(graph.getNode(currentId), node);
@@ -397,21 +403,29 @@ TEST_F(DistributedGraphImportNodeTest, import_node) {
 
 	EXPECT_CALL(location_manager,updateLocations(local_nodes_matcher));
 
-	NodeType* setLocalArg;
+	NodeType* set_local_arg;
 	EXPECT_CALL(location_manager, setLocal(_))
-		.WillOnce(SaveArg<0>(&setLocalArg));
+		.WillOnce(SaveArg<0>(&set_local_arg));
 	EXPECT_CALL(
 		const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()),
 		buildMutex(DistributedId(1, 10), Eq(8))
 		);
+
+	// Callback call test
+	auto local_callback = new MockCallback<NodeType*>;
+	graph.addCallOnSetLocal(local_callback);
+	NodeType* local_callback_arg;
+	EXPECT_CALL(*local_callback, call)
+		.WillOnce(SaveArg<0>(&local_callback_arg));
 
 	distributeTest();
 
 	ASSERT_EQ(graph.getNodes().size(), 1);
 	ASSERT_EQ(graph.getNodes().count(DistributedId(1, 10)), 1);
 	auto node = graph.getNode(DistributedId(1, 10));
-	ASSERT_EQ(setLocalArg, node);
-	//ASSERT_EQ(node->data(), 8);
+	ASSERT_EQ(set_local_arg, node);
+	ASSERT_EQ(local_callback_arg, node);
+	ASSERT_EQ(node->data(), 8);
 	ASSERT_EQ(node->getWeight(), 2.1f);
 }
 
@@ -435,13 +449,21 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 
 	EXPECT_CALL(location_manager, updateLocations(local_nodes_matcher));
 
-	NodeType* setLocalArg;
+	NodeType* set_local_arg;
 	EXPECT_CALL(location_manager, setLocal(_))
-		.WillOnce(SaveArg<0>(&setLocalArg));
+		.WillOnce(SaveArg<0>(&set_local_arg));
+
+	// Callback call test
+	auto local_callback = new MockCallback<NodeType*>;
+	graph.addCallOnSetLocal(local_callback);
+	NodeType* local_callback_arg;
+	EXPECT_CALL(*local_callback, call)
+		.WillOnce(SaveArg<0>(&local_callback_arg));
 
 	distributeTest();
 
-	ASSERT_EQ(setLocalArg, node);
+	ASSERT_EQ(set_local_arg, node);
+	ASSERT_EQ(local_callback_arg, node);
 	ASSERT_EQ(graph.getNodes().size(), 1);
 	ASSERT_EQ(graph.getNodes().count(node->getId()), 1);
 }
@@ -507,6 +529,11 @@ class DistributedGraphImportArcTest : public DistributedGraphImportNodeTest {
 
 /*
  * Import an arc already contained in the graph, as a distant arc.
+ * Nothing is done, but the operation can occur when migrating arcs : a proc
+ * can send an arc to an other proc, because it is linked to an exported node,
+ * but the arcs represented on the target node are not known. In consequence,
+ * the imported arc might have already been imported with an other node in a
+ * previous iteration.
  */
 TEST_F(DistributedGraphImportArcTest, import_existing_local_arc) {
 	EXPECT_CALL(*static_cast<MockNode*>(src), state)
@@ -666,19 +693,27 @@ TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
 
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
-	NodeType* setDistantArg;
+	NodeType* set_distant_arg;
 	EXPECT_CALL(location_manager, setDistant(_))
-		.WillOnce(SaveArg<0>(&setDistantArg));
+		.WillOnce(SaveArg<0>(&set_distant_arg));
+
+	// Distant call back test
+	auto* distant_callback = new MockCallback<NodeType*>;
+	graph.addCallOnSetDistant(distant_callback);
+	NodeType* distant_callback_arg;
+	EXPECT_CALL(*distant_callback, call)
+		.WillOnce(SaveArg<0>(&distant_callback_arg));
 
 	distributeTest();
 	checkArcAndGhostStructure();
 
 	ASSERT_EQ(graph.getNodes().count(DistributedId(8, 16)), 1);
-	auto distantNode = graph.getNode(DistributedId(8, 16));
-	ASSERT_EQ(setDistantArg, distantNode);
+	auto distant_node = graph.getNode(DistributedId(8, 16));
+	ASSERT_EQ(set_distant_arg, distant_node);
+	ASSERT_EQ(distant_callback_arg, distant_node);
 
 	ASSERT_EQ(static_cast<MockArc*>(importedArc)->src, local_node);
-	ASSERT_EQ(static_cast<MockArc*>(importedArc)->tgt, distantNode);
+	ASSERT_EQ(static_cast<MockArc*>(importedArc)->tgt, distant_node);
 }
 
 /*
@@ -704,19 +739,26 @@ TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
-	NodeType* setDistantArg;
+	NodeType* set_distant_arg;
 	EXPECT_CALL(location_manager, setDistant(_))
-		.WillOnce(SaveArg<0>(&setDistantArg));
+		.WillOnce(SaveArg<0>(&set_distant_arg));
+	// Distant call back test
+	auto* distant_callback = new MockCallback<NodeType*>;
+	graph.addCallOnSetDistant(distant_callback);
+	NodeType* distant_callback_arg;
+	EXPECT_CALL(*distant_callback, call)
+		.WillOnce(SaveArg<0>(&distant_callback_arg));
 
 	distributeTest();
 	checkArcAndGhostStructure();
 
 	ASSERT_EQ(graph.getNodes().count(DistributedId(8, 16)), 1);
-	auto distantNode = graph.getNode(DistributedId(8, 16));
-	ASSERT_EQ(setDistantArg, distantNode);
+	auto distant_node = graph.getNode(DistributedId(8, 16));
+	ASSERT_EQ(set_distant_arg, distant_node);
+	ASSERT_EQ(distant_callback_arg, distant_node);
 
 	ASSERT_EQ(static_cast<MockArc*>(importedArc)->tgt, local_node);
-	ASSERT_EQ(static_cast<MockArc*>(importedArc)->src, distantNode);
+	ASSERT_EQ(static_cast<MockArc*>(importedArc)->src, distant_node);
 }
 
 /********************/
@@ -879,10 +921,10 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 	EXPECT_CALL(location_manager, remove(graph.getNode(nodeIds[3])));
 	EXPECT_CALL(location_manager, remove(graph.getNode(nodeIds[4])));
 
-	std::array<NodeType*, 2> setLocalArgs;
+	std::array<NodeType*, 2> set_local_args;
 	EXPECT_CALL(location_manager, setLocal(_))
-		.WillOnce(SaveArg<0>(&setLocalArgs[0]))
-		.WillOnce(SaveArg<0>(&setLocalArgs[1]));
+		.WillOnce(SaveArg<0>(&set_local_args[0]))
+		.WillOnce(SaveArg<0>(&set_local_args[1]));
 	EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(2);
 	
 	EXPECT_CALL(location_manager, updateLocations(UnorderedElementsAre(
@@ -895,7 +937,7 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 	ASSERT_EQ(graph.getNodes().count(DistributedId(2, 5)), 1);
 	ASSERT_EQ(graph.getNodes().count(DistributedId(4, 3)), 1);
 
-	EXPECT_THAT(setLocalArgs, UnorderedElementsAre(
+	EXPECT_THAT(set_local_args, UnorderedElementsAre(
 			graph.getNode(DistributedId(2, 5)),
 			graph.getNode(DistributedId(4, 3))
 			));
@@ -913,6 +955,9 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 
 		ArcList* node2_in = new ArcList;
 		ArcList* node3_out = new ArcList;
+
+		MockCallback<NodeType*>* distant_callback = new MockCallback<NodeType*>;
+		std::array<NodeType*, 2> imported_arc_distant_callback_args;
 
 		void SetUp() override {
 			DistributedGraphDistributeTest::SetUp();
@@ -952,6 +997,20 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 			// Other uninteresting setDistant calls might occur on unconnected
 			// nodes that will be cleared
 			EXPECT_CALL(location_manager, setDistant).Times(AnyNumber());
+
+			graph.addCallOnSetDistant(distant_callback);
+
+			// Those two expectation are matched only when the next 4
+			// expectations are not matched.
+			EXPECT_CALL(*distant_callback, call)
+				.WillOnce(SaveArg<0>(&imported_arc_distant_callback_args[0]))
+				.WillOnce(SaveArg<0>(&imported_arc_distant_callback_args[1]));
+
+			// Exported node callback matchers
+			EXPECT_CALL(*distant_callback, call(graph.getNode(nodeIds[2])));
+			EXPECT_CALL(*distant_callback, call(graph.getNode(nodeIds[3])));
+			EXPECT_CALL(*distant_callback, call(graph.getNode(nodeIds[1])));
+			EXPECT_CALL(*distant_callback, call(graph.getNode(nodeIds[4])));
 
 			// Set linked nodes as distant nodes
 			EXPECT_CALL(location_manager, setDistant(graph.getNode(nodeIds[2])));
@@ -1012,6 +1071,7 @@ TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 	graph.distribute(fakePartition);
 
+	ASSERT_THAT(imported_arc_distant_callback_args, UnorderedElementsAre(mock_src, mock_tgt));
 	ASSERT_EQ(graph.getArcs().size(), 3);
 	ASSERT_EQ(graph.getArcs().count(DistributedId(4, 6)), 1);
 	ASSERT_EQ(graph.getArcs().count(arc1->getId()), 1);

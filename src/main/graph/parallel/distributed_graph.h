@@ -63,6 +63,7 @@ namespace FPMAS::graph::parallel {
 			typedef typename MpiSetUp::communicator communicator;
 			template<typename Data>
 			using mpi = typename MpiSetUp::template mpi<Data>;
+			using NodeCallback = typename DistGraphBase::NodeCallback;
 
 			private:
 			communicator mpi_communicator;
@@ -74,7 +75,13 @@ namespace FPMAS::graph::parallel {
 			LocationManagerImpl<T> location_manager;
 			SyncModeRuntimeType sync_mode_runtime;
 
+			std::vector<NodeCallback*> set_local_callbacks;
+			std::vector<NodeCallback*> set_distant_callbacks;
+
 			NodeType* buildNode(NodeType*);
+
+			void setLocal(api::graph::parallel::DistributedNode<T>* node);
+			void setDistant(api::graph::parallel::DistributedNode<T>* node);
 
 
 			public:
@@ -138,7 +145,31 @@ namespace FPMAS::graph::parallel {
 			NodeType* buildNode(T&& = std::move(T())) override;
 
 			ArcType* link(NodeType* const src, NodeType* const tgt, LayerIdType layer) override;
+
+			void addCallOnSetLocal(NodeCallback* callback) override {
+				set_local_callbacks.push_back(callback);
+			};
+
+			void addCallOnSetDistant(NodeCallback* callback) override {
+				set_distant_callbacks.push_back(callback);
+			};
+
+			~DistributedGraph();
 		};
+
+	template<DIST_GRAPH_PARAMS>
+		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setLocal(api::graph::parallel::DistributedNode<T>* node) {
+			location_manager.setLocal(node);
+			for(auto callback : set_local_callbacks)
+				callback->call(node);
+		}
+
+	template<DIST_GRAPH_PARAMS>
+		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setDistant(api::graph::parallel::DistributedNode<T>* node) {
+			location_manager.setDistant(node);
+			for(auto callback : set_distant_callbacks)
+				callback->call(node);
+		}
 
 	template<DIST_GRAPH_PARAMS>
 	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(ArcType* arc) {
@@ -176,7 +207,7 @@ namespace FPMAS::graph::parallel {
 			// But instead of completely building a new node, we can re-use the
 			// temporary input node.
 			this->insert(node);
-			location_manager.setLocal(node);
+			setLocal(node);
 			node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
 			return node;
 		}
@@ -185,7 +216,7 @@ namespace FPMAS::graph::parallel {
 
 		// Set local representation as local
 		auto local_node = this->getNode(node->getId());
-		location_manager.setLocal(local_node);
+		setLocal(local_node);
 
 		// Deletes unused temporary input node
 		delete node;
@@ -235,7 +266,7 @@ namespace FPMAS::graph::parallel {
 				// source node.
 				src = arc->getSourceNode();
 				this->insert(src);
-				location_manager.setDistant(src);
+				setDistant(src);
 				src->setMutex(sync_mode_runtime.buildMutex(src->getId(), src->data()));
 			}
 			if(this->getNodes().count(tgtId) > 0) {
@@ -261,7 +292,7 @@ namespace FPMAS::graph::parallel {
 				// target node.
 				tgt = arc->getTargetNode();
 				this->insert(tgt);
-				location_manager.setDistant(tgt);
+				setDistant(tgt);
 				tgt->setMutex(sync_mode_runtime.buildMutex(tgt->getId(), tgt->data()));
 			}
 			// Finally, insert the temporary arc into the graph.
@@ -291,7 +322,7 @@ namespace FPMAS::graph::parallel {
 		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(NodeType* node) {
 				this->insert(node);
-				location_manager.setLocal(node);
+				setLocal(node);
 				location_manager.addManagedNode(node, mpi_communicator.getRank());
 				node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
 				//sync_mode_runtime.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
@@ -414,7 +445,7 @@ namespace FPMAS::graph::parallel {
 			}
 
 			for(auto node : exportedNodes) {
-				location_manager.setDistant(node);
+				setDistant(node);
 			}
 			for(auto node : exportedNodes) {
 				FPMAS_LOGD(
@@ -488,6 +519,14 @@ namespace FPMAS::graph::parallel {
 					this->erase(arc);
 				}
 			}
+		}
+
+	template<DIST_GRAPH_PARAMS>
+		DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::~DistributedGraph() {
+			for(auto callback : set_local_callbacks)
+				delete callback;
+			for(auto callback : set_distant_callbacks)
+				delete callback;
 		}
 }
 #endif

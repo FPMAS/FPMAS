@@ -74,7 +74,7 @@ namespace FPMAS::graph::base {
 				const ArcType* getArc(ArcIdType) const override;
 				const ArcMap& getArcs() const override;
 
-				~Graph();
+				virtual ~Graph();
 	};
 
 	template<GRAPH_PARAMS>
