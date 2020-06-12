@@ -56,6 +56,8 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 		MOCK_METHOD(void, unlinkIn, (ArcType*), (override));
 		MOCK_METHOD(void, unlinkOut, (ArcType*), (override));
 
+		virtual ~AbstractMockNode() {}
+
 	private:
 		void setUpGetters() {
 			ON_CALL(*this, getId)
@@ -73,12 +75,19 @@ template<typename IdType>
 class MockNode : public AbstractMockNode<IdType, MockArc<IdType>> {
 	public:
 		typedef AbstractMockNode<IdType, MockArc<IdType>> MockNodeBase;
-		MockNode() : MockNodeBase() {}
+		MockNode() : MockNodeBase() {
+			EXPECT_CALL(*this, die).Times(AnyNumber());
+		}
 		MockNode(const IdType& id)
 			: MockNodeBase(id) {
+			EXPECT_CALL(*this, die).Times(AnyNumber());
 		}
 		MockNode(const IdType& id, float weight)
 			: MockNodeBase(id, weight) {
+			EXPECT_CALL(*this, die).Times(AnyNumber());
 		}
+
+		MOCK_METHOD(void, die, (), ());
+		~MockNode() {die();}
 };
 #endif

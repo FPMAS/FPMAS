@@ -7,7 +7,7 @@ namespace FPMAS::graph::base {
 
 	class BasicId : public FPMAS::api::graph::base::Id<BasicId> {
 		private:
-			unsigned long value;
+			unsigned long value = 0;
 
 		public:
 			BasicId& operator++() override {

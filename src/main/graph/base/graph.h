@@ -93,7 +93,7 @@ namespace FPMAS::graph::base {
 
 	template<GRAPH_PARAMS>
 		void Graph<GRAPH_PARAMS_SPEC>::erase(NodeBase* node) {
-			FPMAS_LOGD(-1, "GRAPH", "Removing node %s", ID_C_STR(node->getId()));
+			FPMAS_LOGD(-1, "GRAPH", "Erase node %s", ID_C_STR(node->getId()));
 			// Deletes incoming arcs
 			for(auto* arc : node->getIncomingArcs()) {
 				FPMAS_LOGV(
@@ -190,11 +190,21 @@ namespace FPMAS::graph::base {
 
 	template<GRAPH_PARAMS>
 		Graph<GRAPH_PARAMS_SPEC>::~Graph() {
-			for(auto node : this->nodes) {
-				delete node.second;
+			// This is VERY hacky.
+			std::vector<ArcType*> arcs;
+			for(auto arc : this->arcs)
+				arcs.push_back(arc.second);
+
+			for(auto arc : arcs) {
+				erase(arc);
 			}
-			for(auto arc : this->arcs) {
-				delete arc.second;
+
+			std::vector<NodeType*> nodes;
+			for(auto node : this->nodes)
+				nodes.push_back(node.second);
+
+			for(auto node : nodes) {
+				erase(node);
 			}
 		}
 
