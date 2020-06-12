@@ -37,30 +37,24 @@ class MockGraph :
 
 class GraphBaseTest : public ::testing::Test {
 	protected:
-		MockGraph<MockNode<BasicId>, MockArc<BasicId>>* graph = new MockGraph<MockNode<BasicId>, MockArc<BasicId>>;
+		MockGraph<MockNode<BasicId>, MockArc<BasicId>> graph;
 		MockCallback<MockNode<BasicId>*>* insert_callback = new MockCallback<MockNode<BasicId>*>;
 		MockCallback<MockNode<BasicId>*>* erase_callback = new MockCallback<MockNode<BasicId>*>;
-
-		void TearDown() override {
-			delete graph;
-			delete insert_callback;
-			delete erase_callback;
-		}
 };
 
 TEST_F(GraphBaseTest, insert_node) {
 	BasicId id;
-	graph->addCallOnInsertNode(insert_callback);
-	graph->addCallOnEraseNode(erase_callback);
+	graph.addCallOnInsertNode(insert_callback);
+	graph.addCallOnEraseNode(erase_callback);
 	for (int i = 0; i < 10; ++i) {
 		auto node = new MockNode<BasicId>(++id);
 
 		EXPECT_CALL(*node, getId).Times(AtLeast(2));
 		EXPECT_CALL(*insert_callback, call(node));
-		graph->insert(node);
+		graph.insert(node);
 
-		ASSERT_EQ(graph->getNodes().size(), i+1);
-		ASSERT_EQ(graph->getNode(node->getId()), node);
+		ASSERT_EQ(graph.getNodes().size(), i+1);
+		ASSERT_EQ(graph.getNode(node->getId()), node);
 
 
 		EXPECT_CALL(*node, getIncomingArcs()).Times(AnyNumber());
@@ -75,11 +69,11 @@ TEST_F(GraphBaseTest, insert_node) {
 
 TEST_F(GraphBaseTest, erase_node) {
 	BasicId id;
-	graph->addCallOnEraseNode(erase_callback);
+	graph.addCallOnEraseNode(erase_callback);
 	std::array<MockNode<BasicId>*, 10> nodes;
 	for (int i = 0; i < 10; ++i) {
 		auto node = new MockNode<BasicId>(++id);
-		graph->insert(node);
+		graph.insert(node);
 		nodes[i] = node;
 
 		EXPECT_CALL(*node, getIncomingArcs()).Times(AnyNumber());
@@ -91,9 +85,10 @@ TEST_F(GraphBaseTest, erase_node) {
 		BasicId node_id = node->getId();
 		Expectation callback = EXPECT_CALL(*erase_callback, call(node));
 		EXPECT_CALL(*node, die).After(callback);
-		graph->erase(node);
-		ASSERT_THAT(graph->getNodes(), Not(Contains(Pair(node_id, _))));
+		graph.erase(node);
+		ASSERT_THAT(graph.getNodes(), Not(Contains(Pair(node_id, _))));
 	}
+	delete insert_callback;
 }
 
 class GraphBaseEraseArcTest : public ::testing::Test {

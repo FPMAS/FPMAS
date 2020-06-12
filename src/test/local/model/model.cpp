@@ -9,10 +9,12 @@
 using ::testing::A;
 using ::testing::An;
 using ::testing::DoAll;
-using ::testing::Eq;
 using ::testing::ElementsAre;
+using ::testing::Eq;
 using ::testing::Invoke;
 using ::testing::InvokeWithoutArgs;
+using ::testing::IsNull;
+using ::testing::Not;
 using ::testing::Pair;
 using ::testing::Property;
 using ::testing::Ref;
@@ -63,15 +65,39 @@ class ModelTest : public ::testing::Test {
 		FPMAS::scheduler::Scheduler scheduler;
 		FPMAS::runtime::Runtime runtime {scheduler};
 
+		typedef
+		FPMAS::api::utils::Callback<
+			FPMAS::api::graph::parallel::DistributedNode<FPMAS::api::model::Agent*>*>
+			NodeCallback;
+		NodeCallback* insert_node_callback;
+		NodeCallback* erase_node_callback;
+		NodeCallback* set_local_callback;
+		NodeCallback* set_distant_callback;
+
 		Model* model;
 		void SetUp() override {
-			EXPECT_CALL(graph, addCallOnInsertNode);
-			EXPECT_CALL(graph, addCallOnEraseNode);
+			EXPECT_CALL(graph, addCallOnInsertNode(
+					WhenDynamicCastTo<FPMAS::model::InsertNodeCallback*>(Not(IsNull()))
+					)).WillOnce(SaveArg<0>(&insert_node_callback));
+			EXPECT_CALL(graph, addCallOnEraseNode(
+					WhenDynamicCastTo<FPMAS::model::EraseNodeCallback*>(Not(IsNull()))
+					)).WillOnce(SaveArg<0>(&erase_node_callback));
+			EXPECT_CALL(graph, addCallOnSetLocal(
+					WhenDynamicCastTo<FPMAS::model::SetLocalNodeCallback*>(Not(IsNull()))
+					)).WillOnce(SaveArg<0>(&set_local_callback));
+			EXPECT_CALL(graph, addCallOnSetDistant(
+					WhenDynamicCastTo<FPMAS::model::SetDistantNodeCallback*>(Not(IsNull()))
+					)).WillOnce(SaveArg<0>(&set_distant_callback));
 			model = new Model(graph, load_balancing);
 		}
 
 		void TearDown() override {
 			delete model;
+			// Would normally be deleted by ~Graph()
+			delete insert_node_callback;
+			delete erase_node_callback;
+			delete set_local_callback;
+			delete set_distant_callback;
 		}
 };
 
@@ -79,7 +105,7 @@ TEST_F(ModelTest, graph) {
 	ASSERT_THAT(model->graph(), Ref(graph));
 }
 
-TEST_F(ModelTest, buildGroup) {
+TEST_F(ModelTest, build_group) {
 	auto& group_1 = model->buildGroup();
 	auto& group_2 = model->buildGroup();
 
@@ -100,6 +126,7 @@ class AgentGroupTest : public ::testing::Test {
 		MockModel model;
 		FPMAS::model::InsertNodeCallback insert_node_callback {model};
 		FPMAS::model::EraseNodeCallback erase_node_callback {model};
+		FPMAS::model::SetLocalNodeCallback set_local_callback {model};
 
 		FPMAS::api::model::GroupId id = 1;
 
@@ -151,10 +178,15 @@ class AgentGroupTest : public ::testing::Test {
 
 			EXPECT_CALL(graph, insert(A<Node*>()))
 				.Times(AnyNumber())
-				.WillRepeatedly(Invoke(&insert_node_callback, &FPMAS::model::InsertNodeCallback::call));
+				.WillRepeatedly(DoAll(
+							Invoke(&insert_node_callback, &FPMAS::model::InsertNodeCallback::call),
+							Invoke(&set_local_callback, &FPMAS::model::SetLocalNodeCallback::call)
+							));
 			EXPECT_CALL(graph, erase(A<Node*>()))
 				.Times(AnyNumber())
-				.WillRepeatedly(Invoke(&erase_node_callback, &FPMAS::model::EraseNodeCallback::call));
+				.WillRepeatedly(DoAll(
+							Invoke(&erase_node_callback, &FPMAS::model::EraseNodeCallback::call)
+							));
 			EXPECT_CALL(model, getGroup(id))
 				.Times(AnyNumber())
 				.WillRepeatedly(ReturnRef(agent_group));
@@ -194,6 +226,7 @@ class MockBuildNode {
 
 		void operator()() {
 			graph->insert(node);
+
 		}
 };
 

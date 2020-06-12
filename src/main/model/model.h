@@ -94,23 +94,43 @@ namespace FPMAS::model {
 	class InsertNodeCallback 
 		: public api::utils::Callback
 		  <api::graph::parallel::DistributedNode<api::model::Agent*>*> {
-		private:
-			api::model::Model& model;
-		public:
-			InsertNodeCallback(api::model::Model& model) : model(model) {}
+			  private:
+				  api::model::Model& model;
+			  public:
+				  InsertNodeCallback(api::model::Model& model) : model(model) {}
 
-			void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
-	};
+				  void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+		  };
 
 	class EraseNodeCallback 
 		: public api::utils::Callback<api::graph::parallel::DistributedNode<api::model::Agent*>*> {
-		private:
-			api::model::Model& model;
-		public:
-			EraseNodeCallback(api::model::Model& model) : model(model) {}
+			private:
+				api::model::Model& model;
+			public:
+				EraseNodeCallback(api::model::Model& model) : model(model) {}
 
-			void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
-	};
+				void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+		};
+
+	class SetLocalNodeCallback
+		: public api::utils::Callback<api::graph::parallel::DistributedNode<api::model::Agent*>*> {
+			private:
+				api::model::Model& model;
+			public:
+				SetLocalNodeCallback(api::model::Model& model) : model(model) {}
+
+				void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+		};
+
+	class SetDistantNodeCallback
+		: public api::utils::Callback<api::graph::parallel::DistributedNode<api::model::Agent*>*> {
+			private:
+				api::model::Model& model;
+			public:
+				SetDistantNodeCallback(api::model::Model& model) : model(model) {}
+
+				void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+		};
 
 	class Model : public api::model::Model {
 		public:
@@ -123,8 +143,10 @@ namespace FPMAS::model {
 			runtime::Runtime _runtime;
 			scheduler::Job _loadBalancingJob;
 			LoadBalancingTask load_balancing_task;
-			InsertNodeCallback insert_node_callback {*this};
-			EraseNodeCallback erase_node_callback {*this};
+			InsertNodeCallback* insert_node_callback = new InsertNodeCallback(*this);
+			EraseNodeCallback* erase_node_callback = new EraseNodeCallback(*this);
+			SetLocalNodeCallback* set_local_callback = new SetLocalNodeCallback(*this);
+			SetDistantNodeCallback* set_distant_callback = new SetDistantNodeCallback(*this);
 
 			std::unordered_map<GroupId, api::model::AgentGroup*> _groups;
 			

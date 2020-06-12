@@ -206,6 +206,15 @@ namespace FPMAS::graph::base {
 			for(auto node : nodes) {
 				erase(node);
 			}
+
+			for(auto callback : insert_node_callbacks)
+				delete callback;
+			for(auto callback : erase_node_callbacks)
+				delete callback;
+			for(auto callback : insert_arc_callbacks)
+				delete callback;
+			for(auto callback : erase_arc_callbacks)
+				delete callback;
 		}
 
 }
