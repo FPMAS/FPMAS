@@ -5,15 +5,15 @@
 #include "graph/parallel/distributed_graph.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
 
+using FPMAS::api::graph::parallel::LocationState;
+using FPMAS::communication::TypedMpi;
+using FPMAS::communication::MpiCommunicator;
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::graph::parallel::DistributedNode;
 using FPMAS::graph::parallel::DistributedArc;
 using FPMAS::graph::parallel::DefaultMpiSetUp;
 using FPMAS::graph::parallel::LocationManager;
-using FPMAS::synchro::hard::HardSyncMode;
-using FPMAS::api::graph::parallel::LocationState;
-using FPMAS::communication::TypedMpi;
-using FPMAS::communication::MpiCommunicator;
+using FPMAS::synchro::HardSyncMode;
 using FPMAS::synchro::hard::HardSyncMutex;
 using FPMAS::synchro::hard::MutexClient;
 using FPMAS::synchro::hard::MutexServer;

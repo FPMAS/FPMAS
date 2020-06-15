@@ -399,9 +399,9 @@ namespace FPMAS::graph::parallel {
 
 			// Builds node and arcs export maps
 			std::vector<NodeType*> exportedNodes;
-			std::unordered_map<int, std::vector<NodePtrWrapper<int>>> node_export_map;
+			std::unordered_map<int, std::vector<NodePtrWrapper<T>>> node_export_map;
 			std::unordered_map<int, std::set<DistributedId>> arc_ids_to_export;
-			std::unordered_map<int, std::vector<ArcPtrWrapper<int>>> arc_export_map;
+			std::unordered_map<int, std::vector<ArcPtrWrapper<T>>> arc_export_map;
 			for(auto item : partition) {
 				if(this->getNodes().count(item.first) > 0) {
 					if(item.second != mpi_communicator.getRank()) {

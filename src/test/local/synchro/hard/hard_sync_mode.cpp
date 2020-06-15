@@ -15,7 +15,7 @@
 using ::testing::Ref;
 
 using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::synchro::hard::HardSyncMode;
+using FPMAS::synchro::HardSyncMode;
 using FPMAS::synchro::hard::HardDataSync;
 using FPMAS::synchro::hard::HardSyncLinker;
 

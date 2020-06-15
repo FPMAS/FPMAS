@@ -2,10 +2,17 @@
 #define MODEL_H
 #include "api/model/model.h"
 #include "api/graph/parallel/distributed_graph.h"
+#include "api/utils/ptr_wrapper.h"
+#include "graph/parallel/distributed_graph.h"
 #include "scheduler/scheduler.h"
 #include "runtime/runtime.h"
+#include "load_balancing/zoltan_load_balancing.h"
+#include "load_balancing/scheduled_load_balancing.h"
 
 namespace FPMAS::model {
+
+	using api::model::AgentNode;
+	using api::model::AgentPtr;
 
 	class AgentTask : public api::model::AgentTask {
 		private:
@@ -16,7 +23,7 @@ namespace FPMAS::model {
 
 			const api::model::Agent& agent() const override {return _agent;}
 
-			api::graph::parallel::DistributedNode<api::model::Agent*>* node() override
+			AgentNode* node() override
 				{return _agent.node();}
 
 
@@ -69,7 +76,7 @@ namespace FPMAS::model {
 	class LoadBalancingTask : public api::scheduler::Task {
 		public:
 			typedef typename api::model::Model::AgentGraph AgentGraph;
-			typedef api::load_balancing::LoadBalancing<api::model::Agent*>
+			typedef api::load_balancing::LoadBalancing<AgentPtr>
 				LoadBalancingAlgorithm;
 			typedef typename LoadBalancingAlgorithm::ConstNodeMap ConstNodeMap;
 			typedef typename LoadBalancingAlgorithm::PartitionMap PartitionMap;
@@ -92,44 +99,43 @@ namespace FPMAS::model {
 	};
 
 	class InsertNodeCallback 
-		: public api::utils::Callback
-		  <api::graph::parallel::DistributedNode<api::model::Agent*>*> {
+		: public api::utils::Callback<AgentNode*> {
 			  private:
 				  api::model::Model& model;
 			  public:
 				  InsertNodeCallback(api::model::Model& model) : model(model) {}
 
-				  void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+				  void call(AgentNode* node) override;
 		  };
 
 	class EraseNodeCallback 
-		: public api::utils::Callback<api::graph::parallel::DistributedNode<api::model::Agent*>*> {
+		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
 				EraseNodeCallback(api::model::Model& model) : model(model) {}
 
-				void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+				void call(AgentNode* node) override;
 		};
 
 	class SetLocalNodeCallback
-		: public api::utils::Callback<api::graph::parallel::DistributedNode<api::model::Agent*>*> {
+		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
 				SetLocalNodeCallback(api::model::Model& model) : model(model) {}
 
-				void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+				void call(AgentNode* node) override;
 		};
 
 	class SetDistantNodeCallback
-		: public api::utils::Callback<api::graph::parallel::DistributedNode<api::model::Agent*>*> {
+		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
 				SetDistantNodeCallback(api::model::Model& model) : model(model) {}
 
-				void call(api::graph::parallel::DistributedNode<api::model::Agent*>* node) override;
+				void call(AgentNode* node) override;
 		};
 
 	class Model : public api::model::Model {
@@ -139,8 +145,8 @@ namespace FPMAS::model {
 		private:
 			GroupId gid;
 			AgentGraph& _graph;
-			scheduler::Scheduler _scheduler;
-			runtime::Runtime _runtime;
+			api::scheduler::Scheduler& _scheduler;
+			api::runtime::Runtime& _runtime;
 			scheduler::Job _loadBalancingJob;
 			LoadBalancingTask load_balancing_task;
 			InsertNodeCallback* insert_node_callback = new InsertNodeCallback(*this);
@@ -155,15 +161,19 @@ namespace FPMAS::model {
 
 		public:
 			static const JID LB_JID;
-			Model(AgentGraph& graph, LoadBalancingAlgorithm& load_balancing);
+			Model(
+				AgentGraph& graph,
+				api::scheduler::Scheduler& scheduler,
+				api::runtime::Runtime& runtime,
+				LoadBalancingAlgorithm& load_balancing);
 			Model(const Model&) = delete;
 			Model(Model&&) = delete;
 			Model& operator=(const Model&) = delete;
 			Model& operator=(Model&&) = delete;
 
 			AgentGraph& graph() override {return _graph;}
-			scheduler::Scheduler& scheduler() override {return _scheduler;}
-			runtime::Runtime& runtime() override {return _runtime;}
+			api::scheduler::Scheduler& scheduler() override {return _scheduler;}
+			api::runtime::Runtime& runtime() override {return _runtime;}
 
 			const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
@@ -173,5 +183,17 @@ namespace FPMAS::model {
 
 			~Model();
 	};
+
+
+	template<typename SyncMode>
+		using AgentGraph = graph::parallel::DistributedGraph<
+		AgentPtr, SyncMode,
+		graph::parallel::DistributedNode,
+		graph::parallel::DistributedArc,
+		api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi>,
+		graph::parallel::LocationManager>;
+
+	typedef load_balancing::ZoltanLoadBalancing<AgentPtr> ZoltanLoadBalancing;
+	typedef load_balancing::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;
 }
 #endif

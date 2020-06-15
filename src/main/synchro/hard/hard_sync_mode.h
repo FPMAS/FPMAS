@@ -11,32 +11,33 @@
 #include "termination.h"
 #include "graph/parallel/distributed_node.h"
 
-namespace FPMAS::synchro::hard {
+namespace FPMAS::synchro {
 
-	template<typename T>
-		class HardSyncRuntime : public FPMAS::api::synchro::SyncModeRuntime<T> {
+	namespace hard {
+		template<typename T>
+			class HardSyncRuntime : public FPMAS::api::synchro::SyncModeRuntime<T> {
 
-			typedef synchro::hard::TerminationAlgorithm<
-				communication::TypedMpi>
-				TerminationAlgorithm;
+				typedef synchro::hard::TerminationAlgorithm<
+					communication::TypedMpi>
+					TerminationAlgorithm;
 
-			communication::TypedMpi<DistributedId> id_mpi;
-			communication::TypedMpi<T> data_mpi;
-			communication::TypedMpi<DataUpdatePack<T>> data_update_mpi;
-			communication::TypedMpi<graph::parallel::NodePtrWrapper<T>> node_mpi;
-			communication::TypedMpi<graph::parallel::ArcPtrWrapper<T>> arc_mpi;
+				communication::TypedMpi<DistributedId> id_mpi;
+				communication::TypedMpi<T> data_mpi;
+				communication::TypedMpi<DataUpdatePack<T>> data_update_mpi;
+				communication::TypedMpi<graph::parallel::NodePtrWrapper<T>> node_mpi;
+				communication::TypedMpi<graph::parallel::ArcPtrWrapper<T>> arc_mpi;
 
-			MutexServer<T> mutex_server;
-			MutexClient<T> mutex_client;
+				MutexServer<T> mutex_server;
+				MutexClient<T> mutex_client;
 
-			LinkServer<T> link_server;
-			LinkClient<T> link_client;
+				LinkServer<T> link_server;
+				LinkClient<T> link_client;
 
-			TerminationAlgorithm termination;
-			HardSyncLinker<T> sync_linker;
-			HardDataSync<T> data_sync;
+				TerminationAlgorithm termination;
+				HardSyncLinker<T> sync_linker;
+				HardDataSync<T> data_sync;
 
-			public:
+				public:
 				HardSyncRuntime(
 						api::graph::parallel::DistributedGraph<T>& graph,
 						api::communication::MpiCommunicator& comm) :
@@ -57,9 +58,9 @@ namespace FPMAS::synchro::hard {
 
 				HardDataSync<T>& getDataSync() override {return data_sync;};
 				HardSyncLinker<T>& getSyncLinker() override {return sync_linker;};
-		};
+			};
 
-	typedef FPMAS::api::synchro::SyncMode<HardSyncMutex, HardSyncRuntime> HardSyncMode;
+	}
+	typedef FPMAS::api::synchro::SyncMode<hard::HardSyncMutex, hard::HardSyncRuntime> HardSyncMode;
 }
-
 #endif

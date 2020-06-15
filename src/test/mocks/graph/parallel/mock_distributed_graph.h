@@ -27,8 +27,11 @@ class MockDistributedGraph :
 				const FPMAS::api::graph::parallel::LocationManager<T>&,
 				getLocationManager, (), (const, override));
 
+		NodeType* buildNode(T&& data) override {
+			return buildNode_rv(data);
+		}
 		MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
-		MOCK_METHOD(NodeType*, buildNode, (T&&), (override));
+		MOCK_METHOD(NodeType*, buildNode_rv, (T), ());
 		MOCK_METHOD(ArcType*, link, (NodeType*, NodeType*, LayerIdType), (override));
 
 		MOCK_METHOD(void, addCallOnSetLocal, (NodeCallback*), (override));

@@ -2,8 +2,8 @@
 #define DISTRIBUTED_ARC_IMPL_H
 
 #include "api/graph/parallel/distributed_arc.h"
+#include "api/utils/ptr_wrapper.h"
 #include "graph/base/arc.h"
-#include "utils/ptr_wrapper.h"
 
 namespace FPMAS::graph::parallel {
 
@@ -35,7 +35,7 @@ namespace FPMAS::graph::parallel {
 
 
 	template<typename T>
-	using ArcPtrWrapper = FPMAS::utils::VirtualPtrWrapper<FPMAS::api::graph::parallel::DistributedArc<T>>;
+	using ArcPtrWrapper = FPMAS::api::utils::VirtualPtrWrapper<FPMAS::api::graph::parallel::DistributedArc<T>>;
 }
 
 namespace nlohmann {

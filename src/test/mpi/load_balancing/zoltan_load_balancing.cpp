@@ -18,7 +18,7 @@ class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 	protected:
 		DistributedGraph<
 			int,
-			FPMAS::synchro::GhostMode<int>,
+			FPMAS::synchro::GhostMode,
 			FPMAS::graph::parallel::DistributedNode,
 			FPMAS::graph::parallel::DistributedArc,
 			FPMAS::api::communication::MpiSetUp<

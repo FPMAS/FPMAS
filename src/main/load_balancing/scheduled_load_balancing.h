@@ -45,6 +45,7 @@ namespace FPMAS::load_balancing {
 				partition = fixed_vertices_lb.balance(node_map, fixed_nodes);
 				fixed_nodes = partition;
 			};
+			return partition;
 		}
 }
 #endif

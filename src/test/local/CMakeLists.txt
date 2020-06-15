@@ -30,6 +30,7 @@ set(SOURCES
 	runtime/runtime.cpp
 	# Model
 	model/model.cpp
+	model/serializer.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

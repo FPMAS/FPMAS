@@ -4,16 +4,20 @@
 #include "api/graph/parallel/distributed_graph.h"
 #include "api/scheduler/scheduler.h"
 #include "api/runtime/runtime.h"
+#include "api/utils/ptr_wrapper.h"
 
 namespace FPMAS::api::model {
 	class Agent;
 	class AgentTask;
-	typedef api::graph::parallel::DistributedNode<Agent*> AgentNode;
-	typedef unsigned int GroupId;
+	typedef api::utils::VirtualPtrWrapper<Agent> AgentPtr;
+	typedef api::graph::parallel::DistributedNode<AgentPtr> AgentNode;
+	typedef int GroupId;
+	typedef int TypeId;
 
 	class Agent {
 		public:
 			virtual GroupId groupId() const = 0;
+			virtual TypeId typeId() const = 0;
 
 			virtual AgentNode* node() = 0;
 			virtual const AgentNode* node() const = 0;
@@ -28,7 +32,7 @@ namespace FPMAS::api::model {
 			virtual ~Agent(){}
 	};
 
-	class AgentTask : public api::scheduler::NodeTask<Agent*> {
+	class AgentTask : public api::scheduler::NodeTask<AgentPtr> {
 		public:
 			virtual const Agent& agent() const = 0;
 			virtual ~AgentTask(){}
@@ -48,7 +52,7 @@ namespace FPMAS::api::model {
 
 	class Model {
 		public:
-			typedef api::graph::parallel::DistributedGraph<Agent*> AgentGraph;
+			typedef api::graph::parallel::DistributedGraph<AgentPtr> AgentGraph;
 
 			virtual AgentGraph& graph() = 0;
 			virtual api::scheduler::Scheduler& scheduler() = 0;

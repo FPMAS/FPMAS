@@ -1,13 +1,15 @@
-#ifndef PTR_WRAPPER_H
-#define PTR_WRAPPER_H
+#ifndef PTR_WRAPPER_API_H
+#define PTR_WRAPPER_API_H
 
-namespace FPMAS::utils {
+namespace FPMAS::api::utils {
 
 	template<typename VirtualType>
 	class VirtualPtrWrapper {
 		private:
 			 VirtualType* virtual_type_ptr;
 		public:
+			 VirtualPtrWrapper()
+				 : virtual_type_ptr(nullptr) {};
 			 VirtualPtrWrapper(VirtualType* virtual_type_ptr)
 				 : virtual_type_ptr(virtual_type_ptr) {}
 
@@ -34,6 +36,5 @@ namespace FPMAS::utils {
 				 return virtual_type_ptr;
 			 }
 	};
-
 }
 #endif

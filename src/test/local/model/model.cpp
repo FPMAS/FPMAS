@@ -28,10 +28,10 @@ using FPMAS::model::Model;
 using FPMAS::model::AgentGroup;
 using FPMAS::model::AgentTask;
 
-typedef FPMAS::api::model::Agent* AgentPtr;
+typedef FPMAS::api::utils::VirtualPtrWrapper<FPMAS::api::model::Agent> AgentPtr;
 
 TEST(AgentTaskTest, build) {
-	MockAgent agent;
+	MockAgent<> agent;
 	MockDistributedNode<AgentPtr> node;
 
 	AgentTask agent_task {agent};
@@ -47,7 +47,7 @@ TEST(AgentTaskTest, build) {
 }
 
 TEST(AgentTaskTest, run) {
-	MockAgent agent;
+	MockAgent<> agent;
 	AgentTask agent_task {agent};
 
 	EXPECT_CALL(agent, act);
@@ -67,7 +67,7 @@ class ModelTest : public ::testing::Test {
 
 		typedef
 		FPMAS::api::utils::Callback<
-			FPMAS::api::graph::parallel::DistributedNode<FPMAS::api::model::Agent*>*>
+			FPMAS::api::graph::parallel::DistributedNode<AgentPtr>*>
 			NodeCallback;
 		NodeCallback* insert_node_callback;
 		NodeCallback* erase_node_callback;
@@ -88,7 +88,7 @@ class ModelTest : public ::testing::Test {
 			EXPECT_CALL(graph, addCallOnSetDistant(
 					WhenDynamicCastTo<FPMAS::model::SetDistantNodeCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&set_distant_callback));
-			model = new Model(graph, load_balancing);
+			model = new Model(graph, scheduler, runtime, load_balancing);
 		}
 
 		void TearDown() override {
@@ -121,7 +121,7 @@ TEST_F(ModelTest, load_balancing_job) {
 
 class AgentGroupTest : public ::testing::Test {
 	public:
-		typedef FPMAS::api::graph::parallel::DistributedNode<FPMAS::api::model::Agent*> Node;
+		typedef FPMAS::api::graph::parallel::DistributedNode<AgentPtr> Node;
 	protected:
 		MockModel model;
 		FPMAS::model::InsertNodeCallback insert_node_callback {model};
@@ -137,11 +137,11 @@ class AgentGroupTest : public ::testing::Test {
 		MockDistributedNode<AgentPtr> node2 {{0, 2}};
 
 		AgentGroup agent_group {10, graph, FPMAS::JID(18)};
-		MockAgent* agent1 = new MockAgent;
-		MockAgent*& agent_1_ref = agent1;
+		MockAgent<>* agent1 = new MockAgent<>;
+		MockAgent<>*& agent_1_ref = agent1;
 
 		FPMAS::api::model::AgentTask* agent1_task;
-		MockAgent*const agent2 = new MockAgent;
+		MockAgent<>* agent2 = new MockAgent<>;
 		FPMAS::api::model::AgentTask* agent2_task;
 
 		FPMAS::scheduler::Scheduler scheduler;
@@ -215,7 +215,7 @@ TEST_F(AgentGroupTest, job_end) {
 
 class MockBuildNode {
 	private:
-		typedef FPMAS::api::graph::parallel::DistributedGraph<FPMAS::api::model::Agent*>
+		typedef FPMAS::api::graph::parallel::DistributedGraph<AgentPtr>
 			Graph;
 		Graph* graph;
 		typename AgentGroupTest::Node* node;
@@ -235,7 +235,7 @@ TEST_F(AgentGroupTest, add_agent) {
 	EXPECT_CALL(*agent2, setTask).Times(1);
 	// Agent 1 set up
 	MockBuildNode build_node_1 {&graph, &node1};
-	EXPECT_CALL(graph, buildNode(TypedEq<FPMAS::api::model::Agent*const&>(agent1)))
+	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent1)))
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_1),
 			Return(&node1)));
@@ -245,7 +245,7 @@ TEST_F(AgentGroupTest, add_agent) {
 
 	// Agent 2 set up
 	MockBuildNode build_node_2 {&graph, &node2};
-	EXPECT_CALL(graph, buildNode(TypedEq<FPMAS::api::model::Agent*const&>(agent2)))
+	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent2)))
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_2),
 			Return(&node1)));
@@ -263,14 +263,14 @@ TEST_F(AgentGroupTest, agent_task) {
 	EXPECT_CALL(*agent2, setTask).Times(1);
 
 	MockBuildNode build_node_1 {&graph, &node1};
-	EXPECT_CALL(graph, buildNode(TypedEq<FPMAS::api::model::Agent*const&>(agent1)))
+	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent1)))
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_1),
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode);
 
 	MockBuildNode build_node_2 {&graph, &node2};
-	EXPECT_CALL(graph, buildNode(TypedEq<FPMAS::api::model::Agent*const&>(agent2)))
+	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent2)))
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_2),
 			Return(&node2)));

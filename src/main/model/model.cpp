@@ -11,7 +11,6 @@ namespace FPMAS::model {
 	}
 
 	void AgentGroup::add(api::model::Agent* agent) {
-		//AgentTask*& task = agent_tasks.emplace_back(new AgentTask(*agent));
 		agent_graph.buildNode(agent);
 	}
 
@@ -19,14 +18,14 @@ namespace FPMAS::model {
 		agent_graph.removeNode(agent->node());
 	}
 
-	void InsertNodeCallback::call(api::graph::parallel::DistributedNode<api::model::Agent *> *node) {
-		api::model::Agent*& agent = node->data();
+	void InsertNodeCallback::call(AgentNode *node) {
+		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(-1, "[INSERT_NODE_CALLBACK]", "Inserting agent %s in graph.", ID_C_STR(node->getId()));
 		agent->setNode(node);
 		agent->setTask(new AgentTask(*agent));
 	}
 
-	void EraseNodeCallback::call(api::graph::parallel::DistributedNode<api::model::Agent *> *node) {
+	void EraseNodeCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(-1, "[ERASE_NODE_CALLBACK]", "Erasing agent %s from graph.", ID_C_STR(node->getId()));
 		// Deletes task and agent
@@ -39,21 +38,26 @@ namespace FPMAS::model {
 		delete agent;
 	}
 
-	void SetLocalNodeCallback::call(api::graph::parallel::DistributedNode<api::model::Agent *> *node) {
+	void SetLocalNodeCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(-1, "[SET_LOCAL_NODE_CALLBACK]", "Setting agent %s LOCAL.", ID_C_STR(node->getId()));
 		model.getGroup(agent->groupId()).job().add(*agent->task());
 	}
 
-	void SetDistantNodeCallback::call(api::graph::parallel::DistributedNode<api::model::Agent *> *node) {
+	void SetDistantNodeCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(-1, "[SET_DISTANT_NODE_CALLBACK]", "Setting agent %s DISTANT.", ID_C_STR(node->getId()));
 		// Unschedule agent task 
 		model.getGroup(agent->groupId()).job().remove(*agent->task());
 	}
 
-	Model::Model(AgentGraph& graph, LoadBalancingAlgorithm& load_balancing)
-		: gid(0), _graph(graph), _runtime(_scheduler), _loadBalancingJob(LB_JID), load_balancing_task(_graph, load_balancing, _scheduler, _runtime) {
+	Model::Model(
+			AgentGraph& graph,
+			api::scheduler::Scheduler& scheduler,
+			api::runtime::Runtime& runtime,
+			LoadBalancingAlgorithm& load_balancing)
+		: gid(0), _graph(graph), _scheduler(scheduler), _runtime(runtime), _loadBalancingJob(LB_JID),
+		load_balancing_task(_graph, load_balancing, _scheduler, _runtime) {
 			_loadBalancingJob.add(load_balancing_task);
 			_graph.addCallOnInsertNode(insert_node_callback);
 			_graph.addCallOnEraseNode(erase_node_callback);

@@ -3,9 +3,9 @@
 
 #include "api/graph/parallel/distributed_node.h"
 #include "api/synchro/mutex.h"
+#include "api/utils/ptr_wrapper.h"
 #include "graph/base/node.h"
 #include "graph/parallel/distributed_arc.h"
-#include "utils/ptr_wrapper.h"
 
 namespace FPMAS::graph::parallel {
 
@@ -66,7 +66,7 @@ namespace FPMAS::graph::parallel {
 	};
 
 	template<typename T>
-	using NodePtrWrapper = FPMAS::utils::VirtualPtrWrapper<FPMAS::api::graph::parallel::DistributedNode<T>>;
+	using NodePtrWrapper = FPMAS::api::utils::VirtualPtrWrapper<FPMAS::api::graph::parallel::DistributedNode<T>>;
 }
 
 namespace nlohmann {

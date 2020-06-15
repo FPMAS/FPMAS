@@ -6,6 +6,7 @@ set(SOURCES
 	synchro/hard/termination.cpp
 	synchro/hard/hard_sync_mode.cpp
 	load_balancing/zoltan_load_balancing.cpp
+	model/model.cpp
 	)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
