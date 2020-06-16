@@ -96,7 +96,7 @@ namespace FPMAS::graph::parallel {
 				this->arc_id = DistributedId(mpi_communicator.getRank(), 0);
 			}
 
-			const communicator& getMpiCommunicator() const {
+			const communicator& getMpiCommunicator() const override {
 				return mpi_communicator;
 			};
 			communicator& getMpiCommunicator() {
@@ -106,8 +106,8 @@ namespace FPMAS::graph::parallel {
 			const mpi<NodePtrWrapper<T>>& getNodeMpi() const {return node_mpi;}
 			const mpi<ArcPtrWrapper<T>>& getArcMpi() const {return arc_mpi;}
 
-			void clear(ArcType*) override;
-			void clear(NodeType*) override;
+			void clearArc(ArcType*) override;
+			void clearNode(NodeType*) override;
 
 			NodeType* importNode(NodeType* node) override;
 			ArcType* importArc(ArcType* arc) override;
@@ -121,19 +121,39 @@ namespace FPMAS::graph::parallel {
 			void unlink(ArcType*) override;
 
 			void balance(api::load_balancing::LoadBalancing<T>& load_balancing) override {
+				FPMAS_LOGI(
+						getMpiCommunicator().getRank(), "LB",
+						"Balancing graph (%lu nodes, %lu arcs)",
+						this->getNodes().size(), this->getArcs().size());
+
 				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
 				for(auto node : this->getNodes()) {
 					node_map.insert(node);
 				}
 				this->distribute(load_balancing.balance(node_map));
+
+				FPMAS_LOGI(
+						getMpiCommunicator().getRank(), "LB",
+						"Graph balanced : %lu nodes, %lu arcs",
+						this->getNodes().size(), this->getArcs().size());
 			};
 
 			void balance(api::load_balancing::FixedVerticesLoadBalancing<T>& load_balancing, PartitionMap fixed_nodes) override {
+				FPMAS_LOGI(
+						getMpiCommunicator().getRank(), "LB",
+						"Balancing graph (%lu nodes, %lu arcs)",
+						this->getNodes().size(), this->getArcs().size());
+
 				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
 				for(auto node : this->getNodes()) {
 					node_map.insert(node);
 				}
 				this->distribute(load_balancing.balance(node_map, fixed_nodes));
+
+				FPMAS_LOGI(
+						getMpiCommunicator().getRank(), "LB",
+						"Graph balanced : %lu nodes, %lu arcs",
+						this->getNodes().size(), this->getArcs().size());
 			};
 
 			void distribute(PartitionMap partition) override;
@@ -191,7 +211,7 @@ namespace FPMAS::graph::parallel {
 		//
 		// "clear" functions should globally be improved : what about a custom
 		// GarbageCollector for the graph?
-		this->clear(arc);
+		this->clearArc(arc);
 	}
 
 	template<DIST_GRAPH_PARAMS>
@@ -453,7 +473,7 @@ namespace FPMAS::graph::parallel {
 					"DIST_GRAPH", "Clear node %s",
 					ID_C_STR(node->getId())
 					);
-				clear(node);
+				clearNode(node);
 			}
 			location_manager.updateLocations(imported_nodes);
 			sync_mode_runtime.getDataSync().synchronize();
@@ -468,21 +488,21 @@ namespace FPMAS::graph::parallel {
 
 	template<DIST_GRAPH_PARAMS>
 		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
-		::clear(ArcType* arc) {
+		::clearArc(ArcType* arc) {
 			auto src = arc->getSourceNode();
 			auto tgt = arc->getTargetNode();
 			this->erase(arc);
 			if(src->state() == LocationState::DISTANT) {
-				this->clear(src);
+				this->clearNode(src);
 			}
 			if(tgt->state() == LocationState::DISTANT) {
-				this->clear(tgt);
+				this->clearNode(tgt);
 			}
 		}
 
 	template<DIST_GRAPH_PARAMS>
 	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
-		::clear(NodeType* node) {
+		::clearNode(NodeType* node) {
 			bool eraseNode = true;
 			std::set<ArcType*> obsoleteArcs;
 			for(auto arc : node->getIncomingArcs()) {

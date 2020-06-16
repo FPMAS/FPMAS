@@ -74,6 +74,8 @@ namespace FPMAS::graph::base {
 				const ArcType* getArc(ArcIdType) const override;
 				const ArcMap& getArcs() const override;
 
+				void clear() override;
+
 				virtual ~Graph();
 	};
 
@@ -189,7 +191,7 @@ namespace FPMAS::graph::base {
 			}
 
 	template<GRAPH_PARAMS>
-		Graph<GRAPH_PARAMS_SPEC>::~Graph() {
+		void Graph<GRAPH_PARAMS_SPEC>::clear() {
 			// This is VERY hacky.
 			std::vector<ArcType*> arcs;
 			for(auto arc : this->arcs)
@@ -206,7 +208,11 @@ namespace FPMAS::graph::base {
 			for(auto node : nodes) {
 				erase(node);
 			}
+		}
 
+	template<GRAPH_PARAMS>
+		Graph<GRAPH_PARAMS_SPEC>::~Graph() {
+			clear();
 			for(auto callback : insert_node_callbacks)
 				delete callback;
 			for(auto callback : erase_node_callbacks)

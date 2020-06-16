@@ -17,6 +17,7 @@ namespace FPMAS::api::model {
 	class Agent {
 		public:
 			virtual GroupId groupId() const = 0;
+			virtual void setGroupId(GroupId) = 0;
 			virtual TypeId typeId() const = 0;
 
 			virtual AgentNode* node() = 0;

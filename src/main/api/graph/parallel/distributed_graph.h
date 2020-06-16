@@ -26,6 +26,7 @@ namespace FPMAS::api::graph::parallel {
 			typedef api::utils::Callback<DistributedNode<T>*> NodeCallback;
 
 		public:
+			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
 			virtual const LocationManager<T>& getLocationManager() const = 0;
 
 			virtual DistributedNode<T>* importNode(DistributedNode<T>*) = 0;
@@ -39,8 +40,8 @@ namespace FPMAS::api::graph::parallel {
 
 			virtual DistributedArc<T>* link(DistributedNode<T>*, DistributedNode<T>*, LayerIdType) = 0;
 
-			virtual void clear(DistributedArc<T>*) = 0;
-			virtual void clear(DistributedNode<T>*) = 0;
+			virtual void clearArc(DistributedArc<T>*) = 0;
+			virtual void clearNode(DistributedNode<T>*) = 0;
 
 			virtual void balance(api::load_balancing::LoadBalancing<T>&) = 0;
 			virtual void balance(api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap fixed_nodes) = 0;

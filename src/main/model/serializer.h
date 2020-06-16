@@ -20,6 +20,7 @@ namespace FPMAS::model {
 		void to_json(nlohmann::json& j, const AgentPtr& ptr) {
 			if(ptr->typeId() == Type::TYPE_ID) {
 				j["type"] = Type::TYPE_ID;
+				j["gid"] = ptr->groupId();
 				j["agent"] = TypedAgentPtr<Type>(const_cast<Type*>(static_cast<const Type*>(ptr.get())));
 			} else {
 				to_json<AgentTypes...>(j, ptr);
@@ -38,6 +39,7 @@ namespace FPMAS::model {
 			FPMAS::api::model::TypeId id = j.at("type").get<FPMAS::api::model::TypeId>();
 			if(id == Type::TYPE_ID) {
 				ptr = AgentPtr(j.at("agent").get<TypedAgentPtr<Type>>());
+				ptr->setGroupId(j.at("gid").get<FPMAS::api::model::GroupId>());
 			} else {
 				from_json<AgentTypes...>(j, ptr);
 			}

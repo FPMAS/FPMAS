@@ -184,7 +184,7 @@ namespace FPMAS::synchro {
 					for(DistributedId id : importList.second) {
 						if(graph.getArcs().count(id) > 0) {
 							auto arc = graph.getArc(id);
-							graph.clear(arc);
+							graph.clearArc(arc);
 						}
 					}
 				}

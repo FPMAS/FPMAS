@@ -11,4 +11,17 @@
 
 #define SYNC_MODE template<typename> class S
 
+#define FPMAS_DEFAULT_JSON(AGENT) \
+	namespace nlohmann {\
+		template<>\
+			struct adl_serializer<FPMAS::api::utils::VirtualPtrWrapper<AGENT>> {\
+				static void to_json(json& j, const FPMAS::api::utils::VirtualPtrWrapper<AGENT>& data) {\
+				}\
+\
+				static void from_json(const json& j, FPMAS::api::utils::VirtualPtrWrapper<AGENT>& ptr) {\
+					ptr = FPMAS::api::utils::VirtualPtrWrapper<AGENT>(new AGENT);\
+				}\
+			};\
+	}\
+
 #endif

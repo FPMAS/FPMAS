@@ -5,6 +5,7 @@
 #include "../mocks/graph/parallel/mock_distributed_graph.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/model/mock_model.h"
+#include "../mocks/communication/mock_communication.h"
 
 using ::testing::A;
 using ::testing::An;
@@ -92,6 +93,7 @@ class ModelTest : public ::testing::Test {
 		}
 
 		void TearDown() override {
+			EXPECT_CALL(graph, clear);
 			delete model;
 			// Would normally be deleted by ~Graph()
 			delete insert_node_callback;
@@ -114,6 +116,12 @@ TEST_F(ModelTest, build_group) {
 
 TEST_F(ModelTest, load_balancing_job) {
 	scheduler.schedule(0, model->loadBalancingJob());
+	
+	MockMpiCommunicator<4, 10> mock_comm;
+	EXPECT_CALL(graph, getMpiCommunicator()).Times(AnyNumber())
+		.WillRepeatedly(ReturnRef(mock_comm));
+	EXPECT_CALL(graph, getNodes).Times(AnyNumber());
+	EXPECT_CALL(graph, getArcs).Times(AnyNumber());
 
 	EXPECT_CALL(graph, balance(Ref(load_balancing)));
 	runtime.run(1);
@@ -231,8 +239,11 @@ class MockBuildNode {
 };
 
 TEST_F(AgentGroupTest, add_agent) {
-	EXPECT_CALL(*agent1, setTask).Times(1);
-	EXPECT_CALL(*agent2, setTask).Times(1);
+	EXPECT_CALL(*agent1, setTask);
+	EXPECT_CALL(*agent1, setGroupId(10));
+	EXPECT_CALL(*agent2, setTask);
+	EXPECT_CALL(*agent2, setGroupId(10));
+
 	// Agent 1 set up
 	MockBuildNode build_node_1 {&graph, &node1};
 	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent1)))
@@ -259,8 +270,10 @@ TEST_F(AgentGroupTest, add_agent) {
 }
 
 TEST_F(AgentGroupTest, agent_task) {
-	EXPECT_CALL(*agent1, setTask).Times(1);
-	EXPECT_CALL(*agent2, setTask).Times(1);
+	EXPECT_CALL(*agent1, setTask);
+	EXPECT_CALL(*agent1, setGroupId(10));
+	EXPECT_CALL(*agent2, setTask);
+	EXPECT_CALL(*agent2, setGroupId(10));
 
 	MockBuildNode build_node_1 {&graph, &node1};
 	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent1)))

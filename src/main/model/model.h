@@ -14,6 +14,32 @@ namespace FPMAS::model {
 	using api::model::AgentNode;
 	using api::model::AgentPtr;
 
+	template<api::model::TypeId _TYPE_ID>
+	class AgentBase : public api::model::Agent {
+		public:
+			inline static const api::model::TypeId TYPE_ID = _TYPE_ID;
+
+		private:
+			api::model::AgentTask* _task;
+			api::model::AgentNode* _node;
+			api::model::GroupId group_id;
+		public:
+			api::model::GroupId groupId() const override {return group_id;}
+			void setGroupId(api::model::GroupId group_id) override {this->group_id = group_id;}
+
+			api::model::TypeId typeId() const override {return TYPE_ID;}
+
+			api::model::AgentNode* node() override {return _node;}
+			const api::model::AgentNode* node() const override {return _node;}
+			void setNode(api::model::AgentNode* node) override {_node = node;}
+
+			api::model::AgentTask* task() override {return _task;}
+			const api::model::AgentTask* task() const override {return _task;}
+			void setTask(api::model::AgentTask* task) override {_task = task;}
+
+			virtual ~AgentBase() {}
+	};
+
 	class AgentTask : public api::model::AgentTask {
 		private:
 			api::model::Agent& _agent;
@@ -195,5 +221,6 @@ namespace FPMAS::model {
 
 	typedef load_balancing::ZoltanLoadBalancing<AgentPtr> ZoltanLoadBalancing;
 	typedef load_balancing::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;
+	typedef api::utils::Callback<AgentNode*> AgentNodeCallback;
 }
 #endif

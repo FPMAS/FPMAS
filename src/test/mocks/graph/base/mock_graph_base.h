@@ -40,5 +40,6 @@ class MockGraph :
 			MOCK_METHOD(void, removeNode, (NodeType*), (override));
 			MOCK_METHOD(void, unlink, (ArcType*), (override));
 
+			MOCK_METHOD(void, clear, (), (override));
 };
 #endif

@@ -23,6 +23,8 @@ class MockDistributedGraph :
 		using typename GraphBase::LayerIdType;
 		using typename GraphBase::NodeCallback;
 
+		MOCK_METHOD(const FPMAS::api::communication::MpiCommunicator&,
+				getMpiCommunicator, (), (const, override));
 		MOCK_METHOD(
 				const FPMAS::api::graph::parallel::LocationManager<T>&,
 				getLocationManager, (), (const, override));
@@ -39,8 +41,8 @@ class MockDistributedGraph :
 
 		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
 		MOCK_METHOD(ArcType*, importArc, (ArcType*), (override));
-		MOCK_METHOD(void, clear, (ArcType*), (override));
-		MOCK_METHOD(void, clear, (NodeType*), (override));
+		MOCK_METHOD(void, clearArc, (ArcType*), (override));
+		MOCK_METHOD(void, clearNode, (NodeType*), (override));
 
 		MOCK_METHOD(void, balance, (FPMAS::api::load_balancing::LoadBalancing<T>&), (override));
 		MOCK_METHOD(void, balance, (FPMAS::api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap), (override));

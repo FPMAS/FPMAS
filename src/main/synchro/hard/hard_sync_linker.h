@@ -53,7 +53,7 @@ namespace FPMAS::synchro::hard {
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
 				DistributedId unlinkId = id_mpi.recv(&req_status);
 				FPMAS_LOGD(this->comm.getRank(), "RECV", "unlink request %s from %i", ID_C_STR(unlinkId), req_status.MPI_SOURCE);
-				graph.clear(graph.getArc(unlinkId));
+				graph.clearArc(graph.getArc(unlinkId));
 			}
 		}
 

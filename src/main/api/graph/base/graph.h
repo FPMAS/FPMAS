@@ -66,6 +66,8 @@ namespace FPMAS::api::graph::base {
 			void unlink(const ArcIdType& id) {
 				this->unlink(this->getArc(id));
 			}
+
+			virtual void clear() = 0;
 		
 			virtual ~Graph() {}
 	};
