@@ -19,18 +19,18 @@ namespace FPMAS::model {
 		agent_graph.removeNode(agent->node());
 	}
 
-	void InsertNodeCallback::call(AgentNode *node) {
+	void InsertAgentCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
-				"[INSERT_NODE_CALLBACK]", "Inserting agent %s in graph.", ID_C_STR(node->getId()));
+				"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", ID_C_STR(node->getId()));
 		agent->setNode(node);
 		agent->setTask(new AgentTask(*agent));
 	}
 
-	void EraseNodeCallback::call(AgentNode *node) {
+	void EraseAgentCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
-				"[ERASE_NODE_CALLBACK]", "Erasing agent %s from graph.", ID_C_STR(node->getId()));
+				"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", ID_C_STR(node->getId()));
 		// Deletes task and agent
 		if(node->state() == graph::parallel::LocationState::LOCAL) {
 			// Unschedule agent task. If the node is DISTANT, task was already
@@ -38,20 +38,19 @@ namespace FPMAS::model {
 			model.getGroup(agent->groupId()).job().remove(*agent->task());
 		}
 		delete agent->task();
-		//delete agent;
 	}
 
-	void SetLocalNodeCallback::call(AgentNode *node) {
+	void SetAgentLocalCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
-				"[SET_LOCAL_NODE_CALLBACK]", "Setting agent %s LOCAL.", ID_C_STR(node->getId()));
+				"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", ID_C_STR(node->getId()));
 		model.getGroup(agent->groupId()).job().add(*agent->task());
 	}
 
-	void SetDistantNodeCallback::call(AgentNode *node) {
+	void SetAgentDistantCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
-				"[SET_DISTANT_NODE_CALLBACK]", "Setting agent %s DISTANT.", ID_C_STR(node->getId()));
+				"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", ID_C_STR(node->getId()));
 		// Unschedule agent task 
 		model.getGroup(agent->groupId()).job().remove(*agent->task());
 	}

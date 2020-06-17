@@ -84,10 +84,6 @@ namespace FPMAS::model {
 
 		public:
 			AgentGroup(GroupId group_id, AgentGraph& agent_graph, JID job_id);
-			//AgentGroup(const AgentGroup&) = delete;
-			//AgentGroup(AgentGroup&&) = delete;
-			//AgentGroup& operator=(const AgentGroup&) = delete;
-			//AgentGroup& operator=(AgentGroup&&) = delete;
 
 			GroupId groupId() const override {return id;}
 
@@ -95,8 +91,6 @@ namespace FPMAS::model {
 			void remove(api::model::Agent*) override;
 			scheduler::Job& job() override {return _job;}
 			const scheduler::Job& job() const override {return _job;}
-
-			//~AgentGroup();
 	};
 
 	class LoadBalancingTask : public api::scheduler::Task {
@@ -124,42 +118,42 @@ namespace FPMAS::model {
 			void run() override;
 	};
 
-	class InsertNodeCallback 
+	class InsertAgentCallback 
 		: public api::utils::Callback<AgentNode*> {
 			  private:
 				  api::model::Model& model;
 			  public:
-				  InsertNodeCallback(api::model::Model& model) : model(model) {}
+				  InsertAgentCallback(api::model::Model& model) : model(model) {}
 
 				  void call(AgentNode* node) override;
 		  };
 
-	class EraseNodeCallback 
+	class EraseAgentCallback 
 		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
-				EraseNodeCallback(api::model::Model& model) : model(model) {}
+				EraseAgentCallback(api::model::Model& model) : model(model) {}
 
 				void call(AgentNode* node) override;
 		};
 
-	class SetLocalNodeCallback
+	class SetAgentLocalCallback
 		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
-				SetLocalNodeCallback(api::model::Model& model) : model(model) {}
+				SetAgentLocalCallback(api::model::Model& model) : model(model) {}
 
 				void call(AgentNode* node) override;
 		};
 
-	class SetDistantNodeCallback
+	class SetAgentDistantCallback
 		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
-				SetDistantNodeCallback(api::model::Model& model) : model(model) {}
+				SetAgentDistantCallback(api::model::Model& model) : model(model) {}
 
 				void call(AgentNode* node) override;
 		};
@@ -175,10 +169,10 @@ namespace FPMAS::model {
 			api::runtime::Runtime& _runtime;
 			scheduler::Job _loadBalancingJob;
 			LoadBalancingTask load_balancing_task;
-			InsertNodeCallback* insert_node_callback = new InsertNodeCallback(*this);
-			EraseNodeCallback* erase_node_callback = new EraseNodeCallback(*this);
-			SetLocalNodeCallback* set_local_callback = new SetLocalNodeCallback(*this);
-			SetDistantNodeCallback* set_distant_callback = new SetDistantNodeCallback(*this);
+			InsertAgentCallback* insert_node_callback = new InsertAgentCallback(*this);
+			EraseAgentCallback* erase_node_callback = new EraseAgentCallback(*this);
+			SetAgentLocalCallback* set_local_callback = new SetAgentLocalCallback(*this);
+			SetAgentDistantCallback* set_distant_callback = new SetAgentDistantCallback(*this);
 
 			std::unordered_map<GroupId, api::model::AgentGroup*> _groups;
 			
