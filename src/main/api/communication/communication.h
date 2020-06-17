@@ -121,6 +121,9 @@ namespace FPMAS::api::communication {
 			virtual std::unordered_map<int, DataPack>
 				allToAll(std::unordered_map<int, DataPack>, MPI_Datatype datatype) = 0;
 
+			virtual std::vector<DataPack>
+				gather(DataPack, MPI_Datatype datatype, int root) = 0;
+
 			virtual ~MpiCommunicator() {};
 	};
 
@@ -129,6 +132,8 @@ namespace FPMAS::api::communication {
 		public:
 			virtual std::unordered_map<int, std::vector<T>>
 				migrate(std::unordered_map<int, std::vector<T>> exportMap) = 0;
+			virtual std::vector<T>
+				gather(const T&, int root) = 0;
 
 			virtual void send(const T&, int destination, int tag) = 0;
 			virtual void Issend(const T&, int destination, int tag, MPI_Request* req) = 0;

@@ -41,6 +41,8 @@ class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
 		MOCK_METHOD(
 			(std::unordered_map<int, FPMAS::api::communication::DataPack>), allToAll,
 			((std::unordered_map<int, FPMAS::api::communication::DataPack>), MPI_Datatype), (override));
+		MOCK_METHOD(std::vector<FPMAS::api::communication::DataPack>, gather, 
+				(FPMAS::api::communication::DataPack, MPI_Datatype, int), (override));
 };
 
 template<typename T>
@@ -56,6 +58,7 @@ class MockMpi : public FPMAS::api::communication::TypedMpi<T> {
 			((std::unordered_map<int, std::vector<T>>)),
 			(override)
 			);
+		MOCK_METHOD(std::vector<T>, gather, (const T&, int), (override));
 		MOCK_METHOD(void, send, (const T&, int, int), (override));
 		MOCK_METHOD(void, Issend, (const T&, int, int, MPI_Request*), (override));
 		MOCK_METHOD(T, recv, (MPI_Status*), (override));

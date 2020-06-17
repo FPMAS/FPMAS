@@ -75,6 +75,8 @@ namespace FPMAS {
 
 				std::unordered_map<int, DataPack> 
 					allToAll(std::unordered_map<int, DataPack> data_pack, MPI_Datatype datatype) override;
+				std::vector<DataPack>
+					gather(DataPack, MPI_Datatype, int root) override;
 
 				~MpiCommunicator();
 
@@ -89,6 +91,7 @@ namespace FPMAS {
 
 					std::unordered_map<int, std::vector<T>>
 						migrate(std::unordered_map<int, std::vector<T>> exportMap) override;
+					std::vector<T> gather(const T&, int root) override;
 
 					void send(const T&, int, int) override;
 					void Issend(const T&, int, int, MPI_Request*) override;
@@ -101,10 +104,10 @@ namespace FPMAS {
 				std::unordered_map<int, DataPack> export_data_pack;
 				for(auto item : exportMap) {
 					std::string str = nlohmann::json(item.second).dump();
-					DataPack dataPack (str.size(), sizeof(char));
-					std::memcpy(dataPack.buffer, str.data(), str.size() * sizeof(char));
+					DataPack data_pack (str.size(), sizeof(char));
+					std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
 
-					export_data_pack[item.first] = dataPack;
+					export_data_pack[item.first] = data_pack;
 				}
 
 				std::unordered_map<int, DataPack> import_data_pack
@@ -120,6 +123,22 @@ namespace FPMAS {
 						.get<std::vector<T>>();
 				}
 				return importMap;
+			}
+		template<typename T> std::vector<T>
+			TypedMpi<T>::gather(const T& data, int root) {
+				// Pack
+				std::string str = nlohmann::json(data).dump();
+				DataPack data_pack (str.size(), sizeof(char));
+				std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
+
+				std::vector<DataPack> import_data_pack = comm.gather(data_pack, MPI_CHAR, root);
+
+				std::vector<T> import_data;
+				for(auto item : import_data_pack) {
+					std::string import = std::string((char*) item.buffer, item.count);
+					import_data.push_back(nlohmann::json::parse(import).get<T>());
+				}
+				return import_data;
 			}
 
 		template<typename T>

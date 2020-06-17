@@ -7,7 +7,7 @@ using ::testing::IsEmpty;
 using FPMAS::communication::MpiCommunicator;
 using FPMAS::communication::TypedMpi;
 
-TEST(Mpi_MpiCommunicatorTest, size_test) {
+TEST(MpiMpiCommunicatorTest, size_test) {
 	MpiCommunicator comm;
 
 	int size;
@@ -15,7 +15,7 @@ TEST(Mpi_MpiCommunicatorTest, size_test) {
 	ASSERT_EQ(size, comm.getSize());
 }
 
-TEST(Mpi_MpiCommunicatorTest, rank_test) {
+TEST(MpiMpiCommunicatorTest, rank_test) {
 	MpiCommunicator comm;
 
 	int rank;
@@ -23,7 +23,7 @@ TEST(Mpi_MpiCommunicatorTest, rank_test) {
 	ASSERT_EQ(rank, comm.getRank());
 }
 
-TEST(Mpi_MpiCommunicatorTest, build_from_ranks_test) {
+TEST(MpiMpiCommunicatorTest, build_from_ranks_test) {
 	int global_size;
 	MPI_Comm_size(MPI_COMM_WORLD, &global_size);
 
@@ -70,7 +70,7 @@ TEST(Mpi_MpiCommunicatorTest, build_from_ranks_test) {
 
 }
 
-TEST(Mpi_MpiCommunicatorTest, probe_any_source) {
+TEST(MpiMpiCommunicatorTest, probe_any_source) {
 	MpiCommunicator comm;
 	if(comm.getSize() > 1) {
 		if(comm.getRank() == 0) {
@@ -97,7 +97,7 @@ TEST(Mpi_MpiCommunicatorTest, probe_any_source) {
 	}
 }
 
-TEST(Mpi_MigrationTest, simple_migration_test) {
+TEST(MpiMigrationTest, simple_migration_test) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 	
@@ -118,7 +118,7 @@ TEST(Mpi_MigrationTest, simple_migration_test) {
 // Each proc :
 //   - sends the same amount of data to all others
 //   - receives different amount of data from each proc
-TEST(Mpi_MigrationTest, variable_recv_size_migration) {
+TEST(MpiMigrationTest, variable_recv_size_migration) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 
@@ -143,7 +143,7 @@ TEST(Mpi_MigrationTest, variable_recv_size_migration) {
 // Each proc: 
 //   - sends different amount of data to each proc
 //   - receives the same amount of data from other
-TEST(Mpi_MigrationTest, variable_send_size_migration) {
+TEST(MpiMigrationTest, variable_send_size_migration) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 
@@ -167,6 +167,21 @@ TEST(Mpi_MigrationTest, variable_send_size_migration) {
 		}
 
 	}
+}
 
+TEST(MpiGatherTest, gather) {
+	MpiCommunicator comm;
+	TypedMpi<int> mpi {comm};
 
+	int local_data = (comm.getRank()+1) * 10;
+	std::vector<int> data = mpi.gather(local_data, comm.getSize() - 1);
+
+	if(comm.getRank() != comm.getSize() - 1) {
+		ASSERT_THAT(data, IsEmpty());
+	} else {
+		int sum = 0;
+		for(auto i : data)
+			sum+=i;
+		ASSERT_EQ(sum, 10*(comm.getSize() * (comm.getSize() + 1)/2));
+	}
 }

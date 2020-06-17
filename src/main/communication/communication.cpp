@@ -190,10 +190,6 @@ namespace FPMAS::communication {
 		MpiCommunicator::allToAll (
 				std::unordered_map<int, DataPack> 
 				data_pack, MPI_Datatype datatype) {
-
-			int data_size;
-			MPI_Type_size(datatype, &data_size);
-
 			// Migrate
 			int* sendcounts = (int*) std::malloc(getSize()*sizeof(int));
 			int* sdispls = (int*) std::malloc(getSize()*sizeof(int));
@@ -241,7 +237,7 @@ namespace FPMAS::communication {
 			std::unordered_map<int, DataPack> imported_data_pack;
 			for (int i = 0; i < getSize(); i++) {
 				if(recvcounts[i] > 0) {
-					imported_data_pack[i] = DataPack(recvcounts[i], data_size);
+					imported_data_pack[i] = DataPack(recvcounts[i], type_size);
 					DataPack& dataPack = imported_data_pack[i];
 
 					std::memcpy(dataPack.buffer, &((char*) recv_buffer)[rdispls[i]], dataPack.size);
@@ -257,6 +253,63 @@ namespace FPMAS::communication {
 			std::free(recv_buffer);
 			return imported_data_pack;
 		}
+
+	std::vector<DataPack> MpiCommunicator::gather(DataPack data, MPI_Datatype type, int root) {
+
+			int type_size;
+			MPI_Type_size(type, &type_size);
+
+
+			void* send_buffer = std::malloc(data.count * type_size);
+			std::memcpy(&((char*) send_buffer)[0], data.buffer, data.size);
+			
+			
+			int* size_buffer;
+			//int recv_size_count = 0;
+			if(getRank() == root) {
+				//recv_size_count = getSize();
+				size_buffer = (int*) std::malloc(getSize() * sizeof(int));
+			} else {
+				size_buffer = (int*) std::malloc(0);
+			}
+
+			MPI_Gather(&data.count, 1, MPI_INT, size_buffer, 1, MPI_INT, root, comm);
+
+			int* recvcounts;
+			int* rdispls;
+			int current_rdispls = 0;
+			if(getRank() == root) {
+				recvcounts = (int*) std::malloc(getSize()*sizeof(int));
+				rdispls = (int*) std::malloc(getSize()*sizeof(int));
+				for (int i = 0; i < getSize(); i++) {
+					recvcounts[i] = size_buffer[i];
+					rdispls[i] = current_rdispls;
+					current_rdispls += recvcounts[i];
+				}
+			} else {
+				recvcounts = (int*) std::malloc(0);
+				rdispls = (int*) std::malloc(0);
+			}
+			void* recv_buffer = std::malloc(current_rdispls * type_size);
+
+			MPI_Gatherv(send_buffer, data.count, type, recv_buffer, recvcounts, rdispls, type, root, comm);
+
+			std::vector<DataPack> imported_data_pack;
+			if(getRank() == root) {
+				for (int i = 0; i < getSize(); i++) {
+					imported_data_pack.emplace_back(recvcounts[i], type_size);
+					DataPack& data_pack = imported_data_pack[i];
+
+					std::memcpy(data_pack.buffer, &((char*) recv_buffer)[rdispls[i]], data_pack.size);
+				}
+			}
+			std::free(send_buffer);
+			std::free(size_buffer);
+			std::free(recvcounts);
+			std::free(rdispls);
+			std::free(recv_buffer);
+			return imported_data_pack;
+	}
 
 	/**
 	 * FPMAS::communication::MpiCommunicator destructor.

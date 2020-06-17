@@ -13,7 +13,7 @@ using ::testing::Contains;
 using ::testing::IsEmpty;
 
 
-class MigrateTest : public ::testing::Test {
+class MpiTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<3, 8> comm;
 
@@ -33,7 +33,7 @@ class MigrateTest : public ::testing::Test {
 		}
 };
 
-TEST_F(MigrateTest, migrate_int) {
+TEST_F(MpiTest, migrate_int) {
 	TypedMpi<int> mpi {comm};
 	std::unordered_map<int, std::vector<int>> exportMap =
 	{ {1, {4, 8, 7}}, {6, {2, 3}}};
@@ -70,6 +70,36 @@ TEST_F(MigrateTest, migrate_int) {
 		));
 }
 
+TEST_F(MpiTest, gather_int) {
+	TypedMpi<int> mpi {comm};
+	int export_int = 8;
+
+	EXPECT_CALL(comm, gather(buildDataPack("8"), MPI_CHAR, 2));
+
+	mpi.gather(export_int, 2);
+}
+
+TEST_F(MpiTest, gather_int_root) {
+	TypedMpi<int> mpi {comm};
+	int local_data = 2;
+
+	// Normally, exactly one item is resized by proc (8 in this case), but not
+	// important in the context of this test.
+	std::vector<FPMAS::communication::DataPack> import = {
+		buildDataPack("2"),
+		buildDataPack("4"),
+		buildDataPack("1"),
+		buildDataPack("3")
+	};
+
+	EXPECT_CALL(comm, gather(buildDataPack("2"), MPI_CHAR, 4))
+		.WillOnce(Return(import));
+
+	std::vector<int> recv = mpi.gather(local_data, 4);
+
+	ASSERT_THAT(recv, ElementsAre(2, 4, 1, 3));
+}
+
 struct FakeType {
 	int field;
 	std::string field2;
@@ -96,7 +126,7 @@ void from_json(const nlohmann::json& j, FakeType& o) {
 	j.at("f3").get_to(o.field3);
 }
 
-TEST_F(MigrateTest, migrate_fake_test) {
+TEST_F(MpiTest, migrate_fake_test) {
 	TypedMpi<FakeType> mpi {comm};
 	FakeType fake1 {2, "hello", 4.5};
 	FakeType fake2 {-1, "world", .6};
