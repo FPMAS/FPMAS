@@ -4,6 +4,7 @@
 #include "api/graph/parallel/distributed_arc.h"
 #include "api/utils/ptr_wrapper.h"
 #include "graph/base/arc.h"
+#include "graph/parallel/distributed_node.h"
 
 namespace FPMAS::graph::parallel {
 
@@ -41,6 +42,8 @@ namespace FPMAS::graph::parallel {
 namespace nlohmann {
 	template<typename T>
 		using ArcPtrWrapper = FPMAS::graph::parallel::ArcPtrWrapper<T>;
+	template<typename T>
+		using NodePtrWrapper = FPMAS::graph::parallel::NodePtrWrapper<T>;
 
 	template<typename T>
 		struct adl_serializer<ArcPtrWrapper<T>> {
@@ -51,15 +54,17 @@ namespace nlohmann {
 					j.at("layer").get<typename FPMAS::api::graph::parallel::DistributedArc<T>::LayerIdType>(),
 					j.at("weight").get<float>()
 				};
-				auto* src = new FPMAS::graph::parallel::DistributedNode<T>(
-						j.at("src").get<DistributedId>()
-						);
+				/*auto* src = new FPMAS::graph::parallel::DistributedNode<T>(*/
+						//j.at("src").get<DistributedId>()
+					  /*  )*/;
+				NodePtrWrapper<T> src = j.at("src").get<NodePtrWrapper<T>>();
 				arc->setSourceNode(src);
 				src->linkOut(arc);
 
-				auto* tgt = new FPMAS::graph::parallel::DistributedNode<T>(
-						j.at("tgt").get<DistributedId>()
-						);
+				//auto* tgt = new FPMAS::graph::parallel::DistributedNode<T>(
+						//j.at("tgt").get<DistributedId>()
+						//);
+				NodePtrWrapper<T> tgt = j.at("tgt").get<NodePtrWrapper<T>>();
 				arc->setTargetNode(tgt);
 				tgt->linkIn(arc);
 				return arc;
@@ -69,8 +74,8 @@ namespace nlohmann {
 				j["id"] = arc->getId();
 				j["layer"] = arc->getLayer();
 				j["weight"] = arc->getWeight();
-				j["src"] = arc->getSourceNode()->getId();
-				j["tgt"] = arc->getTargetNode()->getId();
+				j["src"] = NodePtrWrapper<T>(arc->getSourceNode());
+				j["tgt"] = NodePtrWrapper<T>(arc->getTargetNode());
 			}
 		};
 

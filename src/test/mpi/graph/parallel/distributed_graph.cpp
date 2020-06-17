@@ -23,7 +23,7 @@ using ::testing::SizeIs;
  * DistributedArcs implementations are used to distribute them accross the
  * available procs.
  */
-class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
+class DistributedGraphBalance : public ::testing::Test {
 	protected:
 		template<typename T>
 		using location_manager = FPMAS::graph::parallel::LocationManager<T>;
@@ -85,7 +85,7 @@ class Mpi_BasicDistributedGraphBalance : public ::testing::Test {
 		}
 };
 
-TEST_F(Mpi_BasicDistributedGraphBalance, distribute_test) {
+TEST_F(DistributedGraphBalance, distribute_test) {
 	{
 		::testing::InSequence s;
 		EXPECT_CALL(mock_sync_linker, synchronize);

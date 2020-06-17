@@ -7,6 +7,8 @@
 #include "runtime/runtime.h"
 #include "../mocks/model/mock_model.h"
 
+#include <random>
+
 using ::testing::SizeIs;
 using ::testing::Ge;
 using ::testing::InvokeWithoutArgs;
@@ -53,6 +55,7 @@ class ExpectAct : public FPMAS::model::AgentNodeCallback {
 
 class ModelIntegrationTest : public ::testing::Test {
 	protected:
+		inline static const int NODE_BY_PROC = 50;
 		FPMAS::model::AgentGraph<FPMAS::synchro::GhostMode> agent_graph;
 		FPMAS::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
 
@@ -70,7 +73,7 @@ class ModelIntegrationTest : public ::testing::Test {
 
 			agent_graph.addCallOnSetLocal(new ExpectAct(act_counts));
 			if(agent_graph.getMpiCommunicator().getRank() == 0) {
-				for(int i = 0; i < 10 * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group1.add(new MockAgentBase<1>);
 					group2.add(new MockAgentBase<10>);
 				}
@@ -88,15 +91,29 @@ TEST_F(ModelIntegrationTest, distribute) {
 			//"Executing %lu agents for 100 steps.", agent_graph.getNodes().size());
 	runtime.run(100);
 
-	// TODO : MPI gather to compute the sum of act counts.
-	/*
-	 *for(auto node : agent_graph.getNodes()) {
-	 *    auto agent = node.second->data().get();
-	 *    if(dynamic_cast<MockAgentBase<1>*>(agent)) {
-	 *        ASSERT_EQ(act_counts[node.first], 100);
-	 *    } else {
-	 *        ASSERT_EQ(act_counts[node.first], 50);
-	 *    }
-	 *}
-	 */
+   /* agent_graph.getNodes();*/
+	//// TODO : MPI gather to compute the sum of act counts.
+	//for(auto node : agent_graph.getNodes()) {
+		//auto agent = node.second->data().get();
+		//if(dynamic_cast<MockAgentBase<1>*>(agent)) {
+			//ASSERT_EQ(act_counts[node.first], 100);
+		//} else {
+			//ASSERT_EQ(act_counts[node.first], 50);
+		//}
+   /* }*/
+}
+
+TEST_F(ModelIntegrationTest, distribute_with_link) {
+	std::mt19937 engine;
+	std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+	std::uniform_int_distribution<unsigned int> random_layer {0, 10};
+
+	for(auto node : agent_graph.getNodes()) {
+		for(int i = 0; i < NODE_BY_PROC / 2; i++) {
+			DistributedId id {0, random_node(engine)};
+			if(node.first.id() != id.id())
+				agent_graph.link(node.second, agent_graph.getNode(id), 10);
+		}
+	}
+	runtime.run(100);
 }

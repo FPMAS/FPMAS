@@ -32,7 +32,7 @@ namespace FPMAS::api::graph::parallel {
 			virtual DistributedNode<T>* importNode(DistributedNode<T>*) = 0;
 			virtual DistributedArc<T>* importArc(DistributedArc<T>*) = 0;
 
-			virtual DistributedNode<T>* buildNode(const T&) = 0;
+			//virtual DistributedNode<T>* buildNode(const T&) = 0;
 			virtual DistributedNode<T>* buildNode(T&&) = 0;
 
 			virtual void addCallOnSetLocal(NodeCallback*) = 0;

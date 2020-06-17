@@ -5,7 +5,6 @@
 #include "api/synchro/mutex.h"
 #include "api/utils/ptr_wrapper.h"
 #include "graph/base/node.h"
-#include "graph/parallel/distributed_arc.h"
 
 namespace FPMAS::graph::parallel {
 

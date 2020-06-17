@@ -5,6 +5,7 @@
 #include "api/synchro/mutex.h"
 #include "api/synchro/sync_mode.h"
 #include "communication/communication.h"
+#include "graph/parallel/distributed_arc.h"
 #include "graph/parallel/distributed_node.h"
 
 namespace FPMAS::synchro {
@@ -84,9 +85,9 @@ namespace FPMAS::synchro {
 				nodes = node_mpi.migrate(nodes);
 				for(auto list : nodes) {
 					for(auto& node : list.second) {
-						auto localNode = graph.getNode(node->getId());
-						localNode->data() = node->data();
-						localNode->setWeight(node->getWeight());
+						auto local_node = graph.getNode(node->getId());
+						local_node->data() = std::move(node->data());
+						local_node->setWeight(node->getWeight());
 					}
 				}
 				for(auto node_list : nodes)

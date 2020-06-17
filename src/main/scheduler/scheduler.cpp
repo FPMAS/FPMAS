@@ -10,7 +10,9 @@ namespace FPMAS::scheduler {
 	}
 
 	void Job::remove(api::scheduler::Task& task) {
-		_tasks.erase(std::remove(_tasks.begin(), _tasks.end(), &task));
+		auto removed = std::remove(_tasks.begin(), _tasks.end(), &task);
+		if(removed != _tasks.end())
+			_tasks.erase(removed);
 	}
 
 	const std::vector<api::scheduler::Task*>& Job::tasks() const {

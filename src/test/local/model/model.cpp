@@ -29,7 +29,7 @@ using FPMAS::model::Model;
 using FPMAS::model::AgentGroup;
 using FPMAS::model::AgentTask;
 
-typedef FPMAS::api::utils::VirtualPtrWrapper<FPMAS::api::model::Agent> AgentPtr;
+typedef FPMAS::api::model::AgentPtr AgentPtr;
 
 TEST(AgentTaskTest, build) {
 	MockAgent<> agent;
@@ -141,32 +141,42 @@ class AgentGroupTest : public ::testing::Test {
 		MockDistributedGraph<
 			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedArc<AgentPtr>>
 			graph;
+		MockMpiCommunicator<4, 10> mock_comm;
 		MockDistributedNode<AgentPtr> node1 {{0, 1}};
 		MockDistributedNode<AgentPtr> node2 {{0, 2}};
 
 		AgentGroup agent_group {10, graph, FPMAS::JID(18)};
 		MockAgent<>* agent1 = new MockAgent<>;
-		MockAgent<>*& agent_1_ref = agent1;
-
 		FPMAS::api::model::AgentTask* agent1_task;
+		AgentPtr agent1_ptr {agent1};
+
 		MockAgent<>* agent2 = new MockAgent<>;
 		FPMAS::api::model::AgentTask* agent2_task;
+		AgentPtr agent2_ptr {agent2};
 
 		FPMAS::scheduler::Scheduler scheduler;
 		FPMAS::runtime::Runtime runtime {scheduler};
-
-		class ReturnMockData {
-			private:
-				AgentPtr agent;
-			public:
-				ReturnMockData(AgentPtr agent) : agent(agent) {}
-				AgentPtr& operator()() {return agent;}
-		};
+/*
+ *
+ *        class ReturnMockData {
+ *            private:
+ *                AgentPtr agent;
+ *            public:
+ *                ReturnMockData(AgentPtr agent) : agent(agent) {}
+ *                AgentPtr& operator()() {return agent;}
+ *        };
+ */
 
 		void SetUp() {
-			ON_CALL(node1, data()).WillByDefault(ReturnMockData(agent1));
+			// In case of LOG
+			EXPECT_CALL(model, graph).Times(AnyNumber())
+				.WillRepeatedly(ReturnRef(graph));
+			EXPECT_CALL(graph, getMpiCommunicator).Times(AnyNumber())
+				.WillRepeatedly(ReturnRef(mock_comm));
+
+			ON_CALL(node1, data()).WillByDefault(ReturnRef(agent1_ptr));
 			EXPECT_CALL(node1, data()).Times(AnyNumber());
-			ON_CALL(node2, data()).WillByDefault(ReturnMockData(agent2));
+			ON_CALL(node2, data()).WillByDefault(ReturnRef(agent2_ptr));
 			EXPECT_CALL(node2, data()).Times(AnyNumber());
 
 			EXPECT_CALL(*agent1, groupId)
@@ -203,22 +213,22 @@ class AgentGroupTest : public ::testing::Test {
 
 TEST_F(AgentGroupTest, id) {
 	ASSERT_EQ(agent_group.groupId(), 10);
-	delete agent1;
-	delete agent2;
+	//delete agent1;
+	//delete agent2;
 }
 
 TEST_F(AgentGroupTest, job) {
 	ASSERT_EQ(agent_group.job().id(), FPMAS::JID(18));
-	delete agent1;
-	delete agent2;
+	//delete agent1;
+	//delete agent2;
 }
 
 TEST_F(AgentGroupTest, job_end) {
 	EXPECT_CALL(graph, synchronize);
 
 	agent_group.job().getEndTask().run();
-	delete agent1;
-	delete agent2;
+	//delete agent1;
+	//delete agent2;
 }
 
 class MockBuildNode {
@@ -240,29 +250,36 @@ class MockBuildNode {
 
 TEST_F(AgentGroupTest, add_agent) {
 	EXPECT_CALL(*agent1, setTask);
-	EXPECT_CALL(*agent1, setGroupId(10));
 	EXPECT_CALL(*agent2, setTask);
-	EXPECT_CALL(*agent2, setGroupId(10));
 
 	// Agent 1 set up
 	MockBuildNode build_node_1 {&graph, &node1};
-	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent1)))
+	EXPECT_CALL(graph, buildNode_rv)
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_1),
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode(&node1));
 
-	agent_group.add(agent1);
+	// The fake agent will be implicitely and automatically deleted from the
+	// temporary AgentPtr in the mocked buildNode function. In consequence, we
+	// don't use the real "agent1", BUT agent 1 is still returned by the
+	// buildNode function (see expectation above)
+	MockAgent<>* fake_agent = new MockAgent<>;
+	EXPECT_CALL(*fake_agent, setGroupId(10));
+	agent_group.add(fake_agent);
 
 	// Agent 2 set up
 	MockBuildNode build_node_2 {&graph, &node2};
-	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent2)))
+	//EXPECT_CALL(graph, buildNode_rv(Pointee(Property(&AgentPtr::get, agent2))))
+	EXPECT_CALL(graph, buildNode_rv)
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_2),
 			Return(&node1)));
 	EXPECT_CALL(*agent2, setNode(&node2));
 
-	agent_group.add(agent2);
+	fake_agent = new MockAgent<>;
+	EXPECT_CALL(*fake_agent, setGroupId(10));
+	agent_group.add(fake_agent);
 
 	// Would normally be called from the Graph destructor
 	erase_node_callback.call(&node1);
@@ -271,26 +288,29 @@ TEST_F(AgentGroupTest, add_agent) {
 
 TEST_F(AgentGroupTest, agent_task) {
 	EXPECT_CALL(*agent1, setTask);
-	EXPECT_CALL(*agent1, setGroupId(10));
 	EXPECT_CALL(*agent2, setTask);
-	EXPECT_CALL(*agent2, setGroupId(10));
 
 	MockBuildNode build_node_1 {&graph, &node1};
-	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent1)))
+	EXPECT_CALL(graph, buildNode_rv)
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_1),
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode);
 
+	MockAgent<>* fake_agent = new MockAgent<>;
+	EXPECT_CALL(*fake_agent, setGroupId(10));
+	agent_group.add(fake_agent);
+
 	MockBuildNode build_node_2 {&graph, &node2};
-	EXPECT_CALL(graph, buildNode_rv(Property(&AgentPtr::get, agent2)))
+	EXPECT_CALL(graph, buildNode_rv)
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_2),
 			Return(&node2)));
 	EXPECT_CALL(*agent2, setNode);
 
-	agent_group.add(agent1);
-	agent_group.add(agent2);
+	fake_agent = new MockAgent<>;
+	EXPECT_CALL(*fake_agent, setGroupId(10));
+	agent_group.add(fake_agent);
 
 	ASSERT_THAT(agent_group.job().tasks(), SizeIs(2));
 

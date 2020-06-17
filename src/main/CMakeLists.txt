@@ -1,5 +1,7 @@
 set(SOURCES
 	${SOURCES}
+	# API
+	api/model/model.cpp
 	# Utils
 	utils/log.cpp
 	# Communication

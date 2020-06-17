@@ -29,6 +29,33 @@ TEST_F(JobTest, add) {
 				));
 }
 
+TEST_F(JobTest, remove) {
+	std::array<MockTask, 6> tasks;
+	
+	for(auto& task : tasks)
+		job.add(task);
+
+	job.remove(tasks[3]);
+
+	ASSERT_THAT(job.tasks(), UnorderedElementsAre(
+				&tasks[0], &tasks[1], &tasks[2], &tasks[4], &tasks[5]
+				));
+}
+
+TEST_F(JobTest, remove_not_contained) {
+	std::array<MockTask, 6> tasks;
+	
+	for(auto& task : tasks)
+		job.add(task);
+
+	MockTask other_task;
+	job.remove(other_task);
+
+	ASSERT_THAT(job.tasks(), UnorderedElementsAre(
+				&tasks[0], &tasks[1], &tasks[2], &tasks[3], &tasks[4], &tasks[5]
+				));
+}
+
 TEST_F(JobTest, begin) {
 	MockTask begin;
 

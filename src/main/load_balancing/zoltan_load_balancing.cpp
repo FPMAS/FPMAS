@@ -13,7 +13,7 @@ namespace FPMAS::load_balancing::zoltan {
 		zz->Set_Param("CHECK_GRAPH", "0");
 		zz->Set_Param("IMBALANCE_TOL", "1.02");
 		zz->Set_Param("PHG_EDGE_SIZE_THRESHOLD", "1.0");
-		// zz->Set_Param("DEBUG_LEVEL", "10");
+		zz->Set_Param("DEBUG_LEVEL", "10");
 
 		zz->Set_Param("NUM_LOCAL_PARTS", "1");
 	}

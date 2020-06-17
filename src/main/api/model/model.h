@@ -9,10 +9,25 @@
 namespace FPMAS::api::model {
 	class Agent;
 	class AgentTask;
-	typedef api::utils::VirtualPtrWrapper<Agent> AgentPtr;
+	class AgentPtrWrapper;
+	typedef AgentPtrWrapper AgentPtr;
 	typedef api::graph::parallel::DistributedNode<AgentPtr> AgentNode;
 	typedef int GroupId;
 	typedef int TypeId;
+
+	class AgentPtrWrapper : public api::utils::VirtualPtrWrapper<api::model::Agent> {
+		public:
+			AgentPtrWrapper() : VirtualPtrWrapper() {}
+			AgentPtrWrapper(api::model::Agent* agent)
+				: VirtualPtrWrapper(agent) {}
+
+			AgentPtrWrapper(AgentPtrWrapper&&);
+			AgentPtrWrapper(const AgentPtrWrapper&) = delete;
+			AgentPtrWrapper& operator=(AgentPtrWrapper&&);
+			AgentPtrWrapper& operator=(const AgentPtrWrapper&) = delete;
+
+			~AgentPtrWrapper();
+	};
 
 	class Agent {
 		public:

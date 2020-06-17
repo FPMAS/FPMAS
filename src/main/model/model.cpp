@@ -35,13 +35,10 @@ namespace FPMAS::model {
 		if(node->state() == graph::parallel::LocationState::LOCAL) {
 			// Unschedule agent task. If the node is DISTANT, task was already
 			// unscheduled.
-
-			agent->groupId();
-
 			model.getGroup(agent->groupId()).job().remove(*agent->task());
 		}
 		delete agent->task();
-		delete agent;
+		//delete agent;
 	}
 
 	void SetLocalNodeCallback::call(AgentNode *node) {

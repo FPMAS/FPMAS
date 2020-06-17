@@ -1,11 +1,12 @@
 #ifndef MODEL_SERIALIZER_H
 #define MODEL_SERIALIZER_H
 
+#include <stdexcept>
 #include "api/utils/ptr_wrapper.h"
 #include "api/model/model.h"
 
 namespace FPMAS::model {
-	typedef api::utils::VirtualPtrWrapper<api::model::Agent> AgentPtr;
+	using api::model::AgentPtr;
 	template<typename T>
 		using TypedAgentPtr = api::utils::VirtualPtrWrapper<T>;
 
@@ -14,6 +15,9 @@ namespace FPMAS::model {
 
 	template<> 
 		void to_json<void>(nlohmann::json& j, const AgentPtr& ptr) {
+			FPMAS_LOGE(-1, "AGENT_SERIALIZER", "Invalid agent type : %lu", ptr->typeId());
+			std::string message = "Invalid agent type : " + std::to_string(ptr->typeId());
+			throw std::invalid_argument(message);
 		}
 
 	template<typename Type, typename... AgentTypes> 
@@ -28,20 +32,25 @@ namespace FPMAS::model {
 		}
 
 	template<typename Type, typename... AgentTypes> 
-		void from_json(const nlohmann::json& j, AgentPtr& ptr);
+		AgentPtr from_json(const nlohmann::json& j);
 
 	template<> 
-		void from_json<void>(const nlohmann::json& j, AgentPtr& ptr) {
+		AgentPtr from_json<void>(const nlohmann::json& j) {
+			FPMAS::api::model::TypeId id = j.at("type").get<FPMAS::api::model::TypeId>();
+			FPMAS_LOGE(-1, "AGENT_SERIALIZER", "Invalid agent type : %lu", id);
+			std::string message = "Invalid agent type : " + std::to_string(id);
+			throw std::invalid_argument(message);
 		}
 
 	template<typename Type, typename... AgentTypes> 
-		void from_json(const nlohmann::json& j, AgentPtr& ptr) {
+		AgentPtr from_json(const nlohmann::json& j) {
 			FPMAS::api::model::TypeId id = j.at("type").get<FPMAS::api::model::TypeId>();
 			if(id == Type::TYPE_ID) {
-				ptr = AgentPtr(j.at("agent").get<TypedAgentPtr<Type>>());
-				ptr->setGroupId(j.at("gid").get<FPMAS::api::model::GroupId>());
+				auto agent = j.at("agent").get<TypedAgentPtr<Type>>();
+				agent->setGroupId(j.at("gid").get<FPMAS::api::model::GroupId>());
+				return {agent};
 			} else {
-				from_json<AgentTypes...>(j, ptr);
+				return std::move(from_json<AgentTypes...>(j));
 			}
 		}
 }
@@ -49,14 +58,14 @@ namespace FPMAS::model {
 
 #define FPMAS_JSON_SERIALIZE_AGENT(...) \
 	namespace nlohmann {\
-		typedef FPMAS::api::utils::VirtualPtrWrapper<FPMAS::api::model::Agent> AgentPtr;\
+		using FPMAS::api::model::AgentPtr;\
 		template<>\
 		struct adl_serializer<AgentPtr> {\
 			static void to_json(json& j, const AgentPtr& data) {\
 				FPMAS::model::to_json<__VA_ARGS__, void>(j, data);\
 			}\
-			static void from_json(const json& j, AgentPtr& ptr) {\
-				FPMAS::model::from_json<__VA_ARGS__, void>(j, ptr);\
+			static AgentPtr from_json(const json& j) {\
+				return std::move(FPMAS::model::from_json<__VA_ARGS__, void>(j));\
 			}\
 		};\
 	}\

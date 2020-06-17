@@ -81,6 +81,7 @@ namespace FPMAS::graph::base {
 
 	template<GRAPH_PARAMS>
 		void Graph<GRAPH_PARAMS_SPEC>::insert(NodeType* node) {
+			FPMAS_LOGD(-1, "GRAPH", "Insert node %s", ID_C_STR(node->getId()));
 			this->nodes.insert({node->getId(), node});
 			for(auto callback : insert_node_callbacks)
 				callback->call(node);
@@ -88,6 +89,12 @@ namespace FPMAS::graph::base {
 
 	template<GRAPH_PARAMS>
 		void Graph<GRAPH_PARAMS_SPEC>::insert(ArcType* arc) {
+			FPMAS_LOGD(
+					-1, "GRAPH", "Insert arc %s (%p) (from %s to %s)",
+					ID_C_STR(arc->getId()), arc,
+					ID_C_STR(arc->getSourceNode()->getId()),
+					ID_C_STR(arc->getTargetNode()->getId())
+					);
 			this->arcs.insert({arc->getId(), arc});
 			for(auto callback : insert_arc_callbacks)
 				callback->call(arc);

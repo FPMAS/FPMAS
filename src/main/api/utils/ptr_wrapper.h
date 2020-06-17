@@ -5,7 +5,7 @@ namespace FPMAS::api::utils {
 
 	template<typename VirtualType>
 	class VirtualPtrWrapper {
-		private:
+		protected:
 			 VirtualType* virtual_type_ptr;
 		public:
 			 VirtualPtrWrapper()
@@ -19,6 +19,12 @@ namespace FPMAS::api::utils {
 
 			 const VirtualType* get() const {
 				 return virtual_type_ptr;
+			 }
+
+			 VirtualType* release() {
+				 VirtualType* ptr = virtual_type_ptr;
+				 virtual_type_ptr = nullptr;
+				 return ptr;
 			 }
 
 			 VirtualType* operator->() {

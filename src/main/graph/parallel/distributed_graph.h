@@ -3,6 +3,7 @@
 
 #include "api/graph/parallel/distributed_graph.h"
 #include "communication/communication.h"
+#include "distributed_arc.h"
 #include "distributed_node.h"
 #include "location_manager.h"
 
@@ -83,6 +84,16 @@ namespace FPMAS::graph::parallel {
 			void setLocal(api::graph::parallel::DistributedNode<T>* node);
 			void setDistant(api::graph::parallel::DistributedNode<T>* node);
 
+			void triggerSetLocalCallbacks(api::graph::parallel::DistributedNode<T>* node) {
+				for(auto callback : set_local_callbacks)
+					callback->call(node);
+			}
+
+			void triggerSetDistantCallbacks(api::graph::parallel::DistributedNode<T>* node) {
+				for(auto callback : set_distant_callbacks)
+					callback->call(node);
+			}
+
 
 			public:
 			DistributedGraph() :
@@ -161,7 +172,7 @@ namespace FPMAS::graph::parallel {
 			void synchronize() override;
 
 
-			NodeType* buildNode(const T&) override;
+			//NodeType* buildNode(const T&) override;
 			NodeType* buildNode(T&& = std::move(T())) override;
 
 			ArcType* link(NodeType* const src, NodeType* const tgt, LayerIdType layer) override;
@@ -180,15 +191,13 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setLocal(api::graph::parallel::DistributedNode<T>* node) {
 			location_manager.setLocal(node);
-			for(auto callback : set_local_callbacks)
-				callback->call(node);
+			triggerSetLocalCallbacks(node);
 		}
 
 	template<DIST_GRAPH_PARAMS>
 		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setDistant(api::graph::parallel::DistributedNode<T>* node) {
 			location_manager.setDistant(node);
-			for(auto callback : set_distant_callbacks)
-				callback->call(node);
+			triggerSetDistantCallbacks(node);
 		}
 
 	template<DIST_GRAPH_PARAMS>
@@ -349,13 +358,15 @@ namespace FPMAS::graph::parallel {
 				return node;
 			}
 
-	template<DIST_GRAPH_PARAMS>
-		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
-			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(const T& data) {
-				return buildNode(new DistNodeType(
-						this->node_id++, data
-						));
-			}
+	/*
+	 *template<DIST_GRAPH_PARAMS>
+	 *    typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
+	 *        DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(const T& data) {
+	 *            return buildNode(new DistNodeType(
+	 *                    this->node_id++, data
+	 *                    ));
+	 *        }
+	 */
 
 	template<DIST_GRAPH_PARAMS>
 		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*

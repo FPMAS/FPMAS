@@ -30,10 +30,10 @@ class MockDistributedGraph :
 				getLocationManager, (), (const, override));
 
 		NodeType* buildNode(T&& data) override {
-			return buildNode_rv(data);
+			return buildNode_rv();
 		}
-		MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
-		MOCK_METHOD(NodeType*, buildNode_rv, (T), ());
+		//MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
+		MOCK_METHOD(NodeType*, buildNode_rv, (), ());
 		MOCK_METHOD(ArcType*, link, (NodeType*, NodeType*, LayerIdType), (override));
 
 		MOCK_METHOD(void, addCallOnSetLocal, (NodeCallback*), (override));
