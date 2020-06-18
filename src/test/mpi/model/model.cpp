@@ -8,6 +8,7 @@
 #include "../mocks/model/mock_model.h"
 
 #include <random>
+#include <numeric>
 
 using ::testing::SizeIs;
 using ::testing::Ge;
@@ -56,6 +57,7 @@ class ExpectAct : public FPMAS::model::AgentNodeCallback {
 class ModelIntegrationTest : public ::testing::Test {
 	protected:
 		inline static const int NODE_BY_PROC = 50;
+		inline static const int NUM_STEPS = 100;
 		FPMAS::model::AgentGraph<FPMAS::synchro::GhostMode> agent_graph;
 		FPMAS::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
 
@@ -66,6 +68,7 @@ class ModelIntegrationTest : public ::testing::Test {
 		FPMAS::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		std::unordered_map<DistributedId, unsigned long> act_counts;
+		std::unordered_map<DistributedId, FPMAS::api::model::TypeId> agent_types;
 
 		void SetUp() override {
 			auto& group1 = model.buildGroup();
@@ -81,29 +84,43 @@ class ModelIntegrationTest : public ::testing::Test {
 			scheduler.schedule(0, 1, group1.job());
 			scheduler.schedule(0, 2, group2.job());
 			scheduler.schedule(0, model.loadBalancingJob());
+			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
+				act_counts[{0, (unsigned int) id}] = 0;
+				if(id % 2 == 0) {
+					agent_types[{0, (unsigned int) id}] = 1;
+				} else {
+					agent_types[{0, (unsigned int) id}] = 10;
+				}
+			}
+		}
+
+		void checkExecutionCounts() {
+			FPMAS::communication::TypedMpi<int> mpi {agent_graph.getMpiCommunicator()};
+			// TODO : MPI gather to compute the sum of act counts.
+			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
+				DistributedId dist_id {0, (unsigned int) id};
+				std::vector<int> counts = mpi.gather(act_counts[dist_id], 0);
+				if(agent_graph.getMpiCommunicator().getRank() == 0) {
+					int sum = 0;
+					sum = std::accumulate(counts.begin(), counts.end(), sum);
+					if(agent_types[dist_id] == 1) {
+						// Executed every step
+						ASSERT_EQ(sum, NUM_STEPS);
+					} else {
+						// Executed one in two step
+						ASSERT_EQ(sum, NUM_STEPS / 2);
+					}
+				}
+			}
 		}
 };
 
-TEST_F(ModelIntegrationTest, distribute) {
-	//ASSERT_THAT(agent_graph.getNodes(), SizeIs(Ge(1)));
-	//FPMAS_LOGI(
-			//agent_graph.getMpiCommunicator().getRank(), "MODEL_TEST",
-			//"Executing %lu agents for 100 steps.", agent_graph.getNodes().size());
-	runtime.run(100);
-
-   /* agent_graph.getNodes();*/
-	//// TODO : MPI gather to compute the sum of act counts.
-	//for(auto node : agent_graph.getNodes()) {
-		//auto agent = node.second->data().get();
-		//if(dynamic_cast<MockAgentBase<1>*>(agent)) {
-			//ASSERT_EQ(act_counts[node.first], 100);
-		//} else {
-			//ASSERT_EQ(act_counts[node.first], 50);
-		//}
-   /* }*/
+TEST_F(ModelIntegrationTest, ghost_mode) {
+	runtime.run(NUM_STEPS);
+	checkExecutionCounts();
 }
 
-TEST_F(ModelIntegrationTest, distribute_with_link) {
+TEST_F(ModelIntegrationTest, ghost_mode_with_link) {
 	std::mt19937 engine;
 	std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
 	std::uniform_int_distribution<unsigned int> random_layer {0, 10};
@@ -115,5 +132,6 @@ TEST_F(ModelIntegrationTest, distribute_with_link) {
 				agent_graph.link(node.second, agent_graph.getNode(id), 10);
 		}
 	}
-	runtime.run(100);
+	runtime.run(NUM_STEPS);
+	checkExecutionCounts();
 }
