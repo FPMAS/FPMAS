@@ -92,6 +92,7 @@ namespace FPMAS::graph::parallel {
 		void LocationManager<T>::updateLocations(
 				const NodeMap& local_nodes_to_update
 				) {
+			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Updating node locations...");
 			// Useful types
 			typedef 
 			std::unordered_map<int, std::vector<DistributedId>>
@@ -182,6 +183,7 @@ namespace FPMAS::graph::parallel {
 					distant_nodes.at(location.first)->setLocation(location.second);
 				}
 			}
+			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Node locations updated.");
 		}
 }
 

@@ -42,19 +42,16 @@ namespace FPMAS::model {
 
 	class AgentTask : public api::model::AgentTask {
 		private:
-			api::model::Agent& _agent;
+			api::model::Agent* _agent;
 		public:
-			AgentTask(api::model::Agent& agent)
-				: _agent(agent) {}
-
-			const api::model::Agent& agent() const override {return _agent;}
+			const api::model::Agent* agent() const override {return _agent;}
+			void setAgent(api::model::Agent* agent) override {_agent=agent;}
 
 			AgentNode* node() override
-				{return _agent.node();}
-
+				{return _agent->node();}
 
 			void run() override {
-				_agent.act();
+				_agent->act();
 			}
 	};
 

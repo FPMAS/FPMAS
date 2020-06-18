@@ -865,13 +865,14 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 	for(auto node : graph.getNodes())
 		node_map.insert(node);
 
+	EXPECT_CALL(location_manager, getLocalNodes).WillOnce(ReturnRef(graph.getNodes()));
+
 	// Should call LoadBalancing on all nodes, without fixed nodes
 	EXPECT_CALL(
 		load_balancing,
 		balance(node_map))
 		.WillOnce(Return(fakePartition));
 	// Migration of nodes + arcs
-	//EXPECT_CALL(comm, allToAll(_)).Times(2);
 	EXPECT_CALL(graph.getNodeMpi(), migrate);
 	EXPECT_CALL(graph.getArcMpi(), migrate);
 

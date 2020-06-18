@@ -50,7 +50,8 @@ namespace FPMAS::api::model {
 
 	class AgentTask : public api::scheduler::NodeTask<AgentPtr> {
 		public:
-			virtual const Agent& agent() const = 0;
+			virtual const Agent* agent() const = 0;
+			virtual void setAgent(Agent*) = 0;
 			virtual ~AgentTask(){}
 	};
 

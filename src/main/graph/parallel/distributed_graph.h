@@ -138,7 +138,7 @@ namespace FPMAS::graph::parallel {
 						this->getNodes().size(), this->getArcs().size());
 
 				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
-				for(auto node : this->getNodes()) {
+				for(auto node : this->location_manager.getLocalNodes()) {
 					node_map.insert(node);
 				}
 				this->distribute(load_balancing.balance(node_map));
@@ -226,11 +226,13 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
 	DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importNode(NodeType* node) {
+		FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Importing node %s...", ID_C_STR(node->getId()));
 		// The input node must be a temporary dynamically allocated object.
 		// A representation of the node might already be contained in the
 		// graph, if it were already built as a "distant" node.
 
 		if(this->getNodes().count(node->getId())==0) {
+			FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Inserting new LOCAL node %s.", ID_C_STR(node->getId()));
 			// The node is not contained in the graph, we need to build a new
 			// one.
 			// But instead of completely building a new node, we can re-use the
@@ -240,6 +242,7 @@ namespace FPMAS::graph::parallel {
 			node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
 			return node;
 		}
+		FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Replacing existing DISTANT node %s.", ID_C_STR(node->getId()));
 		// A representation of the node was already contained in the graph.
 		// We just need to update its state.
 
@@ -256,6 +259,11 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
 	DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importArc(ArcType* arc) {
+		FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Importing arc %s (from %s to %s)...",
+				ID_C_STR(arc->getId()),
+				ID_C_STR(arc->getSourceNode()->getId()),
+				ID_C_STR(arc->getTargetNode()->getId())
+				);
 		// The input arc must be a dynamically allocated object, with temporary
 		// dynamically allocated nodes as source and target.
 		// A representation of the imported arc might already be present in the
@@ -273,6 +281,7 @@ namespace FPMAS::graph::parallel {
 			LocationState arcLocationState = LocationState::LOCAL;
 
 			if(this->getNodes().count(srcId) > 0) {
+				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing source %s", ID_C_STR(srcId));
 				// The source node is already contained in the graph
 				src = this->getNode(srcId);
 				if(src->state() == LocationState::DISTANT) {
@@ -287,6 +296,7 @@ namespace FPMAS::graph::parallel {
 				arc->setSourceNode(src);
 				src->linkOut(arc);
 			} else {
+				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Creating DISTANT source %s", ID_C_STR(srcId));
 				// The source node is not contained in the graph : it must be
 				// built as a DISTANT node.
 				arcLocationState = LocationState::DISTANT;
@@ -299,6 +309,7 @@ namespace FPMAS::graph::parallel {
 				src->setMutex(sync_mode_runtime.buildMutex(src->getId(), src->data()));
 			}
 			if(this->getNodes().count(tgtId) > 0) {
+				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing target %s", ID_C_STR(tgtId));
 				// The target node is already contained in the graph
 				tgt = this->getNode(tgtId);
 				if(tgt->state() == LocationState::DISTANT) {
@@ -313,6 +324,7 @@ namespace FPMAS::graph::parallel {
 				arc->setTargetNode(tgt);
 				tgt->linkIn(arc);
 			} else {
+				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Creating DISTANT target %s", ID_C_STR(tgtId));
 				// The target node is not contained in the graph : it must be
 				// built as a DISTANT node.
 				arcLocationState = LocationState::DISTANT;
@@ -425,19 +437,30 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::distribute(PartitionMap partition) {
+			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
+					"Distributing graph...");
+			std::string partition_str = "\n";
+			for(auto item : partition) {
+				std::string str = ID_C_STR(item.first);
+				str.append(" : " + std::to_string(item.second) + "\n");
+				partition_str.append(str);
+			}
+			FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Partition : %s", partition_str.c_str());
 
 			sync_mode_runtime.getSyncLinker().synchronize();
 
 			// Builds node and arcs export maps
-			std::vector<NodeType*> exportedNodes;
+			std::vector<NodeType*> exported_nodes;
 			std::unordered_map<int, std::vector<NodePtrWrapper<T>>> node_export_map;
 			std::unordered_map<int, std::set<DistributedId>> arc_ids_to_export;
 			std::unordered_map<int, std::vector<ArcPtrWrapper<T>>> arc_export_map;
 			for(auto item : partition) {
 				if(this->getNodes().count(item.first) > 0) {
 					if(item.second != mpi_communicator.getRank()) {
+						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH",
+								"Exporting node %s to %i", ID_C_STR(item.first), item.second);
 						auto node_to_export = this->getNode(item.first);
-						exportedNodes.push_back(node_to_export);
+						exported_nodes.push_back(node_to_export);
 						node_export_map[item.second].emplace_back(node_to_export);
 						for(auto arc :  node_to_export->getIncomingArcs()) {
 							// Insert or replace in the IDs set
@@ -475,26 +498,34 @@ namespace FPMAS::graph::parallel {
 				}
 			}
 
-			for(auto node : exportedNodes) {
+			for(auto node : exported_nodes) {
 				setDistant(node);
 			}
-			for(auto node : exportedNodes) {
-				FPMAS_LOGD(
-					mpi_communicator.getRank(),
-					"DIST_GRAPH", "Clear node %s",
-					ID_C_STR(node->getId())
-					);
+
+			location_manager.updateLocations(imported_nodes);
+
+			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...");
+			for(auto node : exported_nodes) {
 				clearNode(node);
 			}
-			location_manager.updateLocations(imported_nodes);
+			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.");
+
 			sync_mode_runtime.getDataSync().synchronize();
+			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
+					"End of distribution.");
 		}
 
 	template<DIST_GRAPH_PARAMS>
 	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::synchronize() {
+			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
+					"Synchronizing graph...");
+
 			sync_mode_runtime.getSyncLinker().synchronize();
 			sync_mode_runtime.getDataSync().synchronize();
+
+			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
+					"End of graph synchronization.");
 		}
 
 	template<DIST_GRAPH_PARAMS>
@@ -514,6 +545,13 @@ namespace FPMAS::graph::parallel {
 	template<DIST_GRAPH_PARAMS>
 	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::clearNode(NodeType* node) {
+			DistributedId id = node->getId();
+			FPMAS_LOGD(
+					mpi_communicator.getRank(),
+					"DIST_GRAPH", "Clearing node %s...",
+					ID_C_STR(id)
+					);
+
 			bool eraseNode = true;
 			std::set<ArcType*> obsoleteArcs;
 			for(auto arc : node->getIncomingArcs()) {
@@ -533,7 +571,7 @@ namespace FPMAS::graph::parallel {
 			if(eraseNode) {
 				FPMAS_LOGD(
 					mpi_communicator.getRank(),
-					"DIST_GRAPH", "Erasing obsolete node %s",
+					"DIST_GRAPH", "Erasing obsolete node %s.",
 					ID_C_STR(node->getId())
 					);
 				location_manager.remove(node);
@@ -550,6 +588,11 @@ namespace FPMAS::graph::parallel {
 					this->erase(arc);
 				}
 			}
+			FPMAS_LOGD(
+					mpi_communicator.getRank(),
+					"DIST_GRAPH", "Node %s cleared.",
+					ID_C_STR(id)
+					);
 		}
 
 	template<DIST_GRAPH_PARAMS>

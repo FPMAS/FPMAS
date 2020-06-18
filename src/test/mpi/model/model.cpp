@@ -18,6 +18,24 @@ FPMAS_JSON_SERIALIZE_AGENT(MockAgentBase<1>, MockAgentBase<10>)
 FPMAS_DEFAULT_JSON(MockAgentBase<1>)
 FPMAS_DEFAULT_JSON(MockAgentBase<10>)
 
+class ModelIntegrationTest : public ::testing::Test {
+	protected:
+		inline static const int NODE_BY_PROC = 50;
+		inline static const int NUM_STEPS = 100;
+		FPMAS::model::AgentGraph<FPMAS::synchro::GhostMode> agent_graph;
+		FPMAS::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
+
+		FPMAS::scheduler::Scheduler scheduler;
+		FPMAS::runtime::Runtime runtime {scheduler};
+		FPMAS::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+
+		FPMAS::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+
+		std::unordered_map<DistributedId, unsigned long> act_counts;
+		std::unordered_map<DistributedId, FPMAS::api::model::TypeId> agent_types;
+
+};
+
 class IncreaseCount {
 	private:
 		std::unordered_map<DistributedId, unsigned long>& act_counts;
@@ -30,11 +48,11 @@ class IncreaseCount {
 		}
 };
 
-class ExpectAct : public FPMAS::model::AgentNodeCallback {
+class IncreaseCountAct : public FPMAS::model::AgentNodeCallback {
 	private:
 		std::unordered_map<DistributedId, unsigned long>& act_counts;
 	public:
-		ExpectAct(std::unordered_map<DistributedId, unsigned long>& act_counts) : act_counts(act_counts) {}
+		IncreaseCountAct(std::unordered_map<DistributedId, unsigned long>& act_counts) : act_counts(act_counts) {}
 
 		void call(FPMAS::model::AgentNode* node) override {
 			switch(node->data().get()->typeId()) {
@@ -54,27 +72,13 @@ class ExpectAct : public FPMAS::model::AgentNodeCallback {
 		}
 };
 
-class ModelIntegrationTest : public ::testing::Test {
+class ModelIntegrationExecutionTest : public ModelIntegrationTest {
 	protected:
-		inline static const int NODE_BY_PROC = 50;
-		inline static const int NUM_STEPS = 100;
-		FPMAS::model::AgentGraph<FPMAS::synchro::GhostMode> agent_graph;
-		FPMAS::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
-
-		FPMAS::scheduler::Scheduler scheduler;
-		FPMAS::runtime::Runtime runtime {scheduler};
-		FPMAS::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
-
-		FPMAS::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
-
-		std::unordered_map<DistributedId, unsigned long> act_counts;
-		std::unordered_map<DistributedId, FPMAS::api::model::TypeId> agent_types;
-
 		void SetUp() override {
 			auto& group1 = model.buildGroup();
 			auto& group2 = model.buildGroup();
 
-			agent_graph.addCallOnSetLocal(new ExpectAct(act_counts));
+			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
 			if(agent_graph.getMpiCommunicator().getRank() == 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group1.add(new MockAgentBase<1>);
@@ -83,7 +87,6 @@ class ModelIntegrationTest : public ::testing::Test {
 			}
 			scheduler.schedule(0, 1, group1.job());
 			scheduler.schedule(0, 2, group2.job());
-			scheduler.schedule(0, model.loadBalancingJob());
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				act_counts[{0, (unsigned int) id}] = 0;
 				if(id % 2 == 0) {
@@ -115,12 +118,13 @@ class ModelIntegrationTest : public ::testing::Test {
 		}
 };
 
-TEST_F(ModelIntegrationTest, ghost_mode) {
+TEST_F(ModelIntegrationExecutionTest, ghost_mode) {
+	scheduler.schedule(0, model.loadBalancingJob());
 	runtime.run(NUM_STEPS);
 	checkExecutionCounts();
 }
 
-TEST_F(ModelIntegrationTest, ghost_mode_with_link) {
+TEST_F(ModelIntegrationExecutionTest, ghost_mode_with_link) {
 	std::mt19937 engine;
 	std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
 	std::uniform_int_distribution<unsigned int> random_layer {0, 10};
@@ -132,6 +136,52 @@ TEST_F(ModelIntegrationTest, ghost_mode_with_link) {
 				agent_graph.link(node.second, agent_graph.getNode(id), 10);
 		}
 	}
+	scheduler.schedule(0, model.loadBalancingJob());
 	runtime.run(NUM_STEPS);
 	checkExecutionCounts();
+}
+
+class UpdateWeightAct : public FPMAS::model::AgentNodeCallback {
+	private:
+		std::mt19937 engine;
+		std::uniform_real_distribution<float> random_node {0, 1};
+	public:
+		void call(FPMAS::model::AgentNode* node) override {
+			node->setWeight(random_node(engine) * 10);
+			EXPECT_CALL(*static_cast<MockAgentBase<10>*>(node->data().get()), act)
+				.Times(AnyNumber());
+		}
+};
+
+class ModelIntegrationLoadBalancingTest : public ModelIntegrationTest {
+	protected:
+		void SetUp() override {
+			auto& group1 = model.buildGroup();
+			auto& group2 = model.buildGroup();
+
+			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
+			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+					group2.add(new MockAgentBase<10>);
+				}
+			}
+			std::mt19937 engine;
+			std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+			std::uniform_int_distribution<unsigned int> random_layer {0, 10};
+
+			for(auto node : agent_graph.getNodes()) {
+				for(int i = 0; i < NODE_BY_PROC / 2; i++) {
+					DistributedId id {0, random_node(engine)};
+					if(node.first.id() != id.id())
+						agent_graph.link(node.second, agent_graph.getNode(id), 10);
+				}
+			}
+			scheduler.schedule(0, 1, group1.job());
+			scheduler.schedule(0, 2, group2.job());
+			scheduler.schedule(0, 4, model.loadBalancingJob());
+		}
+};
+
+TEST_F(ModelIntegrationLoadBalancingTest, ghost_mode_dynamic_lb) {
+	runtime.run(NUM_STEPS);
 }

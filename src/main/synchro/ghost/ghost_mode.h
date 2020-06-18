@@ -69,8 +69,10 @@ namespace FPMAS::synchro {
 
 		template<typename T>
 			void GhostDataSync<T>::synchronize() {
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Synchronizing graph data...");
 				std::unordered_map<int, std::vector<DistributedId>> requests;
 				for(auto node : graph.getLocationManager().getDistantNodes()) {
+					FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "req %s from %lu", ID_C_STR(node.first), node.second->getLocation());
 					requests[node.second->getLocation()].push_back(node.first);
 				}
 				requests = id_mpi.migrate(requests);
@@ -78,14 +80,20 @@ namespace FPMAS::synchro {
 				std::unordered_map<int, std::vector<NodePtr>> nodes;
 				for(auto list : requests) {
 					for(auto id : list.second) {
+						FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "recv req %s", ID_C_STR(id));
 						nodes[list.first].push_back(graph.getNode(id));
+						FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "ok...");
 					}
 				}
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "migrate...");
 				// TODO : Should use data update packs.
 				nodes = node_mpi.migrate(nodes);
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "migrate ok...");
 				for(auto list : nodes) {
 					for(auto& node : list.second) {
+						FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "hey up...");
 						auto local_node = graph.getNode(node->getId());
+						FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "ok up...");
 						local_node->data() = std::move(node->data());
 						local_node->setWeight(node->getWeight());
 					}
@@ -93,6 +101,8 @@ namespace FPMAS::synchro {
 				for(auto node_list : nodes)
 					for(auto node : node_list.second)
 						delete node.get();
+
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph data synchronized...");
 			}
 
 
