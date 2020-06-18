@@ -15,7 +15,10 @@ namespace FPMAS::model {
 
 	template<> 
 		void to_json<void>(nlohmann::json& j, const AgentPtr& ptr) {
-			FPMAS_LOGE(-1, "AGENT_SERIALIZER", "Invalid agent type : %lu", ptr->typeId());
+			FPMAS_LOGE(-1, "AGENT_SERIALIZER",
+					"Invalid agent type : %lu. Make sure to properly register \
+						the Agent type with FPMAS_JSON_SERIALIZE_AGENT.",
+						ptr->typeId());
 			std::string message = "Invalid agent type : " + std::to_string(ptr->typeId());
 			throw std::invalid_argument(message);
 		}

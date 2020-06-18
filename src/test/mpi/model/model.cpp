@@ -14,7 +14,9 @@ using ::testing::SizeIs;
 using ::testing::Ge;
 using ::testing::InvokeWithoutArgs;
 
-FPMAS_JSON_SERIALIZE_AGENT(MockAgentBase<1>, MockAgentBase<10>)
+class ReaderAgent;
+
+FPMAS_JSON_SERIALIZE_AGENT(ReaderAgent, MockAgentBase<1>, MockAgentBase<10>)
 FPMAS_DEFAULT_JSON(MockAgentBase<1>)
 FPMAS_DEFAULT_JSON(MockAgentBase<10>)
 
@@ -184,4 +186,73 @@ class ModelIntegrationLoadBalancingTest : public ModelIntegrationTest {
 
 TEST_F(ModelIntegrationLoadBalancingTest, ghost_mode_dynamic_lb) {
 	runtime.run(NUM_STEPS);
+}
+
+class ReaderAgent : public FPMAS::model::AgentBase<0> {
+	private:
+		std::mt19937 engine;
+		std::uniform_real_distribution<float> random_weight;
+		int counter = 0;
+	public:
+		void act() override {
+			for(auto neighbour : node()->outNeighbors()) {
+				ASSERT_THAT(static_cast<const ReaderAgent*>(neighbour->mutex().read().get())->getCounter(), Ge(counter));
+			}
+			counter++;
+			node()->setWeight(random_weight(engine) * 10);
+		}
+
+		void setCounter(int count) {counter = count;}
+
+		int getCounter() const {
+			return counter;
+		}
+};
+
+void to_json(nlohmann::json& j, const FPMAS::api::utils::VirtualPtrWrapper<ReaderAgent>& agent) {
+	j["c"] = agent->getCounter();
+}
+
+void from_json(const nlohmann::json& j, FPMAS::api::utils::VirtualPtrWrapper<ReaderAgent>& agent) {
+	ReaderAgent* agent_ptr = new ReaderAgent;
+	agent_ptr->setCounter(j.at("c").get<int>());
+	agent = {agent_ptr};
+}
+
+class GhostReadersModelIntegrationTest : public ::testing::Test {
+	protected:
+		inline static unsigned int AGENT_BY_PROC = 50;
+		inline static unsigned int STEPS = 100;
+		FPMAS::model::AgentGraph<FPMAS::synchro::GhostMode> agent_graph;
+		FPMAS::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
+
+		FPMAS::scheduler::Scheduler scheduler;
+		FPMAS::runtime::Runtime runtime {scheduler};
+		FPMAS::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+
+		FPMAS::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+
+		void SetUp() override {
+			auto& group = model.buildGroup();
+			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+					group.add(new ReaderAgent);
+				}
+
+				std::mt19937 engine;
+				std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+				for(auto node : agent_graph.getNodes()) {
+					DistributedId id {0, random_node(engine)};
+					if(node.first != id) {
+						agent_graph.link(node.second, agent_graph.getNode(id), 0);
+					}
+				}
+			}
+			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 10, model.loadBalancingJob());
+		}
+};
+
+TEST_F(GhostReadersModelIntegrationTest, test) {
+	runtime.run(20);
 }
