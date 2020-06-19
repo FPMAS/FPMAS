@@ -14,16 +14,19 @@ namespace FPMAS::synchro::hard {
 			typedef api::synchro::hard::TerminationAlgorithm
 				TerminationAlgorithm;
 
+			api::communication::MpiCommunicator& comm;
 			MutexServer& mutex_server;
 			TerminationAlgorithm& termination;
 
 			public:
-				HardDataSync(MutexServer& server, TerminationAlgorithm& termination)
-					: mutex_server(server), termination(termination) {
+				HardDataSync(api::communication::MpiCommunicator& comm, MutexServer& server, TerminationAlgorithm& termination)
+					: comm(comm), mutex_server(server), termination(termination) {
 				}
 
 				void synchronize() override {
+					FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronizing data sync...");
 					termination.terminate(mutex_server);
+					FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronized.");
 				};
 		};
 

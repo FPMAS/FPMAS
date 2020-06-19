@@ -120,11 +120,13 @@ TEST_F(DistributedGraphTest, build_node) {
 	auto currentId = graph.currentNodeId();
 	ASSERT_EQ(currentId.rank(), 7);
 
+	NodeType* build_mutex_arg;
 	MockMutex<int>* built_mutex = new MockMutex<int>;
-	EXPECT_CALL(const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()), buildMutex(currentId, Eq(2)))
-		.WillOnce(Return(built_mutex));
+	EXPECT_CALL(const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()), buildMutex)
+		.WillOnce(DoAll(SaveArg<0>(&build_mutex_arg), Return(built_mutex)));
 
 	auto node = graph.buildNode(2);
+	ASSERT_EQ(build_mutex_arg, node);
 	ASSERT_EQ(add_managed_node_arg, node);
 	ASSERT_EQ(set_local_arg, node);
 	ASSERT_EQ(local_callback_arg, node);
@@ -406,10 +408,11 @@ TEST_F(DistributedGraphImportNodeTest, import_node) {
 	NodeType* set_local_arg;
 	EXPECT_CALL(location_manager, setLocal(_))
 		.WillOnce(SaveArg<0>(&set_local_arg));
+
+	NodeType* build_mutex_arg;
 	EXPECT_CALL(
-		const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()),
-		buildMutex(DistributedId(1, 10), Eq(8))
-		);
+		const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()), buildMutex)
+		.WillOnce(DoAll(SaveArg<0>(&build_mutex_arg), Return(new MockMutex<int>)));
 
 	// Callback call test
 	auto local_callback = new MockCallback<NodeType*>;
@@ -423,6 +426,7 @@ TEST_F(DistributedGraphImportNodeTest, import_node) {
 	ASSERT_EQ(graph.getNodes().size(), 1);
 	ASSERT_EQ(graph.getNodes().count(DistributedId(1, 10)), 1);
 	auto node = graph.getNode(DistributedId(1, 10));
+	ASSERT_EQ(build_mutex_arg, node);
 	ASSERT_EQ(set_local_arg, node);
 	ASSERT_EQ(local_callback_arg, node);
 	ASSERT_EQ(node->data(), 8);
@@ -435,10 +439,12 @@ TEST_F(DistributedGraphImportNodeTest, import_node) {
 TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 	EXPECT_CALL(location_manager, addManagedNode);
 	EXPECT_CALL(location_manager, setLocal);
-	EXPECT_CALL(
-		const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()),
-		buildMutex(graph.currentNodeId(), Eq(8))
-		);
+
+	NodeType* build_mutex_arg;
+	EXPECT_CALL(const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()),
+		buildMutex).WillOnce(
+			DoAll(SaveArg<0>(&build_mutex_arg), Return(new MockMutex<int>)));
+
 	auto node = graph.buildNode(8);
 	ON_CALL(*static_cast<MockNode*>(node), state()).WillByDefault(Return(LocationState::DISTANT));
 
@@ -462,6 +468,7 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 
 	distributeTest();
 
+	ASSERT_EQ(build_mutex_arg, node);
 	ASSERT_EQ(set_local_arg, node);
 	ASSERT_EQ(local_callback_arg, node);
 	ASSERT_EQ(graph.getNodes().size(), 1);

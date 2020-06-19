@@ -210,8 +210,8 @@ namespace FPMAS::synchro {
 					: id_mpi(comm), node_mpi(comm), arc_mpi(comm),
 					data_sync(node_mpi, id_mpi, graph), sync_linker(arc_mpi, id_mpi, graph) {}
 
-				SingleThreadMutex<T>* buildMutex(DistributedId, T& data) override {
-					return new SingleThreadMutex<T>(data);
+				SingleThreadMutex<T>* buildMutex(api::graph::parallel::DistributedNode<T>* node) override {
+					return new SingleThreadMutex<T>(node->data());
 				};
 				GhostDataSync<T>& getDataSync() override {return data_sync;}
 				GhostSyncLinker<T>& getSyncLinker() override {return sync_linker;}

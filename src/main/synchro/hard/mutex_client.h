@@ -58,7 +58,7 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 		T MutexClient<T>::read(DistributedId id, int location) {
-			FPMAS_LOGD(this->comm.getRank(), "READ", "reading data %s from %i", ID_C_STR(id), location);
+			FPMAS_LOGD(this->comm.getRank(), "MUTEX_CLIENT", "reading data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
 			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::READ, &req);
@@ -78,6 +78,7 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 		void MutexClient<T>::releaseRead(DistributedId id, int location) {
+			FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "releasing read data %s from %i", ID_C_STR(id), location);
 
 			MPI_Request req;
 			id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK_SHARED, &req);
@@ -87,7 +88,7 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 		T MutexClient<T>::acquire(DistributedId id, int location) {
-			FPMAS_LOGD(this->comm.getRank(), "ACQUIRE", "acquiring data %s from %i", ID_C_STR(id), location);
+			FPMAS_LOGD(this->comm.getRank(), "MUTEX_CLIENT", "acquiring data %s from %i", ID_C_STR(id), location);
 			// Starts non-blocking synchronous send
 			MPI_Request req;
 			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::ACQUIRE, &req);
@@ -112,6 +113,7 @@ namespace FPMAS::synchro::hard {
 	 */
 	template<typename T>
 	void MutexClient<T>::releaseAcquire(DistributedId id, const T& data, int location) {
+		FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "releasing acquired data %s from %i", ID_C_STR(id), location);
 		DataUpdatePack<T> update {id, data};
 
 		MPI_Request req;
@@ -122,6 +124,7 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 	void MutexClient<T>::lock(DistributedId id, int location) {
+		FPMAS_LOGD(this->comm.getRank(), "MUTEX_CLIENT", "locking data %s from %i", ID_C_STR(id), location);
 		MPI_Request req;
 		this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::LOCK, &req);
 
@@ -138,6 +141,7 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 	void MutexClient<T>::unlock(DistributedId id, int location) {
+		FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "unlocking data %s from %i", ID_C_STR(id), location);
 		MPI_Request req;
 		this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK, &req);
 
@@ -146,6 +150,7 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 		void MutexClient<T>::lockShared(DistributedId id, int location) {
+			FPMAS_LOGD(this->comm.getRank(), "MUTEX_CLIENT", "share locking data %s from %i", ID_C_STR(id), location);
 			MPI_Request req;
 			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::LOCK_SHARED, &req);
 
@@ -161,6 +166,7 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 		void MutexClient<T>::unlockShared(DistributedId id, int location) {
+			FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "share unlocking data %s from %i", ID_C_STR(id), location);
 			MPI_Request req;
 			this->id_mpi.Issend(id, location, mutex_server.getEpoch() | Tag::UNLOCK_SHARED, &req);
 
@@ -172,13 +178,14 @@ namespace FPMAS::synchro::hard {
 	 */
 	template<typename T>
 	void MutexClient<T>::waitSendRequest(MPI_Request* req) {
-		FPMAS_LOGD(this->comm.getRank(), "WAIT", "wait for send");
+		FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "wait for send...");
 		bool sent = comm.test(req);
 
 		while(!sent) {
 			mutex_server.handleIncomingRequests();
 			sent = comm.test(req);
 		}
+		FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "Request sent.");
 	}
 
 }

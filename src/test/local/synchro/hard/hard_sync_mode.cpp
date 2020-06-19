@@ -24,7 +24,7 @@ class HardDataSyncTest : public ::testing::Test {
 		MockMpiCommunicator<2, 4> comm;
 		MockMutexServer<int> mutex_server;
 		MockTerminationAlgorithm termination {comm};
-		HardDataSync<int> data_sync {mutex_server, termination};
+		HardDataSync<int> data_sync {comm, mutex_server, termination};
 
 };
 
@@ -39,7 +39,7 @@ class HardSyncLinkerTest : public ::testing::Test {
 		MockLinkServer server;
 		MockLinkClient<int> client;
 		MockTerminationAlgorithm termination {comm};
-		HardSyncLinker<int> syncLinker {client, server, termination};
+		HardSyncLinker<int> syncLinker {comm, client, server, termination};
 
 };
 

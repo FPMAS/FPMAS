@@ -47,12 +47,12 @@ namespace FPMAS::synchro::hard {
 			// Check read request
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LINK, &req_status)) {
 				ArcApi* arc = arc_mpi.recv(&req_status);
-				FPMAS_LOGD(this->comm.getRank(), "RECV", "link request from %i", req_status.MPI_SOURCE);
+				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive link request from %i", req_status.MPI_SOURCE);
 				graph.importArc(arc);
 			}
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
 				DistributedId unlinkId = id_mpi.recv(&req_status);
-				FPMAS_LOGD(this->comm.getRank(), "RECV", "unlink request %s from %i", ID_C_STR(unlinkId), req_status.MPI_SOURCE);
+				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", ID_C_STR(unlinkId), req_status.MPI_SOURCE);
 				graph.clearArc(graph.getArc(unlinkId));
 			}
 		}
@@ -157,7 +157,7 @@ namespace FPMAS::synchro::hard {
 	 */
 	template<typename T>
 	void LinkClient<T>::waitSendRequest(MPI_Request* req) {
-		FPMAS_LOGD(this->comm.getRank(), "WAIT", "wait for send");
+		FPMAS_LOGV(this->comm.getRank(), "LINK_CLIENT", "wait for send...");
 		bool sent = comm.test(req);
 
 		while(!sent) {
@@ -177,15 +177,16 @@ namespace FPMAS::synchro::hard {
 			typedef api::synchro::hard::LinkClient<T> LinkClient;
 			typedef api::synchro::hard::LinkServer LinkServer;
 
+			api::communication::MpiCommunicator& comm;
 			LinkClient& link_client;
 			LinkServer& link_server;
 
 			TerminationAlgorithm& termination;
 
 		public:
-			HardSyncLinker(
+			HardSyncLinker(api::communication::MpiCommunicator& comm,
 					LinkClient& link_client, LinkServer& link_server, TerminationAlgorithm& termination)
-				: link_client(link_client), link_server(link_server), termination(termination) {}
+				: comm(comm), link_client(link_client), link_server(link_server), termination(termination) {}
 
 			const TerminationAlgorithm& getTerminationAlgorithm() const {
 				return termination;
@@ -200,7 +201,9 @@ namespace FPMAS::synchro::hard {
 			};
 
 			void synchronize() override {
-				termination.terminate(link_server);
+				FPMAS_LOGI(comm.getRank(), "HARD_SYNC_LINKER", "Synchronizing sync linker...");
+				//termination.terminate(link_server);
+				FPMAS_LOGI(comm.getRank(), "HARD_SYNC_LINKER", "Synchronized.");
 			};
 	};
 }

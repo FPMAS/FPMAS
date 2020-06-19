@@ -239,7 +239,7 @@ namespace FPMAS::graph::parallel {
 			// temporary input node.
 			this->insert(node);
 			setLocal(node);
-			node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
+			node->setMutex(sync_mode_runtime.buildMutex(node));
 			return node;
 		}
 		FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Replacing existing DISTANT node %s.", ID_C_STR(node->getId()));
@@ -249,6 +249,8 @@ namespace FPMAS::graph::parallel {
 		// Set local representation as local
 		auto local_node = this->getNode(node->getId());
 		setLocal(local_node);
+		local_node->data() = std::move(node->data());
+		local_node->setWeight(node->getWeight());
 
 		// Deletes unused temporary input node
 		delete node;
@@ -306,7 +308,7 @@ namespace FPMAS::graph::parallel {
 				src = arc->getSourceNode();
 				this->insert(src);
 				setDistant(src);
-				src->setMutex(sync_mode_runtime.buildMutex(src->getId(), src->data()));
+				src->setMutex(sync_mode_runtime.buildMutex(src));
 			}
 			if(this->getNodes().count(tgtId) > 0) {
 				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing target %s", ID_C_STR(tgtId));
@@ -334,7 +336,7 @@ namespace FPMAS::graph::parallel {
 				tgt = arc->getTargetNode();
 				this->insert(tgt);
 				setDistant(tgt);
-				tgt->setMutex(sync_mode_runtime.buildMutex(tgt->getId(), tgt->data()));
+				tgt->setMutex(sync_mode_runtime.buildMutex(tgt));
 			}
 			// Finally, insert the temporary arc into the graph.
 			arc->setState(arcLocationState);
@@ -365,7 +367,7 @@ namespace FPMAS::graph::parallel {
 				this->insert(node);
 				setLocal(node);
 				location_manager.addManagedNode(node, mpi_communicator.getRank());
-				node->setMutex(sync_mode_runtime.buildMutex(node->getId(), node->data()));
+				node->setMutex(sync_mode_runtime.buildMutex(node));
 				//sync_mode_runtime.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
 				return node;
 			}

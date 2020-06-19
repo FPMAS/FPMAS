@@ -19,14 +19,14 @@ namespace FPMAS::synchro::hard {
 			private:
 				comm_t& comm;
 				TypedMpi<Color> colorMpi {comm};
-				Color color;
+				Color color = Color::WHITE;
 
 				void toggleEpoch(server_t& server);
 
 			public:
 				TerminationAlgorithm(comm_t& comm) : comm(comm) {}
 				const TypedMpi<Color>& getColorMpi() const {return colorMpi;}
-				void terminate(server_t& mutexServer) override;
+				void terminate(server_t& server) override;
 		};
 
 	template<template<typename> class TypedMpi>
@@ -41,7 +41,9 @@ namespace FPMAS::synchro::hard {
 		}
 
 	template<template<typename> class TypedMpi>
-		void TerminationAlgorithm<TypedMpi>::terminate(server_t& mutexServer) {
+		void TerminationAlgorithm<TypedMpi>::terminate(server_t& server) {
+			FPMAS_LOGD(comm.getRank(), "TERMINATION", "Entering termination algorithm... (epoch : %i)",
+					server.getEpoch());
 			Color token;
 
 			if(this->comm.getRank() == 0) {
@@ -61,7 +63,8 @@ namespace FPMAS::synchro::hard {
 							for (int i = 1; i < this->comm.getSize(); ++i) {
 								this->comm.send(i, Tag::END);
 							}
-							toggleEpoch(mutexServer);
+							toggleEpoch(server);
+							FPMAS_LOGD(comm.getRank(), "TERMINATION", "Termination complete.");
 							return;
 						} else {
 							this->color = Color::WHITE;
@@ -79,14 +82,15 @@ namespace FPMAS::synchro::hard {
 				}
 
 				// Check for END
-				if(this->comm.getRank() > 0 && this->comm.Iprobe(MPI_ANY_SOURCE, Tag::END, &status) > 0) {
+				if(this->comm.getRank() > 0 && this->comm.Iprobe(0, Tag::END, &status) > 0) {
 					this->comm.recv(&status);
-					toggleEpoch(mutexServer);
+					toggleEpoch(server);
+					FPMAS_LOGD(comm.getRank(), "TERMINATION", "End message received, termination complete.");
 					return;
 				}
 
 				// Handles READ or ACQUIRE requests
-				mutexServer.handleIncomingRequests();
+				server.handleIncomingRequests();
 			}
 		}
 

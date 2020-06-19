@@ -24,15 +24,16 @@ namespace FPMAS::synchro::hard {
 				typedef FPMAS::api::synchro::hard::MutexServer<T>
 					MutexServer;
 
-				DistributedId id;
-				std::reference_wrapper<T> _data;
-				LocationState* state;
-				int* location;
+				//DistributedId id;
+				//std::reference_wrapper<T> _data;
+				//LocationState* state;
+				//int* location;
+				api::graph::parallel::DistributedNode<T>* node;
 				bool _locked = false;
 				int _locked_shared = 0;
 
-				MutexClient* mutex_client;
-				MutexServer* mutex_server;
+				MutexClient& mutex_client;
+				MutexServer& mutex_server;
 
 				//std::queue<Request> readRequests;
 				//std::queue<Request> lockRequests;
@@ -46,26 +47,29 @@ namespace FPMAS::synchro::hard {
 				void _unlock() override {_locked=false;}
 				void _unlockShared() override {_locked_shared--;}
 			public:
-				HardSyncMutex(T& data) : _data(std::ref(data)) {}
+				HardSyncMutex(api::graph::parallel::DistributedNode<T>* node, MutexClient& mutex_client, MutexServer& mutex_server) :
+					node(node), mutex_client(mutex_client), mutex_server(mutex_server) {}
 
-				void setUp(
-					DistributedId id,
-					LocationState& state,
-					int& location,
-					MutexClient& mutex_client,
-					MutexServer& mutex_server) {
-					this->id = id;
-					this->state = &state;
-					this->location = &location;
-					this->mutex_client = &mutex_client;
-					this->mutex_server = &mutex_server;
-				}
+				/*
+				 *void setUp(
+				 *    DistributedId id,
+				 *    LocationState& state,
+				 *    int& location,
+				 *    MutexClient& mutex_client,
+				 *    MutexServer& mutex_server) {
+				 *    this->id = id;
+				 *    this->state = &state;
+				 *    this->location = &location;
+				 *    this->mutex_client = &mutex_client;
+				 *    this->mutex_server = &mutex_server;
+				 *}
+				 */
 
 				void pushRequest(Request request) override;
 				std::queue<Request> requestsToProcess() override;
 
-				T& data() override {return _data;}
-				const T& data() const override {return _data;}
+				T& data() override {return node->data();}
+				const T& data() const override {return node->data();}
 
 				const T& read() override;
 				void releaseRead() override;
@@ -84,104 +88,104 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 		const T& HardSyncMutex<T>::read() {
-			if(*state == LocationState::LOCAL) {
+			if(node->state() == LocationState::LOCAL) {
 				if(_locked) {
-					Request req = Request(id, Request::LOCAL, MutexRequestType::READ);
+					Request req = Request(node->getId(), Request::LOCAL, MutexRequestType::READ);
 					pushRequest(req);
-					mutex_server->wait(req);
+					mutex_server.wait(req);
 				}
 				_locked_shared++;
-				return _data;
+				return node->data();
 			}
-			_data.get() = mutex_client->read(id, *location);
-			return _data;
+			node->data() = std::move(mutex_client.read(node->getId(), node->getLocation()));
+			return node->data();
 		}
 	template<typename T>
 		void HardSyncMutex<T>::releaseRead() {
-			if(*state == LocationState::LOCAL) {
+			if(node->state() == LocationState::LOCAL) {
 				_locked_shared--;
 				if(_locked_shared==0) {
-					mutex_server->notify(id);
+					mutex_server.notify(node->getId());
 				}
 				return;
 			}
-			mutex_client->releaseRead(id, *location);
+			mutex_client.releaseRead(node->getId(), node->getLocation());
 		}
 
 	template<typename T>
 		T& HardSyncMutex<T>::acquire() {
-			if(*state==LocationState::LOCAL) {
+			if(node->state()==LocationState::LOCAL) {
 				if(_locked || _locked_shared > 0) {
-					Request req = Request(id, Request::LOCAL, MutexRequestType::ACQUIRE);
+					Request req = Request(node->getId(), Request::LOCAL, MutexRequestType::ACQUIRE);
 					pushRequest(req);
-					mutex_server->wait(req);
+					mutex_server.wait(req);
 				}
 				this->_locked = true;
-				return _data;
+				return node->data();
 			}
-			_data.get() = mutex_client->acquire(id, *location);
-			return _data;
+			node->data() = std::move(mutex_client.acquire(node->getId(), node->getLocation()));
+			return node->data();
 		}
 
 	template<typename T>
 		void HardSyncMutex<T>::releaseAcquire() {
-			if(*state==LocationState::LOCAL) {
-				mutex_server->notify(id);
+			if(node->state()==LocationState::LOCAL) {
+				mutex_server.notify(node->getId());
 				this->_locked = false;
 				return;
 			}
-			mutex_client->releaseAcquire(id, _data, *location);
+			mutex_client.releaseAcquire(node->getId(), node->data(), node->getLocation());
 		}
 
 	template<typename T>
 		void HardSyncMutex<T>::lock() {
-			if(*state==LocationState::LOCAL) {
+			if(node->state()==LocationState::LOCAL) {
 				if(_locked || _locked_shared > 0) {
-					Request req = Request(id, Request::LOCAL, MutexRequestType::LOCK);
+					Request req = Request(node->getId(), Request::LOCAL, MutexRequestType::LOCK);
 					pushRequest(req);
-					mutex_server->wait(req);
+					mutex_server.wait(req);
 				}
 				this->_locked = true;
 				return;
 			}
-			mutex_client->lock(id, *location);
+			mutex_client.lock(node->getId(), node->getLocation());
 		}
 
 	template<typename T>
 		void HardSyncMutex<T>::unlock() {
-			if(*state==LocationState::LOCAL) {
+			if(node->state()==LocationState::LOCAL) {
 				// TODO : this is NOT thread safe
 				this->_locked = false;
-				mutex_server->notify(id);
+				mutex_server.notify(node->getId());
 				return;
 			}
-			mutex_client->unlock(id, *location);
+			mutex_client.unlock(node->getId(), node->getLocation());
 		}
 
 	template<typename T>
 		void HardSyncMutex<T>::lockShared() {
-			if(*state==LocationState::LOCAL) {
+			if(node->state()==LocationState::LOCAL) {
 				if(_locked) {
-					Request req = Request(id, Request::LOCAL, MutexRequestType::LOCK_SHARED);
+					Request req = Request(node->getId(), Request::LOCAL, MutexRequestType::LOCK_SHARED);
 					pushRequest(req);
-					mutex_server->wait(req);
+					mutex_server.wait(req);
 				}
 				_locked_shared++;
 				return;
 			}
-			mutex_client->lockShared(id, *location);
+			mutex_client.lockShared(node->getId(), node->getLocation());
 		}
 
 	template<typename T>
 		void HardSyncMutex<T>::unlockShared() {
-			if(*state==LocationState::LOCAL) {
+			if(node->state()==LocationState::LOCAL) {
 				_locked_shared--;
 				if(_locked_shared==0) {
-					mutex_server->notify(id);
+					mutex_server.notify(node->getId());
 				}
 				return;
 			}
-			mutex_client->unlockShared(id, *location);
+			mutex_client.unlockShared(node->getId(), node->getLocation());
 		}
 
 	template<typename T>

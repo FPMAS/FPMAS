@@ -19,6 +19,7 @@ class MockAgent : public FPMAS::api::model::Agent {
 		MOCK_METHOD(FPMAS::api::model::GroupId, groupId, (), (const, override));
 		MOCK_METHOD(void, setGroupId, (FPMAS::api::model::GroupId), (override));
 		MOCK_METHOD(FPMAS::api::model::TypeId, typeId, (), (const, override));
+		MOCK_METHOD(FPMAS::api::model::Agent*, copy, (), (const, override));
 		MOCK_METHOD(FPMAS::api::model::AgentNode*, node, (), (override));
 		MOCK_METHOD(const FPMAS::api::model::AgentNode*, node, (), (const, override));
 		MOCK_METHOD(void, setNode, (FPMAS::api::model::AgentNode*), (override));
@@ -68,8 +69,12 @@ class MockModel : public FPMAS::api::model::Model {
 };
 
 template<FPMAS::api::model::TypeId _TYPE_ID = 0>
-class MockAgentBase : public FPMAS::model::AgentBase<_TYPE_ID> {
+class MockAgentBase : public FPMAS::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID> {
 	public:
+		MockAgentBase() {}
+		MockAgentBase(const MockAgentBase& other)
+			: FPMAS::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID>(other) {}
+
 		MOCK_METHOD(void, act, (), (override));
 };
 

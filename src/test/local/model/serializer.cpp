@@ -1,15 +1,10 @@
 #include "model/serializer.h"
-#include "../mocks/model/mock_model.h"
+#include "api/model/types.h"
 
 using ::testing::AnyNumber;
 using ::testing::WhenDynamicCastTo;
 using ::testing::Not;
 using ::testing::IsNull;
-
-FPMAS_JSON_SERIALIZE_AGENT(MockAgent<4>, MockAgent<2>, MockAgent<12>)
-
-//template<FPMAS::api::model::TypeId TYPE_ID>
-//using MockAgent = FPMAS::serializer_test::MockAgent<TYPE_ID>;
 
 TEST(AgentSerializer, to_json) {
 	MockAgent<4>* agent_4 = new MockAgent<4>;

@@ -43,6 +43,7 @@
  */
 #include "gtest/gtest.h"
 
+#include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 #include "synchro/hard/hard_sync_mutex.h"
 
@@ -63,15 +64,19 @@ class HardSyncMutexTest : public ::testing::Test {
 	protected:
 		DistributedId id {2, 0};
 		int data = 14;
+		MockDistributedNode<int> node {id, data};
 		LocationState state;
 		int location;
+
 		MockMutexClient<int> mock_mutex_client;
 		MockMutexServer<int> mock_mutex_server;
 
-		HardSyncMutex<int> hard_sync_mutex {data};
+		HardSyncMutex<int> hard_sync_mutex {&node, mock_mutex_client, mock_mutex_server};
 
 		void SetUp() {
-			hard_sync_mutex.setUp(id, state, location, mock_mutex_client, mock_mutex_server);
+			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
+			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
+			//hard_sync_mutex.setUp(id, state, location, mock_mutex_client, mock_mutex_server);
 		}
 };
 

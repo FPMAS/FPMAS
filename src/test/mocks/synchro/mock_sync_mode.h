@@ -30,8 +30,9 @@ class MockSyncModeRuntime : public FPMAS::api::synchro::SyncModeRuntime<T> {
 			FPMAS::api::communication::MpiCommunicator&) {
 			ON_CALL(*this, buildMutex).WillByDefault(ReturnNew<MockMutex<int>>());
 		}
+		typedef FPMAS::api::graph::parallel::DistributedNode<T> NodeType;
 
-		MOCK_METHOD(MockMutex<T>*, buildMutex, (DistributedId, T&), (override));
+		MOCK_METHOD(MockMutex<T>*, buildMutex, (NodeType*), (override));
 		MOCK_METHOD(FPMAS::api::synchro::SyncLinker<T>&, getSyncLinker, (), (override));
 		MOCK_METHOD(FPMAS::api::synchro::DataSync&, getDataSync, (), (override));
 

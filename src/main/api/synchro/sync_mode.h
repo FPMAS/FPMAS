@@ -22,7 +22,7 @@ namespace FPMAS::api::synchro {
 	template<typename T>
 		class SyncModeRuntime {
 			public:
-				virtual Mutex<T>* buildMutex(DistributedId id, T& data) = 0;
+				virtual Mutex<T>* buildMutex(api::graph::parallel::DistributedNode<T>*) = 0;
 				virtual SyncLinker<T>& getSyncLinker() = 0;
 				virtual DataSync& getDataSync() = 0;
 		};

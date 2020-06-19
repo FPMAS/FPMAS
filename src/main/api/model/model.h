@@ -22,9 +22,9 @@ namespace FPMAS::api::model {
 				: VirtualPtrWrapper(agent) {}
 
 			AgentPtrWrapper(AgentPtrWrapper&&);
-			AgentPtrWrapper(const AgentPtrWrapper&) = delete;
+			AgentPtrWrapper(const AgentPtrWrapper&);
 			AgentPtrWrapper& operator=(AgentPtrWrapper&&);
-			AgentPtrWrapper& operator=(const AgentPtrWrapper&) = delete;
+			AgentPtrWrapper& operator=(const AgentPtrWrapper&);
 
 			~AgentPtrWrapper();
 	};
@@ -34,6 +34,7 @@ namespace FPMAS::api::model {
 			virtual GroupId groupId() const = 0;
 			virtual void setGroupId(GroupId) = 0;
 			virtual TypeId typeId() const = 0;
+			virtual Agent* copy() const = 0;
 
 			virtual AgentNode* node() = 0;
 			virtual const AgentNode* node() const = 0;

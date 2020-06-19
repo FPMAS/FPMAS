@@ -84,13 +84,29 @@ class MutexServerTest : public ::testing::Test {
  * mutex_server_test_manage
  */
 TEST_F(MutexServerTest, manage) {
-	MockHardSyncMutex<int> mock_mutex;
-	server.manage(DistributedId(5, 4), &mock_mutex);
-	server.manage(DistributedId(0, 2), &mock_mutex);
+	MockHardSyncMutex<int> mock_mutex_1;
+	MockHardSyncMutex<int> mock_mutex_2;
+	server.manage(DistributedId(5, 4), &mock_mutex_1);
+	server.manage(DistributedId(0, 2), &mock_mutex_2);
 
 	ASSERT_THAT(server.getManagedMutexes(), UnorderedElementsAre(
-		Pair(DistributedId(5, 4), _),
-		Pair(DistributedId(0, 2), _)
+		Pair(DistributedId(5, 4), &mock_mutex_1),
+		Pair(DistributedId(0, 2), &mock_mutex_2)
+	));
+}
+
+/*
+ * If manage is called with an already managed id, the associated mutex must be
+ * replaced.
+ */
+TEST_F(MutexServerTest, manage_update) {
+	MockHardSyncMutex<int> mock_mutex_1;
+	MockHardSyncMutex<int> mock_mutex_2;
+	server.manage(DistributedId(5, 4), &mock_mutex_1);
+	server.manage(DistributedId(5, 4), &mock_mutex_2);
+
+	ASSERT_THAT(server.getManagedMutexes(), ElementsAre(
+		Pair(DistributedId(5, 4), &mock_mutex_2)
 	));
 }
 

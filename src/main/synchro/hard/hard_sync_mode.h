@@ -47,12 +47,12 @@ namespace FPMAS::synchro {
 					link_server(comm, id_mpi, arc_mpi, graph),
 					link_client(comm, id_mpi, arc_mpi, link_server),
 					termination(comm),
-					sync_linker(link_client, link_server, termination),
-					data_sync(mutex_server, termination) {}
+					sync_linker(comm, link_client, link_server, termination),
+					data_sync(comm, mutex_server, termination) {}
 
-				HardSyncMutex<T>* buildMutex(DistributedId id, T& data) override {
-					HardSyncMutex<T>* mutex = new HardSyncMutex<T>(data);
-					mutex_server.manage(id, mutex);
+				HardSyncMutex<T>* buildMutex(api::graph::parallel::DistributedNode<T>* node) override {
+					HardSyncMutex<T>* mutex = new HardSyncMutex<T>(node, mutex_client, mutex_server);
+					mutex_server.manage(node->getId(), mutex);
 					return mutex;
 				};
 

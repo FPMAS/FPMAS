@@ -14,7 +14,7 @@ namespace FPMAS::model {
 	using api::model::AgentNode;
 	using api::model::AgentPtr;
 
-	template<api::model::TypeId _TYPE_ID>
+	template<typename AgentType, api::model::TypeId _TYPE_ID>
 	class AgentBase : public api::model::Agent {
 		public:
 			inline static const api::model::TypeId TYPE_ID = _TYPE_ID;
@@ -28,6 +28,7 @@ namespace FPMAS::model {
 			void setGroupId(api::model::GroupId group_id) override {this->group_id = group_id;}
 
 			api::model::TypeId typeId() const override {return TYPE_ID;}
+			api::model::Agent* copy() const override {return new AgentType(*static_cast<const AgentType*>(this));}
 
 			api::model::AgentNode* node() override {return _node;}
 			const api::model::AgentNode* node() const override {return _node;}

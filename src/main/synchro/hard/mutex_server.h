@@ -68,7 +68,7 @@ namespace FPMAS::synchro::hard {
 				Epoch getEpoch() const override {return this->epoch;}
 
 				void manage(DistributedId id, HardSyncMutex* mutex) override {
-					mutex_map.insert({id, mutex});
+					mutex_map[id] = mutex;
 				}
 				void remove(DistributedId id) override {
 					mutex_map.erase(id);
@@ -91,28 +91,28 @@ namespace FPMAS::synchro::hard {
 		// Check read request
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::READ, &req_status)) {
 			DistributedId id = id_mpi.recv(&req_status);
-			FPMAS_LOGD(this->comm.getRank(), "RECV", "read request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
+			FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive read request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
 			this->handleRead(id, req_status.MPI_SOURCE);
 		}
 
 		// Check acquire request
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::ACQUIRE, &req_status)) {
 			DistributedId id = id_mpi.recv(&req_status);
-			FPMAS_LOGD(this->comm.getRank(), "RECV", "acquire request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
+			FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive acquire request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
 			this->handleAcquire(id, req_status.MPI_SOURCE);
 		}
 		
 		// Check lock
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LOCK, &req_status)) {
 			DistributedId id = id_mpi.recv(&req_status);
-			FPMAS_LOGD(this->comm.getRank(), "RECV", "lock request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
+			FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive lock request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
 			this->handleLock(id, req_status.MPI_SOURCE);
 		}
 
 		// Check shared lock
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LOCK_SHARED, &req_status)) {
 			DistributedId id = id_mpi.recv(&req_status);
-			FPMAS_LOGD(this->comm.getRank(), "RECV", "shared lock request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
+			FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive shared lock request %s from %i", ID_C_STR(id), req_status.MPI_SOURCE);
 			this->handleLockShared(id, req_status.MPI_SOURCE);
 		}
 	}
@@ -136,6 +136,8 @@ namespace FPMAS::synchro::hard {
 		// Check release acquire
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::RELEASE_ACQUIRE, &req_status)) {
 			DataUpdatePack<T> update = data_update_mpi.recv(&req_status);
+			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive release acquire %s from %i",
+					ID_C_STR(update.id), req_status.MPI_SOURCE);
 
 			this->handleReleaseAcquire(update);
 		}
@@ -143,6 +145,8 @@ namespace FPMAS::synchro::hard {
 		// Check unlock
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK, &req_status)) {
 			DistributedId id = id_mpi.recv(&req_status);
+			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock %s from %i",
+					ID_C_STR(id), req_status.MPI_SOURCE);
 
 			this->handleUnlock(id);
 		}
@@ -150,6 +154,8 @@ namespace FPMAS::synchro::hard {
 		// Check shared unlock
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK_SHARED, &req_status)) {
 			DistributedId id = id_mpi.recv(&req_status);
+			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock shared %s from %i",
+					ID_C_STR(id), req_status.MPI_SOURCE);
 
 			this->handleUnlockShared(id);
 		}

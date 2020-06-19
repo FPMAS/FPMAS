@@ -13,7 +13,7 @@ using ::testing::AnyNumber;
 using ::testing::AtLeast;
 using FPMAS::synchro::hard::TerminationAlgorithm;
 
-class Mpi_TerminationTest : public ::testing::Test {
+class TerminationTest : public ::testing::Test {
 	protected:
 		FPMAS::communication::MpiCommunicator comm;
 		MockMutexServer<int> mutex_server;
@@ -26,13 +26,13 @@ class Mpi_TerminationTest : public ::testing::Test {
 
 };
 
-TEST_F(Mpi_TerminationTest, simple_termination_test) {
+TEST_F(TerminationTest, simple_termination_test) {
 	EXPECT_CALL(mutex_server, handleIncomingRequests).Times(AnyNumber());
 	termination.terminate(mutex_server);
 }
 
 
-TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
+TEST_F(TerminationTest, termination_test_with_delay) {
 	auto start = std::chrono::system_clock::now();
 	if(comm.getRank() == 0) {
 		EXPECT_CALL(mutex_server, handleIncomingRequests).Times(AnyNumber());
@@ -47,4 +47,32 @@ TEST_F(Mpi_TerminationTest, termination_test_with_delay) {
 	std::chrono::duration delay = end - start;
 
 	ASSERT_GE(delay, 1s);
+}
+
+class FakeServer : public FPMAS::api::synchro::hard::Server {
+	private:
+		Epoch epoch = Epoch::EVEN;
+	public:
+		void setEpoch(Epoch epoch) override {this->epoch = epoch;};
+		Epoch getEpoch() const override {return epoch;}
+
+		void handleIncomingRequests() override {}
+};
+
+class MultipleTerminationTest : public ::testing::Test {
+	protected:
+		FPMAS::communication::MpiCommunicator comm;
+		FakeServer server1;
+		FakeServer server2;
+		TerminationAlgorithm<FPMAS::communication::TypedMpi> termination {comm};
+};
+
+TEST_F(MultipleTerminationTest, test) {
+	for(int i = 0; i < 50; i++) {
+		termination.terminate(server1);
+		MPI_Barrier(comm.getMpiComm());
+
+		termination.terminate(server2);
+		MPI_Barrier(comm.getMpiComm());
+	}
 }

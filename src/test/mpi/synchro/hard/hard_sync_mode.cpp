@@ -3,6 +3,7 @@
 #include <random>
 
 #include "graph/parallel/distributed_graph.h"
+#include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
 
 using FPMAS::api::graph::parallel::LocationState;
@@ -29,15 +30,18 @@ class MPI_HardSyncMutexSelfReadTest : public ::testing::Test {
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = comm.getRank();
+		MockDistributedNode<int> node {DistributedId(3, comm.getRank()), data};
+
 		LocationState state = LocationState::DISTANT;
 		int location = comm.getRank();
 
 		MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi};
 		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server};
-		HardSyncMutex<int> mutex {data};
+		HardSyncMutex<int> mutex {&node, client, server};
 
 		void SetUp() override {
-			mutex.setUp(DistributedId(3, comm.getRank()), state, location, client, server);
+			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
+			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
 			server.manage(DistributedId(3, comm.getRank()), &mutex);
 
 			state = LocationState::LOCAL;
@@ -66,15 +70,19 @@ class Mpi_MutexServerRaceCondition : public ::testing::Test {
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = 0;
+		MockDistributedNode<int> node {DistributedId(3, comm.getRank()), data};
+
 		LocationState state = LocationState::DISTANT;
 		int location = 0;
 
 		MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi};
 		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server};
-		HardSyncMutex<int> mutex {data};
+		HardSyncMutex<int> mutex {&node, client, server};
 
 		void SetUp() override {
-			mutex.setUp(DistributedId(3, 6), state, location, client, server);
+			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
+			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
+
 			server.manage(DistributedId(3, 6), &mutex);
 			if(comm.getRank() == 0) {
 				state = LocationState::LOCAL;
