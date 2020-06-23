@@ -4,7 +4,7 @@
 #include "gmock/gmock.h"
 
 template<typename... Args>
-class MockCallback : public FPMAS::api::utils::Callback<Args...> {
+class MockCallback : public fpmas::api::utils::Callback<Args...> {
 	public:
 		MOCK_METHOD(void, call, (Args...), (override));
 };

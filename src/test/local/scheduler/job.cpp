@@ -2,7 +2,7 @@
 
 #include "../mocks/scheduler/mock_scheduler.h"
 
-using FPMAS::scheduler::Job;
+using fpmas::scheduler::Job;
 
 using ::testing::Ref;
 using ::testing::UnorderedElementsAre;
@@ -10,7 +10,7 @@ using ::testing::IsEmpty;
 
 class JobTest : public ::testing::Test {
 	protected:
-		const FPMAS::JID id = 236;
+		const fpmas::JID id = 236;
 		Job job {id};
 };
 

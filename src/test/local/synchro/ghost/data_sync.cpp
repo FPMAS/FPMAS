@@ -11,7 +11,7 @@ using ::testing::IsEmpty;
 using ::testing::Pair;
 using ::testing::UnorderedElementsAre;
 
-using FPMAS::synchro::ghost::GhostDataSync;
+using fpmas::synchro::ghost::GhostDataSync;
 
 class GhostDataSyncTest : public ::testing::Test {
 	protected:
@@ -21,7 +21,7 @@ class GhostDataSyncTest : public ::testing::Test {
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
-		MockMpi<FPMAS::graph::parallel::NodePtrWrapper<int>> node_mpi {mock_comm};
+		MockMpi<fpmas::graph::parallel::NodePtrWrapper<int>> node_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
 		MockMpi<std::pair<DistributedId, int>> location_mpi {mock_comm};
 		MockDistributedGraph<int, NodeType, ArcType> mocked_graph;
@@ -122,7 +122,7 @@ TEST_F(GhostDataSyncTest, import_test) {
 	);
 	EXPECT_CALL(id_mpi, migrate(requests_matcher));
 
-	std::unordered_map<int, std::vector<FPMAS::graph::parallel::NodePtrWrapper<int>>> updated_data {
+	std::unordered_map<int, std::vector<fpmas::graph::parallel::NodePtrWrapper<int>>> updated_data {
 		{0, {new NodeType {DistributedId(0, 0), 12, 14.6}, new NodeType {DistributedId(6, 2), 56, 7.2}}},
 		{9, {new NodeType {DistributedId(7, 1), 125, 2.2}}}
 	};

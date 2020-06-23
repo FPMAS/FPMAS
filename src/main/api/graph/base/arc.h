@@ -3,7 +3,7 @@
 
 #include "id.h"
 
-namespace FPMAS::api::graph::base {
+namespace fpmas::api::graph::base {
 
 	/**
 	 * Type used to index layers.

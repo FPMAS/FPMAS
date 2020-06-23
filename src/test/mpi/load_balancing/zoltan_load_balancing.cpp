@@ -11,24 +11,24 @@ using ::testing::Contains;
 using ::testing::Pair;
 using ::testing::_;
 
-using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::load_balancing::ZoltanLoadBalancing;
+using fpmas::graph::parallel::DistributedGraph;
+using fpmas::load_balancing::ZoltanLoadBalancing;
 
 class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 	protected:
 		DistributedGraph<
 			int,
-			FPMAS::synchro::GhostMode,
-			FPMAS::graph::parallel::DistributedNode,
-			FPMAS::graph::parallel::DistributedArc,
-			FPMAS::api::communication::MpiSetUp<
-				FPMAS::communication::MpiCommunicator,
-				FPMAS::communication::TypedMpi>,
-			FPMAS::graph::parallel::LocationManager
+			fpmas::synchro::GhostMode,
+			fpmas::graph::parallel::DistributedNode,
+			fpmas::graph::parallel::DistributedArc,
+			fpmas::api::communication::MpiSetUp<
+				fpmas::communication::MpiCommunicator,
+				fpmas::communication::TypedMpi>,
+			fpmas::graph::parallel::LocationManager
 				> graph;
 
 		ZoltanLoadBalancing<int> load_balancing {graph.getMpiCommunicator().getMpiComm()};
-		FPMAS::load_balancing::zoltan::PartitionMap<int> fixed_nodes;
+		fpmas::load_balancing::zoltan::PartitionMap<int> fixed_nodes;
 
 		void SetUp() override {
 			if(graph.getMpiCommunicator().getRank() == 0) {

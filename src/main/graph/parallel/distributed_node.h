@@ -6,9 +6,9 @@
 #include "api/utils/ptr_wrapper.h"
 #include "graph/base/node.h"
 
-namespace FPMAS::graph::parallel {
+namespace fpmas::graph::parallel {
 
-	using FPMAS::api::graph::parallel::LocationState;
+	using fpmas::api::graph::parallel::LocationState;
 
 	template<typename T>
 	class DistributedNode : 
@@ -65,18 +65,18 @@ namespace FPMAS::graph::parallel {
 	};
 
 	template<typename T>
-	using NodePtrWrapper = FPMAS::api::utils::VirtualPtrWrapper<FPMAS::api::graph::parallel::DistributedNode<T>>;
+	using NodePtrWrapper = fpmas::api::utils::VirtualPtrWrapper<fpmas::api::graph::parallel::DistributedNode<T>>;
 }
 
 namespace nlohmann {
 
 	template<typename T>
-		using NodePtrWrapper = FPMAS::graph::parallel::NodePtrWrapper<T>;
+		using NodePtrWrapper = fpmas::graph::parallel::NodePtrWrapper<T>;
 
 	template<typename T>
 		struct adl_serializer<NodePtrWrapper<T>> {
 			static NodePtrWrapper<T> from_json(const json& j) {
-				return new FPMAS::graph::parallel::DistributedNode<T> {
+				return new fpmas::graph::parallel::DistributedNode<T> {
 					j.at("id").get<DistributedId>(),
 					std::move(j.at("data").get<T>()),
 					j.at("weight").get<float>(),

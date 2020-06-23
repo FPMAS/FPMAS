@@ -8,7 +8,7 @@
 #include "api/synchro/hard/client_server.h"
 #include "server_pack.h"
 
-namespace FPMAS::synchro::hard {
+namespace fpmas::synchro::hard {
 
 	using api::synchro::hard::Epoch;
 	using api::synchro::hard::Tag;
@@ -16,7 +16,7 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 	class LinkServer
-		: public FPMAS::api::synchro::hard::LinkServer {
+		: public fpmas::api::synchro::hard::LinkServer {
 			public:
 				typedef api::graph::parallel::DistributedArc<T> ArcApi;
 				typedef api::communication::TypedMpi<graph::parallel::ArcPtrWrapper<T>> ArcMpi;
@@ -27,13 +27,13 @@ namespace FPMAS::synchro::hard {
 			IdMpi& id_mpi;
 			ArcMpi& arc_mpi;
 
-			FPMAS::api::graph::parallel::DistributedGraph<T>& graph;
+			fpmas::api::graph::parallel::DistributedGraph<T>& graph;
 
 			public:
 				LinkServer(
 						api::communication::MpiCommunicator& comm,
 						IdMpi& id_mpi, ArcMpi& arc_mpi,
-						FPMAS::api::graph::parallel::DistributedGraph<T>& graph)
+						fpmas::api::graph::parallel::DistributedGraph<T>& graph)
 					:  comm(comm), id_mpi(id_mpi), arc_mpi(arc_mpi), graph(graph) {}
 
 				Epoch getEpoch() const override {return epoch;}
@@ -59,8 +59,8 @@ namespace FPMAS::synchro::hard {
 		}
 
 	template<typename T>
-		class LinkClient : public FPMAS::api::synchro::hard::LinkClient<T> {
-			typedef FPMAS::api::synchro::hard::LinkServer LinkServer;
+		class LinkClient : public fpmas::api::synchro::hard::LinkClient<T> {
+			typedef fpmas::api::synchro::hard::LinkServer LinkServer;
 			public:
 				typedef api::graph::parallel::DistributedArc<T> ArcApi;
 				typedef api::communication::TypedMpi<graph::parallel::ArcPtrWrapper<T>> ArcMpi;
@@ -168,7 +168,7 @@ namespace FPMAS::synchro::hard {
 	}
 
 	template<typename T>
-	class HardSyncLinker : public FPMAS::api::synchro::SyncLinker<T> {
+	class HardSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
 		public:
 			typedef api::synchro::hard::TerminationAlgorithm
 				TerminationAlgorithm;

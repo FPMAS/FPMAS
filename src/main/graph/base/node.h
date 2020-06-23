@@ -6,12 +6,12 @@
 #include "api/graph/base/node.h"
 #include "utils/callback.h"
 
-namespace FPMAS::graph::base {
+namespace fpmas::graph::base {
 
 	template<typename IdType, typename _ArcType>
-		class Node : public virtual FPMAS::api::graph::base::Node<IdType, _ArcType> {
+		class Node : public virtual fpmas::api::graph::base::Node<IdType, _ArcType> {
 			public:
-				typedef FPMAS::api::graph::base::Node<IdType, _ArcType> NodeType;
+				typedef fpmas::api::graph::base::Node<IdType, _ArcType> NodeType;
 				using typename NodeType::ArcType;
 				using typename NodeType::LayerIdType;
 

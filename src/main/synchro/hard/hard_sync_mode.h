@@ -12,11 +12,11 @@
 #include "graph/parallel/distributed_node.h"
 #include "server_pack.h"
 
-namespace FPMAS::synchro {
+namespace fpmas::synchro {
 
 	namespace hard {
 		template<typename T>
-			class HardSyncRuntime : public FPMAS::api::synchro::SyncModeRuntime<T> {
+			class HardSyncRuntime : public fpmas::api::synchro::SyncModeRuntime<T> {
 
 				typedef synchro::hard::TerminationAlgorithm<
 					communication::TypedMpi>
@@ -64,6 +64,6 @@ namespace FPMAS::synchro {
 			};
 
 	}
-	typedef FPMAS::api::synchro::SyncMode<hard::HardSyncMutex, hard::HardSyncRuntime> HardSyncMode;
+	typedef fpmas::api::synchro::SyncMode<hard::HardSyncMutex, hard::HardSyncRuntime> HardSyncMode;
 }
 #endif

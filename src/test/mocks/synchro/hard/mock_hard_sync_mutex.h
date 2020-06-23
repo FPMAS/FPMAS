@@ -5,11 +5,11 @@
 #include "../mock_mutex.h"
 #include "api/synchro/hard/hard_sync_mutex.h"
 
-using FPMAS::api::synchro::hard::MutexRequest;
+using fpmas::api::synchro::hard::MutexRequest;
 
 template<typename T>
 class MockHardSyncMutex :
-	public FPMAS::api::synchro::hard::HardSyncMutex<T>,
+	public fpmas::api::synchro::hard::HardSyncMutex<T>,
 	public MockMutex<T> {
 		public:
 			MOCK_METHOD(void, pushRequest, (MutexRequest), (override));

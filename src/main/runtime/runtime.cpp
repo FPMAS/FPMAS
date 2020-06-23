@@ -1,6 +1,6 @@
 #include "runtime.h"
 
-namespace FPMAS::runtime {
+namespace fpmas::runtime {
 
 	void Runtime::run(Date start, Date end) {
 		for(Date time = start; time < end; time++) {

@@ -8,20 +8,20 @@
 #include "mutex_client.h"
 #include "mutex_server.h"
 
-namespace FPMAS::synchro::hard {
+namespace fpmas::synchro::hard {
 
-	using FPMAS::api::graph::parallel::LocationState;
-	using FPMAS::api::synchro::hard::MutexRequestType;
+	using fpmas::api::graph::parallel::LocationState;
+	using fpmas::api::synchro::hard::MutexRequestType;
 
 	template<typename T>
 		class HardSyncMutex
-			: public FPMAS::api::synchro::hard::HardSyncMutex<T> {
+			: public fpmas::api::synchro::hard::HardSyncMutex<T> {
 			private:
-				typedef FPMAS::api::synchro::hard::MutexRequest
+				typedef fpmas::api::synchro::hard::MutexRequest
 					Request;
-				typedef FPMAS::api::synchro::hard::MutexClient<T>
+				typedef fpmas::api::synchro::hard::MutexClient<T>
 					MutexClient;
-				typedef FPMAS::api::synchro::hard::MutexServer<T>
+				typedef fpmas::api::synchro::hard::MutexServer<T>
 					MutexServer;
 
 				api::graph::parallel::DistributedNode<T>* node;

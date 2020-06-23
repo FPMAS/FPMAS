@@ -9,9 +9,9 @@ using ::testing::Property;
 using ::testing::Sequence;
 using ::testing::Ref;
 using ::testing::Expectation;
-using FPMAS::graph::parallel::ArcPtrWrapper;
-using FPMAS::synchro::hard::Tag;
-using FPMAS::synchro::hard::LinkClient;
+using fpmas::graph::parallel::ArcPtrWrapper;
+using fpmas::synchro::hard::Tag;
+using fpmas::synchro::hard::LinkClient;
 
 class LinkClientTest : public ::testing::Test {
 	protected:

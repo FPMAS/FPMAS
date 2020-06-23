@@ -8,25 +8,25 @@
 template<typename T, typename DistNode, typename DistArc>
 class MockDistributedGraph :
 	public MockGraph<
-		FPMAS::api::graph::parallel::DistributedNode<T>,
-		FPMAS::api::graph::parallel::DistributedArc<T>>,
-	public FPMAS::api::graph::parallel::DistributedGraph<T> {
+		fpmas::api::graph::parallel::DistributedNode<T>,
+		fpmas::api::graph::parallel::DistributedArc<T>>,
+	public fpmas::api::graph::parallel::DistributedGraph<T> {
 
-		typedef FPMAS::api::graph::parallel::DistributedGraph<T>
+		typedef fpmas::api::graph::parallel::DistributedGraph<T>
 			GraphBase;
 		public:
-		typedef FPMAS::api::graph::parallel::DistributedNode<T> NodeType;
-		typedef FPMAS::api::graph::parallel::DistributedArc<T> ArcType;
+		typedef fpmas::api::graph::parallel::DistributedNode<T> NodeType;
+		typedef fpmas::api::graph::parallel::DistributedArc<T> ArcType;
 		using typename GraphBase::NodeMap;
 		using typename GraphBase::ArcMap;
 		using typename GraphBase::PartitionMap;
 		using typename GraphBase::LayerIdType;
 		using typename GraphBase::NodeCallback;
 
-		MOCK_METHOD(const FPMAS::api::communication::MpiCommunicator&,
+		MOCK_METHOD(const fpmas::api::communication::MpiCommunicator&,
 				getMpiCommunicator, (), (const, override));
 		MOCK_METHOD(
-				const FPMAS::api::graph::parallel::LocationManager<T>&,
+				const fpmas::api::graph::parallel::LocationManager<T>&,
 				getLocationManager, (), (const, override));
 
 		NodeType* buildNode(T&& data) override {
@@ -44,8 +44,8 @@ class MockDistributedGraph :
 		MOCK_METHOD(void, clearArc, (ArcType*), (override));
 		MOCK_METHOD(void, clearNode, (NodeType*), (override));
 
-		MOCK_METHOD(void, balance, (FPMAS::api::load_balancing::LoadBalancing<T>&), (override));
-		MOCK_METHOD(void, balance, (FPMAS::api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap), (override));
+		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::LoadBalancing<T>&), (override));
+		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap), (override));
 		MOCK_METHOD(void, distribute, (PartitionMap), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
 	};

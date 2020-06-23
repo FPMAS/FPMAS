@@ -9,7 +9,7 @@
 
 using ::testing::_;
 
-using FPMAS::api::graph::parallel::LocationState;
+using fpmas::api::graph::parallel::LocationState;
 
 template<typename T>
 class MockDistributedNode;
@@ -22,19 +22,19 @@ ACTION_P(ReturnPointeePointee, ptr) {return **ptr;}
 
 template<typename T>
 class MockDistributedNode :
-	public FPMAS::api::graph::parallel::DistributedNode<T>,
-	public AbstractMockNode<DistributedId, FPMAS::api::graph::parallel::DistributedArc<T>> {
+	public fpmas::api::graph::parallel::DistributedNode<T>,
+	public AbstractMockNode<DistributedId, fpmas::api::graph::parallel::DistributedArc<T>> {
 
-		typedef AbstractMockNode<DistributedId, FPMAS::api::graph::parallel::DistributedArc<T>>
+		typedef AbstractMockNode<DistributedId, fpmas::api::graph::parallel::DistributedArc<T>>
 			NodeBase;
-		typedef FPMAS::api::synchro::Mutex<T> Mutex;
+		typedef fpmas::api::synchro::Mutex<T> Mutex;
 		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T>&);
 
 		private:
 		T _data;
 		LocationState _state = LocationState::LOCAL;
 		int _location;
-		FPMAS::api::synchro::Mutex<T>* null_mutex = nullptr;
+		fpmas::api::synchro::Mutex<T>* null_mutex = nullptr;
 		Mutex** _mutex = &null_mutex;
 
 		public:

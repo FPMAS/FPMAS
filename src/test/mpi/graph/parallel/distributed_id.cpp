@@ -3,7 +3,7 @@
 #include "utils/macros.h"
 #include "graph/parallel/distributed_id.h"
 
-TEST(Mpi_DistributedId, test_mpi_send_distributed_id) {
+TEST(DistributedId, test_mpi_send_distributed_id) {
 	MpiDistributedId id;
 	id.rank = 10;
 	id.id = 2;

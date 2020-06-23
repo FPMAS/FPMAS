@@ -9,18 +9,18 @@ using ::testing::ReturnPointee;
 using ::testing::AnyNumber;
 using ::testing::AtLeast;
 using ::testing::SaveArg;
-using FPMAS::api::graph::base::LayerId;
+using fpmas::api::graph::base::LayerId;
 
 template<typename IdType, typename> class AbstractMockNode;
 template<typename IdType> class MockNode;
 
 template<typename _IdType, typename _NodeType>
-class AbstractMockArc : public virtual FPMAS::api::graph::base::Arc<
+class AbstractMockArc : public virtual fpmas::api::graph::base::Arc<
 				_IdType, _NodeType 
 							> {
 	public:
-		using typename FPMAS::api::graph::base::Arc<_IdType, _NodeType>::NodeType;
-		using typename FPMAS::api::graph::base::Arc<_IdType, _NodeType>::IdType;
+		using typename fpmas::api::graph::base::Arc<_IdType, _NodeType>::NodeType;
+		using typename fpmas::api::graph::base::Arc<_IdType, _NodeType>::IdType;
 
 		/*
 		 * Expectations obvisouly can't be set on an object that haven't been constructed

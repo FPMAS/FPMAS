@@ -61,11 +61,11 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 using ::testing::UnorderedElementsAre;
 
-using FPMAS::synchro::hard::Epoch;
-using FPMAS::synchro::hard::Tag;
-using FPMAS::synchro::hard::MutexServer;
-using FPMAS::synchro::hard::DataUpdatePack;
-using FPMAS::synchro::hard::MutexRequestType;
+using fpmas::synchro::hard::Epoch;
+using fpmas::synchro::hard::Tag;
+using fpmas::synchro::hard::MutexServer;
+using fpmas::synchro::hard::DataUpdatePack;
+using fpmas::synchro::hard::MutexRequestType;
 
 /*******************/
 /* MutexServerTest */

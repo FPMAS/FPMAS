@@ -14,7 +14,7 @@ using ::testing::Pointee;
 using ::testing::Property;
 using ::testing::UnorderedElementsAre;
 
-using FPMAS::synchro::ghost::GhostSyncLinker;
+using fpmas::synchro::ghost::GhostSyncLinker;
 
 class GhostSyncLinkerTest : public ::testing::Test {
 	protected:
@@ -23,7 +23,7 @@ class GhostSyncLinkerTest : public ::testing::Test {
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
-		MockMpi<FPMAS::graph::parallel::ArcPtrWrapper<int>> arc_mpi {mock_comm};
+		MockMpi<fpmas::graph::parallel::ArcPtrWrapper<int>> arc_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
 		MockDistributedGraph<int, MockNode, MockArc> mocked_graph;
 
@@ -119,7 +119,7 @@ TEST_F(GhostSyncLinkerTest, export_link) {
 }
 
 TEST_F(GhostSyncLinkerTest, import_link) {
-	std::unordered_map<int, std::vector<FPMAS::graph::parallel::ArcPtrWrapper<int>>>
+	std::unordered_map<int, std::vector<fpmas::graph::parallel::ArcPtrWrapper<int>>>
 		import_map {
 			{2, {arc1, arc3}},
 			{4, {arc2}}
@@ -144,7 +144,7 @@ TEST_F(GhostSyncLinkerTest, import_export_link) {
 		);
 	linker.link(arc2);
 
-	std::unordered_map<int, std::vector<FPMAS::graph::parallel::ArcPtrWrapper<int>>>
+	std::unordered_map<int, std::vector<fpmas::graph::parallel::ArcPtrWrapper<int>>>
 		import_map {
 			{0, {arc1, arc3}}
 		};
@@ -193,8 +193,8 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 
 	auto arcs = std::unordered_map<
 			DistributedId,
-			FPMAS::api::graph::parallel::DistributedArc<int>*,
-			FPMAS::api::graph::base::IdHash<DistributedId>> {
+			fpmas::api::graph::parallel::DistributedArc<int>*,
+			fpmas::api::graph::base::IdHash<DistributedId>> {
 		{arc1_id, arc1},
 		{arc2_id, arc2},
 		{arc3_id, arc3}
@@ -237,8 +237,8 @@ TEST_F(GhostSyncLinkerTest, import_export_unlink) {
 
 	auto arcs = std::unordered_map<
 			DistributedId,
-			FPMAS::api::graph::parallel::DistributedArc<int>*,
-			FPMAS::api::graph::base::IdHash<DistributedId>> {
+			fpmas::api::graph::parallel::DistributedArc<int>*,
+			fpmas::api::graph::base::IdHash<DistributedId>> {
 		{arc2_id, arc2},
 		{arc3_id, arc3}
 	};

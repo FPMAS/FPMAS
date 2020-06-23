@@ -5,7 +5,7 @@
 #include "api/scheduler/scheduler.h"
 #include "api/runtime/runtime.h"
 
-namespace FPMAS::load_balancing {
+namespace fpmas::load_balancing {
 	template<typename T>
 		class ScheduledLoadBalancing : public api::load_balancing::LoadBalancing<T> {
 			private:

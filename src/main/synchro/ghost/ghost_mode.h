@@ -8,13 +8,13 @@
 #include "graph/parallel/distributed_arc.h"
 #include "graph/parallel/distributed_node.h"
 
-namespace FPMAS::synchro {
+namespace fpmas::synchro {
 
 	namespace ghost {
 		using api::graph::parallel::LocationState;
 
 		template<typename T>
-			class SingleThreadMutex : public FPMAS::api::synchro::Mutex<T> {
+			class SingleThreadMutex : public fpmas::api::synchro::Mutex<T> {
 				private:
 					T& _data;
 					void _lock() override {};
@@ -44,7 +44,7 @@ namespace FPMAS::synchro {
 			};
 
 		template<typename T>
-			class GhostDataSync : public FPMAS::api::synchro::DataSync {
+			class GhostDataSync : public fpmas::api::synchro::DataSync {
 				public:
 					typedef graph::parallel::NodePtrWrapper<T> NodePtr;
 					typedef api::communication::TypedMpi<NodePtr> NodeMpi;
@@ -55,12 +55,12 @@ namespace FPMAS::synchro {
 					NodeMpi& node_mpi;
 					IdMpi& id_mpi;
 
-					FPMAS::api::graph::parallel::DistributedGraph<T>& graph;
+					fpmas::api::graph::parallel::DistributedGraph<T>& graph;
 
 				public:
 					GhostDataSync(
 							NodeMpi& node_mpi, IdMpi& id_mpi,
-							FPMAS::api::graph::parallel::DistributedGraph<T>& graph
+							fpmas::api::graph::parallel::DistributedGraph<T>& graph
 							)
 						: node_mpi(node_mpi), id_mpi(id_mpi), graph(graph) {}
 
@@ -100,10 +100,10 @@ namespace FPMAS::synchro {
 
 
 		template<typename T>
-			class GhostSyncLinker : public FPMAS::api::synchro::SyncLinker<T> {
+			class GhostSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
 
 				public:
-					typedef FPMAS::api::graph::parallel::DistributedArc<T> ArcApi;
+					typedef fpmas::api::graph::parallel::DistributedArc<T> ArcApi;
 					typedef graph::parallel::ArcPtrWrapper<T> ArcPtr;
 					typedef api::communication::TypedMpi<ArcPtr> ArcMpi;
 					typedef api::communication::TypedMpi<DistributedId> IdMpi;
@@ -113,12 +113,12 @@ namespace FPMAS::synchro {
 
 					ArcMpi& arc_mpi;
 					IdMpi& id_mpi;
-					FPMAS::api::graph::parallel::DistributedGraph<T>& graph;
+					fpmas::api::graph::parallel::DistributedGraph<T>& graph;
 
 				public:
 					GhostSyncLinker(
 							ArcMpi& arc_mpi, IdMpi& id_mpi,
-							FPMAS::api::graph::parallel::DistributedGraph<T>& graph)
+							fpmas::api::graph::parallel::DistributedGraph<T>& graph)
 						: arc_mpi(arc_mpi), id_mpi(id_mpi), graph(graph) {}
 
 					void link(const ArcApi*) override;
@@ -195,7 +195,7 @@ namespace FPMAS::synchro {
 			}
 
 		template<typename T>
-			class GhostModeRuntime : FPMAS::api::synchro::SyncModeRuntime<T> {
+			class GhostModeRuntime : fpmas::api::synchro::SyncModeRuntime<T> {
 				communication::TypedMpi<DistributedId> id_mpi;
 				communication::TypedMpi<graph::parallel::NodePtrWrapper<T>> node_mpi;
 				communication::TypedMpi<graph::parallel::ArcPtrWrapper<T>> arc_mpi;
@@ -205,7 +205,7 @@ namespace FPMAS::synchro {
 
 				public:
 				GhostModeRuntime(
-						FPMAS::api::graph::parallel::DistributedGraph<T>& graph,
+						fpmas::api::graph::parallel::DistributedGraph<T>& graph,
 						api::communication::MpiCommunicator& comm)
 					: id_mpi(comm), node_mpi(comm), arc_mpi(comm),
 					data_sync(node_mpi, id_mpi, graph), sync_linker(arc_mpi, id_mpi, graph) {}
@@ -217,7 +217,7 @@ namespace FPMAS::synchro {
 				GhostSyncLinker<T>& getSyncLinker() override {return sync_linker;}
 			};
 	}
-	typedef FPMAS::api::synchro::SyncMode<
+	typedef fpmas::api::synchro::SyncMode<
 		synchro::ghost::SingleThreadMutex,
 		synchro::ghost::GhostModeRuntime
 			> GhostMode;

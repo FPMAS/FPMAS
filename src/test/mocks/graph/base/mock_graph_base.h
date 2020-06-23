@@ -6,8 +6,8 @@
 
 template<typename NodeType, typename ArcType>
 class MockGraph : 
-	public virtual FPMAS::api::graph::base::Graph<NodeType, ArcType> {
-		typedef FPMAS::api::graph::base::Graph<NodeType, ArcType>
+	public virtual fpmas::api::graph::base::Graph<NodeType, ArcType> {
+		typedef fpmas::api::graph::base::Graph<NodeType, ArcType>
 		GraphBase;
 		using typename GraphBase::NodeIdType;
 		using typename GraphBase::NodeMap;
@@ -22,10 +22,10 @@ class MockGraph :
 			MOCK_METHOD(void, erase, (NodeType*), (override));
 			MOCK_METHOD(void, erase, (ArcType*), (override));
 
-			MOCK_METHOD(void, addCallOnInsertNode, (FPMAS::api::utils::Callback<NodeType*>*), (override));
-			MOCK_METHOD(void, addCallOnEraseNode, (FPMAS::api::utils::Callback<NodeType*>*), (override));
-			MOCK_METHOD(void, addCallOnInsertArc, (FPMAS::api::utils::Callback<ArcType*>*), (override));
-			MOCK_METHOD(void, addCallOnEraseArc, (FPMAS::api::utils::Callback<ArcType*>*), (override));
+			MOCK_METHOD(void, addCallOnInsertNode, (fpmas::api::utils::Callback<NodeType*>*), (override));
+			MOCK_METHOD(void, addCallOnEraseNode, (fpmas::api::utils::Callback<NodeType*>*), (override));
+			MOCK_METHOD(void, addCallOnInsertArc, (fpmas::api::utils::Callback<ArcType*>*), (override));
+			MOCK_METHOD(void, addCallOnEraseArc, (fpmas::api::utils::Callback<ArcType*>*), (override));
 
 			MOCK_METHOD(const NodeIdType&, currentNodeId, (), (const, override));
 			MOCK_METHOD(NodeType*, getNode, (NodeIdType), (override));

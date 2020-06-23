@@ -5,7 +5,7 @@
 #include "api/communication/communication.h"
 #include "api/synchro/hard/hard_sync_mutex.h"
 
-namespace FPMAS::synchro::hard {
+namespace fpmas::synchro::hard {
 
 	using api::synchro::hard::Color;
 	using api::synchro::hard::Tag;
@@ -13,9 +13,9 @@ namespace FPMAS::synchro::hard {
 
 	template<template<typename> class TypedMpi>
 		class TerminationAlgorithm
-			: public FPMAS::api::synchro::hard::TerminationAlgorithm {
-				typedef FPMAS::api::communication::MpiCommunicator comm_t;
-				typedef FPMAS::api::synchro::hard::Server server_t;
+			: public fpmas::api::synchro::hard::TerminationAlgorithm {
+				typedef fpmas::api::communication::MpiCommunicator comm_t;
+				typedef fpmas::api::synchro::hard::Server server_t;
 			private:
 				comm_t& comm;
 				TypedMpi<Color> colorMpi {comm};

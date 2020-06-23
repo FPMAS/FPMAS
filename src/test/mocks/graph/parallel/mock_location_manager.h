@@ -4,15 +4,15 @@
 #include "api/communication/communication.h"
 
 template<typename T>
-class MockLocationManager : public FPMAS::api::graph::parallel::LocationManager<T> {
+class MockLocationManager : public fpmas::api::graph::parallel::LocationManager<T> {
 	public:
-		using typename FPMAS::api::graph::parallel::LocationManager<T>::DistNode;
-		using typename FPMAS::api::graph::parallel::LocationManager<T>::NodeMap;
+		using typename fpmas::api::graph::parallel::LocationManager<T>::DistNode;
+		using typename fpmas::api::graph::parallel::LocationManager<T>::NodeMap;
 
 		MockLocationManager(
-				FPMAS::api::communication::MpiCommunicator&,
-				FPMAS::api::communication::TypedMpi<DistributedId>&,
-				FPMAS::api::communication::TypedMpi<std::pair<DistributedId, int>>&
+				fpmas::api::communication::MpiCommunicator&,
+				fpmas::api::communication::TypedMpi<DistributedId>&,
+				fpmas::api::communication::TypedMpi<std::pair<DistributedId, int>>&
 				) {}
 
 		MOCK_METHOD(void, updateLocations, (const NodeMap&), (override));

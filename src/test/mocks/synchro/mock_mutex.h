@@ -8,7 +8,7 @@
 using ::testing::AnyNumber;
 
 template<typename T>
-class MockMutex : public virtual FPMAS::api::synchro::Mutex<T> {
+class MockMutex : public virtual fpmas::api::synchro::Mutex<T> {
 	public:
 		MockMutex() {
 			EXPECT_CALL(*this, lock).Times(AnyNumber());

@@ -26,17 +26,17 @@ class ModelGhostModeIntegrationTest : public ::testing::Test {
 	protected:
 		inline static const int NODE_BY_PROC = 50;
 		inline static const int NUM_STEPS = 100;
-		FPMAS::model::AgentGraph<FPMAS::synchro::GhostMode> agent_graph;
-		FPMAS::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
+		fpmas::model::AgentGraph<fpmas::synchro::GhostMode> agent_graph;
+		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
 
-		FPMAS::scheduler::Scheduler scheduler;
-		FPMAS::runtime::Runtime runtime {scheduler};
-		FPMAS::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::scheduler::Scheduler scheduler;
+		fpmas::runtime::Runtime runtime {scheduler};
+		fpmas::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
 
-		FPMAS::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+		fpmas::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		std::unordered_map<DistributedId, unsigned long> act_counts;
-		std::unordered_map<DistributedId, FPMAS::api::model::TypeId> agent_types;
+		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
 
 };
 
@@ -52,13 +52,13 @@ class IncreaseCount {
 		}
 };
 
-class IncreaseCountAct : public FPMAS::model::AgentNodeCallback {
+class IncreaseCountAct : public fpmas::model::AgentNodeCallback {
 	private:
 		std::unordered_map<DistributedId, unsigned long>& act_counts;
 	public:
 		IncreaseCountAct(std::unordered_map<DistributedId, unsigned long>& act_counts) : act_counts(act_counts) {}
 
-		void call(FPMAS::model::AgentNode* node) override {
+		void call(fpmas::model::AgentNode* node) override {
 			switch(node->data().get()->typeId()) {
 				case MockAgentBase<1>::TYPE_ID :
 					EXPECT_CALL(*static_cast<MockAgentBase<1>*>(node->data().get()), act)
@@ -102,7 +102,7 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 		}
 
 		void checkExecutionCounts() {
-			FPMAS::communication::TypedMpi<int> mpi {agent_graph.getMpiCommunicator()};
+			fpmas::communication::TypedMpi<int> mpi {agent_graph.getMpiCommunicator()};
 			// TODO : MPI gather to compute the sum of act counts.
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				DistributedId dist_id {0, (unsigned int) id};
@@ -145,12 +145,12 @@ TEST_F(ModelGhostModeIntegrationExecutionTest, ghost_mode_with_link) {
 	checkExecutionCounts();
 }
 
-class UpdateWeightAct : public FPMAS::model::AgentNodeCallback {
+class UpdateWeightAct : public fpmas::model::AgentNodeCallback {
 	private:
 		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight {0, 1};
 	public:
-		void call(FPMAS::model::AgentNode* node) override {
+		void call(fpmas::model::AgentNode* node) override {
 			node->setWeight(random_weight(engine) * 10);
 			EXPECT_CALL(*static_cast<MockAgentBase<10>*>(node->data().get()), act)
 				.Times(AnyNumber());
@@ -190,7 +190,7 @@ TEST_F(ModelGhostModeIntegrationLoadBalancingTest, ghost_mode_dynamic_lb) {
 	runtime.run(NUM_STEPS);
 }
 
-class ReaderAgent : public FPMAS::model::AgentBase<ReaderAgent, 0> {
+class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent, 0> {
 	private:
 		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight;
@@ -212,11 +212,11 @@ class ReaderAgent : public FPMAS::model::AgentBase<ReaderAgent, 0> {
 		}
 };
 
-void to_json(nlohmann::json& j, const FPMAS::api::utils::VirtualPtrWrapper<ReaderAgent>& agent) {
+void to_json(nlohmann::json& j, const fpmas::api::utils::VirtualPtrWrapper<ReaderAgent>& agent) {
 	j["c"] = agent->getCounter();
 }
 
-void from_json(const nlohmann::json& j, FPMAS::api::utils::VirtualPtrWrapper<ReaderAgent>& agent) {
+void from_json(const nlohmann::json& j, fpmas::api::utils::VirtualPtrWrapper<ReaderAgent>& agent) {
 	ReaderAgent* agent_ptr = new ReaderAgent;
 	agent_ptr->setCounter(j.at("c").get<int>());
 	agent = {agent_ptr};
@@ -226,17 +226,17 @@ class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
 		inline static const int NODE_BY_PROC = 50;
 		inline static const int NUM_STEPS = 100;
-		FPMAS::model::AgentGraph<FPMAS::synchro::HardSyncMode> agent_graph;
-		FPMAS::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
+		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph;
+		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
 
-		FPMAS::scheduler::Scheduler scheduler;
-		FPMAS::runtime::Runtime runtime {scheduler};
-		FPMAS::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::scheduler::Scheduler scheduler;
+		fpmas::runtime::Runtime runtime {scheduler};
+		fpmas::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
 
-		FPMAS::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+		fpmas::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		std::unordered_map<DistributedId, unsigned long> act_counts;
-		std::unordered_map<DistributedId, FPMAS::api::model::TypeId> agent_types;
+		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
 
 };
 
@@ -266,7 +266,7 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 		}
 
 		void checkExecutionCounts() {
-			FPMAS::communication::TypedMpi<int> mpi {agent_graph.getMpiCommunicator()};
+			fpmas::communication::TypedMpi<int> mpi {agent_graph.getMpiCommunicator()};
 			// TODO : MPI gather to compute the sum of act counts.
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				DistributedId dist_id {0, (unsigned int) id};
@@ -342,7 +342,7 @@ TEST_F(ModelHardSyncModeIntegrationLoadBalancingTest, hard_sync_mode_dynamic_lb)
 	runtime.run(NUM_STEPS);
 }
 
-class WriterAgent : public FPMAS::model::AgentBase<WriterAgent, 2> {
+class WriterAgent : public fpmas::model::AgentBase<WriterAgent, 2> {
 	private:
 		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight;
@@ -367,11 +367,11 @@ class WriterAgent : public FPMAS::model::AgentBase<WriterAgent, 2> {
 		}
 };
 
-void to_json(nlohmann::json& j, const FPMAS::api::utils::VirtualPtrWrapper<WriterAgent>& agent) {
+void to_json(nlohmann::json& j, const fpmas::api::utils::VirtualPtrWrapper<WriterAgent>& agent) {
 	j["c"] = agent->getCounter();
 }
 
-void from_json(const nlohmann::json& j, FPMAS::api::utils::VirtualPtrWrapper<WriterAgent>& agent) {
+void from_json(const nlohmann::json& j, fpmas::api::utils::VirtualPtrWrapper<WriterAgent>& agent) {
 	WriterAgent* agent_ptr = new WriterAgent;
 	agent_ptr->setCounter(j.at("c").get<int>());
 	agent = {agent_ptr};
@@ -381,14 +381,14 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 	protected:
 		inline static unsigned int AGENT_BY_PROC = 50;
 		inline static unsigned int STEPS = 100;
-		FPMAS::model::AgentGraph<FPMAS::synchro::HardSyncMode> agent_graph;
-		FPMAS::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
+		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph;
+		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
 
-		FPMAS::scheduler::Scheduler scheduler;
-		FPMAS::runtime::Runtime runtime {scheduler};
-		FPMAS::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::scheduler::Scheduler scheduler;
+		fpmas::runtime::Runtime runtime {scheduler};
+		fpmas::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
 
-		FPMAS::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+		fpmas::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 };
 
 class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {

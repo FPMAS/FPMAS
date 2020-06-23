@@ -1,7 +1,7 @@
 #ifndef HARD_SYNC_ENUMS_H
 #define HARD_SYNC_ENUMS_H
 
-namespace FPMAS::api::synchro::hard {
+namespace fpmas::api::synchro::hard {
 	enum Epoch : int {
 		EVEN = 0x00,
 		ODD = 0x10

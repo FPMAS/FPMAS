@@ -5,7 +5,7 @@
 #include "api/utils/ptr_wrapper.h"
 #include "api/model/model.h"
 
-namespace FPMAS::model {
+namespace fpmas::model {
 	using api::model::AgentPtr;
 	template<typename T>
 		using TypedAgentPtr = api::utils::VirtualPtrWrapper<T>;
@@ -39,7 +39,7 @@ namespace FPMAS::model {
 
 	template<> 
 		AgentPtr from_json<void>(const nlohmann::json& j) {
-			FPMAS::api::model::TypeId id = j.at("type").get<FPMAS::api::model::TypeId>();
+			fpmas::api::model::TypeId id = j.at("type").get<fpmas::api::model::TypeId>();
 			FPMAS_LOGE(-1, "AGENT_SERIALIZER", "Invalid agent type : %lu", id);
 			std::string message = "Invalid agent type : " + std::to_string(id);
 			throw std::invalid_argument(message);
@@ -47,10 +47,10 @@ namespace FPMAS::model {
 
 	template<typename Type, typename... AgentTypes> 
 		AgentPtr from_json(const nlohmann::json& j) {
-			FPMAS::api::model::TypeId id = j.at("type").get<FPMAS::api::model::TypeId>();
+			fpmas::api::model::TypeId id = j.at("type").get<fpmas::api::model::TypeId>();
 			if(id == Type::TYPE_ID) {
 				auto agent = j.at("agent").get<TypedAgentPtr<Type>>();
-				agent->setGroupId(j.at("gid").get<FPMAS::api::model::GroupId>());
+				agent->setGroupId(j.at("gid").get<fpmas::api::model::GroupId>());
 				return {agent};
 			} else {
 				return std::move(from_json<AgentTypes...>(j));
@@ -61,23 +61,23 @@ namespace FPMAS::model {
 
 #define FPMAS_JSON_SERIALIZE_AGENT(...) \
 	namespace nlohmann {\
-		using FPMAS::api::model::AgentPtr;\
+		using fpmas::api::model::AgentPtr;\
 		template<>\
 		struct adl_serializer<AgentPtr> {\
 			static void to_json(json& j, const AgentPtr& data) {\
-				FPMAS::model::to_json<__VA_ARGS__, void>(j, data);\
+				fpmas::model::to_json<__VA_ARGS__, void>(j, data);\
 			}\
 			static AgentPtr from_json(const json& j) {\
-				return std::move(FPMAS::model::from_json<__VA_ARGS__, void>(j));\
+				return std::move(fpmas::model::from_json<__VA_ARGS__, void>(j));\
 			}\
 		};\
 	}\
 
 /*
- *namespace FPMAS::model {
- *    typedef FPMAS::api::utils::VirtualPtrWrapper<FPMAS::api::model::Agent> AgentPtr;\
+ *namespace fpmas::model {
+ *    typedef fpmas::api::utils::VirtualPtrWrapper<fpmas::api::model::Agent> AgentPtr;\
  *        template<typename T>
- *        using TypedAgentPtr = FPMAS::api::utils::VirtualPtrWrapper<T>;
+ *        using TypedAgentPtr = fpmas::api::utils::VirtualPtrWrapper<T>;
  *
  *    template<typename Type, typename... AgentTypes> 
  *        void to_json(nlohmann::json& j, const AgentPtr& ptr);
@@ -105,7 +105,7 @@ namespace FPMAS::model {
  *
  *    template<typename Type, typename... AgentTypes> 
  *        void from_json(const nlohmann::json& j, AgentPtr& ptr) {
- *            FPMAS::api::model::TypeId id = j.at("type").get<FPMAS::api::model::TypeId>();
+ *            fpmas::api::model::TypeId id = j.at("type").get<fpmas::api::model::TypeId>();
  *            if(id == Type::TYPE_ID) {
  *                ptr = AgentPtr(j.at("agent").get<TypedAgentPtr<Type>>());
  *            } else {
@@ -117,9 +117,9 @@ namespace FPMAS::model {
 
 
 //namespace nlohmann {
-	////using FPMAS::agent::AgentType;
-	////using FPMAS::agent::Agent;
-	//typedef FPMAS::utils::VirtualPtrWrapper<FPMAS::api::model::Agent*> AgentPtr;
+	////using fpmas::agent::AgentType;
+	////using fpmas::agent::Agent;
+	//typedef fpmas::utils::VirtualPtrWrapper<fpmas::api::model::Agent*> AgentPtr;
 
 	//template<>
     //struct adl_serializer<AgentPtr> {
@@ -163,13 +163,13 @@ namespace FPMAS::model {
 				//case AGENT_1 :
 					//Agent1& converted_agent = static_cast<Agent1&>(*data);
 					//j = converted_agent;
-					//auto agent = j.at("agent").get<FPMAS::utils::VirtualPtrWrapper<Agent1>>();
+					//auto agent = j.at("agent").get<fpmas::utils::VirtualPtrWrapper<Agent1>>();
 					//agent_ptr.set(agent);
 					//break;
 				//case AGENT_2 :
 					//Agent2& converted_agent = static_cast<Agent2&>(*data);
 					//j = converted_agent;
-					//auto agent = j.at("agent").get<FPMAS::utils::VirtualPtrWrapper<Agent2>>();
+					//auto agent = j.at("agent").get<fpmas::utils::VirtualPtrWrapper<Agent2>>();
 					//agent_ptr.set(agent);
 					//break;
 			//}

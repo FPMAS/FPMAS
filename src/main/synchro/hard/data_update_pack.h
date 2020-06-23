@@ -3,7 +3,7 @@
 
 #include "graph/parallel/distributed_id.h"
 
-namespace FPMAS::synchro::hard {
+namespace fpmas::synchro::hard {
 	template<typename T>
 		struct DataUpdatePack {
 			DistributedId id;
@@ -16,7 +16,7 @@ namespace FPMAS::synchro::hard {
 }
 
 namespace nlohmann {
-	using FPMAS::synchro::hard::DataUpdatePack;
+	using fpmas::synchro::hard::DataUpdatePack;
     template <typename T>
     struct adl_serializer<DataUpdatePack<T>> {
         static DataUpdatePack<T> from_json(const json& j) {

@@ -11,13 +11,13 @@ using namespace std::chrono_literals;
 using ::testing::Return;
 using ::testing::AnyNumber;
 using ::testing::AtLeast;
-using FPMAS::synchro::hard::TerminationAlgorithm;
+using fpmas::synchro::hard::TerminationAlgorithm;
 
 class TerminationTest : public ::testing::Test {
 	protected:
-		FPMAS::communication::MpiCommunicator comm;
+		fpmas::communication::MpiCommunicator comm;
 		MockMutexServer<int> mutex_server;
-		TerminationAlgorithm<FPMAS::communication::TypedMpi> termination {comm};
+		TerminationAlgorithm<fpmas::communication::TypedMpi> termination {comm};
 
 		void SetUp() override {
 			EXPECT_CALL(mutex_server, getEpoch).WillRepeatedly(Return(Epoch::EVEN));
@@ -49,7 +49,7 @@ TEST_F(TerminationTest, termination_test_with_delay) {
 	ASSERT_GE(delay, 1s);
 }
 
-class FakeServer : public FPMAS::api::synchro::hard::Server {
+class FakeServer : public fpmas::api::synchro::hard::Server {
 	private:
 		Epoch epoch = Epoch::EVEN;
 	public:
@@ -61,10 +61,10 @@ class FakeServer : public FPMAS::api::synchro::hard::Server {
 
 class MultipleTerminationTest : public ::testing::Test {
 	protected:
-		FPMAS::communication::MpiCommunicator comm;
+		fpmas::communication::MpiCommunicator comm;
 		FakeServer server1;
 		FakeServer server2;
-		TerminationAlgorithm<FPMAS::communication::TypedMpi> termination {comm};
+		TerminationAlgorithm<fpmas::communication::TypedMpi> termination {comm};
 };
 
 TEST_F(MultipleTerminationTest, test) {

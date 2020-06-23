@@ -1,7 +1,7 @@
 #include "scheduler.h"
 #include <algorithm>
 
-namespace FPMAS::scheduler {
+namespace fpmas::scheduler {
 
 	JID Job::id() const {return _id;}
 
@@ -79,7 +79,7 @@ namespace FPMAS::scheduler {
 		limited_recurring_jobs[start].push_back({end, period, &job});
 	}
 
-	void Scheduler::build(Date date, FPMAS::api::scheduler::Epoch& epoch) const {
+	void Scheduler::build(Date date, fpmas::api::scheduler::Epoch& epoch) const {
 		epoch.clear();
 		auto unique = unique_jobs.find(date);
 		if(unique != unique_jobs.end()) {

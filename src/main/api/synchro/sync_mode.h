@@ -4,7 +4,7 @@
 #include <string>
 #include "api/graph/parallel/distributed_graph.h"
 
-namespace FPMAS::api::synchro {
+namespace fpmas::api::synchro {
 	class DataSync {
 		public:
 			virtual void synchronize() = 0;
@@ -13,8 +13,8 @@ namespace FPMAS::api::synchro {
 	template<typename T>
 	class SyncLinker {
 		public:
-			virtual void link(const FPMAS::api::graph::parallel::DistributedArc<T>*) = 0;
-			virtual void unlink(const FPMAS::api::graph::parallel::DistributedArc<T>*) = 0;
+			virtual void link(const fpmas::api::graph::parallel::DistributedArc<T>*) = 0;
+			virtual void unlink(const fpmas::api::graph::parallel::DistributedArc<T>*) = 0;
 
 			virtual void synchronize() = 0;
 	};

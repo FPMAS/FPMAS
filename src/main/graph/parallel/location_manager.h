@@ -6,16 +6,16 @@
 
 #include "communication/communication.h"
 
-namespace FPMAS::graph::parallel {
+namespace fpmas::graph::parallel {
 
-	using FPMAS::api::graph::parallel::LocationState;
+	using fpmas::api::graph::parallel::LocationState;
 
 	template<typename T>
 		class LocationManager
-		: public FPMAS::api::graph::parallel::LocationManager<T> {
+		: public fpmas::api::graph::parallel::LocationManager<T> {
 			public:
-				using typename FPMAS::api::graph::parallel::LocationManager<T>::NodeMap;
-				using typename FPMAS::api::graph::parallel::LocationManager<T>::DistNode;
+				using typename fpmas::api::graph::parallel::LocationManager<T>::NodeMap;
+				using typename fpmas::api::graph::parallel::LocationManager<T>::DistNode;
 
 				typedef api::communication::MpiCommunicator MpiComm;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;

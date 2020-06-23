@@ -4,7 +4,7 @@
 #include "mpi.h"
 #include "graph/parallel/distributed_id.h"
 
-namespace FPMAS::api::communication {
+namespace fpmas::api::communication {
 	class DataPack {
 		public:
 			int size;
@@ -153,7 +153,7 @@ namespace FPMAS::api::communication {
 				using mpi = TypedMpiImpl<T>;
 		};
 
-	inline bool operator ==(const FPMAS::api::communication::DataPack& d1, const FPMAS::api::communication::DataPack& d2) {
+	inline bool operator ==(const fpmas::api::communication::DataPack& d1, const fpmas::api::communication::DataPack& d2) {
 		if(d1.count != d2.count)
 			return false;
 		if(d1.size != d2.size)

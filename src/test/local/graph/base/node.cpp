@@ -8,7 +8,7 @@ using ::testing::SizeIs;
 using ::testing::IsEmpty;
 using ::testing::ElementsAre;
 
-using FPMAS::graph::base::Node;
+using fpmas::graph::base::Node;
 
 class BasicMockArc : public AbstractMockArc<BasicId, Node<BasicId, BasicMockArc>> {
 };

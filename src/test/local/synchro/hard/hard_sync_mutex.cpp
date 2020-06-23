@@ -55,10 +55,10 @@ using ::testing::NotNull;
 using ::testing::Return;
 using ::testing::WhenDynamicCastTo;
 
-using FPMAS::api::graph::parallel::LocationState;
-using FPMAS::synchro::hard::HardSyncMutex;
-using FPMAS::api::synchro::hard::MutexRequest;
-using FPMAS::api::synchro::hard::MutexRequestType;
+using fpmas::api::graph::parallel::LocationState;
+using fpmas::synchro::hard::HardSyncMutex;
+using fpmas::api::synchro::hard::MutexRequest;
+using fpmas::api::synchro::hard::MutexRequestType;
 
 class HardSyncMutexTest : public ::testing::Test {
 	protected:

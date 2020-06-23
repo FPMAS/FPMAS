@@ -4,7 +4,7 @@
 #include <functional>
 #include "nlohmann/json.hpp"
 
-namespace FPMAS::api::graph::base {
+namespace fpmas::api::graph::base {
 
 	template<typename IdImpl>
 	class Id {

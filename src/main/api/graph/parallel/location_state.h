@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace FPMAS::api::graph::parallel {
+namespace fpmas::api::graph::parallel {
 	enum LocationState {
 		LOCAL,
 		DISTANT

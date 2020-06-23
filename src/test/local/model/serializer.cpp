@@ -16,18 +16,18 @@ TEST(AgentSerializer, to_json) {
 	EXPECT_CALL(*agent_12, getField).WillRepeatedly(Return(84));
 	EXPECT_CALL(*agent_12, groupId).WillRepeatedly(Return(4));
 
-	FPMAS::api::model::AgentPtr agent_ptr_4 {agent_4};
-	FPMAS::api::model::AgentPtr agent_ptr_12 {agent_12};
+	fpmas::api::model::AgentPtr agent_ptr_4 {agent_4};
+	fpmas::api::model::AgentPtr agent_ptr_12 {agent_12};
 
 	nlohmann::json j4 = agent_ptr_4;
 	nlohmann::json j12 = agent_ptr_12;
 
-	ASSERT_EQ(j4.at("type").get<FPMAS::api::model::TypeId>(), 4);
-	ASSERT_EQ(j4.at("gid").get<FPMAS::api::model::GroupId>(), 2);
+	ASSERT_EQ(j4.at("type").get<fpmas::api::model::TypeId>(), 4);
+	ASSERT_EQ(j4.at("gid").get<fpmas::api::model::GroupId>(), 2);
 	ASSERT_EQ(j4.at("agent").at("mock").get<int>(), 7);
 
-	ASSERT_EQ(j12.at("type").get<FPMAS::api::model::TypeId>(), 12);
-	ASSERT_EQ(j12.at("gid").get<FPMAS::api::model::GroupId>(), 4);
+	ASSERT_EQ(j12.at("type").get<fpmas::api::model::TypeId>(), 12);
+	ASSERT_EQ(j12.at("gid").get<fpmas::api::model::GroupId>(), 4);
 	ASSERT_EQ(j12.at("agent").at("mock").get<int>(), 84);
 }
 
@@ -42,8 +42,8 @@ TEST(AgentSerializer, from_json) {
 	j12["gid"] = 4;
 	j12["agent"]["field"] = 84;
 
-	auto agent_4 = j4.get<FPMAS::api::model::AgentPtr>();
-	auto agent_12 = j12.get<FPMAS::api::model::AgentPtr>();
+	auto agent_4 = j4.get<fpmas::api::model::AgentPtr>();
+	auto agent_12 = j12.get<fpmas::api::model::AgentPtr>();
 
 	ASSERT_THAT(agent_4.get(), WhenDynamicCastTo<MockAgent<4>*>(Not(IsNull())));
 	ASSERT_EQ(static_cast<MockAgent<4>*>(agent_4.get())->getField(), 7);

@@ -6,12 +6,12 @@
 #include "api/synchro/mutex.h"
 #include "graph/parallel/distributed_id.h"
 
-namespace FPMAS::api::graph::parallel {
+namespace fpmas::api::graph::parallel {
 
 	template<typename T>
 	class DistributedNode
-		: public virtual FPMAS::api::graph::base::Node<DistributedId, DistributedArc<T>> {
-		typedef FPMAS::api::graph::base::Node<DistributedId, DistributedArc<T>> NodeBase;
+		: public virtual fpmas::api::graph::base::Node<DistributedId, DistributedArc<T>> {
+		typedef fpmas::api::graph::base::Node<DistributedId, DistributedArc<T>> NodeBase;
 		public:
 			virtual int getLocation() const = 0;
 			virtual void setLocation(int) = 0;

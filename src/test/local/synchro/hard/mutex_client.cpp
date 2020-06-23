@@ -44,10 +44,10 @@ using ::testing::SaveArgPointee;
 using ::testing::SetArgReferee;
 using ::testing::_;
 
-using FPMAS::api::synchro::hard::Epoch;
-using FPMAS::api::synchro::hard::Tag;
-using FPMAS::synchro::hard::MutexClient;
-using FPMAS::synchro::hard::DataUpdatePack;
+using fpmas::api::synchro::hard::Epoch;
+using fpmas::api::synchro::hard::Tag;
+using fpmas::synchro::hard::MutexClient;
+using fpmas::synchro::hard::DataUpdatePack;
 
 class MutexClientTest : public ::testing::Test {
 	protected:

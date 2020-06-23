@@ -4,8 +4,8 @@
 using ::testing::Contains;
 using ::testing::IsEmpty;
 
-using FPMAS::communication::MpiCommunicator;
-using FPMAS::communication::TypedMpi;
+using fpmas::communication::MpiCommunicator;
+using fpmas::communication::TypedMpi;
 
 TEST(MpiMpiCommunicatorTest, size_test) {
 	MpiCommunicator comm;

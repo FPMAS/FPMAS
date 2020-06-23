@@ -4,7 +4,7 @@
 
 #include "utils/macros.h"
 
-namespace FPMAS::communication {
+namespace fpmas::communication {
 	/**
 	 * Builds an MPI group and the associated communicator as a copy of the
 	 * MPI_COMM_WORLD communicator.
@@ -26,7 +26,7 @@ namespace FPMAS::communication {
 	 * specified as arguments.
 	 *
 	 * ```cpp
-	 * FPMAS::communication::MpiCommunicator comm {0, 1, 2};
+	 * fpmas::communication::MpiCommunicator comm {0, 1, 2};
 	 * ```
 	 *
 	 * Notice that such calls must follow the same requirements as the
@@ -67,13 +67,13 @@ namespace FPMAS::communication {
 	}
 
 	/**
-	 * FPMAS::communication::MpiCommunicator copy constructor.
+	 * fpmas::communication::MpiCommunicator copy constructor.
 	 *
 	 * Allows a correct MPI resources management.
 	 *
-	 * @param from FPMAS::communication::MpiCommunicator to copy from
+	 * @param from fpmas::communication::MpiCommunicator to copy from
 	 */
-	MpiCommunicator::MpiCommunicator(const FPMAS::communication::MpiCommunicator& from) {
+	MpiCommunicator::MpiCommunicator(const fpmas::communication::MpiCommunicator& from) {
 		this->comm = from.comm;
 		this->comm_references = from.comm_references + 1;
 
@@ -84,13 +84,13 @@ namespace FPMAS::communication {
 
 	}
 	/**
-	 * FPMAS::communication::MpiCommunicator copy assignment.
+	 * fpmas::communication::MpiCommunicator copy assignment.
 	 *
 	 * Allows a correct MPI resources management.
 	 *
-	 * @param other FPMAS::communication::MpiCommunicator to assign to this
+	 * @param other fpmas::communication::MpiCommunicator to assign to this
 	 */
-	MpiCommunicator& FPMAS::communication::MpiCommunicator::operator=(const MpiCommunicator& other) {
+	MpiCommunicator& fpmas::communication::MpiCommunicator::operator=(const MpiCommunicator& other) {
 		MPI_Group_free(&this->group);
 
 		this->comm = other.comm;
@@ -312,7 +312,7 @@ namespace FPMAS::communication {
 	}
 
 	/**
-	 * FPMAS::communication::MpiCommunicator destructor.
+	 * fpmas::communication::MpiCommunicator destructor.
 	 *
 	 * Properly releases acquired MPI resources.
 	 */

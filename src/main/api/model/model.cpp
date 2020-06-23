@@ -1,6 +1,6 @@
 #include "model.h"
 
-namespace FPMAS::api::model {
+namespace fpmas::api::model {
 
 	AgentPtrWrapper::AgentPtrWrapper(const AgentPtrWrapper& other) {
 		this->virtual_type_ptr = other.virtual_type_ptr->copy();

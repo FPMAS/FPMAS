@@ -8,14 +8,14 @@
 #include "node.h"
 #include "arc.h"
 
-namespace FPMAS::graph::base {
+namespace fpmas::graph::base {
 
 	template<
 		typename NodeType,
 		typename ArcType
 	> class Graph : public virtual api::graph::base::Graph<NodeType, ArcType> {
 			public:
-				typedef FPMAS::api::graph::base::Graph<NodeType, ArcType> GraphBase;
+				typedef fpmas::api::graph::base::Graph<NodeType, ArcType> GraphBase;
 				using typename GraphBase::NodeBase;
 				using typename GraphBase::ArcBase;
 

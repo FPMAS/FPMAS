@@ -3,7 +3,7 @@
 
 #include "graph/parallel/distributed_id.h"
 
-namespace FPMAS::api::synchro {
+namespace fpmas::api::synchro {
 	template<typename T>
 	class Mutex {
 		protected:

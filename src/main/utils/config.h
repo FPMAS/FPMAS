@@ -3,7 +3,7 @@
 
 /*
  *#include "zoltan_cpp.h"
- *namespace FPMAS {
+ *namespace fpmas {
  *    namespace config {
  *
  *        void zoltan_config(Zoltan*);

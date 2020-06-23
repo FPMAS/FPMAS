@@ -13,10 +13,10 @@ using ::testing::Property;
 using ::testing::Return;
 using ::testing::ReturnPointee;
 
-using FPMAS::graph::parallel::ArcPtrWrapper;
-using FPMAS::synchro::hard::Epoch;
-using FPMAS::synchro::hard::Tag;
-using FPMAS::synchro::hard::LinkServer;
+using fpmas::graph::parallel::ArcPtrWrapper;
+using fpmas::synchro::hard::Epoch;
+using fpmas::synchro::hard::Tag;
+using fpmas::synchro::hard::LinkServer;
 
 class LinkServerTest : public ::testing::Test {
 	private:

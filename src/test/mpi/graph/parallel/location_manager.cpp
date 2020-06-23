@@ -8,14 +8,14 @@ using ::testing::ReturnRef;
 using ::testing::SizeIs;
 using ::testing::Ge;
 
-using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::DistributedNode;
-using FPMAS::graph::parallel::DistributedArc;
-using FPMAS::graph::parallel::LocationManager;
-using FPMAS::graph::parallel::DefaultMpiSetUp;
+using fpmas::graph::parallel::DistributedGraph;
+using fpmas::graph::parallel::DistributedNode;
+using fpmas::graph::parallel::DistributedArc;
+using fpmas::graph::parallel::LocationManager;
+using fpmas::graph::parallel::DefaultMpiSetUp;
 
 template<typename T>
-class FakeMutex : public FPMAS::api::synchro::Mutex<T> {
+class FakeMutex : public fpmas::api::synchro::Mutex<T> {
 	private:
 		std::reference_wrapper<T> _data;
 		void _lock() override {}
@@ -110,7 +110,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			ASSERT_THAT(graph.getNodes(), SizeIs(nodeCount > 0 ? NODES_COUNT : 0));
 			int localNodeCount = 0;
 			for(auto node : graph.getNodes()) {
-				if(node.second->state() == FPMAS::graph::parallel::LocationState::LOCAL) {
+				if(node.second->state() == fpmas::graph::parallel::LocationState::LOCAL) {
 					localNodeCount++;
 					ASSERT_THAT(node.second->getIncomingArcs(), SizeIs(NODES_COUNT-1));
 					ASSERT_THAT(node.second->getOutgoingArcs(), SizeIs(NODES_COUNT-1));

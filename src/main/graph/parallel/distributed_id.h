@@ -8,11 +8,11 @@
 #include "utils/log.h"
 
 
-namespace FPMAS::graph::parallel {
+namespace fpmas::graph::parallel {
 	class DistributedId;
 }
 
-namespace FPMAS::communication {
+namespace fpmas::communication {
 	/**
 	 * Structure used to serialize / unserialize DistributedId instances in MPI
 	 * communications.
@@ -33,16 +33,16 @@ namespace FPMAS::communication {
 	//class SyncMpiCommunicator;
 }
 
-namespace FPMAS::graph::parallel {
+namespace fpmas::graph::parallel {
 	class DistributedId;
 }
 namespace std {
-	template<> struct hash<FPMAS::graph::parallel::DistributedId>;
+	template<> struct hash<fpmas::graph::parallel::DistributedId>;
 }
 
-using FPMAS::communication::MpiDistributedId;
+using fpmas::communication::MpiDistributedId;
 
-namespace FPMAS::graph::parallel {
+namespace fpmas::graph::parallel {
 
 	/**
 	 * Distributed `IdType` implementation, used by any DistibutedGraphBase.
@@ -53,7 +53,7 @@ namespace FPMAS::graph::parallel {
 	 */
 	class DistributedId {
 		friend std::hash<DistributedId>;
-		//friend FPMAS::communication::SyncMpiCommunicator;
+		//friend fpmas::communication::SyncMpiCommunicator;
 		friend nlohmann::adl_serializer<DistributedId>;
 		friend std::ostream& operator<<(std::ostream& os, const DistributedId& id) {
 			os << std::string(id);
@@ -68,8 +68,8 @@ namespace FPMAS::graph::parallel {
 			/**
 			 * MPI_Datatype used to send and receive DistributedIds.
 			 *
-			 * Should be initialized with FPMAS::communication::createMpiTypes
-			 * and freed with FPMAS::communication::freeMpiTypes
+			 * Should be initialized with fpmas::communication::createMpiTypes
+			 * and freed with fpmas::communication::freeMpiTypes
 			 */
 			static MPI_Datatype mpiDistributedIdType;
 
@@ -183,9 +183,9 @@ namespace FPMAS::graph::parallel {
 	inline MPI_Datatype DistributedId::mpiDistributedIdType;
 }
 
-using FPMAS::graph::parallel::DistributedId;
+using fpmas::graph::parallel::DistributedId;
 
-namespace FPMAS::communication {
+namespace fpmas::communication {
 	/**
 	 * Initializes the static DistributedId::mpiDistributedIdType instance,
 	 * used to send and receive DistributedId through MPI.
@@ -227,7 +227,7 @@ namespace std {
 	};
 }
 
-using FPMAS::graph::parallel::DistributedId;
+using fpmas::graph::parallel::DistributedId;
 
 namespace nlohmann {
 	template<>

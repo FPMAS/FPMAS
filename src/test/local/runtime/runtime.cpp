@@ -12,7 +12,7 @@ using ::testing::Sequence;
 using ::testing::Expectation;
 using ::testing::ExpectationSet;
 
-using FPMAS::runtime::Runtime;
+using fpmas::runtime::Runtime;
 
 class RuntimeTest : public ::testing::Test {
 	protected:
@@ -20,9 +20,9 @@ class RuntimeTest : public ::testing::Test {
 		Runtime runtime {scheduler};
 		std::array<MockTask, 4> mock_tasks;
 		std::array<MockJob, 3> mock_jobs;
-		std::vector<FPMAS::api::scheduler::Task*> job_0_tasks;
-		std::vector<FPMAS::api::scheduler::Task*> job_1_tasks;
-		std::vector<FPMAS::api::scheduler::Task*> job_2_tasks;
+		std::vector<fpmas::api::scheduler::Task*> job_0_tasks;
+		std::vector<fpmas::api::scheduler::Task*> job_1_tasks;
+		std::vector<fpmas::api::scheduler::Task*> job_2_tasks;
 
 		std::vector<MockJob*> epoch_0_jobs;
 		std::vector<MockJob*> epoch_1_jobs;
@@ -64,7 +64,7 @@ class RuntimeTest : public ::testing::Test {
 			epoch_2_jobs.push_back(&mock_jobs[0]);
 			epoch_2_jobs.push_back(&mock_jobs[2]);
 		}
-		void expectTasks(Sequence& sequence, std::vector<FPMAS::api::scheduler::Task*> job_tasks) {
+		void expectTasks(Sequence& sequence, std::vector<fpmas::api::scheduler::Task*> job_tasks) {
 			Expectation _job_begin = EXPECT_CALL(
 					mock_tasks[0], run)
 				.InSequence(sequence);
@@ -81,7 +81,7 @@ class RuntimeTest : public ::testing::Test {
 		}
 
 	private:
-		void setUpJob(MockJob& job, std::vector<FPMAS::api::scheduler::Task*>& tasks) {
+		void setUpJob(MockJob& job, std::vector<fpmas::api::scheduler::Task*>& tasks) {
 				EXPECT_CALL(job, tasks)
 					.Times(AnyNumber())
 					.WillRepeatedly(ReturnRef(tasks));
@@ -99,7 +99,7 @@ class MockBuildEpoch {
 		std::vector<MockJob*> jobs;
 	public:
 		MockBuildEpoch(std::vector<MockJob*> jobs) : jobs(jobs) {}
-		void operator()(FPMAS::Date date, FPMAS::api::scheduler::Epoch& epoch) {
+		void operator()(fpmas::Date date, fpmas::api::scheduler::Epoch& epoch) {
 			epoch.clear();
 			for(auto job : jobs)
 				epoch.submit(*job);

@@ -6,34 +6,34 @@
 using ::testing::AtLeast;
 using ::testing::AnyNumber;
 
-using FPMAS::load_balancing::zoltan::read_zoltan_id;
+using fpmas::load_balancing::zoltan::read_zoltan_id;
 
-using FPMAS::load_balancing::zoltan::num_obj;
-using FPMAS::load_balancing::zoltan::obj_list;
-using FPMAS::load_balancing::zoltan::num_edges_multi_fn;
-using FPMAS::load_balancing::zoltan::edge_list_multi_fn;
-using FPMAS::load_balancing::zoltan::num_fixed_obj_fn;
-using FPMAS::load_balancing::zoltan::fixed_obj_list_fn;
+using fpmas::load_balancing::zoltan::num_obj;
+using fpmas::load_balancing::zoltan::obj_list;
+using fpmas::load_balancing::zoltan::num_edges_multi_fn;
+using fpmas::load_balancing::zoltan::edge_list_multi_fn;
+using fpmas::load_balancing::zoltan::num_fixed_obj_fn;
+using fpmas::load_balancing::zoltan::fixed_obj_list_fn;
 
 
 class ZoltanFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedId id1 {0, 1};
-		std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*> outArcs1;
+		std::vector<fpmas::api::graph::parallel::DistributedArc<int>*> outArcs1;
 		MockDistributedArc<int>* mockArc1;
 		MockDistributedArc<int>* mockArc2;
 
 		DistributedId id2 {0, 2};
-		std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*> outArcs2;
+		std::vector<fpmas::api::graph::parallel::DistributedArc<int>*> outArcs2;
 
 		DistributedId id3 {2, 3};
-		std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*> outArcs3;
+		std::vector<fpmas::api::graph::parallel::DistributedArc<int>*> outArcs3;
 		MockDistributedArc<int>* mockArc3;
 
 		std::unordered_map<
 			DistributedId,
 			MockDistributedNode<int>*,
-			FPMAS::api::graph::base::IdHash<DistributedId>
+			fpmas::api::graph::base::IdHash<DistributedId>
 			> nodes;
 
 		// Fake Zoltan buffers
@@ -44,7 +44,7 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		float weights[3];
 
 		std::unordered_map<
-			DistributedId, int, FPMAS::api::graph::base::IdHash<DistributedId>
+			DistributedId, int, fpmas::api::graph::base::IdHash<DistributedId>
 			> nodeIndex;
 
 		// Edge lists
@@ -227,7 +227,7 @@ TEST_F(ZoltanFunctionsTest, num_fixed_obj) {
 }
 
 TEST_F(ZoltanFunctionsTest, fixed_obj_list) {
-	FPMAS::load_balancing::zoltan::PartitionMap<int> map;
+	fpmas::load_balancing::zoltan::PartitionMap<int> map;
 	map[id1] = 7;
 	map[id2] = 2;
 	map[id3] = 3;

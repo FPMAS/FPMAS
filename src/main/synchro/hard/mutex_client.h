@@ -7,9 +7,9 @@
 #include "api/synchro/hard/hard_sync_mutex.h"
 #include "data_update_pack.h"
 
-namespace FPMAS::synchro::hard {
-	using FPMAS::api::synchro::hard::Epoch;
-	using FPMAS::api::synchro::hard::Tag;
+namespace fpmas::synchro::hard {
+	using fpmas::api::synchro::hard::Epoch;
+	using fpmas::api::synchro::hard::Tag;
 	
 	template<typename T>
 		class MutexClient :

@@ -9,7 +9,7 @@
 #include "load_balancing/zoltan_load_balancing.h"
 #include "load_balancing/scheduled_load_balancing.h"
 
-namespace FPMAS::model {
+namespace fpmas::model {
 
 	using api::model::AgentNode;
 	using api::model::AgentPtr;

@@ -10,13 +10,13 @@
 
 #include "graph/parallel/distributed_id.h"
 
-namespace FPMAS::api::graph::parallel {
+namespace fpmas::api::graph::parallel {
 
 	template<typename T>
 	class DistributedGraph 
-		: public virtual FPMAS::api::graph::base::Graph<DistributedNode<T>, DistributedArc<T>> {
+		: public virtual fpmas::api::graph::base::Graph<DistributedNode<T>, DistributedArc<T>> {
 		public:
-			typedef FPMAS::api::graph::base::Graph<DistributedNode<T>, DistributedArc<T>> GraphBase;
+			typedef fpmas::api::graph::base::Graph<DistributedNode<T>, DistributedArc<T>> GraphBase;
 
 			using typename GraphBase::LayerIdType;
 			using typename GraphBase::NodeMap;

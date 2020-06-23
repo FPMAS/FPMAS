@@ -44,9 +44,9 @@ using ::testing::SizeIs;
 using ::testing::UnorderedElementsAre;
 using ::testing::_;
 
-using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::graph::parallel::NodePtrWrapper;
-using FPMAS::graph::parallel::ArcPtrWrapper;
+using fpmas::graph::parallel::DistributedGraph;
+using fpmas::graph::parallel::NodePtrWrapper;
+using fpmas::graph::parallel::ArcPtrWrapper;
 
 /********************/
 /* local_build_node */
@@ -65,9 +65,9 @@ class DistributedGraphTest : public ::testing::Test {
 
 		typedef decltype(graph) GraphType;
 		typedef MockDistributedNode<int> MockNode;
-		typedef FPMAS::api::graph::parallel::DistributedNode<int> NodeType; 
+		typedef fpmas::api::graph::parallel::DistributedNode<int> NodeType; 
 		typedef MockDistributedArc<int> MockArc;
-		typedef FPMAS::api::graph::parallel::DistributedArc<int> ArcType;
+		typedef fpmas::api::graph::parallel::DistributedArc<int> ArcType;
 		typedef typename GraphType::SyncModeRuntimeType SyncModeRuntimeType;
 
 		MockMpiCommunicator<CURRENT_RANK, 10>& comm =
@@ -956,7 +956,7 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 /****************************/
 class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistributeTest {
 	protected:
-		typedef std::vector<FPMAS::api::graph::parallel::DistributedArc<int>*> ArcList;
+		typedef std::vector<fpmas::api::graph::parallel::DistributedArc<int>*> ArcList;
 
 		ArcType* arc1;
 		ArcType* arc2;

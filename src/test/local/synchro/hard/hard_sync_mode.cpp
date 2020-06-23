@@ -15,11 +15,11 @@
 using ::testing::Ref;
 using ::testing::NiceMock;
 
-using FPMAS::graph::parallel::DistributedGraph;
-using FPMAS::synchro::HardSyncMode;
-using FPMAS::synchro::hard::HardDataSync;
-using FPMAS::synchro::hard::HardSyncLinker;
-using FPMAS::synchro::hard::ServerPack;
+using fpmas::graph::parallel::DistributedGraph;
+using fpmas::synchro::HardSyncMode;
+using fpmas::synchro::hard::HardDataSync;
+using fpmas::synchro::hard::HardSyncLinker;
+using fpmas::synchro::hard::ServerPack;
 
 class HardDataSyncTest : public ::testing::Test {
 	protected:

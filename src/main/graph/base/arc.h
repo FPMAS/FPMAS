@@ -3,12 +3,12 @@
 
 #include "api/graph/base/node.h"
 
-namespace FPMAS::graph::base {
+namespace fpmas::graph::base {
 
 	template<typename IdType, typename _NodeType>
-		class Arc : public virtual FPMAS::api::graph::base::Arc<IdType, _NodeType> {
+		class Arc : public virtual fpmas::api::graph::base::Arc<IdType, _NodeType> {
 			public:
-				typedef FPMAS::api::graph::base::Arc<IdType, _NodeType> ArcBase;
+				typedef fpmas::api::graph::base::Arc<IdType, _NodeType> ArcBase;
 				using typename ArcBase::NodeType;
 				using typename ArcBase::LayerIdType;
 

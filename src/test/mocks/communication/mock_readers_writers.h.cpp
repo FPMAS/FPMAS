@@ -6,9 +6,9 @@
 
 #include "graph/parallel/distributed_id.h"
 
-using FPMAS::graph::parallel::DistributedId;
+using fpmas::graph::parallel::DistributedId;
 
-class MockReadersWriters : public FPMAS::api::communication::ReadersWriters {
+class MockReadersWriters : public fpmas::api::communication::ReadersWriters {
 	public:
 		MOCK_METHOD(void, read, (int), (override));
 		MOCK_METHOD(void, acquire, (int), (override));
@@ -17,10 +17,10 @@ class MockReadersWriters : public FPMAS::api::communication::ReadersWriters {
 		MOCK_METHOD(bool, isLocked, (), (const override));
 };
 
-class MockReadersWritersManager : public FPMAS::api::communication::ReadersWritersManager<MockReadersWriters> {
+class MockReadersWritersManager : public fpmas::api::communication::ReadersWritersManager<MockReadersWriters> {
 	public:
-		MockReadersWritersManager(FPMAS::api::communication::RequestHandler& requestHandler, int rank)
-			: FPMAS::api::communication::ReadersWritersManager<MockReadersWriters>(requestHandler) {}
+		MockReadersWritersManager(fpmas::api::communication::RequestHandler& requestHandler, int rank)
+			: fpmas::api::communication::ReadersWritersManager<MockReadersWriters>(requestHandler) {}
 
 		MOCK_METHOD(MockReadersWriters&, AccessOp, (const DistributedId &), ());
 		MOCK_METHOD(void, clear, (), (override));

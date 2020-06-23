@@ -1,7 +1,7 @@
 #include "api/model/types.h"
 #include "api/model/model.h"
 
-using FPMAS::api::model::AgentPtrWrapper;
+using fpmas::api::model::AgentPtrWrapper;
 
 class AgentPtrWrapperTest : public ::testing::Test {
 	

@@ -6,7 +6,7 @@
 #include "api/runtime/runtime.h"
 #include "api/utils/ptr_wrapper.h"
 
-namespace FPMAS::api::model {
+namespace fpmas::api::model {
 	class Agent;
 	class AgentTask;
 	class AgentPtrWrapper;

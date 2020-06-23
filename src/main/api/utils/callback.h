@@ -1,7 +1,7 @@
 #ifndef CALLBACK_API_H
 #define CALLBACK_API_H
 
-namespace FPMAS::api::utils {
+namespace fpmas::api::utils {
 	/*
 	 *class Callback {
 	 *    public:

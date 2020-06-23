@@ -3,7 +3,7 @@
 #include "../mocks/communication/mock_communication.h"
 #include "communication/communication.h"
 
-using FPMAS::communication::TypedMpi;
+using fpmas::communication::TypedMpi;
 
 using ::testing::ElementsAre;
 using ::testing::UnorderedElementsAre;
@@ -19,15 +19,15 @@ class MpiTest : public ::testing::Test {
 
 		void copy(
 			std::unordered_map<int, std::string>& map,
-			std::unordered_map<int, FPMAS::api::communication::DataPack>& dataPackMap
+			std::unordered_map<int, fpmas::api::communication::DataPack>& dataPackMap
 			) {
 			for(auto item : map) {
 				dataPackMap[item.first] = buildDataPack(item.second);
 			}
 		}
 
-		FPMAS::api::communication::DataPack buildDataPack(std::string str) {
-			FPMAS::api::communication::DataPack pack {(int) str.size(), sizeof(char)};
+		fpmas::api::communication::DataPack buildDataPack(std::string str) {
+			fpmas::api::communication::DataPack pack {(int) str.size(), sizeof(char)};
 			std::memcpy(pack.buffer, str.data(), str.size());
 			return pack;
 		}
@@ -54,7 +54,7 @@ TEST_F(MpiTest, migrate_int) {
 		{7, "[1,2,3]"}
 	};
 
-	std::unordered_map<int, FPMAS::api::communication::DataPack> importDataPack;
+	std::unordered_map<int, fpmas::api::communication::DataPack> importDataPack;
 	copy(importMap, importDataPack);
 
 	EXPECT_CALL(
@@ -85,7 +85,7 @@ TEST_F(MpiTest, gather_int_root) {
 
 	// Normally, exactly one item is resized by proc (8 in this case), but not
 	// important in the context of this test.
-	std::vector<FPMAS::communication::DataPack> import = {
+	std::vector<fpmas::communication::DataPack> import = {
 		buildDataPack("2"),
 		buildDataPack("4"),
 		buildDataPack("1"),
@@ -149,7 +149,7 @@ TEST_F(MpiTest, migrate_fake_test) {
 	std::unordered_map<int, std::string> importMap =
 	{{2, nlohmann::json({importFake1, importFake2}).dump()}};
 
-	std::unordered_map<int, FPMAS::api::communication::DataPack> importDataPack;
+	std::unordered_map<int, fpmas::api::communication::DataPack> importDataPack;
 	copy(importMap, importDataPack);
 
 	EXPECT_CALL(comm, allToAll(exportMapMatcher, MPI_CHAR))

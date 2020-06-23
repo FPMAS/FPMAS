@@ -7,7 +7,7 @@
 #include "api/graph/parallel/distributed_arc.h"
 #include "mock_distributed_node.h"
 
-using FPMAS::api::graph::parallel::LocationState;
+using fpmas::api::graph::parallel::LocationState;
 
 template<typename T>
 class MockDistributedArc;
@@ -19,11 +19,11 @@ class MockDistributedNode;
 
 template<typename T>
 class MockDistributedArc :
-	public FPMAS::api::graph::parallel::DistributedArc<T>,
-	public AbstractMockArc<DistributedId, FPMAS::api::graph::parallel::DistributedNode<T>>
+	public fpmas::api::graph::parallel::DistributedArc<T>,
+	public AbstractMockArc<DistributedId, fpmas::api::graph::parallel::DistributedNode<T>>
 {
-	typedef AbstractMockArc<DistributedId, FPMAS::api::graph::parallel::DistributedNode<T>> ArcBase;
-	typedef FPMAS::api::graph::parallel::DistributedArc<T> DistArcBase;
+	typedef AbstractMockArc<DistributedId, fpmas::api::graph::parallel::DistributedNode<T>> ArcBase;
+	typedef fpmas::api::graph::parallel::DistributedArc<T> DistArcBase;
 
 	friend void from_json<T>(const nlohmann::json&, MockDistributedArc<T>&);
 

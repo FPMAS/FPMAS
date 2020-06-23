@@ -1,7 +1,7 @@
 #ifndef PTR_WRAPPER_API_H
 #define PTR_WRAPPER_API_H
 
-namespace FPMAS::api::utils {
+namespace fpmas::api::utils {
 
 	template<typename VirtualType>
 	class VirtualPtrWrapper {

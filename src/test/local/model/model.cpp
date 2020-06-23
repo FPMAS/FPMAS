@@ -25,11 +25,11 @@ using ::testing::TypedEq;
 using ::testing::UnorderedElementsAre;
 using ::testing::WhenDynamicCastTo;
 
-using FPMAS::model::Model;
-using FPMAS::model::AgentGroup;
-using FPMAS::model::AgentTask;
+using fpmas::model::Model;
+using fpmas::model::AgentGroup;
+using fpmas::model::AgentTask;
 
-typedef FPMAS::api::model::AgentPtr AgentPtr;
+typedef fpmas::api::model::AgentPtr AgentPtr;
 
 TEST(AgentTaskTest, build) {
 	MockAgent<> agent;
@@ -65,12 +65,12 @@ class ModelTest : public ::testing::Test {
 			graph;
 		MockLoadBalancing<AgentPtr> load_balancing;
 
-		FPMAS::scheduler::Scheduler scheduler;
-		FPMAS::runtime::Runtime runtime {scheduler};
+		fpmas::scheduler::Scheduler scheduler;
+		fpmas::runtime::Runtime runtime {scheduler};
 
 		typedef
-		FPMAS::api::utils::Callback<
-			FPMAS::api::graph::parallel::DistributedNode<AgentPtr>*>
+		fpmas::api::utils::Callback<
+			fpmas::api::graph::parallel::DistributedNode<AgentPtr>*>
 			NodeCallback;
 		NodeCallback* insert_node_callback;
 		NodeCallback* erase_node_callback;
@@ -80,16 +80,16 @@ class ModelTest : public ::testing::Test {
 		Model* model;
 		void SetUp() override {
 			EXPECT_CALL(graph, addCallOnInsertNode(
-					WhenDynamicCastTo<FPMAS::model::InsertAgentCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::InsertAgentCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&insert_node_callback));
 			EXPECT_CALL(graph, addCallOnEraseNode(
-					WhenDynamicCastTo<FPMAS::model::EraseAgentCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::EraseAgentCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&erase_node_callback));
 			EXPECT_CALL(graph, addCallOnSetLocal(
-					WhenDynamicCastTo<FPMAS::model::SetAgentLocalCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::SetAgentLocalCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&set_local_callback));
 			EXPECT_CALL(graph, addCallOnSetDistant(
-					WhenDynamicCastTo<FPMAS::model::SetAgentDistantCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::SetAgentDistantCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&set_distant_callback));
 			model = new Model(graph, scheduler, runtime, load_balancing);
 		}
@@ -131,14 +131,14 @@ TEST_F(ModelTest, load_balancing_job) {
 
 class AgentGroupTest : public ::testing::Test {
 	public:
-		typedef FPMAS::api::graph::parallel::DistributedNode<AgentPtr> Node;
+		typedef fpmas::api::graph::parallel::DistributedNode<AgentPtr> Node;
 	protected:
 		MockModel model;
-		FPMAS::model::InsertAgentCallback insert_agent_callback {model};
-		FPMAS::model::EraseAgentCallback erase_agent_callback {model};
-		FPMAS::model::SetAgentLocalCallback set_local_callback {model};
+		fpmas::model::InsertAgentCallback insert_agent_callback {model};
+		fpmas::model::EraseAgentCallback erase_agent_callback {model};
+		fpmas::model::SetAgentLocalCallback set_local_callback {model};
 
-		FPMAS::api::model::GroupId id = 1;
+		fpmas::api::model::GroupId id = 1;
 
 		MockDistributedGraph<
 			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedArc<AgentPtr>>
@@ -147,17 +147,17 @@ class AgentGroupTest : public ::testing::Test {
 		MockDistributedNode<AgentPtr> node1 {{0, 1}};
 		MockDistributedNode<AgentPtr> node2 {{0, 2}};
 
-		AgentGroup agent_group {10, graph, FPMAS::JID(18)};
+		AgentGroup agent_group {10, graph, fpmas::JID(18)};
 		MockAgent<>* agent1 = new MockAgent<>;
-		FPMAS::api::model::AgentTask* agent1_task;
+		fpmas::api::model::AgentTask* agent1_task;
 		AgentPtr agent1_ptr {agent1};
 
 		MockAgent<>* agent2 = new MockAgent<>;
-		FPMAS::api::model::AgentTask* agent2_task;
+		fpmas::api::model::AgentTask* agent2_task;
 		AgentPtr agent2_ptr {agent2};
 
-		FPMAS::scheduler::Scheduler scheduler;
-		FPMAS::runtime::Runtime runtime {scheduler};
+		fpmas::scheduler::Scheduler scheduler;
+		fpmas::runtime::Runtime runtime {scheduler};
 /*
  *
  *        class ReturnMockData {
@@ -199,13 +199,13 @@ class AgentGroupTest : public ::testing::Test {
 			EXPECT_CALL(graph, insert(A<Node*>()))
 				.Times(AnyNumber())
 				.WillRepeatedly(DoAll(
-							Invoke(&insert_agent_callback, &FPMAS::model::InsertAgentCallback::call),
-							Invoke(&set_local_callback, &FPMAS::model::SetAgentLocalCallback::call)
+							Invoke(&insert_agent_callback, &fpmas::model::InsertAgentCallback::call),
+							Invoke(&set_local_callback, &fpmas::model::SetAgentLocalCallback::call)
 							));
 			EXPECT_CALL(graph, erase(A<Node*>()))
 				.Times(AnyNumber())
 				.WillRepeatedly(DoAll(
-							Invoke(&erase_agent_callback, &FPMAS::model::EraseAgentCallback::call)
+							Invoke(&erase_agent_callback, &fpmas::model::EraseAgentCallback::call)
 							));
 			EXPECT_CALL(model, getGroup(id))
 				.Times(AnyNumber())
@@ -220,7 +220,7 @@ TEST_F(AgentGroupTest, id) {
 }
 
 TEST_F(AgentGroupTest, job) {
-	ASSERT_EQ(agent_group.job().id(), FPMAS::JID(18));
+	ASSERT_EQ(agent_group.job().id(), fpmas::JID(18));
 	//delete agent1;
 	//delete agent2;
 }
@@ -235,7 +235,7 @@ TEST_F(AgentGroupTest, job_end) {
 
 class MockBuildNode {
 	private:
-		typedef FPMAS::api::graph::parallel::DistributedGraph<AgentPtr>
+		typedef fpmas::api::graph::parallel::DistributedGraph<AgentPtr>
 			Graph;
 		Graph* graph;
 		typename AgentGroupTest::Node* node;

@@ -4,9 +4,9 @@
 
 using ::testing::_;
 
-using FPMAS::synchro::hard::Color;
-using FPMAS::synchro::hard::Tag;
-using FPMAS::synchro::hard::TerminationAlgorithm;
+using fpmas::synchro::hard::Color;
+using fpmas::synchro::hard::Tag;
+using fpmas::synchro::hard::TerminationAlgorithm;
 
 class TerminationTest : public ::testing::Test {
 	protected:

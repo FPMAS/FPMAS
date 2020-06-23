@@ -5,10 +5,10 @@
 #include "utils/config.h"
 #include "zoltan_cpp.h"
 
-namespace FPMAS::load_balancing {
+namespace fpmas::load_balancing {
 
 	/**
-	 * The FPMAS::graph::zoltan namespace contains definitions of all the
+	 * The fpmas::graph::zoltan namespace contains definitions of all the
 	 * required Zoltan query functions to compute load balancing partitions
 	 * based on the current graph nodes.
 	 */
@@ -222,9 +222,9 @@ namespace FPMAS::load_balancing {
 	}
 
 	template<typename T>
-		class ZoltanLoadBalancing : public FPMAS::api::load_balancing::FixedVerticesLoadBalancing<T> {
+		class ZoltanLoadBalancing : public fpmas::api::load_balancing::FixedVerticesLoadBalancing<T> {
 			public:
-				typedef FPMAS::api::load_balancing::FixedVerticesLoadBalancing<T> base;
+				typedef fpmas::api::load_balancing::FixedVerticesLoadBalancing<T> base;
 				using typename base::PartitionMap;
 				using typename base::ConstNodeMap;
 

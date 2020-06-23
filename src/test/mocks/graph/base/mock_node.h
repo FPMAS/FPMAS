@@ -12,13 +12,13 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 using ::testing::AnyNumber;
 
-using FPMAS::api::graph::base::Id;
-using FPMAS::api::graph::base::LayerId;
+using fpmas::api::graph::base::Id;
+using fpmas::api::graph::base::LayerId;
 
 class MockData {};
 
 template<typename IdType, typename _ArcType>
-class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
+class AbstractMockNode : public virtual fpmas::api::graph::base::Node<
 				 IdType, _ArcType
 							 > {
 	protected:
@@ -26,7 +26,7 @@ class AbstractMockNode : public virtual FPMAS::api::graph::base::Node<
 		float weight = 1.;
 
 	public:
-		using typename FPMAS::api::graph::base::Node<
+		using typename fpmas::api::graph::base::Node<
 			IdType, _ArcType>::ArcType;
 
 		AbstractMockNode() {

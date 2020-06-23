@@ -1,7 +1,7 @@
 /*
  *#include "config.h"
  *
- *namespace FPMAS {
+ *namespace fpmas {
  *    namespace config {
  *        void zoltan_config(Zoltan* zz) {
  *            zz->Set_Param("DEBUG_LEVEL", "0");

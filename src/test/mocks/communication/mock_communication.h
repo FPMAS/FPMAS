@@ -10,7 +10,7 @@ using ::testing::Return;
 using ::testing::AnyNumber;
 
 template<int RANK=0, int SIZE=0>
-class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
+class MockMpiCommunicator : public fpmas::api::communication::MpiCommunicator {
 	public:
 		MockMpiCommunicator() {
 			ON_CALL(*this, getRank())
@@ -39,16 +39,16 @@ class MockMpiCommunicator : public FPMAS::api::communication::MpiCommunicator {
 		MOCK_METHOD(bool, test, (MPI_Request*), (override));
 
 		MOCK_METHOD(
-			(std::unordered_map<int, FPMAS::api::communication::DataPack>), allToAll,
-			((std::unordered_map<int, FPMAS::api::communication::DataPack>), MPI_Datatype), (override));
-		MOCK_METHOD(std::vector<FPMAS::api::communication::DataPack>, gather, 
-				(FPMAS::api::communication::DataPack, MPI_Datatype, int), (override));
+			(std::unordered_map<int, fpmas::api::communication::DataPack>), allToAll,
+			((std::unordered_map<int, fpmas::api::communication::DataPack>), MPI_Datatype), (override));
+		MOCK_METHOD(std::vector<fpmas::api::communication::DataPack>, gather, 
+				(fpmas::api::communication::DataPack, MPI_Datatype, int), (override));
 };
 
 template<typename T>
-class MockMpi : public FPMAS::api::communication::TypedMpi<T> {
+class MockMpi : public fpmas::api::communication::TypedMpi<T> {
 	public:
-		MockMpi(FPMAS::api::communication::MpiCommunicator&) {
+		MockMpi(fpmas::api::communication::MpiCommunicator&) {
 			EXPECT_CALL(*this, migrate).Times(AnyNumber());
 		}
 
@@ -66,6 +66,6 @@ class MockMpi : public FPMAS::api::communication::TypedMpi<T> {
 };
 
 template<int RANK, int SIZE>
-using MockMpiSetUp = FPMAS::api::communication::MpiSetUp<MockMpiCommunicator<RANK, SIZE>, MockMpi>;
+using MockMpiSetUp = fpmas::api::communication::MpiSetUp<MockMpiCommunicator<RANK, SIZE>, MockMpi>;
 
 #endif

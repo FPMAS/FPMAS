@@ -8,7 +8,7 @@
 #include "graph/parallel/distributed_id.h"
 #include "api/graph/base/id.h"
 
-namespace FPMAS::api::load_balancing {
+namespace fpmas::api::load_balancing {
 	template<typename T>
 		class FixedVerticesLoadBalancing {
 			protected:

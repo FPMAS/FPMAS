@@ -10,7 +10,7 @@
 
 #define GRAPH_PARAMS_SPEC NodeType, ArcType
 
-namespace FPMAS::api::graph::base {
+namespace fpmas::api::graph::base {
 
 	template<GRAPH_PARAMS> class Graph {
 		static_assert(std::is_base_of<typename NodeType::ArcType, ArcType>::value);
@@ -23,8 +23,8 @@ namespace FPMAS::api::graph::base {
 			typedef typename ArcType::IdType ArcIdType;
 			typedef typename ArcType::LayerIdType LayerIdType;
 
-			typedef FPMAS::api::graph::base::IdHash<typename NodeType::IdType> NodeIdHash;
-			typedef FPMAS::api::graph::base::IdHash<typename ArcType::IdType> ArcIdHash;
+			typedef fpmas::api::graph::base::IdHash<typename NodeType::IdType> NodeIdHash;
+			typedef fpmas::api::graph::base::IdHash<typename ArcType::IdType> ArcIdHash;
 			typedef std::unordered_map<
 				NodeIdType, NodeType*, NodeIdHash
 				> NodeMap;

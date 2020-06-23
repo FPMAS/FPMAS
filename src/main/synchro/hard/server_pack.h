@@ -3,7 +3,7 @@
 
 #include "api/synchro/hard/client_server.h"
 
-namespace FPMAS {
+namespace fpmas {
 	namespace synchro {
 		namespace hard {
 

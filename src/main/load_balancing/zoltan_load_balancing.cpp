@@ -1,6 +1,6 @@
 #include "zoltan_load_balancing.h"
 
-namespace FPMAS::load_balancing::zoltan {
+namespace fpmas::load_balancing::zoltan {
 	void zoltan_config(Zoltan* zz) {
 		zz->Set_Param("DEBUG_LEVEL", "0");
 		zz->Set_Param("LB_METHOD", "GRAPH");

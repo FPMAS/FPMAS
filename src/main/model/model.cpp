@@ -1,7 +1,7 @@
 #include "model.h"
 #include "graph/parallel/distributed_node.h"
 
-namespace FPMAS::model {
+namespace fpmas::model {
 
 	const JID Model::LB_JID = 0;
 

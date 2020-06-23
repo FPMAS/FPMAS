@@ -3,7 +3,7 @@
 
 #include "api/graph/parallel/distributed_node.h"
 
-namespace FPMAS {
+namespace fpmas {
 	typedef unsigned long Period;
 	typedef unsigned long Date;
 	typedef size_t JID;

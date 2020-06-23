@@ -2,7 +2,7 @@
 
 #include "../mocks/scheduler/mock_scheduler.h"
 
-using FPMAS::scheduler::Epoch;
+using fpmas::scheduler::Epoch;
 
 using ::testing::UnorderedElementsAre;
 using ::testing::IsEmpty;

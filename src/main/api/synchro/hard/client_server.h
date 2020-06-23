@@ -4,7 +4,7 @@
 #include "enums.h"
 #include "graph/parallel/distributed_arc.h"
 
-namespace FPMAS::api::synchro::hard {
+namespace fpmas::api::synchro::hard {
 	struct MutexRequest {
 		inline static const int LOCAL = -1;
 		DistributedId id;
@@ -71,8 +71,8 @@ namespace FPMAS::api::synchro::hard {
 	template<typename T>
 		class LinkClient {
 			public:
-				virtual void link(const FPMAS::api::graph::parallel::DistributedArc<T>*) = 0;
-				virtual void unlink(const FPMAS::api::graph::parallel::DistributedArc<T>*) = 0;
+				virtual void link(const fpmas::api::graph::parallel::DistributedArc<T>*) = 0;
+				virtual void unlink(const fpmas::api::graph::parallel::DistributedArc<T>*) = 0;
 
 				virtual ~LinkClient() {};
 		};

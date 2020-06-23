@@ -25,9 +25,9 @@
 	MpiSetUp,\
 	LocationManagerImpl
 
-namespace FPMAS::graph::parallel {
+namespace fpmas::graph::parallel {
 	
-	using FPMAS::api::graph::parallel::LocationState;
+	using fpmas::api::graph::parallel::LocationState;
 	
 	typedef api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi> DefaultMpiSetUp;
 

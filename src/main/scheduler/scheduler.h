@@ -7,7 +7,7 @@
 
 #include "api/scheduler/scheduler.h"
 
-namespace FPMAS::scheduler {
+namespace fpmas::scheduler {
 
 	class VoidTask : public api::scheduler::Task {
 		public:
@@ -67,7 +67,7 @@ namespace FPMAS::scheduler {
 			void schedule(Date date, Period period, const api::scheduler::Job&) override;
 			void schedule(Date date, Date end, Period period, const api::scheduler::Job&) override;
 
-			void build(Date date, FPMAS::api::scheduler::Epoch&) const override;
+			void build(Date date, fpmas::api::scheduler::Epoch&) const override;
 	};
 
 }

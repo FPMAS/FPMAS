@@ -1,6 +1,6 @@
 #include "ptr_wrapper.h"
 
-namespace FPMAS::api::utils {
+namespace fpmas::api::utils {
 
 	AgentPtrWrapper::AgentPtrWrapper(AgentPtrWrapper&& other) {
 		this->virtual_type_ptr = other.get();

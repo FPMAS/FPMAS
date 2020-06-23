@@ -5,7 +5,7 @@
 #include "../mutex.h"
 #include "client_server.h"
 
-namespace FPMAS::api::synchro::hard {
+namespace fpmas::api::synchro::hard {
 
 	template<typename T>
 		class HardSyncMutex : public virtual synchro::Mutex<T> {

@@ -4,7 +4,7 @@
 #include "gmock/gmock.h"
 #include "api/communication/request_handler.h"
 
-class MockRequestHandler : public FPMAS::api::communication::RequestHandler {
+class MockRequestHandler : public fpmas::api::communication::RequestHandler {
 	public:
 		MOCK_METHOD(std::string, read, (DistributedId, int), (override));
 		MOCK_METHOD(std::string, acquire, (DistributedId, int), (override));

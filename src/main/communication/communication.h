@@ -8,9 +8,9 @@
 
 #include "api/communication/communication.h"
 
-namespace FPMAS {
+namespace fpmas {
 	/**
-	 * The FPMAS::communication namespace contains low level MPI features
+	 * The fpmas::communication namespace contains low level MPI features
 	 * required by communication processes.
 	 */
 	namespace communication {

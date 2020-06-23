@@ -4,7 +4,7 @@
 #include "scheduler/scheduler.h"
 
 
-namespace FPMAS::runtime {
+namespace fpmas::runtime {
 
 	class Runtime : public api::runtime::Runtime {
 		private:

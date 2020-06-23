@@ -7,20 +7,20 @@
 #include "api/synchro/hard/hard_sync_mutex.h"
 #include "data_update_pack.h"
 
-namespace FPMAS::synchro::hard {
-	using FPMAS::api::synchro::hard::Epoch;
-	using FPMAS::api::synchro::hard::Tag;
+namespace fpmas::synchro::hard {
+	using fpmas::api::synchro::hard::Epoch;
+	using fpmas::api::synchro::hard::Tag;
 
-	using FPMAS::api::synchro::hard::MutexRequestType;
+	using fpmas::api::synchro::hard::MutexRequestType;
 
 	template<typename T>
 		class MutexServer :
-			public FPMAS::api::synchro::hard::MutexServer<T> {
-				typedef FPMAS::api::synchro::hard::MutexServer<T>
+			public fpmas::api::synchro::hard::MutexServer<T> {
+				typedef fpmas::api::synchro::hard::MutexServer<T>
 					MutexServerBase;
-				typedef FPMAS::api::synchro::hard::HardSyncMutex<T>
+				typedef fpmas::api::synchro::hard::HardSyncMutex<T>
 					HardSyncMutex;
-				typedef FPMAS::api::synchro::hard::MutexRequest
+				typedef fpmas::api::synchro::hard::MutexRequest
 					Request;
 				typedef api::communication::MpiCommunicator MpiComm;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
