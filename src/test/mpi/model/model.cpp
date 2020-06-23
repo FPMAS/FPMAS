@@ -16,8 +16,9 @@ using ::testing::Ge;
 using ::testing::InvokeWithoutArgs;
 
 class ReaderAgent;
+class WriterAgent;
 
-FPMAS_JSON_SERIALIZE_AGENT(ReaderAgent, MockAgentBase<1>, MockAgentBase<10>)
+FPMAS_JSON_SERIALIZE_AGENT(ReaderAgent, WriterAgent, MockAgentBase<1>, MockAgentBase<10>)
 FPMAS_DEFAULT_JSON(MockAgentBase<1>)
 FPMAS_DEFAULT_JSON(MockAgentBase<10>)
 
@@ -147,10 +148,10 @@ TEST_F(ModelGhostModeIntegrationExecutionTest, ghost_mode_with_link) {
 class UpdateWeightAct : public FPMAS::model::AgentNodeCallback {
 	private:
 		std::mt19937 engine;
-		std::uniform_real_distribution<float> random_node {0, 1};
+		std::uniform_real_distribution<float> random_weight {0, 1};
 	public:
 		void call(FPMAS::model::AgentNode* node) override {
-			node->setWeight(random_node(engine) * 10);
+			node->setWeight(random_weight(engine) * 10);
 			EXPECT_CALL(*static_cast<MockAgentBase<10>*>(node->data().get()), act)
 				.Times(AnyNumber());
 		}
@@ -341,17 +342,18 @@ TEST_F(ModelHardSyncModeIntegrationLoadBalancingTest, hard_sync_mode_dynamic_lb)
 	runtime.run(NUM_STEPS);
 }
 
-class WriterAgent : public FPMAS::model::AgentBase<ReaderAgent, 0> {
+class WriterAgent : public FPMAS::model::AgentBase<WriterAgent, 2> {
 	private:
 		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight;
 		int counter = 0;
 	public:
 		void act() override {
+			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", ID_C_STR(node()->getId()), counter);
 			for(auto neighbour : node()->outNeighbors()) {
 				WriterAgent* neighbour_agent = static_cast<WriterAgent*>(neighbour->mutex().acquire().get());
 
-				neighbour_agent->setCounter(neighbour_agent->getCounter());
+				neighbour_agent->setCounter(neighbour_agent->getCounter()+1);
 				neighbour->setWeight(random_weight(engine) * 10);
 
 				neighbour->mutex().releaseAcquire();
@@ -375,7 +377,7 @@ void from_json(const nlohmann::json& j, FPMAS::api::utils::VirtualPtrWrapper<Wri
 	agent = {agent_ptr};
 }
 
-class HardSyncReadersModelIntegrationTest : public ::testing::Test {
+class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 	protected:
 		inline static unsigned int AGENT_BY_PROC = 50;
 		inline static unsigned int STEPS = 100;
@@ -387,7 +389,10 @@ class HardSyncReadersModelIntegrationTest : public ::testing::Test {
 		FPMAS::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
 
 		FPMAS::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+};
 
+class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {
+	protected:
 		void SetUp() override {
 			auto& group = model.buildGroup();
 			if(agent_graph.getMpiCommunicator().getRank() == 0) {
@@ -410,5 +415,37 @@ class HardSyncReadersModelIntegrationTest : public ::testing::Test {
 };
 
 TEST_F(HardSyncReadersModelIntegrationTest, test) {
-	runtime.run(20);
+	runtime.run(STEPS);
+}
+
+class HardSyncWritersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {
+	protected:
+		void SetUp() override {
+			auto& group = model.buildGroup();
+			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+					group.add(new WriterAgent);
+				}
+
+				std::mt19937 engine;
+				std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+				for(auto node : agent_graph.getNodes()) {
+					DistributedId id {0, random_node(engine)};
+					if(node.first != id) {
+						agent_graph.link(node.second, agent_graph.getNode(id), 0);
+					}
+				}
+			}
+			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 10, model.loadBalancingJob());
+		}
+};
+
+TEST_F(HardSyncWritersModelIntegrationTest, test) {
+	runtime.run(STEPS);
+
+	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
+		const WriterAgent* agent = static_cast<const WriterAgent*>(node.second->mutex().read().get());
+		ASSERT_EQ(agent->getCounter(), STEPS * node.second->getIncomingArcs().size());
+	}
 }

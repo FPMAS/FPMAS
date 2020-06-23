@@ -248,9 +248,9 @@ namespace FPMAS::graph::parallel {
 
 		// Set local representation as local
 		auto local_node = this->getNode(node->getId());
-		setLocal(local_node);
 		local_node->data() = std::move(node->data());
 		local_node->setWeight(node->getWeight());
+		setLocal(local_node);
 
 		// Deletes unused temporary input node
 		delete node;

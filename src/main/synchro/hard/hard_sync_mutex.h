@@ -130,8 +130,8 @@ namespace FPMAS::synchro::hard {
 	template<typename T>
 		void HardSyncMutex<T>::releaseAcquire() {
 			if(node->state()==LocationState::LOCAL) {
-				mutex_server.notify(node->getId());
 				this->_locked = false;
+				mutex_server.notify(node->getId());
 				return;
 			}
 			mutex_client.releaseAcquire(node->getId(), node->data(), node->getLocation());

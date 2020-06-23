@@ -171,6 +171,8 @@ namespace FPMAS::synchro::hard {
 	void MutexServer<T>::handleRead(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		if(mutex->locked()) {
+			FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Enqueueing READ request of node %s for %i",
+					ID_C_STR(id), source);
 			mutex->pushRequest(Request(id, source, MutexRequestType::READ));
 		} else {
 			respondToRead(id, source);
@@ -200,6 +202,8 @@ namespace FPMAS::synchro::hard {
 	void MutexServer<T>::handleAcquire(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		if(mutex->locked() || mutex->lockedShared() > 0) {
+			FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Enqueueing ACQUIRE request of node %s for %i",
+					ID_C_STR(id), source);
 			mutex->pushRequest(Request(id, source, MutexRequestType::ACQUIRE));
 		} else {
 			respondToAcquire(id, source);
@@ -221,25 +225,32 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 	void MutexServer<T>::respondToRequests(HardSyncMutex* mutex) {
+		FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Unqueueing requests...");
 		std::queue<Request> requests = mutex->requestsToProcess();
 		while(!requests.empty()) {
 			Request request = requests.front();
-			if(request.source != Request::LOCAL) {
-				switch(request.type) {
-					case MutexRequestType::READ :
-						respondToRead(request.id, request.source);
-						break;
-					case MutexRequestType::LOCK :
-						respondToLock(request.id, request.source);
-						break;
-					case MutexRequestType::ACQUIRE :
-						respondToAcquire(request.id, request.source);
-						break;
-					case MutexRequestType::LOCK_SHARED :
-						respondToLockShared(request.id, request.source);
-				}
-				requests.pop();
+			switch(request.type) {
+				case MutexRequestType::READ :
+					FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "%i->READ(%s)",
+							request.source, ID_C_STR(request.id));
+					respondToRead(request.id, request.source);
+					break;
+				case MutexRequestType::LOCK :
+					FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "%i->LOCK(%s)",
+							request.source, ID_C_STR(request.id));
+					respondToLock(request.id, request.source);
+					break;
+				case MutexRequestType::ACQUIRE :
+					FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "%i->ACQUIRE(%s)",
+							request.source, ID_C_STR(request.id));
+					respondToAcquire(request.id, request.source);
+					break;
+				case MutexRequestType::LOCK_SHARED :
+					FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "%i->LOCK_SHARED(%s)",
+							request.source, ID_C_STR(request.id));
+					respondToLockShared(request.id, request.source);
 			}
+			requests.pop();
 		}
 	}
 
@@ -247,7 +258,7 @@ namespace FPMAS::synchro::hard {
 	void MutexServer<T>::handleReleaseAcquire(DataUpdatePack<T>& update) {
 		auto* mutex = mutex_map.at(update.id);
 		this->MutexServerBase::unlock(mutex);
-		mutex->data() = update.updated_data;
+		mutex->data() = std::move(update.updated_data);
 
 		respondToRequests(mutex);
 	}
@@ -262,6 +273,8 @@ namespace FPMAS::synchro::hard {
 	void MutexServer<T>::handleLock(DistributedId id, int source) {
 		auto* mutex = mutex_map.at(id);
 		if(mutex->locked() || mutex->lockedShared() > 0) {
+			FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Enqueueing LOCK request of node %s for %i",
+					ID_C_STR(id), source);
 			mutex->pushRequest(Request(id, source, MutexRequestType::LOCK));
 		} else {
 			respondToLock(id, source);
@@ -292,6 +305,8 @@ namespace FPMAS::synchro::hard {
 		void MutexServer<T>::handleLockShared(DistributedId id, int source) {
 			auto* mutex = mutex_map.at(id);
 			if(mutex->locked()) {
+				FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Enqueueing LOCK_SHARED request of node %s for %i",
+						ID_C_STR(id), source);
 				mutex->pushRequest(Request(id, source, MutexRequestType::LOCK_SHARED));
 			} else {
 				respondToLockShared(id, source);
@@ -319,40 +334,48 @@ namespace FPMAS::synchro::hard {
 	/* Wait variants */
 
 	template<typename T>
-	bool MutexServer<T>::respondToRequests(HardSyncMutex* mutex, const Request& requestToWait) {
-		bool requestToWaitProcessed = false;
+	bool MutexServer<T>::respondToRequests(HardSyncMutex* mutex, const Request& request_to_wait) {
+		FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Unqueueing requests...");
 		std::queue<Request> requests = mutex->requestsToProcess();
 		while(!requests.empty()) {
 			Request request = requests.front();
-			if(request.source != -1) {
+			if(request.source != Request::LOCAL) {
 				switch(request.type) {
 					case MutexRequestType::READ :
+						FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "%i->READ(%s)",
+								request.source, ID_C_STR(request.id));
 						respondToRead(request.id, request.source);
 						break;
 					case MutexRequestType::LOCK :
+						FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "%i->LOCK(%s)",
+								request.source, ID_C_STR(request.id));
 						respondToLock(request.id, request.source);
 						break;
 					case MutexRequestType::ACQUIRE :
+						FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "%i->ACQUIRE(%s)",
+								request.source, ID_C_STR(request.id));
 						respondToAcquire(request.id, request.source);
 						break;
 					case MutexRequestType::LOCK_SHARED :
+						FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "%i->LOCK_SHARED(%s)",
+								request.source, ID_C_STR(request.id));
 						respondToLockShared(request.id, request.source);
 				}
 				requests.pop();
 			} else {
-				if(request == requestToWait) {
-					requestToWaitProcessed = true;
+				if(request == request_to_wait) {
+					return true;
 				}
 			}
 		}
-		return requestToWaitProcessed;
+		return false;
 	}
 
 	template<typename T>
 	bool MutexServer<T>::handleReleaseAcquire(DataUpdatePack<T>& update, const Request& requestToWait) {
 		auto* mutex = mutex_map.at(update.id);
 		this->MutexServerBase::unlock(mutex);
-		mutex->data() = update.updated_data;
+		mutex->data() = std::move(update.updated_data);
 
 		return respondToRequests(mutex, requestToWait);
 	}
@@ -382,7 +405,8 @@ namespace FPMAS::synchro::hard {
 		// Check release acquire
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::RELEASE_ACQUIRE, &req_status)) {
 			DataUpdatePack<T> update = data_update_mpi.recv(&req_status);
-			//FPMAS_LOGD(this->comm.getRank(), "RECV", "released from %i : %s", req_status.MPI_SOURCE, data.c_str());
+			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive release acquire %s from %i",
+					ID_C_STR(update.id), req_status.MPI_SOURCE);
 			if(this->handleReleaseAcquire(update, requestToWait)){
 				return true;
 			}
@@ -391,7 +415,8 @@ namespace FPMAS::synchro::hard {
 		// Check unlock
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK, &req_status)) {
 			DistributedId id = id_mpi.recv(&req_status);
-
+			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock %s from %i",
+					ID_C_STR(id), req_status.MPI_SOURCE);
 			if(this->handleUnlock(id, requestToWait)) {
 				return true;
 			}
@@ -401,6 +426,8 @@ namespace FPMAS::synchro::hard {
 		if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK_SHARED, &req_status)) {
 			DistributedId id = id_mpi.recv(&req_status);
 
+			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock shared %s from %i",
+					ID_C_STR(id), req_status.MPI_SOURCE);
 			if(this->handleUnlockShared(id, requestToWait)) {
 				return true;
 			}
@@ -410,14 +437,22 @@ namespace FPMAS::synchro::hard {
 
 	template<typename T>
 	void MutexServer<T>::wait(const Request& requestToWait) {
+		FPMAS_LOGD(comm.getRank(), "MUTEX_SERVER",
+				"Waiting for local request to node %s to complete...",
+				ID_C_STR(requestToWait.id));
 		bool requestProcessed = false;
 		while(!requestProcessed) {
 			requestProcessed = handleIncomingRequests(requestToWait);
 		}
+		FPMAS_LOGD(comm.getRank(), "MUTEX_SERVER",
+				"Handling local request to node %s.",
+				ID_C_STR(requestToWait.id));
 	}
 
 	template<typename T>
 	void MutexServer<T>::notify(DistributedId id) {
+		FPMAS_LOGD(comm.getRank(), "MUTEX_SERVER",
+				"Notifying released node %s", ID_C_STR(id));
 		auto* mutex = mutex_map.at(id);
 		return respondToRequests(mutex);
 	}

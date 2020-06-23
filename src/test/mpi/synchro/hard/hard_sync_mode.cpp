@@ -70,7 +70,8 @@ class Mpi_MutexServerRaceCondition : public ::testing::Test {
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = 0;
-		MockDistributedNode<int> node {DistributedId(3, comm.getRank()), data};
+		//MockDistributedNode<int> node {DistributedId(3, comm.getRank()), data};
+		MockDistributedNode<int> node {DistributedId(3, 6), data};
 
 		LocationState state = LocationState::DISTANT;
 		int location = 0;
@@ -99,7 +100,7 @@ TEST_F(Mpi_MutexServerRaceCondition, acquire_race_condition) {
 	termination.terminate(server);
 
 	if(comm.getRank() == 0) {
-		ASSERT_EQ(data, comm.getSize() * NUM_ACQUIRE);
+		ASSERT_EQ(mutex.read(), comm.getSize() * NUM_ACQUIRE);
 	}
 }
 

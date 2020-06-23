@@ -71,9 +71,11 @@ class MockModel : public FPMAS::api::model::Model {
 template<FPMAS::api::model::TypeId _TYPE_ID = 0>
 class MockAgentBase : public FPMAS::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID> {
 	public:
-		MockAgentBase() {}
+		MockAgentBase():FPMAS::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID>() {
+		}
 		MockAgentBase(const MockAgentBase& other)
-			: FPMAS::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID>(other) {}
+			: FPMAS::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID>(other) {
+			}
 
 		MOCK_METHOD(void, act, (), (override));
 };
