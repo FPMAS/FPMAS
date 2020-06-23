@@ -24,20 +24,12 @@ namespace FPMAS::synchro::hard {
 				typedef FPMAS::api::synchro::hard::MutexServer<T>
 					MutexServer;
 
-				//DistributedId id;
-				//std::reference_wrapper<T> _data;
-				//LocationState* state;
-				//int* location;
 				api::graph::parallel::DistributedNode<T>* node;
 				bool _locked = false;
 				int _locked_shared = 0;
 
 				MutexClient& mutex_client;
 				MutexServer& mutex_server;
-
-				//std::queue<Request> readRequests;
-				//std::queue<Request> lockRequests;
-				//std::queue<Request> acquireRequests;
 
 				std::queue<Request> lock_requests;
 				std::queue<Request> lock_shared_requests;

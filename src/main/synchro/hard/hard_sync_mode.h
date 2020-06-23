@@ -10,6 +10,7 @@
 #include "mutex_client.h"
 #include "termination.h"
 #include "graph/parallel/distributed_node.h"
+#include "server_pack.h"
 
 namespace FPMAS::synchro {
 
@@ -32,8 +33,9 @@ namespace FPMAS::synchro {
 
 				LinkServer<T> link_server;
 				LinkClient<T> link_client;
-
 				TerminationAlgorithm termination;
+
+				ServerPack<T> server_pack;
 				HardSyncLinker<T> sync_linker;
 				HardDataSync<T> data_sync;
 
@@ -47,8 +49,9 @@ namespace FPMAS::synchro {
 					link_server(comm, id_mpi, arc_mpi, graph),
 					link_client(comm, id_mpi, arc_mpi, link_server),
 					termination(comm),
-					sync_linker(comm, link_client, link_server, termination),
-					data_sync(comm, mutex_server, termination) {}
+					server_pack(termination, mutex_server, link_server),
+					sync_linker(comm, link_client, server_pack),
+					data_sync(comm, server_pack) {}
 
 				HardSyncMutex<T>* buildMutex(api::graph::parallel::DistributedNode<T>* node) override {
 					HardSyncMutex<T>* mutex = new HardSyncMutex<T>(node, mutex_client, mutex_server);

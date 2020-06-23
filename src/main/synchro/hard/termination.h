@@ -93,6 +93,5 @@ namespace FPMAS::synchro::hard {
 				server.handleIncomingRequests();
 			}
 		}
-
 }
 #endif

@@ -4,6 +4,7 @@
 #include "api/communication/communication.h"
 #include "api/synchro/sync_mode.h"
 #include "api/synchro/hard/hard_sync_mutex.h"
+#include "server_pack.h"
 
 namespace FPMAS::synchro::hard {
 
@@ -15,17 +16,17 @@ namespace FPMAS::synchro::hard {
 				TerminationAlgorithm;
 
 			api::communication::MpiCommunicator& comm;
-			MutexServer& mutex_server;
-			TerminationAlgorithm& termination;
+			ServerPack<T>& server_pack;
 
 			public:
-				HardDataSync(api::communication::MpiCommunicator& comm, MutexServer& server, TerminationAlgorithm& termination)
-					: comm(comm), mutex_server(server), termination(termination) {
+				HardDataSync(api::communication::MpiCommunicator& comm, ServerPack<T>& server_pack)
+					: comm(comm), server_pack(server_pack) {
 				}
 
 				void synchronize() override {
 					FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronizing data sync...");
-					termination.terminate(mutex_server);
+					server_pack.terminate();
+					//termination.terminate(mutex_server);
 					FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronized.");
 				};
 		};

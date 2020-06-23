@@ -6,6 +6,7 @@
 #include "api/communication/communication.h"
 #include "api/synchro/sync_mode.h"
 #include "api/synchro/hard/client_server.h"
+#include "server_pack.h"
 
 namespace FPMAS::synchro::hard {
 
@@ -179,18 +180,16 @@ namespace FPMAS::synchro::hard {
 
 			api::communication::MpiCommunicator& comm;
 			LinkClient& link_client;
-			LinkServer& link_server;
-
-			TerminationAlgorithm& termination;
+			ServerPack<T>& server_pack;
 
 		public:
 			HardSyncLinker(api::communication::MpiCommunicator& comm,
-					LinkClient& link_client, LinkServer& link_server, TerminationAlgorithm& termination)
-				: comm(comm), link_client(link_client), link_server(link_server), termination(termination) {}
+					LinkClient& link_client, ServerPack<T>& server_pack)
+				: comm(comm), link_client(link_client), server_pack(server_pack) {}
 
-			const TerminationAlgorithm& getTerminationAlgorithm() const {
-				return termination;
-			}
+			//const TerminationAlgorithm& getTerminationAlgorithm() const {
+				//return termination;
+			//}
 
 			void link(const ArcApi* arc) override {
 				link_client.link(arc);
@@ -202,6 +201,7 @@ namespace FPMAS::synchro::hard {
 
 			void synchronize() override {
 				FPMAS_LOGI(comm.getRank(), "HARD_SYNC_LINKER", "Synchronizing sync linker...");
+				server_pack.terminate();
 				//termination.terminate(link_server);
 				FPMAS_LOGI(comm.getRank(), "HARD_SYNC_LINKER", "Synchronized.");
 			};

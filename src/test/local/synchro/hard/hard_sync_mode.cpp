@@ -13,34 +13,40 @@
 #include "../mocks/synchro/hard/mock_client_server.h"
 
 using ::testing::Ref;
+using ::testing::NiceMock;
 
 using FPMAS::graph::parallel::DistributedGraph;
 using FPMAS::synchro::HardSyncMode;
 using FPMAS::synchro::hard::HardDataSync;
 using FPMAS::synchro::hard::HardSyncLinker;
+using FPMAS::synchro::hard::ServerPack;
 
 class HardDataSyncTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<2, 4> comm;
-		MockMutexServer<int> mutex_server;
+		NiceMock<MockMutexServer<int>> mutex_server;
+		NiceMock<MockLinkServer> link_server;
+		
 		MockTerminationAlgorithm termination {comm};
-		HardDataSync<int> data_sync {comm, mutex_server, termination};
-
+		ServerPack<int> server_pack {termination, mutex_server, link_server};
+		HardDataSync<int> data_sync {comm, server_pack};
 };
 
 TEST_F(HardDataSyncTest, synchronize) {
-	EXPECT_CALL(termination, terminate(Ref(mutex_server)));
+	EXPECT_CALL(termination, terminate(Ref(server_pack)));
 	data_sync.synchronize();
 }
 
 class HardSyncLinkerTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<2, 4> comm;
-		MockLinkServer server;
+		NiceMock<MockMutexServer<int>> mutex_server;
+		NiceMock<MockLinkServer> server;
 		MockLinkClient<int> client;
 		MockTerminationAlgorithm termination {comm};
-		HardSyncLinker<int> syncLinker {comm, client, server, termination};
 
+		ServerPack<int> server_pack {termination, mutex_server, server};
+		HardSyncLinker<int> syncLinker {comm, client, server_pack};
 };
 
 TEST_F(HardSyncLinkerTest, link) {
@@ -56,7 +62,7 @@ TEST_F(HardSyncLinkerTest, unlink) {
 }
 
 TEST_F(HardSyncLinkerTest, synchronize) {
-	EXPECT_CALL(termination, terminate(Ref(server)));
+	EXPECT_CALL(termination, terminate(Ref(server_pack)));
 
 	syncLinker.synchronize();
 }
