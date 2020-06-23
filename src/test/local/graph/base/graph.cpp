@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "graph/base/graph.h"
-#include "graph/base/basic_id.h"
+#include "api/graph/base/basic_id.h"
 #include "../mocks/graph/base/mock_node.h"
 #include "../mocks/graph/base/mock_arc.h"
 #include "../mocks/utils/mock_callback.h"
@@ -15,8 +15,6 @@ using ::testing::Pair;
 using ::testing::Return;
 using ::testing::ReturnRef;
 using ::testing::_;
-
-using FPMAS::graph::base::BasicId;
 
 template<typename NodeType, typename ArcType>
 class MockGraph : 

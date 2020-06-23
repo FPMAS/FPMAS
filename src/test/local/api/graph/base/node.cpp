@@ -2,9 +2,7 @@
 
 #include "../mocks/graph/base/mock_node.h"
 
-#include "graph/base/basic_id.h"
-
-using FPMAS::graph::base::BasicId;
+#include "basic_id.h"
 
 using ::testing::Contains;
 using ::testing::IsEmpty;

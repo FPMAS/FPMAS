@@ -1,5 +1,5 @@
 #include "graph/base/node.h"
-#include "graph/base/basic_id.h"
+#include "api/graph/base/basic_id.h"
 
 #include "../mocks/graph/base/mock_arc.h"
 #include "../mocks/utils/mock_callback.h"
@@ -9,7 +9,6 @@ using ::testing::IsEmpty;
 using ::testing::ElementsAre;
 
 using FPMAS::graph::base::Node;
-using FPMAS::graph::base::BasicId;
 
 class BasicMockArc : public AbstractMockArc<BasicId, Node<BasicId, BasicMockArc>> {
 };
