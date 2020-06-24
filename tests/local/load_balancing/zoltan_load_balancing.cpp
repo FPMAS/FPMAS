@@ -1,7 +1,7 @@
 #include "../mocks/graph/parallel/mock_distributed_arc.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 
-#include "load_balancing/zoltan_load_balancing.h"
+#include "fpmas/load_balancing/zoltan_load_balancing.h"
 
 using ::testing::AtLeast;
 using ::testing::AnyNumber;

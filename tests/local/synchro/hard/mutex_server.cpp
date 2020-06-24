@@ -39,10 +39,10 @@
  *
  * ## mutex_server_handle_incoming_requests_all
  */
-#include "synchro/hard/mutex_server.h"
+#include "fpmas/synchro/hard/mutex_server.h"
 
 #include "../mocks/communication/mock_communication.h"
-#include "api/synchro/hard/enums.h"
+#include "fpmas/api/synchro/hard/enums.h"
 #include "../mocks/synchro/hard/mock_hard_sync_mutex.h"
 
 using ::testing::_;

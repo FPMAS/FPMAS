@@ -2,7 +2,7 @@
 #define MOCK_ARC_H
 
 #include "gmock/gmock.h"
-#include "api/graph/base/arc.h"
+#include "fpmas/api/graph/base/arc.h"
 
 using ::testing::Return;
 using ::testing::ReturnPointee;

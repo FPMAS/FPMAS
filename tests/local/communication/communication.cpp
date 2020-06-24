@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "../mocks/communication/mock_communication.h"
-#include "communication/communication.h"
+#include "fpmas/communication/communication.h"
 
 using fpmas::communication::TypedMpi;
 

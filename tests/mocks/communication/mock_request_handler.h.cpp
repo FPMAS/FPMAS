@@ -2,7 +2,7 @@
 #define MOCK_REQUEST_HANDLER_H
 
 #include "gmock/gmock.h"
-#include "api/communication/request_handler.h"
+#include "fpmas/api/communication/request_handler.h"
 
 class MockRequestHandler : public fpmas::api::communication::RequestHandler {
 	public:

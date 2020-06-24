@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
-#include "utils/macros.h"
-#include "graph/parallel/distributed_id.h"
+#include "fpmas/utils/macros.h"
+#include "fpmas/api/graph/parallel/distributed_id.h"
 
 TEST(DistributedId, test_mpi_send_distributed_id) {
 	MpiDistributedId id;

@@ -1,8 +1,8 @@
 #ifndef MOCK_MODEL_H
 #define MOCK_MODEL_H
 #include "gmock/gmock.h"
-#include "api/model/model.h"
-#include "model/model.h"
+#include "fpmas/api/model/model.h"
+#include "fpmas/model/model.h"
 
 using ::testing::Return;
 using ::testing::ReturnPointee;

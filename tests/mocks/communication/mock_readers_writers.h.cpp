@@ -2,7 +2,7 @@
 #define READERS_WRITERS_MOCKS_H
 #include "gmock/gmock.h"
 
-#include "api/communication/readers_writers.h"
+#include "fpmas/api/communication/readers_writers.h"
 
 #include "graph/parallel/distributed_id.h"
 

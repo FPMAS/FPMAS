@@ -1,4 +1,4 @@
-#include "model/model.h"
+#include "fpmas/model/model.h"
 
 #include "../mocks/graph/parallel/mock_distributed_arc.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"

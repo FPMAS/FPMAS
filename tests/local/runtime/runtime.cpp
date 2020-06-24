@@ -1,5 +1,5 @@
 #include "../mocks/scheduler/mock_scheduler.h"
-#include "runtime/runtime.h"
+#include "fpmas/runtime/runtime.h"
 
 using ::testing::_;
 using ::testing::AnyNumber;

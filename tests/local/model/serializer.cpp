@@ -1,4 +1,4 @@
-#include "model/serializer.h"
+#include "fpmas/model/serializer.h"
 #include "api/model/types.h"
 
 using ::testing::AnyNumber;

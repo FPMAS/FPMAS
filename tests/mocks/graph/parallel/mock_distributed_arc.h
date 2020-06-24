@@ -4,7 +4,7 @@
 #include "gmock/gmock.h"
 
 #include "../base/mock_arc.h"
-#include "api/graph/parallel/distributed_arc.h"
+#include "fpmas/api/graph/parallel/distributed_arc.h"
 #include "mock_distributed_node.h"
 
 using fpmas::api::graph::parallel::LocationState;

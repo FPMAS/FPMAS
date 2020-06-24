@@ -4,7 +4,7 @@
 #include "gmock/gmock.h"
 
 #include "../base/mock_node.h"
-#include "api/graph/parallel/distributed_node.h"
+#include "fpmas/api/graph/parallel/distributed_node.h"
 #include "mock_distributed_arc.h"
 
 using ::testing::_;

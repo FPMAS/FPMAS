@@ -1,8 +1,8 @@
 #ifndef MOCK_SYNC_MODE_H
 #define MOCK_SYNC_MODE_H
 
-#include "api/communication/communication.h"
-#include "api/synchro/sync_mode.h"
+#include "fpmas/api/communication/communication.h"
+#include "fpmas/api/synchro/sync_mode.h"
 #include "mock_mutex.h"
 
 using ::testing::ReturnNew;

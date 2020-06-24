@@ -3,7 +3,7 @@
 
 #include "gmock/gmock.h"
 
-#include "api/load_balancing/load_balancing.h"
+#include "fpmas/api/load_balancing/load_balancing.h"
 
 template<typename T>
 class MockFixedVerticesLoadBalancing : public fpmas::api::load_balancing::FixedVerticesLoadBalancing<T> {

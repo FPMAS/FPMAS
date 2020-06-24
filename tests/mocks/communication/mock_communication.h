@@ -3,8 +3,8 @@
 
 #include "gmock/gmock.h"
 
-//#include "api/communication/resource_handler.h"
-#include "api/communication/communication.h"
+//#include "fpmas/api/communication/resource_handler.h"
+#include "fpmas/api/communication/communication.h"
 
 using ::testing::Return;
 using ::testing::AnyNumber;

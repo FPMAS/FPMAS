@@ -3,7 +3,7 @@
 
 #include "gmock/gmock.h"
 
-#include "api/synchro/mutex.h"
+#include "fpmas/api/synchro/mutex.h"
 
 using ::testing::AnyNumber;
 

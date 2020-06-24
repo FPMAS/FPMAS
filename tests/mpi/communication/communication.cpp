@@ -1,4 +1,4 @@
-#include "communication/communication.h"
+#include "fpmas/communication/communication.h"
 #include "../mocks/communication/mock_communication.h"
 
 using ::testing::Contains;

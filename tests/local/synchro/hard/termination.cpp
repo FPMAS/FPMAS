@@ -1,4 +1,4 @@
-#include "synchro/hard/termination.h"
+#include "fpmas/synchro/hard/termination.h"
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 

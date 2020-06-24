@@ -12,11 +12,11 @@
  * # distribute_test_with_arc
  * # distribute_test_real_MPI
  */
-#include "graph/parallel/distributed_graph.h"
+#include "fpmas/graph/parallel/distributed_graph.h"
 
 #include "../mocks/communication/mock_communication.h"
-#include "api/graph/base/graph.h"
-#include "api/load_balancing/load_balancing.h"
+#include "fpmas/api/graph/base/graph.h"
+#include "fpmas/api/load_balancing/load_balancing.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/graph/parallel/mock_distributed_arc.h"
 #include "../mocks/graph/parallel/mock_location_manager.h"

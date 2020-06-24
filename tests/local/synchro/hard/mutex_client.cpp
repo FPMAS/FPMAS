@@ -22,7 +22,7 @@
  * ### mutex_client_deadlock_test_lock_shared
  * ### mutex_client_deadlock_test_unlock_shared
  */
-#include "synchro/hard/mutex_client.h"
+#include "fpmas/synchro/hard/mutex_client.h"
 
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/synchro/hard/mock_hard_sync_mutex.h"

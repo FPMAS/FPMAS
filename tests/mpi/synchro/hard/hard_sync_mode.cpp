@@ -1,8 +1,8 @@
-#include "synchro/hard/hard_sync_mode.h"
+#include "fpmas/synchro/hard/hard_sync_mode.h"
 
 #include <random>
 
-#include "graph/parallel/distributed_graph.h"
+#include "fpmas/graph/parallel/distributed_graph.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
 

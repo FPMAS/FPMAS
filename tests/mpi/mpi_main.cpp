@@ -2,7 +2,7 @@
 #include "mpi.h"
 #include "zoltan_cpp.h"
 
-#include "communication/communication.h"
+#include "fpmas/communication/communication.h"
 
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);

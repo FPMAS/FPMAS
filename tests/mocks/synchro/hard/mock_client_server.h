@@ -2,7 +2,7 @@
 #define MOCK_TERMINATION_H
 #include "gmock/gmock.h"
 
-#include "api/synchro/hard/client_server.h"
+#include "fpmas/api/synchro/hard/client_server.h"
 
 using fpmas::api::synchro::hard::Epoch;
 

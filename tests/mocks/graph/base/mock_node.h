@@ -3,8 +3,8 @@
 
 #include "gmock/gmock.h"
 
-#include "api/graph/base/id.h"
-#include "api/graph/base/node.h"
+#include "fpmas/api/graph/base/id.h"
+#include "fpmas/api/graph/base/node.h"
 #include "mock_arc.h"
 
 using ::testing::Const;

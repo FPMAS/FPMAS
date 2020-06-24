@@ -1,4 +1,4 @@
-#include "graph/parallel/distributed_graph.h"
+#include "fpmas/graph/parallel/distributed_graph.h"
 
 #include <random>
 #include "../mocks/load_balancing/mock_load_balancing.h"

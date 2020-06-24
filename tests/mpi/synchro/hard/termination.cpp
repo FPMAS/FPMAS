@@ -1,10 +1,10 @@
-#include "synchro/hard/termination.h"
+#include "fpmas/synchro/hard/termination.h"
 
 #include <thread>
 #include <chrono>
 
 #include "../mocks/synchro/hard/mock_client_server.h"
-#include "communication/communication.h"
+#include "fpmas/communication/communication.h"
 
 using namespace std::chrono_literals;
 

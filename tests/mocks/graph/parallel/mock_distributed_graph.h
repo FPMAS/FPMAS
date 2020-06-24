@@ -3,7 +3,7 @@
 #include "gmock/gmock.h"
 
 #include "../base/mock_graph_base.h"
-#include "api/graph/parallel/distributed_graph.h"
+#include "fpmas/api/graph/parallel/distributed_graph.h"
 
 template<typename T, typename DistNode, typename DistArc>
 class MockDistributedGraph :

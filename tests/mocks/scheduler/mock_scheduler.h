@@ -2,7 +2,7 @@
 #define MOCK_SCHEDULER_H
 
 #include "gmock/gmock.h"
-#include "api/scheduler/scheduler.h"
+#include "fpmas/api/scheduler/scheduler.h"
 
 class MockTask : public fpmas::api::scheduler::Task {
 	public:

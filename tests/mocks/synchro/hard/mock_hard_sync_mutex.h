@@ -3,7 +3,7 @@
 #include "gmock/gmock.h"
 
 #include "../mock_mutex.h"
-#include "api/synchro/hard/hard_sync_mutex.h"
+#include "fpmas/api/synchro/hard/hard_sync_mutex.h"
 
 using fpmas::api::synchro::hard::MutexRequest;
 

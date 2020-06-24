@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "graph/base/graph.h"
+#include "fpmas/graph/base/graph.h"
 #include "api/graph/base/basic_id.h"
 #include "../mocks/graph/base/mock_node.h"
 #include "../mocks/graph/base/mock_arc.h"

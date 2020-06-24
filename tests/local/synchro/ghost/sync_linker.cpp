@@ -1,4 +1,4 @@
-#include "synchro/ghost/ghost_mode.h"
+#include "fpmas/synchro/ghost/ghost_mode.h"
 
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"

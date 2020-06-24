@@ -1,7 +1,7 @@
-#include "api/graph/parallel/location_manager.h"
+#include "fpmas/api/graph/parallel/location_manager.h"
 
 #include "gmock/gmock.h"
-#include "api/communication/communication.h"
+#include "fpmas/api/communication/communication.h"
 
 template<typename T>
 class MockLocationManager : public fpmas::api::graph::parallel::LocationManager<T> {

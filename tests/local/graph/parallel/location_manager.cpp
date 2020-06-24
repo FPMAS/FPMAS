@@ -1,4 +1,4 @@
-#include "graph/parallel/location_manager.h"
+#include "fpmas/graph/parallel/location_manager.h"
 
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"

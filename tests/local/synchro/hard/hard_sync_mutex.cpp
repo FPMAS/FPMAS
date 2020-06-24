@@ -45,7 +45,7 @@
 
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
-#include "synchro/hard/hard_sync_mutex.h"
+#include "fpmas/synchro/hard/hard_sync_mutex.h"
 
 using ::testing::AllOf;
 using ::testing::Field;

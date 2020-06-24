@@ -1,11 +1,11 @@
 #include "../mocks/synchro/mock_sync_mode.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
-#include "communication/communication.h"
-#include "graph/parallel/distributed_graph.h"
-#include "graph/parallel/location_manager.h"
-#include "graph/parallel/distributed_node.h"
-#include "graph/parallel/distributed_arc.h"
-#include "api/graph/parallel/location_state.h"
+#include "fpmas/communication/communication.h"
+#include "fpmas/graph/parallel/distributed_graph.h"
+#include "fpmas/graph/parallel/location_manager.h"
+#include "fpmas/graph/parallel/distributed_node.h"
+#include "fpmas/graph/parallel/distributed_arc.h"
+#include "fpmas/api/graph/parallel/location_state.h"
 
 using fpmas::api::graph::parallel::LocationState;
 using fpmas::graph::parallel::DistributedGraph;

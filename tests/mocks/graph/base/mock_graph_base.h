@@ -2,7 +2,7 @@
 #define MOCK_GRAPH_BASE_H
 #include "gmock/gmock.h"
 
-#include "api/graph/base/graph.h"
+#include "fpmas/api/graph/base/graph.h"
 
 template<typename NodeType, typename ArcType>
 class MockGraph : 
