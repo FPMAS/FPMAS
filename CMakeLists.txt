@@ -1,14 +1,11 @@
 cmake_minimum_required(VERSION 3.1O)
 
-project(fpmas)
-
-add_subdirectory(googletest)
-
 set(CMAKE_CXX_STANDARD 17)
+
+project(fpmas)
 
 # MPI setup
 find_package(MPI REQUIRED)
-set(CMAKE_CXX_COMPILER ${MPI_CXX_COMPILER})
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -O0 -Wall -Wpedantic")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
@@ -64,26 +61,23 @@ endif()
 # Nlohmann JSON library
 find_file(JSON nlohmann/json.hpp) 
 if(NOT JSON)
-	message(FATAL_ERROR "nlohman/json library not found.")
+	message(FATAL_ERROR "-- nlohman/json library not found.")
 else()
-	message("nlohman/json library found : ${JSON}")
+	message("-- Found nlohman/json library : ${JSON}")
 endif()
 
 # Zoltan library
 find_library(ZOLTAN zoltan)
 if(NOT ZOLTAN)
-	message(FATAL_ERROR "Zoltan library not found.")
+	message(FATAL_ERROR "-- Zoltan library not found.")
 else()
-	message("Zoltan library found : ${ZOLTAN}")
+	message("-- Found zoltan library : ${ZOLTAN}")
 endif()
 
-include_directories(${CMAKE_PREFIX_PATH}/include)
-link_directories(${CMAKE_PREFIX_PATH}/lib)
+add_subdirectory(src)
+add_subdirectory(tests)
 
-add_subdirectory(src/main)
-add_subdirectory(src/test)
-
-add_subdirectory(examples)
+#add_subdirectory(examples)
 
 # Doxygen
 find_package(Doxygen)

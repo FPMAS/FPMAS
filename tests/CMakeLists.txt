@@ -1,3 +1,5 @@
+add_subdirectory(googletest)
+
 add_subdirectory(local)
 add_subdirectory(mpi)
 
