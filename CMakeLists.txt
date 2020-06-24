@@ -23,22 +23,13 @@ endif()
 
 if(MPIEXEC_EXECUTABLE)
 	message("-- Found mpiexec : ${MPIEXEC_EXECUTABLE}")
-	add_custom_target(run
-		${MPIEXEC_EXECUTABLE}
-		${MPIEXEC_NUMPROC_FLAG}
-		${N_PROC}
-		${MPIEXEC_PREFLAGS}
-		${CMAKE_CURRENT_BINARY_DIR}/src/main/fpmas
-		${MPIEXEC_POSTFLAGS}
-		)
-
+	
 	add_custom_target(mpi_test
 		${MPIEXEC_EXECUTABLE}
 		${MPIEXEC_NUMPROC_FLAG}
 		${N_PROC}
 		${MPIEXEC_PREFLAGS}
-		${CMAKE_CURRENT_BINARY_DIR}/src/test/mpi/fpmas_mpi_test
-		"--gtest_filter=Mpi_*"
+		${CMAKE_CURRENT_BINARY_DIR}/tests/mpi/fpmas_mpi_test
 		${MPIEXEC_POSTFLAGS}
 		)
 
@@ -51,8 +42,7 @@ if(MPIEXEC_EXECUTABLE)
 		"--suppressions=../mpi_init.supp"
 		"--leak-check=full"
 		"--show-leak-kinds=all"
-		${CMAKE_CURRENT_BINARY_DIR}/src/test/mpi/fpmas_mpi_test
-		"--gtest_filter=Mpi_*"
+		${CMAKE_CURRENT_BINARY_DIR}/tests/mpi/fpmas_mpi_test
 		${MPIEXEC_POSTFLAGS}
 		)
 
@@ -88,9 +78,8 @@ if(DOXYGEN_FOUND)
 	set(DOXYGEN_HTML_OUTPUT ".")
 	#set(DOXYGEN_HAVE_DOT "YES")
 	#set(DOXYGEN_TEMPLATE_RELATIONS "YES")
-	# set(DOXYGEN_EXCLUDE src/main/zoltan)
 	doxygen_add_docs(doc
-		${CMAKE_CURRENT_SOURCE_DIR}/src/main
+		${CMAKE_CURRENT_SOURCE_DIR}/src
 		)
 endif()
 
