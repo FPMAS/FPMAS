@@ -220,7 +220,8 @@ namespace fpmas::graph::parallel {
 		//
 		// "clear" functions should globally be improved : what about a custom
 		// GarbageCollector for the graph?
-		this->clearArc(arc);
+		//this->clearArc(arc);
+		this->erase(arc);
 	}
 
 	template<DIST_GRAPH_PARAMS>

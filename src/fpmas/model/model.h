@@ -22,6 +22,7 @@ namespace fpmas::model {
 		private:
 			api::model::AgentTask* _task;
 			api::model::AgentNode* _node;
+			api::model::AgentGraph* _graph;
 			api::model::GroupId group_id;
 		public:
 			api::model::GroupId groupId() const override {return group_id;}
@@ -33,6 +34,10 @@ namespace fpmas::model {
 			api::model::AgentNode* node() override {return _node;}
 			const api::model::AgentNode* node() const override {return _node;}
 			void setNode(api::model::AgentNode* node) override {_node = node;}
+
+			api::model::AgentGraph* graph() override {return _graph;}
+			const api::model::AgentGraph* graph() const override {return _graph;}
+			void setGraph(api::model::AgentGraph* graph) override {_graph = graph;}
 
 			api::model::AgentTask* task() override {return _task;}
 			const api::model::AgentTask* task() const override {return _task;}
@@ -210,6 +215,8 @@ namespace fpmas::model {
 		graph::parallel::DistributedArc,
 		api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi>,
 		graph::parallel::LocationManager>;
+
+	using AgentGraphApi = api::graph::parallel::DistributedGraph<AgentPtr>;
 
 	typedef load_balancing::ZoltanLoadBalancing<AgentPtr> ZoltanLoadBalancing;
 	typedef load_balancing::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;

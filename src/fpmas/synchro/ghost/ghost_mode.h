@@ -109,7 +109,8 @@ namespace fpmas::synchro {
 					typedef api::communication::TypedMpi<DistributedId> IdMpi;
 				private:
 					std::vector<ArcPtr> link_buffer;
-					std::vector<ArcPtr> unlink_buffer;
+					//std::vector<DistributedId> unlink_buffer;
+					std::unordered_map<int, std::vector<DistributedId>> unlink_migration;
 
 					ArcMpi& arc_mpi;
 					IdMpi& id_mpi;
@@ -141,7 +142,14 @@ namespace fpmas::synchro {
 							std::remove(link_buffer.begin(), link_buffer.end(), arc),
 							link_buffer.end()
 							);
-					unlink_buffer.push_back(const_cast<ArcApi*>(arc));
+					auto src = arc->getSourceNode();
+					if(src->state() == LocationState::DISTANT) {
+						unlink_migration[src->getLocation()].push_back(arc->getId());
+					}
+					auto tgt = arc->getTargetNode();
+					if(tgt->state() == LocationState::DISTANT) {
+						unlink_migration[tgt->getLocation()].push_back(arc->getId());
+					}
 				}
 			}
 
@@ -150,6 +158,7 @@ namespace fpmas::synchro {
 				/*
 				 * Migrate links
 				 */
+				std::vector<ArcPtr> arcs_to_clear;
 				std::unordered_map<int, std::vector<ArcPtr>> link_migration;
 				for(auto arc : link_buffer) {
 					auto src = arc->getSourceNode();
@@ -160,38 +169,46 @@ namespace fpmas::synchro {
 					if(tgt->state() == LocationState::DISTANT) {
 						link_migration[tgt->getLocation()].push_back(arc);
 					}
+					if(src->state() == LocationState::DISTANT
+						&& tgt->state() == LocationState::DISTANT) {
+						arcs_to_clear.push_back(arc);
+					}
 				}
 				link_migration = arc_mpi.migrate(link_migration);
 
-				for(auto importList : link_migration) {
-					for (auto arc : importList.second) {
+				for(auto import_list : link_migration) {
+					for (auto arc : import_list.second) {
 						graph.importArc(arc);
 					}
 				}
+				link_buffer.clear();
 
 				/*
 				 * Migrate unlinks
 				 */
-				std::unordered_map<int, std::vector<DistributedId>> unlink_migration;
-				for(auto arc : unlink_buffer) {
-					auto src = arc->getSourceNode();
-					if(src->state() == LocationState::DISTANT) {
-						unlink_migration[src->getLocation()].push_back(arc->getId());
-					}
-					auto tgt = arc->getTargetNode();
-					if(tgt->state() == LocationState::DISTANT) {
-						unlink_migration[tgt->getLocation()].push_back(arc->getId());
-					}
-				}
+   /*             for(auto arc : unlink_buffer) {*/
+					//auto src = arc->getSourceNode();
+					//if(src->state() == LocationState::DISTANT) {
+						//unlink_migration[src->getLocation()].push_back(arc->getId());
+					//}
+					//auto tgt = arc->getTargetNode();
+					//if(tgt->state() == LocationState::DISTANT) {
+						//unlink_migration[tgt->getLocation()].push_back(arc->getId());
+					//}
+				/*}*/
+
 				unlink_migration = id_mpi.migrate(unlink_migration);
-				for(auto importList : unlink_migration) {
-					for(DistributedId id : importList.second) {
+				for(auto import_list : unlink_migration) {
+					for(DistributedId id : import_list.second) {
 						if(graph.getArcs().count(id) > 0) {
 							auto arc = graph.getArc(id);
-							graph.clearArc(arc);
+							graph.erase(arc);
 						}
 					}
 				}
+				unlink_migration.clear();
+				for(auto arc : arcs_to_clear)
+					graph.erase(arc);
 			}
 
 		template<typename T>

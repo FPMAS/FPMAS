@@ -37,9 +37,11 @@ namespace fpmas::api::model {
 		if(other.virtual_type_ptr != nullptr) {
 			AgentTask* task = nullptr;
 			api::model::AgentNode* node = nullptr;
+			api::model::AgentGraph* graph = nullptr;
 			if(this->virtual_type_ptr != nullptr) {
 				task = this->virtual_type_ptr->task();
 				node = this->virtual_type_ptr->node();
+				graph = this->virtual_type_ptr->graph();
 				delete this->virtual_type_ptr;
 			}
 
@@ -47,6 +49,7 @@ namespace fpmas::api::model {
 			other.virtual_type_ptr = nullptr;
 			this->virtual_type_ptr->setTask(task);
 			this->virtual_type_ptr->setNode(node);
+			this->virtual_type_ptr->setGraph(graph);
 			task->setAgent(this->virtual_type_ptr);
 		}
 

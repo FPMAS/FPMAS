@@ -24,6 +24,7 @@ namespace fpmas::model {
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 				"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", ID_C_STR(node->getId()));
 		agent->setNode(node);
+		agent->setGraph(&model.graph());
 		AgentTask* task = new AgentTask;
 		task->setAgent(agent);
 		agent->setTask(task);

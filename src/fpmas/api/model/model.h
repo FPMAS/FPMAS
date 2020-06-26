@@ -12,6 +12,7 @@ namespace fpmas::api::model {
 	class AgentPtrWrapper;
 	typedef AgentPtrWrapper AgentPtr;
 	typedef api::graph::parallel::DistributedNode<AgentPtr> AgentNode;
+	typedef api::graph::parallel::DistributedGraph<AgentPtr> AgentGraph;
 	typedef int GroupId;
 	typedef int TypeId;
 
@@ -39,6 +40,10 @@ namespace fpmas::api::model {
 			virtual AgentNode* node() = 0;
 			virtual const AgentNode* node() const = 0;
 			virtual void setNode(AgentNode*) = 0;
+
+			virtual AgentGraph* graph() = 0;
+			virtual const AgentGraph* graph() const = 0;
+			virtual void setGraph(AgentGraph*) = 0;
 
 			virtual AgentTask* task() = 0; 
 			virtual const AgentTask* task() const = 0; 
