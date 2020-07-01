@@ -850,9 +850,6 @@ TEST_F(DistributedGraphTest, synchronize_calls) {
 			synchronize())
 		.InSequence(s);
 
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()))
-		.InSequence(s);
-
 	EXPECT_CALL(
 			mock_data_sync,
 			synchronize())

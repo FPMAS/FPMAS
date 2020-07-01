@@ -188,10 +188,6 @@ namespace fpmas::synchro::hard {
 					LinkClient& link_client, ServerPack<T>& server_pack)
 				: comm(comm), link_client(link_client), server_pack(server_pack) {}
 
-			//const TerminationAlgorithm& getTerminationAlgorithm() const {
-				//return termination;
-			//}
-
 			void link(const ArcApi* arc) override {
 				link_client.link(arc);
 			};

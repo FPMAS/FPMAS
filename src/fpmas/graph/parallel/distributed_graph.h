@@ -483,9 +483,10 @@ namespace fpmas::graph::parallel {
 				}
 			}
 
-			// Serialize and export / import data
+			// Serialize and export / import nodes
 			auto node_import = node_mpi.migrate(node_export_map);
 
+			// Serialize and export / import arcs
 			auto arc_import = arc_mpi.migrate(arc_export_map);
 
 			NodeMap imported_nodes;
@@ -525,14 +526,6 @@ namespace fpmas::graph::parallel {
 					"Synchronizing graph...");
 
 			sync_mode_runtime.getSyncLinker().synchronize();
-
-			// DISTANT Node locations must be updated.
-			// DISTANT nodes might have been created while importing arcs : the
-			// location of those nodes is undefined until they are updated by
-			// the location manager
-			// TODO : Performances might be improved, updating only the created
-			// nodes, not ALL the DISTANT nodes.
-			location_manager.updateLocations({});
 
 			sync_mode_runtime.getDataSync().synchronize();
 

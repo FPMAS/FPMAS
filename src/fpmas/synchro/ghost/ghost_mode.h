@@ -190,17 +190,6 @@ namespace fpmas::synchro {
 				/*
 				 * Migrate unlinks
 				 */
-   /*             for(auto arc : unlink_buffer) {*/
-					//auto src = arc->getSourceNode();
-					//if(src->state() == LocationState::DISTANT) {
-						//unlink_migration[src->getLocation()].push_back(arc->getId());
-					//}
-					//auto tgt = arc->getTargetNode();
-					//if(tgt->state() == LocationState::DISTANT) {
-						//unlink_migration[tgt->getLocation()].push_back(arc->getId());
-					//}
-				/*}*/
-
 				unlink_migration = id_mpi.migrate(unlink_migration);
 				for(auto import_list : unlink_migration) {
 					for(DistributedId id : import_list.second) {

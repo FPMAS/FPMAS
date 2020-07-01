@@ -60,6 +60,7 @@ namespace nlohmann {
 				NodePtrWrapper<T> src = j.at("src").get<NodePtrWrapper<T>>();
 				arc->setSourceNode(src);
 				src->linkOut(arc);
+				src->setLocation(j.at("src_loc").get<int>());
 
 				//auto* tgt = new fpmas::graph::parallel::DistributedNode<T>(
 						//j.at("tgt").get<DistributedId>()
@@ -67,6 +68,7 @@ namespace nlohmann {
 				NodePtrWrapper<T> tgt = j.at("tgt").get<NodePtrWrapper<T>>();
 				arc->setTargetNode(tgt);
 				tgt->linkIn(arc);
+				tgt->setLocation(j.at("tgt_loc").get<int>());
 				return arc;
 			}
 
@@ -75,7 +77,9 @@ namespace nlohmann {
 				j["layer"] = arc->getLayer();
 				j["weight"] = arc->getWeight();
 				j["src"] = NodePtrWrapper<T>(arc->getSourceNode());
+				j["src_loc"] = arc->getSourceNode()->getLocation();
 				j["tgt"] = NodePtrWrapper<T>(arc->getTargetNode());
+				j["tgt_loc"] = arc->getTargetNode()->getLocation();
 			}
 		};
 
