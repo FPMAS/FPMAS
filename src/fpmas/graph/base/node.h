@@ -124,10 +124,7 @@ namespace fpmas::graph::base {
 				ID_C_STR(arc->getSourceNode()->getId())
 				);
 			auto& arcs = incoming_arcs.at(arc->getLayer());
-			FPMAS_LOGV(-1, "NODE", "%s : Current in arcs size on layer %i: %lu",
-					ID_C_STR(id), arc->getLayer(), arcs.size());
 			arcs.erase(std::remove(arcs.begin(), arcs.end(), arc));
-			FPMAS_LOGV(-1, "NODE", "Done.%i", arcs.size());
 		}
 
 	template<typename IdType, typename ArcType>
@@ -138,10 +135,7 @@ namespace fpmas::graph::base {
 				ID_C_STR(arc->getTargetNode()->getId())
 				);
 			auto& arcs = outgoing_arcs.at(arc->getLayer());
-			FPMAS_LOGV(-1, "NODE", "%s : Current out arcs size on layer %i : %lu",
-					ID_C_STR(id), arc->getLayer(), arcs.size());
 			arcs.erase(std::remove(arcs.begin(), arcs.end(), arc));
-			FPMAS_LOGV(-1, "NODE", "Done.%i", arcs.size());
 		}
 }
 #endif

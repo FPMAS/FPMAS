@@ -525,6 +525,15 @@ namespace fpmas::graph::parallel {
 					"Synchronizing graph...");
 
 			sync_mode_runtime.getSyncLinker().synchronize();
+
+			// DISTANT Node locations must be updated.
+			// DISTANT nodes might have been created while importing arcs : the
+			// location of those nodes is undefined until they are updated by
+			// the location manager
+			// TODO : Performances might be improved, updating only the created
+			// nodes, not ALL the DISTANT nodes.
+			location_manager.updateLocations({});
+
 			sync_mode_runtime.getDataSync().synchronize();
 
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",

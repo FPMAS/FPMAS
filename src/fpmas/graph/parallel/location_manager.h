@@ -148,34 +148,34 @@ namespace fpmas::graph::parallel {
 			/*
 			 * Step 2 : ask for current locations of distant_nodes
 			 */
-			DistributedIdMap locationRequests;
+			DistributedIdMap location_requests;
 			for(auto node : distant_nodes) {
 				if(node.first.rank() != comm.getRank()) {
 					// For distant_nodes that has an origin different from this
 					// proc, asks for the current location of node to its
 					// origin proc
-					locationRequests[node.first.rank()]
+					location_requests[node.first.rank()]
 						.push_back(node.first);
 				}
 			}
 			// Export / import requests
-			DistributedIdMap importedLocationRequests
-				= id_mpi.migrate(locationRequests);
+			DistributedIdMap imported_location_requests
+				= id_mpi.migrate(location_requests);
 
 			// Builds requests response
-			LocationMap exportedLocations;
-			for(auto list : importedLocationRequests) {
+			LocationMap exported_locations;
+			for(auto list : imported_location_requests) {
 				for(auto node_id : list.second) {
 					// for each requested node location, respond a tuple
 					// {node_id, currentLocation} to the requesting proc
-					exportedLocations[list.first]
+					exported_locations[list.first]
 						.push_back({node_id, managed_nodes_locations[node_id]});
 				}
 			}
 
 			// Import / export responses
 			LocationMap imported_locations
-				= location_mpi.migrate(exportedLocations);
+				= location_mpi.migrate(exported_locations);
 
 			// Finally, updates the distant_nodes locations from the requests
 			// responses
