@@ -42,21 +42,6 @@ namespace fpmas::synchro::hard {
 				HardSyncMutex(api::graph::parallel::DistributedNode<T>* node, MutexClient& mutex_client, MutexServer& mutex_server) :
 					node(node), mutex_client(mutex_client), mutex_server(mutex_server) {}
 
-				/*
-				 *void setUp(
-				 *    DistributedId id,
-				 *    LocationState& state,
-				 *    int& location,
-				 *    MutexClient& mutex_client,
-				 *    MutexServer& mutex_server) {
-				 *    this->id = id;
-				 *    this->state = &state;
-				 *    this->location = &location;
-				 *    this->mutex_client = &mutex_client;
-				 *    this->mutex_server = &mutex_server;
-				 *}
-				 */
-
 				void pushRequest(Request request) override;
 				std::queue<Request> requestsToProcess() override;
 

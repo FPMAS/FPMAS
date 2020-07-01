@@ -7,6 +7,7 @@
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/graph/parallel/mock_distributed_arc.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
+#include "../mocks/graph/parallel/mock_distributed_graph.h"
 #include "../mocks/graph/parallel/mock_location_manager.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/synchro/mock_mutex.h"
@@ -28,7 +29,7 @@ class HardDataSyncTest : public ::testing::Test {
 		NiceMock<MockLinkServer> link_server;
 		
 		MockTerminationAlgorithm termination {comm};
-		ServerPack<int> server_pack {termination, mutex_server, link_server};
+		ServerPack<int> server_pack {comm, termination, mutex_server, link_server};
 		HardDataSync<int> data_sync {comm, server_pack};
 };
 
@@ -45,8 +46,9 @@ class HardSyncLinkerTest : public ::testing::Test {
 		MockLinkClient<int> client;
 		MockTerminationAlgorithm termination {comm};
 
-		ServerPack<int> server_pack {termination, mutex_server, server};
-		HardSyncLinker<int> syncLinker {comm, client, server_pack};
+		ServerPack<int> server_pack {comm, termination, mutex_server, server};
+		MockDistributedGraph<int, MockDistributedArc<int>, MockDistributedNode<int>> graph;
+		HardSyncLinker<int> syncLinker {graph, client, server_pack};
 };
 
 TEST_F(HardSyncLinkerTest, link) {

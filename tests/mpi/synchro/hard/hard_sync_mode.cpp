@@ -5,6 +5,7 @@
 #include "fpmas/graph/parallel/distributed_graph.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
+#include "../mocks/synchro/hard/mock_client_server.h"
 
 using fpmas::api::graph::parallel::LocationState;
 using fpmas::communication::TypedMpi;
@@ -35,14 +36,16 @@ class HardSyncMutexSelfReadTest : public ::testing::Test {
 		LocationState state = LocationState::DISTANT;
 		int location = comm.getRank();
 
-		MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi};
-		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server};
-		HardSyncMutex<int> mutex {&node, client, server};
+		MockLinkServer mock_link_server;
+		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi};
+		fpmas::synchro::hard::ServerPack<int> server_pack {comm, termination, mutex_server, mock_link_server};
+		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server_pack};
+		HardSyncMutex<int> mutex {&node, client, mutex_server};
 
 		void SetUp() override {
 			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
 			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
-			server.manage(DistributedId(3, comm.getRank()), &mutex);
+			server_pack.mutexServer().manage(DistributedId(3, comm.getRank()), &mutex);
 
 			state = LocationState::LOCAL;
 		}
@@ -70,21 +73,23 @@ class MutexServerRaceCondition : public ::testing::Test {
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = 0;
-		//MockDistributedNode<int> node {DistributedId(3, comm.getRank()), data};
 		MockDistributedNode<int> node {DistributedId(3, 6), data};
 
 		LocationState state = LocationState::DISTANT;
 		int location = 0;
 
-		MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi};
-		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server};
-		HardSyncMutex<int> mutex {&node, client, server};
+		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi};
+		MockLinkServer mock_link_server;
+		fpmas::synchro::hard::ServerPack<int> server_pack {comm, termination, mutex_server, mock_link_server};
+		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server_pack};
+		HardSyncMutex<int> mutex {&node, client, mutex_server};
 
 		void SetUp() override {
+			EXPECT_CALL(mock_link_server, handleIncomingRequests).Times(AnyNumber());
 			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
 			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
 
-			server.manage(DistributedId(3, 6), &mutex);
+			server_pack.mutexServer().manage(DistributedId(3, 6), &mutex);
 			if(comm.getRank() == 0) {
 				state = LocationState::LOCAL;
 			}
@@ -97,7 +102,7 @@ TEST_F(MutexServerRaceCondition, acquire_race_condition) {
 		data++;
 		mutex.releaseAcquire();
 	}
-	termination.terminate(server);
+	termination.terminate(server_pack);
 
 	if(comm.getRank() == 0) {
 		ASSERT_EQ(mutex.read(), comm.getSize() * NUM_ACQUIRE);

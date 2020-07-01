@@ -90,7 +90,6 @@ namespace fpmas::synchro::hard {
 					return;
 				}
 
-				// Handles READ or ACQUIRE requests
 				server.handleIncomingRequests();
 			}
 		}

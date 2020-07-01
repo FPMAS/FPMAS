@@ -204,14 +204,16 @@ namespace fpmas::graph::parallel {
 	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(ArcType* arc) {
 		auto src = arc->getSourceNode();
 		auto tgt = arc->getTargetNode();
-		src->mutex().lock();
-		tgt->mutex().lock();
+		src->mutex().lockShared();
+		tgt->mutex().lockShared();
 
 		sync_mode_runtime.getSyncLinker().unlink(static_cast<DistArcType*>(arc));
 		// TODO : src and tgt might be cleared
 
-		src->mutex().unlock();
-		tgt->mutex().unlock();
+		this->erase(arc);
+
+		src->mutex().unlockShared();
+		tgt->mutex().unlockShared();
 
 		// TODO : clear usage here is risky, and does not support
 		// multi-threading. It can't be called before src->unlock and
@@ -221,7 +223,7 @@ namespace fpmas::graph::parallel {
 		// "clear" functions should globally be improved : what about a custom
 		// GarbageCollector for the graph?
 		//this->clearArc(arc);
-		this->erase(arc);
+		//this->erase(arc);
 	}
 
 	template<DIST_GRAPH_PARAMS>
@@ -395,8 +397,8 @@ namespace fpmas::graph::parallel {
 		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(NodeType* const src, NodeType* const tgt, LayerIdType layer) {
 				// Locks source and target
-				src->mutex().lock();
-				tgt->mutex().lock();
+				src->mutex().lockShared();
+				tgt->mutex().lockShared();
 
 				// Builds the new arc
 				auto arc = new DistArcType(
@@ -414,24 +416,12 @@ namespace fpmas::graph::parallel {
 						);
 				sync_mode_runtime.getSyncLinker().link(arc);
 
-				// If src and tgt is DISTANT, transmit the request to the
-				// SyncLinker, that will handle the request according to its
-				// synchronisation policy
-				/*
-				 *if(src->state() == LocationState::DISTANT || tgt->state() == LocationState::DISTANT) {
-				 *    sync_mode_runtime.getSyncLinker().link(arc);
-				 *    arc->setState(LocationState::DISTANT);
-				 *} else {
-				 *    arc->setState(LocationState::LOCAL);
-				 *}
-				 */
-
 				// Inserts the arc in the Graph
 				this->insert(arc);
 
 				// Unlocks source and target
-				src->mutex().unlock();
-				tgt->mutex().unlock();
+				src->mutex().unlockShared();
+				tgt->mutex().unlockShared();
 
 				return arc;
 			}

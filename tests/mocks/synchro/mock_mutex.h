@@ -12,7 +12,8 @@ class MockMutex : public virtual fpmas::api::synchro::Mutex<T> {
 	public:
 		MockMutex() {
 			EXPECT_CALL(*this, lock).Times(AnyNumber());
-			EXPECT_CALL(*this, unlock).Times(AnyNumber());
+			EXPECT_CALL(*this, lockShared).Times(AnyNumber());
+			EXPECT_CALL(*this, unlockShared).Times(AnyNumber());
 		}
 		MockMutex(T&) : MockMutex() {}
 		MockMutex(const MockMutex<T>&) {}

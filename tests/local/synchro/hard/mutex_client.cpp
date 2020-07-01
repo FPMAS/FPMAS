@@ -56,8 +56,11 @@ class MutexClientTest : public ::testing::Test {
 		MockMpi<int> data_mpi {comm};
 		MockMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
+		MockTerminationAlgorithm mock_termination;
 		MockMutexServer<int> mock_mutex_server;
-		MutexClient<int> mutex_client {comm, id_mpi, data_mpi, data_update_mpi, mock_mutex_server};
+		MockLinkServer mock_link_server;
+		fpmas::synchro::hard::ServerPack<int> server_pack {comm, mock_termination, mock_mutex_server, mock_link_server};
+		MutexClient<int> mutex_client {comm, id_mpi, data_mpi, data_update_mpi, server_pack};
 
 		MockHardSyncMutex<int> distantHardSyncMutex;
 		MockHardSyncMutex<int> localHardSyncMutex;
@@ -236,6 +239,9 @@ class MutexClientDeadlockTest : public MutexClientTest {
 					.InSequence(seq)
 					.WillOnce(Return(false));
 				EXPECT_CALL(mock_mutex_server, handleIncomingRequests)
+					.Times(AtLeast(1))
+					.InSequence(seq);
+				EXPECT_CALL(mock_link_server, handleIncomingRequests)
 					.Times(AtLeast(1))
 					.InSequence(seq);
 			}

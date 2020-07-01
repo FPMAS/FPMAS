@@ -45,12 +45,12 @@ namespace fpmas::synchro {
 						api::communication::MpiCommunicator& comm) :
 					id_mpi(comm), data_mpi(comm), data_update_mpi(comm), node_mpi(comm), arc_mpi(comm),
 					mutex_server(comm, id_mpi, data_mpi, data_update_mpi),
-					mutex_client(comm, id_mpi, data_mpi, data_update_mpi, mutex_server),
-					link_server(comm, id_mpi, arc_mpi, graph),
-					link_client(comm, id_mpi, arc_mpi, link_server),
+					mutex_client(comm, id_mpi, data_mpi, data_update_mpi, server_pack),
+					link_server(comm, graph, id_mpi, arc_mpi),
+					link_client(comm, id_mpi, arc_mpi, server_pack),
 					termination(comm),
-					server_pack(termination, mutex_server, link_server),
-					sync_linker(comm, link_client, server_pack),
+					server_pack(comm, termination, mutex_server, link_server),
+					sync_linker(graph, link_client, server_pack),
 					data_sync(comm, server_pack) {}
 
 				HardSyncMutex<T>* buildMutex(api::graph::parallel::DistributedNode<T>* node) override {

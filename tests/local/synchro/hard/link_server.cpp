@@ -43,7 +43,7 @@ class LinkServerTest : public ::testing::Test {
 			> mock_graph;
 
 		LinkServer<int> linkServer
-			{comm, id_mpi, arc_mpi, mock_graph};
+			{comm, mock_graph, id_mpi, arc_mpi};
 
 		void SetUp() override {
 			ON_CALL(comm, Iprobe).WillByDefault(Return(false));

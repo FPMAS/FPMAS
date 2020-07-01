@@ -20,8 +20,12 @@ class LinkClientTest : public ::testing::Test {
 		MockMpi<DistributedId> id_mpi {comm};
 		MockMpi<ArcPtrWrapper<int>> arc_mpi {comm};
 
+		MockTerminationAlgorithm mock_termination;
+		MockMutexServer<int> mock_mutex_server;
 		MockLinkServer mock_link_server;
-		LinkClient<int> link_client {comm, id_mpi, arc_mpi, mock_link_server};
+		fpmas::synchro::hard::ServerPack<int> server_pack {
+			comm, mock_termination, mock_mutex_server, mock_link_server};
+		LinkClient<int> link_client {comm, id_mpi, arc_mpi, server_pack};
 
 		MockDistributedNode<int> mock_src;
 		MockDistributedNode<int> mock_tgt;
@@ -200,6 +204,10 @@ class LinkClientDeadlockTest : public LinkClientTest {
 					.Times(AtLeast(1))
 					.InSequence(s1)
 					.RetiresOnSaturation();
+				EXPECT_CALL(mock_mutex_server, handleIncomingRequests)
+					.Times(AtLeast(1))
+					.InSequence(s1)
+					.RetiresOnSaturation();
 			}
 			EXPECT_CALL(comm, test)
 				.InSequence(s1)
@@ -212,6 +220,10 @@ class LinkClientDeadlockTest : public LinkClientTest {
 					.WillOnce(Return(false))
 					.RetiresOnSaturation();
 				EXPECT_CALL(mock_link_server, handleIncomingRequests)
+					.Times(AtLeast(1))
+					.InSequence(s2)
+					.RetiresOnSaturation();
+				EXPECT_CALL(mock_mutex_server, handleIncomingRequests)
 					.Times(AtLeast(1))
 					.InSequence(s2)
 					.RetiresOnSaturation();

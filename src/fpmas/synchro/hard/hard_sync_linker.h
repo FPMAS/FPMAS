@@ -24,18 +24,16 @@ namespace fpmas::synchro::hard {
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
 			private:
 			Epoch epoch = Epoch::EVEN;
+
 			api::communication::MpiCommunicator& comm;
+			api::graph::parallel::DistributedGraph<T>& graph;
 			IdMpi& id_mpi;
 			ArcMpi& arc_mpi;
 
-			fpmas::api::graph::parallel::DistributedGraph<T>& graph;
-
 			public:
-				LinkServer(
-						api::communication::MpiCommunicator& comm,
-						IdMpi& id_mpi, ArcMpi& arc_mpi,
-						fpmas::api::graph::parallel::DistributedGraph<T>& graph)
-					:  comm(comm), id_mpi(id_mpi), arc_mpi(arc_mpi), graph(graph) {}
+				LinkServer(api::communication::MpiCommunicator& comm, api::graph::parallel::DistributedGraph<T>& graph,
+						IdMpi& id_mpi, ArcMpi& arc_mpi)
+					:  comm(comm), graph(graph), id_mpi(id_mpi), arc_mpi(arc_mpi) {}
 
 				Epoch getEpoch() const override {return epoch;}
 				void setEpoch(Epoch epoch) override {this->epoch = epoch;}
@@ -53,9 +51,10 @@ namespace fpmas::synchro::hard {
 				graph.importArc(arc);
 			}
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
-				DistributedId unlinkId = id_mpi.recv(&req_status);
-				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", ID_C_STR(unlinkId), req_status.MPI_SOURCE);
-				graph.clearArc(graph.getArc(unlinkId));
+				DistributedId unlink_id = id_mpi.recv(&req_status);
+				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", ID_C_STR(unlink_id), req_status.MPI_SOURCE);
+				//graph.clearArc(graph.getArc(unlinkId));
+				graph.erase(graph.getArc(unlink_id));
 			}
 		}
 
@@ -71,15 +70,12 @@ namespace fpmas::synchro::hard {
 				api::communication::MpiCommunicator& comm;
 				IdMpi& id_mpi;
 				ArcMpi& arc_mpi;
-				LinkServer& link_server;
-
-				void waitSendRequest(MPI_Request*);
+				ServerPack<T>& server_pack;
 
 			public:
-				LinkClient(api::communication::MpiCommunicator& comm,
-						IdMpi& id_mpi, ArcMpi& arc_mpi,
-						LinkServer& link_server)
-					: comm(comm), id_mpi(id_mpi), arc_mpi(arc_mpi), link_server(link_server) {}
+				LinkClient(api::communication::MpiCommunicator& comm, IdMpi& id_mpi, ArcMpi& arc_mpi,
+						ServerPack<T>& server_pack)
+					: comm(comm), id_mpi(id_mpi), arc_mpi(arc_mpi), server_pack(server_pack) {}
 
 				void link(const ArcApi*) override;
 				void unlink(const ArcApi*) override;
@@ -91,30 +87,47 @@ namespace fpmas::synchro::hard {
 				bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
 				bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
 
-				MPI_Request reqSrc;
-				MPI_Request reqTgt;
-				// Simultaneously initiate the two requests, that are potentially
-				// made to different procs
-				if(distantSrc) {
+				if(arc->getSourceNode()->getLocation() != arc->getTargetNode()->getLocation()) {
+					// The arc is DISTANT, so at least of the two nodes is
+					// DISTANT. In this case, if the two nodes are
+					// DISTANT, they don't have the same location, so two
+					// requests must be performed.
+					MPI_Request reqSrc;
+					MPI_Request reqTgt;
+					// Simultaneously initiate the two requests, that are potentially
+					// made to different procs
+					if(distantSrc) {
+						arc_mpi.Issend(
+								const_cast<ArcApi*>(arc), arc->getSourceNode()->getLocation(),
+								server_pack.getEpoch() | Tag::LINK, &reqSrc
+								); 
+					}
+					if(distantTgt) {
+						arc_mpi.Issend(
+								const_cast<ArcApi*>(arc), arc->getTargetNode()->getLocation(),
+								server_pack.getEpoch() | Tag::LINK, &reqTgt
+								); 
+					}
+					// Sequentially waits for each request : if reqTgt completes
+					// before reqSrc, the second waitSendRequest will immediatly return
+					// so there is no performance issue.
+					if(distantSrc) {
+						server_pack.waitSendRequest(&reqSrc);
+					}
+					if(distantTgt) {
+						server_pack.waitSendRequest(&reqTgt);
+					}
+				} else {
+					// The arc is DISTANT, and its source and target nodes
+					// locations are the same, so the two nodes are necessarily
+					// located on the same DISTANT proc : only need to perform
+					// one request
+					MPI_Request req;
 					arc_mpi.Issend(
 							const_cast<ArcApi*>(arc), arc->getSourceNode()->getLocation(),
-							link_server.getEpoch() | Tag::LINK, &reqSrc
+							server_pack.getEpoch() | Tag::LINK, &req
 							); 
-				}
-				if(distantTgt) {
-					arc_mpi.Issend(
-							const_cast<ArcApi*>(arc), arc->getTargetNode()->getLocation(),
-							link_server.getEpoch() | Tag::LINK, &reqTgt
-							); 
-				}
-				// Sequentially waits for each request : if reqTgt completes
-				// before reqSrc, the second waitSendRequest will immediatly return
-				// so there is no performance issue.
-				if(distantSrc) {
-					waitSendRequest(&reqSrc);
-				}
-				if(distantTgt) {
-					waitSendRequest(&reqTgt);
+					server_pack.waitSendRequest(&req);
 				}
 			}
 		}
@@ -132,41 +145,26 @@ namespace fpmas::synchro::hard {
 				if(distantSrc) {
 					this->id_mpi.Issend(
 							arc->getId(), arc->getSourceNode()->getLocation(),
-							link_server.getEpoch() | Tag::UNLINK, &reqSrc
+							server_pack.getEpoch() | Tag::UNLINK, &reqSrc
 							); 
 				}
 				if(distantTgt) {
 					this->id_mpi.Issend(
 							arc->getId(), arc->getTargetNode()->getLocation(),
-							link_server.getEpoch() | Tag::UNLINK, &reqTgt
+							server_pack.getEpoch() | Tag::UNLINK, &reqTgt
 							); 
 				}
 				// Sequentially waits for each request : if reqTgt completes
 				// before reqSrc, the second waitSendRequest will immediatly return
 				// so there is no performance issue.
 				if(distantSrc) {
-					waitSendRequest(&reqSrc);
+					server_pack.waitSendRequest(&reqSrc);
 				}
 				if(distantTgt) {
-					waitSendRequest(&reqTgt);
+					server_pack.waitSendRequest(&reqTgt);
 				}
 			}
 		}
-
-	/*
-	 * Allows to respond to other request while a request (sent in a synchronous
-	 * message) is sending, in order to avoid deadlock.
-	 */
-	template<typename T>
-	void LinkClient<T>::waitSendRequest(MPI_Request* req) {
-		FPMAS_LOGV(this->comm.getRank(), "LINK_CLIENT", "wait for send...");
-		bool sent = comm.test(req);
-
-		while(!sent) {
-			link_server.handleIncomingRequests();
-			sent = comm.test(req);
-		}
-	}
 
 	template<typename T>
 	class HardSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
@@ -179,17 +177,23 @@ namespace fpmas::synchro::hard {
 			typedef api::synchro::hard::LinkClient<T> LinkClient;
 			typedef api::synchro::hard::LinkServer LinkServer;
 
-			api::communication::MpiCommunicator& comm;
+			std::vector<ArcApi*> ghost_arcs;
+			api::graph::parallel::DistributedGraph<T>& graph;
 			LinkClient& link_client;
 			ServerPack<T>& server_pack;
 
 		public:
-			HardSyncLinker(api::communication::MpiCommunicator& comm,
+			HardSyncLinker(api::graph::parallel::DistributedGraph<T>& graph,
 					LinkClient& link_client, ServerPack<T>& server_pack)
-				: comm(comm), link_client(link_client), server_pack(server_pack) {}
+				: graph(graph), link_client(link_client), server_pack(server_pack) {}
 
 			void link(const ArcApi* arc) override {
 				link_client.link(arc);
+				
+				if(arc->getSourceNode()->state() == LocationState::DISTANT
+						&& arc->getTargetNode()->state() == LocationState::DISTANT) {
+					ghost_arcs.push_back(const_cast<ArcApi*>(arc));
+				}
 			};
 
 			void unlink(const ArcApi* arc) override {
@@ -197,10 +201,13 @@ namespace fpmas::synchro::hard {
 			};
 
 			void synchronize() override {
-				FPMAS_LOGI(comm.getRank(), "HARD_SYNC_LINKER", "Synchronizing sync linker...");
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronizing sync linker...");
+				for(auto arc : ghost_arcs)
+					graph.erase(arc);
+				ghost_arcs.clear();
+
 				server_pack.terminate();
-				//termination.terminate(link_server);
-				FPMAS_LOGI(comm.getRank(), "HARD_SYNC_LINKER", "Synchronized.");
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronized.");
 			};
 	};
 }
