@@ -9,6 +9,7 @@ set(SOURCES
 	graph/base/graph.cpp
 	## Parallel
 	graph/parallel/distributed_graph.cpp
+	graph/parallel/distributed_arc.cpp
 	graph/parallel/location_manager.cpp
 	# Synchro
 	synchro/ghost/data_sync.cpp

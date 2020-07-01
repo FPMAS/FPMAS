@@ -15,6 +15,8 @@ template<typename T>
 class MockDistributedNode;
 template<typename T>
 void from_json(const nlohmann::json& j, MockDistributedNode<T>& mock);
+template<typename T>
+void to_json(nlohmann::json& j, const MockDistributedNode<T>& mock);
 
 template<typename> class MockDistributedArc;
 
@@ -29,6 +31,7 @@ class MockDistributedNode :
 			NodeBase;
 		typedef fpmas::api::synchro::Mutex<T> Mutex;
 		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T>&);
+		friend void to_json<T>(nlohmann::json&, const MockDistributedNode<T>&);
 
 		private:
 		T _data;
@@ -162,7 +165,7 @@ class MockDistributedNode :
 template<typename T>
 inline void to_json(nlohmann::json& j, const MockDistributedNode<T>& mock) {
 	j["id"] = mock.getId();
-	j["data"] = mock.mutex().data();
+	j["data"] = mock._data;
 	j["weight"] = mock.getWeight();
 }
 

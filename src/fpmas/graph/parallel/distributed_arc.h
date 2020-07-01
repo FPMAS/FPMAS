@@ -54,17 +54,11 @@ namespace nlohmann {
 					j.at("layer").get<typename fpmas::api::graph::parallel::DistributedArc<T>::LayerIdType>(),
 					j.at("weight").get<float>()
 				};
-				/*auto* src = new fpmas::graph::parallel::DistributedNode<T>(*/
-						//j.at("src").get<DistributedId>()
-					  /*  )*/;
 				NodePtrWrapper<T> src = j.at("src").get<NodePtrWrapper<T>>();
 				arc->setSourceNode(src);
 				src->linkOut(arc);
 				src->setLocation(j.at("src_loc").get<int>());
 
-				//auto* tgt = new fpmas::graph::parallel::DistributedNode<T>(
-						//j.at("tgt").get<DistributedId>()
-						//);
 				NodePtrWrapper<T> tgt = j.at("tgt").get<NodePtrWrapper<T>>();
 				arc->setTargetNode(tgt);
 				tgt->linkIn(arc);
