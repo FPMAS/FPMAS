@@ -70,7 +70,7 @@ class LinkServerTest : public ::testing::Test {
 			EXPECT_CALL(id_mpi, recv(_))
 				.After(probe)
 				.WillOnce(Return(mock_arc->getId()));
-			EXPECT_CALL(mock_graph, clearArc(mock_arc));
+			EXPECT_CALL(mock_graph, erase(mock_arc));
 		}
 };
 

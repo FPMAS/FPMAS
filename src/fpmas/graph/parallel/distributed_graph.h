@@ -94,6 +94,9 @@ namespace fpmas::graph::parallel {
 					callback->call(node);
 			}
 
+			void clearDistantNodes();
+			void clearNode(NodeType*);
+
 
 			public:
 			DistributedGraph() :
@@ -116,9 +119,6 @@ namespace fpmas::graph::parallel {
 
 			const mpi<NodePtrWrapper<T>>& getNodeMpi() const {return node_mpi;}
 			const mpi<ArcPtrWrapper<T>>& getArcMpi() const {return arc_mpi;}
-
-			void clearArc(ArcType*) override;
-			void clearNode(NodeType*) override;
 
 			NodeType* importNode(NodeType* node) override;
 			ArcType* importArc(ArcType* arc) override;
@@ -214,16 +214,6 @@ namespace fpmas::graph::parallel {
 
 		src->mutex().unlockShared();
 		tgt->mutex().unlockShared();
-
-		// TODO : clear usage here is risky, and does not support
-		// multi-threading. It can't be called before src->unlock and
-		// tgt->unlock, because if one of the two nodes is "cleared" in
-		// clear(arc) src->mutex() will seg fault. 
-		//
-		// "clear" functions should globally be improved : what about a custom
-		// GarbageCollector for the graph?
-		//this->clearArc(arc);
-		//this->erase(arc);
 	}
 
 	template<DIST_GRAPH_PARAMS>
@@ -505,6 +495,7 @@ namespace fpmas::graph::parallel {
 			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.");
 
 			sync_mode_runtime.getDataSync().synchronize();
+
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 					"End of distribution.");
 		}
@@ -517,6 +508,8 @@ namespace fpmas::graph::parallel {
 
 			sync_mode_runtime.getSyncLinker().synchronize();
 
+			clearDistantNodes();
+
 			sync_mode_runtime.getDataSync().synchronize();
 
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
@@ -525,16 +518,10 @@ namespace fpmas::graph::parallel {
 
 	template<DIST_GRAPH_PARAMS>
 		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
-		::clearArc(ArcType* arc) {
-			auto src = arc->getSourceNode();
-			auto tgt = arc->getTargetNode();
-			this->erase(arc);
-			if(src->state() == LocationState::DISTANT) {
-				this->clearNode(src);
-			}
-			if(tgt->state() == LocationState::DISTANT) {
-				this->clearNode(tgt);
-			}
+		::clearDistantNodes() {
+			NodeMap distant_nodes = location_manager.getDistantNodes();
+			for(auto node : distant_nodes)
+				clearNode(node.second);
 		}
 
 	template<DIST_GRAPH_PARAMS>

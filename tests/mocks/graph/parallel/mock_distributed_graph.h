@@ -41,8 +41,6 @@ class MockDistributedGraph :
 
 		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
 		MOCK_METHOD(ArcType*, importArc, (ArcType*), (override));
-		MOCK_METHOD(void, clearArc, (ArcType*), (override));
-		MOCK_METHOD(void, clearNode, (NodeType*), (override));
 
 		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::LoadBalancing<T>&), (override));
 		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap), (override));

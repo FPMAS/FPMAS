@@ -261,6 +261,7 @@ TEST_F(AgentGroupTest, add_agent) {
 			InvokeWithoutArgs(build_node_1),
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode(&node1));
+	EXPECT_CALL(*agent1, setGraph(&graph));
 
 	// The fake agent will be implicitely and automatically deleted from the
 	// temporary AgentPtr in the mocked buildNode function. In consequence, we
@@ -278,6 +279,7 @@ TEST_F(AgentGroupTest, add_agent) {
 			InvokeWithoutArgs(build_node_2),
 			Return(&node1)));
 	EXPECT_CALL(*agent2, setNode(&node2));
+	EXPECT_CALL(*agent2, setGraph(&graph));
 
 	fake_agent = new MockAgent<>;
 	EXPECT_CALL(*fake_agent, setGroupId(10));
@@ -298,6 +300,7 @@ TEST_F(AgentGroupTest, agent_task) {
 			InvokeWithoutArgs(build_node_1),
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode);
+	EXPECT_CALL(*agent1, setGraph);
 
 	MockAgent<>* fake_agent = new MockAgent<>;
 	EXPECT_CALL(*fake_agent, setGroupId(10));
@@ -309,6 +312,7 @@ TEST_F(AgentGroupTest, agent_task) {
 			InvokeWithoutArgs(build_node_2),
 			Return(&node2)));
 	EXPECT_CALL(*agent2, setNode);
+	EXPECT_CALL(*agent2, setGraph);
 
 	fake_agent = new MockAgent<>;
 	EXPECT_CALL(*fake_agent, setGroupId(10));

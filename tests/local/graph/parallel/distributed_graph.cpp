@@ -69,6 +69,7 @@ class DistributedGraphTest : public ::testing::Test {
 		typedef MockDistributedArc<int> MockArc;
 		typedef fpmas::api::graph::parallel::DistributedArc<int> ArcType;
 		typedef typename GraphType::SyncModeRuntimeType SyncModeRuntimeType;
+		typedef typename GraphType::NodeMap NodeMap;
 
 		MockMpiCommunicator<CURRENT_RANK, 10>& comm =
 			static_cast<MockMpiCommunicator<CURRENT_RANK, 10>&>(graph.getMpiCommunicator());
@@ -623,6 +624,7 @@ TEST_F(DistributedGraphImportArcTest, double_import_edge_case) {
 	// The same arc is imported from proc 2
 	imported_arc_mocks[2].push_back(mock);
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+
 	distributeTest();
 	checkArcStructure();
 	ASSERT_EQ(static_cast<MockArc*>(imported_arc)->_state, LocationState::LOCAL);
@@ -855,6 +857,7 @@ TEST_F(DistributedGraphTest, synchronize_calls) {
 			synchronize())
 		.InSequence(s);
 
+	EXPECT_CALL(location_manager, getDistantNodes).WillOnce(ReturnRefOfCopy(NodeMap()));
 	graph.synchronize();
 }
 
@@ -935,6 +938,7 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 					Pair(DistributedId(2, 5), _),
 					Pair(DistributedId(4, 3), _)
 				)));
+
 	graph.distribute(fake_partition);
 	ASSERT_EQ(graph.getNodes().size(), 3);
 	ASSERT_EQ(graph.getNodes().count(node_ids[0]), 1);

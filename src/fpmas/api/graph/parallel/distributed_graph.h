@@ -40,9 +40,6 @@ namespace fpmas::api::graph::parallel {
 
 			virtual DistributedArc<T>* link(DistributedNode<T>*, DistributedNode<T>*, LayerIdType) = 0;
 
-			virtual void clearArc(DistributedArc<T>*) = 0;
-			virtual void clearNode(DistributedNode<T>*) = 0;
-
 			virtual void balance(api::load_balancing::LoadBalancing<T>&) = 0;
 			virtual void balance(api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap fixed_nodes) = 0;
 			virtual void distribute(PartitionMap partition) = 0;

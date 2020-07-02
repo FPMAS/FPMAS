@@ -220,9 +220,9 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 	EXPECT_CALL(id_mpi, migrate(IsEmpty()))
 		.WillOnce(Return(importMap));
 
-	EXPECT_CALL(mocked_graph, clearArc(arc1));
-	EXPECT_CALL(mocked_graph, clearArc(arc2));
-	EXPECT_CALL(mocked_graph, clearArc(arc3));
+	EXPECT_CALL(mocked_graph, erase(arc1));
+	EXPECT_CALL(mocked_graph, erase(arc2));
+	EXPECT_CALL(mocked_graph, erase(arc3));
 
 	linker.synchronize();
 }
@@ -265,8 +265,8 @@ TEST_F(GhostSyncLinkerTest, import_export_unlink) {
 	EXPECT_CALL(id_mpi, migrate(export_id_matcher))
 		.WillOnce(Return(import_map));
 
-	EXPECT_CALL(mocked_graph, clearArc(arc2));
-	EXPECT_CALL(mocked_graph, clearArc(arc3));
+	EXPECT_CALL(mocked_graph, erase(arc2));
+	EXPECT_CALL(mocked_graph, erase(arc3));
 
 	linker.synchronize();
 }
