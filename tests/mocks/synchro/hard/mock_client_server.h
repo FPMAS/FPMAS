@@ -42,6 +42,10 @@ class MockMutexServer
 		using fpmas::api::synchro::hard::MutexServer<T>::lock;
 		using fpmas::api::synchro::hard::MutexServer<T>::lockShared;
 
+		MockMutexServer() {
+			EXPECT_CALL(*this, setEpoch).Times(::testing::AnyNumber());
+		}
+
 		MOCK_METHOD(void, setEpoch, (Epoch), (override));
 		MOCK_METHOD(Epoch, getEpoch, (), (const, override));
 
@@ -71,6 +75,10 @@ class MockLinkClient
 class MockLinkServer
 : public fpmas::api::synchro::hard::LinkServer {
 	public:
+		MockLinkServer() {
+			EXPECT_CALL(*this, setEpoch).Times(::testing::AnyNumber());
+		}
+
 		MOCK_METHOD(void, setEpoch, (Epoch), (override));
 		MOCK_METHOD(Epoch, getEpoch, (), (const, override));
 

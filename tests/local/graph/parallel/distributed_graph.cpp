@@ -166,10 +166,10 @@ class DistributedGraphLinkTest : public DistributedGraphTest {
 			EXPECT_CALL(*tgtMock, mutex()).WillRepeatedly(ReturnRef(tgtMutex));
 			EXPECT_CALL(Const(*tgtMock), mutex()).WillRepeatedly(ReturnRef(tgtMutex));
 
-			EXPECT_CALL(srcMutex, lock);
-			EXPECT_CALL(srcMutex, unlock);
-			EXPECT_CALL(tgtMutex, lock);
-			EXPECT_CALL(tgtMutex, unlock);
+			EXPECT_CALL(srcMutex, lockShared);
+			EXPECT_CALL(srcMutex, unlockShared);
+			EXPECT_CALL(tgtMutex, lockShared);
+			EXPECT_CALL(tgtMutex, unlockShared);
 			EXPECT_CALL(mock_sync_linker, unlink).Times(0);
 
 			EXPECT_CALL(*srcMock, linkOut)
@@ -285,10 +285,10 @@ class DistributedGraphUnlinkTest : public DistributedGraphTest {
 			EXPECT_CALL(*srcMock, mutex()).WillRepeatedly(ReturnRef(srcMutex));
 			EXPECT_CALL(*tgtMock, mutex()).WillRepeatedly(ReturnRef(tgtMutex));
 
-			EXPECT_CALL(srcMutex, lock).Times(2);
-			EXPECT_CALL(srcMutex, unlock).Times(2);
-			EXPECT_CALL(tgtMutex, lock).Times(2);
-			EXPECT_CALL(tgtMutex, unlock).Times(2);
+			EXPECT_CALL(srcMutex, lockShared).Times(2);
+			EXPECT_CALL(srcMutex, unlockShared).Times(2);
+			EXPECT_CALL(tgtMutex, lockShared).Times(2);
+			EXPECT_CALL(tgtMutex, unlockShared).Times(2);
 		}
 
 		void link(LocationState srcState, LocationState tgtState) {
@@ -968,8 +968,8 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 
 			// No lock to manage, all links are local
 			MockMutex<int> mock_mutex;
-			EXPECT_CALL(mock_mutex, lock).Times(AnyNumber());
-			EXPECT_CALL(mock_mutex, unlock).Times(AnyNumber());
+			EXPECT_CALL(mock_mutex, lockShared).Times(AnyNumber());
+			EXPECT_CALL(mock_mutex, unlockShared).Times(AnyNumber());
 			EXPECT_CALL(mock_sync_linker, link).Times(2);
 
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[0])), mutex())

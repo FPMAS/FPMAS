@@ -15,8 +15,9 @@ using fpmas::synchro::hard::LinkClient;
 
 class LinkClientTest : public ::testing::Test {
 	protected:
+		static const int THIS_RANK = 7;
 		const DistributedId arcId {9, 2};
-		MockMpiCommunicator<7, 16> comm;
+		MockMpiCommunicator<THIS_RANK, 16> comm;
 		MockMpi<DistributedId> id_mpi {comm};
 		MockMpi<ArcPtrWrapper<int>> arc_mpi {comm};
 
@@ -67,9 +68,13 @@ TEST_F(LinkClientTest, link_local_src_local_tgt) {
 TEST_F(LinkClientTest, link_local_src_distant_tgt) {
 	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(mock_src, getLocation).Times(AnyNumber())
+		.WillRepeatedly(Return(THIS_RANK));
+
 	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(10));
+
 	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
@@ -82,9 +87,13 @@ TEST_F(LinkClientTest, link_local_src_distant_tgt) {
 TEST_F(LinkClientTest, link_local_tgt_distant_src) {
 	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+
+	EXPECT_CALL(mock_tgt, getLocation).Times(AnyNumber())
+		.WillRepeatedly(Return(THIS_RANK));
 	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+
 	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
@@ -114,6 +123,24 @@ TEST_F(LinkClientTest, link_distant_tgt_distant_src) {
 	link_client.link(&mock_arc);
 }
 
+// If src and tgt are on the same proc, the link request must be sent ONLY ONCE
+TEST_F(LinkClientTest, link_distant_tgt_distant_src_same_location) {
+	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(10));
+
+	EXPECT_CALL(mock_arc, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
+
+	EXPECT_CALL(arc_mpi, Issend(
+				Property(&ArcPtrWrapper<int>::get, &mock_arc), 10, Epoch::EVEN | Tag::LINK, _));
+	EXPECT_CALL(comm, test)
+		.WillOnce(Return(true));
+
+	link_client.link(&mock_arc);
+}
+
 // Should not do anything
 TEST_F(LinkClientTest, unlink_local_src_local_tgt) {
 	EXPECT_CALL(mock_src, state).Times(AnyNumber())
@@ -131,6 +158,9 @@ TEST_F(LinkClientTest, unlink_local_src_local_tgt) {
 
 TEST_F(LinkClientTest, unlink_local_src_distant_tgt) {
 	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(mock_src, getLocation).Times(AnyNumber())
+		.WillRepeatedly(Return(THIS_RANK));
+
 	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(10));
 
@@ -177,7 +207,7 @@ TEST_F(LinkClientTest, unlink_distant_tgt_distant_src) {
 
 class LinkClientDeadlockTest : public LinkClientTest {
 	protected:
-		Sequence s1, s2;
+		Sequence s1_1, s1_2, s2_1, s2_2;
 
 		void SetUp() override {
 			LinkClientTest::SetUp();
@@ -197,39 +227,39 @@ class LinkClientDeadlockTest : public LinkClientTest {
 			// S2 and not in the saturated S1 expectations
 			for(int i = 0; i < 20; i++) {
 				EXPECT_CALL(comm, test)
-					.InSequence(s1)
+					.InSequence(s1_1, s1_2)
 					.WillOnce(Return(false))
 					.RetiresOnSaturation();
 				EXPECT_CALL(mock_link_server, handleIncomingRequests)
 					.Times(AtLeast(1))
-					.InSequence(s1)
+					.InSequence(s1_2)
 					.RetiresOnSaturation();
 				EXPECT_CALL(mock_mutex_server, handleIncomingRequests)
 					.Times(AtLeast(1))
-					.InSequence(s1)
+					.InSequence(s1_1)
 					.RetiresOnSaturation();
 			}
 			EXPECT_CALL(comm, test)
-				.InSequence(s1)
+				.InSequence(s1_1, s1_2)
 				.WillOnce(Return(true))
 				.RetiresOnSaturation();
 
 			for(int i = 0; i < 10; i++) {
 				EXPECT_CALL(comm, test)
-					.InSequence(s2)
+					.InSequence(s2_1, s2_2)
 					.WillOnce(Return(false))
 					.RetiresOnSaturation();
 				EXPECT_CALL(mock_link_server, handleIncomingRequests)
 					.Times(AtLeast(1))
-					.InSequence(s2)
+					.InSequence(s2_1)
 					.RetiresOnSaturation();
 				EXPECT_CALL(mock_mutex_server, handleIncomingRequests)
 					.Times(AtLeast(1))
-					.InSequence(s2)
+					.InSequence(s2_2)
 					.RetiresOnSaturation();
 			}
 			EXPECT_CALL(comm, test)
-				.InSequence(s2)
+				.InSequence(s2_1, s2_2)
 				.WillOnce(Return(true))
 				.RetiresOnSaturation();
 		}
@@ -237,9 +267,9 @@ class LinkClientDeadlockTest : public LinkClientTest {
 
 TEST_F(LinkClientDeadlockTest, link) {
 	EXPECT_CALL(arc_mpi, Issend(Property(&ArcPtrWrapper<int>::get, &mock_arc), 10, Epoch::EVEN | Tag::LINK, _))
-		.InSequence(s1);
+		.InSequence(s1_1, s1_2);
 	EXPECT_CALL(arc_mpi, Issend(Property(&ArcPtrWrapper<int>::get, &mock_arc), 12, Epoch::EVEN | Tag::LINK, _))
-		.InSequence(s2);
+		.InSequence(s2_1, s2_2);
 
 	waitExpectations();
 
@@ -248,9 +278,9 @@ TEST_F(LinkClientDeadlockTest, link) {
 
 TEST_F(LinkClientDeadlockTest, unlink) {
 	EXPECT_CALL(id_mpi, Issend(arcId, 10, Epoch::EVEN | Tag::UNLINK, _))
-		.InSequence(s1);
+		.InSequence(s1_1, s1_2);
 	EXPECT_CALL(id_mpi, Issend(arcId, 12, Epoch::EVEN | Tag::UNLINK, _))
-		.InSequence(s2);
+		.InSequence(s2_1, s2_2);
 
 	waitExpectations();
 

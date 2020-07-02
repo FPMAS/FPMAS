@@ -13,6 +13,7 @@
 #include "../mocks/synchro/mock_mutex.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 
+using ::testing::An;
 using ::testing::Ref;
 using ::testing::NiceMock;
 
@@ -51,10 +52,74 @@ class HardSyncLinkerTest : public ::testing::Test {
 		HardSyncLinker<int> syncLinker {graph, client, server_pack};
 };
 
-TEST_F(HardSyncLinkerTest, link) {
-	MockDistributedArc<int> arc;
-	EXPECT_CALL(client, link(&arc));
+class HardSyncLinkerLinkTest : public HardSyncLinkerTest {
+	protected:
+		MockDistributedArc<int> arc;
+		MockDistributedNode<int> src;
+		MockDistributedNode<int> tgt;
+
+		void SetUp() {
+			EXPECT_CALL(arc, getSourceNode).Times(AnyNumber())
+				.WillRepeatedly(Return(&src));
+			EXPECT_CALL(arc, getTargetNode).Times(AnyNumber())
+				.WillRepeatedly(Return(&tgt));
+
+			EXPECT_CALL(client, link(&arc));
+			EXPECT_CALL(termination, terminate);
+		}
+
+};
+
+TEST_F(HardSyncLinkerLinkTest, link_local_src_local_tgt) {
+	EXPECT_CALL(src, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(tgt, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::LOCAL));
+
 	syncLinker.link(&arc);
+
+	EXPECT_CALL(graph, erase(An<fpmas::api::graph::parallel::DistributedArc<int>*>()))
+		.Times(0);
+	syncLinker.synchronize();
+}
+
+TEST_F(HardSyncLinkerLinkTest, link_local_src_distant_tgt) {
+	EXPECT_CALL(src, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(tgt, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
+
+	syncLinker.link(&arc);
+
+	EXPECT_CALL(graph, erase(An<fpmas::api::graph::parallel::DistributedArc<int>*>()))
+		.Times(0);
+	syncLinker.synchronize();
+}
+
+TEST_F(HardSyncLinkerLinkTest, link_distant_src_local_tgt) {
+	EXPECT_CALL(src, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(tgt, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::LOCAL));
+
+	syncLinker.link(&arc);
+
+	EXPECT_CALL(graph, erase(An<fpmas::api::graph::parallel::DistributedArc<int>*>()))
+		.Times(0);
+	syncLinker.synchronize();
+}
+
+// The linked arc must be erased upon synchronization
+TEST_F(HardSyncLinkerLinkTest, link_distant_src_distant_tgt) {
+	EXPECT_CALL(src, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(tgt, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
+
+	syncLinker.link(&arc);
+
+	EXPECT_CALL(graph, erase(&arc));
+	syncLinker.synchronize();
 }
 
 TEST_F(HardSyncLinkerTest, unlink) {
