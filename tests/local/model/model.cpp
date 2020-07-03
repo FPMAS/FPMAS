@@ -6,9 +6,12 @@
 #include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/model/mock_model.h"
 #include "../mocks/communication/mock_communication.h"
+#include "../mocks/synchro/mock_mutex.h"
+#include "fpmas/model/guards.h"
 
 using ::testing::A;
 using ::testing::An;
+using ::testing::Assign;
 using ::testing::DoAll;
 using ::testing::ElementsAre;
 using ::testing::Eq;
@@ -329,8 +332,6 @@ TEST_F(AgentGroupTest, agent_task) {
 class AgentBaseTest : public ::testing::Test {
 	protected:
 		MockAgentBase<10> agent_base;
-
-
 };
 
 TEST_F(AgentBaseTest, type_id) {
@@ -424,4 +425,46 @@ TEST_F(AgentBaseTest, in_neighbors) {
 
 	std::vector<MockAgentBase<84>*> other_in = agent.inNeighbors<MockAgentBase<84>>();
 	ASSERT_THAT(other_in, IsEmpty());
+}
+
+class FakeAgent : public MockAgentBase<10> {
+	public:
+		int field = 0;
+};
+
+class AgentGuardTest : public ::testing::Test {
+	protected:
+		FakeAgent* agent = new FakeAgent;
+		MockDistributedNode<AgentPtr> node {{0, 0}, agent};
+		MockMutex<AgentPtr> mutex;
+
+		void SetUp() {
+			agent->setNode(&node);
+			EXPECT_CALL(node, mutex()).Times(AnyNumber())
+				.WillRepeatedly(ReturnRef(mutex));
+		}
+};
+
+TEST_F(AgentGuardTest, read_guard) {
+	FakeAgent* agent_ptr = static_cast<FakeAgent*>(node.data().get());
+
+	EXPECT_CALL(mutex, read).WillOnce(DoAll(Assign(&agent->field, 14), ReturnRef(node.data())));
+	const fpmas::model::ReadGuard read(agent_ptr);
+
+	// Pointed data has implicitely been updated by mutex::read
+	ASSERT_EQ(agent_ptr->field, 14);
+
+	EXPECT_CALL(mutex, releaseRead);
+}
+
+TEST_F(AgentGuardTest, acquire_guard) {
+	FakeAgent* agent_ptr = static_cast<FakeAgent*>(node.data().get());
+
+	EXPECT_CALL(mutex, acquire).WillOnce(DoAll(Assign(&agent->field, 14), ReturnRef(node.data())));
+	const fpmas::model::AcquireGuard acq(agent_ptr);
+
+	// Pointed data has implicitely been updated by mutex::acquire
+	ASSERT_EQ(agent_ptr->field, 14);
+
+	EXPECT_CALL(mutex, releaseAcquire);
 }

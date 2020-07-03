@@ -52,7 +52,7 @@ class MockDistributedNode :
 		}
 		MockDistributedNode(const MockDistributedNode& otherMock):
 			MockDistributedNode(
-					otherMock.getId(), otherMock.mutex().data(),
+					otherMock.getId(), std::move(otherMock.mutex().data()),
 					otherMock.getWeight()
 					){
 				setUpDataAccess();
@@ -79,8 +79,27 @@ class MockDistributedNode :
 				setUpStateAccess();
 				this->anyExpectations();
 			}
+
+		MockDistributedNode(const DistributedId& id, T&& data)
+			: NodeBase(id), _data(std::move(data)) {
+				setUpDataAccess();
+				setUpDefaultMutex();
+				setUpLocationAccess();
+				setUpStateAccess();
+				this->anyExpectations();
+			}
+
 		MockDistributedNode(const DistributedId& id, const T& data, float weight)
 			: NodeBase(id, weight), _data(data) {
+				setUpDataAccess();
+				setUpDefaultMutex();
+				setUpLocationAccess();
+				setUpStateAccess();
+				this->anyExpectations();
+			}
+
+		MockDistributedNode(const DistributedId& id, T&& data, float weight)
+			: NodeBase(id, weight), _data(std::move(data)) {
 				setUpDataAccess();
 				setUpDefaultMutex();
 				setUpLocationAccess();
