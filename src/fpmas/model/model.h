@@ -43,6 +43,26 @@ namespace fpmas::model {
 			const api::model::AgentTask* task() const override {return _task;}
 			void setTask(api::model::AgentTask* task) override {_task = task;}
 
+			template<typename NeighborAgentType> std::vector<NeighborAgentType*> outNeighbors() const {
+				std::vector<NeighborAgentType*> out;
+				for(auto node : node()->outNeighbors()) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(node->data().get())) {
+						out.push_back(neighbor);
+					}
+				}
+				return out;
+			}
+
+			template<typename NeighborAgentType> std::vector<NeighborAgentType*> inNeighbors() const {
+				std::vector<NeighborAgentType*> in;
+				for(auto node : node()->inNeighbors()) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(node->data().get())) {
+						in.push_back(neighbor);
+					}
+				}
+				return in;
+			}
+
 			virtual ~AgentBase() {}
 	};
 
