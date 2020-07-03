@@ -115,6 +115,8 @@ TEST_F(GhostSyncLinkerTest, export_link) {
 	EXPECT_CALL(arc_mpi, migrate(export_arc_matcher));
 	EXPECT_CALL(id_mpi, migrate(IsEmpty()));
 
+	// Distant src + distant tgt => erase
+	EXPECT_CALL(mocked_graph, erase(arc3));
 	linker.synchronize();
 }
 
@@ -156,6 +158,8 @@ TEST_F(GhostSyncLinkerTest, import_export_link) {
 	EXPECT_CALL(mocked_graph, importArc(arc1));
 	EXPECT_CALL(mocked_graph, importArc(arc3));
 
+	// Distant src + distant tgt => erase
+	EXPECT_CALL(mocked_graph, erase(arc2));
 	linker.synchronize();
 }
 

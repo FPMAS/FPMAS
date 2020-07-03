@@ -208,7 +208,6 @@ namespace fpmas::graph::parallel {
 		tgt->mutex().lockShared();
 
 		sync_mode_runtime.getSyncLinker().unlink(static_cast<DistArcType*>(arc));
-		// TODO : src and tgt might be cleared
 
 		this->erase(arc);
 
