@@ -28,6 +28,7 @@ using ::testing::ReturnRefOfCopy;
 using ::testing::SizeIs;
 using ::testing::TypedEq;
 using ::testing::UnorderedElementsAre;
+using ::testing::UnorderedElementsAreArray;
 using ::testing::WhenDynamicCastTo;
 
 using fpmas::model::Model;
@@ -210,22 +211,16 @@ class AgentGroupTest : public ::testing::Test {
 
 TEST_F(AgentGroupTest, id) {
 	ASSERT_EQ(agent_group.groupId(), 10);
-	//delete agent1;
-	//delete agent2;
 }
 
 TEST_F(AgentGroupTest, job) {
 	ASSERT_EQ(agent_group.job().id(), fpmas::JID(18));
-	//delete agent1;
-	//delete agent2;
 }
 
 TEST_F(AgentGroupTest, job_end) {
 	EXPECT_CALL(graph, synchronize);
 
 	agent_group.job().getEndTask().run();
-	//delete agent1;
-	//delete agent2;
 }
 
 class MockBuildNode {
@@ -258,17 +253,16 @@ TEST_F(AgentGroupTest, add_agent) {
 	EXPECT_CALL(*agent1, setNode(&node1));
 	EXPECT_CALL(*agent1, setGraph(&graph));
 
+	std::array<MockAgent<>*, 2> fake_agents {new MockAgent<>, new MockAgent<>};
 	// The fake agent will be implicitely and automatically deleted from the
 	// temporary AgentPtr in the mocked buildNode function. In consequence, we
 	// don't use the real "agent1", BUT agent 1 is still returned by the
 	// buildNode function (see expectation above)
-	MockAgent<>* fake_agent = new MockAgent<>;
-	EXPECT_CALL(*fake_agent, setGroupId(10));
-	agent_group.add(fake_agent);
+	EXPECT_CALL(*fake_agents[0], setGroupId(10));
+	agent_group.add(fake_agents[0]);
 
 	// Agent 2 set up
 	MockBuildNode build_node_2 {&graph, &node2};
-	//EXPECT_CALL(graph, buildNode_rv(Pointee(Property(&AgentPtr::get, agent2))))
 	EXPECT_CALL(graph, buildNode_rv)
 		.WillOnce(DoAll(
 			InvokeWithoutArgs(build_node_2),
@@ -276,9 +270,10 @@ TEST_F(AgentGroupTest, add_agent) {
 	EXPECT_CALL(*agent2, setNode(&node2));
 	EXPECT_CALL(*agent2, setGraph(&graph));
 
-	fake_agent = new MockAgent<>;
-	EXPECT_CALL(*fake_agent, setGroupId(10));
-	agent_group.add(fake_agent);
+	EXPECT_CALL(*fake_agents[1], setGroupId(10));
+	agent_group.add(fake_agents[1]);
+
+	ASSERT_THAT(agent_group.agents(), UnorderedElementsAreArray(fake_agents));
 
 	// Would normally be called from the Graph destructor
 	erase_agent_callback.call(&node1);

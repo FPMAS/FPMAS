@@ -13,10 +13,12 @@ namespace fpmas::model {
 	void AgentGroup::add(api::model::Agent* agent) {
 		agent->setGroupId(id);
 		agent_graph.buildNode(agent);
+		_agents.push_back(agent);
 	}
 
 	void AgentGroup::remove(api::model::Agent* agent) {
 		agent_graph.removeNode(agent->node());
+		_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
 	}
 
 	void InsertAgentCallback::call(AgentNode *node) {
@@ -78,11 +80,11 @@ namespace fpmas::model {
 			delete group.second;
 	}
 
-	api::model::AgentGroup& Model::getGroup(GroupId id) {
-		return *_groups.at(id);
+	AgentGroup& Model::getGroup(GroupId id) const {
+		return static_cast<AgentGroup&>(*_groups.at(id));
 	}
 
-	api::model::AgentGroup& Model::buildGroup() {
+	AgentGroup& Model::buildGroup() {
 		AgentGroup* group = new AgentGroup(gid, _graph, job_id++);
 		_groups.insert({gid, group}); 
 		gid++;

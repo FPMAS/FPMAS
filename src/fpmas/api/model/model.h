@@ -67,6 +67,8 @@ namespace fpmas::api::model {
 
 			virtual void add(Agent*) = 0;
 			virtual void remove(Agent*) = 0;
+
+			virtual std::vector<Agent*> agents() const = 0;
 			virtual api::scheduler::Job& job() = 0;
 			virtual const api::scheduler::Job& job() const = 0;
 
@@ -84,7 +86,7 @@ namespace fpmas::api::model {
 			virtual const api::scheduler::Job& loadBalancingJob() const = 0;
 
 			virtual AgentGroup& buildGroup() = 0;
-			virtual AgentGroup& getGroup(GroupId) = 0;
+			virtual AgentGroup& getGroup(GroupId) const = 0;
 			virtual const std::unordered_map<GroupId, AgentGroup*>& groups() const = 0;
 
 			virtual ~Model(){}

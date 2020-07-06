@@ -141,6 +141,7 @@ namespace fpmas::model {
 			AgentGraph& agent_graph;
 			scheduler::Job _job;
 			SynchronizeGraphTask sync_graph_task;
+			std::vector<api::model::Agent*> _agents;
 
 		public:
 			AgentGroup(GroupId group_id, AgentGraph& agent_graph, JID job_id);
@@ -151,6 +152,17 @@ namespace fpmas::model {
 			void remove(api::model::Agent*) override;
 			scheduler::Job& job() override {return _job;}
 			const scheduler::Job& job() const override {return _job;}
+			std::vector<api::model::Agent*> agents() const override {return _agents;}
+
+			template<typename AgentType>
+				std::vector<AgentType*> agents() const {
+					std::vector<AgentType*> out;
+					for(auto agent : _agents)
+						if(AgentType* agent_ptr = dynamic_cast<AgentType*>(agent))
+							out.push_back(agent_ptr);
+
+					return out;
+				}
 	};
 
 	class LoadBalancingTask : public api::scheduler::Task {
@@ -257,8 +269,8 @@ namespace fpmas::model {
 
 			const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
-			api::model::AgentGroup& buildGroup() override;
-			api::model::AgentGroup& getGroup(GroupId) override;
+			AgentGroup& buildGroup() override;
+			AgentGroup& getGroup(GroupId) const override;
 			const std::unordered_map<GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
 
 			~Model();
