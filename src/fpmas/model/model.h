@@ -290,5 +290,22 @@ namespace fpmas::model {
 	typedef load_balancing::ZoltanLoadBalancing<AgentPtr> ZoltanLoadBalancing;
 	typedef load_balancing::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;
 	typedef api::utils::Callback<AgentNode*> AgentNodeCallback;
+
+	template<typename SyncMode>
+	class DefaultModelConfig {
+		protected:
+			fpmas::model::AgentGraph<SyncMode> __graph;
+			fpmas::scheduler::Scheduler __scheduler;
+			fpmas::runtime::Runtime __runtime {__scheduler};
+			fpmas::model::ZoltanLoadBalancing __zoltan_lb {__graph.getMpiCommunicator().getMpiComm()};
+			fpmas::model::ScheduledLoadBalancing __load_balancing {__zoltan_lb, __scheduler, __runtime};
+	};
+
+	template<typename SyncMode>
+	class DefaultModel : private DefaultModelConfig<SyncMode>, public Model {
+		public:
+			DefaultModel()
+				: Model(this->__graph, this->__scheduler, this->__runtime, this->__load_balancing) {}
+	};
 }
 #endif
