@@ -22,6 +22,7 @@ using ::testing::IsEmpty;
 using ::testing::IsNull;
 using ::testing::Not;
 using ::testing::Pair;
+using ::testing::Pointee;
 using ::testing::Property;
 using ::testing::Ref;
 using ::testing::ReturnRefOfCopy;
@@ -361,167 +362,240 @@ TEST_F(AgentBaseTest, task) {
 
 TEST_F(AgentBaseTest, out_neighbors) {
 	MockDistributedNode<AgentPtr> n_1 {{0, 0}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_1;
-	EXPECT_CALL(a_1, getTargetNode).Times(AnyNumber()).WillRepeatedly(Return(&n_1));
-
 	MockDistributedNode<AgentPtr> n_2 {{0, 1}, new MockAgentBase<12>};
-	MockDistributedArc<AgentPtr> a_2;
-	EXPECT_CALL(a_2, getTargetNode).Times(AnyNumber()).WillRepeatedly(Return(&n_2));
-
 	MockDistributedNode<AgentPtr> n_3 {{0, 2}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_3;
-	EXPECT_CALL(a_3, getTargetNode).Times(AnyNumber()).WillRepeatedly(Return(&n_3));
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::parallel::DistributedArc<AgentPtr>*> out_arcs {&a_1, &a_2, &a_3};
-	EXPECT_CALL(n, getOutgoingArcs()).Times(AnyNumber()).WillRepeatedly(
-			Return(out_arcs)
+	std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
+	EXPECT_CALL(n, outNeighbors()).Times(AnyNumber()).WillRepeatedly(
+			Return(out_neighbors)
 			);
 
 	agent->setNode(&n);
 
-	std::vector<MockAgentBase<8>*> out_8 = agent->outNeighbors<MockAgentBase<8>>();
-	ASSERT_THAT(out_8, UnorderedElementsAre(n_1.data().get(), n_3.data().get()));
+	fpmas::model::Neighbors out_8 = agent->outNeighbors<MockAgentBase<8>>();
+	std::vector<MockAgentBase<8>*> out_8_v {out_8.begin(), out_8.end()};
+	ASSERT_THAT(out_8_v, UnorderedElementsAre(n_1.data().get(), n_3.data().get()));
 
-	std::vector<MockAgentBase<12>*> out_12 = agent->outNeighbors<MockAgentBase<12>>();
-	ASSERT_THAT(out_12, ElementsAre(n_2.data().get()));
+	fpmas::model::Neighbors out_12 = agent->outNeighbors<MockAgentBase<12>>();
+	std::vector<MockAgentBase<12>*> out_12_v {out_12.begin(), out_12.end()};
+	ASSERT_THAT(out_12_v, ElementsAre(n_2.data().get()));
 
-	std::vector<MockAgentBase<84>*> other_out = agent->outNeighbors<MockAgentBase<84>>();
-	ASSERT_THAT(other_out, IsEmpty());
+	fpmas::model::Neighbors other_out = agent->outNeighbors<MockAgentBase<84>>();
+	std::vector<MockAgentBase<84>*> other_out_v {other_out.begin(), other_out.end()};
+	ASSERT_THAT(other_out_v, IsEmpty());
 }
 
 TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 	MockDistributedNode<AgentPtr> n_1 {{0, 0}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_1;
-	EXPECT_CALL(a_1, getTargetNode).Times(AnyNumber()).WillRepeatedly(Return(&n_1));
-
 	MockDistributedNode<AgentPtr> n_2 {{0, 1}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_2;
-	EXPECT_CALL(a_2, getTargetNode).Times(AnyNumber()).WillRepeatedly(Return(&n_2));
-
 	MockDistributedNode<AgentPtr> n_3 {{0, 2}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_3;
-	EXPECT_CALL(a_3, getTargetNode).Times(AnyNumber()).WillRepeatedly(Return(&n_3));
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::parallel::DistributedArc<AgentPtr>*> out_arcs {&a_1, &a_2, &a_3};
-	EXPECT_CALL(n, getOutgoingArcs()).Times(AnyNumber()).WillRepeatedly(
-			Return(out_arcs)
+	std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
+	EXPECT_CALL(n, outNeighbors()).Times(AnyNumber()).WillRepeatedly(
+			Return(out_neighbors)
 			);
 
 	agent->setNode(&n);
 
-	fpmas::model::Neighbors<MockAgentBase<8>> out = agent->outNeighbors<MockAgentBase<8>>();
-	std::vector<MockAgentBase<8>*> out_1 = out.shuffle();
-	std::vector<MockAgentBase<8>*> out_2 = out.shuffle();
-	std::vector<MockAgentBase<8>*> out_3 = out.shuffle();
+	fpmas::model::Neighbors out = agent->outNeighbors<MockAgentBase<8>>();
+	fpmas::model::Neighbors out_1 = out.shuffle();
+	std::vector<MockAgentBase<8>*> out_1_v {out_1.begin(), out_1.end()};
+	fpmas::model::Neighbors out_2 = out.shuffle();
+	std::vector<MockAgentBase<8>*> out_2_v {out_2.begin(), out_2.end()};
+	fpmas::model::Neighbors out_3 = out.shuffle();
+	std::vector<MockAgentBase<8>*> out_3_v {out_3.begin(), out_3.end()};
 
-	ASSERT_THAT(out_2, Not(ElementsAreArray(out_1)));
-	ASSERT_THAT(out_3, Not(ElementsAreArray(out_1)));
+	ASSERT_THAT(out_2_v, Not(ElementsAreArray(out_1_v)));
+	ASSERT_THAT(out_3_v, Not(ElementsAreArray(out_1_v)));
 }
 
 TEST_F(AgentBaseTest, in_neighbors) {
 	MockDistributedNode<AgentPtr> n_1 {{0, 0}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_1;
-	EXPECT_CALL(a_1, getSourceNode).Times(AnyNumber()).WillRepeatedly(Return(&n_1));
-
 	MockDistributedNode<AgentPtr> n_2 {{0, 1}, new MockAgentBase<12>};
-	MockDistributedArc<AgentPtr> a_2;
-	EXPECT_CALL(a_2, getSourceNode).Times(AnyNumber()).WillRepeatedly(Return(&n_2));
-
 	MockDistributedNode<AgentPtr> n_3 {{0, 2}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_3;
-	EXPECT_CALL(a_3, getSourceNode).Times(AnyNumber()).WillRepeatedly(Return(&n_3));
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::parallel::DistributedArc<AgentPtr>*> in_arcs {&a_1, &a_2, &a_3};
-	EXPECT_CALL(n, getIncomingArcs()).Times(AnyNumber()).WillRepeatedly(
-			Return(in_arcs)
+	std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*> in_neighbors {&n_1, &n_2, &n_3};
+	EXPECT_CALL(n, inNeighbors()).Times(AnyNumber()).WillRepeatedly(
+			Return(in_neighbors)
 			);
 
 	agent->setNode(&n);
 
-	std::vector<MockAgentBase<8>*> in_8 = agent->inNeighbors<MockAgentBase<8>>();
-	ASSERT_THAT(in_8, UnorderedElementsAre(n_1.data().get(), n_3.data().get()));
+	fpmas::model::Neighbors in_8 = agent->inNeighbors<MockAgentBase<8>>();
+	std::vector<MockAgentBase<8>*> in_8_v {in_8.begin(), in_8.end()};
+	ASSERT_THAT(in_8_v, UnorderedElementsAre(n_1.data().get(), n_3.data().get()));
 
-	std::vector<MockAgentBase<12>*> in_12 = agent->inNeighbors<MockAgentBase<12>>();
-	ASSERT_THAT(in_12, ElementsAre(n_2.data().get()));
+	fpmas::model::Neighbors in_12 = agent->inNeighbors<MockAgentBase<12>>();
+	std::vector<MockAgentBase<12>*> in_12_v {in_12.begin(), in_12.end()};
+	ASSERT_THAT(in_12_v, ElementsAre(n_2.data().get()));
 
-	std::vector<MockAgentBase<84>*> other_in = agent->inNeighbors<MockAgentBase<84>>();
-	ASSERT_THAT(other_in, IsEmpty());
+	fpmas::model::Neighbors other_in = agent->inNeighbors<MockAgentBase<84>>();
+	std::vector<MockAgentBase<84>*> other_in_v {other_in.begin(), other_in.end()};
+	ASSERT_THAT(other_in_v, IsEmpty());
 }
 
 TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 	MockDistributedNode<AgentPtr> n_1 {{0, 0}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_1;
-	EXPECT_CALL(a_1, getSourceNode).Times(AnyNumber()).WillRepeatedly(Return(&n_1));
-
 	MockDistributedNode<AgentPtr> n_2 {{0, 1}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_2;
-	EXPECT_CALL(a_2, getSourceNode).Times(AnyNumber()).WillRepeatedly(Return(&n_2));
-
 	MockDistributedNode<AgentPtr> n_3 {{0, 2}, new MockAgentBase<8>};
-	MockDistributedArc<AgentPtr> a_3;
-	EXPECT_CALL(a_3, getSourceNode).Times(AnyNumber()).WillRepeatedly(Return(&n_3));
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::parallel::DistributedArc<AgentPtr>*> in_arcs {&a_1, &a_2, &a_3};
-	EXPECT_CALL(n, getIncomingArcs()).Times(AnyNumber()).WillRepeatedly(
-			Return(in_arcs)
+	std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*> in_neighbors {&n_1, &n_2, &n_3};
+	EXPECT_CALL(n, inNeighbors()).Times(AnyNumber()).WillRepeatedly(
+			Return(in_neighbors)
 			);
 
 	agent->setNode(&n);
 
 	fpmas::model::Neighbors<MockAgentBase<8>> in = agent->inNeighbors<MockAgentBase<8>>();
-	std::vector<MockAgentBase<8>*> in_1 = in.shuffle();
-	std::vector<MockAgentBase<8>*> in_2 = in.shuffle();
-	std::vector<MockAgentBase<8>*> in_3 = in.shuffle();
+	fpmas::model::Neighbors in_1 = in.shuffle();
+	std::vector<MockAgentBase<8>*> in_1_v {in_1.begin(), in_1.end()};
+	fpmas::model::Neighbors in_2 = in.shuffle();
+	std::vector<MockAgentBase<8>*> in_2_v {in_2.begin(), in_2.end()};
+	fpmas::model::Neighbors in_3 = in.shuffle();
+	std::vector<MockAgentBase<8>*> in_3_v {in_3.begin(), in_3.end()};
 
-	ASSERT_THAT(in_2, Not(ElementsAreArray(in_1)));
-	ASSERT_THAT(in_3, Not(ElementsAreArray(in_1)));
+	ASSERT_THAT(in_2_v, Not(ElementsAreArray(in_1_v)));
+	ASSERT_THAT(in_3_v, Not(ElementsAreArray(in_1_v)));
 }
+
 class FakeAgent : public MockAgentBase<10> {
 	public:
 		int field = 0;
+		FakeAgent(int field) : field(field) {
+		}
 };
 
 class AgentGuardTest : public ::testing::Test {
 	protected:
-		FakeAgent* agent = new FakeAgent;
+		AgentTask task;
+		FakeAgent* agent = new FakeAgent(0);
 		MockDistributedNode<AgentPtr> node {{0, 0}, agent};
 		MockMutex<AgentPtr> mutex;
 
 		void SetUp() {
 			agent->setNode(&node);
+			agent->setTask(&task);
 			EXPECT_CALL(node, mutex()).Times(AnyNumber())
 				.WillRepeatedly(ReturnRef(mutex));
 		}
 };
 
-TEST_F(AgentGuardTest, read_guard) {
-	FakeAgent* agent_ptr = static_cast<FakeAgent*>(node.data().get());
+class MoveAgent {
+	private:
+		AgentPtr& data;
+		AgentPtr& data_to_move;
 
-	EXPECT_CALL(mutex, read).WillOnce(DoAll(Assign(&agent->field, 14), ReturnRef(node.data())));
-	const fpmas::model::ReadGuard read(agent_ptr);
+	public:
+		MoveAgent(AgentPtr& data, AgentPtr& data_to_move)
+			: data(data), data_to_move(data_to_move) {}
+
+		void operator()() {
+			data = std::move(data_to_move);
+		}
+
+};
+
+TEST_F(AgentGuardTest, read_guard) {
+	AgentPtr& ptr = node.data();
+	AgentPtr data_to_move {new FakeAgent(14)};
+
+	EXPECT_CALL(mutex, read).WillOnce(DoAll(InvokeWithoutArgs(MoveAgent(ptr, data_to_move)), ReturnRef(node.data())));
+	const fpmas::model::ReadGuard read(ptr);
 
 	// Pointed data has implicitely been updated by mutex::read
-	ASSERT_EQ(agent_ptr->field, 14);
+	ASSERT_EQ(static_cast<FakeAgent*>(ptr.get())->field, 14);
 
 	EXPECT_CALL(mutex, releaseRead);
 }
 
 TEST_F(AgentGuardTest, acquire_guard) {
-	FakeAgent* agent_ptr = static_cast<FakeAgent*>(node.data().get());
+	AgentPtr& ptr = node.data();
+	AgentPtr data_to_move {new FakeAgent(14)};
 
-	EXPECT_CALL(mutex, acquire).WillOnce(DoAll(Assign(&agent->field, 14), ReturnRef(node.data())));
-	const fpmas::model::AcquireGuard acq(agent_ptr);
+	EXPECT_CALL(mutex, acquire).WillOnce(DoAll(InvokeWithoutArgs(MoveAgent(ptr, data_to_move)), ReturnRef(node.data())));
+	const fpmas::model::AcquireGuard acq(ptr);
 
 	// Pointed data has implicitely been updated by mutex::acquire
-	ASSERT_EQ(agent_ptr->field, 14);
+	ASSERT_EQ(static_cast<FakeAgent*>(ptr.get())->field, 14);
 
 	EXPECT_CALL(mutex, releaseAcquire);
+}
+
+class AgentGuardLoopTest : public AgentGuardTest {
+	protected:
+		FakeAgent* agent_1 = new FakeAgent(0);
+		MockDistributedNode<AgentPtr> node_1 {{0, 0}, agent_1};
+		MockMutex<AgentPtr> mutex_1;
+		AgentPtr& agent_ptr_1 = node_1.data();
+		AgentPtr data_to_move_1 {new FakeAgent(14)};
+
+		FakeAgent* agent_2 = new FakeAgent(0);
+		MockDistributedNode<AgentPtr> node_2 {{0, 0}, agent_2};
+		MockMutex<AgentPtr> mutex_2;
+		AgentPtr& agent_ptr_2 = node_2.data();
+		AgentPtr data_to_move_2 {new FakeAgent(14)};
+
+		void SetUp() override {
+			AgentGuardTest::SetUp();
+			agent_1->setNode(&node_1);
+			agent_1->setTask(&task); // Don't care about task, all agents use the same
+			EXPECT_CALL(node_1, mutex()).Times(AnyNumber())
+				.WillRepeatedly(ReturnRef(mutex_1));
+
+			AgentGuardTest::SetUp();
+			agent_2->setNode(&node_2);
+			agent_2->setTask(&task); // Don't care about task, all agents use the same
+			EXPECT_CALL(node_2, mutex()).Times(AnyNumber())
+				.WillRepeatedly(ReturnRef(mutex_2));
+
+			EXPECT_CALL(node, outNeighbors()).Times(AnyNumber())
+				.WillRepeatedly(Return(
+							std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*>
+							{&node_1, &node_2}
+							));
+		}
+};
+
+TEST_F(AgentGuardLoopTest, neighbor_loop_read) {
+	EXPECT_CALL(mutex_1, read).WillOnce(DoAll(InvokeWithoutArgs(
+					MoveAgent(agent_ptr_1, data_to_move_1)),
+				ReturnRef(node.data())));
+	EXPECT_CALL(mutex_2, read).WillOnce(DoAll(InvokeWithoutArgs(
+					MoveAgent(agent_ptr_2, data_to_move_2)),
+				ReturnRef(node.data())));
+
+	EXPECT_CALL(mutex_1, releaseRead);
+	EXPECT_CALL(mutex_2, releaseRead);
+
+	auto neighbors = agent->outNeighbors<FakeAgent>();
+	for(fpmas::model::Neighbor<FakeAgent>& fake_agent : neighbors) {
+		fpmas::model::ReadGuard read(fake_agent);
+		ASSERT_EQ(fake_agent->field, 14);
+	}
+}
+
+TEST_F(AgentGuardLoopTest, neighbor_loop_acquire) {
+	EXPECT_CALL(mutex_1, acquire).WillOnce(DoAll(InvokeWithoutArgs(
+					MoveAgent(agent_ptr_1, data_to_move_1)),
+				ReturnRef(node.data())));
+	EXPECT_CALL(mutex_2, acquire).WillOnce(DoAll(InvokeWithoutArgs(
+					MoveAgent(agent_ptr_2, data_to_move_2)),
+				ReturnRef(node.data())));
+
+	EXPECT_CALL(mutex_1, releaseAcquire);
+	EXPECT_CALL(mutex_2, releaseAcquire);
+
+	auto neighbors = agent->outNeighbors<FakeAgent>();
+	for(fpmas::model::Neighbor<FakeAgent>& fake_agent : neighbors) {
+		fpmas::model::AcquireGuard acquire(fake_agent);
+		ASSERT_EQ(fake_agent->field, 14);
+	}
 }

@@ -17,18 +17,40 @@ namespace fpmas::model {
 	using api::model::AgentPtr;
 
 	template<typename AgentType>
+		class Neighbor {
+			private:
+				AgentPtr* agent;
+
+			public:
+				Neighbor(AgentPtr* agent)
+					: agent(agent) {}
+
+				operator AgentType*() const {
+					return static_cast<AgentType*>(agent->get());
+				}
+
+				AgentType* operator->() const {
+					return static_cast<AgentType*>(agent->get());
+				}
+
+				AgentType& operator*() const {
+					return *static_cast<AgentType*>(agent->get());
+				}
+
+		};
+	template<typename AgentType>
 		class Neighbors {
 			private:
-				typedef typename std::vector<AgentType*>::iterator iterator;
-				typedef typename std::vector<AgentType*>::const_iterator const_iterator;
-				std::vector<AgentType*> neighbors;
+				typedef typename std::vector<Neighbor<AgentType>>::iterator iterator;
+				typedef typename std::vector<Neighbor<AgentType>>::const_iterator const_iterator;
+				std::vector<Neighbor<AgentType>> neighbors;
 				static std::mt19937 rd;
 
 			public:
-				Neighbors(const std::vector<AgentType*>& neighbors)
+				Neighbors(const std::vector<Neighbor<AgentType>>& neighbors)
 					: neighbors(neighbors) {}
 
-				operator std::vector<AgentType*>() {return neighbors;}
+				//operator std::vector<Neighbor<AgentType>>() {return neighbors;}
 
 				iterator begin() {
 					return neighbors.begin();
@@ -81,20 +103,20 @@ namespace fpmas::model {
 			void setTask(api::model::AgentTask* task) override {_task = task;}
 
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors() const {
-				std::vector<NeighborAgentType*> out;
+				std::vector<Neighbor<NeighborAgentType>> out;
 				for(auto node : node()->outNeighbors()) {
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(node->data().get())) {
-						out.push_back(neighbor);
+						out.push_back(&node->data());
 					}
 				}
 				return out;
 			}
 
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors() const {
-				std::vector<NeighborAgentType*> in;
+				std::vector<Neighbor<NeighborAgentType>> in;
 				for(auto node : node()->inNeighbors()) {
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(node->data().get())) {
-						in.push_back(neighbor);
+						in.push_back(&node->data());
 					}
 				}
 				return in;

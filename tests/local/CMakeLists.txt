@@ -1,6 +1,4 @@
 set(SOURCES
-	# API
-	api/graph/base/node.cpp
 	# Comm
 	communication/communication.cpp
 	# Graph

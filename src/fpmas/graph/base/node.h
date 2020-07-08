@@ -39,9 +39,13 @@ namespace fpmas::graph::base {
 
 				const std::vector<ArcType*> getIncomingArcs() const override;
 				const std::vector<ArcType*> getIncomingArcs(LayerIdType layer) const override;
+				const std::vector<typename ArcType::NodeType*> inNeighbors() const override;
+				const std::vector<typename ArcType::NodeType*> inNeighbors(LayerIdType) const override;
 
 				const std::vector<ArcType*> getOutgoingArcs() const override;
 				const std::vector<ArcType*> getOutgoingArcs(LayerIdType layer) const override;
+				const std::vector<typename ArcType::NodeType*> outNeighbors() const override;
+				const std::vector<typename ArcType::NodeType*> outNeighbors(LayerIdType) const override;
 
 				void linkIn(ArcType* arc) override;
 				void linkOut(ArcType* arc) override;
@@ -96,6 +100,46 @@ namespace fpmas::graph::base {
 				}
 		}
 	
+	template<typename IdType, typename ArcType>
+		const std::vector<typename Node<IdType, ArcType>::ArcType::NodeType*>
+		Node<IdType, ArcType>::inNeighbors() const {
+			std::vector<typename ArcType::NodeType*> neighbors;
+			for(auto arc : this->getIncomingArcs()) {
+				neighbors.push_back(arc->getSourceNode());
+			}
+			return neighbors;
+		}
+
+	template<typename IdType, typename ArcType>
+		const std::vector<typename Node<IdType, ArcType>::ArcType::NodeType*>
+		Node<IdType, ArcType>::inNeighbors(LayerIdType layer) const {
+			std::vector<typename ArcType::NodeType*> neighbors;
+			for(auto arc : this->getIncomingArcs(layer)) {
+				neighbors.push_back(arc->getSourceNode());
+			}
+			return neighbors;
+		}
+
+	template<typename IdType, typename ArcType>
+		const std::vector<typename Node<IdType, ArcType>::ArcType::NodeType*>
+		Node<IdType, ArcType>::outNeighbors() const {
+			std::vector<typename ArcType::NodeType*> neighbors;
+			for(auto arc : this->getOutgoingArcs()) {
+				neighbors.push_back(arc->getTargetNode());
+			}
+			return neighbors;
+		}
+
+	template<typename IdType, typename ArcType>
+		const std::vector<typename Node<IdType, ArcType>::ArcType::NodeType*>
+		Node<IdType, ArcType>::outNeighbors(LayerIdType layer) const {
+			std::vector<typename ArcType::NodeType*> neighbors;
+			for(auto arc : this->getOutgoingArcs(layer)) {
+				neighbors.push_back(arc->getTargetNode());
+			}
+			return neighbors;
+		}
+
 	template<typename IdType, typename ArcType>
 		void Node<IdType, ArcType>::linkIn(ArcType* arc) {
 			FPMAS_LOGV(
