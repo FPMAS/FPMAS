@@ -46,12 +46,12 @@ namespace fpmas::synchro::hard {
 			MPI_Status req_status;
 			// Check read request
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LINK, &req_status)) {
-				EdgeApi* edge = edge_mpi.recv(&req_status);
+				EdgeApi* edge = edge_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
 				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive link request from %i", req_status.MPI_SOURCE);
 				graph.importEdge(edge);
 			}
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
-				DistributedId unlink_id = id_mpi.recv(&req_status);
+				DistributedId unlink_id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
 				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", ID_C_STR(unlink_id), req_status.MPI_SOURCE);
 				//graph.clearEdge(graph.getEdge(unlinkId));
 				graph.erase(graph.getEdge(unlink_id));

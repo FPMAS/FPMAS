@@ -102,8 +102,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0abadf166db8ac55ea0ff6542cf051e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0580a82623a7d0818deff28fb2513a7e"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a0580a82623a7d0818deff28fb2513a7e">Iprobe</a> (int source, int tag, MPI_Status *status)=0</td></tr>
 <tr class="separator:a0580a82623a7d0818deff28fb2513a7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adbb25f7cdf6ea8f2588fd2f611d096bc"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adbb25f7cdf6ea8f2588fd2f611d096bc">recv</a> (MPI_Status *status)=0</td></tr>
-<tr class="separator:adbb25f7cdf6ea8f2588fd2f611d096bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad3f43013aed7c8b6c6b22ddbef07ee5d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#ad3f43013aed7c8b6c6b22ddbef07ee5d">recv</a> (int source, int tag, MPI_Status *status=MPI_STATUS_IGNORE)=0</td></tr>
+<tr class="separator:ad3f43013aed7c8b6c6b22ddbef07ee5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5bf470fcc90a8a0821e27da0577c9ca"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#af5bf470fcc90a8a0821e27da0577c9ca">recv</a> (void *buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status *status)=0</td></tr>
 <tr class="separator:af5bf470fcc90a8a0821e27da0577c9ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa877e3ec7890bdd376b840af11ffd727"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#aa877e3ec7890bdd376b840af11ffd727">test</a> (MPI_Request *req)=0</td></tr>
@@ -521,8 +521,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="adbb25f7cdf6ea8f2588fd2f611d096bc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adbb25f7cdf6ea8f2588fd2f611d096bc">&#9670;&nbsp;</a></span>recv() <span class="overload">[1/2]</span></h2>
+<a id="ad3f43013aed7c8b6c6b22ddbef07ee5d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad3f43013aed7c8b6c6b22ddbef07ee5d">&#9670;&nbsp;</a></span>recv() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -533,9 +533,25 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void fpmas::api::communication::MpiCommunicator::recv </td>
           <td>(</td>
-          <td class="paramtype">MPI_Status *&#160;</td>
-          <td class="paramname"><em>status</em></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MPI_Status *&#160;</td>
+          <td class="paramname"><em>status</em> = <code>MPI_STATUS_IGNORE</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -546,15 +562,16 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Receives a message without data.</p>
 <p>Completes an eventually corresponding synchronous send operation.</p>
-<p><code>status</code> should have been passed to a previous <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a0abadf166db8ac55ea0ff6542cf051e6">probe()</a> or <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a0580a82623a7d0818deff28fb2513a7e">Iprobe()</a> call.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">status</td><td>ready to receive MPI status </td></tr>
+    <tr><td class="paramname">source</td><td>rank of the process to receive from </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+    <tr><td class="paramname">status</td><td>output MPI status </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a041636dcc318dff6f7835d2013f5b235">fpmas::communication::MpiCommunicator</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a6ae2dc7893d615e047f6d39d17edccf1">fpmas::communication::MpiCommunicator</a>.</p>
 
 </div>
 </div>
@@ -624,7 +641,7 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">datatype</td><td>MPI type of the data to receive </td></tr>
     <tr><td class="paramname">source</td><td>rank of the proc to receive from </td></tr>
     <tr><td class="paramname">tag</td><td>message tag </td></tr>
-    <tr><td class="paramname">status</td><td>output status </td></tr>
+    <tr><td class="paramname">status</td><td>output MPI status </td></tr>
   </table>
   </dd>
 </dl>

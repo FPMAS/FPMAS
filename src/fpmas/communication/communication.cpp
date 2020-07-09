@@ -160,8 +160,8 @@ namespace fpmas::communication {
 		MPI_Issend(NULL, 0, MPI_CHAR, destination, tag, this->comm, req);
 	}
 
-	void MpiCommunicator::recv(MPI_Status* status) {
-		MPI_Recv(NULL, 0, MPI_INT, status->MPI_SOURCE, status->MPI_TAG, this->comm, status);
+	void MpiCommunicator::recv(int source, int tag, MPI_Status* status) {
+		MPI_Recv(NULL, 0, MPI_INT, source, tag, this->comm, status);
 	}
 
 	void MpiCommunicator::recv(

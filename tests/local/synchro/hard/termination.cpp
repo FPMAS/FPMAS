@@ -3,6 +3,8 @@
 #include "../mocks/synchro/hard/mock_client_server.h"
 
 using ::testing::_;
+using ::testing::DoAll;
+using ::testing::Invoke;
 
 using fpmas::synchro::hard::Color;
 using fpmas::synchro::hard::Tag;
@@ -15,6 +17,14 @@ class TerminationTest : public ::testing::Test {
 		TerminationAlgorithm<MockMpi> termination {comm};
 };
 
+class SetMpiStatus {
+	public:
+		void operator()(int source, int tag, MPI_Status* status) {
+			status->MPI_SOURCE = source;
+			status->MPI_TAG = tag;
+		}
+};
+
 TEST_F(TerminationTest, rank_0_white_tokens) {
 	EXPECT_CALL(mutexServer, getEpoch).WillRepeatedly(Return(Epoch::EVEN));
 	EXPECT_CALL(mutexServer, setEpoch(Epoch::ODD));
@@ -25,10 +35,10 @@ TEST_F(TerminationTest, rank_0_white_tokens) {
 		.Times(1);
 
 	EXPECT_CALL(comm, Iprobe(1, Tag::TOKEN, _))
-		.WillRepeatedly(Return(1));
+		.WillRepeatedly(DoAll(Invoke(SetMpiStatus()), Return(1)));
 
 	EXPECT_CALL(
-		const_cast<MockMpi<Color>&>(termination.getColorMpi()), recv(_))
+		const_cast<MockMpi<Color>&>(termination.getColorMpi()), recv(1, Tag::TOKEN, _))
 		.WillOnce(Return(Color::WHITE));
 
 	// Sends end messages

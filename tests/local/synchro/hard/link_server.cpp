@@ -54,7 +54,7 @@ class LinkServerTest : public ::testing::Test {
 			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::LINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			EXPECT_CALL(edge_mpi, recv(_))
+			EXPECT_CALL(edge_mpi, recv(source, Epoch::EVEN | Tag::LINK, _))
 				.After(probe)
 				.WillOnce(Return(mock_edge));
 
@@ -67,7 +67,7 @@ class LinkServerTest : public ::testing::Test {
 			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::UNLINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			EXPECT_CALL(id_mpi, recv(_))
+			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::UNLINK, _))
 				.After(probe)
 				.WillOnce(Return(mock_edge->getId()));
 			EXPECT_CALL(mock_graph, erase(mock_edge));

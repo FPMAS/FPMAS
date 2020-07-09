@@ -75,7 +75,7 @@ namespace fpmas::synchro::hard {
 			MPI_Status read_response_status;
 			this->comm.probe(location, server_pack.getEpoch() | Tag::READ_RESPONSE, &read_response_status);
 
-			return data_mpi.recv(&read_response_status);
+			return data_mpi.recv(read_response_status.MPI_SOURCE, read_response_status.MPI_TAG);
 		}
 
 	template<typename T>
@@ -103,7 +103,7 @@ namespace fpmas::synchro::hard {
 			MPI_Status acquire_response_status;
 			this->comm.probe(location, server_pack.getEpoch() | Tag::ACQUIRE_RESPONSE, &acquire_response_status);
 
-			return data_mpi.recv(&acquire_response_status);
+			return data_mpi.recv(acquire_response_status.MPI_SOURCE, acquire_response_status.MPI_TAG);
 		}
 
 	/**
@@ -138,7 +138,7 @@ namespace fpmas::synchro::hard {
 		MPI_Status lock_response_status;
 		this->comm.probe(location, server_pack.getEpoch() | Tag::LOCK_RESPONSE, &lock_response_status);
 
-		comm.recv(&lock_response_status);
+		comm.recv(lock_response_status.MPI_SOURCE, lock_response_status.MPI_TAG);
 	}
 
 	template<typename T>
@@ -163,7 +163,7 @@ namespace fpmas::synchro::hard {
 			MPI_Status lock_response_status;
 			this->comm.probe(location, server_pack.getEpoch() | Tag::LOCK_SHARED_RESPONSE, &lock_response_status);
 
-			comm.recv(&lock_response_status);
+			comm.recv(lock_response_status.MPI_SOURCE, lock_response_status.MPI_TAG);
 		}
 
 	template<typename T>

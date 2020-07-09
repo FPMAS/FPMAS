@@ -90,14 +90,14 @@ $(function() {
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1Server.html">fpmas::api::synchro::hard::Server</a> <a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1Server.html">server_t</a>;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">comm_t</a>&amp; comm;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                TypedMpi&lt;Color&gt; colorMpi {comm};</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                TypedMpi&lt;Color&gt; color_mpi {comm};</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                Color color = Color::WHITE;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                <span class="keywordtype">void</span> toggleEpoch(<a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1Server.html">server_t</a>&amp; server);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1hard_1_1TerminationAlgorithm.html">TerminationAlgorithm</a>(<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">comm_t</a>&amp; comm) : comm(comm) {}</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keyword">const</span> TypedMpi&lt;Color&gt;&amp; getColorMpi()<span class="keyword"> const </span>{<span class="keywordflow">return</span> colorMpi;}</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keyword">const</span> TypedMpi&lt;Color&gt;&amp; getColorMpi()<span class="keyword"> const </span>{<span class="keywordflow">return</span> color_mpi;}</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                <span class="keywordtype">void</span> terminate(<a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1Server.html">server_t</a>&amp; server) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        };</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
@@ -121,7 +121,7 @@ $(function() {
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keywordflow">if</span>(this-&gt;comm.getRank() == 0) {</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                this-&gt;color = Color::WHITE;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                token = Color::WHITE;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                this-&gt;colorMpi.send(token, this-&gt;comm.getSize() - 1, Tag::TOKEN);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                this-&gt;color_mpi.send(token, this-&gt;comm.getSize() - 1, Tag::TOKEN);</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;            }</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keywordtype">int</span> sup_rank = (this-&gt;comm.getRank() + 1) % this-&gt;comm.getSize();</div>
@@ -129,7 +129,7 @@ $(function() {
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordflow">while</span>(<span class="keyword">true</span>) {</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;                <span class="comment">// Check for TOKEN</span></div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                <span class="keywordflow">if</span>(this-&gt;comm.Iprobe(sup_rank, Tag::TOKEN, &amp;status) &gt; 0) {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                    token = this-&gt;colorMpi.recv(&amp;status);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                    token = this-&gt;color_mpi.recv(status.MPI_SOURCE, status.MPI_TAG, MPI_STATUS_IGNORE);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                    <span class="keywordflow">if</span>(this-&gt;comm.getRank() == 0) {</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                        <span class="keywordflow">if</span>(token == Color::WHITE &amp;&amp; this-&gt;color == Color::WHITE) {</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                            <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt; this-&gt;comm.getSize(); ++i) {</div>
@@ -141,21 +141,21 @@ $(function() {
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        } <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                            this-&gt;color = Color::WHITE;</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                            token = Color::WHITE;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                            this-&gt;colorMpi.send(token, this-&gt;comm.getSize() - 1, Tag::TOKEN);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                            this-&gt;color_mpi.send(token, this-&gt;comm.getSize() - 1, Tag::TOKEN);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                        }</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                    }</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                    <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                        <span class="keywordflow">if</span>(this-&gt;color == Color::BLACK) {</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                            token = Color::BLACK;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                        }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        this-&gt;colorMpi.send(token, this-&gt;comm.getRank() - 1, Tag::TOKEN);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        this-&gt;color_mpi.send(token, this-&gt;comm.getRank() - 1, Tag::TOKEN);</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                        this-&gt;color = Color::WHITE;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                    }</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                }</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                <span class="comment">// Check for END</span></div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                <span class="keywordflow">if</span>(this-&gt;comm.getRank() &gt; 0 &amp;&amp; this-&gt;comm.Iprobe(0, Tag::END, &amp;status) &gt; 0) {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                    this-&gt;comm.recv(&amp;status);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                    this-&gt;comm.recv(status.MPI_SOURCE, status.MPI_TAG);</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                    toggleEpoch(server);</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                    FPMAS_LOGD(comm.getRank(), <span class="stringliteral">&quot;TERMINATION&quot;</span>, <span class="stringliteral">&quot;End message received, termination complete.&quot;</span>);</div>
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                    <span class="keywordflow">return</span>;</div>

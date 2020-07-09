@@ -236,12 +236,11 @@ namespace fpmas { namespace api {
 			 *
 			 * Completes an eventually corresponding synchronous send operation.
 			 *
-			 * `status` should have been passed to a previous probe() or
-			 * Iprobe() call.
-			 *
-			 * @param status ready to receive MPI status
+			 * @param source rank of the process to receive from
+			 * @param tag message tag
+			 * @param status output MPI status
 			 */
-			virtual void recv(MPI_Status* status) = 0;
+			virtual void recv(int source, int tag, MPI_Status* status = MPI_STATUS_IGNORE) = 0;
 
 
 			/**
@@ -256,7 +255,7 @@ namespace fpmas { namespace api {
 			 * @param datatype MPI type of the data to receive
 			 * @param source rank of the proc to receive from
 			 * @param tag message tag
-			 * @param status output status
+			 * @param status output MPI status
 			 */
 			virtual void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) = 0;
 
@@ -374,13 +373,13 @@ namespace fpmas { namespace api {
 			 */
 			virtual void Issend(const T&, int destination, int tag, MPI_Request* req) = 0;
 			/**
-			 * Receives a `T` object.
+			 * Receives a `T` object from `source`.
 			 *
-			 * Follows the same rules as MpiCommunicator::recv().
-			 *
-			 * @param status ready to receive MPI status
+			 * @param source rank of the process to receive from
+			 * @param tag message tag
+			 * @param status output MPI status
 			 */
-			virtual T recv(MPI_Status*) = 0;
+			virtual T recv(int source, int tag, MPI_Status* status = MPI_STATUS_IGNORE) = 0;
 
 			virtual ~TypedMpi() {};
 	};

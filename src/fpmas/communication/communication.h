@@ -65,7 +65,7 @@ namespace fpmas {
 				void send(int destination, int tag) override;
 				void Issend(int destination, int tag, MPI_Request* req) override;
 
-				void recv(MPI_Status* status) override;
+				void recv(int source, int tag, MPI_Status* status) override;
 				void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) override;
 
 				void probe(int source, int tag, MPI_Status*) override;
@@ -95,7 +95,7 @@ namespace fpmas {
 
 					void send(const T&, int, int) override;
 					void Issend(const T&, int, int, MPI_Request*) override;
-					T recv(MPI_Status*) override;
+					T recv(int source, int tag, MPI_Status* status = MPI_STATUS_IGNORE) override;
 			};
 
 		template<typename T> std::unordered_map<int, std::vector<T>>
@@ -153,11 +153,13 @@ namespace fpmas {
 			}
 
 		template<typename T>
-			T TypedMpi<T>::recv(MPI_Status* status) {
+			T TypedMpi<T>::recv(int source, int tag, MPI_Status* status) {
+				MPI_Status message_to_receive_status;
+				comm.probe(source, tag, &message_to_receive_status);
 				int count;
-				MPI_Get_count(status, MPI_CHAR, &count);
+				MPI_Get_count(&message_to_receive_status, MPI_CHAR, &count);
 				char* buffer = (char*) std::malloc(count * sizeof(char));
-				comm.recv(buffer, count, MPI_CHAR, status->MPI_SOURCE, status->MPI_TAG, MPI_STATUS_IGNORE);
+				comm.recv(buffer, count, MPI_CHAR, source, tag, status);
 
 				std::string data (buffer, count);
 				std::free(buffer);

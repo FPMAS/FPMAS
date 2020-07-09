@@ -31,7 +31,7 @@ class MockMpiCommunicator : public fpmas::api::communication::MpiCommunicator {
 		MOCK_METHOD(void, Issend, (const void*, int, MPI_Datatype, int, int, MPI_Request*), (override));
 		MOCK_METHOD(void, Issend, (int, int, MPI_Request*), (override));
 
-		MOCK_METHOD(void, recv, (MPI_Status*), (override));
+		MOCK_METHOD(void, recv, (int, int, MPI_Status*), (override));
 		MOCK_METHOD(void, recv, (void* buffer, int count, MPI_Datatype, int, int, MPI_Status*), (override));
 
 		MOCK_METHOD(void, probe, (int, int, MPI_Status*), (override));
@@ -61,7 +61,7 @@ class MockMpi : public fpmas::api::communication::TypedMpi<T> {
 		MOCK_METHOD(std::vector<T>, gather, (const T&, int), (override));
 		MOCK_METHOD(void, send, (const T&, int, int), (override));
 		MOCK_METHOD(void, Issend, (const T&, int, int, MPI_Request*), (override));
-		MOCK_METHOD(T, recv, (MPI_Status*), (override));
+		MOCK_METHOD(T, recv, (int, int, MPI_Status*), (override));
 
 };
 

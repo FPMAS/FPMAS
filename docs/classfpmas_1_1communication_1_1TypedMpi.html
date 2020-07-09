@@ -104,8 +104,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7767de9dc6f0443b36b66c379cfbcf7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adbc8b9cddd0d9bdc984306af1b64cd54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#adbc8b9cddd0d9bdc984306af1b64cd54">Issend</a> (const T &amp;, int, int, MPI_Request *) override</td></tr>
 <tr class="separator:adbc8b9cddd0d9bdc984306af1b64cd54"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec8c680a7ac86da3225406efc803ecbd"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#aec8c680a7ac86da3225406efc803ecbd">recv</a> (MPI_Status *) override</td></tr>
-<tr class="separator:aec8c680a7ac86da3225406efc803ecbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1436aca052092b0992495df36d8a1ad0"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">recv</a> (int source, int tag, MPI_Status *status=MPI_STATUS_IGNORE) override</td></tr>
+<tr class="separator:a1436aca052092b0992495df36d8a1ad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5c0d59ea1887d84340ddc2a057057487"></a>
@@ -260,8 +260,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="aec8c680a7ac86da3225406efc803ecbd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec8c680a7ac86da3225406efc803ecbd">&#9670;&nbsp;</a></span>recv()</h2>
+<a id="a1436aca052092b0992495df36d8a1ad0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1436aca052092b0992495df36d8a1ad0">&#9670;&nbsp;</a></span>recv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -274,9 +274,25 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">T <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a>&lt; T &gt;::recv </td>
           <td>(</td>
-          <td class="paramtype">MPI_Status *&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MPI_Status *&#160;</td>
+          <td class="paramname"><em>status</em> = <code>MPI_STATUS_IGNORE</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -285,16 +301,17 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Receives a <code>T</code> object.</p>
-<p>Follows the same rules as <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a041636dcc318dff6f7835d2013f5b235">MpiCommunicator::recv()</a>.</p>
+<p>Receives a <code>T</code> object from <code>source</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">status</td><td>ready to receive MPI status </td></tr>
+    <tr><td class="paramname">source</td><td>rank of the process to receive from </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+    <tr><td class="paramname">status</td><td>output MPI status </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ad11beac2d6f05c8fe4e44f22f81bd4c7">fpmas::api::communication::TypedMpi&lt; T &gt;</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ab378024c7887f7bcca61076bbc92b705">fpmas::api::communication::TypedMpi&lt; T &gt;</a>.</p>
 
 </div>
 </div>
