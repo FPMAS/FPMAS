@@ -1,9 +1,9 @@
 #ifndef MODEL_H
 #define MODEL_H
 #include "fpmas/api/model/model.h"
-#include "fpmas/api/graph/parallel/distributed_graph.h"
+#include "fpmas/api/graph/distributed_graph.h"
 #include "fpmas/api/utils/ptr_wrapper.h"
-#include "fpmas/graph/parallel/distributed_graph.h"
+#include "fpmas/graph/distributed_graph.h"
 #include "fpmas/scheduler/scheduler.h"
 #include "fpmas/runtime/runtime.h"
 #include "fpmas/load_balancing/zoltan_load_balancing.h"

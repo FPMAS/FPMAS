@@ -1,7 +1,7 @@
 #include "fpmas/synchro/hard/hard_sync_linker.h"
 
 #include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/parallel/mock_distributed_edge.h"
+#include "../mocks/graph/mock_distributed_edge.h"
 #include "../mocks/synchro/mock_mutex.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 

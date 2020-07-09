@@ -6,7 +6,7 @@
 #include "fpmas/api/communication/communication.h"
 #include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/api/synchro/hard/client_server.h"
-#include "fpmas/graph/parallel/distributed_edge.h"
+#include "fpmas/graph/distributed_edge.h"
 #include "server_pack.h"
 
 namespace fpmas { namespace synchro { namespace hard {

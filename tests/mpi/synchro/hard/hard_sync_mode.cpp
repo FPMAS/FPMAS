@@ -2,8 +2,8 @@
 
 #include <random>
 
-#include "fpmas/graph/parallel/distributed_graph.h"
-#include "../mocks/graph/parallel/mock_distributed_node.h"
+#include "fpmas/graph/distributed_graph.h"
+#include "../mocks/graph/mock_distributed_node.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 

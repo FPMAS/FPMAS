@@ -1,5 +1,5 @@
 #include "model.h"
-#include "fpmas/graph/parallel/distributed_node.h"
+#include "fpmas/graph/distributed_node.h"
 
 namespace fpmas { namespace model {
 

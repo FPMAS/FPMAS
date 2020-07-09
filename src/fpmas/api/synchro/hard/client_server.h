@@ -2,7 +2,7 @@
 #define CLIENT_SERVER_H
 
 #include "enums.h"
-#include "fpmas/api/graph/parallel/distributed_edge.h"
+#include "fpmas/api/graph/distributed_edge.h"
 
 namespace fpmas { namespace api {namespace synchro {
 	namespace hard {

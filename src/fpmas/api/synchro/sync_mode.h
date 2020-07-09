@@ -2,7 +2,7 @@
 #define SYNC_MODE_API_H
 
 #include <string>
-#include "fpmas/api/graph/parallel/distributed_graph.h"
+#include "fpmas/api/graph/distributed_graph.h"
 
 namespace fpmas { namespace api { namespace synchro {
 	class DataSync {

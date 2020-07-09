@@ -1,7 +1,7 @@
 #ifndef FPMAS_SYNCHRO_GUARDS
 #define FPMAS_SYNCHRO_GUARDS
 
-#include "fpmas/api/graph/parallel/distributed_node.h"
+#include "fpmas/api/graph/distributed_node.h"
 
 namespace fpmas {
 	namespace synchro {

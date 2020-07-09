@@ -1,8 +1,8 @@
 #include "fpmas/model/model.h"
 
-#include "../mocks/graph/parallel/mock_distributed_edge.h"
-#include "../mocks/graph/parallel/mock_distributed_node.h"
-#include "../mocks/graph/parallel/mock_distributed_graph.h"
+#include "../mocks/graph/mock_distributed_edge.h"
+#include "../mocks/graph/mock_distributed_node.h"
+#include "../mocks/graph/mock_distributed_graph.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/model/mock_model.h"
 #include "../mocks/communication/mock_communication.h"

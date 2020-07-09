@@ -4,7 +4,7 @@
 
 #include "fpmas/api/communication/readers_writers.h"
 
-#include "graph/parallel/distributed_id.h"
+#include "graph/distributed_id.h"
 
 using fpmas::graph::parallel::DistributedId;
 

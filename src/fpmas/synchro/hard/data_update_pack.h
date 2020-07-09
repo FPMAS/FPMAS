@@ -1,7 +1,7 @@
 #ifndef DATA_UPDATE_PACK_H
 #define DATA_UPDATE_PACK_H
 
-#include "fpmas/api/graph/parallel/distributed_id.h"
+#include "fpmas/api/graph/distributed_id.h"
 
 namespace fpmas { namespace synchro {
 	template<typename T>

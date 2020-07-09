@@ -5,8 +5,8 @@
 #include "fpmas/api/synchro/mutex.h"
 #include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/communication/communication.h"
-#include "fpmas/graph/parallel/distributed_edge.h"
-#include "fpmas/graph/parallel/distributed_node.h"
+#include "fpmas/graph/distributed_edge.h"
+#include "fpmas/graph/distributed_node.h"
 
 namespace fpmas { namespace synchro { namespace ghost {
 

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['migrate_72',['migrate',['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a6550b59def1df2ff4570debf69164cbb',1,'fpmas::api::communication::TypedMpi::migrate()'],['../classfpmas_1_1communication_1_1TypedMpi.html#a4e6121faafbd32343eb71327d1b8bf2e',1,'fpmas::communication::TypedMpi::migrate()']]],
-  ['model_73',['Model',['../classfpmas_1_1api_1_1model_1_1Model.html',1,'fpmas::api::model::Model'],['../classfpmas_1_1model_1_1Model.html',1,'fpmas::model::Model']]],
+  ['model_73',['Model',['../classfpmas_1_1model_1_1Model.html',1,'fpmas::model::Model'],['../classfpmas_1_1api_1_1model_1_1Model.html',1,'fpmas::api::model::Model']]],
   ['mpicommunicator_74',['MpiCommunicator',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html',1,'fpmas::api::communication::MpiCommunicator'],['../classfpmas_1_1communication_1_1MpiCommunicator.html',1,'fpmas::communication::MpiCommunicator'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a42eb9726161eaef0864433d57c1153e6',1,'fpmas::communication::MpiCommunicator::MpiCommunicator()']]],
   ['mpidistributedid_75',['MpiDistributedId',['../structfpmas_1_1api_1_1communication_1_1MpiDistributedId.html',1,'fpmas::api::communication']]],
   ['mpidistributedidtype_76',['mpiDistributedIdType',['../classfpmas_1_1api_1_1graph_1_1DistributedId.html#a6daab47e183372ec5c965c01410c7f3c',1,'fpmas::api::graph::DistributedId']]],

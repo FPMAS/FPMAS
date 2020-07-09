@@ -1,8 +1,8 @@
 set(SOURCES
 	communication/communication.cpp
-	graph/parallel/distributed_id.cpp
-	graph/parallel/distributed_graph.cpp
-	graph/parallel/location_manager.cpp
+	graph/distributed_id.cpp
+	graph/distributed_graph.cpp
+	graph/location_manager.cpp
 	synchro/hard/termination.cpp
 	synchro/hard/hard_sync_mode.cpp
 	load_balancing/zoltan_load_balancing.cpp

@@ -2,7 +2,7 @@
 #define MPI_COMMUNICATOR_API_H
 
 #include "mpi.h"
-#include "fpmas/api/graph/parallel/distributed_id.h"
+#include "fpmas/api/graph/distributed_id.h"
 
 namespace fpmas { namespace api { 
 	/**

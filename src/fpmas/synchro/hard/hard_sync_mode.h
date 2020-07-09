@@ -3,7 +3,7 @@
 
 #include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/communication/communication.h"
-#include "fpmas/graph/parallel/distributed_node.h"
+#include "fpmas/graph/distributed_node.h"
 #include "hard_data_sync.h"
 #include "hard_sync_mutex.h"
 #include "hard_sync_linker.h"

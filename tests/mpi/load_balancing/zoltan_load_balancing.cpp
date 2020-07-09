@@ -1,4 +1,4 @@
-#include "fpmas/graph/parallel/distributed_graph.h"
+#include "fpmas/graph/distributed_graph.h"
 #include "fpmas/load_balancing/zoltan_load_balancing.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 

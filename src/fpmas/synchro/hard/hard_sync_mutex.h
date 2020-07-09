@@ -3,7 +3,7 @@
 
 #include <queue>
 #include "fpmas/api/communication/communication.h"
-#include "fpmas/api/graph/parallel/location_state.h"
+#include "fpmas/api/graph/location_state.h"
 #include "fpmas/api/synchro/hard/hard_sync_mutex.h"
 #include "mutex_client.h"
 #include "mutex_server.h"

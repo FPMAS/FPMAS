@@ -1,7 +1,7 @@
 #ifndef MODEL_API_H
 #define MODEL_API_H
 
-#include "fpmas/api/graph/parallel/distributed_graph.h"
+#include "fpmas/api/graph/distributed_graph.h"
 #include "fpmas/api/scheduler/scheduler.h"
 #include "fpmas/api/runtime/runtime.h"
 #include "fpmas/api/utils/ptr_wrapper.h"

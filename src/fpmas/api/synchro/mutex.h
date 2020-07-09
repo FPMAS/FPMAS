@@ -1,7 +1,7 @@
 #ifndef MUTEX_API_H
 #define MUTEX_API_H
 
-#include "fpmas/api/graph/parallel/distributed_id.h"
+#include "fpmas/api/graph/distributed_id.h"
 
 namespace fpmas { namespace api { namespace synchro {
 	template<typename T>

@@ -3,12 +3,12 @@ set(SOURCES
 	communication/communication.cpp
 	# Graph
 	## Base
-	graph/base/node.cpp
-	graph/base/graph.cpp
+	graph/node.cpp
+	graph/graph.cpp
 	## Parallel
-	graph/parallel/distributed_graph.cpp
-	graph/parallel/distributed_edge.cpp
-	graph/parallel/location_manager.cpp
+	graph/distributed_graph.cpp
+	graph/distributed_edge.cpp
+	graph/location_manager.cpp
 	# Synchro
 	synchro/ghost/data_sync.cpp
 	synchro/ghost/sync_linker.cpp

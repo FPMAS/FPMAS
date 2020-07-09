@@ -1,7 +1,7 @@
 #ifndef SCHEDULER_API_H
 #define SCHEDULER_API_H
 
-#include "fpmas/api/graph/parallel/distributed_node.h"
+#include "fpmas/api/graph/distributed_node.h"
 
 namespace fpmas {
 	typedef unsigned long Period;

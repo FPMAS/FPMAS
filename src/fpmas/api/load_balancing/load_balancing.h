@@ -4,9 +4,9 @@
 #include <set>
 #include <unordered_map>
 
-#include "fpmas/api/graph/parallel/distributed_node.h"
-#include "fpmas/api/graph/parallel/distributed_id.h"
-#include "fpmas/api/graph/base/id.h"
+#include "fpmas/api/graph/distributed_node.h"
+#include "fpmas/api/graph/distributed_id.h"
+#include "fpmas/api/graph/id.h"
 
 namespace fpmas { namespace api { namespace load_balancing {
 	template<typename T>

@@ -1,8 +1,8 @@
 #include "fpmas/synchro/hard/hard_sync_linker.h"
 
 #include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/parallel/mock_distributed_graph.h"
-#include "../mocks/graph/parallel/mock_distributed_node.h"
+#include "../mocks/graph/mock_distributed_graph.h"
+#include "../mocks/graph/mock_distributed_node.h"
 #include "../mocks/synchro/mock_mutex.h"
 
 using ::testing::DoAll;
