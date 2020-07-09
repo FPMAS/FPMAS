@@ -7,8 +7,8 @@
 #include "fpmas/graph/parallel/distributed_edge.h"
 #include "fpmas/api/graph/parallel/location_state.h"
 
-using fpmas::api::graph::parallel::LocationState;
-using fpmas::graph::parallel::DistributedGraph;
+using fpmas::api::graph::LocationState;
+using fpmas::graph::DistributedGraph;
 
 using ::testing::AnyNumber;
 using ::testing::ReturnRef;
@@ -26,12 +26,12 @@ using ::testing::SizeIs;
 class DistributedGraphBalance : public ::testing::Test {
 	protected:
 		template<typename T>
-		using location_manager = fpmas::graph::parallel::LocationManager<T>;
+		using location_manager = fpmas::graph::LocationManager<T>;
 		DistributedGraph<
 			int,
 			MockSyncMode<>,
-			fpmas::graph::parallel::DistributedNode,
-			fpmas::graph::parallel::DistributedEdge,
+			fpmas::graph::DistributedNode,
+			fpmas::graph::DistributedEdge,
 			fpmas::api::communication::MpiSetUp<
 				fpmas::communication::MpiCommunicator,
 				fpmas::communication::TypedMpi
@@ -42,7 +42,7 @@ class DistributedGraphBalance : public ::testing::Test {
 		MockSyncLinker<int> mock_sync_linker;
 		MockDataSync mock_data_sync;
 
-		MockLoadBalancing<fpmas::graph::parallel::DistributedNode<int>>
+		MockLoadBalancing<fpmas::graph::DistributedNode<int>>
 			::PartitionMap partition;
 
 		void SetUp() override {

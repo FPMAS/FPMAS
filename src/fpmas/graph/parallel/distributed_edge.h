@@ -6,15 +6,15 @@
 #include "fpmas/graph/base/edge.h"
 #include "fpmas/graph/parallel/distributed_node.h"
 
-namespace fpmas::graph::parallel {
+namespace fpmas { namespace graph {
 
 	template<typename> class DistributedNode;
-	using api::graph::parallel::LocationState;
+	using api::graph::LocationState;
 	template<typename T>
 		class DistributedEdge :
-			public graph::base::Edge<DistributedId, api::graph::parallel::DistributedNode<T>>,
-			public fpmas::api::graph::parallel::DistributedEdge<T> {
-				typedef graph::base::Edge<DistributedId, api::graph::parallel::DistributedNode<T>>
+			public graph::Edge<DistributedId, api::graph::DistributedNode<T>>,
+			public api::graph::DistributedEdge<T> {
+				typedef graph::Edge<DistributedId, api::graph::DistributedNode<T>>
 					EdgeBase;
 
 				private:
@@ -36,22 +36,22 @@ namespace fpmas::graph::parallel {
 
 
 	template<typename T>
-	using EdgePtrWrapper = fpmas::api::utils::VirtualPtrWrapper<fpmas::api::graph::parallel::DistributedEdge<T>>;
-}
+	using EdgePtrWrapper = api::utils::VirtualPtrWrapper<api::graph::DistributedEdge<T>>;
+}}
 
 namespace nlohmann {
 	template<typename T>
-		using EdgePtrWrapper = fpmas::graph::parallel::EdgePtrWrapper<T>;
+		using EdgePtrWrapper = fpmas::graph::EdgePtrWrapper<T>;
 	template<typename T>
-		using NodePtrWrapper = fpmas::graph::parallel::NodePtrWrapper<T>;
+		using NodePtrWrapper = fpmas::graph::NodePtrWrapper<T>;
 
 	template<typename T>
 		struct adl_serializer<EdgePtrWrapper<T>> {
 			static EdgePtrWrapper<T> from_json(const json& j) {
-				fpmas::api::graph::parallel::DistributedEdge<T>* edge
-					= new fpmas::graph::parallel::DistributedEdge<T> {
+				fpmas::api::graph::DistributedEdge<T>* edge
+					= new fpmas::graph::DistributedEdge<T> {
 					j.at("id").get<DistributedId>(),
-					j.at("layer").get<typename fpmas::api::graph::parallel::DistributedEdge<T>::LayerIdType>(),
+					j.at("layer").get<typename fpmas::api::graph::DistributedEdge<T>::LayerIdType>(),
 					j.at("weight").get<float>()
 				};
 				NodePtrWrapper<T> src = j.at("src").get<NodePtrWrapper<T>>();
@@ -76,7 +76,5 @@ namespace nlohmann {
 				j["tgt_loc"] = edge->getTargetNode()->getLocation();
 			}
 		};
-
 }
-
 #endif

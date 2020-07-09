@@ -7,7 +7,7 @@
 #include "fpmas/api/graph/parallel/distributed_edge.h"
 #include "mock_distributed_node.h"
 
-using fpmas::api::graph::parallel::LocationState;
+using fpmas::api::graph::LocationState;
 
 template<typename T>
 class MockDistributedEdge;
@@ -19,11 +19,11 @@ class MockDistributedNode;
 
 template<typename T>
 class MockDistributedEdge :
-	public fpmas::api::graph::parallel::DistributedEdge<T>,
-	public AbstractMockEdge<DistributedId, fpmas::api::graph::parallel::DistributedNode<T>>
+	public fpmas::api::graph::DistributedEdge<T>,
+	public AbstractMockEdge<DistributedId, fpmas::api::graph::DistributedNode<T>>
 {
-	typedef AbstractMockEdge<DistributedId, fpmas::api::graph::parallel::DistributedNode<T>> EdgeBase;
-	typedef fpmas::api::graph::parallel::DistributedEdge<T> DistEdgeBase;
+	typedef AbstractMockEdge<DistributedId, fpmas::api::graph::DistributedNode<T>> EdgeBase;
+	typedef fpmas::api::graph::DistributedEdge<T> DistEdgeBase;
 
 	friend void from_json<T>(const nlohmann::json&, MockDistributedEdge<T>&);
 

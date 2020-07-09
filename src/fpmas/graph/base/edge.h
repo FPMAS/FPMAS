@@ -3,12 +3,12 @@
 
 #include "fpmas/api/graph/base/node.h"
 
-namespace fpmas::graph::base {
+namespace fpmas { namespace graph {
 
 	template<typename IdType, typename _NodeType>
-		class Edge : public virtual fpmas::api::graph::base::Edge<IdType, _NodeType> {
+		class Edge : public virtual api::graph::Edge<IdType, _NodeType> {
 			public:
-				typedef fpmas::api::graph::base::Edge<IdType, _NodeType> EdgeBase;
+				typedef api::graph::Edge<IdType, _NodeType> EdgeBase;
 				using typename EdgeBase::NodeType;
 				using typename EdgeBase::LayerIdType;
 
@@ -38,5 +38,5 @@ namespace fpmas::graph::base {
 				void setTargetNode(NodeType* const tgt) override {this->target = tgt;};
 				NodeType* const getTargetNode() const override {return target;};
 		};
-}
+}}
 #endif

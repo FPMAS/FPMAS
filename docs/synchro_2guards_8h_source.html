@@ -79,9 +79,9 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1Guard.html">    9</a></span>&#160;            <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a> {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;                <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">fpmas::api::synchro::Mutex&lt;T&gt;</a>&amp; mutex;</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">api::synchro::Mutex&lt;T&gt;</a>&amp; mutex;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">fpmas::api::graph::parallel::DistributedNode&lt;T&gt;</a>* node)</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                    : mutex(node-&gt;mutex()) {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                    }</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
@@ -97,7 +97,7 @@ $(function() {
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1ReadGuard.html">   27</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html">ReadGuard</a> : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&lt;T&gt; {</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            <a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html">ReadGuard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">fpmas::api::graph::parallel::DistributedNode&lt;T&gt;</a>* node)</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            <a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html">ReadGuard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard&lt;T&gt;</a>(node) {</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                    <span class="comment">// updates node.data() according to the SyncMode</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                    this-&gt;mutex.read();</div>
@@ -111,7 +111,7 @@ $(function() {
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1AcquireGuard.html">   41</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html">AcquireGuard</a> : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&lt;T&gt; {</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html">AcquireGuard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">fpmas::api::graph::parallel::DistributedNode&lt;T&gt;</a>* node)</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html">AcquireGuard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard&lt;T&gt;</a>(node) {</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                    <span class="comment">// updates node.data() according to the SyncMode</span></div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                    this-&gt;mutex.acquire();</div>
@@ -127,10 +127,10 @@ $(function() {
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassfpmas_1_1synchro_1_1ReadGuard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1ReadGuard.html">fpmas::synchro::ReadGuard</a></div><div class="ttdef"><b>Definition:</b> guards.h:27</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">fpmas::api::graph::parallel::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:9</div></div>
 <div class="ttc" id="aclassfpmas_1_1synchro_1_1AcquireGuard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1AcquireGuard.html">fpmas::synchro::AcquireGuard</a></div><div class="ttdef"><b>Definition:</b> guards.h:41</div></div>
 <div class="ttc" id="aclassfpmas_1_1synchro_1_1Guard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1Guard.html">fpmas::synchro::Guard</a></div><div class="ttdef"><b>Definition:</b> guards.h:9</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1Mutex_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">fpmas::api::synchro::Mutex</a></div><div class="ttdef"><b>Definition:</b> mutex.h:8</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:9</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

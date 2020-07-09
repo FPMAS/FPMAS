@@ -8,11 +8,11 @@ using ::testing::ReturnRef;
 using ::testing::SizeIs;
 using ::testing::Ge;
 
-using fpmas::graph::parallel::DistributedGraph;
-using fpmas::graph::parallel::DistributedNode;
-using fpmas::graph::parallel::DistributedEdge;
-using fpmas::graph::parallel::LocationManager;
-using fpmas::graph::parallel::DefaultMpiSetUp;
+using fpmas::graph::DistributedGraph;
+using fpmas::graph::DistributedNode;
+using fpmas::graph::DistributedEdge;
+using fpmas::graph::LocationManager;
+using fpmas::graph::DefaultMpiSetUp;
 
 template<typename T>
 class FakeMutex : public fpmas::api::synchro::Mutex<T> {
@@ -110,7 +110,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			ASSERT_THAT(graph.getNodes(), SizeIs(nodeCount > 0 ? NODES_COUNT : 0));
 			int localNodeCount = 0;
 			for(auto node : graph.getNodes()) {
-				if(node.second->state() == fpmas::graph::parallel::LocationState::LOCAL) {
+				if(node.second->state() == fpmas::graph::LocationState::LOCAL) {
 					localNodeCount++;
 					ASSERT_THAT(node.second->getIncomingEdges(), SizeIs(NODES_COUNT-1));
 					ASSERT_THAT(node.second->getOutgoingEdges(), SizeIs(NODES_COUNT-1));

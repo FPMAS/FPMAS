@@ -7,7 +7,7 @@
 #define ID_C_STR(id) ((std::string) id).c_str()
 
 #define MPI_DISTRIBUTED_ID_TYPE \
-	fpmas::graph::parallel::DistributedId::mpiDistributedIdType
+	fpmas::api::graph::DistributedId::mpiDistributedIdType
 
 #define SYNC_MODE template<typename> class S
 

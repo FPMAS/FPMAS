@@ -11,7 +11,7 @@
 
 #include <random>
 
-namespace fpmas::model {
+namespace fpmas { namespace model {
 
 	using api::model::AgentNode;
 	using api::model::AgentPtr;
@@ -302,14 +302,14 @@ namespace fpmas::model {
 
 
 	template<typename SyncMode>
-		using AgentGraph = graph::parallel::DistributedGraph<
+		using AgentGraph = graph::DistributedGraph<
 		AgentPtr, SyncMode,
-		graph::parallel::DistributedNode,
-		graph::parallel::DistributedEdge,
+		graph::DistributedNode,
+		graph::DistributedEdge,
 		api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi>,
-		graph::parallel::LocationManager>;
+		graph::LocationManager>;
 
-	using AgentGraphApi = api::graph::parallel::DistributedGraph<AgentPtr>;
+	using AgentGraphApi = api::graph::DistributedGraph<AgentPtr>;
 
 	typedef load_balancing::ZoltanLoadBalancing<AgentPtr> ZoltanLoadBalancing;
 	typedef load_balancing::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;
@@ -318,11 +318,11 @@ namespace fpmas::model {
 	template<typename SyncMode>
 	class DefaultModelConfig {
 		protected:
-			fpmas::model::AgentGraph<SyncMode> __graph;
-			fpmas::scheduler::Scheduler __scheduler;
-			fpmas::runtime::Runtime __runtime {__scheduler};
-			fpmas::model::ZoltanLoadBalancing __zoltan_lb {__graph.getMpiCommunicator().getMpiComm()};
-			fpmas::model::ScheduledLoadBalancing __load_balancing {__zoltan_lb, __scheduler, __runtime};
+			model::AgentGraph<SyncMode> __graph;
+			scheduler::Scheduler __scheduler;
+			runtime::Runtime __runtime {__scheduler};
+			model::ZoltanLoadBalancing __zoltan_lb {__graph.getMpiCommunicator().getMpiComm()};
+			model::ScheduledLoadBalancing __load_balancing {__zoltan_lb, __scheduler, __runtime};
 	};
 
 	template<typename SyncMode>
@@ -331,5 +331,5 @@ namespace fpmas::model {
 			DefaultModel()
 				: Model(this->__graph, this->__scheduler, this->__runtime, this->__load_balancing) {}
 	};
-}
+}}
 #endif

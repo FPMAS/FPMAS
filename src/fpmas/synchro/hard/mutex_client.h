@@ -9,9 +9,9 @@
 #include "fpmas/utils/log.h"
 #include "server_pack.h"
 
-namespace fpmas::synchro::hard {
-	using fpmas::api::synchro::hard::Epoch;
-	using fpmas::api::synchro::hard::Tag;
+namespace fpmas { namespace synchro { namespace hard {
+	using api::synchro::hard::Epoch;
+	using api::synchro::hard::Tag;
 	
 	template<typename T>
 		class MutexClient :
@@ -174,5 +174,5 @@ namespace fpmas::synchro::hard {
 
 			server_pack.waitSendRequest(&req);
 		}
-}
+}}}
 #endif

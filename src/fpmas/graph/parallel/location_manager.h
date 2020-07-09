@@ -7,16 +7,16 @@
 #include "fpmas/communication/communication.h"
 #include "fpmas/utils/log.h"
 
-namespace fpmas::graph::parallel {
+namespace fpmas { namespace graph {
 
-	using fpmas::api::graph::parallel::LocationState;
+	using api::graph::LocationState;
 
 	template<typename T>
 		class LocationManager
-		: public fpmas::api::graph::parallel::LocationManager<T> {
+		: public api::graph::LocationManager<T> {
 			public:
-				using typename fpmas::api::graph::parallel::LocationManager<T>::NodeMap;
-				using typename fpmas::api::graph::parallel::LocationManager<T>::DistNode;
+				using typename api::graph::LocationManager<T>::NodeMap;
+				using typename api::graph::LocationManager<T>::DistNode;
 
 				typedef api::communication::MpiCommunicator MpiComm;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
@@ -186,6 +186,5 @@ namespace fpmas::graph::parallel {
 			}
 			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Node locations updated.");
 		}
-}
-
+}}
 #endif

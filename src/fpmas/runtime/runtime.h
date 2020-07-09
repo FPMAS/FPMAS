@@ -4,7 +4,7 @@
 #include "fpmas/scheduler/scheduler.h"
 
 
-namespace fpmas::runtime {
+namespace fpmas { namespace runtime {
 
 	class Runtime : public api::runtime::Runtime {
 		private:
@@ -20,5 +20,5 @@ namespace fpmas::runtime {
 			void run(Date start, Date end) override;
 			Date currentDate() const override {return date;}
 	};
-}
+}}
 #endif

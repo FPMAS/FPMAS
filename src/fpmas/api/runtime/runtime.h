@@ -3,7 +3,7 @@
 
 #include "fpmas/api/scheduler/scheduler.h"
 
-namespace fpmas::api::runtime {
+namespace fpmas { namespace api { namespace runtime {
 
 	class Runtime {
 		public:
@@ -11,5 +11,5 @@ namespace fpmas::api::runtime {
 			virtual void run(Date start, Date end) = 0;
 			virtual fpmas::Date currentDate() const = 0;
 	};
-}
+}}}
 #endif

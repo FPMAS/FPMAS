@@ -6,7 +6,7 @@
 #include "fpmas/api/synchro/hard/hard_sync_mutex.h"
 #include "server_pack.h"
 
-namespace fpmas::synchro::hard {
+namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		class HardDataSync : public api::synchro::DataSync {
@@ -31,6 +31,5 @@ namespace fpmas::synchro::hard {
 				};
 		};
 
-}
-
+}}}
 #endif

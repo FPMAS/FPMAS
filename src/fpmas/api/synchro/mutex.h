@@ -3,7 +3,7 @@
 
 #include "fpmas/api/graph/parallel/distributed_id.h"
 
-namespace fpmas::api::synchro {
+namespace fpmas { namespace api { namespace synchro {
 	template<typename T>
 	class Mutex {
 		protected:
@@ -32,6 +32,5 @@ namespace fpmas::api::synchro {
 
 			virtual ~Mutex() {}
 	};
-}
-
+}}}
 #endif

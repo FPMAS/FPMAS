@@ -1,7 +1,7 @@
 #include "model.h"
 #include "fpmas/graph/parallel/distributed_node.h"
 
-namespace fpmas::model {
+namespace fpmas { namespace model {
 
 	const JID Model::LB_JID = 0;
 
@@ -37,7 +37,7 @@ namespace fpmas::model {
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 				"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", ID_C_STR(node->getId()));
 		// Deletes task and agent
-		if(node->state() == graph::parallel::LocationState::LOCAL) {
+		if(node->state() == graph::LocationState::LOCAL) {
 			// Unschedule agent task. If the node is DISTANT, task was already
 			// unscheduled.
 			model.getGroup(agent->groupId()).job().remove(*agent->task());
@@ -94,4 +94,4 @@ namespace fpmas::model {
 	void LoadBalancingTask::run() {
 		agent_graph.balance(load_balancing);
 	}
-}
+}}

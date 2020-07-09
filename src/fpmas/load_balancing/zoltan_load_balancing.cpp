@@ -1,6 +1,7 @@
 #include "zoltan_load_balancing.h"
 
-namespace fpmas::load_balancing::zoltan {
+namespace fpmas { namespace load_balancing {
+	namespace zoltan {
 	void zoltan_config(Zoltan* zz) {
 		zz->Set_Param("DEBUG_LEVEL", "0");
 		zz->Set_Param("LB_METHOD", "GRAPH");
@@ -35,4 +36,4 @@ namespace fpmas::load_balancing::zoltan {
 		global_ids[0] = id.rank();
 		global_ids[1] = id.id();
 	}
-}
+}}}

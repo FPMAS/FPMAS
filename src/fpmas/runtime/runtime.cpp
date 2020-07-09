@@ -1,7 +1,7 @@
 #include "runtime.h"
 #include <random>
 
-namespace fpmas::runtime {
+namespace fpmas { namespace runtime {
 
 	void Runtime::run(Date start, Date end) {
 		std::mt19937 rd;
@@ -23,4 +23,4 @@ namespace fpmas::runtime {
 	void Runtime::run(Date end) {
 		run(0, end);
 	}
-}
+}}

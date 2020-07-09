@@ -75,55 +75,56 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/load_balancing/load_balancing.h&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/scheduler/scheduler.h&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/runtime/runtime.h&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span>fpmas::load_balancing {</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00010"></a><span class="lineno"><a class="line" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">   10</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">api::load_balancing::LoadBalancing</a>&lt;T&gt; {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;            <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">api::load_balancing::FixedVerticesLoadBalancing&lt;T&gt;</a>&amp; fixed_vertices_lb;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler;</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> api::load_balancing::LoadBalancing&lt;T&gt;::PartitionMap;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> api::load_balancing::LoadBalancing&lt;T&gt;::ConstNodeMap;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing&lt;T&gt;</a>(</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">api::load_balancing::FixedVerticesLoadBalancing&lt;T&gt;</a>&amp; fixed_vertices_lb,</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        ) : fixed_vertices_lb(fixed_vertices_lb), scheduler(scheduler), runtime(runtime) {}</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                PartitionMap balance(ConstNodeMap nodes) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        };</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;        <span class="keyword">typename</span> ScheduledLoadBalancing&lt;T&gt;::PartitionMap</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing&lt;T&gt;::balance</a>(ConstNodeMap nodes) {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Epoch.html">scheduler::Epoch</a> epoch;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            scheduler.build(runtime.currentDate() + 1, epoch);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            ConstNodeMap node_map;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            PartitionMap fixed_nodes;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            PartitionMap partition;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a>* job : epoch) {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <span class="keywordflow">for</span>(<a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a>* task : *job) {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                    <span class="keywordflow">if</span>(<a class="code" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html">api::scheduler::NodeTask&lt;T&gt;</a>* node_task = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html">api::scheduler::NodeTask&lt;T&gt;</a>*<span class="keyword">&gt;</span>(task)) {</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                        <span class="keyword">auto</span> node = node_task-&gt;node();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        node_map[node-&gt;getId()] = node;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                    }</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                }</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                partition = fixed_vertices_lb.balance(node_map, fixed_nodes);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                fixed_nodes = partition;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            };</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            partition = fixed_vertices_lb.balance(nodes, fixed_nodes);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keywordflow">return</span> partition;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;fpmas/scheduler/scheduler.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>fpmas { <span class="keyword">namespace </span>load_balancing {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00011"></a><span class="lineno"><a class="line" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">   11</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">api::load_balancing::LoadBalancing</a>&lt;T&gt; {</div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;            <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">api::load_balancing::FixedVerticesLoadBalancing&lt;T&gt;</a>&amp; fixed_vertices_lb;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime;</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> api::load_balancing::LoadBalancing&lt;T&gt;::PartitionMap;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> api::load_balancing::LoadBalancing&lt;T&gt;::ConstNodeMap;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing&lt;T&gt;</a>(</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">api::load_balancing::FixedVerticesLoadBalancing&lt;T&gt;</a>&amp; fixed_vertices_lb,</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler,</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        ) : fixed_vertices_lb(fixed_vertices_lb), scheduler(scheduler), runtime(runtime) {}</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                PartitionMap balance(ConstNodeMap nodes) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;        };</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">typename</span> ScheduledLoadBalancing&lt;T&gt;::PartitionMap</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing&lt;T&gt;::balance</a>(ConstNodeMap nodes) {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Epoch.html">scheduler::Epoch</a> epoch;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            scheduler.build(runtime.currentDate() + 1, epoch);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            ConstNodeMap node_map;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            PartitionMap fixed_nodes;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            PartitionMap partition;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a>* job : epoch) {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <span class="keywordflow">for</span>(<a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a>* task : *job) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                    <span class="keywordflow">if</span>(<a class="code" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html">api::scheduler::NodeTask&lt;T&gt;</a>* node_task = <span class="keyword">dynamic_cast&lt;</span><a class="code" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html">api::scheduler::NodeTask&lt;T&gt;</a>*<span class="keyword">&gt;</span>(task)) {</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                        <span class="keyword">auto</span> node = node_task-&gt;node();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                        node_map[node-&gt;getId()] = node;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                    }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                partition = fixed_vertices_lb.balance(node_map, fixed_nodes);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                fixed_nodes = partition;</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            };</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            partition = fixed_vertices_lb.balance(nodes, fixed_nodes);</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;            <span class="keywordflow">return</span> partition;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        }</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;}}</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassfpmas_1_1scheduler_1_1Epoch_html"><div class="ttname"><a href="classfpmas_1_1scheduler_1_1Epoch.html">fpmas::scheduler::Epoch</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:41</div></div>
-<div class="ttc" id="aclassfpmas_1_1load__balancing_1_1ScheduledLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">fpmas::load_balancing::ScheduledLoadBalancing</a></div><div class="ttdef"><b>Definition:</b> scheduled_load_balancing.h:10</div></div>
+<div class="ttc" id="aclassfpmas_1_1load__balancing_1_1ScheduledLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">fpmas::load_balancing::ScheduledLoadBalancing</a></div><div class="ttdef"><b>Definition:</b> scheduled_load_balancing.h:11</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1Scheduler_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">fpmas::api::scheduler::Scheduler</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:59</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1NodeTask_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html">fpmas::api::scheduler::NodeTask</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:20</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1LoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">fpmas::api::load_balancing::LoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:30</div></div>

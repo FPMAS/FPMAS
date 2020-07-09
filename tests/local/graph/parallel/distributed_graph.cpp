@@ -44,9 +44,9 @@ using ::testing::SizeIs;
 using ::testing::UnorderedElementsAre;
 using ::testing::_;
 
-using fpmas::graph::parallel::DistributedGraph;
-using fpmas::graph::parallel::NodePtrWrapper;
-using fpmas::graph::parallel::EdgePtrWrapper;
+using fpmas::graph::DistributedGraph;
+using fpmas::graph::NodePtrWrapper;
+using fpmas::graph::EdgePtrWrapper;
 
 /********************/
 /* local_build_node */
@@ -65,9 +65,9 @@ class DistributedGraphTest : public ::testing::Test {
 
 		typedef decltype(graph) GraphType;
 		typedef MockDistributedNode<int> MockNode;
-		typedef fpmas::api::graph::parallel::DistributedNode<int> NodeType; 
+		typedef fpmas::api::graph::DistributedNode<int> NodeType; 
 		typedef MockDistributedEdge<int> MockEdge;
-		typedef fpmas::api::graph::parallel::DistributedEdge<int> EdgeType;
+		typedef fpmas::api::graph::DistributedEdge<int> EdgeType;
 		typedef typename GraphType::SyncModeRuntimeType SyncModeRuntimeType;
 		typedef typename GraphType::NodeMap NodeMap;
 
@@ -956,7 +956,7 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 /****************************/
 class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistributeTest {
 	protected:
-		typedef std::vector<fpmas::api::graph::parallel::DistributedEdge<int>*> EdgeList;
+		typedef std::vector<fpmas::api::graph::DistributedEdge<int>*> EdgeList;
 
 		EdgeType* edge1;
 		EdgeType* edge2;

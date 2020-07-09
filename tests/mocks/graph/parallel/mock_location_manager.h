@@ -4,10 +4,10 @@
 #include "fpmas/api/communication/communication.h"
 
 template<typename T>
-class MockLocationManager : public fpmas::api::graph::parallel::LocationManager<T> {
+class MockLocationManager : public fpmas::api::graph::LocationManager<T> {
 	public:
-		using typename fpmas::api::graph::parallel::LocationManager<T>::DistNode;
-		using typename fpmas::api::graph::parallel::LocationManager<T>::NodeMap;
+		using typename fpmas::api::graph::LocationManager<T>::DistNode;
+		using typename fpmas::api::graph::LocationManager<T>::NodeMap;
 
 		MockLocationManager(
 				fpmas::api::communication::MpiCommunicator&,

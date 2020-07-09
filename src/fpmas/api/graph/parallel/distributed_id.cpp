@@ -1,6 +1,6 @@
 #include "distributed_id.h"
 
 
-namespace fpmas::graph::parallel {
+namespace fpmas { namespace api { namespace graph {
 	MPI_Datatype DistributedId::mpiDistributedIdType;
-}
+}}}

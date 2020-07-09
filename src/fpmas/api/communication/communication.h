@@ -386,8 +386,8 @@ namespace fpmas { namespace api {
 
 		template<typename MpiCommunicatorImpl, template<typename> class TypedMpiImpl>
 			class MpiSetUp {
-				static_assert(std::is_base_of<MpiCommunicator, MpiCommunicatorImpl>::value);
-				static_assert(std::is_base_of<TypedMpi<int>, TypedMpiImpl<int>>::value);
+				//static_assert(std::is_base_of<MpiCommunicator, MpiCommunicatorImpl>::value);
+				//static_assert(std::is_base_of<TypedMpi<int>, TypedMpiImpl<int>>::value);
 
 				public:
 				typedef MpiCommunicatorImpl communicator;

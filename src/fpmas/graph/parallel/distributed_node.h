@@ -6,15 +6,15 @@
 #include "fpmas/api/utils/ptr_wrapper.h"
 #include "fpmas/graph/base/node.h"
 
-namespace fpmas::graph::parallel {
+namespace fpmas { namespace graph {
 
-	using fpmas::api::graph::parallel::LocationState;
+	using api::graph::LocationState;
 
 	template<typename T>
 	class DistributedNode : 
-		public graph::base::Node<DistributedId, api::graph::parallel::DistributedEdge<T>>,
-		public api::graph::parallel::DistributedNode<T> {
-			typedef graph::base::Node<DistributedId, api::graph::parallel::DistributedEdge<T>> NodeBase;
+		public graph::Node<DistributedId, api::graph::DistributedEdge<T>>,
+		public api::graph::DistributedNode<T> {
+			typedef graph::Node<DistributedId, api::graph::DistributedEdge<T>> NodeBase;
 			typedef api::synchro::Mutex<T> Mutex;
 
 		private:
@@ -65,18 +65,18 @@ namespace fpmas::graph::parallel {
 	};
 
 	template<typename T>
-	using NodePtrWrapper = fpmas::api::utils::VirtualPtrWrapper<fpmas::api::graph::parallel::DistributedNode<T>>;
-}
+	using NodePtrWrapper = api::utils::VirtualPtrWrapper<api::graph::DistributedNode<T>>;
+}}
 
 namespace nlohmann {
 
 	template<typename T>
-		using NodePtrWrapper = fpmas::graph::parallel::NodePtrWrapper<T>;
+		using NodePtrWrapper = fpmas::graph::NodePtrWrapper<T>;
 
 	template<typename T>
 		struct adl_serializer<NodePtrWrapper<T>> {
 			static NodePtrWrapper<T> from_json(const json& j) {
-				return new fpmas::graph::parallel::DistributedNode<T> {
+				return new fpmas::graph::DistributedNode<T> {
 					j.at("id").get<DistributedId>(),
 					std::move(j.at("data").get<T>()),
 					j.at("weight").get<float>(),

@@ -64,7 +64,7 @@ using ::testing::UnorderedElementsAre;
 using fpmas::synchro::hard::Epoch;
 using fpmas::synchro::hard::Tag;
 using fpmas::synchro::hard::MutexServer;
-using fpmas::synchro::hard::DataUpdatePack;
+using fpmas::synchro::DataUpdatePack;
 using fpmas::synchro::hard::MutexRequestType;
 
 /*******************/

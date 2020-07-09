@@ -25,18 +25,18 @@
 	MpiSetUp,\
 	LocationManagerImpl
 
-namespace fpmas::graph::parallel {
+namespace fpmas { namespace graph {
 	
-	using fpmas::api::graph::parallel::LocationState;
+	using api::graph::LocationState;
 	
 	typedef api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi> DefaultMpiSetUp;
 
 	template<DIST_GRAPH_PARAMS>
 	class DistributedGraph : 
-		public base::Graph<
-			api::graph::parallel::DistributedNode<T>,
-			api::graph::parallel::DistributedEdge<T>>,
-		public api::graph::parallel::DistributedGraph<T>
+		public Graph<
+			api::graph::DistributedNode<T>,
+			api::graph::DistributedEdge<T>>,
+		public api::graph::DistributedGraph<T>
 		 {
 			public:
 			typedef DistNodeImpl<T> DistNodeType;
@@ -44,20 +44,18 @@ namespace fpmas::graph::parallel {
 			typedef typename SyncMode::template SyncModeRuntimeType<T> SyncModeRuntimeType;
 
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedNode<T>, DistNodeType>::value,
-					"DistNodeImpl must implement api::graph::parallel::DistributedNode"
+					std::is_base_of<api::graph::DistributedNode<T>, DistNodeType>::value,
+					"DistNodeImpl must implement api::graph::DistributedNode"
 					);
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedEdge<T>, DistEdgeType>::value,
-					"DistEdgeImpl must implement api::graph::parallel::DistributedEdge"
+					std::is_base_of<api::graph::DistributedEdge<T>, DistEdgeType>::value,
+					"DistEdgeImpl must implement api::graph::DistributedEdge"
 					);
-			typedef base::Graph<api::graph::parallel::DistributedNode<T>, api::graph::parallel::DistributedEdge<T>>
-			Graph;
-			typedef api::graph::parallel::DistributedGraph<T> DistGraphBase;
+			typedef api::graph::DistributedGraph<T> DistGraphBase;
 
 			public:
-			typedef api::graph::parallel::DistributedNode<T> NodeType;
-			typedef api::graph::parallel::DistributedEdge<T> EdgeType;
+			typedef api::graph::DistributedNode<T> NodeType;
+			typedef api::graph::DistributedEdge<T> EdgeType;
 			using typename DistGraphBase::LayerIdType;
 			using typename DistGraphBase::NodeMap;
 			using typename DistGraphBase::PartitionMap;
@@ -81,15 +79,15 @@ namespace fpmas::graph::parallel {
 
 			NodeType* buildNode(NodeType*);
 
-			void setLocal(api::graph::parallel::DistributedNode<T>* node);
-			void setDistant(api::graph::parallel::DistributedNode<T>* node);
+			void setLocal(api::graph::DistributedNode<T>* node);
+			void setDistant(api::graph::DistributedNode<T>* node);
 
-			void triggerSetLocalCallbacks(api::graph::parallel::DistributedNode<T>* node) {
+			void triggerSetLocalCallbacks(api::graph::DistributedNode<T>* node) {
 				for(auto callback : set_local_callbacks)
 					callback->call(node);
 			}
 
-			void triggerSetDistantCallbacks(api::graph::parallel::DistributedNode<T>* node) {
+			void triggerSetDistantCallbacks(api::graph::DistributedNode<T>* node) {
 				for(auto callback : set_distant_callbacks)
 					callback->call(node);
 			}
@@ -189,13 +187,13 @@ namespace fpmas::graph::parallel {
 		};
 
 	template<DIST_GRAPH_PARAMS>
-		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setLocal(api::graph::parallel::DistributedNode<T>* node) {
+		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setLocal(api::graph::DistributedNode<T>* node) {
 			location_manager.setLocal(node);
 			triggerSetLocalCallbacks(node);
 		}
 
 	template<DIST_GRAPH_PARAMS>
-		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setDistant(api::graph::parallel::DistributedNode<T>* node) {
+		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setDistant(api::graph::DistributedNode<T>* node) {
 			location_manager.setDistant(node);
 			triggerSetDistantCallbacks(node);
 		}
@@ -583,5 +581,5 @@ namespace fpmas::graph::parallel {
 			for(auto callback : set_distant_callbacks)
 				delete callback;
 		}
-}
+}}
 #endif

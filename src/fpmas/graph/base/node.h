@@ -6,12 +6,12 @@
 #include "fpmas/api/graph/base/node.h"
 #include "fpmas/utils/callback.h"
 
-namespace fpmas::graph::base {
+namespace fpmas { namespace graph {
 
 	template<typename IdType, typename _EdgeType>
-		class Node : public virtual fpmas::api::graph::base::Node<IdType, _EdgeType> {
+		class Node : public virtual api::graph::Node<IdType, _EdgeType> {
 			public:
-				typedef fpmas::api::graph::base::Node<IdType, _EdgeType> NodeType;
+				typedef api::graph::Node<IdType, _EdgeType> NodeType;
 				using typename NodeType::EdgeType;
 				using typename NodeType::LayerIdType;
 
@@ -181,5 +181,5 @@ namespace fpmas::graph::base {
 			auto& edges = outgoing_edges.at(edge->getLayer());
 			edges.erase(std::remove(edges.begin(), edges.end(), edge));
 		}
-}
+}}
 #endif

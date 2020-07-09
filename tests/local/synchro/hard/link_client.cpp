@@ -9,7 +9,7 @@ using ::testing::Property;
 using ::testing::Sequence;
 using ::testing::Ref;
 using ::testing::Expectation;
-using fpmas::graph::parallel::EdgePtrWrapper;
+using fpmas::graph::EdgePtrWrapper;
 using fpmas::synchro::hard::Tag;
 using fpmas::synchro::hard::LinkClient;
 

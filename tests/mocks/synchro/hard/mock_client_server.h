@@ -65,7 +65,7 @@ class MockMutexServer
 template<typename T>
 class MockLinkClient
 : public fpmas::api::synchro::hard::LinkClient<T> {
-	typedef fpmas::api::graph::parallel::DistributedEdge<T> EdgeApi;
+	typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
 	public:
 		MOCK_METHOD(void, link, (const EdgeApi*), (override));
 		MOCK_METHOD(void, unlink, (const EdgeApi*), (override));

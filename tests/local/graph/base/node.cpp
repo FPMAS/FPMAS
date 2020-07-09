@@ -9,7 +9,7 @@ using ::testing::IsEmpty;
 using ::testing::ElementsAre;
 using ::testing::Contains;
 
-using fpmas::graph::base::Node;
+using fpmas::graph::Node;
 
 class BasicMockEdge : public AbstractMockEdge<BasicId, Node<BasicId, BasicMockEdge>> {
 };

@@ -7,20 +7,20 @@
 #include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 
-using fpmas::api::graph::parallel::LocationState;
+using fpmas::api::graph::LocationState;
 using fpmas::communication::TypedMpi;
 using fpmas::communication::MpiCommunicator;
-using fpmas::graph::parallel::DistributedGraph;
-using fpmas::graph::parallel::DistributedNode;
-using fpmas::graph::parallel::DistributedEdge;
-using fpmas::graph::parallel::DefaultMpiSetUp;
-using fpmas::graph::parallel::LocationManager;
+using fpmas::graph::DistributedGraph;
+using fpmas::graph::DistributedNode;
+using fpmas::graph::DistributedEdge;
+using fpmas::graph::DefaultMpiSetUp;
+using fpmas::graph::LocationManager;
 using fpmas::synchro::HardSyncMode;
 using fpmas::synchro::hard::HardSyncMutex;
 using fpmas::synchro::hard::MutexClient;
 using fpmas::synchro::hard::MutexServer;
 using fpmas::synchro::hard::TerminationAlgorithm;
-using fpmas::synchro::hard::DataUpdatePack;
+using fpmas::synchro::DataUpdatePack;
 
 class HardSyncMutexSelfReadTest : public ::testing::Test {
 	protected:

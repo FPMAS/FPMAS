@@ -79,22 +79,22 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;node.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;edge.h&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>fpmas::graph::base {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>fpmas { <span class="keyword">namespace </span>graph {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">template</span>&lt;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">typename</span> NodeType,</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;        <span class="keyword">typename</span> EdgeType</div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1base_1_1Graph.html">   16</a></span>&#160;    &gt; <span class="keyword">class </span><a class="code" href="classfpmas_1_1graph_1_1base_1_1Graph.html">Graph</a> : <span class="keyword">public</span> <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">api::graph::base::Graph</a>&lt;NodeType, EdgeType&gt; {</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1Graph.html">   16</a></span>&#160;    &gt; <span class="keyword">class </span><a class="code" href="classfpmas_1_1graph_1_1Graph.html">Graph</a> : <span class="keyword">public</span> <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html">api::graph::Graph</a>&lt;NodeType, EdgeType&gt; {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">fpmas::api::graph::base::Graph&lt;NodeType, EdgeType&gt;</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">GraphBase</a>;</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html">api::graph::Graph&lt;NodeType, EdgeType&gt;</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html">GraphBase</a>;</div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::NodeBase;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::EdgeBase;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::NodeIdType;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> <a class="code" href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">GraphBase::NodeIdHash</a>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> <a class="code" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">GraphBase::NodeIdHash</a>;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::EdgeIdType;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> <a class="code" href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">GraphBase::EdgeIdHash</a>;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> <a class="code" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">GraphBase::EdgeIdHash</a>;</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                </div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::NodeMap;</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::EdgeMap;</div>
@@ -147,11 +147,11 @@ $(function() {
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keywordtype">void</span> clear() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1graph_1_1base_1_1Graph.html">Graph</a>();</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1graph_1_1Graph.html">Graph</a>();</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    };</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keyword">template</span>&lt;GRAPH_PARAMS&gt;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1base_1_1Graph.html">Graph&lt;GRAPH_PARAMS_SPEC&gt;::insert</a>(NodeType* node) {</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1Graph.html">Graph&lt;GRAPH_PARAMS_SPEC&gt;::insert</a>(NodeType* node) {</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            FPMAS_LOGD(-1, <span class="stringliteral">&quot;GRAPH&quot;</span>, <span class="stringliteral">&quot;Insert node %s&quot;</span>, ID_C_STR(node-&gt;getId()));</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            this-&gt;nodes.insert({node-&gt;getId(), node});</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> callback : insert_node_callbacks)</div>
@@ -301,13 +301,13 @@ $(function() {
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                <span class="keyword">delete</span> callback;</div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;        }</div>
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}}</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructfpmas_1_1api_1_1graph_1_1base_1_1IdHash_html"><div class="ttname"><a href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">fpmas::api::graph::base::IdHash</a></div><div class="ttdef"><b>Definition:</b> id.h:24</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1base_1_1Graph_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">fpmas::api::graph::base::Graph</a></div><div class="ttdef"><b>Definition:</b> graph.h:15</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1utils_1_1Callback_html"><div class="ttname"><a href="classfpmas_1_1api_1_1utils_1_1Callback.html">fpmas::api::utils::Callback</a></div><div class="ttdef"><b>Definition:</b> callback.h:14</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1base_1_1Graph_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1base_1_1Graph.html">fpmas::graph::base::Graph</a></div><div class="ttdef"><b>Definition:</b> graph.h:16</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1Graph_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a></div><div class="ttdef"><b>Definition:</b> graph.h:16</div></div>
+<div class="ttc" id="astructfpmas_1_1api_1_1graph_1_1IdHash_html"><div class="ttname"><a href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a></div><div class="ttdef"><b>Definition:</b> id.h:24</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1utils_1_1Callback_html"><div class="ttname"><a href="classfpmas_1_1api_1_1utils_1_1Callback.html">fpmas::api::utils::Callback</a></div><div class="ttdef"><b>Definition:</b> callback.h:6</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1Graph_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph</a></div><div class="ttdef"><b>Definition:</b> graph.h:15</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

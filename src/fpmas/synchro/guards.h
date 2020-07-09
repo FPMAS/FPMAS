@@ -8,9 +8,9 @@ namespace fpmas {
 		template<typename T>
 			class Guard {
 				protected:
-				fpmas::api::synchro::Mutex<T>& mutex;
+				api::synchro::Mutex<T>& mutex;
 
-				Guard(fpmas::api::graph::parallel::DistributedNode<T>* node)
+				Guard(api::graph::DistributedNode<T>* node)
 					: mutex(node->mutex()) {
 					}
 
@@ -26,7 +26,7 @@ namespace fpmas {
 		template<typename T>
 		class ReadGuard : Guard<T> {
 			public:
-			ReadGuard(fpmas::api::graph::parallel::DistributedNode<T>* node)
+			ReadGuard(api::graph::DistributedNode<T>* node)
 				: Guard<T>(node) {
 					// updates node.data() according to the SyncMode
 					this->mutex.read();
@@ -40,7 +40,7 @@ namespace fpmas {
 		template<typename T>
 		class AcquireGuard : Guard<T> {
 			public:
-			AcquireGuard(fpmas::api::graph::parallel::DistributedNode<T>* node)
+			AcquireGuard(api::graph::DistributedNode<T>* node)
 				: Guard<T>(node) {
 					// updates node.data() according to the SyncMode
 					this->mutex.acquire();

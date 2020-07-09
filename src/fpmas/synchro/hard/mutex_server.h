@@ -8,20 +8,20 @@
 #include "data_update_pack.h"
 #include "fpmas/utils/log.h"
 
-namespace fpmas::synchro::hard {
-	using fpmas::api::synchro::hard::Epoch;
-	using fpmas::api::synchro::hard::Tag;
+namespace fpmas { namespace synchro { namespace hard {
+	using api::synchro::hard::Epoch;
+	using api::synchro::hard::Tag;
 
-	using fpmas::api::synchro::hard::MutexRequestType;
+	using api::synchro::hard::MutexRequestType;
 
 	template<typename T>
 		class MutexServer :
-			public fpmas::api::synchro::hard::MutexServer<T> {
-				typedef fpmas::api::synchro::hard::MutexServer<T>
+			public api::synchro::hard::MutexServer<T> {
+				typedef api::synchro::hard::MutexServer<T>
 					MutexServerBase;
-				typedef fpmas::api::synchro::hard::HardSyncMutex<T>
+				typedef api::synchro::hard::HardSyncMutex<T>
 					HardSyncMutex;
-				typedef fpmas::api::synchro::hard::MutexRequest
+				typedef api::synchro::hard::MutexRequest
 					Request;
 				typedef api::communication::MpiCommunicator MpiComm;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
@@ -457,5 +457,5 @@ namespace fpmas::synchro::hard {
 		auto* mutex = mutex_map.at(id);
 		return respondToRequests(mutex);
 	}
-}
+}}}
 #endif

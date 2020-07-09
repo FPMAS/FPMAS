@@ -1,7 +1,7 @@
 #include "scheduler.h"
 #include <algorithm>
 
-namespace fpmas::scheduler {
+namespace fpmas { namespace scheduler {
 
 	JID Job::id() const {return _id;}
 
@@ -123,4 +123,4 @@ namespace fpmas::scheduler {
 			}
 		}
 	}
-}
+}}

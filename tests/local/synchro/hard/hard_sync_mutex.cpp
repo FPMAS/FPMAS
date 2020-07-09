@@ -55,7 +55,7 @@ using ::testing::NotNull;
 using ::testing::Return;
 using ::testing::WhenDynamicCastTo;
 
-using fpmas::api::graph::parallel::LocationState;
+using fpmas::api::graph::LocationState;
 using fpmas::synchro::hard::HardSyncMutex;
 using fpmas::api::synchro::hard::MutexRequest;
 using fpmas::api::synchro::hard::MutexRequestType;

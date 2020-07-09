@@ -5,14 +5,14 @@
 #include "distributed_id.h"
 #include "fpmas/api/graph/parallel/distributed_node.h"
 
-namespace fpmas::api::graph::parallel {
+namespace fpmas {namespace api { namespace graph {
 
 	template<typename T>
 	class LocationManager {
 		public:
-			typedef api::graph::parallel::DistributedNode<T> DistNode;
+			typedef api::graph::DistributedNode<T> DistNode;
 			typedef 
-				std::unordered_map<DistributedId, DistNode*, fpmas::api::graph::base::IdHash<DistributedId>>
+				std::unordered_map<DistributedId, DistNode*, fpmas::api::graph::IdHash<DistributedId>>
 				NodeMap;
 
 			virtual void addManagedNode(DistNode*, int initialLocation) = 0;
@@ -28,6 +28,5 @@ namespace fpmas::api::graph::parallel {
 				const NodeMap& localNodesToUpdate
 				) = 0;
 	};
-}
-
+}}}
 #endif

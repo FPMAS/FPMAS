@@ -3,7 +3,7 @@
 
 #include "id.h"
 
-namespace fpmas::api::graph::base {
+namespace fpmas { namespace api { namespace graph {
 
 	/**
 	 * Type used to index layers.
@@ -30,5 +30,5 @@ namespace fpmas::api::graph::base {
 
 			virtual ~Edge() {};
 	};
-}
+}}}
 #endif

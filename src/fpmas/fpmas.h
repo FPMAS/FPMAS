@@ -11,11 +11,11 @@ namespace fpmas {
 		MPI_Init(&argc, &argv);
 		float v;
 		Zoltan_Initialize(argc, argv, &v);
-		fpmas::communication::createMpiTypes();
+		fpmas::api::communication::createMpiTypes();
 	}
 
 	void finalize() {
-		fpmas::communication::freeMpiTypes();
+		fpmas::api::communication::freeMpiTypes();
 		MPI_Finalize();
 	}
 }

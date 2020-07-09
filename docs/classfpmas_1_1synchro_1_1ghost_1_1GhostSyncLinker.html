@@ -94,29 +94,29 @@ Collaboration diagram for fpmas::synchro::ghost::GhostSyncLinker&lt; T &gt;:</di
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:aeefe29985d8b8897e37da60e3116dfe2"><td class="memItemLeft" align="right" valign="top"><a id="aeefe29985d8b8897e37da60e3116dfe2"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">fpmas::api::graph::parallel::DistributedEdge</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeApi</b></td></tr>
-<tr class="separator:aeefe29985d8b8897e37da60e3116dfe2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0bd194854893fbc0f8c57d459566b86f"><td class="memItemLeft" align="right" valign="top"><a id="a0bd194854893fbc0f8c57d459566b86f"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1VirtualPtrWrapper.html">graph::parallel::EdgePtrWrapper</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgePtr</b></td></tr>
-<tr class="separator:a0bd194854893fbc0f8c57d459566b86f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae064b19ca0ad660c5dc1ef7cc947c5d9"><td class="memItemLeft" align="right" valign="top"><a id="ae064b19ca0ad660c5dc1ef7cc947c5d9"></a>
+typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeApi</b></td></tr>
+<tr class="separator:ae064b19ca0ad660c5dc1ef7cc947c5d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7431063e2ac3a7cfe145e0166006c01c"><td class="memItemLeft" align="right" valign="top"><a id="a7431063e2ac3a7cfe145e0166006c01c"></a>
+typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1VirtualPtrWrapper.html">graph::EdgePtrWrapper</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgePtr</b></td></tr>
+<tr class="separator:a7431063e2ac3a7cfe145e0166006c01c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9cdf857e28c32691df1b3f8ccedf80f"><td class="memItemLeft" align="right" valign="top"><a id="ab9cdf857e28c32691df1b3f8ccedf80f"></a>
 typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; <a class="el" href="classfpmas_1_1api_1_1utils_1_1VirtualPtrWrapper.html">EdgePtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeMpi</b></td></tr>
 <tr class="separator:ab9cdf857e28c32691df1b3f8ccedf80f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9186fa3ae38a249675f67c4593e293d9"><td class="memItemLeft" align="right" valign="top"><a id="a9186fa3ae38a249675f67c4593e293d9"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; <a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>IdMpi</b></td></tr>
+typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>IdMpi</b></td></tr>
 <tr class="separator:a9186fa3ae38a249675f67c4593e293d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a53a4dac4b22ae2464f1cc628bc260c1b"><td class="memItemLeft" align="right" valign="top"><a id="a53a4dac4b22ae2464f1cc628bc260c1b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>GhostSyncLinker</b> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">EdgeMpi</a> &amp;edge_mpi, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">IdMpi</a> &amp;id_mpi, <a class="el" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedGraph.html">fpmas::api::graph::parallel::DistributedGraph</a>&lt; T &gt; &amp;graph)</td></tr>
-<tr class="separator:a53a4dac4b22ae2464f1cc628bc260c1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84dd995b58701b4fe0101508d9179448"><td class="memItemLeft" align="right" valign="top"><a id="a84dd995b58701b4fe0101508d9179448"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>GhostSyncLinker</b> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">EdgeMpi</a> &amp;edge_mpi, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">IdMpi</a> &amp;id_mpi, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph)</td></tr>
+<tr class="separator:a84dd995b58701b4fe0101508d9179448"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac924cefa65209042f83052ba765d1f5"><td class="memItemLeft" align="right" valign="top"><a id="aac924cefa65209042f83052ba765d1f5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>link</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">EdgeApi</a> *) override</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>link</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">EdgeApi</a> *) override</td></tr>
 <tr class="separator:aac924cefa65209042f83052ba765d1f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2879e4f6ddd56809445d9d8471eb4d69"><td class="memItemLeft" align="right" valign="top"><a id="a2879e4f6ddd56809445d9d8471eb4d69"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">EdgeApi</a> *) override</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">EdgeApi</a> *) override</td></tr>
 <tr class="separator:a2879e4f6ddd56809445d9d8471eb4d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33187466eb861c1e977e07068ae67d32"><td class="memItemLeft" align="right" valign="top"><a id="a33187466eb861c1e977e07068ae67d32"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>synchronize</b> () override</td></tr>

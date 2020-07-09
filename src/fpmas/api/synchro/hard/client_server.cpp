@@ -1,6 +1,8 @@
 #include "client_server.h"
 
 
-namespace fpmas::api::synchro::hard {
-	const int MutexRequest::LOCAL = -1;
-}
+namespace fpmas { namespace api {namespace synchro {
+	namespace hard {
+		const int MutexRequest::LOCAL = -1;
+	}
+}}}

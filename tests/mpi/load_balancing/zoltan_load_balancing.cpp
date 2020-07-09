@@ -11,7 +11,7 @@ using ::testing::Contains;
 using ::testing::Pair;
 using ::testing::_;
 
-using fpmas::graph::parallel::DistributedGraph;
+using fpmas::graph::DistributedGraph;
 using fpmas::load_balancing::ZoltanLoadBalancing;
 
 class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
@@ -19,12 +19,12 @@ class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 		DistributedGraph<
 			int,
 			fpmas::synchro::GhostMode,
-			fpmas::graph::parallel::DistributedNode,
-			fpmas::graph::parallel::DistributedEdge,
+			fpmas::graph::DistributedNode,
+			fpmas::graph::DistributedEdge,
 			fpmas::api::communication::MpiSetUp<
 				fpmas::communication::MpiCommunicator,
 				fpmas::communication::TypedMpi>,
-			fpmas::graph::parallel::LocationManager
+			fpmas::graph::LocationManager
 				> graph;
 
 		ZoltanLoadBalancing<int> load_balancing {graph.getMpiCommunicator().getMpiComm()};

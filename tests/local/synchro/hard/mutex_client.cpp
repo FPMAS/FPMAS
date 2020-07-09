@@ -48,7 +48,7 @@ using ::testing::_;
 using fpmas::api::synchro::hard::Epoch;
 using fpmas::api::synchro::hard::Tag;
 using fpmas::synchro::hard::MutexClient;
-using fpmas::synchro::hard::DataUpdatePack;
+using fpmas::synchro::DataUpdatePack;
 
 class MutexClientTest : public ::testing::Test {
 	protected:

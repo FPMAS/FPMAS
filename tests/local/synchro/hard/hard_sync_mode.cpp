@@ -17,7 +17,7 @@ using ::testing::An;
 using ::testing::Ref;
 using ::testing::NiceMock;
 
-using fpmas::graph::parallel::DistributedGraph;
+using fpmas::graph::DistributedGraph;
 using fpmas::synchro::HardSyncMode;
 using fpmas::synchro::hard::HardDataSync;
 using fpmas::synchro::hard::HardSyncLinker;
@@ -78,7 +78,7 @@ TEST_F(HardSyncLinkerLinkTest, link_local_src_local_tgt) {
 
 	syncLinker.link(&edge);
 
-	EXPECT_CALL(graph, erase(An<fpmas::api::graph::parallel::DistributedEdge<int>*>()))
+	EXPECT_CALL(graph, erase(An<fpmas::api::graph::DistributedEdge<int>*>()))
 		.Times(0);
 	syncLinker.synchronize();
 }
@@ -91,7 +91,7 @@ TEST_F(HardSyncLinkerLinkTest, link_local_src_distant_tgt) {
 
 	syncLinker.link(&edge);
 
-	EXPECT_CALL(graph, erase(An<fpmas::api::graph::parallel::DistributedEdge<int>*>()))
+	EXPECT_CALL(graph, erase(An<fpmas::api::graph::DistributedEdge<int>*>()))
 		.Times(0);
 	syncLinker.synchronize();
 }
@@ -104,7 +104,7 @@ TEST_F(HardSyncLinkerLinkTest, link_distant_src_local_tgt) {
 
 	syncLinker.link(&edge);
 
-	EXPECT_CALL(graph, erase(An<fpmas::api::graph::parallel::DistributedEdge<int>*>()))
+	EXPECT_CALL(graph, erase(An<fpmas::api::graph::DistributedEdge<int>*>()))
 		.Times(0);
 	syncLinker.synchronize();
 }

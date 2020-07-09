@@ -77,7 +77,7 @@ class ModelTest : public ::testing::Test {
 
 		typedef
 		fpmas::api::utils::Callback<
-			fpmas::api::graph::parallel::DistributedNode<AgentPtr>*>
+			fpmas::api::graph::DistributedNode<AgentPtr>*>
 			NodeCallback;
 		NodeCallback* insert_node_callback;
 		NodeCallback* erase_node_callback;
@@ -138,7 +138,7 @@ TEST_F(ModelTest, load_balancing_job) {
 
 class AgentGroupTest : public ::testing::Test {
 	public:
-		typedef fpmas::api::graph::parallel::DistributedNode<AgentPtr> Node;
+		typedef fpmas::api::graph::DistributedNode<AgentPtr> Node;
 	protected:
 		MockModel model;
 		fpmas::model::InsertAgentCallback insert_agent_callback {model};
@@ -226,7 +226,7 @@ TEST_F(AgentGroupTest, job_end) {
 
 class MockBuildNode {
 	private:
-		typedef fpmas::api::graph::parallel::DistributedGraph<AgentPtr>
+		typedef fpmas::api::graph::DistributedGraph<AgentPtr>
 			Graph;
 		Graph* graph;
 		typename AgentGroupTest::Node* node;
@@ -367,7 +367,7 @@ TEST_F(AgentBaseTest, out_neighbors) {
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
+	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
 	EXPECT_CALL(n, outNeighbors()).Times(AnyNumber()).WillRepeatedly(
 			Return(out_neighbors)
 			);
@@ -394,7 +394,7 @@ TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
+	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
 	EXPECT_CALL(n, outNeighbors()).Times(AnyNumber()).WillRepeatedly(
 			Return(out_neighbors)
 			);
@@ -420,7 +420,7 @@ TEST_F(AgentBaseTest, in_neighbors) {
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*> in_neighbors {&n_1, &n_2, &n_3};
+	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> in_neighbors {&n_1, &n_2, &n_3};
 	EXPECT_CALL(n, inNeighbors()).Times(AnyNumber()).WillRepeatedly(
 			Return(in_neighbors)
 			);
@@ -447,7 +447,7 @@ TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*> in_neighbors {&n_1, &n_2, &n_3};
+	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> in_neighbors {&n_1, &n_2, &n_3};
 	EXPECT_CALL(n, inNeighbors()).Times(AnyNumber()).WillRepeatedly(
 			Return(in_neighbors)
 			);
@@ -558,7 +558,7 @@ class AgentGuardLoopTest : public AgentGuardTest {
 
 			EXPECT_CALL(node, outNeighbors()).Times(AnyNumber())
 				.WillRepeatedly(Return(
-							std::vector<fpmas::api::graph::parallel::DistributedNode<AgentPtr>*>
+							std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*>
 							{&node_1, &node_2}
 							));
 		}

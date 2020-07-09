@@ -5,13 +5,13 @@
 #include "distributed_id.h"
 #include "location_state.h"
 
-namespace fpmas::api::graph::parallel {
+namespace fpmas {namespace api { namespace graph {
 	template<typename> class DistributedNode;
 
 	template<typename T>
 		class DistributedEdge
-		: public virtual fpmas::api::graph::base::Edge<DistributedId, DistributedNode<T>> {
-			typedef fpmas::api::graph::base::Edge<DistributedId, DistributedNode<T>> EdgeBase;
+		: public virtual fpmas::api::graph::Edge<DistributedId, DistributedNode<T>> {
+			typedef fpmas::api::graph::Edge<DistributedId, DistributedNode<T>> EdgeBase;
 			public:
 				using typename EdgeBase::NodeType;
 				using typename EdgeBase::LayerIdType;
@@ -21,5 +21,5 @@ namespace fpmas::api::graph::parallel {
 
 				virtual ~DistributedEdge() {}
 		};
-}
+}}}
 #endif

@@ -8,23 +8,23 @@
 #include "mutex_client.h"
 #include "mutex_server.h"
 
-namespace fpmas::synchro::hard {
+namespace fpmas { namespace synchro { namespace hard {
 
-	using fpmas::api::graph::parallel::LocationState;
-	using fpmas::api::synchro::hard::MutexRequestType;
+	using api::graph::LocationState;
+	using api::synchro::hard::MutexRequestType;
 
 	template<typename T>
 		class HardSyncMutex
-			: public fpmas::api::synchro::hard::HardSyncMutex<T> {
+			: public api::synchro::hard::HardSyncMutex<T> {
 			private:
-				typedef fpmas::api::synchro::hard::MutexRequest
+				typedef api::synchro::hard::MutexRequest
 					Request;
-				typedef fpmas::api::synchro::hard::MutexClient<T>
+				typedef api::synchro::hard::MutexClient<T>
 					MutexClient;
-				typedef fpmas::api::synchro::hard::MutexServer<T>
+				typedef api::synchro::hard::MutexServer<T>
 					MutexServer;
 
-				api::graph::parallel::DistributedNode<T>* node;
+				api::graph::DistributedNode<T>* node;
 				bool _locked = false;
 				int _locked_shared = 0;
 
@@ -39,7 +39,7 @@ namespace fpmas::synchro::hard {
 				void _unlock() override {_locked=false;}
 				void _unlockShared() override {_locked_shared--;}
 			public:
-				HardSyncMutex(api::graph::parallel::DistributedNode<T>* node, MutexClient& mutex_client, MutexServer& mutex_server) :
+				HardSyncMutex(api::graph::DistributedNode<T>* node, MutexClient& mutex_client, MutexServer& mutex_server) :
 					node(node), mutex_client(mutex_client), mutex_server(mutex_server) {}
 
 				void pushRequest(Request request) override;
@@ -205,6 +205,5 @@ namespace fpmas::synchro::hard {
 			}
 			return requests;
 		}
-}
-
+}}}
 #endif

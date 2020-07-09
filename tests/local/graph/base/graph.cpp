@@ -18,8 +18,8 @@ using ::testing::_;
 
 template<typename NodeType, typename EdgeType>
 class MockGraph : 
-	public virtual fpmas::graph::base::Graph<NodeType, EdgeType> {
-		typedef fpmas::graph::base::Graph<NodeType, EdgeType>
+	public virtual fpmas::graph::Graph<NodeType, EdgeType> {
+		typedef fpmas::graph::Graph<NodeType, EdgeType>
 		GraphBase;
 		using typename GraphBase::NodeIdType;
 		using typename GraphBase::NodeMap;

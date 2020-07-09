@@ -8,15 +8,15 @@
 template<typename T, typename DistNode, typename DistEdge>
 class MockDistributedGraph :
 	public MockGraph<
-		fpmas::api::graph::parallel::DistributedNode<T>,
-		fpmas::api::graph::parallel::DistributedEdge<T>>,
-	public fpmas::api::graph::parallel::DistributedGraph<T> {
+		fpmas::api::graph::DistributedNode<T>,
+		fpmas::api::graph::DistributedEdge<T>>,
+	public fpmas::api::graph::DistributedGraph<T> {
 
-		typedef fpmas::api::graph::parallel::DistributedGraph<T>
+		typedef fpmas::api::graph::DistributedGraph<T>
 			GraphBase;
 		public:
-		typedef fpmas::api::graph::parallel::DistributedNode<T> NodeType;
-		typedef fpmas::api::graph::parallel::DistributedEdge<T> EdgeType;
+		typedef fpmas::api::graph::DistributedNode<T> NodeType;
+		typedef fpmas::api::graph::DistributedEdge<T> EdgeType;
 		using typename GraphBase::NodeMap;
 		using typename GraphBase::EdgeMap;
 		using typename GraphBase::PartitionMap;
@@ -26,7 +26,7 @@ class MockDistributedGraph :
 		MOCK_METHOD(const fpmas::api::communication::MpiCommunicator&,
 				getMpiCommunicator, (), (const, override));
 		MOCK_METHOD(
-				const fpmas::api::graph::parallel::LocationManager<T>&,
+				const fpmas::api::graph::LocationManager<T>&,
 				getLocationManager, (), (const, override));
 
 		NodeType* buildNode(T&& data) override {

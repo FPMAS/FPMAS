@@ -97,27 +97,27 @@ Public Member Functions</h2></td></tr>
 &#160;</td><td class="memItemRight" valign="bottom"><b>MutexClient</b> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">IdMpi</a> &amp;id_mpi, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">DataMpi</a> &amp;data_mpi, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">DataUpdateMpi</a> &amp;data_update_mpi, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a>&lt; T &gt; &amp;server_pack)</td></tr>
 <tr class="separator:a7aaf2df0eb269e18cc227c1212780dd7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4fecada560fa399757ca9b2f1d8043cf"><td class="memItemLeft" align="right" valign="top"><a id="a4fecada560fa399757ca9b2f1d8043cf"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> (<a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
+T&#160;</td><td class="memItemRight" valign="bottom"><b>read</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
 <tr class="separator:a4fecada560fa399757ca9b2f1d8043cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3efb3d5378b0ad640c71881c730ee844"><td class="memItemLeft" align="right" valign="top"><a id="a3efb3d5378b0ad640c71881c730ee844"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>releaseRead</b> (<a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>releaseRead</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
 <tr class="separator:a3efb3d5378b0ad640c71881c730ee844"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a227505e34526434ae134b429dfe251f2"><td class="memItemLeft" align="right" valign="top"><a id="a227505e34526434ae134b429dfe251f2"></a>
-T&#160;</td><td class="memItemRight" valign="bottom"><b>acquire</b> (<a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
+T&#160;</td><td class="memItemRight" valign="bottom"><b>acquire</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
 <tr class="separator:a227505e34526434ae134b429dfe251f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a86036345e91e9a93e68c606cc7803ffe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1MutexClient.html#a86036345e91e9a93e68c606cc7803ffe">releaseAcquire</a> (<a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, const T &amp;data, int location) override</td></tr>
+<tr class="memitem:a86036345e91e9a93e68c606cc7803ffe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1MutexClient.html#a86036345e91e9a93e68c606cc7803ffe">releaseAcquire</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, const T &amp;data, int location) override</td></tr>
 <tr class="separator:a86036345e91e9a93e68c606cc7803ffe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a466d84900c0d8ec67853b316b2ba9f"><td class="memItemLeft" align="right" valign="top"><a id="a8a466d84900c0d8ec67853b316b2ba9f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> (<a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>lock</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
 <tr class="separator:a8a466d84900c0d8ec67853b316b2ba9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a801a381b416481d0fd995c9df9d9230a"><td class="memItemLeft" align="right" valign="top"><a id="a801a381b416481d0fd995c9df9d9230a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unlock</b> (<a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>unlock</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
 <tr class="separator:a801a381b416481d0fd995c9df9d9230a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5047f081d52471c968d7fc34779e2bc8"><td class="memItemLeft" align="right" valign="top"><a id="a5047f081d52471c968d7fc34779e2bc8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>lockShared</b> (<a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>lockShared</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
 <tr class="separator:a5047f081d52471c968d7fc34779e2bc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6ee388e29e9904b2b3d5b5a33e9046c"><td class="memItemLeft" align="right" valign="top"><a id="ae6ee388e29e9904b2b3d5b5a33e9046c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unlockShared</b> (<a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>unlockShared</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int location) override</td></tr>
 <tr class="separator:ae6ee388e29e9904b2b3d5b5a33e9046c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -135,7 +135,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1MutexClient.html">fpmas::synchro::hard::MutexClient</a>&lt; T &gt;::releaseAcquire </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&#160;</td>
           <td class="paramname"><em>id</em>, </td>
         </tr>
         <tr>

@@ -4,7 +4,7 @@
 
 class DistributedEdgeTest : public ::testing::Test {
 	protected:
-		fpmas::graph::parallel::DistributedEdge<int> edge {{2, 6}, 7, 2.4};
+		fpmas::graph::DistributedEdge<int> edge {{2, 6}, 7, 2.4};
 		MockDistributedNode<int> src {{0, 1}, 0, 0};
 		MockDistributedNode<int> tgt {{0, 2}, 0, 0};
 
@@ -26,7 +26,7 @@ TEST_F(DistributedEdgeTest, json_serialization) {
 	EXPECT_CALL(src, getLocation).Times(AnyNumber()).WillRepeatedly(Return(3));
 	EXPECT_CALL(tgt, getLocation).Times(AnyNumber()).WillRepeatedly(Return(22));
 
-	nlohmann::json edge_json = fpmas::graph::parallel::EdgePtrWrapper<int>(&edge);
+	nlohmann::json edge_json = fpmas::graph::EdgePtrWrapper<int>(&edge);
 
 	ASSERT_EQ(edge_json.at("id").get<DistributedId>(), DistributedId(2, 6));
 	ASSERT_EQ(edge_json.at("layer").get<LayerId>(), 7);
@@ -52,7 +52,7 @@ TEST_F(DistributedEdgeTest, json_deserialization) {
 			{"tgt", tgt}
 	};
 
-	auto edge = edge_json.get<fpmas::graph::parallel::EdgePtrWrapper<int>>();
+	auto edge = edge_json.get<fpmas::graph::EdgePtrWrapper<int>>();
 	ASSERT_EQ(edge->getId(), DistributedId(2, 6));
 	ASSERT_EQ(edge->getLayer(), 7);
 	ASSERT_FLOAT_EQ(edge->getWeight(), 2.4);

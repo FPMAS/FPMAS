@@ -5,17 +5,17 @@
 #include "../mutex.h"
 #include "client_server.h"
 
-namespace fpmas::api::synchro::hard {
-
-	template<typename T>
-		class HardSyncMutex : public virtual synchro::Mutex<T> {
-			friend MutexServer<T>;
-			public:
+namespace fpmas { namespace api { namespace synchro {
+	namespace hard {
+		template<typename T>
+			class HardSyncMutex : public virtual synchro::Mutex<T> {
+				friend MutexServer<T>;
+				public:
 				virtual void pushRequest(MutexRequest) = 0;
 				virtual std::queue<MutexRequest> requestsToProcess() = 0;
 
 				virtual ~HardSyncMutex() {}
-		};
-
-}
+			};
+	}
+}}}
 #endif

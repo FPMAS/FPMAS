@@ -6,11 +6,11 @@
 #include <mpi.h>
 #include <climits>
 
-namespace fpmas::graph::parallel {
+namespace fpmas { namespace api { namespace graph {
 	class DistributedId;
-}
+}}}
 
-namespace fpmas::communication {
+namespace fpmas { namespace api { namespace communication {
 	/**
 	 * Structure used to serialize / unserialize DistributedId instances in MPI
 	 * communications.
@@ -29,18 +29,19 @@ namespace fpmas::communication {
 	};
 
 	//class SyncMpiCommunicator;
-}
+}}}
 
-namespace fpmas::graph::parallel {
+namespace fpmas { namespace api { namespace graph {
 	class DistributedId;
-}
+}}}
+
 namespace std {
-	template<> struct hash<fpmas::graph::parallel::DistributedId>;
+	template<> struct hash<fpmas::api::graph::DistributedId>;
 }
 
-using fpmas::communication::MpiDistributedId;
+using fpmas::api::communication::MpiDistributedId;
 
-namespace fpmas::graph::parallel {
+namespace fpmas { namespace api { namespace graph {
 
 	/**
 	 * Distributed `IdType` implementation, used by any DistibutedGraphBase.
@@ -178,11 +179,11 @@ namespace fpmas::graph::parallel {
 					);
 			}
 	};
-}
+}}}
 
-using fpmas::graph::parallel::DistributedId;
+using fpmas::api::graph::DistributedId;
 
-namespace fpmas::communication {
+namespace fpmas { namespace api { namespace communication {
 	/**
 	 * Initializes the static DistributedId::mpiDistributedIdType instance,
 	 * used to send and receive DistributedId through MPI.
@@ -204,7 +205,7 @@ namespace fpmas::communication {
 	inline static void freeMpiTypes() {
 		MPI_Type_free(&DistributedId::mpiDistributedIdType);
 	}
-}
+}}}
 
 namespace std {
 	/**
@@ -224,7 +225,7 @@ namespace std {
 	};
 }
 
-using fpmas::graph::parallel::DistributedId;
+using fpmas::api::graph::DistributedId;
 
 namespace nlohmann {
 	template<>
@@ -258,5 +259,4 @@ namespace nlohmann {
 			}
 		};
 }
-
 #endif

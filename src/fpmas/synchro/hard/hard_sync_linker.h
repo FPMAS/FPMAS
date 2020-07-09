@@ -9,29 +9,29 @@
 #include "fpmas/graph/parallel/distributed_edge.h"
 #include "server_pack.h"
 
-namespace fpmas::synchro::hard {
+namespace fpmas { namespace synchro { namespace hard {
 
 	using api::synchro::hard::Epoch;
 	using api::synchro::hard::Tag;
-	using api::graph::parallel::LocationState;
+	using api::graph::LocationState;
 
 	template<typename T>
 	class LinkServer
-		: public fpmas::api::synchro::hard::LinkServer {
+		: public api::synchro::hard::LinkServer {
 			public:
-				typedef api::graph::parallel::DistributedEdge<T> EdgeApi;
-				typedef api::communication::TypedMpi<graph::parallel::EdgePtrWrapper<T>> EdgeMpi;
+				typedef api::graph::DistributedEdge<T> EdgeApi;
+				typedef api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
 			private:
 			Epoch epoch = Epoch::EVEN;
 
 			api::communication::MpiCommunicator& comm;
-			api::graph::parallel::DistributedGraph<T>& graph;
+			api::graph::DistributedGraph<T>& graph;
 			IdMpi& id_mpi;
 			EdgeMpi& edge_mpi;
 
 			public:
-				LinkServer(api::communication::MpiCommunicator& comm, api::graph::parallel::DistributedGraph<T>& graph,
+				LinkServer(api::communication::MpiCommunicator& comm, api::graph::DistributedGraph<T>& graph,
 						IdMpi& id_mpi, EdgeMpi& edge_mpi)
 					:  comm(comm), graph(graph), id_mpi(id_mpi), edge_mpi(edge_mpi) {}
 
@@ -59,11 +59,11 @@ namespace fpmas::synchro::hard {
 		}
 
 	template<typename T>
-		class LinkClient : public fpmas::api::synchro::hard::LinkClient<T> {
-			typedef fpmas::api::synchro::hard::LinkServer LinkServer;
+		class LinkClient : public api::synchro::hard::LinkClient<T> {
+			typedef api::synchro::hard::LinkServer LinkServer;
 			public:
-				typedef api::graph::parallel::DistributedEdge<T> EdgeApi;
-				typedef api::communication::TypedMpi<graph::parallel::EdgePtrWrapper<T>> EdgeMpi;
+				typedef api::graph::DistributedEdge<T> EdgeApi;
+				typedef api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
 
 			private:
@@ -167,23 +167,23 @@ namespace fpmas::synchro::hard {
 		}
 
 	template<typename T>
-	class HardSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
+	class HardSyncLinker : public api::synchro::SyncLinker<T> {
 		public:
 			typedef api::synchro::hard::TerminationAlgorithm
 				TerminationAlgorithm;
-			typedef api::graph::parallel::DistributedEdge<T> EdgeApi;
+			typedef api::graph::DistributedEdge<T> EdgeApi;
 
 		private:
 			typedef api::synchro::hard::LinkClient<T> LinkClient;
 			typedef api::synchro::hard::LinkServer LinkServer;
 
 			std::vector<EdgeApi*> ghost_edges;
-			api::graph::parallel::DistributedGraph<T>& graph;
+			api::graph::DistributedGraph<T>& graph;
 			LinkClient& link_client;
 			ServerPack<T>& server_pack;
 
 		public:
-			HardSyncLinker(api::graph::parallel::DistributedGraph<T>& graph,
+			HardSyncLinker(api::graph::DistributedGraph<T>& graph,
 					LinkClient& link_client, ServerPack<T>& server_pack)
 				: graph(graph), link_client(link_client), server_pack(server_pack) {}
 
@@ -210,6 +210,5 @@ namespace fpmas::synchro::hard {
 				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronized.");
 			};
 	};
-}
-
+}}}
 #endif

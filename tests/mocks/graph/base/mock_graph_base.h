@@ -6,8 +6,8 @@
 
 template<typename NodeType, typename EdgeType>
 class MockGraph : 
-	public virtual fpmas::api::graph::base::Graph<NodeType, EdgeType> {
-		typedef fpmas::api::graph::base::Graph<NodeType, EdgeType>
+	public virtual fpmas::api::graph::Graph<NodeType, EdgeType> {
+		typedef fpmas::api::graph::Graph<NodeType, EdgeType>
 		GraphBase;
 		using typename GraphBase::NodeIdType;
 		using typename GraphBase::NodeMap;

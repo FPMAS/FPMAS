@@ -11,7 +11,7 @@ using ::testing::Key;
 using ::testing::Pair;
 using ::testing::AnyOf;
 
-using fpmas::graph::parallel::LocationManager;
+using fpmas::graph::LocationManager;
 
 class LocationManagerTest : public ::testing::Test {
 	protected:

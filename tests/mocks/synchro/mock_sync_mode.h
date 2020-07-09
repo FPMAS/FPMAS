@@ -16,8 +16,8 @@ class MockDataSync : public fpmas::api::synchro::DataSync {
 template<typename T>
 class MockSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
 	public:
-		MOCK_METHOD(void, link, (const fpmas::api::graph::parallel::DistributedEdge<T>*), (override));
-		MOCK_METHOD(void, unlink, (const fpmas::api::graph::parallel::DistributedEdge<T>*), (override));
+		MOCK_METHOD(void, link, (const fpmas::api::graph::DistributedEdge<T>*), (override));
+		MOCK_METHOD(void, unlink, (const fpmas::api::graph::DistributedEdge<T>*), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
 
 };
@@ -26,11 +26,11 @@ template<typename T>
 class MockSyncModeRuntime : public fpmas::api::synchro::SyncModeRuntime<T> {
 	public:
 		MockSyncModeRuntime(
-			fpmas::api::graph::parallel::DistributedGraph<T>&,
+			fpmas::api::graph::DistributedGraph<T>&,
 			fpmas::api::communication::MpiCommunicator&) {
 			ON_CALL(*this, buildMutex).WillByDefault(ReturnNew<MockMutex<int>>());
 		}
-		typedef fpmas::api::graph::parallel::DistributedNode<T> NodeType;
+		typedef fpmas::api::graph::DistributedNode<T> NodeType;
 
 		MOCK_METHOD(MockMutex<T>*, buildMutex, (NodeType*), (override));
 		MOCK_METHOD(fpmas::api::synchro::SyncLinker<T>&, getSyncLinker, (), (override));

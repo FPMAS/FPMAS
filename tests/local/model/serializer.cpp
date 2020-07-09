@@ -1,5 +1,8 @@
 #include "fpmas/model/serializer.h"
-#include "api/model/types.h"
+#include "../mocks/model/mock_model.h"
+#include "fpmas/utils/macros.h"
+
+FPMAS_JSON_SERIALIZE_AGENT(MockAgent<4>, MockAgent<2>, MockAgent<12>)
 
 using ::testing::AnyNumber;
 using ::testing::WhenDynamicCastTo;

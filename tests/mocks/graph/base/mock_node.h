@@ -12,13 +12,13 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 using ::testing::AnyNumber;
 
-using fpmas::api::graph::base::Id;
-using fpmas::api::graph::base::LayerId;
+using fpmas::api::graph::Id;
+using fpmas::api::graph::LayerId;
 
 class MockData {};
 
 template<typename IdType, typename _EdgeType>
-class AbstractMockNode : public virtual fpmas::api::graph::base::Node<
+class AbstractMockNode : public virtual fpmas::api::graph::Node<
 				 IdType, _EdgeType
 							 > {
 	protected:
@@ -26,7 +26,7 @@ class AbstractMockNode : public virtual fpmas::api::graph::base::Node<
 		float weight = 1.;
 
 	public:
-		using typename fpmas::api::graph::base::Node<
+		using typename fpmas::api::graph::Node<
 			IdType, _EdgeType>::EdgeType;
 
 		AbstractMockNode() {

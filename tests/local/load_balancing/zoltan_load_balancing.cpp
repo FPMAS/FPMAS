@@ -19,21 +19,21 @@ using fpmas::load_balancing::zoltan::fixed_obj_list_fn;
 class ZoltanFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedId id1 {0, 1};
-		std::vector<fpmas::api::graph::parallel::DistributedEdge<int>*> outEdges1;
+		std::vector<fpmas::api::graph::DistributedEdge<int>*> outEdges1;
 		MockDistributedEdge<int>* mockEdge1;
 		MockDistributedEdge<int>* mockEdge2;
 
 		DistributedId id2 {0, 2};
-		std::vector<fpmas::api::graph::parallel::DistributedEdge<int>*> outEdges2;
+		std::vector<fpmas::api::graph::DistributedEdge<int>*> outEdges2;
 
 		DistributedId id3 {2, 3};
-		std::vector<fpmas::api::graph::parallel::DistributedEdge<int>*> outEdges3;
+		std::vector<fpmas::api::graph::DistributedEdge<int>*> outEdges3;
 		MockDistributedEdge<int>* mockEdge3;
 
 		std::unordered_map<
 			DistributedId,
 			MockDistributedNode<int>*,
-			fpmas::api::graph::base::IdHash<DistributedId>
+			fpmas::api::graph::IdHash<DistributedId>
 			> nodes;
 
 		// Fake Zoltan buffers
@@ -44,7 +44,7 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		float weights[3];
 
 		std::unordered_map<
-			DistributedId, int, fpmas::api::graph::base::IdHash<DistributedId>
+			DistributedId, int, fpmas::api::graph::IdHash<DistributedId>
 			> nodeIndex;
 
 		// Edge lists

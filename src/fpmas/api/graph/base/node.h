@@ -6,7 +6,7 @@
 #include "id.h"
 #include "fpmas/api/utils/callback.h"
 
-namespace fpmas::api::graph::base {
+namespace fpmas { namespace api { namespace graph {
 	template<typename _IdType, typename _EdgeType>
 		class Node {
 			public:
@@ -38,6 +38,5 @@ namespace fpmas::api::graph::base {
 
 				virtual ~Node() {}
 		};
-}
-
+}}}
 #endif

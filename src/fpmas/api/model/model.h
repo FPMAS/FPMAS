@@ -6,13 +6,13 @@
 #include "fpmas/api/runtime/runtime.h"
 #include "fpmas/api/utils/ptr_wrapper.h"
 
-namespace fpmas::api::model {
+namespace fpmas { namespace api {namespace model {
 	class Agent;
 	class AgentTask;
 	class AgentPtrWrapper;
 	typedef AgentPtrWrapper AgentPtr;
-	typedef api::graph::parallel::DistributedNode<AgentPtr> AgentNode;
-	typedef api::graph::parallel::DistributedGraph<AgentPtr> AgentGraph;
+	typedef api::graph::DistributedNode<AgentPtr> AgentNode;
+	typedef api::graph::DistributedGraph<AgentPtr> AgentGraph;
 	typedef int GroupId;
 	typedef int TypeId;
 
@@ -77,7 +77,7 @@ namespace fpmas::api::model {
 
 	class Model {
 		public:
-			typedef api::graph::parallel::DistributedGraph<AgentPtr> AgentGraph;
+			typedef api::graph::DistributedGraph<AgentPtr> AgentGraph;
 
 			virtual AgentGraph& graph() = 0;
 			virtual api::scheduler::Scheduler& scheduler() = 0;
@@ -91,5 +91,5 @@ namespace fpmas::api::model {
 
 			virtual ~Model(){}
 	};
-}
+}}}
 #endif

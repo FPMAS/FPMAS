@@ -2,7 +2,7 @@
 #define FPMAS_BASIC_ID_H
 
 #include "fpmas/api/graph/base/id.h"
-class BasicId : public fpmas::api::graph::base::Id<BasicId> {
+class BasicId : public fpmas::api::graph::Id<BasicId> {
 	private:
 		unsigned long value = 0;
 

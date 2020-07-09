@@ -5,7 +5,7 @@
 #include "fpmas/utils/config.h"
 #include "zoltan_cpp.h"
 
-namespace fpmas::load_balancing {
+namespace fpmas { namespace load_balancing {
 
 	/**
 	 * The fpmas::graph::zoltan namespace contains definitions of all the
@@ -341,5 +341,5 @@ namespace fpmas::load_balancing {
 		this->zoltan.Set_Edge_List_Multi_Fn(zoltan::edge_list_multi_fn<T>, &this->nodes);
 	}
 
-}
+}}
 #endif

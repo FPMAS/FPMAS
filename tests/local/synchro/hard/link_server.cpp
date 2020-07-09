@@ -13,7 +13,7 @@ using ::testing::Property;
 using ::testing::Return;
 using ::testing::ReturnPointee;
 
-using fpmas::graph::parallel::EdgePtrWrapper;
+using fpmas::graph::EdgePtrWrapper;
 using fpmas::synchro::hard::Epoch;
 using fpmas::synchro::hard::Tag;
 using fpmas::synchro::hard::LinkServer;

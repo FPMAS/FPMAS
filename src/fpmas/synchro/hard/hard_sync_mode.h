@@ -12,11 +12,11 @@
 #include "termination.h"
 #include "server_pack.h"
 
-namespace fpmas::synchro {
+namespace fpmas { namespace synchro {
 
 	namespace hard {
 		template<typename T>
-			class HardSyncRuntime : public fpmas::api::synchro::SyncModeRuntime<T> {
+			class HardSyncRuntime : public api::synchro::SyncModeRuntime<T> {
 
 				typedef synchro::hard::TerminationAlgorithm<
 					communication::TypedMpi>
@@ -25,8 +25,8 @@ namespace fpmas::synchro {
 				communication::TypedMpi<DistributedId> id_mpi;
 				communication::TypedMpi<T> data_mpi;
 				communication::TypedMpi<DataUpdatePack<T>> data_update_mpi;
-				communication::TypedMpi<graph::parallel::NodePtrWrapper<T>> node_mpi;
-				communication::TypedMpi<graph::parallel::EdgePtrWrapper<T>> edge_mpi;
+				communication::TypedMpi<graph::NodePtrWrapper<T>> node_mpi;
+				communication::TypedMpi<graph::EdgePtrWrapper<T>> edge_mpi;
 
 				MutexServer<T> mutex_server;
 				MutexClient<T> mutex_client;
@@ -41,7 +41,7 @@ namespace fpmas::synchro {
 
 				public:
 				HardSyncRuntime(
-						api::graph::parallel::DistributedGraph<T>& graph,
+						api::graph::DistributedGraph<T>& graph,
 						api::communication::MpiCommunicator& comm) :
 					id_mpi(comm), data_mpi(comm), data_update_mpi(comm), node_mpi(comm), edge_mpi(comm),
 					mutex_server(comm, id_mpi, data_mpi, data_update_mpi),
@@ -53,7 +53,7 @@ namespace fpmas::synchro {
 					sync_linker(graph, link_client, server_pack),
 					data_sync(comm, server_pack) {}
 
-				HardSyncMutex<T>* buildMutex(api::graph::parallel::DistributedNode<T>* node) override {
+				HardSyncMutex<T>* buildMutex(api::graph::DistributedNode<T>* node) override {
 					HardSyncMutex<T>* mutex = new HardSyncMutex<T>(node, mutex_client, mutex_server);
 					mutex_server.manage(node->getId(), mutex);
 					return mutex;
@@ -64,6 +64,6 @@ namespace fpmas::synchro {
 			};
 
 	}
-	typedef fpmas::api::synchro::SyncMode<hard::HardSyncMutex, hard::HardSyncRuntime> HardSyncMode;
-}
+	typedef api::synchro::SyncMode<hard::HardSyncMutex, hard::HardSyncRuntime> HardSyncMode;
+}}
 #endif

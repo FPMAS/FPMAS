@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-namespace fpmas::api::graph::parallel {
+namespace fpmas { namespace api { namespace graph {
 	enum LocationState {
 		LOCAL,
 		DISTANT
@@ -22,5 +22,5 @@ namespace fpmas::api::graph::parallel {
 		}
 		return os;
 	}
-}
+}}}
 #endif

@@ -8,14 +8,14 @@
 #include "node.h"
 #include "edge.h"
 
-namespace fpmas::graph::base {
+namespace fpmas { namespace graph {
 
 	template<
 		typename NodeType,
 		typename EdgeType
-	> class Graph : public virtual api::graph::base::Graph<NodeType, EdgeType> {
+	> class Graph : public virtual api::graph::Graph<NodeType, EdgeType> {
 			public:
-				typedef fpmas::api::graph::base::Graph<NodeType, EdgeType> GraphBase;
+				typedef api::graph::Graph<NodeType, EdgeType> GraphBase;
 				using typename GraphBase::NodeBase;
 				using typename GraphBase::EdgeBase;
 
@@ -230,5 +230,5 @@ namespace fpmas::graph::base {
 				delete callback;
 		}
 
-}
+}}
 #endif

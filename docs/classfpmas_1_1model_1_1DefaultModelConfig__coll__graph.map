@@ -1,16 +1,16 @@
 <map id="fpmas::model::DefaultModelConfig&lt; SyncMode &gt;" name="fpmas::model::DefaultModelConfig&lt; SyncMode &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="876,299,1063,340"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1graph_1_1parallel_1_1DistributedGraph.html" title=" " alt="" coords="508,143,723,184"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1base_1_1Graph.html" title=" " alt="" coords="275,8,448,108"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html" title=" " alt="" coords="19,5,201,105"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedGraph.html" title=" " alt="" coords="277,135,446,191"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html" title=" " alt="" coords="5,129,215,200"/>
-<area shape="rect" id="node7" href="$classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html" title=" " alt="" coords="539,211,691,267"/>
-<area shape="rect" id="node8" href="$classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html" title=" " alt="" coords="264,215,459,271"/>
-<area shape="rect" id="node9" href="$classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html" title=" " alt="" coords="527,291,703,347"/>
-<area shape="rect" id="node10" href="$classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html" title=" " alt="" coords="267,299,456,340"/>
-<area shape="rect" id="node11" href="$classfpmas_1_1runtime_1_1Runtime.html" title=" " alt="" coords="532,371,699,398"/>
-<area shape="rect" id="node12" href="$classfpmas_1_1api_1_1runtime_1_1Runtime.html" title=" " alt="" coords="294,364,429,405"/>
-<area shape="rect" id="node13" href="$classfpmas_1_1scheduler_1_1Scheduler.html" title=" " alt="" coords="521,429,709,455"/>
-<area shape="rect" id="node14" href="$classfpmas_1_1api_1_1scheduler_1_1Scheduler.html" title=" " alt="" coords="288,429,435,471"/>
+<area shape="rect" id="node1" title=" " alt="" coords="880,264,1067,305"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1graph_1_1DistributedGraph.html" title=" " alt="" coords="548,111,717,152"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1Graph.html" title=" " alt="" coords="276,12,489,83"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1graph_1_1Graph.html" title=" " alt="" coords="5,5,227,76"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1graph_1_1DistributedGraph.html" title=" " alt="" coords="279,111,486,152"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1graph_1_1Graph.html" title=" " alt="" coords="11,100,221,171"/>
+<area shape="rect" id="node7" href="$classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html" title=" " alt="" coords="557,177,709,233"/>
+<area shape="rect" id="node8" href="$classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html" title=" " alt="" coords="285,177,480,233"/>
+<area shape="rect" id="node9" href="$classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html" title=" " alt="" coords="545,257,721,313"/>
+<area shape="rect" id="node10" href="$classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html" title=" " alt="" coords="288,264,477,305"/>
+<area shape="rect" id="node11" href="$classfpmas_1_1runtime_1_1Runtime.html" title=" " alt="" coords="549,337,716,363"/>
+<area shape="rect" id="node12" href="$classfpmas_1_1api_1_1runtime_1_1Runtime.html" title=" " alt="" coords="315,329,450,371"/>
+<area shape="rect" id="node13" href="$classfpmas_1_1scheduler_1_1Scheduler.html" title=" " alt="" coords="539,394,727,421"/>
+<area shape="rect" id="node14" href="$classfpmas_1_1api_1_1scheduler_1_1Scheduler.html" title=" " alt="" coords="309,395,456,436"/>
 </map>

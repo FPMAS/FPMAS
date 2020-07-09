@@ -8,7 +8,7 @@ namespace fpmas {
 	typedef unsigned long Date;
 	typedef size_t JID;
 
-	namespace api::scheduler {
+	namespace api { namespace scheduler {
 
 		class Task {
 			public:
@@ -19,7 +19,7 @@ namespace fpmas {
 		template<typename T>
 		class NodeTask : public Task {
 			public:
-				virtual api::graph::parallel::DistributedNode<T>* node() = 0;
+				virtual api::graph::DistributedNode<T>* node() = 0;
 		};
 
 		class Job {
@@ -66,6 +66,6 @@ namespace fpmas {
 				virtual ~Scheduler() {}
 		};
 
-	}
+	}}
 }
 #endif

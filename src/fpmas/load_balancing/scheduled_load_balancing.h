@@ -4,8 +4,9 @@
 #include "fpmas/api/load_balancing/load_balancing.h"
 #include "fpmas/api/scheduler/scheduler.h"
 #include "fpmas/api/runtime/runtime.h"
+#include "fpmas/scheduler/scheduler.h"
 
-namespace fpmas::load_balancing {
+namespace fpmas { namespace load_balancing {
 	template<typename T>
 		class ScheduledLoadBalancing : public api::load_balancing::LoadBalancing<T> {
 			private:
@@ -48,5 +49,5 @@ namespace fpmas::load_balancing {
 			partition = fixed_vertices_lb.balance(nodes, fixed_nodes);
 			return partition;
 		}
-}
+}}
 #endif

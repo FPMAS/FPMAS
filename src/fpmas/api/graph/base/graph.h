@@ -10,11 +10,13 @@
 
 #define GRAPH_PARAMS_SPEC NodeType, EdgeType
 
-namespace fpmas::api::graph::base {
+namespace fpmas { namespace api { namespace graph {
 
 	template<GRAPH_PARAMS> class Graph {
-		static_assert(std::is_base_of<typename NodeType::EdgeType, EdgeType>::value);
-		static_assert(std::is_base_of<typename EdgeType::NodeType, NodeType>::value);
+		static_assert(std::is_base_of<typename NodeType::EdgeType, EdgeType>::value,
+				"NodeType::EdgeType must be a base of EdgeType.");
+		static_assert(std::is_base_of<typename EdgeType::NodeType, NodeType>::value,
+				"EdgeType::NodeType must be a base of NodeType.");
 		public:
 			typedef typename EdgeType::NodeType NodeBase; // Maybe NodeType == node_base, but, in any case, NodeType is convertible to node_base.
 			typedef typename NodeType::EdgeType EdgeBase;
@@ -23,8 +25,8 @@ namespace fpmas::api::graph::base {
 			typedef typename EdgeType::IdType EdgeIdType;
 			typedef typename EdgeType::LayerIdType LayerIdType;
 
-			typedef fpmas::api::graph::base::IdHash<typename NodeType::IdType> NodeIdHash;
-			typedef fpmas::api::graph::base::IdHash<typename EdgeType::IdType> EdgeIdHash;
+			typedef fpmas::api::graph::IdHash<typename NodeType::IdType> NodeIdHash;
+			typedef fpmas::api::graph::IdHash<typename EdgeType::IdType> EdgeIdHash;
 			typedef std::unordered_map<
 				NodeIdType, NodeType*, NodeIdHash
 				> NodeMap;
@@ -71,21 +73,5 @@ namespace fpmas::api::graph::base {
 		
 			virtual ~Graph() {}
 	};
-
-/*
- *    template<typename GraphImpl, typename... Args>
- *        typename GraphImpl::NodeType* buildNode(GraphImpl& graph, Args... args) {
- *            return graph.buildNode(args...);
- *        }
- *
- *    template<typename GraphImpl, typename... Args>
- *        typename GraphImpl::EdgeType* link(
- *                GraphImpl& graph,
- *                typename GraphImpl::NodeBase* src,
- *                typename GraphImpl::NodeBase* tgt,
- *                Args... args) {
- *            return graph.link(src, tgt, args...);
- *        }
- */
-}
+}}}
 #endif

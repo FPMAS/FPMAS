@@ -1,7 +1,7 @@
 #ifndef PTR_WRAPPER_API_H
 #define PTR_WRAPPER_API_H
 
-namespace fpmas::api::utils {
+namespace fpmas { namespace api { namespace utils {
 
 	template<typename VirtualType>
 	class VirtualPtrWrapper {
@@ -42,5 +42,5 @@ namespace fpmas::api::utils {
 				 return virtual_type_ptr;
 			 }
 	};
-}
+}}}
 #endif

@@ -5,5 +5,5 @@ var searchData=
   ['loadbalancing_193',['LoadBalancing',['../classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html',1,'fpmas::api::load_balancing']]],
   ['loadbalancing_3c_20agentptr_20_3e_194',['LoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html',1,'fpmas::api::load_balancing']]],
   ['loadbalancingtask_195',['LoadBalancingTask',['../classfpmas_1_1model_1_1LoadBalancingTask.html',1,'fpmas::model']]],
-  ['locationmanager_196',['LocationManager',['../classfpmas_1_1api_1_1graph_1_1parallel_1_1LocationManager.html',1,'fpmas::api::graph::parallel::LocationManager&lt; T &gt;'],['../classfpmas_1_1graph_1_1parallel_1_1LocationManager.html',1,'fpmas::graph::parallel::LocationManager&lt; T &gt;']]]
+  ['locationmanager_196',['LocationManager',['../classfpmas_1_1api_1_1graph_1_1LocationManager.html',1,'fpmas::api::graph::LocationManager&lt; T &gt;'],['../classfpmas_1_1graph_1_1LocationManager.html',1,'fpmas::graph::LocationManager&lt; T &gt;']]]
 ];

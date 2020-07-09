@@ -23,7 +23,7 @@ class GhostSyncLinkerTest : public ::testing::Test {
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
-		MockMpi<fpmas::graph::parallel::EdgePtrWrapper<int>> edge_mpi {mock_comm};
+		MockMpi<fpmas::graph::EdgePtrWrapper<int>> edge_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
 		MockDistributedGraph<int, MockNode, MockEdge> mocked_graph;
 
@@ -121,7 +121,7 @@ TEST_F(GhostSyncLinkerTest, export_link) {
 }
 
 TEST_F(GhostSyncLinkerTest, import_link) {
-	std::unordered_map<int, std::vector<fpmas::graph::parallel::EdgePtrWrapper<int>>>
+	std::unordered_map<int, std::vector<fpmas::graph::EdgePtrWrapper<int>>>
 		import_map {
 			{2, {edge1, edge3}},
 			{4, {edge2}}
@@ -146,7 +146,7 @@ TEST_F(GhostSyncLinkerTest, import_export_link) {
 		);
 	linker.link(edge2);
 
-	std::unordered_map<int, std::vector<fpmas::graph::parallel::EdgePtrWrapper<int>>>
+	std::unordered_map<int, std::vector<fpmas::graph::EdgePtrWrapper<int>>>
 		import_map {
 			{0, {edge1, edge3}}
 		};
@@ -197,8 +197,8 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 
 	auto edges = std::unordered_map<
 			DistributedId,
-			fpmas::api::graph::parallel::DistributedEdge<int>*,
-			fpmas::api::graph::base::IdHash<DistributedId>> {
+			fpmas::api::graph::DistributedEdge<int>*,
+			fpmas::api::graph::IdHash<DistributedId>> {
 		{edge1_id, edge1},
 		{edge2_id, edge2},
 		{edge3_id, edge3}
@@ -241,8 +241,8 @@ TEST_F(GhostSyncLinkerTest, import_export_unlink) {
 
 	auto edges = std::unordered_map<
 			DistributedId,
-			fpmas::api::graph::parallel::DistributedEdge<int>*,
-			fpmas::api::graph::base::IdHash<DistributedId>> {
+			fpmas::api::graph::DistributedEdge<int>*,
+			fpmas::api::graph::IdHash<DistributedId>> {
 		{edge2_id, edge2},
 		{edge3_id, edge3}
 	};
