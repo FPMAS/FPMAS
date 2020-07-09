@@ -395,6 +395,9 @@ namespace fpmas { namespace api {
 				using mpi = TypedMpiImpl<T>;
 		};
 
+	/**
+	 * Utility function used to compare DataPacks.
+	 */
 	inline bool operator ==(const fpmas::api::communication::DataPack& d1, const fpmas::api::communication::DataPack& d2) {
 		if(d1.count != d2.count)
 			return false;
