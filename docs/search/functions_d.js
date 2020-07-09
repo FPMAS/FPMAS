@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['_7empicommunicator_225',['~MpiCommunicator',['../classfpmas_1_1communication_1_1MpiCommunicator.html#a868d5f7039acbde8aaf33f658fbd0bef',1,'fpmas::communication::MpiCommunicator']]]
+  ['test_275',['test',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#aa877e3ec7890bdd376b840af11ffd727',1,'fpmas::api::communication::MpiCommunicator::test()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a17ed5fd7d0546bcdfa9ceac936fc3b27',1,'fpmas::communication::MpiCommunicator::test()']]],
+  ['to_5fjson_276',['to_json',['../structnlohmann_1_1adl__serializer_3_01DistributedId_01_4.html#a38bb1d683f2def40f44c81692d7c8bf4',1,'nlohmann::adl_serializer&lt; DistributedId &gt;']]]
 ];

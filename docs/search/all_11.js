@@ -1,7 +1,13 @@
 var searchData=
 [
-  ['virtualptrwrapper_105',['VirtualPtrWrapper',['../classfpmas_1_1api_1_1utils_1_1VirtualPtrWrapper.html',1,'fpmas::api::utils']]],
-  ['virtualptrwrapper_3c_20api_3a_3amodel_3a_3aagent_20_3e_106',['VirtualPtrWrapper&lt; api::model::Agent &gt;',['../classfpmas_1_1api_1_1utils_1_1VirtualPtrWrapper.html',1,'fpmas::api::utils']]],
-  ['voidcallback_107',['VoidCallback',['../classfpmas_1_1utils_1_1VoidCallback.html',1,'fpmas::utils']]],
-  ['voidtask_108',['VoidTask',['../classfpmas_1_1scheduler_1_1VoidTask.html',1,'fpmas::scheduler']]]
+  ['task_121',['Task',['../classfpmas_1_1api_1_1scheduler_1_1Task.html',1,'fpmas::api::scheduler']]],
+  ['terminationalgorithm_122',['TerminationAlgorithm',['../classfpmas_1_1api_1_1synchro_1_1hard_1_1TerminationAlgorithm.html',1,'fpmas::api::synchro::hard::TerminationAlgorithm'],['../classfpmas_1_1synchro_1_1hard_1_1TerminationAlgorithm.html',1,'fpmas::synchro::hard::TerminationAlgorithm&lt; TypedMpi &gt;']]],
+  ['terminationalgorithm_3c_20communication_3a_3atypedmpi_20_3e_123',['TerminationAlgorithm&lt; communication::TypedMpi &gt;',['../classfpmas_1_1synchro_1_1hard_1_1TerminationAlgorithm.html',1,'fpmas::synchro::hard']]],
+  ['test_124',['test',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#aa877e3ec7890bdd376b840af11ffd727',1,'fpmas::api::communication::MpiCommunicator::test()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a17ed5fd7d0546bcdfa9ceac936fc3b27',1,'fpmas::communication::MpiCommunicator::test()']]],
+  ['to_5fjson_125',['to_json',['../structnlohmann_1_1adl__serializer_3_01DistributedId_01_4.html#a38bb1d683f2def40f44c81692d7c8bf4',1,'nlohmann::adl_serializer&lt; DistributedId &gt;']]],
+  ['typedmpi_126',['TypedMpi',['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html',1,'fpmas::api::communication::TypedMpi&lt; T &gt;'],['../classfpmas_1_1communication_1_1TypedMpi.html',1,'fpmas::communication::TypedMpi&lt; T &gt;']]],
+  ['typedmpi_3c_20color_20_3e_127',['TypedMpi&lt; Color &gt;',['../classfpmas_1_1communication_1_1TypedMpi.html',1,'fpmas::communication::TypedMpi&lt; Color &gt;'],['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html',1,'fpmas::api::communication::TypedMpi&lt; Color &gt;']]],
+  ['typedmpi_3c_20distributedid_20_3e_128',['TypedMpi&lt; DistributedId &gt;',['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html',1,'fpmas::api::communication::TypedMpi&lt; DistributedId &gt;'],['../classfpmas_1_1communication_1_1TypedMpi.html',1,'fpmas::communication::TypedMpi&lt; DistributedId &gt;']]],
+  ['typedmpi_3c_20fpmas_3a_3aapi_3a_3autils_3a_3avirtualptrwrapper_3c_20t_20_3e_20_3e_129',['TypedMpi&lt; fpmas::api::utils::VirtualPtrWrapper&lt; T &gt; &gt;',['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html',1,'fpmas::api::communication::TypedMpi&lt; fpmas::api::utils::VirtualPtrWrapper&lt; T &gt; &gt;'],['../classfpmas_1_1communication_1_1TypedMpi.html',1,'fpmas::communication::TypedMpi&lt; fpmas::api::utils::VirtualPtrWrapper&lt; T &gt; &gt;']]],
+  ['typedmpi_3c_20fpmas_3a_3asynchro_3a_3ahard_3a_3adataupdatepack_3c_20t_20_3e_20_3e_130',['TypedMpi&lt; fpmas::synchro::hard::DataUpdatePack&lt; T &gt; &gt;',['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html',1,'fpmas::api::communication::TypedMpi&lt; fpmas::synchro::hard::DataUpdatePack&lt; T &gt; &gt;'],['../classfpmas_1_1communication_1_1TypedMpi.html',1,'fpmas::communication::TypedMpi&lt; fpmas::synchro::hard::DataUpdatePack&lt; T &gt; &gt;']]]
 ];

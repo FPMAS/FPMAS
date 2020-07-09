@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['num_5fedges_5fmulti_5ffn_208',['num_edges_multi_fn',['../namespacefpmas_1_1load__balancing_1_1zoltan.html#a1198c9d25be82cadec6d84304192b5d0',1,'fpmas::load_balancing::zoltan']]],
-  ['num_5fobj_209',['num_obj',['../namespacefpmas_1_1load__balancing_1_1zoltan.html#a76be5b810be044ab752da4751518170d',1,'fpmas::load_balancing::zoltan']]]
+  ['migrate_257',['migrate',['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a6550b59def1df2ff4570debf69164cbb',1,'fpmas::api::communication::TypedMpi::migrate()'],['../classfpmas_1_1communication_1_1TypedMpi.html#a4e6121faafbd32343eb71327d1b8bf2e',1,'fpmas::communication::TypedMpi::migrate()']]],
+  ['mpicommunicator_258',['MpiCommunicator',['../classfpmas_1_1communication_1_1MpiCommunicator.html#a42eb9726161eaef0864433d57c1153e6',1,'fpmas::communication::MpiCommunicator::MpiCommunicator()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a418cffb7055f03d4f008a74b52e6aedc',1,'fpmas::communication::MpiCommunicator::MpiCommunicator(const MpiCommunicator &amp;)'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a851ef785c18635a13c2f9af62a0aeab5',1,'fpmas::communication::MpiCommunicator::MpiCommunicator(std::initializer_list&lt; int &gt;)']]]
 ];

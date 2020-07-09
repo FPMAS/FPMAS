@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: fpmas::api::graph::base::Graph&lt; NodeType, ArcType &gt; Class Template Reference</title>
+<title>fpmas: fpmas::api::graph::base::Graph&lt; NodeType, EdgeType &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,117 +70,117 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">fpmas::api::graph::base::Graph&lt; NodeType, ArcType &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">fpmas::api::graph::base::Graph&lt; NodeType, EdgeType &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="dynheader">
-Inheritance diagram for fpmas::api::graph::base::Graph&lt; NodeType, ArcType &gt;:</div>
+Inheritance diagram for fpmas::api::graph::base::Graph&lt; NodeType, EdgeType &gt;:</div>
 <div class="dyncontent">
- <div class="center">
-  <img src="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.png" usemap="#fpmas::api::graph::base::Graph_3C_20NodeType_2C_20ArcType_20_3E_map" alt=""/>
-  <map id="fpmas::api::graph::base::Graph_3C_20NodeType_2C_20ArcType_20_3E_map" name="fpmas::api::graph::base::Graph_3C_20NodeType_2C_20ArcType_20_3E_map">
-<area href="classfpmas_1_1graph_1_1base_1_1Graph.html" alt="fpmas::graph::base::Graph&lt; NodeType, ArcType &gt;" shape="rect" coords="0,56,321,80"/>
-  </map>
-</div></div>
+<div class="center"><img src="classfpmas_1_1api_1_1graph_1_1base_1_1Graph__inherit__graph.png" border="0" usemap="#fpmas_1_1api_1_1graph_1_1base_1_1Graph_3_01NodeType_00_01EdgeType_01_4_inherit__map" alt="Inheritance graph"/></div>
+<map name="fpmas_1_1api_1_1graph_1_1base_1_1Graph_3_01NodeType_00_01EdgeType_01_4_inherit__map" id="fpmas_1_1api_1_1graph_1_1base_1_1Graph_3_01NodeType_00_01EdgeType_01_4_inherit__map">
+<area shape="rect" title=" " alt="" coords="29,5,197,61"/>
+<area shape="rect" href="classfpmas_1_1graph_1_1base_1_1Graph.html" title=" " alt="" coords="5,109,220,151"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a8e2f31e16a972f61dd8b6dd6f4e18800"><td class="memItemLeft" align="right" valign="top"><a id="a8e2f31e16a972f61dd8b6dd6f4e18800"></a>
-typedef ArcType::NodeType&#160;</td><td class="memItemRight" valign="bottom"><b>NodeBase</b></td></tr>
-<tr class="separator:a8e2f31e16a972f61dd8b6dd6f4e18800"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac190721ba1c092d575222e0ad9392369"><td class="memItemLeft" align="right" valign="top"><a id="ac190721ba1c092d575222e0ad9392369"></a>
-typedef NodeType::ArcType&#160;</td><td class="memItemRight" valign="bottom"><b>ArcBase</b></td></tr>
-<tr class="separator:ac190721ba1c092d575222e0ad9392369"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a007af921b9de407291d0186a697968a3"><td class="memItemLeft" align="right" valign="top"><a id="a007af921b9de407291d0186a697968a3"></a>
+<tr class="memitem:ad93308b4577e1ad47fcf8dcc49341635"><td class="memItemLeft" align="right" valign="top"><a id="ad93308b4577e1ad47fcf8dcc49341635"></a>
+typedef EdgeType::NodeType&#160;</td><td class="memItemRight" valign="bottom"><b>NodeBase</b></td></tr>
+<tr class="separator:ad93308b4577e1ad47fcf8dcc49341635"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b082eed9595b1a2ce80b762c0af8cf6"><td class="memItemLeft" align="right" valign="top"><a id="a6b082eed9595b1a2ce80b762c0af8cf6"></a>
+typedef NodeType::EdgeType&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeBase</b></td></tr>
+<tr class="separator:a6b082eed9595b1a2ce80b762c0af8cf6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d1bde50df05e0e58ec093c1c49c0e87"><td class="memItemLeft" align="right" valign="top"><a id="a8d1bde50df05e0e58ec093c1c49c0e87"></a>
 typedef NodeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdType</b></td></tr>
-<tr class="separator:a007af921b9de407291d0186a697968a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b1a7205b8eb09a540eae1faa25dcced"><td class="memItemLeft" align="right" valign="top"><a id="a8b1a7205b8eb09a540eae1faa25dcced"></a>
-typedef ArcType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>ArcIdType</b></td></tr>
-<tr class="separator:a8b1a7205b8eb09a540eae1faa25dcced"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a55bcf9bf94e2d970b3dc2abbff47be"><td class="memItemLeft" align="right" valign="top"><a id="a1a55bcf9bf94e2d970b3dc2abbff47be"></a>
-typedef ArcType::LayerIdType&#160;</td><td class="memItemRight" valign="bottom"><b>LayerIdType</b></td></tr>
-<tr class="separator:a1a55bcf9bf94e2d970b3dc2abbff47be"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f441f703b4e169c7598d77775f06f17"><td class="memItemLeft" align="right" valign="top"><a id="a3f441f703b4e169c7598d77775f06f17"></a>
+<tr class="separator:a8d1bde50df05e0e58ec093c1c49c0e87"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e0308d97b482e19c80a122ca304597d"><td class="memItemLeft" align="right" valign="top"><a id="a5e0308d97b482e19c80a122ca304597d"></a>
+typedef EdgeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIdType</b></td></tr>
+<tr class="separator:a5e0308d97b482e19c80a122ca304597d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af30065f967a135d9b4918c80528828f6"><td class="memItemLeft" align="right" valign="top"><a id="af30065f967a135d9b4918c80528828f6"></a>
+typedef EdgeType::LayerIdType&#160;</td><td class="memItemRight" valign="bottom"><b>LayerIdType</b></td></tr>
+<tr class="separator:af30065f967a135d9b4918c80528828f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05a47c6d543e55e054abbbb8eecc03af"><td class="memItemLeft" align="right" valign="top"><a id="a05a47c6d543e55e054abbbb8eecc03af"></a>
 typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">fpmas::api::graph::base::IdHash</a>&lt; typename NodeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdHash</b></td></tr>
-<tr class="separator:a3f441f703b4e169c7598d77775f06f17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57861070ac577b56fb8362e91d930e55"><td class="memItemLeft" align="right" valign="top"><a id="a57861070ac577b56fb8362e91d930e55"></a>
-typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">fpmas::api::graph::base::IdHash</a>&lt; typename ArcType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ArcIdHash</b></td></tr>
-<tr class="separator:a57861070ac577b56fb8362e91d930e55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b62373eb5412fc95da79fb7387a08a2"><td class="memItemLeft" align="right" valign="top"><a id="a4b62373eb5412fc95da79fb7387a08a2"></a>
+<tr class="separator:a05a47c6d543e55e054abbbb8eecc03af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6b539187003ecfeb7f09994f2a76bac"><td class="memItemLeft" align="right" valign="top"><a id="ae6b539187003ecfeb7f09994f2a76bac"></a>
+typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">fpmas::api::graph::base::IdHash</a>&lt; typename EdgeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIdHash</b></td></tr>
+<tr class="separator:ae6b539187003ecfeb7f09994f2a76bac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a671a52f72bfd86b134dc72f89d04093f"><td class="memItemLeft" align="right" valign="top"><a id="a671a52f72bfd86b134dc72f89d04093f"></a>
 typedef std::unordered_map&lt; NodeIdType, NodeType *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeMap</b></td></tr>
-<tr class="separator:a4b62373eb5412fc95da79fb7387a08a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d4ed37c7dfb5e88ca37d6c712f672a7"><td class="memItemLeft" align="right" valign="top"><a id="a4d4ed37c7dfb5e88ca37d6c712f672a7"></a>
-typedef std::unordered_map&lt; ArcIdType, ArcType *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">ArcIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ArcMap</b></td></tr>
-<tr class="separator:a4d4ed37c7dfb5e88ca37d6c712f672a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a671a52f72bfd86b134dc72f89d04093f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab12e47b9c324c9edc59111f5ad4a7d25"><td class="memItemLeft" align="right" valign="top"><a id="ab12e47b9c324c9edc59111f5ad4a7d25"></a>
+typedef std::unordered_map&lt; EdgeIdType, EdgeType *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1base_1_1IdHash.html">EdgeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeMap</b></td></tr>
+<tr class="separator:ab12e47b9c324c9edc59111f5ad4a7d25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a69585d47a3b00bbedf8ff7398c6d1f92"><td class="memItemLeft" align="right" valign="top"><a id="a69585d47a3b00bbedf8ff7398c6d1f92"></a>
+<tr class="memitem:af5e9eec5d5a365a307f69f398d741343"><td class="memItemLeft" align="right" valign="top"><a id="af5e9eec5d5a365a307f69f398d741343"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (NodeType *node)=0</td></tr>
-<tr class="separator:a69585d47a3b00bbedf8ff7398c6d1f92"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab964da48cd39bffe013cb1ad42b490a3"><td class="memItemLeft" align="right" valign="top"><a id="ab964da48cd39bffe013cb1ad42b490a3"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (ArcType *arc)=0</td></tr>
-<tr class="separator:ab964da48cd39bffe013cb1ad42b490a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99f8d855ba8fd8d636118b54f8b2495d"><td class="memItemLeft" align="right" valign="top"><a id="a99f8d855ba8fd8d636118b54f8b2495d"></a>
+<tr class="separator:af5e9eec5d5a365a307f69f398d741343"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c6595bd3c802a8863522fce7a31bedd"><td class="memItemLeft" align="right" valign="top"><a id="a4c6595bd3c802a8863522fce7a31bedd"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (EdgeType *edge)=0</td></tr>
+<tr class="separator:a4c6595bd3c802a8863522fce7a31bedd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99687af2c70ddf4c2987f382cac737c4"><td class="memItemLeft" align="right" valign="top"><a id="a99687af2c70ddf4c2987f382cac737c4"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (NodeBase *node)=0</td></tr>
-<tr class="separator:a99f8d855ba8fd8d636118b54f8b2495d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7c781312a7f00a14988dacda244048c"><td class="memItemLeft" align="right" valign="top"><a id="ab7c781312a7f00a14988dacda244048c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (ArcBase *arc)=0</td></tr>
-<tr class="separator:ab7c781312a7f00a14988dacda244048c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa576feb841eaf3270bbc1f9898347a29"><td class="memItemLeft" align="right" valign="top"><a id="aa576feb841eaf3270bbc1f9898347a29"></a>
+<tr class="separator:a99687af2c70ddf4c2987f382cac737c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acff04ab58502b7c62622b882dff97d2e"><td class="memItemLeft" align="right" valign="top"><a id="acff04ab58502b7c62622b882dff97d2e"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (EdgeBase *edge)=0</td></tr>
+<tr class="separator:acff04ab58502b7c62622b882dff97d2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaef5c89449ab7301736dd1030274f4f6"><td class="memItemLeft" align="right" valign="top"><a id="aaef5c89449ab7301736dd1030274f4f6"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnInsertNode</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *)=0</td></tr>
-<tr class="separator:aa576feb841eaf3270bbc1f9898347a29"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6388efcbe7f8597916f30b9628c90361"><td class="memItemLeft" align="right" valign="top"><a id="a6388efcbe7f8597916f30b9628c90361"></a>
+<tr class="separator:aaef5c89449ab7301736dd1030274f4f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac7e17e87c005ae3060a2c7430f02cd9"><td class="memItemLeft" align="right" valign="top"><a id="aac7e17e87c005ae3060a2c7430f02cd9"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnEraseNode</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *)=0</td></tr>
-<tr class="separator:a6388efcbe7f8597916f30b9628c90361"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3291bb1511babc2d0c88f22841ced947"><td class="memItemLeft" align="right" valign="top"><a id="a3291bb1511babc2d0c88f22841ced947"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnInsertArc</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; ArcType * &gt; *)=0</td></tr>
-<tr class="separator:a3291bb1511babc2d0c88f22841ced947"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a556f035116719d51c744cdc8f2e5ab"><td class="memItemLeft" align="right" valign="top"><a id="a2a556f035116719d51c744cdc8f2e5ab"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnEraseArc</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; ArcType * &gt; *)=0</td></tr>
-<tr class="separator:a2a556f035116719d51c744cdc8f2e5ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac4de59f7cd1bba98c36b79b4de6eb55"><td class="memItemLeft" align="right" valign="top"><a id="aac4de59f7cd1bba98c36b79b4de6eb55"></a>
+<tr class="separator:aac7e17e87c005ae3060a2c7430f02cd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11f284ea0690beeb460780351b813703"><td class="memItemLeft" align="right" valign="top"><a id="a11f284ea0690beeb460780351b813703"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnInsertEdge</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; EdgeType * &gt; *)=0</td></tr>
+<tr class="separator:a11f284ea0690beeb460780351b813703"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab20b09ee0aa5f1b1f13bbab62e92d0a0"><td class="memItemLeft" align="right" valign="top"><a id="ab20b09ee0aa5f1b1f13bbab62e92d0a0"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnEraseEdge</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; EdgeType * &gt; *)=0</td></tr>
+<tr class="separator:ab20b09ee0aa5f1b1f13bbab62e92d0a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a957182bcd68ca9347f7b8e7bbad5d616"><td class="memItemLeft" align="right" valign="top"><a id="a957182bcd68ca9347f7b8e7bbad5d616"></a>
 virtual const NodeIdType &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>currentNodeId</b> () const =0</td></tr>
-<tr class="separator:aac4de59f7cd1bba98c36b79b4de6eb55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d73917fe2126f357fa720e2cc595b33"><td class="memItemLeft" align="right" valign="top"><a id="a9d73917fe2126f357fa720e2cc595b33"></a>
+<tr class="separator:a957182bcd68ca9347f7b8e7bbad5d616"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45bef8e497b9f4855ab3e4c99a7789be"><td class="memItemLeft" align="right" valign="top"><a id="a45bef8e497b9f4855ab3e4c99a7789be"></a>
 virtual NodeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getNode</b> (NodeIdType)=0</td></tr>
-<tr class="separator:a9d73917fe2126f357fa720e2cc595b33"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a577cd793832d49560cea326630bce551"><td class="memItemLeft" align="right" valign="top"><a id="a577cd793832d49560cea326630bce551"></a>
+<tr class="separator:a45bef8e497b9f4855ab3e4c99a7789be"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c11229046cc8b2d9f0ddbbfb976aa02"><td class="memItemLeft" align="right" valign="top"><a id="a9c11229046cc8b2d9f0ddbbfb976aa02"></a>
 virtual const NodeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getNode</b> (NodeIdType) const =0</td></tr>
-<tr class="separator:a577cd793832d49560cea326630bce551"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a26260027af102ca540b52179e8b11ee8"><td class="memItemLeft" align="right" valign="top"><a id="a26260027af102ca540b52179e8b11ee8"></a>
+<tr class="separator:a9c11229046cc8b2d9f0ddbbfb976aa02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45bd60c2e76aa23a578ae47264ab5138"><td class="memItemLeft" align="right" valign="top"><a id="a45bd60c2e76aa23a578ae47264ab5138"></a>
 virtual const NodeMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getNodes</b> () const =0</td></tr>
-<tr class="separator:a26260027af102ca540b52179e8b11ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1998898de088a87142ecb1de4076164a"><td class="memItemLeft" align="right" valign="top"><a id="a1998898de088a87142ecb1de4076164a"></a>
-virtual const ArcIdType &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>currentArcId</b> () const =0</td></tr>
-<tr class="separator:a1998898de088a87142ecb1de4076164a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa28bb479aba808524e4c13152f8011ca"><td class="memItemLeft" align="right" valign="top"><a id="aa28bb479aba808524e4c13152f8011ca"></a>
-virtual ArcType *&#160;</td><td class="memItemRight" valign="bottom"><b>getArc</b> (ArcIdType)=0</td></tr>
-<tr class="separator:aa28bb479aba808524e4c13152f8011ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3cc7bcfe86eae26bc06ed157d4deac7c"><td class="memItemLeft" align="right" valign="top"><a id="a3cc7bcfe86eae26bc06ed157d4deac7c"></a>
-virtual const ArcType *&#160;</td><td class="memItemRight" valign="bottom"><b>getArc</b> (ArcIdType) const =0</td></tr>
-<tr class="separator:a3cc7bcfe86eae26bc06ed157d4deac7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3289fcdf0e509e8b2419ba664430761"><td class="memItemLeft" align="right" valign="top"><a id="ac3289fcdf0e509e8b2419ba664430761"></a>
-virtual const ArcMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getArcs</b> () const =0</td></tr>
-<tr class="separator:ac3289fcdf0e509e8b2419ba664430761"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af1f8f1db0de9708d3dfd939b7710c16b"><td class="memItemLeft" align="right" valign="top"><a id="af1f8f1db0de9708d3dfd939b7710c16b"></a>
+<tr class="separator:a45bd60c2e76aa23a578ae47264ab5138"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b5b7aa02e8027f67339bd905fe91039"><td class="memItemLeft" align="right" valign="top"><a id="a3b5b7aa02e8027f67339bd905fe91039"></a>
+virtual const EdgeIdType &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>currentEdgeId</b> () const =0</td></tr>
+<tr class="separator:a3b5b7aa02e8027f67339bd905fe91039"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a507f1807780da5473bce7ea20f1b7d4d"><td class="memItemLeft" align="right" valign="top"><a id="a507f1807780da5473bce7ea20f1b7d4d"></a>
+virtual EdgeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getEdge</b> (EdgeIdType)=0</td></tr>
+<tr class="separator:a507f1807780da5473bce7ea20f1b7d4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a390d39e7357f4b71c7aea50058827cbf"><td class="memItemLeft" align="right" valign="top"><a id="a390d39e7357f4b71c7aea50058827cbf"></a>
+virtual const EdgeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getEdge</b> (EdgeIdType) const =0</td></tr>
+<tr class="separator:a390d39e7357f4b71c7aea50058827cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a618c568357e60d615eb21857fb52f187"><td class="memItemLeft" align="right" valign="top"><a id="a618c568357e60d615eb21857fb52f187"></a>
+virtual const EdgeMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getEdges</b> () const =0</td></tr>
+<tr class="separator:a618c568357e60d615eb21857fb52f187"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31dd61c8da6e66a29aa65a18f3cd23c9"><td class="memItemLeft" align="right" valign="top"><a id="a31dd61c8da6e66a29aa65a18f3cd23c9"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (NodeType *)=0</td></tr>
-<tr class="separator:af1f8f1db0de9708d3dfd939b7710c16b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6409d0f05afb65d45ce60502e8378a9"><td class="memItemLeft" align="right" valign="top"><a id="ad6409d0f05afb65d45ce60502e8378a9"></a>
+<tr class="separator:a31dd61c8da6e66a29aa65a18f3cd23c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af097b87fb48fa29b49dba7d5fadf012a"><td class="memItemLeft" align="right" valign="top"><a id="af097b87fb48fa29b49dba7d5fadf012a"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (const NodeIdType &amp;id)</td></tr>
-<tr class="separator:ad6409d0f05afb65d45ce60502e8378a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7ad1e8c882ab158aee93f0757ecb2d1b"><td class="memItemLeft" align="right" valign="top"><a id="a7ad1e8c882ab158aee93f0757ecb2d1b"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (ArcType *)=0</td></tr>
-<tr class="separator:a7ad1e8c882ab158aee93f0757ecb2d1b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3fb5cf29f592fa353d529e769201a11f"><td class="memItemLeft" align="right" valign="top"><a id="a3fb5cf29f592fa353d529e769201a11f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const ArcIdType &amp;id)</td></tr>
-<tr class="separator:a3fb5cf29f592fa353d529e769201a11f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6d5f49477e90a47c92ea2cff9667eda5"><td class="memItemLeft" align="right" valign="top"><a id="a6d5f49477e90a47c92ea2cff9667eda5"></a>
+<tr class="separator:af097b87fb48fa29b49dba7d5fadf012a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2453155662690ed1d8a4dc1ab787f8e1"><td class="memItemLeft" align="right" valign="top"><a id="a2453155662690ed1d8a4dc1ab787f8e1"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (EdgeType *)=0</td></tr>
+<tr class="separator:a2453155662690ed1d8a4dc1ab787f8e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac424cb4ef0b7f6e4cb9363cd611407c6"><td class="memItemLeft" align="right" valign="top"><a id="ac424cb4ef0b7f6e4cb9363cd611407c6"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const EdgeIdType &amp;id)</td></tr>
+<tr class="separator:ac424cb4ef0b7f6e4cb9363cd611407c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91c652098b46ff4a3b5d4a7778a6835c"><td class="memItemLeft" align="right" valign="top"><a id="a91c652098b46ff4a3b5d4a7778a6835c"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()=0</td></tr>
-<tr class="separator:a6d5f49477e90a47c92ea2cff9667eda5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a91c652098b46ff4a3b5d4a7778a6835c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/api/graph/base/<a class="el" href="api_2graph_2base_2graph_8h_source.html">graph.h</a></li>
+<li>src/fpmas/api/graph/base/<a class="el" href="api_2graph_2base_2graph_8h_source.html">graph.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

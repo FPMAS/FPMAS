@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['_7empicommunicator_111',['~MpiCommunicator',['../classfpmas_1_1communication_1_1MpiCommunicator.html#a868d5f7039acbde8aaf33f658fbd0bef',1,'fpmas::communication::MpiCommunicator']]]
+  ['zoltanloadbalancing_136',['ZoltanLoadBalancing',['../classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html',1,'fpmas::load_balancing']]],
+  ['zoltanloadbalancing_3c_20agentptr_20_3e_137',['ZoltanLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html',1,'fpmas::load_balancing']]]
 ];

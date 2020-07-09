@@ -1,7 +1,9 @@
 var searchData=
 [
-  ['node_166',['Node',['../classfpmas_1_1api_1_1graph_1_1base_1_1Node.html',1,'fpmas::api::graph::base::Node&lt; _IdType, _ArcType &gt;'],['../classfpmas_1_1graph_1_1base_1_1Node.html',1,'fpmas::graph::base::Node&lt; IdType, _ArcType &gt;']]],
-  ['node_3c_20idtype_2c_20_5farctype_20_3e_167',['Node&lt; IdType, _ArcType &gt;',['../classfpmas_1_1api_1_1graph_1_1base_1_1Node.html',1,'fpmas::api::graph::base']]],
-  ['nodetask_168',['NodeTask',['../classfpmas_1_1api_1_1scheduler_1_1NodeTask.html',1,'fpmas::api::scheduler']]],
-  ['nodetask_3c_20agentptr_20_3e_169',['NodeTask&lt; AgentPtr &gt;',['../classfpmas_1_1api_1_1scheduler_1_1NodeTask.html',1,'fpmas::api::scheduler']]]
+  ['neighbor_206',['Neighbor',['../classfpmas_1_1model_1_1Neighbor.html',1,'fpmas::model']]],
+  ['neighbors_207',['Neighbors',['../classfpmas_1_1model_1_1Neighbors.html',1,'fpmas::model']]],
+  ['node_208',['Node',['../classfpmas_1_1api_1_1graph_1_1base_1_1Node.html',1,'fpmas::api::graph::base::Node&lt; _IdType, _EdgeType &gt;'],['../classfpmas_1_1graph_1_1base_1_1Node.html',1,'fpmas::graph::base::Node&lt; IdType, _EdgeType &gt;']]],
+  ['node_3c_20idtype_2c_20_5fedgetype_20_3e_209',['Node&lt; IdType, _EdgeType &gt;',['../classfpmas_1_1api_1_1graph_1_1base_1_1Node.html',1,'fpmas::api::graph::base']]],
+  ['nodetask_210',['NodeTask',['../classfpmas_1_1api_1_1scheduler_1_1NodeTask.html',1,'fpmas::api::scheduler']]],
+  ['nodetask_3c_20agentptr_20_3e_211',['NodeTask&lt; AgentPtr &gt;',['../classfpmas_1_1api_1_1scheduler_1_1NodeTask.html',1,'fpmas::api::scheduler']]]
 ];

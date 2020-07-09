@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mpidistributedidtype_227',['mpiDistributedIdType',['../classfpmas_1_1graph_1_1parallel_1_1DistributedId.html#a4643d596f69285f1c8ddd7aef5f36174',1,'fpmas::graph::parallel::DistributedId']]]
+  ['count_281',['count',['../classfpmas_1_1api_1_1communication_1_1DataPack.html#a2142f9784dfe9fcb5f6e86f7280852c4',1,'fpmas::api::communication::DataPack']]]
 ];

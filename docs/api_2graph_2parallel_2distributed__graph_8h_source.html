@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: src/api/graph/parallel/distributed_graph.h Source File</title>
+<title>fpmas: src/fpmas/api/graph/parallel/distributed_graph.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_da61e3e9a357748887e3ca8d7c5a0c16.html">api</a></li><li class="navelem"><a class="el" href="dir_01ddf27a970dff21145761d50a21f17e.html">graph</a></li><li class="navelem"><a class="el" href="dir_87b454a1f0892d8f8065161c33b66530.html">parallel</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_cb76c407f77d75ec14ce085fe604e446.html">fpmas</a></li><li class="navelem"><a class="el" href="dir_c9fe1d3a6999d3ba4d68f46a1d24e972.html">api</a></li><li class="navelem"><a class="el" href="dir_3ad2ac235457a4cd39734f9fa0e3e850.html">graph</a></li><li class="navelem"><a class="el" href="dir_dc87bfc7120b9d6c7df486a32fc36751.html">parallel</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -72,26 +72,26 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef DISTRIBUTED_GRAPH_API_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define DISTRIBUTED_GRAPH_API_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;api/communication/communication.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;api/graph/base/graph.h&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;api/graph/parallel/location_manager.h&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;api/graph/parallel/distributed_node.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;api/load_balancing/load_balancing.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;api/synchro/sync_mode.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/communication/communication.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/base/graph.h&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/parallel/location_manager.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/parallel/distributed_node.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/load_balancing/load_balancing.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/synchro/sync_mode.h&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;graph/parallel/distributed_id.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;distributed_id.h&quot;</span></div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span>fpmas::api::graph::parallel {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedGraph.html">   16</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedGraph.html">DistributedGraph</a> </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        : <span class="keyword">public</span> <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">fpmas::api::graph::base::Graph</a>&lt;DistributedNode&lt;T&gt;, DistributedArc&lt;T&gt;&gt; {</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        : <span class="keyword">public</span> <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">fpmas::api::graph::base::Graph</a>&lt;DistributedNode&lt;T&gt;, DistributedEdge&lt;T&gt;&gt; {</div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">fpmas::api::graph::base::Graph&lt;DistributedNode&lt;T&gt;</a>, <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">DistributedArc&lt;T&gt;</a>&gt; <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">GraphBase</a>;</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;            <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">fpmas::api::graph::base::Graph&lt;DistributedNode&lt;T&gt;</a>, <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">DistributedEdge&lt;T&gt;</a>&gt; <a class="code" href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">GraphBase</a>;</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::LayerIdType;</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::NodeMap;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::ArcMap;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;            <span class="keyword">using</span> <span class="keyword">typename</span> GraphBase::EdgeMap;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">api::load_balancing::LoadBalancing&lt;DistributedNode&lt;T&gt;</a>&gt;::PartitionMap PartitionMap;</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;            <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback&lt;DistributedNode&lt;T&gt;</a>*&gt; <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">NodeCallback</a>;</div>
@@ -101,7 +101,7 @@ $(function() {
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;            <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1LocationManager.html">LocationManager&lt;T&gt;</a>&amp; getLocationManager() <span class="keyword">const</span> = 0;</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>* importNode(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>*) = 0;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">DistributedArc&lt;T&gt;</a>* importArc(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">DistributedArc&lt;T&gt;</a>*) = 0;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">DistributedEdge&lt;T&gt;</a>* importEdge(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">DistributedEdge&lt;T&gt;</a>*) = 0;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="comment">//virtual DistributedNode&lt;T&gt;* buildNode(const T&amp;) = 0;</span></div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>* buildNode(T&amp;&amp;) = 0;</div>
@@ -109,28 +109,25 @@ $(function() {
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> addCallOnSetLocal(<a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">NodeCallback</a>*) = 0;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> addCallOnSetDistant(<a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">NodeCallback</a>*) = 0;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">DistributedArc&lt;T&gt;</a>* link(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>*, <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>*, LayerIdType) = 0;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;            <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">DistributedEdge&lt;T&gt;</a>* link(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>*, <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>*, LayerIdType) = 0;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> clearArc(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">DistributedArc&lt;T&gt;</a>*) = 0;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> clearNode(<a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>*) = 0;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> balance(<a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">api::load_balancing::LoadBalancing&lt;T&gt;</a>&amp;) = 0;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> balance(<a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">api::load_balancing::FixedVerticesLoadBalancing&lt;T&gt;</a>&amp;, PartitionMap fixed_nodes) = 0;</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> distribute(PartitionMap partition) = 0;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> synchronize() = 0;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    };</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> balance(<a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">api::load_balancing::LoadBalancing&lt;T&gt;</a>&amp;) = 0;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> balance(<a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">api::load_balancing::FixedVerticesLoadBalancing&lt;T&gt;</a>&amp;, PartitionMap fixed_nodes) = 0;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> distribute(PartitionMap partition) = 0;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> synchronize() = 0;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    };</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">fpmas::api::graph::parallel::DistributedArc</a></div><div class="ttdef"><b>Definition:</b> distributed_arc.h:13</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">fpmas::api::graph::parallel::DistributedEdge</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:13</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1base_1_1Graph_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1base_1_1Graph.html">fpmas::api::graph::base::Graph</a></div><div class="ttdef"><b>Definition:</b> graph.h:15</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1LocationManager_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1LocationManager.html">fpmas::api::graph::parallel::LocationManager</a></div><div class="ttdef"><b>Definition:</b> location_manager.h:11</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedGraph_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedGraph.html">fpmas::api::graph::parallel::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:17</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1utils_1_1Callback_html"><div class="ttname"><a href="classfpmas_1_1api_1_1utils_1_1Callback.html">fpmas::api::utils::Callback</a></div><div class="ttdef"><b>Definition:</b> callback.h:14</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1LoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">fpmas::api::load_balancing::LoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:30</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">fpmas::api::load_balancing::FixedVerticesLoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:13</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:59</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">fpmas::api::graph::parallel::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_arc.h:9</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:128</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedNode.html">fpmas::api::graph::parallel::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:9</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

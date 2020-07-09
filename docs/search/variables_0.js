@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['id_226',['id',['../structfpmas_1_1communication_1_1MpiDistributedId.html#ab1eeb5ddd9e18ba451ad1d27f04919ee',1,'fpmas::communication::MpiDistributedId']]]
+  ['buffer_280',['buffer',['../classfpmas_1_1api_1_1communication_1_1DataPack.html#a11c47710cc89f0dd6c7b8343a0749560',1,'fpmas::api::communication::DataPack']]]
 ];

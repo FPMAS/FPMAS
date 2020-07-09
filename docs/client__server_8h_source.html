@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: src/api/synchro/hard/client_server.h Source File</title>
+<title>fpmas: src/fpmas/api/synchro/hard/client_server.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_da61e3e9a357748887e3ca8d7c5a0c16.html">api</a></li><li class="navelem"><a class="el" href="dir_e93e4026101e2ba355ccfa2c7b2056e4.html">synchro</a></li><li class="navelem"><a class="el" href="dir_7eb285431c25ba9bde53fce89ee36206.html">hard</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_cb76c407f77d75ec14ce085fe604e446.html">fpmas</a></li><li class="navelem"><a class="el" href="dir_c9fe1d3a6999d3ba4d68f46a1d24e972.html">api</a></li><li class="navelem"><a class="el" href="dir_5c7e4d4b452e54fd80528528d6af435b.html">synchro</a></li><li class="navelem"><a class="el" href="dir_1d484b4b5f69d659561d4cbd15908e83.html">hard</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -73,16 +73,16 @@ $(function() {
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define CLIENT_SERVER_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;enums.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;graph/parallel/distributed_arc.h&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/parallel/distributed_edge.h&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>fpmas::api::synchro::hard {</div>
 <div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">    8</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">MutexRequest</a> {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;        <span class="keyword">inline</span> <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> LOCAL = -1;</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        DistributedId id;</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> id;</div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;        <span class="keywordtype">int</span> source;</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;        MutexRequestType type;</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <a class="code" href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">MutexRequest</a>(DistributedId <span class="keywordtype">id</span>, <span class="keywordtype">int</span> source, MutexRequestType type)</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <a class="code" href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">MutexRequest</a>(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> <span class="keywordtype">id</span>, <span class="keywordtype">int</span> source, MutexRequestType type)</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            : id(<span class="keywordtype">id</span>), source(source), type(type) {}</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keywordtype">bool</span> operator==(<span class="keyword">const</span> <a class="code" href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">MutexRequest</a>&amp; other)<span class="keyword"> const </span>{</div>
@@ -96,17 +96,17 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1MutexClient.html">   26</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1MutexClient.html">MutexClient</a> {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keyword">virtual</span> T read(DistributedId, <span class="keywordtype">int</span> location) = 0;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> releaseRead(DistributedId, <span class="keywordtype">int</span> location) = 0;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;                <span class="keyword">virtual</span> T read(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <span class="keywordtype">int</span> location) = 0;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> releaseRead(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <span class="keywordtype">int</span> location) = 0;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                <span class="keyword">virtual</span> T acquire(DistributedId, <span class="keywordtype">int</span> location) = 0;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> releaseAcquire(DistributedId, <span class="keyword">const</span> T&amp;, <span class="keywordtype">int</span> location) = 0;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                <span class="keyword">virtual</span> T acquire(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <span class="keywordtype">int</span> location) = 0;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> releaseAcquire(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <span class="keyword">const</span> T&amp;, <span class="keywordtype">int</span> location) = 0;</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> lock(DistributedId, <span class="keywordtype">int</span> location) = 0;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> unlock(DistributedId, <span class="keywordtype">int</span> location) = 0;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> lock(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <span class="keywordtype">int</span> location) = 0;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> unlock(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <span class="keywordtype">int</span> location) = 0;</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> lockShared(DistributedId, <span class="keywordtype">int</span> location) = 0;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> unlockShared(DistributedId, <span class="keywordtype">int</span> location) = 0;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> lockShared(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <span class="keywordtype">int</span> location) = 0;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> unlockShared(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>, <span class="keywordtype">int</span> location) = 0;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1MutexClient.html">MutexClient</a>() {}</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        };</div>
@@ -129,11 +129,11 @@ $(function() {
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            <span class="keywordtype">void</span> unlock(<a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex&lt;T&gt;</a>* mutex) {mutex-&gt;_unlock();}</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keywordtype">void</span> unlockShared(<a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex&lt;T&gt;</a>* mutex) {mutex-&gt;_unlockShared();}</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> manage(DistributedId <span class="keywordtype">id</span>, <a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex&lt;T&gt;</a>*) = 0;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> remove(DistributedId <span class="keywordtype">id</span>) = 0;</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> manage(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> <span class="keywordtype">id</span>, <a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex&lt;T&gt;</a>*) = 0;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> remove(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a> <span class="keywordtype">id</span>) = 0;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> wait(<span class="keyword">const</span> <a class="code" href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">MutexRequest</a>&amp; req) = 0;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> notify(DistributedId) = 0;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> notify(<a class="code" href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">DistributedId</a>) = 0;</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1MutexServer.html">MutexServer</a>() {}</div>
@@ -142,8 +142,8 @@ $(function() {
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1LinkClient.html">   72</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1LinkClient.html">LinkClient</a> {</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> link(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">fpmas::api::graph::parallel::DistributedArc&lt;T&gt;</a>*) = 0;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> unlink(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">fpmas::api::graph::parallel::DistributedArc&lt;T&gt;</a>*) = 0;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> link(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">fpmas::api::graph::parallel::DistributedEdge&lt;T&gt;</a>*) = 0;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> unlink(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">fpmas::api::graph::parallel::DistributedEdge&lt;T&gt;</a>*) = 0;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1api_1_1synchro_1_1hard_1_1LinkClient.html">LinkClient</a>() {};</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        };</div>
@@ -164,11 +164,12 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1MutexClient_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1MutexClient.html">fpmas::api::synchro::hard::MutexClient</a></div><div class="ttdef"><b>Definition:</b> client_server.h:26</div></div>
 <div class="ttc" id="astructfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest_html"><div class="ttname"><a href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">fpmas::api::synchro::hard::MutexRequest</a></div><div class="ttdef"><b>Definition:</b> client_server.h:8</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedArc.html">fpmas::api::graph::parallel::DistributedArc</a></div><div class="ttdef"><b>Definition:</b> distributed_arc.h:13</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1parallel_1_1DistributedEdge.html">fpmas::api::graph::parallel::DistributedEdge</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:13</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1HardSyncMutex_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1HardSyncMutex.html">fpmas::api::synchro::hard::HardSyncMutex</a></div><div class="ttdef"><b>Definition:</b> client_server.h:51</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1TerminationAlgorithm_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1TerminationAlgorithm.html">fpmas::api::synchro::hard::TerminationAlgorithm</a></div><div class="ttdef"><b>Definition:</b> client_server.h:83</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1Server_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1Server.html">fpmas::api::synchro::hard::Server</a></div><div class="ttdef"><b>Definition:</b> client_server.h:43</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1LinkClient_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1LinkClient.html">fpmas::api::synchro::hard::LinkClient</a></div><div class="ttdef"><b>Definition:</b> client_server.h:72</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1parallel_1_1DistributedId_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1parallel_1_1DistributedId.html">fpmas::graph::parallel::DistributedId</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:52</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1MutexServer_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1MutexServer.html">fpmas::api::synchro::hard::MutexServer</a></div><div class="ttdef"><b>Definition:</b> client_server.h:53</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1LinkServer_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1LinkServer.html">fpmas::api::synchro::hard::LinkServer</a></div><div class="ttdef"><b>Definition:</b> client_server.h:80</div></div>
 <!-- start footer part -->

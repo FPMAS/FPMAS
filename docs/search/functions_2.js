@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['from_5fjson_199',['from_json',['../structnlohmann_1_1adl__serializer_3_01DistributedId_01_4.html#ac835d68f43a1d6914a2a912b77c65e11',1,'nlohmann::adl_serializer&lt; DistributedId &gt;']]]
+  ['edge_5flist_5fmulti_5ffn_246',['edge_list_multi_fn',['../namespacefpmas_1_1load__balancing_1_1zoltan.html#acd521904c5e61149aeb0537c77a83cb4',1,'fpmas::load_balancing::zoltan']]]
 ];

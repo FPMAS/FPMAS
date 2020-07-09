@@ -1,4 +1,8 @@
 var searchData=
 [
-  ['handleincomingrequests_204',['handleIncomingRequests',['../classfpmas_1_1synchro_1_1hard_1_1MutexServer.html#ad3bf18aa77d944e4810b2e16d1b5f5f0',1,'fpmas::synchro::hard::MutexServer']]]
+  ['gather_248',['gather',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#ace830771424539c6e093d14e21910ee8',1,'fpmas::api::communication::MpiCommunicator::gather()'],['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ac60bb4256dace14742298ad9beccbfc3',1,'fpmas::api::communication::TypedMpi::gather()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a38e5db3e4ec61104c1c206f8b2ee0b13',1,'fpmas::communication::MpiCommunicator::gather()'],['../classfpmas_1_1communication_1_1TypedMpi.html#a5c0d59ea1887d84340ddc2a057057487',1,'fpmas::communication::TypedMpi::gather()']]],
+  ['getmpicomm_249',['getMpiComm',['../classfpmas_1_1communication_1_1MpiCommunicator.html#a2c4af2fbf6d4798a83db9272034c80f4',1,'fpmas::communication::MpiCommunicator']]],
+  ['getmpigroup_250',['getMpiGroup',['../classfpmas_1_1communication_1_1MpiCommunicator.html#aee139cff2e4cb6e3a031e0ff3e2c30ca',1,'fpmas::communication::MpiCommunicator']]],
+  ['getrank_251',['getRank',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9',1,'fpmas::api::communication::MpiCommunicator::getRank()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a68c769536ecece44de7f48fd8f9c2ad0',1,'fpmas::communication::MpiCommunicator::getRank()']]],
+  ['getsize_252',['getSize',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adaa99abca527281fe2b7993a524c31c4',1,'fpmas::api::communication::MpiCommunicator::getSize()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#aa1dd663c95f2c8483baff6f83befae32',1,'fpmas::communication::MpiCommunicator::getSize()']]]
 ];

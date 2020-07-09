@@ -1,14 +1,10 @@
 var searchData=
 [
-  ['scheduledloadbalancing_85',['ScheduledLoadBalancing',['../classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html',1,'fpmas::load_balancing']]],
-  ['scheduler_86',['Scheduler',['../classfpmas_1_1scheduler_1_1Scheduler.html',1,'fpmas::scheduler::Scheduler'],['../classfpmas_1_1api_1_1scheduler_1_1Scheduler.html',1,'fpmas::api::scheduler::Scheduler']]],
-  ['server_87',['Server',['../classfpmas_1_1api_1_1synchro_1_1hard_1_1Server.html',1,'fpmas::api::synchro::hard']]],
-  ['serverpack_88',['ServerPack',['../classfpmas_1_1synchro_1_1hard_1_1ServerPack.html',1,'fpmas::synchro::hard']]],
-  ['setagentdistantcallback_89',['SetAgentDistantCallback',['../classfpmas_1_1model_1_1SetAgentDistantCallback.html',1,'fpmas::model']]],
-  ['setagentlocalcallback_90',['SetAgentLocalCallback',['../classfpmas_1_1model_1_1SetAgentLocalCallback.html',1,'fpmas::model']]],
-  ['singlethreadmutex_91',['SingleThreadMutex',['../classfpmas_1_1synchro_1_1ghost_1_1SingleThreadMutex.html',1,'fpmas::synchro::ghost']]],
-  ['synchronizegraphtask_92',['SynchronizeGraphTask',['../classfpmas_1_1model_1_1SynchronizeGraphTask.html',1,'fpmas::model']]],
-  ['synclinker_93',['SyncLinker',['../classfpmas_1_1api_1_1synchro_1_1SyncLinker.html',1,'fpmas::api::synchro']]],
-  ['syncmode_94',['SyncMode',['../classfpmas_1_1api_1_1synchro_1_1SyncMode.html',1,'fpmas::api::synchro']]],
-  ['syncmoderuntime_95',['SyncModeRuntime',['../classfpmas_1_1api_1_1synchro_1_1SyncModeRuntime.html',1,'fpmas::api::synchro']]]
+  ['rank_100',['rank',['../structfpmas_1_1communication_1_1MpiDistributedId.html#addd708e7035bf84dfa7848626a3dc893',1,'fpmas::communication::MpiDistributedId::rank()'],['../classfpmas_1_1graph_1_1parallel_1_1DistributedId.html#ab2436abe238205c1febdd45bc6a4ffd3',1,'fpmas::graph::parallel::DistributedId::rank()']]],
+  ['read_5fzoltan_5fid_101',['read_zoltan_id',['../namespacefpmas_1_1load__balancing_1_1zoltan.html#a3a91a20fb078c1792894e6ae517a53e4',1,'fpmas::load_balancing::zoltan']]],
+  ['readguard_102',['ReadGuard',['../classfpmas_1_1synchro_1_1ReadGuard.html',1,'fpmas::synchro::ReadGuard&lt; T &gt;'],['../classfpmas_1_1model_1_1ReadGuard.html',1,'fpmas::model::ReadGuard']]],
+  ['readguard_3c_20fpmas_3a_3aapi_3a_3amodel_3a_3aagentptr_20_3e_103',['ReadGuard&lt; fpmas::api::model::AgentPtr &gt;',['../classfpmas_1_1synchro_1_1ReadGuard.html',1,'fpmas::synchro']]],
+  ['recv_104',['recv',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adbb25f7cdf6ea8f2588fd2f611d096bc',1,'fpmas::api::communication::MpiCommunicator::recv(MPI_Status *status)=0'],['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#af5bf470fcc90a8a0821e27da0577c9ca',1,'fpmas::api::communication::MpiCommunicator::recv(void *buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status *status)=0'],['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ad11beac2d6f05c8fe4e44f22f81bd4c7',1,'fpmas::api::communication::TypedMpi::recv()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a041636dcc318dff6f7835d2013f5b235',1,'fpmas::communication::MpiCommunicator::recv(MPI_Status *status) override'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#ab7184c20d0730d3e8bc7908255122f7b',1,'fpmas::communication::MpiCommunicator::recv(void *buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status *status) override'],['../classfpmas_1_1communication_1_1TypedMpi.html#aec8c680a7ac86da3225406efc803ecbd',1,'fpmas::communication::TypedMpi::recv()']]],
+  ['releaseacquire_105',['releaseAcquire',['../classfpmas_1_1synchro_1_1hard_1_1MutexClient.html#a86036345e91e9a93e68c606cc7803ffe',1,'fpmas::synchro::hard::MutexClient']]],
+  ['runtime_106',['Runtime',['../classfpmas_1_1runtime_1_1Runtime.html',1,'fpmas::runtime::Runtime'],['../classfpmas_1_1api_1_1runtime_1_1Runtime.html',1,'fpmas::api::runtime::Runtime']]]
 ];

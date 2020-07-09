@@ -204,7 +204,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>List node IDs connected to each node through outgoing arcs for each node.</p>
+<p>List node IDs connected to each node through outgoing edges for each node.</p>
 <p>For more information about this function, see the <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN">Zoltan documentation</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -289,7 +289,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Counts the number of outgoing arcs of each node.</p>
+<p>Counts the number of outgoing edges of each node.</p>
 <p>For more information about this function, see the <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN">Zoltan documentation</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -299,7 +299,7 @@ template&lt;typename T &gt; </div>
     <tr><td class="paramname">num_obj</td><td>number of objects IDs in global_ids </td></tr>
     <tr><td class="paramname">global_ids</td><td>Global IDs of object whose number of edges should be returned </td></tr>
     <tr><td class="paramname">local_ids</td><td>Same for local ids, unused </td></tr>
-    <tr><td class="paramname">num_edges</td><td>Result : number of outgoing arc for each node </td></tr>
+    <tr><td class="paramname">num_edges</td><td>Result : number of outgoing edge for each node </td></tr>
     <tr><td class="paramname">ierr</td><td>Result : error code </td></tr>
   </table>
   </dd>
@@ -443,7 +443,7 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Convenient function to rebuild a regular node or arc id, as an unsigned long, from a ZOLTAN_ID_PTR global id array, that actually stores 2 unsigned int for each node unsigned long id. So, with our configuration, we use 2 unsigned int in Zoltan to represent each id. The <code>i</code> input parameter should correspond to the first part index of the node to query in the <code>global_ids</code> array. In consequence, <code>i</code> should actually always be even.</p>
+<p>Convenient function to rebuild a regular node or edge id, as an unsigned long, from a ZOLTAN_ID_PTR global id array, that actually stores 2 unsigned int for each node unsigned long id. So, with our configuration, we use 2 unsigned int in Zoltan to represent each id. The <code>i</code> input parameter should correspond to the first part index of the node to query in the <code>global_ids</code> array. In consequence, <code>i</code> should actually always be even.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">global_ids</td><td>an adress to a pair of Zoltan global ids </td></tr>
