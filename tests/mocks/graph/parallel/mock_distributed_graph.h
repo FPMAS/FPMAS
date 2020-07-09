@@ -5,20 +5,20 @@
 #include "../base/mock_graph_base.h"
 #include "fpmas/api/graph/parallel/distributed_graph.h"
 
-template<typename T, typename DistNode, typename DistArc>
+template<typename T, typename DistNode, typename DistEdge>
 class MockDistributedGraph :
 	public MockGraph<
 		fpmas::api::graph::parallel::DistributedNode<T>,
-		fpmas::api::graph::parallel::DistributedArc<T>>,
+		fpmas::api::graph::parallel::DistributedEdge<T>>,
 	public fpmas::api::graph::parallel::DistributedGraph<T> {
 
 		typedef fpmas::api::graph::parallel::DistributedGraph<T>
 			GraphBase;
 		public:
 		typedef fpmas::api::graph::parallel::DistributedNode<T> NodeType;
-		typedef fpmas::api::graph::parallel::DistributedArc<T> ArcType;
+		typedef fpmas::api::graph::parallel::DistributedEdge<T> EdgeType;
 		using typename GraphBase::NodeMap;
-		using typename GraphBase::ArcMap;
+		using typename GraphBase::EdgeMap;
 		using typename GraphBase::PartitionMap;
 		using typename GraphBase::LayerIdType;
 		using typename GraphBase::NodeCallback;
@@ -34,13 +34,13 @@ class MockDistributedGraph :
 		}
 		//MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
 		MOCK_METHOD(NodeType*, buildNode_rv, (), ());
-		MOCK_METHOD(ArcType*, link, (NodeType*, NodeType*, LayerIdType), (override));
+		MOCK_METHOD(EdgeType*, link, (NodeType*, NodeType*, LayerIdType), (override));
 
 		MOCK_METHOD(void, addCallOnSetLocal, (NodeCallback*), (override));
 		MOCK_METHOD(void, addCallOnSetDistant, (NodeCallback*), (override));
 
 		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
-		MOCK_METHOD(ArcType*, importArc, (ArcType*), (override));
+		MOCK_METHOD(EdgeType*, importEdge, (EdgeType*), (override));
 
 		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::LoadBalancing<T>&), (override));
 		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap), (override));

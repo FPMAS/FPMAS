@@ -10,7 +10,7 @@ using ::testing::Ge;
 
 using fpmas::graph::parallel::DistributedGraph;
 using fpmas::graph::parallel::DistributedNode;
-using fpmas::graph::parallel::DistributedArc;
+using fpmas::graph::parallel::DistributedEdge;
 using fpmas::graph::parallel::LocationManager;
 using fpmas::graph::parallel::DefaultMpiSetUp;
 
@@ -52,7 +52,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		DistributedGraph<
 			int, MockSyncMode<FakeMutex>,
 			DistributedNode,
-			DistributedArc,
+			DistributedEdge,
 			DefaultMpiSetUp,
 			LocationManager
 			> graph;
@@ -112,8 +112,8 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			for(auto node : graph.getNodes()) {
 				if(node.second->state() == fpmas::graph::parallel::LocationState::LOCAL) {
 					localNodeCount++;
-					ASSERT_THAT(node.second->getIncomingArcs(), SizeIs(NODES_COUNT-1));
-					ASSERT_THAT(node.second->getOutgoingArcs(), SizeIs(NODES_COUNT-1));
+					ASSERT_THAT(node.second->getIncomingEdges(), SizeIs(NODES_COUNT-1));
+					ASSERT_THAT(node.second->getOutgoingEdges(), SizeIs(NODES_COUNT-1));
 				}
 			}
 			ASSERT_EQ(nodeCount, localNodeCount);

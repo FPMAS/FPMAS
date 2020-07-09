@@ -1,44 +1,44 @@
-#ifndef MOCK_DISTRIBUTED_ARC_H
-#define MOCK_DISTRIBUTED_ARC_H
+#ifndef MOCK_DISTRIBUTED_EDGE_H
+#define MOCK_DISTRIBUTED_EDGE_H
 
 #include "gmock/gmock.h"
 
-#include "../base/mock_arc.h"
-#include "fpmas/api/graph/parallel/distributed_arc.h"
+#include "../base/mock_edge.h"
+#include "fpmas/api/graph/parallel/distributed_edge.h"
 #include "mock_distributed_node.h"
 
 using fpmas::api::graph::parallel::LocationState;
 
 template<typename T>
-class MockDistributedArc;
+class MockDistributedEdge;
 template<typename T>
-void from_json(const nlohmann::json& j, MockDistributedArc<T>& mock);
+void from_json(const nlohmann::json& j, MockDistributedEdge<T>& mock);
 
 template<typename>
 class MockDistributedNode;
 
 template<typename T>
-class MockDistributedArc :
-	public fpmas::api::graph::parallel::DistributedArc<T>,
-	public AbstractMockArc<DistributedId, fpmas::api::graph::parallel::DistributedNode<T>>
+class MockDistributedEdge :
+	public fpmas::api::graph::parallel::DistributedEdge<T>,
+	public AbstractMockEdge<DistributedId, fpmas::api::graph::parallel::DistributedNode<T>>
 {
-	typedef AbstractMockArc<DistributedId, fpmas::api::graph::parallel::DistributedNode<T>> ArcBase;
-	typedef fpmas::api::graph::parallel::DistributedArc<T> DistArcBase;
+	typedef AbstractMockEdge<DistributedId, fpmas::api::graph::parallel::DistributedNode<T>> EdgeBase;
+	typedef fpmas::api::graph::parallel::DistributedEdge<T> DistEdgeBase;
 
-	friend void from_json<T>(const nlohmann::json&, MockDistributedArc<T>&);
+	friend void from_json<T>(const nlohmann::json&, MockDistributedEdge<T>&);
 
 	public:
-	using typename ArcBase::NodeType;
-	using typename DistArcBase::LayerIdType;
+	using typename EdgeBase::NodeType;
+	using typename DistEdgeBase::LayerIdType;
 
 	// Saved LocationState
 	LocationState _state = LocationState::LOCAL;
 
-	MockDistributedArc() {
+	MockDistributedEdge() {
 	}
 
-	MockDistributedArc(const MockDistributedArc& otherMock) :
-		MockDistributedArc(
+	MockDistributedEdge(const MockDistributedEdge& otherMock) :
+		MockDistributedEdge(
 				otherMock.getId(),
 				otherMock.getLayer(),
 				otherMock.getWeight()
@@ -47,22 +47,22 @@ class MockDistributedArc :
 			this->tgt = otherMock.tgt;
 		}
 
-	MockDistributedArc(
+	MockDistributedEdge(
 			const DistributedId& id, LayerIdType layer)
-		: ArcBase(id, layer) {
+		: EdgeBase(id, layer) {
 			setUpGetters();
 		}
-	MockDistributedArc(
+	MockDistributedEdge(
 			const DistributedId& id,
 			LayerIdType layer, float weight)
-		: ArcBase(id, layer, weight) {
+		: EdgeBase(id, layer, weight) {
 			setUpGetters();
 		}
 
 	MOCK_METHOD(void, setState, (LocationState), (override));
 	MOCK_METHOD(LocationState, state, (), (const, override));
 
-	bool operator==(const MockDistributedArc& other) const {
+	bool operator==(const MockDistributedEdge& other) const {
 		return this->id == other.id;
 	}
 
@@ -78,7 +78,7 @@ class MockDistributedArc :
 };
 
 template<typename T>
-inline void to_json(nlohmann::json& j, const MockDistributedArc<T>& mock) {
+inline void to_json(nlohmann::json& j, const MockDistributedEdge<T>& mock) {
 	j["id"] = mock.getId();
 	j["src"] = mock.getSourceNode()->getId();
 	j["tgt"] = mock.getTargetNode()->getId();
@@ -87,7 +87,7 @@ inline void to_json(nlohmann::json& j, const MockDistributedArc<T>& mock) {
 }
 
 template<typename T>
-inline void from_json(const nlohmann::json& j, MockDistributedArc<T>& mock) {
+inline void from_json(const nlohmann::json& j, MockDistributedEdge<T>& mock) {
 	ON_CALL(mock, getId)
 		.WillByDefault(Return(j.at("id").get<DistributedId>()));
 	EXPECT_CALL(mock, getId).Times(AnyNumber());
@@ -101,7 +101,7 @@ inline void from_json(const nlohmann::json& j, MockDistributedArc<T>& mock) {
 
 	ON_CALL(mock, getLayer)
 		.WillByDefault(Return(
-			j.at("layer").get<typename MockDistributedArc<T>::LayerIdType>()
+			j.at("layer").get<typename MockDistributedEdge<T>::LayerIdType>()
 		));
 	ON_CALL(mock, getWeight)
 		.WillByDefault(Return(j.at("weight").get<float>()));

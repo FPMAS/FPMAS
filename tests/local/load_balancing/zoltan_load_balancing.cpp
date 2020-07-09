@@ -1,4 +1,4 @@
-#include "../mocks/graph/parallel/mock_distributed_arc.h"
+#include "../mocks/graph/parallel/mock_distributed_edge.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 
 #include "fpmas/load_balancing/zoltan_load_balancing.h"
@@ -19,16 +19,16 @@ using fpmas::load_balancing::zoltan::fixed_obj_list_fn;
 class ZoltanFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedId id1 {0, 1};
-		std::vector<fpmas::api::graph::parallel::DistributedArc<int>*> outArcs1;
-		MockDistributedArc<int>* mockArc1;
-		MockDistributedArc<int>* mockArc2;
+		std::vector<fpmas::api::graph::parallel::DistributedEdge<int>*> outEdges1;
+		MockDistributedEdge<int>* mockEdge1;
+		MockDistributedEdge<int>* mockEdge2;
 
 		DistributedId id2 {0, 2};
-		std::vector<fpmas::api::graph::parallel::DistributedArc<int>*> outArcs2;
+		std::vector<fpmas::api::graph::parallel::DistributedEdge<int>*> outEdges2;
 
 		DistributedId id3 {2, 3};
-		std::vector<fpmas::api::graph::parallel::DistributedArc<int>*> outArcs3;
-		MockDistributedArc<int>* mockArc3;
+		std::vector<fpmas::api::graph::parallel::DistributedEdge<int>*> outEdges3;
+		MockDistributedEdge<int>* mockEdge3;
 
 		std::unordered_map<
 			DistributedId,
@@ -58,30 +58,30 @@ class ZoltanFunctionsTest : public ::testing::Test {
 			nodes[id2] = new MockDistributedNode(id2, 1, 2.f);
 			nodes[id3] = new MockDistributedNode(id3, 2, 3.f);
 
-			// Mock arc id1 -> id2
-			mockArc1 = new MockDistributedArc<int>(
+			// Mock edge id1 -> id2
+			mockEdge1 = new MockDistributedEdge<int>(
 					DistributedId(0, 0), 0, 1.5f
 					);
-			EXPECT_CALL(*mockArc1, getSourceNode).WillRepeatedly(Return(nodes[id1]));
-			EXPECT_CALL(*mockArc1, getTargetNode).WillRepeatedly(Return(nodes[id2]));
-			outArcs1.push_back(mockArc1);
+			EXPECT_CALL(*mockEdge1, getSourceNode).WillRepeatedly(Return(nodes[id1]));
+			EXPECT_CALL(*mockEdge1, getTargetNode).WillRepeatedly(Return(nodes[id2]));
+			outEdges1.push_back(mockEdge1);
 
-			// Mock arc id1 -> id3
-			mockArc2 = new MockDistributedArc<int>(
+			// Mock edge id1 -> id3
+			mockEdge2 = new MockDistributedEdge<int>(
 					DistributedId(0, 1), 1, 3.f
 					);
-			EXPECT_CALL(*mockArc2, getSourceNode).WillRepeatedly(Return(nodes[id1]));
-			EXPECT_CALL(*mockArc2, getTargetNode).WillRepeatedly(Return(nodes[id3]));
-			outArcs1.push_back(mockArc2);
+			EXPECT_CALL(*mockEdge2, getSourceNode).WillRepeatedly(Return(nodes[id1]));
+			EXPECT_CALL(*mockEdge2, getTargetNode).WillRepeatedly(Return(nodes[id3]));
+			outEdges1.push_back(mockEdge2);
 
-			mockArc3 = new MockDistributedArc<int>(
+			mockEdge3 = new MockDistributedEdge<int>(
 					DistributedId(0, 2),
 					0,
 					2.f
 					);
-			EXPECT_CALL(*mockArc3, getSourceNode).WillRepeatedly(Return(nodes[id2]));
-			EXPECT_CALL(*mockArc3, getTargetNode).WillRepeatedly(Return(nodes[id1]));
-			outArcs2.push_back(mockArc3);
+			EXPECT_CALL(*mockEdge3, getSourceNode).WillRepeatedly(Return(nodes[id2]));
+			EXPECT_CALL(*mockEdge3, getTargetNode).WillRepeatedly(Return(nodes[id1]));
+			outEdges2.push_back(mockEdge3);
 
 			// Assumes that nodes are iterated in the same order within
 			// obj_list implementation
@@ -94,10 +94,10 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		void TearDown() override {
 			for(auto node : nodes)
 				delete node.second;
-			for(auto arc : outArcs1)
-				delete arc;
-			for(auto arc : outArcs2)
-				delete arc;
+			for(auto edge : outEdges1)
+				delete edge;
+			for(auto edge : outEdges2)
+				delete edge;
 		}
 
 		void write_zoltan_global_ids() {
@@ -117,12 +117,12 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		}
 
 		void write_zoltan_num_edges() {
-			EXPECT_CALL(*nodes[id1], getOutgoingArcs())
-				.Times(AtLeast(1)).WillRepeatedly(Return(outArcs1));
-			EXPECT_CALL(*nodes[id2], getOutgoingArcs())
-				.Times(AtLeast(1)).WillRepeatedly(Return(outArcs2));
-			EXPECT_CALL(*nodes[id3], getOutgoingArcs())
-				.Times(AtLeast(1)).WillRepeatedly(Return(outArcs3));
+			EXPECT_CALL(*nodes[id1], getOutgoingEdges())
+				.Times(AtLeast(1)).WillRepeatedly(Return(outEdges1));
+			EXPECT_CALL(*nodes[id2], getOutgoingEdges())
+				.Times(AtLeast(1)).WillRepeatedly(Return(outEdges2));
+			EXPECT_CALL(*nodes[id3], getOutgoingEdges())
+				.Times(AtLeast(1)).WillRepeatedly(Return(outEdges3));
 
 			for(auto node : nodes) {
 				EXPECT_CALL(*node.second, getId).Times(AnyNumber());
@@ -159,11 +159,11 @@ TEST_F(ZoltanFunctionsTest, obj_num_egdes_multi_test) {
 	write_zoltan_global_ids();
 	write_zoltan_num_edges();
 
-	// Node 0 has 2 outgoing arcs
+	// Node 0 has 2 outgoing edges
 	ASSERT_EQ(num_edges[nodeIndex[id1]], 2);
-	// Node 1 has 1 outgoing arcs
+	// Node 1 has 1 outgoing edges
 	ASSERT_EQ(num_edges[nodeIndex[id2]], 1);
-	// Node 2 has 0 outgoing arcs
+	// Node 2 has 0 outgoing edges
 	ASSERT_EQ(num_edges[nodeIndex[id3]], 0);
 }
 
@@ -180,9 +180,9 @@ TEST_F(ZoltanFunctionsTest, edge_list_multi_test) {
 	EXPECT_CALL(*nodes[id3], getLocation())
 		.WillRepeatedly(Return(5));
 
-	EXPECT_CALL(*mockArc1, getWeight).Times(AtLeast(1));
-	EXPECT_CALL(*mockArc2, getWeight).Times(AtLeast(1));
-	EXPECT_CALL(*mockArc3, getWeight).Times(AtLeast(1));
+	EXPECT_CALL(*mockEdge1, getWeight).Times(AtLeast(1));
+	EXPECT_CALL(*mockEdge2, getWeight).Times(AtLeast(1));
+	EXPECT_CALL(*mockEdge3, getWeight).Times(AtLeast(1));
 
 	unsigned int nbor_global_id[6];
 	int nbor_procs[3];

@@ -7,7 +7,7 @@ set(SOURCES
 	graph/base/graph.cpp
 	## Parallel
 	graph/parallel/distributed_graph.cpp
-	graph/parallel/distributed_arc.cpp
+	graph/parallel/distributed_edge.cpp
 	graph/parallel/location_manager.cpp
 	# Synchro
 	synchro/ghost/data_sync.cpp
@@ -38,11 +38,6 @@ target_link_libraries(fpmas_local_test fpmas)
 target_link_libraries(fpmas_local_test zoltan)
 target_link_libraries(fpmas_local_test gtest_main)
 target_link_libraries(fpmas_local_test gmock_main)
-
-add_custom_target(local_test
-	${CMAKE_CURRENT_BINARY_DIR}/fpmas_local_test
-	"--gtest_filter=-Mpi_*"
-	)
 
 # generates compile_commands.json, useful for CCLS completion
 set(CMAKE_EXPORT_COMPILE_COMMANDS YES)

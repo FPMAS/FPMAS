@@ -6,47 +6,47 @@
 #include "fpmas/api/graph/base/graph.h"
 
 #include "node.h"
-#include "arc.h"
+#include "edge.h"
 
 namespace fpmas::graph::base {
 
 	template<
 		typename NodeType,
-		typename ArcType
-	> class Graph : public virtual api::graph::base::Graph<NodeType, ArcType> {
+		typename EdgeType
+	> class Graph : public virtual api::graph::base::Graph<NodeType, EdgeType> {
 			public:
-				typedef fpmas::api::graph::base::Graph<NodeType, ArcType> GraphBase;
+				typedef fpmas::api::graph::base::Graph<NodeType, EdgeType> GraphBase;
 				using typename GraphBase::NodeBase;
-				using typename GraphBase::ArcBase;
+				using typename GraphBase::EdgeBase;
 
 				using typename GraphBase::NodeIdType;
 				using typename GraphBase::NodeIdHash;
 
-				using typename GraphBase::ArcIdType;
-				using typename GraphBase::ArcIdHash;
+				using typename GraphBase::EdgeIdType;
+				using typename GraphBase::EdgeIdHash;
 				
 				using typename GraphBase::NodeMap;
-				using typename GraphBase::ArcMap;
+				using typename GraphBase::EdgeMap;
 
 			private:
 				std::vector<api::utils::Callback<NodeType*>*> insert_node_callbacks;
 				std::vector<api::utils::Callback<NodeType*>*> erase_node_callbacks;
-				std::vector<api::utils::Callback<ArcType*>*> insert_arc_callbacks;
-				std::vector<api::utils::Callback<ArcType*>*> erase_arc_callbacks;
+				std::vector<api::utils::Callback<EdgeType*>*> insert_edge_callbacks;
+				std::vector<api::utils::Callback<EdgeType*>*> erase_edge_callbacks;
 
 				NodeMap nodes;
-				ArcMap arcs;
+				EdgeMap edges;
 
 			protected:
 				NodeIdType node_id;
-				ArcIdType arc_id;
+				EdgeIdType edge_id;
 
 			public:
 				void insert(NodeType*) override;
-				void insert(ArcType*) override;
+				void insert(EdgeType*) override;
 
 				void erase(NodeBase*) override;
-				void erase(ArcBase*) override;
+				void erase(EdgeBase*) override;
 
 				void addCallOnInsertNode(api::utils::Callback<NodeType*>* callback) override {
 					insert_node_callbacks.push_back(callback);
@@ -55,11 +55,11 @@ namespace fpmas::graph::base {
 					erase_node_callbacks.push_back(callback);
 				}
 
-				void addCallOnInsertArc(api::utils::Callback<ArcType*>* callback) override {
-					insert_arc_callbacks.push_back(callback);
+				void addCallOnInsertEdge(api::utils::Callback<EdgeType*>* callback) override {
+					insert_edge_callbacks.push_back(callback);
 				}
-				void addCallOnEraseArc(api::utils::Callback<ArcType*>* callback) override {
-					erase_arc_callbacks.push_back(callback);
+				void addCallOnEraseEdge(api::utils::Callback<EdgeType*>* callback) override {
+					erase_edge_callbacks.push_back(callback);
 				}
 
 				// Node getters
@@ -68,11 +68,11 @@ namespace fpmas::graph::base {
 				const NodeType* getNode(NodeIdType) const override;
 				const NodeMap& getNodes() const override;
 
-				// Arc getters
-				const ArcIdType& currentArcId() const override {return arc_id;}
-				ArcType* getArc(ArcIdType) override;
-				const ArcType* getArc(ArcIdType) const override;
-				const ArcMap& getArcs() const override;
+				// Edge getters
+				const EdgeIdType& currentEdgeId() const override {return edge_id;}
+				EdgeType* getEdge(EdgeIdType) override;
+				const EdgeType* getEdge(EdgeIdType) const override;
+				const EdgeMap& getEdges() const override;
 
 				void clear() override;
 
@@ -88,40 +88,40 @@ namespace fpmas::graph::base {
 		}
 
 	template<GRAPH_PARAMS>
-		void Graph<GRAPH_PARAMS_SPEC>::insert(ArcType* arc) {
+		void Graph<GRAPH_PARAMS_SPEC>::insert(EdgeType* edge) {
 			FPMAS_LOGD(
-					-1, "GRAPH", "Insert arc %s (%p) (from %s to %s)",
-					ID_C_STR(arc->getId()), arc,
-					ID_C_STR(arc->getSourceNode()->getId()),
-					ID_C_STR(arc->getTargetNode()->getId())
+					-1, "GRAPH", "Insert edge %s (%p) (from %s to %s)",
+					ID_C_STR(edge->getId()), edge,
+					ID_C_STR(edge->getSourceNode()->getId()),
+					ID_C_STR(edge->getTargetNode()->getId())
 					);
-			this->arcs.insert({arc->getId(), arc});
-			for(auto callback : insert_arc_callbacks)
-				callback->call(arc);
+			this->edges.insert({edge->getId(), edge});
+			for(auto callback : insert_edge_callbacks)
+				callback->call(edge);
 		}
 
 	template<GRAPH_PARAMS>
 		void Graph<GRAPH_PARAMS_SPEC>::erase(NodeBase* node) {
 			FPMAS_LOGD(-1, "GRAPH", "Erase node %s", ID_C_STR(node->getId()));
-			// Deletes incoming arcs
-			for(auto* arc : node->getIncomingArcs()) {
+			// Deletes incoming edges
+			for(auto* edge : node->getIncomingEdges()) {
 				FPMAS_LOGV(
 						-1,
 						"GRAPH",
-						"Unlink incoming arc %s",
-						ID_C_STR(arc->getId())
+						"Unlink incoming edge %s",
+						ID_C_STR(edge->getId())
 						);
-				this->erase(arc);
+				this->erase(edge);
 			}
-			// Deletes outgoing arcs
-			for(auto* arc : node->getOutgoingArcs()) {
+			// Deletes outgoing edges
+			for(auto* edge : node->getOutgoingEdges()) {
 				FPMAS_LOGV(
 						-1,
 						"GRAPH",
-						"Unlink incoming arc %s",
-						ID_C_STR(arc->getId())
+						"Unlink incoming edge %s",
+						ID_C_STR(edge->getId())
 						);
-				this->erase(arc);
+				this->erase(edge);
 			}
 
 			auto id = node->getId();
@@ -137,28 +137,28 @@ namespace fpmas::graph::base {
 		}
 
 	template<GRAPH_PARAMS>
-		void Graph<GRAPH_PARAMS_SPEC>::erase(ArcBase* arc) {
-			auto id = arc->getId();
+		void Graph<GRAPH_PARAMS_SPEC>::erase(EdgeBase* edge) {
+			auto id = edge->getId();
 			FPMAS_LOGD(
-					-1, "GRAPH", "Erase arc %s (%p) (from %s to %s)",
-					ID_C_STR(id), arc,
-					ID_C_STR(arc->getSourceNode()->getId()),
-					ID_C_STR(arc->getTargetNode()->getId())
+					-1, "GRAPH", "Erase edge %s (%p) (from %s to %s)",
+					ID_C_STR(id), edge,
+					ID_C_STR(edge->getSourceNode()->getId()),
+					ID_C_STR(edge->getTargetNode()->getId())
 					);
-			// Removes the incoming arcs from the incoming/outgoing
-			// arc lists of target/source nodes.
-			arc->getSourceNode()->unlinkOut(arc);
-			arc->getTargetNode()->unlinkIn(arc);
+			// Removes the incoming edges from the incoming/outgoing
+			// edge lists of target/source nodes.
+			edge->getSourceNode()->unlinkOut(edge);
+			edge->getTargetNode()->unlinkIn(edge);
 
-			// Erases arc from the graph
-			this->arcs.erase(id);
+			// Erases edge from the graph
+			this->edges.erase(id);
 			// Triggers callbacks
-			for(auto callback : erase_arc_callbacks)
-				callback->call(arc);
+			for(auto callback : erase_edge_callbacks)
+				callback->call(edge);
 
-			// Deletes arc
-			delete arc;
-			FPMAS_LOGD(-1, "GRAPH", "Arc %s removed.", ID_C_STR(id));
+			// Deletes edge
+			delete edge;
+			FPMAS_LOGD(-1, "GRAPH", "Edge %s removed.", ID_C_STR(id));
 		}
 
 	template<GRAPH_PARAMS>
@@ -180,32 +180,32 @@ namespace fpmas::graph::base {
 			}
 
 	template<GRAPH_PARAMS>
-		ArcType*
-			Graph<GRAPH_PARAMS_SPEC>::getArc(ArcIdType id) {
-				return this->arcs.at(id);
+		EdgeType*
+			Graph<GRAPH_PARAMS_SPEC>::getEdge(EdgeIdType id) {
+				return this->edges.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const ArcType*
-			Graph<GRAPH_PARAMS_SPEC>::getArc(ArcIdType id) const {
-				return this->arcs.at(id);
+		const EdgeType*
+			Graph<GRAPH_PARAMS_SPEC>::getEdge(EdgeIdType id) const {
+				return this->edges.at(id);
 		}
 
 	template<GRAPH_PARAMS>
-		const typename Graph<GRAPH_PARAMS_SPEC>::ArcMap&
-			Graph<GRAPH_PARAMS_SPEC>::getArcs() const {
-				return this->arcs;
+		const typename Graph<GRAPH_PARAMS_SPEC>::EdgeMap&
+			Graph<GRAPH_PARAMS_SPEC>::getEdges() const {
+				return this->edges;
 			}
 
 	template<GRAPH_PARAMS>
 		void Graph<GRAPH_PARAMS_SPEC>::clear() {
 			// This is VERY hacky.
-			std::vector<ArcType*> arcs;
-			for(auto arc : this->arcs)
-				arcs.push_back(arc.second);
+			std::vector<EdgeType*> edges;
+			for(auto edge : this->edges)
+				edges.push_back(edge.second);
 
-			for(auto arc : arcs) {
-				erase(arc);
+			for(auto edge : edges) {
+				erase(edge);
 			}
 
 			std::vector<NodeType*> nodes;
@@ -224,9 +224,9 @@ namespace fpmas::graph::base {
 				delete callback;
 			for(auto callback : erase_node_callbacks)
 				delete callback;
-			for(auto callback : insert_arc_callbacks)
+			for(auto callback : insert_edge_callbacks)
 				delete callback;
-			for(auto callback : erase_arc_callbacks)
+			for(auto callback : erase_edge_callbacks)
 				delete callback;
 		}
 

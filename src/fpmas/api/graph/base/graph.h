@@ -6,44 +6,44 @@
 
 #define GRAPH_PARAMS \
 	typename NodeType,\
-	typename ArcType
+	typename EdgeType
 
-#define GRAPH_PARAMS_SPEC NodeType, ArcType
+#define GRAPH_PARAMS_SPEC NodeType, EdgeType
 
 namespace fpmas::api::graph::base {
 
 	template<GRAPH_PARAMS> class Graph {
-		static_assert(std::is_base_of<typename NodeType::ArcType, ArcType>::value);
-		static_assert(std::is_base_of<typename ArcType::NodeType, NodeType>::value);
+		static_assert(std::is_base_of<typename NodeType::EdgeType, EdgeType>::value);
+		static_assert(std::is_base_of<typename EdgeType::NodeType, NodeType>::value);
 		public:
-			typedef typename ArcType::NodeType NodeBase; // Maybe NodeType == node_base, but, in any case, NodeType is convertible to node_base.
-			typedef typename NodeType::ArcType ArcBase;
+			typedef typename EdgeType::NodeType NodeBase; // Maybe NodeType == node_base, but, in any case, NodeType is convertible to node_base.
+			typedef typename NodeType::EdgeType EdgeBase;
 
 			typedef typename NodeType::IdType NodeIdType;
-			typedef typename ArcType::IdType ArcIdType;
-			typedef typename ArcType::LayerIdType LayerIdType;
+			typedef typename EdgeType::IdType EdgeIdType;
+			typedef typename EdgeType::LayerIdType LayerIdType;
 
 			typedef fpmas::api::graph::base::IdHash<typename NodeType::IdType> NodeIdHash;
-			typedef fpmas::api::graph::base::IdHash<typename ArcType::IdType> ArcIdHash;
+			typedef fpmas::api::graph::base::IdHash<typename EdgeType::IdType> EdgeIdHash;
 			typedef std::unordered_map<
 				NodeIdType, NodeType*, NodeIdHash
 				> NodeMap;
 			typedef std::unordered_map<
-				ArcIdType, ArcType*, ArcIdHash
-				> ArcMap;
+				EdgeIdType, EdgeType*, EdgeIdHash
+				> EdgeMap;
 
 		public:
 			virtual void insert(NodeType* node) = 0;
-			virtual void insert(ArcType* arc) = 0;
+			virtual void insert(EdgeType* edge) = 0;
 
 			virtual void erase(NodeBase* node) = 0;
-			virtual void erase(ArcBase* arc) = 0;
+			virtual void erase(EdgeBase* edge) = 0;
 
 			virtual void addCallOnInsertNode(api::utils::Callback<NodeType*>*) = 0;
 			virtual void addCallOnEraseNode(api::utils::Callback<NodeType*>*) = 0;
 
-			virtual void addCallOnInsertArc(api::utils::Callback<ArcType*>*) = 0;
-			virtual void addCallOnEraseArc(api::utils::Callback<ArcType*>*) = 0;
+			virtual void addCallOnInsertEdge(api::utils::Callback<EdgeType*>*) = 0;
+			virtual void addCallOnEraseEdge(api::utils::Callback<EdgeType*>*) = 0;
 
 			// Node getters
 			virtual const NodeIdType& currentNodeId() const = 0;
@@ -51,20 +51,20 @@ namespace fpmas::api::graph::base {
 			virtual const NodeType* getNode(NodeIdType) const = 0;
 			virtual const NodeMap& getNodes() const = 0;
 
-			// Arc getters
-			virtual const ArcIdType& currentArcId() const = 0;
-			virtual ArcType* getArc(ArcIdType) = 0;
-			virtual const ArcType* getArc(ArcIdType) const = 0;
-			virtual const ArcMap& getArcs() const = 0;
+			// Edge getters
+			virtual const EdgeIdType& currentEdgeId() const = 0;
+			virtual EdgeType* getEdge(EdgeIdType) = 0;
+			virtual const EdgeType* getEdge(EdgeIdType) const = 0;
+			virtual const EdgeMap& getEdges() const = 0;
 
 			virtual void removeNode(NodeType*) = 0;
 			void removeNode(const NodeIdType& id) {
 				this->removeNode(this->getNode(id));
 			}
 
-			virtual void unlink(ArcType*) = 0;
-			void unlink(const ArcIdType& id) {
-				this->unlink(this->getArc(id));
+			virtual void unlink(EdgeType*) = 0;
+			void unlink(const EdgeIdType& id) {
+				this->unlink(this->getEdge(id));
 			}
 
 			virtual void clear() = 0;
@@ -79,7 +79,7 @@ namespace fpmas::api::graph::base {
  *        }
  *
  *    template<typename GraphImpl, typename... Args>
- *        typename GraphImpl::ArcType* link(
+ *        typename GraphImpl::EdgeType* link(
  *                GraphImpl& graph,
  *                typename GraphImpl::NodeBase* src,
  *                typename GraphImpl::NodeBase* tgt,

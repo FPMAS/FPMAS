@@ -4,41 +4,41 @@
 
 #include "fpmas/api/graph/base/graph.h"
 
-template<typename NodeType, typename ArcType>
+template<typename NodeType, typename EdgeType>
 class MockGraph : 
-	public virtual fpmas::api::graph::base::Graph<NodeType, ArcType> {
-		typedef fpmas::api::graph::base::Graph<NodeType, ArcType>
+	public virtual fpmas::api::graph::base::Graph<NodeType, EdgeType> {
+		typedef fpmas::api::graph::base::Graph<NodeType, EdgeType>
 		GraphBase;
 		using typename GraphBase::NodeIdType;
 		using typename GraphBase::NodeMap;
 
-		using typename GraphBase::ArcIdType;
-		using typename GraphBase::ArcMap;
+		using typename GraphBase::EdgeIdType;
+		using typename GraphBase::EdgeMap;
 
 		public:
 			MOCK_METHOD(void, insert, (NodeType*), (override));
-			MOCK_METHOD(void, insert, (ArcType*), (override));
+			MOCK_METHOD(void, insert, (EdgeType*), (override));
 
 			MOCK_METHOD(void, erase, (NodeType*), (override));
-			MOCK_METHOD(void, erase, (ArcType*), (override));
+			MOCK_METHOD(void, erase, (EdgeType*), (override));
 
 			MOCK_METHOD(void, addCallOnInsertNode, (fpmas::api::utils::Callback<NodeType*>*), (override));
 			MOCK_METHOD(void, addCallOnEraseNode, (fpmas::api::utils::Callback<NodeType*>*), (override));
-			MOCK_METHOD(void, addCallOnInsertArc, (fpmas::api::utils::Callback<ArcType*>*), (override));
-			MOCK_METHOD(void, addCallOnEraseArc, (fpmas::api::utils::Callback<ArcType*>*), (override));
+			MOCK_METHOD(void, addCallOnInsertEdge, (fpmas::api::utils::Callback<EdgeType*>*), (override));
+			MOCK_METHOD(void, addCallOnEraseEdge, (fpmas::api::utils::Callback<EdgeType*>*), (override));
 
 			MOCK_METHOD(const NodeIdType&, currentNodeId, (), (const, override));
 			MOCK_METHOD(NodeType*, getNode, (NodeIdType), (override));
 			MOCK_METHOD(const NodeType*, getNode, (NodeIdType), (const, override));
 			MOCK_METHOD(const NodeMap&, getNodes, (), (const, override));
 
-			MOCK_METHOD(const ArcIdType&, currentArcId, (), (const, override));
-			MOCK_METHOD(ArcType*, getArc, (ArcIdType), (override));
-			MOCK_METHOD(const ArcType*, getArc, (ArcIdType), (const, override));
-			MOCK_METHOD(const ArcMap&, getArcs, (), (const, override));
+			MOCK_METHOD(const EdgeIdType&, currentEdgeId, (), (const, override));
+			MOCK_METHOD(EdgeType*, getEdge, (EdgeIdType), (override));
+			MOCK_METHOD(const EdgeType*, getEdge, (EdgeIdType), (const, override));
+			MOCK_METHOD(const EdgeMap&, getEdges, (), (const, override));
 
 			MOCK_METHOD(void, removeNode, (NodeType*), (override));
-			MOCK_METHOD(void, unlink, (ArcType*), (override));
+			MOCK_METHOD(void, unlink, (EdgeType*), (override));
 
 			MOCK_METHOD(void, clear, (), (override));
 };

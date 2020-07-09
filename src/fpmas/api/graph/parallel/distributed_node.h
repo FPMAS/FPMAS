@@ -2,7 +2,7 @@
 #define DISTRIBUTED_NODE_API_H
 
 #include "fpmas/api/graph/base/node.h"
-#include "fpmas/api/graph/parallel/distributed_arc.h"
+#include "fpmas/api/graph/parallel/distributed_edge.h"
 #include "fpmas/api/synchro/mutex.h"
 #include "distributed_id.h"
 
@@ -10,8 +10,8 @@ namespace fpmas::api::graph::parallel {
 
 	template<typename T>
 	class DistributedNode
-		: public virtual fpmas::api::graph::base::Node<DistributedId, DistributedArc<T>> {
-		typedef fpmas::api::graph::base::Node<DistributedId, DistributedArc<T>> NodeBase;
+		: public virtual fpmas::api::graph::base::Node<DistributedId, DistributedEdge<T>> {
+		typedef fpmas::api::graph::base::Node<DistributedId, DistributedEdge<T>> NodeBase;
 		public:
 			virtual int getLocation() const = 0;
 			virtual void setLocation(int) = 0;

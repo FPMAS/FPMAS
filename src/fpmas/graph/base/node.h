@@ -8,18 +8,18 @@
 
 namespace fpmas::graph::base {
 
-	template<typename IdType, typename _ArcType>
-		class Node : public virtual fpmas::api::graph::base::Node<IdType, _ArcType> {
+	template<typename IdType, typename _EdgeType>
+		class Node : public virtual fpmas::api::graph::base::Node<IdType, _EdgeType> {
 			public:
-				typedef fpmas::api::graph::base::Node<IdType, _ArcType> NodeType;
-				using typename NodeType::ArcType;
+				typedef fpmas::api::graph::base::Node<IdType, _EdgeType> NodeType;
+				using typename NodeType::EdgeType;
 				using typename NodeType::LayerIdType;
 
 			private:
 				IdType id;
 				float weight = 1.;
-				std::unordered_map<LayerIdType, std::vector<ArcType*>> incoming_arcs;
-				std::unordered_map<LayerIdType, std::vector<ArcType*>> outgoing_arcs;
+				std::unordered_map<LayerIdType, std::vector<EdgeType*>> incoming_edges;
+				std::unordered_map<LayerIdType, std::vector<EdgeType*>> outgoing_edges;
 
 			public:
 				Node(const IdType& id)
@@ -37,149 +37,149 @@ namespace fpmas::graph::base {
 				float getWeight() const override {return weight;};
 				void setWeight(float weight) override {this->weight = weight;};
 
-				const std::vector<ArcType*> getIncomingArcs() const override;
-				const std::vector<ArcType*> getIncomingArcs(LayerIdType layer) const override;
-				const std::vector<typename ArcType::NodeType*> inNeighbors() const override;
-				const std::vector<typename ArcType::NodeType*> inNeighbors(LayerIdType) const override;
+				const std::vector<EdgeType*> getIncomingEdges() const override;
+				const std::vector<EdgeType*> getIncomingEdges(LayerIdType layer) const override;
+				const std::vector<typename EdgeType::NodeType*> inNeighbors() const override;
+				const std::vector<typename EdgeType::NodeType*> inNeighbors(LayerIdType) const override;
 
-				const std::vector<ArcType*> getOutgoingArcs() const override;
-				const std::vector<ArcType*> getOutgoingArcs(LayerIdType layer) const override;
-				const std::vector<typename ArcType::NodeType*> outNeighbors() const override;
-				const std::vector<typename ArcType::NodeType*> outNeighbors(LayerIdType) const override;
+				const std::vector<EdgeType*> getOutgoingEdges() const override;
+				const std::vector<EdgeType*> getOutgoingEdges(LayerIdType layer) const override;
+				const std::vector<typename EdgeType::NodeType*> outNeighbors() const override;
+				const std::vector<typename EdgeType::NodeType*> outNeighbors(LayerIdType) const override;
 
-				void linkIn(ArcType* arc) override;
-				void linkOut(ArcType* arc) override;
+				void linkIn(EdgeType* edge) override;
+				void linkOut(EdgeType* edge) override;
 
-				void unlinkIn(ArcType* arc) override;
-				void unlinkOut(ArcType* arc) override;
+				void unlinkIn(EdgeType* edge) override;
+				void unlinkOut(EdgeType* edge) override;
 
 				virtual ~Node() {}
 		};
 
-	template<typename IdType, typename ArcType>
-		const std::vector<typename Node<IdType, ArcType>::ArcType*>
-			Node<IdType, ArcType>::getIncomingArcs() const {
-				std::vector<ArcType*> in;
-				for(auto layer : this->incoming_arcs) {
-					for(auto* arc : layer.second) {
-						in.push_back(arc);
+	template<typename IdType, typename EdgeType>
+		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
+			Node<IdType, EdgeType>::getIncomingEdges() const {
+				std::vector<EdgeType*> in;
+				for(auto layer : this->incoming_edges) {
+					for(auto* edge : layer.second) {
+						in.push_back(edge);
 					}
 				}
 				return in;
 		}
 
-	template<typename IdType, typename ArcType>
-		const std::vector<typename Node<IdType, ArcType>::ArcType*>
-			Node<IdType, ArcType>::getIncomingArcs(LayerIdType id) const {
+	template<typename IdType, typename EdgeType>
+		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
+			Node<IdType, EdgeType>::getIncomingEdges(LayerIdType id) const {
 				try {
-					return incoming_arcs.at(id);
+					return incoming_edges.at(id);
 				} catch(std::out_of_range&) {
 					return {};
 				}
 		}
 	
-	template<typename IdType, typename ArcType>
-		const std::vector<typename Node<IdType, ArcType>::ArcType*>
-			Node<IdType, ArcType>::getOutgoingArcs() const {
-				std::vector<ArcType*> out;
-				for(auto layer : this->outgoing_arcs) {
-					for(auto* arc : layer.second) {
-						out.push_back(arc);
+	template<typename IdType, typename EdgeType>
+		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
+			Node<IdType, EdgeType>::getOutgoingEdges() const {
+				std::vector<EdgeType*> out;
+				for(auto layer : this->outgoing_edges) {
+					for(auto* edge : layer.second) {
+						out.push_back(edge);
 					}
 				}
 				return out;
 		}
 
-	template<typename IdType, typename ArcType>
-		const std::vector<typename Node<IdType, ArcType>::ArcType*>
-			Node<IdType, ArcType>::getOutgoingArcs(LayerIdType id) const {
+	template<typename IdType, typename EdgeType>
+		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
+			Node<IdType, EdgeType>::getOutgoingEdges(LayerIdType id) const {
 				try {
-					return outgoing_arcs.at(id);
+					return outgoing_edges.at(id);
 				} catch(std::out_of_range&) {
 					return {};
 				}
 		}
 	
-	template<typename IdType, typename ArcType>
-		const std::vector<typename Node<IdType, ArcType>::ArcType::NodeType*>
-		Node<IdType, ArcType>::inNeighbors() const {
-			std::vector<typename ArcType::NodeType*> neighbors;
-			for(auto arc : this->getIncomingArcs()) {
-				neighbors.push_back(arc->getSourceNode());
+	template<typename IdType, typename EdgeType>
+		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
+		Node<IdType, EdgeType>::inNeighbors() const {
+			std::vector<typename EdgeType::NodeType*> neighbors;
+			for(auto edge : this->getIncomingEdges()) {
+				neighbors.push_back(edge->getSourceNode());
 			}
 			return neighbors;
 		}
 
-	template<typename IdType, typename ArcType>
-		const std::vector<typename Node<IdType, ArcType>::ArcType::NodeType*>
-		Node<IdType, ArcType>::inNeighbors(LayerIdType layer) const {
-			std::vector<typename ArcType::NodeType*> neighbors;
-			for(auto arc : this->getIncomingArcs(layer)) {
-				neighbors.push_back(arc->getSourceNode());
+	template<typename IdType, typename EdgeType>
+		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
+		Node<IdType, EdgeType>::inNeighbors(LayerIdType layer) const {
+			std::vector<typename EdgeType::NodeType*> neighbors;
+			for(auto edge : this->getIncomingEdges(layer)) {
+				neighbors.push_back(edge->getSourceNode());
 			}
 			return neighbors;
 		}
 
-	template<typename IdType, typename ArcType>
-		const std::vector<typename Node<IdType, ArcType>::ArcType::NodeType*>
-		Node<IdType, ArcType>::outNeighbors() const {
-			std::vector<typename ArcType::NodeType*> neighbors;
-			for(auto arc : this->getOutgoingArcs()) {
-				neighbors.push_back(arc->getTargetNode());
+	template<typename IdType, typename EdgeType>
+		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
+		Node<IdType, EdgeType>::outNeighbors() const {
+			std::vector<typename EdgeType::NodeType*> neighbors;
+			for(auto edge : this->getOutgoingEdges()) {
+				neighbors.push_back(edge->getTargetNode());
 			}
 			return neighbors;
 		}
 
-	template<typename IdType, typename ArcType>
-		const std::vector<typename Node<IdType, ArcType>::ArcType::NodeType*>
-		Node<IdType, ArcType>::outNeighbors(LayerIdType layer) const {
-			std::vector<typename ArcType::NodeType*> neighbors;
-			for(auto arc : this->getOutgoingArcs(layer)) {
-				neighbors.push_back(arc->getTargetNode());
+	template<typename IdType, typename EdgeType>
+		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
+		Node<IdType, EdgeType>::outNeighbors(LayerIdType layer) const {
+			std::vector<typename EdgeType::NodeType*> neighbors;
+			for(auto edge : this->getOutgoingEdges(layer)) {
+				neighbors.push_back(edge->getTargetNode());
 			}
 			return neighbors;
 		}
 
-	template<typename IdType, typename ArcType>
-		void Node<IdType, ArcType>::linkIn(ArcType* arc) {
+	template<typename IdType, typename EdgeType>
+		void Node<IdType, EdgeType>::linkIn(EdgeType* edge) {
 			FPMAS_LOGV(
-				-1, "NODE", "%s : Linking in arc %s (%p)",
+				-1, "NODE", "%s : Linking in edge %s (%p)",
 				ID_C_STR(id),
-				ID_C_STR(arc->getId()), arc
+				ID_C_STR(edge->getId()), edge
 				);
-			incoming_arcs[arc->getLayer()].push_back(arc);
+			incoming_edges[edge->getLayer()].push_back(edge);
 		}
 
-	template<typename IdType, typename ArcType>
-		void Node<IdType, ArcType>::linkOut(ArcType* arc) {
+	template<typename IdType, typename EdgeType>
+		void Node<IdType, EdgeType>::linkOut(EdgeType* edge) {
 			FPMAS_LOGV(
-				-1, "NODE", "%s : Linking out arc %s (%p)",
+				-1, "NODE", "%s : Linking out edge %s (%p)",
 				ID_C_STR(id),
-				ID_C_STR(arc->getId()), arc
+				ID_C_STR(edge->getId()), edge
 				);
-			outgoing_arcs[arc->getLayer()].push_back(arc);
+			outgoing_edges[edge->getLayer()].push_back(edge);
 		}
 
-	template<typename IdType, typename ArcType>
-		void Node<IdType, ArcType>::unlinkIn(ArcType *arc) {
+	template<typename IdType, typename EdgeType>
+		void Node<IdType, EdgeType>::unlinkIn(EdgeType *edge) {
 			FPMAS_LOGV(
-				-1, "NODE", "%s : Unlink in arc %s (%p) (from %s)",
-				ID_C_STR(id), ID_C_STR(arc->getId()), arc,
-				ID_C_STR(arc->getSourceNode()->getId())
+				-1, "NODE", "%s : Unlink in edge %s (%p) (from %s)",
+				ID_C_STR(id), ID_C_STR(edge->getId()), edge,
+				ID_C_STR(edge->getSourceNode()->getId())
 				);
-			auto& arcs = incoming_arcs.at(arc->getLayer());
-			arcs.erase(std::remove(arcs.begin(), arcs.end(), arc));
+			auto& edges = incoming_edges.at(edge->getLayer());
+			edges.erase(std::remove(edges.begin(), edges.end(), edge));
 		}
 
-	template<typename IdType, typename ArcType>
-		void Node<IdType, ArcType>::unlinkOut(ArcType *arc) {
+	template<typename IdType, typename EdgeType>
+		void Node<IdType, EdgeType>::unlinkOut(EdgeType *edge) {
 			FPMAS_LOGV(
-				-1, "NODE", "%s : Unlink out arc %s (%p) (to %s)",
-				ID_C_STR(id), ID_C_STR(arc->getId()), arc,
-				ID_C_STR(arc->getTargetNode()->getId())
+				-1, "NODE", "%s : Unlink out edge %s (%p) (to %s)",
+				ID_C_STR(id), ID_C_STR(edge->getId()), edge,
+				ID_C_STR(edge->getTargetNode()->getId())
 				);
-			auto& arcs = outgoing_arcs.at(arc->getLayer());
-			arcs.erase(std::remove(arcs.begin(), arcs.end(), arc));
+			auto& edges = outgoing_edges.at(edge->getLayer());
+			edges.erase(std::remove(edges.begin(), edges.end(), edge));
 		}
 }
 #endif

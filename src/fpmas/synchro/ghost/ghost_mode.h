@@ -5,7 +5,7 @@
 #include "fpmas/api/synchro/mutex.h"
 #include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/communication/communication.h"
-#include "fpmas/graph/parallel/distributed_arc.h"
+#include "fpmas/graph/parallel/distributed_edge.h"
 #include "fpmas/graph/parallel/distributed_node.h"
 
 namespace fpmas::synchro {
@@ -107,52 +107,52 @@ namespace fpmas::synchro {
 			class GhostSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
 
 				public:
-					typedef fpmas::api::graph::parallel::DistributedArc<T> ArcApi;
-					typedef graph::parallel::ArcPtrWrapper<T> ArcPtr;
-					typedef api::communication::TypedMpi<ArcPtr> ArcMpi;
+					typedef fpmas::api::graph::parallel::DistributedEdge<T> EdgeApi;
+					typedef graph::parallel::EdgePtrWrapper<T> EdgePtr;
+					typedef api::communication::TypedMpi<EdgePtr> EdgeMpi;
 					typedef api::communication::TypedMpi<DistributedId> IdMpi;
 				private:
-					std::vector<ArcPtr> link_buffer;
+					std::vector<EdgePtr> link_buffer;
 					//std::vector<DistributedId> unlink_buffer;
 					std::unordered_map<int, std::vector<DistributedId>> unlink_migration;
 
-					ArcMpi& arc_mpi;
+					EdgeMpi& edge_mpi;
 					IdMpi& id_mpi;
 					fpmas::api::graph::parallel::DistributedGraph<T>& graph;
 
 				public:
 					GhostSyncLinker(
-							ArcMpi& arc_mpi, IdMpi& id_mpi,
+							EdgeMpi& edge_mpi, IdMpi& id_mpi,
 							fpmas::api::graph::parallel::DistributedGraph<T>& graph)
-						: arc_mpi(arc_mpi), id_mpi(id_mpi), graph(graph) {}
+						: edge_mpi(edge_mpi), id_mpi(id_mpi), graph(graph) {}
 
-					void link(const ArcApi*) override;
-					void unlink(const ArcApi*) override;
+					void link(const EdgeApi*) override;
+					void unlink(const EdgeApi*) override;
 
 					void synchronize() override;
 			};
 
 		template<typename T>
-			void GhostSyncLinker<T>::link(const ArcApi * arc) {
-				if(arc->state() == LocationState::DISTANT) {
-					link_buffer.push_back(const_cast<ArcApi*>(arc));
+			void GhostSyncLinker<T>::link(const EdgeApi * edge) {
+				if(edge->state() == LocationState::DISTANT) {
+					link_buffer.push_back(const_cast<EdgeApi*>(edge));
 				}
 			}
 
 		template<typename T>
-			void GhostSyncLinker<T>::unlink(const ArcApi * arc) {
-				if(arc->state() == LocationState::DISTANT) {
+			void GhostSyncLinker<T>::unlink(const EdgeApi * edge) {
+				if(edge->state() == LocationState::DISTANT) {
 					link_buffer.erase(
-							std::remove(link_buffer.begin(), link_buffer.end(), arc),
+							std::remove(link_buffer.begin(), link_buffer.end(), edge),
 							link_buffer.end()
 							);
-					auto src = arc->getSourceNode();
+					auto src = edge->getSourceNode();
 					if(src->state() == LocationState::DISTANT) {
-						unlink_migration[src->getLocation()].push_back(arc->getId());
+						unlink_migration[src->getLocation()].push_back(edge->getId());
 					}
-					auto tgt = arc->getTargetNode();
+					auto tgt = edge->getTargetNode();
 					if(tgt->state() == LocationState::DISTANT) {
-						unlink_migration[tgt->getLocation()].push_back(arc->getId());
+						unlink_migration[tgt->getLocation()].push_back(edge->getId());
 					}
 				}
 			}
@@ -162,27 +162,27 @@ namespace fpmas::synchro {
 				/*
 				 * Migrate links
 				 */
-				std::vector<ArcPtr> arcs_to_clear;
-				std::unordered_map<int, std::vector<ArcPtr>> link_migration;
-				for(auto arc : link_buffer) {
-					auto src = arc->getSourceNode();
+				std::vector<EdgePtr> edges_to_clear;
+				std::unordered_map<int, std::vector<EdgePtr>> link_migration;
+				for(auto edge : link_buffer) {
+					auto src = edge->getSourceNode();
 					if(src->state() == LocationState::DISTANT) {
-						link_migration[src->getLocation()].push_back(arc);
+						link_migration[src->getLocation()].push_back(edge);
 					}
-					auto tgt = arc->getTargetNode();
+					auto tgt = edge->getTargetNode();
 					if(tgt->state() == LocationState::DISTANT) {
-						link_migration[tgt->getLocation()].push_back(arc);
+						link_migration[tgt->getLocation()].push_back(edge);
 					}
 					if(src->state() == LocationState::DISTANT
 						&& tgt->state() == LocationState::DISTANT) {
-						arcs_to_clear.push_back(arc);
+						edges_to_clear.push_back(edge);
 					}
 				}
-				link_migration = arc_mpi.migrate(link_migration);
+				link_migration = edge_mpi.migrate(link_migration);
 
 				for(auto import_list : link_migration) {
-					for (auto arc : import_list.second) {
-						graph.importArc(arc);
+					for (auto edge : import_list.second) {
+						graph.importEdge(edge);
 					}
 				}
 				link_buffer.clear();
@@ -193,22 +193,22 @@ namespace fpmas::synchro {
 				unlink_migration = id_mpi.migrate(unlink_migration);
 				for(auto import_list : unlink_migration) {
 					for(DistributedId id : import_list.second) {
-						if(graph.getArcs().count(id) > 0) {
-							auto arc = graph.getArc(id);
-							graph.erase(arc);
+						if(graph.getEdges().count(id) > 0) {
+							auto edge = graph.getEdge(id);
+							graph.erase(edge);
 						}
 					}
 				}
 				unlink_migration.clear();
-				for(auto arc : arcs_to_clear)
-					graph.erase(arc);
+				for(auto edge : edges_to_clear)
+					graph.erase(edge);
 			}
 
 		template<typename T>
 			class GhostModeRuntime : fpmas::api::synchro::SyncModeRuntime<T> {
 				communication::TypedMpi<DistributedId> id_mpi;
 				communication::TypedMpi<graph::parallel::NodePtrWrapper<T>> node_mpi;
-				communication::TypedMpi<graph::parallel::ArcPtrWrapper<T>> arc_mpi;
+				communication::TypedMpi<graph::parallel::EdgePtrWrapper<T>> edge_mpi;
 
 				GhostDataSync<T> data_sync;
 				GhostSyncLinker<T> sync_linker;
@@ -217,8 +217,8 @@ namespace fpmas::synchro {
 				GhostModeRuntime(
 						fpmas::api::graph::parallel::DistributedGraph<T>& graph,
 						api::communication::MpiCommunicator& comm)
-					: id_mpi(comm), node_mpi(comm), arc_mpi(comm),
-					data_sync(node_mpi, id_mpi, graph), sync_linker(arc_mpi, id_mpi, graph) {}
+					: id_mpi(comm), node_mpi(comm), edge_mpi(comm),
+					data_sync(node_mpi, id_mpi, graph), sync_linker(edge_mpi, id_mpi, graph) {}
 
 				SingleThreadMutex<T>* buildMutex(api::graph::parallel::DistributedNode<T>* node) override {
 					return new SingleThreadMutex<T>(node->data());

@@ -12,7 +12,7 @@ using fpmas::communication::TypedMpi;
 using fpmas::communication::MpiCommunicator;
 using fpmas::graph::parallel::DistributedGraph;
 using fpmas::graph::parallel::DistributedNode;
-using fpmas::graph::parallel::DistributedArc;
+using fpmas::graph::parallel::DistributedEdge;
 using fpmas::graph::parallel::DefaultMpiSetUp;
 using fpmas::graph::parallel::LocationManager;
 using fpmas::synchro::HardSyncMode;
@@ -114,7 +114,7 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 		DistributedGraph<
 			int, HardSyncMode,
 			DistributedNode,
-			DistributedArc,
+			DistributedEdge,
 			DefaultMpiSetUp,
 			LocationManager
 			> graph;

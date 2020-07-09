@@ -447,7 +447,7 @@ TEST_F(HardSyncWritersModelIntegrationTest, test) {
 
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
 		const WriterAgent* agent = static_cast<const WriterAgent*>(node.second->mutex().read().get());
-		ASSERT_EQ(agent->getCounter(), STEPS * node.second->getIncomingArcs().size());
+		ASSERT_EQ(agent->getCounter(), STEPS * node.second->getIncomingEdges().size());
 	}
 }
 
@@ -461,24 +461,24 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent, 3> {
 
 	void act() override {
 		FPMAS_LOGD(node()->getLocation(), "GHOST_TEST", "Executing agent %s", ID_C_STR(node()->getId()));
-		if(node()->getOutgoingArcs().size() >= 2) {
+		if(node()->getOutgoingEdges().size() >= 2) {
 			auto out_neighbors = node()->outNeighbors();
 			std::uniform_int_distribution<unsigned long> random_neighbor {0, out_neighbors.size()-1};
 			auto src = out_neighbors[random_neighbor(engine)];
 			auto tgt = out_neighbors[random_neighbor(engine)];
 			if(src->getId() != tgt->getId()) {
-				DistributedId current_arc_id = graph()->currentArcId();
-				links.insert(current_arc_id++);
+				DistributedId current_edge_id = graph()->currentEdgeId();
+				links.insert(current_edge_id++);
 				graph()->link(src, tgt, random_layer(engine));
 			}
 		}
-		if(node()->getOutgoingArcs().size() >= 1) {
-			std::uniform_int_distribution<unsigned long> random_arc {0, node()->getOutgoingArcs().size()-1};
-			auto index = random_arc(engine);
-			auto arc = node()->getOutgoingArcs()[index];
-			DistributedId id = arc->getId();
+		if(node()->getOutgoingEdges().size() >= 1) {
+			std::uniform_int_distribution<unsigned long> random_edge {0, node()->getOutgoingEdges().size()-1};
+			auto index = random_edge(engine);
+			auto edge = node()->getOutgoingEdges()[index];
+			DistributedId id = edge->getId();
 			unlinks.insert(id);
-			graph()->unlink(arc);
+			graph()->unlink(edge);
 		}
 	}
 };
@@ -514,8 +514,8 @@ class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegratio
 					for(int i = 0; i < NODE_BY_PROC / 2; i++) {
 						DistributedId id {0, random_node(engine)};
 						if(node.first.id() != id.id()) {
-							auto arc = agent_graph.link(node.second, agent_graph.getNode(id), 10);
-							initial_links.insert(arc->getId());
+							auto edge = agent_graph.link(node.second, agent_graph.getNode(id), 10);
+							initial_links.insert(edge->getId());
 						}
 					}
 				}
@@ -544,22 +544,22 @@ TEST_F(ModelDynamicLinkGhostModeIntegrationTest, test) {
 		unlinks.insert(agent->unlinks.begin(), agent->unlinks.end());
 	}
 
-	// Gather all arcs id in the complete distributed graph
-	fpmas::communication::TypedMpi<std::set<DistributedId>> arc_ids_mpi {agent_graph.getMpiCommunicator()};
-	std::set<DistributedId> arc_ids;
-	for(auto arc : agent_graph.getArcs()) {
-		arc_ids.insert(arc.first);
+	// Gather all edges id in the complete distributed graph
+	fpmas::communication::TypedMpi<std::set<DistributedId>> edge_ids_mpi {agent_graph.getMpiCommunicator()};
+	std::set<DistributedId> edge_ids;
+	for(auto edge : agent_graph.getEdges()) {
+		edge_ids.insert(edge.first);
 	}
-	std::vector<std::set<DistributedId>> arc_id_sets = arc_ids_mpi.gather(arc_ids, 0);
-	std::set<DistributedId> final_arc_id_set;
-	for(auto set : arc_id_sets)
+	std::vector<std::set<DistributedId>> edge_id_sets = edge_ids_mpi.gather(edge_ids, 0);
+	std::set<DistributedId> final_edge_id_set;
+	for(auto set : edge_id_sets)
 		for(auto id : set)
-			final_arc_id_set.insert(id);
+			final_edge_id_set.insert(id);
 
 	// Migrates links / unlinks
-	std::vector<std::set<DistributedId>> recv_total_links = arc_ids_mpi.gather(links, 0);
-	std::vector<std::set<DistributedId>> recv_total_unlinks = arc_ids_mpi.gather(unlinks, 0);
-	unsigned int arc_count = final_arc_id_set.size();
+	std::vector<std::set<DistributedId>> recv_total_links = edge_ids_mpi.gather(links, 0);
+	std::vector<std::set<DistributedId>> recv_total_unlinks = edge_ids_mpi.gather(unlinks, 0);
+	unsigned int edge_count = final_edge_id_set.size();
 
 	// Buils links list
 	std::set<DistributedId> total_links;
@@ -571,20 +571,20 @@ TEST_F(ModelDynamicLinkGhostModeIntegrationTest, test) {
 	for(auto set : recv_total_unlinks)
 		total_unlinks.insert(set.begin(), set.end());
 
-	// Builds the expected arc ids list
+	// Builds the expected edge ids list
 	for(auto id : initial_links)
 		total_links.insert(id);
 	for(auto id : total_unlinks)
 		total_links.erase(id);
 		
-	ASSERT_THAT(final_arc_id_set, ::testing::UnorderedElementsAreArray(total_links));
+	ASSERT_THAT(final_edge_id_set, ::testing::UnorderedElementsAreArray(total_links));
 
 	if(agent_graph.getMpiCommunicator().getRank() == 0) {
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Initial link count : %lu",
 				initial_links.size());
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Link count : %lu - Unlink count : %lu",
 				total_links.size(), total_unlinks.size());
-		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Total arc count : %lu", arc_count);
+		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Total edge count : %lu", edge_count);
 	}
 
 	//runtime.run(NUM_STEPS);
@@ -607,26 +607,26 @@ TEST_F(ModelDynamicLinkGhostModeIntegrationTest, test) {
 	//std::vector<unsigned int> unlink_counts = mpi.gather(local_unlink_count, 0);
 	//unsigned int unlink_count = std::accumulate(unlink_counts.begin(), unlink_counts.end(), 0);
 
-	//fpmas::communication::TypedMpi<std::set<DistributedId>> arc_ids_mpi {agent_graph.getMpiCommunicator()};
-	//std::set<DistributedId> arc_ids;
-	//for(auto arc : agent_graph.getArcs()) {
-		//arc_ids.insert(arc.first);
+	//fpmas::communication::TypedMpi<std::set<DistributedId>> edge_ids_mpi {agent_graph.getMpiCommunicator()};
+	//std::set<DistributedId> edge_ids;
+	//for(auto edge : agent_graph.getEdges()) {
+		//edge_ids.insert(edge.first);
 	//}
 
-	//std::vector<std::set<DistributedId>> arc_id_sets = arc_ids_mpi.gather(arc_ids, 0);
-	//std::set<DistributedId> final_arc_id_set;
-	//for(auto set : arc_id_sets)
+	//std::vector<std::set<DistributedId>> edge_id_sets = edge_ids_mpi.gather(edge_ids, 0);
+	//std::set<DistributedId> final_edge_id_set;
+	//for(auto set : edge_id_sets)
 		//for(auto id : set)
-			//final_arc_id_set.insert(id);
+			//final_edge_id_set.insert(id);
 
-	//unsigned int arc_count = final_arc_id_set.size();
+	//unsigned int edge_count = final_edge_id_set.size();
 
 	//if(agent_graph.getMpiCommunicator().getRank() == 0) {
 		//FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "GHOST_TEST", "Link count : %lu - Unlink count : %lu",
 				//link_count, unlink_count);
-		//FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "GHOST_TEST", "Total arc count : %lu", arc_count);
+		//FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "GHOST_TEST", "Total edge count : %lu", edge_count);
 
-		//ASSERT_EQ(arc_count, initial_arc_count + link_count - unlink_count);
+		//ASSERT_EQ(edge_count, initial_edge_count + link_count - unlink_count);
 	/*}*/
 }
 
@@ -649,8 +649,8 @@ class ModelDynamicLinkHardSyncModeIntegrationTest : public ModelHardSyncModeInte
 					for(int i = 0; i < NODE_BY_PROC / 2; i++) {
 						DistributedId id {0, random_node(engine)};
 						if(node.first.id() != id.id()) {
-							auto arc = agent_graph.link(node.second, agent_graph.getNode(id), 10);
-							initial_links.insert(arc->getId());
+							auto edge = agent_graph.link(node.second, agent_graph.getNode(id), 10);
+							initial_links.insert(edge->getId());
 						}
 					}
 				}
@@ -679,22 +679,22 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 		unlinks.insert(agent->unlinks.begin(), agent->unlinks.end());
 	}
 
-	// Gather all arcs id in the complete distributed graph
-	fpmas::communication::TypedMpi<std::set<DistributedId>> arc_ids_mpi {agent_graph.getMpiCommunicator()};
-	std::set<DistributedId> arc_ids;
-	for(auto arc : agent_graph.getArcs()) {
-		arc_ids.insert(arc.first);
+	// Gather all edges id in the complete distributed graph
+	fpmas::communication::TypedMpi<std::set<DistributedId>> edge_ids_mpi {agent_graph.getMpiCommunicator()};
+	std::set<DistributedId> edge_ids;
+	for(auto edge : agent_graph.getEdges()) {
+		edge_ids.insert(edge.first);
 	}
-	std::vector<std::set<DistributedId>> arc_id_sets = arc_ids_mpi.gather(arc_ids, 0);
-	std::set<DistributedId> final_arc_id_set;
-	for(auto set : arc_id_sets)
+	std::vector<std::set<DistributedId>> edge_id_sets = edge_ids_mpi.gather(edge_ids, 0);
+	std::set<DistributedId> final_edge_id_set;
+	for(auto set : edge_id_sets)
 		for(auto id : set)
-			final_arc_id_set.insert(id);
+			final_edge_id_set.insert(id);
 
 	// Migrates links / unlinks
-	std::vector<std::set<DistributedId>> recv_total_links = arc_ids_mpi.gather(links, 0);
-	std::vector<std::set<DistributedId>> recv_total_unlinks = arc_ids_mpi.gather(unlinks, 0);
-	unsigned int arc_count = final_arc_id_set.size();
+	std::vector<std::set<DistributedId>> recv_total_links = edge_ids_mpi.gather(links, 0);
+	std::vector<std::set<DistributedId>> recv_total_unlinks = edge_ids_mpi.gather(unlinks, 0);
+	unsigned int edge_count = final_edge_id_set.size();
 
 	// Buils links list
 	std::set<DistributedId> total_links;
@@ -706,19 +706,19 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 	for(auto set : recv_total_unlinks)
 		total_unlinks.insert(set.begin(), set.end());
 
-	// Builds the expected arc ids list
+	// Builds the expected edge ids list
 	for(auto id : initial_links)
 		total_links.insert(id);
 	for(auto id : total_unlinks)
 		total_links.erase(id);
 		
-	ASSERT_THAT(final_arc_id_set, ::testing::UnorderedElementsAreArray(total_links));
+	ASSERT_THAT(final_edge_id_set, ::testing::UnorderedElementsAreArray(total_links));
 
 	if(agent_graph.getMpiCommunicator().getRank() == 0) {
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Initial link count : %lu",
 				initial_links.size());
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Link count : %lu - Unlink count : %lu",
 				total_links.size(), total_unlinks.size());
-		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Total arc count : %lu", arc_count);
+		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Total edge count : %lu", edge_count);
 	}
 }

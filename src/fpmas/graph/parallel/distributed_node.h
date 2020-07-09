@@ -12,9 +12,9 @@ namespace fpmas::graph::parallel {
 
 	template<typename T>
 	class DistributedNode : 
-		public graph::base::Node<DistributedId, api::graph::parallel::DistributedArc<T>>,
+		public graph::base::Node<DistributedId, api::graph::parallel::DistributedEdge<T>>,
 		public api::graph::parallel::DistributedNode<T> {
-			typedef graph::base::Node<DistributedId, api::graph::parallel::DistributedArc<T>> NodeBase;
+			typedef graph::base::Node<DistributedId, api::graph::parallel::DistributedEdge<T>> NodeBase;
 			typedef api::synchro::Mutex<T> Mutex;
 
 		private:

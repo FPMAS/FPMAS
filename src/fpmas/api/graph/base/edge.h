@@ -1,5 +1,5 @@
-#ifndef ARC_API_H
-#define ARC_API_H
+#ifndef EDGE_API_H
+#define EDGE_API_H
 
 #include "id.h"
 
@@ -13,7 +13,7 @@ namespace fpmas::api::graph::base {
 	//inline static constexpr LayerId DEFAULT_LAYER = 0;
 
 	template<typename _IdType, typename _NodeType>
-	class Arc {
+	class Edge {
 		public:
 			typedef _IdType IdType;
 			typedef _NodeType NodeType;
@@ -30,7 +30,7 @@ namespace fpmas::api::graph::base {
 			virtual void setTargetNode(NodeType* const src) = 0;
 			virtual NodeType* const getTargetNode() const = 0;
 
-			virtual ~Arc() {};
+			virtual ~Edge() {};
 	};
 }
 #endif

@@ -13,7 +13,7 @@ using ::testing::Property;
 using ::testing::Return;
 using ::testing::ReturnPointee;
 
-using fpmas::graph::parallel::ArcPtrWrapper;
+using fpmas::graph::parallel::EdgePtrWrapper;
 using fpmas::synchro::hard::Epoch;
 using fpmas::synchro::hard::Tag;
 using fpmas::synchro::hard::LinkServer;
@@ -34,43 +34,43 @@ class LinkServerTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<7, 16> comm;
 		MockMpi<DistributedId> id_mpi {comm};
-		MockMpi<ArcPtrWrapper<int>> arc_mpi {comm};
+		MockMpi<EdgePtrWrapper<int>> edge_mpi {comm};
 
 		MockDistributedGraph<
 			int,
 			MockDistributedNode<int>,
-			MockDistributedArc<int>
+			MockDistributedEdge<int>
 			> mock_graph;
 
 		LinkServer<int> linkServer
-			{comm, mock_graph, id_mpi, arc_mpi};
+			{comm, mock_graph, id_mpi, edge_mpi};
 
 		void SetUp() override {
 			ON_CALL(comm, Iprobe).WillByDefault(Return(false));
 			EXPECT_CALL(comm, Iprobe).Times(AnyNumber());
 		}
 
-		void expectLink(int source, MockDistributedArc<int>* mock_arc) {
+		void expectLink(int source, MockDistributedEdge<int>* mock_edge) {
 			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::LINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			EXPECT_CALL(arc_mpi, recv(_))
+			EXPECT_CALL(edge_mpi, recv(_))
 				.After(probe)
-				.WillOnce(Return(mock_arc));
+				.WillOnce(Return(mock_edge));
 
-			EXPECT_CALL(mock_graph, importArc(mock_arc));
+			EXPECT_CALL(mock_graph, importEdge(mock_edge));
 		}
 
-		void expectUnlink(int source, MockDistributedArc<int>* mock_arc) {
-			EXPECT_CALL(mock_graph, getArc(mock_arc->getId()))
-				.WillRepeatedly(Return(mock_arc));
+		void expectUnlink(int source, MockDistributedEdge<int>* mock_edge) {
+			EXPECT_CALL(mock_graph, getEdge(mock_edge->getId()))
+				.WillRepeatedly(Return(mock_edge));
 			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::UNLINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(_))
 				.After(probe)
-				.WillOnce(Return(mock_arc->getId()));
-			EXPECT_CALL(mock_graph, erase(mock_arc));
+				.WillOnce(Return(mock_edge->getId()));
+			EXPECT_CALL(mock_graph, erase(mock_edge));
 		}
 };
 
@@ -82,24 +82,24 @@ TEST_F(LinkServerTest, epoch) {
 }
 
 TEST_F(LinkServerTest, handleLink) {
-	MockDistributedArc<int> mock_arc {DistributedId(15, 2), 7};
-	expectLink(4, &mock_arc);
+	MockDistributedEdge<int> mock_edge {DistributedId(15, 2), 7};
+	expectLink(4, &mock_edge);
 
 	linkServer.handleIncomingRequests();
 }
 
 TEST_F(LinkServerTest, handleUnlink) {
-	MockDistributedArc<int> mock_arc {{3, 5}, 7};
-	expectUnlink(6, &mock_arc);
+	MockDistributedEdge<int> mock_edge {{3, 5}, 7};
+	expectUnlink(6, &mock_edge);
 
 	linkServer.handleIncomingRequests();
 }
 
 TEST_F(LinkServerTest, handleAll) {
-	MockDistributedArc<int> link_mock_arc {{15, 2}, 7};
-	MockDistributedArc<int> unlink_mock_arc {{3, 5}, 7};
-	expectLink(4, &link_mock_arc);
-	expectUnlink(6, &unlink_mock_arc);
+	MockDistributedEdge<int> link_mock_edge {{15, 2}, 7};
+	MockDistributedEdge<int> unlink_mock_edge {{3, 5}, 7};
+	expectLink(4, &link_mock_edge);
+	expectUnlink(6, &unlink_mock_edge);
 
 	linkServer.handleIncomingRequests();
 }

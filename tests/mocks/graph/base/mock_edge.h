@@ -1,8 +1,8 @@
-#ifndef MOCK_ARC_H
-#define MOCK_ARC_H
+#ifndef MOCK_EDGE_H
+#define MOCK_EDGE_H
 
 #include "gmock/gmock.h"
-#include "fpmas/api/graph/base/arc.h"
+#include "fpmas/api/graph/base/edge.h"
 
 using ::testing::Return;
 using ::testing::ReturnPointee;
@@ -15,19 +15,19 @@ template<typename IdType, typename> class AbstractMockNode;
 template<typename IdType> class MockNode;
 
 template<typename _IdType, typename _NodeType>
-class AbstractMockArc : public virtual fpmas::api::graph::base::Arc<
+class AbstractMockEdge : public virtual fpmas::api::graph::base::Edge<
 				_IdType, _NodeType 
 							> {
 	public:
-		using typename fpmas::api::graph::base::Arc<_IdType, _NodeType>::NodeType;
-		using typename fpmas::api::graph::base::Arc<_IdType, _NodeType>::IdType;
+		using typename fpmas::api::graph::base::Edge<_IdType, _NodeType>::NodeType;
+		using typename fpmas::api::graph::base::Edge<_IdType, _NodeType>::IdType;
 
 		/*
 		 * Expectations obvisouly can't be set on an object that haven't been constructed
-		 * yet. But the Graph for example will instantiate Arcs, and so
-		 * MockArcs in this case, internally. But we still want to check some
-		 * properties of those arcs that can be set :
-		 * - when the arc is constructed (id, layer...)
+		 * yet. But the Graph for example will instantiate Edges, and so
+		 * MockEdges in this case, internally. But we still want to check some
+		 * properties of those edges that can be set :
+		 * - when the edge is constructed (id, layer...)
 		 * - using setters (setState...)
 		 * To solve this issue, the general approach is :
 		 * - expect each function call AnyBumber() of times
@@ -41,13 +41,13 @@ class AbstractMockArc : public virtual fpmas::api::graph::base::Arc<
 		LayerId layer;
 		float weight;
 
-		AbstractMockArc() {
+		AbstractMockEdge() {
 			setUpGetters();
 		}
-		AbstractMockArc(IdType id, LayerId layer) : id(id), layer(layer) {
+		AbstractMockEdge(IdType id, LayerId layer) : id(id), layer(layer) {
 			setUpGetters();
 		}
-		AbstractMockArc(IdType id, LayerId layer, float weight)
+		AbstractMockEdge(IdType id, LayerId layer, float weight)
 			: id(id), layer(layer), weight(weight) {
 			setUpGetters();
 		}
@@ -97,17 +97,17 @@ class AbstractMockArc : public virtual fpmas::api::graph::base::Arc<
 };
 
 template<typename IdType>
-class MockArc : public AbstractMockArc<IdType, MockNode<IdType>> {
+class MockEdge : public AbstractMockEdge<IdType, MockNode<IdType>> {
 	public:
-		typedef AbstractMockArc<IdType, MockNode<IdType>> mock_arc_base;
-		using typename mock_arc_base::NodeType;
+		typedef AbstractMockEdge<IdType, MockNode<IdType>> mock_edge_base;
+		using typename mock_edge_base::NodeType;
 
-		MockArc() : mock_arc_base() {}
-		MockArc(IdType id, LayerId layer)
-			: mock_arc_base(id, layer) {
+		MockEdge() : mock_edge_base() {}
+		MockEdge(IdType id, LayerId layer)
+			: mock_edge_base(id, layer) {
 		}
-		MockArc(IdType id, LayerId layer, float weight)
-			: mock_arc_base(id, layer, weight) {
+		MockEdge(IdType id, LayerId layer, float weight)
+			: mock_edge_base(id, layer, weight) {
 		}
 };
 #endif

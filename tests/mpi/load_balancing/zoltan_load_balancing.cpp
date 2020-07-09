@@ -20,7 +20,7 @@ class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 			int,
 			fpmas::synchro::GhostMode,
 			fpmas::graph::parallel::DistributedNode,
-			fpmas::graph::parallel::DistributedArc,
+			fpmas::graph::parallel::DistributedEdge,
 			fpmas::api::communication::MpiSetUp<
 				fpmas::communication::MpiCommunicator,
 				fpmas::communication::TypedMpi>,

@@ -303,7 +303,7 @@ namespace fpmas::model {
 		using AgentGraph = graph::parallel::DistributedGraph<
 		AgentPtr, SyncMode,
 		graph::parallel::DistributedNode,
-		graph::parallel::DistributedArc,
+		graph::parallel::DistributedEdge,
 		api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi>,
 		graph::parallel::LocationManager>;
 

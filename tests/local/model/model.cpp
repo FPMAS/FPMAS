@@ -1,6 +1,6 @@
 #include "fpmas/model/model.h"
 
-#include "../mocks/graph/parallel/mock_distributed_arc.h"
+#include "../mocks/graph/parallel/mock_distributed_edge.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
 #include "../mocks/graph/parallel/mock_distributed_graph.h"
 #include "../mocks/load_balancing/mock_load_balancing.h"
@@ -68,7 +68,7 @@ TEST(AgentTaskTest, run) {
 class ModelTest : public ::testing::Test {
 	public:
 		MockDistributedGraph<
-			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedArc<AgentPtr>>
+			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>>
 			graph;
 		MockLoadBalancing<AgentPtr> load_balancing;
 
@@ -130,7 +130,7 @@ TEST_F(ModelTest, load_balancing_job) {
 	EXPECT_CALL(graph, getMpiCommunicator()).Times(AnyNumber())
 		.WillRepeatedly(ReturnRef(mock_comm));
 	EXPECT_CALL(graph, getNodes).Times(AnyNumber());
-	EXPECT_CALL(graph, getArcs).Times(AnyNumber());
+	EXPECT_CALL(graph, getEdges).Times(AnyNumber());
 
 	EXPECT_CALL(graph, balance(Ref(load_balancing)));
 	runtime.run(1);
@@ -148,7 +148,7 @@ class AgentGroupTest : public ::testing::Test {
 		fpmas::api::model::GroupId id = 1;
 
 		MockDistributedGraph<
-			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedArc<AgentPtr>>
+			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>>
 			graph;
 		MockMpiCommunicator<4, 10> mock_comm;
 		MockDistributedNode<AgentPtr> node1 {{0, 1}};
@@ -348,7 +348,7 @@ TEST_F(AgentBaseTest, node) {
 
 TEST_F(AgentBaseTest, graph) {
 	MockDistributedGraph<
-		AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedArc<AgentPtr>>
+		AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>>
 		graph;
 	agent_base.setGraph(&graph);
 	ASSERT_EQ(agent_base.graph(), &graph);

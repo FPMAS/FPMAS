@@ -21,7 +21,7 @@ namespace fpmas::load_balancing {
 		void zoltan_config(Zoltan*);
 
 		/**
-		 * Convenient function to rebuild a regular node or arc id, as an
+		 * Convenient function to rebuild a regular node or edge id, as an
 		 * unsigned long, from a ZOLTAN_ID_PTR global id array, that actually
 		 * stores 2 unsigned int for each node unsigned long id.
 		 * So, with our configuration, we use 2 unsigned int in Zoltan to
@@ -99,7 +99,7 @@ namespace fpmas::load_balancing {
 		}
 
 		/**
-		 * Counts the number of outgoing arcs of each node.
+		 * Counts the number of outgoing edges of each node.
 		 *
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
@@ -110,7 +110,7 @@ namespace fpmas::load_balancing {
 		 * @param num_obj number of objects IDs in global_ids
 		 * @param global_ids Global IDs of object whose number of edges should be returned
 		 * @param local_ids Same for local ids, unused
-		 * @param num_edges Result : number of outgoing arc for each node
+		 * @param num_edges Result : number of outgoing edge for each node
 		 * @param ierr Result : error code
 		 */
 		template<typename T> void num_edges_multi_fn(
@@ -129,8 +129,8 @@ namespace fpmas::load_balancing {
 						zoltan::read_zoltan_id(&global_ids[i * num_gid_entries])
 						);
 				int count = 0;
-				for(auto arc : node->getOutgoingArcs()) {
-					if(nodes->count(arc->getTargetNode()->getId()) > 0) {
+				for(auto edge : node->getOutgoingEdges()) {
+					if(nodes->count(edge->getTargetNode()->getId()) > 0) {
 						count++;
 					}
 				}
@@ -139,7 +139,7 @@ namespace fpmas::load_balancing {
 		}
 
 		/**
-		 * List node IDs connected to each node through outgoing arcs for each
+		 * List node IDs connected to each node through outgoing edges for each
 		 * node.
 		 *
 		 * For more information about this function, see the [Zoltan
@@ -180,16 +180,16 @@ namespace fpmas::load_balancing {
 				auto node = nodes->at(
 						zoltan::read_zoltan_id(&global_ids[num_gid_entries * i])
 						);
-				for(auto arc : node->getOutgoingArcs()) {
-					if(nodes->count(arc->getTargetNode()->getId()) > 0) {
-						auto target = arc->getTargetNode();
+				for(auto edge : node->getOutgoingEdges()) {
+					if(nodes->count(edge->getTargetNode()->getId()) > 0) {
+						auto target = edge->getTargetNode();
 						DistributedId targetId = target->getId(); 
 						zoltan::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 
 						nbor_procs[neighbor_index]
 							= target->getLocation();
 
-						ewgts[neighbor_index] = arc->getWeight();
+						ewgts[neighbor_index] = edge->getWeight();
 						neighbor_index++;
 					}
 				}
@@ -232,13 +232,13 @@ namespace fpmas::load_balancing {
 				//Zoltan instance
 				Zoltan zoltan;
 
-				// Number of arcs to export.
-				int export_arcs_num;
+				// Number of edges to export.
+				int export_edges_num;
 
-				// Arc ids to export buffer.
-				ZOLTAN_ID_PTR export_arcs_global_ids;
-				// Arc export procs buffer.
-				int* export_arcs_procs;
+				// Edge ids to export buffer.
+				ZOLTAN_ID_PTR export_edges_global_ids;
+				// Edge export procs buffer.
+				int* export_edges_procs;
 
 				void setUpZoltan();
 

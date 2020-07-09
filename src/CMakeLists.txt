@@ -18,6 +18,7 @@ set(SOURCES
 
 add_library(fpmas ${SOURCES})
 
+target_link_libraries(fpmas PUBLIC MPI::MPI_CXX)
 target_link_libraries(fpmas PUBLIC zoltan)
 
 target_include_directories(

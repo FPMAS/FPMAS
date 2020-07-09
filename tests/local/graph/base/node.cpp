@@ -1,7 +1,7 @@
 #include "fpmas/graph/base/node.h"
 #include "api/graph/base/basic_id.h"
 
-#include "../mocks/graph/base/mock_arc.h"
+#include "../mocks/graph/base/mock_edge.h"
 #include "../mocks/utils/mock_callback.h"
 
 using ::testing::SizeIs;
@@ -11,61 +11,61 @@ using ::testing::Contains;
 
 using fpmas::graph::base::Node;
 
-class BasicMockArc : public AbstractMockArc<BasicId, Node<BasicId, BasicMockArc>> {
+class BasicMockEdge : public AbstractMockEdge<BasicId, Node<BasicId, BasicMockEdge>> {
 };
 
 class NodeTest : public ::testing::Test {
 	protected:
 		BasicId id;
-		Node<BasicId, BasicMockArc> node {++id};
-		Node<BasicId, BasicMockArc> otherNode {++id};
-		BasicMockArc arc;
+		Node<BasicId, BasicMockEdge> node {++id};
+		Node<BasicId, BasicMockEdge> otherNode {++id};
+		BasicMockEdge edge;
 
 		void SetUp() override {
-			EXPECT_CALL(arc, getId).WillRepeatedly(Return(++id));
-			EXPECT_CALL(arc, getLayer).WillRepeatedly(Return(4));
+			EXPECT_CALL(edge, getId).WillRepeatedly(Return(++id));
+			EXPECT_CALL(edge, getLayer).WillRepeatedly(Return(4));
 		}
 
 };
 
-TEST_F(NodeTest, void_incoming_arcs) {
-	ASSERT_THAT(node.getIncomingArcs(), SizeIs(0));
-	ASSERT_THAT(node.getIncomingArcs(12), SizeIs(0));
+TEST_F(NodeTest, void_incoming_edges) {
+	ASSERT_THAT(node.getIncomingEdges(), SizeIs(0));
+	ASSERT_THAT(node.getIncomingEdges(12), SizeIs(0));
 }
 
-TEST_F(NodeTest, void_outgoing_arcs) {
-	ASSERT_THAT(node.getOutgoingArcs(), SizeIs(0));
-	ASSERT_THAT(node.getOutgoingArcs(12), SizeIs(0));
+TEST_F(NodeTest, void_outgoing_edges) {
+	ASSERT_THAT(node.getOutgoingEdges(), SizeIs(0));
+	ASSERT_THAT(node.getOutgoingEdges(12), SizeIs(0));
 }
 
 TEST_F(NodeTest, linkIn) {
-	node.linkIn(&arc);
-	ASSERT_THAT(node.getIncomingArcs(4), SizeIs(1));
-	ASSERT_THAT(node.getIncomingArcs(4), ElementsAre(&arc));
+	node.linkIn(&edge);
+	ASSERT_THAT(node.getIncomingEdges(4), SizeIs(1));
+	ASSERT_THAT(node.getIncomingEdges(4), ElementsAre(&edge));
 }
 
 TEST_F(NodeTest, linkOut) {
-	node.linkOut(&arc);
-	ASSERT_THAT(node.getOutgoingArcs(4), SizeIs(1));
-	ASSERT_THAT(node.getOutgoingArcs(4), ElementsAre(&arc));
+	node.linkOut(&edge);
+	ASSERT_THAT(node.getOutgoingEdges(4), SizeIs(1));
+	ASSERT_THAT(node.getOutgoingEdges(4), ElementsAre(&edge));
 }
 
 TEST_F(NodeTest, unlinkIn) {
-	node.linkIn(&arc);
-	EXPECT_CALL(arc, getSourceNode).WillRepeatedly(Return(&otherNode));
-	EXPECT_CALL(arc, getTargetNode).WillRepeatedly(Return(&node));
+	node.linkIn(&edge);
+	EXPECT_CALL(edge, getSourceNode).WillRepeatedly(Return(&otherNode));
+	EXPECT_CALL(edge, getTargetNode).WillRepeatedly(Return(&node));
 
-	node.unlinkIn(&arc);
-	ASSERT_THAT(node.getIncomingArcs(4), IsEmpty());
+	node.unlinkIn(&edge);
+	ASSERT_THAT(node.getIncomingEdges(4), IsEmpty());
 }
 
 TEST_F(NodeTest, unlinkOut) {
-	node.linkOut(&arc);
-	EXPECT_CALL(arc, getSourceNode).WillRepeatedly(Return(&node));
-	EXPECT_CALL(arc, getTargetNode).WillRepeatedly(Return(&otherNode));
+	node.linkOut(&edge);
+	EXPECT_CALL(edge, getSourceNode).WillRepeatedly(Return(&node));
+	EXPECT_CALL(edge, getTargetNode).WillRepeatedly(Return(&otherNode));
 
-	node.unlinkOut(&arc);
-	ASSERT_THAT(node.getOutgoingArcs(4), IsEmpty());
+	node.unlinkOut(&edge);
+	ASSERT_THAT(node.getOutgoingEdges(4), IsEmpty());
 }
 
 TEST_F(NodeTest, empty_in_neighbors) {
@@ -80,19 +80,19 @@ TEST_F(NodeTest, empty_out_neighbors) {
 
 TEST_F(NodeTest, in_neighbors) {
 	// Mock in neighbors nodes
-	std::array<Node<BasicId, BasicMockArc>, 10> nodes {
+	std::array<Node<BasicId, BasicMockEdge>, 10> nodes {
 		++id, ++id, ++id, ++id, ++id,
 		++id, ++id, ++id, ++id, ++id
 	};
-	// Mock arcs
-	std::array<BasicMockArc, 10> arcs;
+	// Mock edges
+	std::array<BasicMockEdge, 10> edges;
 
 	for(int i = 0; i < 10; i++) {
-		EXPECT_CALL(arcs[i], getTargetNode).Times(0);
-		EXPECT_CALL(arcs[i], getSourceNode)
+		EXPECT_CALL(edges[i], getTargetNode).Times(0);
+		EXPECT_CALL(edges[i], getSourceNode)
 			.Times(AtLeast(1))
 			.WillRepeatedly(Return(&nodes[i]));
-		node.linkIn(&arcs[i]);
+		node.linkIn(&edges[i]);
 	}
 
 	auto neighbors = node.inNeighbors();
@@ -105,19 +105,19 @@ TEST_F(NodeTest, in_neighbors) {
 
 TEST_F(NodeTest, out_neighbors) {
 	// Mock in neighbors nodes
-	std::array<Node<BasicId, BasicMockArc>, 10> nodes {
+	std::array<Node<BasicId, BasicMockEdge>, 10> nodes {
 		++id, ++id, ++id, ++id, ++id,
 		++id, ++id, ++id, ++id, ++id
 	};
-	// Mock arcs
-	std::array<BasicMockArc, 10> arcs;
+	// Mock edges
+	std::array<BasicMockEdge, 10> edges;
 
 	for(int i = 0; i < 10; i++) {
-		EXPECT_CALL(arcs[i], getSourceNode).Times(0);
-		EXPECT_CALL(arcs[i], getTargetNode)
+		EXPECT_CALL(edges[i], getSourceNode).Times(0);
+		EXPECT_CALL(edges[i], getTargetNode)
 			.Times(AtLeast(1))
 			.WillRepeatedly(Return(&nodes[i]));
-		node.linkOut(&arcs[i]);
+		node.linkOut(&edges[i]);
 	}
 
 	auto neighbors = node.outNeighbors();
@@ -131,7 +131,7 @@ TEST_F(NodeTest, out_neighbors) {
 /*
  *class NodeCallbackTest : public ::testing::Test {
  *    protected:
- *        Node<BasicId, BasicMockArc> node {BasicId()};
+ *        Node<BasicId, BasicMockEdge> node {BasicId()};
  *
  *};
  *

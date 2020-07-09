@@ -6,10 +6,10 @@
  * # local_link
  * # unlink_tests
  * # import_node_tests
- * # import_arc_tests
- * # import_arc_with_missing_node_test
+ * # import_edge_tests
+ * # import_edge_with_missing_node_test
  * # distribute_tests
- * # distribute_test_with_arc
+ * # distribute_test_with_edge
  * # distribute_test_real_MPI
  */
 #include "fpmas/graph/parallel/distributed_graph.h"
@@ -18,7 +18,7 @@
 #include "fpmas/api/graph/base/graph.h"
 #include "fpmas/api/load_balancing/load_balancing.h"
 #include "../mocks/graph/parallel/mock_distributed_node.h"
-#include "../mocks/graph/parallel/mock_distributed_arc.h"
+#include "../mocks/graph/parallel/mock_distributed_edge.h"
 #include "../mocks/graph/parallel/mock_location_manager.h"
 #include "../mocks/synchro/mock_mutex.h"
 #include "../mocks/synchro/mock_sync_mode.h"
@@ -46,7 +46,7 @@ using ::testing::_;
 
 using fpmas::graph::parallel::DistributedGraph;
 using fpmas::graph::parallel::NodePtrWrapper;
-using fpmas::graph::parallel::ArcPtrWrapper;
+using fpmas::graph::parallel::EdgePtrWrapper;
 
 /********************/
 /* local_build_node */
@@ -58,7 +58,7 @@ class DistributedGraphTest : public ::testing::Test {
 			int,
 			MockSyncMode<>,
 			MockDistributedNode,
-			MockDistributedArc,
+			MockDistributedEdge,
 			MockMpiSetUp<CURRENT_RANK, 10>,
 			MockLocationManager
 			> graph;
@@ -66,8 +66,8 @@ class DistributedGraphTest : public ::testing::Test {
 		typedef decltype(graph) GraphType;
 		typedef MockDistributedNode<int> MockNode;
 		typedef fpmas::api::graph::parallel::DistributedNode<int> NodeType; 
-		typedef MockDistributedArc<int> MockArc;
-		typedef fpmas::api::graph::parallel::DistributedArc<int> ArcType;
+		typedef MockDistributedEdge<int> MockEdge;
+		typedef fpmas::api::graph::parallel::DistributedEdge<int> EdgeType;
 		typedef typename GraphType::SyncModeRuntimeType SyncModeRuntimeType;
 		typedef typename GraphType::NodeMap NodeMap;
 
@@ -151,9 +151,9 @@ class DistributedGraphLinkTest : public DistributedGraphTest {
 		MockMutex<int> srcMutex;
 		MockNode* tgtMock  = new MockNode({0, 2});
 		MockMutex<int> tgtMutex;
-		DistributedId currentId = graph.currentArcId();
-		ArcType* linkOutArg;
-		ArcType* linkInArg;
+		DistributedId currentId = graph.currentEdgeId();
+		EdgeType* linkOutArg;
+		EdgeType* linkInArg;
 
 	public:
 		void SetUp() override {
@@ -181,19 +181,19 @@ class DistributedGraphLinkTest : public DistributedGraphTest {
 			EXPECT_CALL(*tgtMock, unlinkIn);
 		}
 
-		void checkArcStructure(MockArc* arc) {
-			ASSERT_EQ(linkInArg, arc);
-			ASSERT_EQ(linkOutArg, arc);
+		void checkEdgeStructure(MockEdge* edge) {
+			ASSERT_EQ(linkInArg, edge);
+			ASSERT_EQ(linkOutArg, edge);
 
-			ASSERT_EQ(graph.getArcs().count(currentId), 1);
-			ASSERT_EQ(graph.getArc(currentId), arc);
-			ASSERT_EQ(arc->getId(), currentId);
+			ASSERT_EQ(graph.getEdges().count(currentId), 1);
+			ASSERT_EQ(graph.getEdge(currentId), edge);
+			ASSERT_EQ(edge->getId(), currentId);
 
-			ASSERT_EQ(arc->src, srcMock);
-			ASSERT_EQ(arc->tgt, tgtMock);
+			ASSERT_EQ(edge->src, srcMock);
+			ASSERT_EQ(edge->tgt, tgtMock);
 
-			EXPECT_CALL(*arc, getLayer);
-			ASSERT_EQ(arc->getLayer(), 14);
+			EXPECT_CALL(*edge, getLayer);
+			ASSERT_EQ(edge->getLayer(), 14);
 		}
 	};
 /*
@@ -205,11 +205,11 @@ TEST_F(DistributedGraphLinkTest, local_src_local_tgt) {
 
 	EXPECT_CALL(mock_sync_linker, link);
 
-	auto arc = graph.link(srcMock, tgtMock, 14);
+	auto edge = graph.link(srcMock, tgtMock, 14);
 
-	checkArcStructure(static_cast<MockArc*>(arc));
+	checkEdgeStructure(static_cast<MockEdge*>(edge));
 
-	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::LOCAL);
+	ASSERT_EQ(static_cast<MockEdge*>(edge)->_state, LocationState::LOCAL);
 }
 
 /*
@@ -219,15 +219,15 @@ TEST_F(DistributedGraphLinkTest, local_src_distant_tgt) {
 	EXPECT_CALL(*srcMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 	EXPECT_CALL(*tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
-	const ArcType* linkArcArg;
+	const EdgeType* linkEdgeArg;
 	EXPECT_CALL(mock_sync_linker, link)
-		.WillOnce(SaveArg<0>(&linkArcArg));
-	auto arc = graph.link(srcMock, tgtMock, 14);
-	ASSERT_EQ(linkArcArg, arc);
+		.WillOnce(SaveArg<0>(&linkEdgeArg));
+	auto edge = graph.link(srcMock, tgtMock, 14);
+	ASSERT_EQ(linkEdgeArg, edge);
 
-	checkArcStructure(static_cast<MockArc*>(arc));
+	checkEdgeStructure(static_cast<MockEdge*>(edge));
 
-	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::DISTANT);
+	ASSERT_EQ(static_cast<MockEdge*>(edge)->_state, LocationState::DISTANT);
 }
 
 /*
@@ -237,35 +237,35 @@ TEST_F(DistributedGraphLinkTest, distant_src_local_tgt) {
 	EXPECT_CALL(*srcMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(*tgtMock, state).WillRepeatedly(Return(LocationState::LOCAL));
 
-	const ArcType* linkArcArg;
+	const EdgeType* linkEdgeArg;
 	EXPECT_CALL(mock_sync_linker, link)
-		.WillOnce(SaveArg<0>(&linkArcArg));
-	auto arc = graph.link(srcMock, tgtMock, 14);
-	ASSERT_EQ(linkArcArg, arc);
+		.WillOnce(SaveArg<0>(&linkEdgeArg));
+	auto edge = graph.link(srcMock, tgtMock, 14);
+	ASSERT_EQ(linkEdgeArg, edge);
 
-	checkArcStructure(static_cast<MockArc*>(arc));
+	checkEdgeStructure(static_cast<MockEdge*>(edge));
 
-	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::DISTANT);
+	ASSERT_EQ(static_cast<MockEdge*>(edge)->_state, LocationState::DISTANT);
 }
 
 /*
  * Distant src, distant tgt
  */
-// TODO : what should we do with such an arc? Should it be deleted once is has
+// TODO : what should we do with such an edge? Should it be deleted once is has
 // been sent?
 TEST_F(DistributedGraphLinkTest, distant_src_distant_tgt) {
 	EXPECT_CALL(*srcMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(*tgtMock, state).WillRepeatedly(Return(LocationState::DISTANT));
 
-	const ArcType* linkArcArg;
+	const EdgeType* linkEdgeArg;
 	EXPECT_CALL(mock_sync_linker, link)
-		.WillOnce(SaveArg<0>(&linkArcArg));
-	auto arc = graph.link(srcMock, tgtMock, 14);
-	ASSERT_EQ(linkArcArg, arc);
+		.WillOnce(SaveArg<0>(&linkEdgeArg));
+	auto edge = graph.link(srcMock, tgtMock, 14);
+	ASSERT_EQ(linkEdgeArg, edge);
 
-	checkArcStructure(static_cast<MockArc*>(arc));
+	checkEdgeStructure(static_cast<MockEdge*>(edge));
 
-	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::DISTANT);
+	ASSERT_EQ(static_cast<MockEdge*>(edge)->_state, LocationState::DISTANT);
 }
 
 /****************/
@@ -277,7 +277,7 @@ class DistributedGraphUnlinkTest : public DistributedGraphTest {
 		MockMutex<int> srcMutex;
 		MockNode* tgtMock = new MockNode(DistributedId(0, 1));
 		MockMutex<int> tgtMutex;
-		ArcType* arc;
+		EdgeType* edge;
 
 	public:
 		void SetUp() override {
@@ -300,32 +300,32 @@ class DistributedGraphUnlinkTest : public DistributedGraphTest {
 			EXPECT_CALL(*tgtMock, linkIn);
 			EXPECT_CALL(mock_sync_linker, link).Times(AnyNumber());
 
-			arc = graph.link(srcMock, tgtMock, 0);
+			edge = graph.link(srcMock, tgtMock, 0);
 
-			Expectation unlinkSrc = EXPECT_CALL(*srcMock, unlinkOut(arc));
-			Expectation unlinkTgt = EXPECT_CALL(*tgtMock, unlinkIn(arc));
+			Expectation unlinkSrc = EXPECT_CALL(*srcMock, unlinkOut(edge));
+			Expectation unlinkTgt = EXPECT_CALL(*tgtMock, unlinkIn(edge));
 
 			/*
-			 * Might be call to clear() DISTANT node after the arc has been
+			 * Might be call to clear() DISTANT node after the edge has been
 			 * erased
 			 */
-			EXPECT_CALL(*srcMock, getIncomingArcs()).Times(AnyNumber()).After(unlinkSrc);
-			EXPECT_CALL(*srcMock, getOutgoingArcs()).Times(AnyNumber()).After(unlinkSrc);
+			EXPECT_CALL(*srcMock, getIncomingEdges()).Times(AnyNumber()).After(unlinkSrc);
+			EXPECT_CALL(*srcMock, getOutgoingEdges()).Times(AnyNumber()).After(unlinkSrc);
 
-			EXPECT_CALL(*tgtMock, getIncomingArcs()).Times(AnyNumber()).After(unlinkTgt);
-			EXPECT_CALL(*tgtMock, getOutgoingArcs()).Times(AnyNumber()).After(unlinkTgt);
+			EXPECT_CALL(*tgtMock, getIncomingEdges()).Times(AnyNumber()).After(unlinkTgt);
+			EXPECT_CALL(*tgtMock, getOutgoingEdges()).Times(AnyNumber()).After(unlinkTgt);
 		}
 };
 
 TEST_F(DistributedGraphUnlinkTest, local_src_local_tgt) {
 	this->link(LocationState::LOCAL, LocationState::LOCAL);
-	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::LOCAL);
+	ASSERT_EQ(static_cast<MockEdge*>(edge)->_state, LocationState::LOCAL);
 
 	EXPECT_CALL(mock_sync_linker, unlink);
 
-	graph.unlink(arc);
+	graph.unlink(edge);
 
-	ASSERT_EQ(graph.getArcs().size(), 0);
+	ASSERT_EQ(graph.getEdges().size(), 0);
 
 	delete srcMock;
 	delete tgtMock;
@@ -333,28 +333,28 @@ TEST_F(DistributedGraphUnlinkTest, local_src_local_tgt) {
 
 TEST_F(DistributedGraphUnlinkTest, local_src_distant_tgt) {
 	this->link(LocationState::LOCAL, LocationState::DISTANT);
-	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::DISTANT);
+	ASSERT_EQ(static_cast<MockEdge*>(edge)->_state, LocationState::DISTANT);
 
-	EXPECT_CALL(mock_sync_linker, unlink(arc));
+	EXPECT_CALL(mock_sync_linker, unlink(edge));
 	//EXPECT_CALL(location_manager, remove(tgtMock));
 
-	graph.unlink(arc);
+	graph.unlink(edge);
 
-	ASSERT_EQ(graph.getArcs().size(), 0);
+	ASSERT_EQ(graph.getEdges().size(), 0);
 	delete srcMock;
 	delete tgtMock;
 }
 
 TEST_F(DistributedGraphUnlinkTest, distant_src_local_tgt) {
 	this->link(LocationState::DISTANT, LocationState::LOCAL);
-	ASSERT_EQ(static_cast<MockArc*>(arc)->_state, LocationState::DISTANT);
+	ASSERT_EQ(static_cast<MockEdge*>(edge)->_state, LocationState::DISTANT);
 
-	EXPECT_CALL(mock_sync_linker, unlink(static_cast<MockArc*>(arc)));
+	EXPECT_CALL(mock_sync_linker, unlink(static_cast<MockEdge*>(edge)));
 	//EXPECT_CALL(location_manager, remove(srcMock));
 
-	graph.unlink(arc);
+	graph.unlink(edge);
 
-	ASSERT_EQ(graph.getArcs().size(), 0);
+	ASSERT_EQ(graph.getEdges().size(), 0);
 	delete srcMock;
 	delete tgtMock;
 }
@@ -370,12 +370,12 @@ TEST_F(DistributedGraphUnlinkTest, distant_src_local_tgt) {
 class DistributedGraphImportNodeTest : public DistributedGraphTest {
 	protected:
 		typedef typename GraphType::NodeType NodeType; // MockDistributedNode<int, MockMutex>
-		typedef typename GraphType::ArcType ArcType; // MockDistributedArc<int, MockMutex>
+		typedef typename GraphType::EdgeType EdgeType; // MockDistributedEdge<int, MockMutex>
 		typedef typename decltype(graph)::PartitionMap PartitionMap;
 
 		PartitionMap partition;
 		std::unordered_map<int, std::vector<NodePtrWrapper<int>>> imported_node_mocks;
-		std::unordered_map<int, std::vector<ArcPtrWrapper<int>>> imported_arc_mocks;
+		std::unordered_map<int, std::vector<EdgePtrWrapper<int>>> imported_edge_mocks;
 		
 		void SetUp() override {
 			DistributedGraphTest::SetUp();
@@ -387,9 +387,9 @@ class DistributedGraphImportNodeTest : public DistributedGraphTest {
 					migrate
 					).WillOnce(Return(imported_node_mocks));
 			EXPECT_CALL(
-					(const_cast<MockMpi<ArcPtrWrapper<int>>&>(graph.getArcMpi())),
+					(const_cast<MockMpi<EdgePtrWrapper<int>>&>(graph.getEdgeMpi())),
 					migrate
-					).WillOnce(Return(imported_arc_mocks));
+					).WillOnce(Return(imported_edge_mocks));
 			EXPECT_CALL(mock_sync_linker, synchronize).Times(1);
 			EXPECT_CALL(mock_data_sync, synchronize).Times(1);
 			graph.distribute(partition);
@@ -479,23 +479,23 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 }
 
 /********************/
-/* import_arc_tests */
+/* import_edge_tests */
 /********************/
 /*
- * Test suite for the different cases of arc import when :
+ * Test suite for the different cases of edge import when :
  * - the two nodes exist and are LOCAL
  * - the two nodes exist, src is DISTANT, tgt is LOCAL
  * - the two nodes exist, src is LOCAL, tgt is DISTANT
  */
-class DistributedGraphImportArcTest : public DistributedGraphImportNodeTest {
+class DistributedGraphImportEdgeTest : public DistributedGraphImportNodeTest {
 	protected:
 		NodeType* src;
 		NodeType* tgt;
 		MockNode* mock_src;
 		MockNode* mock_tgt;
 
-		ArcType* imported_arc;
-		MockArc* mock_arc;
+		EdgeType* imported_edge;
+		MockEdge* mock_edge;
 
 	void SetUp() override {
 		DistributedGraphImportNodeTest::SetUp();
@@ -508,16 +508,16 @@ class DistributedGraphImportArcTest : public DistributedGraphImportNodeTest {
 
 		mock_src = new MockNode(src->getId());
 		mock_tgt = new MockNode(tgt->getId());
-		mock_arc = new MockArc(
+		mock_edge = new MockEdge(
 					DistributedId(3, 12),
 					2, // layer
 					2.6 // weight
 					);
-		mock_arc->src = mock_src;
-		mock_arc->tgt = mock_tgt;
+		mock_edge->src = mock_src;
+		mock_edge->tgt = mock_tgt;
 
 		// Mock to serialize and import from proc 1 (not yet in the graph)
-		imported_arc_mocks[1].push_back(mock_arc);
+		imported_edge_mocks[1].push_back(mock_edge);
 
 		EXPECT_CALL(*static_cast<MockNode*>(src), linkOut(_));
 		EXPECT_CALL(*static_cast<MockNode*>(src), unlinkOut(_));
@@ -525,128 +525,128 @@ class DistributedGraphImportArcTest : public DistributedGraphImportNodeTest {
 		EXPECT_CALL(*static_cast<MockNode*>(tgt), unlinkIn(_));
 	}
 
-	void checkArcStructure(DistributedId id = DistributedId(3, 12)) {
-		ASSERT_EQ(graph.getArcs().size(), 1);
-		ASSERT_EQ(graph.getArcs().count(id), 1);
-		imported_arc = graph.getArc(id);
-		ASSERT_EQ(imported_arc->getLayer(), 2);
+	void checkEdgeStructure(DistributedId id = DistributedId(3, 12)) {
+		ASSERT_EQ(graph.getEdges().size(), 1);
+		ASSERT_EQ(graph.getEdges().count(id), 1);
+		imported_edge = graph.getEdge(id);
+		ASSERT_EQ(imported_edge->getLayer(), 2);
 
-		ASSERT_EQ(static_cast<MockArc*>(imported_arc)->src, src);
-		ASSERT_EQ(static_cast<MockArc*>(imported_arc)->tgt, tgt);
+		ASSERT_EQ(static_cast<MockEdge*>(imported_edge)->src, src);
+		ASSERT_EQ(static_cast<MockEdge*>(imported_edge)->tgt, tgt);
 	}
 
 };
 
 /*
- * Import an arc already contained in the graph, as a distant arc.
- * Nothing is done, but the operation can occur when migrating arcs : a proc
- * can send an arc to an other proc, because it is linked to an exported node,
- * but the arcs represented on the target node are not known. In consequence,
- * the imported arc might have already been imported with an other node in a
+ * Import an edge already contained in the graph, as a distant edge.
+ * Nothing is done, but the operation can occur when migrating edges : a proc
+ * can send an edge to an other proc, because it is linked to an exported node,
+ * but the edges represented on the target node are not known. In consequence,
+ * the imported edge might have already been imported with an other node in a
  * previous iteration.
  */
-TEST_F(DistributedGraphImportArcTest, import_existing_local_arc) {
+TEST_F(DistributedGraphImportEdgeTest, import_existing_local_edge) {
 	EXPECT_CALL(*static_cast<MockNode*>(src), state)
 		.WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(mock_sync_linker, link);
 
 	DistributedId id;
-	auto* mocked_existing_arc = graph.link(src, tgt, 2);
-	EXPECT_CALL(*static_cast<MockArc*>(mocked_existing_arc), state)
+	auto* mocked_existing_edge = graph.link(src, tgt, 2);
+	EXPECT_CALL(*static_cast<MockEdge*>(mocked_existing_edge), state)
 		.WillRepeatedly(Return(LocationState::DISTANT));
-	id = mocked_existing_arc->getId();
+	id = mocked_existing_edge->getId();
 
-	ON_CALL(*mock_arc, getId).WillByDefault(Return(id));
+	ON_CALL(*mock_edge, getId).WillByDefault(Return(id));
 
-	graph.importArc(mock_arc);
+	graph.importEdge(mock_edge);
 
-	checkArcStructure(id);
-	ASSERT_EQ(static_cast<MockArc*>(imported_arc)->_state, LocationState::DISTANT);
+	checkEdgeStructure(id);
+	ASSERT_EQ(static_cast<MockEdge*>(imported_edge)->_state, LocationState::DISTANT);
 }
 
 /*
- * Import arc when the two nodes are LOCAL
+ * Import edge when the two nodes are LOCAL
  */
-TEST_F(DistributedGraphImportArcTest, import_local_arc) {
+TEST_F(DistributedGraphImportEdgeTest, import_local_edge) {
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
 	distributeTest();
-	checkArcStructure();
-	ASSERT_EQ(static_cast<MockArc*>(imported_arc)->_state, LocationState::LOCAL);
+	checkEdgeStructure();
+	ASSERT_EQ(static_cast<MockEdge*>(imported_edge)->_state, LocationState::LOCAL);
 }
 
 
 /*
  * Import with DISTANT src
  */
-TEST_F(DistributedGraphImportArcTest, import_arc_with_existing_distant_src) {
+TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_src) {
 	EXPECT_CALL(*static_cast<MockNode*>(src), state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
 	distributeTest();
-	checkArcStructure();
-	ASSERT_EQ(static_cast<MockArc*>(imported_arc)->_state, LocationState::DISTANT);
+	checkEdgeStructure();
+	ASSERT_EQ(static_cast<MockEdge*>(imported_edge)->_state, LocationState::DISTANT);
 }
 
 /*
  * Import with DISTANT tgt
  */
-TEST_F(DistributedGraphImportArcTest, import_arc_with_existing_distant_tgt) {
+TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_tgt) {
 	EXPECT_CALL(*static_cast<MockNode*>(tgt), state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
 	distributeTest();
-	checkArcStructure();
-	ASSERT_EQ(static_cast<MockArc*>(imported_arc)->_state, LocationState::DISTANT);
+	checkEdgeStructure();
+	ASSERT_EQ(static_cast<MockEdge*>(imported_edge)->_state, LocationState::DISTANT);
 }
 
 /*
- * Special edge case that test the import behavior when the same arc is
+ * Special edge case that test the import behavior when the same edge is
  * imported twice.
  *
  * This happens notably in the following case :
  * - nodes 0 and 1 are linked and lives in distinct procs
  * - they are both imported to an other proc
  * - in consecuence, because each original proc does not know that the other
- *   node will also be imported to the destination proc, the arc connecting the
- *   two nodes (represented as a ghost arc on both original process) is
+ *   node will also be imported to the destination proc, the edge connecting the
+ *   two nodes (represented as a ghost edge on both original process) is
  *   imported twice to the destination proc.
  *
  * Obviously, the expected behavior is that no duplicate is created, i.e. the
  * second import has no effect.
  */
-TEST_F(DistributedGraphImportArcTest, double_import_edge_case) {
-	auto mock = new MockArc(DistributedId(3, 12), 2, 2.6);
+TEST_F(DistributedGraphImportEdgeTest, double_import_edge_case) {
+	auto mock = new MockEdge(DistributedId(3, 12), 2, 2.6);
 
 	mock->src = new MockNode(src->getId());
 	mock->tgt = new MockNode(tgt->getId());
 
-	// The same arc is imported from proc 2
-	imported_arc_mocks[2].push_back(mock);
+	// The same edge is imported from proc 2
+	imported_edge_mocks[2].push_back(mock);
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 
 	distributeTest();
-	checkArcStructure();
-	ASSERT_EQ(static_cast<MockArc*>(imported_arc)->_state, LocationState::LOCAL);
+	checkEdgeStructure();
+	ASSERT_EQ(static_cast<MockEdge*>(imported_edge)->_state, LocationState::LOCAL);
 }
 
 /*************************************/
-/* import_arc_with_missing_node_test */
+/* import_edge_with_missing_node_test */
 /*************************************/
 /*
  * In the previous test suite, at least one of the two nodes might be DISTANT,
  * but they already exist in the Graph.
- * However, Arcs might be imported with a source or target node that has not
+ * However, Edges might be imported with a source or target node that has not
  * been added to the Graph yet (has LOCAL or DISTANT node), and in this case
  * the missing Node must be created as a new DISTANT node.
  */
-class DistributedGraphImportArcWithGhostTest : public DistributedGraphImportNodeTest {
+class DistributedGraphImportEdgeWithGhostTest : public DistributedGraphImportNodeTest {
 	protected:
 		NodeType* local_node;
 		MockNode* mock_one;
 		MockNode* mock_two;
 
-		ArcType* importedArc;
+		EdgeType* importedEdge;
 
 		void SetUp() override {
 			DistributedGraphTest::SetUp();
@@ -666,13 +666,13 @@ class DistributedGraphImportArcWithGhostTest : public DistributedGraphImportNode
 			EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex);
 		}
 
-		void checkArcAndGhostStructure() {
-			ASSERT_EQ(graph.getArcs().size(), 1);
-			ASSERT_EQ(graph.getArcs().count(DistributedId(3, 12)), 1);
-			importedArc = graph.getArc(DistributedId(3, 12));
-			ASSERT_EQ(importedArc->getLayer(), 2);
-			ASSERT_EQ(importedArc->getWeight(), 2.6f);
-			ASSERT_EQ(static_cast<MockArc*>(importedArc)->_state, LocationState::DISTANT);
+		void checkEdgeAndGhostStructure() {
+			ASSERT_EQ(graph.getEdges().size(), 1);
+			ASSERT_EQ(graph.getEdges().count(DistributedId(3, 12)), 1);
+			importedEdge = graph.getEdge(DistributedId(3, 12));
+			ASSERT_EQ(importedEdge->getLayer(), 2);
+			ASSERT_EQ(importedEdge->getWeight(), 2.6f);
+			ASSERT_EQ(static_cast<MockEdge*>(importedEdge)->_state, LocationState::DISTANT);
 
 			EXPECT_EQ(graph.getNodes().size(), 2);
 			EXPECT_EQ(graph.getNodes().count(DistributedId(8, 16)), 1);
@@ -684,8 +684,8 @@ class DistributedGraphImportArcWithGhostTest : public DistributedGraphImportNode
 /*
  * LOCAL src, missing tgt
  */
-TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
-	auto mock = new MockArc(DistributedId(3, 12),
+TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_tgt) {
+	auto mock = new MockEdge(DistributedId(3, 12),
 					2, // layer
 					2.6 // weight
 					);
@@ -694,7 +694,7 @@ TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
 	mock->tgt = mock_two; // This node is not yet contained in the graph
 
 	// Mock to serialize and import from proc 1 (not yet in the graph)
-	imported_arc_mocks[1].push_back(mock);
+	imported_edge_mocks[1].push_back(mock);
 
 	EXPECT_CALL(*static_cast<MockNode*>(local_node), linkIn(_)).Times(0);
 	EXPECT_CALL(*static_cast<MockNode*>(local_node), linkOut(_));
@@ -716,22 +716,22 @@ TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_tgt) {
 		.WillOnce(SaveArg<0>(&distant_callback_arg));
 
 	distributeTest();
-	checkArcAndGhostStructure();
+	checkEdgeAndGhostStructure();
 
 	ASSERT_EQ(graph.getNodes().count(DistributedId(8, 16)), 1);
 	auto distant_node = graph.getNode(DistributedId(8, 16));
 	ASSERT_EQ(set_distant_arg, distant_node);
 	ASSERT_EQ(distant_callback_arg, distant_node);
 
-	ASSERT_EQ(static_cast<MockArc*>(importedArc)->src, local_node);
-	ASSERT_EQ(static_cast<MockArc*>(importedArc)->tgt, distant_node);
+	ASSERT_EQ(static_cast<MockEdge*>(importedEdge)->src, local_node);
+	ASSERT_EQ(static_cast<MockEdge*>(importedEdge)->tgt, distant_node);
 }
 
 /*
  * Missing src, LOCAL tgt
  */
-TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_src) {
-	auto mock = new MockArc(
+TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_src) {
+	auto mock = new MockEdge(
 					DistributedId(3, 12),
 					2, // layer
 					2.6 // weight
@@ -741,7 +741,7 @@ TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 	mock->tgt = mock_one;
 
 	// Mock to serialize and import from proc 1 (not yet in the graph)
-	imported_arc_mocks[1].push_back(mock);
+	imported_edge_mocks[1].push_back(mock);
 
 	EXPECT_CALL(*static_cast<MockNode*>(local_node), linkOut(_)).Times(0);
 	EXPECT_CALL(*static_cast<MockNode*>(local_node), linkIn(_));
@@ -761,15 +761,15 @@ TEST_F(DistributedGraphImportArcWithGhostTest, import_with_missing_src) {
 		.WillOnce(SaveArg<0>(&distant_callback_arg));
 
 	distributeTest();
-	checkArcAndGhostStructure();
+	checkEdgeAndGhostStructure();
 
 	ASSERT_EQ(graph.getNodes().count(DistributedId(8, 16)), 1);
 	auto distant_node = graph.getNode(DistributedId(8, 16));
 	ASSERT_EQ(set_distant_arg, distant_node);
 	ASSERT_EQ(distant_callback_arg, distant_node);
 
-	ASSERT_EQ(static_cast<MockArc*>(importedArc)->tgt, local_node);
-	ASSERT_EQ(static_cast<MockArc*>(importedArc)->src, distant_node);
+	ASSERT_EQ(static_cast<MockEdge*>(importedEdge)->tgt, local_node);
+	ASSERT_EQ(static_cast<MockEdge*>(importedEdge)->src, distant_node);
 }
 
 /********************/
@@ -810,14 +810,14 @@ class DistributedGraphDistributeTest : public DistributedGraphTest {
  * Check the correct call order of the synchronization steps of the
  * distribute() function.
  * 1. Synchronize links (eventually migrates link/unlink operations)
- * 2. Migrate node / arcs
+ * 2. Migrate node / edges
  * 3. Synchronize Node locations
  * 4. Synchronize Node data
  */
 TEST_F(DistributedGraphTest, distribute_calls) {
 	Sequence s;
 	EXPECT_CALL(
-			//(const_cast<MockSyncLinker<NodeType, ArcType>&>(graph.getSyncLinker())),
+			//(const_cast<MockSyncLinker<NodeType, EdgeType>&>(graph.getSyncLinker())),
 			mock_sync_linker,
 			synchronize()
 			)
@@ -830,7 +830,7 @@ TEST_F(DistributedGraphTest, distribute_calls) {
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()))
 		.InSequence(s);
 	EXPECT_CALL(
-			//(const_cast<MockDataSync<NodeType, ArcType>&>(graph.getDataSync())),
+			//(const_cast<MockDataSync<NodeType, EdgeType>&>(graph.getDataSync())),
 			mock_data_sync,
 			synchronize()
 			)
@@ -878,9 +878,9 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 		load_balancing,
 		balance(node_map))
 		.WillOnce(Return(fake_partition));
-	// Migration of nodes + arcs
+	// Migration of nodes + edges
 	EXPECT_CALL(graph.getNodeMpi(), migrate);
-	EXPECT_CALL(graph.getArcMpi(), migrate);
+	EXPECT_CALL(graph.getEdgeMpi(), migrate);
 
 	EXPECT_CALL(location_manager, setDistant).Times(AnyNumber());
 	EXPECT_CALL(location_manager, remove).Times(4);
@@ -891,7 +891,7 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 }
 
 /*
- * Node distribution test (no arcs)
+ * Node distribution test (no edges)
  */
 TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 	auto export_map_matcher = UnorderedElementsAre(
@@ -917,10 +917,10 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 		const_cast<MockMpi<NodePtrWrapper<int>>&>(graph.getNodeMpi()), migrate(export_map_matcher))
 		.WillOnce(Return(node_import));
 
-	// No arc import
+	// No edge import
 	EXPECT_CALL(
-			const_cast<MockMpi<ArcPtrWrapper<int>>&>(graph.getArcMpi()), migrate(IsEmpty()))
-		.WillOnce(Return(std::unordered_map<int, std::vector<ArcPtrWrapper<int>>>()));;
+			const_cast<MockMpi<EdgePtrWrapper<int>>&>(graph.getEdgeMpi()), migrate(IsEmpty()))
+		.WillOnce(Return(std::unordered_map<int, std::vector<EdgePtrWrapper<int>>>()));;
 
 	EXPECT_CALL(location_manager, setDistant).Times(AnyNumber());
 	EXPECT_CALL(location_manager, remove(graph.getNode(node_ids[1])));
@@ -952,20 +952,20 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 }
 
 /****************************/
-/* distribute_test_with_arc */
+/* distribute_test_with_edge */
 /****************************/
 class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistributeTest {
 	protected:
-		typedef std::vector<fpmas::api::graph::parallel::DistributedArc<int>*> ArcList;
+		typedef std::vector<fpmas::api::graph::parallel::DistributedEdge<int>*> EdgeList;
 
-		ArcType* arc1;
-		ArcType* arc2;
+		EdgeType* edge1;
+		EdgeType* edge2;
 
-		ArcList* node2_in = new ArcList;
-		ArcList* node3_out = new ArcList;
+		EdgeList* node2_in = new EdgeList;
+		EdgeList* node3_out = new EdgeList;
 
 		MockCallback<NodeType*>* distant_callback = new MockCallback<NodeType*>;
-		std::array<NodeType*, 2> imported_arc_distant_callback_args;
+		std::array<NodeType*, 2> imported_edge_distant_callback_args;
 
 		void SetUp() override {
 			DistributedGraphDistributeTest::SetUp();
@@ -983,23 +983,23 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[3])), mutex())
 				.WillRepeatedly(ReturnRef(mock_mutex));
 
-			arc1 = graph.link(graph.getNode(node_ids[0]), graph.getNode(node_ids[2]), 0);
-			node2_in->push_back(arc1);
-			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[2])), getIncomingArcs())
+			edge1 = graph.link(graph.getNode(node_ids[0]), graph.getNode(node_ids[2]), 0);
+			node2_in->push_back(edge1);
+			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[2])), getIncomingEdges())
 				.Times(AnyNumber())
 				.WillRepeatedly(ReturnPointee(node2_in));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[2])), unlinkIn)
-				.WillOnce(InvokeWithoutArgs(node2_in, &ArcList::clear));
+				.WillOnce(InvokeWithoutArgs(node2_in, &EdgeList::clear));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[0])), unlinkOut);
 
 
-			arc2 = graph.link(graph.getNode(node_ids[3]), graph.getNode(node_ids[0]), 0);
-			node3_out->push_back(arc2);
-			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[3])), getOutgoingArcs())
+			edge2 = graph.link(graph.getNode(node_ids[3]), graph.getNode(node_ids[0]), 0);
+			node3_out->push_back(edge2);
+			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[3])), getOutgoingEdges())
 				.Times(AnyNumber())
 				.WillRepeatedly(ReturnPointee(node3_out));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[3])), unlinkOut)
-				.WillOnce(InvokeWithoutArgs(node3_out, &ArcList::clear));
+				.WillOnce(InvokeWithoutArgs(node3_out, &EdgeList::clear));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[0])), unlinkIn);
 
 			// Other uninteresting setDistant calls might occur on unconnected
@@ -1011,8 +1011,8 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 			// Those two expectation are matched only when the next 4
 			// expectations are not matched.
 			EXPECT_CALL(*distant_callback, call)
-				.WillOnce(SaveArg<0>(&imported_arc_distant_callback_args[0]))
-				.WillOnce(SaveArg<0>(&imported_arc_distant_callback_args[1]));
+				.WillOnce(SaveArg<0>(&imported_edge_distant_callback_args[0]))
+				.WillOnce(SaveArg<0>(&imported_edge_distant_callback_args[1]));
 
 			// Exported node callback matchers
 			EXPECT_CALL(*distant_callback, call(graph.getNode(node_ids[2])));
@@ -1035,7 +1035,7 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 };
 
 /*
- * Distribute nodes + arcs
+ * Distribute nodes + edges
  */
 TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
 	auto export_node_map_matcher = UnorderedElementsAre(
@@ -1052,36 +1052,36 @@ TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
 	EXPECT_CALL(
 		const_cast<MockMpi<NodePtrWrapper<int>>&>(graph.getNodeMpi()), migrate(export_node_map_matcher));
 
-	auto export_arc_map_matcher = UnorderedElementsAre(
-		Pair(0, ElementsAre(arc2)),
-		Pair(1, ElementsAre(arc1))
+	auto export_edge_map_matcher = UnorderedElementsAre(
+		Pair(0, ElementsAre(edge2)),
+		Pair(1, ElementsAre(edge1))
 	);
 
-	auto arc = new MockArc(DistributedId(4, 6), 2);
-	std::unordered_map<int, std::vector<ArcPtrWrapper<int>>> arc_import {
-		{3, {arc}}
+	auto edge = new MockEdge(DistributedId(4, 6), 2);
+	std::unordered_map<int, std::vector<EdgePtrWrapper<int>>> edge_import {
+		{3, {edge}}
 	};
 	auto mock_src = new MockNode(DistributedId(4, 8));
 	auto mock_tgt = new MockNode(DistributedId(3, 2));
-	arc->src = mock_src;
-	arc->tgt = mock_tgt;
+	edge->src = mock_src;
+	edge->tgt = mock_tgt;
 	EXPECT_CALL(*mock_src, unlinkOut);
 	EXPECT_CALL(*mock_tgt, unlinkIn);
 
 	EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(2);
 
-	// Mock arc import
+	// Mock edge import
 	EXPECT_CALL(
-		const_cast<MockMpi<ArcPtrWrapper<int>>&>(graph.getArcMpi()),
-		migrate(export_arc_map_matcher))
-		.WillOnce(Return(arc_import));
+		const_cast<MockMpi<EdgePtrWrapper<int>>&>(graph.getEdgeMpi()),
+		migrate(export_edge_map_matcher))
+		.WillOnce(Return(edge_import));
 
 	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
 	graph.distribute(fake_partition);
 
-	ASSERT_THAT(imported_arc_distant_callback_args, UnorderedElementsAre(mock_src, mock_tgt));
-	ASSERT_EQ(graph.getArcs().size(), 3);
-	ASSERT_EQ(graph.getArcs().count(DistributedId(4, 6)), 1);
-	ASSERT_EQ(graph.getArcs().count(arc1->getId()), 1);
-	ASSERT_EQ(graph.getArcs().count(arc2->getId()), 1);
+	ASSERT_THAT(imported_edge_distant_callback_args, UnorderedElementsAre(mock_src, mock_tgt));
+	ASSERT_EQ(graph.getEdges().size(), 3);
+	ASSERT_EQ(graph.getEdges().count(DistributedId(4, 6)), 1);
+	ASSERT_EQ(graph.getEdges().count(edge1->getId()), 1);
+	ASSERT_EQ(graph.getEdges().count(edge2->getId()), 1);
 }

@@ -3,7 +3,7 @@
 
 #include "fpmas/api/graph/parallel/distributed_graph.h"
 #include "fpmas/communication/communication.h"
-#include "distributed_arc.h"
+#include "distributed_edge.h"
 #include "distributed_node.h"
 #include "location_manager.h"
 
@@ -13,7 +13,7 @@
 	typename T,\
 	typename SyncMode,\
 	template<typename> class DistNodeImpl,\
-	template<typename> class DistArcImpl,\
+	template<typename> class DistEdgeImpl,\
 	typename MpiSetUp,\
 	template<typename> class LocationManagerImpl
 
@@ -21,7 +21,7 @@
 	T,\
 	SyncMode,\
 	DistNodeImpl,\
-	DistArcImpl,\
+	DistEdgeImpl,\
 	MpiSetUp,\
 	LocationManagerImpl
 
@@ -35,12 +35,12 @@ namespace fpmas::graph::parallel {
 	class DistributedGraph : 
 		public base::Graph<
 			api::graph::parallel::DistributedNode<T>,
-			api::graph::parallel::DistributedArc<T>>,
+			api::graph::parallel::DistributedEdge<T>>,
 		public api::graph::parallel::DistributedGraph<T>
 		 {
 			public:
 			typedef DistNodeImpl<T> DistNodeType;
-			typedef DistArcImpl<T> DistArcType;
+			typedef DistEdgeImpl<T> DistEdgeType;
 			typedef typename SyncMode::template SyncModeRuntimeType<T> SyncModeRuntimeType;
 
 			static_assert(
@@ -48,16 +48,16 @@ namespace fpmas::graph::parallel {
 					"DistNodeImpl must implement api::graph::parallel::DistributedNode"
 					);
 			static_assert(
-					std::is_base_of<api::graph::parallel::DistributedArc<T>, DistArcType>::value,
-					"DistArcImpl must implement api::graph::parallel::DistributedArc"
+					std::is_base_of<api::graph::parallel::DistributedEdge<T>, DistEdgeType>::value,
+					"DistEdgeImpl must implement api::graph::parallel::DistributedEdge"
 					);
-			typedef base::Graph<api::graph::parallel::DistributedNode<T>, api::graph::parallel::DistributedArc<T>>
+			typedef base::Graph<api::graph::parallel::DistributedNode<T>, api::graph::parallel::DistributedEdge<T>>
 			Graph;
 			typedef api::graph::parallel::DistributedGraph<T> DistGraphBase;
 
 			public:
 			typedef api::graph::parallel::DistributedNode<T> NodeType;
-			typedef api::graph::parallel::DistributedArc<T> ArcType;
+			typedef api::graph::parallel::DistributedEdge<T> EdgeType;
 			using typename DistGraphBase::LayerIdType;
 			using typename DistGraphBase::NodeMap;
 			using typename DistGraphBase::PartitionMap;
@@ -71,7 +71,7 @@ namespace fpmas::graph::parallel {
 			mpi<DistributedId> id_mpi {mpi_communicator};
 			mpi<std::pair<DistributedId, int>> location_mpi {mpi_communicator};
 			mpi<NodePtrWrapper<T>> node_mpi {mpi_communicator};
-			mpi<ArcPtrWrapper<T>> arc_mpi {mpi_communicator};
+			mpi<EdgePtrWrapper<T>> edge_mpi {mpi_communicator};
 
 			LocationManagerImpl<T> location_manager;
 			SyncModeRuntimeType sync_mode_runtime;
@@ -103,11 +103,11 @@ namespace fpmas::graph::parallel {
 				location_manager(mpi_communicator, id_mpi, location_mpi),
 				sync_mode_runtime(*this, mpi_communicator) {
 				// Initialization in the body of this (derived) class of the
-				// (base) fields nodeId and arcId, to ensure that
+				// (base) fields nodeId and edgeId, to ensure that
 				// mpi_communicator is initialized (as a field of this derived
 				// class)
 				this->node_id = DistributedId(mpi_communicator.getRank(), 0);
-				this->arc_id = DistributedId(mpi_communicator.getRank(), 0);
+				this->edge_id = DistributedId(mpi_communicator.getRank(), 0);
 			}
 
 			const communicator& getMpiCommunicator() const override {
@@ -118,10 +118,10 @@ namespace fpmas::graph::parallel {
 			};
 
 			const mpi<NodePtrWrapper<T>>& getNodeMpi() const {return node_mpi;}
-			const mpi<ArcPtrWrapper<T>>& getArcMpi() const {return arc_mpi;}
+			const mpi<EdgePtrWrapper<T>>& getEdgeMpi() const {return edge_mpi;}
 
 			NodeType* importNode(NodeType* node) override;
-			ArcType* importArc(ArcType* arc) override;
+			EdgeType* importEdge(EdgeType* edge) override;
 
 			const SyncModeRuntimeType& getSyncModeRuntime() const {return sync_mode_runtime;}
 
@@ -129,13 +129,13 @@ namespace fpmas::graph::parallel {
 				getLocationManager() const override {return location_manager;}
 
 			void removeNode(NodeType*) override {};
-			void unlink(ArcType*) override;
+			void unlink(EdgeType*) override;
 
 			void balance(api::load_balancing::LoadBalancing<T>& load_balancing) override {
 				FPMAS_LOGI(
 						getMpiCommunicator().getRank(), "LB",
-						"Balancing graph (%lu nodes, %lu arcs)",
-						this->getNodes().size(), this->getArcs().size());
+						"Balancing graph (%lu nodes, %lu edges)",
+						this->getNodes().size(), this->getEdges().size());
 
 				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
 				for(auto node : this->location_manager.getLocalNodes()) {
@@ -145,15 +145,15 @@ namespace fpmas::graph::parallel {
 
 				FPMAS_LOGI(
 						getMpiCommunicator().getRank(), "LB",
-						"Graph balanced : %lu nodes, %lu arcs",
-						this->getNodes().size(), this->getArcs().size());
+						"Graph balanced : %lu nodes, %lu edges",
+						this->getNodes().size(), this->getEdges().size());
 			};
 
 			void balance(api::load_balancing::FixedVerticesLoadBalancing<T>& load_balancing, PartitionMap fixed_nodes) override {
 				FPMAS_LOGI(
 						getMpiCommunicator().getRank(), "LB",
-						"Balancing graph (%lu nodes, %lu arcs)",
-						this->getNodes().size(), this->getArcs().size());
+						"Balancing graph (%lu nodes, %lu edges)",
+						this->getNodes().size(), this->getEdges().size());
 
 				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
 				for(auto node : this->getNodes()) {
@@ -163,8 +163,8 @@ namespace fpmas::graph::parallel {
 
 				FPMAS_LOGI(
 						getMpiCommunicator().getRank(), "LB",
-						"Graph balanced : %lu nodes, %lu arcs",
-						this->getNodes().size(), this->getArcs().size());
+						"Graph balanced : %lu nodes, %lu edges",
+						this->getNodes().size(), this->getEdges().size());
 			};
 
 			void distribute(PartitionMap partition) override;
@@ -175,7 +175,7 @@ namespace fpmas::graph::parallel {
 			//NodeType* buildNode(const T&) override;
 			NodeType* buildNode(T&& = std::move(T())) override;
 
-			ArcType* link(NodeType* const src, NodeType* const tgt, LayerIdType layer) override;
+			EdgeType* link(NodeType* const src, NodeType* const tgt, LayerIdType layer) override;
 
 			void addCallOnSetLocal(NodeCallback* callback) override {
 				set_local_callbacks.push_back(callback);
@@ -201,15 +201,15 @@ namespace fpmas::graph::parallel {
 		}
 
 	template<DIST_GRAPH_PARAMS>
-	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(ArcType* arc) {
-		auto src = arc->getSourceNode();
-		auto tgt = arc->getTargetNode();
+	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(EdgeType* edge) {
+		auto src = edge->getSourceNode();
+		auto tgt = edge->getTargetNode();
 		src->mutex().lockShared();
 		tgt->mutex().lockShared();
 
-		sync_mode_runtime.getSyncLinker().unlink(static_cast<DistArcType*>(arc));
+		sync_mode_runtime.getSyncLinker().unlink(static_cast<DistEdgeType*>(edge));
 
-		this->erase(arc);
+		this->erase(edge);
 
 		src->mutex().unlockShared();
 		tgt->mutex().unlockShared();
@@ -251,53 +251,53 @@ namespace fpmas::graph::parallel {
 	}
 
 	template<DIST_GRAPH_PARAMS>
-	typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
-	DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importArc(ArcType* arc) {
-		FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Importing arc %s (from %s to %s)...",
-				ID_C_STR(arc->getId()),
-				ID_C_STR(arc->getSourceNode()->getId()),
-				ID_C_STR(arc->getTargetNode()->getId())
+	typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::EdgeType*
+	DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importEdge(EdgeType* edge) {
+		FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Importing edge %s (from %s to %s)...",
+				ID_C_STR(edge->getId()),
+				ID_C_STR(edge->getSourceNode()->getId()),
+				ID_C_STR(edge->getTargetNode()->getId())
 				);
-		// The input arc must be a dynamically allocated object, with temporary
+		// The input edge must be a dynamically allocated object, with temporary
 		// dynamically allocated nodes as source and target.
-		// A representation of the imported arc might already be present in the
+		// A representation of the imported edge might already be present in the
 		// graph, for example if it has already been imported as a "distant"
-		// arc with other nodes at other epochs.
+		// edge with other nodes at other epochs.
 
-		if(this->getArcs().count(arc->getId())==0) {
-			// The arc does not belong to the graph : a new one must be built.
+		if(this->getEdges().count(edge->getId())==0) {
+			// The edge does not belong to the graph : a new one must be built.
 
-			DistributedId srcId = arc->getSourceNode()->getId();
+			DistributedId srcId = edge->getSourceNode()->getId();
 			NodeType* src;
-			DistributedId tgtId =  arc->getTargetNode()->getId();
+			DistributedId tgtId =  edge->getTargetNode()->getId();
 			NodeType* tgt;
 
-			LocationState arcLocationState = LocationState::LOCAL;
+			LocationState edgeLocationState = LocationState::LOCAL;
 
 			if(this->getNodes().count(srcId) > 0) {
 				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing source %s", ID_C_STR(srcId));
 				// The source node is already contained in the graph
 				src = this->getNode(srcId);
 				if(src->state() == LocationState::DISTANT) {
-					// At least src is DISTANT, so the imported arc is
+					// At least src is DISTANT, so the imported edge is
 					// necessarily DISTANT.
-					arcLocationState = LocationState::DISTANT;
+					edgeLocationState = LocationState::DISTANT;
 				}
 				// Deletes the temporary source node
-				delete arc->getSourceNode();
+				delete edge->getSourceNode();
 
-				// Links the temporary arc with the src contained in the graph
-				arc->setSourceNode(src);
-				src->linkOut(arc);
+				// Links the temporary edge with the src contained in the graph
+				edge->setSourceNode(src);
+				src->linkOut(edge);
 			} else {
 				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Creating DISTANT source %s", ID_C_STR(srcId));
 				// The source node is not contained in the graph : it must be
 				// built as a DISTANT node.
-				arcLocationState = LocationState::DISTANT;
+				edgeLocationState = LocationState::DISTANT;
 
 				// Instead of building a new node, we re-use the temporary
 				// source node.
-				src = arc->getSourceNode();
+				src = edge->getSourceNode();
 				this->insert(src);
 				setDistant(src);
 				src->setMutex(sync_mode_runtime.buildMutex(src));
@@ -307,50 +307,50 @@ namespace fpmas::graph::parallel {
 				// The target node is already contained in the graph
 				tgt = this->getNode(tgtId);
 				if(tgt->state() == LocationState::DISTANT) {
-					// At least src is DISTANT, so the imported arc is
+					// At least src is DISTANT, so the imported edge is
 					// necessarily DISTANT.
-					arcLocationState = LocationState::DISTANT;
+					edgeLocationState = LocationState::DISTANT;
 				}
 				// Deletes the temporary target node
-				delete arc->getTargetNode();
+				delete edge->getTargetNode();
 
-				// Links the temporary arc with the tgt contained in the graph
-				arc->setTargetNode(tgt);
-				tgt->linkIn(arc);
+				// Links the temporary edge with the tgt contained in the graph
+				edge->setTargetNode(tgt);
+				tgt->linkIn(edge);
 			} else {
 				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Creating DISTANT target %s", ID_C_STR(tgtId));
 				// The target node is not contained in the graph : it must be
 				// built as a DISTANT node.
-				arcLocationState = LocationState::DISTANT;
+				edgeLocationState = LocationState::DISTANT;
 
 				// Instead of building a new node, we re-use the temporary
 				// target node.
-				tgt = arc->getTargetNode();
+				tgt = edge->getTargetNode();
 				this->insert(tgt);
 				setDistant(tgt);
 				tgt->setMutex(sync_mode_runtime.buildMutex(tgt));
 			}
-			// Finally, insert the temporary arc into the graph.
-			arc->setState(arcLocationState);
-			this->insert(arc);
-			return arc;
-		} // if (graph.count(arc_id) > 0)
+			// Finally, insert the temporary edge into the graph.
+			edge->setState(edgeLocationState);
+			this->insert(edge);
+			return edge;
+		} // if (graph.count(edge_id) > 0)
 
-		// A representation of the arc is already present in the graph : it is
+		// A representation of the edge is already present in the graph : it is
 		// useless to insert it again. We just need to update its state.
 
-		auto local_arc = this->getArc(arc->getId());
-		if(local_arc->getSourceNode()->state() == LocationState::LOCAL
-				&& local_arc->getTargetNode()->state() == LocationState::LOCAL) {
-			local_arc->setState(LocationState::LOCAL);
+		auto local_edge = this->getEdge(edge->getId());
+		if(local_edge->getSourceNode()->state() == LocationState::LOCAL
+				&& local_edge->getTargetNode()->state() == LocationState::LOCAL) {
+			local_edge->setState(LocationState::LOCAL);
 		}
 
 		// Completely deletes temporary items, nothing is re-used
-		delete arc->getSourceNode();
-		delete arc->getTargetNode();
-		delete arc;
+		delete edge->getSourceNode();
+		delete edge->getTargetNode();
+		delete edge;
 
-		return local_arc;
+		return local_edge;
 	}
 
 	template<DIST_GRAPH_PARAMS>
@@ -383,36 +383,36 @@ namespace fpmas::graph::parallel {
 			}
 
 	template<DIST_GRAPH_PARAMS>
-		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::ArcType*
+		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::EdgeType*
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(NodeType* const src, NodeType* const tgt, LayerIdType layer) {
 				// Locks source and target
 				src->mutex().lockShared();
 				tgt->mutex().lockShared();
 
-				// Builds the new arc
-				auto arc = new DistArcType(
-						this->arc_id++, layer
+				// Builds the new edge
+				auto edge = new DistEdgeType(
+						this->edge_id++, layer
 						);
-				arc->setSourceNode(src);
-				src->linkOut(arc);
-				arc->setTargetNode(tgt);
-				tgt->linkIn(arc);
+				edge->setSourceNode(src);
+				src->linkOut(edge);
+				edge->setTargetNode(tgt);
+				tgt->linkIn(edge);
 
-				arc->setState(
+				edge->setState(
 						src->state() == LocationState::LOCAL && tgt->state() == LocationState::LOCAL ?
 						LocationState::LOCAL :
 						LocationState::DISTANT
 						);
-				sync_mode_runtime.getSyncLinker().link(arc);
+				sync_mode_runtime.getSyncLinker().link(edge);
 
-				// Inserts the arc in the Graph
-				this->insert(arc);
+				// Inserts the edge in the Graph
+				this->insert(edge);
 
 				// Unlocks source and target
 				src->mutex().unlockShared();
 				tgt->mutex().unlockShared();
 
-				return arc;
+				return edge;
 			}
 
 
@@ -431,11 +431,11 @@ namespace fpmas::graph::parallel {
 
 			sync_mode_runtime.getSyncLinker().synchronize();
 
-			// Builds node and arcs export maps
+			// Builds node and edges export maps
 			std::vector<NodeType*> exported_nodes;
 			std::unordered_map<int, std::vector<NodePtrWrapper<T>>> node_export_map;
-			std::unordered_map<int, std::set<DistributedId>> arc_ids_to_export;
-			std::unordered_map<int, std::vector<ArcPtrWrapper<T>>> arc_export_map;
+			std::unordered_map<int, std::set<DistributedId>> edge_ids_to_export;
+			std::unordered_map<int, std::vector<EdgePtrWrapper<T>>> edge_export_map;
 			for(auto item : partition) {
 				if(this->getNodes().count(item.first) > 0) {
 					if(item.second != mpi_communicator.getRank()) {
@@ -444,29 +444,29 @@ namespace fpmas::graph::parallel {
 						auto node_to_export = this->getNode(item.first);
 						exported_nodes.push_back(node_to_export);
 						node_export_map[item.second].emplace_back(node_to_export);
-						for(auto arc :  node_to_export->getIncomingArcs()) {
+						for(auto edge :  node_to_export->getIncomingEdges()) {
 							// Insert or replace in the IDs set
-							arc_ids_to_export[item.second].insert(arc->getId());
+							edge_ids_to_export[item.second].insert(edge->getId());
 						}
-						for(auto arc :  node_to_export->getOutgoingArcs()) {
+						for(auto edge :  node_to_export->getOutgoingEdges()) {
 							// Insert or replace in the IDs set
-							arc_ids_to_export[item.second].insert(arc->getId());
+							edge_ids_to_export[item.second].insert(edge->getId());
 						}
 					}
 				}
 			}
-			// Ensures that each arc is exported once to each process
-			for(auto list : arc_ids_to_export) {
+			// Ensures that each edge is exported once to each process
+			for(auto list : edge_ids_to_export) {
 				for(auto id : list.second) {
-					arc_export_map[list.first].emplace_back(this->getArc(id));
+					edge_export_map[list.first].emplace_back(this->getEdge(id));
 				}
 			}
 
 			// Serialize and export / import nodes
 			auto node_import = node_mpi.migrate(node_export_map);
 
-			// Serialize and export / import arcs
-			auto arc_import = arc_mpi.migrate(arc_export_map);
+			// Serialize and export / import edges
+			auto edge_import = edge_mpi.migrate(edge_export_map);
 
 			NodeMap imported_nodes;
 			for(auto& import_node_list_from_proc : node_import) {
@@ -475,9 +475,9 @@ namespace fpmas::graph::parallel {
 					imported_nodes.insert({node->getId(), node});
 				}
 			}
-			for(auto& import_arc_list_from_proc : arc_import) {
-				for(auto& imported_arc : import_arc_list_from_proc.second) {
-					this->importArc(imported_arc);
+			for(auto& import_edge_list_from_proc : edge_import) {
+				for(auto& imported_edge : import_edge_list_from_proc.second) {
+					this->importEdge(imported_edge);
 				}
 			}
 
@@ -534,19 +534,19 @@ namespace fpmas::graph::parallel {
 					);
 
 			bool eraseNode = true;
-			std::set<ArcType*> obsoleteArcs;
-			for(auto arc : node->getIncomingArcs()) {
-				if(arc->getSourceNode()->state()==LocationState::LOCAL) {
+			std::set<EdgeType*> obsoleteEdges;
+			for(auto edge : node->getIncomingEdges()) {
+				if(edge->getSourceNode()->state()==LocationState::LOCAL) {
 					eraseNode = false;
 				} else {
-					obsoleteArcs.insert(arc);
+					obsoleteEdges.insert(edge);
 				}
 			}
-			for(auto arc : node->getOutgoingArcs()) {
-				if(arc->getTargetNode()->state()==LocationState::LOCAL) {
+			for(auto edge : node->getOutgoingEdges()) {
+				if(edge->getTargetNode()->state()==LocationState::LOCAL) {
 					eraseNode = false;
 				} else {
-					obsoleteArcs.insert(arc);
+					obsoleteEdges.insert(edge);
 				}
 			}
 			if(eraseNode) {
@@ -558,15 +558,15 @@ namespace fpmas::graph::parallel {
 				location_manager.remove(node);
 				this->erase(node);
 			} else {
-				for(auto arc : obsoleteArcs) {
+				for(auto edge : obsoleteEdges) {
 					FPMAS_LOGD(
 						mpi_communicator.getRank(),
-						"DIST_GRAPH", "Erasing obsolete arc %s (%p) (from %s to %s)",
-						ID_C_STR(node->getId()), arc,
-						ID_C_STR(arc->getSourceNode()->getId()),
-						ID_C_STR(arc->getTargetNode()->getId())
+						"DIST_GRAPH", "Erasing obsolete edge %s (%p) (from %s to %s)",
+						ID_C_STR(node->getId()), edge,
+						ID_C_STR(edge->getSourceNode()->getId()),
+						ID_C_STR(edge->getTargetNode()->getId())
 						);
-					this->erase(arc);
+					this->erase(edge);
 				}
 			}
 			FPMAS_LOGD(

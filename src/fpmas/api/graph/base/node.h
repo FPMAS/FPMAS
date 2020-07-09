@@ -2,17 +2,17 @@
 #define NODE_API_H
 
 #include <vector>
-#include "arc.h"
+#include "edge.h"
 #include "id.h"
 #include "fpmas/api/utils/callback.h"
 
 namespace fpmas::api::graph::base {
-	template<typename _IdType, typename _ArcType>
+	template<typename _IdType, typename _EdgeType>
 		class Node {
 			public:
 				typedef _IdType IdType;
-				typedef _ArcType ArcType;
-				typedef typename ArcType::LayerIdType LayerIdType;
+				typedef _EdgeType EdgeType;
+				typedef typename EdgeType::LayerIdType LayerIdType;
 
 
 				virtual IdType getId() const = 0;
@@ -20,21 +20,21 @@ namespace fpmas::api::graph::base {
 				virtual float getWeight() const = 0;
 				virtual void setWeight(float weight) = 0;
 
-				virtual const std::vector<ArcType*> getIncomingArcs() const = 0;
-				virtual const std::vector<ArcType*> getIncomingArcs(LayerIdType id) const = 0;
-				virtual const std::vector<typename ArcType::NodeType*> inNeighbors() const = 0;
-				virtual const std::vector<typename ArcType::NodeType*> inNeighbors(LayerId) const = 0;
+				virtual const std::vector<EdgeType*> getIncomingEdges() const = 0;
+				virtual const std::vector<EdgeType*> getIncomingEdges(LayerIdType id) const = 0;
+				virtual const std::vector<typename EdgeType::NodeType*> inNeighbors() const = 0;
+				virtual const std::vector<typename EdgeType::NodeType*> inNeighbors(LayerId) const = 0;
 
-				virtual const std::vector<ArcType*> getOutgoingArcs() const = 0;
-				virtual const std::vector<ArcType*> getOutgoingArcs(LayerIdType id) const = 0;
-				virtual const std::vector<typename ArcType::NodeType*> outNeighbors() const = 0;
-				virtual const std::vector<typename ArcType::NodeType*> outNeighbors(LayerId) const = 0;
+				virtual const std::vector<EdgeType*> getOutgoingEdges() const = 0;
+				virtual const std::vector<EdgeType*> getOutgoingEdges(LayerIdType id) const = 0;
+				virtual const std::vector<typename EdgeType::NodeType*> outNeighbors() const = 0;
+				virtual const std::vector<typename EdgeType::NodeType*> outNeighbors(LayerId) const = 0;
 
-				virtual void linkIn(ArcType* arc) = 0;
-				virtual void linkOut(ArcType* arc) = 0;
+				virtual void linkIn(EdgeType* edge) = 0;
+				virtual void linkOut(EdgeType* edge) = 0;
 
-				virtual void unlinkIn(ArcType* arc) = 0;
-				virtual void unlinkOut(ArcType* arc) = 0;
+				virtual void unlinkIn(EdgeType* edge) = 0;
+				virtual void unlinkOut(EdgeType* edge) = 0;
 
 				virtual ~Node() {}
 		};

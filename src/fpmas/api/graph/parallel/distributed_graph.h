@@ -14,13 +14,13 @@ namespace fpmas::api::graph::parallel {
 
 	template<typename T>
 	class DistributedGraph 
-		: public virtual fpmas::api::graph::base::Graph<DistributedNode<T>, DistributedArc<T>> {
+		: public virtual fpmas::api::graph::base::Graph<DistributedNode<T>, DistributedEdge<T>> {
 		public:
-			typedef fpmas::api::graph::base::Graph<DistributedNode<T>, DistributedArc<T>> GraphBase;
+			typedef fpmas::api::graph::base::Graph<DistributedNode<T>, DistributedEdge<T>> GraphBase;
 
 			using typename GraphBase::LayerIdType;
 			using typename GraphBase::NodeMap;
-			using typename GraphBase::ArcMap;
+			using typename GraphBase::EdgeMap;
 
 			typedef typename api::load_balancing::LoadBalancing<DistributedNode<T>>::PartitionMap PartitionMap;
 			typedef api::utils::Callback<DistributedNode<T>*> NodeCallback;
@@ -30,7 +30,7 @@ namespace fpmas::api::graph::parallel {
 			virtual const LocationManager<T>& getLocationManager() const = 0;
 
 			virtual DistributedNode<T>* importNode(DistributedNode<T>*) = 0;
-			virtual DistributedArc<T>* importArc(DistributedArc<T>*) = 0;
+			virtual DistributedEdge<T>* importEdge(DistributedEdge<T>*) = 0;
 
 			//virtual DistributedNode<T>* buildNode(const T&) = 0;
 			virtual DistributedNode<T>* buildNode(T&&) = 0;
@@ -38,7 +38,7 @@ namespace fpmas::api::graph::parallel {
 			virtual void addCallOnSetLocal(NodeCallback*) = 0;
 			virtual void addCallOnSetDistant(NodeCallback*) = 0;
 
-			virtual DistributedArc<T>* link(DistributedNode<T>*, DistributedNode<T>*, LayerIdType) = 0;
+			virtual DistributedEdge<T>* link(DistributedNode<T>*, DistributedNode<T>*, LayerIdType) = 0;
 
 			virtual void balance(api::load_balancing::LoadBalancing<T>&) = 0;
 			virtual void balance(api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap fixed_nodes) = 0;

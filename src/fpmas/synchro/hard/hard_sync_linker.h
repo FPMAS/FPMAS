@@ -6,7 +6,7 @@
 #include "fpmas/api/communication/communication.h"
 #include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/api/synchro/hard/client_server.h"
-#include "fpmas/graph/parallel/distributed_arc.h"
+#include "fpmas/graph/parallel/distributed_edge.h"
 #include "server_pack.h"
 
 namespace fpmas::synchro::hard {
@@ -19,8 +19,8 @@ namespace fpmas::synchro::hard {
 	class LinkServer
 		: public fpmas::api::synchro::hard::LinkServer {
 			public:
-				typedef api::graph::parallel::DistributedArc<T> ArcApi;
-				typedef api::communication::TypedMpi<graph::parallel::ArcPtrWrapper<T>> ArcMpi;
+				typedef api::graph::parallel::DistributedEdge<T> EdgeApi;
+				typedef api::communication::TypedMpi<graph::parallel::EdgePtrWrapper<T>> EdgeMpi;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
 			private:
 			Epoch epoch = Epoch::EVEN;
@@ -28,12 +28,12 @@ namespace fpmas::synchro::hard {
 			api::communication::MpiCommunicator& comm;
 			api::graph::parallel::DistributedGraph<T>& graph;
 			IdMpi& id_mpi;
-			ArcMpi& arc_mpi;
+			EdgeMpi& edge_mpi;
 
 			public:
 				LinkServer(api::communication::MpiCommunicator& comm, api::graph::parallel::DistributedGraph<T>& graph,
-						IdMpi& id_mpi, ArcMpi& arc_mpi)
-					:  comm(comm), graph(graph), id_mpi(id_mpi), arc_mpi(arc_mpi) {}
+						IdMpi& id_mpi, EdgeMpi& edge_mpi)
+					:  comm(comm), graph(graph), id_mpi(id_mpi), edge_mpi(edge_mpi) {}
 
 				Epoch getEpoch() const override {return epoch;}
 				void setEpoch(Epoch epoch) override {this->epoch = epoch;}
@@ -46,15 +46,15 @@ namespace fpmas::synchro::hard {
 			MPI_Status req_status;
 			// Check read request
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LINK, &req_status)) {
-				ArcApi* arc = arc_mpi.recv(&req_status);
+				EdgeApi* edge = edge_mpi.recv(&req_status);
 				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive link request from %i", req_status.MPI_SOURCE);
-				graph.importArc(arc);
+				graph.importEdge(edge);
 			}
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
 				DistributedId unlink_id = id_mpi.recv(&req_status);
 				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", ID_C_STR(unlink_id), req_status.MPI_SOURCE);
-				//graph.clearArc(graph.getArc(unlinkId));
-				graph.erase(graph.getArc(unlink_id));
+				//graph.clearEdge(graph.getEdge(unlinkId));
+				graph.erase(graph.getEdge(unlink_id));
 			}
 		}
 
@@ -62,33 +62,33 @@ namespace fpmas::synchro::hard {
 		class LinkClient : public fpmas::api::synchro::hard::LinkClient<T> {
 			typedef fpmas::api::synchro::hard::LinkServer LinkServer;
 			public:
-				typedef api::graph::parallel::DistributedArc<T> ArcApi;
-				typedef api::communication::TypedMpi<graph::parallel::ArcPtrWrapper<T>> ArcMpi;
+				typedef api::graph::parallel::DistributedEdge<T> EdgeApi;
+				typedef api::communication::TypedMpi<graph::parallel::EdgePtrWrapper<T>> EdgeMpi;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
 
 			private:
 				api::communication::MpiCommunicator& comm;
 				IdMpi& id_mpi;
-				ArcMpi& arc_mpi;
+				EdgeMpi& edge_mpi;
 				ServerPack<T>& server_pack;
 
 			public:
-				LinkClient(api::communication::MpiCommunicator& comm, IdMpi& id_mpi, ArcMpi& arc_mpi,
+				LinkClient(api::communication::MpiCommunicator& comm, IdMpi& id_mpi, EdgeMpi& edge_mpi,
 						ServerPack<T>& server_pack)
-					: comm(comm), id_mpi(id_mpi), arc_mpi(arc_mpi), server_pack(server_pack) {}
+					: comm(comm), id_mpi(id_mpi), edge_mpi(edge_mpi), server_pack(server_pack) {}
 
-				void link(const ArcApi*) override;
-				void unlink(const ArcApi*) override;
+				void link(const EdgeApi*) override;
+				void unlink(const EdgeApi*) override;
 		};
 
 	template<typename T>
-		void LinkClient<T>::link(const ArcApi* arc) {
-			if(arc->state() == LocationState::DISTANT) {
-				bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
-				bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
+		void LinkClient<T>::link(const EdgeApi* edge) {
+			if(edge->state() == LocationState::DISTANT) {
+				bool distantSrc = edge->getSourceNode()->state() == LocationState::DISTANT;
+				bool distantTgt = edge->getTargetNode()->state() == LocationState::DISTANT;
 
-				if(arc->getSourceNode()->getLocation() != arc->getTargetNode()->getLocation()) {
-					// The arc is DISTANT, so at least of the two nodes is
+				if(edge->getSourceNode()->getLocation() != edge->getTargetNode()->getLocation()) {
+					// The edge is DISTANT, so at least of the two nodes is
 					// DISTANT. In this case, if the two nodes are
 					// DISTANT, they don't have the same location, so two
 					// requests must be performed.
@@ -97,14 +97,14 @@ namespace fpmas::synchro::hard {
 					// Simultaneously initiate the two requests, that are potentially
 					// made to different procs
 					if(distantSrc) {
-						arc_mpi.Issend(
-								const_cast<ArcApi*>(arc), arc->getSourceNode()->getLocation(),
+						edge_mpi.Issend(
+								const_cast<EdgeApi*>(edge), edge->getSourceNode()->getLocation(),
 								server_pack.getEpoch() | Tag::LINK, &reqSrc
 								); 
 					}
 					if(distantTgt) {
-						arc_mpi.Issend(
-								const_cast<ArcApi*>(arc), arc->getTargetNode()->getLocation(),
+						edge_mpi.Issend(
+								const_cast<EdgeApi*>(edge), edge->getTargetNode()->getLocation(),
 								server_pack.getEpoch() | Tag::LINK, &reqTgt
 								); 
 					}
@@ -118,13 +118,13 @@ namespace fpmas::synchro::hard {
 						server_pack.waitSendRequest(&reqTgt);
 					}
 				} else {
-					// The arc is DISTANT, and its source and target nodes
+					// The edge is DISTANT, and its source and target nodes
 					// locations are the same, so the two nodes are necessarily
 					// located on the same DISTANT proc : only need to perform
 					// one request
 					MPI_Request req;
-					arc_mpi.Issend(
-							const_cast<ArcApi*>(arc), arc->getSourceNode()->getLocation(),
+					edge_mpi.Issend(
+							const_cast<EdgeApi*>(edge), edge->getSourceNode()->getLocation(),
 							server_pack.getEpoch() | Tag::LINK, &req
 							); 
 					server_pack.waitSendRequest(&req);
@@ -133,10 +133,10 @@ namespace fpmas::synchro::hard {
 		}
 
 	template<typename T>
-		void LinkClient<T>::unlink(const ArcApi* arc) {
-			if(arc->state() == LocationState::DISTANT) {
-				bool distantSrc = arc->getSourceNode()->state() == LocationState::DISTANT;
-				bool distantTgt = arc->getTargetNode()->state() == LocationState::DISTANT;
+		void LinkClient<T>::unlink(const EdgeApi* edge) {
+			if(edge->state() == LocationState::DISTANT) {
+				bool distantSrc = edge->getSourceNode()->state() == LocationState::DISTANT;
+				bool distantTgt = edge->getTargetNode()->state() == LocationState::DISTANT;
 
 				MPI_Request reqSrc;
 				MPI_Request reqTgt;
@@ -144,13 +144,13 @@ namespace fpmas::synchro::hard {
 				// made to different procs
 				if(distantSrc) {
 					this->id_mpi.Issend(
-							arc->getId(), arc->getSourceNode()->getLocation(),
+							edge->getId(), edge->getSourceNode()->getLocation(),
 							server_pack.getEpoch() | Tag::UNLINK, &reqSrc
 							); 
 				}
 				if(distantTgt) {
 					this->id_mpi.Issend(
-							arc->getId(), arc->getTargetNode()->getLocation(),
+							edge->getId(), edge->getTargetNode()->getLocation(),
 							server_pack.getEpoch() | Tag::UNLINK, &reqTgt
 							); 
 				}
@@ -171,13 +171,13 @@ namespace fpmas::synchro::hard {
 		public:
 			typedef api::synchro::hard::TerminationAlgorithm
 				TerminationAlgorithm;
-			typedef api::graph::parallel::DistributedArc<T> ArcApi;
+			typedef api::graph::parallel::DistributedEdge<T> EdgeApi;
 
 		private:
 			typedef api::synchro::hard::LinkClient<T> LinkClient;
 			typedef api::synchro::hard::LinkServer LinkServer;
 
-			std::vector<ArcApi*> ghost_arcs;
+			std::vector<EdgeApi*> ghost_edges;
 			api::graph::parallel::DistributedGraph<T>& graph;
 			LinkClient& link_client;
 			ServerPack<T>& server_pack;
@@ -187,24 +187,24 @@ namespace fpmas::synchro::hard {
 					LinkClient& link_client, ServerPack<T>& server_pack)
 				: graph(graph), link_client(link_client), server_pack(server_pack) {}
 
-			void link(const ArcApi* arc) override {
-				link_client.link(arc);
+			void link(const EdgeApi* edge) override {
+				link_client.link(edge);
 				
-				if(arc->getSourceNode()->state() == LocationState::DISTANT
-						&& arc->getTargetNode()->state() == LocationState::DISTANT) {
-					ghost_arcs.push_back(const_cast<ArcApi*>(arc));
+				if(edge->getSourceNode()->state() == LocationState::DISTANT
+						&& edge->getTargetNode()->state() == LocationState::DISTANT) {
+					ghost_edges.push_back(const_cast<EdgeApi*>(edge));
 				}
 			};
 
-			void unlink(const ArcApi* arc) override {
-				link_client.unlink(arc);
+			void unlink(const EdgeApi* edge) override {
+				link_client.unlink(edge);
 			};
 
 			void synchronize() override {
 				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronizing sync linker...");
-				for(auto arc : ghost_arcs)
-					graph.erase(arc);
-				ghost_arcs.clear();
+				for(auto edge : ghost_edges)
+					graph.erase(edge);
+				ghost_edges.clear();
 
 				server_pack.terminate();
 				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronized.");

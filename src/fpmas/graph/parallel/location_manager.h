@@ -69,11 +69,11 @@ namespace fpmas::graph::parallel {
 			node->setState(LocationState::DISTANT);
 			this->local_nodes.erase(node->getId());
 			this->distant_nodes.insert({node->getId(), node});
-			for(auto arc : node->getOutgoingArcs()) {
-				arc->setState(LocationState::DISTANT);
+			for(auto edge : node->getOutgoingEdges()) {
+				edge->setState(LocationState::DISTANT);
 			}
-			for(auto arc : node->getIncomingArcs()) {
-				arc->setState(LocationState::DISTANT);
+			for(auto edge : node->getIncomingEdges()) {
+				edge->setState(LocationState::DISTANT);
 			}
 		}
 

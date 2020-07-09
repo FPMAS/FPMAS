@@ -16,8 +16,8 @@ class MockDataSync : public fpmas::api::synchro::DataSync {
 template<typename T>
 class MockSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
 	public:
-		MOCK_METHOD(void, link, (const fpmas::api::graph::parallel::DistributedArc<T>*), (override));
-		MOCK_METHOD(void, unlink, (const fpmas::api::graph::parallel::DistributedArc<T>*), (override));
+		MOCK_METHOD(void, link, (const fpmas::api::graph::parallel::DistributedEdge<T>*), (override));
+		MOCK_METHOD(void, unlink, (const fpmas::api::graph::parallel::DistributedEdge<T>*), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
 
 };

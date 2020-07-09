@@ -4,7 +4,7 @@
 #include "fpmas/graph/parallel/distributed_graph.h"
 #include "fpmas/graph/parallel/location_manager.h"
 #include "fpmas/graph/parallel/distributed_node.h"
-#include "fpmas/graph/parallel/distributed_arc.h"
+#include "fpmas/graph/parallel/distributed_edge.h"
 #include "fpmas/api/graph/parallel/location_state.h"
 
 using fpmas::api::graph::parallel::LocationState;
@@ -20,7 +20,7 @@ using ::testing::SizeIs;
 /*
  * All the previous tests used locally mocked communications.
  * In those tests, a real MpiCommunicator and DistributedNode and
- * DistributedArcs implementations are used to distribute them accross the
+ * DistributedEdges implementations are used to distribute them accross the
  * available procs.
  */
 class DistributedGraphBalance : public ::testing::Test {
@@ -31,7 +31,7 @@ class DistributedGraphBalance : public ::testing::Test {
 			int,
 			MockSyncMode<>,
 			fpmas::graph::parallel::DistributedNode,
-			fpmas::graph::parallel::DistributedArc,
+			fpmas::graph::parallel::DistributedEdge,
 			fpmas::api::communication::MpiSetUp<
 				fpmas::communication::MpiCommunicator,
 				fpmas::communication::TypedMpi
@@ -105,12 +105,12 @@ TEST_F(DistributedGraphBalance, distribute_test) {
 	ASSERT_THAT(graph.getLocationManager().getLocalNodes(), SizeIs(1));
 	auto localNode = graph.getLocationManager().getLocalNodes().begin()->second;
 	if(graph.getMpiCommunicator().getSize() > 1) {
-		ASSERT_EQ(localNode->getOutgoingArcs().size(), 1);
-		ASSERT_EQ(localNode->getOutgoingArcs()[0]->state(), LocationState::DISTANT);
-		ASSERT_EQ(localNode->getOutgoingArcs()[0]->getTargetNode()->state(), LocationState::DISTANT);
-		ASSERT_EQ(localNode->getIncomingArcs().size(), 1);
-		ASSERT_EQ(localNode->getIncomingArcs()[0]->state(), LocationState::DISTANT);
-		ASSERT_EQ(localNode->getIncomingArcs()[0]->getSourceNode()->state(), LocationState::DISTANT);
-		ASSERT_EQ(graph.getArcs().size(), 2);
+		ASSERT_EQ(localNode->getOutgoingEdges().size(), 1);
+		ASSERT_EQ(localNode->getOutgoingEdges()[0]->state(), LocationState::DISTANT);
+		ASSERT_EQ(localNode->getOutgoingEdges()[0]->getTargetNode()->state(), LocationState::DISTANT);
+		ASSERT_EQ(localNode->getIncomingEdges().size(), 1);
+		ASSERT_EQ(localNode->getIncomingEdges()[0]->state(), LocationState::DISTANT);
+		ASSERT_EQ(localNode->getIncomingEdges()[0]->getSourceNode()->state(), LocationState::DISTANT);
+		ASSERT_EQ(graph.getEdges().size(), 2);
 	}
 }

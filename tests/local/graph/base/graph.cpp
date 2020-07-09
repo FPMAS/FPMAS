@@ -3,7 +3,7 @@
 #include "fpmas/graph/base/graph.h"
 #include "api/graph/base/basic_id.h"
 #include "../mocks/graph/base/mock_node.h"
-#include "../mocks/graph/base/mock_arc.h"
+#include "../mocks/graph/base/mock_edge.h"
 #include "../mocks/utils/mock_callback.h"
 
 using ::testing::AnyNumber;
@@ -16,26 +16,26 @@ using ::testing::Return;
 using ::testing::ReturnRef;
 using ::testing::_;
 
-template<typename NodeType, typename ArcType>
+template<typename NodeType, typename EdgeType>
 class MockGraph : 
-	public virtual fpmas::graph::base::Graph<NodeType, ArcType> {
-		typedef fpmas::graph::base::Graph<NodeType, ArcType>
+	public virtual fpmas::graph::base::Graph<NodeType, EdgeType> {
+		typedef fpmas::graph::base::Graph<NodeType, EdgeType>
 		GraphBase;
 		using typename GraphBase::NodeIdType;
 		using typename GraphBase::NodeMap;
 
-		using typename GraphBase::ArcIdType;
-		using typename GraphBase::ArcMap;
+		using typename GraphBase::EdgeIdType;
+		using typename GraphBase::EdgeMap;
 
 		public:
 			MOCK_METHOD(void, removeNode, (NodeType*), (override));
-			MOCK_METHOD(void, unlink, (ArcType*), (override));
+			MOCK_METHOD(void, unlink, (EdgeType*), (override));
 
 };
 
 class GraphBaseTest : public ::testing::Test {
 	protected:
-		MockGraph<MockNode<BasicId>, MockArc<BasicId>> graph;
+		MockGraph<MockNode<BasicId>, MockEdge<BasicId>> graph;
 		MockCallback<MockNode<BasicId>*>* insert_callback = new MockCallback<MockNode<BasicId>*>;
 		MockCallback<MockNode<BasicId>*>* erase_callback = new MockCallback<MockNode<BasicId>*>;
 };
@@ -55,10 +55,10 @@ TEST_F(GraphBaseTest, insert_node) {
 		ASSERT_EQ(graph.getNode(node->getId()), node);
 
 
-		EXPECT_CALL(*node, getIncomingArcs()).Times(AnyNumber());
-		EXPECT_CALL(*node, getIncomingArcs(_)).Times(AnyNumber());
-		EXPECT_CALL(*node, getOutgoingArcs()).Times(AnyNumber());
-		EXPECT_CALL(*node, getOutgoingArcs(_)).Times(AnyNumber());
+		EXPECT_CALL(*node, getIncomingEdges()).Times(AnyNumber());
+		EXPECT_CALL(*node, getIncomingEdges(_)).Times(AnyNumber());
+		EXPECT_CALL(*node, getOutgoingEdges()).Times(AnyNumber());
+		EXPECT_CALL(*node, getOutgoingEdges(_)).Times(AnyNumber());
 		// Erase events should be triggered when the graph is deleted.
 		Expectation callback = EXPECT_CALL(*erase_callback, call(node));
 		EXPECT_CALL(*node, die).After(callback);
@@ -74,10 +74,10 @@ TEST_F(GraphBaseTest, erase_node) {
 		graph.insert(node);
 		nodes[i] = node;
 
-		EXPECT_CALL(*node, getIncomingArcs()).Times(AnyNumber());
-		EXPECT_CALL(*node, getIncomingArcs(_)).Times(AnyNumber());
-		EXPECT_CALL(*node, getOutgoingArcs()).Times(AnyNumber());
-		EXPECT_CALL(*node, getOutgoingArcs(_)).Times(AnyNumber());
+		EXPECT_CALL(*node, getIncomingEdges()).Times(AnyNumber());
+		EXPECT_CALL(*node, getIncomingEdges(_)).Times(AnyNumber());
+		EXPECT_CALL(*node, getOutgoingEdges()).Times(AnyNumber());
+		EXPECT_CALL(*node, getOutgoingEdges(_)).Times(AnyNumber());
 	}
 	for(auto node : nodes) {
 		BasicId node_id = node->getId();
@@ -89,37 +89,37 @@ TEST_F(GraphBaseTest, erase_node) {
 	delete insert_callback;
 }
 
-class GraphBaseEraseArcTest : public ::testing::Test {
+class GraphBaseEraseEdgeTest : public ::testing::Test {
 	protected:
-		MockGraph<MockNode<BasicId>, MockArc<BasicId>> graph;
+		MockGraph<MockNode<BasicId>, MockEdge<BasicId>> graph;
 		BasicId id;
 		MockNode<BasicId>* src = new MockNode<BasicId>(++id);
 		MockNode<BasicId>* tgt = new MockNode<BasicId>(++id);
-		MockArc<BasicId>* arc = new MockArc<BasicId>(++id, 2);
+		MockEdge<BasicId>* edge = new MockEdge<BasicId>(++id, 2);
 
 		void SetUp() override {
 			graph.insert(src);
 			graph.insert(tgt);
-			arc->src = src;
-			arc->tgt = tgt;
-			graph.insert(arc);
+			edge->src = src;
+			edge->tgt = tgt;
+			graph.insert(edge);
 
-			EXPECT_CALL(*src, getIncomingArcs()).Times(AnyNumber());
-			EXPECT_CALL(*src, getIncomingArcs(_)).Times(AnyNumber());
-			EXPECT_CALL(*src, getOutgoingArcs()).Times(AnyNumber());
-			EXPECT_CALL(*src, getOutgoingArcs(_)).Times(AnyNumber());
-			EXPECT_CALL(*tgt, getIncomingArcs()).Times(AnyNumber());
-			EXPECT_CALL(*tgt, getIncomingArcs(_)).Times(AnyNumber());
-			EXPECT_CALL(*tgt, getOutgoingArcs()).Times(AnyNumber());
-			EXPECT_CALL(*tgt, getOutgoingArcs(_)).Times(AnyNumber());
+			EXPECT_CALL(*src, getIncomingEdges()).Times(AnyNumber());
+			EXPECT_CALL(*src, getIncomingEdges(_)).Times(AnyNumber());
+			EXPECT_CALL(*src, getOutgoingEdges()).Times(AnyNumber());
+			EXPECT_CALL(*src, getOutgoingEdges(_)).Times(AnyNumber());
+			EXPECT_CALL(*tgt, getIncomingEdges()).Times(AnyNumber());
+			EXPECT_CALL(*tgt, getIncomingEdges(_)).Times(AnyNumber());
+			EXPECT_CALL(*tgt, getOutgoingEdges()).Times(AnyNumber());
+			EXPECT_CALL(*tgt, getOutgoingEdges(_)).Times(AnyNumber());
 		}
 };
 
-TEST_F(GraphBaseEraseArcTest, erase) {
-	EXPECT_CALL(*src, unlinkOut(arc));
+TEST_F(GraphBaseEraseEdgeTest, erase) {
+	EXPECT_CALL(*src, unlinkOut(edge));
 	EXPECT_CALL(*src, unlinkIn).Times(0);
 	EXPECT_CALL(*tgt, unlinkOut).Times(0);
-	EXPECT_CALL(*tgt, unlinkIn(arc));
+	EXPECT_CALL(*tgt, unlinkIn(edge));
 
-	graph.erase(arc);
+	graph.erase(edge);
 }

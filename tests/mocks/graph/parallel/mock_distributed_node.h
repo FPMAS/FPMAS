@@ -5,7 +5,7 @@
 
 #include "../base/mock_node.h"
 #include "fpmas/api/graph/parallel/distributed_node.h"
-#include "mock_distributed_arc.h"
+#include "mock_distributed_edge.h"
 
 using ::testing::_;
 
@@ -18,16 +18,16 @@ void from_json(const nlohmann::json& j, MockDistributedNode<T>& mock);
 template<typename T>
 void to_json(nlohmann::json& j, const MockDistributedNode<T>& mock);
 
-template<typename> class MockDistributedArc;
+template<typename> class MockDistributedEdge;
 
 ACTION_P(ReturnPointeePointee, ptr) {return **ptr;}
 
 template<typename T>
 class MockDistributedNode :
 	public fpmas::api::graph::parallel::DistributedNode<T>,
-	public AbstractMockNode<DistributedId, fpmas::api::graph::parallel::DistributedArc<T>> {
+	public AbstractMockNode<DistributedId, fpmas::api::graph::parallel::DistributedEdge<T>> {
 
-		typedef AbstractMockNode<DistributedId, fpmas::api::graph::parallel::DistributedArc<T>>
+		typedef AbstractMockNode<DistributedId, fpmas::api::graph::parallel::DistributedEdge<T>>
 			NodeBase;
 		typedef fpmas::api::synchro::Mutex<T> Mutex;
 		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T>&);
@@ -42,7 +42,7 @@ class MockDistributedNode :
 
 		public:
 		typedef T DataType;
-		using typename NodeBase::ArcType;
+		using typename NodeBase::EdgeType;
 
 		MockDistributedNode() {
 			setUpDataAccess();
@@ -172,10 +172,10 @@ class MockDistributedNode :
 			EXPECT_CALL(*this, state).Times(AnyNumber());
 			EXPECT_CALL(*this, data()).Times(AnyNumber());
 			EXPECT_CALL(Const(*this), data()).Times(AnyNumber());
-			EXPECT_CALL(*this, getIncomingArcs()).Times(AnyNumber());
-			EXPECT_CALL(*this, getIncomingArcs(_)).Times(AnyNumber());
-			EXPECT_CALL(*this, getOutgoingArcs()).Times(AnyNumber());
-			EXPECT_CALL(*this, getOutgoingArcs(_)).Times(AnyNumber());
+			EXPECT_CALL(*this, getIncomingEdges()).Times(AnyNumber());
+			EXPECT_CALL(*this, getIncomingEdges(_)).Times(AnyNumber());
+			EXPECT_CALL(*this, getOutgoingEdges()).Times(AnyNumber());
+			EXPECT_CALL(*this, getOutgoingEdges(_)).Times(AnyNumber());
 			EXPECT_CALL(*this, setLocation).Times(AnyNumber());
 			EXPECT_CALL(*this, getLocation).Times(AnyNumber());
 		}

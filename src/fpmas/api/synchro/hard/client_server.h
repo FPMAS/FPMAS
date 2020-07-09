@@ -2,7 +2,7 @@
 #define CLIENT_SERVER_H
 
 #include "enums.h"
-#include "fpmas/api/graph/parallel/distributed_arc.h"
+#include "fpmas/api/graph/parallel/distributed_edge.h"
 
 namespace fpmas::api::synchro::hard {
 	struct MutexRequest {
@@ -71,8 +71,8 @@ namespace fpmas::api::synchro::hard {
 	template<typename T>
 		class LinkClient {
 			public:
-				virtual void link(const fpmas::api::graph::parallel::DistributedArc<T>*) = 0;
-				virtual void unlink(const fpmas::api::graph::parallel::DistributedArc<T>*) = 0;
+				virtual void link(const fpmas::api::graph::parallel::DistributedEdge<T>*) = 0;
+				virtual void unlink(const fpmas::api::graph::parallel::DistributedEdge<T>*) = 0;
 
 				virtual ~LinkClient() {};
 		};

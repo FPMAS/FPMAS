@@ -13,8 +13,8 @@ namespace fpmas::api::synchro {
 	template<typename T>
 	class SyncLinker {
 		public:
-			virtual void link(const fpmas::api::graph::parallel::DistributedArc<T>*) = 0;
-			virtual void unlink(const fpmas::api::graph::parallel::DistributedArc<T>*) = 0;
+			virtual void link(const fpmas::api::graph::parallel::DistributedEdge<T>*) = 0;
+			virtual void unlink(const fpmas::api::graph::parallel::DistributedEdge<T>*) = 0;
 
 			virtual void synchronize() = 0;
 	};

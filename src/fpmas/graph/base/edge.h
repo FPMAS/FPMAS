@@ -1,16 +1,16 @@
-#ifndef BASIC_ARC_H
-#define BASIC_ARC_H
+#ifndef BASIC_EDGE_H
+#define BASIC_EDGE_H
 
 #include "fpmas/api/graph/base/node.h"
 
 namespace fpmas::graph::base {
 
 	template<typename IdType, typename _NodeType>
-		class Arc : public virtual fpmas::api::graph::base::Arc<IdType, _NodeType> {
+		class Edge : public virtual fpmas::api::graph::base::Edge<IdType, _NodeType> {
 			public:
-				typedef fpmas::api::graph::base::Arc<IdType, _NodeType> ArcBase;
-				using typename ArcBase::NodeType;
-				using typename ArcBase::LayerIdType;
+				typedef fpmas::api::graph::base::Edge<IdType, _NodeType> EdgeBase;
+				using typename EdgeBase::NodeType;
+				using typename EdgeBase::LayerIdType;
 
 			private:
 				IdType id;
@@ -21,9 +21,9 @@ namespace fpmas::graph::base {
 				NodeType* target;
 
 			public:
-				Arc(IdType id, LayerIdType layer) :
-					Arc(id, layer, 1.f) {};
-				Arc(IdType id, LayerIdType layer, float weight)
+				Edge(IdType id, LayerIdType layer) :
+					Edge(id, layer, 1.f) {};
+				Edge(IdType id, LayerIdType layer, float weight)
 					: id(id), layer(layer), weight(weight) {};
 
 				IdType getId() const override {return id;};

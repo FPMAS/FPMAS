@@ -16,15 +16,15 @@ using fpmas::synchro::ghost::GhostDataSync;
 class GhostDataSyncTest : public ::testing::Test {
 	protected:
 		typedef MockDistributedNode<int> NodeType;
-		typedef MockDistributedArc<int> ArcType;
-		typedef typename MockDistributedGraph<int, NodeType, ArcType>::NodeMap NodeMap;
+		typedef MockDistributedEdge<int> EdgeType;
+		typedef typename MockDistributedGraph<int, NodeType, EdgeType>::NodeMap NodeMap;
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
 		MockMpi<fpmas::graph::parallel::NodePtrWrapper<int>> node_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
 		MockMpi<std::pair<DistributedId, int>> location_mpi {mock_comm};
-		MockDistributedGraph<int, NodeType, ArcType> mocked_graph;
+		MockDistributedGraph<int, NodeType, EdgeType> mocked_graph;
 
 		GhostDataSync<int>
 			dataSync {node_mpi, id_mpi, mocked_graph};

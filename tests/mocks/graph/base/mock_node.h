@@ -5,7 +5,7 @@
 
 #include "fpmas/api/graph/base/id.h"
 #include "fpmas/api/graph/base/node.h"
-#include "mock_arc.h"
+#include "mock_edge.h"
 
 using ::testing::Const;
 using ::testing::Return;
@@ -17,9 +17,9 @@ using fpmas::api::graph::base::LayerId;
 
 class MockData {};
 
-template<typename IdType, typename _ArcType>
+template<typename IdType, typename _EdgeType>
 class AbstractMockNode : public virtual fpmas::api::graph::base::Node<
-				 IdType, _ArcType
+				 IdType, _EdgeType
 							 > {
 	protected:
 		IdType id;
@@ -27,7 +27,7 @@ class AbstractMockNode : public virtual fpmas::api::graph::base::Node<
 
 	public:
 		using typename fpmas::api::graph::base::Node<
-			IdType, _ArcType>::ArcType;
+			IdType, _EdgeType>::EdgeType;
 
 		AbstractMockNode() {
 			// Mock initialized without id
@@ -44,21 +44,21 @@ class AbstractMockNode : public virtual fpmas::api::graph::base::Node<
 		MOCK_METHOD(float, getWeight, (), (const, override));
 		MOCK_METHOD(void, setWeight, (float), (override));
 
-		MOCK_METHOD(const std::vector<ArcType*>, getIncomingArcs, (), (const, override));
-		MOCK_METHOD(const std::vector<ArcType*>, getIncomingArcs, (LayerId), (const, override));
-		MOCK_METHOD(const std::vector<typename ArcType::NodeType*>, inNeighbors, (), (const, override));
-		MOCK_METHOD(const std::vector<typename ArcType::NodeType*>, inNeighbors, (LayerId), (const, override));
+		MOCK_METHOD(const std::vector<EdgeType*>, getIncomingEdges, (), (const, override));
+		MOCK_METHOD(const std::vector<EdgeType*>, getIncomingEdges, (LayerId), (const, override));
+		MOCK_METHOD(const std::vector<typename EdgeType::NodeType*>, inNeighbors, (), (const, override));
+		MOCK_METHOD(const std::vector<typename EdgeType::NodeType*>, inNeighbors, (LayerId), (const, override));
 
-		MOCK_METHOD(const std::vector<ArcType*>, getOutgoingArcs, (), (const, override));
-		MOCK_METHOD(const std::vector<ArcType*>, getOutgoingArcs, (LayerId), (const, override));
-		MOCK_METHOD(const std::vector<typename ArcType::NodeType*>, outNeighbors, (), (const, override));
-		MOCK_METHOD(const std::vector<typename ArcType::NodeType*>, outNeighbors, (LayerId), (const, override));
+		MOCK_METHOD(const std::vector<EdgeType*>, getOutgoingEdges, (), (const, override));
+		MOCK_METHOD(const std::vector<EdgeType*>, getOutgoingEdges, (LayerId), (const, override));
+		MOCK_METHOD(const std::vector<typename EdgeType::NodeType*>, outNeighbors, (), (const, override));
+		MOCK_METHOD(const std::vector<typename EdgeType::NodeType*>, outNeighbors, (LayerId), (const, override));
 
-		MOCK_METHOD(void, linkIn, (ArcType*), (override));
-		MOCK_METHOD(void, linkOut, (ArcType*), (override));
+		MOCK_METHOD(void, linkIn, (EdgeType*), (override));
+		MOCK_METHOD(void, linkOut, (EdgeType*), (override));
 
-		MOCK_METHOD(void, unlinkIn, (ArcType*), (override));
-		MOCK_METHOD(void, unlinkOut, (ArcType*), (override));
+		MOCK_METHOD(void, unlinkIn, (EdgeType*), (override));
+		MOCK_METHOD(void, unlinkOut, (EdgeType*), (override));
 
 		virtual ~AbstractMockNode() {}
 
@@ -76,9 +76,9 @@ class AbstractMockNode : public virtual fpmas::api::graph::base::Node<
 
 
 template<typename IdType>
-class MockNode : public AbstractMockNode<IdType, MockArc<IdType>> {
+class MockNode : public AbstractMockNode<IdType, MockEdge<IdType>> {
 	public:
-		typedef AbstractMockNode<IdType, MockArc<IdType>> MockNodeBase;
+		typedef AbstractMockNode<IdType, MockEdge<IdType>> MockNodeBase;
 		MockNode() : MockNodeBase() {
 			EXPECT_CALL(*this, die).Times(AnyNumber());
 		}
