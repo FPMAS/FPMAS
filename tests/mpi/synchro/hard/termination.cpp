@@ -6,8 +6,6 @@
 #include "../mocks/synchro/hard/mock_client_server.h"
 #include "fpmas/communication/communication.h"
 
-using namespace std::chrono_literals;
-
 using ::testing::Return;
 using ::testing::AnyNumber;
 using ::testing::AtLeast;
@@ -36,7 +34,7 @@ TEST_F(TerminationTest, termination_test_with_delay) {
 	auto start = std::chrono::system_clock::now();
 	if(comm.getRank() == 0) {
 		EXPECT_CALL(mutex_server, handleIncomingRequests).Times(AnyNumber());
-		std::this_thread::sleep_for(1s);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	} else {
 		EXPECT_CALL(mutex_server, handleIncomingRequests).Times(AtLeast(1));
 	}
@@ -44,9 +42,9 @@ TEST_F(TerminationTest, termination_test_with_delay) {
 	termination.terminate(mutex_server);
 	auto end = std::chrono::system_clock::now();
 
-	std::chrono::duration delay = end - start;
+	auto delay = end - start;
 
-	ASSERT_GE(delay, 1s);
+	ASSERT_GE(delay, std::chrono::seconds(1));
 }
 
 class FakeServer : public fpmas::api::synchro::hard::Server {

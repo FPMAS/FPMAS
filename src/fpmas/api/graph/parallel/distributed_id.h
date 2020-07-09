@@ -178,7 +178,6 @@ namespace fpmas::graph::parallel {
 					);
 			}
 	};
-	inline MPI_Datatype DistributedId::mpiDistributedIdType;
 }
 
 using fpmas::graph::parallel::DistributedId;

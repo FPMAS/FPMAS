@@ -76,7 +76,7 @@ namespace fpmas::model {
 	template<typename AgentType, api::model::TypeId _TYPE_ID>
 	class AgentBase : public api::model::Agent {
 		public:
-			inline static const api::model::TypeId TYPE_ID = _TYPE_ID;
+			static const api::model::TypeId TYPE_ID;
 
 		private:
 			api::model::AgentTask* _task;
@@ -124,6 +124,8 @@ namespace fpmas::model {
 
 			virtual ~AgentBase() {}
 	};
+	template<typename AgentType, api::model::TypeId _TYPE_ID>
+		const api::model::TypeId AgentBase<AgentType, _TYPE_ID>::TYPE_ID = _TYPE_ID;
 
 	class AgentTask : public api::model::AgentTask {
 		private:

@@ -80,10 +80,10 @@ TEST_F(NodeTest, empty_out_neighbors) {
 
 TEST_F(NodeTest, in_neighbors) {
 	// Mock in neighbors nodes
-	std::array<Node<BasicId, BasicMockEdge>, 10> nodes {
-		++id, ++id, ++id, ++id, ++id,
-		++id, ++id, ++id, ++id, ++id
-	};
+	std::vector<Node<BasicId, BasicMockEdge>*> nodes;
+	for(int i = 0; i < 10; i++)
+		nodes.push_back(new Node<BasicId, BasicMockEdge>(++id));
+
 	// Mock edges
 	std::array<BasicMockEdge, 10> edges;
 
@@ -91,24 +91,26 @@ TEST_F(NodeTest, in_neighbors) {
 		EXPECT_CALL(edges[i], getTargetNode).Times(0);
 		EXPECT_CALL(edges[i], getSourceNode)
 			.Times(AtLeast(1))
-			.WillRepeatedly(Return(&nodes[i]));
+			.WillRepeatedly(Return(nodes[i]));
 		node.linkIn(&edges[i]);
 	}
 
 	auto neighbors = node.inNeighbors();
 
 	ASSERT_THAT(neighbors, SizeIs(10));
-	for(const auto& neighbor : nodes) {
-		ASSERT_THAT(neighbors, Contains(&neighbor));
+	for(const auto* neighbor : nodes) {
+		ASSERT_THAT(neighbors, Contains(neighbor));
 	}
+	for(auto* node : nodes)
+		delete node;
 }
 
 TEST_F(NodeTest, out_neighbors) {
 	// Mock in neighbors nodes
-	std::array<Node<BasicId, BasicMockEdge>, 10> nodes {
-		++id, ++id, ++id, ++id, ++id,
-		++id, ++id, ++id, ++id, ++id
-	};
+	std::vector<Node<BasicId, BasicMockEdge>*> nodes;
+	for(int i = 0; i < 10; i++)
+		nodes.push_back(new Node<BasicId, BasicMockEdge>(++id));
+
 	// Mock edges
 	std::array<BasicMockEdge, 10> edges;
 
@@ -116,42 +118,14 @@ TEST_F(NodeTest, out_neighbors) {
 		EXPECT_CALL(edges[i], getSourceNode).Times(0);
 		EXPECT_CALL(edges[i], getTargetNode)
 			.Times(AtLeast(1))
-			.WillRepeatedly(Return(&nodes[i]));
+			.WillRepeatedly(Return(nodes[i]));
 		node.linkOut(&edges[i]);
 	}
 
 	auto neighbors = node.outNeighbors();
 
 	ASSERT_THAT(neighbors, SizeIs(10));
-	for(const auto& neighbor : nodes) {
-		ASSERT_THAT(neighbors, Contains(&neighbor));
+	for(const auto* neighbor : nodes) {
+		ASSERT_THAT(neighbors, Contains(neighbor));
 	}
 }
-
-/*
- *class NodeCallbackTest : public ::testing::Test {
- *    protected:
- *        Node<BasicId, BasicMockEdge> node {BasicId()};
- *
- *};
- *
- *TEST_F(NodeCallbackTest, insert) {
- *    MockCallback* insert = new MockCallback;
- *    node.onInsert(insert);
- *    ASSERT_EQ(node.onInsert(), insert);
- *
- *    MockCallback* other_insert = new MockCallback;
- *    node.onInsert(other_insert);
- *    ASSERT_EQ(node.onInsert(), other_insert);
- *}
- *
- *TEST_F(NodeCallbackTest, erase) {
- *    MockCallback* erase = new MockCallback;
- *    node.onErase(erase);
- *    ASSERT_EQ(node.onErase(), erase);
- *
- *    MockCallback* other_erase = new MockCallback;
- *    node.onErase(other_erase);
- *    ASSERT_EQ(node.onErase(), other_erase);
- *}
- */

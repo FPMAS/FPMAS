@@ -25,8 +25,8 @@ FPMAS_DEFAULT_JSON(MockAgentBase<10>)
 
 class ModelGhostModeIntegrationTest : public ::testing::Test {
 	protected:
-		inline static const int NODE_BY_PROC = 50;
-		inline static const int NUM_STEPS = 100;
+		static const int NODE_BY_PROC;
+		static const int NUM_STEPS;
 		fpmas::model::AgentGraph<fpmas::synchro::GhostMode> agent_graph;
 		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
 
@@ -40,6 +40,8 @@ class ModelGhostModeIntegrationTest : public ::testing::Test {
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
 
 };
+const int ModelGhostModeIntegrationTest::NODE_BY_PROC = 50;
+const int ModelGhostModeIntegrationTest::NUM_STEPS = 100;
 
 class IncreaseCount {
 	private:
@@ -225,8 +227,8 @@ void from_json(const nlohmann::json& j, fpmas::api::utils::VirtualPtrWrapper<Rea
 
 class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
-		inline static const int NODE_BY_PROC = 20;
-		inline static const int NUM_STEPS = 100;
+		static const int NODE_BY_PROC;
+		static const int NUM_STEPS;
 		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph;
 		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
 
@@ -240,6 +242,8 @@ class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
 
 };
+const int ModelHardSyncModeIntegrationTest::NODE_BY_PROC = 20;
+const int ModelHardSyncModeIntegrationTest::NUM_STEPS = 100;
 
 class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegrationTest {
 	protected:
@@ -380,8 +384,8 @@ void from_json(const nlohmann::json& j, fpmas::api::utils::VirtualPtrWrapper<Wri
 
 class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 	protected:
-		inline static unsigned int AGENT_BY_PROC = 50;
-		inline static unsigned int STEPS = 100;
+		static const unsigned int AGENT_BY_PROC = 50;
+		static const unsigned int STEPS = 100;
 		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph;
 		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
 
@@ -586,48 +590,6 @@ TEST_F(ModelDynamicLinkGhostModeIntegrationTest, test) {
 				total_links.size(), total_unlinks.size());
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Total edge count : %lu", edge_count);
 	}
-
-	//runtime.run(NUM_STEPS);
-
-	//fpmas::communication::TypedMpi<unsigned int> mpi {agent_graph.getMpiCommunicator()};
-
-	//unsigned int local_link_count = 0;
-	//for(auto node : agent_graph.getLocationManager().getLocalNodes())
-		//local_link_count += static_cast<const LinkerAgent*>(node.second->mutex().read().get())
-			//->link_count;
-
-	//std::vector<unsigned int> link_counts = mpi.gather(local_link_count, 0);
-	//unsigned int link_count = std::accumulate(link_counts.begin(), link_counts.end(), 0);
-
-	//unsigned int local_unlink_count = 0;
-	//for(auto node : agent_graph.getLocationManager().getLocalNodes())
-		//local_unlink_count += static_cast<const LinkerAgent*>(node.second->mutex().read().get())
-			//->unlink_count;
-
-	//std::vector<unsigned int> unlink_counts = mpi.gather(local_unlink_count, 0);
-	//unsigned int unlink_count = std::accumulate(unlink_counts.begin(), unlink_counts.end(), 0);
-
-	//fpmas::communication::TypedMpi<std::set<DistributedId>> edge_ids_mpi {agent_graph.getMpiCommunicator()};
-	//std::set<DistributedId> edge_ids;
-	//for(auto edge : agent_graph.getEdges()) {
-		//edge_ids.insert(edge.first);
-	//}
-
-	//std::vector<std::set<DistributedId>> edge_id_sets = edge_ids_mpi.gather(edge_ids, 0);
-	//std::set<DistributedId> final_edge_id_set;
-	//for(auto set : edge_id_sets)
-		//for(auto id : set)
-			//final_edge_id_set.insert(id);
-
-	//unsigned int edge_count = final_edge_id_set.size();
-
-	//if(agent_graph.getMpiCommunicator().getRank() == 0) {
-		//FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "GHOST_TEST", "Link count : %lu - Unlink count : %lu",
-				//link_count, unlink_count);
-		//FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "GHOST_TEST", "Total edge count : %lu", edge_count);
-
-		//ASSERT_EQ(edge_count, initial_edge_count + link_count - unlink_count);
-	/*}*/
 }
 
 class ModelDynamicLinkHardSyncModeIntegrationTest : public ModelHardSyncModeIntegrationTest {

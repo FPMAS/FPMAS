@@ -6,7 +6,7 @@
 
 namespace fpmas::api::synchro::hard {
 	struct MutexRequest {
-		inline static const int LOCAL = -1;
+		static const int LOCAL;
 		DistributedId id;
 		int source;
 		MutexRequestType type;

@@ -10,8 +10,6 @@ namespace fpmas::api::graph::base {
 	 */
 	typedef int LayerId;
 
-	//inline static constexpr LayerId DEFAULT_LAYER = 0;
-
 	template<typename _IdType, typename _NodeType>
 	class Edge {
 		public:

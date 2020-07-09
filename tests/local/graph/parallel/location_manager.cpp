@@ -177,12 +177,12 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 			auto exportResponsesMatcher = UnorderedElementsAre(
 					// Previously updated locations sent to 0
 					Pair(0, UnorderedElementsAre(
-							std::pair {DistributedId(2, 1), 5},
-							std::pair {DistributedId(2, 2), 2}
+							std::pair<DistributedId, int> {DistributedId(2, 1), 5},
+							std::pair<DistributedId, int> {DistributedId(2, 2), 2}
 							)),
 					// Previously updated locations sent to 7
 					Pair(7, ElementsAre(
-							std::pair {DistributedId(2, 0), 1}
+							std::pair<DistributedId, int> {DistributedId(2, 0), 1}
 							))
 					);
 			// Received location for [4, 0] from 4 : proc 9

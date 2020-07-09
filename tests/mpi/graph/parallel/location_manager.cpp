@@ -46,8 +46,8 @@ class FakeMutex : public fpmas::api::synchro::Mutex<T> {
 
 class LocationManagerIntegrationTest : public ::testing::Test {
 	protected:
-		inline static const int SEQUENCE_COUNT = 5;
-		inline static const int NODES_COUNT = 100;
+		static const int SEQUENCE_COUNT = 5;
+		static const int NODES_COUNT = 100;
 
 		DistributedGraph<
 			int, MockSyncMode<FakeMutex>,

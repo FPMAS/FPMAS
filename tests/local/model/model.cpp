@@ -374,15 +374,15 @@ TEST_F(AgentBaseTest, out_neighbors) {
 
 	agent->setNode(&n);
 
-	fpmas::model::Neighbors out_8 = agent->outNeighbors<MockAgentBase<8>>();
+	fpmas::model::Neighbors<MockAgentBase<8>> out_8 = agent->outNeighbors<MockAgentBase<8>>();
 	std::vector<MockAgentBase<8>*> out_8_v {out_8.begin(), out_8.end()};
 	ASSERT_THAT(out_8_v, UnorderedElementsAre(n_1.data().get(), n_3.data().get()));
 
-	fpmas::model::Neighbors out_12 = agent->outNeighbors<MockAgentBase<12>>();
+	fpmas::model::Neighbors<MockAgentBase<12>> out_12 = agent->outNeighbors<MockAgentBase<12>>();
 	std::vector<MockAgentBase<12>*> out_12_v {out_12.begin(), out_12.end()};
 	ASSERT_THAT(out_12_v, ElementsAre(n_2.data().get()));
 
-	fpmas::model::Neighbors other_out = agent->outNeighbors<MockAgentBase<84>>();
+	fpmas::model::Neighbors<MockAgentBase<84>> other_out = agent->outNeighbors<MockAgentBase<84>>();
 	std::vector<MockAgentBase<84>*> other_out_v {other_out.begin(), other_out.end()};
 	ASSERT_THAT(other_out_v, IsEmpty());
 }
@@ -401,12 +401,12 @@ TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 
 	agent->setNode(&n);
 
-	fpmas::model::Neighbors out = agent->outNeighbors<MockAgentBase<8>>();
-	fpmas::model::Neighbors out_1 = out.shuffle();
+	fpmas::model::Neighbors<MockAgentBase<8>> out = agent->outNeighbors<MockAgentBase<8>>();
+	fpmas::model::Neighbors<MockAgentBase<8>> out_1 = out.shuffle();
 	std::vector<MockAgentBase<8>*> out_1_v {out_1.begin(), out_1.end()};
-	fpmas::model::Neighbors out_2 = out.shuffle();
+	fpmas::model::Neighbors<MockAgentBase<8>> out_2 = out.shuffle();
 	std::vector<MockAgentBase<8>*> out_2_v {out_2.begin(), out_2.end()};
-	fpmas::model::Neighbors out_3 = out.shuffle();
+	fpmas::model::Neighbors<MockAgentBase<8>> out_3 = out.shuffle();
 	std::vector<MockAgentBase<8>*> out_3_v {out_3.begin(), out_3.end()};
 
 	ASSERT_THAT(out_2_v, Not(ElementsAreArray(out_1_v)));
@@ -427,15 +427,15 @@ TEST_F(AgentBaseTest, in_neighbors) {
 
 	agent->setNode(&n);
 
-	fpmas::model::Neighbors in_8 = agent->inNeighbors<MockAgentBase<8>>();
+	fpmas::model::Neighbors<MockAgentBase<8>> in_8 = agent->inNeighbors<MockAgentBase<8>>();
 	std::vector<MockAgentBase<8>*> in_8_v {in_8.begin(), in_8.end()};
 	ASSERT_THAT(in_8_v, UnorderedElementsAre(n_1.data().get(), n_3.data().get()));
 
-	fpmas::model::Neighbors in_12 = agent->inNeighbors<MockAgentBase<12>>();
+	fpmas::model::Neighbors<MockAgentBase<12>> in_12 = agent->inNeighbors<MockAgentBase<12>>();
 	std::vector<MockAgentBase<12>*> in_12_v {in_12.begin(), in_12.end()};
 	ASSERT_THAT(in_12_v, ElementsAre(n_2.data().get()));
 
-	fpmas::model::Neighbors other_in = agent->inNeighbors<MockAgentBase<84>>();
+	fpmas::model::Neighbors<MockAgentBase<84>> other_in = agent->inNeighbors<MockAgentBase<84>>();
 	std::vector<MockAgentBase<84>*> other_in_v {other_in.begin(), other_in.end()};
 	ASSERT_THAT(other_in_v, IsEmpty());
 }
@@ -455,11 +455,11 @@ TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 	agent->setNode(&n);
 
 	fpmas::model::Neighbors<MockAgentBase<8>> in = agent->inNeighbors<MockAgentBase<8>>();
-	fpmas::model::Neighbors in_1 = in.shuffle();
+	fpmas::model::Neighbors<MockAgentBase<8>> in_1 = in.shuffle();
 	std::vector<MockAgentBase<8>*> in_1_v {in_1.begin(), in_1.end()};
-	fpmas::model::Neighbors in_2 = in.shuffle();
+	fpmas::model::Neighbors<MockAgentBase<8>> in_2 = in.shuffle();
 	std::vector<MockAgentBase<8>*> in_2_v {in_2.begin(), in_2.end()};
-	fpmas::model::Neighbors in_3 = in.shuffle();
+	fpmas::model::Neighbors<MockAgentBase<8>> in_3 = in.shuffle();
 	std::vector<MockAgentBase<8>*> in_3_v {in_3.begin(), in_3.end()};
 
 	ASSERT_THAT(in_2_v, Not(ElementsAreArray(in_1_v)));

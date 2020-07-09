@@ -12,7 +12,7 @@ using ::testing::SaveArg;
 template<fpmas::api::model::TypeId _TYPE_ID = 0>
 class MockAgent : public fpmas::api::model::Agent {
 	public:
-		inline static const fpmas::api::model::TypeId TYPE_ID = _TYPE_ID;
+		static const fpmas::api::model::TypeId TYPE_ID;
 
 		fpmas::api::model::GroupId gid;
 
@@ -56,6 +56,8 @@ class MockAgent : public fpmas::api::model::Agent {
 			EXPECT_CALL(*this, setGroupId).Times(AnyNumber());
 		}
 };
+template<fpmas::api::model::TypeId _TYPE_ID>
+const fpmas::api::model::TypeId MockAgent<_TYPE_ID>::TYPE_ID = _TYPE_ID;
 
 class MockModel : public fpmas::api::model::Model {
 	public:

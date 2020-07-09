@@ -161,13 +161,6 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::READ, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			/*
-			 *EXPECT_CALL(id_mpi, recv(
-			 *        Pointee(AllOf(
-			 *            Field(&MPI_Status::MPI_SOURCE, source),
-			 *            Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::READ)))
-			 *        ))
-			 */
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::READ, _)
 					)
 				.WillOnce(Return(id));
@@ -202,14 +195,6 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::ACQUIRE, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			/*
-			 *EXPECT_CALL(id_mpi, recv(
-			 *        Pointee(AllOf(
-			 *            Field(&MPI_Status::MPI_SOURCE, source),
-			 *            Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::ACQUIRE)))
-			 *        ))
-			 *    .WillOnce(Return(id));
-			 */
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::ACQUIRE, _)
 					)
 				.WillOnce(Return(id));
@@ -258,17 +243,10 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			/*
-			 *EXPECT_CALL(data_update_mpi,
-			 *    recv(Pointee(AllOf(
-			 *        Field(&MPI_Status::MPI_SOURCE, source),
-			 *        Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::RELEASE_ACQUIRE))))
-			 *    )
-			 *    .WillOnce(Return(DataUpdatePack(id, updatedData)));
-			 */
+			
 			EXPECT_CALL(data_update_mpi,
 				recv(source, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _))
-				.WillOnce(Return(DataUpdatePack(id, updatedData)));
+				.WillOnce(Return(DataUpdatePack<int>(id, updatedData)));
 
 			EXPECT_CALL(*mock, _unlock);
 		}
@@ -322,15 +300,6 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::UNLOCK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
-			/*
-			 *EXPECT_CALL(id_mpi,
-			 *    recv(Pointee(AllOf(
-			 *        Field(&MPI_Status::MPI_SOURCE, source),
-			 *        Field(&MPI_Status::MPI_TAG, Epoch::EVEN | Tag::UNLOCK)
-			 *        )))
-			 *    )
-			 *    .WillOnce(Return(id));
-			 */
 			EXPECT_CALL(id_mpi,
 				recv(source, Epoch::EVEN | Tag::UNLOCK, _))
 				.WillOnce(Return(id));

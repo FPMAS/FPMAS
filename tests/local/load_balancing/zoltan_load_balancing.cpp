@@ -54,9 +54,9 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		int err;
 
 		void SetUp() override {
-			nodes[id1] = new MockDistributedNode(id1, 0, 1.f);
-			nodes[id2] = new MockDistributedNode(id2, 1, 2.f);
-			nodes[id3] = new MockDistributedNode(id3, 2, 3.f);
+			nodes[id1] = new MockDistributedNode<int>(id1, 0, 1.f);
+			nodes[id2] = new MockDistributedNode<int>(id2, 1, 2.f);
+			nodes[id3] = new MockDistributedNode<int>(id3, 2, 3.f);
 
 			// Mock edge id1 -> id2
 			mockEdge1 = new MockDistributedEdge<int>(
