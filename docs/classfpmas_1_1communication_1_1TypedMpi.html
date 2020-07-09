@@ -72,6 +72,8 @@ $(function() {
 <div class="title">fpmas::communication::TypedMpi&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="communication_2communication_8h_source.html">communication.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::communication::TypedMpi&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -93,8 +95,7 @@ Collaboration diagram for fpmas::communication::TypedMpi&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aac5340a22599e2ec82c318743913dc7e"><td class="memItemLeft" align="right" valign="top"><a id="aac5340a22599e2ec82c318743913dc7e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>TypedMpi</b> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm)</td></tr>
+<tr class="memitem:aac5340a22599e2ec82c318743913dc7e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#aac5340a22599e2ec82c318743913dc7e">TypedMpi</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm)</td></tr>
 <tr class="separator:aac5340a22599e2ec82c318743913dc7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e6121faafbd32343eb71327d1b8bf2e"><td class="memItemLeft" align="right" valign="top">std::unordered_map&lt; int, std::vector&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a4e6121faafbd32343eb71327d1b8bf2e">migrate</a> (std::unordered_map&lt; int, std::vector&lt; T &gt;&gt; exportMap) override</td></tr>
 <tr class="separator:a4e6121faafbd32343eb71327d1b8bf2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -107,6 +108,54 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1436aca052092b0992495df36d8a1ad0"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">recv</a> (int source, int tag, MPI_Status *status=MPI_STATUS_IGNORE) override</td></tr>
 <tr class="separator:a1436aca052092b0992495df36d8a1ad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::communication::TypedMpi&lt; T &gt;</h3>
+
+<p>An <a href="https://github.com/nlohmann/json">nlohmann::json</a> based <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">fpmas::api::communication::TypedMpi</a> implementation.</p>
+<p>Each <code>T</code> instance is serialized as a JSON string using the nlohmann::json library, and sent as MPI_CHAR using the provided <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a>.</p>
+<p>This means that ANY TYPE that can be serialized / unserialized as JSON thanks to the nlohmann::json library can be easily sent accross processors through MPI using this class, preventing users from struggling with low-level MPI issues and custom MPI_Datatype definitions.</p>
+<p>Moreover, defining rules to serialize <b>any custom type</b> with the nlohmann::json library is intuitive and straightforward (see <a href="https://github.com/nlohmann/json#arbitrary-types-conversions">https://github.com/nlohmann/json#arbitrary-types-conversions</a>).</p>
+<p>However, notice that systematically serializing data as JSON might have an impact on performances, and is not even always necessary (to send primary types supported by MPI, such as <code>float</code> or <code>int</code> for example).</p>
+<p>The interest of using this templated code design is that for such types, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">TypedMpi</a> can be (and will be) specialized to circumvent the default JSON serialization process and use low-level MPI calls instead, potentially using custom MPI_Datatypes. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="aac5340a22599e2ec82c318743913dc7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac5340a22599e2ec82c318743913dc7e">&#9670;&nbsp;</a></span>TypedMpi()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">TypedMpi</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">TypedMpi</a> constructor.</p>
+<p>The specified MPI communicator will be used to perform actual message sending between processors.</p>
+<p>To sum up, the role of this class is to serialize / unserialize input / output data, and transmit it to / from the underlying <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> instance.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comm</td><td>reference to an MPI communicator instance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5c0d59ea1887d84340ddc2a057057487"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5c0d59ea1887d84340ddc2a057057487">&#9670;&nbsp;</a></span>gather()</h2>

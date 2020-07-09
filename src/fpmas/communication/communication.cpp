@@ -5,10 +5,6 @@
 #include "fpmas/utils/macros.h"
 
 namespace fpmas { namespace communication {
-	/**
-	 * Builds an MPI group and the associated communicator as a copy of the
-	 * MPI_COMM_WORLD communicator.
-	 */
 	MpiCommunicator::MpiCommunicator() {
 		MPI_Group worldGroup;
 		MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);
@@ -21,40 +17,18 @@ namespace fpmas { namespace communication {
 		MPI_Group_free(&worldGroup);
 	}
 
-	/**
-	 * Returns the built MPI communicator.
-	 *
-	 * @return associated MPI communicator
-	 */
 	MPI_Comm MpiCommunicator::getMpiComm() const {
 		return this->comm;
 	}
 
-	/**
-	 * Returns the built MPI group.
-	 *
-	 * @return associated MPI group
-	 */
 	MPI_Group MpiCommunicator::getMpiGroup() const {
 		return this->group;
 	}
 
-	/**
-	 * Returns the rank of this communicator, in the meaning of MPI communicator
-	 * ranks.
-	 *
-	 * @return MPI communicator rank
-	 */
 	int MpiCommunicator::getRank() const {
 		return this->rank;
 	}
 
-	/**
-	 * Returns the rank of this communicator, in the meaning of MPI communicator
-	 * sizes.
-	 *
-	 * @return MPI communicator size
-	 */
 	int MpiCommunicator::getSize() const {
 		return this->size;
 	}
@@ -81,7 +55,7 @@ namespace fpmas { namespace communication {
 	}
 
 	void MpiCommunicator::recv(
-		void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) {
+			void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) {
 		MPI_Recv(buffer, count, datatype, source, tag, this->comm, status);
 	}
 
@@ -120,7 +94,7 @@ namespace fpmas { namespace communication {
 
 				size_buffer[i] = sendcounts[i];
 			}
-			
+
 			// Sends size / displs to each rank, and receive recvs size / displs from
 			// each rank.
 			MPI_Alltoall(MPI_IN_PLACE, 0, MPI_INT, size_buffer, 1, MPI_INT, getMpiComm());
@@ -172,66 +146,61 @@ namespace fpmas { namespace communication {
 
 	std::vector<DataPack> MpiCommunicator::gather(DataPack data, MPI_Datatype type, int root) {
 
-			int type_size;
-			MPI_Type_size(type, &type_size);
+		int type_size;
+		MPI_Type_size(type, &type_size);
 
 
-			void* send_buffer = std::malloc(data.count * type_size);
-			std::memcpy(&((char*) send_buffer)[0], data.buffer, data.size);
-			
-			
-			int* size_buffer;
-			//int recv_size_count = 0;
-			if(getRank() == root) {
-				//recv_size_count = getSize();
-				size_buffer = (int*) std::malloc(getSize() * sizeof(int));
-			} else {
-				size_buffer = (int*) std::malloc(0);
+		void* send_buffer = std::malloc(data.count * type_size);
+		std::memcpy(&((char*) send_buffer)[0], data.buffer, data.size);
+
+
+		int* size_buffer;
+		//int recv_size_count = 0;
+		if(getRank() == root) {
+			//recv_size_count = getSize();
+			size_buffer = (int*) std::malloc(getSize() * sizeof(int));
+		} else {
+			size_buffer = (int*) std::malloc(0);
+		}
+
+		MPI_Gather(&data.count, 1, MPI_INT, size_buffer, 1, MPI_INT, root, comm);
+
+		int* recvcounts;
+		int* rdispls;
+		int current_rdispls = 0;
+		if(getRank() == root) {
+			recvcounts = (int*) std::malloc(getSize()*sizeof(int));
+			rdispls = (int*) std::malloc(getSize()*sizeof(int));
+			for (int i = 0; i < getSize(); i++) {
+				recvcounts[i] = size_buffer[i];
+				rdispls[i] = current_rdispls;
+				current_rdispls += recvcounts[i];
 			}
+		} else {
+			recvcounts = (int*) std::malloc(0);
+			rdispls = (int*) std::malloc(0);
+		}
+		void* recv_buffer = std::malloc(current_rdispls * type_size);
 
-			MPI_Gather(&data.count, 1, MPI_INT, size_buffer, 1, MPI_INT, root, comm);
+		MPI_Gatherv(send_buffer, data.count, type, recv_buffer, recvcounts, rdispls, type, root, comm);
 
-			int* recvcounts;
-			int* rdispls;
-			int current_rdispls = 0;
-			if(getRank() == root) {
-				recvcounts = (int*) std::malloc(getSize()*sizeof(int));
-				rdispls = (int*) std::malloc(getSize()*sizeof(int));
-				for (int i = 0; i < getSize(); i++) {
-					recvcounts[i] = size_buffer[i];
-					rdispls[i] = current_rdispls;
-					current_rdispls += recvcounts[i];
-				}
-			} else {
-				recvcounts = (int*) std::malloc(0);
-				rdispls = (int*) std::malloc(0);
+		std::vector<DataPack> imported_data_pack;
+		if(getRank() == root) {
+			for (int i = 0; i < getSize(); i++) {
+				imported_data_pack.emplace_back(recvcounts[i], type_size);
+				DataPack& data_pack = imported_data_pack[i];
+
+				std::memcpy(data_pack.buffer, &((char*) recv_buffer)[rdispls[i]], data_pack.size);
 			}
-			void* recv_buffer = std::malloc(current_rdispls * type_size);
-
-			MPI_Gatherv(send_buffer, data.count, type, recv_buffer, recvcounts, rdispls, type, root, comm);
-
-			std::vector<DataPack> imported_data_pack;
-			if(getRank() == root) {
-				for (int i = 0; i < getSize(); i++) {
-					imported_data_pack.emplace_back(recvcounts[i], type_size);
-					DataPack& data_pack = imported_data_pack[i];
-
-					std::memcpy(data_pack.buffer, &((char*) recv_buffer)[rdispls[i]], data_pack.size);
-				}
-			}
-			std::free(send_buffer);
-			std::free(size_buffer);
-			std::free(recvcounts);
-			std::free(rdispls);
-			std::free(recv_buffer);
-			return imported_data_pack;
+		}
+		std::free(send_buffer);
+		std::free(size_buffer);
+		std::free(recvcounts);
+		std::free(rdispls);
+		std::free(recv_buffer);
+		return imported_data_pack;
 	}
 
-	/**
-	 * fpmas::communication::MpiCommunicator destructor.
-	 *
-	 * Releases acquired MPI resources.
-	 */
 	MpiCommunicator::~MpiCommunicator() {
 		MPI_Group_free(&this->group);
 		MPI_Comm_free(&this->comm);

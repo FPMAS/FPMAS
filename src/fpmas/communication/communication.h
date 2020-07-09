@@ -17,7 +17,8 @@ namespace fpmas {
 		using api::communication::DataPack;
 
 		/**
-		 * fpmas::api::communication::MpiCommunicator implementation
+		 * fpmas::api::communication::MpiCommunicator implementation, based on
+		 * the system MPI library (i.e. `#include <mpi.h>`).
 		 */
 		class MpiCommunicator : public virtual api::communication::MpiCommunicator {
 			private:
@@ -28,45 +29,213 @@ namespace fpmas {
 				MPI_Comm comm;
 
 			public:
+				/**
+				 * Default MpiCommunicator constructor.
+				 *
+				 * Builds an MPI_Group and the associated MPI_Comm as a copy of the
+				 * MPI_COMM_WORLD communicator.
+				 */
 				MpiCommunicator();
+
 				MpiCommunicator(const MpiCommunicator&) = delete;
 				MpiCommunicator& operator=(const MpiCommunicator&) = delete;
 
-				MPI_Group getMpiGroup() const;
+				/**
+				 * Returns the built MPI communicator.
+				 *
+				 * @return associated MPI communicator
+				 */
 				MPI_Comm getMpiComm() const;
 
+				/**
+				 * Returns the built MPI group.
+				 *
+				 * @return associated MPI group
+				 */
+				MPI_Group getMpiGroup() const;
+
+				/**
+				 * Returns the MPI rank of this communicator.
+				 *
+				 * @return MPI communicator rank
+				 */
 				int getRank() const override;
+
+				/**
+				 * Returns the size of this communicator (i.e. the current
+				 * processes count).
+				 *
+				 * @return MPI communicator size
+				 */
 				int getSize() const override;
 
+				/**
+				 * Perfoms an MPI_Send operation.
+				 *
+				 * @param data input buffer
+				 * @param count items count in the buffer
+				 * @param datatype MPI type of the data to send
+				 * @param destination rank of the destination proc
+				 * @param tag message tag
+				 */
 				void send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) override;
+				/**
+				 * Performs an MPI_Send operation without data.
+				 *
+				 * @param destination rank of the destination proc
+				 * @param tag message tag
+				 */
+				void send(int destination, int tag) override;
+
+				/**
+				 * Performs an MPI_Issend operation.
+				 *
+				 * @param data input buffer
+				 * @param count items count in the buffer
+				 * @param datatype MPI type of the data to send
+				 * @param destination rank of the destination proc
+				 * @param tag message tag
+				 * @param req output MPI request
+				 */
 				void Issend(
 					const void* data, int count, MPI_Datatype datatype, int destination, int tag, MPI_Request* req) override;
 
-				void send(int destination, int tag) override;
+				/**
+				 * Performs an MPI_Issend operation without data.
+				 *
+				 * @param destination rank of the destination proc
+				 * @param tag message tag
+				 * @param req output MPI request
+				 */
 				void Issend(int destination, int tag, MPI_Request* req) override;
 
+				/**
+				 * Performs an MPI_Recv operation without data.
+				 *
+				 * @param source rank of the process to receive from
+				 * @param tag message tag
+				 * @param status output MPI status
+				 */
 				void recv(int source, int tag, MPI_Status* status) override;
+
+				/**
+				 * Performs an MPI_Recv operation.
+				 *
+				 * @param buffer output buffer
+				 * @param count items count to receive
+				 * @param datatype MPI type of the data to receive
+				 * @param source rank of the proc to receive from
+				 * @param tag message tag
+				 * @param status output MPI status
+				 */
 				void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) override;
 
+				/**
+				 * Performs an MPI_Probe operation.
+				 *
+				 * @param source source rank
+				 * @param tag recv tag
+				 * @param status MPI status
+				 */
 				void probe(int source, int tag, MPI_Status*) override;
+
+				/**
+				 * Performs an MPI_Iprobe operation.
+				 *
+				 * @param source source rank
+				 * @param tag recv tag
+				 * @param status MPI status
+				 * @return true iff a message is available
+				 */
 				bool Iprobe(int source, int tag, MPI_Status*) override;
 
+				/**
+				 * Performs an MPI_Test operation.
+				 *
+				 * @param req MPI request to test
+				 * @returns true iff the request is complete
+				 */
 				bool test(MPI_Request*) override;
 
+				/**
+				 * Performs an MPI_Alltoall operation.
+				 *
+				 * Exchanged data are stored in DataPack instances.
+				 *
+				 * @param export_map data to export to each proc
+				 * @param datatype MPI type of the data to send / receive
+				 * @return data received from each proc
+				 */
 				std::unordered_map<int, DataPack> 
 					allToAll(std::unordered_map<int, DataPack> data_pack, MPI_Datatype datatype) override;
+
+				/**
+				 * Performs an MPI_Gather operation.
+				 *
+				 * Exchanged data are stored in DataPack instances.
+				 *
+				 * @param data data to send to root
+				 * @param root rank of the root process
+				 * @return if `rank == root`, a vector containing gathered data,
+				 * else an empty vector.
+				 */
 				std::vector<DataPack>
 					gather(DataPack, MPI_Datatype, int root) override;
-
+				/**
+				 * MpiCommunicator destructor.
+				 *
+				 * Frees allocated MPI resources.
+				 */
 				~MpiCommunicator();
 
 		};
 
+		/**
+		 * An [nlohmann::json](https://github.com/nlohmann/json) based fpmas::api::communication::TypedMpi
+		 * implementation.
+		 *
+		 * Each `T` instance is serialized as a JSON string using the
+		 * nlohmann::json library, and sent as MPI_CHAR using the provided
+		 * api::communication::MpiCommunicator.
+		 *
+		 * This means that ANY TYPE that can be serialized / unserialized as
+		 * JSON thanks to the nlohmann::json library can be easily sent accross
+		 * processors through MPI using this class, preventing users from
+		 * struggling with low-level MPI issues and custom MPI_Datatype
+		 * definitions.
+		 *
+		 * Moreover, defining rules to serialize **any custom type** with the
+		 * nlohmann::json library is intuitive and straightforward (see
+		 * https://github.com/nlohmann/json#arbitrary-types-conversions).
+		 *
+		 * However, notice that systematically serializing data as JSON might
+		 * have an impact on performances, and is not even always necessary (to
+		 * send primary types supported by MPI, such as `float` or `int` for
+		 * example).
+		 *
+		 * The interest of using this templated code design is that for such
+		 * types, TypedMpi can be (and will be) specialized to circumvent the
+		 * default JSON serialization process and use low-level MPI calls
+		 * instead, potentially using custom MPI_Datatypes.
+		 */
 		template<typename T>
 			class TypedMpi : public api::communication::TypedMpi<T> {
 				private:
 					api::communication::MpiCommunicator& comm;
 				public:
+					/**
+					 * TypedMpi constructor.
+					 *
+					 * The specified MPI communicator will be used to perform
+					 * actual message sending between processors.
+					 *
+					 * To sum up, the role of this class is to serialize /
+					 * unserialize input / output data, and transmit it to /
+					 * from the underlying api::communication::MpiCommunicator
+					 * instance.
+					 *
+					 * @param comm reference to an MPI communicator instance
+					 */
 					TypedMpi(api::communication::MpiCommunicator& comm) : comm(comm) {}
 
 					std::unordered_map<int, std::vector<T>>
