@@ -6,8 +6,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 
-message("process ${CMAKE_COMMAND}")
-message("compiler ${CMAKE_CXX_COMPILER}")
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
   RESULT_VARIABLE result
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
