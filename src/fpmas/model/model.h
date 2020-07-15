@@ -79,13 +79,18 @@ namespace fpmas { namespace model {
 			static const api::model::TypeId TYPE_ID;
 
 		private:
+			api::model::GroupId group_id;
+			api::model::AgentGroup* _group;
 			api::model::AgentTask* _task;
 			api::model::AgentNode* _node;
 			api::model::AgentGraph* _graph;
-			api::model::GroupId group_id;
 		public:
 			api::model::GroupId groupId() const override {return group_id;}
 			void setGroupId(api::model::GroupId group_id) override {this->group_id = group_id;}
+
+			api::model::AgentGroup* group() override {return _group;}
+			const api::model::AgentGroup* group() const override {return _group;}
+			void setGroup(api::model::AgentGroup* group) override {this->_group = group;}
 
 			api::model::TypeId typeId() const override {return TYPE_ID;}
 			api::model::Agent* copy() const override {return new AgentType(*static_cast<const AgentType*>(this));}

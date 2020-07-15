@@ -156,10 +156,12 @@ class AgentGroupTest : public ::testing::Test {
 
 		AgentGroup agent_group {10, graph, fpmas::JID(18)};
 		MockAgent<>* agent1 = new MockAgent<>;
+		fpmas::api::model::AgentGroup* agent1_group;
 		fpmas::api::model::AgentTask* agent1_task;
 		AgentPtr agent1_ptr {agent1};
 
 		MockAgent<>* agent2 = new MockAgent<>;
+		fpmas::api::model::AgentGroup* agent2_group;
 		fpmas::api::model::AgentTask* agent2_task;
 		AgentPtr agent2_ptr {agent2};
 
@@ -184,6 +186,8 @@ class AgentGroupTest : public ::testing::Test {
 			EXPECT_CALL(*agent2, groupId)
 				.Times(AnyNumber())
 				.WillRepeatedly(Return(id));
+
+			// Task SetUp
 			ON_CALL(*agent1, setTask).WillByDefault(SaveArg<0>(&agent1_task));
 			EXPECT_CALL(*agent1, task())
 				.Times(AnyNumber())
@@ -192,6 +196,16 @@ class AgentGroupTest : public ::testing::Test {
 			EXPECT_CALL(*agent2, task())
 				.Times(AnyNumber())
 				.WillRepeatedly(ReturnPointee(&agent2_task));
+
+			// AgentGroup SetUp
+			ON_CALL(*agent1, setGroup).WillByDefault(SaveArg<0>(&agent1_group));
+			EXPECT_CALL(*agent1, group())
+				.Times(AnyNumber())
+				.WillRepeatedly(ReturnPointee(&agent1_group));
+			ON_CALL(*agent2, setGroup).WillByDefault(SaveArg<0>(&agent2_group));
+			EXPECT_CALL(*agent2, group())
+				.Times(AnyNumber())
+				.WillRepeatedly(ReturnPointee(&agent2_group));
 
 			EXPECT_CALL(graph, insert(A<Node*>()))
 				.Times(AnyNumber())
@@ -242,9 +256,8 @@ class MockBuildNode {
 };
 
 TEST_F(AgentGroupTest, add_agent) {
-	EXPECT_CALL(*agent1, setTask);
-	EXPECT_CALL(*agent2, setTask);
 
+	EXPECT_CALL(*agent1, setTask);
 	// Agent 1 set up
 	MockBuildNode build_node_1 {&graph, &node1};
 	EXPECT_CALL(graph, buildNode_rv)
@@ -253,6 +266,7 @@ TEST_F(AgentGroupTest, add_agent) {
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode(&node1));
 	EXPECT_CALL(*agent1, setGraph(&graph));
+	EXPECT_CALL(*agent1, setGroup(&agent_group));
 
 	std::array<MockAgent<>*, 2> fake_agents {new MockAgent<>, new MockAgent<>};
 	// The fake agent will be implicitely and automatically deleted from the
@@ -262,6 +276,7 @@ TEST_F(AgentGroupTest, add_agent) {
 	EXPECT_CALL(*fake_agents[0], setGroupId(10));
 	agent_group.add(fake_agents[0]);
 
+	EXPECT_CALL(*agent2, setTask);
 	// Agent 2 set up
 	MockBuildNode build_node_2 {&graph, &node2};
 	EXPECT_CALL(graph, buildNode_rv)
@@ -270,6 +285,7 @@ TEST_F(AgentGroupTest, add_agent) {
 			Return(&node1)));
 	EXPECT_CALL(*agent2, setNode(&node2));
 	EXPECT_CALL(*agent2, setGraph(&graph));
+	EXPECT_CALL(*agent2, setGroup(&agent_group));
 
 	EXPECT_CALL(*fake_agents[1], setGroupId(10));
 	agent_group.add(fake_agents[1]);
@@ -292,6 +308,7 @@ TEST_F(AgentGroupTest, agent_task) {
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode);
 	EXPECT_CALL(*agent1, setGraph);
+	EXPECT_CALL(*agent1, setGroup);
 
 	MockAgent<>* fake_agent = new MockAgent<>;
 	EXPECT_CALL(*fake_agent, setGroupId(10));
@@ -304,6 +321,7 @@ TEST_F(AgentGroupTest, agent_task) {
 			Return(&node2)));
 	EXPECT_CALL(*agent2, setNode);
 	EXPECT_CALL(*agent2, setGraph);
+	EXPECT_CALL(*agent2, setGroup);
 
 	fake_agent = new MockAgent<>;
 	EXPECT_CALL(*fake_agent, setGroupId(10));
@@ -329,6 +347,7 @@ TEST_F(AgentGroupTest, agent_task) {
 class AgentBaseTest : public ::testing::Test {
 	protected:
 		MockAgentBase<10> agent_base;
+		const MockAgentBase<10>& const_agent_base = agent_base;
 };
 
 TEST_F(AgentBaseTest, type_id) {
@@ -338,6 +357,13 @@ TEST_F(AgentBaseTest, type_id) {
 TEST_F(AgentBaseTest, group_id) {
 	agent_base.setGroupId(12);
 	ASSERT_EQ(agent_base.groupId(), 12);
+}
+
+TEST_F(AgentBaseTest, group) {
+	MockAgentGroup group;
+	agent_base.setGroup(&group);
+	ASSERT_EQ(agent_base.group(), &group);
+	ASSERT_EQ(const_agent_base.group(), &group);
 }
 
 TEST_F(AgentBaseTest, node) {

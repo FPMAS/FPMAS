@@ -30,10 +30,16 @@ namespace fpmas { namespace api {namespace model {
 			~AgentPtrWrapper();
 	};
 
+	class AgentGroup;
+
 	class Agent {
 		public:
 			virtual GroupId groupId() const = 0;
 			virtual void setGroupId(GroupId) = 0;
+			virtual AgentGroup* group() = 0;
+			virtual const AgentGroup* group() const = 0;
+			virtual void setGroup(AgentGroup* group) = 0;
+
 			virtual TypeId typeId() const = 0;
 			virtual Agent* copy() const = 0;
 

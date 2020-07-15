@@ -18,11 +18,18 @@ class MockAgent : public fpmas::api::model::Agent {
 
 		MOCK_METHOD(fpmas::api::model::GroupId, groupId, (), (const, override));
 		MOCK_METHOD(void, setGroupId, (fpmas::api::model::GroupId), (override));
+
+		MOCK_METHOD(fpmas::api::model::AgentGroup*, group, (), (override));
+		MOCK_METHOD(const fpmas::api::model::AgentGroup*, group, (), (const, override));
+		MOCK_METHOD(void, setGroup, (fpmas::api::model::AgentGroup*), (override));
+
 		MOCK_METHOD(fpmas::api::model::TypeId, typeId, (), (const, override));
 		MOCK_METHOD(fpmas::api::model::Agent*, copy, (), (const, override));
+
 		MOCK_METHOD(fpmas::api::model::AgentNode*, node, (), (override));
 		MOCK_METHOD(const fpmas::api::model::AgentNode*, node, (), (const, override));
 		MOCK_METHOD(void, setNode, (fpmas::api::model::AgentNode*), (override));
+
 		MOCK_METHOD(fpmas::api::model::AgentGraph*, graph, (), (override));
 		MOCK_METHOD(const fpmas::api::model::AgentGraph*, graph, (), (const, override));
 		MOCK_METHOD(void, setGraph, (fpmas::api::model::AgentGraph*), (override));
@@ -71,6 +78,16 @@ class MockModel : public fpmas::api::model::Model {
 
 		MOCK_METHOD((const std::unordered_map<fpmas::api::model::GroupId, fpmas::api::model::AgentGroup*>&),
 				groups, (), (const, override));
+};
+
+class MockAgentGroup : public fpmas::api::model::AgentGroup {
+	public:
+		MOCK_METHOD(fpmas::api::model::GroupId, groupId, (), (const, override));
+		MOCK_METHOD(void, add, (fpmas::api::model::Agent*), (override));
+		MOCK_METHOD(void, remove, (fpmas::api::model::Agent*), (override));
+		MOCK_METHOD(std::vector<fpmas::api::model::Agent*>, agents, (), (const, override));
+		MOCK_METHOD(fpmas::api::scheduler::Job&, job, (), (override));
+		MOCK_METHOD(const fpmas::api::scheduler::Job&, job, (), (const, override));
 };
 
 template<fpmas::api::model::TypeId _TYPE_ID = 0>

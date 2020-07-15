@@ -25,6 +25,7 @@ namespace fpmas { namespace model {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 				"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", ID_C_STR(node->getId()));
+		agent->setGroup(&model.getGroup(agent->groupId()));
 		agent->setNode(node);
 		agent->setGraph(&model.graph());
 		AgentTask* task = new AgentTask;
@@ -40,7 +41,8 @@ namespace fpmas { namespace model {
 		if(node->state() == graph::LocationState::LOCAL) {
 			// Unschedule agent task. If the node is DISTANT, task was already
 			// unscheduled.
-			model.getGroup(agent->groupId()).job().remove(*agent->task());
+			agent->group()->job().remove(*agent->task());
+			//model.getGroup(agent->groupId()).job().remove(*agent->task());
 		}
 		delete agent->task();
 	}
