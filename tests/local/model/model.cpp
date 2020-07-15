@@ -290,11 +290,26 @@ TEST_F(AgentGroupTest, add_agent) {
 	EXPECT_CALL(*fake_agents[1], setGroupId(10));
 	agent_group.add(fake_agents[1]);
 
-	ASSERT_THAT(agent_group.agents(), UnorderedElementsAreArray(fake_agents));
-
 	// Would normally be called from the Graph destructor
 	erase_agent_callback.call(&node1);
 	erase_agent_callback.call(&node2);
+}
+
+TEST_F(AgentGroupTest, insert_agent) {
+	agent_group.insert(&agent1_ptr);
+	agent_group.insert(&agent2_ptr);
+
+	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent1_ptr, &agent2_ptr));
+}
+
+TEST_F(AgentGroupTest, erase_agent) {
+	agent_group.insert(&agent1_ptr);
+	agent_group.insert(&agent2_ptr);
+
+	agent_group.erase(&agent1_ptr);
+	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent2_ptr));
+	agent_group.erase(&agent2_ptr);
+	ASSERT_THAT(agent_group.agents(), IsEmpty());
 }
 
 TEST_F(AgentGroupTest, agent_task) {

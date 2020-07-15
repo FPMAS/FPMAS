@@ -22,6 +22,8 @@ namespace fpmas { namespace api {namespace model {
 			AgentPtrWrapper(api::model::Agent* agent)
 				: VirtualPtrWrapper(agent) {}
 
+			// Note : copy is used only to export data to MPI buffers (e.g. in
+			// DataUpdatePack)
 			AgentPtrWrapper(AgentPtrWrapper&&);
 			AgentPtrWrapper(const AgentPtrWrapper&);
 			AgentPtrWrapper& operator=(AgentPtrWrapper&&);
@@ -74,7 +76,10 @@ namespace fpmas { namespace api {namespace model {
 			virtual void add(Agent*) = 0;
 			virtual void remove(Agent*) = 0;
 
-			virtual std::vector<Agent*> agents() const = 0;
+			virtual void insert(AgentPtr*) = 0;
+			virtual void erase(AgentPtr*) = 0;
+
+			virtual std::vector<AgentPtr*> agents() const = 0;
 			virtual api::scheduler::Job& job() = 0;
 			virtual const api::scheduler::Job& job() const = 0;
 

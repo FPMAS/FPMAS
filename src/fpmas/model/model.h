@@ -161,7 +161,9 @@ namespace fpmas { namespace model {
 			}
 	};
 
+	class EraseAgentCallback;
 	class AgentGroup : public api::model::AgentGroup {
+		friend EraseAgentCallback;
 		public:
 			typedef api::model::GroupId GroupId;
 			typedef typename api::model::Model::AgentGraph AgentGraph;
@@ -170,7 +172,8 @@ namespace fpmas { namespace model {
 			AgentGraph& agent_graph;
 			scheduler::Job _job;
 			SynchronizeGraphTask sync_graph_task;
-			std::vector<api::model::Agent*> _agents;
+			std::vector<api::model::AgentPtr*> _agents;
+
 
 		public:
 			AgentGroup(GroupId group_id, AgentGraph& agent_graph, JID job_id);
@@ -179,9 +182,13 @@ namespace fpmas { namespace model {
 
 			void add(api::model::Agent*) override;
 			void remove(api::model::Agent*) override;
+
+			void insert(api::model::AgentPtr*) override;
+			void erase(api::model::AgentPtr*) override;
+
 			scheduler::Job& job() override {return _job;}
 			const scheduler::Job& job() const override {return _job;}
-			std::vector<api::model::Agent*> agents() const override {return _agents;}
+			std::vector<api::model::AgentPtr*> agents() const override {return _agents;}
 
 			template<typename AgentType>
 				std::vector<AgentType*> agents() const {

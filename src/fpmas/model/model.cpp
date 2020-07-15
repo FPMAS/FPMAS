@@ -13,19 +13,27 @@ namespace fpmas { namespace model {
 	void AgentGroup::add(api::model::Agent* agent) {
 		agent->setGroupId(id);
 		agent_graph.buildNode(agent);
-		_agents.push_back(agent);
+		//_agents.push_back(agent);
 	}
 
 	void AgentGroup::remove(api::model::Agent* agent) {
 		agent_graph.removeNode(agent->node());
+	}
+
+	void AgentGroup::insert(api::model::AgentPtr* agent) {
+		_agents.push_back(agent);
+	}
+
+	void AgentGroup::erase(api::model::AgentPtr* agent) {
 		_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
 	}
 
 	void InsertAgentCallback::call(AgentNode *node) {
-		api::model::Agent* agent = node->data();
+		api::model::AgentPtr& agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 				"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", ID_C_STR(node->getId()));
 		agent->setGroup(&model.getGroup(agent->groupId()));
+		agent->group()->insert(&agent);
 		agent->setNode(node);
 		agent->setGraph(&model.graph());
 		AgentTask* task = new AgentTask;
@@ -34,7 +42,7 @@ namespace fpmas { namespace model {
 	}
 
 	void EraseAgentCallback::call(AgentNode *node) {
-		api::model::Agent* agent = node->data();
+		api::model::AgentPtr& agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 				"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", ID_C_STR(node->getId()));
 		// Deletes task and agent
@@ -44,6 +52,7 @@ namespace fpmas { namespace model {
 			agent->group()->job().remove(*agent->task());
 			//model.getGroup(agent->groupId()).job().remove(*agent->task());
 		}
+		agent->group()->erase(&agent);
 		delete agent->task();
 	}
 
