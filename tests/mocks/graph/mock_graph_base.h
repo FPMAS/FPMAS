@@ -27,18 +27,13 @@ class MockGraph :
 			MOCK_METHOD(void, addCallOnInsertEdge, (fpmas::api::utils::Callback<EdgeType*>*), (override));
 			MOCK_METHOD(void, addCallOnEraseEdge, (fpmas::api::utils::Callback<EdgeType*>*), (override));
 
-			MOCK_METHOD(const NodeIdType&, currentNodeId, (), (const, override));
 			MOCK_METHOD(NodeType*, getNode, (NodeIdType), (override));
 			MOCK_METHOD(const NodeType*, getNode, (NodeIdType), (const, override));
 			MOCK_METHOD(const NodeMap&, getNodes, (), (const, override));
 
-			MOCK_METHOD(const EdgeIdType&, currentEdgeId, (), (const, override));
 			MOCK_METHOD(EdgeType*, getEdge, (EdgeIdType), (override));
 			MOCK_METHOD(const EdgeType*, getEdge, (EdgeIdType), (const, override));
 			MOCK_METHOD(const EdgeMap&, getEdges, (), (const, override));
-
-			MOCK_METHOD(void, removeNode, (NodeType*), (override));
-			MOCK_METHOD(void, unlink, (EdgeType*), (override));
 
 			MOCK_METHOD(void, clear, (), (override));
 };

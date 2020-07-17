@@ -94,6 +94,9 @@ namespace fpmas { namespace graph {
 			void clearDistantNodes();
 			void clearNode(NodeType*);
 
+			protected:
+				DistributedId node_id;
+				DistributedId edge_id;
 
 			public:
 			DistributedGraph() :
@@ -117,6 +120,9 @@ namespace fpmas { namespace graph {
 			const mpi<NodePtrWrapper<T>>& getNodeMpi() const {return node_mpi;}
 			const mpi<EdgePtrWrapper<T>>& getEdgeMpi() const {return edge_mpi;}
 
+			const DistributedId& currentNodeId() const override {return node_id;}
+			const DistributedId& currentEdgeId() const override {return edge_id;}
+
 			NodeType* importNode(NodeType* node) override;
 			EdgeType* importEdge(EdgeType* edge) override;
 
@@ -126,7 +132,14 @@ namespace fpmas { namespace graph {
 				getLocationManager() const override {return location_manager;}
 
 			void removeNode(NodeType*) override {};
+			void removeNode(DistributedId id) override {
+				this->removeNode(this->getNode(id));
+			}
+
 			void unlink(EdgeType*) override;
+			void unlink(DistributedId id) override {
+				this->unlink(this->getEdge(id));
+			}
 
 			void balance(api::load_balancing::LoadBalancing<T>& load_balancing) override {
 				FPMAS_LOGI(

@@ -31,8 +31,20 @@ namespace fpmas {namespace api {namespace graph {
 			virtual DistributedNode<T>* importNode(DistributedNode<T>*) = 0;
 			virtual DistributedEdge<T>* importEdge(DistributedEdge<T>*) = 0;
 
+			/**
+			 * Reference to the current internal Node ID.
+			 */
+			virtual const DistributedId& currentNodeId() const = 0;
+			virtual const DistributedId& currentEdgeId() const = 0;
+
 			//virtual DistributedNode<T>* buildNode(const T&) = 0;
 			virtual DistributedNode<T>* buildNode(T&&) = 0;
+
+			virtual void removeNode(DistributedNode<T>*) = 0;
+			virtual void removeNode(DistributedId id) = 0;
+
+			virtual void unlink(DistributedEdge<T>*) = 0;
+			virtual void unlink(DistributedId id) = 0;
 
 			virtual void addCallOnSetLocal(NodeCallback*) = 0;
 			virtual void addCallOnSetDistant(NodeCallback*) = 0;

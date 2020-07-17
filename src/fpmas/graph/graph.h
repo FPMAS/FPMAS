@@ -39,10 +39,6 @@ namespace fpmas {
 				NodeMap nodes;
 				EdgeMap edges;
 
-			protected:
-				NodeIdType node_id;
-				EdgeIdType edge_id;
-
 			public:
 				void insert(NodeType*) override;
 				void insert(EdgeType*) override;
@@ -65,13 +61,11 @@ namespace fpmas {
 				}
 
 				// Node getters
-				const NodeIdType& currentNodeId() const override {return node_id;}
 				NodeType* getNode(NodeIdType) override;
 				const NodeType* getNode(NodeIdType) const override;
 				const NodeMap& getNodes() const override;
 
 				// Edge getters
-				const EdgeIdType& currentEdgeId() const override {return edge_id;}
 				EdgeType* getEdge(EdgeIdType) override;
 				const EdgeType* getEdge(EdgeIdType) const override;
 				const EdgeMap& getEdges() const override;

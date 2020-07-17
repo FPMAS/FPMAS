@@ -15,27 +15,29 @@ using ::testing::Pair;
 using ::testing::Return;
 using ::testing::ReturnRef;
 using ::testing::_;
-
-template<typename NodeType, typename EdgeType>
-class MockGraph : 
-	public virtual fpmas::graph::Graph<NodeType, EdgeType> {
-		typedef fpmas::graph::Graph<NodeType, EdgeType>
-		GraphBase;
-		using typename GraphBase::NodeIdType;
-		using typename GraphBase::NodeMap;
-
-		using typename GraphBase::EdgeIdType;
-		using typename GraphBase::EdgeMap;
-
-		public:
-			MOCK_METHOD(void, removeNode, (NodeType*), (override));
-			MOCK_METHOD(void, unlink, (EdgeType*), (override));
-
-};
+/*
+ *
+ *template<typename NodeType, typename EdgeType>
+ *class MockGraph : 
+ *    public virtual fpmas::graph::Graph<NodeType, EdgeType> {
+ *        typedef fpmas::graph::Graph<NodeType, EdgeType>
+ *        GraphBase;
+ *        using typename GraphBase::NodeIdType;
+ *        using typename GraphBase::NodeMap;
+ *
+ *        using typename GraphBase::EdgeIdType;
+ *        using typename GraphBase::EdgeMap;
+ *
+ *        public:
+ *            MOCK_METHOD(void, removeNode, (NodeType*), (override));
+ *            MOCK_METHOD(void, unlink, (EdgeType*), (override));
+ *
+ *};
+ */
 
 class GraphBaseTest : public ::testing::Test {
 	protected:
-		MockGraph<MockNode<BasicId>, MockEdge<BasicId>> graph;
+		fpmas::graph::Graph<MockNode<BasicId>, MockEdge<BasicId>> graph;
 		MockCallback<MockNode<BasicId>*>* insert_callback = new MockCallback<MockNode<BasicId>*>;
 		MockCallback<MockNode<BasicId>*>* erase_callback = new MockCallback<MockNode<BasicId>*>;
 };
@@ -91,7 +93,7 @@ TEST_F(GraphBaseTest, erase_node) {
 
 class GraphBaseEraseEdgeTest : public ::testing::Test {
 	protected:
-		MockGraph<MockNode<BasicId>, MockEdge<BasicId>> graph;
+		fpmas::graph::Graph<MockNode<BasicId>, MockEdge<BasicId>> graph;
 		BasicId id;
 		MockNode<BasicId>* src = new MockNode<BasicId>(++id);
 		MockNode<BasicId>* tgt = new MockNode<BasicId>(++id);

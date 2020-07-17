@@ -38,6 +38,14 @@ class MockDistributedGraph :
 		MOCK_METHOD(void, addCallOnSetLocal, (NodeCallback*), (override));
 		MOCK_METHOD(void, addCallOnSetDistant, (NodeCallback*), (override));
 
+		MOCK_METHOD(const DistributedId&, currentNodeId, (), (const, override));
+		MOCK_METHOD(const DistributedId&, currentEdgeId, (), (const, override));
+
+		MOCK_METHOD(void, removeNode, (NodeType*), (override));
+		MOCK_METHOD(void, removeNode, (DistributedId), (override));
+		MOCK_METHOD(void, unlink, (EdgeType*), (override));
+		MOCK_METHOD(void, unlink, (DistributedId), (override));
+
 		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
 		MOCK_METHOD(EdgeType*, importEdge, (EdgeType*), (override));
 

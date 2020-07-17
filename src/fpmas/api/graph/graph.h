@@ -145,29 +145,14 @@ namespace fpmas { namespace api {
 				virtual void addCallOnEraseEdge(api::utils::Callback<EdgeType*>* callback) = 0;
 
 				// Node getters
-				/**
-				 * Reference to the current internal Node ID.
-				 */
-				virtual const NodeIdType& currentNodeId() const = 0;
 				virtual NodeType* getNode(NodeIdType) = 0;
 				virtual const NodeType* getNode(NodeIdType) const = 0;
 				virtual const NodeMap& getNodes() const = 0;
 
 				// Edge getters
-				virtual const EdgeIdType& currentEdgeId() const = 0;
 				virtual EdgeType* getEdge(EdgeIdType) = 0;
 				virtual const EdgeType* getEdge(EdgeIdType) const = 0;
 				virtual const EdgeMap& getEdges() const = 0;
-
-				virtual void removeNode(NodeType*) = 0;
-				void removeNode(const NodeIdType& id) {
-					this->removeNode(this->getNode(id));
-				}
-
-				virtual void unlink(EdgeType*) = 0;
-				void unlink(const EdgeIdType& id) {
-					this->unlink(this->getEdge(id));
-				}
 
 				virtual void clear() = 0;
 
