@@ -145,18 +145,67 @@ namespace fpmas { namespace api {
 				virtual void addCallOnEraseEdge(api::utils::Callback<EdgeType*>* callback) = 0;
 
 				// Node getters
-				virtual NodeType* getNode(NodeIdType) = 0;
-				virtual const NodeType* getNode(NodeIdType) const = 0;
+				/**
+				 * Gets the pointer to the node associated to the given id in
+				 * the Graph.
+				 *
+				 * The returned pointer must correspond to the entry `{id,
+				 * node}` contained in the NodeMap returned by getNodes().
+				 *
+				 * If id does not correspond to a node contained in the graph,
+				 * behavior is unspecified.
+				 *
+				 * @param id node id
+				 * @return corresponding node in the graph
+				 */
+				virtual NodeType* getNode(NodeIdType id) = 0;
+				/**
+				 * \copydoc getNode(NodeIdType)
+				 */
+				virtual const NodeType* getNode(NodeIdType id) const = 0;
+				/**
+				 * NodeMap representing the nodes contained in this graph.
+				 *
+				 * @return graph's nodes
+				 */
 				virtual const NodeMap& getNodes() const = 0;
 
 				// Edge getters
+				/**
+				 * Gets the pointer to the edge associated to the given id in
+				 * the Graph.
+				 *
+				 * The returned pointer must correspond to the entry `{id,
+				 * edge}` contained in the EdgeMap returned by getEdges().
+				 *
+				 * If id does not correspond to an edge contained in the graph,
+				 * behavior is unspecified.
+				 *
+				 * @param id edge id
+				 * @return corresponding edge in the graph
+				 */
 				virtual EdgeType* getEdge(EdgeIdType) = 0;
+				/**
+				 * /copydoc getEdge(EdgeIdType)
+				 */
 				virtual const EdgeType* getEdge(EdgeIdType) const = 0;
+				/**
+				 * EdgeMap representing the edges contained in this graph.
+				 *
+				 * @return graph's edges
+				 */
 				virtual const EdgeMap& getEdges() const = 0;
 
+				/**
+				 * Erases all nodes and edges contained in the graph.
+				 *
+				 * All erase node and erase edge callbacks must be called
+				 * properly for each item.
+				 */
 				virtual void clear() = 0;
 
 				virtual ~Graph() {}
 			};
-	}}}
+	}}
+}
 #endif

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['currentnodeid_283',['currentNodeId',['../classfpmas_1_1api_1_1graph_1_1Graph.html#a49bcd316bd2a0c6679c784816dec05e8',1,'fpmas::api::graph::Graph::currentNodeId()'],['../classfpmas_1_1graph_1_1Graph.html#a1573596f78398662158f339049646af2',1,'fpmas::graph::Graph::currentNodeId()']]]
+  ['clear_288',['clear',['../classfpmas_1_1api_1_1graph_1_1Graph.html#a1af6fa1d78d3be3139bab03de3c14761',1,'fpmas::api::graph::Graph::clear()'],['../classfpmas_1_1graph_1_1Graph.html#aafc4a1d95717c75826573e956a43f9e6',1,'fpmas::graph::Graph::clear()']]],
+  ['currentnodeid_289',['currentNodeId',['../classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#af04f1c54519e5110ca749292264b39f7',1,'fpmas::api::graph::DistributedGraph::currentNodeId()'],['../classfpmas_1_1graph_1_1DistributedGraph.html#abfb457cdb2f998244b9e947d3da927d1',1,'fpmas::graph::DistributedGraph::currentNodeId()']]]
 ];

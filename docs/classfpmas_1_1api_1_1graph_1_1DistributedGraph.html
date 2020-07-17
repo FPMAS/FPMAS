@@ -132,9 +132,26 @@ virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">
 <tr class="memitem:a03ee24bc1ee5ffa4979cc50e706f64d4"><td class="memItemLeft" align="right" valign="top"><a id="a03ee24bc1ee5ffa4979cc50e706f64d4"></a>
 virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>importEdge</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *)=0</td></tr>
 <tr class="separator:a03ee24bc1ee5ffa4979cc50e706f64d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af04f1c54519e5110ca749292264b39f7"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#af04f1c54519e5110ca749292264b39f7">currentNodeId</a> () const =0</td></tr>
+<tr class="separator:af04f1c54519e5110ca749292264b39f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a51b440963789646d5706651ddea15bee"><td class="memItemLeft" align="right" valign="top"><a id="a51b440963789646d5706651ddea15bee"></a>
+virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>currentEdgeId</b> () const =0</td></tr>
+<tr class="separator:a51b440963789646d5706651ddea15bee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c9c8d06f423ba2a1f25377bf064496a"><td class="memItemLeft" align="right" valign="top"><a id="a0c9c8d06f423ba2a1f25377bf064496a"></a>
 virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>buildNode</b> (T &amp;&amp;)=0</td></tr>
 <tr class="separator:a0c9c8d06f423ba2a1f25377bf064496a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fdff7acf0a74c6e8f7b2e0b23a02895"><td class="memItemLeft" align="right" valign="top"><a id="a8fdff7acf0a74c6e8f7b2e0b23a02895"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *)=0</td></tr>
+<tr class="separator:a8fdff7acf0a74c6e8f7b2e0b23a02895"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab02cae2fa16324954d02fcc497d1f400"><td class="memItemLeft" align="right" valign="top"><a id="ab02cae2fa16324954d02fcc497d1f400"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id)=0</td></tr>
+<tr class="separator:ab02cae2fa16324954d02fcc497d1f400"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a80c56d76356a50149f8938a9c08bb4fa"><td class="memItemLeft" align="right" valign="top"><a id="a80c56d76356a50149f8938a9c08bb4fa"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *)=0</td></tr>
+<tr class="separator:a80c56d76356a50149f8938a9c08bb4fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac480db15a103f51edfadb75cbc63f91a"><td class="memItemLeft" align="right" valign="top"><a id="ac480db15a103f51edfadb75cbc63f91a"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id)=0</td></tr>
+<tr class="separator:ac480db15a103f51edfadb75cbc63f91a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affbb341d7374df3c8eb616c668174db8"><td class="memItemLeft" align="right" valign="top"><a id="affbb341d7374df3c8eb616c668174db8"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnSetLocal</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">NodeCallback</a> *)=0</td></tr>
 <tr class="separator:affbb341d7374df3c8eb616c668174db8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -173,45 +190,52 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>synchronize</
 <tr class="separator:ad67b1bb8ba0d83adb66f78ff8ee8d2d0 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afac094429ea44cfdf781f1d1fdedf629 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afac094429ea44cfdf781f1d1fdedf629">addCallOnEraseEdge</a> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; * &gt; *callback)=0</td></tr>
 <tr class="separator:afac094429ea44cfdf781f1d1fdedf629 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a49bcd316bd2a0c6679c784816dec05e8 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a49bcd316bd2a0c6679c784816dec05e8">currentNodeId</a> () const=0</td></tr>
-<tr class="separator:a49bcd316bd2a0c6679c784816dec05e8 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a57d43f9cdf73c29de0b79ff051892149 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a57d43f9cdf73c29de0b79ff051892149"></a>
-virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>)=0</td></tr>
-<tr class="separator:a57d43f9cdf73c29de0b79ff051892149 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b0a533bb3cf58fa788f0d70650dcb1a inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a5b0a533bb3cf58fa788f0d70650dcb1a"></a>
-virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>) const=0</td></tr>
-<tr class="separator:a5b0a533bb3cf58fa788f0d70650dcb1a inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ada2efbce22b3deab22818abcd6fd1d52 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="ada2efbce22b3deab22818abcd6fd1d52"></a>
-virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac43fded831674b513ef7b1535d9d1814">NodeMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getNodes</b> () const=0</td></tr>
+<tr class="memitem:a61501e99ee00b6b7444ad50cba4fb656 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a61501e99ee00b6b7444ad50cba4fb656">getNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a> id)=0</td></tr>
+<tr class="separator:a61501e99ee00b6b7444ad50cba4fb656 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa80206b87b398bcded81a2f8ca13affd inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#aa80206b87b398bcded81a2f8ca13affd">getNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a> id) const=0</td></tr>
+<tr class="separator:aa80206b87b398bcded81a2f8ca13affd inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada2efbce22b3deab22818abcd6fd1d52 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac43fded831674b513ef7b1535d9d1814">NodeMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">getNodes</a> () const=0</td></tr>
 <tr class="separator:ada2efbce22b3deab22818abcd6fd1d52 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a869544668e10eea6bc15dd5f6145d15a inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a869544668e10eea6bc15dd5f6145d15a"></a>
-virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>currentEdgeId</b> () const=0</td></tr>
-<tr class="separator:a869544668e10eea6bc15dd5f6145d15a inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5a804d6d60078bcf492a13074a48e831 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a5a804d6d60078bcf492a13074a48e831"></a>
-virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getEdge</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>)=0</td></tr>
+<tr class="memitem:a5a804d6d60078bcf492a13074a48e831 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a5a804d6d60078bcf492a13074a48e831">getEdge</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>)=0</td></tr>
 <tr class="separator:a5a804d6d60078bcf492a13074a48e831 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad44f2a827f2a4eda7c68fc0bed8aa510 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="ad44f2a827f2a4eda7c68fc0bed8aa510"></a>
-virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>getEdge</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>) const=0</td></tr>
+<tr class="memitem:ad44f2a827f2a4eda7c68fc0bed8aa510 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ad44f2a827f2a4eda7c68fc0bed8aa510">getEdge</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>) const=0</td></tr>
 <tr class="separator:ad44f2a827f2a4eda7c68fc0bed8aa510 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac2f167255bd606a932823a0051953ef7 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="ac2f167255bd606a932823a0051953ef7"></a>
-virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a254989187dd47a7a5e2afd9647d13cf2">EdgeMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getEdges</b> () const=0</td></tr>
+<tr class="memitem:ac2f167255bd606a932823a0051953ef7 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a254989187dd47a7a5e2afd9647d13cf2">EdgeMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac2f167255bd606a932823a0051953ef7">getEdges</a> () const=0</td></tr>
 <tr class="separator:ac2f167255bd606a932823a0051953ef7 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a466501d70836c536aca374b184c55d3c inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a466501d70836c536aca374b184c55d3c"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *)=0</td></tr>
-<tr class="separator:a466501d70836c536aca374b184c55d3c inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44a6519fc08667bcfcabab73e8c9f998 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a44a6519fc08667bcfcabab73e8c9f998"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a> &amp;id)</td></tr>
-<tr class="separator:a44a6519fc08667bcfcabab73e8c9f998 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a270e5f471cf058547b1726302c5c1854 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a270e5f471cf058547b1726302c5c1854"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *)=0</td></tr>
-<tr class="separator:a270e5f471cf058547b1726302c5c1854 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a2eaad7a97475cb635658d2b296f8ea inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a0a2eaad7a97475cb635658d2b296f8ea"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a> &amp;id)</td></tr>
-<tr class="separator:a0a2eaad7a97475cb635658d2b296f8ea inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1af6fa1d78d3be3139bab03de3c14761 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a1af6fa1d78d3be3139bab03de3c14761"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()=0</td></tr>
+<tr class="memitem:a1af6fa1d78d3be3139bab03de3c14761 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a1af6fa1d78d3be3139bab03de3c14761">clear</a> ()=0</td></tr>
 <tr class="separator:a1af6fa1d78d3be3139bab03de3c14761 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="af04f1c54519e5110ca749292264b39f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af04f1c54519e5110ca749292264b39f7">&#9670;&nbsp;</a></span>currentNodeId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&amp; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::currentNodeId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reference to the current internal <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html">Node</a> ID. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#abfb457cdb2f998244b9e947d3da927d1">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#abfb457cdb2f998244b9e947d3da927d1">fpmas::graph::DistributedGraph&lt; SyncMode &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/graph/<a class="el" href="api_2graph_2distributed__graph_8h_source.html">distributed_graph.h</a></li>
 </ul>

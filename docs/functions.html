@@ -95,12 +95,16 @@ $(function() {
 
 
 <h3><a id="index_c"></a>- c -</h3><ul>
+<li>clear()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a1af6fa1d78d3be3139bab03de3c14761">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#aafc4a1d95717c75826573e956a43f9e6">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+</li>
 <li>count
 : <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a2142f9784dfe9fcb5f6e86f7280852c4">fpmas::api::communication::DataPack</a>
 </li>
 <li>currentNodeId()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a49bcd316bd2a0c6679c784816dec05e8">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
-, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a1573596f78398662158f339049646af2">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#af04f1c54519e5110ca749292264b39f7">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#abfb457cdb2f998244b9e947d3da927d1">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
 </li>
 </ul>
 
@@ -149,12 +153,20 @@ $(function() {
 , <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a38e5db3e4ec61104c1c206f8b2ee0b13">fpmas::communication::MpiCommunicator</a>
 , <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a5c0d59ea1887d84340ddc2a057057487">fpmas::communication::TypedMpi&lt; T &gt;</a>
 </li>
+<li>getEdge()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a5a804d6d60078bcf492a13074a48e831">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a2fb6a2884739946bd0900e335e1a184c">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+</li>
+<li>getEdges()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac2f167255bd606a932823a0051953ef7">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a34b8a27880b87e0be00a6e23116d8a44">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+</li>
 <li>getId()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a01b45b55bdc925c460eb4533eca33deb">fpmas::api::graph::Edge&lt; _IdType, _NodeType &gt;</a>
 , <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#aa78c8556e95a84b8b324d0722cf4deb7">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 </li>
 <li>getIncomingEdges()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#a8816bc5dc1e545e2d589fd5d2c0f97a7">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#abfeb653bff18ab0f69b3fd11a18f9138">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Node.html#adcef5ab0f176d10cb12273b5de001448">fpmas::graph::Node&lt; IdType, _EdgeType &gt;</a>
 </li>
 <li>getLayer()
@@ -166,8 +178,16 @@ $(function() {
 <li>getMpiGroup()
 : <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#aee139cff2e4cb6e3a031e0ff3e2c30ca">fpmas::communication::MpiCommunicator</a>
 </li>
+<li>getNode()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a61501e99ee00b6b7444ad50cba4fb656">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+</li>
+<li>getNodes()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a428775fd3f71ce9c24d19752e5a385e1">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+</li>
 <li>getOutgoingEdges()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#a9686c2e06df3f4a8866bb521fb238ece">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#aafbeca54045bda9a0b5e066d7f887544">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Node.html#a5263a61aef252bc68970f3dad5722e5d">fpmas::graph::Node&lt; IdType, _EdgeType &gt;</a>
 </li>
 <li>getRank()
