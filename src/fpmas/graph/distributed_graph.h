@@ -214,15 +214,15 @@ namespace fpmas { namespace graph {
 	void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(EdgeType* edge) {
 		auto src = edge->getSourceNode();
 		auto tgt = edge->getTargetNode();
-		src->mutex().lockShared();
-		tgt->mutex().lockShared();
+		src->mutex()->lockShared();
+		tgt->mutex()->lockShared();
 
 		sync_mode_runtime.getSyncLinker().unlink(static_cast<DistEdgeType*>(edge));
 
 		this->erase(edge);
 
-		src->mutex().unlockShared();
-		tgt->mutex().unlockShared();
+		src->mutex()->unlockShared();
+		tgt->mutex()->unlockShared();
 	}
 
 	template<DIST_GRAPH_PARAMS>
@@ -396,8 +396,8 @@ namespace fpmas { namespace graph {
 		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::EdgeType*
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) {
 				// Locks source and target
-				src->mutex().lockShared();
-				tgt->mutex().lockShared();
+				src->mutex()->lockShared();
+				tgt->mutex()->lockShared();
 
 				// Builds the new edge
 				auto edge = new DistEdgeType(
@@ -419,8 +419,8 @@ namespace fpmas { namespace graph {
 				this->insert(edge);
 
 				// Unlocks source and target
-				src->mutex().unlockShared();
-				tgt->mutex().unlockShared();
+				src->mutex()->unlockShared();
+				tgt->mutex()->unlockShared();
 
 				return edge;
 			}

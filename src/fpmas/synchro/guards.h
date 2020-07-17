@@ -11,7 +11,7 @@ namespace fpmas {
 				api::synchro::Mutex<T>& mutex;
 
 				Guard(api::graph::DistributedNode<T>* node)
-					: mutex(node->mutex()) {
+					: mutex(*node->mutex()) {
 					}
 
 				public:

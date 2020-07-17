@@ -138,7 +138,7 @@ TEST_F(DistributedGraphTest, build_node) {
 
 	ASSERT_EQ(node->state(), LocationState::LOCAL);
 
-	ASSERT_EQ(&node->mutex(), built_mutex);
+	ASSERT_EQ(node->mutex(), built_mutex);
 	ASSERT_EQ(node->data(), 2);
 }
 
@@ -162,10 +162,10 @@ class DistributedGraphLinkTest : public DistributedGraphTest {
 			graph.insert(srcMock);
 			graph.insert(tgtMock);
 
-			EXPECT_CALL(*srcMock, mutex()).WillRepeatedly(ReturnRef(srcMutex));
-			EXPECT_CALL(Const(*srcMock), mutex()).WillRepeatedly(ReturnRef(srcMutex));
-			EXPECT_CALL(*tgtMock, mutex()).WillRepeatedly(ReturnRef(tgtMutex));
-			EXPECT_CALL(Const(*tgtMock), mutex()).WillRepeatedly(ReturnRef(tgtMutex));
+			EXPECT_CALL(*srcMock, mutex()).WillRepeatedly(Return(&srcMutex));
+			EXPECT_CALL(Const(*srcMock), mutex()).WillRepeatedly(Return(&srcMutex));
+			EXPECT_CALL(*tgtMock, mutex()).WillRepeatedly(Return(&tgtMutex));
+			EXPECT_CALL(Const(*tgtMock), mutex()).WillRepeatedly(Return(&tgtMutex));
 
 			EXPECT_CALL(srcMutex, lockShared);
 			EXPECT_CALL(srcMutex, unlockShared);
@@ -283,8 +283,8 @@ class DistributedGraphUnlinkTest : public DistributedGraphTest {
 		void SetUp() override {
 			DistributedGraphTest::SetUp();
 
-			EXPECT_CALL(*srcMock, mutex()).WillRepeatedly(ReturnRef(srcMutex));
-			EXPECT_CALL(*tgtMock, mutex()).WillRepeatedly(ReturnRef(tgtMutex));
+			EXPECT_CALL(*srcMock, mutex()).WillRepeatedly(Return(&srcMutex));
+			EXPECT_CALL(*tgtMock, mutex()).WillRepeatedly(Return(&tgtMutex));
 
 			EXPECT_CALL(srcMutex, lockShared).Times(2);
 			EXPECT_CALL(srcMutex, unlockShared).Times(2);
@@ -977,11 +977,11 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 			EXPECT_CALL(mock_sync_linker, link).Times(2);
 
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[0])), mutex())
-				.WillRepeatedly(ReturnRef(mock_mutex));
+				.WillRepeatedly(Return(&mock_mutex));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[2])), mutex())
-				.WillRepeatedly(ReturnRef(mock_mutex));
+				.WillRepeatedly(Return(&mock_mutex));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[3])), mutex())
-				.WillRepeatedly(ReturnRef(mock_mutex));
+				.WillRepeatedly(Return(&mock_mutex));
 
 			edge1 = graph.link(graph.getNode(node_ids[0]), graph.getNode(node_ids[2]), 0);
 			node2_in->push_back(edge1);

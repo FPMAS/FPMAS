@@ -97,15 +97,17 @@ $(function() {
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
 <div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab2bc02a3e06cfd758161013039a84cee">   76</a></span>&#160;            <span class="keyword">virtual</span> T&amp; <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab2bc02a3e06cfd758161013039a84cee">data</a>() = 0;</div>
 <div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ad9d35e5aef703945a2a789a0c2349c3e">   80</a></span>&#160;            <span class="keyword">virtual</span> <span class="keyword">const</span> T&amp; <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ad9d35e5aef703945a2a789a0c2349c3e">data</a>() <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> setMutex(<a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex&lt;T&gt;</a>*) = 0;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex&lt;T&gt;</a>&amp; mutex() = 0;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex&lt;T&gt;</a>&amp; mutex() <span class="keyword">const</span> = 0;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>() {}</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    };</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}}}</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> setMutex(<a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex&lt;T&gt;</a>*) = 0;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex&lt;T&gt;</a>* mutex() = 0;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="keyword">virtual</span> <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex&lt;T&gt;</a>* mutex() <span class="keyword">const</span> = 0;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>() {}</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    };</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}}}</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html_ad9251c911b800a01d9f859c5cdb6021e"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ad9251c911b800a01d9f859c5cdb6021e">fpmas::api::graph::DistributedNode::setState</a></div><div class="ttdeci">virtual void setState(LocationState state)=0</div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a3436e2c1520417414ff6059c45d9e02f"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">fpmas::api::graph::LocationState</a></div><div class="ttdeci">LocationState</div><div class="ttdef"><b>Definition:</b> location_state.h:11</div></div>

@@ -20,7 +20,7 @@ void to_json(nlohmann::json& j, const MockDistributedNode<T>& mock);
 
 template<typename> class MockDistributedEdge;
 
-ACTION_P(ReturnPointeePointee, ptr) {return **ptr;}
+//ACTION_P(ReturnPointeePointee, ptr) {return **ptr;}
 
 template<typename T>
 class MockDistributedNode :
@@ -116,8 +116,8 @@ class MockDistributedNode :
 		MOCK_METHOD(T&, data, (), (override));
 		MOCK_METHOD(const T&, data, (), (const, override));
 		MOCK_METHOD(void, setMutex, (Mutex*), (override));
-		MOCK_METHOD(Mutex&, mutex, (), (override));
-		MOCK_METHOD(const Mutex&, mutex, (), (const, override));
+		MOCK_METHOD(Mutex*, mutex, (), (override));
+		MOCK_METHOD(const Mutex*, mutex, (), (const, override));
 
 		bool operator==(const MockDistributedNode& other) const {
 			return this->id == other.id;
@@ -145,10 +145,10 @@ class MockDistributedNode :
 			EXPECT_CALL(*this, setMutex).Times(AnyNumber());
 
 			ON_CALL(*this, mutex())
-				.WillByDefault(ReturnPointeePointee(_mutex));
+				.WillByDefault(ReturnPointee(_mutex));
 			EXPECT_CALL(*this, mutex()).Times(AnyNumber());
 			ON_CALL(Const(*this), mutex())
-				.WillByDefault(ReturnPointeePointee(_mutex));
+				.WillByDefault(ReturnPointee(_mutex));
 			EXPECT_CALL(Const(*this), mutex()).Times(AnyNumber());
 		}
 

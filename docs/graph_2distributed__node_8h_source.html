@@ -126,8 +126,8 @@ $(function() {
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;            T&amp; data()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _data;}</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            <span class="keyword">const</span> T&amp; data()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _data;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            <span class="keywordtype">void</span> setMutex(Mutex* mutex)<span class="keyword"> override </span>{_mutex=mutex;}</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            Mutex&amp; mutex()<span class="keyword"> override </span>{<span class="keywordflow">return</span> *_mutex;}</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keyword">const</span> Mutex&amp; mutex()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> *_mutex;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            Mutex* mutex()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _mutex;}</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;            <span class="keyword">const</span> Mutex* mutex()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _mutex;}</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            ~DistributedNode() {</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                <span class="keywordflow">if</span>(_mutex!=<span class="keyword">nullptr</span>)</div>

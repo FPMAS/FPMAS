@@ -55,8 +55,8 @@ namespace fpmas { namespace graph {
 			T& data() override {return _data;}
 			const T& data() const override {return _data;}
 			void setMutex(Mutex* mutex) override {_mutex=mutex;}
-			Mutex& mutex() override {return *_mutex;}
-			const Mutex& mutex() const override {return *_mutex;}
+			Mutex* mutex() override {return _mutex;}
+			const Mutex* mutex() const override {return _mutex;}
 
 			~DistributedNode() {
 				if(_mutex!=nullptr)

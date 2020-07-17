@@ -525,7 +525,7 @@ class AgentGuardTest : public ::testing::Test {
 			agent->setNode(&node);
 			agent->setTask(&task);
 			EXPECT_CALL(node, mutex()).Times(AnyNumber())
-				.WillRepeatedly(ReturnRef(mutex));
+				.WillRepeatedly(Return(&mutex));
 		}
 };
 
@@ -589,13 +589,13 @@ class AgentGuardLoopTest : public AgentGuardTest {
 			agent_1->setNode(&node_1);
 			agent_1->setTask(&task); // Don't care about task, all agents use the same
 			EXPECT_CALL(node_1, mutex()).Times(AnyNumber())
-				.WillRepeatedly(ReturnRef(mutex_1));
+				.WillRepeatedly(Return(&mutex_1));
 
 			AgentGuardTest::SetUp();
 			agent_2->setNode(&node_2);
 			agent_2->setTask(&task); // Don't care about task, all agents use the same
 			EXPECT_CALL(node_2, mutex()).Times(AnyNumber())
-				.WillRepeatedly(ReturnRef(mutex_2));
+				.WillRepeatedly(Return(&mutex_2));
 
 			EXPECT_CALL(node, outNeighbors()).Times(AnyNumber())
 				.WillRepeatedly(Return(
