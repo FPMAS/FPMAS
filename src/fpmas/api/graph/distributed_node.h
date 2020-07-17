@@ -61,7 +61,7 @@ namespace fpmas { namespace api { namespace graph {
 			/**
 			 * Updates the state of the node.
 			 *
-			 * Only used for internal / serialization.
+			 * Only intended for internal / serialization usage.
 			 *
 			 * @param state new state
 			 */
