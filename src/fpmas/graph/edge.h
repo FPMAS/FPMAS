@@ -10,24 +10,24 @@ namespace fpmas { namespace graph {
 			public:
 				typedef api::graph::Edge<IdType, _NodeType> EdgeBase;
 				using typename EdgeBase::NodeType;
-				using typename EdgeBase::LayerIdType;
+				typedef api::graph::LayerId LayerId;
 
 			private:
 				IdType id;
-				LayerIdType layer;
+				LayerId layer;
 				float weight;
 
 				NodeType* source;
 				NodeType* target;
 
 			public:
-				Edge(IdType id, LayerIdType layer) :
+				Edge(IdType id, LayerId layer) :
 					Edge(id, layer, 1.f) {};
-				Edge(IdType id, LayerIdType layer, float weight)
+				Edge(IdType id, LayerId layer, float weight)
 					: id(id), layer(layer), weight(weight) {};
 
 				IdType getId() const override {return id;};
-				LayerIdType getLayer() const override {return layer;};
+				LayerId getLayer() const override {return layer;};
 
 				float getWeight() const override {return weight;};
 				void setWeight(float weight) override {this->weight=weight;};

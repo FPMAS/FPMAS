@@ -13,13 +13,13 @@ namespace fpmas { namespace graph {
 			public:
 				typedef api::graph::Node<IdType, _EdgeType> NodeType;
 				using typename NodeType::EdgeType;
-				using typename NodeType::LayerIdType;
+				typedef api::graph::LayerId LayerId;
 
 			private:
 				IdType id;
 				float weight = 1.;
-				std::unordered_map<LayerIdType, std::vector<EdgeType*>> incoming_edges;
-				std::unordered_map<LayerIdType, std::vector<EdgeType*>> outgoing_edges;
+				std::unordered_map<LayerId, std::vector<EdgeType*>> incoming_edges;
+				std::unordered_map<LayerId, std::vector<EdgeType*>> outgoing_edges;
 
 			public:
 				Node(const IdType& id)
@@ -38,14 +38,14 @@ namespace fpmas { namespace graph {
 				void setWeight(float weight) override {this->weight = weight;};
 
 				const std::vector<EdgeType*> getIncomingEdges() const override;
-				const std::vector<EdgeType*> getIncomingEdges(LayerIdType layer) const override;
+				const std::vector<EdgeType*> getIncomingEdges(LayerId layer) const override;
 				const std::vector<typename EdgeType::NodeType*> inNeighbors() const override;
-				const std::vector<typename EdgeType::NodeType*> inNeighbors(LayerIdType) const override;
+				const std::vector<typename EdgeType::NodeType*> inNeighbors(LayerId) const override;
 
 				const std::vector<EdgeType*> getOutgoingEdges() const override;
-				const std::vector<EdgeType*> getOutgoingEdges(LayerIdType layer) const override;
+				const std::vector<EdgeType*> getOutgoingEdges(LayerId layer) const override;
 				const std::vector<typename EdgeType::NodeType*> outNeighbors() const override;
-				const std::vector<typename EdgeType::NodeType*> outNeighbors(LayerIdType) const override;
+				const std::vector<typename EdgeType::NodeType*> outNeighbors(LayerId) const override;
 
 				void linkIn(EdgeType* edge) override;
 				void linkOut(EdgeType* edge) override;
@@ -70,7 +70,7 @@ namespace fpmas { namespace graph {
 
 	template<typename IdType, typename EdgeType>
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
-			Node<IdType, EdgeType>::getIncomingEdges(LayerIdType id) const {
+			Node<IdType, EdgeType>::getIncomingEdges(LayerId id) const {
 				try {
 					return incoming_edges.at(id);
 				} catch(std::out_of_range&) {
@@ -92,7 +92,7 @@ namespace fpmas { namespace graph {
 
 	template<typename IdType, typename EdgeType>
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
-			Node<IdType, EdgeType>::getOutgoingEdges(LayerIdType id) const {
+			Node<IdType, EdgeType>::getOutgoingEdges(LayerId id) const {
 				try {
 					return outgoing_edges.at(id);
 				} catch(std::out_of_range&) {
@@ -112,7 +112,7 @@ namespace fpmas { namespace graph {
 
 	template<typename IdType, typename EdgeType>
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
-		Node<IdType, EdgeType>::inNeighbors(LayerIdType layer) const {
+		Node<IdType, EdgeType>::inNeighbors(LayerId layer) const {
 			std::vector<typename EdgeType::NodeType*> neighbors;
 			for(auto edge : this->getIncomingEdges(layer)) {
 				neighbors.push_back(edge->getSourceNode());
@@ -132,7 +132,7 @@ namespace fpmas { namespace graph {
 
 	template<typename IdType, typename EdgeType>
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
-		Node<IdType, EdgeType>::outNeighbors(LayerIdType layer) const {
+		Node<IdType, EdgeType>::outNeighbors(LayerId layer) const {
 			std::vector<typename EdgeType::NodeType*> neighbors;
 			for(auto edge : this->getOutgoingEdges(layer)) {
 				neighbors.push_back(edge->getTargetNode());

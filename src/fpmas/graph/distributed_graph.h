@@ -56,7 +56,6 @@ namespace fpmas { namespace graph {
 			public:
 			typedef api::graph::DistributedNode<T> NodeType;
 			typedef api::graph::DistributedEdge<T> EdgeType;
-			using typename DistGraphBase::LayerIdType;
 			using typename DistGraphBase::NodeMap;
 			using typename DistGraphBase::PartitionMap;
 			typedef typename MpiSetUp::communicator communicator;
@@ -173,7 +172,7 @@ namespace fpmas { namespace graph {
 			//NodeType* buildNode(const T&) override;
 			NodeType* buildNode(T&& = std::move(T())) override;
 
-			EdgeType* link(NodeType* const src, NodeType* const tgt, LayerIdType layer) override;
+			EdgeType* link(NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) override;
 
 			void addCallOnSetLocal(NodeCallback* callback) override {
 				set_local_callbacks.push_back(callback);
@@ -382,7 +381,7 @@ namespace fpmas { namespace graph {
 
 	template<DIST_GRAPH_PARAMS>
 		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::EdgeType*
-			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(NodeType* const src, NodeType* const tgt, LayerIdType layer) {
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) {
 				// Locks source and target
 				src->mutex().lockShared();
 				tgt->mutex().lockShared();

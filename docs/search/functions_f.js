@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['_7edatapack_279',['~DataPack',['../classfpmas_1_1api_1_1communication_1_1DataPack.html#a6de0888fc740e85083c807cdafb54ec3',1,'fpmas::api::communication::DataPack']]],
-  ['_7empicommunicator_280',['~MpiCommunicator',['../classfpmas_1_1communication_1_1MpiCommunicator.html#a868d5f7039acbde8aaf33f658fbd0bef',1,'fpmas::communication::MpiCommunicator']]]
+  ['unlinkin_314',['unlinkIn',['../classfpmas_1_1api_1_1graph_1_1Node.html#a897418a706e39920e91a06c150a2d0b9',1,'fpmas::api::graph::Node::unlinkIn()'],['../classfpmas_1_1graph_1_1Node.html#a66997e71a7c8f7b35d8e7af53d2e3627',1,'fpmas::graph::Node::unlinkIn()']]],
+  ['unlinkout_315',['unlinkOut',['../classfpmas_1_1api_1_1graph_1_1Node.html#a0f8d4adbc10082dcc6591675a5c320c8',1,'fpmas::api::graph::Node::unlinkOut()'],['../classfpmas_1_1graph_1_1Node.html#a84a55ed24509fa83a6d5bd79844459bf',1,'fpmas::graph::Node::unlinkOut()']]]
 ];

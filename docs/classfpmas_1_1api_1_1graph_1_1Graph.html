@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><b>fpmas</b></li><li class="navelem"><b>api</b></li><li class="navelem"><b>graph</b></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">Graph</a></li>  </ul>
+<li class="navelem"><b>fpmas</b></li><li class="navelem"><b>api</b></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api_1_1graph.html">graph</a></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">Graph</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -73,6 +73,8 @@ $(function() {
 <div class="title">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="api_2graph_2graph_8h_source.html">graph.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;:</div>
 <div class="dyncontent">
@@ -85,21 +87,12 @@ Inheritance diagram for fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;:</d
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a88a81bf33ffd1ebee1b0908e336df064"><td class="memItemLeft" align="right" valign="top"><a id="a88a81bf33ffd1ebee1b0908e336df064"></a>
-typedef EdgeType::NodeType&#160;</td><td class="memItemRight" valign="bottom"><b>NodeBase</b></td></tr>
-<tr class="separator:a88a81bf33ffd1ebee1b0908e336df064"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a919868068330e0d705fca14141507818"><td class="memItemLeft" align="right" valign="top"><a id="a919868068330e0d705fca14141507818"></a>
-typedef NodeType::EdgeType&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeBase</b></td></tr>
-<tr class="separator:a919868068330e0d705fca14141507818"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe364671e442294515e14bbffdd6dfba"><td class="memItemLeft" align="right" valign="top"><a id="afe364671e442294515e14bbffdd6dfba"></a>
 typedef NodeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdType</b></td></tr>
 <tr class="separator:afe364671e442294515e14bbffdd6dfba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace4182051c68558b00dfa1b57f86eb6b"><td class="memItemLeft" align="right" valign="top"><a id="ace4182051c68558b00dfa1b57f86eb6b"></a>
 typedef EdgeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIdType</b></td></tr>
 <tr class="separator:ace4182051c68558b00dfa1b57f86eb6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a249165d17ee651bd3b6671e49a9109ad"><td class="memItemLeft" align="right" valign="top"><a id="a249165d17ee651bd3b6671e49a9109ad"></a>
-typedef EdgeType::LayerIdType&#160;</td><td class="memItemRight" valign="bottom"><b>LayerIdType</b></td></tr>
-<tr class="separator:a249165d17ee651bd3b6671e49a9109ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a48e181d44f84794298ec7c06fd2e5d14"><td class="memItemLeft" align="right" valign="top"><a id="a48e181d44f84794298ec7c06fd2e5d14"></a>
 typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename NodeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdHash</b></td></tr>
 <tr class="separator:a48e181d44f84794298ec7c06fd2e5d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,12 +114,12 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (N
 <tr class="memitem:acbcb25f4af600a3d3fba0bd7fd60280d"><td class="memItemLeft" align="right" valign="top"><a id="acbcb25f4af600a3d3fba0bd7fd60280d"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (EdgeType *edge)=0</td></tr>
 <tr class="separator:acbcb25f4af600a3d3fba0bd7fd60280d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a299d20924d8296053914f668d75d4e97"><td class="memItemLeft" align="right" valign="top"><a id="a299d20924d8296053914f668d75d4e97"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (NodeBase *node)=0</td></tr>
-<tr class="separator:a299d20924d8296053914f668d75d4e97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a40b5e71b7a312fb1ea4d34fb65acd3af"><td class="memItemLeft" align="right" valign="top"><a id="a40b5e71b7a312fb1ea4d34fb65acd3af"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (EdgeBase *edge)=0</td></tr>
-<tr class="separator:a40b5e71b7a312fb1ea4d34fb65acd3af"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27ee97fe167715eda7e45943d329ed02"><td class="memItemLeft" align="right" valign="top"><a id="a27ee97fe167715eda7e45943d329ed02"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (NodeType *node)=0</td></tr>
+<tr class="separator:a27ee97fe167715eda7e45943d329ed02"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2515d9d081cdc68a2f5217a1871ba4e"><td class="memItemLeft" align="right" valign="top"><a id="ab2515d9d081cdc68a2f5217a1871ba4e"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (EdgeType *edge)=0</td></tr>
+<tr class="separator:ab2515d9d081cdc68a2f5217a1871ba4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55ba583c1a38d3255a1ad1177fadeeaf"><td class="memItemLeft" align="right" valign="top"><a id="a55ba583c1a38d3255a1ad1177fadeeaf"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnInsertNode</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *)=0</td></tr>
 <tr class="separator:a55ba583c1a38d3255a1ad1177fadeeaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -179,7 +172,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const Edg
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()=0</td></tr>
 <tr class="separator:a1af6fa1d78d3be3139bab03de3c14761"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename NodeType, typename EdgeType&gt;<br />
+class fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</h3>
+
+<p><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">Graph</a> API</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">NodeType</td><td><a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html">Node</a> implementation </td></tr>
+    <tr><td class="paramname">EdgeType</td><td><a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html">Edge</a> implementation </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/graph/<a class="el" href="api_2graph_2graph_8h_source.html">graph.h</a></li>
 </ul>
 </div><!-- contents -->

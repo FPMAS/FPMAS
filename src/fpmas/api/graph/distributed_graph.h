@@ -18,7 +18,6 @@ namespace fpmas {namespace api {namespace graph {
 		public:
 			typedef fpmas::api::graph::Graph<DistributedNode<T>, DistributedEdge<T>> GraphBase;
 
-			using typename GraphBase::LayerIdType;
 			using typename GraphBase::NodeMap;
 			using typename GraphBase::EdgeMap;
 
@@ -38,7 +37,7 @@ namespace fpmas {namespace api {namespace graph {
 			virtual void addCallOnSetLocal(NodeCallback*) = 0;
 			virtual void addCallOnSetDistant(NodeCallback*) = 0;
 
-			virtual DistributedEdge<T>* link(DistributedNode<T>*, DistributedNode<T>*, LayerIdType) = 0;
+			virtual DistributedEdge<T>* link(DistributedNode<T>*, DistributedNode<T>*, LayerId) = 0;
 
 			virtual void balance(api::load_balancing::LoadBalancing<T>&) = 0;
 			virtual void balance(api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap fixed_nodes) = 0;

@@ -22,12 +22,12 @@ namespace fpmas { namespace graph {
 
 				public:
 					using typename EdgeBase::IdType;
-					using typename EdgeBase::LayerIdType;
+					using typename EdgeBase::LayerId;
 
-					DistributedEdge(IdType id, LayerIdType layer)
+					DistributedEdge(IdType id, LayerId layer)
 						: EdgeBase(id, layer) {}
 
-					DistributedEdge(IdType id, LayerIdType layer, float weight)
+					DistributedEdge(IdType id, LayerId layer, float weight)
 						: EdgeBase(id, layer, weight) {}
 
 					LocationState state() const override {return _state;}
@@ -51,7 +51,7 @@ namespace nlohmann {
 				fpmas::api::graph::DistributedEdge<T>* edge
 					= new fpmas::graph::DistributedEdge<T> {
 					j.at("id").get<DistributedId>(),
-					j.at("layer").get<typename fpmas::api::graph::DistributedEdge<T>::LayerIdType>(),
+					j.at("layer").get<typename fpmas::api::graph::LayerId>(),
 					j.at("weight").get<float>()
 				};
 				NodePtrWrapper<T> src = j.at("src").get<NodePtrWrapper<T>>();

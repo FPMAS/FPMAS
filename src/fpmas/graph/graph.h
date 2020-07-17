@@ -8,7 +8,12 @@
 #include "node.h"
 #include "edge.h"
 
-namespace fpmas { namespace graph {
+namespace fpmas {
+
+	/**
+	 * Namespace containing Graph component implementations.
+	 */
+	namespace graph {
 
 	template<
 		typename NodeType,
@@ -16,9 +21,6 @@ namespace fpmas { namespace graph {
 	> class Graph : public virtual api::graph::Graph<NodeType, EdgeType> {
 			public:
 				typedef api::graph::Graph<NodeType, EdgeType> GraphBase;
-				using typename GraphBase::NodeBase;
-				using typename GraphBase::EdgeBase;
-
 				using typename GraphBase::NodeIdType;
 				using typename GraphBase::NodeIdHash;
 
@@ -45,8 +47,8 @@ namespace fpmas { namespace graph {
 				void insert(NodeType*) override;
 				void insert(EdgeType*) override;
 
-				void erase(NodeBase*) override;
-				void erase(EdgeBase*) override;
+				void erase(NodeType*) override;
+				void erase(EdgeType*) override;
 
 				void addCallOnInsertNode(api::utils::Callback<NodeType*>* callback) override {
 					insert_node_callbacks.push_back(callback);
@@ -79,16 +81,16 @@ namespace fpmas { namespace graph {
 				virtual ~Graph();
 	};
 
-	template<GRAPH_PARAMS>
-		void Graph<GRAPH_PARAMS_SPEC>::insert(NodeType* node) {
+	template<typename NodeType, typename EdgeType>
+		void Graph<NodeType, EdgeType>::insert(NodeType* node) {
 			FPMAS_LOGD(-1, "GRAPH", "Insert node %s", ID_C_STR(node->getId()));
 			this->nodes.insert({node->getId(), node});
 			for(auto callback : insert_node_callbacks)
 				callback->call(node);
 		}
 
-	template<GRAPH_PARAMS>
-		void Graph<GRAPH_PARAMS_SPEC>::insert(EdgeType* edge) {
+	template<typename NodeType, typename EdgeType>
+		void Graph<NodeType, EdgeType>::insert(EdgeType* edge) {
 			FPMAS_LOGD(
 					-1, "GRAPH", "Insert edge %s (%p) (from %s to %s)",
 					ID_C_STR(edge->getId()), edge,
@@ -100,8 +102,8 @@ namespace fpmas { namespace graph {
 				callback->call(edge);
 		}
 
-	template<GRAPH_PARAMS>
-		void Graph<GRAPH_PARAMS_SPEC>::erase(NodeBase* node) {
+	template<typename NodeType, typename EdgeType>
+		void Graph<NodeType, EdgeType>::erase(NodeType* node) {
 			FPMAS_LOGD(-1, "GRAPH", "Erase node %s", ID_C_STR(node->getId()));
 			// Deletes incoming edges
 			for(auto* edge : node->getIncomingEdges()) {
@@ -136,8 +138,8 @@ namespace fpmas { namespace graph {
 			FPMAS_LOGD(-1, "GRAPH", "Node %s removed.", ID_C_STR(id));
 		}
 
-	template<GRAPH_PARAMS>
-		void Graph<GRAPH_PARAMS_SPEC>::erase(EdgeBase* edge) {
+	template<typename NodeType, typename EdgeType>
+		void Graph<NodeType, EdgeType>::erase(EdgeType* edge) {
 			auto id = edge->getId();
 			FPMAS_LOGD(
 					-1, "GRAPH", "Erase edge %s (%p) (from %s to %s)",
@@ -161,44 +163,44 @@ namespace fpmas { namespace graph {
 			FPMAS_LOGD(-1, "GRAPH", "Edge %s removed.", ID_C_STR(id));
 		}
 
-	template<GRAPH_PARAMS>
+	template<typename NodeType, typename EdgeType>
 		NodeType*
-			Graph<GRAPH_PARAMS_SPEC>::getNode(NodeIdType id) {
+			Graph<NodeType, EdgeType>::getNode(NodeIdType id) {
 				return this->nodes.at(id);
 		}
 
-	template<GRAPH_PARAMS>
+	template<typename NodeType, typename EdgeType>
 		const NodeType*
-			Graph<GRAPH_PARAMS_SPEC>::getNode(NodeIdType id) const {
+			Graph<NodeType, EdgeType>::getNode(NodeIdType id) const {
 				return this->nodes.at(id);
 		}
 
-	template<GRAPH_PARAMS>
-		const typename Graph<GRAPH_PARAMS_SPEC>::NodeMap&
-			Graph<GRAPH_PARAMS_SPEC>::getNodes() const {
+	template<typename NodeType, typename EdgeType>
+		const typename Graph<NodeType, EdgeType>::NodeMap&
+			Graph<NodeType, EdgeType>::getNodes() const {
 				return this->nodes;
 			}
 
-	template<GRAPH_PARAMS>
+	template<typename NodeType, typename EdgeType>
 		EdgeType*
-			Graph<GRAPH_PARAMS_SPEC>::getEdge(EdgeIdType id) {
+			Graph<NodeType, EdgeType>::getEdge(EdgeIdType id) {
 				return this->edges.at(id);
 		}
 
-	template<GRAPH_PARAMS>
+	template<typename NodeType, typename EdgeType>
 		const EdgeType*
-			Graph<GRAPH_PARAMS_SPEC>::getEdge(EdgeIdType id) const {
+			Graph<NodeType, EdgeType>::getEdge(EdgeIdType id) const {
 				return this->edges.at(id);
 		}
 
-	template<GRAPH_PARAMS>
-		const typename Graph<GRAPH_PARAMS_SPEC>::EdgeMap&
-			Graph<GRAPH_PARAMS_SPEC>::getEdges() const {
+	template<typename NodeType, typename EdgeType>
+		const typename Graph<NodeType, EdgeType>::EdgeMap&
+			Graph<NodeType, EdgeType>::getEdges() const {
 				return this->edges;
 			}
 
-	template<GRAPH_PARAMS>
-		void Graph<GRAPH_PARAMS_SPEC>::clear() {
+	template<typename NodeType, typename EdgeType>
+		void Graph<NodeType, EdgeType>::clear() {
 			// This is VERY hacky.
 			std::vector<EdgeType*> edges;
 			for(auto edge : this->edges)
@@ -217,8 +219,8 @@ namespace fpmas { namespace graph {
 			}
 		}
 
-	template<GRAPH_PARAMS>
-		Graph<GRAPH_PARAMS_SPEC>::~Graph() {
+	template<typename NodeType, typename EdgeType>
+		Graph<NodeType, EdgeType>::~Graph() {
 			clear();
 			for(auto callback : insert_node_callbacks)
 				delete callback;

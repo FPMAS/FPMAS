@@ -29,7 +29,6 @@ class MockDistributedEdge :
 
 	public:
 	using typename EdgeBase::NodeType;
-	using typename DistEdgeBase::LayerIdType;
 
 	// Saved LocationState
 	LocationState _state = LocationState::LOCAL;
@@ -48,13 +47,13 @@ class MockDistributedEdge :
 		}
 
 	MockDistributedEdge(
-			const DistributedId& id, LayerIdType layer)
+			const DistributedId& id, LayerId layer)
 		: EdgeBase(id, layer) {
 			setUpGetters();
 		}
 	MockDistributedEdge(
 			const DistributedId& id,
-			LayerIdType layer, float weight)
+			LayerId layer, float weight)
 		: EdgeBase(id, layer, weight) {
 			setUpGetters();
 		}
@@ -101,7 +100,7 @@ inline void from_json(const nlohmann::json& j, MockDistributedEdge<T>& mock) {
 
 	ON_CALL(mock, getLayer)
 		.WillByDefault(Return(
-			j.at("layer").get<typename MockDistributedEdge<T>::LayerIdType>()
+			j.at("layer").get<typename MockDistributedEdge<T>::LayerId>()
 		));
 	ON_CALL(mock, getWeight)
 		.WillByDefault(Return(j.at("weight").get<float>()));

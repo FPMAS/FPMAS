@@ -20,7 +20,6 @@ class MockDistributedGraph :
 		using typename GraphBase::NodeMap;
 		using typename GraphBase::EdgeMap;
 		using typename GraphBase::PartitionMap;
-		using typename GraphBase::LayerIdType;
 		using typename GraphBase::NodeCallback;
 
 		MOCK_METHOD(const fpmas::api::communication::MpiCommunicator&,
@@ -34,7 +33,7 @@ class MockDistributedGraph :
 		}
 		//MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
 		MOCK_METHOD(NodeType*, buildNode_rv, (), ());
-		MOCK_METHOD(EdgeType*, link, (NodeType*, NodeType*, LayerIdType), (override));
+		MOCK_METHOD(EdgeType*, link, (NodeType*, NodeType*, fpmas::api::graph::LayerId), (override));
 
 		MOCK_METHOD(void, addCallOnSetLocal, (NodeCallback*), (override));
 		MOCK_METHOD(void, addCallOnSetDistant, (NodeCallback*), (override));

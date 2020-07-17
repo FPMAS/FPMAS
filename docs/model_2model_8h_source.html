@@ -150,272 +150,284 @@ $(function() {
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keyword">static</span> <span class="keyword">const</span> api::model::TypeId TYPE_ID;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a>* _task;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::model::AgentNode</a>* _node;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::AgentGraph</a>* _graph;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            api::model::GroupId group_id;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            api::model::GroupId groupId()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> group_id;}</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            <span class="keywordtype">void</span> setGroupId(api::model::GroupId group_id)<span class="keyword"> override </span>{this-&gt;group_id = group_id;}</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            api::model::TypeId typeId()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> TYPE_ID;}</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* copy()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> <span class="keyword">new</span> AgentType(*<span class="keyword">static_cast&lt;</span><span class="keyword">const </span>AgentType*<span class="keyword">&gt;</span>(<span class="keyword">this</span>));}</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::model::AgentNode</a>* node()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _node;}</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::model::AgentNode</a>* node()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _node;}</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            <span class="keywordtype">void</span> setNode(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::model::AgentNode</a>* node)<span class="keyword"> override </span>{_node = node;}</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::AgentGraph</a>* graph()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _graph;}</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::AgentGraph</a>* graph()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _graph;}</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keywordtype">void</span> setGraph(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::AgentGraph</a>* graph)<span class="keyword"> override </span>{_graph = graph;}</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a>* task()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _task;}</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a>* task()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _task;}</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="keywordtype">void</span> setTask(<a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a>* task)<span class="keyword"> override </span>{_task = task;}</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NeighborAgentType&gt; <a class="code" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors&lt;NeighborAgentType&gt;</a> outNeighbors()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                std::vector&lt;Neighbor&lt;NeighborAgentType&gt;&gt; out;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : node()-&gt;outNeighbors()) {</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                    <span class="keywordflow">if</span>(NeighborAgentType* neighbor = <span class="keyword">dynamic_cast&lt;</span>NeighborAgentType*<span class="keyword">&gt;</span>(node-&gt;data().get())) {</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                        out.push_back(&amp;node-&gt;data());</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                    }</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                }</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;            }</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NeighborAgentType&gt; <a class="code" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors&lt;NeighborAgentType&gt;</a> inNeighbors()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                std::vector&lt;Neighbor&lt;NeighborAgentType&gt;&gt; in;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : node()-&gt;inNeighbors()) {</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                    <span class="keywordflow">if</span>(NeighborAgentType* neighbor = <span class="keyword">dynamic_cast&lt;</span>NeighborAgentType*<span class="keyword">&gt;</span>(node-&gt;data().get())) {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                        in.push_back(&amp;node-&gt;data());</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                    }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                }</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                <span class="keywordflow">return</span> in;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;            }</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1model_1_1AgentBase.html">AgentBase</a>() {}</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    };</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> AgentType, api::model::TypeId _TYPE_ID&gt;</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <span class="keyword">const</span> api::model::TypeId <a class="code" href="classfpmas_1_1model_1_1AgentBase.html">AgentBase&lt;AgentType, _TYPE_ID&gt;::TYPE_ID</a> = _TYPE_ID;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            api::model::GroupId group_id;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a>* _group;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a>* _task;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::model::AgentNode</a>* _node;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::AgentGraph</a>* _graph;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            api::model::GroupId groupId()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> group_id;}</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keywordtype">void</span> setGroupId(api::model::GroupId group_id)<span class="keyword"> override </span>{this-&gt;group_id = group_id;}</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a>* group()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _group;}</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a>* group()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _group;}</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;            <span class="keywordtype">void</span> setGroup(<a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a>* group)<span class="keyword"> override </span>{this-&gt;_group = group;}</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            api::model::TypeId typeId()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> TYPE_ID;}</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* copy()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> <span class="keyword">new</span> AgentType(*<span class="keyword">static_cast&lt;</span><span class="keyword">const </span>AgentType*<span class="keyword">&gt;</span>(<span class="keyword">this</span>));}</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::model::AgentNode</a>* node()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _node;}</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::model::AgentNode</a>* node()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _node;}</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            <span class="keywordtype">void</span> setNode(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::model::AgentNode</a>* node)<span class="keyword"> override </span>{_node = node;}</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::AgentGraph</a>* graph()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _graph;}</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::AgentGraph</a>* graph()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _graph;}</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            <span class="keywordtype">void</span> setGraph(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::AgentGraph</a>* graph)<span class="keyword"> override </span>{_graph = graph;}</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a>* task()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _task;}</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a>* task()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _task;}</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;            <span class="keywordtype">void</span> setTask(<a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a>* task)<span class="keyword"> override </span>{_task = task;}</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NeighborAgentType&gt; <a class="code" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors&lt;NeighborAgentType&gt;</a> outNeighbors()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                std::vector&lt;Neighbor&lt;NeighborAgentType&gt;&gt; out;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : node()-&gt;outNeighbors()) {</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                    <span class="keywordflow">if</span>(NeighborAgentType* neighbor = <span class="keyword">dynamic_cast&lt;</span>NeighborAgentType*<span class="keyword">&gt;</span>(node-&gt;data().get())) {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                        out.push_back(&amp;node-&gt;data());</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                    }</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                }</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            }</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NeighborAgentType&gt; <a class="code" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors&lt;NeighborAgentType&gt;</a> inNeighbors()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                std::vector&lt;Neighbor&lt;NeighborAgentType&gt;&gt; in;</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : node()-&gt;inNeighbors()) {</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    <span class="keywordflow">if</span>(NeighborAgentType* neighbor = <span class="keyword">dynamic_cast&lt;</span>NeighborAgentType*<span class="keyword">&gt;</span>(node-&gt;data().get())) {</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;                        in.push_back(&amp;node-&gt;data());</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;                    }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                }</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;                <span class="keywordflow">return</span> in;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;            }</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1AgentTask.html">  130</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1AgentTask.html">AgentTask</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a> {</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* _agent;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* agent()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _agent;}</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;            <span class="keywordtype">void</span> setAgent(<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* agent)<span class="keyword"> override </span>{_agent=agent;}</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            AgentNode* node()<span class="keyword"> override</span></div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="keyword">                </span>{<span class="keywordflow">return</span> _agent-&gt;node();}</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="keywordtype">void</span> run()<span class="keyword"> override </span>{</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;                _agent-&gt;act();</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            }</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    };</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;            <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1model_1_1AgentBase.html">AgentBase</a>() {}</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    };</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> AgentType, api::model::TypeId _TYPE_ID&gt;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;        <span class="keyword">const</span> api::model::TypeId <a class="code" href="classfpmas_1_1model_1_1AgentBase.html">AgentBase&lt;AgentType, _TYPE_ID&gt;::TYPE_ID</a> = _TYPE_ID;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1AgentTask.html">  135</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1AgentTask.html">AgentTask</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">api::model::AgentTask</a> {</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* _agent;</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* agent()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _agent;}</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <span class="keywordtype">void</span> setAgent(<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* agent)<span class="keyword"> override </span>{_agent=agent;}</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;            AgentNode* node()<span class="keyword"> override</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="keyword">                </span>{<span class="keywordflow">return</span> _agent-&gt;node();}</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">  145</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">SynchronizeGraphTask</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> {</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::Model::AgentGraph</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>;</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">SynchronizeGraphTask</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph)</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                : agent_graph(agent_graph) {}</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <span class="keywordtype">void</span> run()<span class="keyword"> override </span>{</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                agent_graph.synchronize();</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            }</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    };</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;            <span class="keywordtype">void</span> run()<span class="keyword"> override </span>{</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;                _agent-&gt;act();</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            }</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    };</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">  150</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">SynchronizeGraphTask</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> {</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::Model::AgentGraph</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">SynchronizeGraphTask</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph)</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                : agent_graph(agent_graph) {}</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1AgentGroup.html">  159</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> {</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            <span class="keyword">typedef</span> api::model::GroupId GroupId;</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::Model::AgentGraph</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>;</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;            GroupId id;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> _job;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">SynchronizeGraphTask</a> sync_graph_task;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            std::vector&lt;api::model::Agent*&gt; _agents;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>(GroupId group_id, <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph, JID job_id);</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160; </div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            GroupId groupId()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> id;}</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            <span class="keywordtype">void</span> add(<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>*) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            <span class="keywordtype">void</span> remove(<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>*) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a>&amp; job()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _job;}</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a>&amp; job()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _job;}</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            std::vector&lt;api::model::Agent*&gt; agents()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _agents;}</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;            <span class="keywordtype">void</span> run()<span class="keyword"> override </span>{</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                agent_graph.synchronize();</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;            }</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    };</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a>;</div>
+<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1AgentGroup.html">  165</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> {</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keyword">friend</span> <a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a>;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;            <span class="keyword">typedef</span> api::model::GroupId GroupId;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::Model::AgentGraph</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>;</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;            GroupId id;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> _job;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">SynchronizeGraphTask</a> sync_graph_task;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            std::vector&lt;api::model::AgentPtr*&gt; _agents;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>(GroupId group_id, <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph, JID job_id);</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> AgentType&gt;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                std::vector&lt;AgentType*&gt; agents()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                    std::vector&lt;AgentType*&gt; out;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> agent : _agents)</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                        <span class="keywordflow">if</span>(AgentType* agent_ptr = <span class="keyword">dynamic_cast&lt;</span>AgentType*<span class="keyword">&gt;</span>(agent))</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                            out.push_back(agent_ptr);</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                    <span class="keywordflow">return</span> out;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                }</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    };</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
-<div class="line"><a name="l00192"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1LoadBalancingTask.html">  192</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1LoadBalancingTask.html">LoadBalancingTask</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> {</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::Model::AgentGraph</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;            <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">api::load_balancing::LoadBalancing&lt;AgentPtr&gt;</a></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> LoadBalancingAlgorithm::ConstNodeMap ConstNodeMap;</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> LoadBalancingAlgorithm::PartitionMap PartitionMap;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            GroupId groupId()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> id;}</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;            <span class="keywordtype">void</span> add(<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>*) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;            <span class="keywordtype">void</span> remove(<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>*) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            <span class="keywordtype">void</span> insert(<a class="code" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">api::model::AgentPtr</a>*) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;            <span class="keywordtype">void</span> erase(<a class="code" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">api::model::AgentPtr</a>*) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a>&amp; job()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _job;}</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a>&amp; job()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _job;}</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;            std::vector&lt;api::model::AgentPtr*&gt; agents()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _agents;}</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> AgentType&gt;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                std::vector&lt;AgentType*&gt; agents()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                    std::vector&lt;AgentType*&gt; out;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> agent : _agents)</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                        <span class="keywordflow">if</span>(AgentType* agent_ptr = <span class="keyword">dynamic_cast&lt;</span>AgentType*<span class="keyword">&gt;</span>(agent))</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                            out.push_back(agent_ptr);</div>
 <div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160; </div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph;</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>&amp; load_balancing;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1LoadBalancingTask.html">LoadBalancingTask</a>(</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph,</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>&amp; load_balancing,</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler,</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                    ) : agent_graph(agent_graph), load_balancing(load_balancing), scheduler(scheduler), runtime(runtime) {}</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;            <span class="keywordtype">void</span> run() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    };</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
-<div class="line"><a name="l00217"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1InsertAgentCallback.html">  217</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a> </div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; {</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;              <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                  <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;              <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                  <a class="code" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a>(<a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model) : model(model) {}</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                  <span class="keywordtype">void</span> call(AgentNode* node) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;          };</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1EraseAgentCallback.html">  227</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a> </div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; {</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;            <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                <a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a>(<a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model) : model(model) {}</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                <span class="keywordtype">void</span> call(AgentNode* node) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        };</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160; </div>
-<div class="line"><a name="l00237"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">  237</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">SetAgentLocalCallback</a></div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; {</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;            <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                <a class="code" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">SetAgentLocalCallback</a>(<a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model) : model(model) {}</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                <span class="keywordtype">void</span> call(AgentNode* node) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        };</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
-<div class="line"><a name="l00247"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">  247</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; {</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;                <a class="code" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a>(<a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model) : model(model) {}</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                <span class="keywordtype">void</span> call(AgentNode* node) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        };</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
-<div class="line"><a name="l00257"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1Model.html">  257</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a> {</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;            <span class="keyword">typedef</span> api::model::GroupId GroupId;</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingTask::LoadBalancingAlgorithm</a> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>;</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            GroupId gid;</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; _graph;</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; _scheduler;</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; _runtime;</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> _loadBalancingJob;</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1LoadBalancingTask.html">LoadBalancingTask</a> load_balancing_task;</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a>* insert_node_callback = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a>(*<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a>* erase_node_callback = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a>(*<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">SetAgentLocalCallback</a>* set_local_callback = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">SetAgentLocalCallback</a>(*<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a>* set_distant_callback = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a>(*<span class="keyword">this</span>);</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            std::unordered_map&lt;GroupId, api::model::AgentGroup*&gt; _groups;</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            JID job_id = LB_JID + 1;</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            </div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            <span class="keyword">static</span> <span class="keyword">const</span> JID LB_JID;</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>(</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; graph,</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler,</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime,</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>&amp; load_balancing);</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>(<a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp; operator=(<a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;                    <span class="keywordflow">return</span> out;</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                }</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    };</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1LoadBalancingTask.html">  204</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1LoadBalancingTask.html">LoadBalancingTask</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> {</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::Model::AgentGraph</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;            <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">api::load_balancing::LoadBalancing&lt;AgentPtr&gt;</a></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> LoadBalancingAlgorithm::ConstNodeMap ConstNodeMap;</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> LoadBalancingAlgorithm::PartitionMap PartitionMap;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>&amp; load_balancing;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler;</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1LoadBalancingTask.html">LoadBalancingTask</a>(</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph,</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>&amp; load_balancing,</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler,</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;                    ) : agent_graph(agent_graph), load_balancing(load_balancing), scheduler(scheduler), runtime(runtime) {}</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;            <span class="keywordtype">void</span> run() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    };</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160; </div>
+<div class="line"><a name="l00229"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1InsertAgentCallback.html">  229</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a> </div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; {</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;              <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;                  <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;              <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;                  <a class="code" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a>(<a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model) : model(model) {}</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                  <span class="keywordtype">void</span> call(AgentNode* node) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;          };</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
+<div class="line"><a name="l00239"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1EraseAgentCallback.html">  239</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a> </div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; {</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;            <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                <a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a>(<a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model) : model(model) {}</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;                <span class="keywordtype">void</span> call(AgentNode* node) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        };</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
+<div class="line"><a name="l00249"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">  249</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">SetAgentLocalCallback</a></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; {</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                <a class="code" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">SetAgentLocalCallback</a>(<a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model) : model(model) {}</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;                <span class="keywordtype">void</span> call(AgentNode* node) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        };</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
+<div class="line"><a name="l00259"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">  259</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a></div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;        : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; {</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;            <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                <a class="code" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a>(<a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a>&amp; model) : model(model) {}</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                <span class="keywordtype">void</span> call(AgentNode* node) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        };</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
+<div class="line"><a name="l00269"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1Model.html">  269</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a> {</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            <span class="keyword">typedef</span> api::model::GroupId GroupId;</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingTask::LoadBalancingAlgorithm</a> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            GroupId gid;</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; _graph;</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; _scheduler;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; _runtime;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> _loadBalancingJob;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1LoadBalancingTask.html">LoadBalancingTask</a> load_balancing_task;</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a>* insert_node_callback = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a>(*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a>* erase_node_callback = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a>(*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">SetAgentLocalCallback</a>* set_local_callback = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">SetAgentLocalCallback</a>(*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a>* set_distant_callback = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a>(*<span class="keyword">this</span>);</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160; </div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            std::unordered_map&lt;GroupId, api::model::AgentGroup*&gt; _groups;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            </div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            JID job_id = LB_JID + 1;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            </div>
 <div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160; </div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; graph()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _graph;}</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _scheduler;}</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _runtime;}</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a>&amp; loadBalancingJob()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _loadBalancingJob;}</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>&amp; buildGroup() <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>&amp; getGroup(GroupId) <span class="keyword">const override</span>;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;            <span class="keyword">const</span> std::unordered_map&lt;GroupId, api::model::AgentGroup*&gt;&amp; groups()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _groups;}</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160; </div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;            ~<a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>();</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    };</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160; </div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160; </div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SyncMode&gt;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        <span class="keyword">using</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">AgentGraph</a> = <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">graph::DistributedGraph</a>&lt;</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;        AgentPtr, SyncMode,</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>,</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>,</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;        <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiSetUp.html">api::communication::MpiSetUp&lt;communication::MpiCommunicator, communication::TypedMpi&gt;</a>,</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a>&gt;;</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            <span class="keyword">static</span> <span class="keyword">const</span> JID LB_JID;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>(</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; graph,</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler,</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime,</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>&amp; load_balancing);</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>(<a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp; operator=(<a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160; </div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; graph()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _graph;}</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _scheduler;}</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; runtime()<span class="keyword"> override </span>{<span class="keywordflow">return</span> _runtime;}</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a>&amp; loadBalancingJob()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _loadBalancingJob;}</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>&amp; buildGroup() <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>&amp; getGroup(GroupId) <span class="keyword">const override</span>;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;            <span class="keyword">const</span> std::unordered_map&lt;GroupId, api::model::AgentGroup*&gt;&amp; groups()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> _groups;}</div>
 <div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160; </div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    <span class="keyword">using</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraphApi</a> = <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph&lt;AgentPtr&gt;</a>;</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">load_balancing::ZoltanLoadBalancing&lt;AgentPtr&gt;</a> <a class="code" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a>;</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">load_balancing::ScheduledLoadBalancing&lt;AgentPtr&gt;</a> <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a>;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback&lt;AgentNode*&gt;</a> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">AgentNodeCallback</a>;</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160; </div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SyncMode&gt;</div>
-<div class="line"><a name="l00319"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1DefaultModelConfig.html">  319</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1DefaultModelConfig.html">DefaultModelConfig</a> {</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">model::AgentGraph&lt;SyncMode&gt;</a> __graph;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Scheduler.html">scheduler::Scheduler</a> __scheduler;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;            <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html">runtime::Runtime</a> __runtime {__scheduler};</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            <a class="code" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">model::ZoltanLoadBalancing</a> __zoltan_lb {__graph.getMpiCommunicator().getMpiComm()};</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;            <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">model::ScheduledLoadBalancing</a> __load_balancing {__zoltan_lb, __scheduler, __runtime};</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    };</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160; </div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SyncMode&gt;</div>
-<div class="line"><a name="l00329"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1DefaultModel.html">  329</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1DefaultModel.html">DefaultModel</a> : <span class="keyword">private</span> <a class="code" href="classfpmas_1_1model_1_1DefaultModelConfig.html">DefaultModelConfig</a>&lt;SyncMode&gt;, <span class="keyword">public</span> <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a> {</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1DefaultModel.html">DefaultModel</a>()</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                : <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>(this-&gt;__graph, this-&gt;__scheduler, this-&gt;__runtime, this-&gt;__load_balancing) {}</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    };</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;}}</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;            ~<a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>();</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    };</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160; </div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160; </div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SyncMode&gt;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="keyword">using</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">AgentGraph</a> = <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">graph::DistributedGraph</a>&lt;</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        AgentPtr, SyncMode,</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>,</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>,</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;        <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiSetUp.html">api::communication::MpiSetUp&lt;communication::MpiCommunicator, communication::TypedMpi&gt;</a>,</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a>&gt;;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;    <span class="keyword">using</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraphApi</a> = <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph&lt;AgentPtr&gt;</a>;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160; </div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">load_balancing::ZoltanLoadBalancing&lt;AgentPtr&gt;</a> <a class="code" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a>;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">load_balancing::ScheduledLoadBalancing&lt;AgentPtr&gt;</a> <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a>;</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback&lt;AgentNode*&gt;</a> <a class="code" href="classfpmas_1_1api_1_1utils_1_1Callback.html">AgentNodeCallback</a>;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SyncMode&gt;</div>
+<div class="line"><a name="l00331"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1DefaultModelConfig.html">  331</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1DefaultModelConfig.html">DefaultModelConfig</a> {</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;            <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">model::AgentGraph&lt;SyncMode&gt;</a> __graph;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Scheduler.html">scheduler::Scheduler</a> __scheduler;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html">runtime::Runtime</a> __runtime {__scheduler};</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;            <a class="code" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">model::ZoltanLoadBalancing</a> __zoltan_lb {__graph.getMpiCommunicator().getMpiComm()};</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            <a class="code" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">model::ScheduledLoadBalancing</a> __load_balancing {__zoltan_lb, __scheduler, __runtime};</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    };</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160; </div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> SyncMode&gt;</div>
+<div class="line"><a name="l00341"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1DefaultModel.html">  341</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1DefaultModel.html">DefaultModel</a> : <span class="keyword">private</span> <a class="code" href="classfpmas_1_1model_1_1DefaultModelConfig.html">DefaultModelConfig</a>&lt;SyncMode&gt;, <span class="keyword">public</span> <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a> {</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;            <a class="code" href="classfpmas_1_1model_1_1DefaultModel.html">DefaultModel</a>()</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;                : <a class="code" href="classfpmas_1_1model_1_1Model.html">Model</a>(this-&gt;__graph, this-&gt;__scheduler, this-&gt;__runtime, this-&gt;__load_balancing) {}</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    };</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;}}</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassfpmas_1_1model_1_1SetAgentLocalCallback_html"><div class="ttname"><a href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">fpmas::model::SetAgentLocalCallback</a></div><div class="ttdef"><b>Definition:</b> model.h:238</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1DefaultModel_html"><div class="ttname"><a href="classfpmas_1_1model_1_1DefaultModel.html">fpmas::model::DefaultModel</a></div><div class="ttdef"><b>Definition:</b> model.h:329</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1model_1_1AgentGroup.html">fpmas::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:159</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1Model_html"><div class="ttname"><a href="classfpmas_1_1model_1_1Model.html">fpmas::model::Model</a></div><div class="ttdef"><b>Definition:</b> model.h:257</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1EraseAgentCallback_html"><div class="ttname"><a href="classfpmas_1_1model_1_1EraseAgentCallback.html">fpmas::model::EraseAgentCallback</a></div><div class="ttdef"><b>Definition:</b> model.h:228</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1SetAgentLocalCallback_html"><div class="ttname"><a href="classfpmas_1_1model_1_1SetAgentLocalCallback.html">fpmas::model::SetAgentLocalCallback</a></div><div class="ttdef"><b>Definition:</b> model.h:250</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1DefaultModel_html"><div class="ttname"><a href="classfpmas_1_1model_1_1DefaultModel.html">fpmas::model::DefaultModel</a></div><div class="ttdef"><b>Definition:</b> model.h:341</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1model_1_1AgentGroup.html">fpmas::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:165</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1Model_html"><div class="ttname"><a href="classfpmas_1_1model_1_1Model.html">fpmas::model::Model</a></div><div class="ttdef"><b>Definition:</b> model.h:269</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1EraseAgentCallback_html"><div class="ttname"><a href="classfpmas_1_1model_1_1EraseAgentCallback.html">fpmas::model::EraseAgentCallback</a></div><div class="ttdef"><b>Definition:</b> model.h:240</div></div>
 <div class="ttc" id="aclassfpmas_1_1load__balancing_1_1ScheduledLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">fpmas::load_balancing::ScheduledLoadBalancing&lt; AgentPtr &gt;</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedEdge_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedEdge.html">fpmas::graph::DistributedEdge</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:16</div></div>
 <div class="ttc" id="aclassfpmas_1_1scheduler_1_1Job_html"><div class="ttname"><a href="classfpmas_1_1scheduler_1_1Job.html">fpmas::scheduler::Job</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:17</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1SetAgentDistantCallback_html"><div class="ttname"><a href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">fpmas::model::SetAgentDistantCallback</a></div><div class="ttdef"><b>Definition:</b> model.h:248</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1SetAgentDistantCallback_html"><div class="ttname"><a href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">fpmas::model::SetAgentDistantCallback</a></div><div class="ttdef"><b>Definition:</b> model.h:260</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedNode.html">fpmas::graph::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:11</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Agent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a></div><div class="ttdef"><b>Definition:</b> model.h:33</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Agent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a></div><div class="ttdef"><b>Definition:</b> model.h:37</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1LocationManager_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a></div><div class="ttdef"><b>Definition:</b> location_manager.h:16</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1Scheduler_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">fpmas::api::scheduler::Scheduler</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:59</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiSetUp_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiSetUp.html">fpmas::api::communication::MpiSetUp</a></div><div class="ttdef"><b>Definition:</b> communication.h:388</div></div>
@@ -426,20 +438,21 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html">fpmas::runtime::Runtime</a></div><div class="ttdef"><b>Definition:</b> runtime.h:9</div></div>
 <div class="ttc" id="aclassfpmas_1_1scheduler_1_1Scheduler_html"><div class="ttname"><a href="classfpmas_1_1scheduler_1_1Scheduler.html">fpmas::scheduler::Scheduler</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:56</div></div>
 <div class="ttc" id="aclassfpmas_1_1model_1_1Neighbor_html"><div class="ttname"><a href="classfpmas_1_1model_1_1Neighbor.html">fpmas::model::Neighbor</a></div><div class="ttdef"><b>Definition:</b> model.h:20</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1InsertAgentCallback_html"><div class="ttname"><a href="classfpmas_1_1model_1_1InsertAgentCallback.html">fpmas::model::InsertAgentCallback</a></div><div class="ttdef"><b>Definition:</b> model.h:218</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1InsertAgentCallback_html"><div class="ttname"><a href="classfpmas_1_1model_1_1InsertAgentCallback.html">fpmas::model::InsertAgentCallback</a></div><div class="ttdef"><b>Definition:</b> model.h:230</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedGraph_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedGraph.html">fpmas::graph::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:40</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1SynchronizeGraphTask_html"><div class="ttname"><a href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">fpmas::model::SynchronizeGraphTask</a></div><div class="ttdef"><b>Definition:</b> model.h:145</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1SynchronizeGraphTask_html"><div class="ttname"><a href="classfpmas_1_1model_1_1SynchronizeGraphTask.html">fpmas::model::SynchronizeGraphTask</a></div><div class="ttdef"><b>Definition:</b> model.h:150</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1Task_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1Task.html">fpmas::api::scheduler::Task</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:13</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Model_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a></div><div class="ttdef"><b>Definition:</b> model.h:78</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Model_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a></div><div class="ttdef"><b>Definition:</b> model.h:89</div></div>
 <div class="ttc" id="aclassfpmas_1_1model_1_1AgentBase_html"><div class="ttname"><a href="classfpmas_1_1model_1_1AgentBase.html">fpmas::model::AgentBase</a></div><div class="ttdef"><b>Definition:</b> model.h:77</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1DefaultModelConfig_html"><div class="ttname"><a href="classfpmas_1_1model_1_1DefaultModelConfig.html">fpmas::model::DefaultModelConfig</a></div><div class="ttdef"><b>Definition:</b> model.h:319</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1AgentTask_html"><div class="ttname"><a href="classfpmas_1_1model_1_1AgentTask.html">fpmas::model::AgentTask</a></div><div class="ttdef"><b>Definition:</b> model.h:130</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1DefaultModelConfig_html"><div class="ttname"><a href="classfpmas_1_1model_1_1DefaultModelConfig.html">fpmas::model::DefaultModelConfig</a></div><div class="ttdef"><b>Definition:</b> model.h:331</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1AgentTask_html"><div class="ttname"><a href="classfpmas_1_1model_1_1AgentTask.html">fpmas::model::AgentTask</a></div><div class="ttdef"><b>Definition:</b> model.h:135</div></div>
 <div class="ttc" id="aclassfpmas_1_1model_1_1Neighbors_html"><div class="ttname"><a href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a></div><div class="ttdef"><b>Definition:</b> model.h:42</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:64</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentTask_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentTask.html">fpmas::api::model::AgentTask</a></div><div class="ttdef"><b>Definition:</b> model.h:57</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:72</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentPtrWrapper_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">fpmas::api::model::AgentPtrWrapper</a></div><div class="ttdef"><b>Definition:</b> model.h:19</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentTask_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentTask.html">fpmas::api::model::AgentTask</a></div><div class="ttdef"><b>Definition:</b> model.h:65</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1runtime_1_1Runtime_html"><div class="ttname"><a href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">fpmas::api::runtime::Runtime</a></div><div class="ttdef"><b>Definition:</b> runtime.h:8</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:9</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1LoadBalancingTask_html"><div class="ttname"><a href="classfpmas_1_1model_1_1LoadBalancingTask.html">fpmas::model::LoadBalancingTask</a></div><div class="ttdef"><b>Definition:</b> model.h:192</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1LoadBalancingTask_html"><div class="ttname"><a href="classfpmas_1_1model_1_1LoadBalancingTask.html">fpmas::model::LoadBalancingTask</a></div><div class="ttdef"><b>Definition:</b> model.h:204</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
