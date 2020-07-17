@@ -11,7 +11,7 @@ namespace fpmas { namespace api { namespace graph {
 	/**
 	 * DistributedNode API.
 	 *
-	 * DistributedNode is an extension of the Node API, specialized using
+	 * The DistributedNode is an extension of the Node API, specialized using
 	 * DistributedId and DistributedEdge, and introduces some distribution
 	 * related concepts.
 	 *

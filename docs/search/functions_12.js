@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['_7edatapack_363',['~DataPack',['../classfpmas_1_1api_1_1communication_1_1DataPack.html#a6de0888fc740e85083c807cdafb54ec3',1,'fpmas::api::communication::DataPack']]],
-  ['_7empicommunicator_364',['~MpiCommunicator',['../classfpmas_1_1communication_1_1MpiCommunicator.html#a868d5f7039acbde8aaf33f658fbd0bef',1,'fpmas::communication::MpiCommunicator']]]
+  ['write_5fzoltan_5fid_390',['write_zoltan_id',['../namespacefpmas_1_1load__balancing_1_1zoltan.html#a360d5f1c6f8ae085606a3894f9352ba2',1,'fpmas::load_balancing::zoltan']]]
 ];

@@ -62,6 +62,10 @@ namespace fpmas { namespace api {
 				 * Upon return, the NodeMap returned by getNodes() must
 				 * contain an entry `{node->getId(), node}`.
 				 *
+				 * Callbacks registered using addCallOnInsertNode() are also
+				 * called after the node has effectively been inserted into the
+				 * graph.
+				 *
 				 * @param node pointer to node to insert in the graph
 				 */
 				virtual void insert(NodeType* node) = 0;
@@ -71,6 +75,10 @@ namespace fpmas { namespace api {
 				 *
 				 * Upon return, the EdgeMap returned by getEdges() must
 				 * contain an entry `{edge->getId(), edge}`.
+				 *
+				 * Callbacks registered using addCallOnInsertEdge() are also
+				 * called after the edge has effectively been inserted into the
+				 * graph.
 				 *
 				 * @param edge pointer to edge to insert in the graph
 				 */

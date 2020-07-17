@@ -751,6 +751,7 @@ template&lt;typename NodeType , typename EdgeType &gt; </div>
 </div><div class="memdoc">
 <p>Inserts an <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html">Edge</a> into the graph.</p>
 <p>Upon return, the EdgeMap returned by <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac2f167255bd606a932823a0051953ef7">getEdges()</a> must contain an entry <code>{edge-&gt;getId(), edge}</code>.</p>
+<p>Callbacks registered using <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ad67b1bb8ba0d83adb66f78ff8ee8d2d0">addCallOnInsertEdge()</a> are also called after the edge has effectively been inserted into the graph.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">edge</td><td>pointer to edge to insert in the graph </td></tr>
@@ -789,6 +790,7 @@ template&lt;typename NodeType , typename EdgeType &gt; </div>
 </div><div class="memdoc">
 <p>Inserts a <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html">Node</a> into the graph.</p>
 <p>Upon return, the NodeMap returned by <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">getNodes()</a> must contain an entry <code>{node-&gt;getId(), node}</code>.</p>
+<p>Callbacks registered using <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a50add3d4a23575f3f337a31a385b3175">addCallOnInsertNode()</a> are also called after the node has effectively been inserted into the graph.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">node</td><td>pointer to node to insert in the graph </td></tr>

@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['migrate_330',['migrate',['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a6550b59def1df2ff4570debf69164cbb',1,'fpmas::api::communication::TypedMpi::migrate()'],['../classfpmas_1_1communication_1_1TypedMpi.html#a4e6121faafbd32343eb71327d1b8bf2e',1,'fpmas::communication::TypedMpi::migrate()']]],
-  ['mpicommunicator_331',['MpiCommunicator',['../classfpmas_1_1communication_1_1MpiCommunicator.html#a42eb9726161eaef0864433d57c1153e6',1,'fpmas::communication::MpiCommunicator']]],
-  ['mutex_332',['mutex',['../classfpmas_1_1api_1_1graph_1_1DistributedNode.html#aa0e98df57f3a60863e96cde279e88941',1,'fpmas::api::graph::DistributedNode::mutex()=0'],['../classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab317f38259f5465264141f2ebc514bbb',1,'fpmas::api::graph::DistributedNode::mutex() const =0']]]
+  ['link_352',['link',['../classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aef8d1101909c65ef27ce861ff9dd1907',1,'fpmas::api::graph::DistributedGraph::link()'],['../classfpmas_1_1graph_1_1DistributedGraph.html#a6c51a87d07e145469e919abaaf191953',1,'fpmas::graph::DistributedGraph::link()']]],
+  ['linkin_353',['linkIn',['../classfpmas_1_1api_1_1graph_1_1Node.html#a62274d50d14a13a140522c48b59c5870',1,'fpmas::api::graph::Node::linkIn()'],['../classfpmas_1_1graph_1_1Node.html#ad5a591f477dd47be0c4211527ce71e53',1,'fpmas::graph::Node::linkIn()']]],
+  ['linkout_354',['linkOut',['../classfpmas_1_1api_1_1graph_1_1Node.html#ac1a4abf794607f885dabf23a475d2c33',1,'fpmas::api::graph::Node::linkOut()'],['../classfpmas_1_1graph_1_1Node.html#ab740cbe8dac62ae82afb6d48a376cb33',1,'fpmas::graph::Node::linkOut()']]]
 ];

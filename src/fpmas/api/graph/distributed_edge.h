@@ -10,7 +10,7 @@ namespace fpmas {namespace api { namespace graph {
 	/**
 	 * DistributedEdge API.
 	 *
-	 * DistributedEdge is an extension of the Edge API, specialized using
+	 * The DistributedEdge is an extension of the Edge API, specialized using
 	 * DistributedId and DistributedNode, and introduces some distribution
 	 * related concepts.
 	 *

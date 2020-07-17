@@ -80,6 +80,14 @@ $(function() {
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a50add3d4a23575f3f337a31a385b3175">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a9220e20bc66310cea8fb7ac9c331d4a5">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 </li>
+<li>addCallOnSetDistant()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a2dd0a1dd7932f5dfd49f40f41eda3603">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#adb09baf2cdc57c699c22ff823e309f97">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
+<li>addCallOnSetLocal()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a24255b155585d63e1bddacb9980e7937">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a107d2b1f5b0afc14099fb42037693d4a">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
 <li>allToAll()
 : <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5f9b367a6b43c83d03aac44f7a132416">fpmas::api::communication::MpiCommunicator</a>
 , <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a4758f1f7292de9d85ef8897e6ced74f9">fpmas::communication::MpiCommunicator</a>
@@ -88,8 +96,16 @@ $(function() {
 
 
 <h3><a id="index_b"></a>- b -</h3><ul>
+<li>balance()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a9b1c16fc31c0fbc8915be7a69707b937">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#aad700c11c4b276d72e8b9ab1b2549dd4">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
 <li>buffer
 : <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a11c47710cc89f0dd6c7b8343a0749560">fpmas::api::communication::DataPack</a>
+</li>
+<li>buildNode()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ad9a7ca58d53e04a42d3a977f3c30e7ac">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a10627c7385f0dc08e18172cb28247360">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
 </li>
 </ul>
 
@@ -101,6 +117,10 @@ $(function() {
 </li>
 <li>count
 : <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a2142f9784dfe9fcb5f6e86f7280852c4">fpmas::api::communication::DataPack</a>
+</li>
+<li>currentEdgeId()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a51b440963789646d5706651ddea15bee">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a9f0ae6247ea067db7d1cbdbadda375cc">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
 </li>
 <li>currentNodeId()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#af04f1c54519e5110ca749292264b39f7">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
@@ -114,10 +134,14 @@ $(function() {
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab2bc02a3e06cfd758161013039a84cee">fpmas::api::graph::DistributedNode&lt; T &gt;</a>
 </li>
 <li>DataPack()
-: <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a27c701df159c117021cf8e65f779bc97">fpmas::api::communication::DataPack</a>
+: <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a78fcdfd042fbcc8280890acc3051d63f">fpmas::api::communication::DataPack</a>
+</li>
+<li>distribute()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a63f19151be3a12d5cd4f996e161353ee">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a4533e6913a5213a1074b21e5897ddebf">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
 </li>
 <li>DistributedId()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#af3244205451362649fde23bb94812458">fpmas::api::graph::DistributedId</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a413336d079c79aeec4e77f75966b9ea6">fpmas::api::graph::DistributedId</a>
 </li>
 </ul>
 
@@ -178,15 +202,23 @@ $(function() {
 <li>getLocation()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a349e26729e7865ec7adf4fb282a541a9">fpmas::api::graph::DistributedNode&lt; T &gt;</a>
 </li>
+<li>getLocationManager()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a3edfe79909a52a50e9aa230ed62ccc63">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a1ad6eb6458aa0138c51bff85703883ce">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
 <li>getMpiComm()
 : <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a2c4af2fbf6d4798a83db9272034c80f4">fpmas::communication::MpiCommunicator</a>
+</li>
+<li>getMpiCommunicator()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a3df877f59f5b33570e3b5c12dd216a27">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#afbfbbe1eda9f32e44c28647ad0b727d8">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
 </li>
 <li>getMpiGroup()
 : <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#aee139cff2e4cb6e3a031e0ff3e2c30ca">fpmas::communication::MpiCommunicator</a>
 </li>
 <li>getNode()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a61501e99ee00b6b7444ad50cba4fb656">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
-, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a1494027671ee2aa451a78209eee9c620">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 </li>
 <li>getNodes()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
@@ -233,13 +265,21 @@ $(function() {
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#ae249f585c331da506ef69af0a6407283">fpmas::api::graph::Edge&lt; _IdType, _NodeType &gt;</a>
 , <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#ae661da329f949a84e15c578a66ac20cc">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 </li>
+<li>importEdge()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a8e286c4a21751597957e3b689e372457">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#ae30547e96ea9891a37ea796865d95930">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
+<li>importNode()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a7c8863184625a319f1329a14eab71b46">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a84f6b14182b23c8182bf7204d88714a8">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
 <li>inNeighbors()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#ad9d7a7ba92769f753c043a07545b2aaa">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Node.html#a2c353c5bede693df83b973b7c3d793ee">fpmas::graph::Node&lt; IdType, _EdgeType &gt;</a>
 </li>
 <li>insert()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a92df198937356ee94158f3982245078b">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
-, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#aa9ddeefa71508445bd27e9a6ae42f7e8">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a6ea579fada474c4c094646dae5f31668">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 </li>
 <li>Iprobe()
 : <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a0580a82623a7d0818deff28fb2513a7e">fpmas::api::communication::MpiCommunicator</a>
@@ -255,6 +295,10 @@ $(function() {
 
 
 <h3><a id="index_l"></a>- l -</h3><ul>
+<li>link()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aef8d1101909c65ef27ce861ff9dd1907">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a6c51a87d07e145469e919abaaf191953">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
 <li>linkIn()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#a62274d50d14a13a140522c48b59c5870">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Node.html#ad5a591f477dd47be0c4211527ce71e53">fpmas::graph::Node&lt; IdType, _EdgeType &gt;</a>
@@ -350,6 +394,10 @@ $(function() {
 <li>releaseAcquire()
 : <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1MutexClient.html#a86036345e91e9a93e68c606cc7803ffe">fpmas::synchro::hard::MutexClient&lt; T &gt;</a>
 </li>
+<li>removeNode()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a0a20e27bc1434cee36d760278aa79b27">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#ac9a2f3abb7beb8b3e61210a22acd027d">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
 </ul>
 
 
@@ -392,6 +440,10 @@ $(function() {
 , <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a3bbad9ecc09a033de17d3457964a9783">fpmas::api::graph::DistributedNode&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html#a13b79f62b3fcbefb1596b7d049412dc8">fpmas::graph::DistributedEdge&lt; T &gt;</a>
 </li>
+<li>synchronize()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a17fae0be47565cc7749b258aee6e23a0">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
 </ul>
 
 
@@ -410,6 +462,10 @@ $(function() {
 
 
 <h3><a id="index_u"></a>- u -</h3><ul>
+<li>unlink()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#adbd6818d91cea7a3a4856aed08a42527">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a97b7e15eeb0be98ef25ec9e13d2319d3">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
+</li>
 <li>unlinkIn()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#a897418a706e39920e91a06c150a2d0b9">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Node.html#a66997e71a7c8f7b35d8e7af53d2e3627">fpmas::graph::Node&lt; IdType, _EdgeType &gt;</a>

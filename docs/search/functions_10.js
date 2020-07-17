@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['unlinkin_360',['unlinkIn',['../classfpmas_1_1api_1_1graph_1_1Node.html#a897418a706e39920e91a06c150a2d0b9',1,'fpmas::api::graph::Node::unlinkIn()'],['../classfpmas_1_1graph_1_1Node.html#a66997e71a7c8f7b35d8e7af53d2e3627',1,'fpmas::graph::Node::unlinkIn()']]],
-  ['unlinkout_361',['unlinkOut',['../classfpmas_1_1api_1_1graph_1_1Node.html#a0f8d4adbc10082dcc6591675a5c320c8',1,'fpmas::api::graph::Node::unlinkOut()'],['../classfpmas_1_1graph_1_1Node.html#a84a55ed24509fa83a6d5bd79844459bf',1,'fpmas::graph::Node::unlinkOut()']]]
+  ['test_384',['test',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#aa877e3ec7890bdd376b840af11ffd727',1,'fpmas::api::communication::MpiCommunicator::test()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a17ed5fd7d0546bcdfa9ceac936fc3b27',1,'fpmas::communication::MpiCommunicator::test()']]],
+  ['to_5fjson_385',['to_json',['../structnlohmann_1_1adl__serializer_3_01DistributedId_01_4.html#a38bb1d683f2def40f44c81692d7c8bf4',1,'nlohmann::adl_serializer&lt; DistributedId &gt;']]],
+  ['typedmpi_386',['TypedMpi',['../classfpmas_1_1communication_1_1TypedMpi.html#aac5340a22599e2ec82c318743913dc7e',1,'fpmas::communication::TypedMpi']]]
 ];
