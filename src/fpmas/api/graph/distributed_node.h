@@ -24,7 +24,6 @@ namespace fpmas { namespace api { namespace graph {
 	class DistributedNode
 		: public virtual fpmas::api::graph::Node<DistributedId, DistributedEdge<T>> {
 		typedef fpmas::api::graph::Node<DistributedId, DistributedEdge<T>> NodeBase;
-			protected:
 
 		public:
 
@@ -80,8 +79,30 @@ namespace fpmas { namespace api { namespace graph {
 			virtual const T& data() const = 0;
 
 
-			virtual void setMutex(synchro::Mutex<T>*) = 0;
+			/**
+			 * Sets the internal mutex of the node.
+			 *
+			 * The concrete mutex type used might depend on the graph
+			 * synchronization mode.
+			 *
+			 * @param mutex node mutex
+			 */
+			virtual void setMutex(synchro::Mutex<T>* mutex) = 0;
+
+			/**
+			 * Internal node mutex.
+			 *
+			 * The role of the mutex is to protect the access to the internal T
+			 * instance. The data references return by the Mutex methods
+			 * correspond the node's internal T instance.
+			 *
+			 * @return pointer to the internal node mutex
+			 */
 			virtual synchro::Mutex<T>* mutex() = 0;
+
+			/**
+			 * \copydoc mutex()
+			 */
 			virtual const synchro::Mutex<T>* mutex() const = 0;
 
 			virtual ~DistributedNode() {}

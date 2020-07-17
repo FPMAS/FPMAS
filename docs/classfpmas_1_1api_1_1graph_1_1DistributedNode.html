@@ -89,14 +89,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab2bc02a3e06cfd758161013039a84cee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9d35e5aef703945a2a789a0c2349c3e"><td class="memItemLeft" align="right" valign="top">virtual const T &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ad9d35e5aef703945a2a789a0c2349c3e">data</a> () const =0</td></tr>
 <tr class="separator:ad9d35e5aef703945a2a789a0c2349c3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7d808e18d78a6fb55f40d24f36e12704"><td class="memItemLeft" align="right" valign="top"><a id="a7d808e18d78a6fb55f40d24f36e12704"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>setMutex</b> (<a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt; T &gt; *)=0</td></tr>
-<tr class="separator:a7d808e18d78a6fb55f40d24f36e12704"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0e98df57f3a60863e96cde279e88941"><td class="memItemLeft" align="right" valign="top"><a id="aa0e98df57f3a60863e96cde279e88941"></a>
-virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>mutex</b> ()=0</td></tr>
+<tr class="memitem:a4d1b901cb0cae83c2e419ca94bb12597"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a4d1b901cb0cae83c2e419ca94bb12597">setMutex</a> (<a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt; T &gt; *<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#aa0e98df57f3a60863e96cde279e88941">mutex</a>)=0</td></tr>
+<tr class="separator:a4d1b901cb0cae83c2e419ca94bb12597"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0e98df57f3a60863e96cde279e88941"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#aa0e98df57f3a60863e96cde279e88941">mutex</a> ()=0</td></tr>
 <tr class="separator:aa0e98df57f3a60863e96cde279e88941"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab317f38259f5465264141f2ebc514bbb"><td class="memItemLeft" align="right" valign="top"><a id="ab317f38259f5465264141f2ebc514bbb"></a>
-virtual const <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><b>mutex</b> () const =0</td></tr>
+<tr class="memitem:ab317f38259f5465264141f2ebc514bbb"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab317f38259f5465264141f2ebc514bbb">mutex</a> () const =0</td></tr>
 <tr class="separator:ab317f38259f5465264141f2ebc514bbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -203,6 +200,68 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="ab317f38259f5465264141f2ebc514bbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab317f38259f5465264141f2ebc514bbb">&#9670;&nbsp;</a></span>mutex() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt;T&gt;* <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt;::mutex </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p>Internal node mutex.</p>
+<p>The role of the mutex is to protect the access to the internal T instance. The data references return by the Mutex methods correspond the node's internal T instance.</p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the internal node mutex </dd></dl>
+
+</div>
+</div>
+<a id="aa0e98df57f3a60863e96cde279e88941"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0e98df57f3a60863e96cde279e88941">&#9670;&nbsp;</a></span>mutex() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt;T&gt;* <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt;::mutex </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Internal node mutex.</p>
+<p>The role of the mutex is to protect the access to the internal T instance. The data references return by the Mutex methods correspond the node's internal T instance.</p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to the internal node mutex </dd></dl>
+
+</div>
+</div>
 <a id="abf9349f578ce3d2e6e1d9b4127de2373"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abf9349f578ce3d2e6e1d9b4127de2373">&#9670;&nbsp;</a></span>setLocation()</h2>
 
@@ -233,6 +292,42 @@ template&lt;typename T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">location</td><td>new location </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a4d1b901cb0cae83c2e419ca94bb12597"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d1b901cb0cae83c2e419ca94bb12597">&#9670;&nbsp;</a></span>setMutex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt;::setMutex </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">synchro::Mutex</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>mutex</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the internal mutex of the node.</p>
+<p>The concrete mutex type used might depend on the graph synchronization mode.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mutex</td><td>node mutex </td></tr>
   </table>
   </dd>
 </dl>
