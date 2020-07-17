@@ -81,7 +81,7 @@ $(function() {
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>fpmas { <span class="keyword">namespace </span>synchro { <span class="keyword">namespace </span>hard {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">using</span> api::graph::LocationState;</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">using</span> <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">api::graph::LocationState</a>;</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;    <span class="keyword">using</span> api::synchro::hard::MutexRequestType;</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
@@ -116,8 +116,8 @@ $(function() {
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                <span class="keywordtype">void</span> pushRequest(<a class="code" href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">Request</a> request) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                std::queue&lt;Request&gt; requestsToProcess() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                T&amp; data()<span class="keyword"> override </span>{<span class="keywordflow">return</span> node-&gt;data();}</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                <span class="keyword">const</span> T&amp; data()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> node-&gt;data();}</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;                T&amp; data()<span class="keyword"> override </span>{<span class="keywordflow">return</span> node-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab2bc02a3e06cfd758161013039a84cee">data</a>();}</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                <span class="keyword">const</span> T&amp; data()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> node-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab2bc02a3e06cfd758161013039a84cee">data</a>();}</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                <span class="keyword">const</span> T&amp; read() <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                <span class="keywordtype">void</span> releaseRead() <span class="keyword">override</span>;</div>
@@ -281,6 +281,8 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1MutexClient_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1MutexClient.html">fpmas::api::synchro::hard::MutexClient</a></div><div class="ttdef"><b>Definition:</b> client_server.h:27</div></div>
 <div class="ttc" id="astructfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest_html"><div class="ttname"><a href="structfpmas_1_1api_1_1synchro_1_1hard_1_1MutexRequest.html">fpmas::api::synchro::hard::MutexRequest</a></div><div class="ttdef"><b>Definition:</b> client_server.h:9</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a3436e2c1520417414ff6059c45d9e02f"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">fpmas::api::graph::LocationState</a></div><div class="ttdeci">LocationState</div><div class="ttdef"><b>Definition:</b> location_state.h:11</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html_ab2bc02a3e06cfd758161013039a84cee"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab2bc02a3e06cfd758161013039a84cee">fpmas::api::graph::DistributedNode::data</a></div><div class="ttdeci">virtual T &amp; data()=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1HardSyncMutex_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1HardSyncMutex.html">fpmas::api::synchro::hard::HardSyncMutex</a></div><div class="ttdef"><b>Definition:</b> client_server.h:52</div></div>
 <div class="ttc" id="aclassfpmas_1_1synchro_1_1hard_1_1HardSyncMutex_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">fpmas::synchro::hard::HardSyncMutex</a></div><div class="ttdef"><b>Definition:</b> hard_sync_mutex.h:18</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1hard_1_1MutexServer_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1hard_1_1MutexServer.html">fpmas::api::synchro::hard::MutexServer</a></div><div class="ttdef"><b>Definition:</b> client_server.h:54</div></div>

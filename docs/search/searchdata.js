@@ -5,7 +5,9 @@ var indexSectionsWithContent =
   2: "f",
   3: "acdefghilmnoprstuw~",
   4: "bcimrs",
-  5: "eiln"
+  5: "eiln",
+  6: "l",
+  7: "dl"
 };
 
 var indexSectionNames =
@@ -15,7 +17,9 @@ var indexSectionNames =
   2: "namespaces",
   3: "functions",
   4: "variables",
-  5: "typedefs"
+  5: "typedefs",
+  6: "enums",
+  7: "enumvalues"
 };
 
 var indexSectionLabels =
@@ -25,6 +29,8 @@ var indexSectionLabels =
   2: "Namespaces",
   3: "Functions",
   4: "Variables",
-  5: "Typedefs"
+  5: "Typedefs",
+  6: "Enumerations",
+  7: "Enumerator"
 };
 

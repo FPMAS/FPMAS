@@ -8,19 +8,78 @@
 
 namespace fpmas { namespace api { namespace graph {
 
+	/**
+	 * DistributedNode API.
+	 *
+	 * DistributedNode is an extension of the Node API, specialized using
+	 * DistributedId and DistributedEdge, and introduces some distribution
+	 * related concepts.
+	 *
+	 * The class also introduces T, the type of the data contained in the
+	 * DistributedNode. Each DistributedNode instance owns an instance of T.
+	 *
+	 * @tparam T data type
+	 */
 	template<typename T>
 	class DistributedNode
 		: public virtual fpmas::api::graph::Node<DistributedId, DistributedEdge<T>> {
 		typedef fpmas::api::graph::Node<DistributedId, DistributedEdge<T>> NodeBase;
-		public:
-			virtual int getLocation() const = 0;
-			virtual void setLocation(int) = 0;
+			protected:
 
+		public:
+
+			/**
+			 * Rank of the process on which this node is currently located.
+			 *
+			 * If the node is LOCAL, this rank corresponds to the current
+			 * process.
+			 *
+			 * @return node location
+			 */
+			virtual int getLocation() const = 0;
+
+			/**
+			 * Updates the location of the node.
+			 *
+			 * Only used for internal / serialization.
+			 *
+			 * @param location new location
+			 */
+			virtual void setLocation(int location) = 0;
+
+			/**
+			 * Current state of the node.
+			 *
+			 * A DistributedNode is LOCAL iff it is currently hosted and managed by the current
+			 * process.
+			 * A DISTANT DistributedNode correspond to a representation of a
+			 * node currently hosted by an other process.
+			 *
+			 * @return current node state
+			 */
 			virtual LocationState state() const = 0;
+
+			/**
+			 * Updates the state of the node.
+			 *
+			 * Only used for internal / serialization.
+			 *
+			 * @param state new state
+			 */
 			virtual void setState(LocationState state) = 0;
 
+			/**
+			 * Returns a reference to the internal node data.
+			 *
+			 * @return reference to node's data
+			 */
 			virtual T& data() = 0;
+			/**
+			 * \copydoc data()
+			 */
 			virtual const T& data() const = 0;
+
+
 			virtual void setMutex(synchro::Mutex<T>*) = 0;
 			virtual synchro::Mutex<T>& mutex() = 0;
 			virtual const synchro::Mutex<T>& mutex() const = 0;

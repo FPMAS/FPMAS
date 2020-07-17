@@ -2,7 +2,7 @@
 #define ID_API_H
 
 #include <functional>
-#include "nlohmann/json.hpp"
+#include <string>
 
 namespace fpmas { namespace api { namespace graph {
 

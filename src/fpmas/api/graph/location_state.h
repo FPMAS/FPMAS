@@ -4,8 +4,23 @@
 #include <iostream>
 
 namespace fpmas { namespace api { namespace graph {
+	/**
+	 * Enum describing the current state of a DistributedNode or a
+	 * DistributedEdge.
+	 */
 	enum LocationState {
+		/**
+		 * A DistributedNode is LOCAL iff it is currently hosted and managed by the current
+		 * process.
+		 * A DistributedEdge is LOCAL iff its source and target nodes are LOCAL.
+		 */
 		LOCAL,
+		/**
+		 * A DistributedNode is DISTANT iff it is a representation of a Node currently
+		 * hosted by an other process.
+		 * A DistributedEdge is DISTANT iff at least of its target and source
+		 * nodes is DISTANT.
+		 */
 		DISTANT
 	};
 

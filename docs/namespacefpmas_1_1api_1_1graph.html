@@ -105,15 +105,15 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a3436e2c1520417414ff6059c45d9e02f"><td class="memItemLeft" align="right" valign="top"><a id="a3436e2c1520417414ff6059c45d9e02f"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>LocationState</b> { <b>LOCAL</b>, 
-<b>DISTANT</b>
+<tr class="memitem:a3436e2c1520417414ff6059c45d9e02f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LocationState</a> { <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa70a499dd022fa8f84306734e1240d1f9">LOCAL</a>, 
+<a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa5f6df4aaed961263dac8b13311f22c73">DISTANT</a>
  }</td></tr>
 <tr class="separator:a3436e2c1520417414ff6059c45d9e02f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a131b1b921a1f3636426e6a8ebcf10722"><td class="memItemLeft" align="right" valign="top"><a id="a131b1b921a1f3636426e6a8ebcf10722"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const LocationState &amp;loc)</td></tr>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LocationState</a> &amp;loc)</td></tr>
 <tr class="separator:a131b1b921a1f3636426e6a8ebcf10722"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -131,6 +131,28 @@ std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operato
       </table>
 </div><div class="memdoc">
 <p>Type used to index layers. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a3436e2c1520417414ff6059c45d9e02f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3436e2c1520417414ff6059c45d9e02f">&#9670;&nbsp;</a></span>LocationState</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">fpmas::api::graph::LocationState</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Enum describing the current state of a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> or a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a3436e2c1520417414ff6059c45d9e02fa70a499dd022fa8f84306734e1240d1f9"></a>LOCAL&#160;</td><td class="fielddoc"><p>A <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is LOCAL iff it is currently hosted and managed by the current process. A <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> is LOCAL iff its source and target nodes are LOCAL. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a3436e2c1520417414ff6059c45d9e02fa5f6df4aaed961263dac8b13311f22c73"></a>DISTANT&#160;</td><td class="fielddoc"><p>A <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is DISTANT iff it is a representation of a <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html">Node</a> currently hosted by an other process. A <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> is DISTANT iff at least of its target and source nodes is DISTANT. </p>
+</td></tr>
+</table>
 
 </div>
 </div>
