@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['write_5fzoltan_5fid_316',['write_zoltan_id',['../namespacefpmas_1_1load__balancing_1_1zoltan.html#a360d5f1c6f8ae085606a3894f9352ba2',1,'fpmas::load_balancing::zoltan']]]
+  ['unlinkin_334',['unlinkIn',['../classfpmas_1_1api_1_1graph_1_1Node.html#a897418a706e39920e91a06c150a2d0b9',1,'fpmas::api::graph::Node::unlinkIn()'],['../classfpmas_1_1graph_1_1Node.html#a66997e71a7c8f7b35d8e7af53d2e3627',1,'fpmas::graph::Node::unlinkIn()']]],
+  ['unlinkout_335',['unlinkOut',['../classfpmas_1_1api_1_1graph_1_1Node.html#a0f8d4adbc10082dcc6591675a5c320c8',1,'fpmas::api::graph::Node::unlinkOut()'],['../classfpmas_1_1graph_1_1Node.html#a84a55ed24509fa83a6d5bd79844459bf',1,'fpmas::graph::Node::unlinkOut()']]]
 ];

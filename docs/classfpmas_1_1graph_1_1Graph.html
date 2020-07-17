@@ -98,93 +98,72 @@ Public Types</h2></td></tr>
 <tr class="memitem:a481217eba0332997aaf359eaef036367"><td class="memItemLeft" align="right" valign="top"><a id="a481217eba0332997aaf359eaef036367"></a>
 typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">api::graph::Graph</a>&lt; NodeType, EdgeType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>GraphBase</b></td></tr>
 <tr class="separator:a481217eba0332997aaf359eaef036367"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe364671e442294515e14bbffdd6dfba"><td class="memItemLeft" align="right" valign="top"><a id="afe364671e442294515e14bbffdd6dfba"></a>
-typedef NodeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdType</b></td></tr>
+<tr class="memitem:afe364671e442294515e14bbffdd6dfba"><td class="memItemLeft" align="right" valign="top">typedef NodeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a></td></tr>
 <tr class="separator:afe364671e442294515e14bbffdd6dfba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48e181d44f84794298ec7c06fd2e5d14"><td class="memItemLeft" align="right" valign="top"><a id="a48e181d44f84794298ec7c06fd2e5d14"></a>
-typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename NodeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdHash</b></td></tr>
+<tr class="memitem:a48e181d44f84794298ec7c06fd2e5d14"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename NodeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#a48e181d44f84794298ec7c06fd2e5d14">NodeIdHash</a></td></tr>
 <tr class="separator:a48e181d44f84794298ec7c06fd2e5d14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace4182051c68558b00dfa1b57f86eb6b"><td class="memItemLeft" align="right" valign="top"><a id="ace4182051c68558b00dfa1b57f86eb6b"></a>
-typedef EdgeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIdType</b></td></tr>
+<tr class="memitem:ace4182051c68558b00dfa1b57f86eb6b"><td class="memItemLeft" align="right" valign="top">typedef EdgeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a></td></tr>
 <tr class="separator:ace4182051c68558b00dfa1b57f86eb6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c2232a886453eee9932c4023b96bb5c"><td class="memItemLeft" align="right" valign="top"><a id="a7c2232a886453eee9932c4023b96bb5c"></a>
-typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename EdgeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIdHash</b></td></tr>
+<tr class="memitem:a7c2232a886453eee9932c4023b96bb5c"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename EdgeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#a7c2232a886453eee9932c4023b96bb5c">EdgeIdHash</a></td></tr>
 <tr class="separator:a7c2232a886453eee9932c4023b96bb5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac43fded831674b513ef7b1535d9d1814"><td class="memItemLeft" align="right" valign="top"><a id="ac43fded831674b513ef7b1535d9d1814"></a>
-typedef std::unordered_map&lt; NodeIdType, NodeType *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeMap</b></td></tr>
+<tr class="memitem:ac43fded831674b513ef7b1535d9d1814"><td class="memItemLeft" align="right" valign="top">typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>, NodeType *, <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a48e181d44f84794298ec7c06fd2e5d14">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#ac43fded831674b513ef7b1535d9d1814">NodeMap</a></td></tr>
 <tr class="separator:ac43fded831674b513ef7b1535d9d1814"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a254989187dd47a7a5e2afd9647d13cf2"><td class="memItemLeft" align="right" valign="top"><a id="a254989187dd47a7a5e2afd9647d13cf2"></a>
-typedef std::unordered_map&lt; EdgeIdType, EdgeType *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">EdgeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeMap</b></td></tr>
+<tr class="memitem:a254989187dd47a7a5e2afd9647d13cf2"><td class="memItemLeft" align="right" valign="top">typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>, EdgeType *, <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a7c2232a886453eee9932c4023b96bb5c">EdgeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#a254989187dd47a7a5e2afd9647d13cf2">EdgeMap</a></td></tr>
 <tr class="separator:a254989187dd47a7a5e2afd9647d13cf2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classfpmas_1_1api_1_1graph_1_1Graph')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a></td></tr>
-<tr class="memitem:afe364671e442294515e14bbffdd6dfba inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="afe364671e442294515e14bbffdd6dfba"></a>
-typedef NodeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdType</b></td></tr>
+<tr class="memitem:afe364671e442294515e14bbffdd6dfba inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">typedef NodeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a></td></tr>
 <tr class="separator:afe364671e442294515e14bbffdd6dfba inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace4182051c68558b00dfa1b57f86eb6b inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="ace4182051c68558b00dfa1b57f86eb6b"></a>
-typedef EdgeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIdType</b></td></tr>
+<tr class="memitem:ace4182051c68558b00dfa1b57f86eb6b inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">typedef EdgeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a></td></tr>
 <tr class="separator:ace4182051c68558b00dfa1b57f86eb6b inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48e181d44f84794298ec7c06fd2e5d14 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a48e181d44f84794298ec7c06fd2e5d14"></a>
-typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename NodeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdHash</b></td></tr>
+<tr class="memitem:a48e181d44f84794298ec7c06fd2e5d14 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename NodeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a48e181d44f84794298ec7c06fd2e5d14">NodeIdHash</a></td></tr>
 <tr class="separator:a48e181d44f84794298ec7c06fd2e5d14 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c2232a886453eee9932c4023b96bb5c inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a7c2232a886453eee9932c4023b96bb5c"></a>
-typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename EdgeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeIdHash</b></td></tr>
+<tr class="memitem:a7c2232a886453eee9932c4023b96bb5c inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; typename EdgeType::IdType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a7c2232a886453eee9932c4023b96bb5c">EdgeIdHash</a></td></tr>
 <tr class="separator:a7c2232a886453eee9932c4023b96bb5c inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac43fded831674b513ef7b1535d9d1814 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="ac43fded831674b513ef7b1535d9d1814"></a>
-typedef std::unordered_map&lt; NodeIdType, NodeType *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeMap</b></td></tr>
+<tr class="memitem:ac43fded831674b513ef7b1535d9d1814 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>, NodeType *, <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a48e181d44f84794298ec7c06fd2e5d14">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac43fded831674b513ef7b1535d9d1814">NodeMap</a></td></tr>
 <tr class="separator:ac43fded831674b513ef7b1535d9d1814 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a254989187dd47a7a5e2afd9647d13cf2 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a254989187dd47a7a5e2afd9647d13cf2"></a>
-typedef std::unordered_map&lt; EdgeIdType, EdgeType *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">EdgeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>EdgeMap</b></td></tr>
+<tr class="memitem:a254989187dd47a7a5e2afd9647d13cf2 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>, EdgeType *, <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a7c2232a886453eee9932c4023b96bb5c">EdgeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a254989187dd47a7a5e2afd9647d13cf2">EdgeMap</a></td></tr>
 <tr class="separator:a254989187dd47a7a5e2afd9647d13cf2 inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa9ddeefa71508445bd27e9a6ae42f7e8"><td class="memItemLeft" align="right" valign="top"><a id="aa9ddeefa71508445bd27e9a6ae42f7e8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (NodeType *) override</td></tr>
+<tr class="memitem:aa9ddeefa71508445bd27e9a6ae42f7e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#aa9ddeefa71508445bd27e9a6ae42f7e8">insert</a> (NodeType *) override</td></tr>
 <tr class="separator:aa9ddeefa71508445bd27e9a6ae42f7e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6ea579fada474c4c094646dae5f31668"><td class="memItemLeft" align="right" valign="top"><a id="a6ea579fada474c4c094646dae5f31668"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (EdgeType *) override</td></tr>
+<tr class="memitem:a6ea579fada474c4c094646dae5f31668"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#a6ea579fada474c4c094646dae5f31668">insert</a> (EdgeType *) override</td></tr>
 <tr class="separator:a6ea579fada474c4c094646dae5f31668"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac77c74d7ccdf20a9e08815466f38a62e"><td class="memItemLeft" align="right" valign="top"><a id="ac77c74d7ccdf20a9e08815466f38a62e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (NodeType *) override</td></tr>
+<tr class="memitem:ac77c74d7ccdf20a9e08815466f38a62e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#ac77c74d7ccdf20a9e08815466f38a62e">erase</a> (NodeType *) override</td></tr>
 <tr class="separator:ac77c74d7ccdf20a9e08815466f38a62e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acef1a514dac770a2494e94eee1be3e20"><td class="memItemLeft" align="right" valign="top"><a id="acef1a514dac770a2494e94eee1be3e20"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (EdgeType *) override</td></tr>
+<tr class="memitem:acef1a514dac770a2494e94eee1be3e20"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#acef1a514dac770a2494e94eee1be3e20">erase</a> (EdgeType *) override</td></tr>
 <tr class="separator:acef1a514dac770a2494e94eee1be3e20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9220e20bc66310cea8fb7ac9c331d4a5"><td class="memItemLeft" align="right" valign="top"><a id="a9220e20bc66310cea8fb7ac9c331d4a5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnInsertNode</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *callback) override</td></tr>
+<tr class="memitem:a9220e20bc66310cea8fb7ac9c331d4a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#a9220e20bc66310cea8fb7ac9c331d4a5">addCallOnInsertNode</a> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *callback) override</td></tr>
 <tr class="separator:a9220e20bc66310cea8fb7ac9c331d4a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a45ace538ed2d9c037dce1a743039173b"><td class="memItemLeft" align="right" valign="top"><a id="a45ace538ed2d9c037dce1a743039173b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnEraseNode</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *callback) override</td></tr>
+<tr class="memitem:a45ace538ed2d9c037dce1a743039173b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#a45ace538ed2d9c037dce1a743039173b">addCallOnEraseNode</a> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *callback) override</td></tr>
 <tr class="separator:a45ace538ed2d9c037dce1a743039173b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6ca183ef662d87198e3991e11baf26c"><td class="memItemLeft" align="right" valign="top"><a id="af6ca183ef662d87198e3991e11baf26c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnInsertEdge</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; EdgeType * &gt; *callback) override</td></tr>
+<tr class="memitem:af6ca183ef662d87198e3991e11baf26c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#af6ca183ef662d87198e3991e11baf26c">addCallOnInsertEdge</a> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; EdgeType * &gt; *callback) override</td></tr>
 <tr class="separator:af6ca183ef662d87198e3991e11baf26c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1edb6d42eba7841d071604a4e0898458"><td class="memItemLeft" align="right" valign="top"><a id="a1edb6d42eba7841d071604a4e0898458"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addCallOnEraseEdge</b> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; EdgeType * &gt; *callback) override</td></tr>
+<tr class="memitem:a1edb6d42eba7841d071604a4e0898458"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#a1edb6d42eba7841d071604a4e0898458">addCallOnEraseEdge</a> (<a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; EdgeType * &gt; *callback) override</td></tr>
 <tr class="separator:a1edb6d42eba7841d071604a4e0898458"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1573596f78398662158f339049646af2"><td class="memItemLeft" align="right" valign="top"><a id="a1573596f78398662158f339049646af2"></a>
-const NodeIdType &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>currentNodeId</b> () const override</td></tr>
+<tr class="memitem:a1573596f78398662158f339049646af2"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Graph.html#a1573596f78398662158f339049646af2">currentNodeId</a> () const override</td></tr>
 <tr class="separator:a1573596f78398662158f339049646af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9a4539ff472500757bb0a5a674b7d821"><td class="memItemLeft" align="right" valign="top"><a id="a9a4539ff472500757bb0a5a674b7d821"></a>
-NodeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getNode</b> (NodeIdType) override</td></tr>
+NodeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>) override</td></tr>
 <tr class="separator:a9a4539ff472500757bb0a5a674b7d821"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1494027671ee2aa451a78209eee9c620"><td class="memItemLeft" align="right" valign="top"><a id="a1494027671ee2aa451a78209eee9c620"></a>
-const NodeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getNode</b> (NodeIdType) const override</td></tr>
+const NodeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>) const override</td></tr>
 <tr class="separator:a1494027671ee2aa451a78209eee9c620"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a428775fd3f71ce9c24d19752e5a385e1"><td class="memItemLeft" align="right" valign="top"><a id="a428775fd3f71ce9c24d19752e5a385e1"></a>
-const NodeMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getNodes</b> () const override</td></tr>
+const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac43fded831674b513ef7b1535d9d1814">NodeMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getNodes</b> () const override</td></tr>
 <tr class="separator:a428775fd3f71ce9c24d19752e5a385e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69927219af7dd3d099a8514c860e46e6"><td class="memItemLeft" align="right" valign="top"><a id="a69927219af7dd3d099a8514c860e46e6"></a>
-const EdgeIdType &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>currentEdgeId</b> () const override</td></tr>
+const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>currentEdgeId</b> () const override</td></tr>
 <tr class="separator:a69927219af7dd3d099a8514c860e46e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8b5eefaff964502d98640e1b1b3752b1"><td class="memItemLeft" align="right" valign="top"><a id="a8b5eefaff964502d98640e1b1b3752b1"></a>
-EdgeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getEdge</b> (EdgeIdType) override</td></tr>
+EdgeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getEdge</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>) override</td></tr>
 <tr class="separator:a8b5eefaff964502d98640e1b1b3752b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2fb6a2884739946bd0900e335e1a184c"><td class="memItemLeft" align="right" valign="top"><a id="a2fb6a2884739946bd0900e335e1a184c"></a>
-const EdgeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getEdge</b> (EdgeIdType) const override</td></tr>
+const EdgeType *&#160;</td><td class="memItemRight" valign="bottom"><b>getEdge</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>) const override</td></tr>
 <tr class="separator:a2fb6a2884739946bd0900e335e1a184c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34b8a27880b87e0be00a6e23116d8a44"><td class="memItemLeft" align="right" valign="top"><a id="a34b8a27880b87e0be00a6e23116d8a44"></a>
-const EdgeMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getEdges</b> () const override</td></tr>
+const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a254989187dd47a7a5e2afd9647d13cf2">EdgeMap</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getEdges</b> () const override</td></tr>
 <tr class="separator:a34b8a27880b87e0be00a6e23116d8a44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafc4a1d95717c75826573e956a43f9e6"><td class="memItemLeft" align="right" valign="top"><a id="aafc4a1d95717c75826573e956a43f9e6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> () override</td></tr>
@@ -194,24 +173,463 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> () override
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (NodeType *)=0</td></tr>
 <tr class="separator:a466501d70836c536aca374b184c55d3c inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44a6519fc08667bcfcabab73e8c9f998 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a44a6519fc08667bcfcabab73e8c9f998"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (const NodeIdType &amp;id)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>removeNode</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a> &amp;id)</td></tr>
 <tr class="separator:a44a6519fc08667bcfcabab73e8c9f998 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a270e5f471cf058547b1726302c5c1854 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a270e5f471cf058547b1726302c5c1854"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (EdgeType *)=0</td></tr>
 <tr class="separator:a270e5f471cf058547b1726302c5c1854 inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a2eaad7a97475cb635658d2b296f8ea inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top"><a id="a0a2eaad7a97475cb635658d2b296f8ea"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const EdgeIdType &amp;id)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a> &amp;id)</td></tr>
 <tr class="separator:a0a2eaad7a97475cb635658d2b296f8ea inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr class="memitem:a114170afb5ed2ec50a5d2d733eef7122"><td class="memItemLeft" align="right" valign="top"><a id="a114170afb5ed2ec50a5d2d733eef7122"></a>
-NodeIdType&#160;</td><td class="memItemRight" valign="bottom"><b>node_id</b></td></tr>
+<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>&#160;</td><td class="memItemRight" valign="bottom"><b>node_id</b></td></tr>
 <tr class="separator:a114170afb5ed2ec50a5d2d733eef7122"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5470ee116093e62f7c793eef2e625f9b"><td class="memItemLeft" align="right" valign="top"><a id="a5470ee116093e62f7c793eef2e625f9b"></a>
-EdgeIdType&#160;</td><td class="memItemRight" valign="bottom"><b>edge_id</b></td></tr>
+<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>&#160;</td><td class="memItemRight" valign="bottom"><b>edge_id</b></td></tr>
 <tr class="separator:a5470ee116093e62f7c793eef2e625f9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a7c2232a886453eee9932c4023b96bb5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c2232a886453eee9932c4023b96bb5c">&#9670;&nbsp;</a></span>EdgeIdHash</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt;typename EdgeType::IdType&gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph</a>&lt; NodeType, EdgeType &gt;::<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a7c2232a886453eee9932c4023b96bb5c">EdgeIdHash</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1graph_1_1Edge.html">Edge</a> ID hash function </p>
+
+</div>
+</div>
+<a id="ace4182051c68558b00dfa1b57f86eb6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace4182051c68558b00dfa1b57f86eb6b">&#9670;&nbsp;</a></span>EdgeIdType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef EdgeType::IdType <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph</a>&lt; NodeType, EdgeType &gt;::<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1graph_1_1Edge.html">Edge</a> ID type </p>
+
+</div>
+</div>
+<a id="a254989187dd47a7a5e2afd9647d13cf2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a254989187dd47a7a5e2afd9647d13cf2">&#9670;&nbsp;</a></span>EdgeMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ace4182051c68558b00dfa1b57f86eb6b">EdgeIdType</a>, EdgeType*, <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a7c2232a886453eee9932c4023b96bb5c">EdgeIdHash</a> &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph</a>&lt; NodeType, EdgeType &gt;::<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a254989187dd47a7a5e2afd9647d13cf2">EdgeMap</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1graph_1_1Edge.html">Edge</a> map type </p>
+
+</div>
+</div>
+<a id="a48e181d44f84794298ec7c06fd2e5d14"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48e181d44f84794298ec7c06fd2e5d14">&#9670;&nbsp;</a></span>NodeIdHash</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt;typename NodeType::IdType&gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph</a>&lt; NodeType, EdgeType &gt;::<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a48e181d44f84794298ec7c06fd2e5d14">NodeIdHash</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> ID hash function </p>
+
+</div>
+</div>
+<a id="afe364671e442294515e14bbffdd6dfba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe364671e442294515e14bbffdd6dfba">&#9670;&nbsp;</a></span>NodeIdType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef NodeType::IdType <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph</a>&lt; NodeType, EdgeType &gt;::<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> ID type </p>
+
+</div>
+</div>
+<a id="ac43fded831674b513ef7b1535d9d1814"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac43fded831674b513ef7b1535d9d1814">&#9670;&nbsp;</a></span>NodeMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>, NodeType*, <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a48e181d44f84794298ec7c06fd2e5d14">NodeIdHash</a> &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph</a>&lt; NodeType, EdgeType &gt;::<a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac43fded831674b513ef7b1535d9d1814">NodeMap</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> map type </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1edb6d42eba7841d071604a4e0898458"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1edb6d42eba7841d071604a4e0898458">&#9670;&nbsp;</a></span>addCallOnEraseEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::addCallOnEraseEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; EdgeType * &gt; *&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds an erase edge callback, called on <a class="el" href="classfpmas_1_1graph_1_1Graph.html#acef1a514dac770a2494e94eee1be3e20">erase(EdgeType*)</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>erase edge callback </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afac094429ea44cfdf781f1d1fdedf629">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a45ace538ed2d9c037dce1a743039173b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a45ace538ed2d9c037dce1a743039173b">&#9670;&nbsp;</a></span>addCallOnEraseNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::addCallOnEraseNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds an erase node callback, called on <a class="el" href="classfpmas_1_1graph_1_1Graph.html#ac77c74d7ccdf20a9e08815466f38a62e">erase(NodeType*)</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>insert node callback </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a00c750c1fd84eb755547b0f851e229fd">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="af6ca183ef662d87198e3991e11baf26c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6ca183ef662d87198e3991e11baf26c">&#9670;&nbsp;</a></span>addCallOnInsertEdge()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::addCallOnInsertEdge </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; EdgeType * &gt; *&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds an insert edge callback, called on <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a6ea579fada474c4c094646dae5f31668">insert(EdgeType*)</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>insert edge callback </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ad67b1bb8ba0d83adb66f78ff8ee8d2d0">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a9220e20bc66310cea8fb7ac9c331d4a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9220e20bc66310cea8fb7ac9c331d4a5">&#9670;&nbsp;</a></span>addCallOnInsertNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::addCallOnInsertNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; NodeType * &gt; *&#160;</td>
+          <td class="paramname"><em>callback</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds an insert node callback, called on <a class="el" href="classfpmas_1_1graph_1_1Graph.html#aa9ddeefa71508445bd27e9a6ae42f7e8">insert(NodeType*)</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">callback</td><td>insert node callback </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a50add3d4a23575f3f337a31a385b3175">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a1573596f78398662158f339049646af2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1573596f78398662158f339049646af2">&#9670;&nbsp;</a></span>currentNodeId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a>&amp; <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::currentNodeId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reference to the current internal <a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> ID. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a49bcd316bd2a0c6679c784816dec05e8">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="acef1a514dac770a2494e94eee1be3e20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acef1a514dac770a2494e94eee1be3e20">&#9670;&nbsp;</a></span>erase() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::erase </td>
+          <td>(</td>
+          <td class="paramtype">EdgeType *&#160;</td>
+          <td class="paramname"><em>edge</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Erases a previously inserted edge from the graph.</p>
+<p>Upon return, the entry <code>{edge-&gt;getId(), edge}</code> must <b>not</b> be contained anymore in the NodeMap returned by getEdges().</p>
+<p>Callbacks registered using <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a1edb6d42eba7841d071604a4e0898458">addCallOnEraseEdge()</a> are also called after the edge has effectively been removed from the graph.</p>
+<p>Erasing an edge not contained in the <a class="el" href="classfpmas_1_1graph_1_1Graph.html">Graph</a> produces an unexpected behavior.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>edge to erase from the graph </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ab2515d9d081cdc68a2f5217a1871ba4e">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ac77c74d7ccdf20a9e08815466f38a62e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac77c74d7ccdf20a9e08815466f38a62e">&#9670;&nbsp;</a></span>erase() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::erase </td>
+          <td>(</td>
+          <td class="paramtype">NodeType *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Erases a previously inserted node from the graph.</p>
+<p>Upon return, the entry <code>{node-&gt;getId(), node}</code> must <b>not</b> be contained anymore in the NodeMap returned by getNodes().</p>
+<p>Moreover, all incoming and outgoing edges, as returned by Node::getIncomingEdges and Node::getOutgoingEdges, should also be erased from the <a class="el" href="classfpmas_1_1graph_1_1Graph.html">Graph</a>, as specified by the <a class="el" href="classfpmas_1_1graph_1_1Graph.html#acef1a514dac770a2494e94eee1be3e20">erase(EdgeType*)</a> function.</p>
+<p>Callbacks registered using <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a45ace538ed2d9c037dce1a743039173b">addCallOnEraseNode()</a> are also called after the node has effectively been removed from the graph.</p>
+<p>Erasing a node not contained in the <a class="el" href="classfpmas_1_1graph_1_1Graph.html">Graph</a> produces an unexpected behavior.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to erase from the graph </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a27ee97fe167715eda7e45943d329ed02">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a6ea579fada474c4c094646dae5f31668"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ea579fada474c4c094646dae5f31668">&#9670;&nbsp;</a></span>insert() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::insert </td>
+          <td>(</td>
+          <td class="paramtype">EdgeType *&#160;</td>
+          <td class="paramname"><em>edge</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Inserts an <a class="el" href="classfpmas_1_1graph_1_1Edge.html">Edge</a> into the graph.</p>
+<p>Upon return, the EdgeMap returned by getEdges() must contain an entry <code>{edge-&gt;getId(), edge}</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>pointer to edge to insert in the graph </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#acbcb25f4af600a3d3fba0bd7fd60280d">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="aa9ddeefa71508445bd27e9a6ae42f7e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa9ddeefa71508445bd27e9a6ae42f7e8">&#9670;&nbsp;</a></span>insert() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename NodeType , typename EdgeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Graph.html">fpmas::graph::Graph</a>&lt; NodeType, EdgeType &gt;::insert </td>
+          <td>(</td>
+          <td class="paramtype">NodeType *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Inserts a <a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> into the graph.</p>
+<p>Upon return, the NodeMap returned by getNodes() must contain an entry <code>{node-&gt;getId(), node}</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>pointer to node to insert in the graph </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a92df198937356ee94158f3982245078b">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/graph/<a class="el" href="graph_2graph_8h_source.html">graph.h</a></li>
 </ul>
