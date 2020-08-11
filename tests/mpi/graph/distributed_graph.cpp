@@ -29,7 +29,7 @@ class DistributedGraphBalance : public ::testing::Test {
 		using location_manager = fpmas::graph::LocationManager<T>;
 		DistributedGraph<
 			int,
-			MockSyncMode<>,
+			MockSyncMode,
 			fpmas::graph::DistributedNode,
 			fpmas::graph::DistributedEdge,
 			fpmas::api::communication::MpiSetUp<

@@ -194,7 +194,7 @@ namespace fpmas { namespace communication {
 	 * api::communication::MpiCommunicator.
 	 *
 	 * This means that ANY TYPE that can be serialized / unserialized as
-	 * JSON thanks to the nlohmann::json library can be easily sent accross
+	 * JSON thanks to the nlohmann::json library can be easily sent across
 	 * processors through MPI using this class, preventing users from
 	 * struggling with low-level MPI issues and custom MPI_Datatype
 	 * definitions.

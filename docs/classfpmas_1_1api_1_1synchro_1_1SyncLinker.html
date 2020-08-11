@@ -72,6 +72,8 @@ $(function() {
 <div class="title">fpmas::api::synchro::SyncLinker&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="sync__mode_8h_source.html">sync_mode.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::api::synchro::SyncLinker&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -85,16 +87,113 @@ Inheritance diagram for fpmas::api::synchro::SyncLinker&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aeda324b205f393188f34b27c417642a7"><td class="memItemLeft" align="right" valign="top"><a id="aeda324b205f393188f34b27c417642a7"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>link</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt; *)=0</td></tr>
-<tr class="separator:aeda324b205f393188f34b27c417642a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa4ee5389f32a4cc02b7970917a48ba91"><td class="memItemLeft" align="right" valign="top"><a id="aa4ee5389f32a4cc02b7970917a48ba91"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt; *)=0</td></tr>
-<tr class="separator:aa4ee5389f32a4cc02b7970917a48ba91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a82048e7e48cba49d8242df2aaa2d26be"><td class="memItemLeft" align="right" valign="top"><a id="a82048e7e48cba49d8242df2aaa2d26be"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>synchronize</b> ()=0</td></tr>
+<tr class="memitem:a85dc35beae7a423ba4e2907dd55269a8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a85dc35beae7a423ba4e2907dd55269a8">link</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt; *edge)=0</td></tr>
+<tr class="separator:a85dc35beae7a423ba4e2907dd55269a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0af26a34cf5589f3cb2a60c8b8e78a72"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a0af26a34cf5589f3cb2a60c8b8e78a72">unlink</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt; *edge)=0</td></tr>
+<tr class="separator:a0af26a34cf5589f3cb2a60c8b8e78a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82048e7e48cba49d8242df2aaa2d26be"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a82048e7e48cba49d8242df2aaa2d26be">synchronize</a> ()=0</td></tr>
 <tr class="separator:a82048e7e48cba49d8242df2aaa2d26be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::api::synchro::SyncLinker&lt; T &gt;</h3>
+
+<p>Synchronized linker API.</p>
+<p>The behavior of this component can be very different depending on the implemented synchronization mode. See the corresponding implementations for more details.</p>
+<p>Notified link, unlink or node removal operations correspond to intentional user operations. Internal and low-level operations that might occur while distributing the graph for example are not notified to the <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">SyncLinker</a>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a85dc35beae7a423ba4e2907dd55269a8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85dc35beae7a423ba4e2907dd55269a8">&#9670;&nbsp;</a></span>link()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">fpmas::api::synchro::SyncLinker</a>&lt; T &gt;::link </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>edge</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Notifies the specified edge has been linked in the local graph. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a6db3c08b8fdda5a096d53490557cdb5c">fpmas::synchro::hard::HardSyncLinker&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#aac924cefa65209042f83052ba765d1f5">fpmas::synchro::ghost::GhostSyncLinker&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a82048e7e48cba49d8242df2aaa2d26be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82048e7e48cba49d8242df2aaa2d26be">&#9670;&nbsp;</a></span>synchronize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">fpmas::api::synchro::SyncLinker</a>&lt; T &gt;::synchronize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Synchronizes link, unlink and node removal operations across the processes. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a1cc71ff0bbe698fc7114081197561bb2">fpmas::synchro::hard::HardSyncLinker&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a33187466eb861c1e977e07068ae67d32">fpmas::synchro::ghost::GhostSyncLinker&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a0af26a34cf5589f3cb2a60c8b8e78a72"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0af26a34cf5589f3cb2a60c8b8e78a72">&#9670;&nbsp;</a></span>unlink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">fpmas::api::synchro::SyncLinker</a>&lt; T &gt;::unlink </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>edge</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Notifies the specified edge has been unlinked in the local graph. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#ac196344d32dde42c1e60f0ad6b265e9e">fpmas::synchro::hard::HardSyncLinker&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a2879e4f6ddd56809445d9d8471eb4d69">fpmas::synchro::ghost::GhostSyncLinker&lt; T &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/synchro/<a class="el" href="sync__mode_8h_source.html">sync_mode.h</a></li>
 </ul>

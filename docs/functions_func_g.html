@@ -70,12 +70,17 @@ $(function() {
 , <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a38e5db3e4ec61104c1c206f8b2ee0b13">fpmas::communication::MpiCommunicator</a>
 , <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a5c0d59ea1887d84340ddc2a057057487">fpmas::communication::TypedMpi&lt; T &gt;</a>
 </li>
+<li>getDataSync()
+: <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html#ad6db7b3aa725079d62e76a67447dde9d">fpmas::api::synchro::SyncMode&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html#a46554aaafc04544190e6e001d0fb5674">fpmas::synchro::ghost::GhostMode&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html#a307e0c9ce0538d42b114ab5d5bed4e0b">fpmas::synchro::hard::HardSyncMode&lt; T &gt;</a>
+</li>
 <li>getDistantNodes()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a994da161df945297cd64b7fa6afdaf21">fpmas::api::graph::LocationManager&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a9f33487685185ef3aa410f73c83575a9">fpmas::graph::LocationManager&lt; T &gt;</a>
 </li>
 <li>getEdge()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ad44f2a827f2a4eda7c68fc0bed8aa510">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a5a804d6d60078bcf492a13074a48e831">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a8b5eefaff964502d98640e1b1b3752b1">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 </li>
 <li>getEdges()
@@ -87,7 +92,7 @@ $(function() {
 , <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#aa78c8556e95a84b8b324d0722cf4deb7">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 </li>
 <li>getIncomingEdges()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#a8816bc5dc1e545e2d589fd5d2c0f97a7">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#abfeb653bff18ab0f69b3fd11a18f9138">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Node.html#adcef5ab0f176d10cb12273b5de001448">fpmas::graph::Node&lt; IdType, _EdgeType &gt;</a>
 </li>
 <li>getLayer()
@@ -115,8 +120,8 @@ $(function() {
 : <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#aee139cff2e4cb6e3a031e0ff3e2c30ca">fpmas::communication::MpiCommunicator</a>
 </li>
 <li>getNode()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a61501e99ee00b6b7444ad50cba4fb656">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
-, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a1494027671ee2aa451a78209eee9c620">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#aa80206b87b398bcded81a2f8ca13affd">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 </li>
 <li>getNodes()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
@@ -136,6 +141,11 @@ $(function() {
 </li>
 <li>getSourceNode()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#ae7f598115d03216fad45c815c938c4ad">fpmas::api::graph::Edge&lt; _IdType, _NodeType &gt;</a>
+</li>
+<li>getSyncLinker()
+: <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html#a02cf7ca982560ae120fe8cc0e9fc9dc9">fpmas::api::synchro::SyncMode&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html#a6bd0a7a89ad3f0267599f08c1c0d1a06">fpmas::synchro::ghost::GhostMode&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html#af84aeeb9bd8a410cb85c9bc28b382f00">fpmas::synchro::hard::HardSyncMode&lt; T &gt;</a>
 </li>
 <li>getTargetNode()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#af9f5956385ddff637072d3add197660d">fpmas::api::graph::Edge&lt; _IdType, _NodeType &gt;</a>

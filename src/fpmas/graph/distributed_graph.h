@@ -11,7 +11,7 @@
 
 #define DIST_GRAPH_PARAMS\
 	typename T,\
-	typename SyncMode,\
+	template<typename> class SyncMode,\
 	template<typename> class DistNodeImpl,\
 	template<typename> class DistEdgeImpl,\
 	typename MpiSetUp,\
@@ -41,7 +41,6 @@ namespace fpmas { namespace graph {
 			public:
 			typedef DistNodeImpl<T> DistNodeType;
 			typedef DistEdgeImpl<T> DistEdgeType;
-			typedef typename SyncMode::template SyncModeRuntimeType<T> SyncModeRuntimeType;
 
 			static_assert(
 					std::is_base_of<api::graph::DistributedNode<T>, DistNodeType>::value,
@@ -71,7 +70,7 @@ namespace fpmas { namespace graph {
 			mpi<EdgePtrWrapper<T>> edge_mpi {mpi_communicator};
 
 			LocationManagerImpl<T> location_manager;
-			SyncModeRuntimeType sync_mode_runtime;
+			SyncMode<T> sync_mode;
 
 			std::vector<NodeCallback*> set_local_callbacks;
 			std::vector<NodeCallback*> set_distant_callbacks;
@@ -101,7 +100,7 @@ namespace fpmas { namespace graph {
 			public:
 			DistributedGraph() :
 				location_manager(mpi_communicator, id_mpi, location_mpi),
-				sync_mode_runtime(*this, mpi_communicator) {
+				sync_mode(*this, mpi_communicator) {
 				// Initialization in the body of this (derived) class of the
 				// (base) fields nodeId and edgeId, to ensure that
 				// mpi_communicator is initialized (as a field of this derived
@@ -126,7 +125,7 @@ namespace fpmas { namespace graph {
 			NodeType* importNode(NodeType* node) override;
 			EdgeType* importEdge(EdgeType* edge) override;
 
-			const SyncModeRuntimeType& getSyncModeRuntime() const {return sync_mode_runtime;}
+			const SyncMode<T>& getSyncModeRuntime() const {return sync_mode;}
 
 			const LocationManagerImpl<T>&
 				getLocationManager() const override {return location_manager;}
@@ -209,7 +208,7 @@ namespace fpmas { namespace graph {
 		src->mutex()->lockShared();
 		tgt->mutex()->lockShared();
 
-		sync_mode_runtime.getSyncLinker().unlink(static_cast<DistEdgeType*>(edge));
+		sync_mode.getSyncLinker().unlink(static_cast<DistEdgeType*>(edge));
 
 		this->erase(edge);
 
@@ -233,7 +232,7 @@ namespace fpmas { namespace graph {
 			// temporary input node.
 			this->insert(node);
 			setLocal(node);
-			node->setMutex(sync_mode_runtime.buildMutex(node));
+			node->setMutex(sync_mode.buildMutex(node));
 			return node;
 		}
 		FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Replacing existing DISTANT node %s.", ID_C_STR(node->getId()));
@@ -302,7 +301,7 @@ namespace fpmas { namespace graph {
 				src = edge->getSourceNode();
 				this->insert(src);
 				setDistant(src);
-				src->setMutex(sync_mode_runtime.buildMutex(src));
+				src->setMutex(sync_mode.buildMutex(src));
 			}
 			if(this->getNodes().count(tgtId) > 0) {
 				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing target %s", ID_C_STR(tgtId));
@@ -330,7 +329,7 @@ namespace fpmas { namespace graph {
 				tgt = edge->getTargetNode();
 				this->insert(tgt);
 				setDistant(tgt);
-				tgt->setMutex(sync_mode_runtime.buildMutex(tgt));
+				tgt->setMutex(sync_mode.buildMutex(tgt));
 			}
 			// Finally, insert the temporary edge into the graph.
 			edge->setState(edgeLocationState);
@@ -361,8 +360,8 @@ namespace fpmas { namespace graph {
 				this->insert(node);
 				setLocal(node);
 				location_manager.addManagedNode(node, mpi_communicator.getRank());
-				node->setMutex(sync_mode_runtime.buildMutex(node));
-				//sync_mode_runtime.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
+				node->setMutex(sync_mode.buildMutex(node));
+				//sync_mode.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
 				return node;
 			}
 
@@ -405,7 +404,7 @@ namespace fpmas { namespace graph {
 						LocationState::LOCAL :
 						LocationState::DISTANT
 						);
-				sync_mode_runtime.getSyncLinker().link(edge);
+				sync_mode.getSyncLinker().link(edge);
 
 				// Inserts the edge in the Graph
 				this->insert(edge);
@@ -431,7 +430,7 @@ namespace fpmas { namespace graph {
 			}
 			FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Partition : %s", partition_str.c_str());
 
-			sync_mode_runtime.getSyncLinker().synchronize();
+			sync_mode.getSyncLinker().synchronize();
 
 			// Builds node and edges export maps
 			std::vector<NodeType*> exported_nodes;
@@ -493,7 +492,7 @@ namespace fpmas { namespace graph {
 			}
 			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.");
 
-			sync_mode_runtime.getDataSync().synchronize();
+			sync_mode.getDataSync().synchronize();
 
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 					"End of distribution.");
@@ -505,11 +504,11 @@ namespace fpmas { namespace graph {
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 					"Synchronizing graph...");
 
-			sync_mode_runtime.getSyncLinker().synchronize();
+			sync_mode.getSyncLinker().synchronize();
 
 			clearDistantNodes();
 
-			sync_mode_runtime.getDataSync().synchronize();
+			sync_mode.getDataSync().synchronize();
 
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 					"End of graph synchronization.");

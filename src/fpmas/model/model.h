@@ -313,7 +313,7 @@ namespace fpmas { namespace model {
 	};
 
 
-	template<typename SyncMode>
+	template<template<typename> class SyncMode>
 		using AgentGraph = graph::DistributedGraph<
 		AgentPtr, SyncMode,
 		graph::DistributedNode,
@@ -327,7 +327,7 @@ namespace fpmas { namespace model {
 	typedef load_balancing::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;
 	typedef api::utils::Callback<AgentNode*> AgentNodeCallback;
 
-	template<typename SyncMode>
+	template<template<typename> class SyncMode>
 	class DefaultModelConfig {
 		protected:
 			model::AgentGraph<SyncMode> __graph;
@@ -337,7 +337,7 @@ namespace fpmas { namespace model {
 			model::ScheduledLoadBalancing __load_balancing {__zoltan_lb, __scheduler, __runtime};
 	};
 
-	template<typename SyncMode>
+	template<template<typename> class SyncMode>
 	class DefaultModel : private DefaultModelConfig<SyncMode>, public Model {
 		public:
 			DefaultModel()

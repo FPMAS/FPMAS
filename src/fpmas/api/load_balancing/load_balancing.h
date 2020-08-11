@@ -41,7 +41,7 @@ namespace fpmas { namespace api { namespace load_balancing {
 				 * that the global set of nodes to balance correspond to the
 				 * union of all the local node maps specified as arguments.
 				 *
-				 * Fixed vertices are assumed to be consistent accross
+				 * Fixed vertices are assumed to be consistent across
 				 * processes, behavior is undefined otherwise.
 				 *
 				 * @param nodes local nodes to balance

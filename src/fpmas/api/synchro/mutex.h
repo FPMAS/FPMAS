@@ -50,12 +50,7 @@ namespace fpmas { namespace api { namespace synchro {
 			virtual T& data() = 0;
 
 			/**
-			 * Direct access to internal data representation.
-			 *
-			 * **Does not guarantee any concurrent access or data update
-			 * management.**
-			 *
-			 * @return direct reference to internal data
+			 * \copydoc data()
 			 */
 			virtual const T& data() const = 0;
 

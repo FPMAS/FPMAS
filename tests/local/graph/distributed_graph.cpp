@@ -56,7 +56,7 @@ class DistributedGraphTest : public ::testing::Test {
 		static const int CURRENT_RANK = 7;
 		DistributedGraph<
 			int,
-			MockSyncMode<>,
+			MockSyncMode,
 			MockDistributedNode,
 			MockDistributedEdge,
 			MockMpiSetUp<CURRENT_RANK, 10>,
@@ -68,7 +68,6 @@ class DistributedGraphTest : public ::testing::Test {
 		typedef fpmas::api::graph::DistributedNode<int> NodeType; 
 		typedef MockDistributedEdge<int> MockEdge;
 		typedef fpmas::api::graph::DistributedEdge<int> EdgeType;
-		typedef typename GraphType::SyncModeRuntimeType SyncModeRuntimeType;
 		typedef typename GraphType::NodeMap NodeMap;
 
 		MockMpiCommunicator<CURRENT_RANK, 10>& comm =
@@ -123,7 +122,7 @@ TEST_F(DistributedGraphTest, build_node) {
 
 	NodeType* build_mutex_arg;
 	MockMutex<int>* built_mutex = new MockMutex<int>;
-	EXPECT_CALL(const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()), buildMutex)
+	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncModeRuntime()), buildMutex)
 		.WillOnce(DoAll(SaveArg<0>(&build_mutex_arg), Return(built_mutex)));
 
 	auto node = graph.buildNode(2);
@@ -411,7 +410,7 @@ TEST_F(DistributedGraphImportNodeTest, import_node) {
 
 	NodeType* build_mutex_arg;
 	EXPECT_CALL(
-		const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()), buildMutex)
+		const_cast<MockSyncMode<int>&>(graph.getSyncModeRuntime()), buildMutex)
 		.WillOnce(DoAll(SaveArg<0>(&build_mutex_arg), Return(new MockMutex<int>)));
 
 	// Callback call test
@@ -441,7 +440,7 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 	EXPECT_CALL(location_manager, setLocal);
 
 	NodeType* build_mutex_arg;
-	EXPECT_CALL(const_cast<SyncModeRuntimeType&>(graph.getSyncModeRuntime()),
+	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncModeRuntime()),
 		buildMutex).WillOnce(
 			DoAll(SaveArg<0>(&build_mutex_arg), Return(new MockMutex<int>)));
 

@@ -13,10 +13,9 @@
 #include "server_pack.h"
 
 namespace fpmas { namespace synchro {
-
 	namespace hard {
 		template<typename T>
-			class HardSyncRuntime : public api::synchro::SyncModeRuntime<T> {
+			class HardSyncMode : public api::synchro::SyncMode<T> {
 
 				typedef synchro::hard::TerminationAlgorithm<
 					communication::TypedMpi>
@@ -40,7 +39,7 @@ namespace fpmas { namespace synchro {
 				HardDataSync<T> data_sync;
 
 				public:
-				HardSyncRuntime(
+				HardSyncMode(
 						api::graph::DistributedGraph<T>& graph,
 						api::communication::MpiCommunicator& comm) :
 					id_mpi(comm), data_mpi(comm), data_update_mpi(comm), node_mpi(comm), edge_mpi(comm),
@@ -64,6 +63,6 @@ namespace fpmas { namespace synchro {
 			};
 
 	}
-	typedef api::synchro::SyncMode<hard::HardSyncMutex, hard::HardSyncRuntime> HardSyncMode;
+	using hard::HardSyncMode;
 }}
 #endif

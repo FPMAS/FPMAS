@@ -133,7 +133,7 @@ template&lt;typename T &gt; </div>
 <p>Computes a node partition from the input nodes, assigning a fixed rank to nodes specified in the fixed vertices map.</p>
 <p>This functions is synchronous and blocks until all processes call it.</p>
 <p>Each process calls the functions with its own node map, so that the global set of nodes to balance correspond to the union of all the local node maps specified as arguments.</p>
-<p>Fixed vertices are assumed to be consistent accross processes, behavior is undefined otherwise.</p>
+<p>Fixed vertices are assumed to be consistent across processes, behavior is undefined otherwise.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">nodes</td><td>local nodes to balance </td></tr>

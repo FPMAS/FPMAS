@@ -14,43 +14,13 @@ using fpmas::graph::DistributedEdge;
 using fpmas::graph::LocationManager;
 using fpmas::graph::DefaultMpiSetUp;
 
-template<typename T>
-class FakeMutex : public fpmas::api::synchro::Mutex<T> {
-	private:
-		std::reference_wrapper<T> _data;
-		void _lock() override {}
-		void _unlock() override {}
-		void _lockShared() override {}
-		void _unlockShared() override {}
-
-	public:
-		FakeMutex(T& data) : _data(data) {}
-		T& data() override {return _data;}
-		const T& data() const override {return _data;}
-
-		const T& read() override {return _data;}
-		void releaseRead() override {}
-
-		T& acquire() override {return _data;}
-		void releaseAcquire() override {}
-
-		void lock() override {}
-		void unlock() override {}
-		bool locked() const override {return false;}
-
-		void lockShared() override {}
-		void unlockShared() override {}
-		int lockedShared() const override {return 0;}
-
-};
-
 class LocationManagerIntegrationTest : public ::testing::Test {
 	protected:
 		static const int SEQUENCE_COUNT = 5;
 		static const int NODES_COUNT = 100;
 
 		DistributedGraph<
-			int, MockSyncMode<FakeMutex>,
+			int, MockSyncMode,
 			DistributedNode,
 			DistributedEdge,
 			DefaultMpiSetUp,

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.18"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: fpmas::api::synchro::SyncMode&lt; Mutex, Runtime &gt; Class Template Reference</title>
+<title>fpmas: fpmas::api::synchro::SyncMode&lt; T &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -66,24 +66,146 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classfpmas_1_1api_1_1synchro_1_1SyncMode-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">fpmas::api::synchro::SyncMode&lt; Mutex, Runtime &gt; Class Template Reference</div>  </div>
+<div class="title">fpmas::api::synchro::SyncMode&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="sync__mode_8h_source.html">sync_mode.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for fpmas::api::synchro::SyncMode&lt; T &gt;:</div>
+<div class="dyncontent">
+<div class="center"><img src="classfpmas_1_1api_1_1synchro_1_1SyncMode__inherit__graph.png" border="0" usemap="#fpmas_1_1api_1_1synchro_1_1SyncMode_3_01T_01_4_inherit__map" alt="Inheritance graph"/></div>
+<map name="fpmas_1_1api_1_1synchro_1_1SyncMode_3_01T_01_4_inherit__map" id="fpmas_1_1api_1_1synchro_1_1SyncMode_3_01T_01_4_inherit__map">
+<area shape="rect" title=" " alt="" coords="101,5,238,47"/>
+<area shape="rect" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html" title=" " alt="" coords="5,95,157,136"/>
+<area shape="rect" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html" title=" " alt="" coords="182,95,333,136"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:afef1cbeae23a5d48685f908c05f6f394"><td class="memTemplParams" colspan="2"><a id="afef1cbeae23a5d48685f908c05f6f394"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:afef1cbeae23a5d48685f908c05f6f394"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>MutexType</b> = <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">Mutex</a>&lt; T &gt;</td></tr>
-<tr class="separator:afef1cbeae23a5d48685f908c05f6f394"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5bf87adc2d4bd10f3cdffdaec822807d"><td class="memTemplParams" colspan="2"><a id="a5bf87adc2d4bd10f3cdffdaec822807d"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a5bf87adc2d4bd10f3cdffdaec822807d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>SyncModeRuntimeType</b> = Runtime&lt; T &gt;</td></tr>
-<tr class="separator:a5bf87adc2d4bd10f3cdffdaec822807d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:a17006734be2eaf69ad26cf26c629f4d4"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">Mutex</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html#a17006734be2eaf69ad26cf26c629f4d4">buildMutex</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *node)=0</td></tr>
+<tr class="separator:a17006734be2eaf69ad26cf26c629f4d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02cf7ca982560ae120fe8cc0e9fc9dc9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">SyncLinker</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html#a02cf7ca982560ae120fe8cc0e9fc9dc9">getSyncLinker</a> ()=0</td></tr>
+<tr class="separator:a02cf7ca982560ae120fe8cc0e9fc9dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad6db7b3aa725079d62e76a67447dde9d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1DataSync.html">DataSync</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html#ad6db7b3aa725079d62e76a67447dde9d">getDataSync</a> ()=0</td></tr>
+<tr class="separator:ad6db7b3aa725079d62e76a67447dde9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::api::synchro::SyncMode&lt; T &gt;</h3>
+
+<p><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html">SyncMode</a> API.</p>
+<p>A synchronization mode is mainly defined by 3 components :</p><ul>
+<li>A <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">Mutex</a> type, that protects internal nodes data and allows access to it.</li>
+<li>A <a class="el" href="classfpmas_1_1api_1_1synchro_1_1DataSync.html">DataSync</a> type, that ensures node data synchronization.</li>
+<li>A <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">SyncLinker</a> type, that allows synchronized link, unlink and node removal operations. </li>
+</ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a17006734be2eaf69ad26cf26c629f4d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17006734be2eaf69ad26cf26c629f4d4">&#9670;&nbsp;</a></span>buildMutex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">Mutex</a>&lt;T&gt;* <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html">fpmas::api::synchro::SyncMode</a>&lt; T &gt;::buildMutex </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Builds a <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">Mutex</a> associated to the specified node.</p>
+<p>The <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">Mutex</a> must be built so that the <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#a0336feaf53f0e90bac930896b4500320">Mutex::data()</a> function returns a reference to the internal node data, i.e. <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab2bc02a3e06cfd758161013039a84cee">api::graph::DistributedNode::data()</a>.</p>
+<p>Notice that this function is not required to bind the built <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">Mutex</a> to the node, since this might be the role of the component in charge to build the node (i.e. the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> implementation).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to which the built mutex will be associated </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html#a8645799020069856c2738f5e14599cba">fpmas::synchro::ghost::GhostMode&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html#a64adb4e606e6b4386a4761e4bd2a6867">fpmas::synchro::hard::HardSyncMode&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ad6db7b3aa725079d62e76a67447dde9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6db7b3aa725079d62e76a67447dde9d">&#9670;&nbsp;</a></span>getDataSync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1DataSync.html">DataSync</a>&amp; <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html">fpmas::api::synchro::SyncMode</a>&lt; T &gt;::getDataSync </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a reference to the <a class="el" href="classfpmas_1_1api_1_1synchro_1_1DataSync.html">DataSync</a> instance associated to this synchronization mode.</p>
+<dl class="section return"><dt>Returns</dt><dd>data sync </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html#a46554aaafc04544190e6e001d0fb5674">fpmas::synchro::ghost::GhostMode&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html#a307e0c9ce0538d42b114ab5d5bed4e0b">fpmas::synchro::hard::HardSyncMode&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a02cf7ca982560ae120fe8cc0e9fc9dc9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02cf7ca982560ae120fe8cc0e9fc9dc9">&#9670;&nbsp;</a></span>getSyncLinker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">SyncLinker</a>&lt;T&gt;&amp; <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html">fpmas::api::synchro::SyncMode</a>&lt; T &gt;::getSyncLinker </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a reference to the <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">SyncLinker</a> instance associated to this synchronization mode.</p>
+<dl class="section return"><dt>Returns</dt><dd>sync linker </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html#a6bd0a7a89ad3f0267599f08c1c0d1a06">fpmas::synchro::ghost::GhostMode&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html#af84aeeb9bd8a410cb85c9bc28b382f00">fpmas::synchro::hard::HardSyncMode&lt; T &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/synchro/<a class="el" href="sync__mode_8h_source.html">sync_mode.h</a></li>
 </ul>

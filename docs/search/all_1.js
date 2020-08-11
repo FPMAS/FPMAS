@@ -18,6 +18,6 @@ var searchData=
   ['agentbase_19',['AgentBase',['../classfpmas_1_1model_1_1AgentBase.html',1,'fpmas::model']]],
   ['agentgroup_20',['AgentGroup',['../classfpmas_1_1model_1_1AgentGroup.html',1,'fpmas::model::AgentGroup'],['../classfpmas_1_1api_1_1model_1_1AgentGroup.html',1,'fpmas::api::model::AgentGroup']]],
   ['agentptrwrapper_21',['AgentPtrWrapper',['../classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html',1,'fpmas::api::model']]],
-  ['agenttask_22',['AgentTask',['../classfpmas_1_1model_1_1AgentTask.html',1,'fpmas::model::AgentTask'],['../classfpmas_1_1api_1_1model_1_1AgentTask.html',1,'fpmas::api::model::AgentTask']]],
+  ['agenttask_22',['AgentTask',['../classfpmas_1_1api_1_1model_1_1AgentTask.html',1,'fpmas::api::model::AgentTask'],['../classfpmas_1_1model_1_1AgentTask.html',1,'fpmas::model::AgentTask']]],
   ['alltoall_23',['allToAll',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5f9b367a6b43c83d03aac44f7a132416',1,'fpmas::api::communication::MpiCommunicator::allToAll()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#a4758f1f7292de9d85ef8897e6ced74f9',1,'fpmas::communication::MpiCommunicator::allToAll()']]]
 ];
