@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['zoltanloadbalancing_206',['ZoltanLoadBalancing',['../classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html',1,'fpmas::load_balancing']]],
-  ['zoltanloadbalancing_3c_20agentptr_20_3e_207',['ZoltanLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html',1,'fpmas::load_balancing']]]
+  ['write_5fzoltan_5fid_218',['write_zoltan_id',['../namespacefpmas_1_1load__balancing_1_1zoltan.html#a360d5f1c6f8ae085606a3894f9352ba2',1,'fpmas::load_balancing::zoltan']]]
 ];

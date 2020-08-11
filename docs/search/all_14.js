@@ -1,4 +1,7 @@
 var searchData=
 [
-  ['write_5fzoltan_5fid_205',['write_zoltan_id',['../namespacefpmas_1_1load__balancing_1_1zoltan.html#a360d5f1c6f8ae085606a3894f9352ba2',1,'fpmas::load_balancing::zoltan']]]
+  ['virtualptrwrapper_214',['VirtualPtrWrapper',['../classfpmas_1_1api_1_1utils_1_1VirtualPtrWrapper.html',1,'fpmas::api::utils']]],
+  ['virtualptrwrapper_3c_20api_3a_3amodel_3a_3aagent_20_3e_215',['VirtualPtrWrapper&lt; api::model::Agent &gt;',['../classfpmas_1_1api_1_1utils_1_1VirtualPtrWrapper.html',1,'fpmas::api::utils']]],
+  ['voidcallback_216',['VoidCallback',['../classfpmas_1_1utils_1_1VoidCallback.html',1,'fpmas::utils']]],
+  ['voidtask_217',['VoidTask',['../classfpmas_1_1scheduler_1_1VoidTask.html',1,'fpmas::scheduler']]]
 ];
