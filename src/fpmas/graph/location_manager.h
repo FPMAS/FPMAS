@@ -16,7 +16,6 @@ namespace fpmas { namespace graph {
 		: public api::graph::LocationManager<T> {
 			public:
 				using typename api::graph::LocationManager<T>::NodeMap;
-				using typename api::graph::LocationManager<T>::DistNode;
 
 				typedef api::communication::MpiCommunicator MpiComm;
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
@@ -34,17 +33,17 @@ namespace fpmas { namespace graph {
 				LocationManager(MpiComm& comm, IdMpi& id_mpi, LocationMpi& location_mpi)
 					: comm(comm), id_mpi(id_mpi), location_mpi(location_mpi) {}
 
-				void addManagedNode(DistNode* node, int initialLocation) override {
+				void addManagedNode(api::graph::DistributedNode<T>* node, int initialLocation) override {
 					this->managed_nodes_locations[node->getId()] = initialLocation;
 				}
 
-				void removeManagedNode(DistNode* node) override {
+				void removeManagedNode(api::graph::DistributedNode<T>* node) override {
 					this->managed_nodes_locations.erase(node->getId());
 				}
 
-				void setLocal(DistNode*) override;
-				void setDistant(DistNode*) override;
-				void remove(DistNode*) override;
+				void setLocal(api::graph::DistributedNode<T>*) override;
+				void setDistant(api::graph::DistributedNode<T>*) override;
+				void remove(api::graph::DistributedNode<T>*) override;
 
 				const NodeMap& getLocalNodes() const override {return local_nodes;}
 				const NodeMap& getDistantNodes() const override {return distant_nodes;}
@@ -57,7 +56,7 @@ namespace fpmas { namespace graph {
 		};
 
 	template<typename T>
-	void LocationManager<T>::setLocal(DistNode* node) {
+	void LocationManager<T>::setLocal(api::graph::DistributedNode<T>* node) {
 			node->setLocation(comm.getRank());
 			node->setState(LocationState::LOCAL);
 			this->local_nodes.insert({node->getId(), node});
@@ -65,7 +64,7 @@ namespace fpmas { namespace graph {
 		}
 
 	template<typename T>
-	void LocationManager<T>::setDistant(DistNode* node) {
+	void LocationManager<T>::setDistant(api::graph::DistributedNode<T>* node) {
 			node->setState(LocationState::DISTANT);
 			this->local_nodes.erase(node->getId());
 			this->distant_nodes.insert({node->getId(), node});
@@ -78,7 +77,7 @@ namespace fpmas { namespace graph {
 		}
 
 	template<typename T>
-	void LocationManager<T>::remove(DistNode* node) {
+	void LocationManager<T>::remove(api::graph::DistributedNode<T>* node) {
 		switch(node->state()) {
 			case LocationState::LOCAL:
 				local_nodes.erase(node->getId());

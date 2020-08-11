@@ -88,6 +88,10 @@ $(function() {
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a24255b155585d63e1bddacb9980e7937">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a107d2b1f5b0afc14099fb42037693d4a">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
 </li>
+<li>addManagedNode()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a2d7cf8872ef4d923b8f70e3c0c21776d">fpmas::api::graph::LocationManager&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a028450b2e59385ea4f9b7af9027d9aa6">fpmas::graph::LocationManager&lt; T &gt;</a>
+</li>
 <li>allToAll()
 : <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5f9b367a6b43c83d03aac44f7a132416">fpmas::api::communication::MpiCommunicator</a>
 , <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a4758f1f7292de9d85ef8897e6ced74f9">fpmas::communication::MpiCommunicator</a>
@@ -162,6 +166,10 @@ $(function() {
 , <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a38e5db3e4ec61104c1c206f8b2ee0b13">fpmas::communication::MpiCommunicator</a>
 , <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a5c0d59ea1887d84340ddc2a057057487">fpmas::communication::TypedMpi&lt; T &gt;</a>
 </li>
+<li>getDistantNodes()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a994da161df945297cd64b7fa6afdaf21">fpmas::api::graph::LocationManager&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a9f33487685185ef3aa410f73c83575a9">fpmas::graph::LocationManager&lt; T &gt;</a>
+</li>
 <li>getEdge()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a5a804d6d60078bcf492a13074a48e831">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a8b5eefaff964502d98640e1b1b3752b1">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
@@ -180,6 +188,10 @@ $(function() {
 </li>
 <li>getLayer()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a034367372164e34d04cc56fb65836925">fpmas::api::graph::Edge&lt; _IdType, _NodeType &gt;</a>
+</li>
+<li>getLocalNodes()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a9342847510a87ab934ee9ef84e33f8a6">fpmas::api::graph::LocationManager&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa20aab2e29bfcb9944eddf1ddba91f31">fpmas::graph::LocationManager&lt; T &gt;</a>
 </li>
 <li>getLocation()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a349e26729e7865ec7adf4fb282a541a9">fpmas::api::graph::DistributedNode&lt; T &gt;</a>
@@ -351,6 +363,14 @@ $(function() {
 <li>releaseAcquire()
 : <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1MutexClient.html#a86036345e91e9a93e68c606cc7803ffe">fpmas::synchro::hard::MutexClient&lt; T &gt;</a>
 </li>
+<li>remove()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#af55879979ae7c0011225efba57eaa59f">fpmas::api::graph::LocationManager&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a5992a6bfba46f45ff059386ab0664fa9">fpmas::graph::LocationManager&lt; T &gt;</a>
+</li>
+<li>removeManagedNode()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a83a6b1b24c9d1c5fbc7a33f80f27486c">fpmas::api::graph::LocationManager&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a1f4a031fdde206f663783b572ffb9679">fpmas::graph::LocationManager&lt; T &gt;</a>
+</li>
 <li>removeNode()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a0a20e27bc1434cee36d760278aa79b27">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#ac9a2f3abb7beb8b3e61210a22acd027d">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>
@@ -364,6 +384,14 @@ $(function() {
 , <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#af231bbb7a249117dc731ed1e6ac64e7a">fpmas::api::communication::TypedMpi&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#aba0ffbd1dc20f5e4e30485506faf3812">fpmas::communication::MpiCommunicator</a>
 , <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a7767de9dc6f0443b36b66c379cfbcf7c">fpmas::communication::TypedMpi&lt; T &gt;</a>
+</li>
+<li>setDistant()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a831cbb48cac025537db4020808562c13">fpmas::api::graph::LocationManager&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a6ac45717c48660ab12a8cd31bd1bdeeb">fpmas::graph::LocationManager&lt; T &gt;</a>
+</li>
+<li>setLocal()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a1ae4b47cff8f987d9d1abe05937ffdda">fpmas::api::graph::LocationManager&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa522d5e7b87007bfc1fd5a3222e67c7b">fpmas::graph::LocationManager&lt; T &gt;</a>
 </li>
 <li>setLocation()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#abf9349f578ce3d2e6e1d9b4127de2373">fpmas::api::graph::DistributedNode&lt; T &gt;</a>
@@ -427,6 +455,10 @@ $(function() {
 <li>unlinkOut()
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html#a0f8d4adbc10082dcc6591675a5c320c8">fpmas::api::graph::Node&lt; _IdType, _EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Node.html#a84a55ed24509fa83a6d5bd79844459bf">fpmas::graph::Node&lt; IdType, _EdgeType &gt;</a>
+</li>
+<li>updateLocations()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a5d2d255bc9f9a60ea230285f5a78d08a">fpmas::api::graph::LocationManager&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#ae94f2fbadf358c8b1e0373110f875caa">fpmas::graph::LocationManager&lt; T &gt;</a>
 </li>
 </ul>
 

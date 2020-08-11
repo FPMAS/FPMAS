@@ -104,46 +104,334 @@ typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html"
 typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; std::pair&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>LocationMpi</b></td></tr>
 <tr class="separator:a0ab91bab542e9af57046ac2d3d6d3fde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">fpmas::api::graph::LocationManager&lt; T &gt;</a></td></tr>
-<tr class="memitem:a060dbcf70007c0019f25c6aa2ef14f62 inherit pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td class="memItemLeft" align="right" valign="top"><a id="a060dbcf70007c0019f25c6aa2ef14f62"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>DistNode</b></td></tr>
-<tr class="separator:a060dbcf70007c0019f25c6aa2ef14f62 inherit pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a15d6a6b7eb0d4df3a9759a2e64a7f7a4 inherit pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td class="memItemLeft" align="right" valign="top"><a id="a15d6a6b7eb0d4df3a9759a2e64a7f7a4"></a>
-typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistNode</a> *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeMap</b></td></tr>
-<tr class="separator:a15d6a6b7eb0d4df3a9759a2e64a7f7a4 inherit pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48197447bf0348dca279317dfb31aaf4 inherit pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td class="memItemLeft" align="right" valign="top"><a id="a48197447bf0348dca279317dfb31aaf4"></a>
+typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt;, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; &gt;::NodeMap&#160;</td><td class="memItemRight" valign="bottom"><b>NodeMap</b></td></tr>
+<tr class="separator:a48197447bf0348dca279317dfb31aaf4 inherit pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab62cd82baa225f95987e9b319eac1091"><td class="memItemLeft" align="right" valign="top"><a id="ab62cd82baa225f95987e9b319eac1091"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>LocationManager</b> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">MpiComm</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">IdMpi</a> &amp;id_mpi, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">LocationMpi</a> &amp;location_mpi)</td></tr>
 <tr class="separator:ab62cd82baa225f95987e9b319eac1091"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adf38831093679b62cb297d238f83a3d9"><td class="memItemLeft" align="right" valign="top"><a id="adf38831093679b62cb297d238f83a3d9"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>addManagedNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistNode</a> *node, int initialLocation) override</td></tr>
-<tr class="separator:adf38831093679b62cb297d238f83a3d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a79194372ac63ca9f46e1e4e3118a274d"><td class="memItemLeft" align="right" valign="top"><a id="a79194372ac63ca9f46e1e4e3118a274d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>removeManagedNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistNode</a> *node) override</td></tr>
-<tr class="separator:a79194372ac63ca9f46e1e4e3118a274d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc583dd73593628e9c7b87f8a031f77f"><td class="memItemLeft" align="right" valign="top"><a id="acc583dd73593628e9c7b87f8a031f77f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setLocal</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistNode</a> *) override</td></tr>
-<tr class="separator:acc583dd73593628e9c7b87f8a031f77f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f9b61f6e162b86505cdd8777afeaeb8"><td class="memItemLeft" align="right" valign="top"><a id="a9f9b61f6e162b86505cdd8777afeaeb8"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setDistant</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistNode</a> *) override</td></tr>
-<tr class="separator:a9f9b61f6e162b86505cdd8777afeaeb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8e2bacaf5303faab6ed7188a2a23142"><td class="memItemLeft" align="right" valign="top"><a id="ae8e2bacaf5303faab6ed7188a2a23142"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistNode</a> *) override</td></tr>
-<tr class="separator:ae8e2bacaf5303faab6ed7188a2a23142"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa20aab2e29bfcb9944eddf1ddba91f31"><td class="memItemLeft" align="right" valign="top"><a id="aa20aab2e29bfcb9944eddf1ddba91f31"></a>
-const NodeMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getLocalNodes</b> () const override</td></tr>
+<tr class="memitem:a028450b2e59385ea4f9b7af9027d9aa6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a028450b2e59385ea4f9b7af9027d9aa6">addManagedNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *node, int initialLocation) override</td></tr>
+<tr class="separator:a028450b2e59385ea4f9b7af9027d9aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1f4a031fdde206f663783b572ffb9679"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a1f4a031fdde206f663783b572ffb9679">removeManagedNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *node) override</td></tr>
+<tr class="separator:a1f4a031fdde206f663783b572ffb9679"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa522d5e7b87007bfc1fd5a3222e67c7b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa522d5e7b87007bfc1fd5a3222e67c7b">setLocal</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *) override</td></tr>
+<tr class="separator:aa522d5e7b87007bfc1fd5a3222e67c7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ac45717c48660ab12a8cd31bd1bdeeb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a6ac45717c48660ab12a8cd31bd1bdeeb">setDistant</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *) override</td></tr>
+<tr class="separator:a6ac45717c48660ab12a8cd31bd1bdeeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5992a6bfba46f45ff059386ab0664fa9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a5992a6bfba46f45ff059386ab0664fa9">remove</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *) override</td></tr>
+<tr class="separator:a5992a6bfba46f45ff059386ab0664fa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa20aab2e29bfcb9944eddf1ddba91f31"><td class="memItemLeft" align="right" valign="top">const NodeMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa20aab2e29bfcb9944eddf1ddba91f31">getLocalNodes</a> () const override</td></tr>
 <tr class="separator:aa20aab2e29bfcb9944eddf1ddba91f31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9f33487685185ef3aa410f73c83575a9"><td class="memItemLeft" align="right" valign="top"><a id="a9f33487685185ef3aa410f73c83575a9"></a>
-const NodeMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getDistantNodes</b> () const override</td></tr>
+<tr class="memitem:a9f33487685185ef3aa410f73c83575a9"><td class="memItemLeft" align="right" valign="top">const NodeMap &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a9f33487685185ef3aa410f73c83575a9">getDistantNodes</a> () const override</td></tr>
 <tr class="separator:a9f33487685185ef3aa410f73c83575a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae94f2fbadf358c8b1e0373110f875caa"><td class="memItemLeft" align="right" valign="top"><a id="ae94f2fbadf358c8b1e0373110f875caa"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>updateLocations</b> (const NodeMap &amp;local_nodes_to_update) override</td></tr>
+<tr class="memitem:ae94f2fbadf358c8b1e0373110f875caa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#ae94f2fbadf358c8b1e0373110f875caa">updateLocations</a> (const NodeMap &amp;local_nodes_to_update) override</td></tr>
 <tr class="separator:ae94f2fbadf358c8b1e0373110f875caa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c4337b5689f467b2f86410cba060977"><td class="memItemLeft" align="right" valign="top"><a id="a7c4337b5689f467b2f86410cba060977"></a>
 const std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrentLocations</b> () const</td></tr>
 <tr class="separator:a7c4337b5689f467b2f86410cba060977"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a028450b2e59385ea4f9b7af9027d9aa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a028450b2e59385ea4f9b7af9027d9aa6">&#9670;&nbsp;</a></span>addManagedNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::addManagedNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>initial_location</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets up the specified node to be managed by the <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">LocationManager</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to manage </td></tr>
+    <tr><td class="paramname">initial_location</td><td>initial rank of the node </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a2d7cf8872ef4d923b8f70e3c0c21776d">fpmas::api::graph::LocationManager&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a9f33487685185ef3aa410f73c83575a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f33487685185ef3aa410f73c83575a9">&#9670;&nbsp;</a></span>getDistantNodes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const NodeMap&amp; <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::getDistantNodes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a NodeMap containing DistributedNodes that are DISTANT.</p>
+<p>More precisely, returns nodes whose last location update was performed with <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a6ac45717c48660ab12a8cd31bd1bdeeb">setDistant()</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>DISTANT nodes map </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a994da161df945297cd64b7fa6afdaf21">fpmas::api::graph::LocationManager&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="aa20aab2e29bfcb9944eddf1ddba91f31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa20aab2e29bfcb9944eddf1ddba91f31">&#9670;&nbsp;</a></span>getLocalNodes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const NodeMap&amp; <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::getLocalNodes </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a NodeMap containing DistributedNodes that are LOCAL.</p>
+<p>More precisely, returns nodes whose last location update was performed with <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa522d5e7b87007bfc1fd5a3222e67c7b">setLocal()</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>LOCAL nodes map </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a9342847510a87ab934ee9ef84e33f8a6">fpmas::api::graph::LocationManager&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a5992a6bfba46f45ff059386ab0664fa9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5992a6bfba46f45ff059386ab0664fa9">&#9670;&nbsp;</a></span>remove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::remove </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Removes a LOCAL or DISTANT node.</p>
+<p>Upon return, the node is neither returned by <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa20aab2e29bfcb9944eddf1ddba91f31">getLocalNodes()</a> or <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a9f33487685185ef3aa410f73c83575a9">getDistantNodes()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#af55879979ae7c0011225efba57eaa59f">fpmas::api::graph::LocationManager&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a1f4a031fdde206f663783b572ffb9679"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f4a031fdde206f663783b572ffb9679">&#9670;&nbsp;</a></span>removeManagedNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::removeManagedNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Removes a previously managed node.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to remove from managed nodes </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a83a6b1b24c9d1c5fbc7a33f80f27486c">fpmas::api::graph::LocationManager&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a6ac45717c48660ab12a8cd31bd1bdeeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ac45717c48660ab12a8cd31bd1bdeeb">&#9670;&nbsp;</a></span>setDistant()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::setDistant </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Update the state of a node to distant.</p>
+<p>Upon return, the state of the <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set to DISTANT. The location of the node is undefined until it is updated by the next call to <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#ae94f2fbadf358c8b1e0373110f875caa">updateLocations()</a>.</p>
+<p>Moreover, the node will be returned by <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a9f33487685185ef3aa410f73c83575a9">getDistantNodes()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to set DISTANT </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a831cbb48cac025537db4020808562c13">fpmas::api::graph::LocationManager&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="aa522d5e7b87007bfc1fd5a3222e67c7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa522d5e7b87007bfc1fd5a3222e67c7b">&#9670;&nbsp;</a></span>setLocal()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::setLocal </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Update the state of a node to local.</p>
+<p>Upon return, the state of the <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set to LOCAL and its location is set to the current process rank.</p>
+<p>Moreover, the node will be returned by <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa20aab2e29bfcb9944eddf1ddba91f31">getLocalNodes()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to set LOCAL </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a1ae4b47cff8f987d9d1abe05937ffdda">fpmas::api::graph::LocationManager&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ae94f2fbadf358c8b1e0373110f875caa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae94f2fbadf358c8b1e0373110f875caa">&#9670;&nbsp;</a></span>updateLocations()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::updateLocations </td>
+          <td>(</td>
+          <td class="paramtype">const NodeMap &amp;&#160;</td>
+          <td class="paramname"><em>local_nodes_to_update</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Updates nodes locations.</p>
+<p>This functions is synchronous : blocks until all <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">LocationManager</a> instances on each process call this function.</p>
+<p>Upon return, DistributedNode::getLocation() is assumed to return an updated value for <b>all the nodes</b> that where registered using <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa522d5e7b87007bfc1fd5a3222e67c7b">setLocal()</a> or <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a6ac45717c48660ab12a8cd31bd1bdeeb">setDistant()</a>. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a5d2d255bc9f9a60ea230285f5a78d08a">fpmas::api::graph::LocationManager&lt; T &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/graph/<a class="el" href="graph_2location__manager_8h_source.html">location_manager.h</a></li>
 </ul>

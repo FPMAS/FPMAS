@@ -6,7 +6,7 @@
 template<typename T>
 class MockLocationManager : public fpmas::api::graph::LocationManager<T> {
 	public:
-		using typename fpmas::api::graph::LocationManager<T>::DistNode;
+		typedef fpmas::api::graph::DistributedNode<T> DistributedNode;
 		using typename fpmas::api::graph::LocationManager<T>::NodeMap;
 
 		MockLocationManager(
@@ -17,13 +17,13 @@ class MockLocationManager : public fpmas::api::graph::LocationManager<T> {
 
 		MOCK_METHOD(void, updateLocations, (const NodeMap&), (override));
 
-		MOCK_METHOD(void, addManagedNode, (DistNode*, int), (override));
-		MOCK_METHOD(void, removeManagedNode, (DistNode*), (override));
+		MOCK_METHOD(void, addManagedNode, (DistributedNode*, int), (override));
+		MOCK_METHOD(void, removeManagedNode, (DistributedNode*), (override));
 		
 		MOCK_METHOD(const NodeMap&, getLocalNodes, (), (const, override));
 		MOCK_METHOD(const NodeMap&, getDistantNodes, (), (const, override));
 
-		MOCK_METHOD(void, setLocal, (DistNode*), (override));
-		MOCK_METHOD(void, setDistant, (DistNode*), (override));
-		MOCK_METHOD(void, remove, (DistNode*), (override));
+		MOCK_METHOD(void, setLocal, (DistributedNode*), (override));
+		MOCK_METHOD(void, setDistant, (DistributedNode*), (override));
+		MOCK_METHOD(void, remove, (DistributedNode*), (override));
 };
