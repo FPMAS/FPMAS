@@ -206,8 +206,8 @@ namespace fpmas { namespace model {
 			typedef typename api::model::Model::AgentGraph AgentGraph;
 			typedef api::load_balancing::LoadBalancing<AgentPtr>
 				LoadBalancingAlgorithm;
-			typedef typename LoadBalancingAlgorithm::ConstNodeMap ConstNodeMap;
-			typedef typename LoadBalancingAlgorithm::PartitionMap PartitionMap;
+			typedef api::load_balancing::NodeMap<AgentPtr> NodeMap;
+			typedef typename api::load_balancing::PartitionMap PartitionMap;
 
 		private:
 			AgentGraph& agent_graph;

@@ -277,8 +277,8 @@ $(function() {
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::Model::AgentGraph</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>;</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;            <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">api::load_balancing::LoadBalancing&lt;AgentPtr&gt;</a></div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a>;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> LoadBalancingAlgorithm::ConstNodeMap ConstNodeMap;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> LoadBalancingAlgorithm::PartitionMap PartitionMap;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;            <span class="keyword">typedef</span> api::load_balancing::NodeMap&lt;AgentPtr&gt; NodeMap;</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;            <span class="keyword">typedef</span> <span class="keyword">typename</span> api::load_balancing::PartitionMap PartitionMap;</div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;        <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a>&amp; agent_graph;</div>

@@ -7,6 +7,9 @@
 #include "fpmas/scheduler/scheduler.h"
 
 namespace fpmas { namespace load_balancing {
+	using api::load_balancing::PartitionMap;
+	using api::load_balancing::NodeMap;
+
 	template<typename T>
 		class ScheduledLoadBalancing : public api::load_balancing::LoadBalancing<T> {
 			private:
@@ -15,25 +18,21 @@ namespace fpmas { namespace load_balancing {
 				api::runtime::Runtime& runtime;
 
 			public:
-				using typename api::load_balancing::LoadBalancing<T>::PartitionMap;
-				using typename api::load_balancing::LoadBalancing<T>::ConstNodeMap;
-
 				ScheduledLoadBalancing<T>(
 						api::load_balancing::FixedVerticesLoadBalancing<T>& fixed_vertices_lb,
 						api::scheduler::Scheduler& scheduler,
 						api::runtime::Runtime& runtime
 						) : fixed_vertices_lb(fixed_vertices_lb), scheduler(scheduler), runtime(runtime) {}
 
-				PartitionMap balance(ConstNodeMap nodes) override;
+				PartitionMap balance(NodeMap<T> nodes) override;
 
 		};
 
 	template<typename T>
-		typename ScheduledLoadBalancing<T>::PartitionMap
-		ScheduledLoadBalancing<T>::balance(ConstNodeMap nodes) {
+		PartitionMap ScheduledLoadBalancing<T>::balance(NodeMap<T> nodes) {
 			scheduler::Epoch epoch;
 			scheduler.build(runtime.currentDate() + 1, epoch);
-			ConstNodeMap node_map;
+			NodeMap<T> node_map;
 			PartitionMap fixed_nodes;
 			PartitionMap partition;
 			for(const api::scheduler::Job* job : epoch) {

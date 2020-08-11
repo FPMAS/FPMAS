@@ -28,7 +28,7 @@ class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 				> graph;
 
 		ZoltanLoadBalancing<int> load_balancing {graph.getMpiCommunicator().getMpiComm()};
-		fpmas::load_balancing::zoltan::PartitionMap<int> fixed_nodes;
+		fpmas::load_balancing::PartitionMap fixed_nodes;
 
 		void SetUp() override {
 			if(graph.getMpiCommunicator().getRank() == 0) {
@@ -54,7 +54,7 @@ class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 };
 
 TEST_F(ZoltanLoadBalancingIntegrationTest, balance) {
-	typename ZoltanLoadBalancing<int>::ConstNodeMap map;
+	fpmas::api::load_balancing::NodeMap<int> map;
 	for(auto node : graph.getNodes()) {
 		map.insert(node);
 	}

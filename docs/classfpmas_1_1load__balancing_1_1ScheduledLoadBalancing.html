@@ -96,27 +96,49 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5a51aea359a8351a1b25bcb17195655e"><td class="memItemLeft" align="right" valign="top"><a id="a5a51aea359a8351a1b25bcb17195655e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>ScheduledLoadBalancing</b> (<a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">api::load_balancing::FixedVerticesLoadBalancing</a>&lt; T &gt; &amp;fixed_vertices_lb, <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;scheduler, <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;runtime)</td></tr>
 <tr class="separator:a5a51aea359a8351a1b25bcb17195655e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab86668d283566ba759f3595fd7e38ed2"><td class="memItemLeft" align="right" valign="top"><a id="ab86668d283566ba759f3595fd7e38ed2"></a>
-PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><b>balance</b> (ConstNodeMap nodes) override</td></tr>
-<tr class="separator:ab86668d283566ba759f3595fd7e38ed2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
-Additional Inherited Members</h2></td></tr>
-<tr class="inherit_header pub_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">fpmas::api::load_balancing::LoadBalancing&lt; T &gt;</a></td></tr>
-<tr class="memitem:a4fd9364f52e96c683818e110254640b7 inherit pub_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td class="memItemLeft" align="right" valign="top"><a id="a4fd9364f52e96c683818e110254640b7"></a>
-typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>PartitionMap</b></td></tr>
-<tr class="separator:a4fd9364f52e96c683818e110254640b7 inherit pub_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a829601b00285188605a5e15bdf2803c2 inherit pub_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td class="memItemLeft" align="right" valign="top"><a id="a829601b00285188605a5e15bdf2803c2"></a>
-typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">NodeType</a> *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ConstNodeMap</b></td></tr>
-<tr class="separator:a829601b00285188605a5e15bdf2803c2 inherit pub_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td colspan="2" onclick="javascript:toggleInherit('pro_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing')"><img src="closed.png" alt="-"/>&#160;Protected Types inherited from <a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">fpmas::api::load_balancing::LoadBalancing&lt; T &gt;</a></td></tr>
-<tr class="memitem:a3626c283cb4eda238923d93cda593fc6 inherit pro_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td class="memItemLeft" align="right" valign="top"><a id="a3626c283cb4eda238923d93cda593fc6"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeType</b></td></tr>
-<tr class="separator:a3626c283cb4eda238923d93cda593fc6 inherit pro_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8261c1f435beea67725c3e004138263f inherit pro_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td class="memItemLeft" align="right" valign="top"><a id="a8261c1f435beea67725c3e004138263f"></a>
-typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">api::graph::IdHash</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdHash</b></td></tr>
-<tr class="separator:a8261c1f435beea67725c3e004138263f inherit pro_types_classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1199597554c478f8ad591127f79f0893"><td class="memItemLeft" align="right" valign="top">PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html#a1199597554c478f8ad591127f79f0893">balance</a> (NodeMap&lt; T &gt; nodes) override</td></tr>
+<tr class="separator:a1199597554c478f8ad591127f79f0893"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a1199597554c478f8ad591127f79f0893"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1199597554c478f8ad591127f79f0893">&#9670;&nbsp;</a></span>balance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">PartitionMap <a class="el" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">fpmas::load_balancing::ScheduledLoadBalancing</a>&lt; T &gt;::balance </td>
+          <td>(</td>
+          <td class="paramtype">NodeMap&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>nodes</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Computes a node partition from the input nodes.</p>
+<p>This functions is synchronous and blocks until all processes call it.</p>
+<p>Each process calls the functions with its own node map, so that the global set of nodes to balance correspond to the union of all the local node maps specified as arguments.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nodes</td><td>local nodes to balance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html#abef1858958cb9880d99241b4a410e5f8">fpmas::api::load_balancing::LoadBalancing&lt; T &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/load_balancing/<a class="el" href="scheduled__load__balancing_8h_source.html">scheduled_load_balancing.h</a></li>
 </ul>

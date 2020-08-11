@@ -6,6 +6,8 @@
 #include "zoltan_cpp.h"
 
 namespace fpmas { namespace load_balancing {
+	using api::load_balancing::PartitionMap;
+	using api::load_balancing::NodeMap;
 
 	/**
 	 * The fpmas::graph::zoltan namespace contains definitions of all the
@@ -13,11 +15,6 @@ namespace fpmas { namespace load_balancing {
 	 * based on the current graph nodes.
 	 */
 	namespace zoltan {
-		template<typename T>
-		using ConstNodeMap = typename api::load_balancing::FixedVerticesLoadBalancing<T>::ConstNodeMap;
-		template<typename T>
-		using PartitionMap = typename api::load_balancing::FixedVerticesLoadBalancing<T>::PartitionMap;
-
 		void zoltan_config(Zoltan*);
 
 		/**
@@ -59,8 +56,7 @@ namespace fpmas { namespace load_balancing {
 		 * @return numbe of nodes managed by the current process
 		 */
 		template<typename T> int num_obj(void *data, int* ierr) {
-			ConstNodeMap<T>*
-				nodes = (ConstNodeMap<T>*) data;
+			NodeMap<T>* nodes = (NodeMap<T>*) data;
 			return nodes->size();
 		}
 
@@ -90,7 +86,7 @@ namespace fpmas { namespace load_balancing {
 				float *obj_wgts,
 				int *ierr
 				) {
-			ConstNodeMap<T>* nodes = (ConstNodeMap<T>*) data;
+			NodeMap<T>* nodes = (NodeMap<T>*) data;
 			int i = 0;
 			for(auto n : *nodes) {
 				zoltan::write_zoltan_id(n.first, &global_ids[i * num_gid_entries]);
@@ -123,7 +119,7 @@ namespace fpmas { namespace load_balancing {
 				int *num_edges,
 				int *ierr
 				) {
-			ConstNodeMap<T>* nodes = (ConstNodeMap<T>*) data;
+			NodeMap<T>* nodes = (NodeMap<T>*) data;
 			for(int i = 0; i < num_obj; i++) {
 				auto node = nodes->at(
 						zoltan::read_zoltan_id(&global_ids[i * num_gid_entries])
@@ -173,7 +169,7 @@ namespace fpmas { namespace load_balancing {
 				float *ewgts,
 				int *ierr) {
 
-			ConstNodeMap<T>* nodes = (ConstNodeMap<T>*) data;
+			NodeMap<T>* nodes = (NodeMap<T>*) data;
 
 			int neighbor_index = 0;
 			for (int i = 0; i < num_obj; ++i) {
@@ -199,7 +195,7 @@ namespace fpmas { namespace load_balancing {
 		template<typename T> int num_fixed_obj_fn(
 				void* data, int* ierr
 				) {
-			ConstNodeMap<T>* fixed_nodes = (ConstNodeMap<T>*) data;
+			NodeMap<T>* fixed_nodes = (NodeMap<T>*) data;
 			return fixed_nodes->size();
 		}
 
@@ -211,7 +207,7 @@ namespace fpmas { namespace load_balancing {
 			int *fixed_parts,
 			int *ierr
 		) {
-			PartitionMap<T>* fixed_nodes = (PartitionMap<T>*) data;
+			PartitionMap* fixed_nodes = (PartitionMap*) data;
 			int i = 0;
 			for(auto fixed_node : *fixed_nodes) {
 				zoltan::write_zoltan_id(fixed_node.first, &fixed_gids[i * num_gid_entries]);
@@ -222,12 +218,7 @@ namespace fpmas { namespace load_balancing {
 	}
 
 	template<typename T>
-		class ZoltanLoadBalancing : public fpmas::api::load_balancing::FixedVerticesLoadBalancing<T> {
-			public:
-				typedef fpmas::api::load_balancing::FixedVerticesLoadBalancing<T> base;
-				using typename base::PartitionMap;
-				using typename base::ConstNodeMap;
-
+		class ZoltanLoadBalancing : public api::load_balancing::FixedVerticesLoadBalancing<T> {
 			private:
 				//Zoltan instance
 				Zoltan zoltan;
@@ -242,7 +233,7 @@ namespace fpmas { namespace load_balancing {
 
 				void setUpZoltan();
 
-				ConstNodeMap nodes;
+				NodeMap<T> nodes;
 				PartitionMap fixed_vertices;
 
 			public:
@@ -256,15 +247,15 @@ namespace fpmas { namespace load_balancing {
 				}
 				
 				PartitionMap balance(
-						ConstNodeMap nodes,
+						NodeMap<T> nodes,
 						PartitionMap fixed_vertices
 						) override;
 
 		};
 
-	template<typename T> typename ZoltanLoadBalancing<T>::PartitionMap
+	template<typename T> PartitionMap
 		ZoltanLoadBalancing<T>::balance(
-			ConstNodeMap nodes,
+			NodeMap<T> nodes,
 			PartitionMap fixed_vertices
 			) {
 			this->nodes = nodes;

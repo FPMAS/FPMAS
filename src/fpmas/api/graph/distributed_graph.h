@@ -49,7 +49,7 @@ namespace fpmas {namespace api {namespace graph {
 			using typename GraphBase::NodeMap;
 			using typename GraphBase::EdgeMap;
 
-			typedef typename api::load_balancing::LoadBalancing<DistributedNode<T>>::PartitionMap PartitionMap;
+			typedef typename api::load_balancing::PartitionMap PartitionMap;
 			typedef api::utils::Callback<DistributedNode<T>*> NodeCallback;
 
 		public:

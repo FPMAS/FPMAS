@@ -42,8 +42,7 @@ class DistributedGraphBalance : public ::testing::Test {
 		MockSyncLinker<int> mock_sync_linker;
 		MockDataSync mock_data_sync;
 
-		MockLoadBalancing<fpmas::graph::DistributedNode<int>>
-			::PartitionMap partition;
+		fpmas::api::load_balancing::PartitionMap partition;
 
 		void SetUp() override {
 			EXPECT_CALL(mock_sync_linker, link).Times(AnyNumber());

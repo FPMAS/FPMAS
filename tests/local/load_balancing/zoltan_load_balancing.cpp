@@ -227,7 +227,7 @@ TEST_F(ZoltanFunctionsTest, num_fixed_obj) {
 }
 
 TEST_F(ZoltanFunctionsTest, fixed_obj_list) {
-	fpmas::load_balancing::zoltan::PartitionMap<int> map;
+	fpmas::load_balancing::PartitionMap map;
 	map[id1] = 7;
 	map[id2] = 2;
 	map[id3] = 3;

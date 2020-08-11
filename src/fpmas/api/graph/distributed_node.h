@@ -23,7 +23,6 @@ namespace fpmas { namespace api { namespace graph {
 	template<typename T>
 	class DistributedNode
 		: public virtual fpmas::api::graph::Node<DistributedId, DistributedEdge<T>> {
-		typedef fpmas::api::graph::Node<DistributedId, DistributedEdge<T>> NodeBase;
 
 		public:
 

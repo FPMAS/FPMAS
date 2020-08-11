@@ -75,50 +75,39 @@ $(function() {
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;unordered_map&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/distributed_node.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/distributed_id.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/id.h&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span>fpmas { <span class="keyword">namespace </span>api { <span class="keyword">namespace </span>load_balancing {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">   13</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">FixedVerticesLoadBalancing</a> {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;            <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">NodeType</a>;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;                <span class="keyword">typedef</span> <a class="code" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">api::graph::IdHash&lt;DistributedId&gt;</a> <a class="code" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a>;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <span class="keyword">typedef</span> std::unordered_map&lt;DistributedId, int, NodeIdHash&gt; PartitionMap;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                <span class="keyword">typedef</span> std::unordered_map&lt;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">NodeType</a>*, <a class="code" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;                    &gt; ConstNodeMap;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keyword">virtual</span> PartitionMap balance(</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;                        ConstNodeMap nodes,</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;                        PartitionMap fixedVertices</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                        ) = 0;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;        };</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">   30</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancing</a> {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;            <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                <span class="keyword">typedef</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">NodeType</a>;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                <span class="keyword">typedef</span> <a class="code" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">api::graph::IdHash&lt;DistributedId&gt;</a> <a class="code" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a>;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <span class="keyword">typedef</span> std::unordered_map&lt;DistributedId, int, NodeIdHash&gt; PartitionMap;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <span class="keyword">typedef</span> std::unordered_map&lt;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">NodeType</a>*, <a class="code" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                    &gt; ConstNodeMap;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <span class="keyword">virtual</span> PartitionMap balance(ConstNodeMap nodes) = 0;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        };</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}}}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/graph.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/distributed_node.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/distributed_id.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/id.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span>fpmas { <span class="keyword">namespace </span>api { <span class="keyword">namespace </span>load_balancing {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">typedef</span> std::unordered_map&lt;DistributedId, int, api::graph::IdHash&lt;DistributedId&gt;&gt; PartitionMap;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">using</span> NodeMap = <span class="keyword">typename</span> graph::Graph&lt;graph::DistributedNode&lt;T&gt;, graph::DistributedEdge&lt;T&gt;&gt;::NodeMap;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">   31</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">FixedVerticesLoadBalancing</a> {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html#a7ccc777b833bc60b23cc9071964af40b">   50</a></span>&#160;                <span class="keyword">virtual</span> PartitionMap <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html#a7ccc777b833bc60b23cc9071964af40b">balance</a>(</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                        NodeMap&lt;T&gt; nodes,</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;                        PartitionMap fixed_vertices</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                        ) = 0;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        };</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">   60</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancing</a> {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html#abef1858958cb9880d99241b4a410e5f8">   74</a></span>&#160;                <span class="keyword">virtual</span> PartitionMap <a class="code" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html#abef1858958cb9880d99241b4a410e5f8">balance</a>(NodeMap&lt;T&gt; nodes) = 0;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        };</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;}}}</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructfpmas_1_1api_1_1graph_1_1IdHash_html"><div class="ttname"><a href="structfpmas_1_1api_1_1graph_1_1IdHash.html">fpmas::api::graph::IdHash</a></div><div class="ttdef"><b>Definition:</b> id.h:24</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1LoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">fpmas::api::load_balancing::LoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:30</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">fpmas::api::load_balancing::FixedVerticesLoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:13</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:9</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedId_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::api::graph::DistributedId</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:53</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing_html_a7ccc777b833bc60b23cc9071964af40b"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html#a7ccc777b833bc60b23cc9071964af40b">fpmas::api::load_balancing::FixedVerticesLoadBalancing::balance</a></div><div class="ttdeci">virtual PartitionMap balance(NodeMap&lt; T &gt; nodes, PartitionMap fixed_vertices)=0</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1LoadBalancing_html_abef1858958cb9880d99241b4a410e5f8"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html#abef1858958cb9880d99241b4a410e5f8">fpmas::api::load_balancing::LoadBalancing::balance</a></div><div class="ttdeci">virtual PartitionMap balance(NodeMap&lt; T &gt; nodes)=0</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1LoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">fpmas::api::load_balancing::LoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:60</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">fpmas::api::load_balancing::FixedVerticesLoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:31</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

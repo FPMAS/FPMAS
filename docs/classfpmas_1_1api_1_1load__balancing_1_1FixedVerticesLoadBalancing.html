@@ -66,14 +66,14 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pro-types">Protected Types</a> &#124;
 <a href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">fpmas::api::load_balancing::FixedVerticesLoadBalancing&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="load__balancing_8h_source.html">load_balancing.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::api::load_balancing::FixedVerticesLoadBalancing&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -84,30 +84,66 @@ Inheritance diagram for fpmas::api::load_balancing::FixedVerticesLoadBalancing&l
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:ac5b51f32f2f4ed7d2abc98022ddf0d81"><td class="memItemLeft" align="right" valign="top"><a id="ac5b51f32f2f4ed7d2abc98022ddf0d81"></a>
-typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>PartitionMap</b></td></tr>
-<tr class="separator:ac5b51f32f2f4ed7d2abc98022ddf0d81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a43167a9b0a4f0fef7a3e26a1af1f2075"><td class="memItemLeft" align="right" valign="top"><a id="a43167a9b0a4f0fef7a3e26a1af1f2075"></a>
-typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">NodeType</a> *, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">NodeIdHash</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ConstNodeMap</b></td></tr>
-<tr class="separator:a43167a9b0a4f0fef7a3e26a1af1f2075"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8ae4ae1f93962cec82345a6a60360fae"><td class="memItemLeft" align="right" valign="top"><a id="a8ae4ae1f93962cec82345a6a60360fae"></a>
-virtual PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><b>balance</b> (ConstNodeMap nodes, PartitionMap fixedVertices)=0</td></tr>
-<tr class="separator:a8ae4ae1f93962cec82345a6a60360fae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-types"></a>
-Protected Types</h2></td></tr>
-<tr class="memitem:a8a059990e641fe40c50e40ff807bb409"><td class="memItemLeft" align="right" valign="top"><a id="a8a059990e641fe40c50e40ff807bb409"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeType</b></td></tr>
-<tr class="separator:a8a059990e641fe40c50e40ff807bb409"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec4b1ab5e14eaa8a403f2dec236d9e82"><td class="memItemLeft" align="right" valign="top"><a id="aec4b1ab5e14eaa8a403f2dec236d9e82"></a>
-typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">api::graph::IdHash</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>NodeIdHash</b></td></tr>
-<tr class="separator:aec4b1ab5e14eaa8a403f2dec236d9e82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ccc777b833bc60b23cc9071964af40b"><td class="memItemLeft" align="right" valign="top">virtual PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html#a7ccc777b833bc60b23cc9071964af40b">balance</a> (NodeMap&lt; T &gt; nodes, PartitionMap fixed_vertices)=0</td></tr>
+<tr class="separator:a7ccc777b833bc60b23cc9071964af40b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::api::load_balancing::FixedVerticesLoadBalancing&lt; T &gt;</h3>
+
+<p>Load balancing API with fixed vertices handling. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a7ccc777b833bc60b23cc9071964af40b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ccc777b833bc60b23cc9071964af40b">&#9670;&nbsp;</a></span>balance()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual PartitionMap <a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html">fpmas::api::load_balancing::FixedVerticesLoadBalancing</a>&lt; T &gt;::balance </td>
+          <td>(</td>
+          <td class="paramtype">NodeMap&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>nodes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">PartitionMap&#160;</td>
+          <td class="paramname"><em>fixed_vertices</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Computes a node partition from the input nodes, assigning a fixed rank to nodes specified in the fixed vertices map.</p>
+<p>This functions is synchronous and blocks until all processes call it.</p>
+<p>Each process calls the functions with its own node map, so that the global set of nodes to balance correspond to the union of all the local node maps specified as arguments.</p>
+<p>Fixed vertices are assumed to be consistent accross processes, behavior is undefined otherwise.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">nodes</td><td>local nodes to balance </td></tr>
+    <tr><td class="paramname">fixed_vertices</td><td>fixed vertices map </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/load_balancing/<a class="el" href="load__balancing_8h_source.html">load_balancing.h</a></li>
 </ul>

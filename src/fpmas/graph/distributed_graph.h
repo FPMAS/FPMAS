@@ -147,11 +147,7 @@ namespace fpmas { namespace graph {
 						"Balancing graph (%lu nodes, %lu edges)",
 						this->getNodes().size(), this->getEdges().size());
 
-				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
-				for(auto node : this->location_manager.getLocalNodes()) {
-					node_map.insert(node);
-				}
-				this->distribute(load_balancing.balance(node_map));
+				this->distribute(load_balancing.balance(this->location_manager.getLocalNodes()));
 
 				FPMAS_LOGI(
 						getMpiCommunicator().getRank(), "LB",
@@ -165,11 +161,7 @@ namespace fpmas { namespace graph {
 						"Balancing graph (%lu nodes, %lu edges)",
 						this->getNodes().size(), this->getEdges().size());
 
-				typename api::load_balancing::LoadBalancing<T>::ConstNodeMap node_map;
-				for(auto node : this->getNodes()) {
-					node_map.insert(node);
-				}
-				this->distribute(load_balancing.balance(node_map, fixed_nodes));
+				this->distribute(load_balancing.balance(this->location_manager.getLocalNodes(), fixed_nodes));
 
 				FPMAS_LOGI(
 						getMpiCommunicator().getRank(), "LB",

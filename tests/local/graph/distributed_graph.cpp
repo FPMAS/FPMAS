@@ -861,7 +861,7 @@ TEST_F(DistributedGraphTest, synchronize_calls) {
  */
 TEST_F(DistributedGraphDistributeTest, balance) {
 	MockLoadBalancing<int> load_balancing;
-	typename MockLoadBalancing<int>::ConstNodeMap node_map;
+	fpmas::api::load_balancing::NodeMap<int> node_map;
 	for(auto node : graph.getNodes())
 		node_map.insert(node);
 
