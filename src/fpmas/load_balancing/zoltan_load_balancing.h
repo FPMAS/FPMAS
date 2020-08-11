@@ -8,12 +8,7 @@
 namespace fpmas { namespace load_balancing {
 	using api::load_balancing::PartitionMap;
 	using api::load_balancing::NodeMap;
-
-	/**
-	 * The fpmas::graph::zoltan namespace contains definitions of all the
-	 * required Zoltan query functions to compute load balancing partitions
-	 * based on the current graph nodes.
-	 */
+	
 	namespace zoltan {
 		void zoltan_config(Zoltan*);
 

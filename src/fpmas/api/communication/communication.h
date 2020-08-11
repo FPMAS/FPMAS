@@ -4,13 +4,7 @@
 #include "mpi.h"
 #include "fpmas/api/graph/distributed_id.h"
 
-namespace fpmas { namespace api { 
-	/**
-	 * Communication API namespace.
-	 *
-	 * Contains features required to perform communications across processes.
-	 */
-	namespace communication {
+namespace fpmas { namespace api { namespace communication {
 
 		/**
 		 * A convenient wrapper for `void*` buffers used in MPI functions.

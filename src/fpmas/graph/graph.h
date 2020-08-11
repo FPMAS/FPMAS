@@ -8,13 +8,7 @@
 #include "node.h"
 #include "edge.h"
 
-namespace fpmas {
-
-	/**
-	 * Namespace containing Graph component implementations.
-	 */
-	namespace graph {
-
+namespace fpmas { namespace graph {
 	template<
 		typename NodeType,
 		typename EdgeType

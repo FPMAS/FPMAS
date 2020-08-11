@@ -6,6 +6,52 @@
 
 #include "fpmas/communication/communication.h"
 
+/** \namespace fpmas
+ * Main `fpmas` namespace.
+ */
+/**
+ * \namespace fpmas::api
+ * Complete `fpmas` API.
+ *
+ * Users commonly use `fpmas` through the theoretical interfaces
+ * (or "components") defined in this namespace.
+ */
+
+/** \namespace fpmas::api::communication
+ * Communication API namespace.
+ *
+ * Contains features required to perform communications across processes.
+ */
+/** \namespace fpmas::communication
+ * fpmas::api::communication implementations.
+ */
+
+/** \namespace fpmas::api::graph
+ * Graph components API namaspace.
+ */
+/** \namespace fpmas::graph
+ * fpmas::api::graph implementations.
+ */
+
+/**\namespace fpmas::api::load_balancing
+ * Load balancing API namespace.
+ */
+/**\namespace fpmas::load_balancing
+ * fpmas::api::load_balancing implementations.
+ */
+
+/** \namespace fpmas::load_balancing::zoltan
+ * Namespace containing definitions of all the required Zoltan query functions
+ * to compute load balancing partitions based on the current graph nodes.
+ */
+
+/** \namespace fpmas::api::synchro
+ * Defines any API related to synchronization among processes.
+ */
+/** \namespace fpmas::synchro
+ * fpmas::api::synchro implementations.
+ */
+
 namespace fpmas {
 	void init(int argc, char** argv) {
 		MPI_Init(&argc, &argv);

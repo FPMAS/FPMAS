@@ -5,12 +5,7 @@
 #include "node.h"
 
 
-namespace fpmas { namespace api { 
-
-	/**
-	 * Namespace containing Graph components API.
-	 */
-	namespace graph {
+namespace fpmas { namespace api { namespace graph {
 		/**
 		 * Graph API
 		 *
