@@ -212,7 +212,10 @@ TEST_F(LocationManagerUpdateTest, updateLocations) {
 	for(auto node : distant) {
 		location_manager.setDistant(node.second);
 	}
-	location_manager.updateLocations(local);
+	for(auto node : local) {
+		location_manager.setLocal(node.second);
+	}
+	location_manager.updateLocations();
 
 	auto locationMap = location_manager.getCurrentLocations();
 	ASSERT_EQ(locationMap.at(DistributedId(2, 0)), 1);

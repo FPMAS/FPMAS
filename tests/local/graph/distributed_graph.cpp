@@ -402,11 +402,8 @@ class DistributedGraphImportNodeTest : public DistributedGraphTest {
  */
 TEST_F(DistributedGraphImportNodeTest, import_node) {
 	imported_node_mocks[1].emplace_back(new MockNode(DistributedId(1, 10), 8, 2.1));
-	auto local_nodes_matcher = ElementsAre(
-		Key(DistributedId(1, 10))
-		);
 
-	EXPECT_CALL(location_manager,updateLocations(local_nodes_matcher));
+	EXPECT_CALL(location_manager,updateLocations());
 
 	NodeType* set_local_arg;
 	EXPECT_CALL(location_manager, setLocal(_))
@@ -452,11 +449,8 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 	ON_CALL(*static_cast<MockNode*>(node), state()).WillByDefault(Return(LocationState::DISTANT));
 
 	imported_node_mocks[1].emplace_back(new MockNode(node->getId(), 2, 4.));
-	auto local_nodes_matcher = ElementsAre(
-			Key(node->getId())
-			);
 
-	EXPECT_CALL(location_manager, updateLocations(local_nodes_matcher));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	NodeType* set_local_arg;
 	EXPECT_CALL(location_manager, setLocal(_))
@@ -568,7 +562,7 @@ TEST_F(DistributedGraphImportEdgeTest, import_existing_local_edge) {
  * Import edge when the two nodes are LOCAL
  */
 TEST_F(DistributedGraphImportEdgeTest, import_local_edge) {
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	distributeTest();
 	checkEdgeStructure();
@@ -581,7 +575,7 @@ TEST_F(DistributedGraphImportEdgeTest, import_local_edge) {
  */
 TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_src) {
 	EXPECT_CALL(*static_cast<MockNode*>(src), state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	distributeTest();
 	checkEdgeStructure();
@@ -593,7 +587,7 @@ TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_src) {
  */
 TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_tgt) {
 	EXPECT_CALL(*static_cast<MockNode*>(tgt), state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	distributeTest();
 	checkEdgeStructure();
@@ -623,7 +617,7 @@ TEST_F(DistributedGraphImportEdgeTest, double_import_edge_case) {
 
 	// The same edge is imported from proc 2
 	imported_edge_mocks[2].push_back(mock);
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	distributeTest();
 	checkEdgeStructure();
@@ -702,7 +696,7 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_tgt) {
 	EXPECT_CALL(*mock_two, unlinkIn);
 
 
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	NodeType* set_distant_arg;
 	EXPECT_CALL(location_manager, setDistant(_))
@@ -748,7 +742,7 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_src) {
 	EXPECT_CALL(*static_cast<MockNode*>(local_node), unlinkIn);
 	EXPECT_CALL(*mock_two, unlinkOut);
 
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	NodeType* set_distant_arg;
 	EXPECT_CALL(location_manager, setDistant(_))
@@ -827,7 +821,7 @@ TEST_F(DistributedGraphTest, distribute_calls) {
 			comm, allToAll)
 		.Times(AnyNumber())
 		.InSequence(s);
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()))
+	EXPECT_CALL(location_manager, updateLocations())
 		.InSequence(s);
 	EXPECT_CALL(
 			//(const_cast<MockDataSync<NodeType, EdgeType>&>(graph.getDataSync())),
@@ -884,7 +878,7 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 
 	EXPECT_CALL(location_manager, setDistant).Times(AnyNumber());
 	EXPECT_CALL(location_manager, remove).Times(4);
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	// Actual call
 	graph.balance(load_balancing);
@@ -934,10 +928,7 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 		.WillOnce(SaveArg<0>(&set_local_args[1]));
 	EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(2);
 	
-	EXPECT_CALL(location_manager, updateLocations(UnorderedElementsAre(
-					Pair(DistributedId(2, 5), _),
-					Pair(DistributedId(4, 3), _)
-				)));
+	EXPECT_CALL(location_manager, updateLocations());
 
 	graph.distribute(fake_partition);
 	ASSERT_EQ(graph.getNodes().size(), 3);
@@ -1076,7 +1067,7 @@ TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
 		migrate(export_edge_map_matcher))
 		.WillOnce(Return(edge_import));
 
-	EXPECT_CALL(location_manager, updateLocations(IsEmpty()));
+	EXPECT_CALL(location_manager, updateLocations());
 	graph.distribute(fake_partition);
 
 	ASSERT_THAT(imported_edge_distant_callback_args, UnorderedElementsAre(mock_src, mock_tgt));

@@ -105,16 +105,14 @@ namespace fpmas {namespace api { namespace graph {
 			/**
 			 * Updates nodes locations.
 			 *
-			 * This functions is synchronous : blocks until all LocationManager instances on
-			 * each process call this function.
+			 * This functions is synchronous : it blocks until all
+			 * LocationManager instances on each process call this function.
 			 *
 			 * Upon return, DistributedNode::getLocation() is assumed to return
 			 * an updated value for **all the nodes** that where registered
 			 * using setLocal() or setDistant().
 			 */
-			virtual void updateLocations(
-				const NodeMap& local_nodes_to_update
-				) = 0;
+			virtual void updateLocations() = 0;
 	};
 }}}
 #endif

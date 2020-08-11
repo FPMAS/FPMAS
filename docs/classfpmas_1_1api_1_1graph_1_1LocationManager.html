@@ -107,8 +107,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a831cbb48cac025537db4020808562c13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af55879979ae7c0011225efba57eaa59f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#af55879979ae7c0011225efba57eaa59f">remove</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *node)=0</td></tr>
 <tr class="separator:af55879979ae7c0011225efba57eaa59f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d2d255bc9f9a60ea230285f5a78d08a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a5d2d255bc9f9a60ea230285f5a78d08a">updateLocations</a> (const NodeMap &amp;local_nodes_to_update)=0</td></tr>
-<tr class="separator:a5d2d255bc9f9a60ea230285f5a78d08a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0dde25d0084892a7a23ed76729582bc9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a0dde25d0084892a7a23ed76729582bc9">updateLocations</a> ()=0</td></tr>
+<tr class="separator:a0dde25d0084892a7a23ed76729582bc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -332,7 +332,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Update the state of a node to distant.</p>
-<p>Upon return, the state of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set to DISTANT. The location of the node is undefined until it is updated by the next call to <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a5d2d255bc9f9a60ea230285f5a78d08a">updateLocations()</a>.</p>
+<p>Upon return, the state of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set to DISTANT. The location of the node is undefined until it is updated by the next call to <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a0dde25d0084892a7a23ed76729582bc9">updateLocations()</a>.</p>
 <p>Moreover, the node will be returned by <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a994da161df945297cd64b7fa6afdaf21">getDistantNodes()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -384,8 +384,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a5d2d255bc9f9a60ea230285f5a78d08a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5d2d255bc9f9a60ea230285f5a78d08a">&#9670;&nbsp;</a></span>updateLocations()</h2>
+<a id="a0dde25d0084892a7a23ed76729582bc9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0dde25d0084892a7a23ed76729582bc9">&#9670;&nbsp;</a></span>updateLocations()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -398,8 +398,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">fpmas::api::graph::LocationManager</a>&lt; T &gt;::updateLocations </td>
           <td>(</td>
-          <td class="paramtype">const NodeMap &amp;&#160;</td>
-          <td class="paramname"><em>local_nodes_to_update</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -410,10 +409,10 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Updates nodes locations.</p>
-<p>This functions is synchronous : blocks until all <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> instances on each process call this function.</p>
+<p>This functions is synchronous : it blocks until all <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> instances on each process call this function.</p>
 <p>Upon return, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a349e26729e7865ec7adf4fb282a541a9">DistributedNode::getLocation()</a> is assumed to return an updated value for <b>all the nodes</b> that where registered using <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a1ae4b47cff8f987d9d1abe05937ffdda">setLocal()</a> or <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a831cbb48cac025537db4020808562c13">setDistant()</a>. </p>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#ae94f2fbadf358c8b1e0373110f875caa">fpmas::graph::LocationManager&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#abf49a203e8cef844e6766c632a684ade">fpmas::graph::LocationManager&lt; T &gt;</a>.</p>
 
 </div>
 </div>

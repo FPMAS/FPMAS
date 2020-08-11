@@ -478,11 +478,9 @@ namespace fpmas { namespace graph {
 			// Serialize and export / import edges
 			auto edge_import = edge_mpi.migrate(edge_export_map);
 
-			NodeMap imported_nodes;
 			for(auto& import_node_list_from_proc : node_import) {
 				for(auto& imported_node : import_node_list_from_proc.second) {
-					auto node = this->importNode(imported_node);
-					imported_nodes.insert({node->getId(), node});
+					this->importNode(imported_node);
 				}
 			}
 			for(auto& import_edge_list_from_proc : edge_import) {
@@ -495,7 +493,7 @@ namespace fpmas { namespace graph {
 				setDistant(node);
 			}
 
-			location_manager.updateLocations(imported_nodes);
+			location_manager.updateLocations();
 
 			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...");
 			for(auto node : exported_nodes) {

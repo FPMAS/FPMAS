@@ -28,6 +28,7 @@ namespace fpmas { namespace graph {
 
 				NodeMap local_nodes;
 				NodeMap distant_nodes;
+				NodeMap new_local_nodes;
 
 			public:
 				LocationManager(MpiComm& comm, IdMpi& id_mpi, LocationMpi& location_mpi)
@@ -48,7 +49,7 @@ namespace fpmas { namespace graph {
 				const NodeMap& getLocalNodes() const override {return local_nodes;}
 				const NodeMap& getDistantNodes() const override {return distant_nodes;}
 
-				void updateLocations(const NodeMap& local_nodes_to_update) override;
+				void updateLocations() override;
 
 				const std::unordered_map<DistributedId, int>& getCurrentLocations() const {
 					return managed_nodes_locations;
@@ -61,6 +62,7 @@ namespace fpmas { namespace graph {
 			node->setState(LocationState::LOCAL);
 			this->local_nodes.insert({node->getId(), node});
 			this->distant_nodes.erase(node->getId());
+			new_local_nodes.insert({node->getId(), node});
 		}
 
 	template<typename T>
@@ -89,9 +91,7 @@ namespace fpmas { namespace graph {
 	}
 
 	template<typename T>
-		void LocationManager<T>::updateLocations(
-				const NodeMap& local_nodes_to_update
-				) {
+		void LocationManager<T>::updateLocations() {
 			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Updating node locations...");
 			// Useful types
 			typedef 
@@ -106,10 +106,7 @@ namespace fpmas { namespace graph {
 			 * locations of this origin's nodes
 			 */
 			DistributedIdMap exported_updated_locations;
-			for(auto node : local_nodes_to_update) {
-				// Updates local node field
-				node.second->setLocation(comm.getRank());
-
+			for(auto node : new_local_nodes) {
 				if(node.first.rank() != comm.getRank()) {
 					// Notify node origin that node is currently on this proc
 					exported_updated_locations[node.first.rank()]
@@ -183,6 +180,7 @@ namespace fpmas { namespace graph {
 					distant_nodes.at(location.first)->setLocation(location.second);
 				}
 			}
+			new_local_nodes.clear();
 			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Node locations updated.");
 		}
 }}
