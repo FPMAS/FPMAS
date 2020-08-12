@@ -14,6 +14,23 @@
 
 namespace fpmas { namespace synchro {
 	namespace hard {
+		/**
+		 * Hard synchronization SyncMode implementation.
+		 *
+		 * HardSyncMode defines the strongest level of graph synchronization.
+		 *
+		 * At each DISTANT node data access, the HardSyncMutex instance performs
+		 * distant communication with host processes to ensure :
+		 * 1. accessed data is **always** up to date
+		 * 2. a strict concurrent access management at the global execution
+		 * level
+		 *
+		 * Moreover, link, unlink and node removal operations are committed on
+		 * the fly by the HardSyncLinker instance.
+		 *
+		 * A TerminationAlgorithm is used to finalize synchronization
+		 * operations.
+		 */
 		template<typename T>
 			class HardSyncMode : public fpmas::api::synchro::SyncMode<T> {
 
@@ -52,13 +69,29 @@ namespace fpmas { namespace synchro {
 					sync_linker(graph, link_client, server_pack),
 					data_sync(comm, server_pack) {}
 
+				/**
+				 * Builds a new HardSyncMutex from the specified node data.
+				 *
+				 * @param node node to which the built mutex will be associated
+				 */
 				HardSyncMutex<T>* buildMutex(fpmas::api::graph::DistributedNode<T>* node) override {
 					HardSyncMutex<T>* mutex = new HardSyncMutex<T>(node, mutex_client, mutex_server);
 					mutex_server.manage(node->getId(), mutex);
 					return mutex;
 				};
 
+				/**
+				 * Returns a reference to the internal HardDataSync instance.
+				 *
+				 * @return reference to the DataSync instance
+				 */
 				HardDataSync<T>& getDataSync() override {return data_sync;};
+
+				/**
+				 * Returns a reference to the internal HardSyncLinker instance.
+				 *
+				 * @return reference to the SyncLinker instance
+				 */
 				HardSyncLinker<T>& getSyncLinker() override {return sync_linker;};
 			};
 

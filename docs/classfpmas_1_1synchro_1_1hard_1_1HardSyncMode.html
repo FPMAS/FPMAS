@@ -72,6 +72,8 @@ $(function() {
 <div class="title">fpmas::synchro::hard::HardSyncMode&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="hard__sync__mode_8h_source.html">hard_sync_mode.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::synchro::hard::HardSyncMode&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -103,7 +105,19 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af84aeeb9bd8a410cb85c9bc28b382f00"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">HardSyncLinker</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html#af84aeeb9bd8a410cb85c9bc28b382f00">getSyncLinker</a> () override</td></tr>
 <tr class="separator:af84aeeb9bd8a410cb85c9bc28b382f00"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::synchro::hard::HardSyncMode&lt; T &gt;</h3>
+
+<p>Hard synchronization SyncMode implementation.</p>
+<p><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">HardSyncMode</a> defines the strongest level of graph synchronization.</p>
+<p>At each DISTANT node data access, the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a> instance performs distant communication with host processes to ensure :</p><ol type="1">
+<li>accessed data is <b>always</b> up to date</li>
+<li>a strict concurrent access management at the global execution level</li>
+</ol>
+<p>Moreover, link, unlink and node removal operations are committed on the fly by the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">HardSyncLinker</a> instance.</p>
+<p>A <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1TerminationAlgorithm.html">TerminationAlgorithm</a> is used to finalize synchronization operations. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a93c8a5797911553133e29511deefd9bf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a93c8a5797911553133e29511deefd9bf">&#9670;&nbsp;</a></span>buildMutex()</h2>
 
@@ -129,9 +143,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Builds a Mutex associated to the specified node.</p>
-<p>The Mutex must be built so that the Mutex::data() function returns a reference to the internal node data, i.e. <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#ab2bc02a3e06cfd758161013039a84cee">api::graph::DistributedNode::data()</a>.</p>
-<p>Notice that this function is not required to bind the built Mutex to the node, since this might be the role of the component in charge to build the node (i.e. the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> implementation).</p>
+<p>Builds a new <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a> from the specified node data.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">node</td><td>node to which the built mutex will be associated </td></tr>
@@ -167,8 +179,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a reference to the DataSync instance associated to this synchronization mode.</p>
-<dl class="section return"><dt>Returns</dt><dd>data sync </dd></dl>
+<p>Returns a reference to the internal <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html">HardDataSync</a> instance.</p>
+<dl class="section return"><dt>Returns</dt><dd>reference to the DataSync instance </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html#ad6db7b3aa725079d62e76a67447dde9d">fpmas::api::synchro::SyncMode&lt; T &gt;</a>.</p>
 
@@ -198,8 +210,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a reference to the SyncLinker instance associated to this synchronization mode.</p>
-<dl class="section return"><dt>Returns</dt><dd>sync linker </dd></dl>
+<p>Returns a reference to the internal <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">HardSyncLinker</a> instance.</p>
+<dl class="section return"><dt>Returns</dt><dd>reference to the SyncLinker instance </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html#a02cf7ca982560ae120fe8cc0e9fc9dc9">fpmas::api::synchro::SyncMode&lt; T &gt;</a>.</p>
 

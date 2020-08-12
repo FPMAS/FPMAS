@@ -96,11 +96,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a123b7e6abfc367b1614b14d567273333"><td class="memItemLeft" align="right" valign="top"><a id="a123b7e6abfc367b1614b14d567273333"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>HardSyncMutex</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt; *node, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexClient.html">MutexClient</a> &amp;mutex_client, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">MutexServer</a> &amp;mutex_server)</td></tr>
 <tr class="separator:a123b7e6abfc367b1614b14d567273333"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4579865be13a280c345198e353695688"><td class="memItemLeft" align="right" valign="top"><a id="a4579865be13a280c345198e353695688"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>pushRequest</b> (<a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">Request</a> request) override</td></tr>
+<tr class="memitem:a4579865be13a280c345198e353695688"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html#a4579865be13a280c345198e353695688">pushRequest</a> (<a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">Request</a> request) override</td></tr>
 <tr class="separator:a4579865be13a280c345198e353695688"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a282953de4470f76242060dc281d85eba"><td class="memItemLeft" align="right" valign="top"><a id="a282953de4470f76242060dc281d85eba"></a>
-std::queue&lt; <a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">Request</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>requestsToProcess</b> () override</td></tr>
+<tr class="memitem:a282953de4470f76242060dc281d85eba"><td class="memItemLeft" align="right" valign="top">std::queue&lt; <a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">Request</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html#a282953de4470f76242060dc281d85eba">requestsToProcess</a> () override</td></tr>
 <tr class="separator:a282953de4470f76242060dc281d85eba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84c0227e62d47c8e0b45c3423ae3fab6"><td class="memItemLeft" align="right" valign="top"><a id="a84c0227e62d47c8e0b45c3423ae3fab6"></a>
 T &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>data</b> () override</td></tr>
@@ -139,6 +137,71 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>unlockShared</b> () o
 int&#160;</td><td class="memItemRight" valign="bottom"><b>lockedShared</b> () const override</td></tr>
 <tr class="separator:a4e1bceefcc137b03028b805b555892da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4579865be13a280c345198e353695688"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4579865be13a280c345198e353695688">&#9670;&nbsp;</a></span>pushRequest()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">fpmas::synchro::hard::HardSyncMutex</a>&lt; T &gt;::pushRequest </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">Request</a>&#160;</td>
+          <td class="paramname"><em>request</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds a pending request to the waiting queue. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1HardSyncMutex.html#a0ab06fe23e238b08a97768f771ff6013">fpmas::synchro::hard::api::HardSyncMutex&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a282953de4470f76242060dc281d85eba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a282953de4470f76242060dc281d85eba">&#9670;&nbsp;</a></span>requestsToProcess()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::queue&lt; typename <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a>&lt; T &gt;::<a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">Request</a> &gt; <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">fpmas::synchro::hard::HardSyncMutex</a>&lt; T &gt;::requestsToProcess </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns an ordered list of requests that can be handled, depending on the current mutex status.</p>
+<p>For example, if the mutex is locked, an empty queue might be returned. Else, read or lock shared requests can be returned, until the next pending acquire or lock request.</p>
+<p>In any case, the exact behavior is implementation defined and might depend about what priority is given to each request. (e.g. : <a href="https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem">https://en.wikipedia.org/wiki/Readers%E2%80%93writers_problem</a>)</p>
+<dl class="section return"><dt>Returns</dt><dd>an ordered queue of request that can safely be handled at the time of the call, depending on the current mutex status </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1HardSyncMutex.html#ac4264110df61a3acbabaea1cadc993bd">fpmas::synchro::hard::api::HardSyncMutex&lt; T &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/synchro/hard/<a class="el" href="hard__sync__mutex_8h_source.html">hard_sync_mutex.h</a></li>
 </ul>

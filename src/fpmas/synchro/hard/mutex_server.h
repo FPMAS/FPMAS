@@ -52,11 +52,11 @@ namespace fpmas { namespace synchro { namespace hard {
 				void respondToLockShared(DistributedId id, int source);
 				void handleUnlockShared(DistributedId id);
 
-				bool respondToRequests(HardSyncMutex*, const Request& requestToWait);
-				bool handleIncomingRequests(const Request& requestToWait);
-				bool handleReleaseAcquire(DataUpdatePack<T>& update, const Request& requestToWait);
-				bool handleUnlock(DistributedId id, const Request& requestToWait);
-				bool handleUnlockShared(DistributedId id, const Request& requestToWait);
+				bool respondToRequests(HardSyncMutex*, const Request& request_to_wait);
+				bool handleIncomingRequests(const Request& request_to_wait);
+				bool handleReleaseAcquire(DataUpdatePack<T>& update, const Request& request_to_wait);
+				bool handleUnlock(DistributedId id, const Request& request_to_wait);
+				bool handleUnlockShared(DistributedId id, const Request& request_to_wait);
 
 				public:
 				MutexServer(MpiComm& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi)
@@ -370,32 +370,32 @@ namespace fpmas { namespace synchro { namespace hard {
 	}
 
 	template<typename T>
-	bool MutexServer<T>::handleReleaseAcquire(DataUpdatePack<T>& update, const Request& requestToWait) {
+	bool MutexServer<T>::handleReleaseAcquire(DataUpdatePack<T>& update, const Request& request_to_wait) {
 		auto* mutex = mutex_map.at(update.id);
 		this->MutexServerBase::unlock(mutex);
 		mutex->data() = std::move(update.updated_data);
 
-		return respondToRequests(mutex, requestToWait);
+		return respondToRequests(mutex, request_to_wait);
 	}
 
 	template<typename T>
-	bool MutexServer<T>::handleUnlock(DistributedId id, const Request& requestToWait) {
+	bool MutexServer<T>::handleUnlock(DistributedId id, const Request& request_to_wait) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::unlock(mutex);
 
-		return respondToRequests(mutex, requestToWait);
+		return respondToRequests(mutex, request_to_wait);
 	}
 
 	template<typename T>
-	bool MutexServer<T>::handleUnlockShared(DistributedId id, const Request& requestToWait) {
+	bool MutexServer<T>::handleUnlockShared(DistributedId id, const Request& request_to_wait) {
 		auto* mutex = mutex_map.at(id);
 		this->MutexServerBase::unlockShared(mutex);
 
-		return respondToRequests(mutex, requestToWait);
+		return respondToRequests(mutex, request_to_wait);
 	}
 
 	template<typename T>
-	bool MutexServer<T>::handleIncomingRequests(const Request& requestToWait) {
+	bool MutexServer<T>::handleIncomingRequests(const Request& request_to_wait) {
 		handleIncomingReadAcquireLock();
 
 		MPI_Status req_status;
@@ -405,7 +405,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			DataUpdatePack<T> update = data_update_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
 			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive release acquire %s from %i",
 					ID_C_STR(update.id), req_status.MPI_SOURCE);
-			if(this->handleReleaseAcquire(update, requestToWait)){
+			if(this->handleReleaseAcquire(update, request_to_wait)){
 				return true;
 			}
 		}
@@ -415,7 +415,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
 			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock %s from %i",
 					ID_C_STR(id), req_status.MPI_SOURCE);
-			if(this->handleUnlock(id, requestToWait)) {
+			if(this->handleUnlock(id, request_to_wait)) {
 				return true;
 			}
 		}
@@ -426,7 +426,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 			FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock shared %s from %i",
 					ID_C_STR(id), req_status.MPI_SOURCE);
-			if(this->handleUnlockShared(id, requestToWait)) {
+			if(this->handleUnlockShared(id, request_to_wait)) {
 				return true;
 			}
 		}
@@ -434,17 +434,17 @@ namespace fpmas { namespace synchro { namespace hard {
 	}
 
 	template<typename T>
-	void MutexServer<T>::wait(const Request& requestToWait) {
+	void MutexServer<T>::wait(const Request& request_to_wait) {
 		FPMAS_LOGD(comm.getRank(), "MUTEX_SERVER",
 				"Waiting for local request to node %s to complete...",
-				ID_C_STR(requestToWait.id));
-		bool requestProcessed = false;
-		while(!requestProcessed) {
-			requestProcessed = handleIncomingRequests(requestToWait);
+				ID_C_STR(request_to_wait.id));
+		bool request_processed = false;
+		while(!request_processed) {
+			request_processed = handleIncomingRequests(request_to_wait);
 		}
 		FPMAS_LOGD(comm.getRank(), "MUTEX_SERVER",
 				"Handling local request to node %s.",
-				ID_C_STR(requestToWait.id));
+				ID_C_STR(request_to_wait.id));
 	}
 
 	template<typename T>

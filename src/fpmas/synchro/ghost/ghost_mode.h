@@ -323,14 +323,14 @@ namespace fpmas { namespace synchro {
 				};
 
 				/**
-				 * Returns a reference to the internal GhostDataSync.
+				 * Returns a reference to the internal GhostDataSync instance.
 				 *
 				 * @return reference to the DataSync instance
 				 */
 				GhostDataSync<T>& getDataSync() override {return data_sync;}
 
 				/**
-				 * Returns a reference to the internal GhostSyncLinker.
+				 * Returns a reference to the internal GhostSyncLinker instance.
 				 *
 				 * @return reference to the SyncLinker instance
 				 */

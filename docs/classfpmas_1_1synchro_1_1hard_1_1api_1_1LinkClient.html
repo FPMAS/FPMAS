@@ -72,6 +72,8 @@ $(function() {
 <div class="title">fpmas::synchro::hard::api::LinkClient&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="client__server_8h_source.html">client_server.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::synchro::hard::api::LinkClient&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -84,13 +86,98 @@ Inheritance diagram for fpmas::synchro::hard::api::LinkClient&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aef934c246cc7f14244fee1b965f9f0b2"><td class="memItemLeft" align="right" valign="top"><a id="aef934c246cc7f14244fee1b965f9f0b2"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>link</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt; *)=0</td></tr>
-<tr class="separator:aef934c246cc7f14244fee1b965f9f0b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3c28a44249bdce87b59f53642aec621"><td class="memItemLeft" align="right" valign="top"><a id="ac3c28a44249bdce87b59f53642aec621"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>unlink</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt; *)=0</td></tr>
-<tr class="separator:ac3c28a44249bdce87b59f53642aec621"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeceb623d3d5e72851adea3179f7d4941"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html#aeceb623d3d5e72851adea3179f7d4941">link</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt; *edge)=0</td></tr>
+<tr class="separator:aeceb623d3d5e72851adea3179f7d4941"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1671171b923adbee5780dd5bbad36cbf"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html#a1671171b923adbee5780dd5bbad36cbf">unlink</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt; *edge)=0</td></tr>
+<tr class="separator:a1671171b923adbee5780dd5bbad36cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::synchro::hard::api::LinkClient&lt; T &gt;</h3>
+
+<p><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">LinkClient</a> API.</p>
+<p>The <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">LinkClient</a> is used to transmit link, unlink and node removal requests from the local process to distant processes. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aeceb623d3d5e72851adea3179f7d4941"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeceb623d3d5e72851adea3179f7d4941">&#9670;&nbsp;</a></span>link()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">fpmas::synchro::hard::api::LinkClient</a>&lt; T &gt;::link </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>edge</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Transmits a link request for the specified <code>edge</code>.</p>
+<p>The request might be transmitted to two other processes if source and target nodes are DISTANT and located on different processes, to one process if they are located on the same process, or to no other process if source and target nodes are LOCAL.</p>
+<p>In any case, it is guaranteed that the edge is properly linked on any process involved upon return.</p>
+<p>Notice that the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> implementation ensures that source and target nodes are share locked when this method is called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>edge to link </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a7ce2f9b08ab490e4c1904bcca841bab4">fpmas::synchro::hard::LinkClient&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a1671171b923adbee5780dd5bbad36cbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1671171b923adbee5780dd5bbad36cbf">&#9670;&nbsp;</a></span>unlink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">fpmas::synchro::hard::api::LinkClient</a>&lt; T &gt;::unlink </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>edge</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Transmits an unlink request for the specified <code>edge</code>.</p>
+<p>The request might be transmitted to two other processes if source and target nodes are DISTANT and located on different processes, to one process if they are located on the same process, or to no other process if source and target nodes are LOCAL.</p>
+<p>In any case, it is guaranteed that the edge is properly unlinked on any process involved upon return.</p>
+<p>Notice that the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> implementation ensures that source and target nodes are share locked when this method is called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>edge to unlink </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#ac85d2127005c68ae4ab31af821817b2a">fpmas::synchro::hard::LinkClient&lt; T &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/synchro/hard/api/<a class="el" href="client__server_8h_source.html">client_server.h</a></li>
 </ul>

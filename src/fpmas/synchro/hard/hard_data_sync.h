@@ -24,7 +24,6 @@ namespace fpmas { namespace synchro { namespace hard {
 				void synchronize() override {
 					FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronizing data sync...");
 					server_pack.terminate();
-					//termination.terminate(mutex_server);
 					FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronized.");
 				};
 		};

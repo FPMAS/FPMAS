@@ -99,10 +99,49 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8f02687c1d11fa95eb8616cdc0217c5c"><td class="memItemLeft" align="right" valign="top"><a id="a8f02687c1d11fa95eb8616cdc0217c5c"></a>
 const TypedMpi&lt; Color &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getColorMpi</b> () const</td></tr>
 <tr class="separator:a8f02687c1d11fa95eb8616cdc0217c5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac18f283e5d43a5d3469f82cd3bf4d237"><td class="memItemLeft" align="right" valign="top"><a id="ac18f283e5d43a5d3469f82cd3bf4d237"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>terminate</b> (<a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html">server_t</a> &amp;server) override</td></tr>
+<tr class="memitem:ac18f283e5d43a5d3469f82cd3bf4d237"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1TerminationAlgorithm.html#ac18f283e5d43a5d3469f82cd3bf4d237">terminate</a> (<a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html">server_t</a> &amp;server) override</td></tr>
 <tr class="separator:ac18f283e5d43a5d3469f82cd3bf4d237"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="ac18f283e5d43a5d3469f82cd3bf4d237"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac18f283e5d43a5d3469f82cd3bf4d237">&#9670;&nbsp;</a></span>terminate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename &gt; class TypedMpi&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1TerminationAlgorithm.html">fpmas::synchro::hard::TerminationAlgorithm</a>&lt; TypedMpi &gt;::terminate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html">server_t</a> &amp;&#160;</td>
+          <td class="paramname"><em>server</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Apply the termination algorithm to the provided server.</p>
+<p>Termination is determined when all the processes have entered this function and no more request is pending in the global process. In consequence, the argument server must still be able to respond to requests from processes that have not terminated yet while the termination algorithm is applied to ensure progress. This can be performed in practice by the termination algorithm using the Server::handleIncomingRequests() method.</p>
+<p>Moreover, the termination algorithm must toggle the Server Epoch once termination has been detected.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">server</td><td>server to terminate </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1TerminationAlgorithm.html#a39c03976945f0087bfeb75fdcc312055">fpmas::synchro::hard::api::TerminationAlgorithm</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/synchro/hard/<a class="el" href="termination_8h_source.html">termination.h</a></li>
 </ul>
