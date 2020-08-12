@@ -3,7 +3,7 @@ set(SOURCES
 	# API
 	fpmas/api/graph/distributed_id.cpp
 	fpmas/api/model/model.cpp
-	fpmas/api/synchro/hard/client_server.cpp
+	fpmas/synchro/hard/api/client_server.cpp
 	# Utils
 	fpmas/utils/log.cpp
 	# Communication

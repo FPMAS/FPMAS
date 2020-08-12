@@ -3,23 +3,21 @@
 
 #include "fpmas/api/communication/communication.h"
 #include "fpmas/api/synchro/sync_mode.h"
-#include "fpmas/api/synchro/hard/hard_sync_mutex.h"
+#include "fpmas/synchro/hard/api/hard_sync_mutex.h"
 #include "server_pack.h"
 
 namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
-		class HardDataSync : public api::synchro::DataSync {
-			typedef api::synchro::hard::MutexServer<T>
-				MutexServer;
-			typedef api::synchro::hard::TerminationAlgorithm
-				TerminationAlgorithm;
+		class HardDataSync : public fpmas::api::synchro::DataSync {
+			typedef api::MutexServer<T> MutexServer;
+			typedef api::TerminationAlgorithm TerminationAlgorithm;
 
-			api::communication::MpiCommunicator& comm;
+			fpmas::api::communication::MpiCommunicator& comm;
 			ServerPack<T>& server_pack;
 
 			public:
-				HardDataSync(api::communication::MpiCommunicator& comm, ServerPack<T>& server_pack)
+				HardDataSync(fpmas::api::communication::MpiCommunicator& comm, ServerPack<T>& server_pack)
 					: comm(comm), server_pack(server_pack) {
 				}
 

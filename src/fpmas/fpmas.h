@@ -51,7 +51,15 @@
 /** \namespace fpmas::synchro
  * fpmas::api::synchro implementations.
  */
-
+/** \namespace fpmas::synchro::hard
+ * HardSyncMode implementation.
+ */
+/** \namespace fpmas::synchro::hard::api
+ * Defines generic API used to handle HardSyncMode.
+ */
+/** \namespace fpmas::synchro::ghost
+ * GhostMode implementation.
+ */
 namespace fpmas {
 	void init(int argc, char** argv) {
 		MPI_Init(&argc, &argv);

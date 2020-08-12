@@ -4,27 +4,23 @@
 #include <queue>
 #include "fpmas/api/communication/communication.h"
 #include "fpmas/api/graph/location_state.h"
-#include "fpmas/api/synchro/hard/hard_sync_mutex.h"
+#include "./api/hard_sync_mutex.h"
 #include "mutex_client.h"
 #include "mutex_server.h"
 
 namespace fpmas { namespace synchro { namespace hard {
 
-	using api::graph::LocationState;
-	using api::synchro::hard::MutexRequestType;
+	using fpmas::api::graph::LocationState;
+	using api::MutexRequestType;
 
 	template<typename T>
-		class HardSyncMutex
-			: public api::synchro::hard::HardSyncMutex<T> {
+		class HardSyncMutex : public api::HardSyncMutex<T> {
 			private:
-				typedef api::synchro::hard::MutexRequest
-					Request;
-				typedef api::synchro::hard::MutexClient<T>
-					MutexClient;
-				typedef api::synchro::hard::MutexServer<T>
-					MutexServer;
+				typedef api::MutexRequest Request;
+				typedef api::MutexClient<T> MutexClient;
+				typedef api::MutexServer<T> MutexServer;
 
-				api::graph::DistributedNode<T>* node;
+				fpmas::api::graph::DistributedNode<T>* node;
 				bool _locked = false;
 				int _locked_shared = 0;
 
@@ -39,7 +35,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				void _unlock() override {_locked=false;}
 				void _unlockShared() override {_locked_shared--;}
 			public:
-				HardSyncMutex(api::graph::DistributedNode<T>* node, MutexClient& mutex_client, MutexServer& mutex_server) :
+				HardSyncMutex(fpmas::api::graph::DistributedNode<T>* node, MutexClient& mutex_client, MutexServer& mutex_server) :
 					node(node), mutex_client(mutex_client), mutex_server(mutex_server) {}
 
 				void pushRequest(Request request) override;

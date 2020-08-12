@@ -57,8 +57,8 @@ using ::testing::WhenDynamicCastTo;
 
 using fpmas::api::graph::LocationState;
 using fpmas::synchro::hard::HardSyncMutex;
-using fpmas::api::synchro::hard::MutexRequest;
-using fpmas::api::synchro::hard::MutexRequestType;
+using fpmas::synchro::hard::api::MutexRequest;
+using fpmas::synchro::hard::api::MutexRequestType;
 
 class HardSyncMutexTest : public ::testing::Test {
 	protected:

@@ -3,31 +3,27 @@
 
 #include "fpmas/utils/macros.h"
 #include "fpmas/api/communication/communication.h"
-#include "fpmas/api/synchro/hard/enums.h"
-#include "fpmas/api/synchro/hard/hard_sync_mutex.h"
+#include "./api/enums.h"
+#include "./api/hard_sync_mutex.h"
 #include "data_update_pack.h"
 #include "fpmas/utils/log.h"
 #include "server_pack.h"
 
 namespace fpmas { namespace synchro { namespace hard {
-	using api::synchro::hard::Epoch;
-	using api::synchro::hard::Tag;
+	using api::Epoch;
+	using api::Tag;
 	
 	template<typename T>
 		class MutexClient :
-			public api::synchro::hard::MutexClient<T> {
-				typedef api::synchro::hard::MutexServer<T>
-					MutexServerBase;
-				typedef api::synchro::hard::MutexClient<T>
-					MutexClientBase;
-				typedef api::synchro::hard::HardSyncMutex<T>
-					HardSyncMutex;
-				typedef api::synchro::hard::MutexRequest
-					MutexRequest;
-				typedef api::communication::MpiCommunicator MpiCommunicator;
-				typedef api::communication::TypedMpi<DistributedId> IdMpi;
-				typedef api::communication::TypedMpi<T> DataMpi;
-				typedef api::communication::TypedMpi<DataUpdatePack<T>> DataUpdateMpi;
+			public api::MutexClient<T> {
+				typedef api::MutexServer<T> MutexServerBase;
+				typedef api::MutexClient<T> MutexClientBase;
+				typedef api::HardSyncMutex<T> HardSyncMutex;
+				typedef api::MutexRequest MutexRequest;
+				typedef fpmas::api::communication::MpiCommunicator MpiCommunicator;
+				typedef fpmas::api::communication::TypedMpi<DistributedId> IdMpi;
+				typedef fpmas::api::communication::TypedMpi<T> DataMpi;
+				typedef fpmas::api::communication::TypedMpi<DataUpdatePack<T>> DataUpdateMpi;
 
 				private:
 				MpiCommunicator& comm;

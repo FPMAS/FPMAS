@@ -2,7 +2,6 @@
 #define ZOLTAN_LOAD_BALANCING_H
 
 #include "fpmas/api/load_balancing//load_balancing.h"
-#include "fpmas/utils/config.h"
 #include "zoltan_cpp.h"
 
 namespace fpmas { namespace load_balancing {

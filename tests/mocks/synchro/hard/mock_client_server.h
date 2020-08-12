@@ -2,25 +2,25 @@
 #define MOCK_TERMINATION_H
 #include "gmock/gmock.h"
 
-#include "fpmas/api/synchro/hard/client_server.h"
+#include "fpmas/synchro/hard/api/client_server.h"
 
-using fpmas::api::synchro::hard::Epoch;
+using fpmas::synchro::hard::api::Epoch;
 
-class MockTerminationAlgorithm : public fpmas::api::synchro::hard::TerminationAlgorithm {
+class MockTerminationAlgorithm : public fpmas::synchro::hard::api::TerminationAlgorithm {
 	public:
 		template<typename... Args>
 			MockTerminationAlgorithm(Args&...) {}
 
 		MOCK_METHOD(
 			void, terminate,
-			(fpmas::api::synchro::hard::Server&),
+			(fpmas::synchro::hard::api::Server&),
 			(override));
 
 };
 
 template<typename T>
 class MockMutexClient
-: public fpmas::api::synchro::hard::MutexClient<T> {
+: public fpmas::synchro::hard::api::MutexClient<T> {
 	public:
 		MOCK_METHOD(T, read, (DistributedId, int), (override));
 		MOCK_METHOD(void, releaseRead, (DistributedId, int), (override));
@@ -37,10 +37,10 @@ class MockMutexClient
 
 template<typename T>
 class MockMutexServer
-: public fpmas::api::synchro::hard::MutexServer<T> {
+: public fpmas::synchro::hard::api::MutexServer<T> {
 	public:
-		using fpmas::api::synchro::hard::MutexServer<T>::lock;
-		using fpmas::api::synchro::hard::MutexServer<T>::lockShared;
+		using fpmas::synchro::hard::api::MutexServer<T>::lock;
+		using fpmas::synchro::hard::api::MutexServer<T>::lockShared;
 
 		MockMutexServer() {
 			EXPECT_CALL(*this, setEpoch).Times(::testing::AnyNumber());
@@ -50,12 +50,12 @@ class MockMutexServer
 		MOCK_METHOD(Epoch, getEpoch, (), (const, override));
 
 		MOCK_METHOD(void, manage,
-				(DistributedId, fpmas::api::synchro::hard::HardSyncMutex<T>*),
+				(DistributedId, fpmas::synchro::hard::api::HardSyncMutex<T>*),
 				(override));
 		MOCK_METHOD(void, remove, (DistributedId), (override));
 
 		MOCK_METHOD(void, wait,
-				(const fpmas::api::synchro::hard::MutexRequest&),
+				(const fpmas::synchro::hard::api::MutexRequest&),
 				(override));
 		MOCK_METHOD(void, notify, (DistributedId), (override));
 
@@ -64,7 +64,7 @@ class MockMutexServer
 
 template<typename T>
 class MockLinkClient
-: public fpmas::api::synchro::hard::LinkClient<T> {
+: public fpmas::synchro::hard::api::LinkClient<T> {
 	typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
 	public:
 		MOCK_METHOD(void, link, (const EdgeApi*), (override));
@@ -73,7 +73,7 @@ class MockLinkClient
 };
 
 class MockLinkServer
-: public fpmas::api::synchro::hard::LinkServer {
+: public fpmas::synchro::hard::api::LinkServer {
 	public:
 		MockLinkServer() {
 			EXPECT_CALL(*this, setEpoch).Times(::testing::AnyNumber());

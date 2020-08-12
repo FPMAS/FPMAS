@@ -2,70 +2,66 @@
 #define FPMAS_SERVER_PACK_H
 
 #include "fpmas/api/communication/communication.h"
-#include "fpmas/api/synchro/hard/client_server.h"
+#include "./api/client_server.h"
 #include "fpmas/utils/log.h"
 
-namespace fpmas {
-	namespace synchro {
-		namespace hard {
+namespace fpmas { namespace synchro { namespace hard {
 
-			template<typename T>
-			class ServerPack : public api::synchro::hard::Server {
-				typedef api::synchro::hard::Epoch Epoch;
-				typedef api::synchro::hard::TerminationAlgorithm
-					TerminationAlgorithm;
-				private:
-					api::communication::MpiCommunicator& comm;
-					TerminationAlgorithm& termination;
-					api::synchro::hard::MutexServer<T>& mutex_server;
-					api::synchro::hard::LinkServer& link_server;
-					Epoch epoch;
+	template<typename T>
+		class ServerPack : public api::Server {
+			typedef api::Epoch Epoch;
+			typedef api::TerminationAlgorithm TerminationAlgorithm;
 
-				public:
-					ServerPack(
-							api::communication::MpiCommunicator& comm,
-							TerminationAlgorithm& termination,
-							api::synchro::hard::MutexServer<T>& mutex_server,
-							api::synchro::hard::LinkServer& link_server)
-						: comm(comm), termination(termination), mutex_server(mutex_server), link_server(link_server) {
-							setEpoch(Epoch::EVEN);
-						}
+			private:
+			fpmas::api::communication::MpiCommunicator& comm;
+			TerminationAlgorithm& termination;
+			api::MutexServer<T>& mutex_server;
+			api::LinkServer& link_server;
+			Epoch epoch;
 
-					api::synchro::hard::LinkServer& linkServer() {return link_server;}
-					api::synchro::hard::MutexServer<T>& mutexServer() {return mutex_server;}
+			public:
+			ServerPack(
+					fpmas::api::communication::MpiCommunicator& comm,
+					TerminationAlgorithm& termination,
+					api::MutexServer<T>& mutex_server,
+					api::LinkServer& link_server)
+				: comm(comm), termination(termination), mutex_server(mutex_server), link_server(link_server) {
+					setEpoch(Epoch::EVEN);
+				}
 
-					void handleIncomingRequests() override {
-						mutex_server.handleIncomingRequests();
-						link_server.handleIncomingRequests();
-					}
+			api::LinkServer& linkServer() {return link_server;}
+			api::MutexServer<T>& mutexServer() {return mutex_server;}
 
-					void setEpoch(Epoch epoch) override {
-						this->epoch = epoch;
-						mutex_server.setEpoch(epoch);
-						link_server.setEpoch(epoch);
-					}
+			void handleIncomingRequests() override {
+				mutex_server.handleIncomingRequests();
+				link_server.handleIncomingRequests();
+			}
 
-					Epoch getEpoch() const override {
-						return epoch;
-					}
+			void setEpoch(Epoch epoch) override {
+				this->epoch = epoch;
+				mutex_server.setEpoch(epoch);
+				link_server.setEpoch(epoch);
+			}
 
-					void terminate() {
-						termination.terminate(*this);
-					}
+			Epoch getEpoch() const override {
+				return epoch;
+			}
 
-					void waitSendRequest(MPI_Request* req) {
-						FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for send...");
-						bool sent = comm.test(req);
+			void terminate() {
+				termination.terminate(*this);
+			}
 
-						while(!sent) {
-							mutex_server.handleIncomingRequests();
-							link_server.handleIncomingRequests();
-							sent = comm.test(req);
-						}
-						FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Request sent.");
-					}
-			};
-		}
-	}
-}
+			void waitSendRequest(MPI_Request* req) {
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for send...");
+				bool sent = comm.test(req);
+
+				while(!sent) {
+					mutex_server.handleIncomingRequests();
+					link_server.handleIncomingRequests();
+					sent = comm.test(req);
+				}
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Request sent.");
+			}
+		};
+}}}
 #endif

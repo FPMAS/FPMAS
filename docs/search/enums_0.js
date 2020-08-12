@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['locationstate_465',['LocationState',['../namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f',1,'fpmas::api::graph']]]
+  ['color_470',['Color',['../namespacefpmas_1_1synchro_1_1hard_1_1api.html#a2564dc813466b9b61c9a3fe3af0acef4',1,'fpmas::synchro::hard::api']]]
 ];

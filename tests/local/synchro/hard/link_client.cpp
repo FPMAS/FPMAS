@@ -10,7 +10,7 @@ using ::testing::Sequence;
 using ::testing::Ref;
 using ::testing::Expectation;
 using fpmas::graph::EdgePtrWrapper;
-using fpmas::synchro::hard::Tag;
+using fpmas::synchro::hard::api::Tag;
 using fpmas::synchro::hard::LinkClient;
 
 class LinkClientTest : public ::testing::Test {

@@ -15,7 +15,7 @@
 namespace fpmas { namespace synchro {
 	namespace hard {
 		template<typename T>
-			class HardSyncMode : public api::synchro::SyncMode<T> {
+			class HardSyncMode : public fpmas::api::synchro::SyncMode<T> {
 
 				typedef synchro::hard::TerminationAlgorithm<
 					communication::TypedMpi>
@@ -40,8 +40,8 @@ namespace fpmas { namespace synchro {
 
 				public:
 				HardSyncMode(
-						api::graph::DistributedGraph<T>& graph,
-						api::communication::MpiCommunicator& comm) :
+						fpmas::api::graph::DistributedGraph<T>& graph,
+						fpmas::api::communication::MpiCommunicator& comm) :
 					id_mpi(comm), data_mpi(comm), data_update_mpi(comm), node_mpi(comm), edge_mpi(comm),
 					mutex_server(comm, id_mpi, data_mpi, data_update_mpi),
 					mutex_client(comm, id_mpi, data_mpi, data_update_mpi, server_pack),
@@ -52,7 +52,7 @@ namespace fpmas { namespace synchro {
 					sync_linker(graph, link_client, server_pack),
 					data_sync(comm, server_pack) {}
 
-				HardSyncMutex<T>* buildMutex(api::graph::DistributedNode<T>* node) override {
+				HardSyncMutex<T>* buildMutex(fpmas::api::graph::DistributedNode<T>* node) override {
 					HardSyncMutex<T>* mutex = new HardSyncMutex<T>(node, mutex_client, mutex_server);
 					mutex_server.manage(node->getId(), mutex);
 					return mutex;

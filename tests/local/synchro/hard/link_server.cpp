@@ -14,8 +14,8 @@ using ::testing::Return;
 using ::testing::ReturnPointee;
 
 using fpmas::graph::EdgePtrWrapper;
-using fpmas::synchro::hard::Epoch;
-using fpmas::synchro::hard::Tag;
+using fpmas::synchro::hard::api::Epoch;
+using fpmas::synchro::hard::api::Tag;
 using fpmas::synchro::hard::LinkServer;
 
 class LinkServerTest : public ::testing::Test {

@@ -47,7 +47,7 @@ TEST_F(TerminationTest, termination_test_with_delay) {
 	ASSERT_GE(delay, std::chrono::seconds(1));
 }
 
-class FakeServer : public fpmas::api::synchro::hard::Server {
+class FakeServer : public fpmas::synchro::hard::api::Server {
 	private:
 		Epoch epoch = Epoch::EVEN;
 	public:

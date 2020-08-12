@@ -3,20 +3,20 @@
 
 #include "fpmas/communication/communication.h"
 #include "fpmas/api/communication/communication.h"
-#include "fpmas/api/synchro/hard/hard_sync_mutex.h"
+#include "fpmas/synchro/hard/api/hard_sync_mutex.h"
 #include "fpmas/utils/log.h"
 
 namespace fpmas { namespace synchro { namespace hard {
 
-	using api::synchro::hard::Color;
-	using api::synchro::hard::Tag;
-	using api::synchro::hard::Epoch;
+	using api::Color;
+	using api::Tag;
+	using api::Epoch;
 
 	template<template<typename> class TypedMpi>
 		class TerminationAlgorithm
-			: public api::synchro::hard::TerminationAlgorithm {
-				typedef api::communication::MpiCommunicator comm_t;
-				typedef api::synchro::hard::Server server_t;
+			: public api::TerminationAlgorithm {
+				typedef fpmas::api::communication::MpiCommunicator comm_t;
+				typedef api::Server server_t;
 			private:
 				comm_t& comm;
 				TypedMpi<Color> color_mpi {comm};

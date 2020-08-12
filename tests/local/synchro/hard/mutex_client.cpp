@@ -45,8 +45,8 @@ using ::testing::Sequence;
 using ::testing::SetArgReferee;
 using ::testing::_;
 
-using fpmas::api::synchro::hard::Epoch;
-using fpmas::api::synchro::hard::Tag;
+using fpmas::synchro::hard::api::Epoch;
+using fpmas::synchro::hard::api::Tag;
 using fpmas::synchro::hard::MutexClient;
 using fpmas::synchro::DataUpdatePack;
 

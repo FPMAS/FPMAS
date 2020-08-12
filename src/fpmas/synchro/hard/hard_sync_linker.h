@@ -5,33 +5,31 @@
 
 #include "fpmas/api/communication/communication.h"
 #include "fpmas/api/synchro/sync_mode.h"
-#include "fpmas/api/synchro/hard/client_server.h"
+#include "./api/client_server.h"
 #include "fpmas/graph/distributed_edge.h"
 #include "server_pack.h"
 
 namespace fpmas { namespace synchro { namespace hard {
-
-	using api::synchro::hard::Epoch;
-	using api::synchro::hard::Tag;
-	using api::graph::LocationState;
+	using api::Tag;
+	using api::Epoch;
+	using fpmas::api::graph::LocationState;
 
 	template<typename T>
-	class LinkServer
-		: public api::synchro::hard::LinkServer {
+	class LinkServer : public api::LinkServer {
 			public:
-				typedef api::graph::DistributedEdge<T> EdgeApi;
-				typedef api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
-				typedef api::communication::TypedMpi<DistributedId> IdMpi;
+				typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
+				typedef fpmas::api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
+				typedef fpmas::api::communication::TypedMpi<DistributedId> IdMpi;
 			private:
 			Epoch epoch = Epoch::EVEN;
 
-			api::communication::MpiCommunicator& comm;
-			api::graph::DistributedGraph<T>& graph;
+			fpmas::api::communication::MpiCommunicator& comm;
+			fpmas::api::graph::DistributedGraph<T>& graph;
 			IdMpi& id_mpi;
 			EdgeMpi& edge_mpi;
 
 			public:
-				LinkServer(api::communication::MpiCommunicator& comm, api::graph::DistributedGraph<T>& graph,
+				LinkServer(fpmas::api::communication::MpiCommunicator& comm, fpmas::api::graph::DistributedGraph<T>& graph,
 						IdMpi& id_mpi, EdgeMpi& edge_mpi)
 					:  comm(comm), graph(graph), id_mpi(id_mpi), edge_mpi(edge_mpi) {}
 
@@ -59,21 +57,21 @@ namespace fpmas { namespace synchro { namespace hard {
 		}
 
 	template<typename T>
-		class LinkClient : public api::synchro::hard::LinkClient<T> {
-			typedef api::synchro::hard::LinkServer LinkServer;
+		class LinkClient : public api::LinkClient<T> {
+			typedef api::LinkServer LinkServer;
 			public:
-				typedef api::graph::DistributedEdge<T> EdgeApi;
-				typedef api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
-				typedef api::communication::TypedMpi<DistributedId> IdMpi;
+				typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
+				typedef fpmas::api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
+				typedef fpmas::api::communication::TypedMpi<DistributedId> IdMpi;
 
 			private:
-				api::communication::MpiCommunicator& comm;
+				fpmas::api::communication::MpiCommunicator& comm;
 				IdMpi& id_mpi;
 				EdgeMpi& edge_mpi;
 				ServerPack<T>& server_pack;
 
 			public:
-				LinkClient(api::communication::MpiCommunicator& comm, IdMpi& id_mpi, EdgeMpi& edge_mpi,
+				LinkClient(fpmas::api::communication::MpiCommunicator& comm, IdMpi& id_mpi, EdgeMpi& edge_mpi,
 						ServerPack<T>& server_pack)
 					: comm(comm), id_mpi(id_mpi), edge_mpi(edge_mpi), server_pack(server_pack) {}
 
@@ -167,23 +165,23 @@ namespace fpmas { namespace synchro { namespace hard {
 		}
 
 	template<typename T>
-	class HardSyncLinker : public api::synchro::SyncLinker<T> {
+	class HardSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
 		public:
-			typedef api::synchro::hard::TerminationAlgorithm
+			typedef api::TerminationAlgorithm
 				TerminationAlgorithm;
-			typedef api::graph::DistributedEdge<T> EdgeApi;
+			typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
 
 		private:
-			typedef api::synchro::hard::LinkClient<T> LinkClient;
-			typedef api::synchro::hard::LinkServer LinkServer;
+			typedef api::LinkClient<T> LinkClient;
+			typedef api::LinkServer LinkServer;
 
 			std::vector<EdgeApi*> ghost_edges;
-			api::graph::DistributedGraph<T>& graph;
+			fpmas::api::graph::DistributedGraph<T>& graph;
 			LinkClient& link_client;
 			ServerPack<T>& server_pack;
 
 		public:
-			HardSyncLinker(api::graph::DistributedGraph<T>& graph,
+			HardSyncLinker(fpmas::api::graph::DistributedGraph<T>& graph,
 					LinkClient& link_client, ServerPack<T>& server_pack)
 				: graph(graph), link_client(link_client), server_pack(server_pack) {}
 
