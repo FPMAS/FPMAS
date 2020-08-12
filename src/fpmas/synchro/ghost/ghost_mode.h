@@ -13,6 +13,15 @@ namespace fpmas { namespace synchro {
 
 		using api::graph::LocationState;
 
+		/**
+		 * GhostMode Mutex implementation.
+		 *
+		 * Currently, the GhostMode is defined such that a unique thread is
+		 * allowed to access to each node. In consequence, there is literally
+		 * no need for concurrency management.
+		 *
+		 * In the future, this might be improved to handle multi-threading.
+		 */
 		template<typename T>
 			class SingleThreadMutex : public api::synchro::Mutex<T> {
 				private:
@@ -23,12 +32,16 @@ namespace fpmas { namespace synchro {
 					void _unlockShared() override {};
 
 				public:
+					/**
+					 * SingleThreadMutex constructor.
+					 *
+					 * @param data reference to node data
+					 */
 					SingleThreadMutex(T& data) : _data(data) {}
 
 					T& data() override {return _data;}
 					const T& data() const override {return _data;}
 
-					// TODO: Exceptions when multiple lock
 					const T& read() override {return _data;};
 					void releaseRead() override {};
 					T& acquire() override {return _data;};
@@ -43,6 +56,12 @@ namespace fpmas { namespace synchro {
 					int lockedShared() const override {return 0;};
 			};
 
+		/**
+		 * GhostMode DataSync implementation.
+		 *
+		 * Data of each DISTANT node is fetched from host processes at each
+		 * graph synchronization operation.
+		 */
 		template<typename T>
 			class GhostDataSync : public api::synchro::DataSync {
 				public:
@@ -58,12 +77,24 @@ namespace fpmas { namespace synchro {
 					api::graph::DistributedGraph<T>& graph;
 
 				public:
+					/**
+					 * GhostDataSync constructor.
+					 *
+					 * @param node_mpi NodePtr MPI communicator
+					 * @param id_mpi DistributedId MPI communicator
+					 * @param graph reference to the associated
+					 * DistributedGraph
+					 */
 					GhostDataSync(
 							NodeMpi& node_mpi, IdMpi& id_mpi,
 							api::graph::DistributedGraph<T>& graph
 							)
 						: node_mpi(node_mpi), id_mpi(id_mpi), graph(graph) {}
 
+					/**
+					 * Fetches updated data for all the DISTANT nodes of the
+					 * DistributedGraph from the corresponding host processes.
+					 */
 					void synchronize() override;
 			};
 
@@ -103,9 +134,15 @@ namespace fpmas { namespace synchro {
 			}
 
 
+		/**
+		 * GhostMode SyncLinker implementation.
+		 *
+		 * Link, unlink and node removal requests are buffered until the next
+		 * graph synchronization. All operations are then committed across
+		 * processes.
+		 */
 		template<typename T>
 			class GhostSyncLinker : public api::synchro::SyncLinker<T> {
-
 				public:
 					typedef api::graph::DistributedEdge<T> EdgeApi;
 					typedef graph::EdgePtrWrapper<T> EdgePtr;
@@ -121,14 +158,42 @@ namespace fpmas { namespace synchro {
 					api::graph::DistributedGraph<T>& graph;
 
 				public:
+					/**
+					 * GhostSyncLinker constructor.
+					 *
+					 * @param edge_mpi EdgePtr MPI communicator
+					 * @param id_mpi DistributedId MPI communicator
+					 * @param graph reference to the associated
+					 * DistributedGraph
+					 */
 					GhostSyncLinker(
 							EdgeMpi& edge_mpi, IdMpi& id_mpi,
 							api::graph::DistributedGraph<T>& graph)
 						: edge_mpi(edge_mpi), id_mpi(id_mpi), graph(graph) {}
 
-					void link(const EdgeApi*) override;
-					void unlink(const EdgeApi*) override;
+					/**
+					 * If source or target node is DISTANT, edge is buffered to
+					 * be committed at the next synchronize() call.
+					 *
+					 * @param edge linked edge
+					 */
+					void link(const EdgeApi* edge) override;
 
+					/**
+					 * If source or target node is DISTANT, edge unlinking is buffered to
+					 * be committed at the next synchronize() call.
+					 *
+					 * For efficiency purpose, the edge is removed from the
+					 * link buffer if it was not committed yet.
+					 *
+					 * @param edge unlinked edge
+					 */
+					void unlink(const EdgeApi* edge) override;
+
+					/**
+					 * Commits currently buffered link, unlink and node removal
+					 * operations.
+					 */
 					void synchronize() override;
 			};
 
@@ -204,8 +269,30 @@ namespace fpmas { namespace synchro {
 					graph.erase(edge);
 			}
 
+		/**
+		 * Ghost SyncMode implementation.
+		 *
+		 * The concept of GhostMode is that local data is updated **only** at
+		 * each api::graph::DistributedGraph::synchronize() call by the
+		 * GhostDataSync instance. Let's call a "time step" the period between
+		 * two graph synchronizations. It is not guaranteed that DISTANT node
+		 * data accessed within a time step is synchronized with the process
+		 * that owns the node.
+		 *
+		 * More importantly, **write operations on DISTANT nodes are not
+		 * reported** to the hosts processes.
+		 *
+		 * In consequence, the corresponding api::synchro::Mutex implementation
+		 * is trivial, since (for now) we consider a single-threaded
+		 * environment, so no concurrency needs to be managed since the local
+		 * process necessarily access sequentially the local nodes' data.
+		 *
+		 * However, link, unlink and node removal operations are allowed, and
+		 * are committed "at the end of each time step" by the GhostSyncLinker
+		 * instance, i.e. at each graph synchronization.
+		 */
 		template<typename T>
-			class GhostMode : api::synchro::SyncMode<T> {
+			class GhostMode : public api::synchro::SyncMode<T> {
 				communication::TypedMpi<DistributedId> id_mpi;
 				communication::TypedMpi<graph::NodePtrWrapper<T>> node_mpi;
 				communication::TypedMpi<graph::EdgePtrWrapper<T>> edge_mpi;
@@ -214,16 +301,39 @@ namespace fpmas { namespace synchro {
 				GhostSyncLinker<T> sync_linker;
 
 				public:
+				/**
+				 * GhostMode constructor.
+				 *
+				 * @param graph reference to the associated DistributedGraph
+				 * @param comm MPI communicator
+				 */
 				GhostMode(
 						api::graph::DistributedGraph<T>& graph,
 						api::communication::MpiCommunicator& comm)
 					: id_mpi(comm), node_mpi(comm), edge_mpi(comm),
 					data_sync(node_mpi, id_mpi, graph), sync_linker(edge_mpi, id_mpi, graph) {}
 
+				/**
+				 * Builds a new SingleThreadMutex from the specified node data.
+				 *
+				 * @param node node to which the built mutex will be associated
+				 */
 				SingleThreadMutex<T>* buildMutex(api::graph::DistributedNode<T>* node) override {
 					return new SingleThreadMutex<T>(node->data());
 				};
+
+				/**
+				 * Returns a reference to the internal GhostDataSync.
+				 *
+				 * @return reference to the DataSync instance
+				 */
 				GhostDataSync<T>& getDataSync() override {return data_sync;}
+
+				/**
+				 * Returns a reference to the internal GhostSyncLinker.
+				 *
+				 * @return reference to the SyncLinker instance
+				 */
 				GhostSyncLinker<T>& getSyncLinker() override {return sync_linker;}
 			};
 	}

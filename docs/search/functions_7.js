@@ -22,5 +22,8 @@ var searchData=
   ['getsourcenode_387',['getSourceNode',['../classfpmas_1_1api_1_1graph_1_1Edge.html#ae7f598115d03216fad45c815c938c4ad',1,'fpmas::api::graph::Edge']]],
   ['getsynclinker_388',['getSyncLinker',['../classfpmas_1_1api_1_1synchro_1_1SyncMode.html#a02cf7ca982560ae120fe8cc0e9fc9dc9',1,'fpmas::api::synchro::SyncMode::getSyncLinker()'],['../classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html#a6bd0a7a89ad3f0267599f08c1c0d1a06',1,'fpmas::synchro::ghost::GhostMode::getSyncLinker()'],['../classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html#af84aeeb9bd8a410cb85c9bc28b382f00',1,'fpmas::synchro::hard::HardSyncMode::getSyncLinker()']]],
   ['gettargetnode_389',['getTargetNode',['../classfpmas_1_1api_1_1graph_1_1Edge.html#af9f5956385ddff637072d3add197660d',1,'fpmas::api::graph::Edge']]],
-  ['getweight_390',['getWeight',['../classfpmas_1_1api_1_1graph_1_1Edge.html#aff73770c43ab756722d88fcc46d0de65',1,'fpmas::api::graph::Edge::getWeight()'],['../classfpmas_1_1api_1_1graph_1_1Node.html#a62d1c0934c0b8f364b96a776ee9d2008',1,'fpmas::api::graph::Node::getWeight()']]]
+  ['getweight_390',['getWeight',['../classfpmas_1_1api_1_1graph_1_1Edge.html#aff73770c43ab756722d88fcc46d0de65',1,'fpmas::api::graph::Edge::getWeight()'],['../classfpmas_1_1api_1_1graph_1_1Node.html#a62d1c0934c0b8f364b96a776ee9d2008',1,'fpmas::api::graph::Node::getWeight()']]],
+  ['ghostdatasync_391',['GhostDataSync',['../classfpmas_1_1synchro_1_1ghost_1_1GhostDataSync.html#abab2eeed16cc36e8167df8c85e92604b',1,'fpmas::synchro::ghost::GhostDataSync']]],
+  ['ghostmode_392',['GhostMode',['../classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html#a60d134ced49d241df951e2d537e0a80a',1,'fpmas::synchro::ghost::GhostMode']]],
+  ['ghostsynclinker_393',['GhostSyncLinker',['../classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a84dd995b58701b4fe0101508d9179448',1,'fpmas::synchro::ghost::GhostSyncLinker']]]
 ];
