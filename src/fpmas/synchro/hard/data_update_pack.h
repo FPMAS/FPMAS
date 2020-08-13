@@ -4,11 +4,26 @@
 #include "fpmas/api/graph/distributed_id.h"
 
 namespace fpmas { namespace synchro {
+	/**
+	 * Structure used to send and receive data updates.
+	 */
 	template<typename T>
 		struct DataUpdatePack {
+			/**
+			 * Associated node id.
+			 */
 			DistributedId id;
+			/**
+			 * Buffered data.
+			 */
 			T updated_data;
 
+			/**
+			 * DataUpdatePack constructor.
+			 *
+			 * @param id associated node id
+			 * @param data reference to sent / received data
+			 */
 			DataUpdatePack(DistributedId id, const T& data)
 				: id(id), updated_data(data) {}
 		};
@@ -16,6 +31,10 @@ namespace fpmas { namespace synchro {
 
 namespace nlohmann {
 	using fpmas::synchro::DataUpdatePack;
+
+	/**
+	 * DataUpdatePack JSON serialization.
+	 */
     template <typename T>
     struct adl_serializer<DataUpdatePack<T>> {
         static DataUpdatePack<T> from_json(const json& j) {
