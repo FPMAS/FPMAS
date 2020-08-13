@@ -15,6 +15,7 @@ namespace fpmas { namespace model {
 
 	using api::model::AgentNode;
 	using api::model::AgentPtr;
+	using api::scheduler::JID;
 
 	template<typename AgentType>
 		class Neighbor {

@@ -3,6 +3,7 @@
 
 
 using fpmas::scheduler::Scheduler;
+using fpmas::scheduler::Date;
 
 using ::testing::AnyNumber;
 using ::testing::ElementsAre;
@@ -61,7 +62,7 @@ TEST_F(SchedulerTest, schedule_recurrent_from_start) {
 	scheduler.schedule(0, 2, job2);
 	scheduler.schedule(0, 5, job3);
 
-	for(fpmas::Date date = 0; date < 124; date++) {
+	for(Date date = 0; date < 124; date++) {
 		if(date%2==0 && date%5==0) {
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 			EXPECT_CALL(epoch, submit(Ref(job2)));
@@ -84,13 +85,13 @@ TEST_F(SchedulerTest, schedule_recurrent_with_start) {
 	scheduler.schedule(13, 2, job2);
 	scheduler.schedule(6, 5, job3);
 
-	for(fpmas::Date date = 0; date < 6; date++) {
+	for(Date date = 0; date < 6; date++) {
 		if(date % 2 == 0) {
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		}
 		scheduler.build(date, epoch);
 	}
-	for(fpmas::Date date = 6; date < 12; date++) {
+	for(Date date = 6; date < 12; date++) {
 		if (date % 2 == 0) {
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		}
@@ -99,7 +100,7 @@ TEST_F(SchedulerTest, schedule_recurrent_with_start) {
 		}
 		scheduler.build(date, epoch);
 	}
-	for(fpmas::Date date = 13; date < 154; date++) {
+	for(Date date = 13; date < 154; date++) {
 		if(date % 2 == 0) {
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		}
@@ -119,10 +120,10 @@ TEST_F(SchedulerTest, schedule_unique_on_recurrent) {
 	scheduler.schedule(23, 2, job1);
 	scheduler.schedule(29, job2);
 
-	for (fpmas::Date date = 0; date < 22; ++date) {
+	for (Date date = 0; date < 22; ++date) {
 		scheduler.build(date, epoch);
 	}
-	for (fpmas::Date date = 23; date < 29; ++date) {
+	for (Date date = 23; date < 29; ++date) {
 		if((date - 23) % 2 == 0) {
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		}
@@ -131,7 +132,7 @@ TEST_F(SchedulerTest, schedule_unique_on_recurrent) {
 	EXPECT_CALL(epoch, submit(Ref(job1)));
 	EXPECT_CALL(epoch, submit(Ref(job2)));
 	scheduler.build(29, epoch);
-	for (fpmas::Date date = 30; date < 292; ++date) {
+	for (Date date = 30; date < 292; ++date) {
 		if((date-23) % 2 == 0) {
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		}
@@ -144,16 +145,16 @@ TEST_F(SchedulerTest, schedule_limited_recurrent) {
 
 	scheduler.schedule(23, 40, 5, job1);
 
-	for (fpmas::Date date = 0; date < 22; ++date) {
+	for (Date date = 0; date < 22; ++date) {
 		scheduler.build(date, epoch);
 	}
-	for (fpmas::Date date = 23; date < 40; ++date) {
+	for (Date date = 23; date < 40; ++date) {
 		if((date-23) % 5 == 0) {
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		}
 		scheduler.build(date, epoch);
 	}
-	for (fpmas::Date date = 40; date < 60; ++date) {
+	for (Date date = 40; date < 60; ++date) {
 		scheduler.build(date, epoch);
 	}
 }
@@ -166,12 +167,12 @@ TEST_F(SchedulerTest, schedule_recurrent_limited_recurrent_and_unique) {
 	scheduler.schedule(13, 22, 2, job2);
 	scheduler.schedule(17, job3);
 
-	for (fpmas::Date date = 0; date < 13; ++date) {
+	for (Date date = 0; date < 13; ++date) {
 		if(date % 2 == 0)
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		scheduler.build(date, epoch);
 	}
-	for (fpmas::Date date = 13; date < 17; ++date) {
+	for (Date date = 13; date < 17; ++date) {
 		if(date % 2 == 0)
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		if((date-13) % 2 == 0)
@@ -183,14 +184,14 @@ TEST_F(SchedulerTest, schedule_recurrent_limited_recurrent_and_unique) {
 	EXPECT_CALL(epoch, submit(Ref(job3)));
 	scheduler.build(17, epoch);
 
-	for (fpmas::Date date = 18; date < 22; ++date) {
+	for (Date date = 18; date < 22; ++date) {
 		if(date % 2 == 0)
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		if((date-13) % 2 == 0)
 			EXPECT_CALL(epoch, submit(Ref(job2)));
 		scheduler.build(date, epoch);
 	}
-	for (fpmas::Date date = 23; date < 67; ++date) {
+	for (Date date = 23; date < 67; ++date) {
 		if(date % 2 == 0)
 			EXPECT_CALL(epoch, submit(Ref(job1)));
 		scheduler.build(date, epoch);

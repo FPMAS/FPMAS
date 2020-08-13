@@ -5,6 +5,7 @@
 
 
 namespace fpmas { namespace runtime {
+	using api::runtime::Date;
 
 	class Runtime : public api::runtime::Runtime {
 		private:

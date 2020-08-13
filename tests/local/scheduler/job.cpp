@@ -10,7 +10,7 @@ using ::testing::IsEmpty;
 
 class JobTest : public ::testing::Test {
 	protected:
-		const fpmas::JID id = 236;
+		const fpmas::api::scheduler::JID id = 236;
 		Job job {id};
 };
 

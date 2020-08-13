@@ -154,7 +154,7 @@ class AgentGroupTest : public ::testing::Test {
 		MockDistributedNode<AgentPtr> node1 {{0, 1}};
 		MockDistributedNode<AgentPtr> node2 {{0, 2}};
 
-		AgentGroup agent_group {10, graph, fpmas::JID(18)};
+		AgentGroup agent_group {10, graph, fpmas::api::scheduler::JID(18)};
 		MockAgent<>* agent1 = new MockAgent<>;
 		fpmas::api::model::AgentGroup* agent1_group;
 		fpmas::api::model::AgentTask* agent1_task;
@@ -229,7 +229,7 @@ TEST_F(AgentGroupTest, id) {
 }
 
 TEST_F(AgentGroupTest, job) {
-	ASSERT_EQ(agent_group.job().id(), fpmas::JID(18));
+	ASSERT_EQ(agent_group.job().id(), fpmas::api::scheduler::JID(18));
 }
 
 TEST_F(AgentGroupTest, job_end) {

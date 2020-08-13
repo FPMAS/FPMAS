@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><b>scheduler</b></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">Scheduler</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html">scheduler</a></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">Scheduler</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -72,6 +72,8 @@ $(function() {
 <div class="title">fpmas::api::scheduler::Scheduler Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="api_2scheduler_2scheduler_8h_source.html">scheduler.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::api::scheduler::Scheduler:</div>
 <div class="dyncontent">
@@ -84,19 +86,221 @@ Inheritance diagram for fpmas::api::scheduler::Scheduler:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aa56f9128cd23473135a7f32f855dff66"><td class="memItemLeft" align="right" valign="top"><a id="aa56f9128cd23473135a7f32f855dff66"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>schedule</b> (Date date, const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;)=0</td></tr>
-<tr class="separator:aa56f9128cd23473135a7f32f855dff66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a752318c3790828beb7be5deaff8a7fd2"><td class="memItemLeft" align="right" valign="top"><a id="a752318c3790828beb7be5deaff8a7fd2"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>schedule</b> (Date date, Period period, const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;)=0</td></tr>
-<tr class="separator:a752318c3790828beb7be5deaff8a7fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a754b81f4d036a39076cb32c5cd13c781"><td class="memItemLeft" align="right" valign="top"><a id="a754b81f4d036a39076cb32c5cd13c781"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>schedule</b> (Date date, Date end, Period period, const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;)=0</td></tr>
-<tr class="separator:a754b81f4d036a39076cb32c5cd13c781"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afee6efdf9c8bb31c07acd40c80024dd6"><td class="memItemLeft" align="right" valign="top"><a id="afee6efdf9c8bb31c07acd40c80024dd6"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>build</b> (Date date, <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a> &amp;) const =0</td></tr>
-<tr class="separator:afee6efdf9c8bb31c07acd40c80024dd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16247c43544f6ef7cda66150e13c8955"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html#a16247c43544f6ef7cda66150e13c8955">schedule</a> (<a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> date, const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;job)=0</td></tr>
+<tr class="separator:a16247c43544f6ef7cda66150e13c8955"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abaae483dc256c7044cadba31ac394cd1"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html#abaae483dc256c7044cadba31ac394cd1">schedule</a> (<a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> date, <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8">Period</a> period, const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;job)=0</td></tr>
+<tr class="separator:abaae483dc256c7044cadba31ac394cd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a998d61f9ff277420fcead131be688992"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html#a998d61f9ff277420fcead131be688992">schedule</a> (<a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> date, <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> end, <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8">Period</a> period, const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;job)=0</td></tr>
+<tr class="separator:a998d61f9ff277420fcead131be688992"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae67dd0506b1ffe8e3190b0d0a2e6789a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html#ae67dd0506b1ffe8e3190b0d0a2e6789a">build</a> (<a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> date, <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a> &amp;epoch) const =0</td></tr>
+<tr class="separator:ae67dd0506b1ffe8e3190b0d0a2e6789a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">Scheduler</a> API.</p>
+<p>The <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">Scheduler</a> can be used to submit jobs to execute punctually at a given Date or recurrently at a given Period.</p>
+<p>A Runtime can be used to execute jobs submitted to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">Scheduler</a>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ae67dd0506b1ffe8e3190b0d0a2e6789a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae67dd0506b1ffe8e3190b0d0a2e6789a">&#9670;&nbsp;</a></span>build()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::scheduler::Scheduler::build </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a>&#160;</td>
+          <td class="paramname"><em>date</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a> &amp;&#160;</td>
+          <td class="paramname"><em>epoch</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Builds an <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a> that correspond to the specified date.</p>
+<p>All jobs currently scheduled at the specified date, according to the rules of the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html#a16247c43544f6ef7cda66150e13c8955">schedule()</a> functions, will be submitted to the given epoch.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#ad36f42871c104eb749935cd71e0412ad">Epoch::submit()</a> </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">date</td><td>input date </td></tr>
+    <tr><td class="paramname">epoch</td><td>output epoch </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a16247c43544f6ef7cda66150e13c8955"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16247c43544f6ef7cda66150e13c8955">&#9670;&nbsp;</a></span>schedule() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::scheduler::Scheduler::schedule </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a>&#160;</td>
+          <td class="paramname"><em>date</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;&#160;</td>
+          <td class="paramname"><em>job</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Schedule a <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> to be executed at the given Date.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">date</td><td>date when the job must be executed </td></tr>
+    <tr><td class="paramname">job</td><td>job to execute </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a998d61f9ff277420fcead131be688992"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a998d61f9ff277420fcead131be688992">&#9670;&nbsp;</a></span>schedule() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::scheduler::Scheduler::schedule </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a>&#160;</td>
+          <td class="paramname"><em>date</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a>&#160;</td>
+          <td class="paramname"><em>end</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8">Period</a>&#160;</td>
+          <td class="paramname"><em>period</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;&#160;</td>
+          <td class="paramname"><em>job</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Schedule a <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> to be executed at the given Period, starting from the given Date, until the end Date.</p>
+<p>In other terms, the job will be executed at <code>date</code>, <code>date+period</code> and <code>date+n*period</code> for any integer <code>n</code> such that <code>date+n*period &lt; end</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">date</td><td>date when the job must be executed at first </td></tr>
+    <tr><td class="paramname">end</td><td>date until when the job must be executed </td></tr>
+    <tr><td class="paramname">period</td><td>period at which the job must be executed </td></tr>
+    <tr><td class="paramname">job</td><td>job to execute </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abaae483dc256c7044cadba31ac394cd1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abaae483dc256c7044cadba31ac394cd1">&#9670;&nbsp;</a></span>schedule() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::scheduler::Scheduler::schedule </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a>&#160;</td>
+          <td class="paramname"><em>date</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8">Period</a>&#160;</td>
+          <td class="paramname"><em>period</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;&#160;</td>
+          <td class="paramname"><em>job</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Schedule a <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> to be executed at the given Period, starting from the given Date.</p>
+<p>In other terms, the job will be executed at <code>date</code>, <code>date+period</code> and <code>date+n*period</code> for any integer <code>n</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">date</td><td>date when the job must be executed at first </td></tr>
+    <tr><td class="paramname">period</td><td>period at which the job must be executed </td></tr>
+    <tr><td class="paramname">job</td><td>job to execute </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/scheduler/<a class="el" href="api_2scheduler_2scheduler_8h_source.html">scheduler.h</a></li>
 </ul>

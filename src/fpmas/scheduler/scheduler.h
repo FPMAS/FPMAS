@@ -8,6 +8,9 @@
 #include "fpmas/api/scheduler/scheduler.h"
 
 namespace fpmas { namespace scheduler {
+	using api::scheduler::Date;
+	using api::scheduler::Period;
+	using api::scheduler::JID;
 
 	class VoidTask : public api::scheduler::Task {
 		public:

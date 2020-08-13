@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><b>scheduler</b></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html">scheduler</a></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -73,6 +73,8 @@ $(function() {
 <div class="title">fpmas::api::scheduler::Epoch Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="api_2scheduler_2scheduler_8h_source.html">scheduler.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::api::scheduler::Epoch:</div>
 <div class="dyncontent">
@@ -85,31 +87,224 @@ Inheritance diagram for fpmas::api::scheduler::Epoch:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a32972fd3ef62461882631a32c705fb56"><td class="memItemLeft" align="right" valign="top"><a id="a32972fd3ef62461882631a32c705fb56"></a>
-typedef std::vector&lt; const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> * &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><b>JobIterator</b></td></tr>
+<tr class="memitem:a32972fd3ef62461882631a32c705fb56"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> * &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a32972fd3ef62461882631a32c705fb56">JobIterator</a></td></tr>
 <tr class="separator:a32972fd3ef62461882631a32c705fb56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aefc3b3fe29790ae814076ddb130c9462"><td class="memItemLeft" align="right" valign="top"><a id="aefc3b3fe29790ae814076ddb130c9462"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>submit</b> (const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;)=0</td></tr>
-<tr class="separator:aefc3b3fe29790ae814076ddb130c9462"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a66fc5aefc81d2d0527d15a5ba6e84587"><td class="memItemLeft" align="right" valign="top"><a id="a66fc5aefc81d2d0527d15a5ba6e84587"></a>
-virtual const std::vector&lt; const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>jobs</b> () const =0</td></tr>
+<tr class="memitem:ad36f42871c104eb749935cd71e0412ad"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#ad36f42871c104eb749935cd71e0412ad">submit</a> (const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;job)=0</td></tr>
+<tr class="separator:ad36f42871c104eb749935cd71e0412ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66fc5aefc81d2d0527d15a5ba6e84587"><td class="memItemLeft" align="right" valign="top">virtual const std::vector&lt; const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a66fc5aefc81d2d0527d15a5ba6e84587">jobs</a> () const =0</td></tr>
 <tr class="separator:a66fc5aefc81d2d0527d15a5ba6e84587"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a798100d076fc1c51e7525b6a37c4cded"><td class="memItemLeft" align="right" valign="top"><a id="a798100d076fc1c51e7525b6a37c4cded"></a>
-virtual JobIterator&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> () const =0</td></tr>
+<tr class="memitem:a798100d076fc1c51e7525b6a37c4cded"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a32972fd3ef62461882631a32c705fb56">JobIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a798100d076fc1c51e7525b6a37c4cded">begin</a> () const =0</td></tr>
 <tr class="separator:a798100d076fc1c51e7525b6a37c4cded"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73de9e1e61fe671e1bbcf3394bf6c99d"><td class="memItemLeft" align="right" valign="top"><a id="a73de9e1e61fe671e1bbcf3394bf6c99d"></a>
-virtual JobIterator&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> () const =0</td></tr>
+<tr class="memitem:a73de9e1e61fe671e1bbcf3394bf6c99d"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a32972fd3ef62461882631a32c705fb56">JobIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a73de9e1e61fe671e1bbcf3394bf6c99d">end</a> () const =0</td></tr>
 <tr class="separator:a73de9e1e61fe671e1bbcf3394bf6c99d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d7387950558a0672c3f447acae8a735"><td class="memItemLeft" align="right" valign="top"><a id="a0d7387950558a0672c3f447acae8a735"></a>
-virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><b>jobCount</b> ()=0</td></tr>
+<tr class="memitem:a0d7387950558a0672c3f447acae8a735"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a0d7387950558a0672c3f447acae8a735">jobCount</a> ()=0</td></tr>
 <tr class="separator:a0d7387950558a0672c3f447acae8a735"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9bf0feab827f0d94f19bd575b3728752"><td class="memItemLeft" align="right" valign="top"><a id="a9bf0feab827f0d94f19bd575b3728752"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> ()=0</td></tr>
+<tr class="memitem:a9bf0feab827f0d94f19bd575b3728752"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a9bf0feab827f0d94f19bd575b3728752">clear</a> ()=0</td></tr>
 <tr class="separator:a9bf0feab827f0d94f19bd575b3728752"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a> API.</p>
+<p>An <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a> describes an ordered set of <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> that needs to be executed at a given Date. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a32972fd3ef62461882631a32c705fb56"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32972fd3ef62461882631a32c705fb56">&#9670;&nbsp;</a></span>JobIterator</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a>*&gt;::const_iterator <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a32972fd3ef62461882631a32c705fb56">fpmas::api::scheduler::Epoch::JobIterator</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Type used to iterate on an <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a>, yielding epoch's jobs. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a798100d076fc1c51e7525b6a37c4cded"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a798100d076fc1c51e7525b6a37c4cded">&#9670;&nbsp;</a></span>begin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a32972fd3ef62461882631a32c705fb56">JobIterator</a> fpmas::api::scheduler::Epoch::begin </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a begin iterator to the epoch's jobs.</p>
+<dl class="section return"><dt>Returns</dt><dd>begin iterator </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Epoch.html#a6a3fdc978c82fefee96f32d9706225df">fpmas::scheduler::Epoch</a>.</p>
+
+</div>
+</div>
+<a id="a9bf0feab827f0d94f19bd575b3728752"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9bf0feab827f0d94f19bd575b3728752">&#9670;&nbsp;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::scheduler::Epoch::clear </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Clears the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a>, removing all jobs currently submitted. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Epoch.html#ac73a8ffa943581eaf98cb20193c027b1">fpmas::scheduler::Epoch</a>.</p>
+
+</div>
+</div>
+<a id="a73de9e1e61fe671e1bbcf3394bf6c99d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a73de9e1e61fe671e1bbcf3394bf6c99d">&#9670;&nbsp;</a></span>end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a32972fd3ef62461882631a32c705fb56">JobIterator</a> fpmas::api::scheduler::Epoch::end </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns an end iterator to the epoch's jobs.</p>
+<dl class="section return"><dt>Returns</dt><dd>end iterator </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Epoch.html#a32779cb10e05ad37236d6eff64e4d80d">fpmas::scheduler::Epoch</a>.</p>
+
+</div>
+</div>
+<a id="a0d7387950558a0672c3f447acae8a735"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0d7387950558a0672c3f447acae8a735">&#9670;&nbsp;</a></span>jobCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual size_t fpmas::api::scheduler::Epoch::jobCount </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the current number of jobs in the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>job count </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Epoch.html#a511ab0a4ce36ce4b20c883dd7e949711">fpmas::scheduler::Epoch</a>.</p>
+
+</div>
+</div>
+<a id="a66fc5aefc81d2d0527d15a5ba6e84587"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66fc5aefc81d2d0527d15a5ba6e84587">&#9670;&nbsp;</a></span>jobs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const std::vector&lt;const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a>*&gt;&amp; fpmas::api::scheduler::Epoch::jobs </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a reference to the internal Jobs list.</p>
+<dl class="section return"><dt>Returns</dt><dd>current jobs list </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Epoch.html#a2b90695c61a86a8d72e8950603ab75bf">fpmas::scheduler::Epoch</a>.</p>
+
+</div>
+</div>
+<a id="ad36f42871c104eb749935cd71e0412ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad36f42871c104eb749935cd71e0412ad">&#9670;&nbsp;</a></span>submit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::scheduler::Epoch::submit </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;&#160;</td>
+          <td class="paramname"><em>job</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Submits a new job to this <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a>.</p>
+<p>Jobs are assumed to be executed in the order they are added to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a>. The result of <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a66fc5aefc81d2d0527d15a5ba6e84587">jobs()</a> and the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a798100d076fc1c51e7525b6a37c4cded">begin()</a> / <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a73de9e1e61fe671e1bbcf3394bf6c99d">end()</a> iterators are consistent with this order.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">job</td><td>job to submit </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Epoch.html#a16fad618e92948ed0bf0fc63cd33c260">fpmas::scheduler::Epoch</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/scheduler/<a class="el" href="api_2scheduler_2scheduler_8h_source.html">scheduler.h</a></li>
 </ul>

@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><b>scheduler</b></li><li class="navelem"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html">Job</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1scheduler.html">scheduler</a></li><li class="navelem"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html">Job</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -94,46 +94,351 @@ Collaboration diagram for fpmas::scheduler::Job:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a25e3ded13c7f469a2944318f65741804"><td class="memItemLeft" align="right" valign="top"><a id="a25e3ded13c7f469a2944318f65741804"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Job</b> (JID id)</td></tr>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Job</b> (JID <a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a16bcb01e5a51e3fec655ffaa5bce1a52">id</a>)</td></tr>
 <tr class="separator:a25e3ded13c7f469a2944318f65741804"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a16bcb01e5a51e3fec655ffaa5bce1a52"><td class="memItemLeft" align="right" valign="top"><a id="a16bcb01e5a51e3fec655ffaa5bce1a52"></a>
-JID&#160;</td><td class="memItemRight" valign="bottom"><b>id</b> () const override</td></tr>
+<tr class="memitem:a16bcb01e5a51e3fec655ffaa5bce1a52"><td class="memItemLeft" align="right" valign="top">JID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a16bcb01e5a51e3fec655ffaa5bce1a52">id</a> () const override</td></tr>
 <tr class="separator:a16bcb01e5a51e3fec655ffaa5bce1a52"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5e28ab793a1e349e8b0b18cffdbadf17"><td class="memItemLeft" align="right" valign="top"><a id="a5e28ab793a1e349e8b0b18cffdbadf17"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
+<tr class="memitem:a5e28ab793a1e349e8b0b18cffdbadf17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a5e28ab793a1e349e8b0b18cffdbadf17">add</a> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
 <tr class="separator:a5e28ab793a1e349e8b0b18cffdbadf17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9946cf6a9930f5a5a40489e16b365770"><td class="memItemLeft" align="right" valign="top"><a id="a9946cf6a9930f5a5a40489e16b365770"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
+<tr class="memitem:a9946cf6a9930f5a5a40489e16b365770"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a9946cf6a9930f5a5a40489e16b365770">remove</a> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
 <tr class="separator:a9946cf6a9930f5a5a40489e16b365770"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64457ed4997c9c4d7cb57ce0d8c7ae0d"><td class="memItemLeft" align="right" valign="top"><a id="a64457ed4997c9c4d7cb57ce0d8c7ae0d"></a>
-const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>tasks</b> () const override</td></tr>
+<tr class="memitem:a64457ed4997c9c4d7cb57ce0d8c7ae0d"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a64457ed4997c9c4d7cb57ce0d8c7ae0d">tasks</a> () const override</td></tr>
 <tr class="separator:a64457ed4997c9c4d7cb57ce0d8c7ae0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:add3295b55deaef3c3af728f24f62f1c5"><td class="memItemLeft" align="right" valign="top"><a id="add3295b55deaef3c3af728f24f62f1c5"></a>
-TaskIterator&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> () const override</td></tr>
+<tr class="memitem:add3295b55deaef3c3af728f24f62f1c5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">TaskIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#add3295b55deaef3c3af728f24f62f1c5">begin</a> () const override</td></tr>
 <tr class="separator:add3295b55deaef3c3af728f24f62f1c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7c57b793ec609a05bdf3629f3d67a050"><td class="memItemLeft" align="right" valign="top"><a id="a7c57b793ec609a05bdf3629f3d67a050"></a>
-TaskIterator&#160;</td><td class="memItemRight" valign="bottom"><b>end</b> () const override</td></tr>
+<tr class="memitem:a7c57b793ec609a05bdf3629f3d67a050"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">TaskIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a7c57b793ec609a05bdf3629f3d67a050">end</a> () const override</td></tr>
 <tr class="separator:a7c57b793ec609a05bdf3629f3d67a050"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae8051a2b516865d43e15131d7b50077e"><td class="memItemLeft" align="right" valign="top"><a id="ae8051a2b516865d43e15131d7b50077e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setBeginTask</b> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
+<tr class="memitem:ae8051a2b516865d43e15131d7b50077e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#ae8051a2b516865d43e15131d7b50077e">setBeginTask</a> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
 <tr class="separator:ae8051a2b516865d43e15131d7b50077e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9c7b12b33140d205ff74bfa853fc7d27"><td class="memItemLeft" align="right" valign="top"><a id="a9c7b12b33140d205ff74bfa853fc7d27"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setEndTask</b> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
+<tr class="memitem:a9c7b12b33140d205ff74bfa853fc7d27"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a9c7b12b33140d205ff74bfa853fc7d27">setEndTask</a> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
 <tr class="separator:a9c7b12b33140d205ff74bfa853fc7d27"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8bf2d271af5b763b73387b0175eed794"><td class="memItemLeft" align="right" valign="top"><a id="a8bf2d271af5b763b73387b0175eed794"></a>
-<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getBeginTask</b> () const override</td></tr>
+<tr class="memitem:a8bf2d271af5b763b73387b0175eed794"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a8bf2d271af5b763b73387b0175eed794">getBeginTask</a> () const override</td></tr>
 <tr class="separator:a8bf2d271af5b763b73387b0175eed794"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a766a08eede71d88931fd2d090a983521"><td class="memItemLeft" align="right" valign="top"><a id="a766a08eede71d88931fd2d090a983521"></a>
-<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getEndTask</b> () const override</td></tr>
+<tr class="memitem:a766a08eede71d88931fd2d090a983521"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a766a08eede71d88931fd2d090a983521">getEndTask</a> () const override</td></tr>
 <tr class="separator:a766a08eede71d88931fd2d090a983521"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_types_classfpmas_1_1api_1_1scheduler_1_1Job"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classfpmas_1_1api_1_1scheduler_1_1Job')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">fpmas::api::scheduler::Job</a></td></tr>
-<tr class="memitem:a0d2eff9ada080dc6be37ca4da2f99ed0 inherit pub_types_classfpmas_1_1api_1_1scheduler_1_1Job"><td class="memItemLeft" align="right" valign="top"><a id="a0d2eff9ada080dc6be37ca4da2f99ed0"></a>
-typedef std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><b>TaskIterator</b></td></tr>
+<tr class="memitem:a0d2eff9ada080dc6be37ca4da2f99ed0 inherit pub_types_classfpmas_1_1api_1_1scheduler_1_1Job"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">TaskIterator</a></td></tr>
 <tr class="separator:a0d2eff9ada080dc6be37ca4da2f99ed0 inherit pub_types_classfpmas_1_1api_1_1scheduler_1_1Job"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5e28ab793a1e349e8b0b18cffdbadf17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e28ab793a1e349e8b0b18cffdbadf17">&#9670;&nbsp;</a></span>add()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::scheduler::Job::add </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;&#160;</td>
+          <td class="paramname"><em>task</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds a task to this <a class="el" href="classfpmas_1_1scheduler_1_1Job.html">Job</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">task</td><td>task to add </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a3a1175ed0ece04cc7f0ed78e6d0e521d">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="add3295b55deaef3c3af728f24f62f1c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add3295b55deaef3c3af728f24f62f1c5">&#9670;&nbsp;</a></span>begin()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">Job::TaskIterator</a> fpmas::scheduler::Job::begin </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a begin iterator to the job's tasks.</p>
+<dl class="section return"><dt>Returns</dt><dd>begin iterator </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#af97bd2f0a0fcecd53f0d80870722dcd3">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="a7c57b793ec609a05bdf3629f3d67a050"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7c57b793ec609a05bdf3629f3d67a050">&#9670;&nbsp;</a></span>end()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">Job::TaskIterator</a> fpmas::scheduler::Job::end </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns an end iterator to the job's tasks.</p>
+<dl class="section return"><dt>Returns</dt><dd>end iterator </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a27b5adc38325a9f84b8e2782a8413259">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="a8bf2d271af5b763b73387b0175eed794"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8bf2d271af5b763b73387b0175eed794">&#9670;&nbsp;</a></span>getBeginTask()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp; fpmas::scheduler::Job::getBeginTask </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Gets a reference to the begin task of this job.</p>
+<dl class="section return"><dt>Returns</dt><dd>begin task </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a81262247fdff54210268dd9e58d722ea">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="a766a08eede71d88931fd2d090a983521"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a766a08eede71d88931fd2d090a983521">&#9670;&nbsp;</a></span>getEndTask()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp; fpmas::scheduler::Job::getEndTask </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Gets a reference to the end task of this job.</p>
+<dl class="section return"><dt>Returns</dt><dd>end task </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#afff7988be84b18b8c2d1692da63d6cd8">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="a16bcb01e5a51e3fec655ffaa5bce1a52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16bcb01e5a51e3fec655ffaa5bce1a52">&#9670;&nbsp;</a></span>id()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">JID fpmas::scheduler::Job::id </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1scheduler_1_1Job.html">Job</a> id. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0fabef3daf5ac4f47d05b3bbea423564">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="a9946cf6a9930f5a5a40489e16b365770"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9946cf6a9930f5a5a40489e16b365770">&#9670;&nbsp;</a></span>remove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::scheduler::Job::remove </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;&#160;</td>
+          <td class="paramname"><em>task</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Removes a task from this job.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">task</td><td>task to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a1700a72e63f3488cc2ddd33c423fd990">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="ae8051a2b516865d43e15131d7b50077e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8051a2b516865d43e15131d7b50077e">&#9670;&nbsp;</a></span>setBeginTask()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::scheduler::Job::setBeginTask </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;&#160;</td>
+          <td class="paramname"><em>task</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the begin task of the job.</p>
+<p>This task is assumed to be executed before the regular and unordered task list.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">task</td><td>begin task </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a39a362553c50e8a25c874d9b411410a8">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="a9c7b12b33140d205ff74bfa853fc7d27"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c7b12b33140d205ff74bfa853fc7d27">&#9670;&nbsp;</a></span>setEndTask()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::scheduler::Job::setEndTask </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the end task of the job.</p>
+<p>This task is assumed to be executed after the regular and unordered task list.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">task</td><td>end task </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a26b1eb1fdb04096f37c25aa99dfdb4de">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
+<a id="a64457ed4997c9c4d7cb57ce0d8c7ae0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64457ed4997c9c4d7cb57ce0d8c7ae0d">&#9670;&nbsp;</a></span>tasks()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> * &gt; &amp; fpmas::scheduler::Job::tasks </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a reference to the internal Tasks list.</p>
+<dl class="section return"><dt>Returns</dt><dd>current tasks list </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#adf65c26924db62ae0adc8ae812b0a891">fpmas::api::scheduler::Job</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/fpmas/scheduler/<a class="el" href="scheduler_2scheduler_8h_source.html">scheduler.h</a></li>
 <li>src/fpmas/scheduler/scheduler.cpp</li>

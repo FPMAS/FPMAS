@@ -13,6 +13,7 @@ using ::testing::Expectation;
 using ::testing::ExpectationSet;
 
 using fpmas::runtime::Runtime;
+using fpmas::runtime::Date;
 
 class RuntimeTest : public ::testing::Test {
 	protected:
@@ -99,7 +100,7 @@ class MockBuildEpoch {
 		std::vector<MockJob*> jobs;
 	public:
 		MockBuildEpoch(std::vector<MockJob*> jobs) : jobs(jobs) {}
-		void operator()(fpmas::Date date, fpmas::api::scheduler::Epoch& epoch) {
+		void operator()(Date date, fpmas::api::scheduler::Epoch& epoch) {
 			epoch.clear();
 			for(auto job : jobs)
 				epoch.submit(*job);

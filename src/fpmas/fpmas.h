@@ -27,7 +27,7 @@
  */
 
 /** \namespace fpmas::api::graph
- * Graph components API namaspace.
+ * Graph components API namespace.
  */
 /** \namespace fpmas::graph
  * fpmas::api::graph implementations.
@@ -60,6 +60,17 @@
 /** \namespace fpmas::synchro::ghost
  * GhostMode implementation.
  */
+
+/**
+ * \namespace fpmas::api::scheduler
+ *
+ * Scheduler components API namespace.
+ */
+/**
+ * \namespace fpmas::scheduler
+ * fpmas::api::scheduler implementations.
+ */
+
 namespace fpmas {
 	void init(int argc, char** argv) {
 		MPI_Init(&argc, &argv);
