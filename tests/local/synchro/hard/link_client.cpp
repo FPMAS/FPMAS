@@ -51,20 +51,6 @@ class LinkClientTest : public ::testing::Test {
 		}
 };
 
-// Should not do anything
-TEST_F(LinkClientTest, link_local_src_local_tgt) {
-	EXPECT_CALL(mock_src, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
-
-	EXPECT_CALL(edge_mpi, Issend).Times(0);
-
-	link_client.link(&mock_edge);
-}
-
 TEST_F(LinkClientTest, link_local_src_distant_tgt) {
 	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));

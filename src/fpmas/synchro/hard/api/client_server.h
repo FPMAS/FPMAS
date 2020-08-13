@@ -290,11 +290,13 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 				/**
 				 * Transmits a link request for the specified `edge`.
 				 *
-				 * The request might be transmitted to two other processes if
+				 * The provided edge is assumed to be DISTANT, behavior is
+				 * undefined otherwise.
+				 *
+				 * The request is then transmitted to two other processes if
 				 * source and target nodes are DISTANT and located on different
-				 * processes, to one process if they are located on the same
-				 * process, or to no other process if source and target nodes
-				 * are LOCAL.
+				 * processes, or to one process if they are located on the same
+				 * process.
 				 *
 				 * In any case, it is guaranteed that the edge is properly
 				 * linked on any process involved upon return.
@@ -310,11 +312,13 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 				/**
 				 * Transmits an unlink request for the specified `edge`.
 				 *
-				 * The request might be transmitted to two other processes if
+				 * The provided edge is assumed to be DISTANT, behavior is
+				 * undefined otherwise.
+				 *
+				 * The request is then transmitted to two other processes if
 				 * source and target nodes are DISTANT and located on different
-				 * processes, to one process if they are located on the same
-				 * process, or to no other process if source and target nodes
-				 * are LOCAL.
+				 * processes, or to one process if they are located on the same
+				 * process.
 				 *
 				 * In any case, it is guaranteed that the edge is properly
 				 * unlinked on any process involved upon return.

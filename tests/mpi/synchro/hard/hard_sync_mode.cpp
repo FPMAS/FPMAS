@@ -47,7 +47,7 @@ class HardSyncMutexSelfReadTest : public ::testing::Test {
 		void SetUp() override {
 			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
 			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
-			server_pack.mutexServer().manage(DistributedId(3, comm.getRank()), &mutex);
+			mutex_server.manage(DistributedId(3, comm.getRank()), &mutex);
 
 			state = LocationState::LOCAL;
 		}
@@ -92,7 +92,7 @@ class MutexServerRaceCondition : public ::testing::Test {
 			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
 			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
 
-			server_pack.mutexServer().manage(DistributedId(3, 6), &mutex);
+			mutex_server.manage(DistributedId(3, 6), &mutex);
 			if(comm.getRank() == 0) {
 				state = LocationState::LOCAL;
 			}

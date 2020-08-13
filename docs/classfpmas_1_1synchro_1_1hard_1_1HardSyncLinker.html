@@ -73,6 +73,8 @@ $(function() {
 <div class="title">fpmas::synchro::hard::HardSyncLinker&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="hard__sync__linker_8h_source.html">hard_sync_linker.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::synchro::hard::HardSyncLinker&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -103,9 +105,8 @@ typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9b0cd45bae2103a999f910d785e45420"><td class="memItemLeft" align="right" valign="top"><a id="a9b0cd45bae2103a999f910d785e45420"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>HardSyncLinker</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">LinkClient</a> &amp;link_client, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a>&lt; T &gt; &amp;server_pack)</td></tr>
-<tr class="separator:a9b0cd45bae2103a999f910d785e45420"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac90c95cd1d70f9c0acf78b488495321c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#ac90c95cd1d70f9c0acf78b488495321c">HardSyncLinker</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">api::LinkClient</a>&lt; T &gt; &amp;link_client, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a>&lt; T &gt; &amp;server_pack)</td></tr>
+<tr class="separator:ac90c95cd1d70f9c0acf78b488495321c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6db3c08b8fdda5a096d53490557cdb5c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a6db3c08b8fdda5a096d53490557cdb5c">link</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">EdgeApi</a> *edge) override</td></tr>
 <tr class="separator:a6db3c08b8fdda5a096d53490557cdb5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac196344d32dde42c1e60f0ad6b265e9e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#ac196344d32dde42c1e60f0ad6b265e9e">unlink</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">EdgeApi</a> *edge) override</td></tr>
@@ -113,6 +114,65 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1cc71ff0bbe698fc7114081197561bb2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a1cc71ff0bbe698fc7114081197561bb2">synchronize</a> () override</td></tr>
 <tr class="separator:a1cc71ff0bbe698fc7114081197561bb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::synchro::hard::HardSyncLinker&lt; T &gt;</h3>
+
+<p><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">HardSyncMode</a> <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">fpmas::api::synchro::SyncLinker</a> implementation. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ac90c95cd1d70f9c0acf78b488495321c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac90c95cd1d70f9c0acf78b488495321c">&#9670;&nbsp;</a></span>HardSyncLinker()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">fpmas::synchro::hard::HardSyncLinker</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">HardSyncLinker</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>graph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">api::LinkClient</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>link_client</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>server_pack</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">HardSyncLinker</a> constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>associated graph </td></tr>
+    <tr><td class="paramname">link_client</td><td>client used to transmit requests </td></tr>
+    <tr><td class="paramname">server_pack</td><td>associated server_pack used for synchronization </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a6db3c08b8fdda5a096d53490557cdb5c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6db3c08b8fdda5a096d53490557cdb5c">&#9670;&nbsp;</a></span>link()</h2>
@@ -139,7 +199,15 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Notifies the specified edge has been linked in the local graph. </p>
+<p>Performs a link request.</p>
+<p>If the specified edge is DISTANT, the request is transmitted the link request to the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">api::LinkClient</a>. Nothing needs to be done otherwise.</p>
+<p>If source and target nodes are both DISTANT, the edge is planned to be deleted at the next <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a1cc71ff0bbe698fc7114081197561bb2">synchronize()</a> call.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>edge to link </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a85dc35beae7a423ba4e2907dd55269a8">fpmas::api::synchro::SyncLinker&lt; T &gt;</a>.</p>
 
@@ -169,7 +237,24 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Synchronizes link, unlink and node removal operations across the processes. </p>
+<p><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">HardSyncLinker</a> synchronization.</p>
+<p>First, edges linked between a DISTANT source and a DISTANT target since the last synchronization are erased from the graph.</p>
+<p>All processes are then synchronized using <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a29290c0b789b4fb1fbbc046f910483ad">ServerPack::terminate()</a>.</p>
+<p>Notice that, since <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a> is used, not only SyncLinker requests but also <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a> requests (i.e. data related requests) will be handled until termination.</p>
+<p>This is required to avoid the following deadlock situation : </p><table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Process 0 </th><th class="markdownTableHeadNone">Process 1  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">... </td><td class="markdownTableBodyNone">...  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">init HardSyncLinker::terminate() </td><td class="markdownTableBodyNone">send data request to P0...  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">handles link requests... </td><td class="markdownTableBodyNone">waits for data response...  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">handles link requests... </td><td class="markdownTableBodyNone">waits for data response...  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone" colspan="2">DEADLOCK  </td></tr>
+</table>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a82048e7e48cba49d8242df2aaa2d26be">fpmas::api::synchro::SyncLinker&lt; T &gt;</a>.</p>
 
@@ -200,7 +285,14 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Notifies the specified edge has been unlinked in the local graph. </p>
+<p>Performs an unlink request.</p>
+<p>If the specified edge is DISTANT, the request is transmitted the link request to the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">api::LinkClient</a>. Nothing needs to be done otherwise.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>edge to unlink </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a0af26a34cf5589f3cb2a60c8b8e78a72">fpmas::api::synchro::SyncLinker&lt; T &gt;</a>.</p>
 

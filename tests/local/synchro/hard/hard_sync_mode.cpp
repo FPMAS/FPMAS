@@ -64,7 +64,6 @@ class HardSyncLinkerLinkTest : public HardSyncLinkerTest {
 			EXPECT_CALL(edge, getTargetNode).Times(AnyNumber())
 				.WillRepeatedly(Return(&tgt));
 
-			EXPECT_CALL(client, link(&edge));
 			EXPECT_CALL(termination, terminate);
 		}
 
@@ -75,7 +74,10 @@ TEST_F(HardSyncLinkerLinkTest, link_local_src_local_tgt) {
 		.WillRepeatedly(Return(LocationState::LOCAL));
 	EXPECT_CALL(tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(edge, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::LOCAL));
 
+	EXPECT_CALL(client, link(&edge)).Times(0);
 	syncLinker.link(&edge);
 
 	EXPECT_CALL(graph, erase(An<fpmas::api::graph::DistributedEdge<int>*>()))
@@ -88,7 +90,10 @@ TEST_F(HardSyncLinkerLinkTest, link_local_src_distant_tgt) {
 		.WillRepeatedly(Return(LocationState::LOCAL));
 	EXPECT_CALL(tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(edge, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
 
+	EXPECT_CALL(client, link(&edge));
 	syncLinker.link(&edge);
 
 	EXPECT_CALL(graph, erase(An<fpmas::api::graph::DistributedEdge<int>*>()))
@@ -101,7 +106,10 @@ TEST_F(HardSyncLinkerLinkTest, link_distant_src_local_tgt) {
 		.WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(edge, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
 
+	EXPECT_CALL(client, link(&edge));
 	syncLinker.link(&edge);
 
 	EXPECT_CALL(graph, erase(An<fpmas::api::graph::DistributedEdge<int>*>()))
@@ -115,15 +123,27 @@ TEST_F(HardSyncLinkerLinkTest, link_distant_src_distant_tgt) {
 		.WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(edge, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
 
+	EXPECT_CALL(client, link(&edge));
 	syncLinker.link(&edge);
 
 	EXPECT_CALL(graph, erase(&edge));
 	syncLinker.synchronize();
 }
 
-TEST_F(HardSyncLinkerTest, unlink) {
+TEST_F(HardSyncLinkerTest, unlink_local) {
 	MockDistributedEdge<int> edge;
+	EXPECT_CALL(edge, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::LOCAL));
+	EXPECT_CALL(client, unlink(&edge)).Times(0);
+	syncLinker.unlink(&edge);
+}
+TEST_F(HardSyncLinkerTest, unlink_distant) {
+	MockDistributedEdge<int> edge;
+	EXPECT_CALL(edge, state).Times(AnyNumber())
+		.WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(client, unlink(&edge));
 	syncLinker.unlink(&edge);
 }
