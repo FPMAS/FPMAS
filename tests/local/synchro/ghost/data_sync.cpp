@@ -10,8 +10,16 @@ using ::testing::ElementsAre;
 using ::testing::IsEmpty;
 using ::testing::Pair;
 using ::testing::UnorderedElementsAre;
+using fpmas::synchro::NodeUpdatePack;
 
 using fpmas::synchro::ghost::GhostDataSync;
+
+namespace fpmas { namespace synchro {
+	template<typename T>
+		bool operator==(const NodeUpdatePack<T>& d1, const NodeUpdatePack<T>& d2) {
+			return d1.id == d2.id && d1.updated_data == d2.updated_data && d1.updated_weight == d2.updated_weight;
+		}
+}}
 
 class GhostDataSyncTest : public ::testing::Test {
 	protected:
@@ -21,13 +29,13 @@ class GhostDataSyncTest : public ::testing::Test {
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
-		MockMpi<fpmas::graph::NodePtrWrapper<int>> node_mpi {mock_comm};
+		MockMpi<fpmas::synchro::NodeUpdatePack<int>> data_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
 		MockMpi<std::pair<DistributedId, int>> location_mpi {mock_comm};
 		MockDistributedGraph<int, NodeType, EdgeType> mocked_graph;
 
 		GhostDataSync<int>
-			dataSync {node_mpi, id_mpi, mocked_graph};
+			dataSync {data_mpi, id_mpi, mocked_graph};
 
 		MockLocationManager<int> location_manager {mock_comm, id_mpi, location_mpi};
 
@@ -84,11 +92,14 @@ TEST_F(GhostDataSyncTest, export_data) {
 		.WillOnce(Return(requests));
 
 	auto export_node_matcher = UnorderedElementsAre(
-		Pair(0, UnorderedElementsAre(nodes[0], nodes[3])),
-		Pair(1, ElementsAre(nodes[0])),
-		Pair(5, ElementsAre(nodes[2]))
+		Pair(0, UnorderedElementsAre(
+				NodeUpdatePack<int>(DistributedId(2, 0), nodes[0]->data(), 2.8f),
+				NodeUpdatePack<int>(DistributedId(7, 1), nodes[3]->data(), 2.3f)
+				)),
+		Pair(1, ElementsAre(NodeUpdatePack<int>(DistributedId(2, 0), nodes[0]->data(), 2.8f))),
+		Pair(5, ElementsAre(NodeUpdatePack<int>(DistributedId(6, 2), nodes[2]->data(), 0.4f)))
 		);
-	EXPECT_CALL(node_mpi, migrate(export_node_matcher));
+	EXPECT_CALL(data_mpi, migrate(export_node_matcher));
 
 	dataSync.synchronize();
 }
@@ -122,11 +133,11 @@ TEST_F(GhostDataSyncTest, import_test) {
 	);
 	EXPECT_CALL(id_mpi, migrate(requests_matcher));
 
-	std::unordered_map<int, std::vector<fpmas::graph::NodePtrWrapper<int>>> updated_data {
-		{0, {new NodeType {DistributedId(0, 0), 12, 14.6}, new NodeType {DistributedId(6, 2), 56, 7.2}}},
-		{9, {new NodeType {DistributedId(7, 1), 125, 2.2}}}
+	std::unordered_map<int, std::vector<NodeUpdatePack<int>>> updated_data {
+		{0, {{DistributedId(0, 0), 12, 14.6f}, {DistributedId(6, 2), 56, 7.2f}}},
+		{9, {{DistributedId(7, 1), 125, 2.2f}}}
 	};
-	EXPECT_CALL(node_mpi, migrate(IsEmpty()))
+	EXPECT_CALL(data_mpi, migrate(IsEmpty()))
 		.WillOnce(Return(updated_data));
 
 	EXPECT_CALL(*nodes[1], setWeight(14.6));

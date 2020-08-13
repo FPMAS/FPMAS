@@ -7,6 +7,7 @@
 #include "fpmas/communication/communication.h"
 #include "fpmas/graph/distributed_edge.h"
 #include "fpmas/graph/distributed_node.h"
+#include "fpmas/utils/data_update_pack.h"
 
 namespace fpmas { namespace synchro {
 	namespace ghost {
@@ -65,13 +66,12 @@ namespace fpmas { namespace synchro {
 		template<typename T>
 			class GhostDataSync : public api::synchro::DataSync {
 				public:
-					typedef graph::NodePtrWrapper<T> NodePtr;
-					typedef api::communication::TypedMpi<NodePtr> NodeMpi;
+					typedef api::communication::TypedMpi<NodeUpdatePack<T>> DataMpi;
 
 					typedef api::communication::TypedMpi<DistributedId> IdMpi;
 
 				private:
-					NodeMpi& node_mpi;
+					DataMpi& data_mpi;
 					IdMpi& id_mpi;
 
 					api::graph::DistributedGraph<T>& graph;
@@ -86,10 +86,10 @@ namespace fpmas { namespace synchro {
 					 * DistributedGraph
 					 */
 					GhostDataSync(
-							NodeMpi& node_mpi, IdMpi& id_mpi,
+							DataMpi& data_mpi, IdMpi& id_mpi,
 							api::graph::DistributedGraph<T>& graph
 							)
-						: node_mpi(node_mpi), id_mpi(id_mpi), graph(graph) {}
+						: data_mpi(data_mpi), id_mpi(id_mpi), graph(graph) {}
 
 					/**
 					 * Fetches updated data for all the DISTANT nodes of the
@@ -109,26 +109,27 @@ namespace fpmas { namespace synchro {
 				}
 				requests = id_mpi.migrate(requests);
 
-				std::unordered_map<int, std::vector<NodePtr>> nodes;
+				std::unordered_map<int, std::vector<NodeUpdatePack<T>>> updated_data;
 				for(auto list : requests) {
 					for(auto id : list.second) {
 						FPMAS_LOGV(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Export %s to %i",
 								ID_C_STR(id), list.first);
-						nodes[list.first].push_back(graph.getNode(id));
+						auto node = graph.getNode(id);
+						updated_data[list.first].push_back({id, node->data(), node->getWeight()});
 					}
 				}
 				// TODO : Should use data update packs.
-				nodes = node_mpi.migrate(nodes);
-				for(auto list : nodes) {
-					for(auto& node : list.second) {
-						auto local_node = graph.getNode(node->getId());
-						local_node->data() = std::move(node->data());
-						local_node->setWeight(node->getWeight());
+				updated_data = data_mpi.migrate(updated_data);
+				for(auto list : updated_data) {
+					for(auto& data : list.second) {
+						auto local_node = graph.getNode(data.id);
+						local_node->data() = std::move(data.updated_data);
+						local_node->setWeight(data.updated_weight);
 					}
 				}
-				for(auto node_list : nodes)
-					for(auto node : node_list.second)
-						delete node.get();
+				//for(auto node_list : nodes)
+					//for(auto node : node_list.second)
+						//delete node.get();
 
 				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph data synchronized...");
 			}
@@ -294,7 +295,7 @@ namespace fpmas { namespace synchro {
 		template<typename T>
 			class GhostMode : public api::synchro::SyncMode<T> {
 				communication::TypedMpi<DistributedId> id_mpi;
-				communication::TypedMpi<graph::NodePtrWrapper<T>> node_mpi;
+				communication::TypedMpi<NodeUpdatePack<T>> data_mpi;
 				communication::TypedMpi<graph::EdgePtrWrapper<T>> edge_mpi;
 
 				GhostDataSync<T> data_sync;
@@ -310,8 +311,8 @@ namespace fpmas { namespace synchro {
 				GhostMode(
 						api::graph::DistributedGraph<T>& graph,
 						api::communication::MpiCommunicator& comm)
-					: id_mpi(comm), node_mpi(comm), edge_mpi(comm),
-					data_sync(node_mpi, id_mpi, graph), sync_linker(edge_mpi, id_mpi, graph) {}
+					: id_mpi(comm), data_mpi(comm), edge_mpi(comm),
+					data_sync(data_mpi, id_mpi, graph), sync_linker(edge_mpi, id_mpi, graph) {}
 
 				/**
 				 * Builds a new SingleThreadMutex from the specified node data.

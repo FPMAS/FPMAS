@@ -5,7 +5,7 @@
 #include "fpmas/api/communication/communication.h"
 #include "./api/enums.h"
 #include "./api/hard_sync_mutex.h"
-#include "data_update_pack.h"
+#include "fpmas/utils/data_update_pack.h"
 #include "fpmas/utils/log.h"
 
 namespace fpmas { namespace synchro { namespace hard {
