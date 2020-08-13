@@ -71,6 +71,15 @@
  * fpmas::api::scheduler implementations.
  */
 
+/**
+ * \namespace fpmas::api::runtime
+ *
+ * Runtime components API namespace.
+ */
+/**
+ * \namespace fpmas::runtime
+ * fpmas::api::runtime implementations.
+ */
 namespace fpmas {
 	void init(int argc, char** argv) {
 		MPI_Init(&argc, &argv);

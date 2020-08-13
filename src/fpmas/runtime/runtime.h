@@ -7,6 +7,9 @@
 namespace fpmas { namespace runtime {
 	using api::runtime::Date;
 
+	/**
+	 * api::runtime::Runtime implementation.
+	 */
 	class Runtime : public api::runtime::Runtime {
 		private:
 			api::scheduler::Scheduler& scheduler;
@@ -14,6 +17,11 @@ namespace fpmas { namespace runtime {
 			Date date = 0;
 
 		public:
+			/**
+			 * Runtime constructor.
+			 *
+			 * @param scheduler scheduler to execute
+			 */
 			Runtime(api::scheduler::Scheduler& scheduler)
 				: scheduler(scheduler) {}
 
