@@ -15,7 +15,8 @@ class TerminationTest : public ::testing::Test {
 	protected:
 		fpmas::communication::MpiCommunicator comm;
 		MockMutexServer<int> mutex_server;
-		TerminationAlgorithm<fpmas::communication::TypedMpi> termination {comm};
+		fpmas::communication::TypedMpi<fpmas::synchro::hard::api::Color> color_mpi {comm};
+		TerminationAlgorithm termination {comm, color_mpi};
 
 		void SetUp() override {
 			EXPECT_CALL(mutex_server, getEpoch).WillRepeatedly(Return(Epoch::EVEN));
@@ -62,7 +63,8 @@ class MultipleTerminationTest : public ::testing::Test {
 		fpmas::communication::MpiCommunicator comm;
 		FakeServer server1;
 		FakeServer server2;
-		TerminationAlgorithm<fpmas::communication::TypedMpi> termination {comm};
+		fpmas::communication::TypedMpi<fpmas::synchro::hard::api::Color> color_mpi {comm};
+		TerminationAlgorithm termination {comm, color_mpi};
 };
 
 TEST_F(MultipleTerminationTest, test) {

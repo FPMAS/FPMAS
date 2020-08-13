@@ -14,7 +14,8 @@ class TerminationTest : public ::testing::Test {
 	protected:
 		MockMpiCommunicator<0, 4> comm;
 		MockMutexServer<int> mutexServer;
-		TerminationAlgorithm<MockMpi> termination {comm};
+		MockMpi<Color> mock_mpi {comm};
+		TerminationAlgorithm termination {comm, mock_mpi};
 };
 
 class SetMpiStatus {
@@ -29,16 +30,12 @@ TEST_F(TerminationTest, rank_0_white_tokens) {
 	EXPECT_CALL(mutexServer, getEpoch).WillRepeatedly(Return(Epoch::EVEN));
 	EXPECT_CALL(mutexServer, setEpoch(Epoch::ODD));
 
-	EXPECT_CALL(
-			const_cast<MockMpi<Color>&>(termination.getColorMpi()),
-			send(Color::WHITE, 3, Tag::TOKEN))
-		.Times(1);
+	EXPECT_CALL(mock_mpi, send(Color::WHITE, 3, Tag::TOKEN));
 
 	EXPECT_CALL(comm, Iprobe(1, Tag::TOKEN, _))
 		.WillRepeatedly(DoAll(Invoke(SetMpiStatus()), Return(1)));
 
-	EXPECT_CALL(
-		const_cast<MockMpi<Color>&>(termination.getColorMpi()), recv(1, Tag::TOKEN, _))
+	EXPECT_CALL(mock_mpi, recv(1, Tag::TOKEN, _))
 		.WillOnce(Return(Color::WHITE));
 
 	// Sends end messages

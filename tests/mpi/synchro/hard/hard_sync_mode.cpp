@@ -16,6 +16,7 @@ using fpmas::graph::DistributedEdge;
 using fpmas::graph::DefaultMpiSetUp;
 using fpmas::graph::LocationManager;
 using fpmas::synchro::HardSyncMode;
+using fpmas::synchro::hard::api::Color;
 using fpmas::synchro::hard::HardSyncMutex;
 using fpmas::synchro::hard::MutexClient;
 using fpmas::synchro::hard::MutexServer;
@@ -25,7 +26,8 @@ using fpmas::synchro::DataUpdatePack;
 class HardSyncMutexSelfReadTest : public ::testing::Test {
 	protected:
 		MpiCommunicator comm;
-		TerminationAlgorithm<TypedMpi> termination {comm};
+		TypedMpi<Color> color_mpi {comm};
+		TerminationAlgorithm termination {comm, color_mpi};
 		TypedMpi<DistributedId> id_mpi {comm};
 		TypedMpi<int> data_mpi {comm};
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
@@ -67,7 +69,8 @@ class MutexServerRaceCondition : public ::testing::Test {
 	protected:
 		static const int NUM_ACQUIRE = 500;
 		MpiCommunicator comm;
-		TerminationAlgorithm<TypedMpi> termination {comm};
+		TypedMpi<Color> color_mpi {comm};
+		TerminationAlgorithm termination {comm, color_mpi};
 		TypedMpi<DistributedId> id_mpi {comm};
 		TypedMpi<int> data_mpi {comm};
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};

@@ -16,6 +16,8 @@ set(SOURCES
 	fpmas/runtime/runtime.cpp
 	# Model
 	fpmas/model/model.cpp
+	# Synchro
+	fpmas/synchro/hard/termination.cpp
 	)
 
 add_library(fpmas ${SOURCES})

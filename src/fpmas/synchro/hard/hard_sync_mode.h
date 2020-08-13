@@ -34,15 +34,12 @@ namespace fpmas { namespace synchro {
 		template<typename T>
 			class HardSyncMode : public fpmas::api::synchro::SyncMode<T> {
 
-				typedef synchro::hard::TerminationAlgorithm<
-					communication::TypedMpi>
-					TerminationAlgorithm;
-
 				communication::TypedMpi<DistributedId> id_mpi;
 				communication::TypedMpi<T> data_mpi;
 				communication::TypedMpi<DataUpdatePack<T>> data_update_mpi;
 				communication::TypedMpi<graph::NodePtrWrapper<T>> node_mpi;
 				communication::TypedMpi<graph::EdgePtrWrapper<T>> edge_mpi;
+				communication::TypedMpi<Color> color_mpi;
 
 				MutexServer<T> mutex_server;
 				MutexClient<T> mutex_client;
@@ -59,12 +56,13 @@ namespace fpmas { namespace synchro {
 				HardSyncMode(
 						fpmas::api::graph::DistributedGraph<T>& graph,
 						fpmas::api::communication::MpiCommunicator& comm) :
-					id_mpi(comm), data_mpi(comm), data_update_mpi(comm), node_mpi(comm), edge_mpi(comm),
+					id_mpi(comm), data_mpi(comm), data_update_mpi(comm),
+					node_mpi(comm), edge_mpi(comm), color_mpi(comm),
 					mutex_server(comm, id_mpi, data_mpi, data_update_mpi),
 					mutex_client(comm, id_mpi, data_mpi, data_update_mpi, server_pack),
 					link_server(comm, graph, id_mpi, edge_mpi),
 					link_client(comm, id_mpi, edge_mpi, server_pack),
-					termination(comm),
+					termination(comm, color_mpi),
 					server_pack(comm, termination, mutex_server, link_server),
 					sync_linker(graph, link_client, server_pack),
 					data_sync(comm, server_pack) {}
