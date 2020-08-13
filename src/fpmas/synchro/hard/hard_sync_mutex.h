@@ -13,6 +13,13 @@ namespace fpmas { namespace synchro { namespace hard {
 	using fpmas::api::graph::LocationState;
 	using api::MutexRequestType;
 
+	/**
+	 * HardSyncMode Mutex implementation.
+	 *
+	 * Each operation is added to a queue and potentially transmitted to
+	 * DISTANT processes to ensure a strict global concurrent access
+	 * management.
+	 */
 	template<typename T>
 		class HardSyncMutex : public api::HardSyncMutex<T> {
 			private:
@@ -35,8 +42,20 @@ namespace fpmas { namespace synchro { namespace hard {
 				void _unlock() override {_locked=false;}
 				void _unlockShared() override {_locked_shared--;}
 			public:
-				HardSyncMutex(fpmas::api::graph::DistributedNode<T>* node, MutexClient& mutex_client, MutexServer& mutex_server) :
-					node(node), mutex_client(mutex_client), mutex_server(mutex_server) {}
+				/**
+				 * HardSyncMutex constructor.
+				 *
+				 * @param node node associated to this mutex
+				 * @param mutex_client client used to transmit requests to
+				 * other processes
+				 * @param mutex_server server used to handle incoming mutex
+				 * requests
+				 */
+				HardSyncMutex(
+						fpmas::api::graph::DistributedNode<T>* node,
+						MutexClient& mutex_client,
+						MutexServer& mutex_server)
+					: node(node), mutex_client(mutex_client), mutex_server(mutex_server) {}
 
 				void pushRequest(Request request) override;
 				std::queue<Request> requestsToProcess() override;

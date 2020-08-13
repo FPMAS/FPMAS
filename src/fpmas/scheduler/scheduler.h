@@ -12,11 +12,22 @@ namespace fpmas { namespace scheduler {
 	using api::scheduler::Period;
 	using api::scheduler::JID;
 
+	/**
+	 * A Task that does not perform any operation.
+	 *
+	 * Might be used as a default Task.
+	 */
 	class VoidTask : public api::scheduler::Task {
 		public:
+			/**
+			 * Immediatly returns.
+			 */
 			void run() override {};
 	};
 
+	/**
+	 * api::scheduler::Job implementation.
+	 */
 	class Job : public api::scheduler::Job {
 		private:
 			VoidTask voidTask;
@@ -26,6 +37,11 @@ namespace fpmas { namespace scheduler {
 			api::scheduler::Task* _end = &voidTask;
 
 		public:
+			/**
+			 * Job constructor.
+			 *
+			 * @param id job id
+			 */
 			Job(JID id) : _id(id) {}
 			JID id() const override;
 			void add(api::scheduler::Task&) override;
@@ -41,6 +57,9 @@ namespace fpmas { namespace scheduler {
 			api::scheduler::Task& getEndTask() const override;
 	};
 
+	/**
+	 * api::scheduler::Epoch implementation.
+	 */
 	class Epoch : public api::scheduler::Epoch {
 		private:
 			std::vector<const api::scheduler::Job*> _jobs;
@@ -56,6 +75,9 @@ namespace fpmas { namespace scheduler {
 
 
 
+	/**
+	 * api::scheduler::Scheduler implementation.
+	 */
 	class Scheduler : public api::scheduler::Scheduler {
 		private:
 			std::unordered_map<Date, std::vector<const api::scheduler::Job*>> unique_jobs;

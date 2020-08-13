@@ -72,6 +72,8 @@ $(function() {
 <div class="title">fpmas::synchro::hard::HardSyncMutex&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="hard__sync__mutex_8h_source.html">hard_sync_mutex.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::synchro::hard::HardSyncMutex&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -93,8 +95,7 @@ Collaboration diagram for fpmas::synchro::hard::HardSyncMutex&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a123b7e6abfc367b1614b14d567273333"><td class="memItemLeft" align="right" valign="top"><a id="a123b7e6abfc367b1614b14d567273333"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>HardSyncMutex</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt; *node, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexClient.html">MutexClient</a> &amp;mutex_client, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">MutexServer</a> &amp;mutex_server)</td></tr>
+<tr class="memitem:a123b7e6abfc367b1614b14d567273333"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html#a123b7e6abfc367b1614b14d567273333">HardSyncMutex</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt; *node, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexClient.html">MutexClient</a> &amp;mutex_client, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">MutexServer</a> &amp;mutex_server)</td></tr>
 <tr class="separator:a123b7e6abfc367b1614b14d567273333"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4579865be13a280c345198e353695688"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html#a4579865be13a280c345198e353695688">pushRequest</a> (<a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">Request</a> request) override</td></tr>
 <tr class="separator:a4579865be13a280c345198e353695688"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -137,6 +138,66 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>unlockShared</b> () o
 int&#160;</td><td class="memItemRight" valign="bottom"><b>lockedShared</b> () const override</td></tr>
 <tr class="separator:a4e1bceefcc137b03028b805b555892da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::synchro::hard::HardSyncMutex&lt; T &gt;</h3>
+
+<p><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">HardSyncMode</a> Mutex implementation.</p>
+<p>Each operation is added to a queue and potentially transmitted to DISTANT processes to ensure a strict global concurrent access management. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a123b7e6abfc367b1614b14d567273333"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a123b7e6abfc367b1614b14d567273333">&#9670;&nbsp;</a></span>HardSyncMutex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">fpmas::synchro::hard::HardSyncMutex</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>node</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexClient.html">MutexClient</a> &amp;&#160;</td>
+          <td class="paramname"><em>mutex_client</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">MutexServer</a> &amp;&#160;</td>
+          <td class="paramname"><em>mutex_server</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a> constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node associated to this mutex </td></tr>
+    <tr><td class="paramname">mutex_client</td><td>client used to transmit requests to other processes </td></tr>
+    <tr><td class="paramname">mutex_server</td><td>server used to handle incoming mutex requests </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a4579865be13a280c345198e353695688"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4579865be13a280c345198e353695688">&#9670;&nbsp;</a></span>pushRequest()</h2>

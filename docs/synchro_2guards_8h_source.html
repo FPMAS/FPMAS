@@ -74,63 +74,64 @@ $(function() {
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/graph/distributed_node.h&quot;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;    <span class="keyword">namespace </span>synchro {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1Guard.html">    9</a></span>&#160;            <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a> {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;                <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">api::synchro::Mutex&lt;T&gt;</a>&amp; mutex;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;                    : mutex(*node-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#aa0e98df57f3a60863e96cde279e88941">mutex</a>()) {</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;                    }</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;                <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>(<a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp; operator=(<a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>() {}</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;            };</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1ReadGuard.html">   27</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html">ReadGuard</a> : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&lt;T&gt; {</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            <a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html">ReadGuard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;                : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard&lt;T&gt;</a>(node) {</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                    <span class="comment">// updates node.data() according to the SyncMode</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                    this-&gt;mutex.read();</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;                }</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html">ReadGuard</a>() {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                this-&gt;mutex.releaseRead();</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            }</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        };</div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>synchro {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1Guard.html">   21</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a> {</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">api::synchro::Mutex&lt;T&gt;</a>&amp; mutex;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1Guard.html#a8f10ed1da7b65068cf4b0cac10a9a3fc">   30</a></span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html#a8f10ed1da7b65068cf4b0cac10a9a3fc">Guard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                    : mutex(*node-&gt;mutex()) {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;                    }</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html#a8f10ed1da7b65068cf4b0cac10a9a3fc">Guard</a>(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html#a8f10ed1da7b65068cf4b0cac10a9a3fc">Guard</a>(<a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp; operator=(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp;) = <span class="keyword">delete</span>;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp; operator=(<a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&amp;&amp;) = <span class="keyword">delete</span>;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1AcquireGuard.html">   41</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html">AcquireGuard</a> : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&lt;T&gt; {</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html">AcquireGuard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard&lt;T&gt;</a>(node) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                    <span class="comment">// updates node.data() according to the SyncMode</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                    this-&gt;mutex.acquire();</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;                }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;            <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html">AcquireGuard</a>() {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                this-&gt;mutex.releaseAcquire();</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            }</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        };</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>() {}</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        };</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1ReadGuard.html">   47</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html">ReadGuard</a> : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&lt;T&gt; {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1ReadGuard.html#a55e1ebf95d4eb88d44005100eaa390fc">   59</a></span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html#a55e1ebf95d4eb88d44005100eaa390fc">ReadGuard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                    : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&lt;T&gt;(node) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                        <span class="comment">// updates node.data() according to the SyncMode</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                        this-&gt;mutex.read();</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                    }</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1ReadGuard.html#a0b74a565a0d34989c83bf03a63b14525">   70</a></span>&#160;                <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1synchro_1_1ReadGuard.html#a0b74a565a0d34989c83bf03a63b14525">~ReadGuard</a>() {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                    this-&gt;mutex.releaseRead();</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;        };</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1AcquireGuard.html">   79</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html">AcquireGuard</a> : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&lt;T&gt; {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00091"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1AcquireGuard.html#ae586ed5431c0384cbc355cc9ec4bdfe7">   91</a></span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html#ae586ed5431c0384cbc355cc9ec4bdfe7">AcquireGuard</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node)</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                    : <a class="code" href="classfpmas_1_1synchro_1_1Guard.html">Guard</a>&lt;T&gt;(node) {</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                        <span class="comment">// updates node.data() according to the SyncMode</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                        this-&gt;mutex.acquire();</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                    }</div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1AcquireGuard.html#a12321632d16e1b3caa73447b09978f91">  101</a></span>&#160;                <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1synchro_1_1AcquireGuard.html#a12321632d16e1b3caa73447b09978f91">~AcquireGuard</a>() {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                    this-&gt;mutex.releaseAcquire();</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        };</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;}}</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassfpmas_1_1synchro_1_1ReadGuard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1ReadGuard.html">fpmas::synchro::ReadGuard</a></div><div class="ttdef"><b>Definition:</b> guards.h:27</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html_aa0e98df57f3a60863e96cde279e88941"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#aa0e98df57f3a60863e96cde279e88941">fpmas::api::graph::DistributedNode::mutex</a></div><div class="ttdeci">virtual synchro::Mutex&lt; T &gt; * mutex()=0</div></div>
-<div class="ttc" id="aclassfpmas_1_1synchro_1_1AcquireGuard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1AcquireGuard.html">fpmas::synchro::AcquireGuard</a></div><div class="ttdef"><b>Definition:</b> guards.h:41</div></div>
+<div class="ttc" id="aclassfpmas_1_1synchro_1_1AcquireGuard_html_a12321632d16e1b3caa73447b09978f91"><div class="ttname"><a href="classfpmas_1_1synchro_1_1AcquireGuard.html#a12321632d16e1b3caa73447b09978f91">fpmas::synchro::AcquireGuard::~AcquireGuard</a></div><div class="ttdeci">virtual ~AcquireGuard()</div><div class="ttdef"><b>Definition:</b> guards.h:101</div></div>
+<div class="ttc" id="aclassfpmas_1_1synchro_1_1Guard_html_a8f10ed1da7b65068cf4b0cac10a9a3fc"><div class="ttname"><a href="classfpmas_1_1synchro_1_1Guard.html#a8f10ed1da7b65068cf4b0cac10a9a3fc">fpmas::synchro::Guard::Guard</a></div><div class="ttdeci">Guard(api::graph::DistributedNode&lt; T &gt; *node)</div><div class="ttdef"><b>Definition:</b> guards.h:30</div></div>
+<div class="ttc" id="aclassfpmas_1_1synchro_1_1AcquireGuard_html_ae586ed5431c0384cbc355cc9ec4bdfe7"><div class="ttname"><a href="classfpmas_1_1synchro_1_1AcquireGuard.html#ae586ed5431c0384cbc355cc9ec4bdfe7">fpmas::synchro::AcquireGuard::AcquireGuard</a></div><div class="ttdeci">AcquireGuard(api::graph::DistributedNode&lt; T &gt; *node)</div><div class="ttdef"><b>Definition:</b> guards.h:91</div></div>
+<div class="ttc" id="aclassfpmas_1_1synchro_1_1ReadGuard_html_a0b74a565a0d34989c83bf03a63b14525"><div class="ttname"><a href="classfpmas_1_1synchro_1_1ReadGuard.html#a0b74a565a0d34989c83bf03a63b14525">fpmas::synchro::ReadGuard::~ReadGuard</a></div><div class="ttdeci">virtual ~ReadGuard()</div><div class="ttdef"><b>Definition:</b> guards.h:70</div></div>
+<div class="ttc" id="aclassfpmas_1_1synchro_1_1ReadGuard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1ReadGuard.html">fpmas::synchro::ReadGuard</a></div><div class="ttdef"><b>Definition:</b> guards.h:47</div></div>
+<div class="ttc" id="aclassfpmas_1_1synchro_1_1AcquireGuard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1AcquireGuard.html">fpmas::synchro::AcquireGuard</a></div><div class="ttdef"><b>Definition:</b> guards.h:79</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.h:7</div></div>
-<div class="ttc" id="aclassfpmas_1_1synchro_1_1Guard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1Guard.html">fpmas::synchro::Guard</a></div><div class="ttdef"><b>Definition:</b> guards.h:9</div></div>
+<div class="ttc" id="aclassfpmas_1_1synchro_1_1Guard_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1Guard.html">fpmas::synchro::Guard</a></div><div class="ttdef"><b>Definition:</b> guards.h:21</div></div>
+<div class="ttc" id="aclassfpmas_1_1synchro_1_1ReadGuard_html_a55e1ebf95d4eb88d44005100eaa390fc"><div class="ttname"><a href="classfpmas_1_1synchro_1_1ReadGuard.html#a55e1ebf95d4eb88d44005100eaa390fc">fpmas::synchro::ReadGuard::ReadGuard</a></div><div class="ttdeci">ReadGuard(api::graph::DistributedNode&lt; T &gt; *node)</div><div class="ttdef"><b>Definition:</b> guards.h:59</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1Mutex_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">fpmas::api::synchro::Mutex</a></div><div class="ttdef"><b>Definition:</b> mutex.h:22</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:9</div></div>
 <!-- start footer part -->
