@@ -68,7 +68,7 @@ const fpmas::api::model::TypeId MockAgent<_TYPE_ID>::TYPE_ID = _TYPE_ID;
 
 class MockModel : public fpmas::api::model::Model {
 	public:
-		MOCK_METHOD(AgentGraph&, graph, (), (override));
+		MOCK_METHOD(fpmas::api::model::AgentGraph&, graph, (), (override));
 		MOCK_METHOD(fpmas::api::scheduler::Scheduler&, scheduler, (), (override));
 		MOCK_METHOD(fpmas::api::runtime::Runtime&, runtime, (), (override));
 		MOCK_METHOD(const fpmas::api::scheduler::Job&, loadBalancingJob, (), (const, override));

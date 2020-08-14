@@ -85,6 +85,11 @@
  * \namespace fpmas::api::model
  * Agent model API namespace.
  */
+/**
+ * \namespace fpmas::model
+ * fpmas::api::model implementations.
+ */
+
 namespace fpmas {
 	void init(int argc, char** argv) {
 		MPI_Init(&argc, &argv);

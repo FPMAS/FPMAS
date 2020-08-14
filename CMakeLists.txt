@@ -76,12 +76,15 @@ if(DOXYGEN_FOUND)
 	set(DOXYGEN_HTML_OUTPUT ".")
 	set(DOXYGEN_IMAGE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/img)
 	set(DOXYGEN_ALIASES
+		[[Agent="\ref fpmas::api::model::Agent \"Agent\""]]
 		[[Agents="\ref fpmas::api::model::Agent \"Agents\""]]
 		[[AgentGroups="\ref fpmas::api::model::AgentGroup \"AgentGroups\""]]
 		[[AgentNode="\ref fpmas::api::model::AgentNode \"AgentNode\""]]
 		[[AgentGraph="\ref fpmas::api::model::AgentGraph \"AgentGraph\""]]
 		[[AgentTasks="\ref fpmas::api::model::AgentTask \"AgentTasks\""]]
 		[[Job="\ref fpmas::api::scheduler::Job \"Job\""]]
+		[[Scheduler="\ref fpmas::api::scheduler::Scheduler \"Scheduler\""]]
+		[[Runtime="\ref fpmas::api::runtime::Runtime \"Runtime\""]]
 		)
 	#set(DOXYGEN_HAVE_DOT "YES")
 	#set(DOXYGEN_TEMPLATE_RELATIONS "YES")

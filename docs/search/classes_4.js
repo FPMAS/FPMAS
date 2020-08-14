@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['fixedverticesloadbalancing_319',['FixedVerticesLoadBalancing',['../classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html',1,'fpmas::api::load_balancing']]],
-  ['fixedverticesloadbalancing_3c_20agentptr_20_3e_320',['FixedVerticesLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html',1,'fpmas::api::load_balancing']]]
+  ['fixedverticesloadbalancing_327',['FixedVerticesLoadBalancing',['../classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html',1,'fpmas::api::load_balancing']]],
+  ['fixedverticesloadbalancing_3c_20agentptr_20_3e_328',['FixedVerticesLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html',1,'fpmas::api::load_balancing']]]
 ];

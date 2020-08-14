@@ -17,28 +17,66 @@ namespace fpmas { namespace model {
 	using api::model::AgentPtr;
 	using api::scheduler::JID;
 
+	/**
+	 * Helper class to represent an Agent as the neighbor of an other.
+	 *
+	 * A Neighbor can be used through pointer like accesses, and the input
+	 * Agent is automatically downcast to AgentType.
+	 *
+	 * @tparam AgentType Type of the input agent
+	 */
 	template<typename AgentType>
 		class Neighbor {
 			private:
 				AgentPtr* agent;
 
 			public:
+				/**
+				 * Neighbor constructor.
+				 *
+				 * @param agent pointer to a generic AgentPtr
+				 */
 				Neighbor(AgentPtr* agent)
 					: agent(agent) {}
 
+				/**
+				 * Implicit conversion operator to `AgentType*`.
+				 */
 				operator AgentType*() const {
 					return static_cast<AgentType*>(agent->get());
 				}
 
+				/**
+				 * Member of pointer access operator.
+				 *
+				 * @return pointer to neighbor agent
+				 */
 				AgentType* operator->() const {
 					return static_cast<AgentType*>(agent->get());
 				}
 
+				/**
+				 * Indirection operator.
+				 *
+				 * @return reference to neighbor agent
+				 */
 				AgentType& operator*() const {
 					return *static_cast<AgentType*>(agent->get());
 				}
 
 		};
+
+	/**
+	 * Helper class used to represent \Agents neighbors.
+	 *
+	 * Neighbors are defined as \Agents contained in neighbors of the node
+	 * associated to a given Agent.
+	 *
+	 * This class allows to easily iterate over \Agents neighbors thanks to
+	 * predefined iterators and the shuffle() method.
+	 *
+	 * @tparam AgentType Type of agents in the neighbors set
+	 */
 	template<typename AgentType>
 		class Neighbors {
 			private:
@@ -48,25 +86,57 @@ namespace fpmas { namespace model {
 				static std::mt19937 rd;
 
 			public:
+				/**
+				 * Neighbors constructor.
+				 *
+				 * @param neighbors list of agent neighbors
+				 */
 				Neighbors(const std::vector<Neighbor<AgentType>>& neighbors)
 					: neighbors(neighbors) {}
 
-				//operator std::vector<Neighbor<AgentType>>() {return neighbors;}
-
+				/**
+				 * Begin iterator.
+				 *
+				 * @return begin iterator
+				 */
 				iterator begin() {
 					return neighbors.begin();
 				}
+				/**
+				 * Const begin iterator.
+				 *
+				 * @return const begin iterator
+				 */
 				const_iterator begin() const {
 					return neighbors.begin();
 				}
 
+				/**
+				 * End iterator.
+				 *
+				 * @return end iterator
+				 */
 				iterator end() {
 					return neighbors.end();
 				}
+
+				/**
+				 * Const end iterator.
+				 *
+				 * @return const end iterator
+				 */
 				const_iterator end() const {
 					return neighbors.end();
 				}
 
+				/**
+				 * Internally shuffles the neighbors list using
+				 * [std::shuffle](https://en.cppreference.com/w/cpp/algorithm/random_shuffle).
+				 *
+				 * Can be used to iterate randomly over the neighbors set.
+				 *
+				 * @return reference to this Neighbors instance
+				 */
 				Neighbors& shuffle() {
 					std::shuffle(neighbors.begin(), neighbors.end(), rd);
 					return *this;
@@ -74,6 +144,12 @@ namespace fpmas { namespace model {
 		};
 	template<typename AgentType> std::mt19937 Neighbors<AgentType>::rd;
 
+	/**
+	 * Base implementation of the \Agent API.
+	 *
+	 * Users can use this class to easily define their own \Agents with custom
+	 * behaviors.
+	 */
 	template<typename AgentType, api::model::TypeId _TYPE_ID>
 	class AgentBase : public api::model::Agent {
 		public:
@@ -149,12 +225,10 @@ namespace fpmas { namespace model {
 	};
 
 	class SynchronizeGraphTask : public api::scheduler::Task {
-		public:
-			typedef typename api::model::Model::AgentGraph AgentGraph;
 		private:
-			AgentGraph& agent_graph;
+			api::model::AgentGraph& agent_graph;
 		public:
-			SynchronizeGraphTask(AgentGraph& agent_graph)
+			SynchronizeGraphTask(api::model::AgentGraph& agent_graph)
 				: agent_graph(agent_graph) {}
 
 			void run() override {
@@ -167,17 +241,15 @@ namespace fpmas { namespace model {
 		friend EraseAgentCallback;
 		public:
 			typedef api::model::GroupId GroupId;
-			typedef typename api::model::Model::AgentGraph AgentGraph;
 		private:
 			GroupId id;
-			AgentGraph& agent_graph;
+			api::model::AgentGraph& agent_graph;
 			scheduler::Job _job;
 			SynchronizeGraphTask sync_graph_task;
 			std::vector<api::model::AgentPtr*> _agents;
 
-
 		public:
-			AgentGroup(GroupId group_id, AgentGraph& agent_graph, JID job_id);
+			AgentGroup(GroupId group_id, api::model::AgentGraph& agent_graph, JID job_id);
 
 			GroupId groupId() const override {return id;}
 
@@ -204,21 +276,20 @@ namespace fpmas { namespace model {
 
 	class LoadBalancingTask : public api::scheduler::Task {
 		public:
-			typedef typename api::model::Model::AgentGraph AgentGraph;
 			typedef api::load_balancing::LoadBalancing<AgentPtr>
 				LoadBalancingAlgorithm;
 			typedef api::load_balancing::NodeMap<AgentPtr> NodeMap;
 			typedef typename api::load_balancing::PartitionMap PartitionMap;
 
 		private:
-			AgentGraph& agent_graph;
+			api::model::AgentGraph& agent_graph;
 			LoadBalancingAlgorithm& load_balancing;
 			api::scheduler::Scheduler& scheduler;
 			api::runtime::Runtime& runtime;
 
 		public:
 			LoadBalancingTask(
-					AgentGraph& agent_graph,
+					api::model::AgentGraph& agent_graph,
 					LoadBalancingAlgorithm& load_balancing,
 					api::scheduler::Scheduler& scheduler,
 					api::runtime::Runtime& runtime
@@ -273,7 +344,7 @@ namespace fpmas { namespace model {
 			typedef typename LoadBalancingTask::LoadBalancingAlgorithm LoadBalancingAlgorithm;
 		private:
 			GroupId gid;
-			AgentGraph& _graph;
+			api::model::AgentGraph& _graph;
 			api::scheduler::Scheduler& _scheduler;
 			api::runtime::Runtime& _runtime;
 			scheduler::Job _loadBalancingJob;
@@ -291,7 +362,7 @@ namespace fpmas { namespace model {
 		public:
 			static const JID LB_JID;
 			Model(
-				AgentGraph& graph,
+				api::model::AgentGraph& graph,
 				api::scheduler::Scheduler& scheduler,
 				api::runtime::Runtime& runtime,
 				LoadBalancingAlgorithm& load_balancing);
@@ -300,7 +371,7 @@ namespace fpmas { namespace model {
 			Model& operator=(const Model&) = delete;
 			Model& operator=(Model&&) = delete;
 
-			AgentGraph& graph() override {return _graph;}
+			api::model::AgentGraph& graph() override {return _graph;}
 			api::scheduler::Scheduler& scheduler() override {return _scheduler;}
 			api::runtime::Runtime& runtime() override {return _runtime;}
 

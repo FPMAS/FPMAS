@@ -5,7 +5,7 @@ namespace fpmas { namespace model {
 
 	const JID Model::LB_JID = 0;
 
-	AgentGroup::AgentGroup(GroupId group_id, AgentGraph& agent_graph, JID job_id)
+	AgentGroup::AgentGroup(GroupId group_id, api::model::AgentGraph& agent_graph, JID job_id)
 		: id(group_id), agent_graph(agent_graph), _job(job_id), sync_graph_task(agent_graph) {
 			_job.setEndTask(sync_graph_task);
 	}
@@ -72,7 +72,7 @@ namespace fpmas { namespace model {
 	}
 
 	Model::Model(
-			AgentGraph& graph,
+			api::model::AgentGraph& graph,
 			api::scheduler::Scheduler& scheduler,
 			api::runtime::Runtime& runtime,
 			LoadBalancingAlgorithm& load_balancing)

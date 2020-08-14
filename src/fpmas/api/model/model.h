@@ -377,18 +377,105 @@ namespace fpmas { namespace api {namespace model {
 			virtual ~AgentGroup(){}
 	};
 
+	/**
+	 * Model API.
+	 *
+	 * A Model defines and instantiates all the components required to run an
+	 * FPMAS Multi-Agent simulation.
+	 */
 	class Model {
 		public:
-			typedef api::graph::DistributedGraph<AgentPtr> AgentGraph;
-
+			/**
+			 * Model's \AgentGraph.
+			 *
+			 * @return agent graph
+			 */
 			virtual AgentGraph& graph() = 0;
+			/**
+			 * Model's \Scheduler.
+			 *
+			 * @return scheduler
+			 */
 			virtual api::scheduler::Scheduler& scheduler() = 0;
+			/**
+			 * Model's \Runtime, used to execute the scheduler().
+			 *
+			 * @return runtime
+			 */
 			virtual api::runtime::Runtime& runtime() = 0;
 
+			/**
+			 * A predefined LoadBalancing \Job.
+			 *
+			 * This \Job can be scheduled to define when and at which frequency
+			 * the LoadBalancing algorithm (and the graph distribution) will be
+			 * performed.
+			 *
+			 * \par Example
+			 * ```cpp
+			 * // Schedules the LoadBalancing algorithm to be applied every 10
+			 * // iterations.
+			 * model.scheduler().schedule(0, 10, model.loadBalancingJob());
+			 * ```
+			 *
+			 * @return reference to the predefined load balancing job
+			 */
 			virtual const api::scheduler::Job& loadBalancingJob() const = 0;
 
+			/**
+			 * Builds a new AgentGroup associated to this Model.
+			 *
+			 * The user can add its own \Agents to the built groups, and
+			 * schedule it so that \Agents will be executed.
+			 *
+			 * Notice that each AgentGroup is expected to be associated to a
+			 * unique GroupId. How this ID is assigned is implementation
+			 * defined.
+			 *
+			 * \par Example
+			 * Assuming `Agent1` and `Agent2` are predefined user implemented \Agents :
+			 * ```cpp
+			 * using fpmas::api::model::AgentGroup;
+			 *
+			 * AgentGroup& group_1 = model.buildGroup();
+			 * AgentGroup& group_2 = model.buildGroup();
+			 *
+			 * group_1.add(new Agent1);
+			 * group_1.add(new Agent1);
+			 *
+			 * group_2.add(new Agent2);
+			 * // Different Agent types can be added
+			 * // to each group
+			 * group_2.add(new Agent1);
+			 *
+			 * // Schedules Agents of group_1 to be executed each iteration
+			 * model.scheduler().schedule(0, 1, group_1.job());
+			 * // Schedules Agents of group_2 to be executed each 2 iterations
+			 * model.scheduler().schedule(0, 2, group_2.job());
+			 * ```
+			 */
 			virtual AgentGroup& buildGroup() = 0;
+
+			/**
+			 * Gets a reference to an AgentGroup previously created with
+			 * buildGroup().
+			 *
+			 * The unique ID of each built group can be retrieved with
+			 * AgentGroup::id().
+			 *
+			 * Behavior is undefined if the specified ID does not correspond to
+			 * a previously built group.
+			 *
+			 * @param group_id group id
+			 * @return associated agent group
+			 */
 			virtual AgentGroup& getGroup(GroupId) const = 0;
+
+			/**
+			 * Returns the map of \AgentGroups currently defined in the Model.
+			 *
+			 * @return agent groups
+			 */
 			virtual const std::unordered_map<GroupId, AgentGroup*>& groups() const = 0;
 
 			virtual ~Model(){}
