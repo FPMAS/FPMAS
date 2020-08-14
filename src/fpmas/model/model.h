@@ -150,7 +150,7 @@ namespace fpmas { namespace model {
 	 * Users can use this class to easily define their own \Agents with custom
 	 * behaviors.
 	 */
-	template<typename AgentType, api::model::TypeId _TYPE_ID>
+	template<typename AgentType>
 	class AgentBase : public api::model::Agent {
 		public:
 			static const api::model::TypeId TYPE_ID;
@@ -206,8 +206,8 @@ namespace fpmas { namespace model {
 
 			virtual ~AgentBase() {}
 	};
-	template<typename AgentType, api::model::TypeId _TYPE_ID>
-		const api::model::TypeId AgentBase<AgentType, _TYPE_ID>::TYPE_ID = _TYPE_ID;
+	template<typename AgentType>
+		const api::model::TypeId AgentBase<AgentType>::TYPE_ID = typeid(AgentType);
 
 	class AgentTask : public api::model::AgentTask {
 		private:

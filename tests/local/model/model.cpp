@@ -366,7 +366,7 @@ class AgentBaseTest : public ::testing::Test {
 };
 
 TEST_F(AgentBaseTest, type_id) {
-	ASSERT_EQ(agent_base.typeId(), 10);
+	ASSERT_EQ(agent_base.typeId(), std::type_index(typeid(MockAgentBase<10>)));
 }
 
 TEST_F(AgentBaseTest, group_id) {

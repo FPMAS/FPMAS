@@ -1,6 +1,8 @@
 #ifndef MODEL_API_H
 #define MODEL_API_H
 
+#include <typeindex>
+
 #include "fpmas/api/graph/distributed_graph.h"
 #include "fpmas/api/scheduler/scheduler.h"
 #include "fpmas/api/runtime/runtime.h"
@@ -26,7 +28,7 @@ namespace fpmas { namespace api {namespace model {
 	/**
 	 * Agent type ID type.
 	 */
-	typedef int TypeId;
+	typedef std::type_index TypeId;
 
 	/**
 	 * A smart pointer used to manage an Agent pointer.

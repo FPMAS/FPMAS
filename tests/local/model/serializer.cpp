@@ -2,7 +2,7 @@
 #include "../mocks/model/mock_model.h"
 #include "fpmas/utils/macros.h"
 
-FPMAS_JSON_SERIALIZE_AGENT(MockAgent<4>, MockAgent<2>, MockAgent<12>)
+FPMAS_JSON_SET_UP(MockAgent<4>, MockAgent<2>, MockAgent<12>)
 
 using ::testing::AnyNumber;
 using ::testing::WhenDynamicCastTo;
@@ -12,6 +12,8 @@ using ::testing::IsNull;
 TEST(AgentSerializer, to_json) {
 	MockAgent<4>* agent_4 = new MockAgent<4>;
 	MockAgent<12>* agent_12 = new MockAgent<12>;
+	//nlohmann::adl_serializer<std::type_index>::register_type(typeid(MockAgent<4>));
+	//nlohmann::adl_serializer<std::type_index>::register_type(typeid(MockAgent<12>));
 	EXPECT_CALL(*agent_4, typeId).Times(AnyNumber());
 	EXPECT_CALL(*agent_4, getField).WillRepeatedly(Return(7));
 	EXPECT_CALL(*agent_4, groupId).WillRepeatedly(Return(2));
@@ -25,23 +27,23 @@ TEST(AgentSerializer, to_json) {
 	nlohmann::json j4 = agent_ptr_4;
 	nlohmann::json j12 = agent_ptr_12;
 
-	ASSERT_EQ(j4.at("type").get<fpmas::api::model::TypeId>(), 4);
+	ASSERT_EQ(j4.at("type").get<fpmas::api::model::TypeId>(), std::type_index(typeid(MockAgent<4>)));
 	ASSERT_EQ(j4.at("gid").get<fpmas::api::model::GroupId>(), 2);
 	ASSERT_EQ(j4.at("agent").at("mock").get<int>(), 7);
 
-	ASSERT_EQ(j12.at("type").get<fpmas::api::model::TypeId>(), 12);
+	ASSERT_EQ(j12.at("type").get<fpmas::api::model::TypeId>(), std::type_index(typeid(MockAgent<12>)));
 	ASSERT_EQ(j12.at("gid").get<fpmas::api::model::GroupId>(), 4);
 	ASSERT_EQ(j12.at("agent").at("mock").get<int>(), 84);
 }
 
 TEST(AgentSerializer, from_json) {
 	nlohmann::json j4;
-	j4["type"] = 4;
+	j4["type"] = std::type_index(typeid(MockAgent<4>));
 	j4["gid"] = 2;
 	j4["agent"]["field"] = 7;
 
 	nlohmann::json j12;
-	j12["type"] = 12;
+	j12["type"] = std::type_index(typeid(MockAgent<12>));
 	j12["gid"] = 4;
 	j12["agent"]["field"] = 84;
 

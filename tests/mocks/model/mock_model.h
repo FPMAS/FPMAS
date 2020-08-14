@@ -9,7 +9,10 @@ using ::testing::ReturnPointee;
 using ::testing::AnyNumber;
 using ::testing::SaveArg;
 
-template<fpmas::api::model::TypeId _TYPE_ID = 0>
+/*
+ * FOO parameter is just used to easily generate multiple agent types.
+ */
+template<int FOO = 0>
 class MockAgent : public fpmas::api::model::Agent {
 	public:
 		static const fpmas::api::model::TypeId TYPE_ID;
@@ -45,7 +48,7 @@ class MockAgent : public fpmas::api::model::Agent {
 		MOCK_METHOD(int, getField, (), (const));
 
 		MockAgent() {
-			ON_CALL(*this, typeId).WillByDefault(Return(_TYPE_ID));
+			ON_CALL(*this, typeId).WillByDefault(Return(TYPE_ID));
 			setUpGid();
 		}
 
@@ -63,8 +66,8 @@ class MockAgent : public fpmas::api::model::Agent {
 			EXPECT_CALL(*this, setGroupId).Times(AnyNumber());
 		}
 };
-template<fpmas::api::model::TypeId _TYPE_ID>
-const fpmas::api::model::TypeId MockAgent<_TYPE_ID>::TYPE_ID = _TYPE_ID;
+template<int FOO>
+const fpmas::api::model::TypeId MockAgent<FOO>::TYPE_ID = typeid(MockAgent<FOO>);
 
 class MockModel : public fpmas::api::model::Model {
 	public:
@@ -92,30 +95,33 @@ class MockAgentGroup : public fpmas::api::model::AgentGroup {
 		MOCK_METHOD(const fpmas::api::scheduler::Job&, job, (), (const, override));
 };
 
-template<fpmas::api::model::TypeId _TYPE_ID = 0>
-class MockAgentBase : public fpmas::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID> {
+/*
+ * FOO parameter is just used to easily generate multiple agent types.
+ */
+template<int FOO = 0>
+class MockAgentBase : public fpmas::model::AgentBase<MockAgentBase<FOO>> {
 	public:
-		MockAgentBase():fpmas::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID>() {
+		MockAgentBase():fpmas::model::AgentBase<MockAgentBase<FOO>>() {
 		}
 		MockAgentBase(const MockAgentBase& other)
-			: fpmas::model::AgentBase<MockAgentBase<_TYPE_ID>, _TYPE_ID>(other) {
+			: fpmas::model::AgentBase<MockAgentBase<FOO>>(other) {
 			}
 
 		MOCK_METHOD(void, act, (), (override));
 };
 
 namespace nlohmann {
-	template<fpmas::api::model::TypeId TYPE_ID>
-	using MockAgentPtr = fpmas::api::utils::VirtualPtrWrapper<MockAgent<TYPE_ID>>;
+	template<int FOO>
+	using MockAgentPtr = fpmas::api::utils::VirtualPtrWrapper<MockAgent<FOO>>;
 
-	template<fpmas::api::model::TypeId TYPE_ID>
-		struct adl_serializer<MockAgentPtr<TYPE_ID>> {
-			static void to_json(json& j, const MockAgentPtr<TYPE_ID>& data) {
+	template<int FOO>
+		struct adl_serializer<MockAgentPtr<FOO>> {
+			static void to_json(json& j, const MockAgentPtr<FOO>& data) {
 				j["mock"] = data->getField();
 			}
 
-			static void from_json(const json& j, MockAgentPtr<TYPE_ID>& ptr) {
-				ptr = MockAgentPtr<TYPE_ID>(new MockAgent<TYPE_ID>(j.at("field").get<int>()));
+			static void from_json(const json& j, MockAgentPtr<FOO>& ptr) {
+				ptr = MockAgentPtr<FOO>(new MockAgent<FOO>(j.at("field").get<int>()));
 			}
 		};
 }

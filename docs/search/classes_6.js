@@ -1,8 +1,13 @@
 var searchData=
 [
-  ['harddatasync_339',['HardDataSync',['../classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html',1,'fpmas::synchro::hard']]],
-  ['hardsynclinker_340',['HardSyncLinker',['../classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html',1,'fpmas::synchro::hard']]],
-  ['hardsyncmode_341',['HardSyncMode',['../classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html',1,'fpmas::synchro::hard']]],
-  ['hardsyncmutex_342',['HardSyncMutex',['../classfpmas_1_1synchro_1_1hard_1_1api_1_1HardSyncMutex.html',1,'fpmas::synchro::hard::api::HardSyncMutex&lt; T &gt;'],['../classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html',1,'fpmas::synchro::hard::HardSyncMutex&lt; T &gt;']]],
-  ['hash_3c_20distributedid_20_3e_343',['hash&lt; DistributedId &gt;',['../structstd_1_1hash_3_01DistributedId_01_4.html',1,'std']]]
+  ['ghostdatasync_333',['GhostDataSync',['../classfpmas_1_1synchro_1_1ghost_1_1GhostDataSync.html',1,'fpmas::synchro::ghost']]],
+  ['ghostmode_334',['GhostMode',['../classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html',1,'fpmas::synchro::ghost']]],
+  ['ghostsynclinker_335',['GhostSyncLinker',['../classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html',1,'fpmas::synchro::ghost']]],
+  ['graph_336',['Graph',['../classfpmas_1_1graph_1_1Graph.html',1,'fpmas::graph::Graph&lt; NodeType, EdgeType &gt;'],['../classfpmas_1_1api_1_1graph_1_1Graph.html',1,'fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;']]],
+  ['graph_3c_20api_3a_3agraph_3a_3adistributednode_3c_20syncmode_20_3e_2c_20api_3a_3agraph_3a_3adistributededge_3c_20syncmode_20_3e_20_3e_337',['Graph&lt; api::graph::DistributedNode&lt; SyncMode &gt;, api::graph::DistributedEdge&lt; SyncMode &gt; &gt;',['../classfpmas_1_1graph_1_1Graph.html',1,'fpmas::graph::Graph&lt; api::graph::DistributedNode&lt; SyncMode &gt;, api::graph::DistributedEdge&lt; SyncMode &gt; &gt;'],['../classfpmas_1_1api_1_1graph_1_1Graph.html',1,'fpmas::api::graph::Graph&lt; api::graph::DistributedNode&lt; SyncMode &gt;, api::graph::DistributedEdge&lt; SyncMode &gt; &gt;']]],
+  ['graph_3c_20api_3a_3agraph_3a_3adistributednode_3c_20t_20_3e_2c_20api_3a_3agraph_3a_3adistributededge_3c_20t_20_3e_20_3e_338',['Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;',['../classfpmas_1_1api_1_1graph_1_1Graph.html',1,'fpmas::api::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;'],['../classfpmas_1_1graph_1_1Graph.html',1,'fpmas::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;']]],
+  ['graph_3c_20distributednode_3c_20syncmode_20_3e_2c_20distributededge_3c_20syncmode_20_3e_20_3e_339',['Graph&lt; DistributedNode&lt; SyncMode &gt;, DistributedEdge&lt; SyncMode &gt; &gt;',['../classfpmas_1_1api_1_1graph_1_1Graph.html',1,'fpmas::api::graph']]],
+  ['graph_3c_20distributednode_3c_20t_20_3e_2c_20distributededge_3c_20t_20_3e_20_3e_340',['Graph&lt; DistributedNode&lt; T &gt;, DistributedEdge&lt; T &gt; &gt;',['../classfpmas_1_1api_1_1graph_1_1Graph.html',1,'fpmas::api::graph']]],
+  ['guard_341',['Guard',['../classfpmas_1_1synchro_1_1Guard.html',1,'fpmas::synchro']]],
+  ['guard_3c_20fpmas_3a_3aapi_3a_3amodel_3a_3aagentptr_20_3e_342',['Guard&lt; fpmas::api::model::AgentPtr &gt;',['../classfpmas_1_1synchro_1_1Guard.html',1,'fpmas::synchro']]]
 ];

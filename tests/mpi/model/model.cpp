@@ -20,7 +20,7 @@ class ReaderAgent;
 class WriterAgent;
 class LinkerAgent;
 
-FPMAS_JSON_SERIALIZE_AGENT(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>)
+FPMAS_JSON_SET_UP(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>)
 FPMAS_DEFAULT_JSON(MockAgentBase<1>)
 FPMAS_DEFAULT_JSON(MockAgentBase<10>)
 
@@ -40,6 +40,9 @@ class ModelGhostModeIntegrationTest : public ::testing::Test {
 		std::unordered_map<DistributedId, unsigned long> act_counts;
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
 
+		ModelGhostModeIntegrationTest() {
+			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>)
+		}
 };
 const int ModelGhostModeIntegrationTest::NODE_BY_PROC = 50;
 const int ModelGhostModeIntegrationTest::NUM_STEPS = 100;
@@ -63,19 +66,14 @@ class IncreaseCountAct : public fpmas::model::AgentNodeCallback {
 		IncreaseCountAct(std::unordered_map<DistributedId, unsigned long>& act_counts) : act_counts(act_counts) {}
 
 		void call(fpmas::model::AgentNode* node) override {
-			switch(node->data().get()->typeId()) {
-				case MockAgentBase<1>::TYPE_ID :
-					EXPECT_CALL(*static_cast<MockAgentBase<1>*>(node->data().get()), act)
-						.Times(AnyNumber())
-						.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
-					break;
-				case MockAgentBase<10>::TYPE_ID :
-					EXPECT_CALL(*static_cast<MockAgentBase<10>*>(node->data().get()), act)
-						.Times(AnyNumber())
-						.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
-					break;
-				default:
-					break;
+			if(node->data().get()->typeId() == MockAgentBase<1>::TYPE_ID) {
+				EXPECT_CALL(*static_cast<MockAgentBase<1>*>(node->data().get()), act)
+					.Times(AnyNumber())
+					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
+			} else if(node->data().get()->typeId() == MockAgentBase<10>::TYPE_ID) {
+				EXPECT_CALL(*static_cast<MockAgentBase<10>*>(node->data().get()), act)
+					.Times(AnyNumber())
+					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
 			}
 		}
 };
@@ -98,9 +96,9 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				act_counts[{0, (unsigned int) id}] = 0;
 				if(id % 2 == 0) {
-					agent_types[{0, (unsigned int) id}] = 1;
+					agent_types.insert({{0, (unsigned int) id}, typeid(MockAgentBase<1>)});
 				} else {
-					agent_types[{0, (unsigned int) id}] = 10;
+					agent_types.insert({{0, (unsigned int) id}, typeid(MockAgentBase<10>)});
 				}
 			}
 		}
@@ -114,7 +112,7 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 				if(agent_graph.getMpiCommunicator().getRank() == 0) {
 					int sum = 0;
 					sum = std::accumulate(counts.begin(), counts.end(), sum);
-					if(agent_types[dist_id] == 1) {
+					if(agent_types.at(dist_id) == typeid(MockAgentBase<1>)) {
 						// Executed every step
 						ASSERT_EQ(sum, NUM_STEPS);
 					} else {
@@ -206,7 +204,7 @@ TEST_F(ModelGhostModeIntegrationLoadBalancingTest, ghost_mode_dynamic_lb) {
 	runtime.run(NUM_STEPS);
 }
 
-class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent, 0> {
+class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 	private:
 		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight;
@@ -254,6 +252,9 @@ class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 		std::unordered_map<DistributedId, unsigned long> act_counts;
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
 
+		ModelHardSyncModeIntegrationTest() {
+			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>)
+		}
 };
 const int ModelHardSyncModeIntegrationTest::NODE_BY_PROC = 20;
 const int ModelHardSyncModeIntegrationTest::NUM_STEPS = 100;
@@ -276,9 +277,9 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				act_counts[{0, (unsigned int) id}] = 0;
 				if(id % 2 == 0) {
-					agent_types[{0, (unsigned int) id}] = 1;
+					agent_types.insert({{0, (unsigned int) id}, typeid(MockAgentBase<1>)});
 				} else {
-					agent_types[{0, (unsigned int) id}] = 10;
+					agent_types.insert({{0, (unsigned int) id}, typeid(MockAgentBase<10>)});
 				}
 			}
 		}
@@ -292,7 +293,7 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 				if(agent_graph.getMpiCommunicator().getRank() == 0) {
 					int sum = 0;
 					sum = std::accumulate(counts.begin(), counts.end(), sum);
-					if(agent_types[dist_id] == 1) {
+					if(agent_types.at(dist_id) == typeid(MockAgentBase<1>)) {
 						// Executed every step
 						ASSERT_EQ(sum, NUM_STEPS);
 					} else {
@@ -360,7 +361,7 @@ TEST_F(ModelHardSyncModeIntegrationLoadBalancingTest, hard_sync_mode_dynamic_lb)
 	runtime.run(NUM_STEPS);
 }
 
-class WriterAgent : public fpmas::model::AgentBase<WriterAgent, 2> {
+class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
 	private:
 		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight;
@@ -468,7 +469,7 @@ TEST_F(HardSyncWritersModelIntegrationTest, test) {
 	}
 }
 
-class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent, 3> {
+class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 	std::mt19937 engine;
 	std::uniform_int_distribution<int> random_layer {0, 16};
 
