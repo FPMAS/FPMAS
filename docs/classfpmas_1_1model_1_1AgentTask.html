@@ -97,11 +97,9 @@ Collaboration diagram for fpmas::model::AgentTask:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a422eea0bbba5b26d2e2290662ab274fe"><td class="memItemLeft" align="right" valign="top"><a id="a422eea0bbba5b26d2e2290662ab274fe"></a>
-const <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>agent</b> () const override</td></tr>
+<tr class="memitem:a422eea0bbba5b26d2e2290662ab274fe"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentTask.html#a422eea0bbba5b26d2e2290662ab274fe">agent</a> () const override</td></tr>
 <tr class="separator:a422eea0bbba5b26d2e2290662ab274fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1003c64a7f585e7d7f10eef733f9a90f"><td class="memItemLeft" align="right" valign="top"><a id="a1003c64a7f585e7d7f10eef733f9a90f"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>setAgent</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *agent) override</td></tr>
+<tr class="memitem:a1003c64a7f585e7d7f10eef733f9a90f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentTask.html#a1003c64a7f585e7d7f10eef733f9a90f">setAgent</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *<a class="el" href="classfpmas_1_1model_1_1AgentTask.html#a422eea0bbba5b26d2e2290662ab274fe">agent</a>) override</td></tr>
 <tr class="separator:a1003c64a7f585e7d7f10eef733f9a90f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee2f268385873216cf17276b717640c4"><td class="memItemLeft" align="right" valign="top">AgentNode *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentTask.html#aee2f268385873216cf17276b717640c4">node</a> () override</td></tr>
 <tr class="separator:aee2f268385873216cf17276b717640c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -109,6 +107,35 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setAgent</b> (<a clas
 <tr class="separator:a7554d217119a0b85b8bd9c3dd2b11456"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a422eea0bbba5b26d2e2290662ab274fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a422eea0bbba5b26d2e2290662ab274fe">&#9670;&nbsp;</a></span>agent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>* fpmas::model::AgentTask::agent </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a pointer to the associated Agent.</p>
+<dl class="section return"><dt>Returns</dt><dd>task's agent </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentTask.html#a19d7afe588718535b49bfa1a29cc96b4">fpmas::api::model::AgentTask</a>.</p>
+
+</div>
+</div>
 <a id="aee2f268385873216cf17276b717640c4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aee2f268385873216cf17276b717640c4">&#9670;&nbsp;</a></span>node()</h2>
 
@@ -163,6 +190,41 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setAgent</b> (<a clas
 <p>Runs the task. </p>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#acf925d631a63900965ea96688ea93061">fpmas::api::scheduler::Task</a>.</p>
+
+</div>
+</div>
+<a id="a1003c64a7f585e7d7f10eef733f9a90f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1003c64a7f585e7d7f10eef733f9a90f">&#9670;&nbsp;</a></span>setAgent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::AgentTask::setAgent </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the internal pointer of the associated Agent.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>task's agent </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentTask.html#ade9e33611bfd1e52cf24ec2bf3daabe7">fpmas::api::model::AgentTask</a>.</p>
 
 </div>
 </div>

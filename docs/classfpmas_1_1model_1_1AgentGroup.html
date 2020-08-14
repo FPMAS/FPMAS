@@ -95,7 +95,7 @@ Collaboration diagram for fpmas::model::AgentGroup:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:a62558fd587d86464a9f5e72597511795"><td class="memItemLeft" align="right" valign="top"><a id="a62558fd587d86464a9f5e72597511795"></a>
-typedef api::model::GroupId&#160;</td><td class="memItemRight" valign="bottom"><b>GroupId</b></td></tr>
+typedef <a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">api::model::GroupId</a>&#160;</td><td class="memItemRight" valign="bottom"><b>GroupId</b></td></tr>
 <tr class="separator:a62558fd587d86464a9f5e72597511795"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade8f716ec9af5d13620fa4402ca53dc8"><td class="memItemLeft" align="right" valign="top"><a id="ade8f716ec9af5d13620fa4402ca53dc8"></a>
 typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::model::Model::AgentGraph</a>&#160;</td><td class="memItemRight" valign="bottom"><b>AgentGraph</b></td></tr>
@@ -106,35 +106,334 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a07013394e5519099a70c0ad339b185e8"><td class="memItemLeft" align="right" valign="top"><a id="a07013394e5519099a70c0ad339b185e8"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>AgentGroup</b> (GroupId group_id, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">AgentGraph</a> &amp;agent_graph, JID job_id)</td></tr>
 <tr class="separator:a07013394e5519099a70c0ad339b185e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a973b7dcf18856e545aaa56cafec7ad73"><td class="memItemLeft" align="right" valign="top"><a id="a973b7dcf18856e545aaa56cafec7ad73"></a>
-GroupId&#160;</td><td class="memItemRight" valign="bottom"><b>groupId</b> () const override</td></tr>
+<tr class="memitem:a973b7dcf18856e545aaa56cafec7ad73"><td class="memItemLeft" align="right" valign="top">GroupId&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a973b7dcf18856e545aaa56cafec7ad73">groupId</a> () const override</td></tr>
 <tr class="separator:a973b7dcf18856e545aaa56cafec7ad73"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a086450027aaab0e8ea0981dec4d618b7"><td class="memItemLeft" align="right" valign="top"><a id="a086450027aaab0e8ea0981dec4d618b7"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *) override</td></tr>
+<tr class="memitem:a086450027aaab0e8ea0981dec4d618b7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a086450027aaab0e8ea0981dec4d618b7">add</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *) override</td></tr>
 <tr class="separator:a086450027aaab0e8ea0981dec4d618b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a192b744a912dc84ee41713f96e5eb3e0"><td class="memItemLeft" align="right" valign="top"><a id="a192b744a912dc84ee41713f96e5eb3e0"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *) override</td></tr>
+<tr class="memitem:a192b744a912dc84ee41713f96e5eb3e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a192b744a912dc84ee41713f96e5eb3e0">remove</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *) override</td></tr>
 <tr class="separator:a192b744a912dc84ee41713f96e5eb3e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b63dac43249208a1d186fd4a77a3dd3"><td class="memItemLeft" align="right" valign="top"><a id="a0b63dac43249208a1d186fd4a77a3dd3"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">api::model::AgentPtr</a> *) override</td></tr>
+<tr class="memitem:a0b63dac43249208a1d186fd4a77a3dd3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a0b63dac43249208a1d186fd4a77a3dd3">insert</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> *) override</td></tr>
 <tr class="separator:a0b63dac43249208a1d186fd4a77a3dd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c5262b293a1525413a5df6ebcb9fb0e"><td class="memItemLeft" align="right" valign="top"><a id="a2c5262b293a1525413a5df6ebcb9fb0e"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">api::model::AgentPtr</a> *) override</td></tr>
+<tr class="memitem:a2c5262b293a1525413a5df6ebcb9fb0e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a2c5262b293a1525413a5df6ebcb9fb0e">erase</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> *) override</td></tr>
 <tr class="separator:a2c5262b293a1525413a5df6ebcb9fb0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca3eccd8dcfe57c6af87310500977670"><td class="memItemLeft" align="right" valign="top"><a id="aca3eccd8dcfe57c6af87310500977670"></a>
-<a class="el" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>job</b> () override</td></tr>
+<tr class="memitem:aca3eccd8dcfe57c6af87310500977670"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#aca3eccd8dcfe57c6af87310500977670">job</a> () override</td></tr>
 <tr class="separator:aca3eccd8dcfe57c6af87310500977670"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54024b9d8617360e2d281a0c94cc26f4"><td class="memItemLeft" align="right" valign="top"><a id="a54024b9d8617360e2d281a0c94cc26f4"></a>
-const <a class="el" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>job</b> () const override</td></tr>
+<tr class="memitem:a54024b9d8617360e2d281a0c94cc26f4"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a54024b9d8617360e2d281a0c94cc26f4">job</a> () const override</td></tr>
 <tr class="separator:a54024b9d8617360e2d281a0c94cc26f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a131b2b8208ca7cec86759ff987a27abb"><td class="memItemLeft" align="right" valign="top"><a id="a131b2b8208ca7cec86759ff987a27abb"></a>
-std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">api::model::AgentPtr</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>agents</b> () const override</td></tr>
+<tr class="memitem:a131b2b8208ca7cec86759ff987a27abb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a131b2b8208ca7cec86759ff987a27abb">agents</a> () const override</td></tr>
 <tr class="separator:a131b2b8208ca7cec86759ff987a27abb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37950b37fc33ecb5a153d199aeb890f1"><td class="memTemplParams" colspan="2"><a id="a37950b37fc33ecb5a153d199aeb890f1"></a>
-template&lt;typename AgentType &gt; </td></tr>
-<tr class="memitem:a37950b37fc33ecb5a153d199aeb890f1"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; AgentType * &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>agents</b> () const</td></tr>
+<tr class="memitem:a37950b37fc33ecb5a153d199aeb890f1"><td class="memTemplParams" colspan="2">template&lt;typename AgentType &gt; </td></tr>
+<tr class="memitem:a37950b37fc33ecb5a153d199aeb890f1"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; AgentType * &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a37950b37fc33ecb5a153d199aeb890f1">agents</a> () const</td></tr>
 <tr class="separator:a37950b37fc33ecb5a153d199aeb890f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a086450027aaab0e8ea0981dec4d618b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a086450027aaab0e8ea0981dec4d618b7">&#9670;&nbsp;</a></span>add()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::AgentGroup::add </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds a new Agent to this group.</p>
+<p>Also builds a new <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> into the current <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a> and associates it to the Agent.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to add </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a37950b37fc33ecb5a153d199aeb890f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37950b37fc33ecb5a153d199aeb890f1">&#9670;&nbsp;</a></span>agents() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;AgentType*&gt; fpmas::model::AgentGroup::agents </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the list of all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> currently in this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#abf93546021171370c7705830e72ae41a">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a131b2b8208ca7cec86759ff987a27abb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a131b2b8208ca7cec86759ff987a27abb">&#9670;&nbsp;</a></span>agents() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a>*&gt; fpmas::model::AgentGroup::agents </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the list of all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> currently in this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#abf93546021171370c7705830e72ae41a">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a2c5262b293a1525413a5df6ebcb9fb0e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c5262b293a1525413a5df6ebcb9fb0e">&#9670;&nbsp;</a></span>erase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::AgentGroup::erase </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Erases an Agent from this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>This function is only used during the node migration process, and is not supposed to be used by the final user.</p>
+<p>Contrary to <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a192b744a912dc84ee41713f96e5eb3e0">remove()</a>, this method does not globally removes the Agent (and its associated AgentNode) from the simulation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to erase from this group </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ade0515102b7fd5ff17703608ddfd158a">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a973b7dcf18856e545aaa56cafec7ad73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a973b7dcf18856e545aaa56cafec7ad73">&#9670;&nbsp;</a></span>groupId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">GroupId fpmas::model::AgentGroup::groupId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the ID of this group.</p>
+<dl class="section return"><dt>Returns</dt><dd>group id </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a2d16a5243fec7f30ac2e78e21f8b19df">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a0b63dac43249208a1d186fd4a77a3dd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0b63dac43249208a1d186fd4a77a3dd3">&#9670;&nbsp;</a></span>insert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::AgentGroup::insert </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Inserts an Agent into this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>This function is only used during the node migration process, and is not supposed to be used by the final user.</p>
+<p>Contrary to <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a086450027aaab0e8ea0981dec4d618b7">add()</a>, this method assumes that an AgentNode has already been built for the Agent.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to insert into this group </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a4cd3d73f3c5be59a55fcad342702bf46">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a54024b9d8617360e2d281a0c94cc26f4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54024b9d8617360e2d281a0c94cc26f4">&#9670;&nbsp;</a></span>job() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a>&amp; fpmas::model::AgentGroup::job </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p>Returns a reference to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> associated to this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>This <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> contains all the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">AgentTasks</a> associated to all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group.</p>
+<p>This <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> can be scheduled to define when this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a> must be executed.</p>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// Schedules agent_group to be executed from iteration 10 with a</span></div>
+<div class="line"><span class="comment">// period of 2</span></div>
+<div class="line">scheduler.schedule(10, 2, agent_group.job());</div>
+</div><!-- fragment --></dd></dl>
+<p>See the complete <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> interface for more scheduling options. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ae62d2bdce9b702dda19f66efc3812b24">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="aca3eccd8dcfe57c6af87310500977670"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aca3eccd8dcfe57c6af87310500977670">&#9670;&nbsp;</a></span>job() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a>&amp; fpmas::model::AgentGroup::job </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a reference to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> associated to this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>This <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> contains all the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">AgentTasks</a> associated to all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group.</p>
+<p>This <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> can be scheduled to define when this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a> must be executed.</p>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// Schedules agent_group to be executed from iteration 10 with a</span></div>
+<div class="line"><span class="comment">// period of 2</span></div>
+<div class="line">scheduler.schedule(10, 2, agent_group.job());</div>
+</div><!-- fragment --></dd></dl>
+<p>See the complete <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> interface for more scheduling options. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a305224b1bdb3d29821412d154ee4d316">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a192b744a912dc84ee41713f96e5eb3e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a192b744a912dc84ee41713f96e5eb3e0">&#9670;&nbsp;</a></span>remove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::AgentGroup::remove </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Removes an Agent from this group.</p>
+<p>The Agent is completely removed from the simulation, so the associated <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> is also globally removed from the <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/fpmas/model/<a class="el" href="model_2model_8h_source.html">model.h</a></li>
 <li>src/fpmas/model/model.cpp</li>

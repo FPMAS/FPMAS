@@ -111,7 +111,7 @@ $(function() {
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">template</span>&lt;&gt; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        AgentPtr from_json&lt;void&gt;(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            fpmas::api::model::TypeId <span class="keywordtype">id</span> = j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;fpmas::api::model::TypeId&gt;();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            <a class="code" href="namespacefpmas_1_1api_1_1model.html#accff6489e0beb730fe34fc48d71bafc1">fpmas::api::model::TypeId</a> <span class="keywordtype">id</span> = j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;<a class="code" href="namespacefpmas_1_1api_1_1model.html#accff6489e0beb730fe34fc48d71bafc1">fpmas::api::model::TypeId</a>&gt;();</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            FPMAS_LOGE(-1, <span class="stringliteral">&quot;AGENT_SERIALIZER&quot;</span>, <span class="stringliteral">&quot;Invalid agent type : %lu&quot;</span>, <span class="keywordtype">id</span>);</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            std::string message = <span class="stringliteral">&quot;Invalid agent type : &quot;</span> + std::to_string(<span class="keywordtype">id</span>);</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            <span class="keywordflow">throw</span> std::invalid_argument(message);</div>
@@ -119,10 +119,10 @@ $(function() {
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        AgentPtr from_json(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            fpmas::api::model::TypeId <span class="keywordtype">id</span> = j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;fpmas::api::model::TypeId&gt;();</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            <a class="code" href="namespacefpmas_1_1api_1_1model.html#accff6489e0beb730fe34fc48d71bafc1">fpmas::api::model::TypeId</a> <span class="keywordtype">id</span> = j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;<a class="code" href="namespacefpmas_1_1api_1_1model.html#accff6489e0beb730fe34fc48d71bafc1">fpmas::api::model::TypeId</a>&gt;();</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            <span class="keywordflow">if</span>(<span class="keywordtype">id</span> == Type::TYPE_ID) {</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;                <span class="keyword">auto</span> agent = j.at(<span class="stringliteral">&quot;agent&quot;</span>).get&lt;TypedAgentPtr&lt;Type&gt;&gt;();</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                agent-&gt;setGroupId(j.at(<span class="stringliteral">&quot;gid&quot;</span>).get&lt;fpmas::api::model::GroupId&gt;());</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;                agent-&gt;<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html#a803e97bb1657a3db3110d7f499c3c878">setGroupId</a>(j.at(<span class="stringliteral">&quot;gid&quot;</span>).get&lt;<a class="code" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a>&gt;());</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;                <span class="keywordflow">return</span> {agent};</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;            } <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;                <span class="keywordflow">return</span> std::move(from_json&lt;AgentTypes...&gt;(j));</div>
@@ -146,6 +146,9 @@ $(function() {
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="preprocessor"></span> </div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Agent_html_a803e97bb1657a3db3110d7f499c3c878"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Agent.html#a803e97bb1657a3db3110d7f499c3c878">fpmas::api::model::Agent::setGroupId</a></div><div class="ttdeci">virtual void setGroupId(GroupId id)=0</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1model_html_accff6489e0beb730fe34fc48d71bafc1"><div class="ttname"><a href="namespacefpmas_1_1api_1_1model.html#accff6489e0beb730fe34fc48d71bafc1">fpmas::api::model::TypeId</a></div><div class="ttdeci">int TypeId</div><div class="ttdef"><b>Definition:</b> model.h:29</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1model_html_a21595fa9ac22b3afe6da9f2b1c46e13b"><div class="ttname"><a href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a></div><div class="ttdeci">int GroupId</div><div class="ttdef"><b>Definition:</b> model.h:25</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.h:7</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

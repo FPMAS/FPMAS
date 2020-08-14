@@ -2,38 +2,26 @@
 
 namespace fpmas { namespace api { namespace model {
 
-	AgentPtrWrapper::AgentPtrWrapper(const AgentPtrWrapper& other) {
+	AgentPtr::AgentPtr(const AgentPtr& other) {
 		this->virtual_type_ptr = other.virtual_type_ptr->copy();
-		//this->virtual_type_ptr->setNode(other.virtual_type_ptr->node());
-		//this->virtual_type_ptr->setTask(other.virtual_type_ptr->task());
 		this->virtual_type_ptr->setGroupId(other.virtual_type_ptr->groupId());
 	}
 
-	AgentPtrWrapper::AgentPtrWrapper(AgentPtrWrapper&& other) {
+	AgentPtr::AgentPtr(AgentPtr&& other) {
 		this->virtual_type_ptr = other.get();
 		other.virtual_type_ptr = nullptr;
 	}
 
-	AgentPtrWrapper& AgentPtrWrapper::operator=(const AgentPtrWrapper& other) {
-		if(other.virtual_type_ptr != nullptr) {
-			//AgentTask* task = nullptr;
-			//api::model::AgentNode* node = nullptr;
-			if(this->virtual_type_ptr != nullptr) {
-				//task = this->virtual_type_ptr->task();
-				//node = this->virtual_type_ptr->node();
-				delete this->virtual_type_ptr;
-			}
-
-			this->virtual_type_ptr = other.virtual_type_ptr->copy();
-			//this->virtual_type_ptr->setTask(task);
-			//this->virtual_type_ptr->setNode(node);
-			this->virtual_type_ptr->setGroupId(other.virtual_type_ptr->groupId());
-			//task->setAgent(this->virtual_type_ptr);
+	AgentPtr& AgentPtr::operator=(const AgentPtr& other) {
+		if(this->virtual_type_ptr != nullptr) {
+			delete this->virtual_type_ptr;
 		}
+		this->virtual_type_ptr = other.virtual_type_ptr->copy();
+		this->virtual_type_ptr->setGroupId(other.virtual_type_ptr->groupId());
 		return *this;
 	}
 
-	AgentPtrWrapper& AgentPtrWrapper::operator=(AgentPtrWrapper&& other) {
+	AgentPtr& AgentPtr::operator=(AgentPtr&& other) {
 		if(other.virtual_type_ptr != nullptr) {
 			api::model::AgentGroup* group = nullptr;
 			AgentTask* task = nullptr;
@@ -60,7 +48,7 @@ namespace fpmas { namespace api { namespace model {
 		return *this;
 	}
 
-	AgentPtrWrapper::~AgentPtrWrapper() {
+	AgentPtr::~AgentPtr() {
 		if(this->virtual_type_ptr!=nullptr)
 			delete this->virtual_type_ptr;
 	}

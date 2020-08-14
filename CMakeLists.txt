@@ -75,8 +75,17 @@ if(DOXYGEN_FOUND)
 	set(DOXYGEN_MACRO_EXPANSION "YES")
 	set(DOXYGEN_HTML_OUTPUT ".")
 	set(DOXYGEN_IMAGE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/img)
+	set(DOXYGEN_ALIASES
+		[[Agents="\ref fpmas::api::model::Agent \"Agents\""]]
+		[[AgentGroups="\ref fpmas::api::model::AgentGroup \"AgentGroups\""]]
+		[[AgentNode="\ref fpmas::api::model::AgentNode \"AgentNode\""]]
+		[[AgentGraph="\ref fpmas::api::model::AgentGraph \"AgentGraph\""]]
+		[[AgentTasks="\ref fpmas::api::model::AgentTask \"AgentTasks\""]]
+		[[Job="\ref fpmas::api::scheduler::Job \"Job\""]]
+		)
 	#set(DOXYGEN_HAVE_DOT "YES")
 	#set(DOXYGEN_TEMPLATE_RELATIONS "YES")
+	set(DOXYGEN_VERBATIM_VARS DOXYGEN_ALIASES)
 	doxygen_add_docs(doc
 		${CMAKE_CURRENT_SOURCE_DIR}/src
 		)

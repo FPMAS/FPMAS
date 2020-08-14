@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><b>model</b></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api_1_1model.html">model</a></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -87,7 +87,7 @@ Inheritance diagram for fpmas::api::model::Model:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
 <tr class="memitem:aaf2d61ef8987e5da112f7baf20d2ca77"><td class="memItemLeft" align="right" valign="top"><a id="aaf2d61ef8987e5da112f7baf20d2ca77"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>AgentGraph</b></td></tr>
+typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>AgentGraph</b></td></tr>
 <tr class="separator:aaf2d61ef8987e5da112f7baf20d2ca77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
@@ -108,10 +108,10 @@ virtual const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">ap
 virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>buildGroup</b> ()=0</td></tr>
 <tr class="separator:aa2836311dd3fbeeef960fe8cd9a6cada"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11cf0a1adea78e480d7ef67eb40b9243"><td class="memItemLeft" align="right" valign="top"><a id="a11cf0a1adea78e480d7ef67eb40b9243"></a>
-virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getGroup</b> (GroupId) const =0</td></tr>
+virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getGroup</b> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a>) const =0</td></tr>
 <tr class="separator:a11cf0a1adea78e480d7ef67eb40b9243"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab81a61fe901dace453f31268feb9be99"><td class="memItemLeft" align="right" valign="top"><a id="ab81a61fe901dace453f31268feb9be99"></a>
-virtual const std::unordered_map&lt; GroupId, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>groups</b> () const =0</td></tr>
+virtual const std::unordered_map&lt; <a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a>, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>groups</b> () const =0</td></tr>
 <tr class="separator:ab81a61fe901dace453f31268feb9be99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this class was generated from the following file:<ul>

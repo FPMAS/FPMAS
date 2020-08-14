@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><b>model</b></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api_1_1model.html">model</a></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -72,6 +72,8 @@ $(function() {
 <div class="title">fpmas::api::model::AgentGroup Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="api_2model_2model_8h_source.html">model.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::api::model::AgentGroup:</div>
 <div class="dyncontent">
@@ -84,31 +86,306 @@ Inheritance diagram for fpmas::api::model::AgentGroup:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2d16a5243fec7f30ac2e78e21f8b19df"><td class="memItemLeft" align="right" valign="top"><a id="a2d16a5243fec7f30ac2e78e21f8b19df"></a>
-virtual GroupId&#160;</td><td class="memItemRight" valign="bottom"><b>groupId</b> () const =0</td></tr>
+<tr class="memitem:a2d16a5243fec7f30ac2e78e21f8b19df"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a2d16a5243fec7f30ac2e78e21f8b19df">groupId</a> () const =0</td></tr>
 <tr class="separator:a2d16a5243fec7f30ac2e78e21f8b19df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad8ca50fdf02f71d5b638582bd0262cad"><td class="memItemLeft" align="right" valign="top"><a id="ad8ca50fdf02f71d5b638582bd0262cad"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>add</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> *)=0</td></tr>
-<tr class="separator:ad8ca50fdf02f71d5b638582bd0262cad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4b1423280531be522fe948e99a53695f"><td class="memItemLeft" align="right" valign="top"><a id="a4b1423280531be522fe948e99a53695f"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>remove</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> *)=0</td></tr>
-<tr class="separator:a4b1423280531be522fe948e99a53695f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a133b23583e570f7730a2cb6b145c3ebd"><td class="memItemLeft" align="right" valign="top"><a id="a133b23583e570f7730a2cb6b145c3ebd"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>insert</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">AgentPtr</a> *)=0</td></tr>
-<tr class="separator:a133b23583e570f7730a2cb6b145c3ebd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a533f798aed3843bd99d3b16fbe970369"><td class="memItemLeft" align="right" valign="top"><a id="a533f798aed3843bd99d3b16fbe970369"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>erase</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">AgentPtr</a> *)=0</td></tr>
-<tr class="separator:a533f798aed3843bd99d3b16fbe970369"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf93546021171370c7705830e72ae41a"><td class="memItemLeft" align="right" valign="top"><a id="abf93546021171370c7705830e72ae41a"></a>
-virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtrWrapper.html">AgentPtr</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>agents</b> () const =0</td></tr>
+<tr class="memitem:a8b05cfc77d52c34c85121793df15b5fb"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">add</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> *agent)=0</td></tr>
+<tr class="separator:a8b05cfc77d52c34c85121793df15b5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26fcdced435645d94157555677bb72d0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">remove</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> *agent)=0</td></tr>
+<tr class="separator:a26fcdced435645d94157555677bb72d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4cd3d73f3c5be59a55fcad342702bf46"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a4cd3d73f3c5be59a55fcad342702bf46">insert</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> *agent)=0</td></tr>
+<tr class="separator:a4cd3d73f3c5be59a55fcad342702bf46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade0515102b7fd5ff17703608ddfd158a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ade0515102b7fd5ff17703608ddfd158a">erase</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> *agent)=0</td></tr>
+<tr class="separator:ade0515102b7fd5ff17703608ddfd158a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf93546021171370c7705830e72ae41a"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#abf93546021171370c7705830e72ae41a">agents</a> () const =0</td></tr>
 <tr class="separator:abf93546021171370c7705830e72ae41a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a305224b1bdb3d29821412d154ee4d316"><td class="memItemLeft" align="right" valign="top"><a id="a305224b1bdb3d29821412d154ee4d316"></a>
-virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>job</b> ()=0</td></tr>
+<tr class="memitem:a305224b1bdb3d29821412d154ee4d316"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a305224b1bdb3d29821412d154ee4d316">job</a> ()=0</td></tr>
 <tr class="separator:a305224b1bdb3d29821412d154ee4d316"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae62d2bdce9b702dda19f66efc3812b24"><td class="memItemLeft" align="right" valign="top"><a id="ae62d2bdce9b702dda19f66efc3812b24"></a>
-virtual const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>job</b> () const =0</td></tr>
+<tr class="memitem:ae62d2bdce9b702dda19f66efc3812b24"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ae62d2bdce9b702dda19f66efc3812b24">job</a> () const =0</td></tr>
 <tr class="separator:ae62d2bdce9b702dda19f66efc3812b24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> API.</p>
+<p>An <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> describes a group of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> that can be executed independently in any order, potentially in parallel.</p>
+<p>More precisely, the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> is associated to an <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> that contains all the tasks corresponding to <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> added in the group.</p>
+<p>The <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>'s Job can then be scheduled thanks to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> API to define when the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> should be executed.</p>
+<p>A <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a> can be used to conveniently build <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroups</a>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8b05cfc77d52c34c85121793df15b5fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8b05cfc77d52c34c85121793df15b5fb">&#9670;&nbsp;</a></span>add()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::model::AgentGroup::add </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Adds a new <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> to this group.</p>
+<p>Also builds a new <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> into the current <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a> and associates it to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to add </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a086450027aaab0e8ea0981dec4d618b7">fpmas::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="abf93546021171370c7705830e72ae41a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf93546021171370c7705830e72ae41a">&#9670;&nbsp;</a></span>agents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>*&gt; fpmas::api::model::AgentGroup::agents </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the list of all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> currently in this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a131b2b8208ca7cec86759ff987a27abb">fpmas::model::AgentGroup</a>, and <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a37950b37fc33ecb5a153d199aeb890f1">fpmas::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="ade0515102b7fd5ff17703608ddfd158a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade0515102b7fd5ff17703608ddfd158a">&#9670;&nbsp;</a></span>erase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::model::AgentGroup::erase </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Erases an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> from this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>This function is only used during the node migration process, and is not supposed to be used by the final user.</p>
+<p>Contrary to <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">remove()</a>, this method does not globally removes the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> (and its associated AgentNode) from the simulation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to erase from this group </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a2c5262b293a1525413a5df6ebcb9fb0e">fpmas::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a2d16a5243fec7f30ac2e78e21f8b19df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d16a5243fec7f30ac2e78e21f8b19df">&#9670;&nbsp;</a></span>groupId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a> fpmas::api::model::AgentGroup::groupId </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the ID of this group.</p>
+<dl class="section return"><dt>Returns</dt><dd>group id </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a973b7dcf18856e545aaa56cafec7ad73">fpmas::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a4cd3d73f3c5be59a55fcad342702bf46"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4cd3d73f3c5be59a55fcad342702bf46">&#9670;&nbsp;</a></span>insert()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::model::AgentGroup::insert </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Inserts an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> into this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>This function is only used during the node migration process, and is not supposed to be used by the final user.</p>
+<p>Contrary to <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">add()</a>, this method assumes that an AgentNode has already been built for the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to insert into this group </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a0b63dac43249208a1d186fd4a77a3dd3">fpmas::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="ae62d2bdce9b702dda19f66efc3812b24"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae62d2bdce9b702dda19f66efc3812b24">&#9670;&nbsp;</a></span>job() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a>&amp; fpmas::api::model::AgentGroup::job </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p>Returns a reference to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> associated to this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>This <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> contains all the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">AgentTasks</a> associated to all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group.</p>
+<p>This <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> can be scheduled to define when this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> must be executed.</p>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// Schedules agent_group to be executed from iteration 10 with a</span></div>
+<div class="line"><span class="comment">// period of 2</span></div>
+<div class="line">scheduler.schedule(10, 2, agent_group.job());</div>
+</div><!-- fragment --></dd></dl>
+<p>See the complete <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> interface for more scheduling options. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a54024b9d8617360e2d281a0c94cc26f4">fpmas::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a305224b1bdb3d29821412d154ee4d316"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a305224b1bdb3d29821412d154ee4d316">&#9670;&nbsp;</a></span>job() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a>&amp; fpmas::api::model::AgentGroup::job </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a reference to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> associated to this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>This <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> contains all the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentTask.html">AgentTasks</a> associated to all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group.</p>
+<p>This <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> can be scheduled to define when this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> must be executed.</p>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="comment">// Schedules agent_group to be executed from iteration 10 with a</span></div>
+<div class="line"><span class="comment">// period of 2</span></div>
+<div class="line">scheduler.schedule(10, 2, agent_group.job());</div>
+</div><!-- fragment --></dd></dl>
+<p>See the complete <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> interface for more scheduling options. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#aca3eccd8dcfe57c6af87310500977670">fpmas::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a26fcdced435645d94157555677bb72d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26fcdced435645d94157555677bb72d0">&#9670;&nbsp;</a></span>remove()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::model::AgentGroup::remove </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Removes an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> from this group.</p>
+<p>The <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is completely removed from the simulation, so the associated <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> is also globally removed from the <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a192b744a912dc84ee41713f96e5eb3e0">fpmas::model::AgentGroup</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/model/<a class="el" href="api_2model_2model_8h_source.html">model.h</a></li>
 </ul>
