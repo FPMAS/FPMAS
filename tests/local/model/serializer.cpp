@@ -12,8 +12,8 @@ using ::testing::IsNull;
 TEST(AgentSerializer, to_json) {
 	MockAgent<4>* agent_4 = new MockAgent<4>;
 	MockAgent<12>* agent_12 = new MockAgent<12>;
-	//nlohmann::adl_serializer<std::type_index>::register_type(typeid(MockAgent<4>));
-	//nlohmann::adl_serializer<std::type_index>::register_type(typeid(MockAgent<12>));
+	nlohmann::adl_serializer<std::type_index>::register_type(typeid(MockAgent<4>));
+	nlohmann::adl_serializer<std::type_index>::register_type(typeid(MockAgent<12>));
 	EXPECT_CALL(*agent_4, typeId).Times(AnyNumber());
 	EXPECT_CALL(*agent_4, getField).WillRepeatedly(Return(7));
 	EXPECT_CALL(*agent_4, groupId).WillRepeatedly(Return(2));
@@ -37,6 +37,8 @@ TEST(AgentSerializer, to_json) {
 }
 
 TEST(AgentSerializer, from_json) {
+	nlohmann::adl_serializer<std::type_index>::register_type(typeid(MockAgent<4>));
+	nlohmann::adl_serializer<std::type_index>::register_type(typeid(MockAgent<12>));
 	nlohmann::json j4;
 	j4["type"] = std::type_index(typeid(MockAgent<4>));
 	j4["gid"] = 2;
