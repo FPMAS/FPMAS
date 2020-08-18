@@ -223,11 +223,11 @@ namespace fpmas { namespace synchro { namespace hard {
 				/**
 				 * Performs a link request.
 				 *
-				 * If the specified edge is DISTANT, the request is transmitted
+				 * If the specified edge is \DISTANT, the request is transmitted
 				 * the link request to the api::LinkClient. Nothing needs to be
 				 * done otherwise.
 				 *
-				 * If source and target nodes are both DISTANT, the edge is planned
+				 * If source and target nodes are both \DISTANT, the edge is planned
 				 * to be deleted at the next synchronize() call.
 				 *
 				 * @param edge edge to link
@@ -246,7 +246,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				/**
 				 * Performs an unlink request.
 				 *
-				 * If the specified edge is DISTANT, the request is transmitted
+				 * If the specified edge is \DISTANT, the request is transmitted
 				 * the link request to the api::LinkClient. Nothing needs to be
 				 * done otherwise.
 				 *
@@ -260,7 +260,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				/**
 				 * HardSyncLinker synchronization.
 				 *
-				 * First, edges linked between a DISTANT source and a DISTANT
+				 * First, edges linked between a \DISTANT source and a \DISTANT
 				 * target since the last synchronization are erased from the
 				 * graph.
 				 *

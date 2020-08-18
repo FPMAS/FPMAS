@@ -76,12 +76,16 @@ if(DOXYGEN_FOUND)
 	set(DOXYGEN_HTML_OUTPUT ".")
 	set(DOXYGEN_IMAGE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/img)
 	set(DOXYGEN_ALIASES
+		[[LOCAL="\ref fpmas::api::graph::LocationState \"LOCAL\""]]
+		[[DISTANT="\ref fpmas::api::graph::LocationState \"DISTANT\""]]
 		[[Agent="\ref fpmas::api::model::Agent \"Agent\""]]
 		[[Agents="\ref fpmas::api::model::Agent \"Agents\""]]
+		[[AgentGroup="\ref fpmas::api::model::AgentGroup \"AgentGroup\""]]
 		[[AgentGroups="\ref fpmas::api::model::AgentGroup \"AgentGroups\""]]
 		[[AgentNode="\ref fpmas::api::model::AgentNode \"AgentNode\""]]
 		[[AgentGraph="\ref fpmas::api::model::AgentGraph \"AgentGraph\""]]
 		[[AgentTasks="\ref fpmas::api::model::AgentTask \"AgentTasks\""]]
+		[[AgentNode="\ref fpmas::api::model::AgentNode \"AgentNode\""]]
 		[[Job="\ref fpmas::api::scheduler::Job \"Job\""]]
 		[[Scheduler="\ref fpmas::api::scheduler::Scheduler \"Scheduler\""]]
 		[[Runtime="\ref fpmas::api::runtime::Runtime \"Runtime\""]]

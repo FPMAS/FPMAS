@@ -19,7 +19,7 @@ namespace fpmas { namespace synchro {
 		 *
 		 * HardSyncMode defines the strongest level of graph synchronization.
 		 *
-		 * At each DISTANT node data access, the HardSyncMutex instance performs
+		 * At each \DISTANT node data access, the HardSyncMutex instance performs
 		 * distant communication with host processes to ensure :
 		 * 1. accessed data is **always** up to date
 		 * 2. a strict concurrent access management at the global execution

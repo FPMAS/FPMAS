@@ -115,7 +115,7 @@ Public Member Functions</h2></td></tr>
 class fpmas::api::graph::LocationManager&lt; T &gt;</h3>
 
 <p><a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> API.</p>
-<p>The purpose of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> is to provide an easy access to LOCAL and DISTANT Nodes within a local <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>, and to update DISTANT nodes locations so that <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a349e26729e7865ec7adf4fb282a541a9">DistributedNode::getLocation()</a> always returns an updated value.</p>
+<p>The purpose of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> is to provide an easy access to <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> Nodes within a local <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>, and to update <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes locations so that <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a349e26729e7865ec7adf4fb282a541a9">DistributedNode::getLocation()</a> always returns an updated value.</p>
 <p>Moreover, each <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> is assumed to maintain a "managed nodes" collection. When a node is "managed" by a <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a>, other processes (and, more particularly, other <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> instances) can ask this <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> for the current location of the node. Notice that the fact that a node is managed by the <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> <b>does not mean that the node is located on the same process</b> than this <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a>. It only means that this <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> <em>knows</em> where the node is currently located.</p>
 <p>Each <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> in the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> is assumed to be managed by exactly one <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> in the global execution. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
@@ -191,9 +191,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a NodeMap containing DistributedNodes that are DISTANT.</p>
+<p>Returns a NodeMap containing DistributedNodes that are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>.</p>
 <p>More precisely, returns nodes whose last location update was performed with <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a831cbb48cac025537db4020808562c13">setDistant()</a>.</p>
-<dl class="section return"><dt>Returns</dt><dd>DISTANT nodes map </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes map </dd></dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a9f33487685185ef3aa410f73c83575a9">fpmas::graph::LocationManager&lt; T &gt;</a>.</p>
 
@@ -223,9 +223,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a NodeMap containing DistributedNodes that are LOCAL.</p>
+<p>Returns a NodeMap containing DistributedNodes that are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>.</p>
 <p>More precisely, returns nodes whose last location update was performed with <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a1ae4b47cff8f987d9d1abe05937ffdda">setLocal()</a>.</p>
-<dl class="section return"><dt>Returns</dt><dd>LOCAL nodes map </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> nodes map </dd></dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#aa20aab2e29bfcb9944eddf1ddba91f31">fpmas::graph::LocationManager&lt; T &gt;</a>.</p>
 
@@ -256,7 +256,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Removes a LOCAL or DISTANT node.</p>
+<p>Removes a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> or <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> node.</p>
 <p>Upon return, the node is neither returned by <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a9342847510a87ab934ee9ef84e33f8a6">getLocalNodes()</a> or <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a994da161df945297cd64b7fa6afdaf21">getDistantNodes()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -332,11 +332,11 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Update the state of a node to distant.</p>
-<p>Upon return, the state of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set to DISTANT. The location of the node is undefined until it is updated by the next call to <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a0dde25d0084892a7a23ed76729582bc9">updateLocations()</a>.</p>
+<p>Upon return, the state of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set to <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>. The location of the node is undefined until it is updated by the next call to <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a0dde25d0084892a7a23ed76729582bc9">updateLocations()</a>.</p>
 <p>Moreover, the node will be returned by <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a994da161df945297cd64b7fa6afdaf21">getDistantNodes()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">node</td><td>node to set DISTANT </td></tr>
+    <tr><td class="paramname">node</td><td>node to set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> </td></tr>
   </table>
   </dd>
 </dl>
@@ -371,11 +371,11 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Update the state of a node to local.</p>
-<p>Upon return, the state of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set to LOCAL and its location is set to the current process rank.</p>
+<p>Upon return, the state of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set to <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and its location is set to the current process rank.</p>
 <p>Moreover, the node will be returned by <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a9342847510a87ab934ee9ef84e33f8a6">getLocalNodes()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">node</td><td>node to set LOCAL </td></tr>
+    <tr><td class="paramname">node</td><td>node to set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> </td></tr>
   </table>
   </dd>
 </dl>

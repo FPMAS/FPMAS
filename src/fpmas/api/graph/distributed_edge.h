@@ -24,8 +24,8 @@ namespace fpmas {namespace api { namespace graph {
 			/**
 			 * Current state of the edge.
 			 *
-			 * A DistributedEdge is LOCAL iff its source and target nodes are
-			 * LOCAL.
+			 * A DistributedEdge is \LOCAL iff its source and target nodes are
+			 * \LOCAL.
 			 *
 			 * @return current edge state
 			 */

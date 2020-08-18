@@ -87,10 +87,10 @@ class ModelTest : public ::testing::Test {
 		Model* model;
 		void SetUp() override {
 			EXPECT_CALL(graph, addCallOnInsertNode(
-					WhenDynamicCastTo<fpmas::model::InsertAgentCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::InsertAgentNodeCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&insert_node_callback));
 			EXPECT_CALL(graph, addCallOnEraseNode(
-					WhenDynamicCastTo<fpmas::model::EraseAgentCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::EraseAgentNodeCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&erase_node_callback));
 			EXPECT_CALL(graph, addCallOnSetLocal(
 					WhenDynamicCastTo<fpmas::model::SetAgentLocalCallback*>(Not(IsNull()))
@@ -141,8 +141,8 @@ class AgentGroupTest : public ::testing::Test {
 		typedef fpmas::api::graph::DistributedNode<AgentPtr> Node;
 	protected:
 		MockModel model;
-		fpmas::model::InsertAgentCallback insert_agent_callback {model};
-		fpmas::model::EraseAgentCallback erase_agent_callback {model};
+		fpmas::model::InsertAgentNodeCallback insert_agent_callback {model};
+		fpmas::model::EraseAgentNodeCallback erase_agent_callback {model};
 		fpmas::model::SetAgentLocalCallback set_local_callback {model};
 
 		fpmas::api::model::GroupId id = 1;
@@ -210,13 +210,13 @@ class AgentGroupTest : public ::testing::Test {
 			EXPECT_CALL(graph, insert(A<Node*>()))
 				.Times(AnyNumber())
 				.WillRepeatedly(DoAll(
-							Invoke(&insert_agent_callback, &fpmas::model::InsertAgentCallback::call),
+							Invoke(&insert_agent_callback, &fpmas::model::InsertAgentNodeCallback::call),
 							Invoke(&set_local_callback, &fpmas::model::SetAgentLocalCallback::call)
 							));
 			EXPECT_CALL(graph, erase(A<Node*>()))
 				.Times(AnyNumber())
 				.WillRepeatedly(DoAll(
-							Invoke(&erase_agent_callback, &fpmas::model::EraseAgentCallback::call)
+							Invoke(&erase_agent_callback, &fpmas::model::EraseAgentNodeCallback::call)
 							));
 			EXPECT_CALL(model, getGroup(id))
 				.Times(AnyNumber())
@@ -290,6 +290,8 @@ TEST_F(AgentGroupTest, add_agent) {
 	EXPECT_CALL(*fake_agents[1], setGroupId(10));
 	agent_group.add(fake_agents[1]);
 
+	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent1_ptr, &agent2_ptr));
+
 	// Would normally be called from the Graph destructor
 	erase_agent_callback.call(&node1);
 	erase_agent_callback.call(&node2);
@@ -358,6 +360,23 @@ TEST_F(AgentGroupTest, agent_task) {
 	erase_agent_callback.call(&node1);
 	erase_agent_callback.call(&node2);
 }
+
+/*
+ *TEST_F(AgentGroupTest, typed_agents) {
+ *    MockAgent<1>* agent3 = new MockAgent<1>;
+ *    AgentPtr agent3_ptr {agent3};
+ *    agent_group.insert(&agent1_ptr);
+ *    agent_group.insert(&agent2_ptr);
+ *    agent_group.insert(&agent3_ptr);
+ *
+ *    auto list1 = agent_group.agents<MockAgent<>>();
+ *    ASSERT_THAT(list1, UnorderedElementsAre(agent1, agent2));
+ *
+ *    auto list2 = agent_group.agents<MockAgent<1>>();
+ *    ASSERT_THAT(list2, UnorderedElementsAre(agent3));
+ *}
+ */
+
 
 class AgentBaseTest : public ::testing::Test {
 	protected:

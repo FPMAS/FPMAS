@@ -124,8 +124,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Transmits a link request for the specified <code>edge</code>.</p>
-<p>The provided edge is assumed to be DISTANT, behavior is undefined otherwise.</p>
-<p>The request is then transmitted to two other processes if source and target nodes are DISTANT and located on different processes, or to one process if they are located on the same process.</p>
+<p>The provided edge is assumed to be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, behavior is undefined otherwise.</p>
+<p>The request is then transmitted to two other processes if source and target nodes are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> and located on different processes, or to one process if they are located on the same process.</p>
 <p>In any case, it is guaranteed that the edge is properly linked on any process involved upon return.</p>
 <p>Notice that the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> implementation ensures that source and target nodes are share locked when this method is called.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -165,8 +165,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Transmits an unlink request for the specified <code>edge</code>.</p>
-<p>The provided edge is assumed to be DISTANT, behavior is undefined otherwise.</p>
-<p>The request is then transmitted to two other processes if source and target nodes are DISTANT and located on different processes, or to one process if they are located on the same process.</p>
+<p>The provided edge is assumed to be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, behavior is undefined otherwise.</p>
+<p>The request is then transmitted to two other processes if source and target nodes are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> and located on different processes, or to one process if they are located on the same process.</p>
 <p>In any case, it is guaranteed that the edge is properly unlinked on any process involved upon return.</p>
 <p>Notice that the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> implementation ensures that source and target nodes are share locked when this method is called.</p>
 <dl class="params"><dt>Parameters</dt><dd>

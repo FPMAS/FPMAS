@@ -11,8 +11,8 @@ namespace fpmas {namespace api { namespace graph {
 	/**
 	 * LocationManager API.
 	 *
-	 * The purpose of the LocationManager is to provide an easy access to LOCAL
-	 * and DISTANT Nodes within a local DistributedGraph, and to update DISTANT
+	 * The purpose of the LocationManager is to provide an easy access to \LOCAL
+	 * and \DISTANT Nodes within a local DistributedGraph, and to update \DISTANT
 	 * nodes locations so that DistributedNode::getLocation() always returns an
 	 * updated value.
 	 *
@@ -48,52 +48,52 @@ namespace fpmas {namespace api { namespace graph {
 			virtual void removeManagedNode(DistributedNode<T>* node) = 0;
 
 			/**
-			 * Returns a NodeMap containing DistributedNodes that are LOCAL.
+			 * Returns a NodeMap containing DistributedNodes that are \LOCAL.
 			 *
 			 * More precisely, returns nodes whose last location update was
 			 * performed with setLocal().
 			 *
-			 * @return LOCAL nodes map
+			 * @return \LOCAL nodes map
 			 */
 			virtual const NodeMap& getLocalNodes() const = 0;
 
 			/**
-			 * Returns a NodeMap containing DistributedNodes that are DISTANT.
+			 * Returns a NodeMap containing DistributedNodes that are \DISTANT.
 			 *
 			 * More precisely, returns nodes whose last location update was
 			 * performed with setDistant().
 			 *
-			 * @return DISTANT nodes map
+			 * @return \DISTANT nodes map
 			 */
 			virtual const NodeMap& getDistantNodes() const = 0;
 
 			/**
 			 * Update the state of a node to local.
 			 *
-			 * Upon return, the state of the DistributedNode is set to LOCAL
+			 * Upon return, the state of the DistributedNode is set to \LOCAL
 			 * and its location is set to the current process rank.
 			 *
 			 * Moreover, the node will be returned by getLocalNodes().
 			 *
-			 * @param node node to set LOCAL
+			 * @param node node to set \LOCAL
 			 */
 			virtual void setLocal(DistributedNode<T>* node) = 0;
 
 			/**
 			 * Update the state of a node to distant.
 			 *
-			 * Upon return, the state of the DistributedNode is set to DISTANT.
+			 * Upon return, the state of the DistributedNode is set to \DISTANT.
 			 * The location of the node is undefined until it is updated by the
 			 * next call to updateLocations().
 			 *
 			 * Moreover, the node will be returned by getDistantNodes().
 			 *
-			 * @param node node to set DISTANT
+			 * @param node node to set \DISTANT
 			 */
 			virtual void setDistant(DistributedNode<T>* node) = 0;
 
 			/**
-			 * Removes a LOCAL or DISTANT node.
+			 * Removes a \LOCAL or \DISTANT node.
 			 *
 			 * Upon return, the node is neither returned by getLocalNodes() or
 			 * getDistantNodes().

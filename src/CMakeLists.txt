@@ -16,6 +16,7 @@ set(SOURCES
 	fpmas/runtime/runtime.cpp
 	# Model
 	fpmas/model/model.cpp
+	fpmas/model/serializer.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
 	)

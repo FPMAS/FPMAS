@@ -17,7 +17,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	 * HardSyncMode Mutex implementation.
 	 *
 	 * Each operation is added to a queue and potentially transmitted to
-	 * DISTANT processes to ensure a strict global concurrent access
+	 * \DISTANT processes to ensure a strict global concurrent access
 	 * management.
 	 */
 	template<typename T>

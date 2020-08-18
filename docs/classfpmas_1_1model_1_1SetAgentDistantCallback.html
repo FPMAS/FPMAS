@@ -72,6 +72,8 @@ $(function() {
 <div class="title">fpmas::model::SetAgentDistantCallback Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="model_2model_8h_source.html">model.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::model::SetAgentDistantCallback:</div>
 <div class="dyncontent">
@@ -93,17 +95,92 @@ Collaboration diagram for fpmas::model::SetAgentDistantCallback:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a803fa7fd62387ffc6058cc22b0bab3a2"><td class="memItemLeft" align="right" valign="top"><a id="a803fa7fd62387ffc6058cc22b0bab3a2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>SetAgentDistantCallback</b> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a> &amp;model)</td></tr>
+<tr class="memitem:a803fa7fd62387ffc6058cc22b0bab3a2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html#a803fa7fd62387ffc6058cc22b0bab3a2">SetAgentDistantCallback</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a> &amp;model)</td></tr>
 <tr class="separator:a803fa7fd62387ffc6058cc22b0bab3a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25143445e052a302eddf7b896bd13b5b"><td class="memItemLeft" align="right" valign="top"><a id="a25143445e052a302eddf7b896bd13b5b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>call</b> (AgentNode *node) override</td></tr>
-<tr class="separator:a25143445e052a302eddf7b896bd13b5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64ff41fb54aabf521f6b4afa149dbbf4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html#a64ff41fb54aabf521f6b4afa149dbbf4">call</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">api::model::AgentNode</a> *node) override</td></tr>
+<tr class="separator:a64ff41fb54aabf521f6b4afa149dbbf4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classfpmas_1_1api_1_1utils_1_1Callback"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1api_1_1utils_1_1Callback')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">fpmas::api::utils::Callback&lt; AgentNode * &gt;</a></td></tr>
 <tr class="memitem:abec1b29d9833823b4ea3c657ee20dc24 inherit pub_methods_classfpmas_1_1api_1_1utils_1_1Callback"><td class="memItemLeft" align="right" valign="top"><a id="abec1b29d9833823b4ea3c657ee20dc24"></a>
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>call</b> (Args...)=0</td></tr>
 <tr class="separator:abec1b29d9833823b4ea3c657ee20dc24 inherit pub_methods_classfpmas_1_1api_1_1utils_1_1Callback"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Callback triggered when an <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> is set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>.</p>
+<p>This happens when a previously <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> node is exported to an other process, or when a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> node is inserted into the graph upon edge import. </p>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a803fa7fd62387ffc6058cc22b0bab3a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a803fa7fd62387ffc6058cc22b0bab3a2">&#9670;&nbsp;</a></span>SetAgentDistantCallback()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">fpmas::model::SetAgentDistantCallback::SetAgentDistantCallback </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a> &amp;&#160;</td>
+          <td class="paramname"><em>model</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1model_1_1SetAgentDistantCallback.html">SetAgentDistantCallback</a> constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">model</td><td>current model </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a64ff41fb54aabf521f6b4afa149dbbf4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64ff41fb54aabf521f6b4afa149dbbf4">&#9670;&nbsp;</a></span>call()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::SetAgentDistantCallback::call </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">api::model::AgentNode</a> *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Unschedules the associated agent's task.</p>
+<p>Notice that when a node goes <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, it is still contained in the simulation graph as any other node. However, it <b>must not</b> be executed, since only <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> agents are assumed to be executed by the local process.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td><a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> to set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd>\AgentTask </dd>
+<dd>
+<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a67db390e324f864aed535a18339a124e">fpmas::api::model::Agent::task()</a> </dd>
+<dd>
+<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a305224b1bdb3d29821412d154ee4d316">fpmas::api::model::AgentGroup::job()</a> </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/fpmas/model/<a class="el" href="model_2model_8h_source.html">model.h</a></li>
 <li>src/fpmas/model/model.cpp</li>

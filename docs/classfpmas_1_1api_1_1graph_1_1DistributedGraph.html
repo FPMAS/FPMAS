@@ -237,9 +237,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Adds a set DISTANT callback.</p>
-<p>A <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set DISTANT in the following situations :</p><ul>
-<li>the node is exported to an other process (i.e. in a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a63f19151be3a12d5cd4f996e161353ee">distribute()</a> call) AND persist in the graph (i.e. at least one LOCAL node is still connected to this node)</li>
+<p>Adds a set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> callback.</p>
+<p>A <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> in the following situations :</p><ul>
+<li>the node is exported to an other process (i.e. in a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a63f19151be3a12d5cd4f996e161353ee">distribute()</a> call) AND persist in the graph (i.e. at least one <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> node is still connected to this node)</li>
 <li>the node is created as a missing source or target in the importEdge process</li>
 </ul>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -278,8 +278,8 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Adds a set LOCAL node callback.</p>
-<p>A <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set LOCAL in the following situations :</p><ul>
+<p>Adds a set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> node callback.</p>
+<p>A <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> in the following situations :</p><ul>
 <li>the node is imported (with <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a7c8863184625a319f1329a14eab71b46">importNode()</a>)</li>
 <li>the node is built in the local graph (with <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ad9a7ca58d53e04a42d3a977f3c30e7ac">buildNode()</a>)</li>
 </ul>
@@ -405,7 +405,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Builds a new LOCAL node into the graph.</p>
+<p>Builds a new <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> node into the graph.</p>
 <p>The specified data is <em>moved</em> into the built node.</p>
 <p>The node is inserted into the graph, triggering insert node events as specified in <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a92df198937356ee94158f3982245078b">Graph::insert(NodeType*)</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -510,9 +510,9 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Distributes the <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">Graph</a> across processors according to the specified partition.</p>
-<p>The partition describes nodes to <em>export</em>. In consequence, entries specified for nodes that are not LOCAL to this graph are ignored.</p>
+<p>The partition describes nodes to <em>export</em>. In consequence, entries specified for nodes that are not <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> to this graph are ignored.</p>
 <p>The partition is specified as a <code>{node_id, process_rank}</code> map.</p>
-<p>The process then handles node serialization and migrations. Exported nodes becomes DISTANT.</p>
+<p>The process then handles node serialization and migrations. Exported nodes becomes <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">partition</td><td>export partition </td></tr>
@@ -549,7 +549,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Reference to the internal <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a>.</p>
-<p>The <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> is notably used to easily access the LOCAL and DISTANT nodes in independent sets, thanks to the <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a9342847510a87ab934ee9ef84e33f8a6">LocationManager::getLocalNodes()</a> and <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a994da161df945297cd64b7fa6afdaf21">LocationManager::getDistantNodes()</a> functions.</p>
+<p>The <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> is notably used to easily access the <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes in independent sets, thanks to the <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a9342847510a87ab934ee9ef84e33f8a6">LocationManager::getLocalNodes()</a> and <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a994da161df945297cd64b7fa6afdaf21">LocationManager::getDistantNodes()</a> functions.</p>
 <dl class="section return"><dt>Returns</dt><dd>internal <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a> </dd></dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a1ad6eb6458aa0138c51bff85703883ce">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a1ad6eb6458aa0138c51bff85703883ce">fpmas::graph::DistributedGraph&lt; SyncMode &gt;</a>.</p>
@@ -614,15 +614,15 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p>Imports a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> into the local graph instance.</p>
 <p>An edge is imported into the graph as an edge connected to a node imported in the current <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a63f19151be3a12d5cd4f996e161353ee">distribute()</a> operation.</p>
-<p>In consequence, it is guaranteed that at least the source or the target node of the imported edge is LOCAL.</p>
+<p>In consequence, it is guaranteed that at least the source or the target node of the imported edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>.</p>
 <p>Several situations might then occur :</p><ul>
-<li>source and target nodes are LOCAL, then edge is LOCAL</li>
-<li>source is LOCAL and target is a DISTANT, then edge is DISTANT</li>
-<li>target is LOCAL and source is DISTANT, then edge is DISTANT</li>
+<li>source and target nodes are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>, then edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a></li>
+<li>source is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and target is a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, then edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a></li>
+<li>target is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and source is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, then edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a></li>
 </ul>
-<p>When source or target is DISTANT, the corresponding node might already be represented in the local graph instance. In that case, the imported edge is linked to the existing representation.</p>
-<p>Else, if no DISTANT representation of the node is available, a DISTANT representation is created into the local graph instance and the edge is linked to this new DISTANT node.</p>
-<p>Notice that a DISTANT representation of the imported edge might already exist, notably if the two nodes are LOCAL and at least one of them was imported in the current <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a63f19151be3a12d5cd4f996e161353ee">distribute()</a> operation. In that case, the representation must be replaced by the imported edge (in the <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">Graph</a>, and in the corresponding source and target edge lists), to avoid edge duplication.</p>
+<p>When source or target is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, the corresponding node might already be represented in the local graph instance. In that case, the imported edge is linked to the existing representation.</p>
+<p>Else, if no <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> representation of the node is available, a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> representation is created into the local graph instance and the edge is linked to this new <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> node.</p>
+<p>Notice that a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> representation of the imported edge might already exist, notably if the two nodes are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and at least one of them was imported in the current <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a63f19151be3a12d5cd4f996e161353ee">distribute()</a> operation. In that case, the representation must be replaced by the imported edge (in the <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">Graph</a>, and in the corresponding source and target edge lists), to avoid edge duplication.</p>
 <p>In any case, the edge is <em>inserted</em> into the graph, triggering insert edge callbacks, as specified in <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#acbcb25f4af600a3d3fba0bd7fd60280d">Graph::insert(EdgeType*)</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -664,7 +664,7 @@ template&lt;typename T &gt; </div>
 <p>Imports a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> into the local graph instance.</p>
 <p>When a node is imported into the graph, two main events occur :</p><ul>
 <li>the node is <em>inserted</em> into the graph, triggering insert node callbacks, as specified in <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a92df198937356ee94158f3982245078b">Graph::insert(NodeType*)</a>.</li>
-<li>the node becomes <em>LOCAL</em> to this graph, replacing an eventual outdated <em>DISTANT</em> representation of this node.</li>
+<li>the node becomes *<a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>* to this graph, replacing an eventual outdated *<a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>* representation of this node.</li>
 </ul>
 <p>Finally, the inserted node is returned.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -721,7 +721,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Links source to target on the specified layer.</p>
-<p>The two nodes might be LOCAL, only one of them might be DISTANT, or <b>both of them might be DISTANT</b>. In this last case, it is however required that the two DISTANT representations of source and target nodes already exist in the local graph, i.e. each node is already connected to at least one LOCAL node.</p>
+<p>The two nodes might be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>, only one of them might be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, or **both of them might be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>**. In this last case, it is however required that the two <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> representations of source and target nodes already exist in the local graph, i.e. each node is already connected to at least one <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> node.</p>
 <p>In consequence the edge is not guaranteed to be inserted in the graph upon return, since its creation might require inter-process communications, depending on the synchronization mode.</p>
 <p>However, it is guaranteed that upon return of the next <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">synchronize()</a> call, the edge is properly inserted in the graphs hosted by the processes that might require it, i.e. the processes that host at least one of its source and target nodes.</p>
 <p>In any case, insert edge callbacks, as specified in <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#acbcb25f4af600a3d3fba0bd7fd60280d">Graph::insert(EdgeType*)</a>, are called only when the edge is effectively inserted into the graph.</p>
@@ -803,7 +803,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Globally removes the specified node from the graph.</p>
-<p>The removed node might be DISTANT or LOCAL. The node is not guaranteed to be effectively removed upon return, since it might be involved in inter-process communications, depending on the synchronization mode.</p>
+<p>The removed node might be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> or <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>. The node is not guaranteed to be effectively removed upon return, since it might be involved in inter-process communications, depending on the synchronization mode.</p>
 <p>However, it is guaranteed that upon return of the next <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">synchronize()</a> call, the node (and its connected edges) are completely removed from <b>all</b> the processes.</p>
 <p>In any case, Erase node callbacks, as specified in <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a27ee97fe167715eda7e45943d329ed02">Graph::erase(NodeType*)</a>, are called only when the node is effectively erased from the graph.</p>
 <p>The node is assumed to belong to the graph, behavior is unspecified otherwise.</p>
@@ -885,7 +885,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Globally unlinks the specified edge.</p>
-<p>The specified edge might be LOCAL or DISTANT.</p>
+<p>The specified edge might be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> or <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>.</p>
 <p>In consequence the edge is not guaranteed to be effectively unlinked upon return, since it might be involved in inter-process communications, depending on the synchronization mode.</p>
 <p>However, it is guaranteed that upon return of the next <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">synchronize()</a> call, the edge is completely removed from <b>all</b> the processes.</p>
 <p>In any case, Erase edge callbacks, as specified in <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ab2515d9d081cdc68a2f5217a1871ba4e">Graph::erase(EdgeType*)</a>, are called only when the edge is effectively erased from the graph.</p>

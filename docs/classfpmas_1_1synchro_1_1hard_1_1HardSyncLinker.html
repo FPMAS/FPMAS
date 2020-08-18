@@ -200,8 +200,8 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Performs a link request.</p>
-<p>If the specified edge is DISTANT, the request is transmitted the link request to the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">api::LinkClient</a>. Nothing needs to be done otherwise.</p>
-<p>If source and target nodes are both DISTANT, the edge is planned to be deleted at the next <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a1cc71ff0bbe698fc7114081197561bb2">synchronize()</a> call.</p>
+<p>If the specified edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, the request is transmitted the link request to the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">api::LinkClient</a>. Nothing needs to be done otherwise.</p>
+<p>If source and target nodes are both <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, the edge is planned to be deleted at the next <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a1cc71ff0bbe698fc7114081197561bb2">synchronize()</a> call.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">edge</td><td>edge to link </td></tr>
@@ -238,7 +238,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">HardSyncLinker</a> synchronization.</p>
-<p>First, edges linked between a DISTANT source and a DISTANT target since the last synchronization are erased from the graph.</p>
+<p>First, edges linked between a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> source and a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> target since the last synchronization are erased from the graph.</p>
 <p>All processes are then synchronized using <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a29290c0b789b4fb1fbbc046f910483ad">ServerPack::terminate()</a>.</p>
 <p>Notice that, since <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a> is used, not only SyncLinker requests but also <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a> requests (i.e. data related requests) will be handled until termination.</p>
 <p>This is required to avoid the following deadlock situation : </p><table class="markdownTable">
@@ -286,7 +286,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Performs an unlink request.</p>
-<p>If the specified edge is DISTANT, the request is transmitted the link request to the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">api::LinkClient</a>. Nothing needs to be done otherwise.</p>
+<p>If the specified edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, the request is transmitted the link request to the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html">api::LinkClient</a>. Nothing needs to be done otherwise.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">edge</td><td>edge to unlink </td></tr>

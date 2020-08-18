@@ -29,7 +29,7 @@ namespace fpmas { namespace api { namespace graph {
 			/**
 			 * Rank of the process on which this node is currently located.
 			 *
-			 * If the node is LOCAL, this rank corresponds to the current
+			 * If the node is \LOCAL, this rank corresponds to the current
 			 * process.
 			 *
 			 * @return node location
@@ -48,9 +48,9 @@ namespace fpmas { namespace api { namespace graph {
 			/**
 			 * Current state of the node.
 			 *
-			 * A DistributedNode is LOCAL iff it is currently hosted and managed by the current
+			 * A DistributedNode is \LOCAL iff it is currently hosted and managed by the current
 			 * process.
-			 * A DISTANT DistributedNode correspond to a representation of a
+			 * A \DISTANT DistributedNode correspond to a representation of a
 			 * node currently hosted by an other process.
 			 *
 			 * @return current node state

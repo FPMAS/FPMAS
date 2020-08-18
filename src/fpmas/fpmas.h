@@ -5,6 +5,12 @@
 #include "zoltan_cpp.h"
 
 #include "fpmas/communication/communication.h"
+#include "fpmas/model/model.h"
+#include "fpmas/model/serializer.h"
+
+/** \file src/fpmas/fpmas.h
+ * Main FPMAS include file.
+ */
 
 /** \namespace fpmas
  * Main `fpmas` namespace.

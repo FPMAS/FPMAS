@@ -88,9 +88,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1DefaultModelConfig.html">DefaultModelConfig</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1EraseAgentCallback.html">EraseAgentCallback</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1EraseAgentNodeCallback.html">EraseAgentNodeCallback</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1InsertAgentCallback.html">InsertAgentCallback</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1InsertAgentNodeCallback.html">InsertAgentNodeCallback</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1LoadBalancingTask.html">LoadBalancingTask</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,21 +111,14 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a1b85c9b5a756e2e69663be60042c53f0"><td class="memTemplParams" colspan="2"><a id="a1b85c9b5a756e2e69663be60042c53f0"></a>
-template&lt;template&lt; typename &gt; class SyncMode&gt; </td></tr>
-<tr class="memitem:a1b85c9b5a756e2e69663be60042c53f0"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><b>AgentGraph</b> = <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html">graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>, SyncMode, <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>, <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>, <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiSetUp.html">api::communication::MpiSetUp</a>&lt; <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html">communication::MpiCommunicator</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi</a> &gt;, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a> &gt;</td></tr>
+<tr class="memitem:a1b85c9b5a756e2e69663be60042c53f0"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename &gt; class SyncMode&gt; </td></tr>
+<tr class="memitem:a1b85c9b5a756e2e69663be60042c53f0"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a1b85c9b5a756e2e69663be60042c53f0">AgentGraph</a> = <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html">graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>, SyncMode, <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>, <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>, <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiSetUp.html">api::communication::MpiSetUp</a>&lt; <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html">communication::MpiCommunicator</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi</a> &gt;, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a> &gt;</td></tr>
 <tr class="separator:a1b85c9b5a756e2e69663be60042c53f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afe41aee24fc7f62327483024f7c12fd6"><td class="memItemLeft" align="right" valign="top"><a id="afe41aee24fc7f62327483024f7c12fd6"></a>
-using&#160;</td><td class="memItemRight" valign="bottom"><b>AgentGraphApi</b> = <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;</td></tr>
-<tr class="separator:afe41aee24fc7f62327483024f7c12fd6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a684480ebc6a21b302ef177435f9dd716"><td class="memItemLeft" align="right" valign="top"><a id="a684480ebc6a21b302ef177435f9dd716"></a>
-typedef <a class="el" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">load_balancing::ZoltanLoadBalancing</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ZoltanLoadBalancing</b></td></tr>
+<tr class="memitem:a684480ebc6a21b302ef177435f9dd716"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">load_balancing::ZoltanLoadBalancing</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a684480ebc6a21b302ef177435f9dd716">ZoltanLoadBalancing</a></td></tr>
 <tr class="separator:a684480ebc6a21b302ef177435f9dd716"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74ff363ef4f2de367942f12d80652786"><td class="memItemLeft" align="right" valign="top"><a id="a74ff363ef4f2de367942f12d80652786"></a>
-typedef <a class="el" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">load_balancing::ScheduledLoadBalancing</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>ScheduledLoadBalancing</b></td></tr>
+<tr class="memitem:a74ff363ef4f2de367942f12d80652786"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">load_balancing::ScheduledLoadBalancing</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a74ff363ef4f2de367942f12d80652786">ScheduledLoadBalancing</a></td></tr>
 <tr class="separator:a74ff363ef4f2de367942f12d80652786"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a36bc24876d38e87a9e9471f7ae153ab4"><td class="memItemLeft" align="right" valign="top"><a id="a36bc24876d38e87a9e9471f7ae153ab4"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; AgentNode * &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>AgentNodeCallback</b></td></tr>
+<tr class="memitem:a36bc24876d38e87a9e9471f7ae153ab4"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; AgentNode * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a36bc24876d38e87a9e9471f7ae153ab4">AgentNodeCallback</a></td></tr>
 <tr class="separator:a36bc24876d38e87a9e9471f7ae153ab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a282dea33bd258ed497a80aa0615d9aed"><td class="memTemplParams" colspan="2"><a id="a282dea33bd258ed497a80aa0615d9aed"></a>
 template&lt;typename T &gt; </td></tr>
@@ -134,26 +127,89 @@ template&lt;typename T &gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memTemplParams" colspan="2"><a id="a8f71c0752dd7ef3d33acab5b127c2ef8"></a>
-template&lt;typename Type , typename... AgentTypes&gt; </td></tr>
-<tr class="memitem:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_json</b> (nlohmann::json &amp;j, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;ptr)</td></tr>
-<tr class="separator:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b8ab69cf27058b624fef209b1de25f9"><td class="memItemLeft" align="right" valign="top"><a id="a3b8ab69cf27058b624fef209b1de25f9"></a>
 template&lt;&gt; </td></tr>
 <tr class="memitem:a3b8ab69cf27058b624fef209b1de25f9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_json&lt; void &gt;</b> (nlohmann::json &amp;j, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;ptr)</td></tr>
 <tr class="separator:a3b8ab69cf27058b624fef209b1de25f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac3ade94756b6fca35bf4df5784237cd"><td class="memTemplParams" colspan="2"><a id="aac3ade94756b6fca35bf4df5784237cd"></a>
-template&lt;typename Type , typename... AgentTypes&gt; </td></tr>
-<tr class="memitem:aac3ade94756b6fca35bf4df5784237cd"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_json</b> (const nlohmann::json &amp;j)</td></tr>
-<tr class="separator:aac3ade94756b6fca35bf4df5784237cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a250aee4bce18b16122996d09d5e8a8a1"><td class="memItemLeft" align="right" valign="top"><a id="a250aee4bce18b16122996d09d5e8a8a1"></a>
 template&lt;&gt; </td></tr>
 <tr class="memitem:a250aee4bce18b16122996d09d5e8a8a1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_json&lt; void &gt;</b> (const nlohmann::json &amp;j)</td></tr>
 <tr class="separator:a250aee4bce18b16122996d09d5e8a8a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memTemplParams" colspan="2"><a id="a8f71c0752dd7ef3d33acab5b127c2ef8"></a>
+template&lt;typename Type , typename... AgentTypes&gt; </td></tr>
+<tr class="memitem:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_json</b> (nlohmann::json &amp;j, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;ptr)</td></tr>
+<tr class="separator:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac3ade94756b6fca35bf4df5784237cd"><td class="memTemplParams" colspan="2"><a id="aac3ade94756b6fca35bf4df5784237cd"></a>
+template&lt;typename Type , typename... AgentTypes&gt; </td></tr>
+<tr class="memitem:aac3ade94756b6fca35bf4df5784237cd"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_json</b> (const nlohmann::json &amp;j)</td></tr>
+<tr class="separator:aac3ade94756b6fca35bf4df5784237cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="namespacefpmas_1_1api_1_1model.html">fpmas::api::model</a> implementations. </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="a1b85c9b5a756e2e69663be60042c53f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b85c9b5a756e2e69663be60042c53f0">&#9670;&nbsp;</a></span>AgentGraph</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename &gt; class SyncMode&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacefpmas_1_1model.html#a1b85c9b5a756e2e69663be60042c53f0">fpmas::model::AgentGraph</a> = typedef <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html">graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>, SyncMode, <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>, <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>, <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiSetUp.html">api::communication::MpiSetUp</a>&lt;<a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html">communication::MpiCommunicator</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi</a>&gt;, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Partial <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html">graph::DistributedGraph</a> specialization used as the Agent simulation graph. </p>
+
+</div>
+</div>
+<a id="a36bc24876d38e87a9e9471f7ae153ab4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a36bc24876d38e87a9e9471f7ae153ab4">&#9670;&nbsp;</a></span>AgentNodeCallback</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;AgentNode*&gt; <a class="el" href="namespacefpmas_1_1model.html#a36bc24876d38e87a9e9471f7ae153ab4">fpmas::model::AgentNodeCallback</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Callback specialization that can be extended to define user callbacks. </p>
+
+</div>
+</div>
+<a id="a74ff363ef4f2de367942f12d80652786"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74ff363ef4f2de367942f12d80652786">&#9670;&nbsp;</a></span>ScheduledLoadBalancing</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html">load_balancing::ScheduledLoadBalancing</a>&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&gt; <a class="el" href="namespacefpmas_1_1model.html#a74ff363ef4f2de367942f12d80652786">fpmas::model::ScheduledLoadBalancing</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>ScheduledLoadBalancing specialization. </p>
+
+</div>
+</div>
+<a id="a684480ebc6a21b302ef177435f9dd716"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a684480ebc6a21b302ef177435f9dd716">&#9670;&nbsp;</a></span>ZoltanLoadBalancing</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1load__balancing_1_1ZoltanLoadBalancing.html">load_balancing::ZoltanLoadBalancing</a>&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&gt; <a class="el" href="namespacefpmas_1_1model.html#a684480ebc6a21b302ef177435f9dd716">fpmas::model::ZoltanLoadBalancing</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>ZoltanLoadBalancing specialization. </p>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

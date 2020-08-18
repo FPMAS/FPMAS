@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['mpidistributedidtype_615',['mpiDistributedIdType',['../classfpmas_1_1api_1_1graph_1_1DistributedId.html#a6daab47e183372ec5c965c01410c7f3c',1,'fpmas::api::graph::DistributedId']]]
+  ['lb_5fjid_639',['LB_JID',['../classfpmas_1_1model_1_1Model.html#a593d477a4e5408dc8df08b60237b7287',1,'fpmas::model::Model']]],
+  ['local_640',['LOCAL',['../structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html#a59b524281ffb4b38a5f6013d5ea7a0e3',1,'fpmas::synchro::hard::api::MutexRequest']]]
 ];

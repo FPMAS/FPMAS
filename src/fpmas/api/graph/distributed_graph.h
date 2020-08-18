@@ -62,8 +62,8 @@ namespace fpmas {namespace api {namespace graph {
 			/**
 			 * Reference to the internal LocationManager.
 			 *
-			 * The LocationManager is notably used to easily access the LOCAL
-			 * and DISTANT nodes in independent sets, thanks to the
+			 * The LocationManager is notably used to easily access the \LOCAL
+			 * and \DISTANT nodes in independent sets, thanks to the
 			 * LocationManager::getLocalNodes() and
 			 * LocationManager::getDistantNodes() functions.
 			 *
@@ -77,8 +77,8 @@ namespace fpmas {namespace api {namespace graph {
 			 * When a node is imported into the graph, two main events occur :
 			 * - the node is *inserted* into the graph, triggering insert node
 			 *   callbacks, as specified in Graph::insert(NodeType*).
-			 * - the node becomes *LOCAL* to this graph, replacing an eventual
-			 *   outdated *DISTANT* representation of this node.
+			 * - the node becomes *\LOCAL* to this graph, replacing an eventual
+			 *   outdated *\DISTANT* representation of this node.
 			 *
 			 * Finally, the inserted node is returned.
 			 *
@@ -94,23 +94,23 @@ namespace fpmas {namespace api {namespace graph {
 			 * node imported in the current distribute() operation.
 			 *
 			 * In consequence, it is guaranteed that at least the source or the
-			 * target node of the imported edge is LOCAL.
+			 * target node of the imported edge is \LOCAL.
 			 *
 			 * Several situations might then occur : 
-			 * - source and target nodes are LOCAL, then edge is LOCAL
-			 * - source is LOCAL and target is a DISTANT, then edge is DISTANT
-			 * - target is LOCAL and source is DISTANT, then edge is DISTANT
+			 * - source and target nodes are \LOCAL, then edge is \LOCAL
+			 * - source is \LOCAL and target is a \DISTANT, then edge is \DISTANT
+			 * - target is \LOCAL and source is \DISTANT, then edge is \DISTANT
 			 *
-			 * When source or target is DISTANT, the corresponding node might
+			 * When source or target is \DISTANT, the corresponding node might
 			 * already be represented in the local graph instance. In that
 			 * case, the imported edge is linked to the existing representation. 
 			 *
-			 * Else, if no DISTANT representation of the node is available, a
-			 * DISTANT representation is created into the local graph instance
-			 * and the edge is linked to this new DISTANT node.
+			 * Else, if no \DISTANT representation of the node is available, a
+			 * \DISTANT representation is created into the local graph instance
+			 * and the edge is linked to this new \DISTANT node.
 			 *
-			 * Notice that a DISTANT representation of the imported edge might
-			 * already exist, notably if the two nodes are LOCAL and at least
+			 * Notice that a \DISTANT representation of the imported edge might
+			 * already exist, notably if the two nodes are \LOCAL and at least
 			 * one of them was imported in the current distribute() operation.
 			 * In that case, the representation must be replaced by the
 			 * imported edge (in the Graph, and in the corresponding source and
@@ -147,7 +147,7 @@ namespace fpmas {namespace api {namespace graph {
 			//virtual DistributedNode<T>* buildNode(const T&) = 0;
 			
 			/**
-			 * Builds a new LOCAL node into the graph.
+			 * Builds a new \LOCAL node into the graph.
 			 *
 			 * The specified data is *moved* into the built node.
 			 *
@@ -162,7 +162,7 @@ namespace fpmas {namespace api {namespace graph {
 			/**
 			 * Globally removes the specified node from the graph.
 			 *
-			 * The removed node might be DISTANT or LOCAL. The node is not
+			 * The removed node might be \DISTANT or \LOCAL. The node is not
 			 * guaranteed to be effectively removed upon return, since it might
 			 * be involved in inter-process communications, depending on the
 			 * synchronization mode.
@@ -197,7 +197,7 @@ namespace fpmas {namespace api {namespace graph {
 			/**
 			 * Globally unlinks the specified edge.
 			 *
-			 * The specified edge might be LOCAL or DISTANT.
+			 * The specified edge might be \LOCAL or \DISTANT.
 			 *
 			 * In consequence the edge is not guaranteed to be effectively
 			 * unlinked upon return, since it might be involved in
@@ -231,11 +231,11 @@ namespace fpmas {namespace api {namespace graph {
 			/**
 			 * Links source to target on the specified layer.
 			 *
-			 * The two nodes might be LOCAL, only one of them might be DISTANT,
-			 * or **both of them might be DISTANT**. In this last case, it is
-			 * however required that the two DISTANT representations of source
+			 * The two nodes might be \LOCAL, only one of them might be \DISTANT,
+			 * or **both of them might be \DISTANT**. In this last case, it is
+			 * however required that the two \DISTANT representations of source
 			 * and target nodes already exist in the local graph, i.e. each
-			 * node is already connected to at least one LOCAL node.
+			 * node is already connected to at least one \LOCAL node.
 			 *
 			 * In consequence the edge is not guaranteed to be inserted in the
 			 * graph upon return, since its creation might require
@@ -260,9 +260,9 @@ namespace fpmas {namespace api {namespace graph {
 					LayerId layer_id) = 0;
 
 			/**
-			 * Adds a set LOCAL node callback.
+			 * Adds a set \LOCAL node callback.
 			 *
-			 * A DistributedNode is set LOCAL in the following situations :
+			 * A DistributedNode is set \LOCAL in the following situations :
 			 * - the node is imported (with importNode())
 			 * - the node is built in the local graph (with buildNode())
 			 *
@@ -270,12 +270,12 @@ namespace fpmas {namespace api {namespace graph {
 			 */
 			virtual void addCallOnSetLocal(NodeCallback* callback) = 0;
 			/**
-			 * Adds a set DISTANT callback.
+			 * Adds a set \DISTANT callback.
 			 *
-			 * A DistributedNode is set DISTANT in the following situations :
+			 * A DistributedNode is set \DISTANT in the following situations :
 			 * - the node is exported to an other process (i.e. in a
 			 *   distribute() call) AND persist in the graph (i.e. at least one
-			 *   LOCAL node is still connected to this node)
+			 *   \LOCAL node is still connected to this node)
 			 * - the node is created as a missing source or target in the
 			 *   importEdge process
 			 *
@@ -310,13 +310,13 @@ namespace fpmas {namespace api {namespace graph {
 			 * specified partition.
 			 *
 			 * The partition describes nodes to *export*. In consequence,
-			 * entries specified for nodes that are not LOCAL to this graph are
+			 * entries specified for nodes that are not \LOCAL to this graph are
 			 * ignored.
 			 *
 			 * The partition is specified as a `{node_id, process_rank}` map.
 			 *
 			 * The process then handles node serialization and migrations.
-			 * Exported nodes becomes DISTANT.
+			 * Exported nodes becomes \DISTANT.
 			 *
 			 * @param partition export partition
 			 */

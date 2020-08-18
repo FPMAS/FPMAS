@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['updated_5fdata_620',['updated_data',['../structfpmas_1_1synchro_1_1DataUpdatePack.html#aa858ec38abf0348afd447cbae5a923bb',1,'fpmas::synchro::DataUpdatePack']]],
-  ['updated_5fweight_621',['updated_weight',['../structfpmas_1_1synchro_1_1NodeUpdatePack.html#aa58e6be9bfd047b3ea6b0c45f058b266',1,'fpmas::synchro::NodeUpdatePack']]]
+  ['type_645',['type',['../structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html#a3ae19eb0a6e62e26d59f28c25d186c5a',1,'fpmas::synchro::hard::api::MutexRequest']]]
 ];

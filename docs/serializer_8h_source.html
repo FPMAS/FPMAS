@@ -139,99 +139,96 @@ $(function() {
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                    <span class="keywordflow">throw</span> <a class="code" href="classfpmas_1_1exceptions_1_1BadTypeException.html">fpmas::exceptions::BadTypeException</a>(type);</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;            }</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;        };</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    std::unordered_map&lt;std::size_t, std::type_index&gt; adl_serializer&lt;std::type_index&gt;::id_to_type;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    std::unordered_map&lt;std::type_index, std::size_t&gt; adl_serializer&lt;std::type_index&gt;::type_to_id;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    std::size_t adl_serializer&lt;std::type_index&gt;::id = 0;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;}</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> _T, <span class="keyword">typename</span>... T&gt;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>();</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <span class="keyword">template</span>&lt;&gt;</div>
-<div class="line"><a name="l00124"></a><span class="lineno"><a class="line" href="namespacefpmas.html#a4634331ddaec9c6fc199c12eab4c5094">  124</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a4634331ddaec9c6fc199c12eab4c5094">register_types&lt;void&gt;</a>() {</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        }</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> _T, <span class="keyword">typename</span>... T&gt;</div>
-<div class="line"><a name="l00143"></a><span class="lineno"><a class="line" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">  143</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>() {</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;            <a class="code" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">nlohmann::adl_serializer&lt;std::type_index&gt;::register_type</a>(<span class="keyword">typeid</span>(_T));</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;            <a class="code" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>&lt;T...&gt;();</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        }</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { </div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> _T, <span class="keyword">typename</span>... T&gt;</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>();</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keyword">template</span>&lt;&gt; <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a4634331ddaec9c6fc199c12eab4c5094">register_types&lt;void&gt;</a>();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> _T, <span class="keyword">typename</span>... T&gt;</div>
+<div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">  138</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>() {</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;            <a class="code" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">nlohmann::adl_serializer&lt;std::type_index&gt;::register_type</a>(<span class="keyword">typeid</span>(_T));</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;            <a class="code" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>&lt;T...&gt;();</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;        }</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keyword">namespace </span>model {</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;        <span class="keyword">using</span> api::model::AgentPtr;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;            <span class="keyword">using</span> TypedAgentPtr = api::utils::VirtualPtrWrapper&lt;T&gt;;</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keyword">namespace </span>model {</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keyword">using</span> api::model::AgentPtr;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;            <span class="keyword">using</span> TypedAgentPtr = api::utils::VirtualPtrWrapper&lt;T&gt;;</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;            <span class="keywordtype">void</span> to_json(nlohmann::json&amp; j, <span class="keyword">const</span> AgentPtr&amp; ptr);</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        <span class="keyword">template</span>&lt;&gt; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;            <span class="keywordtype">void</span> to_json&lt;void&gt;(nlohmann::json&amp; j, <span class="keyword">const</span> AgentPtr&amp; ptr) {</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                FPMAS_LOGE(-1, <span class="stringliteral">&quot;AGENT_SERIALIZER&quot;</span>,</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                        <span class="stringliteral">&quot;Invalid agent type : %lu. Make sure to properly register \</span></div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="stringliteral">                        the Agent type with FPMAS_JSON_SET_UP and FPMAS_REGISTER_AGENT_TYPES.&quot;</span>,</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                        ptr-&gt;typeId());</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                std::string message = <span class="stringliteral">&quot;Invalid agent type : &quot;</span> + std::string(ptr-&gt;typeId().name());</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                <span class="keywordflow">throw</span> std::invalid_argument(message);</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;            }</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;            <span class="keywordtype">void</span> to_json(nlohmann::json&amp; j, <span class="keyword">const</span> AgentPtr&amp; ptr) {</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                <span class="keywordflow">if</span>(ptr-&gt;typeId() == Type::TYPE_ID) {</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                    j[<span class="stringliteral">&quot;type&quot;</span>] = Type::TYPE_ID;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;                    j[<span class="stringliteral">&quot;gid&quot;</span>] = ptr-&gt;groupId();</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;                    j[<span class="stringliteral">&quot;agent&quot;</span>] = TypedAgentPtr&lt;Type&gt;(<span class="keyword">const_cast&lt;</span>Type*<span class="keyword">&gt;</span>(<span class="keyword">static_cast&lt;</span><span class="keyword">const </span>Type*<span class="keyword">&gt;</span>(ptr.get())));</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                    to_json&lt;AgentTypes...&gt;(j, ptr);</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                }</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;            }</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            AgentPtr from_json(<span class="keyword">const</span> nlohmann::json&amp; j);</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="keyword">template</span>&lt;&gt; </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            AgentPtr from_json&lt;void&gt;(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">fpmas::api::model::TypeId</a> <span class="keywordtype">id</span> = j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;<a class="code" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">fpmas::api::model::TypeId</a>&gt;();</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;                FPMAS_LOGE(-1, <span class="stringliteral">&quot;AGENT_SERIALIZER&quot;</span>, <span class="stringliteral">&quot;Invalid agent type : %lu&quot;</span>, <span class="keywordtype">id</span>);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                std::string message = <span class="stringliteral">&quot;Invalid agent type : &quot;</span> + std::string(<span class="keywordtype">id</span>.name());</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                <span class="keywordflow">throw</span> std::invalid_argument(message);</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;            }</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160; </div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;            AgentPtr from_json(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">fpmas::api::model::TypeId</a> <span class="keywordtype">id</span> = j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;<a class="code" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">fpmas::api::model::TypeId</a>&gt;();</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;                <span class="keywordflow">if</span>(<span class="keywordtype">id</span> == Type::TYPE_ID) {</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;                    <span class="keyword">auto</span> agent = j.at(<span class="stringliteral">&quot;agent&quot;</span>).get&lt;TypedAgentPtr&lt;Type&gt;&gt;();</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;                    agent-&gt;<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html#a803e97bb1657a3db3110d7f499c3c878">setGroupId</a>(j.at(<span class="stringliteral">&quot;gid&quot;</span>).get&lt;<a class="code" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a>&gt;());</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                    <span class="keywordflow">return</span> {agent};</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;                    <span class="keywordflow">return</span> std::move(from_json&lt;AgentTypes...&gt;(j));</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;                }</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;            }</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    }}</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="preprocessor">#define FPMAS_REGISTER_AGENT_TYPES(...)\</span></div>
-<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">  228</a></span>&#160;<span class="preprocessor">    fpmas::register_types&lt;__VA_ARGS__, void&gt;();\</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;<span class="preprocessor"></span> </div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="preprocessor">#define FPMAS_JSON_SET_UP(...) \</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno"><a class="line" href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">  257</a></span>&#160;<span class="preprocessor">    namespace nlohmann {\</span></div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor">        using fpmas::api::model::AgentPtr;\</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;<span class="preprocessor">        template&lt;&gt;\</span></div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="preprocessor">        struct adl_serializer&lt;AgentPtr&gt; {\</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="preprocessor">            static void to_json(json&amp; j, const AgentPtr&amp; data) {\</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="preprocessor">                fpmas::model::to_json&lt;__VA_ARGS__, void&gt;(j, data);\</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="preprocessor">            }\</span></div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="preprocessor">            static AgentPtr from_json(const json&amp; j) {\</span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="preprocessor">                return std::move(fpmas::model::from_json&lt;__VA_ARGS__, void&gt;(j));\</span></div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="preprocessor">            }\</span></div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="preprocessor">        };\</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="preprocessor">    }\</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="preprocessor"></span> </div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;            <span class="keywordtype">void</span> to_json(nlohmann::json&amp; j, <span class="keyword">const</span> AgentPtr&amp; ptr);</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;        <span class="keyword">template</span>&lt;&gt; </div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            <span class="keywordtype">void</span> to_json&lt;void&gt;(nlohmann::json&amp; j, <span class="keyword">const</span> AgentPtr&amp; ptr);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;            <span class="keywordtype">void</span> to_json(nlohmann::json&amp; j, <span class="keyword">const</span> AgentPtr&amp; ptr) {</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;                <span class="keywordflow">if</span>(ptr-&gt;typeId() == Type::TYPE_ID) {</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;                    j[<span class="stringliteral">&quot;type&quot;</span>] = Type::TYPE_ID;</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                    j[<span class="stringliteral">&quot;gid&quot;</span>] = ptr-&gt;groupId();</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                    j[<span class="stringliteral">&quot;agent&quot;</span>] = TypedAgentPtr&lt;Type&gt;(<span class="keyword">const_cast&lt;</span>Type*<span class="keyword">&gt;</span>(<span class="keyword">static_cast&lt;</span><span class="keyword">const </span>Type*<span class="keyword">&gt;</span>(ptr.get())));</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;                    to_json&lt;AgentTypes...&gt;(j, ptr);</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;                }</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;            }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;            AgentPtr from_json(<span class="keyword">const</span> nlohmann::json&amp; j);</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keyword">template</span>&lt;&gt; </div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;            AgentPtr from_json&lt;void&gt;(<span class="keyword">const</span> nlohmann::json&amp; j);</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160; </div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type, <span class="keyword">typename</span>... AgentTypes&gt; </div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            AgentPtr from_json(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">fpmas::api::model::TypeId</a> <span class="keywordtype">id</span> = j.at(<span class="stringliteral">&quot;type&quot;</span>).get&lt;<a class="code" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">fpmas::api::model::TypeId</a>&gt;();</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                <span class="keywordflow">if</span>(<span class="keywordtype">id</span> == Type::TYPE_ID) {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                    <span class="keyword">auto</span> agent = j.at(<span class="stringliteral">&quot;agent&quot;</span>).get&lt;TypedAgentPtr&lt;Type&gt;&gt;();</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                    agent-&gt;<a class="code" href="classfpmas_1_1api_1_1model_1_1Agent.html#a803e97bb1657a3db3110d7f499c3c878">setGroupId</a>(j.at(<span class="stringliteral">&quot;gid&quot;</span>).get&lt;<a class="code" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a>&gt;());</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;                    <span class="keywordflow">return</span> {agent};</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;                    <span class="keywordflow">return</span> std::move(from_json&lt;AgentTypes...&gt;(j));</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            }</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    }}</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="preprocessor">#define FPMAS_REGISTER_AGENT_TYPES(...)\</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno"><a class="line" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">  211</a></span>&#160;<span class="preprocessor">    fpmas::register_types&lt;__VA_ARGS__, void&gt;();\</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="preprocessor">#define FPMAS_JSON_SET_UP(...) \</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno"><a class="line" href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">  240</a></span>&#160;<span class="preprocessor">    namespace nlohmann {\</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="preprocessor">        using fpmas::api::model::AgentPtr;\</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="preprocessor">        template&lt;&gt;\</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="preprocessor">        struct adl_serializer&lt;AgentPtr&gt; {\</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="preprocessor">            static void to_json(json&amp; j, const AgentPtr&amp; data) {\</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="preprocessor">                fpmas::model::to_json&lt;__VA_ARGS__, void&gt;(j, data);\</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="preprocessor">            }\</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="preprocessor">            static AgentPtr from_json(const json&amp; j) {\</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="preprocessor">                return std::move(fpmas::model::from_json&lt;__VA_ARGS__, void&gt;(j));\</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="preprocessor">            }\</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;<span class="preprocessor">        };\</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;<span class="preprocessor">    }\</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;<span class="preprocessor">#define FPMAS_DEFAULT_JSON(AGENT) \</span></div>
+<div class="line"><a name="l00261"></a><span class="lineno"><a class="line" href="serializer_8h.html#a2540dd16aee93cd7779411153980ffb9">  261</a></span>&#160;<span class="preprocessor">    namespace nlohmann {\</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;<span class="preprocessor">        template&lt;&gt;\</span></div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="preprocessor">            struct adl_serializer&lt;fpmas::api::utils::VirtualPtrWrapper&lt;AGENT&gt;&gt; {\</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="preprocessor">                static void to_json(json&amp; j, const fpmas::api::utils::VirtualPtrWrapper&lt;AGENT&gt;&amp; data) {\</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="preprocessor">                }\</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;<span class="preprocessor">\</span></div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="preprocessor">                static void from_json(const json&amp; j, fpmas::api::utils::VirtualPtrWrapper&lt;AGENT&gt;&amp; ptr) {\</span></div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;<span class="preprocessor">                    ptr = fpmas::api::utils::VirtualPtrWrapper&lt;AGENT&gt;(new AGENT);\</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;<span class="preprocessor">                }\</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="preprocessor">            };\</span></div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="preprocessor">    }\</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="preprocessor"></span> </div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespacefpmas_html_ad687ae462a5b1dd2d5d1df39c41aa920"><div class="ttname"><a href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a></div><div class="ttdeci">void register_types()</div><div class="ttdef"><b>Definition:</b> serializer.h:143</div></div>
+<div class="ttc" id="anamespacefpmas_html_ad687ae462a5b1dd2d5d1df39c41aa920"><div class="ttname"><a href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a></div><div class="ttdeci">void register_types()</div><div class="ttdef"><b>Definition:</b> serializer.h:138</div></div>
 <div class="ttc" id="aclassfpmas_1_1exceptions_1_1BadIdException_html"><div class="ttname"><a href="classfpmas_1_1exceptions_1_1BadIdException.html">fpmas::exceptions::BadIdException</a></div><div class="ttdef"><b>Definition:</b> serializer.h:14</div></div>
 <div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4_html_a674531f58ccafee2d371a8ca3e12f073"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a674531f58ccafee2d371a8ca3e12f073">nlohmann::adl_serializer&lt; std::type_index &gt;::from_json</a></div><div class="ttdeci">static std::type_index from_json(const json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializer.h:86</div></div>
 <div class="ttc" id="aclassfpmas_1_1exceptions_1_1BadTypeException_html"><div class="ttname"><a href="classfpmas_1_1exceptions_1_1BadTypeException.html">fpmas::exceptions::BadTypeException</a></div><div class="ttdef"><b>Definition:</b> serializer.h:27</div></div>
@@ -241,7 +238,7 @@ $(function() {
 <div class="ttc" id="anamespacefpmas_1_1api_1_1model_html_a7da0ccdbfe2ecfca12aec5d1bfbb156c"><div class="ttname"><a href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">fpmas::api::model::TypeId</a></div><div class="ttdeci">std::type_index TypeId</div><div class="ttdef"><b>Definition:</b> model.h:31</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.h:7</div></div>
 <div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4_html_a748798d7f44dd0eb637e898ff65f878c"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a748798d7f44dd0eb637e898ff65f878c">nlohmann::adl_serializer&lt; std::type_index &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const std::type_index &amp;type)</div><div class="ttdef"><b>Definition:</b> serializer.h:103</div></div>
-<div class="ttc" id="anamespacefpmas_html_a4634331ddaec9c6fc199c12eab4c5094"><div class="ttname"><a href="namespacefpmas.html#a4634331ddaec9c6fc199c12eab4c5094">fpmas::register_types&lt; void &gt;</a></div><div class="ttdeci">void register_types&lt; void &gt;()</div><div class="ttdef"><b>Definition:</b> serializer.h:124</div></div>
+<div class="ttc" id="anamespacefpmas_html_a4634331ddaec9c6fc199c12eab4c5094"><div class="ttname"><a href="namespacefpmas.html#a4634331ddaec9c6fc199c12eab4c5094">fpmas::register_types&lt; void &gt;</a></div><div class="ttdeci">void register_types&lt; void &gt;()</div><div class="ttdef"><b>Definition:</b> serializer.cpp:12</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

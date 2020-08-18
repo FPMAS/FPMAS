@@ -60,7 +60,7 @@ namespace fpmas { namespace synchro {
 		/**
 		 * GhostMode DataSync implementation.
 		 *
-		 * Data of each DISTANT node is fetched from host processes at each
+		 * Data of each \DISTANT node is fetched from host processes at each
 		 * graph synchronization operation.
 		 */
 		template<typename T>
@@ -92,7 +92,7 @@ namespace fpmas { namespace synchro {
 						: data_mpi(data_mpi), id_mpi(id_mpi), graph(graph) {}
 
 					/**
-					 * Fetches updated data for all the DISTANT nodes of the
+					 * Fetches updated data for all the \DISTANT nodes of the
 					 * DistributedGraph from the corresponding host processes.
 					 */
 					void synchronize() override;
@@ -173,7 +173,7 @@ namespace fpmas { namespace synchro {
 						: edge_mpi(edge_mpi), id_mpi(id_mpi), graph(graph) {}
 
 					/**
-					 * If source or target node is DISTANT, edge is buffered to
+					 * If source or target node is \DISTANT, edge is buffered to
 					 * be committed at the next synchronize() call.
 					 *
 					 * @param edge linked edge
@@ -181,7 +181,7 @@ namespace fpmas { namespace synchro {
 					void link(const EdgeApi* edge) override;
 
 					/**
-					 * If source or target node is DISTANT, edge unlinking is buffered to
+					 * If source or target node is \DISTANT, edge unlinking is buffered to
 					 * be committed at the next synchronize() call.
 					 *
 					 * For efficiency purpose, the edge is removed from the
@@ -276,11 +276,11 @@ namespace fpmas { namespace synchro {
 		 * The concept of GhostMode is that local data is updated **only** at
 		 * each api::graph::DistributedGraph::synchronize() call by the
 		 * GhostDataSync instance. Let's call a "time step" the period between
-		 * two graph synchronizations. It is not guaranteed that DISTANT node
+		 * two graph synchronizations. It is not guaranteed that \DISTANT node
 		 * data accessed within a time step is synchronized with the process
 		 * that owns the node.
 		 *
-		 * More importantly, **write operations on DISTANT nodes are not
+		 * More importantly, **write operations on \DISTANT nodes are not
 		 * reported** to the hosts processes.
 		 *
 		 * In consequence, the corresponding api::synchro::Mutex implementation

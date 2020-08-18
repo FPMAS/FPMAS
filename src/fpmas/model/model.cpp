@@ -5,7 +5,7 @@ namespace fpmas { namespace model {
 
 	const JID Model::LB_JID = 0;
 
-	AgentGroup::AgentGroup(GroupId group_id, api::model::AgentGraph& agent_graph, JID job_id)
+	AgentGroup::AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph, JID job_id)
 		: id(group_id), agent_graph(agent_graph), _job(job_id), sync_graph_task(agent_graph) {
 			_job.setEndTask(sync_graph_task);
 	}
@@ -28,7 +28,7 @@ namespace fpmas { namespace model {
 		_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
 	}
 
-	void InsertAgentCallback::call(AgentNode *node) {
+	void InsertAgentNodeCallback::call(AgentNode *node) {
 		api::model::AgentPtr& agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 				"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", ID_C_STR(node->getId()));
@@ -41,7 +41,7 @@ namespace fpmas { namespace model {
 		agent->setTask(task);
 	}
 
-	void EraseAgentCallback::call(AgentNode *node) {
+	void EraseAgentNodeCallback::call(AgentNode *node) {
 		api::model::AgentPtr& agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 				"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", ID_C_STR(node->getId()));
@@ -77,7 +77,7 @@ namespace fpmas { namespace model {
 			api::runtime::Runtime& runtime,
 			LoadBalancingAlgorithm& load_balancing)
 		: gid(0), _graph(graph), _scheduler(scheduler), _runtime(runtime), _loadBalancingJob(LB_JID),
-		load_balancing_task(_graph, load_balancing, _scheduler, _runtime) {
+		load_balancing_task(_graph, load_balancing) {
 			_loadBalancingJob.add(load_balancing_task);
 			_graph.addCallOnInsertNode(insert_node_callback);
 			_graph.addCallOnEraseNode(erase_node_callback);
@@ -91,7 +91,7 @@ namespace fpmas { namespace model {
 			delete group.second;
 	}
 
-	AgentGroup& Model::getGroup(GroupId id) const {
+	AgentGroup& Model::getGroup(api::model::GroupId id) const {
 		return static_cast<AgentGroup&>(*_groups.at(id));
 	}
 

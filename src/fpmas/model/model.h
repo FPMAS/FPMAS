@@ -209,6 +209,9 @@ namespace fpmas { namespace model {
 	template<typename AgentType>
 		const api::model::TypeId AgentBase<AgentType>::TYPE_ID = typeid(AgentType);
 
+	/**
+	 * api::model::AgentTask implementation.
+	 */
 	class AgentTask : public api::model::AgentTask {
 		private:
 			api::model::Agent* _agent;
@@ -224,56 +227,135 @@ namespace fpmas { namespace model {
 			}
 	};
 
+	/**
+	 * Graph synchronization task.
+	 *
+	 * This task is set as the end task of each \AgentGroup's job.
+	 *
+	 * Concretely, this means that the simulation Graph is synchronized at the
+	 * end of each \AgentGroup execution.
+	 */
 	class SynchronizeGraphTask : public api::scheduler::Task {
 		private:
 			api::model::AgentGraph& agent_graph;
 		public:
+			/**
+			 * SynchronizeGraphTask constructor.
+			 *
+			 * @param agent_graph Agent graph to synchronize
+			 */
 			SynchronizeGraphTask(api::model::AgentGraph& agent_graph)
 				: agent_graph(agent_graph) {}
 
+			/**
+			 * Calls api::model::AgentGraph::synchronize().
+			 */
 			void run() override {
 				agent_graph.synchronize();
 			}
 	};
 
 	class EraseAgentCallback;
+
+	/**
+	 * api::model::AgentGroup implementation.
+	 */
 	class AgentGroup : public api::model::AgentGroup {
 		friend EraseAgentCallback;
-		public:
-			typedef api::model::GroupId GroupId;
 		private:
-			GroupId id;
-			api::model::AgentGraph& agent_graph;
-			scheduler::Job _job;
-			SynchronizeGraphTask sync_graph_task;
-			std::vector<api::model::AgentPtr*> _agents;
+		api::model::GroupId id;
+		api::model::AgentGraph& agent_graph;
+		scheduler::Job _job;
+		SynchronizeGraphTask sync_graph_task;
+		std::vector<api::model::AgentPtr*> _agents;
 
 		public:
-			AgentGroup(GroupId group_id, api::model::AgentGraph& agent_graph, JID job_id);
+		/**
+		 * AgentGroup constructor.
+		 *
+		 * @param group_id unique id of the group
+		 * @param agent_graph associated agent graph
+		 * @param job_id unique id of the associated job
+		 */
+		AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph, JID job_id);
 
-			GroupId groupId() const override {return id;}
+		api::model::GroupId groupId() const override {return id;}
 
-			void add(api::model::Agent*) override;
-			void remove(api::model::Agent*) override;
+		void add(api::model::Agent*) override;
+		void remove(api::model::Agent*) override;
 
-			void insert(api::model::AgentPtr*) override;
-			void erase(api::model::AgentPtr*) override;
+		void insert(api::model::AgentPtr*) override;
+		void erase(api::model::AgentPtr*) override;
 
-			scheduler::Job& job() override {return _job;}
-			const scheduler::Job& job() const override {return _job;}
-			std::vector<api::model::AgentPtr*> agents() const override {return _agents;}
-
-			template<typename AgentType>
-				std::vector<AgentType*> agents() const {
-					std::vector<AgentType*> out;
-					for(auto agent : _agents)
-						if(AgentType* agent_ptr = dynamic_cast<AgentType*>(agent))
-							out.push_back(agent_ptr);
-
-					return out;
-				}
+		scheduler::Job& job() override {return _job;}
+		const scheduler::Job& job() const override {return _job;}
+		std::vector<api::model::AgentPtr*> agents() const override {return _agents;}
+		//template<typename AgentType>
+			//std::vector<AgentType*> agents() const;
 	};
 
+	/*
+	 * Helper template to get an automatically cast agents list.
+	 *
+	 * Since \Agents added to group might be of different type, internal
+	 * agents are added to the list only if they could be cast to the given
+	 * `AgentType`.
+	 *
+	 * Notice that graph synchronization invalidates the list.
+	 *
+	 * @par Examples
+	 * ```cpp
+	 * using fpmas::model::DefaultModel;
+	 * using fpmas::model::AgentGroup;
+	 *
+	 * // Previously defined Agent types
+	 * class Agent1;
+	 * class Agent2;
+	 *
+	 * int main() {
+	 * 	DefaultModel model;
+	 * 	AgentGroup group = model.buildGroup();
+	 *
+	 * 	Agent1* agent_1 = new Agent1;
+	 * 	Agent1* agent_2 = new Agent1;
+	 * 	group.add(agent_1);
+	 * 	group.add(agent_2);
+	 *
+	 * 	// Returns a list containing agent_1 and agent_2 
+	 * 	auto list1 = group_1.agents<Agent1>();
+	 *  // Returns an empty list
+	 * 	auto list2 = group_1.agents<Agent2>();
+	 *
+	 * 	Agent2* agent_3 = new Agent2;
+	 * 	group.add(agent_3);
+	 *
+	 *	// Returns a list containing the same elements as list1
+	 *	auto list3 = group_1.agents<Agent1>();
+	 *	// Returns a list containing agent_3
+	 *	auto list4 = group_1.agents<Agent2>();
+	 * }
+	 */
+/*
+ *    template<typename AgentType>
+ *        std::vector<AgentType*> AgentGroup::agents() const {
+ *            std::vector<AgentType*> out;
+ *            for(auto agent : _agents)
+ *                if(AgentType* agent_ptr = dynamic_cast<AgentType*>(agent->get()))
+ *                    out.push_back(agent_ptr);
+ *
+ *            return out;
+ *        }
+ */
+
+
+	/**
+	 * Load balancing task.
+	 *
+	 * This task is actually the unique task of the \Job defined by
+	 * Model::loadBalancingJob().
+	 *
+	 * @see api::model::AgentGraph::balance()
+	 */
 	class LoadBalancingTask : public api::scheduler::Task {
 		public:
 			typedef api::load_balancing::LoadBalancing<AgentPtr>
@@ -284,83 +366,198 @@ namespace fpmas { namespace model {
 		private:
 			api::model::AgentGraph& agent_graph;
 			LoadBalancingAlgorithm& load_balancing;
-			api::scheduler::Scheduler& scheduler;
-			api::runtime::Runtime& runtime;
 
 		public:
+			/**
+			 * LoadBalancingTask constructor.
+			 *
+			 * @param agent_graph associated agent graph on which load
+			 * balancing will be performed
+			 * @param load_balancing load balancing algorithme used to compute
+			 * a balanced partition
+			 */
 			LoadBalancingTask(
 					api::model::AgentGraph& agent_graph,
-					LoadBalancingAlgorithm& load_balancing,
-					api::scheduler::Scheduler& scheduler,
-					api::runtime::Runtime& runtime
-					) : agent_graph(agent_graph), load_balancing(load_balancing), scheduler(scheduler), runtime(runtime) {}
+					LoadBalancingAlgorithm& load_balancing
+					) : agent_graph(agent_graph), load_balancing(load_balancing) {}
 
 			void run() override;
 	};
 
-	class InsertAgentCallback 
+	/**
+	 * Callback triggered when an \AgentNode is _inserted_ into the simulation
+	 * graph (i.e. when an \AgentNode is created, or when it's imported from an
+	 * other process).
+	 */
+	class InsertAgentNodeCallback 
 		: public api::utils::Callback<AgentNode*> {
 			  private:
 				  api::model::Model& model;
 			  public:
-				  InsertAgentCallback(api::model::Model& model) : model(model) {}
+				  /**
+				   * InsertAgentNodeCallback constructor.
+				   *
+				   * @param model current model
+				   */
+				  InsertAgentNodeCallback(api::model::Model& model) : model(model) {}
 
-				  void call(AgentNode* node) override;
+				  /**
+				   * When called, the argument is assumed to contain a new
+				   * uninitialized \Agent (accessible through node->data()).
+				   * The \Agent GroupId is also assumed to be initialized.
+				   *
+				   * Then this \Agent is bound to :
+				   * - its corresponding group (api::model::Agent::setGroup(),
+				   *   api::model::AgentGroup::insert()). The group is
+				   *   retrieved from the current model using
+				   *   api::model::Model::getGroup().
+				   * - the argument node (api::model::Agent::setNode)
+				   * - the current simulation graph
+				   *   (api::model::Agent::setGraph())
+				   * - a new AgentTask (api::model::Agent::setTask())
+				   *
+				   * All the corresponding fields are valid once this callback
+				   * has been triggered.
+				   *
+				   * @param node \AgentNode inserted in the graph
+				   */
+				  void call(api::model::AgentNode* node) override;
 		  };
 
-	class EraseAgentCallback 
+	/**
+	 * Callback triggered when an \AgentNode is _erased_ from the simulation
+	 * graph (i.e. when an \AgentNode is created, or when its imported from an
+	 * other process).
+	 */
+	class EraseAgentNodeCallback 
 		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
-				EraseAgentCallback(api::model::Model& model) : model(model) {}
+				/**
+				 * EraseAgentNodeCallback constructor.
+				 *
+				 * @param model current model
+				 */
+				EraseAgentNodeCallback(api::model::Model& model) : model(model) {}
 
-				void call(AgentNode* node) override;
+				/**
+				 * Removes the node's \Agent (i.e. node->data()) from its
+				 * \AgentGroup.
+				 *
+				 * If the node was still \LOCAL, the agent's task is also
+				 * unscheduled.
+				 *
+				 * @param node \AgentNode to erase from the graph
+				 */
+				void call(api::model::AgentNode* node) override;
 		};
 
+	/**
+	 * Callback triggered when an \AgentNode is set \LOCAL.
+	 *
+	 * This happens when a previously \DISTANT node is imported into the local
+	 * graph and becomes \LOCAL, or when a new \AgentNode is inserted in the
+	 * graph (the node is implicitly set \LOCAL in this case).
+	 */
 	class SetAgentLocalCallback
 		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
+				/**
+				 * SetAgentLocalCallback constructor.
+				 *
+				 * @param model current model
+				 */
 				SetAgentLocalCallback(api::model::Model& model) : model(model) {}
 
-				void call(AgentNode* node) override;
+				/**
+				 * Schedules the associated agent's task to be executed within
+				 * its \AgentGroup's job.
+				 *
+				 * @param node \AgentNode to set \LOCAL
+				 *
+				 * @see \AgentTask
+				 * @see fpmas::api::model::Agent::task()
+				 * @see fpmas::api::model::AgentGroup::job()
+				 */
+				void call(api::model::AgentNode* node) override;
 		};
 
+	/**
+	 * Callback triggered when an \AgentNode is set \DISTANT.
+	 *
+	 * This happens when a previously \LOCAL node is exported to an other
+	 * process, or when a \DISTANT node is inserted into the graph upon edge
+	 * import.
+	 */
 	class SetAgentDistantCallback
 		: public api::utils::Callback<AgentNode*> {
 			private:
 				api::model::Model& model;
 			public:
+				/**
+				 * SetAgentDistantCallback constructor.
+				 *
+				 * @param model current model
+				 */
 				SetAgentDistantCallback(api::model::Model& model) : model(model) {}
 
-				void call(AgentNode* node) override;
+				/**
+				 * Unschedules the associated agent's task.
+				 *
+				 * Notice that when a node goes \DISTANT, it is still contained
+				 * in the simulation graph as any other node. However, it
+				 * **must not** be executed, since only \LOCAL agents are
+				 * assumed to be executed by the local process.
+				 *
+				 * @param node \AgentNode to set \DISTANT
+				 *
+				 * @see \AgentTask
+				 * @see fpmas::api::model::Agent::task()
+				 * @see fpmas::api::model::AgentGroup::job()
+				 */
+				void call(api::model::AgentNode* node) override;
 		};
 
+	/**
+	 * api::model::Model implementation.
+	 */
 	class Model : public api::model::Model {
 		public:
-			typedef api::model::GroupId GroupId;
 			typedef typename LoadBalancingTask::LoadBalancingAlgorithm LoadBalancingAlgorithm;
+
 		private:
-			GroupId gid;
+			api::model::GroupId gid;
 			api::model::AgentGraph& _graph;
 			api::scheduler::Scheduler& _scheduler;
 			api::runtime::Runtime& _runtime;
 			scheduler::Job _loadBalancingJob;
 			LoadBalancingTask load_balancing_task;
-			InsertAgentCallback* insert_node_callback = new InsertAgentCallback(*this);
-			EraseAgentCallback* erase_node_callback = new EraseAgentCallback(*this);
+			InsertAgentNodeCallback* insert_node_callback = new InsertAgentNodeCallback(*this);
+			EraseAgentNodeCallback* erase_node_callback = new EraseAgentNodeCallback(*this);
 			SetAgentLocalCallback* set_local_callback = new SetAgentLocalCallback(*this);
 			SetAgentDistantCallback* set_distant_callback = new SetAgentDistantCallback(*this);
 
-			std::unordered_map<GroupId, api::model::AgentGroup*> _groups;
+			std::unordered_map<api::model::GroupId, api::model::AgentGroup*> _groups;
 			
 			JID job_id = LB_JID + 1;
 			
 
 		public:
+			/**
+			 * JID used for the loadBalancingJob()
+			 */
 			static const JID LB_JID;
+			/**
+			 * Model constructor.
+			 *
+			 * @param graph simulation graph
+			 * @param scheduler scheduler
+			 * @param runtime runtime
+			 * @param load_balancing load balancing algorithm
+			 */
 			Model(
 				api::model::AgentGraph& graph,
 				api::scheduler::Scheduler& scheduler,
@@ -378,13 +575,17 @@ namespace fpmas { namespace model {
 			const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
 			AgentGroup& buildGroup() override;
-			AgentGroup& getGroup(GroupId) const override;
-			const std::unordered_map<GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
+			AgentGroup& getGroup(api::model::GroupId) const override;
+			const std::unordered_map<api::model::GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
 
 			~Model();
 	};
 
 
+	/**
+	 * Partial graph::DistributedGraph specialization used as the Agent
+	 * simulation graph.
+	 */
 	template<template<typename> class SyncMode>
 		using AgentGraph = graph::DistributedGraph<
 		AgentPtr, SyncMode,
@@ -393,22 +594,104 @@ namespace fpmas { namespace model {
 		api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi>,
 		graph::LocationManager>;
 
-	using AgentGraphApi = api::graph::DistributedGraph<AgentPtr>;
-
+	/**
+	 * ZoltanLoadBalancing specialization.
+	 */
 	typedef load_balancing::ZoltanLoadBalancing<AgentPtr> ZoltanLoadBalancing;
+	/**
+	 * ScheduledLoadBalancing specialization.
+	 */
 	typedef load_balancing::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;
+	/**
+	 * Callback specialization that can be extended to define user callbacks.
+	 */
 	typedef api::utils::Callback<AgentNode*> AgentNodeCallback;
 
+	/**
+	 * A default Model configuration that instantiate default components
+	 * implementations.
+	 */
 	template<template<typename> class SyncMode>
 	class DefaultModelConfig {
 		protected:
+			/**
+			 * Default AgentGraph.
+			 */
 			model::AgentGraph<SyncMode> __graph;
+			/**
+			 * Default Scheduler.
+			 */
 			scheduler::Scheduler __scheduler;
+			/**
+			 * Default Runtime.
+			 */
 			runtime::Runtime __runtime {__scheduler};
+			/**
+			 * Default load balancing algorithm.
+			 */
 			model::ZoltanLoadBalancing __zoltan_lb {__graph.getMpiCommunicator().getMpiComm()};
+			/**
+			 * Default scheduled load balancing algorithm.
+			 */
 			model::ScheduledLoadBalancing __load_balancing {__zoltan_lb, __scheduler, __runtime};
 	};
 
+	/**
+	 * Model extension based on the DefaultModelConfig.
+	 *
+	 * It is recommended to use this helper class to instantiate a Model.
+	 *
+	 * @par Example
+	 * ```cpp
+	 * // main.cpp
+	 * #include "fpmas.h"
+	 *
+	 * using namespace fpmas;
+	 *
+	 * class UserAgent1 : public model::AgentBase<UserAgent1> {
+	 * 	public:
+	 * 	void act() override {
+	 * 		FPMAS_LOG_INFO(UserAgent1, "Execute agent %s",
+	 * 		ID_C_STR(this->node()->getId()))
+	 * 	}
+	 * };
+	 *
+	 * class UserAgent2 : public model::AgentBase<UserAgent2> {
+	 * 	public:
+	 * 	void act() override {
+	 * 		FPMAS_LOG_INFO(UserAgent2, "Execute agent %s",
+	 * 		ID_C_STR(this->node()->getId()))
+	 * 	}
+	 * };
+	 *
+	 * #define USER_AGENTS UserAgent1, UserAgent2
+	 *
+	 * FPMAS_DEFAULT_JSON(UserAgent1)
+	 * FPMAS_DEFAULT_JSON(UserAgent2)
+	 *
+	 * FPMAS_JSON_SET_UP(USER_AGENTS)
+	 *
+	 *
+	 * int main(int argc, char** argv) {
+	 * 	fpmas::init(argc, argv);
+	 * 	FPMAS_REGISTER_AGENT_TYPES(USER_AGENTS);
+	 *
+	 * 	{
+	 * 		model::DefaultModel model;
+	 *
+	 * 		model::AgentGroup& group_1 = model.buildGroup();
+	 * 		group_1.add(new UserAgent1);
+	 * 		group_1.add(new UserAgent2);
+	 *
+	 * 		model.scheduler().schedule(0, 1, group_1.job());
+	 * 		model.scheduler().schedule(0, 50, model.loadBalancingJob());
+	 *
+	 * 		model.runtime().run(1000);
+	 * 	}
+	 * 	fpmas::finalize();
+	 * }
+	 * ```
+	 */
 	template<template<typename> class SyncMode>
 	class DefaultModel : private DefaultModelConfig<SyncMode>, public Model {
 		public:

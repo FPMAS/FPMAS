@@ -73,6 +73,8 @@ $(function() {
 <div class="title">fpmas::model::LoadBalancingTask Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="model_2model_8h_source.html">model.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::model::LoadBalancingTask:</div>
 <div class="dyncontent">
@@ -106,12 +108,60 @@ typedef <a class="el" href="namespacefpmas_1_1api_1_1load__balancing.html#a363a2
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab226c4861f9ffca3a79880ca7476f1e6"><td class="memItemLeft" align="right" valign="top"><a id="ab226c4861f9ffca3a79880ca7476f1e6"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>LoadBalancingTask</b> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">api::model::AgentGraph</a> &amp;agent_graph, <a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a> &amp;load_balancing, <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;scheduler, <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;runtime)</td></tr>
-<tr class="separator:ab226c4861f9ffca3a79880ca7476f1e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a7d0a6e2af6023775d238218a97acfb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1LoadBalancingTask.html#a0a7d0a6e2af6023775d238218a97acfb">LoadBalancingTask</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">api::model::AgentGraph</a> &amp;agent_graph, <a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a> &amp;load_balancing)</td></tr>
+<tr class="separator:a0a7d0a6e2af6023775d238218a97acfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f690e8e7df44b75fc8016ccd284d816"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1LoadBalancingTask.html#a0f690e8e7df44b75fc8016ccd284d816">run</a> () override</td></tr>
 <tr class="separator:a0f690e8e7df44b75fc8016ccd284d816"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Load balancing task.</p>
+<p>This task is actually the unique task of the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> defined by <a class="el" href="classfpmas_1_1model_1_1Model.html#a7a49ba66f4abd2ddb239487c067cce95">Model::loadBalancingJob()</a>.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a9b1c16fc31c0fbc8915be7a69707b937">api::model::AgentGraph::balance()</a> </dd></dl>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a0a7d0a6e2af6023775d238218a97acfb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0a7d0a6e2af6023775d238218a97acfb">&#9670;&nbsp;</a></span>LoadBalancingTask()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">fpmas::model::LoadBalancingTask::LoadBalancingTask </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">api::model::AgentGraph</a> &amp;&#160;</td>
+          <td class="paramname"><em>agent_graph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1load__balancing_1_1LoadBalancing.html">LoadBalancingAlgorithm</a> &amp;&#160;</td>
+          <td class="paramname"><em>load_balancing</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1model_1_1LoadBalancingTask.html">LoadBalancingTask</a> constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent_graph</td><td>associated agent graph on which load balancing will be performed </td></tr>
+    <tr><td class="paramname"><a class="el" href="namespacefpmas_1_1load__balancing.html">load_balancing</a></td><td>load balancing algorithme used to compute a balanced partition </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a0f690e8e7df44b75fc8016ccd284d816"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0f690e8e7df44b75fc8016ccd284d816">&#9670;&nbsp;</a></span>run()</h2>

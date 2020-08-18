@@ -58,7 +58,7 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 	 * MutexClient API.
 	 *
 	 * The MutexClient is used to transmit requests from an HardSyncMutex
-	 * instance (associated to a DISTANT node) to distant processes.
+	 * instance (associated to a \DISTANT node) to distant processes.
 	 *
 	 * All request transmission functions blocks until the corresponding
 	 * response is received from the corresponding `location`.
@@ -290,11 +290,11 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 				/**
 				 * Transmits a link request for the specified `edge`.
 				 *
-				 * The provided edge is assumed to be DISTANT, behavior is
+				 * The provided edge is assumed to be \DISTANT, behavior is
 				 * undefined otherwise.
 				 *
 				 * The request is then transmitted to two other processes if
-				 * source and target nodes are DISTANT and located on different
+				 * source and target nodes are \DISTANT and located on different
 				 * processes, or to one process if they are located on the same
 				 * process.
 				 *
@@ -312,11 +312,11 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 				/**
 				 * Transmits an unlink request for the specified `edge`.
 				 *
-				 * The provided edge is assumed to be DISTANT, behavior is
+				 * The provided edge is assumed to be \DISTANT, behavior is
 				 * undefined otherwise.
 				 *
 				 * The request is then transmitted to two other processes if
-				 * source and target nodes are DISTANT and located on different
+				 * source and target nodes are \DISTANT and located on different
 				 * processes, or to one process if they are located on the same
 				 * process.
 				 *
