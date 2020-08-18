@@ -16,18 +16,17 @@ using fpmas::load_balancing::ZoltanLoadBalancing;
 
 class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 	protected:
+		fpmas::communication::MpiCommunicator comm;
 		DistributedGraph<
 			int,
 			fpmas::synchro::GhostMode,
 			fpmas::graph::DistributedNode,
 			fpmas::graph::DistributedEdge,
-			fpmas::api::communication::MpiSetUp<
-				fpmas::communication::MpiCommunicator,
-				fpmas::communication::TypedMpi>,
+			fpmas::communication::TypedMpi,
 			fpmas::graph::LocationManager
-				> graph;
+				> graph {comm};
 
-		ZoltanLoadBalancing<int> load_balancing {graph.getMpiCommunicator().getMpiComm()};
+		ZoltanLoadBalancing<int> load_balancing {comm.getMpiComm()};
 		fpmas::load_balancing::PartitionMap fixed_nodes;
 
 		void SetUp() override {

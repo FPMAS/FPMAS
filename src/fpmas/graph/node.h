@@ -15,6 +15,9 @@
 
 namespace fpmas { namespace graph {
 
+	/**
+	 * api::graph::Node implementation.
+	 */
 	template<typename IdType, typename _EdgeType>
 		class Node : public virtual api::graph::Node<IdType, _EdgeType> {
 			public:
@@ -24,15 +27,20 @@ namespace fpmas { namespace graph {
 
 			private:
 				IdType id;
-				float weight = 1.;
+				float weight;
 				std::unordered_map<LayerId, std::vector<EdgeType*>> incoming_edges;
 				std::unordered_map<LayerId, std::vector<EdgeType*>> outgoing_edges;
 
 			public:
+				/**
+				 * Node constructor.
+				 *
+				 * The Node is initialized with a default weight of 1.
+				 *
+				 * @param id node id
+				 */
 				Node(const IdType& id)
-					: id(id) {}
-				Node(const IdType& id, float weight)
-					: id(id), weight(weight) {}
+					: id(id), weight(1.f) {}
 
 				Node(const Node&) = delete;
 				Node(Node&&) = delete;

@@ -65,7 +65,4 @@ class MockMpi : public fpmas::api::communication::TypedMpi<T> {
 
 };
 
-template<int RANK, int SIZE>
-using MockMpiSetUp = fpmas::api::communication::MpiSetUp<MockMpiCommunicator<RANK, SIZE>, MockMpi>;
-
 #endif

@@ -12,6 +12,10 @@ namespace fpmas { namespace graph {
 
 	template<typename> class DistributedNode;
 	using api::graph::LocationState;
+
+	/**
+	 * api::graph::DistributedEdge implementation.
+	 */
 	template<typename T>
 		class DistributedEdge :
 			public graph::Edge<DistributedId, api::graph::DistributedNode<T>>,
@@ -29,9 +33,6 @@ namespace fpmas { namespace graph {
 					DistributedEdge(IdType id, LayerId layer)
 						: EdgeBase(id, layer) {}
 
-					DistributedEdge(IdType id, LayerId layer, float weight)
-						: EdgeBase(id, layer, weight) {}
-
 					LocationState state() const override {return _state;}
 					void setState(LocationState state) override {this->_state = state;}
 			};
@@ -47,15 +48,19 @@ namespace nlohmann {
 	template<typename T>
 		using NodePtrWrapper = fpmas::graph::NodePtrWrapper<T>;
 
+	/**
+	 * DistributedEdge JSON serialization.
+	 */
 	template<typename T>
 		struct adl_serializer<EdgePtrWrapper<T>> {
 			static EdgePtrWrapper<T> from_json(const json& j) {
 				fpmas::api::graph::DistributedEdge<T>* edge
 					= new fpmas::graph::DistributedEdge<T> {
 					j.at("id").get<DistributedId>(),
-					j.at("layer").get<typename fpmas::api::graph::LayerId>(),
-					j.at("weight").get<float>()
+					j.at("layer").get<typename fpmas::api::graph::LayerId>()
 				};
+				edge->setWeight(j.at("weight").get<float>());
+
 				NodePtrWrapper<T> src = j.at("src").get<NodePtrWrapper<T>>();
 				edge->setSourceNode(src);
 				src->linkOut(edge);

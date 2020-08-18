@@ -9,6 +9,9 @@
 
 namespace fpmas { namespace graph {
 
+	/**
+	 * api::graph::Edge implementation.
+	 */
 	template<typename IdType, typename _NodeType>
 		class Edge : public virtual api::graph::Edge<IdType, _NodeType> {
 			public:
@@ -25,10 +28,16 @@ namespace fpmas { namespace graph {
 				NodeType* target;
 
 			public:
+				/**
+				 * Edge constructor.
+				 *
+				 * The Edge is initialized with a default weight of 1.
+				 *
+				 * @param id edge id
+				 * @param layer edge layer
+				 */
 				Edge(IdType id, LayerId layer) :
-					Edge(id, layer, 1.f) {};
-				Edge(IdType id, LayerId layer, float weight)
-					: id(id), layer(layer), weight(weight) {};
+					id(id), layer(layer), weight(1.f) {};
 
 				IdType getId() const override {return id;};
 				LayerId getLayer() const override {return layer;};

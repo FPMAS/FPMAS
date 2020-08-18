@@ -27,17 +27,16 @@ class DistributedGraphBalance : public ::testing::Test {
 	protected:
 		template<typename T>
 		using location_manager = fpmas::graph::LocationManager<T>;
+
+		fpmas::communication::MpiCommunicator comm;
 		DistributedGraph<
 			int,
 			MockSyncMode,
 			fpmas::graph::DistributedNode,
 			fpmas::graph::DistributedEdge,
-			fpmas::api::communication::MpiSetUp<
-				fpmas::communication::MpiCommunicator,
-				fpmas::communication::TypedMpi
-				>,
+			fpmas::communication::TypedMpi,
 			location_manager
-			> graph;
+			> graph {comm};
 
 		MockSyncLinker<int> mock_sync_linker;
 		MockDataSync mock_data_sync;

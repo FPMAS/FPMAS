@@ -11,6 +11,10 @@
 #include "fpmas/graph/edge.h"
 
 namespace fpmas { namespace graph {
+
+	/**
+	 * api::graph::Graph implementation.
+	 */
 	template<
 		typename NodeType,
 		typename EdgeType

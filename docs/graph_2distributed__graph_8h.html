@@ -68,8 +68,7 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#define-members">Macros</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
 <div class="title">distributed_graph.h File Reference</div>  </div>
 </div><!--header-->
@@ -140,7 +139,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, MpiSetUp, LocationManagerImpl &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html">fpmas::graph::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, TypedMpi, LocationManagerImpl &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -156,12 +155,6 @@ Macros</h2></td></tr>
 <tr class="separator:a029c48fd45b6ef30bbfa706221f38825"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a998f395803e4551ac794864090c30134"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>DIST_GRAPH_PARAMS_SPEC</b></td></tr>
 <tr class="separator:a998f395803e4551ac794864090c30134"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
-<tr class="memitem:a981544d61866e97bbed22ca4a1c055dc"><td class="memItemLeft" align="right" valign="top"><a id="a981544d61866e97bbed22ca4a1c055dc"></a>
-typedef api::communication::MpiSetUp&lt; communication::MpiCommunicator, communication::TypedMpi &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fpmas::graph::DefaultMpiSetUp</b></td></tr>
-<tr class="separator:a981544d61866e97bbed22ca4a1c055dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>DistributedGraph implementation. </p>
@@ -181,7 +174,7 @@ typedef api::communication::MpiSetUp&lt; communication::MpiCommunicator, communi
 <div class="line">    template&lt;typename&gt; <span class="keyword">class </span>SyncMode,\</div>
 <div class="line">    template&lt;typename&gt; class DistNodeImpl,\</div>
 <div class="line">    template&lt;typename&gt; class DistEdgeImpl,\</div>
-<div class="line">    typename MpiSetUp,\</div>
+<div class="line">    template&lt;typename&gt; class TypedMpi,\</div>
 <div class="line">    template&lt;typename&gt; class LocationManagerImpl</div>
 </div><!-- fragment -->
 </div>
@@ -201,7 +194,7 @@ typedef api::communication::MpiSetUp&lt; communication::MpiCommunicator, communi
 <div class="line">    SyncMode,\</div>
 <div class="line">    DistNodeImpl,\</div>
 <div class="line">    DistEdgeImpl,\</div>
-<div class="line">    MpiSetUp,\</div>
+<div class="line">    TypedMpi,\</div>
 <div class="line">    LocationManagerImpl</div>
 </div><!-- fragment -->
 </div>

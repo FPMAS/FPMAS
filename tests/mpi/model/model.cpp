@@ -28,8 +28,9 @@ class ModelGhostModeIntegrationTest : public ::testing::Test {
 	protected:
 		static const int NODE_BY_PROC;
 		static const int NUM_STEPS;
-		fpmas::model::AgentGraph<fpmas::synchro::GhostMode> agent_graph;
-		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
+		fpmas::communication::MpiCommunicator comm;
+		fpmas::model::AgentGraph<fpmas::synchro::GhostMode> agent_graph {comm};
+		fpmas::model::ZoltanLoadBalancing lb {comm.getMpiComm()};
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
@@ -240,8 +241,9 @@ class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
 		static const int NODE_BY_PROC;
 		static const int NUM_STEPS;
-		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph;
-		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
+		fpmas::communication::MpiCommunicator comm;
+		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph {comm};
+		fpmas::model::ZoltanLoadBalancing lb {comm.getMpiComm()};
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
@@ -400,8 +402,9 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 	protected:
 		static const unsigned int AGENT_BY_PROC = 50;
 		static const unsigned int STEPS = 100;
-		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph;
-		fpmas::model::ZoltanLoadBalancing lb {agent_graph.getMpiCommunicator().getMpiComm()};
+		fpmas::communication::MpiCommunicator comm;
+		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph {comm};
+		fpmas::model::ZoltanLoadBalancing lb {comm.getMpiComm()};
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};

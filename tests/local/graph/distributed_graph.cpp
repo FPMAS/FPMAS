@@ -54,14 +54,15 @@ using fpmas::graph::EdgePtrWrapper;
 class DistributedGraphTest : public ::testing::Test {
 	protected:
 		static const int CURRENT_RANK = 7;
+		MockMpiCommunicator<CURRENT_RANK, 10> comm;
 		DistributedGraph<
 			int,
 			MockSyncMode,
 			MockDistributedNode,
 			MockDistributedEdge,
-			MockMpiSetUp<CURRENT_RANK, 10>,
+			MockMpi,
 			MockLocationManager
-			> graph;
+			> graph {comm};
 
 		typedef decltype(graph) GraphType;
 		typedef MockDistributedNode<int> MockNode;
@@ -69,9 +70,6 @@ class DistributedGraphTest : public ::testing::Test {
 		typedef MockDistributedEdge<int> MockEdge;
 		typedef fpmas::api::graph::DistributedEdge<int> EdgeType;
 		typedef typename GraphType::NodeMap NodeMap;
-
-		MockMpiCommunicator<CURRENT_RANK, 10>& comm =
-			static_cast<MockMpiCommunicator<CURRENT_RANK, 10>&>(graph.getMpiCommunicator());
 
 		MockLocationManager<int>& location_manager
 			= const_cast<MockLocationManager<int>&>(

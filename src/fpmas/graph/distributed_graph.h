@@ -18,7 +18,7 @@
 	template<typename> class SyncMode,\
 	template<typename> class DistNodeImpl,\
 	template<typename> class DistEdgeImpl,\
-	typename MpiSetUp,\
+	template<typename> class TypedMpi,\
 	template<typename> class LocationManagerImpl
 
 #define DIST_GRAPH_PARAMS_SPEC\
@@ -26,15 +26,16 @@
 	SyncMode,\
 	DistNodeImpl,\
 	DistEdgeImpl,\
-	MpiSetUp,\
+	TypedMpi,\
 	LocationManagerImpl
 
 namespace fpmas { namespace graph {
 	
 	using api::graph::LocationState;
 	
-	typedef api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi> DefaultMpiSetUp;
-
+	/**
+	 * api::graph::DistributedGraph implementation.
+	 */
 	template<DIST_GRAPH_PARAMS>
 	class DistributedGraph : 
 		public Graph<
@@ -61,17 +62,14 @@ namespace fpmas { namespace graph {
 			typedef api::graph::DistributedEdge<T> EdgeType;
 			using typename DistGraphBase::NodeMap;
 			using typename DistGraphBase::PartitionMap;
-			typedef typename MpiSetUp::communicator communicator;
-			template<typename Data>
-			using mpi = typename MpiSetUp::template mpi<Data>;
 			using NodeCallback = typename DistGraphBase::NodeCallback;
 
 			private:
-			communicator mpi_communicator;
-			mpi<DistributedId> id_mpi {mpi_communicator};
-			mpi<std::pair<DistributedId, int>> location_mpi {mpi_communicator};
-			mpi<NodePtrWrapper<T>> node_mpi {mpi_communicator};
-			mpi<EdgePtrWrapper<T>> edge_mpi {mpi_communicator};
+			api::communication::MpiCommunicator& mpi_communicator;
+			TypedMpi<DistributedId> id_mpi {mpi_communicator};
+			TypedMpi<std::pair<DistributedId, int>> location_mpi {mpi_communicator};
+			TypedMpi<NodePtrWrapper<T>> node_mpi {mpi_communicator};
+			TypedMpi<EdgePtrWrapper<T>> edge_mpi {mpi_communicator};
 
 			LocationManagerImpl<T> location_manager;
 			SyncMode<T> sync_mode;
@@ -102,8 +100,8 @@ namespace fpmas { namespace graph {
 				DistributedId edge_id;
 
 			public:
-			DistributedGraph() :
-				location_manager(mpi_communicator, id_mpi, location_mpi),
+			DistributedGraph(api::communication::MpiCommunicator& comm) :
+				mpi_communicator(comm), location_manager(mpi_communicator, id_mpi, location_mpi),
 				sync_mode(*this, mpi_communicator) {
 				// Initialization in the body of this (derived) class of the
 				// (base) fields nodeId and edgeId, to ensure that
@@ -113,15 +111,15 @@ namespace fpmas { namespace graph {
 				this->edge_id = DistributedId(mpi_communicator.getRank(), 0);
 			}
 
-			const communicator& getMpiCommunicator() const override {
+			const api::communication::MpiCommunicator& getMpiCommunicator() const override {
 				return mpi_communicator;
 			};
-			communicator& getMpiCommunicator() {
+			api::communication::MpiCommunicator& getMpiCommunicator() {
 				return mpi_communicator;
 			};
 
-			const mpi<NodePtrWrapper<T>>& getNodeMpi() const {return node_mpi;}
-			const mpi<EdgePtrWrapper<T>>& getEdgeMpi() const {return edge_mpi;}
+			const TypedMpi<NodePtrWrapper<T>>& getNodeMpi() const {return node_mpi;}
+			const TypedMpi<EdgePtrWrapper<T>>& getEdgeMpi() const {return edge_mpi;}
 
 			const DistributedId& currentNodeId() const override {return node_id;}
 			const DistributedId& currentEdgeId() const override {return edge_id;}

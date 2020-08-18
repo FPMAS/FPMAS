@@ -73,6 +73,8 @@ $(function() {
 <div class="title">fpmas::graph::LocationManager&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="graph_2location__manager_8h_source.html">location_manager.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::graph::LocationManager&lt; T &gt;:</div>
 <div class="dyncontent">
@@ -94,14 +96,9 @@ Collaboration diagram for fpmas::graph::LocationManager&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:ab5f440bc77c2e8bda3d11433949cb666"><td class="memItemLeft" align="right" valign="top"><a id="ab5f440bc77c2e8bda3d11433949cb666"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a>&#160;</td><td class="memItemRight" valign="bottom"><b>MpiComm</b></td></tr>
-<tr class="separator:ab5f440bc77c2e8bda3d11433949cb666"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2fcb9b8c2c6b7210f31fe36e97eafb82"><td class="memItemLeft" align="right" valign="top"><a id="a2fcb9b8c2c6b7210f31fe36e97eafb82"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>IdMpi</b></td></tr>
+<tr class="memitem:a2fcb9b8c2c6b7210f31fe36e97eafb82"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a2fcb9b8c2c6b7210f31fe36e97eafb82">IdMpi</a></td></tr>
 <tr class="separator:a2fcb9b8c2c6b7210f31fe36e97eafb82"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0ab91bab542e9af57046ac2d3d6d3fde"><td class="memItemLeft" align="right" valign="top"><a id="a0ab91bab542e9af57046ac2d3d6d3fde"></a>
-typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; std::pair&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>LocationMpi</b></td></tr>
+<tr class="memitem:a0ab91bab542e9af57046ac2d3d6d3fde"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; std::pair&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a0ab91bab542e9af57046ac2d3d6d3fde">LocationMpi</a></td></tr>
 <tr class="separator:a0ab91bab542e9af57046ac2d3d6d3fde"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">fpmas::api::graph::LocationManager&lt; T &gt;</a></td></tr>
 <tr class="memitem:a48197447bf0348dca279317dfb31aaf4 inherit pub_types_classfpmas_1_1api_1_1graph_1_1LocationManager"><td class="memItemLeft" align="right" valign="top"><a id="a48197447bf0348dca279317dfb31aaf4"></a>
@@ -110,9 +107,8 @@ typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ab62cd82baa225f95987e9b319eac1091"><td class="memItemLeft" align="right" valign="top"><a id="ab62cd82baa225f95987e9b319eac1091"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>LocationManager</b> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">MpiComm</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">IdMpi</a> &amp;id_mpi, <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">LocationMpi</a> &amp;location_mpi)</td></tr>
-<tr class="separator:ab62cd82baa225f95987e9b319eac1091"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1da66baeee3bfcdf91eb2234184d802"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#ae1da66baeee3bfcdf91eb2234184d802">LocationManager</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a2fcb9b8c2c6b7210f31fe36e97eafb82">IdMpi</a> &amp;id_mpi, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a0ab91bab542e9af57046ac2d3d6d3fde">LocationMpi</a> &amp;location_mpi)</td></tr>
+<tr class="separator:ae1da66baeee3bfcdf91eb2234184d802"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a028450b2e59385ea4f9b7af9027d9aa6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a028450b2e59385ea4f9b7af9027d9aa6">addManagedNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *node, int initialLocation) override</td></tr>
 <tr class="separator:a028450b2e59385ea4f9b7af9027d9aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1f4a031fdde206f663783b572ffb9679"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a1f4a031fdde206f663783b572ffb9679">removeManagedNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *node) override</td></tr>
@@ -133,6 +129,100 @@ Public Member Functions</h2></td></tr>
 const std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrentLocations</b> () const</td></tr>
 <tr class="separator:a7c4337b5689f467b2f86410cba060977"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::graph::LocationManager&lt; T &gt;</h3>
+
+<p><a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">api::graph::LocationManager</a> implementation. </p>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="a2fcb9b8c2c6b7210f31fe36e97eafb82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fcb9b8c2c6b7210f31fe36e97eafb82">&#9670;&nbsp;</a></span>IdMpi</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&gt; <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a2fcb9b8c2c6b7210f31fe36e97eafb82">IdMpi</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Type used to transmit DistributedId with MPI. </p>
+
+</div>
+</div>
+<a id="a0ab91bab542e9af57046ac2d3d6d3fde"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ab91bab542e9af57046ac2d3d6d3fde">&#9670;&nbsp;</a></span>LocationMpi</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt;std::pair&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int&gt; &gt; <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a0ab91bab542e9af57046ac2d3d6d3fde">LocationMpi</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Type used to transmit node locations with MPI. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ae1da66baeee3bfcdf91eb2234184d802"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1da66baeee3bfcdf91eb2234184d802">&#9670;&nbsp;</a></span>LocationManager()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">fpmas::graph::LocationManager</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">LocationManager</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a2fcb9b8c2c6b7210f31fe36e97eafb82">IdMpi</a> &amp;&#160;</td>
+          <td class="paramname"><em>id_mpi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a0ab91bab542e9af57046ac2d3d6d3fde">LocationMpi</a> &amp;&#160;</td>
+          <td class="paramname"><em>location_mpi</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">LocationManager</a> constructor.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
+    <tr><td class="paramname">id_mpi</td><td>IdMpi instance </td></tr>
+    <tr><td class="paramname">location_mpi</td><td>LocationMpi instance </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a028450b2e59385ea4f9b7af9027d9aa6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a028450b2e59385ea4f9b7af9027d9aa6">&#9670;&nbsp;</a></span>addManagedNode()</h2>

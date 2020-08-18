@@ -72,22 +72,149 @@ $(function() {
 <div class="title">fpmas::api::graph::Id&lt; IdImpl &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="id_8h_source.html">id.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad1a57f4341e09cbfc40c82946550edcb"><td class="memItemLeft" align="right" valign="top"><a id="ad1a57f4341e09cbfc40c82946550edcb"></a>
-virtual IdImpl &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator++</b> ()=0</td></tr>
+<tr class="memitem:ad1a57f4341e09cbfc40c82946550edcb"><td class="memItemLeft" align="right" valign="top">virtual IdImpl &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html#ad1a57f4341e09cbfc40c82946550edcb">operator++</a> ()=0</td></tr>
 <tr class="separator:ad1a57f4341e09cbfc40c82946550edcb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a91c47fa6f34308f568ffcc50174fa223"><td class="memItemLeft" align="right" valign="top"><a id="a91c47fa6f34308f568ffcc50174fa223"></a>
-virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const IdImpl &amp;id) const =0</td></tr>
+<tr class="memitem:a91c47fa6f34308f568ffcc50174fa223"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html#a91c47fa6f34308f568ffcc50174fa223">operator==</a> (const IdImpl &amp;id) const =0</td></tr>
 <tr class="separator:a91c47fa6f34308f568ffcc50174fa223"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d054ce3e8551c1da5dac37b60583b74"><td class="memItemLeft" align="right" valign="top"><a id="a5d054ce3e8551c1da5dac37b60583b74"></a>
-virtual std::size_t&#160;</td><td class="memItemRight" valign="bottom"><b>hash</b> () const =0</td></tr>
+<tr class="memitem:a5d054ce3e8551c1da5dac37b60583b74"><td class="memItemLeft" align="right" valign="top">virtual std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html#a5d054ce3e8551c1da5dac37b60583b74">hash</a> () const =0</td></tr>
 <tr class="separator:a5d054ce3e8551c1da5dac37b60583b74"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7bc968e18c41cf2322be8d4d219b25f8"><td class="memItemLeft" align="right" valign="top"><a id="a7bc968e18c41cf2322be8d4d219b25f8"></a>
-virtual&#160;</td><td class="memItemRight" valign="bottom"><b>operator std::string</b> () const =0</td></tr>
+<tr class="memitem:a7bc968e18c41cf2322be8d4d219b25f8"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html#a7bc968e18c41cf2322be8d4d219b25f8">operator std::string</a> () const =0</td></tr>
 <tr class="separator:a7bc968e18c41cf2322be8d4d219b25f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename IdImpl&gt;<br />
+class fpmas::api::graph::Id&lt; IdImpl &gt;</h3>
+
+<p>Generic <a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html">Id</a> API. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a5d054ce3e8551c1da5dac37b60583b74"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d054ce3e8551c1da5dac37b60583b74">&#9670;&nbsp;</a></span>hash()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename IdImpl &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::size_t <a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html">fpmas::api::graph::Id</a>&lt; IdImpl &gt;::hash </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html">Id</a> hash function.</p>
+<dl class="section return"><dt>Returns</dt><dd>id hash </dd></dl>
+
+</div>
+</div>
+<a id="a7bc968e18c41cf2322be8d4d219b25f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7bc968e18c41cf2322be8d4d219b25f8">&#9670;&nbsp;</a></span>operator std::string()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename IdImpl &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html">fpmas::api::graph::Id</a>&lt; IdImpl &gt;::operator std::string </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html">Id</a> string conversion. </p>
+
+</div>
+</div>
+<a id="ad1a57f4341e09cbfc40c82946550edcb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1a57f4341e09cbfc40c82946550edcb">&#9670;&nbsp;</a></span>operator++()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename IdImpl &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual IdImpl&amp; <a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html">fpmas::api::graph::Id</a>&lt; IdImpl &gt;::operator++ </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Increments the id.</p>
+<p>Successive calls to this operator are expected to yield a sequence of unique ids.</p>
+<dl class="section return"><dt>Returns</dt><dd>reference to this </dd></dl>
+
+</div>
+</div>
+<a id="a91c47fa6f34308f568ffcc50174fa223"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91c47fa6f34308f568ffcc50174fa223">&#9670;&nbsp;</a></span>operator==()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename IdImpl &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool <a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html">fpmas::api::graph::Id</a>&lt; IdImpl &gt;::operator== </td>
+          <td>(</td>
+          <td class="paramtype">const IdImpl &amp;&#160;</td>
+          <td class="paramname"><em>id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Checks if two ids are equal.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>id to compare </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true iff <code>id</code> is equal to this </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/graph/<a class="el" href="id_8h_source.html">id.h</a></li>
 </ul>

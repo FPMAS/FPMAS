@@ -381,17 +381,6 @@ namespace fpmas { namespace api { namespace communication {
 					virtual ~TypedMpi() {};
 			};
 
-		template<typename MpiCommunicatorImpl, template<typename> class TypedMpiImpl>
-			class MpiSetUp {
-				//static_assert(std::is_base_of<MpiCommunicator, MpiCommunicatorImpl>::value);
-				//static_assert(std::is_base_of<TypedMpi<int>, TypedMpiImpl<int>>::value);
-
-				public:
-				typedef MpiCommunicatorImpl communicator;
-				template<typename T>
-					using mpi = TypedMpiImpl<T>;
-			};
-
 		/**
 		 * Utility function used to compare DataPacks.
 		 */

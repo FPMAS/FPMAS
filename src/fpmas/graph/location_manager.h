@@ -14,17 +14,26 @@ namespace fpmas { namespace graph {
 
 	using api::graph::LocationState;
 
+	/**
+	 * api::graph::LocationManager implementation.
+	 */
 	template<typename T>
 		class LocationManager
 		: public api::graph::LocationManager<T> {
 			public:
 				using typename api::graph::LocationManager<T>::NodeMap;
 
-				typedef api::communication::MpiCommunicator MpiComm;
+				/**
+				 * Type used to transmit DistributedId with MPI.
+				 */
 				typedef api::communication::TypedMpi<DistributedId> IdMpi;
+				/**
+				 * Type used to transmit node locations with MPI.
+				 */
 				typedef api::communication::TypedMpi<std::pair<DistributedId, int>> LocationMpi;
+
 			private:
-				MpiComm& comm;
+				api::communication::MpiCommunicator& comm;
 				IdMpi& id_mpi;
 				LocationMpi& location_mpi;
 				std::unordered_map<DistributedId, int> managed_nodes_locations;
@@ -34,7 +43,14 @@ namespace fpmas { namespace graph {
 				NodeMap new_local_nodes;
 
 			public:
-				LocationManager(MpiComm& comm, IdMpi& id_mpi, LocationMpi& location_mpi)
+				/**
+				 * LocationManager constructor.
+				 *
+				 * @param comm MPI communicator
+				 * @param id_mpi IdMpi instance
+				 * @param location_mpi LocationMpi instance
+				 */
+				LocationManager(api::communication::MpiCommunicator& comm, IdMpi& id_mpi, LocationMpi& location_mpi)
 					: comm(comm), id_mpi(id_mpi), location_mpi(location_mpi) {}
 
 				void addManagedNode(api::graph::DistributedNode<T>* node, int initialLocation) override {

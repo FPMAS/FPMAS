@@ -12,20 +12,22 @@ using fpmas::graph::DistributedGraph;
 using fpmas::graph::DistributedNode;
 using fpmas::graph::DistributedEdge;
 using fpmas::graph::LocationManager;
-using fpmas::graph::DefaultMpiSetUp;
+using fpmas::communication::MpiCommunicator;
+using fpmas::communication::TypedMpi;
 
 class LocationManagerIntegrationTest : public ::testing::Test {
 	protected:
 		static const int SEQUENCE_COUNT = 5;
 		static const int NODES_COUNT = 100;
 
+		MpiCommunicator comm;
 		DistributedGraph<
 			int, MockSyncMode,
 			DistributedNode,
 			DistributedEdge,
-			DefaultMpiSetUp,
+			TypedMpi,
 			LocationManager
-			> graph;
+			> graph {comm};
 
 		MockDataSync data_sync;
 		MockSyncLinker<int> sync_linker;

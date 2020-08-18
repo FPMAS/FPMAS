@@ -593,7 +593,7 @@ namespace fpmas { namespace model {
 		AgentPtr, SyncMode,
 		graph::DistributedNode,
 		graph::DistributedEdge,
-		api::communication::MpiSetUp<communication::MpiCommunicator, communication::TypedMpi>,
+		communication::TypedMpi,
 		graph::LocationManager>;
 
 	/**
@@ -617,9 +617,13 @@ namespace fpmas { namespace model {
 	class DefaultModelConfig {
 		protected:
 			/**
+			 * Default MpiCommunicator.
+			 */
+			communication::MpiCommunicator comm;
+			/**
 			 * Default AgentGraph.
 			 */
-			model::AgentGraph<SyncMode> __graph;
+			model::AgentGraph<SyncMode> __graph {comm};
 			/**
 			 * Default Scheduler.
 			 */
@@ -631,7 +635,7 @@ namespace fpmas { namespace model {
 			/**
 			 * Default load balancing algorithm.
 			 */
-			model::ZoltanLoadBalancing __zoltan_lb {__graph.getMpiCommunicator().getMpiComm()};
+			model::ZoltanLoadBalancing __zoltan_lb {comm.getMpiComm()};
 			/**
 			 * Default scheduled load balancing algorithm.
 			 */

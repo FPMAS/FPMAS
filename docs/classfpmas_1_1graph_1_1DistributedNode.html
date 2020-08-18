@@ -66,37 +66,23 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classfpmas_1_1graph_1_1DistributedNode-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">fpmas::graph::DistributedNode&lt; T &gt; Class Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="graph_2distributed__node_8h_source.html">distributed_node.h</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:a5e34d8241a23004b68e0af8793febe17"><td class="memItemLeft" align="right" valign="top"><a id="a5e34d8241a23004b68e0af8793febe17"></a>
-typedef T&#160;</td><td class="memItemRight" valign="bottom"><b>DataType</b></td></tr>
-<tr class="separator:a5e34d8241a23004b68e0af8793febe17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a2fede05770385ad82fd193fac8ce6769"><td class="memItemLeft" align="right" valign="top"><a id="a2fede05770385ad82fd193fac8ce6769"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DistributedNode</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;id)</td></tr>
-<tr class="separator:a2fede05770385ad82fd193fac8ce6769"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef053fcb8f8e80802df145806bfac0a0"><td class="memItemLeft" align="right" valign="top"><a id="aef053fcb8f8e80802df145806bfac0a0"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>DistributedNode</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;id, const T &amp;data)</td></tr>
 <tr class="separator:aef053fcb8f8e80802df145806bfac0a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a80c606e453afcf275570772af2394f87"><td class="memItemLeft" align="right" valign="top"><a id="a80c606e453afcf275570772af2394f87"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>DistributedNode</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;id, T &amp;&amp;data)</td></tr>
 <tr class="separator:a80c606e453afcf275570772af2394f87"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7384259998eabea4f426eb8252fc6aa8"><td class="memItemLeft" align="right" valign="top"><a id="a7384259998eabea4f426eb8252fc6aa8"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DistributedNode</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;id, const T &amp;data, float weight)</td></tr>
-<tr class="separator:a7384259998eabea4f426eb8252fc6aa8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8507a69a0e0c1b6735351d695321112"><td class="memItemLeft" align="right" valign="top"><a id="aa8507a69a0e0c1b6735351d695321112"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>DistributedNode</b> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;id, T &amp;&amp;data, float weight)</td></tr>
-<tr class="separator:aa8507a69a0e0c1b6735351d695321112"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89cfc1acd489d6cdc0b013c3dfd91cad"><td class="memItemLeft" align="right" valign="top"><a id="a89cfc1acd489d6cdc0b013c3dfd91cad"></a>
 int&#160;</td><td class="memItemRight" valign="bottom"><b>getLocation</b> () const override</td></tr>
 <tr class="separator:a89cfc1acd489d6cdc0b013c3dfd91cad"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -125,7 +111,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>setMutex</b> (<a clas
 const <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html">Mutex</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>mutex</b> () const override</td></tr>
 <tr class="separator:a576c620cde3e2926710a5ec85ad0e498"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::graph::DistributedNode&lt; T &gt;</h3>
+
+<p><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a> implementation. </p>
+</div><hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/fpmas/graph/<a class="el" href="graph_2distributed__edge_8h_source.html">distributed_edge.h</a></li>
 <li>src/fpmas/graph/<a class="el" href="graph_2distributed__node_8h_source.html">distributed_node.h</a></li>
 </ul>

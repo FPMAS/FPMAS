@@ -13,6 +13,9 @@ namespace fpmas { namespace graph {
 
 	using api::graph::LocationState;
 
+	/**
+	 * api::graph::DistributedNode implementation.
+	 */
 	template<typename T>
 	class DistributedNode : 
 		public graph::Node<DistributedId, api::graph::DistributedEdge<T>>,
@@ -27,25 +30,12 @@ namespace fpmas { namespace graph {
 			Mutex* _mutex = nullptr;
 
 		public:
-			typedef T DataType;
-			DistributedNode(const DistributedId& id)
-				: NodeBase(id) {
-				}
-
 			DistributedNode(const DistributedId& id, const T& data)
 				: NodeBase(id), _data(data) {
 			}
 
 			DistributedNode(const DistributedId& id, T&& data)
 				: NodeBase(id), _data(std::move(data)) {
-			}
-
-			DistributedNode(const DistributedId& id, const T& data, float weight)
-				: NodeBase(id, weight), _data(data) {
-			}
-
-			DistributedNode(const DistributedId& id, T&& data, float weight)
-				: NodeBase(id, weight), _data(std::move(data)) {
 			}
 
 			int getLocation() const override {return location;}
@@ -76,14 +66,18 @@ namespace nlohmann {
 	template<typename T>
 		using NodePtrWrapper = fpmas::graph::NodePtrWrapper<T>;
 
+	/**
+	 * DistributedNode JSON serialization.
+	 */
 	template<typename T>
 		struct adl_serializer<NodePtrWrapper<T>> {
 			static NodePtrWrapper<T> from_json(const json& j) {
-				return new fpmas::graph::DistributedNode<T> {
+				auto node = new fpmas::graph::DistributedNode<T> {
 					j.at("id").get<DistributedId>(),
-					std::move(j.at("data").get<T>()),
-					j.at("weight").get<float>(),
+					std::move(j.at("data").get<T>())
 				};
+				node->setWeight(j.at("weight").get<float>());
+				return node;
 			}
 
 			static void to_json(json& j, const NodePtrWrapper<T>& node) {

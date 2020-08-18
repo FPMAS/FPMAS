@@ -2,13 +2,21 @@
 
 #include "../mocks/graph/mock_distributed_node.h"
 
+TEST(DistributedEdgeConstructorTest, default_weight) {
+	fpmas::graph::DistributedEdge<int> edge {{2, 6}, 7};
+	ASSERT_FLOAT_EQ(edge.getWeight(), 1.f);
+	ASSERT_EQ(edge.getId(), DistributedId(2, 6));
+	ASSERT_EQ(edge.getLayer(), 7);
+}
+
 class DistributedEdgeTest : public ::testing::Test {
 	protected:
-		fpmas::graph::DistributedEdge<int> edge {{2, 6}, 7, 2.4};
+		fpmas::graph::DistributedEdge<int> edge {{2, 6}, 7};
 		MockDistributedNode<int> src {{0, 1}, 0, 0};
 		MockDistributedNode<int> tgt {{0, 2}, 0, 0};
 
 		void SetUp() override {
+			edge.setWeight(2.4);
 			edge.setSourceNode(&src);
 			edge.setTargetNode(&tgt);
 		}
