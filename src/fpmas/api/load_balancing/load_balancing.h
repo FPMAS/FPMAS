@@ -1,13 +1,12 @@
-#ifndef LOAD_BALANCING_API_H
-#define LOAD_BALANCING_API_H
+#ifndef FPMAS_LOAD_BALANCING_API_H
+#define FPMAS_LOAD_BALANCING_API_H
 
-#include <set>
-#include <unordered_map>
+/** \file src/fpmas/api/load_balancing/load_balancing.h
+ * LoadBalancing API
+ */
 
 #include "fpmas/api/graph/graph.h"
 #include "fpmas/api/graph/distributed_node.h"
-#include "fpmas/api/graph/distributed_id.h"
-#include "fpmas/api/graph/id.h"
 
 namespace fpmas { namespace api { namespace load_balancing {
 	/**

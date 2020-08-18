@@ -1,8 +1,9 @@
-#ifndef MACROS_H
-#define MACROS_H
+#ifndef FPMAS_MACROS_H
+#define FPMAS_MACROS_H
 
-#include "fpmas/api/utils/ptr_wrapper.h"
-#include "fpmas/api/model/model.h"
+/** \file src/fpmas/utils/macros.h
+ * FPMAS macros.
+ */
 
 #define ID_C_STR(id) ((std::string) id).c_str()
 

@@ -1,5 +1,9 @@
-#ifndef LOCATION_STATE_H
-#define LOCATION_STATE_H
+#ifndef FPMAS_LOCATION_STATE_H
+#define FPMAS_LOCATION_STATE_H
+
+/** \file src/fpmas/api/graph/location_state.h
+ * LocationState implementation.
+ */
 
 #include <iostream>
 

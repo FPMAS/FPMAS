@@ -1,16 +1,14 @@
-#ifndef BASIC_HARD_SYNC_MODE_H
-#define BASIC_HARD_SYNC_MODE_H
+#ifndef FPMAS_HARD_SYNC_MODE_H
+#define FPMAS_HARD_SYNC_MODE_H
 
-#include "fpmas/api/synchro/sync_mode.h"
-#include "fpmas/communication/communication.h"
-#include "fpmas/graph/distributed_node.h"
+/** \file src/fpmas/synchro/hard/hard_sync_mode.h
+ * HardSyncMode implementation.
+ */
+
 #include "hard_data_sync.h"
 #include "hard_sync_mutex.h"
 #include "hard_sync_linker.h"
-#include "mutex_server.h"
-#include "mutex_client.h"
 #include "termination.h"
-#include "server_pack.h"
 
 namespace fpmas { namespace synchro {
 	namespace hard {

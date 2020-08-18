@@ -1,8 +1,10 @@
-#ifndef DISTRIBUTED_EDGE_IMPL_H
-#define DISTRIBUTED_EDGE_IMPL_H
+#ifndef FPMAS_DISTRIBUTED_EDGE_H
+#define FPMAS_DISTRIBUTED_EDGE_H
 
-#include "fpmas/api/graph/distributed_edge.h"
-#include "fpmas/api/utils/ptr_wrapper.h"
+/** \file src/fpmas/graph/distributed_edge.h
+ * DistributedEdge implementation.
+ */
+
 #include "fpmas/graph/edge.h"
 #include "fpmas/graph/distributed_node.h"
 

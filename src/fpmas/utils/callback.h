@@ -1,5 +1,9 @@
-#ifndef CALLBACK_H
-#define CALLBACK_H
+#ifndef FPMAS_CALLBACK_H
+#define FPMAS_CALLBACK_H
+
+/** \file src/fpmas/utils/callback.h
+ * Generic Callback implementation.
+ */
 
 #include "fpmas/api/utils/callback.h"
 

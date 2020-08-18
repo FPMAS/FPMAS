@@ -1,9 +1,11 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-#include <vector>
+/** \file src/fpmas/scheduler/scheduler.h
+ * Scheduler implementation.
+ */
+
 #include <unordered_map>
-#include <map>
 
 #include "fpmas/api/scheduler/scheduler.h"
 

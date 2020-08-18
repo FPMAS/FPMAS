@@ -1,11 +1,15 @@
-#ifndef DISTRIBUTED_GRAPH_IMPL_H
-#define DISTRIBUTED_GRAPH_IMPL_H
+#ifndef FPMAS_DISTRIBUTED_GRAPH_H
+#define FPMAS_DISTRIBUTED_GRAPH_H
+
+/** \file src/fpmas/graph/distributed_graph.h
+ * DistributedGraph implementation.
+ */
+
+#include <set>
 
 #include "fpmas/api/graph/distributed_graph.h"
-#include "fpmas/communication/communication.h"
-#include "distributed_edge.h"
-#include "distributed_node.h"
-#include "location_manager.h"
+#include "fpmas/graph/distributed_edge.h"
+#include "fpmas/graph/location_manager.h"
 
 #include "fpmas/graph/graph.h"
 

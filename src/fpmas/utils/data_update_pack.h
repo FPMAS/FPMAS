@@ -1,5 +1,9 @@
-#ifndef DATA_UPDATE_PACK_H
-#define DATA_UPDATE_PACK_H
+#ifndef FPMAS_DATA_UPDATE_PACK_H
+#define FPMAS_DATA_UPDATE_PACK_H
+
+/** \file src/fpmas/utils/data_update_pack.h
+ * DataUpdatePack implementation.
+ */
 
 #include "fpmas/api/graph/distributed_id.h"
 

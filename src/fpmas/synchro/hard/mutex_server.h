@@ -1,10 +1,13 @@
-#ifndef MUTEX_SERVER_H
-#define MUTEX_SERVER_H
+#ifndef FPMAS_MUTEX_SERVER_H
+#define FPMAS_MUTEX_SERVER_H
+
+/** \file src/fpmas/synchro/hard/mutex_server.h
+ * MutexServer implementation.
+ */
 
 #include "fpmas/utils/macros.h"
 #include "fpmas/api/communication/communication.h"
-#include "./api/enums.h"
-#include "./api/hard_sync_mutex.h"
+#include "fpmas/synchro/hard/api/hard_sync_mutex.h"
 #include "fpmas/utils/data_update_pack.h"
 #include "fpmas/utils/log.h"
 

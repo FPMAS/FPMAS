@@ -69,40 +69,44 @@ $(function() {
 <div class="title">runtime.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef RUNTIME_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define RUNTIME_H</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/runtime/runtime.h&quot;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;fpmas/scheduler/scheduler.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>runtime {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">using</span> api::runtime::Date;</div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="classfpmas_1_1runtime_1_1Runtime.html">   13</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler;</div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Epoch.html">scheduler::Epoch</a> epoch;</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;            Date date = 0;</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classfpmas_1_1runtime_1_1Runtime.html#a6ef98f90954665ed270e406a3acd841f">   25</a></span>&#160;            <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#a6ef98f90954665ed270e406a3acd841f">Runtime</a>(<a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler)</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;                : scheduler(scheduler) {}</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#a257c7abf301188d04b23248c84a8dbae">run</a>(Date end) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#a257c7abf301188d04b23248c84a8dbae">run</a>(Date start, Date end) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">   30</a></span>&#160;            Date <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">currentDate</a>()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> date;}</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    };</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;}}</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#endif</span></div>
+<a href="runtime_2runtime_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_RUNTIME_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define FPMAS_RUNTIME_H</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="api_2runtime_2runtime_8h.html">fpmas/api/runtime/runtime.h</a>&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="scheduler_2scheduler_8h.html">fpmas/scheduler/scheduler.h</a>&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>runtime {</div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    <span class="keyword">using</span> <a class="code" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">api::runtime::Date</a>;</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="classfpmas_1_1runtime_1_1Runtime.html">   18</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler;</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Epoch.html">scheduler::Epoch</a> epoch;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;            <a class="code" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> date = 0;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="classfpmas_1_1runtime_1_1Runtime.html#a6ef98f90954665ed270e406a3acd841f">   30</a></span>&#160;            <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#a6ef98f90954665ed270e406a3acd841f">Runtime</a>(<a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; scheduler)</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;                : scheduler(scheduler) {}</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#a257c7abf301188d04b23248c84a8dbae">run</a>(<a class="code" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> end) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#a257c7abf301188d04b23248c84a8dbae">run</a>(<a class="code" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> start, <a class="code" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> end) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">   35</a></span>&#160;            <a class="code" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a> <a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">currentDate</a>()<span class="keyword"> const override </span>{<span class="keywordflow">return</span> date;}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    };</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;}}</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="aclassfpmas_1_1scheduler_1_1Epoch_html"><div class="ttname"><a href="classfpmas_1_1scheduler_1_1Epoch.html">fpmas::scheduler::Epoch</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:63</div></div>
+<div class="ttc" id="aclassfpmas_1_1scheduler_1_1Epoch_html"><div class="ttname"><a href="classfpmas_1_1scheduler_1_1Epoch.html">fpmas::scheduler::Epoch</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:65</div></div>
+<div class="ttc" id="ascheduler_2scheduler_8h_html"><div class="ttname"><a href="scheduler_2scheduler_8h.html">scheduler.h</a></div></div>
+<div class="ttc" id="aapi_2runtime_2runtime_8h_html"><div class="ttname"><a href="api_2runtime_2runtime_8h.html">runtime.h</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html_a257c7abf301188d04b23248c84a8dbae"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html#a257c7abf301188d04b23248c84a8dbae">fpmas::runtime::Runtime::run</a></div><div class="ttdeci">void run(Date end) override</div><div class="ttdef"><b>Definition:</b> runtime.cpp:23</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1Scheduler_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">fpmas::api::scheduler::Scheduler</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:198</div></div>
-<div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html_ae80edd27565b8b1cbcf0233aaa061119"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">fpmas::runtime::Runtime::currentDate</a></div><div class="ttdeci">Date currentDate() const override</div><div class="ttdef"><b>Definition:</b> runtime.h:30</div></div>
-<div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html">fpmas::runtime::Runtime</a></div><div class="ttdef"><b>Definition:</b> runtime.h:13</div></div>
-<div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html_a6ef98f90954665ed270e406a3acd841f"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html#a6ef98f90954665ed270e406a3acd841f">fpmas::runtime::Runtime::Runtime</a></div><div class="ttdeci">Runtime(api::scheduler::Scheduler &amp;scheduler)</div><div class="ttdef"><b>Definition:</b> runtime.h:25</div></div>
-<div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.h:7</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1runtime_1_1Runtime_html"><div class="ttname"><a href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">fpmas::api::runtime::Runtime</a></div><div class="ttdef"><b>Definition:</b> runtime.h:14</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1scheduler_html_a9a8550fb82dde3f4b606f76051430d10"><div class="ttname"><a href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">fpmas::api::scheduler::Date</a></div><div class="ttdeci">unsigned long Date</div><div class="ttdef"><b>Definition:</b> scheduler.h:18</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1Scheduler_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">fpmas::api::scheduler::Scheduler</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:202</div></div>
+<div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html_ae80edd27565b8b1cbcf0233aaa061119"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">fpmas::runtime::Runtime::currentDate</a></div><div class="ttdeci">Date currentDate() const override</div><div class="ttdef"><b>Definition:</b> runtime.h:35</div></div>
+<div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html">fpmas::runtime::Runtime</a></div><div class="ttdef"><b>Definition:</b> runtime.h:18</div></div>
+<div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html_a6ef98f90954665ed270e406a3acd841f"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html#a6ef98f90954665ed270e406a3acd841f">fpmas::runtime::Runtime::Runtime</a></div><div class="ttdeci">Runtime(api::scheduler::Scheduler &amp;scheduler)</div><div class="ttdef"><b>Definition:</b> runtime.h:30</div></div>
+<div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.h:10</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1runtime_1_1Runtime_html"><div class="ttname"><a href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">fpmas::api::runtime::Runtime</a></div><div class="ttdef"><b>Definition:</b> runtime.h:18</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

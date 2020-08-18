@@ -1,5 +1,9 @@
-#ifndef FPMAS_SYNCHRO_GUARDS
-#define FPMAS_SYNCHRO_GUARDS
+#ifndef FPMAS_SYNCHRO_GUARDS_H
+#define FPMAS_SYNCHRO_GUARDS_H
+
+/** \file src/fpmas/synchro/guards.h
+ * Guards implementation.
+ */
 
 #include "fpmas/api/graph/distributed_node.h"
 

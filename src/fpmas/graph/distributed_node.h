@@ -1,8 +1,11 @@
-#ifndef DISTRIBUTED_NODE_IMPL_H
-#define DISTRIBUTED_NODE_IMPL_H
+#ifndef FPMAS_DISTRIBUTED_NODE_H
+#define FPMAS_DISTRIBUTED_NODE_H
+
+/** \file src/fpmas/graph/distributed_node.h
+ * DistributedNode implementation.
+ */
 
 #include "fpmas/api/graph/distributed_node.h"
-#include "fpmas/api/synchro/mutex.h"
 #include "fpmas/api/utils/ptr_wrapper.h"
 #include "fpmas/graph/node.h"
 

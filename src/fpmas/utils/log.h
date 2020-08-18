@@ -1,5 +1,10 @@
-#ifndef LOG_H
-#define LOG_H
+#ifndef FPMAS_LOG_H
+#define FPMAS_LOG_H
+
+/** \file src/fpmas/utils/log.h
+ * A logging library, inspired from the
+ * [esp-idf](https://github.com/espressif/esp-idf/tree/master/components/log).
+ */
 
 #include <chrono>
 #include <iostream>

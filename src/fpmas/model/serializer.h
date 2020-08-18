@@ -1,14 +1,13 @@
 #ifndef MODEL_SERIALIZER_H
 #define MODEL_SERIALIZER_H
 
-#include <stdexcept>
-#include "fpmas/api/utils/ptr_wrapper.h"
-#include "fpmas/api/model/model.h"
-#include "fpmas/utils/log.h"
-
 /** \file src/fpmas/model/serializer.h
  * Agent serialization related objects.
  */
+
+#include <stdexcept>
+#include "fpmas/api/model/model.h"
+#include "fpmas/utils/log.h"
 
 namespace fpmas { namespace exceptions {
 class BadIdException : public std::exception {

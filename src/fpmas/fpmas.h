@@ -1,12 +1,10 @@
 #ifndef FPMAS_H
 #define FPMAS_H
 
-#include "mpi.h"
-#include "zoltan_cpp.h"
-
-#include "fpmas/communication/communication.h"
 #include "fpmas/model/model.h"
 #include "fpmas/model/serializer.h"
+#include "fpmas/synchro/ghost/ghost_mode.h"
+#include "fpmas/synchro/hard/hard_sync_mode.h"
 
 /** \file src/fpmas/fpmas.h
  * Main FPMAS include file.

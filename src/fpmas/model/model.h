@@ -1,10 +1,12 @@
-#ifndef MODEL_H
-#define MODEL_H
+#ifndef FPMAS_MODEL_H
+#define FPMAS_MODEL_H
+
+/** \file src/fpmas/model/model.h
+ * Model implementation.
+ */
+
 #include "fpmas/api/model/model.h"
-#include "fpmas/api/graph/distributed_graph.h"
-#include "fpmas/api/utils/ptr_wrapper.h"
 #include "fpmas/graph/distributed_graph.h"
-#include "fpmas/scheduler/scheduler.h"
 #include "fpmas/runtime/runtime.h"
 #include "fpmas/load_balancing/zoltan_load_balancing.h"
 #include "fpmas/load_balancing/scheduled_load_balancing.h"

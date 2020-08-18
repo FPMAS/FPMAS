@@ -1,6 +1,10 @@
 #ifndef FPMAS_SERVER_PACK_H
 #define FPMAS_SERVER_PACK_H
 
+/** \file src/fpmas/synchro/hard/server_pack.h
+ * ServerPack implementation.
+ */
+
 #include "fpmas/api/communication/communication.h"
 #include "./api/client_server.h"
 #include "fpmas/utils/log.h"

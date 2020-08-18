@@ -1,9 +1,12 @@
-#ifndef COMMUNICATION_H
-#define COMMUNICATION_H
+#ifndef FPMAS_COMMUNICATION_H
+#define FPMAS_COMMUNICATION_H
+
+/** \file src/fpmas/communication/communication.h
+ * Communication implementation.
+ */
 
 #include <cstdint>
 #include <string>
-#include <mpi.h>
 #include <unordered_map>
 
 #include "fpmas/api/communication/communication.h"

@@ -1,10 +1,10 @@
-#ifndef HARD_SYNC_MUTEX_H
-#define HARD_SYNC_MUTEX_H
+#ifndef FPMAS_HARD_SYNC_MUTEX_H
+#define FPMAS_HARD_SYNC_MUTEX_H
 
-#include <queue>
-#include "fpmas/api/communication/communication.h"
-#include "fpmas/api/graph/location_state.h"
-#include "./api/hard_sync_mutex.h"
+/** \file src/fpmas/synchro/hard/hard_sync_mutex.h
+ * HardSyncMode Mutex implementation.
+ */
+
 #include "mutex_client.h"
 #include "mutex_server.h"
 

@@ -1,5 +1,9 @@
-#ifndef RUNTIME_API_H
-#define RUNTIME_API_H
+#ifndef FPMAS_RUNTIME_API_H
+#define FPMAS_RUNTIME_API_H
+
+/** \file src/fpmas/api/runtime/runtime.h
+ * Runtime API
+ */
 
 #include "fpmas/api/scheduler/scheduler.h"
 

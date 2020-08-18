@@ -1,5 +1,9 @@
-#ifndef SCHEDULER_API_H
-#define SCHEDULER_API_H
+#ifndef FPMAS_SCHEDULER_API_H
+#define FPMAS_SCHEDULER_API_H
+
+/** \file src/fpmas/api/scheduler/scheduler.h
+ * Scheduler API
+ */
 
 #include "fpmas/api/graph/distributed_node.h"
 

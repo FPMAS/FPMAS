@@ -1,7 +1,10 @@
-#ifndef SYNC_MODE_API_H
-#define SYNC_MODE_API_H
+#ifndef FPMAS_SYNC_MODE_API_H
+#define FPMAS_SYNC_MODE_API_H
 
-#include <string>
+/** \file src/fpmas/api/synchro/sync_mode.h
+ * SyncMode API
+ */
+
 #include "fpmas/api/graph/distributed_graph.h"
 
 namespace fpmas { namespace api { namespace synchro {

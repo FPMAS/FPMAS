@@ -1,5 +1,9 @@
-#ifndef HARD_REQUEST_HANDLER_H
-#define HARD_REQUEST_HANDLER_H
+#ifndef FPMAS_HARD_SYNC_MUTEX_API_H
+#define FPMAS_HARD_SYNC_MUTEX_API_H
+
+/** \file src/fpmas/synchro/hard/api/hard_sync_mutex.h
+ * HardSyncMutex API
+ */
 
 #include <queue>
 #include "fpmas/api/synchro/mutex.h"

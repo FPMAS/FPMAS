@@ -72,30 +72,31 @@ $(function() {
 <a href="fpmas_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define FPMAS_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;mpi.h&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;zoltan_cpp.h&quot;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;fpmas/communication/communication.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;fpmas/model/model.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="serializer_8h.html">fpmas/model/serializer.h</a>&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> {</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordtype">void</span> init(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        MPI_Init(&amp;argc, &amp;argv);</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        <span class="keywordtype">float</span> v;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        Zoltan_Initialize(argc, argv, &amp;v);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;        fpmas::api::communication::createMpiTypes();</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    }</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordtype">void</span> finalize() {</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        fpmas::api::communication::freeMpiTypes();</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;        MPI_Finalize();</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    }</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="model_2model_8h.html">fpmas/model/model.h</a>&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="serializer_8h.html">fpmas/model/serializer.h</a>&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ghost__mode_8h.html">fpmas/synchro/ghost/ghost_mode.h</a>&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="hard__sync__mode_8h.html">fpmas/synchro/hard/hard_sync_mode.h</a>&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> {</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordtype">void</span> init(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        MPI_Init(&amp;argc, &amp;argv);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <span class="keywordtype">float</span> v;</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        Zoltan_Initialize(argc, argv, &amp;v);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        fpmas::api::communication::createMpiTypes();</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keywordtype">void</span> finalize() {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        fpmas::api::communication::freeMpiTypes();</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        MPI_Finalize();</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    }</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aserializer_8h_html"><div class="ttname"><a href="serializer_8h.html">serializer.h</a></div></div>
-<div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.h:7</div></div>
+<div class="ttc" id="amodel_2model_8h_html"><div class="ttname"><a href="model_2model_8h.html">model.h</a></div></div>
+<div class="ttc" id="aghost__mode_8h_html"><div class="ttname"><a href="ghost__mode_8h.html">ghost_mode.h</a></div></div>
+<div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.h:10</div></div>
+<div class="ttc" id="ahard__sync__mode_8h_html"><div class="ttname"><a href="hard__sync__mode_8h.html">hard_sync_mode.h</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

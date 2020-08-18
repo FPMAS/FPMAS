@@ -1,10 +1,13 @@
-#ifndef MODEL_API_H
-#define MODEL_API_H
+#ifndef FPMAS_MODEL_API_H
+#define FPMAS_MODEL_API_H
+
+/** \file src/fpmas/api/model/model.h
+ * Model API
+ */
 
 #include <typeindex>
 
 #include "fpmas/api/graph/distributed_graph.h"
-#include "fpmas/api/scheduler/scheduler.h"
 #include "fpmas/api/runtime/runtime.h"
 #include "fpmas/api/utils/ptr_wrapper.h"
 

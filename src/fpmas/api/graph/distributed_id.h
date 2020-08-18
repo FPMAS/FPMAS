@@ -1,5 +1,9 @@
-#ifndef DISTRIBUTED_ID_H
-#define DISTRIBUTED_ID_H
+#ifndef FPMAS_DISTRIBUTED_ID_H
+#define FPMAS_DISTRIBUTED_ID_H
+
+/** \file src/fpmas/api/graph/distributed_id.h
+ * DistributedId implementation.
+ */
 
 #include <functional>
 #include <nlohmann/json.hpp>

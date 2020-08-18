@@ -1,5 +1,10 @@
-#ifndef RUNTIME_H
-#define RUNTIME_H
+#ifndef FPMAS_RUNTIME_H
+#define FPMAS_RUNTIME_H
+
+/** \file src/fpmas/runtime/runtime.h
+ * Runtime implementation.
+ */
+
 #include "fpmas/api/runtime/runtime.h"
 #include "fpmas/scheduler/scheduler.h"
 

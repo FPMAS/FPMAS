@@ -69,65 +69,72 @@ $(function() {
 <div class="title">log.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef LOG_H</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define LOG_H</span></div>
+<a href="log_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_LOG_H</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define FPMAS_LOG_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    FPMAS_LOG_NONE,       </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;    FPMAS_LOG_ERROR,      </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;    FPMAS_LOG_WARN,       </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;    FPMAS_LOG_INFO,       </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;    FPMAS_LOG_DEBUG,      </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    FPMAS_LOG_VERBOSE     </div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;} fpmas_log_level_t;</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#define LOG_COLOR_BLACK   &quot;30&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#define LOG_COLOR_RED     &quot;31&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#define LOG_COLOR_GREEN   &quot;32&quot;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#define LOG_COLOR_BROWN   &quot;33&quot;</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#define LOG_COLOR_BLUE    &quot;34&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#define LOG_COLOR_PURPLE  &quot;35&quot;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#define LOG_COLOR_CYAN    &quot;36&quot;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define LOG_COLOR_WHITE   &quot;37&quot;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#define LOG_COLOR(COLOR)  &quot;\033[0;&quot; COLOR &quot;m&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#define LOG_BOLD(COLOR)   &quot;\033[1;&quot; COLOR &quot;m&quot;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define LOG_RESET_COLOR   &quot;\033[0m&quot;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define LOG_COLOR_E       LOG_COLOR(LOG_COLOR_RED)</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define LOG_COLOR_W       LOG_COLOR(LOG_COLOR_BROWN)</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#define LOG_COLOR_I       LOG_COLOR(LOG_COLOR_GREEN)</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#define LOG_COLOR_D       LOG_COLOR(LOG_COLOR_PURPLE)</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#define LOG_COLOR_V</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter &quot; %li [%i] %s : &quot; format LOG_RESET_COLOR &quot;\n&quot;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#define FPMAS_LOGE( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_ERROR,   rank, tag, format, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#define FPMAS_LOGW( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_WARN,    rank, tag, format, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#define FPMAS_LOGI( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_INFO,    rank, tag, format, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#define FPMAS_LOGD( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_DEBUG,   rank, tag, format, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#define FPMAS_LOGV( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_VERBOSE, rank, tag, format, ##__VA_ARGS__)</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define FPMAS_LOG_LEVEL_IMPL(level, rank, tag, format, ...) do {                     \</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">        if (level==FPMAS_LOG_ERROR )          { fpmas_log_write(LOG_FORMAT(E, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">        else if (level==FPMAS_LOG_WARN )      { fpmas_log_write(LOG_FORMAT(W, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">        else if (level==FPMAS_LOG_DEBUG )     { fpmas_log_write(LOG_FORMAT(D, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">        else if (level==FPMAS_LOG_VERBOSE )   { fpmas_log_write(LOG_FORMAT(V, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">        else                                { fpmas_log_write(LOG_FORMAT(I, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">    } while(0)</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#define FPMAS_LOG_LEVEL(level, rank, tag, format, ...) do {               \</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">        if ( LOG_LEVEL &gt;= level ) FPMAS_LOG_LEVEL_IMPL(level, rank, tag, format, ##__VA_ARGS__); \</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">    } while(0)</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="keyword">static</span> <span class="keyword">auto</span> start = std::chrono::system_clock::now();</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="keywordtype">void</span> fpmas_log_write(<span class="keyword">const</span> <span class="keywordtype">char</span>* format, ...);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keywordtype">long</span> current_time();</div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54a">   12</a></span>&#160;<span class="keyword">typedef</span> <span class="keyword">enum</span> {</div>
+<div class="line"><a name="l00013"></a><span class="lineno"><a class="line" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa32f3cf3920fd621a761825d8cb34515a">   13</a></span>&#160;    <a class="code" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa32f3cf3920fd621a761825d8cb34515a">FPMAS_LOG_NONE</a>,       </div>
+<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa588a38a862e310d2e4efb315a3432f3f">   14</a></span>&#160;    <a class="code" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa588a38a862e310d2e4efb315a3432f3f">FPMAS_LOG_ERROR</a>,      </div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa12943552b85640f357c1bb901856909b">   15</a></span>&#160;    <a class="code" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa12943552b85640f357c1bb901856909b">FPMAS_LOG_WARN</a>,       </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aaba7ba9c620a75a7d2c2843d51eb048cf">   16</a></span>&#160;    <a class="code" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aaba7ba9c620a75a7d2c2843d51eb048cf">FPMAS_LOG_INFO</a>,       </div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aae896254afbdb44e882e1689c38ae7871">   17</a></span>&#160;    <a class="code" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aae896254afbdb44e882e1689c38ae7871">FPMAS_LOG_DEBUG</a>,      </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    <a class="code" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa26dc5d24e8c69c9581cc2ab0fcbcf495">FPMAS_LOG_VERBOSE</a>     </div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa26dc5d24e8c69c9581cc2ab0fcbcf495">   19</a></span>&#160;} <a class="code" href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54a">fpmas_log_level_t</a>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#define LOG_COLOR_BLACK   &quot;30&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#define LOG_COLOR_RED     &quot;31&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define LOG_COLOR_GREEN   &quot;32&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#define LOG_COLOR_BROWN   &quot;33&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#define LOG_COLOR_BLUE    &quot;34&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define LOG_COLOR_PURPLE  &quot;35&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#define LOG_COLOR_CYAN    &quot;36&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#define LOG_COLOR_WHITE   &quot;37&quot;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#define LOG_COLOR(COLOR)  &quot;\033[0;&quot; COLOR &quot;m&quot;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#define LOG_BOLD(COLOR)   &quot;\033[1;&quot; COLOR &quot;m&quot;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#define LOG_RESET_COLOR   &quot;\033[0m&quot;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#define LOG_COLOR_E       LOG_COLOR(LOG_COLOR_RED)</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#define LOG_COLOR_W       LOG_COLOR(LOG_COLOR_BROWN)</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#define LOG_COLOR_I       LOG_COLOR(LOG_COLOR_GREEN)</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#define LOG_COLOR_D       LOG_COLOR(LOG_COLOR_PURPLE)</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#define LOG_COLOR_V</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter &quot; %li [%i] %s : &quot; format LOG_RESET_COLOR &quot;\n&quot;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#define FPMAS_LOGE( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_ERROR,   rank, tag, format, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#define FPMAS_LOGW( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_WARN,    rank, tag, format, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#define FPMAS_LOGI( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_INFO,    rank, tag, format, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#define FPMAS_LOGD( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_DEBUG,   rank, tag, format, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#define FPMAS_LOGV( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_VERBOSE, rank, tag, format, ##__VA_ARGS__)</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#define FPMAS_LOG_LEVEL_IMPL(level, rank, tag, format, ...) do {                     \</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">        if (level==FPMAS_LOG_ERROR )          { fpmas_log_write(LOG_FORMAT(E, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">        else if (level==FPMAS_LOG_WARN )      { fpmas_log_write(LOG_FORMAT(W, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">        else if (level==FPMAS_LOG_DEBUG )     { fpmas_log_write(LOG_FORMAT(D, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">        else if (level==FPMAS_LOG_VERBOSE )   { fpmas_log_write(LOG_FORMAT(V, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">        else                                { fpmas_log_write(LOG_FORMAT(I, format), current_time(), rank, tag, ##__VA_ARGS__); } \</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">    } while(0)</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#define FPMAS_LOG_LEVEL(level, rank, tag, format, ...) do {               \</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="preprocessor">        if ( LOG_LEVEL &gt;= level ) FPMAS_LOG_LEVEL_IMPL(level, rank, tag, format, ##__VA_ARGS__); \</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">    } while(0)</span></div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">static</span> <span class="keyword">auto</span> start = std::chrono::system_clock::now();</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keywordtype">void</span> fpmas_log_write(<span class="keyword">const</span> <span class="keywordtype">char</span>* format, ...);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keywordtype">long</span> current_time();</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="alog_8h_html_ab21d9d9f1924909dc88e846833c7f54aaba7ba9c620a75a7d2c2843d51eb048cf"><div class="ttname"><a href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aaba7ba9c620a75a7d2c2843d51eb048cf">FPMAS_LOG_INFO</a></div><div class="ttdeci">@ FPMAS_LOG_INFO</div><div class="ttdef"><b>Definition:</b> log.h:16</div></div>
+<div class="ttc" id="alog_8h_html_ab21d9d9f1924909dc88e846833c7f54aa26dc5d24e8c69c9581cc2ab0fcbcf495"><div class="ttname"><a href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa26dc5d24e8c69c9581cc2ab0fcbcf495">FPMAS_LOG_VERBOSE</a></div><div class="ttdeci">@ FPMAS_LOG_VERBOSE</div><div class="ttdef"><b>Definition:</b> log.h:18</div></div>
+<div class="ttc" id="alog_8h_html_ab21d9d9f1924909dc88e846833c7f54aa32f3cf3920fd621a761825d8cb34515a"><div class="ttname"><a href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa32f3cf3920fd621a761825d8cb34515a">FPMAS_LOG_NONE</a></div><div class="ttdeci">@ FPMAS_LOG_NONE</div><div class="ttdef"><b>Definition:</b> log.h:13</div></div>
+<div class="ttc" id="alog_8h_html_ab21d9d9f1924909dc88e846833c7f54aa588a38a862e310d2e4efb315a3432f3f"><div class="ttname"><a href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa588a38a862e310d2e4efb315a3432f3f">FPMAS_LOG_ERROR</a></div><div class="ttdeci">@ FPMAS_LOG_ERROR</div><div class="ttdef"><b>Definition:</b> log.h:14</div></div>
+<div class="ttc" id="alog_8h_html_ab21d9d9f1924909dc88e846833c7f54aae896254afbdb44e882e1689c38ae7871"><div class="ttname"><a href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aae896254afbdb44e882e1689c38ae7871">FPMAS_LOG_DEBUG</a></div><div class="ttdeci">@ FPMAS_LOG_DEBUG</div><div class="ttdef"><b>Definition:</b> log.h:17</div></div>
+<div class="ttc" id="alog_8h_html_ab21d9d9f1924909dc88e846833c7f54a"><div class="ttname"><a href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54a">fpmas_log_level_t</a></div><div class="ttdeci">fpmas_log_level_t</div><div class="ttdef"><b>Definition:</b> log.h:12</div></div>
+<div class="ttc" id="alog_8h_html_ab21d9d9f1924909dc88e846833c7f54aa12943552b85640f357c1bb901856909b"><div class="ttname"><a href="log_8h.html#ab21d9d9f1924909dc88e846833c7f54aa12943552b85640f357c1bb901856909b">FPMAS_LOG_WARN</a></div><div class="ttdeci">@ FPMAS_LOG_WARN</div><div class="ttdef"><b>Definition:</b> log.h:15</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

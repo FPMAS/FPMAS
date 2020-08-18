@@ -1,12 +1,13 @@
 #ifndef BASIC_GHOST_MODE_H
 #define BASIC_GHOST_MODE_H
 
-#include <vector>
-#include "fpmas/api/synchro/mutex.h"
+/** \file src/fpmas/synchro/ghost/ghost_mode.h
+ * GhostMode implementation.
+ */
+
 #include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/communication/communication.h"
 #include "fpmas/graph/distributed_edge.h"
-#include "fpmas/graph/distributed_node.h"
 #include "fpmas/utils/data_update_pack.h"
 
 namespace fpmas { namespace synchro {

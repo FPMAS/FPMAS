@@ -1,10 +1,12 @@
-#ifndef NODE_API_H
-#define NODE_API_H
+#ifndef FPMAS_NODE_API_H
+#define FPMAS_NODE_API_H
+
+/** \file src/fpmas/api/graph/node.h
+ * Node API
+ */
 
 #include <vector>
-#include "edge.h"
-#include "id.h"
-#include "fpmas/api/utils/callback.h"
+#include "fpmas/api/graph/edge.h"
 
 namespace fpmas { namespace api { namespace graph {
 

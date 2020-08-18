@@ -1,5 +1,9 @@
-#ifndef ID_API_H
-#define ID_API_H
+#ifndef FPMAS_ID_API_H
+#define FPMAS_ID_API_H
+
+/** \file src/fpmas/api/graph/id.h
+ * Id API
+ */
 
 #include <functional>
 #include <string>

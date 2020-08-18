@@ -1,5 +1,9 @@
-#ifndef MUTEX_API_H
-#define MUTEX_API_H
+#ifndef FPMAS_MUTEX_API_H
+#define FPMAS_MUTEX_API_H
+
+/** \file src/fpmas/api/synchro/mutex.h
+ * Mutex API
+ */
 
 #include "fpmas/api/graph/distributed_id.h"
 

@@ -1,5 +1,9 @@
-#ifndef ZOLTAN_LOAD_BALANCING_H
-#define ZOLTAN_LOAD_BALANCING_H
+#ifndef FPMAS_ZOLTAN_LOAD_BALANCING_H
+#define FPMAS_ZOLTAN_LOAD_BALANCING_H
+
+/** \file src/fpmas/load_balancing/zoltan_load_balancing.h
+ * ZoltanLoadBalancing implementation.
+ */
 
 #include "fpmas/api/load_balancing//load_balancing.h"
 #include "zoltan_cpp.h"

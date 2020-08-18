@@ -1,5 +1,9 @@
-#ifndef PTR_WRAPPER_API_H
-#define PTR_WRAPPER_API_H
+#ifndef FPMAS_PTR_WRAPPER_API_H
+#define FPMAS_PTR_WRAPPER_API_H
+
+/** \file src/fpmas/api/utils/ptr_wrapper.h
+ * VirtualPtrWrapper implementation.
+ */
 
 namespace fpmas { namespace api { namespace utils {
 

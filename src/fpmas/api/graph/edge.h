@@ -1,7 +1,9 @@
-#ifndef EDGE_API_H
-#define EDGE_API_H
+#ifndef FPMAS_EDGE_API_H
+#define FPMAS_EDGE_API_H
 
-#include "id.h"
+/** \file src/fpmas/api/graph/edge.h
+ * Edge API
+ */
 
 namespace fpmas { namespace api { namespace graph {
 

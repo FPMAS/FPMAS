@@ -1,10 +1,13 @@
-#ifndef DISTRIBUTED_NODE_API_H
-#define DISTRIBUTED_NODE_API_H
+#ifndef FPMAS_DISTRIBUTED_NODE_API_H
+#define FPMAS_DISTRIBUTED_NODE_API_H
+
+/** \file src/fpmas/api/graph/distributed_node.h
+ * DistributedNode API
+ */
 
 #include "fpmas/api/graph/node.h"
 #include "fpmas/api/graph/distributed_edge.h"
 #include "fpmas/api/synchro/mutex.h"
-#include "distributed_id.h"
 
 namespace fpmas { namespace api { namespace graph {
 

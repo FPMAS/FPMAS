@@ -1,14 +1,14 @@
-#ifndef DISTRIBUTED_GRAPH_API_H
-#define DISTRIBUTED_GRAPH_API_H
+#ifndef FPMAS_DISTRIBUTED_GRAPH_API_H
+#define FPMAS_DISTRIBUTED_GRAPH_API_H
+
+/** \file src/fpmas/api/graph/distributed_graph.h
+ * DistributedGraph API
+ */
 
 #include "fpmas/api/communication/communication.h"
-#include "fpmas/api/graph/graph.h"
 #include "fpmas/api/graph/location_manager.h"
-#include "fpmas/api/graph/distributed_node.h"
 #include "fpmas/api/load_balancing/load_balancing.h"
 #include "fpmas/api/synchro/sync_mode.h"
-
-#include "distributed_id.h"
 
 namespace fpmas {namespace api {namespace graph {
 

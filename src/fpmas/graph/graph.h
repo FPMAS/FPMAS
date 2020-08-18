@@ -1,12 +1,14 @@
-#ifndef BASIC_GRAPH_H
-#define BASIC_GRAPH_H
+#ifndef FPMAS_GRAPH_H
+#define FPMAS_GRAPH_H
 
-#include "fpmas/utils/log.h"
-#include "fpmas/utils/macros.h"
+/** \file src/fpmas/graph/graph.h
+ * Graph implementation.
+ */
+
 #include "fpmas/api/graph/graph.h"
 
-#include "node.h"
-#include "edge.h"
+#include "fpmas/graph/node.h"
+#include "fpmas/graph/edge.h"
 
 namespace fpmas { namespace graph {
 	template<

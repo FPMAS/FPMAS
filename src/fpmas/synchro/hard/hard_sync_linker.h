@@ -1,11 +1,13 @@
-#ifndef HARD_SYNC_LINKER_H
-#define HARD_SYNC_LINKER_H
+#ifndef FPMAS_HARD_SYNC_LINKER_H
+#define FPMAS_HARD_SYNC_LINKER_H
+
+/** \file src/fpmas/synchro/hard/hard_sync_linker.h
+ * HardSyncMode SyncLinker implementation.
+ */
 
 #include "fpmas/utils/macros.h"
 
-#include "fpmas/api/communication/communication.h"
 #include "fpmas/api/synchro/sync_mode.h"
-#include "./api/client_server.h"
 #include "fpmas/graph/distributed_edge.h"
 #include "server_pack.h"
 
@@ -15,7 +17,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	using fpmas::api::graph::LocationState;
 
 	/**
-	 * api::LinkServer implemenation.
+	 * api::LinkServer implementation.
 	 */
 	template<typename T>
 		class LinkServer : public api::LinkServer {

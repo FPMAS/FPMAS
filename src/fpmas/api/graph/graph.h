@@ -1,9 +1,14 @@
 #ifndef FPMAS_GRAPH_API_H
 #define FPMAS_GRAPH_API_H
 
-#include <unordered_map>
-#include "node.h"
+/** \file src/fpmas/api/graph/graph.h
+ * Graph API
+ */
 
+#include <unordered_map>
+#include "fpmas/api/graph/node.h"
+#include "fpmas/api/graph/id.h"
+#include "fpmas/api/utils/callback.h"
 
 namespace fpmas { namespace api { namespace graph {
 		/**

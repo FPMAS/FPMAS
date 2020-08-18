@@ -1,8 +1,11 @@
-#ifndef SCHEDULED_LOAD_BALANCING_H
-#define SCHEDULED_LOAD_BALANCING_H
+#ifndef FPMAS_SCHEDULED_LOAD_BALANCING_H
+#define FPMAS_SCHEDULED_LOAD_BALANCING_H
+
+/** \file src/fpmas/load_balancing/scheduled_load_balancing.h
+ * ScheduledLoadBalancing implementation.
+ */
 
 #include "fpmas/api/load_balancing/load_balancing.h"
-#include "fpmas/api/scheduler/scheduler.h"
 #include "fpmas/api/runtime/runtime.h"
 #include "fpmas/scheduler/scheduler.h"
 

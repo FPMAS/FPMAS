@@ -1,7 +1,10 @@
-#ifndef MPI_COMMUNICATOR_API_H
-#define MPI_COMMUNICATOR_API_H
+#ifndef FPMAS_COMMUNICATION_API_H
+#define FPMAS_COMMUNICATION_API_H
 
-#include "mpi.h"
+/** \file src/fpmas/api/communication/communication.h
+ * Communication API
+ */
+
 #include "fpmas/api/graph/distributed_id.h"
 
 namespace fpmas { namespace api { namespace communication {

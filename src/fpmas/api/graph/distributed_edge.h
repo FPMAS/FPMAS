@@ -1,5 +1,9 @@
-#ifndef DISTRIBUTED_EDGE_API_H
-#define DISTRIBUTED_EDGE_API_H
+#ifndef FPMAS_DISTRIBUTED_EDGE_API_H
+#define FPMAS_DISTRIBUTED_EDGE_API_H
+
+/** \file src/fpmas/api/graph/distributed_edge.h
+ * DistributedEdge API
+ */
 
 #include "fpmas/api/graph/edge.h"
 #include "distributed_id.h"

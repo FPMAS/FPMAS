@@ -1,6 +1,10 @@
 #ifndef FPMAS_MODEL_GUARDS
 #define FPMAS_MODEL_GUARDS
 
+/** \file src/fpmas/model/guards.h
+ * Model Guards implementation.
+ */
+
 #include "fpmas/api/model/model.h"
 #include "fpmas/synchro/guards.h"
 

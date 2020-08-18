@@ -1,5 +1,9 @@
-#ifndef BASIC_EDGE_H
-#define BASIC_EDGE_H
+#ifndef FPMAS_EDGE_H
+#define FPMAS_EDGE_H
+
+/** \file src/fpmas/graph/edge.h
+ * Edge implementation.
+ */
 
 #include "fpmas/api/graph/node.h"
 

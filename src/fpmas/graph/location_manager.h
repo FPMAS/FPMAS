@@ -1,8 +1,11 @@
-#ifndef LOCATION_MANAGER_H
-#define LOCATION_MANAGER_H
+#ifndef FPMAS_LOCATION_MANAGER_H
+#define FPMAS_LOCATION_MANAGER_H
+
+/** \file src/fpmas/graph/location_manager.h
+ * LocationManager implementation.
+ */
 
 #include "fpmas/api/graph/location_manager.h"
-#include "fpmas/api/graph/location_state.h"
 
 #include "fpmas/communication/communication.h"
 #include "fpmas/utils/log.h"

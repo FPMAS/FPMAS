@@ -1,9 +1,11 @@
-#ifndef LOCATION_MANAGER_API_H
-#define LOCATION_MANAGER_API_H
+#ifndef FPMAS_LOCATION_MANAGER_API_H
+#define FPMAS_LOCATION_MANAGER_API_H
 
-#include "fpmas/api/graph/id.h"
+/** \file src/fpmas/api/graph/location_manager.h
+ * LocationManager API
+ */
+
 #include "fpmas/api/graph/graph.h"
-#include "distributed_id.h"
 #include "fpmas/api/graph/distributed_node.h"
 
 namespace fpmas {namespace api { namespace graph {

@@ -1,9 +1,12 @@
-#ifndef TERMINATION_H
-#define TERMINATION_H
+#ifndef FPMAS_TERMINATION_H
+#define FPMAS_TERMINATION_H
+
+/** \file src/fpmas/synchro/hard/termination.h
+ * TerminationAlgorithm implementation.
+ */
 
 #include "fpmas/communication/communication.h"
-#include "fpmas/api/communication/communication.h"
-#include "fpmas/synchro/hard/api/hard_sync_mutex.h"
+#include "fpmas/synchro/hard/api/client_server.h"
 #include "fpmas/utils/log.h"
 
 namespace fpmas { namespace synchro { namespace hard {

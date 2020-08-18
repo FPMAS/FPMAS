@@ -1,7 +1,10 @@
-#ifndef HARD_DATA_SYNC_H
-#define HARD_DATA_SYNC_H
+#ifndef FPMAS_HARD_DATA_SYNC_H
+#define FPMAS_HARD_DATA_SYNC_H
 
-#include "fpmas/api/communication/communication.h"
+/** \file src/fpmas/synchro/hard/hard_data_sync.h
+ * HardSyncMode DataSync implementation.
+ */
+
 #include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/synchro/hard/api/hard_sync_mutex.h"
 #include "server_pack.h"

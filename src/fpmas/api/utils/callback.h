@@ -1,5 +1,9 @@
-#ifndef CALLBACK_API_H
-#define CALLBACK_API_H
+#ifndef FPMAS_CALLBACK_API_H
+#define FPMAS_CALLBACK_API_H
+
+/** \file src/fpmas/api/utils/callback.h
+ * Callback API
+ */
 
 namespace fpmas { namespace api { namespace utils {
 	template<typename... Args>

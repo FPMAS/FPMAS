@@ -1,5 +1,9 @@
-#ifndef CLIENT_SERVER_API_H
-#define CLIENT_SERVER_API_H
+#ifndef FPMAS_CLIENT_SERVER_API_H
+#define FPMAS_CLIENT_SERVER_API_H
+
+/** \file src/fpmas/synchro/hard/api/client_server.h
+ * ClientServer API
+ */
 
 #include "enums.h"
 #include "fpmas/api/graph/distributed_edge.h"

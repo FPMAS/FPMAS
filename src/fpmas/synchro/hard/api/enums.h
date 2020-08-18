@@ -1,5 +1,9 @@
-#ifndef HARD_SYNC_ENUMS_H
-#define HARD_SYNC_ENUMS_H
+#ifndef FPMAS_HARD_SYNC_ENUMS_H
+#define FPMAS_HARD_SYNC_ENUMS_H
+
+/** \file src/fpmas/synchro/hard/api/enums.h
+ * HardSyncMode related enums.
+ */
 
 namespace fpmas { namespace synchro {
 	namespace hard { namespace api {

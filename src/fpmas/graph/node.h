@@ -1,5 +1,12 @@
-#ifndef BASIC_NODE_H
-#define BASIC_NODE_H
+#ifndef FPMAS_NODE_H
+#define FPMAS_NODE_H
+
+/** \file src/fpmas/graph/node.h
+ * Node implementation.
+ */
+
+#include <unordered_map>
+#include <algorithm>
 
 #include "fpmas/utils/log.h"
 #include "fpmas/utils/macros.h"

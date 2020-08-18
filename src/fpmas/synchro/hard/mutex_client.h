@@ -1,12 +1,13 @@
-#ifndef MUTEX_CLIENT_H
-#define MUTEX_CLIENT_H
+#ifndef FPMAS_MUTEX_CLIENT_H
+#define FPMAS_MUTEX_CLIENT_H
+
+/** \file src/fpmas/synchro/hard/mutex_client.h
+ * MutexClient implementation.
+ */
 
 #include "fpmas/utils/macros.h"
-#include "fpmas/api/communication/communication.h"
-#include "./api/enums.h"
-#include "./api/hard_sync_mutex.h"
+#include "fpmas/synchro/hard/api/hard_sync_mutex.h"
 #include "fpmas/utils/data_update_pack.h"
-#include "fpmas/utils/log.h"
 #include "server_pack.h"
 
 namespace fpmas { namespace synchro { namespace hard {
