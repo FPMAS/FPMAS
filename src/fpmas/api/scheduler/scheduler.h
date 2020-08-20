@@ -123,7 +123,7 @@ namespace fpmas { namespace api { namespace scheduler {
 			 *
 			 * @param task end task
 			 */
-			virtual void setEndTask(Task&) = 0;
+			virtual void setEndTask(Task& task) = 0;
 			/**
 			 * Gets a reference to the end task of this job.
 			 *

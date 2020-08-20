@@ -211,7 +211,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			expectAcquire(source, id, mock);
 
 			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
-			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(0));
+			EXPECT_CALL(*mock, sharedLockCount).WillRepeatedly(Return(0));
 
 			expectAcquireResponse(source, id, mock->data(), mock);
 		}
@@ -229,7 +229,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			// The resource is not locked...
 			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
 			// ... but some threads still have a shared lock
-			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(5));
+			EXPECT_CALL(*mock, sharedLockCount).WillRepeatedly(Return(5));
 
 			EXPECT_CALL(*mock, pushRequest(MutexRequest(id, source, MutexRequestType::ACQUIRE)));
 		}
@@ -268,7 +268,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			expectLock(source, id, mock);
 			
 			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
-			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(0));
+			EXPECT_CALL(*mock, sharedLockCount).WillRepeatedly(Return(0));
 
 			expectLockResponse(source, id, mock);
 		}
@@ -285,7 +285,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			expectLock(source, id, mock);
 
 			EXPECT_CALL(*mock, locked).WillRepeatedly(Return(false));
-			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(5));
+			EXPECT_CALL(*mock, sharedLockCount).WillRepeatedly(Return(5));
 
 			EXPECT_CALL(*mock, pushRequest(MutexRequest(id, source, MutexRequestType::LOCK)));
 		}
@@ -343,7 +343,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			int source, DistributedId id, int shared_locks,
 			std::queue<MutexRequest>& requests, MockHardSyncMutex<int>* mock) {
 
-			EXPECT_CALL(*mock, lockedShared).WillRepeatedly(Return(shared_locks));
+			EXPECT_CALL(*mock, sharedLockCount).WillRepeatedly(Return(shared_locks));
 
 			EXPECT_CALL(*mock, requestsToProcess)
 				.WillOnce(Return(requests));

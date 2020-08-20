@@ -51,6 +51,12 @@ namespace fpmas { namespace synchro {
 				HardDataSync<T> data_sync;
 
 				public:
+				/**
+				 * HardSyncMode contructor.
+				 *
+				 * @param graph reference to managed graph
+				 * @param comm MPI communicator
+				 */
 				HardSyncMode(
 						fpmas::api::graph::DistributedGraph<T>& graph,
 						fpmas::api::communication::MpiCommunicator& comm) :

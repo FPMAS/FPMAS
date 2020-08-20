@@ -81,13 +81,13 @@ class DistributedGraphTest : public ::testing::Test {
 
 	
 		void SetUp() override {
-			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker)
+			ON_CALL(graph.getSyncMode(), getSyncLinker)
 				.WillByDefault(ReturnRef(mock_sync_linker));
-			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker)
+			EXPECT_CALL(graph.getSyncMode(), getSyncLinker)
 				.Times(AnyNumber());
-			ON_CALL(graph.getSyncModeRuntime(), getDataSync)
+			ON_CALL(graph.getSyncMode(), getDataSync)
 				.WillByDefault(ReturnRef(mock_data_sync));
-			EXPECT_CALL(graph.getSyncModeRuntime(), getDataSync)
+			EXPECT_CALL(graph.getSyncMode(), getDataSync)
 				.Times(AnyNumber());
 		}
 
@@ -120,7 +120,7 @@ TEST_F(DistributedGraphTest, build_node) {
 
 	NodeType* build_mutex_arg;
 	MockMutex<int>* built_mutex = new MockMutex<int>;
-	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncModeRuntime()), buildMutex)
+	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncMode()), buildMutex)
 		.WillOnce(DoAll(SaveArg<0>(&build_mutex_arg), Return(built_mutex)));
 
 	auto node = graph.buildNode(2);
@@ -368,7 +368,7 @@ class DistributedGraphImportNodeTest : public DistributedGraphTest {
 	protected:
 		typedef typename GraphType::NodeType NodeType; // MockDistributedNode<int, MockMutex>
 		typedef typename GraphType::EdgeType EdgeType; // MockDistributedEdge<int, MockMutex>
-		typedef typename decltype(graph)::PartitionMap PartitionMap;
+		typedef typename fpmas::api::load_balancing::PartitionMap PartitionMap;
 
 		PartitionMap partition;
 		std::unordered_map<int, std::vector<NodePtrWrapper<int>>> imported_node_mocks;
@@ -408,7 +408,7 @@ TEST_F(DistributedGraphImportNodeTest, import_node) {
 
 	NodeType* build_mutex_arg;
 	EXPECT_CALL(
-		const_cast<MockSyncMode<int>&>(graph.getSyncModeRuntime()), buildMutex)
+		const_cast<MockSyncMode<int>&>(graph.getSyncMode()), buildMutex)
 		.WillOnce(DoAll(SaveArg<0>(&build_mutex_arg), Return(new MockMutex<int>)));
 
 	// Callback call test
@@ -438,7 +438,7 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 	EXPECT_CALL(location_manager, setLocal);
 
 	NodeType* build_mutex_arg;
-	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncModeRuntime()),
+	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncMode()),
 		buildMutex).WillOnce(
 			DoAll(SaveArg<0>(&build_mutex_arg), Return(new MockMutex<int>)));
 
@@ -493,7 +493,7 @@ class DistributedGraphImportEdgeTest : public DistributedGraphImportNodeTest {
 
 		EXPECT_CALL(location_manager, addManagedNode).Times(AnyNumber());
 		EXPECT_CALL(location_manager, setLocal).Times(AnyNumber());
-		EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(AnyNumber());
+		EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(AnyNumber());
 		src = graph.buildNode();
 		tgt = graph.buildNode();
 
@@ -642,7 +642,7 @@ class DistributedGraphImportEdgeWithGhostTest : public DistributedGraphImportNod
 		void SetUp() override {
 			DistributedGraphTest::SetUp();
 
-			EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex);
+			EXPECT_CALL(graph.getSyncMode(), buildMutex);
 			EXPECT_CALL(location_manager, addManagedNode);
 			EXPECT_CALL(location_manager, setLocal);
 			local_node = graph.buildNode();
@@ -654,7 +654,7 @@ class DistributedGraphImportEdgeWithGhostTest : public DistributedGraphImportNod
 			ASSERT_EQ(graph.getNodes().count(mock_two->getId()), 0);
 
 			// SetUp should be call once for the created tgt or src
-			EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex);
+			EXPECT_CALL(graph.getSyncMode(), buildMutex);
 		}
 
 		void checkEdgeAndGhostStructure() {
@@ -767,7 +767,7 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_src) {
 /* distribute_tests */
 /********************/
 class DistributedGraphDistributeTest : public DistributedGraphTest {
-	typedef typename GraphType::PartitionMap PartitionMap;
+	typedef typename fpmas::api::load_balancing::PartitionMap PartitionMap;
 
 	protected:
 		std::array<DistributedId, 5> node_ids;
@@ -782,7 +782,7 @@ class DistributedGraphDistributeTest : public DistributedGraphTest {
 
 			EXPECT_CALL(location_manager, addManagedNode).Times(5);
 			EXPECT_CALL(location_manager, setLocal).Times(5);
-			EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(5);
+			EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(5);
 			for(int i=0; i < 5;i++) {
 				auto node = graph.buildNode();
 				node_ids[i] = node->getId();
@@ -923,7 +923,7 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 	EXPECT_CALL(location_manager, setLocal(_))
 		.WillOnce(SaveArg<0>(&set_local_args[0]))
 		.WillOnce(SaveArg<0>(&set_local_args[1]));
-	EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(2);
+	EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(2);
 	
 	EXPECT_CALL(location_manager, updateLocations());
 
@@ -1056,7 +1056,7 @@ TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
 	EXPECT_CALL(*mock_src, unlinkOut);
 	EXPECT_CALL(*mock_tgt, unlinkIn);
 
-	EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(2);
+	EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(2);
 
 	// Mock edge import
 	EXPECT_CALL(

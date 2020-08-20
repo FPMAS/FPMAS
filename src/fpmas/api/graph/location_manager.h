@@ -33,6 +33,9 @@ namespace fpmas {namespace api { namespace graph {
 	template<typename T>
 	class LocationManager {
 		public:
+			/**
+			 * Node map type.
+			 */
 			typedef typename fpmas::api::graph::Graph<DistributedNode<T>, DistributedEdge<T>>::NodeMap NodeMap;
 
 			/**

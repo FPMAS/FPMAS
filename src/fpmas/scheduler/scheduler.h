@@ -90,11 +90,10 @@ namespace fpmas { namespace scheduler {
 			void resizeCycle(size_t new_size);
 
 		public:
-			void schedule(Date date, const api::scheduler::Job&) override;
-			void schedule(Date date, Period period, const api::scheduler::Job&) override;
-			void schedule(Date date, Date end, Period period, const api::scheduler::Job&) override;
-
-			void build(Date date, fpmas::api::scheduler::Epoch&) const override;
+			void schedule(api::scheduler::Date date, const api::scheduler::Job&) override;
+			void schedule(api::scheduler::Date date, api::scheduler::Period period, const api::scheduler::Job&) override;
+			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, const api::scheduler::Job&) override;
+			void build(api::scheduler::Date date, fpmas::api::scheduler::Epoch&) const override;
 	};
 
 }}

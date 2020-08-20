@@ -212,7 +212,7 @@ class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 		int counter = 0;
 	public:
 		void act() override {
-			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", ID_C_STR(node()->getId()), counter);
+			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbour : node()->outNeighbors()) {
 				ASSERT_THAT(static_cast<const ReaderAgent*>(neighbour->mutex()->read().get())->getCounter(), Ge(counter));
 			}
@@ -227,11 +227,11 @@ class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 		}
 };
 
-void to_json(nlohmann::json& j, const fpmas::api::utils::VirtualPtrWrapper<ReaderAgent>& agent) {
+void to_json(nlohmann::json& j, const fpmas::api::utils::PtrWrapper<ReaderAgent>& agent) {
 	j["c"] = agent->getCounter();
 }
 
-void from_json(const nlohmann::json& j, fpmas::api::utils::VirtualPtrWrapper<ReaderAgent>& agent) {
+void from_json(const nlohmann::json& j, fpmas::api::utils::PtrWrapper<ReaderAgent>& agent) {
 	ReaderAgent* agent_ptr = new ReaderAgent;
 	agent_ptr->setCounter(j.at("c").get<int>());
 	agent = {agent_ptr};
@@ -370,7 +370,7 @@ class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
 		int counter = 0;
 	public:
 		void act() override {
-			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", ID_C_STR(node()->getId()), counter);
+			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbour : node()->outNeighbors()) {
 				WriterAgent* neighbour_agent = static_cast<WriterAgent*>(neighbour->mutex()->acquire().get());
 
@@ -388,11 +388,11 @@ class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
 		}
 };
 
-void to_json(nlohmann::json& j, const fpmas::api::utils::VirtualPtrWrapper<WriterAgent>& agent) {
+void to_json(nlohmann::json& j, const fpmas::api::utils::PtrWrapper<WriterAgent>& agent) {
 	j["c"] = agent->getCounter();
 }
 
-void from_json(const nlohmann::json& j, fpmas::api::utils::VirtualPtrWrapper<WriterAgent>& agent) {
+void from_json(const nlohmann::json& j, fpmas::api::utils::PtrWrapper<WriterAgent>& agent) {
 	WriterAgent* agent_ptr = new WriterAgent;
 	agent_ptr->setCounter(j.at("c").get<int>());
 	agent = {agent_ptr};
@@ -481,7 +481,7 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 	std::set<DistributedId> unlinks;
 
 	void act() override {
-		FPMAS_LOGD(node()->getLocation(), "GHOST_TEST", "Executing agent %s", ID_C_STR(node()->getId()));
+		FPMAS_LOGD(node()->getLocation(), "GHOST_TEST", "Executing agent %s", FPMAS_C_STR(node()->getId()));
 		if(node()->getOutgoingEdges().size() >= 2) {
 			auto out_neighbors = node()->outNeighbors();
 			std::uniform_int_distribution<unsigned long> random_neighbor {0, out_neighbors.size()-1};
@@ -504,12 +504,12 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 	}
 };
 
-void to_json(nlohmann::json& j, const fpmas::api::utils::VirtualPtrWrapper<LinkerAgent>& agent) {
+void to_json(nlohmann::json& j, const fpmas::api::utils::PtrWrapper<LinkerAgent>& agent) {
 	j["links"] = agent->links;
 	j["unlinks"] = agent->unlinks;
 }
 
-void from_json(const nlohmann::json& j, fpmas::api::utils::VirtualPtrWrapper<LinkerAgent>& agent) {
+void from_json(const nlohmann::json& j, fpmas::api::utils::PtrWrapper<LinkerAgent>& agent) {
 	LinkerAgent* agent_ptr = new LinkerAgent;
 	agent_ptr->links = j.at("links").get<std::set<DistributedId>>();
 	agent_ptr->unlinks = j.at("unlinks").get<std::set<DistributedId>>();

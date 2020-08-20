@@ -75,6 +75,10 @@ if(DOXYGEN_FOUND)
 	set(DOXYGEN_MACRO_EXPANSION "YES")
 	set(DOXYGEN_HTML_OUTPUT ".")
 	set(DOXYGEN_IMAGE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/img)
+	#set(DOXYGEN_CLANG_ASSISTED_PARSING "YES")
+	#set(DOXYGEN_CLANG_DATABASE_PATH "build/compile_commands.json")
+	set(DOXYGEN_SORT_MEMBER_DOCS "NO")
+	set(DOXYGEN_PREDEFINED "DOXYGEN_BUILD")
 	set(DOXYGEN_ALIASES
 		[[LOCAL="\ref fpmas::api::graph::LocationState \"LOCAL\""]]
 		[[DISTANT="\ref fpmas::api::graph::LocationState \"DISTANT\""]]
@@ -84,15 +88,25 @@ if(DOXYGEN_FOUND)
 		[[AgentGroups="\ref fpmas::api::model::AgentGroup \"AgentGroups\""]]
 		[[AgentNode="\ref fpmas::api::model::AgentNode \"AgentNode\""]]
 		[[AgentGraph="\ref fpmas::api::model::AgentGraph \"AgentGraph\""]]
+		[[AgentTask="\ref fpmas::api::model::AgentTask \"AgentTask\""]]
 		[[AgentTasks="\ref fpmas::api::model::AgentTask \"AgentTasks\""]]
 		[[AgentNode="\ref fpmas::api::model::AgentNode \"AgentNode\""]]
 		[[Job="\ref fpmas::api::scheduler::Job \"Job\""]]
 		[[Scheduler="\ref fpmas::api::scheduler::Scheduler \"Scheduler\""]]
 		[[Runtime="\ref fpmas::api::runtime::Runtime \"Runtime\""]]
+		[[implem="\par Implementation details"]]
 		)
-	#set(DOXYGEN_HAVE_DOT "YES")
+	set(DOXYGEN_HAVE_DOT "YES")
 	#set(DOXYGEN_TEMPLATE_RELATIONS "YES")
 	set(DOXYGEN_VERBATIM_VARS DOXYGEN_ALIASES)
+	set(DOXYGEN_EXCLUDE_SYMBOLS
+		[[Node< DistributedId, api::graph::DistributedEdge< T > >]]
+		[[Edge< DistributedId, api::graph::DistributedNode< T > >]]
+		[[Graph< api::graph::DistributedNode< T >, api::graph::DistributedEdge< T > >]]
+		[[DIST_GRAPH_PARAMS]] [[DIST_GRAPH_PARAMS_SPEC]]
+		)
+	set(DOXYGEN_EXCLUDE "src/fpmas/utils/log.h")
+	set(DOXYGEN_HIDE_FRIEND_COMPOUNDS "YES")
 	doxygen_add_docs(doc
 		${CMAKE_CURRENT_SOURCE_DIR}/src
 		)

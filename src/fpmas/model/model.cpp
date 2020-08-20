@@ -31,7 +31,7 @@ namespace fpmas { namespace model {
 	void InsertAgentNodeCallback::call(AgentNode *node) {
 		api::model::AgentPtr& agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
-				"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", ID_C_STR(node->getId()));
+				"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", FPMAS_C_STR(node->getId()));
 		agent->setGroup(&model.getGroup(agent->groupId()));
 		agent->group()->insert(&agent);
 		agent->setNode(node);
@@ -44,7 +44,7 @@ namespace fpmas { namespace model {
 	void EraseAgentNodeCallback::call(AgentNode *node) {
 		api::model::AgentPtr& agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
-				"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", ID_C_STR(node->getId()));
+				"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", FPMAS_C_STR(node->getId()));
 		// Deletes task and agent
 		if(node->state() == graph::LocationState::LOCAL) {
 			// Unschedule agent task. If the node is DISTANT, task was already
@@ -59,14 +59,14 @@ namespace fpmas { namespace model {
 	void SetAgentLocalCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
-				"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", ID_C_STR(node->getId()));
+				"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", FPMAS_C_STR(node->getId()));
 		model.getGroup(agent->groupId()).job().add(*agent->task());
 	}
 
 	void SetAgentDistantCallback::call(AgentNode *node) {
 		api::model::Agent* agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
-				"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", ID_C_STR(node->getId()));
+				"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", FPMAS_C_STR(node->getId()));
 		// Unschedule agent task 
 		model.getGroup(agent->groupId()).job().remove(*agent->task());
 	}

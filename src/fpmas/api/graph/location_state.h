@@ -28,6 +28,13 @@ namespace fpmas { namespace api { namespace graph {
 		DISTANT
 	};
 
+	/**
+	 * LocationState stream output operator.
+	 *
+	 * @param os ostream
+	 * @param loc location state
+	 * @return reference to input ostream
+	 */
 	inline std::ostream& operator<<(std::ostream& os, const LocationState& loc) {
 		switch(loc) {
 			case LOCAL:

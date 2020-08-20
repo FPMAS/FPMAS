@@ -192,7 +192,7 @@ namespace fpmas { namespace api { namespace graph {
 				 * @param id edge id
 				 * @return corresponding edge in the graph
 				 */
-				virtual EdgeType* getEdge(EdgeIdType) = 0;
+				virtual EdgeType* getEdge(EdgeIdType id) = 0;
 				/**
 				 * /copydoc getEdge(EdgeIdType)
 				 */

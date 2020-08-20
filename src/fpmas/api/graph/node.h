@@ -115,7 +115,7 @@ namespace fpmas { namespace api { namespace graph {
 				 * connected to this node with an **outgoing** edge on the
 				 * specified layer, as returned by getOutgoingEdges(layer_id).
 				 *
-				 * @param id layer ID
+				 * @param layer_id layer ID
 				 * @return pointers to outgoing neighbors
 				 */
 				virtual const std::vector<typename EdgeType::NodeType*> outNeighbors(LayerId layer_id) const = 0;

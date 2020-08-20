@@ -91,7 +91,7 @@ TEST_F(HardSyncMutexTest, unlocked_local_read) {
 
 	EXPECT_CALL(mock_mutex_server, wait).Times(0);
 	ASSERT_EQ(hard_sync_mutex.read(), 14);
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 1);
 }
 
 
@@ -112,7 +112,7 @@ TEST_F(HardSyncMutexTest, locked_local_read) {
 		)));
 
 	ASSERT_EQ(hard_sync_mutex.read(), 14);
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 1);
 }
 
 /*
@@ -125,7 +125,7 @@ TEST_F(HardSyncMutexTest, shared_locked_local_read) {
 	mock_mutex_server.lockShared(&hard_sync_mutex);
 
 	ASSERT_EQ(hard_sync_mutex.read(), 14);
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 2);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 2);
 }
 
 /*
@@ -153,7 +153,7 @@ TEST_F(HardSyncMutexTest, partial_local_release_read) {
 	EXPECT_CALL(mock_mutex_server, notify).Times(0);
 
 	hard_sync_mutex.releaseRead();
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 1);
 }
 
 /*
@@ -167,7 +167,7 @@ TEST_F(HardSyncMutexTest, last_local_release_read) {
 	EXPECT_CALL(mock_mutex_server, notify(id));
 
 	hard_sync_mutex.releaseRead();
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 0);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 0);
 }
 
 /*
@@ -381,7 +381,7 @@ TEST_F(HardSyncMutexTest, unlocked_local_lock_shared) {
 	EXPECT_CALL(mock_mutex_server, wait).Times(0);
 
 	hard_sync_mutex.lockShared();
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 1);
 }
 
 
@@ -402,7 +402,7 @@ TEST_F(HardSyncMutexTest, locked_local_lock_shared) {
 		)));
 
 	hard_sync_mutex.lockShared();
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 1);
 }
 
 /*
@@ -415,7 +415,7 @@ TEST_F(HardSyncMutexTest, shared_locked_local_lock_shared) {
 	mock_mutex_server.lockShared(&hard_sync_mutex);
 
 	hard_sync_mutex.lockShared();
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 2);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 2);
 }
 
 /*
@@ -441,7 +441,7 @@ TEST_F(HardSyncMutexTest, partial_local_unlock_shared) {
 	EXPECT_CALL(mock_mutex_server, notify).Times(0);
 
 	hard_sync_mutex.unlockShared();
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 1);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 1);
 }
 
 /*
@@ -455,7 +455,7 @@ TEST_F(HardSyncMutexTest, last_local_unlock_shared) {
 	EXPECT_CALL(mock_mutex_server, notify(id));
 
 	hard_sync_mutex.unlockShared();
-	ASSERT_EQ(hard_sync_mutex.lockedShared(), 0);
+	ASSERT_EQ(hard_sync_mutex.sharedLockCount(), 0);
 }
 
 /*

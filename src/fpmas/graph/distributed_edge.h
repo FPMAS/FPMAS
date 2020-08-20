@@ -10,7 +10,9 @@
 
 namespace fpmas { namespace graph {
 
+#ifndef DOXYGEN_BUILD
 	template<typename> class DistributedNode;
+#endif
 	using api::graph::LocationState;
 
 	/**
@@ -27,32 +29,47 @@ namespace fpmas { namespace graph {
 					LocationState _state = LocationState::LOCAL;
 
 				public:
-					using typename EdgeBase::IdType;
-					using typename EdgeBase::LayerId;
+					using typename graph::Edge<DistributedId, api::graph::DistributedNode<T>>::IdType;
 
-					DistributedEdge(IdType id, LayerId layer)
+					/**
+					 * DistributedEdge constructor.
+					 *
+					 * @param id edge id
+					 * @param layer id of the layer on which the edge is located
+					 */
+					DistributedEdge(DistributedId id, api::graph::LayerId layer)
 						: EdgeBase(id, layer) {}
 
-					LocationState state() const override {return _state;}
-					void setState(LocationState state) override {this->_state = state;}
+					api::graph::LocationState state() const override {return _state;}
+					void setState(api::graph::LocationState state) override {this->_state = state;}
 			};
 
 
+	/**
+	 * Alias for a DistributedEdge PtrWrapper
+	 */
 	template<typename T>
-	using EdgePtrWrapper = api::utils::VirtualPtrWrapper<api::graph::DistributedEdge<T>>;
+	using EdgePtrWrapper = api::utils::PtrWrapper<api::graph::DistributedEdge<T>>;
 }}
 
 namespace nlohmann {
-	template<typename T>
-		using EdgePtrWrapper = fpmas::graph::EdgePtrWrapper<T>;
-	template<typename T>
-		using NodePtrWrapper = fpmas::graph::NodePtrWrapper<T>;
+	using fpmas::graph::EdgePtrWrapper;
 
 	/**
 	 * DistributedEdge JSON serialization.
 	 */
 	template<typename T>
 		struct adl_serializer<EdgePtrWrapper<T>> {
+			/**
+			 * DistributedEdge json unserialization.
+			 *
+			 * @param j json
+			 * @return wrapped heap allocated unserialized
+			 * fpmas::graph::DistributedEdge. Source and target nodes are
+			 * unserialized using nlohmann::adl_serializer<NodePtrWrapper>
+			 *
+			 * @see \ref adl_serializer_node "nlohmann::adl_serializer<NodePtrWrapper>"
+			 */
 			static EdgePtrWrapper<T> from_json(const json& j) {
 				fpmas::api::graph::DistributedEdge<T>* edge
 					= new fpmas::graph::DistributedEdge<T> {
@@ -73,6 +90,12 @@ namespace nlohmann {
 				return edge;
 			}
 
+			/**
+			 * DistributedEdge json serialization.
+			 *
+			 * @param j json
+			 * @param edge wrapper of pointer to the DistributedEdge to serialize
+			 */
 			static void to_json(json& j, const EdgePtrWrapper<T>& edge) {
 				j["id"] = edge->getId();
 				j["layer"] = edge->getLayer();

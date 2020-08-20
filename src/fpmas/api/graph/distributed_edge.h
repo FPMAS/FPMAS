@@ -10,7 +10,10 @@
 #include "location_state.h"
 
 namespace fpmas {namespace api { namespace graph {
+#ifndef DOXYGEN_BUILD
 	template<typename> class DistributedNode;
+#endif
+
 	/**
 	 * DistributedEdge API.
 	 *

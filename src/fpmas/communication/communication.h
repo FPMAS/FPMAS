@@ -161,11 +161,11 @@ namespace fpmas { namespace communication {
 			 * Exchanged data are stored in DataPack instances.
 			 *
 			 * @param export_map data to export to each proc
-			 * @param datatype MPI type of the data to send / receive
+			 * @param datatype MPI datatype of the data to send / receive
 			 * @return data received from each proc
 			 */
 			std::unordered_map<int, DataPack> 
-				allToAll(std::unordered_map<int, DataPack> data_pack, MPI_Datatype datatype) override;
+				allToAll(std::unordered_map<int, DataPack> export_map, MPI_Datatype datatype) override;
 
 			/**
 			 * Performs an MPI_Gather operation.
@@ -173,12 +173,13 @@ namespace fpmas { namespace communication {
 			 * Exchanged data are stored in DataPack instances.
 			 *
 			 * @param data data to send to root
+			 * @param datatype MPI datatype
 			 * @param root rank of the root process
 			 * @return if `rank == root`, a vector containing gathered data,
 			 * else an empty vector.
 			 */
 			std::vector<DataPack>
-				gather(DataPack, MPI_Datatype, int root) override;
+				gather(DataPack data, MPI_Datatype datatype, int root) override;
 			/**
 			 * MpiCommunicator destructor.
 			 *

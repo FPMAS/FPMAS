@@ -22,8 +22,17 @@ namespace fpmas { namespace synchro { namespace hard {
 	template<typename T>
 		class LinkServer : public api::LinkServer {
 			public:
+				/**
+				 * DistributedEdge API.
+				 */
 				typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
+				/**
+				 * TypedMpi used to transmit Edges with MPI.
+				 */
 				typedef fpmas::api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
+				/**
+				 * TypedMpi used to transmit DistributedIds with MPI.
+				 */
 				typedef fpmas::api::communication::TypedMpi<DistributedId> IdMpi;
 			private:
 				Epoch epoch = Epoch::EVEN;
@@ -47,7 +56,7 @@ namespace fpmas { namespace synchro { namespace hard {
 					:  comm(comm), graph(graph), id_mpi(id_mpi), edge_mpi(edge_mpi) {}
 
 				Epoch getEpoch() const override {return epoch;}
-				void setEpoch(Epoch epoch) override {this->epoch = epoch;}
+				void setEpoch(api::Epoch epoch) override {this->epoch = epoch;}
 
 				void handleIncomingRequests() override;
 		};
@@ -63,7 +72,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			}
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
 				DistributedId unlink_id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
-				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", ID_C_STR(unlink_id), req_status.MPI_SOURCE);
+				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", FPMAS_C_STR(unlink_id), req_status.MPI_SOURCE);
 				//graph.clearEdge(graph.getEdge(unlinkId));
 				graph.erase(graph.getEdge(unlink_id));
 			}
@@ -75,41 +84,50 @@ namespace fpmas { namespace synchro { namespace hard {
 	template<typename T>
 		class LinkClient : public api::LinkClient<T> {
 			public:
-			typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
-			typedef fpmas::api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
-			typedef fpmas::api::communication::TypedMpi<DistributedId> IdMpi;
+				/**
+				 * DistributedEdge API.
+				 */
+				typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
+				/**
+				 * TypedMpi used to transmit Edges with MPI.
+				 */
+				typedef fpmas::api::communication::TypedMpi<graph::EdgePtrWrapper<T>> EdgeMpi;
+				/**
+				 * TypedMpi used to transmit DistributedIds with MPI.
+				 */
+				typedef fpmas::api::communication::TypedMpi<DistributedId> IdMpi;
 
 			private:
-			fpmas::api::communication::MpiCommunicator& comm;
-			IdMpi& id_mpi;
-			EdgeMpi& edge_mpi;
-			ServerPack<T>& server_pack;
+				fpmas::api::communication::MpiCommunicator& comm;
+				IdMpi& id_mpi;
+				EdgeMpi& edge_mpi;
+				ServerPack<T>& server_pack;
 
 			public:
-			/**
-			 * LinkClient constructor.
-			 *
-			 * @param comm MPI communicator
-			 * @param id_mpi Typed MPI used to transmit DistributedId
-			 * @param edge_mpi Typed MPI used to transmit edges
-			 * @param server_pack associated ServerPack. The ServerPack is used
-			 * to handle incoming requests (see ServerPack::waitSendRequest())
-			 * while the client is waiting for requests to be sent, in order to
-			 * avoid deadlocks.
-			 */
-			LinkClient(fpmas::api::communication::MpiCommunicator& comm, IdMpi& id_mpi, EdgeMpi& edge_mpi,
-					ServerPack<T>& server_pack)
-				: comm(comm), id_mpi(id_mpi), edge_mpi(edge_mpi), server_pack(server_pack) {}
+				/**
+				 * LinkClient constructor.
+				 *
+				 * @param comm MPI communicator
+				 * @param id_mpi Typed MPI used to transmit DistributedId
+				 * @param edge_mpi Typed MPI used to transmit edges
+				 * @param server_pack associated ServerPack. The ServerPack is used
+				 * to handle incoming requests (see ServerPack::waitSendRequest())
+				 * while the client is waiting for requests to be sent, in order to
+				 * avoid deadlocks.
+				 */
+				LinkClient(fpmas::api::communication::MpiCommunicator& comm, IdMpi& id_mpi, EdgeMpi& edge_mpi,
+						ServerPack<T>& server_pack)
+					: comm(comm), id_mpi(id_mpi), edge_mpi(edge_mpi), server_pack(server_pack) {}
 
-			/**
-			 * \copydoc api::LinkClient::link
-			 */
-			void link(const EdgeApi*) override;
+				/**
+				 * \copydoc api::LinkClient::link
+				 */
+				void link(const EdgeApi*) override;
 
-			/** 
-			 * \copydoc api::LinkClient::unlink
-			 */
-			void unlink(const EdgeApi*) override;
+				/** 
+				 * \copydoc api::LinkClient::unlink
+				 */
+				void unlink(const EdgeApi*) override;
 		};
 
 	template<typename T>
@@ -199,8 +217,9 @@ namespace fpmas { namespace synchro { namespace hard {
 	template<typename T>
 		class HardSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
 			public:
-				typedef api::TerminationAlgorithm
-					TerminationAlgorithm;
+				/**
+				 * DistributedEdge API.
+				 */
 				typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
 
 			private:

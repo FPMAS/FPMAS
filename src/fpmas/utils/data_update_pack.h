@@ -64,10 +64,22 @@ namespace nlohmann {
 	 */
     template <typename T>
     struct adl_serializer<DataUpdatePack<T>> {
+		/**
+		 * DataUpdatePack json unserialization.
+		 *
+		 * @param j json
+		 * @return unserialized DataUpdatePack
+		 */
         static DataUpdatePack<T> from_json(const json& j) {
             return {j[0].get<DistributedId>(), j[1].get<T>()};
         }
 
+		/**
+		 * DataUpdatePack json serialization.
+		 *
+		 * @param j json
+		 * @param data DataUpdatePack to serialize
+		 */
         static void to_json(json& j, const DataUpdatePack<T>& data) {
             j = json::array({data.id, data.updated_data});
         }
@@ -78,10 +90,21 @@ namespace nlohmann {
 	 */
     template <typename T>
     struct adl_serializer<NodeUpdatePack<T>> {
+		/**
+		 * NodeUpdatePack json unserialization.
+		 *
+		 * @param j json
+		 * @return unserialized NodeUpdatePack
+		 */
         static NodeUpdatePack<T> from_json(const json& j) {
             return {j[0].get<DistributedId>(), j[1].get<T>(), j[2].get<float>()};
         }
-
+		/**
+		 * NodeUpdatePack json serialization.
+		 *
+		 * @param j json
+		 * @param data NodeUpdatePack to serialize
+		 */
         static void to_json(json& j, const NodeUpdatePack<T>& data) {
             j = json::array({data.id, data.updated_data, data.updated_weight});
         }

@@ -112,7 +112,7 @@ class MockAgentBase : public fpmas::model::AgentBase<MockAgentBase<FOO>> {
 
 namespace nlohmann {
 	template<int FOO>
-	using MockAgentPtr = fpmas::api::utils::VirtualPtrWrapper<MockAgent<FOO>>;
+	using MockAgentPtr = fpmas::api::utils::PtrWrapper<MockAgent<FOO>>;
 
 	template<int FOO>
 		struct adl_serializer<MockAgentPtr<FOO>> {

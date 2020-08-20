@@ -1,14 +1,6 @@
 var searchData=
 [
-  ['scheduledloadbalancing_440',['ScheduledLoadBalancing',['../classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html',1,'fpmas::load_balancing']]],
-  ['scheduledloadbalancing_3c_20agentptr_20_3e_441',['ScheduledLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1load__balancing_1_1ScheduledLoadBalancing.html',1,'fpmas::load_balancing']]],
-  ['scheduler_442',['Scheduler',['../classfpmas_1_1api_1_1scheduler_1_1Scheduler.html',1,'fpmas::api::scheduler::Scheduler'],['../classfpmas_1_1scheduler_1_1Scheduler.html',1,'fpmas::scheduler::Scheduler']]],
-  ['server_443',['Server',['../classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html',1,'fpmas::synchro::hard::api']]],
-  ['serverpack_444',['ServerPack',['../classfpmas_1_1synchro_1_1hard_1_1ServerPack.html',1,'fpmas::synchro::hard']]],
-  ['setagentdistantcallback_445',['SetAgentDistantCallback',['../classfpmas_1_1model_1_1SetAgentDistantCallback.html',1,'fpmas::model']]],
-  ['setagentlocalcallback_446',['SetAgentLocalCallback',['../classfpmas_1_1model_1_1SetAgentLocalCallback.html',1,'fpmas::model']]],
-  ['singlethreadmutex_447',['SingleThreadMutex',['../classfpmas_1_1synchro_1_1ghost_1_1SingleThreadMutex.html',1,'fpmas::synchro::ghost']]],
-  ['synchronizegraphtask_448',['SynchronizeGraphTask',['../classfpmas_1_1model_1_1SynchronizeGraphTask.html',1,'fpmas::model']]],
-  ['synclinker_449',['SyncLinker',['../classfpmas_1_1api_1_1synchro_1_1SyncLinker.html',1,'fpmas::api::synchro']]],
-  ['syncmode_450',['SyncMode',['../classfpmas_1_1api_1_1synchro_1_1SyncMode.html',1,'fpmas::api::synchro']]]
+  ['readguard_467',['ReadGuard',['../classfpmas_1_1model_1_1ReadGuard.html',1,'fpmas::model::ReadGuard'],['../classfpmas_1_1synchro_1_1ReadGuard.html',1,'fpmas::synchro::ReadGuard&lt; T &gt;']]],
+  ['readguard_3c_20fpmas_3a_3aapi_3a_3amodel_3a_3aagentptr_20_3e_468',['ReadGuard&lt; fpmas::api::model::AgentPtr &gt;',['../classfpmas_1_1synchro_1_1ReadGuard.html',1,'fpmas::synchro']]],
+  ['runtime_469',['Runtime',['../classfpmas_1_1api_1_1runtime_1_1Runtime.html',1,'fpmas::api::runtime::Runtime'],['../classfpmas_1_1runtime_1_1Runtime.html',1,'fpmas::runtime::Runtime']]]
 ];

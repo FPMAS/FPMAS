@@ -63,7 +63,7 @@ namespace fpmas { namespace api { namespace synchro {
 			 *
 			 * The functions blocks until data is effectively read.
 			 *
-			 * read data **must** be released using releaseRead().
+			 * Read data **must** be released using releaseRead().
 			 *
 			 * @return reference to read data
 			 */
@@ -146,7 +146,7 @@ namespace fpmas { namespace api { namespace synchro {
 			 *
 			 * @return shared lock count
 			 */
-			virtual int lockedShared() const = 0;
+			virtual int sharedLockCount() const = 0;
 
 			virtual ~Mutex() {}
 	};

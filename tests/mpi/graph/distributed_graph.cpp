@@ -45,17 +45,17 @@ class DistributedGraphBalance : public ::testing::Test {
 
 		void SetUp() override {
 			EXPECT_CALL(mock_sync_linker, link).Times(AnyNumber());
-			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker)
+			ON_CALL(graph.getSyncMode(), getSyncLinker)
 				.WillByDefault(ReturnRef(mock_sync_linker));
-			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker)
+			EXPECT_CALL(graph.getSyncMode(), getSyncLinker)
 				.Times(AnyNumber());
-			ON_CALL(graph.getSyncModeRuntime(), getDataSync)
+			ON_CALL(graph.getSyncMode(), getDataSync)
 				.WillByDefault(ReturnRef(mock_data_sync));
-			EXPECT_CALL(graph.getSyncModeRuntime(), getDataSync)
+			EXPECT_CALL(graph.getSyncMode(), getDataSync)
 				.Times(AnyNumber());
 
 			if(graph.getMpiCommunicator().getRank() == 0) {
-				EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex)
+				EXPECT_CALL(graph.getSyncMode(), buildMutex)
 					.Times(graph.getMpiCommunicator().getSize());
 				auto firstNode = graph.buildNode();
 				EXPECT_CALL(*dynamic_cast<MockMutex<int>*>(firstNode->mutex()), lockShared).Times(AnyNumber());
@@ -75,10 +75,10 @@ class DistributedGraphBalance : public ::testing::Test {
 			}
 			else if(graph.getMpiCommunicator().getSize() == 2) {
 				// 1 local node + 1 distant nodes will be created
-				EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(2);
+				EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(2);
 			} else {
 				// 1 local node + 2 distant nodes will be created
-				EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(3);
+				EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(3);
 			}
 		}
 };

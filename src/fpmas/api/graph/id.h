@@ -29,7 +29,7 @@ namespace fpmas { namespace api { namespace graph {
 			/**
 			 * Checks if two ids are equal.
 			 *
-			 * @param other id to compare
+			 * @param id other id to compare
 			 * @return true iff `id` is equal to this
 			 */
 			virtual bool operator==(const IdImpl& id) const = 0;

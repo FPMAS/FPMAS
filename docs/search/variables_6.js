@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rank_727',['rank',['../structfpmas_1_1api_1_1communication_1_1MpiDistributedId.html#a67528f4f27b132d956781be817a4f8aa',1,'fpmas::api::communication::MpiDistributedId']]]
+  ['ptr_787',['ptr',['../classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#ae99a83391899f67e6e2e9779bc3a8819',1,'fpmas::api::utils::PtrWrapper']]]
 ];

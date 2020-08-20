@@ -12,16 +12,15 @@ namespace fpmas { namespace graph {
 	/**
 	 * api::graph::Edge implementation.
 	 */
-	template<typename IdType, typename _NodeType>
-		class Edge : public virtual api::graph::Edge<IdType, _NodeType> {
+	template<typename _IdType, typename _NodeType>
+		class Edge : public virtual api::graph::Edge<_IdType, _NodeType> {
 			public:
-				typedef api::graph::Edge<IdType, _NodeType> EdgeBase;
-				using typename EdgeBase::NodeType;
-				typedef api::graph::LayerId LayerId;
+				using typename api::graph::Edge<_IdType, _NodeType>::IdType;
+				using typename api::graph::Edge<_IdType, _NodeType>::NodeType;
 
 			private:
 				IdType id;
-				LayerId layer;
+				api::graph::LayerId layer;
 				float weight;
 
 				NodeType* source;
@@ -36,11 +35,11 @@ namespace fpmas { namespace graph {
 				 * @param id edge id
 				 * @param layer edge layer
 				 */
-				Edge(IdType id, LayerId layer) :
+				Edge(IdType id, api::graph::LayerId layer) :
 					id(id), layer(layer), weight(1.f) {};
 
 				IdType getId() const override {return id;};
-				LayerId getLayer() const override {return layer;};
+				api::graph::LayerId getLayer() const override {return layer;};
 
 				float getWeight() const override {return weight;};
 				void setWeight(float weight) override {this->weight=weight;};

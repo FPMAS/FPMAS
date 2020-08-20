@@ -41,19 +41,19 @@ namespace fpmas { namespace api {namespace model {
 	 * @see AgentNode
 	 * @see AgentGraph
 	 */
-	class AgentPtr : public api::utils::VirtualPtrWrapper<api::model::Agent> {
+	class AgentPtr : public api::utils::PtrWrapper<api::model::Agent> {
 		public:
 			/**
 			 * Default AgentPtr constructor.
 			 */
-			AgentPtr() : VirtualPtrWrapper() {}
+			AgentPtr() : PtrWrapper() {}
 			/**
 			 * AgentPtr constructor.
 			 *
 			 * @param agent agent pointer to manage
 			 */
 			AgentPtr(api::model::Agent* agent)
-				: VirtualPtrWrapper(agent) {}
+				: PtrWrapper(agent) {}
 
 			/**
 			 * Moves the internal Agent pointer from other to this.
@@ -152,7 +152,7 @@ namespace fpmas { namespace api {namespace model {
 			/**
 			 * Sets this Agent group ID.
 			 *
-			 * @param agent group id 
+			 * @param id agent group id 
 			 */
 			virtual void setGroupId(GroupId id) = 0;
 
@@ -273,7 +273,7 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @param agent task's agent
 			 */
-			virtual void setAgent(Agent*) = 0;
+			virtual void setAgent(Agent* agent) = 0;
 
 			virtual ~AgentTask(){}
 	};
@@ -471,10 +471,10 @@ namespace fpmas { namespace api {namespace model {
 			 * Behavior is undefined if the specified ID does not correspond to
 			 * a previously built group.
 			 *
-			 * @param group_id group id
+			 * @param id group id
 			 * @return associated agent group
 			 */
-			virtual AgentGroup& getGroup(GroupId) const = 0;
+			virtual AgentGroup& getGroup(GroupId id) const = 0;
 
 			/**
 			 * Returns the map of \AgentGroups currently defined in the Model.

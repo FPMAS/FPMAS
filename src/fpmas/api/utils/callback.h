@@ -6,10 +6,21 @@
  */
 
 namespace fpmas { namespace api { namespace utils {
+
+	/**
+	 * Generic callback API.
+	 *
+	 * @tparam Args Callback arguments
+	 */
 	template<typename... Args>
 	class Callback {
 		public:
-			virtual void call(Args...) = 0;
+			/**
+			 * Calls the callback.
+			 *
+			 * @param args callback arguments
+			 */
+			virtual void call(Args... args) = 0;
 			virtual ~Callback() {}
 	};
 }}}

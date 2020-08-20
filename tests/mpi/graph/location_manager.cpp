@@ -35,16 +35,16 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		std::mt19937 engine;
 		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
 		
-		typename decltype(graph)::PartitionMap partition;
+		typename fpmas::api::load_balancing::PartitionMap partition;
 
 		std::array<std::array<int, SEQUENCE_COUNT>, NODES_COUNT> location_sequences;
 
 		void SetUp() override {
 			EXPECT_CALL(sync_linker, link).Times(AnyNumber());
-			ON_CALL(graph.getSyncModeRuntime(), getSyncLinker).WillByDefault(ReturnRef(sync_linker));
-			EXPECT_CALL(graph.getSyncModeRuntime(), getSyncLinker).Times(AnyNumber());
-			ON_CALL(graph.getSyncModeRuntime(), getDataSync).WillByDefault(ReturnRef(data_sync));
-			EXPECT_CALL(graph.getSyncModeRuntime(), getDataSync).Times(AnyNumber());
+			ON_CALL(graph.getSyncMode(), getSyncLinker).WillByDefault(ReturnRef(sync_linker));
+			EXPECT_CALL(graph.getSyncMode(), getSyncLinker).Times(AnyNumber());
+			ON_CALL(graph.getSyncMode(), getDataSync).WillByDefault(ReturnRef(data_sync));
+			EXPECT_CALL(graph.getSyncMode(), getDataSync).Times(AnyNumber());
 
 			for(int i = 0; i < SEQUENCE_COUNT; i++) {
 				for(int j = 0; j < NODES_COUNT ; j++) {
@@ -52,7 +52,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 				}
 			}
 
-			EXPECT_CALL(graph.getSyncModeRuntime(), buildMutex).Times(AnyNumber());
+			EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(AnyNumber());
 			if(graph.getMpiCommunicator().getRank() == 0) {
 				for(int i = 0; i < NODES_COUNT; i++) {
 					graph.buildNode();

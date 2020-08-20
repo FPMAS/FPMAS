@@ -24,6 +24,9 @@ namespace fpmas { namespace synchro {
 	template<typename T>
 		class Guard {
 			protected:
+				/**
+				 * Internal mutex reference.
+				 */
 				api::synchro::Mutex<T>& mutex;
 
 				/**

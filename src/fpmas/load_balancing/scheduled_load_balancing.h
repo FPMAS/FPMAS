@@ -13,6 +13,10 @@ namespace fpmas { namespace load_balancing {
 	using api::load_balancing::PartitionMap;
 	using api::load_balancing::NodeMap;
 
+	/**
+	 * api::load_balancing::LoadBalancing implementation that takes nodes' task
+	 * scheduling into account.
+	 */
 	template<typename T>
 		class ScheduledLoadBalancing : public api::load_balancing::LoadBalancing<T> {
 			private:
@@ -21,6 +25,16 @@ namespace fpmas { namespace load_balancing {
 				api::runtime::Runtime& runtime;
 
 			public:
+				/**
+				 * ScheduledLoadBalancing constructor.
+				 *
+				 * @param fixed_vertices_lb fixed vertices load balancing
+				 * algorithm
+				 * @param scheduler current scheduler (used to access scheduled
+				 * tasks associated to nodes)
+				 * @param runtime current runtime (used to access the current
+				 * api::runtime::Runtime::currentDate())
+				 */
 				ScheduledLoadBalancing<T>(
 						api::load_balancing::FixedVerticesLoadBalancing<T>& fixed_vertices_lb,
 						api::scheduler::Scheduler& scheduler,

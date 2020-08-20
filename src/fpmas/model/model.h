@@ -165,7 +165,7 @@ namespace fpmas { namespace model {
 			api::model::AgentGraph* _graph;
 		public:
 			api::model::GroupId groupId() const override {return group_id;}
-			void setGroupId(api::model::GroupId group_id) override {this->group_id = group_id;}
+			void setGroupId(api::model::GroupId id) override {this->group_id = id;}
 
 			api::model::AgentGroup* group() override {return _group;}
 			const api::model::AgentGroup* group() const override {return _group;}
@@ -186,6 +186,19 @@ namespace fpmas { namespace model {
 			const api::model::AgentTask* task() const override {return _task;}
 			void setTask(api::model::AgentTask* task) override {_task = task;}
 
+			/**
+			 * Returns a typed list of agents that are out neighbors of the current
+			 * agent.
+			 *
+			 * Agents are added to the list if and only if :
+			 * 1. they are contained in a node that is an out neighbor of this
+			 * agent's node
+			 * 2. they can be cast to `NeighborAgentType`
+			 *
+			 * @return out neighbor agents
+			 *
+			 * @see fpmas::api::graph::node::outNeighbors()
+			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> out;
 				for(auto node : node()->outNeighbors()) {
@@ -196,6 +209,19 @@ namespace fpmas { namespace model {
 				return out;
 			}
 
+			/**
+			 * Returns a typed list of agents that are in neighbors of the current
+			 * agent.
+			 *
+			 * Agents are added to the list if and only if :
+			 * 1. they are contained in a node that is an in neighbor of this
+			 * agent's node
+			 * 2. they can be cast to `NeighborAgentType`
+			 *
+			 * @return in neighbor agents
+			 *
+			 * @see fpmas::api::graph::node::outNeighbors()
+			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> in;
 				for(auto node : node()->inNeighbors()) {
@@ -208,6 +234,11 @@ namespace fpmas { namespace model {
 
 			virtual ~AgentBase() {}
 	};
+	/**
+	 * Agent's TypeId.
+	 *
+	 * Equal to `typeid(AgentType)`.
+	 */
 	template<typename AgentType>
 		const api::model::TypeId AgentBase<AgentType>::TYPE_ID = typeid(AgentType);
 
@@ -292,63 +323,7 @@ namespace fpmas { namespace model {
 		scheduler::Job& job() override {return _job;}
 		const scheduler::Job& job() const override {return _job;}
 		std::vector<api::model::AgentPtr*> agents() const override {return _agents;}
-		//template<typename AgentType>
-			//std::vector<AgentType*> agents() const;
 	};
-
-	/*
-	 * Helper template to get an automatically cast agents list.
-	 *
-	 * Since \Agents added to group might be of different type, internal
-	 * agents are added to the list only if they could be cast to the given
-	 * `AgentType`.
-	 *
-	 * Notice that graph synchronization invalidates the list.
-	 *
-	 * @par Examples
-	 * ```cpp
-	 * using fpmas::model::DefaultModel;
-	 * using fpmas::model::AgentGroup;
-	 *
-	 * // Previously defined Agent types
-	 * class Agent1;
-	 * class Agent2;
-	 *
-	 * int main() {
-	 * 	DefaultModel model;
-	 * 	AgentGroup group = model.buildGroup();
-	 *
-	 * 	Agent1* agent_1 = new Agent1;
-	 * 	Agent1* agent_2 = new Agent1;
-	 * 	group.add(agent_1);
-	 * 	group.add(agent_2);
-	 *
-	 * 	// Returns a list containing agent_1 and agent_2 
-	 * 	auto list1 = group_1.agents<Agent1>();
-	 *  // Returns an empty list
-	 * 	auto list2 = group_1.agents<Agent2>();
-	 *
-	 * 	Agent2* agent_3 = new Agent2;
-	 * 	group.add(agent_3);
-	 *
-	 *	// Returns a list containing the same elements as list1
-	 *	auto list3 = group_1.agents<Agent1>();
-	 *	// Returns a list containing agent_3
-	 *	auto list4 = group_1.agents<Agent2>();
-	 * }
-	 */
-/*
- *    template<typename AgentType>
- *        std::vector<AgentType*> AgentGroup::agents() const {
- *            std::vector<AgentType*> out;
- *            for(auto agent : _agents)
- *                if(AgentType* agent_ptr = dynamic_cast<AgentType*>(agent->get()))
- *                    out.push_back(agent_ptr);
- *
- *            return out;
- *        }
- */
-
 
 	/**
 	 * Load balancing task.
@@ -360,9 +335,18 @@ namespace fpmas { namespace model {
 	 */
 	class LoadBalancingTask : public api::scheduler::Task {
 		public:
+			/**
+			 * LoadBalancingAlgorithm type.
+			 */
 			typedef api::load_balancing::LoadBalancing<AgentPtr>
 				LoadBalancingAlgorithm;
+			/**
+			 * Agent node map.
+			 */
 			typedef api::load_balancing::NodeMap<AgentPtr> NodeMap;
+			/**
+			 * Partition map.
+			 */
 			typedef typename api::load_balancing::PartitionMap PartitionMap;
 
 		private:
@@ -528,6 +512,9 @@ namespace fpmas { namespace model {
 	 */
 	class Model : public api::model::Model {
 		public:
+			/**
+			 * LoadBalancingAlgorithm type.
+			 */
 			typedef typename LoadBalancingTask::LoadBalancingAlgorithm LoadBalancingAlgorithm;
 
 		private:
@@ -577,7 +564,7 @@ namespace fpmas { namespace model {
 			const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
 			AgentGroup& buildGroup() override;
-			AgentGroup& getGroup(api::model::GroupId) const override;
+			AgentGroup& getGroup(api::model::GroupId id) const override;
 			const std::unordered_map<api::model::GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
 
 			~Model();
@@ -658,7 +645,7 @@ namespace fpmas { namespace model {
 	 * 	public:
 	 * 	void act() override {
 	 * 		FPMAS_LOG_INFO(UserAgent1, "Execute agent %s",
-	 * 		ID_C_STR(this->node()->getId()))
+	 * 		FPMAS_C_STR(this->node()->getId()))
 	 * 	}
 	 * };
 	 *
@@ -666,7 +653,7 @@ namespace fpmas { namespace model {
 	 * 	public:
 	 * 	void act() override {
 	 * 		FPMAS_LOG_INFO(UserAgent2, "Execute agent %s",
-	 * 		ID_C_STR(this->node()->getId()))
+	 * 		FPMAS_C_STR(this->node()->getId()))
 	 * 	}
 	 * };
 	 *

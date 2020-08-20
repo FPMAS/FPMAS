@@ -7,11 +7,17 @@
 
 namespace fpmas { namespace synchro {
 	namespace hard { namespace api {
+		/**
+		 * Constants used to build messages tags.
+		 */
 		enum Epoch : int {
 			EVEN = 0x00,
 			ODD = 0x10
 		};
 
+		/**
+		 * Constants used to describe fpmas::synchro::hard::HardSyncMode message types.
+		 */
 		enum Tag : int {
 			READ = 0x00,
 			READ_RESPONSE = 0x01,
@@ -31,13 +37,17 @@ namespace fpmas { namespace synchro {
 		};
 
 		/**
-		 * Used by the termination algorithm.
+		 * Process colors used by the termination algorithm.
 		 */
 		enum Color : int {
 			WHITE = 0,
 			BLACK = 1
 		};
 
+		/**
+		 * Constants used to describe fpmas::synchro::hard::HardSyncMutex
+		 * requests.
+		 */
 		enum class MutexRequestType {
 			READ, LOCK, ACQUIRE, LOCK_SHARED
 		};

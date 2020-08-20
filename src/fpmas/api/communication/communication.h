@@ -296,6 +296,7 @@ namespace fpmas { namespace api { namespace communication {
 				 * be empty for some procs.
 				 *
 				 * @param data data to send to root
+				 * @param datatype MPI datatype
 				 * @param root rank of the root process
 				 * @return if `rank == root`, a vector containing gathered data,
 				 * else an empty vector.
@@ -368,7 +369,7 @@ namespace fpmas { namespace api { namespace communication {
 					 * @param tag message tag
 					 * @param req output MPI request
 					 */
-					virtual void Issend(const T&, int destination, int tag, MPI_Request* req) = 0;
+					virtual void Issend(const T& data, int destination, int tag, MPI_Request* req) = 0;
 					/**
 					 * Receives a `T` object from `source`.
 					 *

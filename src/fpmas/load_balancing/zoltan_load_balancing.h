@@ -13,10 +13,16 @@ namespace fpmas { namespace load_balancing {
 	using api::load_balancing::NodeMap;
 	
 	namespace zoltan {
-		void zoltan_config(Zoltan*);
+		/**
+		 * Applies the FPMAS pre-defined Zoltan configuration to the provided
+		 * Zoltan instance.
+		 *
+		 * @param zoltan pointer to zoltan instance to configure
+		 */
+		void zoltan_config(Zoltan* zoltan);
 
 		/**
-		 * Convenient function to rebuild a regular node or edge id, as an
+		 * Helper function to rebuild a regular node or edge id, as an
 		 * unsigned long, from a ZOLTAN_ID_PTR global id array, that actually
 		 * stores 2 unsigned int for each node unsigned long id.
 		 * So, with our configuration, we use 2 unsigned int in Zoltan to
@@ -49,9 +55,9 @@ namespace fpmas { namespace load_balancing {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_OBJ_FN).
 		 *
-		 * @param data user data (local DistributedGraphBase instance)
-		 * @param ierr Result : error code
-		 * @return numbe of nodes managed by the current process
+		 * @param data user data (current NodeMap)
+		 * @param ierr output : error code
+		 * @return number of nodes managed by the current process
 		 */
 		template<typename T> int num_obj(void *data, int* ierr) {
 			NodeMap<T>* nodes = (NodeMap<T>*) data;
@@ -65,14 +71,14 @@ namespace fpmas { namespace load_balancing {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_OBJ_LIST_FN).
 		 *
-		 * @param data user data (local DistributedGraphBase instance)
+		 * @param data user data (current NodeMap)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
-		 * @param global_ids Result : global ids assigned to processor
-		 * @param local_ids Result : local ids assigned to processor (unused)
+		 * @param global_ids output : global ids assigned to processor
+		 * @param local_ids output : local ids assigned to processor (unused)
 		 * @param wgt_dim Number of weights of each object, defined by OBJ_WEIGHT_DIM (should be 1)
-		 * @param obj_wgts Result : weights list
-		 * @param ierr Result : error code
+		 * @param obj_wgts output : weights list
+		 * @param ierr output : error code
 		 */
 		template<typename T> void obj_list(
 				void *data,
@@ -98,14 +104,14 @@ namespace fpmas { namespace load_balancing {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
 		 *
-		 * @param data user data (local DistributedGraphBase instance)
+		 * @param data user data (current NodeMap)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_obj number of objects IDs in global_ids
 		 * @param global_ids Global IDs of object whose number of edges should be returned
 		 * @param local_ids Same for local ids, unused
-		 * @param num_edges Result : number of outgoing edge for each node
-		 * @param ierr Result : error code
+		 * @param num_edges output : number of outgoing edge for each node
+		 * @param ierr output : error code
 		 */
 		template<typename T> void num_edges_multi_fn(
 				void *data,
@@ -133,25 +139,25 @@ namespace fpmas { namespace load_balancing {
 		}
 
 		/**
-		 * List node IDs connected to each node through outgoing edges for each
+		 * Lists node IDs connected to each node through outgoing edges for each
 		 * node.
 		 *
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
 		 *
-		 * @param data user data (local DistributedGraphBase instance)
+		 * @param data user data (current NodeMap)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_obj number of objects IDs in global_ids
 		 * @param global_ids Global IDs of object whose list of edges should be returned
 		 * @param local_ids Same for local ids, unused
 		 * @param num_edges number of edges of each corresponding node
-		 * @param nbor_global_id Result : neighbor ids for each node
-		 * @param nbor_procs Result : processor identifier of each neighbor in
+		 * @param nbor_global_id output : neighbor ids for each node
+		 * @param nbor_procs output : processor identifier of each neighbor in
 		 * nbor_global_id
 		 * @param wgt_dim number of edge weights
-		 * @param ewgts Result : edge weight for each neighbor
-		 * @param ierr Result : error code
+		 * @param ewgts output : edge weight for each neighbor
+		 * @param ierr output : error code
 		 */
 		template<typename T> void edge_list_multi_fn(
 				void *data,
@@ -190,6 +196,15 @@ namespace fpmas { namespace load_balancing {
 			}
 		}
 
+		/**
+		 * Counts the number of fixed vertices.
+		 *
+		 * For more information about this function, see the [Zoltan
+		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_FIXED_OBJ_FN).
+		 *
+		 * @param data user data (current fixed NodeMap)
+		 * @param ierr output : error code
+		 */
 		template<typename T> int num_fixed_obj_fn(
 				void* data, int* ierr
 				) {
@@ -197,6 +212,22 @@ namespace fpmas { namespace load_balancing {
 			return fixed_nodes->size();
 		}
 
+		/**
+		 * Lists fixed vertices IDs.
+		 *
+		 * For more information about this function, see the [Zoltan
+		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_FIXED_OBJ_LIST_FN).
+		 *
+		 * @param data user data (current fixed NodeMap)
+		 * @param num_fixed_obj fixed vertices count
+		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
+		 * @param fixed_gids output : fixed vertices ids list
+		 * @param fixed_parts output : parts to which each fixed vertices is associated.
+		 * In out context, corresponds to the process rank to which each
+		 * vertice is attached.
+		 * @param ierr output : error code
+		 *
+		 */
 		template<typename T> void fixed_obj_list_fn(
 			void *data,
 			int num_fixed_obj,
@@ -215,6 +246,10 @@ namespace fpmas { namespace load_balancing {
 		}
 	}
 
+	/**
+	 * api::load_balancing::FixedVerticesLoadBalancing implementation based on
+	 * the [Zoltan library](https://cs.sandia.gov/Zoltan/Zoltan.html).
+	 */
 	template<typename T>
 		class ZoltanLoadBalancing : public api::load_balancing::FixedVerticesLoadBalancing<T> {
 			private:
@@ -235,20 +270,39 @@ namespace fpmas { namespace load_balancing {
 				PartitionMap fixed_vertices;
 
 			public:
+				/**
+				 * ZoltanLoadBalancing constructor.
+				 *
+				 * @param comm MPI_Comm passed to Zoltan
+				 */
 				ZoltanLoadBalancing(MPI_Comm comm)
 					: zoltan(comm) {
 					setUpZoltan();
 				}
 
+				/**
+				 * Returns nodes currently balanced.
+				 *
+				 * Used by the previously defined zoltan callback functions to
+				 * retrieve the current node map.
+				 *
+				 * @return nodes to balance
+				 */
 				const std::unordered_map<DistributedId, T> getNodes() const {
 					return nodes;
 				}
 				
+				/**
+				 * \copydoc api::load_balancing::FixedVerticesLoadBalancing::balance()
+				 *
+				 * \implem
+				 * Computes a balanced partition from the default
+				 * [Zoltan PHG Hypergraph partitioning method](https://cs.sandia.gov/Zoltan/ug_html/ug_alg_phg.html)
+				 */
 				PartitionMap balance(
 						NodeMap<T> nodes,
 						PartitionMap fixed_vertices
 						) override;
-
 		};
 
 	template<typename T> PartitionMap

@@ -67,19 +67,28 @@ namespace fpmas { namespace scheduler {
 		_jobs.clear();
 	}
 
-	void Scheduler::schedule(Date date, const api::scheduler::Job& job) {
+	void Scheduler::schedule(api::scheduler::Date date, const api::scheduler::Job& job) {
 		unique_jobs[date].push_back(&job);
 	}
 
-	void Scheduler::schedule(Date start, Period period, const api::scheduler::Job& job) {
+	void Scheduler::schedule(
+			api::scheduler::Date start,
+			api::scheduler::Period period,
+			const api::scheduler::Job& job
+			) {
 		recurring_jobs[start].push_back({period, &job});
 	}
 
-	void Scheduler::schedule(Date start, Date end, Period period, const api::scheduler::Job& job) {
+	void Scheduler::schedule(
+			api::scheduler::Date start,
+			api::scheduler::Date end,
+			api::scheduler::Period period,
+			const api::scheduler::Job& job
+			) {
 		limited_recurring_jobs[start].push_back({end, period, &job});
 	}
 
-	void Scheduler::build(Date date, fpmas::api::scheduler::Epoch& epoch) const {
+	void Scheduler::build(api::scheduler::Date date, fpmas::api::scheduler::Epoch& epoch) const {
 		epoch.clear();
 		auto unique = unique_jobs.find(date);
 		if(unique != unique_jobs.end()) {

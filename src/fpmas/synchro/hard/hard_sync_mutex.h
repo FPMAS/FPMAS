@@ -60,7 +60,13 @@ namespace fpmas { namespace synchro { namespace hard {
 				void pushRequest(Request request) override;
 				std::queue<Request> requestsToProcess() override;
 
+				/**
+				 * \copydoc fpmas::api::synchro::Mutex::data
+				 */
 				T& data() override {return node->data();}
+				/**
+				 * \copydoc fpmas::api::synchro::Mutex::data
+				 */
 				const T& data() const override {return node->data();}
 
 				const T& read() override;
@@ -71,13 +77,33 @@ namespace fpmas { namespace synchro { namespace hard {
 
 				void lock() override;
 				void unlock() override;
+				/**
+				 * \copydoc fpmas::api::synchro::Mutex::locked()
+				 */
 				bool locked() const override {return _locked;}
 
 				void lockShared() override;
 				void unlockShared() override;
-				int lockedShared() const override {return _locked_shared;}
+				/**
+				 * \copydoc fpmas::api::synchro::Mutex::sharedLockCount()
+				 */
+				int sharedLockCount() const override {return _locked_shared;}
 		};
 
+	/**
+	 * \copydoc fpmas::api::synchro::Mutex::read()
+	 *
+	 * \implem
+	 * If the protected node is \LOCAL and locked, adds the local request to
+	 * the queue and waits for the request to complete. Else if its unlocked,
+	 * directly returns the read data (which is already local).
+	 *
+	 * \par
+	 * If the node is \DISTANT, transmits the request using the MutexClient.
+	 *
+	 * @see MutexServer::wait()
+	 * @see MutexClient::read()
+	 */
 	template<typename T>
 		const T& HardSyncMutex<T>::read() {
 			if(node->state() == LocationState::LOCAL) {
@@ -92,6 +118,21 @@ namespace fpmas { namespace synchro { namespace hard {
 			node->data() = std::move(mutex_client.read(node->getId(), node->getLocation()));
 			return node->data();
 		}
+
+	/**
+	 * \copydoc fpmas::api::synchro::Mutex::releaseRead()
+	 *
+	 * \implem
+	 * If the protected node is \LOCAL, releases a shared lock from the mutex.
+	 * If this unlocks the resource, the MutexServer is notified and pending
+	 * requests are handled.
+	 *
+	 * \par
+	 * If the node is \DISTANT, transmits the request using the MutexClient.
+	 *
+	 * @see MutexServer::notify()
+	 * @see MutexClient::releaseRead()
+	 */
 	template<typename T>
 		void HardSyncMutex<T>::releaseRead() {
 			if(node->state() == LocationState::LOCAL) {
@@ -104,6 +145,20 @@ namespace fpmas { namespace synchro { namespace hard {
 			mutex_client.releaseRead(node->getId(), node->getLocation());
 		}
 
+	/**
+	 * \copydoc fpmas::api::synchro::Mutex::releaseAcquire()
+	 *
+	 * \implem
+	 * If the protected node is \LOCAL and locked, adds the local request to
+	 * the queue and waits for the request to complete. Else if its unlocked,
+	 * directly returns the acquired data (which is already local).
+	 *
+	 * \par
+	 * If the node is \DISTANT, transmits the request using the MutexClient.
+	 *
+	 * @see MutexServer::wait()
+	 * @see MutexClient::acquire()
+	 */
 	template<typename T>
 		T& HardSyncMutex<T>::acquire() {
 			if(node->state()==LocationState::LOCAL) {
@@ -119,6 +174,20 @@ namespace fpmas { namespace synchro { namespace hard {
 			return node->data();
 		}
 
+	/**
+	 * \copydoc fpmas::api::synchro::Mutex::releaseAcquire()
+	 *
+	 * \implem
+	 * If the protected node is \LOCAL, releases the exclusive lock from the
+	 * mutex and notifies the MutexServer so that pending requests are handled.
+	 *
+	 * \par
+	 * If the node is \DISTANT, transmits the request with local data updates
+	 * using the MutexClient.
+	 *
+	 * @see MutexServer::notify()
+	 * @see MutexClient::releaseAcquire()
+	 */
 	template<typename T>
 		void HardSyncMutex<T>::releaseAcquire() {
 			if(node->state()==LocationState::LOCAL) {
@@ -129,6 +198,20 @@ namespace fpmas { namespace synchro { namespace hard {
 			mutex_client.releaseAcquire(node->getId(), node->data(), node->getLocation());
 		}
 
+	/**
+	 * \copydoc fpmas::api::synchro::Mutex::lock()
+	 *
+	 * \implem
+	 * If the protected node is \LOCAL and locked, adds the local request to
+	 * the queue and waits for the request to complete. Else if its unlocked,
+	 * directly locks the mutex.
+	 *
+	 * \par
+	 * If the node is \DISTANT, transmits the request using the MutexClient.
+	 *
+	 * @see MutexServer::wait()
+	 * @see MutexClient::lock()
+	 */
 	template<typename T>
 		void HardSyncMutex<T>::lock() {
 			if(node->state()==LocationState::LOCAL) {
@@ -143,6 +226,19 @@ namespace fpmas { namespace synchro { namespace hard {
 			mutex_client.lock(node->getId(), node->getLocation());
 		}
 
+	/**
+	 * \copydoc fpmas::api::synchro::Mutex::unlock()
+	 *
+	 * \implem
+	 * If the protected node is \LOCAL, releases the exclusive lock from the
+	 * mutex and notifies the MutexServer so that pending requests are handled.
+	 *
+	 * \par
+	 * If the node is \DISTANT, transmits the request using the MutexClient.
+	 *
+	 * @see MutexServer::notify()
+	 * @see MutexClient::unlock()
+	 */
 	template<typename T>
 		void HardSyncMutex<T>::unlock() {
 			if(node->state()==LocationState::LOCAL) {
@@ -154,6 +250,20 @@ namespace fpmas { namespace synchro { namespace hard {
 			mutex_client.unlock(node->getId(), node->getLocation());
 		}
 
+	/**
+	 * \copydoc fpmas::api::synchro::Mutex::lockShared()
+	 *
+	 * \implem
+	 * If the protected node is \LOCAL and locked, adds the local request to
+	 * the queue and waits for the request to complete. Else if its unlocked
+	 * (or shared lock), adds a share lock to the mutex.
+	 *
+	 * \par
+	 * If the node is \DISTANT, transmits the request using the MutexClient.
+	 *
+	 * @see MutexServer::wait()
+	 * @see MutexClient::lockShared()
+	 */
 	template<typename T>
 		void HardSyncMutex<T>::lockShared() {
 			if(node->state()==LocationState::LOCAL) {
@@ -168,6 +278,20 @@ namespace fpmas { namespace synchro { namespace hard {
 			mutex_client.lockShared(node->getId(), node->getLocation());
 		}
 
+	/**
+	 * \copydoc fpmas::api::synchro::Mutex::unlockShared()
+	 *
+	 * \implem
+	 * If the protected node is \LOCAL, releases a shared lock from the mutex.
+	 * If this unlocks the resource, the MutexServer is notified and pending
+	 * requests are handled.
+	 *
+	 * \par
+	 * If the node is \DISTANT, transmits the request using the MutexClient.
+	 *
+	 * @see MutexServer::notify()
+	 * @see MutexClient::unlockShared()
+	 */
 	template<typename T>
 		void HardSyncMutex<T>::unlockShared() {
 			if(node->state()==LocationState::LOCAL) {

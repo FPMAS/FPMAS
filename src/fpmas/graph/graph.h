@@ -20,15 +20,14 @@ namespace fpmas { namespace graph {
 		typename EdgeType
 	> class Graph : public virtual api::graph::Graph<NodeType, EdgeType> {
 			public:
-				typedef api::graph::Graph<NodeType, EdgeType> GraphBase;
-				using typename GraphBase::NodeIdType;
-				using typename GraphBase::NodeIdHash;
+				using typename api::graph::Graph<NodeType, EdgeType>::NodeIdType;
+				using typename api::graph::Graph<NodeType, EdgeType>::NodeIdHash;
 
-				using typename GraphBase::EdgeIdType;
-				using typename GraphBase::EdgeIdHash;
+				using typename api::graph::Graph<NodeType, EdgeType>::EdgeIdType;
+				using typename api::graph::Graph<NodeType, EdgeType>::EdgeIdHash;
 				
-				using typename GraphBase::NodeMap;
-				using typename GraphBase::EdgeMap;
+				using typename api::graph::Graph<NodeType, EdgeType>::NodeMap;
+				using typename api::graph::Graph<NodeType, EdgeType>::EdgeMap;
 
 			private:
 				std::vector<api::utils::Callback<NodeType*>*> insert_node_callbacks;
@@ -77,7 +76,7 @@ namespace fpmas { namespace graph {
 
 	template<typename NodeType, typename EdgeType>
 		void Graph<NodeType, EdgeType>::insert(NodeType* node) {
-			FPMAS_LOGD(-1, "GRAPH", "Insert node %s", ID_C_STR(node->getId()));
+			FPMAS_LOGD(-1, "GRAPH", "Insert node %s", FPMAS_C_STR(node->getId()));
 			this->nodes.insert({node->getId(), node});
 			for(auto callback : insert_node_callbacks)
 				callback->call(node);
@@ -87,9 +86,9 @@ namespace fpmas { namespace graph {
 		void Graph<NodeType, EdgeType>::insert(EdgeType* edge) {
 			FPMAS_LOGD(
 					-1, "GRAPH", "Insert edge %s (%p) (from %s to %s)",
-					ID_C_STR(edge->getId()), edge,
-					ID_C_STR(edge->getSourceNode()->getId()),
-					ID_C_STR(edge->getTargetNode()->getId())
+					FPMAS_C_STR(edge->getId()), edge,
+					FPMAS_C_STR(edge->getSourceNode()->getId()),
+					FPMAS_C_STR(edge->getTargetNode()->getId())
 					);
 			this->edges.insert({edge->getId(), edge});
 			for(auto callback : insert_edge_callbacks)
@@ -98,14 +97,14 @@ namespace fpmas { namespace graph {
 
 	template<typename NodeType, typename EdgeType>
 		void Graph<NodeType, EdgeType>::erase(NodeType* node) {
-			FPMAS_LOGD(-1, "GRAPH", "Erase node %s", ID_C_STR(node->getId()));
+			FPMAS_LOGD(-1, "GRAPH", "Erase node %s", FPMAS_C_STR(node->getId()));
 			// Deletes incoming edges
 			for(auto* edge : node->getIncomingEdges()) {
 				FPMAS_LOGV(
 						-1,
 						"GRAPH",
 						"Unlink incoming edge %s",
-						ID_C_STR(edge->getId())
+						FPMAS_C_STR(edge->getId())
 						);
 				this->erase(edge);
 			}
@@ -115,7 +114,7 @@ namespace fpmas { namespace graph {
 						-1,
 						"GRAPH",
 						"Unlink incoming edge %s",
-						ID_C_STR(edge->getId())
+						FPMAS_C_STR(edge->getId())
 						);
 				this->erase(edge);
 			}
@@ -129,7 +128,7 @@ namespace fpmas { namespace graph {
 
 			// Deletes the node
 			delete node;
-			FPMAS_LOGD(-1, "GRAPH", "Node %s removed.", ID_C_STR(id));
+			FPMAS_LOGD(-1, "GRAPH", "Node %s removed.", FPMAS_C_STR(id));
 		}
 
 	template<typename NodeType, typename EdgeType>
@@ -137,9 +136,9 @@ namespace fpmas { namespace graph {
 			auto id = edge->getId();
 			FPMAS_LOGD(
 					-1, "GRAPH", "Erase edge %s (%p) (from %s to %s)",
-					ID_C_STR(id), edge,
-					ID_C_STR(edge->getSourceNode()->getId()),
-					ID_C_STR(edge->getTargetNode()->getId())
+					FPMAS_C_STR(id), edge,
+					FPMAS_C_STR(edge->getSourceNode()->getId()),
+					FPMAS_C_STR(edge->getTargetNode()->getId())
 					);
 			// Removes the incoming edges from the incoming/outgoing
 			// edge lists of target/source nodes.
@@ -154,7 +153,7 @@ namespace fpmas { namespace graph {
 
 			// Deletes edge
 			delete edge;
-			FPMAS_LOGD(-1, "GRAPH", "Edge %s removed.", ID_C_STR(id));
+			FPMAS_LOGD(-1, "GRAPH", "Edge %s removed.", FPMAS_C_STR(id));
 		}
 
 	template<typename NodeType, typename EdgeType>

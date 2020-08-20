@@ -24,7 +24,9 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 			friend MutexServer<T>;
 			public:
 			/**
-			 * Adds a pending request to the waiting queue.
+			 * Pushes a pending request into the waiting queue.
+			 *
+			 * @param request mutex request to push
 			 */
 			virtual void pushRequest(MutexRequest request) = 0;
 			/**

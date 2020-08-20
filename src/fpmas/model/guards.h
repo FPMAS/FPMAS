@@ -11,14 +11,34 @@
 namespace fpmas {
 	namespace model {
 
-		class ReadGuard : synchro::ReadGuard<fpmas::api::model::AgentPtr> {
+		/**
+		 * \Agent read Guard.
+		 *
+		 * @see synchro::ReadGuard
+		 */
+		class ReadGuard : public synchro::ReadGuard<fpmas::api::model::AgentPtr> {
 			public:
+				/**
+				 * ReadGuard constructor.
+				 *
+				 * @param agent agent to read
+				 */
 				ReadGuard(api::model::Agent* agent)
 					: synchro::ReadGuard<fpmas::api::model::AgentPtr>(agent->node()) {}
 		};
 
-		class AcquireGuard : synchro::AcquireGuard<fpmas::api::model::AgentPtr> {
+		/**
+		 * \Agent acquire Guard.
+		 *
+		 * @see synchro::AcquireGuard
+		 */
+		class AcquireGuard : public synchro::AcquireGuard<fpmas::api::model::AgentPtr> {
 			public:
+				/**
+				 * AcquireGuard constructor.
+				 *
+				 * @param agent agent to acquire
+				 */
 				AcquireGuard(api::model::Agent* agent)
 					: synchro::AcquireGuard<fpmas::api::model::AgentPtr>(agent->node()) {}
 		};

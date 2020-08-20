@@ -2,48 +2,116 @@
 #define FPMAS_PTR_WRAPPER_API_H
 
 /** \file src/fpmas/api/utils/ptr_wrapper.h
- * VirtualPtrWrapper implementation.
+ * PtrWrapper implementation.
  */
 
 namespace fpmas { namespace api { namespace utils {
 
-	template<typename VirtualType>
-	class VirtualPtrWrapper {
+	/**
+	 * A trivial pointer wrapper helper class.
+	 *
+	 * Such wrappers are notably used to allow JSON serialization of pointers
+	 * with the nlohmann library, since using directly a pointer as type raised
+	 * some errors.
+	 *
+	 * It also maked pointer usage as data type in api::graph::DistributedGraph
+	 * easier.
+	 */
+	template<typename T>
+	class PtrWrapper {
 		protected:
-			 VirtualType* virtual_type_ptr;
+			/**
+			 * Internal pointer.
+			 */
+			 T* ptr;
 		public:
-			 VirtualPtrWrapper()
-				 : virtual_type_ptr(nullptr) {};
-			 VirtualPtrWrapper(VirtualType* virtual_type_ptr)
-				 : virtual_type_ptr(virtual_type_ptr) {}
+			 /**
+			  * PtrWrapper default constructor.
+			  *
+			  * The internal pointer is initialized to `nullptr`.
+			  */
+			 PtrWrapper()
+				 : ptr(nullptr) {};
+			 /**
+			  * PtrWrapper constructor.
+			  *
+			  * @param ptr pointer to wrap
+			  */
+			 PtrWrapper(T* ptr)
+				 : ptr(ptr) {}
 
-			 VirtualType* get() {
-				 return virtual_type_ptr;
-			 }
-
-			 const VirtualType* get() const {
-				 return virtual_type_ptr;
-			 }
-
-			 VirtualType* release() {
-				 VirtualType* ptr = virtual_type_ptr;
-				 virtual_type_ptr = nullptr;
+			 /**
+			  * Gets the internal pointer.
+			  *
+			  * @return internal pointer
+			  */
+			 T* get() {
 				 return ptr;
 			 }
 
-			 VirtualType* operator->() {
-				 return virtual_type_ptr;
+			 /**
+			  * \copydoc get()
+			  */
+			 const T* get() const {
+				 return ptr;
 			 }
 
-			 const VirtualType* operator->() const {
-				 return virtual_type_ptr;
+			 /**
+			  * Returns the internal pointer and sets it to `nullptr`.
+			  *
+			  * @return internal pointer
+			  */
+			 T* release() {
+				 T* ptr = ptr;
+				 ptr = nullptr;
+				 return ptr;
 			 }
 
-			 operator VirtualType*() {
-				 return virtual_type_ptr;
+			 /**
+			  * Member of pointer operator.
+			  *
+			  * @return internal pointer
+			  */
+			 T* operator->() {
+				 return ptr;
 			 }
-			 operator const VirtualType*() const {
-				 return virtual_type_ptr;
+
+			 /**
+			  * \copydoc operator->()
+			  */
+			 const T* operator->() const {
+				 return ptr;
+			 }
+
+			 /**
+			  * Indirection operator.
+			  *
+			  * @return reference to the object to which the internal pointer
+			  * points
+			  */
+			 T& operator*() {
+				 return *ptr;
+			 }
+
+			 /**
+			  * \copydoc operator*()
+			  */
+			 const T& operator*() const {
+				 return *ptr;
+			 }
+
+			 /**
+			  * Implicit pointer conversion operator.
+			  */
+			 operator T*() {
+				 return ptr;
+			 }
+
+			 /**
+			  * Implicit pointer conversion operator.
+			  */
+			 operator const T*() const {
+				 return ptr;
 			 }
 	};
 }}}

@@ -55,7 +55,7 @@ namespace fpmas { namespace synchro {
 
 					void lockShared() override {};
 					void unlockShared() override {};
-					int lockedShared() const override {return 0;};
+					int sharedLockCount() const override {return 0;};
 			};
 
 		/**
@@ -67,8 +67,13 @@ namespace fpmas { namespace synchro {
 		template<typename T>
 			class GhostDataSync : public api::synchro::DataSync {
 				public:
+					/**
+					 * TypedMpi used to transmit NodeUpdatePacks with MPI.
+					 */
 					typedef api::communication::TypedMpi<NodeUpdatePack<T>> DataMpi;
-
+					/**
+					 * TypedMpi used to transmit DistributedIds with MPI.
+					 */
 					typedef api::communication::TypedMpi<DistributedId> IdMpi;
 
 				private:
@@ -81,8 +86,8 @@ namespace fpmas { namespace synchro {
 					/**
 					 * GhostDataSync constructor.
 					 *
-					 * @param node_mpi NodePtr MPI communicator
-					 * @param id_mpi DistributedId MPI communicator
+					 * @param data_mpi DataMpi instance
+					 * @param id_mpi IdMpi instance
 					 * @param graph reference to the associated
 					 * DistributedGraph
 					 */
@@ -105,7 +110,7 @@ namespace fpmas { namespace synchro {
 				std::unordered_map<int, std::vector<DistributedId>> requests;
 				for(auto node : graph.getLocationManager().getDistantNodes()) {
 					FPMAS_LOGV(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Request %s from %i",
-							ID_C_STR(node.first), node.second->getLocation());
+							FPMAS_C_STR(node.first), node.second->getLocation());
 					requests[node.second->getLocation()].push_back(node.first);
 				}
 				requests = id_mpi.migrate(requests);
@@ -114,7 +119,7 @@ namespace fpmas { namespace synchro {
 				for(auto list : requests) {
 					for(auto id : list.second) {
 						FPMAS_LOGV(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Export %s to %i",
-								ID_C_STR(id), list.first);
+								FPMAS_C_STR(id), list.first);
 						auto node = graph.getNode(id);
 						updated_data[list.first].push_back({id, node->data(), node->getWeight()});
 					}
@@ -146,9 +151,21 @@ namespace fpmas { namespace synchro {
 		template<typename T>
 			class GhostSyncLinker : public api::synchro::SyncLinker<T> {
 				public:
+					/**
+					 * DistributedEdge API
+					 */
 					typedef api::graph::DistributedEdge<T> EdgeApi;
+					/**
+					 * DistributedEdge pointer wrapper
+					 */
 					typedef graph::EdgePtrWrapper<T> EdgePtr;
+					/**
+					 * TypedMpi used to transmit Edges with MPI.
+					 */
 					typedef api::communication::TypedMpi<EdgePtr> EdgeMpi;
+					/**
+					 * TypedMpi used to transmit DistributedIds with MPI.
+					 */
 					typedef api::communication::TypedMpi<DistributedId> IdMpi;
 				private:
 					std::vector<EdgePtr> link_buffer;

@@ -132,7 +132,7 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 				 * @param id of the node to share lock
 				 * @param location rank of the process that own node `id`
 				 */
-				virtual void lockShared(DistributedId, int location) = 0;
+				virtual void lockShared(DistributedId id, int location) = 0;
 
 				/**
 				 * Transmits an UNLOCK_SHARED request of node `id` to its `location`.
@@ -140,7 +140,7 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 				 * @param id of the share locked node
 				 * @param location rank of the process that own node `id`
 				 */
-				virtual void unlockShared(DistributedId, int location) = 0;
+				virtual void unlockShared(DistributedId id, int location) = 0;
 
 				virtual ~MutexClient() {}
 		};

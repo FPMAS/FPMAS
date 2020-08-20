@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['readguard_437',['ReadGuard',['../classfpmas_1_1synchro_1_1ReadGuard.html',1,'fpmas::synchro::ReadGuard&lt; T &gt;'],['../classfpmas_1_1model_1_1ReadGuard.html',1,'fpmas::model::ReadGuard']]],
-  ['readguard_3c_20fpmas_3a_3aapi_3a_3amodel_3a_3aagentptr_20_3e_438',['ReadGuard&lt; fpmas::api::model::AgentPtr &gt;',['../classfpmas_1_1synchro_1_1ReadGuard.html',1,'fpmas::synchro']]],
-  ['runtime_439',['Runtime',['../classfpmas_1_1api_1_1runtime_1_1Runtime.html',1,'fpmas::api::runtime::Runtime'],['../classfpmas_1_1runtime_1_1Runtime.html',1,'fpmas::runtime::Runtime']]]
+  ['ptrwrapper_465',['PtrWrapper',['../classfpmas_1_1api_1_1utils_1_1PtrWrapper.html',1,'fpmas::api::utils']]],
+  ['ptrwrapper_3c_20api_3a_3amodel_3a_3aagent_20_3e_466',['PtrWrapper&lt; api::model::Agent &gt;',['../classfpmas_1_1api_1_1utils_1_1PtrWrapper.html',1,'fpmas::api::utils']]]
 ];

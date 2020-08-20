@@ -45,6 +45,7 @@ namespace fpmas { namespace api { namespace load_balancing {
 				 *
 				 * @param nodes local nodes to balance
 				 * @param fixed_vertices fixed vertices map
+				 * @return balanced partition map
 				 */
 				virtual PartitionMap balance(
 						NodeMap<T> nodes,
@@ -69,6 +70,7 @@ namespace fpmas { namespace api { namespace load_balancing {
 				 * union of all the local node maps specified as arguments.
 				 *
 				 * @param nodes local nodes to balance
+				 * @return balanced partition map
 				 */
 				virtual PartitionMap balance(NodeMap<T> nodes) = 0;
 		};

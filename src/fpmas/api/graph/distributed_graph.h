@@ -44,12 +44,12 @@ namespace fpmas {namespace api {namespace graph {
 	class DistributedGraph 
 		: public virtual fpmas::api::graph::Graph<DistributedNode<T>, DistributedEdge<T>> {
 		public:
-			typedef fpmas::api::graph::Graph<DistributedNode<T>, DistributedEdge<T>> GraphBase;
+			using typename fpmas::api::graph::Graph<DistributedNode<T>, DistributedEdge<T>>::NodeMap;
+			using typename fpmas::api::graph::Graph<DistributedNode<T>, DistributedEdge<T>>::EdgeMap;
 
-			using typename GraphBase::NodeMap;
-			using typename GraphBase::EdgeMap;
-
-			typedef typename api::load_balancing::PartitionMap PartitionMap;
+			/**
+			 * Node callback API.
+			 */
 			typedef api::utils::Callback<DistributedNode<T>*> NodeCallback;
 
 		public:
@@ -178,7 +178,7 @@ namespace fpmas {namespace api {namespace graph {
 			 * The node is assumed to belong to the graph, behavior is
 			 * unspecified otherwise.
 			 *
-			 * @param pointer to node to remove
+			 * @param node pointer to node to remove
 			 */
 			virtual void removeNode(DistributedNode<T>* node) = 0;
 			/**
@@ -302,8 +302,11 @@ namespace fpmas {namespace api {namespace graph {
 			 * process must enter this function to ensure progress.
 			 *
 			 * @param lb load balancing algorithm
+			 * @param fixed_vertices fixed vertices map
 			 */
-			virtual void balance(api::load_balancing::FixedVerticesLoadBalancing<T>& lb, PartitionMap fixed_nodes) = 0;
+			virtual void balance(
+					api::load_balancing::FixedVerticesLoadBalancing<T>& lb,
+					api::load_balancing::PartitionMap fixed_vertices) = 0;
 
 			/**
 			 * Distributes the Graph across processors according to the
@@ -320,7 +323,7 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * @param partition export partition
 			 */
-			virtual void distribute(PartitionMap partition) = 0;
+			virtual void distribute(api::load_balancing::PartitionMap partition) = 0;
 
 			/**
 			 * Synchronizes the DistributedGraph.

@@ -70,6 +70,14 @@ namespace fpmas { namespace graph {
 
 				void updateLocations() override;
 
+				/**
+				 * Returns a reference to the internal map representing the
+				 * locations of managed nodes.
+				 *
+				 * Used for test / debug purpose only.
+				 *
+				 * @return managed nodes locations
+				 */
 				const std::unordered_map<DistributedId, int>& getCurrentLocations() const {
 					return managed_nodes_locations;
 				}

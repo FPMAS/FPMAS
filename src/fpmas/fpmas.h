@@ -94,7 +94,28 @@
  * fpmas::api::model implementations.
  */
 
+/**
+ * \namespace fpmas::exceptions
+ * FPMAS exceptions.
+ */
+
+/**
+ * \namespace fpmas::api::utils
+ * Utility classes used in the fpmas::api namespace.
+ */
+/**
+ * \namespace fpmas::utils
+ * Utility classes.
+ */
+/**
+ * \namespace nlohmann
+ * Namespace where JSON serialization rules can be defined.
+ */
+
 namespace fpmas {
+	/**
+	 * Initializes FPMAS.
+	 */
 	void init(int argc, char** argv) {
 		MPI_Init(&argc, &argv);
 		float v;
@@ -102,6 +123,37 @@ namespace fpmas {
 		fpmas::api::communication::createMpiTypes();
 	}
 
+	/**
+	 * Finalizes FPMAS.
+	 *
+	 * No FPMAS calls are assumed to be performed after this call.
+	 * Moreover, notice that because this function calls `MPI_Finalize`, all
+	 * FPMAS related structures must have been destroyed to avoid unexpected
+	 * behaviors. This can be easily achieved using _blocks_.
+	 *
+	 * \par Example
+	 *
+	 * ```cpp
+	 * #include "fpmas.h"
+	 *
+	 * ...
+	 *
+	 * int main(int argc, char** argv) {
+	 * 	// Initializes MPI and FPMAS related structures
+	 * 	fpmas::init(argc, argv);
+	 *
+	 * 	{
+	 * 		// Beginning of Model scope
+	 * 		fpmas::model::DefaultModel model;
+	 *
+	 * 		...
+	 *
+	 * 		// End of Model scope : model is destroyed
+	 * 	}
+	 * 	fpmas::finalize();
+	 * }
+	 * ```
+	 */
 	void finalize() {
 		fpmas::api::communication::freeMpiTypes();
 		MPI_Finalize();

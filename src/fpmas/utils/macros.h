@@ -5,11 +5,28 @@
  * FPMAS macros.
  */
 
-#define ID_C_STR(id) ((std::string) id).c_str()
+/**
+ * Converts arg to a C-like null terminated string.
+ *
+ * arg **must** be implicitly convertible to std::string
+ *
+ * This can be used to easily log thinks using FPMAS_LOG* macros.
+ *
+ * \par Example
+ * ```cpp
+ * DistributedId id {0, 4};
+ * FPMAS_LOGI(RANK, "Tag", "%s", FPMAS_C_STR(id));
+ * ```
+ *
+ * @param arg object to convert as a C-like string
+ */
+#define FPMAS_C_STR(arg) ((std::string) arg).c_str()
 
+/**
+ * MPI type that can be used to transmit fpmas::api::graph::DistributedId
+ * instances.
+ */
 #define MPI_DISTRIBUTED_ID_TYPE \
 	fpmas::api::graph::DistributedId::mpiDistributedIdType
-
-#define SYNC_MODE template<typename> class S
 
 #endif

@@ -15,19 +15,20 @@ namespace fpmas {
 		template<> 
 			void to_json<void>(nlohmann::json& j, const AgentPtr& ptr) {
 				FPMAS_LOGE(-1, "AGENT_SERIALIZER",
-						"Invalid agent type : %lu. Make sure to properly register \
+						"Invalid agent type : %s. Make sure to properly register \
 						the Agent type with FPMAS_JSON_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",
-						ptr->typeId());
-				std::string message = "Invalid agent type : " + std::string(ptr->typeId().name());
-				throw std::invalid_argument(message);
+						ptr->typeId().name());
+				throw exceptions::BadTypeException(ptr->typeId());
 			}
 
 		template<> 
 			AgentPtr from_json<void>(const nlohmann::json& j) {
-				fpmas::api::model::TypeId id = j.at("type").get<fpmas::api::model::TypeId>();
-				FPMAS_LOGE(-1, "AGENT_SERIALIZER", "Invalid agent type : %lu", id);
-				std::string message = "Invalid agent type : " + std::string(id.name());
-				throw std::invalid_argument(message);
+				std::size_t id = j.at("type").get<std::size_t>();
+				FPMAS_LOGE(-1, "AGENT_SERIALIZER",
+						"Invalid agent type id : %lu. Make sure to properly register \
+						the Agent type with FPMAS_JSON_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",
+						id);
+				throw exceptions::BadIdException(id);
 			}
 	}
 }

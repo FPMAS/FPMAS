@@ -19,7 +19,6 @@ class MockDistributedGraph :
 		typedef fpmas::api::graph::DistributedEdge<T> EdgeType;
 		using typename GraphBase::NodeMap;
 		using typename GraphBase::EdgeMap;
-		using typename GraphBase::PartitionMap;
 		using typename GraphBase::NodeCallback;
 
 		MOCK_METHOD(const fpmas::api::communication::MpiCommunicator&,
@@ -50,8 +49,11 @@ class MockDistributedGraph :
 		MOCK_METHOD(EdgeType*, importEdge, (EdgeType*), (override));
 
 		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::LoadBalancing<T>&), (override));
-		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::FixedVerticesLoadBalancing<T>&, PartitionMap), (override));
-		MOCK_METHOD(void, distribute, (PartitionMap), (override));
+		MOCK_METHOD(void, balance, (
+					fpmas::api::load_balancing::FixedVerticesLoadBalancing<T>&,
+					fpmas::api::load_balancing::PartitionMap),
+				(override));
+		MOCK_METHOD(void, distribute, (fpmas::api::load_balancing::PartitionMap), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
 	};
 

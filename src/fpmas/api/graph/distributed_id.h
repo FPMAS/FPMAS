@@ -31,17 +31,11 @@ namespace fpmas { namespace api { namespace communication {
 		 */
 		unsigned int id;
 	};
-
-	//class SyncMpiCommunicator;
 }}}
 
 namespace fpmas { namespace api { namespace graph {
 	class DistributedId;
 }}}
-
-namespace std {
-	template<> struct hash<fpmas::api::graph::DistributedId>;
-}
 
 using fpmas::api::communication::MpiDistributedId;
 
@@ -55,8 +49,6 @@ namespace fpmas { namespace api { namespace graph {
 	 * 2. An incrementing local id of type `unsigned int`
 	 */
 	class DistributedId {
-		friend std::hash<DistributedId>;
-		//friend fpmas::communication::SyncMpiCommunicator;
 		friend nlohmann::adl_serializer<DistributedId>;
 		friend std::ostream& operator<<(std::ostream& os, const DistributedId& id) {
 			os << std::string(id);
@@ -76,8 +68,13 @@ namespace fpmas { namespace api { namespace graph {
 			 */
 			static MPI_Datatype mpiDistributedIdType;
 
-			explicit DistributedId(const MpiDistributedId& mpiId)
-				: _rank(mpiId.rank), _id(mpiId.id) {}
+			/**
+			 * Converts an MpiDistributedId instance into a DistributedId.
+			 *
+			 * @param mpi_id MpiDistributedId to convert
+			 */
+			explicit DistributedId(const MpiDistributedId& mpi_id)
+				: _rank(mpi_id.rank), _id(mpi_id.id) {}
 
 			/**
 			 * Default DistributedId constructor.
@@ -177,6 +174,11 @@ namespace fpmas { namespace api { namespace graph {
 
 			}
 
+			/**
+			 * Computes the hash value of this DistributedId.
+			 *
+			 * @return hash value
+			 */
 			std::size_t hash() const {
 				return std::hash<unsigned long int>()(
 						_id + UINT_MAX * (unsigned int) _rank
@@ -244,8 +246,8 @@ namespace nlohmann {
 			 * @param value DistributedId to serialize
 			 */
 			static void to_json(json& j, const DistributedId& value) {
-				j[0] = value._rank;
-				j[1] = value._id;
+				j[0] = value.rank();
+				j[1] = value.id();
 			}
 
 			/**

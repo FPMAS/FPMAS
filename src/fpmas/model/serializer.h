@@ -10,27 +10,61 @@
 #include "fpmas/utils/log.h"
 
 namespace fpmas { namespace exceptions {
-class BadIdException : public std::exception {
+	/**
+	 * Exception raised when unserializing an std::type_index if the provided
+	 * type id does not correspond to any registered type.
+	 *
+	 * @see register_types
+	 * @see nlohmann::adl_serializer<std::type_index>
+	 */
+	class BadIdException : public std::exception {
 		private:
 			std::string message;
 
 		public:
+			/**
+			 * BadIdException constructor.
+			 *
+			 * @param bad_id unregistered id
+			 */
 			BadIdException(std::size_t bad_id)
 				: message("Unknown type id : " + std::to_string(bad_id)) {}
 
+			/**
+			 * Returns the explanatory string.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/error/exception/what
+			 */
 			const char* what() const noexcept override {
 				return message.c_str();
 			}
 	};
 
+	/**
+	 * Exception raised when serializing an std::type_index if the provided
+	 * type index not correspond to any registered type.
+	 *
+	 * @see register_types
+	 * @see nlohmann::adl_serializer<std::type_index>
+	 */
 	class BadTypeException : public std::exception {
 		private:
 			std::string message;
 
 		public:
+			/**
+			 * BadTypeException constructor.
+			 *
+			 * @param bad_type unregistered std::type_index
+			 */
 			BadTypeException(const std::type_index& bad_type)
-				: message("Unknown type id : " + std::string(bad_type.name())) {}
+				: message("Unknown type index : " + std::string(bad_type.name())) {}
 
+			/**
+			 * Returns the explanatory string.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/error/exception/what
+			 */
 			const char* what() const noexcept override {
 				return message.c_str();
 			}
@@ -141,15 +175,61 @@ namespace fpmas {
 
 	namespace model {
 		using api::model::AgentPtr;
-		template<typename T>
-			using TypedAgentPtr = api::utils::VirtualPtrWrapper<T>;
+
+		/**
+		 * Typed \Agent pointer.
+		 *
+		 * Contrary to api::model::AgentPtr, that represents a polymorphic
+		 * \Agent (i.e. api::utils::PtrWrapper<api::model::Agent>), this
+		 * pointer is used to wrap a concrete \Agent type (e.g.
+		 * api::utils::PtrWrapper<UserAgent1>).
+		 *
+		 * This type is notably used to define json serialization rules for
+		 * user defined \Agent types.
+		 *
+		 * @tparam Agent concrete agent type
+		 */
+		template<typename Agent>
+			using TypedAgentPtr = api::utils::PtrWrapper<Agent>;
 
 		template<typename Type, typename... AgentTypes> 
 			void to_json(nlohmann::json& j, const AgentPtr& ptr);
 
+		/**
+		 * to_json recursion base case.
+		 *
+		 * Reaching this case is erroneous and throws a exceptions::BadTypeException.
+		 *
+		 * @throw exceptions::BadTypeException
+		 */
 		template<> 
 			void to_json<void>(nlohmann::json& j, const AgentPtr& ptr);
 
+
+		/**
+		 * Recursive to_json method used to serialize polymorphic \Agent
+		 * pointers as JSON.
+		 *
+		 * `Type` corresponds to the currently examined \Agent type. If this
+		 * type id (i.e. Type::TYPE_ID) corresponds to the `ptr` \Agent type
+		 * (i.e.  `ptr->typedId()`), the underlying agent is serialized
+		 * using the user provided
+		 * nlohmann::adl_serializer<TypedAgentPtr<Type>>.
+		 *
+		 * Else, attempts to recursively serialize `ptr` with
+		 * `to_json<AgentTypes...>(j, ptr)`. Notice that the last value of
+		 * `AgentTypes` **must** be void to reach the recursion base case (see
+		 * to_json<void>).
+		 *
+		 * @tparam Type currently examined type
+		 * @tparam AgentTypes agent types not examined yet (must end with
+		 * `void`)
+		 * @param j json
+		 * @param ptr polymorphic agent pointer to serialize
+		 *
+		 * @see nlohmann::adl_serializer<std::type_index>::to_json (used to
+		 * serialize the agent type id)
+		 */
 		template<typename Type, typename... AgentTypes> 
 			void to_json(nlohmann::json& j, const AgentPtr& ptr) {
 				if(ptr->typeId() == Type::TYPE_ID) {
@@ -164,9 +244,40 @@ namespace fpmas {
 		template<typename Type, typename... AgentTypes> 
 			AgentPtr from_json(const nlohmann::json& j);
 
+		/**
+		 * from_json recursion base case.
+		 *
+		 * Reaching this case is erroneous and throws a exceptions::BadIdException.
+		 *
+		 * @throw exceptions::BadIdException
+		 */
 		template<> 
 			AgentPtr from_json<void>(const nlohmann::json& j);
 
+		/**
+		 * Recursive from_json method used to unserialize polymorphic \Agent
+		 * pointers from JSON.
+		 *
+		 * `Type` corresponds to the currently examined \Agent type. If this
+		 * type id (i.e. Type::TYPE_ID) corresponds to the JSON type id value
+		 * (i.e. j.at("type").get<fpmas::api::model::TypeId>()), the JSON value
+		 * is unserialized using the user provided
+		 * nlohmann::adl_serializer<TypedAgentPtr<Type>>.
+		 *
+		 * Else, attempts to recursively unserialize the JSON value with
+		 * `from_json<AgentTypes...>(j, ptr)`. Notice that the last value of
+		 * `AgentTypes` **must** be void to reach the recursion base case (see
+		 * from_json<void>).
+		 *
+		 * @tparam Type currently examined type
+		 * @tparam AgentTypes agent types not examined yet (must end with
+		 * `void`)
+		 * @param j json
+		 * @return ptr unserialized polymorphic agent pointer
+		 *
+		 * @see nlohmann::adl_serializer<std::type_index>::from_json (used to
+		 * unserialize the agent type id)
+		 */
 		template<typename Type, typename... AgentTypes> 
 			AgentPtr from_json(const nlohmann::json& j) {
 				fpmas::api::model::TypeId id = j.at("type").get<fpmas::api::model::TypeId>();
@@ -259,12 +370,12 @@ namespace fpmas {
 #define FPMAS_DEFAULT_JSON(AGENT) \
 	namespace nlohmann {\
 		template<>\
-			struct adl_serializer<fpmas::api::utils::VirtualPtrWrapper<AGENT>> {\
-				static void to_json(json& j, const fpmas::api::utils::VirtualPtrWrapper<AGENT>& data) {\
+			struct adl_serializer<fpmas::api::utils::PtrWrapper<AGENT>> {\
+				static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AGENT>& data) {\
 				}\
 \
-				static void from_json(const json& j, fpmas::api::utils::VirtualPtrWrapper<AGENT>& ptr) {\
-					ptr = fpmas::api::utils::VirtualPtrWrapper<AGENT>(new AGENT);\
+				static void from_json(const json& j, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
+					ptr = fpmas::api::utils::PtrWrapper<AGENT>(new AGENT);\
 				}\
 			};\
 	}\
