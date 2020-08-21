@@ -47,7 +47,7 @@ FPMAS can then be built and installed using CMake :
 mkdir FPMAS/build
 cd FPMAS/build
 cmake ..
-cmake --build .
+cmake --build . -t fpmas
 sudo cmake --install .
 ```
 
@@ -57,6 +57,36 @@ Once installed, the `fpmas` header files should be available from any C++
 project.
 Detailed instructions about how to set up an FPMAS simulation are available on
 the corresponding wiki page.
+
+# Tests
+
+FPMAS is carefully tested using the [googletest
+library](https://github.com/google/googletest). Tests are organized in two
+categories :
+- local tests : do not involve any MPI communication, can be run as a
+  sequential program
+- MPI tests : tests involving several cores and MPI communication
+
+## Local tests
+The local test suite can be built and run with the following commands :
+```
+cd FPMAS/build
+cmake ..
+cmake --build . -t fpmas_local_test
+./tests/local/fpmas_local_test
+```
+
+## MPI tests
+MPI tests can be built and run with the following commands :
+```
+cd FPMAS/build
+cmake ..
+cmake --build . -t fpmas_mpi_test
+mpiexec -n 4 ./tests/mpi/fpmas_mpi_test
+```
+
+Notice that any number of cores can be passed to the `mpiexec` `-n` option so
+that you can test FPMAS on any architecture.
 
 # Contacts
 
