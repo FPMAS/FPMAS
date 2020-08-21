@@ -31,8 +31,9 @@ balancing or distant write operations.
 FPMAS requires the following tools, see the corresponding documentations to
 install them :
 - [CMake](https://cmake.org/) 3.10 or higher
-- [nlohmann/json library](https://github.com/nlohmann/json) 3.7 or higher
-- [zoltan library](https://cs.sandia.gov/Zoltan/) 3.81 or higher
+- [Open MPI](https://www.open-mpi.org/) 3 or 4
+- [nlohmann/json C++ library](https://github.com/nlohmann/json) 3.7 or higher
+- [zoltan C/C++ library](https://cs.sandia.gov/Zoltan/) 3.81 or higher
 
 ## FPMAS
 
