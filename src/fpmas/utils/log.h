@@ -6,6 +6,10 @@
  * [esp-idf](https://github.com/espressif/esp-idf/tree/master/components/log).
  */
 
+#ifndef LOG_LEVEL
+#define LOG_LEVEL FPMAS_LOG_WARN
+#endif
+
 #include <chrono>
 #include <iostream>
 
