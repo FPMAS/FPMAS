@@ -56,7 +56,7 @@ sudo cmake --install .
 Once installed, the `fpmas` header files should be available from any C++
 project.
 Detailed instructions about how to set up an FPMAS simulation are available on
-the corresponding wiki page.
+the corresponding [wiki page](https://github.com/FPMAS/FPMAS/wiki/Get-Started).
 
 # Tests
 
