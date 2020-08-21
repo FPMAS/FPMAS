@@ -128,4 +128,6 @@ TEST_F(NodeTest, out_neighbors) {
 	for(const auto* neighbor : nodes) {
 		ASSERT_THAT(neighbors, Contains(neighbor));
 	}
+	for(auto* node : nodes)
+		delete node;
 }
