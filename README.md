@@ -37,14 +37,18 @@ install them :
 ## FPMAS
 
 To use the latest FPMAS version, you can directly clone this repository :
-> git clone https://https://github.com/FPMAS/FPMAS
+```
+git clone https://https://github.com/FPMAS/FPMAS
+```
 
 FPMAS can then be built and installed using CMake :
-> mkdir FPMAS/build
-> cd FPMA/build
-> cmake ..
-> cmake --build .
-> sudo cmake --install .
+```
+mkdir FPMAS/build
+cd FPMAS/build
+cmake ..
+cmake --build .
+sudo cmake --install .
+```
 
 # Get started
 
