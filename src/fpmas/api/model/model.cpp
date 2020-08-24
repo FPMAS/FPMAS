@@ -26,13 +26,13 @@ namespace fpmas { namespace api { namespace model {
 			api::model::AgentGroup* group = nullptr;
 			AgentTask* task = nullptr;
 			api::model::AgentNode* node = nullptr;
-			api::model::AgentGraph* graph = nullptr;
+			api::model::Model* model = nullptr;
 			if(this->ptr != nullptr) {
 				group = this->ptr->group();
 				task = this->ptr->task();
 				task->setAgent(other.get());
 				node = this->ptr->node();
-				graph = this->ptr->graph();
+				model = this->ptr->model();
 
 				delete this->ptr;
 			}
@@ -42,7 +42,7 @@ namespace fpmas { namespace api { namespace model {
 			this->ptr->setGroup(group);
 			this->ptr->setTask(task);
 			this->ptr->setNode(node);
-			this->ptr->setGraph(graph);
+			this->ptr->setModel(model);
 		}
 
 		return *this;

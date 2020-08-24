@@ -33,9 +33,9 @@ class MockAgent : public fpmas::api::model::Agent {
 		MOCK_METHOD(const fpmas::api::model::AgentNode*, node, (), (const, override));
 		MOCK_METHOD(void, setNode, (fpmas::api::model::AgentNode*), (override));
 
-		MOCK_METHOD(fpmas::api::model::AgentGraph*, graph, (), (override));
-		MOCK_METHOD(const fpmas::api::model::AgentGraph*, graph, (), (const, override));
-		MOCK_METHOD(void, setGraph, (fpmas::api::model::AgentGraph*), (override));
+		MOCK_METHOD(fpmas::api::model::Model*, model, (), (override));
+		MOCK_METHOD(const fpmas::api::model::Model*, model, (), (const, override));
+		MOCK_METHOD(void, setModel, (fpmas::api::model::Model*), (override));
 
 		MOCK_METHOD(fpmas::api::model::AgentTask*, task, (), (override));
 		MOCK_METHOD(const fpmas::api::model::AgentTask*, task, (), (const, override));

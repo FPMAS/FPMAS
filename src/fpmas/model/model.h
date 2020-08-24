@@ -162,7 +162,7 @@ namespace fpmas { namespace model {
 			api::model::AgentGroup* _group;
 			api::model::AgentTask* _task;
 			api::model::AgentNode* _node;
-			api::model::AgentGraph* _graph;
+			api::model::Model* _model;
 		public:
 			api::model::GroupId groupId() const override {return group_id;}
 			void setGroupId(api::model::GroupId id) override {this->group_id = id;}
@@ -178,9 +178,9 @@ namespace fpmas { namespace model {
 			const api::model::AgentNode* node() const override {return _node;}
 			void setNode(api::model::AgentNode* node) override {_node = node;}
 
-			api::model::AgentGraph* graph() override {return _graph;}
-			const api::model::AgentGraph* graph() const override {return _graph;}
-			void setGraph(api::model::AgentGraph* graph) override {_graph = graph;}
+			api::model::Model* model() override {return _model;}
+			const api::model::Model* model() const override {return _model;}
+			void setModel(api::model::Model* model) override {_model = model;}
 
 			api::model::AgentTask* task() override {return _task;}
 			const api::model::AgentTask* task() const override {return _task;}

@@ -35,7 +35,7 @@ namespace fpmas { namespace model {
 		agent->setGroup(&model.getGroup(agent->groupId()));
 		agent->group()->insert(&agent);
 		agent->setNode(node);
-		agent->setGraph(&model.graph());
+		agent->setModel(&model);
 		AgentTask* task = new AgentTask;
 		task->setAgent(agent);
 		agent->setTask(task);

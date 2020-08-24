@@ -84,7 +84,7 @@ namespace fpmas {
  * \image html mior_dist.png "Simple model automatic distribution example on 4 cores"
  */
 
-/** \file src/fpmas/fpmas.h
+/** \file src/fpmas.h
  * Main FPMAS include file.
  */
 

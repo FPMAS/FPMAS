@@ -124,6 +124,7 @@ namespace fpmas { namespace api {namespace model {
 			~AgentPtr();
 	};
 
+	class Model;
 	class AgentGroup;
 
 	/**
@@ -205,23 +206,22 @@ namespace fpmas { namespace api {namespace model {
 			virtual void setNode(AgentNode* node) = 0;
 
 			/**
-			 * Returns a pointer to the \AgentGraph that contains this Agent's
-			 * \AgentNode.
+			 * Returns a pointer to the Model that contains this Agent.
 			 *
-			 * @return pointer to \AgentGraph
+			 * @return pointer to Model
 			 */
-			virtual AgentGraph* graph() = 0;
+			virtual Model* model() = 0;
 			/**
-			 * \copydoc graph()
+			 * \copydoc model()
 			 */
-			virtual const AgentGraph* graph() const = 0;
+			virtual const Model* model() const = 0;
 			/**
-			 * Sets the internal pointer of the \AgentGraph that contains this
-			 * Agent's \AgentNode.
+			 * Sets the internal pointer of the Model that contains this
+			 * Agent.
 			 *
-			 * @param graph pointer to \AgentGraph
+			 * @param model pointer to Model
 			 */
-			virtual void setGraph(AgentGraph* graph) = 0;
+			virtual void setModel(Model* model) = 0;
 
 			/**
 			 * Returns a pointer to the AgentTask associated to this Agent,

@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "fpmas/fpmas.h"
+#include "fpmas.h"
 
 int main(int argc, char **argv) {
 	::testing::InitGoogleTest(&argc, argv);

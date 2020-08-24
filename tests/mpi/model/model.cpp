@@ -488,9 +488,9 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 			auto src = out_neighbors[random_neighbor(engine)];
 			auto tgt = out_neighbors[random_neighbor(engine)];
 			if(src->getId() != tgt->getId()) {
-				DistributedId current_edge_id = graph()->currentEdgeId();
+				DistributedId current_edge_id = model()->graph().currentEdgeId();
 				links.insert(current_edge_id++);
-				graph()->link(src, tgt, random_layer(engine));
+				model()->graph().link(src, tgt, random_layer(engine));
 			}
 		}
 		if(node()->getOutgoingEdges().size() >= 1) {
@@ -499,7 +499,7 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 			auto edge = node()->getOutgoingEdges()[index];
 			DistributedId id = edge->getId();
 			unlinks.insert(id);
-			graph()->unlink(edge);
+			model()->graph().unlink(edge);
 		}
 	}
 };

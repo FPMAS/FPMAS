@@ -265,7 +265,7 @@ TEST_F(AgentGroupTest, add_agent) {
 			InvokeWithoutArgs(build_node_1),
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode(&node1));
-	EXPECT_CALL(*agent1, setGraph(&graph));
+	EXPECT_CALL(*agent1, setModel(&model));
 	EXPECT_CALL(*agent1, setGroup(&agent_group));
 
 	std::array<MockAgent<>*, 2> fake_agents {new MockAgent<>, new MockAgent<>};
@@ -284,7 +284,7 @@ TEST_F(AgentGroupTest, add_agent) {
 			InvokeWithoutArgs(build_node_2),
 			Return(&node1)));
 	EXPECT_CALL(*agent2, setNode(&node2));
-	EXPECT_CALL(*agent2, setGraph(&graph));
+	EXPECT_CALL(*agent2, setModel(&model));
 	EXPECT_CALL(*agent2, setGroup(&agent_group));
 
 	EXPECT_CALL(*fake_agents[1], setGroupId(10));
@@ -324,7 +324,7 @@ TEST_F(AgentGroupTest, agent_task) {
 			InvokeWithoutArgs(build_node_1),
 			Return(&node1)));
 	EXPECT_CALL(*agent1, setNode);
-	EXPECT_CALL(*agent1, setGraph);
+	EXPECT_CALL(*agent1, setModel);
 	EXPECT_CALL(*agent1, setGroup);
 
 	MockAgent<>* fake_agent = new MockAgent<>;
@@ -337,7 +337,7 @@ TEST_F(AgentGroupTest, agent_task) {
 			InvokeWithoutArgs(build_node_2),
 			Return(&node2)));
 	EXPECT_CALL(*agent2, setNode);
-	EXPECT_CALL(*agent2, setGraph);
+	EXPECT_CALL(*agent2, setModel);
 	EXPECT_CALL(*agent2, setGroup);
 
 	fake_agent = new MockAgent<>;
@@ -406,12 +406,10 @@ TEST_F(AgentBaseTest, node) {
 	ASSERT_EQ(agent_base.node(), &node);
 }
 
-TEST_F(AgentBaseTest, graph) {
-	MockDistributedGraph<
-		AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>>
-		graph;
-	agent_base.setGraph(&graph);
-	ASSERT_EQ(agent_base.graph(), &graph);
+TEST_F(AgentBaseTest, model) {
+	MockModel model;
+	agent_base.setModel(&model);
+	ASSERT_EQ(agent_base.model(), &model);
 }
 
 TEST_F(AgentBaseTest, task) {
