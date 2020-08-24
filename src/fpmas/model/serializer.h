@@ -9,6 +9,95 @@
 #include "fpmas/api/model/model.h"
 #include "fpmas/utils/log.h"
 
+/**
+ * Registers the specified \Agent types so that they can be serialized as JSON
+ * using the `nlohmann` library.
+ *
+ * More particularly, registers \Agents types so that their TypeId (i.e. their
+ * corresponding std::type_index) can be serialized. Serialization rules
+ * (to_json and from_json methods) for each type must still be specified.
+ *
+ * This macro must be called **at runtime**, as soon as possible, before
+ * any \Agent serialization occurs.
+ *
+ * @par Example
+ * ```cpp
+ * ...
+ *
+ * int main(int argc, char** argv) {
+ * 	fpmas::init(argc, argv);
+ *
+ * 	FPMAS_REGISTER_AGENT_TYPES(Agent1, Agent2, OtherAgent);
+ *
+ * 	...
+ *
+ * 	fpmas::finalize();
+ * }
+ * ```
+ */
+#define FPMAS_REGISTER_AGENT_TYPES(...)\
+	fpmas::register_types<__VA_ARGS__, void>();
+
+/**
+ * Defines the nlohmann specializations required to handle the JSON
+ * serialization of the specified set of \Agent types.
+ *
+ * This macro must be called **at the global definition level**.
+ *
+ * The same set of \Agent types must be registered at runtime using the
+ * FPMAS_REGISTER_AGENT_TYPES(...) macro at runtime.
+ *
+ * @par Example
+ * ```cpp
+ * #define AGENT_TYPES Agent1, Agent2, OtherAgent
+ *
+ * FPMAS_JSON_SET_UP(AGENT_TYPES)
+ *
+ * int main(int argc, char** argv) {
+ * 	fpmas::init(argc, argv);
+ *
+ * 	FPMAS_REGISTER_AGENT_TYPES(AGENT_TYPES);
+ *
+ * 	...
+ *
+ * 	fpmas::finalize();
+ * }
+ * ```
+ */
+#define FPMAS_JSON_SET_UP(...) \
+	namespace nlohmann {\
+		using fpmas::api::model::AgentPtr;\
+		template<>\
+		struct adl_serializer<AgentPtr> {\
+			static void to_json(json& j, const AgentPtr& data) {\
+				fpmas::model::to_json<__VA_ARGS__, void>(j, data);\
+			}\
+			static AgentPtr from_json(const json& j) {\
+				return std::move(fpmas::model::from_json<__VA_ARGS__, void>(j));\
+			}\
+		};\
+	}
+
+/**
+ * Helper macro to easily define JSON serialization rules for
+ * [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible)
+ * \Agents.
+ *
+ * @param AGENT DefaultConstructible \Agent type
+ */
+#define FPMAS_DEFAULT_JSON(AGENT) \
+	namespace nlohmann {\
+		template<>\
+			struct adl_serializer<fpmas::api::utils::PtrWrapper<AGENT>> {\
+				static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AGENT>& data) {\
+				}\
+\
+				static void from_json(const json& j, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
+					ptr = fpmas::api::utils::PtrWrapper<AGENT>(new AGENT);\
+				}\
+			};\
+	}\
+
 namespace fpmas { namespace exceptions {
 	/**
 	 * Exception raised when unserializing an std::type_index if the provided
@@ -139,6 +228,122 @@ namespace nlohmann {
 					j = _id->second;
 				else
 					throw fpmas::exceptions::BadTypeException(type);
+			}
+		};
+
+	/**
+	 * Generic \Agent pointer serialization.
+	 *
+	 * This partial specialization can be used to easily define serialization
+	 * rules directly from the \Agent implementation, using the following
+	 * static method definitions :
+	 * ```cpp
+	 * class UserDefinedAgent : fpmas::model::AgentBase<UserDefinedAgent> {
+	 * 	...
+	 * 	public:
+	 * 		...
+	 * 		static void to_json(
+	 * 			nlohmann::json& j,
+	 * 			const UserDefinedAgent* agent
+	 * 			);
+	 * 		static UserDefinedAgent* from_json(
+	 * 			const nlohmann::json& j
+	 * 			);
+	 * 		...
+	 * 	};
+	 * 	```
+	 * The from_json method is assumed to return an **heap allocated** agent
+	 * (initialized with a `new` statement).
+	 *
+	 * \par Example
+	 * ```cpp
+	 * class Agent1 : public fpmas::model::AgentBase<Agent1> {
+	 * 	private:
+	 * 		int count;
+	 * 		std::string message;
+	 * 	public:
+	 * 		Agent1(int count, std::string message)
+	 * 			: count(count), message(message) {}
+	 *
+	 * 		static void to_json(nlohmann::json& j, const Agent1* agent) {
+	 * 			j["c"] = agent->count;
+	 * 			j["m"] = agent->message;
+	 * 		}
+	 *
+	 * 		static Agent1* from_json(const nlohmann::json& j) {
+	 * 			return new Agent1(
+	 * 				j.at("c").get<int>(),
+	 * 				j.at("m").get<std::string>()
+	 * 				);
+	 * 		}
+	 *
+	 * 		void act() override;
+	 * 	};
+	 * ```
+	 *
+	 * \note
+	 * Notice that its still possible to define adl_serializer specialization
+	 * without using the internal to_json / from_json methods.
+	 *
+	 * \par Example
+	 * ```cpp
+	 * class Agent1 : public fpmas::model::AgentBase<Agent1> {
+	 * 	private:
+	 * 		int count;
+	 * 		std::string message;
+	 * 	public:
+	 * 		Agent1(int count, std::string message)
+	 * 			: count(count), message(message) {}
+	 *
+	 * 		int getCount() const {return count;}
+	 * 		std::string getMessage() const {return message;}
+	 *
+	 * 		void act() override;
+	 * 	};
+	 *
+	 * 	namespace nlohmann {
+	 * 		template<>
+	 * 			struct adl_serializer<fpmas::api::utils::PtrWrapper<Agent1>> {
+	 * 				static void to_json(
+	 * 					json& j,
+	 * 					fpmas::api::utils::PtrWrapper<Agent1>& agent_ptr
+	 * 				) {
+	 * 					j["c"] = agent_ptr->getCount();
+	 * 					j["m"] = agent_ptr->getMessage();
+	 * 				}
+	 * 				
+	 * 				static fpmas::api::utils::PtrWrapper<Agent1> from_json(
+	 * 					json& j
+	 * 				) {
+	 * 					return {new Agent1(
+	 * 						j.at("c").get<int>(),
+	 * 						j.at("m").get<std::string>()
+	 * 						)};
+	 * 				}
+	 * 		};
+	 * 	}
+	 * 	```
+	 */
+	template<typename AgentType>
+		struct adl_serializer<fpmas::api::utils::PtrWrapper<AgentType>> {
+			/**
+			 * Returns a PtrWrapper initialized with `AgentType::from_json(j)`.
+			 *
+			 * @param j json
+			 * @return unserialized agent pointer
+			 */
+			static fpmas::api::utils::PtrWrapper<AgentType> from_json(const json& j) {
+				return AgentType::from_json(j);
+			}
+
+			/**
+			 * Calls `AgentType::to_json(j, agent_ptr.get())`.
+			 *
+			 * @param j json
+			 * @param agent_ptr agent pointer to serialized
+			 */
+			static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AgentType>& agent_ptr) {
+				AgentType::to_json(j, agent_ptr.get());
 			}
 		};
 }
@@ -289,95 +494,6 @@ namespace fpmas {
 					return std::move(from_json<AgentTypes...>(j));
 				}
 			}
-	}}
-
-/**
- * Registers the specified \Agent types so that they can be serialized as JSON
- * using the `nlohmann` library.
- *
- * More particularly, registers \Agents types so that their TypeId (i.e. their
- * corresponding std::type_index) can be serialized. Serialization rules
- * (to_json and from_json methods) for each type must still be specified.
- *
- * This macro must be called **at runtime**, as soon as possible, before
- * any \Agent serialization occurs.
- *
- * @par Example
- * ```cpp
- * ...
- *
- * int main(int argc, char** argv) {
- * 	fpmas::init(argc, argv);
- *
- * 	FPMAS_REGISTER_AGENT_TYPES(Agent1, Agent2, OtherAgent);
- *
- * 	...
- *
- * 	fpmas::finalize();
- * }
- * ```
- */
-#define FPMAS_REGISTER_AGENT_TYPES(...)\
-	fpmas::register_types<__VA_ARGS__, void>();\
-
-/**
- * Defines the nlohmann specializations required to handle the JSON
- * serialization of the specified set of \Agent types.
- *
- * This macro must be called **at the global definition level**.
- *
- * The same set of \Agent types must be registered at runtime using the
- * FPMAS_REGISTER_AGENT_TYPES(...) macro at runtime.
- *
- * @par Example
- * ```cpp
- * #define AGENT_TYPES Agent1, Agent2, OtherAgent
- *
- * FPMAS_JSON_SET_UP(AGENT_TYPES)
- *
- * int main(int argc, char** argv) {
- * 	fpmas::init(argc, argv);
- *
- * 	FPMAS_REGISTER_AGENT_TYPES(AGENT_TYPES);
- *
- * 	...
- *
- * 	fpmas::finalize();
- * }
- * ```
- */
-#define FPMAS_JSON_SET_UP(...) \
-	namespace nlohmann {\
-		using fpmas::api::model::AgentPtr;\
-		template<>\
-		struct adl_serializer<AgentPtr> {\
-			static void to_json(json& j, const AgentPtr& data) {\
-				fpmas::model::to_json<__VA_ARGS__, void>(j, data);\
-			}\
-			static AgentPtr from_json(const json& j) {\
-				return std::move(fpmas::model::from_json<__VA_ARGS__, void>(j));\
-			}\
-		};\
-	}\
-
-/**
- * Helper macro to easily define JSON serialization rules for
- * [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible)
- * \Agents.
- *
- * @param AGENT DefaultConstructible \Agent type
- */
-#define FPMAS_DEFAULT_JSON(AGENT) \
-	namespace nlohmann {\
-		template<>\
-			struct adl_serializer<fpmas::api::utils::PtrWrapper<AGENT>> {\
-				static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AGENT>& data) {\
-				}\
-\
-				static void from_json(const json& j, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
-					ptr = fpmas::api::utils::PtrWrapper<AGENT>(new AGENT);\
-				}\
-			};\
-	}\
-
+	}
+}
 #endif

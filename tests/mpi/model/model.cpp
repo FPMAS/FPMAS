@@ -225,17 +225,17 @@ class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 		int getCounter() const {
 			return counter;
 		}
+
+		static void to_json(nlohmann::json& j, const ReaderAgent* agent) {
+			j["c"] = agent->getCounter();
+		}
+
+		static ReaderAgent* from_json(const nlohmann::json& j) {
+			ReaderAgent* agent_ptr = new ReaderAgent;
+			agent_ptr->setCounter(j.at("c").get<int>());
+			return agent_ptr;
+		}
 };
-
-void to_json(nlohmann::json& j, const fpmas::api::utils::PtrWrapper<ReaderAgent>& agent) {
-	j["c"] = agent->getCounter();
-}
-
-void from_json(const nlohmann::json& j, fpmas::api::utils::PtrWrapper<ReaderAgent>& agent) {
-	ReaderAgent* agent_ptr = new ReaderAgent;
-	agent_ptr->setCounter(j.at("c").get<int>());
-	agent = {agent_ptr};
-}
 
 class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
@@ -386,17 +386,17 @@ class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
 		int getCounter() const {
 			return counter;
 		}
+
+		static void to_json(nlohmann::json& j, const WriterAgent* agent) {
+			j["c"] = agent->getCounter();
+		}
+
+		static WriterAgent* from_json(const nlohmann::json& j) {
+			WriterAgent* agent_ptr = new WriterAgent;
+			agent_ptr->setCounter(j.at("c").get<int>());
+			return agent_ptr;
+		}
 };
-
-void to_json(nlohmann::json& j, const fpmas::api::utils::PtrWrapper<WriterAgent>& agent) {
-	j["c"] = agent->getCounter();
-}
-
-void from_json(const nlohmann::json& j, fpmas::api::utils::PtrWrapper<WriterAgent>& agent) {
-	WriterAgent* agent_ptr = new WriterAgent;
-	agent_ptr->setCounter(j.at("c").get<int>());
-	agent = {agent_ptr};
-}
 
 class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 	protected:
@@ -502,19 +502,19 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 			model()->graph().unlink(edge);
 		}
 	}
+
+	static void to_json(nlohmann::json& j, const LinkerAgent* agent) {
+		j["links"] = agent->links;
+		j["unlinks"] = agent->unlinks;
+	}
+
+	static LinkerAgent* from_json(const nlohmann::json& j) {
+		LinkerAgent* agent_ptr = new LinkerAgent;
+		agent_ptr->links = j.at("links").get<std::set<DistributedId>>();
+		agent_ptr->unlinks = j.at("unlinks").get<std::set<DistributedId>>();
+		return agent_ptr;
+	}
 };
-
-void to_json(nlohmann::json& j, const fpmas::api::utils::PtrWrapper<LinkerAgent>& agent) {
-	j["links"] = agent->links;
-	j["unlinks"] = agent->unlinks;
-}
-
-void from_json(const nlohmann::json& j, fpmas::api::utils::PtrWrapper<LinkerAgent>& agent) {
-	LinkerAgent* agent_ptr = new LinkerAgent;
-	agent_ptr->links = j.at("links").get<std::set<DistributedId>>();
-	agent_ptr->unlinks = j.at("unlinks").get<std::set<DistributedId>>();
-	agent = {agent_ptr};
-}
 
 class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegrationTest {
 	protected:
