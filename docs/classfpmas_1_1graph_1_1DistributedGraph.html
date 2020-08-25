@@ -425,7 +425,7 @@ template&lt;typename T , template&lt; typename &gt; class SyncMode, template&lt;
 </table>
 </div><div class="memdoc">
 <p>Reference to the current internal <a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> ID.</p>
-<p>The next node built with buildNode() will have an id equal to <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a5db2c87a9385ad35cef238bf4239f948">currentNodeId()</a>++;</p>
+<p>The next node built with <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a6966114524f7373c2d0f57f4547703a9">buildNode()</a> will have an id equal to <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a5db2c87a9385ad35cef238bf4239f948">currentNodeId()</a>++;</p>
 <dl class="section return"><dt>Returns</dt><dd>reference to the current internal <a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> ID </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#af04f1c54519e5110ca749292264b39f7">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>.</p>
@@ -1072,7 +1072,7 @@ template&lt;typename T , template&lt; typename &gt; class SyncMode, template&lt;
 <p>Adds a set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> node callback.</p>
 <p>A <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">DistributedNode</a> is set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> in the following situations :</p><ul>
 <li>the node is imported (with <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#aed55f73d679863a2857b6a64d5d54c79">importNode()</a>)</li>
-<li>the node is built in the local graph (with buildNode())</li>
+<li>the node is built in the local graph (with <a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html#a6966114524f7373c2d0f57f4547703a9">buildNode()</a>)</li>
 </ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

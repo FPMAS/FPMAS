@@ -78,7 +78,7 @@ namespace fpmas { namespace graph {
 			std::vector<NodeCallback*> set_local_callbacks;
 			std::vector<NodeCallback*> set_distant_callbacks;
 
-			NodeType* buildNode(NodeType*);
+			NodeType* _buildNode(NodeType*);
 
 			void setLocal(api::graph::DistributedNode<T>* node);
 			void setDistant(api::graph::DistributedNode<T>* node);
@@ -389,7 +389,7 @@ namespace fpmas { namespace graph {
 
 	template<DIST_GRAPH_PARAMS>
 		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
-		DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(NodeType* node) {
+		DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::_buildNode(NodeType* node) {
 			this->insert(node);
 			setLocal(node);
 			location_manager.addManagedNode(node, mpi_communicator.getRank());
@@ -411,7 +411,7 @@ namespace fpmas { namespace graph {
 	template<DIST_GRAPH_PARAMS>
 		typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
 		DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(T&& data) {
-			return buildNode(new DistNodeImpl<T>(
+			return _buildNode(new DistNodeImpl<T>(
 						this->node_id++, std::move(data)
 						));
 		}

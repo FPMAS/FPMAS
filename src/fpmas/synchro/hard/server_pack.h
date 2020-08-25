@@ -104,11 +104,40 @@ namespace fpmas { namespace synchro { namespace hard {
 				bool sent = comm.test(req);
 
 				while(!sent) {
-					mutex_server.handleIncomingRequests();
-					link_server.handleIncomingRequests();
+					handleIncomingRequests();
 					sent = comm.test(req);
 				}
 				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Request sent.");
+			}
+
+			/**
+			 * Method used to wait for request responses (to READ, ACQUIRE, LOCK
+			 * or LOCK_SHARED) to be available.
+			 *
+			 * The request might be performed by the api::MutexServer OR the
+			 * api::LinkServer. In any case, this methods handles incoming
+			 * requests (see api::MutexServer::handleIncomingRequests() and
+			 * api::LinkServer::handleIncomingRequests()) until a response
+			 * is available, in order to avoid deadlock.
+			 *
+			 * Upon return, it is safe to receive the response with
+			 * api::communication::MpiCommunicator::recv() using the same source and tag.
+			 *
+			 * @param source rank of the process from which the response should
+			 * be received
+			 * @param tag response tag (READ_RESPONSE, ACQUIRE_RESPONSE, etc)
+			 * @param status pointer to MPI_Status, passed to
+			 * api::communication::MpiCommunicator::Iprobe
+			 */
+			void waitResponse(int source, api::Tag tag, MPI_Status* status) {
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for response...");
+				bool response_available = comm.Iprobe(source, getEpoch() | tag, status);
+
+				while(!response_available) {
+					handleIncomingRequests();
+					response_available = comm.Iprobe(source, getEpoch() | tag, status);
+				}
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Response available.");
 			}
 		};
 }}}

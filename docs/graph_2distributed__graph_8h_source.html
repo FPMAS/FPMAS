@@ -136,7 +136,7 @@ $(function() {
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;            std::vector&lt;NodeCallback*&gt; set_local_callbacks;</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            std::vector&lt;NodeCallback*&gt; set_distant_callbacks;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html#aa771b09dbc1d01f290a10ba4e29966e1">NodeType</a>* buildNode(<a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html#aa771b09dbc1d01f290a10ba4e29966e1">NodeType</a>*);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html#aa771b09dbc1d01f290a10ba4e29966e1">NodeType</a>* _buildNode(<a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html#aa771b09dbc1d01f290a10ba4e29966e1">NodeType</a>*);</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            <span class="keywordtype">void</span> setLocal(api::graph::DistributedNode&lt;T&gt;* node);</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;            <span class="keywordtype">void</span> setDistant(api::graph::DistributedNode&lt;T&gt;* node);</div>
@@ -417,7 +417,7 @@ $(function() {
 <div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
 <div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
 <div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;        <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::NodeType</a>*</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::buildNode</a>(NodeType* node) {</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::_buildNode</a>(NodeType* node) {</div>
 <div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;            this-&gt;insert(node);</div>
 <div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;            setLocal(node);</div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;            location_manager.addManagedNode(node, mpi_communicator.<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>());</div>
@@ -438,8 +438,8 @@ $(function() {
 <div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160; </div>
 <div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;    <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
 <div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;        <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html#aa771b09dbc1d01f290a10ba4e29966e1">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::NodeType</a>*</div>
-<div class="line"><a name="l00413"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1DistributedGraph.html#a6966114524f7373c2d0f57f4547703a9">  413</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::buildNode</a>(T&amp;&amp; data) {</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;            <span class="keywordflow">return</span> buildNode(<span class="keyword">new</span> DistNodeImpl&lt;T&gt;(</div>
+<div class="line"><a name="l00413"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1DistributedGraph.html#a6966114524f7373c2d0f57f4547703a9">  413</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html#a6966114524f7373c2d0f57f4547703a9">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::buildNode</a>(T&amp;&amp; data) {</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;            <span class="keywordflow">return</span> _buildNode(<span class="keyword">new</span> DistNodeImpl&lt;T&gt;(</div>
 <div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                        this-&gt;node_id++, std::move(data)</div>
 <div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                        ));</div>
 <div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        }</div>

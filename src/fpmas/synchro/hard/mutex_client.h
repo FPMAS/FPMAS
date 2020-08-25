@@ -80,7 +80,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			// now responding so we can safely wait for response without deadlocking
 			// TODO : this is not thread safe.
 			MPI_Status read_response_status;
-			this->comm.probe(location, server_pack.getEpoch() | Tag::READ_RESPONSE, &read_response_status);
+			server_pack.waitResponse(location, Tag::READ_RESPONSE, &read_response_status);
 
 			return data_mpi.recv(read_response_status.MPI_SOURCE, read_response_status.MPI_TAG);
 		}
@@ -108,7 +108,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			// now responding so we can safely wait for response without deadlocking
 			// TODO : this is not thread safe.
 			MPI_Status acquire_response_status;
-			this->comm.probe(location, server_pack.getEpoch() | Tag::ACQUIRE_RESPONSE, &acquire_response_status);
+			server_pack.waitResponse(location, Tag::ACQUIRE_RESPONSE, &acquire_response_status);
 
 			return data_mpi.recv(acquire_response_status.MPI_SOURCE, acquire_response_status.MPI_TAG);
 		}
@@ -136,7 +136,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			// now responding so we can safely wait for response without deadlocking
 			// TODO : this is not thread safe.
 			MPI_Status lock_response_status;
-			this->comm.probe(location, server_pack.getEpoch() | Tag::LOCK_RESPONSE, &lock_response_status);
+			server_pack.waitResponse(location, Tag::LOCK_RESPONSE, &lock_response_status);
 
 			comm.recv(lock_response_status.MPI_SOURCE, lock_response_status.MPI_TAG);
 		}
@@ -161,7 +161,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
 			MPI_Status lock_response_status;
-			this->comm.probe(location, server_pack.getEpoch() | Tag::LOCK_SHARED_RESPONSE, &lock_response_status);
+			server_pack.waitResponse(location, Tag::LOCK_SHARED_RESPONSE, &lock_response_status);
 
 			comm.recv(lock_response_status.MPI_SOURCE, lock_response_status.MPI_TAG);
 		}

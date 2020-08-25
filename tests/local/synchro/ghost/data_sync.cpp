@@ -51,6 +51,9 @@ class GhostDataSyncTest : public ::testing::Test {
 			ON_CALL(mocked_graph, getLocationManager)
 				.WillByDefault(ReturnRef(location_manager));
 			EXPECT_CALL(mocked_graph, getLocationManager).Times(AnyNumber());
+			ON_CALL(mocked_graph, getMpiCommunicator)
+				.WillByDefault(ReturnRef(mock_comm));
+			EXPECT_CALL(mocked_graph, getMpiCommunicator).Times(AnyNumber());
 		}
 
 		void TearDown() override {

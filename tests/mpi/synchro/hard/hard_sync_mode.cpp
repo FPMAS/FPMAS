@@ -7,6 +7,10 @@
 #include "../mocks/load_balancing/mock_load_balancing.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 
+#include "utils/test.h"
+
+using ::testing::SizeIs;
+
 using fpmas::api::graph::LocationState;
 using fpmas::communication::TypedMpi;
 using fpmas::communication::MpiCommunicator;
@@ -114,7 +118,7 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
 		MpiCommunicator comm;
 		DistributedGraph<
-			int, HardSyncMode,
+			unsigned int, HardSyncMode,
 			DistributedNode,
 			DistributedEdge,
 			TypedMpi,
@@ -122,12 +126,65 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 			> graph {comm};
 
 		std::mt19937 engine;
-		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
 		
-		typename fpmas::api::load_balancing::PartitionMap partition;
+		fpmas::api::load_balancing::PartitionMap partition;
+
+		void SetUp() override {
+			FPMAS_ON_PROC(comm, 0) {
+				for(int i = 0; i < comm.getSize(); i++) {
+					auto* node = graph.buildNode(0ul);
+					partition[node->getId()] = i;
+				}
+				// Builds a complete graph
+				for(auto source : graph.getNodes()) {
+					for(auto target : graph.getNodes()) {
+						if(source.second != target.second) {
+							graph.link(source.second, target.second, 0);
+						}
+					}
+				}
+			}
+			graph.distribute(partition);
+		}
 };
 
 TEST_F(HardSyncModeIntegrationTest, acquire) {
-	// TODO
+	ASSERT_THAT(graph.getLocationManager().getLocalNodes(), SizeIs(1));
 
+	FPMAS_MIN_PROCS("HardSyncModeIntegrationTest.acquire", comm, 1) {
+		unsigned int num_writes = 10000;
+		unsigned int local_writes_count = 0;
+		for(unsigned int i = 0; i < num_writes; i++) {
+			for(auto node : graph.getLocationManager().getLocalNodes()) {
+				auto& out_nodes = node.second->outNeighbors();
+				std::uniform_int_distribution<std::size_t> dist(0, out_nodes.size()-1);
+				std::size_t random_index = dist(engine);
+
+				auto* out_node = out_nodes.at(random_index);
+				out_node->mutex()->acquire();
+				out_node->data()++;
+				out_node->mutex()->releaseAcquire();
+				local_writes_count++;
+			}
+		}
+
+		// Synchronization barrier
+		graph.synchronize();
+
+		unsigned int local_node_sum = 0;
+		for(auto node : graph.getLocationManager().getLocalNodes()) {
+			local_node_sum+=node.second->data();
+		}
+
+		fpmas::communication::TypedMpi<unsigned int> mpi {comm};
+		std::vector<unsigned int> total_writes = mpi.gather(local_writes_count, 0);
+		unsigned int write_sum = std::accumulate(total_writes.begin(), total_writes.end(), 0);
+
+		std::vector<unsigned int> total_node_sum = mpi.gather(local_node_sum, 0);
+		unsigned int node_sum = std::accumulate(total_node_sum.begin(), total_node_sum.end(), 0);
+
+		FPMAS_ON_PROC(comm, 0) {
+			ASSERT_EQ(write_sum, node_sum);
+		}
+	}
 }

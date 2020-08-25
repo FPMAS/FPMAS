@@ -50,6 +50,13 @@ class HardSyncLinkerTest : public ::testing::Test {
 		ServerPack<int> server_pack {comm, termination, mutex_server, server};
 		MockDistributedGraph<int, MockDistributedEdge<int>, MockDistributedNode<int>> graph;
 		HardSyncLinker<int> syncLinker {graph, client, server_pack};
+
+		virtual void SetUp() override {
+			ON_CALL(graph, getMpiCommunicator)
+				.WillByDefault(ReturnRef(comm));
+			EXPECT_CALL(graph, getMpiCommunicator)
+				.Times(AnyNumber());
+		}
 };
 
 class HardSyncLinkerLinkTest : public HardSyncLinkerTest {
@@ -58,7 +65,12 @@ class HardSyncLinkerLinkTest : public HardSyncLinkerTest {
 		MockDistributedNode<int> src;
 		MockDistributedNode<int> tgt;
 
-		void SetUp() {
+		void SetUp() override {
+			ON_CALL(graph, getMpiCommunicator)
+				.WillByDefault(ReturnRef(comm));
+			EXPECT_CALL(graph, getMpiCommunicator)
+				.Times(AnyNumber());
+
 			EXPECT_CALL(edge, getSourceNode).Times(AnyNumber())
 				.WillRepeatedly(Return(&src));
 			EXPECT_CALL(edge, getTargetNode).Times(AnyNumber())

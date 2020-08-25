@@ -32,6 +32,7 @@ using ::testing::A;
 using ::testing::AllOf;
 using ::testing::Assign;
 using ::testing::AtLeast;
+using ::testing::DoAll;
 using ::testing::Expectation;
 using ::testing::Field;
 using ::testing::InSequence;
@@ -95,8 +96,8 @@ TEST_F(MutexClientTest, read) {
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 		// 3 : Probe for read response
-		EXPECT_CALL(comm, probe(5, Epoch::EVEN | Tag::READ_RESPONSE, _))
-			.WillOnce(Invoke(SetMpiStatus()));
+		EXPECT_CALL(comm, Iprobe(5, Epoch::EVEN | Tag::READ_RESPONSE, _))
+			.WillOnce(DoAll(Invoke(SetMpiStatus()), Return(true)));
 		// 4 : Receive read data
 		EXPECT_CALL(data_mpi, recv(5, Epoch::EVEN | Tag::READ_RESPONSE, _)).WillOnce(Return(27));
 	}
@@ -141,8 +142,8 @@ TEST_F(MutexClientTest, acquire) {
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 		// 3 : Probe for read response
-		EXPECT_CALL(comm, probe(5, Epoch::EVEN | Tag::ACQUIRE_RESPONSE, _))
-			.WillOnce(Invoke(SetMpiStatus()));
+		EXPECT_CALL(comm, Iprobe(5, Epoch::EVEN | Tag::ACQUIRE_RESPONSE, _))
+			.WillOnce(DoAll(Invoke(SetMpiStatus()), Return(true)));
 		// 4 : Receive read data
 		EXPECT_CALL(data_mpi, recv(5, Epoch::EVEN | Tag::ACQUIRE_RESPONSE, _)).WillOnce(Return(27));
 	}
@@ -183,8 +184,8 @@ TEST_F(MutexClientTest, lock) {
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 		// 3 : Probe for read response
-		EXPECT_CALL(comm, probe(5, Epoch::EVEN | Tag::LOCK_RESPONSE, _))
-			.WillOnce(Invoke(SetMpiStatus()));
+		EXPECT_CALL(comm, Iprobe(5, Epoch::EVEN | Tag::LOCK_RESPONSE, _))
+			.WillOnce(DoAll(Invoke(SetMpiStatus()), Return(true)));
 		// 4 : Receive response
 		EXPECT_CALL(comm, recv(5, Epoch::EVEN | Tag::LOCK_RESPONSE, _));
 	}
@@ -217,8 +218,8 @@ TEST_F(MutexClientTest, lock_shared) {
 		// 2 : Tests request completion : completes immediately
 		EXPECT_CALL(comm, test(_)).WillOnce(Return(true));
 		// 3 : Probe for read response
-		EXPECT_CALL(comm, probe(5, Epoch::EVEN | Tag::LOCK_SHARED_RESPONSE, _))
-			.WillOnce(Invoke(SetMpiStatus()));
+		EXPECT_CALL(comm, Iprobe(5, Epoch::EVEN | Tag::LOCK_SHARED_RESPONSE, _))
+			.WillOnce(DoAll(Invoke(SetMpiStatus()), Return(true)));
 		// 4 : Receive response
 		EXPECT_CALL(comm, recv(5, Epoch::EVEN | Tag::LOCK_SHARED_RESPONSE, _));
 	}
@@ -241,11 +242,11 @@ TEST_F(MutexClientTest, unlock_shared) {
 }
 
 /***************************/
-/* mutex_clientDeadlockTest */
+/* MutexClientDeadlockTest */
 /***************************/
 class MutexClientDeadlockTest : public MutexClientTest {
 	private :
-		void wait() {
+		void waitSend() {
 			for(int i = 0; i < 20; i++) {
 				EXPECT_CALL(comm, test(_))
 					.InSequence(seq)
@@ -262,38 +263,58 @@ class MutexClientDeadlockTest : public MutexClientTest {
 				.WillOnce(Return(true));
 		}
 
+		void waitResponse(Tag recv_tag) {
+			for(int i = 0; i < 20; i++) {
+				EXPECT_CALL(comm, Iprobe)
+					.InSequence(seq)
+					.WillOnce(Return(false));
+				EXPECT_CALL(mock_mutex_server, handleIncomingRequests)
+					.Times(AtLeast(1))
+					.InSequence(seq);
+				EXPECT_CALL(mock_link_server, handleIncomingRequests)
+					.Times(AtLeast(1))
+					.InSequence(seq);
+			}
+
+			EXPECT_CALL(comm, Iprobe(5, Epoch::EVEN | recv_tag, _))
+				.InSequence(seq)
+				.WillRepeatedly(DoAll(Invoke(SetMpiStatus()), Return(true)));
+		}
+
+
 	protected:
 		Sequence seq;
 
-		void setUpWait(Tag sendTag, DistributedId id) {
+		void setUpWaitSend(Tag send_tag, DistributedId id) {
 			// 1 : sends the request
-			EXPECT_CALL(id_mpi, Issend(id, 5, Epoch::EVEN | sendTag, _))
+			EXPECT_CALL(id_mpi, Issend(id, 5, Epoch::EVEN | send_tag, _))
 				.InSequence(seq);
 
 			// 2 : Tests request completion : completes after 20 calls
-			wait();
+			waitSend();
 		}
 
-		void setUpWaitWithResponse(Tag sendTag, DistributedId id, Tag recvTag) {
-			setUpWait(sendTag, id);
+		void setUpWaitSendWithResponse(Tag send_tag, DistributedId id, Tag recv_tag) {
+			setUpWaitSend(send_tag, id);
 		
 			// 3 : Probe for response
-			EXPECT_CALL(comm, probe(5, Epoch::EVEN | recvTag, _))
-				.InSequence(seq)
-				.WillRepeatedly(Invoke(SetMpiStatus()));
+			waitResponse(recv_tag);
+			//EXPECT_CALL(comm, Iprobe(5, Epoch::EVEN | recvTag, _))
+				//.InSequence(seq)
+				//.WillRepeatedly(DoAllInvoke(SetMpiStatus()));
 		}
 
-		void setUpWait(Tag sendTag, DistributedId id, int data) {
+		void setUpWaitSend(Tag send_tag, DistributedId id, int data) {
 			// 1 : sends the request
 			EXPECT_CALL(data_update_mpi,
 					Issend(AllOf(
 							Field(&DataUpdatePack<int>::id, id),
 							Field(&DataUpdatePack<int>::updated_data, data)),
-						5, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _))
+						5, Epoch::EVEN | send_tag, _))
 				.InSequence(seq);
 
 			// 2 : Tests request completion : completes after 20 calls
-			wait();
+			waitSend();
 		}
 };
 
@@ -314,7 +335,7 @@ class MutexClientDeadlockTest : public MutexClientTest {
  *   is complete
  */
 TEST_F(MutexClientDeadlockTest, read) {
-	setUpWaitWithResponse(Tag::READ, id, Tag::READ_RESPONSE);
+	setUpWaitSendWithResponse(Tag::READ, id, Tag::READ_RESPONSE);
 
 	// Receive read data
 	EXPECT_CALL(data_mpi, recv(5, Epoch::EVEN | Tag::READ_RESPONSE, _))
@@ -330,7 +351,7 @@ TEST_F(MutexClientDeadlockTest, read) {
  * mutex_client_deadlock_test_release_read
  */
 TEST_F(MutexClientDeadlockTest, release_read) {
-	setUpWait(Tag::UNLOCK_SHARED, id);
+	setUpWaitSend(Tag::UNLOCK_SHARED, id);
 
 	// Actual read call
 	mutex_client.releaseRead(id, 5);
@@ -343,7 +364,7 @@ TEST_F(MutexClientDeadlockTest, release_read) {
  *
  */
 TEST_F(MutexClientDeadlockTest, acquire) {
-	setUpWaitWithResponse(Tag::ACQUIRE, id, Tag::ACQUIRE_RESPONSE);
+	setUpWaitSendWithResponse(Tag::ACQUIRE, id, Tag::ACQUIRE_RESPONSE);
 
 	// Receive acquired data
 	EXPECT_CALL(data_mpi, recv(5, Epoch::EVEN | Tag::ACQUIRE_RESPONSE, _))
@@ -361,7 +382,7 @@ TEST_F(MutexClientDeadlockTest, acquire) {
 TEST_F(MutexClientDeadlockTest, release_acquire) {
 	int data = 42;
 
-	setUpWait(Tag::RELEASE_ACQUIRE, id, data);
+	setUpWaitSend(Tag::RELEASE_ACQUIRE, id, data);
 
 	// Actual read call
 	mutex_client.releaseAcquire(id, data, 5);
@@ -371,7 +392,7 @@ TEST_F(MutexClientDeadlockTest, release_acquire) {
  * mutex_client_deadlock_test_lock
  */
 TEST_F(MutexClientDeadlockTest, lock) {
-	setUpWaitWithResponse(Tag::LOCK, id, Tag::LOCK_RESPONSE);
+	setUpWaitSendWithResponse(Tag::LOCK, id, Tag::LOCK_RESPONSE);
 
 	// Receive lock response
 	EXPECT_CALL(comm, recv(5, Epoch::EVEN | Tag::LOCK_RESPONSE, _))
@@ -386,7 +407,7 @@ TEST_F(MutexClientDeadlockTest, lock) {
  */
 TEST_F(MutexClientDeadlockTest, unlock) {
 
-	setUpWait(Tag::UNLOCK, id);
+	setUpWaitSend(Tag::UNLOCK, id);
 
 	// Actual unlock call
 	mutex_client.unlock(id, 5);
@@ -396,7 +417,7 @@ TEST_F(MutexClientDeadlockTest, unlock) {
  * mutex_client_deadlock_test_lock_shared
  */
 TEST_F(MutexClientDeadlockTest, lock_shared) {
-	setUpWaitWithResponse(Tag::LOCK_SHARED, id, Tag::LOCK_SHARED_RESPONSE);
+	setUpWaitSendWithResponse(Tag::LOCK_SHARED, id, Tag::LOCK_SHARED_RESPONSE);
 
 	// Receive lock shared response
 	EXPECT_CALL(comm, recv(5, Epoch::EVEN | Tag::LOCK_SHARED_RESPONSE, _))
@@ -411,7 +432,7 @@ TEST_F(MutexClientDeadlockTest, lock_shared) {
  */
 TEST_F(MutexClientDeadlockTest, unlock_shared) {
 
-	setUpWait(Tag::UNLOCK_SHARED, id);
+	setUpWaitSend(Tag::UNLOCK_SHARED, id);
 
 	// Actual unlock call
 	mutex_client.unlockShared(id, 5);
