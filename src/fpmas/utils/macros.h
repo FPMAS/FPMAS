@@ -29,4 +29,14 @@
 #define MPI_DISTRIBUTED_ID_TYPE \
 	fpmas::api::graph::DistributedId::mpiDistributedIdType
 
+/**
+ * Elegant expression to specify a portion of code that should be executed only
+ * on the process with the given rank.
+ *
+ * @param COMM reference to an fpmas::api::communication::MpiCommunicator
+ * instance
+ * @param RANK rank of the process on which the code should be executed
+ */
+#define FPMAS_ON_PROC(COMM, RANK) if(comm.getRank() == RANK)
+
 #endif

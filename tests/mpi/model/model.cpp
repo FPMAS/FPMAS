@@ -86,7 +86,7 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 		void SetUp() override {
 
 			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
-			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group1.add(new MockAgentBase<1>);
 					group2.add(new MockAgentBase<10>);
@@ -179,7 +179,7 @@ class ModelGhostModeIntegrationLoadBalancingTest : public ModelGhostModeIntegrat
 			auto& group2 = model.buildGroup();
 
 			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
-			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group2.add(new MockAgentBase<10>);
 				}
@@ -268,7 +268,7 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 			auto& group2 = model.buildGroup();
 
 			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
-			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group1.add(new MockAgentBase<1>);
 					group2.add(new MockAgentBase<10>);
@@ -337,7 +337,7 @@ class ModelHardSyncModeIntegrationLoadBalancingTest : public ModelHardSyncModeIn
 			auto& group2 = model.buildGroup();
 
 			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
-			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group2.add(new MockAgentBase<10>);
 				}
@@ -417,7 +417,7 @@ class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegration
 	protected:
 		void SetUp() override {
 			auto& group = model.buildGroup();
-			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new ReaderAgent);
 				}
@@ -523,7 +523,7 @@ class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegratio
 		void SetUp() override {
 			auto& group = model.buildGroup();
 
-			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new LinkerAgent);
 				}
@@ -600,7 +600,7 @@ TEST_F(ModelDynamicLinkGhostModeIntegrationTest, test) {
 		
 	ASSERT_THAT(final_edge_id_set, ::testing::UnorderedElementsAreArray(total_links));
 
-	if(agent_graph.getMpiCommunicator().getRank() == 0) {
+	FPMAS_ON_PROC(comm, 0) {
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Initial link count : %lu",
 				initial_links.size());
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Link count : %lu - Unlink count : %lu",
@@ -616,7 +616,7 @@ class ModelDynamicLinkHardSyncModeIntegrationTest : public ModelHardSyncModeInte
 		void SetUp() override {
 			auto& group = model.buildGroup();
 
-			if(agent_graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new LinkerAgent);
 				}
@@ -693,11 +693,15 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 		
 	ASSERT_THAT(final_edge_id_set, ::testing::UnorderedElementsAreArray(total_links));
 
-	if(agent_graph.getMpiCommunicator().getRank() == 0) {
+	FPMAS_ON_PROC(comm, 0) {
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Initial link count : %lu",
 				initial_links.size());
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Link count : %lu - Unlink count : %lu",
 				total_links.size(), total_unlinks.size());
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Total edge count : %lu", edge_count);
 	}
+}
+
+TEST(DefaultModelConfig, build) {
+	fpmas::model::DefaultModel<fpmas::synchro::HardSyncMode> model;
 }

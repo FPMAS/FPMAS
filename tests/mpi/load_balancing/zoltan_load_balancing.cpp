@@ -30,7 +30,7 @@ class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 		fpmas::load_balancing::PartitionMap fixed_nodes;
 
 		void SetUp() override {
-			if(graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for (int i = 0; i < 10*graph.getMpiCommunicator().getSize(); ++i) {
 					graph.buildNode();
 				}	

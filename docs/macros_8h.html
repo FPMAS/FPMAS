@@ -101,6 +101,8 @@ Macros</h2></td></tr>
 <tr class="separator:a32ab2caf321ac613cabb47d79541d9c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a50ce9b1067e5bd5a7d8c727f07da8f37"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a50ce9b1067e5bd5a7d8c727f07da8f37">MPI_DISTRIBUTED_ID_TYPE</a>&#160;&#160;&#160;	<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a6daab47e183372ec5c965c01410c7f3c">fpmas::api::graph::DistributedId::mpiDistributedIdType</a></td></tr>
 <tr class="separator:a50ce9b1067e5bd5a7d8c727f07da8f37"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2868889724c6490a488852f9fc535bf3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a2868889724c6490a488852f9fc535bf3">FPMAS_ON_PROC</a>(COMM,  RANK)&#160;&#160;&#160;if(comm.getRank() == RANK)</td></tr>
+<tr class="separator:a2868889724c6490a488852f9fc535bf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>FPMAS macros. </p>
@@ -147,6 +149,42 @@ Macros</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>MPI type that can be used to transmit <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::api::graph::DistributedId</a> instances. </p>
+
+</div>
+</div>
+<a id="a2868889724c6490a488852f9fc535bf3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2868889724c6490a488852f9fc535bf3">&#9670;&nbsp;</a></span>FPMAS_ON_PROC</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_ON_PROC</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">COMM, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">RANK&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td>&#160;&#160;&#160;if(comm.getRank() == RANK)</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Elegant expression to specify a portion of code that should be executed only on the process with the given rank.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">COMM</td><td>reference to an <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a> instance </td></tr>
+    <tr><td class="paramname">RANK</td><td>rank of the process on which the code should be executed </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

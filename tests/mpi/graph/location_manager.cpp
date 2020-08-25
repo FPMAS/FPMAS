@@ -53,7 +53,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			}
 
 			EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(AnyNumber());
-			if(graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODES_COUNT; i++) {
 					graph.buildNode();
 				}

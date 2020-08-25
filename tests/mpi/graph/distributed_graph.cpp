@@ -54,7 +54,7 @@ class DistributedGraphBalance : public ::testing::Test {
 			EXPECT_CALL(graph.getSyncMode(), getDataSync)
 				.Times(AnyNumber());
 
-			if(graph.getMpiCommunicator().getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				EXPECT_CALL(graph.getSyncMode(), buildMutex)
 					.Times(graph.getMpiCommunicator().getSize());
 				auto firstNode = graph.buildNode();

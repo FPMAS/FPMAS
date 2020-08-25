@@ -77,7 +77,9 @@ $(function() {
 <div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="macros_8h.html#a50ce9b1067e5bd5a7d8c727f07da8f37">   29</a></span>&#160;<span class="preprocessor">#define MPI_DISTRIBUTED_ID_TYPE \</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">    fpmas::api::graph::DistributedId::mpiDistributedIdType</span></div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="macros_8h.html#a2868889724c6490a488852f9fc535bf3">   40</a></span>&#160;<span class="preprocessor">#define FPMAS_ON_PROC(COMM, RANK) if(comm.getRank() == RANK)</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

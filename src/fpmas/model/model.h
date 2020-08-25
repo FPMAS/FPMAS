@@ -688,8 +688,26 @@ namespace fpmas { namespace model {
 	template<template<typename> class SyncMode>
 	class DefaultModel : private DefaultModelConfig<SyncMode>, public Model {
 		public:
-			DefaultModel()
-				: Model(this->__graph, this->__scheduler, this->__runtime, this->__load_balancing) {}
+			DefaultModel() :
+				DefaultModelConfig<SyncMode>(),
+				Model(this->__graph, this->__scheduler, this->__runtime, this->__load_balancing) {}
+
+			/**
+			 * Returns a reference to the internal
+			 * communication::MpiCommunicator.
+			 *
+			 * @return reference to internal MPI communicator
+			 */
+			communication::MpiCommunicator& getMpiCommunicator() {
+				return this->comm;
+			}
+
+			/**
+			 * \copydoc getMpiCommunicator
+			 */
+			const communication::MpiCommunicator& getMpiCommunicator() const {
+				return this->comm;
+			}
 	};
 }}
 #endif

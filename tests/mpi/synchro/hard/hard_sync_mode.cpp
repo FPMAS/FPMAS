@@ -92,7 +92,7 @@ class MutexServerRaceCondition : public ::testing::Test {
 			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
 
 			mutex_server.manage(DistributedId(3, 6), &mutex);
-			if(comm.getRank() == 0) {
+			FPMAS_ON_PROC(comm, 0) {
 				state = LocationState::LOCAL;
 			}
 		}
@@ -106,9 +106,8 @@ TEST_F(MutexServerRaceCondition, acquire_race_condition) {
 	}
 	termination.terminate(server_pack);
 
-	if(comm.getRank() == 0) {
+	FPMAS_ON_PROC(comm, 0)
 		ASSERT_EQ(mutex.read(), comm.getSize() * NUM_ACQUIRE);
-	}
 }
 
 class HardSyncModeIntegrationTest : public ::testing::Test {

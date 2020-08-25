@@ -90,6 +90,7 @@
 		template<>\
 			struct adl_serializer<fpmas::api::utils::PtrWrapper<AGENT>> {\
 				static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AGENT>& data) {\
+					j = json::object();\
 				}\
 \
 				static void from_json(const json& j, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
