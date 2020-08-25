@@ -1,5 +1,6 @@
 #include "fpmas/communication/communication.h"
 #include "../mocks/communication/mock_communication.h"
+#include "utils/test.h"
 
 using ::testing::Contains;
 using ::testing::IsEmpty;
@@ -23,9 +24,10 @@ TEST(MpiMpiCommunicatorTest, rank_test) {
 	ASSERT_EQ(rank, comm.getRank());
 }
 
-TEST(MpiMpiCommunicatorTest, probe_any_source) {
+TEST(MpiCommunicatorTest, probe_any_source) {
 	MpiCommunicator comm;
-	if(comm.getSize() > 1) {
+
+	FPMAS_MIN_PROCS("MpiCommunicatorTest.probe_any_source", comm, 1) {
 		if(comm.getRank() == 0) {
 			std::vector<int> ranks;
 			for(int i = 1; i < comm.getSize(); i++) {
