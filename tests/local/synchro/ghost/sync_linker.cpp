@@ -39,33 +39,8 @@ class GhostSyncLinkerTest : public ::testing::Test {
 		MockEdge* edge1 = new MockEdge {edge1_id, 8};
 		MockEdge* edge2 = new MockEdge {edge2_id, 2};
 		MockEdge* edge3 = new MockEdge {edge3_id, 5};
-
-		void SetUp() override {
-			// Edge1 set up
-			edge1->src = new MockNode();
-			edge1->tgt = new MockNode();
-
-			// Edge2 set up
-			edge2->src = new MockNode();
-			edge2->tgt = new MockNode();
-
-			// Edge3 set up
-			edge3->src = new MockNode();
-			edge3->tgt = new MockNode();
-		}
-
-		void TearDown() override {
-			delete edge1->src;
-			delete edge1->tgt;
-			delete edge2->src;
-			delete edge2->tgt;
-			delete edge3->src;
-			delete edge3->tgt;
-			delete edge1;
-			delete edge2;
-			delete edge3;
-		}
 		
+
 		void edgeSetUp(MockEdge& edge, int srcRank, int tgtRank) {
 			LocationState srcLocation = (srcRank == current_rank) ?
 				LocationState::LOCAL : LocationState::DISTANT;
@@ -92,7 +67,37 @@ class GhostSyncLinkerTest : public ::testing::Test {
 
 };
 
-TEST_F(GhostSyncLinkerTest, export_link) {
+class GhostSyncLinkerLinkUnlinkTest : public GhostSyncLinkerTest {
+
+		void SetUp() override {
+			// Edge1 set up
+			edge1->src = new MockNode();
+			edge1->tgt = new MockNode();
+
+			// Edge2 set up
+			edge2->src = new MockNode();
+			edge2->tgt = new MockNode();
+
+			// Edge3 set up
+			edge3->src = new MockNode();
+			edge3->tgt = new MockNode();
+		}
+
+		void TearDown() override {
+			delete edge1->src;
+			delete edge1->tgt;
+			delete edge2->src;
+			delete edge2->tgt;
+			delete edge3->src;
+			delete edge3->tgt;
+			delete edge1;
+			delete edge2;
+			delete edge3;
+		}
+
+};
+
+TEST_F(GhostSyncLinkerLinkUnlinkTest, export_link) {
 	// Edge1 set up
 	edgeSetUp(*edge1, 6, current_rank); // distant src
 
@@ -113,14 +118,14 @@ TEST_F(GhostSyncLinkerTest, export_link) {
 		);
 
 	EXPECT_CALL(edge_mpi, migrate(export_edge_matcher));
-	EXPECT_CALL(id_mpi, migrate(IsEmpty()));
+	EXPECT_CALL(id_mpi, migrate(IsEmpty())).Times(2);
 
 	// Distant src + distant tgt => erase
 	EXPECT_CALL(mocked_graph, erase(edge3));
 	linker.synchronize();
 }
 
-TEST_F(GhostSyncLinkerTest, import_link) {
+TEST_F(GhostSyncLinkerLinkUnlinkTest, import_link) {
 	std::unordered_map<int, std::vector<fpmas::graph::EdgePtrWrapper<int>>>
 		import_map {
 			{2, {edge1, edge3}},
@@ -129,7 +134,7 @@ TEST_F(GhostSyncLinkerTest, import_link) {
 
 	EXPECT_CALL(edge_mpi, migrate(IsEmpty()))
 		.WillOnce(Return(import_map));
-	EXPECT_CALL(id_mpi, migrate(IsEmpty()));
+	EXPECT_CALL(id_mpi, migrate(IsEmpty())).Times(2);
 
 	EXPECT_CALL(mocked_graph, importEdge(edge1));
 	EXPECT_CALL(mocked_graph, importEdge(edge2));
@@ -138,7 +143,7 @@ TEST_F(GhostSyncLinkerTest, import_link) {
 	linker.synchronize();
 }
 
-TEST_F(GhostSyncLinkerTest, import_export_link) {
+TEST_F(GhostSyncLinkerLinkUnlinkTest, import_export_link) {
 	edgeSetUp(*edge2, 0, 4);
 	auto export_edge_matcher = UnorderedElementsAre(
 		Pair(0, ElementsAre(edge2)),
@@ -153,7 +158,7 @@ TEST_F(GhostSyncLinkerTest, import_export_link) {
 
 	EXPECT_CALL(edge_mpi, migrate(export_edge_matcher))
 		.WillOnce(Return(import_map));
-	EXPECT_CALL(id_mpi, migrate(IsEmpty()));
+	EXPECT_CALL(id_mpi, migrate(IsEmpty())).Times(2);
 
 	EXPECT_CALL(mocked_graph, importEdge(edge1));
 	EXPECT_CALL(mocked_graph, importEdge(edge3));
@@ -163,7 +168,7 @@ TEST_F(GhostSyncLinkerTest, import_export_link) {
 	linker.synchronize();
 }
 
-TEST_F(GhostSyncLinkerTest, export_unlink) {
+TEST_F(GhostSyncLinkerLinkUnlinkTest, export_unlink) {
 	// Edge1 set up
 	edgeSetUp(*edge1, 6, current_rank); // distant src
 	// Edge2 set up
@@ -187,7 +192,7 @@ TEST_F(GhostSyncLinkerTest, export_unlink) {
 	linker.synchronize();
 }
 
-TEST_F(GhostSyncLinkerTest, import_unlink) {
+TEST_F(GhostSyncLinkerLinkUnlinkTest, import_unlink) {
 	// Edge1 set up
 	edgeSetUp(*edge1, 6, current_rank); // distant src
 	// Edge2 set up
@@ -221,7 +226,12 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 	};
 
 	EXPECT_CALL(edge_mpi, migrate(IsEmpty()));
+
+	// TODO : Improve this
 	EXPECT_CALL(id_mpi, migrate(IsEmpty()))
+		// Remove node migration
+		.WillOnce(Return(std::unordered_map<int, std::vector<DistributedId>>()))
+		// Unlink migration
 		.WillOnce(Return(importMap));
 
 	EXPECT_CALL(mocked_graph, erase(edge1));
@@ -231,7 +241,7 @@ TEST_F(GhostSyncLinkerTest, import_unlink) {
 	linker.synchronize();
 }
 
-TEST_F(GhostSyncLinkerTest, import_export_unlink) {
+TEST_F(GhostSyncLinkerLinkUnlinkTest, import_export_unlink) {
 	// Edge1 set up
 	edgeSetUp(*edge1, 6, current_rank); // distant src
 	// Edge2 set up
@@ -271,6 +281,103 @@ TEST_F(GhostSyncLinkerTest, import_export_unlink) {
 
 	EXPECT_CALL(mocked_graph, erase(edge2));
 	EXPECT_CALL(mocked_graph, erase(edge3));
+
+	linker.synchronize();
+}
+
+class GhostSyncLinkerRemoveNodeTest : public GhostSyncLinkerTest {
+	protected:
+		DistributedId node_id {3, 8};
+		MockNode* node_to_remove = new MockNode(node_id);
+		std::vector<fpmas::api::graph::DistributedEdge<int>*> out_edges;
+		std::vector<fpmas::api::graph::DistributedEdge<int>*> in_edges;
+
+		void SetUp() override {
+			edge1->src = new MockNode;
+			edge1->tgt = node_to_remove;
+			edge2->src = new MockNode;
+			edge2->tgt = node_to_remove;
+			edge3->src = node_to_remove;
+			edge3->tgt = new MockNode;
+
+			out_edges.push_back(edge3);
+			in_edges.push_back(edge1);
+			in_edges.push_back(edge2);
+
+			ON_CALL(*node_to_remove, getOutgoingEdges())
+				.WillByDefault(Return(out_edges));
+			EXPECT_CALL(*node_to_remove, getOutgoingEdges())
+				.Times(AnyNumber());
+
+			ON_CALL(*node_to_remove, getIncomingEdges())
+				.WillByDefault(Return(in_edges));
+			EXPECT_CALL(*node_to_remove, getIncomingEdges())
+				.Times(AnyNumber());
+		}
+
+		void TearDown() override {
+			delete edge1->src;
+			delete edge2->src;
+			delete edge3->tgt;
+			delete node_to_remove;
+			delete edge1;
+			delete edge2;
+			delete edge3;
+		}
+};
+
+TEST_F(GhostSyncLinkerRemoveNodeTest, remove_local) {
+	edgeSetUp(*edge1, current_rank, current_rank);
+	edgeSetUp(*edge2, current_rank, current_rank);
+	edgeSetUp(*edge3, current_rank, current_rank);
+
+	linker.removeNode(node_to_remove);
+
+	EXPECT_CALL(edge_mpi, migrate(IsEmpty()));
+	EXPECT_CALL(id_mpi, migrate(IsEmpty())).Times(2);
+
+	linker.synchronize();
+}
+
+TEST_F(GhostSyncLinkerRemoveNodeTest, remove_local_with_distant_edges) {
+	edgeSetUp(*edge1, 2, current_rank); // node_to_remove = tgt
+	edgeSetUp(*edge2, current_rank, current_rank); // node_to_remove = tgt
+	edgeSetUp(*edge3, current_rank, 5); // node_to_remove = src
+
+	linker.removeNode(node_to_remove);
+
+	EXPECT_CALL(edge_mpi, migrate(IsEmpty()));
+	// No node removal migration
+	EXPECT_CALL(id_mpi, migrate(IsEmpty()));
+
+	auto export_id_matcher = UnorderedElementsAre(
+		Pair(2, ElementsAre(edge1_id)),
+		Pair(5, ElementsAre(edge3_id))
+		);
+	EXPECT_CALL(id_mpi, migrate(export_id_matcher));
+
+	linker.synchronize();
+}
+
+TEST_F(GhostSyncLinkerRemoveNodeTest, remove_distant) {
+	edgeSetUp(*edge1, current_rank, 5); // node_to_remove = tgt
+	edgeSetUp(*edge2, current_rank, 5); // node_to_remove = tgt
+	edgeSetUp(*edge3, 5, current_rank); // node_to_remove = src
+
+	linker.removeNode(node_to_remove);
+
+	EXPECT_CALL(edge_mpi, migrate(IsEmpty()));
+
+	auto remove_node_matcher = ElementsAre(
+			Pair(5, std::vector<DistributedId> {node_id})
+			);
+	EXPECT_CALL(id_mpi, migrate(remove_node_matcher));
+
+		auto unlink_matcher = UnorderedElementsAre(
+			Pair(5, std::vector<DistributedId> {
+				edge1_id, edge2_id, edge3_id
+				})
+			);
 
 	linker.synchronize();
 }

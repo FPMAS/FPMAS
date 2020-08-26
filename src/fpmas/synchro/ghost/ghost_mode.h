@@ -156,6 +156,10 @@ namespace fpmas { namespace synchro {
 					 */
 					typedef api::graph::DistributedEdge<T> EdgeApi;
 					/**
+					 * DistributedNode API
+					 */
+					typedef api::graph::DistributedNode<T> NodeApi;
+					/**
 					 * DistributedEdge pointer wrapper
 					 */
 					typedef graph::EdgePtrWrapper<T> EdgePtr;
@@ -171,6 +175,7 @@ namespace fpmas { namespace synchro {
 					std::vector<EdgePtr> link_buffer;
 					//std::vector<DistributedId> unlink_buffer;
 					std::unordered_map<int, std::vector<DistributedId>> unlink_migration;
+					std::unordered_map<int, std::vector<DistributedId>> remove_node_buffer;
 
 					EdgeMpi& edge_mpi;
 					IdMpi& id_mpi;
@@ -209,6 +214,8 @@ namespace fpmas { namespace synchro {
 					 */
 					void unlink(const EdgeApi* edge) override;
 
+					void removeNode(const NodeApi* node) override;
+
 					/**
 					 * Commits currently buffered link, unlink and node removal
 					 * operations.
@@ -238,6 +245,18 @@ namespace fpmas { namespace synchro {
 					if(tgt->state() == LocationState::DISTANT) {
 						unlink_migration[tgt->getLocation()].push_back(edge->getId());
 					}
+				}
+			}
+
+		template<typename T>
+			void GhostSyncLinker<T>::removeNode(const NodeApi* node) {
+				if(node->state() == LocationState::DISTANT) {
+					remove_node_buffer[node->getLocation()].push_back(node->getId());
+				} else {
+					for(auto edge : node->getOutgoingEdges())
+						this->unlink(edge);
+					for(auto edge : node->getIncomingEdges())
+						this->unlink(edge);
 				}
 			}
 
@@ -272,6 +291,20 @@ namespace fpmas { namespace synchro {
 				link_buffer.clear();
 
 				/*
+				 * Migrate node removal
+				 */
+				remove_node_buffer = id_mpi.migrate(remove_node_buffer);
+				for(auto import_list : remove_node_buffer) {
+					for(DistributedId node_id : import_list.second) {
+						auto* node = graph.getNode(node_id);
+						for(auto edge : node->getOutgoingEdges())
+							this->unlink(edge);
+						for(auto edge : node->getIncomingEdges())
+							this->unlink(edge);
+					}
+				}
+
+				/*
 				 * Migrate unlinks
 				 */
 				unlink_migration = id_mpi.migrate(unlink_migration);
@@ -286,6 +319,7 @@ namespace fpmas { namespace synchro {
 				unlink_migration.clear();
 				for(auto edge : edges_to_clear)
 					graph.erase(edge);
+
 			}
 
 		/**

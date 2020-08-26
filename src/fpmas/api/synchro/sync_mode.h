@@ -36,18 +36,39 @@ namespace fpmas { namespace api { namespace synchro {
 	 * intentional user operations. Internal and low-level operations that
 	 * might occur while distributing the graph for example are not notified to
 	 * the SyncLinker.
+	 *
+	 * Whatever the synchronization mode is, it is guaranteed that when the
+	 * next synchronize() call returns, all notified operations are committed
+	 * and applied globally.
+	 *
+	 * For example, if removeNode() is called with a \DISTANT node as argument,
+	 * the local representation of the node (and its linked \DISTANT edges)
+	 * might be deleted from the local graph, but it is guaranteed that the
+	 * Node and its linked edges are globally removed from the global graph
+	 * (i.e.  also from other processes, including the process that owns the
+	 * node) only when synchronize() is called.
 	 */
 	template<typename T>
 	class SyncLinker {
 		public:
 			/**
-			 * Notifies the specified edge has been linked in the local graph.
+			 * Notifies the specified edge has been linked.
+			 *
+			 * @param edge linked edge
 			 */
 			virtual void link(const api::graph::DistributedEdge<T>* edge) = 0;
 			/**
-			 * Notifies the specified edge has been unlinked in the local graph.
+			 * Notifies the specified edge must be unlinked.
+			 *
+			 * @param edge edge to unlink
 			 */
 			virtual void unlink(const api::graph::DistributedEdge<T>* edge) = 0;
+			/**
+			 * Notifies the specified node must be removed.
+			 *
+			 * @param node node to remove
+			 */
+			virtual void removeNode(const api::graph::DistributedNode<T>* node) = 0;
 
 			/**
 			 * Synchronizes link, unlink and node removal operations across

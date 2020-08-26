@@ -160,16 +160,6 @@ namespace fpmas { namespace graph {
 			const LocationManagerImpl<T>&
 				getLocationManager() const override {return location_manager;}
 
-			void removeNode(api::graph::DistributedNode<T>*) override {};
-			void removeNode(DistributedId id) override {
-				this->removeNode(this->getNode(id));
-			}
-
-			void unlink(EdgeType*) override;
-			void unlink(DistributedId id) override {
-				this->unlink(this->getEdge(id));
-			}
-
 			void balance(api::load_balancing::LoadBalancing<T>& load_balancing) override {
 				FPMAS_LOGI(
 						getMpiCommunicator().getRank(), "LB",
@@ -211,6 +201,16 @@ namespace fpmas { namespace graph {
 
 			EdgeType* link(NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) override;
 
+			void removeNode(api::graph::DistributedNode<T>*) override;
+			void removeNode(DistributedId id) override {
+				this->removeNode(this->getNode(id));
+			}
+
+			void unlink(EdgeType*) override;
+			void unlink(DistributedId id) override {
+				this->unlink(this->getEdge(id));
+			}
+
 			void addCallOnSetLocal(NodeCallback* callback) override {
 				set_local_callbacks.push_back(callback);
 			};
@@ -241,7 +241,8 @@ namespace fpmas { namespace graph {
 			src->mutex()->lockShared();
 			tgt->mutex()->lockShared();
 
-			sync_mode.getSyncLinker().unlink(static_cast<DistEdgeImpl<T>*>(edge));
+			//sync_mode.getSyncLinker().unlink(static_cast<DistEdgeImpl<T>*>(edge));
+			sync_mode.getSyncLinker().unlink(edge);
 
 			this->erase(edge);
 
@@ -414,6 +415,12 @@ namespace fpmas { namespace graph {
 			return _buildNode(new DistNodeImpl<T>(
 						this->node_id++, std::move(data)
 						));
+		}
+
+	template<DIST_GRAPH_PARAMS>
+		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::removeNode(api::graph::DistributedNode<T> * node) {
+			sync_mode.getSyncLinker().removeNode(node);
+			this->erase(node);
 		}
 
 	template<DIST_GRAPH_PARAMS>

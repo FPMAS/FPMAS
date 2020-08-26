@@ -20,8 +20,6 @@ void to_json(nlohmann::json& j, const MockDistributedNode<T>& mock);
 
 template<typename> class MockDistributedEdge;
 
-//ACTION_P(ReturnPointeePointee, ptr) {return **ptr;}
-
 template<typename T>
 class MockDistributedNode :
 	public fpmas::api::graph::DistributedNode<T>,

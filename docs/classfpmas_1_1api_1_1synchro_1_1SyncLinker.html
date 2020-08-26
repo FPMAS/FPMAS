@@ -91,6 +91,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a85dc35beae7a423ba4e2907dd55269a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0af26a34cf5589f3cb2a60c8b8e78a72"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a0af26a34cf5589f3cb2a60c8b8e78a72">unlink</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt; *edge)=0</td></tr>
 <tr class="separator:a0af26a34cf5589f3cb2a60c8b8e78a72"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e7a84cfe40b7724263f5187be6ceb9d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a8e7a84cfe40b7724263f5187be6ceb9d">removeNode</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *node)=0</td></tr>
+<tr class="separator:a8e7a84cfe40b7724263f5187be6ceb9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a82048e7e48cba49d8242df2aaa2d26be"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a82048e7e48cba49d8242df2aaa2d26be">synchronize</a> ()=0</td></tr>
 <tr class="separator:a82048e7e48cba49d8242df2aaa2d26be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -100,7 +102,9 @@ class fpmas::api::synchro::SyncLinker&lt; T &gt;</h3>
 
 <p>Synchronized linker API.</p>
 <p>The behavior of this component can be very different depending on the implemented synchronization mode. See the corresponding implementations for more details.</p>
-<p>Notified link, unlink or node removal operations correspond to intentional user operations. Internal and low-level operations that might occur while distributing the graph for example are not notified to the <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">SyncLinker</a>. </p>
+<p>Notified link, unlink or node removal operations correspond to intentional user operations. Internal and low-level operations that might occur while distributing the graph for example are not notified to the <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">SyncLinker</a>.</p>
+<p>Whatever the synchronization mode is, it is guaranteed that when the next <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a82048e7e48cba49d8242df2aaa2d26be">synchronize()</a> call returns, all notified operations are committed and applied globally.</p>
+<p>For example, if <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a8e7a84cfe40b7724263f5187be6ceb9d">removeNode()</a> is called with a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> node as argument, the local representation of the node (and its linked <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> edges) might be deleted from the local graph, but it is guaranteed that the Node and its linked edges are globally removed from the global graph (i.e. also from other processes, including the process that owns the node) only when <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a82048e7e48cba49d8242df2aaa2d26be">synchronize()</a> is called. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a85dc35beae7a423ba4e2907dd55269a8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a85dc35beae7a423ba4e2907dd55269a8">&#9670;&nbsp;</a></span>link()</h2>
@@ -127,7 +131,13 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Notifies the specified edge has been linked in the local graph. </p>
+<p>Notifies the specified edge has been linked.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>linked edge </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a6db3c08b8fdda5a096d53490557cdb5c">fpmas::synchro::hard::HardSyncLinker&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a852c0bd7946b692c0898f6ba1109abb5">fpmas::synchro::ghost::GhostSyncLinker&lt; T &gt;</a>.</p>
 
@@ -158,9 +168,52 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Notifies the specified edge has been unlinked in the local graph. </p>
+<p>Notifies the specified edge must be unlinked.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>edge to unlink </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#ac196344d32dde42c1e60f0ad6b265e9e">fpmas::synchro::hard::HardSyncLinker&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a09bfbb8c171b7d4d57bb368445173db6">fpmas::synchro::ghost::GhostSyncLinker&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a8e7a84cfe40b7724263f5187be6ceb9d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e7a84cfe40b7724263f5187be6ceb9d">&#9670;&nbsp;</a></span>removeNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html">fpmas::api::synchro::SyncLinker</a>&lt; T &gt;::removeNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Notifies the specified node must be removed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#ae3ae83af022858e468496b5d43c8488f">fpmas::synchro::hard::HardSyncLinker&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#ad4eddade232cc0e097f5d00dff6ffd83">fpmas::synchro::ghost::GhostSyncLinker&lt; T &gt;</a>.</p>
 
 </div>
 </div>

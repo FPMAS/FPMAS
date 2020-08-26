@@ -98,6 +98,8 @@ Collaboration diagram for fpmas::synchro::ghost::GhostSyncLinker&lt; T &gt;:</di
 Public Types</h2></td></tr>
 <tr class="memitem:ae064b19ca0ad660c5dc1ef7cc947c5d9"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#ae064b19ca0ad660c5dc1ef7cc947c5d9">EdgeApi</a></td></tr>
 <tr class="separator:ae064b19ca0ad660c5dc1ef7cc947c5d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d3705828ba56c640369ce2a12988be9"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a5d3705828ba56c640369ce2a12988be9">NodeApi</a></td></tr>
+<tr class="separator:a5d3705828ba56c640369ce2a12988be9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7431063e2ac3a7cfe145e0166006c01c"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">graph::EdgePtrWrapper</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a7431063e2ac3a7cfe145e0166006c01c">EdgePtr</a></td></tr>
 <tr class="separator:a7431063e2ac3a7cfe145e0166006c01c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9cdf857e28c32691df1b3f8ccedf80f"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a7431063e2ac3a7cfe145e0166006c01c">EdgePtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#ab9cdf857e28c32691df1b3f8ccedf80f">EdgeMpi</a></td></tr>
@@ -113,6 +115,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a852c0bd7946b692c0898f6ba1109abb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a09bfbb8c171b7d4d57bb368445173db6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a09bfbb8c171b7d4d57bb368445173db6">unlink</a> (const <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#ae064b19ca0ad660c5dc1ef7cc947c5d9">EdgeApi</a> *edge) override</td></tr>
 <tr class="separator:a09bfbb8c171b7d4d57bb368445173db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad4eddade232cc0e097f5d00dff6ffd83"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#ad4eddade232cc0e097f5d00dff6ffd83">removeNode</a> (const <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a5d3705828ba56c640369ce2a12988be9">NodeApi</a> *node) override</td></tr>
+<tr class="separator:ad4eddade232cc0e097f5d00dff6ffd83"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33187466eb861c1e977e07068ae67d32"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a33187466eb861c1e977e07068ae67d32">synchronize</a> () override</td></tr>
 <tr class="separator:a33187466eb861c1e977e07068ae67d32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -137,6 +141,23 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>DistributedEdge API </p>
+
+</div>
+</div>
+<a id="a5d3705828ba56c640369ce2a12988be9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5d3705828ba56c640369ce2a12988be9">&#9670;&nbsp;</a></span>NodeApi</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt;T&gt; <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html">fpmas::synchro::ghost::GhostSyncLinker</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a5d3705828ba56c640369ce2a12988be9">NodeApi</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>DistributedNode API </p>
 
 </div>
 </div>
@@ -318,6 +339,43 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a0af26a34cf5589f3cb2a60c8b8e78a72">fpmas::api::synchro::SyncLinker&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ad4eddade232cc0e097f5d00dff6ffd83"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4eddade232cc0e097f5d00dff6ffd83">&#9670;&nbsp;</a></span>removeNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html">fpmas::synchro::ghost::GhostSyncLinker</a>&lt; T &gt;::removeNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a5d3705828ba56c640369ce2a12988be9">NodeApi</a> *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Notifies the specified node must be removed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td>node to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncLinker.html#a8e7a84cfe40b7724263f5187be6ceb9d">fpmas::api::synchro::SyncLinker&lt; T &gt;</a>.</p>
 
 </div>
 </div>

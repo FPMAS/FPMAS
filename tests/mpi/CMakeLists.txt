@@ -3,6 +3,7 @@ set(SOURCES
 	graph/distributed_id.cpp
 	graph/distributed_graph.cpp
 	graph/location_manager.cpp
+	synchro/ghost/ghost_mode.cpp
 	synchro/hard/termination.cpp
 	synchro/hard/hard_sync_mode.cpp
 	load_balancing/zoltan_load_balancing.cpp

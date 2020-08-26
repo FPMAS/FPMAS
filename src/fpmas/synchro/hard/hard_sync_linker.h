@@ -221,6 +221,10 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * DistributedEdge API.
 				 */
 				typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
+				/**
+				 * DistributedNode API.
+				 */
+				typedef fpmas::api::graph::DistributedNode<T> NodeApi;
 
 			private:
 				std::vector<EdgeApi*> ghost_edges;
@@ -278,6 +282,10 @@ namespace fpmas { namespace synchro { namespace hard {
 						link_client.unlink(edge);
 					}
 				};
+
+				void removeNode(const NodeApi* node) override {
+				}
+
 				/**
 				 * HardSyncLinker synchronization.
 				 *
