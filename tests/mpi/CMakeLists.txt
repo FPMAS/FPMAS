@@ -17,5 +17,7 @@ target_link_libraries(fpmas_mpi_test zoltan)
 target_link_libraries(fpmas_mpi_test gtest_main)
 target_link_libraries(fpmas_mpi_test gmock_main)
 
+target_compile_definitions(fpmas_mpi_test PUBLIC LOG_LEVEL=${LOG_LEVEL})
+
 # generates compile_commands.json, useful for CCLS completion
 set(CMAKE_EXPORT_COMPILE_COMMANDS YES)
