@@ -12,6 +12,9 @@ set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
 MPI context")
 set(LOG_LEVEL 0 CACHE STRING "Log level")
 
+include_directories(${CMAKE_PREFIX_PATH}/include)
+link_directories(${CMAKE_PREFIX_PATH}/lib)
+
 message("-- Number of used procs : ${N_PROC}")
 if(N_PROC GREATER MPIEXEC_MAX_NUMPROCS)
 	message("-- Enabling hardware threads cpus")
