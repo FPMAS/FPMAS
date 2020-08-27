@@ -201,9 +201,9 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> out;
-				for(api::model::AgentNode* node : node()->outNeighbors()) {
-					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(node->data().get())) {
-						out.push_back(&node->data());
+				for(api::model::AgentNode* _node : node()->outNeighbors()) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
+						out.push_back(&_node->data());
 					}
 				}
 				return out;
@@ -224,9 +224,9 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> in;
-				for(api::model::AgentNode* node : node()->inNeighbors()) {
-					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(node->data().get())) {
-						in.push_back(&node->data());
+				for(api::model::AgentNode* _node : node()->inNeighbors()) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
+						in.push_back(&_node->data());
 					}
 				}
 				return in;
