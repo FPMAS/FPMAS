@@ -176,6 +176,7 @@ namespace fpmas { namespace synchro {
 					//std::vector<DistributedId> unlink_buffer;
 					std::unordered_map<int, std::vector<DistributedId>> unlink_migration;
 					std::unordered_map<int, std::vector<DistributedId>> remove_node_buffer;
+					std::vector<NodeApi*> local_nodes_to_remove;
 
 					EdgeMpi& edge_mpi;
 					IdMpi& id_mpi;
@@ -201,7 +202,7 @@ namespace fpmas { namespace synchro {
 					 *
 					 * @param edge linked edge
 					 */
-					void link(const EdgeApi* edge) override;
+					void link(EdgeApi* edge) override;
 
 					/**
 					 * If source or target node is \DISTANT, edge unlinking is buffered to
@@ -212,9 +213,9 @@ namespace fpmas { namespace synchro {
 					 *
 					 * @param edge unlinked edge
 					 */
-					void unlink(const EdgeApi* edge) override;
+					void unlink(EdgeApi* edge) override;
 
-					void removeNode(const NodeApi* node) override;
+					void removeNode(NodeApi* node) override;
 
 					/**
 					 * Commits currently buffered link, unlink and node removal
@@ -224,14 +225,14 @@ namespace fpmas { namespace synchro {
 			};
 
 		template<typename T>
-			void GhostSyncLinker<T>::link(const EdgeApi * edge) {
+			void GhostSyncLinker<T>::link(EdgeApi * edge) {
 				if(edge->state() == LocationState::DISTANT) {
 					link_buffer.push_back(const_cast<EdgeApi*>(edge));
 				}
 			}
 
 		template<typename T>
-			void GhostSyncLinker<T>::unlink(const EdgeApi * edge) {
+			void GhostSyncLinker<T>::unlink(EdgeApi * edge) {
 				if(edge->state() == LocationState::DISTANT) {
 					link_buffer.erase(
 							std::remove(link_buffer.begin(), link_buffer.end(), edge),
@@ -249,14 +250,15 @@ namespace fpmas { namespace synchro {
 			}
 
 		template<typename T>
-			void GhostSyncLinker<T>::removeNode(const NodeApi* node) {
+			void GhostSyncLinker<T>::removeNode(NodeApi* node) {
 				if(node->state() == LocationState::DISTANT) {
 					remove_node_buffer[node->getLocation()].push_back(node->getId());
 				} else {
 					for(auto edge : node->getOutgoingEdges())
-						this->unlink(edge);
+						graph.unlink(edge);
 					for(auto edge : node->getIncomingEdges())
-						this->unlink(edge);
+						graph.unlink(edge);
+					local_nodes_to_remove.push_back(node);
 				}
 			}
 
@@ -298,9 +300,9 @@ namespace fpmas { namespace synchro {
 					for(DistributedId node_id : import_list.second) {
 						auto* node = graph.getNode(node_id);
 						for(auto edge : node->getOutgoingEdges())
-							this->unlink(edge);
+							graph.unlink(edge);
 						for(auto edge : node->getIncomingEdges())
-							this->unlink(edge);
+							graph.unlink(edge);
 					}
 				}
 
@@ -317,9 +319,18 @@ namespace fpmas { namespace synchro {
 					}
 				}
 				unlink_migration.clear();
+
 				for(auto edge : edges_to_clear)
 					graph.erase(edge);
 
+				for(auto import_list : remove_node_buffer)
+					for(auto node_id : import_list.second)
+						graph.erase(graph.getNode(node_id));
+				remove_node_buffer.clear();
+
+				for(auto node : local_nodes_to_remove)
+					graph.erase(node);
+				local_nodes_to_remove.clear();
 			}
 
 		/**

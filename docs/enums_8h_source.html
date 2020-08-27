@@ -93,25 +93,26 @@ $(function() {
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;            UNLOCK_SHARED = 0x0A,</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;            LINK = 0x0B,</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;            UNLINK = 0x0C,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            TOKEN = 0x0D,</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            END = 0x0E</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        };</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#a2564dc813466b9b61c9a3fe3af0acef4">   42</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#a2564dc813466b9b61c9a3fe3af0acef4">Color</a> : <span class="keywordtype">int</span> {</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;            WHITE = 0,</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            BLACK = 1</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        };</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ac4046501bb4f4567e743cfd877c68e89">   51</a></span>&#160;        <span class="keyword">enum class</span> <a class="code" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ac4046501bb4f4567e743cfd877c68e89">MutexRequestType</a> {</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;            READ, LOCK, ACQUIRE, LOCK_SHARED</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        };</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}}}</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;            REMOVE_NODE = 0x0D,</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;            TOKEN = 0x0E,</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;            END = 0x0F</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        };</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#a2564dc813466b9b61c9a3fe3af0acef4">   43</a></span>&#160;        <span class="keyword">enum</span> <a class="code" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#a2564dc813466b9b61c9a3fe3af0acef4">Color</a> : <span class="keywordtype">int</span> {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;            WHITE = 0,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            BLACK = 1</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        };</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ac4046501bb4f4567e743cfd877c68e89">   52</a></span>&#160;        <span class="keyword">enum class</span> <a class="code" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ac4046501bb4f4567e743cfd877c68e89">MutexRequestType</a> {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;            READ, LOCK, ACQUIRE, LOCK_SHARED</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        };</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}}}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacefpmas_1_1synchro_1_1hard_1_1api_html_af0c73301fe0dbfb290dc128612232db9"><div class="ttname"><a href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#af0c73301fe0dbfb290dc128612232db9">fpmas::synchro::hard::api::Tag</a></div><div class="ttdeci">Tag</div><div class="ttdef"><b>Definition:</b> enums.h:21</div></div>
-<div class="ttc" id="anamespacefpmas_1_1synchro_1_1hard_1_1api_html_ac4046501bb4f4567e743cfd877c68e89"><div class="ttname"><a href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ac4046501bb4f4567e743cfd877c68e89">fpmas::synchro::hard::api::MutexRequestType</a></div><div class="ttdeci">MutexRequestType</div><div class="ttdef"><b>Definition:</b> enums.h:51</div></div>
-<div class="ttc" id="anamespacefpmas_1_1synchro_1_1hard_1_1api_html_a2564dc813466b9b61c9a3fe3af0acef4"><div class="ttname"><a href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#a2564dc813466b9b61c9a3fe3af0acef4">fpmas::synchro::hard::api::Color</a></div><div class="ttdeci">Color</div><div class="ttdef"><b>Definition:</b> enums.h:42</div></div>
+<div class="ttc" id="anamespacefpmas_1_1synchro_1_1hard_1_1api_html_ac4046501bb4f4567e743cfd877c68e89"><div class="ttname"><a href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ac4046501bb4f4567e743cfd877c68e89">fpmas::synchro::hard::api::MutexRequestType</a></div><div class="ttdeci">MutexRequestType</div><div class="ttdef"><b>Definition:</b> enums.h:52</div></div>
+<div class="ttc" id="anamespacefpmas_1_1synchro_1_1hard_1_1api_html_a2564dc813466b9b61c9a3fe3af0acef4"><div class="ttname"><a href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#a2564dc813466b9b61c9a3fe3af0acef4">fpmas::synchro::hard::api::Color</a></div><div class="ttdeci">Color</div><div class="ttdef"><b>Definition:</b> enums.h:43</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.h:10</div></div>
 <div class="ttc" id="anamespacefpmas_1_1synchro_1_1hard_1_1api_html_ab613c5f2c0ff9f5646a028383496d812"><div class="ttname"><a href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab613c5f2c0ff9f5646a028383496d812">fpmas::synchro::hard::api::Epoch</a></div><div class="ttdeci">Epoch</div><div class="ttdef"><b>Definition:</b> enums.h:13</div></div>
 <!-- start footer part -->

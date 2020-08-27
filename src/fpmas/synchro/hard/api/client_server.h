@@ -335,6 +335,37 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 				 */
 				virtual void unlink(const fpmas::api::graph::DistributedEdge<T>* edge) = 0;
 
+				/**
+				 * Transmits a remove node request for the specified `node`.
+				 *
+				 * The provided edge is assumed to be \DISTANT, behavior is
+				 * undefined otherwise.
+				 *
+				 * The request is transmitted to the process which own the
+				 * `node`. It is then the role of the owner to globally unlink
+				 * the node from the graph.
+				 *
+				 * Upon return, it is guaranteed that the `node` is globally
+				 * unlinked from the graph.
+				 *
+				 * However, the node might be erased only when
+				 * fpmas::api::graph::DistributedGraph::synchronize() is
+				 * called. The reason for that is that in HardSyncMode, even if
+				 * the node is unlinked by this method, mutex requests for
+				 * this node that were send _before_ the node was unlinked
+				 * might be received _after_ it was unlinked, until the
+				 * termination algorithm is applied. Because we need to handle
+				 * those requests, the node can't be erased until the
+				 * termination algorithm is applied.
+				 *
+				 * However, after this method has returned, it is guaranteed
+				 * that no process can perform mutex requests to this node
+				 * since it's globally unlinked from the graph.
+				 *
+				 * @param node \DISTANT node to remove
+				 */
+				virtual void removeNode(const fpmas::api::graph::DistributedNode<T>* node) = 0;
+
 				virtual ~LinkClient() {};
 		};
 

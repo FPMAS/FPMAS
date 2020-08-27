@@ -56,19 +56,19 @@ namespace fpmas { namespace api { namespace synchro {
 			 *
 			 * @param edge linked edge
 			 */
-			virtual void link(const api::graph::DistributedEdge<T>* edge) = 0;
+			virtual void link(api::graph::DistributedEdge<T>* edge) = 0;
 			/**
 			 * Notifies the specified edge must be unlinked.
 			 *
 			 * @param edge edge to unlink
 			 */
-			virtual void unlink(const api::graph::DistributedEdge<T>* edge) = 0;
+			virtual void unlink(api::graph::DistributedEdge<T>* edge) = 0;
 			/**
 			 * Notifies the specified node must be removed.
 			 *
 			 * @param node node to remove
 			 */
-			virtual void removeNode(const api::graph::DistributedNode<T>* node) = 0;
+			virtual void removeNode(api::graph::DistributedNode<T>* node) = 0;
 
 			/**
 			 * Synchronizes link, unlink and node removal operations across

@@ -420,7 +420,6 @@ namespace fpmas { namespace graph {
 	template<DIST_GRAPH_PARAMS>
 		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::removeNode(api::graph::DistributedNode<T> * node) {
 			sync_mode.getSyncLinker().removeNode(node);
-			this->erase(node);
 		}
 
 	template<DIST_GRAPH_PARAMS>

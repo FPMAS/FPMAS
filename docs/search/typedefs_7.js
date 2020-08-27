@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['nodeapi_824',['NodeApi',['../classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a5d3705828ba56c640369ce2a12988be9',1,'fpmas::synchro::ghost::GhostSyncLinker::NodeApi()'],['../classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a2180423ac831f18832019441d7a0d23c',1,'fpmas::synchro::hard::HardSyncLinker::NodeApi()']]],
+  ['nodeapi_824',['NodeApi',['../classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a5d3705828ba56c640369ce2a12988be9',1,'fpmas::synchro::ghost::GhostSyncLinker::NodeApi()'],['../classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a2f9d0af7b8a0494c0aeedf6a11de01e0',1,'fpmas::synchro::hard::LinkClient::NodeApi()'],['../classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html#a2180423ac831f18832019441d7a0d23c',1,'fpmas::synchro::hard::HardSyncLinker::NodeApi()']]],
   ['nodecallback_825',['NodeCallback',['../classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7',1,'fpmas::api::graph::DistributedGraph']]],
   ['nodeidhash_826',['NodeIdHash',['../classfpmas_1_1api_1_1graph_1_1Graph.html#a48e181d44f84794298ec7c06fd2e5d14',1,'fpmas::api::graph::Graph']]],
   ['nodeidtype_827',['NodeIdType',['../classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba',1,'fpmas::api::graph::Graph']]],

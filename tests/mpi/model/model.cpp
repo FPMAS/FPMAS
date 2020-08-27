@@ -411,6 +411,10 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 		fpmas::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
 
 		fpmas::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+
+		HardSyncAgentModelIntegrationTest() {
+			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>);
+		}
 };
 
 class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {

@@ -32,8 +32,9 @@ namespace fpmas { namespace synchro {
 			UNLOCK_SHARED = 0x0A,
 			LINK = 0x0B,
 			UNLINK = 0x0C,
-			TOKEN = 0x0D,
-			END = 0x0E
+			REMOVE_NODE = 0x0D,
+			TOKEN = 0x0E,
+			END = 0x0F
 		};
 
 		/**

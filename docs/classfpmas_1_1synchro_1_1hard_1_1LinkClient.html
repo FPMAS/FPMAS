@@ -98,6 +98,8 @@ Collaboration diagram for fpmas::synchro::hard::LinkClient&lt; T &gt;:</div>
 Public Types</h2></td></tr>
 <tr class="memitem:a4b5ebaace9cd6363a0c605359db4e9ef"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a4b5ebaace9cd6363a0c605359db4e9ef">EdgeApi</a></td></tr>
 <tr class="separator:a4b5ebaace9cd6363a0c605359db4e9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f9d0af7b8a0494c0aeedf6a11de01e0"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a2f9d0af7b8a0494c0aeedf6a11de01e0">NodeApi</a></td></tr>
+<tr class="separator:a2f9d0af7b8a0494c0aeedf6a11de01e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4cc060168ed9f441e9f1a78602b31eb2"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">fpmas::api::communication::TypedMpi</a>&lt; <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">graph::EdgePtrWrapper</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a4cc060168ed9f441e9f1a78602b31eb2">EdgeMpi</a></td></tr>
 <tr class="separator:a4cc060168ed9f441e9f1a78602b31eb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fca53a0ee743c34cbf0394e793e05ed"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">fpmas::api::communication::TypedMpi</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a0fca53a0ee743c34cbf0394e793e05ed">IdMpi</a></td></tr>
@@ -111,6 +113,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7ce2f9b08ab490e4c1904bcca841bab4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac85d2127005c68ae4ab31af821817b2a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#ac85d2127005c68ae4ab31af821817b2a">unlink</a> (const <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a4b5ebaace9cd6363a0c605359db4e9ef">EdgeApi</a> *) override</td></tr>
 <tr class="separator:ac85d2127005c68ae4ab31af821817b2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d723e36db7a2061f8323c90f9d12881"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a2d723e36db7a2061f8323c90f9d12881">removeNode</a> (const <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a2f9d0af7b8a0494c0aeedf6a11de01e0">NodeApi</a> *) override</td></tr>
+<tr class="separator:a2d723e36db7a2061f8323c90f9d12881"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -132,6 +136,23 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>DistributedEdge API. </p>
+
+</div>
+</div>
+<a id="a2f9d0af7b8a0494c0aeedf6a11de01e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f9d0af7b8a0494c0aeedf6a11de01e0">&#9670;&nbsp;</a></span>NodeApi</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt;T&gt; <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html">fpmas::synchro::hard::LinkClient</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a2f9d0af7b8a0494c0aeedf6a11de01e0">NodeApi</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>DistributedNode API. </p>
 
 </div>
 </div>
@@ -256,8 +277,6 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p></p>
 <p>Transmits a link request for the specified <code>edge</code>.</p>
 <p>The provided edge is assumed to be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, behavior is undefined otherwise.</p>
 <p>The request is then transmitted to two other processes if source and target nodes are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> and located on different processes, or to one process if they are located on the same process.</p>
@@ -299,8 +318,6 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p></p>
 <p>Transmits an unlink request for the specified <code>edge</code>.</p>
 <p>The provided edge is assumed to be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, behavior is undefined otherwise.</p>
 <p>The request is then transmitted to two other processes if source and target nodes are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> and located on different processes, or to one process if they are located on the same process.</p>
@@ -314,6 +331,48 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html#a1671171b923adbee5780dd5bbad36cbf">fpmas::synchro::hard::api::LinkClient&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a2d723e36db7a2061f8323c90f9d12881"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d723e36db7a2061f8323c90f9d12881">&#9670;&nbsp;</a></span>removeNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html">fpmas::synchro::hard::LinkClient</a>&lt; T &gt;::removeNode </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a2f9d0af7b8a0494c0aeedf6a11de01e0">NodeApi</a> *&#160;</td>
+          <td class="paramname"><em>node</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Transmits a remove node request for the specified <code>node</code>.</p>
+<p>The provided edge is assumed to be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, behavior is undefined otherwise.</p>
+<p>The request is transmitted to the process which own the <code>node</code>. It is then the role of the owner to globally unlink the node from the graph.</p>
+<p>Upon return, it is guaranteed that the <code>node</code> is globally unlinked from the graph.</p>
+<p>However, the node might be erased only when <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">fpmas::api::graph::DistributedGraph::synchronize()</a> is called. The reason for that is that in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">HardSyncMode</a>, even if the node is unlinked by this method, mutex requests for this node that were send <em>before</em> the node was unlinked might be received <em>after</em> it was unlinked, until the termination algorithm is applied. Because we need to handle those requests, the node can't be erased until the termination algorithm is applied.</p>
+<p>However, after this method has returned, it is guaranteed that no process can perform mutex requests to this node since it's globally unlinked from the graph.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node</td><td><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> node to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkClient.html#a42332e5927a431050c2bcc5a30aa3eef">fpmas::synchro::hard::api::LinkClient&lt; T &gt;</a>.</p>
 
 </div>
 </div>

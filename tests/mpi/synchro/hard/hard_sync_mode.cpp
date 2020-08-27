@@ -10,6 +10,8 @@
 #include "utils/test.h"
 
 using ::testing::SizeIs;
+using ::testing::Ge;
+using ::testing::IsEmpty;
 
 using fpmas::api::graph::LocationState;
 using fpmas::communication::TypedMpi;
@@ -110,8 +112,9 @@ TEST_F(MutexServerRaceCondition, acquire_race_condition) {
 	}
 	termination.terminate(server_pack);
 
-	FPMAS_ON_PROC(comm, 0)
+	FPMAS_ON_PROC(comm, 0) {
 		ASSERT_EQ(mutex.read(), comm.getSize() * NUM_ACQUIRE);
+	}
 }
 
 class HardSyncModeIntegrationTest : public ::testing::Test {
@@ -128,7 +131,10 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 		std::mt19937 engine;
 		
 		fpmas::api::load_balancing::PartitionMap partition;
+};
 
+class HardSyncModeMutexIntegrationTest : public HardSyncModeIntegrationTest {
+	protected:
 		void SetUp() override {
 			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < comm.getSize(); i++) {
@@ -148,7 +154,7 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 		}
 };
 
-TEST_F(HardSyncModeIntegrationTest, acquire) {
+TEST_F(HardSyncModeMutexIntegrationTest, acquire) {
 	ASSERT_THAT(graph.getLocationManager().getLocalNodes(), SizeIs(1));
 
 	FPMAS_MIN_PROCS("HardSyncModeIntegrationTest.acquire", comm, 1) {
@@ -187,4 +193,48 @@ TEST_F(HardSyncModeIntegrationTest, acquire) {
 			ASSERT_EQ(write_sum, node_sum);
 		}
 	}
+}
+
+class HardSyncModeLinkerIntegrationTest : public HardSyncModeIntegrationTest {
+	protected:
+		void SetUp() override {
+			FPMAS_ON_PROC(comm, 0) {
+				std::vector<DistributedId> node_ids;
+				for(int i = 0; i < comm.getSize(); i++) {
+					auto* node = graph.buildNode(0ul);
+					partition[node->getId()] = i;
+					node_ids.push_back(node->getId());
+				}
+				for(std::size_t i = 0; i < node_ids.size() - 1; i ++) {
+					graph.link(
+						graph.getNode(node_ids[i]),
+						graph.getNode(node_ids[i+1]),
+						0);
+				}
+				graph.link(
+						graph.getNode(node_ids[node_ids.size()-1]),
+						graph.getNode(node_ids[0]),
+						0);
+			}
+			graph.distribute(partition);
+		}
+};
+
+TEST_F(HardSyncModeLinkerIntegrationTest, remove_node) {
+	ASSERT_THAT(graph.getNodes(), SizeIs(Ge(1)));
+	if(comm.getSize() > 1) {
+		for(auto node : graph.getLocationManager().getLocalNodes()) {
+			for(auto neighbor : node.second->outNeighbors())
+				graph.removeNode(neighbor);
+		}
+	} else {
+		decltype(graph)::NodeMap nodes = graph.getNodes();
+		for(auto node : nodes)
+			graph.removeNode(node.second);
+	}
+
+	graph.synchronize();
+
+	ASSERT_THAT(graph.getNodes(), IsEmpty());
+	ASSERT_THAT(graph.getEdges(), IsEmpty());
 }

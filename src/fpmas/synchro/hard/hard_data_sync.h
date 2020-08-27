@@ -11,6 +11,10 @@
 
 namespace fpmas { namespace synchro { namespace hard {
 
+#ifndef DOXYGEN_BUILD
+	template<typename T> class LinkServer;
+	template<typename T> class HardSyncLinker;
+#endif
 	/**
 	 * HardSyncMode fpmas::api::synchro::DataSync implementation.
 	 *
@@ -22,21 +26,33 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		class HardDataSync : public fpmas::api::synchro::DataSync {
+			friend LinkServer<T>;
+			friend HardSyncLinker<T>;
 			typedef api::MutexServer<T> MutexServer;
 			typedef api::TerminationAlgorithm TerminationAlgorithm;
 
 			fpmas::api::communication::MpiCommunicator& comm;
 			ServerPack<T>& server_pack;
+			fpmas::api::graph::DistributedGraph<T>& graph;
+			std::vector<fpmas::api::graph::DistributedNode<T>*> nodes_to_remove;
 
+			private:
+			void addNodeToRemove(fpmas::api::graph::DistributedNode<T>* node) {
+				nodes_to_remove.push_back(node);
+			}
 			public:
 			/**
 			 * HardDataSync constructor.
 			 *
 			 * @param comm MPI communicator
 			 * @param server_pack associated server pack
+			 * @param graph associated graph
 			 */
-			HardDataSync(fpmas::api::communication::MpiCommunicator& comm, ServerPack<T>& server_pack)
-				: comm(comm), server_pack(server_pack) {
+			HardDataSync(
+					fpmas::api::communication::MpiCommunicator& comm,
+					ServerPack<T>& server_pack,
+					fpmas::api::graph::DistributedGraph<T>& graph)
+				: comm(comm), server_pack(server_pack), graph(graph) {
 				}
 
 			/**
@@ -60,6 +76,12 @@ namespace fpmas { namespace synchro { namespace hard {
 				FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronizing data sync...");
 				server_pack.terminate();
 				FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronized.");
+				// Nodes that was removed using a potentially distant
+				// DistributedGraph::removeNode called, that has been received
+				// from the LinkServer, can only be erased there, when it is
+				// ensured that no more data request to this node are pending.
+				for(auto node : nodes_to_remove)
+					graph.erase(node);
 			};
 		};
 

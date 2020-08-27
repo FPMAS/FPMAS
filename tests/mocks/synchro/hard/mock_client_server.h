@@ -66,9 +66,11 @@ template<typename T>
 class MockLinkClient
 : public fpmas::synchro::hard::api::LinkClient<T> {
 	typedef fpmas::api::graph::DistributedEdge<T> EdgeApi;
+	typedef fpmas::api::graph::DistributedNode<T> NodeApi;
 	public:
 		MOCK_METHOD(void, link, (const EdgeApi*), (override));
 		MOCK_METHOD(void, unlink, (const EdgeApi*), (override));
+		MOCK_METHOD(void, removeNode, (const NodeApi*), (override));
 
 };
 

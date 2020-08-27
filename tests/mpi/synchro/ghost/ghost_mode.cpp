@@ -30,18 +30,22 @@ class GhostModeIntegrationTest : public ::testing::Test {
 
 		void SetUp() override {
 			FPMAS_ON_PROC(comm, 0) {
+				std::vector<DistributedId> node_ids;
 				for(int i = 0; i < comm.getSize(); i++) {
 					auto* node = graph.buildNode(0ul);
 					partition[node->getId()] = i;
+					node_ids.push_back(node->getId());
 				}
-				// Builds a complete graph
-				for(auto source : graph.getNodes()) {
-					for(auto target : graph.getNodes()) {
-						if(source.second != target.second) {
-							graph.link(source.second, target.second, 0);
-						}
-					}
+				for(std::size_t i = 0; i < node_ids.size() - 1; i ++) {
+					graph.link(
+						graph.getNode(node_ids[i]),
+						graph.getNode(node_ids[i+1]),
+						0);
 				}
+				graph.link(
+						graph.getNode(node_ids[node_ids.size()-1]),
+						graph.getNode(node_ids[0]),
+						0);
 			}
 			graph.distribute(partition);
 		}
@@ -50,7 +54,7 @@ class GhostModeIntegrationTest : public ::testing::Test {
 TEST_F(GhostModeIntegrationTest, remove_node) {
 	ASSERT_THAT(graph.getNodes(), SizeIs(Ge(1)));
 	if(comm.getSize() > 1) {
-		for(auto node : graph.getNodes()) {
+		for(auto node : graph.getLocationManager().getLocalNodes()) {
 			for(auto neighbor : node.second->outNeighbors())
 				graph.removeNode(neighbor);
 		}

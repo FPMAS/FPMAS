@@ -16,7 +16,7 @@ using fpmas::synchro::hard::LinkClient;
 class LinkClientTest : public ::testing::Test {
 	protected:
 		static const int THIS_RANK = 7;
-		const DistributedId edgeId {9, 2};
+		const DistributedId edge_id {9, 2};
 		MockMpiCommunicator<THIS_RANK, 16> comm;
 		MockMpi<DistributedId> id_mpi {comm};
 		MockMpi<EdgePtrWrapper<int>> edge_mpi {comm};
@@ -28,14 +28,15 @@ class LinkClientTest : public ::testing::Test {
 			comm, mock_termination, mock_mutex_server, mock_link_server};
 		LinkClient<int> link_client {comm, id_mpi, edge_mpi, server_pack};
 
-		MockDistributedNode<int> mock_src;
+		DistributedId src_id {3, 6};
+		MockDistributedNode<int> mock_src {src_id};
 		MockDistributedNode<int> mock_tgt;
 
 		MockDistributedEdge<int> mock_edge;
 
 		void SetUp() override {
 			ON_CALL(mock_edge, getId)
-				.WillByDefault(Return(edgeId));
+				.WillByDefault(Return(edge_id));
 			EXPECT_CALL(mock_edge, getId).Times(AnyNumber());
 
 			ON_CALL(mock_edge, getSourceNode)
@@ -153,7 +154,7 @@ TEST_F(LinkClientTest, unlink_local_src_distant_tgt) {
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(id_mpi, Issend(edgeId, 10, Epoch::EVEN | Tag::UNLINK, _));
+	EXPECT_CALL(id_mpi, Issend(edge_id, 10, Epoch::EVEN | Tag::UNLINK, _));
 	EXPECT_CALL(comm, test).WillOnce(Return(true));
 
 	link_client.unlink(&mock_edge);
@@ -167,7 +168,7 @@ TEST_F(LinkClientTest, unlink_local_tgt_distant_src) {
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(id_mpi, Issend(edgeId, 10, Epoch::EVEN | Tag::UNLINK, _));
+	EXPECT_CALL(id_mpi, Issend(edge_id, 10, Epoch::EVEN | Tag::UNLINK, _));
 	EXPECT_CALL(comm, test).WillOnce(Return(true));
 
 	link_client.unlink(&mock_edge);
@@ -182,13 +183,23 @@ TEST_F(LinkClientTest, unlink_distant_tgt_distant_src) {
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	EXPECT_CALL(id_mpi, Issend(edgeId, 10, Epoch::EVEN | Tag::UNLINK, _));
-	EXPECT_CALL(id_mpi, Issend(edgeId, 12, Epoch::EVEN | Tag::UNLINK, _));
+	EXPECT_CALL(id_mpi, Issend(edge_id, 10, Epoch::EVEN | Tag::UNLINK, _));
+	EXPECT_CALL(id_mpi, Issend(edge_id, 12, Epoch::EVEN | Tag::UNLINK, _));
 	EXPECT_CALL(comm, test)
 		.WillOnce(Return(true))
 		.WillOnce(Return(true));
 
 	link_client.unlink(&mock_edge);
+}
+
+TEST_F(LinkClientTest, remove_node) {
+	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+
+	EXPECT_CALL(id_mpi, Issend(src_id, 10, Epoch::EVEN | Tag::REMOVE_NODE, _));
+	EXPECT_CALL(comm, test).WillOnce(Return(true));
+
+	link_client.removeNode(&mock_src);
 }
 
 class LinkClientDeadlockTest : public LinkClientTest {
@@ -207,7 +218,7 @@ class LinkClientDeadlockTest : public LinkClientTest {
 				.WillRepeatedly(Return(LocationState::DISTANT));
 		}
 
-		void waitExpectations() {
+		void waitS1() {
 			// Each expectation must retire on saturation, so that when a test
 			// call for example matches in S1, next calls will try to match in
 			// S2 and not in the saturated S1 expectations
@@ -229,7 +240,8 @@ class LinkClientDeadlockTest : public LinkClientTest {
 				.InSequence(s1_1, s1_2)
 				.WillOnce(Return(true))
 				.RetiresOnSaturation();
-
+		}
+		void waitS2() {
 			for(int i = 0; i < 10; i++) {
 				EXPECT_CALL(comm, test)
 					.InSequence(s2_1, s2_2)
@@ -249,6 +261,11 @@ class LinkClientDeadlockTest : public LinkClientTest {
 				.WillOnce(Return(true))
 				.RetiresOnSaturation();
 		}
+
+		void waitExpectations() {
+			waitS1();
+			waitS2();
+		}
 };
 
 TEST_F(LinkClientDeadlockTest, link) {
@@ -263,12 +280,21 @@ TEST_F(LinkClientDeadlockTest, link) {
 }
 
 TEST_F(LinkClientDeadlockTest, unlink) {
-	EXPECT_CALL(id_mpi, Issend(edgeId, 10, Epoch::EVEN | Tag::UNLINK, _))
+	EXPECT_CALL(id_mpi, Issend(edge_id, 10, Epoch::EVEN | Tag::UNLINK, _))
 		.InSequence(s1_1, s1_2);
-	EXPECT_CALL(id_mpi, Issend(edgeId, 12, Epoch::EVEN | Tag::UNLINK, _))
+	EXPECT_CALL(id_mpi, Issend(edge_id, 12, Epoch::EVEN | Tag::UNLINK, _))
 		.InSequence(s2_1, s2_2);
 
 	waitExpectations();
 
 	link_client.unlink(&mock_edge);
+}
+
+TEST_F(LinkClientDeadlockTest, remove_node) {
+	EXPECT_CALL(id_mpi, Issend(src_id, 10, Epoch::EVEN | Tag::REMOVE_NODE, _))
+		.InSequence(s1_1, s1_2);
+
+	waitS1();
+
+	link_client.removeNode(&mock_src);
 }

@@ -64,12 +64,12 @@ namespace fpmas { namespace synchro {
 					node_mpi(comm), edge_mpi(comm), color_mpi(comm),
 					mutex_server(comm, id_mpi, data_mpi, data_update_mpi),
 					mutex_client(comm, id_mpi, data_mpi, data_update_mpi, server_pack),
-					link_server(comm, graph, id_mpi, edge_mpi),
+					link_server(comm, graph, data_sync, id_mpi, edge_mpi),
 					link_client(comm, id_mpi, edge_mpi, server_pack),
 					termination(comm, color_mpi),
 					server_pack(comm, termination, mutex_server, link_server),
-					sync_linker(graph, link_client, server_pack),
-					data_sync(comm, server_pack) {}
+					sync_linker(graph, link_client, server_pack, data_sync),
+					data_sync(comm, server_pack, graph) {}
 
 				/**
 				 * Builds a new HardSyncMutex from the specified node data.
