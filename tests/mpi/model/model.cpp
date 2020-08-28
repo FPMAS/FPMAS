@@ -213,8 +213,8 @@ class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 	public:
 		void act() override {
 			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
-			for(auto neighbour : node()->outNeighbors()) {
-				ASSERT_THAT(static_cast<const ReaderAgent*>(neighbour->mutex()->read().get())->getCounter(), Ge(counter));
+			for(auto neighbor : node()->outNeighbors()) {
+				ASSERT_THAT(static_cast<const ReaderAgent*>(neighbor->mutex()->read().get())->getCounter(), Ge(counter));
 			}
 			counter++;
 			node()->setWeight(random_weight(engine) * 10);
@@ -371,13 +371,13 @@ class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
 	public:
 		void act() override {
 			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
-			for(auto neighbour : node()->outNeighbors()) {
-				WriterAgent* neighbour_agent = static_cast<WriterAgent*>(neighbour->mutex()->acquire().get());
+			for(auto neighbor : node()->outNeighbors()) {
+				WriterAgent* neighbor_agent = static_cast<WriterAgent*>(neighbor->mutex()->acquire().get());
 
-				neighbour_agent->setCounter(neighbour_agent->getCounter()+1);
-				neighbour->setWeight(random_weight(engine) * 10);
+				neighbor_agent->setCounter(neighbor_agent->getCounter()+1);
+				neighbor->setWeight(random_weight(engine) * 10);
 
-				neighbour->mutex()->releaseAcquire();
+				neighbor->mutex()->releaseAcquire();
 			}
 		}
 

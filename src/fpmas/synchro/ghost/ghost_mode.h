@@ -133,9 +133,6 @@ namespace fpmas { namespace synchro {
 						local_node->setWeight(data.updated_weight);
 					}
 				}
-				//for(auto node_list : nodes)
-					//for(auto node : node_list.second)
-						//delete node.get();
 
 				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph data synchronized...");
 			}
