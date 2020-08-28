@@ -264,6 +264,7 @@ namespace fpmas { namespace synchro {
 
 		template<typename T>
 			void GhostSyncLinker<T>::synchronize() {
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Synchronizing graph links...");
 				/*
 				 * Migrate links
 				 */
@@ -331,6 +332,7 @@ namespace fpmas { namespace synchro {
 				for(auto node : local_nodes_to_remove)
 					graph.erase(node);
 				local_nodes_to_remove.clear();
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph links synchronized.");
 			}
 
 		/**
