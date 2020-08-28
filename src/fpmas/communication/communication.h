@@ -277,7 +277,7 @@ namespace fpmas { namespace communication {
 		TypedMpi<T>::gather(const T& data, int root) {
 			// Pack
 			std::string str = nlohmann::json(data).dump();
-			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Gather JSON :\n %s", str.c_str());
+			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Gather JSON on root %i : %s", root, str.c_str());
 			DataPack data_pack (str.size(), sizeof(char));
 			std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
 
@@ -287,7 +287,7 @@ namespace fpmas { namespace communication {
 			for(std::size_t i = 0; i < import_data_pack.size(); i++) {
 				auto item = import_data_pack[i];
 				std::string import = std::string((char*) item.buffer, item.count);
-				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Gathered JSON from %i :\n %s", i, import.c_str());
+				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Gathered JSON from %i : %s", i, import.c_str());
 				import_data.push_back(nlohmann::json::parse(import).get<T>());
 			}
 			return import_data;
@@ -296,14 +296,14 @@ namespace fpmas { namespace communication {
 	template<typename T>
 		void TypedMpi<T>::send(const T& data, int destination, int tag) {
 			std::string str = nlohmann::json(data).dump();
-			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Send JSON :\n %s", str.c_str());
+			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Send JSON to process %i : %s", destination, str.c_str());
 			comm.send(str.c_str(), str.size()+1, MPI_CHAR, destination, tag);
 		}
 	template<typename T>
 		void TypedMpi<T>::Issend(const T& data, int destination, int tag, MPI_Request* req) {
 			std::string str = nlohmann::json(data).dump();
-			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON :\n %s", str.c_str());
-			comm.Issend(str.c_str(), str.size()+1, MPI_CHAR, destination, tag, req);
+			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
+			comm.Issend(str.c_str(), str.size(), MPI_CHAR, destination, tag, req);
 		}
 
 	template<typename T>
@@ -316,7 +316,7 @@ namespace fpmas { namespace communication {
 			comm.recv(buffer, count, MPI_CHAR, source, tag, status);
 
 			std::string data (buffer, count);
-			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Receive JSON :\n %s", data.c_str());
+			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Receive JSON from process %i : %s", source, data.c_str());
 			std::free(buffer);
 			return nlohmann::json::parse(data).get<T>();
 		}
