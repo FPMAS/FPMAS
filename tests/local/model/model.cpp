@@ -446,13 +446,13 @@ TEST_F(AgentBaseTest, out_neighbors) {
 }
 
 TEST_F(AgentBaseTest, shuffle_out_neighbors) {
-	MockDistributedNode<AgentPtr> n_1 {{0, 0}, new MockAgentBase<8>};
-	MockDistributedNode<AgentPtr> n_2 {{0, 1}, new MockAgentBase<8>};
-	MockDistributedNode<AgentPtr> n_3 {{0, 2}, new MockAgentBase<8>};
+	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors;
+	for(unsigned int i = 0; i < 1000; i++) {
+		out_neighbors.push_back(new MockDistributedNode<AgentPtr>({0, i}, new MockAgentBase<8>));
+	}
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
 	EXPECT_CALL(n, outNeighbors()).Times(AnyNumber()).WillRepeatedly(
 			Return(out_neighbors)
 			);
@@ -460,6 +460,7 @@ TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 	agent->setNode(&n);
 
 	fpmas::model::Neighbors<MockAgentBase<8>> out = agent->outNeighbors<MockAgentBase<8>>();
+	std::vector<MockAgentBase<8>*> out_v {out.begin(), out.end()};
 	fpmas::model::Neighbors<MockAgentBase<8>> out_1 = out.shuffle();
 	std::vector<MockAgentBase<8>*> out_1_v {out_1.begin(), out_1.end()};
 	fpmas::model::Neighbors<MockAgentBase<8>> out_2 = out.shuffle();
@@ -467,8 +468,16 @@ TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 	fpmas::model::Neighbors<MockAgentBase<8>> out_3 = out.shuffle();
 	std::vector<MockAgentBase<8>*> out_3_v {out_3.begin(), out_3.end()};
 
+	ASSERT_THAT(out_1_v, Not(ElementsAreArray(out_v)));
+	ASSERT_THAT(out_2_v, Not(ElementsAreArray(out_v)));
+	ASSERT_THAT(out_3_v, Not(ElementsAreArray(out_v)));
+
 	ASSERT_THAT(out_2_v, Not(ElementsAreArray(out_1_v)));
+	ASSERT_THAT(out_3_v, Not(ElementsAreArray(out_2_v)));
 	ASSERT_THAT(out_3_v, Not(ElementsAreArray(out_1_v)));
+
+	for(auto neighbor : out_neighbors)
+		delete neighbor;
 }
 
 TEST_F(AgentBaseTest, in_neighbors) {
@@ -499,13 +508,13 @@ TEST_F(AgentBaseTest, in_neighbors) {
 }
 
 TEST_F(AgentBaseTest, shuffle_in_neighbors) {
-	MockDistributedNode<AgentPtr> n_1 {{0, 0}, new MockAgentBase<8>};
-	MockDistributedNode<AgentPtr> n_2 {{0, 1}, new MockAgentBase<8>};
-	MockDistributedNode<AgentPtr> n_3 {{0, 2}, new MockAgentBase<8>};
+	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> in_neighbors;
+	for(unsigned int i = 0; i < 1000; i++) {
+		in_neighbors.push_back(new MockDistributedNode<AgentPtr>({0, i}, new MockAgentBase<8>));
+	}
 
 	MockAgentBase<10>* agent = new MockAgentBase<10>;
 	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> in_neighbors {&n_1, &n_2, &n_3};
 	EXPECT_CALL(n, inNeighbors()).Times(AnyNumber()).WillRepeatedly(
 			Return(in_neighbors)
 			);
@@ -513,6 +522,7 @@ TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 	agent->setNode(&n);
 
 	fpmas::model::Neighbors<MockAgentBase<8>> in = agent->inNeighbors<MockAgentBase<8>>();
+	std::vector<MockAgentBase<8>*> in_v {in.begin(), in.end()};
 	fpmas::model::Neighbors<MockAgentBase<8>> in_1 = in.shuffle();
 	std::vector<MockAgentBase<8>*> in_1_v {in_1.begin(), in_1.end()};
 	fpmas::model::Neighbors<MockAgentBase<8>> in_2 = in.shuffle();
@@ -520,8 +530,16 @@ TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 	fpmas::model::Neighbors<MockAgentBase<8>> in_3 = in.shuffle();
 	std::vector<MockAgentBase<8>*> in_3_v {in_3.begin(), in_3.end()};
 
+	ASSERT_THAT(in_1_v, Not(ElementsAreArray(in_v)));
+	ASSERT_THAT(in_2_v, Not(ElementsAreArray(in_v)));
+	ASSERT_THAT(in_3_v, Not(ElementsAreArray(in_v)));
+
 	ASSERT_THAT(in_2_v, Not(ElementsAreArray(in_1_v)));
+	ASSERT_THAT(in_3_v, Not(ElementsAreArray(in_2_v)));
 	ASSERT_THAT(in_3_v, Not(ElementsAreArray(in_1_v)));
+
+	for(auto neighbor : in_neighbors)
+		delete neighbor;
 }
 
 class FakeAgent : public MockAgentBase<10> {
