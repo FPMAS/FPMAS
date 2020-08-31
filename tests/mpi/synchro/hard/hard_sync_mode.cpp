@@ -157,7 +157,7 @@ class HardSyncModeMutexIntegrationTest : public HardSyncModeIntegrationTest {
 TEST_F(HardSyncModeMutexIntegrationTest, acquire) {
 	ASSERT_THAT(graph.getLocationManager().getLocalNodes(), SizeIs(1));
 
-	FPMAS_MIN_PROCS("HardSyncModeIntegrationTest.acquire", comm, 1) {
+	FPMAS_MIN_PROCS("HardSyncModeIntegrationTest.acquire", comm, 2) {
 		unsigned int num_writes = 10000;
 		unsigned int local_writes_count = 0;
 		for(unsigned int i = 0; i < num_writes; i++) {

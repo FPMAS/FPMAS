@@ -1,6 +1,9 @@
 #include "fpmas/communication/communication.h"
 #include "../mocks/communication/mock_communication.h"
 #include "utils/test.h"
+#include "fpmas/utils/macros.h"
+#include <chrono>
+#include <thread>
 
 using ::testing::Contains;
 using ::testing::IsEmpty;
@@ -8,7 +11,7 @@ using ::testing::IsEmpty;
 using fpmas::communication::MpiCommunicator;
 using fpmas::communication::TypedMpi;
 
-TEST(MpiMpiCommunicatorTest, size_test) {
+TEST(MpiCommunicatorTest, size_test) {
 	MpiCommunicator comm;
 
 	int size;
@@ -16,7 +19,7 @@ TEST(MpiMpiCommunicatorTest, size_test) {
 	ASSERT_EQ(size, comm.getSize());
 }
 
-TEST(MpiMpiCommunicatorTest, rank_test) {
+TEST(MpiCommunicatorTest, rank_test) {
 	MpiCommunicator comm;
 
 	int rank;
@@ -27,7 +30,7 @@ TEST(MpiMpiCommunicatorTest, rank_test) {
 TEST(MpiCommunicatorTest, probe_any_source) {
 	MpiCommunicator comm;
 
-	FPMAS_MIN_PROCS("MpiCommunicatorTest.probe_any_source", comm, 1) {
+	FPMAS_MIN_PROCS("MpiCommunicatorTest.probe_any_source", comm, 2) {
 		if(comm.getRank() == 0) {
 			std::vector<int> ranks;
 			for(int i = 1; i < comm.getSize(); i++) {
@@ -138,5 +141,43 @@ TEST(MpiGatherTest, gather) {
 		for(auto i : data)
 			sum+=i;
 		ASSERT_EQ(sum, 10*(comm.getSize() * (comm.getSize() + 1)/2));
+	}
+}
+
+TEST(MpiIssendTest, edge_case) {
+	MpiCommunicator comm;
+	std::string data;
+	// Generates a long string
+	for(int i = 0; i < 10000; i++) {
+		data += std::to_string(i);
+	}
+	FPMAS_MIN_PROCS("MpiIssendTest.edge_case", comm, 2) {
+		FPMAS_ON_PROC(comm, 0) {
+			std::vector<MPI_Request> requests;
+			for(int i = 1; i < comm.getSize(); i++) {
+				std::string local_data = data;
+				MPI_Request req;
+				comm.Issend(local_data.c_str(), local_data.size(), MPI_CHAR, i, 0, &req);
+				requests.push_back(req);
+			}
+			for(auto& req : requests)
+				while(!comm.test(&req)){}
+		} else {
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			MPI_Status message_to_receive_status;
+			comm.probe(0, 0, &message_to_receive_status);
+			int count;
+			MPI_Get_count(&message_to_receive_status, MPI_CHAR, &count);
+			char* buffer = (char*) std::malloc(count * sizeof(char));
+
+			MPI_Status status;
+			comm.recv(buffer, count, MPI_CHAR, 0, 0, &status);
+
+			std::string recv(buffer, count);
+			ASSERT_EQ(data.size(), recv.size());
+			ASSERT_EQ(data, recv);
+
+			std::free(buffer);
+		}
 	}
 }

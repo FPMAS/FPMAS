@@ -39,6 +39,13 @@ class GhostSyncLinkerTest : public ::testing::Test {
 		MockEdge* edge1 = new MockEdge {edge1_id, 8};
 		MockEdge* edge2 = new MockEdge {edge2_id, 2};
 		MockEdge* edge3 = new MockEdge {edge3_id, 5};
+
+		void SetUp() {
+			ON_CALL(mock_graph, getMpiCommunicator())
+				.WillByDefault(ReturnRef(mock_comm));
+			EXPECT_CALL(mock_graph, getMpiCommunicator())
+				.Times(AnyNumber());
+		}
 		
 
 		void edgeSetUp(MockEdge& edge, int srcRank, int tgtRank) {
@@ -70,6 +77,7 @@ class GhostSyncLinkerTest : public ::testing::Test {
 class GhostSyncLinkerLinkUnlinkTest : public GhostSyncLinkerTest {
 
 		void SetUp() override {
+			GhostSyncLinkerTest::SetUp();
 			// Edge1 set up
 			edge1->src = new MockNode();
 			edge1->tgt = new MockNode();
@@ -293,6 +301,8 @@ class GhostSyncLinkerRemoveNodeTest : public GhostSyncLinkerTest {
 		std::vector<fpmas::api::graph::DistributedEdge<int>*> in_edges;
 
 		void SetUp() override {
+			GhostSyncLinkerTest::SetUp();
+
 			edge1->src = new MockNode;
 			edge1->tgt = node_to_remove;
 			edge2->src = new MockNode;
