@@ -97,7 +97,7 @@ namespace fpmas { namespace communication {
 			 * @param req output MPI request
 			 */
 			void Issend(
-					const void* data, int count, MPI_Datatype datatype, int destination, int tag, MPI_Request* req) override;
+					const void* data, int count, MPI_Datatype datatype, int destination, int tag, api::communication::Request& req) override;
 
 			/**
 			 * Performs an MPI_Issend operation without data.
@@ -106,7 +106,7 @@ namespace fpmas { namespace communication {
 			 * @param tag message tag
 			 * @param req output MPI request
 			 */
-			void Issend(int destination, int tag, MPI_Request* req) override;
+			void Issend(int destination, int tag, api::communication::Request& req) override;
 
 			/**
 			 * Performs an MPI_Recv operation without data.
@@ -154,8 +154,9 @@ namespace fpmas { namespace communication {
 			 * @param req MPI request to test
 			 * @returns true iff the request is complete
 			 */
-			bool test(MPI_Request*) override;
+			bool test(api::communication::Request& req) override;
 
+			void wait(api::communication::Request& req) override;
 			/**
 			 * Performs an MPI_Alltoall operation.
 			 *
@@ -243,7 +244,7 @@ namespace fpmas { namespace communication {
 				std::vector<T> gather(const T&, int root) override;
 
 				void send(const T&, int, int) override;
-				void Issend(const T&, int, int, MPI_Request*) override;
+				void Issend(const T&, int, int, api::communication::Request&) override;
 				T recv(int source, int tag, MPI_Status* status = MPI_STATUS_IGNORE) override;
 		};
 
@@ -300,7 +301,7 @@ namespace fpmas { namespace communication {
 			comm.send(str.c_str(), str.size()+1, MPI_CHAR, destination, tag);
 		}
 	template<typename T>
-		void TypedMpi<T>::Issend(const T& data, int destination, int tag, MPI_Request* req) {
+		void TypedMpi<T>::Issend(const T& data, int destination, int tag, api::communication::Request& req) {
 			std::string str = nlohmann::json(data).dump();
 			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
 			comm.Issend(str.c_str(), str.size(), MPI_CHAR, destination, tag, req);

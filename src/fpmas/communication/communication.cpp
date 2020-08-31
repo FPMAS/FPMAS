@@ -42,12 +42,17 @@ namespace fpmas { namespace communication {
 	}
 
 	void MpiCommunicator::Issend(
-			const void* data, int count, MPI_Datatype datatype, int destination, int tag, MPI_Request* req) {
-		MPI_Issend(data, count, datatype, destination, tag, this->comm, req);
+			const void* data, int count, MPI_Datatype datatype, int destination, int tag, api::communication::Request& req) {
+		int type_size;
+		MPI_Type_size(datatype, &type_size);
+		req.__data = new DataPack(count, type_size);
+		std::memcpy(req.__data->buffer, data, req.__data->size);
+
+		MPI_Issend(req.__data->buffer, count, datatype, destination, tag, this->comm, &req.__mpi_request);
 	}
 
-	void MpiCommunicator::Issend(int destination, int tag, MPI_Request* req) {
-		MPI_Issend(NULL, 0, MPI_CHAR, destination, tag, this->comm, req);
+	void MpiCommunicator::Issend(int destination, int tag, api::communication::Request& req) {
+		MPI_Issend(NULL, 0, MPI_CHAR, destination, tag, this->comm, &req.__mpi_request);
 	}
 
 	void MpiCommunicator::recv(int source, int tag, MPI_Status* status) {
@@ -69,11 +74,20 @@ namespace fpmas { namespace communication {
 		return flag > 0;
 	}
 
-	bool MpiCommunicator::test(MPI_Request* req) {
+	bool MpiCommunicator::test(api::communication::Request& req) {
 		MPI_Status status;
 		int flag;
-		MPI_Test(req, &flag, &status);
+		MPI_Test(&req.__mpi_request, &flag, &status);
+		if(flag > 0) {
+			req.free();
+		}
 		return flag > 0;
+	}
+
+	void MpiCommunicator::wait(api::communication::Request& req) {
+		MPI_Status status;
+		MPI_Wait(&req.__mpi_request, &status);
+		req.free();
 	}
 
 	std::unordered_map<int, DataPack> 

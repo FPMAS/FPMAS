@@ -99,7 +99,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			 *
 			 * @param req MPI request to complete
 			 */
-			void waitSendRequest(MPI_Request* req) {
+			void waitSendRequest(fpmas::api::communication::Request& req) {
 				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for send...");
 				bool sent = comm.test(req);
 

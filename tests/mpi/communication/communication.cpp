@@ -153,15 +153,14 @@ TEST(MpiIssendTest, edge_case) {
 	}
 	FPMAS_MIN_PROCS("MpiIssendTest.edge_case", comm, 2) {
 		FPMAS_ON_PROC(comm, 0) {
-			std::vector<MPI_Request> requests;
+			std::vector<fpmas::api::communication::Request> requests;
+			requests.resize(comm.getSize()-1);
 			for(int i = 1; i < comm.getSize(); i++) {
 				std::string local_data = data;
-				MPI_Request req;
-				comm.Issend(local_data.c_str(), local_data.size(), MPI_CHAR, i, 0, &req);
-				requests.push_back(req);
+				comm.Issend(local_data.c_str(), local_data.size(), MPI_CHAR, i, 0, requests[i-1]);
 			}
 			for(auto& req : requests)
-				while(!comm.test(&req)){}
+				comm.wait(req);
 		} else {
 			std::this_thread::sleep_for(std::chrono::seconds(2));
 			MPI_Status message_to_receive_status;

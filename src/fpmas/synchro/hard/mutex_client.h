@@ -69,12 +69,12 @@ namespace fpmas { namespace synchro { namespace hard {
 		T MutexClient<T>::read(DistributedId id, int location) {
 			FPMAS_LOGD(this->comm.getRank(), "MUTEX_CLIENT", "reading node %s from %i", FPMAS_C_STR(id), location);
 			// Starts non-blocking synchronous send
-			MPI_Request req;
-			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::READ, &req);
+			fpmas::api::communication::Request req;
+			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::READ, req);
 
 			// Keep responding to other READ / ACQUIRE request to avoid deadlock,
 			// until the request has been received
-			server_pack.waitSendRequest(&req);
+			server_pack.waitSendRequest(req);
 
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
@@ -89,20 +89,20 @@ namespace fpmas { namespace synchro { namespace hard {
 		void MutexClient<T>::releaseRead(DistributedId id, int location) {
 			FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "releasing read node %s from %i", FPMAS_C_STR(id), location);
 
-			MPI_Request req;
-			id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::UNLOCK_SHARED, &req);
+			fpmas::api::communication::Request req;
+			id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::UNLOCK_SHARED, req);
 
-			server_pack.waitSendRequest(&req);
+			server_pack.waitSendRequest(req);
 		}
 
 	template<typename T>
 		T MutexClient<T>::acquire(DistributedId id, int location) {
 			FPMAS_LOGD(this->comm.getRank(), "MUTEX_CLIENT", "acquiring node %s from %i", FPMAS_C_STR(id), location);
 			// Starts non-blocking synchronous send
-			MPI_Request req;
-			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::ACQUIRE, &req);
+			fpmas::api::communication::Request req;
+			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::ACQUIRE, req);
 
-			server_pack.waitSendRequest(&req);
+			server_pack.waitSendRequest(req);
 
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
@@ -118,19 +118,20 @@ namespace fpmas { namespace synchro { namespace hard {
 			FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "releasing acquired node %s from %i", FPMAS_C_STR(id), location);
 			DataUpdatePack<T> update {id, updated_data};
 
-			MPI_Request req;
-			data_update_mpi.Issend(update, location, server_pack.getEpoch() | Tag::RELEASE_ACQUIRE, &req);
+			fpmas::api::communication::Request req;
+			data_update_mpi.Issend(update, location, server_pack.getEpoch() | Tag::RELEASE_ACQUIRE, req);
 
-			server_pack.waitSendRequest(&req);
+			server_pack.waitSendRequest(req);
 		}
 
 	template<typename T>
 		void MutexClient<T>::lock(DistributedId id, int location) {
 			FPMAS_LOGD(this->comm.getRank(), "MUTEX_CLIENT", "locking node %s from %i", FPMAS_C_STR(id), location);
-			MPI_Request req;
-			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::LOCK, &req);
 
-			server_pack.waitSendRequest(&req);
+			fpmas::api::communication::Request req;
+			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::LOCK, req);
+
+			server_pack.waitSendRequest(req);
 
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
@@ -144,19 +145,21 @@ namespace fpmas { namespace synchro { namespace hard {
 	template<typename T>
 		void MutexClient<T>::unlock(DistributedId id, int location) {
 			FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "unlocking node %s from %i", FPMAS_C_STR(id), location);
-			MPI_Request req;
-			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::UNLOCK, &req);
 
-			server_pack.waitSendRequest(&req);
+			fpmas::api::communication::Request req;
+			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::UNLOCK, req);
+
+			server_pack.waitSendRequest(req);
 		}
 
 	template<typename T>
 		void MutexClient<T>::lockShared(DistributedId id, int location) {
 			FPMAS_LOGD(this->comm.getRank(), "MUTEX_CLIENT", "share locking node %s from %i", FPMAS_C_STR(id), location);
-			MPI_Request req;
-			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::LOCK_SHARED, &req);
 
-			server_pack.waitSendRequest(&req);
+			fpmas::api::communication::Request req;
+			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::LOCK_SHARED, req);
+
+			server_pack.waitSendRequest(req);
 
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
@@ -169,10 +172,11 @@ namespace fpmas { namespace synchro { namespace hard {
 	template<typename T>
 		void MutexClient<T>::unlockShared(DistributedId id, int location) {
 			FPMAS_LOGV(this->comm.getRank(), "MUTEX_CLIENT", "share unlocking node %s from %i", FPMAS_C_STR(id), location);
-			MPI_Request req;
-			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::UNLOCK_SHARED, &req);
 
-			server_pack.waitSendRequest(&req);
+			fpmas::api::communication::Request req;
+			this->id_mpi.Issend(id, location, server_pack.getEpoch() | Tag::UNLOCK_SHARED, req);
+
+			server_pack.waitSendRequest(req);
 		}
 }}}
 #endif

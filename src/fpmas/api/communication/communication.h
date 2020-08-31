@@ -9,6 +9,7 @@
 
 namespace fpmas { namespace api { namespace communication {
 
+
 		/**
 		 * A convenient wrapper for `void*` buffers used in MPI functions.
 		 */
@@ -112,6 +113,23 @@ namespace fpmas { namespace api { namespace communication {
 				}
 		};
 
+	struct Request {
+		MPI_Request __mpi_request;
+		DataPack* __data = nullptr;
+
+		void free() {
+			if(__data!=nullptr) {
+				delete __data;
+				__data = nullptr;
+			}
+		}
+	};
+
+	struct Status {
+		int size;
+		int count;
+	};
+
 		/**
 		 * MpiCommunicator interface.
 		 *
@@ -175,7 +193,7 @@ namespace fpmas { namespace api { namespace communication {
 				 * @param req output MPI request
 				 */
 				virtual void Issend(
-						const void* data, int count, MPI_Datatype datatype, int destination, int tag, MPI_Request* req) = 0;
+						const void* data, int count, MPI_Datatype datatype, int destination, int tag, Request& req) = 0;
 				/**
 				 * Sends a void message to `destination` (blocking).
 				 *
@@ -192,7 +210,7 @@ namespace fpmas { namespace api { namespace communication {
 				 * @param tag message tag
 				 * @param req output MPI request
 				 */
-				virtual void Issend(int destination, int tag, MPI_Request* req) = 0;
+				virtual void Issend(int destination, int tag, Request& req) = 0;
 
 				/**
 				 * Blocking probe.
@@ -265,7 +283,9 @@ namespace fpmas { namespace api { namespace communication {
 				 * @param req MPI request to test
 				 * @returns true iff the request is complete
 				 */
-				virtual bool test(MPI_Request* req) = 0;
+				virtual bool test(Request& req) = 0;
+
+				virtual void wait(Request& req) = 0;
 
 				/**
 				 * Performs a complete data exchange among processor.
@@ -369,7 +389,7 @@ namespace fpmas { namespace api { namespace communication {
 					 * @param tag message tag
 					 * @param req output MPI request
 					 */
-					virtual void Issend(const T& data, int destination, int tag, MPI_Request* req) = 0;
+					virtual void Issend(const T& data, int destination, int tag, Request& req) = 0;
 					/**
 					 * Receives a `T` object from `source`.
 					 *

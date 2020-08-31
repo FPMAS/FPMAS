@@ -5,6 +5,8 @@
  * HardSyncMode SyncLinker implementation.
  */
 
+#include <set>
+
 #include "fpmas/utils/macros.h"
 
 #include "fpmas/api/synchro/sync_mode.h"
@@ -43,6 +45,8 @@ namespace fpmas { namespace synchro { namespace hard {
 				HardDataSync<T>& data_sync;
 				IdMpi& id_mpi;
 				EdgeMpi& edge_mpi;
+				std::set<fpmas::api::graph::DistributedEdge<T>*> erased_edges_from_unlink;
+				std::set<DistributedId> erased_edges_from_remove_node;
 
 			public:
 				/**
@@ -78,8 +82,11 @@ namespace fpmas { namespace synchro { namespace hard {
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
 				DistributedId unlink_id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
 				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", FPMAS_C_STR(unlink_id), req_status.MPI_SOURCE);
-				if(graph.getEdges().count(unlink_id) > 0)
+				if(erased_edges_from_remove_node.count(unlink_id) == 0 && graph.getEdges().count(unlink_id) > 0) {
+					auto* edge = graph.getEdge(unlink_id);
 					graph.erase(graph.getEdge(unlink_id));
+					erased_edges_from_unlink.insert(edge);
+				}
 			}
 			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::REMOVE_NODE, &req_status)) {
 				DistributedId node_id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
@@ -89,10 +96,39 @@ namespace fpmas { namespace synchro { namespace hard {
 				// remove, because it's the only process that has an access to
 				// all the links
 				// Performs distant calls if required.
-				for(auto edge : node->getOutgoingEdges())
-					graph.unlink(edge);
-				for(auto edge : node->getIncomingEdges())
-					graph.unlink(edge);
+				//
+				// When calling graph.unlink(), UNLINK request from other
+				// procs to unlink edges contained in node->getOutgoingEdges or
+				// node->getIncomingEdges might be received (for example, if an
+				// other process is removing a neighbor of `node`). In this
+				// case, the received UNLINK request has priority and the edge is added
+				// to the erase_edges_from_unlink set, and is ignore in the remove node
+				// process below.
+				// An other edge case needs to be avoid : while
+				// graph.unlink(edge) is processed, it is possible that an UNLINK
+				// request for edge is received. In this case, the remove node
+				// operation has priority, the edge is is added to
+				// erased_edges_from_remove_node, and the corresponding edge is
+				// ignored when the UNLINK request is processed.
+				//
+				// The two erased_edges sets are cleared once the node has been
+				// completely unlinked.
+				for(auto edge : node->getOutgoingEdges()) {
+					if(erased_edges_from_unlink.count(edge) == 0) {
+						std::cout << comm.getRank() << " ul " << edge->getId() << std::endl;
+						erased_edges_from_remove_node.insert(edge->getId());
+						graph.unlink(edge);
+					}
+				}
+				for(auto edge : node->getIncomingEdges()) {
+					if(erased_edges_from_unlink.count(edge) == 0) {
+						std::cout << comm.getRank() << "ul " << edge->getId() << std::endl;
+						erased_edges_from_remove_node.insert(edge->getId());
+						graph.unlink(edge);
+					}
+				}
+				erased_edges_from_unlink.clear();
+				erased_edges_from_remove_node.clear();
 
 				// When this point is reached, it is guaranteed that the node
 				// is completely unlinked in the global graph, so no new
@@ -158,94 +194,94 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void LinkClient<T>::link(const EdgeApi* edge) {
-			bool distantSrc = edge->getSourceNode()->state() == LocationState::DISTANT;
-			bool distantTgt = edge->getTargetNode()->state() == LocationState::DISTANT;
+			bool distant_src = edge->getSourceNode()->state() == LocationState::DISTANT;
+			bool distant_tgt = edge->getTargetNode()->state() == LocationState::DISTANT;
 
 			if(edge->getSourceNode()->getLocation() != edge->getTargetNode()->getLocation()) {
 				// The edge is DISTANT, so at least of the two nodes is
 				// DISTANT. In this case, if the two nodes are
 				// DISTANT, they don't have the same location, so two
 				// requests must be performed.
-				MPI_Request req_src;
-				MPI_Request req_tgt;
+				fpmas::api::communication::Request req_src;
+				fpmas::api::communication::Request req_tgt;
 				// Simultaneously initiate the two requests, that are potentially
 				// made to different procs
-				if(distantSrc) {
+				if(distant_src) {
 					edge_mpi.Issend(
 							const_cast<EdgeApi*>(edge), edge->getSourceNode()->getLocation(),
-							server_pack.getEpoch() | Tag::LINK, &req_src
+							server_pack.getEpoch() | Tag::LINK, req_src
 							); 
 				}
-				if(distantTgt) {
+				if(distant_tgt) {
 					edge_mpi.Issend(
 							const_cast<EdgeApi*>(edge), edge->getTargetNode()->getLocation(),
-							server_pack.getEpoch() | Tag::LINK, &req_tgt
+							server_pack.getEpoch() | Tag::LINK, req_tgt
 							); 
 				}
 				// Sequentially waits for each request : if req_tgt completes
 				// before req_src, the second waitSendRequest will immediatly return
 				// so there is no performance issue.
-				if(distantSrc) {
-					server_pack.waitSendRequest(&req_src);
+				if(distant_src) {
+					server_pack.waitSendRequest(req_src);
 				}
-				if(distantTgt) {
-					server_pack.waitSendRequest(&req_tgt);
+				if(distant_tgt) {
+					server_pack.waitSendRequest(req_tgt);
 				}
 			} else {
 				// The edge is DISTANT, and its source and target nodes
 				// locations are the same, so the two nodes are necessarily
 				// located on the same DISTANT proc : only need to perform
 				// one request
-				MPI_Request req;
+				fpmas::api::communication::Request req;
 				edge_mpi.Issend(
 						const_cast<EdgeApi*>(edge), edge->getSourceNode()->getLocation(),
-						server_pack.getEpoch() | Tag::LINK, &req
+						server_pack.getEpoch() | Tag::LINK, req
 						); 
-				server_pack.waitSendRequest(&req);
+				server_pack.waitSendRequest(req);
 			}
 		}
 
 	template<typename T>
 		void LinkClient<T>::unlink(const EdgeApi* edge) {
-			bool distantSrc = edge->getSourceNode()->state() == LocationState::DISTANT;
-			bool distantTgt = edge->getTargetNode()->state() == LocationState::DISTANT;
+			bool distant_src = edge->getSourceNode()->state() == LocationState::DISTANT;
+			bool distant_tgt = edge->getTargetNode()->state() == LocationState::DISTANT;
 
-			MPI_Request req_src;
-			MPI_Request req_tgt;
+			fpmas::api::communication::Request req_src;
+			fpmas::api::communication::Request req_tgt;
 			// Simultaneously initiate the two requests, that are potentially
 			// made to different procs
-			if(distantSrc) {
+			if(distant_src) {
 				this->id_mpi.Issend(
 						edge->getId(), edge->getSourceNode()->getLocation(),
-						server_pack.getEpoch() | Tag::UNLINK, &req_src
+						server_pack.getEpoch() | Tag::UNLINK, req_src
 						); 
 			}
-			if(distantTgt) {
+			if(distant_tgt) {
 				this->id_mpi.Issend(
 						edge->getId(), edge->getTargetNode()->getLocation(),
-						server_pack.getEpoch() | Tag::UNLINK, &req_tgt
+						server_pack.getEpoch() | Tag::UNLINK, req_tgt
 						); 
 			}
 			// Sequentially waits for each request : if req_tgt completes
 			// before req_src, the second waitSendRequest will immediatly return
 			// so there is no performance issue.
-			if(distantSrc) {
-				server_pack.waitSendRequest(&req_src);
+			if(distant_src) {
+				server_pack.waitSendRequest(req_src);
 			}
-			if(distantTgt) {
-				server_pack.waitSendRequest(&req_tgt);
+			if(distant_tgt) {
+				server_pack.waitSendRequest(req_tgt);
 			}
 		}
 
 	template<typename T>
 		void LinkClient<T>::removeNode(const NodeApi* node) {
-			MPI_Request req;
+			fpmas::api::communication::Request req;
 			this->id_mpi.Issend(
 				node->getId(), node->getLocation(),
-				server_pack.getEpoch() | Tag::REMOVE_NODE, &req
+				server_pack.getEpoch() | Tag::REMOVE_NODE, req
 				);
 
-			server_pack.waitSendRequest(&req);
+			server_pack.waitSendRequest(req);
 		}
 
 
