@@ -155,6 +155,7 @@ TEST(MpiIssendTest, edge_case) {
 		FPMAS_ON_PROC(comm, 0) {
 			std::vector<fpmas::api::communication::Request> requests;
 			requests.resize(comm.getSize()-1);
+
 			for(int i = 1; i < comm.getSize(); i++) {
 				std::string local_data = data;
 				comm.Issend(local_data.c_str(), local_data.size(), MPI_CHAR, i, 0, requests[i-1]);
