@@ -20,9 +20,9 @@ class TerminationTest : public ::testing::Test {
 
 class SetMpiStatus {
 	public:
-		void operator()(int source, int tag, MPI_Status* status) {
-			status->MPI_SOURCE = source;
-			status->MPI_TAG = tag;
+		void operator()(int source, int tag, fpmas::communication::Status& status) {
+			status.source = source;
+			status.tag = tag;
 		}
 };
 
@@ -32,7 +32,7 @@ TEST_F(TerminationTest, rank_0_white_tokens) {
 
 	EXPECT_CALL(mock_mpi, send(Color::WHITE, 3, Tag::TOKEN));
 
-	EXPECT_CALL(comm, Iprobe(1, Tag::TOKEN, _))
+	EXPECT_CALL(mock_mpi, Iprobe(1, Tag::TOKEN, _))
 		.WillRepeatedly(DoAll(Invoke(SetMpiStatus()), Return(1)));
 
 	EXPECT_CALL(mock_mpi, recv(1, Tag::TOKEN, _))

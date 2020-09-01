@@ -72,25 +72,25 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void LinkServer<T>::handleIncomingRequests() {
-			MPI_Status req_status;
+			fpmas::api::communication::Status status;
 			// Check read request
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LINK, &req_status)) {
-				EdgeApi* edge = edge_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
-				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive link request from %i", req_status.MPI_SOURCE);
+			if(edge_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LINK, status)) {
+				EdgeApi* edge = edge_mpi.recv(status.source, status.tag);
+				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive link request from %i", status.source);
 				graph.importEdge(edge);
 			}
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, &req_status)) {
-				DistributedId unlink_id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
-				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", FPMAS_C_STR(unlink_id), req_status.MPI_SOURCE);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, status)) {
+				DistributedId unlink_id = id_mpi.recv(status.source, status.tag);
+				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", FPMAS_C_STR(unlink_id), status.source);
 				if(erased_edges_from_remove_node.count(unlink_id) == 0 && graph.getEdges().count(unlink_id) > 0) {
 					auto* edge = graph.getEdge(unlink_id);
 					graph.erase(graph.getEdge(unlink_id));
 					erased_edges_from_unlink.insert(edge);
 				}
 			}
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::REMOVE_NODE, &req_status)) {
-				DistributedId node_id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
-				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive remove node request %s from %i", FPMAS_C_STR(node_id), req_status.MPI_SOURCE);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::REMOVE_NODE, status)) {
+				DistributedId node_id = id_mpi.recv(status.source, status.tag);
+				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive remove node request %s from %i", FPMAS_C_STR(node_id), status.source);
 				auto* node = graph.getNode(node_id);
 				// Unlinks all edges from the process which own the node to
 				// remove, because it's the only process that has an access to
@@ -115,14 +115,12 @@ namespace fpmas { namespace synchro { namespace hard {
 				// completely unlinked.
 				for(auto edge : node->getOutgoingEdges()) {
 					if(erased_edges_from_unlink.count(edge) == 0) {
-						std::cout << comm.getRank() << " ul " << edge->getId() << std::endl;
 						erased_edges_from_remove_node.insert(edge->getId());
 						graph.unlink(edge);
 					}
 				}
 				for(auto edge : node->getIncomingEdges()) {
 					if(erased_edges_from_unlink.count(edge) == 0) {
-						std::cout << comm.getRank() << "ul " << edge->getId() << std::endl;
 						erased_edges_from_remove_node.insert(edge->getId());
 						graph.unlink(edge);
 					}

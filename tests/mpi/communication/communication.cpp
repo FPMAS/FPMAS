@@ -36,16 +36,16 @@ TEST(MpiCommunicatorTest, probe_any_source) {
 			for(int i = 1; i < comm.getSize(); i++) {
 				ranks.push_back(i);
 			}
-			MPI_Status status;
+			fpmas::api::communication::Status status;
 			for(int i = 1; i < comm.getSize(); i++) {
-				bool recv = comm.Iprobe(MPI_ANY_SOURCE, 4, &status);
+				bool recv = comm.Iprobe(MPI_INT, MPI_ANY_SOURCE, 4, status);
 				while(!recv) {
-					recv = comm.Iprobe(MPI_ANY_SOURCE, 4, &status);
+					recv = comm.Iprobe(MPI_INT, MPI_ANY_SOURCE, 4, status);
 				}
-				ASSERT_EQ(status.MPI_TAG, 4);
-				ASSERT_THAT(ranks, Contains(status.MPI_SOURCE));
-				ranks.erase(std::remove(ranks.begin(), ranks.end(), status.MPI_SOURCE));
-				comm.recv(NULL, 0, MPI_INT, status.MPI_SOURCE, 4, MPI_STATUS_IGNORE);
+				ASSERT_EQ(status.tag, 4);
+				ASSERT_THAT(ranks, Contains(status.source));
+				ranks.erase(std::remove(ranks.begin(), ranks.end(), status.source));
+				comm.recv(status.source, 4);
 			}
 			ASSERT_THAT(ranks, IsEmpty());
 		}
@@ -164,16 +164,14 @@ TEST(MpiIssendTest, edge_case) {
 				comm.wait(req);
 		} else {
 			std::this_thread::sleep_for(std::chrono::seconds(2));
-			MPI_Status message_to_receive_status;
-			comm.probe(0, 0, &message_to_receive_status);
-			int count;
-			MPI_Get_count(&message_to_receive_status, MPI_CHAR, &count);
-			char* buffer = (char*) std::malloc(count * sizeof(char));
+			fpmas::communication::Status message_to_receive_status;
+			comm.probe(MPI_CHAR, 0, 0, message_to_receive_status);
+			char* buffer = (char*) std::malloc(message_to_receive_status.size);
 
-			MPI_Status status;
-			comm.recv(buffer, count, MPI_CHAR, 0, 0, &status);
+			fpmas::communication::Status status;
+			comm.recv(buffer, message_to_receive_status.item_count, MPI_CHAR, 0, 0, status);
 
-			std::string recv(buffer, count);
+			std::string recv(buffer, message_to_receive_status.item_count);
 			ASSERT_EQ(data.size(), recv.size());
 			ASSERT_EQ(data, recv);
 

@@ -29,9 +29,9 @@ class LinkServerTest : public ::testing::Test {
 				int source;
 			public:
 				MockProbe(int source) : source(source) {}
-				void operator()(int, int tag, MPI_Status* status) {
-					status->MPI_SOURCE = this->source;
-					status->MPI_TAG = tag;
+				void operator()(int, int tag, fpmas::api::communication::Status& status) {
+					status.source = this->source;
+					status.tag = tag;
 				}
 		};
 
@@ -60,14 +60,18 @@ class LinkServerTest : public ::testing::Test {
 			server_pack(comm, mock_termination, mock_mutex_server, link_server) {}
 
 		void SetUp() override {
-			ON_CALL(comm, Iprobe).WillByDefault(Return(false));
-			EXPECT_CALL(comm, Iprobe).Times(AnyNumber());
+			//ON_CALL(comm, Iprobe).WillByDefault(Return(false));
+			//EXPECT_CALL(comm, Iprobe).Times(AnyNumber());
+			ON_CALL(id_mpi, Iprobe).WillByDefault(Return(false));
+			EXPECT_CALL(id_mpi, Iprobe).Times(AnyNumber());
+			ON_CALL(edge_mpi, Iprobe).WillByDefault(Return(false));
+			EXPECT_CALL(edge_mpi, Iprobe).Times(AnyNumber());
 			ON_CALL(mock_graph, getEdges).WillByDefault(ReturnRef(edge_map));
 			EXPECT_CALL(mock_graph, getEdges).Times(AnyNumber());
 		}
 
 		void expectLink(int source, MockDistributedEdge<int>* mock_edge) {
-			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::LINK, _))
+			Expectation probe = EXPECT_CALL(edge_mpi, Iprobe(_, Epoch::EVEN | Tag::LINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(edge_mpi, recv(source, Epoch::EVEN | Tag::LINK, _))
@@ -81,7 +85,7 @@ class LinkServerTest : public ::testing::Test {
 			edge_map.insert({mock_edge->getId(), mock_edge});
 			EXPECT_CALL(mock_graph, getEdge(mock_edge->getId()))
 				.WillRepeatedly(Return(mock_edge));
-			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::UNLINK, _))
+			Expectation probe = EXPECT_CALL(id_mpi, Iprobe(_, Epoch::EVEN | Tag::UNLINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::UNLINK, _))
@@ -93,7 +97,7 @@ class LinkServerTest : public ::testing::Test {
 		void expectRemoveNode(int source, MockDistributedNode<int>* mock_node) {
 			EXPECT_CALL(mock_graph, getNode(mock_node->getId()))
 				.WillRepeatedly(Return(mock_node));
-			Expectation probe = EXPECT_CALL(comm, Iprobe(_, Epoch::EVEN | Tag::REMOVE_NODE, _))
+			Expectation probe = EXPECT_CALL(id_mpi, Iprobe(_, Epoch::EVEN | Tag::REMOVE_NODE, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::REMOVE_NODE, _))

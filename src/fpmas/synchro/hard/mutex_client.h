@@ -79,10 +79,10 @@ namespace fpmas { namespace synchro { namespace hard {
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
 			// TODO : this is not thread safe.
-			MPI_Status read_response_status;
-			server_pack.waitResponse(location, Tag::READ_RESPONSE, &read_response_status);
+			fpmas::api::communication::Status read_response_status;
+			server_pack.waitResponse(data_mpi, location, Tag::READ_RESPONSE, read_response_status);
 
-			return data_mpi.recv(read_response_status.MPI_SOURCE, read_response_status.MPI_TAG);
+			return data_mpi.recv(read_response_status.source, read_response_status.tag);
 		}
 
 	template<typename T>
@@ -107,10 +107,10 @@ namespace fpmas { namespace synchro { namespace hard {
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
 			// TODO : this is not thread safe.
-			MPI_Status acquire_response_status;
-			server_pack.waitResponse(location, Tag::ACQUIRE_RESPONSE, &acquire_response_status);
+			fpmas::api::communication::Status acquire_response_status;
+			server_pack.waitResponse(data_mpi, location, Tag::ACQUIRE_RESPONSE, acquire_response_status);
 
-			return data_mpi.recv(acquire_response_status.MPI_SOURCE, acquire_response_status.MPI_TAG);
+			return data_mpi.recv(acquire_response_status.source, acquire_response_status.tag);
 		}
 
 	template<typename T>
@@ -136,10 +136,10 @@ namespace fpmas { namespace synchro { namespace hard {
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
 			// TODO : this is not thread safe.
-			MPI_Status lock_response_status;
-			server_pack.waitResponse(location, Tag::LOCK_RESPONSE, &lock_response_status);
+			fpmas::api::communication::Status lock_response_status;
+			server_pack.waitVoidResponse(comm, location, Tag::LOCK_RESPONSE, lock_response_status);
 
-			comm.recv(lock_response_status.MPI_SOURCE, lock_response_status.MPI_TAG);
+			comm.recv(lock_response_status.source, lock_response_status.tag);
 		}
 
 	template<typename T>
@@ -163,10 +163,10 @@ namespace fpmas { namespace synchro { namespace hard {
 
 			// The request has been received : it is assumed that the receiving proc is
 			// now responding so we can safely wait for response without deadlocking
-			MPI_Status lock_response_status;
-			server_pack.waitResponse(location, Tag::LOCK_SHARED_RESPONSE, &lock_response_status);
+			fpmas::api::communication::Status lock_response_status;
+			server_pack.waitVoidResponse(comm, location, Tag::LOCK_SHARED_RESPONSE, lock_response_status);
 
-			comm.recv(lock_response_status.MPI_SOURCE, lock_response_status.MPI_TAG);
+			comm.recv(lock_response_status.source, lock_response_status.tag);
 		}
 
 	template<typename T>

@@ -94,8 +94,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af231bbb7a249117dc731ed1e6ac64e7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b0737291a2077a0d3f14c20021309af"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a1b0737291a2077a0d3f14c20021309af">Issend</a> (const T &amp;data, int destination, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;req)=0</td></tr>
 <tr class="separator:a1b0737291a2077a0d3f14c20021309af"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab378024c7887f7bcca61076bbc92b705"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ab378024c7887f7bcca61076bbc92b705">recv</a> (int source, int tag, MPI_Status *status=MPI_STATUS_IGNORE)=0</td></tr>
-<tr class="separator:ab378024c7887f7bcca61076bbc92b705"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0b47b6e02f6457960a711b3ca2372cd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ac0b47b6e02f6457960a711b3ca2372cd">probe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status)=0</td></tr>
+<tr class="separator:ac0b47b6e02f6457960a711b3ca2372cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1fb1748db117c0f4d9fc0b82f2329ba3"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a1fb1748db117c0f4d9fc0b82f2329ba3">Iprobe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status)=0</td></tr>
+<tr class="separator:a1fb1748db117c0f4d9fc0b82f2329ba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f4203cc8ae67f7d58f0c5e230105b78"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a6f4203cc8ae67f7d58f0c5e230105b78">recv</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status=<a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html#a63d41c6abc77dc4027390c4b65266f5c">Status::IGNORE</a>)=0</td></tr>
+<tr class="separator:a6f4203cc8ae67f7d58f0c5e230105b78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -310,12 +314,127 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a8a4cee6ce4475f8a20025c4254cddc09">fpmas::communication::TypedMpi&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ad5c30a9596260fe437a9f195b7fd4143">fpmas::communication::TypedMpi&lt; T &gt;</a>.</p>
 
 </div>
 </div>
-<a id="ab378024c7887f7bcca61076bbc92b705"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab378024c7887f7bcca61076bbc92b705">&#9670;&nbsp;</a></span>recv()</h2>
+<a id="ac0b47b6e02f6457960a711b3ca2372cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac0b47b6e02f6457960a711b3ca2372cd">&#9670;&nbsp;</a></span>probe()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">fpmas::api::communication::TypedMpi</a>&lt; T &gt;::probe </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;&#160;</td>
+          <td class="paramname"><em>status</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Blocking probe.</p>
+<p>Blocks until a message with the specified tag is received from source.</p>
+<p>Upon return, the output <code>status</code> contains information about the size of the message to receive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>source rank </td></tr>
+    <tr><td class="paramname">tag</td><td>recv tag </td></tr>
+    <tr><td class="paramname">status</td><td>MPI status </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a68451e33f3b35d66930d23ced532a9c8">fpmas::communication::TypedMpi&lt; T &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a68451e33f3b35d66930d23ced532a9c8">fpmas::communication::TypedMpi&lt; Color &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a68451e33f3b35d66930d23ced532a9c8">fpmas::communication::TypedMpi&lt; fpmas::api::utils::PtrWrapper&lt; T &gt; &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a68451e33f3b35d66930d23ced532a9c8">fpmas::communication::TypedMpi&lt; fpmas::synchro::DataUpdatePack&lt; T &gt; &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a68451e33f3b35d66930d23ced532a9c8">fpmas::communication::TypedMpi&lt; DistributedId &gt;</a>, and <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a68451e33f3b35d66930d23ced532a9c8">fpmas::communication::TypedMpi&lt; fpmas::synchro::NodeUpdatePack&lt; T &gt; &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a1fb1748db117c0f4d9fc0b82f2329ba3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fb1748db117c0f4d9fc0b82f2329ba3">&#9670;&nbsp;</a></span>Iprobe()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">fpmas::api::communication::TypedMpi</a>&lt; T &gt;::Iprobe </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;&#160;</td>
+          <td class="paramname"><em>status</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Non-blocking probe.</p>
+<p>Returns true if and only if a message with the specified tag can be received from source.</p>
+<p>Upon return, the output <code>status</code> contains information about the size of the message to receive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>source rank </td></tr>
+    <tr><td class="paramname">tag</td><td>recv tag </td></tr>
+    <tr><td class="paramname">status</td><td>MPI status </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true iff a message is available </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ac85d0801c6f92f1288893403947210fb">fpmas::communication::TypedMpi&lt; T &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ac85d0801c6f92f1288893403947210fb">fpmas::communication::TypedMpi&lt; Color &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ac85d0801c6f92f1288893403947210fb">fpmas::communication::TypedMpi&lt; fpmas::api::utils::PtrWrapper&lt; T &gt; &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ac85d0801c6f92f1288893403947210fb">fpmas::communication::TypedMpi&lt; fpmas::synchro::DataUpdatePack&lt; T &gt; &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ac85d0801c6f92f1288893403947210fb">fpmas::communication::TypedMpi&lt; DistributedId &gt;</a>, and <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ac85d0801c6f92f1288893403947210fb">fpmas::communication::TypedMpi&lt; fpmas::synchro::NodeUpdatePack&lt; T &gt; &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a6f4203cc8ae67f7d58f0c5e230105b78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f4203cc8ae67f7d58f0c5e230105b78">&#9670;&nbsp;</a></span>recv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -340,8 +459,8 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">MPI_Status *&#160;</td>
-          <td class="paramname"><em>status</em> = <code>MPI_STATUS_IGNORE</code>&#160;</td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;&#160;</td>
+          <td class="paramname"><em>status</em> = <code><a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html#a63d41c6abc77dc4027390c4b65266f5c">Status::IGNORE</a></code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -365,7 +484,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">fpmas::communication::TypedMpi&lt; T &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">fpmas::communication::TypedMpi&lt; Color &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">fpmas::communication::TypedMpi&lt; fpmas::api::utils::PtrWrapper&lt; T &gt; &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">fpmas::communication::TypedMpi&lt; fpmas::synchro::DataUpdatePack&lt; T &gt; &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">fpmas::communication::TypedMpi&lt; DistributedId &gt;</a>, and <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">fpmas::communication::TypedMpi&lt; fpmas::synchro::NodeUpdatePack&lt; T &gt; &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a3846a6c7331d28358d013d687d0cd197">fpmas::communication::TypedMpi&lt; T &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a3846a6c7331d28358d013d687d0cd197">fpmas::communication::TypedMpi&lt; Color &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a3846a6c7331d28358d013d687d0cd197">fpmas::communication::TypedMpi&lt; fpmas::api::utils::PtrWrapper&lt; T &gt; &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a3846a6c7331d28358d013d687d0cd197">fpmas::communication::TypedMpi&lt; fpmas::synchro::DataUpdatePack&lt; T &gt; &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a3846a6c7331d28358d013d687d0cd197">fpmas::communication::TypedMpi&lt; DistributedId &gt;</a>, and <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a3846a6c7331d28358d013d687d0cd197">fpmas::communication::TypedMpi&lt; fpmas::synchro::NodeUpdatePack&lt; T &gt; &gt;</a>.</p>
 
 </div>
 </div>

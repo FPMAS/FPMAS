@@ -132,9 +132,9 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 				int source;
 			public:
 				MockProbe(int source) : source(source) {}
-				void operator()(int, int tag, MPI_Status* status) {
-					status->MPI_SOURCE = this->source;
-					status->MPI_TAG = tag;
+				void operator()(int, int tag, fpmas::api::communication::Status& status) {
+					status.source = this->source;
+					status.tag = tag;
 				}
 		};
 		std::vector<MockHardSyncMutex<int>*> mocks;
@@ -146,6 +146,9 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 				.WillByDefault(Return(false));
 			// By default, expect any probe and do default actions
 			EXPECT_CALL(comm, Iprobe).Times(AnyNumber());
+			EXPECT_CALL(id_mpi, Iprobe).Times(AnyNumber());
+			EXPECT_CALL(data_mpi, Iprobe).Times(AnyNumber());
+			EXPECT_CALL(data_update_mpi, Iprobe).Times(AnyNumber());
 		}
 
 		MockHardSyncMutex<int>* mock_mutex(DistributedId id, int& data) {
@@ -158,7 +161,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 		}
 
 		void expectRead(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
-			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::READ, _))
+			EXPECT_CALL(id_mpi, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::READ, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::READ, _)
@@ -192,7 +195,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 		}
 
 		void expectAcquire(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
-			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::ACQUIRE, _))
+			EXPECT_CALL(id_mpi, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::ACQUIRE, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::ACQUIRE, _)
@@ -240,7 +243,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(*mock, requestsToProcess)
 				.WillOnce(Return(requests));
 
-			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _))
+			EXPECT_CALL(data_update_mpi, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::RELEASE_ACQUIRE, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			
@@ -252,7 +255,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 		}
 
 		void expectLock(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
-			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::LOCK, _))
+			EXPECT_CALL(id_mpi, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::LOCK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::LOCK, _))
@@ -297,7 +300,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(*mock, requestsToProcess)
 				.WillOnce(Return(requests));
 
-			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::UNLOCK, _))
+			EXPECT_CALL(id_mpi, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::UNLOCK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi,
@@ -307,7 +310,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 		}
 
 		void expectLockShared(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
-			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::LOCK_SHARED, _))
+			EXPECT_CALL(id_mpi, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::LOCK_SHARED, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::LOCK_SHARED, _))
@@ -348,7 +351,7 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 			EXPECT_CALL(*mock, requestsToProcess)
 				.WillOnce(Return(requests));
 
-			EXPECT_CALL(comm, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::UNLOCK_SHARED, _))
+			EXPECT_CALL(id_mpi, Iprobe(MPI_ANY_SOURCE, Epoch::EVEN | Tag::UNLOCK_SHARED, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi,

@@ -14,6 +14,8 @@
 
 namespace fpmas { namespace communication {
 	using api::communication::DataPack;
+	using api::communication::Request;
+	using api::communication::Status;
 
 	/**
 	 * fpmas::api::communication::MpiCommunicator implementation, based on
@@ -26,6 +28,8 @@ namespace fpmas { namespace communication {
 
 			MPI_Group group;
 			MPI_Comm comm;
+
+			static void convertStatus(MPI_Status*, Status&, MPI_Datatype datatype);
 
 		public:
 			/**
@@ -97,7 +101,7 @@ namespace fpmas { namespace communication {
 			 * @param req output MPI request
 			 */
 			void Issend(
-					const void* data, int count, MPI_Datatype datatype, int destination, int tag, api::communication::Request& req) override;
+					const void* data, int count, MPI_Datatype datatype, int destination, int tag, Request& req) override;
 
 			/**
 			 * Performs an MPI_Issend operation without data.
@@ -106,7 +110,7 @@ namespace fpmas { namespace communication {
 			 * @param tag message tag
 			 * @param req output MPI request
 			 */
-			void Issend(int destination, int tag, api::communication::Request& req) override;
+			void Issend(int destination, int tag, Request& req) override;
 
 			/**
 			 * Performs an MPI_Recv operation without data.
@@ -115,7 +119,7 @@ namespace fpmas { namespace communication {
 			 * @param tag message tag
 			 * @param status output MPI status
 			 */
-			void recv(int source, int tag, MPI_Status* status) override;
+			void recv(int source, int tag, Status& status = Status::IGNORE) override;
 
 			/**
 			 * Performs an MPI_Recv operation.
@@ -127,26 +131,34 @@ namespace fpmas { namespace communication {
 			 * @param tag message tag
 			 * @param status output MPI status
 			 */
-			void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) override;
+			void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status = Status::IGNORE) override;
 
 			/**
 			 * Performs an MPI_Probe operation.
 			 *
+			 * Upon return, the output `status` contains information about the
+			 * message to receive.
+			 *
+			 * @param type expected message type
 			 * @param source source rank
 			 * @param tag recv tag
 			 * @param status MPI status
 			 */
-			void probe(int source, int tag, MPI_Status*) override;
+			void probe(MPI_Datatype type, int source, int tag, Status&) override;
 
 			/**
 			 * Performs an MPI_Iprobe operation.
 			 *
+			 * Upon return, the output `status` contains information about the
+			 * message to receive.
+			 *
+			 * @param type expected message type
 			 * @param source source rank
 			 * @param tag recv tag
 			 * @param status MPI status
 			 * @return true iff a message is available
 			 */
-			bool Iprobe(int source, int tag, MPI_Status*) override;
+			bool Iprobe(MPI_Datatype type, int source, int tag, Status&) override;
 
 			/**
 			 * Performs an MPI_Test operation.
@@ -154,9 +166,9 @@ namespace fpmas { namespace communication {
 			 * @param req MPI request to test
 			 * @returns true iff the request is complete
 			 */
-			bool test(api::communication::Request& req) override;
+			bool test(Request& req) override;
 
-			void wait(api::communication::Request& req) override;
+			void wait(Request& req) override;
 			/**
 			 * Performs an MPI_Alltoall operation.
 			 *
@@ -244,8 +256,12 @@ namespace fpmas { namespace communication {
 				std::vector<T> gather(const T&, int root) override;
 
 				void send(const T&, int, int) override;
-				void Issend(const T&, int, int, api::communication::Request&) override;
-				T recv(int source, int tag, MPI_Status* status = MPI_STATUS_IGNORE) override;
+				void Issend(const T&, int, int, Request&) override;
+
+				void probe(int source, int tag, Status& status);
+				bool Iprobe(int source, int tag, Status& status);
+
+				T recv(int source, int tag, Status& status = Status::IGNORE) override;
 		};
 
 	template<typename T> std::unordered_map<int, std::vector<T>>
@@ -301,19 +317,28 @@ namespace fpmas { namespace communication {
 			comm.send(str.c_str(), str.size()+1, MPI_CHAR, destination, tag);
 		}
 	template<typename T>
-		void TypedMpi<T>::Issend(const T& data, int destination, int tag, api::communication::Request& req) {
+		void TypedMpi<T>::Issend(const T& data, int destination, int tag, Request& req) {
 			std::string str = nlohmann::json(data).dump();
 			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
 			comm.Issend(str.c_str(), str.size(), MPI_CHAR, destination, tag, req);
 		}
 
 	template<typename T>
-		T TypedMpi<T>::recv(int source, int tag, MPI_Status* status) {
-			MPI_Status message_to_receive_status;
-			comm.probe(source, tag, &message_to_receive_status);
-			int count;
-			MPI_Get_count(&message_to_receive_status, MPI_CHAR, &count);
-			char* buffer = (char*) std::malloc(count * sizeof(char));
+		void TypedMpi<T>::probe(int source, int tag, Status &status) {
+			return comm.probe(MPI_CHAR, source, tag, status);
+		}
+	template<typename T>
+		bool TypedMpi<T>::Iprobe(int source, int tag, Status &status) {
+			return comm.Iprobe(MPI_CHAR, source, tag, status);
+		}
+
+	template<typename T>
+		T TypedMpi<T>::recv(int source, int tag, Status& status) {
+			Status message_to_receive_status;
+			this->probe(source, tag, message_to_receive_status);
+			int count = message_to_receive_status.item_count;
+			//MPI_Get_count(&message_to_receive_status, MPI_CHAR, &count);
+			char* buffer = (char*) std::malloc(message_to_receive_status.size);
 			comm.recv(buffer, count, MPI_CHAR, source, tag, status);
 
 			std::string data (buffer, count);

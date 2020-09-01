@@ -1,6 +1,7 @@
 #include "termination.h"
 
 namespace fpmas { namespace synchro { namespace hard {
+
 	void TerminationAlgorithm::toggleEpoch(api::Server& server) {
 		switch(server.getEpoch()) {
 			case Epoch::EVEN:
@@ -23,11 +24,11 @@ namespace fpmas { namespace synchro { namespace hard {
 		}
 
 		int sup_rank = (this->comm.getRank() + 1) % this->comm.getSize();
-		MPI_Status status;
+		communication::Status status;
 		while(true) {
 			// Check for TOKEN
-			if(this->comm.Iprobe(sup_rank, Tag::TOKEN, &status) > 0) {
-				token = this->color_mpi.recv(status.MPI_SOURCE, status.MPI_TAG, MPI_STATUS_IGNORE);
+			if(this->color_mpi.Iprobe(sup_rank, Tag::TOKEN, status) > 0) {
+				token = this->color_mpi.recv(status.source, status.tag);
 				if(this->comm.getRank() == 0) {
 					if(token == Color::WHITE && this->color == Color::WHITE) {
 						for (int i = 1; i < this->comm.getSize(); ++i) {
@@ -52,8 +53,11 @@ namespace fpmas { namespace synchro { namespace hard {
 			}
 
 			// Check for END
-			if(this->comm.getRank() > 0 && this->comm.Iprobe(0, Tag::END, &status) > 0) {
-				this->comm.recv(status.MPI_SOURCE, status.MPI_TAG);
+			if(this->comm.getRank() > 0
+					&& this->comm.Iprobe(
+						fpmas::api::communication::MpiCommunicator::IGNORE_TYPE,0, Tag::END, status
+						) > 0) {
+				this->comm.recv(status.source, status.tag);
 				toggleEpoch(server);
 				FPMAS_LOGD(comm.getRank(), "TERMINATION", "End message received, termination complete.");
 				return;

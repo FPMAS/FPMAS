@@ -169,10 +169,30 @@ namespace fpmas { namespace api { namespace communication {
 		}
 	};
 
+	/**
+	 * Status type, used to return information about messages.
+	 */
 	struct Status {
+		/**
+		 * A special default status that can be used if the user does not need to
+		 * return status.
+		 */
+		static Status IGNORE;
+		/**
+		 * Message buffer size, in bytes.
+		 */
 		int size;
+		/**
+		 * Item count in the message buffer.
+		 */
 		int item_count;
+		/**
+		 * Message source.
+		 */
 		int source;
+		/**
+		 * Message tag.
+		 */
 		int tag;
 	};
 
@@ -188,6 +208,14 @@ namespace fpmas { namespace api { namespace communication {
 	 */
 	class MpiCommunicator {
 		public:
+			/**
+			 * Datatype used for recv / send operation without data.
+			 *
+			 * @see send(int, int, int)
+			 * @see recv(int, int, int)
+			 */
+			static MPI_Datatype IGNORE_TYPE;
+
 			/**
 			 * Returns the rank of this communicator.
 			 * @return rank
@@ -272,14 +300,14 @@ namespace fpmas { namespace api { namespace communication {
 			 * source.
 			 *
 			 * Upon return, the output `status` contains information about the
-			 * size of the message to receive. Such information can be decoded
-			 * using `MPI_Get_count(const MPI_Status*, MPI_Datatype, int* count)`.
+			 * message to receive.
 			 *
+			 * @param type expected message type
 			 * @param source source rank
 			 * @param tag recv tag
 			 * @param status MPI status
 			 */
-			virtual void probe(int source, int tag, MPI_Status* status) = 0;
+			virtual void probe(MPI_Datatype type, int source, int tag, Status& status) = 0;
 
 			/**
 			 * Non-blocking probe.
@@ -288,15 +316,15 @@ namespace fpmas { namespace api { namespace communication {
 			 * from source.
 			 *
 			 * Upon return, the output `status` contains information about the
-			 * size of the message to receive. Such information can be decoded
-			 * using `MPI_Get_count(const MPI_Status*, MPI_Datatype, int* count)`.
+			 * message to receive.
 			 *
+			 * @param type expected message type
 			 * @param source source rank
 			 * @param tag recv tag
 			 * @param status MPI status
 			 * @return true iff a message is available
 			 */
-			virtual bool Iprobe(int source, int tag, MPI_Status* status) = 0;
+			virtual bool Iprobe(MPI_Datatype type, int source, int tag, Status& status) = 0;
 
 
 			/**
@@ -308,7 +336,7 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param tag message tag
 			 * @param status output MPI status
 			 */
-			virtual void recv(int source, int tag, MPI_Status* status = MPI_STATUS_IGNORE) = 0;
+			virtual void recv(int source, int tag, Status& status = Status::IGNORE) = 0;
 
 
 			/**
@@ -325,7 +353,7 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param tag message tag
 			 * @param status output MPI status
 			 */
-			virtual void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, MPI_Status* status) = 0;
+			virtual void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status) = 0;
 
 			/**
 			 * Tests if the input `request` is complete.
@@ -454,6 +482,38 @@ namespace fpmas { namespace api { namespace communication {
 				 * @param req output Request
 				 */
 				virtual void Issend(const T& data, int destination, int tag, Request& req) = 0;
+
+				/**
+				 * Blocking probe.
+				 *
+				 * Blocks until a message with the specified tag is received from
+				 * source.
+				 *
+				 * Upon return, the output `status` contains information about the
+				 * size of the message to receive.
+				 *
+				 * @param source source rank
+				 * @param tag recv tag
+				 * @param status MPI status
+				 */
+				virtual void probe(int source, int tag, Status& status) = 0;
+
+				/**
+				 * Non-blocking probe.
+				 *
+				 * Returns true if and only if a message with the specified tag can be received
+				 * from source.
+				 *
+				 * Upon return, the output `status` contains information about the
+				 * size of the message to receive.
+				 *
+				 * @param source source rank
+				 * @param tag recv tag
+				 * @param status MPI status
+				 * @return true iff a message is available
+				 */
+				virtual bool Iprobe(int source, int tag, Status& status) = 0;
+
 				/**
 				 * Receives a `T` object from `source`.
 				 *
@@ -461,7 +521,7 @@ namespace fpmas { namespace api { namespace communication {
 				 * @param tag message tag
 				 * @param status output MPI status
 				 */
-				virtual T recv(int source, int tag, MPI_Status* status = MPI_STATUS_IGNORE) = 0;
+				virtual T recv(int source, int tag, Status& status = Status::IGNORE) = 0;
 
 				virtual ~TypedMpi() {};
 		};

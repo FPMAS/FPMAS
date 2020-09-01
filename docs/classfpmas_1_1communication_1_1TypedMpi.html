@@ -103,10 +103,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5c0d59ea1887d84340ddc2a057057487"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7767de9dc6f0443b36b66c379cfbcf7c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a7767de9dc6f0443b36b66c379cfbcf7c">send</a> (const T &amp;, int, int) override</td></tr>
 <tr class="separator:a7767de9dc6f0443b36b66c379cfbcf7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a4cee6ce4475f8a20025c4254cddc09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a8a4cee6ce4475f8a20025c4254cddc09">Issend</a> (const T &amp;, int, int, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">api::communication::Request</a> &amp;) override</td></tr>
-<tr class="separator:a8a4cee6ce4475f8a20025c4254cddc09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1436aca052092b0992495df36d8a1ad0"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a1436aca052092b0992495df36d8a1ad0">recv</a> (int source, int tag, MPI_Status *status=MPI_STATUS_IGNORE) override</td></tr>
-<tr class="separator:a1436aca052092b0992495df36d8a1ad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5c30a9596260fe437a9f195b7fd4143"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ad5c30a9596260fe437a9f195b7fd4143">Issend</a> (const T &amp;, int, int, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;) override</td></tr>
+<tr class="separator:ad5c30a9596260fe437a9f195b7fd4143"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68451e33f3b35d66930d23ced532a9c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a68451e33f3b35d66930d23ced532a9c8">probe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status)</td></tr>
+<tr class="separator:a68451e33f3b35d66930d23ced532a9c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac85d0801c6f92f1288893403947210fb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ac85d0801c6f92f1288893403947210fb">Iprobe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status)</td></tr>
+<tr class="separator:ac85d0801c6f92f1288893403947210fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3846a6c7331d28358d013d687d0cd197"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a3846a6c7331d28358d013d687d0cd197">recv</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status=<a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html#a63d41c6abc77dc4027390c4b65266f5c">Status::IGNORE</a>) override</td></tr>
+<tr class="separator:a3846a6c7331d28358d013d687d0cd197"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -302,8 +306,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a8a4cee6ce4475f8a20025c4254cddc09"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a4cee6ce4475f8a20025c4254cddc09">&#9670;&nbsp;</a></span>Issend()</h2>
+<a id="ad5c30a9596260fe437a9f195b7fd4143"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5c30a9596260fe437a9f195b7fd4143">&#9670;&nbsp;</a></span>Issend()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -334,7 +338,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">api::communication::Request</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;&#160;</td>
           <td class="paramname"><em>req</em>&#160;</td>
         </tr>
         <tr>
@@ -350,7 +354,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Sends a <code>T</code> object to <code>destination</code>.</p>
-<p>Follows the same rules as <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a373d664fcd44ebb97ac2674702c21306">MpiCommunicator::Issend()</a>.</p>
+<p>Follows the same rules as <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a7a1baeb83f7a63a4b1aec756aa08d00e">MpiCommunicator::Issend()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>reference to the <code>T</code> object to send to <code>destination</code> </td></tr>
@@ -365,8 +369,123 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a1436aca052092b0992495df36d8a1ad0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1436aca052092b0992495df36d8a1ad0">&#9670;&nbsp;</a></span>recv()</h2>
+<a id="a68451e33f3b35d66930d23ced532a9c8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68451e33f3b35d66930d23ced532a9c8">&#9670;&nbsp;</a></span>probe()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a>&lt; T &gt;::probe </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;&#160;</td>
+          <td class="paramname"><em>status</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Blocking probe.</p>
+<p>Blocks until a message with the specified tag is received from source.</p>
+<p>Upon return, the output <code>status</code> contains information about the size of the message to receive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>source rank </td></tr>
+    <tr><td class="paramname">tag</td><td>recv tag </td></tr>
+    <tr><td class="paramname">status</td><td>MPI status </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ac0b47b6e02f6457960a711b3ca2372cd">fpmas::api::communication::TypedMpi&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ac85d0801c6f92f1288893403947210fb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac85d0801c6f92f1288893403947210fb">&#9670;&nbsp;</a></span>Iprobe()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a>&lt; T &gt;::Iprobe </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>source</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;&#160;</td>
+          <td class="paramname"><em>status</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Non-blocking probe.</p>
+<p>Returns true if and only if a message with the specified tag can be received from source.</p>
+<p>Upon return, the output <code>status</code> contains information about the size of the message to receive.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>source rank </td></tr>
+    <tr><td class="paramname">tag</td><td>recv tag </td></tr>
+    <tr><td class="paramname">status</td><td>MPI status </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true iff a message is available </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a1fb1748db117c0f4d9fc0b82f2329ba3">fpmas::api::communication::TypedMpi&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a3846a6c7331d28358d013d687d0cd197"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3846a6c7331d28358d013d687d0cd197">&#9670;&nbsp;</a></span>recv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -391,8 +510,8 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">MPI_Status *&#160;</td>
-          <td class="paramname"><em>status</em> = <code>MPI_STATUS_IGNORE</code>&#160;</td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;&#160;</td>
+          <td class="paramname"><em>status</em> = <code><a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html#a63d41c6abc77dc4027390c4b65266f5c">Status::IGNORE</a></code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -416,7 +535,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ab378024c7887f7bcca61076bbc92b705">fpmas::api::communication::TypedMpi&lt; T &gt;</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a6f4203cc8ae67f7d58f0c5e230105b78">fpmas::api::communication::TypedMpi&lt; T &gt;</a>.</p>
 
 </div>
 </div>

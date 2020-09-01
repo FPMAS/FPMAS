@@ -103,34 +103,34 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void MutexServer<T>::handleIncomingReadAcquireLock() {
-			MPI_Status req_status;
+			fpmas::api::communication::Status status;
 
 			// Check read request
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::READ, &req_status)) {
-				DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
-				FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive read request %s from %i", FPMAS_C_STR(id), req_status.MPI_SOURCE);
-				this->handleRead(id, req_status.MPI_SOURCE);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::READ, status)) {
+				DistributedId id = id_mpi.recv(status.source, status.tag);
+				FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive read request %s from %i", FPMAS_C_STR(id), status.source);
+				this->handleRead(id, status.source);
 			}
 
 			// Check acquire request
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::ACQUIRE, &req_status)) {
-				DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
-				FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive acquire request %s from %i", FPMAS_C_STR(id), req_status.MPI_SOURCE);
-				this->handleAcquire(id, req_status.MPI_SOURCE);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::ACQUIRE, status)) {
+				DistributedId id = id_mpi.recv(status.source, status.tag);
+				FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive acquire request %s from %i", FPMAS_C_STR(id), status.source);
+				this->handleAcquire(id, status.source);
 			}
 
 			// Check lock
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LOCK, &req_status)) {
-				DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
-				FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive lock request %s from %i", FPMAS_C_STR(id), req_status.MPI_SOURCE);
-				this->handleLock(id, req_status.MPI_SOURCE);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LOCK, status)) {
+				DistributedId id = id_mpi.recv(status.source, status.tag);
+				FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive lock request %s from %i", FPMAS_C_STR(id), status.source);
+				this->handleLock(id, status.source);
 			}
 
 			// Check shared lock
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LOCK_SHARED, &req_status)) {
-				DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
-				FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive shared lock request %s from %i", FPMAS_C_STR(id), req_status.MPI_SOURCE);
-				this->handleLockShared(id, req_status.MPI_SOURCE);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::LOCK_SHARED, status)) {
+				DistributedId id = id_mpi.recv(status.source, status.tag);
+				FPMAS_LOGD(this->comm.getRank(), "MUTEX_SERVER", "receive shared lock request %s from %i", FPMAS_C_STR(id), status.source);
+				this->handleLockShared(id, status.source);
 			}
 		}
 	/**
@@ -147,32 +147,32 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		void MutexServer<T>::handleIncomingRequests() {
-			MPI_Status req_status;
+			fpmas::api::communication::Status status;
 			handleIncomingReadAcquireLock();
 
 			// Check release acquire
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::RELEASE_ACQUIRE, &req_status)) {
-				DataUpdatePack<T> update = data_update_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
+			if(data_update_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::RELEASE_ACQUIRE, status)) {
+				DataUpdatePack<T> update = data_update_mpi.recv(status.source, status.tag);
 				FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive release acquire %s from %i",
-						FPMAS_C_STR(update.id), req_status.MPI_SOURCE);
+						FPMAS_C_STR(update.id), status.source);
 
 				this->handleReleaseAcquire(update);
 			}
 
 			// Check unlock
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK, &req_status)) {
-				DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK, status)) {
+				DistributedId id = id_mpi.recv(status.source, status.tag);
 				FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock %s from %i",
-						FPMAS_C_STR(id), req_status.MPI_SOURCE);
+						FPMAS_C_STR(id), status.source);
 
 				this->handleUnlock(id);
 			}
 
 			// Check shared unlock
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK_SHARED, &req_status)) {
-				DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK_SHARED, status)) {
+				DistributedId id = id_mpi.recv(status.source, status.tag);
 				FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock shared %s from %i",
-						FPMAS_C_STR(id), req_status.MPI_SOURCE);
+						FPMAS_C_STR(id), status.source);
 
 				this->handleUnlockShared(id);
 			}
@@ -417,34 +417,34 @@ namespace fpmas { namespace synchro { namespace hard {
 		bool MutexServer<T>::handleIncomingRequests(const Request& request_to_wait) {
 			handleIncomingReadAcquireLock();
 
-			MPI_Status req_status;
+			fpmas::api::communication::Status status;
 
 			// Check release acquire
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::RELEASE_ACQUIRE, &req_status)) {
-				DataUpdatePack<T> update = data_update_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
+			if(data_update_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::RELEASE_ACQUIRE, status)) {
+				DataUpdatePack<T> update = data_update_mpi.recv(status.source, status.tag);
 				FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive release acquire %s from %i",
-						FPMAS_C_STR(update.id), req_status.MPI_SOURCE);
+						FPMAS_C_STR(update.id), status.source);
 				if(this->handleReleaseAcquire(update, request_to_wait)){
 					return true;
 				}
 			}
 
 			// Check unlock
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK, &req_status)) {
-				DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK, status)) {
+				DistributedId id = id_mpi.recv(status.source, status.tag);
 				FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock %s from %i",
-						FPMAS_C_STR(id), req_status.MPI_SOURCE);
+						FPMAS_C_STR(id), status.source);
 				if(this->handleUnlock(id, request_to_wait)) {
 					return true;
 				}
 			}
 
 			// Check shared unlock
-			if(comm.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK_SHARED, &req_status)) {
-				DistributedId id = id_mpi.recv(req_status.MPI_SOURCE, req_status.MPI_TAG);
+			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLOCK_SHARED, status)) {
+				DistributedId id = id_mpi.recv(status.source, status.tag);
 
 				FPMAS_LOGV(this->comm.getRank(), "MUTEX_SERVER", "receive unlock shared %s from %i",
-						FPMAS_C_STR(id), req_status.MPI_SOURCE);
+						FPMAS_C_STR(id), status.source);
 				if(this->handleUnlockShared(id, request_to_wait)) {
 					return true;
 				}
