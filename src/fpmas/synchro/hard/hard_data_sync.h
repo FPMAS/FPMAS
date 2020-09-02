@@ -75,13 +75,15 @@ namespace fpmas { namespace synchro { namespace hard {
 			void synchronize() override {
 				FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronizing data sync...", "");
 				server_pack.terminate();
-				FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronized.", "");
 				// Nodes that was removed using a potentially distant
 				// DistributedGraph::removeNode called, that has been received
 				// from the LinkServer, can only be erased there, when it is
 				// ensured that no more data request to this node are pending.
 				for(auto node : nodes_to_remove)
 					graph.erase(node);
+				nodes_to_remove.clear();
+
+				FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronized.", "");
 			};
 		};
 

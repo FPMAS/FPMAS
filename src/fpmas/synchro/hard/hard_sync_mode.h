@@ -62,7 +62,7 @@ namespace fpmas { namespace synchro {
 						fpmas::api::communication::MpiCommunicator& comm) :
 					id_mpi(comm), data_mpi(comm), data_update_mpi(comm),
 					node_mpi(comm), edge_mpi(comm), color_mpi(comm),
-					mutex_server(comm, id_mpi, data_mpi, data_update_mpi),
+					mutex_server(comm, id_mpi, data_mpi, data_update_mpi, link_server),
 					mutex_client(comm, id_mpi, data_mpi, data_update_mpi, server_pack),
 					link_server(comm, graph, data_sync, id_mpi, edge_mpi),
 					link_client(comm, id_mpi, edge_mpi, server_pack),

@@ -29,7 +29,7 @@ namespace fpmas { namespace communication {
 			MPI_Group group;
 			MPI_Comm comm;
 
-			static void convertStatus(MPI_Status*, Status&, MPI_Datatype datatype);
+			static void convertStatus(MPI_Status&, Status&, MPI_Datatype datatype);
 
 		public:
 			/**

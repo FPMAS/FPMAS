@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
 MPI context")
 set(LOG_LEVEL 0 CACHE STRING "Log level")
+message("-- LOG_LEVEL : ${LOG_LEVEL}")
 
 include_directories(${CMAKE_PREFIX_PATH}/include)
 link_directories(${CMAKE_PREFIX_PATH}/lib)

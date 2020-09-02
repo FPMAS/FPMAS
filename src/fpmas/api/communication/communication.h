@@ -194,6 +194,8 @@ namespace fpmas { namespace api { namespace communication {
 		 * Message tag.
 		 */
 		int tag;
+
+		Status() : size(0), item_count(0), source(0), tag(0) {}
 	};
 
 	/**

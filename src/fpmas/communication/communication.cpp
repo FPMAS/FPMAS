@@ -17,13 +17,13 @@ namespace fpmas { namespace communication {
 		MPI_Group_free(&worldGroup);
 	}
 
-	void MpiCommunicator::convertStatus(MPI_Status* mpi_status, Status& status, MPI_Datatype datatype) {
-		MPI_Get_count(mpi_status, datatype, &status.item_count);
+	void MpiCommunicator::convertStatus(MPI_Status& mpi_status, Status& status, MPI_Datatype datatype) {
+		MPI_Get_count(&mpi_status, datatype, &status.item_count);
 		int size;
 		MPI_Type_size(datatype, &size);
 		status.size = size * status.item_count;
-		status.source = mpi_status->MPI_SOURCE;
-		status.tag = mpi_status->MPI_TAG;
+		status.source = mpi_status.MPI_SOURCE;
+		status.tag = mpi_status.MPI_TAG;
 	}
 
 	MPI_Comm MpiCommunicator::getMpiComm() const {
@@ -75,22 +75,22 @@ namespace fpmas { namespace communication {
 
 	void MpiCommunicator::recv(
 			void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status) {
-		MPI_Status __status;
+		MPI_Status __status {};
 		MPI_Recv(buffer, count, datatype, source, tag, this->comm, &__status);
-		convertStatus(&__status, status, datatype);
+		convertStatus(__status, status, datatype);
 	}
 
 	void MpiCommunicator::probe(MPI_Datatype type, int source, int tag, Status& status) {
-		MPI_Status __status;
+		MPI_Status __status {};
 		MPI_Probe(source, tag, this->comm, &__status);
-		convertStatus(&__status, status, type);
+		convertStatus(__status, status, type);
 	}
 
 	bool MpiCommunicator::Iprobe(MPI_Datatype type, int source, int tag, Status& status) {
 		int flag;
-		MPI_Status __status;
+		MPI_Status __status {};
 		MPI_Iprobe(source, tag, this->comm, &flag, &__status);
-		convertStatus(&__status, status, type);
+		convertStatus(__status, status, type);
 		return flag > 0;
 	}
 

@@ -44,7 +44,7 @@ class HardSyncMutexSelfReadTest : public ::testing::Test {
 		int location = comm.getRank();
 
 		MockLinkServer mock_link_server;
-		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi};
+		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi, mock_link_server};
 		fpmas::synchro::hard::ServerPack<int> server_pack {comm, termination, mutex_server, mock_link_server};
 		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server_pack};
 		HardSyncMutex<int> mutex {&node, client, mutex_server};
@@ -86,8 +86,8 @@ class MutexServerRaceCondition : public ::testing::Test {
 		LocationState state = LocationState::DISTANT;
 		int location = 0;
 
-		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi};
 		MockLinkServer mock_link_server;
+		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi, mock_link_server};
 		fpmas::synchro::hard::ServerPack<int> server_pack {comm, termination, mutex_server, mock_link_server};
 		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server_pack};
 		HardSyncMutex<int> mutex {&node, client, mutex_server};

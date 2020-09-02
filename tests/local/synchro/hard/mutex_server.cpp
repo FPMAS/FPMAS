@@ -44,6 +44,7 @@
 #include "../mocks/communication/mock_communication.h"
 #include "fpmas/synchro/hard/api/enums.h"
 #include "../mocks/synchro/hard/mock_hard_sync_mutex.h"
+#include "../mocks/synchro/hard/mock_client_server.h"
 
 using ::testing::_;
 using ::testing::A;
@@ -76,8 +77,9 @@ class MutexServerTest : public ::testing::Test {
 	MockMpi<DistributedId> id_mpi {comm};
 	MockMpi<int> data_mpi {comm};
 	MockMpi<DataUpdatePack<int>> data_update_mpi {comm};
+	MockLinkServer mock_link_server;
 
-	MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi};
+	MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi, mock_link_server};
 };
 
 /*

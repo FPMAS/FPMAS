@@ -38,6 +38,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				IdMpi& id_mpi;
 				DataMpi& data_mpi;
 				DataUpdateMpi& data_update_mpi;
+				api::LinkServer& link_server;
 
 				void handleIncomingReadAcquireLock();
 
@@ -73,8 +74,13 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * @param data_mpi DataMpi instance
 				 * @param data_update_mpi DataUpdateMpi instance
 				 */
-				MutexServer(MpiComm& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi)
-					: comm(comm), id_mpi(id_mpi), data_mpi(data_mpi), data_update_mpi(data_update_mpi) {}
+				MutexServer(
+						MpiComm& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi,
+						api::LinkServer& link_server
+						) :
+					comm(comm), id_mpi(id_mpi), data_mpi(data_mpi), data_update_mpi(data_update_mpi),
+					link_server(link_server)
+				{}
 
 				void setEpoch(api::Epoch e) override {this->epoch = e;}
 				Epoch getEpoch() const override {return this->epoch;}
@@ -460,6 +466,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			bool request_processed = false;
 			while(!request_processed) {
 				request_processed = handleIncomingRequests(request_to_wait);
+				link_server.handleIncomingRequests();
 			}
 			FPMAS_LOGD(comm.getRank(), "MUTEX_SERVER",
 					"Handling local request to node %s.",
