@@ -662,7 +662,7 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 		unlinks.insert(agent->unlinks.begin(), agent->unlinks.end());
 	}
 
-	// Gather all edges id in the complete distributed graph
+	// Gather all edges id in the global distributed graph
 	fpmas::communication::TypedMpi<std::set<DistributedId>> edge_ids_mpi {agent_graph.getMpiCommunicator()};
 	std::set<DistributedId> edge_ids;
 	for(auto edge : agent_graph.getEdges()) {
@@ -679,25 +679,25 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 	std::vector<std::set<DistributedId>> recv_total_unlinks = edge_ids_mpi.gather(unlinks, 0);
 	unsigned int edge_count = final_edge_id_set.size();
 
-	// Buils links list
-	std::set<DistributedId> total_links;
-	for(auto set : recv_total_links)
-		total_links.insert(set.begin(), set.end());
-
-	// Builds unlinks list
-	std::set<DistributedId> total_unlinks;
-	for(auto set : recv_total_unlinks)
-		total_unlinks.insert(set.begin(), set.end());
-
-	// Builds the expected edge ids list
-	for(auto id : initial_links)
-		total_links.insert(id);
-	for(auto id : total_unlinks)
-		total_links.erase(id);
-		
-	ASSERT_THAT(final_edge_id_set, ::testing::UnorderedElementsAreArray(total_links));
-
 	FPMAS_ON_PROC(comm, 0) {
+		// Builds links list
+		std::set<DistributedId> total_links;
+		for(auto set : recv_total_links)
+			total_links.insert(set.begin(), set.end());
+
+		// Builds unlinks list
+		std::set<DistributedId> total_unlinks;
+		for(auto set : recv_total_unlinks)
+			total_unlinks.insert(set.begin(), set.end());
+
+		// Builds the expected edge ids list
+		for(auto id : initial_links)
+			total_links.insert(id);
+		for(auto id : total_unlinks)
+			total_links.erase(id);
+
+		ASSERT_THAT(final_edge_id_set, ::testing::UnorderedElementsAreArray(total_links));
+
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Initial link count : %lu",
 				initial_links.size());
 		FPMAS_LOGI(agent_graph.getMpiCommunicator().getRank(), "HARD_SYNC_TEST", "Link count : %lu - Unlink count : %lu",

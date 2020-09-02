@@ -258,8 +258,8 @@ namespace fpmas { namespace communication {
 				void send(const T&, int, int) override;
 				void Issend(const T&, int, int, Request&) override;
 
-				void probe(int source, int tag, Status& status);
-				bool Iprobe(int source, int tag, Status& status);
+				void probe(int source, int tag, Status& status) override;
+				bool Iprobe(int source, int tag, Status& status) override;
 
 				T recv(int source, int tag, Status& status = Status::IGNORE) override;
 		};
