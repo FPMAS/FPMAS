@@ -408,13 +408,13 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * | DEADLOCK                         ||
 				 */
 				void synchronize() override {
-					FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronizing sync linker...");
+					FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronizing sync linker...", "");
 					for(auto edge : ghost_edges)
 						graph.erase(edge);
 					ghost_edges.clear();
 
 					server_pack.terminate();
-					FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronized.");
+					FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronized.", "");
 				};
 		};
 }}}

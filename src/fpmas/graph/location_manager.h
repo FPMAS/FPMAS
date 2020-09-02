@@ -119,7 +119,7 @@ namespace fpmas { namespace graph {
 
 	template<typename T>
 		void LocationManager<T>::updateLocations() {
-			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Updating node locations...");
+			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Updating node locations...", "");
 			// Useful types
 			typedef 
 			std::unordered_map<int, std::vector<DistributedId>>
@@ -208,7 +208,7 @@ namespace fpmas { namespace graph {
 				}
 			}
 			new_local_nodes.clear();
-			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Node locations updated.");
+			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Node locations updated.", "");
 		}
 }}
 #endif

@@ -242,7 +242,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void MutexServer<T>::respondToRequests(HardSyncMutex* mutex) {
-			FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Unqueueing requests...");
+			FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Unqueueing requests...", "");
 			std::queue<Request> requests = mutex->requestsToProcess();
 			while(!requests.empty()) {
 				Request request = requests.front();
@@ -352,7 +352,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		bool MutexServer<T>::respondToRequests(HardSyncMutex* mutex, const Request& request_to_wait) {
-			FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Unqueueing requests...");
+			FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Unqueueing requests...", "");
 			std::queue<Request> requests = mutex->requestsToProcess();
 			while(!requests.empty()) {
 				Request request = requests.front();

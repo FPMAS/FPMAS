@@ -460,7 +460,7 @@ namespace fpmas { namespace graph {
 		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::distribute(api::load_balancing::PartitionMap partition) {
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
-					"Distributing graph...");
+					"Distributing graph...", "");
 			std::string partition_str = "\n";
 			for(auto item : partition) {
 				std::string str = FPMAS_C_STR(item.first);
@@ -525,23 +525,23 @@ namespace fpmas { namespace graph {
 
 			location_manager.updateLocations();
 
-			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...");
+			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...", "");
 			for(auto node : exported_nodes) {
 				clearNode(node);
 			}
-			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.");
+			FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.", "");
 
 			sync_mode.getDataSync().synchronize();
 
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
-					"End of distribution.");
+					"End of distribution.", "");
 		}
 
 	template<DIST_GRAPH_PARAMS>
 		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 		::synchronize() {
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
-					"Synchronizing graph...");
+					"Synchronizing graph...", "");
 
 			sync_mode.getSyncLinker().synchronize();
 
@@ -550,7 +550,7 @@ namespace fpmas { namespace graph {
 			sync_mode.getDataSync().synchronize();
 
 			FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
-					"End of graph synchronization.");
+					"End of graph synchronization.", "");
 		}
 
 	template<DIST_GRAPH_PARAMS>

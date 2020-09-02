@@ -100,14 +100,14 @@ namespace fpmas { namespace synchro { namespace hard {
 			 * @param req MPI request to complete
 			 */
 			void waitSendRequest(fpmas::api::communication::Request& req) {
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for send...");
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for send...", "");
 				bool sent = comm.test(req);
 
 				while(!sent) {
 					handleIncomingRequests();
 					sent = comm.test(req);
 				}
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Request sent.");
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Request sent.", "");
 			}
 
 			/**
@@ -135,14 +135,14 @@ namespace fpmas { namespace synchro { namespace hard {
 					fpmas::api::communication::TypedMpi<T>& mpi,
 					int source, api::Tag tag,
 					fpmas::api::communication::Status& status) {
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for response...");
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for response...", "");
 				bool response_available = mpi.Iprobe(source, getEpoch() | tag, status);
 
 				while(!response_available) {
 					handleIncomingRequests();
 					response_available = mpi.Iprobe(source, getEpoch() | tag, status);
 				}
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Response available.");
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Response available.", "");
 			}
 			/**
 			 * Method used to wait for request responses without data (e.g. to
@@ -169,7 +169,7 @@ namespace fpmas { namespace synchro { namespace hard {
 					fpmas::api::communication::MpiCommunicator& comm,
 					int source, api::Tag tag,
 					fpmas::api::communication::Status& status) {
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for response...");
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for response...", "");
 				bool response_available = comm.Iprobe(
 						fpmas::api::communication::MpiCommunicator::IGNORE_TYPE,
 						source, getEpoch() | tag, status);
@@ -180,7 +180,7 @@ namespace fpmas { namespace synchro { namespace hard {
 						fpmas::api::communication::MpiCommunicator::IGNORE_TYPE,
 						source, getEpoch() | tag, status);
 				}
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Response available.");
+				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Response available.", "");
 			}
 		};
 }}}

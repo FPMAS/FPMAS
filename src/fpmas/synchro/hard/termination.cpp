@@ -35,7 +35,7 @@ namespace fpmas { namespace synchro { namespace hard {
 							this->comm.send(i, Tag::END);
 						}
 						toggleEpoch(server);
-						FPMAS_LOGD(comm.getRank(), "TERMINATION", "Termination complete.");
+						FPMAS_LOGD(comm.getRank(), "TERMINATION", "Termination complete.", "");
 						return;
 					} else {
 						this->color = Color::WHITE;
@@ -59,7 +59,7 @@ namespace fpmas { namespace synchro { namespace hard {
 						) > 0) {
 				this->comm.recv(status.source, status.tag);
 				toggleEpoch(server);
-				FPMAS_LOGD(comm.getRank(), "TERMINATION", "End message received, termination complete.");
+				FPMAS_LOGD(comm.getRank(), "TERMINATION", "End message received, termination complete.", "");
 				return;
 			}
 

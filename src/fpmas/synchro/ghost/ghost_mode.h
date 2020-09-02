@@ -106,7 +106,7 @@ namespace fpmas { namespace synchro {
 
 		template<typename T>
 			void GhostDataSync<T>::synchronize() {
-				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Synchronizing graph data...");
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Synchronizing graph data...", "");
 				std::unordered_map<int, std::vector<DistributedId>> requests;
 				for(auto node : graph.getLocationManager().getDistantNodes()) {
 					FPMAS_LOGV(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Request %s from %i",
@@ -134,7 +134,7 @@ namespace fpmas { namespace synchro {
 					}
 				}
 
-				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph data synchronized...");
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph data synchronized...", "");
 			}
 
 
@@ -261,7 +261,7 @@ namespace fpmas { namespace synchro {
 
 		template<typename T>
 			void GhostSyncLinker<T>::synchronize() {
-				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Synchronizing graph links...");
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Synchronizing graph links...", "");
 				/*
 				 * Migrate links
 				 */
@@ -329,7 +329,7 @@ namespace fpmas { namespace synchro {
 				for(auto node : local_nodes_to_remove)
 					graph.erase(node);
 				local_nodes_to_remove.clear();
-				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph links synchronized.");
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph links synchronized.", "");
 			}
 
 		/**
