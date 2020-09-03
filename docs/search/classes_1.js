@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['badidexception_417',['BadIdException',['../classfpmas_1_1exceptions_1_1BadIdException.html',1,'fpmas::exceptions']]],
-  ['badtypeexception_418',['BadTypeException',['../classfpmas_1_1exceptions_1_1BadTypeException.html',1,'fpmas::exceptions']]]
+  ['badidexception_419',['BadIdException',['../classfpmas_1_1exceptions_1_1BadIdException.html',1,'fpmas::exceptions']]],
+  ['badtypeexception_420',['BadTypeException',['../classfpmas_1_1exceptions_1_1BadTypeException.html',1,'fpmas::exceptions']]]
 ];

@@ -7,6 +7,7 @@
 #include "../mocks/synchro/mock_mutex.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 #include "../mocks/synchro/mock_sync_mode.h"
+#include "../mocks/synchro/hard/mock_hard_sync_mode.h"
 
 using ::testing::DoAll;
 using ::testing::Expectation;
@@ -47,7 +48,7 @@ class LinkServerTest : public ::testing::Test {
 			> mock_graph;
 		decltype(mock_graph)::EdgeMap edge_map;
 
-		fpmas::synchro::hard::HardDataSync<int> data_sync;
+		MockHardSyncLinker<int> mock_sync_linker;
 		LinkServer<int> link_server;
 
 		MockTerminationAlgorithm mock_termination;
@@ -55,13 +56,10 @@ class LinkServerTest : public ::testing::Test {
 		ServerPack<int> server_pack;
 
 		LinkServerTest() :
-			data_sync(comm, server_pack, mock_graph),
-			link_server(comm, mock_graph, data_sync, id_mpi, edge_mpi),
+			link_server(comm, mock_graph, mock_sync_linker, id_mpi, edge_mpi),
 			server_pack(comm, mock_termination, mock_mutex_server, link_server) {}
 
 		void SetUp() override {
-			//ON_CALL(comm, Iprobe).WillByDefault(Return(false));
-			//EXPECT_CALL(comm, Iprobe).Times(AnyNumber());
 			ON_CALL(id_mpi, Iprobe).WillByDefault(Return(false));
 			EXPECT_CALL(id_mpi, Iprobe).Times(AnyNumber());
 			ON_CALL(edge_mpi, Iprobe).WillByDefault(Return(false));
@@ -108,6 +106,7 @@ class LinkServerTest : public ::testing::Test {
 			for(auto edge : mock_node->getOutgoingEdges())
 				EXPECT_CALL(mock_graph, unlink(edge));
 			EXPECT_CALL(mock_graph, erase(mock_node)).Times(0);
+			EXPECT_CALL(mock_sync_linker, registerNodeToRemove(mock_node));
 		}
 
 };
@@ -151,11 +150,6 @@ TEST_F(LinkServerTest, handleRemoveNode) {
 	expectRemoveNode(4, &mock_node);
 
 	link_server.handleIncomingRequests();
-
-	Expectation terminate = EXPECT_CALL(mock_termination, terminate);
-	EXPECT_CALL(mock_graph, erase(&mock_node))
-		.After(terminate);
-	data_sync.synchronize();
 }
 
 TEST_F(LinkServerTest, handleAll) {
@@ -167,9 +161,4 @@ TEST_F(LinkServerTest, handleAll) {
 	expectRemoveNode(5, &mock_node);
 
 	link_server.handleIncomingRequests();
-
-	Expectation terminate = EXPECT_CALL(mock_termination, terminate);
-	EXPECT_CALL(mock_graph, erase(&mock_node))
-		.After(terminate);
-	data_sync.synchronize();
 }

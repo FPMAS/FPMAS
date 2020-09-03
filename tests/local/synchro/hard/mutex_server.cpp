@@ -43,7 +43,7 @@
 
 #include "../mocks/communication/mock_communication.h"
 #include "fpmas/synchro/hard/api/enums.h"
-#include "../mocks/synchro/hard/mock_hard_sync_mutex.h"
+#include "../mocks/synchro/hard/mock_hard_sync_mode.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 
 using ::testing::_;

@@ -6,15 +6,10 @@
  */
 
 #include "fpmas/api/synchro/sync_mode.h"
-#include "fpmas/synchro/hard/api/hard_sync_mutex.h"
 #include "server_pack.h"
 
 namespace fpmas { namespace synchro { namespace hard {
 
-#ifndef DOXYGEN_BUILD
-	template<typename T> class LinkServer;
-	template<typename T> class HardSyncLinker;
-#endif
 	/**
 	 * HardSyncMode fpmas::api::synchro::DataSync implementation.
 	 *
@@ -26,20 +21,13 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		class HardDataSync : public fpmas::api::synchro::DataSync {
-			friend LinkServer<T>;
-			friend HardSyncLinker<T>;
 			typedef api::MutexServer<T> MutexServer;
 			typedef api::TerminationAlgorithm TerminationAlgorithm;
 
 			fpmas::api::communication::MpiCommunicator& comm;
 			ServerPack<T>& server_pack;
 			fpmas::api::graph::DistributedGraph<T>& graph;
-			std::vector<fpmas::api::graph::DistributedNode<T>*> nodes_to_remove;
 
-			private:
-			void addNodeToRemove(fpmas::api::graph::DistributedNode<T>* node) {
-				nodes_to_remove.push_back(node);
-			}
 			public:
 			/**
 			 * HardDataSync constructor.
@@ -75,14 +63,6 @@ namespace fpmas { namespace synchro { namespace hard {
 			void synchronize() override {
 				FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronizing data sync...", "");
 				server_pack.terminate();
-				// Nodes that was removed using a potentially distant
-				// DistributedGraph::removeNode called, that has been received
-				// from the LinkServer, can only be erased there, when it is
-				// ensured that no more data request to this node are pending.
-				for(auto node : nodes_to_remove)
-					graph.erase(node);
-				nodes_to_remove.clear();
-
 				FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronized.", "");
 			};
 		};

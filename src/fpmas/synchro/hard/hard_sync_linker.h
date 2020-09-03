@@ -11,8 +11,8 @@
 
 #include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/graph/distributed_edge.h"
+#include "fpmas/synchro/hard/api/hard_sync_mode.h"
 #include "server_pack.h"
-#include "hard_data_sync.h"
 
 namespace fpmas { namespace synchro { namespace hard {
 	using api::Tag;
@@ -42,7 +42,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 				fpmas::api::communication::MpiCommunicator& comm;
 				fpmas::api::graph::DistributedGraph<T>& graph;
-				HardDataSync<T>& data_sync;
+				api::HardSyncLinker<T>& sync_linker;
 				IdMpi& id_mpi;
 				EdgeMpi& edge_mpi;
 				std::set<fpmas::api::graph::DistributedEdge<T>*> erased_edges_from_unlink;
@@ -54,15 +54,16 @@ namespace fpmas { namespace synchro { namespace hard {
 				 *
 				 * @param comm MPI communicator
 				 * @param graph associated api::graph::DistributedGraph
-				 * @param data_sync associated HardDataSync
+				 * @param sync_linker associated HardSyncLinker
 				 * @param id_mpi Typed MPI used to transmit DistributedId
 				 * @param edge_mpi Typed MPI used to transmit edges
 				 */
 				LinkServer(
 						fpmas::api::communication::MpiCommunicator& comm,
 						fpmas::api::graph::DistributedGraph<T>& graph,
-						HardDataSync<T>& data_sync, IdMpi& id_mpi, EdgeMpi& edge_mpi)
-					:  comm(comm), graph(graph), data_sync(data_sync), id_mpi(id_mpi), edge_mpi(edge_mpi) {}
+						api::HardSyncLinker<T>& sync_linker,
+						IdMpi& id_mpi, EdgeMpi& edge_mpi)
+					:  comm(comm), graph(graph), sync_linker(sync_linker), id_mpi(id_mpi), edge_mpi(edge_mpi) {}
 
 				Epoch getEpoch() const override {return epoch;}
 				void setEpoch(api::Epoch epoch) override {this->epoch = epoch;}
@@ -134,9 +135,9 @@ namespace fpmas { namespace synchro { namespace hard {
 				// possible that requests were pending when the node removal
 				// process was initialized. In consequence, to allow those
 				// request to finish, the node is not erased yet, but will be
-				// when HardDataSync::synchronize() is called, when it is sure
+				// when HardSyncLinker::synchronize() is called, when it is sure
 				// that no more data request is ongoing.
-				data_sync.addNodeToRemove(node);
+				sync_linker.registerNodeToRemove(node);
 			}
 		}
 
@@ -287,7 +288,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	 * HardSyncMode fpmas::api::synchro::SyncLinker implementation.
 	 */
 	template<typename T>
-		class HardSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
+		class HardSyncLinker : public api::HardSyncLinker<T> {
 			public:
 				/**
 				 * DistributedEdge API.
@@ -303,9 +304,12 @@ namespace fpmas { namespace synchro { namespace hard {
 				fpmas::api::graph::DistributedGraph<T>& graph;
 				api::LinkClient<T>& link_client;
 				ServerPack<T>& server_pack;
-				HardDataSync<T>& data_sync;
+				std::vector<fpmas::api::graph::DistributedNode<T>*> nodes_to_remove;
 
 			public:
+			void registerNodeToRemove(fpmas::api::graph::DistributedNode<T>* node) override {
+				nodes_to_remove.push_back(node);
+			}
 				/**
 				 * HardSyncLinker constructor.
 				 *
@@ -313,11 +317,10 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * @param link_client client used to transmit requests
 				 * @param server_pack associated server_pack used for
 				 * synchronization
-				 * @param data_sync associated HardDataSync
 				 */
 				HardSyncLinker(fpmas::api::graph::DistributedGraph<T>& graph,
-						api::LinkClient<T>& link_client, ServerPack<T>& server_pack, HardDataSync<T>& data_sync)
-					: graph(graph), link_client(link_client), server_pack(server_pack), data_sync(data_sync) {}
+						api::LinkClient<T>& link_client, ServerPack<T>& server_pack)
+					: graph(graph), link_client(link_client), server_pack(server_pack) {}
 
 				/**
 				 * Performs a link request.
@@ -380,8 +383,9 @@ namespace fpmas { namespace synchro { namespace hard {
 							graph.unlink(edge);
 						for(auto edge : node->getIncomingEdges())
 							graph.unlink(edge);
-						data_sync.addNodeToRemove(node);
+						//data_sync.addNodeToRemove(node);
 					}
+					nodes_to_remove.push_back(node);
 				}
 
 				/**
@@ -414,6 +418,12 @@ namespace fpmas { namespace synchro { namespace hard {
 					ghost_edges.clear();
 
 					server_pack.terminate();
+
+					for(auto node : nodes_to_remove) {
+						graph.erase(node);
+					}
+					nodes_to_remove.clear();
+
 					FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "HARD_SYNC_LINKER", "Synchronized.", "");
 				};
 		};

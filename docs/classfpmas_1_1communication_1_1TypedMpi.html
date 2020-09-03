@@ -105,10 +105,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7767de9dc6f0443b36b66c379cfbcf7c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5c30a9596260fe437a9f195b7fd4143"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ad5c30a9596260fe437a9f195b7fd4143">Issend</a> (const T &amp;, int, int, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;) override</td></tr>
 <tr class="separator:ad5c30a9596260fe437a9f195b7fd4143"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68451e33f3b35d66930d23ced532a9c8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a68451e33f3b35d66930d23ced532a9c8">probe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status)</td></tr>
-<tr class="separator:a68451e33f3b35d66930d23ced532a9c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac85d0801c6f92f1288893403947210fb"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#ac85d0801c6f92f1288893403947210fb">Iprobe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status)</td></tr>
-<tr class="separator:ac85d0801c6f92f1288893403947210fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb8bbb69f472a92405e98953903af712"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#afb8bbb69f472a92405e98953903af712">probe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status) override</td></tr>
+<tr class="separator:afb8bbb69f472a92405e98953903af712"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99994086738f1c8864e8f85873514450"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a99994086738f1c8864e8f85873514450">Iprobe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status) override</td></tr>
+<tr class="separator:a99994086738f1c8864e8f85873514450"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3846a6c7331d28358d013d687d0cd197"><td class="memItemLeft" align="right" valign="top">T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#a3846a6c7331d28358d013d687d0cd197">recv</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status=<a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html#a63d41c6abc77dc4027390c4b65266f5c">Status::IGNORE</a>) override</td></tr>
 <tr class="separator:a3846a6c7331d28358d013d687d0cd197"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -369,8 +369,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a68451e33f3b35d66930d23ced532a9c8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68451e33f3b35d66930d23ced532a9c8">&#9670;&nbsp;</a></span>probe()</h2>
+<a id="afb8bbb69f472a92405e98953903af712"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afb8bbb69f472a92405e98953903af712">&#9670;&nbsp;</a></span>probe()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -406,7 +406,7 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -426,8 +426,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ac85d0801c6f92f1288893403947210fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac85d0801c6f92f1288893403947210fb">&#9670;&nbsp;</a></span>Iprobe()</h2>
+<a id="a99994086738f1c8864e8f85873514450"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a99994086738f1c8864e8f85873514450">&#9670;&nbsp;</a></span>Iprobe()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -463,7 +463,7 @@ template&lt;typename T &gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">

@@ -7,7 +7,7 @@
 
 #include "fpmas/utils/macros.h"
 #include "fpmas/api/communication/communication.h"
-#include "fpmas/synchro/hard/api/hard_sync_mutex.h"
+#include "fpmas/synchro/hard/api/hard_sync_mode.h"
 #include "fpmas/utils/data_update_pack.h"
 #include "fpmas/utils/log.h"
 
@@ -73,6 +73,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * @param id_mpi IdMpi instance
 				 * @param data_mpi DataMpi instance
 				 * @param data_update_mpi DataUpdateMpi instance
+				 * @param link_server associated LinkServer
 				 */
 				MutexServer(
 						MpiComm& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi,

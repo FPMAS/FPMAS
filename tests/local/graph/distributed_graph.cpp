@@ -365,6 +365,7 @@ TEST_F(DistributedGraphUnlinkTest, distant_src_local_tgt) {
 class DistributedGraphRemoveNodeTest : public DistributedGraphTest {
 	protected:
 		DistributedId node_id {0, 0};
+		MockMutex<int>* mock_mutex = new MockMutex<int>;
 		MockNode* node_to_remove = new MockNode(node_id);
 		MockNode* edge1_src = new MockNode({0, 1});
 		MockEdge* edge1 = new MockEdge({0, 1}, 0);
@@ -375,6 +376,8 @@ class DistributedGraphRemoveNodeTest : public DistributedGraphTest {
 
 		void SetUp() override {
 			DistributedGraphTest::SetUp();
+
+			node_to_remove->setMutex(mock_mutex);
 
 			edge1->src = edge1_src;
 			edge1->tgt = node_to_remove;
@@ -408,6 +411,10 @@ TEST_F(DistributedGraphRemoveNodeTest, remove_node) {
 	EXPECT_CALL(*node_to_remove, unlinkOut(edge2));
 
 	EXPECT_CALL(mock_sync_linker, removeNode(node_to_remove));
+	EXPECT_CALL(location_manager, remove(node_to_remove));
+	Expectation lock = EXPECT_CALL(*mock_mutex, lockShared);
+	EXPECT_CALL(*mock_mutex, unlockShared).After(lock);
+
 	graph.removeNode(node_to_remove);
 
 	// Normally called at DistributedGraph::synchronize, depending on the

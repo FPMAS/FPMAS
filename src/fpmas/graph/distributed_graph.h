@@ -66,6 +66,23 @@ namespace fpmas { namespace graph {
 			using typename api::graph::DistributedGraph<T>::NodeCallback;
 
 		private:
+			class EraseNodeCallback : public api::utils::Callback<NodeType*> {
+				private:
+					DistributedGraph<DIST_GRAPH_PARAMS_SPEC>& graph;
+					bool enabled = true;
+				public:
+					EraseNodeCallback(DistributedGraph<DIST_GRAPH_PARAMS_SPEC>& graph)
+						: graph(graph) {}
+
+					void disable() {
+						enabled = false;
+					}
+					void call(NodeType* node) {
+						if(enabled)
+							graph.location_manager.remove(node);
+					}
+			};
+
 			api::communication::MpiCommunicator& mpi_communicator;
 			TypedMpi<DistributedId> id_mpi {mpi_communicator};
 			TypedMpi<std::pair<DistributedId, int>> location_mpi {mpi_communicator};
@@ -78,6 +95,8 @@ namespace fpmas { namespace graph {
 			std::vector<NodeCallback*> set_local_callbacks;
 			std::vector<NodeCallback*> set_distant_callbacks;
 
+			EraseNodeCallback* erase_node_callback;
+			
 			NodeType* _buildNode(NodeType*);
 
 			void setLocal(api::graph::DistributedNode<T>* node);
@@ -108,8 +127,11 @@ namespace fpmas { namespace graph {
 			DistributedGraph(api::communication::MpiCommunicator& comm) :
 				mpi_communicator(comm), location_manager(mpi_communicator, id_mpi, location_mpi),
 				sync_mode(*this, mpi_communicator),
+				erase_node_callback(new EraseNodeCallback(*this)),
 				node_id(mpi_communicator.getRank(), 0),
-				edge_id(mpi_communicator.getRank(), 0) {
+				edge_id(mpi_communicator.getRank(), 0)
+		{
+					this->addCallOnEraseNode(erase_node_callback);
 				}
 
 			/**
@@ -419,7 +441,11 @@ namespace fpmas { namespace graph {
 
 	template<DIST_GRAPH_PARAMS>
 		void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::removeNode(api::graph::DistributedNode<T> * node) {
+			node->mutex()->lockShared();
+
 			sync_mode.getSyncLinker().removeNode(node);
+
+			node->mutex()->unlockShared();
 		}
 
 	template<DIST_GRAPH_PARAMS>
@@ -593,7 +619,6 @@ namespace fpmas { namespace graph {
 						"DIST_GRAPH", "Erasing obsolete node %s.",
 						FPMAS_C_STR(node->getId())
 						);
-				location_manager.remove(node);
 				this->erase(node);
 			} else {
 				for(auto edge : obsoleteEdges) {
@@ -616,6 +641,7 @@ namespace fpmas { namespace graph {
 
 	template<DIST_GRAPH_PARAMS>
 		DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::~DistributedGraph() {
+			erase_node_callback->disable();
 			for(auto callback : set_local_callbacks)
 				delete callback;
 			for(auto callback : set_distant_callbacks)

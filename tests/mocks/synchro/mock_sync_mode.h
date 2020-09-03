@@ -14,7 +14,7 @@ class MockDataSync : public fpmas::api::synchro::DataSync {
 };
 
 template<typename T>
-class MockSyncLinker : public fpmas::api::synchro::SyncLinker<T> {
+class MockSyncLinker : public virtual fpmas::api::synchro::SyncLinker<T> {
 	public:
 		MOCK_METHOD(void, link, (fpmas::api::graph::DistributedEdge<T>*), (override));
 		MOCK_METHOD(void, unlink, (fpmas::api::graph::DistributedEdge<T>*), (override));

@@ -255,8 +255,8 @@ namespace fpmas { namespace synchro {
 						graph.unlink(edge);
 					for(auto edge : node->getIncomingEdges())
 						graph.unlink(edge);
-					local_nodes_to_remove.push_back(node);
 				}
+				local_nodes_to_remove.push_back(node);
 			}
 
 		template<typename T>
@@ -323,12 +323,14 @@ namespace fpmas { namespace synchro {
 
 				for(auto import_list : remove_node_buffer)
 					for(auto node_id : import_list.second)
-						graph.erase(graph.getNode(node_id));
+						local_nodes_to_remove.push_back(graph.getNode(node_id));
 				remove_node_buffer.clear();
 
-				for(auto node : local_nodes_to_remove)
+				for(auto node : local_nodes_to_remove) {
 					graph.erase(node);
+				}
 				local_nodes_to_remove.clear();
+
 				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph links synchronized.", "");
 			}
 

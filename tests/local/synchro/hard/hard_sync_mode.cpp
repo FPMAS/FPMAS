@@ -51,8 +51,7 @@ class HardSyncLinkerTest : public ::testing::Test {
 
 		ServerPack<int> server_pack {comm, termination, mutex_server, server};
 		MockDistributedGraph<int, MockDistributedEdge<int>, MockDistributedNode<int>> graph;
-		HardDataSync<int> data_sync {comm, server_pack, graph};
-		HardSyncLinker<int> sync_linker {graph, client, server_pack, data_sync};
+		HardSyncLinker<int> sync_linker {graph, client, server_pack};
 
 		virtual void SetUp() override {
 			ON_CALL(graph, getMpiCommunicator)

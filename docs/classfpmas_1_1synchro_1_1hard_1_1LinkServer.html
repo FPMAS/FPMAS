@@ -105,8 +105,8 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a68c66ecdeb1b3c20a7b37ce1d7e0c43f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#a68c66ecdeb1b3c20a7b37ce1d7e0c43f">LinkServer</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html">HardDataSync</a>&lt; T &gt; &amp;data_sync, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#ae29cf33aa904f06ae4c20119f1615288">IdMpi</a> &amp;id_mpi, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#ae257bd2db24e9f7364e73cc1ec67ac0d">EdgeMpi</a> &amp;edge_mpi)</td></tr>
-<tr class="separator:a68c66ecdeb1b3c20a7b37ce1d7e0c43f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a4ec6b1d7ca660e3815167ee4f30dcf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#a1a4ec6b1d7ca660e3815167ee4f30dcf">LinkServer</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1HardSyncLinker.html">api::HardSyncLinker</a>&lt; T &gt; &amp;sync_linker, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#ae29cf33aa904f06ae4c20119f1615288">IdMpi</a> &amp;id_mpi, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#ae257bd2db24e9f7364e73cc1ec67ac0d">EdgeMpi</a> &amp;edge_mpi)</td></tr>
+<tr class="separator:a1a4ec6b1d7ca660e3815167ee4f30dcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab29716935537c5abacb5c06d5b75f5fe"><td class="memItemLeft" align="right" valign="top">Epoch&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#ab29716935537c5abacb5c06d5b75f5fe">getEpoch</a> () const override</td></tr>
 <tr class="separator:ab29716935537c5abacb5c06d5b75f5fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45cb18f6c72dcb1032868edbe8a8a079"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#a45cb18f6c72dcb1032868edbe8a8a079">setEpoch</a> (<a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab613c5f2c0ff9f5646a028383496d812">api::Epoch</a> epoch) override</td></tr>
@@ -172,8 +172,8 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a68c66ecdeb1b3c20a7b37ce1d7e0c43f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68c66ecdeb1b3c20a7b37ce1d7e0c43f">&#9670;&nbsp;</a></span>LinkServer()</h2>
+<a id="a1a4ec6b1d7ca660e3815167ee4f30dcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a4ec6b1d7ca660e3815167ee4f30dcf">&#9670;&nbsp;</a></span>LinkServer()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -198,8 +198,8 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html">HardDataSync</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>data_sync</em>, </td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1HardSyncLinker.html">api::HardSyncLinker</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>sync_linker</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -230,7 +230,7 @@ template&lt;typename T &gt; </div>
   <table class="params">
     <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
     <tr><td class="paramname">graph</td><td>associated <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> </td></tr>
-    <tr><td class="paramname">data_sync</td><td>associated <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html">HardDataSync</a> </td></tr>
+    <tr><td class="paramname">sync_linker</td><td>associated <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">HardSyncLinker</a> </td></tr>
     <tr><td class="paramname">id_mpi</td><td>Typed MPI used to transmit DistributedId </td></tr>
     <tr><td class="paramname">edge_mpi</td><td>Typed MPI used to transmit edges </td></tr>
   </table>

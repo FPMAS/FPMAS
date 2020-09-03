@@ -64,11 +64,11 @@ namespace fpmas { namespace synchro {
 					node_mpi(comm), edge_mpi(comm), color_mpi(comm),
 					mutex_server(comm, id_mpi, data_mpi, data_update_mpi, link_server),
 					mutex_client(comm, id_mpi, data_mpi, data_update_mpi, server_pack),
-					link_server(comm, graph, data_sync, id_mpi, edge_mpi),
+					link_server(comm, graph, sync_linker, id_mpi, edge_mpi),
 					link_client(comm, id_mpi, edge_mpi, server_pack),
 					termination(comm, color_mpi),
 					server_pack(comm, termination, mutex_server, link_server),
-					sync_linker(graph, link_client, server_pack, data_sync),
+					sync_linker(graph, link_client, server_pack),
 					data_sync(comm, server_pack, graph) {}
 
 				/**
