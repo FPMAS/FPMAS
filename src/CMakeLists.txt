@@ -20,6 +20,8 @@ set(SOURCES
 	fpmas/model/serializer.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
+	# Main
+	fpmas.cpp
 	)
 
 add_library(fpmas ${SOURCES})
