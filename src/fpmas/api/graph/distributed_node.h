@@ -28,6 +28,7 @@ namespace fpmas { namespace api { namespace graph {
 		: public virtual fpmas::api::graph::Node<DistributedId, DistributedEdge<T>> {
 
 		public:
+			typedef T data_type;
 
 			/**
 			 * Rank of the process on which this node is currently located.

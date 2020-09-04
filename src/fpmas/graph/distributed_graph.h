@@ -647,5 +647,12 @@ namespace fpmas { namespace graph {
 			for(auto callback : set_distant_callbacks)
 				delete callback;
 		}
-}}
+
+}
+	template<typename T, template<typename> class SyncMode>
+		using DistributedGraph = graph::DistributedGraph<
+			T, SyncMode, graph::DistributedNode, graph::DistributedEdge,
+			communication::TypedMpi, graph::LocationManager>;
+
+}
 #endif

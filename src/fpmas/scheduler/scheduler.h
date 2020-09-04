@@ -27,6 +27,27 @@ namespace fpmas { namespace scheduler {
 			void run() override {};
 	};
 
+	template<typename T>
+	class LambdaTask : public api::scheduler::NodeTask<T> {
+		private:
+			std::function<void()> fct;
+			api::graph::DistributedNode<T>* _node;
+		public:
+			template<typename LAMBDA>
+				LambdaTask(
+						api::graph::DistributedNode<T>* node,
+						LAMBDA&& lambda_fct)
+				: _node(node), fct(lambda_fct) {}
+
+			api::graph::DistributedNode<T>* node() override {
+				return _node;
+			}
+
+			void run() override {
+				fct();
+			}
+	};
+
 	/**
 	 * api::scheduler::Job implementation.
 	 */

@@ -37,6 +37,10 @@
  * instance
  * @param RANK rank of the process on which the code should be executed
  */
-#define FPMAS_ON_PROC(COMM, RANK) if(comm.getRank() == RANK)
+#define FPMAS_ON_PROC(COMM, RANK) if(COMM.getRank() == RANK)
+
+#define FPMAS_NODE_TASK(node, body)\
+	fpmas::scheduler::LambdaTask\
+		<std::remove_pointer<decltype(node)>::type::data_type>(node, [&] () body)
 
 #endif
