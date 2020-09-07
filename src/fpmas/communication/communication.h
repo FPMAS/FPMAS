@@ -194,6 +194,13 @@ namespace fpmas { namespace communication {
 			 */
 			std::vector<DataPack>
 				gather(DataPack data, MPI_Datatype datatype, int root) override;
+
+			
+			/**
+			 * Performs an MPI_Barrier operation.
+			 */
+			void barrier() override;
+
 			/**
 			 * MpiCommunicator destructor.
 			 *

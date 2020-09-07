@@ -44,6 +44,7 @@ class MockMpiCommunicator : public fpmas::api::communication::MpiCommunicator {
 			((std::unordered_map<int, fpmas::api::communication::DataPack>), MPI_Datatype), (override));
 		MOCK_METHOD(std::vector<fpmas::api::communication::DataPack>, gather, 
 				(fpmas::api::communication::DataPack, MPI_Datatype, int), (override));
+		MOCK_METHOD(void, barrier, (), (override));
 };
 
 template<typename T>

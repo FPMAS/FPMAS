@@ -418,6 +418,15 @@ namespace fpmas { namespace api { namespace communication {
 			virtual std::vector<DataPack>
 				gather(DataPack data, MPI_Datatype datatype, int root) = 0;
 
+			/**
+			 * Defines a synchronization barrier.
+			 *
+			 * Blocks the caller until all processes have called it. The
+			 * call returns at any process only after all processes have
+			 * entered the call.
+			 */
+			virtual void barrier() = 0;
+
 			virtual ~MpiCommunicator() {};
 	};
 

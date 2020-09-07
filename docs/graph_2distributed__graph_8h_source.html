@@ -273,7 +273,7 @@ $(function() {
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    };</div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <span class="keywordtype">void</span> DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::setLocal(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node) {</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::setLocal</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode&lt;T&gt;</a>* node) {</div>
 <div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            location_manager.setLocal(node);</div>
 <div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            triggerSetLocalCallbacks(node);</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        }</div>
@@ -460,7 +460,7 @@ $(function() {
 <div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;<span class="comment">     */</span></div>
 <div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160; </div>
 <div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html#aa771b09dbc1d01f290a10ba4e29966e1">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::NodeType</a>*</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;        <span class="keyword">typename</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::NodeType</a>*</div>
 <div class="line"><a name="l00436"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1DistributedGraph.html#a6966114524f7373c2d0f57f4547703a9">  436</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html#a6966114524f7373c2d0f57f4547703a9">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::buildNode</a>(T&amp;&amp; data) {</div>
 <div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;            <span class="keywordflow">return</span> _buildNode(<span class="keyword">new</span> DistNodeImpl&lt;T&gt;(</div>
 <div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;                        this-&gt;node_id++, std::move(data)</div>
@@ -616,8 +616,8 @@ $(function() {
 <div class="line"><a name="l00588"></a><span class="lineno">  588</span>&#160;        }</div>
 <div class="line"><a name="l00589"></a><span class="lineno">  589</span>&#160; </div>
 <div class="line"><a name="l00590"></a><span class="lineno">  590</span>&#160;    <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
-<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;        <span class="keywordtype">void</span> DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;</div>
-<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;        ::clearNode(NodeType* node) {</div>
+<div class="line"><a name="l00591"></a><span class="lineno">  591</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;</a></div>
+<div class="line"><a name="l00592"></a><span class="lineno">  592</span>&#160;<a class="code" href="classfpmas_1_1graph_1_1DistributedGraph.html">		::clearNode</a>(NodeType* node) {</div>
 <div class="line"><a name="l00593"></a><span class="lineno">  593</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> <span class="keywordtype">id</span> = node-&gt;getId();</div>
 <div class="line"><a name="l00594"></a><span class="lineno">  594</span>&#160;            FPMAS_LOGD(</div>
 <div class="line"><a name="l00595"></a><span class="lineno">  595</span>&#160;                    mpi_communicator.<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>(),</div>
@@ -675,8 +675,15 @@ $(function() {
 <div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> callback : set_distant_callbacks)</div>
 <div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;                <span class="keyword">delete</span> callback;</div>
 <div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;        }</div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;}}</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160; </div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;}</div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">template</span>&lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>SyncMode&gt;</div>
+<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;        <span class="keyword">using</span> DistributedGraph = graph::DistributedGraph&lt;</div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;            T, SyncMode, graph::DistributedNode, graph::DistributedEdge,</div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;            communication::TypedMpi, graph::LocationManager&gt;;</div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160; </div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;}</div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedGraph_html_a0a924fa1fa0b1fcd7c4a71730bda0bdc"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedGraph.html#a0a924fa1fa0b1fcd7c4a71730bda0bdc">fpmas::graph::DistributedGraph::getEdgeMpi</a></div><div class="ttdeci">const TypedMpi&lt; EdgePtrWrapper&lt; T &gt; &gt; &amp; getEdgeMpi() const</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:166</div></div>
 <div class="ttc" id="aapi_2graph_2distributed__graph_8h_html"><div class="ttname"><a href="api_2graph_2distributed__graph_8h.html">distributed_graph.h</a></div></div>
@@ -692,7 +699,7 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html_a5d0a8ba6389d11dda81add366f6fc9b9"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">fpmas::api::communication::MpiCommunicator::getRank</a></div><div class="ttdeci">virtual int getRank() const =0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedEdge_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:28</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedGraph_html_ab554fdccebaee696101a011524f29f79"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedGraph.html#ab554fdccebaee696101a011524f29f79">fpmas::graph::DistributedGraph::currentEdgeId</a></div><div class="ttdeci">const DistributedId &amp; currentEdgeId() const override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:169</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1Graph_html_ac43fded831674b513ef7b1535d9d1814"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac43fded831674b513ef7b1535d9d1814">fpmas::api::graph::Graph&lt; DistributedNode&lt; T &gt;, DistributedEdge&lt; T &gt; &gt;::NodeMap</a></div><div class="ttdeci">std::unordered_map&lt; NodeIdType, DistributedNode&lt; T &gt; *, NodeIdHash &gt; NodeMap</div><div class="ttdef"><b>Definition:</b> graph.h:50</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1Graph_html_ac43fded831674b513ef7b1535d9d1814"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac43fded831674b513ef7b1535d9d1814">fpmas::api::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;::NodeMap</a></div><div class="ttdeci">std::unordered_map&lt; NodeIdType, api::graph::DistributedNode&lt; T &gt; *, NodeIdHash &gt; NodeMap</div><div class="ttdef"><b>Definition:</b> graph.h:50</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedGraph_html_a93445679bb631603517aabb1de815a60"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedGraph.html#a93445679bb631603517aabb1de815a60">fpmas::graph::DistributedGraph::addCallOnSetLocal</a></div><div class="ttdeci">void addCallOnSetLocal(NodeCallback *callback) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:236</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing_html_a7ccc777b833bc60b23cc9071964af40b"><div class="ttname"><a href="classfpmas_1_1api_1_1load__balancing_1_1FixedVerticesLoadBalancing.html#a7ccc777b833bc60b23cc9071964af40b">fpmas::api::load_balancing::FixedVerticesLoadBalancing::balance</a></div><div class="ttdeci">virtual PartitionMap balance(NodeMap&lt; T &gt; nodes, PartitionMap fixed_vertices)=0</div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a3436e2c1520417414ff6059c45d9e02fa5f6df4aaed961263dac8b13311f22c73"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa5f6df4aaed961263dac8b13311f22c73">fpmas::api::graph::DISTANT</a></div><div class="ttdeci">@ DISTANT</div><div class="ttdef"><b>Definition:</b> location_state.h:28</div></div>

@@ -115,6 +115,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5f9b367a6b43c83d03aac44f7a132416"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace830771424539c6e093d14e21910ee8"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#ace830771424539c6e093d14e21910ee8">gather</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> data, MPI_Datatype datatype, int root)=0</td></tr>
 <tr class="separator:ace830771424539c6e093d14e21910ee8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae37f7f1125a1b4d64b6532cde80c2af2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#ae37f7f1125a1b4d64b6532cde80c2af2">barrier</a> ()=0</td></tr>
+<tr class="separator:ae37f7f1125a1b4d64b6532cde80c2af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -859,6 +861,35 @@ Static Public Attributes</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>if <code>rank == root</code>, a vector containing gathered data, else an empty vector. </dd></dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a588ad2475ad30c0077f0d0a0e623682f">fpmas::communication::MpiCommunicator</a>.</p>
+
+</div>
+</div>
+<a id="ae37f7f1125a1b4d64b6532cde80c2af2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae37f7f1125a1b4d64b6532cde80c2af2">&#9670;&nbsp;</a></span>barrier()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::communication::MpiCommunicator::barrier </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defines a synchronization barrier.</p>
+<p>Blocks the caller until all processes have called it. The call returns at any process only after all processes have entered the call. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html#a50fe31db2a292556df5287c11bac211b">fpmas::communication::MpiCommunicator</a>.</p>
 
 </div>
 </div>

@@ -235,6 +235,10 @@ namespace fpmas { namespace communication {
 		return imported_data_pack;
 	}
 
+	void MpiCommunicator::barrier() {
+		MPI_Barrier(this->comm);
+	}
+
 	MpiCommunicator::~MpiCommunicator() {
 		MPI_Group_free(&this->group);
 		MPI_Comm_free(&this->comm);
