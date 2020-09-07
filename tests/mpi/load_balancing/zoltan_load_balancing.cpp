@@ -17,14 +17,7 @@ using fpmas::load_balancing::ZoltanLoadBalancing;
 class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 	protected:
 		fpmas::communication::MpiCommunicator comm;
-		DistributedGraph<
-			int,
-			fpmas::synchro::GhostMode,
-			fpmas::graph::DistributedNode,
-			fpmas::graph::DistributedEdge,
-			fpmas::communication::TypedMpi,
-			fpmas::graph::LocationManager
-				> graph {comm};
+		DistributedGraph<int, fpmas::synchro::GhostMode> graph {comm};
 
 		ZoltanLoadBalancing<int> load_balancing {comm.getMpiComm()};
 		fpmas::load_balancing::PartitionMap fixed_nodes;

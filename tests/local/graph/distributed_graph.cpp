@@ -47,7 +47,7 @@ using ::testing::SizeIs;
 using ::testing::UnorderedElementsAre;
 using ::testing::_;
 
-using fpmas::graph::DistributedGraph;
+using fpmas::graph::detail::DistributedGraph;
 using fpmas::graph::NodePtrWrapper;
 using fpmas::graph::EdgePtrWrapper;
 

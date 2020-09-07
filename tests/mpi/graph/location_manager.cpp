@@ -9,9 +9,6 @@ using ::testing::SizeIs;
 using ::testing::Ge;
 
 using fpmas::graph::DistributedGraph;
-using fpmas::graph::DistributedNode;
-using fpmas::graph::DistributedEdge;
-using fpmas::graph::LocationManager;
 using fpmas::communication::MpiCommunicator;
 using fpmas::communication::TypedMpi;
 
@@ -21,13 +18,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		static const int NODES_COUNT = 100;
 
 		MpiCommunicator comm;
-		DistributedGraph<
-			int, MockSyncMode,
-			DistributedNode,
-			DistributedEdge,
-			TypedMpi,
-			LocationManager
-			> graph {comm};
+		DistributedGraph<int, MockSyncMode> graph {comm};
 
 		MockDataSync data_sync;
 		MockSyncLinker<int> sync_linker;

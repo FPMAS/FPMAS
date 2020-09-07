@@ -6,9 +6,6 @@
 using fpmas::communication::MpiCommunicator;
 using fpmas::communication::TypedMpi;
 using fpmas::graph::DistributedGraph;
-using fpmas::graph::DistributedNode;
-using fpmas::graph::DistributedEdge;
-using fpmas::graph::LocationManager;
 using fpmas::synchro::GhostMode;
 
 using ::testing::IsEmpty;
@@ -18,13 +15,7 @@ using ::testing::Ge;
 class GhostModeIntegrationTest : public ::testing::Test {
 	protected:
 		MpiCommunicator comm;
-		DistributedGraph<
-			unsigned int, GhostMode,
-			DistributedNode,
-			DistributedEdge,
-			TypedMpi,
-			LocationManager
-			> graph {comm};
+		DistributedGraph<unsigned int, GhostMode> graph {comm};
 
 		fpmas::api::load_balancing::PartitionMap partition;
 

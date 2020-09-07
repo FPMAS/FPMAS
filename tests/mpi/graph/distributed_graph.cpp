@@ -25,18 +25,9 @@ using ::testing::SizeIs;
  */
 class DistributedGraphBalance : public ::testing::Test {
 	protected:
-		template<typename T>
-		using location_manager = fpmas::graph::LocationManager<T>;
 
 		fpmas::communication::MpiCommunicator comm;
-		DistributedGraph<
-			int,
-			MockSyncMode,
-			fpmas::graph::DistributedNode,
-			fpmas::graph::DistributedEdge,
-			fpmas::communication::TypedMpi,
-			location_manager
-			> graph {comm};
+		DistributedGraph<int, MockSyncMode> graph {comm};
 
 		MockSyncLinker<int> mock_sync_linker;
 		MockDataSync mock_data_sync;

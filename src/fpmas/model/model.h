@@ -576,12 +576,7 @@ namespace fpmas { namespace model {
 	 * simulation graph.
 	 */
 	template<template<typename> class SyncMode>
-		using AgentGraph = graph::DistributedGraph<
-		AgentPtr, SyncMode,
-		graph::DistributedNode,
-		graph::DistributedEdge,
-		communication::TypedMpi,
-		graph::LocationManager>;
+		using AgentGraph = graph::DistributedGraph<AgentPtr, SyncMode>;
 
 	/**
 	 * ZoltanLoadBalancing specialization.

@@ -66,6 +66,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle">
@@ -73,11 +74,14 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+Namespaces</h2></td></tr>
+<tr class="memitem:namespacefpmas_1_1graph_1_1detail"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph_1_1detail.html">detail</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html">DistributedEdge</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1DistributedGraph.html">DistributedGraph</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">DistributedNode</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -95,6 +99,9 @@ Typedefs</h2></td></tr>
 <tr class="memitem:aa824a675374017e941f1f4f780c7e95a"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:aa824a675374017e941f1f4f780c7e95a"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">EdgePtrWrapper</a> = <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">api::graph::DistributedEdge</a>&lt; T &gt; &gt;</td></tr>
 <tr class="separator:aa824a675374017e941f1f4f780c7e95a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf6379dbff231d9b0bd9b9bb7ad65028"><td class="memTemplParams" colspan="2">template&lt;typename T , template&lt; typename &gt; class SyncMode&gt; </td></tr>
+<tr class="memitem:adf6379dbff231d9b0bd9b9bb7ad65028"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#adf6379dbff231d9b0bd9b9bb7ad65028">DistributedGraph</a> = <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">detail::DistributedGraph</a>&lt; T, SyncMode, <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>, <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi</a>, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a> &gt;</td></tr>
+<tr class="separator:adf6379dbff231d9b0bd9b9bb7ad65028"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6c74a4ed290e011f46afa3674cea808e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6c74a4ed290e011f46afa3674cea808e"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#a6c74a4ed290e011f46afa3674cea808e">NodePtrWrapper</a> = <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; &gt;</td></tr>
 <tr class="separator:a6c74a4ed290e011f46afa3674cea808e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -116,6 +123,24 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Alias for a <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> PtrWrapper </p>
+
+</div>
+</div>
+<a id="adf6379dbff231d9b0bd9b9bb7ad65028"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf6379dbff231d9b0bd9b9bb7ad65028">&#9670;&nbsp;</a></span>DistributedGraph</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , template&lt; typename &gt; class SyncMode&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacefpmas_1_1graph.html#adf6379dbff231d9b0bd9b9bb7ad65028">fpmas::graph::DistributedGraph</a> = typedef <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">detail::DistributedGraph</a>&lt; T, SyncMode, <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>, <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>, <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi</a>, <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Default <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> implementation.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">detail::DistributedGraph</a> </dd></dl>
 
 </div>
 </div>

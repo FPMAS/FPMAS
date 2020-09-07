@@ -17,9 +17,6 @@ using fpmas::api::graph::LocationState;
 using fpmas::communication::TypedMpi;
 using fpmas::communication::MpiCommunicator;
 using fpmas::graph::DistributedGraph;
-using fpmas::graph::DistributedNode;
-using fpmas::graph::DistributedEdge;
-using fpmas::graph::LocationManager;
 using fpmas::synchro::HardSyncMode;
 using fpmas::synchro::hard::api::Color;
 using fpmas::synchro::hard::HardSyncMutex;
@@ -120,13 +117,7 @@ TEST_F(MutexServerRaceCondition, acquire_race_condition) {
 class HardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
 		MpiCommunicator comm;
-		DistributedGraph<
-			unsigned int, HardSyncMode,
-			DistributedNode,
-			DistributedEdge,
-			TypedMpi,
-			LocationManager
-			> graph {comm};
+		DistributedGraph<unsigned int, HardSyncMode> graph {comm};
 
 		std::mt19937 engine;
 		
