@@ -12,8 +12,8 @@ namespace fpmas { namespace api { namespace graph {
 	/**
 	 * Type used to describe a DistributedNode partition.
 	 *
-	 * Entries are pairs with node ID as keys, and process ranks to which each
-	 * node is associated as values.
+	 * The PartitionMap associates node IDs to the rank of the process to which
+	 * they should be assigned.
 	 */
 	typedef std::unordered_map<DistributedId, int, api::graph::IdHash<DistributedId>> PartitionMap;
 

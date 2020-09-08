@@ -160,6 +160,19 @@ namespace fpmas {namespace api {namespace graph {
 			virtual DistributedNode<T>* buildNode(T&& data) = 0;
 
 			/**
+			 * Builds a new \LOCAL node into the graph.
+			 *
+			 * The specified data is *copied* to the built node.
+			 *
+			 * The node is inserted into the graph, triggering insert node
+			 * events as specified in Graph::insert(NodeType*).
+			 *
+			 * @param data node data
+			 * @return pointer to built node
+			 */
+			virtual DistributedNode<T>* buildNode(const T& data) = 0;
+
+			/**
 			 * Globally removes the specified node from the graph.
 			 *
 			 * The removed node might be \DISTANT or \LOCAL. The node is not

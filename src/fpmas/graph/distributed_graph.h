@@ -225,6 +225,7 @@ namespace fpmas { namespace graph {
 
 				//NodeType* buildNode(const T&) override;
 				NodeType* buildNode(T&& = std::move(T())) override;
+				NodeType* buildNode(const T&) override;
 
 				EdgeType* link(NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) override;
 
@@ -441,6 +442,14 @@ namespace fpmas { namespace graph {
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(T&& data) {
 				return _buildNode(new DistNodeImpl<T>(
 							this->node_id++, std::move(data)
+							));
+			}
+
+		template<DIST_GRAPH_PARAMS>
+			typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(const T& data) {
+				return _buildNode(new DistNodeImpl<T>(
+							this->node_id++, data
 							));
 			}
 

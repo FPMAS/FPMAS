@@ -30,7 +30,7 @@ class MockDistributedGraph :
 		NodeType* buildNode(T&& data) override {
 			return buildNode_rv();
 		}
-		//MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
+		MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
 		MOCK_METHOD(NodeType*, buildNode_rv, (), ());
 		MOCK_METHOD(EdgeType*, link, (NodeType*, NodeType*, fpmas::api::graph::LayerId), (override));
 
