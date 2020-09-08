@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['partitionmap_291',['PartitionMap',['../classfpmas_1_1model_1_1LoadBalancingTask.html#a6897a55b1ecbf95d5bfab0c289c03ffc',1,'fpmas::model::LoadBalancingTask::PartitionMap()'],['../namespacefpmas_1_1api_1_1load__balancing.html#a363a2d1114c6412e34c8569536e9ac7b',1,'fpmas::api::load_balancing::PartitionMap()']]],
+  ['partitionmap_291',['PartitionMap',['../classfpmas_1_1model_1_1LoadBalancingTask.html#a8907f4ff4ff31357baa6a7fb29a25d8d',1,'fpmas::model::LoadBalancingTask::PartitionMap()'],['../namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d',1,'fpmas::api::graph::PartitionMap()']]],
   ['period_292',['Period',['../namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8',1,'fpmas::api::scheduler']]],
   ['probe_293',['probe',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5dbf8bcbe25f3ec56a90e0640e5d2a3b',1,'fpmas::api::communication::MpiCommunicator::probe()'],['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ac0b47b6e02f6457960a711b3ca2372cd',1,'fpmas::api::communication::TypedMpi::probe()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#aa38a475d1ae4336abc1d5198a491d78c',1,'fpmas::communication::MpiCommunicator::probe()'],['../classfpmas_1_1communication_1_1TypedMpi.html#afb8bbb69f472a92405e98953903af712',1,'fpmas::communication::TypedMpi::probe()']]],
   ['ptr_294',['ptr',['../classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#ae99a83391899f67e6e2e9779bc3a8819',1,'fpmas::api::utils::PtrWrapper']]],

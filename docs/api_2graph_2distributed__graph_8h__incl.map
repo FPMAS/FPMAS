@@ -1,9 +1,9 @@
 <map id="src/fpmas/api/graph/distributed_graph.h" name="src/fpmas/api/graph/distributed_graph.h">
-<area shape="rect" id="node1" title=" " alt="" coords="779,5,916,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="765,5,903,47"/>
 <area shape="rect" id="node2" href="$api_2communication_2communication_8h.html" title=" " alt="" coords="929,184,1099,225"/>
-<area shape="rect" id="node8" href="$api_2graph_2location__manager_8h.html" title=" " alt="" coords="452,95,616,136"/>
-<area shape="rect" id="node22" href="$load__balancing_8h.html" title=" " alt="" coords="640,95,809,136"/>
-<area shape="rect" id="node23" href="$sync__mode_8h.html" title=" " alt="" coords="885,95,1047,136"/>
+<area shape="rect" id="node8" href="$api_2graph_2location__manager_8h.html" title=" " alt="" coords="465,95,629,136"/>
+<area shape="rect" id="node22" href="$load__balancing_8h.html" title=" " alt="" coords="653,95,796,136"/>
+<area shape="rect" id="node23" href="$sync__mode_8h.html" title=" " alt="" coords="872,95,1033,136"/>
 <area shape="rect" id="node3" href="$distributed__id_8h.html" title=" " alt="" coords="873,363,1080,389"/>
 <area shape="rect" id="node4" title=" " alt="" coords="779,437,857,464"/>
 <area shape="rect" id="node5" title=" " alt="" coords="966,437,1097,464"/>

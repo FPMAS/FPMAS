@@ -8,8 +8,8 @@
 #include "fpmas/api/model/model.h"
 #include "fpmas/graph/distributed_graph.h"
 #include "fpmas/runtime/runtime.h"
-#include "fpmas/load_balancing/zoltan_load_balancing.h"
-#include "fpmas/load_balancing/scheduled_load_balancing.h"
+#include "fpmas/graph/zoltan_load_balancing.h"
+#include "fpmas/graph/scheduled_load_balancing.h"
 
 #include <random>
 
@@ -338,16 +338,16 @@ namespace fpmas { namespace model {
 			/**
 			 * LoadBalancingAlgorithm type.
 			 */
-			typedef api::load_balancing::LoadBalancing<AgentPtr>
+			typedef api::graph::LoadBalancing<AgentPtr>
 				LoadBalancingAlgorithm;
 			/**
 			 * Agent node map.
 			 */
-			typedef api::load_balancing::NodeMap<AgentPtr> NodeMap;
+			typedef api::graph::NodeMap<AgentPtr> NodeMap;
 			/**
 			 * Partition map.
 			 */
-			typedef typename api::load_balancing::PartitionMap PartitionMap;
+			typedef typename api::graph::PartitionMap PartitionMap;
 
 		private:
 			api::model::AgentGraph& agent_graph;
@@ -581,11 +581,11 @@ namespace fpmas { namespace model {
 	/**
 	 * ZoltanLoadBalancing specialization.
 	 */
-	typedef load_balancing::ZoltanLoadBalancing<AgentPtr> ZoltanLoadBalancing;
+	typedef graph::ZoltanLoadBalancing<AgentPtr> ZoltanLoadBalancing;
 	/**
 	 * ScheduledLoadBalancing specialization.
 	 */
-	typedef load_balancing::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;
+	typedef graph::ScheduledLoadBalancing<AgentPtr> ScheduledLoadBalancing;
 	/**
 	 * Callback specialization that can be extended to define user callbacks.
 	 */

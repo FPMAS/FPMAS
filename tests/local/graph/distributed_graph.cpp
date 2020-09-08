@@ -17,13 +17,13 @@
 
 #include "../mocks/communication/mock_communication.h"
 #include "fpmas/api/graph/graph.h"
-#include "fpmas/api/load_balancing/load_balancing.h"
+#include "fpmas/api/graph/load_balancing.h"
 #include "../mocks/graph/mock_distributed_node.h"
 #include "../mocks/graph/mock_distributed_edge.h"
 #include "../mocks/graph/mock_location_manager.h"
 #include "../mocks/synchro/mock_mutex.h"
 #include "../mocks/synchro/mock_sync_mode.h"
-#include "../mocks/load_balancing/mock_load_balancing.h"
+#include "../mocks/graph/mock_load_balancing.h"
 #include "../mocks/utils/mock_callback.h"
 
 
@@ -442,7 +442,7 @@ class DistributedGraphImportNodeTest : public DistributedGraphTest {
 	protected:
 		typedef typename GraphType::NodeType NodeType; // MockDistributedNode<int, MockMutex>
 		typedef typename GraphType::EdgeType EdgeType; // MockDistributedEdge<int, MockMutex>
-		typedef typename fpmas::api::load_balancing::PartitionMap PartitionMap;
+		typedef typename fpmas::api::graph::PartitionMap PartitionMap;
 
 		PartitionMap partition;
 		std::unordered_map<int, std::vector<NodePtrWrapper<int>>> imported_node_mocks;
@@ -841,7 +841,7 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_src) {
 /* distribute_tests */
 /********************/
 class DistributedGraphDistributeTest : public DistributedGraphTest {
-	typedef typename fpmas::api::load_balancing::PartitionMap PartitionMap;
+	typedef typename fpmas::api::graph::PartitionMap PartitionMap;
 
 	protected:
 		std::array<DistributedId, 5> node_ids;
@@ -932,7 +932,7 @@ TEST_F(DistributedGraphTest, synchronize_calls) {
  */
 TEST_F(DistributedGraphDistributeTest, balance) {
 	MockLoadBalancing<int> load_balancing;
-	fpmas::api::load_balancing::NodeMap<int> node_map;
+	fpmas::api::graph::NodeMap<int> node_map;
 	for(auto node : graph.getNodes())
 		node_map.insert(node);
 

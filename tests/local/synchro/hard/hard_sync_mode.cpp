@@ -9,7 +9,7 @@
 #include "../mocks/graph/mock_distributed_node.h"
 #include "../mocks/graph/mock_distributed_graph.h"
 #include "../mocks/graph/mock_location_manager.h"
-#include "../mocks/load_balancing/mock_load_balancing.h"
+#include "../mocks/graph/mock_load_balancing.h"
 #include "../mocks/synchro/mock_mutex.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 

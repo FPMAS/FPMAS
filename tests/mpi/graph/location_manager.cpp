@@ -1,7 +1,7 @@
 #include "fpmas/graph/distributed_graph.h"
 
 #include <random>
-#include "../mocks/load_balancing/mock_load_balancing.h"
+#include "../mocks/graph/mock_load_balancing.h"
 #include "../mocks/synchro/mock_sync_mode.h"
 
 using ::testing::ReturnRef;
@@ -26,7 +26,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		std::mt19937 engine;
 		std::uniform_int_distribution<int> dist {0, graph.getMpiCommunicator().getSize()-1};
 		
-		typename fpmas::api::load_balancing::PartitionMap partition;
+		typename fpmas::api::graph::PartitionMap partition;
 
 		std::array<std::array<int, SEQUENCE_COUNT>, NODES_COUNT> location_sequences;
 

@@ -1,8 +1,8 @@
 <map id="src/fpmas/api/runtime/runtime.h" name="src/fpmas/api/runtime/runtime.h">
-<area shape="rect" id="node1" title=" " alt="" coords="411,5,559,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="406,5,554,47"/>
 <area shape="rect" id="node2" href="$api_2model_2model_8h.html" title=" " alt="" coords="226,95,366,136"/>
-<area shape="rect" id="node7" href="$scheduled__load__balancing_8h.html" title=" " alt="" coords="391,95,580,136"/>
-<area shape="rect" id="node8" href="$runtime_2runtime_8h.html" title=" " alt="" coords="605,102,790,129"/>
+<area shape="rect" id="node7" href="$scheduled__load__balancing_8h.html" title=" " alt="" coords="391,95,569,136"/>
+<area shape="rect" id="node8" href="$runtime_2runtime_8h.html" title=" " alt="" coords="594,102,779,129"/>
 <area shape="rect" id="node3" href="$model_2guards_8h.html" title=" " alt="" coords="5,184,179,211"/>
 <area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="414,184,583,211"/>
 <area shape="rect" id="node6" href="$serializer_8h.html" title=" " alt="" coords="203,184,389,211"/>

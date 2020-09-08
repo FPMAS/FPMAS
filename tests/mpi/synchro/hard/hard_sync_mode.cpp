@@ -4,7 +4,7 @@
 
 #include "fpmas/graph/distributed_graph.h"
 #include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/load_balancing/mock_load_balancing.h"
+#include "../mocks/graph/mock_load_balancing.h"
 #include "../mocks/synchro/hard/mock_client_server.h"
 
 #include "utils/test.h"
@@ -121,7 +121,7 @@ class HardSyncModeIntegrationTest : public ::testing::Test {
 
 		std::mt19937 engine;
 		
-		fpmas::api::load_balancing::PartitionMap partition;
+		fpmas::api::graph::PartitionMap partition;
 };
 
 class HardSyncModeMutexIntegrationTest : public HardSyncModeIntegrationTest {

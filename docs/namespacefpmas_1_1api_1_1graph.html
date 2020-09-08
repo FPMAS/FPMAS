@@ -87,11 +87,15 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html">Edge</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">FixedVerticesLoadBalancing</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">Graph</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Id.html">Id</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">IdHash</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">LoadBalancing</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html">LocationManager</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -102,6 +106,11 @@ Classes</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:a6ad1b60906b20514825a6f77b7fdc750"><td class="memItemLeft" align="right" valign="top">typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a></td></tr>
 <tr class="separator:a6ad1b60906b20514825a6f77b7fdc750"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b8d45dcdede19e41beff03c30a0671d"><td class="memItemLeft" align="right" valign="top">typedef std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">api::graph::IdHash</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a></td></tr>
+<tr class="separator:a3b8d45dcdede19e41beff03c30a0671d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc7eb1311839a21b24362b472d3ea887"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:acc7eb1311839a21b24362b472d3ea887"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a> = typename <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">graph::Graph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>&lt; T &gt;, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>&lt; T &gt; &gt;::<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a></td></tr>
+<tr class="separator:acc7eb1311839a21b24362b472d3ea887"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -130,6 +139,39 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Type used to index layers. </p>
+
+</div>
+</div>
+<a id="a3b8d45dcdede19e41beff03c30a0671d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b8d45dcdede19e41beff03c30a0671d">&#9670;&nbsp;</a></span>PartitionMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::unordered_map&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, int, <a class="el" href="structfpmas_1_1api_1_1graph_1_1IdHash.html">api::graph::IdHash</a>&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&gt; &gt; <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">fpmas::api::graph::PartitionMap</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Type used to describe a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> partition.</p>
+<p>Entries are pairs with node ID as keys, and process ranks to which each node is associated as values. </p>
+
+</div>
+</div>
+<a id="acc7eb1311839a21b24362b472d3ea887"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc7eb1311839a21b24362b472d3ea887">&#9670;&nbsp;</a></span>NodeMap</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">fpmas::api::graph::NodeMap</a> = typedef typename <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">graph::Graph</a>&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>&lt;T&gt;, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>&lt;T&gt; &gt;::<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Type used to represent nodes to distribute. </p>
 
 </div>
 </div>

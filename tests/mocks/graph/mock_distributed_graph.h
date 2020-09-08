@@ -48,12 +48,12 @@ class MockDistributedGraph :
 		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
 		MOCK_METHOD(EdgeType*, importEdge, (EdgeType*), (override));
 
-		MOCK_METHOD(void, balance, (fpmas::api::load_balancing::LoadBalancing<T>&), (override));
+		MOCK_METHOD(void, balance, (fpmas::api::graph::LoadBalancing<T>&), (override));
 		MOCK_METHOD(void, balance, (
-					fpmas::api::load_balancing::FixedVerticesLoadBalancing<T>&,
-					fpmas::api::load_balancing::PartitionMap),
+					fpmas::api::graph::FixedVerticesLoadBalancing<T>&,
+					fpmas::api::graph::PartitionMap),
 				(override));
-		MOCK_METHOD(void, distribute, (fpmas::api::load_balancing::PartitionMap), (override));
+		MOCK_METHOD(void, distribute, (fpmas::api::graph::PartitionMap), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
 	};
 

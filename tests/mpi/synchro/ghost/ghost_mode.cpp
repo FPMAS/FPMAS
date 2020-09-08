@@ -17,7 +17,7 @@ class GhostModeIntegrationTest : public ::testing::Test {
 		MpiCommunicator comm;
 		DistributedGraph<unsigned int, GhostMode> graph {comm};
 
-		fpmas::api::load_balancing::PartitionMap partition;
+		fpmas::api::graph::PartitionMap partition;
 
 		void SetUp() override {
 			FPMAS_ON_PROC(comm, 0) {

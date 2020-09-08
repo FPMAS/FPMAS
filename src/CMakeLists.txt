@@ -10,7 +10,7 @@ set(SOURCES
 	# Communication
 	fpmas/communication/communication.cpp
 	# Load balancing
-	fpmas/load_balancing/zoltan_load_balancing.cpp
+	fpmas/graph/zoltan_load_balancing.cpp
 	# Scheduler
 	fpmas/scheduler/scheduler.cpp
 	# Runtime

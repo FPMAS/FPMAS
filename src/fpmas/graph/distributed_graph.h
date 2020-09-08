@@ -187,7 +187,7 @@ namespace fpmas { namespace graph {
 				const LocationManagerImpl<T>&
 					getLocationManager() const override {return location_manager;}
 
-				void balance(api::load_balancing::LoadBalancing<T>& load_balancing) override {
+				void balance(api::graph::LoadBalancing<T>& load_balancing) override {
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
 							"Balancing graph (%lu nodes, %lu edges)",
@@ -202,8 +202,8 @@ namespace fpmas { namespace graph {
 				};
 
 				void balance(
-						api::load_balancing::FixedVerticesLoadBalancing<T>& load_balancing,
-						api::load_balancing::PartitionMap fixed_vertices
+						api::graph::FixedVerticesLoadBalancing<T>& load_balancing,
+						api::graph::PartitionMap fixed_vertices
 						) override {
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
@@ -218,7 +218,7 @@ namespace fpmas { namespace graph {
 							this->getNodes().size(), this->getEdges().size());
 				};
 
-				void distribute(api::load_balancing::PartitionMap partition) override;
+				void distribute(api::graph::PartitionMap partition) override;
 
 				void synchronize() override;
 
@@ -489,7 +489,7 @@ namespace fpmas { namespace graph {
 
 		template<DIST_GRAPH_PARAMS>
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
-			::distribute(api::load_balancing::PartitionMap partition) {
+			::distribute(api::graph::PartitionMap partition) {
 				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 						"Distributing graph...", "");
 				std::string partition_str = "\n";

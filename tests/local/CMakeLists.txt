@@ -9,6 +9,7 @@ set(SOURCES
 	graph/distributed_graph.cpp
 	graph/distributed_edge.cpp
 	graph/location_manager.cpp
+	graph/zoltan_load_balancing.cpp
 	# Synchro
 	synchro/ghost/data_sync.cpp
 	synchro/ghost/sync_linker.cpp
@@ -19,8 +20,6 @@ set(SOURCES
 	synchro/hard/hard_sync_mode.cpp
 	synchro/hard/link_client.cpp
 	synchro/hard/link_server.cpp
-	# Load balancing
-	load_balancing/zoltan_load_balancing.cpp
 	# Scheduler
 	scheduler/job.cpp
 	scheduler/epoch.cpp

@@ -7,7 +7,7 @@
 
 #include "fpmas/api/communication/communication.h"
 #include "fpmas/api/graph/location_manager.h"
-#include "fpmas/api/load_balancing/load_balancing.h"
+#include "fpmas/api/graph/load_balancing.h"
 #include "fpmas/api/synchro/sync_mode.h"
 
 namespace fpmas {namespace api {namespace graph {
@@ -292,7 +292,7 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * @param lb load balancing algorithm
 			 */
-			virtual void balance(api::load_balancing::LoadBalancing<T>& lb) = 0;
+			virtual void balance(LoadBalancing<T>& lb) = 0;
 
 			/**
 			 * Balances the graph using the specified LoadBalancing algorithm
@@ -305,8 +305,8 @@ namespace fpmas {namespace api {namespace graph {
 			 * @param fixed_vertices fixed vertices map
 			 */
 			virtual void balance(
-					api::load_balancing::FixedVerticesLoadBalancing<T>& lb,
-					api::load_balancing::PartitionMap fixed_vertices) = 0;
+					FixedVerticesLoadBalancing<T>& lb,
+					PartitionMap fixed_vertices) = 0;
 
 			/**
 			 * Distributes the Graph across processors according to the
@@ -323,7 +323,7 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * @param partition export partition
 			 */
-			virtual void distribute(api::load_balancing::PartitionMap partition) = 0;
+			virtual void distribute(PartitionMap partition) = 0;
 
 			/**
 			 * Synchronizes the DistributedGraph.

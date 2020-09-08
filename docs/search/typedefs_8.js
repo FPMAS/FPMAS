@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['partitionmap_862',['PartitionMap',['../classfpmas_1_1model_1_1LoadBalancingTask.html#a6897a55b1ecbf95d5bfab0c289c03ffc',1,'fpmas::model::LoadBalancingTask::PartitionMap()'],['../namespacefpmas_1_1api_1_1load__balancing.html#a363a2d1114c6412e34c8569536e9ac7b',1,'fpmas::api::load_balancing::PartitionMap()']]],
-  ['period_863',['Period',['../namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8',1,'fpmas::api::scheduler']]]
+  ['partitionmap_856',['PartitionMap',['../classfpmas_1_1model_1_1LoadBalancingTask.html#a8907f4ff4ff31357baa6a7fb29a25d8d',1,'fpmas::model::LoadBalancingTask::PartitionMap()'],['../namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d',1,'fpmas::api::graph::PartitionMap()']]],
+  ['period_857',['Period',['../namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8',1,'fpmas::api::scheduler']]]
 ];

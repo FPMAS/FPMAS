@@ -1,5 +1,5 @@
 #include "../mocks/synchro/mock_sync_mode.h"
-#include "../mocks/load_balancing/mock_load_balancing.h"
+#include "../mocks/graph/mock_load_balancing.h"
 #include "fpmas/communication/communication.h"
 #include "fpmas/graph/distributed_graph.h"
 #include "fpmas/graph/location_manager.h"
@@ -32,7 +32,7 @@ class DistributedGraphBalance : public ::testing::Test {
 		MockSyncLinker<int> mock_sync_linker;
 		MockDataSync mock_data_sync;
 
-		fpmas::api::load_balancing::PartitionMap partition;
+		fpmas::api::graph::PartitionMap partition;
 
 		void SetUp() override {
 			EXPECT_CALL(mock_sync_linker, link).Times(AnyNumber());
