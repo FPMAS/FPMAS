@@ -208,6 +208,17 @@ namespace fpmas { namespace model {
 				return out;
 			}
 
+			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors(api::graph::LayerId layer) const {
+				std::vector<Neighbor<NeighborAgentType>> out;
+				for(api::model::AgentNode* _node : node()->outNeighbors(layer)) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
+						out.push_back(&_node->data());
+					}
+				}
+				return out;
+			}
+
+
 			/**
 			 * Returns a typed list of agents that are in neighbors of the current
 			 * agent.
@@ -231,6 +242,15 @@ namespace fpmas { namespace model {
 				return in;
 			}
 
+			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors(api::graph::LayerId layer) const {
+				std::vector<Neighbor<NeighborAgentType>> in;
+				for(api::model::AgentNode* _node : node()->inNeighbors(layer)) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
+						in.push_back(&_node->data());
+					}
+				}
+				return in;
+			}
 			virtual ~AgentBase() {}
 	};
 	/**
