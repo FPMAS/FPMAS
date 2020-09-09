@@ -6,6 +6,7 @@
  */
 
 #include "fpmas/api/graph/load_balancing.h"
+#include "fpmas/communication/communication.h"
 #include "zoltan_cpp.h"
 
 namespace fpmas { namespace graph {
@@ -251,7 +252,7 @@ namespace fpmas { namespace graph {
 	 * the [Zoltan library](https://cs.sandia.gov/Zoltan/Zoltan.html).
 	 */
 	template<typename T>
-		class ZoltanLoadBalancing : public api::graph::FixedVerticesLoadBalancing<T> {
+		class ZoltanLoadBalancing : public api::graph::LoadBalancing<T>, public api::graph::FixedVerticesLoadBalancing<T> {
 			private:
 				//Zoltan instance
 				Zoltan zoltan;
@@ -273,10 +274,10 @@ namespace fpmas { namespace graph {
 				/**
 				 * ZoltanLoadBalancing constructor.
 				 *
-				 * @param comm MPI_Comm passed to Zoltan
+				 * @param comm MpiCommunicator implementation
 				 */
-				ZoltanLoadBalancing(MPI_Comm comm)
-					: zoltan(comm) {
+				ZoltanLoadBalancing(communication::MpiCommunicator& comm)
+					: zoltan(comm.getMpiComm()) {
 					setUpZoltan();
 				}
 
@@ -303,6 +304,13 @@ namespace fpmas { namespace graph {
 						NodeMap<T> nodes,
 						PartitionMap fixed_vertices
 						) override;
+				/**
+				 * \copydoc api::graph::LoadBalancing::balance()
+				 *
+				 * Equivalent to balance(NodeMap<T>, PartitionMap), with an
+				 * empty set of fixed vertices.
+				 */
+				PartitionMap balance(NodeMap<T> nodes) override;
 		};
 
 	template<typename T> PartitionMap
@@ -368,6 +376,11 @@ namespace fpmas { namespace graph {
 			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
 			return partition;
 	}
+
+	template<typename T> PartitionMap
+		ZoltanLoadBalancing<T>::balance(NodeMap<T> nodes) {
+			return this->balance(nodes, {});
+		}
 
 	/*
 	 * Initializes zoltan parameters and zoltan lb query functions.

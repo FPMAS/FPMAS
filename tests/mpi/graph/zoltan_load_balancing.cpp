@@ -19,7 +19,7 @@ class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 		fpmas::communication::MpiCommunicator comm;
 		DistributedGraph<int, fpmas::synchro::GhostMode> graph {comm};
 
-		ZoltanLoadBalancing<int> load_balancing {comm.getMpiComm()};
+		ZoltanLoadBalancing<int> load_balancing {comm};
 		fpmas::graph::PartitionMap fixed_nodes;
 
 		void SetUp() override {

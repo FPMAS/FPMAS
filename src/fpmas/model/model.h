@@ -63,8 +63,7 @@ namespace fpmas { namespace model {
 				 * @return reference to neighbor agent
 				 */
 				AgentType& operator*() const {
-					return *static_cast<AgentType*>(agent->get());
-				}
+					return *static_cast<AgentType*>(agent->get()); }
 
 		};
 
@@ -617,7 +616,7 @@ namespace fpmas { namespace model {
 			/**
 			 * Default load balancing algorithm.
 			 */
-			model::ZoltanLoadBalancing __zoltan_lb {comm.getMpiComm()};
+			model::ZoltanLoadBalancing __zoltan_lb {comm};
 			/**
 			 * Default scheduled load balancing algorithm.
 			 */
