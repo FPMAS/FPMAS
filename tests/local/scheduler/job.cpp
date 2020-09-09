@@ -10,12 +10,12 @@ using ::testing::IsEmpty;
 
 class JobTest : public ::testing::Test {
 	protected:
-		const fpmas::api::scheduler::JID id = 236;
-		Job job {id};
+		Job job;
 };
 
 TEST_F(JobTest, id) {
-	ASSERT_EQ(job.id(), id);
+	Job job_2;
+	ASSERT_NE(job.id(), job_2.id());
 }
 
 TEST_F(JobTest, add) {

@@ -75,7 +75,7 @@ $(function() {
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="macros_8h__dep__incl.png" border="0" usemap="#asrc_2fpmas_2utils_2macros_8hdep" alt=""/></div>
-<map name="src_2fpmas_2utils_2macros_8hdep" id="src_2fpmas_2utils_2macros_8hdep">
+<map name="src_2fpmas_2utils_2macros_8hdep" id="asrc_2fpmas_2utils_2macros_8hdep">
 <area shape="rect" title=" " alt="" coords="391,5,557,32"/>
 <area shape="rect" href="graph_2node_8h.html" title=" " alt="" coords="208,87,367,114"/>
 <area shape="rect" href="hard__sync__linker_8h.html" title=" " alt="" coords="336,348,495,389"/>
@@ -105,6 +105,10 @@ Macros</h2></td></tr>
 <tr class="separator:a2868889724c6490a488852f9fc535bf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18036fdf3569b649695ce2c03e3e381b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>FPMAS_NODE_TASK</b>(node,  body)</td></tr>
 <tr class="separator:a18036fdf3569b649695ce2c03e3e381b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f51f358990224f4edba2a7290118cbf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>FPMAS_DEFINE_GROUPS</b>(...)</td></tr>
+<tr class="separator:a0f51f358990224f4edba2a7290118cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5df4bc2a01aa1877da64b5fbd4fe502a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>FPMAS_DEFINE_LAYERS</b>(...)</td></tr>
+<tr class="separator:a5df4bc2a01aa1877da64b5fbd4fe502a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>FPMAS macros. </p>
@@ -220,7 +224,49 @@ Macros</h2></td></tr>
 </div><!-- fragment -->
 </div>
 </div>
+<a id="a0f51f358990224f4edba2a7290118cbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f51f358990224f4edba2a7290118cbf">&#9670;&nbsp;</a></span>FPMAS_DEFINE_GROUPS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_DEFINE_GROUPS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    enum : <a class="code" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a> {\</div>
+<div class="line">        __VA_ARGS__ };</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="a5df4bc2a01aa1877da64b5fbd4fe502a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5df4bc2a01aa1877da64b5fbd4fe502a">&#9670;&nbsp;</a></span>FPMAS_DEFINE_LAYERS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_DEFINE_LAYERS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    enum : <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a> {\</div>
+<div class="line">        __VA_ARGS__ };</div>
+</div><!-- fragment -->
+</div>
+</div>
 </div><!-- contents -->
+<div class="ttc" id="anamespacefpmas_1_1api_1_1model_html_a21595fa9ac22b3afe6da9f2b1c46e13b"><div class="ttname"><a href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a></div><div class="ttdeci">int GroupId</div><div class="ttdef"><b>Definition:</b> model.h:30</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a6ad1b60906b20514825a6f77b7fdc750"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a></div><div class="ttdeci">int LayerId</div><div class="ttdef"><b>Definition:</b> edge.h:13</div></div>
 <div class="ttc" id="amacros_8h_html_a32ab2caf321ac613cabb47d79541d9c9"><div class="ttname"><a href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a></div><div class="ttdeci">#define FPMAS_C_STR(arg)</div><div class="ttdef"><b>Definition:</b> macros.h:23</div></div>
 <div class="ttc" id="aclassfpmas_1_1scheduler_1_1LambdaTask_html"><div class="ttname"><a href="classfpmas_1_1scheduler_1_1LambdaTask.html">fpmas::scheduler::LambdaTask</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:31</div></div>
 <!-- start footer part -->

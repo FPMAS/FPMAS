@@ -329,7 +329,7 @@ namespace fpmas { namespace model {
 		 * @param agent_graph associated agent graph
 		 * @param job_id unique id of the associated job
 		 */
-		AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph, JID job_id);
+		AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph);
 
 		api::model::GroupId groupId() const override {return id;}
 
@@ -548,15 +548,8 @@ namespace fpmas { namespace model {
 			SetAgentDistantCallback* set_distant_callback = new SetAgentDistantCallback(*this);
 
 			std::unordered_map<api::model::GroupId, api::model::AgentGroup*> _groups;
-			
-			JID job_id = LB_JID + 1;
-			
 
 		public:
-			/**
-			 * JID used for the loadBalancingJob()
-			 */
-			static const JID LB_JID;
 			/**
 			 * Model constructor.
 			 *

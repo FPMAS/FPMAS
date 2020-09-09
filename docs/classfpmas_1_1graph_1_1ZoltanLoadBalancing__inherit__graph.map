@@ -1,4 +1,5 @@
 <map id="fpmas::graph::ZoltanLoadBalancing&lt; T &gt;" name="fpmas::graph::ZoltanLoadBalancing&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="29,95,199,136"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html" title=" " alt="" coords="5,5,223,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="271,39,441,80"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1LoadBalancing.html" title=" " alt="" coords="45,5,183,47"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html" title=" " alt="" coords="5,71,223,112"/>
 </map>

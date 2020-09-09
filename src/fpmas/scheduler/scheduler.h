@@ -53,6 +53,7 @@ namespace fpmas { namespace scheduler {
 	 */
 	class Job : public api::scheduler::Job {
 		private:
+			static JID job_id;
 			VoidTask voidTask;
 			JID _id;
 			std::vector<api::scheduler::Task*> _tasks;
@@ -65,7 +66,7 @@ namespace fpmas { namespace scheduler {
 			 *
 			 * @param id job id
 			 */
-			Job(JID id) : _id(id) {}
+			Job() : _id(job_id++) {}
 			JID id() const override;
 			void add(api::scheduler::Task&) override;
 			void remove(api::scheduler::Task&) override;

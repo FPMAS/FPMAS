@@ -3,6 +3,8 @@
 
 namespace fpmas { namespace scheduler {
 
+	JID Job::job_id {0};
+
 	JID Job::id() const {return _id;}
 
 	void Job::add(api::scheduler::Task& task) {
