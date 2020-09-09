@@ -76,7 +76,7 @@ namespace fpmas { namespace model {
 			api::scheduler::Scheduler& scheduler,
 			api::runtime::Runtime& runtime,
 			LoadBalancingAlgorithm& load_balancing)
-		: gid(0), _graph(graph), _scheduler(scheduler), _runtime(runtime), _loadBalancingJob(LB_JID),
+		: _graph(graph), _scheduler(scheduler), _runtime(runtime), _loadBalancingJob(LB_JID),
 		load_balancing_task(_graph, load_balancing) {
 			_loadBalancingJob.add(load_balancing_task);
 			_graph.addCallOnInsertNode(insert_node_callback);
@@ -95,10 +95,9 @@ namespace fpmas { namespace model {
 		return static_cast<AgentGroup&>(*_groups.at(id));
 	}
 
-	AgentGroup& Model::buildGroup() {
-		AgentGroup* group = new AgentGroup(gid, _graph, job_id++);
-		_groups.insert({gid, group}); 
-		gid++;
+	AgentGroup& Model::buildGroup(api::model::GroupId id) {
+		AgentGroup* group = new AgentGroup(id, _graph, job_id++);
+		_groups.insert({id, group}); 
 		return *group;
 	}
 

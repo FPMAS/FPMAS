@@ -43,4 +43,12 @@
 	fpmas::scheduler::LambdaTask\
 		<std::remove_pointer<decltype(node)>::type::data_type>(node, [&] () body)
 
+#define FPMAS_DEFINE_GROUPS(...)\
+	enum : fpmas::api::model::GroupId {\
+		__VA_ARGS__ };
+
+#define FPMAS_DEFINE_LAYERS(...)\
+	enum : fpmas::api::graph::LayerId {\
+		__VA_ARGS__ };
+
 #endif

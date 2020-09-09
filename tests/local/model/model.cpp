@@ -117,10 +117,12 @@ TEST_F(ModelTest, graph) {
 }
 
 TEST_F(ModelTest, build_group) {
-	auto& group_1 = model->buildGroup();
-	auto& group_2 = model->buildGroup();
+	FPMAS_DEFINE_GROUPS(G_1, G_2);
 
-	ASSERT_THAT(model->groups(), UnorderedElementsAre(Pair(_, &group_1), Pair(_, &group_2)));
+	auto& group_1 = model->buildGroup(G_1);
+	auto& group_2 = model->buildGroup(G_2);
+
+	ASSERT_THAT(model->groups(), UnorderedElementsAre(Pair(G_1, &group_1), Pair(G_2, &group_2)));
 }
 
 TEST_F(ModelTest, load_balancing_job) {

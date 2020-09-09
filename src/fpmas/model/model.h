@@ -517,7 +517,6 @@ namespace fpmas { namespace model {
 			typedef typename LoadBalancingTask::LoadBalancingAlgorithm LoadBalancingAlgorithm;
 
 		private:
-			api::model::GroupId gid;
 			api::model::AgentGraph& _graph;
 			api::scheduler::Scheduler& _scheduler;
 			api::runtime::Runtime& _runtime;
@@ -562,7 +561,7 @@ namespace fpmas { namespace model {
 
 			const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
-			AgentGroup& buildGroup() override;
+			AgentGroup& buildGroup(api::model::GroupId id) override;
 			AgentGroup& getGroup(api::model::GroupId id) const override;
 			const std::unordered_map<api::model::GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
 

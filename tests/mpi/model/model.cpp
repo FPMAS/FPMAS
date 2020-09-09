@@ -26,6 +26,8 @@ FPMAS_DEFAULT_JSON(MockAgentBase<10>)
 
 class ModelGhostModeIntegrationTest : public ::testing::Test {
 	protected:
+		FPMAS_DEFINE_GROUPS(G_1, G_2)
+
 		static const int NODE_BY_PROC;
 		static const int NUM_STEPS;
 		fpmas::communication::MpiCommunicator comm;
@@ -81,8 +83,9 @@ class IncreaseCountAct : public fpmas::model::AgentNodeCallback {
 
 class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationTest {
 	protected:
-		fpmas::api::model::AgentGroup& group1 = model.buildGroup();
-		fpmas::api::model::AgentGroup& group2 = model.buildGroup();
+
+		fpmas::api::model::AgentGroup& group1 = model.buildGroup(G_1);
+		fpmas::api::model::AgentGroup& group2 = model.buildGroup(G_2);
 		void SetUp() override {
 
 			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
@@ -175,8 +178,8 @@ class UpdateWeightAct : public fpmas::model::AgentNodeCallback {
 class ModelGhostModeIntegrationLoadBalancingTest : public ModelGhostModeIntegrationTest {
 	protected:
 		void SetUp() override {
-			auto& group1 = model.buildGroup();
-			auto& group2 = model.buildGroup();
+			auto& group1 = model.buildGroup(G_1);
+			auto& group2 = model.buildGroup(G_2);
 
 			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
 			FPMAS_ON_PROC(comm, 0) {
@@ -239,6 +242,8 @@ class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 
 class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
+		FPMAS_DEFINE_GROUPS(G_1, G_2)
+
 		static const int NODE_BY_PROC;
 		static const int NUM_STEPS;
 		fpmas::communication::MpiCommunicator comm;
@@ -264,8 +269,8 @@ const int ModelHardSyncModeIntegrationTest::NUM_STEPS = 100;
 class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegrationTest {
 	protected:
 		void SetUp() override {
-			auto& group1 = model.buildGroup();
-			auto& group2 = model.buildGroup();
+			auto& group1 = model.buildGroup(G_1);
+			auto& group2 = model.buildGroup(G_2);
 
 			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
 			FPMAS_ON_PROC(comm, 0) {
@@ -333,8 +338,8 @@ TEST_F(ModelHardSyncModeIntegrationExecutionTest, hard_sync_mode_with_link) {
 class ModelHardSyncModeIntegrationLoadBalancingTest : public ModelHardSyncModeIntegrationTest {
 	protected:
 		void SetUp() override {
-			auto& group1 = model.buildGroup();
-			auto& group2 = model.buildGroup();
+			auto& group1 = model.buildGroup(G_1);
+			auto& group2 = model.buildGroup(G_2);
 
 			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
 			FPMAS_ON_PROC(comm, 0) {
@@ -400,6 +405,8 @@ class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
 
 class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 	protected:
+		FPMAS_DEFINE_GROUPS(G_0)
+
 		static const unsigned int AGENT_BY_PROC = 50;
 		static const unsigned int STEPS = 100;
 		fpmas::communication::MpiCommunicator comm;
@@ -420,7 +427,7 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {
 	protected:
 		void SetUp() override {
-			auto& group = model.buildGroup();
+			auto& group = model.buildGroup(G_0);
 			FPMAS_ON_PROC(comm, 0) {
 				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new ReaderAgent);
@@ -447,7 +454,7 @@ TEST_F(HardSyncReadersModelIntegrationTest, test) {
 class HardSyncWritersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {
 	protected:
 		void SetUp() override {
-			auto& group = model.buildGroup();
+			auto& group = model.buildGroup(G_0);
 			if(agent_graph.getMpiCommunicator().getRank() == 0) {
 				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new WriterAgent);
@@ -525,7 +532,7 @@ class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegratio
 		std::set<DistributedId> initial_links;
 
 		void SetUp() override {
-			auto& group = model.buildGroup();
+			auto& group = model.buildGroup(G_1);
 
 			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
@@ -618,7 +625,7 @@ class ModelDynamicLinkHardSyncModeIntegrationTest : public ModelHardSyncModeInte
 		std::set<DistributedId> initial_links;
 
 		void SetUp() override {
-			auto& group = model.buildGroup();
+			auto& group = model.buildGroup(G_1);
 
 			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {

@@ -442,8 +442,12 @@ namespace fpmas { namespace api {namespace model {
 			 * ```cpp
 			 * using fpmas::api::model::AgentGroup;
 			 *
-			 * AgentGroup& group_1 = model.buildGroup();
-			 * AgentGroup& group_2 = model.buildGroup();
+			 * enum Groups : fpmas::api::model::GroupId {
+			 * 	G_1, G_2
+			 * };
+			 *
+			 * AgentGroup& group_1 = model.buildGroup(G_1);
+			 * AgentGroup& group_2 = model.buildGroup(G_2);
 			 *
 			 * group_1.add(new Agent1);
 			 * group_1.add(new Agent1);
@@ -459,7 +463,7 @@ namespace fpmas { namespace api {namespace model {
 			 * model.scheduler().schedule(0, 2, group_2.job());
 			 * ```
 			 */
-			virtual AgentGroup& buildGroup() = 0;
+			virtual AgentGroup& buildGroup(GroupId id) = 0;
 
 			/**
 			 * Gets a reference to an AgentGroup previously created with
