@@ -3,7 +3,6 @@
 
 #include "gmock/gmock.h"
 
-//#include "fpmas/api/communication/resource_handler.h"
 #include "fpmas/api/communication/communication.h"
 
 using ::testing::Return;
