@@ -5,6 +5,7 @@
  * Model implementation.
  */
 
+#include "fpmas/api/graph/graph_builder.h"
 #include "fpmas/api/model/model.h"
 #include "fpmas/graph/distributed_graph.h"
 #include "fpmas/runtime/runtime.h"
@@ -128,6 +129,15 @@ namespace fpmas { namespace model {
 				 */
 				const_iterator end() const {
 					return neighbors.end();
+				}
+
+				/**
+				 * Returns the count of neighbors in this list.
+				 *
+				 * @return neighbors count
+				 */
+				std::size_t count() const {
+					return neighbors.size();
 				}
 
 				/**
@@ -713,6 +723,33 @@ namespace fpmas { namespace model {
 			 */
 			const communication::MpiCommunicator& getMpiCommunicator() const {
 				return this->comm;
+			}
+	};
+
+	class AgentNodeBuilder : public api::graph::NodeBuilder<AgentPtr> {
+		private:
+			api::model::AgentGroup& group;
+			std::vector<api::model::Agent*> agents;
+
+		public:
+			AgentNodeBuilder(api::model::AgentGroup& group)
+				: group(group) {}
+
+			void push(api::model::Agent* agent) {
+				agents.push_back(agent);
+			}
+
+			api::graph::DistributedNode<AgentPtr>*
+				buildNode(api::graph::DistributedGraph<AgentPtr>&) override {
+					auto* agent = agents.back();
+				group.add(agent);
+				agents.pop_back();
+
+				return agent->node();
+			}
+
+			std::size_t nodeCount() override {
+				return agents.size();
 			}
 	};
 }}

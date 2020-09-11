@@ -11,7 +11,6 @@ namespace fpmas { namespace model {
 	void AgentGroup::add(api::model::Agent* agent) {
 		agent->setGroupId(id);
 		agent_graph.buildNode(agent);
-		//_agents.push_back(agent);
 	}
 
 	void AgentGroup::remove(api::model::Agent* agent) {

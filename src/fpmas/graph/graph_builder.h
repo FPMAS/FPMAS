@@ -18,15 +18,15 @@ namespace fpmas { namespace graph {
 						api::random::Distribution<std::size_t>& distrib)
 					: generator(generator), distrib(distrib) {}
 
-				void build(std::vector<T> nodes_data, api::graph::LayerId layer, api::graph::DistributedGraph<T>& graph) override;
+				void build(api::graph::NodeBuilder<T>& node_builder, api::graph::LayerId layer, api::graph::DistributedGraph<T>& graph) override;
 		};
 
 	template<typename T>
 		void FixedDegreeDistributionRandomGraph<T>
-			::build(std::vector<T> nodes_data, api::graph::LayerId layer, api::graph::DistributedGraph<T>& graph) {
+			::build(api::graph::NodeBuilder<T>& node_builder, api::graph::LayerId layer, api::graph::DistributedGraph<T>& graph) {
 				std::vector<api::graph::DistributedNode<T>*> built_nodes;
-				for(T& data : nodes_data)
-					built_nodes.push_back(graph.buildNode(std::move(data)));
+				while(!node_builder.nodeCount() == 0)
+					built_nodes.push_back(node_builder.buildNode(graph));
 
 				for(auto node : built_nodes) {
 					std::size_t edge_count = std::min(distrib(generator), built_nodes.size()-1);
