@@ -4,8 +4,13 @@
 
 #include "mock_graph_base.h"
 #include "fpmas/api/graph/distributed_graph.h"
+#include "mock_distributed_node.h"
+#include "mock_distributed_edge.h"
 
-template<typename T, typename DistNode, typename DistEdge>
+template<
+	typename T,
+	typename DistNode = MockDistributedNode<T>,
+	typename DistEdge = MockDistributedEdge<T>>
 class MockDistributedGraph :
 	public MockGraph<
 		fpmas::api::graph::DistributedNode<T>,

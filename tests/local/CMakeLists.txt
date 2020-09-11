@@ -10,6 +10,7 @@ set(SOURCES
 	graph/distributed_edge.cpp
 	graph/location_manager.cpp
 	graph/zoltan_load_balancing.cpp
+	graph/graph_builder.cpp
 	# Synchro
 	synchro/ghost/data_sync.cpp
 	synchro/ghost/sync_linker.cpp
