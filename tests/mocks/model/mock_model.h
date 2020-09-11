@@ -1,6 +1,9 @@
 #ifndef MOCK_MODEL_H
 #define MOCK_MODEL_H
 #include "gmock/gmock.h"
+#include "../graph/mock_distributed_graph.h"
+#include "../graph/mock_distributed_node.h"
+#include "../graph/mock_distributed_edge.h"
 #include "fpmas/api/model/model.h"
 #include "fpmas/model/model.h"
 
@@ -109,6 +112,17 @@ class MockAgentBase : public fpmas::model::AgentBase<MockAgentBase<FOO>> {
 
 		MOCK_METHOD(void, act, (), (override));
 };
+
+using MockAgentNode = MockDistributedNode<fpmas::model::AgentPtr>;
+using MockAgentEdge = MockDistributedEdge<fpmas::model::AgentPtr>;
+
+template<
+	template<typename> class DistNode = MockDistributedNode,
+	template<typename> class DistEdge = MockDistributedEdge>
+using MockAgentGraph = MockDistributedGraph<
+	fpmas::model::AgentPtr,
+	DistNode<fpmas::model::AgentPtr>,
+	DistEdge<fpmas::model::AgentPtr>>;
 
 namespace nlohmann {
 	template<int FOO>
