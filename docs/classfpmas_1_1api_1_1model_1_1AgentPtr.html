@@ -78,7 +78,7 @@ $(function() {
 Inheritance diagram for fpmas::api::model::AgentPtr:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1api_1_1model_1_1AgentPtr__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1model_1_1AgentPtr_inherit__map" alt="Inheritance graph"/></div>
-<map name="fpmas_1_1api_1_1model_1_1AgentPtr_inherit__map" id="afpmas_1_1api_1_1model_1_1AgentPtr_inherit__map">
+<map name="fpmas_1_1api_1_1model_1_1AgentPtr_inherit__map" id="fpmas_1_1api_1_1model_1_1AgentPtr_inherit__map">
 <area shape="rect" title=" " alt="" coords="17,109,152,151"/>
 <area shape="rect" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html" title=" " alt="" coords="5,5,164,61"/>
 </map>
@@ -87,7 +87,7 @@ Inheritance diagram for fpmas::api::model::AgentPtr:</div>
 Collaboration diagram for fpmas::api::model::AgentPtr:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1api_1_1model_1_1AgentPtr__coll__graph.png" border="0" usemap="#afpmas_1_1api_1_1model_1_1AgentPtr_coll__map" alt="Collaboration graph"/></div>
-<map name="fpmas_1_1api_1_1model_1_1AgentPtr_coll__map" id="afpmas_1_1api_1_1model_1_1AgentPtr_coll__map">
+<map name="fpmas_1_1api_1_1model_1_1AgentPtr_coll__map" id="fpmas_1_1api_1_1model_1_1AgentPtr_coll__map">
 <area shape="rect" title=" " alt="" coords="17,215,152,256"/>
 <area shape="rect" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html" title=" " alt="" coords="5,109,164,165"/>
 <area shape="rect" href="classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="17,5,152,47"/>
@@ -292,14 +292,7 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Moves other's agent data <em>into</em> this agent pointer.</p>
-<p>The old agent pointer is replaced by other's agent according to the following rules :</p><ul>
-<li>other's agent pointer group, task, node and graph fields are replaced by <b>this current agent pointer values</b>.</li>
-<li>this current agent pointer task is rebound to other's agent pointer</li>
-<li>this agent pointer is replaced by other's agent pointer</li>
-</ul>
-<p>In other terms, this agent pointer wrapper instance can be considered as an "host" for an agent pointer. When other is moved into this instance, any internal agent data is moved from other to this, preserving former links to task, node and graph so that those objects do not notify that the internal pointer has changed.</p>
-<p>This mechanism is used when <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> updates are received in a <a class="el" href="structfpmas_1_1synchro_1_1DataUpdatePack.html">synchro::DataUpdatePack</a> for example, depending on the <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html">api::synchro::SyncMode</a> used. This <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> instance is supposed to be already contained in the local graph, as a DISTANT node data, and updates, received in the other <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>, are <em>moved into</em> this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>.</p>
+<p>Moves other's agent data <em>into</em> this agent pointer, using <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#acf5e675efc2b0a5d634afbcb9dd9d98d">Agent::moveAssign()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td>other <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> to move into this </td></tr>

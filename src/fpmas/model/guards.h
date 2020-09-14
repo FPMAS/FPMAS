@@ -42,6 +42,38 @@ namespace fpmas {
 				AcquireGuard(api::model::Agent* agent)
 					: synchro::AcquireGuard<fpmas::api::model::AgentPtr>(agent->node()) {}
 		};
+
+		/**
+		 * \Agent lock Guard.
+		 *
+		 * @see synchro::LockGuard
+		 */
+		class LockGuard : public synchro::LockGuard<fpmas::api::model::AgentPtr> {
+			public:
+				/**
+				 * LockGuard constructor.
+				 *
+				 * @param agent agent to lock
+				 */
+				LockGuard(api::model::Agent* agent)
+					: synchro::LockGuard<fpmas::api::model::AgentPtr>(agent->node()) {}
+		};
+
+		/**
+		 * \Agent shared lock Guard.
+		 *
+		 * @see synchro::SharedLockGuard
+		 */
+		class SharedLockGuard : public synchro::SharedLockGuard<fpmas::api::model::AgentPtr> {
+			public:
+				/**
+				 * SharedLockGuard constructor.
+				 *
+				 * @param agent agent to share lock
+				 */
+				SharedLockGuard(api::model::Agent* agent)
+					: synchro::SharedLockGuard<fpmas::api::model::AgentPtr>(agent->node()) {}
+		};
 	}
 }
 #endif

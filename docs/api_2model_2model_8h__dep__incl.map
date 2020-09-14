@@ -1,7 +1,7 @@
 <map id="src/fpmas/api/model/model.h" name="src/fpmas/api/model/model.h">
-<area shape="rect" id="node1" title=" " alt="" coords="218,5,358,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="146,5,286,47"/>
 <area shape="rect" id="node2" href="$model_2guards_8h.html" title=" " alt="" coords="5,95,179,121"/>
-<area shape="rect" id="node3" href="$model_2model_8h.html" title=" " alt="" coords="203,95,373,121"/>
-<area shape="rect" id="node5" href="$serializer_8h.html" title=" " alt="" coords="397,95,584,121"/>
-<area shape="rect" id="node4" href="$fpmas_8h.html" title=" " alt="" coords="344,169,435,196"/>
+<area shape="rect" id="node3" href="$model_2model_8h.html" title=" " alt="" coords="7,169,177,196"/>
+<area shape="rect" id="node5" href="$serializer_8h.html" title=" " alt="" coords="201,169,388,196"/>
+<area shape="rect" id="node4" href="$fpmas_8h.html" title=" " alt="" coords="148,244,239,271"/>
 </map>

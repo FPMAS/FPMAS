@@ -78,7 +78,7 @@ $(function() {
 Inheritance diagram for fpmas::model::AgentGroup:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1AgentGroup__inherit__graph.png" border="0" usemap="#afpmas_1_1model_1_1AgentGroup_inherit__map" alt="Inheritance graph"/></div>
-<map name="fpmas_1_1model_1_1AgentGroup_inherit__map" id="afpmas_1_1model_1_1AgentGroup_inherit__map">
+<map name="fpmas_1_1model_1_1AgentGroup_inherit__map" id="fpmas_1_1model_1_1AgentGroup_inherit__map">
 <area shape="rect" title=" " alt="" coords="5,95,184,121"/>
 <area shape="rect" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html" title=" " alt="" coords="27,5,162,47"/>
 </map>
@@ -87,7 +87,7 @@ Inheritance diagram for fpmas::model::AgentGroup:</div>
 Collaboration diagram for fpmas::model::AgentGroup:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1AgentGroup__coll__graph.png" border="0" usemap="#afpmas_1_1model_1_1AgentGroup_coll__map" alt="Collaboration graph"/></div>
-<map name="fpmas_1_1model_1_1AgentGroup_coll__map" id="afpmas_1_1model_1_1AgentGroup_coll__map">
+<map name="fpmas_1_1model_1_1AgentGroup_coll__map" id="fpmas_1_1model_1_1AgentGroup_coll__map">
 <area shape="rect" title=" " alt="" coords="5,95,184,121"/>
 <area shape="rect" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html" title=" " alt="" coords="27,5,162,47"/>
 </map>
@@ -113,6 +113,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a54024b9d8617360e2d281a0c94cc26f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a131b2b8208ca7cec86759ff987a27abb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a131b2b8208ca7cec86759ff987a27abb">agents</a> () const override</td></tr>
 <tr class="separator:a131b2b8208ca7cec86759ff987a27abb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78de7b946cb9c2d4613e0dc7966331c9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentGroup.html#a78de7b946cb9c2d4613e0dc7966331c9">localAgents</a> () const override</td></tr>
+<tr class="separator:a78de7b946cb9c2d4613e0dc7966331c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> implementation. </p>
@@ -424,10 +426,39 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the list of all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> currently in this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>Returns the list of all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> currently in this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>, including <code>DISTANT</code> representations of Agents not executed on the current process.</p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#abf93546021171370c7705830e72ae41a">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a78de7b946cb9c2d4613e0dc7966331c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78de7b946cb9c2d4613e0dc7966331c9">&#9670;&nbsp;</a></span>localAgents()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> * &gt; fpmas::model::AgentGroup::localAgents </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the list of <code>LOCAL</code> Agents currently in this <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a>, that are executed on the current process.</p>
+<dl class="section return"><dt>Returns</dt><dd><code>LOCAL</code> <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a5cef22fbea05297ecf8aa732e5226eae">fpmas::api::model::AgentGroup</a>.</p>
 
 </div>
 </div>

@@ -20,9 +20,9 @@ class ReaderAgent;
 class WriterAgent;
 class LinkerAgent;
 
-FPMAS_JSON_SET_UP(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>)
-FPMAS_DEFAULT_JSON(MockAgentBase<1>)
-FPMAS_DEFAULT_JSON(MockAgentBase<10>)
+FPMAS_JSON_SET_UP(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>)
+FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>)
+FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
 
 class ModelGhostModeIntegrationTest : public ::testing::Test {
 	protected:
@@ -44,7 +44,7 @@ class ModelGhostModeIntegrationTest : public ::testing::Test {
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
 
 		ModelGhostModeIntegrationTest() {
-			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>)
+			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>)
 		}
 };
 const int ModelGhostModeIntegrationTest::NODE_BY_PROC = 50;
@@ -69,12 +69,12 @@ class IncreaseCountAct : public fpmas::model::AgentNodeCallback {
 		IncreaseCountAct(std::unordered_map<DistributedId, unsigned long>& act_counts) : act_counts(act_counts) {}
 
 		void call(fpmas::model::AgentNode* node) override {
-			if(node->data().get()->typeId() == MockAgentBase<1>::TYPE_ID) {
-				EXPECT_CALL(*static_cast<MockAgentBase<1>*>(node->data().get()), act)
+			if(node->data().get()->typeId() == DefaultMockAgentBase<1>::TYPE_ID) {
+				EXPECT_CALL(*static_cast<DefaultMockAgentBase<1>*>(node->data().get()), act)
 					.Times(AnyNumber())
 					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
-			} else if(node->data().get()->typeId() == MockAgentBase<10>::TYPE_ID) {
-				EXPECT_CALL(*static_cast<MockAgentBase<10>*>(node->data().get()), act)
+			} else if(node->data().get()->typeId() == DefaultMockAgentBase<10>::TYPE_ID) {
+				EXPECT_CALL(*static_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
 					.Times(AnyNumber())
 					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
 			}
@@ -91,8 +91,8 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
 			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
-					group1.add(new MockAgentBase<1>);
-					group2.add(new MockAgentBase<10>);
+					group1.add(new DefaultMockAgentBase<1>);
+					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
 			scheduler.schedule(0, 1, group1.job());
@@ -100,9 +100,9 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				act_counts[{0, (unsigned int) id}] = 0;
 				if(id % 2 == 0) {
-					agent_types.insert({{0, (unsigned int) id}, typeid(MockAgentBase<1>)});
+					agent_types.insert({{0, (unsigned int) id}, typeid(DefaultMockAgentBase<1>)});
 				} else {
-					agent_types.insert({{0, (unsigned int) id}, typeid(MockAgentBase<10>)});
+					agent_types.insert({{0, (unsigned int) id}, typeid(DefaultMockAgentBase<10>)});
 				}
 			}
 		}
@@ -116,7 +116,7 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 				if(agent_graph.getMpiCommunicator().getRank() == 0) {
 					int sum = 0;
 					sum = std::accumulate(counts.begin(), counts.end(), sum);
-					if(agent_types.at(dist_id) == typeid(MockAgentBase<1>)) {
+					if(agent_types.at(dist_id) == typeid(DefaultMockAgentBase<1>)) {
 						// Executed every step
 						ASSERT_EQ(sum, NUM_STEPS);
 					} else {
@@ -170,7 +170,7 @@ class UpdateWeightAct : public fpmas::model::AgentNodeCallback {
 	public:
 		void call(fpmas::model::AgentNode* node) override {
 			node->setWeight(random_weight(engine) * 10);
-			EXPECT_CALL(*static_cast<MockAgentBase<10>*>(node->data().get()), act)
+			EXPECT_CALL(*static_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
 				.Times(AnyNumber());
 		}
 };
@@ -184,7 +184,7 @@ class ModelGhostModeIntegrationLoadBalancingTest : public ModelGhostModeIntegrat
 			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
 			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
-					group2.add(new MockAgentBase<10>);
+					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
 			std::mt19937 engine;
@@ -260,7 +260,7 @@ class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
 
 		ModelHardSyncModeIntegrationTest() {
-			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>)
+			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>)
 		}
 };
 const int ModelHardSyncModeIntegrationTest::NODE_BY_PROC = 20;
@@ -275,8 +275,8 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
 			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
-					group1.add(new MockAgentBase<1>);
-					group2.add(new MockAgentBase<10>);
+					group1.add(new DefaultMockAgentBase<1>);
+					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
 			scheduler.schedule(0, 1, group1.job());
@@ -284,9 +284,9 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				act_counts[{0, (unsigned int) id}] = 0;
 				if(id % 2 == 0) {
-					agent_types.insert({{0, (unsigned int) id}, typeid(MockAgentBase<1>)});
+					agent_types.insert({{0, (unsigned int) id}, typeid(DefaultMockAgentBase<1>)});
 				} else {
-					agent_types.insert({{0, (unsigned int) id}, typeid(MockAgentBase<10>)});
+					agent_types.insert({{0, (unsigned int) id}, typeid(DefaultMockAgentBase<10>)});
 				}
 			}
 		}
@@ -300,7 +300,7 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 				if(agent_graph.getMpiCommunicator().getRank() == 0) {
 					int sum = 0;
 					sum = std::accumulate(counts.begin(), counts.end(), sum);
-					if(agent_types.at(dist_id) == typeid(MockAgentBase<1>)) {
+					if(agent_types.at(dist_id) == typeid(DefaultMockAgentBase<1>)) {
 						// Executed every step
 						ASSERT_EQ(sum, NUM_STEPS);
 					} else {
@@ -344,7 +344,7 @@ class ModelHardSyncModeIntegrationLoadBalancingTest : public ModelHardSyncModeIn
 			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
 			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
-					group2.add(new MockAgentBase<10>);
+					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
 			std::mt19937 engine;
@@ -420,7 +420,7 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 		fpmas::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		HardSyncAgentModelIntegrationTest() {
-			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, MockAgentBase<1>, MockAgentBase<10>);
+			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>);
 		}
 };
 

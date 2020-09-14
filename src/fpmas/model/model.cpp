@@ -25,6 +25,14 @@ namespace fpmas { namespace model {
 		_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
 	}
 
+	std::vector<api::model::AgentPtr*> AgentGroup::localAgents() const {
+		std::vector<api::model::AgentPtr*> local_agents;
+		for(auto agent : _agents)
+			if(agent->get()->node()->state() == graph::LocationState::LOCAL)
+				local_agents.push_back(agent);
+		return local_agents;
+	}
+
 	void InsertAgentNodeCallback::call(AgentNode *node) {
 		api::model::AgentPtr& agent = node->data();
 		FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
@@ -33,8 +41,8 @@ namespace fpmas { namespace model {
 		agent->group()->insert(&agent);
 		agent->setNode(node);
 		agent->setModel(&model);
-		AgentTask* task = new AgentTask;
-		task->setAgent(agent);
+		AgentTask* task = new AgentTask(agent);
+		//task->setAgent(agent);
 		agent->setTask(task);
 	}
 

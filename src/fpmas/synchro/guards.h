@@ -110,5 +110,62 @@ namespace fpmas { namespace synchro {
 				}
 		};
 
+	/**
+	 * LockGuard.
+	 */
+	template<typename T>
+		class LockGuard : Guard<T> {
+			public:
+				/**
+				 * LockGuard constructor.
+				 *
+				 * The node is locked exactly as if `node->mutex()->lock()` was
+				 * called.
+				 *
+				 * @param node to lock
+				 */
+				LockGuard(api::graph::DistributedNode<T>* node)
+					: Guard<T>(node) {
+						this->mutex.lock();
+					}
+				/**
+				 * LockGuard destructor.
+				 *
+				 * Unlocks the node.
+				 */
+				virtual ~LockGuard() {
+					this->mutex.unlock();
+				}
+		};
+
+	/**
+	 * SharedLockGuard.
+	 */
+	template<typename T>
+		class SharedLockGuard : Guard<T> {
+			public:
+				/**
+				 * SharedLockGuard constructor.
+				 *
+				 * The node is locked exactly as if `node->mutex()->lockShared()` was
+				 * called.
+				 *
+				 * @param node to share lock
+				 */
+				SharedLockGuard(api::graph::DistributedNode<T>* node)
+					: Guard<T>(node) {
+						this->mutex.lockShared();
+					}
+				/**
+				 * SharedLockGuard destructor.
+				 *
+				 * Unlocks the node.
+				 */
+				virtual ~SharedLockGuard() {
+					this->mutex.unlockShared();
+				}
+		};
+
+
 }}
 #endif

@@ -31,6 +31,8 @@ class MockAgent : public fpmas::api::model::Agent {
 
 		MOCK_METHOD(fpmas::api::model::TypeId, typeId, (), (const, override));
 		MOCK_METHOD(fpmas::api::model::Agent*, copy, (), (const, override));
+		MOCK_METHOD(void, copyAssign, (fpmas::api::model::Agent*), (override));
+		MOCK_METHOD(void, moveAssign, (fpmas::api::model::Agent*), (override));
 
 		MOCK_METHOD(fpmas::api::model::AgentNode*, node, (), (override));
 		MOCK_METHOD(const fpmas::api::model::AgentNode*, node, (), (const, override));
@@ -94,6 +96,7 @@ class MockAgentGroup : public fpmas::api::model::AgentGroup {
 		MOCK_METHOD(void, insert, (fpmas::api::model::AgentPtr*), (override));
 		MOCK_METHOD(void, erase, (fpmas::api::model::AgentPtr*), (override));
 		MOCK_METHOD(std::vector<fpmas::api::model::AgentPtr*>, agents, (), (const, override));
+		MOCK_METHOD(std::vector<fpmas::api::model::AgentPtr*>, localAgents, (), (const, override));
 		MOCK_METHOD(fpmas::api::scheduler::Job&, job, (), (override));
 		MOCK_METHOD(const fpmas::api::scheduler::Job&, job, (), (const, override));
 };
@@ -101,17 +104,36 @@ class MockAgentGroup : public fpmas::api::model::AgentGroup {
 /*
  * FOO parameter is just used to easily generate multiple agent types.
  */
-template<int FOO = 0>
-class MockAgentBase : public fpmas::model::AgentBase<MockAgentBase<FOO>> {
+template<typename AgentType>
+class MockAgentBase : public fpmas::model::AgentBase<AgentType> {
 	public:
-		MockAgentBase():fpmas::model::AgentBase<MockAgentBase<FOO>>() {
+		MockAgentBase():fpmas::model::AgentBase<AgentType>() {
+			EXPECT_CALL(*this, _copyAssign).Times(AnyNumber());
+			EXPECT_CALL(*this, _moveAssign).Times(AnyNumber());
 		}
 		MockAgentBase(const MockAgentBase& other)
-			: fpmas::model::AgentBase<MockAgentBase<FOO>>(other) {
+			: fpmas::model::AgentBase<AgentType>(other) {
+				EXPECT_CALL(*this, _copyAssign).Times(AnyNumber());
+				EXPECT_CALL(*this, _moveAssign).Times(AnyNumber());
 			}
+
+		MockAgentBase& operator=(const MockAgentBase& other) {
+			this->_copyAssign(&other);
+			return *this;
+		}
+		MOCK_METHOD(void, _copyAssign, (const MockAgentBase*), ());
+
+		MockAgentBase& operator=(MockAgentBase&& other) {
+			this->_moveAssign(&other);
+			return *this;
+		}
+		MOCK_METHOD(void, _moveAssign, (MockAgentBase*), ());
 
 		MOCK_METHOD(void, act, (), (override));
 };
+
+template<int FOO = 0>
+class DefaultMockAgentBase : public MockAgentBase<DefaultMockAgentBase<FOO>> {};
 
 using MockAgentNode = MockDistributedNode<fpmas::model::AgentPtr>;
 using MockAgentEdge = MockDistributedEdge<fpmas::model::AgentPtr>;

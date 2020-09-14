@@ -1,5 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfpmas_1_1synchro_1_1Guard.html" title=" " alt="" coords="5,31,192,57"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1synchro_1_1AcquireGuard.html" title=" " alt="" coords="240,5,471,32"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1synchro_1_1ReadGuard.html" title=" " alt="" coords="247,56,464,83"/>
+<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1utils_1_1PtrWrapper.html" title=" " alt="" coords="5,5,164,61"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1AgentPtr.html" title=" " alt="" coords="212,13,347,54"/>
 </map>

@@ -13,36 +13,14 @@ namespace fpmas { namespace api { namespace model {
 	}
 
 	AgentPtr& AgentPtr::operator=(const AgentPtr& other) {
-		if(this->ptr != nullptr) {
-			delete this->ptr;
-		}
-		this->ptr = other.ptr->copy();
+		this->ptr->copyAssign(other.ptr);
 		this->ptr->setGroupId(other.ptr->groupId());
 		return *this;
 	}
 
 	AgentPtr& AgentPtr::operator=(AgentPtr&& other) {
 		if(other.ptr != nullptr) {
-			api::model::AgentGroup* group = nullptr;
-			AgentTask* task = nullptr;
-			api::model::AgentNode* node = nullptr;
-			api::model::Model* model = nullptr;
-			if(this->ptr != nullptr) {
-				group = this->ptr->group();
-				task = this->ptr->task();
-				task->setAgent(other.get());
-				node = this->ptr->node();
-				model = this->ptr->model();
-
-				delete this->ptr;
-			}
-
-			this->ptr = other.get();
-			other.ptr = nullptr;
-			this->ptr->setGroup(group);
-			this->ptr->setTask(task);
-			this->ptr->setNode(node);
-			this->ptr->setModel(model);
+			this->ptr->moveAssign(other.get());
 		}
 
 		return *this;

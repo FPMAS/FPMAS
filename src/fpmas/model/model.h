@@ -11,6 +11,7 @@
 #include "fpmas/runtime/runtime.h"
 #include "fpmas/graph/zoltan_load_balancing.h"
 #include "fpmas/graph/scheduled_load_balancing.h"
+#include "guards.h"
 
 #include <random>
 
@@ -183,6 +184,22 @@ namespace fpmas { namespace model {
 			api::model::TypeId typeId() const override {return TYPE_ID;}
 			api::model::Agent* copy() const override {return new AgentType(*static_cast<const AgentType*>(this));}
 
+			void copyAssign(api::model::Agent* agent) override {
+				// Uses AgentType copy assignment operator
+				*static_cast<AgentType*>(this) = *static_cast<const AgentType*>(agent);
+			}
+
+			void moveAssign(api::model::Agent* agent) override {
+				// Sets and overrides the fields that must be preserved
+				agent->setGroup(this->group());
+				agent->setTask(this->task());
+				agent->setNode(this->node());
+				agent->setModel(this->model());
+
+				// Uses AgentType move assignment operator
+				*static_cast<AgentType*>(this) = std::move(*static_cast<const AgentType*>(agent));
+			}
+
 			api::model::AgentNode* node() override {return _node;}
 			const api::model::AgentNode* node() const override {return _node;}
 			void setNode(api::model::AgentNode* node) override {_node = node;}
@@ -276,15 +293,22 @@ namespace fpmas { namespace model {
 	 */
 	class AgentTask : public api::model::AgentTask {
 		private:
-			api::model::Agent* _agent;
+			api::model::AgentPtr& _agent;
 		public:
-			const api::model::Agent* agent() const override {return _agent;}
-			void setAgent(api::model::Agent* agent) override {_agent=agent;}
+			//const api::model::Agent* agent() const override {return _agent->get();}
+			//void setAgent(api::model::AgentPtr* agent) override {_agent=agent;}
+			AgentTask(api::model::AgentPtr& agent_ptr)
+				: _agent(agent_ptr) {}
+
+			const api::model::AgentPtr& agent() const override {
+				return _agent;
+			}
 
 			AgentNode* node() override
 				{return _agent->node();}
 
 			void run() override {
+				//LockGuard lock (_agent);
 				_agent->act();
 			}
 	};
@@ -352,6 +376,7 @@ namespace fpmas { namespace model {
 		scheduler::Job& job() override {return _job;}
 		const scheduler::Job& job() const override {return _job;}
 		std::vector<api::model::AgentPtr*> agents() const override {return _agents;}
+		std::vector<api::model::AgentPtr*> localAgents() const override;
 	};
 
 	/**
@@ -742,11 +767,11 @@ namespace fpmas { namespace model {
 			api::graph::DistributedNode<AgentPtr>*
 				buildNode(api::graph::DistributedGraph<AgentPtr>&) override {
 					auto* agent = agents.back();
-				group.add(agent);
-				agents.pop_back();
+					group.add(agent);
+					agents.pop_back();
 
-				return agent->node();
-			}
+					return agent->node();
+				}
 
 			std::size_t nodeCount() override {
 				return agents.size();

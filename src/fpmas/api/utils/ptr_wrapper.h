@@ -62,9 +62,9 @@ namespace fpmas { namespace api { namespace utils {
 			  * @return internal pointer
 			  */
 			 T* release() {
-				 T* ptr = ptr;
-				 ptr = nullptr;
-				 return ptr;
+				 T* _ptr = this->ptr;
+				 this->ptr = nullptr;
+				 return _ptr;
 			 }
 
 			 /**

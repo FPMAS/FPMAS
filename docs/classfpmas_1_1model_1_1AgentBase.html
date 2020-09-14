@@ -79,7 +79,7 @@ $(function() {
 Inheritance diagram for fpmas::model::AgentBase&lt; AgentType &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1AgentBase__inherit__graph.png" border="0" usemap="#afpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_inherit__map" alt="Inheritance graph"/></div>
-<map name="fpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_inherit__map" id="afpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_inherit__map">
+<map name="fpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_inherit__map" id="fpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_inherit__map">
 <area shape="rect" title=" " alt="" coords="5,95,179,136"/>
 <area shape="rect" href="classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="25,5,159,47"/>
 </map>
@@ -88,7 +88,7 @@ Inheritance diagram for fpmas::model::AgentBase&lt; AgentType &gt;:</div>
 Collaboration diagram for fpmas::model::AgentBase&lt; AgentType &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1AgentBase__coll__graph.png" border="0" usemap="#afpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_coll__map" alt="Collaboration graph"/></div>
-<map name="fpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_coll__map" id="afpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_coll__map">
+<map name="fpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_coll__map" id="fpmas_1_1model_1_1AgentBase_3_01AgentType_01_4_coll__map">
 <area shape="rect" title=" " alt="" coords="5,95,179,136"/>
 <area shape="rect" href="classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="25,5,159,47"/>
 </map>
@@ -110,6 +110,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac15f7adaf41c30ad4bd8da6220fb821e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad2a9fac245dc9ac56aa21e4d32944798"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#ad2a9fac245dc9ac56aa21e4d32944798">copy</a> () const override</td></tr>
 <tr class="separator:ad2a9fac245dc9ac56aa21e4d32944798"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10eedbd6bfc76e753ffc8aeb6f5cafb8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a10eedbd6bfc76e753ffc8aeb6f5cafb8">copyAssign</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *agent) override</td></tr>
+<tr class="separator:a10eedbd6bfc76e753ffc8aeb6f5cafb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae0967f21f29c0b275d7e721e097090ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#ae0967f21f29c0b275d7e721e097090ba">moveAssign</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *agent) override</td></tr>
+<tr class="separator:ae0967f21f29c0b275d7e721e097090ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a037fbe9a188833b2707cdd957bde4a13"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">api::model::AgentNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a037fbe9a188833b2707cdd957bde4a13">node</a> () override</td></tr>
 <tr class="separator:a037fbe9a188833b2707cdd957bde4a13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8a413bb03e9aa1d6e481f2e39477078f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">api::model::AgentNode</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a8a413bb03e9aa1d6e481f2e39477078f">node</a> () const override</td></tr>
@@ -385,6 +389,86 @@ template&lt;typename AgentType &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>pointer to a new allocated Agent, copied from this Agent </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#ad59c0cbb0ae1e679d73f6f1461111956">fpmas::api::model::Agent</a>.</p>
+
+</div>
+</div>
+<a id="a10eedbd6bfc76e753ffc8aeb6f5cafb8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10eedbd6bfc76e753ffc8aeb6f5cafb8">&#9670;&nbsp;</a></span>copyAssign()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1model_1_1AgentBase.html">fpmas::model::AgentBase</a>&lt; AgentType &gt;::copyAssign </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Copies the specified agent to this.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to copy from </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a1c0f5ae0694d053a6b4516e807accbfe">fpmas::api::model::Agent</a>.</p>
+
+</div>
+</div>
+<a id="ae0967f21f29c0b275d7e721e097090ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0967f21f29c0b275d7e721e097090ba">&#9670;&nbsp;</a></span>moveAssign()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1model_1_1AgentBase.html">fpmas::model::AgentBase</a>&lt; AgentType &gt;::moveAssign </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Moves the specified agent into this.</p>
+<p>In the move process, the following fields of "this" host agent keep unchanged, and so are note move from <code>agent</code> to this :</p><ul>
+<li><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a1bbaeaffde892c7bcacc7e9309e87be0">group()</a></li>
+<li><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a096900b6933b8345db7a39929ae1ae3e">task()</a></li>
+<li><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a037fbe9a188833b2707cdd957bde4a13">node()</a></li>
+<li><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a8d1263927d45696278d64c4395e4c1dd">model()</a></li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">agent</td><td>agent to move </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#acf5e675efc2b0a5d634afbcb9dd9d98d">fpmas::api::model::Agent</a>.</p>
 
 </div>
 </div>

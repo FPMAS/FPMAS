@@ -80,29 +80,8 @@ namespace fpmas { namespace api {namespace model {
 			AgentPtr(const AgentPtr& other);
 
 			/**
-			 * Moves other's agent data _into_ this agent pointer.
-			 *
-			 * The old agent pointer is replaced by other's agent according to
-			 * the following rules :
-			 * - other's agent pointer group, task, node and graph fields are
-			 *   replaced by **this current agent pointer values**.
-			 * - this current agent pointer task is rebound to other's agent
-			 *   pointer
-			 * - this agent pointer is replaced by other's agent pointer
-			 *
-			 * In other terms, this agent pointer wrapper instance can be
-			 * considered as an "host" for an agent pointer. When other is
-			 * moved into this instance, any internal agent data is moved from
-			 * other to this, preserving former links to task, node and graph
-			 * so that those objects do not notify that the internal pointer
-			 * has changed.
-			 *
-			 * This mechanism is used when Agent updates are received in a
-			 * synchro::DataUpdatePack for example, depending on the
-			 * api::synchro::SyncMode used. This AgentPtr instance is supposed
-			 * to be already contained in the local graph, as a DISTANT node
-			 * data, and updates, received in the other AgentPtr, are _moved
-			 * into_ this AgentPtr.
+			 * Moves other's agent data _into_ this agent pointer, using
+			 * Agent::moveAssign().
 			 *
 			 * @param other other AgentPtr to move into this
 			 */
@@ -130,17 +109,11 @@ namespace fpmas { namespace api {namespace model {
 	/**
 	 * Generic Agent API.
 	 *
-	 * \Agents is a simulation are assumed to take advantage of polymorphism : a
+	 * \Agents in a simulation are assumed to take advantage of polymorphism : a
 	 * single type is used to store \Agents in an api::graph::DistributedGraph
 	 * (more precisely, AgentPtr is used), but pointed \Agents might have
 	 * different types and implement different the act() functions to produce
-	 * different behaviors. Such considerations implies a few constraints :
-	 * - each agent type must be associated to an unique TypeId, so that the
-	 *   underlying type of each Agent can be deduced thanks to the method
-	 *   typeId().
-	 * - a copy() method must be implemented to dynamically allocate copies of
-	 *   \Agents, with the same underlying type, but directly from this generic
-	 *   API.
+	 * different behaviors.
 	 */
 	class Agent {
 		public:
@@ -187,6 +160,27 @@ namespace fpmas { namespace api {namespace model {
 			 * @return pointer to a new allocated Agent, copied from this Agent
 			 */
 			virtual Agent* copy() const = 0;
+
+			/**
+			 * Copies the specified agent to this.
+			 *
+			 * @param agent agent to copy from
+			 */
+			virtual void copyAssign(Agent* agent) = 0;
+
+			/**
+			 * Moves the specified agent into this.
+			 *
+			 * In the move process, the following fields of "this" host agent
+			 * keep unchanged, and so are note move from `agent` to this :
+			 * - group()
+			 * - task()
+			 * - node()
+			 * - model()
+			 *
+			 * @param agent agent to move
+			 */
+			virtual void moveAssign(Agent* agent) = 0;
 
 			/**
 			 * Returns a pointer to the \AgentNode that contains this Agent.
@@ -267,13 +261,14 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @return task's agent
 			 */
-			virtual const Agent* agent() const = 0;
+			//virtual const Agent* agent() const = 0;
+			virtual const AgentPtr& agent() const = 0;
 			/**
 			 * Sets the internal pointer of the associated Agent.
 			 *
 			 * @param agent task's agent
 			 */
-			virtual void setAgent(Agent* agent) = 0;
+			//virtual void setAgent(AgentPtr* agent) = 0;
 
 			virtual ~AgentTask(){}
 	};
@@ -348,11 +343,22 @@ namespace fpmas { namespace api {namespace model {
 			virtual void erase(AgentPtr* agent) = 0;
 
 			/**
-			 * Returns the list of all \Agents currently in this AgentGroup.
+			 * Returns the list of all \Agents currently in this AgentGroup,
+			 * including `DISTANT` representations of Agents not executed on
+			 * the current process.
 			 *
 			 * @return \Agents in this group
 			 */
 			virtual std::vector<AgentPtr*> agents() const = 0;
+
+
+			/**
+			 * Returns the list of `LOCAL` Agents currently in this AgentGroup,
+			 * that are executed on the current process.
+			 *
+			 * @return `LOCAL` \Agents in this group
+			 */
+			virtual std::vector<AgentPtr*> localAgents() const = 0;
 
 			/**
 			 * Returns a reference to the \Job associated to this AgentGroup.
