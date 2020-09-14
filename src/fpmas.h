@@ -170,6 +170,16 @@ namespace fpmas {
  */
 
 /**
+ * \namespace fpmas::api::random
+ * Random generators and distributions.
+ */
+
+/**
+ * \namespace fpmas::random
+ * fpmas::api::random implementations
+ */
+
+/**
  * \namespace fpmas::api::utils
  * Utility classes used in the fpmas::api namespace.
  */

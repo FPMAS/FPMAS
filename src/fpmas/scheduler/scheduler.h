@@ -27,16 +27,31 @@ namespace fpmas { namespace scheduler {
 			void run() override {};
 	};
 
+	/**
+	 * A NodeTask that can be initialized from a lambda function.
+	 *
+	 * Used by the FPMAS_NODE_TASK() macro.
+	 */
 	template<typename T>
 	class LambdaTask : public api::scheduler::NodeTask<T> {
 		private:
 			std::function<void()> fct;
 			api::graph::DistributedNode<T>* _node;
 		public:
-			template<typename LAMBDA>
+			/**
+			 * LambdaTask constructor.
+			 *
+			 * The specified lambda function must have a `void ()` signature.
+			 *
+			 * @tparam automatically deduced lambda function type
+			 * @param node node bound to the task
+			 * @param lambda_fct void() lambda function, that will be run by
+			 * the task 
+			 */
+			template<typename Lambda_t>
 				LambdaTask(
 						api::graph::DistributedNode<T>* node,
-						LAMBDA&& lambda_fct)
+						Lambda_t&& lambda_fct)
 				: _node(node), fct(lambda_fct) {}
 
 			api::graph::DistributedNode<T>* node() override {

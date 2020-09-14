@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zoltanloadbalancing_899',['ZoltanLoadBalancing',['../namespacefpmas_1_1model.html#a754e2c6d105af15dbf499a78229fa18f',1,'fpmas::model']]]
+  ['scheduledloadbalancing_920',['ScheduledLoadBalancing',['../namespacefpmas_1_1model.html#a787eb2c6d3a4ed69230fe2794b10877a',1,'fpmas::model']]]
 ];

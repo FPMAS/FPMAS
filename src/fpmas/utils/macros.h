@@ -39,6 +39,12 @@
  */
 #define FPMAS_ON_PROC(COMM, RANK) if(COMM.getRank() == RANK)
 
+/**
+ * Utility macro to easily build tasks bound to a node.
+ *
+ * @param node node to bind to the task
+ * @param body function body run by the task
+ */
 #define FPMAS_NODE_TASK(node, body)\
 	fpmas::scheduler::LambdaTask\
 		<std::remove_pointer<decltype(node)>::type::data_type>(node, [&] () body)

@@ -61,7 +61,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><b>random</b></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html">Distribution</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api.html">api</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1api_1_1random.html">random</a></li><li class="navelem"><a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html">Distribution</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -72,13 +72,64 @@ $(function() {
 <div class="title">fpmas::api::random::Distribution&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="api_2random_2distribution_8h_source.html">distribution.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4b7891ebb757e420b58022777e56598d"><td class="memItemLeft" align="right" valign="top"><a id="a4b7891ebb757e420b58022777e56598d"></a>
-virtual T&#160;</td><td class="memItemRight" valign="bottom"><b>operator()</b> (<a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">Generator</a> &amp;generator)=0</td></tr>
+<tr class="memitem:a4b7891ebb757e420b58022777e56598d"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html#a4b7891ebb757e420b58022777e56598d">operator()</a> (<a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">Generator</a> &amp;generator)=0</td></tr>
 <tr class="separator:a4b7891ebb757e420b58022777e56598d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+class fpmas::api::random::Distribution&lt; T &gt;</h3>
+
+<p>Defines a generic random distribution API.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>type of generated random values </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a4b7891ebb757e420b58022777e56598d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b7891ebb757e420b58022777e56598d">&#9670;&nbsp;</a></span>operator()()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual T <a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html">fpmas::api::random::Distribution</a>&lt; T &gt;::operator() </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">Generator</a> &amp;&#160;</td>
+          <td class="paramname"><em>generator</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Generates a random value from the input generator, according to the implemented random distribution.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">generator</td><td>random number generator </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>random value </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1random_1_1Distribution.html#a694f846a69b61cf84051782f0d0eeed9">fpmas::random::Distribution&lt; Distribution_t &gt;</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/api/random/<a class="el" href="api_2random_2distribution_8h_source.html">distribution.h</a></li>
 </ul>
