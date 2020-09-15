@@ -69,34 +69,38 @@ $(function() {
 <div class="title">graph_builder.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_GRAPH_BUILDER_API_H</span></div>
+<a href="api_2graph_2graph__builder_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_GRAPH_BUILDER_API_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define FPMAS_GRAPH_BUILDER_API_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="graph_2distributed__graph_8h.html">distributed_graph.h</a>&quot;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>api { <span class="keyword">namespace </span>graph {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00009"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">    9</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">NodeBuilder</a> {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;                <span class="keyword">virtual</span> std::size_t nodeCount() = 0;</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;                <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>* buildNode(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>&amp; graph) = 0;</div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;        };</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">   16</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">GraphBuilder</a> {</div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> build(</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">NodeBuilder&lt;T&gt;</a>&amp; node_builder,</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;                    <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a> layer,</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>&amp; graph) = 0;</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    };</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;}}}</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="graph_2distributed__graph_8h.html">distributed_graph.h</a>&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>api { <span class="keyword">namespace </span>graph {</div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">   17</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">NodeBuilder</a> {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#a68c7d29ebd39b4d5210803e98350c1b3">   27</a></span>&#160;                <span class="keyword">virtual</span> std::size_t <a class="code" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#a68c7d29ebd39b4d5210803e98350c1b3">nodeCount</a>() = 0;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#a7d5aa5165064ec74c221e543338336c7">   35</a></span>&#160;                <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode&lt;T&gt;</a>* <a class="code" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#a7d5aa5165064ec74c221e543338336c7">buildNode</a>(<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>&amp; graph) = 0;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        };</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">   42</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">GraphBuilder</a> {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html#a4870fa03aade8997bcb633597db7499d">   59</a></span>&#160;            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html#a4870fa03aade8997bcb633597db7499d">build</a>(</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">NodeBuilder&lt;T&gt;</a>&amp; node_builder,</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                    <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a> layer,</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph&lt;T&gt;</a>&amp; graph) = 0;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    };</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}}}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1NodeBuilder_html_a68c7d29ebd39b4d5210803e98350c1b3"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#a68c7d29ebd39b4d5210803e98350c1b3">fpmas::api::graph::NodeBuilder::nodeCount</a></div><div class="ttdeci">virtual std::size_t nodeCount()=0</div></div>
 <div class="ttc" id="agraph_2distributed__graph_8h_html"><div class="ttname"><a href="graph_2distributed__graph_8h.html">distributed_graph.h</a></div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1GraphBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">fpmas::api::graph::GraphBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:16</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1NodeBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">fpmas::api::graph::NodeBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:9</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1GraphBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">fpmas::api::graph::GraphBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:42</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1NodeBuilder_html_a7d5aa5165064ec74c221e543338336c7"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#a7d5aa5165064ec74c221e543338336c7">fpmas::api::graph::NodeBuilder::buildNode</a></div><div class="ttdeci">virtual DistributedNode&lt; T &gt; * buildNode(DistributedGraph&lt; T &gt; &amp;graph)=0</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1NodeBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">fpmas::api::graph::NodeBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:17</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1GraphBuilder_html_a4870fa03aade8997bcb633597db7499d"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html#a4870fa03aade8997bcb633597db7499d">fpmas::api::graph::GraphBuilder::build</a></div><div class="ttdeci">virtual void build(NodeBuilder&lt; T &gt; &amp;node_builder, LayerId layer, DistributedGraph&lt; T &gt; &amp;graph)=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraph_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:45</div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a6ad1b60906b20514825a6f77b7fdc750"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a></div><div class="ttdeci">int LayerId</div><div class="ttdef"><b>Definition:</b> edge.h:13</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.cpp:3</div></div>

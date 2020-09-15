@@ -223,7 +223,7 @@ namespace fpmas { namespace model {
 			 *
 			 * @return out neighbor agents
 			 *
-			 * @see fpmas::api::graph::node::outNeighbors()
+			 * @see api::graph::Node::outNeighbors()
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> out;
@@ -235,6 +235,19 @@ namespace fpmas { namespace model {
 				return out;
 			}
 
+			/**
+			 * Returns a typed list of agents that are out neighbors of the current
+			 * agent on the given layer.
+			 *
+			 * Agents are added to the list if and only if :
+			 * 1. they are contained in a node that is an out neighbor of this
+			 * agent's node, connected on the specified layer
+			 * 2. they can be cast to `NeighborAgentType`
+			 *
+			 * @return out neighbor agents
+			 *
+			 * @see api::graph::Node::outNeighbors()
+			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors(api::graph::LayerId layer) const {
 				std::vector<Neighbor<NeighborAgentType>> out;
 				for(api::model::AgentNode* _node : node()->outNeighbors(layer)) {
@@ -257,7 +270,7 @@ namespace fpmas { namespace model {
 			 *
 			 * @return in neighbor agents
 			 *
-			 * @see fpmas::api::graph::node::outNeighbors()
+			 * @see api::graph::Node::inNeighbors()
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> in;
@@ -269,6 +282,19 @@ namespace fpmas { namespace model {
 				return in;
 			}
 
+			/**
+			 * Returns a typed list of agents that are in neighbors of the current
+			 * agent on the given layer.
+			 *
+			 * Agents are added to the list if and only if :
+			 * 1. they are contained in a node that is an in neighbor of this
+			 * agent's node, connected on the specified layer
+			 * 2. they can be cast to `NeighborAgentType`
+			 *
+			 * @return in neighbor agents
+			 *
+			 * @see api::graph::Node::inNeighbors()
+			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors(api::graph::LayerId layer) const {
 				std::vector<Neighbor<NeighborAgentType>> in;
 				for(api::model::AgentNode* _node : node()->inNeighbors(layer)) {
@@ -295,8 +321,11 @@ namespace fpmas { namespace model {
 		private:
 			api::model::AgentPtr& _agent;
 		public:
-			//const api::model::Agent* agent() const override {return _agent->get();}
-			//void setAgent(api::model::AgentPtr* agent) override {_agent=agent;}
+			/**
+			 * AgentTask constructor.
+			 *
+			 * @param agent_ptr agents that will be executed by this task
+			 */
 			AgentTask(api::model::AgentPtr& agent_ptr)
 				: _agent(agent_ptr) {}
 
@@ -308,7 +337,6 @@ namespace fpmas { namespace model {
 				{return _agent->node();}
 
 			void run() override {
-				//LockGuard lock (_agent);
 				_agent->act();
 			}
 	};
@@ -361,7 +389,6 @@ namespace fpmas { namespace model {
 		 *
 		 * @param group_id unique id of the group
 		 * @param agent_graph associated agent graph
-		 * @param job_id unique id of the associated job
 		 */
 		AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph);
 
@@ -751,19 +778,48 @@ namespace fpmas { namespace model {
 			}
 	};
 
+	/**
+	 * An api::graph::NodeBuilder implementation that can be used to easily
+	 * generate a random model, that can be provided to a
+	 * api::graph::GraphBuilder implementation.
+	 *
+	 * AgentNodes are built automatically, and can be linked according to the
+	 * api::graph::GraphBuilder algorithm implementation.
+	 */
 	class AgentNodeBuilder : public api::graph::NodeBuilder<AgentPtr> {
 		private:
 			api::model::AgentGroup& group;
 			std::vector<api::model::Agent*> agents;
 
 		public:
+			/**
+			 * AgentNodeBuilder constructor.
+			 *
+			 * @param group group to which agents will be added
+			 */
 			AgentNodeBuilder(api::model::AgentGroup& group)
 				: group(group) {}
 
+			/**
+			 * Pushes an agent into the node builder, that will be inserted into
+			 * the graph with the buildNode() function.
+			 *
+			 * @param agent agent to add to the graph
+			 */
 			void push(api::model::Agent* agent) {
 				agents.push_back(agent);
 			}
 
+			/**
+			 * Adds the agent to the specified group, using the
+			 * api::model::AgentGroup::add() method.
+			 *
+			 * In consequence, a node is automatically built and added to the
+			 * group's underlying graph.
+			 *
+			 * Such node can be linked automatically as specified by the
+			 * api::graph::GraphBuilder algorithm implementation.
+			 */
 			api::graph::DistributedNode<AgentPtr>*
 				buildNode(api::graph::DistributedGraph<AgentPtr>&) override {
 					auto* agent = agents.back();
@@ -773,6 +829,11 @@ namespace fpmas { namespace model {
 					return agent->node();
 				}
 
+			/**
+			 * Returns the count of agents left in the AgentNodeBuilder.
+			 *
+			 * @return agent count
+			 */
 			std::size_t nodeCount() override {
 				return agents.size();
 			}

@@ -1,6 +1,10 @@
 #ifndef FPMAS_RANDOM_DISTRIBUTION_H
 #define FPMAS_RANDOM_DISTRIBUTION_H
 
+/** \file src/fpmas/random/distribution.h
+ * Random Distribution implementation.
+ */
+
 #include <random>
 #include "fpmas/api/random/distribution.h"
 

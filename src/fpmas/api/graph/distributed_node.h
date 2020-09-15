@@ -28,6 +28,9 @@ namespace fpmas { namespace api { namespace graph {
 		: public virtual fpmas::api::graph::Node<DistributedId, DistributedEdge<T>> {
 
 		public:
+			/**
+			 * Type of data contained in the node.
+			 */
 			typedef T data_type;
 
 			/**

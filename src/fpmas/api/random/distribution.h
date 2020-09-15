@@ -1,6 +1,10 @@
 #ifndef FPMAS_RANDOM_DISTRIBUTION_API_H
 #define FPMAS_RANDOM_DISTRIBUTION_API_H
 
+/** \file src/fpmas/api/random/distribution.h
+ * Random Distribution API
+ */
+
 #include "generator.h"
 
 namespace fpmas { namespace api { namespace random {

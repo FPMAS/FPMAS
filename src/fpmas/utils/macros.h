@@ -49,10 +49,44 @@
 	fpmas::scheduler::LambdaTask\
 		<std::remove_pointer<decltype(node)>::type::data_type>(node, [&] () body)
 
+/**
+ * Defines a set of groups as an anonymous enum. Each group name can then be
+ * used where an fpmas::api::model::GroupId is required.
+ *
+ * ### Example
+ * ```cpp
+ * FPMAS_DEFINE_GROUPS(GroupA, GroupB);
+ *
+ * int main(int argc, char** argv) {
+ * 	...
+ * 	model.buildGroup(GroupA);
+ * 	...
+ * 	fpmas::api::model::AgentGroup& group_a = model.getGroup(GroupA);
+ * 	...
+ * }
+ * ```
+ */
 #define FPMAS_DEFINE_GROUPS(...)\
 	enum : fpmas::api::model::GroupId {\
 		__VA_ARGS__ };
 
+/**
+ * Defines a set of layers as an anonymous enum. Each group name can then be
+ * used where an fpmas::api::graph::LayerId is required.
+ *
+ * ### Example
+ * ```cpp
+ * FPMAS_DEFINE_LAYERS(LayerA, LayerB);
+ *
+ * int main(int argc, char** argv) {
+ * 	...
+ * 	graph.link(node_1, node_2, LayerA);
+ * 	...
+ * 	auto neighbors = node_1->outNeighbors(LayerB);
+ * 	...
+ * }
+ * ```
+ */
 #define FPMAS_DEFINE_LAYERS(...)\
 	enum : fpmas::api::graph::LayerId {\
 		__VA_ARGS__ };

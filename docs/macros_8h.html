@@ -105,9 +105,9 @@ Macros</h2></td></tr>
 <tr class="separator:a2868889724c6490a488852f9fc535bf3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18036fdf3569b649695ce2c03e3e381b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a18036fdf3569b649695ce2c03e3e381b">FPMAS_NODE_TASK</a>(node,  body)</td></tr>
 <tr class="separator:a18036fdf3569b649695ce2c03e3e381b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0f51f358990224f4edba2a7290118cbf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>FPMAS_DEFINE_GROUPS</b>(...)</td></tr>
+<tr class="memitem:a0f51f358990224f4edba2a7290118cbf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a0f51f358990224f4edba2a7290118cbf">FPMAS_DEFINE_GROUPS</a>(...)</td></tr>
 <tr class="separator:a0f51f358990224f4edba2a7290118cbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5df4bc2a01aa1877da64b5fbd4fe502a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>FPMAS_DEFINE_LAYERS</b>(...)</td></tr>
+<tr class="memitem:a5df4bc2a01aa1877da64b5fbd4fe502a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="macros_8h.html#a5df4bc2a01aa1877da64b5fbd4fe502a">FPMAS_DEFINE_LAYERS</a>(...)</td></tr>
 <tr class="separator:a5df4bc2a01aa1877da64b5fbd4fe502a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -249,7 +249,19 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    enum : <a class="code" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a> {\</div>
 <div class="line">        __VA_ARGS__ };</div>
-</div><!-- fragment -->
+</div><!-- fragment --><p>Defines a set of groups as an anonymous enum. Each group name can then be used where an <a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a> is required.</p>
+<h3><a class="anchor" id="autotoc_md0"></a>
+Example</h3>
+<div class="fragment"><div class="line"><a class="code" href="macros_8h.html#a0f51f358990224f4edba2a7290118cbf">FPMAS_DEFINE_GROUPS</a>(GroupA, GroupB);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line">    ...</div>
+<div class="line">    model.buildGroup(GroupA);</div>
+<div class="line">    ...</div>
+<div class="line">    <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a>&amp; group_a = model.getGroup(GroupA);</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+</div><!-- fragment --> 
 </div>
 </div>
 <a id="a5df4bc2a01aa1877da64b5fbd4fe502a"></a>
@@ -269,13 +281,28 @@ Macros</h2></td></tr>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    enum : <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a> {\</div>
 <div class="line">        __VA_ARGS__ };</div>
-</div><!-- fragment -->
+</div><!-- fragment --><p>Defines a set of layers as an anonymous enum. Each group name can then be used where an <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a> is required.</p>
+<h3><a class="anchor" id="autotoc_md1"></a>
+Example</h3>
+<div class="fragment"><div class="line"><a class="code" href="macros_8h.html#a5df4bc2a01aa1877da64b5fbd4fe502a">FPMAS_DEFINE_LAYERS</a>(LayerA, LayerB);</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line">    ...</div>
+<div class="line">    graph.link(node_1, node_2, LayerA);</div>
+<div class="line">    ...</div>
+<div class="line">    <span class="keyword">auto</span> neighbors = node_1-&gt;outNeighbors(LayerB);</div>
+<div class="line">    ...</div>
+<div class="line">}</div>
+</div><!-- fragment --> 
 </div>
 </div>
 </div><!-- contents -->
+<div class="ttc" id="amacros_8h_html_a0f51f358990224f4edba2a7290118cbf"><div class="ttname"><a href="macros_8h.html#a0f51f358990224f4edba2a7290118cbf">FPMAS_DEFINE_GROUPS</a></div><div class="ttdeci">#define FPMAS_DEFINE_GROUPS(...)</div><div class="ttdef"><b>Definition:</b> macros.h:69</div></div>
+<div class="ttc" id="amacros_8h_html_a5df4bc2a01aa1877da64b5fbd4fe502a"><div class="ttname"><a href="macros_8h.html#a5df4bc2a01aa1877da64b5fbd4fe502a">FPMAS_DEFINE_LAYERS</a></div><div class="ttdeci">#define FPMAS_DEFINE_LAYERS(...)</div><div class="ttdef"><b>Definition:</b> macros.h:90</div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1model_html_a21595fa9ac22b3afe6da9f2b1c46e13b"><div class="ttname"><a href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a></div><div class="ttdeci">int GroupId</div><div class="ttdef"><b>Definition:</b> model.h:30</div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a6ad1b60906b20514825a6f77b7fdc750"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a></div><div class="ttdeci">int LayerId</div><div class="ttdef"><b>Definition:</b> edge.h:13</div></div>
 <div class="ttc" id="amacros_8h_html_a32ab2caf321ac613cabb47d79541d9c9"><div class="ttname"><a href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a></div><div class="ttdeci">#define FPMAS_C_STR(arg)</div><div class="ttdef"><b>Definition:</b> macros.h:23</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:291</div></div>
 <div class="ttc" id="aclassfpmas_1_1scheduler_1_1LambdaTask_html"><div class="ttname"><a href="classfpmas_1_1scheduler_1_1LambdaTask.html">fpmas::scheduler::LambdaTask</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:36</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

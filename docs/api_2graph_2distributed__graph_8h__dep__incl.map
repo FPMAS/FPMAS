@@ -1,10 +1,10 @@
 <map id="src/fpmas/api/graph/distributed_graph.h" name="src/fpmas/api/graph/distributed_graph.h">
 <area shape="rect" id="node1" title=" " alt="" coords="481,5,618,47"/>
-<area shape="rect" id="node2" href="$api_2graph_2graph__builder_8h_source.html" title=" " alt="" coords="126,95,263,136"/>
+<area shape="rect" id="node2" href="$api_2graph_2graph__builder_8h.html" title=" " alt="" coords="126,95,263,136"/>
 <area shape="rect" id="node6" href="$api_2model_2model_8h.html" title=" " alt="" coords="295,95,435,136"/>
 <area shape="rect" id="node9" href="$sync__mode_8h.html" title=" " alt="" coords="663,95,814,136"/>
 <area shape="rect" id="node18" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="459,95,639,136"/>
-<area shape="rect" id="node3" href="$graph_2graph__builder_8h_source.html" title=" " alt="" coords="5,184,157,225"/>
+<area shape="rect" id="node3" href="$graph_2graph__builder_8h.html" title=" " alt="" coords="5,184,157,225"/>
 <area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="275,281,445,307"/>
 <area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="511,541,601,568"/>
 <area shape="rect" id="node7" href="$model_2guards_8h.html" title=" " alt="" coords="232,191,405,218"/>
