@@ -74,7 +74,7 @@ class FixedDegreeDistributionRandomGraphBuilder : public ::testing::Test {
 		static const fpmas::api::graph::LayerId layer = 10;
 		MockDistributedGraph<int> mock_graph;
 
-		fpmas::graph::FixedDegreeDistributionRandomGraph<int>
+		fpmas::graph::RandomDegreeGraphBuilder<int>
 			builder {generator, dist};
 
 		MockLink build_expectations(FakeNodeBuilder& node_builder, std::size_t K) {
