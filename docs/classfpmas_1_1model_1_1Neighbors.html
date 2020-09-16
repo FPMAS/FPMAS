@@ -89,6 +89,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4906c16100a6723564ff76f473b3ca40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac50d0dc8883bf182e29e6a19405a2593"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ac50d0dc8883bf182e29e6a19405a2593">count</a> () const</td></tr>
 <tr class="separator:ac50d0dc8883bf182e29e6a19405a2593"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70a4e60e1b587f83222fbcd28252d6b1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#a70a4e60e1b587f83222fbcd28252d6b1">at</a> (std::size_t i)</td></tr>
+<tr class="separator:a70a4e60e1b587f83222fbcd28252d6b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a457b80946dd1b440bcf50cb704f63767"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#a457b80946dd1b440bcf50cb704f63767">at</a> (std::size_t i) const</td></tr>
+<tr class="separator:a457b80946dd1b440bcf50cb704f63767"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf1492a8a051d3b15ee5a5fdffdb7b8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#abf1492a8a051d3b15ee5a5fdffdb7b8a">operator[]</a> (std::size_t i)</td></tr>
+<tr class="separator:abf1492a8a051d3b15ee5a5fdffdb7b8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac92b1e3c73fd47f218988d9daa708833"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ac92b1e3c73fd47f218988d9daa708833">operator[]</a> (std::size_t i) const</td></tr>
+<tr class="separator:ac92b1e3c73fd47f218988d9daa708833"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa5d351d629ea1c87352df4eb4b8a196"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#afa5d351d629ea1c87352df4eb4b8a196">shuffle</a> ()</td></tr>
 <tr class="separator:afa5d351d629ea1c87352df4eb4b8a196"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -284,6 +292,162 @@ template&lt;typename AgentType &gt; </div>
 </div><div class="memdoc">
 <p>Returns the count of neighbors in this list.</p>
 <dl class="section return"><dt>Returns</dt><dd>neighbors count </dd></dl>
+
+</div>
+</div>
+<a id="a70a4e60e1b587f83222fbcd28252d6b1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a70a4e60e1b587f83222fbcd28252d6b1">&#9670;&nbsp;</a></span>at() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt;AgentType&gt;&amp; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::at </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a reference to the neighbor at position <code>i</code>, with bounds checking.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>neighbor position</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if <code>!(i &lt; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ac50d0dc8883bf182e29e6a19405a2593">count()</a>)</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a457b80946dd1b440bcf50cb704f63767"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a457b80946dd1b440bcf50cb704f63767">&#9670;&nbsp;</a></span>at() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt;AgentType&gt;&amp; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::at </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p>Returns a reference to the neighbor at position <code>i</code>, with bounds checking.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>neighbor position</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::out_of_range</td><td>if <code>!(i &lt; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ac50d0dc8883bf182e29e6a19405a2593">count()</a>)</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abf1492a8a051d3b15ee5a5fdffdb7b8a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf1492a8a051d3b15ee5a5fdffdb7b8a">&#9670;&nbsp;</a></span>operator[]() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt;AgentType&gt;&amp; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns a reference to the neighbor at position <code>i</code>, without bounds checking.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>neighbor position </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ac92b1e3c73fd47f218988d9daa708833"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac92b1e3c73fd47f218988d9daa708833">&#9670;&nbsp;</a></span>operator[]() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt;AgentType&gt;&amp; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::operator[] </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p>Returns a reference to the neighbor at position <code>i</code>, without bounds checking.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">i</td><td>neighbor position </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

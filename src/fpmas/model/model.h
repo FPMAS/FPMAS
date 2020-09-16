@@ -142,6 +142,50 @@ namespace fpmas { namespace model {
 				}
 
 				/**
+				 * Returns a reference to the neighbor at position `i`, with
+				 * bounds checking.
+				 *
+				 * @param i neighbor position
+				 *
+				 * @throws std::out_of_range if `!(i < count())`
+				 */
+				Neighbor<AgentType>& at(std::size_t i) {
+					try {
+						return neighbors.at(i);
+					} catch(const std::out_of_range&) {
+						throw;
+					}
+				}
+
+				/**
+				 * \copydoc at
+				 */
+				const Neighbor<AgentType>& at(std::size_t i) const {
+					try {
+						return neighbors.at(i);
+					} catch(const std::out_of_range&) {
+						throw;
+					}
+				}
+
+				/**
+				 * Returns a reference to the neighbor at position `i`, without
+				 * bounds checking.
+				 *
+				 * @param i neighbor position
+				 */
+				Neighbor<AgentType>& operator[](std::size_t i) {
+					return neighbors[i];
+				}
+
+				/**
+				 * \copydoc operator[]
+				 */
+				const Neighbor<AgentType>& operator[](std::size_t i) const {
+					return neighbors[i];
+				}
+
+				/**
 				 * Internally shuffles the neighbors list using
 				 * [std::shuffle](https://en.cppreference.com/w/cpp/algorithm/random_shuffle).
 				 *
