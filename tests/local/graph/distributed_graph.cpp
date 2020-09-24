@@ -866,8 +866,6 @@ class DistributedGraphDistributeTest : public DistributedGraphTest {
 			fake_partition[node_ids[2]] = 1;
 			fake_partition[node_ids[3]] = 0;
 			fake_partition[node_ids[4]] = 0;
-			EXPECT_CALL(mock_sync_linker, synchronize);
-			EXPECT_CALL(mock_data_sync, synchronize);
 		}
 };
 
@@ -939,10 +937,15 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 	EXPECT_CALL(location_manager, getLocalNodes).WillOnce(ReturnRef(graph.getNodes()));
 
 	// Should call LoadBalancing on all nodes, without fixed nodes
-	EXPECT_CALL(
-		load_balancing,
-		balance(node_map))
-		.WillOnce(Return(fake_partition));
+	{
+		::testing::InSequence s;
+		EXPECT_CALL(mock_sync_linker, synchronize);
+		EXPECT_CALL(
+				load_balancing,
+				balance(node_map))
+			.WillOnce(Return(fake_partition));
+		EXPECT_CALL(mock_data_sync, synchronize);
+	}
 	// Migration of nodes + edges
 	EXPECT_CALL(graph.getNodeMpi(), migrate);
 	EXPECT_CALL(graph.getEdgeMpi(), migrate);

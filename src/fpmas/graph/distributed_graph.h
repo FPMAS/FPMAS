@@ -119,6 +119,7 @@ namespace fpmas { namespace graph {
 
 				void clearDistantNodes();
 				void clearNode(NodeType*);
+				void _distribute(api::graph::PartitionMap);
 
 				DistributedId node_id;
 				DistributedId edge_id;
@@ -193,7 +194,9 @@ namespace fpmas { namespace graph {
 							"Balancing graph (%lu nodes, %lu edges)",
 							this->getNodes().size(), this->getEdges().size());
 
-					this->distribute(load_balancing.balance(this->location_manager.getLocalNodes()));
+					sync_mode.getSyncLinker().synchronize();
+					this->_distribute(load_balancing.balance(this->location_manager.getLocalNodes()));
+					sync_mode.getDataSync().synchronize();
 
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
@@ -210,7 +213,9 @@ namespace fpmas { namespace graph {
 							"Balancing graph (%lu nodes, %lu edges)",
 							this->getNodes().size(), this->getEdges().size());
 
-					this->distribute(load_balancing.balance(this->location_manager.getLocalNodes(), fixed_vertices));
+					sync_mode.getSyncLinker().synchronize();
+					this->_distribute(load_balancing.balance(this->location_manager.getLocalNodes(), fixed_vertices));
+					sync_mode.getDataSync().synchronize();
 
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
@@ -495,10 +500,20 @@ namespace fpmas { namespace graph {
 				return edge;
 			}
 
-
 		template<DIST_GRAPH_PARAMS>
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
 			::distribute(api::graph::PartitionMap partition) {
+
+				sync_mode.getSyncLinker().synchronize();
+
+				_distribute(partition);
+
+				sync_mode.getDataSync().synchronize();
+			}
+
+		template<DIST_GRAPH_PARAMS>
+			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+			::_distribute(api::graph::PartitionMap partition) {
 				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 						"Distributing graph...", "");
 				std::string partition_str = "\n";
@@ -509,7 +524,6 @@ namespace fpmas { namespace graph {
 				}
 				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Partition : %s", partition_str.c_str());
 
-				sync_mode.getSyncLinker().synchronize();
 
 				// Builds node and edges export maps
 				std::vector<NodeType*> exported_nodes;
@@ -570,8 +584,6 @@ namespace fpmas { namespace graph {
 					clearNode(node);
 				}
 				FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.", "");
-
-				sync_mode.getDataSync().synchronize();
 
 				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 						"End of distribution.", "");
