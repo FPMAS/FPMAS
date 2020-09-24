@@ -89,6 +89,9 @@ TEST_F(NodeTest, in_neighbors) {
 
 	for(int i = 0; i < 10; i++) {
 		EXPECT_CALL(edges[i], getTargetNode).Times(0);
+		// Not important, neighbors are querried for all layers
+		EXPECT_CALL(edges[i], getLayer).
+			WillRepeatedly(Return(i/2));
 		EXPECT_CALL(edges[i], getSourceNode)
 			.Times(AtLeast(1))
 			.WillRepeatedly(Return(nodes[i]));
@@ -116,6 +119,9 @@ TEST_F(NodeTest, out_neighbors) {
 
 	for(int i = 0; i < 10; i++) {
 		EXPECT_CALL(edges[i], getSourceNode).Times(0);
+		// Not important, neighbors are querried for all layers
+		EXPECT_CALL(edges[i], getLayer).
+			WillRepeatedly(Return(i/2));
 		EXPECT_CALL(edges[i], getTargetNode)
 			.Times(AtLeast(1))
 			.WillRepeatedly(Return(nodes[i]));

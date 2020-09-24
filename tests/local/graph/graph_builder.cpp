@@ -35,9 +35,10 @@ class MockLink {
 	private:
 		FakeNodeBuilder& fake_node_builder;
 		std::size_t K;
-		std::unordered_map<fpmas::api::graph::DistributedNode<int>*, std::set<fpmas::api::graph::DistributedNode<int>*>> edges;
 
 	public:
+		std::unordered_map<fpmas::api::graph::DistributedNode<int>*, std::set<fpmas::api::graph::DistributedNode<int>*>> edges;
+
 		MockLink(FakeNodeBuilder& fake_node_builder, std::size_t K)
 			: fake_node_builder(fake_node_builder), K(K) {}
 
@@ -56,7 +57,7 @@ class MockLink {
 			for(auto edge_set : edges) {
 				// Src is a node built by the GraphBuilder
 				ASSERT_THAT(fake_node_builder.nodes, Contains(edge_set.first));
-				// The node is linked to 5 distinct nodes
+				// The node is linked to K distinct nodes
 				ASSERT_THAT(edge_set.second, SizeIs(std::min(nodes_count-1, K)));
 				// The node is not linked to itself
 				ASSERT_THAT(edge_set.second, Not(Contains(edge_set.first)));
@@ -67,14 +68,14 @@ class MockLink {
 		}
 };
 
-class FixedDegreeDistributionRandomGraphBuilder : public ::testing::Test {
+class UniformGraphBuilder : public ::testing::Test {
 	protected:
 		fpmas::random::mt19937 generator;
 		MockDistribution<std::size_t> dist;
 		static const fpmas::api::graph::LayerId layer = 10;
 		MockDistributedGraph<int> mock_graph;
 
-		fpmas::graph::RandomDegreeGraphBuilder<int>
+		fpmas::graph::UniformGraphBuilder<int>
 			builder {generator, dist};
 
 		MockLink build_expectations(FakeNodeBuilder& node_builder, std::size_t K) {
@@ -94,7 +95,7 @@ class FixedDegreeDistributionRandomGraphBuilder : public ::testing::Test {
 
 };
 
-TEST_F(FixedDegreeDistributionRandomGraphBuilder, regular_build) {
+TEST_F(UniformGraphBuilder, regular_build) {
 	static const std::size_t K = 5;
 	static const std::size_t nodes_count = 20;
 
@@ -108,7 +109,7 @@ TEST_F(FixedDegreeDistributionRandomGraphBuilder, regular_build) {
 	mock_link.check();
 }
 
-TEST_F(FixedDegreeDistributionRandomGraphBuilder, build_without_enough_nodes) {
+TEST_F(UniformGraphBuilder, build_without_enough_nodes) {
 	static const std::size_t K = 10;
 	static const std::size_t nodes_count = 8;
 
@@ -123,7 +124,7 @@ TEST_F(FixedDegreeDistributionRandomGraphBuilder, build_without_enough_nodes) {
 
 }
 
-TEST_F(FixedDegreeDistributionRandomGraphBuilder, edge_case) {
+TEST_F(UniformGraphBuilder, edge_case) {
 	static const std::size_t K = 10;
 
 	FakeNodeBuilder node_builder(1);
@@ -133,4 +134,58 @@ TEST_F(FixedDegreeDistributionRandomGraphBuilder, edge_case) {
 	builder.build(node_builder, layer, mock_graph);
 
 	ASSERT_THAT(node_builder.nodes, SizeIs(1));
+}
+
+class ClusteredGraphBuilder : public ::testing::Test {
+	protected:
+		fpmas::random::mt19937 generator;
+		MockDistribution<std::size_t> edge_dist;
+		MockDistribution<double> x_dist;
+		MockDistribution<double> y_dist;
+		static const fpmas::api::graph::LayerId layer = 10;
+		MockDistributedGraph<int> mock_graph;
+
+		fpmas::graph::ClusteredGraphBuilder<int> graph_builder
+			{generator, edge_dist, x_dist, y_dist};
+
+
+};
+
+TEST_F(ClusteredGraphBuilder, regular_build) {
+	EXPECT_CALL(x_dist, call)
+		.WillOnce(Return(0))
+		.WillOnce(Return(-2))
+		.WillOnce(Return(2))
+		.WillOnce(Return(3));
+
+	EXPECT_CALL(y_dist, call)
+		.WillOnce(Return(0))
+		.WillOnce(Return(1))
+		.WillOnce(Return(1))
+		.WillOnce(Return(-3));
+
+	EXPECT_CALL(edge_dist, call)
+		.WillRepeatedly(Return(2));
+
+	FakeNodeBuilder node_builder(4);
+
+	MockLink mock_link (node_builder, 2);
+
+	EXPECT_CALL(mock_graph, link(_, _, layer))
+		.Times(8)
+		.WillRepeatedly(Invoke(&mock_link, &MockLink::link));
+
+	graph_builder.build(node_builder, layer, mock_graph);
+
+	auto node_0 = node_builder.nodes[0];
+	auto node_1 = node_builder.nodes[1];
+	auto node_2 = node_builder.nodes[2];
+	auto node_3 = node_builder.nodes[3];
+
+	mock_link.check();
+
+	ASSERT_THAT(mock_link.edges[node_0], ElementsAre(node_1, node_2));
+	ASSERT_THAT(mock_link.edges[node_1], ElementsAre(node_0, node_2));
+	ASSERT_THAT(mock_link.edges[node_2], ElementsAre(node_0, node_1));
+	ASSERT_THAT(mock_link.edges[node_3], ElementsAre(node_0, node_2));
 }
