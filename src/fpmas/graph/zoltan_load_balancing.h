@@ -188,7 +188,7 @@ namespace fpmas { namespace graph {
 						zoltan::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 
 						nbor_procs[neighbor_index]
-							= target->getLocation();
+							= target->location();
 
 						ewgts[neighbor_index] = edge->getWeight();
 						neighbor_index++;

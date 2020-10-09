@@ -101,9 +101,9 @@ namespace nlohmann {
 				j["layer"] = edge->getLayer();
 				j["weight"] = edge->getWeight();
 				j["src"] = NodePtrWrapper<T>(edge->getSourceNode());
-				j["src_loc"] = edge->getSourceNode()->getLocation();
+				j["src_loc"] = edge->getSourceNode()->location();
 				j["tgt"] = NodePtrWrapper<T>(edge->getTargetNode());
-				j["tgt_loc"] = edge->getTargetNode()->getLocation();
+				j["tgt_loc"] = edge->getTargetNode()->location();
 			}
 		};
 }

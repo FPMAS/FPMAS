@@ -196,7 +196,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			bool distant_src = edge->getSourceNode()->state() == LocationState::DISTANT;
 			bool distant_tgt = edge->getTargetNode()->state() == LocationState::DISTANT;
 
-			if(edge->getSourceNode()->getLocation() != edge->getTargetNode()->getLocation()) {
+			if(edge->getSourceNode()->location() != edge->getTargetNode()->location()) {
 				// The edge is DISTANT, so at least of the two nodes is
 				// DISTANT. In this case, if the two nodes are
 				// DISTANT, they don't have the same location, so two
@@ -207,13 +207,13 @@ namespace fpmas { namespace synchro { namespace hard {
 				// made to different procs
 				if(distant_src) {
 					edge_mpi.Issend(
-							const_cast<EdgeApi*>(edge), edge->getSourceNode()->getLocation(),
+							const_cast<EdgeApi*>(edge), edge->getSourceNode()->location(),
 							server_pack.getEpoch() | Tag::LINK, req_src
 							); 
 				}
 				if(distant_tgt) {
 					edge_mpi.Issend(
-							const_cast<EdgeApi*>(edge), edge->getTargetNode()->getLocation(),
+							const_cast<EdgeApi*>(edge), edge->getTargetNode()->location(),
 							server_pack.getEpoch() | Tag::LINK, req_tgt
 							); 
 				}
@@ -233,7 +233,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				// one request
 				fpmas::api::communication::Request req;
 				edge_mpi.Issend(
-						const_cast<EdgeApi*>(edge), edge->getSourceNode()->getLocation(),
+						const_cast<EdgeApi*>(edge), edge->getSourceNode()->location(),
 						server_pack.getEpoch() | Tag::LINK, req
 						); 
 				server_pack.waitSendRequest(req);
@@ -251,13 +251,13 @@ namespace fpmas { namespace synchro { namespace hard {
 			// made to different procs
 			if(distant_src) {
 				this->id_mpi.Issend(
-						edge->getId(), edge->getSourceNode()->getLocation(),
+						edge->getId(), edge->getSourceNode()->location(),
 						server_pack.getEpoch() | Tag::UNLINK, req_src
 						); 
 			}
 			if(distant_tgt) {
 				this->id_mpi.Issend(
-						edge->getId(), edge->getTargetNode()->getLocation(),
+						edge->getId(), edge->getTargetNode()->location(),
 						server_pack.getEpoch() | Tag::UNLINK, req_tgt
 						); 
 			}
@@ -276,7 +276,7 @@ namespace fpmas { namespace synchro { namespace hard {
 		void LinkClient<T>::removeNode(const NodeApi* node) {
 			fpmas::api::communication::Request req;
 			this->id_mpi.Issend(
-				node->getId(), node->getLocation(),
+				node->getId(), node->location(),
 				server_pack.getEpoch() | Tag::REMOVE_NODE, req
 				);
 

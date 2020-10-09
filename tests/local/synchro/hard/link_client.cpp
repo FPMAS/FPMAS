@@ -55,12 +55,12 @@ class LinkClientTest : public ::testing::Test {
 TEST_F(LinkClientTest, link_local_src_distant_tgt) {
 	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mock_src, getLocation).Times(AnyNumber())
+	EXPECT_CALL(mock_src, location).Times(AnyNumber())
 		.WillRepeatedly(Return(THIS_RANK));
 
 	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_tgt, location).WillRepeatedly(Return(10));
 
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
@@ -74,9 +74,9 @@ TEST_F(LinkClientTest, link_local_src_distant_tgt) {
 TEST_F(LinkClientTest, link_local_tgt_distant_src) {
 	EXPECT_CALL(mock_src, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_src, location).WillRepeatedly(Return(10));
 
-	EXPECT_CALL(mock_tgt, getLocation).Times(AnyNumber())
+	EXPECT_CALL(mock_tgt, location).Times(AnyNumber())
 		.WillRepeatedly(Return(THIS_RANK));
 	EXPECT_CALL(mock_tgt, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::LOCAL));
@@ -93,8 +93,8 @@ TEST_F(LinkClientTest, link_local_tgt_distant_src) {
 TEST_F(LinkClientTest, link_distant_tgt_distant_src) {
 	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
-	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(12));
+	EXPECT_CALL(mock_src, location).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_tgt, location).WillRepeatedly(Return(12));
 
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
@@ -114,8 +114,8 @@ TEST_F(LinkClientTest, link_distant_tgt_distant_src) {
 TEST_F(LinkClientTest, link_distant_tgt_distant_src_same_location) {
 	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
-	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_src, location).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_tgt, location).WillRepeatedly(Return(10));
 
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
@@ -145,11 +145,11 @@ TEST_F(LinkClientTest, unlink_local_src_local_tgt) {
 
 TEST_F(LinkClientTest, unlink_local_src_distant_tgt) {
 	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mock_src, getLocation).Times(AnyNumber())
+	EXPECT_CALL(mock_src, location).Times(AnyNumber())
 		.WillRepeatedly(Return(THIS_RANK));
 
 	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_tgt, location).WillRepeatedly(Return(10));
 
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
@@ -163,7 +163,7 @@ TEST_F(LinkClientTest, unlink_local_src_distant_tgt) {
 TEST_F(LinkClientTest, unlink_local_tgt_distant_src) {
 	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_src, location).WillRepeatedly(Return(10));
 
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
@@ -177,8 +177,8 @@ TEST_F(LinkClientTest, unlink_local_tgt_distant_src) {
 TEST_F(LinkClientTest, unlink_distant_tgt_distant_src) {
 	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
-	EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(12));
+	EXPECT_CALL(mock_src, location).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_tgt, location).WillRepeatedly(Return(12));
 
 	EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 		.WillRepeatedly(Return(LocationState::DISTANT));
@@ -194,7 +194,7 @@ TEST_F(LinkClientTest, unlink_distant_tgt_distant_src) {
 
 TEST_F(LinkClientTest, remove_node) {
 	EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
+	EXPECT_CALL(mock_src, location).WillRepeatedly(Return(10));
 
 	EXPECT_CALL(id_mpi, Issend(src_id, 10, Epoch::EVEN | Tag::REMOVE_NODE, _));
 	EXPECT_CALL(comm, test).WillOnce(Return(true));
@@ -211,8 +211,8 @@ class LinkClientDeadlockTest : public LinkClientTest {
 
 			EXPECT_CALL(mock_src, state).WillRepeatedly(Return(LocationState::DISTANT));
 			EXPECT_CALL(mock_tgt, state).WillRepeatedly(Return(LocationState::DISTANT));
-			EXPECT_CALL(mock_src, getLocation).WillRepeatedly(Return(10));
-			EXPECT_CALL(mock_tgt, getLocation).WillRepeatedly(Return(12));
+			EXPECT_CALL(mock_src, location).WillRepeatedly(Return(10));
+			EXPECT_CALL(mock_tgt, location).WillRepeatedly(Return(12));
 
 			EXPECT_CALL(mock_edge, state).Times(AnyNumber())
 				.WillRepeatedly(Return(LocationState::DISTANT));

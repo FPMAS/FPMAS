@@ -82,7 +82,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 			ASSERT_EQ(nodeCount, localNodeCount);
 
 			for(auto node : graph.getNodes()) {
-				ASSERT_EQ(node.second->getLocation(), location_sequences[node.first.id()][i]);
+				ASSERT_EQ(node.second->location(), location_sequences[node.first.id()][i]);
 			}
 			FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "done %i", i);
 		}

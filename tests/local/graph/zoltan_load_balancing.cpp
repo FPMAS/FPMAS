@@ -173,11 +173,11 @@ TEST_F(ZoltanFunctionsTest, edge_list_multi_test) {
 	write_zoltan_global_ids();
 	write_zoltan_num_edges();
 
-	EXPECT_CALL(*nodes[id1], getLocation())
+	EXPECT_CALL(*nodes[id1], location())
 		.WillRepeatedly(Return(0));
-	EXPECT_CALL(*nodes[id2], getLocation())
+	EXPECT_CALL(*nodes[id2], location())
 		.WillRepeatedly(Return(3));
-	EXPECT_CALL(*nodes[id3], getLocation())
+	EXPECT_CALL(*nodes[id3], location())
 		.WillRepeatedly(Return(5));
 
 	EXPECT_CALL(*mockEdge1, getWeight).Times(AtLeast(1));

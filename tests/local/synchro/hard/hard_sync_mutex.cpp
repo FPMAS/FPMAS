@@ -75,7 +75,7 @@ class HardSyncMutexTest : public ::testing::Test {
 
 		void SetUp() {
 			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
-			ON_CALL(node, getLocation).WillByDefault(ReturnPointee(&location));
+			ON_CALL(node, location).WillByDefault(ReturnPointee(&location));
 			//hard_sync_mutex.setUp(id, state, location, mock_mutex_client, mock_mutex_server);
 		}
 };

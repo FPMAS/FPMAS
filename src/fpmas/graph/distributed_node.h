@@ -25,7 +25,7 @@ namespace fpmas { namespace graph {
 
 		private:
 			LocationState _state = LocationState::LOCAL;
-			int location;
+			int _location;
 			T _data;
 			Mutex* _mutex = nullptr;
 
@@ -54,8 +54,8 @@ namespace fpmas { namespace graph {
 				: NodeBase(id), _data(std::move(data)) {
 			}
 
-			int getLocation() const override {return location;}
-			void setLocation(int location) override {this->location = location;}
+			int location() const override {return _location;}
+			void setLocation(int location) override {this->_location = location;}
 
 			api::graph::LocationState state() const override {return _state;}
 			void setState(api::graph::LocationState state) override {this->_state=state;}

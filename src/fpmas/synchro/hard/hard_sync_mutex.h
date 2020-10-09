@@ -115,7 +115,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				_locked_shared++;
 				return node->data();
 			}
-			node->data() = std::move(mutex_client.read(node->getId(), node->getLocation()));
+			node->data() = std::move(mutex_client.read(node->getId(), node->location()));
 			return node->data();
 		}
 
@@ -142,7 +142,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				}
 				return;
 			}
-			mutex_client.releaseRead(node->getId(), node->getLocation());
+			mutex_client.releaseRead(node->getId(), node->location());
 		}
 
 	/**
@@ -170,7 +170,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				this->_locked = true;
 				return node->data();
 			}
-			node->data() = std::move(mutex_client.acquire(node->getId(), node->getLocation()));
+			node->data() = std::move(mutex_client.acquire(node->getId(), node->location()));
 			return node->data();
 		}
 
@@ -195,7 +195,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				mutex_server.notify(node->getId());
 				return;
 			}
-			mutex_client.releaseAcquire(node->getId(), node->data(), node->getLocation());
+			mutex_client.releaseAcquire(node->getId(), node->data(), node->location());
 		}
 
 	/**
@@ -223,7 +223,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				this->_locked = true;
 				return;
 			}
-			mutex_client.lock(node->getId(), node->getLocation());
+			mutex_client.lock(node->getId(), node->location());
 		}
 
 	/**
@@ -247,7 +247,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				mutex_server.notify(node->getId());
 				return;
 			}
-			mutex_client.unlock(node->getId(), node->getLocation());
+			mutex_client.unlock(node->getId(), node->location());
 		}
 
 	/**
@@ -275,7 +275,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				_locked_shared++;
 				return;
 			}
-			mutex_client.lockShared(node->getId(), node->getLocation());
+			mutex_client.lockShared(node->getId(), node->location());
 		}
 
 	/**
@@ -301,7 +301,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				}
 				return;
 			}
-			mutex_client.unlockShared(node->getId(), node->getLocation());
+			mutex_client.unlockShared(node->getId(), node->location());
 		}
 
 	template<typename T>

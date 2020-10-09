@@ -105,7 +105,7 @@ class MockDistributedNode :
 				this->anyExpectations();
 			}
 
-		MOCK_METHOD(int, getLocation, (), (const, override));
+		MOCK_METHOD(int, location, (), (const, override));
 		MOCK_METHOD(void, setLocation, (int), (override));
 
 		MOCK_METHOD(void, setState, (LocationState), (override));
@@ -159,7 +159,7 @@ class MockDistributedNode :
 		void setUpLocationAccess() {
 			ON_CALL(*this, setLocation)
 				.WillByDefault(SaveArg<0>(&_location));
-			ON_CALL(*this, getLocation)
+			ON_CALL(*this, location)
 				.WillByDefault(ReturnPointee(&_location));
 		}
 		void anyExpectations() {
@@ -175,7 +175,7 @@ class MockDistributedNode :
 			EXPECT_CALL(*this, getOutgoingEdges()).Times(AnyNumber());
 			EXPECT_CALL(*this, getOutgoingEdges(_)).Times(AnyNumber());
 			EXPECT_CALL(*this, setLocation).Times(AnyNumber());
-			EXPECT_CALL(*this, getLocation).Times(AnyNumber());
+			EXPECT_CALL(*this, location).Times(AnyNumber());
 		}
 	};
 

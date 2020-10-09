@@ -41,7 +41,7 @@ namespace fpmas { namespace api { namespace graph {
 			 *
 			 * @return node location
 			 */
-			virtual int getLocation() const = 0;
+			virtual int location() const = 0;
 
 			/**
 			 * Updates the location of the node.

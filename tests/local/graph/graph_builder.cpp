@@ -184,8 +184,8 @@ TEST_F(ClusteredGraphBuilder, regular_build) {
 
 	mock_link.check();
 
-	ASSERT_THAT(mock_link.edges[node_0], ElementsAre(node_1, node_2));
-	ASSERT_THAT(mock_link.edges[node_1], ElementsAre(node_0, node_2));
-	ASSERT_THAT(mock_link.edges[node_2], ElementsAre(node_0, node_1));
-	ASSERT_THAT(mock_link.edges[node_3], ElementsAre(node_0, node_2));
+	ASSERT_THAT(mock_link.edges[node_0], UnorderedElementsAre(node_1, node_2));
+	ASSERT_THAT(mock_link.edges[node_1], UnorderedElementsAre(node_0, node_2));
+	ASSERT_THAT(mock_link.edges[node_2], UnorderedElementsAre(node_0, node_1));
+	ASSERT_THAT(mock_link.edges[node_3], UnorderedElementsAre(node_0, node_2));
 }

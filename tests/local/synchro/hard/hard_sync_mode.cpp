@@ -216,12 +216,12 @@ class HardSyncLinkerRemoveNodeTest : public HardSyncLinkerTest {
 
 			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.src), state).Times(AnyNumber())
 				.WillRepeatedly(Return(srcLocation));
-			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.src), getLocation).Times(AnyNumber())
+			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.src), location).Times(AnyNumber())
 				.WillRepeatedly(Return(srcRank));
 
 			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.tgt), state).Times(AnyNumber())
 				.WillRepeatedly(Return(tgtLocation));
-			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.tgt), getLocation).Times(AnyNumber())
+			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.tgt), location).Times(AnyNumber())
 				.WillRepeatedly(Return(tgtRank));
 
 			EXPECT_CALL(edge, state).Times(AnyNumber())

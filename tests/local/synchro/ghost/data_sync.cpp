@@ -114,11 +114,11 @@ TEST_F(GhostDataSyncTest, import_test) {
 		{DistributedId(6, 2), nodes[2]},
 		{DistributedId(7, 1), nodes[3]}
 	};
-	EXPECT_CALL(*nodes[1], getLocation)
+	EXPECT_CALL(*nodes[1], location)
 		.WillRepeatedly(Return(0));
-	EXPECT_CALL(*nodes[2], getLocation)
+	EXPECT_CALL(*nodes[2], location)
 		.WillRepeatedly(Return(0));
-	EXPECT_CALL(*nodes[3], getLocation)
+	EXPECT_CALL(*nodes[3], location)
 		.WillRepeatedly(Return(9));
 
 	NodeMap distant_nodes {

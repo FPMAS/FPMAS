@@ -31,8 +31,8 @@ TEST_F(DistributedEdgeTest, state) {
 }
 
 TEST_F(DistributedEdgeTest, json_serialization) {
-	EXPECT_CALL(src, getLocation).Times(AnyNumber()).WillRepeatedly(Return(3));
-	EXPECT_CALL(tgt, getLocation).Times(AnyNumber()).WillRepeatedly(Return(22));
+	EXPECT_CALL(src, location).Times(AnyNumber()).WillRepeatedly(Return(3));
+	EXPECT_CALL(tgt, location).Times(AnyNumber()).WillRepeatedly(Return(22));
 
 	nlohmann::json edge_json = fpmas::graph::EdgePtrWrapper<int>(&edge);
 
@@ -68,12 +68,12 @@ TEST_F(DistributedEdgeTest, json_deserialization) {
 	ASSERT_EQ(edge->getSourceNode()->getId(), DistributedId(0, 1));
 	ASSERT_FLOAT_EQ(edge->getSourceNode()->getWeight(), 0);
 	ASSERT_EQ(edge->getSourceNode()->data(), 0);
-	ASSERT_EQ(edge->getSourceNode()->getLocation(), 3);
+	ASSERT_EQ(edge->getSourceNode()->location(), 3);
 
 	ASSERT_EQ(edge->getTargetNode()->getId(), DistributedId(0, 2));
 	ASSERT_FLOAT_EQ(edge->getTargetNode()->getWeight(), 0);
 	ASSERT_EQ(edge->getTargetNode()->data(), 0);
-	ASSERT_EQ(edge->getTargetNode()->getLocation(), 22);
+	ASSERT_EQ(edge->getTargetNode()->location(), 22);
 
 	delete edge->getSourceNode();
 	delete edge->getTargetNode();

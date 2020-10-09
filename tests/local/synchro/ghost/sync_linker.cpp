@@ -56,12 +56,12 @@ class GhostSyncLinkerTest : public ::testing::Test {
 
 			EXPECT_CALL(*static_cast<const MockNode*>(edge.src), state).Times(AnyNumber())
 				.WillRepeatedly(Return(srcLocation));
-			EXPECT_CALL(*static_cast<const MockNode*>(edge.src), getLocation).Times(AnyNumber())
+			EXPECT_CALL(*static_cast<const MockNode*>(edge.src), location).Times(AnyNumber())
 				.WillRepeatedly(Return(srcRank));
 
 			EXPECT_CALL(*static_cast<const MockNode*>(edge.tgt), state).Times(AnyNumber())
 				.WillRepeatedly(Return(tgtLocation));
-			EXPECT_CALL(*static_cast<const MockNode*>(edge.tgt), getLocation).Times(AnyNumber())
+			EXPECT_CALL(*static_cast<const MockNode*>(edge.tgt), location).Times(AnyNumber())
 				.WillRepeatedly(Return(tgtRank));
 
 			EXPECT_CALL(edge, state).Times(AnyNumber())

@@ -215,7 +215,7 @@ class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 		int counter = 0;
 	public:
 		void act() override {
-			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
+			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbor : node()->outNeighbors()) {
 				ASSERT_THAT(static_cast<const ReaderAgent*>(neighbor->mutex()->read().get())->getCounter(), Ge(counter));
 			}
@@ -375,7 +375,7 @@ class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
 		int counter = 0;
 	public:
 		void act() override {
-			FPMAS_LOGD(node()->getLocation(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
+			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbor : node()->outNeighbors()) {
 				WriterAgent* neighbor_agent = static_cast<WriterAgent*>(neighbor->mutex()->acquire().get());
 
@@ -492,7 +492,7 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 	std::set<DistributedId> unlinks;
 
 	void act() override {
-		FPMAS_LOGD(node()->getLocation(), "GHOST_TEST", "Executing agent %s", FPMAS_C_STR(node()->getId()));
+		FPMAS_LOGD(node()->location(), "GHOST_TEST", "Executing agent %s", FPMAS_C_STR(node()->getId()));
 		if(node()->getOutgoingEdges().size() >= 2) {
 			auto out_neighbors = node()->outNeighbors();
 			std::uniform_int_distribution<unsigned long> random_neighbor {0, out_neighbors.size()-1};

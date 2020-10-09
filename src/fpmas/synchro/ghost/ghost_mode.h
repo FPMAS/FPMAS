@@ -110,8 +110,8 @@ namespace fpmas { namespace synchro {
 				std::unordered_map<int, std::vector<DistributedId>> requests;
 				for(auto node : graph.getLocationManager().getDistantNodes()) {
 					FPMAS_LOGV(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Request %s from %i",
-							FPMAS_C_STR(node.first), node.second->getLocation());
-					requests[node.second->getLocation()].push_back(node.first);
+							FPMAS_C_STR(node.first), node.second->location());
+					requests[node.second->location()].push_back(node.first);
 				}
 				requests = id_mpi.migrate(requests);
 
@@ -237,11 +237,11 @@ namespace fpmas { namespace synchro {
 							);
 					auto src = edge->getSourceNode();
 					if(src->state() == LocationState::DISTANT) {
-						unlink_migration[src->getLocation()].push_back(edge->getId());
+						unlink_migration[src->location()].push_back(edge->getId());
 					}
 					auto tgt = edge->getTargetNode();
 					if(tgt->state() == LocationState::DISTANT) {
-						unlink_migration[tgt->getLocation()].push_back(edge->getId());
+						unlink_migration[tgt->location()].push_back(edge->getId());
 					}
 				}
 			}
@@ -249,7 +249,7 @@ namespace fpmas { namespace synchro {
 		template<typename T>
 			void GhostSyncLinker<T>::removeNode(NodeApi* node) {
 				if(node->state() == LocationState::DISTANT) {
-					remove_node_buffer[node->getLocation()].push_back(node->getId());
+					remove_node_buffer[node->location()].push_back(node->getId());
 				} else {
 					for(auto edge : node->getOutgoingEdges())
 						graph.unlink(edge);
@@ -270,11 +270,11 @@ namespace fpmas { namespace synchro {
 				for(auto edge : link_buffer) {
 					auto src = edge->getSourceNode();
 					if(src->state() == LocationState::DISTANT) {
-						link_migration[src->getLocation()].push_back(edge);
+						link_migration[src->location()].push_back(edge);
 					}
 					auto tgt = edge->getTargetNode();
 					if(tgt->state() == LocationState::DISTANT) {
-						link_migration[tgt->getLocation()].push_back(edge);
+						link_migration[tgt->location()].push_back(edge);
 					}
 					if(src->state() == LocationState::DISTANT
 							&& tgt->state() == LocationState::DISTANT) {
