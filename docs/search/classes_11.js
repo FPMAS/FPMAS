@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['voidcallback_563',['VoidCallback',['../classfpmas_1_1utils_1_1VoidCallback.html',1,'fpmas::utils']]],
-  ['voidtask_564',['VoidTask',['../classfpmas_1_1scheduler_1_1VoidTask.html',1,'fpmas::scheduler']]]
+  ['uniformgraphbuilder_566',['UniformGraphBuilder',['../classfpmas_1_1graph_1_1UniformGraphBuilder.html',1,'fpmas::graph']]]
 ];

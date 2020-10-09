@@ -12,7 +12,8 @@ namespace fpmas { namespace graph {
 
 	/**
 	 * api::graph::GraphBuilder implementation that can be used to generate
-	 * random graphs.
+	 * random uniform graphs. When links are built, nodes are selected
+	 * uniformly among all the available built nodes.
 	 */
 	template<typename T>
 		class UniformGraphBuilder : public api::graph::GraphBuilder<T> {
@@ -26,8 +27,8 @@ namespace fpmas { namespace graph {
 				 *
 				 * @param generator random number generator provided to the
 				 * distribution
-				 * @param distribution random distribution that manages edges generation.
-				 * See build()
+				 * @param distribution random distribution that manages edges
+				 * generation. See build()
 				 */
 				UniformGraphBuilder(
 						api::random::Generator& generator,
@@ -81,6 +82,11 @@ namespace fpmas { namespace graph {
 				}
 		}
 
+	/**
+	 * api::graph::GraphBuilder implementation that can be used to generate
+	 * random clustered graphs. A random 2D coordinate is implicitly associated
+	 * to each node : each node is then connected to its nearest neighbors.
+	 */
 	template<typename T>
 		class ClusteredGraphBuilder : public api::graph::GraphBuilder<T> {
 			private:
@@ -117,6 +123,18 @@ namespace fpmas { namespace graph {
 				};
 
 			public:
+				/**
+				 * ClusteredGraphBuilder constructor.
+				 *
+				 * @param generator random number generator provided to the
+				 * distribution
+				 * @param edge_distribution random distribution that manages edges
+				 * generation. See build()
+				 * @param x_distribution random distribution used to assign an
+				 * x coordinate to each node
+				 * @param y_distribution random distribution used to assign an
+				 * y coordinate to each node
+				 */
 				ClusteredGraphBuilder(
 						api::random::Generator& generator,
 						api::random::Distribution<std::size_t>& edge_distribution,
@@ -129,10 +147,28 @@ namespace fpmas { namespace graph {
 					y_distribution(y_distribution)
 			{}
 
-			void build(
-					api::graph::NodeBuilder<T>& node_builder,
-					api::graph::LayerId layer,
-					api::graph::DistributedGraph<T>& graph) override;
+				/**
+				 * A 2D coordinate is first assigned to each node provided by
+				 * the node_builder, according to the specified
+				 * `x_distribution` and `y_distribution`.
+				 *
+				 * Then, for each node, an outgoing edge count `n` is determined by
+				 * `edge_distribution`. The node is then connected to its `n`
+				 * nearest neighbors according to the previously computed
+				 * coordinates.
+				 *
+				 * Notice that those coordinates are completely implicit and
+				 * independent from the kind of nodes actually built by the
+				 * algorithm.
+				 *
+				 * @param node_builder NodeBuilder instance used to generate nodes
+				 * @param layer layer on which nodes will be linked
+				 * @param graph graph in which nodes and edges will be inserted
+				 */
+				void build(
+						api::graph::NodeBuilder<T>& node_builder,
+						api::graph::LayerId layer,
+						api::graph::DistributedGraph<T>& graph) override;
 		};
 
 	template<typename T>

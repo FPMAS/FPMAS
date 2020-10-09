@@ -1,7 +1,9 @@
 <map id="src/fpmas/api/random/generator.h" name="src/fpmas/api/random/generator.h">
-<area shape="rect" id="node1" title=" " alt="" coords="206,5,354,47"/>
-<area shape="rect" id="node2" href="$api_2random_2distribution_8h.html" title=" " alt="" coords="109,95,257,136"/>
-<area shape="rect" id="node5" href="$random_2generator_8h.html" title=" " alt="" coords="281,102,477,129"/>
-<area shape="rect" id="node3" href="$graph_2graph__builder_8h.html" title=" " alt="" coords="5,184,157,225"/>
-<area shape="rect" id="node4" href="$random_2distribution_8h.html" title=" " alt="" coords="181,191,387,218"/>
+<area shape="rect" id="node1" title=" " alt="" coords="189,5,337,47"/>
+<area shape="rect" id="node2" href="$api_2random_2distribution_8h.html" title=" " alt="" coords="91,95,239,136"/>
+<area shape="rect" id="node7" href="$random_2generator_8h.html" title=" " alt="" coords="263,102,459,129"/>
+<area shape="rect" id="node3" href="$graph_2graph__builder_8h.html" title=" " alt="" coords="5,259,157,300"/>
+<area shape="rect" id="node5" href="$random_2distribution_8h.html" title=" " alt="" coords="119,184,324,211"/>
+<area shape="rect" id="node4" href="$fpmas_8h.html" title=" " alt="" coords="132,348,223,375"/>
+<area shape="rect" id="node6" href="$random_8h_source.html" title=" " alt="" coords="182,266,367,293"/>
 </map>
