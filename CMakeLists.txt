@@ -2,24 +2,28 @@ cmake_minimum_required(VERSION 3.1O)
 
 project(fpmas VERSION 0.1)
 
+# Custom modules directory
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-# MPI setup
+
+## Dependecies
+# MPI package
 find_package(MPI 3 REQUIRED)
+
+# Custom Zoltan module
 find_package(Zoltan 3.81 REQUIRED)
+
+# Since only the single include json.hpp is required, we defined a custom
+# nlohmann_json module so that a "complete" installation of nlohmann_json is
+# required, while still allowing version management. If the "complete"
+# installation is used, find_package() will automatically load the
+# nlohmann_json Config.cmake.
+find_package(nlohmann_json 3.7 REQUIRED)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -std=c++11 -O0 -Wall -Wpedantic")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
-set(LOG_LEVEL 0 CACHE STRING "Log level")
+set(LOG_LEVEL FPMAS_LOG_WARN CACHE STRING "Log level")
 message("-- LOG_LEVEL : ${LOG_LEVEL}")
-
-# Nlohmann JSON library
-find_file(JSON nlohmann/json.hpp) 
-if(NOT JSON)
-	message(FATAL_ERROR "-- nlohman/json library not found.")
-else()
-	message("-- Found nlohman/json library : ${JSON}")
-endif()
 
 add_subdirectory(src)
 add_subdirectory(tests)
@@ -29,13 +33,20 @@ write_basic_package_version_file(
 	${CMAKE_CURRENT_BINARY_DIR}/fpmasConfigVersion.cmake
 	COMPATIBILITY SameMajorVersion)
 
+# CMake packaging configuration
 install(FILES
 	cmake/fpmasConfig.cmake
 	cmake/FindZoltan.cmake
+	cmake/Findnlohmann_json.cmake
 	${CMAKE_CURRENT_BINARY_DIR}/fpmasConfigVersion.cmake
 	DESTINATION lib/cmake/fpmas)
+
+# "find_version" utilities need to be installed with custom modules
 install(DIRECTORY
 	cmake/find_zoltan_version
+	DESTINATION lib/cmake/fpmas)
+install(DIRECTORY
+	cmake/find_nlohmann_json_version
 	DESTINATION lib/cmake/fpmas)
 
 # Doxygen
