@@ -1,53 +1,15 @@
 cmake_minimum_required(VERSION 3.1O)
 
-project(fpmas)
+project(fpmas VERSION 0.1)
 
 # MPI setup
-find_package(MPI REQUIRED)
+find_package(MPI 3 REQUIRED)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -std=c++11 -O0 -Wall -Wpedantic")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
-set(N_PROC ${MPIEXEC_MAX_NUMPROCS} CACHE STRING "Number of procs to use in the
-MPI context")
 set(LOG_LEVEL 0 CACHE STRING "Log level")
 message("-- LOG_LEVEL : ${LOG_LEVEL}")
-
-include_directories(${CMAKE_PREFIX_PATH}/include)
-link_directories(${CMAKE_PREFIX_PATH}/lib)
-
-message("-- Number of used procs : ${N_PROC}")
-if(N_PROC GREATER MPIEXEC_MAX_NUMPROCS)
-	message("-- Enabling hardware threads cpus")
-	set(MPIEXEC_PREFLAGS "--use-hwthread-cpus")
-endif()
-
-if(MPIEXEC_EXECUTABLE)
-	message("-- Found mpiexec : ${MPIEXEC_EXECUTABLE}")
-	
-	add_custom_target(mpi_test
-		${MPIEXEC_EXECUTABLE}
-		${MPIEXEC_NUMPROC_FLAG}
-		${N_PROC}
-		${MPIEXEC_PREFLAGS}
-		${CMAKE_CURRENT_BINARY_DIR}/tests/mpi/fpmas_mpi_test
-		${MPIEXEC_POSTFLAGS}
-		)
-
-	add_custom_target(mpi_memcheck
-		${MPIEXEC_EXECUTABLE}
-		${MPIEXEC_NUMPROC_FLAG}
-		${N_PROC}
-		${MPIEXEC_PREFLAGS}
-		"valgrind"
-		"--suppressions=../mpi_init.supp"
-		"--leak-check=full"
-		"--show-leak-kinds=all"
-		${CMAKE_CURRENT_BINARY_DIR}/tests/mpi/fpmas_mpi_test
-		${MPIEXEC_POSTFLAGS}
-		)
-
-endif()
 
 # Nlohmann JSON library
 find_file(JSON nlohmann/json.hpp) 
@@ -67,6 +29,16 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(tests)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+	${CMAKE_CURRENT_BINARY_DIR}/fpmasConfigVersion.cmake
+	COMPATIBILITY SameMajorVersion)
+
+install(FILES
+	cmake/fpmasConfig.cmake
+	${CMAKE_CURRENT_BINARY_DIR}/fpmasConfigVersion.cmake
+	DESTINATION lib/cmake/fpmas)
 
 # Doxygen
 find_package(Doxygen)
