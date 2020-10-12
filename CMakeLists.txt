@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.1O)
 
 project(fpmas VERSION 0.1)
 
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # MPI setup
 find_package(MPI 3 REQUIRED)
+find_package(Zoltan 3.81 REQUIRED)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -std=c++11 -O0 -Wall -Wpedantic")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
@@ -19,14 +21,6 @@ else()
 	message("-- Found nlohman/json library : ${JSON}")
 endif()
 
-# Zoltan library
-find_library(ZOLTAN zoltan)
-if(NOT ZOLTAN)
-	message(FATAL_ERROR "-- Zoltan library not found.")
-else()
-	message("-- Found zoltan library : ${ZOLTAN}")
-endif()
-
 add_subdirectory(src)
 add_subdirectory(tests)
 
@@ -37,7 +31,11 @@ write_basic_package_version_file(
 
 install(FILES
 	cmake/fpmasConfig.cmake
+	cmake/FindZoltan.cmake
 	${CMAKE_CURRENT_BINARY_DIR}/fpmasConfigVersion.cmake
+	DESTINATION lib/cmake/fpmas)
+install(DIRECTORY
+	cmake/find_zoltan_version
 	DESTINATION lib/cmake/fpmas)
 
 # Doxygen

@@ -27,7 +27,7 @@ set(SOURCES
 add_library(fpmas ${SOURCES})
 
 target_compile_definitions(fpmas PUBLIC LOG_LEVEL=${LOG_LEVEL})
-target_link_libraries(fpmas PUBLIC MPI::MPI_CXX zoltan)
+target_link_libraries(fpmas PUBLIC MPI::MPI_CXX Zoltan::Zoltan)
 
 target_include_directories(fpmas PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
