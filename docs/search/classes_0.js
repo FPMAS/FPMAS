@@ -11,8 +11,8 @@ var searchData=
   ['adl_5fserializer_3c_20std_3a_3atype_5findex_20_3e_455',['adl_serializer&lt; std::type_index &gt;',['../structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html',1,'nlohmann']]],
   ['agent_456',['Agent',['../classfpmas_1_1api_1_1model_1_1Agent.html',1,'fpmas::api::model']]],
   ['agentbase_457',['AgentBase',['../classfpmas_1_1model_1_1AgentBase.html',1,'fpmas::model']]],
-  ['agentgroup_458',['AgentGroup',['../classfpmas_1_1model_1_1AgentGroup.html',1,'fpmas::model::AgentGroup'],['../classfpmas_1_1api_1_1model_1_1AgentGroup.html',1,'fpmas::api::model::AgentGroup']]],
+  ['agentgroup_458',['AgentGroup',['../classfpmas_1_1model_1_1detail_1_1AgentGroup.html',1,'fpmas::model::detail::AgentGroup'],['../classfpmas_1_1api_1_1model_1_1AgentGroup.html',1,'fpmas::api::model::AgentGroup']]],
   ['agentnodebuilder_459',['AgentNodeBuilder',['../classfpmas_1_1model_1_1AgentNodeBuilder.html',1,'fpmas::model']]],
   ['agentptr_460',['AgentPtr',['../classfpmas_1_1api_1_1model_1_1AgentPtr.html',1,'fpmas::api::model']]],
-  ['agenttask_461',['AgentTask',['../classfpmas_1_1model_1_1AgentTask.html',1,'fpmas::model::AgentTask'],['../classfpmas_1_1api_1_1model_1_1AgentTask.html',1,'fpmas::api::model::AgentTask']]]
+  ['agenttask_461',['AgentTask',['../classfpmas_1_1api_1_1model_1_1AgentTask.html',1,'fpmas::api::model::AgentTask'],['../classfpmas_1_1model_1_1detail_1_1AgentTask.html',1,'fpmas::model::detail::AgentTask']]]
 ];

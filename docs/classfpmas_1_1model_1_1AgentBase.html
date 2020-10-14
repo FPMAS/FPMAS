@@ -22,6 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">fpmas
+   &#160;<span id="projectnumber">0.1</span>
    </div>
   </td>
  </tr>
@@ -184,7 +185,7 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the ID of the <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this Agent belong.</p>
+<p>Returns the ID of the AgentGroup to which this Agent belong.</p>
 <dl class="section return"><dt>Returns</dt><dd>group id </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#af7df85262a65329202070747bd152c83">fpmas::api::model::Agent</a>.</p>
@@ -252,7 +253,7 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a pointer to the <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this Agent belong.</p>
+<p>Returns a pointer to the AgentGroup to which this Agent belong.</p>
 <dl class="section return"><dt>Returns</dt><dd>pointer to agent group </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a46ea84f58fb1b430f05312ba61b06639">fpmas::api::model::Agent</a>.</p>
@@ -285,7 +286,7 @@ template&lt;typename AgentType &gt; </div>
 </div><div class="memdoc">
 
 <p></p>
-<p>Returns a pointer to the <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this Agent belong.</p>
+<p>Returns a pointer to the AgentGroup to which this Agent belong.</p>
 <dl class="section return"><dt>Returns</dt><dd>pointer to agent group </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#ae5374eb2b87f1b6c338f0547aab600f3">fpmas::api::model::Agent</a>.</p>
@@ -317,7 +318,7 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Sets the internal pointer of the <a class="el" href="classfpmas_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this Agent belong.</p>
+<p>Sets the internal pointer of the AgentGroup to which this Agent belong.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">group</td><td>agent group </td></tr>
@@ -595,8 +596,8 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a pointer to the <a class="el" href="classfpmas_1_1model_1_1Model.html">Model</a> that contains this Agent.</p>
-<dl class="section return"><dt>Returns</dt><dd>pointer to <a class="el" href="classfpmas_1_1model_1_1Model.html">Model</a> </dd></dl>
+<p>Returns a pointer to the Model that contains this Agent.</p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to Model </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#ae6794887a1eec21b29534b5612e1f60d">fpmas::api::model::Agent</a>.</p>
 
@@ -628,8 +629,8 @@ template&lt;typename AgentType &gt; </div>
 </div><div class="memdoc">
 
 <p></p>
-<p>Returns a pointer to the <a class="el" href="classfpmas_1_1model_1_1Model.html">Model</a> that contains this Agent.</p>
-<dl class="section return"><dt>Returns</dt><dd>pointer to <a class="el" href="classfpmas_1_1model_1_1Model.html">Model</a> </dd></dl>
+<p>Returns a pointer to the Model that contains this Agent.</p>
+<dl class="section return"><dt>Returns</dt><dd>pointer to Model </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a109e978f560ff376679066e07372dee7">fpmas::api::model::Agent</a>.</p>
 
@@ -660,10 +661,10 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Sets the internal pointer of the <a class="el" href="classfpmas_1_1model_1_1Model.html">Model</a> that contains this Agent.</p>
+<p>Sets the internal pointer of the Model that contains this Agent.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">model</td><td>pointer to <a class="el" href="classfpmas_1_1model_1_1Model.html">Model</a> </td></tr>
+    <tr><td class="paramname">model</td><td>pointer to Model </td></tr>
   </table>
   </dd>
 </dl>
@@ -696,7 +697,7 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns a pointer to the <a class="el" href="classfpmas_1_1model_1_1AgentTask.html">AgentTask</a> associated to this Agent, that is used to execute the Agent (thanks to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a038600989efe7ceb1fc5afce1c87de45">act()</a> function).</p>
+<p>Returns a pointer to the AgentTask associated to this Agent, that is used to execute the Agent (thanks to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a038600989efe7ceb1fc5afce1c87de45">act()</a> function).</p>
 <dl class="section return"><dt>Returns</dt><dd>agent task </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a67db390e324f864aed535a18339a124e">fpmas::api::model::Agent</a>.</p>
@@ -729,7 +730,7 @@ template&lt;typename AgentType &gt; </div>
 </div><div class="memdoc">
 
 <p></p>
-<p>Returns a pointer to the <a class="el" href="classfpmas_1_1model_1_1AgentTask.html">AgentTask</a> associated to this Agent, that is used to execute the Agent (thanks to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a038600989efe7ceb1fc5afce1c87de45">act()</a> function).</p>
+<p>Returns a pointer to the AgentTask associated to this Agent, that is used to execute the Agent (thanks to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a038600989efe7ceb1fc5afce1c87de45">act()</a> function).</p>
 <dl class="section return"><dt>Returns</dt><dd>agent task </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a3e635c3ee12b226056a270dd21825816">fpmas::api::model::Agent</a>.</p>
@@ -761,7 +762,7 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Sets the <a class="el" href="classfpmas_1_1model_1_1AgentTask.html">AgentTask</a> associated to this Agent.</p>
+<p>Sets the AgentTask associated to this Agent.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">task</td><td>agent task </td></tr>

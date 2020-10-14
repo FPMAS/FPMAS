@@ -228,7 +228,6 @@ namespace fpmas { namespace graph {
 				void synchronize() override;
 
 
-				//NodeType* buildNode(const T&) override;
 				NodeType* buildNode(T&& = std::move(T())) override;
 				NodeType* buildNode(const T&) override;
 
@@ -274,7 +273,6 @@ namespace fpmas { namespace graph {
 				src->mutex()->lockShared();
 				tgt->mutex()->lockShared();
 
-				//sync_mode.getSyncLinker().unlink(static_cast<DistEdgeImpl<T>*>(edge));
 				sync_mode.getSyncLinker().unlink(edge);
 
 				this->erase(edge);
@@ -431,16 +429,6 @@ namespace fpmas { namespace graph {
 				//sync_mode.setUp(node->getId(), dynamic_cast<typename SyncMode::template MutexType<T>&>(node->mutex()));
 				return node;
 			}
-
-		/*
-		 *template<DIST_GRAPH_PARAMS>
-		 *    typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
-		 *        DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::buildNode(const T& data) {
-		 *            return buildNode(new DistNodeType(
-		 *                    this->node_id++, data
-		 *                    ));
-		 *        }
-		 */
 
 		template<DIST_GRAPH_PARAMS>
 			typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*

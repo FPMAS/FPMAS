@@ -1,10 +1,11 @@
 <map id="src/fpmas/api/runtime/runtime.h" name="src/fpmas/api/runtime/runtime.h">
-<area shape="rect" id="node1" title=" " alt="" coords="373,5,521,47"/>
-<area shape="rect" id="node2" href="$api_2model_2model_8h.html" title=" " alt="" coords="193,95,333,136"/>
-<area shape="rect" id="node7" href="$scheduled__load__balancing_8h.html" title=" " alt="" coords="361,184,540,225"/>
-<area shape="rect" id="node8" href="$runtime_2runtime_8h.html" title=" " alt="" coords="485,102,670,129"/>
-<area shape="rect" id="node3" href="$model_2guards_8h.html" title=" " alt="" coords="113,191,287,218"/>
-<area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="239,273,409,300"/>
-<area shape="rect" id="node6" href="$serializer_8h.html" title=" " alt="" coords="5,273,192,300"/>
-<area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="155,348,245,375"/>
+<area shape="rect" id="node1" title=" " alt="" coords="227,5,375,47"/>
+<area shape="rect" id="node2" href="$api_2model_2model_8h.html" title=" " alt="" coords="418,95,558,136"/>
+<area shape="rect" id="node8" href="$scheduled__load__balancing_8h.html" title=" " alt="" coords="5,95,184,136"/>
+<area shape="rect" id="node9" href="$runtime_2runtime_8h.html" title=" " alt="" coords="209,102,394,129"/>
+<area shape="rect" id="node3" href="$model_2detail_2model_8h.html" title=" " alt="" coords="223,184,377,225"/>
+<area shape="rect" id="node6" href="$model_2guards_8h.html" title=" " alt="" coords="401,191,575,218"/>
+<area shape="rect" id="node7" href="$serializer_8h.html" title=" " alt="" coords="519,273,705,300"/>
+<area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="325,273,494,300"/>
+<area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="465,348,556,375"/>
 </map>

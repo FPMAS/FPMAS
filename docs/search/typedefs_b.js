@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['scheduledloadbalancing_946',['ScheduledLoadBalancing',['../namespacefpmas_1_1model.html#a787eb2c6d3a4ed69230fe2794b10877a',1,'fpmas::model']]]
+  ['scheduledloadbalancing_947',['ScheduledLoadBalancing',['../namespacefpmas_1_1model_1_1detail.html#a2ca32d0ef086e24464878ad021ce2732',1,'fpmas::model::detail']]]
 ];

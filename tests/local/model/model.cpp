@@ -32,9 +32,9 @@ using ::testing::UnorderedElementsAre;
 using ::testing::UnorderedElementsAreArray;
 using ::testing::WhenDynamicCastTo;
 
-using fpmas::model::Model;
-using fpmas::model::AgentGroup;
-using fpmas::model::AgentTask;
+using fpmas::model::detail::Model;
+using fpmas::model::detail::AgentGroup;
+using fpmas::model::detail::AgentTask;
 
 typedef fpmas::api::model::AgentPtr AgentPtr;
 
@@ -96,16 +96,16 @@ class ModelTest : public ::testing::Test {
 		Model* model;
 		void SetUp() override {
 			EXPECT_CALL(graph, addCallOnInsertNode(
-					WhenDynamicCastTo<fpmas::model::InsertAgentNodeCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::detail::InsertAgentNodeCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&insert_node_callback));
 			EXPECT_CALL(graph, addCallOnEraseNode(
-					WhenDynamicCastTo<fpmas::model::EraseAgentNodeCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::detail::EraseAgentNodeCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&erase_node_callback));
 			EXPECT_CALL(graph, addCallOnSetLocal(
-					WhenDynamicCastTo<fpmas::model::SetAgentLocalCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::detail::SetAgentLocalCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&set_local_callback));
 			EXPECT_CALL(graph, addCallOnSetDistant(
-					WhenDynamicCastTo<fpmas::model::SetAgentDistantCallback*>(Not(IsNull()))
+					WhenDynamicCastTo<fpmas::model::detail::SetAgentDistantCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&set_distant_callback));
 			model = new Model(graph, scheduler, runtime, load_balancing);
 		}
@@ -152,9 +152,9 @@ class AgentGroupTest : public ::testing::Test {
 		typedef fpmas::api::graph::DistributedNode<AgentPtr> Node;
 	protected:
 		MockModel model;
-		fpmas::model::InsertAgentNodeCallback insert_agent_callback {model};
-		fpmas::model::EraseAgentNodeCallback erase_agent_callback {model};
-		fpmas::model::SetAgentLocalCallback set_local_callback {model};
+		fpmas::model::detail::InsertAgentNodeCallback insert_agent_callback {model};
+		fpmas::model::detail::EraseAgentNodeCallback erase_agent_callback {model};
+		fpmas::model::detail::SetAgentLocalCallback set_local_callback {model};
 
 		fpmas::api::model::GroupId id = 1;
 
@@ -221,13 +221,13 @@ class AgentGroupTest : public ::testing::Test {
 			EXPECT_CALL(graph, insert(A<Node*>()))
 				.Times(AnyNumber())
 				.WillRepeatedly(DoAll(
-							Invoke(&insert_agent_callback, &fpmas::model::InsertAgentNodeCallback::call),
-							Invoke(&set_local_callback, &fpmas::model::SetAgentLocalCallback::call)
+							Invoke(&insert_agent_callback, &fpmas::model::detail::InsertAgentNodeCallback::call),
+							Invoke(&set_local_callback, &fpmas::model::detail::SetAgentLocalCallback::call)
 							));
 			EXPECT_CALL(graph, erase(A<Node*>()))
 				.Times(AnyNumber())
 				.WillRepeatedly(DoAll(
-							Invoke(&erase_agent_callback, &fpmas::model::EraseAgentNodeCallback::call)
+							Invoke(&erase_agent_callback, &fpmas::model::detail::EraseAgentNodeCallback::call)
 							));
 			EXPECT_CALL(model, getGroup(id))
 				.Times(AnyNumber())

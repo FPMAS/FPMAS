@@ -1,11 +1,12 @@
 <map id="src/fpmas/communication/communication.h" name="src/fpmas/communication/communication.h">
 <area shape="rect" id="node1" title=" " alt="" coords="287,5,459,47"/>
 <area shape="rect" id="node2" href="$graph_2location__manager_8h.html" title=" " alt="" coords="77,95,242,136"/>
-<area shape="rect" id="node6" href="$zoltan__load__balancing_8h.html" title=" " alt="" coords="210,184,365,225"/>
-<area shape="rect" id="node7" href="$ghost__mode_8h.html" title=" " alt="" coords="309,273,476,315"/>
-<area shape="rect" id="node8" href="$termination_8h.html" title=" " alt="" coords="448,95,607,136"/>
+<area shape="rect" id="node7" href="$zoltan__load__balancing_8h.html" title=" " alt="" coords="210,184,365,225"/>
+<area shape="rect" id="node8" href="$ghost__mode_8h.html" title=" " alt="" coords="317,273,484,315"/>
+<area shape="rect" id="node9" href="$termination_8h.html" title=" " alt="" coords="441,95,600,136"/>
 <area shape="rect" id="node3" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="5,184,185,225"/>
-<area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="116,281,285,307"/>
-<area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="347,363,438,389"/>
-<area shape="rect" id="node9" href="$hard__sync__mode_8h.html" title=" " alt="" coords="500,273,659,315"/>
+<area shape="rect" id="node4" href="$model_2detail_2model_8h.html" title=" " alt="" coords="138,273,293,315"/>
+<area shape="rect" id="node5" href="$model_2model_8h.html" title=" " alt="" coords="163,370,332,397"/>
+<area shape="rect" id="node6" href="$fpmas_8h.html" title=" " alt="" coords="355,452,446,479"/>
+<area shape="rect" id="node10" href="$hard__sync__mode_8h.html" title=" " alt="" coords="440,363,599,404"/>
 </map>

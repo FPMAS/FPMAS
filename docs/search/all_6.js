@@ -2,7 +2,7 @@ var searchData=
 [
   ['api_114',['api',['../namespacefpmas_1_1api.html',1,'fpmas::api'],['../namespacefpmas_1_1synchro_1_1hard_1_1api.html',1,'fpmas::synchro::hard::api']]],
   ['communication_115',['communication',['../namespacefpmas_1_1api_1_1communication.html',1,'fpmas::api::communication'],['../namespacefpmas_1_1communication.html',1,'fpmas::communication']]],
-  ['detail_116',['detail',['../namespacefpmas_1_1graph_1_1detail.html',1,'fpmas::graph']]],
+  ['detail_116',['detail',['../namespacefpmas_1_1graph_1_1detail.html',1,'fpmas::graph::detail'],['../namespacefpmas_1_1model_1_1detail.html',1,'fpmas::model::detail']]],
   ['exceptions_117',['exceptions',['../namespacefpmas_1_1exceptions.html',1,'fpmas']]],
   ['finalize_118',['finalize',['../namespacefpmas.html#a025034ef544117c0d20c51eb567ab474',1,'fpmas']]],
   ['fixed_5fobj_5flist_5ffn_119',['fixed_obj_list_fn',['../zoltan__load__balancing_8h.html#a6a060ddd3acbbb48914598f5a755c78a',1,'fpmas::graph::zoltan']]],

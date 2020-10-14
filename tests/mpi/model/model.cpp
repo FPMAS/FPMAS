@@ -31,14 +31,14 @@ class ModelGhostModeIntegrationTest : public ::testing::Test {
 		static const int NODE_BY_PROC;
 		static const int NUM_STEPS;
 		fpmas::communication::MpiCommunicator comm;
-		fpmas::model::AgentGraph<fpmas::synchro::GhostMode> agent_graph {comm};
-		fpmas::model::ZoltanLoadBalancing lb {comm};
+		fpmas::model::detail::AgentGraph<fpmas::synchro::GhostMode> agent_graph {comm};
+		fpmas::model::detail::ZoltanLoadBalancing lb {comm};
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
 
-		fpmas::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		std::unordered_map<DistributedId, unsigned long> act_counts;
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
@@ -247,14 +247,14 @@ class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 		static const int NODE_BY_PROC;
 		static const int NUM_STEPS;
 		fpmas::communication::MpiCommunicator comm;
-		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph {comm};
-		fpmas::model::ZoltanLoadBalancing lb {comm};
+		fpmas::model::detail::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph {comm};
+		fpmas::model::detail::ZoltanLoadBalancing lb {comm};
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
 
-		fpmas::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		std::unordered_map<DistributedId, unsigned long> act_counts;
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
@@ -410,14 +410,14 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 		static const unsigned int AGENT_BY_PROC = 50;
 		static const unsigned int STEPS = 100;
 		fpmas::communication::MpiCommunicator comm;
-		fpmas::model::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph {comm};
-		fpmas::model::ZoltanLoadBalancing lb {comm};
+		fpmas::model::detail::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph {comm};
+		fpmas::model::detail::ZoltanLoadBalancing lb {comm};
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
 
-		fpmas::model::Model model {agent_graph, scheduler, runtime, scheduled_lb};
+		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		HardSyncAgentModelIntegrationTest() {
 			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>);
@@ -714,5 +714,5 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 }
 
 TEST(DefaultModelConfig, build) {
-	fpmas::model::DefaultModel<fpmas::synchro::HardSyncMode> model;
+	fpmas::model::Model<fpmas::synchro::HardSyncMode> model;
 }

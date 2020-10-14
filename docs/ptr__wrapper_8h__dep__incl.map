@@ -1,14 +1,15 @@
 <map id="src/fpmas/api/utils/ptr_wrapper.h" name="src/fpmas/api/utils/ptr_wrapper.h">
-<area shape="rect" id="node1" title=" " alt="" coords="306,5,435,47"/>
-<area shape="rect" id="node2" href="$api_2model_2model_8h.html" title=" " alt="" coords="209,184,349,225"/>
-<area shape="rect" id="node7" href="$graph_2distributed__node_8h.html" title=" " alt="" coords="358,95,538,136"/>
-<area shape="rect" id="node3" href="$model_2guards_8h.html" title=" " alt="" coords="113,281,287,307"/>
-<area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="238,370,407,397"/>
-<area shape="rect" id="node6" href="$serializer_8h.html" title=" " alt="" coords="5,370,192,397"/>
-<area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="373,452,464,479"/>
-<area shape="rect" id="node8" href="$graph_2distributed__edge_8h.html" title=" " alt="" coords="406,184,586,225"/>
-<area shape="rect" id="node9" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="362,273,542,315"/>
-<area shape="rect" id="node10" href="$ghost__mode_8h.html" title=" " alt="" coords="431,363,598,404"/>
-<area shape="rect" id="node11" href="$hard__sync__linker_8h.html" title=" " alt="" coords="621,273,779,315"/>
-<area shape="rect" id="node12" href="$hard__sync__mode_8h.html" title=" " alt="" coords="622,363,781,404"/>
+<area shape="rect" id="node1" title=" " alt="" coords="250,5,379,47"/>
+<area shape="rect" id="node2" href="$api_2model_2model_8h.html" title=" " alt="" coords="134,273,274,315"/>
+<area shape="rect" id="node8" href="$graph_2distributed__node_8h.html" title=" " alt="" coords="317,95,497,136"/>
+<area shape="rect" id="node3" href="$model_2detail_2model_8h.html" title=" " alt="" coords="315,363,469,404"/>
+<area shape="rect" id="node6" href="$model_2guards_8h.html" title=" " alt="" coords="117,370,291,397"/>
+<area shape="rect" id="node7" href="$serializer_8h.html" title=" " alt="" coords="5,459,192,486"/>
+<area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="235,459,405,486"/>
+<area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="371,541,461,568"/>
+<area shape="rect" id="node9" href="$graph_2distributed__edge_8h.html" title=" " alt="" coords="362,184,542,225"/>
+<area shape="rect" id="node10" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="298,273,478,315"/>
+<area shape="rect" id="node11" href="$ghost__mode_8h.html" title=" " alt="" coords="429,452,595,493"/>
+<area shape="rect" id="node12" href="$hard__sync__linker_8h.html" title=" " alt="" coords="554,273,713,315"/>
+<area shape="rect" id="node13" href="$hard__sync__mode_8h.html" title=" " alt="" coords="554,363,713,404"/>
 </map>

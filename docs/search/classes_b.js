@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['model_520',['Model',['../classfpmas_1_1api_1_1model_1_1Model.html',1,'fpmas::api::model::Model'],['../classfpmas_1_1model_1_1Model.html',1,'fpmas::model::Model']]],
+  ['model_520',['Model',['../classfpmas_1_1model_1_1detail_1_1Model.html',1,'fpmas::model::detail::Model'],['../classfpmas_1_1api_1_1model_1_1Model.html',1,'fpmas::api::model::Model']]],
   ['mpicommunicator_521',['MpiCommunicator',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html',1,'fpmas::api::communication::MpiCommunicator'],['../classfpmas_1_1communication_1_1MpiCommunicator.html',1,'fpmas::communication::MpiCommunicator']]],
   ['mpidistributedid_522',['MpiDistributedId',['../structfpmas_1_1api_1_1communication_1_1MpiDistributedId.html',1,'fpmas::api::communication']]],
   ['mutex_523',['Mutex',['../classfpmas_1_1api_1_1synchro_1_1Mutex.html',1,'fpmas::api::synchro']]],

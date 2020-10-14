@@ -2,7 +2,7 @@ var searchData=
 [
   ['api_571',['api',['../namespacefpmas_1_1api.html',1,'fpmas::api'],['../namespacefpmas_1_1synchro_1_1hard_1_1api.html',1,'fpmas::synchro::hard::api']]],
   ['communication_572',['communication',['../namespacefpmas_1_1api_1_1communication.html',1,'fpmas::api::communication'],['../namespacefpmas_1_1communication.html',1,'fpmas::communication']]],
-  ['detail_573',['detail',['../namespacefpmas_1_1graph_1_1detail.html',1,'fpmas::graph']]],
+  ['detail_573',['detail',['../namespacefpmas_1_1graph_1_1detail.html',1,'fpmas::graph::detail'],['../namespacefpmas_1_1model_1_1detail.html',1,'fpmas::model::detail']]],
   ['exceptions_574',['exceptions',['../namespacefpmas_1_1exceptions.html',1,'fpmas']]],
   ['fpmas_575',['fpmas',['../namespacefpmas.html',1,'']]],
   ['ghost_576',['ghost',['../namespacefpmas_1_1synchro_1_1ghost.html',1,'fpmas::synchro']]],

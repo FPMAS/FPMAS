@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['partitionmap_322',['PartitionMap',['../classfpmas_1_1model_1_1LoadBalancingTask.html#a8907f4ff4ff31357baa6a7fb29a25d8d',1,'fpmas::model::LoadBalancingTask::PartitionMap()'],['../namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d',1,'fpmas::api::graph::PartitionMap()']]],
+  ['partitionmap_322',['PartitionMap',['../classfpmas_1_1model_1_1detail_1_1LoadBalancingTask.html#a8f59dd435e4d24623fcc23afa2794192',1,'fpmas::model::detail::LoadBalancingTask::PartitionMap()'],['../namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d',1,'fpmas::api::graph::PartitionMap()']]],
   ['period_323',['Period',['../namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8',1,'fpmas::api::scheduler']]],
   ['poissondistribution_324',['PoissonDistribution',['../namespacefpmas_1_1random.html#acc013969073992c63b84ea645dcf0894',1,'fpmas::random']]],
   ['probe_325',['probe',['../classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5dbf8bcbe25f3ec56a90e0640e5d2a3b',1,'fpmas::api::communication::MpiCommunicator::probe()'],['../classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ac0b47b6e02f6457960a711b3ca2372cd',1,'fpmas::api::communication::TypedMpi::probe()'],['../classfpmas_1_1communication_1_1MpiCommunicator.html#aa38a475d1ae4336abc1d5198a491d78c',1,'fpmas::communication::MpiCommunicator::probe()'],['../classfpmas_1_1communication_1_1TypedMpi.html#afb8bbb69f472a92405e98953903af712',1,'fpmas::communication::TypedMpi::probe()']]],
