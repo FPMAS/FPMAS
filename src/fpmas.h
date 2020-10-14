@@ -8,6 +8,11 @@
 #include "fpmas/graph/graph_builder.h"
 #include "fpmas/random/random.h"
 
+#define FPMAS_VERSION "0.1.0"
+#define FPMAS_VERSION_MAJOR 0
+#define FPMAS_VERSION_MINOR 1
+#define FPMAS_VERSION_PATCH 0
+
 namespace fpmas {
 	/**
 	 * Initializes FPMAS.
