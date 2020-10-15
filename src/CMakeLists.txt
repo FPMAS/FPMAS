@@ -1,3 +1,5 @@
+configure_file(fpmas.h.in ${CMAKE_CURRENT_SOURCE_DIR}/fpmas.h)
+
 set(SOURCES
 	${SOURCES}
 	# API
