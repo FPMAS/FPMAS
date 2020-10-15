@@ -14,8 +14,22 @@ namespace fpmas { namespace api { namespace scheduler {
 	typedef unsigned long Period;
 	/**
 	 * Type used to define a particular date.
+	 *
+	 * The integer part of a Date corresponds to the TimeStep used to build an
+	 * Epoch, and the rational part is the SubTimeStep, that can be used to
+	 * order events within a TimeStep.
 	 */
-	typedef unsigned long Date;
+	typedef float Date;
+
+	/**
+	 * Integral part of a Date.
+	 */
+	typedef unsigned long TimeStep;
+	/**
+	 * Rational part of a Date.
+	 */
+	typedef float SubTimeStep;
+
 	/**
 	 * Job ID type.
 	 */
@@ -150,13 +164,16 @@ namespace fpmas { namespace api { namespace scheduler {
 			/**
 			 * Submits a new job to this Epoch.
 			 *
-			 * Jobs are assumed to be executed in the order they are added
-			 * to the Epoch.  The result of jobs() and the begin() / end()
-			 * iterators are consistent with this order.
+			 * Jobs within the Epoch are ordered according to the specified
+			 * `sub_time_step`. The result of jobs() and the begin() / end()
+			 * iterators are consistent with this order. If several jobs are
+			 * submitted with equal `sub_time_steps`, their relative ordering is
+			 * undefined.
 			 *
 			 * @param job job to submit
+			 * @param sub_time_step value used to order jobs within the Epoch
 			 */
-			virtual void submit(const Job& job) = 0;
+			virtual void submit(const Job& job, SubTimeStep sub_time_step) = 0;
 
 			/**
 			 * Returns a reference to the internal Jobs list.
@@ -238,15 +255,17 @@ namespace fpmas { namespace api { namespace scheduler {
 			/**
 			 * Builds an Epoch that correspond to the specified date.
 			 *
-			 * All jobs currently scheduled at the specified date,
+			 * All jobs currently scheduled at the specified time step,
 			 * according to the rules of the schedule() functions, will be
-			 * submitted to the given epoch.
+			 * submitted to the given epoch. Jobs are ordered by Date within
+			 * the built epoch. If jobs are submitted with the same Date, the
+			 * execution order is undefined.
 			 *
 			 * @see Epoch::submit()
-			 * @param date input date
+			 * @param step time step to build 
 			 * @param epoch output epoch
 			 */
-			virtual void build(Date date, Epoch& epoch) const = 0;
+			virtual void build(TimeStep step, Epoch& epoch) const = 0;
 
 			virtual ~Scheduler() {}
 	};

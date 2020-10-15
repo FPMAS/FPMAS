@@ -100,10 +100,10 @@ class MockBuildEpoch {
 		std::vector<MockJob*> jobs;
 	public:
 		MockBuildEpoch(std::vector<MockJob*> jobs) : jobs(jobs) {}
-		void operator()(Date date, fpmas::api::scheduler::Epoch& epoch) {
+		void operator()(fpmas::scheduler::TimeStep, fpmas::api::scheduler::Epoch& epoch) {
 			epoch.clear();
-			for(auto job : jobs)
-				epoch.submit(*job);
+			for(MockJob* job : jobs)
+				epoch.submit(*job, 0);
 		}
 };
 

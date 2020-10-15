@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">fpmas
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">0.1.0</span>
    </div>
   </td>
  </tr>
@@ -91,8 +91,12 @@ Classes</h2></td></tr>
 Typedefs</h2></td></tr>
 <tr class="memitem:aae904660e81c6a78fd0b27db5226f6f8"><td class="memItemLeft" align="right" valign="top">typedef unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#aae904660e81c6a78fd0b27db5226f6f8">Period</a></td></tr>
 <tr class="separator:aae904660e81c6a78fd0b27db5226f6f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9a8550fb82dde3f4b606f76051430d10"><td class="memItemLeft" align="right" valign="top">typedef unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">Date</a></td></tr>
-<tr class="separator:a9a8550fb82dde3f4b606f76051430d10"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a01d03432a682d5e46feacd771f756266"><td class="memItemLeft" align="right" valign="top">typedef float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a01d03432a682d5e46feacd771f756266">Date</a></td></tr>
+<tr class="separator:a01d03432a682d5e46feacd771f756266"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad5a155cbf800b483b5555af9d45c92fa"><td class="memItemLeft" align="right" valign="top">typedef unsigned long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ad5a155cbf800b483b5555af9d45c92fa">TimeStep</a></td></tr>
+<tr class="separator:ad5a155cbf800b483b5555af9d45c92fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77af02d3aacc514067e2762f0d021261"><td class="memItemLeft" align="right" valign="top">typedef float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a77af02d3aacc514067e2762f0d021261">SubTimeStep</a></td></tr>
+<tr class="separator:a77af02d3aacc514067e2762f0d021261"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac26320b5421570e51865ab054ac369ed"><td class="memItemLeft" align="right" valign="top">typedef size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ac26320b5421570e51865ab054ac369ed">JID</a></td></tr>
 <tr class="separator:ac26320b5421570e51865ab054ac369ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -114,18 +118,49 @@ Typedefs</h2></td></tr>
 
 </div>
 </div>
-<a id="a9a8550fb82dde3f4b606f76051430d10"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9a8550fb82dde3f4b606f76051430d10">&#9670;&nbsp;</a></span>Date</h2>
+<a id="a01d03432a682d5e46feacd771f756266"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a01d03432a682d5e46feacd771f756266">&#9670;&nbsp;</a></span>Date</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef unsigned long <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a9a8550fb82dde3f4b606f76051430d10">fpmas::api::scheduler::Date</a></td>
+          <td class="memname">typedef float <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a01d03432a682d5e46feacd771f756266">fpmas::api::scheduler::Date</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Type used to define a particular date. </p>
+<p>Type used to define a particular date.</p>
+<p>The integer part of a Date corresponds to the TimeStep used to build an <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a>, and the rational part is the SubTimeStep, that can be used to order events within a TimeStep. </p>
+
+</div>
+</div>
+<a id="ad5a155cbf800b483b5555af9d45c92fa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad5a155cbf800b483b5555af9d45c92fa">&#9670;&nbsp;</a></span>TimeStep</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef unsigned long <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ad5a155cbf800b483b5555af9d45c92fa">fpmas::api::scheduler::TimeStep</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Integral part of a Date. </p>
+
+</div>
+</div>
+<a id="a77af02d3aacc514067e2762f0d021261"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77af02d3aacc514067e2762f0d021261">&#9670;&nbsp;</a></span>SubTimeStep</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef float <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a77af02d3aacc514067e2762f0d021261">fpmas::api::scheduler::SubTimeStep</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Rational part of a Date. </p>
 
 </div>
 </div>

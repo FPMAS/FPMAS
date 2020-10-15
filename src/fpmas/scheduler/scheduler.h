@@ -6,12 +6,15 @@
  */
 
 #include <unordered_map>
+#include <queue>
 
 #include "fpmas/api/scheduler/scheduler.h"
 
 namespace fpmas { namespace scheduler {
 	using api::scheduler::Date;
 	using api::scheduler::Period;
+	using api::scheduler::TimeStep;
+	using api::scheduler::SubTimeStep;
 	using api::scheduler::JID;
 
 	/**
@@ -82,6 +85,13 @@ namespace fpmas { namespace scheduler {
 			 * @param id job id
 			 */
 			Job() : _id(job_id++) {}
+			/**
+			 * Initializes a Job from the specified tasks.
+			 *
+			 * @param tasks initial tasks
+			 */
+			Job(std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks);
+
 			JID id() const override;
 			void add(api::scheduler::Task&) override;
 			void remove(api::scheduler::Task&) override;
@@ -102,8 +112,10 @@ namespace fpmas { namespace scheduler {
 	class Epoch : public api::scheduler::Epoch {
 		private:
 			std::vector<const api::scheduler::Job*> _jobs;
+			std::vector<SubTimeStep> job_ordering;
+
 		public:
-			void submit(const api::scheduler::Job&) override;
+			void submit(const api::scheduler::Job&, api::scheduler::SubTimeStep sub_time_step) override;
 			const std::vector<const api::scheduler::Job*>& jobs() const override;
 			JobIterator begin() const override;
 			JobIterator end() const override;
@@ -119,10 +131,18 @@ namespace fpmas { namespace scheduler {
 	 */
 	class Scheduler : public api::scheduler::Scheduler {
 		private:
-			std::unordered_map<Date, std::vector<const api::scheduler::Job*>> unique_jobs;
-			std::map<Date, std::vector<std::pair<Period, const api::scheduler::Job*>>>
+			struct SchedulerItem {
+				SubTimeStep sub_step;
+				const api::scheduler::Job* job;
+
+				SchedulerItem(SubTimeStep sub_step, const api::scheduler::Job* job)
+					: sub_step(sub_step), job(job) {}
+			};
+
+			std::unordered_map<TimeStep, std::vector<SchedulerItem>> unique_jobs;
+			std::map<TimeStep, std::vector<std::pair<Period, SchedulerItem>>>
 				recurring_jobs;
-			std::map<Date, std::vector<std::tuple<Date, Period, const api::scheduler::Job*>>>
+			std::map<TimeStep, std::vector<std::tuple<Date, Period, SchedulerItem>>>
 				limited_recurring_jobs;
 			void resizeCycle(size_t new_size);
 
@@ -130,7 +150,7 @@ namespace fpmas { namespace scheduler {
 			void schedule(api::scheduler::Date date, const api::scheduler::Job&) override;
 			void schedule(api::scheduler::Date date, api::scheduler::Period period, const api::scheduler::Job&) override;
 			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, const api::scheduler::Job&) override;
-			void build(api::scheduler::Date date, fpmas::api::scheduler::Epoch&) const override;
+			void build(api::scheduler::TimeStep step, fpmas::api::scheduler::Epoch&) const override;
 	};
 
 }}

@@ -28,7 +28,7 @@ class MockJob : public fpmas::api::scheduler::Job {
 
 class MockEpoch : public fpmas::api::scheduler::Epoch {
 	public:
-		MOCK_METHOD(void, submit, (const fpmas::api::scheduler::Job&), (override));
+		MOCK_METHOD(void, submit, (const fpmas::api::scheduler::Job&, fpmas::api::scheduler::SubTimeStep), (override));
 		MOCK_METHOD(const std::vector<const fpmas::api::scheduler::Job*>&, jobs, (), (const, override));
 		MOCK_METHOD(JobIterator, begin, (), (const, override));
 		MOCK_METHOD(JobIterator, end, (), (const, override));
@@ -42,7 +42,7 @@ class MockScheduler : public fpmas::api::scheduler::Scheduler {
 		MOCK_METHOD(void, schedule, (fpmas::api::scheduler::Date, fpmas::api::scheduler::Period, const fpmas::api::scheduler::Job&), (override));
 		MOCK_METHOD(void, schedule, (fpmas::api::scheduler::Date, fpmas::api::scheduler::Date, fpmas::api::scheduler::Period, const fpmas::api::scheduler::Job&), (override));
 
-		MOCK_METHOD(void, build, (fpmas::api::scheduler::Date, fpmas::api::scheduler::Epoch&), (const, override));
+		MOCK_METHOD(void, build, (fpmas::api::scheduler::TimeStep, fpmas::api::scheduler::Epoch&), (const, override));
 };
 
 #endif

@@ -4,12 +4,18 @@
 
 using fpmas::scheduler::Scheduler;
 using fpmas::scheduler::Date;
+using fpmas::scheduler::TimeStep;
+using fpmas::scheduler::SubTimeStep;
 
 using ::testing::AnyNumber;
 using ::testing::ElementsAre;
 using ::testing::IsEmpty;
 using ::testing::Ref;
 using ::testing::StrictMock;
+using ::testing::FloatNear;
+
+#define SUB_STEP_APPROXIMATION 10e-5
+#define SUB_STEP_NEAR(SUB_STEP) FloatNear(SUB_STEP, SUB_STEP_APPROXIMATION)
 
 TEST(BaseSchedulerTest, schedule) {
 	Scheduler scheduler;
@@ -32,21 +38,21 @@ TEST_F(SchedulerTest, schedule_unique) {
 	MockJob job1;
 	MockJob job2;
 	MockJob job3;
-	scheduler.schedule(8, job1);
-	scheduler.schedule(8, job2);
+	scheduler.schedule(8.3, job1);
+	scheduler.schedule(8.1, job2);
 	scheduler.schedule(12, job3);
 
 	for(int i = 0; i < 8; i++) {
 		scheduler.build(i, epoch);
 	}
-	EXPECT_CALL(epoch, submit(Ref(job1)));
-	EXPECT_CALL(epoch, submit(Ref(job2)));
+	EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(.3)));
+	EXPECT_CALL(epoch, submit(Ref(job2), SUB_STEP_NEAR(.1)));
 	scheduler.build(8, epoch);
 
 	for(int i = 9; i < 12; i++) {
 		scheduler.build(i, epoch);
 	}
-	EXPECT_CALL(epoch, submit(Ref(job3)));
+	EXPECT_CALL(epoch, submit(Ref(job3), SUB_STEP_NEAR(0)));
 	scheduler.build(12, epoch);
 
 	for(int i = 13; i < 123; i++) {
@@ -58,22 +64,22 @@ TEST_F(SchedulerTest, schedule_recurrent_from_start) {
 	MockJob job1;
 	MockJob job2;
 	MockJob job3;
-	scheduler.schedule(0, 2, job1);
-	scheduler.schedule(0, 2, job2);
-	scheduler.schedule(0, 5, job3);
+	scheduler.schedule(0.7, 2, job1);
+	scheduler.schedule(0.2, 2, job2);
+	scheduler.schedule(0.5, 5, job3);
 
-	for(Date date = 0; date < 124; date++) {
-		if(date%2==0 && date%5==0) {
-			EXPECT_CALL(epoch, submit(Ref(job1)));
-			EXPECT_CALL(epoch, submit(Ref(job2)));
-			EXPECT_CALL(epoch, submit(Ref(job3)));
-		} else if (date%2==0) {
-			EXPECT_CALL(epoch, submit(Ref(job1)));
-			EXPECT_CALL(epoch, submit(Ref(job2)));
-		} else if (date%5==0) {
-			EXPECT_CALL(epoch, submit(Ref(job3)));
+	for(TimeStep step = 0; step < 124; step++) {
+		if(step%2==0 && step%5==0) {
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(.7)));
+			EXPECT_CALL(epoch, submit(Ref(job2), SUB_STEP_NEAR(.2)));
+			EXPECT_CALL(epoch, submit(Ref(job3), SUB_STEP_NEAR(.5)));
+		} else if (step%2==0) {
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(.7)));
+			EXPECT_CALL(epoch, submit(Ref(job2), SUB_STEP_NEAR(.2)));
+		} else if (step%5==0) {
+			EXPECT_CALL(epoch, submit(Ref(job3), SUB_STEP_NEAR(.5)));
 		}
-		scheduler.build(date, epoch);
+		scheduler.build(step, epoch);
 	}
 }
 
@@ -85,77 +91,77 @@ TEST_F(SchedulerTest, schedule_recurrent_with_start) {
 	scheduler.schedule(13, 2, job2);
 	scheduler.schedule(6, 5, job3);
 
-	for(Date date = 0; date < 6; date++) {
-		if(date % 2 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job1)));
+	for(TimeStep step = 0; step < 6; step++) {
+		if(step % 2 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(0)));
 		}
-		scheduler.build(date, epoch);
+		scheduler.build(step, epoch);
 	}
-	for(Date date = 6; date < 12; date++) {
-		if (date % 2 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job1)));
+	for(TimeStep step = 6; step < 12; step++) {
+		if (step % 2 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(0)));
 		}
-		if ((date-6) % 5 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job3)));
+		if ((step-6) % 5 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job3), SUB_STEP_NEAR(0)));
 		}
-		scheduler.build(date, epoch);
+		scheduler.build(step, epoch);
 	}
-	for(Date date = 13; date < 154; date++) {
-		if(date % 2 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job1)));
+	for(TimeStep step = 13; step < 154; step++) {
+		if(step % 2 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(0)));
 		}
-		if((date - 6) % 5 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job3)));
+		if((step - 6) % 5 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job3), SUB_STEP_NEAR(0)));
 		}
-		if((date - 13) % 2 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job2)));
+		if((step - 13) % 2 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job2), SUB_STEP_NEAR(0)));
 		}
-		scheduler.build(date, epoch);
+		scheduler.build(step, epoch);
 	}
 }
 
 TEST_F(SchedulerTest, schedule_unique_on_recurrent) {
 	MockJob job1;
 	MockJob job2;
-	scheduler.schedule(23, 2, job1);
-	scheduler.schedule(29, job2);
+	scheduler.schedule(23.4, 2, job1);
+	scheduler.schedule(29.045, job2);
 
-	for (Date date = 0; date < 22; ++date) {
-		scheduler.build(date, epoch);
+	for (TimeStep step = 0; step < 22; ++step) {
+		scheduler.build(step, epoch);
 	}
-	for (Date date = 23; date < 29; ++date) {
-		if((date - 23) % 2 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job1)));
+	for (TimeStep step = 23; step < 29; ++step) {
+		if((step - 23) % 2 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(.4)));
 		}
-		scheduler.build(date, epoch);
+		scheduler.build(step, epoch);
 	}
-	EXPECT_CALL(epoch, submit(Ref(job1)));
-	EXPECT_CALL(epoch, submit(Ref(job2)));
+	EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(.4)));
+	EXPECT_CALL(epoch, submit(Ref(job2), SUB_STEP_NEAR(.045)));
 	scheduler.build(29, epoch);
-	for (Date date = 30; date < 292; ++date) {
-		if((date-23) % 2 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job1)));
+	for (TimeStep step = 30; step < 292; ++step) {
+		if((step-23) % 2 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(.4)));
 		}
-		scheduler.build(date, epoch);
+		scheduler.build(step, epoch);
 	}
 }
 
 TEST_F(SchedulerTest, schedule_limited_recurrent) {
 	MockJob job1;
 
-	scheduler.schedule(23, 40, 5, job1);
+	scheduler.schedule(23.7, 40, 5, job1);
 
-	for (Date date = 0; date < 22; ++date) {
-		scheduler.build(date, epoch);
+	for (TimeStep step = 0; step < 22; ++step) {
+		scheduler.build(step, epoch);
 	}
-	for (Date date = 23; date < 40; ++date) {
-		if((date-23) % 5 == 0) {
-			EXPECT_CALL(epoch, submit(Ref(job1)));
+	for (TimeStep step = 23; step < 40; ++step) {
+		if((step-23) % 5 == 0) {
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(.7)));
 		}
-		scheduler.build(date, epoch);
+		scheduler.build(step, epoch);
 	}
-	for (Date date = 40; date < 60; ++date) {
-		scheduler.build(date, epoch);
+	for (TimeStep step = 40; step < 60; ++step) {
+		scheduler.build(step, epoch);
 	}
 }
 
@@ -167,33 +173,33 @@ TEST_F(SchedulerTest, schedule_recurrent_limited_recurrent_and_unique) {
 	scheduler.schedule(13, 22, 2, job2);
 	scheduler.schedule(17, job3);
 
-	for (Date date = 0; date < 13; ++date) {
-		if(date % 2 == 0)
-			EXPECT_CALL(epoch, submit(Ref(job1)));
-		scheduler.build(date, epoch);
+	for (TimeStep step = 0; step < 13; ++step) {
+		if(step % 2 == 0)
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(0)));
+		scheduler.build(step, epoch);
 	}
-	for (Date date = 13; date < 17; ++date) {
-		if(date % 2 == 0)
-			EXPECT_CALL(epoch, submit(Ref(job1)));
-		if((date-13) % 2 == 0)
-			EXPECT_CALL(epoch, submit(Ref(job2)));
-		scheduler.build(date, epoch);
+	for (TimeStep step = 13; step < 17; ++step) {
+		if(step % 2 == 0)
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(0)));
+		if((step-13) % 2 == 0)
+			EXPECT_CALL(epoch, submit(Ref(job2), SUB_STEP_NEAR(0)));
+		scheduler.build(step, epoch);
 	}
 
-	EXPECT_CALL(epoch, submit(Ref(job2)));
-	EXPECT_CALL(epoch, submit(Ref(job3)));
+	EXPECT_CALL(epoch, submit(Ref(job2), SUB_STEP_NEAR(0)));
+	EXPECT_CALL(epoch, submit(Ref(job3), SUB_STEP_NEAR(0)));
 	scheduler.build(17, epoch);
 
-	for (Date date = 18; date < 22; ++date) {
-		if(date % 2 == 0)
-			EXPECT_CALL(epoch, submit(Ref(job1)));
-		if((date-13) % 2 == 0)
-			EXPECT_CALL(epoch, submit(Ref(job2)));
-		scheduler.build(date, epoch);
+	for (TimeStep step = 18; step < 22; ++step) {
+		if(step % 2 == 0)
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(0)));
+		if((step-13) % 2 == 0)
+			EXPECT_CALL(epoch, submit(Ref(job2), SUB_STEP_NEAR(0)));
+		scheduler.build(step, epoch);
 	}
-	for (Date date = 23; date < 67; ++date) {
-		if(date % 2 == 0)
-			EXPECT_CALL(epoch, submit(Ref(job1)));
-		scheduler.build(date, epoch);
+	for (TimeStep step = 23; step < 67; ++step) {
+		if(step % 2 == 0)
+			EXPECT_CALL(epoch, submit(Ref(job1), SUB_STEP_NEAR(0)));
+		scheduler.build(step, epoch);
 	}
 }

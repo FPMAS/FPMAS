@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">fpmas
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">0.1.0</span>
    </div>
   </td>
  </tr>
@@ -98,6 +98,8 @@ Collaboration diagram for fpmas::scheduler::Job:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a285f5658eebffa25ca25561fa0029e36"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a285f5658eebffa25ca25561fa0029e36">Job</a> ()</td></tr>
 <tr class="separator:a285f5658eebffa25ca25561fa0029e36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c5a66ddfa0e3cf6e90926596bf83cba"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a8c5a66ddfa0e3cf6e90926596bf83cba">Job</a> (std::initializer_list&lt; std::reference_wrapper&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &gt;&gt; <a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a64457ed4997c9c4d7cb57ce0d8c7ae0d">tasks</a>)</td></tr>
+<tr class="separator:a8c5a66ddfa0e3cf6e90926596bf83cba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16bcb01e5a51e3fec655ffaa5bce1a52"><td class="memItemLeft" align="right" valign="top">JID&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a16bcb01e5a51e3fec655ffaa5bce1a52">id</a> () const override</td></tr>
 <tr class="separator:a16bcb01e5a51e3fec655ffaa5bce1a52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e28ab793a1e349e8b0b18cffdbadf17"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a5e28ab793a1e349e8b0b18cffdbadf17">add</a> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &amp;) override</td></tr>
@@ -129,7 +131,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> implementation. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a285f5658eebffa25ca25561fa0029e36"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a285f5658eebffa25ca25561fa0029e36">&#9670;&nbsp;</a></span>Job()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a285f5658eebffa25ca25561fa0029e36">&#9670;&nbsp;</a></span>Job() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -154,6 +156,31 @@ Additional Inherited Members</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>job id </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8c5a66ddfa0e3cf6e90926596bf83cba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c5a66ddfa0e3cf6e90926596bf83cba">&#9670;&nbsp;</a></span>Job() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">fpmas::scheduler::Job::Job </td>
+          <td>(</td>
+          <td class="paramtype">std::initializer_list&lt; std::reference_wrapper&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> &gt;&gt;&#160;</td>
+          <td class="paramname"><em>tasks</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Initializes a <a class="el" href="classfpmas_1_1scheduler_1_1Job.html">Job</a> from the specified tasks.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tasks</td><td>initial tasks </td></tr>
   </table>
   </dd>
 </dl>

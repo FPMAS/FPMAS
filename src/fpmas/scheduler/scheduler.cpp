@@ -3,6 +3,12 @@
 
 namespace fpmas { namespace scheduler {
 
+	Job::Job(std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks)
+		: Job() {
+			for(api::scheduler::Task& task : tasks)
+				add(task);
+		}
+
 	JID Job::job_id {0};
 
 	JID Job::id() const {return _id;}
@@ -45,8 +51,17 @@ namespace fpmas { namespace scheduler {
 		return _tasks.end();
 	}
 
-	void Epoch::submit(const api::scheduler::Job& job) {
-		_jobs.push_back(&job);
+	void Epoch::submit(const api::scheduler::Job& job, api::scheduler::SubTimeStep sub_step) {
+		std::vector<const api::scheduler::Job*>::iterator job_pos = _jobs.begin();
+		std::vector<SubTimeStep>::iterator job_ordering_pos = job_ordering.begin();
+
+		while(job_ordering_pos != job_ordering.end() && sub_step >= *job_ordering_pos) {
+			++job_pos;
+			++job_ordering_pos;
+		}
+
+		job_ordering.insert(job_ordering_pos, sub_step);
+		_jobs.insert(job_pos, &job);
 	}
 
 	const std::vector<const api::scheduler::Job*>& Epoch::jobs() const {
@@ -66,11 +81,16 @@ namespace fpmas { namespace scheduler {
 	}
 
 	void Epoch::clear() {
+		job_ordering.clear();
 		_jobs.clear();
 	}
 
 	void Scheduler::schedule(api::scheduler::Date date, const api::scheduler::Job& job) {
-		unique_jobs[date].push_back(&job);
+		float step_f;
+		api::scheduler::SubTimeStep sub_step = std::modf(date, &step_f);
+		api::scheduler::TimeStep step = step_f;
+
+		unique_jobs[step].push_back({sub_step, &job});
 	}
 
 	void Scheduler::schedule(
@@ -78,7 +98,11 @@ namespace fpmas { namespace scheduler {
 			api::scheduler::Period period,
 			const api::scheduler::Job& job
 			) {
-		recurring_jobs[start].push_back({period, &job});
+		float step_f;
+		api::scheduler::SubTimeStep sub_step = std::modf(start, &step_f);
+		api::scheduler::TimeStep step = step_f;
+
+		recurring_jobs[step].push_back({period, {sub_step, &job}});
 	}
 
 	void Scheduler::schedule(
@@ -87,47 +111,51 @@ namespace fpmas { namespace scheduler {
 			api::scheduler::Period period,
 			const api::scheduler::Job& job
 			) {
-		limited_recurring_jobs[start].push_back({end, period, &job});
+		float step_f;
+		api::scheduler::SubTimeStep sub_step = std::modf(start, &step_f);
+		api::scheduler::TimeStep step = step_f;
+
+		limited_recurring_jobs[step].push_back({end, period, {sub_step, &job}});
 	}
 
-	void Scheduler::build(api::scheduler::Date date, fpmas::api::scheduler::Epoch& epoch) const {
+	void Scheduler::build(api::scheduler::TimeStep step, fpmas::api::scheduler::Epoch& epoch) const {
 		epoch.clear();
-		auto unique = unique_jobs.find(date);
+		auto unique = unique_jobs.find(step);
 		if(unique != unique_jobs.end()) {
-			for(auto job : unique->second) {
-				epoch.submit(*job);
+			for(auto job_item : unique->second) {
+				epoch.submit(*job_item.job, job_item.sub_step);
 			}
 		}
 		if(recurring_jobs.size() > 0) {
-			auto bound = recurring_jobs.lower_bound(date);
-			if(bound!=recurring_jobs.end() && bound->first == date) {
+			auto bound = recurring_jobs.lower_bound(step);
+			if(bound!=recurring_jobs.end() && bound->first == step) {
 				bound++;
 			}
 			
 			for(auto recurring = recurring_jobs.begin(); recurring != bound; recurring++) {
-				Date start = recurring->first;
-				for(auto job : recurring->second) {
-					if((date-start) % job.first == 0) {
-						epoch.submit(*job.second);
+				TimeStep start = recurring->first;
+				for(auto job_item : recurring->second) {
+					if((step-start) % job_item.first == 0) {
+						epoch.submit(*job_item.second.job, job_item.second.sub_step);
 					}
 				}
 			}
 		}
 		if(limited_recurring_jobs.size() > 0) {
-			auto bound = limited_recurring_jobs.lower_bound(date);
-			if(bound!=limited_recurring_jobs.end() && bound->first == date) {
+			auto bound = limited_recurring_jobs.lower_bound(step);
+			if(bound!=limited_recurring_jobs.end() && bound->first == step) {
 				bound++;
 			}
 			
 			for(auto recurring = limited_recurring_jobs.begin(); recurring != bound; recurring++) {
-				Date start = recurring->first;
-				for(auto job : recurring->second) {
-					Date end = std::get<0>(job);
-					Period period = std::get<1>(job);
-					auto job_ptr = std::get<2>(job);
-					if(date < end) {
-						if((date-start) % period == 0) {
-							epoch.submit(*job_ptr);
+				TimeStep start = recurring->first;
+				for(auto limited_job : recurring->second) {
+					Date end = std::get<0>(limited_job);
+					Period period = std::get<1>(limited_job);
+					auto job_item = std::get<2>(limited_job);
+					if(step + job_item.sub_step < end) {
+						if((step-start) % period == 0) {
+							epoch.submit(*job_item.job, job_item.sub_step);
 						}
 					}
 				}

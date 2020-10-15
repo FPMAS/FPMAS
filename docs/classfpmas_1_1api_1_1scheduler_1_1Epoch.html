@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">fpmas
-   &#160;<span id="projectnumber">0.1</span>
+   &#160;<span id="projectnumber">0.1.0</span>
    </div>
   </td>
  </tr>
@@ -93,8 +93,8 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad36f42871c104eb749935cd71e0412ad"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#ad36f42871c104eb749935cd71e0412ad">submit</a> (const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;job)=0</td></tr>
-<tr class="separator:ad36f42871c104eb749935cd71e0412ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae47cd7df1f404ebf18ecf1e7eb5c1221"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#ae47cd7df1f404ebf18ecf1e7eb5c1221">submit</a> (const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;job, <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a77af02d3aacc514067e2762f0d021261">SubTimeStep</a> sub_time_step)=0</td></tr>
+<tr class="separator:ae47cd7df1f404ebf18ecf1e7eb5c1221"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a66fc5aefc81d2d0527d15a5ba6e84587"><td class="memItemLeft" align="right" valign="top">virtual const std::vector&lt; const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a66fc5aefc81d2d0527d15a5ba6e84587">jobs</a> () const =0</td></tr>
 <tr class="separator:a66fc5aefc81d2d0527d15a5ba6e84587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a798100d076fc1c51e7525b6a37c4cded"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a32972fd3ef62461882631a32c705fb56">JobIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a798100d076fc1c51e7525b6a37c4cded">begin</a> () const =0</td></tr>
@@ -126,8 +126,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad36f42871c104eb749935cd71e0412ad"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad36f42871c104eb749935cd71e0412ad">&#9670;&nbsp;</a></span>submit()</h2>
+<a id="ae47cd7df1f404ebf18ecf1e7eb5c1221"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae47cd7df1f404ebf18ecf1e7eb5c1221">&#9670;&nbsp;</a></span>submit()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -139,8 +139,18 @@ Public Member Functions</h2></td></tr>
           <td class="memname">virtual void fpmas::api::scheduler::Epoch::submit </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> &amp;&#160;</td>
-          <td class="paramname"><em>job</em></td><td>)</td>
+          <td class="paramname"><em>job</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a77af02d3aacc514067e2762f0d021261">SubTimeStep</a>&#160;</td>
+          <td class="paramname"><em>sub_time_step</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -150,15 +160,16 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Submits a new job to this <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a>.</p>
-<p>Jobs are assumed to be executed in the order they are added to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a>. The result of <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a66fc5aefc81d2d0527d15a5ba6e84587">jobs()</a> and the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a798100d076fc1c51e7525b6a37c4cded">begin()</a> / <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a73de9e1e61fe671e1bbcf3394bf6c99d">end()</a> iterators are consistent with this order.</p>
+<p>Jobs within the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a> are ordered according to the specified <code>sub_time_step</code>. The result of <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a66fc5aefc81d2d0527d15a5ba6e84587">jobs()</a> and the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a798100d076fc1c51e7525b6a37c4cded">begin()</a> / <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html#a73de9e1e61fe671e1bbcf3394bf6c99d">end()</a> iterators are consistent with this order. If several jobs are submitted with equal <code>sub_time_steps</code>, their relative ordering is undefined.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">job</td><td>job to submit </td></tr>
+    <tr><td class="paramname">sub_time_step</td><td>value used to order jobs within the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Epoch.html">Epoch</a> </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Epoch.html#a16fad618e92948ed0bf0fc63cd33c260">fpmas::scheduler::Epoch</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Epoch.html#aa8c5675a5ae2834ebb6ffd84c4905444">fpmas::scheduler::Epoch</a>.</p>
 
 </div>
 </div>
