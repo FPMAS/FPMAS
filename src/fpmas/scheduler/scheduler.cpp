@@ -9,6 +9,28 @@ namespace fpmas { namespace scheduler {
 				add(task);
 		}
 
+	Job::Job(
+			api::scheduler::Task& begin,
+			std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks)
+		: Job(tasks) {
+			setBeginTask(begin);
+		}
+
+	Job::Job(
+			api::scheduler::Task& begin,
+			std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks,
+			api::scheduler::Task& end)
+		: Job(begin, tasks) {
+			setEndTask(end);
+		}
+
+	Job::Job(
+			std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks,
+			api::scheduler::Task& end)
+		: Job(tasks) {
+			setEndTask(end);
+		}
+
 	JID Job::job_id {0};
 
 	JID Job::id() const {return _id;}

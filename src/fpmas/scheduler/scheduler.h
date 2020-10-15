@@ -91,6 +91,35 @@ namespace fpmas { namespace scheduler {
 			 * @param tasks initial tasks
 			 */
 			Job(std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks);
+			/**
+			 * Initializes a Job from the specified tasks.
+			 *
+			 * @param begin begin task
+			 * @param tasks initial tasks
+			 */
+			Job(
+					api::scheduler::Task& begin,
+					std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks);
+			/**
+			 * Initializes a Job from the specified tasks.
+			 *
+			 * @param begin begin task
+			 * @param tasks initial tasks
+			 * @param end end task
+			 */
+			Job(
+					api::scheduler::Task& begin,
+					std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks,
+					api::scheduler::Task& end);
+			/**
+			 * Initializes a Job from the specified tasks.
+			 *
+			 * @param tasks initial tasks
+			 * @param end end task
+			 */
+			Job(
+					std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks,
+					api::scheduler::Task& end);
 
 			JID id() const override;
 			void add(api::scheduler::Task&) override;
