@@ -21,6 +21,11 @@ namespace fpmas { namespace api {namespace model {
 	 */
 	typedef api::graph::DistributedNode<AgentPtr> AgentNode;
 	/**
+	 * AgentEdge type.
+	 */
+	typedef api::graph::DistributedEdge<AgentPtr> AgentEdge;
+
+	/**
 	 * AgentGraph type.
 	 */
 	typedef api::graph::DistributedGraph<AgentPtr> AgentGraph;
@@ -440,8 +445,9 @@ namespace fpmas { namespace api {namespace model {
 			 * schedule it so that \Agents will be executed.
 			 *
 			 * Notice that each AgentGroup is expected to be associated to a
-			 * unique GroupId. How this ID is assigned is implementation
-			 * defined.
+			 * unique GroupId. The FPMAS_DEFINE_GROUPS() macro can be used to
+			 * easily generate unique GroupIds.
+			 *
 			 *
 			 * \par Example
 			 * Assuming `Agent1` and `Agent2` are predefined user implemented \Agents :
@@ -475,9 +481,6 @@ namespace fpmas { namespace api {namespace model {
 			 * Gets a reference to an AgentGroup previously created with
 			 * buildGroup().
 			 *
-			 * The unique ID of each built group can be retrieved with
-			 * AgentGroup::id().
-			 *
 			 * Behavior is undefined if the specified ID does not correspond to
 			 * a previously built group.
 			 *
@@ -492,6 +495,26 @@ namespace fpmas { namespace api {namespace model {
 			 * @return agent groups
 			 */
 			virtual const std::unordered_map<GroupId, AgentGroup*>& groups() const = 0;
+
+			/**
+			 * Defines a new relation from `src_agent` to `tgt_agent` on the
+			 * given `layer`, that can be interpreted as a relation type.
+			 *
+			 * The FPMAS_DEFINE_LAYERS() macro can be used to easily generate
+			 * `LayerIds`.
+			 *
+			 * @param src_agent source agent
+			 * @param tgt_agent target agent
+			 * @param layer layer id
+			 */
+			virtual AgentEdge* link(Agent* src_agent, Agent* tgt_agent, api::graph::LayerId layer) = 0;
+			/**
+			 * Delete a previously defined agent relation, unlinking the
+			 * corresponding edge.
+			 *
+			 * @param edge edge to unlink
+			 */
+			virtual void unlink(AgentEdge* edge) = 0;
 
 			virtual ~Model(){}
 	};

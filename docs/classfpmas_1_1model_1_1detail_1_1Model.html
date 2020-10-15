@@ -131,6 +131,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9eeb757290dc2e4926da9ff3de6cbe6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aefd9218e15dbda51bcbec2d0a7dddd88"><td class="memItemLeft" align="right" valign="top">const std::unordered_map&lt; <a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">api::model::GroupId</a>, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#aefd9218e15dbda51bcbec2d0a7dddd88">groups</a> () const override</td></tr>
 <tr class="separator:aefd9218e15dbda51bcbec2d0a7dddd88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b8b34698640ac3387675fa056d4eaeb"><td class="memItemLeft" align="right" valign="top">AgentEdge *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a2b8b34698640ac3387675fa056d4eaeb">link</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *src_agent, <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *tgt_agent, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a> layer) override</td></tr>
+<tr class="separator:a2b8b34698640ac3387675fa056d4eaeb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b1c5a8bc582e1253fa4d4be16110939"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a4b1c5a8bc582e1253fa4d4be16110939">unlink</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#ad5477de8442103a77a5d09703fbe1366">api::model::AgentEdge</a> *edge) override</td></tr>
+<tr class="separator:a4b1c5a8bc582e1253fa4d4be16110939"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">api::model::Model</a> implementation. </p>
@@ -348,7 +352,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Builds a new <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html">AgentGroup</a> associated to this <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html">Model</a>.</p>
 <p>The user can add its own <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> to the built groups, and schedule it so that <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> will be executed.</p>
-<p>Notice that each <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html">AgentGroup</a> is expected to be associated to a unique GroupId. How this ID is assigned is implementation defined.</p>
+<p>Notice that each <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html">AgentGroup</a> is expected to be associated to a unique GroupId. The <a class="el" href="macros_8h.html#a0f51f358990224f4edba2a7290118cbf">FPMAS_DEFINE_GROUPS()</a> macro can be used to easily generate unique GroupIds.</p>
 <dl class="section user"><dt>Example</dt><dd>Assuming <code>Agent1</code> and <code>Agent2</code> are predefined user implemented <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> : <div class="fragment"><div class="line"><span class="keyword">using</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a>;</div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">enum</span> Groups : <a class="code" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a> {</div>
@@ -400,7 +404,6 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Gets a reference to an <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html">AgentGroup</a> previously created with <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a11ee6be6c0571436bce373fe424435fe">buildGroup()</a>.</p>
-<p>The unique ID of each built group can be retrieved with AgentGroup::id().</p>
 <p>Behavior is undefined if the specified ID does not correspond to a previously built group.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -443,14 +446,103 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a2b8b34698640ac3387675fa056d4eaeb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b8b34698640ac3387675fa056d4eaeb">&#9670;&nbsp;</a></span>link()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">AgentEdge * fpmas::model::detail::Model::link </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>src_agent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>tgt_agent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a>&#160;</td>
+          <td class="paramname"><em>layer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Defines a new relation from <code>src_agent</code> to <code>tgt_agent</code> on the given <code>layer</code>, that can be interpreted as a relation type.</p>
+<p>The <a class="el" href="macros_8h.html#a5df4bc2a01aa1877da64b5fbd4fe502a">FPMAS_DEFINE_LAYERS()</a> macro can be used to easily generate <code>LayerIds</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">src_agent</td><td>source agent </td></tr>
+    <tr><td class="paramname">tgt_agent</td><td>target agent </td></tr>
+    <tr><td class="paramname">layer</td><td>layer id </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a6427014c6c05c44bd7fd97fb002a5889">fpmas::api::model::Model</a>.</p>
+
+</div>
+</div>
+<a id="a4b1c5a8bc582e1253fa4d4be16110939"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b1c5a8bc582e1253fa4d4be16110939">&#9670;&nbsp;</a></span>unlink()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::detail::Model::unlink </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1model.html#ad5477de8442103a77a5d09703fbe1366">api::model::AgentEdge</a> *&#160;</td>
+          <td class="paramname"><em>edge</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Delete a previously defined agent relation, unlinking the corresponding edge.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>edge to unlink </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a4663840cf39443f1f0a8809393fb2394">fpmas::api::model::Model</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/fpmas/model/detail/<a class="el" href="model_2detail_2model_8h_source.html">model.h</a></li>
 <li>src/fpmas/model/detail/model.cpp</li>
 </ul>
 </div><!-- contents -->
-<div class="ttc" id="anamespacefpmas_1_1api_1_1model_html_a21595fa9ac22b3afe6da9f2b1c46e13b"><div class="ttname"><a href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a></div><div class="ttdeci">int GroupId</div><div class="ttdef"><b>Definition:</b> model.h:30</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1model_html_a21595fa9ac22b3afe6da9f2b1c46e13b"><div class="ttname"><a href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">fpmas::api::model::GroupId</a></div><div class="ttdeci">int GroupId</div><div class="ttdef"><b>Definition:</b> model.h:35</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentGroup_html_a8b05cfc77d52c34c85121793df15b5fb"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">fpmas::api::model::AgentGroup::add</a></div><div class="ttdeci">virtual void add(Agent *agent)=0</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:291</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:296</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="http://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.0

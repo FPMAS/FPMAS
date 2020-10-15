@@ -86,6 +86,11 @@ class MockModel : public fpmas::api::model::Model {
 
 		MOCK_METHOD((const std::unordered_map<fpmas::api::model::GroupId, fpmas::api::model::AgentGroup*>&),
 				groups, (), (const, override));
+
+		MOCK_METHOD(
+			fpmas::api::model::AgentEdge*, link,
+			(fpmas::api::model::Agent*, fpmas::api::model::Agent*, fpmas::api::graph::LayerId), (override));
+		MOCK_METHOD(void, unlink, (fpmas::api::model::AgentEdge*), (override));
 };
 
 class MockAgentGroup : public fpmas::api::model::AgentGroup {

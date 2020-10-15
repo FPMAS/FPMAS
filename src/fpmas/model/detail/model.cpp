@@ -76,6 +76,14 @@ namespace fpmas {
 				return *group;
 			}
 
+			AgentEdge* Model::link(api::model::Agent *src_agent, api::model::Agent *tgt_agent, api::graph::LayerId layer) {
+				return _graph.link(src_agent->node(), tgt_agent->node(), layer);
+			}
+
+			void Model::unlink(api::model::AgentEdge *edge) {
+				_graph.unlink(edge);
+			}
+
 			void LoadBalancingTask::run() {
 				agent_graph.balance(load_balancing);
 			}

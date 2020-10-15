@@ -14,6 +14,7 @@
 namespace fpmas {
 	namespace model {
 		using api::model::AgentNode;
+		using api::model::AgentEdge;
 		using api::model::AgentPtr;
 		using api::scheduler::JID;
 
@@ -366,6 +367,9 @@ namespace fpmas {
 					api::model::AgentGroup& buildGroup(api::model::GroupId id) override;
 					api::model::AgentGroup& getGroup(api::model::GroupId id) const override;
 					const std::unordered_map<api::model::GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
+
+					AgentEdge* link(api::model::Agent* src_agent, api::model::Agent* tgt_agent, api::graph::LayerId layer) override;
+					void unlink(api::model::AgentEdge* edge) override;
 
 					~Model();
 			};

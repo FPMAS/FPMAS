@@ -31,6 +31,7 @@ using ::testing::TypedEq;
 using ::testing::UnorderedElementsAre;
 using ::testing::UnorderedElementsAreArray;
 using ::testing::WhenDynamicCastTo;
+using ::testing::NiceMock;
 
 using fpmas::model::detail::Model;
 using fpmas::model::detail::AgentGroup;
@@ -145,6 +146,28 @@ TEST_F(ModelTest, load_balancing_job) {
 
 	EXPECT_CALL(graph, balance(Ref(load_balancing)));
 	runtime.run(1);
+}
+
+TEST_F(ModelTest, link) {
+	NiceMock<MockAgent<0>> agent_1;
+	MockDistributedNode<AgentPtr> node_1;
+	ON_CALL(agent_1, node()).WillByDefault(Return(&node_1));
+
+	MockDistributedNode<AgentPtr> node_2;
+	NiceMock<MockAgent<4>> agent_2;
+	ON_CALL(agent_2, node()).WillByDefault(Return(&node_2));
+
+	fpmas::api::graph::LayerId layer = 12;
+
+	EXPECT_CALL(graph, link(&node_1, &node_2, layer));
+	model->link(&agent_1, &agent_2, layer);
+}
+
+TEST_F(ModelTest, unlink) {
+	MockDistributedEdge<AgentPtr> mock_edge;
+
+	EXPECT_CALL(graph, unlink(&mock_edge));
+	model->unlink(&mock_edge);
 }
 
 class AgentGroupTest : public ::testing::Test {
