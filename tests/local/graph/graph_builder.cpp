@@ -34,13 +34,12 @@ class FakeNodeBuilder : public fpmas::api::graph::NodeBuilder<int> {
 class MockLink {
 	private:
 		FakeNodeBuilder& fake_node_builder;
-		std::size_t K;
 
 	public:
 		std::unordered_map<fpmas::api::graph::DistributedNode<int>*, std::set<fpmas::api::graph::DistributedNode<int>*>> edges;
 
-		MockLink(FakeNodeBuilder& fake_node_builder, std::size_t K)
-			: fake_node_builder(fake_node_builder), K(K) {}
+		MockLink(FakeNodeBuilder& fake_node_builder)
+			: fake_node_builder(fake_node_builder) {}
 
 		fpmas::api::graph::DistributedEdge<int>* link(
 			fpmas::api::graph::DistributedNode<int>* src,
@@ -50,20 +49,19 @@ class MockLink {
 			return nullptr;
 		}
 
-		void check() {
-			std::size_t nodes_count = fake_node_builder.nodes.size();
+		void check(std::vector<fpmas::api::graph::DistributedNode<int>*> available_target_nodes, std::size_t edge_count) {
 			// All nodes have been linked
-			ASSERT_THAT(edges, SizeIs(nodes_count));
+			ASSERT_THAT(edges, SizeIs(fake_node_builder.nodes.size()));
 			for(auto edge_set : edges) {
 				// Src is a node built by the GraphBuilder
 				ASSERT_THAT(fake_node_builder.nodes, Contains(edge_set.first));
 				// The node is linked to K distinct nodes
-				ASSERT_THAT(edge_set.second, SizeIs(std::min(nodes_count-1, K)));
+				ASSERT_THAT(edge_set.second, SizeIs(edge_count));
 				// The node is not linked to itself
 				ASSERT_THAT(edge_set.second, Not(Contains(edge_set.first)));
 				// Tgts are nodes built by the GraphBuilder
 				for(auto tgt : edge_set.second)
-					ASSERT_THAT(fake_node_builder.nodes, Contains(tgt));
+					ASSERT_THAT(available_target_nodes, Contains(tgt));
 			}
 		}
 };
@@ -84,7 +82,7 @@ class UniformGraphBuilder : public ::testing::Test {
 				.Times(AtLeast(node_builder.nodeCount()))
 				.WillRepeatedly(Return(K));
 
-			MockLink mock_link(node_builder, K);
+			MockLink mock_link(node_builder);
 
 			EXPECT_CALL(mock_graph, link(_, _, layer))
 				.Times(node_builder.nodeCount() * std::min(node_builder.nodeCount()-1, K))
@@ -102,11 +100,12 @@ TEST_F(UniformGraphBuilder, regular_build) {
 	FakeNodeBuilder node_builder(nodes_count);
 	auto mock_link = build_expectations(node_builder, K);
 
-	builder.build(node_builder, layer, mock_graph);
+	auto built_nodes = builder.build(node_builder, layer, mock_graph);
+	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
 
 	ASSERT_THAT(node_builder.nodes, SizeIs(nodes_count));
 
-	mock_link.check();
+	mock_link.check(node_builder.nodes, K);
 }
 
 TEST_F(UniformGraphBuilder, build_without_enough_nodes) {
@@ -116,11 +115,12 @@ TEST_F(UniformGraphBuilder, build_without_enough_nodes) {
 	FakeNodeBuilder node_builder(nodes_count);
 	auto mock_link = build_expectations(node_builder, K);
 
-	builder.build(node_builder, layer, mock_graph);
+	auto built_nodes = builder.build(node_builder, layer, mock_graph);
+	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
 
 	ASSERT_THAT(node_builder.nodes, SizeIs(nodes_count));
 
-	mock_link.check();
+	mock_link.check(node_builder.nodes, 7);
 
 }
 
@@ -131,7 +131,8 @@ TEST_F(UniformGraphBuilder, edge_case) {
 	EXPECT_CALL(dist, call)
 		.WillRepeatedly(Return(K));
 
-	builder.build(node_builder, layer, mock_graph);
+	auto built_nodes = builder.build(node_builder, layer, mock_graph);
+	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
 
 	ASSERT_THAT(node_builder.nodes, SizeIs(1));
 }
@@ -164,28 +165,132 @@ TEST_F(ClusteredGraphBuilder, regular_build) {
 		.WillOnce(Return(1))
 		.WillOnce(Return(-3));
 
+	std::size_t K = 2;
 	EXPECT_CALL(edge_dist, call)
-		.WillRepeatedly(Return(2));
+		.WillRepeatedly(Return(K));
 
 	FakeNodeBuilder node_builder(4);
 
-	MockLink mock_link (node_builder, 2);
+	MockLink mock_link (node_builder);
 
 	EXPECT_CALL(mock_graph, link(_, _, layer))
 		.Times(8)
 		.WillRepeatedly(Invoke(&mock_link, &MockLink::link));
 
-	graph_builder.build(node_builder, layer, mock_graph);
+	auto built_nodes = graph_builder.build(node_builder, layer, mock_graph);
+	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
 
 	auto node_0 = node_builder.nodes[0];
 	auto node_1 = node_builder.nodes[1];
 	auto node_2 = node_builder.nodes[2];
 	auto node_3 = node_builder.nodes[3];
 
-	mock_link.check();
+	mock_link.check(node_builder.nodes, K);
 
 	ASSERT_THAT(mock_link.edges[node_0], UnorderedElementsAre(node_1, node_2));
 	ASSERT_THAT(mock_link.edges[node_1], UnorderedElementsAre(node_0, node_2));
 	ASSERT_THAT(mock_link.edges[node_2], UnorderedElementsAre(node_0, node_1));
 	ASSERT_THAT(mock_link.edges[node_3], UnorderedElementsAre(node_0, node_2));
 }
+
+TEST_F(ClusteredGraphBuilder, build_without_enough_nodes) {
+	EXPECT_CALL(x_dist, call)
+		.WillOnce(Return(0))
+		.WillOnce(Return(-2))
+		.WillOnce(Return(2))
+		.WillOnce(Return(3));
+
+	EXPECT_CALL(y_dist, call)
+		.WillOnce(Return(0))
+		.WillOnce(Return(1))
+		.WillOnce(Return(1))
+		.WillOnce(Return(-3));
+
+	std::size_t K = 8; // but only 3 available
+	EXPECT_CALL(edge_dist, call)
+		.WillRepeatedly(Return(K));
+
+	FakeNodeBuilder node_builder(4);
+
+	MockLink mock_link (node_builder);
+
+	EXPECT_CALL(mock_graph, link(_, _, layer))
+		.Times(12)
+		.WillRepeatedly(Invoke(&mock_link, &MockLink::link));
+
+	auto built_nodes = graph_builder.build(node_builder, layer, mock_graph);
+	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
+
+	mock_link.check(node_builder.nodes, 3);
+}
+
+class BipartiteGraphBuilder : public ::testing::Test {
+	protected:
+		fpmas::random::mt19937 generator;
+		MockDistribution<std::size_t> edge_dist;
+		static const fpmas::api::graph::LayerId layer = 10;
+		MockDistributedGraph<int> mock_graph;
+
+		std::vector<fpmas::api::graph::DistributedNode<int>*> base_nodes {{
+			new MockDistributedNode<int>, new MockDistributedNode<int>,
+			new MockDistributedNode<int>, new MockDistributedNode<int>
+		}};
+		fpmas::graph::BipartiteGraphBuilder<int> graph_builder
+			{generator, edge_dist, base_nodes};
+
+		void TearDown() override {
+			for(auto node : base_nodes)
+				delete node;
+		}
+};
+
+TEST_F(BipartiteGraphBuilder, regular_build) {
+	std::size_t K = 2;
+	// Dist => 2 out edges by node
+	EXPECT_CALL(edge_dist, call)
+		.WillRepeatedly(Return(K));
+
+	// Build three nodes, that must be connected to the 4 base nodes
+	FakeNodeBuilder node_builder(3);
+
+	// 2 out edges by node
+	MockLink mock_link (node_builder);
+
+	// 3*2 edges created
+	EXPECT_CALL(mock_graph, link(_, _, layer))
+		.Times(6)
+		.WillRepeatedly(Invoke(&mock_link, &MockLink::link));
+
+	auto built_nodes = graph_builder.build(node_builder, layer, mock_graph);
+	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
+
+	mock_link.check(base_nodes, K);
+};
+
+TEST_F(BipartiteGraphBuilder, build_without_enough_nodes) {
+	std::size_t K = 6;
+	// Dist => 6 out edges by node
+	EXPECT_CALL(edge_dist, call)
+		.WillRepeatedly(Return(K));
+
+	// Build three nodes, that must be connected to the 4 base nodes
+	FakeNodeBuilder node_builder(3);
+
+	// Only 4 nodes available, not 6
+	MockLink mock_link (node_builder);
+
+	// 3*4 edges created
+	EXPECT_CALL(mock_graph, link(_, _, layer))
+		.Times(12)
+		.WillRepeatedly(Invoke(&mock_link, &MockLink::link));
+
+	auto built_nodes = graph_builder.build(node_builder, layer, mock_graph);
+	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
+
+	mock_link.check(base_nodes, 4);
+
+	// All nodes are necessarily linked to the 4 available nodes
+	for(auto node : mock_link.edges) {
+		ASSERT_THAT(node.second, UnorderedElementsAreArray(base_nodes));
+	}
+};

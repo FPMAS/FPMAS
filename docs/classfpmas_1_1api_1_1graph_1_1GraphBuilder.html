@@ -80,16 +80,17 @@ Inheritance diagram for fpmas::api::graph::GraphBuilder&lt; T &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1api_1_1graph_1_1GraphBuilder__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1graph_1_1GraphBuilder_3_01T_01_4_inherit__map" alt="Inheritance graph"/></div>
 <map name="fpmas_1_1api_1_1graph_1_1GraphBuilder_3_01T_01_4_inherit__map" id="fpmas_1_1api_1_1graph_1_1GraphBuilder_3_01T_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="147,5,277,47"/>
-<area shape="rect" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html" title=" " alt="" coords="5,95,203,136"/>
-<area shape="rect" href="classfpmas_1_1graph_1_1UniformGraphBuilder.html" title=" " alt="" coords="227,95,413,136"/>
+<area shape="rect" title=" " alt="" coords="5,71,136,112"/>
+<area shape="rect" href="classfpmas_1_1graph_1_1BipartiteGraphBuilder.html" title=" " alt="" coords="188,5,377,47"/>
+<area shape="rect" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html" title=" " alt="" coords="184,71,381,112"/>
+<area shape="rect" href="classfpmas_1_1graph_1_1UniformGraphBuilder.html" title=" " alt="" coords="189,136,376,177"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4870fa03aade8997bcb633597db7499d"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html#a4870fa03aade8997bcb633597db7499d">build</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">NodeBuilder</a>&lt; T &gt; &amp;node_builder, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a> layer, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>&lt; T &gt; &amp;graph)=0</td></tr>
-<tr class="separator:a4870fa03aade8997bcb633597db7499d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2d2ec86d834bc22e0390154af5190c64"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html#a2d2ec86d834bc22e0390154af5190c64">build</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">NodeBuilder</a>&lt; T &gt; &amp;node_builder, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a> layer, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a>&lt; T &gt; &amp;graph)=0</td></tr>
+<tr class="separator:a2d2ec86d834bc22e0390154af5190c64"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -97,8 +98,8 @@ class fpmas::api::graph::GraphBuilder&lt; T &gt;</h3>
 
 <p>An utility interface used to automatically generate some graphs. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4870fa03aade8997bcb633597db7499d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4870fa03aade8997bcb633597db7499d">&#9670;&nbsp;</a></span>build()</h2>
+<a id="a2d2ec86d834bc22e0390154af5190c64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d2ec86d834bc22e0390154af5190c64">&#9670;&nbsp;</a></span>build()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -109,7 +110,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">fpmas::api::graph::GraphBuilder</a>&lt; T &gt;::build </td>
+          <td class="memname">virtual std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt;T&gt;*&gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">fpmas::api::graph::GraphBuilder</a>&lt; T &gt;::build </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">NodeBuilder</a>&lt; T &gt; &amp;&#160;</td>
           <td class="paramname"><em>node_builder</em>, </td>
@@ -149,8 +150,9 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>built nodes </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#acfc06d8346b3678183192668ac011149">fpmas::graph::ClusteredGraphBuilder&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1UniformGraphBuilder.html#ab0db175264e638832c9111672ba6d939">fpmas::graph::UniformGraphBuilder&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1BipartiteGraphBuilder.html#a41ff0977a203fb5ca90d79abe4ebc8e7">fpmas::graph::BipartiteGraphBuilder&lt; T &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#ac55b80abb4cbbf5ccb65ebd302fdf462">fpmas::graph::ClusteredGraphBuilder&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1UniformGraphBuilder.html#a23519d18f87f2d566363b160ed269dbd">fpmas::graph::UniformGraphBuilder&lt; T &gt;</a>.</p>
 
 </div>
 </div>

@@ -55,8 +55,9 @@ namespace fpmas { namespace api { namespace graph {
 			 * @param node_builder NodeBuilder instance used to generate nodes
 			 * @param layer layer on which nodes will be linked
 			 * @param graph graph in which nodes and edges will be inserted
+			 * @return built nodes
 			 */
-			virtual void build(
+			virtual std::vector<api::graph::DistributedNode<T>*> build(
 					NodeBuilder<T>& node_builder,
 					LayerId layer,
 					DistributedGraph<T>& graph) = 0;
