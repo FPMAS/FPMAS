@@ -12,7 +12,6 @@ namespace fpmas {
 				agent->setNode(node);
 				agent->setModel(&model);
 				AgentTask* task = new AgentTask(agent);
-				//task->setAgent(agent);
 				agent->setTask(task);
 			}
 
@@ -25,7 +24,6 @@ namespace fpmas {
 					// Unschedule agent task. If the node is DISTANT, task was already
 					// unscheduled.
 					agent->group()->job().remove(*agent->task());
-					//model.getGroup(agent->groupId()).job().remove(*agent->task());
 				}
 				agent->group()->erase(&agent);
 				delete agent->task();
@@ -35,7 +33,7 @@ namespace fpmas {
 				api::model::Agent* agent = node->data();
 				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 						"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", FPMAS_C_STR(node->getId()));
-				model.getGroup(agent->groupId()).job().add(*agent->task());
+				agent->group()->job().add(*agent->task());
 			}
 
 			void SetAgentDistantCallback::call(AgentNode *node) {
@@ -43,7 +41,7 @@ namespace fpmas {
 				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 						"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", FPMAS_C_STR(node->getId()));
 				// Unschedule agent task 
-				model.getGroup(agent->groupId()).job().remove(*agent->task());
+				agent->group()->job().remove(*agent->task());
 			}
 
 			Model::Model(
