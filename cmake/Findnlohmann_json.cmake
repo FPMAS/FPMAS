@@ -5,7 +5,9 @@ if(nlohmann_json_INCLUDE_DIR)
 	execute_process(COMMAND ${CMAKE_COMMAND} -E make_directory
 		${CMAKE_CURRENT_BINARY_DIR}/cmake/find_nlohmann_json_version)
 
-	execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}"
+	execute_process(COMMAND ${CMAKE_COMMAND}
+		"-DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}"
+		-G "${CMAKE_GENERATOR}"
 		${CMAKE_CURRENT_LIST_DIR}/find_nlohmann_json_version
 		WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cmake/find_nlohmann_json_version)
 
