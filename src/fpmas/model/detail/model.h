@@ -311,8 +311,8 @@ namespace fpmas {
 
 				scheduler::Job& job() override {return _job;}
 				const scheduler::Job& job() const override {return _job;}
-				std::vector<api::model::AgentPtr*> agents() const override {return _agents;}
-				std::vector<api::model::AgentPtr*> localAgents() const override;
+				std::vector<api::model::Agent*> agents() const override;
+				std::vector<api::model::Agent*> localAgents() const override;
 			};
 
 

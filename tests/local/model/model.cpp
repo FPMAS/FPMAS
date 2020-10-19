@@ -325,7 +325,7 @@ TEST_F(AgentGroupTest, add_agent) {
 	EXPECT_CALL(*fake_agents[1], setGroupId(10));
 	agent_group.add(fake_agents[1]);
 
-	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent1_ptr, &agent2_ptr));
+	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent1, &agent2));
 
 	// Would normally be called from the Graph destructor
 	erase_agent_callback.call(&node1);
@@ -336,7 +336,7 @@ TEST_F(AgentGroupTest, insert_agent) {
 	agent_group.insert(&agent1_ptr);
 	agent_group.insert(&agent2_ptr);
 
-	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent1_ptr, &agent2_ptr));
+	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent1, &agent2));
 }
 
 TEST_F(AgentGroupTest, erase_agent) {
@@ -344,7 +344,7 @@ TEST_F(AgentGroupTest, erase_agent) {
 	agent_group.insert(&agent2_ptr);
 
 	agent_group.erase(&agent1_ptr);
-	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent2_ptr));
+	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent2));
 	agent_group.erase(&agent2_ptr);
 	ASSERT_THAT(agent_group.agents(), IsEmpty());
 }
@@ -414,12 +414,12 @@ TEST_F(AgentGroupTest, local_agents) {
 	EXPECT_CALL(node2, state)
 		.WillRepeatedly(Return(LocationState::LOCAL));
 
-	ASSERT_THAT(agent_group.localAgents(), UnorderedElementsAre(&agent1_ptr, &agent2_ptr));
+	ASSERT_THAT(agent_group.localAgents(), UnorderedElementsAre(&agent1, &agent2));
 
 	EXPECT_CALL(node1, state)
 		.WillRepeatedly(Return(LocationState::DISTANT));
 
-	ASSERT_THAT(agent_group.localAgents(), ElementsAre(&agent2_ptr));
+	ASSERT_THAT(agent_group.localAgents(), ElementsAre(&agent2));
 
 	EXPECT_CALL(node2, state)
 		.WillRepeatedly(Return(LocationState::DISTANT));

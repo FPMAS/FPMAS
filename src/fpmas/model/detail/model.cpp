@@ -110,11 +110,18 @@ namespace fpmas {
 				_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
 			}
 
-			std::vector<api::model::AgentPtr*> AgentGroup::localAgents() const {
-				std::vector<api::model::AgentPtr*> local_agents;
+			std::vector<api::model::Agent*> AgentGroup::agents() const {
+				std::vector<api::model::Agent*> agents;
+				for(auto agent : _agents)
+					agents.push_back(*agent);
+				return agents;
+			}
+
+			std::vector<api::model::Agent*> AgentGroup::localAgents() const {
+				std::vector<api::model::Agent*> local_agents;
 				for(auto agent : _agents)
 					if(agent->get()->node()->state() == graph::LocationState::LOCAL)
-						local_agents.push_back(agent);
+						local_agents.push_back(*agent);
 				return local_agents;
 			}
 

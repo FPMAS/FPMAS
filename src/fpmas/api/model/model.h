@@ -352,18 +352,28 @@ namespace fpmas { namespace api {namespace model {
 			 * including `DISTANT` representations of Agents not executed on
 			 * the current process.
 			 *
+			 * The returned list is **invalidated** by the following operations
+			 * :
+			 * - fpmas::api::graph::DistributedGraph::synchronize()
+			 * - fpmas::api::synchro::Mutex::read() or fpmas::api::synchro::Mutex::acquire() on any Agent of the list.
+			 *
 			 * @return \Agents in this group
 			 */
-			virtual std::vector<AgentPtr*> agents() const = 0;
+			virtual std::vector<Agent*> agents() const = 0;
 
 
 			/**
-			 * Returns the list of `LOCAL` Agents currently in this AgentGroup,
+			 * Returns the list of \LOCAL Agents currently in this AgentGroup,
 			 * that are executed on the current process.
 			 *
-			 * @return `LOCAL` \Agents in this group
+			 * The returned list is **invalidated** by the following operations
+			 * :
+			 * - fpmas::api::graph::DistributedGraph::synchronize()
+			 * - fpmas::api::synchro::Mutex::read() or fpmas::api::synchro::Mutex::acquire() on any Agent of the list.
+			 *
+			 * @return \LOCAL \Agents in this group
 			 */
-			virtual std::vector<AgentPtr*> localAgents() const = 0;
+			virtual std::vector<Agent*> localAgents() const = 0;
 
 			/**
 			 * Returns a reference to the \Job associated to this AgentGroup.

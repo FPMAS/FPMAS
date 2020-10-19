@@ -97,10 +97,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4cd3d73f3c5be59a55fcad342702bf46"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ade0515102b7fd5ff17703608ddfd158a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ade0515102b7fd5ff17703608ddfd158a">erase</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> *agent)=0</td></tr>
 <tr class="separator:ade0515102b7fd5ff17703608ddfd158a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abf93546021171370c7705830e72ae41a"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#abf93546021171370c7705830e72ae41a">agents</a> () const =0</td></tr>
-<tr class="separator:abf93546021171370c7705830e72ae41a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5cef22fbea05297ecf8aa732e5226eae"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a5cef22fbea05297ecf8aa732e5226eae">localAgents</a> () const =0</td></tr>
-<tr class="separator:a5cef22fbea05297ecf8aa732e5226eae"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a881d09c82488623a8668db11d992e602"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a881d09c82488623a8668db11d992e602">agents</a> () const =0</td></tr>
+<tr class="separator:a881d09c82488623a8668db11d992e602"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a847a43eca5667ed69d424738f6177dbf"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a847a43eca5667ed69d424738f6177dbf">localAgents</a> () const =0</td></tr>
+<tr class="separator:a847a43eca5667ed69d424738f6177dbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a305224b1bdb3d29821412d154ee4d316"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a305224b1bdb3d29821412d154ee4d316">job</a> ()=0</td></tr>
 <tr class="separator:a305224b1bdb3d29821412d154ee4d316"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae62d2bdce9b702dda19f66efc3812b24"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ae62d2bdce9b702dda19f66efc3812b24">job</a> () const =0</td></tr>
@@ -288,8 +288,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abf93546021171370c7705830e72ae41a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abf93546021171370c7705830e72ae41a">&#9670;&nbsp;</a></span>agents()</h2>
+<a id="a881d09c82488623a8668db11d992e602"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a881d09c82488623a8668db11d992e602">&#9670;&nbsp;</a></span>agents()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -298,7 +298,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>*&gt; fpmas::api::model::AgentGroup::agents </td>
+          <td class="memname">virtual std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>*&gt; fpmas::api::model::AgentGroup::agents </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -311,14 +311,18 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Returns the list of all <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> currently in this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>, including <code>DISTANT</code> representations of Agents not executed on the current process.</p>
+<p>The returned list is <b>invalidated</b> by the following operations :</p><ul>
+<li><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">fpmas::api::graph::DistributedGraph::synchronize()</a></li>
+<li><a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#abbbbdffc747bd45c448ec26d064aedbe">fpmas::api::synchro::Mutex::read()</a> or <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#a68bf2e4a527aac09ce552eb875112821">fpmas::api::synchro::Mutex::acquire()</a> on any <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> of the list.</li>
+</ul>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html#a790e1e4220e7bc0412bee7ce528f7c48">fpmas::model::detail::AgentGroup</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html#a73b21140a2447fe772a5ba75dd8d9017">fpmas::model::detail::AgentGroup</a>.</p>
 
 </div>
 </div>
-<a id="a5cef22fbea05297ecf8aa732e5226eae"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5cef22fbea05297ecf8aa732e5226eae">&#9670;&nbsp;</a></span>localAgents()</h2>
+<a id="a847a43eca5667ed69d424738f6177dbf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a847a43eca5667ed69d424738f6177dbf">&#9670;&nbsp;</a></span>localAgents()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -327,7 +331,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>*&gt; fpmas::api::model::AgentGroup::localAgents </td>
+          <td class="memname">virtual std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>*&gt; fpmas::api::model::AgentGroup::localAgents </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -339,10 +343,14 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Returns the list of <code>LOCAL</code> Agents currently in this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>, that are executed on the current process.</p>
-<dl class="section return"><dt>Returns</dt><dd><code>LOCAL</code> <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group </dd></dl>
+<p>Returns the list of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> Agents currently in this <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>, that are executed on the current process.</p>
+<p>The returned list is <b>invalidated</b> by the following operations :</p><ul>
+<li><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">fpmas::api::graph::DistributedGraph::synchronize()</a></li>
+<li><a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#abbbbdffc747bd45c448ec26d064aedbe">fpmas::api::synchro::Mutex::read()</a> or <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#a68bf2e4a527aac09ce552eb875112821">fpmas::api::synchro::Mutex::acquire()</a> on any <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> of the list.</li>
+</ul>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> in this group </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html#af3ecadb747da844479f5162bc88080c2">fpmas::model::detail::AgentGroup</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html#a77e7643dff4b6e17912c5b9d8ac5aabb">fpmas::model::detail::AgentGroup</a>.</p>
 
 </div>
 </div>

@@ -132,15 +132,15 @@ TEST_F(ModelGhostModeIntegrationExecutionTest, ghost_mode) {
 	scheduler.schedule(0, model.loadBalancingJob());
 	runtime.run(NUM_STEPS);
 	checkExecutionCounts();
-	std::vector<fpmas::api::model::AgentPtr*> group_1_agents;
-	std::vector<fpmas::api::model::AgentPtr*> group_2_agents;
+	std::vector<fpmas::api::model::Agent*> group_1_agents;
+	std::vector<fpmas::api::model::Agent*> group_2_agents;
 
 	for(auto node : agent_graph.getNodes()) {
 		fpmas::api::model::AgentPtr& agent = node.second->data();
 		if(agent->group() == &group1)
-			group_1_agents.push_back(&agent);
+			group_1_agents.push_back(agent);
 		else
-			group_2_agents.push_back(&agent);
+			group_2_agents.push_back(agent);
 	}
 	ASSERT_THAT(group1.agents(), UnorderedElementsAreArray(group_1_agents));
 	ASSERT_THAT(group2.agents(), UnorderedElementsAreArray(group_2_agents));
