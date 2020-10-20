@@ -23,7 +23,7 @@ namespace fpmas {
 				 *
 				 * @param agent agent to read
 				 */
-				ReadGuard(api::model::Agent* agent)
+				ReadGuard(const api::model::Agent* agent)
 					: synchro::ReadGuard<fpmas::api::model::AgentPtr>(agent->node()) {}
 		};
 
@@ -71,7 +71,7 @@ namespace fpmas {
 				 *
 				 * @param agent agent to share lock
 				 */
-				SharedLockGuard(api::model::Agent* agent)
+				SharedLockGuard(const api::model::Agent* agent)
 					: synchro::SharedLockGuard<fpmas::api::model::AgentPtr>(agent->node()) {}
 		};
 	}

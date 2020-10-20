@@ -63,8 +63,8 @@ namespace fpmas { namespace synchro {
 				 *
 				 * @param node to read
 				 */
-				ReadGuard(api::graph::DistributedNode<T>* node)
-					: Guard<T>(node) {
+				ReadGuard(const api::graph::DistributedNode<T>* node)
+					: Guard<T>(const_cast<api::graph::DistributedNode<T>*>(node)) {
 						// updates node.data() according to the SyncMode
 						this->mutex.read();
 					}
@@ -152,8 +152,8 @@ namespace fpmas { namespace synchro {
 				 *
 				 * @param node to share lock
 				 */
-				SharedLockGuard(api::graph::DistributedNode<T>* node)
-					: Guard<T>(node) {
+				SharedLockGuard(const api::graph::DistributedNode<T>* node)
+					: Guard<T>(const_cast<api::graph::DistributedNode<T>*>(node)) {
 						this->mutex.lockShared();
 					}
 				/**
