@@ -12,6 +12,7 @@
 namespace fpmas { namespace graph {
 
 	using api::graph::LocationState;
+	using api::graph::DistributedId;
 
 	/**
 	 * api::graph::DistributedNode implementation.

@@ -36,8 +36,6 @@ namespace fpmas { namespace graph {
 	 */
 	namespace detail {
 
-		using api::graph::LocationState;
-
 		/**
 		 * api::graph::DistributedGraph implementation.
 		 */
@@ -231,7 +229,7 @@ namespace fpmas { namespace graph {
 				NodeType* buildNode(T&& = std::move(T())) override;
 				NodeType* buildNode(const T&) override;
 
-				EdgeType* link(NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) override;
+				EdgeType* link(NodeType* const src, NodeType* const tgt, LayerId layer) override;
 
 				void removeNode(api::graph::DistributedNode<T>*) override;
 				void removeNode(DistributedId id) override {
@@ -457,7 +455,7 @@ namespace fpmas { namespace graph {
 
 		template<DIST_GRAPH_PARAMS>
 			typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::EdgeType*
-			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) {
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(NodeType* const src, NodeType* const tgt, LayerId layer) {
 				// Locks source and target
 				src->mutex()->lockShared();
 				tgt->mutex()->lockShared();

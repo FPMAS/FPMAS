@@ -10,10 +10,7 @@
 
 namespace fpmas { namespace graph {
 
-#ifndef DOXYGEN_BUILD
-	template<typename> class DistributedNode;
-#endif
-	using api::graph::LocationState;
+	using api::graph::LayerId;
 
 	/**
 	 * api::graph::DistributedEdge implementation.
@@ -37,7 +34,7 @@ namespace fpmas { namespace graph {
 					 * @param id edge id
 					 * @param layer id of the layer on which the edge is located
 					 */
-					DistributedEdge(DistributedId id, api::graph::LayerId layer)
+					DistributedEdge(DistributedId id, LayerId layer)
 						: EdgeBase(id, layer) {}
 
 					api::graph::LocationState state() const override {return _state;}
@@ -74,7 +71,7 @@ namespace nlohmann {
 				fpmas::api::graph::DistributedEdge<T>* edge
 					= new fpmas::graph::DistributedEdge<T> {
 					j.at("id").get<DistributedId>(),
-					j.at("layer").get<typename fpmas::api::graph::LayerId>()
+					j.at("layer").get<typename fpmas::graph::LayerId>()
 				};
 				edge->setWeight(j.at("weight").get<float>());
 
