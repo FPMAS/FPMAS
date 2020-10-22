@@ -145,6 +145,7 @@ namespace fpmas { namespace scheduler {
 
 		public:
 			void submit(const api::scheduler::Job&, api::scheduler::SubTimeStep sub_time_step) override;
+			void submit(JobList job_list, api::scheduler::SubTimeStep sub_time_step) override;
 			const std::vector<const api::scheduler::Job*>& jobs() const override;
 			JobIterator begin() const override;
 			JobIterator end() const override;
@@ -159,13 +160,15 @@ namespace fpmas { namespace scheduler {
 	 * api::scheduler::Scheduler implementation.
 	 */
 	class Scheduler : public api::scheduler::Scheduler {
+		public:
+			using api::scheduler::Scheduler::JobList;
 		private:
 			struct SchedulerItem {
 				SubTimeStep sub_step;
-				const api::scheduler::Job* job;
+				JobList job_list;
 
-				SchedulerItem(SubTimeStep sub_step, const api::scheduler::Job* job)
-					: sub_step(sub_step), job(job) {}
+				SchedulerItem(SubTimeStep sub_step, JobList job_list)
+					: sub_step(sub_step), job_list(job_list) {}
 			};
 
 			std::unordered_map<TimeStep, std::vector<SchedulerItem>> unique_jobs;
@@ -179,6 +182,9 @@ namespace fpmas { namespace scheduler {
 			void schedule(api::scheduler::Date date, const api::scheduler::Job&) override;
 			void schedule(api::scheduler::Date date, api::scheduler::Period period, const api::scheduler::Job&) override;
 			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, const api::scheduler::Job&) override;
+			void schedule(api::scheduler::Date date, JobList) override;
+			void schedule(api::scheduler::Date date, api::scheduler::Period period, JobList) override;
+			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, JobList) override;
 			void build(api::scheduler::TimeStep step, fpmas::api::scheduler::Epoch&) const override;
 	};
 

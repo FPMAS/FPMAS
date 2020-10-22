@@ -265,7 +265,7 @@ TEST_F(BipartiteGraphBuilder, regular_build) {
 	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
 
 	mock_link.check(base_nodes, K);
-};
+}
 
 TEST_F(BipartiteGraphBuilder, build_without_enough_nodes) {
 	std::size_t K = 6;
@@ -293,4 +293,4 @@ TEST_F(BipartiteGraphBuilder, build_without_enough_nodes) {
 	for(auto node : mock_link.edges) {
 		ASSERT_THAT(node.second, UnorderedElementsAreArray(base_nodes));
 	}
-};
+}
