@@ -441,7 +441,7 @@ namespace fpmas {
 				if(ptr->typeId() == Type::TYPE_ID) {
 					j["type"] = Type::TYPE_ID;
 					j["gid"] = ptr->groupId();
-					j["agent"] = TypedAgentPtr<Type>(const_cast<Type*>(static_cast<const Type*>(ptr.get())));
+					j["agent"] = TypedAgentPtr<Type>(const_cast<Type*>(dynamic_cast<const Type*>(ptr.get())));
 				} else {
 					to_json<AgentTypes...>(j, ptr);
 				}

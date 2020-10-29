@@ -16,6 +16,7 @@ namespace fpmas { namespace scheduler {
 	using api::scheduler::TimeStep;
 	using api::scheduler::SubTimeStep;
 	using api::scheduler::JID;
+	using api::scheduler::JobList;
 
 	/**
 	 * A Task that does not perform any operation.
@@ -160,8 +161,6 @@ namespace fpmas { namespace scheduler {
 	 * api::scheduler::Scheduler implementation.
 	 */
 	class Scheduler : public api::scheduler::Scheduler {
-		public:
-			using api::scheduler::Scheduler::JobList;
 		private:
 			struct SchedulerItem {
 				SubTimeStep sub_step;

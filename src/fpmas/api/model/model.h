@@ -253,6 +253,31 @@ namespace fpmas { namespace api {namespace model {
 			virtual ~Agent(){}
 	};
 
+	template<typename AgentType>
+		class Neighbor {
+			public:
+				/**
+				 * Implicit conversion operator to `AgentType*`.
+				 */
+				virtual operator AgentType*() const = 0;
+
+				/**
+				 * Member of pointer access operator.
+				 *
+				 * @return pointer to neighbor agent
+				 */
+				virtual AgentType* operator->() const = 0;
+
+				/**
+				 * Indirection operator.
+				 *
+				 * @return reference to neighbor agent
+				 */
+				virtual AgentType& operator*() const = 0;
+
+				virtual AgentEdge* edge() const = 0;
+		};
+
 	/**
 	 * AgentTask API.
 	 *
@@ -352,10 +377,11 @@ namespace fpmas { namespace api {namespace model {
 			 * including `DISTANT` representations of Agents not executed on
 			 * the current process.
 			 *
-			 * The returned list is **invalidated** by the following operations
-			 * :
+			 * The returned list is **invalidated** by the following operations:
 			 * - fpmas::api::graph::DistributedGraph::synchronize()
-			 * - fpmas::api::synchro::Mutex::read() or fpmas::api::synchro::Mutex::acquire() on any Agent of the list.
+			 * - fpmas::api::synchro::Mutex::read() or
+			 *   fpmas::api::synchro::Mutex::acquire() on any Agent of the
+			 *   list.
 			 *
 			 * @return \Agents in this group
 			 */
@@ -366,10 +392,11 @@ namespace fpmas { namespace api {namespace model {
 			 * Returns the list of \LOCAL Agents currently in this AgentGroup,
 			 * that are executed on the current process.
 			 *
-			 * The returned list is **invalidated** by the following operations
-			 * :
+			 * The returned list is **invalidated** by the following operations:
 			 * - fpmas::api::graph::DistributedGraph::synchronize()
-			 * - fpmas::api::synchro::Mutex::read() or fpmas::api::synchro::Mutex::acquire() on any Agent of the list.
+			 * - fpmas::api::synchro::Mutex::read() or
+			 *   fpmas::api::synchro::Mutex::acquire() on any Agent of the
+			 *   list.
 			 *
 			 * @return \LOCAL \Agents in this group
 			 */

@@ -657,7 +657,7 @@ TEST_F(AgentGuardTest, read_guard) {
 	const fpmas::model::ReadGuard read(ptr);
 
 	// Pointed data has implicitely been updated by mutex::read
-	ASSERT_EQ(static_cast<FakeAgent*>(ptr.get())->field, 14);
+	ASSERT_EQ(dynamic_cast<FakeAgent*>(ptr.get())->field, 14);
 
 	EXPECT_CALL(mutex, releaseRead);
 }
@@ -670,7 +670,7 @@ TEST_F(AgentGuardTest, acquire_guard) {
 	const fpmas::model::AcquireGuard acq(ptr);
 
 	// Pointed data has implicitely been updated by mutex::acquire
-	ASSERT_EQ(static_cast<FakeAgent*>(ptr.get())->field, 14);
+	ASSERT_EQ(dynamic_cast<FakeAgent*>(ptr.get())->field, 14);
 
 	EXPECT_CALL(mutex, releaseAcquire);
 }

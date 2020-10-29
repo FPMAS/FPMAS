@@ -12,67 +12,76 @@ using ::testing::ReturnPointee;
 using ::testing::AnyNumber;
 using ::testing::SaveArg;
 
+namespace detail {
+	template<typename Implem>
+		class MockAgentBase : public virtual fpmas::api::model::Agent {
+			public:
+				static const fpmas::api::model::TypeId TYPE_ID;
+
+				fpmas::api::model::GroupId gid;
+
+				MOCK_METHOD(fpmas::api::model::GroupId, groupId, (), (const, override));
+				MOCK_METHOD(void, setGroupId, (fpmas::api::model::GroupId), (override));
+
+				MOCK_METHOD(fpmas::api::model::AgentGroup*, group, (), (override));
+				MOCK_METHOD(const fpmas::api::model::AgentGroup*, group, (), (const, override));
+				MOCK_METHOD(void, setGroup, (fpmas::api::model::AgentGroup*), (override));
+
+				MOCK_METHOD(fpmas::api::model::TypeId, typeId, (), (const, override));
+				MOCK_METHOD(fpmas::api::model::Agent*, copy, (), (const, override));
+				MOCK_METHOD(void, copyAssign, (fpmas::api::model::Agent*), (override));
+				MOCK_METHOD(void, moveAssign, (fpmas::api::model::Agent*), (override));
+
+				MOCK_METHOD(fpmas::api::model::AgentNode*, node, (), (override));
+				MOCK_METHOD(const fpmas::api::model::AgentNode*, node, (), (const, override));
+				MOCK_METHOD(void, setNode, (fpmas::api::model::AgentNode*), (override));
+
+				MOCK_METHOD(fpmas::api::model::Model*, model, (), (override));
+				MOCK_METHOD(const fpmas::api::model::Model*, model, (), (const, override));
+				MOCK_METHOD(void, setModel, (fpmas::api::model::Model*), (override));
+
+				MOCK_METHOD(fpmas::api::model::AgentTask*, task, (), (override));
+				MOCK_METHOD(const fpmas::api::model::AgentTask*, task, (), (const, override));
+				MOCK_METHOD(void, setTask, (fpmas::api::model::AgentTask*), (override));
+
+				MockAgentBase() {
+					ON_CALL(*this, typeId).WillByDefault(Return(TYPE_ID));
+					setUpGid();
+				}
+
+			private:
+				void setUpGid() {
+					ON_CALL(*this, groupId)
+						.WillByDefault(ReturnPointee(&gid));
+					EXPECT_CALL(*this, groupId).Times(AnyNumber());
+					ON_CALL(*this, setGroupId)
+						.WillByDefault(SaveArg<0>(&gid));
+					EXPECT_CALL(*this, setGroupId).Times(AnyNumber());
+				}
+		};
+	template<typename Implem>
+		const fpmas::api::model::TypeId MockAgentBase<Implem>::TYPE_ID = typeid(Implem);
+}
+
 /*
  * FOO parameter is just used to easily generate multiple agent types.
  */
 template<int FOO = 0>
-class MockAgent : public fpmas::api::model::Agent {
+class MockAgent : public virtual fpmas::api::model::Agent, public detail::MockAgentBase<MockAgent<FOO>> {
 	public:
-		static const fpmas::api::model::TypeId TYPE_ID;
-
-		fpmas::api::model::GroupId gid;
-
-		MOCK_METHOD(fpmas::api::model::GroupId, groupId, (), (const, override));
-		MOCK_METHOD(void, setGroupId, (fpmas::api::model::GroupId), (override));
-
-		MOCK_METHOD(fpmas::api::model::AgentGroup*, group, (), (override));
-		MOCK_METHOD(const fpmas::api::model::AgentGroup*, group, (), (const, override));
-		MOCK_METHOD(void, setGroup, (fpmas::api::model::AgentGroup*), (override));
-
-		MOCK_METHOD(fpmas::api::model::TypeId, typeId, (), (const, override));
-		MOCK_METHOD(fpmas::api::model::Agent*, copy, (), (const, override));
-		MOCK_METHOD(void, copyAssign, (fpmas::api::model::Agent*), (override));
-		MOCK_METHOD(void, moveAssign, (fpmas::api::model::Agent*), (override));
-
-		MOCK_METHOD(fpmas::api::model::AgentNode*, node, (), (override));
-		MOCK_METHOD(const fpmas::api::model::AgentNode*, node, (), (const, override));
-		MOCK_METHOD(void, setNode, (fpmas::api::model::AgentNode*), (override));
-
-		MOCK_METHOD(fpmas::api::model::Model*, model, (), (override));
-		MOCK_METHOD(const fpmas::api::model::Model*, model, (), (const, override));
-		MOCK_METHOD(void, setModel, (fpmas::api::model::Model*), (override));
-
-		MOCK_METHOD(fpmas::api::model::AgentTask*, task, (), (override));
-		MOCK_METHOD(const fpmas::api::model::AgentTask*, task, (), (const, override));
-		MOCK_METHOD(void, setTask, (fpmas::api::model::AgentTask*), (override));
-
 		MOCK_METHOD(void, act, (), (override));
 
 		// A fake custom agent field
 		MOCK_METHOD(void, setField, (int), ());
 		MOCK_METHOD(int, getField, (), (const));
 
-		MockAgent() {
-			ON_CALL(*this, typeId).WillByDefault(Return(TYPE_ID));
-			setUpGid();
-		}
+		MockAgent() : detail::MockAgentBase<MockAgent<FOO>>() {}
 
 		MockAgent(int field) : MockAgent() {
 			EXPECT_CALL(*this, getField).Times(AnyNumber())
 				.WillRepeatedly(Return(field));
 		}
-	private:
-		void setUpGid() {
-			ON_CALL(*this, groupId)
-				.WillByDefault(ReturnPointee(&gid));
-			EXPECT_CALL(*this, groupId).Times(AnyNumber());
-			ON_CALL(*this, setGroupId)
-				.WillByDefault(SaveArg<0>(&gid));
-			EXPECT_CALL(*this, setGroupId).Times(AnyNumber());
-		}
 };
-template<int FOO>
-const fpmas::api::model::TypeId MockAgent<FOO>::TYPE_ID = typeid(MockAgent<FOO>);
 
 class MockModel : public fpmas::api::model::Model {
 	public:

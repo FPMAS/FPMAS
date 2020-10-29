@@ -70,11 +70,11 @@ class IncreaseCountAct : public fpmas::model::AgentNodeCallback {
 
 		void call(fpmas::model::AgentNode* node) override {
 			if(node->data().get()->typeId() == DefaultMockAgentBase<1>::TYPE_ID) {
-				EXPECT_CALL(*static_cast<DefaultMockAgentBase<1>*>(node->data().get()), act)
+				EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<1>*>(node->data().get()), act)
 					.Times(AnyNumber())
 					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
 			} else if(node->data().get()->typeId() == DefaultMockAgentBase<10>::TYPE_ID) {
-				EXPECT_CALL(*static_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
+				EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
 					.Times(AnyNumber())
 					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
 			}
@@ -170,7 +170,7 @@ class UpdateWeightAct : public fpmas::model::AgentNodeCallback {
 	public:
 		void call(fpmas::model::AgentNode* node) override {
 			node->setWeight(random_weight(engine) * 10);
-			EXPECT_CALL(*static_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
+			EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
 				.Times(AnyNumber());
 		}
 };
@@ -217,7 +217,7 @@ class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 		void act() override {
 			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbor : node()->outNeighbors()) {
-				ASSERT_THAT(static_cast<const ReaderAgent*>(neighbor->mutex()->read().get())->getCounter(), Ge(counter));
+				ASSERT_THAT(dynamic_cast<const ReaderAgent*>(neighbor->mutex()->read().get())->getCounter(), Ge(counter));
 			}
 			counter++;
 			node()->setWeight(random_weight(engine) * 10);
@@ -377,7 +377,7 @@ class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
 		void act() override {
 			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbor : node()->outNeighbors()) {
-				WriterAgent* neighbor_agent = static_cast<WriterAgent*>(neighbor->mutex()->acquire().get());
+				WriterAgent* neighbor_agent = dynamic_cast<WriterAgent*>(neighbor->mutex()->acquire().get());
 
 				neighbor_agent->setCounter(neighbor_agent->getCounter()+1);
 				neighbor->setWeight(random_weight(engine) * 10);
@@ -478,7 +478,7 @@ TEST_F(HardSyncWritersModelIntegrationTest, test) {
 	runtime.run(STEPS);
 
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		const WriterAgent* agent = static_cast<const WriterAgent*>(node.second->mutex()->read().get());
+		const WriterAgent* agent = dynamic_cast<const WriterAgent*>(node.second->mutex()->read().get());
 		ASSERT_EQ(agent->getCounter(), STEPS * node.second->getIncomingEdges().size());
 	}
 }
@@ -565,14 +565,14 @@ TEST_F(ModelDynamicLinkGhostModeIntegrationTest, test) {
 	// Build local links set
 	std::set<DistributedId> links;
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		auto agent = static_cast<const LinkerAgent*>(node.second->mutex()->read().get());
+		auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 		links.insert(agent->links.begin(), agent->links.end());
 	}
 
 	// Build local unlinks set
 	std::set<DistributedId> unlinks;
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		auto agent = static_cast<const LinkerAgent*>(node.second->mutex()->read().get());
+		auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 		unlinks.insert(agent->unlinks.begin(), agent->unlinks.end());
 	}
 
@@ -658,14 +658,14 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 	// Build local links set
 	std::set<DistributedId> links;
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		auto agent = static_cast<const LinkerAgent*>(node.second->mutex()->read().get());
+		auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 		links.insert(agent->links.begin(), agent->links.end());
 	}
 
 	// Build local unlinks set
 	std::set<DistributedId> unlinks;
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		auto agent = static_cast<const LinkerAgent*>(node.second->mutex()->read().get());
+		auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 		unlinks.insert(agent->unlinks.begin(), agent->unlinks.end());
 	}
 

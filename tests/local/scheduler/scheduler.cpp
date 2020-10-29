@@ -6,6 +6,7 @@ using fpmas::scheduler::Scheduler;
 using fpmas::scheduler::Date;
 using fpmas::scheduler::TimeStep;
 using fpmas::scheduler::SubTimeStep;
+using fpmas::scheduler::JobList;
 
 using ::testing::AnyNumber;
 using ::testing::ElementsAre;
@@ -29,7 +30,6 @@ class SchedulerTest : public ::testing::Test {
 	protected:
 		Scheduler scheduler;
 		StrictMock<MockEpoch> epoch;
-		typedef fpmas::api::scheduler::Epoch::JobList JobList;
 
 		void SetUp() override {
 			EXPECT_CALL(epoch, clear).Times(AnyNumber());

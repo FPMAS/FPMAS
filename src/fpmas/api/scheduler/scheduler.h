@@ -149,6 +149,11 @@ namespace fpmas { namespace api { namespace scheduler {
 	};
 
 	/**
+	 * A list of Jobs.
+	 */
+	typedef std::vector<std::reference_wrapper<const Job>> JobList;
+
+	/**
 	 * Epoch API.
 	 *
 	 * An Epoch describes an ordered set of Job that needs to be executed
@@ -156,10 +161,6 @@ namespace fpmas { namespace api { namespace scheduler {
 	 */
 	class Epoch {
 		public:
-			/**
-			 * A list of Jobs.
-			 */
-			typedef std::vector<std::reference_wrapper<const Job>> JobList;
 
 			/**
 			 * Type used to iterate on an Epoch, yielding epoch's jobs.
@@ -239,11 +240,6 @@ namespace fpmas { namespace api { namespace scheduler {
 	 */
 	class Scheduler {
 		public:
-			/**
-			 * A list of Jobs.
-			 */
-			typedef std::vector<std::reference_wrapper<const Job>> JobList;
-
 			/**
 			 * Schedule a Job to be executed at the given Date.
 			 *

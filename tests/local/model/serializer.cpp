@@ -53,9 +53,9 @@ TEST(AgentSerializer, from_json) {
 	auto agent_12 = j12.get<fpmas::api::model::AgentPtr>();
 
 	ASSERT_THAT(agent_4.get(), WhenDynamicCastTo<MockAgent<4>*>(Not(IsNull())));
-	ASSERT_EQ(static_cast<MockAgent<4>*>(agent_4.get())->getField(), 7);
+	ASSERT_EQ(dynamic_cast<MockAgent<4>*>(agent_4.get())->getField(), 7);
 	ASSERT_EQ(agent_4->groupId(), 2);
 	ASSERT_THAT(agent_12.get(), WhenDynamicCastTo<MockAgent<12>*>(Not(IsNull())));
-	ASSERT_EQ(static_cast<MockAgent<12>*>(agent_12.get())->getField(), 84);
+	ASSERT_EQ(dynamic_cast<MockAgent<12>*>(agent_12.get())->getField(), 84);
 	ASSERT_EQ(agent_12->groupId(), 4);
 }

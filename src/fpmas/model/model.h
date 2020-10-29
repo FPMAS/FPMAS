@@ -22,12 +22,15 @@ namespace fpmas { namespace model {
 	 * @tparam AgentType Type of the input agent
 	 */
 	template<typename AgentType>
-		class Neighbor {
+		class Neighbor : public api::model::Neighbor<AgentType> {
 			private:
 				AgentPtr* agent;
+				AgentEdge* _edge = nullptr;
 
 			public:
 				/**
+				 * @deprecated
+				 *
 				 * Neighbor constructor.
 				 *
 				 * @param agent pointer to a generic AgentPtr
@@ -35,11 +38,14 @@ namespace fpmas { namespace model {
 				Neighbor(AgentPtr* agent)
 					: agent(agent) {}
 
+				Neighbor(AgentPtr* agent, AgentEdge* edge)
+					: agent(agent), _edge(edge) {}
+
 				/**
 				 * Implicit conversion operator to `AgentType*`.
 				 */
-				operator AgentType*() const {
-					return static_cast<AgentType*>(agent->get());
+				operator AgentType*() const override {
+					return dynamic_cast<AgentType*>(agent->get());
 				}
 
 				/**
@@ -47,8 +53,8 @@ namespace fpmas { namespace model {
 				 *
 				 * @return pointer to neighbor agent
 				 */
-				AgentType* operator->() const {
-					return static_cast<AgentType*>(agent->get());
+				AgentType* operator->() const override {
+					return dynamic_cast<AgentType*>(agent->get());
 				}
 
 				/**
@@ -56,9 +62,12 @@ namespace fpmas { namespace model {
 				 *
 				 * @return reference to neighbor agent
 				 */
-				AgentType& operator*() const {
-					return *static_cast<AgentType*>(agent->get()); }
+				AgentType& operator*() const override {
+					return *dynamic_cast<AgentType*>(agent->get()); }
 
+				AgentEdge* edge() const override {
+					return _edge;
+				}
 		};
 
 	/**
@@ -199,7 +208,7 @@ namespace fpmas { namespace model {
 	 * behaviors.
 	 */
 	template<typename AgentType>
-	class AgentBase : public api::model::Agent {
+	class AgentBase : public virtual api::model::Agent {
 		public:
 			static const api::model::TypeId TYPE_ID;
 
@@ -218,11 +227,11 @@ namespace fpmas { namespace model {
 			void setGroup(api::model::AgentGroup* group) override {this->_group = group;}
 
 			api::model::TypeId typeId() const override {return TYPE_ID;}
-			api::model::Agent* copy() const override {return new AgentType(*static_cast<const AgentType*>(this));}
+			api::model::Agent* copy() const override {return new AgentType(*dynamic_cast<const AgentType*>(this));}
 
 			void copyAssign(api::model::Agent* agent) override {
 				// Uses AgentType copy assignment operator
-				*static_cast<AgentType*>(this) = *static_cast<const AgentType*>(agent);
+				*dynamic_cast<AgentType*>(this) = *dynamic_cast<const AgentType*>(agent);
 			}
 
 			void moveAssign(api::model::Agent* agent) override {
@@ -233,7 +242,7 @@ namespace fpmas { namespace model {
 				agent->setModel(this->model());
 
 				// Uses AgentType move assignment operator
-				*static_cast<AgentType*>(this) = std::move(*static_cast<const AgentType*>(agent));
+				*dynamic_cast<AgentType*>(this) = std::move(*dynamic_cast<const AgentType*>(agent));
 			}
 
 			api::model::AgentNode* node() override {return _node;}
