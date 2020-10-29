@@ -20,6 +20,7 @@ set(SOURCES
 	# Model
 	fpmas/model/detail/model.cpp
 	fpmas/model/serializer.cpp
+	fpmas/model/environment.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
 	# Main
