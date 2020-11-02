@@ -7,6 +7,7 @@
 #include "fpmas/api/model/model.h"
 #include "fpmas/model/model.h"
 
+using ::testing::Invoke;
 using ::testing::Return;
 using ::testing::ReturnPointee;
 using ::testing::AnyNumber;
@@ -18,13 +19,18 @@ namespace detail {
 			public:
 				static const fpmas::api::model::TypeId TYPE_ID;
 
-				fpmas::api::model::GroupId gid;
+				std::vector<fpmas::api::model::GroupId> gids;
 
 				MOCK_METHOD(fpmas::api::model::GroupId, groupId, (), (const, override));
+				MOCK_METHOD(std::vector<fpmas::api::model::GroupId>, groupIds, (), (const, override));
 				MOCK_METHOD(void, setGroupId, (fpmas::api::model::GroupId), (override));
+				MOCK_METHOD(void, addGroupId, (fpmas::api::model::GroupId), (override));
 
+				MOCK_METHOD(std::vector<fpmas::api::model::AgentGroup*>, groups, (), (override));
 				MOCK_METHOD(fpmas::api::model::AgentGroup*, group, (), (override));
+				MOCK_METHOD(std::vector<const fpmas::api::model::AgentGroup*>, groups, (), (const, override));
 				MOCK_METHOD(const fpmas::api::model::AgentGroup*, group, (), (const, override));
+				MOCK_METHOD(void, addGroup, (fpmas::api::model::AgentGroup*), (override));
 				MOCK_METHOD(void, setGroup, (fpmas::api::model::AgentGroup*), (override));
 
 				MOCK_METHOD(fpmas::api::model::TypeId, typeId, (), (const, override));
@@ -43,6 +49,14 @@ namespace detail {
 				MOCK_METHOD(fpmas::api::model::AgentTask*, task, (), (override));
 				MOCK_METHOD(const fpmas::api::model::AgentTask*, task, (), (const, override));
 				MOCK_METHOD(void, setTask, (fpmas::api::model::AgentTask*), (override));
+				MOCK_METHOD(fpmas::api::model::AgentTask*, task,
+						(fpmas::api::model::GroupId), (override));
+				MOCK_METHOD(const fpmas::api::model::AgentTask*, task,
+						(fpmas::api::model::GroupId), (const, override));
+				MOCK_METHOD(void, setTask,
+						(fpmas::api::model::GroupId, fpmas::api::model::AgentTask*), (override));
+				MOCK_METHOD((const std::unordered_map<fpmas::api::model::GroupId, fpmas::api::model::AgentTask*>&),
+						tasks, (), (const, override));
 
 				MockAgentBase() {
 					ON_CALL(*this, typeId).WillByDefault(Return(TYPE_ID));
@@ -50,13 +64,18 @@ namespace detail {
 				}
 
 			private:
+				void _addGroupId(fpmas::api::model::GroupId gid) {
+					gids.push_back(gid);
+				}
+
 				void setUpGid() {
-					ON_CALL(*this, groupId)
-						.WillByDefault(ReturnPointee(&gid));
-					EXPECT_CALL(*this, groupId).Times(AnyNumber());
-					ON_CALL(*this, setGroupId)
-						.WillByDefault(SaveArg<0>(&gid));
-					EXPECT_CALL(*this, setGroupId).Times(AnyNumber());
+					ON_CALL(*this, groupIds)
+						.WillByDefault(ReturnPointee(&gids));
+					EXPECT_CALL(*this, groupIds).Times(AnyNumber());
+					ON_CALL(*this, addGroupId)
+						.WillByDefault(Invoke(this,
+									&MockAgentBase<Implem>::_addGroupId));
+					EXPECT_CALL(*this, addGroupId).Times(AnyNumber());
 				}
 		};
 	template<typename Implem>
@@ -105,6 +124,7 @@ class MockModel : public fpmas::api::model::Model {
 class MockAgentGroup : public fpmas::api::model::AgentGroup {
 	public:
 		MOCK_METHOD(fpmas::api::model::GroupId, groupId, (), (const, override));
+		MOCK_METHOD(fpmas::api::model::Behavior&, behavior, (), (override));
 		MOCK_METHOD(void, add, (fpmas::api::model::Agent*), (override));
 		MOCK_METHOD(void, remove, (fpmas::api::model::Agent*), (override));
 		MOCK_METHOD(void, insert, (fpmas::api::model::AgentPtr*), (override));

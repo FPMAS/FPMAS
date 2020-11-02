@@ -4,7 +4,6 @@ namespace fpmas { namespace api { namespace model {
 
 	AgentPtr::AgentPtr(const AgentPtr& other) {
 		this->ptr = other.ptr->copy();
-		this->ptr->setGroupId(other.ptr->groupId());
 	}
 
 	AgentPtr::AgentPtr(AgentPtr&& other) {
@@ -14,7 +13,6 @@ namespace fpmas { namespace api { namespace model {
 
 	AgentPtr& AgentPtr::operator=(const AgentPtr& other) {
 		this->ptr->copyAssign(other.ptr);
-		this->ptr->setGroupId(other.ptr->groupId());
 		return *this;
 	}
 

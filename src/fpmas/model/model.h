@@ -201,6 +201,25 @@ namespace fpmas { namespace model {
 		};
 	template<typename AgentType> std::mt19937 Neighbors<AgentType>::rd;
 
+	template<typename T>
+		class Behavior : public api::model::Behavior {
+			private:
+				void(T::*behavior)();
+
+			public:
+				Behavior(void(T::*behavior)())
+					: behavior(behavior) {}
+
+				void execute(api::model::Agent* agent) {
+					(dynamic_cast<T*>(agent)->*behavior)();
+				}
+		};
+
+	template<typename T>
+		Behavior<T> make_behavior(void(T::*behavior)()) {
+			return Behavior<T>(behavior);
+		}
+
 	/**
 	 * Base implementation of the \Agent API.
 	 *
@@ -213,18 +232,36 @@ namespace fpmas { namespace model {
 			static const api::model::TypeId TYPE_ID;
 
 		private:
-			api::model::GroupId group_id;
-			api::model::AgentGroup* _group;
-			api::model::AgentTask* _task;
+			std::vector<api::model::GroupId> group_ids;
+			std::vector<api::model::AgentGroup*> _groups;
+			std::unordered_map<api::model::GroupId, api::model::AgentTask*> _tasks;
 			api::model::AgentNode* _node;
 			api::model::Model* _model;
-		public:
-			api::model::GroupId groupId() const override {return group_id;}
-			void setGroupId(api::model::GroupId id) override {this->group_id = id;}
 
-			api::model::AgentGroup* group() override {return _group;}
-			const api::model::AgentGroup* group() const override {return _group;}
-			void setGroup(api::model::AgentGroup* group) override {this->_group = group;}
+		public:
+			api::model::GroupId groupId() const override {
+				if(group_ids.size() > 0)
+					return group_ids.back();
+				return {};
+			}
+			std::vector<api::model::GroupId> groupIds() const override {return group_ids;}
+			void setGroupId(api::model::GroupId id) override {group_ids.push_back(id);}
+			void addGroupId(api::model::GroupId id) override {group_ids.push_back(id);}
+
+			api::model::AgentGroup* group() override {
+				if(_groups.size() > 0)
+					return _groups.back();
+				return nullptr;
+			}
+			std::vector<const api::model::AgentGroup*> groups() const override {
+				return {_groups.begin(), _groups.end()};
+			}
+
+			const api::model::AgentGroup* group() const override {return _groups.back();}
+			std::vector<api::model::AgentGroup*> groups() override {return _groups;}
+
+			void setGroup(api::model::AgentGroup* group) override {_groups.push_back(group);}
+			void addGroup(api::model::AgentGroup* group) override {_groups.push_back(group);}
 
 			api::model::TypeId typeId() const override {return TYPE_ID;}
 			api::model::Agent* copy() const override {return new AgentType(*dynamic_cast<const AgentType*>(this));}
@@ -236,13 +273,15 @@ namespace fpmas { namespace model {
 
 			void moveAssign(api::model::Agent* agent) override {
 				// Sets and overrides the fields that must be preserved
-				agent->setGroup(this->group());
-				agent->setTask(this->task());
+				for(auto group : this->groups())
+					agent->addGroup(group);
+				for(auto task : this->tasks())
+					agent->setTask(task.first, task.second);
 				agent->setNode(this->node());
 				agent->setModel(this->model());
 
 				// Uses AgentType move assignment operator
-				*dynamic_cast<AgentType*>(this) = std::move(*dynamic_cast<const AgentType*>(agent));
+				*dynamic_cast<AgentType*>(this) = std::move(*dynamic_cast<AgentType*>(agent));
 			}
 
 			api::model::AgentNode* node() override {return _node;}
@@ -253,9 +292,23 @@ namespace fpmas { namespace model {
 			const api::model::Model* model() const override {return _model;}
 			void setModel(api::model::Model* model) override {_model = model;}
 
-			api::model::AgentTask* task() override {return _task;}
-			const api::model::AgentTask* task() const override {return _task;}
-			void setTask(api::model::AgentTask* task) override {_task = task;}
+			api::model::AgentTask* task() override {
+				return _tasks.at(this->groupId());}
+			const api::model::AgentTask* task() const override {
+				return _tasks.at(this->groupId());}
+			void setTask(api::model::AgentTask* task) override {
+				_tasks[this->groupId()] = task;}
+
+			api::model::AgentTask* task(api::model::GroupId id) override {
+				return _tasks.at(id);}
+			const api::model::AgentTask* task(api::model::GroupId id) const override {
+				return _tasks.at(id);}
+
+			void setTask(api::model::GroupId id, api::model::AgentTask* task) override {
+				_tasks[id] = task;}
+
+			const std::unordered_map<api::model::GroupId, api::model::AgentTask*>&
+				tasks() const override { return _tasks;}
 
 			/**
 			 * Returns a typed list of agents that are out neighbors of the current

@@ -123,36 +123,56 @@ namespace fpmas { namespace api {namespace model {
 	class Agent {
 		public:
 			/**
+			 * @deprecated
 			 * Returns the ID of the AgentGroup to which this Agent belong.
 			 *
 			 * @return group id
 			 */
+			[[deprecated]]
 			virtual GroupId groupId() const = 0;
+
+			virtual std::vector<GroupId> groupIds() const = 0;
+
 			/**
+			 * @deprecated
 			 * Sets this Agent group ID.
 			 *
 			 * @param id agent group id 
 			 */
+			[[deprecated]]
 			virtual void setGroupId(GroupId id) = 0;
+
+			virtual void addGroupId(GroupId id) = 0;
 
 
 			/**
+			 * @deprecated
 			 * Returns a pointer to the AgentGroup to which this Agent belong.
 			 *
 			 * @return pointer to agent group
 			 */
+			[[deprecated]]
 			virtual AgentGroup* group() = 0;
 			/**
 			 * \copydoc group()
 			 */
+			[[deprecated]]
 			virtual const AgentGroup* group() const = 0;
+
+			virtual std::vector<const AgentGroup*> groups() const = 0;
+			virtual std::vector<AgentGroup*> groups() = 0;
+
 			/**
+			 * @deprecated
 			 * Sets the internal pointer of the AgentGroup to which this Agent
 			 * belong.
 			 *
 			 * @param group agent group
 			 */
+			[[deprecated]]
 			virtual void setGroup(AgentGroup* group) = 0;
+
+			virtual void addGroup(AgentGroup* group) = 0;
 
 			/**
 			 * Returns the ID of the type of this Agent.
@@ -229,17 +249,26 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @return agent task
 			 */
+			[[deprecated]]
 			virtual AgentTask* task() = 0; 
 			/**
 			 * \copydoc task()
 			 */
+			[[deprecated]]
 			virtual const AgentTask* task() const = 0; 
 			/**
 			 * Sets the AgentTask associated to this Agent.
 			 *
 			 * @param task agent task
 			 */
+			[[deprecated]]
 			virtual void setTask(AgentTask* task) = 0;
+
+			virtual AgentTask* task(GroupId id) = 0;
+			virtual const AgentTask* task(GroupId id) const = 0; 
+
+			virtual void setTask(GroupId id, AgentTask* task) = 0;
+			virtual const std::unordered_map<GroupId, AgentTask*>& tasks() const = 0;
 
 			/**
 			 * Executes the behavior of the Agent.
@@ -291,16 +320,16 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @return task's agent
 			 */
-			//virtual const Agent* agent() const = 0;
 			virtual const AgentPtr& agent() const = 0;
-			/**
-			 * Sets the internal pointer of the associated Agent.
-			 *
-			 * @param agent task's agent
-			 */
-			//virtual void setAgent(AgentPtr* agent) = 0;
-
+			
 			virtual ~AgentTask(){}
+	};
+
+	class Behavior {
+		public:
+			virtual void execute(Agent*) = 0;
+
+			virtual ~Behavior(){}
 	};
 
 	/**
@@ -326,6 +355,8 @@ namespace fpmas { namespace api {namespace model {
 			 * @return group id
 			 */
 			virtual GroupId groupId() const = 0;
+
+			virtual Behavior& behavior() = 0;
 
 			/**
 			 * Adds a new Agent to this group.

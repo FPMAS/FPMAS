@@ -29,7 +29,7 @@ class MockSyncMode : public fpmas::api::synchro::SyncMode<T> {
 		MockSyncMode(
 			fpmas::api::graph::DistributedGraph<T>&,
 			fpmas::api::communication::MpiCommunicator&) {
-			ON_CALL(*this, buildMutex).WillByDefault(ReturnNew<MockMutex<int>>());
+			ON_CALL(*this, buildMutex).WillByDefault(ReturnNew<MockMutex<T>>());
 		}
 		typedef fpmas::api::graph::DistributedNode<T> NodeType;
 

@@ -31,6 +31,7 @@ set(SOURCES
 	model/model.cpp
 	model/serializer.cpp
 	model/environment.cpp
+	model/behavior.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

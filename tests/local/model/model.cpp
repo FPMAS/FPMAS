@@ -62,7 +62,6 @@ class AgentTaskTest : public ::testing::Test {
 
 TEST_F(AgentTaskTest, build) {
 	AgentTask agent_task(agent_ptr);
-	//agent_task.setAgent(&agent);
 
 	ASSERT_THAT(agent_task.agent(), Ref(agent_ptr));
 	ASSERT_THAT(agent_task.node(), Eq(&node));
@@ -174,12 +173,43 @@ class AgentGroupTest : public ::testing::Test {
 	public:
 		typedef fpmas::api::graph::DistributedNode<AgentPtr> Node;
 	protected:
+		struct MockAddGroup {
+			std::vector<fpmas::api::model::AgentGroup*> _groups;
+
+			void add(fpmas::api::model::AgentGroup* group) {
+				_groups.push_back(group);
+			}
+
+			std::vector<fpmas::api::model::AgentGroup*> groups() {
+				return _groups;
+			}
+		};
+
+		struct MockTasks {
+			typedef fpmas::api::model::GroupId GroupId;
+			typedef fpmas::api::model::AgentTask AgentTask;
+
+			std::unordered_map<GroupId, AgentTask*> _tasks;
+
+			void addTask(GroupId gid, AgentTask* task) {
+				_tasks[gid] = task;
+			}
+
+			AgentTask* task(GroupId gid) {
+				return _tasks[gid];
+			}
+
+			const std::unordered_map<GroupId, AgentTask*>& tasks() {
+				return _tasks;
+			}
+		};
+
 		MockModel model;
 		fpmas::model::detail::InsertAgentNodeCallback insert_agent_callback {model};
 		fpmas::model::detail::EraseAgentNodeCallback erase_agent_callback {model};
 		fpmas::model::detail::SetAgentLocalCallback set_local_callback {model};
 
-		fpmas::api::model::GroupId id = 1;
+		fpmas::api::model::GroupId id = 10;
 
 		MockDistributedGraph<
 			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>>
@@ -188,15 +218,15 @@ class AgentGroupTest : public ::testing::Test {
 		MockDistributedNode<AgentPtr> node1 {{0, 1}};
 		MockDistributedNode<AgentPtr> node2 {{0, 2}};
 
-		AgentGroup agent_group {10, graph};
+		AgentGroup agent_group {id, graph};
 		MockAgent<> agent1;
-		fpmas::api::model::AgentGroup* agent1_group;
-		fpmas::api::model::AgentTask* agent1_task;
+		MockAddGroup agent1_groups;
+		MockTasks agent1_tasks;
 		AgentPtr agent1_ptr {&agent1};
 
 		MockAgent<> agent2;
-		fpmas::api::model::AgentGroup* agent2_group;
-		fpmas::api::model::AgentTask* agent2_task;
+		MockAddGroup agent2_groups;
+		MockTasks agent2_tasks;
 		AgentPtr agent2_ptr {&agent2};
 
 		fpmas::scheduler::Scheduler scheduler;
@@ -214,32 +244,44 @@ class AgentGroupTest : public ::testing::Test {
 			ON_CALL(node2, data()).WillByDefault(ReturnRef(agent2_ptr));
 			EXPECT_CALL(node2, data()).Times(AnyNumber());
 
-			EXPECT_CALL(agent1, groupId)
+			EXPECT_CALL(agent1, groupIds)
 				.Times(AnyNumber())
-				.WillRepeatedly(Return(id));
-			EXPECT_CALL(agent2, groupId)
+				.WillRepeatedly(Return(
+							std::vector<fpmas::api::model::GroupId> {id}));
+			EXPECT_CALL(agent2, groupIds)
 				.Times(AnyNumber())
-				.WillRepeatedly(Return(id));
+				.WillRepeatedly(Return(
+							std::vector<fpmas::api::model::GroupId> {id}));
 
 			// Task SetUp
-			ON_CALL(agent1, setTask).WillByDefault(SaveArg<0>(&agent1_task));
-			EXPECT_CALL(agent1, task())
+			ON_CALL(agent1, setTask(id, _)).WillByDefault(
+					Invoke(&agent1_tasks, &MockTasks::addTask));
+			EXPECT_CALL(agent1, task(_))
 				.Times(AnyNumber())
-				.WillRepeatedly(ReturnPointee(&agent1_task));
-			ON_CALL(agent2, setTask).WillByDefault(SaveArg<0>(&agent2_task));
-			EXPECT_CALL(agent2, task())
+				.WillRepeatedly(Invoke(&agent1_tasks, &MockTasks::task));
+			EXPECT_CALL(agent1, tasks())
 				.Times(AnyNumber())
-				.WillRepeatedly(ReturnPointee(&agent2_task));
+				.WillRepeatedly(Invoke(&agent1_tasks, &MockTasks::tasks));
+			ON_CALL(agent2, setTask(id, _)).WillByDefault(
+					Invoke(&agent2_tasks, &MockTasks::addTask));
+			EXPECT_CALL(agent2, task(_))
+				.Times(AnyNumber())
+				.WillRepeatedly(Invoke(&agent2_tasks, &MockTasks::task));
+			EXPECT_CALL(agent2, tasks())
+				.Times(AnyNumber())
+				.WillRepeatedly(Invoke(&agent2_tasks, &MockTasks::tasks));
 
 			// AgentGroup SetUp
-			ON_CALL(agent1, setGroup).WillByDefault(SaveArg<0>(&agent1_group));
-			EXPECT_CALL(agent1, group())
+			ON_CALL(agent1, addGroup).WillByDefault(
+					Invoke(&agent1_groups, &MockAddGroup::add));
+			EXPECT_CALL(agent1, groups())
 				.Times(AnyNumber())
-				.WillRepeatedly(ReturnPointee(&agent1_group));
-			ON_CALL(agent2, setGroup).WillByDefault(SaveArg<0>(&agent2_group));
-			EXPECT_CALL(agent2, group())
+				.WillRepeatedly(Invoke(&agent1_groups, &MockAddGroup::groups));
+			ON_CALL(agent2, addGroup).WillByDefault(
+					Invoke(&agent2_groups, &MockAddGroup::add));
+			EXPECT_CALL(agent2, groups())
 				.Times(AnyNumber())
-				.WillRepeatedly(ReturnPointee(&agent2_group));
+				.WillRepeatedly(Invoke(&agent2_groups, &MockAddGroup::groups));
 
 			EXPECT_CALL(graph, insert(A<Node*>()))
 				.Times(AnyNumber())
@@ -284,46 +326,38 @@ class MockBuildNode {
 		MockBuildNode(Graph* graph, typename AgentGroupTest::Node* node)
 			: graph(graph), node(node) {}
 
-		void operator()() {
+		decltype(node) build(fpmas::model::AgentPtr& ptr) {
 			graph->insert(node);
-
+			// Prevents temporary AgentPtr from deleting the Agent
+			ptr.release();
+			return node;
 		}
 };
 
 TEST_F(AgentGroupTest, add_agent) {
 
-	EXPECT_CALL(agent1, setTask);
+	EXPECT_CALL(agent1, setTask(id, _));
 	// Agent 1 set up
 	MockBuildNode build_node_1 {&graph, &node1};
 	EXPECT_CALL(graph, buildNode_rv)
-		.WillOnce(DoAll(
-			InvokeWithoutArgs(build_node_1),
-			Return(&node1)));
+		.WillOnce(Invoke(&build_node_1, &MockBuildNode::build));
 	EXPECT_CALL(agent1, setNode(&node1));
 	EXPECT_CALL(agent1, setModel(&model));
-	EXPECT_CALL(agent1, setGroup(&agent_group));
+	EXPECT_CALL(agent1, addGroup(&agent_group));
+	EXPECT_CALL(agent1, addGroupId(10));
+	agent_group.add(&agent1);
 
-	std::array<MockAgent<>*, 2> fake_agents {new MockAgent<>, new MockAgent<>};
-	// The fake agent will be implicitely and automatically deleted from the
-	// temporary AgentPtr in the mocked buildNode function. In consequence, we
-	// don't use the real "agent1", BUT agent 1 is still returned by the
-	// buildNode function (see expectation above)
-	EXPECT_CALL(*fake_agents[0], setGroupId(10));
-	agent_group.add(fake_agents[0]);
-
-	EXPECT_CALL(agent2, setTask);
+	EXPECT_CALL(agent2, setTask(id, _));
 	// Agent 2 set up
 	MockBuildNode build_node_2 {&graph, &node2};
 	EXPECT_CALL(graph, buildNode_rv)
-		.WillOnce(DoAll(
-			InvokeWithoutArgs(build_node_2),
-			Return(&node1)));
+		.WillOnce(Invoke(&build_node_2, &MockBuildNode::build));
 	EXPECT_CALL(agent2, setNode(&node2));
 	EXPECT_CALL(agent2, setModel(&model));
-	EXPECT_CALL(agent2, setGroup(&agent_group));
+	EXPECT_CALL(agent2, addGroup(&agent_group));
 
-	EXPECT_CALL(*fake_agents[1], setGroupId(10));
-	agent_group.add(fake_agents[1]);
+	EXPECT_CALL(agent2, addGroupId(10));
+	agent_group.add(&agent2);
 
 	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent1, &agent2));
 
@@ -350,34 +384,26 @@ TEST_F(AgentGroupTest, erase_agent) {
 }
 
 TEST_F(AgentGroupTest, agent_task) {
-	EXPECT_CALL(agent1, setTask);
-	EXPECT_CALL(agent2, setTask);
+	EXPECT_CALL(agent1, setTask(id, _));
+	EXPECT_CALL(agent2, setTask(id, _));
 
 	MockBuildNode build_node_1 {&graph, &node1};
 	EXPECT_CALL(graph, buildNode_rv)
-		.WillOnce(DoAll(
-			InvokeWithoutArgs(build_node_1),
-			Return(&node1)));
+		.WillOnce(Invoke(&build_node_1, &MockBuildNode::build));
 	EXPECT_CALL(agent1, setNode);
 	EXPECT_CALL(agent1, setModel);
-	EXPECT_CALL(agent1, setGroup);
-
-	MockAgent<>* fake_agent = new MockAgent<>;
-	EXPECT_CALL(*fake_agent, setGroupId(10));
-	agent_group.add(fake_agent);
+	EXPECT_CALL(agent1, addGroup);
+	EXPECT_CALL(agent1, addGroupId(10));
+	agent_group.add(&agent1);
 
 	MockBuildNode build_node_2 {&graph, &node2};
 	EXPECT_CALL(graph, buildNode_rv)
-		.WillOnce(DoAll(
-			InvokeWithoutArgs(build_node_2),
-			Return(&node2)));
+		.WillOnce(Invoke(&build_node_2, &MockBuildNode::build));
 	EXPECT_CALL(agent2, setNode);
 	EXPECT_CALL(agent2, setModel);
-	EXPECT_CALL(agent2, setGroup);
-
-	fake_agent = new MockAgent<>;
-	EXPECT_CALL(*fake_agent, setGroupId(10));
-	agent_group.add(fake_agent);
+	EXPECT_CALL(agent2, addGroup);
+	EXPECT_CALL(agent2, addGroupId(10));
+	agent_group.add(&agent2);
 
 	ASSERT_THAT(agent_group.job().tasks(), SizeIs(2));
 
@@ -466,6 +492,30 @@ TEST_F(AgentBaseTest, group) {
 	ASSERT_EQ(const_agent_base.group(), &group);
 }
 
+TEST_F(AgentBaseTest, group_ids) {
+	agent_base.addGroupId(12);
+	agent_base.addGroupId(4);
+	agent_base.addGroupId(45);
+	ASSERT_THAT(agent_base.groupIds(), UnorderedElementsAre(12, 4, 45));
+}
+
+TEST_F(AgentBaseTest, groups) {
+	MockAgentGroup group1;
+	MockAgentGroup group2;
+	MockAgentGroup group3;
+
+	agent_base.addGroup(&group1);
+	agent_base.addGroup(&group2);
+	agent_base.addGroup(&group3);
+
+	ASSERT_THAT(
+			agent_base.groups(),
+			UnorderedElementsAre(&group1, &group2, &group3));
+	ASSERT_THAT(
+			const_agent_base.groups(),
+			UnorderedElementsAre(&group1, &group2, &group3));
+}
+
 TEST_F(AgentBaseTest, node) {
 	MockDistributedNode<AgentPtr> node;
 	agent_base.setNode(&node);
@@ -483,6 +533,104 @@ TEST_F(AgentBaseTest, task) {
 	AgentTask task(ptr);
 	agent_base.setTask(&task);
 	ASSERT_EQ(agent_base.task(), &task);
+
+	ptr.release();
+}
+
+TEST_F(AgentBaseTest, tasks) {
+	AgentPtr ptr(&agent_base);
+	AgentTask t1(ptr);
+	AgentTask t2(ptr);
+	AgentTask t3(ptr);
+	agent_base.setTask(1, &t1);
+	agent_base.setTask(4, &t2);
+	agent_base.setTask(2, &t3);
+	ASSERT_EQ(agent_base.task(1), &t1);
+	ASSERT_EQ(agent_base.task(4), &t2);
+	ASSERT_EQ(agent_base.task(2), &t3);
+
+	ASSERT_THAT(agent_base.tasks(),
+			UnorderedElementsAre(Pair(1, &t1), Pair(4, &t2), Pair(2, &t3)));
+
+	ptr.release();
+}
+
+class AgentBaseCopyMoveTest : public testing::Test {
+	protected:
+		class TestAgent : public fpmas::model::AgentBase<TestAgent> {
+			public:
+				const TestAgent* copy_constructed_from = nullptr;
+
+				TestAgent() {}
+
+				TestAgent(const TestAgent& agent) {
+					copy_constructed_from = &agent;
+				}
+
+				MOCK_METHOD(void, copy_assign, (const TestAgent& agent), ());
+				TestAgent& operator=(const TestAgent& agent) {
+					copy_assign(agent);
+					return *this;
+				}
+
+				MOCK_METHOD(void, move_assign, (const TestAgent& agent), ());
+				TestAgent& operator=(TestAgent&& agent) {
+					move_assign(agent);
+					return *this;
+				}
+
+				MOCK_METHOD(void, act, (), (override));
+		};
+
+		TestAgent test_agent;
+};
+
+TEST_F(AgentBaseCopyMoveTest, copy) {
+	fpmas::api::model::Agent* agent = test_agent.copy();
+
+	ASSERT_THAT(agent, WhenDynamicCastTo<TestAgent*>(Not(IsNull())));
+	ASSERT_EQ(dynamic_cast<TestAgent*>(agent)->copy_constructed_from, &test_agent);
+
+	delete agent;
+}
+
+TEST_F(AgentBaseCopyMoveTest, copy_assign) {
+	TestAgent agent_to_copy;
+
+	EXPECT_CALL(test_agent, copy_assign(Ref(agent_to_copy)));
+
+	test_agent.copyAssign(&agent_to_copy);
+}
+
+TEST_F(AgentBaseCopyMoveTest, move_assign) {
+	TestAgent agent_to_move;
+	AgentPtr ptr(&test_agent);
+
+	MockAgentGroup g1;
+	MockAgentGroup g2;
+	AgentTask t1(ptr);
+	AgentTask t2(ptr);
+	AgentTask t3(ptr);
+
+	MockModel mock_model;
+	MockDistributedNode<AgentPtr> mock_node;
+	test_agent.addGroup(&g1);
+	test_agent.addGroup(&g2);
+	test_agent.setTask(1, &t1);
+	test_agent.setTask(12, &t2);
+	test_agent.setTask(11, &t3);
+	test_agent.setNode(&mock_node);
+	test_agent.setModel(&mock_model);
+
+	EXPECT_CALL(test_agent, move_assign(Ref(agent_to_move)));
+
+	test_agent.moveAssign(&agent_to_move);
+
+	ASSERT_EQ(test_agent.node(), &mock_node);
+	ASSERT_EQ(test_agent.model(), &mock_model);
+	ASSERT_THAT(test_agent.groups(), UnorderedElementsAre(&g1, &g2));
+	ASSERT_THAT(test_agent.tasks(), UnorderedElementsAre(
+				Pair(1, &t1), Pair(12, &t2), Pair(11, &t3)));
 
 	ptr.release();
 }
@@ -610,6 +758,7 @@ TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 	for(auto neighbor : in_neighbors)
 		delete neighbor;
 }
+
 
 class FakeAgent : public MockAgentBase<FakeAgent> {
 	public:

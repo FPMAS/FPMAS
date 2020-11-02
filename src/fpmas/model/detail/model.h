@@ -18,6 +18,13 @@ namespace fpmas {
 		using api::model::AgentPtr;
 		using api::scheduler::JID;
 
+		class DefaultBehavior : public api::model::Behavior {
+			public:
+				void execute(api::model::Agent* agent) override {
+					agent->act();
+				}
+		};
+
 		/**
 		 * fpmas::model implementation details.
 		 */
@@ -25,8 +32,8 @@ namespace fpmas {
 			/**
 			 * api::model::AgentTask implementation.
 			 */
-			class AgentTask : public api::model::AgentTask {
-				private:
+			class AgentTaskBase : public api::model::AgentTask {
+				protected:
 					api::model::AgentPtr& _agent;
 				public:
 					/**
@@ -34,7 +41,7 @@ namespace fpmas {
 					 *
 					 * @param agent_ptr agents that will be executed by this task
 					 */
-					AgentTask(api::model::AgentPtr& agent_ptr)
+					AgentTaskBase(api::model::AgentPtr& agent_ptr)
 						: _agent(agent_ptr) {}
 
 					const api::model::AgentPtr& agent() const override {
@@ -43,9 +50,34 @@ namespace fpmas {
 
 					AgentNode* node() override
 					{return _agent->node();}
+			};
+
+			class AgentTask : public AgentTaskBase {
+				public:
+					/**
+					 * AgentTask constructor.
+					 *
+					 * @param agent_ptr agents that will be executed by this task
+					 */
+					AgentTask(api::model::AgentPtr& agent_ptr)
+						: AgentTaskBase(agent_ptr) {}
+
 
 					void run() override {
 						_agent->act();
+					}
+			};
+
+			class AgentBehaviorTask : public AgentTaskBase {
+				private:
+					api::model::Behavior& behavior;
+
+				public:
+					AgentBehaviorTask(api::model::Behavior& behavior, api::model::AgentPtr& agent)
+						: AgentTaskBase(agent), behavior(behavior) {}
+
+					void run() override {
+						behavior.execute(_agent.get());
 					}
 			};
 
@@ -289,6 +321,9 @@ namespace fpmas {
 				detail::SynchronizeGraphTask sync_graph_task;
 				std::vector<api::model::AgentPtr*> _agents;
 
+				static DefaultBehavior default_behavior;
+				api::model::Behavior& _behavior;
+
 				public:
 				/**
 				 * AgentGroup constructor.
@@ -298,10 +333,16 @@ namespace fpmas {
 				 */
 				AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph);
 
+				AgentGroup(
+						api::model::GroupId group_id,
+						api::model::AgentGraph& agent_graph,
+						api::model::Behavior& behavior);
+
 				AgentGroup& operator=(const AgentGroup&) = delete;
 				AgentGroup& operator=(AgentGroup&&) = delete;
 
 				api::model::GroupId groupId() const override {return id;}
+				api::model::Behavior& behavior() override {return _behavior;}
 
 				void add(api::model::Agent*) override;
 				void remove(api::model::Agent*) override;

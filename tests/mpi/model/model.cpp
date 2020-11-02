@@ -137,7 +137,8 @@ TEST_F(ModelGhostModeIntegrationExecutionTest, ghost_mode) {
 
 	for(auto node : agent_graph.getNodes()) {
 		fpmas::api::model::AgentPtr& agent = node.second->data();
-		if(agent->group() == &group1)
+		auto gids = agent->groupIds();
+		if(std::count(gids.begin(), gids.end(), G_1)>0)
 			group_1_agents.push_back(agent);
 		else
 			group_2_agents.push_back(agent);

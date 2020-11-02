@@ -3,37 +3,48 @@
 namespace fpmas {
 	namespace model {
 		namespace detail {
+
+			DefaultBehavior AgentGroup::default_behavior;
+
 			void InsertAgentNodeCallback::call(AgentNode *node) {
 				api::model::AgentPtr& agent = node->data();
 				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 						"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", FPMAS_C_STR(node->getId()));
-				agent->setGroup(&model.getGroup(agent->groupId()));
-				agent->group()->insert(&agent);
+				for(auto gid : agent->groupIds())
+					agent->addGroup(&model.getGroup(gid));
+				for(auto group : agent->groups())
+					group->insert(&agent);
 				agent->setNode(node);
 				agent->setModel(&model);
-				AgentTask* task = new AgentTask(agent);
-				agent->setTask(task);
+				for(auto group : agent->groups()) {
+					AgentBehaviorTask* task
+						= new AgentBehaviorTask(group->behavior(), agent);
+					agent->setTask(group->groupId(), task);
+				}
 			}
 
 			void EraseAgentNodeCallback::call(AgentNode *node) {
 				api::model::AgentPtr& agent = node->data();
 				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 						"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", FPMAS_C_STR(node->getId()));
-				// Deletes task and agent
 				if(node->state() == graph::LocationState::LOCAL) {
 					// Unschedule agent task. If the node is DISTANT, task was already
 					// unscheduled.
-					agent->group()->job().remove(*agent->task());
+					for(auto group : agent->groups())
+						group->job().remove(*agent->task(group->groupId()));
 				}
-				agent->group()->erase(&agent);
-				delete agent->task();
+				for(auto group : agent->groups())
+					group->erase(&agent);
+				for(auto task : agent->tasks())
+					delete task.second;
 			}
 
 			void SetAgentLocalCallback::call(AgentNode *node) {
 				api::model::Agent* agent = node->data();
 				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 						"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", FPMAS_C_STR(node->getId()));
-				agent->group()->job().add(*agent->task());
+				for(auto group : agent->groups())
+					group->job().add(*agent->task(group->groupId()));
 			}
 
 			void SetAgentDistantCallback::call(AgentNode *node) {
@@ -41,7 +52,8 @@ namespace fpmas {
 				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 						"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", FPMAS_C_STR(node->getId()));
 				// Unschedule agent task 
-				agent->group()->job().remove(*agent->task());
+				for(auto group : agent->groups())
+					group->job().remove(*agent->task(group->groupId()));
 			}
 
 			Model::Model(
@@ -87,13 +99,49 @@ namespace fpmas {
 			}
 
 			AgentGroup::AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph)
-				: id(group_id), agent_graph(agent_graph), _job(), sync_graph_task(agent_graph) {
+				: AgentGroup(group_id, agent_graph, default_behavior) {
+				}
+
+			AgentGroup::AgentGroup(
+					api::model::GroupId group_id,
+					api::model::AgentGraph& agent_graph,
+					api::model::Behavior& behavior)
+				: id(group_id), agent_graph(agent_graph), _job(), sync_graph_task(agent_graph), _behavior(behavior) {
 					_job.setEndTask(sync_graph_task);
 				}
 
 			void AgentGroup::add(api::model::Agent* agent) {
-				agent->setGroupId(id);
-				agent_graph.buildNode(agent);
+				agent->addGroupId(id);
+				// TODO: to improve in 2.0
+				if(agent->groups().empty()) {
+					agent_graph.buildNode(agent);
+				}
+				else {
+					// It is assumed that the agent has already been added to a
+					// group, and so the "insert node" and "set local"
+					// callbacks above have already been triggered, for the
+					// first group to which the agent was added.
+					//
+					// Since those callbacks are not triggered again for next
+					// groups, we can manually set up group and task for the agent.
+					//
+					// This might be modified in version 2.0
+					//
+					// Notice that this is only valid when agents are "added"
+					// to the group, callbacks work as expected when the agent
+					// is "inserted" when migration are performed for example.
+
+					agent->addGroup(this);
+
+					// The node is already built and inserted in the graph, so
+					// this is safe (but hacky)
+					this->insert(&agent->node()->data());
+					AgentBehaviorTask* task
+						= new AgentBehaviorTask(this->behavior(), agent->node()->data()); // Same as above
+					agent->setTask(this->groupId(), task);
+
+					this->job().add(*task);
+				}
 			}
 
 			void AgentGroup::remove(api::model::Agent* agent) {
