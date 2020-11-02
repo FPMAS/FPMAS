@@ -148,7 +148,7 @@ namespace environment {
 		ptr.release();
 	}
 
-	TEST_F(CellBaseTest, act_new_location) {
+	TEST_F(CellBaseTest, update_ranges_new_location) {
 		ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::NEW_LOCATION))
 			.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge})));
 
@@ -162,10 +162,10 @@ namespace environment {
 		EXPECT_CALL(mock_model, link(mock_located_agent, this, EnvironmentLayers::PERCEIVE));
 		EXPECT_CALL(mock_model, link(mock_located_agent, cell_neighbor_1, EnvironmentLayers::NEW_PERCEIVE));
 
-		this->act();
+		this->updateRanges();
 	}
 
-	TEST_F(CellBaseTest, act_new_move) {
+	TEST_F(CellBaseTest, update_ranges_new_move) {
 		ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::NEW_MOVE))
 			.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge})));
 
@@ -175,10 +175,10 @@ namespace environment {
 		EXPECT_CALL(mock_model, unlink(&agent_edge));
 		EXPECT_CALL(mock_model, link(mock_located_agent, cell_neighbor_2, EnvironmentLayers::NEW_MOVE));
 
-		this->act();
+		this->updateRanges();
 	}
 
-	TEST_F(CellBaseTest, act_new_perceive) {
+	TEST_F(CellBaseTest, update_ranges_new_perceive) {
 		ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::NEW_PERCEIVE))
 			.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge})));
 
@@ -189,6 +189,24 @@ namespace environment {
 
 		EXPECT_CALL(mock_model, link(mock_located_agent, cell_neighbor_1, EnvironmentLayers::NEW_PERCEIVE));
 
-		this->act();
+		this->updateRanges();
+	}
+
+	TEST_F(CellBaseTest, update_perceptions) {
+		NiceMock<MockLocatedAgent>* perceived_agent = new NiceMock<MockLocatedAgent>;
+		NiceMock<MockDistributedNode<AgentPtr>> perceived_agent_node {_id_, fpmas::model::AgentPtr(perceived_agent)};
+		NiceMock<MockDistributedEdge<AgentPtr>> perceived_agent_edge;
+		perceived_agent_edge.setSourceNode(&perceived_agent_node);
+
+		ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::PERCEIVE))
+			.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge})));
+
+		ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::LOCATION))
+			.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&perceived_agent_edge})));
+
+		EXPECT_CALL(mock_model, link(mock_located_agent, perceived_agent, EnvironmentLayers::PERCEIVE));
+		EXPECT_CALL(mock_model, unlink(&agent_edge));
+
+		this->updatePerceptions();
 	}
 }

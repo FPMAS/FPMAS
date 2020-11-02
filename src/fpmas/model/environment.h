@@ -12,20 +12,17 @@ namespace fpmas {
 	namespace model {
 	using api::model::EnvironmentLayers;
 
-	class CellBase : public api::model::Cell {
-		private:
-			Neighbors<api::model::LocatedAgent> newAgentsLocatedInThisCell() const;
-			Neighbors<api::model::LocatedAgent> newAgentsMovableToThisCell() const;
-			Neighbors<api::model::LocatedAgent> newAgentsPerceivingThisCell() const;
+	class CellBase : public api::model::Cell, public NeighborsAccess {
+		protected:
 			Neighbors<api::model::Cell> neighborCells() const;
 
-		protected:
 			void updateLocation(api::model::Neighbor<api::model::LocatedAgent>& agent) override;
 			void growMobilityRange(api::model::LocatedAgent* agent) override;
 			void growPerceptionRange(api::model::LocatedAgent* agent) override;
 
 		public:
-			void act() override;
+			void updateRanges() override;
+			void updatePerceptions() override;
 
 	};
 

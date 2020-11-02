@@ -17,7 +17,8 @@ class MockLocatedAgent : public fpmas::api::model::LocatedAgent, public testing:
 };
 
 class MockCellBase : public fpmas::model::CellBase, public testing::NiceMock<detail::MockAgentBase<MockCellBase>> {
-
+	public:
+		MOCK_METHOD(void, act, (), (override));
 };
 
 class MockCell : public fpmas::api::model::Cell, public detail::MockAgentBase<MockCell> {

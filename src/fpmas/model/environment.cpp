@@ -4,52 +4,7 @@
 namespace fpmas {
 	namespace model {
 		Neighbors<api::model::Cell> CellBase::neighborCells() const {
-			std::vector<Neighbor<api::model::Cell>> cells;
-			for(auto raw_cell_edge : this->node()->getOutgoingEdges(EnvironmentLayers::NEIGHBOR_CELL))
-				cells.push_back({&raw_cell_edge->getTargetNode()->data(), raw_cell_edge});
-
-			return cells;
-		}
-
-		Neighbors<api::model::LocatedAgent> CellBase::newAgentsLocatedInThisCell() const {
-			std::vector<Neighbor<api::model::LocatedAgent>> agents;
-			for(auto raw_agent_edge : this->node()->getIncomingEdges(EnvironmentLayers::NEW_LOCATION))
-				agents.push_back({&raw_agent_edge->getSourceNode()->data(), raw_agent_edge});
-			return agents;
-		}
-
-		Neighbors<api::model::LocatedAgent> CellBase::newAgentsMovableToThisCell() const {
-			std::vector<Neighbor<api::model::LocatedAgent>> agents;
-
-			for(auto raw_agent_edge : this->node()->getIncomingEdges(EnvironmentLayers::NEW_MOVE))
-				agents.push_back({&raw_agent_edge->getSourceNode()->data(), raw_agent_edge});
-			return agents;
-		}
-
-		Neighbors<api::model::LocatedAgent> CellBase::newAgentsPerceivingThisCell() const {
-			std::vector<Neighbor<api::model::LocatedAgent>> agents;
-
-			for(auto raw_agent_edge : this->node()->getIncomingEdges(EnvironmentLayers::NEW_PERCEIVE))
-				agents.push_back({&raw_agent_edge->getSourceNode()->data(), raw_agent_edge});
-			return agents;
-		}
-
-		void CellBase::act() {
-			for(auto agent : this->newAgentsLocatedInThisCell()) {
-				updateLocation(agent);
-				growMobilityRange(agent);
-				growPerceptionRange(agent);
-			}
-			for(auto agent: this->newAgentsMovableToThisCell()) {
-				this->model()->link(agent, this, EnvironmentLayers::MOVE);
-				this->model()->unlink(agent.edge());
-				growMobilityRange(agent);
-			}
-			for(auto agent : this->newAgentsPerceivingThisCell()) {
-				this->model()->link(agent, this, EnvironmentLayers::PERCEIVE);
-				this->model()->unlink(agent.edge());
-				growPerceptionRange(agent);
-			}
+			return this->outNeighbors<api::model::Cell>(EnvironmentLayers::NEIGHBOR_CELL);
 		}
 
 		void CellBase::updateLocation(api::model::Neighbor<api::model::LocatedAgent>& agent) {
@@ -72,6 +27,32 @@ namespace fpmas {
 			for(auto cell : this->neighborCells())
 				if(agent->isInPerceptionRange(cell))
 					this->model()->link(agent, cell, EnvironmentLayers::NEW_PERCEIVE);
+		}
+
+		void CellBase::updateRanges() {
+			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::NEW_LOCATION)) {
+				updateLocation(agent);
+				growMobilityRange(agent);
+				growPerceptionRange(agent);
+			}
+			for(auto agent: this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::NEW_MOVE)) {
+				this->model()->link(agent, this, EnvironmentLayers::MOVE);
+				this->model()->unlink(agent.edge());
+				growMobilityRange(agent);
+			}
+			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::NEW_PERCEIVE)) {
+				this->model()->link(agent, this, EnvironmentLayers::PERCEIVE);
+				this->model()->unlink(agent.edge());
+				growPerceptionRange(agent);
+			}
+		}
+
+		void CellBase::updatePerceptions() {
+			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::PERCEIVE)) {
+				for(auto perceived_agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::LOCATION))
+					this->model()->link(agent, perceived_agent, EnvironmentLayers::PERCEIVE);
+				this->model()->unlink(agent.edge());
+			}
 		}
 	}
 	namespace api { namespace model {

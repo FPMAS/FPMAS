@@ -221,6 +221,107 @@ namespace fpmas { namespace model {
 			return Behavior<T>(behavior);
 		}
 
+	class NeighborsAccess : public virtual api::model::Agent {
+		public:
+		/**
+		 * Returns a typed list of agents that are out neighbors of the current
+		 * agent.
+		 *
+		 * Agents are added to the list if and only if :
+		 * 1. they are contained in a node that is an out neighbor of this
+		 * agent's node
+		 * 2. they can be cast to `NeighborAgentType`
+		 *
+		 * @return out neighbor agents
+		 *
+		 * @see api::graph::Node::outNeighbors()
+		 */
+		template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors() const {
+			std::vector<Neighbor<NeighborAgentType>> out;
+			for(api::model::AgentEdge* _edge : node()->getOutgoingEdges()) {
+				api::model::AgentNode* _node = _edge->getTargetNode();
+				if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
+					out.push_back({&_node->data(), _edge});
+				}
+			}
+			return out;
+		}
+
+		/**
+		 * Returns a typed list of agents that are out neighbors of the current
+		 * agent on the given layer.
+		 *
+		 * Agents are added to the list if and only if :
+		 * 1. they are contained in a node that is an out neighbor of this
+		 * agent's node, connected on the specified layer
+		 * 2. they can be cast to `NeighborAgentType`
+		 *
+		 * @return out neighbor agents
+		 *
+		 * @see api::graph::Node::outNeighbors()
+		 */
+		template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors(api::graph::LayerId layer) const {
+			std::vector<Neighbor<NeighborAgentType>> out;
+			for(api::model::AgentEdge* _edge : node()->getOutgoingEdges(layer)) {
+				api::model::AgentNode* _node = _edge->getTargetNode();
+				if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
+					out.push_back({&_node->data(), _edge});
+				}
+			}
+			return out;
+		}
+
+
+		/**
+		 * Returns a typed list of agents that are in neighbors of the current
+		 * agent.
+		 *
+		 * Agents are added to the list if and only if :
+		 * 1. they are contained in a node that is an in neighbor of this
+		 * agent's node
+		 * 2. they can be cast to `NeighborAgentType`
+		 *
+		 * @return in neighbor agents
+		 *
+		 * @see api::graph::Node::inNeighbors()
+		 */
+		template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors() const {
+			std::vector<Neighbor<NeighborAgentType>> in;
+			for(api::model::AgentEdge* _edge : node()->getIncomingEdges()) {
+				api::model::AgentNode* _node = _edge->getSourceNode();
+				if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
+					in.push_back({&_node->data(), _edge});
+				}
+			}
+			return in;
+		}
+
+		/**
+		 * Returns a typed list of agents that are in neighbors of the current
+		 * agent on the given layer.
+		 *
+		 * Agents are added to the list if and only if :
+		 * 1. they are contained in a node that is an in neighbor of this
+		 * agent's node, connected on the specified layer
+		 * 2. they can be cast to `NeighborAgentType`
+		 *
+		 * @return in neighbor agents
+		 *
+		 * @see api::graph::Node::inNeighbors()
+		 */
+		template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors(api::graph::LayerId layer) const {
+			std::vector<Neighbor<NeighborAgentType>> in;
+			for(api::model::AgentEdge* _edge : node()->getIncomingEdges(layer)) {
+				api::model::AgentNode* _node = _edge->getSourceNode();
+				if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
+					in.push_back({&_node->data(), _edge});
+				}
+			}
+			return in;
+		}
+
+	};
+
 	/**
 	 * Base implementation of the \Agent API.
 	 *
@@ -228,7 +329,7 @@ namespace fpmas { namespace model {
 	 * behaviors.
 	 */
 	template<typename AgentType>
-	class AgentBase : public virtual api::model::Agent {
+	class AgentBase : public virtual api::model::Agent, public NeighborsAccess {
 		public:
 			static const api::model::TypeId TYPE_ID;
 
@@ -311,103 +412,7 @@ namespace fpmas { namespace model {
 			const std::unordered_map<api::model::GroupId, api::model::AgentTask*>&
 				tasks() const override { return _tasks;}
 
-			/**
-			 * Returns a typed list of agents that are out neighbors of the current
-			 * agent.
-			 *
-			 * Agents are added to the list if and only if :
-			 * 1. they are contained in a node that is an out neighbor of this
-			 * agent's node
-			 * 2. they can be cast to `NeighborAgentType`
-			 *
-			 * @return out neighbor agents
-			 *
-			 * @see api::graph::Node::outNeighbors()
-			 */
-			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors() const {
-				std::vector<Neighbor<NeighborAgentType>> out;
-				for(api::model::AgentEdge* _edge : node()->getOutgoingEdges()) {
-					api::model::AgentNode* _node = _edge->getTargetNode();
-					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						out.push_back({&_node->data(), _edge});
-					}
-				}
-				return out;
-			}
-
-			/**
-			 * Returns a typed list of agents that are out neighbors of the current
-			 * agent on the given layer.
-			 *
-			 * Agents are added to the list if and only if :
-			 * 1. they are contained in a node that is an out neighbor of this
-			 * agent's node, connected on the specified layer
-			 * 2. they can be cast to `NeighborAgentType`
-			 *
-			 * @return out neighbor agents
-			 *
-			 * @see api::graph::Node::outNeighbors()
-			 */
-			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors(api::graph::LayerId layer) const {
-				std::vector<Neighbor<NeighborAgentType>> out;
-				for(api::model::AgentEdge* _edge : node()->getOutgoingEdges(layer)) {
-					api::model::AgentNode* _node = _edge->getTargetNode();
-					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						out.push_back({&_node->data(), _edge});
-					}
-				}
-				return out;
-			}
-
-
-			/**
-			 * Returns a typed list of agents that are in neighbors of the current
-			 * agent.
-			 *
-			 * Agents are added to the list if and only if :
-			 * 1. they are contained in a node that is an in neighbor of this
-			 * agent's node
-			 * 2. they can be cast to `NeighborAgentType`
-			 *
-			 * @return in neighbor agents
-			 *
-			 * @see api::graph::Node::inNeighbors()
-			 */
-			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors() const {
-				std::vector<Neighbor<NeighborAgentType>> in;
-				for(api::model::AgentEdge* _edge : node()->getIncomingEdges()) {
-					api::model::AgentNode* _node = _edge->getSourceNode();
-					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						in.push_back({&_node->data(), _edge});
-					}
-				}
-				return in;
-			}
-
-			/**
-			 * Returns a typed list of agents that are in neighbors of the current
-			 * agent on the given layer.
-			 *
-			 * Agents are added to the list if and only if :
-			 * 1. they are contained in a node that is an in neighbor of this
-			 * agent's node, connected on the specified layer
-			 * 2. they can be cast to `NeighborAgentType`
-			 *
-			 * @return in neighbor agents
-			 *
-			 * @see api::graph::Node::inNeighbors()
-			 */
-			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors(api::graph::LayerId layer) const {
-				std::vector<Neighbor<NeighborAgentType>> in;
-				for(api::model::AgentEdge* _edge : node()->getIncomingEdges(layer)) {
-					api::model::AgentNode* _node = _edge->getSourceNode();
-					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						in.push_back({&_node->data(), _edge});
-					}
-				}
-				return in;
-			}
-
+			
 			/**
 			 * By default, no behavior is associated to act().
 			 *

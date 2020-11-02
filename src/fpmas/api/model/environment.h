@@ -24,6 +24,9 @@ namespace fpmas { namespace api { namespace model {
 			virtual void growMobilityRange(LocatedAgent* agent) = 0;
 			virtual void growPerceptionRange(LocatedAgent* agent) = 0;
 
+		public:
+			virtual void updateRanges() = 0;
+			virtual void updatePerceptions() = 0;
 	};
 
 	class LocatedAgent : public virtual Agent {
