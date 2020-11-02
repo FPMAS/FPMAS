@@ -35,6 +35,7 @@ namespace fpmas { namespace model {
 				 *
 				 * @param agent pointer to a generic AgentPtr
 				 */
+				[[deprecated]]
 				Neighbor(AgentPtr* agent)
 					: agent(agent) {}
 
@@ -325,9 +326,10 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> out;
-				for(api::model::AgentNode* _node : node()->outNeighbors()) {
+				for(api::model::AgentEdge* _edge : node()->getOutgoingEdges()) {
+					api::model::AgentNode* _node = _edge->getTargetNode();
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						out.push_back(&_node->data());
+						out.push_back({&_node->data(), _edge});
 					}
 				}
 				return out;
@@ -348,9 +350,10 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors(api::graph::LayerId layer) const {
 				std::vector<Neighbor<NeighborAgentType>> out;
-				for(api::model::AgentNode* _node : node()->outNeighbors(layer)) {
+				for(api::model::AgentEdge* _edge : node()->getOutgoingEdges(layer)) {
+					api::model::AgentNode* _node = _edge->getTargetNode();
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						out.push_back(&_node->data());
+						out.push_back({&_node->data(), _edge});
 					}
 				}
 				return out;
@@ -372,9 +375,10 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> in;
-				for(api::model::AgentNode* _node : node()->inNeighbors()) {
+				for(api::model::AgentEdge* _edge : node()->getIncomingEdges()) {
+					api::model::AgentNode* _node = _edge->getSourceNode();
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						in.push_back(&_node->data());
+						in.push_back({&_node->data(), _edge});
 					}
 				}
 				return in;
@@ -395,13 +399,23 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors(api::graph::LayerId layer) const {
 				std::vector<Neighbor<NeighborAgentType>> in;
-				for(api::model::AgentNode* _node : node()->inNeighbors(layer)) {
+				for(api::model::AgentEdge* _edge : node()->getIncomingEdges(layer)) {
+					api::model::AgentNode* _node = _edge->getSourceNode();
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						in.push_back(&_node->data());
+						in.push_back({&_node->data(), _edge});
 					}
 				}
 				return in;
 			}
+
+			/**
+			 * By default, no behavior is associated to act().
+			 *
+			 * Implemented Agents can override the act() method to implement a
+			 * default behavior.
+			 */
+			virtual void act() override {}
+
 			virtual ~AgentBase() {}
 	};
 	/**
