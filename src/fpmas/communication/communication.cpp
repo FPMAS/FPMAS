@@ -189,9 +189,7 @@ namespace fpmas { namespace communication {
 
 
 		int* size_buffer;
-		//int recv_size_count = 0;
 		if(getRank() == root) {
-			//recv_size_count = getSize();
 			size_buffer = (int*) std::malloc(getSize() * sizeof(int));
 		} else {
 			size_buffer = (int*) std::malloc(0);
@@ -233,6 +231,25 @@ namespace fpmas { namespace communication {
 		std::free(rdispls);
 		std::free(recv_buffer);
 		return imported_data_pack;
+	}
+
+	DataPack MpiCommunicator::bcast(DataPack data, MPI_Datatype datatype, int root) {
+		// Procs other that root don't know how many items will be received, so
+		// we broadcast items count from root first
+		int count = data.count;
+		MPI_Bcast(&count, 1, MPI_INT, root, this->comm);
+
+		// Allocates the in/out buffer used by MPI_Bcast
+		int type_size;
+		MPI_Type_size(datatype, &type_size);
+		DataPack in_out_data(count, type_size);
+		// At root, we need to copy data to in/out buffer. On other procs, this
+		// operation is useless
+		if(this->getRank() == root)
+			std::memcpy(in_out_data.buffer, data.buffer, data.size);
+
+		MPI_Bcast(in_out_data.buffer, count, datatype, root, this->comm);
+		return in_out_data;
 	}
 
 	void MpiCommunicator::barrier() {

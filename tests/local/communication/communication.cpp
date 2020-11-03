@@ -83,7 +83,7 @@ TEST_F(MpiTest, gather_int_root) {
 	TypedMpi<int> mpi {comm};
 	int local_data = 2;
 
-	// Normally, exactly one item is resized by proc (8 in this case), but not
+	// Normally, exactly one item is received by proc (8 in this case), but not
 	// important in the context of this test.
 	std::vector<fpmas::communication::DataPack> import = {
 		buildDataPack("2"),
@@ -98,6 +98,17 @@ TEST_F(MpiTest, gather_int_root) {
 	std::vector<int> recv = mpi.gather(local_data, 4);
 
 	ASSERT_THAT(recv, ElementsAre(2, 4, 1, 3));
+}
+
+TEST_F(MpiTest, bcast_int) {
+	TypedMpi<int> mpi {comm};
+	int export_int = 8;
+
+	auto recv = buildDataPack("8");
+	EXPECT_CALL(comm, bcast(buildDataPack("8"), MPI_CHAR, 2))
+		.WillOnce(Return(recv));
+
+	mpi.bcast(export_int, 2);
 }
 
 struct FakeType {

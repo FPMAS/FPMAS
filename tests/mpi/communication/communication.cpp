@@ -55,7 +55,7 @@ TEST(MpiCommunicatorTest, probe_any_source) {
 	}
 }
 
-TEST(MpiMigrationTest, simple_migration_test) {
+TEST(TypedMpiTest, simple_migration_test) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 	
@@ -76,7 +76,7 @@ TEST(MpiMigrationTest, simple_migration_test) {
 // Each proc :
 //   - sends the same amount of data to all others
 //   - receives different amount of data from each proc
-TEST(MpiMigrationTest, variable_recv_size_migration) {
+TEST(TypedMpiTest, variable_recv_size_migration) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 
@@ -101,7 +101,7 @@ TEST(MpiMigrationTest, variable_recv_size_migration) {
 // Each proc: 
 //   - sends different amount of data to each proc
 //   - receives the same amount of data from other
-TEST(MpiMigrationTest, variable_send_size_migration) {
+TEST(TypedMpiTest, variable_send_size_migration) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 
@@ -127,7 +127,7 @@ TEST(MpiMigrationTest, variable_send_size_migration) {
 	}
 }
 
-TEST(MpiGatherTest, gather) {
+TEST(TypedMpiTest, gather) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 
@@ -144,7 +144,20 @@ TEST(MpiGatherTest, gather) {
 	}
 }
 
-TEST(MpiIssendTest, edge_case) {
+TEST(TypedMpiTest, bcast) {
+	MpiCommunicator comm;
+	TypedMpi<int> mpi {comm};
+
+	int local_data;
+	FPMAS_ON_PROC(comm, comm.getSize()-1)
+		local_data = 10;
+
+	int data = mpi.bcast(local_data, comm.getSize()-1);
+
+	ASSERT_EQ(data, 10);
+}
+
+TEST(TypedMpiTest, issend_edge_case) {
 	MpiCommunicator comm;
 	std::string data;
 	// Generates a long string

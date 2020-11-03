@@ -418,6 +418,8 @@ namespace fpmas { namespace api { namespace communication {
 			virtual std::vector<DataPack>
 				gather(DataPack data, MPI_Datatype datatype, int root) = 0;
 
+			virtual DataPack bcast(DataPack data, MPI_Datatype datatype, int root) = 0;
+
 			/**
 			 * Defines a synchronization barrier.
 			 *
@@ -471,6 +473,8 @@ namespace fpmas { namespace api { namespace communication {
 				 */
 				virtual std::vector<T>
 					gather(const T& data, int root) = 0;
+
+				virtual T bcast(const T& data, int root) = 0;
 
 				/**
 				 * Sends a `T` object to `destination`.

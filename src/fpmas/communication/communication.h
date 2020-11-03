@@ -195,6 +195,7 @@ namespace fpmas { namespace communication {
 			std::vector<DataPack>
 				gather(DataPack data, MPI_Datatype datatype, int root) override;
 
+			DataPack bcast(DataPack data, MPI_Datatype datatype, int root) override;
 			
 			/**
 			 * Performs an MPI_Barrier operation.
@@ -261,6 +262,7 @@ namespace fpmas { namespace communication {
 				std::unordered_map<int, std::vector<T>>
 					migrate(std::unordered_map<int, std::vector<T>> exportMap) override;
 				std::vector<T> gather(const T&, int root) override;
+				T bcast(const T&, int root) override;
 
 				void send(const T&, int, int) override;
 				void Issend(const T&, int, int, Request&) override;
@@ -315,6 +317,20 @@ namespace fpmas { namespace communication {
 				import_data.push_back(nlohmann::json::parse(import).get<T>());
 			}
 			return import_data;
+		}
+
+	template<typename T> T
+		TypedMpi<T>::bcast(const T& data, int root) {
+			std::string str = nlohmann::json(data).dump();
+			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Bcast JSON to root %i : %s", root, str.c_str());
+
+			DataPack data_pack (str.size(), sizeof(char));
+			std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
+
+			DataPack recv_data = comm.bcast(data_pack, MPI_CHAR, root);
+			std::string recv = std::string((char*) recv_data.buffer, recv_data.count);
+
+			return nlohmann::json::parse(recv).get<T>();
 		}
 
 	template<typename T>
