@@ -16,6 +16,8 @@ namespace environment {
 			NiceMock<MockLocatedAgent>* mock_located_agent = new NiceMock<MockLocatedAgent>;
 			NiceMock<MockDistributedNode<AgentPtr>> agent_node {_id_, fpmas::model::AgentPtr(mock_located_agent)};
 			NaggyMock<MockDistributedEdge<AgentPtr>> agent_edge;
+			MockRange mock_mobility_range;
+			MockRange mock_perception_range;
 
 			NiceMock<MockDistributedNode<AgentPtr>> cell_node;
 
@@ -46,6 +48,11 @@ namespace environment {
 
 				cell_neighbor_1_edge.setTargetNode(&cell_neighbor_1_node);
 				cell_neighbor_2_edge.setTargetNode(&cell_neighbor_2_node);
+
+				ON_CALL(*mock_located_agent, mobilityRange)
+					.WillByDefault(ReturnRef(mock_mobility_range));
+				ON_CALL(*mock_located_agent, perceptionRange)
+					.WillByDefault(ReturnRef(mock_perception_range));
 			}
 
 	};
@@ -57,17 +64,17 @@ namespace environment {
 			}
 
 			void rangeSetUp(bool move_to_new_location, bool perceive_new_location) {
-				EXPECT_CALL(*mock_located_agent, isInMobilityRange(this))
+				EXPECT_CALL(mock_mobility_range, contains(this))
 					.WillRepeatedly(Return(move_to_new_location));
-				EXPECT_CALL(*mock_located_agent, isInMobilityRange(cell_neighbor_1))
+				EXPECT_CALL(mock_mobility_range, contains(cell_neighbor_1))
 					.WillRepeatedly(Return(false));
-				EXPECT_CALL(*mock_located_agent, isInMobilityRange(cell_neighbor_2))
+				EXPECT_CALL(mock_mobility_range, contains(cell_neighbor_2))
 					.WillRepeatedly(Return(true));
-				EXPECT_CALL(*mock_located_agent, isInPerceptionRange(this))
+				EXPECT_CALL(mock_perception_range, contains(this))
 					.WillRepeatedly(Return(perceive_new_location));
-				EXPECT_CALL(*mock_located_agent, isInPerceptionRange(cell_neighbor_1))
+				EXPECT_CALL(mock_perception_range, contains(cell_neighbor_1))
 					.WillRepeatedly(Return(true));
-				EXPECT_CALL(*mock_located_agent, isInPerceptionRange(cell_neighbor_2))
+				EXPECT_CALL(mock_perception_range, contains(cell_neighbor_2))
 					.WillRepeatedly(Return(false));
 			}
 	};

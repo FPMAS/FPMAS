@@ -4,7 +4,7 @@ namespace fpmas {
 	namespace model {
 		namespace detail {
 
-			DefaultBehavior AgentGroup::default_behavior;
+			const DefaultBehavior AgentGroup::default_behavior;
 
 			void InsertAgentNodeCallback::call(AgentNode *node) {
 				api::model::AgentPtr& agent = node->data();
@@ -86,6 +86,12 @@ namespace fpmas {
 				return *group;
 			}
 
+			api::model::AgentGroup& Model::buildGroup(api::model::GroupId id, const api::model::Behavior& behavior) {
+				api::model::AgentGroup* group = new AgentGroup(id, _graph, behavior);
+				_groups.insert({id, group}); 
+				return *group;
+			}
+
 			AgentEdge* Model::link(api::model::Agent *src_agent, api::model::Agent *tgt_agent, api::graph::LayerId layer) {
 				return _graph.link(src_agent->node(), tgt_agent->node(), layer);
 			}
@@ -105,7 +111,7 @@ namespace fpmas {
 			AgentGroup::AgentGroup(
 					api::model::GroupId group_id,
 					api::model::AgentGraph& agent_graph,
-					api::model::Behavior& behavior)
+					const api::model::Behavior& behavior)
 				: id(group_id), agent_graph(agent_graph), _job(), sync_graph_task(agent_graph), _behavior(behavior) {
 					_job.setEndTask(sync_graph_task);
 				}

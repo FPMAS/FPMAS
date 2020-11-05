@@ -327,7 +327,7 @@ namespace fpmas { namespace api {namespace model {
 
 	class Behavior {
 		public:
-			virtual void execute(Agent*) = 0;
+			virtual void execute(Agent*) const = 0;
 
 			virtual ~Behavior(){}
 	};
@@ -356,7 +356,7 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual GroupId groupId() const = 0;
 
-			virtual Behavior& behavior() = 0;
+			virtual const Behavior& behavior() = 0;
 
 			/**
 			 * Adds a new Agent to this group.
@@ -544,6 +544,8 @@ namespace fpmas { namespace api {namespace model {
 			 * ```
 			 */
 			virtual AgentGroup& buildGroup(GroupId id) = 0;
+
+			virtual AgentGroup& buildGroup(GroupId id, const Behavior& behavior) = 0;
 
 			/**
 			 * Gets a reference to an AgentGroup previously created with

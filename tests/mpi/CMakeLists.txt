@@ -8,6 +8,8 @@ set(SOURCES
 	synchro/hard/termination.cpp
 	synchro/hard/hard_sync_mode.cpp
 	model/model.cpp
+	model/environment.cpp
+	model/test_agents.cpp
 	)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})

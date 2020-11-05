@@ -211,7 +211,7 @@ namespace fpmas { namespace model {
 				Behavior(void(T::*behavior)())
 					: behavior(behavior) {}
 
-				void execute(api::model::Agent* agent) {
+				void execute(api::model::Agent* agent) const {
 					(dynamic_cast<T*>(agent)->*behavior)();
 				}
 		};

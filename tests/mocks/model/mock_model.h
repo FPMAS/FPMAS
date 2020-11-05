@@ -110,6 +110,7 @@ class MockModel : public fpmas::api::model::Model {
 		MOCK_METHOD(const fpmas::api::scheduler::Job&, loadBalancingJob, (), (const, override));
 
 		MOCK_METHOD(fpmas::api::model::AgentGroup&, buildGroup, (fpmas::api::model::GroupId), (override));
+		MOCK_METHOD(fpmas::api::model::AgentGroup&, buildGroup, (fpmas::api::model::GroupId, const fpmas::api::model::Behavior&), (override));
 		MOCK_METHOD(fpmas::api::model::AgentGroup&, getGroup, (fpmas::api::model::GroupId), (const, override));
 
 		MOCK_METHOD((const std::unordered_map<fpmas::api::model::GroupId, fpmas::api::model::AgentGroup*>&),

@@ -20,7 +20,7 @@ namespace fpmas {
 
 		class DefaultBehavior : public api::model::Behavior {
 			public:
-				void execute(api::model::Agent* agent) override {
+				void execute(api::model::Agent* agent) const override {
 					agent->act();
 				}
 		};
@@ -70,10 +70,10 @@ namespace fpmas {
 
 			class AgentBehaviorTask : public AgentTaskBase {
 				private:
-					api::model::Behavior& behavior;
+					const api::model::Behavior& behavior;
 
 				public:
-					AgentBehaviorTask(api::model::Behavior& behavior, api::model::AgentPtr& agent)
+					AgentBehaviorTask(const api::model::Behavior& behavior, api::model::AgentPtr& agent)
 						: AgentTaskBase(agent), behavior(behavior) {}
 
 					void run() override {
@@ -321,8 +321,8 @@ namespace fpmas {
 				detail::SynchronizeGraphTask sync_graph_task;
 				std::vector<api::model::AgentPtr*> _agents;
 
-				static DefaultBehavior default_behavior;
-				api::model::Behavior& _behavior;
+				static const DefaultBehavior default_behavior;
+				const api::model::Behavior& _behavior;
 
 				public:
 				/**
@@ -336,13 +336,13 @@ namespace fpmas {
 				AgentGroup(
 						api::model::GroupId group_id,
 						api::model::AgentGraph& agent_graph,
-						api::model::Behavior& behavior);
+						const api::model::Behavior& behavior);
 
 				AgentGroup& operator=(const AgentGroup&) = delete;
 				AgentGroup& operator=(AgentGroup&&) = delete;
 
 				api::model::GroupId groupId() const override {return id;}
-				api::model::Behavior& behavior() override {return _behavior;}
+				const api::model::Behavior& behavior() override {return _behavior;}
 
 				void add(api::model::Agent*) override;
 				void remove(api::model::Agent*) override;
@@ -406,6 +406,7 @@ namespace fpmas {
 					const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
 					api::model::AgentGroup& buildGroup(api::model::GroupId id) override;
+					api::model::AgentGroup& buildGroup(api::model::GroupId id, const api::model::Behavior& behavior) override;
 					api::model::AgentGroup& getGroup(api::model::GroupId id) const override;
 					const std::unordered_map<api::model::GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
 

@@ -25,8 +25,15 @@ namespace fpmas { namespace api { namespace model {
 			virtual void growPerceptionRange(LocatedAgent* agent) = 0;
 
 		public:
+			virtual std::vector<Cell*> neighborhood() = 0;
 			virtual void updateRanges() = 0;
 			virtual void updatePerceptions() = 0;
+	};
+
+	class Range {
+		public:
+			virtual unsigned int size() const = 0;
+			virtual bool contains(Cell* cell) const = 0;
 	};
 
 	class LocatedAgent : public virtual Agent {
@@ -34,20 +41,22 @@ namespace fpmas { namespace api { namespace model {
 			virtual void moveToCell(Cell*) = 0;
 
 			virtual Cell* location() = 0;
-			virtual unsigned int mobilityRange() = 0;
-			virtual bool isInMobilityRange(Cell*) = 0;
-			virtual unsigned int perceptionRange() = 0;
-			virtual bool isInPerceptionRange(Cell*) = 0;
+			virtual const Range& mobilityRange() const = 0;
+			virtual const Range& perceptionRange() const = 0;
 	};
 
 	class Environment {
 		public:
-			virtual api::scheduler::JobList jobs(
+			virtual void add(std::vector<Cell*> cells) = 0;
+			virtual std::vector<Cell*> localCells() = 0;
+
+			virtual api::scheduler::JobList initLocationAlgorithm(
+					unsigned int max_perception_range,
+					unsigned int max_mobility_range) = 0;
+			virtual api::scheduler::JobList distributedMoveAlgorithm(
 					const AgentGroup& movable_agents,
 					unsigned int max_perception_range,
 					unsigned int max_mobility_range) = 0;
-
-			virtual AgentGroup& cells() = 0;
 
 	};
 

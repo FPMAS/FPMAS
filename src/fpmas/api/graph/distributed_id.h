@@ -51,7 +51,7 @@ namespace fpmas { namespace api { namespace graph {
 	class DistributedId {
 		friend nlohmann::adl_serializer<DistributedId>;
 		friend std::ostream& operator<<(std::ostream& os, const DistributedId& id) {
-			os << std::string(id);
+			os << (std::string) id;
 			return os;
 		}
 
@@ -168,10 +168,12 @@ namespace fpmas { namespace api { namespace graph {
 
 			/**
 			 * std::string conversion.
+			 *
 			 */
+			//TODO: Removes this in 2.0 (conflicts with nlohmann::json, when
+			//declaring std::map<DistributedId, _>)
 			operator std::string() const {
 				return "[" + std::to_string(_rank) + ":" + std::to_string(_id) + "]";
-
 			}
 
 			/**
@@ -231,9 +233,10 @@ namespace std {
 	};
 }
 
-using fpmas::api::graph::DistributedId;
 
 namespace nlohmann {
+	using fpmas::api::graph::DistributedId;
+
 	template<>
 		/**
 		 * DistributedId serializer.
@@ -262,6 +265,26 @@ namespace nlohmann {
 						j[0].get<int>(),
 						j[1].get<unsigned int>()
 						);
+			}
+		};
+
+	/*
+	 * temporary hack to solve the DistributedId std::string conversion issue
+	 */
+	template<typename Value, typename Hash, typename Equal, typename Alloc>
+		struct adl_serializer<std::unordered_map<DistributedId, Value, Hash, Equal, Alloc>> {
+			typedef std::unordered_map<DistributedId, Value, Hash, Equal, Alloc> Map;
+			static void to_json(json& j, const Map& map) {
+				for(auto item : map)
+					j[json(item.first).dump()] = json(item.second);
+			}
+
+			static void from_json(const json& j, Map& map) {
+				for(auto item : j.items()) {
+					map.insert({
+							json::parse(item.key()).get<DistributedId>(),
+							item.value().get<Value>()});
+				}
 			}
 		};
 }

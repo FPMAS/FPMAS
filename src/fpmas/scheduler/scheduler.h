@@ -31,15 +31,41 @@ namespace fpmas { namespace scheduler {
 			void run() override {};
 	};
 
+	namespace detail {
+		// TODO 2.0: put this in fpmas::scheduler, rename
+		// fpmas::scheduler::LambdaTask
+		class LambdaTask : public api::scheduler::Task {
+			private:
+				std::function<void()> fct;
+
+			public:
+				/**
+				 * LambdaTask constructor.
+				 *
+				 * The specified lambda function must have a `void ()` signature.
+				 *
+				 * @tparam automatically deduced lambda function type
+				 * @param lambda_fct void() lambda function, that will be run by
+				 * the task 
+				 */
+				template<typename Lambda_t>
+					LambdaTask(Lambda_t&& lambda_fct)
+					: fct(lambda_fct) {}
+
+				void run() override {
+					fct();
+				}
+		};
+	}
+
 	/**
 	 * A NodeTask that can be initialized from a lambda function.
 	 *
 	 * Used by the FPMAS_NODE_TASK() macro.
 	 */
 	template<typename T>
-	class LambdaTask : public api::scheduler::NodeTask<T> {
+	class LambdaTask : public api::scheduler::NodeTask<T>, public detail::LambdaTask {
 		private:
-			std::function<void()> fct;
 			api::graph::DistributedNode<T>* _node;
 		public:
 			/**
@@ -56,14 +82,10 @@ namespace fpmas { namespace scheduler {
 				LambdaTask(
 						api::graph::DistributedNode<T>* node,
 						Lambda_t&& lambda_fct)
-				: _node(node), fct(lambda_fct) {}
+				: _node(node), detail::LambdaTask(lambda_fct) {}
 
 			api::graph::DistributedNode<T>* node() override {
 				return _node;
-			}
-
-			void run() override {
-				fct();
 			}
 	};
 
