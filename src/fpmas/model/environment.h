@@ -25,7 +25,7 @@ namespace fpmas {
 
 		public:
 			std::vector<api::model::Cell*> neighborhood() override;
-			void updateRanges() override;
+			void growRanges() override;
 			void updatePerceptions() override;
 
 	};
@@ -39,19 +39,18 @@ namespace fpmas {
 
 	enum CellGroups : api::model::GroupId {
 		CELL_UPDATE_RANGES = -1,
-		CELL_UPDATE_PERCEPTIONS = -2
+		CELL_UPDATE_PERCEPTIONS = -2,
+		AGENT_CROP_RANGES = -3,
 	};
 
 	class Environment : public api::model::Environment {
 		private:
-			Behavior<api::model::Cell> update_ranges {
-				&api::model::Cell::updateRanges};
-			Behavior<api::model::Cell> update_perceptions {
-				&api::model::Cell::updatePerceptions};
-
 			AgentGroup& update_ranges_group;
 			Behavior<api::model::Cell> update_ranges_behavior {
-				&api::model::Cell::updateRanges};
+				&api::model::Cell::growRanges};
+			AgentGroup& crop_ranges_group;
+			Behavior<api::model::LocatedAgent> crop_ranges_behavior {
+				&api::model::LocatedAgent::cropRanges};
 			AgentGroup& update_perceptions_group;
 			Behavior<api::model::Cell> update_perceptions_behavior {
 				&api::model::Cell::updatePerceptions};
@@ -59,6 +58,7 @@ namespace fpmas {
 		public:
 			Environment(api::model::Model& model);
 
+			void add(std::vector<api::model::LocatedAgent*> agents) override;
 			void add(std::vector<api::model::Cell*> cells) override;
 			std::vector<api::model::Cell*> localCells() override;
 
@@ -76,9 +76,35 @@ namespace fpmas {
 	template<typename AgentType>
 	class LocatedAgent :
 		public api::model::LocatedAgent, public model::AgentBase<AgentType> {
+			private:
+				class CurrentOutLayer {
+					private:
+						LocatedAgent* agent;
+						fpmas::graph::LayerId layer_id;
+						std::set<DistributedId> current_layer_ids;
+
+					public:
+						CurrentOutLayer(LocatedAgent* agent, fpmas::graph::LayerId layer_id)
+							: agent(agent), layer_id(layer_id) {
+							auto layer = agent->node()->outNeighbors(layer_id);
+							for(auto node : layer)
+								current_layer_ids.insert(node->getId());
+						}
+
+						bool contains(fpmas::api::model::Agent* agent) {
+							return current_layer_ids.count(agent->node()->getId()) > 0;
+						}
+
+						void link(fpmas::api::model::Agent* cell) {
+							current_layer_ids.insert(cell->node()->getId());
+							agent->model()->link(agent, cell, layer_id);
+						}
+				};
 			public:
 				void moveToCell(api::model::Cell* cell) override;
 				api::model::Cell* location() override;
+
+				void cropRanges() override;
 	};
 
 	template<typename AgentType>
@@ -102,6 +128,14 @@ namespace fpmas {
 			for(auto agent : this->template outNeighbors<api::model::Agent>(
 						EnvironmentLayers::PERCEPTION))
 				this->model()->unlink(agent.edge());
+
+			// Adds the NEW_LOCATION to the mobility/perceptions fields
+			// depending on the current ranges
+			if(this->mobilityRange().contains(cell, cell))
+				this->model()->link(this, cell, EnvironmentLayers::MOVE);
+			if(this->perceptionRange().contains(cell, cell)) {
+				this->model()->link(this, cell, EnvironmentLayers::PERCEIVE);
+			}
 		}
 
 	template<typename AgentType>
@@ -113,6 +147,29 @@ namespace fpmas {
 			return nullptr;
 		}
 
+	template<typename AgentType>
+		void LocatedAgent<AgentType>::cropRanges() {
+
+			CurrentOutLayer move_layer(this, EnvironmentLayers::MOVE);
+
+			for(auto cell : this->template outNeighbors<api::model::Cell>(
+						EnvironmentLayers::NEW_MOVE)) {
+				if(!move_layer.contains(cell)
+						&& this->mobilityRange().contains(this->location(), cell))
+					move_layer.link(cell);
+				this->model()->unlink(cell.edge());
+			}
+
+			CurrentOutLayer perceive_layer(this, EnvironmentLayers::PERCEIVE);
+
+			for(auto cell : this->template outNeighbors<api::model::Cell>(
+						EnvironmentLayers::NEW_PERCEIVE)) {
+				if(!perceive_layer.contains(cell)
+						&& this->perceptionRange().contains(this->location(), cell))
+					perceive_layer.link(cell);
+				this->model()->unlink(cell.edge());
+			}
+		}
 }}
 
 FPMAS_DEFAULT_JSON(fpmas::model::DefaultCell)

@@ -26,14 +26,14 @@ namespace fpmas { namespace api { namespace model {
 
 		public:
 			virtual std::vector<Cell*> neighborhood() = 0;
-			virtual void updateRanges() = 0;
+			virtual void growRanges() = 0;
 			virtual void updatePerceptions() = 0;
 	};
 
 	class Range {
 		public:
 			virtual unsigned int size() const = 0;
-			virtual bool contains(Cell* cell) const = 0;
+			virtual bool contains(Cell* root, Cell* cell) const = 0;
 	};
 
 	class LocatedAgent : public virtual Agent {
@@ -43,10 +43,13 @@ namespace fpmas { namespace api { namespace model {
 			virtual Cell* location() = 0;
 			virtual const Range& mobilityRange() const = 0;
 			virtual const Range& perceptionRange() const = 0;
+
+			virtual void cropRanges() = 0;
 	};
 
 	class Environment {
 		public:
+			virtual void add(std::vector<LocatedAgent*> agents) = 0;
 			virtual void add(std::vector<Cell*> cells) = 0;
 			virtual std::vector<Cell*> localCells() = 0;
 

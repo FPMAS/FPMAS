@@ -133,23 +133,43 @@ class TestCell : public fpmas::model::Cell<TestCell> {
 };
 
 class FakeRange : public fpmas::api::model::Range {
+	private:
+		unsigned int _size;
+		unsigned int num_cells_in_ring;
 	public:
+		FakeRange(unsigned int _size, unsigned int num_cells_in_ring)
+			: _size(_size), num_cells_in_ring(num_cells_in_ring) {}
+
 		unsigned int size() const override {
-			return 1;
+			return _size;
 		}
 
-		bool contains(fpmas::api::model::Cell* cell) const override {
-			return true;
+		bool contains(fpmas::api::model::Cell* root, fpmas::api::model::Cell* cell) const override {
+			int root_index = static_cast<TestCell*>(root)->index;
+			int cell_index = static_cast<TestCell*>(cell)->index;
+			unsigned int distance = std::abs(cell_index - root_index);
+			if(distance > num_cells_in_ring / 2)
+				distance = num_cells_in_ring-distance;
+			if(distance <= size())
+				return true;
+			return false;
 		}
 };
 
 class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent> {
 	private:
+		unsigned int range_size;
+		unsigned int num_cells_in_ring;
 		FakeRange mobility_range;
 		FakeRange perception_range;
 
 	public:
 		static const fpmas::model::Behavior<TestLocatedAgent> behavior;
+
+		TestLocatedAgent(unsigned int range_size, unsigned int num_cells_in_ring)
+			: range_size(range_size), num_cells_in_ring(num_cells_in_ring),
+			mobility_range(range_size, num_cells_in_ring),
+			perception_range(range_size, num_cells_in_ring) {}
 
 		const fpmas::api::model::Range& mobilityRange() const override {
 			return mobility_range;
@@ -169,11 +189,21 @@ class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent> {
 			int next_index = (current_index+1) % this->model()->graph().getMpiCommunicator().getSize();
 			moveToCell(cell_index[next_index]);
 		}
+
+		static void to_json(nlohmann::json& j, const TestLocatedAgent* agent) {
+			j = {{"r", agent->range_size}, {"n", agent->num_cells_in_ring}};
+		}
+
+		static TestLocatedAgent* from_json(const nlohmann::json& j) {
+			return new TestLocatedAgent(
+					j.at("r").get<unsigned int>(),
+					j.at("n").get<unsigned int>()
+					);
+		}
 };
 
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>)
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
-FPMAS_DEFAULT_JSON(TestLocatedAgent)
 
 #define TEST_AGENTS ReaderAgent, WriterAgent, LinkerAgent,\
 		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\

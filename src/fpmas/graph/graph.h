@@ -85,8 +85,8 @@ namespace fpmas { namespace graph {
 	template<typename NodeType, typename EdgeType>
 		void Graph<NodeType, EdgeType>::insert(EdgeType* edge) {
 			FPMAS_LOGD(
-					-1, "GRAPH", "Insert edge %s (%p) (from %s to %s)",
-					FPMAS_C_STR(edge->getId()), edge,
+					-1, "GRAPH", "Insert edge %s-{%i} (%p) (from %s to %s)",
+					FPMAS_C_STR(edge->getId()), edge->getLayer(), edge,
 					FPMAS_C_STR(edge->getSourceNode()->getId()),
 					FPMAS_C_STR(edge->getTargetNode()->getId())
 					);
@@ -135,8 +135,8 @@ namespace fpmas { namespace graph {
 		void Graph<NodeType, EdgeType>::erase(EdgeType* edge) {
 			auto id = edge->getId();
 			FPMAS_LOGD(
-					-1, "GRAPH", "Erase edge %s (%p) (from %s to %s)",
-					FPMAS_C_STR(id), edge,
+					-1, "GRAPH", "Erase edge %s-{%i} (%p) (from %s to %s)",
+					FPMAS_C_STR(id), edge->getLayer(), edge,
 					FPMAS_C_STR(edge->getSourceNode()->getId()),
 					FPMAS_C_STR(edge->getTargetNode()->getId())
 					);

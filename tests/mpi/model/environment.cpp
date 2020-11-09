@@ -7,16 +7,23 @@
 
 using namespace testing;
 
-class EnvironmentTest : public ::testing::Test {
-	public:
-		fpmas::model::Model<fpmas::synchro::GhostMode> model;
+template<template<typename> class SYNC_MODE>
+class EnvironmentTestBase : public ::testing::Test {
+	protected:
+		unsigned int range_size;
+		fpmas::model::Model<SYNC_MODE> model;
 		fpmas::model::Environment environment {model};
 		fpmas::model::AgentGroup& agent_group {model.buildGroup(0, TestLocatedAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
 		std::unordered_map<int, fpmas::api::graph::DistributedId> index_to_agent_id;
 
+		int num_cells_in_ring {model.getMpiCommunicator().getSize()};
+
 		fpmas::scheduler::detail::LambdaTask check_model_task {[&]() -> void {this->checkModelState();}};
 		fpmas::scheduler::Job check_model_job {check_model_task};
+
+		EnvironmentTestBase(int range_size)
+			: range_size(range_size) {}
 
 		void SetUp() override {
 			fpmas::graph::PartitionMap partition;
@@ -25,7 +32,7 @@ class EnvironmentTest : public ::testing::Test {
 				std::vector<fpmas::api::model::LocatedAgent*> agents;
 				for(int i = 0; i < model.getMpiCommunicator().getSize(); i++) {
 					auto cell = new TestCell(i);
-					auto agent = new TestLocatedAgent;
+					auto agent = new TestLocatedAgent(range_size, num_cells_in_ring);
 					cells.push_back(cell);
 					agents.push_back(agent);
 
@@ -34,6 +41,7 @@ class EnvironmentTest : public ::testing::Test {
 					index_to_agent_id[i] = agent->node()->getId();
 				}
 
+				environment.add(agents);
 				environment.add(cells);
 				for(std::size_t i = 0; i < cells.size(); i++) {
 					agents[i]->moveToCell(cells[i]);
@@ -41,19 +49,16 @@ class EnvironmentTest : public ::testing::Test {
 					partition[cells[i]->node()->getId()] = i;
 				}
 
-				for(std::size_t i = 1; i < cells.size() - 1; i++) {
-					model.link(cells[i], cells[i-1], fpmas::api::model::NEIGHBOR_CELL);
-					model.link(cells[i], cells[i+1], fpmas::api::model::NEIGHBOR_CELL);
-				}
-				if(cells.size() > 1) {
-					if(cells.size() == 2) {
-						model.link(cells[0], cells[1], fpmas::api::model::NEIGHBOR_CELL);
-						model.link(cells[1], cells[0], fpmas::api::model::NEIGHBOR_CELL);
+				int comm_size = model.getMpiCommunicator().getSize();
+				if(comm_size > 1) {
+					if(comm_size > 2) {
+						for(std::size_t i = 0; i < cells.size(); i++) {
+							model.link(cells[i % comm_size], cells[(comm_size+i-1)%comm_size], fpmas::api::model::NEIGHBOR_CELL);
+							model.link(cells[i % comm_size], cells[(i+1) % comm_size], fpmas::api::model::NEIGHBOR_CELL);
+						}
 					} else {
 						model.link(cells[0], cells[1], fpmas::api::model::NEIGHBOR_CELL);
-						model.link(cells[0], cells[cells.size()-1], fpmas::api::model::NEIGHBOR_CELL);
-						model.link(cells[cells.size()-1], cells[cells.size()-2], fpmas::api::model::NEIGHBOR_CELL);
-						model.link(cells[cells.size()-1], cells[0], fpmas::api::model::NEIGHBOR_CELL);
+						model.link(cells[1], cells[0], fpmas::api::model::NEIGHBOR_CELL);
 					}
 				}
 			}
@@ -91,13 +96,15 @@ class EnvironmentTest : public ::testing::Test {
 				fpmas::api::scheduler::TimeStep step = step_f;
 				ASSERT_EQ(location->index, (agent_id_to_index[agent->node()->getId()] + step) % comm_size);
 
-				std::vector<int> expected_move_index {location->index};
+				std::set<int> expected_move_index {location->index};
 				if(comm_size > 1) {
 					if(comm_size == 2) {
-						expected_move_index.push_back((location->index+1) % comm_size);
+						expected_move_index.insert((location->index+1) % comm_size);
 					} else {
-						expected_move_index.push_back((location->index+1) % comm_size);
-						expected_move_index.push_back((comm_size + location->index-1) % comm_size);
+						for(unsigned int i = 1; i <= range_size; i++) {
+							expected_move_index.insert((location->index+i) % comm_size);
+							expected_move_index.insert((comm_size + location->index-i) % comm_size);
+						}
 					}
 				}
 
@@ -108,13 +115,15 @@ class EnvironmentTest : public ::testing::Test {
 
 				ASSERT_THAT(actual_move_index, UnorderedElementsAreArray(expected_move_index));
 
-				std::vector<int> expected_perceptions_index;
+				std::set<int> expected_perceptions_index;
 				if(comm_size > 1) {
 					if(comm_size == 2) {
-						expected_perceptions_index.push_back((location->index+1) % comm_size);
+						expected_perceptions_index.insert((location->index+1) % comm_size);
 					} else {
-						expected_perceptions_index.push_back((location->index+1) % comm_size);
-						expected_perceptions_index.push_back((comm_size + location->index-1) % comm_size);
+						for(unsigned int i = 1; i <= range_size; i++) {
+							expected_perceptions_index.insert((location->index+i) % comm_size);
+							expected_perceptions_index.insert((comm_size + location->index-i) % comm_size);
+						}
 					}
 				}
 				std::vector<int> actual_perceptions_index;
@@ -128,19 +137,78 @@ class EnvironmentTest : public ::testing::Test {
 				ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::NEW_PERCEIVE), IsEmpty());
 			}
 		}
+
+		void testInit() {
+			model.scheduler().schedule(0, environment.initLocationAlgorithm(1, 1));
+			model.runtime().run(1);
+
+			checkModelState();
+		}
+
+		void testDistributedMoveAlgorithm() {
+			model.scheduler().schedule(0, environment.initLocationAlgorithm(1, 1));
+			model.scheduler().schedule(1, 1, environment.distributedMoveAlgorithm(agent_group, 1, 1));
+			model.scheduler().schedule(0.1, 1, check_model_job);
+
+			model.runtime().run(3 * model.getMpiCommunicator().getSize());
+		}
 };
 
-TEST_F(EnvironmentTest, init_location_test) {
-	model.scheduler().schedule(0, environment.initLocationAlgorithm(1, 1));
-	model.runtime().run(1);
+typedef EnvironmentTestBase<fpmas::synchro::GhostMode> EnvironmentTest_GhostMode;
+typedef EnvironmentTestBase<fpmas::synchro::HardSyncMode> EnvironmentTest_HardSyncMode;
 
-	checkModelState();
+class EnvironmentTest_GhostMode_SimpleRange : public EnvironmentTest_GhostMode {
+	protected:
+		EnvironmentTest_GhostMode_SimpleRange()
+			: EnvironmentTest_GhostMode(1) {}
+};
+
+TEST_F(EnvironmentTest_GhostMode_SimpleRange, init_location_test) {
+	testInit();
 }
 
-TEST_F(EnvironmentTest, distributed_move_algorithm) {
-	model.scheduler().schedule(0, environment.initLocationAlgorithm(1, 1));
-	model.scheduler().schedule(1, 1, environment.distributedMoveAlgorithm(agent_group, 1, 1));
-	model.scheduler().schedule(0.1, 1, check_model_job);
+TEST_F(EnvironmentTest_GhostMode_SimpleRange, distributed_move_algorithm) {
+	testDistributedMoveAlgorithm();
+}
 
-	model.runtime().run(3);
+class EnvironmentTest_HardSyncMode_SimpleRange : public EnvironmentTest_HardSyncMode {
+	protected:
+		EnvironmentTest_HardSyncMode_SimpleRange()
+			: EnvironmentTest_HardSyncMode(1) {}
+};
+
+TEST_F(EnvironmentTest_HardSyncMode_SimpleRange, init_location_test) {
+	testInit();
+}
+
+TEST_F(EnvironmentTest_HardSyncMode_SimpleRange, distributed_move_algorithm) {
+	testDistributedMoveAlgorithm();
+}
+
+class EnvironmentTest_GhostMode_ComplexRange : public EnvironmentTest_GhostMode {
+	protected:
+		EnvironmentTest_GhostMode_ComplexRange()
+			: EnvironmentTest_GhostMode(2) {}
+};
+
+TEST_F(EnvironmentTest_GhostMode_ComplexRange, init_location_test) {
+	testInit();
+}
+
+TEST_F(EnvironmentTest_GhostMode_ComplexRange, distributed_move_algorithm) {
+	testDistributedMoveAlgorithm();
+}
+
+class EnvironmentTest_HardSyncMode_ComplexRange : public EnvironmentTest_HardSyncMode {
+	protected:
+		EnvironmentTest_HardSyncMode_ComplexRange()
+			: EnvironmentTest_HardSyncMode(2) {}
+};
+
+TEST_F(EnvironmentTest_HardSyncMode_ComplexRange, init_location_test) {
+	testInit();
+}
+
+TEST_F(EnvironmentTest_HardSyncMode_ComplexRange, distributed_move_algorithm) {
+	testDistributedMoveAlgorithm();
 }

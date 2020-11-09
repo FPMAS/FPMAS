@@ -13,63 +13,63 @@ namespace fpmas {
 		}
 
 		void CellBase::updateLocation(api::model::Neighbor<api::model::LocatedAgent>& agent) {
+			FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
+					"%s Setting this Cell as %s location.",
+					FPMAS_C_STR(this->node()->getId()),
+					FPMAS_C_STR(agent->node()->getId()));
 			this->model()->link(agent, this, EnvironmentLayers::LOCATION);
 			this->model()->unlink(agent.edge());
-			if(agent->perceptionRange().contains(this))
-				this->model()->link(agent, this, EnvironmentLayers::PERCEIVE);
-			if(agent->mobilityRange().contains(this)) {
-				this->model()->link(agent, this, EnvironmentLayers::MOVE);
-			}
 		}
 
 		void CellBase::growMobilityRange(api::model::LocatedAgent* agent) {
 			for(auto cell : this->neighborhood())
-				if(agent->mobilityRange().contains(cell)) {
-					this->model()->link(agent, cell, EnvironmentLayers::NEW_MOVE);
-				}
+				this->model()->link(agent, cell, EnvironmentLayers::NEW_MOVE);
 		}
 
 		void CellBase::growPerceptionRange(api::model::LocatedAgent* agent) {
 			for(auto cell : this->neighborhood())
-				if(agent->perceptionRange().contains(cell))
-					this->model()->link(agent, cell, EnvironmentLayers::NEW_PERCEIVE);
+				this->model()->link(agent, cell, EnvironmentLayers::NEW_PERCEIVE);
 		}
 
-		void CellBase::updateRanges() {
+		void CellBase::growRanges() {
+			FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
+					"%s Updating ranges...",
+					FPMAS_C_STR(this->node()->getId()));
 			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::NEW_LOCATION)) {
 				updateLocation(agent);
 				growMobilityRange(agent);
 				growPerceptionRange(agent);
+
+				// If this node is to be linked in the MOVE or PERCEPTION
+				// field, this has already been done by
+				// LocatedAgent::moveToCell(), so this current location does
+				// not need to be explored for this agent.
 				move_flags.insert(agent->node()->getId());
 				perception_flags.insert(agent->node()->getId());
 			}
-			for(auto agent: this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::NEW_MOVE)) {
+			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::MOVE)) {
 				if(move_flags.count(agent->node()->getId()) == 0) {
-					this->model()->link(agent, this, EnvironmentLayers::MOVE);
 					growMobilityRange(agent);
 					move_flags.insert(agent->node()->getId());
 				}
-				this->model()->unlink(agent.edge());
 			}
-			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::NEW_PERCEIVE)) {
+			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::PERCEIVE)) {
 				if(perception_flags.count(agent->node()->getId()) == 0) {
-					this->model()->link(agent, this, EnvironmentLayers::PERCEIVE);
 					growPerceptionRange(agent);
 					perception_flags.insert(agent->node()->getId());
 				}
-				this->model()->unlink(agent.edge());
 			}
 		}
 
 		void CellBase::updatePerceptions() {
+			FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
+					"%s Updating perceptions...",
+					FPMAS_C_STR(this->node()->getId()));
+		
 			move_flags.clear();
 			perception_flags.clear();
-			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::NEW_MOVE))
-				this->model()->unlink(agent.edge());
-			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::NEW_PERCEIVE))
-				this->model()->unlink(agent.edge());
-
-			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::PERCEIVE)) {
+			for(auto agent : this->inNeighbors<api::model::LocatedAgent>(
+						EnvironmentLayers::PERCEIVE)) {
 				for(auto perceived_agent : this->inNeighbors<api::model::LocatedAgent>(EnvironmentLayers::LOCATION))
 					if(perceived_agent->node()->getId() != agent->node()->getId())
 						this->model()->link(agent, perceived_agent, EnvironmentLayers::PERCEPTION);
@@ -84,9 +84,16 @@ namespace fpmas {
 		Environment::Environment(api::model::Model& model) :
 			update_ranges_group(model.buildGroup(
 						CELL_UPDATE_RANGES, update_ranges_behavior)),
+			crop_ranges_group(model.buildGroup(
+						AGENT_CROP_RANGES, crop_ranges_behavior)),
 			update_perceptions_group(model.buildGroup(
 						CELL_UPDATE_PERCEPTIONS, update_perceptions_behavior)) {
 			}
+
+		void Environment::add(std::vector<api::model::LocatedAgent*> agents) {
+			for(api::model::Agent* agent : agents)
+				crop_ranges_group.add(agent);
+		}
 
 		void Environment::add(std::vector<api::model::Cell *> cells) {
 			for(api::model::Cell* cell : cells) {
@@ -107,8 +114,10 @@ namespace fpmas {
 				unsigned int max_mobility_range) {
 			api::scheduler::JobList _jobs;
 
-			for(unsigned int i = 0; i <= std::max(max_perception_range, max_mobility_range); i++)
+			for(unsigned int i = 0; i <= std::max(max_perception_range, max_mobility_range); i++) {
 				_jobs.push_back(update_ranges_group.job());
+				_jobs.push_back(crop_ranges_group.job());
+			}
 
 			_jobs.push_back(update_perceptions_group.job());
 			return _jobs;
