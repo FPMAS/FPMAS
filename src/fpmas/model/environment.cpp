@@ -114,7 +114,7 @@ namespace fpmas {
 				unsigned int max_mobility_range) {
 			api::scheduler::JobList _jobs;
 
-			for(unsigned int i = 0; i <= std::max(max_perception_range, max_mobility_range); i++) {
+			for(unsigned int i = 0; i < std::max(max_perception_range, max_mobility_range); i++) {
 				_jobs.push_back(update_ranges_group.job());
 				_jobs.push_back(crop_ranges_group.job());
 			}

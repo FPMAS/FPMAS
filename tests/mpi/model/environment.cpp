@@ -74,7 +74,6 @@ class EnvironmentTestBase : public ::testing::Test {
 		void checkModelState() {
 			int comm_size = model.getMpiCommunicator().getSize();
 
-			//auto local_cell = environment.localCells().at(0);
 			for(auto cell : environment.localCells()) {
 				if(comm_size > 1)
 					if(comm_size == 2)
@@ -139,15 +138,15 @@ class EnvironmentTestBase : public ::testing::Test {
 		}
 
 		void testInit() {
-			model.scheduler().schedule(0, environment.initLocationAlgorithm(1, 1));
+			model.scheduler().schedule(0, environment.initLocationAlgorithm(range_size, range_size));
 			model.runtime().run(1);
 
 			checkModelState();
 		}
 
 		void testDistributedMoveAlgorithm() {
-			model.scheduler().schedule(0, environment.initLocationAlgorithm(1, 1));
-			model.scheduler().schedule(1, 1, environment.distributedMoveAlgorithm(agent_group, 1, 1));
+			model.scheduler().schedule(0, environment.initLocationAlgorithm(range_size, range_size));
+			model.scheduler().schedule(1, 1, environment.distributedMoveAlgorithm(agent_group, range_size, range_size));
 			model.scheduler().schedule(0.1, 1, check_model_job);
 
 			model.runtime().run(3 * model.getMpiCommunicator().getSize());
