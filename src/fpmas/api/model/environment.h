@@ -16,42 +16,38 @@ namespace fpmas { namespace api { namespace model {
 		NEW_PERCEIVE = -8
 	};
 
-	class LocatedAgent;
-
 	class Cell : public virtual Agent {
-		protected:
-			virtual void updateLocation(Neighbor<LocatedAgent>& agent) = 0;
-			virtual void growMobilityRange(LocatedAgent* agent) = 0;
-			virtual void growPerceptionRange(LocatedAgent* agent) = 0;
-
 		public:
 			virtual std::vector<Cell*> neighborhood() = 0;
 			virtual void growRanges() = 0;
 			virtual void updatePerceptions() = 0;
 	};
 
+	template<typename CellType>
 	class Range {
 		public:
 			virtual unsigned int size() const = 0;
-			virtual bool contains(Cell* root, Cell* cell) const = 0;
+			virtual bool contains(CellType* root, CellType* cell) const = 0;
 	};
 
+	template<typename CellType>
 	class LocatedAgent : public virtual Agent {
 		public:
-			virtual void moveToCell(Cell*) = 0;
+			virtual void moveToCell(CellType*) = 0;
 
-			virtual Cell* location() = 0;
-			virtual const Range& mobilityRange() const = 0;
-			virtual const Range& perceptionRange() const = 0;
+			virtual CellType* location() = 0;
+			virtual const Range<CellType>& mobilityRange() const = 0;
+			virtual const Range<CellType>& perceptionRange() const = 0;
 
 			virtual void cropRanges() = 0;
 	};
 
+	template<typename CellType>
 	class Environment {
 		public:
-			virtual void add(std::vector<LocatedAgent*> agents) = 0;
-			virtual void add(std::vector<Cell*> cells) = 0;
-			virtual std::vector<Cell*> localCells() = 0;
+			virtual void add(LocatedAgent<CellType>* agent) = 0;
+			virtual void add(CellType* cell) = 0;
+			virtual std::vector<CellType*> localCells() = 0;
 
 			virtual api::scheduler::JobList initLocationAlgorithm(
 					unsigned int max_perception_range,
@@ -77,10 +73,8 @@ namespace fpmas { namespace api { namespace model {
 			virtual DiscretePoint location() = 0;
 	};
 
-	class GridAgent : public LocatedAgent {
+	class GridAgent : public LocatedAgent<GridCell> {
 		public:
-			virtual GridCell* location() override = 0;
-
 			virtual void moveToPoint(DiscretePoint point) = 0;
 	};
 

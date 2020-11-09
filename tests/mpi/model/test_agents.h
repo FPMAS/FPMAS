@@ -132,7 +132,7 @@ class TestCell : public fpmas::model::Cell<TestCell> {
 		}
 };
 
-class FakeRange : public fpmas::api::model::Range {
+class FakeRange : public fpmas::api::model::Range<TestCell> {
 	private:
 		unsigned int _size;
 		unsigned int num_cells_in_ring;
@@ -144,9 +144,9 @@ class FakeRange : public fpmas::api::model::Range {
 			return _size;
 		}
 
-		bool contains(fpmas::api::model::Cell* root, fpmas::api::model::Cell* cell) const override {
-			int root_index = static_cast<TestCell*>(root)->index;
-			int cell_index = static_cast<TestCell*>(cell)->index;
+		bool contains(TestCell* root, TestCell* cell) const override {
+			int root_index = root->index;
+			int cell_index = cell->index;
 			unsigned int distance = std::abs(cell_index - root_index);
 			if(distance > num_cells_in_ring / 2)
 				distance = num_cells_in_ring-distance;
@@ -156,7 +156,7 @@ class FakeRange : public fpmas::api::model::Range {
 		}
 };
 
-class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent> {
+class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent, TestCell> {
 	private:
 		unsigned int range_size;
 		unsigned int num_cells_in_ring;
@@ -171,11 +171,11 @@ class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent> {
 			mobility_range(range_size, num_cells_in_ring),
 			perception_range(range_size, num_cells_in_ring) {}
 
-		const fpmas::api::model::Range& mobilityRange() const override {
+		const FakeRange& mobilityRange() const override {
 			return mobility_range;
 		}
 
-		const fpmas::api::model::Range& perceptionRange() const override {
+		const FakeRange& perceptionRange() const override {
 			return perception_range;
 		}
 

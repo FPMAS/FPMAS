@@ -12,7 +12,7 @@ class EnvironmentTestBase : public ::testing::Test {
 	protected:
 		unsigned int range_size;
 		fpmas::model::Model<SYNC_MODE> model;
-		fpmas::model::Environment environment {model};
+		fpmas::model::Environment<TestCell> environment {model};
 		fpmas::model::AgentGroup& agent_group {model.buildGroup(0, TestLocatedAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
 		std::unordered_map<int, fpmas::api::graph::DistributedId> index_to_agent_id;
@@ -28,8 +28,8 @@ class EnvironmentTestBase : public ::testing::Test {
 		void SetUp() override {
 			fpmas::graph::PartitionMap partition;
 			FPMAS_ON_PROC(model.getMpiCommunicator(), 0) {
-				std::vector<fpmas::api::model::Cell*> cells;
-				std::vector<fpmas::api::model::LocatedAgent*> agents;
+				std::vector<TestCell*> cells;
+				std::vector<fpmas::api::model::LocatedAgent<TestCell>*> agents;
 				for(int i = 0; i < model.getMpiCommunicator().getSize(); i++) {
 					auto cell = new TestCell(i);
 					auto agent = new TestLocatedAgent(range_size, num_cells_in_ring);
@@ -39,10 +39,10 @@ class EnvironmentTestBase : public ::testing::Test {
 					agent_group.add(agent);
 					agent_id_to_index[agent->node()->getId()] = i;
 					index_to_agent_id[i] = agent->node()->getId();
-				}
 
-				environment.add(agents);
-				environment.add(cells);
+					environment.add(cell);
+					environment.add(agent);
+				}
 				for(std::size_t i = 0; i < cells.size(); i++) {
 					agents[i]->moveToCell(cells[i]);
 					partition[agents[i]->node()->getId()] = i;
@@ -88,7 +88,7 @@ class EnvironmentTestBase : public ::testing::Test {
 						agent->node()->outNeighbors(fpmas::api::model::LOCATION), 
 						SizeIs(1));
 
-				auto location = static_cast<TestCell*>(dynamic_cast<fpmas::api::model::LocatedAgent*>(agent)->location());
+				auto location = dynamic_cast<fpmas::api::model::LocatedAgent<TestCell>*>(agent)->location();
 
 				float step_f;
 				std::modf(model.runtime().currentDate(), &step_f);

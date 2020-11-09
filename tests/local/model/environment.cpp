@@ -10,13 +10,15 @@ using namespace testing;
 
 class CellBaseTestSetUp {
 	protected:
+		typedef fpmas::api::model::Cell DefaultCell;
+
 		DistributedId agent_id {7, 4};
-		NiceMock<MockLocatedAgent>* mock_located_agent = new NiceMock<MockLocatedAgent>;
+		NiceMock<MockLocatedAgent<DefaultCell>>* mock_located_agent = new NiceMock<MockLocatedAgent<DefaultCell>>;
 		NiceMock<MockCell> current_location;
 		NiceMock<MockDistributedNode<AgentPtr>> agent_node {agent_id, fpmas::model::AgentPtr(mock_located_agent)};
 		NaggyMock<MockDistributedEdge<AgentPtr>> agent_edge;
-		MockRange mock_mobility_range;
-		MockRange mock_perception_range;
+		MockRange<DefaultCell> mock_mobility_range;
+		MockRange<DefaultCell> mock_perception_range;
 
 		NiceMock<MockDistributedNode<AgentPtr>> cell_node;
 
@@ -86,7 +88,7 @@ TEST_F(CellBaseTest, update_location) {
 	EXPECT_CALL(mock_model, unlink(&agent_edge));
 
 	fpmas::model::AgentPtr ptr {mock_located_agent};
-	fpmas::model::Neighbor<fpmas::api::model::LocatedAgent> neighbor {&ptr, &agent_edge};
+	fpmas::model::Neighbor<fpmas::api::model::Agent> neighbor {&ptr, &agent_edge};
 
 	this->updateLocation(neighbor);
 
@@ -138,7 +140,7 @@ TEST_F(CellBaseTest, grow_ranges_perceive) {
 
 TEST_F(CellBaseTest, update_perceptions) {
 	DistributedId perceived_id {5, 2};
-	NiceMock<MockLocatedAgent>* perceived_agent = new NiceMock<MockLocatedAgent>;
+	NiceMock<MockLocatedAgent<DefaultCell>>* perceived_agent = new NiceMock<MockLocatedAgent<DefaultCell>>;
 	NiceMock<MockDistributedNode<AgentPtr>> perceived_agent_node {perceived_id, fpmas::model::AgentPtr(perceived_agent)};
 	ON_CALL(*perceived_agent, node())
 		.WillByDefault(Return(&perceived_agent_node));
@@ -158,7 +160,7 @@ TEST_F(CellBaseTest, update_perceptions) {
 }
 
 namespace test {
-	class LocatedAgent : public fpmas::model::LocatedAgent<LocatedAgent> {
+	class LocatedAgent : public fpmas::model::LocatedAgent<LocatedAgent, fpmas::api::model::Cell> {
 		public:
 			LocatedAgent() {}
 			LocatedAgent(const LocatedAgent&) {}
@@ -166,13 +168,15 @@ namespace test {
 			LocatedAgent& operator=(const LocatedAgent&) {return *this;}
 			LocatedAgent& operator=(LocatedAgent&&) {return *this;}
 
-			MOCK_METHOD(const fpmas::api::model::Range&, mobilityRange, (), (const, override));
-			MOCK_METHOD(const fpmas::api::model::Range&, perceptionRange, (), (const, override));
+			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, mobilityRange, (), (const, override));
+			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, perceptionRange, (), (const, override));
 	};
 }
 
 class LocatedAgentTest : public ::testing::Test {
 	protected:
+		typedef fpmas::api::model::Cell DefaultCell;
+
 		MockModel mock_model;
 		NiceMock<test::LocatedAgent> agent;
 		MockDistributedNode<AgentPtr> agent_node {{2, 37}};
@@ -180,8 +184,8 @@ class LocatedAgentTest : public ::testing::Test {
 		MockCell location_cell;
 		MockDistributedEdge<AgentPtr> location_edge;
 		MockDistributedNode<AgentPtr> location_node {{12, 67}, &location_cell};
-		MockRange mock_mobility_range;
-		MockRange mock_perception_range;
+		MockRange<DefaultCell> mock_mobility_range;
+		MockRange<DefaultCell> mock_perception_range;
 
 
 		void SetUp() override {
@@ -206,7 +210,7 @@ class LocatedAgentTest : public ::testing::Test {
 				std::vector<fpmas::model::AgentNode*>& nodes,
 				std::vector<fpmas::model::AgentEdge*>& edges,
 				std::array<bool, 10>& in_range,
-				MockRange& range
+				MockRange<DefaultCell>& range
 				) {
 			std::bernoulli_distribution dist(.5);
 
@@ -227,7 +231,7 @@ class LocatedAgentTest : public ::testing::Test {
 				std::vector<fpmas::model::AgentNode*>& nodes,
 				std::vector<fpmas::model::AgentEdge*>& edges,
 				fpmas::graph::LayerId layer,
-				MockRange& range) {
+				MockRange<DefaultCell>& range) {
 
 			auto node = new MockDistributedNode<AgentPtr>({0, 1}, cell);
 			ON_CALL(*cell, node())
