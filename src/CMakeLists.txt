@@ -21,6 +21,7 @@ set(SOURCES
 	fpmas/model/detail/model.cpp
 	fpmas/model/serializer.cpp
 	fpmas/model/environment.cpp
+	fpmas/model/grid.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
 	# Main

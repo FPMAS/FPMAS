@@ -10,6 +10,8 @@ class MockRange : public fpmas::api::model::Range<CellType> {
 	public:
 		MOCK_METHOD(unsigned int, size, (), (const, override));
 		MOCK_METHOD(bool, contains, (CellType*, CellType*), (const, override));
+
+		virtual ~MockRange() {}
 };
 
 template<typename CellType>
@@ -21,14 +23,18 @@ class MockLocatedAgent : public fpmas::api::model::LocatedAgent<CellType>, publi
 		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, mobilityRange, (), (const, override));
 		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, perceptionRange, (), (const, override));
 		MOCK_METHOD(void, cropRanges, (), (override));
+
+		virtual ~MockLocatedAgent() {}
 };
 
 class MockCellBase : public fpmas::model::CellBase, public testing::NiceMock<detail::MockAgentBase<MockCellBase>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
+
+		virtual ~MockCellBase() {}
 };
 
-class MockCell : public fpmas::api::model::Cell, public testing::NiceMock<detail::MockAgentBase<MockCell>> {
+class MockCell : public virtual fpmas::api::model::Cell, public testing::NiceMock<detail::MockAgentBase<MockCell>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 
@@ -36,6 +42,8 @@ class MockCell : public fpmas::api::model::Cell, public testing::NiceMock<detail
 				(), (override));
 		MOCK_METHOD(void, growRanges, (), (override));
 		MOCK_METHOD(void, updatePerceptions, (), (override));
+
+		virtual ~MockCell() {}
 };
 
 #endif

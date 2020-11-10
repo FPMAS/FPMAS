@@ -9,7 +9,7 @@ namespace fpmas {
 	namespace model {
 	using api::model::EnvironmentLayers;
 
-	class CellBase : public api::model::Cell, public NeighborsAccess {
+	class CellBase : public virtual api::model::Cell, public NeighborsAccess {
 		private:
 			std::set<fpmas::api::graph::DistributedId> move_flags;
 			std::set<fpmas::api::graph::DistributedId> perception_flags;
@@ -68,10 +68,6 @@ namespace fpmas {
 					unsigned int max_mobility_range) override;
 
 	};
-
-		/*
-		 * Environment implementation.
-		 */
 
 	template<typename CellType>
 		Environment<CellType>::Environment(api::model::Model& model) :
@@ -135,23 +131,24 @@ namespace fpmas {
 		}
 
 
+	
 	template<typename AgentType, typename CellType>
-	class LocatedAgent :
-		public api::model::LocatedAgent<CellType>, public model::AgentBase<AgentType> {
+	class SpatialAgentBase :
+		public virtual api::model::LocatedAgent<CellType>, public model::AgentBase<AgentType> {
 			private:
 				class CurrentOutLayer {
 					private:
-						LocatedAgent* agent;
+						SpatialAgentBase* agent;
 						fpmas::graph::LayerId layer_id;
 						std::set<DistributedId> current_layer_ids;
 
 					public:
-						CurrentOutLayer(LocatedAgent* agent, fpmas::graph::LayerId layer_id)
+						CurrentOutLayer(SpatialAgentBase* agent, fpmas::graph::LayerId layer_id)
 							: agent(agent), layer_id(layer_id) {
-							auto layer = agent->node()->outNeighbors(layer_id);
-							for(auto node : layer)
-								current_layer_ids.insert(node->getId());
-						}
+								auto layer = agent->node()->outNeighbors(layer_id);
+								for(auto node : layer)
+									current_layer_ids.insert(node->getId());
+							}
 
 						bool contains(fpmas::api::model::Agent* agent) {
 							return current_layer_ids.count(agent->node()->getId()) > 0;
@@ -162,15 +159,17 @@ namespace fpmas {
 							agent->model()->link(agent, cell, layer_id);
 						}
 				};
+			protected:
+				void updateLocation(CellType* cell);
 			public:
-				void moveToCell(CellType* cell) override;
 				CellType* location() override;
 
 				void cropRanges() override;
-	};
+
+		};
 
 	template<typename AgentType, typename CellType>
-		void LocatedAgent<AgentType, CellType>::moveToCell(CellType* cell) {
+		void SpatialAgentBase<AgentType, CellType>::updateLocation(CellType* cell) {
 			// Links to new location
 			this->model()->link(this, cell, EnvironmentLayers::NEW_LOCATION);
 
@@ -201,7 +200,7 @@ namespace fpmas {
 		}
 
 	template<typename AgentType, typename CellType>
-		CellType* LocatedAgent<AgentType, CellType>::location() {
+		CellType* SpatialAgentBase<AgentType, CellType>::location() {
 			auto location = this->template outNeighbors<CellType>(
 					EnvironmentLayers::LOCATION);
 			if(location.count() > 0)
@@ -210,7 +209,7 @@ namespace fpmas {
 		}
 
 	template<typename AgentType, typename CellType>
-		void LocatedAgent<AgentType, CellType>::cropRanges() {
+		void SpatialAgentBase<AgentType, CellType>::cropRanges() {
 
 			CurrentOutLayer move_layer(this, EnvironmentLayers::MOVE);
 
@@ -232,6 +231,16 @@ namespace fpmas {
 				this->model()->unlink(cell.edge());
 			}
 		}
+	
+	template<typename AgentType, typename CellType>
+		class LocatedAgent :
+			public SpatialAgentBase<AgentType, CellType> {
+				public:
+					void moveToCell(CellType* cell) override {
+						this->updateLocation(cell);
+					}
+			};
+
 }}
 
 FPMAS_DEFAULT_JSON(fpmas::model::DefaultCell)

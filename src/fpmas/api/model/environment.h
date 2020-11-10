@@ -59,24 +59,5 @@ namespace fpmas { namespace api { namespace model {
 
 	};
 
-
-	typedef unsigned long DiscreteCoordinate;
-
-	struct DiscretePoint {
-		DiscreteCoordinate x;
-		DiscreteCoordinate y;
-	};
-
-
-	class GridCell : public Cell {
-		public:
-			virtual DiscretePoint location() = 0;
-	};
-
-	class GridAgent : public LocatedAgent<GridCell> {
-		public:
-			virtual void moveToPoint(DiscretePoint point) = 0;
-	};
-
 }}}
 #endif
