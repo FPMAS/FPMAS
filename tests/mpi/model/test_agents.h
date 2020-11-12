@@ -156,7 +156,7 @@ class FakeRange : public fpmas::api::model::Range<TestCell> {
 		}
 };
 
-class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent, TestCell> {
+class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, TestCell> {
 	private:
 		unsigned int range_size;
 		unsigned int num_cells_in_ring;
@@ -164,9 +164,9 @@ class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent, Tes
 		FakeRange perception_range;
 
 	public:
-		static const fpmas::model::Behavior<TestLocatedAgent> behavior;
+		static const fpmas::model::Behavior<TestSpatialAgent> behavior;
 
-		TestLocatedAgent(unsigned int range_size, unsigned int num_cells_in_ring)
+		TestSpatialAgent(unsigned int range_size, unsigned int num_cells_in_ring)
 			: range_size(range_size), num_cells_in_ring(num_cells_in_ring),
 			mobility_range(range_size, num_cells_in_ring),
 			perception_range(range_size, num_cells_in_ring) {}
@@ -179,9 +179,16 @@ class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent, Tes
 			return perception_range;
 		}
 
+		/**
+		 * Normally not publicly accessible, but made public for test purpose.
+		 */
+		TestCell* testLocation() {
+			return this->locationCell();
+		}
+
 		void moveToNextCell() {
 			std::unordered_map<int, TestCell*> cell_index;
-			int current_index = static_cast<TestCell*>(this->location())->index;
+			int current_index = static_cast<TestCell*>(this->locationCell())->index;
 			for(auto cell : outNeighbors<TestCell>(fpmas::api::model::MOVE)) {
 				cell_index[cell->index] = cell;
 			}
@@ -190,12 +197,12 @@ class TestLocatedAgent : public fpmas::model::LocatedAgent<TestLocatedAgent, Tes
 			moveToCell(cell_index[next_index]);
 		}
 
-		static void to_json(nlohmann::json& j, const TestLocatedAgent* agent) {
+		static void to_json(nlohmann::json& j, const TestSpatialAgent* agent) {
 			j = {{"r", agent->range_size}, {"n", agent->num_cells_in_ring}};
 		}
 
-		static TestLocatedAgent* from_json(const nlohmann::json& j) {
-			return new TestLocatedAgent(
+		static TestSpatialAgent* from_json(const nlohmann::json& j) {
+			return new TestSpatialAgent(
 					j.at("r").get<unsigned int>(),
 					j.at("n").get<unsigned int>()
 					);
@@ -207,7 +214,7 @@ FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
 
 #define TEST_AGENTS ReaderAgent, WriterAgent, LinkerAgent,\
 		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\
-		TestCell, TestLocatedAgent
+		TestCell, TestSpatialAgent
 
 FPMAS_JSON_SET_UP(TEST_AGENTS)
 

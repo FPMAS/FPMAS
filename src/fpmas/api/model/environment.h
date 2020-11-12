@@ -19,7 +19,11 @@ namespace fpmas { namespace api { namespace model {
 	class Cell : public virtual Agent {
 		public:
 			virtual std::vector<Cell*> neighborhood() = 0;
-			virtual void growRanges() = 0;
+
+			virtual void handleNewLocation() = 0;
+			virtual void handleMove() = 0;
+			virtual void handlePerceive() = 0;
+
 			virtual void updatePerceptions() = 0;
 	};
 
@@ -31,21 +35,24 @@ namespace fpmas { namespace api { namespace model {
 	};
 
 	template<typename CellType>
-	class LocatedAgent : public virtual Agent {
-		public:
+	class SpatialAgent : public virtual Agent {
+		protected:
 			virtual void moveToCell(CellType*) = 0;
+			virtual CellType* locationCell() = 0;
 
-			virtual CellType* location() = 0;
+		public:
+			virtual void initLocation(CellType*) = 0;
 			virtual const Range<CellType>& mobilityRange() const = 0;
 			virtual const Range<CellType>& perceptionRange() const = 0;
 
-			virtual void cropRanges() = 0;
+			virtual void handleNewMove() = 0;
+			virtual void handleNewPerceive() = 0;
 	};
 
 	template<typename CellType>
 	class Environment {
 		public:
-			virtual void add(LocatedAgent<CellType>* agent) = 0;
+			virtual void add(SpatialAgent<CellType>* agent) = 0;
 			virtual void add(CellType* cell) = 0;
 			virtual std::vector<CellType*> localCells() = 0;
 

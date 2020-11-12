@@ -205,20 +205,23 @@ namespace fpmas { namespace model {
 	template<typename T>
 		class Behavior : public api::model::Behavior {
 			private:
-				void(T::*behavior)();
+				std::vector<void(T::*)()> behaviors;
 
 			public:
-				Behavior(void(T::*behavior)())
-					: behavior(behavior) {}
+				template<typename ...F>
+					Behavior(F... behavior)
+					: behaviors({behavior...}){
+					}
 
 				void execute(api::model::Agent* agent) const {
-					(dynamic_cast<T*>(agent)->*behavior)();
+					for(auto behavior : behaviors)
+						(dynamic_cast<T*>(agent)->*behavior)();
 				}
 		};
 
-	template<typename T>
-		Behavior<T> make_behavior(void(T::*behavior)()) {
-			return Behavior<T>(behavior);
+	template<typename T, typename... F>
+		Behavior<T> make_behavior(void(T::*behavior)(), F... methods) {
+			return Behavior<T>(behavior, methods...);
 		}
 
 	class NeighborsAccess : public virtual api::model::Agent {

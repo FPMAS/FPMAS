@@ -15,16 +15,18 @@ class MockRange : public fpmas::api::model::Range<CellType> {
 };
 
 template<typename CellType>
-class MockLocatedAgent : public fpmas::api::model::LocatedAgent<CellType>, public testing::NiceMock<detail::MockAgentBase<MockLocatedAgent<CellType>>> {
+class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, public testing::NiceMock<detail::MockAgentBase<MockSpatialAgent<CellType>>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 		MOCK_METHOD(void, moveToCell, (CellType*), (override));
-		MOCK_METHOD(CellType*, location, (), (override));
+		MOCK_METHOD(void, initLocation, (CellType*), (override));
+		MOCK_METHOD(CellType*, locationCell, (), (override));
 		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, mobilityRange, (), (const, override));
 		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, perceptionRange, (), (const, override));
-		MOCK_METHOD(void, cropRanges, (), (override));
+		MOCK_METHOD(void, handleNewMove, (), (override));
+		MOCK_METHOD(void, handleNewPerceive, (), (override));
 
-		virtual ~MockLocatedAgent() {}
+		virtual ~MockSpatialAgent() {}
 };
 
 class MockCellBase : public fpmas::model::CellBase, public testing::NiceMock<detail::MockAgentBase<MockCellBase>> {
@@ -40,7 +42,9 @@ class MockCell : public virtual fpmas::api::model::Cell, public testing::NiceMoc
 
 		MOCK_METHOD(std::vector<fpmas::api::model::Cell*>, neighborhood,
 				(), (override));
-		MOCK_METHOD(void, growRanges, (), (override));
+		MOCK_METHOD(void, handleNewLocation, (), (override));
+		MOCK_METHOD(void, handleMove, (), (override));
+		MOCK_METHOD(void, handlePerceive, (), (override));
 		MOCK_METHOD(void, updatePerceptions, (), (override));
 
 		virtual ~MockCell() {}

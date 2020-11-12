@@ -13,7 +13,7 @@ class EnvironmentTestBase : public ::testing::Test {
 		unsigned int range_size;
 		fpmas::model::Model<SYNC_MODE> model;
 		fpmas::model::Environment<TestCell> environment {model};
-		fpmas::model::AgentGroup& agent_group {model.buildGroup(0, TestLocatedAgent::behavior)};
+		fpmas::model::AgentGroup& agent_group {model.buildGroup(0, TestSpatialAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
 		std::unordered_map<int, fpmas::api::graph::DistributedId> index_to_agent_id;
 
@@ -29,10 +29,10 @@ class EnvironmentTestBase : public ::testing::Test {
 			fpmas::graph::PartitionMap partition;
 			FPMAS_ON_PROC(model.getMpiCommunicator(), 0) {
 				std::vector<TestCell*> cells;
-				std::vector<fpmas::api::model::LocatedAgent<TestCell>*> agents;
+				std::vector<fpmas::api::model::SpatialAgent<TestCell>*> agents;
 				for(int i = 0; i < model.getMpiCommunicator().getSize(); i++) {
 					auto cell = new TestCell(i);
-					auto agent = new TestLocatedAgent(range_size, num_cells_in_ring);
+					auto agent = new TestSpatialAgent(range_size, num_cells_in_ring);
 					cells.push_back(cell);
 					agents.push_back(agent);
 
@@ -42,11 +42,10 @@ class EnvironmentTestBase : public ::testing::Test {
 
 					environment.add(cell);
 					environment.add(agent);
-				}
-				for(std::size_t i = 0; i < cells.size(); i++) {
-					agents[i]->moveToCell(cells[i]);
-					partition[agents[i]->node()->getId()] = i;
-					partition[cells[i]->node()->getId()] = i;
+
+					agent->initLocation(cells[i]);
+					partition[agent->node()->getId()] = i;
+					partition[cell->node()->getId()] = i;
 				}
 
 				int comm_size = model.getMpiCommunicator().getSize();
@@ -88,7 +87,7 @@ class EnvironmentTestBase : public ::testing::Test {
 						agent->node()->outNeighbors(fpmas::api::model::LOCATION), 
 						SizeIs(1));
 
-				auto location = dynamic_cast<fpmas::api::model::LocatedAgent<TestCell>*>(agent)->location();
+				auto location = dynamic_cast<TestSpatialAgent*>(agent)->testLocation();
 
 				float step_f;
 				std::modf(model.runtime().currentDate(), &step_f);
@@ -108,7 +107,7 @@ class EnvironmentTestBase : public ::testing::Test {
 				}
 
 				std::vector<int> actual_move_index;
-				for(auto cell : dynamic_cast<fpmas::model::AgentBase<TestLocatedAgent>*>(agent)->outNeighbors<TestCell>(fpmas::api::model::MOVE)) {
+				for(auto cell : dynamic_cast<fpmas::model::AgentBase<TestSpatialAgent>*>(agent)->outNeighbors<TestCell>(fpmas::api::model::MOVE)) {
 					actual_move_index.push_back(cell->index);
 				}
 

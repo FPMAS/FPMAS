@@ -32,6 +32,10 @@ namespace api {
 		public:
 			virtual void action_2() = 0;
 	};
+
+	class Action1_2 : public Action1, public Action2 {
+
+	};
 }
 
 class Agent1 : public fpmas::model::AgentBase<Agent1>, public api::Action1 {
@@ -48,7 +52,7 @@ class Agent2 : public fpmas::model::AgentBase<Agent2>, public api::Action2 {
 		MOCK_METHOD(void, action_2, (), (override));
 		MOCK_METHOD(void, act, (), (override));
 };
-class Agent1_2 : public fpmas::model::AgentBase<Agent1_2>, public api::Action1, public api::Action2 {
+class Agent1_2 : public fpmas::model::AgentBase<Agent1_2>, public api::Action1_2 {
 	public:
 		DEFAULT_COPY_MOVE(Agent1_2)
 		MOCK_METHOD(void, action_1, (), (override));
@@ -63,6 +67,20 @@ TEST(Behavior, execute) {
 	EXPECT_CALL(agent_1, action_1);
 
 	agent_1_behavior.execute(&agent_1);
+}
+
+TEST(Behavior, execute_multiple) {
+	fpmas::model::Behavior<api::Action1_2> agent_1_behavior(
+			&api::Action1_2::action_1, &api::Action1_2::action_2);
+
+	Agent1_2 agent;
+	{
+		InSequence s;
+		EXPECT_CALL(agent, action_1);
+		EXPECT_CALL(agent, action_2);
+	}
+
+	agent_1_behavior.execute(&agent);
 }
 
 class AgentGroupBehaviorTest : public testing::Test {

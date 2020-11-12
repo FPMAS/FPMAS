@@ -52,7 +52,7 @@ TEST_F(GridAgentTest, location) {
 	grid_agent.moveToCell(&mock_cell);
 
 	ASSERT_EQ(grid_agent.currentLocation(), location);
-};
+}
 
 TEST_F(GridAgentTest, json) {
 	grid_agent.moveToCell(&mock_cell);

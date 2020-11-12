@@ -27,7 +27,7 @@ namespace fpmas {
 				this->model()->link(agent, cell, EnvironmentLayers::NEW_PERCEIVE);
 		}
 
-		void CellBase::growRanges() {
+		void CellBase::handleNewLocation() {
 			FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
 					"%s Updating ranges...",
 					FPMAS_C_STR(this->node()->getId()));
@@ -43,12 +43,18 @@ namespace fpmas {
 				move_flags.insert(agent->node()->getId());
 				perception_flags.insert(agent->node()->getId());
 			}
+		}
+
+		void CellBase::handleMove() {
 			for(auto agent : this->inNeighbors<api::model::Agent>(EnvironmentLayers::MOVE)) {
 				if(move_flags.count(agent->node()->getId()) == 0) {
 					growMobilityRange(agent);
 					move_flags.insert(agent->node()->getId());
 				}
 			}
+		}
+
+		void CellBase::handlePerceive() {
 			for(auto agent : this->inNeighbors<api::model::Agent>(EnvironmentLayers::PERCEIVE)) {
 				if(perception_flags.count(agent->node()->getId()) == 0) {
 					growPerceptionRange(agent);
