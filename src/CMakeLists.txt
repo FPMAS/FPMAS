@@ -6,6 +6,7 @@ set(SOURCES
 	fpmas/api/communication/communication.cpp
 	fpmas/api/graph/distributed_id.cpp
 	fpmas/api/model/model.cpp
+	fpmas/api/model/grid.cpp
 	fpmas/synchro/hard/api/client_server.cpp
 	# Utils
 	fpmas/utils/log.cpp

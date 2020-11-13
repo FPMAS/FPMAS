@@ -208,7 +208,7 @@ class SpatialAgentTest : public ::testing::Test, protected NiceMock<test::Spatia
 	protected:
 		typedef fpmas::api::model::Cell DefaultCell;
 
-		MockModel mock_model;
+		StrictMock<MockModel> mock_model;
 		fpmas::api::model::SpatialAgent<DefaultCell>& agent;
 		MockDistributedNode<AgentPtr> agent_node {{2, 37}};
 
@@ -405,6 +405,26 @@ TEST_F(SpatialAgentTest, moveToCell4) {
 	this->moveTo(&location_cell);
 
 	ASSERT_EQ(this->locationId(), location_id);
+}
+
+TEST_F(SpatialAgentTest, moveToId) {
+	// Build MOVE layer
+	std::vector<fpmas::model::AgentNode*> move_neighbors {&location_node};
+	std::vector<fpmas::model::AgentEdge*> move_neighbor_edges {&location_edge};
+
+	ON_CALL(agent_node, outNeighbors(EnvironmentLayers::MOVE))
+		.WillByDefault(Return(move_neighbors));
+	ON_CALL(agent_node, getOutgoingEdges(EnvironmentLayers::MOVE))
+		.WillByDefault(Return(move_neighbor_edges));
+
+	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
+	EXPECT_CALL(mock_model, unlink(&location_edge));
+
+	this->moveTo(location_id);
+}
+
+TEST_F(SpatialAgentTest, moveToIdOutOfField) {
+	ASSERT_THROW(this->moveTo(location_id), fpmas::api::model::OutOfMobilityFieldException);
 }
 
 TEST_F(SpatialAgentTest, agentBehavior) {

@@ -2,6 +2,7 @@
 #define FPMAS_ENVIRONMENT_H
 
 #include "fpmas/api/model/environment.h"
+#include "fpmas/api/model/exceptions.h"
 #include "model.h"
 #include "serializer.h"
 
@@ -182,9 +183,7 @@ namespace fpmas {
 				void handleNewPerceive() override;
 
 				using api::model::SpatialAgent<CellType>::moveTo;
-				void moveTo(graph::DistributedId id) override {
-
-				}
+				void moveTo(graph::DistributedId id) override;
 
 			public:
 				void initLocation(CellType* cell) override {
@@ -265,10 +264,30 @@ namespace fpmas {
 			}
 		}
 	
+	template<typename AgentType, typename CellType, typename Derived>
+		void SpatialAgentBase<AgentType, CellType, Derived>::moveTo(graph::DistributedId cell_id) {
+			bool found = false;
+			auto mobility_field = this->template outNeighbors<CellType>(EnvironmentLayers::MOVE);
+			auto it = mobility_field.begin();
+			while(!found && it != mobility_field.end()) {
+				if((*it)->node()->getId() == cell_id) {
+					found=true;
+				} else {
+					it++;
+				}
+			}
+			if(found)
+				this->moveTo(*it);
+			else
+				throw api::model::OutOfMobilityFieldException(this->node()->getId(), cell_id);
+		}
+
 	template<typename AgentType, typename CellType>
 		class SpatialAgent :
 			public SpatialAgentBase<AgentType, CellType, AgentType> {
 				protected:
+					using SpatialAgentBase<AgentType, CellType, AgentType>::moveTo;
+
 					void moveTo(CellType* cell) override {
 						this->updateLocation(cell);
 					}

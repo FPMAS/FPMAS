@@ -37,4 +37,8 @@ namespace fpmas { namespace api { namespace model {
 	};
 
 }}}
+
+namespace fpmas {
+	std::string to_string(const api::model::DiscretePoint& point);
+}
 #endif

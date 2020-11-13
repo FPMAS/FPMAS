@@ -50,10 +50,6 @@ namespace fpmas { namespace api { namespace graph {
 	 */
 	class DistributedId {
 		friend nlohmann::adl_serializer<DistributedId>;
-		friend std::ostream& operator<<(std::ostream& os, const DistributedId& id) {
-			os << (std::string) id;
-			return os;
-		}
 
 		private:
 			int _rank;
@@ -187,9 +183,15 @@ namespace fpmas { namespace api { namespace graph {
 					);
 			}
 	};
+
+	std::ostream& operator<<(std::ostream& os, const DistributedId& id);
 }}}
 
 using fpmas::api::graph::DistributedId;
+
+namespace fpmas {
+	std::string to_string(const api::graph::DistributedId& id);
+}
 
 namespace fpmas { namespace api { namespace communication {
 	/**

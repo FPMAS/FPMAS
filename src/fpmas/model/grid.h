@@ -67,6 +67,20 @@ namespace fpmas { namespace model {
 
 	template<typename AgentType>
 		void GridAgent<AgentType>::moveTo(DiscretePoint point) {
+			bool found = false;
+			auto mobility_field = this->template outNeighbors<fpmas::api::model::GridCell>(EnvironmentLayers::MOVE);
+			auto it = mobility_field.begin();
+			while(!found && it != mobility_field.end()) {
+				if((*it)->location() == point) {
+					found=true;
+				} else {
+					it++;
+				}
+			}
+			if(found)
+				this->moveTo(*it);
+			else
+				throw api::model::OutOfMobilityFieldException(this->node()->getId(), this->locationPoint(), point);
 		}
 
 	class VonNeumannNeighborhood : public api::model::EnvironmentBuilder<api::model::GridCell> {
