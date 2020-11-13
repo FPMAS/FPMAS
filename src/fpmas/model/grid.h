@@ -51,9 +51,11 @@ namespace fpmas { namespace model {
 			private:
 			DiscretePoint current_location_point;
 
-			public:
+			protected:
 			void moveToCell(fpmas::api::model::GridCell* cell) override;
 			void moveToPoint(DiscretePoint point) override;
+
+			public:
 			DiscretePoint locationPoint() const override {return current_location_point;}
 		};
 

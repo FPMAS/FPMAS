@@ -51,13 +51,13 @@ class GridAgentTest : public testing::Test {
 };
 
 TEST_F(GridAgentTest, location) {
-	grid_agent.moveToCell(&mock_cell);
+	grid_agent.initLocation(&mock_cell);
 
 	ASSERT_EQ(grid_agent.locationPoint(), location);
 }
 
 TEST_F(GridAgentTest, json) {
-	grid_agent.moveToCell(&mock_cell);
+	grid_agent.initLocation(&mock_cell);
 	nlohmann::json j = fpmas::api::utils::PtrWrapper<model::test::GridAgent::JsonBase>(&grid_agent);
 
 	auto unserialized_agent = j.get<fpmas::api::utils::PtrWrapper<model::test::GridAgent::JsonBase>>();
@@ -81,7 +81,7 @@ TEST_F(GridAgentTest, to_json_with_data) {
 	model::test::GridAgentWithData agent(8);
 	agent.setModel(&mock_model);
 	agent.setNode(&mock_agent_node);
-	agent.moveToCell(&mock_cell);
+	agent.initLocation(&mock_cell);
 
 	/* to_json */
 	nlohmann::json j = fpmas::api::utils::PtrWrapper<model::test::GridAgentWithData::JsonBase>(&agent);
