@@ -55,16 +55,17 @@ FPMAS_DEFAULT_JSON(model::test::GridAgent)
 
 FPMAS_JSON_SET_UP(
 		MockAgent<4>, MockAgent<2>, MockAgent<12>,
-		fpmas::model::GridAgent<model::test::GridAgent>,
-		fpmas::model::GridAgent<model::test::GridAgentWithData>
+		//model::test::GridAgent,
+		model::test::GridAgent::JsonBase,
+		model::test::GridAgentWithData::JsonBase
 		)
 
 class Environment : public testing::Environment {
 	void SetUp() override {
 		FPMAS_REGISTER_AGENT_TYPES(
 		MockAgent<4>, MockAgent<2>, MockAgent<12>,
-		fpmas::model::GridAgent<model::test::GridAgent>,
-		fpmas::model::GridAgent<model::test::GridAgentWithData>
+		model::test::GridAgent::JsonBase,
+		model::test::GridAgentWithData::JsonBase
 		);
 	}
 

@@ -45,37 +45,17 @@ namespace fpmas { namespace model {
 	template<typename AgentType>
 	class GridAgent :
 		public api::model::GridAgent,
-		public SpatialAgentBase<AgentType, fpmas::api::model::GridCell> {
+		public SpatialAgentBase<AgentType, fpmas::api::model::GridCell, GridAgent<AgentType>> {
+			friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridAgent<AgentType>>>;
 
-		private:
+			private:
 			DiscretePoint current_location;
 
-		public:
+			public:
 			void moveToCell(fpmas::api::model::GridCell* cell) override;
 			void moveToPoint(DiscretePoint point) override;
 			DiscretePoint currentLocation() override {return current_location;}
-
-			static GridAgent* from_json(const nlohmann::json& j) {
-				fpmas::api::utils::PtrWrapper<AgentType> derived_ptr;
-				if(j.contains("derived"))
-					derived_ptr = j.at("derived").get<fpmas::api::utils::PtrWrapper<AgentType>>();
-				else
-					derived_ptr = nlohmann::json().get<fpmas::api::utils::PtrWrapper<AgentType>>();
-
-				derived_ptr->current_location = j.at("base").get<DiscretePoint>();
-				return derived_ptr;
-			}
-
-			static void to_json(nlohmann::json& j, const GridAgent* agent) {
-				nlohmann::json derived = fpmas::api::utils::PtrWrapper<const AgentType>(static_cast<const AgentType*>(agent));
-				if(!derived.is_null())
-					j["derived"] = derived;
-				j["base"] = agent->current_location;
-			}
-
-			static void to_json(nlohmann::json& j, const AgentType* agent) {
-			}
-	};
+		};
 
 	template<typename AgentType>
 		void GridAgent<AgentType>::moveToCell(fpmas::api::model::GridCell* cell) {
@@ -95,4 +75,30 @@ namespace fpmas { namespace model {
 namespace fpmas { namespace api { namespace model {
 	bool operator==(const DiscretePoint& p1, const DiscretePoint& p2);
 }}}
+
+namespace nlohmann {
+	template<typename AgentType>
+		struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType>>> {
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType>> Ptr;
+			static void to_json(nlohmann::json& j, const Ptr& ptr) {
+				// Derived serialization
+				j[0] = fpmas::api::utils::PtrWrapper<AgentType>(
+						const_cast<AgentType*>(static_cast<const AgentType*>(ptr.get())));
+				// Current base serialization
+				j[1] = ptr->current_location;
+			}
+
+			static Ptr from_json(const nlohmann::json& j) {
+				// Derived unserialization.
+				// The current base is implicitly default initialized
+				fpmas::api::utils::PtrWrapper<AgentType> derived_ptr
+					= j[0].get<fpmas::api::utils::PtrWrapper<AgentType>>();
+
+				// Initializes the current base
+				derived_ptr->current_location = j[1].get<fpmas::api::model::DiscretePoint>();
+				return derived_ptr.get();
+			}
+		};
+
+}
 #endif

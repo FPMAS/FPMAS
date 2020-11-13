@@ -141,9 +141,11 @@ namespace fpmas {
 
 
 	
-	template<typename AgentType, typename CellType>
+	template<typename AgentType, typename CellType, typename Derived = AgentType>
 	class SpatialAgentBase :
 		public virtual api::model::SpatialAgent<CellType>, public model::AgentBase<AgentType> {
+			public:
+				typedef SpatialAgentBase<AgentType, CellType, Derived> JsonBase;
 			private:
 				class CurrentOutLayer {
 					private:
@@ -172,7 +174,6 @@ namespace fpmas {
 				void updateLocation(CellType* cell);
 
 				CellType* locationCell() override;
-				//void cropRanges() override;
 				void handleNewMove() override;
 				void handleNewPerceive() override;
 
@@ -183,8 +184,8 @@ namespace fpmas {
 
 		};
 
-	template<typename AgentType, typename CellType>
-		void SpatialAgentBase<AgentType, CellType>::updateLocation(CellType* cell) {
+	template<typename AgentType, typename CellType, typename Derived>
+		void SpatialAgentBase<AgentType, CellType, Derived>::updateLocation(CellType* cell) {
 			// Links to new location
 			this->model()->link(this, cell, EnvironmentLayers::NEW_LOCATION);
 
@@ -214,8 +215,8 @@ namespace fpmas {
 			}
 		}
 
-	template<typename AgentType, typename CellType>
-		CellType* SpatialAgentBase<AgentType, CellType>::locationCell() {
+	template<typename AgentType, typename CellType, typename Derived>
+		CellType* SpatialAgentBase<AgentType, CellType, Derived>::locationCell() {
 			auto location = this->template outNeighbors<CellType>(
 					EnvironmentLayers::LOCATION);
 			if(location.count() > 0)
@@ -223,8 +224,8 @@ namespace fpmas {
 			return nullptr;
 		}
 
-	template<typename AgentType, typename CellType>
-		void SpatialAgentBase<AgentType, CellType>::handleNewMove() {
+	template<typename AgentType, typename CellType, typename Derived>
+		void SpatialAgentBase<AgentType, CellType, Derived>::handleNewMove() {
 
 			CurrentOutLayer move_layer(this, EnvironmentLayers::MOVE);
 
@@ -237,8 +238,8 @@ namespace fpmas {
 			}
 		}
 
-	template<typename AgentType, typename CellType>
-		void SpatialAgentBase<AgentType, CellType>::handleNewPerceive() {
+	template<typename AgentType, typename CellType, typename Derived>
+		void SpatialAgentBase<AgentType, CellType, Derived>::handleNewPerceive() {
 			CurrentOutLayer perceive_layer(this, EnvironmentLayers::PERCEIVE);
 
 			for(auto cell : this->template outNeighbors<CellType>(
@@ -252,7 +253,7 @@ namespace fpmas {
 	
 	template<typename AgentType, typename CellType>
 		class SpatialAgent :
-			public SpatialAgentBase<AgentType, CellType> {
+			public SpatialAgentBase<AgentType, CellType, AgentType> {
 				protected:
 					void moveToCell(CellType* cell) override {
 						this->updateLocation(cell);
@@ -262,5 +263,27 @@ namespace fpmas {
 }}
 
 FPMAS_DEFAULT_JSON(fpmas::model::DefaultCell)
-	
+
+	namespace nlohmann {
+		template<typename AgentType, typename CellType, typename Derived>
+			struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
+				typedef fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
+				static void to_json(nlohmann::json& j, const Ptr& ptr) {
+					// Derived serialization
+					j[0] = fpmas::api::utils::PtrWrapper<AgentType>(
+							const_cast<AgentType*>(static_cast<const AgentType*>(ptr.get())));
+				}
+
+				static Ptr from_json(const nlohmann::json& j) {
+					// Derived unserialization.
+					// The current base is implicitly default initialized
+					fpmas::api::utils::PtrWrapper<AgentType> derived_ptr
+						= j[0].get<fpmas::api::utils::PtrWrapper<AgentType>>();
+
+					return derived_ptr.get();
+				}
+			};
+
+	}
+
 #endif

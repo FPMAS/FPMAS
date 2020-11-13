@@ -369,7 +369,9 @@ namespace fpmas { namespace model {
 			void addGroup(api::model::AgentGroup* group) override {_groups.push_back(group);}
 
 			api::model::TypeId typeId() const override {return TYPE_ID;}
-			api::model::Agent* copy() const override {return new AgentType(*dynamic_cast<const AgentType*>(this));}
+			api::model::Agent* copy() const override {
+				return new AgentType(*dynamic_cast<const AgentType*>(this));
+			}
 
 			void copyAssign(api::model::Agent* agent) override {
 				// Uses AgentType copy assignment operator
