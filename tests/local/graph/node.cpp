@@ -1,5 +1,5 @@
-#include "fpmas/graph/node.h"
 #include "api/graph/basic_id.h"
+#include "fpmas/graph/node.h"
 
 #include "../mocks/graph/mock_edge.h"
 #include "../mocks/utils/mock_callback.h"

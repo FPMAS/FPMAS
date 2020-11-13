@@ -1,4 +1,5 @@
 set(SOURCES
+	api/graph/basic_id.cpp
 	# Comm
 	communication/communication.cpp
 	# Graph

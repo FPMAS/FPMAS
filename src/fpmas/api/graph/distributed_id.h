@@ -166,6 +166,7 @@ namespace fpmas { namespace api { namespace graph {
 			 * std::string conversion.
 			 *
 			 */
+			[[deprecated]]
 			//TODO: Removes this in 2.0 (conflicts with nlohmann::json, when
 			//declaring std::map<DistributedId, _>)
 			operator std::string() const {

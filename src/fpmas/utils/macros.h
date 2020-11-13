@@ -20,7 +20,8 @@
  *
  * @param arg object to convert as a C-like string
  */
-#define FPMAS_C_STR(arg) ((std::string) arg).c_str()
+//#define FPMAS_C_STR(arg) ((std::string) arg).c_str()
+#define FPMAS_C_STR(arg) fpmas::to_string(arg).c_str()
 
 /**
  * MPI type that can be used to transmit fpmas::api::graph::DistributedId

@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
-#include "fpmas/graph/graph.h"
 #include "api/graph/basic_id.h"
+#include "fpmas/graph/graph.h"
 #include "../mocks/graph/mock_node.h"
 #include "../mocks/graph/mock_edge.h"
 #include "../mocks/utils/mock_callback.h"
