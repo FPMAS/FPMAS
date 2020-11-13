@@ -52,21 +52,21 @@ namespace fpmas { namespace model {
 			DiscretePoint current_location_point;
 
 			protected:
-			void moveToCell(fpmas::api::model::GridCell* cell) override;
-			void moveToPoint(DiscretePoint point) override;
+			void moveTo(api::model::GridCell* cell) override;
+			void moveTo(DiscretePoint point) override;
 
 			public:
 			DiscretePoint locationPoint() const override {return current_location_point;}
 		};
 
 	template<typename AgentType>
-		void GridAgent<AgentType>::moveToCell(fpmas::api::model::GridCell* cell) {
+		void GridAgent<AgentType>::moveTo(api::model::GridCell* cell) {
 			this->updateLocation(cell);
 			current_location_point = cell->location();
 		}
 
 	template<typename AgentType>
-		void GridAgent<AgentType>::moveToPoint(DiscretePoint point) {
+		void GridAgent<AgentType>::moveTo(DiscretePoint point) {
 		}
 
 	class VonNeumannNeighborhood : public api::model::EnvironmentBuilder<api::model::GridCell> {

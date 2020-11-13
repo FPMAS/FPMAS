@@ -361,7 +361,7 @@ TEST_F(SpatialAgentTest, moveToCell1) {
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::PERCEIVE));
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
 
-	this->moveToCell(&location_cell);
+	this->moveTo(&location_cell);
 
 	ASSERT_EQ(this->locationId(), location_id);
 }
@@ -375,7 +375,7 @@ TEST_F(SpatialAgentTest, moveToCell2) {
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::PERCEIVE));
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
 
-	this->moveToCell(&location_cell);
+	this->moveTo(&location_cell);
 
 	ASSERT_EQ(this->locationId(), location_id);
 }
@@ -389,7 +389,7 @@ TEST_F(SpatialAgentTest, moveToCell3) {
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::MOVE));
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
 
-	this->moveToCell(&location_cell);
+	this->moveTo(&location_cell);
 
 	ASSERT_EQ(this->locationId(), location_id);
 }
@@ -402,7 +402,7 @@ TEST_F(SpatialAgentTest, moveToCell4) {
 
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
 
-	this->moveToCell(&location_cell);
+	this->moveTo(&location_cell);
 
 	ASSERT_EQ(this->locationId(), location_id);
 }

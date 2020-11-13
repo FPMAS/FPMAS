@@ -37,7 +37,8 @@ namespace fpmas { namespace api { namespace model {
 	template<typename CellType>
 	class SpatialAgent : public virtual Agent {
 		protected:
-			virtual void moveToCell(CellType*) = 0;
+			virtual void moveTo(CellType*) = 0;
+			virtual void moveTo(api::graph::DistributedId id) = 0;
 			virtual CellType* locationCell() const = 0;
 
 		public:

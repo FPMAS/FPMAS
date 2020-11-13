@@ -18,7 +18,8 @@ template<typename CellType>
 class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, public testing::NiceMock<detail::MockAgentBase<MockSpatialAgent<CellType>>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
-		MOCK_METHOD(void, moveToCell, (CellType*), (override));
+		MOCK_METHOD(void, moveTo, (CellType*), (override));
+		MOCK_METHOD(void, moveTo, (fpmas::api::graph::DistributedId), (override));
 		MOCK_METHOD(void, initLocation, (CellType*), (override));
 		MOCK_METHOD(CellType*, locationCell, (), (const, override));
 		MOCK_METHOD(fpmas::api::graph::DistributedId, locationId, (), (const, override));

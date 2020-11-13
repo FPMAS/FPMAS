@@ -181,9 +181,14 @@ namespace fpmas {
 				void handleNewMove() override;
 				void handleNewPerceive() override;
 
+				using api::model::SpatialAgent<CellType>::moveTo;
+				void moveTo(graph::DistributedId id) override {
+
+				}
+
 			public:
 				void initLocation(CellType* cell) override {
-					this->moveToCell(cell);
+					this->moveTo(cell);
 				}
 
 				fpmas::graph::DistributedId locationId() const override {
@@ -264,7 +269,7 @@ namespace fpmas {
 		class SpatialAgent :
 			public SpatialAgentBase<AgentType, CellType, AgentType> {
 				protected:
-					void moveToCell(CellType* cell) override {
+					void moveTo(CellType* cell) override {
 						this->updateLocation(cell);
 					}
 			};

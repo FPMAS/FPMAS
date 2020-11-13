@@ -194,7 +194,7 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 			}
 
 			int next_index = (current_index+1) % this->model()->graph().getMpiCommunicator().getSize();
-			moveToCell(cell_index[next_index]);
+			moveTo(cell_index[next_index]);
 		}
 
 		static void to_json(nlohmann::json& j, const TestSpatialAgent* agent) {

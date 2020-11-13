@@ -23,7 +23,9 @@ namespace fpmas { namespace api { namespace model {
 
 	class GridAgent : public virtual SpatialAgent<GridCell> {
 		protected:
-			virtual void moveToPoint(DiscretePoint point) = 0;
+			using SpatialAgent<GridCell>::moveTo;
+
+			virtual void moveTo(DiscretePoint point) = 0;
 		public:
 			virtual DiscretePoint locationPoint() const = 0;
 	};
