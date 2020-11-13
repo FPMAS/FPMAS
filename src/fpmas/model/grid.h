@@ -30,7 +30,7 @@ namespace fpmas { namespace model {
 			GridCellBase(DiscretePoint location)
 				: _location(location) {}
 
-			DiscretePoint location() override {
+			DiscretePoint location() const override {
 				return _location;
 			}
 	};
@@ -49,18 +49,18 @@ namespace fpmas { namespace model {
 			friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridAgent<AgentType>>>;
 
 			private:
-			DiscretePoint current_location;
+			DiscretePoint current_location_point;
 
 			public:
 			void moveToCell(fpmas::api::model::GridCell* cell) override;
 			void moveToPoint(DiscretePoint point) override;
-			DiscretePoint currentLocation() override {return current_location;}
+			DiscretePoint locationPoint() const override {return current_location_point;}
 		};
 
 	template<typename AgentType>
 		void GridAgent<AgentType>::moveToCell(fpmas::api::model::GridCell* cell) {
 			this->updateLocation(cell);
-			current_location = cell->location();
+			current_location_point = cell->location();
 		}
 
 	template<typename AgentType>
@@ -85,7 +85,7 @@ namespace nlohmann {
 				j[0] = fpmas::api::utils::PtrWrapper<AgentType>(
 						const_cast<AgentType*>(static_cast<const AgentType*>(ptr.get())));
 				// Current base serialization
-				j[1] = ptr->current_location;
+				j[1] = ptr->current_location_point;
 			}
 
 			static Ptr from_json(const nlohmann::json& j) {
@@ -95,7 +95,7 @@ namespace nlohmann {
 					= j[0].get<fpmas::api::utils::PtrWrapper<AgentType>>();
 
 				// Initializes the current base
-				derived_ptr->current_location = j[1].get<fpmas::api::model::DiscretePoint>();
+				derived_ptr->current_location_point = j[1].get<fpmas::api::model::DiscretePoint>();
 				return derived_ptr.get();
 			}
 		};

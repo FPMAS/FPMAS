@@ -18,13 +18,13 @@ namespace fpmas { namespace api { namespace model {
 
 	class GridCell : public virtual Cell {
 		public:
-			virtual DiscretePoint location() = 0;
+			virtual DiscretePoint location() const = 0;
 	};
 
 	class GridAgent : public virtual SpatialAgent<GridCell> {
 		public:
 			virtual void moveToPoint(DiscretePoint point) = 0;
-			virtual DiscretePoint currentLocation() = 0;
+			virtual DiscretePoint locationPoint() const = 0;
 	};
 
 	template<typename CellType>

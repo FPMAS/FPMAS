@@ -171,18 +171,38 @@ TEST_F(CellBaseTest, update_perceptions) {
 }
 
 namespace test {
-	class SpatialAgent : public fpmas::model::SpatialAgent<SpatialAgent, fpmas::api::model::Cell> {
+	template<typename AgentType>
+	class SpatialAgentBase : public fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell> {
 		public:
-			SpatialAgent() {}
-			SpatialAgent(const SpatialAgent&) {}
-			SpatialAgent(SpatialAgent&&) {}
-			SpatialAgent& operator=(const SpatialAgent&) {return *this;}
-			SpatialAgent& operator=(SpatialAgent&&) {return *this;}
+			SpatialAgentBase() {}
+			SpatialAgentBase(const SpatialAgentBase&) {}
+			SpatialAgentBase(SpatialAgentBase&&) {}
+			SpatialAgentBase& operator=(const SpatialAgentBase&) {return *this;}
+			SpatialAgentBase& operator=(SpatialAgentBase&&) {return *this;}
 
 			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, mobilityRange, (), (const, override));
 			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, perceptionRange, (), (const, override));
 	};
+
+	class SpatialAgent : public SpatialAgentBase<SpatialAgent> {};
+
+	class SpatialAgentWithData : public SpatialAgentBase<SpatialAgentWithData> {
+		public:
+			int data;
+
+			static void to_json(nlohmann::json& j, const SpatialAgentWithData* agent) {
+				j = agent->data;
+			}
+			static SpatialAgentWithData* from_json(const nlohmann::json& j) {
+				auto agent = new SpatialAgentWithData;
+				agent->data = j.get<int>();
+				return agent;
+			}
+	};
+
 }
+
+FPMAS_DEFAULT_JSON(test::SpatialAgent)
 
 class SpatialAgentTest : public ::testing::Test, protected NiceMock<test::SpatialAgent> {
 	protected:
@@ -192,11 +212,12 @@ class SpatialAgentTest : public ::testing::Test, protected NiceMock<test::Spatia
 		fpmas::api::model::SpatialAgent<DefaultCell>& agent;
 		MockDistributedNode<AgentPtr> agent_node {{2, 37}};
 
+		fpmas::graph::DistributedId location_id {12, 67};
 		MockCell location_cell;
 		MockDistributedEdge<AgentPtr> location_edge;
-		MockDistributedNode<AgentPtr> location_node {{12, 67}, &location_cell};
-		MockRange<DefaultCell> mock_mobility_range;
-		MockRange<DefaultCell> mock_perception_range;
+		MockDistributedNode<AgentPtr> location_node {location_id, &location_cell};
+		NiceMock<MockRange<DefaultCell>> mock_mobility_range;
+		NiceMock<MockRange<DefaultCell>> mock_perception_range;
 
 		SpatialAgentTest() : agent(*this) {}
 
@@ -212,6 +233,9 @@ class SpatialAgentTest : public ::testing::Test, protected NiceMock<test::Spatia
 				.WillByDefault(ReturnRef(mock_mobility_range));
 			ON_CALL(*this, perceptionRange)
 				.WillByDefault(ReturnRef(mock_perception_range));
+
+			ON_CALL(location_cell, node())
+				.WillByDefault(Return(&location_node));
 		}
 
 		void TearDown() override {
@@ -279,6 +303,54 @@ TEST_F(SpatialAgentTest, location) {
 	ASSERT_EQ(this->locationCell(), &location_cell);
 }
 
+TEST_F(SpatialAgentTest, locationId) {
+	EXPECT_CALL(mock_model, link).Times(AnyNumber());
+	this->initLocation(&location_cell);
+
+	ASSERT_EQ(this->locationId(), location_id);
+}
+
+TEST_F(SpatialAgentTest, json) {
+	EXPECT_CALL(mock_model, link).Times(AnyNumber());
+	this->initLocation(&location_cell);
+
+	nlohmann::json j = fpmas::api::utils::PtrWrapper<test::SpatialAgent::JsonBase>(this);
+
+	fpmas::api::utils::PtrWrapper<test::SpatialAgent::JsonBase> ptr = j.get<decltype(ptr)>();
+
+	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<test::SpatialAgent*>(NotNull()));
+	ASSERT_EQ(ptr->locationId(), location_id);
+
+	delete ptr.get();
+}
+
+TEST_F(SpatialAgentTest, json_with_data) {
+	EXPECT_CALL(mock_model, link).Times(AnyNumber());
+	// SetUp used only for this test
+	NiceMock<test::SpatialAgentWithData> agent;
+	agent.setModel(&mock_model);
+	agent.setNode(&agent_node);
+
+	ON_CALL(agent, mobilityRange)
+		.WillByDefault(ReturnRef(mock_mobility_range));
+	ON_CALL(agent, perceptionRange)
+		.WillByDefault(ReturnRef(mock_perception_range));
+	agent.data= 7;
+	agent.initLocation(&location_cell);
+
+	// Serialization
+	nlohmann::json j = fpmas::api::utils::PtrWrapper<test::SpatialAgentWithData::JsonBase>(&agent);
+
+	// Unserialization
+	fpmas::api::utils::PtrWrapper<test::SpatialAgentWithData::JsonBase> ptr = j.get<decltype(ptr)>();
+
+	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<test::SpatialAgentWithData*>(NotNull()));
+	ASSERT_EQ(static_cast<test::SpatialAgentWithData*>(ptr.get())->data, 7);
+	ASSERT_EQ(ptr->locationId(), location_id);
+
+	delete ptr.get();
+}
+
 TEST_F(SpatialAgentTest, moveToCell1) {
 	EXPECT_CALL(mock_mobility_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(true));
@@ -290,6 +362,8 @@ TEST_F(SpatialAgentTest, moveToCell1) {
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
 
 	this->moveToCell(&location_cell);
+
+	ASSERT_EQ(this->locationId(), location_id);
 }
 
 TEST_F(SpatialAgentTest, moveToCell2) {
@@ -302,6 +376,8 @@ TEST_F(SpatialAgentTest, moveToCell2) {
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
 
 	this->moveToCell(&location_cell);
+
+	ASSERT_EQ(this->locationId(), location_id);
 }
 
 TEST_F(SpatialAgentTest, moveToCell3) {
@@ -314,6 +390,8 @@ TEST_F(SpatialAgentTest, moveToCell3) {
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
 
 	this->moveToCell(&location_cell);
+
+	ASSERT_EQ(this->locationId(), location_id);
 }
 
 TEST_F(SpatialAgentTest, moveToCell4) {
@@ -325,6 +403,8 @@ TEST_F(SpatialAgentTest, moveToCell4) {
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
 
 	this->moveToCell(&location_cell);
+
+	ASSERT_EQ(this->locationId(), location_id);
 }
 
 TEST_F(SpatialAgentTest, agentBehavior) {

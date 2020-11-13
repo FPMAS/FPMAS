@@ -33,8 +33,6 @@ namespace fpmas {
 	class Cell : public CellBase, public AgentBase<CellImpl> {
 	};
 
-	class DefaultCell : public Cell<DefaultCell> {};
-
 	enum CellGroups : api::model::GroupId {
 		CELL_UPDATE_RANGES = -1,
 		CELL_UPDATE_PERCEPTIONS = -2,
@@ -144,6 +142,9 @@ namespace fpmas {
 	template<typename AgentType, typename CellType, typename Derived = AgentType>
 	class SpatialAgentBase :
 		public virtual api::model::SpatialAgent<CellType>, public model::AgentBase<AgentType> {
+			friend nlohmann::adl_serializer<
+				api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
+
 			public:
 				typedef SpatialAgentBase<AgentType, CellType, Derived> JsonBase;
 			private:
@@ -170,10 +171,13 @@ namespace fpmas {
 							agent->model()->link(agent, cell, layer_id);
 						}
 				};
+			private:
+				graph::DistributedId current_location_id;
+
 			protected:
 				void updateLocation(CellType* cell);
 
-				CellType* locationCell() override;
+				CellType* locationCell() const override;
 				void handleNewMove() override;
 				void handleNewPerceive() override;
 
@@ -182,6 +186,9 @@ namespace fpmas {
 					this->moveToCell(cell);
 				}
 
+				fpmas::graph::DistributedId locationId() const override {
+					return current_location_id;
+				}
 		};
 
 	template<typename AgentType, typename CellType, typename Derived>
@@ -213,10 +220,12 @@ namespace fpmas {
 			if(this->perceptionRange().contains(cell, cell)) {
 				this->model()->link(this, cell, EnvironmentLayers::PERCEIVE);
 			}
+
+			this->current_location_id = cell->node()->getId();
 		}
 
 	template<typename AgentType, typename CellType, typename Derived>
-		CellType* SpatialAgentBase<AgentType, CellType, Derived>::locationCell() {
+		CellType* SpatialAgentBase<AgentType, CellType, Derived>::locationCell() const {
 			auto location = this->template outNeighbors<CellType>(
 					EnvironmentLayers::LOCATION);
 			if(location.count() > 0)
@@ -262,28 +271,28 @@ namespace fpmas {
 
 }}
 
-FPMAS_DEFAULT_JSON(fpmas::model::DefaultCell)
+namespace nlohmann {
+	template<typename AgentType, typename CellType, typename Derived>
+		struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
+			static void to_json(nlohmann::json& j, const Ptr& ptr) {
+				// Derived serialization
+				j[0] = fpmas::api::utils::PtrWrapper<Derived>(
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
+				j[1] = ptr->current_location_id;
+			}
 
-	namespace nlohmann {
-		template<typename AgentType, typename CellType, typename Derived>
-			struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
-				typedef fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
-				static void to_json(nlohmann::json& j, const Ptr& ptr) {
-					// Derived serialization
-					j[0] = fpmas::api::utils::PtrWrapper<AgentType>(
-							const_cast<AgentType*>(static_cast<const AgentType*>(ptr.get())));
-				}
+			static Ptr from_json(const nlohmann::json& j) {
+				// Derived unserialization.
+				// The current base is implicitly default initialized
+				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
+					= j[0].get<fpmas::api::utils::PtrWrapper<Derived>>();
 
-				static Ptr from_json(const nlohmann::json& j) {
-					// Derived unserialization.
-					// The current base is implicitly default initialized
-					fpmas::api::utils::PtrWrapper<AgentType> derived_ptr
-						= j[0].get<fpmas::api::utils::PtrWrapper<AgentType>>();
+				derived_ptr->current_location_id = j[1].get<fpmas::graph::DistributedId>();
+				return derived_ptr.get();
+			}
+		};
 
-					return derived_ptr.get();
-				}
-			};
-
-	}
+}
 
 #endif

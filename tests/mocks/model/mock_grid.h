@@ -6,7 +6,7 @@
 
 class MockGridCell : public fpmas::api::model::GridCell, public testing::NiceMock<MockCell> {
 	public:
-		MOCK_METHOD(fpmas::api::model::DiscretePoint, location, (), (override));
+		MOCK_METHOD(fpmas::api::model::DiscretePoint, location, (), (const, override));
 
 		virtual ~MockGridCell() {}
 };

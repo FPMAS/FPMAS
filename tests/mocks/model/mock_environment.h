@@ -20,7 +20,8 @@ class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, publi
 		MOCK_METHOD(void, act, (), (override));
 		MOCK_METHOD(void, moveToCell, (CellType*), (override));
 		MOCK_METHOD(void, initLocation, (CellType*), (override));
-		MOCK_METHOD(CellType*, locationCell, (), (override));
+		MOCK_METHOD(CellType*, locationCell, (), (const, override));
+		MOCK_METHOD(fpmas::api::graph::DistributedId, locationId, (), (const, override));
 		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, mobilityRange, (), (const, override));
 		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, perceptionRange, (), (const, override));
 		MOCK_METHOD(void, handleNewMove, (), (override));

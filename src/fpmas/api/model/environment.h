@@ -38,10 +38,11 @@ namespace fpmas { namespace api { namespace model {
 	class SpatialAgent : public virtual Agent {
 		protected:
 			virtual void moveToCell(CellType*) = 0;
-			virtual CellType* locationCell() = 0;
+			virtual CellType* locationCell() const = 0;
 
 		public:
 			virtual void initLocation(CellType*) = 0;
+			virtual api::graph::DistributedId locationId() const = 0;
 			virtual const Range<CellType>& mobilityRange() const = 0;
 			virtual const Range<CellType>& perceptionRange() const = 0;
 

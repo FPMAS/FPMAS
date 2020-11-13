@@ -5,8 +5,6 @@
 
 using namespace testing;
 using fpmas::model::GridCell;
-using model::test::GridAgent;
-using model::test::GridAgentWithData;
 
 class GridCellTest : public testing::Test {
 	protected:
@@ -25,6 +23,8 @@ class GridAgentTest : public testing::Test {
 		MockAgentNode mock_agent_node;
 
 		NiceMock<MockGridCell> mock_cell;
+		fpmas::graph::DistributedId mock_cell_id {37, 2};
+		NiceMock<MockAgentNode> mock_cell_node {mock_cell_id};
 		fpmas::model::DiscretePoint location {3, -18};
 		NiceMock<MockModel> mock_model;
 
@@ -45,22 +45,25 @@ class GridAgentTest : public testing::Test {
 
 			ON_CALL(mock_cell, location)
 				.WillByDefault(Return(location));
+			ON_CALL(mock_cell, node())
+				.WillByDefault(Return(&mock_cell_node));
 		}
 };
 
 TEST_F(GridAgentTest, location) {
 	grid_agent.moveToCell(&mock_cell);
 
-	ASSERT_EQ(grid_agent.currentLocation(), location);
+	ASSERT_EQ(grid_agent.locationPoint(), location);
 }
 
 TEST_F(GridAgentTest, json) {
 	grid_agent.moveToCell(&mock_cell);
-	nlohmann::json j = fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<GridAgent>>(&grid_agent);
+	nlohmann::json j = fpmas::api::utils::PtrWrapper<model::test::GridAgent::JsonBase>(&grid_agent);
 
-	auto unserialized_agent = j.get<fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<GridAgent>>>();
-	ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<GridAgent*>(NotNull()));
-	ASSERT_EQ(unserialized_agent->currentLocation(), location);
+	auto unserialized_agent = j.get<fpmas::api::utils::PtrWrapper<model::test::GridAgent::JsonBase>>();
+	ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<model::test::GridAgent*>(NotNull()));
+	ASSERT_EQ(static_cast<model::test::GridAgent*>(unserialized_agent.get())->locationId(), mock_cell_id);
+	ASSERT_EQ(static_cast<model::test::GridAgent*>(unserialized_agent.get())->locationPoint(), location);
 
 	delete unserialized_agent.get();
 }
@@ -75,21 +78,22 @@ TEST_F(GridAgentTest, to_json_with_data) {
 	model::test::GridAgentWithData::perception_range
 		= new NiceMock<MockRange<fpmas::api::model::GridCell>>;
 
-	GridAgentWithData agent(8);
+	model::test::GridAgentWithData agent(8);
 	agent.setModel(&mock_model);
 	agent.setNode(&mock_agent_node);
 	agent.moveToCell(&mock_cell);
 
 	/* to_json */
-	nlohmann::json j = fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<GridAgentWithData>>(&agent);
+	nlohmann::json j = fpmas::api::utils::PtrWrapper<model::test::GridAgentWithData::JsonBase>(&agent);
 
 	/* from_json */
-	auto unserialized_agent = j.get<fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<GridAgentWithData>>>();
+	auto unserialized_agent = j.get<fpmas::api::utils::PtrWrapper<model::test::GridAgentWithData::JsonBase>>();
 
 	/* check */
-	ASSERT_EQ(unserialized_agent->currentLocation(), location);
-	ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<GridAgentWithData*>(NotNull()));
-	ASSERT_EQ(dynamic_cast<GridAgentWithData*>(unserialized_agent.get())->data, 8);
+	ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<model::test::GridAgentWithData*>(NotNull()));
+	ASSERT_EQ(static_cast<model::test::GridAgentWithData*>(unserialized_agent.get())->locationId(), mock_cell_id);
+	ASSERT_EQ(static_cast<model::test::GridAgentWithData*>(unserialized_agent.get())->locationPoint(), location);
+	ASSERT_EQ(static_cast<model::test::GridAgentWithData*>(unserialized_agent.get())->data, 8);
 
 	delete unserialized_agent.get();
 
