@@ -5,19 +5,8 @@
 #include "fpmas/utils/macros.h"
 
 namespace fpmas { namespace communication {
-	MpiCommunicator::MpiCommunicator() {
-		MPI_Group worldGroup;
-		MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);
-		MPI_Group_union(worldGroup, MPI_GROUP_EMPTY, &this->group);
-		MPI_Comm_create(MPI_COMM_WORLD, this->group, &this->comm);
 
-		MPI_Comm_rank(this->comm, &this->rank);
-		MPI_Comm_size(this->comm, &this->size);
-
-		MPI_Group_free(&worldGroup);
-	}
-
-	void MpiCommunicator::convertStatus(MPI_Status& mpi_status, Status& status, MPI_Datatype datatype) {
+	void MpiCommunicatorBase::convertStatus(MPI_Status& mpi_status, Status& status, MPI_Datatype datatype) {
 		MPI_Get_count(&mpi_status, datatype, &status.item_count);
 		int size;
 		MPI_Type_size(datatype, &size);
@@ -26,31 +15,31 @@ namespace fpmas { namespace communication {
 		status.tag = mpi_status.MPI_TAG;
 	}
 
-	MPI_Comm MpiCommunicator::getMpiComm() const {
+	MPI_Comm MpiCommunicatorBase::getMpiComm() const {
 		return this->comm;
 	}
 
-	MPI_Group MpiCommunicator::getMpiGroup() const {
+	MPI_Group MpiCommunicatorBase::getMpiGroup() const {
 		return this->group;
 	}
 
-	int MpiCommunicator::getRank() const {
+	int MpiCommunicatorBase::getRank() const {
 		return this->rank;
 	}
 
-	int MpiCommunicator::getSize() const {
+	int MpiCommunicatorBase::getSize() const {
 		return this->size;
 	}
 
-	void MpiCommunicator::send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) {
+	void MpiCommunicatorBase::send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) {
 		MPI_Send(data, count, datatype, destination, tag, this->comm);
 	}
 
-	void MpiCommunicator::send(int destination, int tag) {
+	void MpiCommunicatorBase::send(int destination, int tag) {
 		MPI_Send(NULL, 0, MPI_CHAR, destination, tag, this->comm);
 	}
 
-	void MpiCommunicator::Issend(
+	void MpiCommunicatorBase::Issend(
 			const void* data, int count, MPI_Datatype datatype, int destination, int tag, Request& req) {
 		int type_size;
 		MPI_Type_size(datatype, &type_size);
@@ -60,11 +49,11 @@ namespace fpmas { namespace communication {
 		MPI_Issend(req.__data->buffer, count, datatype, destination, tag, this->comm, &req.__mpi_request);
 	}
 
-	void MpiCommunicator::Issend(int destination, int tag, Request& req) {
+	void MpiCommunicatorBase::Issend(int destination, int tag, Request& req) {
 		MPI_Issend(NULL, 0, MPI_CHAR, destination, tag, this->comm, &req.__mpi_request);
 	}
 
-	void MpiCommunicator::recv(int source, int tag, Status& status) {
+	void MpiCommunicatorBase::recv(int source, int tag, Status& status) {
 		MPI_Status __status;
 		MPI_Recv(NULL, 0, IGNORE_TYPE, source, tag, this->comm, &__status);
 		status.item_count = 0;
@@ -73,20 +62,20 @@ namespace fpmas { namespace communication {
 		status.tag = __status.MPI_TAG;
 	}
 
-	void MpiCommunicator::recv(
+	void MpiCommunicatorBase::recv(
 			void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status) {
 		MPI_Status __status {};
 		MPI_Recv(buffer, count, datatype, source, tag, this->comm, &__status);
 		convertStatus(__status, status, datatype);
 	}
 
-	void MpiCommunicator::probe(MPI_Datatype type, int source, int tag, Status& status) {
+	void MpiCommunicatorBase::probe(MPI_Datatype type, int source, int tag, Status& status) {
 		MPI_Status __status {};
 		MPI_Probe(source, tag, this->comm, &__status);
 		convertStatus(__status, status, type);
 	}
 
-	bool MpiCommunicator::Iprobe(MPI_Datatype type, int source, int tag, Status& status) {
+	bool MpiCommunicatorBase::Iprobe(MPI_Datatype type, int source, int tag, Status& status) {
 		int flag;
 		MPI_Status __status {};
 		MPI_Iprobe(source, tag, this->comm, &flag, &__status);
@@ -94,7 +83,7 @@ namespace fpmas { namespace communication {
 		return flag > 0;
 	}
 
-	bool MpiCommunicator::test(Request& req) {
+	bool MpiCommunicatorBase::test(Request& req) {
 		MPI_Status status;
 		int flag;
 		MPI_Test(&req.__mpi_request, &flag, &status);
@@ -104,14 +93,14 @@ namespace fpmas { namespace communication {
 		return flag > 0;
 	}
 
-	void MpiCommunicator::wait(Request& req) {
+	void MpiCommunicatorBase::wait(Request& req) {
 		MPI_Status status;
 		MPI_Wait(&req.__mpi_request, &status);
 		req.free();
 	}
 
 	std::unordered_map<int, DataPack> 
-		MpiCommunicator::allToAll (
+		MpiCommunicatorBase::allToAll (
 				std::unordered_map<int, DataPack> 
 				data_pack, MPI_Datatype datatype) {
 			// Migrate
@@ -178,7 +167,7 @@ namespace fpmas { namespace communication {
 			return imported_data_pack;
 		}
 
-	std::vector<DataPack> MpiCommunicator::gather(DataPack data, MPI_Datatype type, int root) {
+	std::vector<DataPack> MpiCommunicatorBase::gather(DataPack data, MPI_Datatype type, int root) {
 
 		int type_size;
 		MPI_Type_size(type, &type_size);
@@ -233,7 +222,7 @@ namespace fpmas { namespace communication {
 		return imported_data_pack;
 	}
 
-	DataPack MpiCommunicator::bcast(DataPack data, MPI_Datatype datatype, int root) {
+	DataPack MpiCommunicatorBase::bcast(DataPack data, MPI_Datatype datatype, int root) {
 		// Procs other that root don't know how many items will be received, so
 		// we broadcast items count from root first
 		int count = data.count;
@@ -252,12 +241,26 @@ namespace fpmas { namespace communication {
 		return in_out_data;
 	}
 
-	void MpiCommunicator::barrier() {
+	void MpiCommunicatorBase::barrier() {
 		MPI_Barrier(this->comm);
+	}
+
+	MpiCommunicator::MpiCommunicator() {
+		MPI_Group worldGroup;
+		MPI_Comm_group(MPI_COMM_WORLD, &worldGroup);
+		MPI_Group_union(worldGroup, MPI_GROUP_EMPTY, &this->group);
+		MPI_Comm_create(MPI_COMM_WORLD, this->group, &this->comm);
+
+		MPI_Comm_rank(this->comm, &this->rank);
+		MPI_Comm_size(this->comm, &this->size);
+
+		MPI_Group_free(&worldGroup);
 	}
 
 	MpiCommunicator::~MpiCommunicator() {
 		MPI_Group_free(&this->group);
 		MPI_Comm_free(&this->comm);
 	}
+
+	MpiCommWorld MpiCommunicator::WORLD;
 }}

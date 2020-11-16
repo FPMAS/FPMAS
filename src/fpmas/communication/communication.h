@@ -12,6 +12,10 @@
 #include "fpmas/utils/log.h"
 #include "fpmas/api/communication/communication.h"
 
+namespace fpmas {
+	void init(int argc, char** argv);
+}
+
 namespace fpmas { namespace communication {
 	using api::communication::DataPack;
 	using api::communication::Request;
@@ -21,28 +25,18 @@ namespace fpmas { namespace communication {
 	 * fpmas::api::communication::MpiCommunicator implementation, based on
 	 * the system MPI library (i.e. `#include <mpi.h>`).
 	 */
-	class MpiCommunicator : public virtual api::communication::MpiCommunicator {
-		private:
+	class MpiCommunicatorBase : public virtual api::communication::MpiCommunicator {
+		protected:
 			int size;
 			int rank;
 
 			MPI_Group group;
 			MPI_Comm comm;
 
+		private:
 			static void convertStatus(MPI_Status&, Status&, MPI_Datatype datatype);
 
 		public:
-			/**
-			 * Default MpiCommunicator constructor.
-			 *
-			 * Builds an MPI_Group and the associated MPI_Comm as a copy of the
-			 * MPI_COMM_WORLD communicator.
-			 */
-			MpiCommunicator();
-
-			MpiCommunicator(const MpiCommunicator&) = delete;
-			MpiCommunicator& operator=(const MpiCommunicator&) = delete;
-
 			/**
 			 * Returns the built MPI communicator.
 			 *
@@ -201,6 +195,33 @@ namespace fpmas { namespace communication {
 			 * Performs an MPI_Barrier operation.
 			 */
 			void barrier() override;
+	};
+
+	class MpiCommWorld : public MpiCommunicatorBase {
+		friend void fpmas::init(int argc, char **argv);
+		private:
+			void init() {
+				this->comm = MPI_COMM_WORLD;
+				MPI_Comm_group(MPI_COMM_WORLD, &this->group);
+				MPI_Comm_size(MPI_COMM_WORLD, &this->size);
+				MPI_Comm_rank(MPI_COMM_WORLD, &this->rank);
+			};
+	};
+
+	class MpiCommunicator : public MpiCommunicatorBase {
+		public:
+			static MpiCommWorld WORLD;
+			/**
+			 * Default MpiCommunicator constructor.
+			 *
+			 * Builds an MPI_Group and the associated MPI_Comm as a copy of the
+			 * MPI_COMM_WORLD communicator.
+			 */
+			MpiCommunicator();
+
+			MpiCommunicator(const MpiCommunicator&) = delete;
+			MpiCommunicator& operator=(const MpiCommunicator&) = delete;
+
 
 			/**
 			 * MpiCommunicator destructor.
@@ -208,7 +229,6 @@ namespace fpmas { namespace communication {
 			 * Frees allocated MPI resources.
 			 */
 			~MpiCommunicator();
-
 	};
 
 	/**

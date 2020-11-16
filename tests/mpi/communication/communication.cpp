@@ -55,6 +55,25 @@ TEST(MpiCommunicatorTest, probe_any_source) {
 	}
 }
 
+TEST(MpiCommunicator, WORLD) {
+	int comm_size;
+	MPI_Comm_size(MPI_COMM_WORLD, &comm_size);
+	int comm_rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &comm_rank);
+
+	ASSERT_EQ(MpiCommunicator::WORLD.getSize(), comm_size);
+	ASSERT_EQ(MpiCommunicator::WORLD.getRank(), comm_rank);
+	ASSERT_EQ(MpiCommunicator::WORLD.getMpiComm(), MPI_COMM_WORLD);
+
+	fpmas::communication::DataPack pack(1, sizeof(int));
+	int data = 8;
+	std::memcpy(pack.buffer, &data, sizeof(int));
+
+	auto recv = MpiCommunicator::WORLD.bcast(pack, MPI_INT, 0);
+
+	ASSERT_EQ(*((int *) recv.buffer), data);
+}
+
 TEST(TypedMpiTest, simple_migration_test) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
