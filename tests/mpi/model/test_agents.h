@@ -2,6 +2,7 @@
 #define FPMAS_TEST_AGENTS
 
 #include "fpmas/model/environment.h"
+#include "fpmas/model/grid.h"
 #include "../mocks/model/mock_model.h"
 
 using testing::Ge;
@@ -214,7 +215,7 @@ FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
 
 #define TEST_AGENTS ReaderAgent, WriterAgent, LinkerAgent,\
 		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\
-		TestCell, TestSpatialAgent
+		TestCell, TestSpatialAgent, fpmas::model::GridCell::JsonBase
 
 FPMAS_JSON_SET_UP(TEST_AGENTS)
 

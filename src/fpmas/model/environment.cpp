@@ -78,5 +78,61 @@ namespace fpmas {
 				this->model()->unlink(agent.edge());
 			}
 		}
+
+		Environment::Environment(api::model::Model& model) :
+			cell_behavior_group(model.buildGroup(
+						CELL_UPDATE_RANGES, cell_behaviors)),
+			spatial_agent_group(model.buildGroup(
+						AGENT_CROP_RANGES, spatial_agent_behaviors)),
+			update_perceptions_group(model.buildGroup(
+						CELL_UPDATE_PERCEPTIONS, update_perceptions_behavior)) {
+			}
+
+		void Environment::add(api::model::SpatialAgentBase* agent) {
+			spatial_agent_group.add(agent);
+		}
+
+		void Environment::add(api::model::Cell* cell) {
+			cell_behavior_group.add(cell);
+			update_perceptions_group.add(cell);
+		}
+
+		std::vector<api::model::Cell*> Environment::cells() {
+			std::vector<api::model::Cell*> cells;
+			for(auto agent : cell_behavior_group.localAgents())
+				cells.push_back(dynamic_cast<api::model::Cell*>(agent));
+			return cells;
+		}
+
+		api::scheduler::JobList Environment::initLocationAlgorithm(
+				unsigned int max_perception_range,
+				unsigned int max_mobility_range) {
+			api::scheduler::JobList _jobs;
+
+			for(unsigned int i = 0; i < std::max(max_perception_range, max_mobility_range); i++) {
+				_jobs.push_back(cell_behavior_group.job());
+				_jobs.push_back(spatial_agent_group.job());
+			}
+
+			_jobs.push_back(update_perceptions_group.job());
+			return _jobs;
+		}
+
+		api::scheduler::JobList Environment::distributedMoveAlgorithm(
+					const AgentGroup& movable_agents,
+					unsigned int max_perception_range,
+					unsigned int max_mobility_range) {
+			api::scheduler::JobList _jobs;
+
+			_jobs.push_back(movable_agents.job());
+
+			api::scheduler::JobList update_location_algorithm
+				= initLocationAlgorithm(max_perception_range, max_mobility_range);
+			for(auto job : update_location_algorithm)
+				_jobs.push_back(job);
+
+			return _jobs;
+		}
+
 	}
 }

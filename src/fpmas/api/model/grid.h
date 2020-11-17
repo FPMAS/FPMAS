@@ -30,15 +30,17 @@ namespace fpmas { namespace api { namespace model {
 			virtual DiscretePoint locationPoint() const = 0;
 	};
 
-	template<typename CellType>
-	class EnvironmentBuilder {
+	class GridCellFactory {
 		public:
-			virtual void build(Environment<CellType>& environment) = 0;
+			virtual GridCell* build(DiscretePoint location) = 0;
 	};
-
 }}}
 
 namespace fpmas {
 	std::string to_string(const api::model::DiscretePoint& point);
+
+	namespace api { namespace model {
+		std::ostream& operator<<(std::ostream& os, const DiscretePoint& point);
+	}}
 }
 #endif

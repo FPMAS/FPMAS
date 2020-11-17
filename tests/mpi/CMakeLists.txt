@@ -10,6 +10,7 @@ set(SOURCES
 	model/model.cpp
 	model/environment.cpp
 	model/test_agents.cpp
+	model/grid.cpp
 	)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})

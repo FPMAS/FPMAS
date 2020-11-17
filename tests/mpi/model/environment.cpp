@@ -12,7 +12,7 @@ class EnvironmentTestBase : public ::testing::Test {
 	protected:
 		unsigned int range_size;
 		fpmas::model::Model<SYNC_MODE> model;
-		fpmas::model::Environment<TestCell> environment {model};
+		fpmas::model::Environment environment {model};
 		fpmas::model::AgentGroup& agent_group {model.buildGroup(0, TestSpatialAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
 		std::unordered_map<int, fpmas::api::graph::DistributedId> index_to_agent_id;
@@ -73,7 +73,7 @@ class EnvironmentTestBase : public ::testing::Test {
 		void checkModelState() {
 			int comm_size = model.getMpiCommunicator().getSize();
 
-			for(auto cell : environment.localCells()) {
+			for(auto cell : environment.cells()) {
 				if(comm_size > 1)
 					if(comm_size == 2)
 						ASSERT_THAT(cell->neighborhood(), SizeIs(1));

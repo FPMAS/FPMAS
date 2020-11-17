@@ -17,6 +17,18 @@ TEST_F(GridCellTest, location) {
 	ASSERT_EQ(grid_cell.location(), fpmas::model::DiscretePoint(12, -7));
 }
 
+TEST_F(GridCellTest, json) {
+	nlohmann::json j
+		= fpmas::api::utils::PtrWrapper<GridCell::JsonBase>(&grid_cell);
+
+	auto ptr = j.get<fpmas::api::utils::PtrWrapper<GridCell::JsonBase>>();
+	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<GridCell*>(NotNull()));
+	ASSERT_EQ(
+			dynamic_cast<GridCell*>(ptr.get())->location(),
+			fpmas::model::DiscretePoint(12, -7));
+	ptr.release();
+}
+
 
 class GridAgentTest : public testing::Test, protected model::test::GridAgent {
 	protected:

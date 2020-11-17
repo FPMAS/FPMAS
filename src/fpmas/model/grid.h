@@ -21,12 +21,18 @@ namespace nlohmann {
 namespace fpmas { namespace model {
 
 	using api::model::DiscretePoint;
+	using api::model::DiscreteCoordinate;
 
-	class GridCellBase : public virtual api::model::GridCell {
+	template<typename GridCellType, typename Derived = GridCellType>
+	class GridCellBase : public api::model::GridCell, public Cell<GridCellType> {
+		friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridCellBase<GridCellType, Derived>>>;
+
 		private:
 			DiscretePoint _location;
-
 		public:
+			typedef GridCellBase<GridCellType, Derived> JsonBase;
+			GridCellBase() {}
+
 			GridCellBase(DiscretePoint location)
 				: _location(location) {}
 
@@ -35,17 +41,18 @@ namespace fpmas { namespace model {
 			}
 	};
 
-	class GridCell : public GridCellBase, public Cell<GridCell> {
+	class GridCell : public GridCellBase<GridCell> {
 		public:
+			GridCell() {}
 			GridCell(DiscretePoint location)
-				: GridCellBase(location) {}
+				: GridCellBase<GridCell>(location) {}
 
 	};
 
-	template<typename AgentType>
+	template<typename AgentType, typename Derived = AgentType>
 	class GridAgent :
 		public api::model::GridAgent,
-		public SpatialAgentBase<AgentType, fpmas::api::model::GridCell, GridAgent<AgentType>> {
+		public SpatialAgentBase<AgentType, fpmas::api::model::GridCell, GridAgent<AgentType, Derived>> {
 			friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridAgent<AgentType>>>;
 
 			private:
@@ -59,14 +66,14 @@ namespace fpmas { namespace model {
 			DiscretePoint locationPoint() const override {return current_location_point;}
 		};
 
-	template<typename AgentType>
-		void GridAgent<AgentType>::moveTo(api::model::GridCell* cell) {
+	template<typename AgentType, typename Derived>
+		void GridAgent<AgentType, Derived>::moveTo(api::model::GridCell* cell) {
 			this->updateLocation(cell);
 			current_location_point = cell->location();
 		}
 
-	template<typename AgentType>
-		void GridAgent<AgentType>::moveTo(DiscretePoint point) {
+	template<typename AgentType, typename Derived>
+		void GridAgent<AgentType, Derived>::moveTo(DiscretePoint point) {
 			bool found = false;
 			auto mobility_field = this->template outNeighbors<fpmas::api::model::GridCell>(EnvironmentLayers::MOVE);
 			auto it = mobility_field.begin();
@@ -83,23 +90,71 @@ namespace fpmas { namespace model {
 				throw api::model::OutOfMobilityFieldException(this->node()->getId(), this->locationPoint(), point);
 		}
 
-	class VonNeumannNeighborhood : public api::model::EnvironmentBuilder<api::model::GridCell> {
+	template<typename GridCellType = GridCell>
+		class GridCellFactory : public api::model::GridCellFactory {
+			public:
+				GridCellType* build(DiscretePoint location) override {
+					return new GridCellType(location);
+				}
+		};
 
+	class VonNeumannNeighborhood : public api::model::EnvironmentBuilder {
+		private:
+			api::model::GridCellFactory& cell_factory;
+			DiscreteCoordinate width;
+			DiscreteCoordinate height;
+
+		public:
+			VonNeumannNeighborhood(
+					api::model::GridCellFactory& cell_factory,
+					DiscreteCoordinate width,
+					DiscreteCoordinate height)
+				: cell_factory(cell_factory), width(width), height(height) {}
+
+			void build(
+					api::model::Model& model,
+					api::model::Environment& environment);
 	};
+
 }}
+
+FPMAS_DEFAULT_JSON(fpmas::model::GridCell)
 
 namespace fpmas { namespace api { namespace model {
 	bool operator==(const DiscretePoint& p1, const DiscretePoint& p2);
 }}}
 
 namespace nlohmann {
-	template<typename AgentType>
-		struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType>>> {
-			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType>> Ptr;
+	template<typename GridCellType, typename Derived>
+		struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GridCellBase<GridCellType, Derived>>> {
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GridCellBase<GridCellType, Derived>> Ptr;
 			static void to_json(nlohmann::json& j, const Ptr& ptr) {
 				// Derived serialization
-				j[0] = fpmas::api::utils::PtrWrapper<AgentType>(
-						const_cast<AgentType*>(static_cast<const AgentType*>(ptr.get())));
+				j[0] = fpmas::api::utils::PtrWrapper<Derived>(
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
+				// Current base serialization
+				j[1] = ptr->_location;
+			}
+
+			static Ptr from_json(const nlohmann::json& j) {
+				// Derived unserialization.
+				// The current base is implicitly default initialized
+				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
+					= j[0].get<fpmas::api::utils::PtrWrapper<Derived>>();
+
+				// Initializes the current base
+				derived_ptr->_location = j[1].get<fpmas::api::model::DiscretePoint>();
+				return derived_ptr.get();
+			}
+		};
+
+	template<typename AgentType, typename Derived>
+		struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType, Derived>>> {
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType, Derived>> Ptr;
+			static void to_json(nlohmann::json& j, const Ptr& ptr) {
+				// Derived serialization
+				j[0] = fpmas::api::utils::PtrWrapper<Derived>(
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
 				// Current base serialization
 				j[1] = ptr->current_location_point;
 			}
@@ -107,8 +162,8 @@ namespace nlohmann {
 			static Ptr from_json(const nlohmann::json& j) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
-				fpmas::api::utils::PtrWrapper<AgentType> derived_ptr
-					= j[0].get<fpmas::api::utils::PtrWrapper<AgentType>>();
+				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
+					= j[0].get<fpmas::api::utils::PtrWrapper<Derived>>();
 
 				// Initializes the current base
 				derived_ptr->current_location_point = j[1].get<fpmas::api::model::DiscretePoint>();

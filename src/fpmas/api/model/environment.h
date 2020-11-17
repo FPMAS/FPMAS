@@ -16,15 +16,19 @@ namespace fpmas { namespace api { namespace model {
 		NEW_PERCEIVE = -8
 	};
 
-	class Cell : public virtual Agent {
+	class CellBehavior {
 		public:
-			virtual std::vector<Cell*> neighborhood() = 0;
-
 			virtual void handleNewLocation() = 0;
 			virtual void handleMove() = 0;
 			virtual void handlePerceive() = 0;
 
 			virtual void updatePerceptions() = 0;
+	};
+
+	class Cell : public virtual Agent, public CellBehavior {
+		public:
+			virtual std::vector<Cell*> neighborhood() = 0;
+
 	};
 
 	template<typename CellType>
@@ -34,8 +38,18 @@ namespace fpmas { namespace api { namespace model {
 			virtual bool contains(CellType* root, CellType* cell) const = 0;
 	};
 
+	class SpatialAgentBehavior {
+		public:
+			virtual void handleNewMove() = 0;
+			virtual void handleNewPerceive() = 0;
+	};
+
+	class SpatialAgentBase : public virtual Agent, public SpatialAgentBehavior {
+
+	};
+
 	template<typename CellType>
-	class SpatialAgent : public virtual Agent {
+	class SpatialAgent : public SpatialAgentBase {
 		protected:
 			virtual void moveTo(CellType*) = 0;
 			virtual void moveTo(api::graph::DistributedId id) = 0;
@@ -46,17 +60,13 @@ namespace fpmas { namespace api { namespace model {
 			virtual api::graph::DistributedId locationId() const = 0;
 			virtual const Range<CellType>& mobilityRange() const = 0;
 			virtual const Range<CellType>& perceptionRange() const = 0;
-
-			virtual void handleNewMove() = 0;
-			virtual void handleNewPerceive() = 0;
 	};
 
-	template<typename CellType>
 	class Environment {
 		public:
-			virtual void add(SpatialAgent<CellType>* agent) = 0;
-			virtual void add(CellType* cell) = 0;
-			virtual std::vector<CellType*> localCells() = 0;
+			virtual void add(SpatialAgentBase* agent) = 0;
+			virtual void add(Cell* cell) = 0;
+			virtual std::vector<Cell*> cells() = 0;
 
 			virtual api::scheduler::JobList initLocationAlgorithm(
 					unsigned int max_perception_range,
@@ -67,6 +77,14 @@ namespace fpmas { namespace api { namespace model {
 					unsigned int max_mobility_range) = 0;
 
 	};
+
+	class EnvironmentBuilder {
+		public:
+			virtual void build(
+					Model& model,
+					Environment& environment) = 0;
+	};
+
 
 }}}
 #endif

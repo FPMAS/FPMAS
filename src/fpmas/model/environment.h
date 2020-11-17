@@ -30,8 +30,8 @@ namespace fpmas {
 			void updatePerceptions() override;
 	};
 
-	template<typename CellImpl>
-	class Cell : public CellBase, public AgentBase<CellImpl> {
+	template<typename CellType>
+	class Cell : public CellBase, public AgentBase<CellType> {
 	};
 
 	enum CellGroups : api::model::GroupId {
@@ -40,31 +40,30 @@ namespace fpmas {
 		AGENT_CROP_RANGES = -3,
 	};
 
-	template<typename CellType>
-	class Environment : public api::model::Environment<CellType> {
+	class Environment : public api::model::Environment {
 		private:
 			AgentGroup& cell_behavior_group;
-			Behavior<CellType> cell_behaviors {
-				&CellType::handleNewLocation,
-				&CellType::handleMove,
-				&CellType::handlePerceive
+			Behavior<api::model::CellBehavior> cell_behaviors {
+				&api::model::CellBehavior::handleNewLocation,
+				&api::model::CellBehavior::handleMove,
+				&api::model::CellBehavior::handlePerceive
 			};
 			AgentGroup& spatial_agent_group;
-			Behavior<api::model::SpatialAgent<CellType>> spatial_agent_behaviors {
-				&api::model::SpatialAgent<CellType>::handleNewMove,
-				&api::model::SpatialAgent<CellType>::handleNewPerceive
+			Behavior<api::model::SpatialAgentBehavior> spatial_agent_behaviors {
+				&api::model::SpatialAgentBehavior::handleNewMove,
+				&api::model::SpatialAgentBehavior::handleNewPerceive
 			};
 			AgentGroup& update_perceptions_group;
-			Behavior<CellType> update_perceptions_behavior {
-				&CellType::updatePerceptions
+			Behavior<api::model::CellBehavior> update_perceptions_behavior {
+				&api::model::CellBehavior::updatePerceptions
 			};
 
 		public:
 			Environment(api::model::Model& model);
 
-			void add(api::model::SpatialAgent<CellType>* agent) override;
-			void add(CellType* cell) override;
-			std::vector<CellType*> localCells() override;
+			void add(api::model::SpatialAgentBase* agent) override;
+			void add(api::model::Cell* cell) override;
+			std::vector<api::model::Cell*> cells() override;
 
 			api::scheduler::JobList initLocationAlgorithm(
 					unsigned int max_perception_range,
@@ -76,68 +75,6 @@ namespace fpmas {
 					unsigned int max_mobility_range) override;
 
 	};
-
-	template<typename CellType>
-		Environment<CellType>::Environment(api::model::Model& model) :
-			cell_behavior_group(model.buildGroup(
-						CELL_UPDATE_RANGES, cell_behaviors)),
-			spatial_agent_group(model.buildGroup(
-						AGENT_CROP_RANGES, spatial_agent_behaviors)),
-			update_perceptions_group(model.buildGroup(
-						CELL_UPDATE_PERCEPTIONS, update_perceptions_behavior)) {
-			}
-
-	template<typename CellType>
-		void Environment<CellType>::add(api::model::SpatialAgent<CellType>* agent) {
-			spatial_agent_group.add(agent);
-		}
-
-	template<typename CellType>
-		void Environment<CellType>::add(CellType* cell) {
-			cell_behavior_group.add(cell);
-			update_perceptions_group.add(cell);
-		}
-
-	template<typename CellType>
-		std::vector<CellType*> Environment<CellType>::localCells() {
-			std::vector<CellType*> cells;
-			for(auto agent : cell_behavior_group.localAgents())
-				cells.push_back(dynamic_cast<CellType*>(agent));
-			return cells;
-		}
-
-	template<typename CellType>
-		api::scheduler::JobList Environment<CellType>::initLocationAlgorithm(
-				unsigned int max_perception_range,
-				unsigned int max_mobility_range) {
-			api::scheduler::JobList _jobs;
-
-			for(unsigned int i = 0; i < std::max(max_perception_range, max_mobility_range); i++) {
-				_jobs.push_back(cell_behavior_group.job());
-				_jobs.push_back(spatial_agent_group.job());
-			}
-
-			_jobs.push_back(update_perceptions_group.job());
-			return _jobs;
-		}
-
-	template<typename CellType>
-		api::scheduler::JobList Environment<CellType>::distributedMoveAlgorithm(
-					const AgentGroup& movable_agents,
-					unsigned int max_perception_range,
-					unsigned int max_mobility_range) {
-			api::scheduler::JobList _jobs;
-
-			_jobs.push_back(movable_agents.job());
-
-			api::scheduler::JobList update_location_algorithm
-				= initLocationAlgorithm(max_perception_range, max_mobility_range);
-			for(auto job : update_location_algorithm)
-				_jobs.push_back(job);
-
-			return _jobs;
-		}
-
 
 	
 	template<typename AgentType, typename CellType, typename Derived = AgentType>
@@ -282,11 +219,11 @@ namespace fpmas {
 				throw api::model::OutOfMobilityFieldException(this->node()->getId(), cell_id);
 		}
 
-	template<typename AgentType, typename CellType>
+	template<typename AgentType, typename CellType, typename Derived = AgentType>
 		class SpatialAgent :
-			public SpatialAgentBase<AgentType, CellType, AgentType> {
+			public SpatialAgentBase<AgentType, CellType, Derived> {
 				protected:
-					using SpatialAgentBase<AgentType, CellType, AgentType>::moveTo;
+					using SpatialAgentBase<AgentType, CellType, Derived>::moveTo;
 
 					void moveTo(CellType* cell) override {
 						this->updateLocation(cell);
