@@ -104,6 +104,12 @@ namespace fpmas { namespace model {
 			DiscreteCoordinate width;
 			DiscreteCoordinate height;
 
+			void buildLocalGrid(
+					api::model::Model& model,
+					api::model::Environment& environment,
+					DiscreteCoordinate min_x, DiscreteCoordinate max_x,
+					DiscreteCoordinate min_y, DiscreteCoordinate max_y);
+
 		public:
 			VonNeumannNeighborhood(
 					api::model::GridCellFactory& cell_factory,

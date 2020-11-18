@@ -22,8 +22,9 @@ TEST_F(VonNeumannNeighborhoodTest, trivial) {
 }
 
 TEST_F(VonNeumannNeighborhoodTest, build) {
-	int n = fpmas::communication::MpiCommunicator::WORLD.getSize() * 10;
-	VonNeumannNeighborhood grid_builder(cell_factory, n, n);
+	int X = fpmas::communication::MpiCommunicator::WORLD.getSize() * 10;
+	int Y = 2*X;
+	VonNeumannNeighborhood grid_builder(cell_factory, X, Y);
 
 	fpmas::communication::TypedMpi<std::vector<fpmas::model::DiscretePoint>> mpi(
 			fpmas::communication::MpiCommunicator::WORLD);
@@ -43,11 +44,11 @@ TEST_F(VonNeumannNeighborhoodTest, build) {
 		for(auto coordinates : recv_coordinates)
 			cell_coordinates.insert(
 					cell_coordinates.end(), coordinates.begin(), coordinates.end());
-		ASSERT_THAT(cell_coordinates, SizeIs(n * n));
+		ASSERT_THAT(cell_coordinates, SizeIs(X * Y));
 
 		std::vector<fpmas::model::DiscretePoint> expected_coordinates;
-		for(fpmas::model::DiscreteCoordinate i = 0; i < n; i++)
-			for(fpmas::model::DiscreteCoordinate j = 0; j < n; j++)
+		for(fpmas::model::DiscreteCoordinate i = 0; i < X; i++)
+			for(fpmas::model::DiscreteCoordinate j = 0; j < Y; j++)
 				expected_coordinates.push_back({i, j});
 		ASSERT_THAT(cell_coordinates, UnorderedElementsAreArray(expected_coordinates));
 	}
@@ -62,8 +63,8 @@ TEST_F(VonNeumannNeighborhoodTest, build) {
 			neighbor_points.push_back(
 					dynamic_cast<fpmas::api::model::GridCell*>(cell)->location());
 
-		if(location.x > 0 && location.x < n-1
-				&& location.y > 0 && location.y < n-1) {
+		if(location.x > 0 && location.x < X-1
+				&& location.y > 0 && location.y < Y-1) {
 			ASSERT_THAT(neighbor_points, UnorderedElementsAre(
 						fpmas::model::DiscretePoint(location.x, location.y-1),
 						fpmas::model::DiscretePoint(location.x, location.y+1),
@@ -77,30 +78,30 @@ TEST_F(VonNeumannNeighborhoodTest, build) {
 				ASSERT_THAT(neighbor_points, UnorderedElementsAre(
 							fpmas::model::DiscretePoint(0, 1),
 							fpmas::model::DiscretePoint(1, 0)));
-			} else if(location.y == n-1) {
+			} else if(location.y == Y-1) {
 				ASSERT_THAT(neighbor_points, UnorderedElementsAre(
-							fpmas::model::DiscretePoint(0, n-2),
-							fpmas::model::DiscretePoint(1, n-1)));
+							fpmas::model::DiscretePoint(0, Y-2),
+							fpmas::model::DiscretePoint(1, Y-1)));
 			} else {
 				ASSERT_THAT(neighbor_points, UnorderedElementsAre(
 							fpmas::model::DiscretePoint(0, location.y-1),
 							fpmas::model::DiscretePoint(0, location.y+1),
 							fpmas::model::DiscretePoint(1, location.y)));
 			}
-		} else if (location.x == n-1) {
+		} else if (location.x == X-1) {
 			if(location.y == 0) {
 				ASSERT_THAT(neighbor_points, UnorderedElementsAre(
-							fpmas::model::DiscretePoint(n-2, 0),
-							fpmas::model::DiscretePoint(n-1, 1)));
-			} else if(location.y == n-1) {
+							fpmas::model::DiscretePoint(X-2, 0),
+							fpmas::model::DiscretePoint(X-1, 1)));
+			} else if(location.y == Y-1) {
 				ASSERT_THAT(neighbor_points, UnorderedElementsAre(
-							fpmas::model::DiscretePoint(n-1, n-2),
-							fpmas::model::DiscretePoint(n-2, n-1)));
+							fpmas::model::DiscretePoint(X-1, Y-2),
+							fpmas::model::DiscretePoint(X-2, Y-1)));
 			} else {
 				ASSERT_THAT(neighbor_points, UnorderedElementsAre(
-							fpmas::model::DiscretePoint(n-1, location.y-1),
-							fpmas::model::DiscretePoint(n-1, location.y+1),
-							fpmas::model::DiscretePoint(n-2, location.y)));
+							fpmas::model::DiscretePoint(X-1, location.y-1),
+							fpmas::model::DiscretePoint(X-1, location.y+1),
+							fpmas::model::DiscretePoint(X-2, location.y)));
 			}
 		} else {
 			if(location.y == 0) {
@@ -108,11 +109,11 @@ TEST_F(VonNeumannNeighborhoodTest, build) {
 							fpmas::model::DiscretePoint(location.x-1, 0),
 							fpmas::model::DiscretePoint(location.x+1, 0),
 							fpmas::model::DiscretePoint(location.x, 1)));
-			} else if (location.y == n-1) {
+			} else if (location.y == Y-1) {
 				ASSERT_THAT(neighbor_points, UnorderedElementsAre(
-							fpmas::model::DiscretePoint(location.x-1, n-1),
-							fpmas::model::DiscretePoint(location.x+1, n-1),
-							fpmas::model::DiscretePoint(location.x, n-2)));
+							fpmas::model::DiscretePoint(location.x-1, Y-1),
+							fpmas::model::DiscretePoint(location.x+1, Y-1),
+							fpmas::model::DiscretePoint(location.x, Y-2)));
 			}
 		}
 	}
