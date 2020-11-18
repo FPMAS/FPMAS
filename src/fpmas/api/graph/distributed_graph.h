@@ -143,8 +143,6 @@ namespace fpmas {namespace api {namespace graph {
 			 * @return reference to the current internal Edge ID
 			 */
 			virtual const DistributedId& currentEdgeId() const = 0;
-
-			//virtual DistributedNode<T>* buildNode(const T&) = 0;
 			
 			/**
 			 * Builds a new \LOCAL node into the graph.
@@ -171,6 +169,8 @@ namespace fpmas {namespace api {namespace graph {
 			 * @return pointer to built node
 			 */
 			virtual DistributedNode<T>* buildNode(const T& data) = 0;
+
+			virtual void insertDistant(DistributedNode<T>* node) = 0;
 
 			/**
 			 * Globally removes the specified node from the graph.

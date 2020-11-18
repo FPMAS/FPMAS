@@ -37,6 +37,7 @@ class MockDistributedGraph :
 		}
 		MOCK_METHOD(NodeType*, buildNode, (const T&), (override));
 		MOCK_METHOD(NodeType*, buildNode_rv, (T&), ());
+		MOCK_METHOD(void, insertDistant, (fpmas::api::graph::DistributedNode<T>*), (override));
 		MOCK_METHOD(EdgeType*, link, (NodeType*, NodeType*, fpmas::api::graph::LayerId), (override));
 
 		MOCK_METHOD(void, addCallOnSetLocal, (NodeCallback*), (override));

@@ -6,6 +6,8 @@
 #include "fpmas/graph/distributed_node.h"
 #include "fpmas/graph/distributed_edge.h"
 #include "fpmas/api/graph/location_state.h"
+#include "fpmas/synchro/ghost/ghost_mode.h"
+#include "utils/test.h"
 
 using fpmas::api::graph::LocationState;
 using fpmas::graph::DistributedGraph;
@@ -13,6 +15,37 @@ using fpmas::graph::DistributedGraph;
 using ::testing::AnyNumber;
 using ::testing::ReturnRef;
 using ::testing::SizeIs;
+
+class DistributedGraphTest : public ::testing::Test {
+	protected:
+		fpmas::communication::MpiCommunicator comm;
+		DistributedGraph<int, fpmas::synchro::GhostMode> graph {comm};
+};
+
+/*
+ * Demonstrates how to use a temporary distant node and link it to a local
+ * node.
+ */
+TEST_F(DistributedGraphTest, insertDistant) {
+	FPMAS_MIN_PROCS("DistributedGraphTest.insertDistant", comm, 2) {
+		auto local_node = graph.buildNode();
+
+		fpmas::communication::TypedMpi<fpmas::graph::DistributedId> mpi(comm);
+		auto node_id_map = mpi.migrate({{(comm.getRank() + 1) % comm.getSize(), {local_node->getId()}}});
+
+		auto received_pair = node_id_map.begin();
+		auto tmp_node = new fpmas::graph::DistributedNode<int>(*received_pair->second.begin(), 0);
+
+		tmp_node->setLocation(received_pair->first);
+		graph.insertDistant(tmp_node);
+
+		graph.link(local_node, tmp_node, 0);
+		graph.synchronize();
+
+		ASSERT_THAT(local_node->getIncomingEdges(), SizeIs(1));
+		ASSERT_THAT(local_node->getOutgoingEdges(), SizeIs(1));
+	}
+}
 
 /****************************/
 /* distribute_test_real_MPI */
