@@ -100,6 +100,27 @@ TEST_F(MpiTest, gather_int_root) {
 	ASSERT_THAT(recv, ElementsAre(2, 4, 1, 3));
 }
 
+TEST_F(MpiTest, all_to_all_int) {
+	TypedMpi<int> mpi {comm};
+
+	std::unordered_map<int, int> export_map {
+		{0, 0}, {2, -2}, {3, 4}};
+	auto export_map_matcher = UnorderedElementsAre(
+			Pair(0, buildDataPack("0")),
+			Pair(2, buildDataPack("-2")),
+			Pair(3, buildDataPack("4"))
+			);
+	std::unordered_map<int, fpmas::api::communication::DataPack> import_map {
+		{0, buildDataPack("4")}, {2, buildDataPack("-13")}};
+
+	EXPECT_CALL(comm, allToAll(export_map_matcher, MPI_CHAR))
+		.WillOnce(Return(import_map));
+
+	auto recv = mpi.allToAll(export_map);
+
+	ASSERT_THAT(recv, UnorderedElementsAre(Pair(0, 4), Pair(2, -13)));
+}
+
 TEST_F(MpiTest, bcast_int) {
 	TypedMpi<int> mpi {comm};
 	int export_int = 8;
@@ -137,17 +158,55 @@ void from_json(const nlohmann::json& j, FakeType& o) {
 	j.at("f3").get_to(o.field3);
 }
 
+TEST_F(MpiTest, all_to_all_fake_test) {
+	TypedMpi<FakeType> mpi {comm};
+	FakeType fake1 {2, "hello", 4.5};
+	FakeType fake2 {-1, "world", .6};
+	FakeType fake3 {0, "foo", 8};
+	std::unordered_map<int, FakeType> export_map = {
+			{0, fake1},
+			{2, fake2},
+			{3, fake3},
+		};
+
+	auto export_map_matcher = UnorderedElementsAre(
+		Pair(0, buildDataPack(nlohmann::json(fake1).dump())),
+		Pair(2, buildDataPack(nlohmann::json(fake2).dump())),
+		Pair(3, buildDataPack(nlohmann::json(fake3).dump()))
+		);
+
+	FakeType import_fake_1 {10, "import", 4.2};
+	FakeType import_fake_2 {8, "import_2", 4.5};
+	std::unordered_map<int, std::string> import_map = {
+		{2, nlohmann::json(import_fake_1).dump()},
+		{6, nlohmann::json(import_fake_2).dump()}
+	};
+
+	std::unordered_map<int, fpmas::api::communication::DataPack> import_data_pack;
+	copy(import_map, import_data_pack);
+
+	EXPECT_CALL(comm, allToAll(export_map_matcher, MPI_CHAR))
+		.WillOnce(Return(import_data_pack));
+
+	auto result = mpi.allToAll(export_map);
+
+	ASSERT_THAT(result, UnorderedElementsAre(
+		Pair(2, import_fake_1),
+		Pair(6, import_fake_2)
+		));
+}
+
 TEST_F(MpiTest, migrate_fake_test) {
 	TypedMpi<FakeType> mpi {comm};
 	FakeType fake1 {2, "hello", 4.5};
 	FakeType fake2 {-1, "world", .6};
 	FakeType fake3 {0, "foo", 8};
-	std::unordered_map<int, std::vector<FakeType>> exportMap = {
+	std::unordered_map<int, std::vector<FakeType>> export_map = {
 			{0, {fake1, fake2}},
 			{3, {fake3}},
 		};
 
-	auto exportMapMatcher = UnorderedElementsAre(
+	auto export_map_matcher = UnorderedElementsAre(
 		Pair(0, AnyOf(
 				buildDataPack(nlohmann::json({fake1, fake2}).dump()),
 				buildDataPack(nlohmann::json({fake2, fake1}).dump())
@@ -155,20 +214,20 @@ TEST_F(MpiTest, migrate_fake_test) {
 		Pair(3, buildDataPack(nlohmann::json({fake3}).dump()))
 		);
 
-	FakeType importFake1 {10, "import", 4.2};
-	FakeType importFake2 {8, "import_2", 4.5};
-	std::unordered_map<int, std::string> importMap =
-	{{2, nlohmann::json({importFake1, importFake2}).dump()}};
+	FakeType import_fake_1 {10, "import", 4.2};
+	FakeType import_fake_2 {8, "import_2", 4.5};
+	std::unordered_map<int, std::string> import_map =
+	{{2, nlohmann::json({import_fake_1, import_fake_2}).dump()}};
 
-	std::unordered_map<int, fpmas::api::communication::DataPack> importDataPack;
-	copy(importMap, importDataPack);
+	std::unordered_map<int, fpmas::api::communication::DataPack> import_data_pack;
+	copy(import_map, import_data_pack);
 
-	EXPECT_CALL(comm, allToAll(exportMapMatcher, MPI_CHAR))
-		.WillOnce(Return(importDataPack));
+	EXPECT_CALL(comm, allToAll(export_map_matcher, MPI_CHAR))
+		.WillOnce(Return(import_data_pack));
 
-	auto result = mpi.migrate(exportMap);
+	auto result = mpi.migrate(export_map);
 
 	ASSERT_THAT(result, ElementsAre(
-		Pair(2, UnorderedElementsAre(importFake1, importFake2))
+		Pair(2, UnorderedElementsAre(import_fake_1, import_fake_2))
 		));
 }

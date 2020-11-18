@@ -31,10 +31,10 @@ TEST_F(DistributedGraphTest, insertDistant) {
 		auto local_node = graph.buildNode();
 
 		fpmas::communication::TypedMpi<fpmas::graph::DistributedId> mpi(comm);
-		auto node_id_map = mpi.migrate({{(comm.getRank() + 1) % comm.getSize(), {local_node->getId()}}});
+		auto node_id_map = mpi.allToAll({{(comm.getRank() + 1) % comm.getSize(), local_node->getId()}});
 
 		auto received_pair = node_id_map.begin();
-		auto tmp_node = new fpmas::graph::DistributedNode<int>(*received_pair->second.begin(), 0);
+		auto tmp_node = new fpmas::graph::DistributedNode<int>(received_pair->second, 0);
 
 		tmp_node->setLocation(received_pair->first);
 		graph.insertDistant(tmp_node);

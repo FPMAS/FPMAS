@@ -458,8 +458,12 @@ namespace fpmas { namespace api { namespace communication {
 				 * @param export_map vectors of data to send to each process
 				 * @return vectors of data received from each process
 				 */
+				// TODO: Remove this in 2.0
 				virtual std::unordered_map<int, std::vector<T>>
 					migrate(std::unordered_map<int, std::vector<T>> export_map) = 0;
+
+				virtual std::unordered_map<int, T>
+					allToAll(std::unordered_map<int, T> export_map) = 0;
 
 				/**
 				 * Gathers `T` objects at `root`.

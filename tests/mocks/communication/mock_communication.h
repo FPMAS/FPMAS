@@ -61,6 +61,12 @@ class MockMpi : public fpmas::api::communication::TypedMpi<T> {
 			((std::unordered_map<int, std::vector<T>>)),
 			(override)
 			);
+		MOCK_METHOD(
+			(std::unordered_map<int, T>), 
+			allToAll,
+			((std::unordered_map<int, T>)),
+			(override)
+			);
 		MOCK_METHOD(std::vector<T>, gather, (const T&, int), (override));
 		MOCK_METHOD(T, bcast, (const T&, int), (override));
 		MOCK_METHOD(void, send, (const T&, int, int), (override));

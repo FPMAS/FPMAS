@@ -281,6 +281,10 @@ namespace fpmas { namespace communication {
 
 				std::unordered_map<int, std::vector<T>>
 					migrate(std::unordered_map<int, std::vector<T>> exportMap) override;
+
+				std::unordered_map<int, T>
+					allToAll(std::unordered_map<int, T> export_map) override;
+
 				std::vector<T> gather(const T&, int root) override;
 				T bcast(const T&, int root) override;
 
@@ -319,6 +323,34 @@ namespace fpmas { namespace communication {
 			}
 			return importMap;
 		}
+
+	template<typename T> std::unordered_map<int, T>
+		TypedMpi<T>::allToAll(std::unordered_map<int, T> exportMap) {
+			// Pack
+			std::unordered_map<int, DataPack> export_data_pack;
+			for(auto item : exportMap) {
+				std::string str = nlohmann::json(item.second).dump();
+				DataPack data_pack (str.size(), sizeof(char));
+				std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
+
+				export_data_pack[item.first] = data_pack;
+			}
+
+			std::unordered_map<int, DataPack> import_data_pack
+				= comm.allToAll(export_data_pack, MPI_CHAR);
+
+			std::unordered_map<int, T> importMap;
+			for(auto item : import_data_pack) {
+				DataPack& pack = import_data_pack[item.first];
+				std::string import = std::string((char*) pack.buffer, pack.count);
+				importMap.insert(std::pair<int, T>(item.first, nlohmann::json::parse(
+						import
+						)
+					.get<T>()));
+			}
+			return importMap;
+		}
+
 	template<typename T> std::vector<T>
 		TypedMpi<T>::gather(const T& data, int root) {
 			// Pack
