@@ -331,7 +331,7 @@ namespace fpmas { namespace model {
 	 * Users can use this class to easily define their own \Agents with custom
 	 * behaviors.
 	 */
-	template<typename AgentType>
+	template<typename AgentType, typename TypeIdBase = AgentType>
 	class AgentBase : public virtual api::model::Agent, public NeighborsAccess {
 		public:
 			static const api::model::TypeId TYPE_ID;
@@ -433,8 +433,8 @@ namespace fpmas { namespace model {
 	 *
 	 * Equal to `typeid(AgentType)`.
 	 */
-	template<typename AgentType>
-		const api::model::TypeId AgentBase<AgentType>::TYPE_ID = typeid(AgentType);
+	template<typename AgentType, typename TypeIdBase>
+		const api::model::TypeId AgentBase<AgentType, TypeIdBase>::TYPE_ID = typeid(TypeIdBase);
 
 	/**
 	 * Callback specialization that can be extended to define user callbacks.

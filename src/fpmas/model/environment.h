@@ -30,8 +30,8 @@ namespace fpmas {
 			void updatePerceptions() override;
 	};
 
-	template<typename CellType>
-	class Cell : public CellBase, public AgentBase<CellType> {
+	template<typename CellType, typename TypeIdBase = CellType>
+	class Cell : public CellBase, public AgentBase<CellType, TypeIdBase> {
 	};
 
 	enum CellGroups : api::model::GroupId {
@@ -79,12 +79,14 @@ namespace fpmas {
 	
 	template<typename AgentType, typename CellType, typename Derived = AgentType>
 	class SpatialAgentBase :
-		public virtual api::model::SpatialAgent<CellType>, public model::AgentBase<AgentType> {
+		public virtual api::model::SpatialAgent<CellType>,
+		public model::AgentBase<AgentType, SpatialAgentBase<AgentType, CellType, Derived>> {
 			friend nlohmann::adl_serializer<
 				api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
 
 			public:
 				typedef SpatialAgentBase<AgentType, CellType, Derived> JsonBase;
+
 			private:
 				class CurrentOutLayer {
 					private:

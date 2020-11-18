@@ -17,6 +17,35 @@
 	}
 
 namespace model { namespace test {
+	template<typename AgentType>
+	class SpatialAgentBase : public fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell> {
+		public:
+			SpatialAgentBase() {}
+			SpatialAgentBase(const SpatialAgentBase&) {}
+			SpatialAgentBase(SpatialAgentBase&&) {}
+			SpatialAgentBase& operator=(const SpatialAgentBase&) {return *this;}
+			SpatialAgentBase& operator=(SpatialAgentBase&&) {return *this;}
+
+			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, mobilityRange, (), (const, override));
+			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, perceptionRange, (), (const, override));
+	};
+
+	class SpatialAgent : public SpatialAgentBase<SpatialAgent> {};
+
+	class SpatialAgentWithData : public SpatialAgentBase<SpatialAgentWithData> {
+		public:
+			int data;
+
+			static void to_json(nlohmann::json& j, const SpatialAgentWithData* agent) {
+				j = agent->data;
+			}
+			static SpatialAgentWithData* from_json(const nlohmann::json& j) {
+				auto agent = new SpatialAgentWithData;
+				agent->data = j.get<int>();
+				return agent;
+			}
+	};
+
 	template<typename GridAgentType>
 		class GridAgentBase : public fpmas::model::GridAgent<GridAgentType> {
 			public:
@@ -51,10 +80,13 @@ namespace model { namespace test {
 	};
 }}
 
+FPMAS_DEFAULT_JSON(model::test::SpatialAgent)
 FPMAS_DEFAULT_JSON(model::test::GridAgent)
 
 FPMAS_JSON_SET_UP(
 		MockAgent<4>, MockAgent<2>, MockAgent<12>,
+		model::test::SpatialAgent::JsonBase,
+		model::test::SpatialAgentWithData::JsonBase,
 		model::test::GridAgent::JsonBase,
 		model::test::GridAgentWithData::JsonBase,
 		fpmas::model::GridCell::JsonBase
@@ -64,6 +96,8 @@ class Environment : public testing::Environment {
 	void SetUp() override {
 		FPMAS_REGISTER_AGENT_TYPES(
 		MockAgent<4>, MockAgent<2>, MockAgent<12>,
+		model::test::SpatialAgent::JsonBase,
+		model::test::SpatialAgentWithData::JsonBase,
 		model::test::GridAgent::JsonBase,
 		model::test::GridAgentWithData::JsonBase,
 		fpmas::model::GridCell::JsonBase

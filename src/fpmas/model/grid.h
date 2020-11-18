@@ -24,7 +24,9 @@ namespace fpmas { namespace model {
 	using api::model::DiscreteCoordinate;
 
 	template<typename GridCellType, typename Derived = GridCellType>
-	class GridCellBase : public api::model::GridCell, public Cell<GridCellType> {
+	class GridCellBase :
+		public api::model::GridCell,
+		public Cell<GridCellType, GridCellBase<GridCellType, Derived>> {
 		friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridCellBase<GridCellType, Derived>>>;
 
 		private:
@@ -100,11 +102,14 @@ namespace fpmas { namespace model {
 
 	class VonNeumannNeighborhood : public api::model::EnvironmentBuilder {
 		private:
+			typedef std::vector<std::vector<api::model::GridCell*>> CellMatrix;
+			void allocate(CellMatrix& matrix, DiscreteCoordinate width, DiscreteCoordinate height);
+
 			api::model::GridCellFactory& cell_factory;
 			DiscreteCoordinate width;
 			DiscreteCoordinate height;
 
-			void buildLocalGrid(
+			CellMatrix buildLocalGrid(
 					api::model::Model& model,
 					api::model::Environment& environment,
 					DiscreteCoordinate min_x, DiscreteCoordinate max_x,

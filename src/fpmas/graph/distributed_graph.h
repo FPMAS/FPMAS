@@ -143,7 +143,7 @@ namespace fpmas { namespace graph {
 				 *
 				 * @return reference to the internal MpiCommunicator
 				 */
-				api::communication::MpiCommunicator& getMpiCommunicator() {
+				api::communication::MpiCommunicator& getMpiCommunicator() override {
 					return mpi_communicator;
 				};
 

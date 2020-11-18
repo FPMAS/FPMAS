@@ -1,10 +1,14 @@
 #include "../mocks/model/mock_environment.h"
 #include "fpmas/model/environment.h"
+#include "gtest_environment.h"
 
 
 using fpmas::model::CellBase;
 using fpmas::model::AgentPtr;
 using fpmas::api::model::EnvironmentLayers;
+// defined in gtest_environment
+using model::test::SpatialAgent;
+using model::test::SpatialAgentWithData;
 
 using namespace testing;
 
@@ -170,41 +174,7 @@ TEST_F(CellBaseTest, update_perceptions) {
 	this->updatePerceptions();
 }
 
-namespace test {
-	template<typename AgentType>
-	class SpatialAgentBase : public fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell> {
-		public:
-			SpatialAgentBase() {}
-			SpatialAgentBase(const SpatialAgentBase&) {}
-			SpatialAgentBase(SpatialAgentBase&&) {}
-			SpatialAgentBase& operator=(const SpatialAgentBase&) {return *this;}
-			SpatialAgentBase& operator=(SpatialAgentBase&&) {return *this;}
-
-			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, mobilityRange, (), (const, override));
-			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, perceptionRange, (), (const, override));
-	};
-
-	class SpatialAgent : public SpatialAgentBase<SpatialAgent> {};
-
-	class SpatialAgentWithData : public SpatialAgentBase<SpatialAgentWithData> {
-		public:
-			int data;
-
-			static void to_json(nlohmann::json& j, const SpatialAgentWithData* agent) {
-				j = agent->data;
-			}
-			static SpatialAgentWithData* from_json(const nlohmann::json& j) {
-				auto agent = new SpatialAgentWithData;
-				agent->data = j.get<int>();
-				return agent;
-			}
-	};
-
-}
-
-FPMAS_DEFAULT_JSON(test::SpatialAgent)
-
-class SpatialAgentTest : public ::testing::Test, protected NiceMock<test::SpatialAgent> {
+class SpatialAgentTest : public ::testing::Test, protected NiceMock<SpatialAgent> {
 	protected:
 		typedef fpmas::api::model::Cell DefaultCell;
 
@@ -314,20 +284,22 @@ TEST_F(SpatialAgentTest, json) {
 	EXPECT_CALL(mock_model, link).Times(AnyNumber());
 	this->initLocation(&location_cell);
 
-	nlohmann::json j = fpmas::api::utils::PtrWrapper<test::SpatialAgent::JsonBase>(this);
+	fpmas::api::model::AgentPtr src_ptr (this);
+	nlohmann::json j = src_ptr;
 
-	fpmas::api::utils::PtrWrapper<test::SpatialAgent::JsonBase> ptr = j.get<decltype(ptr)>();
+	auto ptr = j.get<fpmas::api::model::AgentPtr>();
 
-	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<test::SpatialAgent*>(NotNull()));
-	ASSERT_EQ(ptr->locationId(), location_id);
+	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<SpatialAgent*>(NotNull()));
+	ASSERT_EQ(dynamic_cast<SpatialAgent*>(ptr.get())->locationId(), location_id);
 
-	delete ptr.get();
+	src_ptr.release();
 }
 
 TEST_F(SpatialAgentTest, json_with_data) {
 	EXPECT_CALL(mock_model, link).Times(AnyNumber());
 	// SetUp used only for this test
-	NiceMock<test::SpatialAgentWithData> agent;
+	NiceMock<SpatialAgentWithData> agent;
+	fpmas::model::AgentPtr src_ptr (&agent);
 	agent.setModel(&mock_model);
 	agent.setNode(&agent_node);
 
@@ -339,16 +311,16 @@ TEST_F(SpatialAgentTest, json_with_data) {
 	agent.initLocation(&location_cell);
 
 	// Serialization
-	nlohmann::json j = fpmas::api::utils::PtrWrapper<test::SpatialAgentWithData::JsonBase>(&agent);
+	nlohmann::json j = src_ptr;
 
 	// Unserialization
-	fpmas::api::utils::PtrWrapper<test::SpatialAgentWithData::JsonBase> ptr = j.get<decltype(ptr)>();
+	auto ptr = j.get<fpmas::model::AgentPtr>();
 
-	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<test::SpatialAgentWithData*>(NotNull()));
-	ASSERT_EQ(static_cast<test::SpatialAgentWithData*>(ptr.get())->data, 7);
-	ASSERT_EQ(ptr->locationId(), location_id);
+	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<SpatialAgentWithData*>(NotNull()));
+	ASSERT_EQ(dynamic_cast<SpatialAgentWithData*>(ptr.get())->data, 7);
+	ASSERT_EQ(dynamic_cast<SpatialAgentWithData*>(ptr.get())->locationId(), location_id);
 
-	delete ptr.get();
+	src_ptr.release();
 }
 
 TEST_F(SpatialAgentTest, moveToCell1) {

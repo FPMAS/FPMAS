@@ -107,7 +107,7 @@ class EnvironmentTestBase : public ::testing::Test {
 				}
 
 				std::vector<int> actual_move_index;
-				for(auto cell : dynamic_cast<fpmas::model::AgentBase<TestSpatialAgent>*>(agent)->outNeighbors<TestCell>(fpmas::api::model::MOVE)) {
+				for(auto cell : dynamic_cast<TestSpatialAgent*>(agent)->outNeighbors<TestCell>(fpmas::api::model::MOVE)) {
 					actual_move_index.push_back(cell->index);
 				}
 

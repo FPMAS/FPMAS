@@ -215,7 +215,7 @@ FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
 
 #define TEST_AGENTS ReaderAgent, WriterAgent, LinkerAgent,\
 		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\
-		TestCell, TestSpatialAgent, fpmas::model::GridCell::JsonBase
+		TestCell, TestSpatialAgent::JsonBase, fpmas::model::GridCell::JsonBase
 
 FPMAS_JSON_SET_UP(TEST_AGENTS)
 

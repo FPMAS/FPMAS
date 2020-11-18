@@ -10,7 +10,11 @@ using fpmas::model::EnvironmentLayers;
 class GridCellTest : public testing::Test {
 	protected:
 		GridCell grid_cell {{12, -7}};
+		fpmas::api::model::AgentPtr src_ptr {&grid_cell};
 
+		void TearDown() {
+			src_ptr.release();
+		}
 };
 
 TEST_F(GridCellTest, location) {
@@ -18,15 +22,13 @@ TEST_F(GridCellTest, location) {
 }
 
 TEST_F(GridCellTest, json) {
-	nlohmann::json j
-		= fpmas::api::utils::PtrWrapper<GridCell::JsonBase>(&grid_cell);
+	nlohmann::json j = src_ptr;
 
-	auto ptr = j.get<fpmas::api::utils::PtrWrapper<GridCell::JsonBase>>();
+	auto ptr = j.get<fpmas::api::model::AgentPtr>();
 	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<GridCell*>(NotNull()));
 	ASSERT_EQ(
 			dynamic_cast<GridCell*>(ptr.get())->location(),
 			fpmas::model::DiscretePoint(12, -7));
-	ptr.release();
 }
 
 
