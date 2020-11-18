@@ -120,6 +120,10 @@ class MockModel : public fpmas::api::model::Model {
 			fpmas::api::model::AgentEdge*, link,
 			(fpmas::api::model::Agent*, fpmas::api::model::Agent*, fpmas::api::graph::LayerId), (override));
 		MOCK_METHOD(void, unlink, (fpmas::api::model::AgentEdge*), (override));
+		MOCK_METHOD(fpmas::api::communication::MpiCommunicator&,
+				getMpiCommunicator, (), (override));
+		MOCK_METHOD(const fpmas::api::communication::MpiCommunicator&,
+				getMpiCommunicator, (), (const, override));
 };
 
 class MockAgentGroup : public fpmas::api::model::AgentGroup {

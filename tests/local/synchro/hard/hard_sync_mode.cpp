@@ -54,9 +54,9 @@ class HardSyncLinkerTest : public ::testing::Test {
 		HardSyncLinker<int> sync_linker {graph, client, server_pack};
 
 		virtual void SetUp() override {
-			ON_CALL(graph, getMpiCommunicator)
+			ON_CALL(graph, getMpiCommunicator())
 				.WillByDefault(ReturnRef(comm));
-			EXPECT_CALL(graph, getMpiCommunicator)
+			EXPECT_CALL(graph, getMpiCommunicator())
 				.Times(AnyNumber());
 		}
 };
@@ -68,9 +68,9 @@ class HardSyncLinkerLinkTest : public HardSyncLinkerTest {
 		MockDistributedNode<int> tgt;
 
 		void SetUp() override {
-			ON_CALL(graph, getMpiCommunicator)
+			ON_CALL(graph, getMpiCommunicator())
 				.WillByDefault(ReturnRef(comm));
-			EXPECT_CALL(graph, getMpiCommunicator)
+			EXPECT_CALL(graph, getMpiCommunicator())
 				.Times(AnyNumber());
 
 			EXPECT_CALL(edge, getSourceNode).Times(AnyNumber())

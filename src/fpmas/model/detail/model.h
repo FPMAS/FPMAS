@@ -413,6 +413,24 @@ namespace fpmas {
 					AgentEdge* link(api::model::Agent* src_agent, api::model::Agent* tgt_agent, api::graph::LayerId layer) override;
 					void unlink(api::model::AgentEdge* edge) override;
 
+					/**
+					 * Returns a reference to the internal
+					 * communication::MpiCommunicator.
+					 *
+					 * @return reference to internal MPI communicator
+					 */
+					api::communication::MpiCommunicator& getMpiCommunicator() override {
+						return this->_graph.getMpiCommunicator();
+					}
+
+					/**
+					 * \copydoc getMpiCommunicator
+					 */
+					const api::communication::MpiCommunicator& getMpiCommunicator() const override {
+						return this->_graph.getMpiCommunicator();
+					}
+
+
 					~Model();
 			};
 
@@ -511,23 +529,6 @@ namespace fpmas {
 						DefaultModel() :
 							DefaultModelConfig<SyncMode>(),
 							Model(this->__graph, this->__scheduler, this->__runtime, this->__load_balancing) {}
-
-						/**
-						 * Returns a reference to the internal
-						 * communication::MpiCommunicator.
-						 *
-						 * @return reference to internal MPI communicator
-						 */
-						communication::MpiCommunicator& getMpiCommunicator() {
-							return this->comm;
-						}
-
-						/**
-						 * \copydoc getMpiCommunicator
-						 */
-						const communication::MpiCommunicator& getMpiCommunicator() const {
-							return this->comm;
-						}
 				};
 
 		}

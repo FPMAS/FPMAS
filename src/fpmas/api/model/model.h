@@ -586,6 +586,9 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual void unlink(AgentEdge* edge) = 0;
 
+			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
+			virtual api::communication::MpiCommunicator& getMpiCommunicator() = 0;
+
 			virtual ~Model(){}
 	};
 }}}

@@ -214,7 +214,7 @@ class AgentGroupTest : public ::testing::Test {
 			// In case of LOG
 			EXPECT_CALL(model, graph).Times(AnyNumber())
 				.WillRepeatedly(ReturnRef(graph));
-			EXPECT_CALL(graph, getMpiCommunicator).Times(AnyNumber())
+			EXPECT_CALL(graph, getMpiCommunicator()).Times(AnyNumber())
 				.WillRepeatedly(ReturnRef(mock_comm));
 
 			ON_CALL(node1, data()).WillByDefault(ReturnRef(agent1_ptr));

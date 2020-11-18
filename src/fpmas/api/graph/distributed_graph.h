@@ -59,6 +59,9 @@ namespace fpmas {namespace api {namespace graph {
 			 * @return internal MpiCommunicator
 			 */
 			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
+
+			virtual api::communication::MpiCommunicator& getMpiCommunicator() = 0;
+
 			/**
 			 * Reference to the internal LocationManager.
 			 *

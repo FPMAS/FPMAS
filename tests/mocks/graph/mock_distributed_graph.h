@@ -28,6 +28,8 @@ class MockDistributedGraph :
 
 		MOCK_METHOD(const fpmas::api::communication::MpiCommunicator&,
 				getMpiCommunicator, (), (const, override));
+		MOCK_METHOD(fpmas::api::communication::MpiCommunicator&,
+				getMpiCommunicator, (), (override));
 		MOCK_METHOD(
 				const fpmas::api::graph::LocationManager<T>&,
 				getLocationManager, (), (const, override));
