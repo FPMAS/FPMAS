@@ -89,11 +89,11 @@
 	namespace nlohmann {\
 		template<>\
 			struct adl_serializer<fpmas::api::utils::PtrWrapper<AGENT>> {\
-				static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AGENT>& data) {\
+				static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AGENT>&) {\
 					j = json::object();\
 				}\
 \
-				static void from_json(const json& j, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
+				static void from_json(const json&, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
 					ptr = fpmas::api::utils::PtrWrapper<AGENT>(new AGENT);\
 				}\
 			};\

@@ -33,6 +33,8 @@ namespace fpmas { namespace api { namespace graph {
 				 * @return pointer to built node
 				 */
 				virtual DistributedNode<T>* buildNode(DistributedGraph<T>& graph) = 0;
+
+				virtual ~NodeBuilder() {}
 		};
 
 	/**
@@ -61,6 +63,8 @@ namespace fpmas { namespace api { namespace graph {
 					NodeBuilder<T>& node_builder,
 					LayerId layer,
 					DistributedGraph<T>& graph) = 0;
+
+			virtual ~GraphBuilder() {}
 	};
 }}}
 #endif

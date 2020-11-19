@@ -25,6 +25,8 @@ namespace fpmas { namespace api { namespace random {
 			 * @return random value
 			 */
 			virtual T operator()(Generator& generator) = 0;
+
+			virtual ~Distribution() {}
 	};
 }}}
 #endif

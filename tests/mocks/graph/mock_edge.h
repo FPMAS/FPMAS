@@ -59,10 +59,10 @@ class AbstractMockEdge : public virtual fpmas::api::graph::Edge<
 		MOCK_METHOD(void, setWeight, (float), (override));
 
 		MOCK_METHOD(void, setSourceNode, (NodeType* const), (override));
-		MOCK_METHOD(NodeType* const, getSourceNode, (), (const, override));
+		MOCK_METHOD(NodeType*, getSourceNode, (), (const, override));
 
 		MOCK_METHOD(void, setTargetNode, (NodeType* const), (override));
-		MOCK_METHOD(NodeType* const, getTargetNode, (), (const, override));
+		MOCK_METHOD(NodeType*, getTargetNode, (), (const, override));
 
 	private:
 		void setUpGetters() {

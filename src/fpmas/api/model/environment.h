@@ -23,12 +23,15 @@ namespace fpmas { namespace api { namespace model {
 			virtual void handlePerceive() = 0;
 
 			virtual void updatePerceptions() = 0;
+
+			virtual ~CellBehavior() {}
 	};
 
 	class Cell : public virtual Agent, public CellBehavior {
 		public:
 			virtual std::vector<Cell*> neighborhood() = 0;
 
+			virtual ~Cell() {}
 	};
 
 	template<typename CellType>
@@ -36,12 +39,16 @@ namespace fpmas { namespace api { namespace model {
 		public:
 			virtual unsigned int size() const = 0;
 			virtual bool contains(CellType* root, CellType* cell) const = 0;
+
+			virtual ~Range() {}
 	};
 
 	class SpatialAgentBehavior {
 		public:
 			virtual void handleNewMove() = 0;
 			virtual void handleNewPerceive() = 0;
+
+			virtual ~SpatialAgentBehavior() {}
 	};
 
 	class SpatialAgentBase : public virtual Agent, public SpatialAgentBehavior {
@@ -76,6 +83,7 @@ namespace fpmas { namespace api { namespace model {
 					unsigned int max_perception_range,
 					unsigned int max_mobility_range) = 0;
 
+			virtual ~Environment() {}
 	};
 
 	class EnvironmentBuilder {
@@ -83,6 +91,8 @@ namespace fpmas { namespace api { namespace model {
 			virtual void build(
 					Model& model,
 					Environment& environment) = 0;
+
+			virtual ~EnvironmentBuilder() {}
 	};
 
 

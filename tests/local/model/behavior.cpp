@@ -26,11 +26,15 @@ namespace api {
 	class Action1 {
 		public:
 			virtual void action_1() = 0;
+
+			virtual ~Action1() {}
 	};
 
 	class Action2 {
 		public:
 			virtual void action_2() = 0;
+
+			virtual ~Action2() {}
 	};
 
 	class Action1_2 : public Action1, public Action2 {

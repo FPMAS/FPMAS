@@ -13,7 +13,7 @@ namespace fpmas {
 
 	namespace model {
 		template<> 
-			void to_json<void>(nlohmann::json& j, const AgentPtr& ptr) {
+			void to_json<void>(nlohmann::json&, const AgentPtr& ptr) {
 				FPMAS_LOGE(-1, "AGENT_SERIALIZER",
 						"Invalid agent type : %s. Make sure to properly register \
 						the Agent type with FPMAS_JSON_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",

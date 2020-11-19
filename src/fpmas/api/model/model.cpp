@@ -2,12 +2,12 @@
 
 namespace fpmas { namespace api { namespace model {
 
-	AgentPtr::AgentPtr(const AgentPtr& other) {
-		this->ptr = other.ptr->copy();
+	AgentPtr::AgentPtr(const AgentPtr& other)
+		: api::utils::PtrWrapper<api::model::Agent>(other.ptr->copy()) {
 	}
 
-	AgentPtr::AgentPtr(AgentPtr&& other) {
-		this->ptr = other.get();
+	AgentPtr::AgentPtr(AgentPtr&& other)
+		: api::utils::PtrWrapper<api::model::Agent>(other.get()) {
 		other.ptr = nullptr;
 	}
 

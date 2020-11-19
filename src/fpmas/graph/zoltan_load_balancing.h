@@ -60,7 +60,7 @@ namespace fpmas { namespace graph {
 		 * @param ierr output : error code
 		 * @return number of nodes managed by the current process
 		 */
-		template<typename T> int num_obj(void *data, int* ierr) {
+		template<typename T> int num_obj(void *data, int*) {
 			NodeMap<T>* nodes = (NodeMap<T>*) data;
 			return nodes->size();
 		}
@@ -84,12 +84,12 @@ namespace fpmas { namespace graph {
 		template<typename T> void obj_list(
 				void *data,
 				int num_gid_entries, 
-				int num_lid_entries,
+				int, // num_lid_entries (unused)
 				ZOLTAN_ID_PTR global_ids,
-				ZOLTAN_ID_PTR local_ids,
-				int wgt_dim,
+				ZOLTAN_ID_PTR, // local_ids (unused)
+				int, // wgt_dim, 1 by default
 				float *obj_wgts,
-				int *ierr
+				int * // ierr (unused)
 				) {
 			NodeMap<T>* nodes = (NodeMap<T>*) data;
 			int i = 0;
@@ -117,12 +117,12 @@ namespace fpmas { namespace graph {
 		template<typename T> void num_edges_multi_fn(
 				void *data,
 				int num_gid_entries,
-				int num_lid_entries,
+				int, // num_lid_entries (unused)
 				int num_obj,
 				ZOLTAN_ID_PTR global_ids,
-				ZOLTAN_ID_PTR local_ids,
+				ZOLTAN_ID_PTR, // local_ids (unused)
 				int *num_edges,
-				int *ierr
+				int * // ierr (unused)
 				) {
 			NodeMap<T>* nodes = (NodeMap<T>*) data;
 			for(int i = 0; i < num_obj; i++) {
@@ -163,16 +163,17 @@ namespace fpmas { namespace graph {
 		template<typename T> void edge_list_multi_fn(
 				void *data,
 				int num_gid_entries,
-				int num_lid_entries,
+				int, // num_lid_entries (unused)
 				int num_obj,
 				ZOLTAN_ID_PTR global_ids,
-				ZOLTAN_ID_PTR local_ids,
-				int *num_edges,
+				ZOLTAN_ID_PTR, // local_ids (unused)
+				int *, // num_edges (unused)
 				ZOLTAN_ID_PTR nbor_global_id,
 				int *nbor_procs,
-				int wgt_dim,
+				int, // wgt_dim (unused, 1 by default)
 				float *ewgts,
-				int *ierr) {
+				int * // ierr (unused)
+				) {
 
 			NodeMap<T>* nodes = (NodeMap<T>*) data;
 
@@ -206,9 +207,7 @@ namespace fpmas { namespace graph {
 		 * @param data user data (current fixed NodeMap)
 		 * @param ierr output : error code
 		 */
-		template<typename T> int num_fixed_obj_fn(
-				void* data, int* ierr
-				) {
+		template<typename T> int num_fixed_obj_fn(void* data, int*) {
 			NodeMap<T>* fixed_nodes = (NodeMap<T>*) data;
 			return fixed_nodes->size();
 		}
@@ -231,11 +230,11 @@ namespace fpmas { namespace graph {
 		 */
 		template<typename T> void fixed_obj_list_fn(
 			void *data,
-			int num_fixed_obj,
+			int, // num_fixed_obj (unused)
 			int num_gid_entries,
 			ZOLTAN_ID_PTR fixed_gids,
 			int *fixed_parts,
-			int *ierr
+			int * // ierr (unused)
 		) {
 			PartitionMap* fixed_nodes = (PartitionMap*) data;
 			int i = 0;

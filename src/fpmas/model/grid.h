@@ -54,13 +54,14 @@ namespace fpmas { namespace model {
 	template<typename AgentType, typename Derived = AgentType>
 	class GridAgent :
 		public api::model::GridAgent,
-		public SpatialAgentBase<AgentType, fpmas::api::model::GridCell, GridAgent<AgentType, Derived>> {
-			friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridAgent<AgentType>>>;
+		public SpatialAgentBase<AgentType, api::model::GridCell, GridAgent<AgentType, Derived>> {
+			friend nlohmann::adl_serializer<api::utils::PtrWrapper<GridAgent<AgentType>>>;
 
 			private:
 			DiscretePoint current_location_point;
 
 			protected:
+			using model::SpatialAgentBase<AgentType, api::model::GridCell, GridAgent<AgentType, Derived>>::moveTo;
 			void moveTo(api::model::GridCell* cell) override;
 			void moveTo(DiscretePoint point) override;
 

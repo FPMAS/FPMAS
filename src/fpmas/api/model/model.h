@@ -305,6 +305,8 @@ namespace fpmas { namespace api {namespace model {
 				virtual AgentType& operator*() const = 0;
 
 				virtual AgentEdge* edge() const = 0;
+
+				virtual ~Neighbor() {}
 		};
 
 	/**

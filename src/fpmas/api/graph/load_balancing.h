@@ -51,6 +51,8 @@ namespace fpmas { namespace api { namespace graph {
 						NodeMap<T> nodes,
 						PartitionMap fixed_vertices
 						) = 0;
+
+				virtual ~FixedVerticesLoadBalancing() {}
 		};
 
 	/**
@@ -73,6 +75,8 @@ namespace fpmas { namespace api { namespace graph {
 				 * @return balanced partition map
 				 */
 				virtual PartitionMap balance(NodeMap<T> nodes) = 0;
+
+				virtual ~LoadBalancing() {}
 		};
 
 }}}

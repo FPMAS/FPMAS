@@ -38,6 +38,8 @@ namespace fpmas { namespace api { namespace runtime {
 			 * Current internal date of the runtime.
 			 */
 			virtual Date currentDate() const = 0;
+
+			virtual ~Runtime() {}
 	};
 }}}
 #endif

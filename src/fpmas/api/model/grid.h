@@ -33,6 +33,8 @@ namespace fpmas { namespace api { namespace model {
 	class GridCellFactory {
 		public:
 			virtual GridCell* build(DiscretePoint location) = 0;
+
+			virtual ~GridCellFactory() {}
 	};
 }}}
 

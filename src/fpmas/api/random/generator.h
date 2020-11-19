@@ -40,6 +40,8 @@ namespace fpmas { namespace api { namespace random {
 			 * @return random integer
 			 */
 			virtual result_type operator()() = 0;
+
+			virtual ~Generator() {}
 	};
 }}}
 #endif

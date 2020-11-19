@@ -181,6 +181,8 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 			 * request to ensure progress and avoid deadlock situations.
 			 */
 			virtual void handleIncomingRequests() = 0;
+
+			virtual ~Server() {}
 	};
 
 	template<typename T> class HardSyncMutex;

@@ -83,7 +83,7 @@ class SetMpiStatus {
 			status.source = source;
 			status.tag = tag;
 		}
-		void operator()(MPI_Datatype type, int source, int tag, fpmas::api::communication::Status& status) {
+		void operator()(MPI_Datatype, int source, int tag, fpmas::api::communication::Status& status) {
 			status.source = source;
 			status.tag = tag;
 		}

@@ -118,6 +118,8 @@ namespace fpmas {namespace api { namespace graph {
 			 * using setLocal() or setDistant().
 			 */
 			virtual void updateLocations() = 0;
+			
+			virtual ~LocationManager() {}
 	};
 }}}
 #endif

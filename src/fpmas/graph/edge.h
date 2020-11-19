@@ -45,10 +45,10 @@ namespace fpmas { namespace graph {
 				void setWeight(float weight) override {this->weight=weight;};
 
 				void setSourceNode(NodeType* const src) override {this->source = src;};
-				NodeType* const getSourceNode() const override {return source;};
+				NodeType* getSourceNode() const override {return source;};
 
 				void setTargetNode(NodeType* const tgt) override {this->target = tgt;};
-				NodeType* const getTargetNode() const override {return target;};
+				NodeType* getTargetNode() const override {return target;};
 		};
 }}
 #endif
