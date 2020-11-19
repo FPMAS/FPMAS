@@ -62,8 +62,14 @@ namespace fpmas { namespace model {
 			DiscretePoint current_location_point;
 
 			protected:
+			GridAgent(
+					fpmas::api::model::Range<api::model::GridCell>& mobility_range,
+					fpmas::api::model::Range<api::model::GridCell>& perception_range)
+				: model::SpatialAgentBase<AgentType, api::model::GridCell, GridAgent<AgentType, Derived>>(
+						mobility_range, perception_range) {}
+
 			using model::SpatialAgentBase<AgentType, api::model::GridCell, GridAgent<AgentType, Derived>>::moveTo;
-			void moveTo(api::model::GridCell* cell) override;
+			void moveTo(api::model::Cell* cell) override;
 			void moveTo(DiscretePoint point) override;
 
 			public:
@@ -71,9 +77,10 @@ namespace fpmas { namespace model {
 		};
 
 	template<typename AgentType, typename Derived>
-		void GridAgent<AgentType, Derived>::moveTo(api::model::GridCell* cell) {
+		void GridAgent<AgentType, Derived>::moveTo(api::model::Cell* cell) {
 			this->updateLocation(cell);
-			current_location_point = cell->location();
+			if(auto grid_cell = dynamic_cast<api::model::GridCell*>(cell))
+				current_location_point = grid_cell->location();
 		}
 
 	template<typename AgentType, typename Derived>

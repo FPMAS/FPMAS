@@ -55,18 +55,15 @@ namespace fpmas { namespace api { namespace model {
 
 	};
 
-	template<typename CellType>
 	class SpatialAgent : public SpatialAgentBase {
 		protected:
-			virtual void moveTo(CellType*) = 0;
+			virtual void moveTo(Cell*) = 0;
 			virtual void moveTo(api::graph::DistributedId id) = 0;
-			virtual CellType* locationCell() const = 0;
+			virtual Cell* locationCell() const = 0;
 
 		public:
-			virtual void initLocation(CellType*) = 0;
+			virtual void initLocation(Cell*) = 0;
 			virtual api::graph::DistributedId locationId() const = 0;
-			virtual const Range<CellType>& mobilityRange() const = 0;
-			virtual const Range<CellType>& perceptionRange() const = 0;
 	};
 
 	class Environment {
@@ -95,10 +92,9 @@ namespace fpmas { namespace api { namespace model {
 			virtual ~EnvironmentBuilder() {}
 	};
 
-	template<typename CellType>
 	class SpatialAgentFactory {
 		public:
-			virtual SpatialAgent<CellType>* build() = 0;
+			virtual SpatialAgent* build() = 0;
 
 			virtual ~SpatialAgentFactory() {}
 	};
@@ -110,13 +106,12 @@ namespace fpmas { namespace api { namespace model {
 			virtual ~SpatialAgentMapping() {}
 	};
 
-	template<typename CellType>
 	class SpatialAgentBuilder {
 		public:
 			virtual void build(
-					SpatialAgentFactory<CellType>& factory,
+					SpatialAgentFactory& factory,
 					SpatialAgentMapping& agent_counts,
-					std::vector<CellType*> local_cells) = 0;
+					std::vector<Cell*> local_cells) = 0;
 
 			virtual ~SpatialAgentBuilder() {}
 	};

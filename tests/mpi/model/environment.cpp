@@ -29,7 +29,7 @@ class EnvironmentTestBase : public ::testing::Test {
 			fpmas::graph::PartitionMap partition;
 			FPMAS_ON_PROC(model.getMpiCommunicator(), 0) {
 				std::vector<TestCell*> cells;
-				std::vector<fpmas::api::model::SpatialAgent<TestCell>*> agents;
+				std::vector<fpmas::api::model::SpatialAgent*> agents;
 				for(int i = 0; i < model.getMpiCommunicator().getSize(); i++) {
 					auto cell = new TestCell(i);
 					auto agent = new TestSpatialAgent(range_size, num_cells_in_ring);

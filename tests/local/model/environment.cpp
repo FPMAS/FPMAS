@@ -17,12 +17,11 @@ class CellBaseTestSetUp {
 		typedef fpmas::api::model::Cell DefaultCell;
 
 		DistributedId agent_id {7, 4};
-		NiceMock<MockSpatialAgent<DefaultCell>>* mock_spatial_agent = new NiceMock<MockSpatialAgent<DefaultCell>>;
+		NiceMock<MockSpatialAgent>* mock_spatial_agent
+			= new NiceMock<MockSpatialAgent>;
 		NiceMock<MockCell> current_location;
 		NiceMock<MockDistributedNode<AgentPtr>> agent_node {agent_id, fpmas::model::AgentPtr(mock_spatial_agent)};
 		NaggyMock<MockDistributedEdge<AgentPtr>> agent_edge;
-		MockRange<DefaultCell> mock_mobility_range;
-		MockRange<DefaultCell> mock_perception_range;
 
 		NiceMock<MockDistributedNode<AgentPtr>> cell_node;
 
@@ -54,10 +53,6 @@ class CellBaseTestSetUp {
 			cell_neighbor_1_edge.setTargetNode(&cell_neighbor_1_node);
 			cell_neighbor_2_edge.setTargetNode(&cell_neighbor_2_node);
 
-			ON_CALL(*mock_spatial_agent, mobilityRange)
-				.WillByDefault(ReturnRef(mock_mobility_range));
-			ON_CALL(*mock_spatial_agent, perceptionRange)
-				.WillByDefault(ReturnRef(mock_perception_range));
 			ON_CALL(*mock_spatial_agent, locationCell)
 				.WillByDefault(Return(&current_location));
 			ON_CALL(*mock_spatial_agent, node())
@@ -155,7 +150,8 @@ TEST_F(CellBaseTest, handle_perceive) {
 
 TEST_F(CellBaseTest, update_perceptions) {
 	DistributedId perceived_id {5, 2};
-	NiceMock<MockSpatialAgent<DefaultCell>>* perceived_agent = new NiceMock<MockSpatialAgent<DefaultCell>>;
+	NiceMock<MockSpatialAgent>* perceived_agent
+		= new NiceMock<MockSpatialAgent>;
 	NiceMock<MockDistributedNode<AgentPtr>> perceived_agent_node {perceived_id, fpmas::model::AgentPtr(perceived_agent)};
 	ON_CALL(*perceived_agent, node())
 		.WillByDefault(Return(&perceived_agent_node));
@@ -179,15 +175,13 @@ class SpatialAgentTest : public ::testing::Test, protected NiceMock<SpatialAgent
 		typedef fpmas::api::model::Cell DefaultCell;
 
 		StrictMock<MockModel> mock_model;
-		fpmas::api::model::SpatialAgent<DefaultCell>& agent;
+		fpmas::api::model::SpatialAgent& agent;
 		MockDistributedNode<AgentPtr> agent_node {{2, 37}};
 
 		fpmas::graph::DistributedId location_id {12, 67};
 		MockCell location_cell;
 		MockDistributedEdge<AgentPtr> location_edge;
 		MockDistributedNode<AgentPtr> location_node {location_id, &location_cell};
-		NiceMock<MockRange<DefaultCell>> mock_mobility_range;
-		NiceMock<MockRange<DefaultCell>> mock_perception_range;
 
 		SpatialAgentTest() : agent(*this) {}
 
@@ -198,11 +192,6 @@ class SpatialAgentTest : public ::testing::Test, protected NiceMock<SpatialAgent
 
 			location_edge.setSourceNode(&agent_node);
 			location_edge.setTargetNode(&location_node);
-
-			ON_CALL(*this, mobilityRange)
-				.WillByDefault(ReturnRef(mock_mobility_range));
-			ON_CALL(*this, perceptionRange)
-				.WillByDefault(ReturnRef(mock_perception_range));
 
 			ON_CALL(location_cell, node())
 				.WillByDefault(Return(&location_node));
@@ -303,10 +292,6 @@ TEST_F(SpatialAgentTest, json_with_data) {
 	agent.setModel(&mock_model);
 	agent.setNode(&agent_node);
 
-	ON_CALL(agent, mobilityRange)
-		.WillByDefault(ReturnRef(mock_mobility_range));
-	ON_CALL(agent, perceptionRange)
-		.WillByDefault(ReturnRef(mock_perception_range));
 	agent.data= 7;
 	agent.initLocation(&location_cell);
 
@@ -324,9 +309,9 @@ TEST_F(SpatialAgentTest, json_with_data) {
 }
 
 TEST_F(SpatialAgentTest, moveToCell1) {
-	EXPECT_CALL(mock_mobility_range, contains(&location_cell, &location_cell))
+	EXPECT_CALL(this->mobility_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(true));
-	EXPECT_CALL(mock_perception_range, contains(&location_cell, &location_cell))
+	EXPECT_CALL(this->perception_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(true));
 
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::MOVE));
@@ -339,9 +324,9 @@ TEST_F(SpatialAgentTest, moveToCell1) {
 }
 
 TEST_F(SpatialAgentTest, moveToCell2) {
-	EXPECT_CALL(mock_mobility_range, contains(&location_cell, &location_cell))
+	EXPECT_CALL(this->mobility_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(false));
-	EXPECT_CALL(mock_perception_range, contains(&location_cell, &location_cell))
+	EXPECT_CALL(this->perception_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(true));
 
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::PERCEIVE));
@@ -353,9 +338,9 @@ TEST_F(SpatialAgentTest, moveToCell2) {
 }
 
 TEST_F(SpatialAgentTest, moveToCell3) {
-	EXPECT_CALL(mock_mobility_range, contains(&location_cell, &location_cell))
+	EXPECT_CALL(this->mobility_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(true));
-	EXPECT_CALL(mock_perception_range, contains(&location_cell, &location_cell))
+	EXPECT_CALL(this->perception_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(false));
 
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::MOVE));
@@ -367,9 +352,9 @@ TEST_F(SpatialAgentTest, moveToCell3) {
 }
 
 TEST_F(SpatialAgentTest, moveToCell4) {
-	EXPECT_CALL(mock_mobility_range, contains(&location_cell, &location_cell))
+	EXPECT_CALL(this->mobility_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(false));
-	EXPECT_CALL(mock_perception_range, contains(&location_cell, &location_cell))
+	EXPECT_CALL(this->perception_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(false));
 
 	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
@@ -415,7 +400,9 @@ TEST_F(SpatialAgentTest, agentBehavior) {
 	}
 
 	std::array<bool, 10> in_move_range;
-	setUpRandomRange(engine, move_neighbors, move_neighbor_edges, in_move_range, mock_mobility_range);
+	setUpRandomRange(
+			engine, move_neighbors, move_neighbor_edges,
+			in_move_range, this->mobility_range);
 
 	// Build NEW_PERCEIVE layer
 	std::vector<fpmas::model::AgentNode*> perceive_neighbors;
@@ -429,7 +416,9 @@ TEST_F(SpatialAgentTest, agentBehavior) {
 		perceive_neighbor_edges.push_back(new MockDistributedEdge<AgentPtr>);
 	}
 	std::array<bool, 10> in_perceive_range;
-	setUpRandomRange(engine, perceive_neighbors, perceive_neighbor_edges, in_perceive_range, mock_perception_range);
+	setUpRandomRange(
+			engine, perceive_neighbors, perceive_neighbor_edges,
+			in_perceive_range, this->perception_range);
 
 	// Set up NEW_MOVE layer
 	ON_CALL(agent_node, outNeighbors(EnvironmentLayers::NEW_MOVE))
@@ -489,7 +478,7 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 	std::vector<fpmas::model::AgentEdge*> move_neighbor_edges;
 	setUpDuplicates(
 			move_cell, move_neighbors, move_neighbor_edges,
-			EnvironmentLayers::NEW_MOVE, mock_mobility_range);
+			EnvironmentLayers::NEW_MOVE, this->mobility_range);
 
 	// Set up perceive layer with a duplicate node
 	auto perceive_cell = new NiceMock<MockCell>;
@@ -497,7 +486,7 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 	std::vector<fpmas::model::AgentEdge*> perceive_neighbor_edges;
 	setUpDuplicates(
 			perceive_cell, perceive_neighbors, perceive_neighbor_edges,
-			EnvironmentLayers::NEW_PERCEIVE, mock_perception_range);
+			EnvironmentLayers::NEW_PERCEIVE, this->perception_range);
 
 	EXPECT_CALL(mock_model, link(&agent, move_cell, EnvironmentLayers::MOVE))
 		.Times(1);

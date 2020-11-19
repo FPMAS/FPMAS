@@ -14,17 +14,14 @@ class MockRange : public fpmas::api::model::Range<CellType> {
 		virtual ~MockRange() {}
 };
 
-template<typename CellType>
-class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, public testing::NiceMock<detail::MockAgentBase<MockSpatialAgent<CellType>>> {
+class MockSpatialAgent : public fpmas::api::model::SpatialAgent, public testing::NiceMock<detail::MockAgentBase<MockSpatialAgent>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
-		MOCK_METHOD(void, moveTo, (CellType*), (override));
+		MOCK_METHOD(void, moveTo, (fpmas::api::model::Cell*), (override));
 		MOCK_METHOD(void, moveTo, (fpmas::api::graph::DistributedId), (override));
-		MOCK_METHOD(void, initLocation, (CellType*), (override));
-		MOCK_METHOD(CellType*, locationCell, (), (const, override));
+		MOCK_METHOD(void, initLocation, (fpmas::api::model::Cell*), (override));
+		MOCK_METHOD(fpmas::api::model::Cell*, locationCell, (), (const, override));
 		MOCK_METHOD(fpmas::api::graph::DistributedId, locationId, (), (const, override));
-		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, mobilityRange, (), (const, override));
-		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, perceptionRange, (), (const, override));
 		MOCK_METHOD(void, handleNewMove, (), (override));
 		MOCK_METHOD(void, handleNewPerceive, (), (override));
 

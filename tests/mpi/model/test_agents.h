@@ -167,18 +167,11 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 	public:
 		static const fpmas::model::Behavior<TestSpatialAgent> behavior;
 
-		TestSpatialAgent(unsigned int range_size, unsigned int num_cells_in_ring)
-			: range_size(range_size), num_cells_in_ring(num_cells_in_ring),
+		TestSpatialAgent(unsigned int range_size, unsigned int num_cells_in_ring) : 
+				fpmas::model::SpatialAgent<TestSpatialAgent, TestCell>(mobility_range, perception_range),
+				range_size(range_size), num_cells_in_ring(num_cells_in_ring),
 			mobility_range(range_size, num_cells_in_ring),
 			perception_range(range_size, num_cells_in_ring) {}
-
-		const FakeRange& mobilityRange() const override {
-			return mobility_range;
-		}
-
-		const FakeRange& perceptionRange() const override {
-			return perception_range;
-		}
 
 		/**
 		 * Normally not publicly accessible, but made public for test purpose.

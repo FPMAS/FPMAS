@@ -5,29 +5,20 @@
 #include "../mocks/model/mock_environment.h"
 #include "fpmas/model/grid.h"
 
-#define MOBILITY_RANGE(RANGE) \
-	std::add_lvalue_reference<std::add_const<decltype(RANGE)>::type>::type\
-		mobilityRange() const override {\
-		return RANGE;\
-	}
-#define PERCEPTION_RANGE(RANGE) \
-	std::add_lvalue_reference<std::add_const<decltype(RANGE)>::type>::type\
-		perceptionRange() const override {\
-		return RANGE;\
-	}
-
 namespace model { namespace test {
 	template<typename AgentType>
 	class SpatialAgentBase : public fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell> {
 		public:
-			SpatialAgentBase() {}
-			SpatialAgentBase(const SpatialAgentBase&) {}
-			SpatialAgentBase(SpatialAgentBase&&) {}
+			MockRange<fpmas::api::model::Cell> mobility_range;
+			MockRange<fpmas::api::model::Cell> perception_range;
+
+			SpatialAgentBase() : fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell>(mobility_range, perception_range) {}
+			SpatialAgentBase(const SpatialAgentBase&)
+				: SpatialAgentBase() {}
+			SpatialAgentBase(SpatialAgentBase&&)
+				: SpatialAgentBase() {}
 			SpatialAgentBase& operator=(const SpatialAgentBase&) {return *this;}
 			SpatialAgentBase& operator=(SpatialAgentBase&&) {return *this;}
-
-			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, mobilityRange, (), (const, override));
-			MOCK_METHOD(const fpmas::api::model::Range<fpmas::api::model::Cell>&, perceptionRange, (), (const, override));
 	};
 
 	class SpatialAgent : public SpatialAgentBase<SpatialAgent> {};
@@ -52,9 +43,8 @@ namespace model { namespace test {
 				static MockRange<fpmas::api::model::GridCell>* mobility_range;
 				static MockRange<fpmas::api::model::GridCell>* perception_range;
 
-				MOBILITY_RANGE(*mobility_range);
-				PERCEPTION_RANGE(*perception_range);
-
+				GridAgentBase() : fpmas::model::GridAgent<GridAgentType>(
+						*mobility_range, *perception_range) {}
 		};
 
 	template<typename GridAgentType>

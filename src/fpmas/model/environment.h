@@ -79,7 +79,7 @@ namespace fpmas {
 	
 	template<typename AgentType, typename CellType, typename Derived = AgentType>
 	class SpatialAgentBase :
-		public virtual api::model::SpatialAgent<CellType>,
+		public virtual api::model::SpatialAgent,
 		public model::AgentBase<AgentType, SpatialAgentBase<AgentType, CellType, Derived>> {
 			friend nlohmann::adl_serializer<
 				api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
@@ -113,19 +113,27 @@ namespace fpmas {
 				};
 			private:
 				graph::DistributedId current_location_id;
+				api::model::Range<CellType>* mobility_range;
+				api::model::Range<CellType>* perception_range;
 
 			protected:
-				void updateLocation(CellType* cell);
+				SpatialAgentBase(
+						api::model::Range<CellType>& mobility_range,
+						api::model::Range<CellType>& perception_range) :
+					mobility_range(&mobility_range),
+					perception_range(&perception_range) {}
+
+				void updateLocation(api::model::Cell* cell);
 
 				CellType* locationCell() const override;
 				void handleNewMove() override;
 				void handleNewPerceive() override;
 
-				using api::model::SpatialAgent<CellType>::moveTo;
+				using api::model::SpatialAgent::moveTo;
 				void moveTo(graph::DistributedId id) override;
 
 			public:
-				void initLocation(CellType* cell) override {
+				void initLocation(api::model::Cell* cell) override {
 					this->moveTo(cell);
 				}
 
@@ -135,7 +143,7 @@ namespace fpmas {
 		};
 
 	template<typename AgentType, typename CellType, typename Derived>
-		void SpatialAgentBase<AgentType, CellType, Derived>::updateLocation(CellType* cell) {
+		void SpatialAgentBase<AgentType, CellType, Derived>::updateLocation(api::model::Cell* cell) {
 			// Links to new location
 			this->model()->link(this, cell, EnvironmentLayers::NEW_LOCATION);
 
@@ -158,10 +166,12 @@ namespace fpmas {
 
 			// Adds the NEW_LOCATION to the mobility/perceptions fields
 			// depending on the current ranges
-			if(this->mobilityRange().contains(cell, cell))
-				this->model()->link(this, cell, EnvironmentLayers::MOVE);
-			if(this->perceptionRange().contains(cell, cell)) {
-				this->model()->link(this, cell, EnvironmentLayers::PERCEIVE);
+			if(auto _cell = dynamic_cast<CellType*>(cell)) {
+				if(this->mobility_range->contains(_cell, _cell))
+					this->model()->link(this, _cell, EnvironmentLayers::MOVE);
+				if(this->perception_range->contains(_cell, _cell)) {
+					this->model()->link(this, _cell, EnvironmentLayers::PERCEIVE);
+				}
 			}
 
 			this->current_location_id = cell->node()->getId();
@@ -184,7 +194,7 @@ namespace fpmas {
 			for(auto cell : this->template outNeighbors<CellType>(
 						EnvironmentLayers::NEW_MOVE)) {
 				if(!move_layer.contains(cell)
-						&& this->mobilityRange().contains(this->locationCell(), cell))
+						&& this->mobility_range->contains(this->locationCell(), cell))
 					move_layer.link(cell);
 				this->model()->unlink(cell.edge());
 			}
@@ -197,7 +207,7 @@ namespace fpmas {
 			for(auto cell : this->template outNeighbors<CellType>(
 						EnvironmentLayers::NEW_PERCEIVE)) {
 				if(!perceive_layer.contains(cell)
-						&& this->perceptionRange().contains(this->locationCell(), cell))
+						&& this->perception_range->contains(this->locationCell(), cell))
 					perceive_layer.link(cell);
 				this->model()->unlink(cell.edge());
 			}
@@ -226,8 +236,9 @@ namespace fpmas {
 			public SpatialAgentBase<AgentType, CellType, Derived> {
 				protected:
 					using SpatialAgentBase<AgentType, CellType, Derived>::moveTo;
+					using SpatialAgentBase<AgentType, CellType, Derived>::SpatialAgentBase;
 
-					void moveTo(CellType* cell) override {
+					void moveTo(api::model::Cell* cell) override {
 						this->updateLocation(cell);
 					}
 			};
