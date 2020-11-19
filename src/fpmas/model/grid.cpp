@@ -1,4 +1,5 @@
 #include "grid.h"
+#include "fpmas/random/generator.h"
 
 namespace fpmas { namespace model {
 
@@ -18,11 +19,6 @@ namespace fpmas { namespace model {
 
 		DiscreteCoordinate local_height = max_y - min_y + 1;
 		DiscreteCoordinate local_width = max_x - min_x + 1;
-		//fpmas::api::model::GridCell*** cells = (fpmas::api::model::GridCell***)
-			//std::malloc(local_height * sizeof(GridCell**));
-		//for(DiscreteCoordinate y = 0; y < local_height; y++)
-			//cells[y] = (fpmas::api::model::GridCell**)
-				//std::malloc(local_width * sizeof(fpmas::api::model::GridCell*));
 
 		CellMatrix cells;
 		allocate(cells, local_width, local_height);
@@ -50,10 +46,6 @@ namespace fpmas { namespace model {
 				model.link(cells[i][j], cells[i][j-1], api::model::NEIGHBOR_CELL);
 			}
 		}
-
-		//for(DiscreteCoordinate i = 0; i < local_height; i++)
-			//std::free(cells[i]);
-		//std::free(cells);
 
 		return cells;
 	}
@@ -136,9 +128,37 @@ namespace fpmas { namespace model {
 			}
 		}
 		model.graph().synchronize();
-		//FPMAS_ON_PROC(model.graph().getMpiCommunicator(), 0) {
-			//buildLocalGrid(model, environment, 0, width-1, 0, height-1);
-		//}
+	}
+
+	struct PointComparison {
+		bool operator()(const DiscretePoint& p1, const DiscretePoint& p2) const {
+			return p1.x < p2.x && p1.y < p2.y;
+		}
+	};
+
+	RandomAgentMapping::RandomAgentMapping(
+			api::random::Distribution<DiscreteCoordinate>&& x,
+			api::random::Distribution<DiscreteCoordinate>&& y,
+			std::size_t agent_count,
+			std::vector<DiscretePoint> local_points)
+	: RandomAgentMapping(x, y, agent_count, local_points) {
+	}
+
+	RandomAgentMapping::RandomAgentMapping(
+			api::random::Distribution<DiscreteCoordinate>& x,
+			api::random::Distribution<DiscreteCoordinate>& y,
+			std::size_t agent_count,
+			std::vector<DiscretePoint> local_points) {
+		std::set<DiscretePoint, PointComparison> local_points_set;
+		for(auto point : local_points)
+			local_points_set.insert(point);
+		random::mt19937_64 rd;
+
+		for(std::size_t i = 0; i < agent_count; i++) {
+			DiscretePoint p {x(rd), y(rd)};
+			if(local_points_set.count(p) > 0)
+				count_map[p.x][p.y]++;
+		}
 	}
 }}
 

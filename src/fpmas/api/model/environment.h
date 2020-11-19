@@ -95,6 +95,31 @@ namespace fpmas { namespace api { namespace model {
 			virtual ~EnvironmentBuilder() {}
 	};
 
+	template<typename CellType>
+	class SpatialAgentFactory {
+		public:
+			virtual SpatialAgent<CellType>* build() = 0;
+
+			virtual ~SpatialAgentFactory() {}
+	};
+
+	class SpatialAgentMapping {
+		public:
+			virtual std::size_t countAt(Cell*) = 0;
+
+			virtual ~SpatialAgentMapping() {}
+	};
+
+	template<typename CellType>
+	class SpatialAgentBuilder {
+		public:
+			virtual void build(
+					SpatialAgentFactory<CellType>& factory,
+					SpatialAgentMapping& agent_counts,
+					std::vector<CellType*> local_cells) = 0;
+
+			virtual ~SpatialAgentBuilder() {}
+	};
 
 }}}
 #endif

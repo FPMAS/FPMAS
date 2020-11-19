@@ -3,6 +3,7 @@
 
 #include "fpmas/api/model/grid.h"
 #include "environment.h"
+#include "fpmas/random/distribution.h"
 
 namespace nlohmann {
 	template<>
@@ -128,6 +129,39 @@ namespace fpmas { namespace model {
 					api::model::Environment& environment);
 	};
 
+	class RandomAgentMapping : public api::model::GridAgentMapping {
+		private:
+			std::unordered_map<DiscreteCoordinate, std::unordered_map<DiscreteCoordinate, std::size_t>> count_map;
+		public:
+			RandomAgentMapping(
+					api::random::Distribution<DiscreteCoordinate>&& x,
+					api::random::Distribution<DiscreteCoordinate>&& y,
+					std::size_t agent_count,
+					std::vector<DiscretePoint> local_points);
+
+			RandomAgentMapping(
+					api::random::Distribution<DiscreteCoordinate>& x,
+					api::random::Distribution<DiscreteCoordinate>& y,
+					std::size_t agent_count,
+					std::vector<DiscretePoint> local_points);
+
+			std::size_t countAt(DiscretePoint point) override {
+				return count_map.at(point.x).at(point.y);
+			}
+	};
+
+	class UniformAgentMapping : public RandomAgentMapping {
+		public:
+			UniformAgentMapping(
+					DiscreteCoordinate grid_width,
+					DiscreteCoordinate grid_height,
+					std::size_t agent_count,
+					std::vector<DiscretePoint> local_points) 
+				: RandomAgentMapping(
+						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_width-1),
+						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_height-1),
+						agent_count, local_points) {}
+	};
 }}
 
 FPMAS_DEFAULT_JSON(fpmas::model::GridCell)
