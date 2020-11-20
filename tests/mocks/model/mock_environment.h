@@ -49,4 +49,26 @@ class MockCell : public virtual fpmas::api::model::Cell, public testing::NiceMoc
 		virtual ~MockCell() {}
 };
 
+class MockEnvironment : public fpmas::api::model::Environment {
+	public:
+		MOCK_METHOD(void, add, (fpmas::api::model::SpatialAgentBase*), (override));
+		MOCK_METHOD(void, add, (fpmas::api::model::Cell*), (override));
+		MOCK_METHOD(std::vector<fpmas::api::model::Cell*>, cells, (), (override));
+
+		MOCK_METHOD(fpmas::api::scheduler::JobList, initLocationAlgorithm, (), (override));
+		MOCK_METHOD(fpmas::api::scheduler::JobList, distributedMoveAlgorithm,
+				(const fpmas::api::model::AgentGroup&), (override));
+
+};
+
+class MockSpatialAgentFactory : public fpmas::api::model::SpatialAgentFactory {
+	public:
+		MOCK_METHOD(fpmas::api::model::SpatialAgent*, build, (), (override));
+};
+
+class MockSpatialAgentMapping : public fpmas::api::model::SpatialAgentMapping {
+	public:
+		MOCK_METHOD(std::size_t, countAt, (fpmas::api::model::Cell*), (override));
+};
+
 #endif

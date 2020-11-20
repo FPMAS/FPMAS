@@ -79,13 +79,17 @@ namespace fpmas {
 			}
 		}
 
-		Environment::Environment(api::model::Model& model) :
+		Environment::Environment(
+				api::model::Model& model,
+				unsigned int max_mobility_range,
+				unsigned int max_perception_range) :
 			cell_behavior_group(model.buildGroup(
 						CELL_UPDATE_RANGES, cell_behaviors)),
 			spatial_agent_group(model.buildGroup(
 						AGENT_CROP_RANGES, spatial_agent_behaviors)),
 			update_perceptions_group(model.buildGroup(
-						CELL_UPDATE_PERCEPTIONS, update_perceptions_behavior)) {
+						CELL_UPDATE_PERCEPTIONS, update_perceptions_behavior)),
+			max_mobility_range(max_mobility_range), max_perception_range(max_perception_range) {
 			}
 
 		void Environment::add(api::model::SpatialAgentBase* agent) {
@@ -104,9 +108,7 @@ namespace fpmas {
 			return cells;
 		}
 
-		api::scheduler::JobList Environment::initLocationAlgorithm(
-				unsigned int max_perception_range,
-				unsigned int max_mobility_range) {
+		api::scheduler::JobList Environment::initLocationAlgorithm() {
 			api::scheduler::JobList _jobs;
 
 			for(unsigned int i = 0; i < std::max(max_perception_range, max_mobility_range); i++) {
@@ -119,20 +121,34 @@ namespace fpmas {
 		}
 
 		api::scheduler::JobList Environment::distributedMoveAlgorithm(
-					const AgentGroup& movable_agents,
-					unsigned int max_perception_range,
-					unsigned int max_mobility_range) {
+					const AgentGroup& movable_agents
+					) {
 			api::scheduler::JobList _jobs;
 
 			_jobs.push_back(movable_agents.job());
 
 			api::scheduler::JobList update_location_algorithm
-				= initLocationAlgorithm(max_perception_range, max_mobility_range);
+				= initLocationAlgorithm();
 			for(auto job : update_location_algorithm)
 				_jobs.push_back(job);
 
 			return _jobs;
 		}
 
+		void SpatialAgentBuilder::build(
+				api::model::AgentGroup& group,
+				api::model::SpatialAgentFactory& factory,
+				api::model::SpatialAgentMapping& agent_counts,
+				std::vector<api::model::Cell*> local_cells) {
+
+			for(auto cell : local_cells)
+				for(std::size_t i = 0; i < agent_counts.countAt(cell); i++) {
+					auto agent = factory.build();
+					group.add(agent);
+					agent->initLocation(cell);
+				}
+
+			model.runtime().execute(environment.initLocationAlgorithm());
+		}
 	}
 }

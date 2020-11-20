@@ -2,8 +2,11 @@
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
 #include "../mocks/model/mock_environment.h"
+#include "../mocks/runtime/mock_runtime.h"
+#include "../mocks/scheduler/mock_scheduler.h"
 #include "test_agents.h"
 #include "fpmas/api/graph/distributed_id.h"
+#include "fpmas/random/random.h"
 
 using namespace testing;
 
@@ -12,7 +15,7 @@ class EnvironmentTestBase : public ::testing::Test {
 	protected:
 		unsigned int range_size;
 		fpmas::model::Model<SYNC_MODE> model;
-		fpmas::model::Environment environment {model};
+		fpmas::model::Environment environment;
 		fpmas::model::AgentGroup& agent_group {model.buildGroup(0, TestSpatialAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
 		std::unordered_map<int, fpmas::api::graph::DistributedId> index_to_agent_id;
@@ -23,7 +26,7 @@ class EnvironmentTestBase : public ::testing::Test {
 		fpmas::scheduler::Job check_model_job {check_model_task};
 
 		EnvironmentTestBase(int range_size)
-			: range_size(range_size) {}
+			: range_size(range_size), environment(model, range_size, range_size) {}
 
 		void SetUp() override {
 			fpmas::graph::PartitionMap partition;
@@ -137,15 +140,15 @@ class EnvironmentTestBase : public ::testing::Test {
 		}
 
 		void testInit() {
-			model.scheduler().schedule(0, environment.initLocationAlgorithm(range_size, range_size));
+			model.scheduler().schedule(0, environment.initLocationAlgorithm());
 			model.runtime().run(1);
 
 			checkModelState();
 		}
 
 		void testDistributedMoveAlgorithm() {
-			model.scheduler().schedule(0, environment.initLocationAlgorithm(range_size, range_size));
-			model.scheduler().schedule(1, 1, environment.distributedMoveAlgorithm(agent_group, range_size, range_size));
+			model.scheduler().schedule(0, environment.initLocationAlgorithm());
+			model.scheduler().schedule(1, 1, environment.distributedMoveAlgorithm(agent_group));
 			model.scheduler().schedule(0.1, 1, check_model_job);
 
 			model.runtime().run(3 * model.getMpiCommunicator().getSize());
@@ -209,4 +212,89 @@ TEST_F(EnvironmentTest_HardSyncMode_ComplexRange, init_location_test) {
 
 TEST_F(EnvironmentTest_HardSyncMode_ComplexRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
+}
+
+class SpatialAgentBuilderTest : public Test {
+/*
+ *    class FakeSpatialAgent
+ *        : public fpmas::model::SpatialAgent<FakeSpatialAgent, MockCell> {
+ *            static const MockRange<MockCell> range;
+ *            public:
+ *            FakeSpatialAgent()
+ *                : SpatialAgent(range, range) {}
+ *
+ *        };
+ */
+
+	protected:
+	fpmas::random::DistributedGenerator<> rd;
+	fpmas::random::UniformIntDistribution<> rand_int {0, 10};
+	int num_cells {rand_int(rd)};
+
+	std::vector<fpmas::api::model::Agent*> agents;
+	std::vector<fpmas::api::model::Cell*> local_cells;
+	MockJob mock_job;
+	fpmas::api::scheduler::JobList fake_job_list {mock_job};
+	NiceMock<MockEnvironment> environment;
+	NiceMock<MockModel> model;
+
+	MockRuntime mock_runtime;
+	MockAgentGroup mock_group;
+	StrictMock<MockSpatialAgentFactory> agent_factory;
+	StrictMock<MockSpatialAgentMapping> agent_mapping;
+	fpmas::model::SpatialAgentBuilder builder {model, environment};
+
+	struct CountAgents {
+		std::unordered_map<fpmas::api::model::Cell*, int> counts;
+
+		void increase(fpmas::api::model::Cell* cell) {
+			counts[cell]++;
+		}
+	};
+
+	CountAgents count_agents;
+	void SetUp() override {
+		ON_CALL(model, runtime)
+			.WillByDefault(ReturnRef(mock_runtime));
+		ON_CALL(environment, initLocationAlgorithm)
+			.WillByDefault(Return(fake_job_list));
+		// Builds a random agent mapping on each process
+		for(int i = 0; i < num_cells; i++) {
+			int num_agents = rand_int(rd);
+			local_cells.push_back(new MockCell);
+			EXPECT_CALL(agent_mapping, countAt(local_cells.back()))
+				.WillRepeatedly(Return(num_agents));
+
+			for(int j = 0; j < num_agents; j++) {
+				auto agent = new MockSpatialAgent;
+				agents.push_back(agent);
+				{
+					InSequence s;
+					EXPECT_CALL(mock_group, add(agent));
+					EXPECT_CALL(*agent, initLocation)
+						.WillOnce(Invoke(&count_agents, &CountAgents::increase));
+				}
+				// This is all the magic: using a common mapping, each process
+				// only instantiate the agents located in local cells
+				EXPECT_CALL(agent_factory, build)
+					.WillOnce(Return(agent))
+					.RetiresOnSaturation();
+			}
+		}
+	}
+
+	void TearDown() override {
+		for(auto cell : local_cells)
+			delete cell;
+		for(auto agent : agents)
+			delete agent;
+	}
+};
+
+TEST_F(SpatialAgentBuilderTest, build) {
+	// Expect initLocationAlgorithm execution
+	EXPECT_CALL(mock_runtime, execute((Matcher<const fpmas::api::scheduler::JobList&>) ElementsAre(
+					Property(&std::reference_wrapper<const fpmas::api::scheduler::Job>::get,Ref(mock_job)))));
+
+	builder.build(mock_group, agent_factory, agent_mapping, local_cells);
 }

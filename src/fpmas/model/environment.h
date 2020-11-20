@@ -57,22 +57,24 @@ namespace fpmas {
 			Behavior<api::model::CellBehavior> update_perceptions_behavior {
 				&api::model::CellBehavior::updatePerceptions
 			};
+			unsigned int max_mobility_range;
+			unsigned int max_perception_range;
 
 		public:
-			Environment(api::model::Model& model);
+			Environment(
+					api::model::Model& model,
+					unsigned int max_mobility_range,
+					unsigned int max_perception_range);
 
 			void add(api::model::SpatialAgentBase* agent) override;
 			void add(api::model::Cell* cell) override;
 			std::vector<api::model::Cell*> cells() override;
 
-			api::scheduler::JobList initLocationAlgorithm(
-					unsigned int max_perception_range,
-					unsigned int max_mobility_range) override;
+			api::scheduler::JobList initLocationAlgorithm() override;
 
 			api::scheduler::JobList distributedMoveAlgorithm(
-					const AgentGroup& movable_agents,
-					unsigned int max_perception_range,
-					unsigned int max_mobility_range) override;
+					const AgentGroup& movable_agents
+					) override;
 
 	};
 
@@ -113,13 +115,13 @@ namespace fpmas {
 				};
 			private:
 				graph::DistributedId current_location_id;
-				api::model::Range<CellType>* mobility_range;
-				api::model::Range<CellType>* perception_range;
+				const api::model::Range<CellType>* mobility_range;
+				const api::model::Range<CellType>* perception_range;
 
 			protected:
 				SpatialAgentBase(
-						api::model::Range<CellType>& mobility_range,
-						api::model::Range<CellType>& perception_range) :
+						const api::model::Range<CellType>& mobility_range,
+						const api::model::Range<CellType>& perception_range) :
 					mobility_range(&mobility_range),
 					perception_range(&perception_range) {}
 
@@ -243,6 +245,30 @@ namespace fpmas {
 					}
 			};
 
+	template<typename AgentType>
+		class DefaultSpatialAgentFactory : public api::model::SpatialAgentFactory {
+			public:
+				AgentType* build() override {
+					return new AgentType;
+				}
+		};
+
+	class SpatialAgentBuilder {
+		private:
+			fpmas::api::model::Model& model;
+			fpmas::api::model::Environment& environment;
+		public:
+			SpatialAgentBuilder(
+					fpmas::api::model::Model& model,
+					fpmas::api::model::Environment& environment
+					) : model(model), environment(environment) {}
+
+			void build(
+					api::model::AgentGroup& group,
+					api::model::SpatialAgentFactory& factory,
+					api::model::SpatialAgentMapping& agent_counts,
+					std::vector<api::model::Cell*> local_cells);
+	};
 }}
 
 namespace nlohmann {

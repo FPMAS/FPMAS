@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <random>
 #include "fpmas/api/random/generator.h"
+#include "fpmas/communication/communication.h"
 
 namespace fpmas { namespace random {
 
@@ -16,7 +17,7 @@ namespace fpmas { namespace random {
 	 */
 	template<typename Generator_t>
 	class Generator : public api::random::Generator {
-		private:
+		protected:
 			Generator_t gen;
 		public:
 
@@ -57,5 +58,22 @@ namespace fpmas { namespace random {
 	 * engine.
 	 */
 	typedef Generator<std::random_device> random_device;
+
+	template<typename Generator = mt19937_64>
+		class DistributedGenerator : public Generator {
+			private:
+				std::mt19937 seeder;
+			public:
+				DistributedGenerator() {
+					int rank = communication::MpiCommunicator::WORLD.getRank();
+					seeder.discard(rank);
+					this->gen.seed(seeder());
+				}
+		};
+
+	template<>
+		class DistributedGenerator<random_device> : public random_device {
+		};
+
 }}
 #endif

@@ -8,6 +8,7 @@
 #include "fpmas/api/runtime/runtime.h"
 #include "fpmas/scheduler/scheduler.h"
 
+#include <random>
 
 namespace fpmas { namespace runtime {
 	using api::runtime::Date;
@@ -20,6 +21,7 @@ namespace fpmas { namespace runtime {
 			api::scheduler::Scheduler& scheduler;
 			scheduler::Epoch epoch;
 			Date date = 0;
+			std::mt19937 rd;
 
 		public:
 			/**
@@ -32,6 +34,8 @@ namespace fpmas { namespace runtime {
 
 			void run(Date end) override;
 			void run(Date start, Date end) override;
+			void execute(const api::scheduler::Job& job) override;
+			void execute(const api::scheduler::JobList& job_list) override;
 			Date currentDate() const override {return date;}
 	};
 }}

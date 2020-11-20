@@ -72,13 +72,10 @@ namespace fpmas { namespace api { namespace model {
 			virtual void add(Cell* cell) = 0;
 			virtual std::vector<Cell*> cells() = 0;
 
-			virtual api::scheduler::JobList initLocationAlgorithm(
-					unsigned int max_perception_range,
-					unsigned int max_mobility_range) = 0;
+			virtual api::scheduler::JobList initLocationAlgorithm() = 0;
 			virtual api::scheduler::JobList distributedMoveAlgorithm(
-					const AgentGroup& movable_agents,
-					unsigned int max_perception_range,
-					unsigned int max_mobility_range) = 0;
+					const AgentGroup& movable_agents
+					) = 0;
 
 			virtual ~Environment() {}
 	};
@@ -109,6 +106,7 @@ namespace fpmas { namespace api { namespace model {
 	class SpatialAgentBuilder {
 		public:
 			virtual void build(
+					AgentGroup& group,
 					SpatialAgentFactory& factory,
 					SpatialAgentMapping& agent_counts,
 					std::vector<Cell*> local_cells) = 0;

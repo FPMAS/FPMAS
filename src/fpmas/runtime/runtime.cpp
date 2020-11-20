@@ -1,26 +1,33 @@
 #include "runtime.h"
-#include <random>
 
 namespace fpmas { namespace runtime {
 
 	void Runtime::run(Date start, Date end) {
-		std::mt19937 rd;
 		for(Date time = start; time < end; time++) {
 			date = time;
 			scheduler.build(time, epoch);
 			for(const api::scheduler::Job* job : epoch) {
-				job->getBeginTask().run();
-				std::vector<api::scheduler::Task*> tasks = job->tasks();
-				std::shuffle(tasks.begin(), tasks.end(), rd);
-				for(api::scheduler::Task* task : tasks) {
-					task->run();
-				}
-				job->getEndTask().run();
+				execute(*job);
 			}
 		}
 	}
 
 	void Runtime::run(Date end) {
 		run(0, end);
+	}
+
+	void Runtime::execute(const api::scheduler::Job &job) {
+		job.getBeginTask().run();
+		std::vector<api::scheduler::Task*> tasks = job.tasks();
+		std::shuffle(tasks.begin(), tasks.end(), rd);
+		for(api::scheduler::Task* task : tasks) {
+			task->run();
+		}
+		job.getEndTask().run();
+	}
+
+	void Runtime::execute(const api::scheduler::JobList &job_list) {
+		for(auto& job : job_list)
+			execute(job);
 	}
 }}

@@ -34,6 +34,11 @@ namespace fpmas { namespace api { namespace runtime {
 			 * @param end end date
 			 */
 			virtual void run(Date end) = 0;
+
+			virtual void execute(const scheduler::Job& job) = 0;
+
+			virtual void execute(const scheduler::JobList& job_list) = 0;
+
 			/**
 			 * Current internal date of the runtime.
 			 */

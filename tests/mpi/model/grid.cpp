@@ -9,7 +9,7 @@ using fpmas::model::VonNeumannNeighborhood;
 class VonNeumannNeighborhoodTest : public ::testing::Test {
 	protected:
 		fpmas::model::Model<fpmas::synchro::GhostMode> model;
-		fpmas::model::Environment grid {model};
+		fpmas::model::Environment grid {model, 0, 0};
 		fpmas::model::GridCellFactory<> cell_factory;
 
 };
