@@ -3,6 +3,31 @@
 
 namespace fpmas {
 	namespace model {
+
+		MoveAgentGroup::MoveAgentGroup(
+				api::model::GroupId group_id,
+				api::model::AgentGraph& agent_graph,
+				api::model::SpatialModel& model) :
+			AgentGroupBase(group_id, agent_graph), model(model) {
+
+			}
+
+		MoveAgentGroup::MoveAgentGroup(
+				api::model::GroupId group_id,
+				api::model::AgentGraph& agent_graph,
+				const api::model::Behavior& behavior,
+				api::model::SpatialModel& model) :
+			AgentGroupBase(group_id, agent_graph, behavior), model(model) {
+			}
+
+		api::scheduler::JobList MoveAgentGroup::jobs() const {
+			api::scheduler::JobList job_list;
+			job_list.push_back(this->job());
+			for(auto job : model.distributedMoveAlgorithm())
+				job_list.push_back(job);
+			return job_list;
+		}
+
 		std::vector<api::model::Cell*> CellBase::neighborhood() {
 			auto neighbors = this->outNeighbors<api::model::Cell>(SpatialModelLayers::NEIGHBOR_CELL);
 			return {neighbors.begin(), neighbors.end()};
@@ -102,30 +127,22 @@ namespace fpmas {
 			return cells;
 		}
 
-		api::scheduler::JobList SpatialModelBase::initLocationAlgorithm() {
+		api::model::AgentGroup& SpatialModelBase::buildMoveGroup(
+				api::model::GroupId id, const api::model::Behavior& behavior) {
+			auto* group = new MoveAgentGroup(id, this->graph(), behavior, *this);
+			this->insert(id, group);
+			return *group;
+		}
+
+		api::scheduler::JobList SpatialModelBase::distributedMoveAlgorithm() {
 			api::scheduler::JobList _jobs;
 
 			for(unsigned int i = 0; i < std::max(max_perception_range, max_mobility_range); i++) {
-				_jobs.push_back(cell_behavior_group->job());
-				_jobs.push_back(spatial_agent_group->job());
+				_jobs.push_back(cell_behavior_group->agentExecutionJob());
+				_jobs.push_back(spatial_agent_group->agentExecutionJob());
 			}
 
-			_jobs.push_back(update_perceptions_group->job());
-			return _jobs;
-		}
-
-		api::scheduler::JobList SpatialModelBase::distributedMoveAlgorithm(
-					const AgentGroup& movable_agents
-					) {
-			api::scheduler::JobList _jobs;
-
-			_jobs.push_back(movable_agents.job());
-
-			api::scheduler::JobList update_location_algorithm
-				= initLocationAlgorithm();
-			for(auto job : update_location_algorithm)
-				_jobs.push_back(job);
-
+			_jobs.push_back(update_perceptions_group->agentExecutionJob());
 			return _jobs;
 		}
 
@@ -142,7 +159,7 @@ namespace fpmas {
 					agent->initLocation(cell);
 				}
 
-			spatial_model.runtime().execute(spatial_model.initLocationAlgorithm());
+			spatial_model.runtime().execute(spatial_model.distributedMoveAlgorithm());
 		}
 	}
 }

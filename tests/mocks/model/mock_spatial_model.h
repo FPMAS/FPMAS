@@ -54,10 +54,10 @@ class MockSpatialModel : public fpmas::api::model::SpatialModel, public testing:
 		MOCK_METHOD(void, add, (fpmas::api::model::SpatialAgentBase*), (override));
 		MOCK_METHOD(void, add, (fpmas::api::model::Cell*), (override));
 		MOCK_METHOD(std::vector<fpmas::api::model::Cell*>, cells, (), (override));
+		MOCK_METHOD(fpmas::api::model::AgentGroup&, buildMoveGroup,
+				(fpmas::model::GroupId, const fpmas::api::model::Behavior&), (override));
 
-		MOCK_METHOD(fpmas::api::scheduler::JobList, initLocationAlgorithm, (), (override));
-		MOCK_METHOD(fpmas::api::scheduler::JobList, distributedMoveAlgorithm,
-				(const fpmas::api::model::AgentGroup&), (override));
+		MOCK_METHOD(fpmas::api::scheduler::JobList, distributedMoveAlgorithm, (), (override));
 
 };
 

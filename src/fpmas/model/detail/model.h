@@ -16,6 +16,7 @@ namespace fpmas {
 		using api::model::AgentNode;
 		using api::model::AgentEdge;
 		using api::model::AgentPtr;
+		using api::model::GroupId;
 		using api::scheduler::JID;
 
 		class DefaultBehavior : public api::model::Behavior {
@@ -312,12 +313,12 @@ namespace fpmas {
 			/**
 			 * api::model::AgentGroup implementation.
 			 */
-			class AgentGroup : public api::model::AgentGroup {
+			class AgentGroupBase : public api::model::AgentGroup {
 				friend detail::EraseAgentCallback;
 				private:
-				api::model::GroupId id;
+				GroupId id;
 				api::model::AgentGraph& agent_graph;
-				scheduler::Job _job;
+				scheduler::Job job_base;
 				detail::SynchronizeGraphTask sync_graph_task;
 				std::vector<api::model::AgentPtr*> _agents;
 
@@ -331,17 +332,17 @@ namespace fpmas {
 				 * @param group_id unique id of the group
 				 * @param agent_graph associated agent graph
 				 */
-				AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph);
+				AgentGroupBase(GroupId group_id, api::model::AgentGraph& agent_graph);
 
-				AgentGroup(
-						api::model::GroupId group_id,
+				AgentGroupBase(
+						GroupId group_id,
 						api::model::AgentGraph& agent_graph,
 						const api::model::Behavior& behavior);
 
 				AgentGroup& operator=(const AgentGroup&) = delete;
 				AgentGroup& operator=(AgentGroup&&) = delete;
 
-				api::model::GroupId groupId() const override {return id;}
+				GroupId groupId() const override {return id;}
 				const api::model::Behavior& behavior() override {return _behavior;}
 
 				void add(api::model::Agent*) override;
@@ -350,10 +351,21 @@ namespace fpmas {
 				void insert(api::model::AgentPtr*) override;
 				void erase(api::model::AgentPtr*) override;
 
-				scheduler::Job& job() override {return _job;}
-				const scheduler::Job& job() const override {return _job;}
+				scheduler::Job& job() override {return job_base;}
+				const scheduler::Job& job() const override {return job_base;}
+				api::scheduler::Job& agentExecutionJob() override {return job_base;}
+
 				std::vector<api::model::Agent*> agents() const override;
 				std::vector<api::model::Agent*> localAgents() const override;
+			};
+
+			class AgentGroup : public AgentGroupBase {
+				public:
+					using AgentGroupBase::AgentGroupBase;
+
+					api::scheduler::JobList jobs() const override {
+						return {this->job()};
+					}
 			};
 
 
@@ -361,6 +373,9 @@ namespace fpmas {
 			 * api::model::Model implementation.
 			 */
 			class Model : public virtual api::model::Model {
+				protected:
+					void insert(GroupId id, api::model::AgentGroup* group) override;
+
 				public:
 					/**
 					 * LoadBalancingAlgorithm type.
@@ -382,7 +397,7 @@ namespace fpmas {
 					SetAgentDistantCallback* set_distant_callback
 						= new SetAgentDistantCallback(*this);
 
-					std::unordered_map<api::model::GroupId, api::model::AgentGroup*> _groups;
+					std::unordered_map<GroupId, api::model::AgentGroup*> _groups;
 
 				public:
 					/**
@@ -409,10 +424,10 @@ namespace fpmas {
 
 					const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
-					api::model::AgentGroup& buildGroup(api::model::GroupId id) override;
-					api::model::AgentGroup& buildGroup(api::model::GroupId id, const api::model::Behavior& behavior) override;
-					api::model::AgentGroup& getGroup(api::model::GroupId id) const override;
-					const std::unordered_map<api::model::GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
+					api::model::AgentGroup& buildGroup(GroupId id) override;
+					api::model::AgentGroup& buildGroup(GroupId id, const api::model::Behavior& behavior) override;
+					api::model::AgentGroup& getGroup(GroupId id) const override;
+					const std::unordered_map<GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
 
 					AgentEdge* link(api::model::Agent* src_agent, api::model::Agent* tgt_agent, api::graph::LayerId layer) override;
 					void unlink(api::model::AgentEdge* edge) override;

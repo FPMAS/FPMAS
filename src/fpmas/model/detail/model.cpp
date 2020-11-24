@@ -4,7 +4,7 @@ namespace fpmas {
 	namespace model {
 		namespace detail {
 
-			const DefaultBehavior AgentGroup::default_behavior;
+			const DefaultBehavior AgentGroupBase::default_behavior;
 
 			void InsertAgentNodeCallback::call(AgentNode *node) {
 				api::model::AgentPtr& agent = node->data();
@@ -31,7 +31,7 @@ namespace fpmas {
 					// Unschedule agent task. If the node is DISTANT, task was already
 					// unscheduled.
 					for(auto group : agent->groups())
-						group->job().remove(*agent->task(group->groupId()));
+						group->agentExecutionJob().remove(*agent->task(group->groupId()));
 				}
 				for(auto group : agent->groups())
 					group->erase(&agent);
@@ -44,7 +44,7 @@ namespace fpmas {
 				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
 						"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", FPMAS_C_STR(node->getId()));
 				for(auto group : agent->groups())
-					group->job().add(*agent->task(group->groupId()));
+					group->agentExecutionJob().add(*agent->task(group->groupId()));
 			}
 
 			void SetAgentDistantCallback::call(AgentNode *node) {
@@ -53,7 +53,7 @@ namespace fpmas {
 						"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", FPMAS_C_STR(node->getId()));
 				// Unschedule agent task 
 				for(auto group : agent->groups())
-					group->job().remove(*agent->task(group->groupId()));
+					group->agentExecutionJob().remove(*agent->task(group->groupId()));
 			}
 
 			Model::Model(
@@ -76,19 +76,24 @@ namespace fpmas {
 					delete group.second;
 			}
 
+			void Model::insert(GroupId id, api::model::AgentGroup* group) {
+				_groups.insert({id, group});
+			}
+
+
 			api::model::AgentGroup& Model::getGroup(api::model::GroupId id) const {
 				return *_groups.at(id);
 			}
 
 			api::model::AgentGroup& Model::buildGroup(api::model::GroupId id) {
 				api::model::AgentGroup* group = new AgentGroup(id, _graph);
-				_groups.insert({id, group}); 
+				this->insert(id, group); 
 				return *group;
 			}
 
 			api::model::AgentGroup& Model::buildGroup(api::model::GroupId id, const api::model::Behavior& behavior) {
 				api::model::AgentGroup* group = new AgentGroup(id, _graph, behavior);
-				_groups.insert({id, group}); 
+				this->insert(id, group); 
 				return *group;
 			}
 
@@ -104,19 +109,19 @@ namespace fpmas {
 				agent_graph.balance(load_balancing);
 			}
 
-			AgentGroup::AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph)
-				: AgentGroup(group_id, agent_graph, default_behavior) {
+			AgentGroupBase::AgentGroupBase(api::model::GroupId group_id, api::model::AgentGraph& agent_graph)
+				: AgentGroupBase(group_id, agent_graph, default_behavior) {
 				}
 
-			AgentGroup::AgentGroup(
+			AgentGroupBase::AgentGroupBase(
 					api::model::GroupId group_id,
 					api::model::AgentGraph& agent_graph,
 					const api::model::Behavior& behavior)
-				: id(group_id), agent_graph(agent_graph), _job(), sync_graph_task(agent_graph), _behavior(behavior) {
-					_job.setEndTask(sync_graph_task);
+				: id(group_id), agent_graph(agent_graph), job_base(), sync_graph_task(agent_graph), _behavior(behavior) {
+					job_base.setEndTask(sync_graph_task);
 				}
 
-			void AgentGroup::add(api::model::Agent* agent) {
+			void AgentGroupBase::add(api::model::Agent* agent) {
 				agent->addGroupId(id);
 				// TODO: to improve in 2.0
 				if(agent->groups().empty()) {
@@ -150,26 +155,26 @@ namespace fpmas {
 				}
 			}
 
-			void AgentGroup::remove(api::model::Agent* agent) {
+			void AgentGroupBase::remove(api::model::Agent* agent) {
 				agent_graph.removeNode(agent->node());
 			}
 
-			void AgentGroup::insert(api::model::AgentPtr* agent) {
+			void AgentGroupBase::insert(api::model::AgentPtr* agent) {
 				_agents.push_back(agent);
 			}
 
-			void AgentGroup::erase(api::model::AgentPtr* agent) {
+			void AgentGroupBase::erase(api::model::AgentPtr* agent) {
 				_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
 			}
 
-			std::vector<api::model::Agent*> AgentGroup::agents() const {
+			std::vector<api::model::Agent*> AgentGroupBase::agents() const {
 				std::vector<api::model::Agent*> agents;
 				for(auto agent : _agents)
 					agents.push_back(*agent);
 				return agents;
 			}
 
-			std::vector<api::model::Agent*> AgentGroup::localAgents() const {
+			std::vector<api::model::Agent*> AgentGroupBase::localAgents() const {
 				std::vector<api::model::Agent*> local_agents;
 				for(auto agent : _agents)
 					if(agent->get()->node()->state() == graph::LocationState::LOCAL)

@@ -84,8 +84,8 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
-			scheduler.schedule(0, 1, group1.job());
-			scheduler.schedule(0, 2, group2.job());
+			scheduler.schedule(0, 1, group1.jobs());
+			scheduler.schedule(0, 2, group2.jobs());
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				act_counts[{0, (unsigned int) id}] = 0;
 				if(id % 2 == 0) {
@@ -188,8 +188,8 @@ class ModelGhostModeIntegrationLoadBalancingTest : public ModelGhostModeIntegrat
 						agent_graph.link(node.second, agent_graph.getNode(id), 10);
 				}
 			}
-			scheduler.schedule(0, 1, group1.job());
-			scheduler.schedule(0, 2, group2.job());
+			scheduler.schedule(0, 1, group1.jobs());
+			scheduler.schedule(0, 2, group2.jobs());
 			scheduler.schedule(0, 4, model.loadBalancingJob());
 		}
 };
@@ -233,8 +233,8 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
-			scheduler.schedule(0, 1, group1.job());
-			scheduler.schedule(0, 2, group2.job());
+			scheduler.schedule(0, 1, group1.jobs());
+			scheduler.schedule(0, 2, group2.jobs());
 			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
 				act_counts[{0, (unsigned int) id}] = 0;
 				if(id % 2 == 0) {
@@ -312,8 +312,8 @@ class ModelHardSyncModeIntegrationLoadBalancingTest : public ModelHardSyncModeIn
 						agent_graph.link(node.second, agent_graph.getNode(id), 10);
 				}
 			}
-			scheduler.schedule(0, 1, group1.job());
-			scheduler.schedule(0, 2, group2.job());
+			scheduler.schedule(0, 1, group1.jobs());
+			scheduler.schedule(0, 2, group2.jobs());
 			scheduler.schedule(0, 4, model.loadBalancingJob());
 		}
 };
@@ -357,7 +357,7 @@ class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegration
 					}
 				}
 			}
-			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 1, group.jobs());
 			scheduler.schedule(0, 10, model.loadBalancingJob());
 		}
 };
@@ -384,7 +384,7 @@ class HardSyncWritersModelIntegrationTest : public HardSyncAgentModelIntegration
 					}
 				}
 			}
-			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 1, group.jobs());
 			scheduler.schedule(0, 10, model.loadBalancingJob());
 		}
 };
@@ -423,7 +423,7 @@ class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegratio
 					}
 				}
 			}
-			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 1, group.jobs());
 			scheduler.schedule(0, 10, model.loadBalancingJob());
 		}
 };
@@ -516,7 +516,7 @@ class ModelDynamicLinkHardSyncModeIntegrationTest : public ModelHardSyncModeInte
 					}
 				}
 			}
-			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 1, group.jobs());
 			scheduler.schedule(0, 10, model.loadBalancingJob());
 		}
 };

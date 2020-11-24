@@ -454,11 +454,16 @@ namespace fpmas { namespace api {namespace model {
 			 * See the complete api::scheduler::Scheduler interface for more
 			 * scheduling options.
 			 */
+			[[deprecated]]
 			virtual api::scheduler::Job& job() = 0;
 			/**
 			 * \copydoc job()
 			 */
+			[[deprecated]]
 			virtual const api::scheduler::Job& job() const = 0;
+
+			virtual api::scheduler::Job& agentExecutionJob() = 0;
+			virtual api::scheduler::JobList jobs() const = 0;
 
 			virtual ~AgentGroup(){}
 	};
@@ -470,6 +475,9 @@ namespace fpmas { namespace api {namespace model {
 	 * FPMAS Multi-Agent simulation.
 	 */
 	class Model {
+		protected:
+			virtual void insert(GroupId id, AgentGroup* group) = 0;
+
 		public:
 			/**
 			 * Model's \AgentGraph.
@@ -591,6 +599,7 @@ namespace fpmas { namespace api {namespace model {
 			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
 			virtual api::communication::MpiCommunicator& getMpiCommunicator() = 0;
 
+		public:
 			virtual ~Model(){}
 	};
 }}}

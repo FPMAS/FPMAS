@@ -15,7 +15,7 @@ class SpatialModelTestBase : public ::testing::Test {
 	protected:
 		unsigned int range_size;
 		fpmas::model::SpatialModel<SYNC_MODE> model;
-		fpmas::model::AgentGroup& agent_group {model.buildGroup(0, TestSpatialAgent::behavior)};
+		fpmas::model::AgentGroup& agent_group {model.buildMoveGroup(0, TestSpatialAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
 		std::unordered_map<int, fpmas::api::graph::DistributedId> index_to_agent_id;
 
@@ -139,15 +139,18 @@ class SpatialModelTestBase : public ::testing::Test {
 		}
 
 		void testInit() {
-			model.scheduler().schedule(0, model.initLocationAlgorithm());
+			model.scheduler().schedule(0, model.distributedMoveAlgorithm());
 			model.runtime().run(1);
 
 			checkModelState();
 		}
 
 		void testDistributedMoveAlgorithm() {
-			model.scheduler().schedule(0, model.initLocationAlgorithm());
-			model.scheduler().schedule(1, 1, model.distributedMoveAlgorithm(agent_group));
+			// Init location
+			model.scheduler().schedule(0, model.distributedMoveAlgorithm());
+			// Agent behavior. Since agent_group is a MoveAgentGroup, the
+			// distributedMoveAlgorithm is automatically included.
+			model.scheduler().schedule(1, 1, agent_group.jobs());
 			model.scheduler().schedule(0.1, 1, check_model_job);
 
 			model.runtime().run(3 * model.getMpiCommunicator().getSize());
@@ -254,7 +257,7 @@ class SpatialAgentBuilderTest : public Test {
 	void SetUp() override {
 		ON_CALL(model, runtime)
 			.WillByDefault(ReturnRef(mock_runtime));
-		ON_CALL(model, initLocationAlgorithm)
+		ON_CALL(model, distributedMoveAlgorithm)
 			.WillByDefault(Return(fake_job_list));
 		// Builds a random agent mapping on each process
 		for(int i = 0; i < num_cells; i++) {

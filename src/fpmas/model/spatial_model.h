@@ -10,6 +10,24 @@ namespace fpmas {
 	namespace model {
 	using api::model::SpatialModelLayers;
 
+	class MoveAgentGroup : public model::detail::AgentGroupBase {
+		private:
+			api::model::SpatialModel& model;
+		public:
+			MoveAgentGroup(
+					api::model::GroupId group_id,
+					api::model::AgentGraph& agent_graph,
+					api::model::SpatialModel& model);
+
+			MoveAgentGroup(
+					api::model::GroupId group_id,
+					api::model::AgentGraph& agent_graph,
+					const api::model::Behavior& behavior,
+					api::model::SpatialModel& model);
+
+			api::scheduler::JobList jobs() const;
+	};
+
 	class CellBase : public virtual api::model::Cell, public NeighborsAccess {
 		private:
 			std::set<fpmas::api::graph::DistributedId> move_flags;
@@ -77,13 +95,10 @@ namespace fpmas {
 			void add(api::model::SpatialAgentBase* agent) override;
 			void add(api::model::Cell* cell) override;
 			std::vector<api::model::Cell*> cells() override;
+			api::model::AgentGroup& buildMoveGroup(
+					api::model::GroupId id, const api::model::Behavior& behavior) override;
 
-			api::scheduler::JobList initLocationAlgorithm() override;
-
-			api::scheduler::JobList distributedMoveAlgorithm(
-					const AgentGroup& movable_agents
-					) override;
-
+			api::scheduler::JobList distributedMoveAlgorithm() override;
 	};
 
 	template<template<typename> class SyncMode>

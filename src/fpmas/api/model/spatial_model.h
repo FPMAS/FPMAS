@@ -71,11 +71,9 @@ namespace fpmas { namespace api { namespace model {
 			virtual void add(SpatialAgentBase* agent) = 0;
 			virtual void add(Cell* cell) = 0;
 			virtual std::vector<Cell*> cells() = 0;
+			virtual AgentGroup& buildMoveGroup(GroupId id, const Behavior& behavior) = 0;
 
-			virtual api::scheduler::JobList initLocationAlgorithm() = 0;
-			virtual api::scheduler::JobList distributedMoveAlgorithm(
-					const AgentGroup& movable_agents
-					) = 0;
+			virtual api::scheduler::JobList distributedMoveAlgorithm() = 0;
 
 			virtual ~SpatialModel() {}
 	};
