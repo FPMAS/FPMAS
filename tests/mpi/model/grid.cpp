@@ -4,26 +4,25 @@
 #include "test_agents.h"
 
 using namespace testing;
-using fpmas::model::VonNeumannNeighborhood;
+using fpmas::model::VonNeumannGridBuilder;
 
-class VonNeumannNeighborhoodTest : public ::testing::Test {
+class VonNeumannGridBuilderTest : public ::testing::Test {
 	protected:
 		fpmas::model::SpatialModel<fpmas::synchro::GhostMode> grid_model {0, 0};
-		fpmas::model::GridCellFactory<> cell_factory;
 
 };
 
-TEST_F(VonNeumannNeighborhoodTest, trivial) {
-	VonNeumannNeighborhood null(cell_factory, 0, 0);
+TEST_F(VonNeumannGridBuilderTest, trivial) {
+	VonNeumannGridBuilder null(0, 0);
 
 	null.build(grid_model);
 	ASSERT_THAT(grid_model.cells(), IsEmpty());
 }
 
-TEST_F(VonNeumannNeighborhoodTest, build) {
+TEST_F(VonNeumannGridBuilderTest, build) {
 	int X = fpmas::communication::MpiCommunicator::WORLD.getSize() * 10;
 	int Y = 2*X;
-	VonNeumannNeighborhood grid_builder(cell_factory, X, Y);
+	VonNeumannGridBuilder grid_builder(X, Y);
 
 	fpmas::communication::TypedMpi<std::vector<fpmas::model::DiscretePoint>> mpi(
 			fpmas::communication::MpiCommunicator::WORLD);

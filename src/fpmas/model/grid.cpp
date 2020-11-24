@@ -3,7 +3,9 @@
 
 namespace fpmas { namespace model {
 
-	void VonNeumannNeighborhood::allocate(
+	GridCellFactory<> VonNeumannGridBuilder::default_cell_factory;
+
+	void VonNeumannGridBuilder::allocate(
 			CellMatrix& matrix,
 			DiscreteCoordinate width,
 			DiscreteCoordinate height) {
@@ -11,7 +13,7 @@ namespace fpmas { namespace model {
 		for(auto& row : matrix)
 			row.resize(width);
 	}
-	typename VonNeumannNeighborhood::CellMatrix VonNeumannNeighborhood::buildLocalGrid(
+	typename VonNeumannGridBuilder::CellMatrix VonNeumannGridBuilder::buildLocalGrid(
 			api::model::SpatialModel& model,
 			DiscreteCoordinate min_x, DiscreteCoordinate max_x,
 			DiscreteCoordinate min_y, DiscreteCoordinate max_y) {
@@ -49,7 +51,7 @@ namespace fpmas { namespace model {
 		return cells;
 	}
 
-	void VonNeumannNeighborhood::build(api::model::SpatialModel& model) {
+	void VonNeumannGridBuilder::build(api::model::SpatialModel& model) {
 		typedef std::pair<DistributedId, std::vector<api::model::GroupId>>
 			GridCellPack;
 		if(this->width * this->height > 0) {

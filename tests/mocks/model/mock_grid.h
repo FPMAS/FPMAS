@@ -11,4 +11,10 @@ class MockGridCell : public fpmas::api::model::GridCell, public testing::NiceMoc
 		virtual ~MockGridCell() {}
 };
 
+class MockGridCellFactory : public fpmas::api::model::GridCellFactory {
+	public:
+		MOCK_METHOD(fpmas::api::model::GridCell*, build,
+				(fpmas::api::model::DiscretePoint), (override));
+
+};
 #endif
