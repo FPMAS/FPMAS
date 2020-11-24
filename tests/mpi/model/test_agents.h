@@ -1,7 +1,7 @@
 #ifndef FPMAS_TEST_AGENTS
 #define FPMAS_TEST_AGENTS
 
-#include "fpmas/model/environment.h"
+#include "fpmas/model/spatial_model.h"
 #include "fpmas/model/grid.h"
 #include "../mocks/model/mock_model.h"
 

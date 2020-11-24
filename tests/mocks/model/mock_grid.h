@@ -2,7 +2,7 @@
 #define FPMAS_GRID_MOCK_H
 
 #include "fpmas/api/model/grid.h"
-#include "mock_environment.h"
+#include "mock_spatial_model.h"
 
 class MockGridCell : public fpmas::api::model::GridCell, public testing::NiceMock<MockCell> {
 	public:

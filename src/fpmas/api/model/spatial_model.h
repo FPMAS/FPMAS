@@ -5,7 +5,7 @@
 
 namespace fpmas { namespace api { namespace model {
 
-	enum EnvironmentLayers : fpmas::api::graph::LayerId {
+	enum SpatialModelLayers : fpmas::api::graph::LayerId {
 		NEIGHBOR_CELL = -1,
 		LOCATION = -2,
 		MOVE = -3,
@@ -66,7 +66,7 @@ namespace fpmas { namespace api { namespace model {
 			virtual api::graph::DistributedId locationId() const = 0;
 	};
 
-	class Environment {
+	class SpatialModel : public virtual Model {
 		public:
 			virtual void add(SpatialAgentBase* agent) = 0;
 			virtual void add(Cell* cell) = 0;
@@ -77,16 +77,14 @@ namespace fpmas { namespace api { namespace model {
 					const AgentGroup& movable_agents
 					) = 0;
 
-			virtual ~Environment() {}
+			virtual ~SpatialModel() {}
 	};
 
-	class EnvironmentBuilder {
+	class SpatialModelBuilder {
 		public:
-			virtual void build(
-					Model& model,
-					Environment& environment) = 0;
+			virtual void build(SpatialModel& spatial_model) = 0;
 
-			virtual ~EnvironmentBuilder() {}
+			virtual ~SpatialModelBuilder() {}
 	};
 
 	class SpatialAgentFactory {

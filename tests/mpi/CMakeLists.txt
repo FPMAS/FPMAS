@@ -8,7 +8,7 @@ set(SOURCES
 	synchro/hard/termination.cpp
 	synchro/hard/hard_sync_mode.cpp
 	model/model.cpp
-	model/environment.cpp
+	model/spatial_model.cpp
 	model/test_agents.cpp
 	model/grid.cpp
 	)

@@ -1,7 +1,7 @@
 #include "fpmas/model/serializer.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
-#include "../mocks/model/mock_environment.h"
+#include "../mocks/model/mock_spatial_model.h"
 #include "../mocks/runtime/mock_runtime.h"
 #include "../mocks/scheduler/mock_scheduler.h"
 #include "test_agents.h"
@@ -11,11 +11,10 @@
 using namespace testing;
 
 template<template<typename> class SYNC_MODE>
-class EnvironmentTestBase : public ::testing::Test {
+class SpatialModelTestBase : public ::testing::Test {
 	protected:
 		unsigned int range_size;
-		fpmas::model::Model<SYNC_MODE> model;
-		fpmas::model::Environment environment;
+		fpmas::model::SpatialModel<SYNC_MODE> model;
 		fpmas::model::AgentGroup& agent_group {model.buildGroup(0, TestSpatialAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
 		std::unordered_map<int, fpmas::api::graph::DistributedId> index_to_agent_id;
@@ -25,8 +24,8 @@ class EnvironmentTestBase : public ::testing::Test {
 		fpmas::scheduler::detail::LambdaTask check_model_task {[&]() -> void {this->checkModelState();}};
 		fpmas::scheduler::Job check_model_job {check_model_task};
 
-		EnvironmentTestBase(int range_size)
-			: range_size(range_size), environment(model, range_size, range_size) {}
+		SpatialModelTestBase(int range_size)
+			: range_size(range_size), model(range_size, range_size) {}
 
 		void SetUp() override {
 			fpmas::graph::PartitionMap partition;
@@ -43,8 +42,8 @@ class EnvironmentTestBase : public ::testing::Test {
 					agent_id_to_index[agent->node()->getId()] = i;
 					index_to_agent_id[i] = agent->node()->getId();
 
-					environment.add(cell);
-					environment.add(agent);
+					model.add(cell);
+					model.add(agent);
 
 					agent->initLocation(cells[i]);
 					partition[agent->node()->getId()] = i;
@@ -76,7 +75,7 @@ class EnvironmentTestBase : public ::testing::Test {
 		void checkModelState() {
 			int comm_size = model.getMpiCommunicator().getSize();
 
-			for(auto cell : environment.cells()) {
+			for(auto cell : model.cells()) {
 				if(comm_size > 1)
 					if(comm_size == 2)
 						ASSERT_THAT(cell->neighborhood(), SizeIs(1));
@@ -140,77 +139,77 @@ class EnvironmentTestBase : public ::testing::Test {
 		}
 
 		void testInit() {
-			model.scheduler().schedule(0, environment.initLocationAlgorithm());
+			model.scheduler().schedule(0, model.initLocationAlgorithm());
 			model.runtime().run(1);
 
 			checkModelState();
 		}
 
 		void testDistributedMoveAlgorithm() {
-			model.scheduler().schedule(0, environment.initLocationAlgorithm());
-			model.scheduler().schedule(1, 1, environment.distributedMoveAlgorithm(agent_group));
+			model.scheduler().schedule(0, model.initLocationAlgorithm());
+			model.scheduler().schedule(1, 1, model.distributedMoveAlgorithm(agent_group));
 			model.scheduler().schedule(0.1, 1, check_model_job);
 
 			model.runtime().run(3 * model.getMpiCommunicator().getSize());
 		}
 };
 
-typedef EnvironmentTestBase<fpmas::synchro::GhostMode> EnvironmentTest_GhostMode;
-typedef EnvironmentTestBase<fpmas::synchro::HardSyncMode> EnvironmentTest_HardSyncMode;
+typedef SpatialModelTestBase<fpmas::synchro::GhostMode> SpatialModelTest_GhostMode;
+typedef SpatialModelTestBase<fpmas::synchro::HardSyncMode> SpatialModelTest_HardSyncMode;
 
-class EnvironmentTest_GhostMode_SimpleRange : public EnvironmentTest_GhostMode {
+class SpatialModelTest_GhostMode_SimpleRange : public SpatialModelTest_GhostMode {
 	protected:
-		EnvironmentTest_GhostMode_SimpleRange()
-			: EnvironmentTest_GhostMode(1) {}
+		SpatialModelTest_GhostMode_SimpleRange()
+			: SpatialModelTest_GhostMode(1) {}
 };
 
-TEST_F(EnvironmentTest_GhostMode_SimpleRange, init_location_test) {
+TEST_F(SpatialModelTest_GhostMode_SimpleRange, init_location_test) {
 	testInit();
 }
 
-TEST_F(EnvironmentTest_GhostMode_SimpleRange, distributed_move_algorithm) {
+TEST_F(SpatialModelTest_GhostMode_SimpleRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
 
-class EnvironmentTest_HardSyncMode_SimpleRange : public EnvironmentTest_HardSyncMode {
+class SpatialModelTest_HardSyncMode_SimpleRange : public SpatialModelTest_HardSyncMode {
 	protected:
-		EnvironmentTest_HardSyncMode_SimpleRange()
-			: EnvironmentTest_HardSyncMode(1) {}
+		SpatialModelTest_HardSyncMode_SimpleRange()
+			: SpatialModelTest_HardSyncMode(1) {}
 };
 
-TEST_F(EnvironmentTest_HardSyncMode_SimpleRange, init_location_test) {
+TEST_F(SpatialModelTest_HardSyncMode_SimpleRange, init_location_test) {
 	testInit();
 }
 
-TEST_F(EnvironmentTest_HardSyncMode_SimpleRange, distributed_move_algorithm) {
+TEST_F(SpatialModelTest_HardSyncMode_SimpleRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
 
-class EnvironmentTest_GhostMode_ComplexRange : public EnvironmentTest_GhostMode {
+class SpatialModelTest_GhostMode_ComplexRange : public SpatialModelTest_GhostMode {
 	protected:
-		EnvironmentTest_GhostMode_ComplexRange()
-			: EnvironmentTest_GhostMode(2) {}
+		SpatialModelTest_GhostMode_ComplexRange()
+			: SpatialModelTest_GhostMode(2) {}
 };
 
-TEST_F(EnvironmentTest_GhostMode_ComplexRange, init_location_test) {
+TEST_F(SpatialModelTest_GhostMode_ComplexRange, init_location_test) {
 	testInit();
 }
 
-TEST_F(EnvironmentTest_GhostMode_ComplexRange, distributed_move_algorithm) {
+TEST_F(SpatialModelTest_GhostMode_ComplexRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
 
-class EnvironmentTest_HardSyncMode_ComplexRange : public EnvironmentTest_HardSyncMode {
+class SpatialModelTest_HardSyncMode_ComplexRange : public SpatialModelTest_HardSyncMode {
 	protected:
-		EnvironmentTest_HardSyncMode_ComplexRange()
-			: EnvironmentTest_HardSyncMode(2) {}
+		SpatialModelTest_HardSyncMode_ComplexRange()
+			: SpatialModelTest_HardSyncMode(2) {}
 };
 
-TEST_F(EnvironmentTest_HardSyncMode_ComplexRange, init_location_test) {
+TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, init_location_test) {
 	testInit();
 }
 
-TEST_F(EnvironmentTest_HardSyncMode_ComplexRange, distributed_move_algorithm) {
+TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
 
@@ -235,14 +234,13 @@ class SpatialAgentBuilderTest : public Test {
 	std::vector<fpmas::api::model::Cell*> local_cells;
 	MockJob mock_job;
 	fpmas::api::scheduler::JobList fake_job_list {mock_job};
-	NiceMock<MockEnvironment> environment;
-	NiceMock<MockModel> model;
+	NiceMock<MockSpatialModel> model;
 
 	MockRuntime mock_runtime;
 	MockAgentGroup mock_group;
 	StrictMock<MockSpatialAgentFactory> agent_factory;
 	StrictMock<MockSpatialAgentMapping> agent_mapping;
-	fpmas::model::SpatialAgentBuilder builder {model, environment};
+	fpmas::model::SpatialAgentBuilder builder {model};
 
 	struct CountAgents {
 		std::unordered_map<fpmas::api::model::Cell*, int> counts;
@@ -256,7 +254,7 @@ class SpatialAgentBuilderTest : public Test {
 	void SetUp() override {
 		ON_CALL(model, runtime)
 			.WillByDefault(ReturnRef(mock_runtime));
-		ON_CALL(environment, initLocationAlgorithm)
+		ON_CALL(model, initLocationAlgorithm)
 			.WillByDefault(Return(fake_job_list));
 		// Builds a random agent mapping on each process
 		for(int i = 0; i < num_cells; i++) {

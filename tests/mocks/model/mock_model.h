@@ -102,7 +102,7 @@ class MockAgent : public virtual fpmas::api::model::Agent, public detail::MockAg
 		}
 };
 
-class MockModel : public fpmas::api::model::Model {
+class MockModel : public virtual fpmas::api::model::Model {
 	public:
 		MOCK_METHOD(fpmas::api::model::AgentGraph&, graph, (), (override));
 		MOCK_METHOD(fpmas::api::scheduler::Scheduler&, scheduler, (), (override));

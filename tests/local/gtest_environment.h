@@ -2,7 +2,7 @@
 #define FPMAS_GTEST_LOCAL_ENVIRONMENT_H
 
 #include "../mocks/model/mock_model.h"
-#include "../mocks/model/mock_environment.h"
+#include "../mocks/model/mock_spatial_model.h"
 #include "fpmas/model/grid.h"
 
 namespace model { namespace test {

@@ -1,11 +1,11 @@
-#include "../mocks/model/mock_environment.h"
-#include "fpmas/model/environment.h"
+#include "../mocks/model/mock_spatial_model.h"
+#include "fpmas/model/spatial_model.h"
 #include "gtest_environment.h"
 
 
 using fpmas::model::CellBase;
 using fpmas::model::AgentPtr;
-using fpmas::api::model::EnvironmentLayers;
+using fpmas::api::model::SpatialModelLayers;
 // defined in gtest_environment
 using model::test::SpatialAgent;
 using model::test::SpatialAgentWithData;
@@ -20,23 +20,26 @@ class CellBaseTestSetUp {
 		NiceMock<MockSpatialAgent>* mock_spatial_agent
 			= new NiceMock<MockSpatialAgent>;
 		NiceMock<MockCell> current_location;
-		NiceMock<MockDistributedNode<AgentPtr>> agent_node {agent_id, fpmas::model::AgentPtr(mock_spatial_agent)};
+		NiceMock<MockDistributedNode<AgentPtr>> agent_node {
+			agent_id, fpmas::model::AgentPtr(mock_spatial_agent)};
 		NaggyMock<MockDistributedEdge<AgentPtr>> agent_edge;
 
 		NiceMock<MockDistributedNode<AgentPtr>> cell_node;
 
 		NiceMock<MockCellBase>* cell_neighbor_1 = new NiceMock<MockCellBase>;
-		NiceMock<MockDistributedNode<AgentPtr>> cell_neighbor_1_node {agent_id, fpmas::model::AgentPtr(cell_neighbor_1)};
+		NiceMock<MockDistributedNode<AgentPtr>> cell_neighbor_1_node {
+			agent_id, fpmas::model::AgentPtr(cell_neighbor_1)};
 		NiceMock<MockDistributedEdge<AgentPtr>> cell_neighbor_1_edge;
 
 		NiceMock<MockCellBase>* cell_neighbor_2 = new NiceMock<MockCellBase>;
-		NiceMock<MockDistributedNode<AgentPtr>> cell_neighbor_2_node {agent_id, fpmas::model::AgentPtr(cell_neighbor_2)};
+		NiceMock<MockDistributedNode<AgentPtr>> cell_neighbor_2_node {
+			agent_id, fpmas::model::AgentPtr(cell_neighbor_2)};
 		NiceMock<MockDistributedEdge<AgentPtr>> cell_neighbor_2_edge;
 
 		StrictMock<MockModel> mock_model;
 
 		void BaseTestSetUp(MockCellBase& cell) {
-			ON_CALL(cell_node, getOutgoingEdges(EnvironmentLayers::NEIGHBOR_CELL))
+			ON_CALL(cell_node, getOutgoingEdges(SpatialModelLayers::NEIGHBOR_CELL))
 				.WillByDefault(Return(
 							std::vector<fpmas::model::AgentEdge*>
 							{&cell_neighbor_1_edge, &cell_neighbor_2_edge}
@@ -79,21 +82,29 @@ class CellBaseTest : public testing::Test, protected CellBaseTestSetUp,
 };
 
 TEST_F(CellBaseTest, grow_mobility_range) {
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_1, EnvironmentLayers::NEW_MOVE));
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_2, EnvironmentLayers::NEW_MOVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_MOVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_MOVE));
 
 	this->growMobilityRange(mock_spatial_agent);
 }
 
 TEST_F(CellBaseTest, grow_perception_range) {
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_1, EnvironmentLayers::NEW_PERCEIVE));
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_2, EnvironmentLayers::NEW_PERCEIVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_PERCEIVE)
+			);
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
+			);
 
 	this->growPerceptionRange(mock_spatial_agent);
 }
 
 TEST_F(CellBaseTest, update_location) {
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, this, EnvironmentLayers::LOCATION));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, this, SpatialModelLayers::LOCATION)
+			);
 	EXPECT_CALL(mock_model, unlink(&agent_edge));
 
 	fpmas::model::AgentPtr ptr {mock_spatial_agent};
@@ -105,27 +116,38 @@ TEST_F(CellBaseTest, update_location) {
 }
 
 TEST_F(CellBaseTest, handle_new_location) {
-	ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::NEW_LOCATION))
-		.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge})));
+	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::NEW_LOCATION))
+		.WillByDefault(Return(
+					std::vector<fpmas::model::AgentEdge*>({&agent_edge})
+					));
 
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, this, EnvironmentLayers::LOCATION));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, this, SpatialModelLayers::LOCATION));
 	EXPECT_CALL(mock_model, unlink(&agent_edge));
 
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_1, EnvironmentLayers::NEW_MOVE));
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_2, EnvironmentLayers::NEW_MOVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_MOVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_MOVE));
 
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_1, EnvironmentLayers::NEW_PERCEIVE));
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_2, EnvironmentLayers::NEW_PERCEIVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_PERCEIVE)
+			);
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
+			);
 
 	this->handleNewLocation();
 }
 
 TEST_F(CellBaseTest, handle_move) {
-	ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::MOVE))
-		.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge})));
+	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::MOVE))
+		.WillByDefault(Return(std::vector<fpmas::model::AgentEdge*>({&agent_edge})));
 
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_1, EnvironmentLayers::NEW_MOVE));
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_2, EnvironmentLayers::NEW_MOVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_MOVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_MOVE));
 	this->handleMove();
 
 	// Should do nothing when called again, since the node is already
@@ -135,11 +157,15 @@ TEST_F(CellBaseTest, handle_move) {
 }
 
 TEST_F(CellBaseTest, handle_perceive) {
-	ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::PERCEIVE))
-		.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge})));
+	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::PERCEIVE))
+		.WillByDefault(Return(std::vector<fpmas::model::AgentEdge*>({&agent_edge})));
 
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_1, EnvironmentLayers::NEW_PERCEIVE));
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, cell_neighbor_2, EnvironmentLayers::NEW_PERCEIVE));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_PERCEIVE)
+			);
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
+			);
 	this->handlePerceive();
 
 	// Should do nothing when called again, since the node is already
@@ -152,19 +178,23 @@ TEST_F(CellBaseTest, update_perceptions) {
 	DistributedId perceived_id {5, 2};
 	NiceMock<MockSpatialAgent>* perceived_agent
 		= new NiceMock<MockSpatialAgent>;
-	NiceMock<MockDistributedNode<AgentPtr>> perceived_agent_node {perceived_id, fpmas::model::AgentPtr(perceived_agent)};
+	NiceMock<MockDistributedNode<AgentPtr>> perceived_agent_node {
+		perceived_id, fpmas::model::AgentPtr(perceived_agent)};
 	ON_CALL(*perceived_agent, node())
 		.WillByDefault(Return(&perceived_agent_node));
 	NiceMock<MockDistributedEdge<AgentPtr>> perceived_agent_edge;
 	perceived_agent_edge.setSourceNode(&perceived_agent_node);
 
-	ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::PERCEIVE))
-		.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge})));
+	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::PERCEIVE))
+		.WillByDefault(Return(std::vector<fpmas::model::AgentEdge*>({&agent_edge})));
 
-	ON_CALL(cell_node, getIncomingEdges(EnvironmentLayers::LOCATION))
-		.WillByDefault(Return(std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>({&agent_edge, &perceived_agent_edge})));
+	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::LOCATION))
+		.WillByDefault(Return(std::vector<fpmas::model::AgentEdge*>(
+						{&agent_edge, &perceived_agent_edge}
+						)));
 
-	EXPECT_CALL(mock_model, link(mock_spatial_agent, perceived_agent, EnvironmentLayers::PERCEPTION));
+	EXPECT_CALL(mock_model, link(
+				mock_spatial_agent, perceived_agent, SpatialModelLayers::PERCEPTION));
 	EXPECT_CALL(mock_model, unlink(&agent_edge));
 
 	this->updatePerceptions();
@@ -217,8 +247,9 @@ class SpatialAgentTest : public ::testing::Test, protected NiceMock<SpatialAgent
 				in_range[i] = dist(engine);
 				ON_CALL(range, contains(
 							&location_cell,
-							dynamic_cast<fpmas::api::model::Cell*>(nodes[i]->data().get())))
-					.WillByDefault(Return(in_range[i]));
+							dynamic_cast<fpmas::api::model::Cell*>(
+								nodes[i]->data().get())
+							)).WillByDefault(Return(in_range[i]));
 			}
 		}
 
@@ -254,10 +285,12 @@ class SpatialAgentTest : public ::testing::Test, protected NiceMock<SpatialAgent
 };
 
 TEST_F(SpatialAgentTest, location) {
-	ON_CALL(agent_node, getOutgoingEdges(EnvironmentLayers::LOCATION))
-		.WillByDefault(Return(std::vector<fpmas::api::model::AgentEdge*> {&location_edge}));
-	ON_CALL(agent_node, outNeighbors(EnvironmentLayers::LOCATION))
-		.WillByDefault(Return(std::vector<fpmas::api::model::AgentNode*> {&location_node}));
+	ON_CALL(agent_node, getOutgoingEdges(SpatialModelLayers::LOCATION))
+		.WillByDefault(Return(std::vector<fpmas::model::AgentEdge*> {
+					&location_edge}));
+	ON_CALL(agent_node, outNeighbors(SpatialModelLayers::LOCATION))
+		.WillByDefault(Return(std::vector<fpmas::model::AgentNode*> {
+					&location_node}));
 
 	ASSERT_EQ(this->locationCell(), &location_cell);
 }
@@ -303,7 +336,9 @@ TEST_F(SpatialAgentTest, json_with_data) {
 
 	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<SpatialAgentWithData*>(NotNull()));
 	ASSERT_EQ(dynamic_cast<SpatialAgentWithData*>(ptr.get())->data, 7);
-	ASSERT_EQ(dynamic_cast<SpatialAgentWithData*>(ptr.get())->locationId(), location_id);
+	ASSERT_EQ(
+			dynamic_cast<SpatialAgentWithData*>(ptr.get())->locationId(),
+			location_id);
 
 	src_ptr.release();
 }
@@ -314,9 +349,12 @@ TEST_F(SpatialAgentTest, moveToCell1) {
 	EXPECT_CALL(this->perception_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(true));
 
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::MOVE));
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::PERCEIVE));
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::MOVE));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::PERCEIVE));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::NEW_LOCATION));
 
 	this->moveTo(&location_cell);
 
@@ -329,8 +367,10 @@ TEST_F(SpatialAgentTest, moveToCell2) {
 	EXPECT_CALL(this->perception_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(true));
 
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::PERCEIVE));
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::PERCEIVE));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::NEW_LOCATION));
 
 	this->moveTo(&location_cell);
 
@@ -343,8 +383,10 @@ TEST_F(SpatialAgentTest, moveToCell3) {
 	EXPECT_CALL(this->perception_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(false));
 
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::MOVE));
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::MOVE));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::NEW_LOCATION));
 
 	this->moveTo(&location_cell);
 
@@ -357,7 +399,8 @@ TEST_F(SpatialAgentTest, moveToCell4) {
 	EXPECT_CALL(this->perception_range, contains(&location_cell, &location_cell))
 		.WillRepeatedly(Return(false));
 
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::NEW_LOCATION));
 
 	this->moveTo(&location_cell);
 
@@ -369,19 +412,22 @@ TEST_F(SpatialAgentTest, moveToId) {
 	std::vector<fpmas::model::AgentNode*> move_neighbors {&location_node};
 	std::vector<fpmas::model::AgentEdge*> move_neighbor_edges {&location_edge};
 
-	ON_CALL(agent_node, outNeighbors(EnvironmentLayers::MOVE))
+	ON_CALL(agent_node, outNeighbors(SpatialModelLayers::MOVE))
 		.WillByDefault(Return(move_neighbors));
-	ON_CALL(agent_node, getOutgoingEdges(EnvironmentLayers::MOVE))
+	ON_CALL(agent_node, getOutgoingEdges(SpatialModelLayers::MOVE))
 		.WillByDefault(Return(move_neighbor_edges));
 
-	EXPECT_CALL(mock_model, link(&agent, &location_cell, EnvironmentLayers::NEW_LOCATION));
+	EXPECT_CALL(mock_model, link(
+				&agent, &location_cell, SpatialModelLayers::NEW_LOCATION));
 	EXPECT_CALL(mock_model, unlink(&location_edge));
 
 	this->moveTo(location_id);
 }
 
 TEST_F(SpatialAgentTest, moveToIdOutOfField) {
-	ASSERT_THROW(this->moveTo(location_id), fpmas::api::model::OutOfMobilityFieldException);
+	ASSERT_THROW(
+			this->moveTo(location_id),
+			fpmas::api::model::OutOfMobilityFieldException);
 }
 
 TEST_F(SpatialAgentTest, agentBehavior) {
@@ -421,27 +467,31 @@ TEST_F(SpatialAgentTest, agentBehavior) {
 			in_perceive_range, this->perception_range);
 
 	// Set up NEW_MOVE layer
-	ON_CALL(agent_node, outNeighbors(EnvironmentLayers::NEW_MOVE))
+	ON_CALL(agent_node, outNeighbors(SpatialModelLayers::NEW_MOVE))
 		.WillByDefault(Return(move_neighbors));
-	ON_CALL(agent_node, getOutgoingEdges(EnvironmentLayers::NEW_MOVE))
+	ON_CALL(agent_node, getOutgoingEdges(SpatialModelLayers::NEW_MOVE))
 		.WillByDefault(Return(move_neighbor_edges));
 
 	// Set up NEW_PERCEIVE layer
-	ON_CALL(agent_node, outNeighbors(EnvironmentLayers::NEW_PERCEIVE))
+	ON_CALL(agent_node, outNeighbors(SpatialModelLayers::NEW_PERCEIVE))
 		.WillByDefault(Return(perceive_neighbors));
-	ON_CALL(agent_node, getOutgoingEdges(EnvironmentLayers::NEW_PERCEIVE))
+	ON_CALL(agent_node, getOutgoingEdges(SpatialModelLayers::NEW_PERCEIVE))
 		.WillByDefault(Return(perceive_neighbor_edges));
 
 	// Set up location
-	ON_CALL(agent_node, getOutgoingEdges(EnvironmentLayers::LOCATION))
-		.WillByDefault(Return(std::vector<fpmas::api::model::AgentEdge*> {&location_edge}));
-	ON_CALL(agent_node, outNeighbors(EnvironmentLayers::LOCATION))
-		.WillByDefault(Return(std::vector<fpmas::api::model::AgentNode*> {&location_node}));
+	ON_CALL(agent_node, getOutgoingEdges(SpatialModelLayers::LOCATION))
+		.WillByDefault(Return(std::vector<fpmas::model::AgentEdge*> {
+					&location_edge}));
+	ON_CALL(agent_node, outNeighbors(SpatialModelLayers::LOCATION))
+		.WillByDefault(Return(std::vector<fpmas::model::AgentNode*> {
+					&location_node}));
 
 	// MOVE expectations
 	for(int i = 0; i < 10; i++) {
 		if(in_move_range[i])
-			EXPECT_CALL(mock_model, link(&agent, move_neighbors[i]->data().get(), EnvironmentLayers::MOVE));
+			EXPECT_CALL(mock_model, link(
+						&agent, move_neighbors[i]->data().get(),
+						SpatialModelLayers::MOVE));
 		EXPECT_CALL(mock_model, unlink(move_neighbor_edges[i]));
 	}
 	this->handleNewMove();
@@ -449,7 +499,9 @@ TEST_F(SpatialAgentTest, agentBehavior) {
 	// PERCEIVE expectations
 	for(int i = 0; i < 10; i++) {
 		if(in_perceive_range[i])
-			EXPECT_CALL(mock_model, link(&agent, perceive_neighbors[i]->data().get(), EnvironmentLayers::PERCEIVE));
+			EXPECT_CALL(mock_model, link(
+						&agent, perceive_neighbors[i]->data().get(),
+						SpatialModelLayers::PERCEIVE));
 		EXPECT_CALL(mock_model, unlink(perceive_neighbor_edges[i]));
 	}
 	this->handleNewPerceive();
@@ -478,7 +530,7 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 	std::vector<fpmas::model::AgentEdge*> move_neighbor_edges;
 	setUpDuplicates(
 			move_cell, move_neighbors, move_neighbor_edges,
-			EnvironmentLayers::NEW_MOVE, this->mobility_range);
+			SpatialModelLayers::NEW_MOVE, this->mobility_range);
 
 	// Set up perceive layer with a duplicate node
 	auto perceive_cell = new NiceMock<MockCell>;
@@ -486,16 +538,16 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 	std::vector<fpmas::model::AgentEdge*> perceive_neighbor_edges;
 	setUpDuplicates(
 			perceive_cell, perceive_neighbors, perceive_neighbor_edges,
-			EnvironmentLayers::NEW_PERCEIVE, this->perception_range);
+			SpatialModelLayers::NEW_PERCEIVE, this->perception_range);
 
-	EXPECT_CALL(mock_model, link(&agent, move_cell, EnvironmentLayers::MOVE))
+	EXPECT_CALL(mock_model, link(&agent, move_cell, SpatialModelLayers::MOVE))
 		.Times(1);
 	for(auto edge : move_neighbor_edges)
 		EXPECT_CALL(mock_model, unlink(edge));
 
 	this->handleNewMove();
 
-	EXPECT_CALL(mock_model, link(&agent, perceive_cell, EnvironmentLayers::PERCEIVE))
+	EXPECT_CALL(mock_model, link(&agent, perceive_cell, SpatialModelLayers::PERCEIVE))
 		.Times(1);
 	for(auto edge : perceive_neighbor_edges)
 		EXPECT_CALL(mock_model, unlink(edge));

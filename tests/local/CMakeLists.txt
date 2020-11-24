@@ -31,7 +31,7 @@ set(SOURCES
 	# Model
 	model/model.cpp
 	model/serializer.cpp
-	model/environment.cpp
+	model/spatial_model.cpp
 	model/behavior.cpp
 	model/grid.cpp
 	)

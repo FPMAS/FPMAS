@@ -2,7 +2,7 @@
 #define FPMAS_GRID_H
 
 #include "fpmas/api/model/grid.h"
-#include "environment.h"
+#include "spatial_model.h"
 #include "fpmas/random/distribution.h"
 
 namespace nlohmann {
@@ -86,7 +86,7 @@ namespace fpmas { namespace model {
 	template<typename AgentType, typename Derived>
 		void GridAgent<AgentType, Derived>::moveTo(DiscretePoint point) {
 			bool found = false;
-			auto mobility_field = this->template outNeighbors<fpmas::api::model::GridCell>(EnvironmentLayers::MOVE);
+			auto mobility_field = this->template outNeighbors<fpmas::api::model::GridCell>(SpatialModelLayers::MOVE);
 			auto it = mobility_field.begin();
 			while(!found && it != mobility_field.end()) {
 				if((*it)->location() == point) {
@@ -109,7 +109,7 @@ namespace fpmas { namespace model {
 				}
 		};
 
-	class VonNeumannNeighborhood : public api::model::EnvironmentBuilder {
+	class VonNeumannNeighborhood : public api::model::SpatialModelBuilder {
 		private:
 			typedef std::vector<std::vector<api::model::GridCell*>> CellMatrix;
 			void allocate(CellMatrix& matrix, DiscreteCoordinate width, DiscreteCoordinate height);
@@ -119,8 +119,7 @@ namespace fpmas { namespace model {
 			DiscreteCoordinate height;
 
 			CellMatrix buildLocalGrid(
-					api::model::Model& model,
-					api::model::Environment& environment,
+					api::model::SpatialModel& model,
 					DiscreteCoordinate min_x, DiscreteCoordinate max_x,
 					DiscreteCoordinate min_y, DiscreteCoordinate max_y);
 
@@ -131,9 +130,7 @@ namespace fpmas { namespace model {
 					DiscreteCoordinate height)
 				: cell_factory(cell_factory), width(width), height(height) {}
 
-			void build(
-					api::model::Model& model,
-					api::model::Environment& environment);
+			void build(api::model::SpatialModel& spatial_model);
 	};
 
 	class RandomAgentMapping : public api::model::GridAgentMapping {

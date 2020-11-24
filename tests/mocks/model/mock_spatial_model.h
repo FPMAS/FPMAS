@@ -2,7 +2,7 @@
 #define MOCK_ENVIRONMENT_H
 
 #include "gmock/gmock.h"
-#include "fpmas/model/environment.h"
+#include "fpmas/model/spatial_model.h"
 #include "mock_model.h"
 
 template<typename CellType>
@@ -49,7 +49,7 @@ class MockCell : public virtual fpmas::api::model::Cell, public testing::NiceMoc
 		virtual ~MockCell() {}
 };
 
-class MockEnvironment : public fpmas::api::model::Environment {
+class MockSpatialModel : public fpmas::api::model::SpatialModel, public testing::NiceMock<MockModel> {
 	public:
 		MOCK_METHOD(void, add, (fpmas::api::model::SpatialAgentBase*), (override));
 		MOCK_METHOD(void, add, (fpmas::api::model::Cell*), (override));

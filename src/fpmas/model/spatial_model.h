@@ -1,14 +1,14 @@
 #ifndef FPMAS_ENVIRONMENT_H
 #define FPMAS_ENVIRONMENT_H
 
-#include "fpmas/api/model/environment.h"
+#include "fpmas/api/model/spatial_model.h"
 #include "fpmas/api/model/exceptions.h"
 #include "model.h"
 #include "serializer.h"
 
 namespace fpmas {
 	namespace model {
-	using api::model::EnvironmentLayers;
+	using api::model::SpatialModelLayers;
 
 	class CellBase : public virtual api::model::Cell, public NeighborsAccess {
 		private:
@@ -40,32 +40,40 @@ namespace fpmas {
 		AGENT_CROP_RANGES = -3,
 	};
 
-	class Environment : public api::model::Environment {
+	class SpatialModelBase : public api::model::SpatialModel {
 		private:
-			AgentGroup& cell_behavior_group;
+			AgentGroup* cell_behavior_group;
 			Behavior<api::model::CellBehavior> cell_behaviors {
 				&api::model::CellBehavior::handleNewLocation,
 				&api::model::CellBehavior::handleMove,
 				&api::model::CellBehavior::handlePerceive
 			};
-			AgentGroup& spatial_agent_group;
+			AgentGroup* spatial_agent_group;
 			Behavior<api::model::SpatialAgentBehavior> spatial_agent_behaviors {
 				&api::model::SpatialAgentBehavior::handleNewMove,
 				&api::model::SpatialAgentBehavior::handleNewPerceive
 			};
-			AgentGroup& update_perceptions_group;
+			AgentGroup* update_perceptions_group;
 			Behavior<api::model::CellBehavior> update_perceptions_behavior {
 				&api::model::CellBehavior::updatePerceptions
 			};
 			unsigned int max_mobility_range;
 			unsigned int max_perception_range;
 
-		public:
-			Environment(
-					api::model::Model& model,
+		protected:
+			void initGroups() {
+				cell_behavior_group = &this->buildGroup(
+							CELL_UPDATE_RANGES, cell_behaviors);
+				spatial_agent_group = &this->buildGroup(
+							AGENT_CROP_RANGES, spatial_agent_behaviors);
+				update_perceptions_group = &this->buildGroup(
+							CELL_UPDATE_PERCEPTIONS, update_perceptions_behavior);
+			}
+
+			SpatialModelBase(
 					unsigned int max_mobility_range,
 					unsigned int max_perception_range);
-
+		public:
 			void add(api::model::SpatialAgentBase* agent) override;
 			void add(api::model::Cell* cell) override;
 			std::vector<api::model::Cell*> cells() override;
@@ -76,6 +84,17 @@ namespace fpmas {
 					const AgentGroup& movable_agents
 					) override;
 
+	};
+
+	template<template<typename> class SyncMode>
+	class SpatialModel : public SpatialModelBase, public Model<SyncMode> {
+		public:
+			SpatialModel(
+					unsigned int max_mobility_range,
+					unsigned int max_perception_range)
+				: SpatialModelBase(max_mobility_range, max_perception_range) {
+					this->initGroups();
+				}
 	};
 
 	
@@ -147,32 +166,32 @@ namespace fpmas {
 	template<typename AgentType, typename CellType, typename Derived>
 		void SpatialAgentBase<AgentType, CellType, Derived>::updateLocation(api::model::Cell* cell) {
 			// Links to new location
-			this->model()->link(this, cell, EnvironmentLayers::NEW_LOCATION);
+			this->model()->link(this, cell, SpatialModelLayers::NEW_LOCATION);
 
 			// Unlinks obsolete location
 			auto location = this->template outNeighbors<api::model::Cell>(
-					EnvironmentLayers::LOCATION);
+					SpatialModelLayers::LOCATION);
 			if(location.count() > 0)
 				this->model()->unlink(location.at(0).edge());
 
 			// Unlinks obsolete mobility field
 			for(auto cell : this->template outNeighbors<api::model::Cell>(
-						EnvironmentLayers::MOVE)) {
+						SpatialModelLayers::MOVE)) {
 				this->model()->unlink(cell.edge());
 			}
 
 			// Unlinks obsolete perception field
 			for(auto agent : this->template outNeighbors<api::model::Agent>(
-						EnvironmentLayers::PERCEPTION))
+						SpatialModelLayers::PERCEPTION))
 				this->model()->unlink(agent.edge());
 
 			// Adds the NEW_LOCATION to the mobility/perceptions fields
 			// depending on the current ranges
 			if(auto _cell = dynamic_cast<CellType*>(cell)) {
 				if(this->mobility_range->contains(_cell, _cell))
-					this->model()->link(this, _cell, EnvironmentLayers::MOVE);
+					this->model()->link(this, _cell, SpatialModelLayers::MOVE);
 				if(this->perception_range->contains(_cell, _cell)) {
-					this->model()->link(this, _cell, EnvironmentLayers::PERCEIVE);
+					this->model()->link(this, _cell, SpatialModelLayers::PERCEIVE);
 				}
 			}
 
@@ -182,7 +201,7 @@ namespace fpmas {
 	template<typename AgentType, typename CellType, typename Derived>
 		CellType* SpatialAgentBase<AgentType, CellType, Derived>::locationCell() const {
 			auto location = this->template outNeighbors<CellType>(
-					EnvironmentLayers::LOCATION);
+					SpatialModelLayers::LOCATION);
 			if(location.count() > 0)
 				return location.at(0);
 			return nullptr;
@@ -191,10 +210,10 @@ namespace fpmas {
 	template<typename AgentType, typename CellType, typename Derived>
 		void SpatialAgentBase<AgentType, CellType, Derived>::handleNewMove() {
 
-			CurrentOutLayer move_layer(this, EnvironmentLayers::MOVE);
+			CurrentOutLayer move_layer(this, SpatialModelLayers::MOVE);
 
 			for(auto cell : this->template outNeighbors<CellType>(
-						EnvironmentLayers::NEW_MOVE)) {
+						SpatialModelLayers::NEW_MOVE)) {
 				if(!move_layer.contains(cell)
 						&& this->mobility_range->contains(this->locationCell(), cell))
 					move_layer.link(cell);
@@ -204,10 +223,10 @@ namespace fpmas {
 
 	template<typename AgentType, typename CellType, typename Derived>
 		void SpatialAgentBase<AgentType, CellType, Derived>::handleNewPerceive() {
-			CurrentOutLayer perceive_layer(this, EnvironmentLayers::PERCEIVE);
+			CurrentOutLayer perceive_layer(this, SpatialModelLayers::PERCEIVE);
 
 			for(auto cell : this->template outNeighbors<CellType>(
-						EnvironmentLayers::NEW_PERCEIVE)) {
+						SpatialModelLayers::NEW_PERCEIVE)) {
 				if(!perceive_layer.contains(cell)
 						&& this->perception_range->contains(this->locationCell(), cell))
 					perceive_layer.link(cell);
@@ -218,7 +237,7 @@ namespace fpmas {
 	template<typename AgentType, typename CellType, typename Derived>
 		void SpatialAgentBase<AgentType, CellType, Derived>::moveTo(graph::DistributedId cell_id) {
 			bool found = false;
-			auto mobility_field = this->template outNeighbors<CellType>(EnvironmentLayers::MOVE);
+			auto mobility_field = this->template outNeighbors<CellType>(SpatialModelLayers::MOVE);
 			auto it = mobility_field.begin();
 			while(!found && it != mobility_field.end()) {
 				if((*it)->node()->getId() == cell_id) {
@@ -255,13 +274,11 @@ namespace fpmas {
 
 	class SpatialAgentBuilder {
 		private:
-			fpmas::api::model::Model& model;
-			fpmas::api::model::Environment& environment;
+			fpmas::api::model::SpatialModel& spatial_model;
 		public:
 			SpatialAgentBuilder(
-					fpmas::api::model::Model& model,
-					fpmas::api::model::Environment& environment
-					) : model(model), environment(environment) {}
+					fpmas::api::model::SpatialModel& spatial_model
+					) : spatial_model(spatial_model) {}
 
 			void build(
 					api::model::AgentGroup& group,

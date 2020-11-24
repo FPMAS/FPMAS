@@ -8,8 +8,7 @@ using fpmas::model::VonNeumannNeighborhood;
 
 class VonNeumannNeighborhoodTest : public ::testing::Test {
 	protected:
-		fpmas::model::Model<fpmas::synchro::GhostMode> model;
-		fpmas::model::Environment grid {model, 0, 0};
+		fpmas::model::SpatialModel<fpmas::synchro::GhostMode> grid_model {0, 0};
 		fpmas::model::GridCellFactory<> cell_factory;
 
 };
@@ -17,8 +16,8 @@ class VonNeumannNeighborhoodTest : public ::testing::Test {
 TEST_F(VonNeumannNeighborhoodTest, trivial) {
 	VonNeumannNeighborhood null(cell_factory, 0, 0);
 
-	null.build(model, grid);
-	ASSERT_THAT(grid.cells(), IsEmpty());
+	null.build(grid_model);
+	ASSERT_THAT(grid_model.cells(), IsEmpty());
 }
 
 TEST_F(VonNeumannNeighborhoodTest, build) {
@@ -29,10 +28,10 @@ TEST_F(VonNeumannNeighborhoodTest, build) {
 	fpmas::communication::TypedMpi<std::vector<fpmas::model::DiscretePoint>> mpi(
 			fpmas::communication::MpiCommunicator::WORLD);
 
-	grid_builder.build(model, grid);
+	grid_builder.build(grid_model);
 
 	std::vector<fpmas::model::DiscretePoint> local_cell_coordinates;
-	for(auto cell : grid.cells())
+	for(auto cell : grid_model.cells())
 		local_cell_coordinates.push_back(
 				dynamic_cast<fpmas::api::model::GridCell*>(cell)->location());
 
@@ -53,7 +52,7 @@ TEST_F(VonNeumannNeighborhoodTest, build) {
 		ASSERT_THAT(cell_coordinates, UnorderedElementsAreArray(expected_coordinates));
 	}
 
-	for(auto cell : grid.cells()) {
+	for(auto cell : grid_model.cells()) {
 		fpmas::api::model::GridCell* grid_cell
 			= dynamic_cast<fpmas::api::model::GridCell*>(cell);
 		auto location = grid_cell->location();

@@ -1,7 +1,7 @@
 #ifndef FPMAS_GRID_API_H
 #define FPMAS_GRID_API_H
 
-#include "environment.h"
+#include "spatial_model.h"
 
 namespace fpmas { namespace api { namespace model {
 

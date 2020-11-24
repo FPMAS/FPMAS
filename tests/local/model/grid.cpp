@@ -5,7 +5,7 @@
 
 using namespace testing;
 using fpmas::model::GridCell;
-using fpmas::model::EnvironmentLayers;
+using fpmas::model::SpatialModelLayers;
 
 class GridCellTest : public testing::Test {
 	protected:
@@ -129,12 +129,12 @@ TEST_F(GridAgentTest, moveToPoint) {
 	mock_cell_edge.setTargetNode(&mock_cell_node);
 	std::vector<fpmas::model::AgentEdge*> move_neighbor_edges {&mock_cell_edge};
 
-	ON_CALL(mock_agent_node, outNeighbors(EnvironmentLayers::MOVE))
+	ON_CALL(mock_agent_node, outNeighbors(SpatialModelLayers::MOVE))
 		.WillByDefault(Return(move_neighbors));
-	ON_CALL(mock_agent_node, getOutgoingEdges(EnvironmentLayers::MOVE))
+	ON_CALL(mock_agent_node, getOutgoingEdges(SpatialModelLayers::MOVE))
 		.WillByDefault(Return(move_neighbor_edges));
 
-	EXPECT_CALL(mock_model, link(this, &mock_cell, EnvironmentLayers::NEW_LOCATION));
+	EXPECT_CALL(mock_model, link(this, &mock_cell, SpatialModelLayers::NEW_LOCATION));
 	EXPECT_CALL(mock_model, unlink(&mock_cell_edge));
 
 	this->moveTo(location_point);

@@ -360,7 +360,7 @@ namespace fpmas {
 			/**
 			 * api::model::Model implementation.
 			 */
-			class Model : public api::model::Model {
+			class Model : public virtual api::model::Model {
 				public:
 					/**
 					 * LoadBalancingAlgorithm type.
@@ -373,10 +373,14 @@ namespace fpmas {
 					api::runtime::Runtime& _runtime;
 					scheduler::Job _loadBalancingJob;
 					LoadBalancingTask load_balancing_task;
-					InsertAgentNodeCallback* insert_node_callback = new InsertAgentNodeCallback(*this);
-					EraseAgentNodeCallback* erase_node_callback = new EraseAgentNodeCallback(*this);
-					SetAgentLocalCallback* set_local_callback = new SetAgentLocalCallback(*this);
-					SetAgentDistantCallback* set_distant_callback = new SetAgentDistantCallback(*this);
+					InsertAgentNodeCallback* insert_node_callback
+						= new InsertAgentNodeCallback(*this);
+					EraseAgentNodeCallback* erase_node_callback
+						= new EraseAgentNodeCallback(*this);
+					SetAgentLocalCallback* set_local_callback
+						= new SetAgentLocalCallback(*this);
+					SetAgentDistantCallback* set_distant_callback
+						= new SetAgentDistantCallback(*this);
 
 					std::unordered_map<api::model::GroupId, api::model::AgentGroup*> _groups;
 

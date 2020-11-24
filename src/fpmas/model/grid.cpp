@@ -12,8 +12,7 @@ namespace fpmas { namespace model {
 			row.resize(width);
 	}
 	typename VonNeumannNeighborhood::CellMatrix VonNeumannNeighborhood::buildLocalGrid(
-			api::model::Model& model,
-			api::model::Environment& environment,
+			api::model::SpatialModel& model,
 			DiscreteCoordinate min_x, DiscreteCoordinate max_x,
 			DiscreteCoordinate min_y, DiscreteCoordinate max_y) {
 
@@ -27,7 +26,7 @@ namespace fpmas { namespace model {
 			for(DiscreteCoordinate x = min_x; x <= max_x; x++) {
 				auto cell = cell_factory.build({x, y});
 				cells[y-min_y][x-min_x] = cell;
-				environment.add(cell);
+				model.add(cell);
 			}
 		}
 		for(DiscreteCoordinate j = 0; j < local_width; j++) {
@@ -50,9 +49,7 @@ namespace fpmas { namespace model {
 		return cells;
 	}
 
-	void VonNeumannNeighborhood::build(
-			api::model::Model& model,
-			api::model::Environment& environment) {
+	void VonNeumannNeighborhood::build(api::model::SpatialModel& model) {
 		typedef std::pair<DistributedId, std::vector<api::model::GroupId>>
 			GridCellPack;
 		if(this->width * this->height > 0) {
@@ -69,7 +66,7 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate begin_width = mpi_comm.getRank() * column_per_proc;
 				DiscreteCoordinate end_width = begin_width + local_columns_count - 1;
 
-				buildLocalGrid(model, environment, begin_width, end_width, 0, height-1);
+				buildLocalGrid(model, begin_width, end_width, 0, height-1);
 			} else {
 				DiscreteCoordinate rows_per_proc = this->height / mpi_comm.getSize();
 				DiscreteCoordinate remainder = this->height % mpi_comm.getSize();
@@ -81,7 +78,7 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate begin_height = mpi_comm.getRank() * rows_per_proc;
 				DiscreteCoordinate end_height = begin_height + local_rows_count - 1;
 
-				CellMatrix cells = buildLocalGrid(model, environment, 0, this->width-1, begin_height, end_height);
+				CellMatrix cells = buildLocalGrid(model, 0, this->width-1, begin_height, end_height);
 
 				std::unordered_map<int, std::vector<GridCellPack>> frontiers;
 				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
@@ -119,9 +116,9 @@ namespace fpmas { namespace model {
 						model.graph().insertDistant(tmp_node);
 
 						if(frontier.first < mpi_comm.getRank()) {
-							model.link(cells[0][x], cell, EnvironmentLayers::NEIGHBOR_CELL);
+							model.link(cells[0][x], cell, SpatialModelLayers::NEIGHBOR_CELL);
 						} else {
-							model.link(cells[end_height-begin_height][x], cell, EnvironmentLayers::NEIGHBOR_CELL);
+							model.link(cells[end_height-begin_height][x], cell, SpatialModelLayers::NEIGHBOR_CELL);
 						}
 					}
 				}
