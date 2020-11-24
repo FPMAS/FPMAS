@@ -102,7 +102,7 @@ namespace fpmas { namespace api { namespace model {
 	class SpatialAgentBuilder {
 		public:
 			virtual void build(
-					AgentGroup& group,
+					GroupList groups,
 					SpatialAgentFactory& factory,
 					SpatialAgentMapping& agent_counts,
 					std::vector<Cell*> local_cells) = 0;

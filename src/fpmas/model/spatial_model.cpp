@@ -147,15 +147,16 @@ namespace fpmas {
 		}
 
 		void SpatialAgentBuilder::build(
-				api::model::AgentGroup& group,
+				api::model::GroupList groups,
 				api::model::SpatialAgentFactory& factory,
 				api::model::SpatialAgentMapping& agent_counts,
-				std::vector<api::model::Cell*> local_cells) {
+				std::vector<api::model::Cell*> cells) {
 
-			for(auto cell : local_cells)
+			for(auto cell : cells)
 				for(std::size_t i = 0; i < agent_counts.countAt(cell); i++) {
 					auto agent = factory.build();
-					group.add(agent);
+					for(api::model::AgentGroup& group : groups)
+						group.add(agent);
 					agent->initLocation(cell);
 				}
 

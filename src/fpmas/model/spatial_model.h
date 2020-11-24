@@ -296,10 +296,10 @@ namespace fpmas {
 					) : spatial_model(spatial_model) {}
 
 			void build(
-					api::model::AgentGroup& group,
+					api::model::GroupList groups,
 					api::model::SpatialAgentFactory& factory,
 					api::model::SpatialAgentMapping& agent_counts,
-					std::vector<api::model::Cell*> local_cells);
+					std::vector<api::model::Cell*> cells);
 	};
 }}
 

@@ -217,17 +217,6 @@ TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, distributed_move_algorithm) {
 }
 
 class SpatialAgentBuilderTest : public Test {
-/*
- *    class FakeSpatialAgent
- *        : public fpmas::model::SpatialAgent<FakeSpatialAgent, MockCell> {
- *            static const MockRange<MockCell> range;
- *            public:
- *            FakeSpatialAgent()
- *                : SpatialAgent(range, range) {}
- *
- *        };
- */
-
 	protected:
 	fpmas::random::DistributedGenerator<> rd;
 	fpmas::random::UniformIntDistribution<> rand_int {0, 10};
@@ -240,7 +229,7 @@ class SpatialAgentBuilderTest : public Test {
 	NiceMock<MockSpatialModel> model;
 
 	MockRuntime mock_runtime;
-	MockAgentGroup mock_group;
+	std::array<MockAgentGroup, 2> mock_groups;
 	StrictMock<MockSpatialAgentFactory> agent_factory;
 	StrictMock<MockSpatialAgentMapping> agent_mapping;
 	fpmas::model::SpatialAgentBuilder builder {model};
@@ -269,12 +258,16 @@ class SpatialAgentBuilderTest : public Test {
 			for(int j = 0; j < num_agents; j++) {
 				auto agent = new MockSpatialAgent;
 				agents.push_back(agent);
-				{
-					InSequence s;
-					EXPECT_CALL(mock_group, add(agent));
-					EXPECT_CALL(*agent, initLocation)
-						.WillOnce(Invoke(&count_agents, &CountAgents::increase));
-				}
+
+				Sequence s1, s2;
+				EXPECT_CALL(mock_groups[0], add(agent))
+					.InSequence(s1);
+				EXPECT_CALL(mock_groups[1], add(agent))
+					.InSequence(s2);
+				EXPECT_CALL(*agent, initLocation)
+					.InSequence(s1, s2)
+					.WillOnce(Invoke(&count_agents, &CountAgents::increase));
+
 				// This is all the magic: using a common mapping, each process
 				// only instantiate the agents located in local cells
 				EXPECT_CALL(agent_factory, build)
@@ -293,9 +286,11 @@ class SpatialAgentBuilderTest : public Test {
 };
 
 TEST_F(SpatialAgentBuilderTest, build) {
-	// Expect initLocationAlgorithm execution
+	// Expect distributedMoveAlgorithm execution
 	EXPECT_CALL(mock_runtime, execute((Matcher<const fpmas::api::scheduler::JobList&>) ElementsAre(
 					Property(&std::reference_wrapper<const fpmas::api::scheduler::Job>::get,Ref(mock_job)))));
 
-	builder.build(mock_group, agent_factory, agent_mapping, local_cells);
+	builder.build(
+			{mock_groups[0], mock_groups[1]},
+			agent_factory, agent_mapping, local_cells);
 }

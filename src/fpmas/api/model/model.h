@@ -468,6 +468,8 @@ namespace fpmas { namespace api {namespace model {
 			virtual ~AgentGroup(){}
 	};
 
+	typedef std::vector<std::reference_wrapper<AgentGroup>> GroupList;
+
 	/**
 	 * Model API.
 	 *
