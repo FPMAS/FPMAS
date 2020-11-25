@@ -51,9 +51,13 @@ namespace fpmas { namespace model {
 		return cells;
 	}
 
-	void VonNeumannGridBuilder::build(api::model::SpatialModel& model) {
+
+	std::vector<api::model::GridCell*> VonNeumannGridBuilder::build(
+			api::model::SpatialModel& model) {
 		typedef std::pair<DistributedId, std::vector<api::model::GroupId>>
 			GridCellPack;
+
+		CellMatrix cells;
 		if(this->width * this->height > 0) {
 			auto& mpi_comm = model.graph().getMpiCommunicator();
 			fpmas::communication::TypedMpi<std::vector<GridCellPack>> mpi(mpi_comm);
@@ -68,7 +72,50 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate begin_width = mpi_comm.getRank() * column_per_proc;
 				DiscreteCoordinate end_width = begin_width + local_columns_count - 1;
 
-				buildLocalGrid(model, begin_width, end_width, 0, height-1);
+				cells = buildLocalGrid(model, begin_width, end_width, 0, height-1);
+
+				std::unordered_map<int, std::vector<GridCellPack>> frontiers;
+				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
+					std::vector<GridCellPack> frontier;
+					for(DiscreteCoordinate y = 0; y < this->height; y++) {
+						auto cell = cells[y][end_width-begin_width];
+						frontier.push_back({cell->node()->getId(), cell->groupIds()});
+					}
+					frontiers[mpi_comm.getRank()+1] = frontier;
+				}
+				if (mpi_comm.getRank() > 0) {
+					std::vector<GridCellPack> frontier;
+					for(DiscreteCoordinate y = 0; y < this->height; y++) {
+						auto cell = cells[y][0];
+						frontier.push_back({cell->node()->getId(), cell->groupIds()});
+					}
+					frontiers[mpi_comm.getRank()-1] = frontier;
+				}
+				frontiers = mpi.allToAll(frontiers);
+
+				for(auto frontier : frontiers) {
+					for(DiscreteCoordinate y = 0; y < this->height; y++) {
+						auto cell_pack = frontier.second[y];
+						DiscretePoint point;
+						if(frontier.first < mpi_comm.getRank()) {
+							point = {begin_width-1, y};
+						} else {
+							point = {end_width+1, y};
+						}
+						auto cell = cell_factory.build(point);
+						for(auto gid : cell_pack.second)
+							cell->addGroupId(gid);
+						auto tmp_node = new graph::DistributedNode<AgentPtr>(cell_pack.first, cell);
+						tmp_node->setLocation(frontier.first);
+						model.graph().insertDistant(tmp_node);
+
+						if(frontier.first < mpi_comm.getRank()) {
+							model.link(cells[y][0], cell, SpatialModelLayers::NEIGHBOR_CELL);
+						} else {
+							model.link(cells[y][end_width-begin_width], cell, SpatialModelLayers::NEIGHBOR_CELL);
+						}
+					}
+				}
 			} else {
 				DiscreteCoordinate rows_per_proc = this->height / mpi_comm.getSize();
 				DiscreteCoordinate remainder = this->height % mpi_comm.getSize();
@@ -80,7 +127,7 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate begin_height = mpi_comm.getRank() * rows_per_proc;
 				DiscreteCoordinate end_height = begin_height + local_rows_count - 1;
 
-				CellMatrix cells = buildLocalGrid(model, 0, this->width-1, begin_height, end_height);
+				cells = buildLocalGrid(model, 0, this->width-1, begin_height, end_height);
 
 				std::unordered_map<int, std::vector<GridCellPack>> frontiers;
 				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
@@ -127,6 +174,11 @@ namespace fpmas { namespace model {
 			}
 		}
 		model.graph().synchronize();
+		std::vector<api::model::GridCell*> built_cells;
+		for(auto row : cells)
+			for(auto cell : row)
+				built_cells.push_back(cell);
+		return built_cells;
 	}
 
 	struct PointComparison {
@@ -138,25 +190,19 @@ namespace fpmas { namespace model {
 	RandomAgentMapping::RandomAgentMapping(
 			api::random::Distribution<DiscreteCoordinate>&& x,
 			api::random::Distribution<DiscreteCoordinate>&& y,
-			std::size_t agent_count,
-			std::vector<DiscretePoint> local_points)
-	: RandomAgentMapping(x, y, agent_count, local_points) {
+			std::size_t agent_count)
+	: RandomAgentMapping(x, y, agent_count) {
 	}
 
 	RandomAgentMapping::RandomAgentMapping(
 			api::random::Distribution<DiscreteCoordinate>& x,
 			api::random::Distribution<DiscreteCoordinate>& y,
-			std::size_t agent_count,
-			std::vector<DiscretePoint> local_points) {
-		std::set<DiscretePoint, PointComparison> local_points_set;
-		for(auto point : local_points)
-			local_points_set.insert(point);
+			std::size_t agent_count) {
 		random::mt19937_64 rd;
 
 		for(std::size_t i = 0; i < agent_count; i++) {
 			DiscretePoint p {x(rd), y(rd)};
-			if(local_points_set.count(p) > 0)
-				count_map[p.x][p.y]++;
+			count_map[p.x][p.y]++;
 		}
 	}
 }}

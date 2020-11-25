@@ -287,20 +287,37 @@ namespace fpmas {
 				}
 		};
 
-	class SpatialAgentBuilder {
-		private:
-			fpmas::api::model::SpatialModel& spatial_model;
+	template<typename CellType>
+	class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType>{
 		public:
-			SpatialAgentBuilder(
-					fpmas::api::model::SpatialModel& spatial_model
-					) : spatial_model(spatial_model) {}
-
 			void build(
+					api::model::SpatialModel& model,
 					api::model::GroupList groups,
 					api::model::SpatialAgentFactory& factory,
-					api::model::SpatialAgentMapping& agent_counts,
-					std::vector<api::model::Cell*> cells);
+					api::model::SpatialAgentMapping<CellType>& agent_counts
+					) override;
 	};
+
+	template<typename CellType>
+		void SpatialAgentBuilder<CellType>::build(
+				api::model::SpatialModel& model,
+				api::model::GroupList groups,
+				api::model::SpatialAgentFactory& factory,
+				api::model::SpatialAgentMapping<CellType>& agent_counts
+				) {
+			for(auto cell : model.cells()) {
+				if(auto _cell = dynamic_cast<CellType*>(cell)) {
+					for(std::size_t i = 0; i < agent_counts.countAt(_cell); i++) {
+						auto agent = factory.build();
+						for(api::model::AgentGroup& group : groups)
+							group.add(agent);
+						agent->initLocation(cell);
+					}
+				}
+			}
+
+			model.runtime().execute(model.distributedMoveAlgorithm());
+		}
 }}
 
 namespace nlohmann {

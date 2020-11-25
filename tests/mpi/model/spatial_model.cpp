@@ -231,8 +231,8 @@ class SpatialAgentBuilderTest : public Test {
 	MockRuntime mock_runtime;
 	std::array<MockAgentGroup, 2> mock_groups;
 	StrictMock<MockSpatialAgentFactory> agent_factory;
-	StrictMock<MockSpatialAgentMapping> agent_mapping;
-	fpmas::model::SpatialAgentBuilder builder {model};
+	StrictMock<MockSpatialAgentMapping<fpmas::api::model::Cell>> agent_mapping;
+	fpmas::model::SpatialAgentBuilder<fpmas::api::model::Cell> builder;
 
 	struct CountAgents {
 		std::unordered_map<fpmas::api::model::Cell*, int> counts;
@@ -275,6 +275,9 @@ class SpatialAgentBuilderTest : public Test {
 					.RetiresOnSaturation();
 			}
 		}
+
+		ON_CALL(model, cells)
+			.WillByDefault(Return(local_cells));
 	}
 
 	void TearDown() override {
@@ -291,6 +294,7 @@ TEST_F(SpatialAgentBuilderTest, build) {
 					Property(&std::reference_wrapper<const fpmas::api::scheduler::Job>::get,Ref(mock_job)))));
 
 	builder.build(
+			model,
 			{mock_groups[0], mock_groups[1]},
-			agent_factory, agent_mapping, local_cells);
+			agent_factory, agent_mapping);
 }

@@ -66,9 +66,10 @@ class MockSpatialAgentFactory : public fpmas::api::model::SpatialAgentFactory {
 		MOCK_METHOD(fpmas::api::model::SpatialAgent*, build, (), (override));
 };
 
-class MockSpatialAgentMapping : public fpmas::api::model::SpatialAgentMapping {
+template<typename CellType>
+class MockSpatialAgentMapping : public fpmas::api::model::SpatialAgentMapping<CellType> {
 	public:
-		MOCK_METHOD(std::size_t, countAt, (fpmas::api::model::Cell*), (override));
+		MOCK_METHOD(std::size_t, countAt, (CellType*), (override));
 };
 
 #endif

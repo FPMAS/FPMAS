@@ -27,25 +27,7 @@
 #include "../mocks/utils/mock_callback.h"
 
 
-using ::testing::AnyOf;
-using ::testing::Contains;
-using ::testing::ElementsAre;
-using ::testing::Eq;
-using ::testing::Expectation;
-using ::testing::InvokeWithoutArgs;
-using ::testing::IsEmpty;
-using ::testing::IsSupersetOf;
-using ::testing::Key;
-using ::testing::NiceMock;
-using ::testing::Not;
-using ::testing::Pair;
-using ::testing::Property;
-using ::testing::Ref;
-using ::testing::ReturnRefOfCopy;
-using ::testing::Sequence;
-using ::testing::SizeIs;
-using ::testing::UnorderedElementsAre;
-using ::testing::_;
+using namespace testing;
 
 using fpmas::graph::detail::DistributedGraph;
 using fpmas::graph::NodePtrWrapper;
@@ -54,7 +36,7 @@ using fpmas::graph::EdgePtrWrapper;
 /********************/
 /* local_build_node */
 /********************/
-class DistributedGraphTest : public ::testing::Test {
+class DistributedGraphTest : public Test {
 	protected:
 		static const int CURRENT_RANK = 7;
 		MockMpiCommunicator<CURRENT_RANK, 10> comm;
@@ -938,7 +920,7 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 
 	// Should call LoadBalancing on all nodes, without fixed nodes
 	{
-		::testing::InSequence s;
+		InSequence s;
 		EXPECT_CALL(mock_sync_linker, synchronize);
 		EXPECT_CALL(
 				load_balancing,

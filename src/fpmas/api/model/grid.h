@@ -36,29 +36,6 @@ namespace fpmas { namespace api { namespace model {
 
 			virtual ~GridCellFactory() {}
 	};
-
-	class GridAgentFactory {
-		public:
-			virtual GridAgent* build() = 0;
-
-			virtual ~GridAgentFactory() {}
-	};
-
-	class GridAgentMapping {
-		public:
-			virtual std::size_t countAt(DiscretePoint) = 0;
-
-			virtual ~GridAgentMapping() {}
-	};
-	class DistributedGridAgentBuilder {
-		public:
-			virtual void build(
-				GridAgentFactory& factory,
-				GridAgentMapping& agent_counts,
-				std::vector<DiscretePoint> local_points) = 0;
-
-			virtual ~DistributedGridAgentBuilder() {}
-	};
 }}}
 
 namespace fpmas {

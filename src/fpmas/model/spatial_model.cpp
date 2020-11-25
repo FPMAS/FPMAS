@@ -145,22 +145,5 @@ namespace fpmas {
 			_jobs.push_back(update_perceptions_group->agentExecutionJob());
 			return _jobs;
 		}
-
-		void SpatialAgentBuilder::build(
-				api::model::GroupList groups,
-				api::model::SpatialAgentFactory& factory,
-				api::model::SpatialAgentMapping& agent_counts,
-				std::vector<api::model::Cell*> cells) {
-
-			for(auto cell : cells)
-				for(std::size_t i = 0; i < agent_counts.countAt(cell); i++) {
-					auto agent = factory.build();
-					for(api::model::AgentGroup& group : groups)
-						group.add(agent);
-					agent->initLocation(cell);
-				}
-
-			spatial_model.runtime().execute(spatial_model.distributedMoveAlgorithm());
-		}
 	}
 }

@@ -109,7 +109,7 @@ namespace fpmas { namespace model {
 				}
 		};
 
-	class VonNeumannGridBuilder : public api::model::SpatialModelBuilder {
+	class VonNeumannGridBuilder : public api::model::SpatialModelBuilder<api::model::GridCell> {
 		private:
 			typedef std::vector<std::vector<api::model::GridCell*>> CellMatrix;
 			void allocate(CellMatrix& matrix, DiscreteCoordinate width, DiscreteCoordinate height);
@@ -142,27 +142,28 @@ namespace fpmas { namespace model {
 			api::model::GridCellFactory& gridCellFactory() {
 				return cell_factory;
 			}
-			void build(api::model::SpatialModel& spatial_model);
+			std::vector<api::model::GridCell*> build(
+					api::model::SpatialModel& spatial_model);
 	};
 
-	class RandomAgentMapping : public api::model::GridAgentMapping {
+	class RandomAgentMapping : public api::model::SpatialAgentMapping<api::model::GridCell> {
 		private:
 			std::unordered_map<DiscreteCoordinate, std::unordered_map<DiscreteCoordinate, std::size_t>> count_map;
 		public:
 			RandomAgentMapping(
 					api::random::Distribution<DiscreteCoordinate>&& x,
 					api::random::Distribution<DiscreteCoordinate>&& y,
-					std::size_t agent_count,
-					std::vector<DiscretePoint> local_points);
+					std::size_t agent_count);
 
 			RandomAgentMapping(
 					api::random::Distribution<DiscreteCoordinate>& x,
 					api::random::Distribution<DiscreteCoordinate>& y,
-					std::size_t agent_count,
-					std::vector<DiscretePoint> local_points);
+					std::size_t agent_count);
 
-			std::size_t countAt(DiscretePoint point) override {
-				return count_map.at(point.x).at(point.y);
+			std::size_t countAt(api::model::GridCell* cell) override {
+				// When values are not in the map, 0 (default initialized) will
+				// be returned
+				return count_map[cell->location().x][cell->location().y];
 			}
 	};
 
@@ -171,12 +172,11 @@ namespace fpmas { namespace model {
 			UniformAgentMapping(
 					DiscreteCoordinate grid_width,
 					DiscreteCoordinate grid_height,
-					std::size_t agent_count,
-					std::vector<DiscretePoint> local_points) 
+					std::size_t agent_count) 
 				: RandomAgentMapping(
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_width-1),
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_height-1),
-						agent_count, local_points) {}
+						agent_count) {}
 	};
 }}
 
