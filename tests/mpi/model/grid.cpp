@@ -8,7 +8,7 @@
 using namespace testing;
 using fpmas::model::VonNeumannGridBuilder;
 
-class VonNeumannGridBuilderTest : public ::testing::Test {
+class VonNeumannGridBuilderTest : public Test {
 	protected:
 		fpmas::model::SpatialModel<fpmas::synchro::GhostMode> grid_model {0, 0};
 
@@ -133,7 +133,7 @@ TEST_F(VonNeumannGridBuilderTest, build_width_sup_height) {
 
 class UniformAgentMappingTest : public Test {
 	protected:
-		fpmas::model::UniformAgentMapping mapping {10, 10, 30};
+		fpmas::model::UniformGridAgentMapping mapping {10, 10, 30};
 		std::array<NiceMock<MockGridCell>, 100> cells;
 
 		void SetUp() override {

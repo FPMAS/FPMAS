@@ -157,7 +157,7 @@ TEST(VonNeumannGridBuilder, grid_cell_factory) {
 	ASSERT_THAT(builder.gridCellFactory(), Ref(factory));
 }
 
-class RandomAgentMappingTest : public Test {
+class RandomGridAgentMappingTest : public Test {
 	protected:
 		NiceMock<MockDistribution<fpmas::model::DiscreteCoordinate>> mock_x;
 		NiceMock<MockDistribution<fpmas::model::DiscreteCoordinate>> mock_y;
@@ -210,8 +210,8 @@ class RandomAgentMappingTest : public Test {
 
 };
 
-TEST_F(RandomAgentMappingTest, test) {
-	fpmas::model::RandomAgentMapping random_mapping(mock_x, mock_y, 10);
+TEST_F(RandomGridAgentMappingTest, test) {
+	fpmas::model::RandomGridAgentMapping random_mapping(mock_x, mock_y, 10);
 
 	ASSERT_EQ(random_mapping.countAt(&cells[0]), 2);
 	ASSERT_EQ(random_mapping.countAt(&cells[1]), 1);
@@ -225,9 +225,9 @@ TEST_F(RandomAgentMappingTest, test) {
 	ASSERT_EQ(total_count, 10);
 }
 
-class UniformAgentMappingTest : public Test {
+class UniformGridAgentMappingTest : public Test {
 	protected:
-		fpmas::model::UniformAgentMapping mapping {10, 10, 30};
+		fpmas::model::UniformGridAgentMapping mapping {10, 10, 30};
 		std::array<NiceMock<MockGridCell>, 100> cells;
 
 		void SetUp() override {
@@ -240,8 +240,8 @@ class UniformAgentMappingTest : public Test {
 
 // Notice that an mpi test (in mpi/model/grid.cpp) checks the consistency of
 // the map across processes. Then its enough to check reproducibility locally.
-TEST_F(UniformAgentMappingTest, reproducibility) {
-	fpmas::model::UniformAgentMapping other_mapping(10, 10, 30);
+TEST_F(UniformGridAgentMappingTest, reproducibility) {
+	fpmas::model::UniformGridAgentMapping other_mapping(10, 10, 30);
 	for(std::size_t i = 0; i < 100; i++)
 		ASSERT_EQ(mapping.countAt(&cells[i]), other_mapping.countAt(&cells[i]));
 }

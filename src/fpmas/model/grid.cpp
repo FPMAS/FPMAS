@@ -187,14 +187,14 @@ namespace fpmas { namespace model {
 		}
 	};
 
-	RandomAgentMapping::RandomAgentMapping(
+	RandomGridAgentMapping::RandomGridAgentMapping(
 			api::random::Distribution<DiscreteCoordinate>&& x,
 			api::random::Distribution<DiscreteCoordinate>&& y,
 			std::size_t agent_count)
-	: RandomAgentMapping(x, y, agent_count) {
+	: RandomGridAgentMapping(x, y, agent_count) {
 	}
 
-	RandomAgentMapping::RandomAgentMapping(
+	RandomGridAgentMapping::RandomGridAgentMapping(
 			api::random::Distribution<DiscreteCoordinate>& x,
 			api::random::Distribution<DiscreteCoordinate>& y,
 			std::size_t agent_count) {

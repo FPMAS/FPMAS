@@ -24,6 +24,8 @@ namespace fpmas { namespace model {
 	using api::model::DiscretePoint;
 	using api::model::DiscreteCoordinate;
 
+	typedef SpatialAgentBuilder<api::model::GridCell> GridAgentBuilder;
+
 	template<typename GridCellType, typename Derived = GridCellType>
 	class GridCellBase :
 		public api::model::GridCell,
@@ -146,16 +148,16 @@ namespace fpmas { namespace model {
 					api::model::SpatialModel& spatial_model);
 	};
 
-	class RandomAgentMapping : public api::model::SpatialAgentMapping<api::model::GridCell> {
+	class RandomGridAgentMapping : public api::model::SpatialAgentMapping<api::model::GridCell> {
 		private:
 			std::unordered_map<DiscreteCoordinate, std::unordered_map<DiscreteCoordinate, std::size_t>> count_map;
 		public:
-			RandomAgentMapping(
+			RandomGridAgentMapping(
 					api::random::Distribution<DiscreteCoordinate>&& x,
 					api::random::Distribution<DiscreteCoordinate>&& y,
 					std::size_t agent_count);
 
-			RandomAgentMapping(
+			RandomGridAgentMapping(
 					api::random::Distribution<DiscreteCoordinate>& x,
 					api::random::Distribution<DiscreteCoordinate>& y,
 					std::size_t agent_count);
@@ -167,13 +169,13 @@ namespace fpmas { namespace model {
 			}
 	};
 
-	class UniformAgentMapping : public RandomAgentMapping {
+	class UniformGridAgentMapping : public RandomGridAgentMapping {
 		public:
-			UniformAgentMapping(
+			UniformGridAgentMapping(
 					DiscreteCoordinate grid_width,
 					DiscreteCoordinate grid_height,
 					std::size_t agent_count) 
-				: RandomAgentMapping(
+				: RandomGridAgentMapping(
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_width-1),
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_height-1),
 						agent_count) {}
