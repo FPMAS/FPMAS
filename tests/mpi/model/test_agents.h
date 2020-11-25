@@ -141,7 +141,7 @@ class FakeRange : public fpmas::api::model::Range<TestCell> {
 		FakeRange(unsigned int _size, unsigned int num_cells_in_ring)
 			: _size(_size), num_cells_in_ring(num_cells_in_ring) {}
 
-		unsigned int size() const override {
+		std::size_t size() const override {
 			return _size;
 		}
 

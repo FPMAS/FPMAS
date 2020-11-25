@@ -65,8 +65,8 @@ namespace fpmas { namespace model {
 
 			protected:
 			GridAgent(
-					fpmas::api::model::Range<api::model::GridCell>& mobility_range,
-					fpmas::api::model::Range<api::model::GridCell>& perception_range)
+					const fpmas::api::model::Range<api::model::GridCell>& mobility_range,
+					const fpmas::api::model::Range<api::model::GridCell>& perception_range)
 				: model::SpatialAgentBase<AgentType, api::model::GridCell, GridAgent<AgentType, Derived>>(
 						mobility_range, perception_range) {}
 
@@ -179,6 +179,39 @@ namespace fpmas { namespace model {
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_width-1),
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_height-1),
 						agent_count) {}
+	};
+
+	class ManhattanDistance {
+		public:
+			DiscreteCoordinate operator()(
+					const DiscretePoint& p1,
+					const DiscretePoint& p2) const {
+				return std::abs(p2.x - p1.x) + std::abs(p2.y - p1.y);
+			}
+	};
+
+	template<typename GridDistance>
+		class GridRange : public api::model::Range<fpmas::api::model::GridCell> {
+			private:
+				static const GridDistance distance;
+				std::size_t _size;
+
+			public:
+				GridRange(DiscreteCoordinate size)
+					: _size(size) {}
+
+				std::size_t size() const override {return _size;}
+
+				bool contains(fpmas::api::model::GridCell* location_cell, fpmas::api::model::GridCell* cell) const override {
+					return distance(location_cell->location(), cell->location()) <= _size;
+				}
+		};
+	template<typename GridDistance>
+		const GridDistance GridRange<GridDistance>::distance;
+
+	struct VonNeumann {
+		typedef VonNeumannGridBuilder Builder;
+		typedef ManhattanDistance Distance;
 	};
 }}
 

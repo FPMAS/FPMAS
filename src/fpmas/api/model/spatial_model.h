@@ -37,7 +37,7 @@ namespace fpmas { namespace api { namespace model {
 	template<typename CellType>
 	class Range {
 		public:
-			virtual unsigned int size() const = 0;
+			virtual std::size_t size() const = 0;
 			virtual bool contains(CellType* root, CellType* cell) const = 0;
 
 			virtual ~Range() {}
