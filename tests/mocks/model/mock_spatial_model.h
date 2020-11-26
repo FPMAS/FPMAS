@@ -8,7 +8,6 @@
 template<typename CellType>
 class MockRange : public fpmas::api::model::Range<CellType> {
 	public:
-		MOCK_METHOD(std::size_t, size, (), (const, override));
 		MOCK_METHOD(bool, contains, (CellType*, CellType*), (const, override));
 
 		virtual ~MockRange() {}

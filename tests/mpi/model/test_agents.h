@@ -135,15 +135,11 @@ class TestCell : public fpmas::model::Cell<TestCell> {
 
 class FakeRange : public fpmas::api::model::Range<TestCell> {
 	private:
-		unsigned int _size;
+		unsigned int size;
 		unsigned int num_cells_in_ring;
 	public:
-		FakeRange(unsigned int _size, unsigned int num_cells_in_ring)
-			: _size(_size), num_cells_in_ring(num_cells_in_ring) {}
-
-		std::size_t size() const override {
-			return _size;
-		}
+		FakeRange(unsigned int size, unsigned int num_cells_in_ring)
+			: size(size), num_cells_in_ring(num_cells_in_ring) {}
 
 		bool contains(TestCell* root, TestCell* cell) const override {
 			int root_index = root->index;
@@ -151,7 +147,7 @@ class FakeRange : public fpmas::api::model::Range<TestCell> {
 			unsigned int distance = std::abs(cell_index - root_index);
 			if(distance > num_cells_in_ring / 2)
 				distance = num_cells_in_ring-distance;
-			if(distance <= size())
+			if(distance <= size)
 				return true;
 			return false;
 		}

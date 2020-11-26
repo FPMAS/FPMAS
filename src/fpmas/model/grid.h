@@ -194,20 +194,20 @@ namespace fpmas { namespace model {
 		class GridRange : public api::model::Range<fpmas::api::model::GridCell> {
 			private:
 				static const GridDistance distance;
-				std::size_t _size;
+				std::size_t size;
 
 			public:
 				GridRange(DiscreteCoordinate size)
-					: _size(size) {}
-
-				std::size_t size() const override {return _size;}
+					: size(size) {}
 
 				bool contains(fpmas::api::model::GridCell* location_cell, fpmas::api::model::GridCell* cell) const override {
-					return distance(location_cell->location(), cell->location()) <= _size;
+					return distance(location_cell->location(), cell->location()) <= size;
 				}
 		};
 	template<typename GridDistance>
 		const GridDistance GridRange<GridDistance>::distance;
+
+	typedef GridRange<ManhattanDistance> VonNeumannRange;
 
 	struct VonNeumann {
 		typedef VonNeumannGridBuilder Builder;
