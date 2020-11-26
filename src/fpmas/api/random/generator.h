@@ -14,6 +14,8 @@ namespace fpmas { namespace api { namespace random {
 	 * requirement](https://en.cppreference.com/w/cpp/named_req/UniformRandomBitGenerator),
 	 * that can still be used in predefined random definitions.
 	 */
+	//TODO v2: template this interface so Generator really satisfies
+	//UniformRandomBitGenerator?
 	class Generator {
 		public:
 			/**

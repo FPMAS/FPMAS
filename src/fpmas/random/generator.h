@@ -12,11 +12,13 @@
 
 namespace fpmas { namespace random {
 
+	template<typename> class DistributedGenerator;
 	/**
 	 * api::random::Generator implementation.
 	 */
 	template<typename Generator_t>
 	class Generator : public api::random::Generator {
+		friend DistributedGenerator<Generator<Generator_t>>;
 		protected:
 			Generator_t gen;
 		public:
@@ -59,15 +61,37 @@ namespace fpmas { namespace random {
 	 */
 	typedef Generator<std::random_device> random_device;
 
-	template<typename Generator = mt19937_64>
-		class DistributedGenerator : public Generator {
+	template<typename GeneratorType = mt19937_64>
+		class DistributedGenerator : public api::random::Generator {
 			private:
+				GeneratorType local_generator;
 				std::mt19937 seeder;
-			public:
-				DistributedGenerator() {
+
+				bool _init = false;
+				void init() {
 					int rank = communication::MpiCommunicator::WORLD.getRank();
-					seeder.discard(rank);
-					this->gen.seed(seeder());
+					result_type local_seed = seeder() + rank;
+					local_generator.gen.seed(local_seed);
+					_init = true;
+				}
+
+			public:
+				DistributedGenerator() {}
+				DistributedGenerator(result_type seed)
+					: seeder(seed) {}
+
+				result_type operator()() override {
+					if(!_init)
+						init();
+					return local_generator();
+				}
+
+				result_type min() override {
+					return local_generator.min();
+				}
+
+				result_type max() override {
+					return local_generator.max();
 				}
 		};
 

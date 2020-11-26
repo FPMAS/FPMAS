@@ -11,6 +11,7 @@ set(SOURCES
 	model/spatial_model.cpp
 	model/test_agents.cpp
 	model/grid.cpp
+	random/generator.cpp
 	)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})

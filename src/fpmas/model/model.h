@@ -8,8 +8,8 @@
 #include "fpmas/api/graph/graph_builder.h"
 #include "guards.h"
 #include "detail/model.h"
+#include "fpmas/random/random.h"
 
-#include <random>
 
 namespace fpmas { namespace model {
 
@@ -88,7 +88,7 @@ namespace fpmas { namespace model {
 				typedef typename std::vector<Neighbor<AgentType>>::iterator iterator;
 				typedef typename std::vector<Neighbor<AgentType>>::const_iterator const_iterator;
 				std::vector<Neighbor<AgentType>> neighbors;
-				static std::mt19937 rd;
+				static random::DistributedGenerator<> rd;
 
 			public:
 				/**
@@ -200,7 +200,7 @@ namespace fpmas { namespace model {
 					return *this;
 				}
 		};
-	template<typename AgentType> std::mt19937 Neighbors<AgentType>::rd;
+	template<typename AgentType> random::DistributedGenerator<> Neighbors<AgentType>::rd;
 
 	template<typename T>
 		class Behavior : public api::model::Behavior {
