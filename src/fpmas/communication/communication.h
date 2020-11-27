@@ -189,6 +189,9 @@ namespace fpmas { namespace communication {
 			std::vector<DataPack>
 				gather(DataPack data, MPI_Datatype datatype, int root) override;
 
+			std::vector<DataPack>
+				allGather(DataPack data, MPI_Datatype datatype) override;
+
 			DataPack bcast(DataPack data, MPI_Datatype datatype, int root) override;
 			
 			/**
@@ -286,6 +289,7 @@ namespace fpmas { namespace communication {
 					allToAll(std::unordered_map<int, T> export_map) override;
 
 				std::vector<T> gather(const T&, int root) override;
+				std::vector<T> allGather(const T&) override;
 				T bcast(const T&, int root) override;
 
 				void send(const T&, int, int) override;
@@ -365,7 +369,27 @@ namespace fpmas { namespace communication {
 			for(std::size_t i = 0; i < import_data_pack.size(); i++) {
 				auto item = import_data_pack[i];
 				std::string import = std::string((char*) item.buffer, item.count);
-				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Gathered JSON from %i : %s", i, import.c_str());
+				FPMAS_LOGV(comm.getRank(), "TYPED_MPI", "Gathered JSON from %i : %s", i, import.c_str());
+				import_data.push_back(nlohmann::json::parse(import).get<T>());
+			}
+			return import_data;
+		}
+
+	template<typename T> std::vector<T>
+		TypedMpi<T>::allGather(const T& data) {
+			// Pack
+			std::string str = nlohmann::json(data).dump();
+			FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "AllGather JSON : %s", str.c_str());
+			DataPack data_pack (str.size(), sizeof(char));
+			std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
+
+			std::vector<DataPack> import_data_pack = comm.allGather(data_pack, MPI_CHAR);
+
+			std::vector<T> import_data;
+			for(std::size_t i = 0; i < import_data_pack.size(); i++) {
+				auto item = import_data_pack[i];
+				std::string import = std::string((char*) item.buffer, item.count);
+				FPMAS_LOGV(comm.getRank(), "TYPED_MPI", "Gathered JSON from %i : %s", i, import.c_str());
 				import_data.push_back(nlohmann::json::parse(import).get<T>());
 			}
 			return import_data;

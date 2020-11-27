@@ -395,6 +395,8 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param datatype MPI type of the data to send / receive
 			 * @return data received from each process
 			 */
+			// TODO: should std::vector be used instead of map? pb: what if we
+			// want to send "no data" to process?
 			virtual std::unordered_map<int, DataPack>
 				allToAll(std::unordered_map<int, DataPack> export_map, MPI_Datatype datatype) = 0;
 
@@ -417,6 +419,9 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			virtual std::vector<DataPack>
 				gather(DataPack data, MPI_Datatype datatype, int root) = 0;
+
+			virtual std::vector<DataPack>
+				allGather(DataPack data, MPI_Datatype datatype) = 0;
 
 			virtual DataPack bcast(DataPack data, MPI_Datatype datatype, int root) = 0;
 
@@ -477,6 +482,9 @@ namespace fpmas { namespace api { namespace communication {
 				 */
 				virtual std::vector<T>
 					gather(const T& data, int root) = 0;
+
+				virtual std::vector<T>
+					allGather(const T& data) = 0;
 
 				virtual T bcast(const T& data, int root) = 0;
 

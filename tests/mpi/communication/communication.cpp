@@ -148,19 +148,28 @@ TEST(TypedMpiTest, variable_send_size_migration) {
 
 TEST(TypedMpiTest, gather) {
 	MpiCommunicator comm;
-	TypedMpi<int> mpi {comm};
+	TypedMpi<float> mpi {comm};
 
-	int local_data = (comm.getRank()+1) * 10;
-	std::vector<int> data = mpi.gather(local_data, comm.getSize() - 1);
+	float local_data = std::pow(8, comm.getRank());
+	std::vector<float> data = mpi.gather(local_data, comm.getSize() - 1);
 
 	if(comm.getRank() != comm.getSize() - 1) {
 		ASSERT_THAT(data, IsEmpty());
 	} else {
-		int sum = 0;
-		for(auto i : data)
-			sum+=i;
-		ASSERT_EQ(sum, 10*(comm.getSize() * (comm.getSize() + 1)/2));
+		for(int i = 0; i < comm.getSize(); i++)
+			ASSERT_FLOAT_EQ(data[i], std::pow(8, i));
 	}
+}
+
+TEST(TypedMpiTest, allGather) {
+	MpiCommunicator comm;
+	TypedMpi<float> mpi {comm};
+
+	float local_data = std::pow(8, comm.getRank());
+	std::vector<float> data = mpi.allGather(local_data);
+
+	for(int i = 0; i < comm.getSize(); i++)
+		ASSERT_FLOAT_EQ(data[i], std::pow(8, i));
 }
 
 TEST(TypedMpiTest, bcast) {

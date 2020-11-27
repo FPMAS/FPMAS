@@ -86,16 +86,37 @@ TEST_F(MpiTest, gather_int_root) {
 	// Normally, exactly one item is received by proc (8 in this case), but not
 	// important in the context of this test.
 	std::vector<fpmas::communication::DataPack> import = {
+		buildDataPack("0"),
+		buildDataPack("4"),
+		buildDataPack("2"),
+		buildDataPack("3")
+	};
+
+	EXPECT_CALL(comm, gather(buildDataPack("2"), MPI_CHAR, 2))
+		.WillOnce(Return(import));
+
+	std::vector<int> recv = mpi.gather(local_data, 2);
+
+	ASSERT_THAT(recv, ElementsAre(0, 4, 2, 3));
+}
+
+TEST_F(MpiTest, all_gather) {
+	TypedMpi<int> mpi {comm};
+	int local_data = 2;
+
+	// Normally, exactly one item is received by proc (8 in this case), but not
+	// important in the context of this test.
+	std::vector<fpmas::communication::DataPack> import = {
 		buildDataPack("2"),
 		buildDataPack("4"),
 		buildDataPack("1"),
 		buildDataPack("3")
 	};
 
-	EXPECT_CALL(comm, gather(buildDataPack("2"), MPI_CHAR, 4))
+	EXPECT_CALL(comm, allGather(buildDataPack("2"), MPI_CHAR))
 		.WillOnce(Return(import));
 
-	std::vector<int> recv = mpi.gather(local_data, 4);
+	std::vector<int> recv = mpi.allGather(local_data);
 
 	ASSERT_THAT(recv, ElementsAre(2, 4, 1, 3));
 }

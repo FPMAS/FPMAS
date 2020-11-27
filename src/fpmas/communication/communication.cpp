@@ -222,6 +222,53 @@ namespace fpmas { namespace communication {
 		return imported_data_pack;
 	}
 
+	std::vector<DataPack> MpiCommunicatorBase::allGather(DataPack data, MPI_Datatype type) {
+		int type_size;
+		MPI_Type_size(type, &type_size);
+
+
+		void* send_buffer = std::malloc(data.count * type_size);
+		std::memcpy(&((char*) send_buffer)[0], data.buffer, data.size);
+
+
+		int* size_buffer;
+		size_buffer = (int*) std::malloc(getSize() * sizeof(int));
+
+		MPI_Allgather(&data.size, 1, MPI_INT, size_buffer, 1, MPI_INT, comm);
+
+		int* recvcounts;
+		int* rdispls;
+		int current_rdispls = 0;
+
+		recvcounts = (int*) std::malloc(getSize()*sizeof(int));
+		rdispls = (int*) std::malloc(getSize()*sizeof(int));
+		for (int i = 0; i < getSize(); i++) {
+			recvcounts[i] = size_buffer[i];
+			rdispls[i] = current_rdispls;
+			current_rdispls += recvcounts[i];
+		}
+		
+		void* recv_buffer = std::malloc(current_rdispls * type_size);
+
+		MPI_Allgatherv(send_buffer, data.count, type, recv_buffer, recvcounts, rdispls, type, comm);
+
+		std::vector<DataPack> imported_data_pack;
+		for (int i = 0; i < getSize(); i++) {
+			imported_data_pack.emplace_back(recvcounts[i], type_size);
+			DataPack& data_pack = imported_data_pack[i];
+
+			std::memcpy(data_pack.buffer, &((char*) recv_buffer)[rdispls[i]], data_pack.size);
+		}
+
+		std::free(send_buffer);
+		std::free(size_buffer);
+		std::free(recvcounts);
+		std::free(rdispls);
+		std::free(recv_buffer);
+		return imported_data_pack;
+	}
+
+
 	DataPack MpiCommunicatorBase::bcast(DataPack data, MPI_Datatype datatype, int root) {
 		// Procs other that root don't know how many items will be received, so
 		// we broadcast items count from root first
