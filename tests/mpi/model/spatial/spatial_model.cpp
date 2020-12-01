@@ -4,18 +4,20 @@
 #include "../mocks/model/mock_spatial_model.h"
 #include "../mocks/runtime/mock_runtime.h"
 #include "../mocks/scheduler/mock_scheduler.h"
-#include "test_agents.h"
+#include "../test_agents.h"
 #include "fpmas/api/graph/distributed_id.h"
 #include "fpmas/random/random.h"
 
 using namespace testing;
 
-template<template<typename> class SYNC_MODE>
+template<template<typename> class SYNC_MODE, int RangeSize>
 class SpatialModelTestBase : public ::testing::Test {
 	protected:
-		unsigned int range_size;
-		fpmas::model::SpatialModel<SYNC_MODE> model;
-		fpmas::model::AgentGroup& agent_group {model.buildMoveGroup(0, TestSpatialAgent::behavior)};
+		unsigned int range_size = RangeSize;
+		fpmas::model::SpatialModel<
+			SYNC_MODE, TestCell, fpmas::model::StaticEndCondition<FakeRange, RangeSize, TestCell>> model;
+
+		fpmas::model::MoveAgentGroup<TestCell>& agent_group {model.buildMoveGroup(0, TestSpatialAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
 		std::unordered_map<int, fpmas::api::graph::DistributedId> index_to_agent_id;
 
@@ -24,14 +26,14 @@ class SpatialModelTestBase : public ::testing::Test {
 		fpmas::scheduler::detail::LambdaTask check_model_task {[&]() -> void {this->checkModelState();}};
 		fpmas::scheduler::Job check_model_job {check_model_task};
 
-		SpatialModelTestBase(int range_size)
-			: range_size(range_size), model(range_size, range_size) {}
+		SpatialModelTestBase() {}
+
 
 		void SetUp() override {
 			fpmas::graph::PartitionMap partition;
 			FPMAS_ON_PROC(model.getMpiCommunicator(), 0) {
 				std::vector<TestCell*> cells;
-				std::vector<fpmas::api::model::SpatialAgent*> agents;
+				std::vector<fpmas::api::model::SpatialAgent<TestCell>*> agents;
 				for(int i = 0; i < model.getMpiCommunicator().getSize(); i++) {
 					auto cell = new TestCell(i);
 					auto agent = new TestSpatialAgent(range_size, num_cells_in_ring);
@@ -43,7 +45,6 @@ class SpatialModelTestBase : public ::testing::Test {
 					index_to_agent_id[i] = agent->node()->getId();
 
 					model.add(cell);
-					model.add(agent);
 
 					agent->initLocation(cells[i]);
 					partition[agent->node()->getId()] = i;
@@ -139,7 +140,7 @@ class SpatialModelTestBase : public ::testing::Test {
 		}
 
 		void testInit() {
-			model.scheduler().schedule(0, model.distributedMoveAlgorithm());
+			model.scheduler().schedule(0, agent_group.initLocationJobs());
 			model.runtime().run(1);
 
 			checkModelState();
@@ -147,7 +148,7 @@ class SpatialModelTestBase : public ::testing::Test {
 
 		void testDistributedMoveAlgorithm() {
 			// Init location
-			model.scheduler().schedule(0, model.distributedMoveAlgorithm());
+			model.scheduler().schedule(0, agent_group.initLocationJobs());
 			// Agent behavior. Since agent_group is a MoveAgentGroup, the
 			// distributedMoveAlgorithm is automatically included.
 			model.scheduler().schedule(1, 1, agent_group.jobs());
@@ -157,14 +158,16 @@ class SpatialModelTestBase : public ::testing::Test {
 		}
 };
 
-typedef SpatialModelTestBase<fpmas::synchro::GhostMode> SpatialModelTest_GhostMode;
-typedef SpatialModelTestBase<fpmas::synchro::HardSyncMode> SpatialModelTest_HardSyncMode;
+template<int MaxStep>
+using SpatialModelTest_GhostMode = SpatialModelTestBase<fpmas::synchro::GhostMode, MaxStep>;
 
-class SpatialModelTest_GhostMode_SimpleRange : public SpatialModelTest_GhostMode {
-	protected:
-		SpatialModelTest_GhostMode_SimpleRange()
-			: SpatialModelTest_GhostMode(1) {}
-};
+template<int MaxStep>
+using SpatialModelTest_HardSyncMode = SpatialModelTestBase<fpmas::synchro::HardSyncMode, MaxStep>;
+
+typedef SpatialModelTest_GhostMode<1> SpatialModelTest_GhostMode_SimpleRange;
+typedef SpatialModelTest_GhostMode<2> SpatialModelTest_GhostMode_ComplexRange;
+typedef SpatialModelTest_HardSyncMode<1> SpatialModelTest_HardSyncMode_SimpleRange;
+typedef SpatialModelTest_HardSyncMode<2> SpatialModelTest_HardSyncMode_ComplexRange;
 
 TEST_F(SpatialModelTest_GhostMode_SimpleRange, init_location_test) {
 	testInit();
@@ -174,12 +177,6 @@ TEST_F(SpatialModelTest_GhostMode_SimpleRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
 
-class SpatialModelTest_HardSyncMode_SimpleRange : public SpatialModelTest_HardSyncMode {
-	protected:
-		SpatialModelTest_HardSyncMode_SimpleRange()
-			: SpatialModelTest_HardSyncMode(1) {}
-};
-
 TEST_F(SpatialModelTest_HardSyncMode_SimpleRange, init_location_test) {
 	testInit();
 }
@@ -188,12 +185,6 @@ TEST_F(SpatialModelTest_HardSyncMode_SimpleRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
 
-class SpatialModelTest_GhostMode_ComplexRange : public SpatialModelTest_GhostMode {
-	protected:
-		SpatialModelTest_GhostMode_ComplexRange()
-			: SpatialModelTest_GhostMode(2) {}
-};
-
 TEST_F(SpatialModelTest_GhostMode_ComplexRange, init_location_test) {
 	testInit();
 }
@@ -201,12 +192,6 @@ TEST_F(SpatialModelTest_GhostMode_ComplexRange, init_location_test) {
 TEST_F(SpatialModelTest_GhostMode_ComplexRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
-
-class SpatialModelTest_HardSyncMode_ComplexRange : public SpatialModelTest_HardSyncMode {
-	protected:
-		SpatialModelTest_HardSyncMode_ComplexRange()
-			: SpatialModelTest_HardSyncMode(2) {}
-};
 
 TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, init_location_test) {
 	testInit();
@@ -226,11 +211,12 @@ class SpatialAgentBuilderTest : public Test {
 	std::vector<fpmas::api::model::Cell*> local_cells;
 	MockJob mock_job;
 	fpmas::api::scheduler::JobList fake_job_list {mock_job};
-	NiceMock<MockSpatialModel> model;
+	NiceMock<MockDistributedMoveAlgorithm<fpmas::api::model::Cell>> mock_dist_move_algo;
+	NiceMock<MockSpatialModel<fpmas::api::model::Cell>> model;
 
 	MockRuntime mock_runtime;
 	std::array<MockAgentGroup, 2> mock_groups;
-	StrictMock<MockSpatialAgentFactory> agent_factory;
+	StrictMock<MockSpatialAgentFactory<fpmas::api::model::Cell>> agent_factory;
 	StrictMock<MockSpatialAgentMapping<fpmas::api::model::Cell>> agent_mapping;
 	fpmas::model::SpatialAgentBuilder<fpmas::api::model::Cell> builder;
 
@@ -247,6 +233,8 @@ class SpatialAgentBuilderTest : public Test {
 		ON_CALL(model, runtime)
 			.WillByDefault(ReturnRef(mock_runtime));
 		ON_CALL(model, distributedMoveAlgorithm)
+			.WillByDefault(ReturnRef(mock_dist_move_algo));
+		ON_CALL(mock_dist_move_algo, jobs)
 			.WillByDefault(Return(fake_job_list));
 		// Builds a random agent mapping on each process
 		for(int i = 0; i < num_cells; i++) {
@@ -256,7 +244,7 @@ class SpatialAgentBuilderTest : public Test {
 				.WillRepeatedly(Return(num_agents));
 
 			for(int j = 0; j < num_agents; j++) {
-				auto agent = new MockSpatialAgent;
+				auto agent = new MockSpatialAgent<fpmas::api::model::Cell>;
 				agents.push_back(agent);
 
 				Sequence s1, s2;
@@ -297,4 +285,88 @@ TEST_F(SpatialAgentBuilderTest, build) {
 			model,
 			{mock_groups[0], mock_groups[1]},
 			agent_factory, agent_mapping);
+}
+
+class EndConditionTest : public Test {
+	protected:
+		class Range : public NiceMock<MockRange<MockCell>> {
+			public:
+				int size;
+				Range(int size)
+					: size(size) {
+						ON_CALL(*this, radius)
+							.WillByDefault(ReturnPointee(&this->size));
+					}
+		};
+		std::vector<fpmas::api::model::SpatialAgent<MockCell>*> agents;
+		std::vector<Range*> mobility_ranges;
+		std::vector<Range*> perception_ranges;
+		fpmas::communication::MpiCommunicator comm;
+		fpmas::random::DistributedGenerator<> rd;
+		fpmas::random::UniformIntDistribution<> agent_count {5, 10};
+
+		void SetUp() {
+			int local_agent_count = agent_count(rd);
+			for(int i = 0; i < local_agent_count; i++) {
+				auto agent = new NiceMock<MockSpatialAgent<MockCell>>;
+				auto mobility_range = new Range(4);
+				auto perception_range = new Range(4);
+
+				ON_CALL(*agent, mobilityRange)
+					.WillByDefault(ReturnRef(*mobility_range));
+				ON_CALL(*agent, perceptionRange)
+					.WillByDefault(ReturnRef(*perception_range));
+
+				agents.push_back(agent);
+				mobility_ranges.push_back(mobility_range);
+				perception_ranges.push_back(perception_range);
+			}
+		}
+		void TearDown() {
+			for(auto agent : agents)
+				delete agent;
+			for(auto range : mobility_ranges)
+				delete range;
+			for(auto range : perception_ranges)
+				delete range;
+
+		}
+
+		void expectIterationCount(fpmas::api::model::EndCondition<MockCell>& end_condition, std::size_t expected_count) {
+			end_condition.init(comm, agents, {});
+			std::size_t counter = 0;
+			while(!end_condition.end()) {
+				end_condition.step();
+				counter++;
+			}
+			ASSERT_EQ(counter, expected_count);
+		}
+};
+
+TEST_F(EndConditionTest, dynamic_range) {
+	fpmas::model::DynamicEndCondition<MockCell> end_condition;
+
+	expectIterationCount(end_condition, 4);
+
+	// Reduces all ranges
+	for(auto range : mobility_ranges)
+		range->size = 2;
+	for(auto range : perception_ranges)
+		range->size = 2;
+
+	expectIterationCount(end_condition, 2);
+
+	// Randomly updates all ranges
+	fpmas::random::UniformIntDistribution<> range_size {0, 10};
+	for(auto range : mobility_ranges)
+		range->size = range_size(rd);
+	for(auto range : perception_ranges)
+		range->size = range_size(rd);
+
+	// Sets ONE range to a bigger value
+	FPMAS_ON_PROC(comm, 0)
+		(*mobility_ranges.begin())->size = 12;
+
+	// Iteration count must fit to the maximum range radius
+	expectIterationCount(end_condition, 12);
 }

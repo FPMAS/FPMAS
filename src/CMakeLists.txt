@@ -6,7 +6,7 @@ set(SOURCES
 	fpmas/api/communication/communication.cpp
 	fpmas/api/graph/distributed_id.cpp
 	fpmas/api/model/model.cpp
-	fpmas/api/model/grid.cpp
+	fpmas/api/model/spatial/grid.cpp
 	fpmas/synchro/hard/api/client_server.cpp
 	# Utils
 	fpmas/utils/log.cpp
@@ -21,8 +21,10 @@ set(SOURCES
 	# Model
 	fpmas/model/detail/model.cpp
 	fpmas/model/serializer.cpp
-	fpmas/model/spatial_model.cpp
-	fpmas/model/grid.cpp
+	fpmas/model/spatial/spatial_model.cpp
+	fpmas/model/spatial/grid.cpp
+	fpmas/model/spatial/grid_agent_mapping.cpp
+	fpmas/model/spatial/von_neumann.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
 	# Main

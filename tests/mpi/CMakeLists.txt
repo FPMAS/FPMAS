@@ -8,9 +8,9 @@ set(SOURCES
 	synchro/hard/termination.cpp
 	synchro/hard/hard_sync_mode.cpp
 	model/model.cpp
-	model/spatial_model.cpp
 	model/test_agents.cpp
-	model/grid.cpp
+	model/spatial/spatial_model.cpp
+	model/spatial/grid.cpp
 	random/generator.cpp
 	)
 

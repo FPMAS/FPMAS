@@ -1,32 +1,65 @@
 #ifndef FPMAS_ENVIRONMENT_H
 #define FPMAS_ENVIRONMENT_H
 
-#include "fpmas/api/model/spatial_model.h"
+#include "dist_move_algo.h"
 #include "fpmas/api/model/exceptions.h"
-#include "model.h"
-#include "serializer.h"
+#include "../serializer.h"
 
 namespace fpmas {
 	namespace model {
 	using api::model::SpatialModelLayers;
 
+	template<typename CellType>
 	class MoveAgentGroup : public model::detail::AgentGroupBase {
 		private:
-			api::model::SpatialModel& model;
+			api::model::SpatialModel<CellType>& model;
 		public:
 			MoveAgentGroup(
 					api::model::GroupId group_id,
 					api::model::AgentGraph& agent_graph,
-					api::model::SpatialModel& model);
+					api::model::SpatialModel<CellType>& model) :
+			AgentGroupBase(group_id, agent_graph), model(model) {
+			}
 
 			MoveAgentGroup(
 					api::model::GroupId group_id,
 					api::model::AgentGraph& agent_graph,
 					const api::model::Behavior& behavior,
-					api::model::SpatialModel& model);
-
-			api::scheduler::JobList jobs() const;
+					api::model::SpatialModel<CellType>& model) :
+			AgentGroupBase(group_id, agent_graph, behavior), model(model) {
+			}
+			api::scheduler::JobList initLocationJobs() const;
+			api::scheduler::JobList jobs() const override;
 	};
+		
+	template<typename CellType>
+		api::scheduler::JobList MoveAgentGroup<CellType>::initLocationJobs() const {
+			api::scheduler::JobList job_list;
+
+			std::vector<api::model::SpatialAgent<CellType>*> agents;
+			for(auto agent : this->localAgents())
+				agents.push_back(dynamic_cast<api::model::SpatialAgent<CellType>*>(agent));
+
+			for(auto job : model.distributedMoveAlgorithm().jobs(model, agents, model.cells()))
+				job_list.push_back(job);
+			return job_list;
+		}
+
+	template<typename CellType>
+		api::scheduler::JobList MoveAgentGroup<CellType>::jobs() const {
+			api::scheduler::JobList job_list;
+			job_list.push_back(this->job());
+
+			std::vector<api::model::SpatialAgent<CellType>*> agents;
+			for(auto agent : this->localAgents()) {
+				agents.push_back(dynamic_cast<api::model::SpatialAgent<CellType>*>(agent));
+			}
+
+			for(auto job : model.distributedMoveAlgorithm().jobs(model, agents, model.cells()))
+				job_list.push_back(job);
+			return job_list;
+		}
+
 
 	class CellBase : public virtual api::model::Cell, public NeighborsAccess {
 		private:
@@ -52,70 +85,72 @@ namespace fpmas {
 	class Cell : public CellBase, public AgentBase<CellType, TypeIdBase> {
 	};
 
-	enum CellGroups : api::model::GroupId {
-		CELL_UPDATE_RANGES = -1,
-		CELL_UPDATE_PERCEPTIONS = -2,
-		AGENT_CROP_RANGES = -3,
-	};
+	static const api::model::GroupId CELL_GROUP_ID = -1;
 
-	class SpatialModelBase : public api::model::SpatialModel {
+	template<typename CellType, typename DistributedMoveAlgorithm>
+	class SpatialModelBase : public api::model::SpatialModel<CellType> {
 		private:
-			AgentGroup* cell_behavior_group;
-			Behavior<api::model::CellBehavior> cell_behaviors {
-				&api::model::CellBehavior::handleNewLocation,
-				&api::model::CellBehavior::handleMove,
-				&api::model::CellBehavior::handlePerceive
-			};
-			AgentGroup* spatial_agent_group;
-			Behavior<api::model::SpatialAgentBehavior> spatial_agent_behaviors {
-				&api::model::SpatialAgentBehavior::handleNewMove,
-				&api::model::SpatialAgentBehavior::handleNewPerceive
-			};
-			AgentGroup* update_perceptions_group;
-			Behavior<api::model::CellBehavior> update_perceptions_behavior {
-				&api::model::CellBehavior::updatePerceptions
-			};
-			unsigned int max_mobility_range;
-			unsigned int max_perception_range;
+			AgentGroup* cell_group;
+			DistributedMoveAlgorithm dist_move_algo;
 
 		protected:
-			void initGroups() {
-				cell_behavior_group = &this->buildGroup(
-							CELL_UPDATE_RANGES, cell_behaviors);
-				spatial_agent_group = &this->buildGroup(
-							AGENT_CROP_RANGES, spatial_agent_behaviors);
-				update_perceptions_group = &this->buildGroup(
-							CELL_UPDATE_PERCEPTIONS, update_perceptions_behavior);
+			void initCellGroup() {
+				cell_group = &this->buildGroup(CELL_GROUP_ID);
 			}
 
-			SpatialModelBase(
-					unsigned int max_mobility_range,
-					unsigned int max_perception_range);
 		public:
-			void add(api::model::SpatialAgentBase* agent) override;
-			void add(api::model::Cell* cell) override;
-			std::vector<api::model::Cell*> cells() override;
-			api::model::AgentGroup& buildMoveGroup(
+			void add(CellType* cell) override;
+			std::vector<CellType*> cells() override;
+			MoveAgentGroup<CellType>& buildMoveGroup(
 					api::model::GroupId id, const api::model::Behavior& behavior) override;
 
-			api::scheduler::JobList distributedMoveAlgorithm() override;
+			api::model::DistributedMoveAlgorithm<CellType>& distributedMoveAlgorithm() override;
 	};
 
-	template<template<typename> class SyncMode>
-	class SpatialModel : public SpatialModelBase, public Model<SyncMode> {
+	template<typename CellType, typename DistMoveAlg>
+		void SpatialModelBase<CellType, DistMoveAlg>::add(CellType* cell) {
+			cell_group->add(cell);
+		}
+
+	template<typename CellType, typename DistMoveAlg>
+		std::vector<CellType*> SpatialModelBase<CellType, DistMoveAlg>::cells() {
+			std::vector<CellType*> cells;
+			for(auto agent : cell_group->localAgents())
+				cells.push_back(dynamic_cast<CellType*>(agent));
+			return cells;
+		}
+
+	template<typename CellType, typename DistMoveAlg>
+		MoveAgentGroup<CellType>& SpatialModelBase<CellType, DistMoveAlg>::buildMoveGroup(
+				api::model::GroupId id, const api::model::Behavior& behavior) {
+			auto* group = new MoveAgentGroup<CellType>(id, this->graph(), behavior, *this);
+			this->insert(id, group);
+			return *group;
+		}
+
+	template<typename CellType, typename DistMoveAlg>
+		api::model::DistributedMoveAlgorithm<CellType>& SpatialModelBase<CellType, DistMoveAlg>::distributedMoveAlgorithm() {
+			return dist_move_algo;
+		}
+
+
+	template<
+		template<typename> class SyncMode,
+		typename CellType,
+		typename DistMoveAlgoEndCondition>
+	class SpatialModel :
+		public SpatialModelBase<CellType, DistributedMoveAlgorithm<CellType, DistMoveAlgoEndCondition>>,
+		public Model<SyncMode> {
 		public:
-			SpatialModel(
-					unsigned int max_mobility_range,
-					unsigned int max_perception_range)
-				: SpatialModelBase(max_mobility_range, max_perception_range) {
-					this->initGroups();
-				}
+			SpatialModel() {
+				this->initCellGroup();
+			}
 	};
 
 	
 	template<typename AgentType, typename CellType, typename Derived = AgentType>
 	class SpatialAgentBase :
-		public virtual api::model::SpatialAgent,
+		public virtual api::model::SpatialAgent<CellType>,
 		public model::AgentBase<AgentType, SpatialAgentBase<AgentType, CellType, Derived>> {
 			friend nlohmann::adl_serializer<
 				api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
@@ -149,6 +184,11 @@ namespace fpmas {
 				};
 			private:
 				graph::DistributedId current_location_id;
+
+				// Use pointers, since each instance (probably) belongs to the
+				// implementing child class, or is static. In any case, it is
+				// not the purpose of this base to perform copy assignment of
+				// this fields, so a reference can't be used.
 				const api::model::Range<CellType>* mobility_range;
 				const api::model::Range<CellType>* perception_range;
 
@@ -159,27 +199,34 @@ namespace fpmas {
 					mobility_range(&mobility_range),
 					perception_range(&perception_range) {}
 
-				void updateLocation(api::model::Cell* cell);
+				void updateLocation(CellType* cell);
 
 				CellType* locationCell() const override;
 				void handleNewMove() override;
 				void handleNewPerceive() override;
 
-				using api::model::SpatialAgent::moveTo;
+				using api::model::SpatialAgent<CellType>::moveTo;
 				void moveTo(graph::DistributedId id) override;
 
 			public:
-				void initLocation(api::model::Cell* cell) override {
+				void initLocation(CellType* cell) override {
 					this->moveTo(cell);
 				}
 
 				fpmas::graph::DistributedId locationId() const override {
 					return current_location_id;
 				}
+
+				const api::model::Range<CellType>& mobilityRange() const override {
+					return *mobility_range;
+				}
+				const api::model::Range<CellType>& perceptionRange() const override {
+					return *perception_range;
+				}
 		};
 
 	template<typename AgentType, typename CellType, typename Derived>
-		void SpatialAgentBase<AgentType, CellType, Derived>::updateLocation(api::model::Cell* cell) {
+		void SpatialAgentBase<AgentType, CellType, Derived>::updateLocation(CellType* cell) {
 			// Links to new location
 			this->model()->link(this, cell, SpatialModelLayers::NEW_LOCATION);
 
@@ -202,13 +249,10 @@ namespace fpmas {
 
 			// Adds the NEW_LOCATION to the mobility/perceptions fields
 			// depending on the current ranges
-			if(auto _cell = dynamic_cast<CellType*>(cell)) {
-				if(this->mobility_range->contains(_cell, _cell))
-					this->model()->link(this, _cell, SpatialModelLayers::MOVE);
-				if(this->perception_range->contains(_cell, _cell)) {
-					this->model()->link(this, _cell, SpatialModelLayers::PERCEIVE);
-				}
-			}
+			if(this->mobility_range->contains(cell, cell))
+				this->model()->link(this, cell, SpatialModelLayers::MOVE);
+			if(this->perception_range->contains(cell, cell))
+				this->model()->link(this, cell, SpatialModelLayers::PERCEIVE);
 
 			this->current_location_id = cell->node()->getId();
 		}
@@ -274,13 +318,13 @@ namespace fpmas {
 					using SpatialAgentBase<AgentType, CellType, Derived>::moveTo;
 					using SpatialAgentBase<AgentType, CellType, Derived>::SpatialAgentBase;
 
-					void moveTo(api::model::Cell* cell) override {
+					void moveTo(CellType* cell) override {
 						this->updateLocation(cell);
 					}
 			};
 
 	template<typename AgentType>
-		class DefaultSpatialAgentFactory : public api::model::SpatialAgentFactory {
+		class DefaultSpatialAgentFactory : public api::model::SpatialAgentFactory<typename AgentType::Cell> {
 			public:
 				AgentType* build() override {
 					return new AgentType;
@@ -291,32 +335,32 @@ namespace fpmas {
 	class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType>{
 		public:
 			void build(
-					api::model::SpatialModel& model,
+					api::model::SpatialModel<CellType>& model,
 					api::model::GroupList groups,
-					api::model::SpatialAgentFactory& factory,
+					api::model::SpatialAgentFactory<CellType>& factory,
 					api::model::SpatialAgentMapping<CellType>& agent_counts
 					) override;
 	};
 
 	template<typename CellType>
 		void SpatialAgentBuilder<CellType>::build(
-				api::model::SpatialModel& model,
+				api::model::SpatialModel<CellType>& model,
 				api::model::GroupList groups,
-				api::model::SpatialAgentFactory& factory,
+				api::model::SpatialAgentFactory<CellType>& factory,
 				api::model::SpatialAgentMapping<CellType>& agent_counts
 				) {
+			std::vector<api::model::SpatialAgent<CellType>*> agents;
 			for(auto cell : model.cells()) {
-				if(auto _cell = dynamic_cast<CellType*>(cell)) {
-					for(std::size_t i = 0; i < agent_counts.countAt(_cell); i++) {
-						auto agent = factory.build();
-						for(api::model::AgentGroup& group : groups)
-							group.add(agent);
-						agent->initLocation(cell);
-					}
+				for(std::size_t i = 0; i < agent_counts.countAt(cell); i++) {
+					auto agent = factory.build();
+					agents.push_back(agent);
+					for(api::model::AgentGroup& group : groups)
+						group.add(agent);
+					agent->initLocation(cell);
 				}
 			}
 
-			model.runtime().execute(model.distributedMoveAlgorithm());
+			model.runtime().execute(model.distributedMoveAlgorithm().jobs(model, agents, model.cells()));
 		}
 }}
 

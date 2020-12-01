@@ -1,16 +1,20 @@
-#include "fpmas/model/grid.h"
+#include "fpmas/model/spatial/grid.h"
+#include "fpmas/model/spatial/von_neumann.h"
+#include "fpmas/model/spatial/grid_agent_mapping.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "gmock/gmock.h"
-#include "test_agents.h"
+#include "../test_agents.h"
 #include "../mocks/random/mock_random.h"
 #include "../mocks/model/mock_grid.h"
 
 using namespace testing;
-using fpmas::model::VonNeumannGridBuilder;
+using namespace fpmas::model;
 
 class VonNeumannGridBuilderTest : public Test {
 	protected:
-		fpmas::model::SpatialModel<fpmas::synchro::GhostMode> grid_model {0, 0};
+		GridModel<fpmas::synchro::GhostMode,
+			StaticGridEndCondition<VonNeumannRange<VonNeumannGrid>, 0>
+				> grid_model;
 
 		void checkGridStructure(std::vector<fpmas::api::model::GridCell*> cells, int X, int Y) {
 			fpmas::communication::TypedMpi<std::vector<fpmas::model::DiscretePoint>> mpi(

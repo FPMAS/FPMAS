@@ -3,7 +3,7 @@
 
 #include "../mocks/model/mock_model.h"
 #include "../mocks/model/mock_spatial_model.h"
-#include "fpmas/model/grid.h"
+#include "fpmas/model/spatial/grid.h"
 
 namespace model { namespace test {
 	template<typename AgentType>

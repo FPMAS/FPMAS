@@ -2,27 +2,31 @@
 #define MOCK_ENVIRONMENT_H
 
 #include "gmock/gmock.h"
-#include "fpmas/model/spatial_model.h"
+#include "fpmas/model/spatial/spatial_model.h"
 #include "mock_model.h"
 
 template<typename CellType>
 class MockRange : public fpmas::api::model::Range<CellType> {
 	public:
 		MOCK_METHOD(bool, contains, (CellType*, CellType*), (const, override));
+		MOCK_METHOD(std::size_t, radius, (CellType*), (const, override));
 
 		virtual ~MockRange() {}
 };
 
-class MockSpatialAgent : public fpmas::api::model::SpatialAgent, public testing::NiceMock<detail::MockAgentBase<MockSpatialAgent>> {
+template<typename CellType>
+class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, public testing::NiceMock<detail::MockAgentBase<MockSpatialAgent<CellType>>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
-		MOCK_METHOD(void, moveTo, (fpmas::api::model::Cell*), (override));
+		MOCK_METHOD(void, moveTo, (CellType*), (override));
 		MOCK_METHOD(void, moveTo, (fpmas::api::graph::DistributedId), (override));
-		MOCK_METHOD(void, initLocation, (fpmas::api::model::Cell*), (override));
-		MOCK_METHOD(fpmas::api::model::Cell*, locationCell, (), (const, override));
+		MOCK_METHOD(void, initLocation, (CellType*), (override));
+		MOCK_METHOD(CellType*, locationCell, (), (const, override));
 		MOCK_METHOD(fpmas::api::graph::DistributedId, locationId, (), (const, override));
 		MOCK_METHOD(void, handleNewMove, (), (override));
 		MOCK_METHOD(void, handleNewPerceive, (), (override));
+		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, mobilityRange, (), (const, override));
+		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, perceptionRange, (), (const, override));
 
 		virtual ~MockSpatialAgent() {}
 };
@@ -48,21 +52,32 @@ class MockCell : public virtual fpmas::api::model::Cell, public testing::NiceMoc
 		virtual ~MockCell() {}
 };
 
-class MockSpatialModel : public fpmas::api::model::SpatialModel, public testing::NiceMock<MockModel> {
+template<typename CellType>
+class MockDistributedMoveAlgorithm : public fpmas::api::model::DistributedMoveAlgorithm<CellType> {
 	public:
-		MOCK_METHOD(void, add, (fpmas::api::model::SpatialAgentBase*), (override));
-		MOCK_METHOD(void, add, (fpmas::api::model::Cell*), (override));
-		MOCK_METHOD(std::vector<fpmas::api::model::Cell*>, cells, (), (override));
+		MOCK_METHOD(fpmas::api::scheduler::JobList, jobs, (
+					fpmas::api::model::SpatialModel<CellType>&,
+					std::vector<fpmas::api::model::SpatialAgent<CellType>*>,
+					std::vector<CellType*>
+					), (override));
+};
+
+template<typename CellType>
+class MockSpatialModel : public fpmas::api::model::SpatialModel<CellType>, public testing::NiceMock<MockModel> {
+	public:
+		MOCK_METHOD(void, add, (CellType*), (override));
+		MOCK_METHOD(std::vector<CellType*>, cells, (), (override));
 		MOCK_METHOD(fpmas::api::model::AgentGroup&, buildMoveGroup,
 				(fpmas::model::GroupId, const fpmas::api::model::Behavior&), (override));
 
-		MOCK_METHOD(fpmas::api::scheduler::JobList, distributedMoveAlgorithm, (), (override));
+		MOCK_METHOD(fpmas::api::model::DistributedMoveAlgorithm<CellType>&, distributedMoveAlgorithm, (), (override));
 
 };
 
-class MockSpatialAgentFactory : public fpmas::api::model::SpatialAgentFactory {
+template<typename CellType>
+class MockSpatialAgentFactory : public fpmas::api::model::SpatialAgentFactory<CellType> {
 	public:
-		MOCK_METHOD(fpmas::api::model::SpatialAgent*, build, (), (override));
+		MOCK_METHOD(fpmas::api::model::SpatialAgent<CellType>*, build, (), (override));
 };
 
 template<typename CellType>

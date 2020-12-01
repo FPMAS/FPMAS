@@ -2,7 +2,7 @@
 #define FPMAS_MODEL_EXCEPTIONS_API_H
 
 #include "fpmas/api/graph/distributed_id.h"
-#include "fpmas/api/model/grid.h"
+#include "fpmas/api/model/spatial/grid.h"
 
 namespace fpmas { namespace api { namespace model {
 

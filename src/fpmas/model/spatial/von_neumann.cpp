@@ -1,8 +1,6 @@
-#include "grid.h"
-#include "fpmas/random/generator.h"
+#include "von_neumann.h"
 
 namespace fpmas { namespace model {
-
 	GridCellFactory<> VonNeumannGridBuilder::default_cell_factory;
 
 	void VonNeumannGridBuilder::allocate(
@@ -14,7 +12,7 @@ namespace fpmas { namespace model {
 			row.resize(width);
 	}
 	typename VonNeumannGridBuilder::CellMatrix VonNeumannGridBuilder::buildLocalGrid(
-			api::model::SpatialModel& model,
+			api::model::SpatialModel<api::model::GridCell>& model,
 			DiscreteCoordinate min_x, DiscreteCoordinate max_x,
 			DiscreteCoordinate min_y, DiscreteCoordinate max_y) {
 
@@ -53,7 +51,7 @@ namespace fpmas { namespace model {
 
 
 	std::vector<api::model::GridCell*> VonNeumannGridBuilder::build(
-			api::model::SpatialModel& model) {
+			api::model::SpatialModel<api::model::GridCell>& model) {
 		typedef std::pair<DistributedId, std::vector<api::model::GroupId>>
 			GridCellPack;
 
@@ -181,34 +179,4 @@ namespace fpmas { namespace model {
 		return built_cells;
 	}
 
-	struct PointComparison {
-		bool operator()(const DiscretePoint& p1, const DiscretePoint& p2) const {
-			return p1.x < p2.x && p1.y < p2.y;
-		}
-	};
-
-	RandomGridAgentMapping::RandomGridAgentMapping(
-			api::random::Distribution<DiscreteCoordinate>&& x,
-			api::random::Distribution<DiscreteCoordinate>&& y,
-			std::size_t agent_count)
-	: RandomGridAgentMapping(x, y, agent_count) {
-	}
-
-	RandomGridAgentMapping::RandomGridAgentMapping(
-			api::random::Distribution<DiscreteCoordinate>& x,
-			api::random::Distribution<DiscreteCoordinate>& y,
-			std::size_t agent_count) {
-		random::mt19937_64 rd;
-
-		for(std::size_t i = 0; i < agent_count; i++) {
-			DiscretePoint p {x(rd), y(rd)};
-			count_map[p.x][p.y]++;
-		}
-	}
 }}
-
-namespace fpmas { namespace api { namespace model {
-	bool operator==(const DiscretePoint& p1, const DiscretePoint& p2) {
-		return p1.x == p2.x && p1.y == p2.y;
-	}
-}}}

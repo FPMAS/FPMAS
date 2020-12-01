@@ -31,9 +31,9 @@ set(SOURCES
 	# Model
 	model/model.cpp
 	model/serializer.cpp
-	model/spatial_model.cpp
 	model/behavior.cpp
-	model/grid.cpp
+	model/spatial/spatial_model.cpp
+	model/spatial/grid.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

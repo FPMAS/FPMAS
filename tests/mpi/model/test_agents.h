@@ -1,8 +1,8 @@
 #ifndef FPMAS_TEST_AGENTS
 #define FPMAS_TEST_AGENTS
 
-#include "fpmas/model/spatial_model.h"
-#include "fpmas/model/grid.h"
+#include "fpmas/model/spatial/spatial_model.h"
+#include "fpmas/model/spatial/grid.h"
 #include "../mocks/model/mock_model.h"
 
 using testing::Ge;
@@ -138,6 +138,9 @@ class FakeRange : public fpmas::api::model::Range<TestCell> {
 		unsigned int size;
 		unsigned int num_cells_in_ring;
 	public:
+		FakeRange(unsigned int size)
+			: size(size) {}
+
 		FakeRange(unsigned int size, unsigned int num_cells_in_ring)
 			: size(size), num_cells_in_ring(num_cells_in_ring) {}
 
@@ -150,6 +153,10 @@ class FakeRange : public fpmas::api::model::Range<TestCell> {
 			if(distance <= size)
 				return true;
 			return false;
+		}
+
+		std::size_t radius(TestCell*) const override {
+			return size;
 		}
 };
 
@@ -178,7 +185,7 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 
 		void moveToNextCell() {
 			std::unordered_map<int, TestCell*> cell_index;
-			int current_index = static_cast<TestCell*>(this->locationCell())->index;
+			int current_index = this->locationCell()->index;
 			for(auto cell : outNeighbors<TestCell>(fpmas::api::model::MOVE)) {
 				cell_index[cell->index] = cell;
 			}
