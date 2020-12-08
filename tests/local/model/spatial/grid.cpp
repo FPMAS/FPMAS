@@ -148,17 +148,6 @@ TEST_F(GridAgentTest, moveToPointOutOfField) {
 	ASSERT_THROW(this->moveTo(location_point), fpmas::api::model::OutOfMobilityFieldException);
 }
 
-TEST(VonNeumannGridBuilder, grid_cell_factory) {
-	VonNeumannGridBuilder default_builder (10, 10);
-	ASSERT_THAT(
-			default_builder.gridCellFactory(),
-			Ref(VonNeumannGridBuilder::default_cell_factory));
-
-	MockGridCellFactory factory;
-	VonNeumannGridBuilder builder (factory, 10, 10);
-	ASSERT_THAT(builder.gridCellFactory(), Ref(factory));
-}
-
 class RandomGridAgentMappingTest : public Test {
 	protected:
 		NiceMock<MockDistribution<DiscreteCoordinate>> mock_x;

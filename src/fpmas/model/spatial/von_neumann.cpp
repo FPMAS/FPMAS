@@ -6,7 +6,7 @@ namespace fpmas { namespace model {
 	void VonNeumannGridBuilder::allocate(
 			CellMatrix& matrix,
 			DiscreteCoordinate width,
-			DiscreteCoordinate height) {
+			DiscreteCoordinate height) const {
 		matrix.resize(height);
 		for(auto& row : matrix)
 			row.resize(width);
@@ -14,7 +14,7 @@ namespace fpmas { namespace model {
 	typename VonNeumannGridBuilder::CellMatrix VonNeumannGridBuilder::buildLocalGrid(
 			api::model::SpatialModel<api::model::GridCell>& model,
 			DiscreteCoordinate min_x, DiscreteCoordinate max_x,
-			DiscreteCoordinate min_y, DiscreteCoordinate max_y) {
+			DiscreteCoordinate min_y, DiscreteCoordinate max_y) const {
 
 		DiscreteCoordinate local_height = max_y - min_y + 1;
 		DiscreteCoordinate local_width = max_x - min_x + 1;
@@ -31,18 +31,18 @@ namespace fpmas { namespace model {
 		}
 		for(DiscreteCoordinate j = 0; j < local_width; j++) {
 			for(DiscreteCoordinate i = 0; i < local_height-1; i++) {
-				model.link(cells[i][j], cells[i+1][j], api::model::NEIGHBOR_CELL);
+				model.link(cells[i][j], cells[i+1][j], api::model::CELL_SUCCESSOR);
 			}
 			for(DiscreteCoordinate i = local_height-1; i > 0; i--) {
-				model.link(cells[i][j], cells[i-1][j], api::model::NEIGHBOR_CELL);
+				model.link(cells[i][j], cells[i-1][j], api::model::CELL_SUCCESSOR);
 			}
 		}
 		for(DiscreteCoordinate i = 0; i < local_height; i++) {
 			for(DiscreteCoordinate j = 0; j < local_width-1; j++) {
-				model.link(cells[i][j], cells[i][j+1], api::model::NEIGHBOR_CELL);
+				model.link(cells[i][j], cells[i][j+1], api::model::CELL_SUCCESSOR);
 			}
 			for(DiscreteCoordinate j = local_width-1; j > 0; j--) {
-				model.link(cells[i][j], cells[i][j-1], api::model::NEIGHBOR_CELL);
+				model.link(cells[i][j], cells[i][j-1], api::model::CELL_SUCCESSOR);
 			}
 		}
 
@@ -51,7 +51,7 @@ namespace fpmas { namespace model {
 
 
 	std::vector<api::model::GridCell*> VonNeumannGridBuilder::build(
-			api::model::SpatialModel<api::model::GridCell>& model) {
+			api::model::SpatialModel<api::model::GridCell>& model) const {
 		typedef std::pair<DistributedId, std::vector<api::model::GroupId>>
 			GridCellPack;
 
@@ -108,9 +108,9 @@ namespace fpmas { namespace model {
 						model.graph().insertDistant(tmp_node);
 
 						if(frontier.first < mpi_comm.getRank()) {
-							model.link(cells[y][0], cell, SpatialModelLayers::NEIGHBOR_CELL);
+							model.link(cells[y][0], cell, SpatialModelLayers::CELL_SUCCESSOR);
 						} else {
-							model.link(cells[y][end_width-begin_width], cell, SpatialModelLayers::NEIGHBOR_CELL);
+							model.link(cells[y][end_width-begin_width], cell, SpatialModelLayers::CELL_SUCCESSOR);
 						}
 					}
 				}
@@ -163,9 +163,9 @@ namespace fpmas { namespace model {
 						model.graph().insertDistant(tmp_node);
 
 						if(frontier.first < mpi_comm.getRank()) {
-							model.link(cells[0][x], cell, SpatialModelLayers::NEIGHBOR_CELL);
+							model.link(cells[0][x], cell, SpatialModelLayers::CELL_SUCCESSOR);
 						} else {
-							model.link(cells[end_height-begin_height][x], cell, SpatialModelLayers::NEIGHBOR_CELL);
+							model.link(cells[end_height-begin_height][x], cell, SpatialModelLayers::CELL_SUCCESSOR);
 						}
 					}
 				}

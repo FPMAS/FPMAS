@@ -12,6 +12,8 @@
 #include "fpmas/api/utils/ptr_wrapper.h"
 
 namespace fpmas { namespace api {namespace model {
+	using api::graph::DistributedId;
+
 	class Agent;
 	class AgentTask;
 	class AgentPtr;
@@ -126,28 +128,47 @@ namespace fpmas { namespace api {namespace model {
 			 * @deprecated
 			 * Returns the ID of the AgentGroup to which this Agent belong.
 			 *
+			 * This method is deprecated and will be removed in a next release.
+			 * Use groupIds() instead.
+			 *
 			 * @return group id
 			 */
 			[[deprecated]]
 			virtual GroupId groupId() const = 0;
 
+			/**
+			 * Returns ids of AgentGroups to which the Agent belong.
+			 *
+			 * @return list of group ids
+			 */
 			virtual std::vector<GroupId> groupIds() const = 0;
 
 			/**
 			 * @deprecated
 			 * Sets this Agent group ID.
 			 *
+			 * This method is deprecated and will be removed in a next release.
+			 * Use addGroupId() instead.
+			 *
 			 * @param id agent group id 
 			 */
 			[[deprecated]]
 			virtual void setGroupId(GroupId id) = 0;
 
+			/**
+			 * Adds `id` to this Agent's group ids.
+			 *
+			 * @param id agent group id 
+			 */
 			virtual void addGroupId(GroupId id) = 0;
 
 
 			/**
 			 * @deprecated
 			 * Returns a pointer to the AgentGroup to which this Agent belong.
+			 *
+			 * This method is deprecated and will be removed in a next release.
+			 * Use groups() instead.
 			 *
 			 * @return pointer to agent group
 			 */
@@ -159,19 +180,37 @@ namespace fpmas { namespace api {namespace model {
 			[[deprecated]]
 			virtual const AgentGroup* group() const = 0;
 
-			virtual std::vector<const AgentGroup*> groups() const = 0;
+			/**
+			 * Returns a list of \AgentGroups to which this Agent belong.
+			 *
+			 * @return agent group list
+			 */
 			virtual std::vector<AgentGroup*> groups() = 0;
+
+			/**
+			 * \copydoc groups()
+			 */
+			virtual std::vector<const AgentGroup*> groups() const = 0;
 
 			/**
 			 * @deprecated
 			 * Sets the internal pointer of the AgentGroup to which this Agent
 			 * belong.
 			 *
+			 * This method is deprecated and will be removed in a next release.
+			 * Use addGroup() instead.
+			 *
 			 * @param group agent group
 			 */
 			[[deprecated]]
 			virtual void setGroup(AgentGroup* group) = 0;
 
+			/**
+			 * Adds `group` to the list of \AgentGroups to which this Agent
+			 * belong.
+			 *
+			 * @param group agent group
+			 */
 			virtual void addGroup(AgentGroup* group) = 0;
 
 			/**
@@ -244,8 +283,7 @@ namespace fpmas { namespace api {namespace model {
 
 			/**
 			 * Returns a pointer to the AgentTask associated to this Agent,
-			 * that is used to execute the Agent (thanks to the act()
-			 * function).
+			 * that is used to execute the Agent.
 			 *
 			 * @return agent task
 			 */
@@ -264,11 +302,42 @@ namespace fpmas { namespace api {namespace model {
 			[[deprecated]]
 			virtual void setTask(AgentTask* task) = 0;
 
+			/**
+			 * Returns the AgentTask associated to this Agent in the AgentGroup
+			 * corresponding to `id`.
+			 *
+			 * Behavior is undefined if the Agent does not belong to an
+			 * AgentGroup with the specified `id`.
+			 *
+			 * @param id group id
+			 */
 			virtual AgentTask* task(GroupId id) = 0;
+			/**
+			 * \copydoc task(int)
+			 */
 			virtual const AgentTask* task(GroupId id) const = 0; 
 
+			/**
+			 * Sets the AgentTask associated to this Agent in the AgentGroup
+			 * corresponding to `id`.
+			 *
+			 * Behavior is undefined if the Agent does not belong to an
+			 * AgentGroup with the specified `id`.
+			 *
+			 * @param id group id
+			 * @param task agent task
+			 */
 			virtual void setTask(GroupId id, AgentTask* task) = 0;
-			virtual const std::unordered_map<GroupId, AgentTask*>& tasks() const = 0;
+
+			/**
+			 * Returns a map containing all the tasks associated to this Agent
+			 * in the \AgentGroups to which it belongs.
+			 *
+			 * Exactly one task is associated to the agent in each group.
+			 *
+			 * @return tasks associated to this agent
+			 */
+			virtual const std::unordered_map<GroupId, AgentTask*>& tasks() = 0;
 
 			/**
 			 * Executes the behavior of the Agent.
@@ -281,33 +350,6 @@ namespace fpmas { namespace api {namespace model {
 
 			virtual ~Agent(){}
 	};
-
-	template<typename AgentType>
-		class Neighbor {
-			public:
-				/**
-				 * Implicit conversion operator to `AgentType*`.
-				 */
-				virtual operator AgentType*() const = 0;
-
-				/**
-				 * Member of pointer access operator.
-				 *
-				 * @return pointer to neighbor agent
-				 */
-				virtual AgentType* operator->() const = 0;
-
-				/**
-				 * Indirection operator.
-				 *
-				 * @return reference to neighbor agent
-				 */
-				virtual AgentType& operator*() const = 0;
-
-				virtual AgentEdge* edge() const = 0;
-
-				virtual ~Neighbor() {}
-		};
 
 	/**
 	 * AgentTask API.
@@ -327,9 +369,25 @@ namespace fpmas { namespace api {namespace model {
 			virtual ~AgentTask(){}
 	};
 
+	/**
+	 * Agent Behavior API.
+	 *
+	 * The purpose of a Behavior is to be _executed_ on \Agents, for example
+	 * calling a user specified method on the Agent to execute.
+	 *
+	 * A single Behavior instance might be executed on many \Agents: in
+	 * practice, each AgentGroup is bound to a Behavior.
+	 *
+	 * @see Model::buildGroup(GroupId, const Behavior&)
+	 */
 	class Behavior {
 		public:
-			virtual void execute(Agent*) const = 0;
+			/**
+			 * Executes this behavior on the specified `agent`.
+			 *
+			 * @param agent on which this behavior must be executed.
+			 */
+			virtual void execute(Agent* agent) const = 0;
 
 			virtual ~Behavior(){}
 	};
@@ -358,6 +416,11 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual GroupId groupId() const = 0;
 
+			/**
+			 * Returns the Behavior associated to this group.
+			 *
+			 * @return group's behavior
+			 */
 			virtual const Behavior& behavior() = 0;
 
 			/**
@@ -453,6 +516,10 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * See the complete api::scheduler::Scheduler interface for more
 			 * scheduling options.
+			 *
+			 * This method as been deprecated and will be removed in a next
+			 * release. Use agentExecutionJob() or jobs() instead, depending on
+			 * use case.
 			 */
 			[[deprecated]]
 			virtual api::scheduler::Job& job() = 0;
@@ -462,12 +529,51 @@ namespace fpmas { namespace api {namespace model {
 			[[deprecated]]
 			virtual const api::scheduler::Job& job() const = 0;
 
+			/**
+			 * Returns a reference to the internal \Job specifically used to
+			 * execute behavior() on the agents() of the group.
+			 *
+			 * However this job is not intended to be scheduled directly: use
+			 * jobs() instead.
+			 *
+			 * @return agent execution job
+			 * @see jobs()
+			 */
 			virtual api::scheduler::Job& agentExecutionJob() = 0;
+
+			/**
+			 * \copydoc agentExecutionJob()
+			 */
+			virtual const api::scheduler::Job& agentExecutionJob() const = 0;
+
+			/**
+			 * Returns the list of \Jobs associated to this group.
+			 *
+			 * This list must at least contain the agentExecutionJob(). Extra
+			 * processes might be added internally to ensure the proper
+			 * execution of \Agents: in consequence, this list of job can be
+			 * safely scheduled to plan agents execution.
+			 *
+			 * @par Example
+			 * ```cpp
+			 * // Schedules agent_group to be executed from iteration 10 with a
+			 * // period of 2
+			 * scheduler.schedule(10, 2, agent_group.jobs());
+			 * ```
+			 *
+			 * See the complete api::scheduler::Scheduler interface for more
+			 * scheduling options.
+			 *
+			 * @return list of jobs associated to this group
+			 */
 			virtual api::scheduler::JobList jobs() const = 0;
 
 			virtual ~AgentGroup(){}
 	};
 
+	/**
+	 * A type used to represent lists of \AgentGroups.
+	 */
 	typedef std::vector<std::reference_wrapper<AgentGroup>> GroupList;
 
 	/**
@@ -478,6 +584,12 @@ namespace fpmas { namespace api {namespace model {
 	 */
 	class Model {
 		protected:
+			/**
+			 * Inserts an AgentGroup into this model.
+			 *
+			 * @param id id of the group
+			 * @param group agent group to insert
+			 */
 			virtual void insert(GroupId id, AgentGroup* group) = 0;
 
 		public:
@@ -521,8 +633,12 @@ namespace fpmas { namespace api {namespace model {
 			/**
 			 * Builds a new AgentGroup associated to this Model.
 			 *
-			 * The user can add its own \Agents to the built groups, and
-			 * schedule it so that \Agents will be executed.
+			 * The user can add its own \Agents to the built group, and
+			 * schedule it so that \Agents will be executed. More precisely,
+			 * the default behavior defined by this group calls the
+			 * Agent::act() method, that do nothing by default but can be
+			 * overriden by the user. Other behaviors can be specified using
+			 * the addGroup(GroupId, const Behavior&) method.
 			 *
 			 * Notice that each AgentGroup is expected to be associated to a
 			 * unique GroupId. The FPMAS_DEFINE_GROUPS() macro can be used to
@@ -554,9 +670,30 @@ namespace fpmas { namespace api {namespace model {
 			 * // Schedules Agents of group_2 to be executed each 2 iterations
 			 * model.scheduler().schedule(0, 2, group_2.job());
 			 * ```
+			 *
+			 * @param id unique group id
 			 */
 			virtual AgentGroup& buildGroup(GroupId id) = 0;
 
+			/**
+			 * Builds a new AgentGroup associated to this Model.
+			 *
+			 * The user can add its own \Agents to the built group, and
+			 * schedule it so that \Agents will be executed.
+			 *
+			 * Jobs generated by the build AgentGroup will execute the
+			 * specified `behavior` on agents contained in the group.
+			 *
+			 * The `behavior`s storage duration must be greater or equal to
+			 * this AgentGroup storage duration.
+			 *
+			 * Each AgentGroup is expected to be associated to a unique
+			 * GroupId. The FPMAS_DEFINE_GROUPS() macro can be used to easily
+			 * generate unique GroupIds.
+			 *
+			 * @param id unique group id
+			 * @param behavior behavior to execute on agents of the group
+			 */
 			virtual AgentGroup& buildGroup(GroupId id, const Behavior& behavior) = 0;
 
 			/**
@@ -598,8 +735,17 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual void unlink(AgentEdge* edge) = 0;
 
-			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
+			/**
+			 * Returns the MPI communicator used by this model.
+			 *
+			 * @return MPI communicator
+			 */
 			virtual api::communication::MpiCommunicator& getMpiCommunicator() = 0;
+
+			/**
+			 * \copydoc getMpiCommunicator()
+			 */
+			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
 
 		public:
 			virtual ~Model(){}

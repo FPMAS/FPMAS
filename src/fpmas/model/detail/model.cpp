@@ -76,12 +76,11 @@ namespace fpmas {
 					delete group.second;
 			}
 
-			void Model::insert(GroupId id, api::model::AgentGroup* group) {
+			void Model::insert(api::model::GroupId id, api::model::AgentGroup* group) {
 				_groups.insert({id, group});
 			}
 
-
-			api::model::AgentGroup& Model::getGroup(api::model::GroupId id) const {
+			fpmas::api::model::AgentGroup& Model::getGroup(api::model::GroupId id) const {
 				return *_groups.at(id);
 			}
 
@@ -109,12 +108,12 @@ namespace fpmas {
 				agent_graph.balance(load_balancing);
 			}
 
-			AgentGroupBase::AgentGroupBase(api::model::GroupId group_id, api::model::AgentGraph& agent_graph)
+			AgentGroupBase::AgentGroupBase(GroupId group_id, api::model::AgentGraph& agent_graph)
 				: AgentGroupBase(group_id, agent_graph, default_behavior) {
 				}
 
 			AgentGroupBase::AgentGroupBase(
-					api::model::GroupId group_id,
+					GroupId group_id,
 					api::model::AgentGraph& agent_graph,
 					const api::model::Behavior& behavior)
 				: id(group_id), agent_graph(agent_graph), job_base(), sync_graph_task(agent_graph), _behavior(behavior) {

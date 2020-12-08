@@ -15,7 +15,9 @@ class SpatialModelTestBase : public ::testing::Test {
 	protected:
 		unsigned int range_size = RangeSize;
 		fpmas::model::SpatialModel<
-			SYNC_MODE, TestCell, fpmas::model::StaticEndCondition<FakeRange, RangeSize, TestCell>> model;
+			SYNC_MODE, TestCell,
+			fpmas::model::StaticEndCondition<FakeRange, RangeSize, TestCell>
+				> model;
 
 		fpmas::model::MoveAgentGroup<TestCell>& agent_group {model.buildMoveGroup(0, TestSpatialAgent::behavior)};
 		std::unordered_map<fpmas::api::graph::DistributedId, int> agent_id_to_index;
@@ -55,12 +57,12 @@ class SpatialModelTestBase : public ::testing::Test {
 				if(comm_size > 1) {
 					if(comm_size > 2) {
 						for(std::size_t i = 0; i < cells.size(); i++) {
-							model.link(cells[i % comm_size], cells[(comm_size+i-1)%comm_size], fpmas::api::model::NEIGHBOR_CELL);
-							model.link(cells[i % comm_size], cells[(i+1) % comm_size], fpmas::api::model::NEIGHBOR_CELL);
+							model.link(cells[i % comm_size], cells[(comm_size+i-1)%comm_size], fpmas::api::model::CELL_SUCCESSOR);
+							model.link(cells[i % comm_size], cells[(i+1) % comm_size], fpmas::api::model::CELL_SUCCESSOR);
 						}
 					} else {
-						model.link(cells[0], cells[1], fpmas::api::model::NEIGHBOR_CELL);
-						model.link(cells[1], cells[0], fpmas::api::model::NEIGHBOR_CELL);
+						model.link(cells[0], cells[1], fpmas::api::model::CELL_SUCCESSOR);
+						model.link(cells[1], cells[0], fpmas::api::model::CELL_SUCCESSOR);
 					}
 				}
 			}
@@ -79,11 +81,11 @@ class SpatialModelTestBase : public ::testing::Test {
 			for(auto cell : model.cells()) {
 				if(comm_size > 1)
 					if(comm_size == 2)
-						ASSERT_THAT(cell->neighborhood(), SizeIs(1));
+						ASSERT_THAT(cell->successors(), SizeIs(1));
 					else
-						ASSERT_THAT(cell->neighborhood(), SizeIs(2));
+						ASSERT_THAT(cell->successors(), SizeIs(2));
 				else
-					ASSERT_THAT(cell->neighborhood(), SizeIs(0));
+					ASSERT_THAT(cell->successors(), SizeIs(0));
 			}
 			for(auto agent : agent_group.localAgents()) {
 				ASSERT_THAT(
@@ -140,15 +142,23 @@ class SpatialModelTestBase : public ::testing::Test {
 		}
 
 		void testInit() {
-			model.scheduler().schedule(0, agent_group.initLocationJobs());
-			model.runtime().run(1);
+			std::vector<fpmas::api::model::SpatialAgent<TestCell>*> agents;
+			for(auto agent : agent_group.localAgents())
+				agents.push_back(dynamic_cast<fpmas::api::model::SpatialAgent<TestCell>*>(agent));
+
+			model.runtime().execute(model.distributedMoveAlgorithm().jobs(model, agents, model.cells()));
 
 			checkModelState();
 		}
 
 		void testDistributedMoveAlgorithm() {
 			// Init location
-			model.scheduler().schedule(0, agent_group.initLocationJobs());
+			std::vector<fpmas::api::model::SpatialAgent<TestCell>*> agents;
+			for(auto agent : agent_group.localAgents())
+				agents.push_back(dynamic_cast<fpmas::api::model::SpatialAgent<TestCell>*>(agent));
+
+			model.runtime().execute(model.distributedMoveAlgorithm().jobs(model, agents, model.cells()));
+
 			// Agent behavior. Since agent_group is a MoveAgentGroup, the
 			// distributedMoveAlgorithm is automatically included.
 			model.scheduler().schedule(1, 1, agent_group.jobs());

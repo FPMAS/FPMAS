@@ -88,11 +88,24 @@
 #define FPMAS_DEFAULT_JSON(AGENT) \
 	namespace nlohmann {\
 		template<>\
+			/**\
+			 * Default AGENT adl_serializer specialization.
+			 */\
 			struct adl_serializer<fpmas::api::utils::PtrWrapper<AGENT>> {\
+				/**\
+				 * No effect: j is assigned a void object.
+				 *
+				 * @param j output json
+				 */\
 				static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AGENT>&) {\
 					j = json::object();\
 				}\
 \
+				/**\
+				 * Unserializes a default AGENT, dynamically allocated with `new AGENT`.
+				 *
+				 * @param ptr unserialized AGENT pointer
+				 */\
 				static void from_json(const json&, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
 					ptr = fpmas::api::utils::PtrWrapper<AGENT>(new AGENT);\
 				}\

@@ -3,12 +3,16 @@
 
 namespace fpmas {
 	namespace model {
-		std::vector<api::model::Cell*> CellBase::neighborhood() {
-			auto neighbors = this->outNeighbors<api::model::Cell>(SpatialModelLayers::NEIGHBOR_CELL);
+		std::vector<api::model::Cell*> CellBase::successors() {
+			auto neighbors = this->outNeighbors<api::model::Cell>(SpatialModelLayers::CELL_SUCCESSOR);
 			return {neighbors.begin(), neighbors.end()};
 		}
 
-		void CellBase::updateLocation(api::model::Neighbor<api::model::Agent>& agent) {
+		/**
+		 * Replaces the NEW_LOCATION link associated to `agent` by a LOCATION
+		 * link.
+		 */
+		void CellBase::updateLocation(Neighbor<api::model::Agent>& agent) {
 			FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
 					"%s Setting this Cell as %s location.",
 					FPMAS_C_STR(this->node()->getId()),
@@ -17,13 +21,21 @@ namespace fpmas {
 			this->model()->unlink(agent.edge());
 		}
 
-		void CellBase::growMobilityRange(api::model::Agent* agent) {
-			for(auto cell : this->neighborhood())
+		/**
+		 * Grows the current `agent`s mobility field, connecting it to
+		 * successors() on the NEW_MOVE layer.
+		 */
+		void CellBase::growMobilityField(api::model::Agent* agent) {
+			for(auto cell : this->successors())
 				this->model()->link(agent, cell, SpatialModelLayers::NEW_MOVE);
 		}
 
-		void CellBase::growPerceptionRange(api::model::Agent* agent) {
-			for(auto cell : this->neighborhood())
+		/**
+		 * Grows the current `agent`s perception field, connecting it to
+		 * successors() on the NEW_PERCEIVE layer.
+		 */
+		void CellBase::growPerceptionField(api::model::Agent* agent) {
+			for(auto cell : this->successors())
 				this->model()->link(agent, cell, SpatialModelLayers::NEW_PERCEIVE);
 		}
 
@@ -33,8 +45,8 @@ namespace fpmas {
 					FPMAS_C_STR(this->node()->getId()));
 			for(auto agent : this->inNeighbors<api::model::Agent>(SpatialModelLayers::NEW_LOCATION)) {
 				updateLocation(agent);
-				growMobilityRange(agent);
-				growPerceptionRange(agent);
+				growMobilityField(agent);
+				growPerceptionField(agent);
 
 				// If this node is to be linked in the MOVE or PERCEPTION
 				// field, this has already been done by
@@ -48,7 +60,7 @@ namespace fpmas {
 		void CellBase::handleMove() {
 			for(auto agent : this->inNeighbors<api::model::Agent>(SpatialModelLayers::MOVE)) {
 				if(move_flags.count(agent->node()->getId()) == 0) {
-					growMobilityRange(agent);
+					growMobilityField(agent);
 					move_flags.insert(agent->node()->getId());
 				}
 			}
@@ -57,7 +69,7 @@ namespace fpmas {
 		void CellBase::handlePerceive() {
 			for(auto agent : this->inNeighbors<api::model::Agent>(SpatialModelLayers::PERCEIVE)) {
 				if(perception_flags.count(agent->node()->getId()) == 0) {
-					growPerceptionRange(agent);
+					growPerceptionField(agent);
 					perception_flags.insert(agent->node()->getId());
 				}
 			}

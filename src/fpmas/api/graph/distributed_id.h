@@ -185,12 +185,26 @@ namespace fpmas { namespace api { namespace graph {
 			}
 	};
 
+	/**
+	 * DistributedId stream output operator.
+	 *
+	 * @param os output stream
+	 * @param id id to add to the stream
+	 * @return os
+	 */
 	std::ostream& operator<<(std::ostream& os, const DistributedId& id);
 }}}
 
 using fpmas::api::graph::DistributedId;
 
 namespace fpmas {
+	/**
+	 * Converts an api::graph::DistributedId instance to a string
+	 * representation, in the form `[id.rank(), id.id()]`.
+	 *
+	 * @param id id to convert to std::string
+	 * @return string representation of id
+	 */
 	std::string to_string(const api::graph::DistributedId& id);
 }
 
@@ -272,7 +286,10 @@ namespace nlohmann {
 		};
 
 	/*
-	 * temporary hack to solve the DistributedId std::string conversion issue
+	 * Temporary hack to solve the DistributedId std::string conversion issue
+	 *
+	 * Will be removed in a next release, when DistributedId automatic
+	 * std::string conversion will be disabled.
 	 */
 	template<typename Value, typename Hash, typename Equal, typename Alloc>
 		struct adl_serializer<std::unordered_map<DistributedId, Value, Hash, Equal, Alloc>> {
@@ -281,7 +298,6 @@ namespace nlohmann {
 				for(auto item : map)
 					j[json(item.first).dump()] = json(item.second);
 			}
-
 			static void from_json(const json& j, Map& map) {
 				for(auto item : j.items()) {
 					map.insert({

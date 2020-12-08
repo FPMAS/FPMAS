@@ -22,7 +22,7 @@ namespace fpmas { namespace model {
 	 * @tparam AgentType Type of the input agent
 	 */
 	template<typename AgentType>
-		class Neighbor : public api::model::Neighbor<AgentType> {
+		class Neighbor  {
 			private:
 				AgentPtr* agent;
 				AgentEdge* _edge = nullptr;
@@ -39,13 +39,19 @@ namespace fpmas { namespace model {
 				Neighbor(AgentPtr* agent)
 					: agent(agent) {}
 
+				/**
+				 * Neighbor constructor.
+				 *
+				 * @param agent pointer to a generic AgentPtr
+				 * @param edge edge with wich the neighbor is linked to agent
+				 */
 				Neighbor(AgentPtr* agent, AgentEdge* edge)
 					: agent(agent), _edge(edge) {}
 
 				/**
 				 * Implicit conversion operator to `AgentType*`.
 				 */
-				operator AgentType*() const override {
+				operator AgentType*() const {
 					return dynamic_cast<AgentType*>(agent->get());
 				}
 
@@ -54,7 +60,7 @@ namespace fpmas { namespace model {
 				 *
 				 * @return pointer to neighbor agent
 				 */
-				AgentType* operator->() const override {
+				AgentType* operator->() const {
 					return dynamic_cast<AgentType*>(agent->get());
 				}
 
@@ -63,10 +69,16 @@ namespace fpmas { namespace model {
 				 *
 				 * @return reference to neighbor agent
 				 */
-				AgentType& operator*() const override {
+				AgentType& operator*() const {
 					return *dynamic_cast<AgentType*>(agent->get()); }
 
-				AgentEdge* edge() const override {
+				/**
+				 * Returns the edge with which this neighbor is linked to
+				 * agent.
+				 *
+				 * @return neighbor edge
+				 */
+				AgentEdge* edge() const {
 					return _edge;
 				}
 		};
@@ -202,28 +214,83 @@ namespace fpmas { namespace model {
 		};
 	template<typename AgentType> random::DistributedGenerator<> Neighbors<AgentType>::rd;
 
-	template<typename T>
+	/**
+	 * api::model::Behavior implementation.
+	 *
+	 * This Behavior can be defined from any sequence of member methods of
+	 * AgentType.
+	 */
+	template<typename AgentType>
 		class Behavior : public api::model::Behavior {
 			private:
-				std::vector<void(T::*)()> behaviors;
+				std::vector<void(AgentType::*)()> _behaviors;
 
 			public:
-				template<typename ...F>
-					Behavior(F... behavior)
-					: behaviors({behavior...}){
+				/**
+				 * Behavior constructor.
+				 *
+				 * Builds an Agent behavior from the member methods specified
+				 * as arguments. Those methods must take no argument, and will
+				 * be called in the order specified on each Agent to which this
+				 * behavior is applied.
+				 *
+				 * Each `agent` to which this behavior is applied must be of type
+				 * AgentType, or be a child class of AgentType, so that
+				 * specified methods can be called on `agent`. Otherwise, the
+				 * behavior of execute() is undefined.
+				 *
+				 * Notice that AgentType might be an abstract class, and
+				 * specified methods can be virtual. In such a case, this
+				 * Behavior can be applied to any AgentType implementation.
+				 *
+				 * @par example
+				 *
+				 * ```cpp
+				 * class Agent : public fpmas::model::AgentBase<Agent> {
+				 *     public:
+				 *         void behavior1() {};
+				 *
+				 *         void behavior2() {};
+				 * };
+				 *
+				 * int main() {
+				 *     ...
+				 *     fpmas::model::Model model;
+				 *
+				 *     // behavior1() and behavior2() methods will be called
+				 *     // successively on Agents to which this behavior is
+				 *     // applied.
+				 *     fpmas::model::Behavior<Agent> behavior {
+				 *         &Agent::behavior1, &Agent::behavior2
+				 *     };
+				 *
+				 *     // behavior will be applied to any agent of this group
+				 *     auto& group = model.buildGroup(AGENT_GROUP_ID, behavior);
+				 *
+				 *     // Agents added to the group must be convertible to
+				 *     // Agent.
+				 *     group.add(new Agent);
+				 * }
+				 * ```
+				 *
+				 * @param behaviors A comma separated list of AgentType member methods,
+				 * in the form `&AgentType::method`
+				 */
+				template<typename ...T>
+					Behavior(T... behaviors)
+					: _behaviors({behaviors...}){
 					}
 
 				void execute(api::model::Agent* agent) const {
-					for(auto behavior : behaviors)
-						(dynamic_cast<T*>(agent)->*behavior)();
+					for(auto behavior : _behaviors)
+						(dynamic_cast<AgentType*>(agent)->*behavior)();
 				}
 		};
 
-	template<typename T, typename... F>
-		Behavior<T> make_behavior(void(T::*behavior)(), F... methods) {
-			return Behavior<T>(behavior, methods...);
-		}
-
+	/**
+	 * Defines useful templates to obtain typed neighbors list directly from an
+	 * api::model::Agent.
+	 */
 	class NeighborsAccess : public virtual api::model::Agent {
 		public:
 		/**
@@ -335,7 +402,7 @@ namespace fpmas { namespace model {
 	class AgentBase : public virtual api::model::Agent, public NeighborsAccess {
 		public:
 			static const api::model::TypeId TYPE_ID;
-
+			
 		private:
 			std::vector<api::model::GroupId> group_ids;
 			std::vector<api::model::AgentGroup*> _groups;
@@ -344,40 +411,82 @@ namespace fpmas { namespace model {
 			api::model::Model* _model;
 
 		public:
-			api::model::GroupId groupId() const override {
+			/**
+			 * \copydoc fpmas::api::model::Agent::groupId
+			 */
+			GroupId groupId() const override {
 				if(group_ids.size() > 0)
 					return group_ids.back();
 				return {};
 			}
-			std::vector<api::model::GroupId> groupIds() const override {return group_ids;}
+			/**
+			 * \copydoc fpmas::api::model::Agent::groupIds
+			 */
+			std::vector<GroupId> groupIds() const override {return group_ids;}
+			/**
+			 * \copydoc fpmas::api::model::Agent::setGroupId
+			 */
 			void setGroupId(api::model::GroupId id) override {group_ids.push_back(id);}
+			/**
+			 * \copydoc fpmas::api::model::Agent::addGroupId
+			 */
 			void addGroupId(api::model::GroupId id) override {group_ids.push_back(id);}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::group
+			 */
 			api::model::AgentGroup* group() override {
 				if(_groups.size() > 0)
 					return _groups.back();
 				return nullptr;
 			}
+			/**
+			 * \copydoc fpmas::api::model::Agent::groups
+			 */
 			std::vector<const api::model::AgentGroup*> groups() const override {
 				return {_groups.begin(), _groups.end()};
 			}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::group
+			 */
 			const api::model::AgentGroup* group() const override {return _groups.back();}
+			/**
+			 * \copydoc fpmas::api::model::Agent::groups
+			 */
 			std::vector<api::model::AgentGroup*> groups() override {return _groups;}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::setGroup
+			 */
 			void setGroup(api::model::AgentGroup* group) override {_groups.push_back(group);}
+			/**
+			 * \copydoc fpmas::api::model::Agent::addGroup
+			 */
 			void addGroup(api::model::AgentGroup* group) override {_groups.push_back(group);}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::typeId
+			 */
 			api::model::TypeId typeId() const override {return TYPE_ID;}
+			/**
+			 * \copydoc fpmas::api::model::Agent::copy
+			 */
 			api::model::Agent* copy() const override {
 				return new AgentType(*dynamic_cast<const AgentType*>(this));
 			}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::copyAssign
+			 */
 			void copyAssign(api::model::Agent* agent) override {
 				// Uses AgentType copy assignment operator
 				*dynamic_cast<AgentType*>(this) = *dynamic_cast<const AgentType*>(agent);
 			}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::moveAssign
+			 */
 			void moveAssign(api::model::Agent* agent) override {
 				// Sets and overrides the fields that must be preserved
 				for(auto group : this->groups())
@@ -391,31 +500,70 @@ namespace fpmas { namespace model {
 				*dynamic_cast<AgentType*>(this) = std::move(*dynamic_cast<AgentType*>(agent));
 			}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::node
+			 */
 			api::model::AgentNode* node() override {return _node;}
+			/**
+			 * \copydoc fpmas::api::model::Agent::node
+			 */
 			const api::model::AgentNode* node() const override {return _node;}
+			/**
+			 * \copydoc fpmas::api::model::Agent::setNode
+			 */
 			void setNode(api::model::AgentNode* node) override {_node = node;}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::model
+			 */
 			api::model::Model* model() override {return _model;}
+			/**
+			 * \copydoc fpmas::api::model::Agent::model
+			 */
 			const api::model::Model* model() const override {return _model;}
+			/**
+			 * \copydoc fpmas::api::model::Agent::setModel
+			 */
 			void setModel(api::model::Model* model) override {_model = model;}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::task()
+			 */
 			api::model::AgentTask* task() override {
 				return _tasks.at(this->groupId());}
+			/**
+			 * \copydoc fpmas::api::model::Agent::task()
+			 */
 			const api::model::AgentTask* task() const override {
 				return _tasks.at(this->groupId());}
+			/**
+			 * \copydoc fpmas::api::model::Agent::setTask(api::model::AgentTask*)
+			 */
 			void setTask(api::model::AgentTask* task) override {
 				_tasks[this->groupId()] = task;}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::task(GroupId)
+			 */
 			api::model::AgentTask* task(api::model::GroupId id) override {
 				return _tasks.at(id);}
+			/**
+			 * \copydoc fpmas::api::model::Agent::task(GroupId)
+			 */
 			const api::model::AgentTask* task(api::model::GroupId id) const override {
 				return _tasks.at(id);}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::setTask(GroupId, api::model::AgentTask*)
+			 */
 			void setTask(api::model::GroupId id, api::model::AgentTask* task) override {
 				_tasks[id] = task;}
 
+			/**
+			 * \copydoc fpmas::api::model::Agent::tasks
+			 */
 			const std::unordered_map<api::model::GroupId, api::model::AgentTask*>&
-				tasks() const override { return _tasks;}
+				tasks() override { return _tasks;}
 
 			
 			/**

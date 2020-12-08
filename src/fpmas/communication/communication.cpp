@@ -6,6 +6,8 @@
 
 namespace fpmas { namespace communication {
 
+	MpiCommWorld WORLD {};
+
 	void MpiCommunicatorBase::convertStatus(MPI_Status& mpi_status, Status& status, MPI_Datatype datatype) {
 		MPI_Get_count(&mpi_status, datatype, &status.item_count);
 		int size;
@@ -308,6 +310,4 @@ namespace fpmas { namespace communication {
 		MPI_Group_free(&this->group);
 		MPI_Comm_free(&this->comm);
 	}
-
-	MpiCommWorld MpiCommunicator::WORLD;
 }}

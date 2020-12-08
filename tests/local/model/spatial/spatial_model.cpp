@@ -9,9 +9,17 @@ using fpmas::api::model::SpatialModelLayers;
 using namespace testing;
 using namespace fpmas::model;
 
-class CellBaseTestSetUp {
+/*
+ * MockCellBase inherits from fpmas::model::CellBase, so that methods defined
+ * in fpmas::api::model::Cell are implemented, but other
+ * fpmas::api::model::Agent methods are mocked.
+ * See mocks/model/mock_environment.h.
+ */
+
+class CellBaseTest : public Test {
 	protected:
 		typedef fpmas::api::model::Cell DefaultCell;
+		NiceMock<MockCellBase> mock_cell;
 
 		DistributedId agent_id {7, 4};
 		NiceMock<MockSpatialAgent<DefaultCell>>* mock_spatial_agent
@@ -35,17 +43,17 @@ class CellBaseTestSetUp {
 
 		StrictMock<MockModel> mock_model;
 
-		void BaseTestSetUp(MockCellBase& cell) {
-			ON_CALL(cell_node, getOutgoingEdges(SpatialModelLayers::NEIGHBOR_CELL))
+		void SetUp() override {
+			ON_CALL(cell_node, getOutgoingEdges(SpatialModelLayers::CELL_SUCCESSOR))
 				.WillByDefault(Return(
 							std::vector<AgentEdge*>
 							{&cell_neighbor_1_edge, &cell_neighbor_2_edge}
 							));
-			ON_CALL(cell, model())
+			ON_CALL(mock_cell, model())
 				.WillByDefault(Return(&mock_model));
 
-			ON_CALL(cell, node()).WillByDefault(Return(&cell_node));
-			ON_CALL(Const(cell), node()).WillByDefault(Return(&cell_node));
+			ON_CALL(mock_cell, node()).WillByDefault(Return(&cell_node));
+			ON_CALL(Const(mock_cell), node()).WillByDefault(Return(&cell_node));
 
 			agent_edge.setSourceNode(&agent_node);
 			agent_edge.setTargetNode(&cell_node);
@@ -58,59 +66,7 @@ class CellBaseTestSetUp {
 			ON_CALL(*mock_spatial_agent, node())
 				.WillByDefault(Return(&agent_node));
 		}
-
 };
-
-/*
- * MockCellBase inherits from fpmas::model::CellBase, so that methods defined
- * in fpmas::api::model::Cell are implemented, but other
- * fpmas::api::model::Agent methods are mocked.
- * See mocks/model/mock_environment.h.
- */
-
-class CellBaseTest : public testing::Test, protected CellBaseTestSetUp,
-	// The test directly inherits from MockCellBase, to have access to
-	// fpmas::model::CellBase protected methods that need to be tested
-	protected NiceMock<MockCellBase> {
-	public:
-		void SetUp() override {
-			BaseTestSetUp(*this);
-		}
-};
-
-TEST_F(CellBaseTest, grow_mobility_range) {
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_MOVE));
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_MOVE));
-
-	this->growMobilityRange(mock_spatial_agent);
-}
-
-TEST_F(CellBaseTest, grow_perception_range) {
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_PERCEIVE)
-			);
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
-			);
-
-	this->growPerceptionRange(mock_spatial_agent);
-}
-
-TEST_F(CellBaseTest, update_location) {
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, this, SpatialModelLayers::LOCATION)
-			);
-	EXPECT_CALL(mock_model, unlink(&agent_edge));
-
-	AgentPtr ptr {mock_spatial_agent};
-	Neighbor<fpmas::api::model::Agent> neighbor {&ptr, &agent_edge};
-
-	this->updateLocation(neighbor);
-
-	ptr.release();
-}
 
 TEST_F(CellBaseTest, handle_new_location) {
 	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::NEW_LOCATION))
@@ -119,7 +75,7 @@ TEST_F(CellBaseTest, handle_new_location) {
 					));
 
 	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, this, SpatialModelLayers::LOCATION));
+				mock_spatial_agent, &mock_cell, SpatialModelLayers::LOCATION));
 	EXPECT_CALL(mock_model, unlink(&agent_edge));
 
 	EXPECT_CALL(mock_model, link(
@@ -134,7 +90,7 @@ TEST_F(CellBaseTest, handle_new_location) {
 				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
 			);
 
-	this->handleNewLocation();
+	mock_cell.handleNewLocation();
 }
 
 TEST_F(CellBaseTest, handle_move) {
@@ -145,12 +101,12 @@ TEST_F(CellBaseTest, handle_move) {
 				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_MOVE));
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_MOVE));
-	this->handleMove();
+	mock_cell.handleMove();
 
 	// Should do nothing when called again, since the node is already
 	// explored
 	EXPECT_CALL(mock_model, link).Times(0);
-	this->handleMove();
+	mock_cell.handleMove();
 }
 
 TEST_F(CellBaseTest, handle_perceive) {
@@ -163,12 +119,12 @@ TEST_F(CellBaseTest, handle_perceive) {
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
 			);
-	this->handlePerceive();
+	mock_cell.handlePerceive();
 
 	// Should do nothing when called again, since the node is already
 	// explored
 	EXPECT_CALL(mock_model, link).Times(0);
-	this->handlePerceive();
+	mock_cell.handlePerceive();
 }
 
 TEST_F(CellBaseTest, update_perceptions) {
@@ -194,7 +150,7 @@ TEST_F(CellBaseTest, update_perceptions) {
 				mock_spatial_agent, perceived_agent, SpatialModelLayers::PERCEPTION));
 	EXPECT_CALL(mock_model, unlink(&agent_edge));
 
-	this->updatePerceptions();
+	mock_cell.updatePerceptions();
 }
 
 class SpatialAgentTest : public ::testing::Test, protected NiceMock<model::test::SpatialAgent> {

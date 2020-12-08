@@ -1,6 +1,10 @@
 #ifndef FPMAS_DIST_MOVE_ALGO_H
 #define FPMAS_DIST_MOVE_ALGO_H
 
+/**\file src/fpmas/model/spatial/dist_move_algo.h
+ * Distribued move algorithm implementation.
+ */
+
 #include "fpmas/api/model/spatial/spatial_model.h"
 #include "../model.h"
 
@@ -32,22 +36,42 @@ namespace fpmas {
 					std::size_t max_step;
 
 				public:
+					/**
+					 * StaticEndCondition constructor.
+					 *
+					 * The maximum iteration count is computed from the
+					 * `RangeType` radius() and the `MaxRangeSize`.
+					 */
 					StaticEndCondition() {
 						static const RangeType range(MaxRangeSize);
 						max_step = range.radius(nullptr);
 					}
 
+					/**
+					 * Initializes the end condition.
+					 */
 					void init(
 							api::communication::MpiCommunicator&,
 							std::vector<api::model::SpatialAgent<CellType>*>,
 							std::vector<CellType*>) override {
 						_step = 0;
 					}
+
+					/**
+					 * Increments internal counter.
+					 */
 					void step() override {
 						_step++;
 					}
+
+					/**
+					 * Returns true if and only if the internal counter is
+					 * greater or equal to the maximum iteration count.
+					 *
+					 * @return true iff the end condition has been reached
+					 */
 					bool end() override {
-						return _step == max_step;
+						return _step >= max_step;
 					}
 			};
 
@@ -110,11 +134,14 @@ namespace fpmas {
 					_step++;
 				}
 				bool end() override {
-					return _step == max_step;
+					return _step >= max_step;
 				}
 		};
 
 
+		/**
+		 * api::model::DistributedMoveAlgorithm implementation.
+		 */
 		template<typename CellType, typename EndCondition>
 			class DistributedMoveAlgorithm : public api::model::DistributedMoveAlgorithm<CellType> {
 				private:
@@ -138,6 +165,10 @@ namespace fpmas {
 							api::model::AgentGraph* graph;
 
 						public:
+							/**
+							 * Set up the distributed move algorithm with input
+							 * `graph`, `agents` and `cells`.
+							 */
 							void set(
 									api::model::AgentGraph* graph,
 									std::vector<api::model::SpatialAgent<CellType>*> agents,
@@ -147,19 +178,31 @@ namespace fpmas {
 								this->cells = cells;
 							}
 
+							/**
+							 * Runs the distributed move algorithm
+							 */
 							void run() override {
+								// Initializes the generic end condition
 								end.init(graph->getMpiCommunicator(), agents, cells);
 
+								// Assumed to loop until the mobility and
+								// perception fields of all agents are up to
+								// date
 								while(!end.end()) {
 									for(auto cell : cells)
+										// Grows mobility and perception fields
 										cell_behaviors.execute(cell);
 									graph->synchronize();
 									for(auto agent : agents)
+										// Crops and build mobility and
+										// perception fields
 										spatial_agent_behaviors.execute(agent);
 									graph->synchronize();
 									end.step();
 								}
 								for(auto cell : cells)
+									// Update agent perceptions (creates
+									// PERCEPTION links)
 									update_perceptions_behavior.execute(cell);
 								graph->synchronize();
 							}
@@ -170,10 +213,16 @@ namespace fpmas {
 
 
 				public:
+					/**
+					 * DistributedMoveAlgorithm constructor.
+					 */
 					DistributedMoveAlgorithm() {
 						algo_job.add(algo_task);
 					}
 
+					/**
+					 * \copydoc api::model::DistributedMoveAlgorithm::jobs
+					 */
 					api::scheduler::JobList jobs(
 							api::model::SpatialModel<CellType>& model,
 							std::vector<api::model::SpatialAgent<CellType>*> agents,
@@ -184,7 +233,6 @@ namespace fpmas {
 
 						_jobs.push_back(algo_job);
 						return _jobs;
-
 					}
 			};
 

@@ -56,7 +56,7 @@ namespace detail {
 				MOCK_METHOD(void, setTask,
 						(fpmas::api::model::GroupId, fpmas::api::model::AgentTask*), (override));
 				MOCK_METHOD((const std::unordered_map<fpmas::api::model::GroupId, fpmas::api::model::AgentTask*>&),
-						tasks, (), (const, override));
+						tasks, (), (override));
 
 				MockAgentBase() {
 					ON_CALL(*this, typeId).WillByDefault(Return(TYPE_ID));
@@ -141,6 +141,7 @@ class MockAgentGroup : public fpmas::api::model::AgentGroup {
 		MOCK_METHOD(std::vector<fpmas::api::model::Agent*>, localAgents, (), (const, override));
 		MOCK_METHOD(fpmas::api::scheduler::Job&, job, (), (override));
 		MOCK_METHOD(const fpmas::api::scheduler::Job&, job, (), (const, override));
+		MOCK_METHOD(const fpmas::api::scheduler::Job&, agentExecutionJob, (), (const, override));
 		MOCK_METHOD(fpmas::api::scheduler::Job&, agentExecutionJob, (), (override));
 		MOCK_METHOD(fpmas::api::scheduler::JobList, jobs, (), (const, override));
 };

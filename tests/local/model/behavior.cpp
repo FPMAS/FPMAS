@@ -38,7 +38,9 @@ namespace api {
 	};
 
 	class Action1_2 : public Action1, public Action2 {
-
+		public:
+			using Action1::action_1;
+			using Action2::action_2;
 	};
 }
 
@@ -65,7 +67,7 @@ class Agent1_2 : public fpmas::model::AgentBase<Agent1_2>, public api::Action1_2
 };
 
 TEST(Behavior, execute) {
-	auto agent_1_behavior = fpmas::model::make_behavior(&api::Action1::action_1);
+	fpmas::model::Behavior<api::Action1> agent_1_behavior {&api::Action1::action_1};
 
 	Agent1 agent_1;
 	EXPECT_CALL(agent_1, action_1);
@@ -74,8 +76,9 @@ TEST(Behavior, execute) {
 }
 
 TEST(Behavior, execute_multiple) {
-	fpmas::model::Behavior<api::Action1_2> agent_1_behavior(
-			&api::Action1_2::action_1, &api::Action1_2::action_2);
+	fpmas::model::Behavior<api::Action1_2> agent_1_behavior {
+			&api::Action1_2::action_1, &api::Action1_2::action_2
+	};
 
 	Agent1_2 agent;
 	{

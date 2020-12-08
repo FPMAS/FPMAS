@@ -34,6 +34,9 @@ namespace fpmas { namespace scheduler {
 	namespace detail {
 		// TODO 2.0: put this in fpmas::scheduler, rename
 		// fpmas::scheduler::LambdaTask
+		/**
+		 * api::scheduler::Task implementation based on a lambda function.
+		 */
 		class LambdaTask : public api::scheduler::Task {
 			private:
 				std::function<void()> fct;
@@ -168,7 +171,7 @@ namespace fpmas { namespace scheduler {
 
 		public:
 			void submit(const api::scheduler::Job&, api::scheduler::SubTimeStep sub_time_step) override;
-			void submit(JobList job_list, api::scheduler::SubTimeStep sub_time_step) override;
+			void submit(api::scheduler::JobList job_list, api::scheduler::SubTimeStep sub_time_step) override;
 			const std::vector<const api::scheduler::Job*>& jobs() const override;
 			JobIterator begin() const override;
 			JobIterator end() const override;
@@ -203,9 +206,9 @@ namespace fpmas { namespace scheduler {
 			void schedule(api::scheduler::Date date, const api::scheduler::Job&) override;
 			void schedule(api::scheduler::Date date, api::scheduler::Period period, const api::scheduler::Job&) override;
 			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, const api::scheduler::Job&) override;
-			void schedule(api::scheduler::Date date, JobList) override;
-			void schedule(api::scheduler::Date date, api::scheduler::Period period, JobList) override;
-			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, JobList) override;
+			void schedule(api::scheduler::Date date, api::scheduler::JobList) override;
+			void schedule(api::scheduler::Date date, api::scheduler::Period period, api::scheduler::JobList) override;
+			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, api::scheduler::JobList) override;
 			void build(api::scheduler::TimeStep step, fpmas::api::scheduler::Epoch&) const override;
 	};
 

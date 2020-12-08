@@ -18,7 +18,7 @@ class VonNeumannGridBuilderTest : public Test {
 
 		void checkGridStructure(std::vector<fpmas::api::model::GridCell*> cells, int X, int Y) {
 			fpmas::communication::TypedMpi<std::vector<fpmas::model::DiscretePoint>> mpi(
-					fpmas::communication::MpiCommunicator::WORLD);
+					fpmas::communication::WORLD);
 
 			std::vector<fpmas::model::DiscretePoint> local_cell_coordinates;
 			for(auto cell : grid_model.cells())
@@ -28,7 +28,7 @@ class VonNeumannGridBuilderTest : public Test {
 			std::vector<std::vector<fpmas::api::model::DiscretePoint>> recv_coordinates
 				= mpi.gather(local_cell_coordinates, 0);
 
-			FPMAS_ON_PROC(fpmas::communication::MpiCommunicator::WORLD, 0) {
+			FPMAS_ON_PROC(fpmas::communication::WORLD, 0) {
 				std::vector<fpmas::model::DiscretePoint> cell_coordinates;
 				for(auto coordinates : recv_coordinates)
 					cell_coordinates.insert(
@@ -44,7 +44,7 @@ class VonNeumannGridBuilderTest : public Test {
 
 			for(auto grid_cell : cells) {
 				auto location = grid_cell->location();
-				auto cell_successors = grid_cell->neighborhood();
+				auto cell_successors = grid_cell->successors();
 				std::vector<fpmas::model::DiscretePoint> neighbor_points;
 				for(auto cell : cell_successors)
 					neighbor_points.push_back(
@@ -116,7 +116,7 @@ TEST_F(VonNeumannGridBuilderTest, trivial) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, build_height_sup_width) {
-	int X = fpmas::communication::MpiCommunicator::WORLD.getSize() * 10;
+	int X = fpmas::communication::WORLD.getSize() * 10;
 	int Y = 2*X;
 	VonNeumannGridBuilder grid_builder(X, Y);
 
@@ -126,7 +126,7 @@ TEST_F(VonNeumannGridBuilderTest, build_height_sup_width) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, build_width_sup_height) {
-	int Y = fpmas::communication::MpiCommunicator::WORLD.getSize() * 10;
+	int Y = fpmas::communication::WORLD.getSize() * 10;
 	int X = 2*Y;
 	VonNeumannGridBuilder grid_builder(X, Y);
 
@@ -157,7 +157,7 @@ TEST_F(UniformAgentMappingTest, consistency_across_processes) {
 	ASSERT_EQ(total_count, 30);
 
 	fpmas::communication::TypedMpi<std::array<std::size_t, 100>> mpi
-		(fpmas::communication::MpiCommunicator::WORLD);
+		(fpmas::communication::WORLD);
 	std::array<std::size_t, 100> proc_0_counts = mpi.bcast(counts, 0);
 
 	// The mapping is generated intependently on each process.

@@ -27,10 +27,22 @@ namespace fpmas { namespace communication {
 	 */
 	class MpiCommunicatorBase : public virtual api::communication::MpiCommunicator {
 		protected:
+			/**
+			 * Communicator size
+			 */
 			int size;
+			/**
+			 * Communicator rank
+			 */
 			int rank;
 
+			/**
+			 * Internal MPI_Group
+			 */
 			MPI_Group group;
+			/**
+			 * Internal MPI_Comm
+			 */
 			MPI_Comm comm;
 
 		private:
@@ -162,11 +174,15 @@ namespace fpmas { namespace communication {
 			 */
 			bool test(Request& req) override;
 
+			/**
+			 * Performs an MPI_Wait operation.
+			 *
+			 * @param req Request to wait for completion
+			 */
 			void wait(Request& req) override;
+
 			/**
 			 * Performs an MPI_Alltoall operation.
-			 *
-			 * Exchanged data are stored in DataPack instances.
 			 *
 			 * @param export_map data to export to each proc
 			 * @param datatype MPI datatype of the data to send / receive
@@ -178,8 +194,6 @@ namespace fpmas { namespace communication {
 			/**
 			 * Performs an MPI_Gather operation.
 			 *
-			 * Exchanged data are stored in DataPack instances.
-			 *
 			 * @param data data to send to root
 			 * @param datatype MPI datatype
 			 * @param root rank of the root process
@@ -189,9 +203,24 @@ namespace fpmas { namespace communication {
 			std::vector<DataPack>
 				gather(DataPack data, MPI_Datatype datatype, int root) override;
 
+			/**
+			 * Performs an MPI_Allgather operation.
+			 *
+			 * @param data to send to all processes
+			 * @param datatype MPI datatype
+			 * @return data sent by all processes
+			 */
 			std::vector<DataPack>
 				allGather(DataPack data, MPI_Datatype datatype) override;
 
+			/**
+			 * Performs an MPI_Bcast operation.
+			 *
+			 * @param data data to broadcast
+			 * @param datatype MPI datatype
+			 * @param root rank of the process from which data is sent
+			 * @return received data from `root`
+			 */
 			DataPack bcast(DataPack data, MPI_Datatype datatype, int root) override;
 			
 			/**
@@ -200,20 +229,12 @@ namespace fpmas { namespace communication {
 			void barrier() override;
 	};
 
-	class MpiCommWorld : public MpiCommunicatorBase {
-		friend void fpmas::init(int argc, char **argv);
-		private:
-			void init() {
-				this->comm = MPI_COMM_WORLD;
-				MPI_Comm_group(MPI_COMM_WORLD, &this->group);
-				MPI_Comm_size(MPI_COMM_WORLD, &this->size);
-				MPI_Comm_rank(MPI_COMM_WORLD, &this->rank);
-			};
-	};
 
+	/**
+	 * api::communication::MpiCommunicator implementation.
+	 */
 	class MpiCommunicator : public MpiCommunicatorBase {
 		public:
-			static MpiCommWorld WORLD;
 			/**
 			 * Default MpiCommunicator constructor.
 			 *
@@ -233,6 +254,33 @@ namespace fpmas { namespace communication {
 			 */
 			~MpiCommunicator();
 	};
+
+	/**
+	 * Special api::communication::MpiCommunicator implementation, built from
+	 * MPI_COMM_WORLD.
+	 */
+	class MpiCommWorld : public MpiCommunicatorBase {
+		public:
+		/**
+		 * Initializes internal MPI structures from MPI_COMM_WORLD.
+		 *
+		 * This must be called **after** MPI_Init(). Since an MpiCommWorld
+		 * instance is very likely to be declared static (see WORLD), this
+		 * can't be performed in the constructor, since MPI_Init() can't be
+		 * called before the call to a constructor of a static variable.
+		 */
+		void init() {
+			this->comm = MPI_COMM_WORLD;
+			MPI_Comm_group(MPI_COMM_WORLD, &this->group);
+			MPI_Comm_size(MPI_COMM_WORLD, &this->size);
+			MPI_Comm_rank(MPI_COMM_WORLD, &this->rank);
+		};
+	};
+
+	/**
+	 * MpiCommWorld instance, initialized by fpmas::init().
+	 */
+	extern MpiCommWorld WORLD;
 
 	/**
 	 * An [nlohmann::json](https://github.com/nlohmann/json) based fpmas::api::communication::TypedMpi

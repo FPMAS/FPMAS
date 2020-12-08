@@ -19,6 +19,14 @@ namespace fpmas {
 		using api::model::GroupId;
 		using api::scheduler::JID;
 
+		/**
+		 * @deprecated
+		 *
+		 * A default api::model::Behavior that call api::model::Agent::act().
+		 *
+		 * Since api::model::Agent::act() might be removed in a next release,
+		 * this bahevior is deprecated: use Behavior instead.
+		 */
 		class DefaultBehavior : public api::model::Behavior {
 			public:
 				void execute(api::model::Agent* agent) const override {
@@ -35,6 +43,9 @@ namespace fpmas {
 			 */
 			class AgentTaskBase : public api::model::AgentTask {
 				protected:
+					/**
+					 * Internal agent pointer.
+					 */
 					api::model::AgentPtr& _agent;
 				public:
 					/**
@@ -49,10 +60,19 @@ namespace fpmas {
 						return _agent;
 					}
 
-					AgentNode* node() override
-					{return _agent->node();}
+					AgentNode* node() override {
+						return _agent->node();
+					}
 			};
 
+			/**
+			 * @deprecated
+			 *
+			 * Legacy agent task used to execute the api::model::Agent::act()
+			 * method at each run().
+			 *
+			 * This is no longer used, and will be removed in a next release.
+			 */
 			class AgentTask : public AgentTaskBase {
 				public:
 					/**
@@ -69,11 +89,25 @@ namespace fpmas {
 					}
 			};
 
+			/**
+			 * api::model::AgentTask implementation base on an
+			 * api::model::Behavior.
+			 */
 			class AgentBehaviorTask : public AgentTaskBase {
 				private:
 					const api::model::Behavior& behavior;
 
 				public:
+					/**
+					 * AgentBehaviorTask constructor.
+					 *
+					 * At each run(), `behavior` is applied to `agent`.
+					 *
+					 * @param behavior behavior to apply on `agent` each time
+					 * the task is run()
+					 * @param agent agent to which `behavior` must be applied
+					 * each time the task is run()
+					 */
 					AgentBehaviorTask(const api::model::Behavior& behavior, api::model::AgentPtr& agent)
 						: AgentTaskBase(agent), behavior(behavior) {}
 
@@ -327,13 +361,20 @@ namespace fpmas {
 
 				public:
 				/**
-				 * AgentGroup constructor.
+				 * AgentGroupBase constructor.
 				 *
 				 * @param group_id unique id of the group
 				 * @param agent_graph associated agent graph
 				 */
 				AgentGroupBase(GroupId group_id, api::model::AgentGraph& agent_graph);
 
+				/**
+				 * AgentGroupBase constructor.
+				 *
+				 * @param group_id unique id of the group
+				 * @param agent_graph associated agent graph
+				 * @param behavior group behavior
+				 */
 				AgentGroupBase(
 						GroupId group_id,
 						api::model::AgentGraph& agent_graph,
@@ -354,17 +395,23 @@ namespace fpmas {
 				scheduler::Job& job() override {return job_base;}
 				const scheduler::Job& job() const override {return job_base;}
 				api::scheduler::Job& agentExecutionJob() override {return job_base;}
+				const api::scheduler::Job& agentExecutionJob() const override {return job_base;}
 
 				std::vector<api::model::Agent*> agents() const override;
 				std::vector<api::model::Agent*> localAgents() const override;
 			};
 
+			/**
+			 * Simple api::model::AgentGroup.
+			 *
+			 * The jobs() list only contains the agentExecutionJob().
+			 */
 			class AgentGroup : public AgentGroupBase {
 				public:
 					using AgentGroupBase::AgentGroupBase;
 
 					api::scheduler::JobList jobs() const override {
-						return {this->job()};
+						return {this->agentExecutionJob()};
 					}
 			};
 
@@ -374,7 +421,7 @@ namespace fpmas {
 			 */
 			class Model : public virtual api::model::Model {
 				protected:
-					void insert(GroupId id, api::model::AgentGroup* group) override;
+					void insert(api::model::GroupId id, api::model::AgentGroup* group) override;
 
 				public:
 					/**
@@ -424,27 +471,18 @@ namespace fpmas {
 
 					const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
 
-					api::model::AgentGroup& buildGroup(GroupId id) override;
-					api::model::AgentGroup& buildGroup(GroupId id, const api::model::Behavior& behavior) override;
-					api::model::AgentGroup& getGroup(GroupId id) const override;
+					api::model::AgentGroup& buildGroup(api::model::GroupId id) override;
+					api::model::AgentGroup& buildGroup(api::model::GroupId id, const api::model::Behavior& behavior) override;
+					api::model::AgentGroup& getGroup(api::model::GroupId id) const override;
 					const std::unordered_map<GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
 
 					AgentEdge* link(api::model::Agent* src_agent, api::model::Agent* tgt_agent, api::graph::LayerId layer) override;
 					void unlink(api::model::AgentEdge* edge) override;
 
-					/**
-					 * Returns a reference to the internal
-					 * communication::MpiCommunicator.
-					 *
-					 * @return reference to internal MPI communicator
-					 */
 					api::communication::MpiCommunicator& getMpiCommunicator() override {
 						return this->_graph.getMpiCommunicator();
 					}
 
-					/**
-					 * \copydoc getMpiCommunicator
-					 */
 					const api::communication::MpiCommunicator& getMpiCommunicator() const override {
 						return this->_graph.getMpiCommunicator();
 					}

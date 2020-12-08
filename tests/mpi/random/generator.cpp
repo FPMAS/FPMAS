@@ -16,7 +16,7 @@ TEST_F(DistributedRandomGeneratorTest, test) {
 	for(int i = 0; i < 100; i++)
 		values[i] = distributed_generator();
 	fpmas::communication::TypedMpi<decltype(values)> mpi(
-			fpmas::communication::MpiCommunicator::WORLD);
+			fpmas::communication::WORLD);
 
 	std::vector<decltype(values)> generated_values = mpi.gather(values, 0);
 

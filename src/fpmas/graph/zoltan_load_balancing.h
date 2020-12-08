@@ -57,7 +57,6 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_OBJ_FN).
 		 *
 		 * @param data user data (current NodeMap)
-		 * @param ierr output : error code
 		 * @return number of nodes managed by the current process
 		 */
 		template<typename T> int num_obj(void *data, int*) {
@@ -74,12 +73,8 @@ namespace fpmas { namespace graph {
 		 *
 		 * @param data user data (current NodeMap)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
-		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param global_ids output : global ids assigned to processor
-		 * @param local_ids output : local ids assigned to processor (unused)
-		 * @param wgt_dim Number of weights of each object, defined by OBJ_WEIGHT_DIM (should be 1)
 		 * @param obj_wgts output : weights list
-		 * @param ierr output : error code
 		 */
 		template<typename T> void obj_list(
 				void *data,
@@ -107,12 +102,9 @@ namespace fpmas { namespace graph {
 		 *
 		 * @param data user data (current NodeMap)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
-		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_obj number of objects IDs in global_ids
 		 * @param global_ids Global IDs of object whose number of edges should be returned
-		 * @param local_ids Same for local ids, unused
 		 * @param num_edges output : number of outgoing edge for each node
-		 * @param ierr output : error code
 		 */
 		template<typename T> void num_edges_multi_fn(
 				void *data,
@@ -148,17 +140,12 @@ namespace fpmas { namespace graph {
 		 *
 		 * @param data user data (current NodeMap)
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
-		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_obj number of objects IDs in global_ids
 		 * @param global_ids Global IDs of object whose list of edges should be returned
-		 * @param local_ids Same for local ids, unused
-		 * @param num_edges number of edges of each corresponding node
 		 * @param nbor_global_id output : neighbor ids for each node
 		 * @param nbor_procs output : processor identifier of each neighbor in
 		 * nbor_global_id
-		 * @param wgt_dim number of edge weights
 		 * @param ewgts output : edge weight for each neighbor
-		 * @param ierr output : error code
 		 */
 		template<typename T> void edge_list_multi_fn(
 				void *data,
@@ -205,7 +192,6 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_FIXED_OBJ_FN).
 		 *
 		 * @param data user data (current fixed NodeMap)
-		 * @param ierr output : error code
 		 */
 		template<typename T> int num_fixed_obj_fn(void* data, int*) {
 			NodeMap<T>* fixed_nodes = (NodeMap<T>*) data;
@@ -219,14 +205,11 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_FIXED_OBJ_LIST_FN).
 		 *
 		 * @param data user data (current fixed NodeMap)
-		 * @param num_fixed_obj fixed vertices count
 		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
 		 * @param fixed_gids output : fixed vertices ids list
 		 * @param fixed_parts output : parts to which each fixed vertices is associated.
 		 * In out context, corresponds to the process rank to which each
 		 * vertice is attached.
-		 * @param ierr output : error code
-		 *
 		 */
 		template<typename T> void fixed_obj_list_fn(
 			void *data,

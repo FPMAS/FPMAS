@@ -76,7 +76,7 @@ namespace fpmas { namespace scheduler {
 	void Epoch::submit(const api::scheduler::Job& job, api::scheduler::SubTimeStep sub_step) {
 		this->submit(JobList {job}, sub_step);
 	}
-	void Epoch::submit(JobList job_list, api::scheduler::SubTimeStep sub_step) {
+	void Epoch::submit(api::scheduler::JobList job_list, api::scheduler::SubTimeStep sub_step) {
 		std::vector<const api::scheduler::Job*>::iterator job_pos = _jobs.begin();
 		std::vector<SubTimeStep>::iterator job_ordering_pos = job_ordering.begin();
 
@@ -121,7 +121,7 @@ namespace fpmas { namespace scheduler {
 		this->schedule(date, JobList {job});
 	}
 
-	void Scheduler::schedule(api::scheduler::Date date, JobList job_list) {
+	void Scheduler::schedule(api::scheduler::Date date, api::scheduler::JobList job_list) {
 		float step_f;
 		api::scheduler::SubTimeStep sub_step = std::modf(date, &step_f);
 		api::scheduler::TimeStep step = step_f;
@@ -139,7 +139,7 @@ namespace fpmas { namespace scheduler {
 	void Scheduler::schedule(
 			api::scheduler::Date start,
 			api::scheduler::Period period,
-			JobList job_list
+			api::scheduler::JobList job_list
 			) {
 		float step_f;
 		api::scheduler::SubTimeStep sub_step = std::modf(start, &step_f);
@@ -161,7 +161,7 @@ namespace fpmas { namespace scheduler {
 			api::scheduler::Date start,
 			api::scheduler::Date end,
 			api::scheduler::Period period,
-			JobList job_list
+			api::scheduler::JobList job_list
 			) {
 		float step_f;
 		api::scheduler::SubTimeStep sub_step = std::modf(start, &step_f);

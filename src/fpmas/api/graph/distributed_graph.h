@@ -58,9 +58,13 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * @return internal MpiCommunicator
 			 */
+			virtual api::communication::MpiCommunicator& getMpiCommunicator() = 0;
+
+			/**
+			 * \copydoc getMpiCommunicator
+			 */
 			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
 
-			virtual api::communication::MpiCommunicator& getMpiCommunicator() = 0;
 
 			/**
 			 * Reference to the internal LocationManager.
@@ -173,6 +177,40 @@ namespace fpmas {namespace api {namespace graph {
 			 */
 			virtual DistributedNode<T>* buildNode(const T& data) = 0;
 
+			/**
+			 * Inserts a temporary \DISTANT node into the graph.
+			 *
+			 * The node is guaranteed to live at least until the next
+			 * synchronize() call.
+			 *
+			 * Once inserted, the temporary `node` can eventually be used as
+			 * any other \DISTANT node, and so can be linked to existing \LOCAL
+			 * and \DISTANT nodes or to query data.
+			 *
+			 * However, the DistributedNode::location() must be initialized
+			 * manually, otherwise operations above might produce unexpected
+			 * results.
+			 *
+			 * The `node` must be dynamically allocated, and the
+			 * DistributedGraph implementation automatically takes its
+			 * ownership.
+			 *
+			 * This method can notably be used to implement distributed graph
+			 * initialization algorithms. Indeed, if a node 0 is built on
+			 * process 0 and node 1 is built on process 1, it is at first
+			 * glance impossible to create a link from node 0 to node 1.
+			 *
+			 * But, for example knowing that the node 1 is necessarily
+			 * instanciated on process 1, it is possible to manually insert a
+			 * \DISTANT representation of node 1 using insertDistant() on
+			 * process 0, what allows to build a link from node 0 to node 1 on
+			 * process 0. Such link will be committed at the latest at the next
+			 * synchronize() call and imported on process 1.
+			 *
+			 *
+			 * @param node temporary \DISTANT node to manually insert in the
+			 * graph
+			 */
 			virtual void insertDistant(DistributedNode<T>* node) = 0;
 
 			/**
