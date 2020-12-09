@@ -193,7 +193,14 @@ namespace fpmas {
 	 * This is a partial implementation, that does not implement
 	 * moveTo(CellType*).
 	 *
+	 * @tparam AgentType SpatialAgentBase dynamic type (i.e. most derived class
+	 * from this SpatialAgentBase)
+	 * @tparam CellType type of cells on which the agent moves
+	 * @tparam Derived direct derived class, or at least the next class in the
+	 * serialization chain
+	 *
 	 * @see SpatialAgent
+	 * @see GridAgent
 	 */
 	template<typename AgentType, typename CellType, typename Derived = AgentType>
 	class SpatialAgentBase :
@@ -316,12 +323,28 @@ namespace fpmas {
 				void moveTo(DistributedId id) override;
 
 				/**
-				 * \copydoc fpmas::api::model::SpatialAgent::mobilityField
+				 * Returns \Cells currently contained in the agent's mobility
+				 * field.
+				 *
+				 * @return mobility field
 				 */
-				std::vector<CellType*> mobilityField() const override {
-					auto cells = this->template outNeighbors<CellType>(SpatialModelLayers::MOVE);
-					return {cells.begin(), cells.end()};
+				Neighbors<CellType> mobilityField() const {
+					return this->template outNeighbors<CellType>(SpatialModelLayers::MOVE);
 				}
+
+				/**
+				 * Returns \Agents currently perceived by this agent.
+				 *
+				 * Only agents of type `NeighborType` are selected: other are
+				 * ignored and not returned by this method.
+				 *
+				 * @tparam NeighborType type of perceived agents to return
+				 * @return list of perceived \Agents of type `NeighborType`
+				 */
+				template<typename NeighborType = api::model::Agent>
+					Neighbors<NeighborType> perceptions() const {
+						return this->template outNeighbors<NeighborType>(SpatialModelLayers::PERCEPTION);
+					}
 
 			public:
 				/**

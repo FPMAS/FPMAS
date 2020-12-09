@@ -134,8 +134,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ad9a7ca58d53e04a42d3a977f3c30e7ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b50a15bcd495829c2afccaebb514075"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a6b50a15bcd495829c2afccaebb514075">buildNode</a> (const T &amp;data)=0</td></tr>
 <tr class="separator:a6b50a15bcd495829c2afccaebb514075"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1c98337099a9ea16fe805050a85ea8a4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a1c98337099a9ea16fe805050a85ea8a4">insertDistant</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *node)=0</td></tr>
-<tr class="separator:a1c98337099a9ea16fe805050a85ea8a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a10fb5863c0ea1fbe6aa8829aa81d154a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a10fb5863c0ea1fbe6aa8829aa81d154a">insertDistant</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *node)=0</td></tr>
+<tr class="separator:a10fb5863c0ea1fbe6aa8829aa81d154a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a20e27bc1434cee36d760278aa79b27"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a0a20e27bc1434cee36d760278aa79b27">removeNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *node)=0</td></tr>
 <tr class="separator:a0a20e27bc1434cee36d760278aa79b27"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab02cae2fa16324954d02fcc497d1f400"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ab02cae2fa16324954d02fcc497d1f400">removeNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id)=0</td></tr>
@@ -562,8 +562,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a1c98337099a9ea16fe805050a85ea8a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1c98337099a9ea16fe805050a85ea8a4">&#9670;&nbsp;</a></span>insertDistant()</h2>
+<a id="a10fb5863c0ea1fbe6aa8829aa81d154a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a10fb5863c0ea1fbe6aa8829aa81d154a">&#9670;&nbsp;</a></span>insertDistant()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -574,7 +574,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::insertDistant </td>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt;T&gt;* <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::insertDistant </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *&#160;</td>
           <td class="paramname"><em>node</em></td><td>)</td>
@@ -592,8 +592,9 @@ template&lt;typename T &gt; </div>
 <p>Once inserted, the temporary <code>node</code> can eventually be used as any other <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> node, and so can be linked to existing <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes or to query data.</p>
 <p>However, the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a54a0655fdc97496cd1f5a78bc7209fbd">DistributedNode::location()</a> must be initialized manually, otherwise operations above might produce unexpected results.</p>
 <p>The <code>node</code> must be dynamically allocated, and the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> implementation automatically takes its ownership.</p>
+<p>If a node with the same ID is already contained in the graph, the node is simply deleted and a pointer to the existing node is returned. Else, a pointer to the inserted node is returned.</p>
 <p>This method can notably be used to implement distributed graph initialization algorithms. Indeed, if a node 0 is built on process 0 and node 1 is built on process 1, it is at first glance impossible to create a link from node 0 to node 1.</p>
-<p>But, for example knowing that the node 1 is necessarily instanciated on process 1, it is possible to manually insert a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> representation of node 1 using <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a1c98337099a9ea16fe805050a85ea8a4">insertDistant()</a> on process 0, what allows to build a link from node 0 to node 1 on process 0. Such link will be committed at the latest at the next <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">synchronize()</a> call and imported on process 1.</p>
+<p>But, for example knowing that the node 1 is necessarily instanciated on process 1, it is possible to manually insert a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> representation of node 1 using <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a10fb5863c0ea1fbe6aa8829aa81d154a">insertDistant()</a> on process 0, what allows to build a link from node 0 to node 1 on process 0. Such link will be committed at the latest at the next <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">synchronize()</a> call and imported on process 1.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">node</td><td>temporary <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> node to manually insert in the graph </td></tr>
@@ -601,7 +602,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a6acc3adc30c714cf83c9699970ad0377">fpmas::graph::detail::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, TypedMpi, LocationManagerImpl &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a6ba15a7bfb820c4354957d725f7f2a59">fpmas::graph::detail::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, TypedMpi, LocationManagerImpl &gt;</a>.</p>
 
 </div>
 </div>

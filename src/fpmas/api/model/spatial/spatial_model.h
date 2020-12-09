@@ -204,6 +204,15 @@ namespace fpmas { namespace api { namespace model {
 	 *
 	 * In addition to the classical Agent properties, \SpatialAgents can be
 	 * located on a Cell network, move and perceive objects within it.
+	 *
+	 * The _mobility field_ of a SpatialAgent is defined as the set of outgoing
+	 * neighbors of type Cell on the `MOVE` layer.
+	 *
+	 * The _perceptions_ of a SpatialAgent are defined as elements of the set
+	 * of outgoind neighbors of type Agent on the `PERCEPTION` layer.
+	 *
+	 * Helper functions might be defined in implementing classes to access
+	 * those elements.
 	 */
 	template<typename CellType>
 	class SpatialAgent : public virtual Agent, public SpatialAgentBehavior {
@@ -223,7 +232,7 @@ namespace fpmas { namespace api { namespace model {
 			 * For example, let's consider a SpatialAgent `A`, that is LOCAL.
 			 * It can perceive a DISTANT agent `B`, located on a Cell `C`, that
 			 * is also DISTANT. We also assume `C` is currently in the
-			 * mobilityField() of `A`. Considering the properties of an FPMAS
+			 * _mobility field_ of `A`. Considering the properties of an FPMAS
 			 * DistributedGraph, `B` is guaranteed to be represented on the
 			 * current process, since it's linked to `A` on the `PERCEPTION`
 			 * layer, and so does `C` on the `MOVE` layer. However, since `B`
@@ -301,17 +310,10 @@ namespace fpmas { namespace api { namespace model {
 
 		protected:
 			/**
-			 * Returns the current mobility range of this SpatialAgent.
-			 *
-			 * @return mobility range
-			 */
-			virtual std::vector<Cell*> mobilityField() const = 0;
-
-			/**
 			 * Moves to the Cell with the provided `id`.
 			 *
 			 * If the `id` does not correspond to any Cell in the current
-			 * mobilityField(), an OutOfMobilityFieldException is thrown.
+			 * _mobility field_, an OutOfMobilityFieldException is thrown.
 			 *
 			 * If a corresponding Cell is found, the move operation is
 			 * performed as described in moveTo(Cell*).
@@ -325,9 +327,9 @@ namespace fpmas { namespace api { namespace model {
 			 * Moves to the input Cell.
 			 *
 			 * The input Cell is not required to be contained in the current
-			 * mobilityField() of this SpatialAgent, what allows:
+			 * _mobility field_ of this SpatialAgent, what allows:
 			 * 1. To initialize the location of this SpatialAgent (since in this
-			 * case, the mobilityField() is still empty)
+			 * case, the _mobility field_ is still empty)
 			 * 2. A SpatialAgent to move an other DISTANT SpatialAgent.
 			 *
 			 * The execution of a DistributedMoveAlgorithm is required to

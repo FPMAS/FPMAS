@@ -77,7 +77,7 @@ namespace fpmas { namespace api { namespace model {
 			 * located at each `point`.
 			 *
 			 * If no Cell at `point` can be found in the current
-			 * mobilityField(), an OutOfMobilityFieldException is thrown.
+			 * _mobility field_, an OutOfMobilityFieldException is thrown.
 			 *
 			 * @param point discrete coordinates
 			 * @throw OutOfMobilityFieldException

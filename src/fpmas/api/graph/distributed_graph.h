@@ -195,6 +195,10 @@ namespace fpmas {namespace api {namespace graph {
 			 * DistributedGraph implementation automatically takes its
 			 * ownership.
 			 *
+			 * If a node with the same ID is already contained in the graph,
+			 * the node is simply deleted and a pointer to the existing node is
+			 * returned. Else, a pointer to the inserted node is returned.
+			 *
 			 * This method can notably be used to implement distributed graph
 			 * initialization algorithms. Indeed, if a node 0 is built on
 			 * process 0 and node 1 is built on process 1, it is at first
@@ -211,7 +215,7 @@ namespace fpmas {namespace api {namespace graph {
 			 * @param node temporary \DISTANT node to manually insert in the
 			 * graph
 			 */
-			virtual void insertDistant(DistributedNode<T>* node) = 0;
+			virtual DistributedNode<T>* insertDistant(DistributedNode<T>* node) = 0;
 
 			/**
 			 * Globally removes the specified node from the graph.

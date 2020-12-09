@@ -211,6 +211,16 @@ namespace fpmas { namespace model {
 					std::shuffle(neighbors.begin(), neighbors.end(), rd);
 					return *this;
 				}
+
+				/**
+				 * Returns a random element of this neighbors list.
+				 *
+				 * @return random neighbor
+				 */
+				Neighbor<AgentType> random() {
+					random::UniformIntDistribution<std::size_t> index(0, this->count()-1);
+					return neighbors[index(rd)];
+				}
 		};
 	template<typename AgentType> random::DistributedGenerator<> Neighbors<AgentType>::rd;
 

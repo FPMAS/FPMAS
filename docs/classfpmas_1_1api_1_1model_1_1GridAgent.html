@@ -187,8 +187,6 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ac119bd703acb668dd20ca7dc97deab24"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1GridAgent.html#ac119bd703acb668dd20ca7dc97deab24">moveTo</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#abf0a276b2503f729442c5b9811eb326d">Cell</a> *cell)=0</td></tr>
 <tr class="separator:ac119bd703acb668dd20ca7dc97deab24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">fpmas::api::model::SpatialAgent&lt; GridCell &gt;</a></td></tr>
-<tr class="memitem:a1f682e1724cb3f8c2ae5ce76271794b4 inherit pro_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#abf0a276b2503f729442c5b9811eb326d">Cell</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField</a> () const=0</td></tr>
-<tr class="separator:a1f682e1724cb3f8c2ae5ce76271794b4 inherit pro_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05227b8b6e46c6c6b698ec532a326712 inherit pro_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a05227b8b6e46c6c6b698ec532a326712">moveTo</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id)=0</td></tr>
 <tr class="separator:a05227b8b6e46c6c6b698ec532a326712 inherit pro_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac119bd703acb668dd20ca7dc97deab24 inherit pro_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#ac119bd703acb668dd20ca7dc97deab24">moveTo</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#abf0a276b2503f729442c5b9811eb326d">Cell</a> *cell)=0</td></tr>
@@ -229,7 +227,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 <p>Moves to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> at the specified point.</p>
 <p>Notice that it is assumed that at most one <a class="el" href="classfpmas_1_1api_1_1model_1_1GridCell.html">GridCell</a> can be located at each <code>point</code>.</p>
-<p>If no <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> at <code>point</code> can be found in the current <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField()</a>, an <a class="el" href="classfpmas_1_1api_1_1model_1_1OutOfMobilityFieldException.html">OutOfMobilityFieldException</a> is thrown.</p>
+<p>If no <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> at <code>point</code> can be found in the current <em>mobility field</em>, an <a class="el" href="classfpmas_1_1api_1_1model_1_1OutOfMobilityFieldException.html">OutOfMobilityFieldException</a> is thrown.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">point</td><td>discrete coordinates </td></tr>
@@ -297,7 +295,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Moves to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> with the provided <code>id</code>.</p>
-<p>If the <code>id</code> does not correspond to any <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> in the current <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField()</a>, an <a class="el" href="classfpmas_1_1api_1_1model_1_1OutOfMobilityFieldException.html">OutOfMobilityFieldException</a> is thrown.</p>
+<p>If the <code>id</code> does not correspond to any <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> in the current <em>mobility field</em>, an <a class="el" href="classfpmas_1_1api_1_1model_1_1OutOfMobilityFieldException.html">OutOfMobilityFieldException</a> is thrown.</p>
 <p>If a corresponding <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> is found, the move operation is performed as described in <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#ac119bd703acb668dd20ca7dc97deab24">moveTo(Cell*)</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -334,8 +332,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Moves to the input <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a>.</p>
-<p>The input <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> is not required to be contained in the current <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField()</a> of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>, what allows:</p><ol type="1">
-<li>To initialize the location of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> (since in this case, the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField()</a> is still empty)</li>
+<p>The input <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> is not required to be contained in the current <em>mobility field</em> of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>, what allows:</p><ol type="1">
+<li>To initialize the location of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> (since in this case, the <em>mobility field</em> is still empty)</li>
 <li>A <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> to move an other DISTANT <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</li>
 </ol>
 <p>The execution of a <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> is required to commit the operation and update mobility fields and perceptions. However, this can be handled automatically on specific AgentGroups: see <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a2e62c3b242a3730325fab5d93a6c0060">SpatialModel::buildMoveGroup()</a>.</p>

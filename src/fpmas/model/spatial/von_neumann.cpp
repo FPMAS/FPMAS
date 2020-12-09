@@ -100,17 +100,32 @@ namespace fpmas { namespace model {
 						} else {
 							point = {end_width+1, y};
 						}
+						// Builds a temporary cell
 						auto cell = cell_factory.build(point);
+						// Cells group ids must be updated before it is
+						// inserted in the graph
 						for(auto gid : cell_pack.second)
 							cell->addGroupId(gid);
-						auto tmp_node = new graph::DistributedNode<AgentPtr>(cell_pack.first, cell);
+
+						// Builds a temporary node representing the node on the
+						// frontier (that is located on an other process)
+						api::graph::DistributedNode<AgentPtr>* tmp_node
+							= new graph::DistributedNode<AgentPtr>(cell_pack.first, cell);
 						tmp_node->setLocation(frontier.first);
-						model.graph().insertDistant(tmp_node);
+
+						// The node might already exist (for example, if a
+						// previous link operation from an other process as
+						// already occured). In this case, tmp_node is deleted
+						// and the existing node is returned, so finally
+						// tmp_node is up to date.
+						tmp_node = model.graph().insertDistant(tmp_node);
 
 						if(frontier.first < mpi_comm.getRank()) {
-							model.link(cells[y][0], cell, SpatialModelLayers::CELL_SUCCESSOR);
+							// tmp_node->data() is always up to date, cf above
+							model.link(cells[y][0], tmp_node->data(), SpatialModelLayers::CELL_SUCCESSOR);
 						} else {
-							model.link(cells[y][end_width-begin_width], cell, SpatialModelLayers::CELL_SUCCESSOR);
+							// idem
+							model.link(cells[y][end_width-begin_width], tmp_node->data(), SpatialModelLayers::CELL_SUCCESSOR);
 						}
 					}
 				}
@@ -155,17 +170,19 @@ namespace fpmas { namespace model {
 						} else {
 							point = {x, end_height+1};
 						}
+						// Same procedure as above
 						auto cell = cell_factory.build(point);
 						for(auto gid : cell_pack.second)
 							cell->addGroupId(gid);
-						auto tmp_node = new graph::DistributedNode<AgentPtr>(cell_pack.first, cell);
+						api::graph::DistributedNode<AgentPtr>* tmp_node
+							= new graph::DistributedNode<AgentPtr>(cell_pack.first, cell);
 						tmp_node->setLocation(frontier.first);
-						model.graph().insertDistant(tmp_node);
+						tmp_node = model.graph().insertDistant(tmp_node);
 
 						if(frontier.first < mpi_comm.getRank()) {
-							model.link(cells[0][x], cell, SpatialModelLayers::CELL_SUCCESSOR);
+							model.link(cells[0][x], tmp_node->data(), SpatialModelLayers::CELL_SUCCESSOR);
 						} else {
-							model.link(cells[end_height-begin_height][x], cell, SpatialModelLayers::CELL_SUCCESSOR);
+							model.link(cells[end_height-begin_height][x], tmp_node->data(), SpatialModelLayers::CELL_SUCCESSOR);
 						}
 					}
 				}

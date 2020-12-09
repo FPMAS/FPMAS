@@ -1,12 +1,13 @@
 #ifndef FPMAS_H
 #define FPMAS_H
 
-#include "fpmas/model/model.h"
 #include "fpmas/model/serializer.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
 #include "fpmas/graph/graph_builder.h"
 #include "fpmas/random/random.h"
+#include "fpmas/model/spatial/moore.h"
+#include "fpmas/model/spatial/grid_agent_mapping.h"
 
 /**
  * FPMAS version literal.

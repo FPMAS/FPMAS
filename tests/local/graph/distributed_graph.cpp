@@ -9,6 +9,7 @@
  * # import_node_tests
  * # import_edge_tests
  * # import_edge_with_missing_node_test
+ * # insert_distant_test
  * # distribute_tests
  * # distribute_test_with_edge
  * # distribute_test_real_MPI
@@ -677,9 +678,9 @@ TEST_F(DistributedGraphImportEdgeTest, double_import_edge_case) {
 	ASSERT_EQ(static_cast<MockEdge*>(imported_edge)->_state, LocationState::LOCAL);
 }
 
-/*************************************/
+/**************************************/
 /* import_edge_with_missing_node_test */
-/*************************************/
+/**************************************/
 /*
  * In the previous test suite, at least one of the two nodes might be DISTANT,
  * but they already exist in the Graph.
@@ -817,6 +818,43 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_src) {
 
 	ASSERT_EQ(static_cast<MockEdge*>(importedEdge)->tgt, local_node);
 	ASSERT_EQ(static_cast<MockEdge*>(importedEdge)->src, distant_node);
+}
+
+/***********************/
+/* insert_distant_test */
+/***********************/
+
+class DistributedGraphInsertDistantTest : public DistributedGraphTest {
+
+	void SetUp() {
+		DistributedGraphTest::SetUp();
+	}
+};
+
+TEST_F(DistributedGraphInsertDistantTest, insert_distant) {
+	auto node = new MockDistributedNode<int>;
+
+	EXPECT_CALL(location_manager, setDistant(node));
+	MockMutex<int>* built_mutex = new MockMutex<int>;
+	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncMode()), buildMutex)
+		.WillOnce(Return(built_mutex));
+	EXPECT_CALL(*node, setMutex(built_mutex));
+
+	ASSERT_EQ(graph.insertDistant(node), node);
+}
+
+TEST_F(DistributedGraphInsertDistantTest, insert_distant_existing_node) {
+	auto existing_node = new NiceMock<MockDistributedNode<int>>(DistributedId(2, 4));
+	graph.insert(existing_node);
+
+	auto node = new MockDistributedNode<int>(DistributedId(2, 4));
+
+	EXPECT_CALL(location_manager, setDistant(node))
+		.Times(0);
+	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncMode()), buildMutex)
+		.Times(0);
+
+	ASSERT_EQ(graph.insertDistant(node), existing_node);
 }
 
 /********************/

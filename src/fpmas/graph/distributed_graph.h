@@ -228,7 +228,7 @@ namespace fpmas { namespace graph {
 
 				NodeType* buildNode(T&& = std::move(T())) override;
 				NodeType* buildNode(const T&) override;
-				void insertDistant(api::graph::DistributedNode<T>*) override;
+				api::graph::DistributedNode<T>* insertDistant(api::graph::DistributedNode<T>*) override;
 
 				EdgeType* link(NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) override;
 
@@ -444,14 +444,20 @@ namespace fpmas { namespace graph {
 							));
 			}
 		template<DIST_GRAPH_PARAMS>
-			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::insertDistant(
+			api::graph::DistributedNode<T>* DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::insertDistant(
 					api::graph::DistributedNode<T> * node) {
+				FPMAS_LOGD(getMpiCommunicator().getRank(),
+						"GRAPH", "Inserting temporary distant node: %s",
+						FPMAS_C_STR(node->getId()));
 				if(this->getNodes().count(node->getId()) == 0) {
 					this->insert(node);
 					setDistant(node);
 					node->setMutex(sync_mode.buildMutex(node));
+					return node;
 				} else {
+					auto id = node->getId();
 					delete node;
+					return this->getNode(id);
 				}
 			}
 

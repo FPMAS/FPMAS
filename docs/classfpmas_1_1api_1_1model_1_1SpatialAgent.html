@@ -183,8 +183,6 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a1f682e1724cb3f8c2ae5ce76271794b4"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#abf0a276b2503f729442c5b9811eb326d">Cell</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField</a> () const =0</td></tr>
-<tr class="separator:a1f682e1724cb3f8c2ae5ce76271794b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05227b8b6e46c6c6b698ec532a326712"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a05227b8b6e46c6c6b698ec532a326712">moveTo</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id)=0</td></tr>
 <tr class="separator:a05227b8b6e46c6c6b698ec532a326712"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac119bd703acb668dd20ca7dc97deab24"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#ac119bd703acb668dd20ca7dc97deab24">moveTo</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#abf0a276b2503f729442c5b9811eb326d">Cell</a> *cell)=0</td></tr>
@@ -195,7 +193,10 @@ Protected Member Functions</h2></td></tr>
 class fpmas::api::model::SpatialAgent&lt; CellType &gt;</h3>
 
 <p><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> API.</p>
-<p>In addition to the classical <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> properties, <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> can be located on a <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network, move and perceive objects within it. </p>
+<p>In addition to the classical <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> properties, <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> can be located on a <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network, move and perceive objects within it.</p>
+<p>The <em>mobility field</em> of a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> is defined as the set of outgoing neighbors of type <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> on the <code>MOVE</code> layer.</p>
+<p>The <em>perceptions</em> of a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> are defined as elements of the set of outgoind neighbors of type <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> on the <code>PERCEPTION</code> layer.</p>
+<p>Helper functions might be defined in implementing classes to access those elements. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="abf0a276b2503f729442c5b9811eb326d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abf0a276b2503f729442c5b9811eb326d">&#9670;&nbsp;</a></span>Cell</h2>
@@ -241,7 +242,7 @@ template&lt;typename CellType &gt; </div>
 </div><div class="memdoc">
 <p>Returns the <code>id</code> of the location <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</p>
 <p>This id can be used to easily move to the location of DISTANT perceived <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</p>
-<p>For example, let's consider a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> <code>A</code>, that is LOCAL. It can perceive a DISTANT agent <code>B</code>, located on a <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> <code>C</code>, that is also DISTANT. We also assume <code>C</code> is currently in the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField()</a> of <code>A</code>. Considering the properties of an FPMAS DistributedGraph, <code>B</code> is guaranteed to be represented on the current process, since it's linked to <code>A</code> on the <code>PERCEPTION</code> layer, and so does <code>C</code> on the <code>MOVE</code> layer. However, since <code>B</code> and <code>C</code> are distant, the <code>LOCATION</code> link from <code>B</code> to <code>C</code> is not expected to be presented on the current process, so calling <code>B-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a710835cc3b3e28dfebaa834003b4363d">locationCell()</a></code> will produce an unexpected behavior. However, <code>A</code> can still move to the current location of <code>B</code> using the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#acce9e122bb6da9ed2b284c6dcf831553">locationId()</a> method: </p><div class="fragment"><div class="line">A-&gt;moveTo(B-&gt;locationId());</div>
+<p>For example, let's consider a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> <code>A</code>, that is LOCAL. It can perceive a DISTANT agent <code>B</code>, located on a <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> <code>C</code>, that is also DISTANT. We also assume <code>C</code> is currently in the <em>mobility field</em> of <code>A</code>. Considering the properties of an FPMAS DistributedGraph, <code>B</code> is guaranteed to be represented on the current process, since it's linked to <code>A</code> on the <code>PERCEPTION</code> layer, and so does <code>C</code> on the <code>MOVE</code> layer. However, since <code>B</code> and <code>C</code> are distant, the <code>LOCATION</code> link from <code>B</code> to <code>C</code> is not expected to be presented on the current process, so calling <code>B-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a710835cc3b3e28dfebaa834003b4363d">locationCell()</a></code> will produce an unexpected behavior. However, <code>A</code> can still move to the current location of <code>B</code> using the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#acce9e122bb6da9ed2b284c6dcf831553">locationId()</a> method: </p><div class="fragment"><div class="line">A-&gt;moveTo(B-&gt;locationId());</div>
 </div><!-- fragment --><p>Notice that this is valid whatever the current SynchronizationMode is. Indeed, <code>moveTo</code> operations are only committed at the next <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> execution, that includes a Graph synchronization process. So, in any case, even if <code>B</code> moves during its execution on an other process while <code>A-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a05227b8b6e46c6c6b698ec532a326712">moveTo()</a></code> is executed on the current process, its new location will effectively be committed only when all <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> are synchronized, so it is still consistent to assume that, during this epoch, <code>B</code> is still located at <code>B-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#acce9e122bb6da9ed2b284c6dcf831553">locationId()</a></code>. However, when the <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> will be applied, <code>A</code> will finally end on a different location than <code>B</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>id of the current location </dd></dl>
 
@@ -383,37 +384,6 @@ template&lt;typename CellType &gt; </div>
 
 </div>
 </div>
-<a id="a1f682e1724cb3f8c2ae5ce76271794b4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f682e1724cb3f8c2ae5ce76271794b4">&#9670;&nbsp;</a></span>mobilityField()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename CellType &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#abf0a276b2503f729442c5b9811eb326d">Cell</a>*&gt; <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">fpmas::api::model::SpatialAgent</a>&lt; CellType &gt;::mobilityField </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns the current mobility range of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</p>
-<dl class="section return"><dt>Returns</dt><dd>mobility range </dd></dl>
-
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a69b091c8cd7b9eb9407d7b2f1784e979">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a69b091c8cd7b9eb9407d7b2f1784e979">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, AgentType &gt; &gt;</a>.</p>
-
-</div>
-</div>
 <a id="a05227b8b6e46c6c6b698ec532a326712"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a05227b8b6e46c6c6b698ec532a326712">&#9670;&nbsp;</a></span>moveTo() <span class="overload">[1/2]</span></h2>
 
@@ -440,7 +410,7 @@ template&lt;typename CellType &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Moves to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> with the provided <code>id</code>.</p>
-<p>If the <code>id</code> does not correspond to any <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> in the current <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField()</a>, an <a class="el" href="classfpmas_1_1api_1_1model_1_1OutOfMobilityFieldException.html">OutOfMobilityFieldException</a> is thrown.</p>
+<p>If the <code>id</code> does not correspond to any <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> in the current <em>mobility field</em>, an <a class="el" href="classfpmas_1_1api_1_1model_1_1OutOfMobilityFieldException.html">OutOfMobilityFieldException</a> is thrown.</p>
 <p>If a corresponding <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> is found, the move operation is performed as described in <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#ac119bd703acb668dd20ca7dc97deab24">moveTo(Cell*)</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -485,8 +455,8 @@ template&lt;typename CellType &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Moves to the input <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a>.</p>
-<p>The input <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> is not required to be contained in the current <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField()</a> of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>, what allows:</p><ol type="1">
-<li>To initialize the location of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> (since in this case, the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1f682e1724cb3f8c2ae5ce76271794b4">mobilityField()</a> is still empty)</li>
+<p>The input <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> is not required to be contained in the current <em>mobility field</em> of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>, what allows:</p><ol type="1">
+<li>To initialize the location of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> (since in this case, the <em>mobility field</em> is still empty)</li>
 <li>A <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> to move an other DISTANT <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</li>
 </ol>
 <p>The execution of a <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> is required to commit the operation and update mobility fields and perceptions. However, this can be handled automatically on specific AgentGroups: see <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a2e62c3b242a3730325fab5d93a6c0060">SpatialModel::buildMoveGroup()</a>.</p>
