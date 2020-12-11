@@ -494,6 +494,7 @@ namespace fpmas { namespace model {
 			 */
 			void removeGroup(api::model::AgentGroup* group) override {
 				_groups.erase(std::remove(_groups.begin(), _groups.end(), group));
+				_tasks.erase(group->groupId());
 			}
 
 			/**

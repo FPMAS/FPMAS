@@ -436,6 +436,21 @@ namespace fpmas { namespace api { namespace model {
 	template<typename CellType>
 		class MoveAgentGroup : public virtual AgentGroup {
 			public:
+				/**
+				 * Returns the internal distributedMoveAlgorithm() associated
+				 * to this group.
+				 *
+				 * The execution of distributedMoveAlgorithm().jobs() apply the
+				 * DistributedMoveAlgorithm to all agents currently contained
+				 * in the group.
+				 *
+				 * The JobList returned by jobs() corresponds to
+				 * ```cpp
+				 * {this->agentExecutionJob(), this->distributedMoveAlgorithm().jobs()}
+				 * ```
+				 *
+				 * @return reference to internal distributed move algorithm instance
+				 */
 				virtual DistributedMoveAlgorithm<CellType>& distributedMoveAlgorithm() = 0;
 		};
 

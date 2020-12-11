@@ -80,7 +80,7 @@ $(function() {
 Inheritance diagram for fpmas::model::AgentBase&lt; AgentType, TypeIdBase &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1AgentBase__inherit__graph.png" border="0" usemap="#afpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_inherit__map" alt="Inheritance graph"/></div>
-<map name="fpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_inherit__map" id="afpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_inherit__map">
+<map name="fpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_inherit__map" id="fpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_inherit__map">
 <area shape="rect" title=" " alt="" coords="5,169,188,211"/>
 <area shape="rect" href="classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="29,5,164,47"/>
 <area shape="rect" href="classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="63,95,275,121"/>
@@ -90,7 +90,7 @@ Inheritance diagram for fpmas::model::AgentBase&lt; AgentType, TypeIdBase &gt;:<
 Collaboration diagram for fpmas::model::AgentBase&lt; AgentType, TypeIdBase &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1AgentBase__coll__graph.png" border="0" usemap="#afpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_coll__map" alt="Collaboration graph"/></div>
-<map name="fpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_coll__map" id="afpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_coll__map">
+<map name="fpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_coll__map" id="fpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_coll__map">
 <area shape="rect" title=" " alt="" coords="5,169,188,211"/>
 <area shape="rect" href="classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="29,5,164,47"/>
 <area shape="rect" href="classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="63,95,275,121"/>
@@ -358,8 +358,15 @@ template&lt;typename AgentType , typename TypeIdBase  = AgentType&gt; </div>
 </div><div class="memdoc">
 
 <p></p>
+<p>Removes <code>id</code> from this Agent's group ids.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>agent group id </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#affebf9145d5a77e16d60bfb384c6d4f3">fpmas::api::model::Agent</a>.</p>
 
 </div>
 </div>
@@ -603,8 +610,16 @@ template&lt;typename AgentType , typename TypeIdBase  = AgentType&gt; </div>
 </div><div class="memdoc">
 
 <p></p>
+<p>Removes <code>group</code> from the list of <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroups</a> to wich this Agent belong.</p>
+<p>Morever, the entry corresponding to this <code>group</code>'s id is removed from <a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a088d25931e55b74ca34752a4317a988a">tasks()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">group</td><td>agent group </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aa327b8d0ab033b95a635cf0131d1fd35">fpmas::api::model::Agent</a>.</p>
 
 </div>
 </div>

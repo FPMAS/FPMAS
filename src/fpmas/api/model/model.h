@@ -162,6 +162,11 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual void addGroupId(GroupId id) = 0;
 
+			/**
+			 * Removes `id` from this Agent's group ids.
+			 *
+			 * @param id agent group id
+			 */
 			virtual void removeGroupId(GroupId id) = 0;
 
 
@@ -215,6 +220,15 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual void addGroup(AgentGroup* group) = 0;
 
+			/**
+			 * Removes `group` from the list of \AgentGroups to wich this Agent
+			 * belong.
+			 *
+			 * Morever, the entry corresponding to this `group`'s id is removed
+			 * from tasks().
+			 *
+			 * @param group agent group
+			 */
 			virtual void removeGroup(AgentGroup* group) = 0;
 
 			/**

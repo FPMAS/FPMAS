@@ -10,38 +10,24 @@ namespace fpmas {
 				api::model::AgentPtr& agent = node->data();
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", FPMAS_C_STR(node->getId()));
-				for(auto gid : agent->groupIds())
-					agent->addGroup(&model.getGroup(gid));
-				for(auto group : agent->groups())
-					group->insert(&agent);
 				agent->setNode(node);
 				agent->setModel(&model);
-				for(auto group : agent->groups()) {
-					AgentBehaviorTask* task
-						= new AgentBehaviorTask(group->behavior(), agent);
-					agent->setTask(group->groupId(), task);
-				}
+
+				for(auto gid : agent->groupIds())
+					model.getGroup(gid).insert(&agent);
 			}
 
 			void EraseAgentNodeCallback::call(AgentNode *node) {
 				api::model::AgentPtr& agent = node->data();
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", FPMAS_C_STR(node->getId()));
-				if(node->state() == graph::LocationState::LOCAL) {
-					// Unschedule agent task. If the node is DISTANT, task was already
-					// unscheduled.
-					for(auto group : agent->groups())
-						group->agentExecutionJob().remove(*agent->task(group->groupId()));
-				}
 				for(auto group : agent->groups()) {
 					group->erase(&agent);
 				}
-				for(auto task : agent->tasks())
-					delete task.second;
 			}
 
 			void SetAgentLocalCallback::call(AgentNode *node) {
-				api::model::Agent* agent = node->data();
+				api::model::AgentPtr& agent = node->data();
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", FPMAS_C_STR(node->getId()));
 				for(auto group : agent->groups())
@@ -49,7 +35,7 @@ namespace fpmas {
 			}
 
 			void SetAgentDistantCallback::call(AgentNode *node) {
-				api::model::Agent* agent = node->data();
+				api::model::AgentPtr& agent = node->data();
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", FPMAS_C_STR(node->getId()));
 				// Unschedule agent task 
@@ -129,58 +115,92 @@ namespace fpmas {
 
 			void AgentGroupBase::add(api::model::Agent* agent) {
 				agent->addGroupId(id);
-				// TODO: to improve in 2.0
+
 				if(agent->groups().empty()) {
+					// The agent does not belong to any group yet, so we insert
+					// it in the graph.
+					// InsertAgentNodeCallback is called.
 					agent_graph.buildNode(api::model::AgentPtr {agent});
 				} else {
-					// It is assumed that the agent has already been added to a
-					// group, and so the "insert node" and "set local"
-					// callbacks above have already been triggered, for the
-					// first group to which the agent was added.
+					// The agent as already been added to a group, so it is
+					// already contained in the graph
 					//
-					// Since those callbacks are not triggered again for next
-					// groups, we can manually set up group and task for the agent.
-					//
-					// This might be modified in version 2.0
-					//
-					// Notice that this is only valid when agents are "added"
-					// to the group, callbacks work as expected when the agent
-					// is "inserted" when migration are performed for example.
-
-					agent->addGroup(this);
+					// This is necessarily performed on a LOCAL agent: adding a
+					// DISTANT agent to a group is not allowed.
+					assert(agent->node()->state() == graph::LocationState::LOCAL);
 
 					// The node is already built and inserted in the graph, so
-					// this is safe (but hacky)
+					// we just need to insert is in this new group. A new task
+					// corresponding to this group is bound to the agent in
+					// this process
 					this->insert(&agent->node()->data());
-					AgentBehaviorTask* task
-						= new AgentBehaviorTask(this->behavior(), agent->node()->data()); // Same as above
-					agent->setTask(this->groupId(), task);
 
-					this->job().add(*task);
+					// Because of the requirements of this method, agent is
+					// LOCAL, so it must be scheduled for execution in this
+					// group.
+					// Notice that, since the agent was already added to the
+					// group, SetAgentLocalCallback will not be called in this
+					// case.
+					this->agentExecutionJob().add(*agent->task(this->groupId()));
 				}
 			}
 
 			void AgentGroupBase::remove(api::model::Agent* agent) {
-				agent->removeGroup(this);
-				agent->removeGroupId(this->groupId());
-				this->erase(&agent->node()->data());
-
 				if(agent->node()->state() == graph::LocationState::LOCAL) {
 					// Unschedule agent task. If the node is DISTANT, task was already
 					// unscheduled.
+					// This must be performed before erase(), since it will
+					// clear and delete the associated agent's task.
 					this->agentExecutionJob().remove(*agent->task(this->groupId()));
+				}
 
+				this->erase(&agent->node()->data());
+
+				if(agent->node()->state() == graph::LocationState::LOCAL) {
+					// If the agent is not contained into any group, delete it
+					// from the graph
 					if(agent->groups().empty())
 						agent_graph.removeNode(agent->node());
 				}
 			}
 
 			void AgentGroupBase::insert(api::model::AgentPtr* agent) {
+				// Inserts agent into the internal agents() list
 				_agents.push_back(agent);
+
+				// Inserts this group to Agent::groups()
+				agent->get()->addGroup(this);
+				// addGroupId must not be called there, since:
+				// 1. it has already been called from AgentGroupBase::add()
+				// 2. else, the agent have been imported, and its group Ids
+				// list was already up to date (what allows to effectively
+				// insert it in the group (see InsertAgentNodeCallback)
+
+				// Binds a task corresponding to this group behavior to the
+				// agent
+				// The task is not added to agentExecutionJob(), since this
+				// must be handled by SetAgentLocalCallback (or by the add()
+				// method, see above)
+				AgentBehaviorTask* task
+					= new AgentBehaviorTask(this->behavior(), *agent);
+				agent->get()->setTask(this->groupId(), task);
 			}
 
 			void AgentGroupBase::erase(api::model::AgentPtr* agent) {
+				// Erases agent from the local agents() list
 				_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
+	
+				// The task is not removed from agentExecutionJob(), since this
+				// must be handled by SetAgentDistantCallback (or by the remove()
+				// method, see above)
+				delete agent->get()->task(this->groupId());
+
+				// Erases this group from Agent::groups(), and erases the entry
+				// corresponding to this group in Agent::tasks() (that's why
+				// the task is deleted before)
+				agent->get()->removeGroup(this);
+				// Erases this group from Agent::groupIds()
+				agent->get()->removeGroupId(this->groupId());
 			}
 
 			void AgentGroupBase::clear() {

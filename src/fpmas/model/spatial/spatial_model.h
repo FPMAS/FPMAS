@@ -41,6 +41,7 @@ namespace fpmas {
 			 * @param group_id unique group id
 			 * @param behavior behavior to execute on agents of the group
 			 * @param model associated spatial model
+			 * @param end_condition distributed move algorithm end condition
 			 */
 			MoveAgentGroup(
 					api::model::GroupId group_id,
