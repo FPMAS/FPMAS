@@ -208,6 +208,8 @@ namespace fpmas {
 
 		template<typename CellType>
 			void DistributedMoveAlgorithm<CellType>::AlgoTask::run() {
+				FPMAS_LOGD(this->dist_move_algo.model.getMpiCommunicator().getRank(),
+						"DMA", "Running DistributedMoveAlgorithm...", "");
 				using api::model::SpatialAgent;
 
 				std::vector<SpatialAgent<CellType>*> agents;
@@ -243,6 +245,9 @@ namespace fpmas {
 					// PERCEPTION links)
 					update_perceptions_behavior.execute(cell);
 				dist_move_algo.model.graph().synchronize();
+
+				FPMAS_LOGD(this->dist_move_algo.model.getMpiCommunicator().getRank(),
+						"DMA", "Done.", "");
 			}
 	}
 }

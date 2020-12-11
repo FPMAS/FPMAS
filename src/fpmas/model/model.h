@@ -562,23 +562,27 @@ namespace fpmas { namespace model {
 			 * \copydoc fpmas::api::model::Agent::task()
 			 */
 			api::model::AgentTask* task() override {
-				return _tasks.at(this->groupId());}
+				return _tasks.at(this->groupId());
+			}
 			/**
 			 * \copydoc fpmas::api::model::Agent::task()
 			 */
 			const api::model::AgentTask* task() const override {
-				return _tasks.at(this->groupId());}
+				return _tasks.at(this->groupId());
+			}
 			/**
 			 * \copydoc fpmas::api::model::Agent::setTask(api::model::AgentTask*)
 			 */
 			void setTask(api::model::AgentTask* task) override {
-				_tasks[this->groupId()] = task;}
+				_tasks[this->groupId()] = task;
+			}
 
 			/**
 			 * \copydoc fpmas::api::model::Agent::task(GroupId)
 			 */
 			api::model::AgentTask* task(api::model::GroupId id) override {
-				return _tasks.at(id);}
+				return _tasks.at(id);
+			}
 			/**
 			 * \copydoc fpmas::api::model::Agent::task(GroupId)
 			 */
@@ -589,7 +593,8 @@ namespace fpmas { namespace model {
 			 * \copydoc fpmas::api::model::Agent::setTask(GroupId, api::model::AgentTask*)
 			 */
 			void setTask(api::model::GroupId id, api::model::AgentTask* task) override {
-				_tasks[id] = task;}
+				_tasks[id] = task;
+			}
 
 			/**
 			 * \copydoc fpmas::api::model::Agent::tasks

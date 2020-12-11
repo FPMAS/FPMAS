@@ -168,7 +168,7 @@ namespace fpmas {
 				// Inserts agent into the internal agents() list
 				_agents.push_back(agent);
 
-				// Inserts this group to Agent::groups()
+				// Inserts this group into Agent::groups()
 				agent->get()->addGroup(this);
 				// addGroupId must not be called there, since:
 				// 1. it has already been called from AgentGroupBase::add()
