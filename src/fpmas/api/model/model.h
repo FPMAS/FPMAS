@@ -162,6 +162,8 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual void addGroupId(GroupId id) = 0;
 
+			virtual void removeGroupId(GroupId id) = 0;
+
 
 			/**
 			 * @deprecated
@@ -212,6 +214,8 @@ namespace fpmas { namespace api {namespace model {
 			 * @param group agent group
 			 */
 			virtual void addGroup(AgentGroup* group) = 0;
+
+			virtual void removeGroup(AgentGroup* group) = 0;
 
 			/**
 			 * Returns the ID of the type of this Agent.
@@ -442,6 +446,11 @@ namespace fpmas { namespace api {namespace model {
 			 * @param agent agent to remove
 			 */
 			virtual void remove(Agent* agent) = 0;
+
+			/**
+			 * Removes all local agents from this group.
+			 */
+			virtual void clear() = 0;
 
 			/**
 			 * Inserts an Agent into this AgentGroup.
@@ -695,6 +704,16 @@ namespace fpmas { namespace api {namespace model {
 			 * @param behavior behavior to execute on agents of the group
 			 */
 			virtual AgentGroup& buildGroup(GroupId id, const Behavior& behavior) = 0;
+
+			/**
+			 * Removes the specified group from the model.
+			 *
+			 * All local agents are removed from group, and the group is
+			 * deleted.
+			 *
+			 * @param group group to remove from the model
+			 */
+			virtual void removeGroup(AgentGroup& group) = 0;
 
 			/**
 			 * Gets a reference to an AgentGroup previously created with

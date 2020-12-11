@@ -79,7 +79,7 @@ $(function() {
 Inheritance diagram for fpmas::model::detail::AgentGroupBase:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1detail_1_1AgentGroupBase__inherit__graph.png" border="0" usemap="#afpmas_1_1model_1_1detail_1_1AgentGroupBase_inherit__map" alt="Inheritance graph"/></div>
-<map name="fpmas_1_1model_1_1detail_1_1AgentGroupBase_inherit__map" id="fpmas_1_1model_1_1detail_1_1AgentGroupBase_inherit__map">
+<map name="fpmas_1_1model_1_1detail_1_1AgentGroupBase_inherit__map" id="afpmas_1_1model_1_1detail_1_1AgentGroupBase_inherit__map">
 <area shape="rect" title=" " alt="" coords="105,95,245,136"/>
 <area shape="rect" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html" title=" " alt="" coords="5,184,145,225"/>
 <area shape="rect" href="classfpmas_1_1model_1_1MoveAgentGroup.html" title=" " alt="" coords="170,184,381,225"/>
@@ -90,7 +90,7 @@ Inheritance diagram for fpmas::model::detail::AgentGroupBase:</div>
 Collaboration diagram for fpmas::model::detail::AgentGroupBase:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1detail_1_1AgentGroupBase__coll__graph.png" border="0" usemap="#afpmas_1_1model_1_1detail_1_1AgentGroupBase_coll__map" alt="Collaboration graph"/></div>
-<map name="fpmas_1_1model_1_1detail_1_1AgentGroupBase_coll__map" id="fpmas_1_1model_1_1detail_1_1AgentGroupBase_coll__map">
+<map name="fpmas_1_1model_1_1detail_1_1AgentGroupBase_coll__map" id="afpmas_1_1model_1_1detail_1_1AgentGroupBase_coll__map">
 <area shape="rect" title=" " alt="" coords="5,95,145,136"/>
 <area shape="rect" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html" title=" " alt="" coords="8,5,143,47"/>
 </map>
@@ -120,6 +120,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8dd58298f1ae198313bb15a51ebc8641"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d256769ad4288132d4215adf3613014"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a1d256769ad4288132d4215adf3613014">erase</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> *) override</td></tr>
 <tr class="separator:a1d256769ad4288132d4215adf3613014"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a3e62b2793d98b3f47ecbda79b8a4d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a9a3e62b2793d98b3f47ecbda79b8a4d0">clear</a> () override</td></tr>
+<tr class="separator:a9a3e62b2793d98b3f47ecbda79b8a4d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5d726030a0bcf58a85af7e0ced02d937"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a5d726030a0bcf58a85af7e0ced02d937">job</a> () override</td></tr>
 <tr class="separator:a5d726030a0bcf58a85af7e0ced02d937"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b485d248a8e2e65692557d6bbbea7f6"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a2b485d248a8e2e65692557d6bbbea7f6">job</a> () const override</td></tr>
@@ -420,6 +422,34 @@ Public Member Functions</h2></td></tr>
 </dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ade0515102b7fd5ff17703608ddfd158a">fpmas::api::model::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a9a3e62b2793d98b3f47ecbda79b8a4d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a3e62b2793d98b3f47ecbda79b8a4d0">&#9670;&nbsp;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::detail::AgentGroupBase::clear </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Removes all local agents from this group. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a4b1291454e7fede2b78c068d480f8ca3">fpmas::api::model::AgentGroup</a>.</p>
 
 </div>
 </div>

@@ -25,12 +25,14 @@ namespace detail {
 				MOCK_METHOD(std::vector<fpmas::api::model::GroupId>, groupIds, (), (const, override));
 				MOCK_METHOD(void, setGroupId, (fpmas::api::model::GroupId), (override));
 				MOCK_METHOD(void, addGroupId, (fpmas::api::model::GroupId), (override));
+				MOCK_METHOD(void, removeGroupId, (fpmas::api::model::GroupId), (override));
 
 				MOCK_METHOD(std::vector<fpmas::api::model::AgentGroup*>, groups, (), (override));
 				MOCK_METHOD(fpmas::api::model::AgentGroup*, group, (), (override));
 				MOCK_METHOD(std::vector<const fpmas::api::model::AgentGroup*>, groups, (), (const, override));
 				MOCK_METHOD(const fpmas::api::model::AgentGroup*, group, (), (const, override));
 				MOCK_METHOD(void, addGroup, (fpmas::api::model::AgentGroup*), (override));
+				MOCK_METHOD(void, removeGroup, (fpmas::api::model::AgentGroup*), (override));
 				MOCK_METHOD(void, setGroup, (fpmas::api::model::AgentGroup*), (override));
 
 				MOCK_METHOD(fpmas::api::model::TypeId, typeId, (), (const, override));
@@ -114,6 +116,7 @@ class MockModel : public virtual fpmas::api::model::Model {
 
 		MOCK_METHOD(fpmas::api::model::AgentGroup&, buildGroup, (fpmas::api::model::GroupId), (override));
 		MOCK_METHOD(fpmas::api::model::AgentGroup&, buildGroup, (fpmas::api::model::GroupId, const fpmas::api::model::Behavior&), (override));
+		MOCK_METHOD(void, removeGroup, (fpmas::api::model::AgentGroup&), (override));
 		MOCK_METHOD(fpmas::api::model::AgentGroup&, getGroup, (fpmas::api::model::GroupId), (const, override));
 
 		MOCK_METHOD((const std::unordered_map<fpmas::api::model::GroupId, fpmas::api::model::AgentGroup*>&),
@@ -129,7 +132,7 @@ class MockModel : public virtual fpmas::api::model::Model {
 				getMpiCommunicator, (), (const, override));
 };
 
-class MockAgentGroup : public fpmas::api::model::AgentGroup {
+class MockAgentGroup : public virtual fpmas::api::model::AgentGroup {
 	public:
 		MOCK_METHOD(fpmas::api::model::GroupId, groupId, (), (const, override));
 		MOCK_METHOD(fpmas::api::model::Behavior&, behavior, (), (override));
@@ -137,6 +140,7 @@ class MockAgentGroup : public fpmas::api::model::AgentGroup {
 		MOCK_METHOD(void, remove, (fpmas::api::model::Agent*), (override));
 		MOCK_METHOD(void, insert, (fpmas::api::model::AgentPtr*), (override));
 		MOCK_METHOD(void, erase, (fpmas::api::model::AgentPtr*), (override));
+		MOCK_METHOD(void, clear, (), (override));
 		MOCK_METHOD(std::vector<fpmas::api::model::Agent*>, agents, (), (const, override));
 		MOCK_METHOD(std::vector<fpmas::api::model::Agent*>, localAgents, (), (const, override));
 		MOCK_METHOD(fpmas::api::scheduler::Job&, job, (), (override));

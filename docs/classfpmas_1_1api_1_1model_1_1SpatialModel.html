@@ -79,7 +79,7 @@ $(function() {
 Inheritance diagram for fpmas::api::model::SpatialModel&lt; CellType &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1api_1_1model_1_1SpatialModel__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1model_1_1SpatialModel_3_01CellType_01_4_inherit__map" alt="Inheritance graph"/></div>
-<map name="fpmas_1_1api_1_1model_1_1SpatialModel_3_01CellType_01_4_inherit__map" id="fpmas_1_1api_1_1model_1_1SpatialModel_3_01CellType_01_4_inherit__map">
+<map name="fpmas_1_1api_1_1model_1_1SpatialModel_3_01CellType_01_4_inherit__map" id="afpmas_1_1api_1_1model_1_1SpatialModel_3_01CellType_01_4_inherit__map">
 <area shape="rect" title=" " alt="" coords="11,5,183,47"/>
 <area shape="rect" href="classfpmas_1_1model_1_1SpatialModel.html" title=" " alt="" coords="5,95,189,136"/>
 </map>
@@ -91,10 +91,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a7c9a708d6bae6bf5e860306baed5598c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9ddb3a685e4016ca6f7e809e3eb7470"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; CellType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#ad9ddb3a685e4016ca6f7e809e3eb7470">cells</a> ()=0</td></tr>
 <tr class="separator:ad9ddb3a685e4016ca6f7e809e3eb7470"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2e62c3b242a3730325fab5d93a6c0060"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a2e62c3b242a3730325fab5d93a6c0060">buildMoveGroup</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a> id, const <a class="el" href="classfpmas_1_1api_1_1model_1_1Behavior.html">Behavior</a> &amp;behavior)=0</td></tr>
-<tr class="separator:a2e62c3b242a3730325fab5d93a6c0060"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22cde3e16547148d021503f0aa10a366"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a>&lt; CellType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a22cde3e16547148d021503f0aa10a366">distributedMoveAlgorithm</a> ()=0</td></tr>
-<tr class="separator:a22cde3e16547148d021503f0aa10a366"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f2536b755ae8fca7ae0c5078cd4c613"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1MoveAgentGroup.html">MoveAgentGroup</a>&lt; CellType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a4f2536b755ae8fca7ae0c5078cd4c613">buildMoveGroup</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a> id, const <a class="el" href="classfpmas_1_1api_1_1model_1_1Behavior.html">Behavior</a> &amp;behavior)=0</td></tr>
+<tr class="separator:a4f2536b755ae8fca7ae0c5078cd4c613"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename CellType&gt;<br />
@@ -128,7 +126,7 @@ template&lt;typename CellType &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Adds a <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> to this model.</p>
-<p><a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cells</a> added to the model constitute the "Cell network", on which <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a>, added to groups created with <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a2e62c3b242a3730325fab5d93a6c0060">buildMoveGroup()</a>, will be able to move.</p>
+<p><a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cells</a> added to the model constitute the "Cell network", on which <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a>, added to groups created with <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a4f2536b755ae8fca7ae0c5078cd4c613">buildMoveGroup()</a>, will be able to move.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">cell</td><td>cell to add to the model </td></tr>
@@ -136,7 +134,7 @@ template&lt;typename CellType &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html#a59f3610bf1fe872a8f532426cae36991">fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html#a95673fcbc7959f4ac512a6795d217b2b">fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;</a>.</p>
 
 </div>
 </div>
@@ -168,12 +166,12 @@ template&lt;typename CellType &gt; </div>
 <p>Such <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cells</a> have necessarily been added to the model using <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a7c9a708d6bae6bf5e860306baed5598c">add()</a>, but might have migrate across processes during load-balancing operations.</p>
 <dl class="section return"><dt>Returns</dt><dd>local <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cells</a> list </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html#ab264c611b04ffe8c79b7c0eb7ea52ab6">fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html#aafd3cff1eb0b642291b94652950df909">fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;</a>.</p>
 
 </div>
 </div>
-<a id="a2e62c3b242a3730325fab5d93a6c0060"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2e62c3b242a3730325fab5d93a6c0060">&#9670;&nbsp;</a></span>buildMoveGroup()</h2>
+<a id="a4f2536b755ae8fca7ae0c5078cd4c613"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f2536b755ae8fca7ae0c5078cd4c613">&#9670;&nbsp;</a></span>buildMoveGroup()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -184,7 +182,7 @@ template&lt;typename CellType &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>&amp; <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">fpmas::api::model::SpatialModel</a>&lt; CellType &gt;::buildMoveGroup </td>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1MoveAgentGroup.html">MoveAgentGroup</a>&lt;CellType&gt;&amp; <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">fpmas::api::model::SpatialModel</a>&lt; CellType &gt;::buildMoveGroup </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a>&#160;</td>
           <td class="paramname"><em>id</em>, </td>
@@ -208,7 +206,7 @@ template&lt;typename CellType &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Builds an agent group that automatically includes the <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> execution.</p>
-<p>The specified <code>behavior</code> is assumed to include some <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a05227b8b6e46c6c6b698ec532a326712">SpatialAgent::moveTo()</a> operations, even if it's not required. Contrary to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a1d8b68afd855c58f023253debf25b476">Model::buildGroup()</a> method, the returned group is such that in addition to the execution of the <code>behavior</code> for each agent of the group, the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a38be689a0b96dbb9e25feca3c962a6d9">AgentGroup::jobs()</a> list also includes the <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html#ac73a284305227d0f8113513ef13909e1">DistributedMoveAlgorithm::jobs()</a> list, built properly from <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#ad9ddb3a685e4016ca6f7e809e3eb7470">cells()</a> in the model and agents contained in the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
+<p>The specified <code>behavior</code> is assumed to include some <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a05227b8b6e46c6c6b698ec532a326712">SpatialAgent::moveTo()</a> operations, even if it's not required. Contrary to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a1d8b68afd855c58f023253debf25b476">Model::buildGroup()</a> method, the returned group is such that in addition to the execution of the <code>behavior</code> for each agent of the group, the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a38be689a0b96dbb9e25feca3c962a6d9">AgentGroup::jobs()</a> list also includes the <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html#a06d7fcbb128d61291844d0d7ee1410b7">DistributedMoveAlgorithm::jobs()</a> list, built properly from <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#ad9ddb3a685e4016ca6f7e809e3eb7470">cells()</a> in the model and agents contained in the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">id</td><td>unique group id </td></tr>
@@ -218,39 +216,7 @@ template&lt;typename CellType &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>an <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> such that <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a38be689a0b96dbb9e25feca3c962a6d9">AgentGroup::jobs()</a> is suitable for the execution and commitment of <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a05227b8b6e46c6c6b698ec532a326712">SpatialAgent::moveTo()</a> operations </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html#aa11eeeb530567edbb4b58738112e98c7">fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;</a>.</p>
-
-</div>
-</div>
-<a id="a22cde3e16547148d021503f0aa10a366"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22cde3e16547148d021503f0aa10a366">&#9670;&nbsp;</a></span>distributedMoveAlgorithm()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename CellType &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a>&lt;CellType&gt;&amp; <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">fpmas::api::model::SpatialModel</a>&lt; CellType &gt;::distributedMoveAlgorithm </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns a reference to internal the <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a>.</p>
-<p>The <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> is notably used by <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroups</a> built by the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html#a2e62c3b242a3730325fab5d93a6c0060">buildMoveGroup()</a> method to compute <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a38be689a0b96dbb9e25feca3c962a6d9">AgentGroup::jobs()</a> lists.</p>
-<dl class="section return"><dt>Returns</dt><dd>distributed move algorithm </dd></dl>
-
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html#ac578e32169fdf3eb8abe6cd1bbec2b55">fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html#aaf48758e06bf0a959a7303cdda801d58">fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;</a>.</p>
 
 </div>
 </div>

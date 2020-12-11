@@ -15,13 +15,20 @@ namespace fpmas {
 	using api::model::DistributedId;
 
 	/**
-	 * \AgentGroup designed to implicitly include a \DistributedMoveAlgorithm
-	 * in the JobList returned by jobs().
+	 * FPMAS reserved api::model::GroupId used by Cell groups.
+	 */
+	static const api::model::GroupId CELL_GROUP_ID = -1;
+
+	/**
+	 * api::model::MoveAgentGroup implementation.
 	 */
 	template<typename CellType>
-	class MoveAgentGroup : public model::detail::AgentGroupBase {
+	class MoveAgentGroup :
+		public api::model::MoveAgentGroup<CellType>,
+		public model::detail::AgentGroupBase {
 		private:
 			api::model::SpatialModel<CellType>& model;
+			DistributedMoveAlgorithm<CellType> dist_move_algo;
 		public:
 			/**
 			 * MoveAgentGroup constructor.
@@ -38,8 +45,11 @@ namespace fpmas {
 			MoveAgentGroup(
 					api::model::GroupId group_id,
 					const api::model::Behavior& behavior,
-					api::model::SpatialModel<CellType>& model) :
-			AgentGroupBase(group_id, model.graph(), behavior), model(model) {
+					api::model::SpatialModel<CellType>& model,
+					api::model::EndCondition<CellType>& end_condition) :
+			AgentGroupBase(group_id, model.graph(), behavior),
+			model(model),
+			dist_move_algo(model, *this, model.getGroup(CELL_GROUP_ID), end_condition) {
 			}
 
 			/**
@@ -57,19 +67,18 @@ namespace fpmas {
 			 * @return list of \Jobs associated to this \AgentGroup
 			 */
 			api::scheduler::JobList jobs() const override;
+
+			api::model::DistributedMoveAlgorithm<CellType>& distributedMoveAlgorithm()  override {
+				return dist_move_algo;
+			}
 	};
 		
 	template<typename CellType>
 		api::scheduler::JobList MoveAgentGroup<CellType>::jobs() const {
 			api::scheduler::JobList job_list;
-			job_list.push_back(this->job());
+			job_list.push_back(this->agentExecutionJob());
 
-			std::vector<api::model::SpatialAgent<CellType>*> agents;
-			for(auto agent : this->localAgents()) {
-				agents.push_back(dynamic_cast<api::model::SpatialAgent<CellType>*>(agent));
-			}
-
-			for(auto job : model.distributedMoveAlgorithm().jobs(model, agents, model.cells()))
+			for(auto job : dist_move_algo.jobs())
 				job_list.push_back(job);
 			return job_list;
 		}
@@ -110,11 +119,6 @@ namespace fpmas {
 	};
 
 	/**
-	 * FPMAS reserved api::model::GroupId used by Cell groups.
-	 */
-	static const api::model::GroupId CELL_GROUP_ID = -1;
-
-	/**
 	 * api::model::SpatialModel implementation.
 	 *
 	 * @see SpatialModel
@@ -125,7 +129,7 @@ namespace fpmas {
 		public Model<SyncMode> {
 		private:
 			AgentGroup* cell_group;
-			DistributedMoveAlgorithm<CellType, EndCondition> dist_move_algo;
+			EndCondition dist_move_algo_end_condition;
 
 		public:
 			/**
@@ -138,54 +142,31 @@ namespace fpmas {
 			void add(CellType* cell) override;
 			std::vector<CellType*> cells() override;
 			MoveAgentGroup<CellType>& buildMoveGroup(
-					api::model::GroupId id, const api::model::Behavior& behavior) override;
-
-			api::model::DistributedMoveAlgorithm<CellType>& distributedMoveAlgorithm() override;
+					api::model::GroupId id,
+					const api::model::Behavior& behavior) override;
 	};
 
-	template<template<typename> class SyncMode, typename CellType, typename DistMoveAlg>
-		void SpatialModel<SyncMode, CellType, DistMoveAlg>::add(CellType* cell) {
+	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
+		void SpatialModel<SyncMode, CellType, EndCondition>::add(CellType* cell) {
 			cell_group->add(cell);
 		}
 
-	template<template<typename> class SyncMode, typename CellType, typename DistMoveAlg>
-		std::vector<CellType*> SpatialModel<SyncMode, CellType, DistMoveAlg>::cells() {
+	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
+		std::vector<CellType*> SpatialModel<SyncMode, CellType, EndCondition>::cells() {
 			std::vector<CellType*> cells;
 			for(auto agent : cell_group->localAgents())
 				cells.push_back(dynamic_cast<CellType*>(agent));
 			return cells;
 		}
 
-	template<template<typename> class SyncMode, typename CellType, typename DistMoveAlg>
-		MoveAgentGroup<CellType>& SpatialModel<SyncMode, CellType, DistMoveAlg>::buildMoveGroup(
+	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
+		MoveAgentGroup<CellType>& SpatialModel<SyncMode, CellType, EndCondition>::buildMoveGroup(
 				api::model::GroupId id, const api::model::Behavior& behavior) {
-			auto* group = new MoveAgentGroup<CellType>(id, behavior, *this);
+			auto* group = new MoveAgentGroup<CellType>(
+					id, behavior, *this, dist_move_algo_end_condition);
 			this->insert(id, group);
 			return *group;
 		}
-
-	template<template<typename> class SyncMode, typename CellType, typename DistMoveAlg>
-		api::model::DistributedMoveAlgorithm<CellType>&
-		SpatialModel<SyncMode, CellType, DistMoveAlg>::distributedMoveAlgorithm() {
-			return dist_move_algo;
-		}
-
-
-	/*
-	 *template<
-	 *    template<typename> class SyncMode,
-	 *    typename CellType,
-	 *    typename DistMoveAlgoEndCondition>
-	 *class SpatialModel :
-	 *    public SpatialModelBase<CellType, DistributedMoveAlgorithm<CellType, DistMoveAlgoEndCondition>>,
-	 *    public Model<SyncMode> {
-	 *    public:
-	 *        SpatialModel() {
-	 *            this->initCellGroup();
-	 *        }
-	 *};
-	 */
-
 	
 	/**
 	 * api::model::SpatialAgent API implementation.
@@ -521,18 +502,24 @@ namespace fpmas {
 				api::model::SpatialAgentFactory<CellType>& factory,
 				api::model::SpatialAgentMapping<CellType>& agent_counts
 				) {
+			model::DefaultBehavior _;
+			api::model::MoveAgentGroup<CellType>& temp_group = model.buildMoveGroup(-2, _);
 			std::vector<api::model::SpatialAgent<CellType>*> agents;
 			for(auto cell : model.cells()) {
 				for(std::size_t i = 0; i < agent_counts.countAt(cell); i++) {
 					auto agent = factory.build();
 					agents.push_back(agent);
+					temp_group.add(agent);
 					for(api::model::AgentGroup& group : groups)
 						group.add(agent);
 					agent->initLocation(cell);
 				}
 			}
 
-			model.runtime().execute(model.distributedMoveAlgorithm().jobs(model, agents, model.cells()));
+			model.runtime().execute(
+					temp_group.distributedMoveAlgorithm().jobs()
+					);
+			model.removeGroup(temp_group);
 		}
 }}
 

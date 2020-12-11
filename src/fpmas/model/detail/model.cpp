@@ -8,7 +8,7 @@ namespace fpmas {
 
 			void InsertAgentNodeCallback::call(AgentNode *node) {
 				api::model::AgentPtr& agent = node->data();
-				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
+				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"INSERT_AGENT_CALLBACK", "Inserting agent %s in graph.", FPMAS_C_STR(node->getId()));
 				for(auto gid : agent->groupIds())
 					agent->addGroup(&model.getGroup(gid));
@@ -25,7 +25,7 @@ namespace fpmas {
 
 			void EraseAgentNodeCallback::call(AgentNode *node) {
 				api::model::AgentPtr& agent = node->data();
-				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
+				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", FPMAS_C_STR(node->getId()));
 				if(node->state() == graph::LocationState::LOCAL) {
 					// Unschedule agent task. If the node is DISTANT, task was already
@@ -33,15 +33,16 @@ namespace fpmas {
 					for(auto group : agent->groups())
 						group->agentExecutionJob().remove(*agent->task(group->groupId()));
 				}
-				for(auto group : agent->groups())
+				for(auto group : agent->groups()) {
 					group->erase(&agent);
+				}
 				for(auto task : agent->tasks())
 					delete task.second;
 			}
 
 			void SetAgentLocalCallback::call(AgentNode *node) {
 				api::model::Agent* agent = node->data();
-				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
+				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", FPMAS_C_STR(node->getId()));
 				for(auto group : agent->groups())
 					group->agentExecutionJob().add(*agent->task(group->groupId()));
@@ -49,7 +50,7 @@ namespace fpmas {
 
 			void SetAgentDistantCallback::call(AgentNode *node) {
 				api::model::Agent* agent = node->data();
-				FPMAS_LOGD(model.graph().getMpiCommunicator().getRank(),
+				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", FPMAS_C_STR(node->getId()));
 				// Unschedule agent task 
 				for(auto group : agent->groups())
@@ -96,6 +97,12 @@ namespace fpmas {
 				return *group;
 			}
 
+			void Model::removeGroup(api::model::AgentGroup& group) {
+				group.clear();
+				_groups.erase(group.groupId());
+				delete &group;
+			}
+
 			AgentEdge* Model::link(api::model::Agent *src_agent, api::model::Agent *tgt_agent, api::graph::LayerId layer) {
 				return _graph.link(src_agent->node(), tgt_agent->node(), layer);
 			}
@@ -124,9 +131,8 @@ namespace fpmas {
 				agent->addGroupId(id);
 				// TODO: to improve in 2.0
 				if(agent->groups().empty()) {
-					agent_graph.buildNode(agent);
-				}
-				else {
+					agent_graph.buildNode(api::model::AgentPtr {agent});
+				} else {
 					// It is assumed that the agent has already been added to a
 					// group, and so the "insert node" and "set local"
 					// callbacks above have already been triggered, for the
@@ -155,7 +161,18 @@ namespace fpmas {
 			}
 
 			void AgentGroupBase::remove(api::model::Agent* agent) {
-				agent_graph.removeNode(agent->node());
+				agent->removeGroup(this);
+				agent->removeGroupId(this->groupId());
+				this->erase(&agent->node()->data());
+
+				if(agent->node()->state() == graph::LocationState::LOCAL) {
+					// Unschedule agent task. If the node is DISTANT, task was already
+					// unscheduled.
+					this->agentExecutionJob().remove(*agent->task(this->groupId()));
+
+					if(agent->groups().empty())
+						agent_graph.removeNode(agent->node());
+				}
 			}
 
 			void AgentGroupBase::insert(api::model::AgentPtr* agent) {
@@ -164,6 +181,11 @@ namespace fpmas {
 
 			void AgentGroupBase::erase(api::model::AgentPtr* agent) {
 				_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
+			}
+
+			void AgentGroupBase::clear() {
+				for(auto agent : this->agents())
+					this->remove(agent);
 			}
 
 			std::vector<api::model::Agent*> AgentGroupBase::agents() const {

@@ -347,7 +347,7 @@ namespace fpmas {
 			/**
 			 * api::model::AgentGroup implementation.
 			 */
-			class AgentGroupBase : public api::model::AgentGroup {
+			class AgentGroupBase : public virtual api::model::AgentGroup {
 				friend detail::EraseAgentCallback;
 				private:
 				GroupId id;
@@ -391,6 +391,7 @@ namespace fpmas {
 
 				void insert(api::model::AgentPtr*) override;
 				void erase(api::model::AgentPtr*) override;
+				void clear() override;
 
 				scheduler::Job& job() override {return job_base;}
 				const scheduler::Job& job() const override {return job_base;}
@@ -465,18 +466,38 @@ namespace fpmas {
 					Model& operator=(const Model&) = delete;
 					Model& operator=(Model&&) = delete;
 
-					api::model::AgentGraph& graph() override {return _graph;}
-					api::scheduler::Scheduler& scheduler() override {return _scheduler;}
-					api::runtime::Runtime& runtime() override {return _runtime;}
+					api::model::AgentGraph& graph() override {
+						return _graph;
+					}
+					api::scheduler::Scheduler& scheduler() override {
+						return _scheduler;
+					}
+					api::runtime::Runtime& runtime() override {
+						return _runtime;
+					}
 
-					const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
+					const scheduler::Job& loadBalancingJob() const override {
+						return _loadBalancingJob;
+					}
 
-					api::model::AgentGroup& buildGroup(api::model::GroupId id) override;
-					api::model::AgentGroup& buildGroup(api::model::GroupId id, const api::model::Behavior& behavior) override;
-					api::model::AgentGroup& getGroup(api::model::GroupId id) const override;
-					const std::unordered_map<GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
+					api::model::AgentGroup& buildGroup(
+							api::model::GroupId id) override;
+					api::model::AgentGroup& buildGroup(
+							api::model::GroupId id,
+							const api::model::Behavior& behavior) override;
 
-					AgentEdge* link(api::model::Agent* src_agent, api::model::Agent* tgt_agent, api::graph::LayerId layer) override;
+					void removeGroup(api::model::AgentGroup& group) override;
+
+					api::model::AgentGroup& getGroup(
+							api::model::GroupId id) const override;
+
+					const std::unordered_map<GroupId, api::model::AgentGroup*>&
+						groups() const override {return _groups;}
+
+					AgentEdge* link(
+							api::model::Agent* src_agent,
+							api::model::Agent* tgt_agent,
+							api::graph::LayerId layer) override;
 					void unlink(api::model::AgentEdge* edge) override;
 
 					api::communication::MpiCommunicator& getMpiCommunicator() override {

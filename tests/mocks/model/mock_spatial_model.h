@@ -55,11 +55,16 @@ class MockCell : public virtual fpmas::api::model::Cell, public testing::NiceMoc
 template<typename CellType>
 class MockDistributedMoveAlgorithm : public fpmas::api::model::DistributedMoveAlgorithm<CellType> {
 	public:
-		MOCK_METHOD(fpmas::api::scheduler::JobList, jobs, (
-					fpmas::api::model::SpatialModel<CellType>&,
-					std::vector<fpmas::api::model::SpatialAgent<CellType>*>,
-					std::vector<CellType*>
-					), (override));
+		MOCK_METHOD(fpmas::api::scheduler::JobList, jobs, (), (const, override));
+};
+
+template<typename CellType>
+class MockMoveAgentGroup :
+	public fpmas::api::model::MoveAgentGroup<CellType>,
+	public MockAgentGroup {
+	public:
+		MOCK_METHOD(fpmas::api::model::DistributedMoveAlgorithm<CellType>&,
+				distributedMoveAlgorithm, (), (override));
 };
 
 template<typename CellType>
@@ -67,11 +72,8 @@ class MockSpatialModel : public fpmas::api::model::SpatialModel<CellType>, publi
 	public:
 		MOCK_METHOD(void, add, (CellType*), (override));
 		MOCK_METHOD(std::vector<CellType*>, cells, (), (override));
-		MOCK_METHOD(fpmas::api::model::AgentGroup&, buildMoveGroup,
+		MOCK_METHOD(fpmas::api::model::MoveAgentGroup<CellType>&, buildMoveGroup,
 				(fpmas::model::GroupId, const fpmas::api::model::Behavior&), (override));
-
-		MOCK_METHOD(fpmas::api::model::DistributedMoveAlgorithm<CellType>&, distributedMoveAlgorithm, (), (override));
-
 };
 
 template<typename CellType>

@@ -436,11 +436,21 @@ namespace fpmas { namespace model {
 			/**
 			 * \copydoc fpmas::api::model::Agent::setGroupId
 			 */
-			void setGroupId(api::model::GroupId id) override {group_ids.push_back(id);}
+			void setGroupId(api::model::GroupId id) override {
+				group_ids.push_back(id);}
 			/**
 			 * \copydoc fpmas::api::model::Agent::addGroupId
 			 */
-			void addGroupId(api::model::GroupId id) override {group_ids.push_back(id);}
+			void addGroupId(api::model::GroupId id) override {
+				group_ids.push_back(id);
+			}
+
+			/**
+			 * \copydoc fpmas::api::model::Agent::removeGroupId
+			 */
+			void removeGroupId(api::model::GroupId id) override {
+				group_ids.erase(std::remove(group_ids.begin(), group_ids.end(), id));
+			}
 
 			/**
 			 * \copydoc fpmas::api::model::Agent::group
@@ -469,11 +479,22 @@ namespace fpmas { namespace model {
 			/**
 			 * \copydoc fpmas::api::model::Agent::setGroup
 			 */
-			void setGroup(api::model::AgentGroup* group) override {_groups.push_back(group);}
+			void setGroup(api::model::AgentGroup* group) override {
+				_groups.push_back(group);
+			}
 			/**
 			 * \copydoc fpmas::api::model::Agent::addGroup
 			 */
-			void addGroup(api::model::AgentGroup* group) override {_groups.push_back(group);}
+			void addGroup(api::model::AgentGroup* group) override {
+				_groups.push_back(group);
+			}
+
+			/**
+			 * \copydoc fpmas::api::model::Agent::removeGroup
+			 */
+			void removeGroup(api::model::AgentGroup* group) override {
+				_groups.erase(std::remove(_groups.begin(), _groups.end(), group));
+			}
 
 			/**
 			 * \copydoc fpmas::api::model::Agent::typeId

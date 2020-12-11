@@ -54,6 +54,7 @@ TEST_F(AgentTaskTest, run) {
 
 class ModelTest : public ::testing::Test {
 	public:
+		MockMpiCommunicator<> mock_comm;
 		MockDistributedGraph<
 			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>>
 			graph;
@@ -73,6 +74,9 @@ class ModelTest : public ::testing::Test {
 
 		Model* model;
 		void SetUp() override {
+			EXPECT_CALL(graph, getMpiCommunicator())
+				.Times(AnyNumber())
+				.WillRepeatedly(ReturnRef(mock_comm));
 			EXPECT_CALL(graph, addCallOnInsertNode(
 					WhenDynamicCastTo<fpmas::model::detail::InsertAgentNodeCallback*>(Not(IsNull()))
 					)).WillOnce(SaveArg<0>(&insert_node_callback));
@@ -110,6 +114,75 @@ TEST_F(ModelTest, build_group) {
 	auto& group_2 = model->buildGroup(G_2);
 
 	ASSERT_THAT(model->groups(), UnorderedElementsAre(Pair(G_1, &group_1), Pair(G_2, &group_2)));
+}
+
+TEST_F(ModelTest, remove_group) {
+	FPMAS_DEFINE_GROUPS(G_1, G_2);
+
+	// Absurdly complex set up to simulate group.add(agent) and
+	// group.remove(agent)...
+	// It would really be better if we could use MockAgentGroup in Model, and
+	// simply expect mock_agent_group.clear()
+	struct MockBuildNode {
+		MockDistributedNode<AgentPtr> mock_node;
+		fpmas::api::model::AgentTask* task;
+		std::unordered_map<
+			fpmas::api::model::GroupId,
+			fpmas::api::model::AgentTask*> task_list;
+
+		void setTask(Unused, fpmas::api::model::AgentTask* task) {
+			this->task = task;
+			task_list[G_1] = task;
+		}
+		MockBuildNode(MockAgent<>* agent)
+			: mock_node({0, 0}, agent), task_list({{G_1, task}}) {
+				ON_CALL(*agent, node())
+					.WillByDefault(Return(&mock_node));
+				ON_CALL(mock_node, state)
+					.WillByDefault(Return(fpmas::api::graph::LOCAL));
+				ON_CALL(*agent, setTask(G_1, _))
+					.WillByDefault(Invoke(this, &MockBuildNode::setTask));
+				ON_CALL(*agent, task(G_1))
+					.WillByDefault(ReturnPointee(&task));
+				ON_CALL(*agent, tasks)
+					.WillByDefault(ReturnRef(task_list));
+			}
+
+		fpmas::api::graph::DistributedNode<AgentPtr>* build(fpmas::api::model::AgentPtr& ptr) {
+			ptr.release();
+			return &mock_node;
+		}
+	};
+
+	NiceMock<MockAgent<>>* agent = new NiceMock<MockAgent<>>;
+	MockBuildNode mock_build_node(agent);
+	EXPECT_CALL(graph, buildNode_rv)
+		.WillOnce(Invoke(&mock_build_node, &MockBuildNode::build));
+
+	auto& group_1 = model->buildGroup(G_1);
+	auto& group_2 = model->buildGroup(G_2);
+
+	std::vector<fpmas::api::model::GroupId> group_ids {G_1};
+	std::vector<fpmas::api::model::AgentGroup*> groups {&group_1};
+	group_1.add(agent);
+	ON_CALL(*agent, groupIds)
+		.WillByDefault(ReturnPointee(&group_ids));
+	ON_CALL(*agent, groups())
+		.WillByDefault(ReturnPointee(&groups));
+	insert_node_callback->call(&mock_build_node.mock_node);
+
+	// Expect group_1.remove(agent)
+	// It would be more efficient to mock group_1 and group_2 but this is
+	// currently not possible
+	EXPECT_CALL(*agent, removeGroup(&group_1))
+		.WillOnce(InvokeWithoutArgs(&groups, &decltype(groups)::clear));
+	EXPECT_CALL(*agent, removeGroupId(G_1))
+		.WillOnce(InvokeWithoutArgs(&group_ids, &decltype(group_ids)::clear));
+	EXPECT_CALL(graph, removeNode(&mock_build_node.mock_node))
+		.WillOnce(Invoke(erase_node_callback, &NodeCallback::call));
+
+	model->removeGroup(group_1);
+	ASSERT_THAT(model->groups(), ElementsAre(Pair(G_2, &group_2)));
 }
 
 TEST_F(ModelTest, load_balancing_job) {
@@ -151,37 +224,6 @@ class AgentGroupTest : public ::testing::Test {
 	public:
 		typedef fpmas::api::graph::DistributedNode<AgentPtr> Node;
 	protected:
-		struct MockAddGroup {
-			std::vector<fpmas::api::model::AgentGroup*> _groups;
-
-			void add(fpmas::api::model::AgentGroup* group) {
-				_groups.push_back(group);
-			}
-
-			std::vector<fpmas::api::model::AgentGroup*> groups() {
-				return _groups;
-			}
-		};
-
-		struct MockTasks {
-			typedef fpmas::api::model::GroupId GroupId;
-			typedef fpmas::api::model::AgentTask AgentTask;
-
-			std::unordered_map<GroupId, AgentTask*> _tasks;
-
-			void addTask(GroupId gid, AgentTask* task) {
-				_tasks[gid] = task;
-			}
-
-			AgentTask* task(GroupId gid) {
-				return _tasks[gid];
-			}
-
-			const std::unordered_map<GroupId, AgentTask*>& tasks() {
-				return _tasks;
-			}
-		};
-
 		MockModel model;
 		fpmas::model::detail::InsertAgentNodeCallback insert_agent_callback {model};
 		fpmas::model::detail::EraseAgentNodeCallback erase_agent_callback {model};
@@ -197,14 +239,14 @@ class AgentGroupTest : public ::testing::Test {
 		MockDistributedNode<AgentPtr> node2 {{0, 2}};
 
 		AgentGroup agent_group {id, graph};
-		MockAgent<> agent1;
-		MockAddGroup agent1_groups;
-		MockTasks agent1_tasks;
+		NiceMock<MockAgent<>> agent1;
+		std::vector<fpmas::api::model::AgentGroup*> agent1_groups;
+		std::unordered_map<fpmas::model::GroupId, fpmas::api::model::AgentTask*> agent1_tasks;
 		AgentPtr agent1_ptr {&agent1};
 
-		MockAgent<> agent2;
-		MockAddGroup agent2_groups;
-		MockTasks agent2_tasks;
+		NiceMock<MockAgent<>> agent2;
+		std::vector<fpmas::api::model::AgentGroup*> agent2_groups;
+		std::unordered_map<fpmas::model::GroupId, fpmas::api::model::AgentTask*> agent2_tasks;
 		AgentPtr agent2_ptr {&agent2};
 
 		fpmas::scheduler::Scheduler scheduler;
@@ -214,6 +256,8 @@ class AgentGroupTest : public ::testing::Test {
 			// In case of LOG
 			EXPECT_CALL(model, graph).Times(AnyNumber())
 				.WillRepeatedly(ReturnRef(graph));
+			EXPECT_CALL(model, getMpiCommunicator()).Times(AnyNumber())
+				.WillRepeatedly(ReturnRef(mock_comm));
 			EXPECT_CALL(graph, getMpiCommunicator()).Times(AnyNumber())
 				.WillRepeatedly(ReturnRef(mock_comm));
 
@@ -232,34 +276,49 @@ class AgentGroupTest : public ::testing::Test {
 							std::vector<fpmas::api::model::GroupId> {id}));
 
 			// Task SetUp
-			ON_CALL(agent1, setTask(id, _)).WillByDefault(
-					Invoke(&agent1_tasks, &MockTasks::addTask));
-			EXPECT_CALL(agent1, task(_))
-				.Times(AnyNumber())
-				.WillRepeatedly(Invoke(&agent1_tasks, &MockTasks::task));
-			EXPECT_CALL(agent1, tasks())
-				.Times(AnyNumber())
-				.WillRepeatedly(Invoke(&agent1_tasks, &MockTasks::tasks));
-			ON_CALL(agent2, setTask(id, _)).WillByDefault(
-					Invoke(&agent2_tasks, &MockTasks::addTask));
-			EXPECT_CALL(agent2, task(_))
-				.Times(AnyNumber())
-				.WillRepeatedly(Invoke(&agent2_tasks, &MockTasks::task));
-			EXPECT_CALL(agent2, tasks())
-				.Times(AnyNumber())
-				.WillRepeatedly(Invoke(&agent2_tasks, &MockTasks::tasks));
+			ON_CALL(agent1, setTask(_, _)).WillByDefault(
+					[this] (fpmas::model::GroupId id, fpmas::api::model::AgentTask* task) {
+						agent1_tasks[id] = task;
+						});
+			ON_CALL(agent1, task(_)).WillByDefault(
+					[this] (fpmas::model::GroupId id) {
+						return agent1_tasks[id];
+						});
+			ON_CALL(agent1, tasks())
+				.WillByDefault(ReturnPointee(&agent1_tasks));
+
+			ON_CALL(agent2, setTask(_, _)).WillByDefault(
+					[this] (fpmas::model::GroupId id, fpmas::api::model::AgentTask* task) {
+						agent2_tasks[id] = task;
+						});
+			ON_CALL(agent2, task(_)).WillByDefault(
+					[this] (fpmas::model::GroupId id) {
+						return agent2_tasks[id];
+						});
+			ON_CALL(agent2, tasks())
+				.WillByDefault(ReturnPointee(&agent2_tasks));
 
 			// AgentGroup SetUp
+			ON_CALL(agent1, groups())
+				.WillByDefault(ReturnPointee(&agent1_groups));
 			ON_CALL(agent1, addGroup).WillByDefault(
-					Invoke(&agent1_groups, &MockAddGroup::add));
-			EXPECT_CALL(agent1, groups())
-				.Times(AnyNumber())
-				.WillRepeatedly(Invoke(&agent1_groups, &MockAddGroup::groups));
+					[this] (fpmas::api::model::AgentGroup* group) {
+						agent1_groups.push_back(group);
+						});
+			ON_CALL(agent1, removeGroup).WillByDefault(
+					[this] (fpmas::api::model::AgentGroup* group) {
+						agent1_groups.erase(std::remove(agent1_groups.begin(), agent1_groups.end(), group));
+						});
+			ON_CALL(agent2, groups())
+				.WillByDefault(ReturnPointee(&agent2_groups));
 			ON_CALL(agent2, addGroup).WillByDefault(
-					Invoke(&agent2_groups, &MockAddGroup::add));
-			EXPECT_CALL(agent2, groups())
-				.Times(AnyNumber())
-				.WillRepeatedly(Invoke(&agent2_groups, &MockAddGroup::groups));
+					[this] (fpmas::api::model::AgentGroup* group) {
+						agent2_groups.push_back(group);
+						});
+			ON_CALL(agent2, removeGroup).WillByDefault(
+					[this] (fpmas::api::model::AgentGroup* group) {
+						agent2_groups.erase(std::remove(agent2_groups.begin(), agent2_groups.end(), group));
+						});
 
 			EXPECT_CALL(graph, insert(A<Node*>()))
 				.Times(AnyNumber())
@@ -275,6 +334,44 @@ class AgentGroupTest : public ::testing::Test {
 			EXPECT_CALL(model, getGroup(id))
 				.Times(AnyNumber())
 				.WillRepeatedly(ReturnRef(agent_group));
+		}
+
+		void AddAgentsToGroup() {
+			// Agent 1 set up
+			EXPECT_CALL(graph, buildNode_rv)
+				.WillOnce([this] (fpmas::model::AgentPtr& ptr) {
+						graph.insert(&node1);
+						ptr.release();
+						return &node1;
+						});
+			EXPECT_CALL(agent1, setNode(&node1));
+			EXPECT_CALL(agent1, setModel(&model));
+			EXPECT_CALL(agent1, addGroup(&agent_group));
+			EXPECT_CALL(agent1, addGroupId(id));
+			EXPECT_CALL(agent1, setTask(id, _));
+			agent_group.add(&agent1);
+
+			EXPECT_CALL(agent2, setTask(id, _));
+			// Agent 2 set up
+			EXPECT_CALL(graph, buildNode_rv)
+				.WillOnce([this] (fpmas::model::AgentPtr& ptr) {
+						graph.insert(&node2);
+						ptr.release();
+						return &node2;
+						});
+			EXPECT_CALL(agent2, setNode(&node2));
+			EXPECT_CALL(agent2, setModel(&model));
+			EXPECT_CALL(agent2, addGroup(&agent_group));
+
+			EXPECT_CALL(agent2, addGroupId(10));
+			agent_group.add(&agent2);
+
+			using fpmas::api::graph::DistributedNode;
+			ON_CALL(graph, removeNode(A<DistributedNode<AgentPtr>*>()))
+				.WillByDefault(Invoke(
+							&erase_agent_callback,
+							&fpmas::model::detail::EraseAgentNodeCallback::call
+							));
 		}
 
 		void TearDown() override {
@@ -293,55 +390,94 @@ TEST_F(AgentGroupTest, job_end) {
 	agent_group.job().getEndTask().run();
 }
 
-class MockBuildNode {
-	private:
-		typedef fpmas::api::graph::DistributedGraph<AgentPtr>
-			Graph;
-		Graph* graph;
-		typename AgentGroupTest::Node* node;
-
-	public:
-		MockBuildNode(Graph* graph, typename AgentGroupTest::Node* node)
-			: graph(graph), node(node) {}
-
-		decltype(node) build(fpmas::model::AgentPtr& ptr) {
-			graph->insert(node);
-			// Prevents temporary AgentPtr from deleting the Agent
-			ptr.release();
-			return node;
-		}
-};
-
 TEST_F(AgentGroupTest, add_agent) {
-
-	EXPECT_CALL(agent1, setTask(id, _));
-	// Agent 1 set up
-	MockBuildNode build_node_1 {&graph, &node1};
-	EXPECT_CALL(graph, buildNode_rv)
-		.WillOnce(Invoke(&build_node_1, &MockBuildNode::build));
-	EXPECT_CALL(agent1, setNode(&node1));
-	EXPECT_CALL(agent1, setModel(&model));
-	EXPECT_CALL(agent1, addGroup(&agent_group));
-	EXPECT_CALL(agent1, addGroupId(10));
-	agent_group.add(&agent1);
-
-	EXPECT_CALL(agent2, setTask(id, _));
-	// Agent 2 set up
-	MockBuildNode build_node_2 {&graph, &node2};
-	EXPECT_CALL(graph, buildNode_rv)
-		.WillOnce(Invoke(&build_node_2, &MockBuildNode::build));
-	EXPECT_CALL(agent2, setNode(&node2));
-	EXPECT_CALL(agent2, setModel(&model));
-	EXPECT_CALL(agent2, addGroup(&agent_group));
-
-	EXPECT_CALL(agent2, addGroupId(10));
-	agent_group.add(&agent2);
+	AddAgentsToGroup();
 
 	ASSERT_THAT(agent_group.agents(), UnorderedElementsAre(&agent1, &agent2));
+	ASSERT_THAT(
+			agent_group.agentExecutionJob().tasks(),
+			UnorderedElementsAre(agent1.task(id), agent2.task(id)));
 
 	// Would normally be called from the Graph destructor
 	erase_agent_callback.call(&node1);
 	erase_agent_callback.call(&node2);
+}
+
+TEST_F(AgentGroupTest, add_agent_to_an_other_group) {
+	AgentGroup other_agent_group {id+1, graph};
+	AddAgentsToGroup();
+
+	ON_CALL(agent2, node())
+		.WillByDefault(Return(&node2));
+
+	EXPECT_CALL(agent2, addGroup(&other_agent_group));
+	EXPECT_CALL(agent2, addGroupId(11));
+	EXPECT_CALL(agent2, setTask(11, _));
+	EXPECT_CALL(graph, buildNode_rv).Times(0);
+	other_agent_group.add(&agent2);
+
+	erase_agent_callback.call(&node1);
+	erase_agent_callback.call(&node2);
+}
+
+TEST_F(AgentGroupTest, remove_agent_from_last_group) {
+	AddAgentsToGroup();
+
+	EXPECT_CALL(agent1, node())
+		.WillRepeatedly(Return(&node1));
+
+	EXPECT_CALL(agent1, removeGroup(&agent_group));
+	EXPECT_CALL(agent1, removeGroupId(10));
+	EXPECT_CALL(graph, removeNode(&node1));
+
+	agent_group.remove(&agent1);
+
+	ASSERT_THAT(agent_group.agents(), ElementsAre(&agent2));
+
+	erase_agent_callback.call(&node2);
+}
+
+TEST_F(AgentGroupTest, remove_agent_not_last_group) {
+	AgentGroup other_agent_group {id+1, graph};
+	AddAgentsToGroup();
+
+	EXPECT_CALL(agent1, node())
+		.WillRepeatedly(Return(&node1));
+
+	EXPECT_CALL(agent1, addGroup(&other_agent_group));
+	EXPECT_CALL(agent1, addGroupId(11));
+	EXPECT_CALL(agent1, setTask(11, _));
+	other_agent_group.add(&agent1);
+
+	EXPECT_CALL(agent1, removeGroup(&agent_group));
+	EXPECT_CALL(agent1, removeGroupId(10));
+	EXPECT_CALL(graph, removeNode(&node1)).Times(0);
+
+	agent_group.remove(&agent1);
+
+	ASSERT_THAT(agent_group.agents(), ElementsAre(&agent2));
+
+	erase_agent_callback.call(&node1);
+	erase_agent_callback.call(&node2);
+}
+
+TEST_F(AgentGroupTest, clear) {
+	AddAgentsToGroup();
+
+	EXPECT_CALL(agent1, node())
+		.WillRepeatedly(Return(&node1));
+
+	EXPECT_CALL(graph, removeNode(&node1));
+	agent_group.remove(&agent1);
+
+	EXPECT_CALL(agent2, node())
+		.WillRepeatedly(Return(&node2));
+
+	EXPECT_CALL(graph, removeNode(&node2));
+	agent_group.remove(&agent2);
+
+	agent_group.clear();
+	ASSERT_THAT(agent_group.agents(), IsEmpty());
 }
 
 TEST_F(AgentGroupTest, insert_agent) {
@@ -362,28 +498,9 @@ TEST_F(AgentGroupTest, erase_agent) {
 }
 
 TEST_F(AgentGroupTest, agent_task) {
-	EXPECT_CALL(agent1, setTask(id, _));
-	EXPECT_CALL(agent2, setTask(id, _));
+	AddAgentsToGroup();
 
-	MockBuildNode build_node_1 {&graph, &node1};
-	EXPECT_CALL(graph, buildNode_rv)
-		.WillOnce(Invoke(&build_node_1, &MockBuildNode::build));
-	EXPECT_CALL(agent1, setNode);
-	EXPECT_CALL(agent1, setModel);
-	EXPECT_CALL(agent1, addGroup);
-	EXPECT_CALL(agent1, addGroupId(10));
-	agent_group.add(&agent1);
-
-	MockBuildNode build_node_2 {&graph, &node2};
-	EXPECT_CALL(graph, buildNode_rv)
-		.WillOnce(Invoke(&build_node_2, &MockBuildNode::build));
-	EXPECT_CALL(agent2, setNode);
-	EXPECT_CALL(agent2, setModel);
-	EXPECT_CALL(agent2, addGroup);
-	EXPECT_CALL(agent2, addGroupId(10));
-	agent_group.add(&agent2);
-
-	ASSERT_THAT(agent_group.job().tasks(), SizeIs(2));
+	ASSERT_THAT(agent_group.agentExecutionJob().tasks(), SizeIs(2));
 
 	EXPECT_CALL(graph, synchronize);
 	::testing::Sequence s1, s2;
@@ -394,8 +511,7 @@ TEST_F(AgentGroupTest, agent_task) {
 	EXPECT_CALL(agent2, act)
 		.InSequence(s2);
 
-	scheduler.schedule(0, agent_group.job());
-	runtime.run(1);
+	runtime.execute(agent_group.agentExecutionJob());
 
 	// Would normally be called from the Graph destructor
 	erase_agent_callback.call(&node1);
@@ -408,10 +524,8 @@ TEST_F(AgentGroupTest, local_agents) {
 
 	ON_CALL(agent1, node())
 		.WillByDefault(Return(&node1));
-	EXPECT_CALL(agent1, node()).Times(AnyNumber());
 	ON_CALL(agent2, node())
 		.WillByDefault(Return(&node2));
-	EXPECT_CALL(agent2, node()).Times(AnyNumber());
 
 	EXPECT_CALL(node1, state)
 		.WillRepeatedly(Return(LocationState::LOCAL));
@@ -430,23 +544,6 @@ TEST_F(AgentGroupTest, local_agents) {
 
 	ASSERT_THAT(agent_group.localAgents(), IsEmpty());
 }
-
-/*
- *TEST_F(AgentGroupTest, typed_agents) {
- *    MockAgent<1>* agent3 = new MockAgent<1>;
- *    AgentPtr agent3_ptr {agent3};
- *    agent_group.insert(&agent1_ptr);
- *    agent_group.insert(&agent2_ptr);
- *    agent_group.insert(&agent3_ptr);
- *
- *    auto list1 = agent_group.agents<MockAgent<>>();
- *    ASSERT_THAT(list1, UnorderedElementsAre(agent1, agent2));
- *
- *    auto list2 = agent_group.agents<MockAgent<1>>();
- *    ASSERT_THAT(list2, UnorderedElementsAre(agent3));
- *}
- */
-
 
 class AgentBaseTest : public ::testing::Test {
 	protected:

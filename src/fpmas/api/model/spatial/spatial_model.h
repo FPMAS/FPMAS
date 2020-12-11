@@ -424,13 +424,20 @@ namespace fpmas { namespace api { namespace model {
 			 * @param cells LOCAL cells of the current Cell network, within
 			 * which agents are moving
 			 */
-			virtual api::scheduler::JobList jobs(
-					SpatialModel<CellType>& model,
-					std::vector<SpatialAgent<CellType>*> agents,
-					std::vector<CellType*> cells) = 0;
+			virtual api::scheduler::JobList jobs() const = 0;
 
 			virtual ~DistributedMoveAlgorithm() {}
 	};
+
+	/**
+	 * \AgentGroup designed to implicitly include a \DistributedMoveAlgorithm
+	 * in the JobList returned by jobs().
+	 */
+	template<typename CellType>
+		class MoveAgentGroup : public virtual AgentGroup {
+			public:
+				virtual DistributedMoveAlgorithm<CellType>& distributedMoveAlgorithm() = 0;
+		};
 
 	/**
 	 * Model API extension to handle \SpatialAgents.
@@ -478,18 +485,7 @@ namespace fpmas { namespace api { namespace model {
 			 * for the execution and commitment of SpatialAgent::moveTo()
 			 * operations
 			 */
-			virtual AgentGroup& buildMoveGroup(GroupId id, const Behavior& behavior) = 0;
-
-			/**
-			 * Returns a reference to internal the DistributedMoveAlgorithm.
-			 *
-			 * The DistributedMoveAlgorithm is notably used by \AgentGroups
-			 * built by the buildMoveGroup() method to compute
-			 * AgentGroup::jobs() lists.
-			 *
-			 * @return distributed move algorithm
-			 */
-			virtual DistributedMoveAlgorithm<CellType>& distributedMoveAlgorithm() = 0;
+			virtual MoveAgentGroup<CellType>& buildMoveGroup(GroupId id, const Behavior& behavior) = 0;
 
 			virtual ~SpatialModel() {}
 	};

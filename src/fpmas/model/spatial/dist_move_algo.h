@@ -142,100 +142,108 @@ namespace fpmas {
 		/**
 		 * api::model::DistributedMoveAlgorithm implementation.
 		 */
-		template<typename CellType, typename EndCondition>
+		template<typename CellType>
 			class DistributedMoveAlgorithm : public api::model::DistributedMoveAlgorithm<CellType> {
 				private:
 					class AlgoTask : public api::scheduler::Task {
 						private:
-							std::vector<api::model::SpatialAgent<CellType>*> agents;
-							std::vector<CellType*> cells;
-							EndCondition end;
-							Behavior<api::model::CellBehavior> cell_behaviors {
-								&api::model::CellBehavior::handleNewLocation,
-									&api::model::CellBehavior::handleMove,
-									&api::model::CellBehavior::handlePerceive
+							typedef api::model::CellBehavior CellBehavior;
+							typedef api::model::SpatialAgentBehavior AgentBehavior;
+
+							DistributedMoveAlgorithm& dist_move_algo;
+
+							Behavior<CellBehavior> cell_behaviors {
+								&CellBehavior::handleNewLocation,
+								&CellBehavior::handleMove,
+								&CellBehavior::handlePerceive
 							};
-							Behavior<api::model::SpatialAgentBehavior> spatial_agent_behaviors {
-								&api::model::SpatialAgentBehavior::handleNewMove,
-									&api::model::SpatialAgentBehavior::handleNewPerceive
+							Behavior<AgentBehavior> spatial_agent_behaviors {
+								&AgentBehavior::handleNewMove,
+								&AgentBehavior::handleNewPerceive
 							};
-							Behavior<api::model::CellBehavior> update_perceptions_behavior {
-								&api::model::CellBehavior::updatePerceptions
+							Behavior<CellBehavior> update_perceptions_behavior {
+								&CellBehavior::updatePerceptions
 							};
-							api::model::AgentGraph* graph;
 
 						public:
-							/**
-							 * Set up the distributed move algorithm with input
-							 * `graph`, `agents` and `cells`.
-							 */
-							void set(
-									api::model::AgentGraph* graph,
-									std::vector<api::model::SpatialAgent<CellType>*> agents,
-									std::vector<CellType*> cells) {
-								this->graph = graph;
-								this->agents = agents;
-								this->cells = cells;
-							}
-
+							AlgoTask(DistributedMoveAlgorithm& dist_move_algo)
+								: dist_move_algo(dist_move_algo) {}
+							
 							/**
 							 * Runs the distributed move algorithm
 							 */
-							void run() override {
-								// Initializes the generic end condition
-								end.init(graph->getMpiCommunicator(), agents, cells);
-
-								// Assumed to loop until the mobility and
-								// perception fields of all agents are up to
-								// date
-								while(!end.end()) {
-									for(auto cell : cells)
-										// Grows mobility and perception fields
-										cell_behaviors.execute(cell);
-									graph->synchronize();
-									for(auto agent : agents)
-										// Crops and build mobility and
-										// perception fields
-										spatial_agent_behaviors.execute(agent);
-									graph->synchronize();
-									end.step();
-								}
-								for(auto cell : cells)
-									// Update agent perceptions (creates
-									// PERCEPTION links)
-									update_perceptions_behavior.execute(cell);
-								graph->synchronize();
-							}
+							void run() override;
 					};
+
+					api::model::SpatialModel<CellType>& model;
+					api::model::AgentGroup& move_agent_group;
+					api::model::AgentGroup& cell_group;
+					api::model::EndCondition<CellType>& end;
 
 					AlgoTask algo_task;
 					scheduler::Job algo_job;
-
 
 				public:
 					/**
 					 * DistributedMoveAlgorithm constructor.
 					 */
-					DistributedMoveAlgorithm() {
+					DistributedMoveAlgorithm(
+							api::model::SpatialModel<CellType>& model,
+							api::model::AgentGroup& move_agent_group,
+							api::model::AgentGroup& cell_group,
+							api::model::EndCondition<CellType>& end
+							) :
+						model(model), move_agent_group(move_agent_group),
+						cell_group(cell_group), end(end), algo_task(*this) {
 						algo_job.add(algo_task);
 					}
 
 					/**
 					 * \copydoc api::model::DistributedMoveAlgorithm::jobs
 					 */
-					api::scheduler::JobList jobs(
-							api::model::SpatialModel<CellType>& model,
-							std::vector<api::model::SpatialAgent<CellType>*> agents,
-							std::vector<CellType*> cells
-							) override {
-						algo_task.set(&model.graph(), agents, cells);
-						api::scheduler::JobList _jobs;
-
-						_jobs.push_back(algo_job);
-						return _jobs;
+					api::scheduler::JobList jobs() const override {
+						return {algo_job};
 					}
 			};
 
+		template<typename CellType>
+			void DistributedMoveAlgorithm<CellType>::AlgoTask::run() {
+				using api::model::SpatialAgent;
+
+				std::vector<SpatialAgent<CellType>*> agents;
+				for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
+					agents.push_back(
+							dynamic_cast<SpatialAgent<CellType>*>(agent));
+				}
+				std::vector<CellType*> cells;
+				for(auto cell : dist_move_algo.cell_group.localAgents()) {
+					cells.push_back(dynamic_cast<CellType*>(cell));
+				}
+
+				// Initializes the generic end condition
+				dist_move_algo.end.init(dist_move_algo.model.getMpiCommunicator(), agents, cells);
+
+				// Assumed to loop until the mobility and
+				// perception fields of all agents are up to
+				// date
+				while(!dist_move_algo.end.end()) {
+					for(auto cell : cells)
+						// Grows mobility and perception fields
+						cell_behaviors.execute(cell);
+					dist_move_algo.model.graph().synchronize();
+					for(auto agent : agents)
+						// Crops and build mobility and
+						// perception fields
+						spatial_agent_behaviors.execute(agent);
+					dist_move_algo.model.graph().synchronize();
+					dist_move_algo.end.step();
+				}
+				for(auto cell : cells)
+					// Update agent perceptions (creates
+					// PERCEPTION links)
+					update_perceptions_behavior.execute(cell);
+				dist_move_algo.model.graph().synchronize();
+			}
 	}
 }
 #endif

@@ -25,7 +25,9 @@ class SpatialModelTestBase : public ::testing::Test {
 
 		int num_cells_in_ring {model.getMpiCommunicator().getSize()};
 
-		fpmas::scheduler::detail::LambdaTask check_model_task {[&]() -> void {this->checkModelState();}};
+		fpmas::scheduler::detail::LambdaTask check_model_task {
+			[&]() -> void {this->checkModelState();}
+		};
 		fpmas::scheduler::Job check_model_job {check_model_task};
 
 		SpatialModelTestBase() {}
@@ -146,7 +148,7 @@ class SpatialModelTestBase : public ::testing::Test {
 			for(auto agent : agent_group.localAgents())
 				agents.push_back(dynamic_cast<fpmas::api::model::SpatialAgent<TestCell>*>(agent));
 
-			model.runtime().execute(model.distributedMoveAlgorithm().jobs(model, agents, model.cells()));
+			model.runtime().execute(agent_group.distributedMoveAlgorithm().jobs());
 
 			checkModelState();
 		}
@@ -157,7 +159,7 @@ class SpatialModelTestBase : public ::testing::Test {
 			for(auto agent : agent_group.localAgents())
 				agents.push_back(dynamic_cast<fpmas::api::model::SpatialAgent<TestCell>*>(agent));
 
-			model.runtime().execute(model.distributedMoveAlgorithm().jobs(model, agents, model.cells()));
+			model.runtime().execute(agent_group.distributedMoveAlgorithm().jobs());
 
 			// Agent behavior. Since agent_group is a MoveAgentGroup, the
 			// distributedMoveAlgorithm is automatically included.
@@ -214,7 +216,7 @@ TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, distributed_move_algorithm) {
 class SpatialAgentBuilderTest : public Test {
 	protected:
 	fpmas::random::DistributedGenerator<> rd;
-	fpmas::random::UniformIntDistribution<> rand_int {0, 10};
+	fpmas::random::UniformIntDistribution<> rand_int {5, 10};
 	int num_cells {rand_int(rd)};
 
 	std::vector<fpmas::api::model::Agent*> agents;
@@ -226,6 +228,7 @@ class SpatialAgentBuilderTest : public Test {
 
 	MockRuntime mock_runtime;
 	std::array<MockAgentGroup, 2> mock_groups;
+	NiceMock<MockMoveAgentGroup<fpmas::api::model::Cell>> mock_move_group;
 	StrictMock<MockSpatialAgentFactory<fpmas::api::model::Cell>> agent_factory;
 	StrictMock<MockSpatialAgentMapping<fpmas::api::model::Cell>> agent_mapping;
 	fpmas::model::SpatialAgentBuilder<fpmas::api::model::Cell> builder;
@@ -238,11 +241,15 @@ class SpatialAgentBuilderTest : public Test {
 		}
 	};
 
+	ExpectationSet add_to_temp_group;
+
 	CountAgents count_agents;
 	void SetUp() override {
 		ON_CALL(model, runtime)
 			.WillByDefault(ReturnRef(mock_runtime));
-		ON_CALL(model, distributedMoveAlgorithm)
+		ON_CALL(model, buildMoveGroup(-2, _))
+			.WillByDefault(ReturnRef(mock_move_group));
+		ON_CALL(mock_move_group, distributedMoveAlgorithm)
 			.WillByDefault(ReturnRef(mock_dist_move_algo));
 		ON_CALL(mock_dist_move_algo, jobs)
 			.WillByDefault(Return(fake_job_list));
@@ -256,6 +263,8 @@ class SpatialAgentBuilderTest : public Test {
 			for(int j = 0; j < num_agents; j++) {
 				auto agent = new MockSpatialAgent<fpmas::api::model::Cell>;
 				agents.push_back(agent);
+
+				add_to_temp_group += EXPECT_CALL(mock_move_group, add(agent));
 
 				Sequence s1, s2;
 				EXPECT_CALL(mock_groups[0], add(agent))
@@ -287,9 +296,20 @@ class SpatialAgentBuilderTest : public Test {
 };
 
 TEST_F(SpatialAgentBuilderTest, build) {
+	using fpmas::api::scheduler::Job;
+
 	// Expect distributedMoveAlgorithm execution
-	EXPECT_CALL(mock_runtime, execute((Matcher<const fpmas::api::scheduler::JobList&>) ElementsAre(
-					Property(&std::reference_wrapper<const fpmas::api::scheduler::Job>::get,Ref(mock_job)))));
+	Expectation move_algo_execution = EXPECT_CALL(
+			mock_runtime, execute(
+				(Matcher<const fpmas::api::scheduler::JobList&>) ElementsAre(
+					Property(&std::reference_wrapper<const Job>::get,Ref(mock_job))
+					)
+				)
+			)
+		.After(add_to_temp_group);
+
+	EXPECT_CALL(model, removeGroup(Ref(mock_move_group)))
+		.After(move_algo_execution);
 
 	builder.build(
 			model,
