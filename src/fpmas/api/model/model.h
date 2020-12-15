@@ -253,12 +253,37 @@ namespace fpmas { namespace api {namespace model {
 			/**
 			 * Moves the specified agent into this.
 			 *
+			 * The specified `agent` is assumed to be an updated version of
+			 * this agent.
+			 *
 			 * In the move process, the following fields of "this" host agent
-			 * keep unchanged, and so are note move from `agent` to this :
-			 * - group()
-			 * - task()
+			 * keep unchanged, and so are not moved from `agent` to this :
 			 * - node()
 			 * - model()
+			 *
+			 * groups() and tasks() fields are particularly handled such as the
+			 * `agent`s groupIds() is assumed to be up to date and synchronized
+			 * with this groupIds().
+			 *
+			 * More particularly:
+			 * - this agent is added to groups corresponding to ids contained in
+			 *   `agent->groupIds()` but not in `this->groupIds()` (see
+			 *   AgentGroup::add())
+			 * - this agent is removed from groups corresponding to ids
+			 *   contained in `this->groupIds()` but not in `agent->groupIds()`
+			 *   (see AgentGroup::remove())
+			 * - other groups are left unchanged.
+			 *
+			 * `this->groupIds()` is also updated according to the previous
+			 * rules.
+			 *
+			 * tasks() are assumed to stay consistent with the rules expressed
+			 * above, since tasks are bound to agent groups to which the agent
+			 * belong. Those tasks are updated automatically by
+			 * AgentGroup::add() and AgentGroup::remove().
+			 *
+			 * Other fields are moved according to implementation defined
+			 * rules.
 			 *
 			 * @param agent agent to move
 			 */

@@ -488,6 +488,12 @@ namespace fpmas {
 	template<typename CellType>
 	class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType>{
 		public:
+			/**
+			 * FPMAS reserved group id used by the SpatialAgentBuilder
+			 * temporary group used to build() agents.
+			 */
+			static const api::model::GroupId TEMP_GROUP_ID = -2;
+
 			void build(
 					api::model::SpatialModel<CellType>& model,
 					api::model::GroupList groups,
@@ -504,7 +510,7 @@ namespace fpmas {
 				api::model::SpatialAgentMapping<CellType>& agent_counts
 				) {
 			model::DefaultBehavior _;
-			api::model::MoveAgentGroup<CellType>& temp_group = model.buildMoveGroup(-2, _);
+			api::model::MoveAgentGroup<CellType>& temp_group = model.buildMoveGroup(TEMP_GROUP_ID, _);
 			std::vector<api::model::SpatialAgent<CellType>*> agents;
 			for(auto cell : model.cells()) {
 				for(std::size_t i = 0; i < agent_counts.countAt(cell); i++) {

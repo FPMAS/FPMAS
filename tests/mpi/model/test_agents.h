@@ -7,6 +7,11 @@
 
 using testing::Ge;
 
+class BasicAgent : public fpmas::model::AgentBase<BasicAgent> {
+};
+
+FPMAS_DEFAULT_JSON(BasicAgent)
+
 class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 	private:
 		std::mt19937 engine;
@@ -209,7 +214,7 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>)
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
 
-#define TEST_AGENTS ReaderAgent, WriterAgent, LinkerAgent,\
+#define TEST_AGENTS BasicAgent, ReaderAgent, WriterAgent, LinkerAgent,\
 		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\
 		TestCell, TestSpatialAgent::JsonBase, fpmas::model::GridCell::JsonBase
 

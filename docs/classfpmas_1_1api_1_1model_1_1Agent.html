@@ -688,12 +688,20 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Moves the specified agent into this.</p>
-<p>In the move process, the following fields of "this" host agent keep unchanged, and so are note move from <code>agent</code> to this :</p><ul>
-<li><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a46ea84f58fb1b430f05312ba61b06639">group()</a></li>
-<li><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a67db390e324f864aed535a18339a124e">task()</a></li>
+<p>The specified <code>agent</code> is assumed to be an updated version of this agent.</p>
+<p>In the move process, the following fields of "this" host agent keep unchanged, and so are not moved from <code>agent</code> to this :</p><ul>
 <li><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aa0946e489e1679844800c1bb591ded85">node()</a></li>
 <li><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#ae6794887a1eec21b29534b5612e1f60d">model()</a></li>
 </ul>
+<p><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a11e6bb6db81b851129d22140dffb582e">groups()</a> and <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#abdd1c49e6ec9696bf0d8a42aa3b15768">tasks()</a> fields are particularly handled such as the <code>agent</code>s <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a33b14774c578bda05ba61abc308cc123">groupIds()</a> is assumed to be up to date and synchronized with this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a33b14774c578bda05ba61abc308cc123">groupIds()</a>.</p>
+<p>More particularly:</p><ul>
+<li>this agent is added to groups corresponding to ids contained in <code>agent-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a33b14774c578bda05ba61abc308cc123">groupIds()</a></code> but not in <code>this-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a33b14774c578bda05ba61abc308cc123">groupIds()</a></code> (see <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">AgentGroup::add()</a>)</li>
+<li>this agent is removed from groups corresponding to ids contained in <code>this-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a33b14774c578bda05ba61abc308cc123">groupIds()</a></code> but not in <code>agent-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a33b14774c578bda05ba61abc308cc123">groupIds()</a></code> (see <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">AgentGroup::remove()</a>)</li>
+<li>other groups are left unchanged.</li>
+</ul>
+<p><code>this-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a33b14774c578bda05ba61abc308cc123">groupIds()</a></code> is also updated according to the previous rules.</p>
+<p><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#abdd1c49e6ec9696bf0d8a42aa3b15768">tasks()</a> are assumed to stay consistent with the rules expressed above, since tasks are bound to agent groups to which the agent belong. Those tasks are updated automatically by <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">AgentGroup::add()</a> and <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">AgentGroup::remove()</a>.</p>
+<p>Other fields are moved according to implementation defined rules.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">agent</td><td>agent to move </td></tr>

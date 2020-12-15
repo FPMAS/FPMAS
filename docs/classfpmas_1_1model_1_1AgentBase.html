@@ -755,12 +755,20 @@ template&lt;typename AgentType , typename TypeIdBase  = AgentType&gt; </div>
 
 <p></p>
 <p>Moves the specified agent into this.</p>
-<p>In the move process, the following fields of "this" host agent keep unchanged, and so are note move from <code>agent</code> to this :</p><ul>
-<li><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#adc1328799e6a37f1c6b0f9044705b583">group()</a></li>
-<li><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a6cfdc386c9794c6c469e8c4619ee3941">task()</a></li>
+<p>The specified <code>agent</code> is assumed to be an updated version of this agent.</p>
+<p>In the move process, the following fields of "this" host agent keep unchanged, and so are not moved from <code>agent</code> to this :</p><ul>
 <li><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#abf848511e4e9d9d6c8494506b815576c">node()</a></li>
 <li><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a4149099bc92fef542a8c14d062655a27">model()</a></li>
 </ul>
+<p><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#aa9f0b9efbea7f06af08051746268e37f">groups()</a> and <a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a088d25931e55b74ca34752a4317a988a">tasks()</a> fields are particularly handled such as the <code>agent</code>s <a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a2251313022c0be755aef6528613fbc55">groupIds()</a> is assumed to be up to date and synchronized with this <a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a2251313022c0be755aef6528613fbc55">groupIds()</a>.</p>
+<p>More particularly:</p><ul>
+<li>this agent is added to groups corresponding to ids contained in <code>agent-&gt;<a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a2251313022c0be755aef6528613fbc55">groupIds()</a></code> but not in <code>this-&gt;<a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a2251313022c0be755aef6528613fbc55">groupIds()</a></code> (see <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">AgentGroup::add()</a>)</li>
+<li>this agent is removed from groups corresponding to ids contained in <code>this-&gt;<a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a2251313022c0be755aef6528613fbc55">groupIds()</a></code> but not in <code>agent-&gt;<a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a2251313022c0be755aef6528613fbc55">groupIds()</a></code> (see <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">AgentGroup::remove()</a>)</li>
+<li>other groups are left unchanged.</li>
+</ul>
+<p><code>this-&gt;<a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a2251313022c0be755aef6528613fbc55">groupIds()</a></code> is also updated according to the previous rules.</p>
+<p><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a088d25931e55b74ca34752a4317a988a">tasks()</a> are assumed to stay consistent with the rules expressed above, since tasks are bound to agent groups to which the agent belong. Those tasks are updated automatically by <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">AgentGroup::add()</a> and <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">AgentGroup::remove()</a>.</p>
+<p>Other fields are moved according to implementation defined rules.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">agent</td><td>agent to move </td></tr>

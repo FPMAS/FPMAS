@@ -114,6 +114,9 @@ namespace fpmas {
 				}
 
 			void AgentGroupBase::add(api::model::Agent* agent) {
+				FPMAS_LOGD(this->agent_graph.getMpiCommunicator().getRank(),
+						"AGENT_GROUP", "Add agent to group %i",
+						this->groupId());
 				agent->addGroupId(id);
 
 				if(agent->groups().empty()) {
@@ -127,7 +130,7 @@ namespace fpmas {
 					//
 					// This is necessarily performed on a LOCAL agent: adding a
 					// DISTANT agent to a group is not allowed.
-					assert(agent->node()->state() == graph::LocationState::LOCAL);
+					//assert(agent->node()->state() == graph::LocationState::LOCAL);
 
 					// The node is already built and inserted in the graph, so
 					// we just need to insert is in this new group. A new task
@@ -135,17 +138,22 @@ namespace fpmas {
 					// this process
 					this->insert(&agent->node()->data());
 
-					// Because of the requirements of this method, agent is
-					// LOCAL, so it must be scheduled for execution in this
-					// group.
-					// Notice that, since the agent was already added to the
-					// group, SetAgentLocalCallback will not be called in this
-					// case.
-					this->agentExecutionJob().add(*agent->task(this->groupId()));
+					if(agent->node()->state() == graph::LocationState::LOCAL)
+						// Because of the requirements of this method, agent is
+						// LOCAL, so it must be scheduled for execution in this
+						// group.
+						// Notice that, since the agent was already added to the
+						// group, SetAgentLocalCallback will not be called in this
+						// case.
+						this->agentExecutionJob().add(*agent->task(this->groupId()));
 				}
 			}
 
 			void AgentGroupBase::remove(api::model::Agent* agent) {
+				FPMAS_LOGD(this->agent_graph.getMpiCommunicator().getRank(),
+						"AGENT_GROUP", "Removing agent %s from group %i",
+						FPMAS_C_STR(agent->node()->getId()),
+						this->groupId());
 				if(agent->node()->state() == graph::LocationState::LOCAL) {
 					// Unschedule agent task. If the node is DISTANT, task was already
 					// unscheduled.

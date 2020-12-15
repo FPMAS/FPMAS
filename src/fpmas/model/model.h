@@ -521,8 +521,32 @@ namespace fpmas { namespace model {
 			 */
 			void moveAssign(api::model::Agent* agent) override {
 				// Sets and overrides the fields that must be preserved
+				std::set<api::model::GroupId> local_ids;
+				for(auto id : this->groupIds())
+					local_ids.insert(id);
+				std::set<api::model::GroupId> updated_ids;
+				for(auto id : agent->groupIds())
+					updated_ids.insert(id);
+
+				std::vector<api::model::GroupId> new_groups;
+				for(auto id : updated_ids)
+					if(local_ids.count(id) == 0)
+						new_groups.push_back(id);
+
+				std::vector<api::model::GroupId> obsolete_groups;
+				for(auto id : local_ids)
+					if(updated_ids.count(id) == 0)
+						obsolete_groups.push_back(id);
+
+				// Preserve the local agent set up
 				for(auto group : this->groups())
 					agent->addGroup(group);
+				// Ok because the updated list of ids is saves in updated_ids
+				for(auto id : agent->groupIds())
+					agent->removeGroupId(id);
+				for(auto id : this->groupIds())
+					agent->addGroupId(id);
+
 				for(auto task : this->tasks())
 					agent->setTask(task.first, task.second);
 				agent->setNode(this->node());
@@ -530,6 +554,12 @@ namespace fpmas { namespace model {
 
 				// Uses AgentType move assignment operator
 				*dynamic_cast<AgentType*>(this) = std::move(*dynamic_cast<AgentType*>(agent));
+
+				// Updates groups lists
+				for(auto id : new_groups)
+					this->model()->getGroup(id).add(this);
+				for(auto id : obsolete_groups)
+					this->model()->getGroup(id).remove(this);
 			}
 
 			/**

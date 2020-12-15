@@ -8,16 +8,14 @@
 #include "fpmas/runtime/runtime.h"
 #include "../mocks/model/mock_model.h"
 #include "test_agents.h"
+#include "utils/test.h"
 
 #include <random>
 #include <numeric>
 
-using ::testing::SizeIs;
-using ::testing::Ge;
-using ::testing::InvokeWithoutArgs;
-using ::testing::UnorderedElementsAreArray;
+using namespace testing;
 
-class ModelGhostModeIntegrationTest : public ::testing::Test {
+class ModelGhostModeIntegrationTest : public Test {
 	protected:
 		FPMAS_DEFINE_GROUPS(G_1, G_2)
 
@@ -586,4 +584,47 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 
 TEST(DefaultModelConfig, build) {
 	fpmas::model::Model<fpmas::synchro::HardSyncMode> model;
+}
+
+class ModelDynamicGroupIntegration : public Test {
+	protected:
+		fpmas::model::Model<fpmas::synchro::GhostMode> model;
+
+		fpmas::api::model::AgentGroup& init_group {model.buildGroup(0)};
+		fpmas::api::model::AgentGroup& other_group {model.buildGroup(1)};
+
+		void SetUp() override {
+			fpmas::graph::PartitionMap partition;
+			FPMAS_ON_PROC(model.getMpiCommunicator(), 0) {
+				std::vector<fpmas::api::model::Agent*> agents;
+				for(int i = 0; i < model.getMpiCommunicator().getSize(); i++) {
+					auto agent = new BasicAgent;
+					init_group.add(agent);
+					partition[agent->node()->getId()] = i;
+					agents.push_back(agent);
+				}
+				for(std::size_t i = 0; i < agents.size(); i++)
+					model.link(agents[i], agents[(i+1) % agents.size()], 0);
+			}
+			model.graph().distribute(partition);
+		}
+};
+
+TEST_F(ModelDynamicGroupIntegration, migration_edge_case) {
+	//FPMAS_MIN_PROCS("ModelDynamicGroupIntegration.migration_edge_case", model.getMpiCommunicator(), 2) {
+		ASSERT_THAT(init_group.localAgents(), SizeIs(1));
+
+		other_group.add(*init_group.localAgents().begin());
+		//init_group.clear();
+		init_group.remove(*init_group.localAgents().begin());
+
+		fpmas::graph::PartitionMap partition;
+		partition[(*other_group.localAgents().begin())->node()->getId()]
+			= (model.getMpiCommunicator().getRank()+1) % model.getMpiCommunicator().getSize();
+
+		model.graph().distribute(partition);
+
+		ASSERT_THAT(other_group.localAgents(), SizeIs(1));
+		ASSERT_THAT((*other_group.localAgents().begin())->groups(), ElementsAre(&other_group));
+	//}
 }
