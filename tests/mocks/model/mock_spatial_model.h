@@ -15,7 +15,7 @@ class MockRange : public fpmas::api::model::Range<CellType> {
 };
 
 template<typename CellType>
-class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, public testing::NiceMock<detail::MockAgentBase<MockSpatialAgent<CellType>>> {
+class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, public detail::MockAgentBase<MockSpatialAgent<CellType>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 		MOCK_METHOD(void, moveTo, (CellType*), (override));
@@ -31,14 +31,14 @@ class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, publi
 		virtual ~MockSpatialAgent() {}
 };
 
-class MockCellBase : public fpmas::model::CellBase, public testing::NiceMock<detail::MockAgentBase<MockCellBase>> {
+class MockCellBase : public fpmas::model::CellBase, public detail::MockAgentBase<MockCellBase> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 
 		virtual ~MockCellBase() {}
 };
 
-class MockCell : public virtual fpmas::api::model::Cell, public testing::NiceMock<detail::MockAgentBase<MockCell>> {
+class MockCell : public virtual fpmas::api::model::Cell, public detail::MockAgentBase<MockCell> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 
@@ -68,7 +68,7 @@ class MockMoveAgentGroup :
 };
 
 template<typename CellType>
-class MockSpatialModel : public fpmas::api::model::SpatialModel<CellType>, public testing::NiceMock<MockModel> {
+class MockSpatialModel : public fpmas::api::model::SpatialModel<CellType>, public MockModel {
 	public:
 		MOCK_METHOD(void, add, (CellType*), (override));
 		MOCK_METHOD(std::vector<CellType*>, cells, (), (override));

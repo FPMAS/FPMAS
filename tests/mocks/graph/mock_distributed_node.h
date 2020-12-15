@@ -23,9 +23,9 @@ template<typename> class MockDistributedEdge;
 template<typename T>
 class MockDistributedNode :
 	public fpmas::api::graph::DistributedNode<T>,
-	public testing::NiceMock<AbstractMockNode<DistributedId, fpmas::api::graph::DistributedEdge<T>>> {
+	public AbstractMockNode<DistributedId, fpmas::api::graph::DistributedEdge<T>> {
 
-		typedef testing::NiceMock<AbstractMockNode<DistributedId, fpmas::api::graph::DistributedEdge<T>>>
+		typedef AbstractMockNode<DistributedId, fpmas::api::graph::DistributedEdge<T>>
 			NodeBase;
 		typedef fpmas::api::synchro::Mutex<T> Mutex;
 		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T>&);

@@ -4,7 +4,7 @@
 #include "fpmas/api/model/spatial/grid.h"
 #include "mock_spatial_model.h"
 
-class MockGridCell : public fpmas::api::model::GridCell, public testing::NiceMock<MockCell> {
+class MockGridCell : public fpmas::api::model::GridCell, public MockCell {
 	public:
 		MOCK_METHOD(fpmas::api::model::DiscretePoint, location, (), (const, override));
 
