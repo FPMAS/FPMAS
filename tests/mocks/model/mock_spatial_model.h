@@ -15,7 +15,7 @@ class MockRange : public fpmas::api::model::Range<CellType> {
 };
 
 template<typename CellType>
-class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, public detail::MockAgentBase<MockSpatialAgent<CellType>> {
+class AbstractMockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 		MOCK_METHOD(void, moveTo, (CellType*), (override));
@@ -27,18 +27,21 @@ class MockSpatialAgent : public fpmas::api::model::SpatialAgent<CellType>, publi
 		MOCK_METHOD(void, handleNewPerceive, (), (override));
 		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, mobilityRange, (), (const, override));
 		MOCK_METHOD(const fpmas::api::model::Range<CellType>&, perceptionRange, (), (const, override));
-
-		virtual ~MockSpatialAgent() {}
+};
+template<typename CellType, template<typename> class Strictness = testing::NaggyMock>
+class MockSpatialAgent :
+	public Strictness<AbstractMockSpatialAgent<CellType>>,
+	public Strictness<detail::MockAgentBase<MockSpatialAgent<CellType, Strictness>>> {
 };
 
-class MockCellBase : public fpmas::model::CellBase, public detail::MockAgentBase<MockCellBase> {
+class MockCellBase : public fpmas::model::CellBase, public testing::NiceMock<detail::MockAgentBase<MockCellBase>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 
 		virtual ~MockCellBase() {}
 };
 
-class MockCell : public virtual fpmas::api::model::Cell, public detail::MockAgentBase<MockCell> {
+class AbstractMockCell : public virtual fpmas::api::model::Cell {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 
@@ -49,7 +52,11 @@ class MockCell : public virtual fpmas::api::model::Cell, public detail::MockAgen
 		MOCK_METHOD(void, handlePerceive, (), (override));
 		MOCK_METHOD(void, updatePerceptions, (), (override));
 
-		virtual ~MockCell() {}
+		virtual ~AbstractMockCell() {}
+};
+
+template<template<typename> class Strictness = testing::NaggyMock>
+class MockCell : public Strictness<AbstractMockCell>, public Strictness<detail::MockAgentBase<MockCell<Strictness>>> {
 };
 
 template<typename CellType>
@@ -68,12 +75,18 @@ class MockMoveAgentGroup :
 };
 
 template<typename CellType>
-class MockSpatialModel : public fpmas::api::model::SpatialModel<CellType>, public MockModel {
+class AbstractMockSpatialModel : public fpmas::api::model::SpatialModel<CellType> {
 	public:
 		MOCK_METHOD(void, add, (CellType*), (override));
 		MOCK_METHOD(std::vector<CellType*>, cells, (), (override));
 		MOCK_METHOD(fpmas::api::model::MoveAgentGroup<CellType>&, buildMoveGroup,
 				(fpmas::model::GroupId, const fpmas::api::model::Behavior&), (override));
+};
+
+template<typename CellType, template<typename> class Strictness = testing::NaggyMock>
+class MockSpatialModel :
+	public Strictness<AbstractMockSpatialModel<CellType>>,
+	public Strictness<MockModel> {
 };
 
 template<typename CellType>

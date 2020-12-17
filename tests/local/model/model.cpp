@@ -21,15 +21,13 @@ class AgentTaskTest : public ::testing::Test {
 	protected:
 		MockAgent<> agent;
 		AgentPtr agent_ptr {&agent};
-		MockDistributedNode<AgentPtr> node;
+		MockDistributedNode<AgentPtr, NiceMock> node;
 
 		void SetUp() override {
 			ON_CALL(agent, node())
 				.WillByDefault(Return(&node));
-			EXPECT_CALL(agent, node()).Times(AnyNumber());
 			ON_CALL(Const(agent), node())
 				.WillByDefault(Return(&node));
-			EXPECT_CALL(Const(agent), node()).Times(AnyNumber());
 		}
 
 		void TearDown() override {
@@ -124,7 +122,7 @@ TEST_F(ModelTest, remove_group) {
 	// It would really be better if we could use MockAgentGroup in Model, and
 	// simply expect mock_agent_group.clear()
 	struct MockBuildNode {
-		MockDistributedNode<AgentPtr> mock_node;
+		MockAgentNode<NiceMock> mock_node;
 		fpmas::api::model::AgentTask* task;
 		std::unordered_map<
 			fpmas::api::model::GroupId,
@@ -154,7 +152,7 @@ TEST_F(ModelTest, remove_group) {
 		}
 	};
 
-	NiceMock<MockAgent<>>* agent = new NiceMock<MockAgent<>>;
+	MockAgent<>* agent = new MockAgent<>;
 	MockBuildNode mock_build_node(agent);
 	EXPECT_CALL(graph, buildNode_rv)
 		.WillOnce(Invoke(&mock_build_node, &MockBuildNode::build));
@@ -199,12 +197,12 @@ TEST_F(ModelTest, load_balancing_job) {
 }
 
 TEST_F(ModelTest, link) {
-	NiceMock<MockAgent<0>> agent_1;
-	MockDistributedNode<AgentPtr> node_1;
+	MockAgent<0> agent_1;
+	MockAgentNode<NiceMock> node_1;
 	ON_CALL(agent_1, node()).WillByDefault(Return(&node_1));
 
-	MockDistributedNode<AgentPtr> node_2;
-	NiceMock<MockAgent<4>> agent_2;
+	MockAgentNode<NiceMock> node_2;
+	MockAgent<4> agent_2;
 	ON_CALL(agent_2, node()).WillByDefault(Return(&node_2));
 
 	fpmas::api::graph::LayerId layer = 12;
@@ -239,14 +237,14 @@ class AgentGroupTest : public ::testing::Test {
 		NiceMock<MockDistributedNode<AgentPtr>> node2 {fpmas::graph::DistributedId(0, 2)};
 
 		AgentGroup agent_group {id, graph};
-		NiceMock<MockAgent<>> agent1;
+		MockAgent<> agent1;
 		fpmas::api::model::AgentNode* agent1_node;
 		std::vector<fpmas::api::model::AgentGroup*> agent1_groups;
 		std::vector<fpmas::api::model::GroupId> agent1_group_ids;
 		std::unordered_map<fpmas::model::GroupId, fpmas::api::model::AgentTask*> agent1_tasks;
 		AgentPtr agent1_ptr {&agent1};
 
-		NiceMock<MockAgent<>> agent2;
+		MockAgent<> agent2;
 		fpmas::api::model::AgentNode* agent2_node;
 		std::vector<fpmas::api::model::AgentGroup*> agent2_groups;
 		std::vector<fpmas::api::model::GroupId> agent2_group_ids;
@@ -838,26 +836,24 @@ TEST_F(AgentBaseCopyMoveTest, move_assign) {
 }
 
 TEST_F(AgentBaseTest, out_neighbors) {
-	MockDistributedNode<AgentPtr> n_1 {{0, 0}, new DefaultMockAgentBase<8>};
+	MockAgentNode<NiceMock> n_1 {{0, 0}, new DefaultMockAgentBase<8>};
 	MockDistributedEdge<AgentPtr> e_1;
 	e_1.setTargetNode(&n_1);
-	MockDistributedNode<AgentPtr> n_2 {{0, 1}, new DefaultMockAgentBase<12>};
+	MockAgentNode<NiceMock> n_2 {{0, 1}, new DefaultMockAgentBase<12>};
 	MockDistributedEdge<AgentPtr> e_2;
 	e_2.setTargetNode(&n_2);
-	MockDistributedNode<AgentPtr> n_3 {{0, 2}, new DefaultMockAgentBase<8>};
+	MockAgentNode<NiceMock> n_3 {{0, 2}, new DefaultMockAgentBase<8>};
 	MockDistributedEdge<AgentPtr> e_3;
 	e_3.setTargetNode(&n_3);
 
 	DefaultMockAgentBase<10>* agent = new DefaultMockAgentBase<10>;
-	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
+	MockAgentNode<NiceMock> n {{0, 4}, agent};
 	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
-	EXPECT_CALL(n, outNeighbors())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(out_neighbors));
+	ON_CALL(n, outNeighbors())
+		.WillByDefault(Return(out_neighbors));
 	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> out_edges {&e_1, &e_2, &e_3};
-	EXPECT_CALL(n, getOutgoingEdges())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(out_edges));
+	ON_CALL(n, getOutgoingEdges())
+		.WillByDefault(Return(out_edges));
 
 	agent->setNode(&n);
 
@@ -878,19 +874,17 @@ TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors;
 	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> out_edges;
 	for(unsigned int i = 0; i < 1000; i++) {
-		out_neighbors.push_back(new MockDistributedNode<AgentPtr>({0, i}, new DefaultMockAgentBase<8>));
+		out_neighbors.push_back(new MockAgentNode<>({0, i}, new DefaultMockAgentBase<8>));
 		out_edges.push_back(new MockDistributedEdge<AgentPtr>);
 		out_edges.back()->setTargetNode(out_neighbors.back());
 	}
 
 	DefaultMockAgentBase<10>* agent = new DefaultMockAgentBase<10>;
-	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	EXPECT_CALL(n, outNeighbors())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(out_neighbors));
-	EXPECT_CALL(n, getOutgoingEdges())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(out_edges));
+	MockAgentNode<NiceMock> n {{0, 4}, agent};
+	ON_CALL(n, outNeighbors())
+		.WillByDefault(Return(out_neighbors));
+	ON_CALL(n, getOutgoingEdges())
+		.WillByDefault(Return(out_edges));
 
 	agent->setNode(&n);
 
@@ -918,26 +912,24 @@ TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 }
 
 TEST_F(AgentBaseTest, in_neighbors) {
-	MockDistributedNode<AgentPtr> n_1 {{0, 0}, new DefaultMockAgentBase<8>};
+	MockAgentNode<NiceMock> n_1 {{0, 0}, new DefaultMockAgentBase<8>};
 	MockDistributedEdge<AgentPtr> e_1;
 	e_1.setSourceNode(&n_1);
-	MockDistributedNode<AgentPtr> n_2 {{0, 1}, new DefaultMockAgentBase<12>};
+	MockAgentNode<NiceMock> n_2 {{0, 1}, new DefaultMockAgentBase<12>};
 	MockDistributedEdge<AgentPtr> e_2;
 	e_2.setSourceNode(&n_2);
-	MockDistributedNode<AgentPtr> n_3 {{0, 2}, new DefaultMockAgentBase<8>};
+	MockAgentNode<NiceMock> n_3 {{0, 2}, new DefaultMockAgentBase<8>};
 	MockDistributedEdge<AgentPtr> e_3;
 	e_3.setSourceNode(&n_3);
 
 	DefaultMockAgentBase<10>* agent = new DefaultMockAgentBase<10>;
-	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
+	MockAgentNode<NiceMock> n {{0, 4}, agent};
 	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> in_neighbors {&n_1, &n_2, &n_3};
 	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> in_edges {&e_1, &e_2, &e_3};
-	EXPECT_CALL(n, inNeighbors())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(in_neighbors));
-	EXPECT_CALL(n, getIncomingEdges())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(in_edges));
+	ON_CALL(n, inNeighbors())
+		.WillByDefault(Return(in_neighbors));
+	ON_CALL(n, getIncomingEdges())
+		.WillByDefault(Return(in_edges));
 
 	agent->setNode(&n);
 
@@ -958,19 +950,17 @@ TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> in_neighbors;
 	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> in_edges;
 	for(unsigned int i = 0; i < 1000; i++) {
-		in_neighbors.push_back(new MockDistributedNode<AgentPtr>({0, i}, new DefaultMockAgentBase<8>));
+		in_neighbors.push_back(new MockAgentNode<>({0, i}, new DefaultMockAgentBase<8>));
 		in_edges.push_back(new MockDistributedEdge<AgentPtr>);
 		in_edges.back()->setSourceNode(in_neighbors.back());
 	}
 
 	DefaultMockAgentBase<10>* agent = new DefaultMockAgentBase<10>;
-	MockDistributedNode<AgentPtr> n {{0, 4}, agent};
-	EXPECT_CALL(n, inNeighbors())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(in_neighbors));
-	EXPECT_CALL(n, getIncomingEdges())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(in_edges));
+	MockAgentNode<NiceMock> n {{0, 4}, agent};
+	ON_CALL(n, inNeighbors())
+		.WillByDefault(Return(in_neighbors));
+	ON_CALL(n, getIncomingEdges())
+		.WillByDefault(Return(in_edges));
 
 	agent->setNode(&n);
 
@@ -1010,14 +1000,14 @@ class AgentGuardTest : public ::testing::Test {
 		FakeAgent* agent = new FakeAgent(0);
 		AgentPtr ptr {agent};
 		AgentTask task {ptr};
-		MockDistributedNode<AgentPtr> node {{0, 0}, std::move(ptr)};
+		MockAgentNode<NiceMock> node {{0, 0}, std::move(ptr)};
 		MockMutex<AgentPtr> mutex;
 
 		void SetUp() {
 			agent->setNode(&node);
 			agent->setTask(&task);
-			EXPECT_CALL(node, mutex()).Times(AnyNumber())
-				.WillRepeatedly(Return(&mutex));
+			ON_CALL(node, mutex())
+				.WillByDefault(Return(&mutex));
 		}
 };
 
@@ -1040,7 +1030,11 @@ TEST_F(AgentGuardTest, read_guard) {
 	AgentPtr& ptr = node.data();
 	AgentPtr data_to_move {new FakeAgent(14)};
 
-	EXPECT_CALL(mutex, read).WillOnce(DoAll(InvokeWithoutArgs(MoveAgent(ptr, data_to_move)), ReturnRef(node.data())));
+	EXPECT_CALL(mutex, read)
+		.WillOnce(DoAll(
+					InvokeWithoutArgs(MoveAgent(ptr, data_to_move)),
+					ReturnRef(node.data())
+					));
 	const fpmas::model::ReadGuard read(ptr);
 
 	// Pointed data has implicitely been updated by mutex::read
@@ -1053,7 +1047,11 @@ TEST_F(AgentGuardTest, acquire_guard) {
 	AgentPtr& ptr = node.data();
 	AgentPtr data_to_move {new FakeAgent(14)};
 
-	EXPECT_CALL(mutex, acquire).WillOnce(DoAll(InvokeWithoutArgs(MoveAgent(ptr, data_to_move)), ReturnRef(node.data())));
+	EXPECT_CALL(mutex, acquire)
+		.WillOnce(DoAll(
+					InvokeWithoutArgs(MoveAgent(ptr, data_to_move)),
+					ReturnRef(node.data())
+					));
 	const fpmas::model::AcquireGuard acq(ptr);
 
 	// Pointed data has implicitely been updated by mutex::acquire
@@ -1065,14 +1063,14 @@ TEST_F(AgentGuardTest, acquire_guard) {
 class AgentGuardLoopTest : public AgentGuardTest {
 	protected:
 		FakeAgent* agent_1 = new FakeAgent(0);
-		MockDistributedNode<AgentPtr> node_1 {{0, 0}, agent_1};
+		MockAgentNode<NiceMock> node_1 {{0, 0}, agent_1};
 		MockDistributedEdge<AgentPtr> edge_1;
 		MockMutex<AgentPtr> mutex_1;
 		AgentPtr& agent_ptr_1 = node_1.data();
 		AgentPtr data_to_move_1 {new FakeAgent(14)};
 
 		FakeAgent* agent_2 = new FakeAgent(0);
-		MockDistributedNode<AgentPtr> node_2 {{0, 0}, agent_2};
+		MockAgentNode<NiceMock> node_2 {{0, 0}, agent_2};
 		MockDistributedEdge<AgentPtr> edge_2;
 		MockMutex<AgentPtr> mutex_2;
 		AgentPtr& agent_ptr_2 = node_2.data();
@@ -1088,20 +1086,18 @@ class AgentGuardLoopTest : public AgentGuardTest {
 			AgentGuardTest::SetUp();
 			agent_2->setNode(&node_2);
 			agent_2->setTask(&task); // Don't care about task, all agents use the same
-			EXPECT_CALL(node_2, mutex()).Times(AnyNumber())
-				.WillRepeatedly(Return(&mutex_2));
+			ON_CALL(node_2, mutex())
+				.WillByDefault(Return(&mutex_2));
 
 			edge_1.setTargetNode(&node_1);
 			edge_2.setTargetNode(&node_2);
-			EXPECT_CALL(node, outNeighbors())
-				.Times(AnyNumber())
-				.WillRepeatedly(Return(
+			ON_CALL(node, outNeighbors())
+				.WillByDefault(Return(
 							std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*>
 							{&node_1, &node_2}
 							));
-			EXPECT_CALL(node, getOutgoingEdges())
-				.Times(AnyNumber())
-				.WillRepeatedly(Return(
+			ON_CALL(node, getOutgoingEdges())
+				.WillByDefault(Return(
 							std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*>
 							{&edge_1, &edge_2}
 							));
@@ -1110,12 +1106,17 @@ class AgentGuardLoopTest : public AgentGuardTest {
 };
 
 TEST_F(AgentGuardLoopTest, neighbor_loop_read) {
-	EXPECT_CALL(mutex_1, read).WillOnce(DoAll(InvokeWithoutArgs(
-					MoveAgent(agent_ptr_1, data_to_move_1)),
-				ReturnRef(node.data())));
-	EXPECT_CALL(mutex_2, read).WillOnce(DoAll(InvokeWithoutArgs(
-					MoveAgent(agent_ptr_2, data_to_move_2)),
-				ReturnRef(node.data())));
+	EXPECT_CALL(mutex_1, read)
+		.WillOnce(DoAll(
+					InvokeWithoutArgs(MoveAgent(agent_ptr_1, data_to_move_1)),
+					ReturnRef(node.data())
+					));
+	EXPECT_CALL(mutex_2, read)
+		.WillOnce(DoAll(
+					InvokeWithoutArgs(
+						MoveAgent(agent_ptr_2, data_to_move_2)),
+					ReturnRef(node.data())
+					));
 
 	EXPECT_CALL(mutex_1, releaseRead);
 	EXPECT_CALL(mutex_2, releaseRead);
@@ -1128,12 +1129,16 @@ TEST_F(AgentGuardLoopTest, neighbor_loop_read) {
 }
 
 TEST_F(AgentGuardLoopTest, neighbor_loop_acquire) {
-	EXPECT_CALL(mutex_1, acquire).WillOnce(DoAll(InvokeWithoutArgs(
-					MoveAgent(agent_ptr_1, data_to_move_1)),
-				ReturnRef(node.data())));
-	EXPECT_CALL(mutex_2, acquire).WillOnce(DoAll(InvokeWithoutArgs(
-					MoveAgent(agent_ptr_2, data_to_move_2)),
-				ReturnRef(node.data())));
+	EXPECT_CALL(mutex_1, acquire)
+		.WillOnce(DoAll(
+					InvokeWithoutArgs(MoveAgent(agent_ptr_1, data_to_move_1)),
+					ReturnRef(node.data())
+					));
+	EXPECT_CALL(mutex_2, acquire)
+		.WillOnce(DoAll(
+					InvokeWithoutArgs(MoveAgent(agent_ptr_2, data_to_move_2)),
+					ReturnRef(node.data())
+					));
 
 	EXPECT_CALL(mutex_1, releaseAcquire);
 	EXPECT_CALL(mutex_2, releaseAcquire);

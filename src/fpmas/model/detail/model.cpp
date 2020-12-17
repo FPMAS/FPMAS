@@ -139,9 +139,8 @@ namespace fpmas {
 					this->insert(&agent->node()->data());
 
 					if(agent->node()->state() == graph::LocationState::LOCAL)
-						// Because of the requirements of this method, agent is
-						// LOCAL, so it must be scheduled for execution in this
-						// group.
+						// If the agent is LOCAL, schedules it for execution in
+						// this group.
 						// Notice that, since the agent was already added to the
 						// group, SetAgentLocalCallback will not be called in this
 						// case.

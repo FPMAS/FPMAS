@@ -88,7 +88,7 @@ namespace detail {
  * FOO parameter is just used to easily generate multiple agent types.
  */
 template<int FOO = 0>
-class MockAgent : public virtual fpmas::api::model::Agent, public detail::MockAgentBase<MockAgent<FOO>> {
+class MockAgent : public virtual fpmas::api::model::Agent, public testing::NiceMock<detail::MockAgentBase<MockAgent<FOO>>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 
@@ -96,7 +96,7 @@ class MockAgent : public virtual fpmas::api::model::Agent, public detail::MockAg
 		MOCK_METHOD(void, setField, (int), ());
 		MOCK_METHOD(int, getField, (), (const));
 
-		MockAgent() : detail::MockAgentBase<MockAgent<FOO>>() {}
+		MockAgent() : testing::NiceMock<detail::MockAgentBase<MockAgent<FOO>>>() {}
 
 		MockAgent(int field) : MockAgent() {
 			EXPECT_CALL(*this, getField).Times(AnyNumber())
@@ -184,11 +184,15 @@ class MockAgentBase : public fpmas::model::AgentBase<AgentType> {
 template<int FOO = 0>
 class DefaultMockAgentBase : public MockAgentBase<DefaultMockAgentBase<FOO>> {};
 
-using MockAgentNode = MockDistributedNode<fpmas::model::AgentPtr>;
+template<template<typename> class Strictness = testing::NaggyMock>
+using MockAgentNode = MockDistributedNode<fpmas::model::AgentPtr, Strictness>;
 using MockAgentEdge = MockDistributedEdge<fpmas::model::AgentPtr>;
 
+template<typename T>
+using DefaultDistNode = MockDistributedNode<T>;
+
 template<
-	template<typename> class DistNode = MockDistributedNode,
+	template<typename> class DistNode = DefaultDistNode,
 	template<typename> class DistEdge = MockDistributedEdge>
 using MockAgentGraph = MockDistributedGraph<
 	fpmas::model::AgentPtr,

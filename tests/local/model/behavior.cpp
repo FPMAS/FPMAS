@@ -107,13 +107,13 @@ class AgentGroupBehaviorTest : public testing::Test {
 
 		StrictMock<Agent1> agent_1;
 		fpmas::model::AgentPtr ptr_1 {&agent_1};
-		NiceMock<MockAgentNode> node_1;
+		MockAgentNode<NiceMock> node_1;
 		StrictMock<Agent2> agent_2;
 		fpmas::model::AgentPtr ptr_2 {&agent_2};
-		NiceMock<MockAgentNode> node_2;
+		MockAgentNode<NiceMock> node_2;
 		StrictMock<Agent1_2> agent_1_2;
 		fpmas::model::AgentPtr ptr_3 {&agent_1_2};
-		NiceMock<MockAgentNode> node_3;
+		MockAgentNode<NiceMock> node_3;
 
 		void SetUp() override {
 			ON_CALL(model, getGroup(0))

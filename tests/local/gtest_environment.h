@@ -9,8 +9,8 @@ namespace model { namespace test {
 	template<typename AgentType>
 	class SpatialAgentBase : public fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell> {
 		public:
-			MockRange<fpmas::api::model::Cell> mobility_range;
-			MockRange<fpmas::api::model::Cell> perception_range;
+			testing::NiceMock<MockRange<fpmas::api::model::Cell>> mobility_range;
+			testing::NiceMock<MockRange<fpmas::api::model::Cell>> perception_range;
 
 			SpatialAgentBase() : fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell>(mobility_range, perception_range) {}
 			SpatialAgentBase(const SpatialAgentBase&)

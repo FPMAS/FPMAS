@@ -469,18 +469,52 @@ namespace fpmas { namespace api {namespace model {
 			/**
 			 * Adds a new Agent to this group.
 			 *
-			 * Also builds a new \AgentNode into the current \AgentGraph and
-			 * associates it to the Agent.
+			 * \AgentGroups to which an `agent` is added take ownership of the
+			 * `agent`, that must be dynamically allocated (using a `new`
+			 * statement). The `agent` lives while it belongs to at least one
+			 * group, and is deleted when it is removed from the last group.
+			 *
+			 * add() builds a new \AgentNode into the current \AgentGraph and
+			 * associates it to the Agent if the `agent` was not contained in
+			 * any group yet.
+			 * 
+			 * This group's groupId() is added to `agent`s Agent::groupIds().
+			 *
+			 * A task is also bound to the `agent` and Agent::groups() is
+			 * updated as defined in insert().
+			 *
+			 * Moreover, if the `agent` is \LOCAL, the previous task is added
+			 * to agentExecutionJob().
+			 *
+			 * In consequence, it is possible to dynamically add() \LOCAL
+			 * agents to groups.
+			 *
+			 * Notice that when the `agent` is not bound to a node yet, i.e.
+			 * this is the first group the agent is inserted into so that a new
+			 * node is built, the `agent` automatically becomes \LOCAL, since
+			 * the new node is built locally.
+			 *
+			 * If a \DISTANT `agent` is added to the group, it is just inserted
+			 * in the group.  However, this is a mechanic that must be used
+			 * only internally, since adding a \DISTANT agent to the group is
+			 * not guaranteed to report the operation on other processes.
 			 *
 			 * @param agent agent to add
 			 */
 			virtual void add(Agent* agent) = 0;
+
 			/**
 			 * Removes an Agent from this group.
 			 *
-			 * The Agent is completely removed from the simulation, so the
-			 * associated \AgentNode is also globally removed from the
-			 * \AgentGraph.
+			 * If this was the last group containing the Agent, it is
+			 * completely removed from the simulation, so the associated
+			 * \AgentNode is also globally removed from the \AgentGraph.
+			 *
+			 * Else, the agent is simply removed from this group as defined in
+			 * erase().
+			 *
+			 * If the `agent` is \LOCAL, the task associated to this group's
+			 * behavior() is removed from agentExecutionJob().
 			 *
 			 * @param agent agent to remove
 			 */
@@ -497,8 +531,17 @@ namespace fpmas { namespace api {namespace model {
 			 * This function is only used during the node migration process,
 			 * and is not supposed to be used by the final user.
 			 *
-			 * Contrary to add(), this method assumes that an AgentNode has
+			 * Contrary to add(), this method assumes that an \AgentNode has
 			 * already been built for the Agent.
+			 *
+			 * When this method is called, it is assumed that `agent`'s
+			 * Agent::groupIds() list already contains this groupId(), so the
+			 * `agent` should be inserted in the group.
+			 *
+			 * Upon return, `agent`'s Agent::groups() must be updated, and a
+			 * task that execute behavior() on this agent must be bound to the
+			 * agent. The corresponding task is then accessible from
+			 * Agent::task(GroupId) and Agent::tasks().
 			 *
 			 * @param agent agent to insert into this group
 			 */
@@ -510,7 +553,11 @@ namespace fpmas { namespace api {namespace model {
 			 * and is not supposed to be used by the final user.
 			 *
 			 * Contrary to remove(), this method does not globally removes the
-			 * Agent (and its associated AgentNode) from the simulation.
+			 * Agent (and its associated \AgentNode) from the simulation.
+			 *
+			 * Upon return, `agent`'s Agent::groupIds() and Agent::groups()
+			 * must be updated, and the task previously bound to the agent by
+			 * insert() must be unbound.
 			 *
 			 * @param agent agent to erase from this group
 			 */

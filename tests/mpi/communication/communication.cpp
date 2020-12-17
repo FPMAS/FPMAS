@@ -176,7 +176,7 @@ TEST(TypedMpiTest, bcast) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 
-	int local_data;
+	int local_data = 0;
 	FPMAS_ON_PROC(comm, comm.getSize()-1)
 		local_data = 10;
 

@@ -520,6 +520,11 @@ namespace fpmas { namespace model {
 			 * \copydoc fpmas::api::model::Agent::moveAssign
 			 */
 			void moveAssign(api::model::Agent* agent) override {
+				// TODO: this should probably be improved in 2.0
+				// The purpose of "moveAssign" is clearly inconsistent with its
+				// current behavior, that does much more that just "moving" the
+				// agent.
+
 				// Sets and overrides the fields that must be preserved
 				std::set<api::model::GroupId> local_ids;
 				for(auto id : this->groupIds())
@@ -553,9 +558,18 @@ namespace fpmas { namespace model {
 				agent->setModel(this->model());
 
 				// Uses AgentType move assignment operator
+				//
+				// groupIds(), groups(), tasks(), node() and model() are
+				// notably moved from agent to this, but this as no effect
+				// since agent's fields was overriden above. In consequence,
+				// those fields are properly preserved, as required by the
+				// method.
 				*dynamic_cast<AgentType*>(this) = std::move(*dynamic_cast<AgentType*>(agent));
 
-				// Updates groups lists
+				// Dynamically updates groups lists
+				// If `agent` was added to / removed from group on a distant
+				// process for example (assuming that this agent is DISTANT),
+				// this agent representation groups are updated.
 				for(auto id : new_groups)
 					this->model()->getGroup(id).add(this);
 				for(auto id : obsolete_groups)

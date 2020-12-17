@@ -224,7 +224,7 @@ class SpatialAgentBuilderTest : public Test {
 	MockJob mock_job;
 	fpmas::api::scheduler::JobList fake_job_list {mock_job};
 	NiceMock<MockDistributedMoveAlgorithm<fpmas::api::model::Cell>> mock_dist_move_algo;
-	NiceMock<MockSpatialModel<fpmas::api::model::Cell>> model;
+	MockSpatialModel<fpmas::api::model::Cell, NiceMock> model;
 
 	MockRuntime mock_runtime;
 	std::array<MockAgentGroup, 2> mock_groups;
@@ -256,7 +256,7 @@ class SpatialAgentBuilderTest : public Test {
 		// Builds a random agent mapping on each process
 		for(int i = 0; i < num_cells; i++) {
 			int num_agents = rand_int(rd);
-			local_cells.push_back(new MockCell);
+			local_cells.push_back(new MockCell<>);
 			EXPECT_CALL(agent_mapping, countAt(local_cells.back()))
 				.WillRepeatedly(Return(num_agents));
 
@@ -319,7 +319,7 @@ TEST_F(SpatialAgentBuilderTest, build) {
 
 class EndConditionTest : public Test {
 	protected:
-		class Range : public NiceMock<MockRange<MockCell>> {
+		class Range : public NiceMock<MockRange<MockCell<>>> {
 			public:
 				int size;
 				Range(int size)
@@ -328,7 +328,7 @@ class EndConditionTest : public Test {
 							.WillByDefault(ReturnPointee(&this->size));
 					}
 		};
-		std::vector<fpmas::api::model::SpatialAgent<MockCell>*> agents;
+		std::vector<fpmas::api::model::SpatialAgent<MockCell<>>*> agents;
 		std::vector<Range*> mobility_ranges;
 		std::vector<Range*> perception_ranges;
 		fpmas::communication::MpiCommunicator comm;
@@ -338,7 +338,7 @@ class EndConditionTest : public Test {
 		void SetUp() {
 			int local_agent_count = agent_count(rd);
 			for(int i = 0; i < local_agent_count; i++) {
-				auto agent = new NiceMock<MockSpatialAgent<MockCell>>;
+				auto agent = new NiceMock<MockSpatialAgent<MockCell<>>>;
 				auto mobility_range = new Range(4);
 				auto perception_range = new Range(4);
 
@@ -362,7 +362,7 @@ class EndConditionTest : public Test {
 
 		}
 
-		void expectIterationCount(fpmas::api::model::EndCondition<MockCell>& end_condition, std::size_t expected_count) {
+		void expectIterationCount(fpmas::api::model::EndCondition<MockCell<>>& end_condition, std::size_t expected_count) {
 			end_condition.init(comm, agents, {});
 			std::size_t counter = 0;
 			while(!end_condition.end()) {
@@ -374,7 +374,7 @@ class EndConditionTest : public Test {
 };
 
 TEST_F(EndConditionTest, dynamic_range) {
-	fpmas::model::DynamicEndCondition<MockCell> end_condition;
+	fpmas::model::DynamicEndCondition<MockCell<>> end_condition;
 
 	expectIterationCount(end_condition, 4);
 

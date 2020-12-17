@@ -5,21 +5,13 @@
 #include "../mocks/graph/mock_distributed_graph.h"
 #include "../mocks/synchro/mock_mutex.h"
 
-using ::testing::ElementsAre;
-using ::testing::Eq;
-using ::testing::Invoke;
-using ::testing::IsEmpty;
-using ::testing::Matcher;
-using ::testing::Pair;
-using ::testing::Pointee;
-using ::testing::Property;
-using ::testing::UnorderedElementsAre;
+using namespace testing;
 
 using fpmas::synchro::ghost::GhostSyncLinker;
 
-class GhostSyncLinkerTest : public ::testing::Test {
+class GhostSyncLinkerTest : public Test {
 	protected:
-		typedef MockDistributedNode<int> MockNode;
+		typedef MockDistributedNode<int, NiceMock> MockNode;
 		typedef MockDistributedEdge<int> MockEdge;
 
 		static const int current_rank = 3;
@@ -48,25 +40,26 @@ class GhostSyncLinkerTest : public ::testing::Test {
 		}
 		
 
-		void edgeSetUp(MockEdge& edge, int srcRank, int tgtRank) {
-			LocationState srcLocation = (srcRank == current_rank) ?
+		void edgeSetUp(MockEdge& edge, int src_rank, int tgt_rank) {
+			LocationState src_location = (src_rank == current_rank) ?
 				LocationState::LOCAL : LocationState::DISTANT;
-			LocationState tgtLocation = (tgtRank == current_rank) ?
+			LocationState tgt_location = (tgt_rank == current_rank) ?
 				LocationState::LOCAL : LocationState::DISTANT;
 
-			EXPECT_CALL(*static_cast<const MockNode*>(edge.src), state).Times(AnyNumber())
-				.WillRepeatedly(Return(srcLocation));
-			EXPECT_CALL(*static_cast<const MockNode*>(edge.src), location).Times(AnyNumber())
-				.WillRepeatedly(Return(srcRank));
+			ON_CALL(*static_cast<const MockNode*>(edge.src), state)
+				.WillByDefault(Return(src_location));
+			ON_CALL(*static_cast<const MockNode*>(edge.src), location)
+				.WillByDefault(Return(src_rank));
 
-			EXPECT_CALL(*static_cast<const MockNode*>(edge.tgt), state).Times(AnyNumber())
-				.WillRepeatedly(Return(tgtLocation));
-			EXPECT_CALL(*static_cast<const MockNode*>(edge.tgt), location).Times(AnyNumber())
-				.WillRepeatedly(Return(tgtRank));
+			ON_CALL(*static_cast<const MockNode*>(edge.tgt), state)
+				.WillByDefault(Return(tgt_location));
+			ON_CALL(*static_cast<const MockNode*>(edge.tgt), location)
+				.WillByDefault(Return(tgt_rank));
 
-			EXPECT_CALL(edge, state).Times(AnyNumber())
+			EXPECT_CALL(edge, state)
+				.Times(AnyNumber())
 				.WillRepeatedly(Return(
-					srcLocation == LocationState::LOCAL && tgtLocation == LocationState::LOCAL ?
+					src_location == LocationState::LOCAL && tgt_location == LocationState::LOCAL ?
 					LocationState::LOCAL :
 					LocationState::DISTANT
 					));
@@ -402,5 +395,6 @@ TEST_F(GhostSyncLinkerRemoveNodeTest, remove_distant) {
 				})
 			);
 
+	EXPECT_CALL(mock_graph, erase(node_to_remove));
 	linker.synchronize();
 }

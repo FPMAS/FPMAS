@@ -5,15 +5,9 @@
 
 using fpmas::communication::TypedMpi;
 
-using ::testing::ElementsAre;
-using ::testing::UnorderedElementsAre;
-using ::testing::Pair;
-using ::testing::AnyOf;
-using ::testing::Contains;
-using ::testing::IsEmpty;
+using namespace testing;
 
-
-class MpiTest : public ::testing::Test {
+class MpiTest : public Test {
 	protected:
 		MockMpiCommunicator<3, 8> comm;
 

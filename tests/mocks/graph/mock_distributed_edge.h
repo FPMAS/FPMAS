@@ -14,7 +14,7 @@ class MockDistributedEdge;
 template<typename T>
 void from_json(const nlohmann::json& j, MockDistributedEdge<T>& mock);
 
-template<typename>
+template<typename, template<typename> class>
 class MockDistributedNode;
 
 template<typename T>
@@ -91,10 +91,10 @@ inline void from_json(const nlohmann::json& j, MockDistributedEdge<T>& mock) {
 		.WillByDefault(Return(j.at("id").get<DistributedId>()));
 	EXPECT_CALL(mock, getId).Times(AnyNumber());
 
-	mock.setSourceNode(new MockDistributedNode<T>(
+	mock.setSourceNode(new MockDistributedNode<T, testing::NiceMock>(
 						j.at("src").get<DistributedId>()
 						));
-	mock.setTargetNode(new MockDistributedNode<T>(
+	mock.setTargetNode(new MockDistributedNode<T, testing::NiceMock>(
 						j.at("tgt").get<DistributedId>()
 						));
 

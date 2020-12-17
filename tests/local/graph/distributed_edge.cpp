@@ -2,6 +2,8 @@
 
 #include "../mocks/graph/mock_distributed_node.h"
 
+using namespace testing;
+
 TEST(DistributedEdgeConstructorTest, default_weight) {
 	fpmas::graph::DistributedEdge<int> edge {{2, 6}, 7};
 	ASSERT_FLOAT_EQ(edge.getWeight(), 1.f);
@@ -9,11 +11,11 @@ TEST(DistributedEdgeConstructorTest, default_weight) {
 	ASSERT_EQ(edge.getLayer(), 7);
 }
 
-class DistributedEdgeTest : public ::testing::Test {
+class DistributedEdgeTest : public Test {
 	protected:
 		fpmas::graph::DistributedEdge<int> edge {{2, 6}, 7};
-		MockDistributedNode<int> src {{0, 1}, 0, 0};
-		MockDistributedNode<int> tgt {{0, 2}, 0, 0};
+		MockDistributedNode<int, NiceMock> src {{0, 1}, 0, 0};
+		MockDistributedNode<int, NiceMock> tgt {{0, 2}, 0, 0};
 
 		void SetUp() override {
 			edge.setWeight(2.4);
@@ -31,8 +33,10 @@ TEST_F(DistributedEdgeTest, state) {
 }
 
 TEST_F(DistributedEdgeTest, json_serialization) {
-	EXPECT_CALL(src, location).Times(AnyNumber()).WillRepeatedly(Return(3));
-	EXPECT_CALL(tgt, location).Times(AnyNumber()).WillRepeatedly(Return(22));
+	ON_CALL(src, location)
+		.WillByDefault(Return(3));
+	ON_CALL(tgt, location)
+		.WillByDefault(Return(22));
 
 	nlohmann::json edge_json = fpmas::graph::EdgePtrWrapper<int>(&edge);
 

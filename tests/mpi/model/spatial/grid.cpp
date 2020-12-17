@@ -177,7 +177,7 @@ TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_width_sup_height) {
 class UniformAgentMappingTest : public Test {
 	protected:
 		fpmas::model::UniformGridAgentMapping mapping {10, 10, 30};
-		std::array<NiceMock<MockGridCell>, 100> cells;
+		std::array<MockGridCell<NiceMock>, 100> cells;
 
 		void SetUp() override {
 			for(fpmas::model::DiscreteCoordinate x = 0; x < 10; x++)

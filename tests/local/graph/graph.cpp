@@ -6,15 +6,8 @@
 #include "../mocks/graph/mock_edge.h"
 #include "../mocks/utils/mock_callback.h"
 
-using ::testing::AnyNumber;
-using ::testing::AtLeast;
-using ::testing::Contains;
-using ::testing::Expectation;
-using ::testing::Not;
-using ::testing::Pair;
-using ::testing::Return;
-using ::testing::ReturnRef;
-using ::testing::_;
+using namespace testing;
+
 /*
  *
  *template<typename NodeType, typename EdgeType>
@@ -35,11 +28,13 @@ using ::testing::_;
  *};
  */
 
-class GraphBaseTest : public ::testing::Test {
+class GraphBaseTest : public Test {
 	protected:
 		fpmas::graph::Graph<MockNode<BasicId>, MockEdge<BasicId>> graph;
-		MockCallback<MockNode<BasicId>*>* insert_callback = new MockCallback<MockNode<BasicId>*>;
-		MockCallback<MockNode<BasicId>*>* erase_callback = new MockCallback<MockNode<BasicId>*>;
+		MockCallback<MockNode<BasicId>*>* insert_callback
+			= new MockCallback<MockNode<BasicId>*>;
+		MockCallback<MockNode<BasicId>*>* erase_callback
+			= new MockCallback<MockNode<BasicId>*>;
 };
 
 TEST_F(GraphBaseTest, insert_node) {
@@ -62,8 +57,12 @@ TEST_F(GraphBaseTest, insert_node) {
 		EXPECT_CALL(*node, getOutgoingEdges()).Times(AnyNumber());
 		EXPECT_CALL(*node, getOutgoingEdges(_)).Times(AnyNumber());
 		// Erase events should be triggered when the graph is deleted.
-		Expectation callback = EXPECT_CALL(*erase_callback, call(node));
-		EXPECT_CALL(*node, die).After(callback);
+		EXPECT_CALL(*erase_callback, call(node))
+			// Fake action, ensures node is not yet deleted when callback is
+			// called
+			.WillOnce([] (decltype(node) _node) {
+					_node->getId();
+					});
 	}
 }
 
@@ -83,15 +82,19 @@ TEST_F(GraphBaseTest, erase_node) {
 	}
 	for(auto node : nodes) {
 		BasicId node_id = node->getId();
-		Expectation callback = EXPECT_CALL(*erase_callback, call(node));
-		EXPECT_CALL(*node, die).After(callback);
+		EXPECT_CALL(*erase_callback, call(node))
+			// Fake action, ensures node is not yet deleted when callback is
+			// called
+			.WillOnce([] (decltype(node) _node) {
+					_node->getId();
+					});
 		graph.erase(node);
 		ASSERT_THAT(graph.getNodes(), Not(Contains(Pair(node_id, _))));
 	}
 	delete insert_callback;
 }
 
-class GraphBaseEraseEdgeTest : public ::testing::Test {
+class GraphBaseEraseEdgeTest : public Test {
 	protected:
 		fpmas::graph::Graph<MockNode<BasicId>, MockEdge<BasicId>> graph;
 		BasicId id;

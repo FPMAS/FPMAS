@@ -9,9 +9,7 @@
 
 #include "utils/test.h"
 
-using ::testing::SizeIs;
-using ::testing::Ge;
-using ::testing::IsEmpty;
+using namespace testing;
 
 using fpmas::api::graph::LocationState;
 using fpmas::communication::TypedMpi;
@@ -25,7 +23,7 @@ using fpmas::synchro::hard::MutexServer;
 using fpmas::synchro::hard::TerminationAlgorithm;
 using fpmas::synchro::DataUpdatePack;
 
-class HardSyncMutexSelfReadTest : public ::testing::Test {
+class HardSyncMutexSelfReadTest : public Test {
 	protected:
 		MpiCommunicator comm;
 		TypedMpi<Color> color_mpi {comm};
@@ -35,7 +33,7 @@ class HardSyncMutexSelfReadTest : public ::testing::Test {
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = comm.getRank();
-		MockDistributedNode<int> node {DistributedId(3, comm.getRank()), data};
+		MockDistributedNode<int, NiceMock> node {DistributedId(3, comm.getRank()), data};
 
 		LocationState state = LocationState::DISTANT;
 		int location = comm.getRank();
@@ -67,7 +65,7 @@ TEST_F(HardSyncMutexSelfReadTest, unlocked_read_test) {
 /*
  * mpi_race_condition
  */
-class MutexServerRaceCondition : public ::testing::Test {
+class MutexServerRaceCondition : public Test {
 	protected:
 		static const int NUM_ACQUIRE = 500;
 		MpiCommunicator comm;
@@ -78,7 +76,7 @@ class MutexServerRaceCondition : public ::testing::Test {
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = 0;
-		MockDistributedNode<int> node {DistributedId(3, 6), data};
+		MockDistributedNode<int, NiceMock> node {DistributedId(3, 6), data};
 
 		LocationState state = LocationState::DISTANT;
 		int location = 0;
@@ -114,7 +112,7 @@ TEST_F(MutexServerRaceCondition, acquire_race_condition) {
 	}
 }
 
-class HardSyncModeIntegrationTest : public ::testing::Test {
+class HardSyncModeIntegrationTest : public Test {
 	protected:
 		MpiCommunicator comm;
 		DistributedGraph<unsigned int, HardSyncMode> graph {comm};

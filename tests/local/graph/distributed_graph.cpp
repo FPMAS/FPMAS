@@ -41,6 +41,10 @@ class DistributedGraphTest : public Test {
 	protected:
 		static const int CURRENT_RANK = 7;
 		MockMpiCommunicator<CURRENT_RANK, 10> comm;
+		template<typename T>
+			using MockDistributedNode = MockDistributedNode<T, NiceMock>;
+		template<typename T>
+			using MockSyncMode = NiceMock<MockSyncMode<T>>;
 		DistributedGraph<
 			int,
 			MockSyncMode,
@@ -69,12 +73,8 @@ class DistributedGraphTest : public Test {
 		void SetUp() override {
 			ON_CALL(graph.getSyncMode(), getSyncLinker)
 				.WillByDefault(ReturnRef(mock_sync_linker));
-			EXPECT_CALL(graph.getSyncMode(), getSyncLinker)
-				.Times(AnyNumber());
 			ON_CALL(graph.getSyncMode(), getDataSync)
 				.WillByDefault(ReturnRef(mock_data_sync));
-			EXPECT_CALL(graph.getSyncMode(), getDataSync)
-				.Times(AnyNumber());
 		}
 
 };
@@ -83,11 +83,6 @@ class DistributedGraphTest : public Test {
  * Local buildNode test
  */
 TEST_F(DistributedGraphTest, build_node) {
-
-	MockLocationManager<int>& location_manager
-		= const_cast<MockLocationManager<int>&>(
-				graph.getLocationManager()
-				);
 	auto local_callback = new MockCallback<NodeType*>;
 	graph.addCallOnSetLocal(local_callback);
 
@@ -866,11 +861,7 @@ class DistributedGraphDistributeTest : public DistributedGraphTest {
 	protected:
 		std::array<DistributedId, 5> node_ids;
 		PartitionMap fake_partition;
-		MockLocationManager<int>& location_manager
-			= const_cast<MockLocationManager<int>&>(
-				static_cast<const MockLocationManager<int>&>(
-					graph.getLocationManager()
-					));
+
 		void SetUp() override {
 			DistributedGraphTest::SetUp();
 
@@ -900,7 +891,6 @@ class DistributedGraphDistributeTest : public DistributedGraphTest {
 TEST_F(DistributedGraphTest, distribute_calls) {
 	Sequence s;
 	EXPECT_CALL(
-			//(const_cast<MockSyncLinker<NodeType, EdgeType>&>(graph.getSyncLinker())),
 			mock_sync_linker,
 			synchronize()
 			)
@@ -913,7 +903,6 @@ TEST_F(DistributedGraphTest, distribute_calls) {
 	EXPECT_CALL(location_manager, updateLocations())
 		.InSequence(s);
 	EXPECT_CALL(
-			//(const_cast<MockDataSync<NodeType, EdgeType>&>(graph.getDataSync())),
 			mock_data_sync,
 			synchronize()
 			)
@@ -1024,6 +1013,8 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 	
 	EXPECT_CALL(location_manager, updateLocations());
 
+	EXPECT_CALL(mock_sync_linker, synchronize);
+	EXPECT_CALL(mock_data_sync, synchronize);
 	graph.distribute(fake_partition);
 	ASSERT_EQ(graph.getNodes().size(), 3);
 	ASSERT_EQ(graph.getNodes().count(node_ids[0]), 1);
@@ -1046,8 +1037,8 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 		EdgeType* edge1;
 		EdgeType* edge2;
 
-		EdgeList* node2_in = new EdgeList;
-		EdgeList* node3_out = new EdgeList;
+		EdgeList node2_in;
+		EdgeList node3_out;
 
 		MockCallback<NodeType*>* distant_callback = new MockCallback<NodeType*>;
 		std::array<NodeType*, 2> imported_edge_distant_callback_args;
@@ -1069,22 +1060,22 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 				.WillRepeatedly(Return(&mock_mutex));
 
 			edge1 = graph.link(graph.getNode(node_ids[0]), graph.getNode(node_ids[2]), 0);
-			node2_in->push_back(edge1);
+			node2_in.push_back(edge1);
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[2])), getIncomingEdges())
 				.Times(AnyNumber())
-				.WillRepeatedly(ReturnPointee(node2_in));
+				.WillRepeatedly(ReturnPointee(&node2_in));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[2])), unlinkIn)
-				.WillOnce(InvokeWithoutArgs(node2_in, &EdgeList::clear));
+				.WillOnce(InvokeWithoutArgs(&node2_in, &EdgeList::clear));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[0])), unlinkOut);
 
 
 			edge2 = graph.link(graph.getNode(node_ids[3]), graph.getNode(node_ids[0]), 0);
-			node3_out->push_back(edge2);
+			node3_out.push_back(edge2);
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[3])), getOutgoingEdges())
 				.Times(AnyNumber())
-				.WillRepeatedly(ReturnPointee(node3_out));
+				.WillRepeatedly(ReturnPointee(&node3_out));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[3])), unlinkOut)
-				.WillOnce(InvokeWithoutArgs(node3_out, &EdgeList::clear));
+				.WillOnce(InvokeWithoutArgs(&node3_out, &EdgeList::clear));
 			EXPECT_CALL(*static_cast<MockNode*>(graph.getNode(node_ids[0])), unlinkIn);
 
 			// Other uninteresting setDistant calls might occur on unconnected
@@ -1114,8 +1105,6 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 		}
 
 		void TearDown() override {
-			delete node2_in;
-			delete node3_out;
 		}
 };
 
@@ -1162,6 +1151,8 @@ TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
 		.WillOnce(Return(edge_import));
 
 	EXPECT_CALL(location_manager, updateLocations());
+	EXPECT_CALL(mock_sync_linker, synchronize);
+	EXPECT_CALL(mock_data_sync, synchronize);
 	graph.distribute(fake_partition);
 
 	ASSERT_THAT(imported_edge_distant_callback_args, UnorderedElementsAre(mock_src, mock_tgt));

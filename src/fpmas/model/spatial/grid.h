@@ -109,7 +109,7 @@ namespace fpmas { namespace model {
 			friend nlohmann::adl_serializer<api::utils::PtrWrapper<GridAgent<AgentType>>>;
 
 			private:
-			DiscretePoint location_point;
+			DiscretePoint location_point {0, 0};
 
 			protected:
 			/**

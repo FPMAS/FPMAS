@@ -6,10 +6,8 @@
 #include "../mocks/graph/mock_location_manager.h"
 #include "../mocks/synchro/mock_mutex.h"
 
-using ::testing::ElementsAre;
-using ::testing::IsEmpty;
-using ::testing::Pair;
-using ::testing::UnorderedElementsAre;
+using namespace testing;
+
 using fpmas::synchro::NodeUpdatePack;
 
 using fpmas::synchro::ghost::GhostDataSync;
@@ -21,9 +19,9 @@ namespace fpmas { namespace synchro {
 		}
 }}
 
-class GhostDataSyncTest : public ::testing::Test {
+class GhostDataSyncTest : public Test {
 	protected:
-		typedef MockDistributedNode<int> NodeType;
+		typedef MockDistributedNode<int, NiceMock> NodeType;
 		typedef MockDistributedEdge<int> EdgeType;
 		typedef typename MockDistributedGraph<int, NodeType, EdgeType>::NodeMap NodeMap;
 
@@ -37,7 +35,7 @@ class GhostDataSyncTest : public ::testing::Test {
 		GhostDataSync<int>
 			dataSync {data_mpi, id_mpi, mocked_graph};
 
-		MockLocationManager<int> location_manager {mock_comm, id_mpi, location_mpi};
+		NiceMock<MockLocationManager<int>> location_manager {mock_comm, id_mpi, location_mpi};
 
 
 		std::array<NodeType*, 4> nodes {
@@ -83,8 +81,8 @@ TEST_F(GhostDataSyncTest, export_data) {
 	setUpGraphNodes(graph_nodes);
 
 	NodeMap distant_nodes;
-	EXPECT_CALL(location_manager, getDistantNodes)
-		.WillRepeatedly(ReturnRef(distant_nodes));
+	ON_CALL(location_manager, getDistantNodes)
+		.WillByDefault(ReturnRef(distant_nodes));
 
 	std::unordered_map<int, std::vector<DistributedId>> requests {
 		{0, {DistributedId(2, 0), DistributedId(7, 1)}},
@@ -126,8 +124,8 @@ TEST_F(GhostDataSyncTest, import_test) {
 		{DistributedId(6, 2), nodes[2]},
 		{DistributedId(7, 1), nodes[3]}
 	};
-	EXPECT_CALL(location_manager, getDistantNodes)
-		.WillRepeatedly(ReturnRef(distant_nodes));
+	ON_CALL(location_manager, getDistantNodes)
+		.WillByDefault(ReturnRef(distant_nodes));
 
 	setUpGraphNodes(graph_nodes);
 	auto requests_matcher = UnorderedElementsAre(

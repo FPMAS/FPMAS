@@ -303,7 +303,14 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Adds a new Agent to this group.</p>
-<p>Also builds a new <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> into the current <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a> and associates it to the Agent.</p>
+<p><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroups</a> to which an <code>agent</code> is added take ownership of the <code>agent</code>, that must be dynamically allocated (using a <code>new</code> statement). The <code>agent</code> lives while it belongs to at least one group, and is deleted when it is removed from the last group.</p>
+<p><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#ac226e2eb63a7f2e2a0e1138a325b1ee8">add()</a> builds a new <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> into the current <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a> and associates it to the Agent if the <code>agent</code> was not contained in any group yet.</p>
+<p>This group's <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#abf975bf2e2fa51ee3b1349a5270fd3cf">groupId()</a> is added to <code>agent</code>s Agent::groupIds().</p>
+<p>A task is also bound to the <code>agent</code> and Agent::groups() is updated as defined in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a8dd58298f1ae198313bb15a51ebc8641">insert()</a>.</p>
+<p>Moreover, if the <code>agent</code> is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>, the previous task is added to <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a057d75f9badca09069c068d2c6142cc9">agentExecutionJob()</a>.</p>
+<p>In consequence, it is possible to dynamically <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#ac226e2eb63a7f2e2a0e1138a325b1ee8">add()</a> <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> agents to groups.</p>
+<p>Notice that when the <code>agent</code> is not bound to a node yet, i.e. this is the first group the agent is inserted into so that a new node is built, the <code>agent</code> automatically becomes <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>, since the new node is built locally.</p>
+<p>If a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> <code>agent</code> is added to the group, it is just inserted in the group. However, this is a mechanic that must be used only internally, since adding a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> agent to the group is not guaranteed to report the operation on other processes.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">agent</td><td>agent to add </td></tr>
@@ -339,7 +346,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Removes an Agent from this group.</p>
-<p>The Agent is completely removed from the simulation, so the associated <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> is also globally removed from the <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a>.</p>
+<p>If this was the last group containing the Agent, it is completely removed from the simulation, so the associated <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> is also globally removed from the <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a>.</p>
+<p>Else, the agent is simply removed from this group as defined in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a1d256769ad4288132d4215adf3613014">erase()</a>.</p>
+<p>If the <code>agent</code> is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>, the task associated to this group's <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#af98ac509397bfaad074c0b885ace53b0">behavior()</a> is removed from <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a057d75f9badca09069c068d2c6142cc9">agentExecutionJob()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">agent</td><td>agent to remove </td></tr>
@@ -376,7 +385,9 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Inserts an Agent into this <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html">AgentGroup</a>.</p>
 <p>This function is only used during the node migration process, and is not supposed to be used by the final user.</p>
-<p>Contrary to <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#ac226e2eb63a7f2e2a0e1138a325b1ee8">add()</a>, this method assumes that an AgentNode has already been built for the Agent.</p>
+<p>Contrary to <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#ac226e2eb63a7f2e2a0e1138a325b1ee8">add()</a>, this method assumes that an <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a> has already been built for the Agent.</p>
+<p>When this method is called, it is assumed that <code>agent</code>'s Agent::groupIds() list already contains this <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#abf975bf2e2fa51ee3b1349a5270fd3cf">groupId()</a>, so the <code>agent</code> should be inserted in the group.</p>
+<p>Upon return, <code>agent</code>'s Agent::groups() must be updated, and a task that execute <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#af98ac509397bfaad074c0b885ace53b0">behavior()</a> on this agent must be bound to the agent. The corresponding task is then accessible from Agent::task(GroupId) and Agent::tasks().</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">agent</td><td>agent to insert into this group </td></tr>
@@ -413,7 +424,8 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Erases an Agent from this <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html">AgentGroup</a>.</p>
 <p>This function is only used during the node migration process, and is not supposed to be used by the final user.</p>
-<p>Contrary to <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a6ab7b85ed29da686d3f97b3b838ca873">remove()</a>, this method does not globally removes the Agent (and its associated AgentNode) from the simulation.</p>
+<p>Contrary to <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a6ab7b85ed29da686d3f97b3b838ca873">remove()</a>, this method does not globally removes the Agent (and its associated <a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">AgentNode</a>) from the simulation.</p>
+<p>Upon return, <code>agent</code>'s Agent::groupIds() and Agent::groups() must be updated, and the task previously bound to the agent by <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a8dd58298f1ae198313bb15a51ebc8641">insert()</a> must be unbound.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">agent</td><td>agent to erase from this group </td></tr>

@@ -12,7 +12,7 @@ using ::testing::SaveArg;
 using fpmas::api::graph::LayerId;
 
 template<typename IdType, typename> class AbstractMockNode;
-template<typename IdType> class MockNode;
+//template<typename IdType> class MockNode;
 
 template<typename _IdType, typename _NodeType>
 class AbstractMockEdge : public virtual fpmas::api::graph::Edge<
@@ -95,6 +95,10 @@ class AbstractMockEdge : public virtual fpmas::api::graph::Edge<
 
 		}
 };
+
+template<typename IdType> class MockEdge;
+template<typename IdType>
+using MockNode = AbstractMockNode<IdType, MockEdge<IdType>>;
 
 template<typename IdType>
 class MockEdge : public AbstractMockEdge<IdType, MockNode<IdType>> {
