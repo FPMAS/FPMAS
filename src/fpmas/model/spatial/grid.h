@@ -39,8 +39,15 @@ namespace fpmas { namespace model {
 
 	/**
 	 * Grid specialization of the SpatialAgentBuilder class.
+	 *
+	 * The fpmas::model::GridAgentBuilder uses api::model::GridCell as the `MappingCellType`
+	 * parameter, meaning an
+	 * SpatialAgentMapping<api::model::GridCell> must be provided
+	 * to the fpmas::model::GridAgentBuilder::build() method. As an example,
+	 * RandomGridAgentMapping might be used. 
 	 */
-	typedef SpatialAgentBuilder<api::model::GridCell> GridAgentBuilder;
+	template<typename CellType>
+	using GridAgentBuilder = SpatialAgentBuilder<CellType, api::model::GridCell>;
 
 	/**
 	 * api::model::GridCell implementation.
@@ -99,14 +106,18 @@ namespace fpmas { namespace model {
 	 *
 	 * @tparam AgentType dynamic GridAgent type (i.e. the most derived
 	 * type from this GridAgent)
+	 * @tparam GridCellType Type of cells constituting the Grid on which the
+	 * agent is moving. Must extend api::model::GridCell.
 	 * @tparam Derived direct derived class, or at least the next class in the
 	 * serialization chain
 	 */
-	template<typename AgentType, typename Derived = AgentType>
+	template<typename AgentType, typename GridCellType = api::model::GridCell, typename Derived = AgentType>
 	class GridAgent :
-		public api::model::GridAgent,
-		public SpatialAgentBase<AgentType, api::model::GridCell, GridAgent<AgentType, Derived>> {
-			friend nlohmann::adl_serializer<api::utils::PtrWrapper<GridAgent<AgentType>>>;
+		public api::model::GridAgent<GridCellType>,
+		public SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>> {
+			friend nlohmann::adl_serializer<api::utils::PtrWrapper<GridAgent<AgentType, GridCellType, Derived>>>;
+			static_assert(std::is_base_of<api::model::GridCell, GridCellType>::value,
+					"The specified GridCellType must extend api::model::GridCell.");
 
 			private:
 			DiscretePoint location_point {0, 0};
@@ -125,16 +136,16 @@ namespace fpmas { namespace model {
 			 * @param perception_range perception range
 			 */
 			GridAgent(
-					const fpmas::api::model::Range<api::model::GridCell>& mobility_range,
-					const fpmas::api::model::Range<api::model::GridCell>& perception_range)
-				: model::SpatialAgentBase<AgentType, api::model::GridCell, GridAgent<AgentType, Derived>>(
+					const fpmas::api::model::Range<GridCellType>& mobility_range,
+					const fpmas::api::model::Range<GridCellType>& perception_range)
+				: model::SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>>(
 						mobility_range, perception_range) {}
 
-			using model::SpatialAgentBase<AgentType, api::model::GridCell, GridAgent<AgentType, Derived>>::moveTo;
+			using model::SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>>::moveTo;
 			/**
-			 * \copydoc fpmas::api::model::GridAgent::moveTo(api::model::GridCell*)
+			 * \copydoc fpmas::api::model::GridAgent::moveTo(GridCellType*)
 			 */
-			void moveTo(api::model::GridCell* cell) override;
+			void moveTo(GridCellType* cell) override;
 			/**
 			 * \copydoc fpmas::api::model::GridAgent::moveTo(DiscretePoint)
 			 */
@@ -147,16 +158,16 @@ namespace fpmas { namespace model {
 			DiscretePoint locationPoint() const override {return location_point;}
 		};
 
-	template<typename AgentType, typename Derived>
-		void GridAgent<AgentType, Derived>::moveTo(api::model::GridCell* cell) {
+	template<typename AgentType, typename GridCellType, typename Derived>
+		void GridAgent<AgentType, GridCellType, Derived>::moveTo(GridCellType* cell) {
 			this->updateLocation(cell);
 			location_point = cell->location();
 		}
 
-	template<typename AgentType, typename Derived>
-		void GridAgent<AgentType, Derived>::moveTo(DiscretePoint point) {
+	template<typename AgentType, typename GridCellType, typename Derived>
+		void GridAgent<AgentType, GridCellType, Derived>::moveTo(DiscretePoint point) {
 			bool found = false;
-			auto mobility_field = this->template outNeighbors<fpmas::api::model::GridCell>(SpatialModelLayers::MOVE);
+			auto mobility_field = this->template outNeighbors<GridCellType>(SpatialModelLayers::MOVE);
 			auto it = mobility_field.begin();
 			while(!found && it != mobility_field.end()) {
 				if((*it)->location() == point) {
@@ -178,7 +189,7 @@ namespace fpmas { namespace model {
 	 * cell type can be provided.
 	 */
 	template<typename GridCellType = GridCell>
-		class GridCellFactory : public api::model::GridCellFactory {
+		class GridCellFactory : public api::model::GridCellFactory<GridCellType> {
 			public:
 				/**
 				 * Build a new api::model::GridCell using the following
@@ -194,9 +205,23 @@ namespace fpmas { namespace model {
 		};
 
 	/**
+	 * A GridCellFactory specialization for api::model::GridCell.
+	 *
+	 * GridCellFactory normally accepts constructible types as the
+	 * `GridCellType` template parameter. This specialization can however by
+	 * used to produce default GridCell instances.
+	 */
+	template<>
+		class GridCellFactory<api::model::GridCell> : public api::model::GridCellFactory<api::model::GridCell>{
+			api::model::GridCell* build(DiscretePoint location) override {
+				return new GridCell(location);
+			}
+		};
+
+	/**
 	 * Generic static Grid configuration interface.
 	 */
-	template<typename BuilderType, typename DistanceType>
+	template<typename BuilderType, typename DistanceType, typename _CellType = api::model::GridCell>
 		struct GridConfig {
 			/**
 			 * fpmas::api::model::CellNetworkBuilder implementation that can
@@ -224,6 +249,14 @@ namespace fpmas { namespace model {
 			 *   underlying `Graph` is the ChebyshevDistance from `p1` to `p2`.
 			 */
 			typedef DistanceType Distance;
+
+			/**
+			 * Type of fpmas::api::model::Cell used by the Grid.
+			 *
+			 * This type is notably used to define Range types of GridAgent
+			 * evolving on the Grid.
+			 */
+			typedef _CellType CellType;
 		};
 
 	/**
@@ -286,7 +319,7 @@ namespace fpmas { namespace model {
 	 * threshold and the `RangeConfig::Distance` function object.
 	 */
 	template<typename GridConfig, typename GridRangeConfig>
-		class GridRange : public api::model::Range<fpmas::api::model::GridCell> {
+		class GridRange : public api::model::Range<typename GridConfig::CellType> {
 			private:
 				static const typename GridConfig::Distance grid_distance;
 				static const typename GridRangeConfig::Distance range_distance;
@@ -334,7 +367,7 @@ namespace fpmas { namespace model {
 				 * @param cell cell to check
 				 * @return true iff `cell` is in this range
 				 */
-				bool contains(api::model::GridCell* location_cell, api::model::GridCell* cell) const override {
+				bool contains(typename GridConfig::CellType* location_cell, typename GridConfig::CellType* cell) const override {
 					return range_distance(location_cell->location(), cell->location()) <= size;
 				}
 
@@ -355,7 +388,7 @@ namespace fpmas { namespace model {
 				// TODO: provide a figure with examples for VN range / VN
 				// grid, VN range / Moore grid, Moore range / VN grid and
 				// Moore range / Moore grid.
-				std::size_t radius(api::model::GridCell*) const override {
+				std::size_t radius(typename GridConfig::CellType*) const override {
 					return grid_distance({0, 0}, perimeter(*this));
 				}
 		};
@@ -368,23 +401,13 @@ namespace fpmas { namespace model {
 		const typename RangeConfig::Perimeter GridRange<GridConfig, RangeConfig>::perimeter;
 
 	/**
-	 * Grid specialization of the StaticEndCondition.
-	 */
-	template<typename RangeType, unsigned MaxRangeSize>
-		using StaticGridEndCondition = StaticEndCondition<RangeType, MaxRangeSize, api::model::GridCell>;
-		
-	/**
-	 * Grid specialization of the DynamicEndCondition.
-	 */
-	typedef DynamicEndCondition<api::model::GridCell> DynamicGridEndCondition;
-
-	/**
 	 * Grid specialization of the SpatialModel.
 	 */
 	template<
 		template<typename> class SyncMode,
-		typename EndCondition = DynamicGridEndCondition>
-			using GridModel = SpatialModel<SyncMode, api::model::GridCell, EndCondition>;
+		typename CellType = api::model::GridCell,
+		typename EndCondition = DynamicEndCondition<CellType>>
+			using GridModel = SpatialModel<SyncMode, CellType, EndCondition>;
 }}
 
 FPMAS_DEFAULT_JSON(fpmas::model::GridCell)
@@ -495,12 +518,12 @@ namespace nlohmann {
 	/**
 	 * Polymorphic GridAgent nlohmann json serializer specialization.
 	 */
-	template<typename AgentType, typename Derived>
-		struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType, Derived>>> {
+	template<typename AgentType, typename CellType, typename Derived>
+		struct adl_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType, CellType, Derived>>> {
 			/**
 			 * Pointer wrapper to a polymorphic GridAgent.
 			 */
-			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType, Derived>> Ptr;
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType, CellType, Derived>> Ptr;
 
 			/**
 			 * Serializes the pointer to the polymorphic GridAgent using

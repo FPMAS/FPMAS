@@ -149,11 +149,11 @@ This graph shows which files directly or indirectly include this file:</div>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1ManhattanDistance.html">fpmas::model::ManhattanDistance</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1VonNeumannGridBuilder.html">fpmas::model::VonNeumannGridBuilder</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1VonNeumannGridBuilder.html">fpmas::model::VonNeumannGridBuilder&lt; CellType &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter.html">fpmas::model::VonNeumannRangePerimeter&lt; GridConfig &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01VonNeumannGrid_01_4.html">fpmas::model::VonNeumannRangePerimeter&lt; VonNeumannGrid &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01VonNeumannGrid_3_01CellType_01_4_01_4.html">fpmas::model::VonNeumannRangePerimeter&lt; VonNeumannGrid&lt; CellType &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -165,8 +165,9 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ae621b716883773e999e4b20f4d2f1e2b"><td class="memItemLeft" align="right" valign="top">typedef GridConfig&lt; VonNeumannGridBuilder, ManhattanDistance &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#ae621b716883773e999e4b20f4d2f1e2b">fpmas::model::VonNeumannGrid</a></td></tr>
-<tr class="separator:ae621b716883773e999e4b20f4d2f1e2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a89fbfcfbe02c5c6bd0c2dc8ecdb57a0e"><td class="memTemplParams" colspan="2">template&lt;typename CellType  = api::model::GridCell&gt; </td></tr>
+<tr class="memitem:a89fbfcfbe02c5c6bd0c2dc8ecdb57a0e"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a89fbfcfbe02c5c6bd0c2dc8ecdb57a0e">fpmas::model::VonNeumannGrid</a> = GridConfig&lt; VonNeumannGridBuilder&lt; CellType &gt;, ManhattanDistance, CellType &gt;</td></tr>
+<tr class="separator:a89fbfcfbe02c5c6bd0c2dc8ecdb57a0e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af36960684bc9aa760d6c845f4320d451"><td class="memTemplParams" colspan="2">template&lt;typename GridConfig &gt; </td></tr>
 <tr class="memitem:af36960684bc9aa760d6c845f4320d451"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#af36960684bc9aa760d6c845f4320d451">fpmas::model::VonNeumannRangeConfig</a> = GridRangeConfig&lt; ManhattanDistance, VonNeumannRangePerimeter&lt; GridConfig &gt; &gt;</td></tr>
 <tr class="separator:af36960684bc9aa760d6c845f4320d451"><td class="memSeparator" colspan="2">&#160;</td></tr>

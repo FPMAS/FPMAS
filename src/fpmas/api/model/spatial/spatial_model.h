@@ -213,10 +213,14 @@ namespace fpmas { namespace api { namespace model {
 	 *
 	 * Helper functions might be defined in implementing classes to access
 	 * those elements.
+	 *
+	 * The specified `CellType` must extend Cell.
 	 */
 	template<typename CellType>
 	class SpatialAgent : public virtual Agent, public SpatialAgentBehavior {
 		public:
+			static_assert(std::is_base_of<api::model::Cell, CellType>::value,
+					"CellType must extend api::model::Cell");
 			/**
 			 * Type of Cell on which the SpatialAgent is moving.
 			 */
@@ -624,8 +628,13 @@ namespace fpmas { namespace api { namespace model {
 	 * The purpose of the SpatialAgentBuilder is to instantiate and initialize
 	 * \SpatialAgents in a distributed way, independently of the current Cell
 	 * network distribution.
+	 *
+	 * The `CellType` is the concrete type of Cell used by the SpatialModel.
+	 * The `MappingCellType` is the type used by the SpatialAgentMapping.
+	 * Those types does not need to be the same. See implementations for
+	 * examples.
 	 */
-	template<typename CellType>
+	template<typename CellType, typename MappingCellType>
 	class SpatialAgentBuilder {
 		public:
 			/**
@@ -657,7 +666,7 @@ namespace fpmas { namespace api { namespace model {
 					SpatialModel<CellType>& model,
 					GroupList groups,
 					SpatialAgentFactory<CellType>& factory,
-					SpatialAgentMapping<CellType>& agent_mapping
+					SpatialAgentMapping<MappingCellType>& agent_mapping
 					) = 0;
 
 			virtual ~SpatialAgentBuilder() {}

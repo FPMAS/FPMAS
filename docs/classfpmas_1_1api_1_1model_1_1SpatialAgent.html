@@ -200,7 +200,8 @@ class fpmas::api::model::SpatialAgent&lt; CellType &gt;</h3>
 <p>In addition to the classical <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> properties, <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> can be located on a <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network, move and perceive objects within it.</p>
 <p>The <em>mobility field</em> of a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> is defined as the set of outgoing neighbors of type <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> on the <code>MOVE</code> layer.</p>
 <p>The <em>perceptions</em> of a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> are defined as elements of the set of outgoind neighbors of type <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> on the <code>PERCEPTION</code> layer.</p>
-<p>Helper functions might be defined in implementing classes to access those elements. </p>
+<p>Helper functions might be defined in implementing classes to access those elements.</p>
+<p>The specified <code>CellType</code> must extend <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a>. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="abf0a276b2503f729442c5b9811eb326d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abf0a276b2503f729442c5b9811eb326d">&#9670;&nbsp;</a></span>Cell</h2>
@@ -250,7 +251,7 @@ template&lt;typename CellType &gt; </div>
 </div><!-- fragment --><p>Notice that this is valid whatever the current SynchronizationMode is. Indeed, <code>moveTo</code> operations are only committed at the next <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> execution, that includes a Graph synchronization process. So, in any case, even if <code>B</code> moves during its execution on an other process while <code>A-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a05227b8b6e46c6c6b698ec532a326712">moveTo()</a></code> is executed on the current process, its new location will effectively be committed only when all <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> are synchronized, so it is still consistent to assume that, during this epoch, <code>B</code> is still located at <code>B-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#acce9e122bb6da9ed2b284c6dcf831553">locationId()</a></code>. However, when the <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> will be applied, <code>A</code> will finally end on a different location than <code>B</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>id of the current location </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a4210fa6392f62bcdb327fba980095070">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a4210fa6392f62bcdb327fba980095070">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, AgentType &gt; &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a4210fa6392f62bcdb327fba980095070">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a4210fa6392f62bcdb327fba980095070">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, api::model::GridCell, AgentType &gt; &gt;</a>.</p>
 
 </div>
 </div>
@@ -283,7 +284,7 @@ template&lt;typename CellType &gt; </div>
 <p>Contrary to <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#acce9e122bb6da9ed2b284c6dcf831553">locationId()</a>, this method produces an unexpected result when called on a DISTANT <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>current location </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, AgentType &gt; &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, api::model::GridCell, AgentType &gt; &gt;</a>.</p>
 
 </div>
 </div>
@@ -322,7 +323,7 @@ template&lt;typename CellType &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#ac459900a3c1ffa9e5e6ec7067049d454">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#ac459900a3c1ffa9e5e6ec7067049d454">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, AgentType &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#ac459900a3c1ffa9e5e6ec7067049d454">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, AgentType &gt; &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#ac459900a3c1ffa9e5e6ec7067049d454">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#ac459900a3c1ffa9e5e6ec7067049d454">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, AgentType &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#ac459900a3c1ffa9e5e6ec7067049d454">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, api::model::GridCell, AgentType &gt; &gt;</a>.</p>
 
 </div>
 </div>
@@ -353,7 +354,7 @@ template&lt;typename CellType &gt; </div>
 <p>Returns the current mobility range of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>mobility range </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#abfd681d02357c416b4eda2be4101377e">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#abfd681d02357c416b4eda2be4101377e">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, AgentType &gt; &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#abfd681d02357c416b4eda2be4101377e">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#abfd681d02357c416b4eda2be4101377e">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, api::model::GridCell, AgentType &gt; &gt;</a>.</p>
 
 </div>
 </div>
@@ -384,7 +385,7 @@ template&lt;typename CellType &gt; </div>
 <p>Returns the current perception range of this <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>perception range </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#aa114a59eacb17ca4f24bf465acd58a27">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#aa114a59eacb17ca4f24bf465acd58a27">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, AgentType &gt; &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#aa114a59eacb17ca4f24bf465acd58a27">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#aa114a59eacb17ca4f24bf465acd58a27">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, api::model::GridCell, AgentType &gt; &gt;</a>.</p>
 
 </div>
 </div>
@@ -429,7 +430,7 @@ template&lt;typename CellType &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a0c1a2e3bf455891a6187142b9ae67e32">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a0c1a2e3bf455891a6187142b9ae67e32">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, AgentType &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a0c1a2e3bf455891a6187142b9ae67e32">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, AgentType &gt; &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a0c1a2e3bf455891a6187142b9ae67e32">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a0c1a2e3bf455891a6187142b9ae67e32">fpmas::model::SpatialAgentBase&lt; AgentType, api::model::GridCell, GridAgent&lt; AgentType, api::model::GridCell, AgentType &gt; &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a0c1a2e3bf455891a6187142b9ae67e32">fpmas::model::SpatialAgentBase&lt; AgentType, CellType, AgentType &gt;</a>.</p>
 
 </div>
 </div>
@@ -473,7 +474,7 @@ template&lt;typename CellType &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgent.html#a0e2d10191115349a31dddf76b1dd3061">fpmas::model::SpatialAgent&lt; AgentType, CellType, Derived &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1GridAgent.html#a74396367f80d3a7ce7382cd0c7990e59">fpmas::model::GridAgent&lt; AgentType, Derived &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1SpatialAgent.html#a0e2d10191115349a31dddf76b1dd3061">fpmas::model::SpatialAgent&lt; AgentType, CellType, Derived &gt;</a>.</p>
 
 </div>
 </div>

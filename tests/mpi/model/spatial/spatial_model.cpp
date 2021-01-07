@@ -231,7 +231,7 @@ class SpatialAgentBuilderTest : public Test {
 	NiceMock<MockMoveAgentGroup<fpmas::api::model::Cell>> mock_move_group;
 	StrictMock<MockSpatialAgentFactory<fpmas::api::model::Cell>> agent_factory;
 	StrictMock<MockSpatialAgentMapping<fpmas::api::model::Cell>> agent_mapping;
-	fpmas::model::SpatialAgentBuilder<fpmas::api::model::Cell> builder;
+	fpmas::model::SpatialAgentBuilder<fpmas::api::model::Cell, fpmas::api::model::Cell> builder;
 
 	struct CountAgents {
 		std::unordered_map<fpmas::api::model::Cell*, int> counts;

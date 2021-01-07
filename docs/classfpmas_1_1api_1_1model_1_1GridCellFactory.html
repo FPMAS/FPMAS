@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>fpmas: fpmas::api::model::GridCellFactory Class Reference</title>
+<title>fpmas: fpmas::api::model::GridCellFactory&lt; CellType &gt; Class Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -70,41 +70,36 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classfpmas_1_1api_1_1model_1_1GridCellFactory-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">fpmas::api::model::GridCellFactory Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
+<div class="title">fpmas::api::model::GridCellFactory&lt; CellType &gt; Class Template Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="api_2model_2spatial_2grid_8h_source.html">grid.h</a>&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for fpmas::api::model::GridCellFactory:</div>
-<div class="dyncontent">
-<div class="center"><img src="classfpmas_1_1api_1_1model_1_1GridCellFactory__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1model_1_1GridCellFactory_inherit__map" alt="Inheritance graph"/></div>
-<map name="fpmas_1_1api_1_1model_1_1GridCellFactory_inherit__map" id="fpmas_1_1api_1_1model_1_1GridCellFactory_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,39,140,80"/>
-<area shape="rect" href="classfpmas_1_1model_1_1GridCellFactory.html" title=" " alt="" coords="188,5,388,47"/>
-<area shape="rect" href="classfpmas_1_1model_1_1GridCellFactory.html" title=" " alt="" coords="188,71,388,112"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a1fc7492250f198fae9d9528d07b4c1fb"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1GridCell.html">GridCell</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1GridCellFactory.html#a1fc7492250f198fae9d9528d07b4c1fb">build</a> (<a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> location)=0</td></tr>
-<tr class="separator:a1fc7492250f198fae9d9528d07b4c1fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae1eeb790a9d2ca1f3c3cc7b1dab7eca1"><td class="memItemLeft" align="right" valign="top">virtual CellType *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1GridCellFactory.html#ae1eeb790a9d2ca1f3c3cc7b1dab7eca1">build</a> (<a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> location)=0</td></tr>
+<tr class="separator:ae1eeb790a9d2ca1f3c3cc7b1dab7eca1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1GridCellFactory.html">GridCellFactory</a> API. </p>
+<div class="textblock"><h3>template&lt;typename CellType&gt;<br />
+class fpmas::api::model::GridCellFactory&lt; CellType &gt;</h3>
+
+<p><a class="el" href="classfpmas_1_1api_1_1model_1_1GridCellFactory.html">GridCellFactory</a> API. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a1fc7492250f198fae9d9528d07b4c1fb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fc7492250f198fae9d9528d07b4c1fb">&#9670;&nbsp;</a></span>build()</h2>
+<a id="ae1eeb790a9d2ca1f3c3cc7b1dab7eca1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae1eeb790a9d2ca1f3c3cc7b1dab7eca1">&#9670;&nbsp;</a></span>build()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename CellType &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1GridCell.html">GridCell</a>* fpmas::api::model::GridCellFactory::build </td>
+          <td class="memname">virtual CellType* <a class="el" href="classfpmas_1_1api_1_1model_1_1GridCellFactory.html">fpmas::api::model::GridCellFactory</a>&lt; CellType &gt;::build </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a>&#160;</td>
           <td class="paramname"><em>location</em></td><td>)</td>
@@ -127,7 +122,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>pointer to dynamically allocated <a class="el" href="classfpmas_1_1api_1_1model_1_1GridCell.html">GridCell</a> </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1GridCellFactory.html#a93111bf960653da5015283822c876132">fpmas::model::GridCellFactory&lt; GridCellType &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1GridCellFactory.html#a93111bf960653da5015283822c876132">fpmas::model::GridCellFactory&lt; fpmas::model::GridCell &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1GridCellFactory.html#a93111bf960653da5015283822c876132">fpmas::model::GridCellFactory&lt; GridCellType &gt;</a>.</p>
 
 </div>
 </div>

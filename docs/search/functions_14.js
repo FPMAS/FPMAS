@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vonneumanngridbuilder_1156',['VonNeumannGridBuilder',['../classfpmas_1_1model_1_1VonNeumannGridBuilder.html#a9119c3d668ea39783ce0e16441ee30f5',1,'fpmas::model::VonNeumannGridBuilder::VonNeumannGridBuilder(api::model::GridCellFactory &amp;cell_factory, DiscreteCoordinate width, DiscreteCoordinate height)'],['../classfpmas_1_1model_1_1VonNeumannGridBuilder.html#a9c83620cef55ea3b2eec635a8b7e9ab1',1,'fpmas::model::VonNeumannGridBuilder::VonNeumannGridBuilder(DiscreteCoordinate width, DiscreteCoordinate height)']]]
+  ['vonneumanngridbuilder_1159',['VonNeumannGridBuilder',['../classfpmas_1_1model_1_1VonNeumannGridBuilder.html#a499e851d7a0dac997cef60964cc80a2b',1,'fpmas::model::VonNeumannGridBuilder::VonNeumannGridBuilder(api::model::GridCellFactory&lt; CellType &gt; &amp;cell_factory, DiscreteCoordinate width, DiscreteCoordinate height)'],['../classfpmas_1_1model_1_1VonNeumannGridBuilder.html#aa2b32fb1b5e2327ce166b84d84d7c52d',1,'fpmas::model::VonNeumannGridBuilder::VonNeumannGridBuilder(DiscreteCoordinate width, DiscreteCoordinate height)']]]
 ];

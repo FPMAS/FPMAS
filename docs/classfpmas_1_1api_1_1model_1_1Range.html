@@ -136,8 +136,6 @@ template&lt;typename CellType &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1GridRange.html#ac68e1ea8b497aa58c33464b2e82d28bc">fpmas::model::GridRange&lt; GridConfig, GridRangeConfig &gt;</a>.</p>
-
 </div>
 </div>
 <a id="a6dc423fc1d7ea52bdd5c640c868d9b91"></a>
@@ -171,8 +169,6 @@ distance", and not confused with any other type of distance that might be associ
 <p>It represents the maximum count of edges on a shortest path from <code>origin</code> to any point in the range in the current <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network. In consequence, implementations will probably depend on the underlying environment implementation on which this range is used (Grid, generic graph, geographic graph...).</p>
 <p>Here is a trivial example. Consider that the current environment (or "Cell network") is a simple chain of cells, with a distance of 1km between each cell. The underlying graph might be represented as follow: 1 &ndash; 2 &ndash; 3 &ndash; 4 &ndash; 5 &ndash; 6 &ndash; ...</p>
 <p>Now, let's implement a <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> that represents the fact that a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> can move 2km to its left or to its right. Considering the definition above, the radius returned by this method will be 2, since that, considering the current environment, a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> associated to this <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> will be able to move at most two cells to its left or to its right, whatever its current position is (so, in this case, there is no need to use the <code>origin</code> parameter). </p>
-
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1GridRange.html#a1d0c0204bcadd72afa82bdc158b2ce80">fpmas::model::GridRange&lt; GridConfig, GridRangeConfig &gt;</a>.</p>
 
 </div>
 </div>

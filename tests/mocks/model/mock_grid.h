@@ -13,9 +13,10 @@ template<template<typename> class Strictness>
 class MockGridCell : public Strictness<AbstractMockGridCell>, public MockCell<Strictness> {
 };
 
-class MockGridCellFactory : public fpmas::api::model::GridCellFactory {
+template<typename GridCell>
+class MockGridCellFactory : public fpmas::api::model::GridCellFactory<GridCell> {
 	public:
-		MOCK_METHOD(fpmas::api::model::GridCell*, build,
+		MOCK_METHOD(GridCell*, build,
 				(fpmas::api::model::DiscretePoint), (override));
 
 };

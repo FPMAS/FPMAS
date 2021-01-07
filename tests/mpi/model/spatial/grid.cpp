@@ -108,24 +108,24 @@ class VonNeumannGridBuilderTest : public Test {
 };
 
 TEST_F(VonNeumannGridBuilderTest, trivial) {
-	GridModel<fpmas::synchro::HardSyncMode,
-		StaticGridEndCondition<VonNeumannRange<VonNeumannGrid>, 0>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
 			> grid_model;
 
-	VonNeumannGridBuilder null(0, 0);
+	VonNeumannGridBuilder<> null(0, 0);
 
 	null.build(grid_model);
 	ASSERT_THAT(grid_model.cells(), IsEmpty());
 }
 
 TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_height_sup_width) {
-	GridModel<fpmas::synchro::GhostMode,
-		StaticGridEndCondition<VonNeumannRange<VonNeumannGrid>, 0>
+	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
 			> grid_model;
 
 	int X = fpmas::communication::WORLD.getSize() * 10;
 	int Y = 2*X + 1; // +1 so that there is a "remainder" when lines are assigned to each process
-	VonNeumannGridBuilder grid_builder(X, Y);
+	VonNeumannGridBuilder<> grid_builder(X, Y);
 
 	auto cells = grid_builder.build(grid_model);
 
@@ -133,13 +133,13 @@ TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_height_sup_width) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_width_sup_height) {
-	GridModel<fpmas::synchro::GhostMode,
-		StaticGridEndCondition<VonNeumannRange<VonNeumannGrid>, 0>
+	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
 			> grid_model;
 
 	int Y = fpmas::communication::WORLD.getSize() * 10;
 	int X = 2*Y + 1; // +1 so that there is a "remainder" when columns are assigned to each process
-	VonNeumannGridBuilder grid_builder(X, Y);
+	VonNeumannGridBuilder<> grid_builder(X, Y);
 
 	auto cells = grid_builder.build(grid_model);
 
@@ -147,13 +147,13 @@ TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_width_sup_height) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_height_sup_width) {
-	GridModel<fpmas::synchro::HardSyncMode,
-		StaticGridEndCondition<VonNeumannRange<VonNeumannGrid>, 0>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
 			> grid_model;
 
 	int X = fpmas::communication::WORLD.getSize() * 10;
 	int Y = 2*X + 1; // +1 so that there is a "remainder" when lines are assigned to each process
-	VonNeumannGridBuilder grid_builder(X, Y);
+	VonNeumannGridBuilder<> grid_builder(X, Y);
 
 	auto cells = grid_builder.build(grid_model);
 
@@ -161,13 +161,13 @@ TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_height_sup_width) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_width_sup_height) {
-	GridModel<fpmas::synchro::HardSyncMode,
-		StaticGridEndCondition<VonNeumannRange<VonNeumannGrid>, 0>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
 			> grid_model;
 
 	int Y = fpmas::communication::WORLD.getSize() * 10;
 	int X = 2*Y + 1; // +1 so that there is a "remainder" when columns are assigned to each process
-	VonNeumannGridBuilder grid_builder(X, Y);
+	VonNeumannGridBuilder<> grid_builder(X, Y);
 
 	auto cells = grid_builder.build(grid_model);
 

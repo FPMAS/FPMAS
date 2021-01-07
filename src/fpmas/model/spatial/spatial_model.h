@@ -485,8 +485,8 @@ namespace fpmas {
 	/**
 	 * api::model::SpatialAgentBuilder implementation.
 	 */
-	template<typename CellType>
-	class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType>{
+	template<typename CellType, typename MappingCellType>
+	class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType, MappingCellType>{
 		public:
 			/**
 			 * FPMAS reserved group id used by the SpatialAgentBuilder
@@ -494,26 +494,29 @@ namespace fpmas {
 			 */
 			static const api::model::GroupId TEMP_GROUP_ID = -2;
 
+			/**
+			 * \copydoc api::model::SpatialAgentBuilder::build
+			 */
 			void build(
 					api::model::SpatialModel<CellType>& model,
 					api::model::GroupList groups,
 					api::model::SpatialAgentFactory<CellType>& factory,
-					api::model::SpatialAgentMapping<CellType>& agent_counts
+					api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
 					) override;
 	};
 
-	template<typename CellType>
-		void SpatialAgentBuilder<CellType>::build(
+	template<typename CellType, typename MappingCellType>
+		void SpatialAgentBuilder<CellType, MappingCellType>::build(
 				api::model::SpatialModel<CellType>& model,
 				api::model::GroupList groups,
 				api::model::SpatialAgentFactory<CellType>& factory,
-				api::model::SpatialAgentMapping<CellType>& agent_counts
+				api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
 				) {
 			model::DefaultBehavior _;
 			api::model::MoveAgentGroup<CellType>& temp_group = model.buildMoveGroup(TEMP_GROUP_ID, _);
 			std::vector<api::model::SpatialAgent<CellType>*> agents;
 			for(auto cell : model.cells()) {
-				for(std::size_t i = 0; i < agent_counts.countAt(cell); i++) {
+				for(std::size_t i = 0; i < agent_mapping.countAt(cell); i++) {
 					auto agent = factory.build();
 					agents.push_back(agent);
 					temp_group.add(agent);

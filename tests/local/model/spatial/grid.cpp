@@ -238,7 +238,7 @@ TEST_F(UniformGridAgentMappingTest, reproducibility) {
 }
 
 TEST(VonNeumannRange, radius_von_neumann_grid) {
-	VonNeumannRange<VonNeumannGrid> range(5);
+	VonNeumannRange<VonNeumannGrid<>> range(5);
 
 	ASSERT_EQ(range.radius(nullptr), 5);
 }
@@ -267,7 +267,7 @@ TEST(VonNeumannRange, range) {
 						{3, 6}
 	};
 	
-	VonNeumannRange<VonNeumannGrid> range(2);
+	VonNeumannRange<VonNeumannGrid<>> range(2);
 
 	for(auto cell : cells)
 		ASSERT_EQ(range.contains(current_location, cell), points_in_range.count(cell->location())>0);
@@ -278,7 +278,7 @@ TEST(VonNeumannRange, range) {
 }
 
 TEST(MooreRange, radius_von_neumann_grid) {
-	MooreRange<VonNeumannGrid> range(5);
+	MooreRange<VonNeumannGrid<>> range(5);
 
 	ASSERT_EQ(range.radius(nullptr), 10);
 }
@@ -304,7 +304,7 @@ TEST(MooreRange, range) {
 		for(DiscreteCoordinate y = 2; y <= 6; y++)
 			points_in_range.insert({x, y});
 	
-	MooreRange<VonNeumannGrid> range(2);
+	MooreRange<VonNeumannGrid<>> range(2);
 
 	for(auto cell : cells)
 		ASSERT_EQ(range.contains(current_location, cell), points_in_range.count(cell->location())>0);

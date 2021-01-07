@@ -55,8 +55,8 @@ namespace fpmas { namespace model {
 	 * MooreRangePerimeter specialization corresponding to a
 	 * MooreRange used on a VonNeumannGrid.
 	 */
-	template<>
-		struct MooreRangePerimeter<VonNeumannGrid> {
+	template<typename CellType>
+		struct MooreRangePerimeter<VonNeumannGrid<CellType>> {
 			/**
 			 * Returns the _perimeter_ of the specified Moore `range` on a
 			 * VonNeumannGrid.
@@ -72,7 +72,7 @@ namespace fpmas { namespace model {
 			 * @param range VonNeumann range for which the perimeter must be
 			 * computed
 			 */
-			DiscretePoint operator()(const GridRange<VonNeumannGrid, MooreRangeConfig<VonNeumannGrid>>& range) const {
+			DiscretePoint operator()(const GridRange<VonNeumannGrid<CellType>, MooreRangeConfig<VonNeumannGrid<CellType>>>& range) const {
 				return {range.getSize(), range.getSize()};
 			}
 		};

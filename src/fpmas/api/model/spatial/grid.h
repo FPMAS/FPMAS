@@ -65,10 +65,17 @@ namespace fpmas { namespace api { namespace model {
 	 *
 	 * The GridAgent notably provides methods to move or locate the agent using
 	 * DiscretePoint coordinates.
+	 *
+	 * The specified `GridCellType` is required to extend GridCell.
 	 */
-	class GridAgent : public virtual SpatialAgent<GridCell> {
+	template<typename GridCellType>
+	class GridAgent : public virtual SpatialAgent<GridCellType> {
 		protected:
-			using SpatialAgent::moveTo;
+			static_assert(
+					std::is_base_of<api::model::GridCell, GridCellType>::value,
+					"fpmas::api::model::GridCell must be a base of the specified GridCell"
+					);
+			using SpatialAgent<GridCellType>::moveTo;
 
 			/**
 			 * Moves to the Cell at the specified point.
@@ -110,6 +117,7 @@ namespace fpmas { namespace api { namespace model {
 	/**
 	 * GridCellFactory API.
 	 */
+	template<typename CellType>
 	class GridCellFactory {
 		public:
 			/**
@@ -122,7 +130,7 @@ namespace fpmas { namespace api { namespace model {
 			 * @param location grid cell location
 			 * @return pointer to dynamically allocated GridCell
 			 */
-			virtual GridCell* build(DiscretePoint location) = 0;
+			virtual CellType* build(DiscretePoint location) = 0;
 
 			virtual ~GridCellFactory() {}
 	};

@@ -157,11 +157,13 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridCell.html">fpmas::model::GridCell</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridAgent.html">fpmas::model::GridAgent&lt; AgentType, Derived &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridAgent.html">fpmas::model::GridAgent&lt; AgentType, GridCellType, Derived &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridCellFactory.html">fpmas::model::GridCellFactory&lt; GridCellType &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">fpmas::model::GridConfig&lt; BuilderType, DistanceType &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridCellFactory_3_01api_1_1model_1_1GridCell_01_4.html">fpmas::model::GridCellFactory&lt; api::model::GridCell &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">fpmas::model::GridConfig&lt; BuilderType, DistanceType, _CellType &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1GridRangeConfig.html">fpmas::model::GridRangeConfig&lt; DistanceType, PerimeterType &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -173,7 +175,7 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmas_1_1model_1_1784f1e1360367771d11e7adbddb7008f.html">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::GridCellBase&lt; GridCellType, Derived &gt; &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmas_1_1model_1_1c2adacd85518ef257b5dbcc50777a61d.html">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::GridAgent&lt; AgentType, Derived &gt; &gt; &gt;</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmas_1_1model_1_136032a46204f163d868560f92634ba90.html">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::GridAgent&lt; AgentType, CellType, Derived &gt; &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd_1_1hash_3_01fpmas_1_1model_1_1DiscretePoint_01_4.html">std::hash&lt; fpmas::model::DiscretePoint &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,16 +195,12 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a95aff7cda83fe4007a66c5ca34127c4c"><td class="memItemLeft" align="right" valign="top">typedef SpatialAgentBuilder&lt; api::model::GridCell &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a95aff7cda83fe4007a66c5ca34127c4c">fpmas::model::GridAgentBuilder</a></td></tr>
-<tr class="separator:a95aff7cda83fe4007a66c5ca34127c4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a71772763612928f893178717fc06184c"><td class="memTemplParams" colspan="2">template&lt;typename RangeType , unsigned MaxRangeSize&gt; </td></tr>
-<tr class="memitem:a71772763612928f893178717fc06184c"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a71772763612928f893178717fc06184c">fpmas::model::StaticGridEndCondition</a> = StaticEndCondition&lt; RangeType, MaxRangeSize, api::model::GridCell &gt;</td></tr>
-<tr class="separator:a71772763612928f893178717fc06184c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace7fd5ceddf7746f8083769a8521d7ae"><td class="memItemLeft" align="right" valign="top">typedef DynamicEndCondition&lt; api::model::GridCell &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#ace7fd5ceddf7746f8083769a8521d7ae">fpmas::model::DynamicGridEndCondition</a></td></tr>
-<tr class="separator:ace7fd5ceddf7746f8083769a8521d7ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeeb7b63410d02a31ab0266ecf4988952"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename &gt; class SyncMode, typename EndCondition  = DynamicGridEndCondition&gt; </td></tr>
-<tr class="memitem:aeeb7b63410d02a31ab0266ecf4988952"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#aeeb7b63410d02a31ab0266ecf4988952">fpmas::model::GridModel</a> = SpatialModel&lt; SyncMode, api::model::GridCell, EndCondition &gt;</td></tr>
-<tr class="separator:aeeb7b63410d02a31ab0266ecf4988952"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ec666f213a5477053a870026432ba47"><td class="memTemplParams" colspan="2">template&lt;typename CellType &gt; </td></tr>
+<tr class="memitem:a7ec666f213a5477053a870026432ba47"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a7ec666f213a5477053a870026432ba47">fpmas::model::GridAgentBuilder</a> = SpatialAgentBuilder&lt; CellType, api::model::GridCell &gt;</td></tr>
+<tr class="separator:a7ec666f213a5477053a870026432ba47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fa31f2c0500caaa3dfbf0bfad07899d"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename &gt; class SyncMode, typename CellType  = api::model::GridCell, typename EndCondition  = DynamicEndCondition&lt;CellType&gt;&gt; </td></tr>
+<tr class="memitem:a9fa31f2c0500caaa3dfbf0bfad07899d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a9fa31f2c0500caaa3dfbf0bfad07899d">fpmas::model::GridModel</a> = SpatialModel&lt; SyncMode, CellType, EndCondition &gt;</td></tr>
+<tr class="separator:a9fa31f2c0500caaa3dfbf0bfad07899d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
