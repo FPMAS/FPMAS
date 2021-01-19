@@ -144,10 +144,6 @@ class SpatialModelTestBase : public ::testing::Test {
 		}
 
 		void testInit() {
-			std::vector<fpmas::api::model::SpatialAgent<TestCell>*> agents;
-			for(auto agent : agent_group.localAgents())
-				agents.push_back(dynamic_cast<fpmas::api::model::SpatialAgent<TestCell>*>(agent));
-
 			model.runtime().execute(agent_group.distributedMoveAlgorithm().jobs());
 
 			checkModelState();
@@ -155,10 +151,6 @@ class SpatialModelTestBase : public ::testing::Test {
 
 		void testDistributedMoveAlgorithm() {
 			// Init location
-			std::vector<fpmas::api::model::SpatialAgent<TestCell>*> agents;
-			for(auto agent : agent_group.localAgents())
-				agents.push_back(dynamic_cast<fpmas::api::model::SpatialAgent<TestCell>*>(agent));
-
 			model.runtime().execute(agent_group.distributedMoveAlgorithm().jobs());
 
 			// Agent behavior. Since agent_group is a MoveAgentGroup, the
@@ -211,6 +203,95 @@ TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, init_location_test) {
 
 TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
+}
+
+class SpatialModelTest_DynamicAgentInsertion : public SpatialModelTest_GhostMode_SimpleRange {
+	protected:
+		fpmas::model::MoveAgentGroup<TestCell>& new_agent_group {
+			model.buildMoveGroup(1, TestSpatialAgent::behavior)};
+		std::unordered_map<fpmas::api::graph::DistributedId, int> new_agent_id_to_index;
+		std::unordered_map<int, fpmas::api::graph::DistributedId> new_index_to_agent_id;
+
+		void SetUp() override {
+			SpatialModelTest_GhostMode_SimpleRange::SetUp();
+
+			testInit();
+
+			// Adds a new agent on each cell
+			auto new_agent = new TestSpatialAgent(range_size, num_cells_in_ring);
+			new_agent_group.add(new_agent);
+			new_agent->initLocation(model.cells().at(0));
+			new_agent_id_to_index[new_agent->node()->getId()] = model.getMpiCommunicator().getRank();
+			new_index_to_agent_id[model.getMpiCommunicator().getRank()] = new_agent->node()->getId();
+
+			fpmas::communication::TypedMpi<decltype(agent_id_to_index)> id_to_index_mpi(model.getMpiCommunicator());
+			fpmas::communication::TypedMpi<decltype(index_to_agent_id)> index_to_id_mpi(model.getMpiCommunicator());
+
+			auto id_to_index_vec = id_to_index_mpi.allGather(new_agent_id_to_index);
+			for(auto item : id_to_index_vec)
+				for(auto id_to_index : item)
+					new_agent_id_to_index[id_to_index.first] = id_to_index.second;
+			auto index_to_id_vec = index_to_id_mpi.allGather(new_index_to_agent_id);
+			for(auto item : index_to_id_vec)
+				for(auto index_to_id : item)
+					new_index_to_agent_id[index_to_id.first] = index_to_id.second;
+		}
+
+		void checkDynamicModelState(int step) {
+			for(auto agent : new_agent_group.localAgents()) {
+				auto location = dynamic_cast<TestSpatialAgent*>(agent)->testLocation();
+				std::cout << agent->node()->getId() << ":" << location->index << std::endl;
+			}
+			for(auto agent : agent_group.localAgents()) {
+				auto location = dynamic_cast<TestSpatialAgent*>(agent)->testLocation();
+				std::cout << agent->node()->getId() << ":" << location->index << std::endl;
+				int comm_size = model.getMpiCommunicator().getSize();
+				std::set<fpmas::graph::DistributedId> expected_perceptions;
+				if(comm_size > 1) {
+					if(comm_size == 2) {
+						std::cout << index_to_agent_id[(location->index+1-step) % comm_size] << std::endl;
+						expected_perceptions.insert(index_to_agent_id[(location->index+1-step) % comm_size]);
+						expected_perceptions.insert(new_index_to_agent_id[(location->index+1-step) % comm_size]);
+						expected_perceptions.insert(new_index_to_agent_id[(location->index-step) % comm_size]);
+					} else {
+						for(unsigned int i = 1; i <= range_size; i++) {
+							expected_perceptions.insert(index_to_agent_id[(location->index+i-step) % comm_size]);
+							expected_perceptions.insert(index_to_agent_id[(comm_size + location->index-i-step) % comm_size]);
+							expected_perceptions.insert(new_index_to_agent_id[(location->index-step) % comm_size]);
+							expected_perceptions.insert(new_index_to_agent_id[(location->index+i-step) % comm_size]);
+							expected_perceptions.insert(new_index_to_agent_id[(location->index-i-step) % comm_size]);
+						}
+					}
+				}
+				std::vector<fpmas::graph::DistributedId> actual_perceptions;
+				for(auto perception : agent->node()->outNeighbors(fpmas::api::model::PERCEPTION))
+					actual_perceptions.push_back(perception->getId());
+
+				ASSERT_THAT(actual_perceptions, UnorderedElementsAreArray(expected_perceptions));
+			}
+
+		}
+};
+
+TEST_F(SpatialModelTest_DynamicAgentInsertion, test) {
+
+	// Initializes the location of new agents.
+	// Initial agents DO NOT MOVE. However, the new agents must be added to
+	// their perceptions.
+	model.runtime().execute(new_agent_group.distributedMoveAlgorithm().jobs());
+
+	checkDynamicModelState(0);
+	/*
+	 *for(auto agent : agent_group.localAgents())
+	 *    if(model.getMpiCommunicator().getSize() == 1) {
+	 *        ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::PERCEPTION), SizeIs(1));
+	 *        ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::PERCEPTION), Contains(new_agent->node()));
+	 *    }
+	 *    else if (model.getMpiCommunicator().getSize() == 2)
+	 *        ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::PERCEPTION), SizeIs(3));
+	 *    else
+	 *        ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::PERCEPTION), SizeIs(5));
+	 */
 }
 
 class SpatialAgentBuilderTest : public Test {

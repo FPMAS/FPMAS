@@ -101,8 +101,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae5c5cb2cb992488bd5ff4888f6aa2e87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60fe96879582e41e2b55c95d996aa161"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a60fe96879582e41e2b55c95d996aa161">handlePerceive</a> ()=0</td></tr>
 <tr class="separator:a60fe96879582e41e2b55c95d996aa161"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18d6d334745a72d965d36e3eecfa8935"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a18d6d334745a72d965d36e3eecfa8935">updatePerceptions</a> ()=0</td></tr>
-<tr class="separator:a18d6d334745a72d965d36e3eecfa8935"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04e4be9bdf95203ad2811e2a70359139"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a04e4be9bdf95203ad2811e2a70359139">updatePerceptions</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> &amp;group)=0</td></tr>
+<tr class="separator:a04e4be9bdf95203ad2811e2a70359139"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Predefined <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> behaviors specifically used in the context of the <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a>. </p>
@@ -194,8 +194,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a18d6d334745a72d965d36e3eecfa8935"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18d6d334745a72d965d36e3eecfa8935">&#9670;&nbsp;</a></span>updatePerceptions()</h2>
+<a id="a04e4be9bdf95203ad2811e2a70359139"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04e4be9bdf95203ad2811e2a70359139">&#9670;&nbsp;</a></span>updatePerceptions()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -206,7 +206,8 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">virtual void fpmas::api::model::CellBehavior::updatePerceptions </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> &amp;&#160;</td>
+          <td class="paramname"><em>group</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -219,7 +220,7 @@ Public Member Functions</h2></td></tr>
 <p>Updates the perceptions of agents "perceiving" this <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a>.</p>
 <p>More precisely, each agent connected to this <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> on the PERCEIVE layer is linked to all agents located in this <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a>, (i.e. connected on the LOCATION layer) on the PERCEPTION layer. </p>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1CellBase.html#a363229ca76be88b9bbdb143afca66d55">fpmas::model::CellBase</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1CellBase.html#a4f18eee837f5bbd29dfc7554fdee1dd6">fpmas::model::CellBase</a>.</p>
 
 </div>
 </div>

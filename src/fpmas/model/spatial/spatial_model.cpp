@@ -39,6 +39,12 @@ namespace fpmas {
 				this->model()->link(agent, cell, SpatialModelLayers::NEW_PERCEIVE);
 		}
 
+		bool CellBase::isAgentInGroup(api::model::Agent* agent, api::model::AgentGroup& group) {
+			std::vector<fpmas::api::model::GroupId> group_ids = agent->groupIds();
+			auto result = std::find(group_ids.begin(), group_ids.end(), group.groupId());
+			return result != group_ids.end();
+		}
+
 		void CellBase::handleNewLocation() {
 			FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
 					"%s Updating ranges...",
@@ -75,7 +81,7 @@ namespace fpmas {
 			}
 		}
 
-		void CellBase::updatePerceptions() {
+		void CellBase::updatePerceptions(api::model::AgentGroup& group) {
 			FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
 					"%s Updating perceptions...",
 					FPMAS_C_STR(this->node()->getId()));
@@ -85,9 +91,9 @@ namespace fpmas {
 			for(auto agent : this->inNeighbors<api::model::Agent>(
 						SpatialModelLayers::PERCEIVE)) {
 				for(auto perceived_agent : this->inNeighbors<api::model::Agent>(SpatialModelLayers::LOCATION))
-					if(perceived_agent->node()->getId() != agent->node()->getId())
-						this->model()->link(agent, perceived_agent, SpatialModelLayers::PERCEPTION);
-				this->model()->unlink(agent.edge());
+					if(isAgentInGroup(agent, group) || isAgentInGroup(perceived_agent, group))
+						if(perceived_agent->node()->getId() != agent->node()->getId())
+							this->model()->link(agent, perceived_agent, SpatialModelLayers::PERCEPTION);
 			}
 		}
 	}

@@ -131,6 +131,17 @@ TEST_F(CellBaseTest, update_perceptions) {
 	DistributedId perceived_id {5, 2};
 	MockSpatialAgent<DefaultCell, NiceMock>* perceived_agent
 		= new MockSpatialAgent<DefaultCell, NiceMock>;
+
+	// TODO: this set up might easily broke if updatePerceptions implementation
+	// changes
+	NiceMock<MockAgentGroup> mock_group;
+	ON_CALL(mock_group, groupId())
+		.WillByDefault(Return(0));
+	ON_CALL(*perceived_agent, groupIds)
+		.WillByDefault(Return(std::vector<fpmas::model::GroupId> {mock_group.groupId()}));
+	ON_CALL(*mock_spatial_agent, groupIds)
+		.WillByDefault(Return(std::vector<fpmas::model::GroupId> {mock_group.groupId()}));
+
 	NiceMock<MockDistributedNode<AgentPtr>> perceived_agent_node {
 		perceived_id, AgentPtr(perceived_agent)};
 	ON_CALL(*perceived_agent, node())
@@ -148,9 +159,8 @@ TEST_F(CellBaseTest, update_perceptions) {
 
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, perceived_agent, SpatialModelLayers::PERCEPTION));
-	EXPECT_CALL(mock_model, unlink(&agent_edge));
 
-	mock_cell.updatePerceptions();
+	mock_cell.updatePerceptions(mock_group);
 }
 
 class SpatialAgentTest : public ::testing::Test, protected model::test::SpatialAgent {

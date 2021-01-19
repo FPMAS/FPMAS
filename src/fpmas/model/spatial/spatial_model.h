@@ -102,6 +102,11 @@ namespace fpmas {
 			void growMobilityField(api::model::Agent* agent);
 			void growPerceptionField(api::model::Agent* agent);
 
+			/**
+			 * Checks if `agent` is currently in `group`.
+			 */
+			bool isAgentInGroup(api::model::Agent* agent, api::model::AgentGroup& group);
+
 		public:
 			std::vector<api::model::Cell*> successors() override;
 
@@ -109,7 +114,7 @@ namespace fpmas {
 			void handleMove() override;
 			void handlePerceive() override;
 
-			void updatePerceptions() override;
+			void updatePerceptions(api::model::AgentGroup& group) override;
 	};
 
 	/**
@@ -381,9 +386,10 @@ namespace fpmas {
 			}
 
 			// Unlinks obsolete perception field
-			for(auto agent : this->template outNeighbors<api::model::Agent>(
-						SpatialModelLayers::PERCEPTION))
+			for(auto agent : this->template outNeighbors<api::model::Cell>(
+						SpatialModelLayers::PERCEIVE))
 				this->model()->unlink(agent.edge());
+
 
 			// Adds the NEW_LOCATION to the mobility/perceptions fields
 			// depending on the current ranges

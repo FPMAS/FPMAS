@@ -161,8 +161,8 @@ namespace fpmas {
 								&AgentBehavior::handleNewMove,
 								&AgentBehavior::handleNewPerceive
 							};
-							Behavior<CellBehavior> update_perceptions_behavior {
-								&CellBehavior::updatePerceptions
+							BehaviorWithArgs<CellBehavior, api::model::AgentGroup&> update_perceptions_behavior {
+								&CellBehavior::updatePerceptions, dist_move_algo.move_agent_group
 							};
 
 						public:
@@ -214,9 +214,26 @@ namespace fpmas {
 
 				std::vector<SpatialAgent<CellType>*> agents;
 				for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
+					// Unlinks obsolete perceptions of agents to which the
+					// algoralgorithm is applied
+					for(auto perception : agent->node()->getOutgoingEdges(fpmas::api::model::PERCEPTION))
+						dist_move_algo.model.graph().unlink(perception);
+
 					agents.push_back(
 							dynamic_cast<SpatialAgent<CellType>*>(agent));
 				}
+				// TODO: optimize this!!
+				dist_move_algo.model.graph().synchronize();
+
+				// Agents to which the algorithm is NOT applied might still
+				// perceive moving agent: those perceptions are also obsolete.
+				for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
+					for(auto perceiver : agent->node()->getIncomingEdges(fpmas::api::model::PERCEPTION)) {
+						dist_move_algo.model.graph().unlink(perceiver);
+					}
+				}
+				dist_move_algo.model.graph().synchronize();
+
 				std::vector<CellType*> cells;
 				for(auto cell : dist_move_algo.cell_group.localAgents()) {
 					cells.push_back(dynamic_cast<CellType*>(cell));

@@ -30,6 +30,7 @@ message("-- LOG_LEVEL : ${LOG_LEVEL}")
 
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(examples EXCLUDE_FROM_ALL)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
@@ -105,11 +106,14 @@ if(DOXYGEN_FOUND)
 		# Hacky specialization to remove in a next release
 		[[nlohmann::adl_serializer< std::unordered_map< DistributedId, Value, Hash, Equal, Alloc > >]]
 		[[DIST_GRAPH_PARAMS]] [[DIST_GRAPH_PARAMS_SPEC]]
+		[[ExampleAgent]]
 		)
 	set(DOXYGEN_EXCLUDE "src/fpmas/utils/log.h")
 	set(DOXYGEN_HIDE_FRIEND_COMPOUNDS "YES")
+	set(DOXYGEN_EXAMPLE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 	doxygen_add_docs(doc
 		${CMAKE_CURRENT_SOURCE_DIR}/src
+		${CMAKE_CURRENT_SOURCE_DIR}/examples
 		)
 endif()
 

@@ -298,6 +298,61 @@ namespace fpmas { namespace model {
 		};
 
 	/**
+	 * An api::model::Behavior implementation that can take some arbitrary
+	 * arguments.
+	 *
+	 * The arguments are provided in the constructor, and are passed to the
+	 * specified behavior each time execute() is called. Using pointers or
+	 * references can be used as arguments if dynamic parameter update is
+	 * required.
+	 */
+	template<typename AgentType, typename ... Args>
+		class BehaviorWithArgs : public api::model::Behavior {
+			private:
+				void (AgentType::* behavior)(Args...);
+				std::tuple<Args...> args;
+
+				// helpers for tuple unrolling
+				// From: https://riptutorial.com/cplusplus/example/24746/storing-function-arguments-in-std--tuple
+				template<int ...> struct seq {};
+				template<int N, int ...S> struct gens {
+					public:
+						typedef typename gens<N-1, N-1, S...>::type type;
+				};
+				template<int ...S> struct gens<0, S...>{ typedef seq<S...> type; };
+
+				// invocation helper 
+				template<int ...S>
+					void call_fn_internal(api::model::Agent* agent, const seq<S...>) const
+					{
+						(dynamic_cast<AgentType*>(agent)->*behavior)(std::get<S>(args) ...);
+					}
+
+			public:
+				/**
+				 * BehaviorWithArgs constructor.
+				 *
+				 * @param behavior The AgentType method that will be called by
+				 * execute() with the specified arguments
+				 * @param args argument list that will be passed to `behavior`
+				 */
+				BehaviorWithArgs(
+						void (AgentType::* behavior)(Args...),
+						Args... args)
+					: behavior(behavior), args(args...) {}
+
+				/**
+				 * Calls `behavior` on the specified `agent` with the arguments
+				 * specified in the constructor.
+				 *
+				 * @param agent agent to execute
+				 */
+				void execute(api::model::Agent* agent) const override {
+					return call_fn_internal(agent, typename gens<sizeof...(Args)>::type());
+				}
+		};
+
+	/**
 	 * Defines useful templates to obtain typed neighbors list directly from an
 	 * api::model::Agent.
 	 */

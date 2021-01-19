@@ -50,7 +50,7 @@ class AbstractMockCell : public virtual fpmas::api::model::Cell {
 		MOCK_METHOD(void, handleNewLocation, (), (override));
 		MOCK_METHOD(void, handleMove, (), (override));
 		MOCK_METHOD(void, handlePerceive, (), (override));
-		MOCK_METHOD(void, updatePerceptions, (), (override));
+		MOCK_METHOD(void, updatePerceptions, (fpmas::api::model::AgentGroup&), (override));
 
 		virtual ~AbstractMockCell() {}
 };

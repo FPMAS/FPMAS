@@ -66,7 +66,7 @@ namespace fpmas { namespace api { namespace model {
 			 * PERCEIVE layer is linked to all agents located in this Cell,
 			 * (i.e. connected on the LOCATION layer) on the PERCEPTION layer.
 			 */
-			virtual void updatePerceptions() = 0;
+			virtual void updatePerceptions(AgentGroup& group) = 0;
 
 			virtual ~CellBehavior() {}
 	};
