@@ -238,28 +238,22 @@ class SpatialModelTest_DynamicAgentInsertion : public SpatialModelTest_GhostMode
 		}
 
 		void checkDynamicModelState(int step) {
-			for(auto agent : new_agent_group.localAgents()) {
-				auto location = dynamic_cast<TestSpatialAgent*>(agent)->testLocation();
-				std::cout << agent->node()->getId() << ":" << location->index << std::endl;
-			}
 			for(auto agent : agent_group.localAgents()) {
 				auto location = dynamic_cast<TestSpatialAgent*>(agent)->testLocation();
-				std::cout << agent->node()->getId() << ":" << location->index << std::endl;
 				int comm_size = model.getMpiCommunicator().getSize();
 				std::set<fpmas::graph::DistributedId> expected_perceptions;
 				if(comm_size > 1) {
 					if(comm_size == 2) {
-						std::cout << index_to_agent_id[(location->index+1-step) % comm_size] << std::endl;
-						expected_perceptions.insert(index_to_agent_id[(location->index+1-step) % comm_size]);
-						expected_perceptions.insert(new_index_to_agent_id[(location->index+1-step) % comm_size]);
-						expected_perceptions.insert(new_index_to_agent_id[(location->index-step) % comm_size]);
+						expected_perceptions.insert(index_to_agent_id[(comm_size + location->index+1) % comm_size]);
+						expected_perceptions.insert(new_index_to_agent_id[(comm_size + location->index+1-step) % comm_size]);
+						expected_perceptions.insert(new_index_to_agent_id[(comm_size + location->index-step) % comm_size]);
 					} else {
 						for(unsigned int i = 1; i <= range_size; i++) {
-							expected_perceptions.insert(index_to_agent_id[(location->index+i-step) % comm_size]);
-							expected_perceptions.insert(index_to_agent_id[(comm_size + location->index-i-step) % comm_size]);
-							expected_perceptions.insert(new_index_to_agent_id[(location->index-step) % comm_size]);
-							expected_perceptions.insert(new_index_to_agent_id[(location->index+i-step) % comm_size]);
-							expected_perceptions.insert(new_index_to_agent_id[(location->index-i-step) % comm_size]);
+							expected_perceptions.insert(index_to_agent_id[(comm_size + location->index+i) % comm_size]);
+							expected_perceptions.insert(index_to_agent_id[(comm_size + location->index-i) % comm_size]);
+							expected_perceptions.insert(new_index_to_agent_id[(comm_size + location->index-step) % comm_size]);
+							expected_perceptions.insert(new_index_to_agent_id[(comm_size + location->index+i-step) % comm_size]);
+							expected_perceptions.insert(new_index_to_agent_id[(comm_size + location->index-i-step) % comm_size]);
 						}
 					}
 				}
@@ -281,6 +275,10 @@ TEST_F(SpatialModelTest_DynamicAgentInsertion, test) {
 	model.runtime().execute(new_agent_group.distributedMoveAlgorithm().jobs());
 
 	checkDynamicModelState(0);
+	
+	model.runtime().execute(new_agent_group.jobs());
+
+	checkDynamicModelState(1);
 	/*
 	 *for(auto agent : agent_group.localAgents())
 	 *    if(model.getMpiCommunicator().getSize() == 1) {
@@ -419,7 +417,7 @@ class EndConditionTest : public Test {
 		void SetUp() {
 			int local_agent_count = agent_count(rd);
 			for(int i = 0; i < local_agent_count; i++) {
-				auto agent = new NiceMock<MockSpatialAgent<MockCell<>>>;
+				auto agent = new MockSpatialAgent<MockCell<>, NiceMock>;
 				auto mobility_range = new Range(4);
 				auto perception_range = new Range(4);
 

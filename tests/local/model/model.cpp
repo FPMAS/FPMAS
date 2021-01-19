@@ -233,8 +233,8 @@ class AgentGroupTest : public ::testing::Test {
 			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>>>
 			graph;
 		MockMpiCommunicator<4, 10> mock_comm;
-		NiceMock<MockDistributedNode<AgentPtr>> node1 {fpmas::graph::DistributedId(0, 1)};
-		NiceMock<MockDistributedNode<AgentPtr>> node2 {fpmas::graph::DistributedId(0, 2)};
+		MockDistributedNode<AgentPtr, NiceMock> node1 {fpmas::graph::DistributedId(0, 1)};
+		MockDistributedNode<AgentPtr, NiceMock> node2 {fpmas::graph::DistributedId(0, 2)};
 
 		AgentGroup agent_group {id, graph};
 		MockAgent<> agent1;
