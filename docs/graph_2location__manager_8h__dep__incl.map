@@ -1,12 +1,15 @@
 <map id="src/fpmas/graph/location_manager.h" name="src/fpmas/graph/location_manager.h">
-<area shape="rect" id="node1" title=" " alt="" coords="13,5,178,47"/>
-<area shape="rect" id="node2" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="5,95,185,136"/>
-<area shape="rect" id="node3" href="$model_2detail_2model_8h.html" title=" " alt="" coords="18,184,173,225"/>
-<area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="11,273,180,300"/>
-<area shape="rect" id="node5" href="$dist__move__algo_8h.html" title=" " alt="" coords="15,348,176,389"/>
-<area shape="rect" id="node6" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="15,437,176,479"/>
-<area shape="rect" id="node7" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="15,527,176,568"/>
-<area shape="rect" id="node8" href="$von__neumann_8h.html" title=" " alt="" coords="15,616,176,657"/>
-<area shape="rect" id="node9" href="$moore_8h.html" title=" " alt="" coords="15,705,176,747"/>
-<area shape="rect" id="node10" href="$fpmas_8h.html" title=" " alt="" coords="50,795,141,821"/>
+<area shape="rect" id="node1" title=" " alt="" coords="191,5,357,47"/>
+<area shape="rect" id="node2" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="184,95,364,136"/>
+<area shape="rect" id="node3" href="$model_2detail_2model_8h.html" title=" " alt="" coords="78,184,233,225"/>
+<area shape="rect" id="node11" href="$ghost__mode_8h.html" title=" " alt="" coords="191,348,357,389"/>
+<area shape="rect" id="node12" href="$hard__sync__linker_8h.html" title=" " alt="" coords="315,184,473,225"/>
+<area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="35,273,204,300"/>
+<area shape="rect" id="node5" href="$dist__move__algo_8h.html" title=" " alt="" coords="5,348,167,389"/>
+<area shape="rect" id="node6" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="13,437,175,479"/>
+<area shape="rect" id="node7" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="31,527,192,568"/>
+<area shape="rect" id="node8" href="$von__neumann_8h.html" title=" " alt="" coords="65,616,227,657"/>
+<area shape="rect" id="node9" href="$moore_8h.html" title=" " alt="" coords="71,705,232,747"/>
+<area shape="rect" id="node10" href="$fpmas_8h.html" title=" " alt="" coords="229,795,319,821"/>
+<area shape="rect" id="node13" href="$hard__sync__mode_8h.html" title=" " alt="" coords="313,437,472,479"/>
 </map>

@@ -5,9 +5,8 @@
  * GhostMode implementation.
  */
 
-#include "fpmas/api/synchro/sync_mode.h"
 #include "fpmas/communication/communication.h"
-#include "fpmas/graph/distributed_edge.h"
+#include "fpmas/graph/distributed_graph.h"
 #include "fpmas/utils/data_update_pack.h"
 
 namespace fpmas { namespace synchro {

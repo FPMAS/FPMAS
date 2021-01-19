@@ -9,8 +9,7 @@
 
 #include "fpmas/utils/macros.h"
 
-#include "fpmas/api/synchro/sync_mode.h"
-#include "fpmas/graph/distributed_edge.h"
+#include "fpmas/graph/distributed_graph.h"
 #include "fpmas/synchro/hard/api/hard_sync_mode.h"
 #include "server_pack.h"
 

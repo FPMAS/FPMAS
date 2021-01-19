@@ -390,8 +390,10 @@ namespace fpmas {namespace api {namespace graph {
 			 * processes blocks until all other perform a synchronize() call.
 			 *
 			 * The synchronization process involves two main steps :
-			 * 1. Link and Removed node synchronization
-			 * 2. Node Data synchronization
+			 * 1. Link and Removed node synchronization (using
+			 * synchronizationMode().getSyncLinker().synchronize())
+			 * 2. Node Data synchronization (using
+			 * synchronizationMode().getDataSync().synchronize())
 			 *
 			 * Different synchronization modes might define different
 			 * policies to perform those synchronizations.
@@ -407,6 +409,19 @@ namespace fpmas {namespace api {namespace graph {
 			 *   **all** the processes
 			 */
 			virtual void synchronize() = 0;
-	};
+
+
+			/**
+			 * Returns the current synchro::SyncMode instance used to
+			 * synchronize() the graph.
+			 *
+			 * Directly accessing
+			 * synchronizationMode().getSyncLinker().synchronize() or
+			 * synchronizationMode().getDataSync().synchronize() can be used to
+			 * perform corresponding partial synchronizations (contrary to
+			 * synchronize()) for performance purpose.
+			 */
+			virtual synchro::SyncMode<T>& synchronizationMode() = 0;
+		};
 }}}
 #endif

@@ -147,6 +147,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a815d339cf845f58aebf0cd24f9046368"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a871e40918042fb1c08cfbbf63ad47e01"><td class="memItemLeft" align="right" valign="top">const SyncMode&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a871e40918042fb1c08cfbbf63ad47e01">getSyncMode</a> () const</td></tr>
 <tr class="separator:a871e40918042fb1c08cfbbf63ad47e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2026124edf686cd7f4de63bd47e67007"><td class="memItemLeft" align="right" valign="top">SyncMode&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a2026124edf686cd7f4de63bd47e67007">synchronizationMode</a> () override</td></tr>
+<tr class="separator:a2026124edf686cd7f4de63bd47e67007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad63e47bb73d07ef3a893121d376f7bdc"><td class="memItemLeft" align="right" valign="top">const LocationManagerImpl&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ad63e47bb73d07ef3a893121d376f7bdc">getLocationManager</a> () const override</td></tr>
 <tr class="separator:ad63e47bb73d07ef3a893121d376f7bdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f5297cb4294dcc3423f47cd3d563dc6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a9f5297cb4294dcc3423f47cd3d563dc6">balance</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">api::graph::LoadBalancing</a>&lt; T &gt; &amp;load_balancing) override</td></tr>
@@ -588,8 +590,40 @@ template&lt;typename T , template&lt; typename &gt; class SyncMode, template&lt;
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000005">Deprecated:</a></b></dt><dd>Use <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a2026124edf686cd7f4de63bd47e67007">synchronizationMode()</a> instead.</dd></dl>
 <p>Returns the internal SyncMode instance.</p>
 <dl class="section return"><dt>Returns</dt><dd>sync mode </dd></dl>
+
+</div>
+</div>
+<a id="a2026124edf686cd7f4de63bd47e67007"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2026124edf686cd7f4de63bd47e67007">&#9670;&nbsp;</a></span>synchronizationMode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , template&lt; typename &gt; class SyncMode, template&lt; typename &gt; class DistNodeImpl, template&lt; typename &gt; class DistEdgeImpl, template&lt; typename &gt; class TypedMpi, template&lt; typename &gt; class LocationManagerImpl&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">SyncMode&lt;T&gt;&amp; <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">fpmas::graph::detail::DistributedGraph</a>&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, TypedMpi, LocationManagerImpl &gt;::synchronizationMode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the current synchro::SyncMode instance used to <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8f026dc7aa83b53cc8aee56e21c79a9e">synchronize()</a> the graph.</p>
+<p>Directly accessing <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a2026124edf686cd7f4de63bd47e67007">synchronizationMode()</a>.getSyncLinker().<a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8f026dc7aa83b53cc8aee56e21c79a9e">synchronize()</a> or <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a2026124edf686cd7f4de63bd47e67007">synchronizationMode()</a>.getDataSync().<a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8f026dc7aa83b53cc8aee56e21c79a9e">synchronize()</a> can be used to perform corresponding partial synchronizations (contrary to <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8f026dc7aa83b53cc8aee56e21c79a9e">synchronize()</a>) for performance purpose. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a9b8c4aa878f481b81c025c03e5f14be6">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>.</p>
 
 </div>
 </div>
@@ -779,8 +813,8 @@ template&lt;typename T , template&lt; typename &gt; class SyncMode, template&lt;
 <p>Synchronizes the <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">DistributedGraph</a>.</p>
 <p>This function acts as a synchronization barrier : <b>all</b> processes blocks until all other perform a <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8f026dc7aa83b53cc8aee56e21c79a9e">synchronize()</a> call.</p>
 <p>The synchronization process involves two main steps :</p><ol type="1">
-<li>Link and Removed node synchronization</li>
-<li><a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> Data synchronization</li>
+<li>Link and Removed node synchronization (using <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a2026124edf686cd7f4de63bd47e67007">synchronizationMode()</a>.getSyncLinker().<a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8f026dc7aa83b53cc8aee56e21c79a9e">synchronize()</a>)</li>
+<li><a class="el" href="classfpmas_1_1graph_1_1Node.html">Node</a> Data synchronization (using <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a2026124edf686cd7f4de63bd47e67007">synchronizationMode()</a>.getDataSync().<a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8f026dc7aa83b53cc8aee56e21c79a9e">synchronize()</a>)</li>
 </ol>
 <p>Different synchronization modes might define different policies to perform those synchronizations.</p>
 <p>In any case, as specified in the corresponding function, it is guaranteed that :</p><ul>
@@ -1222,9 +1256,9 @@ template&lt;typename T , template&lt; typename &gt; class SyncMode, template&lt;
 <li>src/fpmas/graph/<a class="el" href="graph_2distributed__graph_8h_source.html">distributed_graph.h</a></li>
 </ul>
 </div><!-- contents -->
-<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a9edd2f3804ba18ce9e6dd9df4bd9b87b"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a9edd2f3804ba18ce9e6dd9df4bd9b87b">fpmas::graph::detail::DistributedGraph::removeNode</a></div><div class="ttdeci">void removeNode(api::graph::DistributedNode&lt; T &gt; *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:465</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a9edd2f3804ba18ce9e6dd9df4bd9b87b"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a9edd2f3804ba18ce9e6dd9df4bd9b87b">fpmas::graph::detail::DistributedGraph::removeNode</a></div><div class="ttdeci">void removeNode(api::graph::DistributedNode&lt; T &gt; *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:470</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1Graph_html_a9a4539ff472500757bb0a5a674b7d821"><div class="ttname"><a href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">fpmas::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;::getNode</a></div><div class="ttdeci">api::graph::DistributedNode&lt; T &gt; * getNode(NodeIdType) override</div><div class="ttdef"><b>Definition:</b> graph.h:161</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a52d53a00a317de7c3c20f78d2641b551"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a52d53a00a317de7c3c20f78d2641b551">fpmas::graph::detail::DistributedGraph::unlink</a></div><div class="ttdeci">void unlink(EdgeType *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:269</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a52d53a00a317de7c3c20f78d2641b551"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a52d53a00a317de7c3c20f78d2641b551">fpmas::graph::detail::DistributedGraph::unlink</a></div><div class="ttdeci">void unlink(EdgeType *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:274</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1Graph_html_a8b5eefaff964502d98640e1b1b3752b1"><div class="ttname"><a href="classfpmas_1_1graph_1_1Graph.html#a8b5eefaff964502d98640e1b1b3752b1">fpmas::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;::getEdge</a></div><div class="ttdeci">api::graph::DistributedEdge&lt; T &gt; * getEdge(EdgeIdType) override</div><div class="ttdef"><b>Definition:</b> graph.h:179</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -63,6 +63,7 @@ class MockDistributedGraph :
 				(override));
 		MOCK_METHOD(void, distribute, (fpmas::api::graph::PartitionMap), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
+		MOCK_METHOD(fpmas::api::synchro::SyncMode<T>&, synchronizationMode, (), (override));
 	};
 
 #endif

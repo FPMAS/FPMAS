@@ -5,7 +5,7 @@
  * HardSyncMode DataSync implementation.
  */
 
-#include "fpmas/api/synchro/sync_mode.h"
+#include "fpmas/api/graph/distributed_graph.h"
 #include "server_pack.h"
 
 namespace fpmas { namespace synchro { namespace hard {

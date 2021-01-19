@@ -5,7 +5,13 @@
  * SyncMode API
  */
 
-#include "fpmas/api/graph/distributed_graph.h"
+//#include "fpmas/api/graph/distributed_graph.h"
+#include "mutex.h"
+
+namespace fpmas { namespace api { namespace graph {
+	template<typename T> class DistributedNode;
+	template<typename T> class DistributedEdge;
+}}}
 
 namespace fpmas { namespace api { namespace synchro {
 	/**

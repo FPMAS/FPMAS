@@ -177,11 +177,16 @@ namespace fpmas { namespace graph {
 
 
 				/**
+				 * @deprecated
+				 * Use synchronizationMode() instead.
+				 *
 				 * Returns the internal SyncMode instance.
 				 *
 				 * @return sync mode
 				 */
 				const SyncMode<T>& getSyncMode() const {return sync_mode;}
+
+				SyncMode<T>& synchronizationMode() override {return sync_mode;}
 
 				const LocationManagerImpl<T>&
 					getLocationManager() const override {return location_manager;}
