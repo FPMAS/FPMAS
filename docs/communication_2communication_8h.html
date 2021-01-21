@@ -101,25 +101,26 @@ Include dependency graph for communication.h:</div>
 This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="communication_2communication_8h__dep__incl.png" border="0" usemap="#asrc_2fpmas_2communication_2communication_8hdep" alt=""/></div>
-<map name="src_2fpmas_2communication_2communication_8hdep" id="asrc_2fpmas_2communication_2communication_8hdep">
-<area shape="rect" title=" " alt="" coords="301,5,473,47"/>
-<area shape="rect" href="graph_2location__manager_8h.html" title=" " alt="" coords="155,95,321,136"/>
-<area shape="rect" href="ghost__mode_8h.html" title=" " alt="" coords="5,273,172,315"/>
-<area shape="rect" href="zoltan__load__balancing_8h.html" title=" " alt="" coords="425,95,579,136"/>
-<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="604,102,800,129"/>
-<area shape="rect" href="termination_8h.html" title=" " alt="" coords="323,184,481,225"/>
-<area shape="rect" href="graph_2distributed__graph_8h.html" title=" " alt="" coords="119,184,299,225"/>
-<area shape="rect" href="model_2detail_2model_8h.html" title=" " alt="" coords="430,273,585,315"/>
-<area shape="rect" href="hard__sync__linker_8h.html" title=" " alt="" coords="196,273,355,315"/>
-<area shape="rect" href="model_2model_8h.html" title=" " alt="" coords="440,370,609,397"/>
-<area shape="rect" href="dist__move__algo_8h.html" title=" " alt="" coords="409,452,571,493"/>
-<area shape="rect" href="model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="392,541,553,583"/>
-<area shape="rect" href="model_2spatial_2grid_8h.html" title=" " alt="" coords="384,631,545,672"/>
-<area shape="rect" href="von__neumann_8h.html" title=" " alt="" coords="380,720,541,761"/>
-<area shape="rect" href="moore_8h.html" title=" " alt="" coords="377,809,539,851"/>
-<area shape="rect" href="fpmas_8h.html" title=" " alt="" coords="369,899,459,925"/>
-<area shape="rect" href="hard__sync__mode_8h.html" title=" " alt="" coords="257,363,416,404"/>
-<area shape="rect" href="random_8h_source.html" title=" " alt="" coords="609,281,795,307"/>
+<map name="src_2fpmas_2communication_2communication_8hdep" id="src_2fpmas_2communication_2communication_8hdep">
+<area shape="rect" title=" " alt="" coords="437,5,609,47"/>
+<area shape="rect" href="graph_2location__manager_8h.html" title=" " alt="" coords="507,95,673,136"/>
+<area shape="rect" href="ghost__mode_8h.html" title=" " alt="" coords="628,273,795,315"/>
+<area shape="rect" href="zoltan__load__balancing_8h.html" title=" " alt="" coords="259,95,414,136"/>
+<area shape="rect" href="csv__output_8h.html" title=" " alt="" coords="739,452,884,493"/>
+<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="13,102,209,129"/>
+<area shape="rect" href="termination_8h.html" title=" " alt="" coords="319,184,477,225"/>
+<area shape="rect" href="graph_2distributed__graph_8h.html" title=" " alt="" coords="501,184,681,225"/>
+<area shape="rect" href="model_2detail_2model_8h.html" title=" " alt="" coords="215,273,370,315"/>
+<area shape="rect" href="hard__sync__linker_8h.html" title=" " alt="" coords="445,273,604,315"/>
+<area shape="rect" href="model_2model_8h.html" title=" " alt="" coords="208,370,377,397"/>
+<area shape="rect" href="dist__move__algo_8h.html" title=" " alt="" coords="225,452,387,493"/>
+<area shape="rect" href="model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="229,541,391,583"/>
+<area shape="rect" href="model_2spatial_2grid_8h.html" title=" " alt="" coords="237,631,399,672"/>
+<area shape="rect" href="von__neumann_8h.html" title=" " alt="" coords="255,720,416,761"/>
+<area shape="rect" href="moore_8h.html" title=" " alt="" coords="268,809,429,851"/>
+<area shape="rect" href="fpmas_8h.html" title=" " alt="" coords="457,899,547,925"/>
+<area shape="rect" href="hard__sync__mode_8h.html" title=" " alt="" coords="423,363,581,404"/>
+<area shape="rect" href="random_8h_source.html" title=" " alt="" coords="5,281,191,307"/>
 </map>
 </div>
 </div>
@@ -147,6 +148,12 @@ Namespaces</h2></td></tr>
 Functions</h2></td></tr>
 <tr class="memitem:a685b5a9916d27bffb1d0d4a9bf9f08a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a> (int argc, char **argv)</td></tr>
 <tr class="separator:a685b5a9916d27bffb1d0d4a9bf9f08a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8fe9aadebc27f2864c1b3c82636d1631"><td class="memTemplParams" colspan="2">template&lt;typename T , typename BinaryOp  = std::plus&lt;T&gt;&gt; </td></tr>
+<tr class="memitem:a8fe9aadebc27f2864c1b3c82636d1631"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1communication.html#a8fe9aadebc27f2864c1b3c82636d1631">fpmas::communication::gather_and_accumulate</a> (api::communication::TypedMpi&lt; T &gt; &amp;mpi, int root, const T &amp;data, BinaryOp binary_op=BinaryOp())</td></tr>
+<tr class="separator:a8fe9aadebc27f2864c1b3c82636d1631"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7dcb7d32ed7f7a34901b06cdf4d70de"><td class="memTemplParams" colspan="2">template&lt;typename T , typename BinaryOp  = std::plus&lt;T&gt;&gt; </td></tr>
+<tr class="memitem:ab7dcb7d32ed7f7a34901b06cdf4d70de"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1communication.html#ab7dcb7d32ed7f7a34901b06cdf4d70de">fpmas::communication::all_gather_and_accumulate</a> (api::communication::TypedMpi&lt; T &gt; &amp;mpi, const T &amp;data, BinaryOp binary_op=BinaryOp())</td></tr>
+<tr class="separator:ab7dcb7d32ed7f7a34901b06cdf4d70de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Communication implementation. </p>

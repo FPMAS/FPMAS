@@ -68,6 +68,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
+<a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">fpmas::communication Namespace Reference</div>  </div>
@@ -85,6 +86,15 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html">TypedMpi</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a8fe9aadebc27f2864c1b3c82636d1631"><td class="memTemplParams" colspan="2">template&lt;typename T , typename BinaryOp  = std::plus&lt;T&gt;&gt; </td></tr>
+<tr class="memitem:a8fe9aadebc27f2864c1b3c82636d1631"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1communication.html#a8fe9aadebc27f2864c1b3c82636d1631">gather_and_accumulate</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; T &gt; &amp;mpi, int root, const T &amp;data, BinaryOp binary_op=BinaryOp())</td></tr>
+<tr class="separator:a8fe9aadebc27f2864c1b3c82636d1631"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab7dcb7d32ed7f7a34901b06cdf4d70de"><td class="memTemplParams" colspan="2">template&lt;typename T , typename BinaryOp  = std::plus&lt;T&gt;&gt; </td></tr>
+<tr class="memitem:ab7dcb7d32ed7f7a34901b06cdf4d70de"><td class="memTemplItemLeft" align="right" valign="top">T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1communication.html#ab7dcb7d32ed7f7a34901b06cdf4d70de">all_gather_and_accumulate</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; T &gt; &amp;mpi, const T &amp;data, BinaryOp binary_op=BinaryOp())</td></tr>
+<tr class="separator:ab7dcb7d32ed7f7a34901b06cdf4d70de"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
 <tr class="memitem:a0cd77ee61dd8f7c45cc7d1e98e36bae8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1communication_1_1MpiCommWorld.html">MpiCommWorld</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1communication.html#a0cd77ee61dd8f7c45cc7d1e98e36bae8">WORLD</a> {}</td></tr>
@@ -92,7 +102,114 @@ Variables</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="namespacefpmas_1_1api_1_1communication.html">fpmas::api::communication</a> implementations. </p>
-</div><h2 class="groupheader">Variable Documentation</h2>
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a8fe9aadebc27f2864c1b3c82636d1631"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8fe9aadebc27f2864c1b3c82636d1631">&#9670;&nbsp;</a></span>gather_and_accumulate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename BinaryOp  = std::plus&lt;T&gt;&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">T fpmas::communication::gather_and_accumulate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>mpi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>root</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BinaryOp&#160;</td>
+          <td class="paramname"><em>binary_op</em> = <code>BinaryOp()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gathers <code>data</code> at <code>root</code> using the provided <code>mpi</code> instance, and returns the accumulated result.</p>
+<p><code>binary_op</code> is the operation used to accumulate data of the vector returned by the gather operation.</p>
+<p>On processes other that <code>root</code>, <code>data</code> is returned.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mpi</td><td>mpi instance used to perform the gather operation </td></tr>
+    <tr><td class="paramname">root</td><td>rank of the processes on which data should be gathered and accumulated </td></tr>
+    <tr><td class="paramname">data</td><td>local data instance to gather </td></tr>
+    <tr><td class="paramname">binary_op</td><td>operation used to accumulate data</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ac60bb4256dace14742298ad9beccbfc3">fpmas::api::communication::TypedMpi::gather()</a> </dd>
+<dd>
+<a href="https://en.cppreference.com/w/cpp/algorithm/accumulate">https://en.cppreference.com/w/cpp/algorithm/accumulate</a> </dd></dl>
+
+</div>
+</div>
+<a id="ab7dcb7d32ed7f7a34901b06cdf4d70de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7dcb7d32ed7f7a34901b06cdf4d70de">&#9670;&nbsp;</a></span>all_gather_and_accumulate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename BinaryOp  = std::plus&lt;T&gt;&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">T fpmas::communication::all_gather_and_accumulate </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">api::communication::TypedMpi</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>mpi</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">BinaryOp&#160;</td>
+          <td class="paramname"><em>binary_op</em> = <code>BinaryOp()</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Gathers <code>data</code> using the provided <code>mpi</code> instance, and returns the accumulated result on all processes (using an <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a4467468344561d45cb5b7c9152909755">fpmas::api::communication::TypedMpi::allGather()</a> operation).</p>
+<p><code>binary_op</code> is the operation used to accumulate data of the vector returned by the gather operation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mpi</td><td>mpi instance used to perform the allGather() operation </td></tr>
+    <tr><td class="paramname">data</td><td>local data instance to gather </td></tr>
+    <tr><td class="paramname">binary_op</td><td>operation used to accumulate data</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a4467468344561d45cb5b7c9152909755">fpmas::api::communication::TypedMpi::allGather()</a> </dd>
+<dd>
+<a href="https://en.cppreference.com/w/cpp/algorithm/accumulate">https://en.cppreference.com/w/cpp/algorithm/accumulate</a> </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
 <a id="a0cd77ee61dd8f7c45cc7d1e98e36bae8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0cd77ee61dd8f7c45cc7d1e98e36bae8">&#9670;&nbsp;</a></span>WORLD</h2>
 
@@ -105,6 +222,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p><a class="el" href="classfpmas_1_1communication_1_1MpiCommWorld.html">MpiCommWorld</a> instance, initialized by <a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init()</a>. </p>
+<dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fpmas_2output_2csv_output_8cpp-example.html#a2">fpmas/output/csv_output.cpp</a>, and <a class="el" href="fpmas_2output_2distributed_csv_output_8cpp-example.html#a1">fpmas/output/distributed_csv_output.cpp</a>.</dd>
+</dl>
 
 </div>
 </div>

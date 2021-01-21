@@ -493,6 +493,57 @@ namespace fpmas { namespace communication {
 			std::free(buffer);
 			return nlohmann::json::parse(data).get<T>();
 		}
-}
-}
+
+
+	/**
+	 * Gathers `data` at `root` using the provided `mpi` instance, and returns
+	 * the accumulated result.
+	 *
+	 * `binary_op` is the operation used to accumulate data of the vector
+	 * returned by the gather operation.
+	 *
+	 * On processes other that `root`, `data` is returned.
+	 *
+	 * @param mpi mpi instance used to perform the gather operation
+	 * @param root rank of the processes on which data should be gathered and
+	 * accumulated
+	 * @param data local data instance to gather
+	 * @param binary_op operation used to accumulate data
+	 *
+	 * @see fpmas::api::communication::TypedMpi::gather()
+	 * @see https://en.cppreference.com/w/cpp/algorithm/accumulate
+	 */
+	template<typename T, typename BinaryOp = std::plus<T>>
+		T gather_and_accumulate(
+				api::communication::TypedMpi<T>& mpi, int root,
+				const T& data, BinaryOp binary_op = BinaryOp()) {
+			std::vector<T> data_vec = mpi.gather(data, root);
+			if(data_vec.size() > 0)
+				return std::accumulate(std::next(data_vec.begin()), data_vec.end(), data_vec[0], binary_op);
+			return data;
+		}
+	/**
+	 * Gathers `data` using the provided `mpi` instance, and returns
+	 * the accumulated result on all processes (using an
+	 * fpmas::api::communication::TypedMpi::allGather() operation).
+	 *
+	 * `binary_op` is the operation used to accumulate data of the vector
+	 * returned by the gather operation.
+	 *
+	 *
+	 * @param mpi mpi instance used to perform the allGather() operation
+	 * @param data local data instance to gather
+	 * @param binary_op operation used to accumulate data
+	 *
+	 * @see fpmas::api::communication::TypedMpi::allGather()
+	 * @see https://en.cppreference.com/w/cpp/algorithm/accumulate
+	 */
+	template<typename T, typename BinaryOp = std::plus<T>>
+		T all_gather_and_accumulate(
+				api::communication::TypedMpi<T>& mpi,
+				const T& data, BinaryOp binary_op = BinaryOp()) {
+			std::vector<T> data_vec = mpi.allGather(data);
+			return std::accumulate(std::next(data_vec.begin()), data_vec.end(), data_vec[0], binary_op);
+		}
+}}
 #endif

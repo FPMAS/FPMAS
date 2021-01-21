@@ -20,7 +20,7 @@ class ExampleAgent : public fpmas::model::AgentBase<ExampleAgent> {
 		}
 };
 
-int main(int argc, char** argv) {
+int main() {
 	std::string message = "hello";
 
 	fpmas::model::BehaviorWithArgs<ExampleAgent, int, std::string&> behavior {

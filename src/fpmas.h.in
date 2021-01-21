@@ -8,6 +8,7 @@
 #include "fpmas/random/random.h"
 #include "fpmas/model/spatial/moore.h"
 #include "fpmas/model/spatial/grid_agent_mapping.h"
+#include "fpmas/output/csv_output.h"
 
 /**
  * FPMAS version literal.
@@ -198,6 +199,16 @@ namespace fpmas {
 /**
  * \namespace fpmas::random
  * fpmas::api::random implementations
+ */
+
+/**
+ * \namespace fpmas::api::output
+ *
+ * Program outputs APIs.
+ */
+/**
+ * \namespace fpmas::output
+ * fpmas::api::output implementations.
  */
 
 /**

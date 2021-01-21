@@ -1,14 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="5,169,152,211"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="218,5,365,47"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1detail_1_1LoadBalancingTask.html" title=" " alt="" coords="220,71,363,112"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1detail_1_1SynchronizeGraphTask.html" title=" " alt="" coords="209,136,374,177"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1scheduler_1_1detail_1_1LambdaTask.html" title=" " alt="" coords="211,201,372,243"/>
-<area shape="rect" id="node7" href="$classfpmas_1_1scheduler_1_1VoidTask.html" title=" " alt="" coords="200,267,383,294"/>
-<area shape="rect" id="node8" href="$classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="210,319,373,360"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1scheduler_1_1LambdaTask.html" title=" " alt="" coords="431,104,607,145"/>
-<area shape="rect" id="node9" href="$classfpmas_1_1api_1_1model_1_1AgentTask.html" title=" " alt="" coords="451,319,586,360"/>
-<area shape="rect" id="node10" href="$classfpmas_1_1model_1_1detail_1_1AgentTaskBase.html" title=" " alt="" coords="655,319,795,360"/>
-<area shape="rect" id="node11" href="$classfpmas_1_1model_1_1detail_1_1AgentBehaviorTask.html" title=" " alt="" coords="843,285,985,327"/>
-<area shape="rect" id="node12" href="$classfpmas_1_1model_1_1detail_1_1AgentTask.html" title=" " alt="" coords="844,351,984,392"/>
+<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1scheduler_1_1Scheduler.html" title=" " alt="" coords="5,5,152,47"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1scheduler_1_1Scheduler.html" title=" " alt="" coords="200,13,388,39"/>
 </map>
