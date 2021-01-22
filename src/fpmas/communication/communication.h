@@ -514,7 +514,7 @@ namespace fpmas { namespace communication {
 	 * @see https://en.cppreference.com/w/cpp/algorithm/accumulate
 	 */
 	template<typename T, typename BinaryOp = std::plus<T>>
-		T gather_and_accumulate(
+		T reduce(
 				api::communication::TypedMpi<T>& mpi, int root,
 				const T& data, BinaryOp binary_op = BinaryOp()) {
 			std::vector<T> data_vec = mpi.gather(data, root);
@@ -539,7 +539,7 @@ namespace fpmas { namespace communication {
 	 * @see https://en.cppreference.com/w/cpp/algorithm/accumulate
 	 */
 	template<typename T, typename BinaryOp = std::plus<T>>
-		T all_gather_and_accumulate(
+		T all_reduce(
 				api::communication::TypedMpi<T>& mpi,
 				const T& data, BinaryOp binary_op = BinaryOp()) {
 			std::vector<T> data_vec = mpi.allGather(data);

@@ -7,14 +7,16 @@
  *
  * @par output on 4 processes
  * ```
- * i,f
- * 6,6
- * 8,0
+ * rank,i,f
+ * 0,0,6
+ * 0,16,0
  * ```
  *
  * If the example is run on several processes, each process will independently
  * output the same data
  */
+
+using namespace fpmas::output;
 
 int main(int argc, char** argv) {
 	fpmas::init(argc, argv);
@@ -23,8 +25,19 @@ int main(int argc, char** argv) {
 		int i = fpmas::communication::WORLD.getRank();
 		float f = 1.5;
 
-		// Field types are specified as template parameters
-		fpmas::output::DistributedCsvOutput<int, float> distributed_output(
+		// Field types are specified as template parameters.
+		// The Local field is only considered on the process where data is
+		// fetched, i.e. 0 in this case.
+		// The second field, of type `int`, is gathered from all the processes and
+		// reduced using a multiplication.
+		// The third field, of type `float`, is gathered from all the processes
+		// and reduced using an addition.
+		// It the `root` parameter (0 in this case), was not specified, output
+		// would be performed on all processes. While reduced fields would be
+		// identical on all processes, the Local field would be equal to the rank
+		// of the process on which the output is performed.
+		DistributedCsvOutput<
+			Local<int>, Reduce<int, std::multiplies<int>>, Reduce<float>> distributed_output(
 				// Output data on process 0 using the WORLD communicator.
 				// If the root process is ommitted, data will be output to
 				// std::cout on all processes.
@@ -35,8 +48,9 @@ int main(int argc, char** argv) {
 				// specified using lambda functions. When value are captured
 				// by reference (using &), latest modifications are
 				// automatically fetched when dump() is called.
-				{"i", [&i] () {return i;}},
-				{"f", [&f] () {return f;}}
+				{"rank", [] () {return fpmas::communication::WORLD.getRank();}}, // Local field
+				{"i", [&i] () {return i;}}, // Reduced field using *
+				{"f", [&f] () {return f;}} // Reduced field using +
 				);
 
 		// Gathers all value of i and f, performs a sum of all data coming from

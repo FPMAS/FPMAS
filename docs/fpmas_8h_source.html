@@ -80,24 +80,26 @@ $(function() {
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;fpmas/random/random.h&quot;</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="moore_8h.html">fpmas/model/spatial/moore.h</a>&quot;</span></div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="grid__agent__mapping_8h.html">fpmas/model/spatial/grid_agent_mapping.h</a>&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="csv__output_8h.html">fpmas/output/csv_output.h</a>&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="fpmas_8h.html#a4766d5892b769bcff0480917a85b921e">   16</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION &quot;1.1.0&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="fpmas_8h.html#a85f66e8572844ae65b978c34ff6c6d1b">   20</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_MAJOR 1</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="fpmas_8h.html#ada8b8c2730e77e4e60c63af56a2add74">   24</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_MINOR 1</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="fpmas_8h.html#ad074e4937a67e81ef92268273d2b0313">   29</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_PATCH 0</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">init</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">finalize</a>();</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;}</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="output_2output_8h.html">fpmas/output/output.h</a>&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="csv__output_8h.html">fpmas/output/csv_output.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="fpmas_8h.html#a4766d5892b769bcff0480917a85b921e">   17</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION &quot;1.1.0&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="fpmas_8h.html#a85f66e8572844ae65b978c34ff6c6d1b">   21</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_MAJOR 1</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="fpmas_8h.html#ada8b8c2730e77e4e60c63af56a2add74">   25</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_MINOR 1</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="fpmas_8h.html#ad074e4937a67e81ef92268273d2b0313">   30</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_PATCH 0</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">init</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">finalize</a>();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
+<div class="ttc" id="aoutput_2output_8h_html"><div class="ttname"><a href="output_2output_8h.html">output.h</a></div></div>
 <div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:4</div></div>
 <div class="ttc" id="agrid__agent__mapping_8h_html"><div class="ttname"><a href="grid__agent__mapping_8h.html">grid_agent_mapping.h</a></div></div>
 <div class="ttc" id="aserializer_8h_html"><div class="ttname"><a href="serializer_8h.html">serializer.h</a></div></div>

@@ -31,5 +31,14 @@ namespace fpmas { namespace api { namespace output {
 
 			virtual ~Output() {}
 	};
+
+	/**
+	 * Generic Watcher interface.
+	 *
+	 * A Watcher is a callable object that dynamically returns some underlying
+	 * data.
+	 */
+	template<typename T>
+		using Watcher = std::function<T()>;
 }}}
 #endif

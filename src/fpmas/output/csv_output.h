@@ -1,3 +1,6 @@
+#ifndef FPMAS_CSV_OUTPUT_H
+#define FPMAS_CSV_OUTPUT_H
+
 #include <fstream>
 #include <functional>
 #include <vector>
@@ -12,6 +15,7 @@
  */
 
 namespace fpmas { namespace output {
+	using api::output::Watcher;
 
 	/**
 	 * Tasks implementation used to output some data.
@@ -196,6 +200,37 @@ namespace fpmas { namespace output {
 		};
 
 	/**
+	 * Type used as a distributed CSV field parameter.
+	 *
+	 * This allows to optionally pass a custom set of paramaters to the
+	 * `DistributedOperation` when building a DistributedCsvOutput.
+	 */
+	template<typename Operation>
+		struct DistributedCsvField : public std::tuple<
+									std::string,
+									Watcher<typename Operation::Type>,
+									typename Operation::Params>
+	{
+		/**
+		 * Imports standard tuple constructors.
+		 */
+		using std::tuple<
+			std::string,
+		std::function<typename Operation::Type()>,
+		typename Operation::Params>::tuple;
+
+		/**
+		 * Custom DistributedCsvField constructor.
+		 *
+		 * The `Params` field of the tuple is default initialized.
+		 */
+		DistributedCsvField(
+				const std::string& name,
+				std::function<typename Operation::Type()> watcher)
+			: DistributedCsvField(name, watcher, {}) {}
+	};
+
+	/**
 	 * A distributed api::output::Output implementation that dumps CSV data to an
 	 * output stream.
 	 *
@@ -204,51 +239,13 @@ namespace fpmas { namespace output {
 	 *
 	 * @param DataField types of data in each row
 	 */
-	template<typename... DataField>
-		class DistributedCsvOutput : public CsvOutputBase<DataField...> {
+	template<typename... DataFieldOperation>
+		class DistributedCsvOutput : public CsvOutputBase<typename DataFieldOperation::Type...> {
 			private:
-				template<typename T, typename BinaryOp = std::plus<T>>
-					class GatherAndAccumulate {
-						private:
-							communication::TypedMpi<T> mpi;
-							int root;
-							std::function<T()> watcher;
-							BinaryOp binary_op;
-
-						public:
-							GatherAndAccumulate(
-									api::communication::MpiCommunicator& comm,
-									int root,
-									const std::function<T()>& watcher)
-								: mpi(comm), root(root), watcher(watcher) {}
-
-							T operator()() {
-								return fpmas::communication::gather_and_accumulate(mpi, root, watcher(), binary_op);
-							}
-					};
-
-				template<typename T, typename BinaryOp = std::plus<T>>
-					class AllGatherAndAccumulate {
-						private:
-							communication::TypedMpi<T> mpi;
-							std::function<T()> watcher;
-							BinaryOp binary_op;
-
-						public:
-							AllGatherAndAccumulate(
-									api::communication::MpiCommunicator& comm,
-									const std::function<T()>& watcher)
-								: mpi(comm), watcher(watcher) {}
-
-							T operator()() {
-								return fpmas::communication::all_gather_and_accumulate(mpi, watcher(), binary_op);
-							}
-					};
-
-
 				api::communication::MpiCommunicator& comm;
 				int root;
 				bool all_out;
+
 			public:
 				/**
 				 * DistributedCsvOutput constructor.
@@ -262,23 +259,34 @@ namespace fpmas { namespace output {
 				 * @param root rank of the process on which data is dumped
 				 * @param output_stream output stream on which data are dumped
 				 * (ignored on processes other than `root`)
-				 * @param csv_fields pairs of type `{"field_name", watcher}`,
-				 * where `watcher` is a callable object used to fetch data
-				 * corresponding to `"field_name"`. See examples for concrete
-				 * use cases.
+				 * @param csv_fields tuples of type `{"field_name", watcher,
+				 * params}`, where `watcher` is a callable object used to fetch
+				 * data corresponding to `"field_name"`. `params` is optional.
+				 * See examples for concrete use cases.
 				 */
 				DistributedCsvOutput(
 						api::communication::MpiCommunicator& comm, int root,
 						std::ostream& output_stream,
-						std::pair<std::string, std::function<DataField()>>... csv_fields)
-					: CsvOutputBase<DataField...>(
+						DistributedCsvField<DataFieldOperation>... csv_fields)
+					: CsvOutputBase<typename DataFieldOperation::Type...>(
 							output_stream,
-							{csv_fields.first, GatherAndAccumulate<DataField>(comm, root, csv_fields.second)}...),
+							{
+							// Field name
+							std::get<0>(csv_fields),
+							// DistributedOperation
+							typename DataFieldOperation::Single(
+									comm, root,
+									// Watcher
+									std::get<1>(csv_fields),
+									// Extra Params
+									std::get<2>(csv_fields))
+							}...),
 					comm(comm), root(root), all_out(false)
 					{
 						if(comm.getRank() == root)
 							this->dump_csv(this->headers());
 					}
+
 
 				/**
 				 * DistributedCsvOutput constructor.
@@ -289,18 +297,28 @@ namespace fpmas { namespace output {
 				 * @param comm MPI communicator
 				 * @param output_stream output stream on which data are dumped
 				 * on each process
-				 * @param csv_fields pairs of type `{"field_name", watcher}`,
-				 * where `watcher` is a callable object used to fetch data
-				 * corresponding to `"field_name"`. See examples for concrete
-				 * use cases.
+				 * @param csv_fields tuples of type `{"field_name", watcher,
+				 * params}`, where `watcher` is a callable object used to fetch
+				 * data corresponding to `"field_name"`. `params` is optional.
+				 * See examples for concrete use cases.
 				 */
 				DistributedCsvOutput(
 						api::communication::MpiCommunicator& comm,
 						std::ostream& output_stream,
-						std::pair<std::string, std::function<DataField()>>... csv_fields)
-					: CsvOutputBase<DataField...>(
+						DistributedCsvField<DataFieldOperation>... csv_fields)
+					: CsvOutputBase<typename DataFieldOperation::Type...>(
 							output_stream,
-							{csv_fields.first, AllGatherAndAccumulate<DataField>(comm, csv_fields.second)}...),
+							{
+							// Field name
+							std::get<0>(csv_fields),
+							// DistributedOperation
+							typename DataFieldOperation::All(
+									comm,
+									// Watcher
+									std::get<1>(csv_fields),
+									// Extra Params
+									std::get<2>(csv_fields))
+							}...),
 					comm(comm), all_out(true)
 					{
 						this->dump_csv(this->headers());
@@ -325,3 +343,4 @@ namespace fpmas { namespace output {
 		};
 
 }}
+#endif
