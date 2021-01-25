@@ -24,10 +24,25 @@ namespace fpmas { namespace model {
 	template<typename AgentType>
 		class Neighbor  {
 			private:
-				AgentPtr* agent;
-				AgentEdge* _edge = nullptr;
+				AgentPtr* _agent;
+				AgentEdge* _edge;
 
 			public:
+				/**
+				 * Initializes a null Neighbor.
+				 *
+				 * The Neighbor can eventually be assigned later with a
+				 * non-null Neighbor.
+				 *
+				 * @par Example
+				 * ```cpp
+				 * Neighbor neighbor;
+				 *
+				 * neighbor = agent->outNeighbors<...>().random();
+				 * ```
+				 */
+				Neighbor() : Neighbor(nullptr, nullptr) {}
+
 				/**
 				 * @deprecated
 				 *
@@ -37,7 +52,7 @@ namespace fpmas { namespace model {
 				 */
 				[[deprecated]]
 				Neighbor(AgentPtr* agent)
-					: agent(agent) {}
+					: Neighbor(agent, nullptr) {}
 
 				/**
 				 * Neighbor constructor.
@@ -46,13 +61,13 @@ namespace fpmas { namespace model {
 				 * @param edge edge with wich the neighbor is linked to agent
 				 */
 				Neighbor(AgentPtr* agent, AgentEdge* edge)
-					: agent(agent), _edge(edge) {}
+					: _agent(agent), _edge(edge) {}
 
 				/**
 				 * Implicit conversion operator to `AgentType*`.
 				 */
 				operator AgentType*() const {
-					return dynamic_cast<AgentType*>(agent->get());
+					return dynamic_cast<AgentType*>(_agent->get());
 				}
 
 				/**
@@ -61,7 +76,7 @@ namespace fpmas { namespace model {
 				 * @return pointer to neighbor agent
 				 */
 				AgentType* operator->() const {
-					return dynamic_cast<AgentType*>(agent->get());
+					return dynamic_cast<AgentType*>(_agent->get());
 				}
 
 				/**
@@ -70,7 +85,7 @@ namespace fpmas { namespace model {
 				 * @return reference to neighbor agent
 				 */
 				AgentType& operator*() const {
-					return *dynamic_cast<AgentType*>(agent->get()); }
+					return *dynamic_cast<AgentType*>(_agent->get()); }
 
 				/**
 				 * Returns the edge with which this neighbor is linked to
@@ -80,6 +95,18 @@ namespace fpmas { namespace model {
 				 */
 				AgentEdge* edge() const {
 					return _edge;
+				}
+
+				/**
+				 * Returns a pointer to the internal Agent, or a `nullptr` if
+				 * the Neighbor is null.
+				 *
+				 * @return pointer to internal agent
+				 */
+				AgentType* agent() const {
+					if(_agent == nullptr)
+						return nullptr;
+					return dynamic_cast<AgentType*>(_agent->get());
 				}
 		};
 
