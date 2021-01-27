@@ -1,0 +1,15 @@
+{
+	"configurations": {
+		"gdb-test": {
+			"adapter": "vscode-cpptools",
+			"configuration": {
+				"request": "launch",
+				"cwd":"${workspaceRoot}/build/tests/local",
+				"program":"${workspaceRoot}/build/tests/local/fpmas_local_test",
+				"args":["--gtest_filter=Constrained*"],
+				"stopAtEntry": true,
+				"MIMode": "gdb"
+			}
+		}
+	}
+}

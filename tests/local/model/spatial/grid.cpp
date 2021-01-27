@@ -313,3 +313,30 @@ TEST(MooreRange, range) {
 		delete cell;
 	delete current_location;
 }
+
+class ConstrainedGridAgentMappingTest : public Test {
+	protected:
+		static const DiscreteCoordinate grid_width;
+		static const DiscreteCoordinate grid_height;
+		static const std::size_t num_agent;
+		ConstrainedGridAgentMapping mapping {grid_width, grid_height, num_agent, 2};
+
+};
+const DiscreteCoordinate ConstrainedGridAgentMappingTest::grid_width = 100;
+const DiscreteCoordinate ConstrainedGridAgentMappingTest::grid_height = 100;
+const std::size_t ConstrainedGridAgentMappingTest::num_agent = 4000;
+
+TEST_F(ConstrainedGridAgentMappingTest, test) {
+	std::size_t total_count;
+	for(DiscreteCoordinate x = 0; x < grid_width; x++) {
+		for(DiscreteCoordinate y = 0; y < grid_height; y++) {
+			MockGridCell<NiceMock> mock_cell;
+			ON_CALL(mock_cell, location)
+				.WillByDefault(Return(DiscretePoint {x, y}));
+			std::size_t local_count = mapping.countAt(&mock_cell);
+			ASSERT_LE(local_count, 2);
+			total_count += local_count;
+		}
+	}
+	ASSERT_EQ(total_count, num_agent);
+}

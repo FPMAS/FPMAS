@@ -209,7 +209,25 @@ class HardSyncModeLinkerIntegrationTest : public HardSyncModeIntegrationTest {
 		}
 };
 
-TEST_F(HardSyncModeLinkerIntegrationTest, remove_node) {
+TEST_F(HardSyncModeLinkerIntegrationTest, remove_local_node) {
+	ASSERT_THAT(graph.getNodes(), SizeIs(Ge(1)));
+	if(comm.getSize() > 1) {
+		for(auto node : graph.getLocationManager().getLocalNodes()) {
+			graph.removeNode(node.second);
+		}
+	} else {
+		decltype(graph)::NodeMap nodes = graph.getNodes();
+		for(auto node : nodes)
+			graph.removeNode(node.second);
+	}
+
+	graph.synchronize();
+
+	ASSERT_THAT(graph.getNodes(), IsEmpty());
+	ASSERT_THAT(graph.getEdges(), IsEmpty());
+}
+
+TEST_F(HardSyncModeLinkerIntegrationTest, remove_distant_node) {
 	ASSERT_THAT(graph.getNodes(), SizeIs(Ge(1)));
 	if(comm.getSize() > 1) {
 		for(auto node : graph.getLocationManager().getLocalNodes()) {

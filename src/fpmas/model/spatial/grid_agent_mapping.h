@@ -87,5 +87,39 @@ namespace fpmas { namespace model {
 						agent_count) {}
 	};
 
+	/**
+	 * api::model::SpatialAgentMapping implementation for grid environments.
+	 *
+	 * The ConstrainedGridAgentMapping allows to uniformly distribute agents
+	 * over a grid, while specifying a maximum count of agents by cell.
+	 */
+	class ConstrainedGridAgentMapping : public api::model::SpatialAgentMapping<api::model::GridCell> {
+		private:
+			std::unordered_map<DiscreteCoordinate, std::unordered_map<DiscreteCoordinate, std::size_t>>
+				count_map;
+		public:
+			/**
+			 * ConstrainedGridAgentMapping constructor.
+			 *
+			 * `agent_count` agents will be uniformly distributed on the grid
+			 * defined by `(grid_width, grid_height)`, considering the origin
+			 * at `(0, 0)`, with `max_agent_by_cell` as the maximum capacity of
+			 * each cell.
+			 *
+			 * @param grid_width Grid width
+			 * @param grid_height Grid height
+			 * @param agent_count total count of agents to map
+			 * @param max_agent_by_cell maximum count of agents allowed on each
+			 * cell
+			 */
+			ConstrainedGridAgentMapping(
+					DiscreteCoordinate grid_width,
+					DiscreteCoordinate grid_height,
+					std::size_t agent_count,
+					std::size_t max_agent_by_cell);
+
+		std::size_t countAt(api::model::GridCell* cell) override;
+	};
+
 }}
 #endif

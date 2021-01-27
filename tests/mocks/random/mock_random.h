@@ -12,6 +12,9 @@ class MockDistribution : public fpmas::api::random::Distribution<T> {
 		T operator()(fpmas::api::random::Generator& gen) {
 			return call(gen);
 		}
+
+		MOCK_METHOD(T, min, (), (const));
+		MOCK_METHOD(T, max, (), (const));
 };
 
 #endif
