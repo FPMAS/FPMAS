@@ -378,11 +378,10 @@ namespace fpmas { namespace synchro { namespace hard {
 					if(node->state() == LocationState::DISTANT) {
 						link_client.removeNode(node);
 					} else {
-						for(auto edge : node->getOutgoingEdges())
-							graph.unlink(edge);
-						for(auto edge : node->getIncomingEdges())
-							graph.unlink(edge);
-						//data_sync.addNodeToRemove(node);
+						while(!node->getOutgoingEdges().empty())
+							graph.unlink(node->getOutgoingEdges().back());
+						while(!node->getIncomingEdges().empty())
+							graph.unlink(node->getIncomingEdges().back());
 					}
 					nodes_to_remove.push_back(node);
 				}
