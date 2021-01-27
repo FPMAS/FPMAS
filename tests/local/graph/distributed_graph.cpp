@@ -44,6 +44,8 @@ class DistributedGraphTest : public Test {
 		template<typename T>
 			using MockDistributedNode = MockDistributedNode<T, NiceMock>;
 		template<typename T>
+			using MockDistributedEdge = MockDistributedEdge<T, NiceMock>;
+		template<typename T>
 			using MockSyncMode = NiceMock<MockSyncMode<T>>;
 		DistributedGraph<
 			int,

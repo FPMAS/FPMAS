@@ -96,8 +96,12 @@ Collaboration diagram for fpmas::synchro::hard::ServerPack&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a9023b8c88358157379f5c5d1f96568cb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a9023b8c88358157379f5c5d1f96568cb">ServerPack</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1TerminationAlgorithm.html">TerminationAlgorithm</a> &amp;termination, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a>&lt; T &gt; &amp;mutex_server, <a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a> &amp;link_server)</td></tr>
+<tr class="memitem:a9023b8c88358157379f5c5d1f96568cb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a9023b8c88358157379f5c5d1f96568cb">ServerPack</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1TerminationAlgorithm.html">TerminationAlgorithm</a> &amp;termination, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a>&lt; T &gt; &amp;mutex_server, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a> &amp;link_server)</td></tr>
 <tr class="separator:a9023b8c88358157379f5c5d1f96568cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a23bfe2ed85783cb88d4a7cc645deb258"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a>&lt; T &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a23bfe2ed85783cb88d4a7cc645deb258">mutexServer</a> ()</td></tr>
+<tr class="separator:a23bfe2ed85783cb88d4a7cc645deb258"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0c7126648e43ad00355877ba1634723"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#aa0c7126648e43ad00355877ba1634723">linkServer</a> ()</td></tr>
+<tr class="separator:aa0c7126648e43ad00355877ba1634723"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa73b37b26aba354af5bbe0d6d6e1c05e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#aa73b37b26aba354af5bbe0d6d6e1c05e">handleIncomingRequests</a> () override</td></tr>
 <tr class="separator:aa73b37b26aba354af5bbe0d6d6e1c05e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26a78ff176397b4d44ee15b0861abf58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a26a78ff176397b4d44ee15b0861abf58">setEpoch</a> (<a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab613c5f2c0ff9f5646a028383496d812">Epoch</a> epoch) override</td></tr>
@@ -117,7 +121,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
 class fpmas::synchro::hard::ServerPack&lt; T &gt;</h3>
 
-<p>A Server implementation wrapping an <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> and an <a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a>.</p>
+<p>A Server implementation wrapping an <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> and an <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a>.</p>
 <p>This is used to apply an <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1TerminationAlgorithm.html">api::TerminationAlgorithm</a> to the two instances simultaneously. More precisely, when applying the termination algorithm to this server, the system is still able to answer to mutex AND link requests, to completely determine global termination. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9023b8c88358157379f5c5d1f96568cb"></a>
@@ -152,7 +156,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a> &amp;&#160;</td>
           <td class="paramname"><em>link_server</em>&#160;</td>
         </tr>
         <tr>
@@ -181,6 +185,62 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a23bfe2ed85783cb88d4a7cc645deb258"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a23bfe2ed85783cb88d4a7cc645deb258">&#9670;&nbsp;</a></span>mutexServer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a>&lt;T&gt;&amp; <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">fpmas::synchro::hard::ServerPack</a>&lt; T &gt;::mutexServer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reference to the internal <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> instance. </p>
+
+</div>
+</div>
+<a id="aa0c7126648e43ad00355877ba1634723"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0c7126648e43ad00355877ba1634723">&#9670;&nbsp;</a></span>linkServer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a>&amp; <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">fpmas::synchro::hard::ServerPack</a>&lt; T &gt;::linkServer </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Reference to the internal <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a> instance. </p>
+
+</div>
+</div>
 <a id="aa73b37b26aba354af5bbe0d6d6e1c05e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa73b37b26aba354af5bbe0d6d6e1c05e">&#9670;&nbsp;</a></span>handleIncomingRequests()</h2>
 
@@ -205,7 +265,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Performs a reception cycle on the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> AND on the <a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a>. </p>
+<p>Performs a reception cycle on the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> AND on the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a>. </p>
 
 <p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">fpmas::synchro::hard::api::Server</a>.</p>
 
@@ -236,7 +296,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Sets the Epoch of the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> AND the <a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a>.</p>
+<p>Sets the Epoch of the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> AND the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">epoch</td><td>new epoch </td></tr>
@@ -272,7 +332,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Gets the common epoch of the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> and the <a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a>.</p>
+<p>Gets the common epoch of the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> and the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a>.</p>
 <dl class="section return"><dt>Returns</dt><dd>current Epoch </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a68e3d04343a8bd775d0f0843d8d78308">fpmas::synchro::hard::api::Server</a>.</p>
@@ -333,7 +393,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Method used to wait for an MPI_Request to be sent.</p>
-<p>The request might be performed by the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> OR the <a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a>. In any case, this methods handles incoming requests (see <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::MutexServer::handleIncomingRequests()</a> and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::LinkServer::handleIncomingRequests()</a>) until the MPI_Request is complete, in order to avoid deadlock.</p>
+<p>The request might be performed by the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> OR the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a>. In any case, this methods handles incoming requests (see <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::MutexServer::handleIncomingRequests()</a> and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::LinkServer::handleIncomingRequests()</a>) until the MPI_Request is complete, in order to avoid deadlock.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">req</td><td>MPI request to complete </td></tr>
@@ -391,7 +451,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Method used to wait for request responses with data (e.g. to READ, ACQUIRE) from the specified <code>mpi</code> instance to be available.</p>
-<p>The request might be performed by the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> OR the <a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a>. In any case, this methods handles incoming requests (see <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::MutexServer::handleIncomingRequests()</a> and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::LinkServer::handleIncomingRequests()</a>) until a response is available, in order to avoid deadlock.</p>
+<p>The request might be performed by the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> OR the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a>. In any case, this methods handles incoming requests (see <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::MutexServer::handleIncomingRequests()</a> and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::LinkServer::handleIncomingRequests()</a>) until a response is available, in order to avoid deadlock.</p>
 <p>Upon return, it is safe to receive the response with <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a90c9f239f2f895b6e180f6107524df4e">api::communication::MpiCommunicator::recv()</a> using the same source and tag.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -453,7 +513,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Method used to wait for request responses without data (e.g. to LOCK, UNLOCK) from the specified <code>comm</code> instance to be available.</p>
-<p>The request might be performed by the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> OR the <a class="el" href="namespacefpmas_1_1synchro_1_1hard_1_1api.html#ab225a3d8b8c3d9232ac1c7d36bc17999">api::LinkServer</a>. In any case, this methods handles incoming requests (see <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::MutexServer::handleIncomingRequests()</a> and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::LinkServer::handleIncomingRequests()</a>) until a response is available, in order to avoid deadlock.</p>
+<p>The request might be performed by the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1MutexServer.html">api::MutexServer</a> OR the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html">api::LinkServer</a>. In any case, this methods handles incoming requests (see <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::MutexServer::handleIncomingRequests()</a> and <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html#a13e0c29890b8ea594d865a632da43a88">api::LinkServer::handleIncomingRequests()</a>) until a response is available, in order to avoid deadlock.</p>
 <p>Upon return, it is safe to receive the response with <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a90c9f239f2f895b6e180f6107524df4e">api::communication::MpiCommunicator::recv()</a> using the same source and tag.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

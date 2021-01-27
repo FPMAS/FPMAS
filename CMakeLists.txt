@@ -20,9 +20,10 @@ find_package(Zoltan 3.81 REQUIRED)
 find_package(nlohmann_json 3.7 REQUIRED)
 
 set(CMAKE_CXX_FLAGS_DEBUG
-	"${CMAKE_CXX_FLAGS_DEBUG} -g -std=c++11 -O0\
-	-Wall -Wextra -Wpedantic -Werror\
+	"${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -O0\
+	-Wall -Wextra -Wpedantic -Werror -Wno-error=pedantic\
 	-Woverloaded-virtual -Wnon-virtual-dtor")
+message(${CMAKE_CXX_FLAGS_DEBUG})
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
 set(LOG_LEVEL FPMAS_LOG_WARN CACHE STRING "Log level")

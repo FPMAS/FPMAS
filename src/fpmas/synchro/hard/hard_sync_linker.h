@@ -46,6 +46,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				EdgeMpi& edge_mpi;
 				std::set<fpmas::api::graph::DistributedEdge<T>*> erased_edges_from_unlink;
 				std::set<DistributedId> erased_edges_from_remove_node;
+				std::set<DistributedId> locked_unlink_edges;
 
 			public:
 				/**
@@ -68,6 +69,19 @@ namespace fpmas { namespace synchro { namespace hard {
 				void setEpoch(api::Epoch epoch) override {this->epoch = epoch;}
 
 				void handleIncomingRequests() override;
+
+				
+				void lockUnlink(DistributedId edge_id) override {
+					locked_unlink_edges.insert(edge_id);
+				}
+				
+				bool isLockedUnlink(DistributedId edge_id) override {
+					return locked_unlink_edges.count(edge_id) > 0;
+				}
+				
+				void unlockUnlink(DistributedId edge_id) override {
+					locked_unlink_edges.erase(edge_id);
+				}
 		};
 
 	template<typename T>
@@ -82,7 +96,15 @@ namespace fpmas { namespace synchro { namespace hard {
 			if(id_mpi.Iprobe(MPI_ANY_SOURCE, epoch | Tag::UNLINK, status)) {
 				DistributedId unlink_id = id_mpi.recv(status.source, status.tag);
 				FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER", "receive unlink request %s from %i", FPMAS_C_STR(unlink_id), status.source);
-				if(erased_edges_from_remove_node.count(unlink_id) == 0 && graph.getEdges().count(unlink_id) > 0) {
+				if(
+						// The edge is not currently being unlinked by an
+						// incoming REMOVE_NODE operation
+						erased_edges_from_remove_node.count(unlink_id) == 0
+						// The edge is not being unlinking by the local process
+						&& !isLockedUnlink(unlink_id)
+						// The edge has not been unlinked by an other UNLINK
+						// operation
+						&& graph.getEdges().count(unlink_id) > 0) {
 					auto* edge = graph.getEdge(unlink_id);
 					graph.erase(graph.getEdge(unlink_id));
 					erased_edges_from_unlink.insert(edge);
@@ -241,6 +263,11 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void LinkClient<T>::unlink(const EdgeApi* edge) {
+			// Prevents other processes to unlink the edge while the local
+			// process is unlinking it. In this case, incoming unlink requests
+			// have no effect. (see LinkServer::handleIncomingRequests())
+			server_pack.linkServer().lockUnlink(edge->getId());
+
 			bool distant_src = edge->getSourceNode()->state() == LocationState::DISTANT;
 			bool distant_tgt = edge->getTargetNode()->state() == LocationState::DISTANT;
 
@@ -269,6 +296,11 @@ namespace fpmas { namespace synchro { namespace hard {
 			if(distant_tgt) {
 				server_pack.waitSendRequest(req_tgt);
 			}
+
+			// Unlocks the unlink operation. The edge will actually be erased
+			// from the graph upon return, in the DistributedGraph::unlink()
+			// method.
+			server_pack.linkServer().unlockUnlink(edge->getId());
 		}
 
 	template<typename T>

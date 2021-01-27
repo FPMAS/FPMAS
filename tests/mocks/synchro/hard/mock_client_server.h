@@ -85,5 +85,9 @@ class MockLinkServer
 		MOCK_METHOD(Epoch, getEpoch, (), (const, override));
 
 		MOCK_METHOD(void, handleIncomingRequests, (), (override));
+
+		MOCK_METHOD(void, lockUnlink, (DistributedId), (override));
+		MOCK_METHOD(bool, isLockedUnlink, (DistributedId), (override));
+		MOCK_METHOD(void, unlockUnlink, (DistributedId), (override));
 };
 #endif

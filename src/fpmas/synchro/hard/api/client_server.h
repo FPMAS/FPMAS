@@ -376,7 +376,44 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 	 *
 	 * Adds nothing to the Server API.
 	 */
-	typedef Server LinkServer;
+	//typedef Server LinkServer;
+	class LinkServer : public Server {
+		public:
+			/**
+			 * Locks the unlink operation on the edge corresponding to
+			 * `edge_id`.
+			 *
+			 * `isLockedUnlink(edge_id)` will return true until
+			 * `unlockUnlink(edge_id)` is called.
+			 *
+			 * @note
+			 * This is notably used by the LinkClient when an UNLINK operation
+			 * is initialized from the local process. While the operation is
+			 * performed, the unlink operation is locked so that UNLINK
+			 * requests for the same edge coming from other processes will be
+			 * ignored.
+			 *
+			 * @param edge_id id of the edge to unlink
+			 */
+			virtual void lockUnlink(DistributedId edge_id) = 0;
+
+			/**
+			 * Returns true is an unlink operation has been locked for the
+			 * edge corresponding to `edge_id`.
+			 *
+			 * @param edge_id id of the edge to unlink
+			 * @return true iff an unlink operation is locked
+			 */
+			virtual bool isLockedUnlink(DistributedId edge_id) = 0;
+
+			/**
+			 * Releases an unlink operation on the edge corresponding to
+			 * `edge_id`.
+			 *
+			 * @param edge_id id of the unlinked edge
+			 */
+			virtual void unlockUnlink(DistributedId edge_id) = 0;
+	};
 
 	/**
 	 * Generic termination algorithm.

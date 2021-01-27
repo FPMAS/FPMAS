@@ -18,7 +18,7 @@ void from_json(const nlohmann::json& j, MockDistributedNode<T, Strictness>& mock
 template<typename T, template<typename> class Strictness>
 void to_json(nlohmann::json& j, const MockDistributedNode<T, Strictness>& mock);
 
-template<typename> class MockDistributedEdge;
+template<typename, template<typename> class> class MockDistributedEdge;
 
 template<typename T>
 class AbstractMockDistributedNode : public fpmas::api::graph::DistributedNode<T> {
@@ -37,7 +37,6 @@ class AbstractMockDistributedNode : public fpmas::api::graph::DistributedNode<T>
 		setUpDefaultMutex();
 		setUpLocationAccess();
 		setUpStateAccess();
-		this->anyExpectations();
 	}
 
 	AbstractMockDistributedNode(const T& data)
@@ -46,7 +45,6 @@ class AbstractMockDistributedNode : public fpmas::api::graph::DistributedNode<T>
 			setUpDefaultMutex();
 			setUpLocationAccess();
 			setUpStateAccess();
-			this->anyExpectations();
 		}
 	AbstractMockDistributedNode(T&& data)
 		: _data(std::move(data)) {
@@ -54,7 +52,6 @@ class AbstractMockDistributedNode : public fpmas::api::graph::DistributedNode<T>
 			setUpDefaultMutex();
 			setUpLocationAccess();
 			setUpStateAccess();
-			this->anyExpectations();
 		}
 
 	public:
@@ -117,31 +114,14 @@ class AbstractMockDistributedNode : public fpmas::api::graph::DistributedNode<T>
 		ON_CALL(*this, location)
 			.WillByDefault(ReturnPointee(&_location));
 	}
-	void anyExpectations() {
-		/*
-		 *EXPECT_CALL(*this, linkIn).Times(AnyNumber());
-		 *EXPECT_CALL(*this, linkOut).Times(AnyNumber());
-		 *EXPECT_CALL(*this, getWeight).Times(AnyNumber());
-		 *EXPECT_CALL(*this, setState).Times(AnyNumber());
-		 *EXPECT_CALL(*this, state).Times(AnyNumber());
-		 *EXPECT_CALL(*this, data()).Times(AnyNumber());
-		 *EXPECT_CALL(Const(*this), data()).Times(AnyNumber());
-		 *EXPECT_CALL(*this, getIncomingEdges()).Times(AnyNumber());
-		 *EXPECT_CALL(*this, getIncomingEdges(_)).Times(AnyNumber());
-		 *EXPECT_CALL(*this, getOutgoingEdges()).Times(AnyNumber());
-		 *EXPECT_CALL(*this, getOutgoingEdges(_)).Times(AnyNumber());
-		 *EXPECT_CALL(*this, setLocation).Times(AnyNumber());
-		 *EXPECT_CALL(*this, location).Times(AnyNumber());
-		 */
-	}
 };
 
 template<typename T, template<typename> class Strictness = testing::NaggyMock>
 class MockDistributedNode :
 	public Strictness<AbstractMockDistributedNode<T>>,
 	public Strictness<AbstractMockNode<DistributedId, fpmas::api::graph::DistributedEdge<T>>> {
-		friend void from_json<T>(const nlohmann::json&, MockDistributedNode<T, Strictness>&);
-		friend void to_json<T>(nlohmann::json&, const MockDistributedNode<T, Strictness>&);
+		friend void from_json<T, Strictness>(const nlohmann::json&, MockDistributedNode<T, Strictness>&);
+		friend void to_json<T, Strictness>(nlohmann::json&, const MockDistributedNode<T, Strictness>&);
 		typedef Strictness<AbstractMockNode<DistributedId, fpmas::api::graph::DistributedEdge<T>>>
 			NodeBase;
 		typedef Strictness<AbstractMockDistributedNode<T>>
@@ -200,7 +180,6 @@ inline void from_json(const nlohmann::json& j, MockDistributedNode<T, Strictness
 		.WillByDefault(ReturnRef(mock._data));
 	ON_CALL(mock, getWeight)
 		.WillByDefault(Return(j.at("weight").get<float>()));
-	mock.anyExpectations();
 }
 
 #endif

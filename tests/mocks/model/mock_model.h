@@ -186,14 +186,17 @@ class DefaultMockAgentBase : public MockAgentBase<DefaultMockAgentBase<FOO>> {};
 
 template<template<typename> class Strictness = testing::NaggyMock>
 using MockAgentNode = MockDistributedNode<fpmas::model::AgentPtr, Strictness>;
-using MockAgentEdge = MockDistributedEdge<fpmas::model::AgentPtr>;
+template<template<typename> class Strictness = testing::NaggyMock>
+using MockAgentEdge = MockDistributedEdge<fpmas::model::AgentPtr, Strictness>;
 
 template<typename T>
 using DefaultDistNode = MockDistributedNode<T>;
+template<typename T>
+using DefaultDistEdge = MockDistributedEdge<T>;
 
 template<
 	template<typename> class DistNode = DefaultDistNode,
-	template<typename> class DistEdge = MockDistributedEdge>
+	template<typename> class DistEdge = DefaultDistEdge>
 using MockAgentGraph = MockDistributedGraph<
 	fpmas::model::AgentPtr,
 	DistNode<fpmas::model::AgentPtr>,

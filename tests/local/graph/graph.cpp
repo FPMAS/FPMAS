@@ -8,26 +8,6 @@
 
 using namespace testing;
 
-/*
- *
- *template<typename NodeType, typename EdgeType>
- *class MockGraph : 
- *    public virtual fpmas::graph::Graph<NodeType, EdgeType> {
- *        typedef fpmas::graph::Graph<NodeType, EdgeType>
- *        GraphBase;
- *        using typename GraphBase::NodeIdType;
- *        using typename GraphBase::NodeMap;
- *
- *        using typename GraphBase::EdgeIdType;
- *        using typename GraphBase::EdgeMap;
- *
- *        public:
- *            MOCK_METHOD(void, removeNode, (NodeType*), (override));
- *            MOCK_METHOD(void, unlink, (EdgeType*), (override));
- *
- *};
- */
-
 class GraphBaseTest : public Test {
 	protected:
 		fpmas::graph::Graph<MockNode<BasicId>, MockEdge<BasicId>> graph;
@@ -71,14 +51,9 @@ TEST_F(GraphBaseTest, erase_node) {
 	graph.addCallOnEraseNode(erase_callback);
 	std::array<MockNode<BasicId>*, 10> nodes;
 	for (int i = 0; i < 10; ++i) {
-		auto node = new MockNode<BasicId>(++id);
+		auto node = new NiceMock<MockNode<BasicId>>(++id);
 		graph.insert(node);
 		nodes[i] = node;
-
-		EXPECT_CALL(*node, getIncomingEdges()).Times(AnyNumber());
-		EXPECT_CALL(*node, getIncomingEdges(_)).Times(AnyNumber());
-		EXPECT_CALL(*node, getOutgoingEdges()).Times(AnyNumber());
-		EXPECT_CALL(*node, getOutgoingEdges(_)).Times(AnyNumber());
 	}
 	for(auto node : nodes) {
 		BasicId node_id = node->getId();
@@ -98,9 +73,9 @@ class GraphBaseEraseEdgeTest : public Test {
 	protected:
 		fpmas::graph::Graph<MockNode<BasicId>, MockEdge<BasicId>> graph;
 		BasicId id;
-		MockNode<BasicId>* src = new MockNode<BasicId>(++id);
-		MockNode<BasicId>* tgt = new MockNode<BasicId>(++id);
-		MockEdge<BasicId>* edge = new MockEdge<BasicId>(++id, 2);
+		MockNode<BasicId>* src = new NiceMock<MockNode<BasicId>>(++id);
+		MockNode<BasicId>* tgt = new NiceMock<MockNode<BasicId>>(++id);
+		MockEdge<BasicId>* edge = new NiceMock<MockEdge<BasicId>>(++id, 2);
 
 		void SetUp() override {
 			graph.insert(src);
@@ -108,15 +83,6 @@ class GraphBaseEraseEdgeTest : public Test {
 			edge->src = src;
 			edge->tgt = tgt;
 			graph.insert(edge);
-
-			EXPECT_CALL(*src, getIncomingEdges()).Times(AnyNumber());
-			EXPECT_CALL(*src, getIncomingEdges(_)).Times(AnyNumber());
-			EXPECT_CALL(*src, getOutgoingEdges()).Times(AnyNumber());
-			EXPECT_CALL(*src, getOutgoingEdges(_)).Times(AnyNumber());
-			EXPECT_CALL(*tgt, getIncomingEdges()).Times(AnyNumber());
-			EXPECT_CALL(*tgt, getIncomingEdges(_)).Times(AnyNumber());
-			EXPECT_CALL(*tgt, getOutgoingEdges()).Times(AnyNumber());
-			EXPECT_CALL(*tgt, getOutgoingEdges(_)).Times(AnyNumber());
 		}
 };
 

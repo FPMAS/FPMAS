@@ -67,31 +67,24 @@ class AbstractMockEdge : public virtual fpmas::api::graph::Edge<
 	private:
 		void setUpGetters() {
 			ON_CALL(*this, getId).WillByDefault(ReturnPointee(&id));
-			EXPECT_CALL(*this, getId).Times(AnyNumber());
 
 			ON_CALL(*this, getLayer).WillByDefault(ReturnPointee(&layer));
-			EXPECT_CALL(*this, getLayer).Times(AnyNumber());
 
 			ON_CALL(*this, getWeight).WillByDefault(ReturnPointee(&weight));
-			EXPECT_CALL(*this, getWeight).Times(AnyNumber());
 
-			EXPECT_CALL(*this, setSourceNode)
-				.Times(AnyNumber())
+			ON_CALL(*this, setSourceNode)
 				// Saves to src
-				.WillRepeatedly(SaveArg<0>(&src));
-			EXPECT_CALL(*this, getSourceNode)
-				.Times(AnyNumber())
+				.WillByDefault(SaveArg<0>(&src));
+			ON_CALL(*this, getSourceNode)
 				// Return the pointer pointed by the this->src field (the
 				// pointed pointer might change during execution)
-				.WillRepeatedly(ReturnPointee(const_cast<NodeType**>(&src)));
+				.WillByDefault(ReturnPointee(const_cast<NodeType**>(&src)));
 
 			// idem
-			EXPECT_CALL(*this, setTargetNode)
-				.Times(AnyNumber())
-				.WillRepeatedly(SaveArg<0>(&tgt));
-			EXPECT_CALL(*this, getTargetNode)
-				.Times(AnyNumber())
-				.WillRepeatedly(ReturnPointee(const_cast<NodeType**>(&tgt)));
+			ON_CALL(*this, setTargetNode)
+				.WillByDefault(SaveArg<0>(&tgt));
+			ON_CALL(*this, getTargetNode)
+				.WillByDefault(ReturnPointee(const_cast<NodeType**>(&tgt)));
 
 		}
 };
@@ -103,15 +96,16 @@ using MockNode = AbstractMockNode<IdType, MockEdge<IdType>>;
 template<typename IdType>
 class MockEdge : public AbstractMockEdge<IdType, MockNode<IdType>> {
 	public:
-		typedef AbstractMockEdge<IdType, MockNode<IdType>> mock_edge_base;
-		using typename mock_edge_base::NodeType;
+		using AbstractMockEdge<IdType, MockNode<IdType>>::AbstractMockEdge;
+		//typedef AbstractMockEdge<IdType, MockNode<IdType>> mock_edge_base;
+		//using typename mock_edge_base::NodeType;
 
-		MockEdge() : mock_edge_base() {}
-		MockEdge(IdType id, LayerId layer)
-			: mock_edge_base(id, layer) {
-		}
-		MockEdge(IdType id, LayerId layer, float weight)
-			: mock_edge_base(id, layer, weight) {
-		}
+		//MockEdge() : mock_edge_base() {}
+		//MockEdge(IdType id, LayerId layer)
+			//: mock_edge_base(id, layer) {
+		//}
+		//MockEdge(IdType id, LayerId layer, float weight)
+			//: mock_edge_base(id, layer, weight) {
+		//}
 };
 #endif

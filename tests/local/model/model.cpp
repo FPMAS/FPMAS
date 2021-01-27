@@ -837,13 +837,13 @@ TEST_F(AgentBaseCopyMoveTest, move_assign) {
 
 TEST_F(AgentBaseTest, out_neighbors) {
 	MockAgentNode<NiceMock> n_1 {{0, 0}, new DefaultMockAgentBase<8>};
-	MockDistributedEdge<AgentPtr> e_1;
+	MockAgentEdge<NiceMock> e_1;
 	e_1.setTargetNode(&n_1);
 	MockAgentNode<NiceMock> n_2 {{0, 1}, new DefaultMockAgentBase<12>};
-	MockDistributedEdge<AgentPtr> e_2;
+	MockAgentEdge<NiceMock> e_2;
 	e_2.setTargetNode(&n_2);
 	MockAgentNode<NiceMock> n_3 {{0, 2}, new DefaultMockAgentBase<8>};
-	MockDistributedEdge<AgentPtr> e_3;
+	MockAgentEdge<NiceMock> e_3;
 	e_3.setTargetNode(&n_3);
 
 	DefaultMockAgentBase<10>* agent = new DefaultMockAgentBase<10>;
@@ -874,8 +874,8 @@ TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors;
 	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> out_edges;
 	for(unsigned int i = 0; i < 1000; i++) {
-		out_neighbors.push_back(new MockAgentNode<>({0, i}, new DefaultMockAgentBase<8>));
-		out_edges.push_back(new MockDistributedEdge<AgentPtr>);
+		out_neighbors.push_back(new MockAgentNode<NiceMock>({0, i}, new DefaultMockAgentBase<8>));
+		out_edges.push_back(new MockAgentEdge<NiceMock>);
 		out_edges.back()->setTargetNode(out_neighbors.back());
 	}
 
@@ -913,13 +913,13 @@ TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 
 TEST_F(AgentBaseTest, in_neighbors) {
 	MockAgentNode<NiceMock> n_1 {{0, 0}, new DefaultMockAgentBase<8>};
-	MockDistributedEdge<AgentPtr> e_1;
+	MockAgentEdge<NiceMock> e_1;
 	e_1.setSourceNode(&n_1);
 	MockAgentNode<NiceMock> n_2 {{0, 1}, new DefaultMockAgentBase<12>};
-	MockDistributedEdge<AgentPtr> e_2;
+	MockAgentEdge<NiceMock> e_2;
 	e_2.setSourceNode(&n_2);
 	MockAgentNode<NiceMock> n_3 {{0, 2}, new DefaultMockAgentBase<8>};
-	MockDistributedEdge<AgentPtr> e_3;
+	MockAgentEdge<NiceMock> e_3;
 	e_3.setSourceNode(&n_3);
 
 	DefaultMockAgentBase<10>* agent = new DefaultMockAgentBase<10>;
@@ -950,8 +950,8 @@ TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> in_neighbors;
 	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> in_edges;
 	for(unsigned int i = 0; i < 1000; i++) {
-		in_neighbors.push_back(new MockAgentNode<>({0, i}, new DefaultMockAgentBase<8>));
-		in_edges.push_back(new MockDistributedEdge<AgentPtr>);
+		in_neighbors.push_back(new MockAgentNode<NiceMock>({0, i}, new DefaultMockAgentBase<8>));
+		in_edges.push_back(new MockAgentEdge<NiceMock>);
 		in_edges.back()->setSourceNode(in_neighbors.back());
 	}
 
@@ -1064,14 +1064,14 @@ class AgentGuardLoopTest : public AgentGuardTest {
 	protected:
 		FakeAgent* agent_1 = new FakeAgent(0);
 		MockAgentNode<NiceMock> node_1 {{0, 0}, agent_1};
-		MockDistributedEdge<AgentPtr> edge_1;
+		MockAgentEdge<NiceMock> edge_1;
 		MockMutex<AgentPtr> mutex_1;
 		AgentPtr& agent_ptr_1 = node_1.data();
 		AgentPtr data_to_move_1 {new FakeAgent(14)};
 
 		FakeAgent* agent_2 = new FakeAgent(0);
 		MockAgentNode<NiceMock> node_2 {{0, 0}, agent_2};
-		MockDistributedEdge<AgentPtr> edge_2;
+		MockAgentEdge<NiceMock> edge_2;
 		MockMutex<AgentPtr> mutex_2;
 		AgentPtr& agent_ptr_2 = node_2.data();
 		AgentPtr data_to_move_2 {new FakeAgent(14)};

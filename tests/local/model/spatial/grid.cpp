@@ -128,7 +128,7 @@ TEST_F(GridAgentTest, to_json_with_data) {
 TEST_F(GridAgentTest, moveToPoint) {
 	// Build MOVE layer
 	std::vector<AgentNode*> move_neighbors {&mock_cell_node};
-	MockAgentEdge mock_cell_edge;
+	MockAgentEdge<NiceMock> mock_cell_edge;
 	mock_cell_edge.setSourceNode(&mock_agent_node);
 	mock_cell_edge.setTargetNode(&mock_cell_node);
 	std::vector<AgentEdge*> move_neighbor_edges {&mock_cell_edge};

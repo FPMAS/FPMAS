@@ -245,3 +245,34 @@ TEST_F(HardSyncModeLinkerIntegrationTest, remove_distant_node) {
 	ASSERT_THAT(graph.getNodes(), IsEmpty());
 	ASSERT_THAT(graph.getEdges(), IsEmpty());
 }
+
+class HardSyncModeLinkerLoadTest : public HardSyncModeIntegrationTest {
+	protected:
+		void SetUp() {
+			FPMAS_ON_PROC(comm, 0) {
+				std::vector<DistributedId> node_ids;
+				for(int i = 0; i < comm.getSize(); i++) {
+					for(int j = 0; j < 10; j++) {
+						auto* node = graph.buildNode(0ul);
+						partition[node->getId()] = i;
+						node_ids.push_back(node->getId());
+					}
+				}
+				for(auto src_id : node_ids)
+					for(auto tgt_id : node_ids)
+						if(src_id != tgt_id)
+							graph.link(graph.getNode(src_id), graph.getNode(tgt_id), 0);
+			}
+			graph.distribute(partition);
+		}
+};
+
+TEST_F(HardSyncModeLinkerLoadTest, remove_node) {
+	for(auto node : graph.getLocationManager().getLocalNodes())
+		graph.removeNode(node.second);
+
+	graph.synchronize();
+
+	ASSERT_THAT(graph.getNodes(), IsEmpty());
+	ASSERT_THAT(graph.getEdges(), IsEmpty());
+}

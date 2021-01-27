@@ -12,7 +12,7 @@ using fpmas::synchro::ghost::GhostSyncLinker;
 class GhostSyncLinkerTest : public Test {
 	protected:
 		typedef MockDistributedNode<int, NiceMock> MockNode;
-		typedef MockDistributedEdge<int> MockEdge;
+		typedef MockDistributedEdge<int, NiceMock> MockEdge;
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
@@ -56,9 +56,8 @@ class GhostSyncLinkerTest : public Test {
 			ON_CALL(*static_cast<const MockNode*>(edge.tgt), location)
 				.WillByDefault(Return(tgt_rank));
 
-			EXPECT_CALL(edge, state)
-				.Times(AnyNumber())
-				.WillRepeatedly(Return(
+			ON_CALL(edge, state)
+				.WillByDefault(Return(
 					src_location == LocationState::LOCAL && tgt_location == LocationState::LOCAL ?
 					LocationState::LOCAL :
 					LocationState::DISTANT
@@ -309,13 +308,9 @@ class GhostSyncLinkerRemoveNodeTest : public GhostSyncLinkerTest {
 
 			ON_CALL(*node_to_remove, getOutgoingEdges())
 				.WillByDefault(Return(out_edges));
-			EXPECT_CALL(*node_to_remove, getOutgoingEdges())
-				.Times(AnyNumber());
 
 			ON_CALL(*node_to_remove, getIncomingEdges())
 				.WillByDefault(Return(in_edges));
-			EXPECT_CALL(*node_to_remove, getIncomingEdges())
-				.Times(AnyNumber());
 		}
 
 		void TearDown() override {
