@@ -2,6 +2,7 @@
 #include <algorithm>
 
 namespace fpmas { namespace scheduler {
+	const api::scheduler::SubTimeStep sub_step_end = std::numeric_limits<SubTimeStep>::max();
 
 	Job::Job(std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks)
 		: Job() {

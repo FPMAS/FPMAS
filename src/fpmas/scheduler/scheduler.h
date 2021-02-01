@@ -18,6 +18,8 @@ namespace fpmas { namespace scheduler {
 	using api::scheduler::JID;
 	using api::scheduler::JobList;
 
+	extern const api::scheduler::SubTimeStep sub_step_end;
+
 	/**
 	 * A Task that does not perform any operation.
 	 *

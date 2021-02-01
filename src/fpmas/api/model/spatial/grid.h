@@ -134,6 +134,11 @@ namespace fpmas { namespace api { namespace model {
 
 			virtual ~GridCellFactory() {}
 	};
+
+	/**
+	 * SpatialAgentMapping specialization for grid based models.
+	 */
+	typedef SpatialAgentMapping<GridCell> GridAgentMapping;
 }}}
 
 namespace fpmas {
