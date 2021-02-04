@@ -59,7 +59,7 @@ namespace fpmas { namespace model {
 	 */
 	template<typename GridCellType, typename Derived = GridCellType>
 	class GridCellBase :
-		public api::model::GridCell,
+		public virtual api::model::GridCell,
 		public Cell<GridCellType, GridCellBase<GridCellType, Derived>> {
 		friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridCellBase<GridCellType, Derived>>>;
 
@@ -113,7 +113,7 @@ namespace fpmas { namespace model {
 	 */
 	template<typename AgentType, typename GridCellType = api::model::GridCell, typename Derived = AgentType>
 	class GridAgent :
-		public api::model::GridAgent<GridCellType>,
+		public virtual api::model::GridAgent<GridCellType>,
 		public SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>> {
 			friend nlohmann::adl_serializer<api::utils::PtrWrapper<GridAgent<AgentType, GridCellType, Derived>>>;
 			static_assert(std::is_base_of<api::model::GridCell, GridCellType>::value,

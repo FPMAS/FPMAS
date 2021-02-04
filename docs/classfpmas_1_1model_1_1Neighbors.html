@@ -100,6 +100,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac92b1e3c73fd47f218988d9daa708833"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa5d351d629ea1c87352df4eb4b8a196"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#afa5d351d629ea1c87352df4eb4b8a196">shuffle</a> ()</td></tr>
 <tr class="separator:afa5d351d629ea1c87352df4eb4b8a196"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcfecd08d071a23e1f64369e0c18dad1"><td class="memTemplParams" colspan="2">template&lt;typename Filter &gt; </td></tr>
+<tr class="memitem:abcfecd08d071a23e1f64369e0c18dad1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#abcfecd08d071a23e1f64369e0c18dad1">filter</a> (Filter _filter)</td></tr>
+<tr class="separator:abcfecd08d071a23e1f64369e0c18dad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa21a92f8804a4661fd11996a4ad4146f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#aa21a92f8804a4661fd11996a4ad4146f">random</a> ()</td></tr>
 <tr class="separator:aa21a92f8804a4661fd11996a4ad4146f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -481,6 +484,45 @@ template&lt;typename AgentType &gt; </div>
 <p>Internally shuffles the neighbors list using <a href="https://en.cppreference.com/w/cpp/algorithm/random_shuffle">std::shuffle</a>.</p>
 <p>Can be used to iterate randomly over the neighbors set.</p>
 <dl class="section return"><dt>Returns</dt><dd>reference to this <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> instance </dd></dl>
+
+</div>
+</div>
+<a id="abcfecd08d071a23e1f64369e0c18dad1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcfecd08d071a23e1f64369e0c18dad1">&#9670;&nbsp;</a></span>filter()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<div class="memtemplate">
+template&lt;typename Filter &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a>&amp; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::filter </td>
+          <td>(</td>
+          <td class="paramtype">Filter&#160;</td>
+          <td class="paramname"><em>_filter</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Filters the neighbor list.</p>
+<p>The specified <code>Filter</code> must be an unary predicate such that for each <code>agent</code> in the current neighbor list, <code>agent</code> is <b>kept</b> only if <code>_filter(agent)</code> returns <code>true</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">_filter</td><td>filter to apply </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>filtered list </dd></dl>
 
 </div>
 </div>

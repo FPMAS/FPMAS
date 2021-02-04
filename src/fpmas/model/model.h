@@ -240,6 +240,27 @@ namespace fpmas { namespace model {
 				}
 
 				/**
+				 * Filters the neighbor list.
+				 *
+				 * The specified `Filter` must be an unary predicate such that
+				 * for each `agent` in the current neighbor list, `agent` is
+				 * **kept** only if `_filter(agent)` returns `true`.
+				 *
+				 * @param _filter filter to apply
+				 * @return filtered list
+				 */
+				template<typename Filter>
+				Neighbors& filter(Filter _filter) {
+					neighbors.erase(
+							std::remove_if(
+								neighbors.begin(), neighbors.end(),
+								[&_filter] (const Neighbor<AgentType>& agent) {return !_filter(agent);}),
+							neighbors.end()
+							);
+					return *this;
+				}
+
+				/**
 				 * Returns a random element of this neighbors list.
 				 *
 				 * @return random neighbor

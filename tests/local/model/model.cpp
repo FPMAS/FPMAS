@@ -987,6 +987,39 @@ TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 		delete edge;
 }
 
+TEST_F(AgentBaseTest, filter_neighbors) {
+	MockAgentNode<NiceMock> n_1 {{0, 0}, new DefaultMockAgentBase<8>};
+	MockAgentEdge<NiceMock> e_1;
+	e_1.setTargetNode(&n_1);
+	MockAgentNode<NiceMock> n_2 {{0, 1}, new DefaultMockAgentBase<8>};
+	MockAgentEdge<NiceMock> e_2;
+	e_2.setTargetNode(&n_2);
+	MockAgentNode<NiceMock> n_3 {{0, 2}, new DefaultMockAgentBase<8>};
+	MockAgentEdge<NiceMock> e_3;
+	e_3.setTargetNode(&n_3);
+
+	DefaultMockAgentBase<10>* agent = new DefaultMockAgentBase<10>;
+	MockAgentNode<NiceMock> n {{0, 4}, agent};
+	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors {&n_1, &n_2, &n_3};
+	ON_CALL(n, outNeighbors())
+		.WillByDefault(Return(out_neighbors));
+	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> out_edges {&e_1, &e_2, &e_3};
+	ON_CALL(n, getOutgoingEdges())
+		.WillByDefault(Return(out_edges));
+
+	agent->setNode(&n);
+
+	fpmas::model::Neighbors<DefaultMockAgentBase<8>> out_8
+		= agent->outNeighbors<DefaultMockAgentBase<8>>();
+	std::vector<DefaultMockAgentBase<8>*> out_8_v {out_8.begin(), out_8.end()};
+	ASSERT_THAT(out_8_v, UnorderedElementsAre(n_1.data().get(), n_2.data().get(), n_3.data().get()));
+
+	out_8.filter([&n_2] (const fpmas::model::Neighbor<DefaultMockAgentBase<8>>& neighbor) {
+			return neighbor.agent() == n_2.data();}
+			);
+	out_8_v = {out_8.begin(), out_8.end()};
+	ASSERT_THAT(out_8_v, ElementsAre(n_2.data().get()));
+}
 
 class FakeAgent : public MockAgentBase<FakeAgent> {
 	public:
