@@ -20,10 +20,19 @@ find_package(Zoltan 3.81 REQUIRED)
 find_package(nlohmann_json 3.7 REQUIRED)
 
 set(CMAKE_CXX_FLAGS_DEBUG
-	"${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -O0\
+	"${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -O3\
 	-Wall -Wextra -Wpedantic -Werror -Wno-error=pedantic\
 	-Woverloaded-virtual -Wnon-virtual-dtor")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
+
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+	message("-- Build type: Debug (${CMAKE_CXX_FLAGS_DEBUG})")
+elseif(CMAKE_BUILD_TYPE STREQUAL Release)
+	message("-- Build type: Release (${CMAKE_CXX_FLAGS_RELEASE})")
+elseif(CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
+	message("-- Build type: RelWithDebInfo (${CMAKE_CXX_FLAGS_RELWITHDEBINFO})")
+endif()
+
 
 set(LOG_LEVEL FPMAS_LOG_WARN CACHE STRING "Log level")
 message("-- LOG_LEVEL : ${LOG_LEVEL}")
