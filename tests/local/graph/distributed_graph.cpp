@@ -142,10 +142,14 @@ class DistributedGraphLinkTest : public DistributedGraphTest {
 			graph.insert(src_mock);
 			graph.insert(tgt_mock);
 
-			EXPECT_CALL(*src_mock, mutex()).WillRepeatedly(Return(&src_mutex));
-			EXPECT_CALL(Const(*src_mock), mutex()).WillRepeatedly(Return(&src_mutex));
-			EXPECT_CALL(*tgt_mock, mutex()).WillRepeatedly(Return(&tgt_mutex));
-			EXPECT_CALL(Const(*tgt_mock), mutex()).WillRepeatedly(Return(&tgt_mutex));
+			ON_CALL(*src_mock, mutex())
+				.WillByDefault(Return(&src_mutex));
+			ON_CALL(Const(*src_mock), mutex())
+				.WillByDefault(Return(&src_mutex));
+			ON_CALL(*tgt_mock, mutex())
+				.WillByDefault(Return(&tgt_mutex));
+			ON_CALL(Const(*tgt_mock), mutex())
+				.WillByDefault(Return(&tgt_mutex));
 
 			EXPECT_CALL(src_mutex, lockShared);
 			EXPECT_CALL(src_mutex, unlockShared);
@@ -180,8 +184,10 @@ class DistributedGraphLinkTest : public DistributedGraphTest {
  * Local link
  */
 TEST_F(DistributedGraphLinkTest, local_src_local_tgt) {
-	EXPECT_CALL(*src_mock, state).WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(*tgt_mock, state).WillRepeatedly(Return(LocationState::LOCAL));
+	ON_CALL(*src_mock, state)
+		.WillByDefault(Return(LocationState::LOCAL));
+	ON_CALL(*tgt_mock, state)
+		.WillByDefault(Return(LocationState::LOCAL));
 
 	EXPECT_CALL(mock_sync_linker, link);
 
@@ -196,8 +202,10 @@ TEST_F(DistributedGraphLinkTest, local_src_local_tgt) {
  * Local src, distant tgt
  */
 TEST_F(DistributedGraphLinkTest, local_src_distant_tgt) {
-	EXPECT_CALL(*src_mock, state).WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(*tgt_mock, state).WillRepeatedly(Return(LocationState::DISTANT));
+	ON_CALL(*src_mock, state)
+		.WillByDefault(Return(LocationState::LOCAL));
+	ON_CALL(*tgt_mock, state)
+		.WillByDefault(Return(LocationState::DISTANT));
 
 	const EdgeType* link_edge_arg;
 	EXPECT_CALL(mock_sync_linker, link)
@@ -214,8 +222,10 @@ TEST_F(DistributedGraphLinkTest, local_src_distant_tgt) {
  * Distant src, local tgt
  */
 TEST_F(DistributedGraphLinkTest, distant_src_local_tgt) {
-	EXPECT_CALL(*src_mock, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(*tgt_mock, state).WillRepeatedly(Return(LocationState::LOCAL));
+	ON_CALL(*src_mock, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+	ON_CALL(*tgt_mock, state)
+		.WillByDefault(Return(LocationState::LOCAL));
 
 	const EdgeType* linkEdgeArg;
 	EXPECT_CALL(mock_sync_linker, link)
@@ -234,8 +244,10 @@ TEST_F(DistributedGraphLinkTest, distant_src_local_tgt) {
 // TODO : what should we do with such an edge? Should it be deleted once is has
 // been sent?
 TEST_F(DistributedGraphLinkTest, distant_src_distant_tgt) {
-	EXPECT_CALL(*src_mock, state).WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(*tgt_mock, state).WillRepeatedly(Return(LocationState::DISTANT));
+	ON_CALL(*src_mock, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+	ON_CALL(*tgt_mock, state)
+		.WillByDefault(Return(LocationState::DISTANT));
 
 	const EdgeType* linkEdgeArg;
 	EXPECT_CALL(mock_sync_linker, link)
@@ -263,37 +275,27 @@ class DistributedGraphUnlinkTest : public DistributedGraphTest {
 		void SetUp() override {
 			DistributedGraphTest::SetUp();
 
-			EXPECT_CALL(*src_mock, mutex()).WillRepeatedly(Return(&src_mutex));
-			EXPECT_CALL(*tgt_mock, mutex()).WillRepeatedly(Return(&tgt_mutex));
+			ON_CALL(*src_mock, mutex())
+				.WillByDefault(Return(&src_mutex));
+			ON_CALL(*tgt_mock, mutex())
+				.WillByDefault(Return(&tgt_mutex));
 
-			EXPECT_CALL(src_mutex, lockShared).Times(2);
-			EXPECT_CALL(src_mutex, unlockShared).Times(2);
-			EXPECT_CALL(tgt_mutex, lockShared).Times(2);
-			EXPECT_CALL(tgt_mutex, unlockShared).Times(2);
+			EXPECT_CALL(mock_sync_linker, link).Times(AnyNumber());
 		}
 
 		void link(LocationState srcState, LocationState tgtState) {
-			EXPECT_CALL(*src_mock, state).WillRepeatedly(Return(srcState));
-			EXPECT_CALL(*tgt_mock, state).WillRepeatedly(Return(tgtState));
+			ON_CALL(*src_mock, state)
+				.WillByDefault(Return(srcState));
+			ON_CALL(*tgt_mock, state)
+				.WillByDefault(Return(tgtState));
 
 			EXPECT_CALL(*src_mock, linkOut);
 			EXPECT_CALL(*tgt_mock, linkIn);
-			EXPECT_CALL(mock_sync_linker, link).Times(AnyNumber());
 
 			edge = graph.link(src_mock, tgt_mock, 0);
 
-			Expectation unlinkSrc = EXPECT_CALL(*src_mock, unlinkOut(edge));
-			Expectation unlinkTgt = EXPECT_CALL(*tgt_mock, unlinkIn(edge));
-
-			/*
-			 * Might be call to clear() DISTANT node after the edge has been
-			 * erased
-			 */
-			EXPECT_CALL(*src_mock, getIncomingEdges()).Times(AnyNumber()).After(unlinkSrc);
-			EXPECT_CALL(*src_mock, getOutgoingEdges()).Times(AnyNumber()).After(unlinkSrc);
-
-			EXPECT_CALL(*tgt_mock, getIncomingEdges()).Times(AnyNumber()).After(unlinkTgt);
-			EXPECT_CALL(*tgt_mock, getOutgoingEdges()).Times(AnyNumber()).After(unlinkTgt);
+			EXPECT_CALL(*src_mock, unlinkOut(edge));
+			EXPECT_CALL(*tgt_mock, unlinkIn(edge));
 		}
 };
 

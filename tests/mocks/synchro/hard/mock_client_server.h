@@ -89,5 +89,9 @@ class MockLinkServer
 		MOCK_METHOD(void, lockUnlink, (DistributedId), (override));
 		MOCK_METHOD(bool, isLockedUnlink, (DistributedId), (override));
 		MOCK_METHOD(void, unlockUnlink, (DistributedId), (override));
+
+		MOCK_METHOD(void, lockRemoveNode, (DistributedId), (override));
+		MOCK_METHOD(bool, isLockedRemoveNode, (DistributedId), (override));
+		MOCK_METHOD(void, unlockRemoveNode, (DistributedId), (override));
 };
 #endif

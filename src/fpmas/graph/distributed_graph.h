@@ -272,24 +272,8 @@ namespace fpmas { namespace graph {
 
 		template<DIST_GRAPH_PARAMS>
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(EdgeType* edge) {
-				auto src = edge->getSourceNode();
-				auto tgt = edge->getTargetNode();
-				DistributedId edge_id = edge->getId();
-
-				src->mutex()->lockShared();
-				tgt->mutex()->lockShared();
-
-				// The edge might have been unlinked by an other process while
-				// lockShared() operation was applied. In this case, the edge
-				// has already been removed from the local process so there is
-				// nothing left to do.
-				if(this->getEdges().count(edge_id) > 0) {
-					sync_mode.getSyncLinker().unlink(edge);
-					this->erase(edge);
-				}
-
-				src->mutex()->unlockShared();
-				tgt->mutex()->unlockShared();
+				sync_mode.getSyncLinker().unlink(edge);
+				this->erase(edge);
 			}
 
 		template<DIST_GRAPH_PARAMS>

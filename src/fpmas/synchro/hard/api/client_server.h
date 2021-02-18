@@ -413,6 +413,10 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 			 * @param edge_id id of the unlinked edge
 			 */
 			virtual void unlockUnlink(DistributedId edge_id) = 0;
+
+			virtual void lockRemoveNode(DistributedId node_id) = 0;
+			virtual bool isLockedRemoveNode(DistributedId node_id) = 0;
+			virtual void unlockRemoveNode(DistributedId node_id) = 0;
 	};
 
 	/**

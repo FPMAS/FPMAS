@@ -327,7 +327,7 @@ const DiscreteCoordinate ConstrainedGridAgentMappingTest::grid_height = 100;
 const std::size_t ConstrainedGridAgentMappingTest::num_agent = 4000;
 
 TEST_F(ConstrainedGridAgentMappingTest, test) {
-	std::size_t total_count;
+	std::size_t total_count = 0;
 	for(DiscreteCoordinate x = 0; x < grid_width; x++) {
 		for(DiscreteCoordinate y = 0; y < grid_height; y++) {
 			MockGridCell<NiceMock> mock_cell;
