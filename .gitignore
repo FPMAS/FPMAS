@@ -1,5 +1,6 @@
 build
 
 .ccls-cache
+.vimspector.json
 
 src/fpmas.h
