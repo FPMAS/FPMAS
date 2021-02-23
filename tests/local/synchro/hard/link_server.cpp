@@ -95,12 +95,8 @@ class LinkServerTest : public Test {
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::REMOVE_NODE, _))
 				.After(probe)
 				.WillOnce(Return(node->getId()));
-			for(auto edge : node->getIncomingEdges())
-				EXPECT_CALL(mock_graph, unlink(edge));
-			for(auto edge : node->getOutgoingEdges())
-				EXPECT_CALL(mock_graph, unlink(edge));
-			EXPECT_CALL(mock_graph, erase(node)).Times(0);
-			EXPECT_CALL(mock_sync_linker, registerNodeToRemove(node));
+
+			EXPECT_CALL(mock_graph, removeNode(node));
 		}
 
 };
@@ -121,6 +117,12 @@ TEST_F(LinkServerTest, handleLink) {
 
 TEST_F(LinkServerTest, handleUnlink) {
 	MockDistributedEdge<int, NiceMock> mock_edge {{3, 5}, 7};
+	MockDistributedNode<int, NiceMock> mock_node;
+	ON_CALL(mock_edge, getSourceNode)
+		.WillByDefault(Return(&mock_node));
+	ON_CALL(mock_edge, getTargetNode)
+		.WillByDefault(Return(&mock_node));
+
 	expectUnlink(6, &mock_edge);
 
 	link_server.handleIncomingRequests();
@@ -139,6 +141,21 @@ TEST_F(LinkServerTest, handleRemoveNode) {
 		.WillByDefault(Return(
 					std::vector<fpmas::api::graph::DistributedEdge<int>*>
 					{&out_edge}));
+	ON_CALL(out_edge, getSourceNode())
+		.WillByDefault(Return(&mock_node));
+	ON_CALL(in_edge_1, getTargetNode())
+		.WillByDefault(Return(&mock_node));
+	ON_CALL(in_edge_2, getTargetNode())
+		.WillByDefault(Return(&mock_node));
+	// Fake set up
+	MockDistributedNode<int, NiceMock> fake_node;
+	ON_CALL(out_edge, getTargetNode())
+		.WillByDefault(Return(&fake_node));
+	ON_CALL(in_edge_1, getSourceNode())
+		.WillByDefault(Return(&fake_node));
+	ON_CALL(in_edge_2, getSourceNode())
+		.WillByDefault(Return(&fake_node));
+
 	expectRemoveNode(4, &mock_node);
 
 	link_server.handleIncomingRequests();
@@ -148,6 +165,13 @@ TEST_F(LinkServerTest, handleAll) {
 	MockDistributedEdge<int, NiceMock> link_mock_edge {{15, 2}, 7};
 	MockDistributedEdge<int, NiceMock> unlink_mock_edge {{3, 5}, 7};
 	MockDistributedNode<int, NiceMock> mock_node {{2, 7}};
+
+	MockDistributedNode<int, NiceMock> fake_node;
+	ON_CALL(unlink_mock_edge, getSourceNode)
+		.WillByDefault(Return(&fake_node));
+	ON_CALL(unlink_mock_edge, getTargetNode)
+		.WillByDefault(Return(&fake_node));
+
 	expectLink(4, &link_mock_edge);
 	expectUnlink(6, &unlink_mock_edge);
 	expectRemoveNode(5, &mock_node);

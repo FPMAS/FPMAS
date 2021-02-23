@@ -150,13 +150,24 @@ TEST_F(HardSyncLinkerTest, unlink_local) {
 	ON_CALL(edge, state)
 		.WillByDefault(Return(LocationState::LOCAL));
 	EXPECT_CALL(client, unlink(&edge)).Times(0);
+	{
+		InSequence s;
+		EXPECT_CALL(server, lockUnlink(edge.getId()));
+		EXPECT_CALL(server, unlockUnlink(edge.getId()));
+	}
+
 	sync_linker.unlink(&edge);
 }
 TEST_F(HardSyncLinkerTest, unlink_distant) {
 	MockDistributedEdge<int, NiceMock> edge {{0, 0}, 0};
 	ON_CALL(edge, state)
 		.WillByDefault(Return(LocationState::DISTANT));
-	EXPECT_CALL(client, unlink(&edge));
+	{
+		InSequence s;
+		EXPECT_CALL(server, lockUnlink(edge.getId()));
+		EXPECT_CALL(client, unlink(&edge));
+		EXPECT_CALL(server, unlockUnlink(edge.getId()));
+	}
 	sync_linker.unlink(&edge);
 }
 

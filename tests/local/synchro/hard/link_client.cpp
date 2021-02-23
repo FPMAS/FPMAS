@@ -144,11 +144,6 @@ TEST_F(LinkClientTest, unlink_local_src_local_tgt) {
 		.WillByDefault(Return(LocationState::LOCAL));
 
 	EXPECT_CALL(id_mpi, Issend).Times(0);
-	{
-		InSequence s;
-		EXPECT_CALL(mock_link_server, lockUnlink(edge_id));
-		EXPECT_CALL(mock_link_server, unlockUnlink(edge_id));
-	}
 
 	link_client.unlink(&mock_edge);
 }
@@ -168,10 +163,8 @@ TEST_F(LinkClientTest, unlink_local_src_distant_tgt) {
 		.WillByDefault(Return(LocationState::DISTANT));
 	{
 		InSequence s;
-		EXPECT_CALL(mock_link_server, lockUnlink(edge_id));
 		EXPECT_CALL(id_mpi, Issend(edge_id, 10, Epoch::EVEN | Tag::UNLINK, _));
 		EXPECT_CALL(comm, test).WillOnce(Return(true));
-		EXPECT_CALL(mock_link_server, unlockUnlink(edge_id));
 	}
 
 	link_client.unlink(&mock_edge);
@@ -189,10 +182,8 @@ TEST_F(LinkClientTest, unlink_local_tgt_distant_src) {
 		.WillByDefault(Return(LocationState::DISTANT));
 	{
 		InSequence s;
-		EXPECT_CALL(mock_link_server, lockUnlink(edge_id));
 		EXPECT_CALL(id_mpi, Issend(edge_id, 10, Epoch::EVEN | Tag::UNLINK, _));
 		EXPECT_CALL(comm, test).WillOnce(Return(true));
-		EXPECT_CALL(mock_link_server, unlockUnlink(edge_id));
 	}
 
 	link_client.unlink(&mock_edge);
@@ -212,13 +203,11 @@ TEST_F(LinkClientTest, unlink_distant_tgt_distant_src) {
 		.WillByDefault(Return(LocationState::DISTANT));
 	{
 		InSequence s;
-		EXPECT_CALL(mock_link_server, lockUnlink(edge_id));
 		EXPECT_CALL(id_mpi, Issend(edge_id, 10, Epoch::EVEN | Tag::UNLINK, _));
 		EXPECT_CALL(id_mpi, Issend(edge_id, 12, Epoch::EVEN | Tag::UNLINK, _));
 		EXPECT_CALL(comm, test)
 			.WillOnce(Return(true))
 			.WillOnce(Return(true));
-		EXPECT_CALL(mock_link_server, unlockUnlink(edge_id));
 	}
 
 	link_client.unlink(&mock_edge);
@@ -325,8 +314,6 @@ TEST_F(LinkClientDeadlockTest, unlink) {
 
 	waitExpectations();
 
-	EXPECT_CALL(mock_link_server, lockUnlink(edge_id));
-	EXPECT_CALL(mock_link_server, unlockUnlink(edge_id));
 	link_client.unlink(&mock_edge);
 }
 

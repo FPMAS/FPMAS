@@ -129,7 +129,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 				// Initiates a removeNode operation from the local process,
 				// that will trigger all required UNLINK operations
-				sync_linker.removeNode(graph.getNode(node_id));
+				graph.removeNode(graph.getNode(node_id));
 			}
 		}
 
