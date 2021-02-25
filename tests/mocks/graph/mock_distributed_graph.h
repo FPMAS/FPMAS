@@ -7,14 +7,8 @@
 #include "mock_distributed_node.h"
 #include "mock_distributed_edge.h"
 
-template<
-	typename T,
-	typename DistNode = MockDistributedNode<T>,
-	typename DistEdge = MockDistributedEdge<T>>
-class MockDistributedGraph :
-	public MockGraph<
-		fpmas::api::graph::DistributedNode<T>,
-		fpmas::api::graph::DistributedEdge<T>>,
+template<typename T, typename DistNode, typename DistEdge>
+class AbstractMockDistributedGraph :
 	public fpmas::api::graph::DistributedGraph<T> {
 
 		typedef fpmas::api::graph::DistributedGraph<T>
@@ -33,6 +27,9 @@ class MockDistributedGraph :
 		MOCK_METHOD(
 				const fpmas::api::graph::LocationManager<T>&,
 				getLocationManager, (), (const, override));
+		MOCK_METHOD(
+				fpmas::api::graph::LocationManager<T>&,
+				getLocationManager, (), (override));
 
 		NodeType* buildNode(T&& data) override {
 			return buildNode_rv(data);
@@ -66,4 +63,15 @@ class MockDistributedGraph :
 		MOCK_METHOD(fpmas::api::synchro::SyncMode<T>&, synchronizationMode, (), (override));
 	};
 
+template<
+	typename T,
+	typename DistNode = MockDistributedNode<T>,
+	typename DistEdge = MockDistributedEdge<T>,
+	template<typename> class Strictness = testing::NaggyMock>
+class MockDistributedGraph :
+	public Strictness<MockGraph<
+		fpmas::api::graph::DistributedNode<T>,
+		fpmas::api::graph::DistributedEdge<T>>>,
+	public Strictness<AbstractMockDistributedGraph<T, DistNode, DistEdge>> {
+	};
 #endif

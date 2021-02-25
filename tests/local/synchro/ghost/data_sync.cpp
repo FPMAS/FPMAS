@@ -23,14 +23,14 @@ class GhostDataSyncTest : public Test {
 	protected:
 		typedef MockDistributedNode<int, NiceMock> NodeType;
 		typedef MockDistributedEdge<int> EdgeType;
-		typedef typename MockDistributedGraph<int, NodeType, EdgeType>::NodeMap NodeMap;
+		typedef typename fpmas::api::graph::DistributedGraph<int>::NodeMap NodeMap;
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
 		MockMpi<fpmas::synchro::NodeUpdatePack<int>> data_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
 		MockMpi<std::pair<DistributedId, int>> location_mpi {mock_comm};
-		MockDistributedGraph<int, NodeType, EdgeType> mocked_graph;
+		MockDistributedGraph<int, NodeType, EdgeType, NiceMock> mocked_graph;
 
 		GhostDataSync<int>
 			dataSync {data_mpi, id_mpi, mocked_graph};
@@ -46,12 +46,12 @@ class GhostDataSyncTest : public Test {
 		};
 
 		void SetUp() override {
-			ON_CALL(mocked_graph, getLocationManager)
+			ON_CALL(mocked_graph, getLocationManager())
 				.WillByDefault(ReturnRef(location_manager));
-			EXPECT_CALL(mocked_graph, getLocationManager).Times(AnyNumber());
+			ON_CALL(Const(mocked_graph), getLocationManager())
+				.WillByDefault(ReturnRef(location_manager));
 			ON_CALL(mocked_graph, getMpiCommunicator())
 				.WillByDefault(ReturnRef(mock_comm));
-			EXPECT_CALL(mocked_graph, getMpiCommunicator()).Times(AnyNumber());
 		}
 
 		void TearDown() override {
@@ -63,11 +63,10 @@ class GhostDataSyncTest : public Test {
 		void setUpGraphNodes(NodeMap& graph_nodes) {
 			ON_CALL(mocked_graph, getNodes)
 				.WillByDefault(ReturnRef(graph_nodes));
-			EXPECT_CALL(mocked_graph, getNodes).Times(AnyNumber());
 
 			for(auto node : graph_nodes) {
-				EXPECT_CALL(mocked_graph, getNode(node.first))
-					.WillRepeatedly(Return(node.second));
+				ON_CALL(mocked_graph, getNode(node.first))
+					.WillByDefault(Return(node.second));
 			}
 		}
 };

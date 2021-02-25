@@ -1,6 +1,5 @@
 <map id="fpmas::model::SharedLockGuard" name="fpmas::model::SharedLockGuard">
-<area shape="rect" id="node1" title=" " alt="" coords="11,335,189,376"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1synchro_1_1SharedLockGuard.html" title=" " alt="" coords="5,229,195,285"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1synchro_1_1Guard.html" title=" " alt="" coords="23,124,177,180"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1synchro_1_1Mutex.html" title=" " alt="" coords="31,5,169,61"/>
+<area shape="rect" id="node1" title=" " alt="" coords="11,184,189,225"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1synchro_1_1SharedLockGuard.html" title=" " alt="" coords="5,80,195,136"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1synchro_1_1Guard.html" title=" " alt="" coords="7,5,193,32"/>
 </map>

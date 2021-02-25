@@ -276,7 +276,7 @@ namespace fpmas { namespace graph {
 				}
 				
 				/**
-				 * \copydoc api::graph::FixedVerticesLoadBalancing::balance()
+				 * \copydoc fpmas::api::graph::FixedVerticesLoadBalancing::balance()
 				 *
 				 * \implem
 				 * Computes a balanced partition from the default
@@ -287,7 +287,7 @@ namespace fpmas { namespace graph {
 						PartitionMap fixed_vertices
 						) override;
 				/**
-				 * \copydoc api::graph::LoadBalancing::balance()
+				 * \copydoc fpmas::api::graph::LoadBalancing::balance()
 				 *
 				 * Equivalent to balance(NodeMap<T>, PartitionMap), with an
 				 * empty set of fixed vertices.

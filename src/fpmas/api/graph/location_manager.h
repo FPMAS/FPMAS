@@ -39,18 +39,51 @@ namespace fpmas {namespace api { namespace graph {
 			typedef typename fpmas::api::graph::Graph<DistributedNode<T>, DistributedEdge<T>>::NodeMap NodeMap;
 
 			/**
+			 * @deprecated
+			 * Use addManagedNode(DistributedId, int) instead.
+			 *
 			 * Sets up the specified node to be managed by the LocationManager.
 			 *
 			 * @param node node to manage
 			 * @param initial_location initial rank of the node
 			 */
+			[[deprecated]]
 			virtual void addManagedNode(DistributedNode<T>* node, int initial_location) = 0;
+
 			/**
+			 *
+			 * Sets up the node corresponding to the specified `id` to be
+			 * managed by the LocationManager.
+			 *
+			 * @param id id of the node to manage
+			 * @param initial_location initial rank of the node
+			 */
+			virtual void addManagedNode(DistributedId id, int initial_location) = 0;
+			/**
+			 * @deprecated
+			 * Use removeManagedNode(DistributedId) instead.
+			 *
 			 * Removes a previously managed node.
 			 *
 			 * @param node node to remove from managed nodes
 			 */
+			[[deprecated]]
 			virtual void removeManagedNode(DistributedNode<T>* node) = 0;
+			/**
+			 * Removes the node corresponding to the specified `id` from the
+			 * set of managed nodes.
+			 *
+			 * @param id id of the node to remove from managed nodes
+			 */
+			virtual void removeManagedNode(DistributedId id) = 0;
+
+			/**
+			 * Returns the current location of nodes managed by this
+			 * LocationManager.
+			 *
+			 * @return managed nodes locations
+			 */
+			virtual std::unordered_map<DistributedId, int> getCurrentLocations() const = 0;
 
 			/**
 			 * Returns a NodeMap containing DistributedNodes that are \LOCAL.

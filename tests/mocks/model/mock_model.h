@@ -196,11 +196,13 @@ using DefaultDistEdge = MockDistributedEdge<T>;
 
 template<
 	template<typename> class DistNode = DefaultDistNode,
-	template<typename> class DistEdge = DefaultDistEdge>
+	template<typename> class DistEdge = DefaultDistEdge,
+	template<typename> class Strictness = testing::NaggyMock>
 using MockAgentGraph = MockDistributedGraph<
 	fpmas::model::AgentPtr,
 	DistNode<fpmas::model::AgentPtr>,
-	DistEdge<fpmas::model::AgentPtr>>;
+	DistEdge<fpmas::model::AgentPtr>,
+	Strictness>;
 
 namespace nlohmann {
 	template<int FOO>

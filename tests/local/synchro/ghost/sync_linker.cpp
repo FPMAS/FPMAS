@@ -18,7 +18,7 @@ class GhostSyncLinkerTest : public Test {
 		MockMpiCommunicator<current_rank, 10> mock_comm;
 		MockMpi<fpmas::graph::EdgePtrWrapper<int>> edge_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
-		MockDistributedGraph<int, MockNode, MockEdge> mock_graph;
+		MockDistributedGraph<int, MockNode, MockEdge, NiceMock> mock_graph;
 
 		GhostSyncLinker<int>
 			linker {edge_mpi, id_mpi, mock_graph};
@@ -35,8 +35,6 @@ class GhostSyncLinkerTest : public Test {
 		void SetUp() {
 			ON_CALL(mock_graph, getMpiCommunicator())
 				.WillByDefault(ReturnRef(mock_comm));
-			EXPECT_CALL(mock_graph, getMpiCommunicator())
-				.Times(AnyNumber());
 		}
 		
 
@@ -209,16 +207,15 @@ TEST_F(GhostSyncLinkerLinkUnlinkTest, import_unlink) {
 		{edge3_id, edge3}
 	};
 
-	EXPECT_CALL(mock_graph, getEdges)
-		.Times(AnyNumber())
-		.WillRepeatedly(ReturnRef(edges));
+	ON_CALL(mock_graph, getEdges)
+		.WillByDefault(ReturnRef(edges));
 
-	EXPECT_CALL(mock_graph, getEdge(edge1_id)).Times(AnyNumber())
-		.WillRepeatedly(Return(edge1));
-	EXPECT_CALL(mock_graph, getEdge(edge2_id)).Times(AnyNumber())
-		.WillRepeatedly(Return(edge2));
-	EXPECT_CALL(mock_graph, getEdge(edge3_id)).Times(AnyNumber())
-		.WillRepeatedly(Return(edge3));
+	ON_CALL(mock_graph, getEdge(edge1_id))
+		.WillByDefault(Return(edge1));
+	ON_CALL(mock_graph, getEdge(edge2_id))
+		.WillByDefault(Return(edge2));
+	ON_CALL(mock_graph, getEdge(edge3_id))
+		.WillByDefault(Return(edge3));
 
 	std::unordered_map<int, std::vector<DistributedId>> importMap {
 		{6, {edge1_id}},
@@ -257,14 +254,13 @@ TEST_F(GhostSyncLinkerLinkUnlinkTest, import_export_unlink) {
 		{edge3_id, edge3}
 	};
 
-	EXPECT_CALL(mock_graph, getEdges)
-		.Times(AnyNumber())
-		.WillRepeatedly(ReturnRef(edges));
+	ON_CALL(mock_graph, getEdges)
+		.WillByDefault(ReturnRef(edges));
 
-	EXPECT_CALL(mock_graph, getEdge(edge2_id)).Times(AnyNumber())
-		.WillRepeatedly(Return(edge2));
-	EXPECT_CALL(mock_graph, getEdge(edge3_id)).Times(AnyNumber())
-		.WillRepeatedly(Return(edge3));
+	ON_CALL(mock_graph, getEdge(edge2_id))
+		.WillByDefault(Return(edge2));
+	ON_CALL(mock_graph, getEdge(edge3_id))
+		.WillByDefault(Return(edge3));
 
 	auto export_id_matcher = ElementsAre(
 		Pair(6, ElementsAre(edge1_id))

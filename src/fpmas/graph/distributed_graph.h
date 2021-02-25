@@ -68,6 +68,21 @@ namespace fpmas { namespace graph {
 				using typename api::graph::DistributedGraph<T>::NodeMap;
 				using typename api::graph::DistributedGraph<T>::NodeCallback;
 
+				DistributedGraph(const DistributedGraph<DIST_GRAPH_PARAMS_SPEC>&)
+					= delete;
+				DistributedGraph& operator=(
+						const DistributedGraph<DIST_GRAPH_PARAMS_SPEC>&)
+					= delete;
+
+				/**
+				 * DistributedGraph move constructor.
+				 */
+				DistributedGraph(DistributedGraph<DIST_GRAPH_PARAMS_SPEC>&& graph);
+				/**
+				 * DistributedGraph move assignment operator.
+				 */
+				DistributedGraph& operator=(DistributedGraph<DIST_GRAPH_PARAMS_SPEC>&& graph);
+
 			private:
 				class EraseNodeCallback : public api::utils::Callback<NodeType*> {
 					private:
@@ -86,11 +101,11 @@ namespace fpmas { namespace graph {
 						}
 				};
 
-				api::communication::MpiCommunicator& mpi_communicator;
-				TypedMpi<DistributedId> id_mpi {mpi_communicator};
-				TypedMpi<std::pair<DistributedId, int>> location_mpi {mpi_communicator};
-				TypedMpi<NodePtrWrapper<T>> node_mpi {mpi_communicator};
-				TypedMpi<EdgePtrWrapper<T>> edge_mpi {mpi_communicator};
+				api::communication::MpiCommunicator* mpi_communicator;
+				TypedMpi<DistributedId> id_mpi {*mpi_communicator};
+				TypedMpi<std::pair<DistributedId, int>> location_mpi {*mpi_communicator};
+				TypedMpi<NodePtrWrapper<T>> node_mpi {*mpi_communicator};
+				TypedMpi<EdgePtrWrapper<T>> edge_mpi {*mpi_communicator};
 
 				LocationManagerImpl<T> location_manager;
 				SyncMode<T> sync_mode;
@@ -129,14 +144,14 @@ namespace fpmas { namespace graph {
 				 * @param comm MPI communicator
 				 */
 				DistributedGraph(api::communication::MpiCommunicator& comm) :
-					mpi_communicator(comm), location_manager(mpi_communicator, id_mpi, location_mpi),
-					sync_mode(*this, mpi_communicator),
+					mpi_communicator(&comm), location_manager(*mpi_communicator, id_mpi, location_mpi),
+					sync_mode(*this, *mpi_communicator),
+					// Graph base takes ownership of the erase_node_callback
 					erase_node_callback(new EraseNodeCallback(*this)),
-					node_id(mpi_communicator.getRank(), 0),
-					edge_id(mpi_communicator.getRank(), 0)
-			{
-				this->addCallOnEraseNode(erase_node_callback);
-			}
+					node_id(mpi_communicator->getRank(), 0),
+					edge_id(mpi_communicator->getRank(), 0) {
+						this->addCallOnEraseNode(erase_node_callback);
+					}
 
 				/**
 				 * Returns the internal MpiCommunicator.
@@ -144,14 +159,14 @@ namespace fpmas { namespace graph {
 				 * @return reference to the internal MpiCommunicator
 				 */
 				api::communication::MpiCommunicator& getMpiCommunicator() override {
-					return mpi_communicator;
+					return *mpi_communicator;
 				};
 
 				/**
 				 * \copydoc getMpiCommunicator()
 				 */
 				const api::communication::MpiCommunicator& getMpiCommunicator() const override {
-					return mpi_communicator;
+					return *mpi_communicator;
 				};
 
 				/**
@@ -190,6 +205,8 @@ namespace fpmas { namespace graph {
 
 				const LocationManagerImpl<T>&
 					getLocationManager() const override {return location_manager;}
+				LocationManagerImpl<T>&
+					getLocationManager() override {return location_manager;}
 
 				void balance(api::graph::LoadBalancing<T>& load_balancing) override {
 					FPMAS_LOGI(
@@ -250,13 +267,78 @@ namespace fpmas { namespace graph {
 				void addCallOnSetLocal(NodeCallback* callback) override {
 					set_local_callbacks.push_back(callback);
 				};
+				std::vector<NodeCallback*> onSetLocalCallbacks() const {
+					return set_local_callbacks;
+				}
 
 				void addCallOnSetDistant(NodeCallback* callback) override {
 					set_distant_callbacks.push_back(callback);
 				};
+				std::vector<NodeCallback*> onSetDistantCallbacks() const {
+					return set_distant_callbacks;
+				}
 
 				~DistributedGraph();
 		};
+
+		template<DIST_GRAPH_PARAMS>
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::DistributedGraph(DistributedGraph<DIST_GRAPH_PARAMS_SPEC>&& graph) :
+				// Calls base Graph move constructor
+				Graph<api::graph::DistributedNode<T>, api::graph::DistributedEdge<T>>(std::move(graph)),
+				// Moves DistributedGraph specific fields
+				mpi_communicator(graph.mpi_communicator),
+				location_manager(std::move(graph.location_manager)),
+				sync_mode(std::move(graph.sync_mode)),
+				set_local_callbacks(std::move(graph.set_local_callbacks)),
+				set_distant_callbacks(std::move(graph.set_distant_callbacks)),
+				erase_node_callback(graph.erase_node_callback),
+				node_id(std::move(graph.node_id)), edge_id(std::move(graph.edge_id)) {
+					// TODO: Refactor callbacks system
+					// Prevents erase_node_callback->disable() when `graph` is
+					// deleted
+					graph.erase_node_callback = nullptr;
+				}
+
+		template<DIST_GRAPH_PARAMS>
+			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>& DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::operator=(DistributedGraph<DIST_GRAPH_PARAMS_SPEC>&& graph) {
+				// Calls base Graph move assignment
+				static_cast<Graph<api::graph::DistributedNode<T>, api::graph::DistributedEdge<T>>&>(*this)
+					= std::move(static_cast<Graph<api::graph::DistributedNode<T>, api::graph::DistributedEdge<T>>&>(graph));
+				// Reassigns MPI communicators
+				//
+				// Notice that TypedMpi instances, location_manager and
+				// sync_mode have been constructed in `graph` using
+				// `graph.mpi_communicator`. Since we reassign
+				// `this->mpi_communicator` to `graph.mpi_communicator`, we can
+				// safely move those member fields from `graph` to `this`
+				// without introducing inconsistencies.
+				this->mpi_communicator = graph.mpi_communicator;
+				this->id_mpi = std::move(graph.id_mpi);
+				this->location_mpi = std::move(graph.location_mpi);
+				this->node_mpi = std::move(graph.node_mpi);
+				this->edge_mpi = std::move(graph.edge_mpi);
+
+				this->location_manager = std::move(graph.location_manager);
+				this->sync_mode = std::move(graph.sync_mode);
+				// The obsolete `this->erase_node_callback` is
+				// automatically deleted by the base Graph move assignment,
+				// when the "erase_node_callback" list is cleared.
+				this->erase_node_callback = graph.erase_node_callback;
+				// Prevents erase_node_callback->disable() when `graph` is
+				// deleted
+				graph.erase_node_callback = nullptr;
+
+				this->node_id = std::move(graph.node_id);
+				this->edge_id = std::move(graph.edge_id);
+				for(auto callback : set_local_callbacks)
+					delete callback;
+				for(auto callback : set_distant_callbacks)
+					delete callback;
+				this->set_local_callbacks = std::move(graph.set_local_callbacks);
+				this->set_distant_callbacks = std::move(graph.set_distant_callbacks);
+
+				return *this;
+			}
 
 		template<DIST_GRAPH_PARAMS>
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setLocal(api::graph::DistributedNode<T>* node) {
@@ -328,17 +410,17 @@ namespace fpmas { namespace graph {
 				if(this->getEdges().count(edge->getId())==0) {
 					// The edge does not belong to the graph : a new one must be built.
 
-					DistributedId srcId = edge->getSourceNode()->getId();
+					DistributedId src_id = edge->getSourceNode()->getId();
 					NodeType* src;
-					DistributedId tgtId =  edge->getTargetNode()->getId();
+					DistributedId tgt_id =  edge->getTargetNode()->getId();
 					NodeType* tgt;
 
 					LocationState edgeLocationState = LocationState::LOCAL;
 
-					if(this->getNodes().count(srcId) > 0) {
-						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing source %s", FPMAS_C_STR(srcId));
+					if(this->getNodes().count(src_id) > 0) {
+						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing source %s", FPMAS_C_STR(src_id));
 						// The source node is already contained in the graph
-						src = this->getNode(srcId);
+						src = this->getNode(src_id);
 						if(src->state() == LocationState::DISTANT) {
 							// At least src is DISTANT, so the imported edge is
 							// necessarily DISTANT.
@@ -351,7 +433,7 @@ namespace fpmas { namespace graph {
 						edge->setSourceNode(src);
 						src->linkOut(edge);
 					} else {
-						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Creating DISTANT source %s", FPMAS_C_STR(srcId));
+						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Creating DISTANT source %s", FPMAS_C_STR(src_id));
 						// The source node is not contained in the graph : it must be
 						// built as a DISTANT node.
 						edgeLocationState = LocationState::DISTANT;
@@ -363,10 +445,10 @@ namespace fpmas { namespace graph {
 						setDistant(src);
 						src->setMutex(sync_mode.buildMutex(src));
 					}
-					if(this->getNodes().count(tgtId) > 0) {
-						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing target %s", FPMAS_C_STR(tgtId));
+					if(this->getNodes().count(tgt_id) > 0) {
+						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing target %s", FPMAS_C_STR(tgt_id));
 						// The target node is already contained in the graph
-						tgt = this->getNode(tgtId);
+						tgt = this->getNode(tgt_id);
 						if(tgt->state() == LocationState::DISTANT) {
 							// At least src is DISTANT, so the imported edge is
 							// necessarily DISTANT.
@@ -379,7 +461,7 @@ namespace fpmas { namespace graph {
 						edge->setTargetNode(tgt);
 						tgt->linkIn(edge);
 					} else {
-						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Creating DISTANT target %s", FPMAS_C_STR(tgtId));
+						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Creating DISTANT target %s", FPMAS_C_STR(tgt_id));
 						// The target node is not contained in the graph : it must be
 						// built as a DISTANT node.
 						edgeLocationState = LocationState::DISTANT;
@@ -419,7 +501,7 @@ namespace fpmas { namespace graph {
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::_buildNode(NodeType* node) {
 				this->insert(node);
 				setLocal(node);
-				location_manager.addManagedNode(node, mpi_communicator.getRank());
+				location_manager.addManagedNode(node->getId(), mpi_communicator->getRank());
 				node->setMutex(sync_mode.buildMutex(node));
 				return node;
 			}
@@ -533,7 +615,7 @@ namespace fpmas { namespace graph {
 				std::unordered_map<int, std::vector<EdgePtrWrapper<T>>> edge_export_map;
 				for(auto item : partition) {
 					if(this->getNodes().count(item.first) > 0) {
-						if(item.second != mpi_communicator.getRank()) {
+						if(item.second != mpi_communicator->getRank()) {
 							FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH",
 									"Exporting node %s to %i", FPMAS_C_STR(item.first), item.second);
 							auto node_to_export = this->getNode(item.first);
@@ -619,7 +701,7 @@ namespace fpmas { namespace graph {
 			::clearNode(NodeType* node) {
 				DistributedId id = node->getId();
 				FPMAS_LOGD(
-						mpi_communicator.getRank(),
+						mpi_communicator->getRank(),
 						"DIST_GRAPH", "Clearing node %s...",
 						FPMAS_C_STR(id)
 						);
@@ -642,7 +724,7 @@ namespace fpmas { namespace graph {
 				}
 				if(eraseNode) {
 					FPMAS_LOGD(
-							mpi_communicator.getRank(),
+							mpi_communicator->getRank(),
 							"DIST_GRAPH", "Erasing obsolete node %s.",
 							FPMAS_C_STR(node->getId())
 							);
@@ -650,7 +732,7 @@ namespace fpmas { namespace graph {
 				} else {
 					for(auto edge : obsoleteEdges) {
 						FPMAS_LOGD(
-								mpi_communicator.getRank(),
+								mpi_communicator->getRank(),
 								"DIST_GRAPH", "Erasing obsolete edge %s (%p) (from %s to %s)",
 								FPMAS_C_STR(node->getId()), edge,
 								FPMAS_C_STR(edge->getSourceNode()->getId()),
@@ -660,7 +742,7 @@ namespace fpmas { namespace graph {
 					}
 				}
 				FPMAS_LOGD(
-						mpi_communicator.getRank(),
+						mpi_communicator->getRank(),
 						"DIST_GRAPH", "Node %s cleared.",
 						FPMAS_C_STR(id)
 						);
@@ -668,7 +750,10 @@ namespace fpmas { namespace graph {
 
 		template<DIST_GRAPH_PARAMS>
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::~DistributedGraph() {
-				erase_node_callback->disable();
+				//TODO: Refactor callback system
+				if(erase_node_callback != nullptr)
+					// This DistributedGraph has not been moved
+					erase_node_callback->disable();
 				for(auto callback : set_local_callbacks)
 					delete callback;
 				for(auto callback : set_distant_callbacks)
@@ -687,6 +772,85 @@ namespace fpmas { namespace graph {
 		T, SyncMode, graph::DistributedNode, graph::DistributedEdge,
 		communication::TypedMpi, graph::LocationManager>;
 
-}
+}}
+
+namespace nlohmann {
+	/**
+	 * Defines Json serialization rules for generic
+	 * fpmas::api::graph::DistributedGraph instances.
+	 *
+	 * This notably enables the usage of fpmas::io::Breakpoint with
+	 * fpmas::api::graph::DistributedGraph instances.
+	 */
+	template<typename T>
+		struct adl_serializer<fpmas::api::graph::DistributedGraph<T>> {
+
+			/**
+			 * Serializes `graph` to the json `j`.
+			 *
+			 * @param j json output
+			 * @param graph graph to serialize
+			 */
+			static void to_json(json& j, const fpmas::api::graph::DistributedGraph<T>& graph) {
+				for(auto node : graph.getNodes())
+					j["graph"]["nodes"].push_back({
+							NodePtrWrapper<T>(node.second),
+							node.second->location()
+							});
+				for(auto edge : graph.getEdges()) {
+					j["graph"]["edges"].push_back({
+							{"id", edge.first},
+							{"layer", edge.second->getLayer()},
+							{"weight", edge.second->getWeight()},
+							{"src", edge.second->getSourceNode()->getId()},
+							{"tgt", edge.second->getTargetNode()->getId()}
+							});
+				}
+				nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
+					::to_json(j["loc_manager"], graph.getLocationManager());
+			}
+
+			/**
+			 * Unserializes the json `j` into the specified `graph`.
+			 *
+			 * Nodes and edges read from the Json file are imported into the
+			 * `graph`, without altering the previous state of the input
+			 * `graph`. So, depending on the desired behavior, calling
+			 * `graph.clear()` might be required before loading data into it.
+			 *
+			 * @param j json input
+			 * @param graph output graph
+			 */
+			static void from_json(const json& j, fpmas::api::graph::DistributedGraph<T>& graph) {
+				auto j_graph = j["graph"];
+				for(auto j_node : j_graph["nodes"]) {
+					auto location = j_node[1].get<int>();
+					fpmas::api::graph::DistributedNode<T>* node = j_node[0].get<NodePtrWrapper<T>>();
+					if(location == graph.getMpiCommunicator().getRank())
+						node = graph.importNode(node);
+					else
+						node = graph.insertDistant(node);
+
+					node->setLocation(location);
+				}
+				for(auto j_edge : j_graph["edges"]) {
+					auto edge = new fpmas::graph::DistributedEdge<T>(
+							j_edge["id"].get<fpmas::graph::DistributedId>(),
+							j_edge["layer"].get<fpmas::graph::LayerId>()
+							);
+					edge->setWeight(j_edge["weight"].get<float>());
+					auto src = new fpmas::graph::DistributedNode<T>(j_edge["src"].get<fpmas::graph::DistributedId>(), {});
+					edge->setSourceNode(src);
+					src->linkOut(edge);
+					auto tgt = new fpmas::graph::DistributedNode<T>(j_edge["tgt"].get<fpmas::graph::DistributedId>(), {});
+					edge->setTargetNode(tgt);
+					tgt->linkIn(edge);
+					graph.importEdge(edge);
+				}
+
+				nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
+					::from_json(j["loc_manager"], graph.getLocationManager());
+			}
+		};
 }
 #endif

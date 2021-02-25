@@ -35,7 +35,8 @@ set(SOURCES
 	model/spatial/spatial_model.cpp
 	model/spatial/grid.cpp
 	# Output
-	output/csv_output.cpp
+	io/csv_output.cpp
+	io/breakpoint.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

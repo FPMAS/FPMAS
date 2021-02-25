@@ -25,11 +25,18 @@ class MockSyncLinker : public virtual fpmas::api::synchro::SyncLinker<T> {
 template<typename T>
 class MockSyncMode : public fpmas::api::synchro::SyncMode<T> {
 	public:
+		MockSyncMode() {
+			ON_CALL(*this, buildMutex).WillByDefault(ReturnNew<MockMutex<T>>());
+		}
 		MockSyncMode(
 			fpmas::api::graph::DistributedGraph<T>&,
 			fpmas::api::communication::MpiCommunicator&) {
 			ON_CALL(*this, buildMutex).WillByDefault(ReturnNew<MockMutex<T>>());
 		}
+
+		MockSyncMode(MockSyncMode<T>&&) {};
+		MockSyncMode& operator=(MockSyncMode<T>&&) {return *this;};
+
 		typedef fpmas::api::graph::DistributedNode<T> NodeType;
 
 		MOCK_METHOD(MockMutex<T>*, buildMutex, (NodeType*), (override));

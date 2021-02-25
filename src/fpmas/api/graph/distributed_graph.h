@@ -65,7 +65,6 @@ namespace fpmas {namespace api {namespace graph {
 			 */
 			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
 
-
 			/**
 			 * Reference to the internal LocationManager.
 			 *
@@ -75,6 +74,11 @@ namespace fpmas {namespace api {namespace graph {
 			 * LocationManager::getDistantNodes() functions.
 			 *
 			 * @return internal LocationManager
+			 */
+			virtual LocationManager<T>& getLocationManager() = 0;
+
+			/**
+			 * \copydoc getLocationManager()
 			 */
 			virtual const LocationManager<T>& getLocationManager() const = 0;
 

@@ -1,3 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1model_1_1Range.html" title=" " alt="" coords="5,5,204,47"/>
+<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1model_1_1SpatialAgentMapping.html" title=" " alt="" coords="5,31,167,87"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1ConstrainedGridAgentMapping.html" title=" " alt="" coords="217,5,395,47"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1RandomGridAgentMapping.html" title=" " alt="" coords="215,71,397,112"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1UniformGridAgentMapping.html" title=" " alt="" coords="445,71,624,112"/>
 </map>

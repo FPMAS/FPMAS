@@ -1,3 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1communication_1_1TypedMpi.html" title=" " alt="" coords="5,29,184,85"/>
+<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1graph_1_1Edge.html" title=" " alt="" coords="5,56,201,97"/>
+<area shape="rect" id="node2" title=" " alt="" coords="251,5,415,76"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1graph_1_1Edge.html" title=" " alt="" coords="249,100,416,141"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1DistributedEdge.html" title=" " alt="" coords="464,93,633,135"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1graph_1_1Edge.html" title=" " alt="" coords="22,158,185,214"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1graph_1_1DistributedEdge.html" title=" " alt="" coords="259,165,406,207"/>
 </map>

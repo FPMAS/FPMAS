@@ -229,8 +229,9 @@ class AgentGroupTest : public ::testing::Test {
 
 		fpmas::api::model::GroupId id = 10;
 
-		NiceMock<MockDistributedGraph<
-			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>>>
+		MockDistributedGraph<
+			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>,
+			NiceMock>
 			graph;
 		MockMpiCommunicator<4, 10> mock_comm;
 		MockDistributedNode<AgentPtr, NiceMock> node1 {fpmas::graph::DistributedId(0, 1)};

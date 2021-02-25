@@ -39,6 +39,22 @@ namespace fpmas { namespace graph {
 				EdgeMap edges;
 
 			public:
+				/**
+				 * Graph default constructor.
+				 */
+				Graph() {}
+				Graph(const Graph<NodeType, EdgeType>&) = delete;
+				Graph<NodeType, EdgeType>& operator=(const Graph<NodeType, EdgeType>&) = delete;
+
+				/**
+				 * Graph move constructor.
+				 */
+				Graph(Graph<NodeType, EdgeType>&& graph);
+				/**
+				 * Graph move assignment operator.
+				 */
+				Graph<NodeType, EdgeType>& operator=(Graph<NodeType, EdgeType>&&);
+
 				void insert(NodeType*) override;
 				void insert(EdgeType*) override;
 
@@ -48,15 +64,33 @@ namespace fpmas { namespace graph {
 				void addCallOnInsertNode(api::utils::Callback<NodeType*>* callback) override {
 					insert_node_callbacks.push_back(callback);
 				}
+
+				std::vector<api::utils::Callback<NodeType*>*> onInsertNodeCallbacks() const {
+					return insert_node_callbacks;
+				}
+
 				void addCallOnEraseNode(api::utils::Callback<NodeType*>* callback) override {
 					erase_node_callbacks.push_back(callback);
+				}
+
+				std::vector<api::utils::Callback<NodeType*>*> onEraseNodeCallbacks() const {
+					return erase_node_callbacks;
 				}
 
 				void addCallOnInsertEdge(api::utils::Callback<EdgeType*>* callback) override {
 					insert_edge_callbacks.push_back(callback);
 				}
+
+				std::vector<api::utils::Callback<EdgeType*>*> onInsertEdgeCallbacks() const {
+					return insert_edge_callbacks;
+				}
+
 				void addCallOnEraseEdge(api::utils::Callback<EdgeType*>* callback) override {
 					erase_edge_callbacks.push_back(callback);
+				}
+
+				std::vector<api::utils::Callback<EdgeType*>*> onEraseEdgeCallbacks() const {
+					return erase_edge_callbacks;
 				}
 
 				// Node getters
@@ -73,6 +107,39 @@ namespace fpmas { namespace graph {
 
 				virtual ~Graph();
 	};
+
+	template<typename NodeType, typename EdgeType>
+		Graph<NodeType, EdgeType>::Graph(Graph<NodeType, EdgeType>&& graph) {
+			this->nodes = std::move(graph.nodes);
+			this->edges = std::move(graph.edges);
+			this->insert_node_callbacks = std::move(graph.insert_node_callbacks);
+			this->insert_edge_callbacks = std::move(graph.insert_edge_callbacks);
+			this->erase_node_callbacks = std::move(graph.erase_node_callbacks);
+			this->erase_edge_callbacks = std::move(graph.erase_edge_callbacks);
+		}
+
+	template<typename NodeType, typename EdgeType>
+		Graph<NodeType, EdgeType>& Graph<NodeType, EdgeType>::operator=(Graph<NodeType, EdgeType>&& graph) {
+			this->clear();
+			for(auto callback : insert_node_callbacks)
+				delete callback;
+			for(auto callback : erase_node_callbacks)
+				delete callback;
+			for(auto callback : insert_edge_callbacks)
+				delete callback;
+			for(auto callback : erase_edge_callbacks)
+				delete callback;
+
+			this->nodes = std::move(graph.nodes);
+			this->edges = std::move(graph.edges);
+			this->insert_node_callbacks = std::move(graph.insert_node_callbacks);
+			this->insert_edge_callbacks = std::move(graph.insert_edge_callbacks);
+			this->erase_node_callbacks = std::move(graph.erase_node_callbacks);
+			this->erase_edge_callbacks = std::move(graph.erase_edge_callbacks);
+
+			return *this;
+		}
+
 
 	template<typename NodeType, typename EdgeType>
 		void Graph<NodeType, EdgeType>::insert(NodeType* node) {

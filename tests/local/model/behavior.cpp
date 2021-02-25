@@ -94,7 +94,7 @@ TEST(Behavior, execute_multiple) {
 class AgentGroupBehaviorTest : public testing::Test {
 	public:
 		MockMpiCommunicator<> mock_comm;
-		NiceMock<MockAgentGraph<>> graph;
+		MockAgentGraph<DefaultDistNode, DefaultDistEdge, NiceMock> graph;
 		fpmas::model::Behavior<api::Action1> behavior_1 {&api::Action1::action_1};
 		fpmas::model::detail::AgentGroup group_1 {0, graph, behavior_1};
 		fpmas::model::Behavior<api::Action2> behavior_2 {&api::Action2::action_2};

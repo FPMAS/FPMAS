@@ -1,5 +1,6 @@
 <map id="fpmas::api::graph::DistributedGraph&lt; T &gt;" name="fpmas::api::graph::DistributedGraph&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="11,124,162,165"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html" title=" " alt="" coords="7,213,166,255"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1Graph.html" title=" " alt="" coords="5,5,168,76"/>
+<area shape="rect" id="node1" title=" " alt="" coords="216,49,367,91"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html" title=" " alt="" coords="415,5,629,47"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html" title=" " alt="" coords="432,71,612,157"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1Graph.html" title=" " alt="" coords="5,35,168,105"/>
 </map>

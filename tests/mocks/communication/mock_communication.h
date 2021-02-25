@@ -56,6 +56,8 @@ class MockMpi : public fpmas::api::communication::TypedMpi<T> {
 		MockMpi(fpmas::api::communication::MpiCommunicator&) {
 			EXPECT_CALL(*this, migrate).Times(AnyNumber());
 		}
+		MockMpi(MockMpi&&) {}
+		MockMpi& operator=(MockMpi&&) {return *this;}
 
 		MOCK_METHOD(
 			(std::unordered_map<int, std::vector<T>>), 
