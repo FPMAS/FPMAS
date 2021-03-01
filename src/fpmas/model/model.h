@@ -842,4 +842,18 @@ namespace fpmas { namespace model {
 
 	using api::model::AgentGroup;
 }}
+
+namespace nlohmann {
+	template<>
+		struct adl_serializer<fpmas::api::model::AgentPtr> {
+			static void to_json(json& j, const fpmas::api::model::AgentPtr& data);
+			static fpmas::api::model::AgentPtr from_json(const json& j);
+		};
+
+	template<>
+		struct adl_serializer<fpmas::api::model::Model> {
+			static void to_json(json& j, const fpmas::api::model::Model& model);
+			static void from_json(const json& j, fpmas::api::model::Model& model);
+		};
+}
 #endif

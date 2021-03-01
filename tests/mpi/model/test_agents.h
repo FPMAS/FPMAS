@@ -5,6 +5,10 @@
 #include "fpmas/model/spatial/grid.h"
 #include "../mocks/model/mock_model.h"
 
+#define TEST_AGENTS BasicAgent, ReaderAgent, WriterAgent, LinkerAgent,\
+		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\
+		TestCell, TestSpatialAgent::JsonBase, fpmas::model::GridCell::JsonBase
+
 using testing::Ge;
 
 class BasicAgent : public fpmas::model::AgentBase<BasicAgent> {
@@ -12,25 +16,36 @@ class BasicAgent : public fpmas::model::AgentBase<BasicAgent> {
 
 FPMAS_DEFAULT_JSON(BasicAgent)
 
-class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
-	private:
-		std::mt19937 engine;
-		std::uniform_real_distribution<float> random_weight;
+class ReaderWriterBase {
+	protected:
 		int counter = 0;
-	public:
-		void act() override {
-			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
-			for(auto neighbor : node()->outNeighbors()) {
-				ASSERT_THAT(dynamic_cast<const ReaderAgent*>(neighbor->mutex()->read().get())->getCounter(), Ge(counter));
-			}
-			counter++;
-			node()->setWeight(random_weight(engine) * 10);
-		}
 
+	public:
 		void setCounter(int count) {counter = count;}
 
 		int getCounter() const {
 			return counter;
+		}
+
+		void hello() {};
+};
+
+class ReaderAgent : public ReaderWriterBase, public fpmas::model::AgentBase<ReaderAgent> {
+	private:
+		std::mt19937 engine;
+		std::uniform_real_distribution<float> random_weight;
+	public:
+		void read() {
+			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
+			for(auto neighbor_node : node()->outNeighbors()) {
+				const auto* agent = neighbor_node->mutex()->read().get();
+				if(const ReaderAgent* neighbor = dynamic_cast<const ReaderAgent*>(agent)) {
+					ASSERT_THAT(neighbor->getCounter(), Ge(this->model()->runtime().currentDate()));
+				}
+				neighbor_node->mutex()->releaseRead();
+			}
+			counter++;
+			node()->setWeight(random_weight(engine) * 10);
 		}
 
 		static void to_json(nlohmann::json& j, const ReaderAgent* agent) {
@@ -44,28 +59,22 @@ class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
 		}
 };
 
-class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
+class WriterAgent : public ReaderWriterBase, public fpmas::model::AgentBase<WriterAgent> {
 	private:
 		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight;
-		int counter = 0;
 	public:
-		void act() override {
-			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
+		void write() {
+			FPMAS_LOGD(node()->location(), "WRITER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbor : node()->outNeighbors()) {
-				WriterAgent* neighbor_agent = dynamic_cast<WriterAgent*>(neighbor->mutex()->acquire().get());
+				ReaderWriterBase* neighbor_agent
+					= dynamic_cast<ReaderWriterBase*>(neighbor->mutex()->acquire().get());
 
 				neighbor_agent->setCounter(neighbor_agent->getCounter()+1);
 				neighbor->setWeight(random_weight(engine) * 10);
 
 				neighbor->mutex()->releaseAcquire();
 			}
-		}
-
-		void setCounter(int count) {counter = count;}
-
-		int getCounter() const {
-			return counter;
 		}
 
 		static void to_json(nlohmann::json& j, const WriterAgent* agent) {
@@ -87,7 +96,7 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 	std::set<DistributedId> links;
 	std::set<DistributedId> unlinks;
 
-	void act() override {
+	void link() {
 		FPMAS_LOGD(node()->location(), "GHOST_TEST", "Executing agent %s", FPMAS_C_STR(node()->getId()));
 		if(node()->getOutgoingEdges().size() >= 2) {
 			auto out_neighbors = node()->outNeighbors();
@@ -213,11 +222,4 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>)
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
-
-#define TEST_AGENTS BasicAgent, ReaderAgent, WriterAgent, LinkerAgent,\
-		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\
-		TestCell, TestSpatialAgent::JsonBase, fpmas::model::GridCell::JsonBase
-
-FPMAS_JSON_SET_UP(TEST_AGENTS)
-
 #endif

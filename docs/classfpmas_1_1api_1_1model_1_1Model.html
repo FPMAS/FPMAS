@@ -93,10 +93,16 @@ Inheritance diagram for fpmas::api::model::Model:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a59b8312f1570e1a3cc0af36baf03f679"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a59b8312f1570e1a3cc0af36baf03f679">graph</a> ()=0</td></tr>
 <tr class="separator:a59b8312f1570e1a3cc0af36baf03f679"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e311b6af42074838aff221f45ba545d"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a6e311b6af42074838aff221f45ba545d">graph</a> () const =0</td></tr>
+<tr class="separator:a6e311b6af42074838aff221f45ba545d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a845cd1a69f86ab69c1fd55e763bdea12"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a845cd1a69f86ab69c1fd55e763bdea12">scheduler</a> ()=0</td></tr>
 <tr class="separator:a845cd1a69f86ab69c1fd55e763bdea12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a7496ca25e117735384210fce6c9c82"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a4a7496ca25e117735384210fce6c9c82">scheduler</a> () const =0</td></tr>
+<tr class="separator:a4a7496ca25e117735384210fce6c9c82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dd560c85966165dde31ed518296603a"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a8dd560c85966165dde31ed518296603a">runtime</a> ()=0</td></tr>
 <tr class="separator:a8dd560c85966165dde31ed518296603a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b9094b3f1fdb1da10d016aa3c0a15d9"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a4b9094b3f1fdb1da10d016aa3c0a15d9">runtime</a> () const =0</td></tr>
+<tr class="separator:a4b9094b3f1fdb1da10d016aa3c0a15d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a573a9ec4c44a91984ea7e54069f50585"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a573a9ec4c44a91984ea7e54069f50585">loadBalancingJob</a> () const =0</td></tr>
 <tr class="separator:a573a9ec4c44a91984ea7e54069f50585"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d8b68afd855c58f023253debf25b476"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a1d8b68afd855c58f023253debf25b476">buildGroup</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a> id)=0</td></tr>
@@ -174,7 +180,7 @@ Protected Member Functions</h2></td></tr>
 </div>
 </div>
 <a id="a59b8312f1570e1a3cc0af36baf03f679"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a59b8312f1570e1a3cc0af36baf03f679">&#9670;&nbsp;</a></span>graph()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a59b8312f1570e1a3cc0af36baf03f679">&#9670;&nbsp;</a></span>graph() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -202,8 +208,39 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a6e311b6af42074838aff221f45ba545d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e311b6af42074838aff221f45ba545d">&#9670;&nbsp;</a></span>graph() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a>&amp; fpmas::api::model::Model::graph </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a>'s <a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>agent graph </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#aefd9e9f48daf05ca25a721a00701b4dc">fpmas::model::detail::Model</a>.</p>
+
+</div>
+</div>
 <a id="a845cd1a69f86ab69c1fd55e763bdea12"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a845cd1a69f86ab69c1fd55e763bdea12">&#9670;&nbsp;</a></span>scheduler()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a845cd1a69f86ab69c1fd55e763bdea12">&#9670;&nbsp;</a></span>scheduler() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -231,8 +268,39 @@ Protected Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a4a7496ca25e117735384210fce6c9c82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a7496ca25e117735384210fce6c9c82">&#9670;&nbsp;</a></span>scheduler() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a>&amp; fpmas::api::model::Model::scheduler </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a>'s <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">Scheduler</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>scheduler </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#ae72dce34baf5a53d88d6a64b09fb03c0">fpmas::model::detail::Model</a>.</p>
+
+</div>
+</div>
 <a id="a8dd560c85966165dde31ed518296603a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8dd560c85966165dde31ed518296603a">&#9670;&nbsp;</a></span>runtime()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8dd560c85966165dde31ed518296603a">&#9670;&nbsp;</a></span>runtime() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -257,6 +325,37 @@ Protected Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>runtime </dd></dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a4f8c28c690c4d5003abb7733a421fa28">fpmas::model::detail::Model</a>.</p>
+
+</div>
+</div>
+<a id="a4b9094b3f1fdb1da10d016aa3c0a15d9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4b9094b3f1fdb1da10d016aa3c0a15d9">&#9670;&nbsp;</a></span>runtime() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual const <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a>&amp; fpmas::api::model::Model::runtime </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a>'s <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">Runtime</a>, used to execute the <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a845cd1a69f86ab69c1fd55e763bdea12">scheduler()</a>.</p>
+<dl class="section return"><dt>Returns</dt><dd>runtime </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a26dea4de82e1723eda8234f70b35ee72">fpmas::model::detail::Model</a>.</p>
 
 </div>
 </div>

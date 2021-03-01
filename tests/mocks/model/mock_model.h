@@ -110,8 +110,11 @@ class MockModel : public virtual fpmas::api::model::Model {
 				(fpmas::api::model::GroupId, fpmas::api::model::AgentGroup*), (override));
 	public:
 		MOCK_METHOD(fpmas::api::model::AgentGraph&, graph, (), (override));
+		MOCK_METHOD(const fpmas::api::model::AgentGraph&, graph, (), (const, override));
 		MOCK_METHOD(fpmas::api::scheduler::Scheduler&, scheduler, (), (override));
+		MOCK_METHOD(const fpmas::api::scheduler::Scheduler&, scheduler, (), (const, override));
 		MOCK_METHOD(fpmas::api::runtime::Runtime&, runtime, (), (override));
+		MOCK_METHOD(const fpmas::api::runtime::Runtime&, runtime, (), (const, override));
 		MOCK_METHOD(const fpmas::api::scheduler::Job&, loadBalancingJob, (), (const, override));
 
 		MOCK_METHOD(fpmas::api::model::AgentGroup&, buildGroup, (fpmas::api::model::GroupId), (override));
@@ -130,6 +133,8 @@ class MockModel : public virtual fpmas::api::model::Model {
 				getMpiCommunicator, (), (override));
 		MOCK_METHOD(const fpmas::api::communication::MpiCommunicator&,
 				getMpiCommunicator, (), (const, override));
+
+		MOCK_METHOD(void, clear, (), (override));
 };
 
 class MockAgentGroup : public virtual fpmas::api::model::AgentGroup {

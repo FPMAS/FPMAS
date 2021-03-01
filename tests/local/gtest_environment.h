@@ -73,15 +73,6 @@ namespace model { namespace test {
 FPMAS_DEFAULT_JSON(model::test::SpatialAgent)
 FPMAS_DEFAULT_JSON(model::test::GridAgent)
 
-FPMAS_JSON_SET_UP(
-		MockAgent<4>, MockAgent<2>, MockAgent<12>,
-		model::test::SpatialAgent::JsonBase,
-		model::test::SpatialAgentWithData::JsonBase,
-		model::test::GridAgent::JsonBase,
-		model::test::GridAgentWithData::JsonBase,
-		fpmas::model::GridCell::JsonBase
-		)
-
 class Environment : public testing::Environment {
 	void SetUp() override {
 		FPMAS_REGISTER_AGENT_TYPES(

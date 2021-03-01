@@ -42,6 +42,12 @@
  * Defines the nlohmann specializations required to handle the JSON
  * serialization of the specified set of \Agent types.
  *
+ * Notice that this is only the _definitions_ of the `to_json` and `from_json`
+ * methods, that are declared (but not defined) in src/fpmas/model/model.h.
+ *
+ * In consequence, this macro must be invoked exaclty once from a **source**
+ * file in any C++ target using FPMAS.
+ *
  * This macro must be called **at the global definition level**.
  *
  * The same set of \Agent types must be registered at runtime using the
@@ -64,19 +70,15 @@
  * }
  * ```
  */
-#define FPMAS_JSON_SET_UP(...) \
+#define FPMAS_JSON_SET_UP(...)\
 	namespace nlohmann {\
-		using fpmas::api::model::AgentPtr;\
-		template<>\
-		struct adl_serializer<AgentPtr> {\
-			static void to_json(json& j, const AgentPtr& data) {\
-				fpmas::model::to_json<__VA_ARGS__, void>(j, data);\
-			}\
-			static AgentPtr from_json(const json& j) {\
-				return std::move(fpmas::model::from_json<__VA_ARGS__, void>(j));\
-			}\
-		};\
-	}
+		void adl_serializer<fpmas::api::model::AgentPtr>::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
+			fpmas::model::to_json<__VA_ARGS__, void>(j, data);\
+		}\
+		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>::from_json(const json& j) {\
+			return std::move(fpmas::model::from_json<__VA_ARGS__, void>(j));\
+		}\
+	}\
 
 /**
  * Helper macro to easily define JSON serialization rules for

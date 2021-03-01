@@ -324,7 +324,9 @@ class SpatialAgentBuilderTest : public Test {
 
 	CountAgents count_agents;
 	void SetUp() override {
-		ON_CALL(model, runtime)
+		ON_CALL(model, runtime())
+			.WillByDefault(ReturnRef(mock_runtime));
+		ON_CALL(Const(model), runtime())
 			.WillByDefault(ReturnRef(mock_runtime));
 		ON_CALL(model, buildMoveGroup(-2, _))
 			.WillByDefault(ReturnRef(mock_move_group));

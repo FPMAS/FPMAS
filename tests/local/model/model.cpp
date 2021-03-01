@@ -257,7 +257,9 @@ class AgentGroupTest : public ::testing::Test {
 
 		void SetUp() override {
 			// In case of LOG
-			ON_CALL(model, graph)
+			ON_CALL(model, graph())
+				.WillByDefault(ReturnRef(graph));
+			ON_CALL(Const(model), graph())
 				.WillByDefault(ReturnRef(graph));
 			ON_CALL(model, getMpiCommunicator())
 				.WillByDefault(ReturnRef(mock_comm));

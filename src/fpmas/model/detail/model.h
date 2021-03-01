@@ -469,10 +469,19 @@ namespace fpmas {
 					api::model::AgentGraph& graph() override {
 						return _graph;
 					}
+					const api::model::AgentGraph& graph() const override {
+						return _graph;
+					}
 					api::scheduler::Scheduler& scheduler() override {
 						return _scheduler;
 					}
+					const api::scheduler::Scheduler& scheduler() const override {
+						return _scheduler;
+					}
 					api::runtime::Runtime& runtime() override {
+						return _runtime;
+					}
+					const api::runtime::Runtime& runtime() const override {
 						return _runtime;
 					}
 
@@ -508,6 +517,9 @@ namespace fpmas {
 						return this->_graph.getMpiCommunicator();
 					}
 
+					void clear() override {
+						this->_graph.clear();
+					}
 
 					~Model();
 			};

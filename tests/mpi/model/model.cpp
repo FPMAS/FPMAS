@@ -339,8 +339,10 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 
 class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {
 	protected:
+		fpmas::model::Behavior<ReaderAgent> read {&ReaderAgent::read};
+
 		void SetUp() override {
-			auto& group = model.buildGroup(G_0);
+			auto& group = model.buildGroup(G_0, read);
 			FPMAS_ON_PROC(comm, 0) {
 				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new ReaderAgent);
@@ -366,8 +368,10 @@ TEST_F(HardSyncReadersModelIntegrationTest, test) {
 
 class HardSyncWritersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {
 	protected:
+		fpmas::model::Behavior<WriterAgent> write {&WriterAgent::write};
+
 		void SetUp() override {
-			auto& group = model.buildGroup(G_0);
+			auto& group = model.buildGroup(G_0, write);
 			if(agent_graph.getMpiCommunicator().getRank() == 0) {
 				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new WriterAgent);
@@ -399,9 +403,10 @@ TEST_F(HardSyncWritersModelIntegrationTest, test) {
 class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegrationTest {
 	protected:
 		std::set<DistributedId> initial_links;
+		fpmas::model::Behavior<LinkerAgent> link {&LinkerAgent::link};
 
 		void SetUp() override {
-			auto& group = model.buildGroup(G_1);
+			auto& group = model.buildGroup(G_1, link);
 
 			FPMAS_ON_PROC(comm, 0) {
 				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {

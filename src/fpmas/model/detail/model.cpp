@@ -22,6 +22,13 @@ namespace fpmas {
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", FPMAS_C_STR(node->getId()));
 				for(auto group : agent->groups()) {
+					if(agent->node()->state() == graph::LocationState::LOCAL) {
+						// Unschedule agent task. If the node is DISTANT, task was already
+						// unscheduled.
+						// This must be performed before erase(), since it will
+						// clear and delete the associated agent's task.
+						group->agentExecutionJob().remove(*agent->task(group->groupId()));
+					}
 					group->erase(&agent);
 				}
 			}

@@ -694,18 +694,35 @@ namespace fpmas { namespace api {namespace model {
 			 * @return agent graph
 			 */
 			virtual AgentGraph& graph() = 0;
+
+			/**
+			 * \copydoc graph()
+			 */
+			virtual const AgentGraph& graph() const = 0;
+
 			/**
 			 * Model's \Scheduler.
 			 *
 			 * @return scheduler
 			 */
 			virtual api::scheduler::Scheduler& scheduler() = 0;
+
+			/**
+			 * \copydoc scheduler()
+			 */
+			virtual const api::scheduler::Scheduler& scheduler() const = 0;
+
 			/**
 			 * Model's \Runtime, used to execute the scheduler().
 			 *
 			 * @return runtime
 			 */
 			virtual api::runtime::Runtime& runtime() = 0;
+
+			/**
+			 * \copydoc runtime()
+			 */
+			virtual const api::runtime::Runtime& runtime() const = 0;
 
 			/**
 			 * A predefined LoadBalancing \Job.
@@ -852,6 +869,15 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
 
+			/**
+			 * Erases all agents from the Model.
+			 *
+			 * This is assumed to be performed by all the processes in the same
+			 * epoch, even if the operation itself does not necessarily
+			 * requires communications (since it is assumed that all agents are
+			 * erased from any process anyway).
+			 */
+			virtual void clear() = 0;
 		public:
 			virtual ~Model(){}
 	};

@@ -246,22 +246,20 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">namespace </span><a class="code" href="namespacenlohmann.html">nlohmann</a> {\</div>
-<div class="line">        using <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a>;\</div>
-<div class="line">        template&lt;&gt;\</div>
-<div class="line">        struct adl_serializer&lt;AgentPtr&gt; {\</div>
-<div class="line">            static <span class="keywordtype">void</span> <a class="code" href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">to_json</a>(json&amp; j, <span class="keyword">const</span> AgentPtr&amp; data) {\</div>
-<div class="line">                fpmas::model::to_json&lt;__VA_ARGS__, void&gt;(j, data);\</div>
-<div class="line">            }\</div>
-<div class="line">            static AgentPtr <a class="code" href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">from_json</a>(<span class="keyword">const</span> json&amp; j) {\</div>
-<div class="line">                return std::move(fpmas::model::from_json&lt;__VA_ARGS__, void&gt;(j));\</div>
-<div class="line">            }\</div>
-<div class="line">        };\</div>
-<div class="line">    }</div>
+<div class="line">        void <a class="code" href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">adl_serializer&lt;fpmas::api::model::AgentPtr&gt;::to_json</a>(json&amp; j, <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a>&amp; data) {\</div>
+<div class="line">            fpmas::model::to_json&lt;__VA_ARGS__, void&gt;(j, data);\</div>
+<div class="line">        }\</div>
+<div class="line">        fpmas::api::model::AgentPtr <a class="code" href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">adl_serializer&lt;fpmas::api::model::AgentPtr&gt;::from_json</a>(<span class="keyword">const</span> json&amp; j) {\</div>
+<div class="line">            return std::move(fpmas::model::from_json&lt;__VA_ARGS__, void&gt;(j));\</div>
+<div class="line">        }\</div>
+<div class="line">    }\</div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentPtr_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a></div><div class="ttdef"><b>Definition:</b> model.h:51</div></div>
-<div class="ttc" id="anamespacefpmas_1_1model_html_a8f71c0752dd7ef3d33acab5b127c2ef8"><div class="ttname"><a href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">fpmas::model::to_json</a></div><div class="ttdeci">void to_json(nlohmann::json &amp;j, const AgentPtr &amp;ptr)</div><div class="ttdef"><b>Definition:</b> serializer.h:443</div></div>
-<div class="ttc" id="anamespacefpmas_1_1model_html_aac3ade94756b6fca35bf4df5784237cd"><div class="ttname"><a href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">fpmas::model::from_json</a></div><div class="ttdeci">AgentPtr from_json(const nlohmann::json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializer.h:491</div></div>
+<div class="ttc" id="anamespacefpmas_1_1model_html_a8f71c0752dd7ef3d33acab5b127c2ef8"><div class="ttname"><a href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">fpmas::model::to_json</a></div><div class="ttdeci">void to_json(nlohmann::json &amp;j, const AgentPtr &amp;ptr)</div><div class="ttdef"><b>Definition:</b> serializer.h:445</div></div>
+<div class="ttc" id="anamespacefpmas_1_1model_html_aac3ade94756b6fca35bf4df5784237cd"><div class="ttname"><a href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">fpmas::model::from_json</a></div><div class="ttdeci">AgentPtr from_json(const nlohmann::json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializer.h:493</div></div>
 <div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:254</div></div>
 </div><!-- fragment --><p>Defines the nlohmann specializations required to handle the JSON serialization of the specified set of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types.</p>
+<p>Notice that this is only the <em>definitions</em> of the <code>to_json</code> and <code>from_json</code> methods, that has already been defined in <a class="el" href="model_2model_8h.html">src/fpmas/model/model.h</a>.</p>
+<p>In consequence, this macro must be invoked exaclty once from a <b>source</b> file in any C++ target using FPMAS.</p>
 <p>This macro must be called <b>at the global definition level</b>.</p>
 <p>The same set of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types must be registered at runtime using the <a class="el" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES(...)</a> macro at runtime.</p>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="preprocessor">#define AGENT_TYPES Agent1, Agent2, OtherAgent</span></div>
@@ -277,7 +275,7 @@ Functions</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <a class="code" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a>();</div>
 <div class="line">}</div>
-<div class="ttc" id="aserializer_8h_html_a4722b5fd6cdf04855fb40935583a8dcf"><div class="ttname"><a href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP</a></div><div class="ttdeci">#define FPMAS_JSON_SET_UP(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:67</div></div>
+<div class="ttc" id="aserializer_8h_html_a4722b5fd6cdf04855fb40935583a8dcf"><div class="ttname"><a href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP</a></div><div class="ttdeci">#define FPMAS_JSON_SET_UP(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:73</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>

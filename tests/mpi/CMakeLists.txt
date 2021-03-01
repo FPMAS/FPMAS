@@ -13,6 +13,7 @@ set(SOURCES
 	model/spatial/grid.cpp
 	random/generator.cpp
 	io/csv_output.cpp
+	io/breakpoint.cpp
 	)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})

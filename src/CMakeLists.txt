@@ -20,6 +20,7 @@ set(SOURCES
 	fpmas/runtime/runtime.cpp
 	# Model
 	fpmas/model/detail/model.cpp
+	fpmas/model/model.cpp
 	fpmas/model/serializer.cpp
 	fpmas/model/spatial/spatial_model.cpp
 	fpmas/model/spatial/grid.cpp
