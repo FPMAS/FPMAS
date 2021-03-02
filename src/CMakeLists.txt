@@ -10,6 +10,7 @@ set(SOURCES
 	fpmas/synchro/hard/api/client_server.cpp
 	# Utils
 	fpmas/utils/log.cpp
+	fpmas/utils/format.cpp
 	# Communication
 	fpmas/communication/communication.cpp
 	# Load balancing

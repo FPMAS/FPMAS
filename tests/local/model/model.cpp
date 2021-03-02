@@ -7,6 +7,9 @@
 #include "../mocks/model/mock_model.h"
 #include "../mocks/communication/mock_communication.h"
 #include "../mocks/synchro/mock_mutex.h"
+#include "../mocks/io/mock_breakpoint.h"
+#include "../mocks/scheduler/mock_scheduler.h"
+#include "../mocks/runtime/mock_runtime.h"
 #include "fpmas/model/guards.h"
 
 using namespace testing;
@@ -1184,4 +1187,92 @@ TEST_F(AgentGuardLoopTest, neighbor_loop_acquire) {
 		fpmas::model::AcquireGuard acquire(fake_agent);
 		ASSERT_EQ(fake_agent->field, 14);
 	}
+}
+
+class AutoBreakpointTest : public Test {
+	protected:
+		MockMpiCommunicator<2, 10> comm;
+		NiceMock<MockModel> model;
+		MockBreakpoint<fpmas::api::model::Model> breakpoint;
+		NiceMock<MockScheduler> scheduler;
+		NiceMock<MockRuntime> mock_runtime;
+
+		fpmas::model::AutoBreakpoint auto_bp {"test.%r.%t.msgpack", breakpoint, model};
+
+		void SetUp() {
+			ON_CALL(model, getMpiCommunicator())
+				.WillByDefault(ReturnRef(comm));
+			ON_CALL(Const(model), getMpiCommunicator())
+				.WillByDefault(ReturnRef(comm));
+			ON_CALL(model, scheduler())
+				.WillByDefault(ReturnRef(scheduler));
+			ON_CALL(model, runtime())
+				.WillByDefault(ReturnRef(mock_runtime));
+			ON_CALL(Const(model), scheduler())
+				.WillByDefault(ReturnRef(scheduler));
+			ON_CALL(Const(model), runtime())
+				.WillByDefault(ReturnRef(mock_runtime));
+
+			ON_CALL(mock_runtime, currentDate)
+				.WillByDefault(Return(7.0f));
+		}
+};
+
+TEST_F(AutoBreakpointTest, test) {
+	fpmas::runtime::Runtime runtime(scheduler);
+	std::ifstream file;
+
+	// First output
+	EXPECT_CALL(breakpoint, dump(_, Ref(model)))
+		.WillOnce(Invoke([] (std::ostream& out, Unused) {
+					out << "hello 1";
+					}));
+
+	runtime.execute(auto_bp.job());
+	file.open("test.2.7.msgpack");
+	ASSERT_TRUE(file.is_open());
+	std::stringstream content_1;
+	file >> content_1.rdbuf();
+	ASSERT_EQ(content_1.str(), "hello 1");
+	file.close();
+
+	// An other output on the same file.
+	// The previous content must be overriden
+	EXPECT_CALL(breakpoint, dump(_, Ref(model)))
+		.WillOnce(Invoke([] (std::ostream& out, Unused) {
+					out << "hello 2";
+					}));
+
+	runtime.execute(auto_bp.job());
+	file.open("test.2.7.msgpack");
+	ASSERT_TRUE(file.is_open());
+	std::stringstream content_2;
+	file >> content_2.rdbuf();
+	ASSERT_EQ(content_2.str(), "hello 2");
+	file.close();
+
+	// An other output on a different file
+	ON_CALL(mock_runtime, currentDate)
+		.WillByDefault(Return(12.0f));
+	EXPECT_CALL(breakpoint, dump(_, Ref(model)))
+		.WillOnce(Invoke([] (std::ostream& out, Unused) {
+					out << "hello 3";
+					}));
+
+
+	runtime.execute(auto_bp.job());
+	// The previous file still exists
+	file.open("test.2.7.msgpack");
+	ASSERT_TRUE(file.is_open());
+	file.close();
+
+	// Check new file
+	file.open("test.2.12.msgpack");
+	std::stringstream content_3;
+	file >> content_3.rdbuf();
+	ASSERT_EQ(content_3.str(), "hello 3");
+	file.close();
+
+	std::remove("test.2.7.msgpack");
+	std::remove("test.2.12.msgpack");
 }

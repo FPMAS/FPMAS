@@ -37,6 +37,8 @@ set(SOURCES
 	# Output
 	io/csv_output.cpp
 	io/breakpoint.cpp
+	# Utils
+	utils/format.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

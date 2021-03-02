@@ -9,6 +9,9 @@
 #include "guards.h"
 #include "detail/model.h"
 #include "fpmas/random/random.h"
+#include "fpmas/io/breakpoint.h"
+#include "fpmas/utils/format.h"
+#include <fstream>
 
 
 namespace fpmas { namespace model {
@@ -841,6 +844,36 @@ namespace fpmas { namespace model {
 		using Model = detail::DefaultModel<SyncMode>;
 
 	using api::model::AgentGroup;
+
+	typedef io::Breakpoint<api::model::Model> Breakpoint;
+
+	class AutoBreakpoint {
+		private:
+			std::string file_format;
+			std::fstream stream;
+			fpmas::api::io::Breakpoint<api::model::Model>& breakpoint;
+			api::model::Model& model;
+			scheduler::detail::LambdaTask task {[this] () {
+				stream.open(utils::format(
+							file_format,
+							model.getMpiCommunicator().getRank(),
+							model.runtime().currentDate()
+							), std::ios_base::out);
+				breakpoint.dump(stream, model);
+				stream.close();
+			}};
+			scheduler::Job _job {{task}};
+
+		public:
+			AutoBreakpoint(
+					std::string file_format,
+					api::io::Breakpoint<api::model::Model>& breakpoint,
+					api::model::Model& model)
+				: file_format(file_format), breakpoint(breakpoint), model(model) {
+				}
+
+			const api::scheduler::Job& job() const {return _job;}
+	};
 }}
 
 namespace nlohmann {
