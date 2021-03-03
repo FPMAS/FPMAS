@@ -42,8 +42,10 @@ class AbstractMockDistributedGraph :
 		MOCK_METHOD(void, addCallOnSetLocal, (NodeCallback*), (override));
 		MOCK_METHOD(void, addCallOnSetDistant, (NodeCallback*), (override));
 
-		MOCK_METHOD(const DistributedId&, currentNodeId, (), (const, override));
-		MOCK_METHOD(const DistributedId&, currentEdgeId, (), (const, override));
+		MOCK_METHOD(DistributedId, currentNodeId, (), (const, override));
+		MOCK_METHOD(void, setCurrentNodeId, (fpmas::api::graph::DistributedId), (override));
+		MOCK_METHOD(DistributedId, currentEdgeId, (), (const, override));
+		MOCK_METHOD(void, setCurrentEdgeId, (fpmas::api::graph::DistributedId), (override));
 
 		MOCK_METHOD(void, removeNode, (NodeType*), (override));
 		MOCK_METHOD(void, removeNode, (DistributedId), (override));

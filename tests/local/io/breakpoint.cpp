@@ -151,6 +151,9 @@ TEST(Breakpoint, distributed_graph) {
 
 	ASSERT_THAT(breakpoint_graph.getEdges(), UnorderedElementsAreArray(edge_matchers));
 
+	ASSERT_EQ(breakpoint_graph.currentNodeId(), graph.currentNodeId());
+	ASSERT_EQ(breakpoint_graph.currentEdgeId(), graph.currentEdgeId());
+
 	/*
 	 * Check LocationManager state
 	 */

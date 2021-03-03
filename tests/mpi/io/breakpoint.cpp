@@ -149,10 +149,11 @@ TEST_F(ModelBreakpointTest, test) {
 		ASSERT_THAT(load_hello_agents, UnorderedElementsAreArray(dump_hello_agents));
 		ASSERT_THAT(load_reader_agents, UnorderedElementsAreArray(dump_reader_agents));
 		ASSERT_THAT(load_writer_agents, UnorderedElementsAreArray(dump_writer_agents));
+		ASSERT_EQ(breakpoint_model.runtime().currentDate(), 50);
 	}
 
-	// Resumes execution
-	breakpoint_model.runtime().run(50, 100);
+	// Resumes execution from currentDate() = 50
+	breakpoint_model.runtime().run(100);
 
 	// Gathers final agent data for the breakpoint model
 	std::unordered_map<DistributedId, int> breakpoint_data;

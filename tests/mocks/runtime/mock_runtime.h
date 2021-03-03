@@ -12,6 +12,7 @@ class MockRuntime : public fpmas::api::runtime::Runtime {
 		MOCK_METHOD(void, execute, (const fpmas::api::scheduler::Job&), (override));
 		MOCK_METHOD(void, execute, (const fpmas::api::scheduler::JobList&), (override));
 		MOCK_METHOD(fpmas::api::scheduler::Date, currentDate, (), (const, override));
+		MOCK_METHOD(void, setCurrentDate, (fpmas::api::scheduler::Date), (override));
 };
 
 #endif

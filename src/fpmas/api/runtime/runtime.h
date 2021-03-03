@@ -20,18 +20,28 @@ namespace fpmas { namespace api { namespace runtime {
 			/**
 			 * Runs jobs from start, included, to end, excluded.
 			 *
-			 * The Runtime is currently base on a unit time step. In consequence,
+			 * The Runtime is currently based on a unit time step. In consequence,
 			 * the Runtime will execute jobs at dates `start`, `start+1` and
 			 * `start+n` for any integer n such that `start+n < end`.
+			 *
+			 * At the end of the execution, currentDate() is reinitialized to
+			 * 0.
 			 *
 			 * @param start start date
 			 * @param end end date
 			 */
 			virtual void run(Date start, Date end) = 0;
 			/**
-			 * Alias for `run(0, end)`.
+			 * Runs jobs from currentDate() to end, excluded.
+			 *
+			 * Equivalent to
+			 * ```cpp
+			 * this->run(this->currentDate(), end);
+			 * ```
 			 *
 			 * @param end end date
+			 *
+			 * @see run(Date, Date)
 			 */
 			virtual void run(Date end) = 0;
 
@@ -55,8 +65,20 @@ namespace fpmas { namespace api { namespace runtime {
 
 			/**
 			 * Current internal date of the runtime.
+			 *
+			 * The current date is initialized to 0 when a Runtime is built.
+			 *
+			 * @return current date of this Runtime
 			 */
 			virtual Date currentDate() const = 0;
+
+			/**
+			 * Sets the internal date of this Runtime, so that the next call to
+			 * run(Date) will start to run jobs from `date`.
+			 *
+			 * @param date new date
+			 */
+			virtual void setCurrentDate(Date date) = 0;
 
 			virtual ~Runtime() {}
 	};

@@ -13,7 +13,7 @@ namespace fpmas { namespace runtime {
 	}
 
 	void Runtime::run(Date end) {
-		run(0, end);
+		run(date, end);
 	}
 
 	void Runtime::execute(const api::scheduler::Job &job) {

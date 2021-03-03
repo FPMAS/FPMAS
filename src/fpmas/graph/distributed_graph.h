@@ -184,8 +184,10 @@ namespace fpmas { namespace graph {
 				 */
 				const TypedMpi<EdgePtrWrapper<T>>& getEdgeMpi() const {return edge_mpi;}
 
-				const DistributedId& currentNodeId() const override {return node_id;}
-				const DistributedId& currentEdgeId() const override {return edge_id;}
+				DistributedId currentNodeId() const override {return node_id;}
+				void setCurrentNodeId(DistributedId id) override {this->node_id = id;}
+				DistributedId currentEdgeId() const override {return edge_id;}
+				void setCurrentEdgeId(DistributedId id) override {this->edge_id = id;}
 
 				NodeType* importNode(NodeType* node) override;
 				EdgeType* importEdge(EdgeType* edge) override;
@@ -806,6 +808,8 @@ namespace nlohmann {
 							{"tgt", edge.second->getTargetNode()->getId()}
 							});
 				}
+				j["edge_id"] = graph.currentEdgeId();
+				j["node_id"] = graph.currentNodeId();
 				nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
 					::to_json(j["loc_manager"], graph.getLocationManager());
 			}
@@ -845,8 +849,12 @@ namespace nlohmann {
 					auto tgt = new fpmas::graph::DistributedNode<T>(j_edge["tgt"].get<fpmas::graph::DistributedId>(), {});
 					edge->setTargetNode(tgt);
 					tgt->linkIn(edge);
+					assert(graph.getNodes().count(src->getId()) > 0);
+					assert(graph.getNodes().count(tgt->getId()) > 0);
 					graph.importEdge(edge);
 				}
+				graph.setCurrentNodeId(j.at("node_id").get<fpmas::graph::DistributedId>());
+				graph.setCurrentEdgeId(j.at("edge_id").get<fpmas::graph::DistributedId>());
 
 				nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
 					::from_json(j["loc_manager"], graph.getLocationManager());

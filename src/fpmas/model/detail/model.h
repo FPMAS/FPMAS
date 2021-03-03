@@ -519,6 +519,7 @@ namespace fpmas {
 
 					void clear() override {
 						this->_graph.clear();
+						this->runtime().setCurrentDate(0);
 					}
 
 					~Model();

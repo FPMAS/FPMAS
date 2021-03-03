@@ -136,25 +136,39 @@ namespace fpmas {namespace api {namespace graph {
 			virtual DistributedEdge<T>* importEdge(DistributedEdge<T>* edge) = 0;
 
 			/**
-			 * Reference to the current internal Node ID.
+			 * Returns the current internal Node ID.
 			 *
 			 * The next node built with buildNode() will have an id equal to
 			 * currentNodeId()++;
 			 *
-			 * @return reference to the current internal Node ID
+			 * @return current Node ID
 			 */
-			virtual const DistributedId& currentNodeId() const = 0;
+			virtual DistributedId currentNodeId() const = 0;
 
 			/**
-			 * Reference to the current internal Edge ID.
+			 * Sets the current internal Node ID to the specified value.
+			 *
+			 * @param id node id
+			 */
+			virtual void setCurrentNodeId(DistributedId id) = 0;
+
+			/**
+			 * Returns the current internal Edge ID.
 			 *
 			 * The next edge built with link() will have an id equal to
 			 * currentEdgeId()++;
 			 *
-			 * @return reference to the current internal Edge ID
+			 * @return current Edge ID
 			 */
-			virtual const DistributedId& currentEdgeId() const = 0;
-			
+			virtual DistributedId currentEdgeId() const = 0;
+
+			/**
+			 * Sets the current internal Edge ID to the specified value.
+			 *
+			 * @param id edge id
+			 */
+			virtual void setCurrentEdgeId(DistributedId id) = 0;
+
 			/**
 			 * Builds a new \LOCAL node into the graph.
 			 *

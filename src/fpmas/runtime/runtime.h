@@ -37,6 +37,7 @@ namespace fpmas { namespace runtime {
 			void execute(const api::scheduler::Job& job) override;
 			void execute(const api::scheduler::JobList& job_list) override;
 			Date currentDate() const override {return date;}
+			void setCurrentDate(Date date) override {this->date = date;}
 	};
 }}
 #endif
