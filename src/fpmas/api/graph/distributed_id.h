@@ -5,6 +5,8 @@
  * DistributedId implementation.
  */
 
+#define ID_TYPE unsigned long long
+
 #include <functional>
 #include <nlohmann/json.hpp>
 #include <mpi.h>
@@ -29,7 +31,7 @@ namespace fpmas { namespace api { namespace communication {
 		/**
 		 * Local id
 		 */
-		unsigned int id;
+		ID_TYPE id;
 	};
 }}}
 
@@ -46,14 +48,14 @@ namespace fpmas { namespace api { namespace graph {
 	 *
 	 * The id is represented through a pair of :
 	 * 1. The rank on which the item where created
-	 * 2. An incrementing local id of type `unsigned int`
+	 * 2. An incrementing local id of type `unsigned long long`
 	 */
 	class DistributedId {
 		friend nlohmann::adl_serializer<DistributedId>;
 
 		private:
 			int _rank;
-			unsigned int _id;
+			ID_TYPE _id;
 
 		public:
 			/**
@@ -93,7 +95,7 @@ namespace fpmas { namespace api { namespace graph {
 			 * @param rank MPI rank
 			 * @param id initial local id value
 			 */
-			DistributedId(int rank, unsigned int id) : _rank(rank), _id(id) {}
+			DistributedId(int rank, ID_TYPE id) : _rank(rank), _id(id) {}
 
 			/**
 			 * Rank associated to this DistributedId instance.
@@ -109,7 +111,7 @@ namespace fpmas { namespace api { namespace graph {
 			 *
 			 * @return local id
 			 */
-			unsigned int id() const {
+			ID_TYPE id() const {
 				return _id;
 			}
 
@@ -179,9 +181,7 @@ namespace fpmas { namespace api { namespace graph {
 			 * @return hash value
 			 */
 			std::size_t hash() const {
-				return std::hash<unsigned long int>()(
-						_id + UINT_MAX * (unsigned int) _rank
-					);
+				return std::hash<ID_TYPE>()(_rank);
 			}
 	};
 
@@ -214,7 +214,7 @@ namespace fpmas { namespace api { namespace communication {
 	 * used to send and receive DistributedId through MPI.
 	 */
 	inline static void createMpiTypes() {
-		MPI_Datatype types[2] = {MPI_INT, MPI_UNSIGNED};
+		MPI_Datatype types[2] = {MPI_INT, MPI_UNSIGNED_LONG_LONG};
 		int block[2] = {1, 1};
 		MPI_Aint disp[2] = {
 			offsetof(MpiDistributedId, rank),
@@ -280,7 +280,7 @@ namespace nlohmann {
 			static DistributedId from_json(const json& j) {
 				return DistributedId(
 						j[0].get<int>(),
-						j[1].get<unsigned int>()
+						j[1].get<ID_TYPE>()
 						);
 			}
 		};
