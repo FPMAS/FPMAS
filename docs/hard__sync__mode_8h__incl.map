@@ -1,52 +1,52 @@
 <map id="src/fpmas/synchro/hard/hard_sync_mode.h" name="src/fpmas/synchro/hard/hard_sync_mode.h">
-<area shape="rect" id="node1" title=" " alt="" coords="706,5,864,47"/>
-<area shape="rect" id="node2" href="$hard__data__sync_8h.html" title=" " alt="" coords="672,177,797,203"/>
-<area shape="rect" id="node29" href="$hard__sync__mutex_8h.html" title=" " alt="" coords="398,177,534,203"/>
-<area shape="rect" id="node36" href="$hard__sync__linker_8h.html" title=" " alt="" coords="930,95,1061,121"/>
-<area shape="rect" id="node50" href="$termination_8h.html" title=" " alt="" coords="680,355,778,382"/>
-<area shape="rect" id="node3" href="$api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="645,259,824,300"/>
-<area shape="rect" id="node25" href="$server__pack_8h.html" title=" " alt="" coords="450,355,554,382"/>
-<area shape="rect" id="node4" href="$api_2communication_2communication_8h.html" title=" " alt="" coords="46,527,217,568"/>
-<area shape="rect" id="node10" href="$api_2graph_2location__manager_8h.html" title=" " alt="" coords="1083,348,1247,389"/>
-<area shape="rect" id="node23" href="$load__balancing_8h.html" title=" " alt="" coords="916,348,1059,389"/>
-<area shape="rect" id="node24" href="$sync__mode_8h.html" title=" " alt="" coords="216,437,378,479"/>
-<area shape="rect" id="node5" href="$distributed__id_8h.html" title=" " alt="" coords="228,616,435,643"/>
-<area shape="rect" id="node6" title=" " alt="" coords="924,691,1003,717"/>
-<area shape="rect" id="node7" title=" " alt="" coords="386,691,517,717"/>
-<area shape="rect" id="node8" title=" " alt="" coords="223,691,278,717"/>
-<area shape="rect" id="node9" title=" " alt="" coords="302,691,362,717"/>
-<area shape="rect" id="node11" href="$api_2graph_2graph_8h.html" title=" " alt="" coords="1194,445,1357,471"/>
-<area shape="rect" id="node18" href="$api_2graph_2distributed__node_8h.html" title=" " alt="" coords="992,437,1170,479"/>
-<area shape="rect" id="node12" title=" " alt="" coords="1242,534,1352,561"/>
-<area shape="rect" id="node13" href="$api_2graph_2node_8h.html" title=" " alt="" coords="1376,534,1535,561"/>
-<area shape="rect" id="node15" href="$id_8h.html" title=" " alt="" coords="1026,534,1166,561"/>
-<area shape="rect" id="node17" href="$api_2utils_2callback_8h.html" title=" " alt="" coords="1496,616,1666,643"/>
-<area shape="rect" id="node14" href="$api_2graph_2edge_8h.html" title=" " alt="" coords="1250,616,1408,643"/>
-<area shape="rect" id="node16" title=" " alt="" coords="971,616,1026,643"/>
-<area shape="rect" id="node19" href="$api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="686,527,865,568"/>
-<area shape="rect" id="node22" href="$mutex_8h.html" title=" " alt="" coords="242,534,422,561"/>
-<area shape="rect" id="node20" href="$location__state_8h.html" title=" " alt="" coords="718,616,833,643"/>
-<area shape="rect" id="node21" title=" " alt="" coords="740,691,812,717"/>
-<area shape="rect" id="node26" href="$client__server_8h.html" title=" " alt="" coords="504,445,640,471"/>
-<area shape="rect" id="node28" title=" " alt="" coords="543,534,662,561"/>
-<area shape="rect" id="node27" href="$enums_8h.html" title=" " alt="" coords="446,534,518,561"/>
-<area shape="rect" id="node30" href="$mutex__client_8h.html" title=" " alt="" coords="413,266,520,293"/>
-<area shape="rect" id="node35" href="$mutex__server_8h.html" title=" " alt="" coords="277,266,389,293"/>
-<area shape="rect" id="node31" href="$macros_8h.html" title=" " alt="" coords="1842,534,1986,561"/>
-<area shape="rect" id="node32" href="$api_2hard__sync__mode_8h.html" title=" " alt="" coords="218,348,376,389"/>
-<area shape="rect" id="node34" href="$data__update__pack_8h.html" title=" " alt="" coords="32,348,194,389"/>
-<area shape="rect" id="node33" title=" " alt="" coords="83,445,140,471"/>
-<area shape="rect" id="node37" title=" " alt="" coords="1301,266,1341,293"/>
-<area shape="rect" id="node38" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="975,169,1134,211"/>
-<area shape="rect" id="node39" href="$graph_2distributed__edge_8h.html" title=" " alt="" coords="1118,259,1276,300"/>
-<area shape="rect" id="node46" href="$graph_2location__manager_8h.html" title=" " alt="" coords="899,259,1042,300"/>
-<area shape="rect" id="node49" href="$graph_2graph_8h.html" title=" " alt="" coords="1272,355,1413,382"/>
-<area shape="rect" id="node40" href="$graph_2edge_8h.html" title=" " alt="" coords="1382,445,1519,471"/>
-<area shape="rect" id="node41" href="$graph_2distributed__node_8h.html" title=" " alt="" coords="1510,348,1668,389"/>
-<area shape="rect" id="node42" href="$ptr__wrapper_8h.html" title=" " alt="" coords="1704,437,1831,479"/>
-<area shape="rect" id="node43" href="$graph_2node_8h.html" title=" " alt="" coords="1543,445,1680,471"/>
-<area shape="rect" id="node44" title=" " alt="" coords="1733,534,1808,561"/>
-<area shape="rect" id="node45" href="$utils_2callback_8h.html" title=" " alt="" coords="1560,534,1709,561"/>
-<area shape="rect" id="node47" href="$communication_2communication_8h.html" title=" " alt="" coords="816,437,967,479"/>
-<area shape="rect" id="node48" title=" " alt="" coords="889,534,950,561"/>
+<area shape="rect" id="node1" title=" " alt="" coords="637,5,795,47"/>
+<area shape="rect" id="node2" href="$hard__data__sync_8h.html" title=" " alt="" coords="741,177,867,203"/>
+<area shape="rect" id="node29" href="$hard__sync__mutex_8h.html" title=" " alt="" coords="367,177,503,203"/>
+<area shape="rect" id="node36" href="$hard__sync__linker_8h.html" title=" " alt="" coords="600,95,731,121"/>
+<area shape="rect" id="node50" href="$termination_8h.html" title=" " alt="" coords="1893,355,1990,382"/>
+<area shape="rect" id="node3" href="$api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="805,259,984,300"/>
+<area shape="rect" id="node25" href="$server__pack_8h.html" title=" " alt="" coords="613,355,717,382"/>
+<area shape="rect" id="node4" href="$api_2communication_2communication_8h.html" title=" " alt="" coords="552,527,723,568"/>
+<area shape="rect" id="node11" href="$api_2graph_2location__manager_8h.html" title=" " alt="" coords="1263,348,1427,389"/>
+<area shape="rect" id="node23" href="$load__balancing_8h.html" title=" " alt="" coords="1045,348,1187,389"/>
+<area shape="rect" id="node24" href="$sync__mode_8h.html" title=" " alt="" coords="377,437,538,479"/>
+<area shape="rect" id="node5" href="$distributed__id_8h.html" title=" " alt="" coords="534,616,741,643"/>
+<area shape="rect" id="node6" title=" " alt="" coords="1159,691,1238,717"/>
+<area shape="rect" id="node7" title=" " alt="" coords="415,691,545,717"/>
+<area shape="rect" id="node8" title=" " alt="" coords="570,691,625,717"/>
+<area shape="rect" id="node9" title=" " alt="" coords="649,691,709,717"/>
+<area shape="rect" id="node10" title=" " alt="" coords="733,691,816,717"/>
+<area shape="rect" id="node12" href="$api_2graph_2graph_8h.html" title=" " alt="" coords="1553,445,1716,471"/>
+<area shape="rect" id="node19" href="$api_2graph_2distributed__node_8h.html" title=" " alt="" coords="1027,437,1205,479"/>
+<area shape="rect" id="node13" title=" " alt="" coords="1717,534,1827,561"/>
+<area shape="rect" id="node14" href="$api_2graph_2node_8h.html" title=" " alt="" coords="1046,534,1205,561"/>
+<area shape="rect" id="node16" href="$id_8h.html" title=" " alt="" coords="1553,534,1693,561"/>
+<area shape="rect" id="node18" href="$api_2utils_2callback_8h.html" title=" " alt="" coords="1361,616,1532,643"/>
+<area shape="rect" id="node15" href="$api_2graph_2edge_8h.html" title=" " alt="" coords="1030,616,1189,643"/>
+<area shape="rect" id="node17" title=" " alt="" coords="1631,616,1686,643"/>
+<area shape="rect" id="node20" href="$api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="843,527,1021,568"/>
+<area shape="rect" id="node22" href="$mutex_8h.html" title=" " alt="" coords="347,534,527,561"/>
+<area shape="rect" id="node21" href="$location__state_8h.html" title=" " alt="" coords="875,616,989,643"/>
+<area shape="rect" id="node26" href="$client__server_8h.html" title=" " alt="" coords="715,445,851,471"/>
+<area shape="rect" id="node28" title=" " alt="" coords="1851,534,1970,561"/>
+<area shape="rect" id="node27" href="$enums_8h.html" title=" " alt="" coords="747,534,819,561"/>
+<area shape="rect" id="node30" href="$mutex__client_8h.html" title=" " alt="" coords="248,266,355,293"/>
+<area shape="rect" id="node35" href="$mutex__server_8h.html" title=" " alt="" coords="379,266,491,293"/>
+<area shape="rect" id="node31" href="$macros_8h.html" title=" " alt="" coords="113,534,257,561"/>
+<area shape="rect" id="node32" href="$api_2hard__sync__mode_8h.html" title=" " alt="" coords="331,348,488,389"/>
+<area shape="rect" id="node34" href="$data__update__pack_8h.html" title=" " alt="" coords="94,348,255,389"/>
+<area shape="rect" id="node33" title=" " alt="" coords="295,445,353,471"/>
+<area shape="rect" id="node37" title=" " alt="" coords="741,266,781,293"/>
+<area shape="rect" id="node38" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="950,169,1109,211"/>
+<area shape="rect" id="node39" href="$graph_2distributed__edge_8h.html" title=" " alt="" coords="1009,259,1167,300"/>
+<area shape="rect" id="node46" href="$graph_2location__manager_8h.html" title=" " alt="" coords="1395,259,1538,300"/>
+<area shape="rect" id="node49" href="$graph_2graph_8h.html" title=" " alt="" coords="1452,355,1593,382"/>
+<area shape="rect" id="node40" href="$graph_2edge_8h.html" title=" " alt="" coords="1230,445,1367,471"/>
+<area shape="rect" id="node41" href="$graph_2distributed__node_8h.html" title=" " alt="" coords="862,348,1021,389"/>
+<area shape="rect" id="node42" href="$ptr__wrapper_8h.html" title=" " alt="" coords="875,437,1002,479"/>
+<area shape="rect" id="node43" href="$graph_2node_8h.html" title=" " alt="" coords="1391,445,1529,471"/>
+<area shape="rect" id="node44" title=" " alt="" coords="1229,534,1304,561"/>
+<area shape="rect" id="node45" href="$utils_2callback_8h.html" title=" " alt="" coords="1328,534,1477,561"/>
+<area shape="rect" id="node47" href="$communication_2communication_8h.html" title=" " alt="" coords="1949,437,2099,479"/>
+<area shape="rect" id="node48" title=" " alt="" coords="1995,534,2056,561"/>
 </map>

@@ -35,6 +35,7 @@ endif()
 
 
 set(LOG_LEVEL FPMAS_LOG_WARN CACHE STRING "Log level")
+set(FPMAS_ID_TYPE "unsigned long" CACHE STRING "FPMAS ID type (unsigned)")
 message("-- LOG_LEVEL : ${LOG_LEVEL}")
 
 add_subdirectory(src)

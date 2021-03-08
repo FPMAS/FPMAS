@@ -401,7 +401,7 @@ TEST_F(SpatialAgentTest, agentBehavior) {
 	// Build NEW_MOVE layer
 	std::vector<AgentNode*> move_neighbors;
 	std::vector<AgentEdge*> move_neighbor_edges;
-	for(unsigned int i = 0; i < 10; i++) {
+	for(FPMAS_ID_TYPE i = 0; i < 10; i++) {
 		auto cell = new MockCell<NiceMock>;
 		auto node = new MockAgentNode<NiceMock>({0, i}, cell);
 		ON_CALL(*cell, node())
@@ -418,7 +418,7 @@ TEST_F(SpatialAgentTest, agentBehavior) {
 	// Build NEW_PERCEIVE layer
 	std::vector<AgentNode*> perceive_neighbors;
 	std::vector<AgentEdge*> perceive_neighbor_edges;
-	for(unsigned int i = 0; i < 10; i++) {
+	for(FPMAS_ID_TYPE i = 0; i < 10; i++) {
 		auto cell = new MockCell<NiceMock>;
 		auto node = new MockAgentNode<NiceMock>({0, i}, cell);
 		ON_CALL(*cell, node())

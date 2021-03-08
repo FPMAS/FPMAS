@@ -1,8 +1,0 @@
-<map id="fpmas::api::output::Output" name="fpmas::api::output::Output">
-<area shape="rect" id="node1" title=" " alt="" coords="5,79,132,120"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1output_1_1CsvOutputBase.html" title=" " alt="" coords="181,5,355,47"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1output_1_1CsvOutputBase.html" title=" " alt="" coords="180,71,356,127"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1output_1_1CsvOutputBase.html" title=" " alt="" coords="181,152,355,193"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1output_1_1CsvOutput.html" title=" " alt="" coords="428,5,601,47"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1output_1_1DistributedCsvOutput.html" title=" " alt="" coords="404,79,625,120"/>
-</map>

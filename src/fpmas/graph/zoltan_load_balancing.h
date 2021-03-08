@@ -15,6 +15,52 @@ namespace fpmas { namespace graph {
 	
 	namespace zoltan {
 		/**
+		 * In this case, a single ZOLTAN_ID_TYPE instance is enough to store an
+		 * FPMAS_ID_TYPE.
+		 *
+		 * So num_gid_entries() returns `2`, to store an
+		 * fpmas::api::graph::DistributedId instance (including the "rank"
+		 * part).
+		 */
+		template<
+			typename IdType = FPMAS_ID_TYPE,
+			typename std::enable_if<(sizeof(IdType) <= sizeof(ZOLTAN_ID_TYPE)), bool>::type = true>
+		static constexpr int num_gid_entries() {
+			return 2;
+		}
+		/**
+		 * In this case, a single ZOLTAN_ID_TYPE instance is **not** enough to store an
+		 * FPMAS_ID_TYPE.
+		 *
+		 * Since ZOLTAN_ID_TYPE and FPMAS_ID_TYPE sizes are necessarily 16, 32
+		 * or 64, `sizeof(FPMAS_ID_TYPE) / sizeof(ZOLTAN_ID_TYPE)` is
+		 * necessarily an integer, and represents the number of
+		 * ZOLTAN_ID_TYPE instances that are required to store a single
+		 * FPMAS_ID_TYPE. For example, if `sizeof(ZOLTAN_ID_TYPE)` is 32
+		 * and `sizeof(FPMAS_ID_TYPE)` is 64, we need 2 ZOLTAN_ID_TYPE
+		 * instances to store a single FPMAS_ID_TYPE.
+		 *
+		 * So num_gid_entries() returns `sizeof(FPMAS_ID_TYPE) /
+		 * sizeof(ZOLTAN_ID_TYPE) + 1` to store an
+		 * fpmas::api::graph::DistributedId instance (including the "rank"
+		 * part).
+		 */
+		template<
+			typename IdType = FPMAS_ID_TYPE,
+			typename std::enable_if<(sizeof(IdType) > sizeof(ZOLTAN_ID_TYPE)), bool>::type = true>
+		static constexpr int num_gid_entries() {
+			return sizeof(FPMAS_ID_TYPE) / sizeof(ZOLTAN_ID_TYPE) + 1;
+		}
+
+		/**
+		 * NUM_GID_ENTRIES Zoltan parameter.
+		 *
+		 * The value is automatically computed to be compatible with the
+		 * FPMAS_ID_TYPE.
+		 */
+		constexpr int NUM_GID_ENTRIES = num_gid_entries<>();
+
+		/**
 		 * Applies the FPMAS pre-defined Zoltan configuration to the provided
 		 * Zoltan instance.
 		 *

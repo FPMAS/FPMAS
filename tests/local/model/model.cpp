@@ -879,7 +879,7 @@ TEST_F(AgentBaseTest, out_neighbors) {
 TEST_F(AgentBaseTest, shuffle_out_neighbors) {
 	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> out_neighbors;
 	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> out_edges;
-	for(unsigned int i = 0; i < 1000; i++) {
+	for(FPMAS_ID_TYPE i = 0; i < 1000; i++) {
 		out_neighbors.push_back(new MockAgentNode<NiceMock>({0, i}, new DefaultMockAgentBase<8>));
 		out_edges.push_back(new MockAgentEdge<NiceMock>);
 		out_edges.back()->setTargetNode(out_neighbors.back());
@@ -955,7 +955,7 @@ TEST_F(AgentBaseTest, in_neighbors) {
 TEST_F(AgentBaseTest, shuffle_in_neighbors) {
 	std::vector<fpmas::api::graph::DistributedNode<AgentPtr>*> in_neighbors;
 	std::vector<fpmas::api::graph::DistributedEdge<AgentPtr>*> in_edges;
-	for(unsigned int i = 0; i < 1000; i++) {
+	for(FPMAS_ID_TYPE i = 0; i < 1000; i++) {
 		in_neighbors.push_back(new MockAgentNode<NiceMock>({0, i}, new DefaultMockAgentBase<8>));
 		in_edges.push_back(new MockAgentEdge<NiceMock>);
 		in_edges.back()->setSourceNode(in_neighbors.back());

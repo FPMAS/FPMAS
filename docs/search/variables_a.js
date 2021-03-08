@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ptr_1307',['ptr',['../classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#ae99a83391899f67e6e2e9779bc3a8819',1,'fpmas::api::utils::PtrWrapper']]]
+  ['num_5fgid_5fentries_1316',['NUM_GID_ENTRIES',['../zoltan__load__balancing_8h.html#af95733f89124974337a1602382bc0155',1,'fpmas::graph::zoltan']]]
 ];

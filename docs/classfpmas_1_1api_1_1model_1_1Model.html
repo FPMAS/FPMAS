@@ -123,6 +123,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab895d5a0523bc20c394098fea309b67c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa25176b21c9efb6daa1ab0a29d179d5f"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#aa25176b21c9efb6daa1ab0a29d179d5f">getMpiCommunicator</a> () const =0</td></tr>
 <tr class="separator:aa25176b21c9efb6daa1ab0a29d179d5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fc2aacb27a79625e27847ccdb266c1a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a0fc2aacb27a79625e27847ccdb266c1a">clear</a> ()=0</td></tr>
+<tr class="separator:a0fc2aacb27a79625e27847ccdb266c1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -753,6 +755,35 @@ Protected Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>MPI communicator </dd></dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a6f9245081c3e42560294587486f4ec2a">fpmas::model::detail::Model</a>.</p>
+
+</div>
+</div>
+<a id="a0fc2aacb27a79625e27847ccdb266c1a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0fc2aacb27a79625e27847ccdb266c1a">&#9670;&nbsp;</a></span>clear()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::model::Model::clear </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Erases all agents from the <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a>.</p>
+<p>This is assumed to be performed by all the processes in the same epoch, even if the operation itself does not necessarily requires communications (since it is assumed that all agents are erased from any process anyway). </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a05329bcadff3ecdb9be26ff38cf7ceae">fpmas::model::detail::Model</a>.</p>
 
 </div>
 </div>

@@ -85,12 +85,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a413336d079c79aeec4e77f75966b9ea6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d887c7dede86c1e5f84315558a2fe34"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a1d887c7dede86c1e5f84315558a2fe34">DistributedId</a> (int <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a57f698a2639f24de0a019e1c9902d5fb">rank</a>)</td></tr>
 <tr class="separator:a1d887c7dede86c1e5f84315558a2fe34"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af3244205451362649fde23bb94812458"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#af3244205451362649fde23bb94812458">DistributedId</a> (int <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a57f698a2639f24de0a019e1c9902d5fb">rank</a>, unsigned int <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#ae87cf2a0f118ce6bc35d7aa3e7ba52ac">id</a>)</td></tr>
-<tr class="separator:af3244205451362649fde23bb94812458"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a315efd404662a54d1ee18e2ea2900b77"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a315efd404662a54d1ee18e2ea2900b77">DistributedId</a> (int <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a57f698a2639f24de0a019e1c9902d5fb">rank</a>, unsigned long long <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a49b5c504b03fe339f7af5efa30207b4c">id</a>)</td></tr>
+<tr class="separator:a315efd404662a54d1ee18e2ea2900b77"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57f698a2639f24de0a019e1c9902d5fb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a57f698a2639f24de0a019e1c9902d5fb">rank</a> () const</td></tr>
 <tr class="separator:a57f698a2639f24de0a019e1c9902d5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae87cf2a0f118ce6bc35d7aa3e7ba52ac"><td class="memItemLeft" align="right" valign="top">unsigned int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#ae87cf2a0f118ce6bc35d7aa3e7ba52ac">id</a> () const</td></tr>
-<tr class="separator:ae87cf2a0f118ce6bc35d7aa3e7ba52ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49b5c504b03fe339f7af5efa30207b4c"><td class="memItemLeft" align="right" valign="top">unsigned long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a49b5c504b03fe339f7af5efa30207b4c">id</a> () const</td></tr>
+<tr class="separator:a49b5c504b03fe339f7af5efa30207b4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1948ef62f00cb4e9951faa92e57d9b7f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a1948ef62f00cb4e9951faa92e57d9b7f">operator++</a> (int)</td></tr>
 <tr class="separator:a1948ef62f00cb4e9951faa92e57d9b7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a044cc6d16e097b0ff87df3b390e78068"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a044cc6d16e097b0ff87df3b390e78068">operator&lt;</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;other) const</td></tr>
@@ -106,6 +106,12 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
+<tr class="memitem:ae7eaac11f48cd4c61b5c6964412b8600"><td class="memItemLeft" align="right" valign="top"><a id="ae7eaac11f48cd4c61b5c6964412b8600"></a>
+static int&#160;</td><td class="memItemRight" valign="bottom"><b>max_rank</b> = std::numeric_limits&lt;int&gt;::max()</td></tr>
+<tr class="separator:ae7eaac11f48cd4c61b5c6964412b8600"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30aa01a55282a15af7a748ff8fd056df"><td class="memItemLeft" align="right" valign="top"><a id="a30aa01a55282a15af7a748ff8fd056df"></a>
+static unsigned long long&#160;</td><td class="memItemRight" valign="bottom"><b>max_id</b> = std::numeric_limits&lt; unsigned long long &gt;::max()</td></tr>
+<tr class="separator:a30aa01a55282a15af7a748ff8fd056df"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6daab47e183372ec5c965c01410c7f3c"><td class="memItemLeft" align="right" valign="top">static MPI_Datatype&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a6daab47e183372ec5c965c01410c7f3c">mpiDistributedIdType</a></td></tr>
 <tr class="separator:a6daab47e183372ec5c965c01410c7f3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -113,7 +119,7 @@ Static Public Attributes</h2></td></tr>
 <div class="textblock"><p>Distributed <code>IdType</code> implementation, used by any DistibutedGraphBase.</p>
 <p>The id is represented through a pair of :</p><ol type="1">
 <li>The rank on which the item where created</li>
-<li>An incrementing local id of type <code>unsigned int</code> </li>
+<li>An incrementing local id of type <code>unsigned long long</code> </li>
 </ol>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a773bf9124de180c4c4a5b22ec858a052"></a>
@@ -209,8 +215,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="af3244205451362649fde23bb94812458"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af3244205451362649fde23bb94812458">&#9670;&nbsp;</a></span>DistributedId() <span class="overload">[4/4]</span></h2>
+<a id="a315efd404662a54d1ee18e2ea2900b77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a315efd404662a54d1ee18e2ea2900b77">&#9670;&nbsp;</a></span>DistributedId() <span class="overload">[4/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -227,7 +233,7 @@ Static Public Attributes</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramtype">unsigned long long&#160;</td>
           <td class="paramname"><em>id</em>&#160;</td>
         </tr>
         <tr>
@@ -281,8 +287,8 @@ Static Public Attributes</h2></td></tr>
 
 </div>
 </div>
-<a id="ae87cf2a0f118ce6bc35d7aa3e7ba52ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae87cf2a0f118ce6bc35d7aa3e7ba52ac">&#9670;&nbsp;</a></span>id()</h2>
+<a id="a49b5c504b03fe339f7af5efa30207b4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49b5c504b03fe339f7af5efa30207b4c">&#9670;&nbsp;</a></span>id()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -291,7 +297,7 @@ Static Public Attributes</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">unsigned int fpmas::api::graph::DistributedId::id </td>
+          <td class="memname">unsigned long long fpmas::api::graph::DistributedId::id </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>

@@ -28,18 +28,17 @@ class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
 					graph.buildNode();
 				}	
 				std::mt19937 engine;
-				std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) graph.getNodes().size()-1};
+				std::uniform_int_distribution<FPMAS_ID_TYPE> random_node(
+						0, (FPMAS_ID_TYPE) graph.getNodes().size()-1);
 				for(auto node : graph.getNodes()) {
 					for(int i = 0; i < 4; i++) {
 						graph.link(node.second, graph.getNode({0, random_node(engine)}), 0);
-
 					}
 				}
 
 				std::uniform_int_distribution<int> random_rank {0, graph.getMpiCommunicator().getSize()-1};
 				for(int i = 0; i < 10; i++) {
-					unsigned int rand = random_node(engine);
-					fixed_nodes[{0, rand}] = random_rank(engine);
+					fixed_nodes[{0, random_node(engine)}] = random_rank(engine);
 				}
 			}
 		}

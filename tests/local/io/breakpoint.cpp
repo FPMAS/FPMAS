@@ -114,9 +114,9 @@ TEST(Breakpoint, distributed_graph) {
 	fpmas::random::mt19937_64 rd;
 	// Some random ranks, different from the current process
 	fpmas::random::UniformIntDistribution<int> rd_rank(4, 7);
-	for(std::size_t i = 0; i < 5; i++) {
+	for(FPMAS_ID_TYPE i = 0; i < 5; i++) {
 		nodes.push_back(
-				graph.insertDistant(new fpmas::graph::DistributedNode<int>({2, (unsigned int) i}, i))
+				graph.insertDistant(new fpmas::graph::DistributedNode<int>({2, i}, i))
 				);
 		nodes.back()->setLocation(rd_rank(rd));
 	}

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['world_1317',['WORLD',['../namespacefpmas_1_1communication.html#a0cd77ee61dd8f7c45cc7d1e98e36bae8',1,'fpmas::communication']]]
+  ['updated_5fdata_1325',['updated_data',['../structfpmas_1_1synchro_1_1DataUpdatePack.html#aa858ec38abf0348afd447cbae5a923bb',1,'fpmas::synchro::DataUpdatePack']]],
+  ['updated_5fweight_1326',['updated_weight',['../structfpmas_1_1synchro_1_1NodeUpdatePack.html#aa58e6be9bfd047b3ea6b0c45f058b266',1,'fpmas::synchro::NodeUpdatePack']]]
 ];

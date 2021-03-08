@@ -97,10 +97,11 @@ Include dependency graph for serializer.h:</div>
 <area shape="rect" href="load__balancing_8h.html" title=" " alt="" coords="471,244,613,285"/>
 <area shape="rect" href="sync__mode_8h.html" title=" " alt="" coords="833,333,995,375"/>
 <area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="873,512,1080,539"/>
-<area shape="rect" title=" " alt="" coords="779,587,857,613"/>
-<area shape="rect" title=" " alt="" coords="966,587,1097,613"/>
-<area shape="rect" title=" " alt="" coords="1121,587,1176,613"/>
-<area shape="rect" title=" " alt="" coords="881,587,941,613"/>
+<area shape="rect" title=" " alt="" coords="765,587,844,613"/>
+<area shape="rect" title=" " alt="" coords="1138,587,1269,613"/>
+<area shape="rect" title=" " alt="" coords="868,587,923,613"/>
+<area shape="rect" title=" " alt="" coords="947,587,1007,613"/>
+<area shape="rect" title=" " alt="" coords="1031,587,1114,613"/>
 <area shape="rect" href="api_2graph_2graph_8h.html" title=" " alt="" coords="385,341,547,367"/>
 <area shape="rect" href="api_2graph_2distributed__node_8h.html" title=" " alt="" coords="630,333,809,375"/>
 <area shape="rect" title=" " alt="" coords="5,430,116,457"/>
@@ -113,7 +114,7 @@ Include dependency graph for serializer.h:</div>
 <area shape="rect" href="api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="683,423,862,464"/>
 <area shape="rect" href="mutex_8h.html" title=" " alt="" coords="887,430,1067,457"/>
 <area shape="rect" href="location__state_8h.html" title=" " alt="" coords="725,512,839,539"/>
-<area shape="rect" title=" " alt="" coords="682,587,754,613"/>
+<area shape="rect" title=" " alt="" coords="669,587,741,613"/>
 <area shape="rect" href="api_2scheduler_2scheduler_8h.html" title=" " alt="" coords="927,244,1066,285"/>
 </map>
 </div>
@@ -256,9 +257,9 @@ Functions</h2></td></tr>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentPtr_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a></div><div class="ttdef"><b>Definition:</b> model.h:51</div></div>
 <div class="ttc" id="anamespacefpmas_1_1model_html_a8f71c0752dd7ef3d33acab5b127c2ef8"><div class="ttname"><a href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">fpmas::model::to_json</a></div><div class="ttdeci">void to_json(nlohmann::json &amp;j, const AgentPtr &amp;ptr)</div><div class="ttdef"><b>Definition:</b> serializer.h:445</div></div>
 <div class="ttc" id="anamespacefpmas_1_1model_html_aac3ade94756b6fca35bf4df5784237cd"><div class="ttname"><a href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">fpmas::model::from_json</a></div><div class="ttdeci">AgentPtr from_json(const nlohmann::json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializer.h:493</div></div>
-<div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:254</div></div>
+<div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:270</div></div>
 </div><!-- fragment --><p>Defines the nlohmann specializations required to handle the JSON serialization of the specified set of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types.</p>
-<p>Notice that this is only the <em>definitions</em> of the <code>to_json</code> and <code>from_json</code> methods, that has already been defined in <a class="el" href="model_2model_8h.html">src/fpmas/model/model.h</a>.</p>
+<p>Notice that this is only the <em>definitions</em> of the <code>to_json</code> and <code>from_json</code> methods, that are declared (but not defined) in <a class="el" href="model_2model_8h.html">src/fpmas/model/model.h</a>.</p>
 <p>In consequence, this macro must be invoked exaclty once from a <b>source</b> file in any C++ target using FPMAS.</p>
 <p>This macro must be called <b>at the global definition level</b>.</p>
 <p>The same set of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types must be registered at runtime using the <a class="el" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES(...)</a> macro at runtime.</p>

@@ -3,6 +3,8 @@
 
 #include "fpmas/graph/zoltan_load_balancing.h"
 
+#define NUM_GID_ENTRIES fpmas::graph::zoltan::NUM_GID_ENTRIES
+
 using ::testing::AtLeast;
 using ::testing::AnyNumber;
 
@@ -15,6 +17,31 @@ using fpmas::graph::zoltan::edge_list_multi_fn;
 using fpmas::graph::zoltan::num_fixed_obj_fn;
 using fpmas::graph::zoltan::fixed_obj_list_fn;
 
+TEST(Zoltan, read_write_id) {
+	fpmas::api::graph::DistributedId id(12, 34578);
+
+	ZOLTAN_ID_TYPE zoltan_id[NUM_GID_ENTRIES];
+	fpmas::graph::zoltan::write_zoltan_id(id, zoltan_id);
+
+	fpmas::api::graph::DistributedId read_id
+		= fpmas::graph::zoltan::read_zoltan_id(zoltan_id);
+
+	ASSERT_EQ(id, read_id);
+}
+
+TEST(Zoltan, read_write_id_overflow) {
+	fpmas::api::graph::DistributedId max_id(
+			fpmas::api::graph::DistributedId::max_rank,
+			fpmas::api::graph::DistributedId::max_id);
+
+	ZOLTAN_ID_TYPE zoltan_id[NUM_GID_ENTRIES];
+	fpmas::graph::zoltan::write_zoltan_id(max_id, zoltan_id);
+
+	fpmas::api::graph::DistributedId read_id
+		= fpmas::graph::zoltan::read_zoltan_id(zoltan_id);
+
+	ASSERT_EQ(max_id, read_id);
+}
 
 class ZoltanFunctionsTest : public ::testing::Test {
 	protected:
@@ -39,7 +66,7 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		// Fake Zoltan buffers
 		
 		// Node lists
-		unsigned int global_ids[6];
+		unsigned int global_ids[3*NUM_GID_ENTRIES];
 		unsigned int* local_ids;
 		float weights[3];
 
@@ -106,7 +133,7 @@ class ZoltanFunctionsTest : public ::testing::Test {
 			EXPECT_CALL(*nodes[id3], getWeight).Times(1);
 			obj_list<int>(
 					&nodes,
-					2,
+					NUM_GID_ENTRIES,
 					0,
 					global_ids,
 					local_ids,
@@ -130,7 +157,7 @@ class ZoltanFunctionsTest : public ::testing::Test {
 
 			num_edges_multi_fn<int>(
 					&nodes,
-					2,
+					NUM_GID_ENTRIES,
 					0,
 					3,
 					global_ids,
@@ -149,9 +176,9 @@ TEST_F(ZoltanFunctionsTest, num_obj) {
 TEST_F(ZoltanFunctionsTest, obj_list_fn_test) {
 	write_zoltan_global_ids();
 
-	ASSERT_EQ(read_zoltan_id(&global_ids[2 * nodeIndex[id1]]), id1);
-	ASSERT_EQ(read_zoltan_id(&global_ids[2 * nodeIndex[id2]]), id2);
-	ASSERT_EQ(read_zoltan_id(&global_ids[2 * nodeIndex[id3]]), id3);
+	ASSERT_EQ(read_zoltan_id(&global_ids[NUM_GID_ENTRIES * nodeIndex[id1]]), id1);
+	ASSERT_EQ(read_zoltan_id(&global_ids[NUM_GID_ENTRIES * nodeIndex[id2]]), id2);
+	ASSERT_EQ(read_zoltan_id(&global_ids[NUM_GID_ENTRIES * nodeIndex[id3]]), id3);
 }
 
 
@@ -184,13 +211,13 @@ TEST_F(ZoltanFunctionsTest, edge_list_multi_test) {
 	EXPECT_CALL(*mockEdge2, getWeight).Times(AtLeast(1));
 	EXPECT_CALL(*mockEdge3, getWeight).Times(AtLeast(1));
 
-	unsigned int nbor_global_id[6];
+	unsigned int nbor_global_id[3*NUM_GID_ENTRIES];
 	int nbor_procs[3];
 	float ewgts[3];
 
 	edge_list_multi_fn<int>(
 			&nodes,
-			2,
+			NUM_GID_ENTRIES,
 			0,
 			3,
 			global_ids,
@@ -206,15 +233,15 @@ TEST_F(ZoltanFunctionsTest, edge_list_multi_test) {
 	int node1_offset = nodeIndex[id1] < nodeIndex[id2] ? 0 : 1;
 	int node2_offset = nodeIndex[id1] < nodeIndex[id2] ? 2 : 0;
 
-	ASSERT_EQ(read_zoltan_id(&nbor_global_id[(node1_offset) * 2]), id2);
+	ASSERT_EQ(read_zoltan_id(&nbor_global_id[(node1_offset) * NUM_GID_ENTRIES]), id2);
 	ASSERT_EQ(ewgts[node1_offset], 1.5f);
 	ASSERT_EQ(nbor_procs[node1_offset], 3);
 
-	ASSERT_EQ(read_zoltan_id(&nbor_global_id[(node1_offset + 1) * 2]), id3);
+	ASSERT_EQ(read_zoltan_id(&nbor_global_id[(node1_offset + 1) * NUM_GID_ENTRIES]), id3);
 	ASSERT_EQ(ewgts[node1_offset+1], 3.f);
 	ASSERT_EQ(nbor_procs[node1_offset+1], 5);
 
-	ASSERT_EQ(read_zoltan_id(&nbor_global_id[node2_offset * 2]), id1);
+	ASSERT_EQ(read_zoltan_id(&nbor_global_id[node2_offset * NUM_GID_ENTRIES]), id1);
 	ASSERT_EQ(ewgts[node2_offset], 2.f);
 	ASSERT_EQ(nbor_procs[node2_offset], 0);
 }
@@ -240,20 +267,20 @@ TEST_F(ZoltanFunctionsTest, fixed_obj_list) {
 		node_index[node.first] = index++;
 	}
 
-	unsigned int fixed_ids[6];
+	unsigned int fixed_ids[3*NUM_GID_ENTRIES];
 	int fixed_parts[3];
 	fixed_obj_list_fn<int>(
 			&map,
 			3,
-			2,
+			NUM_GID_ENTRIES,
 			fixed_ids,
 			fixed_parts,
 			&err
 			);
 
-	ASSERT_EQ(read_zoltan_id(&fixed_ids[2 * node_index[id1]]), id1);
-	ASSERT_EQ(read_zoltan_id(&fixed_ids[2 * node_index[id2]]), id2);
-	ASSERT_EQ(read_zoltan_id(&fixed_ids[2 * node_index[id3]]), id3);
+	ASSERT_EQ(read_zoltan_id(&fixed_ids[NUM_GID_ENTRIES * node_index[id1]]), id1);
+	ASSERT_EQ(read_zoltan_id(&fixed_ids[NUM_GID_ENTRIES * node_index[id2]]), id2);
+	ASSERT_EQ(read_zoltan_id(&fixed_ids[NUM_GID_ENTRIES * node_index[id3]]), id3);
 
 	ASSERT_EQ(fixed_parts[node_index[id1]], 7);
 	ASSERT_EQ(fixed_parts[node_index[id2]], 2);

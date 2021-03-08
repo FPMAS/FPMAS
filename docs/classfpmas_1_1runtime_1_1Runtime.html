@@ -108,6 +108,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a023e3e08f333e599f9863a135efae5fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae80edd27565b8b1cbcf0233aaa061119"><td class="memItemLeft" align="right" valign="top">Date&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">currentDate</a> () const override</td></tr>
 <tr class="separator:ae80edd27565b8b1cbcf0233aaa061119"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ffc12923b412f17d9045ae0b0a20a8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#a6ffc12923b412f17d9045ae0b0a20a8c">setCurrentDate</a> (Date date) override</td></tr>
+<tr class="separator:a6ffc12923b412f17d9045ae0b0a20a8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> implementation. </p>
@@ -169,13 +171,17 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Alias for <code>run(0, end)</code>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Runs jobs from <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">currentDate()</a> to end, excluded.</p>
+<p>Equivalent to </p><div class="fragment"><div class="line">this-&gt;<a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#a257c7abf301188d04b23248c84a8dbae">run</a>(this-&gt;<a class="code" href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">currentDate</a>(), end);</div>
+<div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html_a257c7abf301188d04b23248c84a8dbae"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html#a257c7abf301188d04b23248c84a8dbae">fpmas::runtime::Runtime::run</a></div><div class="ttdeci">void run(Date end) override</div><div class="ttdef"><b>Definition:</b> runtime.cpp:15</div></div>
+<div class="ttc" id="aclassfpmas_1_1runtime_1_1Runtime_html_ae80edd27565b8b1cbcf0233aaa061119"><div class="ttname"><a href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">fpmas::runtime::Runtime::currentDate</a></div><div class="ttdeci">Date currentDate() const override</div><div class="ttdef"><b>Definition:</b> runtime.h:39</div></div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">end</td><td>end date </td></tr>
+    <tr><td class="paramname">end</td><td>end date</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#a82621c12507a8bf0b205e60fec9a4d84">run(Date, Date)</a> </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html#a47d4954c8da167dab75612e6fbee3047">fpmas::api::runtime::Runtime</a>.</p>
 
@@ -215,7 +221,8 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p>Runs jobs from start, included, to end, excluded.</p>
-<p>The <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a> is currently base on a unit time step. In consequence, the <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a> will execute jobs at dates <code>start</code>, <code>start+1</code> and <code>start+n</code> for any integer n such that <code>start+n &lt; end</code>.</p>
+<p>The <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a> is currently based on a unit time step. In consequence, the <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a> will execute jobs at dates <code>start</code>, <code>start+1</code> and <code>start+n</code> for any integer n such that <code>start+n &lt; end</code>.</p>
+<p>At the end of the execution, <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#ae80edd27565b8b1cbcf0233aaa061119">currentDate()</a> is reinitialized to 0.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">start</td><td>start date </td></tr>
@@ -321,9 +328,46 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Current internal date of the runtime. </p>
+<p>Current internal date of the runtime.</p>
+<p>The current date is initialized to 0 when a <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a> is built.</p>
+<dl class="section return"><dt>Returns</dt><dd>current date of this <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a> </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html#a7264a42ca0256668394d58c500445ad0">fpmas::api::runtime::Runtime</a>.</p>
+
+</div>
+</div>
+<a id="a6ffc12923b412f17d9045ae0b0a20a8c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ffc12923b412f17d9045ae0b0a20a8c">&#9670;&nbsp;</a></span>setCurrentDate()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::runtime::Runtime::setCurrentDate </td>
+          <td>(</td>
+          <td class="paramtype">Date&#160;</td>
+          <td class="paramname"><em>date</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the internal date of this <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html">Runtime</a>, so that the next call to <a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#a257c7abf301188d04b23248c84a8dbae">run(Date)</a> will start to run jobs from <code>date</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">date</td><td>new date </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html#a6ce196e0d98a348fa473129b632273b5">fpmas::api::runtime::Runtime</a>.</p>
 
 </div>
 </div>

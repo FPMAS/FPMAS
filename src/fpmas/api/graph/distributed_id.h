@@ -5,12 +5,25 @@
  * DistributedId implementation.
  */
 
-#define ID_TYPE unsigned long long
+#ifndef FPMAS_ID_TYPE
+	#define FPMAS_ID_TYPE unsigned long long
+#endif
 
 #include <functional>
 #include <nlohmann/json.hpp>
 #include <mpi.h>
 #include <climits>
+#include <type_traits>
+
+static_assert(
+		std::is_integral<FPMAS_ID_TYPE>::value,
+		"FPMAS_ID_TYPE must be an unsigned integer."
+		);
+static_assert(
+		std::is_unsigned<FPMAS_ID_TYPE>::value,
+		"FPMAS_ID_TYPE must be unsigned."
+		);
+
 
 namespace fpmas { namespace api { namespace graph {
 	class DistributedId;
@@ -31,7 +44,7 @@ namespace fpmas { namespace api { namespace communication {
 		/**
 		 * Local id
 		 */
-		ID_TYPE id;
+		FPMAS_ID_TYPE id;
 	};
 }}}
 
@@ -55,9 +68,12 @@ namespace fpmas { namespace api { namespace graph {
 
 		private:
 			int _rank;
-			ID_TYPE _id;
+			FPMAS_ID_TYPE _id;
 
 		public:
+			static int max_rank;
+			static FPMAS_ID_TYPE max_id;
+
 			/**
 			 * MPI_Datatype used to send and receive DistributedIds.
 			 *
@@ -95,7 +111,7 @@ namespace fpmas { namespace api { namespace graph {
 			 * @param rank MPI rank
 			 * @param id initial local id value
 			 */
-			DistributedId(int rank, ID_TYPE id) : _rank(rank), _id(id) {}
+			DistributedId(int rank, FPMAS_ID_TYPE id) : _rank(rank), _id(id) {}
 
 			/**
 			 * Rank associated to this DistributedId instance.
@@ -111,7 +127,7 @@ namespace fpmas { namespace api { namespace graph {
 			 *
 			 * @return local id
 			 */
-			ID_TYPE id() const {
+			FPMAS_ID_TYPE id() const {
 				return _id;
 			}
 
@@ -181,7 +197,7 @@ namespace fpmas { namespace api { namespace graph {
 			 * @return hash value
 			 */
 			std::size_t hash() const {
-				return std::hash<ID_TYPE>()(_rank);
+				return std::hash<FPMAS_ID_TYPE>()(_rank);
 			}
 	};
 
@@ -280,7 +296,7 @@ namespace nlohmann {
 			static DistributedId from_json(const json& j) {
 				return DistributedId(
 						j[0].get<int>(),
-						j[1].get<ID_TYPE>()
+						j[1].get<FPMAS_ID_TYPE>()
 						);
 			}
 		};
