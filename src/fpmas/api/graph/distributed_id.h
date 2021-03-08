@@ -197,7 +197,7 @@ namespace fpmas { namespace api { namespace graph {
 			 * @return hash value
 			 */
 			std::size_t hash() const {
-				return std::hash<FPMAS_ID_TYPE>()(_rank);
+				return std::hash<FPMAS_ID_TYPE>()(_id);
 			}
 	};
 
