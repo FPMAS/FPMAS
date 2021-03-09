@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['zoltan_5fload_5fbalancing_2eh_670',['zoltan_load_balancing.h',['../zoltan__load__balancing_8h.html',1,'']]],
-  ['zoltanloadbalancing_671',['ZoltanLoadBalancing',['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html',1,'fpmas::graph::ZoltanLoadBalancing&lt; T &gt;'],['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a801e515edf4bb13fe2151e9f2e707c25',1,'fpmas::graph::ZoltanLoadBalancing::ZoltanLoadBalancing()'],['../namespacefpmas_1_1model_1_1detail.html#a7aee66cb197cb771785532ace85b4a22',1,'fpmas::model::detail::ZoltanLoadBalancing()']]],
-  ['zoltanloadbalancing_3c_20agentptr_20_3e_672',['ZoltanLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html',1,'fpmas::graph']]]
+  ['zoltan_5fconfig_676',['zoltan_config',['../namespacefpmas_1_1graph_1_1zoltan.html#a5dba3e09b1c68378547b22a77e78431f',1,'fpmas::graph::zoltan']]],
+  ['zoltan_5fload_5fbalancing_2eh_677',['zoltan_load_balancing.h',['../zoltan__load__balancing_8h.html',1,'']]],
+  ['zoltandata_678',['ZoltanData',['../structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html',1,'fpmas::graph::zoltan']]],
+  ['zoltanloadbalancing_679',['ZoltanLoadBalancing',['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html',1,'fpmas::graph::ZoltanLoadBalancing&lt; T &gt;'],['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a801e515edf4bb13fe2151e9f2e707c25',1,'fpmas::graph::ZoltanLoadBalancing::ZoltanLoadBalancing()'],['../namespacefpmas_1_1model_1_1detail.html#a7aee66cb197cb771785532ace85b4a22',1,'fpmas::model::detail::ZoltanLoadBalancing()']]],
+  ['zoltanloadbalancing_3c_20agentptr_20_3e_680',['ZoltanLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html',1,'fpmas::graph']]]
 ];

@@ -100,8 +100,6 @@ Collaboration diagram for fpmas::graph::ZoltanLoadBalancing&lt; T &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a801e515edf4bb13fe2151e9f2e707c25"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a801e515edf4bb13fe2151e9f2e707c25">ZoltanLoadBalancing</a> (<a class="el" href="classfpmas_1_1communication_1_1MpiCommunicator.html">communication::MpiCommunicator</a> &amp;comm)</td></tr>
 <tr class="separator:a801e515edf4bb13fe2151e9f2e707c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab6137bc94ebaba213ff58a2396edfbba"><td class="memItemLeft" align="right" valign="top">const std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#ab6137bc94ebaba213ff58a2396edfbba">getNodes</a> () const</td></tr>
-<tr class="separator:ab6137bc94ebaba213ff58a2396edfbba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ab28c34273f2d9c0da6443249ef5e7d"><td class="memItemLeft" align="right" valign="top">PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8ab28c34273f2d9c0da6443249ef5e7d">balance</a> (NodeMap&lt; T &gt; nodes, PartitionMap fixed_vertices) override</td></tr>
 <tr class="separator:a8ab28c34273f2d9c0da6443249ef5e7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef65a29932d06a728fbd45433e62b3e8"><td class="memItemLeft" align="right" valign="top">PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">balance</a> (NodeMap&lt; T &gt; nodes) override</td></tr>
@@ -152,36 +150,6 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="ab6137bc94ebaba213ff58a2396edfbba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab6137bc94ebaba213ff58a2396edfbba">&#9670;&nbsp;</a></span>getNodes()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const std::unordered_map&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, T&gt; <a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">fpmas::graph::ZoltanLoadBalancing</a>&lt; T &gt;::getNodes </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns nodes currently balanced.</p>
-<p>Used by the previously defined zoltan callback functions to retrieve the current node map.</p>
-<dl class="section return"><dt>Returns</dt><dd>nodes to balance </dd></dl>
-
-</div>
-</div>
 <a id="a8ab28c34273f2d9c0da6443249ef5e7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8ab28c34273f2d9c0da6443249ef5e7d">&#9670;&nbsp;</a></span>balance() <span class="overload">[1/2]</span></h2>
 
