@@ -345,6 +345,14 @@ namespace fpmas {namespace api {namespace graph {
 			 * @param callback set local node callback
 			 */
 			virtual void addCallOnSetLocal(NodeCallback* callback) = 0;
+
+			/**
+			 * Current set local callbacks list.
+			 *
+			 * @return set local callbacks
+			 */
+			virtual std::vector<NodeCallback*> onSetLocalCallbacks() const = 0;
+
 			/**
 			 * Adds a set \DISTANT callback.
 			 *
@@ -358,6 +366,13 @@ namespace fpmas {namespace api {namespace graph {
 			 * @param callback set distant node callback
 			 */
 			virtual void addCallOnSetDistant(NodeCallback* callback) = 0;
+
+			/**
+			 * Current set distant callbacks list.
+			 *
+			 * @return set distant callbacks
+			 */
+			virtual std::vector<NodeCallback*> onSetDistantCallbacks() const = 0;
 
 			/**
 			 * Balances the graph across processors using the specified lb

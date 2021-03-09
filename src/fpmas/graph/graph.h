@@ -65,7 +65,7 @@ namespace fpmas { namespace graph {
 					insert_node_callbacks.push_back(callback);
 				}
 
-				std::vector<api::utils::Callback<NodeType*>*> onInsertNodeCallbacks() const {
+				std::vector<api::utils::Callback<NodeType*>*> onInsertNodeCallbacks() const override {
 					return insert_node_callbacks;
 				}
 
@@ -73,7 +73,7 @@ namespace fpmas { namespace graph {
 					erase_node_callbacks.push_back(callback);
 				}
 
-				std::vector<api::utils::Callback<NodeType*>*> onEraseNodeCallbacks() const {
+				std::vector<api::utils::Callback<NodeType*>*> onEraseNodeCallbacks() const override {
 					return erase_node_callbacks;
 				}
 
@@ -81,7 +81,7 @@ namespace fpmas { namespace graph {
 					insert_edge_callbacks.push_back(callback);
 				}
 
-				std::vector<api::utils::Callback<EdgeType*>*> onInsertEdgeCallbacks() const {
+				std::vector<api::utils::Callback<EdgeType*>*> onInsertEdgeCallbacks() const override {
 					return insert_edge_callbacks;
 				}
 
@@ -89,7 +89,7 @@ namespace fpmas { namespace graph {
 					erase_edge_callbacks.push_back(callback);
 				}
 
-				std::vector<api::utils::Callback<EdgeType*>*> onEraseEdgeCallbacks() const {
+				std::vector<api::utils::Callback<EdgeType*>*> onEraseEdgeCallbacks() const override {
 					return erase_edge_callbacks;
 				}
 

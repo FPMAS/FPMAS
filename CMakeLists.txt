@@ -68,7 +68,7 @@ find_package(Doxygen)
 if(DOXYGEN_FOUND)
 	file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
 	set(DOXYGEN_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs)
-	set(DOXYGEN_MACRO_EXPANSION "YES")
+	#set(DOXYGEN_MACRO_EXPANSION "YES")
 	set(DOXYGEN_HTML_OUTPUT ".")
 	set(DOXYGEN_IMAGE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/docs/img)
 	#set(DOXYGEN_CLANG_ASSISTED_PARSING "YES")
@@ -76,8 +76,12 @@ if(DOXYGEN_FOUND)
 	set(DOXYGEN_SORT_MEMBER_DOCS "NO")
 	set(DOXYGEN_PREDEFINED "DOXYGEN_BUILD")
 	set(DOXYGEN_ALIASES
+		[[FPMAS_ID_TYPE="\ref FPMAS_ID_TYPE"]]
 		[[LOCAL="\ref fpmas::api::graph::LocationState \"LOCAL\""]]
 		[[DISTANT="\ref fpmas::api::graph::LocationState \"DISTANT\""]]
+		[[DistributedGraph="\ref fpmas::api::graph::DistributedGraph \"DistributedGraph\""]]
+		[[DistributedNodes="\ref fpmas::api::graph::DistributedNode \"DistributedNodes\""]]
+		[[DistributedEdges="\ref fpmas::api::graph::DistributedEdge \"DistributedEdges\""]]
 		[[Agent="\ref fpmas::api::model::Agent \"Agent\""]]
 		[[Agents="\ref fpmas::api::model::Agent \"Agents\""]]
 		[[SpatialAgent="\ref fpmas::api::model::SpatialAgent \"SpatialAgent\""]]
@@ -97,6 +101,7 @@ if(DOXYGEN_FOUND)
 		[[AgentTask="\ref fpmas::api::model::AgentTask \"AgentTask\""]]
 		[[AgentTasks="\ref fpmas::api::model::AgentTask \"AgentTasks\""]]
 		[[AgentNode="\ref fpmas::api::model::AgentNode \"AgentNode\""]]
+		[[Model="\ref fpmas::api::model::Model \"Model\""]]
 		[[Job="\ref fpmas::api::scheduler::Job \"Job\""]]
 		[[Jobs="\ref fpmas::api::scheduler::Job \"Jobs\""]]
 		[[JobList="\ref fpmas::api::scheduler::JobList \"JobList\""]]

@@ -122,14 +122,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab991e8add47eb0e6f9786273614f16db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5f8bdb0a5dcb8192cc13022cb8dd13a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#ad5f8bdb0a5dcb8192cc13022cb8dd13a">unlockUnlink</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> edge_id) override</td></tr>
 <tr class="separator:ad5f8bdb0a5dcb8192cc13022cb8dd13a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a67284317f609ed87a7db36dd860773fd"><td class="memItemLeft" align="right" valign="top"><a id="a67284317f609ed87a7db36dd860773fd"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>lockRemoveNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> node_id) override</td></tr>
+<tr class="memitem:a67284317f609ed87a7db36dd860773fd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#a67284317f609ed87a7db36dd860773fd">lockRemoveNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> node_id) override</td></tr>
 <tr class="separator:a67284317f609ed87a7db36dd860773fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afa67cedaca96b4a167de36896273d876"><td class="memItemLeft" align="right" valign="top"><a id="afa67cedaca96b4a167de36896273d876"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>isLockedRemoveNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> node_id) override</td></tr>
+<tr class="memitem:afa67cedaca96b4a167de36896273d876"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#afa67cedaca96b4a167de36896273d876">isLockedRemoveNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> node_id) override</td></tr>
 <tr class="separator:afa67cedaca96b4a167de36896273d876"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81120007d120c4cdccb1f38801d6c340"><td class="memItemLeft" align="right" valign="top"><a id="a81120007d120c4cdccb1f38801d6c340"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>unlockRemoveNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> node_id) override</td></tr>
+<tr class="memitem:a81120007d120c4cdccb1f38801d6c340"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#a81120007d120c4cdccb1f38801d6c340">unlockRemoveNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> node_id) override</td></tr>
 <tr class="separator:a81120007d120c4cdccb1f38801d6c340"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -468,6 +465,118 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html#a93d76c0d9aa8a1346d0b41fd7b05a286">fpmas::synchro::hard::api::LinkServer</a>.</p>
+
+</div>
+</div>
+<a id="a67284317f609ed87a7db36dd860773fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67284317f609ed87a7db36dd860773fd">&#9670;&nbsp;</a></span>lockRemoveNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html">fpmas::synchro::hard::LinkServer</a>&lt; T &gt;::lockRemoveNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&#160;</td>
+          <td class="paramname"><em>node_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Locks a remove operation on a local node, represented by <code>node_id</code>.</p>
+<p>This should be called as soon as possible when the remove node operation is initialized. Incoming unlink or remove operations received while the local remove node operation is locked will then be handled consistently to avoid unexpected behaviors.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node_id</td><td>id of the local node to remove </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html#af0c8c6ad5112fc95b54c28844657e455">fpmas::synchro::hard::api::LinkServer</a>.</p>
+
+</div>
+</div>
+<a id="afa67cedaca96b4a167de36896273d876"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afa67cedaca96b4a167de36896273d876">&#9670;&nbsp;</a></span>isLockedRemoveNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html">fpmas::synchro::hard::LinkServer</a>&lt; T &gt;::isLockedRemoveNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&#160;</td>
+          <td class="paramname"><em>node_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Checks if a remove operation is locked on the local node represented by <code>node_id</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node_id</td><td>local node id </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html#a8ff1fc541356c939b6f00bd28b358f2e">fpmas::synchro::hard::api::LinkServer</a>.</p>
+
+</div>
+</div>
+<a id="a81120007d120c4cdccb1f38801d6c340"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81120007d120c4cdccb1f38801d6c340">&#9670;&nbsp;</a></span>unlockRemoveNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1LinkServer.html">fpmas::synchro::hard::LinkServer</a>&lt; T &gt;::unlockRemoveNode </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&#160;</td>
+          <td class="paramname"><em>node_id</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Unlocks a remove node operation previously applied on the local node represented by <code>node_id</code>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">node_id</td><td>local node id </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1LinkServer.html#ac6bcf4c2e08376acb52dae90622ddf16">fpmas::synchro::hard::api::LinkServer</a>.</p>
 
 </div>
 </div>

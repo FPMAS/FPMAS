@@ -845,8 +845,17 @@ namespace fpmas { namespace model {
 
 	using api::model::AgentGroup;
 
+	/**
+	 * \Model fpmas::io::Breakpoint specialization.
+	 */
 	typedef io::Breakpoint<api::model::Model> Breakpoint;
 
+	/**
+	 * An utility class that can be used to easily schedule \Model breakpoints.
+	 *
+	 * A job() is built to automatically dump the specified model to a file
+	 * when it is executed.
+	 */
 	class AutoBreakpoint {
 		private:
 			std::string file_format;
@@ -865,6 +874,26 @@ namespace fpmas { namespace model {
 			scheduler::Job _job {{task}};
 
 		public:
+			/**
+			 * AutoBreakpoint constructor.
+			 *
+			 * The specified `file_format` is formatted using the
+			 * fpmas::utils::format(std::string, int, fpmas::api::scheduler::TimeStep)
+			 * method, so that `%r` and `%t` occurrences in the `file_format`
+			 * are automatically replaced by the current process rank and the
+			 * current date to generate file names.
+			 *
+			 * Since breakpoints can quickly grow in size, a good practice is
+			 * to use a `file_format` such as `"breakpoint.%r.bin"`, that does
+			 * not depend on `"%t"`. This way, the last dump always overrides the
+			 * previous, what might save a consequent amount of memory, while
+			 * still allowing to recover from the most recent breakpoint in
+			 * case of crash.
+			 *
+			 * @param file_format File name format
+			 * @param breakpoint Breakpoint instance used to perform dumps
+			 * @param model Model on which breakpoints are performed
+			 */
 			AutoBreakpoint(
 					std::string file_format,
 					api::io::Breakpoint<api::model::Model>& breakpoint,
@@ -872,20 +901,85 @@ namespace fpmas { namespace model {
 				: file_format(file_format), breakpoint(breakpoint), model(model) {
 				}
 
+			/**
+			 * A \Job that can be scheduled to automatically dump model breakpoints.
+			 *
+			 * @see fpmas::api::scheduler::Scheduler
+			 */
 			const api::scheduler::Job& job() const {return _job;}
 	};
 }}
 
 namespace nlohmann {
+	/**
+	 * fpmas::api::model::AgentPtr JSON serialization rules **declaration**.
+	 *
+	 * `to_json` and `from_json` methods must be _defined_ by the user at compile time,
+	 * depending on its own Agent types, using the FPMAS_JSON_SET_UP() macro,
+	 * that must be called from a **source** file. Otherwise, linker errors
+	 * will be thrown.
+	 */
 	template<>
 		struct adl_serializer<fpmas::api::model::AgentPtr> {
-			static void to_json(json& j, const fpmas::api::model::AgentPtr& data);
+			/**
+			 * Serializes the \Agent represented by `pointer` to the specified
+			 * JSON `j`.
+			 *
+			 * Notice that since \Agent is polymorphic, the actual `to_json`
+			 * call that corresponds to the most derived type of the specified
+			 * \Agent is resolved at runtime.
+			 *
+			 * @param j json output
+			 * @param pointer pointer to polymorphic \Agent
+			 */
+			static void to_json(json& j, const fpmas::api::model::AgentPtr& pointer);
+
+			/**
+			 * Unserializes an \Agent from the specified JSON `j`.
+			 *
+			 * The built \Agent is dynamically allocated, but is automatically
+			 * managed by the fpmas::api::model::AgentPtr wrapper.
+			 *
+			 * Since \Agent is polymorphic, the concrete type that should be
+			 * instantiated from the input JSON `j` is determined at runtime.
+			 *
+			 * @param j input json
+			 * @return dynamically allocated \Agent, unserialized from `j`,
+			 * wrapped in an fpmas::api::model::AgentPtr instance
+			 */
 			static fpmas::api::model::AgentPtr from_json(const json& j);
 		};
 
+	/**
+	 * \Model JSON serialization rules.
+	 */
 	template<>
 		struct adl_serializer<fpmas::api::model::Model> {
+			/**
+			 * Serializes the specified `model` to the json `j`.
+			 *
+			 * The complete underlying \DistributedGraph is dumped in the json, as long as
+			 * the current \Runtime status.
+			 *
+			 * @param j json output
+			 * @param model \Model to serialize
+			 *
+			 * \see \ref nlohmann_adl_serializer_DistributedGraph_to_json "nlohmann::adl_serializer<fpmas::api::graph::DistributedGraph<T>>::to_json()"
+			 */
 			static void to_json(json& j, const fpmas::api::model::Model& model);
+
+			/**
+			 * Loads data from the input json to the specified `model`.
+			 *
+			 * The \DistributedGraph contained in `j` is loaded into
+			 * `model.graph()`, and the `model.runtime()` current date is set
+			 * to the value saved in the json.
+			 *
+			 * @param j input json
+			 * @param model \Model in which data from `j` will be loaded
+			 *
+			 * \see \ref nlohmann_adl_serializer_DistributedGraph_from_json "nlohmann::adl_serializer<fpmas::api::graph::DistributedGraph<T>>::from_json()"
+			 */
 			static void from_json(const json& j, fpmas::api::model::Model& model);
 		};
 }

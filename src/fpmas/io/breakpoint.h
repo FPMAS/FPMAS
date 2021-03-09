@@ -1,6 +1,12 @@
 #ifndef FPMAS_BREAKPOINT_H
 #define FPMAS_BREAKPOINT_H
 
+/**
+ * \file src/fpmas/io/breakpoint.h
+ *
+ * fpmas::api::io::Breakpoint implementations.
+ */
+
 #include <iostream>
 
 #include "fpmas/api/io/breakpoint.h"

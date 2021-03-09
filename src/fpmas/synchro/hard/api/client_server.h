@@ -414,8 +414,31 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 			 */
 			virtual void unlockUnlink(DistributedId edge_id) = 0;
 
+			/**
+			 * Locks a remove operation on a local node, represented by
+			 * `node_id`.
+			 *
+			 * This should be called as soon as possible when the remove node
+			 * operation is initialized. Incoming unlink or remove operations
+			 * received while the local remove node operation is locked will
+			 * then be handled consistently to avoid unexpected behaviors.
+			 *
+			 * @param node_id id of the local node to remove
+			 */
 			virtual void lockRemoveNode(DistributedId node_id) = 0;
+			/**
+			 * Checks if a remove operation is locked on the local node
+			 * represented by `node_id`.
+			 *
+			 * @param node_id local node id
+			 */
 			virtual bool isLockedRemoveNode(DistributedId node_id) = 0;
+			/**
+			 * Unlocks a remove node operation previously applied on the local
+			 * node represented by `node_id`.
+			 *
+			 * @param node_id local node id
+			 */
 			virtual void unlockRemoveNode(DistributedId node_id) = 0;
 	};
 

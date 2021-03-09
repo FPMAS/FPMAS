@@ -4,6 +4,12 @@
 #include <istream>
 #include <ostream>
 
+/**
+ * \file src/fpmas/api/io/breakpoint.h
+ *
+ * fpmas::api::io::Breakpoint related interfaces.
+ */
+
 namespace fpmas { namespace api { namespace io {
 	/**
 	 * Breakpoint API.

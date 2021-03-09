@@ -6,7 +6,27 @@
  */
 
 #ifndef FPMAS_ID_TYPE
-	#define FPMAS_ID_TYPE unsigned long long
+	/**
+	 * Type used to represent the "id" part of an fpmas::api::graph::DistributedId.
+	 *
+	 * This type defines the maximum count of Nodes and Edges that might be created
+	 * during a single simulation. (e.g. 65535 for a 16 bit unsigned integer)
+	 *
+	 * It can be user defined at compile time using
+	 * `cmake -DFPMAS_ID_TYPE=<unsigned integer type> ..`
+	 *
+	 * By default, the `unsigned long` type is used, that can be 32 or 64 bit
+	 * depending on systems.
+	 *
+	 * Any unsigned integer type can be specified. The std::uintN_t like
+	 * types defined in the [C++
+	 * standard](https://en.cppreference.com/w/cpp/types/integer) can notably
+	 * be used to fix the \FPMAS_ID_TYPE size independently of the underlying
+	 * system.
+	 *
+	 * FPMAS currently supports 16, 32 and 64 unsigned integer types.
+	 */
+	#define FPMAS_ID_TYPE unsigned long
 #endif
 
 #include <functional>
@@ -57,11 +77,11 @@ using fpmas::api::communication::MpiDistributedId;
 namespace fpmas { namespace api { namespace graph {
 
 	/**
-	 * Distributed `IdType` implementation, used by any DistibutedGraphBase.
+	 * Distributed `IdType` implementation, used by any \DistributedGraph.
 	 *
-	 * The id is represented through a pair of :
+	 * The id is represented by a pair constituted by:
 	 * 1. The rank on which the item where created
-	 * 2. An incrementing local id of type `unsigned long long`
+	 * 2. An incrementing local id of type \FPMAS_ID_TYPE
 	 */
 	class DistributedId {
 		friend nlohmann::adl_serializer<DistributedId>;
@@ -71,7 +91,20 @@ namespace fpmas { namespace api { namespace graph {
 			FPMAS_ID_TYPE _id;
 
 		public:
+			/**
+			 * The maximum rank that can be represented.
+			 */
 			static int max_rank;
+			/**
+			 * The maximum id that can be represented.
+			 *
+			 * This can be controlled defining a custom \FPMAS_ID_TYPE.
+			 *
+			 * Overflows, that might occur if the \FPMAS_ID_TYPE is not large
+			 * enough to represent ids of all \DistributedNodes and
+			 * \DistributedEdges created during a single simulation, will
+			 * produce unexpected behaviors.
+			 */
 			static FPMAS_ID_TYPE max_id;
 
 			/**

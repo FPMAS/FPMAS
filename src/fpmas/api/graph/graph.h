@@ -132,11 +132,25 @@ namespace fpmas { namespace api { namespace graph {
 				virtual void addCallOnInsertNode(api::utils::Callback<NodeType*>* callback) = 0;
 
 				/**
+				 * Current insert node callbacks list.
+				 *
+				 * @return insert node callbacks
+				 */
+				virtual std::vector<api::utils::Callback<NodeType*>*> onInsertNodeCallbacks() const = 0;
+
+				/**
 				 * Adds an erase node callback, called on erase(NodeType*).
 				 *
 				 * @param callback insert node callback
 				 */
 				virtual void addCallOnEraseNode(api::utils::Callback<NodeType*>* callback) = 0;
+
+				/**
+				 * Current erase node callbacks list.
+				 *
+				 * @return erase node callbacks
+				 */
+				virtual std::vector<api::utils::Callback<NodeType*>*> onEraseNodeCallbacks() const = 0;
 
 				/**
 				 * Adds an insert edge callback, called on insert(EdgeType*).
@@ -146,11 +160,25 @@ namespace fpmas { namespace api { namespace graph {
 				virtual void addCallOnInsertEdge(api::utils::Callback<EdgeType*>* callback) = 0;
 
 				/**
+				 * Current insert edge callbacks list.
+				 *
+				 * @return insert edge callbacks
+				 */
+				virtual std::vector<api::utils::Callback<EdgeType*>*> onInsertEdgeCallbacks() const = 0;
+
+				/**
 				 * Adds an erase edge callback, called on erase(EdgeType*).
 				 *
 				 * @param callback erase edge callback
 				 */
 				virtual void addCallOnEraseEdge(api::utils::Callback<EdgeType*>* callback) = 0;
+
+				/**
+				 * Current erase edge callbacks list.
+				 *
+				 * @return erase edge callbacks
+				 */
+				virtual std::vector<api::utils::Callback<EdgeType*>*> onEraseEdgeCallbacks() const = 0;
 
 				// Node getters
 				/**

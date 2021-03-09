@@ -73,16 +73,111 @@ $(function() {
 <div class="title">nlohmann::adl_serializer&lt; fpmas::api::model::Model &gt; Struct Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="model_2model_8h_source.html">model.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a3aefa6225128c57688131fd8068884e2"><td class="memItemLeft" align="right" valign="top"><a id="a3aefa6225128c57688131fd8068884e2"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> (json &amp;j, const <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a> &amp;model)</td></tr>
+<tr class="memitem:a3aefa6225128c57688131fd8068884e2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1model_1_1Model_01_4.html#a3aefa6225128c57688131fd8068884e2">to_json</a> (json &amp;j, const <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a> &amp;model)</td></tr>
 <tr class="separator:a3aefa6225128c57688131fd8068884e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a39b173eb9ca79bc43a8b46e9d153874e"><td class="memItemLeft" align="right" valign="top"><a id="a39b173eb9ca79bc43a8b46e9d153874e"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>from_json</b> (const json &amp;j, <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a> &amp;model)</td></tr>
+<tr class="memitem:a39b173eb9ca79bc43a8b46e9d153874e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1model_1_1Model_01_4.html#a39b173eb9ca79bc43a8b46e9d153874e">from_json</a> (const json &amp;j, <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a> &amp;model)</td></tr>
 <tr class="separator:a39b173eb9ca79bc43a8b46e9d153874e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a> JSON serialization rules. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a3aefa6225128c57688131fd8068884e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3aefa6225128c57688131fd8068884e2">&#9670;&nbsp;</a></span>to_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nlohmann::adl_serializer&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a> &gt;::to_json </td>
+          <td>(</td>
+          <td class="paramtype">json &amp;&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a> &amp;&#160;</td>
+          <td class="paramname"><em>model</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Serializes the specified <code>model</code> to the json <code>j</code>.</p>
+<p>The complete underlying <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> is dumped in the json, as long as the current <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">Runtime</a> status.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">j</td><td>json output </td></tr>
+    <tr><td class="paramname">model</td><td><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a> to serialize</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#nlohmann_adl_serializer_DistributedGraph_to_json">nlohmann::adl_serializer&lt;fpmas::api::graph::DistributedGraph&lt;T&gt;&gt;::to_json()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a39b173eb9ca79bc43a8b46e9d153874e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a39b173eb9ca79bc43a8b46e9d153874e">&#9670;&nbsp;</a></span>from_json()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void nlohmann::adl_serializer&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a> &gt;::from_json </td>
+          <td>(</td>
+          <td class="paramtype">const json &amp;&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">fpmas::api::model::Model</a> &amp;&#160;</td>
+          <td class="paramname"><em>model</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Loads data from the input json to the specified <code>model</code>.</p>
+<p>The <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> contained in <code>j</code> is loaded into <code>model.graph()</code>, and the <code>model.runtime()</code> current date is set to the value saved in the json.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">j</td><td>input json </td></tr>
+    <tr><td class="paramname">model</td><td><a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a> in which data from <code>j</code> will be loaded</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#nlohmann_adl_serializer_DistributedGraph_from_json">nlohmann::adl_serializer&lt;fpmas::api::graph::DistributedGraph&lt;T&gt;&gt;::from_json()</a> </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following files:<ul>
 <li>src/fpmas/model/<a class="el" href="model_2model_8h_source.html">model.h</a></li>
 <li>src/fpmas/model/model.cpp</li>

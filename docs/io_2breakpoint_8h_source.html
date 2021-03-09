@@ -70,44 +70,45 @@ $(function() {
 <div class="title">breakpoint.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_BREAKPOINT_H</span></div>
+<a href="io_2breakpoint_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_BREAKPOINT_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define FPMAS_BREAKPOINT_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;fpmas/api/io/breakpoint.h&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;nlohmann/json.hpp&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>io {</div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1Breakpoint.html">   20</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1io_1_1Breakpoint.html">Breakpoint</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">api::io::Breakpoint</a>&lt;T&gt; {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1Breakpoint.html#a5faae863a64c6c8c5f20aff0b0cf3b80">   33</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1Breakpoint.html#a5faae863a64c6c8c5f20aff0b0cf3b80">dump</a>(std::ostream&amp; stream, <span class="keyword">const</span> T&amp; <span class="keywordtype">object</span>)<span class="keyword"> override </span>{</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;                    nlohmann::json j;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                    <a class="code" href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">nlohmann::json::json_serializer&lt;T, void&gt;::to_json</a>(j, <span class="keywordtype">object</span>);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                    std::vector&lt;uint8_t&gt; data = nlohmann::json::to_msgpack(j);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> i : data)</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                        <span class="comment">// Conversion from uint8_t to char</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                        stream.put(i);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                }</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1Breakpoint.html#ad727a74902d79270242057bcfc7d62fd">   60</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1Breakpoint.html#ad727a74902d79270242057bcfc7d62fd">load</a>(std::istream&amp; stream, T&amp; <span class="keywordtype">object</span>)<span class="keyword"> override </span>{</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                    std::vector&lt;uint8_t&gt; data;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;                    <span class="comment">// Conversion from char to uint8_t</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                    <span class="keywordflow">for</span>(<span class="keywordtype">char</span> i; stream.get(i);)</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                        data.push_back(i);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                    nlohmann::json j = nlohmann::json::from_msgpack(data);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                    <a class="code" href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">nlohmann::json::json_serializer&lt;T, void&gt;::from_json</a>(j, <span class="keywordtype">object</span>);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                }</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        };</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;}}</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1io_1_1Breakpoint_html"><div class="ttname"><a href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">fpmas::api::io::Breakpoint</a></div><div class="ttdef"><b>Definition:</b> breakpoint.h:20</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1Breakpoint_html"><div class="ttname"><a href="classfpmas_1_1io_1_1Breakpoint.html">fpmas::io::Breakpoint</a></div><div class="ttdef"><b>Definition:</b> breakpoint.h:20</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1Breakpoint_html_a5faae863a64c6c8c5f20aff0b0cf3b80"><div class="ttname"><a href="classfpmas_1_1io_1_1Breakpoint.html#a5faae863a64c6c8c5f20aff0b0cf3b80">fpmas::io::Breakpoint::dump</a></div><div class="ttdeci">void dump(std::ostream &amp;stream, const T &amp;object) override</div><div class="ttdef"><b>Definition:</b> breakpoint.h:33</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1Breakpoint_html_ad727a74902d79270242057bcfc7d62fd"><div class="ttname"><a href="classfpmas_1_1io_1_1Breakpoint.html#ad727a74902d79270242057bcfc7d62fd">fpmas::io::Breakpoint::load</a></div><div class="ttdeci">void load(std::istream &amp;stream, T &amp;object) override</div><div class="ttdef"><b>Definition:</b> breakpoint.h:60</div></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="api_2io_2breakpoint_8h.html">fpmas/api/io/breakpoint.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;nlohmann/json.hpp&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>io {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1Breakpoint.html">   26</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1io_1_1Breakpoint.html">Breakpoint</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">api::io::Breakpoint</a>&lt;T&gt; {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1Breakpoint.html#a5faae863a64c6c8c5f20aff0b0cf3b80">   39</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1Breakpoint.html#a5faae863a64c6c8c5f20aff0b0cf3b80">dump</a>(std::ostream&amp; stream, <span class="keyword">const</span> T&amp; <span class="keywordtype">object</span>)<span class="keyword"> override </span>{</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                    nlohmann::json j;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;                    <a class="code" href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">nlohmann::json::json_serializer&lt;T, void&gt;::to_json</a>(j, <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                    std::vector&lt;uint8_t&gt; data = nlohmann::json::to_msgpack(j);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> i : data)</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;                        <span class="comment">// Conversion from uint8_t to char</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                        stream.put(i);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;                }</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1Breakpoint.html#ad727a74902d79270242057bcfc7d62fd">   66</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1Breakpoint.html#ad727a74902d79270242057bcfc7d62fd">load</a>(std::istream&amp; stream, T&amp; <span class="keywordtype">object</span>)<span class="keyword"> override </span>{</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;                    std::vector&lt;uint8_t&gt; data;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;                    <span class="comment">// Conversion from char to uint8_t</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;                    <span class="keywordflow">for</span>(<span class="keywordtype">char</span> i; stream.get(i);)</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                        data.push_back(i);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                    nlohmann::json j = nlohmann::json::from_msgpack(data);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                    <a class="code" href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">nlohmann::json::json_serializer&lt;T, void&gt;::from_json</a>(j, <span class="keywordtype">object</span>);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                }</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        };</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;}}</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aapi_2io_2breakpoint_8h_html"><div class="ttname"><a href="api_2io_2breakpoint_8h.html">breakpoint.h</a></div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1io_1_1Breakpoint_html"><div class="ttname"><a href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">fpmas::api::io::Breakpoint</a></div><div class="ttdef"><b>Definition:</b> breakpoint.h:26</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1Breakpoint_html"><div class="ttname"><a href="classfpmas_1_1io_1_1Breakpoint.html">fpmas::io::Breakpoint</a></div><div class="ttdef"><b>Definition:</b> breakpoint.h:26</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1Breakpoint_html_a5faae863a64c6c8c5f20aff0b0cf3b80"><div class="ttname"><a href="classfpmas_1_1io_1_1Breakpoint.html#a5faae863a64c6c8c5f20aff0b0cf3b80">fpmas::io::Breakpoint::dump</a></div><div class="ttdeci">void dump(std::ostream &amp;stream, const T &amp;object) override</div><div class="ttdef"><b>Definition:</b> breakpoint.h:39</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1Breakpoint_html_ad727a74902d79270242057bcfc7d62fd"><div class="ttname"><a href="classfpmas_1_1io_1_1Breakpoint.html#ad727a74902d79270242057bcfc7d62fd">fpmas::io::Breakpoint::load</a></div><div class="ttdeci">void load(std::istream &amp;stream, T &amp;object) override</div><div class="ttdef"><b>Definition:</b> breakpoint.h:66</div></div>
 <div class="ttc" id="anamespacefpmas_1_1model_html_a8f71c0752dd7ef3d33acab5b127c2ef8"><div class="ttname"><a href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">fpmas::model::to_json</a></div><div class="ttdeci">void to_json(nlohmann::json &amp;j, const AgentPtr &amp;ptr)</div><div class="ttdef"><b>Definition:</b> serializer.h:445</div></div>
 <div class="ttc" id="anamespacefpmas_1_1model_html_aac3ade94756b6fca35bf4df5784237cd"><div class="ttname"><a href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">fpmas::model::from_json</a></div><div class="ttdeci">AgentPtr from_json(const nlohmann::json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializer.h:493</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.cpp:3</div></div>

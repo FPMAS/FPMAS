@@ -70,25 +70,25 @@ $(function() {
 <div class="title">breakpoint.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_BREAKPOINT_API_H</span></div>
+<a href="api_2io_2breakpoint_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef FPMAS_BREAKPOINT_API_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define FPMAS_BREAKPOINT_API_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
 <div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;istream&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;ostream&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>api { <span class="keyword">namespace </span>io {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">   20</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">Breakpoint</a> {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a725fda5d778dfebf3d5a989a39839b63">   28</a></span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a725fda5d778dfebf3d5a989a39839b63">dump</a>(std::ostream&amp; stream, <span class="keyword">const</span> T&amp; <span class="keywordtype">object</span>) = 0;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a3ebf38430500bad9ee5ed2557195491f">   43</a></span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a3ebf38430500bad9ee5ed2557195491f">load</a>(std::istream&amp; stream, T&amp; <span class="keywordtype">object</span>) = 0;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">Breakpoint</a>() {}</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        };</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}}}</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1io_1_1Breakpoint_html"><div class="ttname"><a href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">fpmas::api::io::Breakpoint</a></div><div class="ttdef"><b>Definition:</b> breakpoint.h:20</div></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>api { <span class="keyword">namespace </span>io {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">   26</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">Breakpoint</a> {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a725fda5d778dfebf3d5a989a39839b63">   34</a></span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a725fda5d778dfebf3d5a989a39839b63">dump</a>(std::ostream&amp; stream, <span class="keyword">const</span> T&amp; <span class="keywordtype">object</span>) = 0;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a3ebf38430500bad9ee5ed2557195491f">   49</a></span>&#160;                <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a3ebf38430500bad9ee5ed2557195491f">load</a>(std::istream&amp; stream, T&amp; <span class="keywordtype">object</span>) = 0;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;                <span class="keyword">virtual</span> ~<a class="code" href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">Breakpoint</a>() {}</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        };</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;}}}</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1io_1_1Breakpoint_html"><div class="ttname"><a href="classfpmas_1_1api_1_1io_1_1Breakpoint.html">fpmas::api::io::Breakpoint</a></div><div class="ttdef"><b>Definition:</b> breakpoint.h:26</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1io_1_1Breakpoint_html_a3ebf38430500bad9ee5ed2557195491f"><div class="ttname"><a href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a3ebf38430500bad9ee5ed2557195491f">fpmas::api::io::Breakpoint::load</a></div><div class="ttdeci">virtual void load(std::istream &amp;stream, T &amp;object)=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1io_1_1Breakpoint_html_a725fda5d778dfebf3d5a989a39839b63"><div class="ttname"><a href="classfpmas_1_1api_1_1io_1_1Breakpoint.html#a725fda5d778dfebf3d5a989a39839b63">fpmas::api::io::Breakpoint::dump</a></div><div class="ttdeci">virtual void dump(std::ostream &amp;stream, const T &amp;object)=0</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.cpp:3</div></div>

@@ -269,14 +269,14 @@ namespace fpmas { namespace graph {
 				void addCallOnSetLocal(NodeCallback* callback) override {
 					set_local_callbacks.push_back(callback);
 				};
-				std::vector<NodeCallback*> onSetLocalCallbacks() const {
+				std::vector<NodeCallback*> onSetLocalCallbacks() const override {
 					return set_local_callbacks;
 				}
 
 				void addCallOnSetDistant(NodeCallback* callback) override {
 					set_distant_callbacks.push_back(callback);
 				};
-				std::vector<NodeCallback*> onSetDistantCallbacks() const {
+				std::vector<NodeCallback*> onSetDistantCallbacks() const override {
 					return set_distant_callbacks;
 				}
 
@@ -778,16 +778,20 @@ namespace fpmas { namespace graph {
 
 namespace nlohmann {
 	/**
+	 *
 	 * Defines Json serialization rules for generic
 	 * fpmas::api::graph::DistributedGraph instances.
 	 *
 	 * This notably enables the usage of fpmas::io::Breakpoint with
 	 * fpmas::api::graph::DistributedGraph instances.
+	 *
 	 */
 	template<typename T>
 		struct adl_serializer<fpmas::api::graph::DistributedGraph<T>> {
 
 			/**
+			 * \anchor nlohmann_adl_serializer_DistributedGraph_to_json
+			 *
 			 * Serializes `graph` to the json `j`.
 			 *
 			 * @param j json output
@@ -815,6 +819,8 @@ namespace nlohmann {
 			}
 
 			/**
+			 * \anchor nlohmann_adl_serializer_DistributedGraph_from_json
+			 *
 			 * Unserializes the json `j` into the specified `graph`.
 			 *
 			 * Nodes and edges read from the Json file are imported into the
