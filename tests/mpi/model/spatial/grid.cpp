@@ -20,9 +20,11 @@ class VonNeumannGridBuilderTest : public Test {
 					fpmas::communication::WORLD);
 
 			std::vector<fpmas::model::DiscretePoint> local_cell_coordinates;
-			for(auto cell : grid_model.cells())
+			for(auto cell : grid_model.cells()) {
+				fpmas::model::ReadGuard read(cell);
 				local_cell_coordinates.push_back(
 						dynamic_cast<fpmas::api::model::GridCell*>(cell)->location());
+			}
 
 			std::vector<std::vector<fpmas::api::model::DiscretePoint>> recv_coordinates
 				= mpi.gather(local_cell_coordinates, 0);
@@ -42,12 +44,15 @@ class VonNeumannGridBuilderTest : public Test {
 			}
 
 			for(auto grid_cell : cells) {
+				fpmas::model::ReadGuard read(grid_cell);
 				auto location = grid_cell->location();
 				auto cell_successors = grid_cell->successors();
 				std::vector<fpmas::model::DiscretePoint> neighbor_points;
-				for(auto cell : cell_successors)
+				for(auto cell : cell_successors) {
+					fpmas::model::ReadGuard read(cell);
 					neighbor_points.push_back(
 							dynamic_cast<fpmas::api::model::GridCell*>(cell)->location());
+				}
 
 				if(location.x > 0 && location.x < X-1
 						&& location.y > 0 && location.y < Y-1) {
@@ -104,6 +109,7 @@ class VonNeumannGridBuilderTest : public Test {
 				}
 			}
 
+			grid_model.graph().synchronize();
 		}
 };
 

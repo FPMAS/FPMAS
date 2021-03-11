@@ -8,6 +8,7 @@
 #include "fpmas/api/graph/distributed_node.h"
 #include "fpmas/api/utils/ptr_wrapper.h"
 #include "fpmas/graph/node.h"
+#include "fpmas/io/json.h"
 
 namespace fpmas { namespace graph {
 
@@ -119,4 +120,23 @@ namespace nlohmann {
 			}
 		};
 }
+
+namespace fpmas { namespace io { namespace json {
+	using fpmas::graph::NodePtrWrapper;
+
+	template<typename T>
+		struct light_serializer<NodePtrWrapper<T>> {
+			static void to_json(nlohmann::json& j, const NodePtrWrapper<T>& node) {
+				j["id"] = node->getId();
+				light_serializer<T>::to_json(j["data"], node->data());
+			}
+
+			static NodePtrWrapper<T> from_json(const nlohmann::json& j) {
+				return {new fpmas::graph::DistributedNode<T>(
+						j["id"].get<fpmas::graph::DistributedId>(),
+						light_serializer<T>::from_json(j["data"]))
+				};
+			}
+		};
+}}}
 #endif

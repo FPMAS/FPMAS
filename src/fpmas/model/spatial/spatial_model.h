@@ -147,6 +147,7 @@ namespace fpmas {
 
 			void add(CellType* cell) override;
 			std::vector<CellType*> cells() override;
+			fpmas::api::model::AgentGroup& cellGroup() override;
 			MoveAgentGroup<CellType>& buildMoveGroup(
 					api::model::GroupId id,
 					const api::model::Behavior& behavior) override;
@@ -163,6 +164,11 @@ namespace fpmas {
 			for(auto agent : cell_group->localAgents())
 				cells.push_back(dynamic_cast<CellType*>(agent));
 			return cells;
+		}
+
+	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
+		fpmas::api::model::AgentGroup& SpatialModel<SyncMode, CellType, EndCondition>::cellGroup() {
+			return *cell_group;
 		}
 
 	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
@@ -195,6 +201,9 @@ namespace fpmas {
 		public model::AgentBase<AgentType, SpatialAgentBase<AgentType, CellType, Derived>> {
 			friend nlohmann::adl_serializer<
 				api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
+			friend fpmas::io::json::light_serializer<
+				api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
+
 
 			public:
 			/**
@@ -415,8 +424,10 @@ namespace fpmas {
 
 			CurrentOutLayer move_layer(this, SpatialModelLayers::MOVE);
 
+			fpmas::model::ReadGuard read_location(this->locationCell());
 			for(auto cell : this->template outNeighbors<CellType>(
 						SpatialModelLayers::NEW_MOVE)) {
+				fpmas::model::ReadGuard read_cell(cell);
 				if(!move_layer.contains(cell)
 						&& this->mobility_range->contains(this->locationCell(), cell))
 					move_layer.link(cell);
@@ -600,5 +611,32 @@ namespace nlohmann {
 			}
 		};
 }
+
+namespace fpmas { namespace io { namespace json {
+	template<typename AgentType, typename CellType, typename Derived>
+		struct light_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
+			/**
+			 * Pointer wrapper to a polymorphic SpatialAgentBase.
+			 */
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
+			
+			static void to_json(nlohmann::json& j, const Ptr& ptr) {
+				// Derived serialization
+				light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::to_json(
+						j,
+						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get()))
+						);
+			}
+
+			static Ptr from_json(const nlohmann::json& j) {
+				// Derived unserialization.
+				// The current base is implicitly default initialized
+				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
+					= light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::from_json(j);
+				return derived_ptr.get();
+			}
+		};
+
+}}}
 
 #endif

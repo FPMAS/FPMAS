@@ -20,6 +20,10 @@ namespace fpmas {
 						ptr->typeId().name());
 				throw exceptions::BadTypeException(ptr->typeId());
 			}
+		template<>
+			void to_light_json<void>(nlohmann::json& j, const AgentPtr& ptr) {
+				to_json<void>(j, ptr);
+			}
 
 		template<> 
 			AgentPtr from_json<void>(const nlohmann::json& j) {
@@ -29,6 +33,10 @@ namespace fpmas {
 						"the Agent type with FPMAS_JSON_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",
 						id);
 				throw exceptions::BadIdException(id);
+			}
+		template<>
+			AgentPtr from_light_json<void>(const nlohmann::json& j) {
+				return from_json<void>(j);
 			}
 	}
 }

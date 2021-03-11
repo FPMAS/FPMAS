@@ -485,6 +485,9 @@ namespace fpmas { namespace api { namespace model {
 			 * @return local \Cells list
 			 */
 			virtual std::vector<CellType*> cells() = 0;
+
+			virtual AgentGroup& cellGroup() = 0;
+
 			/**
 			 * Builds an agent group that automatically includes the
 			 * DistributedMoveAlgorithm execution.

@@ -58,6 +58,7 @@ namespace model { namespace test {
 		public:
 			int data;
 
+			GridAgentWithData() {}
 			GridAgentWithData(int data)
 				: data(data) {}
 

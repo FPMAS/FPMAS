@@ -79,6 +79,7 @@ class AbstractMockSpatialModel : public fpmas::api::model::SpatialModel<CellType
 	public:
 		MOCK_METHOD(void, add, (CellType*), (override));
 		MOCK_METHOD(std::vector<CellType*>, cells, (), (override));
+		MOCK_METHOD(fpmas::api::model::AgentGroup&, cellGroup, (), (override));
 		MOCK_METHOD(fpmas::api::model::MoveAgentGroup<CellType>&, buildMoveGroup,
 				(fpmas::model::GroupId, const fpmas::api::model::Behavior&), (override));
 };

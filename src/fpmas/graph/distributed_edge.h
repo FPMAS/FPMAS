@@ -58,6 +58,34 @@ namespace nlohmann {
 	template<typename T>
 		struct adl_serializer<EdgePtrWrapper<T>> {
 			/**
+			 * DistributedEdge json serialization.
+			 *
+			 * @param j json
+			 * @param edge wrapper of pointer to the DistributedEdge to serialize
+			 */
+			static void to_json(json& j, const EdgePtrWrapper<T>& edge) {
+				j["id"] = edge->getId();
+				j["layer"] = edge->getLayer();
+				j["weight"] = edge->getWeight();
+				j["src"] = {{}, edge->getSourceNode()->location()};
+				NodePtrWrapper<T> src(edge->getSourceNode());
+				fpmas::io::json::light_serializer<NodePtrWrapper<T>>::to_json(j["src"][0], src);
+				j["tgt"] = {{}, edge->getTargetNode()->location()};
+				NodePtrWrapper<T> tgt(edge->getTargetNode());
+				fpmas::io::json::light_serializer<NodePtrWrapper<T>>::to_json(j["tgt"][0], tgt);
+				/*
+				 *j["src"] = {
+				 *    edge->getSourceNode()->getId(),
+				 *    edge->getSourceNode()->location()
+				 *};
+				 *j["tgt"] = {
+				 *    edge->getTargetNode()->getId(),
+				 *    edge->getTargetNode()->location()
+				 *};
+				 */
+			}
+
+			/**
 			 * DistributedEdge json unserialization.
 			 *
 			 * @param j json
@@ -75,32 +103,31 @@ namespace nlohmann {
 				};
 				edge->setWeight(j.at("weight").get<float>());
 
-				NodePtrWrapper<T> src = j.at("src").get<NodePtrWrapper<T>>();
+				NodePtrWrapper<T> src = fpmas::io::json::light_serializer<NodePtrWrapper<T>>::from_json(j.at("src")[0]);
+				/*
+				 *NodePtrWrapper<T> src = {
+				 *    new fpmas::graph::DistributedNode<T>(
+				 *        j.at("src").at(0).get<DistributedId>(), {}
+				 *        )
+				 *};
+				 */
+				src->setLocation(j.at("src")[1].get<int>());
 				edge->setSourceNode(src);
 				src->linkOut(edge);
-				src->setLocation(j.at("src_loc").get<int>());
 
-				NodePtrWrapper<T> tgt = j.at("tgt").get<NodePtrWrapper<T>>();
+				NodePtrWrapper<T> tgt = fpmas::io::json::light_serializer<NodePtrWrapper<T>>::from_json(j.at("tgt")[0]);
+				/*
+				 *NodePtrWrapper<T> tgt = {
+				 *    new fpmas::graph::DistributedNode<T>(
+				 *        j.at("tgt").at(0).get<DistributedId>(), {}
+				 *        )
+				 *};
+				 */
+				tgt->setLocation(j.at("tgt")[1].get<int>());
+
 				edge->setTargetNode(tgt);
 				tgt->linkIn(edge);
-				tgt->setLocation(j.at("tgt_loc").get<int>());
 				return edge;
-			}
-
-			/**
-			 * DistributedEdge json serialization.
-			 *
-			 * @param j json
-			 * @param edge wrapper of pointer to the DistributedEdge to serialize
-			 */
-			static void to_json(json& j, const EdgePtrWrapper<T>& edge) {
-				j["id"] = edge->getId();
-				j["layer"] = edge->getLayer();
-				j["weight"] = edge->getWeight();
-				j["src"] = NodePtrWrapper<T>(edge->getSourceNode());
-				j["src_loc"] = edge->getSourceNode()->location();
-				j["tgt"] = NodePtrWrapper<T>(edge->getTargetNode());
-				j["tgt_loc"] = edge->getTargetNode()->location();
 			}
 		};
 }

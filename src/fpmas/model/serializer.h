@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include "fpmas/api/model/model.h"
 #include "fpmas/utils/log.h"
+#include "fpmas/io/json.h"
 
 /**
  * Registers the specified \Agent types so that they can be serialized as JSON
@@ -78,6 +79,12 @@
 		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>::from_json(const json& j) {\
 			return std::move(fpmas::model::from_json<__VA_ARGS__, void>(j));\
 		}\
+	}\
+	void fpmas::io::json::light_serializer<fpmas::api::model::AgentPtr>::to_json(nlohmann::json& j, const fpmas::api::model::AgentPtr& data) {\
+		fpmas::model::to_light_json<__VA_ARGS__, void>(j, data);\
+	}\
+	fpmas::api::model::AgentPtr fpmas::io::json::light_serializer<fpmas::api::model::AgentPtr>::from_json(const nlohmann::json& j) {\
+		return std::move(fpmas::model::from_light_json<__VA_ARGS__, void>(j));\
 	}\
 
 /**
@@ -364,6 +371,20 @@ namespace nlohmann {
 		};
 }
 
+namespace fpmas { namespace io { namespace json {
+
+	 template<typename AgentType>
+		struct light_serializer<fpmas::api::utils::PtrWrapper<AgentType>> {
+			static fpmas::api::utils::PtrWrapper<AgentType> from_json(const nlohmann::json& j) {
+				return new AgentType;
+			}
+
+			static void to_json(nlohmann::json& j, const fpmas::api::utils::PtrWrapper<AgentType>& agent_ptr) {
+			}
+		};
+
+}}}
+
 namespace fpmas { 
 	template<typename _T, typename... T>
 		void register_types();
@@ -512,6 +533,50 @@ namespace fpmas {
 					return std::move(from_json<AgentTypes...>(j));
 				}
 			}
+
+		template<typename Type, typename... AgentTypes> 
+			void to_light_json(nlohmann::json& j, const AgentPtr& ptr);
+
+		template<> 
+			void to_light_json<void>(nlohmann::json& j, const AgentPtr& ptr);
+
+
+		template<typename Type, typename... AgentTypes> 
+			void to_light_json(nlohmann::json& j, const AgentPtr& ptr) {
+				if(ptr->typeId() == Type::TYPE_ID) {
+					j["type"] = Type::TYPE_ID;
+					j["gids"] = ptr->groupIds();
+					fpmas::io::json::light_serializer<TypedAgentPtr<Type>>::to_json(
+							j["agent"],
+							TypedAgentPtr<Type>(
+								const_cast<Type*>(dynamic_cast<const Type*>(ptr.get()))
+								)
+							);
+				} else {
+					to_light_json<AgentTypes...>(j, ptr);
+				}
+			}
+
+		template<typename Type, typename... AgentTypes> 
+			AgentPtr from_light_json(const nlohmann::json& j);
+
+		template<> 
+			AgentPtr from_light_json<void>(const nlohmann::json& j);
+
+		template<typename Type, typename... AgentTypes> 
+			AgentPtr from_light_json(const nlohmann::json& j) {
+				fpmas::api::model::TypeId id = j.at("type").get<fpmas::api::model::TypeId>();
+				if(id == Type::TYPE_ID) {
+					auto agent = fpmas::io::json::light_serializer<TypedAgentPtr<Type>>::from_json(j.at("agent"));
+					for(auto gid : j.at("gids")
+							.get<std::vector<fpmas::api::model::GroupId>>())
+						agent->addGroupId(gid);
+					return {agent};
+				} else {
+					return std::move(from_light_json<AgentTypes...>(j));
+				}
+			}
+
 	}
 }
 #endif

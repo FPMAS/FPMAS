@@ -99,17 +99,26 @@ namespace fpmas {namespace api {namespace graph {
 			virtual DistributedNode<T>* importNode(DistributedNode<T>* node) = 0;
 
 			/**
-			 * Imports a DistributedEdge into the local graph instance.
+			 * Imports a \DistributedEdge into the local graph instance.
 			 *
-			 * An edge is imported into the graph as an edge connected to a
-			 * node imported in the current distribute() operation.
+			 * The \DistributedEdge must comply with the following requirements:
+			 * - dynamically allocated
+			 * - dynamically allocated source and target nodes. Those nodes
+			 *   must not be nodes of the graph: they will eventually be reused
+			 *   and inserted in the graph, or deleted.
+			 * - source and target nodes `getId()` and `location()` fields
+			 *   **must** be up to date. Any other field (including `data()`
+			 *   and `getWeight()`) are ignored, since they are managed by the
+			 *   \SyncMode.
 			 *
-			 * In consequence, it is guaranteed that at least the source or the
-			 * target node of the imported edge is \LOCAL.
+			 * Moreover, at least the source or the target node of the imported
+			 * edge must represent a \LOCAL node (since edges between two
+			 * \DISTANT nodes are not represented in a \DistributedGraph
+			 * anyway).
 			 *
 			 * Several situations might then occur : 
 			 * - source and target nodes are \LOCAL, then edge is \LOCAL
-			 * - source is \LOCAL and target is a \DISTANT, then edge is \DISTANT
+			 * - source is \LOCAL and target is \DISTANT, then edge is \DISTANT
 			 * - target is \LOCAL and source is \DISTANT, then edge is \DISTANT
 			 *
 			 * When source or target is \DISTANT, the corresponding node might

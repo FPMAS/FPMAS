@@ -78,7 +78,9 @@ class SpatialModelTestBase : public ::testing::Test {
 		}
 
 		void checkModelState() {
+			model.graph().synchronize();
 			int comm_size = model.getMpiCommunicator().getSize();
+
 
 			for(auto cell : model.cells()) {
 				if(comm_size > 1)
@@ -89,6 +91,7 @@ class SpatialModelTestBase : public ::testing::Test {
 				else
 					ASSERT_THAT(cell->successors(), SizeIs(0));
 			}
+
 			for(auto agent : agent_group.localAgents()) {
 				ASSERT_THAT(
 						agent->node()->outNeighbors(fpmas::api::model::LOCATION), 
@@ -112,9 +115,9 @@ class SpatialModelTestBase : public ::testing::Test {
 						}
 					}
 				}
-
 				std::vector<int> actual_move_index;
 				for(auto cell : dynamic_cast<TestSpatialAgent*>(agent)->outNeighbors<TestCell>(fpmas::api::model::MOVE)) {
+					fpmas::model::ReadGuard read(cell);
 					actual_move_index.push_back(cell->index);
 				}
 
@@ -141,6 +144,8 @@ class SpatialModelTestBase : public ::testing::Test {
 				ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::NEW_MOVE), IsEmpty());
 				ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::NEW_PERCEIVE), IsEmpty());
 			}
+
+			model.graph().synchronize();
 		}
 
 		void testInit() {

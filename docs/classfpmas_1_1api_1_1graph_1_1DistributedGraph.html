@@ -451,11 +451,15 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p>Imports a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> into the local graph instance.</p>
-<p>An edge is imported into the graph as an edge connected to a node imported in the current <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a63f19151be3a12d5cd4f996e161353ee">distribute()</a> operation.</p>
-<p>In consequence, it is guaranteed that at least the source or the target node of the imported edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>.</p>
+<p>The <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> must comply with the following requirements:</p><ul>
+<li>dynamically allocated</li>
+<li>dynamically allocated source and target nodes. Those nodes must not be nodes of the graph: they will eventually be reused and inserted in the graph, or deleted.</li>
+<li>source and target nodes <code>getId()</code> and <code>location()</code> fields <b>must</b> be up to date. Any other field (including <code>data()</code> and <code>getWeight()</code>) are ignored, since they are managed by the <a class="el" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html">SyncMode</a>.</li>
+</ul>
+<p>Moreover, at least the source or the target node of the imported edge must represent a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> node (since edges between two <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes are not represented in a <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">DistributedGraph</a> anyway).</p>
 <p>Several situations might then occur :</p><ul>
 <li>source and target nodes are <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>, then edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a></li>
-<li>source is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and target is a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, then edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a></li>
+<li>source is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and target is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, then edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a></li>
 <li>target is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and source is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, then edge is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a></li>
 </ul>
 <p>When source or target is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>, the corresponding node might already be represented in the local graph instance. In that case, the imported edge is linked to the existing representation.</p>

@@ -62,6 +62,7 @@ namespace fpmas { namespace model {
 		public virtual api::model::GridCell,
 		public Cell<GridCellType, GridCellBase<GridCellType, Derived>> {
 		friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridCellBase<GridCellType, Derived>>>;
+		friend fpmas::io::json::light_serializer<fpmas::api::utils::PtrWrapper<GridCellBase<GridCellType, Derived>>>;
 
 		private:
 			DiscretePoint _location;
@@ -448,8 +449,8 @@ namespace nlohmann {
 			 * @param point unserialized point
 			 */
 			static void from_json(const nlohmann::json& j, fpmas::api::model::DiscretePoint& point) {
-				point.x = j.at(0).get<fpmas::api::model::DiscreteCoordinate>();
-				point.y = j.at(1).get<fpmas::api::model::DiscreteCoordinate>();
+				point.x = j[0].get<fpmas::api::model::DiscreteCoordinate>();
+				point.y = j[1].get<fpmas::api::model::DiscreteCoordinate>();
 			}
 		};
 
@@ -578,6 +579,58 @@ namespace nlohmann {
 		};
 
 }
+
+namespace fpmas { namespace io { namespace json {
+
+	template<typename GridCellType, typename Derived>
+		struct light_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GridCellBase<GridCellType, Derived>>> {
+			/**
+			 * Pointer wrapper to a polymorphic GridCellBase.
+			 */
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GridCellBase<GridCellType, Derived>> Ptr;
+
+			static void to_json(nlohmann::json& j, const Ptr& ptr) {
+				// Derived serialization
+				light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::to_json(
+						j,
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get()))
+						);
+			}
+
+			static Ptr from_json(const nlohmann::json& j) {
+				// Derived unserialization.
+				// The current base is implicitly default initialized
+				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
+					= light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::from_json(j);
+				return derived_ptr.get();
+			}
+		};
+
+	template<typename AgentType, typename CellType, typename Derived>
+		struct light_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType, CellType, Derived>>> {
+			/**
+			 * Pointer wrapper to a polymorphic GridAgent.
+			 */
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GridAgent<AgentType, CellType, Derived>> Ptr;
+
+			static void to_json(nlohmann::json& j, const Ptr& ptr) {
+				// Derived serialization
+				light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::to_json(
+						j,
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get()))
+						);
+			}
+
+			static Ptr from_json(const nlohmann::json& j) {
+				// Derived unserialization.
+				// The current base is implicitly default initialized
+				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
+					= light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::from_json(j);
+				return derived_ptr.get();
+			}
+		};
+
+}}}
 
 namespace std {
 	/**

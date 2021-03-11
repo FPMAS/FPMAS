@@ -137,6 +137,7 @@ class TestCell : public fpmas::model::Cell<TestCell> {
 	public:
 		int index;
 
+		TestCell() {}
 		TestCell(int index) : index(index) {}
 
 		static void to_json(nlohmann::json& j, const TestCell* cell) {
@@ -152,6 +153,7 @@ class FakeRange : public fpmas::api::model::Range<TestCell> {
 		unsigned int size;
 		unsigned int num_cells_in_ring;
 	public:
+		FakeRange() {}
 		FakeRange(unsigned int size)
 			: size(size) {}
 
@@ -184,6 +186,8 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 	public:
 		static const fpmas::model::Behavior<TestSpatialAgent> behavior;
 
+		TestSpatialAgent()
+			: fpmas::model::SpatialAgent<TestSpatialAgent, TestCell>(mobility_range, perception_range) {}
 		TestSpatialAgent(unsigned int range_size, unsigned int num_cells_in_ring) : 
 				fpmas::model::SpatialAgent<TestSpatialAgent, TestCell>(mobility_range, perception_range),
 				range_size(range_size), num_cells_in_ring(num_cells_in_ring),
@@ -205,6 +209,13 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 			}
 
 			int next_index = (current_index+1) % this->model()->graph().getMpiCommunicator().getSize();
+
+			FPMAS_LOGI(
+					this->model()->getMpiCommunicator().getRank(),
+					"TEST_MOVE_AGENT", "%s moves to %s",
+					FPMAS_C_STR(this->node()->getId()),
+					FPMAS_C_STR(cell_index[next_index]->node()->getId())
+					);
 			moveTo(cell_index[next_index]);
 		}
 

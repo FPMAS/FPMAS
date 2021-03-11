@@ -79,7 +79,6 @@ var menudata={children:[
 {text:"t",url:"namespacemembers_type.html#index_t"},
 {text:"u",url:"namespacemembers_type.html#index_u"},
 {text:"v",url:"namespacemembers_type.html#index_v"},
-{text:"w",url:"namespacemembers_type.html#index_w"},
 {text:"z",url:"namespacemembers_type.html#index_z"}]},
 {text:"Enumerations",url:"namespacemembers_enum.html"},
 {text:"Enumerator",url:"namespacemembers_eval.html"}]}]},

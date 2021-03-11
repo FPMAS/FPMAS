@@ -983,4 +983,12 @@ namespace nlohmann {
 			static void from_json(const json& j, fpmas::api::model::Model& model);
 		};
 }
+
+namespace fpmas { namespace io { namespace json {
+	template<>
+		struct light_serializer<fpmas::api::model::AgentPtr> {
+			static void to_json(nlohmann::json& j, const fpmas::api::model::AgentPtr& pointer);
+			static fpmas::api::model::AgentPtr from_json(const nlohmann::json& j);
+		};
+}}}
 #endif

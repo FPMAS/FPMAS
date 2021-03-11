@@ -118,30 +118,43 @@ $(function() {
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;                };</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;                edge-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Edge.html#ab67d88ab59fa041c8bd8e1320b57e124">setWeight</a>(j.at(<span class="stringliteral">&quot;weight&quot;</span>).get&lt;<span class="keywordtype">float</span>&gt;());</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                NodePtrWrapper&lt;T&gt; src = j.at(<span class="stringliteral">&quot;src&quot;</span>).get&lt;NodePtrWrapper&lt;T&gt;&gt;();</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                edge-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a4afd2966e10d39d93ec3f9aebe3ae267">setSourceNode</a>(src);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                src-&gt;linkOut(edge);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                src-&gt;setLocation(j.at(<span class="stringliteral">&quot;src_loc&quot;</span>).get&lt;<span class="keywordtype">int</span>&gt;());</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                NodePtrWrapper&lt;T&gt; tgt = j.at(<span class="stringliteral">&quot;tgt&quot;</span>).get&lt;NodePtrWrapper&lt;T&gt;&gt;();</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                edge-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a118171acfb3a9802f852e30c41c54668">setTargetNode</a>(tgt);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                tgt-&gt;linkIn(edge);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;                tgt-&gt;setLocation(j.at(<span class="stringliteral">&quot;tgt_loc&quot;</span>).get&lt;<span class="keywordtype">int</span>&gt;());</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                <span class="keywordflow">return</span> edge;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            }</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#a737bd2c6fd4632e59d3772088effc3f0">   96</a></span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#a737bd2c6fd4632e59d3772088effc3f0">to_json</a>(json&amp; j, <span class="keyword">const</span> EdgePtrWrapper&lt;T&gt;&amp; edge) {</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                j[<span class="stringliteral">&quot;id&quot;</span>] = edge-&gt;getId();</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                j[<span class="stringliteral">&quot;layer&quot;</span>] = edge-&gt;getLayer();</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                j[<span class="stringliteral">&quot;weight&quot;</span>] = edge-&gt;getWeight();</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;                j[<span class="stringliteral">&quot;src&quot;</span>] = NodePtrWrapper&lt;T&gt;(edge-&gt;getSourceNode());</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                j[<span class="stringliteral">&quot;src_loc&quot;</span>] = edge-&gt;getSourceNode()-&gt;location();</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                j[<span class="stringliteral">&quot;tgt&quot;</span>] = NodePtrWrapper&lt;T&gt;(edge-&gt;getTargetNode());</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                j[<span class="stringliteral">&quot;tgt_loc&quot;</span>] = edge-&gt;getTargetNode()-&gt;location();</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;            }</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        };</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;}</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;                NodePtrWrapper&lt;T&gt; src = {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;                    <span class="keyword">new</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">fpmas::graph::DistributedNode&lt;T&gt;</a>(</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;                        j.at(<span class="stringliteral">&quot;src&quot;</span>).at(0).get&lt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&gt;(), {}</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                        )</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                };</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                src-&gt;<a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html#a3e480ac25cf8ab08add81b73afe5cb78">setLocation</a>(j.at(<span class="stringliteral">&quot;src&quot;</span>).at(1).get&lt;<span class="keywordtype">int</span>&gt;());</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;                edge-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a4afd2966e10d39d93ec3f9aebe3ae267">setSourceNode</a>(src);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;                src-&gt;linkOut(edge);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;                NodePtrWrapper&lt;T&gt; tgt = {</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;                    <span class="keyword">new</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">fpmas::graph::DistributedNode&lt;T&gt;</a>(</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;                        j.at(<span class="stringliteral">&quot;tgt&quot;</span>).at(0).get&lt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&gt;(), {}</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                        )</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                };</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                tgt-&gt;<a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html#a3e480ac25cf8ab08add81b73afe5cb78">setLocation</a>(j.at(<span class="stringliteral">&quot;tgt&quot;</span>).at(1).get&lt;<span class="keywordtype">int</span>&gt;());</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                edge-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a118171acfb3a9802f852e30c41c54668">setTargetNode</a>(tgt);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;                tgt-&gt;linkIn(edge);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                <span class="keywordflow">return</span> edge;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;            }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#a737bd2c6fd4632e59d3772088effc3f0">  105</a></span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#a737bd2c6fd4632e59d3772088effc3f0">to_json</a>(json&amp; j, <span class="keyword">const</span> EdgePtrWrapper&lt;T&gt;&amp; edge) {</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                j[<span class="stringliteral">&quot;id&quot;</span>] = edge-&gt;getId();</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                j[<span class="stringliteral">&quot;layer&quot;</span>] = edge-&gt;getLayer();</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                j[<span class="stringliteral">&quot;weight&quot;</span>] = edge-&gt;getWeight();</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                j[<span class="stringliteral">&quot;src&quot;</span>] = {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                    edge-&gt;getSourceNode()-&gt;getId(),</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;                    edge-&gt;getSourceNode()-&gt;location()</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;                };</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;                j[<span class="stringliteral">&quot;tgt&quot;</span>] = {</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;                    edge-&gt;getTargetNode()-&gt;getId(),</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                    edge-&gt;getTargetNode()-&gt;location()</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                };</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;            }</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        };</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;}</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedEdge_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a></div><div class="ttdef"><b>Definition:</b> distributed_edge.h:28</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedId_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::api::graph::DistributedId</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:86</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1Edge_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1Edge.html">fpmas::api::graph::Edge&lt; DistributedId, DistributedNode&lt; T &gt; &gt;</a></div></div>
@@ -154,6 +167,8 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedEdge_html_a5d6b6f1a4e789666e2f4417fbc7830d2"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedEdge.html#a5d6b6f1a4e789666e2f4417fbc7830d2">fpmas::graph::DistributedEdge::setState</a></div><div class="ttdeci">void setState(api::graph::LocationState state) override</div><div class="ttdef"><b>Definition:</b> distributed_edge.h:41</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedEdge_html_a8547dd0a19e0aad902ee36d580009dc8"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedEdge.html#a8547dd0a19e0aad902ee36d580009dc8">fpmas::graph::DistributedEdge::state</a></div><div class="ttdeci">api::graph::LocationState state() const override</div><div class="ttdef"><b>Definition:</b> distributed_edge.h:40</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedEdge_html_a9e108d8f1f746715683f00d117968148"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedEdge.html#a9e108d8f1f746715683f00d117968148">fpmas::graph::DistributedEdge::DistributedEdge</a></div><div class="ttdeci">DistributedEdge(DistributedId id, LayerId layer)</div><div class="ttdef"><b>Definition:</b> distributed_edge.h:37</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedNode.html">fpmas::graph::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_node.h:23</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1DistributedNode_html_a3e480ac25cf8ab08add81b73afe5cb78"><div class="ttname"><a href="classfpmas_1_1graph_1_1DistributedNode.html#a3e480ac25cf8ab08add81b73afe5cb78">fpmas::graph::DistributedNode::setLocation</a></div><div class="ttdeci">void setLocation(int location) override</div><div class="ttdef"><b>Definition:</b> distributed_node.h:59</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1Edge_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1Edge.html">fpmas::graph::Edge</a></div><div class="ttdef"><b>Definition:</b> edge.h:16</div></div>
 <div class="ttc" id="agraph_2distributed__node_8h_html"><div class="ttname"><a href="graph_2distributed__node_8h.html">distributed_node.h</a></div></div>
 <div class="ttc" id="agraph_2edge_8h_html"><div class="ttname"><a href="graph_2edge_8h.html">edge.h</a></div></div>
@@ -163,7 +178,7 @@ $(function() {
 <div class="ttc" id="anamespacefpmas_1_1graph_html_aa824a675374017e941f1f4f780c7e95a"><div class="ttname"><a href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a></div><div class="ttdeci">api::utils::PtrWrapper&lt; api::graph::DistributedEdge&lt; T &gt; &gt; EdgePtrWrapper</div><div class="ttdef"><b>Definition:</b> distributed_edge.h:49</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.cpp:3</div></div>
 <div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:303</div></div>
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4_html_a737bd2c6fd4632e59d3772088effc3f0"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#a737bd2c6fd4632e59d3772088effc3f0">nlohmann::adl_serializer&lt; EdgePtrWrapper&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const EdgePtrWrapper&lt; T &gt; &amp;edge)</div><div class="ttdef"><b>Definition:</b> distributed_edge.h:96</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4_html_a737bd2c6fd4632e59d3772088effc3f0"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#a737bd2c6fd4632e59d3772088effc3f0">nlohmann::adl_serializer&lt; EdgePtrWrapper&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const EdgePtrWrapper&lt; T &gt; &amp;edge)</div><div class="ttdef"><b>Definition:</b> distributed_edge.h:105</div></div>
 <div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4_html_ad4f861ef355b4b84243304df6ab0c1e1"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#ad4f861ef355b4b84243304df6ab0c1e1">nlohmann::adl_serializer&lt; EdgePtrWrapper&lt; T &gt; &gt;::from_json</a></div><div class="ttdeci">static EdgePtrWrapper&lt; T &gt; from_json(const json &amp;j)</div><div class="ttdef"><b>Definition:</b> distributed_edge.h:70</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
