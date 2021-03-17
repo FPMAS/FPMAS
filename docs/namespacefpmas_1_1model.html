@@ -69,8 +69,7 @@ $(function() {
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle">
 <div class="title">fpmas::model Namespace Reference</div>  </div>
 </div><!--header-->
@@ -108,6 +107,10 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentNodeBuilder.html">AgentNodeBuilder</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AutoBreakpoint.html">AutoBreakpoint</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer.html">AgentPtrSerializer</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer_3_01JsonType_00_01void_01_4.html">AgentPtrSerializer&lt; JsonType, void &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1StaticEndCondition.html">StaticEndCondition</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -203,21 +206,6 @@ Typedefs</h2></td></tr>
 <tr class="memitem:abd91eeccf31a7fd158f4e4bca7ce9d0d"><td class="memTemplParams" colspan="2">template&lt;typename GridConfig &gt; </td></tr>
 <tr class="memitem:abd91eeccf31a7fd158f4e4bca7ce9d0d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#abd91eeccf31a7fd158f4e4bca7ce9d0d">VonNeumannRange</a> = <a class="el" href="classfpmas_1_1model_1_1GridRange.html">GridRange</a>&lt; <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a>, <a class="el" href="namespacefpmas_1_1model.html#af36960684bc9aa760d6c845f4320d451">VonNeumannRangeConfig</a>&lt; <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> &gt; &gt;</td></tr>
 <tr class="separator:abd91eeccf31a7fd158f4e4bca7ce9d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:acef3e85a4b6f987ffc2b6fc71e07eb97"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
-<tr class="memitem:acef3e85a4b6f987ffc2b6fc71e07eb97"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#acef3e85a4b6f987ffc2b6fc71e07eb97">to_json&lt; void &gt;</a> (nlohmann::json &amp;, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;ptr)</td></tr>
-<tr class="separator:acef3e85a4b6f987ffc2b6fc71e07eb97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a250aee4bce18b16122996d09d5e8a8a1"><td class="memItemLeft" align="right" valign="top">template&lt;&gt; </td></tr>
-<tr class="memitem:a250aee4bce18b16122996d09d5e8a8a1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a250aee4bce18b16122996d09d5e8a8a1">from_json&lt; void &gt;</a> (const nlohmann::json &amp;j)</td></tr>
-<tr class="separator:a250aee4bce18b16122996d09d5e8a8a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memTemplParams" colspan="2">template&lt;typename Type , typename... AgentTypes&gt; </td></tr>
-<tr class="memitem:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;ptr)</td></tr>
-<tr class="separator:a8f71c0752dd7ef3d33acab5b127c2ef8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aac3ade94756b6fca35bf4df5784237cd"><td class="memTemplParams" colspan="2">template&lt;typename Type , typename... AgentTypes&gt; </td></tr>
-<tr class="memitem:aac3ade94756b6fca35bf4df5784237cd"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">from_json</a> (const nlohmann::json &amp;j)</td></tr>
-<tr class="separator:aac3ade94756b6fca35bf4df5784237cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="namespacefpmas_1_1api_1_1model.html">fpmas::api::model</a> implementations. </p>
@@ -427,159 +415,6 @@ template&lt;typename GridConfig &gt; </div>
 <a class="el" href="namespacefpmas_1_1model.html#a17376db8bc0f38123bd38394b9603714">MooreRange</a> </dd>
 <dd>
 <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> </dd></dl>
-
-</div>
-</div>
-<h2 class="groupheader">Function Documentation</h2>
-<a id="acef3e85a4b6f987ffc2b6fc71e07eb97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acef3e85a4b6f987ffc2b6fc71e07eb97">&#9670;&nbsp;</a></span>to_json&lt; void &gt;()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void <a class="el" href="namespacefpmas_1_1model.html#a8f71c0752dd7ef3d33acab5b127c2ef8">fpmas::model::to_json</a>&lt; void &gt; </td>
-          <td>(</td>
-          <td class="paramtype">nlohmann::json &amp;&#160;</td>
-          <td class="paramname"><em>j</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;&#160;</td>
-          <td class="paramname"><em>ptr</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>to_json recursion base case.</p>
-<p>Reaching this case is erroneous and throws a <a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">exceptions::BadTypeException</a>.</p>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">exceptions::BadTypeException</a></td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a250aee4bce18b16122996d09d5e8a8a1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a250aee4bce18b16122996d09d5e8a8a1">&#9670;&nbsp;</a></span>from_json&lt; void &gt;()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> <a class="el" href="namespacefpmas_1_1model.html#aac3ade94756b6fca35bf4df5784237cd">fpmas::model::from_json</a>&lt; void &gt; </td>
-          <td>(</td>
-          <td class="paramtype">const nlohmann::json &amp;&#160;</td>
-          <td class="paramname"><em>j</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>from_json recursion base case.</p>
-<p>Reaching this case is erroneous and throws a <a class="el" href="classfpmas_1_1exceptions_1_1BadIdException.html">exceptions::BadIdException</a>.</p>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadIdException.html">exceptions::BadIdException</a></td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a8f71c0752dd7ef3d33acab5b127c2ef8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f71c0752dd7ef3d33acab5b127c2ef8">&#9670;&nbsp;</a></span>to_json()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Type , typename... AgentTypes&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">void fpmas::model::to_json </td>
-          <td>(</td>
-          <td class="paramtype">nlohmann::json &amp;&#160;</td>
-          <td class="paramname"><em>j</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;&#160;</td>
-          <td class="paramname"><em>ptr</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Recursive to_json method used to serialize polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointers as JSON.</p>
-<p><code>Type</code> corresponds to the currently examined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type. If this type id (i.e. Type::TYPE_ID) corresponds to the <code>ptr</code> <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type (i.e. <code>ptr-&gt;typedId()</code>), the underlying agent is serialized using the user provided nlohmann::adl_serializer&lt;TypedAgentPtr&lt;Type&gt;&gt;.</p>
-<p>Else, attempts to recursively serialize <code>ptr</code> with <code>to_json&lt;AgentTypes...&gt;(j, ptr)</code>. Notice that the last value of <code>AgentTypes</code> <b>must</b> be void to reach the recursion base case (see to_json&lt;void&gt;).</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Type</td><td>currently examined type </td></tr>
-    <tr><td class="paramname">AgentTypes</td><td>agent types not examined yet (must end with <code>void</code>) </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">j</td><td>json </td></tr>
-    <tr><td class="paramname">ptr</td><td>polymorphic agent pointer to serialize</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a748798d7f44dd0eb637e898ff65f878c">nlohmann::adl_serializer&lt;std::type_index&gt;::to_json</a> (used to serialize the agent type id) </dd></dl>
-
-</div>
-</div>
-<a id="aac3ade94756b6fca35bf4df5784237cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac3ade94756b6fca35bf4df5784237cd">&#9670;&nbsp;</a></span>from_json()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename Type , typename... AgentTypes&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> fpmas::model::from_json </td>
-          <td>(</td>
-          <td class="paramtype">const nlohmann::json &amp;&#160;</td>
-          <td class="paramname"><em>j</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Recursive from_json method used to unserialize polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointers from JSON.</p>
-<p><code>Type</code> corresponds to the currently examined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type. If this type id (i.e. Type::TYPE_ID) corresponds to the JSON type id value (i.e. j.at("type").get&lt;fpmas::api::model::TypeId&gt;()), the JSON value is unserialized using the user provided nlohmann::adl_serializer&lt;TypedAgentPtr&lt;Type&gt;&gt;.</p>
-<p>Else, attempts to recursively unserialize the JSON value with <code>from_json&lt;AgentTypes...&gt;(j, ptr)</code>. Notice that the last value of <code>AgentTypes</code> <b>must</b> be void to reach the recursion base case (see from_json&lt;void&gt;).</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Type</td><td>currently examined type </td></tr>
-    <tr><td class="paramname">AgentTypes</td><td>agent types not examined yet (must end with <code>void</code>) </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">j</td><td>json </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>ptr unserialized polymorphic agent pointer</dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a674531f58ccafee2d371a8ca3e12f073">nlohmann::adl_serializer&lt;std::type_index&gt;::from_json</a> (used to unserialize the agent type id) </dd></dl>
 
 </div>
 </div>

@@ -84,7 +84,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:aa4b662d79cccb1be1af04ed39c2b732c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> JSON serialization rules <b>declaration</b>.</p>
+<div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> <code>nlohmann::json</code> serialization rules <b>declaration</b>.</p>
 <p><code>to_json</code> and <code>from_json</code> methods must be <em>defined</em> by the user at compile time, depending on its own Agent types, using the <a class="el" href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP()</a> macro, that must be called from a <b>source</b> file. Otherwise, linker errors will be thrown. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ade937b52afe3ee0b25f8ca0a816e5f9e"></a>
@@ -120,7 +120,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Serializes the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> represented by <code>pointer</code> to the specified JSON <code>j</code>.</p>
+<p>Serializes the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> represented by <code>pointer</code> to the specified json <code>j</code>.</p>
 <p>Notice that since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the actual <code>to_json</code> call that corresponds to the most derived type of the specified <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is resolved at runtime.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -157,7 +157,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Unserializes an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> from the specified JSON <code>j</code>.</p>
 <p>The built <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is dynamically allocated, but is automatically managed by the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> wrapper.</p>
-<p>Since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the concrete type that should be instantiated from the input JSON <code>j</code> is determined at runtime.</p>
+<p>Since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the concrete type that should be instantiated from the input json <code>j</code> is determined at runtime.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">j</td><td>input json </td></tr>

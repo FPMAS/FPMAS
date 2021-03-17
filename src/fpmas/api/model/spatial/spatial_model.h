@@ -486,6 +486,12 @@ namespace fpmas { namespace api { namespace model {
 			 */
 			virtual std::vector<CellType*> cells() = 0;
 
+			/**
+			 * Returns the AgentGroup containing all \Cells in the current
+			 * SpatialModel.
+			 *
+			 * @return cell group
+			 */
 			virtual AgentGroup& cellGroup() = 0;
 
 			/**

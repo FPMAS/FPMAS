@@ -80,10 +80,12 @@ $(function() {
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a2ef35756346c86be964534f48e339bc9"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">register_type</a> (const std::type_index &amp;type)</td></tr>
 <tr class="separator:a2ef35756346c86be964534f48e339bc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a674531f58ccafee2d371a8ca3e12f073"><td class="memItemLeft" align="right" valign="top">static std::type_index&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a674531f58ccafee2d371a8ca3e12f073">from_json</a> (const json &amp;j)</td></tr>
-<tr class="separator:a674531f58ccafee2d371a8ca3e12f073"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a748798d7f44dd0eb637e898ff65f878c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a748798d7f44dd0eb637e898ff65f878c">to_json</a> (json &amp;j, const std::type_index &amp;type)</td></tr>
-<tr class="separator:a748798d7f44dd0eb637e898ff65f878c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18ceee305ca2c17b6f54e42097c16146"><td class="memTemplParams" colspan="2">template&lt;typename JsonType &gt; </td></tr>
+<tr class="memitem:a18ceee305ca2c17b6f54e42097c16146"><td class="memTemplItemLeft" align="right" valign="top">static std::type_index&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a18ceee305ca2c17b6f54e42097c16146">from_json</a> (const JsonType &amp;j)</td></tr>
+<tr class="separator:a18ceee305ca2c17b6f54e42097c16146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab749767dafdfbefc5004d58eb20fc3da"><td class="memTemplParams" colspan="2">template&lt;typename JsonType &gt; </td></tr>
+<tr class="memitem:ab749767dafdfbefc5004d58eb20fc3da"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#ab749767dafdfbefc5004d58eb20fc3da">to_json</a> (JsonType &amp;j, const std::type_index &amp;type)</td></tr>
+<tr class="separator:ab749767dafdfbefc5004d58eb20fc3da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An nlohmann::adl_serializer specialization to allow JSON serialization of <a href="https://en.cppreference.com/w/cpp/types/type_index">std:type_index</a>, that is used as <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> TypeId.</p>
@@ -124,11 +126,13 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a674531f58ccafee2d371a8ca3e12f073"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a674531f58ccafee2d371a8ca3e12f073">&#9670;&nbsp;</a></span>from_json()</h2>
+<a id="a18ceee305ca2c17b6f54e42097c16146"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a18ceee305ca2c17b6f54e42097c16146">&#9670;&nbsp;</a></span>from_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename JsonType &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -136,7 +140,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">static std::type_index nlohmann::adl_serializer&lt; std::type_index &gt;::from_json </td>
           <td>(</td>
-          <td class="paramtype">const json &amp;&#160;</td>
+          <td class="paramtype">const JsonType &amp;&#160;</td>
           <td class="paramname"><em>j</em></td><td>)</td>
           <td></td>
         </tr>
@@ -163,11 +167,13 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a748798d7f44dd0eb637e898ff65f878c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a748798d7f44dd0eb637e898ff65f878c">&#9670;&nbsp;</a></span>to_json()</h2>
+<a id="ab749767dafdfbefc5004d58eb20fc3da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab749767dafdfbefc5004d58eb20fc3da">&#9670;&nbsp;</a></span>to_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<div class="memtemplate">
+template&lt;typename JsonType &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -175,7 +181,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">static void nlohmann::adl_serializer&lt; std::type_index &gt;::to_json </td>
           <td>(</td>
-          <td class="paramtype">json &amp;&#160;</td>
+          <td class="paramtype">JsonType &amp;&#160;</td>
           <td class="paramname"><em>j</em>, </td>
         </tr>
         <tr>

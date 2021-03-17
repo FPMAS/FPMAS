@@ -137,7 +137,6 @@ class TestCell : public fpmas::model::Cell<TestCell> {
 	public:
 		int index;
 
-		TestCell() {}
 		TestCell(int index) : index(index) {}
 
 		static void to_json(nlohmann::json& j, const TestCell* cell) {
@@ -148,12 +147,27 @@ class TestCell : public fpmas::model::Cell<TestCell> {
 		}
 };
 
+namespace fpmas { namespace io { namespace json {
+	template<>
+		struct light_serializer<fpmas::api::utils::PtrWrapper<TestCell>> {
+			static void to_json(light_json&, const fpmas::api::utils::PtrWrapper<TestCell>&) {
+				std::cout << "ouf, that's a better to_json!" << std::endl;
+			}
+
+			static void from_json(const light_json&, fpmas::api::utils::PtrWrapper<TestCell>& data) {
+				std::cout << "ouf, that's a better from_json!" << std::endl;
+				data = {new TestCell(0)};
+			}
+
+
+		};
+}}}
+
 class FakeRange : public fpmas::api::model::Range<TestCell> {
 	private:
 		unsigned int size;
 		unsigned int num_cells_in_ring;
 	public:
-		FakeRange() {}
 		FakeRange(unsigned int size)
 			: size(size) {}
 
@@ -186,8 +200,6 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 	public:
 		static const fpmas::model::Behavior<TestSpatialAgent> behavior;
 
-		TestSpatialAgent()
-			: fpmas::model::SpatialAgent<TestSpatialAgent, TestCell>(mobility_range, perception_range) {}
 		TestSpatialAgent(unsigned int range_size, unsigned int num_cells_in_ring) : 
 				fpmas::model::SpatialAgent<TestSpatialAgent, TestCell>(mobility_range, perception_range),
 				range_size(range_size), num_cells_in_ring(num_cells_in_ring),

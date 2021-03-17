@@ -215,12 +215,14 @@ namespace nlohmann {
 
 	template<int FOO>
 		struct adl_serializer<MockAgentPtr<FOO>> {
-			static void to_json(json& j, const MockAgentPtr<FOO>& data) {
+			template<typename JsonType>
+			static void to_json(JsonType& j, const MockAgentPtr<FOO>& data) {
 				j["mock"] = data->getField();
 			}
 
-			static void from_json(const json& j, MockAgentPtr<FOO>& ptr) {
-				ptr = MockAgentPtr<FOO>(new MockAgent<FOO>(j.at("field").get<int>()));
+			template<typename JsonType>
+			static void from_json(const JsonType& j, MockAgentPtr<FOO>& ptr) {
+				ptr = MockAgentPtr<FOO>(new MockAgent<FOO>(j.at("field").template get<int>()));
 			}
 		};
 }

@@ -1,22 +1,23 @@
 <map id="src/fpmas/communication/communication.h" name="src/fpmas/communication/communication.h">
-<area shape="rect" id="node1" title=" " alt="" coords="322,5,494,47"/>
-<area shape="rect" id="node2" href="$graph_2location__manager_8h.html" title=" " alt="" coords="325,95,491,136"/>
-<area shape="rect" id="node12" href="$ghost__mode_8h.html" title=" " alt="" coords="99,273,266,315"/>
-<area shape="rect" id="node15" href="$zoltan__load__balancing_8h.html" title=" " alt="" coords="515,95,669,136"/>
-<area shape="rect" id="node16" href="$csv__output_8h.html" title=" " alt="" coords="5,459,179,486"/>
-<area shape="rect" id="node17" href="$io_2output_8h.html" title=" " alt="" coords="830,549,975,575"/>
-<area shape="rect" id="node18" href="$random_2generator_8h.html" title=" " alt="" coords="694,102,890,129"/>
-<area shape="rect" id="node20" href="$termination_8h.html" title=" " alt="" coords="203,184,362,225"/>
-<area shape="rect" id="node3" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="386,184,566,225"/>
-<area shape="rect" id="node4" href="$model_2detail_2model_8h.html" title=" " alt="" coords="525,273,680,315"/>
-<area shape="rect" id="node13" href="$hard__sync__linker_8h.html" title=" " alt="" coords="342,273,501,315"/>
-<area shape="rect" id="node5" href="$model_2model_8h.html" title=" " alt="" coords="521,370,690,397"/>
-<area shape="rect" id="node6" href="$dist__move__algo_8h.html" title=" " alt="" coords="517,452,678,493"/>
-<area shape="rect" id="node7" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="499,541,661,583"/>
-<area shape="rect" id="node8" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="495,631,657,672"/>
-<area shape="rect" id="node9" href="$von__neumann_8h.html" title=" " alt="" coords="493,720,654,761"/>
-<area shape="rect" id="node10" href="$moore_8h.html" title=" " alt="" coords="491,809,653,851"/>
-<area shape="rect" id="node11" href="$fpmas_8h.html" title=" " alt="" coords="500,899,591,925"/>
-<area shape="rect" id="node14" href="$hard__sync__mode_8h.html" title=" " alt="" coords="338,363,497,404"/>
-<area shape="rect" id="node19" href="$random_8h_source.html" title=" " alt="" coords="705,281,890,307"/>
+<area shape="rect" id="node1" title=" " alt="" coords="253,5,425,47"/>
+<area shape="rect" id="node2" href="$graph_2distributed__edge_8h.html" title=" " alt="" coords="347,95,527,136"/>
+<area shape="rect" id="node12" href="$ghost__mode_8h.html" title=" " alt="" coords="87,273,254,315"/>
+<area shape="rect" id="node15" href="$graph_2location__manager_8h.html" title=" " alt="" coords="157,95,323,136"/>
+<area shape="rect" id="node16" href="$zoltan__load__balancing_8h.html" title=" " alt="" coords="552,95,707,136"/>
+<area shape="rect" id="node17" href="$csv__output_8h.html" title=" " alt="" coords="5,459,179,486"/>
+<area shape="rect" id="node18" href="$io_2output_8h.html" title=" " alt="" coords="842,549,987,575"/>
+<area shape="rect" id="node19" href="$random_2generator_8h.html" title=" " alt="" coords="731,102,927,129"/>
+<area shape="rect" id="node21" href="$termination_8h.html" title=" " alt="" coords="122,184,281,225"/>
+<area shape="rect" id="node3" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="319,184,499,225"/>
+<area shape="rect" id="node4" href="$model_2detail_2model_8h.html" title=" " alt="" coords="516,273,671,315"/>
+<area shape="rect" id="node13" href="$hard__sync__linker_8h.html" title=" " alt="" coords="330,273,489,315"/>
+<area shape="rect" id="node5" href="$model_2model_8h.html" title=" " alt="" coords="510,370,679,397"/>
+<area shape="rect" id="node6" href="$dist__move__algo_8h.html" title=" " alt="" coords="506,452,667,493"/>
+<area shape="rect" id="node7" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="489,541,650,583"/>
+<area shape="rect" id="node8" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="485,631,646,672"/>
+<area shape="rect" id="node9" href="$von__neumann_8h.html" title=" " alt="" coords="482,720,643,761"/>
+<area shape="rect" id="node10" href="$moore_8h.html" title=" " alt="" coords="481,809,642,851"/>
+<area shape="rect" id="node11" href="$fpmas_8h.html" title=" " alt="" coords="489,899,580,925"/>
+<area shape="rect" id="node14" href="$hard__sync__mode_8h.html" title=" " alt="" coords="327,363,486,404"/>
+<area shape="rect" id="node20" href="$random_8h_source.html" title=" " alt="" coords="695,281,881,307"/>
 </map>

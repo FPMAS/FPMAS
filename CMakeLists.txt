@@ -79,6 +79,8 @@ if(DOXYGEN_FOUND)
 		[[FPMAS_ID_TYPE="\ref FPMAS_ID_TYPE"]]
 		[[LOCAL="\ref fpmas::api::graph::LocationState \"LOCAL\""]]
 		[[DISTANT="\ref fpmas::api::graph::LocationState \"DISTANT\""]]
+		[[light_json="\ref fpmas::io::json::light_json \"light_json\""]]
+		[[DistributedId="\ref fpmas::api::graph::DistributedId \"DistributedId\""]]
 		[[DistributedGraph="\ref fpmas::api::graph::DistributedGraph \"DistributedGraph\""]]
 		[[DistributedNode="\ref fpmas::api::graph::DistributedNode \"DistributedNode\""]]
 		[[DistributedNodes="\ref fpmas::api::graph::DistributedNode \"DistributedNodes\""]]

@@ -27,12 +27,14 @@ namespace model { namespace test {
 		public:
 			int data;
 
+			SpatialAgentWithData(int data) : data(data) {}
+
 			static void to_json(nlohmann::json& j, const SpatialAgentWithData* agent) {
 				j = agent->data;
 			}
 			static SpatialAgentWithData* from_json(const nlohmann::json& j) {
-				auto agent = new SpatialAgentWithData;
-				agent->data = j.get<int>();
+				std::cout << "unserial sp agent with data" << std::endl;
+				auto agent = new SpatialAgentWithData(j.get<int>());;
 				return agent;
 			}
 	};
@@ -58,7 +60,7 @@ namespace model { namespace test {
 		public:
 			int data;
 
-			GridAgentWithData() {}
+			GridAgentWithData() : data(0) {}
 			GridAgentWithData(int data)
 				: data(data) {}
 

@@ -303,10 +303,10 @@ namespace std {
 namespace nlohmann {
 	using fpmas::api::graph::DistributedId;
 
+	/**
+	 * DistributedId serializer.
+	 */
 	template<>
-		/**
-		 * DistributedId serializer.
-		 */
 		struct adl_serializer<DistributedId> {
 			/**
 			 * Serializes a DistributedId instance as [rank, localId].
@@ -314,7 +314,8 @@ namespace nlohmann {
 			 * @param j current json
 			 * @param value DistributedId to serialize
 			 */
-			static void to_json(json& j, const DistributedId& value) {
+			template<typename JsonType>
+			static void to_json(JsonType& j, const DistributedId& value) {
 				j[0] = value.rank();
 				j[1] = value.id();
 			}
@@ -324,13 +325,12 @@ namespace nlohmann {
 			 * json representation.
 			 *
 			 * @param j json to unserialize
-			 * @return unserialized DistributedId
+			 * @param id DistributedId output
 			 */
-			static DistributedId from_json(const json& j) {
-				return DistributedId(
-						j[0].get<int>(),
-						j[1].get<FPMAS_ID_TYPE>()
-						);
+			template<typename JsonType>
+			static void from_json(const JsonType& j, DistributedId& id) {
+				id._rank = j[0].template get<int>();
+				id._id = j[1].template get<FPMAS_ID_TYPE>();
 			}
 		};
 

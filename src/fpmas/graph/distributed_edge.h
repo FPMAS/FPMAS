@@ -7,6 +7,7 @@
 
 #include "fpmas/graph/edge.h"
 #include "fpmas/graph/distributed_node.h"
+#include "fpmas/communication/communication.h"
 
 namespace fpmas { namespace graph {
 
@@ -53,6 +54,8 @@ namespace nlohmann {
 	using fpmas::graph::EdgePtrWrapper;
 
 	/**
+	 * \anchor adl_serializer_DistributedEdge
+	 *
 	 * DistributedEdge JSON serialization.
 	 */
 	template<typename T>
@@ -60,75 +63,89 @@ namespace nlohmann {
 			/**
 			 * DistributedEdge json serialization.
 			 *
+			 * Source and target \DistributedNode are unserialized depending on
+			 * the provided `JsonType`, that might be the classic
+			 * `nlohmann::json` type or fpmas::io::json::light_json.
+			 *
+			 * @see \ref adl_serializer_DistributedNode_to_json
+			 * "adl_serializer<NodePtrWrapper<T>>::to_json()"
+			 * @see \ref light_serializer_DistributedNode_to_json
+			 * "light_serializer<NodePtrWrapper<T>>::to_json()"
+			 *
 			 * @param j json
 			 * @param edge wrapper of pointer to the DistributedEdge to serialize
 			 */
-			static void to_json(json& j, const EdgePtrWrapper<T>& edge) {
+			template<typename JsonType>
+			static void to_json(JsonType& j, const EdgePtrWrapper<T>& edge) {
 				j["id"] = edge->getId();
 				j["layer"] = edge->getLayer();
 				j["weight"] = edge->getWeight();
 				j["src"] = {{}, edge->getSourceNode()->location()};
 				NodePtrWrapper<T> src(edge->getSourceNode());
-				fpmas::io::json::light_serializer<NodePtrWrapper<T>>::to_json(j["src"][0], src);
+				j["src"][0] = src;
 				j["tgt"] = {{}, edge->getTargetNode()->location()};
 				NodePtrWrapper<T> tgt(edge->getTargetNode());
-				fpmas::io::json::light_serializer<NodePtrWrapper<T>>::to_json(j["tgt"][0], tgt);
-				/*
-				 *j["src"] = {
-				 *    edge->getSourceNode()->getId(),
-				 *    edge->getSourceNode()->location()
-				 *};
-				 *j["tgt"] = {
-				 *    edge->getTargetNode()->getId(),
-				 *    edge->getTargetNode()->location()
-				 *};
-				 */
+				j["tgt"][0] = tgt;
 			}
 
 			/**
 			 * DistributedEdge json unserialization.
 			 *
-			 * @param j json
-			 * @return wrapped heap allocated unserialized
-			 * fpmas::graph::DistributedEdge. Source and target nodes are
-			 * unserialized using nlohmann::adl_serializer<NodePtrWrapper>
+			 * Source and target \DistributedNode are unserialized depending on
+			 * the provided `JsonType`, that might be the classic
+			 * `nlohmann::json` type or fpmas::io::json::light_json.
 			 *
-			 * @see \ref adl_serializer_node "nlohmann::adl_serializer<NodePtrWrapper>"
+			 * @see \ref adl_serializer_DistributedNode_from_json
+			 * "nlohmann::adl_serializer<NodePtrWrapper<T>>::from_json()"
+			 * @see \ref light_serializer_DistributedNode_from_json
+			 * "light_serializer<NodePtrWrapper<T>>::from_json()"
+			 *
+			 * @param j json
+			 * @param edge_ptr output edge
 			 */
-			static EdgePtrWrapper<T> from_json(const json& j) {
+			template<typename JsonType>
+			static void from_json(const JsonType& j, EdgePtrWrapper<T>& edge_ptr) {
 				fpmas::api::graph::DistributedEdge<T>* edge
 					= new fpmas::graph::DistributedEdge<T> {
-					j.at("id").get<DistributedId>(),
-					j.at("layer").get<typename fpmas::graph::LayerId>()
+					j.at("id").template get<DistributedId>(),
+					j.at("layer").template get<typename fpmas::graph::LayerId>()
 				};
-				edge->setWeight(j.at("weight").get<float>());
+				edge->setWeight(j.at("weight").template get<float>());
 
-				NodePtrWrapper<T> src = fpmas::io::json::light_serializer<NodePtrWrapper<T>>::from_json(j.at("src")[0]);
-				/*
-				 *NodePtrWrapper<T> src = {
-				 *    new fpmas::graph::DistributedNode<T>(
-				 *        j.at("src").at(0).get<DistributedId>(), {}
-				 *        )
-				 *};
-				 */
-				src->setLocation(j.at("src")[1].get<int>());
+				NodePtrWrapper<T> src = j.at("src")[0].template get<NodePtrWrapper<T>>();
+				src->setLocation(j.at("src")[1].template get<int>());
 				edge->setSourceNode(src);
 				src->linkOut(edge);
 
-				NodePtrWrapper<T> tgt = fpmas::io::json::light_serializer<NodePtrWrapper<T>>::from_json(j.at("tgt")[0]);
-				/*
-				 *NodePtrWrapper<T> tgt = {
-				 *    new fpmas::graph::DistributedNode<T>(
-				 *        j.at("tgt").at(0).get<DistributedId>(), {}
-				 *        )
-				 *};
-				 */
-				tgt->setLocation(j.at("tgt")[1].get<int>());
+				NodePtrWrapper<T> tgt = j.at("tgt")[0].template get<NodePtrWrapper<T>>();
+				tgt->setLocation(j.at("tgt")[1].template get<int>());
 
 				edge->setTargetNode(tgt);
 				tgt->linkIn(edge);
-				return edge;
+				edge_ptr = {edge};
 			}
 		};
 }
+
+namespace fpmas { namespace communication {
+
+	/**
+	 * \anchor TypedMpiDistributedEdge
+	 *
+	 * \DistributedEdge TypedMpi specialization, used to bypass the default
+	 * fpmas::communication::TypedMpi specialization based on nlohmann::json.
+	 *
+	 * Here, fpmas::io::json::light_json is used instead. This allows to use
+	 * "light" serialization rules of source and target \DistributedNodes,
+	 * since sending their data is not required when transmitting
+	 * \DistributedEdges.
+	 *
+	 * @tparam T type of data contained in associated \DistributedNodes
+	 */
+	template<typename T>
+		struct TypedMpi<fpmas::graph::EdgePtrWrapper<T>> : public detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, fpmas::io::json::light_json> {
+			using detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, fpmas::io::json::light_json>::TypedMpi;
+		};
+
+}}
 #endif

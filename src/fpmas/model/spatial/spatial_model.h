@@ -439,8 +439,10 @@ namespace fpmas {
 		void SpatialAgentBase<AgentType, CellType, Derived>::handleNewPerceive() {
 			CurrentOutLayer perceive_layer(this, SpatialModelLayers::PERCEIVE);
 
+			fpmas::model::ReadGuard read_location(this->locationCell());
 			for(auto cell : this->template outNeighbors<CellType>(
 						SpatialModelLayers::NEW_PERCEIVE)) {
+				fpmas::model::ReadGuard read_cell(cell);
 				if(!perceive_layer.contains(cell)
 						&& this->perception_range->contains(this->locationCell(), cell))
 					perceive_layer.link(cell);
@@ -613,6 +615,17 @@ namespace nlohmann {
 }
 
 namespace fpmas { namespace io { namespace json {
+	/**
+	 * light_serializer specialization for an fpmas::model::SpatialAgentBase
+	 *
+	 * The light_serializer is directly call on the next `Derived` type: no
+	 * data is added to / extracted from the current \light_json.
+	 *
+	 * @tparam AgentType final \Agent type to serialize
+	 * @tparam CellType type of cells used by the spatial model
+	 * @tparam Derived next derived class in the polymorphic serialization
+	 * chain
+	 */
 	template<typename AgentType, typename CellType, typename Derived>
 		struct light_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
 			/**
@@ -620,15 +633,39 @@ namespace fpmas { namespace io { namespace json {
 			 */
 			typedef fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
 			
-			static void to_json(nlohmann::json& j, const Ptr& ptr) {
+			/**
+			 * \light_json to_json() implementation for an
+			 * fpmas::model::SpatialAgentBase.
+			 *
+			 * Effectively calls
+			 * `light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::%to_json()`,
+			 * without adding any `SpatialAgentBase` specific data to the
+			 * \light_json j.
+			 *
+			 * @param j json output
+			 * @param agent agent to serialize 
+			 */
+			static void to_json(light_json& j, const Ptr& agent) {
 				// Derived serialization
 				light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::to_json(
 						j,
-						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get()))
+						const_cast<Derived*>(dynamic_cast<const Derived*>(agent.get()))
 						);
 			}
 
-			static Ptr from_json(const nlohmann::json& j) {
+			/**
+			 * \light_json from_json() implementation for an
+			 * fpmas::model::SpatialAgentBase.
+			 *
+			 * Effectively calls
+			 * `light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::%from_json()`,
+			 * without extracting any `SpatialAgentBase` specific data from the
+			 * \light_json j.
+			 *
+			 * @param j json input
+			 * @return dynamically allocated `Derived` instance, unserialized from `j`
+			 */
+			static Ptr from_json(const light_json& j) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
 				fpmas::api::utils::PtrWrapper<Derived> derived_ptr

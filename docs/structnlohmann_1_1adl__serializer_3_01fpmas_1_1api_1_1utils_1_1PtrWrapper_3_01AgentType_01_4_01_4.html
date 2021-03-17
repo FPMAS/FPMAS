@@ -78,10 +78,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aa7c7049b9d0b6ee3bec09c976a982c24"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; AgentType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aa7c7049b9d0b6ee3bec09c976a982c24">from_json</a> (const json &amp;j)</td></tr>
-<tr class="separator:aa7c7049b9d0b6ee3bec09c976a982c24"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afc48eba366aa624001ac980c575a4be6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#afc48eba366aa624001ac980c575a4be6">to_json</a> (json &amp;j, const <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; AgentType &gt; &amp;agent_ptr)</td></tr>
-<tr class="separator:afc48eba366aa624001ac980c575a4be6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1766e6d3759b0bb8f9fd39bec6107ffa"><td class="memTemplParams" colspan="2">template&lt;typename JsonType &gt; </td></tr>
+<tr class="memitem:a1766e6d3759b0bb8f9fd39bec6107ffa"><td class="memTemplItemLeft" align="right" valign="top">static <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; AgentType &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#a1766e6d3759b0bb8f9fd39bec6107ffa">from_json</a> (const JsonType &amp;j)</td></tr>
+<tr class="separator:a1766e6d3759b0bb8f9fd39bec6107ffa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafc696e6ab69798d024ba9d97210aa35"><td class="memTemplParams" colspan="2">template&lt;typename JsonType &gt; </td></tr>
+<tr class="memitem:aafc696e6ab69798d024ba9d97210aa35"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aafc696e6ab69798d024ba9d97210aa35">to_json</a> (JsonType &amp;j, const <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; AgentType &gt; &amp;agent_ptr)</td></tr>
+<tr class="separator:aafc696e6ab69798d024ba9d97210aa35"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename AgentType&gt;<br />
@@ -92,18 +94,18 @@ struct nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType 
 <div class="line">    ...</div>
 <div class="line">    <span class="keyword">public</span>:</div>
 <div class="line">        ...</div>
-<div class="line">        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#afc48eba366aa624001ac980c575a4be6">to_json</a>(</div>
+<div class="line">        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aafc696e6ab69798d024ba9d97210aa35">to_json</a>(</div>
 <div class="line">            nlohmann::json&amp; j,</div>
 <div class="line">            <span class="keyword">const</span> UserDefinedAgent* agent</div>
 <div class="line">            );</div>
-<div class="line">        <span class="keyword">static</span> UserDefinedAgent* <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aa7c7049b9d0b6ee3bec09c976a982c24">from_json</a>(</div>
+<div class="line">        <span class="keyword">static</span> UserDefinedAgent* <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#a1766e6d3759b0bb8f9fd39bec6107ffa">from_json</a>(</div>
 <div class="line">            <span class="keyword">const</span> nlohmann::json&amp; j</div>
 <div class="line">            );</div>
 <div class="line">        ...</div>
 <div class="line">    };</div>
 <div class="ttc" id="aclassfpmas_1_1model_1_1AgentBase_html"><div class="ttname"><a href="classfpmas_1_1model_1_1AgentBase.html">fpmas::model::AgentBase</a></div><div class="ttdef"><b>Definition:</b> model.h:518</div></div>
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4_html_aa7c7049b9d0b6ee3bec09c976a982c24"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aa7c7049b9d0b6ee3bec09c976a982c24">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt; &gt;::from_json</a></div><div class="ttdeci">static fpmas::api::utils::PtrWrapper&lt; AgentType &gt; from_json(const json &amp;j)</div><div class="ttdef"><b>Definition:</b> serializer.h:341</div></div>
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4_html_afc48eba366aa624001ac980c575a4be6"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#afc48eba366aa624001ac980c575a4be6">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const fpmas::api::utils::PtrWrapper&lt; AgentType &gt; &amp;agent_ptr)</div><div class="ttdef"><b>Definition:</b> serializer.h:351</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4_html_a1766e6d3759b0bb8f9fd39bec6107ffa"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#a1766e6d3759b0bb8f9fd39bec6107ffa">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt; &gt;::from_json</a></div><div class="ttdeci">static fpmas::api::utils::PtrWrapper&lt; AgentType &gt; from_json(const JsonType &amp;j)</div><div class="ttdef"><b>Definition:</b> serializer.h:355</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4_html_aafc696e6ab69798d024ba9d97210aa35"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aafc696e6ab69798d024ba9d97210aa35">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(JsonType &amp;j, const fpmas::api::utils::PtrWrapper&lt; AgentType &gt; &amp;agent_ptr)</div><div class="ttdef"><b>Definition:</b> serializer.h:366</div></div>
 </div><!-- fragment --><p> The from_json method is assumed to return an <b>heap allocated</b> agent (initialized with a <code>new</code> statement).</p>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="keyword">class </span>Agent1 : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1model_1_1AgentBase.html">fpmas::model::AgentBase</a>&lt;Agent1&gt; {</div>
 <div class="line">    <span class="keyword">private</span>:</div>
@@ -113,12 +115,12 @@ struct nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType 
 <div class="line">        Agent1(<span class="keywordtype">int</span> count, std::string message)</div>
 <div class="line">            : count(count), message(message) {}</div>
 <div class="line"> </div>
-<div class="line">        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#afc48eba366aa624001ac980c575a4be6">to_json</a>(nlohmann::json&amp; j, <span class="keyword">const</span> Agent1* agent) {</div>
+<div class="line">        <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aafc696e6ab69798d024ba9d97210aa35">to_json</a>(nlohmann::json&amp; j, <span class="keyword">const</span> Agent1* agent) {</div>
 <div class="line">            j[<span class="stringliteral">&quot;c&quot;</span>] = agent-&gt;count;</div>
 <div class="line">            j[<span class="stringliteral">&quot;m&quot;</span>] = agent-&gt;message;</div>
 <div class="line">        }</div>
 <div class="line"> </div>
-<div class="line">        <span class="keyword">static</span> Agent1* <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aa7c7049b9d0b6ee3bec09c976a982c24">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
+<div class="line">        <span class="keyword">static</span> Agent1* <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#a1766e6d3759b0bb8f9fd39bec6107ffa">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j) {</div>
 <div class="line">            <span class="keywordflow">return</span> <span class="keyword">new</span> Agent1(</div>
 <div class="line">                j.at(<span class="stringliteral">&quot;c&quot;</span>).get&lt;<span class="keywordtype">int</span>&gt;(),</div>
 <div class="line">                j.at(<span class="stringliteral">&quot;m&quot;</span>).get&lt;std::string&gt;()</div>
@@ -146,7 +148,7 @@ struct nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType 
 <div class="line">    <span class="keyword">namespace </span><a class="code" href="namespacenlohmann.html">nlohmann</a> {</div>
 <div class="line">        <span class="keyword">template</span>&lt;&gt;</div>
 <div class="line">            <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="namespacefpmas.html">fpmas</a>::api::utils::PtrWrapper&lt;Agent1&gt;&gt; {</div>
-<div class="line">                <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#afc48eba366aa624001ac980c575a4be6">to_json</a>(</div>
+<div class="line">                <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aafc696e6ab69798d024ba9d97210aa35">to_json</a>(</div>
 <div class="line">                    json&amp; j,</div>
 <div class="line">                    <a class="code" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper&lt;Agent1&gt;</a>&amp; agent_ptr</div>
 <div class="line">                ) {</div>
@@ -154,7 +156,7 @@ struct nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType 
 <div class="line">                    j[<span class="stringliteral">&quot;m&quot;</span>] = agent_ptr-&gt;getMessage();</div>
 <div class="line">                }</div>
 <div class="line">                </div>
-<div class="line">                <span class="keyword">static</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper&lt;Agent1&gt;</a> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aa7c7049b9d0b6ee3bec09c976a982c24">from_json</a>(</div>
+<div class="line">                <span class="keyword">static</span> <a class="code" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper&lt;Agent1&gt;</a> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#a1766e6d3759b0bb8f9fd39bec6107ffa">from_json</a>(</div>
 <div class="line">                    json&amp; j</div>
 <div class="line">                ) {</div>
 <div class="line">                    <span class="keywordflow">return</span> {<span class="keyword">new</span> Agent1(</div>
@@ -169,13 +171,15 @@ struct nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType 
 <div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:303</div></div>
 </div><!-- fragment --> </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa7c7049b9d0b6ee3bec09c976a982c24"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7c7049b9d0b6ee3bec09c976a982c24">&#9670;&nbsp;</a></span>from_json()</h2>
+<a id="a1766e6d3759b0bb8f9fd39bec6107ffa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1766e6d3759b0bb8f9fd39bec6107ffa">&#9670;&nbsp;</a></span>from_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename AgentType &gt; </div>
+<div class="memtemplate">
+template&lt;typename JsonType &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -183,7 +187,7 @@ template&lt;typename AgentType &gt; </div>
         <tr>
           <td class="memname">static <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt;AgentType&gt; nlohmann::adl_serializer&lt; <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; AgentType &gt; &gt;::from_json </td>
           <td>(</td>
-          <td class="paramtype">const json &amp;&#160;</td>
+          <td class="paramtype">const JsonType &amp;&#160;</td>
           <td class="paramname"><em>j</em></td><td>)</td>
           <td></td>
         </tr>
@@ -205,13 +209,15 @@ template&lt;typename AgentType &gt; </div>
 
 </div>
 </div>
-<a id="afc48eba366aa624001ac980c575a4be6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afc48eba366aa624001ac980c575a4be6">&#9670;&nbsp;</a></span>to_json()</h2>
+<a id="aafc696e6ab69798d024ba9d97210aa35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafc696e6ab69798d024ba9d97210aa35">&#9670;&nbsp;</a></span>to_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
 template&lt;typename AgentType &gt; </div>
+<div class="memtemplate">
+template&lt;typename JsonType &gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -219,7 +225,7 @@ template&lt;typename AgentType &gt; </div>
         <tr>
           <td class="memname">static void nlohmann::adl_serializer&lt; <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; AgentType &gt; &gt;::to_json </td>
           <td>(</td>
-          <td class="paramtype">json &amp;&#160;</td>
+          <td class="paramtype">JsonType &amp;&#160;</td>
           <td class="paramname"><em>j</em>, </td>
         </tr>
         <tr>

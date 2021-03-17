@@ -37,6 +37,7 @@ set(SOURCES
 	# Output
 	io/csv_output.cpp
 	io/breakpoint.cpp
+	io/json.cpp
 	# Utils
 	utils/format.cpp
 	)

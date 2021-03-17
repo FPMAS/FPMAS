@@ -204,13 +204,18 @@ namespace fpmas {
  */
 
 /**
- * \namespace fpmas::api::output
+ * \namespace fpmas::api::io
  *
- * Program outputs APIs.
+ * Program input / output related APIs.
  */
 /**
- * \namespace fpmas::output
- * fpmas::api::output implementations.
+ * \namespace fpmas::io
+ * fpmas::api::io implementations.
+ */
+/**
+ * \namespace fpmas::io::json
+ *
+ * Features related to FPMAS Json serialization rules.
  */
 
 /**

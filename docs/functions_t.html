@@ -97,21 +97,32 @@ $(function() {
 , <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#ad0af13c5b293e5dc32d60ceedc26df4d">fpmas::communication::MpiCommunicatorBase</a>
 </li>
 <li>to_json()
-: <a class="el" href="structnlohmann_1_1adl__serializer_3_01DataUpdatePack_3_01T_01_4_01_4.html#ab8cb02a39c04e68fb4c8df2d7842b389">nlohmann::adl_serializer&lt; DataUpdatePack&lt; T &gt; &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01DistributedId_01_4.html#a38bb1d683f2def40f44c81692d7c8bf4">nlohmann::adl_serializer&lt; DistributedId &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#a737bd2c6fd4632e59d3772088effc3f0">nlohmann::adl_serializer&lt; EdgePtrWrapper&lt; T &gt; &gt;</a>
+: <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer.html#a6d92f744dabdfb57ddd3f68f6bab3dd8">fpmas::io::json::light_serializer&lt; T, Enable &gt;</a>
+, <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1model_1_1AgentPtr_01_4.html#a9cb8d08cf539e6e25a75adc4633ad5dd">fpmas::io::json::light_serializer&lt; fpmas::api::model::AgentPtr &gt;</a>
+, <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent1166da05b8eb25f2bd231c13fb984d35.html#a46ef7c930f888202d3c9eb3512d60d51">fpmas::io::json::light_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt;, typename std::enable_if&lt; std::is_base_of&lt; fpmas::api::model::Agent, AgentType &gt;::value &amp;&amp;!std::is_default_constructible&lt; AgentType &gt;::value &amp;&amp;std::is_same&lt; AgentType, typename AgentType::FinalAgentType &gt;::value &gt;::type &gt;</a>
+, <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent897a43c8e174bcaded636be4611a9868.html#a572e62f598b316f09cd3d0f123f5851f">fpmas::io::json::light_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt;, typename std::enable_if&lt; std::is_base_of&lt; fpmas::api::model::Agent, AgentType &gt;::value &amp;&amp;std::is_default_constructible&lt; AgentType &gt;::value &amp;&amp;std::is_same&lt; AgentType, typename AgentType::FinalAgentType &gt;::value &gt;::type &gt;</a>
+, <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmas6514cec9ffaf9ddc3a05c9b72f5062b9.html#a46542f7fdc3fea287d0973ee03fade95">fpmas::io::json::light_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::GridAgent&lt; AgentType, CellType, Derived &gt; &gt; &gt;</a>
+, <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmas087459d4f5dfa9eac727b48e6313447e.html#ab757655ed846b28739122191f311afe1">fpmas::io::json::light_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::GridCellBase&lt; GridCellType, Derived &gt; &gt; &gt;</a>
+, <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmasc84e89e520a4a0cda5345fc83f0b8125.html#a81ef6b37d83ecdc47452a449dbc33953">fpmas::io::json::light_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt; &gt; &gt;</a>
+, <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01NodePtrWrapper_3_01T_01_4_01_4.html#af7cdf14526508971dda78259dc9d64a2">fpmas::io::json::light_serializer&lt; NodePtrWrapper&lt; T &gt; &gt;</a>
+, <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01T_00_01typename_01std_1_1enable__if_3_9std_1_5b712814e422b4c73c9fd9f49be13323.html#a7089659b1a01771edf73fcef2a6536b7">fpmas::io::json::light_serializer&lt; T, typename std::enable_if&lt;!std::is_default_constructible&lt; T &gt;::value &gt;::type &gt;</a>
+, <a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer.html#ae4803fbd043d62e8da187eecc0202150">fpmas::model::AgentPtrSerializer&lt; JsonType, Type, AgentTypes &gt;</a>
+, <a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer_3_01JsonType_00_01void_01_4.html#a3931559f7449c70806cab05d6e773b97">fpmas::model::AgentPtrSerializer&lt; JsonType, void &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01DataUpdatePack_3_01T_01_4_01_4.html#ab8cb02a39c04e68fb4c8df2d7842b389">nlohmann::adl_serializer&lt; DataUpdatePack&lt; T &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01DistributedId_01_4.html#ac940522a325bac9acfceb5985b523de2">nlohmann::adl_serializer&lt; DistributedId &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html#a0b5b70ba9113d0aa45ff4306e780ad24">nlohmann::adl_serializer&lt; EdgePtrWrapper&lt; T &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#a91c8e1060603e1722ec42b3c0c16fd56">nlohmann::adl_serializer&lt; fpmas::api::graph::DistributedGraph&lt; T &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1LocationManager_3_01T_01_4_01_4.html#a9a0e97381ed8800d8bd9e9317112c30e">nlohmann::adl_serializer&lt; fpmas::api::graph::LocationManager&lt; T &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1model_1_1AgentPtr_01_4.html#ade937b52afe3ee0b25f8ca0a816e5f9e">nlohmann::adl_serializer&lt; fpmas::api::model::AgentPtr &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1model_1_1DiscretePoint_01_4.html#ab4dd2a0f200472b4b96aab3d14e3e4e7">nlohmann::adl_serializer&lt; fpmas::api::model::DiscretePoint &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1model_1_1Model_01_4.html#a3aefa6225128c57688131fd8068884e2">nlohmann::adl_serializer&lt; fpmas::api::model::Model &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#afc48eba366aa624001ac980c575a4be6">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt; &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01AgentType_01_4_01_4.html#aafc696e6ab69798d024ba9d97210aa35">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmas_1_1model_1_136032a46204f163d868560f92634ba90.html#a5493520712a1338a1722ef9d99b39587">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::GridAgent&lt; AgentType, CellType, Derived &gt; &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmas_1_1model_1_1784f1e1360367771d11e7adbddb7008f.html#ad96f9ccac8ad879d954770956ad3fe8f">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::GridCellBase&lt; GridCellType, Derived &gt; &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01fpmas_1_1model_1_15c21a6b0ad54d23aaa2f84ed15f8db9e.html#ae8e095bade2162a3959f3ef3cee339b3">nlohmann::adl_serializer&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt; &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01NodePtrWrapper_3_01T_01_4_01_4.html#a6b906506ca7bd554501fc2f939855182">nlohmann::adl_serializer&lt; NodePtrWrapper&lt; T &gt; &gt;</a>
 , <a class="el" href="structnlohmann_1_1adl__serializer_3_01NodeUpdatePack_3_01T_01_4_01_4.html#a0f385a3ee53a1a04ecd3bb745250430e">nlohmann::adl_serializer&lt; NodeUpdatePack&lt; T &gt; &gt;</a>
-, <a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a748798d7f44dd0eb637e898ff65f878c">nlohmann::adl_serializer&lt; std::type_index &gt;</a>
+, <a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#ab749767dafdfbefc5004d58eb20fc3da">nlohmann::adl_serializer&lt; std::type_index &gt;</a>
 </li>
 <li>Type
 : <a class="el" href="structfpmas_1_1io_1_1Local.html#ab4fa9196a2674cb6cd9b1b461f198003">fpmas::io::Local&lt; T &gt;</a>
@@ -124,7 +135,7 @@ $(function() {
 : <a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a77887dacc49a91e62f49f3d25d05e854">fpmas::model::AgentBase&lt; AgentType, TypeIdBase &gt;</a>
 </li>
 <li>TypedMpi()
-: <a class="el" href="classfpmas_1_1communication_1_1TypedMpi.html#aac5340a22599e2ec82c318743913dc7e">fpmas::communication::TypedMpi&lt; T &gt;</a>
+: <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#a1a89ccdd7a951f2b9a671410ff5dafc5">fpmas::communication::detail::TypedMpi&lt; T, JsonType &gt;</a>
 </li>
 <li>typeId()
 : <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a1a6b51d0a175f47b878f27af5937277f">fpmas::api::model::Agent</a>

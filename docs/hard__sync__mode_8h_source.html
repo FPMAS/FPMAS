@@ -83,12 +83,12 @@ $(function() {
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
 <div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">   33</a></span>&#160;            <span class="keyword">class </span><a class="code" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">HardSyncMode</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html">fpmas::api::synchro::SyncMode</a>&lt;T&gt; {</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <a class="code" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;DistributedId&gt;</a> id_mpi;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <a class="code" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;T&gt;</a> data_mpi;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <a class="code" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;DataUpdatePack&lt;T&gt;</a>&gt; data_update_mpi;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <a class="code" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;graph::NodePtrWrapper&lt;T&gt;</a>&gt; node_mpi;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <a class="code" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;graph::EdgePtrWrapper&lt;T&gt;</a>&gt; edge_mpi;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <a class="code" href="classfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;Color&gt;</a> color_mpi;</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;                <a class="code" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;DistributedId&gt;</a> id_mpi;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;                <a class="code" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;T&gt;</a> data_mpi;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;                <a class="code" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;DataUpdatePack&lt;T&gt;</a>&gt; data_update_mpi;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;                <a class="code" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;graph::NodePtrWrapper&lt;T&gt;</a>&gt; node_mpi;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;                <a class="code" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;graph::EdgePtrWrapper&lt;T&gt;</a>&gt; edge_mpi;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                <a class="code" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;Color&gt;</a> color_mpi;</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1hard_1_1MutexServer.html">MutexServer&lt;T&gt;</a> mutex_server;</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;                <a class="code" href="classfpmas_1_1synchro_1_1hard_1_1MutexClient.html">MutexClient&lt;T&gt;</a> mutex_client;</div>
@@ -136,7 +136,6 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_node.h:28</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1Node_html_aa78c8556e95a84b8b324d0722cf4deb7"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1Node.html#aa78c8556e95a84b8b324d0722cf4deb7">fpmas::api::graph::Node::getId</a></div><div class="ttdeci">virtual IdType getId() const =0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1synchro_1_1SyncMode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1synchro_1_1SyncMode.html">fpmas::api::synchro::SyncMode</a></div><div class="ttdef"><b>Definition:</b> sync_mode.h:101</div></div>
-<div class="ttc" id="aclassfpmas_1_1communication_1_1TypedMpi_html"><div class="ttname"><a href="classfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi&lt; DistributedId &gt;</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1synchro_1_1hard_1_1HardDataSync_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html">fpmas::synchro::hard::HardDataSync</a></div><div class="ttdef"><b>Definition:</b> hard_data_sync.h:23</div></div>
 <div class="ttc" id="aclassfpmas_1_1synchro_1_1hard_1_1HardSyncLinker_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1hard_1_1HardSyncLinker.html">fpmas::synchro::hard::HardSyncLinker</a></div><div class="ttdef"><b>Definition:</b> hard_sync_linker.h:284</div></div>
 <div class="ttc" id="aclassfpmas_1_1synchro_1_1hard_1_1HardSyncMode_html"><div class="ttname"><a href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">fpmas::synchro::hard::HardSyncMode</a></div><div class="ttdef"><b>Definition:</b> hard_sync_mode.h:33</div></div>
@@ -156,6 +155,7 @@ $(function() {
 <div class="ttc" id="ahard__sync__linker_8h_html"><div class="ttname"><a href="hard__sync__linker_8h.html">hard_sync_linker.h</a></div></div>
 <div class="ttc" id="ahard__sync__mutex_8h_html"><div class="ttname"><a href="hard__sync__mutex_8h.html">hard_sync_mutex.h</a></div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.cpp:3</div></div>
+<div class="ttc" id="astructfpmas_1_1communication_1_1TypedMpi_html"><div class="ttname"><a href="structfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi&lt; DistributedId &gt;</a></div></div>
 <div class="ttc" id="atermination_8h_html"><div class="ttname"><a href="termination_8h.html">termination.h</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

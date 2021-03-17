@@ -74,18 +74,20 @@
 #define FPMAS_JSON_SET_UP(...)\
 	namespace nlohmann {\
 		void adl_serializer<fpmas::api::model::AgentPtr>::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
-			fpmas::model::to_json<__VA_ARGS__, void>(j, data);\
+			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__, void>::to_json(j, data);\
 		}\
 		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>::from_json(const json& j) {\
-			return std::move(fpmas::model::from_json<__VA_ARGS__, void>(j));\
+			return std::move(fpmas::model::AgentPtrSerializer<json, __VA_ARGS__, void>::from_json(j));\
 		}\
 	}\
-	void fpmas::io::json::light_serializer<fpmas::api::model::AgentPtr>::to_json(nlohmann::json& j, const fpmas::api::model::AgentPtr& data) {\
-		fpmas::model::to_light_json<__VA_ARGS__, void>(j, data);\
-	}\
-	fpmas::api::model::AgentPtr fpmas::io::json::light_serializer<fpmas::api::model::AgentPtr>::from_json(const nlohmann::json& j) {\
-		return std::move(fpmas::model::from_light_json<__VA_ARGS__, void>(j));\
-	}\
+	namespace fpmas { namespace io { namespace json {\
+		void light_serializer<fpmas::api::model::AgentPtr>::to_json(light_json& j, const fpmas::api::model::AgentPtr& data) {\
+			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__, void>::to_json(j, data);\
+		}\
+		fpmas::api::model::AgentPtr light_serializer<fpmas::api::model::AgentPtr>::from_json(const light_json& j) {\
+			return std::move(fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__, void>::from_json(j));\
+		}\
+	}}}\
 
 /**
  * Helper macro to easily define JSON serialization rules for
@@ -106,7 +108,8 @@
 				 *
 				 * @param j output json
 				 */\
-				static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AGENT>&) {\
+				template<typename JsonType>\
+				static void to_json(JsonType& j, const fpmas::api::utils::PtrWrapper<AGENT>&) {\
 					j = json::object();\
 				}\
 \
@@ -115,7 +118,8 @@
 				 *
 				 * @param ptr unserialized AGENT pointer
 				 */\
-				static void from_json(const json&, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
+				template<typename JsonType>\
+				static void from_json(const JsonType&, fpmas::api::utils::PtrWrapper<AGENT>& ptr) {\
 					ptr = fpmas::api::utils::PtrWrapper<AGENT>(new AGENT);\
 				}\
 			};\
@@ -228,8 +232,9 @@ namespace nlohmann {
 			 * @throw fpmas::exceptions::BadIdException if the id does not correspond to a type
 			 * registered using register_type()
 			 */
-			static std::type_index from_json(const json& j) {
-				std::size_t id = j.get<std::size_t>();
+			template<typename JsonType>
+			static std::type_index from_json(const JsonType& j) {
+				std::size_t id = j.template get<std::size_t>();
 				auto _type = id_to_type.find(id);
 				if(_type != id_to_type.end())
 					return _type->second;
@@ -245,7 +250,8 @@ namespace nlohmann {
 			 * @throw fpmas::exceptions::BadTypeException if the type was not
 			 * register using register_type()
 			 */
-			static void to_json(json& j, const std::type_index& type) {
+			template<typename JsonType>
+			static void to_json(JsonType& j, const std::type_index& type) {
 				auto _id = type_to_id.find(type);
 				if(_id != type_to_id.end())
 					j = _id->second;
@@ -355,7 +361,8 @@ namespace nlohmann {
 			 * @param j json
 			 * @return unserialized agent pointer
 			 */
-			static fpmas::api::utils::PtrWrapper<AgentType> from_json(const json& j) {
+			template<typename JsonType>
+			static fpmas::api::utils::PtrWrapper<AgentType> from_json(const JsonType& j) {
 				return AgentType::from_json(j);
 			}
 
@@ -365,7 +372,8 @@ namespace nlohmann {
 			 * @param j json
 			 * @param agent_ptr agent pointer to serialized
 			 */
-			static void to_json(json& j, const fpmas::api::utils::PtrWrapper<AgentType>& agent_ptr) {
+			template<typename JsonType>
+			static void to_json(JsonType& j, const fpmas::api::utils::PtrWrapper<AgentType>& agent_ptr) {
 				AgentType::to_json(j, agent_ptr.get());
 			}
 		};
@@ -373,13 +381,149 @@ namespace nlohmann {
 
 namespace fpmas { namespace io { namespace json {
 
-	 template<typename AgentType>
-		struct light_serializer<fpmas::api::utils::PtrWrapper<AgentType>> {
-			static fpmas::api::utils::PtrWrapper<AgentType> from_json(const nlohmann::json& j) {
-				return new AgentType;
+#define AGENT_TYPE_STR(AgentType) typeid(AgentType).name()
+
+	/**
+	 * \anchor not_default_constructible_Agent_light_serializer
+	 *
+	 * A default light_serializer specialization for \Agent types, when no
+	 * default constructor is available. In this case, to_json() and
+	 * from_json() methods falls back to the classic `nlohmann::json`
+	 * serialization rules, what might be inefficient. A warning is also
+	 * printed at runtime.
+	 *
+	 * To avoid this inefficient behaviors, two things can be performed:
+	 * - Defining a default constructor for `AgentType`. Notice that the
+	 *   default constructed `AgentType` will **never** be used by FPMAS (since
+	 *   `AgentType` transmitted in a \light_json are completely passive,
+	 *   a complete \DistributedNode transfer is always performed before
+	 *   when the \Agent data is required).
+	 * - Specializing the light_serializer with `AgentType`:
+	 *   ```cpp
+	 *   namespace fpmas { namespace io { namespace json {
+	 *   	template<>
+	 *   		struct light_serializer<fpmas::api::utils::PtrWrapper<CustomAgentType>> {
+	 *   			static void to_json(light_json& j, const fpmas::api::utils::PtrWrapper<CustomAgentType>& ptr) {
+	 *   				// light_json serialization rules
+	 *   				...
+	 *   			}
+	 *
+	 *   			static fpmas::api::utils::PtrWrapper<CustomAgentType> to_json(light_json& j) {
+	 *   				// light_json unserialization rules
+	 *   				...
+	 *   			}
+	 *   		};
+	 *   }}}
+	 *   ```
+	 *
+	 * @tparam AgentType concrete type of \Agent to serialize
+	 */
+	template<typename AgentType>
+		struct light_serializer<
+		fpmas::api::utils::PtrWrapper<AgentType>,
+		typename std::enable_if<
+			std::is_base_of<fpmas::api::model::Agent, AgentType>::value
+			&& !std::is_default_constructible<AgentType>::value
+			&& std::is_same<AgentType, typename AgentType::FinalAgentType>::value>::type
+			>{
+				private:
+					static bool warn_print;
+				public:
+					/**
+					 * \anchor not_default_constructible_Agent_light_serializer_to_json
+					 *
+					 * Calls
+					 * `nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<AgentType>>::%to_json()`.
+					 *
+					 * @param j json output
+					 * @param agent agent to serialize
+					 */
+					static void to_json(light_json& j, const fpmas::api::utils::PtrWrapper<AgentType>& agent) {
+						if(!warn_print) {
+							warn_print = true;
+							FPMAS_LOGW(0, "light_serializer",
+									"Type %s does not define a default constructor or "
+									"a light_serializer specialization."
+									"This might be uneficient.", AGENT_TYPE_STR(AgentType)
+									);
+						}
+
+						nlohmann::json _j = agent;
+						j = light_json::parse(_j.dump());
+					}
+
+					/**
+					 * \anchor not_default_constructible_Agent_light_serializer_from_json
+					 *
+					 * Calls
+					 * `nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<AgentType>>::%from_json()`.
+					 *
+					 * @param j json input
+					 * @return dynamically allocated `AgentType`
+					 */
+					static fpmas::api::utils::PtrWrapper<AgentType> from_json(const light_json& j) {
+						nlohmann::json _j = nlohmann::json::parse(j.dump());
+						return _j.get<fpmas::api::utils::PtrWrapper<AgentType>>();
+					}
+			};
+
+	template<typename AgentType>
+		bool light_serializer<
+		fpmas::api::utils::PtrWrapper<AgentType>,
+		typename std::enable_if<
+			std::is_base_of<fpmas::api::model::Agent, AgentType>::value
+			&& !std::is_default_constructible<AgentType>::value
+			&& std::is_same<AgentType, typename AgentType::FinalAgentType>::value>::type
+			>::warn_print = false;
+
+	
+	/**
+	 * \anchor default_constructible_Agent_light_serializer
+	 *
+	 * A default light_serializer specialization for default constructible
+	 * \Agent types.
+	 *
+	 * When a default constructor is available for `AgentType`, this
+	 * specialization is automatically selected.
+	 *
+	 * The usage of this specialization is recommended, since its optimal:
+	 * **no** json data is required to serialize / unserialize a \light_json
+	 * representing such an `AgentType`.
+	 *
+	 * @tparam AgentType concrete type of \Agent to serialize
+	 */
+	template<typename AgentType>
+		struct light_serializer<
+			fpmas::api::utils::PtrWrapper<AgentType>,
+		 	typename std::enable_if<
+				std::is_base_of<fpmas::api::model::Agent, AgentType>::value
+				&& std::is_default_constructible<AgentType>::value
+				&& std::is_same<AgentType, typename AgentType::FinalAgentType>::value>::type
+		 > {
+
+			/**
+			 * \anchor default_constructible_Agent_light_serializer_to_json
+			 *
+			 * \light_json to_json() implementation for the default
+			 * constructible `AgentType`: nothing is serialized.  Notice that
+			 * the "type id", that is actually required to reach this method,
+			 * is managed by the
+			 * nlohmann::adl_serializer<fpmas::api::model::AgentPtr> structure.
+			 */
+			static void to_json(light_json&, const fpmas::api::utils::PtrWrapper<AgentType>&) {
 			}
 
-			static void to_json(nlohmann::json& j, const fpmas::api::utils::PtrWrapper<AgentType>& agent_ptr) {
+			/**
+			 * \anchor default_constructible_Agent_light_serializer_from_json
+			 *
+			 * \light_json from_json() implementation for the default
+			 * constructible `AgentType`: a dynamically allocated, default
+			 * constructed `AgentType` is returned.
+			 *
+			 * @return dynamically allocated `AgentType`
+			 */
+			static fpmas::api::utils::PtrWrapper<AgentType> from_json(const light_json&) {
+				return new AgentType;
 			}
 		};
 
@@ -434,149 +578,129 @@ namespace fpmas {
 		template<typename Agent>
 			using TypedAgentPtr = api::utils::PtrWrapper<Agent>;
 
-		template<typename Type, typename... AgentTypes> 
-			void to_json(nlohmann::json& j, const AgentPtr& ptr);
+		template<typename JsonType, typename Type, typename... AgentTypes> 
+			struct AgentPtrSerializer;
 
 		/**
-		 * to_json recursion base case.
-		 *
-		 * Reaching this case is erroneous and throws a exceptions::BadTypeException.
-		 *
-		 * @throw exceptions::BadTypeException
+		 * AgentPtrSerializer recursion base case.
 		 */
-		template<> 
-			void to_json<void>(nlohmann::json& j, const AgentPtr& ptr);
+		template<typename JsonType> 
+			struct AgentPtrSerializer<JsonType, void> {
+				/**
+				 * to_json recursion base case.
+				 *
+				 * Reaching this case is erroneous and throws a exceptions::BadTypeException.
+				 *
+				 * @throw exceptions::BadTypeException
+				 */
+				static void to_json(JsonType&, const AgentPtr& ptr); 
 
+				/**
+				 * from_json recursion base case.
+				 *
+				 * Reaching this case is erroneous and throws a exceptions::BadIdException.
+				 *
+				 * @throw exceptions::BadIdException
+				 */
+				static AgentPtr from_json(const JsonType& j);
+			};
+
+		template<typename JsonType>
+			void AgentPtrSerializer<JsonType, void>::to_json(JsonType &, const AgentPtr &ptr) {
+				FPMAS_LOGE(-1, "AGENT_SERIALIZER",
+						"Invalid agent type : %s. Make sure to properly register "
+						"the Agent type with FPMAS_JSON_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",
+						ptr->typeId().name());
+				throw exceptions::BadTypeException(ptr->typeId());
+			}
+
+		template<typename JsonType>
+			AgentPtr AgentPtrSerializer<JsonType, void>::from_json(const JsonType &j) {
+				std::size_t id = j.at("type").template get<std::size_t>();
+				FPMAS_LOGE(-1, "AGENT_SERIALIZER",
+						"Invalid agent type id : %lu. Make sure to properly register "
+						"the Agent type with FPMAS_JSON_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",
+						id);
+				throw exceptions::BadIdException(id);
+			}
 
 		/**
-		 * Recursive to_json method used to serialize polymorphic \Agent
-		 * pointers as JSON.
+		 * Generic AgentPtr serializer, that recursively deduces the final and
+		 * concrete types of polymorphic AgentPtr instances.
 		 *
-		 * `Type` corresponds to the currently examined \Agent type. If this
-		 * type id (i.e. Type::TYPE_ID) corresponds to the `ptr` \Agent type
-		 * (i.e.  `ptr->typedId()`), the underlying agent is serialized
-		 * using the user provided
-		 * nlohmann::adl_serializer<TypedAgentPtr<Type>>.
-		 *
-		 * Else, attempts to recursively serialize `ptr` with
-		 * `to_json<AgentTypes...>(j, ptr)`. Notice that the last value of
-		 * `AgentTypes` **must** be void to reach the recursion base case (see
-		 * to_json<void>).
-		 *
-		 * @tparam Type currently examined type
-		 * @tparam AgentTypes agent types not examined yet (must end with
+		 * @tparam JsonType type of json used for serialization
+		 * @tparam Type type currently inspected
+		 * @tparam AgentTypes agent types not inspected yet (must end with
 		 * `void`)
-		 * @param j json
-		 * @param ptr polymorphic agent pointer to serialize
-		 *
-		 * @see nlohmann::adl_serializer<std::type_index>::to_json (used to
-		 * serialize the agent type id)
 		 */
-		template<typename Type, typename... AgentTypes> 
-			void to_json(nlohmann::json& j, const AgentPtr& ptr) {
-				if(ptr->typeId() == Type::TYPE_ID) {
-					j["type"] = Type::TYPE_ID;
-					j["gids"] = ptr->groupIds();
-					j["agent"] = TypedAgentPtr<Type>(const_cast<Type*>(dynamic_cast<const Type*>(ptr.get())));
-				} else {
-					to_json<AgentTypes...>(j, ptr);
+		template<typename JsonType, typename Type, typename... AgentTypes> 
+			struct AgentPtrSerializer {
+				/**
+				 * Recursive to_json method used to serialize polymorphic \Agent
+				 * pointers as JSON.
+				 *
+				 * `Type` corresponds to the currently examined \Agent type. If this
+				 * type id (i.e. Type::TYPE_ID) corresponds to the `ptr` \Agent type
+				 * (i.e.  `ptr->typedId()`), the underlying agent is serialized
+				 * using the user provided
+				 * nlohmann::adl_serializer<TypedAgentPtr<Type>>.
+				 *
+				 * Else, attempts to recursively serialize `ptr` with
+				 * `to_json<AgentTypes...>(j, ptr)`. Notice that the last value of
+				 * `AgentTypes` **must** be void to reach the recursion base case (see
+				 * to_json<void>).
+				 *
+				 * @param j json
+				 * @param ptr polymorphic agent pointer to serialize
+				 *
+				 * @see nlohmann::adl_serializer<std::type_index>::to_json (used to
+				 * serialize the agent type id)
+				 */
+				static void to_json(JsonType& j, const AgentPtr& ptr) {
+					if(ptr->typeId() == Type::TYPE_ID) {
+						j["type"] = Type::TYPE_ID;
+						j["gids"] = ptr->groupIds();
+						j["agent"] = TypedAgentPtr<Type>(const_cast<Type*>(dynamic_cast<const Type*>(ptr.get())));
+					} else {
+						AgentPtrSerializer<JsonType, AgentTypes...>::to_json(j, ptr);
+					}
 				}
-			}
 
-		template<typename Type, typename... AgentTypes> 
-			AgentPtr from_json(const nlohmann::json& j);
-
-		/**
-		 * from_json recursion base case.
-		 *
-		 * Reaching this case is erroneous and throws a exceptions::BadIdException.
-		 *
-		 * @throw exceptions::BadIdException
-		 */
-		template<> 
-			AgentPtr from_json<void>(const nlohmann::json& j);
-
-		/**
-		 * Recursive from_json method used to unserialize polymorphic \Agent
-		 * pointers from JSON.
-		 *
-		 * `Type` corresponds to the currently examined \Agent type. If this
-		 * type id (i.e. Type::TYPE_ID) corresponds to the JSON type id value
-		 * (i.e. j.at("type").get<fpmas::api::model::TypeId>()), the JSON value
-		 * is unserialized using the user provided
-		 * nlohmann::adl_serializer<TypedAgentPtr<Type>>.
-		 *
-		 * Else, attempts to recursively unserialize the JSON value with
-		 * `from_json<AgentTypes...>(j, ptr)`. Notice that the last value of
-		 * `AgentTypes` **must** be void to reach the recursion base case (see
-		 * from_json<void>).
-		 *
-		 * @tparam Type currently examined type
-		 * @tparam AgentTypes agent types not examined yet (must end with
-		 * `void`)
-		 * @param j json
-		 * @return ptr unserialized polymorphic agent pointer
-		 *
-		 * @see nlohmann::adl_serializer<std::type_index>::from_json (used to
-		 * unserialize the agent type id)
-		 */
-		template<typename Type, typename... AgentTypes> 
-			AgentPtr from_json(const nlohmann::json& j) {
-				fpmas::api::model::TypeId id = j.at("type").get<fpmas::api::model::TypeId>();
-				if(id == Type::TYPE_ID) {
-					auto agent = j.at("agent").get<TypedAgentPtr<Type>>();
-					for(auto gid : j.at("gids")
-							.get<std::vector<fpmas::api::model::GroupId>>())
-						agent->addGroupId(gid);
-					return {agent};
-				} else {
-					return std::move(from_json<AgentTypes...>(j));
+				/**
+				 * Recursive from_json method used to unserialize polymorphic \Agent
+				 * pointers from JSON.
+				 *
+				 * `Type` corresponds to the currently examined \Agent type. If this
+				 * type id (i.e. Type::TYPE_ID) corresponds to the JSON type id value
+				 * (i.e. j.at("type").get<fpmas::api::model::TypeId>()), the JSON value
+				 * is unserialized using the user provided
+				 * nlohmann::adl_serializer<TypedAgentPtr<Type>>.
+				 *
+				 * Else, attempts to recursively unserialize the JSON value with
+				 * `from_json<AgentTypes...>(j, ptr)`. Notice that the last value of
+				 * `AgentTypes` **must** be void to reach the recursion base case (see
+				 * from_json<void>).
+				 *
+				 * @param j json
+				 * @return ptr unserialized polymorphic agent pointer
+				 *
+				 * @see nlohmann::adl_serializer<std::type_index>::from_json (used to
+				 * unserialize the agent type id)
+				 */
+				static AgentPtr from_json(const JsonType& j) {
+					fpmas::api::model::TypeId id = j.at("type").template get<fpmas::api::model::TypeId>();
+					if(id == Type::TYPE_ID) {
+						auto agent = j.at("agent").template get<TypedAgentPtr<Type>>();
+						for(auto gid : j.at("gids")
+								.template get<std::vector<fpmas::api::model::GroupId>>())
+							agent->addGroupId(gid);
+						return {agent};
+					} else {
+						return std::move(AgentPtrSerializer<JsonType, AgentTypes...>::from_json(j));
+					}
 				}
-			}
 
-		template<typename Type, typename... AgentTypes> 
-			void to_light_json(nlohmann::json& j, const AgentPtr& ptr);
-
-		template<> 
-			void to_light_json<void>(nlohmann::json& j, const AgentPtr& ptr);
-
-
-		template<typename Type, typename... AgentTypes> 
-			void to_light_json(nlohmann::json& j, const AgentPtr& ptr) {
-				if(ptr->typeId() == Type::TYPE_ID) {
-					j["type"] = Type::TYPE_ID;
-					j["gids"] = ptr->groupIds();
-					fpmas::io::json::light_serializer<TypedAgentPtr<Type>>::to_json(
-							j["agent"],
-							TypedAgentPtr<Type>(
-								const_cast<Type*>(dynamic_cast<const Type*>(ptr.get()))
-								)
-							);
-				} else {
-					to_light_json<AgentTypes...>(j, ptr);
-				}
-			}
-
-		template<typename Type, typename... AgentTypes> 
-			AgentPtr from_light_json(const nlohmann::json& j);
-
-		template<> 
-			AgentPtr from_light_json<void>(const nlohmann::json& j);
-
-		template<typename Type, typename... AgentTypes> 
-			AgentPtr from_light_json(const nlohmann::json& j) {
-				fpmas::api::model::TypeId id = j.at("type").get<fpmas::api::model::TypeId>();
-				if(id == Type::TYPE_ID) {
-					auto agent = fpmas::io::json::light_serializer<TypedAgentPtr<Type>>::from_json(j.at("agent"));
-					for(auto gid : j.at("gids")
-							.get<std::vector<fpmas::api::model::GroupId>>())
-						agent->addGroupId(gid);
-					return {agent};
-				} else {
-					return std::move(from_light_json<AgentTypes...>(j));
-				}
-			}
-
+			};
 	}
 }
 #endif
