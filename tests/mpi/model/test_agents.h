@@ -151,11 +151,9 @@ namespace fpmas { namespace io { namespace json {
 	template<>
 		struct light_serializer<fpmas::api::utils::PtrWrapper<TestCell>> {
 			static void to_json(light_json&, const fpmas::api::utils::PtrWrapper<TestCell>&) {
-				std::cout << "ouf, that's a better to_json!" << std::endl;
 			}
 
 			static void from_json(const light_json&, fpmas::api::utils::PtrWrapper<TestCell>& data) {
-				std::cout << "ouf, that's a better from_json!" << std::endl;
 				data = {new TestCell(0)};
 			}
 

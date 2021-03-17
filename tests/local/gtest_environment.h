@@ -33,7 +33,6 @@ namespace model { namespace test {
 				j = agent->data;
 			}
 			static SpatialAgentWithData* from_json(const nlohmann::json& j) {
-				std::cout << "unserial sp agent with data" << std::endl;
 				auto agent = new SpatialAgentWithData(j.get<int>());;
 				return agent;
 			}
