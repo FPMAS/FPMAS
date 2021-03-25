@@ -96,180 +96,179 @@ $(function() {
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;            }</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    };</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... DataField&gt;</div>
-<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html">   58</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1io_1_1Output.html">api::io::Output</a> {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;            std::ostream&amp; output_stream;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;            std::vector&lt;std::string&gt; _headers;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;            std::tuple&lt;std::function&lt;DataField()&gt;...&gt; watchers;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <a class="code" href="classfpmas_1_1io_1_1OutputTask.html">OutputTask</a> output_task {*<span class="keyword">this</span>};</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> _job {{output_task}};</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;            </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            <span class="comment">/*</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment">             * Serializes `data` using the C++ output stream operator.</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment">             */</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;                <span class="keyword">static</span> std::string serial(<span class="keyword">const</span> T&amp; data) {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;                    std::ostringstream stream;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                    stream &lt;&lt; data;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                    <span class="keywordflow">return</span> stream.str();</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                }</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            <span class="comment">/*</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment">             * Tuple unrolling helper structs.</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment">             */</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> ...&gt; <span class="keyword">struct </span>seq {};</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;            <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> N, <span class="keywordtype">int</span> ...S&gt; <span class="keyword">struct </span>gens {</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;                <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;                    <span class="keyword">typedef</span> <span class="keyword">typename</span> gens&lt;N-1, N-1, S...&gt;::type type;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;            }; <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> ...S&gt; <span class="keyword">struct </span>gens&lt;0, S...&gt;{ <span class="keyword">typedef</span> seq&lt;S...&gt; type; };</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;            <span class="comment">/*</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment">             * Unrolls the input tuple to feed internal _headers, that are then</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment">             * accessible with headers().</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">             */</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> ...S&gt;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;                <span class="keywordtype">void</span> build_headers(</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;                        std::tuple&lt;std::pair&lt;std::string, std::function&lt;DataField()&gt;&gt;...&gt; csv_fields,</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;                        <span class="keyword">const</span> seq&lt;S...&gt;) {</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;                    _headers = {std::get&lt;S&gt;(csv_fields).first...};</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;                }</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="comment">/*</span></div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment">             * Unrolls the input tuple and calls each watcher. Data is the</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="comment">             * serialized and return in a vector.</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment">             */</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;            <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> ...S&gt;</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;                std::vector&lt;std::string&gt; _dump_fields(<span class="keyword">const</span> seq&lt;S...&gt;) {</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;                    std::tuple&lt;DataField...&gt; data {std::get&lt;S&gt;(watchers)() ...};</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;                    std::ostringstream output_str;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;                    <span class="keywordflow">return</span> {serial(std::get&lt;S&gt;(data))...};</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;                }</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        <span class="keyword">protected</span>:</div>
-<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">  114</a></span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; data) {</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;                <span class="keywordflow">for</span>(std::size_t i = 0; i &lt; data.size()-1; i++)</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;                    output_stream &lt;&lt; data[i] &lt;&lt; <span class="stringliteral">&quot;,&quot;</span>;</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                output_stream &lt;&lt; data.back() &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;            }</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">  125</a></span>&#160;            std::vector&lt;std::string&gt; <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">headers</a>() {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;                <span class="keywordflow">return</span> _headers;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;            }</div>
-<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">  134</a></span>&#160;            std::vector&lt;std::string&gt; <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">dump_fields</a>() {</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;                <span class="keywordflow">return</span> _dump_fields(<span class="keyword">typename</span> gens&lt;<span class="keyword">sizeof</span>...(DataField)&gt;::type());</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;            }</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#ae5e1153872e3714a937d8733e594d90d">  147</a></span>&#160;            <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#ae5e1153872e3714a937d8733e594d90d">CsvOutputBase</a>(</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;                    std::ostream&amp; output_stream,</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;                    std::pair&lt;std::string, std::function&lt;DataField()&gt;&gt;... csv_fields)</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;                : output_stream(output_stream), watchers(csv_fields.second...) {</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                    build_headers({csv_fields...}, <span class="keyword">typename</span> gens&lt;<span class="keyword">sizeof</span>...(DataField)&gt;::type());</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;                }</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="structfpmas_1_1io_1_1CsvSerial.html">   54</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structfpmas_1_1io_1_1CsvSerial.html">CsvSerial</a> {</div>
+<div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="structfpmas_1_1io_1_1CsvSerial.html#a24d88f30b4a8007e3ec2e8877d7a6abc">   62</a></span>&#160;            <span class="keyword">static</span> std::string <a class="code" href="structfpmas_1_1io_1_1CsvSerial.html#a24d88f30b4a8007e3ec2e8877d7a6abc">to_csv</a>(<span class="keyword">const</span> T&amp; data) {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;                std::ostringstream stream;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;                stream &lt;&lt; data;</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                <span class="keywordflow">return</span> stream.str();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        };</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... DataField&gt;</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html">   84</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1io_1_1Output.html">api::io::Output</a> {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            std::ostream&amp; output_stream;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            std::vector&lt;std::string&gt; _headers;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;            std::tuple&lt;std::function&lt;DataField()&gt;...&gt; watchers;</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;            <a class="code" href="classfpmas_1_1io_1_1OutputTask.html">OutputTask</a> output_task {*<span class="keyword">this</span>};</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;            <a class="code" href="classfpmas_1_1scheduler_1_1Job.html">scheduler::Job</a> _job {{output_task}};</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;            <span class="comment">/*</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">             * Tuple unrolling helper structs.</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment">             */</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> ...&gt; <span class="keyword">struct </span>seq {};</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;            <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> N, <span class="keywordtype">int</span> ...S&gt; <span class="keyword">struct </span>gens {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;                <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;                    <span class="keyword">typedef</span> <span class="keyword">typename</span> gens&lt;N-1, N-1, S...&gt;::type type;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;            }; <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> ...S&gt; <span class="keyword">struct </span>gens&lt;0, S...&gt;{ <span class="keyword">typedef</span> seq&lt;S...&gt; type; };</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;            <span class="comment">/*</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment">             * Unrolls the input tuple to feed internal _headers, that are then</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="comment">             * accessible with headers().</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="comment">             */</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;            <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> ...S&gt;</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;                <span class="keywordtype">void</span> build_headers(</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;                        std::tuple&lt;std::pair&lt;std::string, std::function&lt;DataField()&gt;&gt;...&gt; csv_fields,</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;                        <span class="keyword">const</span> seq&lt;S...&gt;) {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;                    _headers = {std::get&lt;S&gt;(csv_fields).first...};</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;                }</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;            <span class="comment">/*</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment">             * Unrolls the input tuple and calls each watcher. Data is the</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment">             * serialized and return in a vector.</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">             */</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;            <span class="keyword">template</span>&lt;<span class="keywordtype">int</span> ...S&gt;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;                std::vector&lt;std::string&gt; _dump_fields(<span class="keyword">const</span> seq&lt;S...&gt;) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;                    std::tuple&lt;DataField...&gt; data {std::get&lt;S&gt;(watchers)() ...};</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;                    std::ostringstream output_str;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;                    <span class="keywordflow">return</span> {<a class="code" href="structfpmas_1_1io_1_1CsvSerial.html">CsvSerial</a>&lt;<span class="keyword">typename</span> std::tuple_element&lt;S, decltype(data)&gt;::type&gt;::to_csv(std::get&lt;S&gt;(data))...};</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        <span class="keyword">protected</span>:</div>
+<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">  130</a></span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; data) {</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;                <span class="keywordflow">for</span>(std::size_t i = 0; i &lt; data.size()-1; i++)</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;                    output_stream &lt;&lt; data[i] &lt;&lt; <span class="stringliteral">&quot;,&quot;</span>;</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;                output_stream &lt;&lt; data.back() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;            }</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00141"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">  141</a></span>&#160;            std::vector&lt;std::string&gt; <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">headers</a>() {</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;                <span class="keywordflow">return</span> _headers;</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;            }</div>
+<div class="line"><a name="l00150"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">  150</a></span>&#160;            std::vector&lt;std::string&gt; <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">dump_fields</a>() {</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;                <span class="keywordflow">return</span> _dump_fields(<span class="keyword">typename</span> gens&lt;<span class="keyword">sizeof</span>...(DataField)&gt;::type());</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;            }</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;        <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#adc9cf6a751e0db7203572b722f6227f8">  158</a></span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a>&amp; <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#adc9cf6a751e0db7203572b722f6227f8">job</a>()<span class="keyword"> override </span>{</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;                <span class="keywordflow">return</span> _job;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;            }</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    };</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... DataField&gt;</div>
-<div class="line"><a name="l00171"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutput.html">  171</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1io_1_1CsvOutput.html">CsvOutput</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;DataField...&gt; {</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00184"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutput.html#ab7054572fcfa39323f5705534202a9d9">  184</a></span>&#160;                <a class="code" href="classfpmas_1_1io_1_1CsvOutput.html#ab7054572fcfa39323f5705534202a9d9">CsvOutput</a>(</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;                    std::ostream&amp; output_stream,</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                    std::pair&lt;std::string, std::function&lt;DataField()&gt;&gt;... csv_fields)</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;                    : <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;DataField...&gt;(output_stream, csv_fields...) {</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;                        this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">headers</a>());</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;                    }</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
-<div class="line"><a name="l00197"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutput.html#a58b087420bc2301c0594eb6a7352cd1e">  197</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1CsvOutput.html#a58b087420bc2301c0594eb6a7352cd1e">dump</a>()<span class="keyword"> override </span>{</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;                    this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">dump_fields</a>());</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;                };</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        };</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Operation&gt;</div>
-<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="structfpmas_1_1io_1_1DistributedCsvField.html">  209</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html">DistributedCsvField</a> : <span class="keyword">public</span> std::tuple&lt;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                                    std::string,</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;                                    Watcher&lt;typename Operation::Type&gt;,</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;                                    typename Operation::Params&gt;</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    {</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        <span class="keyword">using</span> std::tuple&lt;</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;            std::string,</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        std::function&lt;<span class="keyword">typename</span> Operation::Type()&gt;,</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keyword">typename</span> Operation::Params&gt;::tuple;</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="structfpmas_1_1io_1_1DistributedCsvField.html#a177ec8404f2b74f7aab604af02b662ca">  227</a></span>&#160;        <a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html#a177ec8404f2b74f7aab604af02b662ca">DistributedCsvField</a>(</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                <span class="keyword">const</span> std::string&amp; name,</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;                std::function&lt;<span class="keyword">typename</span> Operation::Type()&gt; watcher)</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;            : <a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html">DistributedCsvField</a>(name, watcher, {}) {}</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    };</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... DataFieldOperation&gt;</div>
-<div class="line"><a name="l00243"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1DistributedCsvOutput.html">  243</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1io_1_1DistributedCsvOutput.html">DistributedCsvOutput</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;typename DataFieldOperation::Type...&gt; {</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a>&amp; comm;</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;                <span class="keywordtype">int</span> root;</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;                <span class="keywordtype">bool</span> all_out;</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00163"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#ae5e1153872e3714a937d8733e594d90d">  163</a></span>&#160;            <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#ae5e1153872e3714a937d8733e594d90d">CsvOutputBase</a>(</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;                    std::ostream&amp; output_stream,</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;                    std::pair&lt;std::string, std::function&lt;DataField()&gt;&gt;... csv_fields)</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                : output_stream(output_stream), watchers(csv_fields.second...) {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;                    build_headers({csv_fields...}, <span class="keyword">typename</span> gens&lt;<span class="keyword">sizeof</span>...(DataField)&gt;::type());</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;                }</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00174"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutputBase.html#adc9cf6a751e0db7203572b722f6227f8">  174</a></span>&#160;            <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a>&amp; <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#adc9cf6a751e0db7203572b722f6227f8">job</a>()<span class="keyword"> override </span>{</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;                <span class="keywordflow">return</span> _job;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;            }</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    };</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... DataField&gt;</div>
+<div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutput.html">  187</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1io_1_1CsvOutput.html">CsvOutput</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;DataField...&gt; {</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00200"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutput.html#ab7054572fcfa39323f5705534202a9d9">  200</a></span>&#160;                <a class="code" href="classfpmas_1_1io_1_1CsvOutput.html#ab7054572fcfa39323f5705534202a9d9">CsvOutput</a>(</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;                    std::ostream&amp; output_stream,</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                    std::pair&lt;std::string, std::function&lt;DataField()&gt;&gt;... csv_fields)</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;                    : <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;DataField...&gt;(output_stream, csv_fields...) {</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;                        this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">headers</a>());</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                    }</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
+<div class="line"><a name="l00213"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1CsvOutput.html#a58b087420bc2301c0594eb6a7352cd1e">  213</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1CsvOutput.html#a58b087420bc2301c0594eb6a7352cd1e">dump</a>()<span class="keyword"> override </span>{</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;                    this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">dump_fields</a>());</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;                };</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        };</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Operation&gt;</div>
+<div class="line"><a name="l00225"></a><span class="lineno"><a class="line" href="structfpmas_1_1io_1_1DistributedCsvField.html">  225</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html">DistributedCsvField</a> : <span class="keyword">public</span> std::tuple&lt;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;                                    std::string,</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;                                    Watcher&lt;typename Operation::Type&gt;,</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;                                    typename Operation::Params&gt;</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    {</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        <span class="keyword">using</span> std::tuple&lt;</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;            std::string,</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;        std::function&lt;<span class="keyword">typename</span> Operation::Type()&gt;,</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;        <span class="keyword">typename</span> Operation::Params&gt;::tuple;</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
+<div class="line"><a name="l00243"></a><span class="lineno"><a class="line" href="structfpmas_1_1io_1_1DistributedCsvField.html#a177ec8404f2b74f7aab604af02b662ca">  243</a></span>&#160;        <a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html#a177ec8404f2b74f7aab604af02b662ca">DistributedCsvField</a>(</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;                <span class="keyword">const</span> std::string&amp; name,</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;                std::function&lt;<span class="keyword">typename</span> Operation::Type()&gt; watcher)</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            : <a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html">DistributedCsvField</a>(name, watcher, {}) {}</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    };</div>
 <div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00267"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a37e84a244f63e4b806b807f6639546e6">  267</a></span>&#160;                <a class="code" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a37e84a244f63e4b806b807f6639546e6">DistributedCsvOutput</a>(</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a>&amp; comm, <span class="keywordtype">int</span> root,</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                        std::ostream&amp; output_stream,</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                        <a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html">DistributedCsvField&lt;DataFieldOperation&gt;</a>... csv_fields)</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                    : <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;typename DataFieldOperation::Type...&gt;(</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                            output_stream,</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                            {</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                            <span class="comment">// Field name</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                            std::get&lt;0&gt;(csv_fields),</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                            <span class="comment">// DistributedOperation</span></div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                            <span class="keyword">typename</span> DataFieldOperation::Single(</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                                    comm, root,</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                                    <span class="comment">// Watcher</span></div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;                                    std::get&lt;1&gt;(csv_fields),</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                                    <span class="comment">// Extra Params</span></div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;                                    std::get&lt;2&gt;(csv_fields))</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;                            }...),</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                    comm(comm), root(root), all_out(<span class="keyword">false</span>)</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;                    {</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;                        <span class="keywordflow">if</span>(comm.<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>() == root)</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;                            this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">headers</a>());</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;                    }</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160; </div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
-<div class="line"><a name="l00305"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a207e6c864ddb1d4feef6daf824fc8ec7">  305</a></span>&#160;                <a class="code" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a207e6c864ddb1d4feef6daf824fc8ec7">DistributedCsvOutput</a>(</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a>&amp; comm,</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;                        std::ostream&amp; output_stream,</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;                        <a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html">DistributedCsvField&lt;DataFieldOperation&gt;</a>... csv_fields)</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;                    : <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;typename DataFieldOperation::Type...&gt;(</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;                            output_stream,</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;                            {</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;                            <span class="comment">// Field name</span></div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;                            std::get&lt;0&gt;(csv_fields),</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;                            <span class="comment">// DistributedOperation</span></div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;                            <span class="keyword">typename</span> DataFieldOperation::All(</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;                                    comm,</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;                                    <span class="comment">// Watcher</span></div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;                                    std::get&lt;1&gt;(csv_fields),</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;                                    <span class="comment">// Extra Params</span></div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;                                    std::get&lt;2&gt;(csv_fields))</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;                            }...),</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                    comm(comm), all_out(<span class="keyword">true</span>)</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                    {</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                        this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">headers</a>());</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                    }</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160; </div>
-<div class="line"><a name="l00338"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a4c157888ea663ecf58c30cd344b0be68">  338</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a4c157888ea663ecf58c30cd344b0be68">dump</a>()<span class="keyword"> override </span>{</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                    std::vector&lt;std::string&gt; data_fields = this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">dump_fields</a>();</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                    <span class="keywordflow">if</span>(all_out || comm.<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>() == root)</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                        this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(data_fields);</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;                }</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        };</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160; </div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;}}</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span>... DataFieldOperation&gt;</div>
+<div class="line"><a name="l00259"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1DistributedCsvOutput.html">  259</a></span>&#160;        <span class="keyword">class </span><a class="code" href="classfpmas_1_1io_1_1DistributedCsvOutput.html">DistributedCsvOutput</a> : <span class="keyword">public</span> <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;typename DataFieldOperation::Type...&gt; {</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;            <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a>&amp; comm;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                <span class="keywordtype">int</span> root;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                <span class="keywordtype">bool</span> all_out;</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160; </div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00283"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a37e84a244f63e4b806b807f6639546e6">  283</a></span>&#160;                <a class="code" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a37e84a244f63e4b806b807f6639546e6">DistributedCsvOutput</a>(</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a>&amp; comm, <span class="keywordtype">int</span> root,</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;                        std::ostream&amp; output_stream,</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;                        <a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html">DistributedCsvField&lt;DataFieldOperation&gt;</a>... csv_fields)</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;                    : <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;typename DataFieldOperation::Type...&gt;(</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;                            output_stream,</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;                            {</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                            <span class="comment">// Field name</span></div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;                            std::get&lt;0&gt;(csv_fields),</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;                            <span class="comment">// DistributedOperation</span></div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                            <span class="keyword">typename</span> DataFieldOperation::Single(</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;                                    comm, root,</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                                    <span class="comment">// Watcher</span></div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;                                    std::get&lt;1&gt;(csv_fields),</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                                    <span class="comment">// Extra Params</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;                                    std::get&lt;2&gt;(csv_fields))</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;                            }...),</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;                    comm(comm), root(root), all_out(<span class="keyword">false</span>)</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;                    {</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;                        <span class="keywordflow">if</span>(comm.<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>() == root)</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;                            this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">headers</a>());</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;                    }</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160; </div>
+<div class="line"><a name="l00321"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a207e6c864ddb1d4feef6daf824fc8ec7">  321</a></span>&#160;                <a class="code" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a207e6c864ddb1d4feef6daf824fc8ec7">DistributedCsvOutput</a>(</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;                        <a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a>&amp; comm,</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;                        std::ostream&amp; output_stream,</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;                        <a class="code" href="structfpmas_1_1io_1_1DistributedCsvField.html">DistributedCsvField&lt;DataFieldOperation&gt;</a>... csv_fields)</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;                    : <a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a>&lt;typename DataFieldOperation::Type...&gt;(</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;                            output_stream,</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;                            {</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;                            <span class="comment">// Field name</span></div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;                            std::get&lt;0&gt;(csv_fields),</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;                            <span class="comment">// DistributedOperation</span></div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;                            <span class="keyword">typename</span> DataFieldOperation::All(</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;                                    comm,</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;                                    <span class="comment">// Watcher</span></div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                                    std::get&lt;1&gt;(csv_fields),</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;                                    <span class="comment">// Extra Params</span></div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;                                    std::get&lt;2&gt;(csv_fields))</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;                            }...),</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;                    comm(comm), all_out(<span class="keyword">true</span>)</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;                    {</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;                        this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">headers</a>());</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;                    }</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160; </div>
+<div class="line"><a name="l00354"></a><span class="lineno"><a class="line" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a4c157888ea663ecf58c30cd344b0be68">  354</a></span>&#160;                <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a4c157888ea663ecf58c30cd344b0be68">dump</a>()<span class="keyword"> override </span>{</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;                    std::vector&lt;std::string&gt; data_fields = this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">dump_fields</a>();</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;                    <span class="keywordflow">if</span>(all_out || comm.<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>() == root)</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;                        this-&gt;<a class="code" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a>(data_fields);</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;                }</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;        };</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;}}</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aapi_2io_2output_8h_html"><div class="ttname"><a href="api_2io_2output_8h.html">output.h</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:211</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html_a5d0a8ba6389d11dda81add366f6fc9b9"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">fpmas::api::communication::MpiCommunicator::getRank</a></div><div class="ttdeci">virtual int getRank() const =0</div></div>
@@ -277,19 +276,19 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1api_1_1io_1_1Output_html_a8e0704b42bb274d7a9b35a6c27b3e691"><div class="ttname"><a href="classfpmas_1_1api_1_1io_1_1Output.html#a8e0704b42bb274d7a9b35a6c27b3e691">fpmas::api::io::Output::dump</a></div><div class="ttdeci">virtual void dump()=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1Job_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1Job.html">fpmas::api::scheduler::Job</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:74</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1Task_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1Task.html">fpmas::api::scheduler::Task</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:41</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html">fpmas::io::CsvOutputBase</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:58</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_a1358f8c08c55ff3582d90642862db80a"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">fpmas::io::CsvOutputBase::headers</a></div><div class="ttdeci">std::vector&lt; std::string &gt; headers()</div><div class="ttdef"><b>Definition:</b> csv_output.h:125</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_a5f6dbc9427cadeab1d01af9802fd6ad1"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">fpmas::io::CsvOutputBase::dump_fields</a></div><div class="ttdeci">std::vector&lt; std::string &gt; dump_fields()</div><div class="ttdef"><b>Definition:</b> csv_output.h:134</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_a853082805fda1c9fa9c202a47c584d75"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">fpmas::io::CsvOutputBase::dump_csv</a></div><div class="ttdeci">void dump_csv(const std::vector&lt; std::string &gt; &amp;data)</div><div class="ttdef"><b>Definition:</b> csv_output.h:114</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_adc9cf6a751e0db7203572b722f6227f8"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#adc9cf6a751e0db7203572b722f6227f8">fpmas::io::CsvOutputBase::job</a></div><div class="ttdeci">const api::scheduler::Job &amp; job() override</div><div class="ttdef"><b>Definition:</b> csv_output.h:158</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_ae5e1153872e3714a937d8733e594d90d"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#ae5e1153872e3714a937d8733e594d90d">fpmas::io::CsvOutputBase::CsvOutputBase</a></div><div class="ttdeci">CsvOutputBase(std::ostream &amp;output_stream, std::pair&lt; std::string, std::function&lt; DataField()&gt;&gt;... csv_fields)</div><div class="ttdef"><b>Definition:</b> csv_output.h:147</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html">fpmas::io::CsvOutput</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:171</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html_a58b087420bc2301c0594eb6a7352cd1e"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html#a58b087420bc2301c0594eb6a7352cd1e">fpmas::io::CsvOutput::dump</a></div><div class="ttdeci">void dump() override</div><div class="ttdef"><b>Definition:</b> csv_output.h:197</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html_ab7054572fcfa39323f5705534202a9d9"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html#ab7054572fcfa39323f5705534202a9d9">fpmas::io::CsvOutput::CsvOutput</a></div><div class="ttdeci">CsvOutput(std::ostream &amp;output_stream, std::pair&lt; std::string, std::function&lt; DataField()&gt;&gt;... csv_fields)</div><div class="ttdef"><b>Definition:</b> csv_output.h:184</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1DistributedCsvOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1DistributedCsvOutput.html">fpmas::io::DistributedCsvOutput</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:243</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1DistributedCsvOutput_html_a207e6c864ddb1d4feef6daf824fc8ec7"><div class="ttname"><a href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a207e6c864ddb1d4feef6daf824fc8ec7">fpmas::io::DistributedCsvOutput::DistributedCsvOutput</a></div><div class="ttdeci">DistributedCsvOutput(api::communication::MpiCommunicator &amp;comm, std::ostream &amp;output_stream, DistributedCsvField&lt; DataFieldOperation &gt;... csv_fields)</div><div class="ttdef"><b>Definition:</b> csv_output.h:305</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1DistributedCsvOutput_html_a37e84a244f63e4b806b807f6639546e6"><div class="ttname"><a href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a37e84a244f63e4b806b807f6639546e6">fpmas::io::DistributedCsvOutput::DistributedCsvOutput</a></div><div class="ttdeci">DistributedCsvOutput(api::communication::MpiCommunicator &amp;comm, int root, std::ostream &amp;output_stream, DistributedCsvField&lt; DataFieldOperation &gt;... csv_fields)</div><div class="ttdef"><b>Definition:</b> csv_output.h:267</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1DistributedCsvOutput_html_a4c157888ea663ecf58c30cd344b0be68"><div class="ttname"><a href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a4c157888ea663ecf58c30cd344b0be68">fpmas::io::DistributedCsvOutput::dump</a></div><div class="ttdeci">void dump() override</div><div class="ttdef"><b>Definition:</b> csv_output.h:338</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html">fpmas::io::CsvOutputBase</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:84</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_a1358f8c08c55ff3582d90642862db80a"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#a1358f8c08c55ff3582d90642862db80a">fpmas::io::CsvOutputBase::headers</a></div><div class="ttdeci">std::vector&lt; std::string &gt; headers()</div><div class="ttdef"><b>Definition:</b> csv_output.h:141</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_a5f6dbc9427cadeab1d01af9802fd6ad1"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">fpmas::io::CsvOutputBase::dump_fields</a></div><div class="ttdeci">std::vector&lt; std::string &gt; dump_fields()</div><div class="ttdef"><b>Definition:</b> csv_output.h:150</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_a853082805fda1c9fa9c202a47c584d75"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">fpmas::io::CsvOutputBase::dump_csv</a></div><div class="ttdeci">void dump_csv(const std::vector&lt; std::string &gt; &amp;data)</div><div class="ttdef"><b>Definition:</b> csv_output.h:130</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_adc9cf6a751e0db7203572b722f6227f8"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#adc9cf6a751e0db7203572b722f6227f8">fpmas::io::CsvOutputBase::job</a></div><div class="ttdeci">const api::scheduler::Job &amp; job() override</div><div class="ttdef"><b>Definition:</b> csv_output.h:174</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutputBase_html_ae5e1153872e3714a937d8733e594d90d"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutputBase.html#ae5e1153872e3714a937d8733e594d90d">fpmas::io::CsvOutputBase::CsvOutputBase</a></div><div class="ttdeci">CsvOutputBase(std::ostream &amp;output_stream, std::pair&lt; std::string, std::function&lt; DataField()&gt;&gt;... csv_fields)</div><div class="ttdef"><b>Definition:</b> csv_output.h:163</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html">fpmas::io::CsvOutput</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:187</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html_a58b087420bc2301c0594eb6a7352cd1e"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html#a58b087420bc2301c0594eb6a7352cd1e">fpmas::io::CsvOutput::dump</a></div><div class="ttdeci">void dump() override</div><div class="ttdef"><b>Definition:</b> csv_output.h:213</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html_ab7054572fcfa39323f5705534202a9d9"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html#ab7054572fcfa39323f5705534202a9d9">fpmas::io::CsvOutput::CsvOutput</a></div><div class="ttdeci">CsvOutput(std::ostream &amp;output_stream, std::pair&lt; std::string, std::function&lt; DataField()&gt;&gt;... csv_fields)</div><div class="ttdef"><b>Definition:</b> csv_output.h:200</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1DistributedCsvOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1DistributedCsvOutput.html">fpmas::io::DistributedCsvOutput</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:259</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1DistributedCsvOutput_html_a207e6c864ddb1d4feef6daf824fc8ec7"><div class="ttname"><a href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a207e6c864ddb1d4feef6daf824fc8ec7">fpmas::io::DistributedCsvOutput::DistributedCsvOutput</a></div><div class="ttdeci">DistributedCsvOutput(api::communication::MpiCommunicator &amp;comm, std::ostream &amp;output_stream, DistributedCsvField&lt; DataFieldOperation &gt;... csv_fields)</div><div class="ttdef"><b>Definition:</b> csv_output.h:321</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1DistributedCsvOutput_html_a37e84a244f63e4b806b807f6639546e6"><div class="ttname"><a href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a37e84a244f63e4b806b807f6639546e6">fpmas::io::DistributedCsvOutput::DistributedCsvOutput</a></div><div class="ttdeci">DistributedCsvOutput(api::communication::MpiCommunicator &amp;comm, int root, std::ostream &amp;output_stream, DistributedCsvField&lt; DataFieldOperation &gt;... csv_fields)</div><div class="ttdef"><b>Definition:</b> csv_output.h:283</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1DistributedCsvOutput_html_a4c157888ea663ecf58c30cd344b0be68"><div class="ttname"><a href="classfpmas_1_1io_1_1DistributedCsvOutput.html#a4c157888ea663ecf58c30cd344b0be68">fpmas::io::DistributedCsvOutput::dump</a></div><div class="ttdeci">void dump() override</div><div class="ttdef"><b>Definition:</b> csv_output.h:354</div></div>
 <div class="ttc" id="aclassfpmas_1_1io_1_1OutputTask_html"><div class="ttname"><a href="classfpmas_1_1io_1_1OutputTask.html">fpmas::io::OutputTask</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:23</div></div>
 <div class="ttc" id="aclassfpmas_1_1io_1_1OutputTask_html_a83449a38add080b0c684ee65c836910a"><div class="ttname"><a href="classfpmas_1_1io_1_1OutputTask.html#a83449a38add080b0c684ee65c836910a">fpmas::io::OutputTask::run</a></div><div class="ttdeci">void run() override</div><div class="ttdef"><b>Definition:</b> csv_output.h:38</div></div>
 <div class="ttc" id="aclassfpmas_1_1io_1_1OutputTask_html_a8d25b0cfff8c10b276af62a67c972eed"><div class="ttname"><a href="classfpmas_1_1io_1_1OutputTask.html#a8d25b0cfff8c10b276af62a67c972eed">fpmas::io::OutputTask::OutputTask</a></div><div class="ttdeci">OutputTask(api::io::Output &amp;output)</div><div class="ttdef"><b>Definition:</b> csv_output.h:32</div></div>
@@ -298,8 +297,10 @@ $(function() {
 <div class="ttc" id="anamespacefpmas_1_1api_1_1io_html_a6a28e70ce859db06fc25482a97bee9f0"><div class="ttname"><a href="namespacefpmas_1_1api_1_1io.html#a6a28e70ce859db06fc25482a97bee9f0">fpmas::api::io::Watcher</a></div><div class="ttdeci">std::function&lt; T()&gt; Watcher</div><div class="ttdef"><b>Definition:</b> output.h:42</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.cpp:3</div></div>
 <div class="ttc" id="ascheduler_2scheduler_8h_html"><div class="ttname"><a href="scheduler_2scheduler_8h.html">scheduler.h</a></div></div>
-<div class="ttc" id="astructfpmas_1_1io_1_1DistributedCsvField_html"><div class="ttname"><a href="structfpmas_1_1io_1_1DistributedCsvField.html">fpmas::io::DistributedCsvField</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:213</div></div>
-<div class="ttc" id="astructfpmas_1_1io_1_1DistributedCsvField_html_a177ec8404f2b74f7aab604af02b662ca"><div class="ttname"><a href="structfpmas_1_1io_1_1DistributedCsvField.html#a177ec8404f2b74f7aab604af02b662ca">fpmas::io::DistributedCsvField::DistributedCsvField</a></div><div class="ttdeci">DistributedCsvField(const std::string &amp;name, std::function&lt; typename Operation::Type()&gt; watcher)</div><div class="ttdef"><b>Definition:</b> csv_output.h:227</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1CsvSerial_html"><div class="ttname"><a href="structfpmas_1_1io_1_1CsvSerial.html">fpmas::io::CsvSerial</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:54</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1CsvSerial_html_a24d88f30b4a8007e3ec2e8877d7a6abc"><div class="ttname"><a href="structfpmas_1_1io_1_1CsvSerial.html#a24d88f30b4a8007e3ec2e8877d7a6abc">fpmas::io::CsvSerial::to_csv</a></div><div class="ttdeci">static std::string to_csv(const T &amp;data)</div><div class="ttdef"><b>Definition:</b> csv_output.h:62</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1DistributedCsvField_html"><div class="ttname"><a href="structfpmas_1_1io_1_1DistributedCsvField.html">fpmas::io::DistributedCsvField</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:229</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1DistributedCsvField_html_a177ec8404f2b74f7aab604af02b662ca"><div class="ttname"><a href="structfpmas_1_1io_1_1DistributedCsvField.html#a177ec8404f2b74f7aab604af02b662ca">fpmas::io::DistributedCsvField::DistributedCsvField</a></div><div class="ttdeci">DistributedCsvField(const std::string &amp;name, std::function&lt; typename Operation::Type()&gt; watcher)</div><div class="ttdef"><b>Definition:</b> csv_output.h:243</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

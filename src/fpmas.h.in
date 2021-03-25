@@ -227,6 +227,14 @@ namespace fpmas {
  * Utility classes.
  */
 /**
+ * \namespace fpmas::api::utils::perf
+ * Utility classes for performance analysis
+ */
+/**
+ * \namespace fpmas::utils::perf
+ * fpmas::api::utils::perf implementations.
+ */
+/**
  * \namespace nlohmann
  * Namespace where JSON serialization rules can be defined.
  */

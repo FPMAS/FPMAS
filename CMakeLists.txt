@@ -113,6 +113,7 @@ if(DOXYGEN_FOUND)
 		[[DistributedMoveAlgorithm="\ref fpmas::api::model::DistributedMoveAlgorithm \"DistributedMoveAlgorithm\""]]
 		[[Scheduler="\ref fpmas::api::scheduler::Scheduler \"Scheduler\""]]
 		[[Runtime="\ref fpmas::api::runtime::Runtime \"Runtime\""]]
+		[[Probes="\ref fpmas::api::utils::perf::Probe \"Probes\""]]
 		[[implem="\par Implementation details"]]
 		)
 	set(DOXYGEN_HAVE_DOT "YES")

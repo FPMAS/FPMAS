@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['hasher_1386',['hasher',['../structstd_1_1hash_3_01fpmas_1_1model_1_1DiscretePoint_01_4.html#a6fff5d09753c70a341fbaf781c4f2739',1,'std::hash&lt; fpmas::model::DiscretePoint &gt;']]]
+  ['gen_1418',['gen',['../classfpmas_1_1random_1_1Generator.html#a0a6c638d792d1d0bd1b179579bf3c8ce',1,'fpmas::random::Generator']]],
+  ['generator_1419',['generator',['../classfpmas_1_1graph_1_1RandomGraphBuilder.html#ae918ca85253c86ca48374f7b4419a39d',1,'fpmas::graph::RandomGraphBuilder']]],
+  ['group_1420',['group',['../classfpmas_1_1communication_1_1MpiCommunicatorBase.html#af9f09cf5da93c3f175b94faedfbaaa9f',1,'fpmas::communication::MpiCommunicatorBase']]]
 ];

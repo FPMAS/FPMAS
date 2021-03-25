@@ -1,6 +1,8 @@
 #ifndef FPMAS_OUTPUT_H
 #define FPMAS_OUTPUT_H
 
+#include <fstream>
+
 /**
  * @file src/fpmas/io/output.h
  *
@@ -277,5 +279,124 @@ namespace fpmas { namespace io {
 					}
 			};
 		};
+
+	/**
+	 * An helper class that can be used to initialize a file output stream.
+	 *
+	 * This class is notably useful to extend output classes that take an
+	 * output stream as constructor parameter, such as CsvOutput.
+	 *
+	 * For example, the following code is **wrong** and will produce a
+	 * segmentation fault:
+	 * ```cpp
+	 * class MyOutput : public fpmas::io::CsvOutput<int> {
+	 * 	private:
+	 * 		std::ofstream file("file.csv");
+	 *
+	 * 	public:
+	 * 		MyOutput()
+	 * 			: fpmas::io::CsvOutput<int>(
+	 * 				this->file, 
+	 * 				{"my_field", [] () {return ...}}
+	 * 				) {}
+	 * };
+	 * ```
+	 * Indeed, the CsvOutput constructor uses the specified output stream (to
+	 * automatically write CSV headers), BUT CsvOutput, as a base class of
+	 * `MyOutput`, is initialized **before** `MyOutput`, so before `file`, what
+	 * produces a segmentation fault.
+	 *
+	 * This FileOutput class can be used to easily solve the issue:
+	 * ```cpp
+	 * // FileOutput must be specified BEFORE CsvOutput
+	 * class MyOutput : public fpmas::io::FileOutput, fpmas::io::CsvOutput<int> {
+	 * 	public:
+	 * 		MyOutput() :
+	 * 			fpmas::io::FileOutput("file.csv"),
+	 * 			fpmas::io::CsvOutput<int>(
+	 * 				this->file,
+	 * 				{"my_field", [] () {return ...}}
+	 * 				) {}
+	 * };
+	 * ```
+	 * In this case, FileOutput is properly initialized before CsvOutput so no
+	 * error occurs.
+	 */
+	struct FileOutput {
+		/**
+		 * std::ofstream file instance
+		 */
+		std::ofstream file;
+
+		/**
+		 * FileOutput constructor.
+		 *
+		 * @see https://en.cppreference.com/w/cpp/io/basic_filebuf/open
+		 *
+		 * @param filename file name
+		 * @param mode standard open mode
+		 */
+		FileOutput(
+				std::string filename,
+				std::ios_base::openmode mode = std::ios_base::out
+				);
+
+		/**
+		 * FileOutput constructor.
+		 *
+		 * `file_format` is formatted using fpmas::utils::format(std::string, int)
+		 * to produce a file name.
+		 *
+		 * @see https://en.cppreference.com/w/cpp/io/basic_filebuf/open
+		 *
+		 * @param file_format file name to format
+		 * @param rank rank of the current process
+		 * @param mode standard open mode
+		 */
+		FileOutput(
+				std::string file_format,
+				int rank,
+				std::ios_base::openmode mode = std::ios_base::out
+				);
+
+		/**
+		 * FileOutput constructor.
+		 *
+		 * `file_format` is formatted using
+		 * fpmas::utils::format(std::string, fpmas::api::scheduler::TimeStep)
+		 * to produce a file name.
+		 *
+		 * @see https://en.cppreference.com/w/cpp/io/basic_filebuf/open
+		 *
+		 * @param file_format file name to format
+		 * @param step current time step
+		 * @param mode standard open mode
+		 */
+		FileOutput(
+				std::string file_format,
+				api::scheduler::TimeStep step,
+				std::ios_base::openmode mode = std::ios_base::out
+				);
+		/**
+		 * FileOutput constructor.
+		 *
+		 * `file_format` is formatted using
+		 * fpmas::utils::format(std::string, int, fpmas::api::scheduler::TimeStep)
+		 * to produce a file name.
+		 *
+		 * @see https://en.cppreference.com/w/cpp/io/basic_filebuf/open
+		 *
+		 * @param file_format file name to format
+		 * @param rank rank of the current process
+		 * @param step current time step
+		 * @param mode standard open mode
+		 */
+		FileOutput(
+				std::string file_format,
+				int rank,
+				api::scheduler::TimeStep step,
+				std::ios_base::openmode mode = std::ios_base::out
+				);
+	};
 }}
 #endif

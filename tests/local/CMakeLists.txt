@@ -40,6 +40,7 @@ set(SOURCES
 	io/json.cpp
 	# Utils
 	utils/format.cpp
+	utils/perf.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

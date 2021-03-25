@@ -41,6 +41,32 @@ namespace fpmas { namespace io {
 	};
 
 	/**
+	 * Component used to convert an arbitrary data field to an std::string in
+	 * the CSV serialization process.
+	 *
+	 * By default, serializes `data` using the C++ output stream operator, but
+	 * template specifilizations can be provided to define other behaviors for
+	 * specific types.
+	 *
+	 * @tparam T type of the field to serialize
+	 */
+	template<typename T>
+		struct CsvSerial {
+			/**
+			 * Converts `data` to an `std::string` using the C++ output stream
+			 * operato `<<`.
+			 *
+			 * @param data data to serialize
+			 * @return string representation of `data`
+			 */
+			static std::string to_csv(const T& data) {
+				std::ostringstream stream;
+				stream << data;
+				return stream.str();
+			}
+		};
+	
+	/**
 	 * CSV based api::output::Output implementation.
 	 *
 	 * Produces very simple CSV formatted data, without any escaping.
@@ -62,17 +88,7 @@ namespace fpmas { namespace io {
 			std::tuple<std::function<DataField()>...> watchers;
 			OutputTask output_task {*this};
 			scheduler::Job _job {{output_task}};
-			
-			/*
-			 * Serializes `data` using the C++ output stream operator.
-			 */
-			template<typename T>
-				static std::string serial(const T& data) {
-					std::ostringstream stream;
-					stream << data;
-					return stream.str();
-				}
-
+	
 			/*
 			 * Tuple unrolling helper structs.
 			 */
@@ -101,7 +117,7 @@ namespace fpmas { namespace io {
 				std::vector<std::string> _dump_fields(const seq<S...>) {
 					std::tuple<DataField...> data {std::get<S>(watchers)() ...};
 					std::ostringstream output_str;
-					return {serial(std::get<S>(data))...};
+					return {CsvSerial<typename std::tuple_element<S, decltype(data)>::type>::to_csv(std::get<S>(data))...};
 				}
 
 		protected:
@@ -328,7 +344,7 @@ namespace fpmas { namespace io {
 				 * The dump process is implictly performed in several steps:
 				 * 1. Fetch local data on each process
 				 * 2. Gather data
-				 * 3. Accumulate gathered data (using the operator +)
+				 * 3. Reduces gathered data
 				 * 4. Serialize and dump CSV formatted data to
 				 * `output_stream`
 				 *

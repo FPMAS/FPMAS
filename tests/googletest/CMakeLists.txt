@@ -11,7 +11,7 @@ execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
 
 if(result)
-  message(FATAL_ERROR "CMake step for googletest failed: ${result}")
+	message(FATAL_ERROR "CMake step for googletest failed: ${result}")
 endif()
 
 execute_process(COMMAND ${CMAKE_COMMAND} --build .
@@ -19,7 +19,7 @@ execute_process(COMMAND ${CMAKE_COMMAND} --build .
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/googletest-download )
 
 if(result)
-  message(FATAL_ERROR "Build step for googletest failed: ${result}")
+	message(WARNING "Build step for googletest failed: ${result}")
 endif()
 
 # Prevent overriding the parent project's compiler/linker

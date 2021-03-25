@@ -276,7 +276,7 @@ template&lt;typename... DataFieldOperation&gt; </div>
 <p>The dump process is implictly performed in several steps:</p><ol type="1">
 <li>Fetch local data on each process</li>
 <li>Gather data</li>
-<li>Accumulate gathered data (using the operator +)</li>
+<li>Reduces gathered data</li>
 <li>Serialize and dump CSV formatted data to <code>output_stream</code></li>
 </ol>
 <p>Depending on the constructor used, data is gathered and dumped only at <code>root</code> or on all the processes. </p>

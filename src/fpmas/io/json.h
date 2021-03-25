@@ -1,6 +1,10 @@
 #ifndef FPMAS_JSON_H
 #define FPMAS_JSON_H
 
+/**\file src/fpmas/io/json.h
+ * Json input/output related features.
+ */
+
 #include "nlohmann/json.hpp"
 
 namespace fpmas { namespace io { namespace json {

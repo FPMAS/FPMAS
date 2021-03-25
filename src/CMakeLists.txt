@@ -11,6 +11,7 @@ set(SOURCES
 	# Utils
 	fpmas/utils/log.cpp
 	fpmas/utils/format.cpp
+	fpmas/utils/perf.cpp
 	# Communication
 	fpmas/communication/communication.cpp
 	# Load balancing
@@ -29,6 +30,8 @@ set(SOURCES
 	fpmas/model/spatial/von_neumann.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
+	# Output
+	fpmas/io/output.cpp
 	# Main
 	fpmas.cpp
 	)
