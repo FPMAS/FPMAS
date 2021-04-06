@@ -632,3 +632,35 @@ TEST_F(ModelDynamicGroupIntegration, migration_edge_case) {
 	ASSERT_THAT(other_group.localAgents(), SizeIs(1));
 	ASSERT_THAT((*other_group.localAgents().begin())->groups(), ElementsAre(&other_group));
 }
+
+TEST(DistributedAgentNodeBuilder, test) {
+	static const std::size_t N_AGENT = 1000;
+
+	fpmas::model::Model<fpmas::synchro::GhostMode> model;
+	fpmas::model::Behavior<ReaderAgent> reader_behavior(&ReaderAgent::read);
+
+	auto& group = model.buildGroup(0, reader_behavior);
+
+	fpmas::random::DistributedGenerator<> generator;
+	fpmas::random::PoissonDistribution<std::size_t> edge_dist(6);
+	fpmas::graph::DistributedUniformGraphBuilder<fpmas::model::AgentPtr> builder(
+			generator, edge_dist
+			);
+
+	fpmas::model::DistributedAgentNodeBuilder node_builder(
+			group, N_AGENT, []() {return new ReaderAgent;}, model.getMpiCommunicator()
+			);
+	builder.build(node_builder, 0, model.graph());
+
+	model.graph().synchronize();
+	model.runtime().execute(model.loadBalancingJob());
+
+	fpmas::communication::TypedMpi<std::size_t> mpi(model.getMpiCommunicator());
+	std::size_t total_agent_count = fpmas::communication::all_reduce(
+			mpi, group.localAgents().size()
+			);
+	ASSERT_EQ(total_agent_count, N_AGENT);
+
+	model.scheduler().schedule(0, 1, group.jobs());
+	model.runtime().run(100);
+}

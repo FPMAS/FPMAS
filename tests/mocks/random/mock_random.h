@@ -4,6 +4,17 @@
 #include "gmock/gmock.h"
 #include "fpmas/api/random/distribution.h"
 
+class MockGenerator : public fpmas::api::random::Generator {
+	public:
+		MOCK_METHOD(result_type, min, (), (override));
+		MOCK_METHOD(result_type, max, (), (override));
+		MOCK_METHOD(result_type, call, (), ());
+
+		result_type operator()() override {
+			return call();
+		}
+};
+
 template<typename T>
 class MockDistribution : public fpmas::api::random::Distribution<T> {
 	public:

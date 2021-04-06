@@ -262,19 +262,19 @@ namespace fpmas { namespace graph {
 	template<typename NodeType, typename EdgeType>
 		void Graph<NodeType, EdgeType>::clear() {
 			// This is VERY hacky.
-			std::vector<EdgeType*> edges;
+			std::vector<EdgeType*> _edges;
 			for(auto edge : this->edges)
-				edges.push_back(edge.second);
+				_edges.push_back(edge.second);
 
-			for(auto edge : edges) {
+			for(auto edge : _edges) {
 				erase(edge);
 			}
 
-			std::vector<NodeType*> nodes;
+			std::vector<NodeType*> _nodes;
 			for(auto node : this->nodes)
-				nodes.push_back(node.second);
+				_nodes.push_back(node.second);
 
-			for(auto node : nodes) {
+			for(auto node : _nodes) {
 				erase(node);
 			}
 		}

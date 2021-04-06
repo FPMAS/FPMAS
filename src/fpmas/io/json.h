@@ -18,7 +18,7 @@ namespace fpmas { namespace io { namespace json {
 	 * be used to only serialize minimalist \DistributedNode information,
 	 * such as its ID, without considering its weight or data, that are
 	 * optional to insert a \DistributedNode into a \DistributedGraph.
-	 	 *
+	 *
 	 * @see light_serializer
 	 * @see \ref light_serializer_DistributedNode "light_serializer< NodePtrWrapper< T > >"
 	 */

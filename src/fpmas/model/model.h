@@ -11,6 +11,7 @@
 #include "fpmas/random/random.h"
 #include "fpmas/io/breakpoint.h"
 #include "fpmas/utils/format.h"
+#include "fpmas/graph/graph_builder.h"
 #include <fstream>
 
 
@@ -786,7 +787,7 @@ namespace fpmas { namespace model {
 	
 	/**
 	 * An api::graph::NodeBuilder implementation that can be used to easily
-	 * generate a random model, that can be provided to a
+	 * generate a random model, that can be provided to an
 	 * api::graph::GraphBuilder implementation.
 	 *
 	 * AgentNodes are built automatically, and can be linked according to the
@@ -826,14 +827,8 @@ namespace fpmas { namespace model {
 			 * Such node can be linked automatically as specified by the
 			 * api::graph::GraphBuilder algorithm implementation.
 			 */
-			api::graph::DistributedNode<AgentPtr>*
-				buildNode(api::graph::DistributedGraph<AgentPtr>&) override {
-					auto* agent = agents.back();
-					group.add(agent);
-					agents.pop_back();
-
-					return agent->node();
-				}
+			api::model::AgentNode*
+				buildNode(api::graph::DistributedGraph<AgentPtr>&) override;
 
 			/**
 			 * Returns the count of agents left in the AgentNodeBuilder.
@@ -843,6 +838,130 @@ namespace fpmas { namespace model {
 			std::size_t nodeCount() override {
 				return agents.size();
 			}
+	};
+	/**
+	 * An api::graph::DistributedNodeBuilder implementation that can be used to
+	 * easily generate a random model, that can be provided to an
+	 * api::graph::DistributedGraphBuilder implementation.
+	 *
+	 * AgentNodes are built automatically, and can be linked according to the
+	 * api::graph::DistributedGraphBuilder algorithm implementation.
+	 */
+	class DistributedAgentNodeBuilder : public graph::DistributedNodeBuilder<AgentPtr> {
+		private:
+			std::function<api::model::Agent*()> allocator;
+			std::function<api::model::Agent*()> distant_allocator;
+			api::model::AgentGroup& group;
+
+		public:
+			/**
+			 * DistributedAgentNodeBuilder constructor.
+			 *
+			 * `allocator` is a function object used to dynamically allocate
+			 * \Agents. When this version of the constructor is used, the
+			 * `allocator` is used by both buildNode() and buildDistantNode()
+			 * methods. A lambda function can be used to easily define an
+			 * `allocator`.
+			 *
+			 * @par example
+			 * ```cpp
+			 * ...
+			 * // Vector containing 1000 integers
+			 * std::vector<int> some_agent_data(1000);
+			 * // Initializes some_agent_data
+			 * ...
+			 * int index = 0;
+			 * DistributedAgentNodeBuilder builder(
+			 * 	user_group, 1000,
+			 * 	[&index] () {
+			 * 		return new UserAgent(some_agent_data[index++]);
+			 * 		},
+			 * 	model.getMpiCommunicator()
+			 * 	);
+			 * ```
+			 * @note Notice that the build process defined in an
+			 * fpmas::api::graph::DistributedGraphBuilder implementation is
+			 * **distributed**. In consequence, the inialization of
+			 * `some_agent_data` should in practice take distribution into
+			 * account. For example, since 1000 is the **total** count of
+			 * initialized \Agents, it is very likely that much less \Agents
+			 * will be effectively initialized on the local process.
+			 *
+			 * @param group group to which agents will be added
+			 * @param agent_count total count of \Agents to build
+			 * @param allocator \Agent allocator
+			 * @param comm MPI communicator
+			 */
+			DistributedAgentNodeBuilder(
+					api::model::AgentGroup& group,
+					std::size_t agent_count,
+					std::function<api::model::Agent*()> allocator,
+					api::communication::MpiCommunicator& comm);
+
+			/**
+			 * DistributedAgentNodeBuilder constructor.
+			 *
+			 * `allocator` and `distant_allocator` are function object used to
+			 * dynamically allocate \Agents. When this version of the
+			 * constructor is used, `allocator` is used by buildNode(), and
+			 * `distant_allocator` is used by buildDistantNode(). Since
+			 * buildDistantNode() is used to build temporary representations of
+			 * \Agents, `distant_allocator` can be used to efficiently
+			 * allocated default constructed \Agents. Lambda functions can be
+			 * used to easily define an allocators.
+			 *
+			 * @par example
+			 * ```cpp
+			 * ...
+			 * // Vector containing 1000 integers
+			 * std::vector<int> some_agent_data(1000);
+			 * // Initializes some_agent_data
+			 * ...
+			 * int index = 0;
+			 * DistributedAgentNodeBuilder builder(
+			 * 	user_group, 1000,
+			 * 	[&index] () {
+			 * 		// Allocates a local agent with data
+			 * 		return new UserAgent(some_agent_data[index++]);
+			 * 		},
+			 * 	[] () {
+			 * 		// Allocates a default temporary agent
+			 * 		return new UserAgent;
+			 * 		},
+			 * 	model.getMpiCommunicator()
+			 * 	);
+			 * ```
+			 * @note Same note as
+			 * DistributedAgentNodeBuilder(fpmas::api::model::AgentGroup&, std::size_t, std::function<api::model::Agent*()>, fpmas::api::communication::MpiCommunicator&)
+			 *
+			 * @param group group to which agents will be added
+			 * @param agent_count total count of \Agents to build
+			 * @param allocator \Agent allocator
+			 * @param distant_allocator temporary \Agent allocator
+			 * @param comm MPI communicator
+			 */
+			DistributedAgentNodeBuilder(
+					api::model::AgentGroup& group,
+					std::size_t agent_count,
+					std::function<api::model::Agent*()> allocator,
+					std::function<api::model::Agent*()> distant_allocator,
+					api::communication::MpiCommunicator& comm);
+
+
+			/**
+			 * \copydoc fpmas::api::graph::DistributedNodeBuilder::buildNode()
+			 */
+			api::model::AgentNode*
+				buildNode(api::graph::DistributedGraph<AgentPtr>& graph) override;
+
+			/**
+			 * \copydoc fpmas::api::graph::DistributedNodeBuilder::buildDistantNode()
+			 */
+			api::model::AgentNode*
+				buildDistantNode(
+						api::graph::DistributedId id,
+						int location,
+						api::graph::DistributedGraph<AgentPtr>& graph) override;
 	};
 
 	/**

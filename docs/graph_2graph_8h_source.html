@@ -318,19 +318,19 @@ $(function() {
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NodeType, <span class="keyword">typename</span> EdgeType&gt;</div>
 <div class="line"><a name="l00263"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1Graph.html#aafc4a1d95717c75826573e956a43f9e6">  263</a></span>&#160;        <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1Graph.html#aafc4a1d95717c75826573e956a43f9e6">Graph&lt;NodeType, EdgeType&gt;::clear</a>() {</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;            <span class="comment">// This is VERY hacky.</span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            std::vector&lt;EdgeType*&gt; edges;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;            std::vector&lt;EdgeType*&gt; _edges;</div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : this-&gt;edges)</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                edges.push_back(edge.second);</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                _edges.push_back(edge.second);</div>
 <div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : edges) {</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : _edges) {</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                erase(edge);</div>
 <div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;            }</div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160; </div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            std::vector&lt;NodeType*&gt; nodes;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            std::vector&lt;NodeType*&gt; _nodes;</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : this-&gt;nodes)</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                nodes.push_back(node.second);</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                _nodes.push_back(node.second);</div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : nodes) {</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : _nodes) {</div>
 <div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                erase(node);</div>
 <div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            }</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        }</div>

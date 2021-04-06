@@ -77,7 +77,7 @@ $(function() {
 , <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html#a1629c45867e061d72cefe1cc4b08aaa5">fpmas::api::graph::LoadBalancing&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a02960142da8c4dc27095a13d1036e64e">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html#af42206d6d8beee9cdd1f64b3f2edc407">fpmas::graph::ScheduledLoadBalancing&lt; T &gt;</a>
-, <a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8ab28c34273f2d9c0da6443249ef5e7d">fpmas::graph::ZoltanLoadBalancing&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">fpmas::graph::ZoltanLoadBalancing&lt; T &gt;</a>
 </li>
 <li>barrier()
 : <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#ae37f7f1125a1b4d64b6532cde80c2af2">fpmas::api::communication::MpiCommunicator</a>
@@ -115,7 +115,8 @@ $(function() {
 : <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a11c47710cc89f0dd6c7b8343a0749560">fpmas::api::communication::DataPack</a>
 </li>
 <li>build()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html#a2d2ec86d834bc22e0390154af5190c64">fpmas::api::graph::GraphBuilder&lt; T &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder.html#add1dc8b412ac88c926cdc623da104bb0">fpmas::api::graph::DistributedGraphBuilder&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html#a2d2ec86d834bc22e0390154af5190c64">fpmas::api::graph::GraphBuilder&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html#a9ddeff6e5b704df3ee92c8d79c008074">fpmas::api::model::CellNetworkBuilder&lt; CellType &gt;</a>
 , <a class="el" href="classfpmas_1_1api_1_1model_1_1GridCellFactory.html#ae1eeb790a9d2ca1f3c3cc7b1dab7eca1">fpmas::api::model::GridCellFactory&lt; CellType &gt;</a>
 , <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgentBuilder.html#a9c4f3bec1dc913589b87b41211c8331d">fpmas::api::model::SpatialAgentBuilder&lt; CellType, MappingCellType &gt;</a>
@@ -123,12 +124,18 @@ $(function() {
 , <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html#ae4784aa2e370b7f372a8491eff1f6eb8">fpmas::api::scheduler::Scheduler</a>
 , <a class="el" href="classfpmas_1_1graph_1_1BipartiteGraphBuilder.html#a41ff0977a203fb5ca90d79abe4ebc8e7">fpmas::graph::BipartiteGraphBuilder&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#ac55b80abb4cbbf5ccb65ebd302fdf462">fpmas::graph::ClusteredGraphBuilder&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedClusteredGraphBuilder.html#aa6a2b6e8a5b86b89dfbf3e7cd58aa390">fpmas::graph::DistributedClusteredGraphBuilder&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1graph_1_1DistributedUniformGraphBuilder.html#a4ee44db24429b2e520aa20dccdc4eb4e">fpmas::graph::DistributedUniformGraphBuilder&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1UniformGraphBuilder.html#a23519d18f87f2d566363b160ed269dbd">fpmas::graph::UniformGraphBuilder&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1model_1_1DefaultSpatialAgentFactory.html#a67f44b6c81a762d68d3e24093d025e74">fpmas::model::DefaultSpatialAgentFactory&lt; AgentType &gt;</a>
 , <a class="el" href="classfpmas_1_1model_1_1GridCellFactory.html#a93111bf960653da5015283822c876132">fpmas::model::GridCellFactory&lt; GridCellType &gt;</a>
 , <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBuilder.html#a7b2e69b833e00b58ecc13283db0f688f">fpmas::model::SpatialAgentBuilder&lt; CellType, MappingCellType &gt;</a>
 , <a class="el" href="classfpmas_1_1model_1_1VonNeumannGridBuilder.html#a0f836894ef1c904564476158703b67d2">fpmas::model::VonNeumannGridBuilder&lt; CellType &gt;</a>
 , <a class="el" href="classfpmas_1_1scheduler_1_1Scheduler.html#a7b75e2cc25be7fdd0fa2e509f7d04f86">fpmas::scheduler::Scheduler</a>
+</li>
+<li>buildDistantNode()
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html#a6c59bd293d7d5fdebc6b33e1f41b2c1d">fpmas::api::graph::DistributedNodeBuilder&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1model_1_1DistributedAgentNodeBuilder.html#a5e8b29e5bf3df3481ce25fd10492130f">fpmas::model::DistributedAgentNodeBuilder</a>
 </li>
 <li>Builder
 : <a class="el" href="structfpmas_1_1model_1_1GridConfig.html#a9454bb7f4e85a5c4bad9949edf9d1183">fpmas::model::GridConfig&lt; BuilderType, DistanceType, _CellType &gt;</a>
@@ -150,7 +157,8 @@ $(function() {
 : <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ad9a7ca58d53e04a42d3a977f3c30e7ac">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#a7d5aa5165064ec74c221e543338336c7">fpmas::api::graph::NodeBuilder&lt; T &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab54c86b9d2861ac12f92860487b10255">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>
-, <a class="el" href="classfpmas_1_1model_1_1AgentNodeBuilder.html#ab804e4ec5fd1e45a573ff865d9f79b08">fpmas::model::AgentNodeBuilder</a>
+, <a class="el" href="classfpmas_1_1model_1_1AgentNodeBuilder.html#af212180249f6119221dedfca65a36647">fpmas::model::AgentNodeBuilder</a>
+, <a class="el" href="classfpmas_1_1model_1_1DistributedAgentNodeBuilder.html#ad12dfe2670c80d18e04165ac8160099d">fpmas::model::DistributedAgentNodeBuilder</a>
 </li>
 </ul>
 </div><!-- contents -->
