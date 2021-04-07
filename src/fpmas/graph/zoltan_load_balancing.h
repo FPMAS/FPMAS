@@ -163,7 +163,10 @@ namespace fpmas { namespace graph {
 			for(auto n : z_data->node_map) {
 				z_data->nodes.push_back(n.second);
 				zoltan::write_zoltan_id(n.first, &global_ids[i * num_gid_entries]);
-				obj_wgts[i++] = n.second->getWeight();
+				if(n.second->state() == api::graph::LOCAL)
+					obj_wgts[i++] = n.second->getWeight();
+				else
+					obj_wgts[i++] = 0;
 			}
 		}
 
@@ -193,10 +196,12 @@ namespace fpmas { namespace graph {
 			for(int i = 0; i < num_obj; i++) {
 				auto node = z_data->nodes.at(i);
 				int count = 0;
-				for(auto edge : node->getOutgoingEdges()) {
-					if(z_data->node_map.count(edge->getTargetNode()->getId()) > 0) {
-						count++;
-						z_data->edges.at(i).push_back(edge);
+				if(node->state() == fpmas::api::graph::LOCAL) {
+					for(auto edge : node->getOutgoingEdges()) {
+						if(z_data->node_map.count(edge->getTargetNode()->getId()) > 0) {
+							count++;
+							z_data->edges.at(i).push_back(edge);
+						}
 					}
 				}
 				num_edges[i] = count;
@@ -417,7 +422,7 @@ namespace fpmas { namespace graph {
 			zoltan_data.nodes = {};
 			zoltan_data.edges = {};
 
-			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
+			//this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
 			return partition;
 		}
 

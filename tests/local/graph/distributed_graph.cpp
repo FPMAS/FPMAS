@@ -948,8 +948,6 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 	for(auto node : graph.getNodes())
 		node_map.insert(node);
 
-	EXPECT_CALL(location_manager, getLocalNodes).WillOnce(ReturnRef(graph.getNodes()));
-
 	// Should call LoadBalancing on all nodes, without fixed nodes
 	{
 		InSequence s;

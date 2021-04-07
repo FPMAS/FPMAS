@@ -27,7 +27,7 @@ class ModelGhostModeIntegrationTest : public Test {
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime, comm};
 
 		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
@@ -210,7 +210,7 @@ class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime, comm};
 
 		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
@@ -336,7 +336,7 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime, comm};
 
 		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 };

@@ -268,9 +268,6 @@ namespace fpmas { namespace graph {
 							target_node = graph.getNode(id.first);
 						} catch(std::out_of_range&) {
 							target_node = node_builder.buildDistantNode(id.first, id.second, graph);
-							//target_node = new fpmas::graph::DistributedNode<T>(id.first, {});
-							//target_node->setLocation(id.second);
-							//graph.insertDistant(target_node);
 						}
 						graph.link(node, target_node, layer);
 
@@ -646,6 +643,10 @@ namespace fpmas { namespace graph {
 						graph.link(node.node, target_node, layer);
 					}
 				}
+
+				// Commits new links
+				graph.synchronizationMode().getSyncLinker().synchronize();
+
 				return raw_built_nodes;
 			}
 
