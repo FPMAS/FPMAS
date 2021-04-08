@@ -9,6 +9,8 @@
 #include "fpmas/communication/communication.h"
 #include "zoltan_cpp.h"
 
+#include <set>
+
 namespace fpmas { namespace graph {
 	using api::graph::PartitionMap;
 	using api::graph::NodeMap;
@@ -27,6 +29,13 @@ namespace fpmas { namespace graph {
 			 * Maps of nodes currently partitionned by Zoltan.
 			 */
 			NodeMap<T> node_map;
+
+			/**
+			 * Contains ids of **all** the nodes currently partitionned by
+			 * Zoltan, including ones owned by other processes.
+			 */
+			std::set<fpmas::api::graph::DistributedId> distributed_node_ids;
+
 			/**
 			 * Nodes buffer. (built by Zoltan query functions)
 			 *
@@ -163,10 +172,7 @@ namespace fpmas { namespace graph {
 			for(auto n : z_data->node_map) {
 				z_data->nodes.push_back(n.second);
 				zoltan::write_zoltan_id(n.first, &global_ids[i * num_gid_entries]);
-				if(n.second->state() == api::graph::LOCAL)
-					obj_wgts[i++] = n.second->getWeight();
-				else
-					obj_wgts[i++] = 0;
+				obj_wgts[i++] = n.second->getWeight();
 			}
 		}
 
@@ -196,12 +202,19 @@ namespace fpmas { namespace graph {
 			for(int i = 0; i < num_obj; i++) {
 				auto node = z_data->nodes.at(i);
 				int count = 0;
-				if(node->state() == fpmas::api::graph::LOCAL) {
-					for(auto edge : node->getOutgoingEdges()) {
-						if(z_data->node_map.count(edge->getTargetNode()->getId()) > 0) {
-							count++;
-							z_data->edges.at(i).push_back(edge);
-						}
+				for(auto edge : node->getOutgoingEdges()) {
+					// Considers the neighbor only if the load balancing
+					// algorithm is also applied to it, potentially from an
+					// other process.
+					// The distributed_node_ids list contains the ids of ALL
+					// the nodes that are currently balanced.
+					// It is the responsability of
+					// ZoltanLoadBalancing::balance() to perform communications
+					// required to build this list, before the Zoltan algorithm
+					// is effectively applied.
+					if(z_data->distributed_node_ids.count(edge->getTargetNode()->getId()) > 0) {
+						count++;
+						z_data->edges.at(i).push_back(edge);
 					}
 				}
 				num_edges[i] = count;
@@ -306,6 +319,18 @@ namespace fpmas { namespace graph {
 	template<typename T>
 		class ZoltanLoadBalancing : public api::graph::LoadBalancing<T>, public api::graph::FixedVerticesLoadBalancing<T> {
 			private:
+				struct ConcatSet {
+					std::set<DistributedId> operator()(
+							const std::set<DistributedId> s1,
+							const std::set<DistributedId> s2
+							) {
+						std::set<DistributedId> s;
+						s.insert(s1.begin(), s1.end());
+						s.insert(s2.begin(), s2.end());
+						return s;
+					}
+				};
+
 				//Zoltan instance
 				Zoltan zoltan;
 
@@ -321,6 +346,8 @@ namespace fpmas { namespace graph {
 
 				zoltan::ZoltanData<T> zoltan_data;
 				PartitionMap fixed_vertices;
+				api::communication::MpiCommunicator& comm;
+				communication::TypedMpi<std::set<DistributedId>> id_mpi;
 
 			public:
 
@@ -330,7 +357,7 @@ namespace fpmas { namespace graph {
 				 * @param comm MpiCommunicator implementation
 				 */
 				ZoltanLoadBalancing(communication::MpiCommunicator& comm)
-					: zoltan(comm.getMpiComm()) {
+					: zoltan(comm.getMpiComm()), comm(comm), id_mpi(comm) {
 						setUpZoltan();
 					}
 
@@ -359,6 +386,15 @@ namespace fpmas { namespace graph {
 				NodeMap<T> nodes,
 				PartitionMap fixed_vertices
 				) {
+			for(auto local_node : nodes)
+				zoltan_data.distributed_node_ids.insert(local_node.first);
+
+			// Fetches ids of **all** the nodes that are currently partitionned
+			zoltan_data.distributed_node_ids = communication::all_reduce(
+					id_mpi, zoltan_data.distributed_node_ids, ConcatSet()
+					);
+
+
 			// Moves the temporary node map into `zoltan_data`. This is safe,
 			// since `nodes` is not reused in this scope.
 			zoltan_data.node_map = std::move(nodes);
@@ -418,9 +454,10 @@ namespace fpmas { namespace graph {
 					);
 
 			// Clears `zoltan_data`
-			zoltan_data.node_map = {};
-			zoltan_data.nodes = {};
-			zoltan_data.edges = {};
+			zoltan_data.node_map.clear();
+			zoltan_data.distributed_node_ids.clear();
+			zoltan_data.nodes.clear();
+			zoltan_data.edges.clear();
 
 			//this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
 			return partition;

@@ -36,10 +36,17 @@ class ReaderAgent : public ReaderWriterBase, public fpmas::model::AgentBase<Read
 		std::uniform_real_distribution<float> random_weight;
 	public:
 		void read() {
-			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
+			FPMAS_LOGD(
+					node()->location(), "READER_AGENT",
+					"Execute agent %s - count : %i",
+					FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbor_node : node()->outNeighbors()) {
 				const auto* agent = neighbor_node->mutex()->read().get();
 				if(const ReaderAgent* neighbor = dynamic_cast<const ReaderAgent*>(agent)) {
+					FPMAS_LOGD(
+							node()->location(), "READER_AGENT",
+							"Reading neighbor %s - count : %i",
+							FPMAS_C_STR(neighbor->node()->getId()), neighbor->getCounter());
 					ASSERT_THAT(neighbor->getCounter(), Ge(this->model()->runtime().currentDate()));
 				}
 				neighbor_node->mutex()->releaseRead();

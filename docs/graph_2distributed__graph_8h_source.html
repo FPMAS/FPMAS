@@ -234,7 +234,7 @@ $(function() {
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;                            this-&gt;<a class="code" href="classfpmas_1_1graph_1_1Graph.html#a428775fd3f71ce9c24d19752e5a385e1">getNodes</a>().size(), this-&gt;<a class="code" href="classfpmas_1_1graph_1_1Graph.html#a34b8a27880b87e0be00a6e23116d8a44">getEdges</a>().size());</div>
 <div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
 <div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;                    sync_mode.getSyncLinker().synchronize();</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                    this-&gt;_distribute(load_balancing.<a class="code" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html#a1629c45867e061d72cefe1cc4b08aaa5">balance</a>(this-&gt;getNodes()));</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;                    this-&gt;_distribute(load_balancing.<a class="code" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html#a1629c45867e061d72cefe1cc4b08aaa5">balance</a>(this-&gt;location_manager.getLocalNodes()));</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;                    sync_mode.getDataSync().synchronize();</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160; </div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;                    FPMAS_LOGI(</div>
@@ -253,7 +253,7 @@ $(function() {
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;                            this-&gt;<a class="code" href="classfpmas_1_1graph_1_1Graph.html#a428775fd3f71ce9c24d19752e5a385e1">getNodes</a>().size(), this-&gt;<a class="code" href="classfpmas_1_1graph_1_1Graph.html#a34b8a27880b87e0be00a6e23116d8a44">getEdges</a>().size());</div>
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160; </div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;                    sync_mode.getSyncLinker().synchronize();</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                    this-&gt;_distribute(load_balancing.<a class="code" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html#a1f32907993058e2631a94ffc2e9b0136">balance</a>(this-&gt;getNodes(), fixed_vertices));</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;                    this-&gt;_distribute(load_balancing.<a class="code" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html#a1f32907993058e2631a94ffc2e9b0136">balance</a>(this-&gt;location_manager.getLocalNodes(), fixed_vertices));</div>
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;                    sync_mode.getDataSync().synchronize();</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                    FPMAS_LOGI(</div>
@@ -634,224 +634,222 @@ $(function() {
 <div class="line"><a name="l00617"></a><span class="lineno">  617</span>&#160;                std::unordered_map&lt;int, std::vector&lt;EdgePtrWrapper&lt;T&gt;&gt;&gt; edge_export_map;</div>
 <div class="line"><a name="l00618"></a><span class="lineno">  618</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : partition) {</div>
 <div class="line"><a name="l00619"></a><span class="lineno">  619</span>&#160;                    <span class="keywordflow">if</span>(this-&gt;getNodes().count(item.first) &gt; 0) {</div>
-<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;                        <span class="keywordflow">if</span>(</div>
-<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;                                this-&gt;getNode(item.first)-&gt;state() == <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa70a499dd022fa8f84306734e1240d1f9">fpmas::api::graph::LOCAL</a></div>
-<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;                                &amp;&amp; item.second != mpi_communicator-&gt;getRank()) {</div>
-<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;                            FPMAS_LOGV(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>,</div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;                                    <span class="stringliteral">&quot;Exporting node %s to %i&quot;</span>, <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(item.first), item.second);</div>
-<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;                            <span class="keyword">auto</span> node_to_export = this-&gt;getNode(item.first);</div>
-<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;                            exported_nodes.push_back(node_to_export);</div>
-<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;                            node_export_map[item.second].emplace_back(node_to_export);</div>
-<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;                            <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge :  node_to_export-&gt;getIncomingEdges()) {</div>
-<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;                                <span class="comment">// Insert or replace in the IDs set</span></div>
-<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;                                edge_ids_to_export[item.second].insert(edge-&gt;getId());</div>
-<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;                            }</div>
-<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;                            <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge :  node_to_export-&gt;getOutgoingEdges()) {</div>
-<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;                                <span class="comment">// Insert or replace in the IDs set</span></div>
-<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;                                edge_ids_to_export[item.second].insert(edge-&gt;getId());</div>
-<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;                            }</div>
-<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;                        }</div>
-<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;                    }</div>
-<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;                }</div>
-<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;                <span class="comment">// Ensures that each edge is exported once to each process</span></div>
-<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> list : edge_ids_to_export) {</div>
-<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> <span class="keywordtype">id</span> : list.second) {</div>
-<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;                        edge_export_map[list.first].emplace_back(this-&gt;getEdge(<span class="keywordtype">id</span>));</div>
-<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160;                    }</div>
-<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;                }</div>
-<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160; </div>
-<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;                <span class="comment">// Serialize and export / import nodes</span></div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;                <span class="keyword">auto</span> node_import = node_mpi.migrate(node_export_map);</div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160; </div>
-<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;                <span class="comment">// Serialize and export / import edges</span></div>
-<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;                <span class="keyword">auto</span> edge_import = edge_mpi.migrate(edge_export_map);</div>
-<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160; </div>
-<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; import_node_list_from_proc : node_import) {</div>
-<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; imported_node : import_node_list_from_proc.second) {</div>
-<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;                        this-&gt;importNode(imported_node);</div>
-<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;                    }</div>
-<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;                }</div>
-<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; import_edge_list_from_proc : edge_import) {</div>
-<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; imported_edge : import_edge_list_from_proc.second) {</div>
-<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;                        this-&gt;importEdge(imported_edge);</div>
-<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160;                    }</div>
-<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;                }</div>
-<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160; </div>
-<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : exported_nodes) {</div>
-<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160;                    setDistant(node);</div>
-<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;                }</div>
+<div class="line"><a name="l00620"></a><span class="lineno">  620</span>&#160;                        <span class="keywordflow">if</span>(item.second != mpi_communicator-&gt;getRank()) {</div>
+<div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;                            FPMAS_LOGV(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>,</div>
+<div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;                                    <span class="stringliteral">&quot;Exporting node %s to %i&quot;</span>, <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(item.first), item.second);</div>
+<div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;                            <span class="keyword">auto</span> node_to_export = this-&gt;getNode(item.first);</div>
+<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;                            exported_nodes.push_back(node_to_export);</div>
+<div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;                            node_export_map[item.second].emplace_back(node_to_export);</div>
+<div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;                            <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge :  node_to_export-&gt;getIncomingEdges()) {</div>
+<div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;                                <span class="comment">// Insert or replace in the IDs set</span></div>
+<div class="line"><a name="l00628"></a><span class="lineno">  628</span>&#160;                                edge_ids_to_export[item.second].insert(edge-&gt;getId());</div>
+<div class="line"><a name="l00629"></a><span class="lineno">  629</span>&#160;                            }</div>
+<div class="line"><a name="l00630"></a><span class="lineno">  630</span>&#160;                            <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge :  node_to_export-&gt;getOutgoingEdges()) {</div>
+<div class="line"><a name="l00631"></a><span class="lineno">  631</span>&#160;                                <span class="comment">// Insert or replace in the IDs set</span></div>
+<div class="line"><a name="l00632"></a><span class="lineno">  632</span>&#160;                                edge_ids_to_export[item.second].insert(edge-&gt;getId());</div>
+<div class="line"><a name="l00633"></a><span class="lineno">  633</span>&#160;                            }</div>
+<div class="line"><a name="l00634"></a><span class="lineno">  634</span>&#160;                        }</div>
+<div class="line"><a name="l00635"></a><span class="lineno">  635</span>&#160;                    }</div>
+<div class="line"><a name="l00636"></a><span class="lineno">  636</span>&#160;                }</div>
+<div class="line"><a name="l00637"></a><span class="lineno">  637</span>&#160;                <span class="comment">// Ensures that each edge is exported once to each process</span></div>
+<div class="line"><a name="l00638"></a><span class="lineno">  638</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> list : edge_ids_to_export) {</div>
+<div class="line"><a name="l00639"></a><span class="lineno">  639</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> <span class="keywordtype">id</span> : list.second) {</div>
+<div class="line"><a name="l00640"></a><span class="lineno">  640</span>&#160;                        edge_export_map[list.first].emplace_back(this-&gt;getEdge(<span class="keywordtype">id</span>));</div>
+<div class="line"><a name="l00641"></a><span class="lineno">  641</span>&#160;                    }</div>
+<div class="line"><a name="l00642"></a><span class="lineno">  642</span>&#160;                }</div>
+<div class="line"><a name="l00643"></a><span class="lineno">  643</span>&#160; </div>
+<div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;                <span class="comment">// Serialize and export / import nodes</span></div>
+<div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;                <span class="keyword">auto</span> node_import = node_mpi.migrate(node_export_map);</div>
+<div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160; </div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;                <span class="comment">// Serialize and export / import edges</span></div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;                <span class="keyword">auto</span> edge_import = edge_mpi.migrate(edge_export_map);</div>
+<div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160; </div>
+<div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; import_node_list_from_proc : node_import) {</div>
+<div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; imported_node : import_node_list_from_proc.second) {</div>
+<div class="line"><a name="l00652"></a><span class="lineno">  652</span>&#160;                        this-&gt;importNode(imported_node);</div>
+<div class="line"><a name="l00653"></a><span class="lineno">  653</span>&#160;                    }</div>
+<div class="line"><a name="l00654"></a><span class="lineno">  654</span>&#160;                }</div>
+<div class="line"><a name="l00655"></a><span class="lineno">  655</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; import_edge_list_from_proc : edge_import) {</div>
+<div class="line"><a name="l00656"></a><span class="lineno">  656</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp; imported_edge : import_edge_list_from_proc.second) {</div>
+<div class="line"><a name="l00657"></a><span class="lineno">  657</span>&#160;                        this-&gt;importEdge(imported_edge);</div>
+<div class="line"><a name="l00658"></a><span class="lineno">  658</span>&#160;                    }</div>
+<div class="line"><a name="l00659"></a><span class="lineno">  659</span>&#160;                }</div>
+<div class="line"><a name="l00660"></a><span class="lineno">  660</span>&#160; </div>
+<div class="line"><a name="l00661"></a><span class="lineno">  661</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : exported_nodes) {</div>
+<div class="line"><a name="l00662"></a><span class="lineno">  662</span>&#160;                    setDistant(node);</div>
+<div class="line"><a name="l00663"></a><span class="lineno">  663</span>&#160;                }</div>
+<div class="line"><a name="l00664"></a><span class="lineno">  664</span>&#160; </div>
+<div class="line"><a name="l00665"></a><span class="lineno">  665</span>&#160;                location_manager.updateLocations();</div>
 <div class="line"><a name="l00666"></a><span class="lineno">  666</span>&#160; </div>
-<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;                location_manager.updateLocations();</div>
-<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160; </div>
-<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;                FPMAS_LOGD(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Clearing distant nodes...&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160; </div>
-<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;                clearDistantNodes();</div>
+<div class="line"><a name="l00667"></a><span class="lineno">  667</span>&#160;                FPMAS_LOGD(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Clearing exported nodes...&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00668"></a><span class="lineno">  668</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : exported_nodes) {</div>
+<div class="line"><a name="l00669"></a><span class="lineno">  669</span>&#160;                    clearNode(node);</div>
+<div class="line"><a name="l00670"></a><span class="lineno">  670</span>&#160;                }</div>
+<div class="line"><a name="l00671"></a><span class="lineno">  671</span>&#160;                FPMAS_LOGD(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Exported nodes cleared.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"><a name="l00672"></a><span class="lineno">  672</span>&#160; </div>
-<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;                FPMAS_LOGD(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Distant nodes cleared.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160; </div>
-<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;                FPMAS_LOGI(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>,</div>
-<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160;                        <span class="stringliteral">&quot;End of distribution.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;            }</div>
-<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160; </div>
-<div class="line"><a name="l00679"></a><span class="lineno">  679</span>&#160;        <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
-<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;            <span class="keywordtype">void</span> DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;</div>
-<div class="line"><a name="l00681"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8feb8a3a21c40a734e2d3b3593114e37">  681</a></span>&#160;            ::synchronize() {</div>
-<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160;                FPMAS_LOGI(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>,</div>
-<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;                        <span class="stringliteral">&quot;Synchronizing graph...&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00673"></a><span class="lineno">  673</span>&#160;                FPMAS_LOGI(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>,</div>
+<div class="line"><a name="l00674"></a><span class="lineno">  674</span>&#160;                        <span class="stringliteral">&quot;End of distribution.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00675"></a><span class="lineno">  675</span>&#160;            }</div>
+<div class="line"><a name="l00676"></a><span class="lineno">  676</span>&#160; </div>
+<div class="line"><a name="l00677"></a><span class="lineno">  677</span>&#160;        <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
+<div class="line"><a name="l00678"></a><span class="lineno">  678</span>&#160;            <span class="keywordtype">void</span> DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;</div>
+<div class="line"><a name="l00679"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8feb8a3a21c40a734e2d3b3593114e37">  679</a></span>&#160;            ::synchronize() {</div>
+<div class="line"><a name="l00680"></a><span class="lineno">  680</span>&#160;                FPMAS_LOGI(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>,</div>
+<div class="line"><a name="l00681"></a><span class="lineno">  681</span>&#160;                        <span class="stringliteral">&quot;Synchronizing graph...&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00682"></a><span class="lineno">  682</span>&#160; </div>
+<div class="line"><a name="l00683"></a><span class="lineno">  683</span>&#160;                sync_mode.getSyncLinker().synchronize();</div>
 <div class="line"><a name="l00684"></a><span class="lineno">  684</span>&#160; </div>
-<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;                sync_mode.getSyncLinker().synchronize();</div>
+<div class="line"><a name="l00685"></a><span class="lineno">  685</span>&#160;                clearDistantNodes();</div>
 <div class="line"><a name="l00686"></a><span class="lineno">  686</span>&#160; </div>
-<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;                clearDistantNodes();</div>
+<div class="line"><a name="l00687"></a><span class="lineno">  687</span>&#160;                sync_mode.getDataSync().synchronize();</div>
 <div class="line"><a name="l00688"></a><span class="lineno">  688</span>&#160; </div>
-<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;                sync_mode.getDataSync().synchronize();</div>
-<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160; </div>
-<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;                FPMAS_LOGI(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>,</div>
-<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160;                        <span class="stringliteral">&quot;End of graph synchronization.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;            }</div>
-<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160; </div>
-<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;        <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
-<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;</a></div>
-<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;<a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">			::clearDistantNodes</a>() {</div>
-<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a> distant_nodes = location_manager.getDistantNodes();</div>
-<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : distant_nodes)</div>
-<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160;                    clearNode(node.second);</div>
-<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;            }</div>
-<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160; </div>
-<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;        <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
-<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;</a></div>
-<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;<a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">			::clearNode</a>(NodeType* node) {</div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> <span class="keywordtype">id</span> = node-&gt;getId();</div>
-<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;                FPMAS_LOGD(</div>
-<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;                        mpi_communicator-&gt;getRank(),</div>
-<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;                        <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Clearing node %s...&quot;</span>,</div>
-<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160;                        <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(<span class="keywordtype">id</span>)</div>
-<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;                        );</div>
-<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160; </div>
-<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;                <span class="keywordtype">bool</span> eraseNode = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;                std::set&lt;EdgeType*&gt; obsoleteEdges;</div>
-<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : node-&gt;getIncomingEdges()) {</div>
-<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;                    <span class="keywordflow">if</span>(edge-&gt;getSourceNode()-&gt;state()==<a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa70a499dd022fa8f84306734e1240d1f9">LocationState::LOCAL</a>) {</div>
-<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;                        eraseNode = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;                    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;                        obsoleteEdges.insert(edge);</div>
-<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;                    }</div>
-<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;                }</div>
-<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : node-&gt;getOutgoingEdges()) {</div>
-<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;                    <span class="keywordflow">if</span>(edge-&gt;getTargetNode()-&gt;state()==<a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa70a499dd022fa8f84306734e1240d1f9">LocationState::LOCAL</a>) {</div>
-<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;                        eraseNode = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;                    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;                        obsoleteEdges.insert(edge);</div>
-<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;                    }</div>
-<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;                }</div>
-<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;                <span class="keywordflow">if</span>(eraseNode) {</div>
-<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;                    FPMAS_LOGD(</div>
-<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;                            mpi_communicator-&gt;getRank(),</div>
-<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;                            <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Erasing obsolete node %s.&quot;</span>,</div>
-<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;                            <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(node-&gt;getId())</div>
-<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;                            );</div>
-<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;                    this-&gt;erase(node);</div>
-<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;                } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : obsoleteEdges) {</div>
-<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;                        FPMAS_LOGD(</div>
-<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;                                mpi_communicator-&gt;getRank(),</div>
-<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;                                <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Erasing obsolete edge %s (%p) (from %s to %s)&quot;</span>,</div>
-<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;                                <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(node-&gt;getId()), edge,</div>
-<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;                                <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(edge-&gt;getSourceNode()-&gt;getId()),</div>
-<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;                                <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(edge-&gt;getTargetNode()-&gt;getId())</div>
-<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;                                );</div>
-<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;                        this-&gt;erase(edge);</div>
-<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;                    }</div>
-<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;                }</div>
-<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;                FPMAS_LOGD(</div>
-<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;                        mpi_communicator-&gt;getRank(),</div>
-<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;                        <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Node %s cleared.&quot;</span>,</div>
-<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;                        <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(<span class="keywordtype">id</span>)</div>
-<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160;                        );</div>
-<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;            }</div>
-<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160; </div>
-<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;        <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
-<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;            DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::~DistributedGraph() {</div>
-<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;                <span class="comment">//TODO: Refactor callback system</span></div>
-<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;                <span class="keywordflow">if</span>(erase_node_callback != <span class="keyword">nullptr</span>)</div>
-<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;                    <span class="comment">// This DistributedGraph has not been moved</span></div>
-<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;                    erase_node_callback-&gt;disable();</div>
-<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> callback : set_local_callbacks)</div>
+<div class="line"><a name="l00689"></a><span class="lineno">  689</span>&#160;                FPMAS_LOGI(getMpiCommunicator().getRank(), <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>,</div>
+<div class="line"><a name="l00690"></a><span class="lineno">  690</span>&#160;                        <span class="stringliteral">&quot;End of graph synchronization.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00691"></a><span class="lineno">  691</span>&#160;            }</div>
+<div class="line"><a name="l00692"></a><span class="lineno">  692</span>&#160; </div>
+<div class="line"><a name="l00693"></a><span class="lineno">  693</span>&#160;        <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
+<div class="line"><a name="l00694"></a><span class="lineno">  694</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;</a></div>
+<div class="line"><a name="l00695"></a><span class="lineno">  695</span>&#160;<a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">			::clearDistantNodes</a>() {</div>
+<div class="line"><a name="l00696"></a><span class="lineno">  696</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a> distant_nodes = location_manager.getDistantNodes();</div>
+<div class="line"><a name="l00697"></a><span class="lineno">  697</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : distant_nodes)</div>
+<div class="line"><a name="l00698"></a><span class="lineno">  698</span>&#160;                    clearNode(node.second);</div>
+<div class="line"><a name="l00699"></a><span class="lineno">  699</span>&#160;            }</div>
+<div class="line"><a name="l00700"></a><span class="lineno">  700</span>&#160; </div>
+<div class="line"><a name="l00701"></a><span class="lineno">  701</span>&#160;        <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
+<div class="line"><a name="l00702"></a><span class="lineno">  702</span>&#160;            <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;</a></div>
+<div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;<a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">			::clearNode</a>(NodeType* node) {</div>
+<div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;                <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> <span class="keywordtype">id</span> = node-&gt;getId();</div>
+<div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160;                FPMAS_LOGD(</div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;                        mpi_communicator-&gt;getRank(),</div>
+<div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;                        <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Clearing node %s...&quot;</span>,</div>
+<div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;                        <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(<span class="keywordtype">id</span>)</div>
+<div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;                        );</div>
+<div class="line"><a name="l00710"></a><span class="lineno">  710</span>&#160; </div>
+<div class="line"><a name="l00711"></a><span class="lineno">  711</span>&#160;                <span class="keywordtype">bool</span> eraseNode = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00712"></a><span class="lineno">  712</span>&#160;                std::set&lt;EdgeType*&gt; obsoleteEdges;</div>
+<div class="line"><a name="l00713"></a><span class="lineno">  713</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : node-&gt;getIncomingEdges()) {</div>
+<div class="line"><a name="l00714"></a><span class="lineno">  714</span>&#160;                    <span class="keywordflow">if</span>(edge-&gt;getSourceNode()-&gt;state()==<a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa70a499dd022fa8f84306734e1240d1f9">LocationState::LOCAL</a>) {</div>
+<div class="line"><a name="l00715"></a><span class="lineno">  715</span>&#160;                        eraseNode = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00716"></a><span class="lineno">  716</span>&#160;                    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00717"></a><span class="lineno">  717</span>&#160;                        obsoleteEdges.insert(edge);</div>
+<div class="line"><a name="l00718"></a><span class="lineno">  718</span>&#160;                    }</div>
+<div class="line"><a name="l00719"></a><span class="lineno">  719</span>&#160;                }</div>
+<div class="line"><a name="l00720"></a><span class="lineno">  720</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : node-&gt;getOutgoingEdges()) {</div>
+<div class="line"><a name="l00721"></a><span class="lineno">  721</span>&#160;                    <span class="keywordflow">if</span>(edge-&gt;getTargetNode()-&gt;state()==<a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa70a499dd022fa8f84306734e1240d1f9">LocationState::LOCAL</a>) {</div>
+<div class="line"><a name="l00722"></a><span class="lineno">  722</span>&#160;                        eraseNode = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00723"></a><span class="lineno">  723</span>&#160;                    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00724"></a><span class="lineno">  724</span>&#160;                        obsoleteEdges.insert(edge);</div>
+<div class="line"><a name="l00725"></a><span class="lineno">  725</span>&#160;                    }</div>
+<div class="line"><a name="l00726"></a><span class="lineno">  726</span>&#160;                }</div>
+<div class="line"><a name="l00727"></a><span class="lineno">  727</span>&#160;                <span class="keywordflow">if</span>(eraseNode) {</div>
+<div class="line"><a name="l00728"></a><span class="lineno">  728</span>&#160;                    FPMAS_LOGD(</div>
+<div class="line"><a name="l00729"></a><span class="lineno">  729</span>&#160;                            mpi_communicator-&gt;getRank(),</div>
+<div class="line"><a name="l00730"></a><span class="lineno">  730</span>&#160;                            <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Erasing obsolete node %s.&quot;</span>,</div>
+<div class="line"><a name="l00731"></a><span class="lineno">  731</span>&#160;                            <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(node-&gt;getId())</div>
+<div class="line"><a name="l00732"></a><span class="lineno">  732</span>&#160;                            );</div>
+<div class="line"><a name="l00733"></a><span class="lineno">  733</span>&#160;                    this-&gt;erase(node);</div>
+<div class="line"><a name="l00734"></a><span class="lineno">  734</span>&#160;                } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00735"></a><span class="lineno">  735</span>&#160;                    <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : obsoleteEdges) {</div>
+<div class="line"><a name="l00736"></a><span class="lineno">  736</span>&#160;                        FPMAS_LOGD(</div>
+<div class="line"><a name="l00737"></a><span class="lineno">  737</span>&#160;                                mpi_communicator-&gt;getRank(),</div>
+<div class="line"><a name="l00738"></a><span class="lineno">  738</span>&#160;                                <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Erasing obsolete edge %s (%p) (from %s to %s)&quot;</span>,</div>
+<div class="line"><a name="l00739"></a><span class="lineno">  739</span>&#160;                                <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(node-&gt;getId()), edge,</div>
+<div class="line"><a name="l00740"></a><span class="lineno">  740</span>&#160;                                <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(edge-&gt;getSourceNode()-&gt;getId()),</div>
+<div class="line"><a name="l00741"></a><span class="lineno">  741</span>&#160;                                <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(edge-&gt;getTargetNode()-&gt;getId())</div>
+<div class="line"><a name="l00742"></a><span class="lineno">  742</span>&#160;                                );</div>
+<div class="line"><a name="l00743"></a><span class="lineno">  743</span>&#160;                        this-&gt;erase(edge);</div>
+<div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;                    }</div>
+<div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;                }</div>
+<div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160;                FPMAS_LOGD(</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;                        mpi_communicator-&gt;getRank(),</div>
+<div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;                        <span class="stringliteral">&quot;DIST_GRAPH&quot;</span>, <span class="stringliteral">&quot;Node %s cleared.&quot;</span>,</div>
+<div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;                        <a class="code" href="macros_8h.html#a32ab2caf321ac613cabb47d79541d9c9">FPMAS_C_STR</a>(<span class="keywordtype">id</span>)</div>
+<div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;                        );</div>
+<div class="line"><a name="l00751"></a><span class="lineno">  751</span>&#160;            }</div>
+<div class="line"><a name="l00752"></a><span class="lineno">  752</span>&#160; </div>
+<div class="line"><a name="l00753"></a><span class="lineno">  753</span>&#160;        <span class="keyword">template</span>&lt;DIST_GRAPH_PARAMS&gt;</div>
+<div class="line"><a name="l00754"></a><span class="lineno">  754</span>&#160;            DistributedGraph&lt;DIST_GRAPH_PARAMS_SPEC&gt;::~DistributedGraph() {</div>
+<div class="line"><a name="l00755"></a><span class="lineno">  755</span>&#160;                <span class="comment">//TODO: Refactor callback system</span></div>
+<div class="line"><a name="l00756"></a><span class="lineno">  756</span>&#160;                <span class="keywordflow">if</span>(erase_node_callback != <span class="keyword">nullptr</span>)</div>
+<div class="line"><a name="l00757"></a><span class="lineno">  757</span>&#160;                    <span class="comment">// This DistributedGraph has not been moved</span></div>
+<div class="line"><a name="l00758"></a><span class="lineno">  758</span>&#160;                    erase_node_callback-&gt;disable();</div>
+<div class="line"><a name="l00759"></a><span class="lineno">  759</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> callback : set_local_callbacks)</div>
+<div class="line"><a name="l00760"></a><span class="lineno">  760</span>&#160;                    <span class="keyword">delete</span> callback;</div>
+<div class="line"><a name="l00761"></a><span class="lineno">  761</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> callback : set_distant_callbacks)</div>
 <div class="line"><a name="l00762"></a><span class="lineno">  762</span>&#160;                    <span class="keyword">delete</span> callback;</div>
-<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> callback : set_distant_callbacks)</div>
-<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160;                    <span class="keyword">delete</span> callback;</div>
-<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;            }</div>
+<div class="line"><a name="l00763"></a><span class="lineno">  763</span>&#160;            }</div>
+<div class="line"><a name="l00764"></a><span class="lineno">  764</span>&#160; </div>
+<div class="line"><a name="l00765"></a><span class="lineno">  765</span>&#160;    }</div>
 <div class="line"><a name="l00766"></a><span class="lineno">  766</span>&#160; </div>
-<div class="line"><a name="l00767"></a><span class="lineno">  767</span>&#160;    }</div>
-<div class="line"><a name="l00768"></a><span class="lineno">  768</span>&#160; </div>
-<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">template</span>&lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>SyncMode&gt;</div>
-<div class="line"><a name="l00775"></a><span class="lineno"><a class="line" href="namespacefpmas_1_1graph.html#adf6379dbff231d9b0bd9b9bb7ad65028">  775</a></span>&#160;        <span class="keyword">using</span> <a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">DistributedGraph</a> = <a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">detail::DistributedGraph</a>&lt;</div>
-<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160;        T, SyncMode, <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>, <a class="code" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>,</div>
-<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;        <a class="code" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi</a>, <a class="code" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a>&gt;;</div>
+<div class="line"><a name="l00772"></a><span class="lineno">  772</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">template</span>&lt;<span class="keyword">typename</span>&gt; <span class="keyword">class </span>SyncMode&gt;</div>
+<div class="line"><a name="l00773"></a><span class="lineno"><a class="line" href="namespacefpmas_1_1graph.html#adf6379dbff231d9b0bd9b9bb7ad65028">  773</a></span>&#160;        <span class="keyword">using</span> <a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">DistributedGraph</a> = <a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">detail::DistributedGraph</a>&lt;</div>
+<div class="line"><a name="l00774"></a><span class="lineno">  774</span>&#160;        T, SyncMode, <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">graph::DistributedNode</a>, <a class="code" href="classfpmas_1_1graph_1_1DistributedEdge.html">graph::DistributedEdge</a>,</div>
+<div class="line"><a name="l00775"></a><span class="lineno">  775</span>&#160;        <a class="code" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi</a>, <a class="code" href="classfpmas_1_1graph_1_1LocationManager.html">graph::LocationManager</a>&gt;;</div>
+<div class="line"><a name="l00776"></a><span class="lineno">  776</span>&#160; </div>
+<div class="line"><a name="l00777"></a><span class="lineno">  777</span>&#160;}}</div>
 <div class="line"><a name="l00778"></a><span class="lineno">  778</span>&#160; </div>
-<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;}}</div>
-<div class="line"><a name="l00780"></a><span class="lineno">  780</span>&#160; </div>
-<div class="line"><a name="l00781"></a><span class="lineno">  781</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacenlohmann.html">nlohmann</a> {</div>
-<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00792"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html">  792</a></span>&#160;        <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="namespacefpmas.html">fpmas</a>::<a class="code" href="namespacefpmas_1_1graph.html#adf6379dbff231d9b0bd9b9bb7ad65028">api::graph::DistributedGraph</a>&lt;T&gt;&gt; {</div>
-<div class="line"><a name="l00793"></a><span class="lineno">  793</span>&#160; </div>
-<div class="line"><a name="l00802"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#a91c8e1060603e1722ec42b3c0c16fd56">  802</a></span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#a91c8e1060603e1722ec42b3c0c16fd56">to_json</a>(json&amp; j, <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph&lt;T&gt;</a>&amp; graph) {</div>
-<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">getNodes</a>())</div>
-<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;                    j[<span class="stringliteral">&quot;graph&quot;</span>][<span class="stringliteral">&quot;nodes&quot;</span>].push_back({</div>
-<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;                            NodePtrWrapper&lt;T&gt;(node.second),</div>
-<div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;                            node.second-&gt;location()</div>
-<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;                            });</div>
-<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac2f167255bd606a932823a0051953ef7">getEdges</a>()) {</div>
-<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;                    j[<span class="stringliteral">&quot;graph&quot;</span>][<span class="stringliteral">&quot;edges&quot;</span>].push_back({</div>
-<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;                            {<span class="stringliteral">&quot;id&quot;</span>, edge.first},</div>
-<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;                            {<span class="stringliteral">&quot;layer&quot;</span>, edge.second-&gt;getLayer()},</div>
-<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;                            {<span class="stringliteral">&quot;weight&quot;</span>, edge.second-&gt;getWeight()},</div>
-<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;                            {<span class="stringliteral">&quot;src&quot;</span>, edge.second-&gt;getSourceNode()-&gt;getId()},</div>
-<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;                            {<span class="stringliteral">&quot;tgt&quot;</span>, edge.second-&gt;getTargetNode()-&gt;getId()}</div>
-<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;                            });</div>
-<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;                }</div>
-<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;                j[<span class="stringliteral">&quot;edge_id&quot;</span>] = graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a7a04cae4697d27e7e7a71f8a115705a2">currentEdgeId</a>();</div>
-<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;                j[<span class="stringliteral">&quot;node_id&quot;</span>] = graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a869e1d9294aa6d1e4e9ca4b35a3547f3">currentNodeId</a>();</div>
-<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;                nlohmann::json::json_serializer&lt;fpmas::api::graph::LocationManager&lt;T&gt;, <span class="keywordtype">void</span>&gt;</div>
-<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160;                    ::to_json(j[<span class="stringliteral">&quot;loc_manager&quot;</span>], graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aac4225b449bb41a9013b14ce13df2116">getLocationManager</a>());</div>
-<div class="line"><a name="l00821"></a><span class="lineno">  821</span>&#160;            }</div>
-<div class="line"><a name="l00822"></a><span class="lineno">  822</span>&#160; </div>
-<div class="line"><a name="l00836"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#abae7981ae9cbbe5203891b37b3bb6ac3">  836</a></span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#abae7981ae9cbbe5203891b37b3bb6ac3">from_json</a>(<span class="keyword">const</span> json&amp; j, <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph&lt;T&gt;</a>&amp; graph) {</div>
-<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;                <span class="keyword">auto</span> j_graph = j[<span class="stringliteral">&quot;graph&quot;</span>];</div>
-<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> j_node : j_graph[<span class="stringliteral">&quot;nodes&quot;</span>]) {</div>
-<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;                    <span class="keyword">auto</span> location = j_node[1].get&lt;<span class="keywordtype">int</span>&gt;();</div>
-<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode&lt;T&gt;</a>* node = j_node[0].get&lt;NodePtrWrapper&lt;T&gt;&gt;();</div>
-<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;                    <span class="keywordflow">if</span>(location == graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a70367a18594a05467350529b48e9be6d">getMpiCommunicator</a>().<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>())</div>
-<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;                        node = graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a7c8863184625a319f1329a14eab71b46">importNode</a>(node);</div>
-<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160;                    <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;                        node = graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a10fb5863c0ea1fbe6aa8829aa81d154a">insertDistant</a>(node);</div>
-<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160; </div>
-<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;                    node-&gt;setLocation(location);</div>
-<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;                }</div>
-<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> j_edge : j_graph[<span class="stringliteral">&quot;edges&quot;</span>]) {</div>
-<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;                    <span class="keyword">auto</span> edge = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedEdge.html">fpmas::graph::DistributedEdge&lt;T&gt;</a>(</div>
-<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;                            j_edge[<span class="stringliteral">&quot;id&quot;</span>].get&lt;fpmas::graph::DistributedId&gt;(),</div>
-<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;                            j_edge[<span class="stringliteral">&quot;layer&quot;</span>].get&lt;fpmas::graph::LayerId&gt;()</div>
-<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;                            );</div>
-<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;                    edge-&gt;setWeight(j_edge[<span class="stringliteral">&quot;weight&quot;</span>].get&lt;float&gt;());</div>
-<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;                    <span class="keyword">auto</span> src = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">fpmas::graph::DistributedNode&lt;T&gt;</a>(j_edge[<span class="stringliteral">&quot;src&quot;</span>].get&lt;fpmas::graph::DistributedId&gt;(), {});</div>
-<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;                    edge-&gt;setSourceNode(src);</div>
-<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;                    src-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Node.html#ac1a4abf794607f885dabf23a475d2c33">linkOut</a>(edge);</div>
-<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;                    <span class="keyword">auto</span> tgt = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">fpmas::graph::DistributedNode&lt;T&gt;</a>(j_edge[<span class="stringliteral">&quot;tgt&quot;</span>].get&lt;fpmas::graph::DistributedId&gt;(), {});</div>
-<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;                    edge-&gt;setTargetNode(tgt);</div>
-<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;                    tgt-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Node.html#a62274d50d14a13a140522c48b59c5870">linkIn</a>(edge);</div>
-<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;                    assert(graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">getNodes</a>().count(src-&gt;getId()) &gt; 0);</div>
-<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;                    assert(graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">getNodes</a>().count(tgt-&gt;getId()) &gt; 0);</div>
-<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;                    graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a8e286c4a21751597957e3b689e372457">importEdge</a>(edge);</div>
-<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;                }</div>
-<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;                graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a895e677b29acca3b9c9192c294ffe408">setCurrentNodeId</a>(j.at(<span class="stringliteral">&quot;node_id&quot;</span>).get&lt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::graph::DistributedId</a>&gt;());</div>
-<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;                graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aea61510c7f39f69c795188f33a92f1a6">setCurrentEdgeId</a>(j.at(<span class="stringliteral">&quot;edge_id&quot;</span>).get&lt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::graph::DistributedId</a>&gt;());</div>
-<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160; </div>
-<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;                nlohmann::json::json_serializer&lt;fpmas::api::graph::LocationManager&lt;T&gt;, <span class="keywordtype">void</span>&gt;</div>
-<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;                    ::from_json(j[<span class="stringliteral">&quot;loc_manager&quot;</span>], graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aac4225b449bb41a9013b14ce13df2116">getLocationManager</a>());</div>
-<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;            }</div>
-<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;        };</div>
-<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;}</div>
-<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00779"></a><span class="lineno">  779</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacenlohmann.html">nlohmann</a> {</div>
+<div class="line"><a name="l00789"></a><span class="lineno">  789</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00790"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html">  790</a></span>&#160;        <span class="keyword">struct </span>adl_serializer&lt;<a class="code" href="namespacefpmas.html">fpmas</a>::<a class="code" href="namespacefpmas_1_1graph.html#adf6379dbff231d9b0bd9b9bb7ad65028">api::graph::DistributedGraph</a>&lt;T&gt;&gt; {</div>
+<div class="line"><a name="l00791"></a><span class="lineno">  791</span>&#160; </div>
+<div class="line"><a name="l00800"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#a91c8e1060603e1722ec42b3c0c16fd56">  800</a></span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#a91c8e1060603e1722ec42b3c0c16fd56">to_json</a>(json&amp; j, <span class="keyword">const</span> <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph&lt;T&gt;</a>&amp; graph) {</div>
+<div class="line"><a name="l00801"></a><span class="lineno">  801</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">getNodes</a>())</div>
+<div class="line"><a name="l00802"></a><span class="lineno">  802</span>&#160;                    j[<span class="stringliteral">&quot;graph&quot;</span>][<span class="stringliteral">&quot;nodes&quot;</span>].push_back({</div>
+<div class="line"><a name="l00803"></a><span class="lineno">  803</span>&#160;                            NodePtrWrapper&lt;T&gt;(node.second),</div>
+<div class="line"><a name="l00804"></a><span class="lineno">  804</span>&#160;                            node.second-&gt;location()</div>
+<div class="line"><a name="l00805"></a><span class="lineno">  805</span>&#160;                            });</div>
+<div class="line"><a name="l00806"></a><span class="lineno">  806</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> edge : graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ac2f167255bd606a932823a0051953ef7">getEdges</a>()) {</div>
+<div class="line"><a name="l00807"></a><span class="lineno">  807</span>&#160;                    j[<span class="stringliteral">&quot;graph&quot;</span>][<span class="stringliteral">&quot;edges&quot;</span>].push_back({</div>
+<div class="line"><a name="l00808"></a><span class="lineno">  808</span>&#160;                            {<span class="stringliteral">&quot;id&quot;</span>, edge.first},</div>
+<div class="line"><a name="l00809"></a><span class="lineno">  809</span>&#160;                            {<span class="stringliteral">&quot;layer&quot;</span>, edge.second-&gt;getLayer()},</div>
+<div class="line"><a name="l00810"></a><span class="lineno">  810</span>&#160;                            {<span class="stringliteral">&quot;weight&quot;</span>, edge.second-&gt;getWeight()},</div>
+<div class="line"><a name="l00811"></a><span class="lineno">  811</span>&#160;                            {<span class="stringliteral">&quot;src&quot;</span>, edge.second-&gt;getSourceNode()-&gt;getId()},</div>
+<div class="line"><a name="l00812"></a><span class="lineno">  812</span>&#160;                            {<span class="stringliteral">&quot;tgt&quot;</span>, edge.second-&gt;getTargetNode()-&gt;getId()}</div>
+<div class="line"><a name="l00813"></a><span class="lineno">  813</span>&#160;                            });</div>
+<div class="line"><a name="l00814"></a><span class="lineno">  814</span>&#160;                }</div>
+<div class="line"><a name="l00815"></a><span class="lineno">  815</span>&#160;                j[<span class="stringliteral">&quot;edge_id&quot;</span>] = graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a7a04cae4697d27e7e7a71f8a115705a2">currentEdgeId</a>();</div>
+<div class="line"><a name="l00816"></a><span class="lineno">  816</span>&#160;                j[<span class="stringliteral">&quot;node_id&quot;</span>] = graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a869e1d9294aa6d1e4e9ca4b35a3547f3">currentNodeId</a>();</div>
+<div class="line"><a name="l00817"></a><span class="lineno">  817</span>&#160;                nlohmann::json::json_serializer&lt;fpmas::api::graph::LocationManager&lt;T&gt;, <span class="keywordtype">void</span>&gt;</div>
+<div class="line"><a name="l00818"></a><span class="lineno">  818</span>&#160;                    ::to_json(j[<span class="stringliteral">&quot;loc_manager&quot;</span>], graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aac4225b449bb41a9013b14ce13df2116">getLocationManager</a>());</div>
+<div class="line"><a name="l00819"></a><span class="lineno">  819</span>&#160;            }</div>
+<div class="line"><a name="l00820"></a><span class="lineno">  820</span>&#160; </div>
+<div class="line"><a name="l00834"></a><span class="lineno"><a class="line" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#abae7981ae9cbbe5203891b37b3bb6ac3">  834</a></span>&#160;            <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#abae7981ae9cbbe5203891b37b3bb6ac3">from_json</a>(<span class="keyword">const</span> json&amp; j, <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph&lt;T&gt;</a>&amp; graph) {</div>
+<div class="line"><a name="l00835"></a><span class="lineno">  835</span>&#160;                <span class="keyword">auto</span> j_graph = j[<span class="stringliteral">&quot;graph&quot;</span>];</div>
+<div class="line"><a name="l00836"></a><span class="lineno">  836</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> j_node : j_graph[<span class="stringliteral">&quot;nodes&quot;</span>]) {</div>
+<div class="line"><a name="l00837"></a><span class="lineno">  837</span>&#160;                    <span class="keyword">auto</span> location = j_node[1].get&lt;<span class="keywordtype">int</span>&gt;();</div>
+<div class="line"><a name="l00838"></a><span class="lineno">  838</span>&#160;                    <a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode&lt;T&gt;</a>* node = j_node[0].get&lt;NodePtrWrapper&lt;T&gt;&gt;();</div>
+<div class="line"><a name="l00839"></a><span class="lineno">  839</span>&#160;                    <span class="keywordflow">if</span>(location == graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a70367a18594a05467350529b48e9be6d">getMpiCommunicator</a>().<a class="code" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>())</div>
+<div class="line"><a name="l00840"></a><span class="lineno">  840</span>&#160;                        node = graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a7c8863184625a319f1329a14eab71b46">importNode</a>(node);</div>
+<div class="line"><a name="l00841"></a><span class="lineno">  841</span>&#160;                    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00842"></a><span class="lineno">  842</span>&#160;                        node = graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a10fb5863c0ea1fbe6aa8829aa81d154a">insertDistant</a>(node);</div>
+<div class="line"><a name="l00843"></a><span class="lineno">  843</span>&#160; </div>
+<div class="line"><a name="l00844"></a><span class="lineno">  844</span>&#160;                    node-&gt;setLocation(location);</div>
+<div class="line"><a name="l00845"></a><span class="lineno">  845</span>&#160;                }</div>
+<div class="line"><a name="l00846"></a><span class="lineno">  846</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> j_edge : j_graph[<span class="stringliteral">&quot;edges&quot;</span>]) {</div>
+<div class="line"><a name="l00847"></a><span class="lineno">  847</span>&#160;                    <span class="keyword">auto</span> edge = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedEdge.html">fpmas::graph::DistributedEdge&lt;T&gt;</a>(</div>
+<div class="line"><a name="l00848"></a><span class="lineno">  848</span>&#160;                            j_edge[<span class="stringliteral">&quot;id&quot;</span>].get&lt;fpmas::graph::DistributedId&gt;(),</div>
+<div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;                            j_edge[<span class="stringliteral">&quot;layer&quot;</span>].get&lt;fpmas::graph::LayerId&gt;()</div>
+<div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;                            );</div>
+<div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;                    edge-&gt;setWeight(j_edge[<span class="stringliteral">&quot;weight&quot;</span>].get&lt;float&gt;());</div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;                    <span class="keyword">auto</span> src = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">fpmas::graph::DistributedNode&lt;T&gt;</a>(j_edge[<span class="stringliteral">&quot;src&quot;</span>].get&lt;fpmas::graph::DistributedId&gt;(), {});</div>
+<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;                    edge-&gt;setSourceNode(src);</div>
+<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;                    src-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Node.html#ac1a4abf794607f885dabf23a475d2c33">linkOut</a>(edge);</div>
+<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;                    <span class="keyword">auto</span> tgt = <span class="keyword">new</span> <a class="code" href="classfpmas_1_1graph_1_1DistributedNode.html">fpmas::graph::DistributedNode&lt;T&gt;</a>(j_edge[<span class="stringliteral">&quot;tgt&quot;</span>].get&lt;fpmas::graph::DistributedId&gt;(), {});</div>
+<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;                    edge-&gt;setTargetNode(tgt);</div>
+<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;                    tgt-&gt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1Node.html#a62274d50d14a13a140522c48b59c5870">linkIn</a>(edge);</div>
+<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;                    assert(graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">getNodes</a>().count(src-&gt;getId()) &gt; 0);</div>
+<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;                    assert(graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ada2efbce22b3deab22818abcd6fd1d52">getNodes</a>().count(tgt-&gt;getId()) &gt; 0);</div>
+<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;                    graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a8e286c4a21751597957e3b689e372457">importEdge</a>(edge);</div>
+<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;                }</div>
+<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;                graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a895e677b29acca3b9c9192c294ffe408">setCurrentNodeId</a>(j.at(<span class="stringliteral">&quot;node_id&quot;</span>).get&lt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::graph::DistributedId</a>&gt;());</div>
+<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;                graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aea61510c7f39f69c795188f33a92f1a6">setCurrentEdgeId</a>(j.at(<span class="stringliteral">&quot;edge_id&quot;</span>).get&lt;<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::graph::DistributedId</a>&gt;());</div>
+<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160; </div>
+<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;                nlohmann::json::json_serializer&lt;fpmas::api::graph::LocationManager&lt;T&gt;, <span class="keywordtype">void</span>&gt;</div>
+<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;                    ::from_json(j[<span class="stringliteral">&quot;loc_manager&quot;</span>], graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aac4225b449bb41a9013b14ce13df2116">getLocationManager</a>());</div>
+<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;            }</div>
+<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;        };</div>
+<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;}</div>
+<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aapi_2graph_2distributed__graph_8h_html"><div class="ttname"><a href="api_2graph_2distributed__graph_8h.html">distributed_graph.h</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:211</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html_a5d0a8ba6389d11dda81add366f6fc9b9"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">fpmas::api::communication::MpiCommunicator::getRank</a></div><div class="ttdeci">virtual int getRank() const =0</div></div>
@@ -919,7 +917,7 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a7888600e46477335aa752c9c3dc77678"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a7888600e46477335aa752c9c3dc77678">fpmas::graph::detail::DistributedGraph::onSetLocalCallbacks</a></div><div class="ttdeci">std::vector&lt; NodeCallback * &gt; onSetLocalCallbacks() const override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:272</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a8b79d869a2fb4aa169c12a58b6183cf4"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">fpmas::graph::detail::DistributedGraph::removeNode</a></div><div class="ttdeci">void removeNode(api::graph::DistributedNode&lt; T &gt; *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:545</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a8e0bd7495705459f24e363f6e512eaa4"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8e0bd7495705459f24e363f6e512eaa4">fpmas::graph::detail::DistributedGraph::link</a></div><div class="ttdeci">EdgeType * link(NodeType *const src, NodeType *const tgt, api::graph::LayerId layer) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:556</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a8feb8a3a21c40a734e2d3b3593114e37"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8feb8a3a21c40a734e2d3b3593114e37">fpmas::graph::detail::DistributedGraph::synchronize</a></div><div class="ttdeci">void synchronize() override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:681</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a8feb8a3a21c40a734e2d3b3593114e37"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8feb8a3a21c40a734e2d3b3593114e37">fpmas::graph::detail::DistributedGraph::synchronize</a></div><div class="ttdeci">void synchronize() override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:679</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a9c92d38fc28bd565c90fbd06fd8cd59e"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a9c92d38fc28bd565c90fbd06fd8cd59e">fpmas::graph::detail::DistributedGraph::addCallOnSetLocal</a></div><div class="ttdeci">void addCallOnSetLocal(NodeCallback *callback) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:269</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_aa0531e967a109d7275b52514b6d0ad47"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#aa0531e967a109d7275b52514b6d0ad47">fpmas::graph::detail::DistributedGraph::NodeType</a></div><div class="ttdeci">api::graph::DistributedNode&lt; T &gt; NodeType</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:53</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_aa2d9e506866dee48646a37dcca28e6fc"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#aa2d9e506866dee48646a37dcca28e6fc">fpmas::graph::detail::DistributedGraph::removeNode</a></div><div class="ttdeci">void removeNode(DistributedId id) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:260</div></div>
@@ -945,12 +943,12 @@ $(function() {
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a3b8d45dcdede19e41beff03c30a0671d"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">fpmas::api::graph::PartitionMap</a></div><div class="ttdeci">std::unordered_map&lt; DistributedId, int, api::graph::IdHash&lt; DistributedId &gt; &gt; PartitionMap</div><div class="ttdef"><b>Definition:</b> load_balancing.h:18</div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a6ad1b60906b20514825a6f77b7fdc750"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a></div><div class="ttdeci">int LayerId</div><div class="ttdef"><b>Definition:</b> edge.h:13</div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_acc7eb1311839a21b24362b472d3ea887"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">fpmas::api::graph::NodeMap</a></div><div class="ttdeci">typename graph::Graph&lt; graph::DistributedNode&lt; T &gt;, graph::DistributedEdge&lt; T &gt; &gt;::NodeMap NodeMap</div><div class="ttdef"><b>Definition:</b> load_balancing.h:24</div></div>
-<div class="ttc" id="anamespacefpmas_1_1graph_html_adf6379dbff231d9b0bd9b9bb7ad65028"><div class="ttname"><a href="namespacefpmas_1_1graph.html#adf6379dbff231d9b0bd9b9bb7ad65028">fpmas::graph::DistributedGraph</a></div><div class="ttdeci">detail::DistributedGraph&lt; T, SyncMode, graph::DistributedNode, graph::DistributedEdge, communication::TypedMpi, graph::LocationManager &gt; DistributedGraph</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:777</div></div>
+<div class="ttc" id="anamespacefpmas_1_1graph_html_adf6379dbff231d9b0bd9b9bb7ad65028"><div class="ttname"><a href="namespacefpmas_1_1graph.html#adf6379dbff231d9b0bd9b9bb7ad65028">fpmas::graph::DistributedGraph</a></div><div class="ttdeci">detail::DistributedGraph&lt; T, SyncMode, graph::DistributedNode, graph::DistributedEdge, communication::TypedMpi, graph::LocationManager &gt; DistributedGraph</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:775</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.cpp:3</div></div>
 <div class="ttc" id="anamespacenlohmann_html"><div class="ttname"><a href="namespacenlohmann.html">nlohmann</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:303</div></div>
 <div class="ttc" id="astructfpmas_1_1communication_1_1TypedMpi_html"><div class="ttname"><a href="structfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a></div><div class="ttdef"><b>Definition:</b> communication.h:567</div></div>
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4_html_a91c8e1060603e1722ec42b3c0c16fd56"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#a91c8e1060603e1722ec42b3c0c16fd56">nlohmann::adl_serializer&lt; fpmas::api::graph::DistributedGraph&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const fpmas::api::graph::DistributedGraph&lt; T &gt; &amp;graph)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:802</div></div>
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4_html_abae7981ae9cbbe5203891b37b3bb6ac3"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#abae7981ae9cbbe5203891b37b3bb6ac3">nlohmann::adl_serializer&lt; fpmas::api::graph::DistributedGraph&lt; T &gt; &gt;::from_json</a></div><div class="ttdeci">static void from_json(const json &amp;j, fpmas::api::graph::DistributedGraph&lt; T &gt; &amp;graph)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:836</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4_html_a91c8e1060603e1722ec42b3c0c16fd56"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#a91c8e1060603e1722ec42b3c0c16fd56">nlohmann::adl_serializer&lt; fpmas::api::graph::DistributedGraph&lt; T &gt; &gt;::to_json</a></div><div class="ttdeci">static void to_json(json &amp;j, const fpmas::api::graph::DistributedGraph&lt; T &gt; &amp;graph)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:800</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4_html_abae7981ae9cbbe5203891b37b3bb6ac3"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1graph_1_1DistributedGraph_3_01T_01_4_01_4.html#abae7981ae9cbbe5203891b37b3bb6ac3">nlohmann::adl_serializer&lt; fpmas::api::graph::DistributedGraph&lt; T &gt; &gt;::from_json</a></div><div class="ttdeci">static void from_json(const json &amp;j, fpmas::api::graph::DistributedGraph&lt; T &gt; &amp;graph)</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:834</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -555,7 +555,9 @@ namespace fpmas {
 						/**
 						 * Default scheduled load balancing algorithm.
 						 */
-						ScheduledLoadBalancing __load_balancing {__zoltan_lb, __scheduler, __runtime, comm};
+						ScheduledLoadBalancing __load_balancing {
+							__zoltan_lb, __scheduler, __runtime
+						};
 				};
 
 			/**

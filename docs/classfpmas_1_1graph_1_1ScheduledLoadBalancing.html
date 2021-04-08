@@ -67,7 +67,6 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classfpmas_1_1graph_1_1ScheduledLoadBalancing-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -99,8 +98,6 @@ Collaboration diagram for fpmas::graph::ScheduledLoadBalancing&lt; T &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9fa0c10d87cac51e7c3df234d8241cdc"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html#a9fa0c10d87cac51e7c3df234d8241cdc">ScheduledLoadBalancing</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">api::graph::FixedVerticesLoadBalancing</a>&lt; T &gt; &amp;fixed_vertices_lb, <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;scheduler, <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;runtime)</td></tr>
 <tr class="separator:a9fa0c10d87cac51e7c3df234d8241cdc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a09e2327f6c5427ded6e12b6703694438"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html#a09e2327f6c5427ded6e12b6703694438">ScheduledLoadBalancing</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">api::graph::FixedVerticesLoadBalancing</a>&lt; T &gt; &amp;fixed_vertices_lb, <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;scheduler, <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;runtime, <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm)</td></tr>
-<tr class="separator:a09e2327f6c5427ded6e12b6703694438"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af42206d6d8beee9cdd1f64b3f2edc407"><td class="memItemLeft" align="right" valign="top">PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html#af42206d6d8beee9cdd1f64b3f2edc407">balance</a> (NodeMap&lt; T &gt; nodes) override</td></tr>
 <tr class="separator:af42206d6d8beee9cdd1f64b3f2edc407"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -111,7 +108,7 @@ class fpmas::graph::ScheduledLoadBalancing&lt; T &gt;</h3>
 <p><a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">api::graph::LoadBalancing</a> implementation that takes nodes' task scheduling into account. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9fa0c10d87cac51e7c3df234d8241cdc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9fa0c10d87cac51e7c3df234d8241cdc">&#9670;&nbsp;</a></span>ScheduledLoadBalancing() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fa0c10d87cac51e7c3df234d8241cdc">&#9670;&nbsp;</a></span>ScheduledLoadBalancing()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -151,73 +148,12 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000008">Deprecated:</a></b></dt><dd></dd></dl>
 <p><a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a> constructor.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fixed_vertices_lb</td><td>fixed vertices load balancing algorithm </td></tr>
     <tr><td class="paramname">scheduler</td><td>current scheduler (used to access scheduled tasks associated to nodes) </td></tr>
     <tr><td class="paramname">runtime</td><td>current runtime (used to access the current <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html#a7264a42ca0256668394d58c500445ad0">api::runtime::Runtime::currentDate()</a>) </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a09e2327f6c5427ded6e12b6703694438"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a09e2327f6c5427ded6e12b6703694438">&#9670;&nbsp;</a></span>ScheduledLoadBalancing() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html">fpmas::graph::ScheduledLoadBalancing</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a> </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">api::graph::FixedVerticesLoadBalancing</a>&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>fixed_vertices_lb</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;&#160;</td>
-          <td class="paramname"><em>scheduler</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;&#160;</td>
-          <td class="paramname"><em>runtime</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p><a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a> constructor.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">fixed_vertices_lb</td><td>fixed vertices load balancing algorithm </td></tr>
-    <tr><td class="paramname">scheduler</td><td>current scheduler (used to access scheduled tasks associated to nodes) </td></tr>
-    <tr><td class="paramname">runtime</td><td>current runtime (used to access the current <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html#a7264a42ca0256668394d58c500445ad0">api::runtime::Runtime::currentDate()</a>) </td></tr>
-    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
   </table>
   </dd>
 </dl>

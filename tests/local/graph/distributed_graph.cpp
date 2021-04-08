@@ -962,6 +962,7 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 	EXPECT_CALL(graph.getNodeMpi(), migrate);
 	EXPECT_CALL(graph.getEdgeMpi(), migrate);
 
+	EXPECT_CALL(location_manager, getLocalNodes).WillRepeatedly(ReturnRef(node_map));
 	EXPECT_CALL(location_manager, setDistant).Times(AnyNumber());
 	EXPECT_CALL(location_manager, remove).Times(4);
 	EXPECT_CALL(location_manager, updateLocations());

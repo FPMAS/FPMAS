@@ -80,6 +80,7 @@ class ZoltanFunctionsTest : public ::testing::Test {
 			auto node_2 = new MockDistributedNode<int, NiceMock>(id2, 1, 2.f);
 			auto node_3 = new MockDistributedNode<int, NiceMock>(id3, 2, 3.f);
 			data.node_map = {{id1, node_1}, {id2, node_2}, {id3, node_3}};
+			data.distributed_node_ids = {id1, id2, id3};
 
 			// Mock edge id1 -> id2
 			mock_edge_1 = new MockDistributedEdge<int, NiceMock>(

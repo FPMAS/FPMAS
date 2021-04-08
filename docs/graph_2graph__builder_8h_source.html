@@ -241,8 +241,8 @@ $(function() {
 <div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                    }</div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                }</div>
 <div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                <span class="comment">// Commits new links and clears obsolete nodes</span></div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">synchronize</a>();</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;                <span class="comment">// Commits new links</span></div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a9b8c4aa878f481b81c025c03e5f14be6">synchronizationMode</a>().getSyncLinker().synchronize();</div>
 <div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
 <div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                <span class="keywordflow">return</span> built_nodes;</div>
 <div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        }</div>
@@ -477,8 +477,8 @@ $(function() {
 <div class="line"><a name="l00644"></a><span class="lineno">  644</span>&#160;                    }</div>
 <div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;                }</div>
 <div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160; </div>
-<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;                <span class="comment">// Commits new links and clears obsolete nodes</span></div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;                graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">synchronize</a>();</div>
+<div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;                <span class="comment">// Commits new links</span></div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;                graph.<a class="code" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a9b8c4aa878f481b81c025c03e5f14be6">synchronizationMode</a>().getSyncLinker().synchronize();</div>
 <div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160; </div>
 <div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;                <span class="keywordflow">return</span> raw_built_nodes;</div>
 <div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;            }</div>
@@ -557,7 +557,7 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder.html">fpmas::api::graph::DistributedGraphBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:143</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraph_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:45</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraph_html_a70367a18594a05467350529b48e9be6d"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a70367a18594a05467350529b48e9be6d">fpmas::api::graph::DistributedGraph::getMpiCommunicator</a></div><div class="ttdeci">virtual api::communication::MpiCommunicator &amp; getMpiCommunicator()=0</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraph_html_acf23a48ac7af373c0d92b7dd50764da9"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#acf23a48ac7af373c0d92b7dd50764da9">fpmas::api::graph::DistributedGraph::synchronize</a></div><div class="ttdeci">virtual void synchronize()=0</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraph_html_a9b8c4aa878f481b81c025c03e5f14be6"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a9b8c4aa878f481b81c025c03e5f14be6">fpmas::api::graph::DistributedGraph::synchronizationMode</a></div><div class="ttdeci">virtual synchro::SyncMode&lt; T &gt; &amp; synchronizationMode()=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraph_html_aef8d1101909c65ef27ce861ff9dd1907"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aef8d1101909c65ef27ce861ff9dd1907">fpmas::api::graph::DistributedGraph::link</a></div><div class="ttdeci">virtual DistributedEdge&lt; T &gt; * link(DistributedNode&lt; T &gt; *source, DistributedNode&lt; T &gt; *target, LayerId layer_id)=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedId_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::api::graph::DistributedId</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:86</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html">fpmas::api::graph::DistributedNodeBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:88</div></div>
