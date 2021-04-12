@@ -246,11 +246,11 @@ namespace fpmas { namespace graph {
 						);
 
 
-				std::size_t edge_count = std::min(
-						edge_distribution(generator), node_ids.size()-1
-						);
-
 				for(auto node : built_nodes) {
+					std::size_t edge_count = std::min(
+							edge_distribution(generator), node_ids.size()-1
+							);
+
 					auto position = std::find_if(
 								node_ids.begin(), node_ids.end(),
 								[node] (const LocId& id) {return id.first == node->getId();}
@@ -483,7 +483,10 @@ namespace fpmas { namespace graph {
 				}
 
 				for(auto& node : built_nodes) {
-					std::size_t edge_count = std::min(edge_distribution(generator), built_nodes.size()-1);
+					std::size_t edge_count = std::min(
+							edge_distribution(generator), built_nodes.size()-1
+							);
+
 					detail::DistanceComparator comp(node.p);
 					std::list<detail::LocalizedNode<T>> nearest_nodes;
 					std::size_t i = 0;
@@ -603,7 +606,9 @@ namespace fpmas { namespace graph {
 						);
 
 				for(auto& node : built_nodes) {
-					std::size_t edge_count = std::min(edge_distribution(generator), built_nodes_buffer.size()-1);
+					std::size_t edge_count = std::min(
+							edge_distribution(generator), built_nodes_buffer.size()-1
+							);
 					detail::DistanceComparator comp(node.p);
 					std::list<detail::LocalizedNodeView<T>> nearest_nodes;
 					std::size_t i = 0;
