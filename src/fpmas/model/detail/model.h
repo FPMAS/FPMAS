@@ -310,11 +310,6 @@ namespace fpmas {
 			class LoadBalancingTask : public api::scheduler::Task {
 				public:
 					/**
-					 * LoadBalancingAlgorithm type.
-					 */
-					typedef api::graph::LoadBalancing<AgentPtr>
-						LoadBalancingAlgorithm;
-					/**
 					 * Agent node map.
 					 */
 					typedef api::graph::NodeMap<AgentPtr> NodeMap;
@@ -325,7 +320,7 @@ namespace fpmas {
 
 				private:
 					api::model::AgentGraph& agent_graph;
-					LoadBalancingAlgorithm& load_balancing;
+					api::model::LoadBalancing& load_balancing;
 
 				public:
 					/**
@@ -338,7 +333,7 @@ namespace fpmas {
 					 */
 					LoadBalancingTask(
 							api::model::AgentGraph& agent_graph,
-							LoadBalancingAlgorithm& load_balancing
+							api::model::LoadBalancing& load_balancing
 							) : agent_graph(agent_graph), load_balancing(load_balancing) {}
 
 					void run() override;
@@ -424,12 +419,6 @@ namespace fpmas {
 				protected:
 					void insert(api::model::GroupId id, api::model::AgentGroup* group) override;
 
-				public:
-					/**
-					 * LoadBalancingAlgorithm type.
-					 */
-					typedef typename LoadBalancingTask::LoadBalancingAlgorithm LoadBalancingAlgorithm;
-
 				private:
 					api::model::AgentGraph& _graph;
 					api::scheduler::Scheduler& _scheduler;
@@ -460,7 +449,7 @@ namespace fpmas {
 							api::model::AgentGraph& graph,
 							api::scheduler::Scheduler& scheduler,
 							api::runtime::Runtime& runtime,
-							LoadBalancingAlgorithm& load_balancing);
+							api::model::LoadBalancing& load_balancing);
 					Model(const Model&) = delete;
 					Model(Model&&) = delete;
 					Model& operator=(const Model&) = delete;
@@ -621,7 +610,10 @@ namespace fpmas {
 					public:
 						DefaultModel() :
 							DefaultModelConfig<SyncMode>(),
-							Model(this->__graph, this->__scheduler, this->__runtime, this->__load_balancing) {}
+							Model(
+									this->__graph, this->__scheduler, this->__runtime,
+									this->__load_balancing
+									) {}
 				};
 
 		}

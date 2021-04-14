@@ -356,7 +356,7 @@ namespace fpmas { namespace graph {
 				 *
 				 * @param comm MpiCommunicator implementation
 				 */
-				ZoltanLoadBalancing(communication::MpiCommunicator& comm)
+				ZoltanLoadBalancing(communication::MpiCommunicatorBase& comm)
 					: zoltan(comm.getMpiComm()), comm(comm), id_mpi(comm) {
 						setUpZoltan();
 					}

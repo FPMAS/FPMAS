@@ -77,26 +77,27 @@ $(function() {
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ghost__mode_8h.html">fpmas/synchro/ghost/ghost_mode.h</a>&quot;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="hard__sync__mode_8h.html">fpmas/synchro/hard/hard_sync_mode.h</a>&quot;</span></div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="graph_2graph__builder_8h.html">fpmas/graph/graph_builder.h</a>&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;fpmas/random/random.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="moore_8h.html">fpmas/model/spatial/moore.h</a>&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="grid__agent__mapping_8h.html">fpmas/model/spatial/grid_agent_mapping.h</a>&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="io_2output_8h.html">fpmas/io/output.h</a>&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="csv__output_8h.html">fpmas/io/csv_output.h</a>&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="io_2breakpoint_8h.html">fpmas/io/breakpoint.h</a>&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="fpmas_8h.html#a4766d5892b769bcff0480917a85b921e">   18</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION &quot;1.1.0&quot;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="fpmas_8h.html#a85f66e8572844ae65b978c34ff6c6d1b">   22</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_MAJOR 1</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="fpmas_8h.html#ada8b8c2730e77e4e60c63af56a2add74">   26</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_MINOR 1</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="fpmas_8h.html#ad074e4937a67e81ef92268273d2b0313">   31</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_PATCH 0</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">init</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">finalize</a>();</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;}</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;fpmas/graph/random_load_balancing.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;fpmas/random/random.h&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="moore_8h.html">fpmas/model/spatial/moore.h</a>&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="grid__agent__mapping_8h.html">fpmas/model/spatial/grid_agent_mapping.h</a>&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="io_2output_8h.html">fpmas/io/output.h</a>&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="csv__output_8h.html">fpmas/io/csv_output.h</a>&quot;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="io_2breakpoint_8h.html">fpmas/io/breakpoint.h</a>&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="fpmas_8h.html#a4766d5892b769bcff0480917a85b921e">   19</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION &quot;1.1.0&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="fpmas_8h.html#a85f66e8572844ae65b978c34ff6c6d1b">   23</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_MAJOR 1</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="fpmas_8h.html#ada8b8c2730e77e4e60c63af56a2add74">   27</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_MINOR 1</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="fpmas_8h.html#ad074e4937a67e81ef92268273d2b0313">   32</a></span>&#160;<span class="preprocessor">#define FPMAS_VERSION_PATCH 0</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacefpmas.html">fpmas</a> {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">init</a>(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">finalize</a>();</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;}</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="acsv__output_8h_html"><div class="ttname"><a href="csv__output_8h.html">csv_output.h</a></div></div>
 <div class="ttc" id="aghost__mode_8h_html"><div class="ttname"><a href="ghost__mode_8h.html">ghost_mode.h</a></div></div>
 <div class="ttc" id="agraph_2graph__builder_8h_html"><div class="ttname"><a href="graph_2graph__builder_8h.html">graph_builder.h</a></div></div>

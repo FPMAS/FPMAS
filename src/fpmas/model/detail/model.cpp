@@ -54,7 +54,7 @@ namespace fpmas {
 					api::model::AgentGraph& graph,
 					api::scheduler::Scheduler& scheduler,
 					api::runtime::Runtime& runtime,
-					LoadBalancingAlgorithm& load_balancing)
+					api::model::LoadBalancing& load_balancing)
 				: _graph(graph), _scheduler(scheduler), _runtime(runtime), _loadBalancingJob(),
 				load_balancing_task(_graph, load_balancing) {
 					_loadBalancingJob.add(load_balancing_task);

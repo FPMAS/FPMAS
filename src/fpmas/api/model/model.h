@@ -881,5 +881,10 @@ namespace fpmas { namespace api {namespace model {
 		public:
 			virtual ~Model(){}
 	};
+
+	/**
+	 * AgentPtr LoadBalancing specialization.
+	 */
+	using LoadBalancing = fpmas::api::graph::LoadBalancing<AgentPtr>;
 }}}
 #endif
