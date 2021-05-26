@@ -43,8 +43,8 @@
  */
 #include "gtest/gtest.h"
 
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "graph/mock_distributed_node.h"
+#include "synchro/hard/mock_client_server.h"
 #include "fpmas/synchro/hard/hard_sync_mutex.h"
 
 using namespace testing;

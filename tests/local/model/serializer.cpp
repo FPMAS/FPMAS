@@ -1,5 +1,5 @@
 #include "fpmas/model/serializer.h"
-#include "../mocks/model/mock_model.h"
+#include "model/mock_model.h"
 #include "fpmas/utils/macros.h"
 #include "gtest_environment.h"
 

@@ -6,7 +6,7 @@
 #include "fpmas/synchro/hard/hard_sync_mode.h"
 #include "fpmas/scheduler/scheduler.h"
 #include "fpmas/runtime/runtime.h"
-#include "../mocks/model/mock_model.h"
+#include "model/mock_model.h"
 #include "test_agents.h"
 #include "utils/test.h"
 

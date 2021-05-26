@@ -1,8 +1,8 @@
 #ifndef FPMAS_GTEST_LOCAL_ENVIRONMENT_H
 #define FPMAS_GTEST_LOCAL_ENVIRONMENT_H
 
-#include "../mocks/model/mock_model.h"
-#include "../mocks/model/mock_spatial_model.h"
+#include "model/mock_model.h"
+#include "model/mock_spatial_model.h"
 #include "fpmas/model/spatial/grid.h"
 
 namespace model { namespace test {

@@ -1,6 +1,6 @@
-#include "../mocks/model/mock_spatial_model.h"
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/synchro/mock_mutex.h"
+#include "model/mock_spatial_model.h"
+#include "communication/mock_communication.h"
+#include "synchro/mock_mutex.h"
 #include "fpmas/model/spatial/spatial_model.h"
 #include "gtest_environment.h"
 
@@ -45,25 +45,6 @@ class CellBaseTest : public Test {
 		StrictMock<MockModel> mock_model;
 
 		void SetUp() override {
-			/*
-			 *ON_CALL(agent_node, mutex())
-			 *    .WillByDefault(Return(&mock_mutex));
-			 *ON_CALL(Const(agent_node), mutex())
-			 *    .WillByDefault(Return(&mock_mutex));
-			 *ON_CALL(cell_node, mutex())
-			 *    .WillByDefault(Return(&mock_mutex));
-			 *ON_CALL(Const(cell_node), mutex())
-			 *    .WillByDefault(Return(&mock_mutex));
-			 *ON_CALL(cell_neighbor_1_node, mutex())
-			 *    .WillByDefault(Return(&mock_mutex));
-			 *ON_CALL(Const(cell_neighbor_1_node), mutex())
-			 *    .WillByDefault(Return(&mock_mutex));
-			 *ON_CALL(cell_neighbor_2_node, mutex())
-			 *    .WillByDefault(Return(&mock_mutex));
-			 *ON_CALL(Const(cell_neighbor_2_node), mutex())
-			 *    .WillByDefault(Return(&mock_mutex));
-			 */
-
 			ON_CALL(cell_node, getOutgoingEdges(SpatialModelLayers::CELL_SUCCESSOR))
 				.WillByDefault(Return(
 							std::vector<AgentEdge*>

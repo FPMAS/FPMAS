@@ -1,5 +1,5 @@
-#include "../mocks/model/mock_model.h"
-#include "../mocks/communication/mock_communication.h"
+#include "model/mock_model.h"
+#include "communication/mock_communication.h"
 
 using namespace testing;
 

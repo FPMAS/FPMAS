@@ -1,8 +1,8 @@
 #include "fpmas/graph/location_manager.h"
 
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/synchro/mock_mutex.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_node.h"
+#include "synchro/mock_mutex.h"
 
 using namespace testing;
 

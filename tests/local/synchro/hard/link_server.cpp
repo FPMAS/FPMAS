@@ -1,13 +1,13 @@
 #include "fpmas/synchro/hard/hard_sync_linker.h"
 #include "fpmas/synchro/hard/server_pack.h"
 
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_graph.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/synchro/mock_mutex.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
-#include "../mocks/synchro/mock_sync_mode.h"
-#include "../mocks/synchro/hard/mock_hard_sync_mode.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_graph.h"
+#include "graph/mock_distributed_node.h"
+#include "synchro/mock_mutex.h"
+#include "synchro/hard/mock_client_server.h"
+#include "synchro/mock_sync_mode.h"
+#include "synchro/hard/mock_hard_sync_mode.h"
 
 using namespace testing;
 

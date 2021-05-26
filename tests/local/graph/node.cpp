@@ -1,8 +1,8 @@
 #include "api/graph/basic_id.h"
 #include "fpmas/graph/node.h"
 
-#include "../mocks/graph/mock_edge.h"
-#include "../mocks/utils/mock_callback.h"
+#include "graph/mock_edge.h"
+#include "utils/mock_callback.h"
 
 using ::testing::SizeIs;
 using ::testing::IsEmpty;

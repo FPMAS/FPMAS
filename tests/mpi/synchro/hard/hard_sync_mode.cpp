@@ -3,9 +3,9 @@
 #include <random>
 
 #include "fpmas/graph/distributed_graph.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/graph/mock_load_balancing.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "graph/mock_distributed_node.h"
+#include "graph/mock_load_balancing.h"
+#include "synchro/hard/mock_client_server.h"
 
 #include "utils/test.h"
 

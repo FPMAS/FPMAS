@@ -4,14 +4,14 @@
 #include "fpmas/graph/distributed_node.h"
 
 #include "fpmas/communication/communication.h"
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_edge.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/graph/mock_distributed_graph.h"
-#include "../mocks/graph/mock_location_manager.h"
-#include "../mocks/graph/mock_load_balancing.h"
-#include "../mocks/synchro/mock_mutex.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_edge.h"
+#include "graph/mock_distributed_node.h"
+#include "graph/mock_distributed_graph.h"
+#include "graph/mock_location_manager.h"
+#include "graph/mock_load_balancing.h"
+#include "synchro/mock_mutex.h"
+#include "synchro/hard/mock_client_server.h"
 
 using namespace testing;
 

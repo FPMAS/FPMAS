@@ -140,6 +140,3 @@ if(DOXYGEN_FOUND)
 		${CMAKE_CURRENT_SOURCE_DIR}/examples
 		)
 endif()
-
-# generates compile_commands.json, useful for CCLS completion
-set(CMAKE_EXPORT_COMPILE_COMMANDS YES)

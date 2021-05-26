@@ -1,7 +1,7 @@
 #include "fpmas/io/output.h"
 
-#include "../../mocks/communication/mock_communication.h"
-#include "../../mocks/runtime/mock_runtime.h"
+#include "communication/mock_communication.h"
+#include "runtime/mock_runtime.h"
 
 using namespace testing;
 

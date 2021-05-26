@@ -3,9 +3,9 @@
 #include "api/graph/basic_id.h"
 #include "fpmas/graph/graph.h"
 #include "fpmas/random/random.h"
-#include "../mocks/graph/mock_node.h"
-#include "../mocks/graph/mock_edge.h"
-#include "../mocks/utils/mock_callback.h"
+#include "graph/mock_node.h"
+#include "graph/mock_edge.h"
+#include "utils/mock_callback.h"
 
 using namespace testing;
 using namespace fpmas::graph;

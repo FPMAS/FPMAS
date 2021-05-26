@@ -2,8 +2,8 @@
 #include "fpmas/model/spatial/von_neumann.h"
 #include "fpmas/model/spatial/moore.h"
 #include "fpmas/model/spatial/grid_agent_mapping.h"
-#include "../mocks/model/mock_grid.h"
-#include "../mocks/random/mock_random.h"
+#include "model/mock_grid.h"
+#include "random/mock_random.h"
 #include "gtest_environment.h"
 
 #include <unordered_set>

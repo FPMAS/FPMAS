@@ -41,10 +41,10 @@
  */
 #include "fpmas/synchro/hard/mutex_server.h"
 
-#include "../mocks/communication/mock_communication.h"
+#include "communication/mock_communication.h"
 #include "fpmas/synchro/hard/api/enums.h"
-#include "../mocks/synchro/hard/mock_hard_sync_mode.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "synchro/hard/mock_hard_sync_mode.h"
+#include "synchro/hard/mock_client_server.h"
 
 using ::testing::_;
 using ::testing::A;

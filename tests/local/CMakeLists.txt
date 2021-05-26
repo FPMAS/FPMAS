@@ -49,13 +49,13 @@ set(SOURCES
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})
-target_include_directories(fpmas_local_test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(fpmas_local_test PUBLIC
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/../mocks
+	)
 target_link_libraries(fpmas_local_test fpmas)
 target_link_libraries(fpmas_local_test Zoltan::Zoltan)
 target_link_libraries(fpmas_local_test gtest_main)
 target_link_libraries(fpmas_local_test gmock_main)
 
 target_compile_definitions(fpmas_local_test PUBLIC LOG_LEVEL=${LOG_LEVEL})
-
-# generates compile_commands.json, useful for CCLS completion
-set(CMAKE_EXPORT_COMPILE_COMMANDS YES)

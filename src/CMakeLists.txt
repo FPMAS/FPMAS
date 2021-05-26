@@ -61,6 +61,3 @@ export(EXPORT fpmas_targets
 install(EXPORT fpmas_targets
 	DESTINATION lib/cmake/fpmas
 	NAMESPACE fpmas::)
-
-# generates compile_commands.json, useful for CCLS completion
-set(CMAKE_EXPORT_COMPILE_COMMANDS YES)

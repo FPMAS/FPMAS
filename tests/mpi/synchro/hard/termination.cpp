@@ -3,7 +3,7 @@
 #include <thread>
 #include <chrono>
 
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "synchro/hard/mock_client_server.h"
 #include "fpmas/communication/communication.h"
 
 using ::testing::Return;

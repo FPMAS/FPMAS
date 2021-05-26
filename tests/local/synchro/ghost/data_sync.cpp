@@ -1,10 +1,10 @@
 #include "fpmas/synchro/ghost/ghost_mode.h"
 
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/graph/mock_distributed_graph.h"
-#include "../mocks/graph/mock_location_manager.h"
-#include "../mocks/synchro/mock_mutex.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_node.h"
+#include "graph/mock_distributed_graph.h"
+#include "graph/mock_location_manager.h"
+#include "synchro/mock_mutex.h"
 
 using namespace testing;
 

@@ -1,5 +1,5 @@
 #include "fpmas/communication/communication.h"
-#include "../mocks/communication/mock_communication.h"
+#include "communication/mock_communication.h"
 #include "utils/test.h"
 #include "fpmas/utils/macros.h"
 #include <chrono>

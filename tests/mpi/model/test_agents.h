@@ -4,7 +4,7 @@
 #include "fpmas/model/spatial/spatial_model.h"
 #include "fpmas/model/spatial/grid.h"
 #include "fpmas/model/spatial/graph.h"
-#include "../../mocks/model/mock_model.h"
+#include "model/mock_model.h"
 
 #define TEST_AGENTS BasicAgent, ReaderAgent, WriterAgent, LinkerAgent,\
 		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\

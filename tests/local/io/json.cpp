@@ -1,7 +1,7 @@
 #include "json.h"
 #include "gmock/gmock.h"
 #include "fpmas/graph/distributed_edge.h"
-#include "../mocks/graph/mock_distributed_node.h"
+#include "graph/mock_distributed_node.h"
 #include "../gtest_environment.h"
 
 using namespace testing;

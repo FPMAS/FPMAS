@@ -5,8 +5,8 @@
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "gmock/gmock.h"
 #include "../test_agents.h"
-#include "../mocks/random/mock_random.h"
-#include "../mocks/model/mock_grid.h"
+#include "random/mock_random.h"
+#include "model/mock_grid.h"
 
 using namespace testing;
 using namespace fpmas::model;

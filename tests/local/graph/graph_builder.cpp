@@ -1,8 +1,8 @@
 #include "fpmas/graph/graph_builder.h"
 #include "fpmas/random/generator.h"
 #include "fpmas/random/distribution.h"
-#include "../mocks/graph/mock_distributed_graph.h"
-#include "../mocks/random/mock_random.h"
+#include "graph/mock_distributed_graph.h"
+#include "random/mock_random.h"
 
 using namespace testing;
 

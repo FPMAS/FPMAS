@@ -1,8 +1,8 @@
 #include "fpmas/graph/distributed_graph.h"
 
 #include <random>
-#include "../mocks/graph/mock_load_balancing.h"
-#include "../mocks/synchro/mock_sync_mode.h"
+#include "graph/mock_load_balancing.h"
+#include "synchro/mock_sync_mode.h"
 
 using ::testing::ReturnRef;
 using ::testing::SizeIs;

@@ -1,6 +1,6 @@
 #include "fpmas/scheduler/scheduler.h"
 
-#include "../mocks/scheduler/mock_scheduler.h"
+#include "scheduler/mock_scheduler.h"
 
 using fpmas::scheduler::Job;
 

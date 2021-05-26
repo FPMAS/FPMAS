@@ -1,6 +1,6 @@
 #include "fpmas/io/csv_output.h"
 #include "fpmas/runtime/runtime.h"
-#include "../mocks/scheduler/mock_scheduler.h"
+#include "scheduler/mock_scheduler.h"
 #include "gmock/gmock.h"
 
 TEST(CsvOutputBase, job) {

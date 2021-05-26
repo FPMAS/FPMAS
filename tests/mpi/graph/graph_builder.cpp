@@ -2,7 +2,7 @@
 #include "fpmas/graph/distributed_graph.h"
 #include "fpmas/random/random.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
-#include "../mocks/random/mock_random.h"
+#include "random/mock_random.h"
 
 #include "gmock/gmock.h"
 

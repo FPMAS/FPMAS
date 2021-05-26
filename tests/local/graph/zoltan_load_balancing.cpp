@@ -1,5 +1,5 @@
-#include "../mocks/graph/mock_distributed_edge.h"
-#include "../mocks/graph/mock_distributed_node.h"
+#include "graph/mock_distributed_edge.h"
+#include "graph/mock_distributed_node.h"
 
 #include "fpmas/graph/zoltan_load_balancing.h"
 

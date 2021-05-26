@@ -1,9 +1,9 @@
 #include "fpmas/synchro/hard/hard_sync_linker.h"
 
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_edge.h"
-#include "../mocks/synchro/mock_mutex.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_edge.h"
+#include "synchro/mock_mutex.h"
+#include "synchro/hard/mock_client_server.h"
 
 using namespace testing;
 

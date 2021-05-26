@@ -1,6 +1,6 @@
 #include "fpmas/graph/distributed_edge.h"
 
-#include "../mocks/graph/mock_distributed_node.h"
+#include "graph/mock_distributed_node.h"
 
 using namespace testing;
 

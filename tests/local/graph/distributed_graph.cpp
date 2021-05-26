@@ -16,17 +16,17 @@
  */
 #include "fpmas/graph/distributed_graph.h"
 
-#include "../mocks/communication/mock_communication.h"
+#include "communication/mock_communication.h"
 #include "fpmas/api/graph/graph.h"
 #include "fpmas/api/graph/load_balancing.h"
 #include "fpmas/random/random.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/graph/mock_distributed_edge.h"
-#include "../mocks/graph/mock_location_manager.h"
-#include "../mocks/synchro/mock_mutex.h"
-#include "../mocks/synchro/mock_sync_mode.h"
-#include "../mocks/graph/mock_load_balancing.h"
-#include "../mocks/utils/mock_callback.h"
+#include "graph/mock_distributed_node.h"
+#include "graph/mock_distributed_edge.h"
+#include "graph/mock_location_manager.h"
+#include "synchro/mock_mutex.h"
+#include "synchro/mock_sync_mode.h"
+#include "graph/mock_load_balancing.h"
+#include "utils/mock_callback.h"
 
 
 using namespace testing;

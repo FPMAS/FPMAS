@@ -1,6 +1,6 @@
 #include "fpmas/io/breakpoint.h"
-#include "../mocks/synchro/mock_sync_mode.h"
-#include "../mocks/communication/mock_communication.h"
+#include "synchro/mock_sync_mode.h"
+#include "communication/mock_communication.h"
 #include "fpmas/graph/distributed_graph.h"
 #include "fpmas/random/random.h"
 

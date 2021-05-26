@@ -1,6 +1,6 @@
 #include "fpmas/model/spatial/graph.h"
-#include "../../../mocks/model/mock_model.h"
-#include "../../../mocks/model/mock_spatial_model.h"
+#include "model/mock_model.h"
+#include "model/mock_spatial_model.h"
 
 using namespace testing;
 

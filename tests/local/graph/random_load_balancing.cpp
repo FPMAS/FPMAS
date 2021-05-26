@@ -1,6 +1,6 @@
 #include "fpmas/graph/random_load_balancing.h"
-#include "../../mocks/communication/mock_communication.h"
-#include "../../mocks/graph/mock_distributed_node.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_node.h"
 
 using namespace testing;
 

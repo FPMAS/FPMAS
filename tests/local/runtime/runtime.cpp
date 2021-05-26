@@ -1,4 +1,4 @@
-#include "../mocks/scheduler/mock_scheduler.h"
+#include "scheduler/mock_scheduler.h"
 #include "fpmas/runtime/runtime.h"
 
 using ::testing::_;
