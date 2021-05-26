@@ -9,7 +9,7 @@ TEST(DistributedCsvOutput, single) {
 	int size = fpmas::communication::WORLD.getSize();
 	int i = size;
 	std::string s = std::to_string(fpmas::communication::WORLD.getRank());
-	std::ostringstream out;
+	StringOutput out;
 
 	DistributedCsvOutput<Reduce<int>, Local<std::string>> csv_out (
 			fpmas::communication::WORLD, 0, out,
@@ -38,7 +38,7 @@ TEST(DistributedCsvOutput, all) {
 	int size = fpmas::communication::WORLD.getSize();
 	int i = size;
 	std::string s = std::to_string(fpmas::communication::WORLD.getRank());
-	std::ostringstream out;
+	StringOutput out;
 
 	DistributedCsvOutput<Reduce<int>, Local<std::string>> csv_out (
 			fpmas::communication::WORLD, out,

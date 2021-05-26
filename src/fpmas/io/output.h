@@ -2,9 +2,13 @@
 #define FPMAS_OUTPUT_H
 
 #include <fstream>
+#include <sstream>
+#include "fpmas/api/runtime/runtime.h"
+#include "fpmas/scheduler/scheduler.h"
+#include "fpmas/api/io/output.h"
+#include "fpmas/communication/communication.h"
 
-/**
- * @file src/fpmas/io/output.h
+/** \file src/fpmas/io/output.h
  *
  * fpmas::api::output related implementations.
  *
@@ -84,9 +88,6 @@
  * does not mean that fetched data is the same on all processes (see for
  * example fpmas::output::Local).
  */
-
-#include "fpmas/api/io/output.h"
-#include "fpmas/communication/communication.h"
 
 namespace fpmas { namespace io {
 	using api::io::Watcher;
@@ -280,6 +281,36 @@ namespace fpmas { namespace io {
 			};
 		};
 
+
+	/**
+	 * A string based implementation of fpmas::api::io::OutputStream.
+	 *
+	 * Outputs are performed on an underlying string.
+	 */
+	class StringOutput : public api::io::OutputStream {
+		private:
+			std::ostringstream out;
+		public:
+			/**
+			 * Returns a reference to the underlying std::ostringstream
+			 * instance.
+			 *
+			 * @return output stream
+			 */
+			std::ostringstream& get() override {
+				return out;
+			}
+
+			/**
+			 * Returns a copy of the current output string.
+			 *
+			 * @return string output
+			 */
+			std::string str() const {
+				return out.str();
+			}
+	};
+
 	/**
 	 * An helper class that can be used to initialize a file output stream.
 	 *
@@ -291,7 +322,7 @@ namespace fpmas { namespace io {
 	 * ```cpp
 	 * class MyOutput : public fpmas::io::CsvOutput<int> {
 	 * 	private:
-	 * 		std::ofstream file("file.csv");
+	 * 		fpmas::io::FileOutput file("file.csv");
 	 *
 	 * 	public:
 	 * 		MyOutput()
@@ -314,7 +345,7 @@ namespace fpmas { namespace io {
 	 * 		MyOutput() :
 	 * 			fpmas::io::FileOutput("file.csv"),
 	 * 			fpmas::io::CsvOutput<int>(
-	 * 				this->file,
+	 * 				*this,
 	 * 				{"my_field", [] () {return ...}}
 	 * 				) {}
 	 * };
@@ -322,11 +353,20 @@ namespace fpmas { namespace io {
 	 * In this case, FileOutput is properly initialized before CsvOutput so no
 	 * error occurs.
 	 */
-	struct FileOutput {
+	class FileOutput : public api::io::OutputStream {
+		private:
 		/**
 		 * std::ofstream file instance
 		 */
 		std::ofstream file;
+
+		public:
+		/**
+		 * Default constructor.
+		 *
+		 * The underlying file is left in an undefined state.
+		 */
+		FileOutput() {}
 
 		/**
 		 * FileOutput constructor.
@@ -397,6 +437,135 @@ namespace fpmas { namespace io {
 				api::scheduler::TimeStep step,
 				std::ios_base::openmode mode = std::ios_base::out
 				);
+
+		std::ofstream& get() override {
+			return file;
+		}
+	};
+
+	/**
+	 * An fpmas::api::io::OutputStream implementation that dynamically open
+	 * files depending on the current time step.
+	 *
+	 * The generic get() method is always used to access the underlying file
+	 * output. However the returned file effectively depends on the current
+	 * runtime state.
+	 *
+	 * For example, if the specified file format is "file.%t.csv", calling
+	 * `get()` when `runtime.currentDate()` is 0 while open and return a
+	 * reference to the file "file.0.csv", while calling the same method at
+	 * time step 3 will open and return a reference to the file "file.3.csv".
+	 *
+	 * In addition, the file format can contain '%r', that will eventually be
+	 * replaced by the current process rank.
+	 */
+	class DynamicFileOutput : public api::io::OutputStream {
+		private:
+			std::string fileformat;
+			int rank;
+			api::runtime::Runtime& runtime;
+			FileOutput current_output;
+			std::ios_base::openmode mode;
+
+		public:
+			/**
+			 * DynamicFileOutput constructor.
+			 *
+			 * @param fileformat Abstract file format, used to generate file
+			 * names. Each time get() is called, `file_format` is formatted
+			 * using fpmas::utils::format(std::string, int,
+			 * fpmas::api::scheduler::TimeStep) to produce a file name.
+			 * @param comm MPI communicator (used only to get the current
+			 * process rank)
+			 * @param runtime runtime used to get the current time step
+			 * @param mode file open mode (see
+			 * https://en.cppreference.com/w/cpp/io/ios_base/openmode)
+			 */
+			DynamicFileOutput(
+					std::string fileformat,
+					api::communication::MpiCommunicator& comm,
+					api::runtime::Runtime& runtime,
+					std::ios_base::openmode mode = std::ios_base::out
+					) :
+				fileformat(fileformat), rank(comm.getRank()), runtime(runtime),
+				mode(mode) {
+				}
+
+			/**
+			 * Return a reference to the current file output, depending on the
+			 * current runtime state.
+			 *
+			 * @return file output
+			 */
+			std::ofstream& get() override {
+				current_output = FileOutput(
+						fileformat, rank,
+						api::scheduler::time_step(runtime.currentDate()),
+						mode);
+
+				return current_output.get();
+			}
+	};
+
+	/**
+	 * Tasks implementation used to output some data.
+	 */
+	class OutputTask : public api::scheduler::Task {
+		private:
+			api::io::Output& output;
+		public:
+			/**
+			 * OutputTask constructor.
+			 *
+			 * @param output data output to call
+			 */
+			OutputTask(api::io::Output& output)
+				: output(output) {}
+
+			/**
+			 * Calls `output.dump()`.
+			 */
+			void run() override {
+				output.dump();
+			}
+	};
+
+	/**
+	 * A partial fpmas::io::output implementation.
+	 *
+	 * This base defines an output job(), that contains a single task that
+	 * perform a dump() when executed, but does **not** provide a dump()
+	 * method.
+	 */
+	class OutputBase : public api::io::Output {
+		private:
+			OutputTask output_task {*this};
+			scheduler::Job _job {{output_task}};
+		protected:
+			/**
+			 * OutputStream to which the dump() operation (not implemented in
+			 * this base) is supposed to perform data output.
+			 */
+			api::io::OutputStream& output_stream;
+
+		public:
+			/**
+			 * OutputBase constructor.
+			 *
+			 * @param output_stream OutputStream to which data will be dumped
+			 * by job()
+			 */
+			OutputBase(api::io::OutputStream& output_stream)
+				: output_stream(output_stream) {
+				}
+
+		public:
+			/**
+			 * \copydoc fpmas::api::io::Output::job()
+			 */
+			const api::scheduler::Job& job() override {
+				return _job;
+			}
 	};
 }}
 #endif

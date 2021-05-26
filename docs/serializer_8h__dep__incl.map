@@ -1,8 +1,9 @@
 <map id="src/fpmas/model/serializer.h" name="src/fpmas/model/serializer.h">
-<area shape="rect" id="node1" title=" " alt="" coords="51,5,238,32"/>
-<area shape="rect" id="node2" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="5,80,167,121"/>
-<area shape="rect" id="node6" href="$fpmas_8h.html" title=" " alt="" coords="99,437,190,464"/>
-<area shape="rect" id="node3" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="5,169,167,211"/>
-<area shape="rect" id="node4" href="$von__neumann_8h.html" title=" " alt="" coords="5,259,167,300"/>
-<area shape="rect" id="node5" href="$moore_8h.html" title=" " alt="" coords="5,348,167,389"/>
+<area shape="rect" id="node1" title=" " alt="" coords="237,5,423,32"/>
+<area shape="rect" id="node2" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="191,80,352,121"/>
+<area shape="rect" id="node7" href="$fpmas_8h.html" title=" " alt="" coords="285,437,375,464"/>
+<area shape="rect" id="node3" href="$model_2spatial_2graph_8h_source.html" title=" " alt="" coords="5,169,167,211"/>
+<area shape="rect" id="node4" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="191,169,352,211"/>
+<area shape="rect" id="node5" href="$von__neumann_8h.html" title=" " alt="" coords="191,259,352,300"/>
+<area shape="rect" id="node6" href="$moore_8h.html" title=" " alt="" coords="191,348,352,389"/>
 </map>

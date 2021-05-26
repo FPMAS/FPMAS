@@ -26,7 +26,7 @@ namespace fpmas { namespace api { namespace scheduler {
 	 */
 	typedef unsigned long TimeStep;
 	/**
-	 * Rational part of a Date.
+	 * Decimal part of a Date.
 	 */
 	typedef float SubTimeStep;
 
@@ -34,6 +34,39 @@ namespace fpmas { namespace api { namespace scheduler {
 	 * Job ID type.
 	 */
 	typedef size_t JID;
+
+	/**
+	 * Returns the integer time step represented by `date`.
+	 *
+	 * @param date date
+	 * @return time step
+	 */
+	TimeStep time_step(Date date);
+	/**
+	 * Returns the decimal sub time step represented by `date`.
+	 *
+	 * @param date date
+	 * @return sub stime step
+	 */
+	SubTimeStep sub_time_step(Date date);
+
+	/**
+	 * The maximum Date value in the provided `time_step`.
+	 *
+	 * This value can be used to schedule a job after all other in the current
+	 * time step.
+	 *
+	 * @par example
+	 * ```cpp
+	 * // Ordered list of jobs
+	 * scheduler.schedule(0, 1, job1);
+	 * scheduler.schedule(0.1, 1, job2);
+	 * ...
+	 * // Always executed at the end of each time step
+	 * scheduler.schedule(fpmas::scheduler::sub_step_end(0), 1, final_job);
+	 * ```
+	 */
+	api::scheduler::SubTimeStep sub_step_end(api::scheduler::TimeStep time_step);
 
 	/**
 	 * Task API.

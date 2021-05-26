@@ -1,8 +1,8 @@
 <map id="fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;" name="fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="601,35,855,76"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1SpatialModel.html" title=" " alt="" coords="381,5,553,47"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1Model.html" title=" " alt="" coords="5,35,140,76"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1model_1_1detail_1_1Model.html" title=" " alt="" coords="191,64,331,105"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1detail_1_1DefaultModel.html" title=" " alt="" coords="396,71,539,98"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1detail_1_1DefaultModelConfig.html" title=" " alt="" coords="188,130,333,186"/>
+<area shape="rect" id="node1" title=" " alt="" coords="599,46,852,87"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1SpatialModel.html" title=" " alt="" coords="381,5,551,61"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1Model.html" title=" " alt="" coords="5,42,140,83"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1model_1_1detail_1_1Model.html" title=" " alt="" coords="191,71,331,113"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1detail_1_1DefaultModel.html" title=" " alt="" coords="395,85,537,112"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1detail_1_1DefaultModelConfig.html" title=" " alt="" coords="188,137,333,193"/>
 </map>

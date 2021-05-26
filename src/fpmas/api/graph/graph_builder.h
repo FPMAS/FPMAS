@@ -45,7 +45,8 @@ namespace fpmas { namespace api { namespace graph {
 		};
 
 	/**
-	 * An utility interface used to automatically generate some graphs.
+	 * An utility interface used to automatically generate some graphs on a
+	 * single process.
 	 *
 	 * @tparam T graph datatype
 	 */

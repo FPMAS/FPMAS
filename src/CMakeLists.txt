@@ -8,6 +8,7 @@ set(SOURCES
 	fpmas/api/model/model.cpp
 	fpmas/api/model/spatial/grid.cpp
 	fpmas/synchro/hard/api/client_server.cpp
+	fpmas/api/scheduler/scheduler.cpp
 	# Utils
 	fpmas/utils/log.cpp
 	fpmas/utils/format.cpp
@@ -28,6 +29,7 @@ set(SOURCES
 	fpmas/model/spatial/grid.cpp
 	fpmas/model/spatial/grid_agent_mapping.cpp
 	fpmas/model/spatial/von_neumann.cpp
+	fpmas/model/spatial/graph.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
 	# Output

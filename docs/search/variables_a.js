@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['max_5fid_1482',['max_id',['../classfpmas_1_1api_1_1graph_1_1DistributedId.html#ae971fde76e870fd74aff46814aa687d8',1,'fpmas::api::graph::DistributedId']]],
-  ['max_5frank_1483',['max_rank',['../classfpmas_1_1api_1_1graph_1_1DistributedId.html#ae7eaac11f48cd4c61b5c6964412b8600',1,'fpmas::api::graph::DistributedId']]],
-  ['mpidistributedidtype_1484',['mpiDistributedIdType',['../classfpmas_1_1api_1_1graph_1_1DistributedId.html#a6daab47e183372ec5c965c01410c7f3c',1,'fpmas::api::graph::DistributedId']]],
-  ['mutex_1485',['mutex',['../classfpmas_1_1synchro_1_1Guard.html#a65fd7aeb968788c11cd18b90072d853e',1,'fpmas::synchro::Guard']]]
+  ['node_1563',['node',['../structfpmas_1_1graph_1_1detail_1_1LocalizedNode.html#a3c7cc84c1fa5b5e19a9f356d22c33462',1,'fpmas::graph::detail::LocalizedNode']]],
+  ['node_5fid_1564',['node_id',['../structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html#ae4375eac6cd2e327c936ec21e65d7db5',1,'fpmas::graph::detail::LocalizedNodeView']]],
+  ['node_5fmap_1565',['node_map',['../structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html#a8d41ae8883c03008359984f3434beccf',1,'fpmas::graph::zoltan::ZoltanData']]],
+  ['nodes_1566',['nodes',['../structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html#a413ae9094bc5b3d38bd52aa5e0290673',1,'fpmas::graph::zoltan::ZoltanData']]],
+  ['num_5fgid_5fentries_1567',['NUM_GID_ENTRIES',['../namespacefpmas_1_1graph_1_1zoltan.html#af95733f89124974337a1602382bc0155',1,'fpmas::graph::zoltan']]]
 ];

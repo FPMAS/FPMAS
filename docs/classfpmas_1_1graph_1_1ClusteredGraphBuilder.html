@@ -102,6 +102,8 @@ Collaboration diagram for fpmas::graph::ClusteredGraphBuilder&lt; T &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a57c426e5d8bef2df2e2b8dbd3be71b2e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#a57c426e5d8bef2df2e2b8dbd3be71b2e">ClusteredGraphBuilder</a> (<a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">api::random::Generator</a> &amp;<a class="el" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html#ae918ca85253c86ca48374f7b4419a39d">generator</a>, <a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html">api::random::Distribution</a>&lt; std::size_t &gt; &amp;<a class="el" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html#a085b6bc9b05d591d9f96a267cd37dc57">edge_distribution</a>, <a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html">api::random::Distribution</a>&lt; double &gt; &amp;x_distribution, <a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html">api::random::Distribution</a>&lt; double &gt; &amp;y_distribution)</td></tr>
 <tr class="separator:a57c426e5d8bef2df2e2b8dbd3be71b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3a23c74b0d63b831f9bbee3ef7cd5b40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#a3a23c74b0d63b831f9bbee3ef7cd5b40">ClusteredGraphBuilder</a> (<a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">api::random::Generator</a> &amp;<a class="el" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html#ae918ca85253c86ca48374f7b4419a39d">generator</a>, <a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html">api::random::Distribution</a>&lt; std::size_t &gt; &amp;<a class="el" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html#a085b6bc9b05d591d9f96a267cd37dc57">edge_distribution</a>)</td></tr>
+<tr class="separator:a3a23c74b0d63b831f9bbee3ef7cd5b40"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac55b80abb4cbbf5ccb65ebd302fdf462"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#ac55b80abb4cbbf5ccb65ebd302fdf462">build</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">api::graph::NodeBuilder</a>&lt; T &gt; &amp;node_builder, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a> layer, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph) override</td></tr>
 <tr class="separator:ac55b80abb4cbbf5ccb65ebd302fdf462"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -112,7 +114,7 @@ class fpmas::graph::ClusteredGraphBuilder&lt; T &gt;</h3>
 <p><a class="el" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">api::graph::GraphBuilder</a> implementation that can be used to generate random clustered graphs. A random 2D coordinate is implicitly associated to each node : each node is then connected to its nearest neighbors. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a57c426e5d8bef2df2e2b8dbd3be71b2e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a57c426e5d8bef2df2e2b8dbd3be71b2e">&#9670;&nbsp;</a></span>ClusteredGraphBuilder()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a57c426e5d8bef2df2e2b8dbd3be71b2e">&#9670;&nbsp;</a></span>ClusteredGraphBuilder() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -165,6 +167,53 @@ template&lt;typename T &gt; </div>
     <tr><td class="paramname">edge_distribution</td><td>random distribution that manages edges generation. See <a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#ac55b80abb4cbbf5ccb65ebd302fdf462">build()</a> </td></tr>
     <tr><td class="paramname">x_distribution</td><td>random distribution used to assign an x coordinate to each node </td></tr>
     <tr><td class="paramname">y_distribution</td><td>random distribution used to assign an y coordinate to each node </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3a23c74b0d63b831f9bbee3ef7cd5b40"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3a23c74b0d63b831f9bbee3ef7cd5b40">&#9670;&nbsp;</a></span>ClusteredGraphBuilder() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html">fpmas::graph::ClusteredGraphBuilder</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html">ClusteredGraphBuilder</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">api::random::Generator</a> &amp;&#160;</td>
+          <td class="paramname"><em>generator</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1random_1_1Distribution.html">api::random::Distribution</a>&lt; std::size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>edge_distribution</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html">ClusteredGraphBuilder</a> constructor.</p>
+<p>Built nodes are implicitly and uniformly distributed in a 2D space.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">generator</td><td>random number generator provided to the distribution </td></tr>
+    <tr><td class="paramname">edge_distribution</td><td>random distribution that manages edges generation. See <a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#ac55b80abb4cbbf5ccb65ebd302fdf462">build()</a> </td></tr>
   </table>
   </dd>
 </dl>

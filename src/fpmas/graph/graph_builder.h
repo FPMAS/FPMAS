@@ -10,6 +10,7 @@
 #include "fpmas/communication/communication.h"
 #include "fpmas/graph/distributed_node.h"
 #include "fpmas/random/random.h"
+#include "fpmas/utils/functional.h"
 
 #include <list>
 
@@ -234,15 +235,7 @@ namespace fpmas { namespace graph {
 					node_ids.push_back({node->getId(), node->location()});
 
 				node_ids = fpmas::communication::all_reduce(
-						id_mpi, node_ids, [](
-							const std::vector<LocId>& vec1,
-							const std::vector<LocId>& vec2
-							) {
-						std::vector<LocId> vec(vec1.size()+vec2.size());
-						vec.insert(vec.begin(), vec1.begin(), vec1.end());
-						vec.insert(vec.begin(), vec2.begin(), vec2.end());
-						return vec;
-						}
+						id_mpi, node_ids, fpmas::utils::Concat()
 						);
 
 
@@ -419,6 +412,7 @@ namespace fpmas { namespace graph {
 				api::random::Distribution<double>& x_distribution;
 				api::random::Distribution<double>& y_distribution;
 
+				static random::UniformRealDistribution<double> default_xy_dist;
 	
 			public:
 				/**
@@ -441,8 +435,28 @@ namespace fpmas { namespace graph {
 						) :
 					RandomGraphBuilder(generator, edge_distribution),
 					x_distribution(x_distribution),
-					y_distribution(y_distribution)
-			{}
+					y_distribution(y_distribution) {
+					}
+
+				/**
+				 * ClusteredGraphBuilder constructor.
+				 *
+				 * Built nodes are implicitly and uniformly distributed in a 2D
+				 * space.
+				 *
+				 * @param generator random number generator provided to the
+				 * distribution
+				 * @param edge_distribution random distribution that manages edges
+				 * generation. See build()
+				 */
+				ClusteredGraphBuilder(
+						api::random::Generator& generator,
+						api::random::Distribution<std::size_t>& edge_distribution
+						) :
+					ClusteredGraphBuilder(
+							generator, edge_distribution,
+							default_xy_dist, default_xy_dist) {
+					}
 
 				/**
 				 * A 2D coordinate is first assigned to each node provided by
@@ -467,6 +481,10 @@ namespace fpmas { namespace graph {
 						api::graph::LayerId layer,
 						api::graph::DistributedGraph<T>& graph) override;
 		};
+
+	template<typename T>
+		random::UniformRealDistribution<double>
+		ClusteredGraphBuilder<T>::default_xy_dist {0, 1000};
 
 	template<typename T>
 		std::vector<api::graph::DistributedNode<T>*> ClusteredGraphBuilder<T>
@@ -534,6 +552,7 @@ namespace fpmas { namespace graph {
 				api::random::Distribution<double>& x_distribution;
 				api::random::Distribution<double>& y_distribution;
 
+				static random::UniformRealDistribution<double> default_xy_dist;
 	
 			public:
 				/**
@@ -548,6 +567,18 @@ namespace fpmas { namespace graph {
 					RandomGraphBuilder(generator, edge_distribution),
 					x_distribution(x_distribution),
 					y_distribution(y_distribution){
+					}
+
+				/**
+				 * \copydoc ClusteredGraphBuilder::ClusteredGraphBuilder(api::random::Generator&, api::random::Distribution<std::size_t>&)
+				 */
+				DistributedClusteredGraphBuilder(
+						random::DistributedGenerator<>& generator,
+						api::random::Distribution<std::size_t>& edge_distribution
+						) :
+					DistributedClusteredGraphBuilder(
+							generator, edge_distribution,
+							default_xy_dist, default_xy_dist){
 					}
 
 				/**
@@ -566,6 +597,10 @@ namespace fpmas { namespace graph {
 						api::graph::LayerId layer,
 						api::graph::DistributedGraph<T>& graph) override;
 		};
+
+	template<typename T>
+		random::UniformRealDistribution<double>
+		DistributedClusteredGraphBuilder<T>::default_xy_dist {0, 1000};
 
 	template<typename T>
 		std::vector<api::graph::DistributedNode<T>*> DistributedClusteredGraphBuilder<T>
@@ -592,17 +627,9 @@ namespace fpmas { namespace graph {
 				fpmas::communication::TypedMpi<std::vector<detail::LocalizedNodeView<T>>> mpi(
 						graph.getMpiCommunicator()
 						);
+
 				built_nodes_buffer = fpmas::communication::all_reduce(
-						mpi, built_nodes_buffer,
-						[](
-							const std::vector<detail::LocalizedNodeView<T>>& v1,
-							const std::vector<detail::LocalizedNodeView<T>>& v2
-						  ) {
-						std::vector<detail::LocalizedNodeView<T>> v;
-						v.insert(v.begin(), v1.begin(), v1.end());
-						v.insert(v.begin(), v2.begin(), v2.end());
-						return v;
-						}
+						mpi, built_nodes_buffer, fpmas::utils::Concat()
 						);
 
 				for(auto& node : built_nodes) {

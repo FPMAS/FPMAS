@@ -74,6 +74,9 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;fstream&gt;</code><br />
+<code>#include &lt;sstream&gt;</code><br />
+<code>#include &quot;<a class="el" href="api_2runtime_2runtime_8h_source.html">fpmas/api/runtime/runtime.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="scheduler_2scheduler_8h_source.html">fpmas/scheduler/scheduler.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="api_2io_2output_8h_source.html">fpmas/api/io/output.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="communication_2communication_8h_source.html">fpmas/communication/communication.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -81,31 +84,35 @@ Include dependency graph for output.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="io_2output_8h__incl.png" border="0" usemap="#asrc_2fpmas_2io_2output_8h" alt=""/></div>
 <map name="asrc_2fpmas_2io_2output_8h" id="asrc_2fpmas_2io_2output_8h">
-<area shape="rect" title=" " alt="" coords="530,5,675,32"/>
-<area shape="rect" title=" " alt="" coords="440,80,507,107"/>
-<area shape="rect" href="api_2io_2output_8h.html" title=" " alt="" coords="531,80,675,107"/>
-<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="873,244,1023,285"/>
-<area shape="rect" href="api_2scheduler_2scheduler_8h.html" title=" " alt="" coords="489,155,628,196"/>
-<area shape="rect" href="api_2graph_2distributed__node_8h.html" title=" " alt="" coords="292,244,471,285"/>
-<area shape="rect" href="api_2graph_2node_8h.html" title=" " alt="" coords="6,341,165,367"/>
-<area shape="rect" href="api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="189,333,368,375"/>
-<area shape="rect" href="mutex_8h.html" title=" " alt="" coords="393,341,573,367"/>
-<area shape="rect" title=" " alt="" coords="5,423,64,449"/>
-<area shape="rect" href="api_2graph_2edge_8h.html" title=" " alt="" coords="89,423,247,449"/>
-<area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="547,423,658,449"/>
-<area shape="rect" href="location__state_8h.html" title=" " alt="" coords="272,423,387,449"/>
-<area shape="rect" title=" " alt="" coords="615,497,694,524"/>
-<area shape="rect" title=" " alt="" coords="815,497,945,524"/>
-<area shape="rect" title=" " alt="" coords="718,497,773,524"/>
-<area shape="rect" title=" " alt="" coords="423,497,483,524"/>
-<area shape="rect" title=" " alt="" coords="508,497,591,524"/>
-<area shape="rect" title=" " alt="" coords="293,497,365,524"/>
-<area shape="rect" title=" " alt="" coords="985,341,1047,367"/>
-<area shape="rect" title=" " alt="" coords="1071,341,1126,367"/>
-<area shape="rect" title=" " alt="" coords="1150,341,1261,367"/>
-<area shape="rect" title=" " alt="" coords="597,341,715,367"/>
-<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="740,333,911,375"/>
-<area shape="rect" href="json_8h.html" title=" " alt="" coords="858,423,969,449"/>
+<area shape="rect" title=" " alt="" coords="302,5,447,32"/>
+<area shape="rect" title=" " alt="" coords="5,87,72,114"/>
+<area shape="rect" title=" " alt="" coords="96,87,165,114"/>
+<area shape="rect" href="api_2runtime_2runtime_8h.html" title=" " alt="" coords="189,87,373,114"/>
+<area shape="rect" href="scheduler_2scheduler_8h.html" title=" " alt="" coords="565,87,755,114"/>
+<area shape="rect" href="api_2io_2output_8h.html" title=" " alt="" coords="397,87,541,114"/>
+<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="779,80,930,121"/>
+<area shape="rect" href="api_2scheduler_2scheduler_8h.html" title=" " alt="" coords="400,169,539,211"/>
+<area shape="rect" href="api_2graph_2distributed__node_8h.html" title=" " alt="" coords="380,259,559,300"/>
+<area shape="rect" href="api_2graph_2node_8h.html" title=" " alt="" coords="197,355,355,382"/>
+<area shape="rect" href="api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="380,348,559,389"/>
+<area shape="rect" href="mutex_8h.html" title=" " alt="" coords="583,355,763,382"/>
+<area shape="rect" title=" " alt="" coords="145,437,204,464"/>
+<area shape="rect" href="api_2graph_2edge_8h.html" title=" " alt="" coords="229,437,387,464"/>
+<area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="661,437,771,464"/>
+<area shape="rect" href="location__state_8h.html" title=" " alt="" coords="412,437,527,464"/>
+<area shape="rect" title=" " alt="" coords="719,512,798,539"/>
+<area shape="rect" title=" " alt="" coords="901,512,1032,539"/>
+<area shape="rect" title=" " alt="" coords="822,512,877,539"/>
+<area shape="rect" title=" " alt="" coords="527,512,587,539"/>
+<area shape="rect" title=" " alt="" coords="612,512,695,539"/>
+<area shape="rect" title=" " alt="" coords="431,512,503,539"/>
+<area shape="rect" title=" " alt="" coords="654,177,765,203"/>
+<area shape="rect" title=" " alt="" coords="573,177,630,203"/>
+<area shape="rect" title=" " alt="" coords="891,177,952,203"/>
+<area shape="rect" title=" " alt="" coords="977,177,1031,203"/>
+<area shape="rect" title=" " alt="" coords="1055,177,1174,203"/>
+<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="716,259,887,300"/>
+<area shape="rect" href="json_8h.html" title=" " alt="" coords="911,266,1022,293"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -113,8 +120,11 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="io_2output_8h__dep__incl.png" border="0" usemap="#asrc_2fpmas_2io_2output_8hdep" alt=""/></div>
 <map name="asrc_2fpmas_2io_2output_8hdep" id="asrc_2fpmas_2io_2output_8hdep">
-<area shape="rect" title=" " alt="" coords="5,5,151,32"/>
-<area shape="rect" href="fpmas_8h.html" title=" " alt="" coords="33,80,123,107"/>
+<area shape="rect" title=" " alt="" coords="143,5,289,32"/>
+<area shape="rect" href="csv__output_8h.html" title=" " alt="" coords="5,80,179,107"/>
+<area shape="rect" href="fpmas_8h.html" title=" " alt="" coords="180,155,271,181"/>
+<area shape="rect" href="json__output_8h_source.html" title=" " alt="" coords="253,80,429,107"/>
+<area shape="rect" href="utils_2perf_8h.html" title=" " alt="" coords="10,155,155,181"/>
 </map>
 </div>
 </div>
@@ -136,7 +146,15 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1Reduce_1_1All.html">fpmas::io::Reduce&lt; T, BinaryOp, Mpi &gt;::All</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1FileOutput.html">fpmas::io::FileOutput</a></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1StringOutput.html">fpmas::io::StringOutput</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1FileOutput.html">fpmas::io::FileOutput</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1DynamicFileOutput.html">fpmas::io::DynamicFileOutput</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1OutputTask.html">fpmas::io::OutputTask</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1OutputBase.html">fpmas::io::OutputBase</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>

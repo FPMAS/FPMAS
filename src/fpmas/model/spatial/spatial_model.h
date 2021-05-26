@@ -19,6 +19,9 @@ namespace fpmas {
 	 */
 	static const api::model::GroupId CELL_GROUP_ID = -1;
 
+	static const bool EXCLUDE_LOCATION = false;
+	static const bool INCLUDE_LOCATION = true;
+
 	/**
 	 * api::model::MoveAgentGroup implementation.
 	 */
@@ -119,6 +122,11 @@ namespace fpmas {
 
 	/**
 	 * Complete api::model::Cell implementation.
+	 *
+	 * @tparam CellType final Cell type, that must inherit from the current
+	 * Cell.
+	 * @tparam TypeIdBase type used to define the type id of the current
+	 * Cell implementation.
 	 */
 	template<typename CellType, typename TypeIdBase = CellType>
 	class Cell : public CellBase, public AgentBase<CellType, TypeIdBase> {
@@ -127,9 +135,16 @@ namespace fpmas {
 	/**
 	 * api::model::SpatialModel implementation.
 	 *
-	 * @see SpatialModel
+	 * @tparam SyncMode Synchronization Mode (see fpmas::synchro)
+	 * @tparam CellType Cell type on which \SpatialAgents are moving. The
+	 * specified type might be abstract.
+	 * @tparam EndCondition DistributedMoveAlgorithm end condition. Uses
+	 * DynamicEndCondition by default.
 	 */
-	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
+	template<
+		template<typename> class SyncMode,
+		typename CellType = api::model::Cell,
+		typename EndCondition = DynamicEndCondition<CellType>>
 	class SpatialModel :
 		public api::model::SpatialModel<CellType>,
 		public Model<SyncMode> {
@@ -145,6 +160,9 @@ namespace fpmas {
 				cell_group = &this->buildGroup(CELL_GROUP_ID);
 			}
 
+			/**
+			 * \copydoc fpmas::api::model::SpatialModel::add(CellType*)
+			 */
 			void add(CellType* cell) override;
 			std::vector<CellType*> cells() override;
 			fpmas::api::model::AgentGroup& cellGroup() override;
@@ -186,7 +204,7 @@ namespace fpmas {
 	 * This is a partial implementation, that does not implement
 	 * moveTo(CellType*).
 	 *
-	 * @tparam AgentType SpatialAgentBase dynamic type (i.e. most derived class
+	 * @tparam AgentType final SpatialAgentBase type (i.e. most derived class
 	 * from this SpatialAgentBase)
 	 * @tparam CellType type of cells on which the agent moves
 	 * @tparam Derived direct derived class, or at least the next class in the
@@ -237,13 +255,13 @@ namespace fpmas {
 			private:
 				class CurrentOutLayer {
 					private:
-						SpatialAgentBase* agent;
+						SpatialAgentBase* _agent;
 						fpmas::graph::LayerId layer_id;
 						std::set<DistributedId> current_layer_ids;
 
 					public:
 						CurrentOutLayer(SpatialAgentBase* agent, fpmas::graph::LayerId layer_id)
-							: agent(agent), layer_id(layer_id) {
+							: _agent(agent), layer_id(layer_id) {
 								auto layer = agent->node()->outNeighbors(layer_id);
 								for(auto node : layer)
 									current_layer_ids.insert(node->getId());
@@ -255,7 +273,7 @@ namespace fpmas {
 
 						void link(fpmas::api::model::Agent* cell) {
 							current_layer_ids.insert(cell->node()->getId());
-							agent->model()->link(agent, cell, layer_id);
+							_agent->model()->link(_agent, cell, layer_id);
 						}
 				};
 			private:
@@ -389,9 +407,9 @@ namespace fpmas {
 				this->model()->unlink(location.at(0).edge());
 
 			// Unlinks obsolete mobility field
-			for(auto cell : this->template outNeighbors<api::model::Cell>(
+			for(auto _cell : this->template outNeighbors<api::model::Cell>(
 						SpatialModelLayers::MOVE)) {
-				this->model()->unlink(cell.edge());
+				this->model()->unlink(_cell.edge());
 			}
 
 			// Unlinks obsolete perception field
@@ -470,14 +488,23 @@ namespace fpmas {
 
 	/**
 	 * SpatialAgent that can be used in an arbitrary graph environment.
+	 *
+	 * @tparam AgentType final SpatialAgent type (i.e. most derived class from
+	 * this SpatialAgent)
+	 * @tparam CellType type of cells on which the agent moves
+	 * @tparam Derived direct derived class, or at least the next class in the
+	 * serialization chain
 	 */
-	template<typename AgentType, typename CellType, typename Derived = AgentType>
+	template<typename AgentType, typename CellType = api::model::Cell, typename Derived = AgentType>
 		class SpatialAgent :
 			public SpatialAgentBase<AgentType, CellType, Derived> {
 				protected:
 					using SpatialAgentBase<AgentType, CellType, Derived>::moveTo;
 					using SpatialAgentBase<AgentType, CellType, Derived>::SpatialAgentBase;
 
+					/**
+					 * \copydoc fpmas::api::model::SpatialAgent::moveTo(CellType*)
+					 */
 					void moveTo(CellType* cell) override {
 						this->updateLocation(cell);
 					}
@@ -502,9 +529,49 @@ namespace fpmas {
 		};
 
 	/**
+	 * An api::model::SpatialAgentMapping implementation that randomly assign
+	 * \SpatialAgents to available \Cells.
+	 */
+	class UniformAgentMapping : public api::model::SpatialAgentMapping<api::model::Cell> {
+		private:
+			std::unordered_map<DistributedId, std::size_t> mapping;
+
+		public:
+			/**
+			 * UniformAgentMapping constructor.
+			 *
+			 * `agent_count` agents are distributed on the distributed set of
+			 * \Cells contained in the specified `cell_group`.
+			 *
+			 * A custom `seed` might be specified. However, since the generated
+			 * mapping is required to be the same on **all processes**, the
+			 * same `seed` must be specified on all processes.
+			 *
+			 * For the same reasons, the same `agent_count` must be specified
+			 * on all processes, since this corresponds to the **global** count
+			 * of \SpatialAgents to initialize.
+			 *
+			 * @param comm MPI communicator
+			 * @param cell_group AgentGroup containing \Cells to which a
+			 * \SpatialAgent count will be assigned.
+			 * @param agent_count total number of \SpatialAgents to distribute
+			 * on a set of \Cells. 
+			 * @param seed random seed
+			 */
+			UniformAgentMapping(
+					api::communication::MpiCommunicator& comm,
+					api::model::AgentGroup& cell_group,
+					std::size_t agent_count,
+					std::uint_fast64_t seed = std::mt19937_64::default_seed
+					);
+
+			std::size_t countAt(api::model::Cell* cell) override;
+	};
+
+	/**
 	 * api::model::SpatialAgentBuilder implementation.
 	 */
-	template<typename CellType, typename MappingCellType>
+	template<typename CellType, typename MappingCellType = api::model::Cell>
 	class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType, MappingCellType>{
 		public:
 			/**
@@ -675,5 +742,4 @@ namespace fpmas { namespace io { namespace json {
 		};
 
 }}}
-
 #endif

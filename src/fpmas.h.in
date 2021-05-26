@@ -11,6 +11,7 @@
 #include "fpmas/model/spatial/grid_agent_mapping.h"
 #include "fpmas/io/output.h"
 #include "fpmas/io/csv_output.h"
+#include "fpmas/io/json_output.h"
 #include "fpmas/io/breakpoint.h"
 
 /**

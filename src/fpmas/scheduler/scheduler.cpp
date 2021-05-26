@@ -2,9 +2,6 @@
 #include <algorithm>
 
 namespace fpmas { namespace scheduler {
-	api::scheduler::Date sub_step_end(api::scheduler::TimeStep step) {
-		return std::nextafter((SubTimeStep) (step+1), (SubTimeStep) 0);
-	}
 
 	Job::Job(std::initializer_list<std::reference_wrapper<api::scheduler::Task>> tasks)
 		: Job() {

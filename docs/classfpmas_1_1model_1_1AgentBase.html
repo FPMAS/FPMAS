@@ -82,11 +82,13 @@ Inheritance diagram for fpmas::model::AgentBase&lt; AgentType, TypeIdBase &gt;:<
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1model_1_1AgentBase__inherit__graph.png" border="0" usemap="#afpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_inherit__map" alt="Inheritance graph"/></div>
 <map name="afpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_inherit__map" id="afpmas_1_1model_1_1AgentBase_3_01AgentType_00_01TypeIdBase_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="22,169,205,211"/>
-<area shape="rect" href="classfpmas_1_1model_1_1Cell.html" title=" " alt="" coords="5,259,221,315"/>
-<area shape="rect" href="classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="46,5,181,47"/>
-<area shape="rect" href="classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="79,95,291,121"/>
-<area shape="rect" href="classfpmas_1_1model_1_1GridCellBase.html" title=" " alt="" coords="20,363,207,404"/>
+<area shape="rect" title=" " alt="" coords="448,53,631,94"/>
+<area shape="rect" href="classfpmas_1_1model_1_1Cell.html" title=" " alt="" coords="705,5,921,61"/>
+<area shape="rect" href="classfpmas_1_1model_1_1Cell.html" title=" " alt="" coords="679,85,947,141"/>
+<area shape="rect" href="classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="5,53,140,94"/>
+<area shape="rect" href="classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="188,85,400,112"/>
+<area shape="rect" href="classfpmas_1_1model_1_1GridCellBase.html" title=" " alt="" coords="1000,13,1187,54"/>
+<area shape="rect" href="classfpmas_1_1model_1_1GraphCellBase.html" title=" " alt="" coords="995,93,1192,134"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -191,7 +193,14 @@ Static Public Attributes</h2></td></tr>
 class fpmas::model::AgentBase&lt; AgentType, TypeIdBase &gt;</h3>
 
 <p>Base implementation of the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> API.</p>
-<p>Users can use this class to easily define their own <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> with custom behaviors. </p>
+<p>Users can use this class to easily define their own <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> with custom behaviors.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">AgentType</td><td>final Agent type, that must inherit from the current <a class="el" href="classfpmas_1_1model_1_1AgentBase.html">AgentBase</a>. </td></tr>
+    <tr><td class="paramname">TypeIdBase</td><td>type used to define the type id of the current <a class="el" href="classfpmas_1_1model_1_1AgentBase.html">AgentBase</a> implementation. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fpmas_2model_2behavior_with_args_8cpp-example.html#_a0">fpmas/model/behavior_with_args.cpp</a>.</dd>
 </dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>

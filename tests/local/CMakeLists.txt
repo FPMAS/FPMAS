@@ -35,13 +35,17 @@ set(SOURCES
 	model/behavior.cpp
 	model/spatial/spatial_model.cpp
 	model/spatial/grid.cpp
+	model/spatial/graph.cpp
 	# Output
+	io/output.cpp
 	io/csv_output.cpp
+	io/json_output.cpp
 	io/breakpoint.cpp
 	io/json.cpp
 	# Utils
 	utils/format.cpp
 	utils/perf.cpp
+	utils/functional.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

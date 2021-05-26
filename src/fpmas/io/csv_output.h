@@ -5,9 +5,8 @@
 #include <functional>
 #include <vector>
 #include <sstream>
-#include "fpmas/api/io/output.h"
+#include "output.h"
 #include "fpmas/communication/communication.h"
-#include "fpmas/scheduler/scheduler.h"
 
 /** \file fpmas/io/csv_output.h
  *
@@ -17,28 +16,6 @@
 namespace fpmas { namespace io {
 	using api::io::Watcher;
 
-	/**
-	 * Tasks implementation used to output some data.
-	 */
-	class OutputTask : public api::scheduler::Task {
-		private:
-			api::io::Output& output;
-		public:
-			/**
-			 * OutputTask constructor.
-			 *
-			 * @param output data output to call
-			 */
-			OutputTask(api::io::Output& output)
-				: output(output) {}
-
-			/**
-			 * Calls `output.dump()`.
-			 */
-			void run() override {
-				output.dump();
-			}
-	};
 
 	/**
 	 * Component used to convert an arbitrary data field to an std::string in
@@ -81,13 +58,10 @@ namespace fpmas { namespace io {
 	 * @see DistributedCsvOutput
 	 */
 	template<typename... DataField>
-	class CsvOutputBase : public api::io::Output {
+	class CsvOutputBase : public OutputBase {
 		private:
-			std::ostream& output_stream;
 			std::vector<std::string> _headers;
 			std::tuple<std::function<DataField()>...> watchers;
-			OutputTask output_task {*this};
-			scheduler::Job _job {{output_task}};
 	
 			/*
 			 * Tuple unrolling helper structs.
@@ -110,8 +84,8 @@ namespace fpmas { namespace io {
 				}
 
 			/*
-			 * Unrolls the input tuple and calls each watcher. Data is the
-			 * serialized and return in a vector.
+			 * Unrolls the input tuple and calls each watcher. 
+			 * Data is serialized and returned in a vector.
 			 */
 			template<int ...S>
 				std::vector<std::string> _dump_fields(const seq<S...>) {
@@ -128,9 +102,10 @@ namespace fpmas { namespace io {
 			 * @param data data to write
 			 */
 			void dump_csv(const std::vector<std::string>& data) {
+				std::ostream& output = output_stream.get();
 				for(std::size_t i = 0; i < data.size()-1; i++)
-					output_stream << data[i] << ",";
-				output_stream << data.back() << std::endl;
+					output << data[i] << ",";
+				output << data.back() << std::endl;
 			}
 
 			/**
@@ -161,20 +136,11 @@ namespace fpmas { namespace io {
 			 * to `"field_name"`
 			 */
 			CsvOutputBase(
-					std::ostream& output_stream,
+					api::io::OutputStream& output_stream,
 					std::pair<std::string, std::function<DataField()>>... csv_fields)
-				: output_stream(output_stream), watchers(csv_fields.second...) {
+				: OutputBase(output_stream), watchers(csv_fields.second...) {
 					build_headers({csv_fields...}, typename gens<sizeof...(DataField)>::type());
 				}
-
-		public:
-			/**
-			 * \copydoc fpmas::api::io::Output::job()
-			 */
-			const api::scheduler::Job& job() override {
-				return _job;
-			}
-
 	};
 
 	/**
@@ -198,7 +164,7 @@ namespace fpmas { namespace io {
 				 * use cases.
 				 */
 				CsvOutput(
-					std::ostream& output_stream,
+					api::io::OutputStream& output_stream,
 					std::pair<std::string, std::function<DataField()>>... csv_fields)
 					: CsvOutputBase<DataField...>(output_stream, csv_fields...) {
 						this->dump_csv(this->headers());
@@ -282,7 +248,7 @@ namespace fpmas { namespace io {
 				 */
 				DistributedCsvOutput(
 						api::communication::MpiCommunicator& comm, int root,
-						std::ostream& output_stream,
+						api::io::OutputStream& output_stream,
 						DistributedCsvField<DataFieldOperation>... csv_fields)
 					: CsvOutputBase<typename DataFieldOperation::Type...>(
 							output_stream,
@@ -320,7 +286,7 @@ namespace fpmas { namespace io {
 				 */
 				DistributedCsvOutput(
 						api::communication::MpiCommunicator& comm,
-						std::ostream& output_stream,
+						api::io::OutputStream& output_stream,
 						DistributedCsvField<DataFieldOperation>... csv_fields)
 					: CsvOutputBase<typename DataFieldOperation::Type...>(
 							output_stream,

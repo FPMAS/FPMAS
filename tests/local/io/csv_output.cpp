@@ -7,7 +7,7 @@ TEST(CsvOutputBase, job) {
 	struct MockCsvOuput : public fpmas::io::CsvOutputBase<int, float> {
 		using fpmas::io::CsvOutputBase<int, float>::CsvOutputBase;
 
-		MockCsvOuput(std::ostream& o,
+		MockCsvOuput(fpmas::api::io::OutputStream& o,
 				std::pair<std::string, std::function<int()>> f,
 				std::pair<std::string, std::function<float()>> g
 				)
@@ -16,8 +16,8 @@ TEST(CsvOutputBase, job) {
 		MOCK_METHOD(void, dump, (), (override));
 	};
 
-	std::ostringstream out;
-	MockCsvOuput csv_out(out,
+	fpmas::io::StringOutput out_stream;
+	MockCsvOuput csv_out(out_stream,
 			{"f", [] () {return 0;}},
 			{"g", [] () {return 1.f;}});
 
@@ -31,7 +31,7 @@ TEST(CsvOutputBase, job) {
 TEST(CsvOutput, output) {
 	int i = 0;
 	std::string s {"hello"};
-	std::ostringstream out;
+	fpmas::io::StringOutput out;
 
 	fpmas::io::CsvOutput<int, std::string> csv_out {
 		out,

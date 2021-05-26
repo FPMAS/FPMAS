@@ -180,7 +180,7 @@ TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_width_sup_height) {
 	checkGridStructure(grid_model, cells, X, Y);
 }
 
-class UniformAgentMappingTest : public Test {
+class UniformGridAgentMappingTest : public Test {
 	protected:
 		fpmas::model::UniformGridAgentMapping mapping {10, 10, 30};
 		std::array<MockGridCell<NiceMock>, 100> cells;
@@ -193,7 +193,7 @@ class UniformAgentMappingTest : public Test {
 		}
 };
 
-TEST_F(UniformAgentMappingTest, consistency_across_processes) {
+TEST_F(UniformGridAgentMappingTest, consistency_across_processes) {
 	std::array<std::size_t, 100> counts;
 	for(std::size_t i = 0; i < 100; i++)
 		counts[i] = mapping.countAt(&cells[i]);

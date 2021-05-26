@@ -364,6 +364,15 @@ namespace fpmas {
 				AgentGroupBase(GroupId group_id, api::model::AgentGraph& agent_graph);
 
 				/**
+				 * Deletes copy constructor.
+				 */
+				AgentGroupBase(const AgentGroupBase&) = delete;
+				/**
+				 * Deletes copy assignment operator.
+				 */
+				AgentGroupBase& operator=(const AgentGroupBase&) = delete;
+
+				/**
 				 * AgentGroupBase constructor.
 				 *
 				 * @param group_id unique id of the group
@@ -374,9 +383,6 @@ namespace fpmas {
 						GroupId group_id,
 						api::model::AgentGraph& agent_graph,
 						const api::model::Behavior& behavior);
-
-				AgentGroup& operator=(const AgentGroup&) = delete;
-				AgentGroup& operator=(AgentGroup&&) = delete;
 
 				GroupId groupId() const override {return id;}
 				const api::model::Behavior& behavior() override {return _behavior;}

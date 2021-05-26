@@ -128,6 +128,7 @@ template&lt;typename CellType &gt; </div>
 </div><div class="memdoc">
 <p>Returns <code>true</code> if and only if <code>cell</code> is contained in this range, considering that the range uses <code>root</code> as its origin.</p>
 <p>In practice, <code>root</code> is usually the location of the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> to which this range is associated.</p>
+<p>Notice that <code>root</code> and <code>cell</code> can be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>. In consequence, it is not safe to use <code>root</code>'s or <code>cell</code>'s neighbors in this method implementation.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">root</td><td>origin of the range </td></tr>
@@ -168,7 +169,7 @@ template&lt;typename CellType &gt; </div>
 distance", and not confused with any other type of distance that might be associated to <code>CellType</code>.</p>
 <p>It represents the maximum count of edges on a shortest path from <code>origin</code> to any point in the range in the current <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network. In consequence, implementations will probably depend on the underlying environment implementation on which this range is used (Grid, generic graph, geographic graph...).</p>
 <p>Here is a trivial example. Consider that the current environment (or "Cell network") is a simple chain of cells, with a distance of 1km between each cell. The underlying graph might be represented as follow: 1 &ndash; 2 &ndash; 3 &ndash; 4 &ndash; 5 &ndash; 6 &ndash; ...</p>
-<p>Now, let's implement a <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> that represents the fact that a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> can move 2km to its left or to its right. Considering the definition above, the radius returned by this method will be 2, since that, considering the current environment, a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> associated to this <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> will be able to move at most two cells to its left or to its right, whatever its current position is (so, in this case, there is no need to use the <code>origin</code> parameter). </p>
+<p>Now, let's implement a <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> that represents the fact that a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> can move 2km to its left or to its right. Considering the definition above, the radius returned by this method will be 2, since in the current environment a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> associated to this <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> will be able to move at most two cells to its left or to its right, whatever its current position is (so, in this case, there is no need to use the <code>origin</code> parameter). </p>
 
 </div>
 </div>

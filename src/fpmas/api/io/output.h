@@ -33,6 +33,27 @@ namespace fpmas { namespace api { namespace io {
 	};
 
 	/**
+	 * A generic `std::ostream` wrapper.
+	 *
+	 * This allows to implement dynamic output streams, with a generic
+	 * interface.
+	 *
+	 * For example, the method get() might open and return a reference to a
+	 * different output file depending on the current simulation step, while
+	 * outputs are always performed to OutputStream::get().
+	 */
+	struct OutputStream {
+		/**
+		 * Returns a reference to an abstract std::ostream.
+		 *
+		 * @return output stream
+		 */
+		virtual std::ostream& get() = 0;
+
+		virtual ~OutputStream() {}
+	};
+
+	/**
 	 * Generic Watcher interface.
 	 *
 	 * A Watcher is a callable object that dynamically returns some underlying

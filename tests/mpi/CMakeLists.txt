@@ -12,6 +12,7 @@ set(SOURCES
 	model/test_agents.cpp
 	model/spatial/spatial_model.cpp
 	model/spatial/grid.cpp
+	model/spatial/graph_range.cpp
 	random/generator.cpp
 	io/csv_output.cpp
 	io/breakpoint.cpp

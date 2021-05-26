@@ -187,6 +187,15 @@ namespace fpmas { namespace model {
 				}
 
 				/**
+				 * Checks if this neighbors list is empty.
+				 *
+				 * @return true iff there is no neighbor in this neighbor list
+				 */
+				bool empty() const {
+					return neighbors.empty();
+				}
+
+				/**
 				 * Returns a reference to the neighbor at position `i`, with
 				 * bounds checking.
 				 *
@@ -271,7 +280,7 @@ namespace fpmas { namespace model {
 				 */
 				Neighbor<AgentType> random() {
 					random::UniformIntDistribution<std::size_t> index(0, this->count()-1);
-					return neighbors[index(rd)];
+					return neighbors.at(index(rd));
 				}
 		};
 	template<typename AgentType> random::DistributedGenerator<> Neighbors<AgentType>::rd;
@@ -405,6 +414,14 @@ namespace fpmas { namespace model {
 		};
 
 	/**
+	 * A \Behavior that does not execute anything on any \Agent.
+	 */
+	class IdleBehavior : public api::model::Behavior {
+		void execute(api::model::Agent*) const override {
+		}
+	};
+
+	/**
 	 * Defines useful templates to obtain typed neighbors list directly from an
 	 * api::model::Agent.
 	 */
@@ -514,6 +531,11 @@ namespace fpmas { namespace model {
 	 *
 	 * Users can use this class to easily define their own \Agents with custom
 	 * behaviors.
+	 *
+	 * @tparam AgentType final Agent type, that must inherit from the current
+	 * AgentBase.
+	 * @tparam TypeIdBase type used to define the type id of the current
+	 * AgentBase implementation.
 	 */
 	template<typename AgentType, typename TypeIdBase = AgentType>
 	class AgentBase : public virtual api::model::Agent, public NeighborsAccess {
@@ -971,6 +993,17 @@ namespace fpmas { namespace model {
 		using Model = detail::DefaultModel<SyncMode>;
 
 	using api::model::AgentGroup;
+
+	/**
+	 * graph::DistributedUniformGraphBuilder AgentPtr specialization.
+	 */
+	using DistributedUniformGraphBuilder
+		= graph::DistributedUniformGraphBuilder<AgentPtr>;
+	/**
+	 * graph::DistributedClusteredGraphBuilder AgentPtr specialization.
+	 */
+	using DistributedClusteredGraphBuilder
+		= graph::DistributedClusteredGraphBuilder<AgentPtr>;
 
 	/**
 	 * \Model fpmas::io::Breakpoint specialization.

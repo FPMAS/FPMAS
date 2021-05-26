@@ -17,24 +17,10 @@ namespace fpmas { namespace scheduler {
 	using api::scheduler::SubTimeStep;
 	using api::scheduler::JID;
 	using api::scheduler::JobList;
+	using api::scheduler::time_step;
+	using api::scheduler::sub_time_step;
+	using api::scheduler::sub_step_end;
 
-	/**
-	 * The maximum Date value in the provided `time_step`.
-	 *
-	 * This value can be used to schedule a job after all other in the current
-	 * time step.
-	 *
-	 * @par example
-	 * ```cpp
-	 * // Ordered list of jobs
-	 * scheduler.schedule(0, 1, job1);
-	 * scheduler.schedule(0.1, 1, job2);
-	 * ...
-	 * // Always executed at the end of each time step
-	 * scheduler.schedule(fpmas::scheduler::sub_step_end(0), 1, final_job);
-	 * ```
-	 */
-	api::scheduler::SubTimeStep sub_step_end(api::scheduler::TimeStep time_step);
 
 	/**
 	 * A Task that does not perform any operation.

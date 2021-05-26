@@ -77,8 +77,15 @@ $(function() {
 <li>generator
 : <a class="el" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html#ae918ca85253c86ca48374f7b4419a39d">fpmas::graph::RandomGraphBuilder</a>
 </li>
+<li>Generator()
+: <a class="el" href="classfpmas_1_1random_1_1Generator.html#a16d397f593de99e4f25f22a78feada7e">fpmas::random::Generator&lt; Generator_t &gt;</a>
+</li>
 <li>get()
-: <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#a8355d9085f63f88acb7a712f5482d65b">fpmas::api::utils::PtrWrapper&lt; T &gt;</a>
+: <a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html#a155300296b7784faf48a4a4f56c964d6">fpmas::api::io::OutputStream</a>
+, <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#a8355d9085f63f88acb7a712f5482d65b">fpmas::api::utils::PtrWrapper&lt; T &gt;</a>
+, <a class="el" href="classfpmas_1_1io_1_1DynamicFileOutput.html#a1557e66d84d79e1b0879c455f6bbc414">fpmas::io::DynamicFileOutput</a>
+, <a class="el" href="classfpmas_1_1io_1_1FileOutput.html#a281ac35e240dfb8b7c0f1ee423056358">fpmas::io::FileOutput</a>
+, <a class="el" href="classfpmas_1_1io_1_1StringOutput.html#a961ed7a8d5fbf2f9b1a27df122316a85">fpmas::io::StringOutput</a>
 </li>
 <li>getBeginTask()
 : <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a81262247fdff54210268dd9e58d722ea">fpmas::api::scheduler::Job</a>
@@ -98,7 +105,7 @@ $(function() {
 , <a class="el" href="classfpmas_1_1graph_1_1LocationManager.html#a9f33487685185ef3aa410f73c83575a9">fpmas::graph::LocationManager&lt; T &gt;</a>
 </li>
 <li>getEdge()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#ad44f2a827f2a4eda7c68fc0bed8aa510">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a88929eaa162f730d385afe6c2ea4173d">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a8b5eefaff964502d98640e1b1b3752b1">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 </li>
 <li>getEdgeMpi()
@@ -160,7 +167,7 @@ $(function() {
 : <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#a53b72f17e094ba5e9e1c5eb873553d4d">fpmas::communication::MpiCommunicatorBase</a>
 </li>
 <li>getNode()
-: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a61501e99ee00b6b7444ad50cba4fb656">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#aa80206b87b398bcded81a2f8ca13affd">fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 , <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 </li>
 <li>getNodeMpi()
@@ -218,10 +225,13 @@ $(function() {
 : <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html#a59b8312f1570e1a3cc0af36baf03f679">fpmas::api::model::Model</a>
 </li>
 <li>Graph()
-: <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a7df951298b9037f734d432341d033fa4">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
+: <a class="el" href="classfpmas_1_1graph_1_1Graph.html#a106c75214b335eaa0e22df7db1ad0e2f">fpmas::graph::Graph&lt; NodeType, EdgeType &gt;</a>
 </li>
 <li>graph()
 : <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a1d91d4bfb887a41b058fa72ddbaa0163">fpmas::model::detail::Model</a>
+</li>
+<li>GraphRange()
+: <a class="el" href="classfpmas_1_1model_1_1GraphRange.html#acb5cf4d25c25331648f88e841b9ddaed">fpmas::model::GraphRange&lt; GraphCellType &gt;</a>
 </li>
 <li>GridAgent()
 : <a class="el" href="classfpmas_1_1model_1_1GridAgent.html#a754b557eb8468872fa0d0a6e395fec7f">fpmas::model::GridAgent&lt; AgentType, GridCellType, Derived &gt;</a>
@@ -235,7 +245,7 @@ $(function() {
 <li>group()
 : <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a46ea84f58fb1b430f05312ba61b06639">fpmas::api::model::Agent</a>
 , <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#af9f09cf5da93c3f175b94faedfbaaa9f">fpmas::communication::MpiCommunicatorBase</a>
-, <a class="el" href="classfpmas_1_1model_1_1AgentBase.html#af381fb37cf9202c032581435136ac421">fpmas::model::AgentBase&lt; AgentType, TypeIdBase &gt;</a>
+, <a class="el" href="classfpmas_1_1model_1_1AgentBase.html#adc1328799e6a37f1c6b0f9044705b583">fpmas::model::AgentBase&lt; AgentType, TypeIdBase &gt;</a>
 </li>
 <li>groupId()
 : <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#af7df85262a65329202070747bd152c83">fpmas::api::model::Agent</a>

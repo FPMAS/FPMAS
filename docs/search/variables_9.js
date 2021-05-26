@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['local_1479',['LOCAL',['../structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html#a59b524281ffb4b38a5f6013d5ea7a0e3',1,'fpmas::synchro::hard::api::MutexRequest']]],
-  ['local_5fnode_5fcount_1480',['local_node_count',['../classfpmas_1_1graph_1_1DistributedNodeBuilder.html#a65e163c885f58e856b567ccc4016d19f',1,'fpmas::graph::DistributedNodeBuilder']]],
-  ['location_1481',['location',['../structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html#a1c49738deb1be6bb021d5f810057911f',1,'fpmas::graph::detail::LocalizedNodeView']]]
+  ['max_5fid_1559',['max_id',['../classfpmas_1_1api_1_1graph_1_1DistributedId.html#ae971fde76e870fd74aff46814aa687d8',1,'fpmas::api::graph::DistributedId']]],
+  ['max_5frank_1560',['max_rank',['../classfpmas_1_1api_1_1graph_1_1DistributedId.html#ae7eaac11f48cd4c61b5c6964412b8600',1,'fpmas::api::graph::DistributedId']]],
+  ['mpidistributedidtype_1561',['mpiDistributedIdType',['../classfpmas_1_1api_1_1graph_1_1DistributedId.html#a6daab47e183372ec5c965c01410c7f3c',1,'fpmas::api::graph::DistributedId']]],
+  ['mutex_1562',['mutex',['../classfpmas_1_1synchro_1_1Guard.html#a65fd7aeb968788c11cd18b90072d853e',1,'fpmas::synchro::Guard']]]
 ];

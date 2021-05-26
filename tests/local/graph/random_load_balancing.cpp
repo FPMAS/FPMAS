@@ -6,7 +6,7 @@ using namespace testing;
 
 class RandomLoadBalancing : public Test {
 	protected:
-		static const std::size_t NUM_NODES = 100;
+		static const std::size_t NUM_NODES;
 		fpmas::graph::NodeMap<int> nodes;
 		MockMpiCommunicator<3, 4> comm;
 		fpmas::graph::RandomLoadBalancing<int> random_lb {comm};
@@ -23,6 +23,8 @@ class RandomLoadBalancing : public Test {
 				delete node.second;
 		}
 };
+
+const std::size_t RandomLoadBalancing::NUM_NODES = 100;
 
 TEST_F(RandomLoadBalancing, test) {
 	auto partition = random_lb.balance(nodes);

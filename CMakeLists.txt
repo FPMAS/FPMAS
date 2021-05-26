@@ -92,6 +92,8 @@ if(DOXYGEN_FOUND)
 		[[Agents="\ref fpmas::api::model::Agent \"Agents\""]]
 		[[SpatialAgent="\ref fpmas::api::model::SpatialAgent \"SpatialAgent\""]]
 		[[SpatialAgents="\ref fpmas::api::model::SpatialAgent \"SpatialAgents\""]]
+		[[SpatialModel="\ref fpmas::api::model::SpatialModel \"SpatialModel\""]]
+		[[SpatialModels="\ref fpmas::api::model::SpatialModel \"SpatialModels\""]]
 		[[GridAgent="\ref fpmas::api::model::GridAgent \"GridAgent\""]]
 		[[GridAgents="\ref fpmas::api::model::GridAgent \"GridAgents\""]]
 		[[Cell="\ref fpmas::api::model::Cell \"Cell\""]]

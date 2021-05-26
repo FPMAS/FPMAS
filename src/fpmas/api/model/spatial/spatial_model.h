@@ -121,13 +121,16 @@ namespace fpmas { namespace api { namespace model {
 				 * In practice, `root` is usually the location of the
 				 * SpatialAgent to which this range is associated.
 				 *
+				 * Notice that `root` and `cell` can be \DISTANT. In
+				 * consequence, it is not safe to use `root`'s or `cell`'s
+				 * neighbors in this method implementation.
+				 *
 				 * @param root origin of the range
 				 * @param cell cell to check
 				 */
 				virtual bool contains(CellType* root, CellType* cell) const = 0;
 
-				/**
-				 * Returns the radius of this range, i.e. a value greater or
+				/** Returns the radius of this range, i.e. a value greater or
 				 * equal to the maximum shortest path length between `origin`
 				 * and any cell contained in this range, considering `origin`
 				 * as the location of the object to which this range is
@@ -153,11 +156,11 @@ namespace fpmas { namespace api { namespace model {
 				 * Now, let's implement a Range that represents the fact that a
 				 * SpatialAgent can move 2km to its left or to its right.
 				 * Considering the definition above, the radius returned by
-				 * this method will be 2, since that, considering the current
-				 * environment, a SpatialAgent associated to this Range will be
-				 * able to move at most two cells to its left or to its right,
-				 * whatever its current position is (so, in this case, there is
-				 * no need to use the `origin` parameter).
+				 * this method will be 2, since in the current environment a
+				 * SpatialAgent associated to this Range will be able to move
+				 * at most two cells to its left or to its right, whatever its
+				 * current position is (so, in this case, there is no need to
+				 * use the `origin` parameter).
 				 */
 				virtual std::size_t radius(CellType* origin) const = 0;
 

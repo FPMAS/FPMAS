@@ -19,6 +19,8 @@ namespace fpmas { namespace random {
 
 	/**
 	 * api::random::Generator implementation.
+	 *
+	 * @tparam Generator_t cpp standard random number generator
 	 */
 	template<typename Generator_t>
 		class Generator : public api::random::Generator {
@@ -29,6 +31,17 @@ namespace fpmas { namespace random {
 			 */
 			Generator_t gen;
 			public:
+
+			/**
+			 * Default constructor.
+			 */
+			Generator() {}
+			/**
+			 * Initializes the Generator with the provided seed.
+			 *
+			 * @param seed random seed
+			 */
+			Generator(result_type seed) : gen(seed) {}
 
 			result_type min() override {
 				return gen.min();

@@ -1,5 +1,7 @@
 <map id="fpmas::io::DistributedCsvOutput&lt; DataFieldOperation &gt;" name="fpmas::io::DistributedCsvOutput&lt; DataFieldOperation &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="10,169,207,211"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1io_1_1CsvOutputBase.html" title=" " alt="" coords="5,80,212,121"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1io_1_1Output.html" title=" " alt="" coords="35,5,183,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="77,261,274,303"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1io_1_1CsvOutputBase.html" title=" " alt="" coords="72,171,279,212"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1io_1_1OutputBase.html" title=" " alt="" coords="99,95,252,121"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1io_1_1Output.html" title=" " alt="" coords="5,5,153,32"/>
+<area shape="rect" id="node5" href="$structfpmas_1_1api_1_1io_1_1OutputStream.html" title=" " alt="" coords="177,5,368,32"/>
 </map>

@@ -68,7 +68,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classfpmas_1_1io_1_1CsvOutputBase-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -82,7 +81,8 @@ Inheritance diagram for fpmas::io::CsvOutputBase&lt; DataField &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1io_1_1CsvOutputBase__inherit__graph.png" border="0" usemap="#afpmas_1_1io_1_1CsvOutputBase_3_01DataField_01_4_inherit__map" alt="Inheritance graph"/></div>
 <map name="afpmas_1_1io_1_1CsvOutputBase_3_01DataField_01_4_inherit__map" id="afpmas_1_1io_1_1CsvOutputBase_3_01DataField_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,80,183,121"/>
+<area shape="rect" title=" " alt="" coords="5,155,183,196"/>
+<area shape="rect" href="classfpmas_1_1io_1_1OutputBase.html" title=" " alt="" coords="17,80,171,107"/>
 <area shape="rect" href="classfpmas_1_1api_1_1io_1_1Output.html" title=" " alt="" coords="20,5,168,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
@@ -91,19 +91,13 @@ Collaboration diagram for fpmas::io::CsvOutputBase&lt; DataField &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1io_1_1CsvOutputBase__coll__graph.png" border="0" usemap="#afpmas_1_1io_1_1CsvOutputBase_3_01DataField_01_4_coll__map" alt="Collaboration graph"/></div>
 <map name="afpmas_1_1io_1_1CsvOutputBase_3_01DataField_01_4_coll__map" id="afpmas_1_1io_1_1CsvOutputBase_3_01DataField_01_4_coll__map">
-<area shape="rect" title=" " alt="" coords="5,80,183,121"/>
-<area shape="rect" href="classfpmas_1_1api_1_1io_1_1Output.html" title=" " alt="" coords="20,5,168,32"/>
+<area shape="rect" title=" " alt="" coords="87,171,264,212"/>
+<area shape="rect" href="classfpmas_1_1io_1_1OutputBase.html" title=" " alt="" coords="99,95,252,121"/>
+<area shape="rect" href="classfpmas_1_1api_1_1io_1_1Output.html" title=" " alt="" coords="5,5,153,32"/>
+<area shape="rect" href="structfpmas_1_1api_1_1io_1_1OutputStream.html" title=" " alt="" coords="177,5,368,32"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
-Public Member Functions</h2></td></tr>
-<tr class="memitem:adc9cf6a751e0db7203572b722f6227f8"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1CsvOutputBase.html#adc9cf6a751e0db7203572b722f6227f8">job</a> () override</td></tr>
-<tr class="separator:adc9cf6a751e0db7203572b722f6227f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pub_methods_classfpmas_1_1api_1_1io_1_1Output"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1api_1_1io_1_1Output')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1api_1_1io_1_1Output.html">fpmas::api::io::Output</a></td></tr>
-<tr class="memitem:a8e0704b42bb274d7a9b35a6c27b3e691 inherit pub_methods_classfpmas_1_1api_1_1io_1_1Output"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1io_1_1Output.html#a8e0704b42bb274d7a9b35a6c27b3e691">dump</a> ()=0</td></tr>
-<tr class="separator:a8e0704b42bb274d7a9b35a6c27b3e691 inherit pub_methods_classfpmas_1_1api_1_1io_1_1Output"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a853082805fda1c9fa9c202a47c584d75"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1CsvOutputBase.html#a853082805fda1c9fa9c202a47c584d75">dump_csv</a> (const std::vector&lt; std::string &gt; &amp;data)</td></tr>
@@ -112,8 +106,22 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a1358f8c08c55ff3582d90642862db80a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f6dbc9427cadeab1d01af9802fd6ad1"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1CsvOutputBase.html#a5f6dbc9427cadeab1d01af9802fd6ad1">dump_fields</a> ()</td></tr>
 <tr class="separator:a5f6dbc9427cadeab1d01af9802fd6ad1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae5e1153872e3714a937d8733e594d90d"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1CsvOutputBase.html#ae5e1153872e3714a937d8733e594d90d">CsvOutputBase</a> (std::ostream &amp;output_stream, std::pair&lt; std::string, std::function&lt; DataField()&gt;&gt;... csv_fields)</td></tr>
-<tr class="separator:ae5e1153872e3714a937d8733e594d90d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a322eba604b23d08bdaf8268d74181402"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1CsvOutputBase.html#a322eba604b23d08bdaf8268d74181402">CsvOutputBase</a> (<a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">api::io::OutputStream</a> &amp;<a class="el" href="classfpmas_1_1io_1_1OutputBase.html#ae3868c6b642e1f79cc196269f9174275">output_stream</a>, std::pair&lt; std::string, std::function&lt; DataField()&gt;&gt;... csv_fields)</td></tr>
+<tr class="separator:a322eba604b23d08bdaf8268d74181402"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
+Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pub_methods_classfpmas_1_1io_1_1OutputBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1io_1_1OutputBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1io_1_1OutputBase.html">fpmas::io::OutputBase</a></td></tr>
+<tr class="memitem:a2ea2e49aa07949866524464d806264f0 inherit pub_methods_classfpmas_1_1io_1_1OutputBase"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1OutputBase.html#a2ea2e49aa07949866524464d806264f0">OutputBase</a> (<a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">api::io::OutputStream</a> &amp;<a class="el" href="classfpmas_1_1io_1_1OutputBase.html#ae3868c6b642e1f79cc196269f9174275">output_stream</a>)</td></tr>
+<tr class="separator:a2ea2e49aa07949866524464d806264f0 inherit pub_methods_classfpmas_1_1io_1_1OutputBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a70f426a3c786d295783e86270b053b81 inherit pub_methods_classfpmas_1_1io_1_1OutputBase"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1OutputBase.html#a70f426a3c786d295783e86270b053b81">job</a> () override</td></tr>
+<tr class="separator:a70f426a3c786d295783e86270b053b81 inherit pub_methods_classfpmas_1_1io_1_1OutputBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classfpmas_1_1api_1_1io_1_1Output"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1api_1_1io_1_1Output')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1api_1_1io_1_1Output.html">fpmas::api::io::Output</a></td></tr>
+<tr class="memitem:a8e0704b42bb274d7a9b35a6c27b3e691 inherit pub_methods_classfpmas_1_1api_1_1io_1_1Output"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1io_1_1Output.html#a8e0704b42bb274d7a9b35a6c27b3e691">dump</a> ()=0</td></tr>
+<tr class="separator:a8e0704b42bb274d7a9b35a6c27b3e691 inherit pub_methods_classfpmas_1_1api_1_1io_1_1Output"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pro_attribs_classfpmas_1_1io_1_1OutputBase"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classfpmas_1_1io_1_1OutputBase')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classfpmas_1_1io_1_1OutputBase.html">fpmas::io::OutputBase</a></td></tr>
+<tr class="memitem:ae3868c6b642e1f79cc196269f9174275 inherit pro_attribs_classfpmas_1_1io_1_1OutputBase"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">api::io::OutputStream</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1OutputBase.html#ae3868c6b642e1f79cc196269f9174275">output_stream</a></td></tr>
+<tr class="separator:ae3868c6b642e1f79cc196269f9174275 inherit pro_attribs_classfpmas_1_1io_1_1OutputBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename... DataField&gt;<br />
@@ -132,8 +140,8 @@ class fpmas::io::CsvOutputBase&lt; DataField &gt;</h3>
 <dd>
 <a class="el" href="classfpmas_1_1io_1_1DistributedCsvOutput.html">DistributedCsvOutput</a> </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ae5e1153872e3714a937d8733e594d90d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae5e1153872e3714a937d8733e594d90d">&#9670;&nbsp;</a></span>CsvOutputBase()</h2>
+<a id="a322eba604b23d08bdaf8268d74181402"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a322eba604b23d08bdaf8268d74181402">&#9670;&nbsp;</a></span>CsvOutputBase()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,7 +154,7 @@ template&lt;typename... DataField&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classfpmas_1_1io_1_1CsvOutputBase.html">fpmas::io::CsvOutputBase</a>&lt; DataField &gt;::<a class="el" href="classfpmas_1_1io_1_1CsvOutputBase.html">CsvOutputBase</a> </td>
           <td>(</td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">api::io::OutputStream</a> &amp;&#160;</td>
           <td class="paramname"><em>output_stream</em>, </td>
         </tr>
         <tr>
@@ -269,40 +277,6 @@ template&lt;typename... DataField&gt; </div>
 </div><div class="memdoc">
 <p>Fetch data fields using the <code>watchers</code> and returns the serialized data.</p>
 <dl class="section return"><dt>Returns</dt><dd>serialized data </dd></dl>
-
-</div>
-</div>
-<a id="adc9cf6a751e0db7203572b722f6227f8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adc9cf6a751e0db7203572b722f6227f8">&#9670;&nbsp;</a></span>job()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename... DataField&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a>&amp; <a class="el" href="classfpmas_1_1io_1_1CsvOutputBase.html">fpmas::io::CsvOutputBase</a>&lt; DataField &gt;::job </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p></p>
-<p>Returns an executable <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> that might be sheduled with a <a class="el" href="classfpmas_1_1scheduler_1_1Scheduler.html">scheduler::Scheduler</a>.</p>
-<p>The execution of the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> calls <a class="el" href="classfpmas_1_1api_1_1io_1_1Output.html#a8e0704b42bb274d7a9b35a6c27b3e691">dump()</a> exactly once.</p>
-<dl class="section return"><dt>Returns</dt><dd>executable job </dd></dl>
-
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1io_1_1Output.html#a59becf32e05e39169fcda84c2bf5b200">fpmas::api::io::Output</a>.</p>
 
 </div>
 </div>
