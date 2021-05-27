@@ -46,7 +46,7 @@ namespace fpmas { namespace model {
 	 * to the fpmas::model::GridAgentBuilder::build() method. As an example,
 	 * RandomGridAgentMapping might be used. 
 	 */
-	template<typename CellType>
+	template<typename CellType = api::model::GridCell>
 	using GridAgentBuilder = SpatialAgentBuilder<CellType, api::model::GridCell>;
 
 	/**

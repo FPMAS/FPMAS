@@ -115,6 +115,30 @@ namespace fpmas { namespace model {
 		};
 
 	/**
+	 * Helper class that defines a static random::DistributedGenerator used by
+	 * the Neighbors class (for any `AgentType`).
+	 *
+	 * The random generator can be seeded by the user to control random
+	 * neighbors selection and shuffling.
+	 *
+	 * @see Neighbors::shuffle()
+	 * @see Neighbors::random()
+	 */
+	struct RandomNeighbors {
+		/**
+		 * Static random generator.
+		 */
+		static random::DistributedGenerator<> rd;
+
+		/**
+		 * Seeds the random generator.
+		 *
+		 * @param seed random seed
+		 */
+		static void seed(random::DistributedGenerator<>::result_type seed);
+	};
+
+	/**
 	 * Helper class used to represent \Agents neighbors.
 	 *
 	 * Neighbors are defined as \Agents contained in neighbors of the node
@@ -131,7 +155,6 @@ namespace fpmas { namespace model {
 				typedef typename std::vector<Neighbor<AgentType>>::iterator iterator;
 				typedef typename std::vector<Neighbor<AgentType>>::const_iterator const_iterator;
 				std::vector<Neighbor<AgentType>> neighbors;
-				static random::DistributedGenerator<> rd;
 
 			public:
 				/**
@@ -248,7 +271,7 @@ namespace fpmas { namespace model {
 				 * @return reference to this Neighbors instance
 				 */
 				Neighbors& shuffle() {
-					std::shuffle(neighbors.begin(), neighbors.end(), rd);
+					std::shuffle(neighbors.begin(), neighbors.end(), RandomNeighbors::rd);
 					return *this;
 				}
 
@@ -280,10 +303,9 @@ namespace fpmas { namespace model {
 				 */
 				Neighbor<AgentType> random() {
 					random::UniformIntDistribution<std::size_t> index(0, this->count()-1);
-					return neighbors.at(index(rd));
+					return neighbors.at(index(RandomNeighbors::rd));
 				}
 		};
-	template<typename AgentType> random::DistributedGenerator<> Neighbors<AgentType>::rd;
 
 	/**
 	 * api::model::Behavior implementation.

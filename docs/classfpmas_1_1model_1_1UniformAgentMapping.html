@@ -96,16 +96,16 @@ Collaboration diagram for fpmas::model::UniformAgentMapping:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a452f6b94e8d76b780c04fed15dfd15ef"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1UniformAgentMapping.html#a452f6b94e8d76b780c04fed15dfd15ef">UniformAgentMapping</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> &amp;cell_group, std::size_t agent_count, std::uint_fast64_t seed=std::mt19937_64::default_seed)</td></tr>
-<tr class="separator:a452f6b94e8d76b780c04fed15dfd15ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52eb355fc3fed9e7859223a982946478"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1UniformAgentMapping.html#a52eb355fc3fed9e7859223a982946478">UniformAgentMapping</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> &amp;cell_group, std::size_t agent_count, std::mt19937_64::result_type seed=std::mt19937_64::default_seed)</td></tr>
+<tr class="separator:a52eb355fc3fed9e7859223a982946478"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3f4c836a73e06c61e61c663c65d2a01"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1UniformAgentMapping.html#ad3f4c836a73e06c61e61c663c65d2a01">countAt</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">api::model::Cell</a> *cell) override</td></tr>
 <tr class="separator:ad3f4c836a73e06c61e61c663c65d2a01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgentMapping.html">api::model::SpatialAgentMapping</a> implementation that randomly assign <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> to available <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cells</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a452f6b94e8d76b780c04fed15dfd15ef"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a452f6b94e8d76b780c04fed15dfd15ef">&#9670;&nbsp;</a></span>UniformAgentMapping()</h2>
+<a id="a52eb355fc3fed9e7859223a982946478"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52eb355fc3fed9e7859223a982946478">&#9670;&nbsp;</a></span>UniformAgentMapping()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -131,7 +131,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::uint_fast64_t&#160;</td>
+          <td class="paramtype">std::mt19937_64::result_type&#160;</td>
           <td class="paramname"><em>seed</em> = <code>std::mt19937_64::default_seed</code>&#160;</td>
         </tr>
         <tr>

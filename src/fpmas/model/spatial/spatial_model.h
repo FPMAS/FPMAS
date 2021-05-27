@@ -19,7 +19,15 @@ namespace fpmas {
 	 */
 	static const api::model::GroupId CELL_GROUP_ID = -1;
 
+	/**
+	 * Can be used to specify that the current location of a SpatialAgent
+	 * should be excluded from a Range.
+	 */
 	static const bool EXCLUDE_LOCATION = false;
+	/**
+	 * Can be used to specify that the current location of a SpatialAgent
+	 * should be included in a Range.
+	 */
 	static const bool INCLUDE_LOCATION = true;
 
 	/**
@@ -562,7 +570,7 @@ namespace fpmas {
 					api::communication::MpiCommunicator& comm,
 					api::model::AgentGroup& cell_group,
 					std::size_t agent_count,
-					std::uint_fast64_t seed = std::mt19937_64::default_seed
+					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
 					);
 
 			std::size_t countAt(api::model::Cell* cell) override;

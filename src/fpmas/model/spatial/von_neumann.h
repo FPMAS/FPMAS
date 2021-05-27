@@ -52,8 +52,8 @@ namespace fpmas { namespace model {
 			void allocate(CellMatrix& matrix, DiscreteCoordinate width, DiscreteCoordinate height) const;
 
 			api::model::GridCellFactory<CellType>& cell_factory;
-			DiscreteCoordinate width;
-			DiscreteCoordinate height;
+			DiscreteCoordinate _width;
+			DiscreteCoordinate _height;
 
 			CellMatrix buildLocalGrid(
 					api::model::SpatialModel<CellType>& model,
@@ -82,7 +82,7 @@ namespace fpmas { namespace model {
 					api::model::GridCellFactory<CellType>& cell_factory,
 					DiscreteCoordinate width,
 					DiscreteCoordinate height)
-				: cell_factory(cell_factory), width(width), height(height) {}
+				: cell_factory(cell_factory), _width(width), _height(height) {}
 			/**
 			 * VonNeumannGridBuilder constructor.
 			 *
@@ -119,6 +119,19 @@ namespace fpmas { namespace model {
 			 */
 			std::vector<CellType*> build(
 					api::model::SpatialModel<CellType>& spatial_model) const override;
+
+			/**
+			 * Grid width.
+			 */
+			DiscreteCoordinate width() {
+				return _width;
+			}
+			/**
+			 * Grid height.
+			 */
+			DiscreteCoordinate height() {
+				return _height;
+			}
 	};
 	template<typename CellType>
 	GridCellFactory<CellType> VonNeumannGridBuilder<CellType>::default_cell_factory;
@@ -180,12 +193,12 @@ namespace fpmas { namespace model {
 			GridCellPack;
 
 		CellMatrix cells;
-		if(this->width * this->height > 0) {
+		if(this->_width * this->_height > 0) {
 			auto& mpi_comm = model.graph().getMpiCommunicator();
 			fpmas::communication::TypedMpi<std::vector<GridCellPack>> mpi(mpi_comm);
-			if(this->width >= this->height) {
-				DiscreteCoordinate column_per_proc = this->width / mpi_comm.getSize();
-				DiscreteCoordinate remainder = this->width % mpi_comm.getSize();
+			if(this->_width >= this->_height) {
+				DiscreteCoordinate column_per_proc = this->_width / mpi_comm.getSize();
+				DiscreteCoordinate remainder = this->_width % mpi_comm.getSize();
 
 				DiscreteCoordinate local_columns_count = column_per_proc;
 				FPMAS_ON_PROC(mpi_comm, mpi_comm.getSize()-1)
@@ -194,12 +207,12 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate begin_width = mpi_comm.getRank() * column_per_proc;
 				DiscreteCoordinate end_width = begin_width + local_columns_count - 1;
 
-				cells = buildLocalGrid(model, begin_width, end_width, 0, height-1);
+				cells = buildLocalGrid(model, begin_width, end_width, 0, this->_height-1);
 
 				std::unordered_map<int, std::vector<GridCellPack>> frontiers;
 				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
 					std::vector<GridCellPack> frontier;
-					for(DiscreteCoordinate y = 0; y < this->height; y++) {
+					for(DiscreteCoordinate y = 0; y < this->_height; y++) {
 						auto cell = cells[y][end_width-begin_width];
 						frontier.push_back({cell->node()->getId(), cell->groupIds()});
 					}
@@ -207,7 +220,7 @@ namespace fpmas { namespace model {
 				}
 				if (mpi_comm.getRank() > 0) {
 					std::vector<GridCellPack> frontier;
-					for(DiscreteCoordinate y = 0; y < this->height; y++) {
+					for(DiscreteCoordinate y = 0; y < this->_height; y++) {
 						auto cell = cells[y][0];
 						frontier.push_back({cell->node()->getId(), cell->groupIds()});
 					}
@@ -216,7 +229,7 @@ namespace fpmas { namespace model {
 				frontiers = mpi.allToAll(frontiers);
 
 				for(auto frontier : frontiers) {
-					for(DiscreteCoordinate y = 0; y < this->height; y++) {
+					for(DiscreteCoordinate y = 0; y < this->_height; y++) {
 						auto cell_pack = frontier.second[y];
 						DiscretePoint point;
 						if(frontier.first < mpi_comm.getRank()) {
@@ -254,8 +267,8 @@ namespace fpmas { namespace model {
 					}
 				}
 			} else {
-				DiscreteCoordinate rows_per_proc = this->height / mpi_comm.getSize();
-				DiscreteCoordinate remainder = this->height % mpi_comm.getSize();
+				DiscreteCoordinate rows_per_proc = this->_height / mpi_comm.getSize();
+				DiscreteCoordinate remainder = this->_height % mpi_comm.getSize();
 
 				DiscreteCoordinate local_rows_count = rows_per_proc;
 				FPMAS_ON_PROC(mpi_comm, mpi_comm.getSize()-1)
@@ -264,12 +277,12 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate begin_height = mpi_comm.getRank() * rows_per_proc;
 				DiscreteCoordinate end_height = begin_height + local_rows_count - 1;
 
-				cells = buildLocalGrid(model, 0, this->width-1, begin_height, end_height);
+				cells = buildLocalGrid(model, 0, this->_width-1, begin_height, end_height);
 
 				std::unordered_map<int, std::vector<GridCellPack>> frontiers;
 				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
 					std::vector<GridCellPack> frontier;
-					for(DiscreteCoordinate x = 0; x < this->width; x++) {
+					for(DiscreteCoordinate x = 0; x < this->_width; x++) {
 						auto cell = cells[end_height-begin_height][x];
 						frontier.push_back({cell->node()->getId(), cell->groupIds()});
 					}
@@ -277,7 +290,7 @@ namespace fpmas { namespace model {
 				}
 				if (mpi_comm.getRank() > 0) {
 					std::vector<GridCellPack> frontier;
-					for(DiscreteCoordinate x = 0; x < this->width; x++) {
+					for(DiscreteCoordinate x = 0; x < this->_width; x++) {
 						auto cell = cells[0][x];
 						frontier.push_back({cell->node()->getId(), cell->groupIds()});
 					}
@@ -286,7 +299,7 @@ namespace fpmas { namespace model {
 				frontiers = mpi.allToAll(frontiers);
 
 				for(auto frontier : frontiers) {
-					for(DiscreteCoordinate x = 0; x < this->width; x++) {
+					for(DiscreteCoordinate x = 0; x < this->_width; x++) {
 						auto cell_pack = frontier.second[x];
 						DiscretePoint point;
 						if(frontier.first < mpi_comm.getRank()) {

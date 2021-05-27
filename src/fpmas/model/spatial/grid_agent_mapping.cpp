@@ -6,15 +6,17 @@ namespace fpmas { namespace model {
 	RandomGridAgentMapping::RandomGridAgentMapping(
 			api::random::Distribution<DiscreteCoordinate>&& x,
 			api::random::Distribution<DiscreteCoordinate>&& y,
-			std::size_t agent_count)
-	: RandomGridAgentMapping(x, y, agent_count) {
+			std::size_t agent_count,
+			std::mt19937_64::result_type seed)
+	: RandomGridAgentMapping(x, y, agent_count, seed) {
 	}
 
 	RandomGridAgentMapping::RandomGridAgentMapping(
 			api::random::Distribution<DiscreteCoordinate>& x,
 			api::random::Distribution<DiscreteCoordinate>& y,
-			std::size_t agent_count) {
-		random::mt19937_64 rd;
+			std::size_t agent_count,
+			std::mt19937_64::result_type seed) {
+		random::mt19937_64 rd(seed);
 
 		for(std::size_t i = 0; i < agent_count; i++) {
 			DiscretePoint p {x(rd), y(rd)};
@@ -26,10 +28,11 @@ namespace fpmas { namespace model {
 					DiscreteCoordinate grid_width,
 					DiscreteCoordinate grid_height,
 					std::size_t agent_count,
-					std::size_t max_agent_by_cell) {
+					std::size_t max_agent_by_cell,
+					std::mt19937_64::result_type seed) {
 		if(grid_width * grid_height * max_agent_by_cell < agent_count)
 			return;
-		random::mt19937_64 rd;
+		random::mt19937_64 rd(seed);
 		std::size_t current_agent_count = agent_count;
 		std::size_t n = 0;
 		while(current_agent_count > 0 && n < max_agent_by_cell) {

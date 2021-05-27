@@ -2,6 +2,12 @@
 
 namespace fpmas { namespace model {
 	
+	random::DistributedGenerator<> RandomNeighbors::rd;
+
+	void RandomNeighbors::seed(random::DistributedGenerator<>::result_type seed) {
+		RandomNeighbors::rd = random::DistributedGenerator<>(seed);
+	}
+
 	api::model::AgentNode*
 		AgentNodeBuilder::buildNode(api::graph::DistributedGraph<AgentPtr>&) {
 			auto* agent = agents.back();

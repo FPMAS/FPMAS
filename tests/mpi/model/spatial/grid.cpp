@@ -122,6 +122,8 @@ TEST_F(VonNeumannGridBuilderTest, trivial) {
 
 	null.build(grid_model);
 	ASSERT_THAT(grid_model.cells(), IsEmpty());
+	ASSERT_EQ(null.height(), 0);
+	ASSERT_EQ(null.width(), 0);
 }
 
 TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_height_sup_width) {
@@ -132,6 +134,9 @@ TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_height_sup_width) {
 	int X = fpmas::communication::WORLD.getSize() * 10;
 	int Y = 2*X + 1; // +1 so that there is a "remainder" when lines are assigned to each process
 	VonNeumannGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
 
 	auto cells = grid_builder.build(grid_model);
 

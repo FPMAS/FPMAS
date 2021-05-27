@@ -39,11 +39,14 @@ namespace fpmas { namespace model {
 			 * @param x x distribution
 			 * @param y y distribution
 			 * @param agent_count agent count
+			 * @param seed random seed
 			 */
 			RandomGridAgentMapping(
 					api::random::Distribution<DiscreteCoordinate>& x,
 					api::random::Distribution<DiscreteCoordinate>& y,
-					std::size_t agent_count);
+					std::size_t agent_count,
+					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
+					);
 	
 			/**
 			 * \copydoc RandomGridAgentMapping
@@ -51,7 +54,9 @@ namespace fpmas { namespace model {
 			RandomGridAgentMapping(
 					api::random::Distribution<DiscreteCoordinate>&& x,
 					api::random::Distribution<DiscreteCoordinate>&& y,
-					std::size_t agent_count);
+					std::size_t agent_count,
+					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
+					);
 
 			std::size_t countAt(api::model::GridCell* cell) override {
 				// When values are not in the map, 0 (default initialized) will
@@ -76,15 +81,18 @@ namespace fpmas { namespace model {
 			 * @param grid_width grid width
 			 * @param grid_height grid height
 			 * @param agent_count agent count
+			 * @param seed random seed
 			 */
 			UniformGridAgentMapping(
 					DiscreteCoordinate grid_width,
 					DiscreteCoordinate grid_height,
-					std::size_t agent_count) 
+					std::size_t agent_count,
+					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
+					) 
 				: RandomGridAgentMapping(
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_width-1),
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_height-1),
-						agent_count) {}
+						agent_count, seed) {}
 	};
 
 	/**
@@ -111,12 +119,15 @@ namespace fpmas { namespace model {
 			 * @param agent_count total count of agents to map
 			 * @param max_agent_by_cell maximum count of agents allowed on each
 			 * cell
+			 * @param seed random seed
 			 */
 			ConstrainedGridAgentMapping(
 					DiscreteCoordinate grid_width,
 					DiscreteCoordinate grid_height,
 					std::size_t agent_count,
-					std::size_t max_agent_by_cell);
+					std::size_t max_agent_by_cell,
+					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
+					);
 
 		std::size_t countAt(api::model::GridCell* cell) override;
 	};
