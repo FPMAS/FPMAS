@@ -185,6 +185,34 @@ TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_width_sup_height) {
 	checkGridStructure(grid_model, cells, X, Y);
 }
 
+TEST_F(VonNeumannGridBuilderTest, build_with_groups) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
+			> grid_model;
+
+	IdleBehavior behavior;
+	auto& g1 = grid_model.buildGroup(0, behavior);
+	auto& g2 = grid_model.buildGroup(1, behavior);
+
+	int X = fpmas::communication::WORLD.getSize() * 10;
+	int Y = 2*X + 1; // +1 so that there is a "remainder" when lines are assigned to each process
+	VonNeumannGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model, {g1, g2});
+
+	checkGridStructure(grid_model, cells, X, Y);
+
+	for(auto cell : cells) {
+		ASSERT_THAT(cell->groups(), Contains(&g1));
+		ASSERT_THAT(cell->groups(), Contains(&g2));
+		ASSERT_THAT(g1.localAgents(), Contains(cell));
+		ASSERT_THAT(g2.localAgents(), Contains(cell));
+	}
+}
+
 class UniformGridAgentMappingTest : public Test {
 	protected:
 		fpmas::model::UniformGridAgentMapping mapping {10, 10, 30};

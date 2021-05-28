@@ -80,6 +80,8 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9ddeff6e5b704df3ee92c8d79c008074"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; CellType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html#a9ddeff6e5b704df3ee92c8d79c008074">build</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">SpatialModel</a>&lt; CellType &gt; &amp;spatial_model) const =0</td></tr>
 <tr class="separator:a9ddeff6e5b704df3ee92c8d79c008074"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adb8b3824a438f9b5e19d0a2332dd11b6"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; CellType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html#adb8b3824a438f9b5e19d0a2332dd11b6">build</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">SpatialModel</a>&lt; CellType &gt; &amp;spatial_model, <a class="el" href="namespacefpmas_1_1api_1_1model.html#aed5895780a486f536653be0248d0a56a">GroupList</a> groups) const =0</td></tr>
+<tr class="separator:adb8b3824a438f9b5e19d0a2332dd11b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename CellType&gt;<br />
@@ -92,7 +94,7 @@ class fpmas::api::model::CellNetworkBuilder&lt; CellType &gt;</h3>
 <p>The distributed instantiation of user defined <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> on the built <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network can be handled using a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgentBuilder.html">SpatialAgentBuilder</a>. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a9ddeff6e5b704df3ee92c8d79c008074"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9ddeff6e5b704df3ee92c8d79c008074">&#9670;&nbsp;</a></span>build()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a9ddeff6e5b704df3ee92c8d79c008074">&#9670;&nbsp;</a></span>build() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -122,6 +124,53 @@ template&lt;typename CellType &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">spatial_model</td><td>spatial model in which cells will be added </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>cells built on the current process </dd></dl>
+
+</div>
+</div>
+<a id="adb8b3824a438f9b5e19d0a2332dd11b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adb8b3824a438f9b5e19d0a2332dd11b6">&#9670;&nbsp;</a></span>build() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename CellType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::vector&lt;CellType*&gt; <a class="el" href="classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html">fpmas::api::model::CellNetworkBuilder</a>&lt; CellType &gt;::build </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">SpatialModel</a>&lt; CellType &gt; &amp;&#160;</td>
+          <td class="paramname"><em>spatial_model</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1model.html#aed5895780a486f536653be0248d0a56a">GroupList</a>&#160;</td>
+          <td class="paramname"><em>groups</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Same as <code>build(spatial_model)</code>, but also adds built cells to <code>groups</code>, in order to assign behaviors to cells.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">spatial_model</td><td>spatial model in which cells will be added </td></tr>
+    <tr><td class="paramname">groups</td><td>groups to which built cells will be added </td></tr>
   </table>
   </dd>
 </dl>

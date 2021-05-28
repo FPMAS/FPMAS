@@ -559,7 +559,22 @@ namespace fpmas { namespace api { namespace model {
 			 * @param spatial_model spatial model in which cells will be added
 			 * @return cells built on the current process
 			 */
-			virtual std::vector<CellType*> build(SpatialModel<CellType>& spatial_model) const = 0;
+			virtual std::vector<CellType*> build(
+					SpatialModel<CellType>& spatial_model
+					) const = 0;
+
+			/**
+			 * Same as `build(spatial_model)`, but also adds built
+			 * cells to `groups`, in order to assign behaviors to cells.
+			 *
+			 * @param spatial_model spatial model in which cells will be added
+			 * @param groups groups to which built cells will be added
+			 * @return cells built on the current process
+			 */
+			virtual std::vector<CellType*> build(
+					SpatialModel<CellType>& spatial_model,
+					GroupList groups
+					) const = 0;
 
 			virtual ~CellNetworkBuilder() {}
 	};

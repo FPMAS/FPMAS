@@ -58,8 +58,12 @@ namespace fpmas { namespace model {
 			CellMatrix buildLocalGrid(
 					api::model::SpatialModel<CellType>& model,
 					DiscreteCoordinate min_x, DiscreteCoordinate max_x,
-					DiscreteCoordinate min_y, DiscreteCoordinate max_y) const;
+					DiscreteCoordinate min_y, DiscreteCoordinate max_y,
+					api::model::GroupList group) const;
 
+			std::vector<CellType*> _build(
+					api::model::SpatialModel<CellType>& spatial_model,
+					api::model::GroupList groups) const;
 		public:
 			/**
 			 * Default GridCellFactory.
@@ -118,7 +122,18 @@ namespace fpmas { namespace model {
 			 * @return cells built on the current process
 			 */
 			std::vector<CellType*> build(
-					api::model::SpatialModel<CellType>& spatial_model) const override;
+					api::model::SpatialModel<CellType>& spatial_model) const override {
+				return this->_build(spatial_model, {});
+			}
+
+			/**
+			 * \copydoc fpmas::api::model::CellNetworkBuilder::build(fpmas::api::model::SpatialModel<CellType>&, fpmas::api::model::GroupList) const
+			 */
+			std::vector<CellType*> build(
+					api::model::SpatialModel<CellType>& spatial_model,
+					api::model::GroupList groups) const override {
+				return this->_build(spatial_model, groups);
+			}
 
 			/**
 			 * Grid width.
@@ -150,7 +165,8 @@ namespace fpmas { namespace model {
 	typename VonNeumannGridBuilder<CellType>::CellMatrix VonNeumannGridBuilder<CellType>::buildLocalGrid(
 			api::model::SpatialModel<CellType>& model,
 			DiscreteCoordinate min_x, DiscreteCoordinate max_x,
-			DiscreteCoordinate min_y, DiscreteCoordinate max_y) const {
+			DiscreteCoordinate min_y, DiscreteCoordinate max_y,
+			api::model::GroupList groups) const {
 
 		DiscreteCoordinate local_height = max_y - min_y + 1;
 		DiscreteCoordinate local_width = max_x - min_x + 1;
@@ -163,6 +179,8 @@ namespace fpmas { namespace model {
 				auto cell = cell_factory.build({x, y});
 				cells[y-min_y][x-min_x] = cell;
 				model.add(cell);
+				for(auto group : groups)
+					group.get().add(cell);
 			}
 		}
 		for(DiscreteCoordinate j = 0; j < local_width; j++) {
@@ -187,8 +205,9 @@ namespace fpmas { namespace model {
 
 
 	template<typename CellType>
-	std::vector<CellType*> VonNeumannGridBuilder<CellType>::build(
-			api::model::SpatialModel<CellType>& model) const {
+	std::vector<CellType*> VonNeumannGridBuilder<CellType>::_build(
+			api::model::SpatialModel<CellType>& model,
+			api::model::GroupList groups) const {
 		typedef std::pair<DistributedId, std::vector<api::model::GroupId>>
 			GridCellPack;
 
@@ -207,7 +226,9 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate begin_width = mpi_comm.getRank() * column_per_proc;
 				DiscreteCoordinate end_width = begin_width + local_columns_count - 1;
 
-				cells = buildLocalGrid(model, begin_width, end_width, 0, this->_height-1);
+				cells = buildLocalGrid(
+						model, begin_width, end_width, 0, this->_height-1, groups
+						);
 
 				std::unordered_map<int, std::vector<GridCellPack>> frontiers;
 				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
@@ -277,7 +298,9 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate begin_height = mpi_comm.getRank() * rows_per_proc;
 				DiscreteCoordinate end_height = begin_height + local_rows_count - 1;
 
-				cells = buildLocalGrid(model, 0, this->_width-1, begin_height, end_height);
+				cells = buildLocalGrid(
+						model, 0, this->_width-1, begin_height, end_height, groups
+						);
 
 				std::unordered_map<int, std::vector<GridCellPack>> frontiers;
 				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
