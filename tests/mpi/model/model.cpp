@@ -6,29 +6,20 @@
 #include "fpmas/synchro/hard/hard_sync_mode.h"
 #include "fpmas/scheduler/scheduler.h"
 #include "fpmas/runtime/runtime.h"
-#include "../mocks/model/mock_model.h"
+#include "model/mock_model.h"
+#include "test_agents.h"
+#include "utils/test.h"
 
 #include <random>
 #include <numeric>
 
-using ::testing::SizeIs;
-using ::testing::Ge;
-using ::testing::InvokeWithoutArgs;
-using ::testing::UnorderedElementsAreArray;
+using namespace testing;
 
-class ReaderAgent;
-class WriterAgent;
-class LinkerAgent;
-
-FPMAS_JSON_SET_UP(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>)
-FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>)
-FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
-
-class ModelGhostModeIntegrationTest : public ::testing::Test {
+class ModelGhostModeIntegrationTest : public Test {
 	protected:
 		FPMAS_DEFINE_GROUPS(G_1, G_2)
 
-		static const int NODE_BY_PROC;
+		static const FPMAS_ID_TYPE NODE_BY_PROC;
 		static const int NUM_STEPS;
 		fpmas::communication::MpiCommunicator comm;
 		fpmas::model::detail::AgentGraph<fpmas::synchro::GhostMode> agent_graph {comm};
@@ -36,18 +27,16 @@ class ModelGhostModeIntegrationTest : public ::testing::Test {
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {
+			lb, scheduler, runtime
+		};
 
 		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		std::unordered_map<DistributedId, unsigned long> act_counts;
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
-
-		ModelGhostModeIntegrationTest() {
-			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>)
-		}
 };
-const int ModelGhostModeIntegrationTest::NODE_BY_PROC = 50;
+const FPMAS_ID_TYPE ModelGhostModeIntegrationTest::NODE_BY_PROC = 50;
 const int ModelGhostModeIntegrationTest::NUM_STEPS = 100;
 
 class IncreaseCount {
@@ -70,11 +59,11 @@ class IncreaseCountAct : public fpmas::model::AgentNodeCallback {
 
 		void call(fpmas::model::AgentNode* node) override {
 			if(node->data().get()->typeId() == DefaultMockAgentBase<1>::TYPE_ID) {
-				EXPECT_CALL(*static_cast<DefaultMockAgentBase<1>*>(node->data().get()), act)
+				EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<1>*>(node->data().get()), act)
 					.Times(AnyNumber())
 					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
 			} else if(node->data().get()->typeId() == DefaultMockAgentBase<10>::TYPE_ID) {
-				EXPECT_CALL(*static_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
+				EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
 					.Times(AnyNumber())
 					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
 			}
@@ -90,19 +79,19 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 
 			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
 			FPMAS_ON_PROC(comm, 0) {
-				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group1.add(new DefaultMockAgentBase<1>);
 					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
-			scheduler.schedule(0, 1, group1.job());
-			scheduler.schedule(0, 2, group2.job());
-			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
-				act_counts[{0, (unsigned int) id}] = 0;
+			scheduler.schedule(0, 1, group1.jobs());
+			scheduler.schedule(0, 2, group2.jobs());
+			for(FPMAS_ID_TYPE id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
+				act_counts[{0, id}] = 0;
 				if(id % 2 == 0) {
-					agent_types.insert({{0, (unsigned int) id}, typeid(DefaultMockAgentBase<1>)});
+					agent_types.insert({{0, id}, typeid(DefaultMockAgentBase<1>)});
 				} else {
-					agent_types.insert({{0, (unsigned int) id}, typeid(DefaultMockAgentBase<10>)});
+					agent_types.insert({{0, id}, typeid(DefaultMockAgentBase<10>)});
 				}
 			}
 		}
@@ -110,8 +99,8 @@ class ModelGhostModeIntegrationExecutionTest : public ModelGhostModeIntegrationT
 		void checkExecutionCounts() {
 			fpmas::communication::TypedMpi<int> mpi {agent_graph.getMpiCommunicator()};
 			// TODO : MPI gather to compute the sum of act counts.
-			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
-				DistributedId dist_id {0, (unsigned int) id};
+			for(FPMAS_ID_TYPE id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
+				DistributedId dist_id {0, id};
 				std::vector<int> counts = mpi.gather(act_counts[dist_id], 0);
 				if(agent_graph.getMpiCommunicator().getRank() == 0) {
 					int sum = 0;
@@ -137,7 +126,8 @@ TEST_F(ModelGhostModeIntegrationExecutionTest, ghost_mode) {
 
 	for(auto node : agent_graph.getNodes()) {
 		fpmas::api::model::AgentPtr& agent = node.second->data();
-		if(agent->group() == &group1)
+		auto gids = agent->groupIds();
+		if(std::count(gids.begin(), gids.end(), G_1)>0)
 			group_1_agents.push_back(agent);
 		else
 			group_2_agents.push_back(agent);
@@ -148,11 +138,12 @@ TEST_F(ModelGhostModeIntegrationExecutionTest, ghost_mode) {
 
 TEST_F(ModelGhostModeIntegrationExecutionTest, ghost_mode_with_link) {
 	std::mt19937 engine;
-	std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+	std::uniform_int_distribution<FPMAS_ID_TYPE> random_node {
+		0, static_cast<FPMAS_ID_TYPE>(agent_graph.getNodes().size()-1)};
 	std::uniform_int_distribution<unsigned int> random_layer {0, 10};
 
 	for(auto node : agent_graph.getNodes()) {
-		for(int i = 0; i < NODE_BY_PROC / 2; i++) {
+		for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC / 2; i++) {
 			DistributedId id {0, random_node(engine)};
 			if(node.first.id() != id.id())
 				agent_graph.link(node.second, agent_graph.getNode(id), 10);
@@ -170,7 +161,7 @@ class UpdateWeightAct : public fpmas::model::AgentNodeCallback {
 	public:
 		void call(fpmas::model::AgentNode* node) override {
 			node->setWeight(random_weight(engine) * 10);
-			EXPECT_CALL(*static_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
+			EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
 				.Times(AnyNumber());
 		}
 };
@@ -183,23 +174,24 @@ class ModelGhostModeIntegrationLoadBalancingTest : public ModelGhostModeIntegrat
 
 			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
 			FPMAS_ON_PROC(comm, 0) {
-				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
 			std::mt19937 engine;
-			std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+			std::uniform_int_distribution<FPMAS_ID_TYPE> random_node {
+				0, static_cast<FPMAS_ID_TYPE>(agent_graph.getNodes().size()-1)};
 			std::uniform_int_distribution<unsigned int> random_layer {0, 10};
 
 			for(auto node : agent_graph.getNodes()) {
-				for(int i = 0; i < NODE_BY_PROC / 2; i++) {
+				for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC / 2; i++) {
 					DistributedId id {0, random_node(engine)};
 					if(node.first.id() != id.id())
 						agent_graph.link(node.second, agent_graph.getNode(id), 10);
 				}
 			}
-			scheduler.schedule(0, 1, group1.job());
-			scheduler.schedule(0, 2, group2.job());
+			scheduler.schedule(0, 1, group1.jobs());
+			scheduler.schedule(0, 2, group2.jobs());
 			scheduler.schedule(0, 4, model.loadBalancingJob());
 		}
 };
@@ -208,43 +200,11 @@ TEST_F(ModelGhostModeIntegrationLoadBalancingTest, ghost_mode_dynamic_lb) {
 	runtime.run(NUM_STEPS);
 }
 
-class ReaderAgent : public fpmas::model::AgentBase<ReaderAgent> {
-	private:
-		std::mt19937 engine;
-		std::uniform_real_distribution<float> random_weight;
-		int counter = 0;
-	public:
-		void act() override {
-			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
-			for(auto neighbor : node()->outNeighbors()) {
-				ASSERT_THAT(static_cast<const ReaderAgent*>(neighbor->mutex()->read().get())->getCounter(), Ge(counter));
-			}
-			counter++;
-			node()->setWeight(random_weight(engine) * 10);
-		}
-
-		void setCounter(int count) {counter = count;}
-
-		int getCounter() const {
-			return counter;
-		}
-
-		static void to_json(nlohmann::json& j, const ReaderAgent* agent) {
-			j["c"] = agent->getCounter();
-		}
-
-		static ReaderAgent* from_json(const nlohmann::json& j) {
-			ReaderAgent* agent_ptr = new ReaderAgent;
-			agent_ptr->setCounter(j.at("c").get<int>());
-			return agent_ptr;
-		}
-};
-
 class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 	protected:
 		FPMAS_DEFINE_GROUPS(G_1, G_2)
 
-		static const int NODE_BY_PROC;
+		static const FPMAS_ID_TYPE NODE_BY_PROC;
 		static const int NUM_STEPS;
 		fpmas::communication::MpiCommunicator comm;
 		fpmas::model::detail::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph {comm};
@@ -252,18 +212,16 @@ class ModelHardSyncModeIntegrationTest : public ::testing::Test {
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {
+			lb, scheduler, runtime
+		};
 
 		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
 
 		std::unordered_map<DistributedId, unsigned long> act_counts;
 		std::unordered_map<DistributedId, fpmas::api::model::TypeId> agent_types;
-
-		ModelHardSyncModeIntegrationTest() {
-			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>)
-		}
 };
-const int ModelHardSyncModeIntegrationTest::NODE_BY_PROC = 20;
+const FPMAS_ID_TYPE ModelHardSyncModeIntegrationTest::NODE_BY_PROC = 20;
 const int ModelHardSyncModeIntegrationTest::NUM_STEPS = 100;
 
 class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegrationTest {
@@ -274,19 +232,19 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 
 			agent_graph.addCallOnSetLocal(new IncreaseCountAct(act_counts));
 			FPMAS_ON_PROC(comm, 0) {
-				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group1.add(new DefaultMockAgentBase<1>);
 					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
-			scheduler.schedule(0, 1, group1.job());
-			scheduler.schedule(0, 2, group2.job());
-			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
-				act_counts[{0, (unsigned int) id}] = 0;
+			scheduler.schedule(0, 1, group1.jobs());
+			scheduler.schedule(0, 2, group2.jobs());
+			for(FPMAS_ID_TYPE id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
+				act_counts[{0, id}] = 0;
 				if(id % 2 == 0) {
-					agent_types.insert({{0, (unsigned int) id}, typeid(DefaultMockAgentBase<1>)});
+					agent_types.insert({{0, id}, typeid(DefaultMockAgentBase<1>)});
 				} else {
-					agent_types.insert({{0, (unsigned int) id}, typeid(DefaultMockAgentBase<10>)});
+					agent_types.insert({{0, id}, typeid(DefaultMockAgentBase<10>)});
 				}
 			}
 		}
@@ -294,8 +252,8 @@ class ModelHardSyncModeIntegrationExecutionTest : public ModelHardSyncModeIntegr
 		void checkExecutionCounts() {
 			fpmas::communication::TypedMpi<int> mpi {agent_graph.getMpiCommunicator()};
 			// TODO : MPI gather to compute the sum of act counts.
-			for(int id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
-				DistributedId dist_id {0, (unsigned int) id};
+			for(FPMAS_ID_TYPE id = 0; id < 2 * NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); id++) {
+				DistributedId dist_id {0, id};
 				std::vector<int> counts = mpi.gather(act_counts[dist_id], 0);
 				if(agent_graph.getMpiCommunicator().getRank() == 0) {
 					int sum = 0;
@@ -320,11 +278,12 @@ TEST_F(ModelHardSyncModeIntegrationExecutionTest, hard_sync_mode) {
 
 TEST_F(ModelHardSyncModeIntegrationExecutionTest, hard_sync_mode_with_link) {
 	std::mt19937 engine;
-	std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+	std::uniform_int_distribution<FPMAS_ID_TYPE> random_node {
+		0, static_cast<FPMAS_ID_TYPE>(agent_graph.getNodes().size()-1)};
 	std::uniform_int_distribution<unsigned int> random_layer {0, 10};
 
 	for(auto node : agent_graph.getNodes()) {
-		for(int i = 0; i < NODE_BY_PROC / 2; i++) {
+		for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC / 2; i++) {
 			DistributedId id {0, random_node(engine)};
 			if(node.first.id() != id.id())
 				agent_graph.link(node.second, agent_graph.getNode(id), 10);
@@ -343,23 +302,24 @@ class ModelHardSyncModeIntegrationLoadBalancingTest : public ModelHardSyncModeIn
 
 			agent_graph.addCallOnSetLocal(new UpdateWeightAct());
 			FPMAS_ON_PROC(comm, 0) {
-				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group2.add(new DefaultMockAgentBase<10>);
 				}
 			}
 			std::mt19937 engine;
-			std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+			std::uniform_int_distribution<FPMAS_ID_TYPE> random_node {
+				0, static_cast<FPMAS_ID_TYPE>(agent_graph.getNodes().size()-1)};
 			std::uniform_int_distribution<unsigned int> random_layer {0, 10};
 
 			for(auto node : agent_graph.getNodes()) {
-				for(int i = 0; i < NODE_BY_PROC / 2; i++) {
+				for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC / 2; i++) {
 					DistributedId id {0, random_node(engine)};
 					if(node.first.id() != id.id())
 						agent_graph.link(node.second, agent_graph.getNode(id), 10);
 				}
 			}
-			scheduler.schedule(0, 1, group1.job());
-			scheduler.schedule(0, 2, group2.job());
+			scheduler.schedule(0, 1, group1.jobs());
+			scheduler.schedule(0, 2, group2.jobs());
 			scheduler.schedule(0, 4, model.loadBalancingJob());
 		}
 };
@@ -368,46 +328,11 @@ TEST_F(ModelHardSyncModeIntegrationLoadBalancingTest, hard_sync_mode_dynamic_lb)
 	runtime.run(NUM_STEPS);
 }
 
-class WriterAgent : public fpmas::model::AgentBase<WriterAgent> {
-	private:
-		std::mt19937 engine;
-		std::uniform_real_distribution<float> random_weight;
-		int counter = 0;
-	public:
-		void act() override {
-			FPMAS_LOGD(node()->location(), "READER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
-			for(auto neighbor : node()->outNeighbors()) {
-				WriterAgent* neighbor_agent = static_cast<WriterAgent*>(neighbor->mutex()->acquire().get());
-
-				neighbor_agent->setCounter(neighbor_agent->getCounter()+1);
-				neighbor->setWeight(random_weight(engine) * 10);
-
-				neighbor->mutex()->releaseAcquire();
-			}
-		}
-
-		void setCounter(int count) {counter = count;}
-
-		int getCounter() const {
-			return counter;
-		}
-
-		static void to_json(nlohmann::json& j, const WriterAgent* agent) {
-			j["c"] = agent->getCounter();
-		}
-
-		static WriterAgent* from_json(const nlohmann::json& j) {
-			WriterAgent* agent_ptr = new WriterAgent;
-			agent_ptr->setCounter(j.at("c").get<int>());
-			return agent_ptr;
-		}
-};
-
 class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 	protected:
 		FPMAS_DEFINE_GROUPS(G_0)
 
-		static const unsigned int AGENT_BY_PROC = 50;
+		static const FPMAS_ID_TYPE AGENT_BY_PROC = 50;
 		static const unsigned int STEPS = 100;
 		fpmas::communication::MpiCommunicator comm;
 		fpmas::model::detail::AgentGraph<fpmas::synchro::HardSyncMode> agent_graph {comm};
@@ -415,26 +340,27 @@ class HardSyncAgentModelIntegrationTest : public ::testing::Test {
 
 		fpmas::scheduler::Scheduler scheduler;
 		fpmas::runtime::Runtime runtime {scheduler};
-		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {lb, scheduler, runtime};
+		fpmas::model::detail::ScheduledLoadBalancing scheduled_lb {
+			lb, scheduler, runtime
+		};
 
 		fpmas::model::detail::Model model {agent_graph, scheduler, runtime, scheduled_lb};
-
-		HardSyncAgentModelIntegrationTest() {
-			FPMAS_REGISTER_AGENT_TYPES(ReaderAgent, WriterAgent, LinkerAgent, DefaultMockAgentBase<1>, DefaultMockAgentBase<10>);
-		}
 };
 
 class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {
 	protected:
+		fpmas::model::Behavior<ReaderAgent> read {&ReaderAgent::read};
+
 		void SetUp() override {
-			auto& group = model.buildGroup(G_0);
+			auto& group = model.buildGroup(G_0, read);
 			FPMAS_ON_PROC(comm, 0) {
-				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(FPMAS_ID_TYPE i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new ReaderAgent);
 				}
 
 				std::mt19937 engine;
-				std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+				std::uniform_int_distribution<FPMAS_ID_TYPE> random_node {
+					0, static_cast<FPMAS_ID_TYPE>(agent_graph.getNodes().size()-1)};
 				for(auto node : agent_graph.getNodes()) {
 					DistributedId id {0, random_node(engine)};
 					if(node.first != id) {
@@ -442,7 +368,7 @@ class HardSyncReadersModelIntegrationTest : public HardSyncAgentModelIntegration
 					}
 				}
 			}
-			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 1, group.jobs());
 			scheduler.schedule(0, 10, model.loadBalancingJob());
 		}
 };
@@ -453,15 +379,18 @@ TEST_F(HardSyncReadersModelIntegrationTest, test) {
 
 class HardSyncWritersModelIntegrationTest : public HardSyncAgentModelIntegrationTest {
 	protected:
+		fpmas::model::Behavior<WriterAgent> write {&WriterAgent::write};
+
 		void SetUp() override {
-			auto& group = model.buildGroup(G_0);
+			auto& group = model.buildGroup(G_0, write);
 			if(agent_graph.getMpiCommunicator().getRank() == 0) {
-				for(unsigned int i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(FPMAS_ID_TYPE i = 0; i < AGENT_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new WriterAgent);
 				}
 
 				std::mt19937 engine;
-				std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+				std::uniform_int_distribution<FPMAS_ID_TYPE> random_node {
+					0, static_cast<FPMAS_ID_TYPE>(agent_graph.getNodes().size()-1)};
 				for(auto node : agent_graph.getNodes()) {
 					DistributedId id {0, random_node(engine)};
 					if(node.first != id) {
@@ -469,7 +398,7 @@ class HardSyncWritersModelIntegrationTest : public HardSyncAgentModelIntegration
 					}
 				}
 			}
-			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 1, group.jobs());
 			scheduler.schedule(0, 10, model.loadBalancingJob());
 		}
 };
@@ -478,72 +407,30 @@ TEST_F(HardSyncWritersModelIntegrationTest, test) {
 	runtime.run(STEPS);
 
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		const WriterAgent* agent = static_cast<const WriterAgent*>(node.second->mutex()->read().get());
+		const WriterAgent* agent = dynamic_cast<const WriterAgent*>(node.second->mutex()->read().get());
 		ASSERT_EQ(agent->getCounter(), STEPS * node.second->getIncomingEdges().size());
 	}
 }
 
-class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
-	std::mt19937 engine;
-	std::uniform_int_distribution<int> random_layer {0, 16};
-
-	public:
-	std::set<DistributedId> links;
-	std::set<DistributedId> unlinks;
-
-	void act() override {
-		FPMAS_LOGD(node()->location(), "GHOST_TEST", "Executing agent %s", FPMAS_C_STR(node()->getId()));
-		if(node()->getOutgoingEdges().size() >= 2) {
-			auto out_neighbors = node()->outNeighbors();
-			std::uniform_int_distribution<unsigned long> random_neighbor {0, out_neighbors.size()-1};
-			auto src = out_neighbors[random_neighbor(engine)];
-			auto tgt = out_neighbors[random_neighbor(engine)];
-			if(src->getId() != tgt->getId()) {
-				DistributedId current_edge_id = model()->graph().currentEdgeId();
-				links.insert(current_edge_id++);
-				model()->graph().link(src, tgt, random_layer(engine));
-			}
-		}
-		if(node()->getOutgoingEdges().size() >= 1) {
-			std::uniform_int_distribution<unsigned long> random_edge {0, node()->getOutgoingEdges().size()-1};
-			auto index = random_edge(engine);
-			auto edge = node()->getOutgoingEdges()[index];
-			DistributedId id = edge->getId();
-			unlinks.insert(id);
-			model()->graph().unlink(edge);
-		}
-	}
-
-	static void to_json(nlohmann::json& j, const LinkerAgent* agent) {
-		j["links"] = agent->links;
-		j["unlinks"] = agent->unlinks;
-	}
-
-	static LinkerAgent* from_json(const nlohmann::json& j) {
-		LinkerAgent* agent_ptr = new LinkerAgent;
-		agent_ptr->links = j.at("links").get<std::set<DistributedId>>();
-		agent_ptr->unlinks = j.at("unlinks").get<std::set<DistributedId>>();
-		return agent_ptr;
-	}
-};
-
 class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegrationTest {
 	protected:
 		std::set<DistributedId> initial_links;
+		fpmas::model::Behavior<LinkerAgent> link {&LinkerAgent::link};
 
 		void SetUp() override {
-			auto& group = model.buildGroup(G_1);
+			auto& group = model.buildGroup(G_1, link);
 
 			FPMAS_ON_PROC(comm, 0) {
-				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new LinkerAgent);
 				}
 				std::mt19937 engine;
-				std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
-				std::uniform_int_distribution<unsigned int> random_layer {0, 10};
+				std::uniform_int_distribution<FPMAS_ID_TYPE> random_node {
+					0, static_cast<FPMAS_ID_TYPE>(agent_graph.getNodes().size()-1)};
+				std::uniform_int_distribution<fpmas::graph::LayerId> random_layer {0, 10};
 
 				for(auto node : agent_graph.getNodes()) {
-					for(int i = 0; i < NODE_BY_PROC / 2; i++) {
+					for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC / 2; i++) {
 						DistributedId id {0, random_node(engine)};
 						if(node.first.id() != id.id()) {
 							auto edge = agent_graph.link(node.second, agent_graph.getNode(id), 10);
@@ -552,7 +439,7 @@ class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegratio
 					}
 				}
 			}
-			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 1, group.jobs());
 			scheduler.schedule(0, 10, model.loadBalancingJob());
 		}
 };
@@ -560,19 +447,17 @@ class ModelDynamicLinkGhostModeIntegrationTest : public ModelGhostModeIntegratio
 TEST_F(ModelDynamicLinkGhostModeIntegrationTest, test) {
 	runtime.run(NUM_STEPS);
 
-	fpmas::communication::TypedMpi<unsigned int> mpi {agent_graph.getMpiCommunicator()};
-
 	// Build local links set
 	std::set<DistributedId> links;
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		auto agent = static_cast<const LinkerAgent*>(node.second->mutex()->read().get());
+		auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 		links.insert(agent->links.begin(), agent->links.end());
 	}
 
 	// Build local unlinks set
 	std::set<DistributedId> unlinks;
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		auto agent = static_cast<const LinkerAgent*>(node.second->mutex()->read().get());
+		auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 		unlinks.insert(agent->unlinks.begin(), agent->unlinks.end());
 	}
 
@@ -628,15 +513,16 @@ class ModelDynamicLinkHardSyncModeIntegrationTest : public ModelHardSyncModeInte
 			auto& group = model.buildGroup(G_1);
 
 			FPMAS_ON_PROC(comm, 0) {
-				for(int i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
+				for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC * agent_graph.getMpiCommunicator().getSize(); i++) {
 					group.add(new LinkerAgent);
 				}
 				std::mt19937 engine;
-				std::uniform_int_distribution<unsigned int> random_node {0, (unsigned int) agent_graph.getNodes().size()-1};
+				std::uniform_int_distribution<FPMAS_ID_TYPE> random_node {
+					0, static_cast<FPMAS_ID_TYPE>(agent_graph.getNodes().size()-1)};
 				std::uniform_int_distribution<unsigned int> random_layer {0, 10};
 
 				for(auto node : agent_graph.getNodes()) {
-					for(int i = 0; i < NODE_BY_PROC / 2; i++) {
+					for(FPMAS_ID_TYPE i = 0; i < NODE_BY_PROC / 2; i++) {
 						DistributedId id {0, random_node(engine)};
 						if(node.first.id() != id.id()) {
 							auto edge = agent_graph.link(node.second, agent_graph.getNode(id), 10);
@@ -645,7 +531,7 @@ class ModelDynamicLinkHardSyncModeIntegrationTest : public ModelHardSyncModeInte
 					}
 				}
 			}
-			scheduler.schedule(0, 1, group.job());
+			scheduler.schedule(0, 1, group.jobs());
 			scheduler.schedule(0, 10, model.loadBalancingJob());
 		}
 };
@@ -653,19 +539,17 @@ class ModelDynamicLinkHardSyncModeIntegrationTest : public ModelHardSyncModeInte
 TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 	runtime.run(NUM_STEPS);
 
-	fpmas::communication::TypedMpi<unsigned int> mpi {agent_graph.getMpiCommunicator()};
-
 	// Build local links set
 	std::set<DistributedId> links;
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		auto agent = static_cast<const LinkerAgent*>(node.second->mutex()->read().get());
+		auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 		links.insert(agent->links.begin(), agent->links.end());
 	}
 
 	// Build local unlinks set
 	std::set<DistributedId> unlinks;
 	for(auto node : agent_graph.getLocationManager().getLocalNodes()) {
-		auto agent = static_cast<const LinkerAgent*>(node.second->mutex()->read().get());
+		auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 		unlinks.insert(agent->unlinks.begin(), agent->unlinks.end());
 	}
 
@@ -715,4 +599,74 @@ TEST_F(ModelDynamicLinkHardSyncModeIntegrationTest, test) {
 
 TEST(DefaultModelConfig, build) {
 	fpmas::model::Model<fpmas::synchro::HardSyncMode> model;
+}
+
+class ModelDynamicGroupIntegration : public Test {
+	protected:
+		fpmas::model::Model<fpmas::synchro::GhostMode> model;
+
+		fpmas::api::model::AgentGroup& init_group {model.buildGroup(0)};
+		fpmas::api::model::AgentGroup& other_group {model.buildGroup(1)};
+
+		void SetUp() override {
+			fpmas::graph::PartitionMap partition;
+			FPMAS_ON_PROC(model.getMpiCommunicator(), 0) {
+				std::vector<fpmas::api::model::Agent*> agents;
+				for(int i = 0; i < model.getMpiCommunicator().getSize(); i++) {
+					auto agent = new BasicAgent;
+					init_group.add(agent);
+					partition[agent->node()->getId()] = i;
+					agents.push_back(agent);
+				}
+				for(std::size_t i = 0; i < agents.size(); i++)
+					model.link(agents[i], agents[(i+1) % agents.size()], 0);
+			}
+			model.graph().distribute(partition);
+		}
+};
+
+TEST_F(ModelDynamicGroupIntegration, migration_edge_case) {
+	other_group.add(*init_group.localAgents().begin());
+	init_group.remove(*init_group.localAgents().begin());
+
+	fpmas::graph::PartitionMap partition;
+	partition[(*other_group.localAgents().begin())->node()->getId()]
+		= (model.getMpiCommunicator().getRank()+1) % model.getMpiCommunicator().getSize();
+
+	model.graph().distribute(partition);
+
+	ASSERT_THAT(other_group.localAgents(), SizeIs(1));
+	ASSERT_THAT((*other_group.localAgents().begin())->groups(), ElementsAre(&other_group));
+}
+
+TEST(DistributedAgentNodeBuilder, test) {
+	static const std::size_t N_AGENT = 1000;
+
+	fpmas::model::Model<fpmas::synchro::GhostMode> model;
+	fpmas::model::Behavior<ReaderAgent> reader_behavior(&ReaderAgent::read);
+
+	auto& group = model.buildGroup(0, reader_behavior);
+
+	fpmas::random::DistributedGenerator<> generator;
+	fpmas::random::PoissonDistribution<std::size_t> edge_dist(6);
+	fpmas::graph::DistributedUniformGraphBuilder<fpmas::model::AgentPtr> builder(
+			generator, edge_dist
+			);
+
+	fpmas::model::DistributedAgentNodeBuilder node_builder(
+			group, N_AGENT, []() {return new ReaderAgent;}, model.getMpiCommunicator()
+			);
+	builder.build(node_builder, 0, model.graph());
+
+	model.graph().synchronize();
+	model.runtime().execute(model.loadBalancingJob());
+
+	fpmas::communication::TypedMpi<std::size_t> mpi(model.getMpiCommunicator());
+	std::size_t total_agent_count = fpmas::communication::all_reduce(
+			mpi, group.localAgents().size()
+			);
+	ASSERT_EQ(total_agent_count, N_AGENT);
+
+	model.scheduler().schedule(0, 1, group.jobs());
+	model.runtime().run(100);
 }

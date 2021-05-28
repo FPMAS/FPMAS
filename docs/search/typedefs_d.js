@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['uniformintdistribution_970',['UniformIntDistribution',['../namespacefpmas_1_1random.html#a23dc7c593f8260da242cefd237ca8e18',1,'fpmas::random']]],
-  ['uniformrealdistribution_971',['UniformRealDistribution',['../namespacefpmas_1_1random.html#a4ad22d20ea25e75206e433664b7a0c63',1,'fpmas::random']]]
+  ['random_5fdevice_1655',['random_device',['../namespacefpmas_1_1random.html#aff2c18877094fcaaa04f4e857eabe64a',1,'fpmas::random']]],
+  ['result_5ftype_1656',['result_type',['../classfpmas_1_1api_1_1random_1_1Generator.html#a005d0e3f4205f1c292682b003366cf24',1,'fpmas::api::random::Generator::result_type()'],['../classfpmas_1_1random_1_1Distribution.html#a822508dc54851c938f6946621dc35f11',1,'fpmas::random::Distribution::result_type()']]]
 ];

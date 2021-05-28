@@ -1,5 +1,5 @@
 #include "fpmas/communication/communication.h"
-#include "../mocks/communication/mock_communication.h"
+#include "communication/mock_communication.h"
 #include "utils/test.h"
 #include "fpmas/utils/macros.h"
 #include <chrono>
@@ -55,7 +55,26 @@ TEST(MpiCommunicatorTest, probe_any_source) {
 	}
 }
 
-TEST(MpiMigrationTest, simple_migration_test) {
+TEST(MpiCommunicator, WORLD) {
+	int comm_size;
+	MPI_Comm_size(MPI_COMM_WORLD, &comm_size);
+	int comm_rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &comm_rank);
+
+	ASSERT_EQ(fpmas::communication::WORLD.getSize(), comm_size);
+	ASSERT_EQ(fpmas::communication::WORLD.getRank(), comm_rank);
+	ASSERT_EQ(fpmas::communication::WORLD.getMpiComm(), MPI_COMM_WORLD);
+
+	fpmas::communication::DataPack pack(1, sizeof(int));
+	int data = 8;
+	std::memcpy(pack.buffer, &data, sizeof(int));
+
+	auto recv = fpmas::communication::WORLD.bcast(pack, MPI_INT, 0);
+
+	ASSERT_EQ(*((int *) recv.buffer), data);
+}
+
+TEST(TypedMpiTest, simple_migration_test) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 	
@@ -76,7 +95,7 @@ TEST(MpiMigrationTest, simple_migration_test) {
 // Each proc :
 //   - sends the same amount of data to all others
 //   - receives different amount of data from each proc
-TEST(MpiMigrationTest, variable_recv_size_migration) {
+TEST(TypedMpiTest, variable_recv_size_migration) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 
@@ -101,7 +120,7 @@ TEST(MpiMigrationTest, variable_recv_size_migration) {
 // Each proc: 
 //   - sends different amount of data to each proc
 //   - receives the same amount of data from other
-TEST(MpiMigrationTest, variable_send_size_migration) {
+TEST(TypedMpiTest, variable_send_size_migration) {
 	MpiCommunicator comm;
 	TypedMpi<int> mpi {comm};
 
@@ -127,24 +146,46 @@ TEST(MpiMigrationTest, variable_send_size_migration) {
 	}
 }
 
-TEST(MpiGatherTest, gather) {
+TEST(TypedMpiTest, gather) {
 	MpiCommunicator comm;
-	TypedMpi<int> mpi {comm};
+	TypedMpi<float> mpi {comm};
 
-	int local_data = (comm.getRank()+1) * 10;
-	std::vector<int> data = mpi.gather(local_data, comm.getSize() - 1);
+	float local_data = std::pow(8, comm.getRank());
+	std::vector<float> data = mpi.gather(local_data, comm.getSize() - 1);
 
 	if(comm.getRank() != comm.getSize() - 1) {
 		ASSERT_THAT(data, IsEmpty());
 	} else {
-		int sum = 0;
-		for(auto i : data)
-			sum+=i;
-		ASSERT_EQ(sum, 10*(comm.getSize() * (comm.getSize() + 1)/2));
+		for(int i = 0; i < comm.getSize(); i++)
+			ASSERT_FLOAT_EQ(data[i], std::pow(8, i));
 	}
 }
 
-TEST(MpiIssendTest, edge_case) {
+TEST(TypedMpiTest, allGather) {
+	MpiCommunicator comm;
+	TypedMpi<float> mpi {comm};
+
+	float local_data = std::pow(8, comm.getRank());
+	std::vector<float> data = mpi.allGather(local_data);
+
+	for(int i = 0; i < comm.getSize(); i++)
+		ASSERT_FLOAT_EQ(data[i], std::pow(8, i));
+}
+
+TEST(TypedMpiTest, bcast) {
+	MpiCommunicator comm;
+	TypedMpi<int> mpi {comm};
+
+	int local_data = 0;
+	FPMAS_ON_PROC(comm, comm.getSize()-1)
+		local_data = 10;
+
+	int data = mpi.bcast(local_data, comm.getSize()-1);
+
+	ASSERT_EQ(data, 10);
+}
+
+TEST(TypedMpiTest, issend_edge_case) {
 	MpiCommunicator comm;
 	std::string data;
 	// Generates a long string

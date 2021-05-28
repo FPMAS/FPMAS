@@ -9,11 +9,93 @@
 #include "fpmas/communication/communication.h"
 #include "zoltan_cpp.h"
 
+#include <set>
+
 namespace fpmas { namespace graph {
 	using api::graph::PartitionMap;
 	using api::graph::NodeMap;
-	
+
+	/**
+	 * Namespace containing Zoltan query functions definitions and utilities.
+	 */
 	namespace zoltan {
+		/**
+		 * Utility type that is used to store data and temporary buffers passed
+		 * to Zoltan query functions as the `void* data` parameter.
+		 */
+		template<typename T>
+		struct ZoltanData {
+			/**
+			 * Maps of nodes currently partitionned by Zoltan.
+			 */
+			NodeMap<T> node_map;
+
+			/**
+			 * Contains ids of **all** the nodes currently partitionned by
+			 * Zoltan, including ones owned by other processes.
+			 */
+			std::set<fpmas::api::graph::DistributedId> distributed_node_ids;
+
+			/**
+			 * Nodes buffer. (built by Zoltan query functions)
+			 *
+			 * @see obj_list()
+			 */
+			std::vector<fpmas::api::graph::DistributedNode<T>*> nodes;
+			/**
+			 * Edges buffer. (built by Zoltan query functions)
+			 *
+			 * @see edge_list_multi_fn()
+			 */
+			std::vector<std::vector<fpmas::api::graph::DistributedEdge<T>*>> edges;
+		};
+
+		/**
+		 * In this case, a single ZOLTAN_ID_TYPE instance is enough to store an
+		 * FPMAS_ID_TYPE.
+		 *
+		 * So num_gid_entries() returns `2`, to store an
+		 * fpmas::api::graph::DistributedId instance (including the "rank"
+		 * part).
+		 */
+		template<
+			typename IdType = FPMAS_ID_TYPE,
+					 typename std::enable_if<(sizeof(IdType) <= sizeof(ZOLTAN_ID_TYPE)), bool>::type = true>
+						 static constexpr int num_gid_entries() {
+							 return 2;
+						 }
+		/**
+		 * In this case, a single ZOLTAN_ID_TYPE instance is **not** enough to store an
+		 * FPMAS_ID_TYPE.
+		 *
+		 * Since ZOLTAN_ID_TYPE and FPMAS_ID_TYPE sizes are necessarily 16, 32
+		 * or 64, `sizeof(FPMAS_ID_TYPE) / sizeof(ZOLTAN_ID_TYPE)` is
+		 * necessarily an integer, and represents the number of
+		 * ZOLTAN_ID_TYPE instances that are required to store a single
+		 * FPMAS_ID_TYPE. For example, if `sizeof(ZOLTAN_ID_TYPE)` is 32
+		 * and `sizeof(FPMAS_ID_TYPE)` is 64, we need 2 ZOLTAN_ID_TYPE
+		 * instances to store a single FPMAS_ID_TYPE.
+		 *
+		 * So num_gid_entries() returns `sizeof(FPMAS_ID_TYPE) /
+		 * sizeof(ZOLTAN_ID_TYPE) + 1` to store an
+		 * fpmas::api::graph::DistributedId instance (including the "rank"
+		 * part).
+		 */
+		template<
+			typename IdType = FPMAS_ID_TYPE,
+					 typename std::enable_if<(sizeof(IdType) > sizeof(ZOLTAN_ID_TYPE)), bool>::type = true>
+						 static constexpr int num_gid_entries() {
+							 return sizeof(FPMAS_ID_TYPE) / sizeof(ZOLTAN_ID_TYPE) + 1;
+						 }
+
+		/**
+		 * NUM_GID_ENTRIES Zoltan parameter.
+		 *
+		 * The value is automatically computed to be compatible with the
+		 * FPMAS_ID_TYPE.
+		 */
+		constexpr int NUM_GID_ENTRIES = num_gid_entries<>();
+
 		/**
 		 * Applies the FPMAS pre-defined Zoltan configuration to the provided
 		 * Zoltan instance.
@@ -57,12 +139,10 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_OBJ_FN).
 		 *
 		 * @param data user data (current NodeMap)
-		 * @param ierr output : error code
 		 * @return number of nodes managed by the current process
 		 */
-		template<typename T> int num_obj(void *data, int* ierr) {
-			NodeMap<T>* nodes = (NodeMap<T>*) data;
-			return nodes->size();
+		template<typename T> int num_obj(void *data, int*) {
+			return ((ZoltanData<T>*) data)->node_map.size();
 		}
 
 		/**
@@ -73,27 +153,24 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_OBJ_LIST_FN).
 		 *
 		 * @param data user data (current NodeMap)
-		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
-		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
+		 * @param num_gid_entries number of entries used to describe global ids
 		 * @param global_ids output : global ids assigned to processor
-		 * @param local_ids output : local ids assigned to processor (unused)
-		 * @param wgt_dim Number of weights of each object, defined by OBJ_WEIGHT_DIM (should be 1)
 		 * @param obj_wgts output : weights list
-		 * @param ierr output : error code
 		 */
 		template<typename T> void obj_list(
 				void *data,
 				int num_gid_entries, 
-				int num_lid_entries,
+				int, // num_lid_entries (unused)
 				ZOLTAN_ID_PTR global_ids,
-				ZOLTAN_ID_PTR local_ids,
-				int wgt_dim,
+				ZOLTAN_ID_PTR, // local_ids (unused)
+				int, // wgt_dim, 1 by default
 				float *obj_wgts,
-				int *ierr
+				int * // ierr (unused)
 				) {
-			NodeMap<T>* nodes = (NodeMap<T>*) data;
+			ZoltanData<T>* z_data = (ZoltanData<T>*) data;
 			int i = 0;
-			for(auto n : *nodes) {
+			for(auto n : z_data->node_map) {
+				z_data->nodes.push_back(n.second);
 				zoltan::write_zoltan_id(n.first, &global_ids[i * num_gid_entries]);
 				obj_wgts[i++] = n.second->getWeight();
 			}
@@ -106,33 +183,38 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
 		 *
 		 * @param data user data (current NodeMap)
-		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
-		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
 		 * @param num_obj number of objects IDs in global_ids
-		 * @param global_ids Global IDs of object whose number of edges should be returned
-		 * @param local_ids Same for local ids, unused
 		 * @param num_edges output : number of outgoing edge for each node
-		 * @param ierr output : error code
 		 */
 		template<typename T> void num_edges_multi_fn(
 				void *data,
-				int num_gid_entries,
-				int num_lid_entries,
+				int, // num_gid_entries (unused)
+				int, // num_lid_entries (unused)
 				int num_obj,
-				ZOLTAN_ID_PTR global_ids,
-				ZOLTAN_ID_PTR local_ids,
+				ZOLTAN_ID_PTR, // global_ids (unused)
+				ZOLTAN_ID_PTR, // local_ids (unused)
 				int *num_edges,
-				int *ierr
+				int * // ierr (unused)
 				) {
-			NodeMap<T>* nodes = (NodeMap<T>*) data;
+			ZoltanData<T>* z_data = (ZoltanData<T>*) data;
+			// Initializes `num_obj` empty vectors
+			z_data->edges.resize(num_obj);
 			for(int i = 0; i < num_obj; i++) {
-				auto node = nodes->at(
-						zoltan::read_zoltan_id(&global_ids[i * num_gid_entries])
-						);
+				auto node = z_data->nodes.at(i);
 				int count = 0;
 				for(auto edge : node->getOutgoingEdges()) {
-					if(nodes->count(edge->getTargetNode()->getId()) > 0) {
+					// Considers the neighbor only if the load balancing
+					// algorithm is also applied to it, potentially from an
+					// other process.
+					// The distributed_node_ids list contains the ids of ALL
+					// the nodes that are currently balanced.
+					// It is the responsability of
+					// ZoltanLoadBalancing::balance() to perform communications
+					// required to build this list, before the Zoltan algorithm
+					// is effectively applied.
+					if(z_data->distributed_node_ids.count(edge->getTargetNode()->getId()) > 0) {
 						count++;
+						z_data->edges.at(i).push_back(edge);
 					}
 				}
 				num_edges[i] = count;
@@ -147,52 +229,42 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
 		 *
 		 * @param data user data (current NodeMap)
-		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
-		 * @param num_lid_entries number of entries used to describe local ids (should be 0)
+		 * @param num_gid_entries number of entries used to describe global ids
 		 * @param num_obj number of objects IDs in global_ids
-		 * @param global_ids Global IDs of object whose list of edges should be returned
-		 * @param local_ids Same for local ids, unused
-		 * @param num_edges number of edges of each corresponding node
 		 * @param nbor_global_id output : neighbor ids for each node
 		 * @param nbor_procs output : processor identifier of each neighbor in
 		 * nbor_global_id
-		 * @param wgt_dim number of edge weights
 		 * @param ewgts output : edge weight for each neighbor
-		 * @param ierr output : error code
 		 */
 		template<typename T> void edge_list_multi_fn(
 				void *data,
 				int num_gid_entries,
-				int num_lid_entries,
+				int, // num_lid_entries (unused)
 				int num_obj,
-				ZOLTAN_ID_PTR global_ids,
-				ZOLTAN_ID_PTR local_ids,
-				int *num_edges,
+				ZOLTAN_ID_PTR, // global_ids (unused)
+				ZOLTAN_ID_PTR, // local_ids (unused)
+				int *, // num_edges (unused)
 				ZOLTAN_ID_PTR nbor_global_id,
 				int *nbor_procs,
-				int wgt_dim,
+				int, // wgt_dim (unused, 1 by default)
 				float *ewgts,
-				int *ierr) {
+				int * // ierr (unused)
+				) {
 
-			NodeMap<T>* nodes = (NodeMap<T>*) data;
+			ZoltanData<T>* z_data = (ZoltanData<T>*) data;
 
 			int neighbor_index = 0;
 			for (int i = 0; i < num_obj; ++i) {
-				auto node = nodes->at(
-						zoltan::read_zoltan_id(&global_ids[num_gid_entries * i])
-						);
-				for(auto edge : node->getOutgoingEdges()) {
-					if(nodes->count(edge->getTargetNode()->getId()) > 0) {
-						auto target = edge->getTargetNode();
-						DistributedId targetId = target->getId(); 
-						zoltan::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
+				for(auto edge : z_data->edges.at(i)) {
+					auto target = edge->getTargetNode();
+					DistributedId targetId = target->getId(); 
+					zoltan::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
 
-						nbor_procs[neighbor_index]
-							= target->location();
+					nbor_procs[neighbor_index]
+						= target->location();
 
-						ewgts[neighbor_index] = edge->getWeight();
-						neighbor_index++;
-					}
+					ewgts[neighbor_index] = edge->getWeight();
+					neighbor_index++;
 				}
 			}
 		}
@@ -204,13 +276,9 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_FIXED_OBJ_FN).
 		 *
 		 * @param data user data (current fixed NodeMap)
-		 * @param ierr output : error code
 		 */
-		template<typename T> int num_fixed_obj_fn(
-				void* data, int* ierr
-				) {
-			NodeMap<T>* fixed_nodes = (NodeMap<T>*) data;
-			return fixed_nodes->size();
+		template<typename T> int num_fixed_obj_fn(void* data, int*) {
+			return ((NodeMap<T>*) data)->size();
 		}
 
 		/**
@@ -220,23 +288,20 @@ namespace fpmas { namespace graph {
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_FIXED_OBJ_LIST_FN).
 		 *
 		 * @param data user data (current fixed NodeMap)
-		 * @param num_fixed_obj fixed vertices count
-		 * @param num_gid_entries number of entries used to describe global ids (should be 2)
+		 * @param num_gid_entries number of entries used to describe global ids
 		 * @param fixed_gids output : fixed vertices ids list
 		 * @param fixed_parts output : parts to which each fixed vertices is associated.
 		 * In out context, corresponds to the process rank to which each
 		 * vertice is attached.
-		 * @param ierr output : error code
-		 *
 		 */
 		template<typename T> void fixed_obj_list_fn(
-			void *data,
-			int num_fixed_obj,
-			int num_gid_entries,
-			ZOLTAN_ID_PTR fixed_gids,
-			int *fixed_parts,
-			int *ierr
-		) {
+				void *data,
+				int, // num_fixed_obj (unused)
+				int num_gid_entries,
+				ZOLTAN_ID_PTR fixed_gids,
+				int *fixed_parts,
+				int * // ierr (unused)
+				) {
 			PartitionMap* fixed_nodes = (PartitionMap*) data;
 			int i = 0;
 			for(auto fixed_node : *fixed_nodes) {
@@ -254,6 +319,18 @@ namespace fpmas { namespace graph {
 	template<typename T>
 		class ZoltanLoadBalancing : public api::graph::LoadBalancing<T>, public api::graph::FixedVerticesLoadBalancing<T> {
 			private:
+				struct ConcatSet {
+					std::set<DistributedId> operator()(
+							const std::set<DistributedId> s1,
+							const std::set<DistributedId> s2
+							) {
+						std::set<DistributedId> s;
+						s.insert(s1.begin(), s1.end());
+						s.insert(s2.begin(), s2.end());
+						return s;
+					}
+				};
+
 				//Zoltan instance
 				Zoltan zoltan;
 
@@ -267,34 +344,25 @@ namespace fpmas { namespace graph {
 
 				void setUpZoltan();
 
-				NodeMap<T> nodes;
+				zoltan::ZoltanData<T> zoltan_data;
 				PartitionMap fixed_vertices;
+				api::communication::MpiCommunicator& comm;
+				communication::TypedMpi<std::set<DistributedId>> id_mpi;
 
 			public:
+
 				/**
 				 * ZoltanLoadBalancing constructor.
 				 *
 				 * @param comm MpiCommunicator implementation
 				 */
-				ZoltanLoadBalancing(communication::MpiCommunicator& comm)
-					: zoltan(comm.getMpiComm()) {
-					setUpZoltan();
-				}
+				ZoltanLoadBalancing(communication::MpiCommunicatorBase& comm)
+					: zoltan(comm.getMpiComm()), comm(comm), id_mpi(comm) {
+						setUpZoltan();
+					}
 
 				/**
-				 * Returns nodes currently balanced.
-				 *
-				 * Used by the previously defined zoltan callback functions to
-				 * retrieve the current node map.
-				 *
-				 * @return nodes to balance
-				 */
-				const std::unordered_map<DistributedId, T> getNodes() const {
-					return nodes;
-				}
-				
-				/**
-				 * \copydoc api::graph::FixedVerticesLoadBalancing::balance()
+				 * \copydoc fpmas::api::graph::FixedVerticesLoadBalancing::balance()
 				 *
 				 * \implem
 				 * Computes a balanced partition from the default
@@ -305,7 +373,7 @@ namespace fpmas { namespace graph {
 						PartitionMap fixed_vertices
 						) override;
 				/**
-				 * \copydoc api::graph::LoadBalancing::balance()
+				 * \copydoc fpmas::api::graph::LoadBalancing::balance()
 				 *
 				 * Equivalent to balance(NodeMap<T>, PartitionMap), with an
 				 * empty set of fixed vertices.
@@ -315,10 +383,22 @@ namespace fpmas { namespace graph {
 
 	template<typename T> PartitionMap
 		ZoltanLoadBalancing<T>::balance(
-			NodeMap<T> nodes,
-			PartitionMap fixed_vertices
-			) {
-			this->nodes = nodes;
+				NodeMap<T> nodes,
+				PartitionMap fixed_vertices
+				) {
+			for(auto local_node : nodes)
+				zoltan_data.distributed_node_ids.insert(local_node.first);
+
+			// Fetches ids of **all** the nodes that are currently partitionned
+			zoltan_data.distributed_node_ids = communication::all_reduce(
+					id_mpi, zoltan_data.distributed_node_ids, ConcatSet()
+					);
+
+
+			// Moves the temporary node map into `zoltan_data`. This is safe,
+			// since `nodes` is not reused in this scope.
+			zoltan_data.node_map = std::move(nodes);
+
 			this->fixed_vertices = fixed_vertices;
 			int changes;
 			int num_lid_entries;
@@ -373,9 +453,15 @@ namespace fpmas { namespace graph {
 					&export_to_part
 					);
 
-			this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
+			// Clears `zoltan_data`
+			zoltan_data.node_map.clear();
+			zoltan_data.distributed_node_ids.clear();
+			zoltan_data.nodes.clear();
+			zoltan_data.edges.clear();
+
+			//this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
 			return partition;
-	}
+		}
 
 	template<typename T> PartitionMap
 		ZoltanLoadBalancing<T>::balance(NodeMap<T> nodes) {
@@ -391,10 +477,10 @@ namespace fpmas { namespace graph {
 		// Initializes Zoltan Node Load Balancing functions
 		this->zoltan.Set_Num_Fixed_Obj_Fn(zoltan::num_fixed_obj_fn<T>, &this->fixed_vertices);
 		this->zoltan.Set_Fixed_Obj_List_Fn(zoltan::fixed_obj_list_fn<T>, &this->fixed_vertices);
-		this->zoltan.Set_Num_Obj_Fn(zoltan::num_obj<T>, &this->nodes);
-		this->zoltan.Set_Obj_List_Fn(zoltan::obj_list<T>, &this->nodes);
-		this->zoltan.Set_Num_Edges_Multi_Fn(zoltan::num_edges_multi_fn<T>, &this->nodes);
-		this->zoltan.Set_Edge_List_Multi_Fn(zoltan::edge_list_multi_fn<T>, &this->nodes);
+		this->zoltan.Set_Num_Obj_Fn(zoltan::num_obj<T>, &this->zoltan_data);
+		this->zoltan.Set_Obj_List_Fn(zoltan::obj_list<T>, &this->zoltan_data);
+		this->zoltan.Set_Num_Edges_Multi_Fn(zoltan::num_edges_multi_fn<T>, &this->zoltan_data);
+		this->zoltan.Set_Edge_List_Multi_Fn(zoltan::edge_list_multi_fn<T>, &this->zoltan_data);
 	}
 
 }}

@@ -9,75 +9,78 @@
 
 using fpmas::api::graph::LocationState;
 
-template<typename T>
+template<typename T, template<typename> class Strictness>
 class MockDistributedEdge;
-template<typename T>
-void from_json(const nlohmann::json& j, MockDistributedEdge<T>& mock);
+template<typename T, template<typename> class Strictness>
+void from_json(const nlohmann::json& j, MockDistributedEdge<T, Strictness>& mock);
 
-template<typename>
+template<typename, template<typename> class>
 class MockDistributedNode;
 
 template<typename T>
-class MockDistributedEdge :
-	public fpmas::api::graph::DistributedEdge<T>,
-	public AbstractMockEdge<DistributedId, fpmas::api::graph::DistributedNode<T>>
-{
-	typedef AbstractMockEdge<DistributedId, fpmas::api::graph::DistributedNode<T>> EdgeBase;
-	typedef fpmas::api::graph::DistributedEdge<T> DistEdgeBase;
-
-	friend void from_json<T>(const nlohmann::json&, MockDistributedEdge<T>&);
-
+class AbstractMockDistributedEdge : public fpmas::api::graph::DistributedEdge<T> {
 	public:
-	using typename EdgeBase::NodeType;
-
 	// Saved LocationState
 	LocationState _state = LocationState::LOCAL;
-
-	MockDistributedEdge() {
-	}
-
-	MockDistributedEdge(const MockDistributedEdge& otherMock) :
-		MockDistributedEdge(
-				otherMock.getId(),
-				otherMock.getLayer(),
-				otherMock.getWeight()
-				) {
-			this->src = otherMock.src;
-			this->tgt = otherMock.tgt;
-		}
-
-	MockDistributedEdge(
-			const DistributedId& id, LayerId layer)
-		: EdgeBase(id, layer) {
-			setUpGetters();
-		}
-	MockDistributedEdge(
-			const DistributedId& id,
-			LayerId layer, float weight)
-		: EdgeBase(id, layer, weight) {
-			setUpGetters();
-		}
 
 	MOCK_METHOD(void, setState, (LocationState), (override));
 	MOCK_METHOD(LocationState, state, (), (const, override));
 
-	bool operator==(const MockDistributedEdge& other) const {
+	bool operator==(const AbstractMockDistributedEdge& other) const {
 		return this->id == other.id;
+	}
+	protected:
+	AbstractMockDistributedEdge() {
+		this->setUpGetters();
 	}
 
 	private:
 	void setUpGetters() {
-		EXPECT_CALL(*this, setState)
-			.Times(AnyNumber())
-			.WillRepeatedly(SaveArg<0>(&_state));
+		ON_CALL(*this, setState)
+			.WillByDefault(SaveArg<0>(&_state));
 		ON_CALL(*this, state)
 			.WillByDefault(ReturnPointee(&_state));
-		EXPECT_CALL(*this, state()).Times(AnyNumber());
 	}
 };
 
-template<typename T>
-inline void to_json(nlohmann::json& j, const MockDistributedEdge<T>& mock) {
+template<typename T, template<typename> class Strictness = testing::NaggyMock>
+class MockDistributedEdge :
+	public Strictness<AbstractMockDistributedEdge<T>>,
+	public Strictness<AbstractMockEdge<DistributedId, fpmas::api::graph::DistributedNode<T>>> {
+		friend void from_json<T, Strictness>(const nlohmann::json&, MockDistributedEdge<T, Strictness>&);
+		typedef Strictness<AbstractMockEdge<DistributedId, fpmas::api::graph::DistributedNode<T>>>
+			EdgeBase;
+		typedef Strictness<AbstractMockDistributedEdge<T>>
+			DistEdgeBase;
+
+		public:
+		MockDistributedEdge() {
+		}
+
+		MockDistributedEdge(const MockDistributedEdge& otherMock) :
+			MockDistributedEdge(
+					otherMock.getId(),
+					otherMock.getLayer(),
+					otherMock.getWeight()
+					) {
+				this->src = otherMock.src;
+				this->tgt = otherMock.tgt;
+			}
+
+		MockDistributedEdge(
+				const DistributedId& id, LayerId layer)
+			: EdgeBase(id, layer) {
+			}
+		MockDistributedEdge(
+				const DistributedId& id,
+				LayerId layer,
+				float weight)
+			: EdgeBase(id, layer, weight) {
+			}
+	};
+
+template<typename T, template<typename> class Strictness>
+inline void to_json(nlohmann::json& j, const MockDistributedEdge<T, Strictness>& mock) {
 	j["id"] = mock.getId();
 	j["src"] = mock.getSourceNode()->getId();
 	j["tgt"] = mock.getTargetNode()->getId();
@@ -85,26 +88,25 @@ inline void to_json(nlohmann::json& j, const MockDistributedEdge<T>& mock) {
 	j["weight"] = mock.getWeight();
 }
 
-template<typename T>
-inline void from_json(const nlohmann::json& j, MockDistributedEdge<T>& mock) {
+template<typename T, template<typename> class Strictness>
+inline void from_json(const nlohmann::json& j, MockDistributedEdge<T, Strictness>& mock) {
 	ON_CALL(mock, getId)
 		.WillByDefault(Return(j.at("id").get<DistributedId>()));
 	EXPECT_CALL(mock, getId).Times(AnyNumber());
 
-	mock.setSourceNode(new MockDistributedNode<T>(
+	mock.setSourceNode(new MockDistributedNode<T, testing::NiceMock>(
 						j.at("src").get<DistributedId>()
 						));
-	mock.setTargetNode(new MockDistributedNode<T>(
+	mock.setTargetNode(new MockDistributedNode<T, testing::NiceMock>(
 						j.at("tgt").get<DistributedId>()
 						));
 
 	ON_CALL(mock, getLayer)
 		.WillByDefault(Return(
-			j.at("layer").get<typename MockDistributedEdge<T>::LayerId>()
+			j.at("layer").get<typename MockDistributedEdge<T, Strictness>::LayerId>()
 		));
 	ON_CALL(mock, getWeight)
 		.WillByDefault(Return(j.at("weight").get<float>()));
 	mock.anyExpectations();
-
 }
 #endif

@@ -1,6 +1,12 @@
 <map id="src/fpmas/graph/scheduled_load_balancing.h" name="src/fpmas/graph/scheduled_load_balancing.h">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,184,47"/>
-<area shape="rect" id="node2" href="$model_2detail_2model_8h.html" title=" " alt="" coords="17,95,172,136"/>
-<area shape="rect" id="node3" href="$model_2model_8h.html" title=" " alt="" coords="10,184,179,211"/>
-<area shape="rect" id="node4" href="$fpmas_8h.html" title=" " alt="" coords="49,259,140,285"/>
+<area shape="rect" id="node1" title=" " alt="" coords="89,5,267,47"/>
+<area shape="rect" id="node2" href="$model_2detail_2model_8h.html" title=" " alt="" coords="101,95,255,136"/>
+<area shape="rect" id="node3" href="$model_2model_8h.html" title=" " alt="" coords="93,184,263,211"/>
+<area shape="rect" id="node4" href="$dist__move__algo_8h.html" title=" " alt="" coords="97,259,259,300"/>
+<area shape="rect" id="node5" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="97,348,259,389"/>
+<area shape="rect" id="node6" href="$model_2spatial_2graph_8h_source.html" title=" " alt="" coords="5,437,167,479"/>
+<area shape="rect" id="node7" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="191,437,352,479"/>
+<area shape="rect" id="node8" href="$von__neumann_8h.html" title=" " alt="" coords="191,527,352,568"/>
+<area shape="rect" id="node9" href="$moore_8h.html" title=" " alt="" coords="191,616,352,657"/>
+<area shape="rect" id="node10" href="$fpmas_8h.html" title=" " alt="" coords="226,705,317,732"/>
 </map>

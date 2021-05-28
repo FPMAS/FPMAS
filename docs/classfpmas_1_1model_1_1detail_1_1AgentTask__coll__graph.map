@@ -1,6 +1,9 @@
 <map id="fpmas::model::detail::AgentTask" name="fpmas::model::detail::AgentTask">
-<area shape="rect" id="node1" title=" " alt="" coords="17,273,157,315"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1AgentTask.html" title=" " alt="" coords="19,184,154,225"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="5,95,168,136"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="13,5,160,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="829,43,969,84"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1detail_1_1AgentTaskBase.html" title=" " alt="" coords="640,43,780,84"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1AgentTask.html" title=" " alt="" coords="413,8,548,49"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="201,5,364,47"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="5,5,152,47"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1model_1_1AgentPtr.html" title=" " alt="" coords="413,75,548,116"/>
+<area shape="rect" id="node7" href="$classfpmas_1_1api_1_1utils_1_1PtrWrapper.html" title=" " alt="" coords="203,71,362,127"/>
 </map>

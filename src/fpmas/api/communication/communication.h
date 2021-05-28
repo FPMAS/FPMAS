@@ -395,6 +395,8 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param datatype MPI type of the data to send / receive
 			 * @return data received from each process
 			 */
+			// TODO: should std::vector be used instead of map? pb: what if we
+			// want to send "no data" to process?
 			virtual std::unordered_map<int, DataPack>
 				allToAll(std::unordered_map<int, DataPack> export_map, MPI_Datatype datatype) = 0;
 
@@ -417,6 +419,39 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			virtual std::vector<DataPack>
 				gather(DataPack data, MPI_Datatype datatype, int root) = 0;
+
+			/**
+			 * Gathers data on all processes.
+			 *
+			 * Each process sends a `data` instance, and all sent data are
+			 * received on all processes, ordered by rank. In consequence,
+			 * vectors returned on all processes are the same.
+			 *
+			 * Notice that input DataPacks might have different length, and can
+			 * be empty for some processes.
+			 *
+			 * @param data to send to all processes
+			 * @param datatype MPI datatype
+			 * @return data sent by all processes
+			 */
+			virtual std::vector<DataPack>
+				allGather(DataPack data, MPI_Datatype datatype) = 0;
+
+			/**
+			 * Broadcasts data.
+			 *
+			 * `data` is sent from `root` to all other processes, and received
+			 * data is returned (including at `root`). On other processes than
+			 * root, the `data` parameter is ignored.
+			 *
+			 * Notice that the input DataPack might be empty.
+			 *
+			 * @param data data to broadcast
+			 * @param datatype MPI datatype
+			 * @param root rank of the process from which data is sent
+			 * @return received data from `root`
+			 */
+			virtual DataPack bcast(DataPack data, MPI_Datatype datatype, int root) = 0;
 
 			/**
 			 * Defines a synchronization barrier.
@@ -456,11 +491,23 @@ namespace fpmas { namespace api { namespace communication {
 				 * @param export_map vectors of data to send to each process
 				 * @return vectors of data received from each process
 				 */
+				// TODO: Remove this in 2.0
 				virtual std::unordered_map<int, std::vector<T>>
 					migrate(std::unordered_map<int, std::vector<T>> export_map) = 0;
 
 				/**
-				 * Gathers `T` objects at `root`.
+				 * Performs a complete exchange of `T` instances among processor.
+				 *
+				 * Follows the same rules as MpiCommunicator::allToAll().
+				 *
+				 * @param export_map data to export to each process
+				 * @return data received from each process
+				 */
+				virtual std::unordered_map<int, T>
+					allToAll(std::unordered_map<int, T> export_map) = 0;
+
+				/**
+				 * Gathers `T` instances at `root`.
 				 *
 				 * Follows the same rules as MpiCommunicator::gather().
 				 *
@@ -473,7 +520,29 @@ namespace fpmas { namespace api { namespace communication {
 					gather(const T& data, int root) = 0;
 
 				/**
-				 * Sends a `T` object to `destination`.
+				 * Gathers `T` instances on all processes.
+				 *
+				 * Follows the same rules as MpiCommunicator::allGather().
+				 *
+				 * @param data to send to all processes
+				 * @return data sent by all processes
+				 */
+				virtual std::vector<T>
+					allGather(const T& data) = 0;
+
+				/**
+				 * Broadcasts a `T` instance to all processes.
+				 *
+				 * Follows the same rules as MpiCommunicator::bcast().
+				 *
+				 * @param data data to broadcast
+				 * @param root rank of the process from which data is sent
+				 * @return received data from `root`
+				 */
+				virtual T bcast(const T& data, int root) = 0;
+
+				/**
+				 * Sends a `T` instance to `destination`.
 				 *
 				 * Follows the same rules as MpiCommunicator::send().
 				 *
@@ -482,8 +551,9 @@ namespace fpmas { namespace api { namespace communication {
 				 * @param tag message tag
 				 */
 				virtual void send(const T& data, int destination, int tag) = 0;
+
 				/**
-				 * Sends a `T` object to `destination`.
+				 * Sends a `T` instance to `destination`.
 				 *
 				 * Follows the same rules as MpiCommunicator::Issend().
 				 *

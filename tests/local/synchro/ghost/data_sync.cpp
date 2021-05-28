@@ -1,15 +1,13 @@
 #include "fpmas/synchro/ghost/ghost_mode.h"
 
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/graph/mock_distributed_graph.h"
-#include "../mocks/graph/mock_location_manager.h"
-#include "../mocks/synchro/mock_mutex.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_node.h"
+#include "graph/mock_distributed_graph.h"
+#include "graph/mock_location_manager.h"
+#include "synchro/mock_mutex.h"
 
-using ::testing::ElementsAre;
-using ::testing::IsEmpty;
-using ::testing::Pair;
-using ::testing::UnorderedElementsAre;
+using namespace testing;
+
 using fpmas::synchro::NodeUpdatePack;
 
 using fpmas::synchro::ghost::GhostDataSync;
@@ -21,23 +19,23 @@ namespace fpmas { namespace synchro {
 		}
 }}
 
-class GhostDataSyncTest : public ::testing::Test {
+class GhostDataSyncTest : public Test {
 	protected:
-		typedef MockDistributedNode<int> NodeType;
+		typedef MockDistributedNode<int, NiceMock> NodeType;
 		typedef MockDistributedEdge<int> EdgeType;
-		typedef typename MockDistributedGraph<int, NodeType, EdgeType>::NodeMap NodeMap;
+		typedef typename fpmas::api::graph::DistributedGraph<int>::NodeMap NodeMap;
 
 		static const int current_rank = 3;
 		MockMpiCommunicator<current_rank, 10> mock_comm;
 		MockMpi<fpmas::synchro::NodeUpdatePack<int>> data_mpi {mock_comm};
 		MockMpi<DistributedId> id_mpi {mock_comm};
 		MockMpi<std::pair<DistributedId, int>> location_mpi {mock_comm};
-		MockDistributedGraph<int, NodeType, EdgeType> mocked_graph;
+		MockDistributedGraph<int, NodeType, EdgeType, NiceMock> mocked_graph;
 
 		GhostDataSync<int>
 			dataSync {data_mpi, id_mpi, mocked_graph};
 
-		MockLocationManager<int> location_manager {mock_comm, id_mpi, location_mpi};
+		NiceMock<MockLocationManager<int>> location_manager {mock_comm, id_mpi, location_mpi};
 
 
 		std::array<NodeType*, 4> nodes {
@@ -48,12 +46,12 @@ class GhostDataSyncTest : public ::testing::Test {
 		};
 
 		void SetUp() override {
-			ON_CALL(mocked_graph, getLocationManager)
+			ON_CALL(mocked_graph, getLocationManager())
 				.WillByDefault(ReturnRef(location_manager));
-			EXPECT_CALL(mocked_graph, getLocationManager).Times(AnyNumber());
-			ON_CALL(mocked_graph, getMpiCommunicator)
+			ON_CALL(Const(mocked_graph), getLocationManager())
+				.WillByDefault(ReturnRef(location_manager));
+			ON_CALL(mocked_graph, getMpiCommunicator())
 				.WillByDefault(ReturnRef(mock_comm));
-			EXPECT_CALL(mocked_graph, getMpiCommunicator).Times(AnyNumber());
 		}
 
 		void TearDown() override {
@@ -65,11 +63,10 @@ class GhostDataSyncTest : public ::testing::Test {
 		void setUpGraphNodes(NodeMap& graph_nodes) {
 			ON_CALL(mocked_graph, getNodes)
 				.WillByDefault(ReturnRef(graph_nodes));
-			EXPECT_CALL(mocked_graph, getNodes).Times(AnyNumber());
 
 			for(auto node : graph_nodes) {
-				EXPECT_CALL(mocked_graph, getNode(node.first))
-					.WillRepeatedly(Return(node.second));
+				ON_CALL(mocked_graph, getNode(node.first))
+					.WillByDefault(Return(node.second));
 			}
 		}
 };
@@ -83,8 +80,8 @@ TEST_F(GhostDataSyncTest, export_data) {
 	setUpGraphNodes(graph_nodes);
 
 	NodeMap distant_nodes;
-	EXPECT_CALL(location_manager, getDistantNodes)
-		.WillRepeatedly(ReturnRef(distant_nodes));
+	ON_CALL(location_manager, getDistantNodes)
+		.WillByDefault(ReturnRef(distant_nodes));
 
 	std::unordered_map<int, std::vector<DistributedId>> requests {
 		{0, {DistributedId(2, 0), DistributedId(7, 1)}},
@@ -126,8 +123,8 @@ TEST_F(GhostDataSyncTest, import_test) {
 		{DistributedId(6, 2), nodes[2]},
 		{DistributedId(7, 1), nodes[3]}
 	};
-	EXPECT_CALL(location_manager, getDistantNodes)
-		.WillRepeatedly(ReturnRef(distant_nodes));
+	ON_CALL(location_manager, getDistantNodes)
+		.WillByDefault(ReturnRef(distant_nodes));
 
 	setUpGraphNodes(graph_nodes);
 	auto requests_matcher = UnorderedElementsAre(

@@ -23,9 +23,13 @@ class MockGraph :
 			MOCK_METHOD(void, erase, (EdgeType*), (override));
 
 			MOCK_METHOD(void, addCallOnInsertNode, (fpmas::api::utils::Callback<NodeType*>*), (override));
+			MOCK_METHOD(std::vector<fpmas::api::utils::Callback<NodeType*>*>, onInsertNodeCallbacks, (), (const, override));
 			MOCK_METHOD(void, addCallOnEraseNode, (fpmas::api::utils::Callback<NodeType*>*), (override));
+			MOCK_METHOD(std::vector<fpmas::api::utils::Callback<NodeType*>*>, onEraseNodeCallbacks, (), (const, override));
 			MOCK_METHOD(void, addCallOnInsertEdge, (fpmas::api::utils::Callback<EdgeType*>*), (override));
+			MOCK_METHOD(std::vector<fpmas::api::utils::Callback<EdgeType*>*>, onInsertEdgeCallbacks, (), (const, override));
 			MOCK_METHOD(void, addCallOnEraseEdge, (fpmas::api::utils::Callback<EdgeType*>*), (override));
+			MOCK_METHOD(std::vector<fpmas::api::utils::Callback<EdgeType*>*>, onEraseEdgeCallbacks, (), (const, override));
 
 			MOCK_METHOD(NodeType*, getNode, (NodeIdType), (override));
 			MOCK_METHOD(const NodeType*, getNode, (NodeIdType), (const, override));

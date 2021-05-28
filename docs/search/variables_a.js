@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['size_915',['size',['../classfpmas_1_1api_1_1communication_1_1DataPack.html#a13bb6c2725dbeb314bc40376efbeb176',1,'fpmas::api::communication::DataPack::size()'],['../structfpmas_1_1api_1_1communication_1_1Status.html#a71d1726a2595395b8fce99ccf8a0da0e',1,'fpmas::api::communication::Status::size()']]],
-  ['source_916',['source',['../structfpmas_1_1api_1_1communication_1_1Status.html#ae72f73a165c508e32efb8aba3b8122ec',1,'fpmas::api::communication::Status::source()'],['../structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html#abb66d42eabf084bddc87cf9addb32abe',1,'fpmas::synchro::hard::api::MutexRequest::source()']]]
+  ['node_1570',['node',['../structfpmas_1_1graph_1_1detail_1_1LocalizedNode.html#a3c7cc84c1fa5b5e19a9f356d22c33462',1,'fpmas::graph::detail::LocalizedNode']]],
+  ['node_5fid_1571',['node_id',['../structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html#ae4375eac6cd2e327c936ec21e65d7db5',1,'fpmas::graph::detail::LocalizedNodeView']]],
+  ['node_5fmap_1572',['node_map',['../structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html#a8d41ae8883c03008359984f3434beccf',1,'fpmas::graph::zoltan::ZoltanData']]],
+  ['nodes_1573',['nodes',['../structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html#a413ae9094bc5b3d38bd52aa5e0290673',1,'fpmas::graph::zoltan::ZoltanData']]],
+  ['num_5fgid_5fentries_1574',['NUM_GID_ENTRIES',['../namespacefpmas_1_1graph_1_1zoltan.html#af95733f89124974337a1602382bc0155',1,'fpmas::graph::zoltan']]]
 ];

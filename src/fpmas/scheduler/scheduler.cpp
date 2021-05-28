@@ -74,6 +74,9 @@ namespace fpmas { namespace scheduler {
 	}
 
 	void Epoch::submit(const api::scheduler::Job& job, api::scheduler::SubTimeStep sub_step) {
+		this->submit(JobList {job}, sub_step);
+	}
+	void Epoch::submit(api::scheduler::JobList job_list, api::scheduler::SubTimeStep sub_step) {
 		std::vector<const api::scheduler::Job*>::iterator job_pos = _jobs.begin();
 		std::vector<SubTimeStep>::iterator job_ordering_pos = job_ordering.begin();
 
@@ -82,8 +85,15 @@ namespace fpmas { namespace scheduler {
 			++job_ordering_pos;
 		}
 
-		job_ordering.insert(job_ordering_pos, sub_step);
-		_jobs.insert(job_pos, &job);
+		std::vector<SubTimeStep> sub_time_steps;
+		std::vector<const api::scheduler::Job*> jobs;
+		for(const api::scheduler::Job& job : job_list) {
+			sub_time_steps.push_back(sub_step);
+			jobs.push_back(&job);
+		}
+
+		job_ordering.insert(job_ordering_pos, sub_time_steps.begin(), sub_time_steps.end());
+		_jobs.insert(job_pos, jobs.begin(), jobs.end());
 	}
 
 	const std::vector<const api::scheduler::Job*>& Epoch::jobs() const {
@@ -108,11 +118,15 @@ namespace fpmas { namespace scheduler {
 	}
 
 	void Scheduler::schedule(api::scheduler::Date date, const api::scheduler::Job& job) {
+		this->schedule(date, JobList {job});
+	}
+
+	void Scheduler::schedule(api::scheduler::Date date, api::scheduler::JobList job_list) {
 		float step_f;
 		api::scheduler::SubTimeStep sub_step = std::modf(date, &step_f);
 		api::scheduler::TimeStep step = step_f;
 
-		unique_jobs[step].push_back({sub_step, &job});
+		unique_jobs[step].push_back({sub_step, {job_list}});
 	}
 
 	void Scheduler::schedule(
@@ -120,11 +134,18 @@ namespace fpmas { namespace scheduler {
 			api::scheduler::Period period,
 			const api::scheduler::Job& job
 			) {
+		this->schedule(start, period, JobList {job});
+	}
+	void Scheduler::schedule(
+			api::scheduler::Date start,
+			api::scheduler::Period period,
+			api::scheduler::JobList job_list
+			) {
 		float step_f;
 		api::scheduler::SubTimeStep sub_step = std::modf(start, &step_f);
 		api::scheduler::TimeStep step = step_f;
 
-		recurring_jobs[step].push_back({period, {sub_step, &job}});
+		recurring_jobs[step].push_back({period, {sub_step, {job_list}}});
 	}
 
 	void Scheduler::schedule(
@@ -133,11 +154,20 @@ namespace fpmas { namespace scheduler {
 			api::scheduler::Period period,
 			const api::scheduler::Job& job
 			) {
+		this->schedule(start, end, period, JobList {job});
+
+	}
+	void Scheduler::schedule(
+			api::scheduler::Date start,
+			api::scheduler::Date end,
+			api::scheduler::Period period,
+			api::scheduler::JobList job_list
+			) {
 		float step_f;
 		api::scheduler::SubTimeStep sub_step = std::modf(start, &step_f);
 		api::scheduler::TimeStep step = step_f;
 
-		limited_recurring_jobs[step].push_back({end, period, {sub_step, &job}});
+		limited_recurring_jobs[step].push_back({end, period, {sub_step, {job_list}}});
 	}
 
 	void Scheduler::build(api::scheduler::TimeStep step, fpmas::api::scheduler::Epoch& epoch) const {
@@ -145,7 +175,7 @@ namespace fpmas { namespace scheduler {
 		auto unique = unique_jobs.find(step);
 		if(unique != unique_jobs.end()) {
 			for(auto job_item : unique->second) {
-				epoch.submit(*job_item.job, job_item.sub_step);
+				epoch.submit(job_item.job_list, job_item.sub_step);
 			}
 		}
 		if(recurring_jobs.size() > 0) {
@@ -158,7 +188,7 @@ namespace fpmas { namespace scheduler {
 				TimeStep start = recurring->first;
 				for(auto job_item : recurring->second) {
 					if((step-start) % job_item.first == 0) {
-						epoch.submit(*job_item.second.job, job_item.second.sub_step);
+						epoch.submit(job_item.second.job_list, job_item.second.sub_step);
 					}
 				}
 			}
@@ -177,7 +207,7 @@ namespace fpmas { namespace scheduler {
 					auto job_item = std::get<2>(limited_job);
 					if(step + job_item.sub_step < end) {
 						if((step-start) % period == 0) {
-							epoch.submit(*job_item.job, job_item.sub_step);
+							epoch.submit(job_item.job_list, job_item.sub_step);
 						}
 					}
 				}

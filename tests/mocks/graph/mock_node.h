@@ -19,8 +19,7 @@ class MockData {};
 
 template<typename IdType, typename _EdgeType>
 class AbstractMockNode : public virtual fpmas::api::graph::Node<
-				 IdType, _EdgeType
-							 > {
+				 IdType, _EdgeType> {
 	protected:
 		IdType id;
 		float weight = 1.;
@@ -60,13 +59,14 @@ class AbstractMockNode : public virtual fpmas::api::graph::Node<
 		MOCK_METHOD(void, unlinkIn, (EdgeType*), (override));
 		MOCK_METHOD(void, unlinkOut, (EdgeType*), (override));
 
-		virtual ~AbstractMockNode() {}
+		virtual ~AbstractMockNode() {
+		}
 
 	private:
 		void setUpGetters() {
 			ON_CALL(*this, getId)
 				.WillByDefault(ReturnPointee(&id));
-			EXPECT_CALL(*this, getId).Times(AnyNumber());
+			//EXPECT_CALL(*this, getId).Times(AnyNumber());
 
 			ON_CALL(*this, getWeight)
 				.WillByDefault(ReturnPointee(&weight));
@@ -74,24 +74,7 @@ class AbstractMockNode : public virtual fpmas::api::graph::Node<
 		}
 };
 
-
 template<typename IdType>
-class MockNode : public AbstractMockNode<IdType, MockEdge<IdType>> {
-	public:
-		typedef AbstractMockNode<IdType, MockEdge<IdType>> MockNodeBase;
-		MockNode() : MockNodeBase() {
-			EXPECT_CALL(*this, die).Times(AnyNumber());
-		}
-		MockNode(const IdType& id)
-			: MockNodeBase(id) {
-			EXPECT_CALL(*this, die).Times(AnyNumber());
-		}
-		MockNode(const IdType& id, float weight)
-			: MockNodeBase(id, weight) {
-			EXPECT_CALL(*this, die).Times(AnyNumber());
-		}
+using MockNode = AbstractMockNode<IdType, MockEdge<IdType>>;
 
-		MOCK_METHOD(void, die, (), ());
-		~MockNode() {die();}
-};
 #endif

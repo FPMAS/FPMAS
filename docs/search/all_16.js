@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['zoltan_5fload_5fbalancing_2eh_446',['zoltan_load_balancing.h',['../zoltan__load__balancing_8h.html',1,'']]],
-  ['zoltanloadbalancing_447',['ZoltanLoadBalancing',['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html',1,'fpmas::graph::ZoltanLoadBalancing&lt; T &gt;'],['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a801e515edf4bb13fe2151e9f2e707c25',1,'fpmas::graph::ZoltanLoadBalancing::ZoltanLoadBalancing()'],['../namespacefpmas_1_1model_1_1detail.html#a7aee66cb197cb771785532ace85b4a22',1,'fpmas::model::detail::ZoltanLoadBalancing()']]],
-  ['zoltanloadbalancing_3c_20agentptr_20_3e_448',['ZoltanLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1graph_1_1ZoltanLoadBalancing.html',1,'fpmas::graph']]]
+  ['x_775',['x',['../structfpmas_1_1api_1_1model_1_1DiscretePoint.html#a7ebf26ffd43b442ac752ddc8abe884dc',1,'fpmas::api::model::DiscretePoint::x()'],['../structfpmas_1_1graph_1_1detail_1_1Point.html#a4efa118529d0e78adb7433bef3b15237',1,'fpmas::graph::detail::Point::x()']]]
 ];

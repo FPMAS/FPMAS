@@ -42,6 +42,20 @@ namespace fpmas { namespace random {
 			result_type operator()(api::random::Generator& generator) override {
 				return distrib(generator);
 			}
+
+			/**
+			 * \copydoc fpmas::api::random::Distribution::min()
+			 */
+			result_type min() const override {
+				return distrib.min();
+			}
+
+			/**
+			 * \copydoc fpmas::api::random::Distribution::max()
+			 */
+			result_type max() const override {
+				return distrib.max();
+			}
 	};
 
 	/**

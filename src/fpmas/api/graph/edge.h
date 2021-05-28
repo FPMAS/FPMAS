@@ -78,7 +78,7 @@ namespace fpmas { namespace api { namespace graph {
 			 *
 			 * @return pointer to source node
 			 */
-			virtual NodeType* const getSourceNode() const = 0;
+			virtual NodeType* getSourceNode() const = 0;
 
 			/**
 			 * Sets the target node of this edge.
@@ -92,7 +92,7 @@ namespace fpmas { namespace api { namespace graph {
 			 *
 			 * @return pointer to target node
 			 */
-			virtual NodeType* const getTargetNode() const = 0;
+			virtual NodeType* getTargetNode() const = 0;
 
 			virtual ~Edge() {};
 	};

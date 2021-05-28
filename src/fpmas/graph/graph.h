@@ -39,6 +39,22 @@ namespace fpmas { namespace graph {
 				EdgeMap edges;
 
 			public:
+				/**
+				 * Graph default constructor.
+				 */
+				Graph() {}
+				Graph(const Graph<NodeType, EdgeType>&) = delete;
+				Graph<NodeType, EdgeType>& operator=(const Graph<NodeType, EdgeType>&) = delete;
+
+				/**
+				 * Graph move constructor.
+				 */
+				Graph(Graph<NodeType, EdgeType>&& graph);
+				/**
+				 * Graph move assignment operator.
+				 */
+				Graph<NodeType, EdgeType>& operator=(Graph<NodeType, EdgeType>&&);
+
 				void insert(NodeType*) override;
 				void insert(EdgeType*) override;
 
@@ -48,15 +64,33 @@ namespace fpmas { namespace graph {
 				void addCallOnInsertNode(api::utils::Callback<NodeType*>* callback) override {
 					insert_node_callbacks.push_back(callback);
 				}
+
+				std::vector<api::utils::Callback<NodeType*>*> onInsertNodeCallbacks() const override {
+					return insert_node_callbacks;
+				}
+
 				void addCallOnEraseNode(api::utils::Callback<NodeType*>* callback) override {
 					erase_node_callbacks.push_back(callback);
+				}
+
+				std::vector<api::utils::Callback<NodeType*>*> onEraseNodeCallbacks() const override {
+					return erase_node_callbacks;
 				}
 
 				void addCallOnInsertEdge(api::utils::Callback<EdgeType*>* callback) override {
 					insert_edge_callbacks.push_back(callback);
 				}
+
+				std::vector<api::utils::Callback<EdgeType*>*> onInsertEdgeCallbacks() const override {
+					return insert_edge_callbacks;
+				}
+
 				void addCallOnEraseEdge(api::utils::Callback<EdgeType*>* callback) override {
 					erase_edge_callbacks.push_back(callback);
+				}
+
+				std::vector<api::utils::Callback<EdgeType*>*> onEraseEdgeCallbacks() const override {
+					return erase_edge_callbacks;
 				}
 
 				// Node getters
@@ -75,6 +109,39 @@ namespace fpmas { namespace graph {
 	};
 
 	template<typename NodeType, typename EdgeType>
+		Graph<NodeType, EdgeType>::Graph(Graph<NodeType, EdgeType>&& graph) {
+			this->nodes = std::move(graph.nodes);
+			this->edges = std::move(graph.edges);
+			this->insert_node_callbacks = std::move(graph.insert_node_callbacks);
+			this->insert_edge_callbacks = std::move(graph.insert_edge_callbacks);
+			this->erase_node_callbacks = std::move(graph.erase_node_callbacks);
+			this->erase_edge_callbacks = std::move(graph.erase_edge_callbacks);
+		}
+
+	template<typename NodeType, typename EdgeType>
+		Graph<NodeType, EdgeType>& Graph<NodeType, EdgeType>::operator=(Graph<NodeType, EdgeType>&& graph) {
+			this->clear();
+			for(auto callback : insert_node_callbacks)
+				delete callback;
+			for(auto callback : erase_node_callbacks)
+				delete callback;
+			for(auto callback : insert_edge_callbacks)
+				delete callback;
+			for(auto callback : erase_edge_callbacks)
+				delete callback;
+
+			this->nodes = std::move(graph.nodes);
+			this->edges = std::move(graph.edges);
+			this->insert_node_callbacks = std::move(graph.insert_node_callbacks);
+			this->insert_edge_callbacks = std::move(graph.insert_edge_callbacks);
+			this->erase_node_callbacks = std::move(graph.erase_node_callbacks);
+			this->erase_edge_callbacks = std::move(graph.erase_edge_callbacks);
+
+			return *this;
+		}
+
+
+	template<typename NodeType, typename EdgeType>
 		void Graph<NodeType, EdgeType>::insert(NodeType* node) {
 			FPMAS_LOGD(-1, "GRAPH", "Insert node %s", FPMAS_C_STR(node->getId()));
 			this->nodes.insert({node->getId(), node});
@@ -85,8 +152,8 @@ namespace fpmas { namespace graph {
 	template<typename NodeType, typename EdgeType>
 		void Graph<NodeType, EdgeType>::insert(EdgeType* edge) {
 			FPMAS_LOGD(
-					-1, "GRAPH", "Insert edge %s (%p) (from %s to %s)",
-					FPMAS_C_STR(edge->getId()), edge,
+					-1, "GRAPH", "Insert edge %s-{%i} (%p) (from %s to %s)",
+					FPMAS_C_STR(edge->getId()), edge->getLayer(), edge,
 					FPMAS_C_STR(edge->getSourceNode()->getId()),
 					FPMAS_C_STR(edge->getTargetNode()->getId())
 					);
@@ -135,8 +202,8 @@ namespace fpmas { namespace graph {
 		void Graph<NodeType, EdgeType>::erase(EdgeType* edge) {
 			auto id = edge->getId();
 			FPMAS_LOGD(
-					-1, "GRAPH", "Erase edge %s (%p) (from %s to %s)",
-					FPMAS_C_STR(id), edge,
+					-1, "GRAPH", "Erase edge %s-{%i} (%p) (from %s to %s)",
+					FPMAS_C_STR(id), edge->getLayer(), edge,
 					FPMAS_C_STR(edge->getSourceNode()->getId()),
 					FPMAS_C_STR(edge->getTargetNode()->getId())
 					);
@@ -195,19 +262,19 @@ namespace fpmas { namespace graph {
 	template<typename NodeType, typename EdgeType>
 		void Graph<NodeType, EdgeType>::clear() {
 			// This is VERY hacky.
-			std::vector<EdgeType*> edges;
+			std::vector<EdgeType*> _edges;
 			for(auto edge : this->edges)
-				edges.push_back(edge.second);
+				_edges.push_back(edge.second);
 
-			for(auto edge : edges) {
+			for(auto edge : _edges) {
 				erase(edge);
 			}
 
-			std::vector<NodeType*> nodes;
+			std::vector<NodeType*> _nodes;
 			for(auto node : this->nodes)
-				nodes.push_back(node.second);
+				_nodes.push_back(node.second);
 
-			for(auto node : nodes) {
+			for(auto node : _nodes) {
 				erase(node);
 			}
 		}

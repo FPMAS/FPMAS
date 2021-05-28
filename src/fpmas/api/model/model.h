@@ -12,6 +12,8 @@
 #include "fpmas/api/utils/ptr_wrapper.h"
 
 namespace fpmas { namespace api {namespace model {
+	using api::graph::DistributedId;
+
 	class Agent;
 	class AgentTask;
 	class AgentPtr;
@@ -123,36 +125,111 @@ namespace fpmas { namespace api {namespace model {
 	class Agent {
 		public:
 			/**
+			 * @deprecated
 			 * Returns the ID of the AgentGroup to which this Agent belong.
+			 *
+			 * This method is deprecated and will be removed in a next release.
+			 * Use groupIds() instead.
 			 *
 			 * @return group id
 			 */
+			[[deprecated]]
 			virtual GroupId groupId() const = 0;
+
 			/**
+			 * Returns ids of AgentGroups to which the Agent belong.
+			 *
+			 * @return list of group ids
+			 */
+			virtual std::vector<GroupId> groupIds() const = 0;
+
+			/**
+			 * @deprecated
 			 * Sets this Agent group ID.
+			 *
+			 * This method is deprecated and will be removed in a next release.
+			 * Use addGroupId() instead.
 			 *
 			 * @param id agent group id 
 			 */
+			[[deprecated]]
 			virtual void setGroupId(GroupId id) = 0;
+
+			/**
+			 * Adds `id` to this Agent's group ids.
+			 *
+			 * @param id agent group id 
+			 */
+			virtual void addGroupId(GroupId id) = 0;
+
+			/**
+			 * Removes `id` from this Agent's group ids.
+			 *
+			 * @param id agent group id
+			 */
+			virtual void removeGroupId(GroupId id) = 0;
 
 
 			/**
+			 * @deprecated
 			 * Returns a pointer to the AgentGroup to which this Agent belong.
+			 *
+			 * This method is deprecated and will be removed in a next release.
+			 * Use groups() instead.
 			 *
 			 * @return pointer to agent group
 			 */
+			[[deprecated]]
 			virtual AgentGroup* group() = 0;
 			/**
 			 * \copydoc group()
 			 */
+			[[deprecated]]
 			virtual const AgentGroup* group() const = 0;
+
 			/**
+			 * Returns a list of \AgentGroups to which this Agent belong.
+			 *
+			 * @return agent group list
+			 */
+			virtual std::vector<AgentGroup*> groups() = 0;
+
+			/**
+			 * \copydoc groups()
+			 */
+			virtual std::vector<const AgentGroup*> groups() const = 0;
+
+			/**
+			 * @deprecated
 			 * Sets the internal pointer of the AgentGroup to which this Agent
+			 * belong.
+			 *
+			 * This method is deprecated and will be removed in a next release.
+			 * Use addGroup() instead.
+			 *
+			 * @param group agent group
+			 */
+			[[deprecated]]
+			virtual void setGroup(AgentGroup* group) = 0;
+
+			/**
+			 * Adds `group` to the list of \AgentGroups to which this Agent
 			 * belong.
 			 *
 			 * @param group agent group
 			 */
-			virtual void setGroup(AgentGroup* group) = 0;
+			virtual void addGroup(AgentGroup* group) = 0;
+
+			/**
+			 * Removes `group` from the list of \AgentGroups to wich this Agent
+			 * belong.
+			 *
+			 * Morever, the entry corresponding to this `group`'s id is removed
+			 * from tasks().
+			 *
+			 * @param group agent group
+			 */
+			virtual void removeGroup(AgentGroup* group) = 0;
 
 			/**
 			 * Returns the ID of the type of this Agent.
@@ -176,12 +253,37 @@ namespace fpmas { namespace api {namespace model {
 			/**
 			 * Moves the specified agent into this.
 			 *
+			 * The specified `agent` is assumed to be an updated version of
+			 * this agent.
+			 *
 			 * In the move process, the following fields of "this" host agent
-			 * keep unchanged, and so are note move from `agent` to this :
-			 * - group()
-			 * - task()
+			 * keep unchanged, and so are not moved from `agent` to this :
 			 * - node()
 			 * - model()
+			 *
+			 * groups() and tasks() fields are particularly handled such as the
+			 * `agent`s groupIds() is assumed to be up to date and synchronized
+			 * with this groupIds().
+			 *
+			 * More particularly:
+			 * - this agent is added to groups corresponding to ids contained in
+			 *   `agent->groupIds()` but not in `this->groupIds()` (see
+			 *   AgentGroup::add())
+			 * - this agent is removed from groups corresponding to ids
+			 *   contained in `this->groupIds()` but not in `agent->groupIds()`
+			 *   (see AgentGroup::remove())
+			 * - other groups are left unchanged.
+			 *
+			 * `this->groupIds()` is also updated according to the previous
+			 * rules.
+			 *
+			 * tasks() are assumed to stay consistent with the rules expressed
+			 * above, since tasks are bound to agent groups to which the agent
+			 * belong. Those tasks are updated automatically by
+			 * AgentGroup::add() and AgentGroup::remove().
+			 *
+			 * Other fields are moved according to implementation defined
+			 * rules.
 			 *
 			 * @param agent agent to move
 			 */
@@ -224,22 +326,61 @@ namespace fpmas { namespace api {namespace model {
 
 			/**
 			 * Returns a pointer to the AgentTask associated to this Agent,
-			 * that is used to execute the Agent (thanks to the act()
-			 * function).
+			 * that is used to execute the Agent.
 			 *
 			 * @return agent task
 			 */
+			[[deprecated]]
 			virtual AgentTask* task() = 0; 
 			/**
 			 * \copydoc task()
 			 */
+			[[deprecated]]
 			virtual const AgentTask* task() const = 0; 
 			/**
 			 * Sets the AgentTask associated to this Agent.
 			 *
 			 * @param task agent task
 			 */
+			[[deprecated]]
 			virtual void setTask(AgentTask* task) = 0;
+
+			/**
+			 * Returns the AgentTask associated to this Agent in the AgentGroup
+			 * corresponding to `id`.
+			 *
+			 * Behavior is undefined if the Agent does not belong to an
+			 * AgentGroup with the specified `id`.
+			 *
+			 * @param id group id
+			 */
+			virtual AgentTask* task(GroupId id) = 0;
+			/**
+			 * \copydoc task(int)
+			 */
+			virtual const AgentTask* task(GroupId id) const = 0; 
+
+			/**
+			 * Sets the AgentTask associated to this Agent in the AgentGroup
+			 * corresponding to `id`.
+			 *
+			 * Behavior is undefined if the Agent does not belong to an
+			 * AgentGroup with the specified `id`.
+			 *
+			 * @param id group id
+			 * @param task agent task
+			 */
+			virtual void setTask(GroupId id, AgentTask* task) = 0;
+
+			/**
+			 * Returns a map containing all the tasks associated to this Agent
+			 * in the \AgentGroups to which it belongs.
+			 *
+			 * Exactly one task is associated to the agent in each group.
+			 *
+			 * @return tasks associated to this agent
+			 */
+			virtual const std::unordered_map<GroupId, AgentTask*>& tasks() = 0;
 
 			/**
 			 * Executes the behavior of the Agent.
@@ -266,16 +407,32 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @return task's agent
 			 */
-			//virtual const Agent* agent() const = 0;
 			virtual const AgentPtr& agent() const = 0;
-			/**
-			 * Sets the internal pointer of the associated Agent.
-			 *
-			 * @param agent task's agent
-			 */
-			//virtual void setAgent(AgentPtr* agent) = 0;
-
+			
 			virtual ~AgentTask(){}
+	};
+
+	/**
+	 * Agent Behavior API.
+	 *
+	 * The purpose of a Behavior is to be _executed_ on \Agents, for example
+	 * calling a user specified method on the Agent to execute.
+	 *
+	 * A single Behavior instance might be executed on many \Agents: in
+	 * practice, each AgentGroup is bound to a Behavior.
+	 *
+	 * @see Model::buildGroup(GroupId, const Behavior&)
+	 */
+	class Behavior {
+		public:
+			/**
+			 * Executes this behavior on the specified `agent`.
+			 *
+			 * @param agent on which this behavior must be executed.
+			 */
+			virtual void execute(Agent* agent) const = 0;
+
+			virtual ~Behavior(){}
 	};
 
 	/**
@@ -303,24 +460,70 @@ namespace fpmas { namespace api {namespace model {
 			virtual GroupId groupId() const = 0;
 
 			/**
+			 * Returns the Behavior associated to this group.
+			 *
+			 * @return group's behavior
+			 */
+			virtual const Behavior& behavior() = 0;
+
+			/**
 			 * Adds a new Agent to this group.
 			 *
-			 * Also builds a new \AgentNode into the current \AgentGraph and
-			 * associates it to the Agent.
+			 * \AgentGroups to which an `agent` is added take ownership of the
+			 * `agent`, that must be dynamically allocated (using a `new`
+			 * statement). The `agent` lives while it belongs to at least one
+			 * group, and is deleted when it is removed from the last group.
+			 *
+			 * add() builds a new \AgentNode into the current \AgentGraph and
+			 * associates it to the Agent if the `agent` was not contained in
+			 * any group yet.
+			 * 
+			 * This group's groupId() is added to `agent`s Agent::groupIds().
+			 *
+			 * A task is also bound to the `agent` and Agent::groups() is
+			 * updated as defined in insert().
+			 *
+			 * Moreover, if the `agent` is \LOCAL, the previous task is added
+			 * to agentExecutionJob().
+			 *
+			 * In consequence, it is possible to dynamically add() \LOCAL
+			 * agents to groups.
+			 *
+			 * Notice that when the `agent` is not bound to a node yet, i.e.
+			 * this is the first group the agent is inserted into so that a new
+			 * node is built, the `agent` automatically becomes \LOCAL, since
+			 * the new node is built locally.
+			 *
+			 * If a \DISTANT `agent` is added to the group, it is just inserted
+			 * in the group.  However, this is a mechanic that must be used
+			 * only internally, since adding a \DISTANT agent to the group is
+			 * not guaranteed to report the operation on other processes.
 			 *
 			 * @param agent agent to add
 			 */
 			virtual void add(Agent* agent) = 0;
+
 			/**
 			 * Removes an Agent from this group.
 			 *
-			 * The Agent is completely removed from the simulation, so the
-			 * associated \AgentNode is also globally removed from the
-			 * \AgentGraph.
+			 * If this was the last group containing the Agent, it is
+			 * completely removed from the simulation, so the associated
+			 * \AgentNode is also globally removed from the \AgentGraph.
+			 *
+			 * Else, the agent is simply removed from this group as defined in
+			 * erase().
+			 *
+			 * If the `agent` is \LOCAL, the task associated to this group's
+			 * behavior() is removed from agentExecutionJob().
 			 *
 			 * @param agent agent to remove
 			 */
 			virtual void remove(Agent* agent) = 0;
+
+			/**
+			 * Removes all local agents from this group.
+			 */
+			virtual void clear() = 0;
 
 			/**
 			 * Inserts an Agent into this AgentGroup.
@@ -328,8 +531,17 @@ namespace fpmas { namespace api {namespace model {
 			 * This function is only used during the node migration process,
 			 * and is not supposed to be used by the final user.
 			 *
-			 * Contrary to add(), this method assumes that an AgentNode has
+			 * Contrary to add(), this method assumes that an \AgentNode has
 			 * already been built for the Agent.
+			 *
+			 * When this method is called, it is assumed that `agent`'s
+			 * Agent::groupIds() list already contains this groupId(), so the
+			 * `agent` should be inserted in the group.
+			 *
+			 * Upon return, `agent`'s Agent::groups() must be updated, and a
+			 * task that execute behavior() on this agent must be bound to the
+			 * agent. The corresponding task is then accessible from
+			 * Agent::task(GroupId) and Agent::tasks().
 			 *
 			 * @param agent agent to insert into this group
 			 */
@@ -341,7 +553,11 @@ namespace fpmas { namespace api {namespace model {
 			 * and is not supposed to be used by the final user.
 			 *
 			 * Contrary to remove(), this method does not globally removes the
-			 * Agent (and its associated AgentNode) from the simulation.
+			 * Agent (and its associated \AgentNode) from the simulation.
+			 *
+			 * Upon return, `agent`'s Agent::groupIds() and Agent::groups()
+			 * must be updated, and the task previously bound to the agent by
+			 * insert() must be unbound.
 			 *
 			 * @param agent agent to erase from this group
 			 */
@@ -352,10 +568,11 @@ namespace fpmas { namespace api {namespace model {
 			 * including `DISTANT` representations of Agents not executed on
 			 * the current process.
 			 *
-			 * The returned list is **invalidated** by the following operations
-			 * :
+			 * The returned list is **invalidated** by the following operations:
 			 * - fpmas::api::graph::DistributedGraph::synchronize()
-			 * - fpmas::api::synchro::Mutex::read() or fpmas::api::synchro::Mutex::acquire() on any Agent of the list.
+			 * - fpmas::api::synchro::Mutex::read() or
+			 *   fpmas::api::synchro::Mutex::acquire() on any Agent of the
+			 *   list.
 			 *
 			 * @return \Agents in this group
 			 */
@@ -366,10 +583,11 @@ namespace fpmas { namespace api {namespace model {
 			 * Returns the list of \LOCAL Agents currently in this AgentGroup,
 			 * that are executed on the current process.
 			 *
-			 * The returned list is **invalidated** by the following operations
-			 * :
+			 * The returned list is **invalidated** by the following operations:
 			 * - fpmas::api::graph::DistributedGraph::synchronize()
-			 * - fpmas::api::synchro::Mutex::read() or fpmas::api::synchro::Mutex::acquire() on any Agent of the list.
+			 * - fpmas::api::synchro::Mutex::read() or
+			 *   fpmas::api::synchro::Mutex::acquire() on any Agent of the
+			 *   list.
 			 *
 			 * @return \LOCAL \Agents in this group
 			 */
@@ -393,15 +611,65 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * See the complete api::scheduler::Scheduler interface for more
 			 * scheduling options.
+			 *
+			 * This method as been deprecated and will be removed in a next
+			 * release. Use agentExecutionJob() or jobs() instead, depending on
+			 * use case.
 			 */
+			[[deprecated]]
 			virtual api::scheduler::Job& job() = 0;
 			/**
 			 * \copydoc job()
 			 */
+			[[deprecated]]
 			virtual const api::scheduler::Job& job() const = 0;
+
+			/**
+			 * Returns a reference to the internal \Job specifically used to
+			 * execute behavior() on the agents() of the group.
+			 *
+			 * However this job is not intended to be scheduled directly: use
+			 * jobs() instead.
+			 *
+			 * @return agent execution job
+			 * @see jobs()
+			 */
+			virtual api::scheduler::Job& agentExecutionJob() = 0;
+
+			/**
+			 * \copydoc agentExecutionJob()
+			 */
+			virtual const api::scheduler::Job& agentExecutionJob() const = 0;
+
+			/**
+			 * Returns the list of \Jobs associated to this group.
+			 *
+			 * This list must at least contain the agentExecutionJob(). Extra
+			 * processes might be added internally to ensure the proper
+			 * execution of \Agents: in consequence, this list of job can be
+			 * safely scheduled to plan agents execution.
+			 *
+			 * @par Example
+			 * ```cpp
+			 * // Schedules agent_group to be executed from iteration 10 with a
+			 * // period of 2
+			 * scheduler.schedule(10, 2, agent_group.jobs());
+			 * ```
+			 *
+			 * See the complete api::scheduler::Scheduler interface for more
+			 * scheduling options.
+			 *
+			 * @return list of jobs associated to this group
+			 */
+			virtual api::scheduler::JobList jobs() const = 0;
 
 			virtual ~AgentGroup(){}
 	};
+
+	/**
+	 * A type used to represent lists of \AgentGroups.
+	 */
+	typedef std::vector<std::reference_wrapper<AgentGroup>> GroupList;
 
 	/**
 	 * Model API.
@@ -410,6 +678,15 @@ namespace fpmas { namespace api {namespace model {
 	 * FPMAS Multi-Agent simulation.
 	 */
 	class Model {
+		protected:
+			/**
+			 * Inserts an AgentGroup into this model.
+			 *
+			 * @param id id of the group
+			 * @param group agent group to insert
+			 */
+			virtual void insert(GroupId id, AgentGroup* group) = 0;
+
 		public:
 			/**
 			 * Model's \AgentGraph.
@@ -417,18 +694,35 @@ namespace fpmas { namespace api {namespace model {
 			 * @return agent graph
 			 */
 			virtual AgentGraph& graph() = 0;
+
+			/**
+			 * \copydoc graph()
+			 */
+			virtual const AgentGraph& graph() const = 0;
+
 			/**
 			 * Model's \Scheduler.
 			 *
 			 * @return scheduler
 			 */
 			virtual api::scheduler::Scheduler& scheduler() = 0;
+
+			/**
+			 * \copydoc scheduler()
+			 */
+			virtual const api::scheduler::Scheduler& scheduler() const = 0;
+
 			/**
 			 * Model's \Runtime, used to execute the scheduler().
 			 *
 			 * @return runtime
 			 */
 			virtual api::runtime::Runtime& runtime() = 0;
+
+			/**
+			 * \copydoc runtime()
+			 */
+			virtual const api::runtime::Runtime& runtime() const = 0;
 
 			/**
 			 * A predefined LoadBalancing \Job.
@@ -451,8 +745,12 @@ namespace fpmas { namespace api {namespace model {
 			/**
 			 * Builds a new AgentGroup associated to this Model.
 			 *
-			 * The user can add its own \Agents to the built groups, and
-			 * schedule it so that \Agents will be executed.
+			 * The user can add its own \Agents to the built group, and
+			 * schedule it so that \Agents will be executed. More precisely,
+			 * the default behavior defined by this group calls the
+			 * Agent::act() method, that do nothing by default but can be
+			 * overriden by the user. Other behaviors can be specified using
+			 * the addGroup(GroupId, const Behavior&) method.
 			 *
 			 * Notice that each AgentGroup is expected to be associated to a
 			 * unique GroupId. The FPMAS_DEFINE_GROUPS() macro can be used to
@@ -484,8 +782,41 @@ namespace fpmas { namespace api {namespace model {
 			 * // Schedules Agents of group_2 to be executed each 2 iterations
 			 * model.scheduler().schedule(0, 2, group_2.job());
 			 * ```
+			 *
+			 * @param id unique group id
 			 */
 			virtual AgentGroup& buildGroup(GroupId id) = 0;
+
+			/**
+			 * Builds a new AgentGroup associated to this Model.
+			 *
+			 * The user can add its own \Agents to the built group, and
+			 * schedule it so that \Agents will be executed.
+			 *
+			 * Jobs generated by the build AgentGroup will execute the
+			 * specified `behavior` on agents contained in the group.
+			 *
+			 * The `behavior`s storage duration must be greater or equal to
+			 * this AgentGroup storage duration.
+			 *
+			 * Each AgentGroup is expected to be associated to a unique
+			 * GroupId. The FPMAS_DEFINE_GROUPS() macro can be used to easily
+			 * generate unique GroupIds.
+			 *
+			 * @param id unique group id
+			 * @param behavior behavior to execute on agents of the group
+			 */
+			virtual AgentGroup& buildGroup(GroupId id, const Behavior& behavior) = 0;
+
+			/**
+			 * Removes the specified group from the model.
+			 *
+			 * All local agents are removed from group, and the group is
+			 * deleted.
+			 *
+			 * @param group group to remove from the model
+			 */
+			virtual void removeGroup(AgentGroup& group) = 0;
 
 			/**
 			 * Gets a reference to an AgentGroup previously created with
@@ -526,7 +857,34 @@ namespace fpmas { namespace api {namespace model {
 			 */
 			virtual void unlink(AgentEdge* edge) = 0;
 
+			/**
+			 * Returns the MPI communicator used by this model.
+			 *
+			 * @return MPI communicator
+			 */
+			virtual api::communication::MpiCommunicator& getMpiCommunicator() = 0;
+
+			/**
+			 * \copydoc getMpiCommunicator()
+			 */
+			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
+
+			/**
+			 * Erases all agents from the Model.
+			 *
+			 * This is assumed to be performed by all the processes in the same
+			 * epoch, even if the operation itself does not necessarily
+			 * requires communications (since it is assumed that all agents are
+			 * erased from any process anyway).
+			 */
+			virtual void clear() = 0;
+		public:
 			virtual ~Model(){}
 	};
+
+	/**
+	 * AgentPtr LoadBalancing specialization.
+	 */
+	using LoadBalancing = fpmas::api::graph::LoadBalancing<AgentPtr>;
 }}}
 #endif

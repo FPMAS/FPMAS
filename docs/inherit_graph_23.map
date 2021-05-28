@@ -1,6 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="216,29,400,100"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1graph_1_1DistributedNode.html" title=" " alt="" coords="448,84,617,125"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1graph_1_1Node.html" title=" " alt="" coords="5,117,168,173"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1graph_1_1DistributedNode.html" title=" " alt="" coords="235,124,381,165"/>
+<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1model_1_1AgentGroup.html" title=" " alt="" coords="5,39,140,80"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1MoveAgentGroup.html" title=" " alt="" coords="188,5,387,47"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html" title=" " alt="" coords="217,71,357,112"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1MoveAgentGroup.html" title=" " alt="" coords="435,5,645,47"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1detail_1_1AgentGroup.html" title=" " alt="" coords="470,71,610,112"/>
 </map>

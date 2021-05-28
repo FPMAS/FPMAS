@@ -1,34 +1,34 @@
 #include "fpmas/graph/graph_builder.h"
 #include "fpmas/random/generator.h"
 #include "fpmas/random/distribution.h"
-#include "../mocks/graph/mock_distributed_graph.h"
-#include "../mocks/random/mock_random.h"
+#include "graph/mock_distributed_graph.h"
+#include "random/mock_random.h"
 
 using namespace testing;
 
 class FakeNodeBuilder : public fpmas::api::graph::NodeBuilder<int> {
 	public:
-	std::vector<fpmas::api::graph::DistributedNode<int>*> nodes;
-	std::size_t count;
+		std::vector<fpmas::api::graph::DistributedNode<int>*> nodes;
+		std::size_t count;
 
-	FakeNodeBuilder(std::size_t count)
-		: count(count) {}
+		FakeNodeBuilder(std::size_t count)
+			: count(count) {}
 
-	fpmas::api::graph::DistributedNode<int>* buildNode(fpmas::api::graph::DistributedGraph<int>&) override {
-		auto node = new MockDistributedNode<int>({0, 0});
-		nodes.push_back(node);
-		count--;
-		return node;
-	}
+		fpmas::api::graph::DistributedNode<int>* buildNode(fpmas::api::graph::DistributedGraph<int>&) override {
+			auto node = new MockDistributedNode<int>({0, 0});
+			nodes.push_back(node);
+			count--;
+			return node;
+		}
 
-	std::size_t nodeCount() override {
-		return count;
-	}
+		std::size_t nodeCount() override {
+			return count;
+		}
 
-	~FakeNodeBuilder() {
-		for(auto node : nodes)
-			delete node;
-	}
+		~FakeNodeBuilder() {
+			for(auto node : nodes)
+				delete node;
+		}
 };
 
 class MockLink {
@@ -42,9 +42,9 @@ class MockLink {
 			: fake_node_builder(fake_node_builder) {}
 
 		fpmas::api::graph::DistributedEdge<int>* link(
-			fpmas::api::graph::DistributedNode<int>* src,
-			fpmas::api::graph::DistributedNode<int>* tgt,
-			Unused) {
+				fpmas::api::graph::DistributedNode<int>* src,
+				fpmas::api::graph::DistributedNode<int>* tgt,
+				Unused) {
 			edges[src].insert(tgt);
 			return nullptr;
 		}
@@ -87,7 +87,7 @@ class UniformGraphBuilder : public ::testing::Test {
 			EXPECT_CALL(mock_graph, link(_, _, layer))
 				.Times(node_builder.nodeCount() * std::min(node_builder.nodeCount()-1, K))
 				.WillRepeatedly(Invoke(&mock_link, &MockLink::link));
-		
+
 			return mock_link;
 		}
 
@@ -147,7 +147,7 @@ class ClusteredGraphBuilder : public ::testing::Test {
 		MockDistributedGraph<int> mock_graph;
 
 		fpmas::graph::ClusteredGraphBuilder<int> graph_builder
-			{generator, edge_dist, x_dist, y_dist};
+		{generator, edge_dist, x_dist, y_dist};
 
 
 };
@@ -233,10 +233,10 @@ class BipartiteGraphBuilder : public ::testing::Test {
 
 		std::vector<fpmas::api::graph::DistributedNode<int>*> base_nodes {{
 			new MockDistributedNode<int>, new MockDistributedNode<int>,
-			new MockDistributedNode<int>, new MockDistributedNode<int>
+				new MockDistributedNode<int>, new MockDistributedNode<int>
 		}};
 		fpmas::graph::BipartiteGraphBuilder<int> graph_builder
-			{generator, edge_dist, base_nodes};
+		{generator, edge_dist, base_nodes};
 
 		void TearDown() override {
 			for(auto node : base_nodes)
@@ -265,7 +265,7 @@ TEST_F(BipartiteGraphBuilder, regular_build) {
 	ASSERT_THAT(built_nodes, UnorderedElementsAreArray(node_builder.nodes));
 
 	mock_link.check(base_nodes, K);
-};
+}
 
 TEST_F(BipartiteGraphBuilder, build_without_enough_nodes) {
 	std::size_t K = 6;
@@ -293,4 +293,4 @@ TEST_F(BipartiteGraphBuilder, build_without_enough_nodes) {
 	for(auto node : mock_link.edges) {
 		ASSERT_THAT(node.second, UnorderedElementsAreArray(base_nodes));
 	}
-};
+}

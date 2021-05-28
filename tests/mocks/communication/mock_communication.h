@@ -43,6 +43,10 @@ class MockMpiCommunicator : public fpmas::api::communication::MpiCommunicator {
 			((std::unordered_map<int, fpmas::api::communication::DataPack>), MPI_Datatype), (override));
 		MOCK_METHOD(std::vector<fpmas::api::communication::DataPack>, gather, 
 				(fpmas::api::communication::DataPack, MPI_Datatype, int), (override));
+		MOCK_METHOD(std::vector<fpmas::api::communication::DataPack>, allGather, 
+				(fpmas::api::communication::DataPack, MPI_Datatype), (override));
+		MOCK_METHOD(fpmas::api::communication::DataPack, bcast, 
+				(fpmas::api::communication::DataPack, MPI_Datatype, int), (override));
 		MOCK_METHOD(void, barrier, (), (override));
 };
 
@@ -52,6 +56,8 @@ class MockMpi : public fpmas::api::communication::TypedMpi<T> {
 		MockMpi(fpmas::api::communication::MpiCommunicator&) {
 			EXPECT_CALL(*this, migrate).Times(AnyNumber());
 		}
+		MockMpi(MockMpi&&) {}
+		MockMpi& operator=(MockMpi&&) {return *this;}
 
 		MOCK_METHOD(
 			(std::unordered_map<int, std::vector<T>>), 
@@ -59,7 +65,15 @@ class MockMpi : public fpmas::api::communication::TypedMpi<T> {
 			((std::unordered_map<int, std::vector<T>>)),
 			(override)
 			);
+		MOCK_METHOD(
+			(std::unordered_map<int, T>), 
+			allToAll,
+			((std::unordered_map<int, T>)),
+			(override)
+			);
 		MOCK_METHOD(std::vector<T>, gather, (const T&, int), (override));
+		MOCK_METHOD(std::vector<T>, allGather, (const T&), (override));
+		MOCK_METHOD(T, bcast, (const T&, int), (override));
 		MOCK_METHOD(void, send, (const T&, int, int), (override));
 		MOCK_METHOD(void, Issend, (const T&, int, int, fpmas::api::communication::Request&), (override));
 		MOCK_METHOD(void, probe, (int, int, fpmas::api::communication::Status&), (override));

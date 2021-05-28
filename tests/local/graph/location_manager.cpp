@@ -1,22 +1,15 @@
 #include "fpmas/graph/location_manager.h"
 
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/synchro/mock_mutex.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_node.h"
+#include "synchro/mock_mutex.h"
 
-using ::testing::UnorderedElementsAre;
-using ::testing::ElementsAre;
-using ::testing::IsEmpty;
-using ::testing::Key;
-using ::testing::Pair;
-using ::testing::AnyOf;
+using namespace testing;
 
 using fpmas::graph::LocationManager;
 
-class LocationManagerTest : public ::testing::Test {
+class LocationManagerTest : public Test {
 	protected:
-		typedef MockDistributedNode<int> MockNode;
-
 		typedef typename
 			LocationManager<int>::NodeMap
 			NodeMap;
@@ -29,7 +22,7 @@ class LocationManagerTest : public ::testing::Test {
 };
 
 TEST_F(LocationManagerTest, setLocal) {
-	MockNode mock_node {DistributedId(5, 4)};
+	MockDistributedNode<int, NiceMock> mock_node {DistributedId(5, 4)};
 	EXPECT_CALL(mock_node, setState(LocationState::LOCAL));
 	EXPECT_CALL(mock_node, setLocation(2));
 
@@ -42,7 +35,7 @@ TEST_F(LocationManagerTest, setLocal) {
 }
 
 TEST_F(LocationManagerTest, setDistant) {
-	MockNode mock_node {DistributedId(5, 4)};
+	MockDistributedNode<int, NiceMock> mock_node {DistributedId(5, 4)};
 	EXPECT_CALL(mock_node, setState(LocationState::DISTANT));
 	location_manager.setDistant(&mock_node);
 
@@ -53,7 +46,7 @@ TEST_F(LocationManagerTest, setDistant) {
 }
 
 TEST_F(LocationManagerTest, removeLocal) {
-	MockNode mock_node {DistributedId(5, 4)};
+	MockDistributedNode<int, NiceMock> mock_node {DistributedId(5, 4)};
 	EXPECT_CALL(mock_node, setState);
 	location_manager.setLocal(&mock_node);
 
@@ -62,7 +55,7 @@ TEST_F(LocationManagerTest, removeLocal) {
 }
 
 TEST_F(LocationManagerTest, removeDistant) {
-	MockNode mock_node {DistributedId(5, 4)};
+	MockDistributedNode<int, NiceMock> mock_node {DistributedId(5, 4)};
 	EXPECT_CALL(mock_node, setState);
 	location_manager.setDistant(&mock_node);
 
@@ -71,7 +64,7 @@ TEST_F(LocationManagerTest, removeDistant) {
 }
 
 TEST_F(LocationManagerTest, addManagedNode) {
-	MockNode mock_node {DistributedId(2, 0)};
+	MockDistributedNode<int, NiceMock> mock_node {DistributedId(2, 0)};
 	location_manager.addManagedNode(&mock_node, 2);
 	ASSERT_THAT(location_manager.getCurrentLocations(), ElementsAre(
 				Pair(DistributedId(2, 0), 2)
@@ -79,7 +72,7 @@ TEST_F(LocationManagerTest, addManagedNode) {
 }
 
 TEST_F(LocationManagerTest, removeManagedNode) {
-	MockNode mock_node {DistributedId(2, 0)};
+	MockDistributedNode<int, NiceMock> mock_node {DistributedId(2, 0)};
 	location_manager.addManagedNode(&mock_node, 2);
 
 	location_manager.removeManagedNode(&mock_node);
@@ -96,27 +89,27 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 		std::unordered_map<int, std::pair<DistributedId, int>>
 		location_map;
 
-		MockNode* nodes[3] = {
-			new MockNode(DistributedId(2, 0)),
-			new MockNode(DistributedId(2, 1)),
-			new MockNode(DistributedId(2, 2))
+		MockDistributedNode<int, NiceMock>* nodes[3] = {
+			new MockDistributedNode<int, NiceMock>(DistributedId(2, 0)),
+			new MockDistributedNode<int, NiceMock>(DistributedId(2, 1)),
+			new MockDistributedNode<int, NiceMock>(DistributedId(2, 2))
 		};
 
 
-		std::unordered_map<DistributedId, MockNode*> mock_local {
+		std::unordered_map<DistributedId, MockDistributedNode<int, NiceMock>*> mock_local {
 			// Node [2, 2], that was previously on proc 7, is now local
-			{DistributedId(2, 2), new MockNode(DistributedId(2, 2))},
+			{DistributedId(2, 2), new MockDistributedNode<int, NiceMock>(DistributedId(2, 2))},
 			// Other arbitrary node
-			{DistributedId(1, 4), new MockNode(DistributedId(1, 4))}
+			{DistributedId(1, 4), new MockDistributedNode<int, NiceMock>(DistributedId(1, 4))}
 		};
 
 		NodeMap local;
 		
-		std::unordered_map<DistributedId, MockNode*> distant {
+		std::unordered_map<DistributedId, MockDistributedNode<int, NiceMock>*> distant {
 			// Distant node with this proc has origin
-			{DistributedId(2, 1), new MockNode(DistributedId(2, 1))},
+			{DistributedId(2, 1), new MockDistributedNode<int, NiceMock>(DistributedId(2, 1))},
 			// Other arbitrary node
-			{DistributedId(4, 0), new MockNode(DistributedId(4, 0))}
+			{DistributedId(4, 0), new MockDistributedNode<int, NiceMock>(DistributedId(4, 0))}
 		};
 
 		void SetUp() override {
@@ -135,13 +128,13 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 			EXPECT_CALL(*mock_local.at(DistributedId(1, 4)), setLocation(2));
 
 			// Export [1, 4] location (this proc) to its origin proc (proc 1)
-			auto exportUpdateMatcher = ElementsAre(
+			auto export_update_matcher = ElementsAre(
 				Pair(1, ElementsAre(DistributedId(1, 4)))
 				);
 
 			// Received updates of node managed by this proc ([2, 0], [2, 1]),
 			// except for those located on this proc ([2, 2])
-			std::unordered_map<int, std::vector<DistributedId>> importMap {
+			std::unordered_map<int, std::vector<DistributedId>> import_map {
 				{1, {DistributedId(2, 0)}}, // [2, 0] is still on 1
 				{5, {DistributedId(2, 1)}} // [2, 1] is now on 5
 			};
@@ -151,14 +144,14 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 			EXPECT_CALL(*distant.at(DistributedId(2, 1)), setLocation(5));
 
 			// Mock comm
-			EXPECT_CALL(id_mpi, migrate(exportUpdateMatcher)
-				).WillOnce(Return(importMap));
+			EXPECT_CALL(id_mpi, migrate(export_update_matcher)
+				).WillOnce(Return(import_map));
 
 			// Request for location of distant nodes ([4, 0]) to their origin
 			// proc, except for those that have this proc as origin ([2, 1])
 			// since their location should have been updated in the previous
 			// step.
-			auto exportRequestsMatcher = ElementsAre(
+			auto export_requests_matcher = ElementsAre(
 				Pair(4, ElementsAre(DistributedId(4, 0)))
 				);
 
@@ -171,10 +164,10 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 			};
 
 			// Mock comm
-			EXPECT_CALL(id_mpi, migrate(exportRequestsMatcher))
+			EXPECT_CALL(id_mpi, migrate(export_requests_matcher))
 				.WillOnce(Return(importRequests));
 
-			auto exportResponsesMatcher = UnorderedElementsAre(
+			auto export_responses_matcher = UnorderedElementsAre(
 					// Previously updated locations sent to 0
 					Pair(0, UnorderedElementsAre(
 							std::pair<DistributedId, int> {DistributedId(2, 1), 5},
@@ -186,7 +179,7 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 							))
 					);
 			// Received location for [4, 0] from 4 : proc 9
-			std::unordered_map<int, std::vector<std::pair<DistributedId, int>>> importedResponses {
+			std::unordered_map<int, std::vector<std::pair<DistributedId, int>>> imported_responses {
 				{4, {{DistributedId(4, 0), 9}}}
 			};
 			
@@ -194,8 +187,8 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 			EXPECT_CALL(*distant.at(DistributedId(4, 0)), setLocation(9));
 
 			// Mock comm
-			EXPECT_CALL(location_mpi, migrate(exportResponsesMatcher))
-				.WillOnce(Return(importedResponses));
+			EXPECT_CALL(location_mpi, migrate(export_responses_matcher))
+				.WillOnce(Return(imported_responses));
 		}
 
 		void TearDown() override {

@@ -51,6 +51,20 @@ namespace fpmas { namespace synchro { namespace hard {
 				}
 
 			/**
+			 * Reference to the internal api::MutexServer instance.
+			 */
+			api::MutexServer<T>& mutexServer() {
+				return mutex_server;
+			}
+
+			/**
+			 * Reference to the internal api::LinkServer instance.
+			 */
+			api::LinkServer& linkServer() {
+				return link_server;
+			}
+
+			/**
 			 * Performs a reception cycle on the api::MutexServer AND on the
 			 * api::LinkServer.
 			 */

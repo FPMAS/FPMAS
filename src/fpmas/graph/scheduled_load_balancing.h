@@ -8,6 +8,10 @@
 #include "fpmas/api/graph/graph.h"
 #include "fpmas/api/runtime/runtime.h"
 #include "fpmas/scheduler/scheduler.h"
+#include "fpmas/api/graph/load_balancing.h"
+#include "fpmas/communication/communication.h"
+
+#include <set>
 
 namespace fpmas { namespace graph {
 	using api::graph::PartitionMap;
@@ -23,7 +27,7 @@ namespace fpmas { namespace graph {
 				api::graph::FixedVerticesLoadBalancing<T>& fixed_vertices_lb;
 				api::scheduler::Scheduler& scheduler;
 				api::runtime::Runtime& runtime;
-
+				
 			public:
 				/**
 				 * ScheduledLoadBalancing constructor.
@@ -49,19 +53,33 @@ namespace fpmas { namespace graph {
 		PartitionMap ScheduledLoadBalancing<T>::balance(NodeMap<T> nodes) {
 			scheduler::Epoch epoch;
 			scheduler.build(runtime.currentDate() + 1, epoch);
+			// Global node map
 			NodeMap<T> node_map;
+			// Nodes currently fixed
 			PartitionMap fixed_nodes;
+			// Current partition
 			PartitionMap partition;
+
 			for(const api::scheduler::Job* job : epoch) {
 				for(api::scheduler::Task* task : *job) {
 					if(api::scheduler::NodeTask<T>* node_task = dynamic_cast<api::scheduler::NodeTask<T>*>(task)) {
+						// Node is bound to a Task that will be executed in
+						// job. Only LOCAL nodes are considered in this
+						// process, since DISTANT nodes are never executed.
 						auto node = node_task->node();
 						node_map[node->getId()] = node;
 					}
 				}
+				// Partitions only the nodes that will be executed in this job,
+				// fixing nodes that will be executed in previous jobs (that
+				// are already partitionned). Notice that fixed_nodes is
+				// included in node_map.
 				partition = fixed_vertices_lb.balance(node_map, fixed_nodes);
+				// Fixes nodes currently partitionned
 				fixed_nodes = partition;
 			};
+			// Finally, partition all other nodes, that are not executed within
+			// this epoch, or that are not bound to any Task.
 			partition = fixed_vertices_lb.balance(nodes, fixed_nodes);
 			return partition;
 		}

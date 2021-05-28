@@ -16,7 +16,23 @@ namespace fpmas {
 		using api::model::AgentNode;
 		using api::model::AgentEdge;
 		using api::model::AgentPtr;
+		using api::model::GroupId;
 		using api::scheduler::JID;
+
+		/**
+		 * @deprecated
+		 *
+		 * A default api::model::Behavior that call api::model::Agent::act().
+		 *
+		 * Since api::model::Agent::act() might be removed in a next release,
+		 * this bahevior is deprecated: use Behavior instead.
+		 */
+		class DefaultBehavior : public api::model::Behavior {
+			public:
+				void execute(api::model::Agent* agent) const override {
+					agent->act();
+				}
+		};
 
 		/**
 		 * fpmas::model implementation details.
@@ -25,8 +41,11 @@ namespace fpmas {
 			/**
 			 * api::model::AgentTask implementation.
 			 */
-			class AgentTask : public api::model::AgentTask {
-				private:
+			class AgentTaskBase : public api::model::AgentTask {
+				protected:
+					/**
+					 * Internal agent pointer.
+					 */
 					api::model::AgentPtr& _agent;
 				public:
 					/**
@@ -34,18 +53,66 @@ namespace fpmas {
 					 *
 					 * @param agent_ptr agents that will be executed by this task
 					 */
-					AgentTask(api::model::AgentPtr& agent_ptr)
+					AgentTaskBase(api::model::AgentPtr& agent_ptr)
 						: _agent(agent_ptr) {}
 
 					const api::model::AgentPtr& agent() const override {
 						return _agent;
 					}
 
-					AgentNode* node() override
-					{return _agent->node();}
+					AgentNode* node() override {
+						return _agent->node();
+					}
+			};
+
+			/**
+			 * @deprecated
+			 *
+			 * Legacy agent task used to execute the api::model::Agent::act()
+			 * method at each run().
+			 *
+			 * This is no longer used, and will be removed in a next release.
+			 */
+			class AgentTask : public AgentTaskBase {
+				public:
+					/**
+					 * AgentTask constructor.
+					 *
+					 * @param agent_ptr agents that will be executed by this task
+					 */
+					AgentTask(api::model::AgentPtr& agent_ptr)
+						: AgentTaskBase(agent_ptr) {}
+
 
 					void run() override {
 						_agent->act();
+					}
+			};
+
+			/**
+			 * api::model::AgentTask implementation base on an
+			 * api::model::Behavior.
+			 */
+			class AgentBehaviorTask : public AgentTaskBase {
+				private:
+					const api::model::Behavior& behavior;
+
+				public:
+					/**
+					 * AgentBehaviorTask constructor.
+					 *
+					 * At each run(), `behavior` is applied to `agent`.
+					 *
+					 * @param behavior behavior to apply on `agent` each time
+					 * the task is run()
+					 * @param agent agent to which `behavior` must be applied
+					 * each time the task is run()
+					 */
+					AgentBehaviorTask(const api::model::Behavior& behavior, api::model::AgentPtr& agent)
+						: AgentTaskBase(agent), behavior(behavior) {}
+
+					void run() override {
+						behavior.execute(_agent.get());
 					}
 			};
 
@@ -243,11 +310,6 @@ namespace fpmas {
 			class LoadBalancingTask : public api::scheduler::Task {
 				public:
 					/**
-					 * LoadBalancingAlgorithm type.
-					 */
-					typedef api::graph::LoadBalancing<AgentPtr>
-						LoadBalancingAlgorithm;
-					/**
 					 * Agent node map.
 					 */
 					typedef api::graph::NodeMap<AgentPtr> NodeMap;
@@ -258,7 +320,7 @@ namespace fpmas {
 
 				private:
 					api::model::AgentGraph& agent_graph;
-					LoadBalancingAlgorithm& load_balancing;
+					api::model::LoadBalancing& load_balancing;
 
 				public:
 					/**
@@ -271,7 +333,7 @@ namespace fpmas {
 					 */
 					LoadBalancingTask(
 							api::model::AgentGraph& agent_graph,
-							LoadBalancingAlgorithm& load_balancing
+							api::model::LoadBalancing& load_balancing
 							) : agent_graph(agent_graph), load_balancing(load_balancing) {}
 
 					void run() override;
@@ -280,51 +342,88 @@ namespace fpmas {
 			/**
 			 * api::model::AgentGroup implementation.
 			 */
-			class AgentGroup : public api::model::AgentGroup {
+			class AgentGroupBase : public virtual api::model::AgentGroup {
 				friend detail::EraseAgentCallback;
 				private:
-				api::model::GroupId id;
+				GroupId id;
 				api::model::AgentGraph& agent_graph;
-				scheduler::Job _job;
+				scheduler::Job job_base;
 				detail::SynchronizeGraphTask sync_graph_task;
 				std::vector<api::model::AgentPtr*> _agents;
 
+				static const DefaultBehavior default_behavior;
+				const api::model::Behavior& _behavior;
+
 				public:
 				/**
-				 * AgentGroup constructor.
+				 * AgentGroupBase constructor.
 				 *
 				 * @param group_id unique id of the group
 				 * @param agent_graph associated agent graph
 				 */
-				AgentGroup(api::model::GroupId group_id, api::model::AgentGraph& agent_graph);
+				AgentGroupBase(GroupId group_id, api::model::AgentGraph& agent_graph);
 
-				AgentGroup& operator=(const AgentGroup&) = delete;
-				AgentGroup& operator=(AgentGroup&&) = delete;
+				/**
+				 * Deletes copy constructor.
+				 */
+				AgentGroupBase(const AgentGroupBase&) = delete;
+				/**
+				 * Deletes copy assignment operator.
+				 */
+				AgentGroupBase& operator=(const AgentGroupBase&) = delete;
 
-				api::model::GroupId groupId() const override {return id;}
+				/**
+				 * AgentGroupBase constructor.
+				 *
+				 * @param group_id unique id of the group
+				 * @param agent_graph associated agent graph
+				 * @param behavior group behavior
+				 */
+				AgentGroupBase(
+						GroupId group_id,
+						api::model::AgentGraph& agent_graph,
+						const api::model::Behavior& behavior);
+
+				GroupId groupId() const override {return id;}
+				const api::model::Behavior& behavior() override {return _behavior;}
 
 				void add(api::model::Agent*) override;
 				void remove(api::model::Agent*) override;
 
 				void insert(api::model::AgentPtr*) override;
 				void erase(api::model::AgentPtr*) override;
+				void clear() override;
 
-				scheduler::Job& job() override {return _job;}
-				const scheduler::Job& job() const override {return _job;}
+				scheduler::Job& job() override {return job_base;}
+				const scheduler::Job& job() const override {return job_base;}
+				api::scheduler::Job& agentExecutionJob() override {return job_base;}
+				const api::scheduler::Job& agentExecutionJob() const override {return job_base;}
+
 				std::vector<api::model::Agent*> agents() const override;
 				std::vector<api::model::Agent*> localAgents() const override;
+			};
+
+			/**
+			 * Simple api::model::AgentGroup.
+			 *
+			 * The jobs() list only contains the agentExecutionJob().
+			 */
+			class AgentGroup : public AgentGroupBase {
+				public:
+					using AgentGroupBase::AgentGroupBase;
+
+					api::scheduler::JobList jobs() const override {
+						return {this->agentExecutionJob()};
+					}
 			};
 
 
 			/**
 			 * api::model::Model implementation.
 			 */
-			class Model : public api::model::Model {
-				public:
-					/**
-					 * LoadBalancingAlgorithm type.
-					 */
-					typedef typename LoadBalancingTask::LoadBalancingAlgorithm LoadBalancingAlgorithm;
+			class Model : public virtual api::model::Model {
+				protected:
+					void insert(api::model::GroupId id, api::model::AgentGroup* group) override;
 
 				private:
 					api::model::AgentGraph& _graph;
@@ -332,12 +431,16 @@ namespace fpmas {
 					api::runtime::Runtime& _runtime;
 					scheduler::Job _loadBalancingJob;
 					LoadBalancingTask load_balancing_task;
-					InsertAgentNodeCallback* insert_node_callback = new InsertAgentNodeCallback(*this);
-					EraseAgentNodeCallback* erase_node_callback = new EraseAgentNodeCallback(*this);
-					SetAgentLocalCallback* set_local_callback = new SetAgentLocalCallback(*this);
-					SetAgentDistantCallback* set_distant_callback = new SetAgentDistantCallback(*this);
+					InsertAgentNodeCallback* insert_node_callback
+						= new InsertAgentNodeCallback(*this);
+					EraseAgentNodeCallback* erase_node_callback
+						= new EraseAgentNodeCallback(*this);
+					SetAgentLocalCallback* set_local_callback
+						= new SetAgentLocalCallback(*this);
+					SetAgentDistantCallback* set_distant_callback
+						= new SetAgentDistantCallback(*this);
 
-					std::unordered_map<api::model::GroupId, api::model::AgentGroup*> _groups;
+					std::unordered_map<GroupId, api::model::AgentGroup*> _groups;
 
 				public:
 					/**
@@ -352,24 +455,67 @@ namespace fpmas {
 							api::model::AgentGraph& graph,
 							api::scheduler::Scheduler& scheduler,
 							api::runtime::Runtime& runtime,
-							LoadBalancingAlgorithm& load_balancing);
+							api::model::LoadBalancing& load_balancing);
 					Model(const Model&) = delete;
 					Model(Model&&) = delete;
 					Model& operator=(const Model&) = delete;
 					Model& operator=(Model&&) = delete;
 
-					api::model::AgentGraph& graph() override {return _graph;}
-					api::scheduler::Scheduler& scheduler() override {return _scheduler;}
-					api::runtime::Runtime& runtime() override {return _runtime;}
+					api::model::AgentGraph& graph() override {
+						return _graph;
+					}
+					const api::model::AgentGraph& graph() const override {
+						return _graph;
+					}
+					api::scheduler::Scheduler& scheduler() override {
+						return _scheduler;
+					}
+					const api::scheduler::Scheduler& scheduler() const override {
+						return _scheduler;
+					}
+					api::runtime::Runtime& runtime() override {
+						return _runtime;
+					}
+					const api::runtime::Runtime& runtime() const override {
+						return _runtime;
+					}
 
-					const scheduler::Job& loadBalancingJob() const override {return _loadBalancingJob;}
+					const scheduler::Job& loadBalancingJob() const override {
+						return _loadBalancingJob;
+					}
 
-					api::model::AgentGroup& buildGroup(api::model::GroupId id) override;
-					api::model::AgentGroup& getGroup(api::model::GroupId id) const override;
-					const std::unordered_map<api::model::GroupId, api::model::AgentGroup*>& groups() const override {return _groups;}
+					api::model::AgentGroup& buildGroup(
+							api::model::GroupId id) override;
+					api::model::AgentGroup& buildGroup(
+							api::model::GroupId id,
+							const api::model::Behavior& behavior) override;
 
-					AgentEdge* link(api::model::Agent* src_agent, api::model::Agent* tgt_agent, api::graph::LayerId layer) override;
+					void removeGroup(api::model::AgentGroup& group) override;
+
+					api::model::AgentGroup& getGroup(
+							api::model::GroupId id) const override;
+
+					const std::unordered_map<GroupId, api::model::AgentGroup*>&
+						groups() const override {return _groups;}
+
+					AgentEdge* link(
+							api::model::Agent* src_agent,
+							api::model::Agent* tgt_agent,
+							api::graph::LayerId layer) override;
 					void unlink(api::model::AgentEdge* edge) override;
+
+					api::communication::MpiCommunicator& getMpiCommunicator() override {
+						return this->_graph.getMpiCommunicator();
+					}
+
+					const api::communication::MpiCommunicator& getMpiCommunicator() const override {
+						return this->_graph.getMpiCommunicator();
+					}
+
+					void clear() override {
+						this->_graph.clear();
+						this->runtime().setCurrentDate(0);
+					}
 
 					~Model();
 			};
@@ -404,7 +550,9 @@ namespace fpmas {
 						/**
 						 * Default scheduled load balancing algorithm.
 						 */
-						ScheduledLoadBalancing __load_balancing {__zoltan_lb, __scheduler, __runtime};
+						ScheduledLoadBalancing __load_balancing {
+							__zoltan_lb, __scheduler, __runtime
+						};
 				};
 
 			/**
@@ -468,24 +616,10 @@ namespace fpmas {
 					public:
 						DefaultModel() :
 							DefaultModelConfig<SyncMode>(),
-							Model(this->__graph, this->__scheduler, this->__runtime, this->__load_balancing) {}
-
-						/**
-						 * Returns a reference to the internal
-						 * communication::MpiCommunicator.
-						 *
-						 * @return reference to internal MPI communicator
-						 */
-						communication::MpiCommunicator& getMpiCommunicator() {
-							return this->comm;
-						}
-
-						/**
-						 * \copydoc getMpiCommunicator
-						 */
-						const communication::MpiCommunicator& getMpiCommunicator() const {
-							return this->comm;
-						}
+							Model(
+									this->__graph, this->__scheduler, this->__runtime,
+									this->__load_balancing
+									) {}
 				};
 
 		}

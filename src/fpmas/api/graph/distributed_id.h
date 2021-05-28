@@ -5,10 +5,45 @@
  * DistributedId implementation.
  */
 
+#ifndef FPMAS_ID_TYPE
+	/**
+	 * Type used to represent the "id" part of an fpmas::api::graph::DistributedId.
+	 *
+	 * This type defines the maximum count of Nodes and Edges that might be created
+	 * during a single simulation. (e.g. 65535 for a 16 bit unsigned integer)
+	 *
+	 * It can be user defined at compile time using
+	 * `cmake -DFPMAS_ID_TYPE=<unsigned integer type> ..`
+	 *
+	 * By default, the `unsigned long` type is used, that can be 32 or 64 bit
+	 * depending on systems.
+	 *
+	 * Any unsigned integer type can be specified. The std::uintN_t like
+	 * types defined in the [C++
+	 * standard](https://en.cppreference.com/w/cpp/types/integer) can notably
+	 * be used to fix the \FPMAS_ID_TYPE size independently of the underlying
+	 * system.
+	 *
+	 * FPMAS currently supports 16, 32 and 64 unsigned integer types.
+	 */
+	#define FPMAS_ID_TYPE unsigned long
+#endif
+
 #include <functional>
 #include <nlohmann/json.hpp>
 #include <mpi.h>
 #include <climits>
+#include <type_traits>
+
+static_assert(
+		std::is_integral<FPMAS_ID_TYPE>::value,
+		"FPMAS_ID_TYPE must be an unsigned integer."
+		);
+static_assert(
+		std::is_unsigned<FPMAS_ID_TYPE>::value,
+		"FPMAS_ID_TYPE must be unsigned."
+		);
+
 
 namespace fpmas { namespace api { namespace graph {
 	class DistributedId;
@@ -29,7 +64,7 @@ namespace fpmas { namespace api { namespace communication {
 		/**
 		 * Local id
 		 */
-		unsigned int id;
+		FPMAS_ID_TYPE id;
 	};
 }}}
 
@@ -42,24 +77,36 @@ using fpmas::api::communication::MpiDistributedId;
 namespace fpmas { namespace api { namespace graph {
 
 	/**
-	 * Distributed `IdType` implementation, used by any DistibutedGraphBase.
+	 * Distributed `IdType` implementation, used by any \DistributedGraph.
 	 *
-	 * The id is represented through a pair of :
+	 * The id is represented by a pair constituted by:
 	 * 1. The rank on which the item where created
-	 * 2. An incrementing local id of type `unsigned int`
+	 * 2. An incrementing local id of type \FPMAS_ID_TYPE
 	 */
 	class DistributedId {
 		friend nlohmann::adl_serializer<DistributedId>;
-		friend std::ostream& operator<<(std::ostream& os, const DistributedId& id) {
-			os << std::string(id);
-			return os;
-		}
 
 		private:
 			int _rank;
-			unsigned int _id;
+			FPMAS_ID_TYPE _id;
 
 		public:
+			/**
+			 * The maximum rank that can be represented.
+			 */
+			static int max_rank;
+			/**
+			 * The maximum id that can be represented.
+			 *
+			 * This can be controlled defining a custom \FPMAS_ID_TYPE.
+			 *
+			 * Overflows, that might occur if the \FPMAS_ID_TYPE is not large
+			 * enough to represent ids of all \DistributedNodes and
+			 * \DistributedEdges created during a single simulation, will
+			 * produce unexpected behaviors.
+			 */
+			static FPMAS_ID_TYPE max_id;
+
 			/**
 			 * MPI_Datatype used to send and receive DistributedIds.
 			 *
@@ -97,7 +144,7 @@ namespace fpmas { namespace api { namespace graph {
 			 * @param rank MPI rank
 			 * @param id initial local id value
 			 */
-			DistributedId(int rank, unsigned int id) : _rank(rank), _id(id) {}
+			DistributedId(int rank, FPMAS_ID_TYPE id) : _rank(rank), _id(id) {}
 
 			/**
 			 * Rank associated to this DistributedId instance.
@@ -113,7 +160,7 @@ namespace fpmas { namespace api { namespace graph {
 			 *
 			 * @return local id
 			 */
-			unsigned int id() const {
+			FPMAS_ID_TYPE id() const {
 				return _id;
 			}
 
@@ -168,10 +215,13 @@ namespace fpmas { namespace api { namespace graph {
 
 			/**
 			 * std::string conversion.
+			 *
 			 */
+			[[deprecated]]
+			//TODO: Removes this in 2.0 (conflicts with nlohmann::json, when
+			//declaring std::map<DistributedId, _>)
 			operator std::string() const {
 				return "[" + std::to_string(_rank) + ":" + std::to_string(_id) + "]";
-
 			}
 
 			/**
@@ -180,14 +230,32 @@ namespace fpmas { namespace api { namespace graph {
 			 * @return hash value
 			 */
 			std::size_t hash() const {
-				return std::hash<unsigned long int>()(
-						_id + UINT_MAX * (unsigned int) _rank
-					);
+				return std::hash<FPMAS_ID_TYPE>()(_id);
 			}
 	};
+
+	/**
+	 * DistributedId stream output operator.
+	 *
+	 * @param os output stream
+	 * @param id id to add to the stream
+	 * @return os
+	 */
+	std::ostream& operator<<(std::ostream& os, const DistributedId& id);
 }}}
 
 using fpmas::api::graph::DistributedId;
+
+namespace fpmas {
+	/**
+	 * Converts an api::graph::DistributedId instance to a string
+	 * representation, in the form `[id.rank(), id.id()]`.
+	 *
+	 * @param id id to convert to std::string
+	 * @return string representation of id
+	 */
+	std::string to_string(const api::graph::DistributedId& id);
+}
 
 namespace fpmas { namespace api { namespace communication {
 	/**
@@ -195,7 +263,7 @@ namespace fpmas { namespace api { namespace communication {
 	 * used to send and receive DistributedId through MPI.
 	 */
 	inline static void createMpiTypes() {
-		MPI_Datatype types[2] = {MPI_INT, MPI_UNSIGNED};
+		MPI_Datatype types[2] = {MPI_INT, MPI_UNSIGNED_LONG_LONG};
 		int block[2] = {1, 1};
 		MPI_Aint disp[2] = {
 			offsetof(MpiDistributedId, rank),
@@ -231,13 +299,14 @@ namespace std {
 	};
 }
 
-using fpmas::api::graph::DistributedId;
 
 namespace nlohmann {
+	using fpmas::api::graph::DistributedId;
+
+	/**
+	 * DistributedId serializer.
+	 */
 	template<>
-		/**
-		 * DistributedId serializer.
-		 */
 		struct adl_serializer<DistributedId> {
 			/**
 			 * Serializes a DistributedId instance as [rank, localId].
@@ -245,7 +314,8 @@ namespace nlohmann {
 			 * @param j current json
 			 * @param value DistributedId to serialize
 			 */
-			static void to_json(json& j, const DistributedId& value) {
+			template<typename JsonType>
+			static void to_json(JsonType& j, const DistributedId& value) {
 				j[0] = value.rank();
 				j[1] = value.id();
 			}
@@ -255,13 +325,34 @@ namespace nlohmann {
 			 * json representation.
 			 *
 			 * @param j json to unserialize
-			 * @return unserialized DistributedId
+			 * @param id DistributedId output
 			 */
-			static DistributedId from_json(const json& j) {
-				return DistributedId(
-						j[0].get<int>(),
-						j[1].get<unsigned int>()
-						);
+			template<typename JsonType>
+			static void from_json(const JsonType& j, DistributedId& id) {
+				id._rank = j[0].template get<int>();
+				id._id = j[1].template get<FPMAS_ID_TYPE>();
+			}
+		};
+
+	/*
+	 * Temporary hack to solve the DistributedId std::string conversion issue
+	 *
+	 * Will be removed in a next release, when DistributedId automatic
+	 * std::string conversion will be disabled.
+	 */
+	template<typename Value, typename Hash, typename Equal, typename Alloc>
+		struct adl_serializer<std::unordered_map<DistributedId, Value, Hash, Equal, Alloc>> {
+			typedef std::unordered_map<DistributedId, Value, Hash, Equal, Alloc> Map;
+			static void to_json(json& j, const Map& map) {
+				for(auto item : map)
+					j[json(item.first).dump()] = json(item.second);
+			}
+			static void from_json(const json& j, Map& map) {
+				for(auto item : j.items()) {
+					map.insert({
+							json::parse(item.key()).get<DistributedId>(),
+							item.value().get<Value>()});
+				}
 			}
 		};
 }

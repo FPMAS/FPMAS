@@ -4,18 +4,16 @@
 #include "fpmas/graph/distributed_node.h"
 
 #include "fpmas/communication/communication.h"
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_edge.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/graph/mock_distributed_graph.h"
-#include "../mocks/graph/mock_location_manager.h"
-#include "../mocks/graph/mock_load_balancing.h"
-#include "../mocks/synchro/mock_mutex.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_edge.h"
+#include "graph/mock_distributed_node.h"
+#include "graph/mock_distributed_graph.h"
+#include "graph/mock_location_manager.h"
+#include "graph/mock_load_balancing.h"
+#include "synchro/mock_mutex.h"
+#include "synchro/hard/mock_client_server.h"
 
-using ::testing::An;
-using ::testing::Ref;
-using ::testing::NiceMock;
+using namespace testing;
 
 using fpmas::graph::DistributedGraph;
 using fpmas::synchro::HardSyncMode;
@@ -23,7 +21,7 @@ using fpmas::synchro::hard::HardDataSync;
 using fpmas::synchro::hard::HardSyncLinker;
 using fpmas::synchro::hard::ServerPack;
 
-class HardDataSyncTest : public ::testing::Test {
+class HardDataSyncTest : public Test {
 	protected:
 		MockMpiCommunicator<2, 4> comm;
 		NiceMock<MockMutexServer<int>> mutex_server;
@@ -40,7 +38,7 @@ TEST_F(HardDataSyncTest, synchronize) {
 	data_sync.synchronize();
 }
 
-class HardSyncLinkerTest : public ::testing::Test {
+class HardSyncLinkerTest : public Test {
 	protected:
 		static const int current_rank = 2;
 		MockMpiCommunicator<current_rank, 4> comm;
@@ -50,33 +48,33 @@ class HardSyncLinkerTest : public ::testing::Test {
 		MockTerminationAlgorithm termination {comm};
 
 		ServerPack<int> server_pack {comm, termination, mutex_server, server};
-		MockDistributedGraph<int, MockDistributedEdge<int>, MockDistributedNode<int>> graph;
+		MockDistributedGraph<int, MockDistributedEdge<int, NiceMock>, MockDistributedNode<int, NiceMock>> graph;
 		HardSyncLinker<int> sync_linker {graph, client, server_pack};
 
 		virtual void SetUp() override {
-			ON_CALL(graph, getMpiCommunicator)
+			ON_CALL(graph, getMpiCommunicator())
 				.WillByDefault(ReturnRef(comm));
-			EXPECT_CALL(graph, getMpiCommunicator)
+			EXPECT_CALL(graph, getMpiCommunicator())
 				.Times(AnyNumber());
 		}
 };
 
 class HardSyncLinkerLinkTest : public HardSyncLinkerTest {
 	protected:
-		MockDistributedEdge<int> edge;
-		MockDistributedNode<int> src;
-		MockDistributedNode<int> tgt;
+		MockDistributedEdge<int, NiceMock> edge;
+		MockDistributedNode<int, NiceMock> src;
+		MockDistributedNode<int, NiceMock> tgt;
 
 		void SetUp() override {
-			ON_CALL(graph, getMpiCommunicator)
+			ON_CALL(graph, getMpiCommunicator())
 				.WillByDefault(ReturnRef(comm));
-			EXPECT_CALL(graph, getMpiCommunicator)
+			EXPECT_CALL(graph, getMpiCommunicator())
 				.Times(AnyNumber());
 
-			EXPECT_CALL(edge, getSourceNode).Times(AnyNumber())
-				.WillRepeatedly(Return(&src));
-			EXPECT_CALL(edge, getTargetNode).Times(AnyNumber())
-				.WillRepeatedly(Return(&tgt));
+			ON_CALL(edge, getSourceNode)
+				.WillByDefault(Return(&src));
+			ON_CALL(edge, getTargetNode)
+				.WillByDefault(Return(&tgt));
 
 			EXPECT_CALL(termination, terminate);
 		}
@@ -84,12 +82,12 @@ class HardSyncLinkerLinkTest : public HardSyncLinkerTest {
 };
 
 TEST_F(HardSyncLinkerLinkTest, link_local_src_local_tgt) {
-	EXPECT_CALL(src, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(tgt, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(edge, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
+	ON_CALL(src, state)
+		.WillByDefault(Return(LocationState::LOCAL));
+	ON_CALL(tgt, state)
+		.WillByDefault(Return(LocationState::LOCAL));
+	ON_CALL(edge, state)
+		.WillByDefault(Return(LocationState::LOCAL));
 
 	EXPECT_CALL(client, link(&edge)).Times(0);
 	sync_linker.link(&edge);
@@ -100,12 +98,12 @@ TEST_F(HardSyncLinkerLinkTest, link_local_src_local_tgt) {
 }
 
 TEST_F(HardSyncLinkerLinkTest, link_local_src_distant_tgt) {
-	EXPECT_CALL(src, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(tgt, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(edge, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::DISTANT));
+	ON_CALL(src, state)
+		.WillByDefault(Return(LocationState::LOCAL));
+	ON_CALL(tgt, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+	ON_CALL(edge, state)
+		.WillByDefault(Return(LocationState::DISTANT));
 
 	EXPECT_CALL(client, link(&edge));
 	sync_linker.link(&edge);
@@ -116,12 +114,12 @@ TEST_F(HardSyncLinkerLinkTest, link_local_src_distant_tgt) {
 }
 
 TEST_F(HardSyncLinkerLinkTest, link_distant_src_local_tgt) {
-	EXPECT_CALL(src, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(tgt, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
-	EXPECT_CALL(edge, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::DISTANT));
+	ON_CALL(src, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+	ON_CALL(tgt, state)
+		.WillByDefault(Return(LocationState::LOCAL));
+	ON_CALL(edge, state)
+		.WillByDefault(Return(LocationState::DISTANT));
 
 	EXPECT_CALL(client, link(&edge));
 	sync_linker.link(&edge);
@@ -133,12 +131,12 @@ TEST_F(HardSyncLinkerLinkTest, link_distant_src_local_tgt) {
 
 // The linked edge must be erased upon synchronization
 TEST_F(HardSyncLinkerLinkTest, link_distant_src_distant_tgt) {
-	EXPECT_CALL(src, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(tgt, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(edge, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::DISTANT));
+	ON_CALL(src, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+	ON_CALL(tgt, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+	ON_CALL(edge, state)
+		.WillByDefault(Return(LocationState::DISTANT));
 
 	EXPECT_CALL(client, link(&edge));
 	sync_linker.link(&edge);
@@ -148,17 +146,28 @@ TEST_F(HardSyncLinkerLinkTest, link_distant_src_distant_tgt) {
 }
 
 TEST_F(HardSyncLinkerTest, unlink_local) {
-	MockDistributedEdge<int> edge;
-	EXPECT_CALL(edge, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::LOCAL));
+	MockDistributedEdge<int, NiceMock> edge;
+	ON_CALL(edge, state)
+		.WillByDefault(Return(LocationState::LOCAL));
 	EXPECT_CALL(client, unlink(&edge)).Times(0);
+	{
+		InSequence s;
+		EXPECT_CALL(server, lockUnlink(edge.getId()));
+		EXPECT_CALL(server, unlockUnlink(edge.getId()));
+	}
+
 	sync_linker.unlink(&edge);
 }
 TEST_F(HardSyncLinkerTest, unlink_distant) {
-	MockDistributedEdge<int> edge;
-	EXPECT_CALL(edge, state).Times(AnyNumber())
-		.WillRepeatedly(Return(LocationState::DISTANT));
-	EXPECT_CALL(client, unlink(&edge));
+	MockDistributedEdge<int, NiceMock> edge {{0, 0}, 0};
+	ON_CALL(edge, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+	{
+		InSequence s;
+		EXPECT_CALL(server, lockUnlink(edge.getId()));
+		EXPECT_CALL(client, unlink(&edge));
+		EXPECT_CALL(server, unlockUnlink(edge.getId()));
+	}
 	sync_linker.unlink(&edge);
 }
 
@@ -171,7 +180,8 @@ TEST_F(HardSyncLinkerTest, synchronize) {
 class HardSyncLinkerRemoveNodeTest : public HardSyncLinkerTest {
 	protected:
 		DistributedId node_id {3, 8};
-		MockDistributedNode<int>* node_to_remove = new MockDistributedNode<int>(node_id);
+		MockDistributedNode<int, NiceMock>* node_to_remove
+			= new MockDistributedNode<int, NiceMock>(node_id);
 		std::vector<fpmas::api::graph::DistributedEdge<int>*> out_edges;
 		std::vector<fpmas::api::graph::DistributedEdge<int>*> in_edges;
 
@@ -180,53 +190,52 @@ class HardSyncLinkerRemoveNodeTest : public HardSyncLinkerTest {
 		DistributedId edge3_id = DistributedId(1, 0);
 
 		// Mocked edges that can be used in import / export
-		MockDistributedEdge<int>* edge1 = new MockDistributedEdge<int> {edge1_id, 8};
-		MockDistributedEdge<int>* edge2 = new MockDistributedEdge<int> {edge2_id, 2};
-		MockDistributedEdge<int>* edge3 = new MockDistributedEdge<int> {edge3_id, 5};
+		MockDistributedEdge<int, NiceMock>* edge1
+			= new MockDistributedEdge<int, NiceMock> {edge1_id, 8};
+		MockDistributedEdge<int, NiceMock>* edge2
+			= new MockDistributedEdge<int, NiceMock> {edge2_id, 2};
+		MockDistributedEdge<int, NiceMock>* edge3
+			= new MockDistributedEdge<int, NiceMock> {edge3_id, 5};
 
 
 		void SetUp() override {
-			edge1->src = new MockDistributedNode<int>;
+			edge1->src = new MockDistributedNode<int, NiceMock>;
 			edge1->tgt = node_to_remove;
-			edge2->src = new MockDistributedNode<int>;
+			edge2->src = new MockDistributedNode<int, NiceMock>;
 			edge2->tgt = node_to_remove;
 			edge3->src = node_to_remove;
-			edge3->tgt = new MockDistributedNode<int>;
+			edge3->tgt = new MockDistributedNode<int, NiceMock>;
 
 			out_edges.push_back(edge3);
 			in_edges.push_back(edge1);
 			in_edges.push_back(edge2);
 
 			ON_CALL(*node_to_remove, getOutgoingEdges())
-				.WillByDefault(Return(out_edges));
-			EXPECT_CALL(*node_to_remove, getOutgoingEdges())
-				.Times(AnyNumber());
+				.WillByDefault(ReturnPointee(&out_edges));
 
 			ON_CALL(*node_to_remove, getIncomingEdges())
-				.WillByDefault(Return(in_edges));
-			EXPECT_CALL(*node_to_remove, getIncomingEdges())
-				.Times(AnyNumber());
+				.WillByDefault(ReturnPointee(&in_edges));
 		}
 
-		void edgeSetUp(MockDistributedEdge<int>& edge, int srcRank, int tgtRank) {
-			LocationState srcLocation = (srcRank == current_rank) ?
+		void edgeSetUp(MockDistributedEdge<int, NiceMock>& edge, int src_rank, int tgt_rank) {
+			LocationState src_location = (src_rank == current_rank) ?
 				LocationState::LOCAL : LocationState::DISTANT;
-			LocationState tgtLocation = (tgtRank == current_rank) ?
+			LocationState tgt_location = (tgt_rank == current_rank) ?
 				LocationState::LOCAL : LocationState::DISTANT;
 
-			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.src), state).Times(AnyNumber())
-				.WillRepeatedly(Return(srcLocation));
-			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.src), location).Times(AnyNumber())
-				.WillRepeatedly(Return(srcRank));
+			ON_CALL((*static_cast<const MockDistributedNode<int, NiceMock>*>(edge.src)), state)
+				.WillByDefault(Return(src_location));
+			ON_CALL((*static_cast<const MockDistributedNode<int, NiceMock>*>(edge.src)), location)
+				.WillByDefault(Return(src_rank));
 
-			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.tgt), state).Times(AnyNumber())
-				.WillRepeatedly(Return(tgtLocation));
-			EXPECT_CALL(*static_cast<const MockDistributedNode<int>*>(edge.tgt), location).Times(AnyNumber())
-				.WillRepeatedly(Return(tgtRank));
+			ON_CALL((*static_cast<const MockDistributedNode<int, NiceMock>*>(edge.tgt)), state)
+				.WillByDefault(Return(tgt_location));
+			ON_CALL((*static_cast<const MockDistributedNode<int, NiceMock>*>(edge.tgt)), location)
+				.WillByDefault(Return(tgt_rank));
 
-			EXPECT_CALL(edge, state).Times(AnyNumber())
-				.WillRepeatedly(Return(
-					srcLocation == LocationState::LOCAL && tgtLocation == LocationState::LOCAL ?
+			ON_CALL(edge, state)
+				.WillByDefault(Return(
+					src_location == LocationState::LOCAL && tgt_location == LocationState::LOCAL ?
 					LocationState::LOCAL :
 					LocationState::DISTANT
 					));
@@ -249,9 +258,19 @@ TEST_F(HardSyncLinkerRemoveNodeTest, remove_local) {
 	edgeSetUp(*edge3, current_rank, current_rank);
 
 	EXPECT_CALL(client, removeNode).Times(0);
-	EXPECT_CALL(graph, unlink(edge1));
-	EXPECT_CALL(graph, unlink(edge2));
-	EXPECT_CALL(graph, unlink(edge3));
+	EXPECT_CALL(graph, unlink(edge1))
+		.WillOnce(Invoke([this] (fpmas::api::graph::DistributedEdge<int>* edge) {
+					in_edges.erase(std::remove(in_edges.begin(), in_edges.end(), edge));
+					}));
+
+	EXPECT_CALL(graph, unlink(edge2))
+		.WillOnce(Invoke([this] (fpmas::api::graph::DistributedEdge<int>* edge) {
+					in_edges.erase(std::remove(in_edges.begin(), in_edges.end(), edge));
+					}));
+	EXPECT_CALL(graph, unlink(edge3))
+		.WillOnce(Invoke([this] (fpmas::api::graph::DistributedEdge<int>* edge) {
+					out_edges.erase(std::remove(out_edges.begin(), out_edges.end(), edge));
+					}));
 
 	sync_linker.removeNode(node_to_remove);
 }

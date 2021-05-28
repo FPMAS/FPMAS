@@ -15,7 +15,8 @@ namespace fpmas { namespace api { namespace graph {
 	 * The PartitionMap associates node IDs to the rank of the process to which
 	 * they should be assigned.
 	 */
-	typedef std::unordered_map<DistributedId, int, api::graph::IdHash<DistributedId>> PartitionMap;
+	typedef std::unordered_map<DistributedId, int, api::graph::IdHash<DistributedId>>
+		PartitionMap;
 
 	/**
 	 * Type used to represent nodes to distribute.
@@ -51,6 +52,8 @@ namespace fpmas { namespace api { namespace graph {
 						NodeMap<T> nodes,
 						PartitionMap fixed_vertices
 						) = 0;
+
+				virtual ~FixedVerticesLoadBalancing() {}
 		};
 
 	/**
@@ -73,6 +76,8 @@ namespace fpmas { namespace api { namespace graph {
 				 * @return balanced partition map
 				 */
 				virtual PartitionMap balance(NodeMap<T> nodes) = 0;
+
+				virtual ~LoadBalancing() {}
 		};
 
 }}}

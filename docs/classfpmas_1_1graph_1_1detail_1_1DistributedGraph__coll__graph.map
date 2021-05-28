@@ -1,7 +1,7 @@
-<map id="fpmas::graph::detail::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, TypedMpi, LocationManagerImpl &gt;" name="fpmas::graph::detail::DistributedGraph&lt; T, SyncMode, DistNodeImpl, DistEdgeImpl, TypedMpi, LocationManagerImpl &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="584,46,764,131"/>
-<area shape="rect" id="node2" title=" " alt="" coords="273,18,536,74"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,5,225,76"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1graph_1_1DistributedGraph.html" title=" " alt="" coords="329,104,480,145"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1graph_1_1Graph.html" title=" " alt="" coords="34,100,197,171"/>
+<map id="fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;" name="fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="571,44,741,100"/>
+<area shape="rect" id="node2" title=" " alt="" coords="260,5,523,61"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1graph_1_1Graph.html" title=" " alt="" coords="5,10,212,51"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1graph_1_1DistributedGraph.html" title=" " alt="" coords="316,87,467,129"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1graph_1_1Graph.html" title=" " alt="" coords="27,75,190,146"/>
 </map>

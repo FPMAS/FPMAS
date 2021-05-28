@@ -24,9 +24,9 @@
  */
 #include "fpmas/synchro/hard/mutex_client.h"
 
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/synchro/hard/mock_hard_sync_mode.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "communication/mock_communication.h"
+#include "synchro/hard/mock_hard_sync_mode.h"
+#include "synchro/hard/mock_client_server.h"
 
 using ::testing::A;
 using ::testing::AllOf;
@@ -83,7 +83,7 @@ class SetMpiStatus {
 			status.source = source;
 			status.tag = tag;
 		}
-		void operator()(MPI_Datatype type, int source, int tag, fpmas::api::communication::Status& status) {
+		void operator()(MPI_Datatype, int source, int tag, fpmas::api::communication::Status& status) {
 			status.source = source;
 			status.tag = tag;
 		}

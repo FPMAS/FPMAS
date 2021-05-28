@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['voidcallback_579',['VoidCallback',['../classfpmas_1_1utils_1_1VoidCallback.html',1,'fpmas::utils']]],
-  ['voidtask_580',['VoidTask',['../classfpmas_1_1scheduler_1_1VoidTask.html',1,'fpmas::scheduler']]]
+  ['uniformagentmapping_1058',['UniformAgentMapping',['../classfpmas_1_1model_1_1UniformAgentMapping.html',1,'fpmas::model']]],
+  ['uniformgraphbuilder_1059',['UniformGraphBuilder',['../classfpmas_1_1graph_1_1UniformGraphBuilder.html',1,'fpmas::graph']]],
+  ['uniformgridagentmapping_1060',['UniformGridAgentMapping',['../classfpmas_1_1model_1_1UniformGridAgentMapping.html',1,'fpmas::model']]]
 ];

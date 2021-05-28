@@ -33,9 +33,12 @@ namespace fpmas { namespace graph {
 				typedef api::communication::TypedMpi<std::pair<DistributedId, int>> LocationMpi;
 
 			private:
-				api::communication::MpiCommunicator& comm;
-				IdMpi& id_mpi;
-				LocationMpi& location_mpi;
+				// MPI communicators are likely to be owned by the parent
+				// DistributedGraph. In any case, their lifetimes must span the
+				// LocationManager lifetime.
+				api::communication::MpiCommunicator* comm;
+				IdMpi* id_mpi;
+				LocationMpi* location_mpi;
 				std::unordered_map<DistributedId, int> managed_nodes_locations;
 
 				NodeMap local_nodes;
@@ -51,14 +54,20 @@ namespace fpmas { namespace graph {
 				 * @param location_mpi LocationMpi instance
 				 */
 				LocationManager(api::communication::MpiCommunicator& comm, IdMpi& id_mpi, LocationMpi& location_mpi)
-					: comm(comm), id_mpi(id_mpi), location_mpi(location_mpi) {}
+					: comm(&comm), id_mpi(&id_mpi), location_mpi(&location_mpi) {}
 
-				void addManagedNode(api::graph::DistributedNode<T>* node, int initialLocation) override {
-					this->managed_nodes_locations[node->getId()] = initialLocation;
+				void addManagedNode(api::graph::DistributedNode<T>* node, int initial_location) override {
+					this->managed_nodes_locations[node->getId()] = initial_location;
+				}
+				void addManagedNode(DistributedId id, int initial_location) override {
+					this->managed_nodes_locations[id] = initial_location;
 				}
 
 				void removeManagedNode(api::graph::DistributedNode<T>* node) override {
 					this->managed_nodes_locations.erase(node->getId());
+				}
+				void removeManagedNode(DistributedId id) override {
+					this->managed_nodes_locations.erase(id);
 				}
 
 				void setLocal(api::graph::DistributedNode<T>*) override;
@@ -70,22 +79,15 @@ namespace fpmas { namespace graph {
 
 				void updateLocations() override;
 
-				/**
-				 * Returns a reference to the internal map representing the
-				 * locations of managed nodes.
-				 *
-				 * Used for test / debug purpose only.
-				 *
-				 * @return managed nodes locations
-				 */
-				const std::unordered_map<DistributedId, int>& getCurrentLocations() const {
+				
+				std::unordered_map<DistributedId, int> getCurrentLocations() const override {
 					return managed_nodes_locations;
 				}
 		};
 
 	template<typename T>
 	void LocationManager<T>::setLocal(api::graph::DistributedNode<T>* node) {
-			node->setLocation(comm.getRank());
+			node->setLocation(comm->getRank());
 			node->setState(LocationState::LOCAL);
 			this->local_nodes.insert({node->getId(), node});
 			this->distant_nodes.erase(node->getId());
@@ -119,7 +121,7 @@ namespace fpmas { namespace graph {
 
 	template<typename T>
 		void LocationManager<T>::updateLocations() {
-			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Updating node locations...", "");
+			FPMAS_LOGD(comm->getRank(), "LOCATION_MANAGER", "Updating node locations...", "");
 			// Useful types
 			typedef 
 			std::unordered_map<int, std::vector<DistributedId>>
@@ -134,7 +136,7 @@ namespace fpmas { namespace graph {
 			 */
 			DistributedIdMap exported_updated_locations;
 			for(auto node : new_local_nodes) {
-				if(node.first.rank() != comm.getRank()) {
+				if(node.first.rank() != comm->getRank()) {
 					// Notify node origin that node is currently on this proc
 					exported_updated_locations[node.first.rank()]
 						.push_back(node.first);
@@ -142,13 +144,13 @@ namespace fpmas { namespace graph {
 					// No need to export the new node location to itself :
 					// just locally set this node location to this proc
 					managed_nodes_locations[node.first]
-						= comm.getRank();
+						= comm->getRank();
 				}
 			}
 			
 			// Export / import location updates of managed_nodes_locations
 			DistributedIdMap imported_updated_locations =
-				id_mpi.migrate(exported_updated_locations);
+				id_mpi->migrate(exported_updated_locations);
 			// Updates the managed_nodes_locations data
 			for(auto list : imported_updated_locations) {
 				for(auto node_id : list.second) {
@@ -161,7 +163,7 @@ namespace fpmas { namespace graph {
 			// location has already been updated and won't be requested to this
 			// proc himself
 			for(auto node : distant_nodes) {
-				if(node.first.rank() == comm.getRank()) {
+				if(node.first.rank() == comm->getRank()) {
 					node.second->setLocation(
 							managed_nodes_locations[node.first]
 							);
@@ -173,7 +175,7 @@ namespace fpmas { namespace graph {
 			 */
 			DistributedIdMap location_requests;
 			for(auto node : distant_nodes) {
-				if(node.first.rank() != comm.getRank()) {
+				if(node.first.rank() != comm->getRank()) {
 					// For distant_nodes that has an origin different from this
 					// proc, asks for the current location of node to its
 					// origin proc
@@ -183,7 +185,7 @@ namespace fpmas { namespace graph {
 			}
 			// Export / import requests
 			DistributedIdMap imported_location_requests
-				= id_mpi.migrate(location_requests);
+				= id_mpi->migrate(location_requests);
 
 			// Builds requests response
 			LocationMap exported_locations;
@@ -198,7 +200,7 @@ namespace fpmas { namespace graph {
 
 			// Import / export responses
 			LocationMap imported_locations
-				= location_mpi.migrate(exported_locations);
+				= location_mpi->migrate(exported_locations);
 
 			// Finally, updates the distant_nodes locations from the requests
 			// responses
@@ -208,7 +210,58 @@ namespace fpmas { namespace graph {
 				}
 			}
 			new_local_nodes.clear();
-			FPMAS_LOGD(comm.getRank(), "LOCATION_MANAGER", "Node locations updated.", "");
+			FPMAS_LOGD(comm->getRank(), "LOCATION_MANAGER", "Node locations updated.", "");
 		}
 }}
+
+namespace nlohmann {
+	/**
+	 * Defines json serialization rules for generic
+	 * fpmas::api::graph::LocationManager instances.
+	 *
+	 * Notice that it is assumed that the internal state of a LocationManager
+	 * is defined only by the location of its managed nodes. In consequence,
+	 * the LocationManager::getLocalNodes() and
+	 * LocationManager::getDistantNodes() lists for example are not considered
+	 * by the serialization process. It is the responsibility of the
+	 * DistributedGraph to call LocationManager::setLocal() and
+	 * LocationManager::setDistant() methods accordingly when the
+	 * DistributedGraph is unserialized.
+	 */
+	template<typename T>
+		struct adl_serializer<fpmas::api::graph::LocationManager<T>> {
+
+			/**
+			 * Serializes the `location_manager` to the json `j`.
+			 *
+			 * @param j json output
+			 * @param location_manager location manager to serialize
+			 */
+			static void to_json(json& j, const fpmas::api::graph::LocationManager<T>& location_manager) {
+				for(auto item : location_manager.getCurrentLocations())
+					j.push_back({item.first, item.second});
+			}
+
+			/**
+			 * Unserializes the json `j` into the specified `location_manager`.
+			 *
+			 * Managed nodes read from the input json are added to the
+			 * `location_manager`, without considering its current state, so
+			 * clearing the `location_manager` before loading data into it
+			 * might be required, depending on the expected behavior.
+			 *
+			 * @param j json input
+			 * @param location_manager output location manager
+			 */
+			static void from_json(const json& j, fpmas::api::graph::LocationManager<T>& location_manager) {
+				for(auto item : j) {
+					location_manager.addManagedNode(
+							item[0].get<DistributedId>(),
+							item[1].get<int>()
+							);
+				}
+			}
+
+		};
+}
 #endif

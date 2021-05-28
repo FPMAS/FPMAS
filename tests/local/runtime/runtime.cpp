@@ -1,4 +1,4 @@
-#include "../mocks/scheduler/mock_scheduler.h"
+#include "scheduler/mock_scheduler.h"
 #include "fpmas/runtime/runtime.h"
 
 using ::testing::_;
@@ -135,4 +135,24 @@ TEST_F(RuntimeTest, run) {
 	expectTasks(seq, job_2_tasks);
 
 	runtime.run(0, 3);
+}
+
+TEST_F(RuntimeTest, execute_job) {
+	Sequence seq;
+	expectTasks(seq, job_0_tasks);
+
+	runtime.execute(mock_jobs[0]);
+}
+
+TEST_F(RuntimeTest, execute_job_list) {
+	fpmas::api::scheduler::JobList job_list;
+	job_list.push_back(mock_jobs[0]);
+	job_list.push_back(mock_jobs[1]);
+	job_list.push_back(mock_jobs[2]);
+	Sequence seq;
+	expectTasks(seq, job_0_tasks);
+	expectTasks(seq, job_1_tasks);
+	expectTasks(seq, job_2_tasks);
+
+	runtime.execute(job_list);
 }

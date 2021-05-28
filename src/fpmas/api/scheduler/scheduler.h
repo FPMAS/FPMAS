@@ -26,7 +26,7 @@ namespace fpmas { namespace api { namespace scheduler {
 	 */
 	typedef unsigned long TimeStep;
 	/**
-	 * Rational part of a Date.
+	 * Decimal part of a Date.
 	 */
 	typedef float SubTimeStep;
 
@@ -34,6 +34,39 @@ namespace fpmas { namespace api { namespace scheduler {
 	 * Job ID type.
 	 */
 	typedef size_t JID;
+
+	/**
+	 * Returns the integer time step represented by `date`.
+	 *
+	 * @param date date
+	 * @return time step
+	 */
+	TimeStep time_step(Date date);
+	/**
+	 * Returns the decimal sub time step represented by `date`.
+	 *
+	 * @param date date
+	 * @return sub stime step
+	 */
+	SubTimeStep sub_time_step(Date date);
+
+	/**
+	 * The maximum Date value in the provided `time_step`.
+	 *
+	 * This value can be used to schedule a job after all other in the current
+	 * time step.
+	 *
+	 * @par example
+	 * ```cpp
+	 * // Ordered list of jobs
+	 * scheduler.schedule(0, 1, job1);
+	 * scheduler.schedule(0.1, 1, job2);
+	 * ...
+	 * // Always executed at the end of each time step
+	 * scheduler.schedule(fpmas::scheduler::sub_step_end(0), 1, final_job);
+	 * ```
+	 */
+	api::scheduler::SubTimeStep sub_step_end(api::scheduler::TimeStep time_step);
 
 	/**
 	 * Task API.
@@ -149,6 +182,11 @@ namespace fpmas { namespace api { namespace scheduler {
 	};
 
 	/**
+	 * A list of Jobs.
+	 */
+	typedef std::vector<std::reference_wrapper<const Job>> JobList;
+
+	/**
 	 * Epoch API.
 	 *
 	 * An Epoch describes an ordered set of Job that needs to be executed
@@ -156,6 +194,7 @@ namespace fpmas { namespace api { namespace scheduler {
 	 */
 	class Epoch {
 		public:
+
 			/**
 			 * Type used to iterate on an Epoch, yielding epoch's jobs.
 			 */
@@ -167,13 +206,29 @@ namespace fpmas { namespace api { namespace scheduler {
 			 * Jobs within the Epoch are ordered according to the specified
 			 * `sub_time_step`. The result of jobs() and the begin() / end()
 			 * iterators are consistent with this order. If several jobs are
-			 * submitted with equal `sub_time_steps`, their relative ordering is
-			 * undefined.
+			 * submitted with equal `sub_time_steps`, their relative ordering
+			 * corresponds to the order they are submitted. However it is risky
+			 * to rely on this, since float comparison can be approximate.
 			 *
 			 * @param job job to submit
 			 * @param sub_time_step value used to order jobs within the Epoch
 			 */
 			virtual void submit(const Job& job, SubTimeStep sub_time_step) = 0;
+
+			/**
+			 * Submits a list of job to be executed sequentially in this Epoch.
+			 *
+			 * Jobs within the Epoch are ordered according to the specified
+			 * `sub_time_step`. The result of jobs() and the begin() / end()
+			 * iterators are consistent with this order. If several jobs are
+			 * submitted with equal `sub_time_steps`, their relative ordering
+			 * corresponds to the order they are submitted. However it is risky
+			 * to rely on this, since float comparison can be approximate.
+			 *
+			 * @param job_list list of jobs to submit
+			 * @param sub_time_step value used to order jobs within the Epoch
+			 */
+			virtual void submit(JobList job_list, SubTimeStep sub_time_step) = 0;
 
 			/**
 			 * Returns a reference to the internal Jobs list.
@@ -237,8 +292,9 @@ namespace fpmas { namespace api { namespace scheduler {
 			 * @param job job to execute
 			 */
 			virtual void schedule(Date date, Period period, const Job& job) = 0;
+
 			/**
-			 * Schedule a Job to be executed at the given Period, starting
+			 * Schedules a Job to be executed at the given Period, starting
 			 * from the given Date, until the end Date.
 			 *
 			 * In other terms, the job will be executed at `date`,
@@ -251,6 +307,42 @@ namespace fpmas { namespace api { namespace scheduler {
 			 * @param job job to execute
 			 */
 			virtual void schedule(Date date, Date end, Period period, const Job& job) = 0;
+
+			/**
+			 * Schedules a Job list to be executed sequentially at the given
+			 * Date.
+			 *
+			 * @param date date when the job must be executed
+			 * @param job job to execute
+			 */
+			virtual void schedule(Date date, JobList job) = 0;
+
+			/**
+			 * Schedules a Job list to be executed sequentially at the given
+			 * Period, starting from the given Date.
+			 *
+			 * In other terms, the job will be executed at `date`,
+			 * `date+period` and `date+n*period` for any integer `n`.
+			 *
+			 * @param date date when the job must be executed at first
+			 * @param period period at which the job must be executed
+			 * @param job job to execute
+			 */
+			virtual void schedule(Date date, Period period, JobList job) = 0;
+			/**
+			 * Schedules a Job list to be executed sequentially at the given
+			 * Period, starting from the given Date, until the end Date.
+			 *
+			 * In other terms, the job will be executed at `date`,
+			 * `date+period` and `date+n*period` for any integer `n` such
+			 * that `date+n*period < end`.
+			 *
+			 * @param date date when the job must be executed at first
+			 * @param end date until when the job must be executed
+			 * @param period period at which the job must be executed
+			 * @param job job to execute
+			 */
+			virtual void schedule(Date date, Date end, Period period, JobList job) = 0;
 
 			/**
 			 * Builds an Epoch that correspond to the specified date.

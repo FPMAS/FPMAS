@@ -6,9 +6,13 @@ set(SOURCES
 	fpmas/api/communication/communication.cpp
 	fpmas/api/graph/distributed_id.cpp
 	fpmas/api/model/model.cpp
+	fpmas/api/model/spatial/grid.cpp
 	fpmas/synchro/hard/api/client_server.cpp
+	fpmas/api/scheduler/scheduler.cpp
 	# Utils
 	fpmas/utils/log.cpp
+	fpmas/utils/format.cpp
+	fpmas/utils/perf.cpp
 	# Communication
 	fpmas/communication/communication.cpp
 	# Load balancing
@@ -19,9 +23,17 @@ set(SOURCES
 	fpmas/runtime/runtime.cpp
 	# Model
 	fpmas/model/detail/model.cpp
+	fpmas/model/model.cpp
 	fpmas/model/serializer.cpp
+	fpmas/model/spatial/spatial_model.cpp
+	fpmas/model/spatial/grid.cpp
+	fpmas/model/spatial/grid_agent_mapping.cpp
+	fpmas/model/spatial/von_neumann.cpp
+	fpmas/model/spatial/graph.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
+	# Output
+	fpmas/io/output.cpp
 	# Main
 	fpmas.cpp
 	)
@@ -29,6 +41,7 @@ set(SOURCES
 add_library(fpmas ${SOURCES})
 
 target_compile_definitions(fpmas PUBLIC LOG_LEVEL=${LOG_LEVEL})
+target_compile_definitions(fpmas PUBLIC FPMAS_ID_TYPE=${FPMAS_ID_TYPE})
 target_link_libraries(fpmas PUBLIC MPI::MPI_CXX Zoltan::Zoltan
 	nlohmann_json::nlohmann_json)
 
@@ -48,6 +61,3 @@ export(EXPORT fpmas_targets
 install(EXPORT fpmas_targets
 	DESTINATION lib/cmake/fpmas
 	NAMESPACE fpmas::)
-
-# generates compile_commands.json, useful for CCLS completion
-set(CMAKE_EXPORT_COMPILE_COMMANDS YES)

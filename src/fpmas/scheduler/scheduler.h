@@ -16,6 +16,11 @@ namespace fpmas { namespace scheduler {
 	using api::scheduler::TimeStep;
 	using api::scheduler::SubTimeStep;
 	using api::scheduler::JID;
+	using api::scheduler::JobList;
+	using api::scheduler::time_step;
+	using api::scheduler::sub_time_step;
+	using api::scheduler::sub_step_end;
+
 
 	/**
 	 * A Task that does not perform any operation.
@@ -30,6 +35,36 @@ namespace fpmas { namespace scheduler {
 			void run() override {};
 	};
 
+	namespace detail {
+		// TODO 2.0: put this in fpmas::scheduler, rename
+		// fpmas::scheduler::LambdaTask
+		/**
+		 * api::scheduler::Task implementation based on a lambda function.
+		 */
+		class LambdaTask : public api::scheduler::Task {
+			private:
+				std::function<void()> fct;
+
+			public:
+				/**
+				 * LambdaTask constructor.
+				 *
+				 * The specified lambda function must have a `void ()` signature.
+				 *
+				 * @tparam automatically deduced lambda function type
+				 * @param lambda_fct void() lambda function, that will be run by
+				 * the task 
+				 */
+				template<typename Lambda_t>
+					LambdaTask(Lambda_t&& lambda_fct)
+					: fct(lambda_fct) {}
+
+				void run() override {
+					fct();
+				}
+		};
+	}
+
 	/**
 	 * A NodeTask that can be initialized from a lambda function.
 	 *
@@ -40,6 +75,7 @@ namespace fpmas { namespace scheduler {
 		private:
 			std::function<void()> fct;
 			api::graph::DistributedNode<T>* _node;
+
 		public:
 			/**
 			 * LambdaTask constructor.
@@ -145,6 +181,7 @@ namespace fpmas { namespace scheduler {
 
 		public:
 			void submit(const api::scheduler::Job&, api::scheduler::SubTimeStep sub_time_step) override;
+			void submit(api::scheduler::JobList job_list, api::scheduler::SubTimeStep sub_time_step) override;
 			const std::vector<const api::scheduler::Job*>& jobs() const override;
 			JobIterator begin() const override;
 			JobIterator end() const override;
@@ -162,10 +199,10 @@ namespace fpmas { namespace scheduler {
 		private:
 			struct SchedulerItem {
 				SubTimeStep sub_step;
-				const api::scheduler::Job* job;
+				JobList job_list;
 
-				SchedulerItem(SubTimeStep sub_step, const api::scheduler::Job* job)
-					: sub_step(sub_step), job(job) {}
+				SchedulerItem(SubTimeStep sub_step, JobList job_list)
+					: sub_step(sub_step), job_list(job_list) {}
 			};
 
 			std::unordered_map<TimeStep, std::vector<SchedulerItem>> unique_jobs;
@@ -179,6 +216,9 @@ namespace fpmas { namespace scheduler {
 			void schedule(api::scheduler::Date date, const api::scheduler::Job&) override;
 			void schedule(api::scheduler::Date date, api::scheduler::Period period, const api::scheduler::Job&) override;
 			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, const api::scheduler::Job&) override;
+			void schedule(api::scheduler::Date date, api::scheduler::JobList) override;
+			void schedule(api::scheduler::Date date, api::scheduler::Period period, api::scheduler::JobList) override;
+			void schedule(api::scheduler::Date date, api::scheduler::Date end, api::scheduler::Period period, api::scheduler::JobList) override;
 			void build(api::scheduler::TimeStep step, fpmas::api::scheduler::Epoch&) const override;
 	};
 

@@ -3,15 +3,13 @@
 #include <random>
 
 #include "fpmas/graph/distributed_graph.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/graph/mock_load_balancing.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "graph/mock_distributed_node.h"
+#include "graph/mock_load_balancing.h"
+#include "synchro/hard/mock_client_server.h"
 
 #include "utils/test.h"
 
-using ::testing::SizeIs;
-using ::testing::Ge;
-using ::testing::IsEmpty;
+using namespace testing;
 
 using fpmas::api::graph::LocationState;
 using fpmas::communication::TypedMpi;
@@ -25,7 +23,7 @@ using fpmas::synchro::hard::MutexServer;
 using fpmas::synchro::hard::TerminationAlgorithm;
 using fpmas::synchro::DataUpdatePack;
 
-class HardSyncMutexSelfReadTest : public ::testing::Test {
+class HardSyncMutexSelfReadTest : public Test {
 	protected:
 		MpiCommunicator comm;
 		TypedMpi<Color> color_mpi {comm};
@@ -35,7 +33,7 @@ class HardSyncMutexSelfReadTest : public ::testing::Test {
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = comm.getRank();
-		MockDistributedNode<int> node {DistributedId(3, comm.getRank()), data};
+		MockDistributedNode<int, NiceMock> node {DistributedId(3, comm.getRank()), data};
 
 		LocationState state = LocationState::DISTANT;
 		int location = comm.getRank();
@@ -67,7 +65,7 @@ TEST_F(HardSyncMutexSelfReadTest, unlocked_read_test) {
 /*
  * mpi_race_condition
  */
-class MutexServerRaceCondition : public ::testing::Test {
+class MutexServerRaceCondition : public Test {
 	protected:
 		static const int NUM_ACQUIRE = 500;
 		MpiCommunicator comm;
@@ -78,7 +76,7 @@ class MutexServerRaceCondition : public ::testing::Test {
 		TypedMpi<DataUpdatePack<int>> data_update_mpi {comm};
 
 		int data = 0;
-		MockDistributedNode<int> node {DistributedId(3, 6), data};
+		MockDistributedNode<int, NiceMock> node {DistributedId(3, 6), data};
 
 		LocationState state = LocationState::DISTANT;
 		int location = 0;
@@ -114,7 +112,7 @@ TEST_F(MutexServerRaceCondition, acquire_race_condition) {
 	}
 }
 
-class HardSyncModeIntegrationTest : public ::testing::Test {
+class HardSyncModeIntegrationTest : public Test {
 	protected:
 		MpiCommunicator comm;
 		DistributedGraph<unsigned int, HardSyncMode> graph {comm};
@@ -211,7 +209,25 @@ class HardSyncModeLinkerIntegrationTest : public HardSyncModeIntegrationTest {
 		}
 };
 
-TEST_F(HardSyncModeLinkerIntegrationTest, remove_node) {
+TEST_F(HardSyncModeLinkerIntegrationTest, remove_local_node) {
+	ASSERT_THAT(graph.getNodes(), SizeIs(Ge(1)));
+	if(comm.getSize() > 1) {
+		for(auto node : graph.getLocationManager().getLocalNodes()) {
+			graph.removeNode(node.second);
+		}
+	} else {
+		decltype(graph)::NodeMap nodes = graph.getNodes();
+		for(auto node : nodes)
+			graph.removeNode(node.second);
+	}
+
+	graph.synchronize();
+
+	ASSERT_THAT(graph.getNodes(), IsEmpty());
+	ASSERT_THAT(graph.getEdges(), IsEmpty());
+}
+
+TEST_F(HardSyncModeLinkerIntegrationTest, remove_distant_node) {
 	ASSERT_THAT(graph.getNodes(), SizeIs(Ge(1)));
 	if(comm.getSize() > 1) {
 		for(auto node : graph.getLocationManager().getLocalNodes()) {
@@ -223,6 +239,37 @@ TEST_F(HardSyncModeLinkerIntegrationTest, remove_node) {
 		for(auto node : nodes)
 			graph.removeNode(node.second);
 	}
+
+	graph.synchronize();
+
+	ASSERT_THAT(graph.getNodes(), IsEmpty());
+	ASSERT_THAT(graph.getEdges(), IsEmpty());
+}
+
+class HardSyncModeLinkerLoadTest : public HardSyncModeIntegrationTest {
+	protected:
+		void SetUp() {
+			FPMAS_ON_PROC(comm, 0) {
+				std::vector<DistributedId> node_ids;
+				for(int i = 0; i < comm.getSize(); i++) {
+					for(int j = 0; j < 10; j++) {
+						auto* node = graph.buildNode(0ul);
+						partition[node->getId()] = i;
+						node_ids.push_back(node->getId());
+					}
+				}
+				for(auto src_id : node_ids)
+					for(auto tgt_id : node_ids)
+						if(src_id != tgt_id)
+							graph.link(graph.getNode(src_id), graph.getNode(tgt_id), 0);
+			}
+			graph.distribute(partition);
+		}
+};
+
+TEST_F(HardSyncModeLinkerLoadTest, remove_node) {
+	for(auto node : graph.getLocationManager().getLocalNodes())
+		graph.removeNode(node.second);
 
 	graph.synchronize();
 

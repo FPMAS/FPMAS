@@ -1,17 +1,18 @@
 var searchData=
 [
-  ['scheduledloadbalancing_556',['ScheduledLoadBalancing',['../classfpmas_1_1graph_1_1ScheduledLoadBalancing.html',1,'fpmas::graph']]],
-  ['scheduledloadbalancing_3c_20agentptr_20_3e_557',['ScheduledLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1graph_1_1ScheduledLoadBalancing.html',1,'fpmas::graph']]],
-  ['scheduler_558',['Scheduler',['../classfpmas_1_1api_1_1scheduler_1_1Scheduler.html',1,'fpmas::api::scheduler::Scheduler'],['../classfpmas_1_1scheduler_1_1Scheduler.html',1,'fpmas::scheduler::Scheduler']]],
-  ['server_559',['Server',['../classfpmas_1_1synchro_1_1hard_1_1api_1_1Server.html',1,'fpmas::synchro::hard::api']]],
-  ['serverpack_560',['ServerPack',['../classfpmas_1_1synchro_1_1hard_1_1ServerPack.html',1,'fpmas::synchro::hard']]],
-  ['setagentdistantcallback_561',['SetAgentDistantCallback',['../classfpmas_1_1model_1_1detail_1_1SetAgentDistantCallback.html',1,'fpmas::model::detail']]],
-  ['setagentlocalcallback_562',['SetAgentLocalCallback',['../classfpmas_1_1model_1_1detail_1_1SetAgentLocalCallback.html',1,'fpmas::model::detail']]],
-  ['sharedlockguard_563',['SharedLockGuard',['../classfpmas_1_1synchro_1_1SharedLockGuard.html',1,'fpmas::synchro::SharedLockGuard&lt; T &gt;'],['../classfpmas_1_1model_1_1SharedLockGuard.html',1,'fpmas::model::SharedLockGuard']]],
-  ['sharedlockguard_3c_20fpmas_3a_3aapi_3a_3amodel_3a_3aagentptr_20_3e_564',['SharedLockGuard&lt; fpmas::api::model::AgentPtr &gt;',['../classfpmas_1_1synchro_1_1SharedLockGuard.html',1,'fpmas::synchro']]],
-  ['singlethreadmutex_565',['SingleThreadMutex',['../classfpmas_1_1synchro_1_1ghost_1_1SingleThreadMutex.html',1,'fpmas::synchro::ghost']]],
-  ['status_566',['Status',['../structfpmas_1_1api_1_1communication_1_1Status.html',1,'fpmas::api::communication']]],
-  ['synchronizegraphtask_567',['SynchronizeGraphTask',['../classfpmas_1_1model_1_1detail_1_1SynchronizeGraphTask.html',1,'fpmas::model::detail']]],
-  ['synclinker_568',['SyncLinker',['../classfpmas_1_1api_1_1synchro_1_1SyncLinker.html',1,'fpmas::api::synchro']]],
-  ['syncmode_569',['SyncMode',['../classfpmas_1_1api_1_1synchro_1_1SyncMode.html',1,'fpmas::api::synchro']]]
+  ['randomgraphbuilder_997',['RandomGraphBuilder',['../classfpmas_1_1graph_1_1RandomGraphBuilder.html',1,'fpmas::graph']]],
+  ['randomgridagentmapping_998',['RandomGridAgentMapping',['../classfpmas_1_1model_1_1RandomGridAgentMapping.html',1,'fpmas::model']]],
+  ['randomloadbalancing_999',['RandomLoadBalancing',['../classfpmas_1_1graph_1_1RandomLoadBalancing.html',1,'fpmas::graph']]],
+  ['randomneighbors_1000',['RandomNeighbors',['../structfpmas_1_1model_1_1RandomNeighbors.html',1,'fpmas::model']]],
+  ['range_1001',['Range',['../classfpmas_1_1api_1_1model_1_1Range.html',1,'fpmas::api::model']]],
+  ['range_3c_20api_3a_3amodel_3a_3acell_20_3e_1002',['Range&lt; api::model::Cell &gt;',['../classfpmas_1_1api_1_1model_1_1Range.html',1,'fpmas::api::model']]],
+  ['range_3c_20api_3a_3amodel_3a_3agridcell_20_3e_1003',['Range&lt; api::model::GridCell &gt;',['../classfpmas_1_1api_1_1model_1_1Range.html',1,'fpmas::api::model']]],
+  ['range_3c_20graphcell_20_3e_1004',['Range&lt; GraphCell &gt;',['../classfpmas_1_1api_1_1model_1_1Range.html',1,'fpmas::api::model']]],
+  ['range_3c_20gridconfig_3a_3acelltype_20_3e_1005',['Range&lt; GridConfig::CellType &gt;',['../classfpmas_1_1api_1_1model_1_1Range.html',1,'fpmas::api::model']]],
+  ['reachablecell_1006',['ReachableCell',['../classfpmas_1_1model_1_1ReachableCell.html',1,'fpmas::model']]],
+  ['readguard_1007',['ReadGuard',['../classfpmas_1_1model_1_1ReadGuard.html',1,'fpmas::model::ReadGuard'],['../classfpmas_1_1synchro_1_1ReadGuard.html',1,'fpmas::synchro::ReadGuard&lt; T &gt;']]],
+  ['readguard_3c_20fpmas_3a_3aapi_3a_3amodel_3a_3aagentptr_20_3e_1008',['ReadGuard&lt; fpmas::api::model::AgentPtr &gt;',['../classfpmas_1_1synchro_1_1ReadGuard.html',1,'fpmas::synchro']]],
+  ['reduce_1009',['Reduce',['../structfpmas_1_1io_1_1Reduce.html',1,'fpmas::io']]],
+  ['request_1010',['Request',['../structfpmas_1_1api_1_1communication_1_1Request.html',1,'fpmas::api::communication']]],
+  ['runtime_1011',['Runtime',['../classfpmas_1_1api_1_1runtime_1_1Runtime.html',1,'fpmas::api::runtime::Runtime'],['../classfpmas_1_1runtime_1_1Runtime.html',1,'fpmas::runtime::Runtime']]]
 ];

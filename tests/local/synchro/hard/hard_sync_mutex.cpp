@@ -43,30 +43,24 @@
  */
 #include "gtest/gtest.h"
 
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
+#include "graph/mock_distributed_node.h"
+#include "synchro/hard/mock_client_server.h"
 #include "fpmas/synchro/hard/hard_sync_mutex.h"
 
-using ::testing::AllOf;
-using ::testing::Field;
-using ::testing::SizeIs;
-using ::testing::IsEmpty;
-using ::testing::NotNull;
-using ::testing::Return;
-using ::testing::WhenDynamicCastTo;
+using namespace testing;
 
 using fpmas::api::graph::LocationState;
 using fpmas::synchro::hard::HardSyncMutex;
 using fpmas::synchro::hard::api::MutexRequest;
 using fpmas::synchro::hard::api::MutexRequestType;
 
-class HardSyncMutexTest : public ::testing::Test {
+class HardSyncMutexTest : public Test {
 	protected:
 		DistributedId id {2, 0};
 		int data = 14;
-		MockDistributedNode<int> node {id, data};
+		MockDistributedNode<int, NiceMock> node {id, data};
 		LocationState state;
-		int location;
+		int location = 5;
 
 		MockMutexClient<int> mock_mutex_client;
 		MockMutexServer<int> mock_mutex_server;
@@ -76,7 +70,6 @@ class HardSyncMutexTest : public ::testing::Test {
 		void SetUp() {
 			ON_CALL(node, state).WillByDefault(ReturnPointee(&state));
 			ON_CALL(node, location).WillByDefault(ReturnPointee(&location));
-			//hard_sync_mutex.setUp(id, state, location, mock_mutex_client, mock_mutex_server);
 		}
 };
 

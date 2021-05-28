@@ -1,21 +1,15 @@
 #include "fpmas/synchro/hard/hard_sync_linker.h"
 #include "fpmas/synchro/hard/server_pack.h"
 
-#include "../mocks/communication/mock_communication.h"
-#include "../mocks/graph/mock_distributed_graph.h"
-#include "../mocks/graph/mock_distributed_node.h"
-#include "../mocks/synchro/mock_mutex.h"
-#include "../mocks/synchro/hard/mock_client_server.h"
-#include "../mocks/synchro/mock_sync_mode.h"
-#include "../mocks/synchro/hard/mock_hard_sync_mode.h"
+#include "communication/mock_communication.h"
+#include "graph/mock_distributed_graph.h"
+#include "graph/mock_distributed_node.h"
+#include "synchro/mock_mutex.h"
+#include "synchro/hard/mock_client_server.h"
+#include "synchro/mock_sync_mode.h"
+#include "synchro/hard/mock_hard_sync_mode.h"
 
-using ::testing::DoAll;
-using ::testing::Expectation;
-using ::testing::Invoke;
-using ::testing::Pointee;
-using ::testing::Property;
-using ::testing::Return;
-using ::testing::ReturnPointee;
+using namespace testing;
 
 using fpmas::graph::EdgePtrWrapper;
 using fpmas::synchro::hard::api::Epoch;
@@ -23,7 +17,7 @@ using fpmas::synchro::hard::api::Tag;
 using fpmas::synchro::hard::ServerPack;
 using fpmas::synchro::hard::LinkServer;
 
-class LinkServerTest : public ::testing::Test {
+class LinkServerTest : public Test {
 	private:
 		class MockProbe {
 			private:
@@ -43,10 +37,11 @@ class LinkServerTest : public ::testing::Test {
 
 		MockDistributedGraph<
 			int,
-			MockDistributedNode<int>,
-			MockDistributedEdge<int>
+			MockDistributedNode<int, NiceMock>,
+			MockDistributedEdge<int, NiceMock>,
+			NiceMock
 			> mock_graph;
-		decltype(mock_graph)::EdgeMap edge_map;
+		typename fpmas::api::graph::DistributedGraph<int>::EdgeMap edge_map;
 
 		MockHardSyncLinker<int> mock_sync_linker;
 		LinkServer<int> link_server;
@@ -65,10 +60,9 @@ class LinkServerTest : public ::testing::Test {
 			ON_CALL(edge_mpi, Iprobe).WillByDefault(Return(false));
 			EXPECT_CALL(edge_mpi, Iprobe).Times(AnyNumber());
 			ON_CALL(mock_graph, getEdges).WillByDefault(ReturnRef(edge_map));
-			EXPECT_CALL(mock_graph, getEdges).Times(AnyNumber());
 		}
 
-		void expectLink(int source, MockDistributedEdge<int>* mock_edge) {
+		void expectLink(int source, MockDistributedEdge<int, NiceMock>* mock_edge) {
 			Expectation probe = EXPECT_CALL(edge_mpi, Iprobe(_, Epoch::EVEN | Tag::LINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
@@ -79,10 +73,10 @@ class LinkServerTest : public ::testing::Test {
 			EXPECT_CALL(mock_graph, importEdge(mock_edge));
 		}
 
-		void expectUnlink(int source, MockDistributedEdge<int>* mock_edge) {
+		void expectUnlink(int source, MockDistributedEdge<int, NiceMock>* mock_edge) {
 			edge_map.insert({mock_edge->getId(), mock_edge});
-			EXPECT_CALL(mock_graph, getEdge(mock_edge->getId()))
-				.WillRepeatedly(Return(mock_edge));
+			ON_CALL(mock_graph, getEdge(mock_edge->getId()))
+				.WillByDefault(Return(mock_edge));
 			Expectation probe = EXPECT_CALL(id_mpi, Iprobe(_, Epoch::EVEN | Tag::UNLINK, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
@@ -92,21 +86,17 @@ class LinkServerTest : public ::testing::Test {
 			EXPECT_CALL(mock_graph, erase(mock_edge));
 		}
 
-		void expectRemoveNode(int source, MockDistributedNode<int>* mock_node) {
-			EXPECT_CALL(mock_graph, getNode(mock_node->getId()))
-				.WillRepeatedly(Return(mock_node));
+		void expectRemoveNode(int source, fpmas::api::graph::DistributedNode<int>* node) {
+			ON_CALL(mock_graph, getNode(node->getId()))
+				.WillByDefault(Return(node));
 			Expectation probe = EXPECT_CALL(id_mpi, Iprobe(_, Epoch::EVEN | Tag::REMOVE_NODE, _))
 				.WillOnce(DoAll(Invoke(MockProbe(source)), Return(true)));
 
 			EXPECT_CALL(id_mpi, recv(source, Epoch::EVEN | Tag::REMOVE_NODE, _))
 				.After(probe)
-				.WillOnce(Return(mock_node->getId()));
-			for(auto edge : mock_node->getIncomingEdges())
-				EXPECT_CALL(mock_graph, unlink(edge));
-			for(auto edge : mock_node->getOutgoingEdges())
-				EXPECT_CALL(mock_graph, unlink(edge));
-			EXPECT_CALL(mock_graph, erase(mock_node)).Times(0);
-			EXPECT_CALL(mock_sync_linker, registerNodeToRemove(mock_node));
+				.WillOnce(Return(node->getId()));
+
+			EXPECT_CALL(mock_graph, removeNode(node));
 		}
 
 };
@@ -119,43 +109,69 @@ TEST_F(LinkServerTest, epoch) {
 }
 
 TEST_F(LinkServerTest, handleLink) {
-	MockDistributedEdge<int> mock_edge {DistributedId(15, 2), 7};
+	MockDistributedEdge<int, NiceMock> mock_edge {DistributedId(15, 2), 7};
 	expectLink(4, &mock_edge);
 
 	link_server.handleIncomingRequests();
 }
 
 TEST_F(LinkServerTest, handleUnlink) {
-	MockDistributedEdge<int> mock_edge {{3, 5}, 7};
+	MockDistributedEdge<int, NiceMock> mock_edge {{3, 5}, 7};
+	MockDistributedNode<int, NiceMock> mock_node;
+	ON_CALL(mock_edge, getSourceNode)
+		.WillByDefault(Return(&mock_node));
+	ON_CALL(mock_edge, getTargetNode)
+		.WillByDefault(Return(&mock_node));
+
 	expectUnlink(6, &mock_edge);
 
 	link_server.handleIncomingRequests();
 }
 
 TEST_F(LinkServerTest, handleRemoveNode) {
-	MockDistributedNode<int> mock_node {{0, 2}};
-	MockDistributedEdge<int> out_edge;
-	MockDistributedEdge<int> in_edge_1;
-	MockDistributedEdge<int> in_edge_2;
-	EXPECT_CALL(mock_node, getIncomingEdges())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(
+	MockDistributedNode<int, NiceMock> mock_node {{0, 2}};
+	MockDistributedEdge<int, NiceMock> out_edge;
+	MockDistributedEdge<int, NiceMock> in_edge_1;
+	MockDistributedEdge<int, NiceMock> in_edge_2;
+	ON_CALL(mock_node, getIncomingEdges())
+		.WillByDefault(Return(
 					std::vector<fpmas::api::graph::DistributedEdge<int>*>
 					{&in_edge_1, &in_edge_2}));
-	EXPECT_CALL(mock_node, getOutgoingEdges())
-		.Times(AnyNumber())
-		.WillRepeatedly(Return(
+	ON_CALL(mock_node, getOutgoingEdges())
+		.WillByDefault(Return(
 					std::vector<fpmas::api::graph::DistributedEdge<int>*>
 					{&out_edge}));
+	ON_CALL(out_edge, getSourceNode())
+		.WillByDefault(Return(&mock_node));
+	ON_CALL(in_edge_1, getTargetNode())
+		.WillByDefault(Return(&mock_node));
+	ON_CALL(in_edge_2, getTargetNode())
+		.WillByDefault(Return(&mock_node));
+	// Fake set up
+	MockDistributedNode<int, NiceMock> fake_node;
+	ON_CALL(out_edge, getTargetNode())
+		.WillByDefault(Return(&fake_node));
+	ON_CALL(in_edge_1, getSourceNode())
+		.WillByDefault(Return(&fake_node));
+	ON_CALL(in_edge_2, getSourceNode())
+		.WillByDefault(Return(&fake_node));
+
 	expectRemoveNode(4, &mock_node);
 
 	link_server.handleIncomingRequests();
 }
 
 TEST_F(LinkServerTest, handleAll) {
-	MockDistributedEdge<int> link_mock_edge {{15, 2}, 7};
-	MockDistributedEdge<int> unlink_mock_edge {{3, 5}, 7};
-	MockDistributedNode<int> mock_node {{2, 7}};
+	MockDistributedEdge<int, NiceMock> link_mock_edge {{15, 2}, 7};
+	MockDistributedEdge<int, NiceMock> unlink_mock_edge {{3, 5}, 7};
+	MockDistributedNode<int, NiceMock> mock_node {{2, 7}};
+
+	MockDistributedNode<int, NiceMock> fake_node;
+	ON_CALL(unlink_mock_edge, getSourceNode)
+		.WillByDefault(Return(&fake_node));
+	ON_CALL(unlink_mock_edge, getTargetNode)
+		.WillByDefault(Return(&fake_node));
+
 	expectLink(4, &link_mock_edge);
 	expectUnlink(6, &unlink_mock_edge);
 	expectRemoveNode(5, &mock_node);

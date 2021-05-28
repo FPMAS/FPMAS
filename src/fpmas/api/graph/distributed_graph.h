@@ -58,7 +58,13 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * @return internal MpiCommunicator
 			 */
+			virtual api::communication::MpiCommunicator& getMpiCommunicator() = 0;
+
+			/**
+			 * \copydoc getMpiCommunicator
+			 */
 			virtual const api::communication::MpiCommunicator& getMpiCommunicator() const = 0;
+
 			/**
 			 * Reference to the internal LocationManager.
 			 *
@@ -68,6 +74,11 @@ namespace fpmas {namespace api {namespace graph {
 			 * LocationManager::getDistantNodes() functions.
 			 *
 			 * @return internal LocationManager
+			 */
+			virtual LocationManager<T>& getLocationManager() = 0;
+
+			/**
+			 * \copydoc getLocationManager()
 			 */
 			virtual const LocationManager<T>& getLocationManager() const = 0;
 
@@ -88,17 +99,26 @@ namespace fpmas {namespace api {namespace graph {
 			virtual DistributedNode<T>* importNode(DistributedNode<T>* node) = 0;
 
 			/**
-			 * Imports a DistributedEdge into the local graph instance.
+			 * Imports a \DistributedEdge into the local graph instance.
 			 *
-			 * An edge is imported into the graph as an edge connected to a
-			 * node imported in the current distribute() operation.
+			 * The \DistributedEdge must comply with the following requirements:
+			 * - dynamically allocated
+			 * - dynamically allocated source and target nodes. Those nodes
+			 *   must not be nodes of the graph: they will eventually be reused
+			 *   and inserted in the graph, or deleted.
+			 * - source and target nodes `getId()` and `location()` fields
+			 *   **must** be up to date. Any other field (including `data()`
+			 *   and `getWeight()`) are ignored, since they are managed by the
+			 *   \SyncMode.
 			 *
-			 * In consequence, it is guaranteed that at least the source or the
-			 * target node of the imported edge is \LOCAL.
+			 * Moreover, at least the source or the target node of the imported
+			 * edge must represent a \LOCAL node (since edges between two
+			 * \DISTANT nodes are not represented in a \DistributedGraph
+			 * anyway).
 			 *
 			 * Several situations might then occur : 
 			 * - source and target nodes are \LOCAL, then edge is \LOCAL
-			 * - source is \LOCAL and target is a \DISTANT, then edge is \DISTANT
+			 * - source is \LOCAL and target is \DISTANT, then edge is \DISTANT
 			 * - target is \LOCAL and source is \DISTANT, then edge is \DISTANT
 			 *
 			 * When source or target is \DISTANT, the corresponding node might
@@ -125,27 +145,39 @@ namespace fpmas {namespace api {namespace graph {
 			virtual DistributedEdge<T>* importEdge(DistributedEdge<T>* edge) = 0;
 
 			/**
-			 * Reference to the current internal Node ID.
+			 * Returns the current internal Node ID.
 			 *
 			 * The next node built with buildNode() will have an id equal to
 			 * currentNodeId()++;
 			 *
-			 * @return reference to the current internal Node ID
+			 * @return current Node ID
 			 */
-			virtual const DistributedId& currentNodeId() const = 0;
+			virtual DistributedId currentNodeId() const = 0;
 
 			/**
-			 * Reference to the current internal Edge ID.
+			 * Sets the current internal Node ID to the specified value.
+			 *
+			 * @param id node id
+			 */
+			virtual void setCurrentNodeId(DistributedId id) = 0;
+
+			/**
+			 * Returns the current internal Edge ID.
 			 *
 			 * The next edge built with link() will have an id equal to
 			 * currentEdgeId()++;
 			 *
-			 * @return reference to the current internal Edge ID
+			 * @return current Edge ID
 			 */
-			virtual const DistributedId& currentEdgeId() const = 0;
+			virtual DistributedId currentEdgeId() const = 0;
 
-			//virtual DistributedNode<T>* buildNode(const T&) = 0;
-			
+			/**
+			 * Sets the current internal Edge ID to the specified value.
+			 *
+			 * @param id edge id
+			 */
+			virtual void setCurrentEdgeId(DistributedId id) = 0;
+
 			/**
 			 * Builds a new \LOCAL node into the graph.
 			 *
@@ -171,6 +203,46 @@ namespace fpmas {namespace api {namespace graph {
 			 * @return pointer to built node
 			 */
 			virtual DistributedNode<T>* buildNode(const T& data) = 0;
+
+			/**
+			 * Inserts a temporary \DISTANT node into the graph.
+			 *
+			 * The node is guaranteed to live at least until the next
+			 * synchronize() call.
+			 *
+			 * Once inserted, the temporary `node` can eventually be used as
+			 * any other \DISTANT node, and so can be linked to existing \LOCAL
+			 * and \DISTANT nodes or to query data.
+			 *
+			 * However, the DistributedNode::location() must be initialized
+			 * manually, otherwise operations above might produce unexpected
+			 * results.
+			 *
+			 * The `node` must be dynamically allocated, and the
+			 * DistributedGraph implementation automatically takes its
+			 * ownership.
+			 *
+			 * If a node with the same ID is already contained in the graph,
+			 * the node is simply deleted and a pointer to the existing node is
+			 * returned. Else, a pointer to the inserted node is returned.
+			 *
+			 * This method can notably be used to implement distributed graph
+			 * initialization algorithms. Indeed, if a node 0 is built on
+			 * process 0 and node 1 is built on process 1, it is at first
+			 * glance impossible to create a link from node 0 to node 1.
+			 *
+			 * But, for example knowing that the node 1 is necessarily
+			 * instanciated on process 1, it is possible to manually insert a
+			 * \DISTANT representation of node 1 using insertDistant() on
+			 * process 0, what allows to build a link from node 0 to node 1 on
+			 * process 0. Such link will be committed at the latest at the next
+			 * synchronize() call and imported on process 1.
+			 *
+			 *
+			 * @param node temporary \DISTANT node to manually insert in the
+			 * graph
+			 */
+			virtual DistributedNode<T>* insertDistant(DistributedNode<T>* node) = 0;
 
 			/**
 			 * Globally removes the specified node from the graph.
@@ -282,6 +354,14 @@ namespace fpmas {namespace api {namespace graph {
 			 * @param callback set local node callback
 			 */
 			virtual void addCallOnSetLocal(NodeCallback* callback) = 0;
+
+			/**
+			 * Current set local callbacks list.
+			 *
+			 * @return set local callbacks
+			 */
+			virtual std::vector<NodeCallback*> onSetLocalCallbacks() const = 0;
+
 			/**
 			 * Adds a set \DISTANT callback.
 			 *
@@ -295,6 +375,13 @@ namespace fpmas {namespace api {namespace graph {
 			 * @param callback set distant node callback
 			 */
 			virtual void addCallOnSetDistant(NodeCallback* callback) = 0;
+
+			/**
+			 * Current set distant callbacks list.
+			 *
+			 * @return set distant callbacks
+			 */
+			virtual std::vector<NodeCallback*> onSetDistantCallbacks() const = 0;
 
 			/**
 			 * Balances the graph across processors using the specified lb
@@ -345,8 +432,10 @@ namespace fpmas {namespace api {namespace graph {
 			 * processes blocks until all other perform a synchronize() call.
 			 *
 			 * The synchronization process involves two main steps :
-			 * 1. Link and Removed node synchronization
-			 * 2. Node Data synchronization
+			 * 1. Link and Removed node synchronization (using
+			 * synchronizationMode().getSyncLinker().synchronize())
+			 * 2. Node Data synchronization (using
+			 * synchronizationMode().getDataSync().synchronize())
 			 *
 			 * Different synchronization modes might define different
 			 * policies to perform those synchronizations.
@@ -362,6 +451,19 @@ namespace fpmas {namespace api {namespace graph {
 			 *   **all** the processes
 			 */
 			virtual void synchronize() = 0;
-	};
+
+
+			/**
+			 * Returns the current synchro::SyncMode instance used to
+			 * synchronize() the graph.
+			 *
+			 * Directly accessing
+			 * synchronizationMode().getSyncLinker().synchronize() or
+			 * synchronizationMode().getDataSync().synchronize() can be used to
+			 * perform corresponding partial synchronizations (contrary to
+			 * synchronize()) for performance purpose.
+			 */
+			virtual synchro::SyncMode<T>& synchronizationMode() = 0;
+		};
 }}}
 #endif

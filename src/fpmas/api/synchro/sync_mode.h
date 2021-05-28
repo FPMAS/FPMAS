@@ -5,7 +5,13 @@
  * SyncMode API
  */
 
-#include "fpmas/api/graph/distributed_graph.h"
+//#include "fpmas/api/graph/distributed_graph.h"
+#include "mutex.h"
+
+namespace fpmas { namespace api { namespace graph {
+	template<typename T> class DistributedNode;
+	template<typename T> class DistributedEdge;
+}}}
 
 namespace fpmas { namespace api { namespace synchro {
 	/**
@@ -23,6 +29,8 @@ namespace fpmas { namespace api { namespace synchro {
 			 * api::graph::DistributedNode, or the managed data of each Mutex.
 			 */
 			virtual void synchronize() = 0;
+
+			virtual ~DataSync() {}
 	};
 
 	/**
@@ -75,6 +83,8 @@ namespace fpmas { namespace api { namespace synchro {
 			 * the processes.
 			 */
 			virtual void synchronize() = 0;
+
+			virtual ~SyncLinker() {}
 	};
 
 	/**
@@ -121,6 +131,8 @@ namespace fpmas { namespace api { namespace synchro {
 				 * @return data sync
 				 */
 				virtual DataSync& getDataSync() = 0;
+
+				virtual ~SyncMode() {};
 		};
 }}}
 #endif

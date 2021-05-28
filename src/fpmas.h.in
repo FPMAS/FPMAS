@@ -1,12 +1,18 @@
 #ifndef FPMAS_H
 #define FPMAS_H
 
-#include "fpmas/model/model.h"
 #include "fpmas/model/serializer.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
 #include "fpmas/graph/graph_builder.h"
+#include "fpmas/graph/random_load_balancing.h"
 #include "fpmas/random/random.h"
+#include "fpmas/model/spatial/moore.h"
+#include "fpmas/model/spatial/grid_agent_mapping.h"
+#include "fpmas/io/output.h"
+#include "fpmas/io/csv_output.h"
+#include "fpmas/io/json_output.h"
+#include "fpmas/io/breakpoint.h"
 
 /**
  * FPMAS version literal.
@@ -200,12 +206,35 @@ namespace fpmas {
  */
 
 /**
+ * \namespace fpmas::api::io
+ *
+ * Program input / output related APIs.
+ */
+/**
+ * \namespace fpmas::io
+ * fpmas::api::io implementations.
+ */
+/**
+ * \namespace fpmas::io::json
+ *
+ * Features related to FPMAS Json serialization rules.
+ */
+
+/**
  * \namespace fpmas::api::utils
  * Utility classes used in the fpmas::api namespace.
  */
 /**
  * \namespace fpmas::utils
  * Utility classes.
+ */
+/**
+ * \namespace fpmas::api::utils::perf
+ * Utility classes for performance analysis
+ */
+/**
+ * \namespace fpmas::utils::perf
+ * fpmas::api::utils::perf implementations.
  */
 /**
  * \namespace nlohmann

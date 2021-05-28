@@ -1,4 +1,10 @@
 <map id="src/fpmas/model/model.h" name="src/fpmas/model/model.h">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,175,32"/>
-<area shape="rect" id="node2" href="$fpmas_8h.html" title=" " alt="" coords="45,80,135,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="93,5,263,32"/>
+<area shape="rect" id="node2" href="$dist__move__algo_8h.html" title=" " alt="" coords="97,80,259,121"/>
+<area shape="rect" id="node3" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="97,169,259,211"/>
+<area shape="rect" id="node4" href="$model_2spatial_2graph_8h_source.html" title=" " alt="" coords="5,259,167,300"/>
+<area shape="rect" id="node5" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="191,259,352,300"/>
+<area shape="rect" id="node6" href="$von__neumann_8h.html" title=" " alt="" coords="191,348,352,389"/>
+<area shape="rect" id="node7" href="$moore_8h.html" title=" " alt="" coords="191,437,352,479"/>
+<area shape="rect" id="node8" href="$fpmas_8h.html" title=" " alt="" coords="226,527,317,553"/>
 </map>
