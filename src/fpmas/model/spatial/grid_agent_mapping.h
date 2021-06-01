@@ -7,6 +7,8 @@
 
 #include "fpmas/api/model/spatial/grid.h"
 #include "fpmas/random/distribution.h"
+#include "fpmas/random/random.h"
+
 
 namespace fpmas { namespace model {
 	using api::model::DiscretePoint;
@@ -36,24 +38,18 @@ namespace fpmas { namespace model {
 			 * number of agents on each x/y position is stored and used to
 			 * produce results returned by the countAt() method.
 			 *
+			 * @tparam DistributionX x coordinates distribution
+			 * @tparam DistributionY y coordinates distribution
+			 *
 			 * @param x x distribution
 			 * @param y y distribution
 			 * @param agent_count agent count
 			 * @param seed random seed
 			 */
+			template<typename DistributionX, typename DistributionY>
 			RandomGridAgentMapping(
-					api::random::Distribution<DiscreteCoordinate>& x,
-					api::random::Distribution<DiscreteCoordinate>& y,
-					std::size_t agent_count,
-					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
-					);
-	
-			/**
-			 * \copydoc RandomGridAgentMapping
-			 */
-			RandomGridAgentMapping(
-					api::random::Distribution<DiscreteCoordinate>&& x,
-					api::random::Distribution<DiscreteCoordinate>&& y,
+					DistributionX&& x,
+					DistributionY&& y,
 					std::size_t agent_count,
 					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
 					);
@@ -64,6 +60,21 @@ namespace fpmas { namespace model {
 				return count_map[cell->location().x][cell->location().y];
 			}
 	};
+
+	template<typename DistributionX, typename DistributionY>
+		RandomGridAgentMapping::RandomGridAgentMapping(
+				DistributionX&& x,
+				DistributionY&& y,
+				std::size_t agent_count,
+				std::mt19937_64::result_type seed) {
+			random::mt19937_64 rd(seed);
+
+			for(std::size_t i = 0; i < agent_count; i++) {
+				DiscretePoint p {x(rd), y(rd)};
+				count_map[p.x][p.y]++;
+			}
+		}
+
 
 	/**
 	 * api::model::SpatialAgentMapping implementation for grid environments.

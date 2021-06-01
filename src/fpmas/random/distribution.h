@@ -17,7 +17,8 @@ namespace fpmas { namespace random {
 	 * the requirements of the [C++ RandomNumberDistribution named
 	 * requirement](https://en.cppreference.com/w/cpp/named_req/RandomNumberDistribution).
 	 *
-	 * @tparam predefined C++ distribution
+	 * @tparam Distribution_t predefined C++ distribution, that must satisfy
+	 * _RandomNumberDistribution_.
 	 */
 	template<typename Distribution_t>
 	class Distribution : public api::random::Distribution<typename Distribution_t::result_type> {
@@ -39,9 +40,20 @@ namespace fpmas { namespace random {
 			template<typename... Args>
 				Distribution(Args... args) : distrib(args...) {}
 
-			result_type operator()(api::random::Generator& generator) override {
-				return distrib(generator);
-			}
+			/**
+			 * Generates a random value from the input generator, according to
+			 * the implemented random distribution.
+			 *
+			 * @tparam Generator_t Random number generator (must satisfy
+			 * _UniformRandomBitGenerator_)
+			 *
+			 * @param generator random number generator
+			 * @return random value
+			 */
+			template<typename Generator_t>
+				result_type operator()(Generator_t& generator) {
+					return distrib(generator);
+				}
 
 			/**
 			 * \copydoc fpmas::api::random::Distribution::min()

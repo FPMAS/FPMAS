@@ -12,7 +12,7 @@ class DistributedRandomGeneratorTest : public Test {
 fpmas::random::DistributedGenerator<> DistributedRandomGeneratorTest::distributed_generator;
 
 TEST_F(DistributedRandomGeneratorTest, test) {
-	std::array<typename fpmas::api::random::Generator::result_type, 100> values;
+	std::array<typename fpmas::random::DistributedGenerator<>::result_type, 100> values;
 	for(int i = 0; i < 100; i++)
 		values[i] = distributed_generator();
 	fpmas::communication::TypedMpi<decltype(values)> mpi(

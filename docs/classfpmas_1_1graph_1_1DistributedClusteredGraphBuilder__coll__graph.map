@@ -1,7 +1,5 @@
 <map id="fpmas::graph::DistributedClusteredGraphBuilder&lt; T &gt;" name="fpmas::graph::DistributedClusteredGraphBuilder&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="70,215,254,256"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder.html" title=" " alt="" coords="5,124,196,165"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1RandomGraphBuilder.html" title=" " alt="" coords="220,124,411,165"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="168,13,303,54"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1random_1_1Distribution.html" title=" " alt="" coords="327,5,461,61"/>
+<area shape="rect" id="node1" title=" " alt="" coords="115,95,299,136"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder.html" title=" " alt="" coords="5,5,196,47"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1RandomGraphBuilder.html" title=" " alt="" coords="220,5,411,47"/>
 </map>

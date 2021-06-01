@@ -1,28 +1,7 @@
 #include "grid_agent_mapping.h"
 
-#include "fpmas/random/random.h"
-
 namespace fpmas { namespace model {
-	RandomGridAgentMapping::RandomGridAgentMapping(
-			api::random::Distribution<DiscreteCoordinate>&& x,
-			api::random::Distribution<DiscreteCoordinate>&& y,
-			std::size_t agent_count,
-			std::mt19937_64::result_type seed)
-	: RandomGridAgentMapping(x, y, agent_count, seed) {
-	}
 
-	RandomGridAgentMapping::RandomGridAgentMapping(
-			api::random::Distribution<DiscreteCoordinate>& x,
-			api::random::Distribution<DiscreteCoordinate>& y,
-			std::size_t agent_count,
-			std::mt19937_64::result_type seed) {
-		random::mt19937_64 rd(seed);
-
-		for(std::size_t i = 0; i < agent_count; i++) {
-			DiscretePoint p {x(rd), y(rd)};
-			count_map[p.x][p.y]++;
-		}
-	}
 
 	ConstrainedGridAgentMapping::ConstrainedGridAgentMapping(
 					DiscreteCoordinate grid_width,

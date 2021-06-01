@@ -4,11 +4,19 @@
 #include "gmock/gmock.h"
 #include "fpmas/api/random/distribution.h"
 
-class MockGenerator : public fpmas::api::random::Generator {
+class MockGenerator : public fpmas::api::random::Generator<std::uint_fast64_t> {
 	public:
-		MOCK_METHOD(result_type, min, (), (override));
-		MOCK_METHOD(result_type, max, (), (override));
+		typedef std::uint_fast64_t result_type;
+
 		MOCK_METHOD(result_type, call, (), ());
+
+		static constexpr result_type min() {
+			return 0;
+		}
+
+		static constexpr result_type max() {
+			return std::numeric_limits<result_type>::max();
+		}
 
 		result_type operator()() override {
 			return call();
@@ -18,9 +26,9 @@ class MockGenerator : public fpmas::api::random::Generator {
 template<typename T>
 class MockDistribution : public fpmas::api::random::Distribution<T> {
 	public:
-		MOCK_METHOD(T, call, (fpmas::api::random::Generator&), ());
+		MOCK_METHOD(T, call, (fpmas::api::random::Generator<std::uint_fast64_t>&), ());
 
-		T operator()(fpmas::api::random::Generator& gen) {
+		T operator()(fpmas::api::random::Generator<std::uint_fast64_t>& gen) {
 			return call(gen);
 		}
 

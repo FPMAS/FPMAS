@@ -76,23 +76,32 @@ namespace fpmas { namespace graph {
 	class RandomGraphBuilder {
 		protected:
 			/**
-			 * Random generator.
+			 * Function object returning a random edge count.
 			 */
-			api::random::Generator& generator;
-			/**
-			 * Outgoing edge count distribution.
-			 */
-			api::random::Distribution<std::size_t>& edge_distribution;
+			std::function<std::size_t()> num_edge;
 			/**
 			 * RandomGraphBuilder constructor.
+			 *
+			 * @tparam Generator_t random generator type (must satisfy
+			 * _UniformRandomBitGenerator_)
+			 * @tparam EdgeDist edge count distribution (must satisfy
+			 * _RandomNumberDistribution_)
 			 *
 			 * @param generator random generator
 			 * @param edge_distribution outgoing edge count distribution
 			 */
-			RandomGraphBuilder(
-					api::random::Generator& generator,
-					api::random::Distribution<std::size_t>& edge_distribution)
-				: generator(generator), edge_distribution(edge_distribution) {}
+			template<typename Generator_t, typename EdgeDist>
+				RandomGraphBuilder(
+						Generator_t& generator,
+						EdgeDist& edge_distribution) :
+					// A lambda function is used to "catch" generator end
+					// edge_distribution, without requiring class level
+					// template parameters. Moreover, template arguments can be
+					// automatically deduced in the context of a constructor,
+					// but not at the class level.
+					num_edge([&generator, &edge_distribution] () {
+							return edge_distribution(generator);
+							}) {}
 	};
 
 
@@ -102,48 +111,73 @@ namespace fpmas { namespace graph {
 	 * uniformly among all the available built nodes.
 	 */
 	template<typename T>
-		class UniformGraphBuilder : public api::graph::GraphBuilder<T>, private RandomGraphBuilder {
-			public:
-				/**
-				 * UniformGraphBuilder constructor.
-				 *
-				 * @param generator random number generator provided to the
-				 * distribution
-				 * @param distribution random distribution that manages edges
-				 * generation. See build()
-				 */
-				UniformGraphBuilder(
-						api::random::Generator& generator,
-						api::random::Distribution<std::size_t>& distribution)
-					: RandomGraphBuilder(generator, distribution) {}
+		class UniformGraphBuilder :
+			public api::graph::GraphBuilder<T>,
+			private RandomGraphBuilder {
+				private:
+					/*
+					 * Function object that return a random integer between 0 and
+					 * the specified argument (included).
+					 */
+					std::function<std::size_t(std::size_t)> index;
 
-				/**
-				 * Builds a graph according to the following algorithm.
-				 *
-				 * 1. api::graph::NodeBuilder::nodeCount() are built in the
-				 * graph.
-				 * 2. The number of outgoing edge of each node is determined by
-				 * the value returned by `distribution(generator)`.
-				 * 3. For each node, a subset of nodes among the nodes built by
-				 * the algorithm is selected uniformly, of size equal to the
-				 * previously computed output degree of the node. The node is
-				 * then linked to each node of the subset, on the specified
-				 * `layer`.
-				 *
-				 * Any random distribution can be used to build such a graph.
-				 * The mean output degree of the graph, K, will by definition
-				 * be equal to the mean of the specified random distribution.
-				 *
-				 * @param node_builder NodeBuilder instance used to generate nodes
-				 * @param layer layer on which nodes will be linked
-				 * @param graph graph in which nodes and edges will be inserted
-				 * @return built nodes
-				 */
-				std::vector<api::graph::DistributedNode<T>*> build(
-						api::graph::NodeBuilder<T>& node_builder,
-						api::graph::LayerId layer,
-						api::graph::DistributedGraph<T>& graph) override;
-		};
+				public:
+					/**
+					 * UniformGraphBuilder constructor.
+					 *
+					 * @tparam Generator_t random generator type (must satisfy
+					 * _UniformRandomBitGenerator_)
+					 * @tparam EdgeDist edge count distribution (must satisfy
+					 * _RandomNumberDistribution_)
+					 *
+					 * _RandomNumberDistribution_)
+					 * @param generator random number generator provided to the
+					 * distribution
+					 * @param distribution random distribution that manages edges
+					 * generation. See build()
+					 */
+					template<typename Generator_t, typename EdgeDist>
+						UniformGraphBuilder(
+								Generator_t& generator,
+								EdgeDist& distribution) :
+							RandomGraphBuilder(generator, distribution),
+							// A lambda function is used to "catch" generator, without
+							// requiring class level template parameters.
+							index([&generator] (std::size_t max) {
+									random::UniformIntDistribution<std::size_t> index(
+											0, max
+											);
+									return index(generator);
+									}) {
+							}
+
+					/**
+					 * Builds a graph according to the following algorithm.
+					 *
+					 * 1. api::graph::NodeBuilder::nodeCount() are built in the
+					 * graph.
+					 * 2. The number of outgoing edge of each node is determined by
+					 * the value returned by `distribution(generator)`.
+					 * 3. For each node, a subset of nodes among the nodes built by
+					 * the algorithm is selected uniformly, of size equal to the
+					 * previously computed output degree of the node. The node is
+					 * then linked to each node of the subset, on the specified
+					 * `layer`.
+					 *
+					 * Any random distribution can be used to build such a graph.
+					 * The mean output degree of the graph, K, will by definition
+					 * be equal to the mean of the specified random distribution.
+					 *
+					 * @param node_builder NodeBuilder instance used to generate nodes
+					 * @param layer layer on which nodes will be linked
+					 * @param graph graph in which nodes and edges will be inserted
+					 * @return built nodes
+					 */
+					std::vector<api::graph::DistributedNode<T>*> build(
+							api::graph::NodeBuilder<T>& node_builder,
+							api::graph::LayerId layer,
+							api::graph::DistributedGraph<T>& graph) override;
+			};
 
 	template<typename T>
 		std::vector<api::graph::DistributedNode<T>*> UniformGraphBuilder<T>
@@ -158,7 +192,8 @@ namespace fpmas { namespace graph {
 				std::vector<api::graph::DistributedNode<T>*> node_buffer = built_nodes;
 				for(auto node : built_nodes) {
 					std::size_t edge_count = std::min(
-							edge_distribution(generator), built_nodes.size()-1
+							// Random edge count
+							this->num_edge(), built_nodes.size()-1
 							);
 
 					auto position = std::find(
@@ -168,10 +203,9 @@ namespace fpmas { namespace graph {
 					std::swap(*position, node_buffer.back());
 
 					for(std::size_t i = 0; i < edge_count; i++) {
-						fpmas::random::UniformIntDistribution<std::size_t> index(
-								0, node_buffer.size()-2-i
-								);
-						auto& target_node = node_buffer[index(generator)];
+						auto& target_node = node_buffer[
+							this->index(node_buffer.size()-2-i) // random index
+						];
 						graph.link(node, target_node, layer);
 
 						std::swap(target_node, node_buffer[node_buffer.size()-2-i]);
@@ -188,34 +222,59 @@ namespace fpmas { namespace graph {
 	 */
 	template<typename T>
 		class DistributedUniformGraphBuilder :
-			public api::graph::DistributedGraphBuilder<T>, private RandomGraphBuilder {
+			public api::graph::DistributedGraphBuilder<T>,
+			private RandomGraphBuilder {
+				private:
+					/*
+					 * Function object that return a random integer between 0 and
+					 * the specified argument (included).
+					 */
+					std::function<std::size_t(std::size_t)> index;
+				public:
+					
+					/**
+					 * DistributedUniformGraphBuilder constructor.
+					 *
+					 * @tparam EdgeDist edge count distribution (must satisfy
+					 * _RandomNumberDistribution_)
+					 *
+					 * @param generator random number generator provided to the
+					 * distribution
+					 * @param distribution random distribution that manages edges
+					 * generation. See build()
+					 */
+					template<typename EdgeDist>
+						DistributedUniformGraphBuilder(
+								random::DistributedGenerator<>& generator,
+								EdgeDist& distribution) :
+							RandomGraphBuilder(generator, distribution),
+							// A lambda function is used to "catch" generator, without
+							// requiring class level template parameters.
+							index([&generator] (std::size_t max) {
+									random::UniformIntDistribution<std::size_t> index(
+											0, max
+											);
+									return index(generator);
+									}) {
+						}
 
-			public:
-				/**
-				 * \copydoc UniformGraphBuilder::UniformGraphBuilder()
-				 */
-				DistributedUniformGraphBuilder(
-						random::DistributedGenerator<>& generator,
-						api::random::Distribution<std::size_t>& distribution)
-					: RandomGraphBuilder(generator, distribution) {}
-
-				/**
-				 * Same as UniformGraphBuilder::build(), but distributed and
-				 * much more efficient.
-				 *
-				 * This process is **synchronous** and should be called from
-				 * **all** processes.
-				 *
-				 * @param node_builder DistributedNodeBuilder instance used to generate nodes
-				 * @param layer layer on which nodes will be linked
-				 * @param graph graph in which nodes and edges will be inserted
-				 * @return built nodes
-				 */
-				std::vector<api::graph::DistributedNode<T>*> build(
-						api::graph::DistributedNodeBuilder<T>& node_builder,
-						api::graph::LayerId layer,
-						api::graph::DistributedGraph<T>& graph) override;
-		};
+					/**
+					 * Same as UniformGraphBuilder::build(), but distributed and
+					 * much more efficient.
+					 *
+					 * This process is **synchronous** and should be called from
+					 * **all** processes.
+					 *
+					 * @param node_builder DistributedNodeBuilder instance used to generate nodes
+					 * @param layer layer on which nodes will be linked
+					 * @param graph graph in which nodes and edges will be inserted
+					 * @return built nodes
+					 */
+					std::vector<api::graph::DistributedNode<T>*> build(
+							api::graph::DistributedNodeBuilder<T>& node_builder,
+							api::graph::LayerId layer,
+							api::graph::DistributedGraph<T>& graph) override;
+			};
 
 	template<typename T>
 		std::vector<api::graph::DistributedNode<T>*> DistributedUniformGraphBuilder<T>
@@ -241,7 +300,7 @@ namespace fpmas { namespace graph {
 
 				for(auto node : built_nodes) {
 					std::size_t edge_count = std::min(
-							edge_distribution(generator), node_ids.size()-1
+							this->num_edge(), node_ids.size()-1
 							);
 
 					auto position = std::find_if(
@@ -251,10 +310,7 @@ namespace fpmas { namespace graph {
 					std::swap(*position, node_ids.back());
 
 					for(std::size_t i = 0; i < edge_count; i++) {
-						fpmas::random::UniformIntDistribution<std::size_t> index(
-								0, node_ids.size()-2-i
-								);
-						auto& id = node_ids[index(generator)];
+						auto& id = node_ids[this->index(node_ids.size()-2-i)];
 
 						fpmas::api::graph::DistributedNode<T>* target_node;
 						try{
@@ -407,16 +463,33 @@ namespace fpmas { namespace graph {
 	 * to each node : each node is then connected to its nearest neighbors.
 	 */
 	template<typename T>
-		class ClusteredGraphBuilder : public api::graph::GraphBuilder<T>, private RandomGraphBuilder {
+		class ClusteredGraphBuilder :
+			public api::graph::GraphBuilder<T>,
+			private RandomGraphBuilder {
 			private:
-				api::random::Distribution<double>& x_distribution;
-				api::random::Distribution<double>& y_distribution;
+				/*
+				 * Function object that returns a random x coordinate.
+				 */
+				std::function<double()> x;
+				/*
+				 * Function object that returns a random y coordinate.
+				 */
+				std::function<double()> y;
 
 				static random::UniformRealDistribution<double> default_xy_dist;
 	
 			public:
 				/**
 				 * ClusteredGraphBuilder constructor.
+				 *
+				 * @tparam Generator_t random generator type (must satisfy
+				 * _UniformRandomBitGenerator_)
+				 * @tparam EdgeDist edge count distribution (must satisfy
+				 * _RandomNumberDistribution_)
+				 * @tparam X_Dist x coordinates distribution (must satisfy
+				 * RandomNumberDistribution)
+				 * @tparam Y_Dist y coordinates distribution (must satisfy
+				 * RandomNumberDistribution)
 				 *
 				 * @param generator random number generator provided to the
 				 * distribution
@@ -427,16 +500,24 @@ namespace fpmas { namespace graph {
 				 * @param y_distribution random distribution used to assign an
 				 * y coordinate to each node
 				 */
-				ClusteredGraphBuilder(
-						api::random::Generator& generator,
-						api::random::Distribution<std::size_t>& edge_distribution,
-						api::random::Distribution<double>& x_distribution,
-						api::random::Distribution<double>& y_distribution
-						) :
-					RandomGraphBuilder(generator, edge_distribution),
-					x_distribution(x_distribution),
-					y_distribution(y_distribution) {
-					}
+				template<typename Generator_t, typename EdgeDist, typename X_Dist, typename Y_Dist>
+					ClusteredGraphBuilder(
+							Generator_t& generator,
+							EdgeDist& edge_distribution,
+							X_Dist& x_distribution,
+							Y_Dist& y_distribution
+							) :
+						RandomGraphBuilder(generator, edge_distribution),
+						// Generator, x_distribution and y_distribution are
+						// catched in a lambda to avoid class template
+						// parameters usage
+						x([&generator, &x_distribution] () {
+								return x_distribution(generator);
+								}),
+						y([&generator, &y_distribution] () {
+								return y_distribution(generator);
+								}) {
+						}
 
 				/**
 				 * ClusteredGraphBuilder constructor.
@@ -444,19 +525,25 @@ namespace fpmas { namespace graph {
 				 * Built nodes are implicitly and uniformly distributed in a 2D
 				 * space.
 				 *
+				 * @tparam Generator_t random generator type (must satisfy
+				 * _UniformRandomBitGenerator_)
+				 * @tparam EdgeDist edge count distribution (must satisfy
+				 * _RandomNumberDistribution_)
+				 *
 				 * @param generator random number generator provided to the
 				 * distribution
 				 * @param edge_distribution random distribution that manages edges
 				 * generation. See build()
 				 */
-				ClusteredGraphBuilder(
-						api::random::Generator& generator,
-						api::random::Distribution<std::size_t>& edge_distribution
-						) :
+				template<typename Generator_t, typename Distribution_t>
 					ClusteredGraphBuilder(
-							generator, edge_distribution,
-							default_xy_dist, default_xy_dist) {
-					}
+							Generator_t& generator,
+							Distribution_t& edge_distribution
+							) :
+						ClusteredGraphBuilder(
+								generator, edge_distribution,
+								default_xy_dist, default_xy_dist) {
+						}
 
 				/**
 				 * A 2D coordinate is first assigned to each node provided by
@@ -494,7 +581,7 @@ namespace fpmas { namespace graph {
 				while(!node_builder.nodeCount() == 0) {
 					auto* node = node_builder.buildNode(graph);
 					built_nodes.push_back({
-							{x_distribution(generator), y_distribution(generator)},
+							{this->x(), this->y()},
 							node
 							});
 					raw_built_nodes.push_back(node);
@@ -502,7 +589,7 @@ namespace fpmas { namespace graph {
 
 				for(auto& node : built_nodes) {
 					std::size_t edge_count = std::min(
-							edge_distribution(generator), built_nodes.size()-1
+							this->num_edge(), built_nodes.size()-1
 							);
 
 					detail::DistanceComparator comp(node.p);
@@ -549,32 +636,68 @@ namespace fpmas { namespace graph {
 			public api::graph::DistributedGraphBuilder<T>,
 			private RandomGraphBuilder {
 			private:
-				api::random::Distribution<double>& x_distribution;
-				api::random::Distribution<double>& y_distribution;
+				/*
+				 * Function object that returns a random x coordinate.
+				 */
+				std::function<double()> x;
+				/*
+				 * Function object that returns a random y coordinate.
+				 */
+				std::function<double()> y;
 
 				static random::UniformRealDistribution<double> default_xy_dist;
 	
 			public:
 				/**
-				 * \copydoc ClusteredGraphBuilder::ClusteredGraphBuilder()
+				 * DistributedClusteredGraphBuilder constructor.
+				 *
+				 * @tparam EdgeDist edge count distribution (must satisfy
+				 * _RandomNumberDistribution_)
+				 * @tparam X_Dist x coordinates distribution (must satisfy
+				 * RandomNumberDistribution)
+				 * @tparam Y_Dist y coordinates distribution (must satisfy
+				 * RandomNumberDistribution)
+				 *
+				 * @param generator random number generator provided to the
+				 * distribution
+				 * @param edge_distribution random distribution that manages edges
+				 * generation. See build()
+				 * @param x_distribution random distribution used to assign an
+				 * x coordinate to each node
+				 * @param y_distribution random distribution used to assign an
+				 * y coordinate to each node
 				 */
+				template<typename EdgeDist, typename X_Dist, typename Y_Dist>
 				DistributedClusteredGraphBuilder(
 						random::DistributedGenerator<>& generator,
-						api::random::Distribution<std::size_t>& edge_distribution,
-						api::random::Distribution<double>& x_distribution,
-						api::random::Distribution<double>& y_distribution
+						EdgeDist& edge_distribution,
+						X_Dist& x_distribution,
+						Y_Dist& y_distribution
 						) :
 					RandomGraphBuilder(generator, edge_distribution),
-					x_distribution(x_distribution),
-					y_distribution(y_distribution){
+					x([&generator, &x_distribution] () {return x_distribution(generator);}),
+					y([&generator, &y_distribution] () {return y_distribution(generator);}) {
 					}
 
+				
 				/**
-				 * \copydoc ClusteredGraphBuilder::ClusteredGraphBuilder(api::random::Generator&, api::random::Distribution<std::size_t>&)
+				 * ClusteredGraphBuilder constructor.
+				 *
+				 * Built nodes are implicitly and uniformly distributed in a 2D
+				 * space.
+				 *
+				 * @tparam EdgeDist edge count distribution (must satisfy
+				 * _RandomNumberDistribution_)
+				 *
+				 * @param generator random number generator provided to the
+				 * distribution
+				 * @param edge_distribution random distribution that manages edges
+				 * generation. See build()
 				 */
+				template<typename EdgeDist>
 				DistributedClusteredGraphBuilder(
 						random::DistributedGenerator<>& generator,
-						api::random::Distribution<std::size_t>& edge_distribution
+						EdgeDist& edge_distribution
 						) :
 					DistributedClusteredGraphBuilder(
 							generator, edge_distribution,
@@ -613,7 +736,7 @@ namespace fpmas { namespace graph {
 				while(!node_builder.localNodeCount() == 0) {
 					auto* node = node_builder.buildNode(graph);
 					built_nodes.push_back({
-							{x_distribution(generator), y_distribution(generator)},
+							{this->x(), this->y()},
 							node
 							});
 					raw_built_nodes.push_back(node);
@@ -634,7 +757,7 @@ namespace fpmas { namespace graph {
 
 				for(auto& node : built_nodes) {
 					std::size_t edge_count = std::min(
-							edge_distribution(generator), built_nodes_buffer.size()-1
+							this->num_edge(), built_nodes_buffer.size()-1
 							);
 					detail::DistanceComparator comp(node.p);
 					std::list<detail::LocalizedNodeView<T>> nearest_nodes;
@@ -687,12 +810,25 @@ namespace fpmas { namespace graph {
 	 * graphs. Built nodes are linked to nodes specified as "base nodes".
 	 */
 	template<typename T>
-		class BipartiteGraphBuilder : public api::graph::GraphBuilder<T>, private RandomGraphBuilder {
+		class BipartiteGraphBuilder :
+			public api::graph::GraphBuilder<T>,
+			private RandomGraphBuilder {
 			private:
 				std::vector<api::graph::DistributedNode<T>*> base_nodes;
+				/*
+				 * Function object that return a random integer between 0 and
+				 * the specified argument (included).
+				 */
+				std::function<std::size_t(std::size_t)> index;
+
 			public:
 				/**
 				 * BipartiteGraphBuilder constructor.
+				 *
+				 * @tparam Generator_t random generator type (must satisfy
+				 * _UniformRandomBitGenerator_)
+				 * @tparam EdgeDist edge count distribution (must satisfy
+				 * _RandomNumberDistribution_)
 				 *
 				 * @param generator random number generator provided to the
 				 * distribution
@@ -700,11 +836,20 @@ namespace fpmas { namespace graph {
 				 * generation. See build()
 				 * @param base_nodes nodes to which built nodes will be linked
 				 */
-				BipartiteGraphBuilder(
-						api::random::Generator& generator,
-						api::random::Distribution<std::size_t>& edge_distribution,
-						std::vector<api::graph::DistributedNode<T>*> base_nodes)
-					: RandomGraphBuilder(generator, edge_distribution), base_nodes(base_nodes) {}
+				template<typename Generator_t, typename EdgeDist>
+					BipartiteGraphBuilder(
+							Generator_t& generator,
+							EdgeDist& edge_distribution,
+							std::vector<api::graph::DistributedNode<T>*> base_nodes) :
+						RandomGraphBuilder(generator, edge_distribution),
+						base_nodes(base_nodes),
+						index([&generator] (std::size_t max) {
+								fpmas::random::UniformIntDistribution<std::size_t> index(
+										0, max
+										);
+								return index(generator);
+								}){
+						}
 
 				/**
 				 * For each built node, an outgoing edge count `n` is
@@ -731,17 +876,19 @@ namespace fpmas { namespace graph {
 				api::graph::LayerId layer,
 				api::graph::DistributedGraph<T>& graph) {
 			std::vector<api::graph::DistributedNode<T>*> built_nodes;
+
 			while(node_builder.nodeCount() > 0) {
 				auto* node = node_builder.buildNode(graph);
 				built_nodes.push_back(node);
 				std::size_t out_neighbors_count = std::min(
 						base_nodes.size(),
-						edge_distribution(generator));
-				std::vector<api::graph::DistributedNode<T>*> shuffled_base_nodes = base_nodes;
-				std::shuffle(shuffled_base_nodes.begin(), shuffled_base_nodes.end(), generator);
-
+						this->num_edge()
+						);
 				for(std::size_t i = 0; i < out_neighbors_count; i++) {
-					graph.link(node, base_nodes[i], layer);
+					auto& target_node = base_nodes[this->index(base_nodes.size()-1-i)];
+					graph.link(node, target_node, layer);
+
+					std::swap(target_node, base_nodes[base_nodes.size()-1-i]);
 				}
 			}
 			return built_nodes;

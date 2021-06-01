@@ -20,17 +20,25 @@ namespace fpmas { namespace random {
 	/**
 	 * api::random::Generator implementation.
 	 *
+	 * Any specialization of this class meets the requirements of
+	 * _UniformRandomBitGenerator_.
+	 * 
 	 * @tparam Generator_t cpp standard random number generator
 	 */
 	template<typename Generator_t>
-		class Generator : public api::random::Generator {
+		class Generator : public api::random::Generator<typename Generator_t::result_type> {
 			friend DistributedGenerator<Generator<Generator_t>>;
 			protected:
 			/**
 			 * Internal `Generator_t` instance.
 			 */
 			Generator_t gen;
+
 			public:
+			/**
+			 * Integer type used by the generator.
+			 */
+			typedef typename Generator_t::result_type result_type;
 
 			/**
 			 * Default constructor.
@@ -43,12 +51,22 @@ namespace fpmas { namespace random {
 			 */
 			Generator(result_type seed) : gen(seed) {}
 
-			result_type min() override {
-				return gen.min();
+			/**
+			 * Minimum value that can be generated.
+			 *
+			 * @return min value
+			 */
+			static constexpr result_type min() {
+				return Generator_t::min();
 			}
 
-			result_type max() override {
-				return gen.max();
+			/**
+			 * Maximum value that can be generated.
+			 *
+			 * @return max value
+			 */
+			static constexpr result_type max() {
+				return Generator_t::max();
 			}
 
 			result_type operator()() override {
@@ -87,19 +105,23 @@ namespace fpmas { namespace random {
 	 * The generator is assumed to produce pseudo-random and deterministic,
 	 * that are still different on each process.
 	 *
-	 * More particularly, the generator internally uses a `GeneratorType`
-	 * instance, that might be any api::random::Generator implementation, that
-	 * is seeded differently according to the rank of the process on which the
-	 * generator is used. Since MPI communications are required to do so,
-	 * fpmas::init() **must** be called before the first use of the generator.
-	 * However, it is safe to instantiate the generator before fpmas::init() is
-	 * called. This allows to declare a DistributedGenerator as a static
-	 * variable.
+	 * More particularly, the generator internally uses a `Generator_t`
+	 * instance, that must satisfy _UniformRandomBitGenerator_, seeded
+	 * differently according to the rank of the process on which the generator
+	 * is used. Since MPI communications are required to do so, fpmas::init()
+	 * **must** be called before the first use of the generator. However, it
+	 * is safe to instantiate the generator before fpmas::init() is called.
+	 * This allows to declare a DistributedGenerator as a static variable.
+	 *
+	 * This class meets the requirements of _UniformRandomBitGenerator_.
+	 *
+	 * @tparam Generator_t type of the local random number generator used on
+	 * each process
 	 */
-	template<typename GeneratorType = mt19937_64>
-		class DistributedGenerator : public api::random::Generator {
+	template<typename Generator_t = mt19937_64>
+		class DistributedGenerator : public api::random::Generator<typename Generator_t::result_type> {
 			private:
-				GeneratorType local_generator;
+				Generator_t local_generator;
 				std::mt19937 seeder;
 
 				bool _init = false;
@@ -117,6 +139,11 @@ namespace fpmas { namespace random {
 				}
 
 			public:
+				/**
+				 * Integer type used by the generator.
+				 */
+				typedef typename Generator_t::result_type result_type;
+
 				/**
 				 * Default DistributedGenerator constructor from a default
 				 * seed.
@@ -145,12 +172,22 @@ namespace fpmas { namespace random {
 					return local_generator();
 				}
 
-				result_type min() override {
-					return local_generator.min();
+				/**
+				 * Minimum value that can be generated.
+				 *
+				 * @return min value
+				 */
+				static constexpr result_type min() {
+					return Generator_t::min();
 				}
 
-				result_type max() override {
-					return local_generator.max();
+				/**
+				 * Maximum value that can be generated.
+				 *
+				 * @return max value
+				 */
+				static constexpr result_type max() {
+					return Generator_t::max();
 				}
 		};
 
