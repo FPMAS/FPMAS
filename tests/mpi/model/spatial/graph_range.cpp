@@ -1,4 +1,3 @@
-#include "fpmas/model/spatial/graph_range.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 
 #include "../test_agents.h"
