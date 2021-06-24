@@ -27,8 +27,8 @@ namespace fpmas { namespace graph {
 			private:
 				IdType id;
 				float weight;
-				std::unordered_map<api::graph::LayerId, std::vector<EdgeType*>> incoming_edges;
-				std::unordered_map<api::graph::LayerId, std::vector<EdgeType*>> outgoing_edges;
+				mutable std::unordered_map<api::graph::LayerId, std::vector<EdgeType*>> incoming_edges;
+				mutable std::unordered_map<api::graph::LayerId, std::vector<EdgeType*>> outgoing_edges;
 
 			public:
 				/**
@@ -85,11 +85,7 @@ namespace fpmas { namespace graph {
 	template<typename IdType, typename EdgeType>
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
 			Node<IdType, EdgeType>::getIncomingEdges(api::graph::LayerId id) const {
-				try {
-					return incoming_edges.at(id);
-				} catch(std::out_of_range&) {
-					return {};
-				}
+				return incoming_edges[id];
 		}
 	
 	template<typename IdType, typename EdgeType>
@@ -107,11 +103,7 @@ namespace fpmas { namespace graph {
 	template<typename IdType, typename EdgeType>
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
 			Node<IdType, EdgeType>::getOutgoingEdges(api::graph::LayerId id) const {
-				try {
-					return outgoing_edges.at(id);
-				} catch(std::out_of_range&) {
-					return {};
-				}
+				return outgoing_edges[id];
 		}
 	
 	template<typename IdType, typename EdgeType>
