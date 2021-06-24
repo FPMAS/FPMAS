@@ -16,6 +16,7 @@ set(SOURCES
 	random/generator.cpp
 	io/csv_output.cpp
 	io/breakpoint.cpp
+	io/output.cpp
 	)
 
 add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})

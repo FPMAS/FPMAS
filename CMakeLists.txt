@@ -14,7 +14,7 @@ find_package(Zoltan 3.81 REQUIRED)
 
 # Since only the single include json.hpp is required, we defined a custom
 # nlohmann_json module so that a "complete" installation of nlohmann_json is
-# required, while still allowing version management. If the "complete"
+# not required, while still allowing version management. If the "complete"
 # installation is used, find_package() will automatically load the
 # nlohmann_json Config.cmake.
 find_package(nlohmann_json 3.7 REQUIRED)

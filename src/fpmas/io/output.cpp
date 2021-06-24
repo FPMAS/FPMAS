@@ -4,30 +4,36 @@
 namespace fpmas { namespace io {
 	FileOutput::FileOutput(
 			std::string filename,
-			std::ios_base::openmode mode
+			std::ios::openmode mode
 			)
-		: file(filename, mode) {}
+		: filename(filename), mode(mode) {}
 
 	FileOutput::FileOutput(
 			std::string file_format,
 			int rank,
-			std::ios_base::openmode mode
+			std::ios::openmode mode
 			)
-		: file(fpmas::utils::format(file_format, rank), mode) {}
+		: filename(fpmas::utils::format(file_format, rank)), mode(mode) {}
 
 	FileOutput::FileOutput(
 			std::string file_format,
 			api::scheduler::TimeStep step,
-			std::ios_base::openmode mode
+			std::ios::openmode mode
 			)
-		: file(fpmas::utils::format(file_format, step), mode) {}
+		: filename(fpmas::utils::format(file_format, step)), mode(mode) {}
 
 	FileOutput::FileOutput(
 			std::string file_format,
 			int rank,
 			api::scheduler::TimeStep step,
-			std::ios_base::openmode mode
+			std::ios::openmode mode
 			)
-		: file(fpmas::utils::format(file_format, rank, step), mode) {}
+		: filename(fpmas::utils::format(file_format, rank, step)), mode(mode) {}
+
+	std::ofstream& FileOutput::get() {
+		if(!file.is_open())
+			file = std::ofstream {filename, mode};
+		return file;
+	}
 
 }}

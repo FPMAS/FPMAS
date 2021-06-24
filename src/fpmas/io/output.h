@@ -359,6 +359,8 @@ namespace fpmas { namespace io {
 		 * std::ofstream file instance
 		 */
 		std::ofstream file;
+		std::string filename;
+		std::ios::openmode mode;
 
 		public:
 		/**
@@ -371,6 +373,8 @@ namespace fpmas { namespace io {
 		/**
 		 * FileOutput constructor.
 		 *
+		 * The underlying file is opened only when get() is called.
+		 *
 		 * @see https://en.cppreference.com/w/cpp/io/basic_filebuf/open
 		 *
 		 * @param filename file name
@@ -378,7 +382,7 @@ namespace fpmas { namespace io {
 		 */
 		FileOutput(
 				std::string filename,
-				std::ios_base::openmode mode = std::ios_base::out
+				std::ios::openmode mode = std::ios::out
 				);
 
 		/**
@@ -386,6 +390,8 @@ namespace fpmas { namespace io {
 		 *
 		 * `file_format` is formatted using fpmas::utils::format(std::string, int)
 		 * to produce a file name.
+		 *
+		 * The underlying file is opened only when get() is called.
 		 *
 		 * @see https://en.cppreference.com/w/cpp/io/basic_filebuf/open
 		 *
@@ -396,7 +402,7 @@ namespace fpmas { namespace io {
 		FileOutput(
 				std::string file_format,
 				int rank,
-				std::ios_base::openmode mode = std::ios_base::out
+				std::ios::openmode mode = std::ios::out
 				);
 
 		/**
@@ -406,6 +412,8 @@ namespace fpmas { namespace io {
 		 * fpmas::utils::format(std::string, fpmas::api::scheduler::TimeStep)
 		 * to produce a file name.
 		 *
+		 * The underlying file is opened only when get() is called.
+		 *
 		 * @see https://en.cppreference.com/w/cpp/io/basic_filebuf/open
 		 *
 		 * @param file_format file name to format
@@ -415,7 +423,7 @@ namespace fpmas { namespace io {
 		FileOutput(
 				std::string file_format,
 				api::scheduler::TimeStep step,
-				std::ios_base::openmode mode = std::ios_base::out
+				std::ios::openmode mode = std::ios::out
 				);
 		/**
 		 * FileOutput constructor.
@@ -423,6 +431,8 @@ namespace fpmas { namespace io {
 		 * `file_format` is formatted using
 		 * fpmas::utils::format(std::string, int, fpmas::api::scheduler::TimeStep)
 		 * to produce a file name.
+		 *
+		 * The underlying file is opened only when get() is called.
 		 *
 		 * @see https://en.cppreference.com/w/cpp/io/basic_filebuf/open
 		 *
@@ -435,12 +445,23 @@ namespace fpmas { namespace io {
 				std::string file_format,
 				int rank,
 				api::scheduler::TimeStep step,
-				std::ios_base::openmode mode = std::ios_base::out
+				std::ios::openmode mode = std::ios::out
 				);
 
-		std::ofstream& get() override {
-			return file;
-		}
+		/**
+		 * Returns a reference to the internal file output stream, that can be
+		 * used to output data using the classical C++ `<<` operator.
+		 *
+		 * The file is open once, the first time this get() method is called.
+		 *
+		 * This allows the FileOutput object to be declared on all processes,
+		 * while being opened only on one process, assuming only one process is
+		 * writing to the file, preventing other processes to delete the file
+		 * content when it is opened if the current openmode is `out`.
+		 *
+		 * @return file output stream
+		 */
+		std::ofstream& get() override;
 	};
 
 	/**
@@ -465,7 +486,7 @@ namespace fpmas { namespace io {
 			int rank;
 			api::runtime::Runtime& runtime;
 			FileOutput current_output;
-			std::ios_base::openmode mode;
+			std::ios::openmode mode;
 
 		public:
 			/**
@@ -485,7 +506,7 @@ namespace fpmas { namespace io {
 					std::string fileformat,
 					api::communication::MpiCommunicator& comm,
 					api::runtime::Runtime& runtime,
-					std::ios_base::openmode mode = std::ios_base::out
+					std::ios::openmode mode = std::ios::out
 					) :
 				fileformat(fileformat), rank(comm.getRank()), runtime(runtime),
 				mode(mode) {

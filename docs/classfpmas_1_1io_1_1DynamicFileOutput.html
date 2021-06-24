@@ -96,8 +96,8 @@ Collaboration diagram for fpmas::io::DynamicFileOutput:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0b0358892bf91bf062d4a15e3c434b28"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1DynamicFileOutput.html#a0b0358892bf91bf062d4a15e3c434b28">DynamicFileOutput</a> (std::string fileformat, <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;runtime, std::ios_base::openmode mode=std::ios_base::out)</td></tr>
-<tr class="separator:a0b0358892bf91bf062d4a15e3c434b28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0909faf52ec9fa45b200bd29c5ce3f82"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1DynamicFileOutput.html#a0909faf52ec9fa45b200bd29c5ce3f82">DynamicFileOutput</a> (std::string fileformat, <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;runtime, std::ios::openmode mode=std::ios::out)</td></tr>
+<tr class="separator:a0909faf52ec9fa45b200bd29c5ce3f82"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1557e66d84d79e1b0879c455f6bbc414"><td class="memItemLeft" align="right" valign="top">std::ofstream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1DynamicFileOutput.html#a1557e66d84d79e1b0879c455f6bbc414">get</a> () override</td></tr>
 <tr class="separator:a1557e66d84d79e1b0879c455f6bbc414"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -107,8 +107,8 @@ Public Member Functions</h2></td></tr>
 <p>For example, if the specified file format is "file.%t.csv", calling <code><a class="el" href="classfpmas_1_1io_1_1DynamicFileOutput.html#a1557e66d84d79e1b0879c455f6bbc414">get()</a></code> when <code>runtime.currentDate()</code> is 0 while open and return a reference to the file "file.0.csv", while calling the same method at time step 3 will open and return a reference to the file "file.3.csv".</p>
 <p>In addition, the file format can contain 'r', that will eventually be replaced by the current process rank. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a0b0358892bf91bf062d4a15e3c434b28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0b0358892bf91bf062d4a15e3c434b28">&#9670;&nbsp;</a></span>DynamicFileOutput()</h2>
+<a id="a0909faf52ec9fa45b200bd29c5ce3f82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0909faf52ec9fa45b200bd29c5ce3f82">&#9670;&nbsp;</a></span>DynamicFileOutput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -137,8 +137,8 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::ios_base::openmode&#160;</td>
-          <td class="paramname"><em>mode</em> = <code>std::ios_base::out</code>&#160;</td>
+          <td class="paramtype">std::ios::openmode&#160;</td>
+          <td class="paramname"><em>mode</em> = <code>std::ios::out</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
