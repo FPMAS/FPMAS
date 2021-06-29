@@ -27,7 +27,8 @@ class CellBaseTest : public Test {
 			= new NiceMock<MockSpatialAgent<DefaultCell, NiceMock>>;
 		MockCell<NiceMock> current_location;
 		MockAgentNode<NiceMock> agent_node {
-			agent_id, AgentPtr(mock_spatial_agent)};
+			agent_id, AgentPtr(mock_spatial_agent)
+		};
 		MockAgentEdge<NiceMock> agent_edge;
 
 		MockAgentNode<NiceMock> cell_node;
@@ -74,6 +75,10 @@ TEST_F(CellBaseTest, handle_new_location) {
 		.WillByDefault(Return(
 					std::vector<AgentEdge*>({&agent_edge})
 					));
+	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::NEW_LOCATION))
+		.WillByDefault(Return(
+					std::vector<AgentNode*>({&agent_node})
+					));
 
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, &mock_cell, SpatialModelLayers::LOCATION));
@@ -91,28 +96,36 @@ TEST_F(CellBaseTest, handle_new_location) {
 				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
 			);
 
+	mock_cell.init();
 	mock_cell.handleNewLocation();
 }
 
 TEST_F(CellBaseTest, handle_move) {
 	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::MOVE))
 		.WillByDefault(Return(std::vector<AgentEdge*>({&agent_edge})));
+	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::MOVE))
+		.WillByDefault(Return(std::vector<AgentNode*>({&agent_node})));
 
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_MOVE));
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_MOVE));
+	mock_cell.init();
 	mock_cell.handleMove();
 
 	// Should do nothing when called again, since the node is already
 	// explored
 	EXPECT_CALL(mock_model, link).Times(0);
+
+	mock_cell.init();
 	mock_cell.handleMove();
 }
 
 TEST_F(CellBaseTest, handle_perceive) {
 	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::PERCEIVE))
 		.WillByDefault(Return(std::vector<AgentEdge*>({&agent_edge})));
+	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::PERCEIVE))
+		.WillByDefault(Return(std::vector<AgentNode*>({&agent_node})));
 
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_PERCEIVE)
@@ -120,11 +133,14 @@ TEST_F(CellBaseTest, handle_perceive) {
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
 			);
+	mock_cell.init();
 	mock_cell.handlePerceive();
 
 	// Should do nothing when called again, since the node is already
 	// explored
 	EXPECT_CALL(mock_model, link).Times(0);
+
+	mock_cell.init();
 	mock_cell.handlePerceive();
 }
 
@@ -152,11 +168,18 @@ TEST_F(CellBaseTest, update_perceptions) {
 
 	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::PERCEIVE))
 		.WillByDefault(Return(std::vector<AgentEdge*>({&agent_edge})));
+	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::PERCEIVE))
+		.WillByDefault(Return(std::vector<AgentNode*>({&agent_node})));
 
 	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::LOCATION))
 		.WillByDefault(Return(std::vector<AgentEdge*>(
 						{&agent_edge, &perceived_agent_edge}
 						)));
+	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::LOCATION))
+		.WillByDefault(Return(std::vector<AgentNode*>(
+						{&agent_node, &perceived_agent_node}
+						)));
+
 
 	EXPECT_CALL(mock_model, link(
 				mock_spatial_agent, perceived_agent, SpatialModelLayers::PERCEPTION));

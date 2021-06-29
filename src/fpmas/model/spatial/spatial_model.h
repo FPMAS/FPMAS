@@ -109,7 +109,9 @@ namespace fpmas {
 			std::set<DistributedId> move_flags;
 			std::set<DistributedId> perception_flags;
 
-			void updateLocation(Neighbor<api::model::Agent>& agent);
+			void updateLocation(
+					api::model::Agent* agent, api::model::AgentEdge* new_location_edge
+					);
 			void growMobilityField(api::model::Agent* agent);
 			void growPerceptionField(api::model::Agent* agent);
 
@@ -118,9 +120,24 @@ namespace fpmas {
 			 */
 			bool isAgentInGroup(api::model::Agent* agent, api::model::AgentGroup& group);
 
+			/*
+			 * Some profiling analysis show that the successors() method calls,
+			 * and more particularly the dynamic_casts that are involved, have
+			 * a significant performance cost.
+			 * The purpose of the following structures is to drastically reduce
+			 * the call to the successors() method, buffering the result only
+			 * when required.
+			 * This is safe, since the Cell network can't be modified during
+			 * the DistributedMoveAlgorithm execution.
+			 */
+			bool init_successors = false;
+			std::vector<api::model::Cell*> successors_buffer;
+			const std::vector<api::model::Cell*>& bufferedSuccessors();
+
 		public:
 			std::vector<api::model::Cell*> successors() override;
 
+			void init() override;
 			void handleNewLocation() override;
 			void handleMove() override;
 			void handlePerceive() override;

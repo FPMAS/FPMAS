@@ -240,6 +240,8 @@ namespace fpmas { namespace model {
 			std::vector<CellType*> cells;
 			for(auto cell : dist_move_algo.cell_group.localAgents()) {
 				cells.push_back(dynamic_cast<CellType*>(cell));
+				// Initializes all cells
+				cells.back()->init();
 			}
 
 			// Initializes the generic end condition

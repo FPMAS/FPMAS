@@ -32,6 +32,12 @@ namespace fpmas { namespace api { namespace model {
 	class CellBehavior {
 		public:
 			/**
+			 * Implementation free initialization method, called on each Cell
+			 * when the DistributedMoveAlgorithm is run, before any other
+			 * behavior is executed.
+			 */
+			virtual void init() = 0;
+			/**
 			 * Handles links on the NEW_LOCATION layer.
 			 *
 			 * NEW_LOCATION links are replaced by LOCATION links, and the

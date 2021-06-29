@@ -230,61 +230,62 @@ $(function() {
 <div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;            std::vector&lt;CellType*&gt; cells;</div>
 <div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> cell : dist_move_algo.cell_group.localAgents()) {</div>
 <div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;                cells.push_back(<span class="keyword">dynamic_cast&lt;</span>CellType*<span class="keyword">&gt;</span>(cell));</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;            }</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160; </div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;            <span class="comment">// Initializes the generic end condition</span></div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            dist_move_algo.end.init(dist_move_algo.model.getMpiCommunicator(), agents, cells);</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160; </div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;            <span class="comment">// Assumed to loop until the mobility and</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            <span class="comment">// perception fields of all agents are up to</span></div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="comment">// date</span></div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <span class="keywordflow">while</span>(!dist_move_algo.end.end()) {</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> cell : cells)</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                    <span class="comment">// Grows mobility and perception fields</span></div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                    cell_behaviors.execute(cell);</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;                <span class="comment">// Synchronizes new links</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;                dist_move_algo.model.graph()</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                    .synchronizationMode().getSyncLinker().synchronize();</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                <span class="comment">// Synchronizes only newly imported cells</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                dist_move_algo.model.graph()</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                    .synchronizationMode().getDataSync().synchronize(</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                            dist_move_algo.model.graph().getUnsyncNodes()</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                            );</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> agent : agents)</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                    <span class="comment">// Crops and build mobility and</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                    <span class="comment">// perception fields</span></div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                    spatial_agent_behaviors.execute(agent);</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                <span class="comment">// No new nodes can be imported in the previous step (since</span></div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                <span class="comment">// edges are only replaced / removed), so a link</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                <span class="comment">// synchronization is enough</span></div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                dist_move_algo.model.graph()</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                    .synchronizationMode().getSyncLinker().synchronize();</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                dist_move_algo.end.step();</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;            }</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> cell : cells)</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;                <span class="comment">// Update agent perceptions (creates</span></div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;                <span class="comment">// PERCEPTION links)</span></div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                update_perceptions_behavior.execute(cell);</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;            <span class="comment">// Synchronizes perception links</span></div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            dist_move_algo.model.graph()</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;                .synchronizationMode().getSyncLinker().synchronize();</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            <span class="comment">// Synchronizes data of DISTANT agents that might have been created</span></div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            <span class="comment">// when updating perceptions</span></div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160; </div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;            dist_move_algo.model.graph()</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;                .synchronizationMode().getDataSync().synchronize(</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                    dist_move_algo.model.graph().getUnsyncNodes()</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;                    );</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;            FPMAS_LOGD(this-&gt;dist_move_algo.model.getMpiCommunicator().getRank(),</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;                    <span class="stringliteral">&quot;DMA&quot;</span>, <span class="stringliteral">&quot;Done.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        }</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;}}</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;                cells.back()-&gt;init();</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;            }</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;            <span class="comment">// Initializes the generic end condition</span></div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;            dist_move_algo.end.init(dist_move_algo.model.getMpiCommunicator(), agents, cells);</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;            <span class="comment">// Assumed to loop until the mobility and</span></div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;            <span class="comment">// perception fields of all agents are up to</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;            <span class="comment">// date</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;            <span class="keywordflow">while</span>(!dist_move_algo.end.end()) {</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> cell : cells)</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;                    <span class="comment">// Grows mobility and perception fields</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;                    cell_behaviors.execute(cell);</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;                <span class="comment">// Synchronizes new links</span></div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                dist_move_algo.model.graph()</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                    .synchronizationMode().getSyncLinker().synchronize();</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                <span class="comment">// Synchronizes only newly imported cells</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                dist_move_algo.model.graph()</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                    .synchronizationMode().getDataSync().synchronize(</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                            dist_move_algo.model.graph().getUnsyncNodes()</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;                            );</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160; </div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> agent : agents)</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;                    <span class="comment">// Crops and build mobility and</span></div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;                    <span class="comment">// perception fields</span></div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;                    spatial_agent_behaviors.execute(agent);</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;                <span class="comment">// No new nodes can be imported in the previous step (since</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;                <span class="comment">// edges are only replaced / removed), so a link</span></div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;                <span class="comment">// synchronization is enough</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;                dist_move_algo.model.graph()</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;                    .synchronizationMode().getSyncLinker().synchronize();</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160; </div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;                dist_move_algo.end.step();</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;            }</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> cell : cells)</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;                <span class="comment">// Update agent perceptions (creates</span></div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;                <span class="comment">// PERCEPTION links)</span></div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;                update_perceptions_behavior.execute(cell);</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;            <span class="comment">// Synchronizes perception links</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;            dist_move_algo.model.graph()</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;                .synchronizationMode().getSyncLinker().synchronize();</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            <span class="comment">// Synchronizes data of DISTANT agents that might have been created</span></div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            <span class="comment">// when updating perceptions</span></div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160; </div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;            dist_move_algo.model.graph()</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                .synchronizationMode().getDataSync().synchronize(</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;                    dist_move_algo.model.graph().getUnsyncNodes()</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;                    );</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160; </div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;            FPMAS_LOGD(this-&gt;dist_move_algo.model.getMpiCommunicator().getRank(),</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;                    <span class="stringliteral">&quot;DMA&quot;</span>, <span class="stringliteral">&quot;Done.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        }</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;}}</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aapi_2model_2spatial_2spatial__model_8h_html"><div class="ttname"><a href="api_2model_2spatial_2spatial__model_8h.html">spatial_model.h</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:211</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraph_html_adbd6818d91cea7a3a4856aed08a42527"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#adbd6818d91cea7a3a4856aed08a42527">fpmas::api::graph::DistributedGraph::unlink</a></div><div class="ttdeci">virtual void unlink(DistributedEdge&lt; T &gt; *edge)=0</div></div>
@@ -295,13 +296,13 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1CellBehavior_html_a44ba9609363ce5baa1793c069cb427c3"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a44ba9609363ce5baa1793c069cb427c3">fpmas::api::model::CellBehavior::handleNewLocation</a></div><div class="ttdeci">virtual void handleNewLocation()=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1CellBehavior_html_a60fe96879582e41e2b55c95d996aa161"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a60fe96879582e41e2b55c95d996aa161">fpmas::api::model::CellBehavior::handlePerceive</a></div><div class="ttdeci">virtual void handlePerceive()=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1CellBehavior_html_ae5c5cb2cb992488bd5ff4888f6aa2e87"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#ae5c5cb2cb992488bd5ff4888f6aa2e87">fpmas::api::model::CellBehavior::handleMove</a></div><div class="ttdeci">virtual void handleMove()=0</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">fpmas::api::model::DistributedMoveAlgorithm</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:414</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1EndCondition_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1EndCondition.html">fpmas::api::model::EndCondition</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:365</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1SpatialAgentBehavior_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1SpatialAgentBehavior.html">fpmas::api::model::SpatialAgentBehavior</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:174</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">fpmas::api::model::DistributedMoveAlgorithm</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:420</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1EndCondition_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1EndCondition.html">fpmas::api::model::EndCondition</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:371</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1SpatialAgentBehavior_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1SpatialAgentBehavior.html">fpmas::api::model::SpatialAgentBehavior</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:180</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1SpatialAgentBehavior_html_aaf7a8ebf72a49ceebebdb869b4f373ae"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1SpatialAgentBehavior.html#aaf7a8ebf72a49ceebebdb869b4f373ae">fpmas::api::model::SpatialAgentBehavior::handleNewPerceive</a></div><div class="ttdeci">virtual void handleNewPerceive()=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1SpatialAgentBehavior_html_ab130ba9b8820a568fd11f326a23e012e"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1SpatialAgentBehavior.html#ab130ba9b8820a568fd11f326a23e012e">fpmas::api::model::SpatialAgentBehavior::handleNewMove</a></div><div class="ttdeci">virtual void handleNewMove()=0</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1SpatialAgent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">fpmas::api::model::SpatialAgent</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:223</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1SpatialModel_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">fpmas::api::model::SpatialModel</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:468</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1SpatialAgent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">fpmas::api::model::SpatialAgent</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:229</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1SpatialModel_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">fpmas::api::model::SpatialModel</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:474</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1scheduler_1_1Task_html"><div class="ttname"><a href="classfpmas_1_1api_1_1scheduler_1_1Task.html">fpmas::api::scheduler::Task</a></div><div class="ttdef"><b>Definition:</b> scheduler.h:74</div></div>
 <div class="ttc" id="aclassfpmas_1_1communication_1_1detail_1_1TypedMpi_html_acc214ca22edfe3f99740465abfe6cdc5"><div class="ttname"><a href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#acc214ca22edfe3f99740465abfe6cdc5">fpmas::communication::detail::TypedMpi::allGather</a></div><div class="ttdeci">std::vector&lt; T &gt; allGather(const T &amp;) override</div><div class="ttdef"><b>Definition:</b> communication.h:473</div></div>
 <div class="ttc" id="aclassfpmas_1_1model_1_1BehaviorWithArgs_html"><div class="ttname"><a href="classfpmas_1_1model_1_1BehaviorWithArgs.html">fpmas::model::BehaviorWithArgs</a></div><div class="ttdef"><b>Definition:</b> model.h:393</div></div>

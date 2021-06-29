@@ -113,6 +113,8 @@ Collaboration diagram for fpmas::model::CellBase:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a16ed9973dcf9da54710b43ed495d4ea3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">api::model::Cell</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a16ed9973dcf9da54710b43ed495d4ea3">successors</a> () override</td></tr>
 <tr class="separator:a16ed9973dcf9da54710b43ed495d4ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2580822e26a7fcbf57b2aeaf39406c3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a2580822e26a7fcbf57b2aeaf39406c3b">init</a> () override</td></tr>
+<tr class="separator:a2580822e26a7fcbf57b2aeaf39406c3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf7649d1322244915e241d3291d4fe0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#aaf7649d1322244915e241d3291d4fe0a">handleNewLocation</a> () override</td></tr>
 <tr class="separator:aaf7649d1322244915e241d3291d4fe0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e245107ceb975dfa5c2d3864d2f9fdf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a8e245107ceb975dfa5c2d3864d2f9fdf">handleMove</a> () override</td></tr>
@@ -229,6 +231,34 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>successors of this <a class="el" href="classfpmas_1_1model_1_1Cell.html">Cell</a> </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html#a8fb19e195c393d83e289da838b8f3391">fpmas::api::model::Cell</a>.</p>
+
+</div>
+</div>
+<a id="a2580822e26a7fcbf57b2aeaf39406c3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2580822e26a7fcbf57b2aeaf39406c3b">&#9670;&nbsp;</a></span>init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::model::CellBase::init </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Implementation free initialization method, called on each <a class="el" href="classfpmas_1_1model_1_1Cell.html">Cell</a> when the <a class="el" href="classfpmas_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> is run, before any other behavior is executed. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a4e5e9b2aaf1eb024a0226e2d475b59d3">fpmas::api::model::CellBehavior</a>.</p>
 
 </div>
 </div>

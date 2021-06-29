@@ -12,13 +12,16 @@ namespace fpmas { namespace model {
 	 * Replaces the NEW_LOCATION link associated to `agent` by a LOCATION
 	 * link.
 	 */
-	void CellBase::updateLocation(Neighbor<api::model::Agent>& agent) {
+	void CellBase::updateLocation(
+			api::model::Agent* agent,
+			api::model::AgentEdge* new_location_edge
+			) {
 		FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
 				"%s Setting this Cell as %s location.",
 				FPMAS_C_STR(this->node()->getId()),
 				FPMAS_C_STR(agent->node()->getId()));
 		this->model()->link(agent, this, SpatialModelLayers::LOCATION);
-		this->model()->unlink(agent.edge());
+		this->model()->unlink(new_location_edge);
 	}
 
 	/**
@@ -26,7 +29,7 @@ namespace fpmas { namespace model {
 	 * successors() on the NEW_MOVE layer.
 	 */
 	void CellBase::growMobilityField(api::model::Agent* agent) {
-		for(auto cell : this->successors())
+		for(auto cell : this->bufferedSuccessors())
 			this->model()->link(agent, cell, SpatialModelLayers::NEW_MOVE);
 	}
 
@@ -35,7 +38,7 @@ namespace fpmas { namespace model {
 	 * successors() on the NEW_PERCEIVE layer.
 	 */
 	void CellBase::growPerceptionField(api::model::Agent* agent) {
-		for(auto cell : this->successors())
+		for(auto cell : this->bufferedSuccessors())
 			this->model()->link(agent, cell, SpatialModelLayers::NEW_PERCEIVE);
 	}
 
@@ -45,12 +48,26 @@ namespace fpmas { namespace model {
 		return result != group_ids.end();
 	}
 
+	const std::vector<api::model::Cell*>& CellBase::bufferedSuccessors() {
+		if(!init_successors) {
+			this->successors_buffer = this->successors();
+			init_successors = true;
+		}
+		return this->successors_buffer;
+	}
+
+	void CellBase::init() {
+		init_successors = false;
+	}
+
 	void CellBase::handleNewLocation() {
 		FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
 				"%s Updating ranges...",
 				FPMAS_C_STR(this->node()->getId()));
-		for(auto agent : this->inNeighbors<api::model::Agent>(SpatialModelLayers::NEW_LOCATION)) {
-			updateLocation(agent);
+
+		for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::NEW_LOCATION)) {
+			AgentPtr& agent = agent_edge->getSourceNode()->data();
+			updateLocation(agent, agent_edge);
 			growMobilityField(agent);
 			growPerceptionField(agent);
 
@@ -64,19 +81,19 @@ namespace fpmas { namespace model {
 	}
 
 	void CellBase::handleMove() {
-		for(auto agent : this->inNeighbors<api::model::Agent>(SpatialModelLayers::MOVE)) {
-			if(move_flags.count(agent->node()->getId()) == 0) {
-				growMobilityField(agent);
-				move_flags.insert(agent->node()->getId());
+		for(auto agent : this->node()->inNeighbors(SpatialModelLayers::MOVE)) {
+			if(move_flags.count(agent->getId()) == 0) {
+				growMobilityField(agent->data());
+				move_flags.insert(agent->getId());
 			}
 		}
 	}
 
 	void CellBase::handlePerceive() {
-		for(auto agent : this->inNeighbors<api::model::Agent>(SpatialModelLayers::PERCEIVE)) {
-			if(perception_flags.count(agent->node()->getId()) == 0) {
-				growPerceptionField(agent);
-				perception_flags.insert(agent->node()->getId());
+		for(auto agent : this->node()->inNeighbors(SpatialModelLayers::PERCEIVE)) {
+			if(perception_flags.count(agent->getId()) == 0) {
+				growPerceptionField(agent->data());
+				perception_flags.insert(agent->getId());
 			}
 		}
 	}
@@ -88,12 +105,20 @@ namespace fpmas { namespace model {
 
 		move_flags.clear();
 		perception_flags.clear();
-		for(auto agent : this->inNeighbors<api::model::Agent>(
-					SpatialModelLayers::PERCEIVE)) {
-			for(auto perceived_agent : this->inNeighbors<api::model::Agent>(SpatialModelLayers::LOCATION))
-				if(isAgentInGroup(agent, group) || isAgentInGroup(perceived_agent, group))
-					if(perceived_agent->node()->getId() != agent->node()->getId())
-						this->model()->link(agent, perceived_agent, SpatialModelLayers::PERCEPTION);
+		std::vector<api::model::AgentNode*> perceived_agents =
+			this->node()->inNeighbors(SpatialModelLayers::LOCATION);
+
+		for(auto agent : this->node()->inNeighbors(SpatialModelLayers::PERCEIVE)) {
+			for(auto perceived_agent : perceived_agents)
+				if(
+						isAgentInGroup(agent->data(), group) ||
+						isAgentInGroup(perceived_agent->data(), group)
+						)
+					if(perceived_agent->getId() != agent->getId())
+						this->model()->link(
+								agent->data(), perceived_agent->data(),
+								SpatialModelLayers::PERCEPTION
+								);
 		}
 	}
 

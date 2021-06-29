@@ -47,6 +47,7 @@ class AbstractMockCell : public virtual fpmas::api::model::Cell {
 
 		MOCK_METHOD(std::vector<fpmas::api::model::Cell*>, successors,
 				(), (override));
+		MOCK_METHOD(void, init, (), (override));
 		MOCK_METHOD(void, handleNewLocation, (), (override));
 		MOCK_METHOD(void, handleMove, (), (override));
 		MOCK_METHOD(void, handlePerceive, (), (override));
