@@ -5,8 +5,9 @@
  * SyncMode API
  */
 
-//#include "fpmas/api/graph/distributed_graph.h"
 #include "mutex.h"
+
+#include <unordered_set>
 
 namespace fpmas { namespace api { namespace graph {
 	template<typename T> class DistributedNode;
@@ -21,17 +22,35 @@ namespace fpmas { namespace api { namespace synchro {
 	 * implemented synchronization mode. See the corresponding implementations
 	 * for more details.
 	 */
-	class DataSync {
-		public:
-			/**
-			 * Synchronizes api::graph::DistributedGraph data across the
-			 * processes, i.e. the internal data of each
-			 * api::graph::DistributedNode, or the managed data of each Mutex.
-			 */
-			virtual void synchronize() = 0;
+	template<typename T>
+		class DataSync {
+			public:
+				/**
+				 * Synchronizes api::graph::DistributedGraph data across the
+				 * processes, i.e. the internal data of each
+				 * api::graph::DistributedNode, or the managed data of each Mutex.
+				 */
+				virtual void synchronize() = 0;
 
-			virtual ~DataSync() {}
-	};
+				/**
+				 * Performs a partial synchronization of the specified node
+				 * set.
+				 *
+				 * The actual behavior is highly dependent on the currently
+				 * implemented SyncMode.
+				 *
+				 * The specified `nodes` list might contain \LOCAL and \DISTANT
+				 * nodes: it is the responsibility of the implemented SyncMode
+				 * to eventually not do anything with \LOCAL nodes.
+				 *
+				 * @param nodes nodes to synchronize
+				 */
+				virtual void synchronize(
+						std::unordered_set<api::graph::DistributedNode<T>*>
+						nodes) = 0;
+
+				virtual ~DataSync() {}
+		};
 
 	/**
 	 * Synchronized linker API.
@@ -130,7 +149,7 @@ namespace fpmas { namespace api { namespace synchro {
 				 *
 				 * @return data sync
 				 */
-				virtual DataSync& getDataSync() = 0;
+				virtual DataSync<T>& getDataSync() = 0;
 
 				virtual ~SyncMode() {};
 		};

@@ -6,9 +6,13 @@
 
 using ::testing::ReturnNew;
 
-class MockDataSync : public fpmas::api::synchro::DataSync {
+template<typename T>
+class MockDataSync : public fpmas::api::synchro::DataSync<T> {
 	public:
 		MOCK_METHOD(void, synchronize, (), (override));
+		MOCK_METHOD(void, synchronize, (
+					std::unordered_set<fpmas::api::graph::DistributedNode<T>*>
+					), (override));
 
 };
 
@@ -41,7 +45,7 @@ class MockSyncMode : public fpmas::api::synchro::SyncMode<T> {
 
 		MOCK_METHOD(MockMutex<T>*, buildMutex, (NodeType*), (override));
 		MOCK_METHOD(fpmas::api::synchro::SyncLinker<T>&, getSyncLinker, (), (override));
-		MOCK_METHOD(fpmas::api::synchro::DataSync&, getDataSync, (), (override));
+		MOCK_METHOD(fpmas::api::synchro::DataSync<T>&, getDataSync, (), (override));
 
 };
 #endif

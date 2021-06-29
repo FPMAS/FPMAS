@@ -213,7 +213,7 @@ namespace fpmas { namespace model {
 
 			std::vector<SpatialAgent<CellType>*> agents;
 			for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
-				// Unlinks obsolete perceptions of agents to which the
+				// First, unlinks obsolete perceptions of agents to which the
 				// algorithm is applied
 				for(auto perception : agent->node()->getOutgoingEdges(fpmas::api::model::PERCEPTION))
 					dist_move_algo.model.graph().unlink(perception);
@@ -221,17 +221,19 @@ namespace fpmas { namespace model {
 				agents.push_back(
 						dynamic_cast<SpatialAgent<CellType>*>(agent));
 			}
-			// TODO: optimize this!!
+			// Commits previously unlinked edges
 			dist_move_algo.model.graph()
 				.synchronizationMode().getSyncLinker().synchronize();
 
 			// Agents to which the algorithm is NOT applied might still
-			// perceive moving agent: those perceptions are also obsolete.
+			// perceive moving agent: those perceptions are also obsolete, but
+			// might not have been removed in the perception above.
 			for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
 				for(auto perceiver : agent->node()->getIncomingEdges(fpmas::api::model::PERCEPTION)) {
 					dist_move_algo.model.graph().unlink(perceiver);
 				}
 			}
+			// Commits unlinks
 			dist_move_algo.model.graph()
 				.synchronizationMode().getSyncLinker().synchronize();
 
@@ -250,12 +252,16 @@ namespace fpmas { namespace model {
 				for(auto cell : cells)
 					// Grows mobility and perception fields
 					cell_behaviors.execute(cell);
-				// When growing mobility and perceptions fields, new Cells
-				// might be imported into the graph. A link + data
-				// synchronization of the graph allows to initialize Cells
-				// data, what might be required to "crop" fields in the next
-				// step
-				dist_move_algo.model.graph().synchronize();
+
+				// Synchronizes new links
+				dist_move_algo.model.graph()
+					.synchronizationMode().getSyncLinker().synchronize();
+
+				// Synchronizes only newly imported cells
+				dist_move_algo.model.graph()
+					.synchronizationMode().getDataSync().synchronize(
+							dist_move_algo.model.graph().getUnsyncNodes()
+							);
 
 				for(auto agent : agents)
 					// Crops and build mobility and
@@ -266,16 +272,23 @@ namespace fpmas { namespace model {
 				// synchronization is enough
 				dist_move_algo.model.graph()
 					.synchronizationMode().getSyncLinker().synchronize();
+
 				dist_move_algo.end.step();
 			}
 			for(auto cell : cells)
 				// Update agent perceptions (creates
 				// PERCEPTION links)
 				update_perceptions_behavior.execute(cell);
-			// Performs link + data synchronization. This might be useful to
-			// initialize data of DISTANT agents that might have been created
+			// Synchronizes perception links
+			dist_move_algo.model.graph()
+				.synchronizationMode().getSyncLinker().synchronize();
+			// Synchronizes data of DISTANT agents that might have been created
 			// when updating perceptions
-			dist_move_algo.model.graph().synchronize();
+
+			dist_move_algo.model.graph()
+				.synchronizationMode().getDataSync().synchronize(
+					dist_move_algo.model.graph().getUnsyncNodes()
+					);
 
 			FPMAS_LOGD(this->dist_move_algo.model.getMpiCommunicator().getRank(),
 					"DMA", "Done.", "");

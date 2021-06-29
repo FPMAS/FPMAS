@@ -422,7 +422,7 @@ TEST_F(AgentGroupTest, id) {
 }
 
 TEST_F(AgentGroupTest, job_end) {
-	EXPECT_CALL(graph, synchronize);
+	EXPECT_CALL(graph, synchronize());
 
 	agent_group.job().getEndTask().run();
 }
@@ -574,7 +574,7 @@ TEST_F(AgentGroupTest, agent_task) {
 
 	ASSERT_THAT(agent_group.agentExecutionJob().tasks(), SizeIs(2));
 
-	EXPECT_CALL(graph, synchronize);
+	EXPECT_CALL(graph, synchronize());
 	::testing::Sequence s1, s2;
 
 	EXPECT_CALL(agent1, act)

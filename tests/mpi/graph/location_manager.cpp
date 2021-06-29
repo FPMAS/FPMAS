@@ -20,7 +20,7 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 		MpiCommunicator comm;
 		DistributedGraph<int, MockSyncMode> graph {comm};
 
-		MockDataSync data_sync;
+		MockDataSync<int> data_sync;
 		MockSyncLinker<int> sync_linker;
 
 		std::mt19937 engine;
@@ -92,8 +92,8 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 TEST_F(LocationManagerIntegrationTest, location_updates) {
 	for(int i = 0; i < SEQUENCE_COUNT; i++) {
 		{ ::testing::InSequence s;
-		EXPECT_CALL(sync_linker, synchronize);
-		EXPECT_CALL(data_sync, synchronize);
+		EXPECT_CALL(sync_linker, synchronize());
+		EXPECT_CALL(data_sync, synchronize());
 		}
 		generatePartition(i);
 

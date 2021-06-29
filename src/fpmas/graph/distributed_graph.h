@@ -96,8 +96,10 @@ namespace fpmas { namespace graph {
 							enabled = false;
 						}
 						void call(NodeType* node) {
-							if(enabled)
+							if(enabled) {
 								graph.location_manager.remove(node);
+								graph.unsynchronized_nodes.erase(node);
+							}
 						}
 				};
 
@@ -136,6 +138,8 @@ namespace fpmas { namespace graph {
 
 				DistributedId node_id;
 				DistributedId edge_id;
+
+				std::unordered_set<api::graph::DistributedNode<T>*> unsynchronized_nodes;
 
 			public:
 				/**
@@ -191,6 +195,9 @@ namespace fpmas { namespace graph {
 
 				NodeType* importNode(NodeType* node) override;
 				EdgeType* importEdge(EdgeType* edge) override;
+				std::unordered_set<api::graph::DistributedNode<T>*> getUnsyncNodes() const override {
+					return unsynchronized_nodes;
+				}
 
 
 				/**
@@ -248,7 +255,13 @@ namespace fpmas { namespace graph {
 				void distribute(api::graph::PartitionMap partition) override;
 
 				void synchronize() override;
-
+				/**
+				 * \copydoc fpmas::api::graph::DistributedGraph::synchronize(std::unordered_set<DistributedNode<T>*>, bool)
+				 */
+				void synchronize(
+					std::unordered_set<api::graph::DistributedNode<T>*> nodes,
+					bool synchronize_links = true
+					) override;
 
 				NodeType* buildNode(T&& = std::move(T())) override;
 				NodeType* buildNode(const T&) override;
@@ -446,6 +459,7 @@ namespace fpmas { namespace graph {
 						this->insert(src);
 						setDistant(src);
 						src->setMutex(sync_mode.buildMutex(src));
+						unsynchronized_nodes.insert(src);
 					}
 					if(this->getNodes().count(tgt_id) > 0) {
 						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing target %s", FPMAS_C_STR(tgt_id));
@@ -474,6 +488,7 @@ namespace fpmas { namespace graph {
 						this->insert(tgt);
 						setDistant(tgt);
 						tgt->setMutex(sync_mode.buildMutex(tgt));
+						unsynchronized_nodes.insert(tgt);
 					}
 					// Finally, insert the temporary edge into the graph.
 					edge->setState(edgeLocationState);
@@ -533,6 +548,7 @@ namespace fpmas { namespace graph {
 					this->insert(node);
 					setDistant(node);
 					node->setMutex(sync_mode.buildMutex(node));
+					unsynchronized_nodes.insert(node);
 					return node;
 				} else {
 					auto id = node->getId();
@@ -688,6 +704,26 @@ namespace fpmas { namespace graph {
 
 				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 						"End of graph synchronization.", "");
+			}
+
+		template<DIST_GRAPH_PARAMS>
+			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
+			::synchronize(std::unordered_set<api::graph::DistributedNode<T>*> nodes, bool synchronize_links) {
+				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
+						"Partially synchronizing graph...", "");
+
+				if(synchronize_links)
+					sync_mode.getSyncLinker().synchronize();
+
+				clearDistantNodes();
+
+				sync_mode.getDataSync().synchronize(nodes);
+
+				for(auto node : nodes)
+					unsynchronized_nodes.erase(node);
+
+				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
+						"End of partial graph synchronization.", "");
 			}
 
 		template<DIST_GRAPH_PARAMS>

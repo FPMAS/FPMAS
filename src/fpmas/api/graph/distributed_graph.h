@@ -145,6 +145,29 @@ namespace fpmas {namespace api {namespace graph {
 			virtual DistributedEdge<T>* importEdge(DistributedEdge<T>* edge) = 0;
 
 			/**
+			 * Returns a buffer containing nodes that have not been
+			 * synchronized yet using the getDataSync() component.
+			 *
+			 * This set corresponds to nodes that were created while
+			 * importing an importEdge() or insertDistant() statement.
+			 *
+			 * Nodes are added to the buffer when importEdge() or
+			 * insertDistant() is called, each node is removed under two conditions:
+			 * 1. When its data is synchronized with a call to
+			 * `getDataSync().synchronize()` or
+			 * `getDataSync().synchronize(node_set)`, that are themselves
+			 * called by synchronize() and synchronize(std::unordered_set nodes).
+			 * 2. When it is erased from the graph
+			 *
+			 * Notice that what is called "data synchronization" there is still
+			 * dependent on the current \SyncMode: this does not necessarily
+			 * mean message exchanges or data import.
+			 *
+			 * @return unsynchronized nodes buffer
+			 */
+			virtual std::unordered_set<DistributedNode<T>*> getUnsyncNodes() const = 0;
+
+			/**
 			 * Returns the current internal Node ID.
 			 *
 			 * The next node built with buildNode() will have an id equal to
@@ -449,8 +472,38 @@ namespace fpmas {namespace api {namespace graph {
 			 *   **all** the processes
 			 * - nodes removed with removeNode() are properly removed from
 			 *   **all** the processes
+			 *
+			 * Since all nodes are synchronized, the getUnsyncNodes() buffer is
+			 * cleared.
 			 */
 			virtual void synchronize() = 0;
+
+			/**
+			 * Partially synchronizes the graph, as specified in the
+			 * synchronize() method, except that the
+			 * synchro::DataSync::synchronize(std::unordered_set<api::graph::DistributedNode<T>*>) method is used with the
+			 * specified nodes instead.
+			 *
+			 * Links synchronization is regularly performed with
+			 * `synchronizationMode().getSyncLinker().synchronize()`, unless
+			 * `synchronize_links` is `false`.
+			 *
+			 * `nodes` are **not** required to be contained in getUnsyncNodes(),
+			 * but are removed from this buffer if they do.
+			 *
+			 * The specified `nodes` list might contain \LOCAL and \DISTANT
+			 * nodes: it is the responsibility of the implemented
+			 * synchro::DataSync to eventually not do anything with \LOCAL
+			 * nodes.
+			 *
+			 * @param nodes nodes to synchronize
+			 * @param synchronize_links specifies if
+			 * synchro::SyncLinker::synchronize() must be called
+			 */
+			virtual void synchronize(
+					std::unordered_set<DistributedNode<T>*> nodes,
+					bool synchronize_links = true
+					) = 0;
 
 
 			/**

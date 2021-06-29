@@ -63,7 +63,7 @@ class DistributedGraphBalance : public ::testing::Test {
 		DistributedGraph<int, MockSyncMode> graph {comm};
 
 		MockSyncLinker<int> mock_sync_linker;
-		MockDataSync mock_data_sync;
+		MockDataSync<int> mock_data_sync;
 
 		fpmas::api::graph::PartitionMap partition;
 
@@ -110,8 +110,8 @@ class DistributedGraphBalance : public ::testing::Test {
 TEST_F(DistributedGraphBalance, distribute_test) {
 	{
 		::testing::InSequence s;
-		EXPECT_CALL(mock_sync_linker, synchronize);
-		EXPECT_CALL(mock_data_sync, synchronize);
+		EXPECT_CALL(mock_sync_linker, synchronize());
+		EXPECT_CALL(mock_data_sync, synchronize());
 	}
 	graph.distribute(partition);
 

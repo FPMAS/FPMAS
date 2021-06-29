@@ -56,6 +56,10 @@ class AbstractMockDistributedGraph :
 
 		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
 		MOCK_METHOD(EdgeType*, importEdge, (EdgeType*), (override));
+		MOCK_METHOD(
+				std::unordered_set<fpmas::api::graph::DistributedNode<T>*>,
+				getUnsyncNodes, (), (const, override)
+				);
 
 		MOCK_METHOD(void, balance, (fpmas::api::graph::LoadBalancing<T>&), (override));
 		MOCK_METHOD(void, balance, (
@@ -64,6 +68,9 @@ class AbstractMockDistributedGraph :
 				(override));
 		MOCK_METHOD(void, distribute, (fpmas::api::graph::PartitionMap), (override));
 		MOCK_METHOD(void, synchronize, (), (override));
+		MOCK_METHOD(void, synchronize, (
+					std::unordered_set<fpmas::api::graph::DistributedNode<T>*>, bool
+					), (override));
 		MOCK_METHOD(fpmas::api::synchro::SyncMode<T>&, synchronizationMode, (), (override));
 	};
 

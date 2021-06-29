@@ -20,7 +20,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	 * until global termination (i.e. global synchronization) is determined.
 	 */
 	template<typename T>
-		class HardDataSync : public fpmas::api::synchro::DataSync {
+		class HardDataSync : public fpmas::api::synchro::DataSync<T> {
 			typedef api::MutexServer<T> MutexServer;
 			typedef api::TerminationAlgorithm TerminationAlgorithm;
 
@@ -65,6 +65,23 @@ namespace fpmas { namespace synchro { namespace hard {
 				server_pack.terminate();
 				FPMAS_LOGI(comm.getRank(), "HARD_DATA_SYNC", "Synchronized.", "");
 			};
+
+			/**
+			 * Same as synchronize().
+			 *
+			 * Indeed, partial synchronization is not really relevant in the
+			 * case of HardSyncMode, since data exchanges in this mode occur
+			 * only when required, when read() or acquire() method are called,
+			 * but not directly when the termination algorithm is performed.
+			 *
+			 * So we can consider that all nodes are synchronized in any case
+			 * when this method is called.
+			 */
+			void synchronize(
+					std::unordered_set<fpmas::api::graph::DistributedNode<T>*>
+					) override {
+				synchronize();
+			}
 		};
 
 }}}

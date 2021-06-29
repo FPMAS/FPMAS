@@ -64,7 +64,7 @@ namespace fpmas { namespace synchro {
 		 * graph synchronization operation.
 		 */
 		template<typename T>
-			class GhostDataSync : public api::synchro::DataSync {
+			class GhostDataSync : public api::synchro::DataSync<T> {
 				public:
 					/**
 					 * TypedMpi used to transmit NodeUpdatePacks with MPI.
@@ -80,6 +80,13 @@ namespace fpmas { namespace synchro {
 					IdMpi& id_mpi;
 
 					api::graph::DistributedGraph<T>& graph;
+					std::unordered_map<int, std::vector<DistributedId>> buildRequests();
+					std::unordered_map<int, std::vector<DistributedId>> buildRequests(
+							std::unordered_set<api::graph::DistributedNode<T>*> nodes
+							);
+					void _synchronize(
+							std::unordered_map<int, std::vector<DistributedId>> requests
+							);
 
 				public:
 					/**
@@ -101,26 +108,32 @@ namespace fpmas { namespace synchro {
 					 * DistributedGraph from the corresponding host processes.
 					 */
 					void synchronize() override;
+
+					void synchronize(
+							std::unordered_set<api::graph::DistributedNode<T>*> nodes
+							) override;
 			};
 
 		template<typename T>
-			void GhostDataSync<T>::synchronize() {
-				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Synchronizing graph data...", "");
-				std::unordered_map<int, std::vector<DistributedId>> requests;
-				for(auto node : graph.getLocationManager().getDistantNodes()) {
-					FPMAS_LOGV(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Request %s from %i",
-							FPMAS_C_STR(node.first), node.second->location());
-					requests[node.second->location()].push_back(node.first);
-				}
+			void GhostDataSync<T>::_synchronize(
+					std::unordered_map<int, std::vector<DistributedId>> requests) {
+				FPMAS_LOGI(
+						graph.getMpiCommunicator().getRank(), "GHOST_MODE",
+						"Synchronizing graph data...", ""
+						);
 				requests = id_mpi.migrate(requests);
 
 				std::unordered_map<int, std::vector<NodeUpdatePack<T>>> updated_data;
 				for(auto list : requests) {
 					for(auto id : list.second) {
-						FPMAS_LOGV(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Export %s to %i",
-								FPMAS_C_STR(id), list.first);
+						FPMAS_LOGV(
+								graph.getMpiCommunicator().getRank(), "GHOST_MODE",
+								"Export %s to %i", FPMAS_C_STR(id), list.first
+								);
 						auto node = graph.getNode(id);
-						updated_data[list.first].push_back({id, node->data(), node->getWeight()});
+						updated_data[list.first].push_back({
+								id, node->data(), node->getWeight()
+								});
 					}
 				}
 				// TODO : Should use data update packs.
@@ -133,7 +146,66 @@ namespace fpmas { namespace synchro {
 					}
 				}
 
-				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph data synchronized...", "");
+				FPMAS_LOGI(
+						graph.getMpiCommunicator().getRank(), "GHOST_MODE",
+						"Graph data synchronized.", ""
+						);
+			}
+
+		template<typename T>
+			 std::unordered_map<int, std::vector<DistributedId>> GhostDataSync<T>
+			 ::buildRequests(std::unordered_set<api::graph::DistributedNode<T>*> nodes) {
+				 std::unordered_map<int, std::vector<DistributedId>> requests;
+				 for(auto node : nodes) {
+					 if(node->state() == fpmas::api::graph::DISTANT) {
+						 FPMAS_LOGV(
+								 graph.getMpiCommunicator().getRank(), "GHOST_MODE",
+								 "Request %s from %i",
+								 FPMAS_C_STR(node->getId()), node->location());
+
+						 requests[node->location()].push_back(node->getId());
+					 }
+				 }
+				 return requests;
+			 }
+
+		template<typename T>
+			void GhostDataSync<T>::synchronize(
+					std::unordered_set<api::graph::DistributedNode<T>*> nodes) {
+				FPMAS_LOGI(
+						graph.getMpiCommunicator().getRank(), "GHOST_MODE",
+						"Synchronizing graph data...", ""
+						);
+
+				std::unordered_map<int, std::vector<DistributedId>> requests
+					= buildRequests(nodes);
+				_synchronize(requests);
+			}
+
+		template<typename T>
+			 std::unordered_map<int, std::vector<DistributedId>> GhostDataSync<T>
+			 ::buildRequests() {
+				 std::unordered_map<int, std::vector<DistributedId>> requests;
+				 for(auto node : graph.getLocationManager().getDistantNodes()) {
+					 FPMAS_LOGV(
+							 graph.getMpiCommunicator().getRank(), "GHOST_MODE",
+							 "Request %s from %i",
+							 FPMAS_C_STR(node.first), node.second->location()
+							 );
+					 requests[node.second->location()].push_back(node.first);
+				 }
+				 return requests;
+			 }
+
+		template<typename T>
+			void GhostDataSync<T>::synchronize() {
+				FPMAS_LOGI(
+						graph.getMpiCommunicator().getRank(), "GHOST_MODE",
+						"Synchronizing graph data...", "");
+
+				std::unordered_map<int, std::vector<DistributedId>> requests
+					= buildRequests();
+				_synchronize(requests);
 			}
 
 

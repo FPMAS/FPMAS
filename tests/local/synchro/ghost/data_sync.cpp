@@ -33,7 +33,7 @@ class GhostDataSyncTest : public Test {
 		MockDistributedGraph<int, NodeType, EdgeType, NiceMock> mocked_graph;
 
 		GhostDataSync<int>
-			dataSync {data_mpi, id_mpi, mocked_graph};
+			data_sync {data_mpi, id_mpi, mocked_graph};
 
 		NiceMock<MockLocationManager<int>> location_manager {mock_comm, id_mpi, location_mpi};
 
@@ -71,7 +71,7 @@ class GhostDataSyncTest : public Test {
 		}
 };
 
-TEST_F(GhostDataSyncTest, export_data) {
+TEST_F(GhostDataSyncTest, export_test) {
 	NodeMap graph_nodes {
 		{DistributedId(2, 0), nodes[0]},
 		{DistributedId(6, 2), nodes[2]},
@@ -101,7 +101,7 @@ TEST_F(GhostDataSyncTest, export_data) {
 		);
 	EXPECT_CALL(data_mpi, migrate(export_node_matcher));
 
-	dataSync.synchronize();
+	data_sync.synchronize();
 }
 
 TEST_F(GhostDataSyncTest, import_test) {
@@ -144,9 +144,66 @@ TEST_F(GhostDataSyncTest, import_test) {
 	EXPECT_CALL(*nodes[2], setWeight(7.2));
 	EXPECT_CALL(*nodes[3], setWeight(2.2));
 
-	dataSync.synchronize();
+	data_sync.synchronize();
 
 	ASSERT_EQ(nodes[1]->data(), 12);
 	ASSERT_EQ(nodes[2]->data(), 56);
+	ASSERT_EQ(nodes[3]->data(), 125);
+}
+
+TEST_F(GhostDataSyncTest, partial_import_test) {
+	NodeMap graph_nodes {
+		{DistributedId(2, 0), nodes[0]},
+		{DistributedId(0, 0), nodes[1]},
+		{DistributedId(6, 2), nodes[2]},
+		{DistributedId(7, 1), nodes[3]}
+	};
+	EXPECT_CALL(*nodes[1], location)
+		.WillRepeatedly(Return(0));
+	EXPECT_CALL(*nodes[2], location)
+		.WillRepeatedly(Return(0));
+	EXPECT_CALL(*nodes[3], location)
+		.WillRepeatedly(Return(9));
+
+	NodeMap distant_nodes {
+		{DistributedId(0, 0), nodes[1]},
+		{DistributedId(6, 2), nodes[2]},
+		{DistributedId(7, 1), nodes[3]}
+	};
+	ON_CALL(location_manager, getDistantNodes)
+		.WillByDefault(ReturnRef(distant_nodes));
+	ON_CALL(*nodes[0], state)
+		.WillByDefault(Return(fpmas::api::graph::LOCAL));
+	ON_CALL(*nodes[1], state)
+		.WillByDefault(Return(fpmas::api::graph::DISTANT));
+	ON_CALL(*nodes[3], state)
+		.WillByDefault(Return(fpmas::api::graph::DISTANT));
+
+	setUpGraphNodes(graph_nodes);
+	auto requests_matcher = UnorderedElementsAre(
+		Pair(0, UnorderedElementsAre(DistributedId(0, 0))),
+		Pair(9, ElementsAre(DistributedId(7, 1)))
+	);
+	EXPECT_CALL(id_mpi, migrate(requests_matcher));
+
+	std::unordered_map<int, std::vector<NodeUpdatePack<int>>> updated_data {
+		{0, {{DistributedId(0, 0), 12, 14.6f}}},
+		{9, {{DistributedId(7, 1), 125, 2.2f}}}
+	};
+	EXPECT_CALL(data_mpi, migrate(IsEmpty()))
+		.WillOnce(Return(updated_data));
+
+	EXPECT_CALL(*nodes[1], setWeight(14.6));
+	EXPECT_CALL(*nodes[2], setWeight(7.2)).Times(0); // not updated
+	EXPECT_CALL(*nodes[3], setWeight(2.2));
+
+	// Updates local data
+	nodes[0]->data() = 4;
+	// Synchronizes only 3 nodes, including 1 LOCAL node and 2 DISTANT nodes
+	data_sync.synchronize({nodes[1], nodes[0], nodes[3]});
+
+	ASSERT_EQ(nodes[0]->data(), 4);
+	ASSERT_EQ(nodes[1]->data(), 12);
+	ASSERT_EQ(nodes[2]->data(), 10); // not updated
 	ASSERT_EQ(nodes[3]->data(), 125);
 }
