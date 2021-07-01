@@ -453,6 +453,27 @@ namespace fpmas { namespace api {namespace model {
 	class AgentGroup {
 		public:
 			/**
+			 * Events that can be emitted by the AgentGroup interface.
+			 */
+			enum Event {
+				/**
+				 * Sent after a node has been inserted in the AgentGroup.
+				 */
+				INSERT,
+				/**
+				 * Sent before an Agent is erased from the AgentGroup.
+				 */
+				ERASE,
+				/**
+				 * Sent after a node has been added to the AgentGroup.
+				 */
+				ADD,
+				/**
+				 * Sent before an Agent is removed from the AgentGroup.
+				 */
+				REMOVE
+			};
+			/**
 			 * Returns the ID of this group.
 			 *
 			 * @return group id
@@ -662,6 +683,30 @@ namespace fpmas { namespace api {namespace model {
 			 * @return list of jobs associated to this group
 			 */
 			virtual api::scheduler::JobList jobs() const = 0;
+
+			/**
+			 * Registers a callback function to be called when the specified
+			 * Event is emitted.
+			 *
+			 * @param event event that triggers the callback
+			 * @param callback callback called when the event occurs
+			 */
+			virtual void addEventHandler(
+					Event event, api::utils::Callback<Agent*>* callback
+					) = 0;
+			/**
+			 * Unregisters a callback function previously registered for the
+			 * spespecified event.
+			 *
+			 * The behavior is undefined if the callback was not previously
+			 * registered using addEventHandler().
+			 *
+			 * @param event event that triggers the callback
+			 * @param callback callback called when the event occurs
+			 */
+			virtual void removeEventHandler(
+					Event event, api::utils::Callback<Agent*>* callback
+					) = 0;
 
 			virtual ~AgentGroup(){}
 	};

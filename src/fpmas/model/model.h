@@ -705,7 +705,7 @@ namespace fpmas { namespace model {
 				// Preserve the local agent set up
 				for(auto group : this->groups())
 					agent->addGroup(group);
-				// Ok because the updated list of ids is saves in updated_ids
+				// Ok because the updated list of ids is saved in updated_ids
 				for(auto id : agent->groupIds())
 					agent->removeGroupId(id);
 				for(auto id : this->groupIds())

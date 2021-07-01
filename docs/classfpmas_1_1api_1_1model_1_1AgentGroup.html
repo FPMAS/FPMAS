@@ -67,6 +67,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classfpmas_1_1api_1_1model_1_1AgentGroup-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -88,6 +89,15 @@ Inheritance diagram for fpmas::api::model::AgentGroup:</div>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ad1794356e7a6728244970881daecb814"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814">Event</a> { <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814aa9be75a94530d96fe32eef8b56d04379">INSERT</a>
+, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814acd8d783ce6f2e78c701e9cdad3e5153b">ERASE</a>
+, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814a8faee0d080ef761affdb3b6ac4eba850">ADD</a>
+, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814a0b6a5953d2b1fd0ecd6d793c004139ec">REMOVE</a>
+ }</td></tr>
+<tr class="separator:ad1794356e7a6728244970881daecb814"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2d16a5243fec7f30ac2e78e21f8b19df"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a2d16a5243fec7f30ac2e78e21f8b19df">groupId</a> () const =0</td></tr>
@@ -118,6 +128,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3e680b5266ea8f4279073323a891730c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38be689a0b96dbb9e25feca3c962a6d9"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#a139c9d1ed36198a6a33716af6501b131">api::scheduler::JobList</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a38be689a0b96dbb9e25feca3c962a6d9">jobs</a> () const =0</td></tr>
 <tr class="separator:a38be689a0b96dbb9e25feca3c962a6d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a17b3e244cee14eaf4961c6e1538a1a49"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a17b3e244cee14eaf4961c6e1538a1a49">addEventHandler</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814">Event</a> event, <a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt; *callback)=0</td></tr>
+<tr class="separator:a17b3e244cee14eaf4961c6e1538a1a49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a29cae90b0b9c345e7425eb86b234d8d3"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a29cae90b0b9c345e7425eb86b234d8d3">removeEventHandler</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814">Event</a> event, <a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt; *callback)=0</td></tr>
+<tr class="separator:a29cae90b0b9c345e7425eb86b234d8d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> API.</p>
@@ -125,7 +139,33 @@ Public Member Functions</h2></td></tr>
 <p>More precisely, the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> is associated to an <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">api::scheduler::Job</a> that contains all the tasks corresponding to <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> added in the group.</p>
 <p>The <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>'s Job can then be scheduled thanks to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> API to define when the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> should be executed.</p>
 <p>A <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a> can be used to conveniently build <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroups</a>. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="ad1794356e7a6728244970881daecb814"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad1794356e7a6728244970881daecb814">&#9670;&nbsp;</a></span>Event</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814">fpmas::api::model::AgentGroup::Event</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Events that can be emitted by the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> interface. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad1794356e7a6728244970881daecb814aa9be75a94530d96fe32eef8b56d04379"></a>INSERT&#160;</td><td class="fielddoc"><p>Sent after a node has been inserted in the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad1794356e7a6728244970881daecb814acd8d783ce6f2e78c701e9cdad3e5153b"></a>ERASE&#160;</td><td class="fielddoc"><p>Sent before an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is erased from the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad1794356e7a6728244970881daecb814a8faee0d080ef761affdb3b6ac4eba850"></a>ADD&#160;</td><td class="fielddoc"><p>Sent after a node has been added to the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad1794356e7a6728244970881daecb814a0b6a5953d2b1fd0ecd6d793c004139ec"></a>REMOVE&#160;</td><td class="fielddoc"><p>Sent before an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is removed from the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a id="a2d16a5243fec7f30ac2e78e21f8b19df"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2d16a5243fec7f30ac2e78e21f8b19df">&#9670;&nbsp;</a></span>groupId()</h2>
 
@@ -606,6 +646,99 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>list of jobs associated to this group </dd></dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1model_1_1MoveAgentGroup.html#ae8878decaf3bad1f1ae0e86506d9300d">fpmas::model::MoveAgentGroup&lt; CellType &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroup.html#ab8c7f358078b2859dff05fd5387385d8">fpmas::model::detail::AgentGroup</a>.</p>
+
+</div>
+</div>
+<a id="a17b3e244cee14eaf4961c6e1538a1a49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a17b3e244cee14eaf4961c6e1538a1a49">&#9670;&nbsp;</a></span>addEventHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::model::AgentGroup::addEventHandler </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814">Event</a>&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt; *&#160;</td>
+          <td class="paramname"><em>callback</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Registers a callback function to be called when the specified Event is emitted.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td>event that triggers the callback </td></tr>
+    <tr><td class="paramname">callback</td><td>callback called when the event occurs </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#add95601802d8bbc40f3591412a7a7baa">fpmas::model::detail::AgentGroupBase</a>.</p>
+
+</div>
+</div>
+<a id="a29cae90b0b9c345e7425eb86b234d8d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a29cae90b0b9c345e7425eb86b234d8d3">&#9670;&nbsp;</a></span>removeEventHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::model::AgentGroup::removeEventHandler </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814">Event</a>&#160;</td>
+          <td class="paramname"><em>event</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt; *&#160;</td>
+          <td class="paramname"><em>callback</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Unregisters a callback function previously registered for the spespecified event.</p>
+<p>The behavior is undefined if the callback was not previously registered using <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a17b3e244cee14eaf4961c6e1538a1a49">addEventHandler()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">event</td><td>event that triggers the callback </td></tr>
+    <tr><td class="paramname">callback</td><td>callback called when the event occurs </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#af30ccce6e8365f3e1d611f7903dc52cb">fpmas::model::detail::AgentGroupBase</a>.</p>
 
 </div>
 </div>

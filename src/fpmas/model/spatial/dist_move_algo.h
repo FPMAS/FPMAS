@@ -151,19 +151,6 @@ namespace fpmas { namespace model {
 
 						DistributedMoveAlgorithm& dist_move_algo;
 
-						Behavior<CellBehavior> cell_behaviors {
-							&CellBehavior::handleNewLocation,
-								&CellBehavior::handleMove,
-								&CellBehavior::handlePerceive
-						};
-						Behavior<AgentBehavior> spatial_agent_behaviors {
-							&AgentBehavior::handleNewMove,
-								&AgentBehavior::handleNewPerceive
-						};
-						BehaviorWithArgs<CellBehavior, api::model::AgentGroup&> update_perceptions_behavior {
-							&CellBehavior::updatePerceptions, dist_move_algo.move_agent_group
-						};
-
 					public:
 						AlgoTask(DistributedMoveAlgorithm& dist_move_algo)
 							: dist_move_algo(dist_move_algo) {}
@@ -203,6 +190,9 @@ namespace fpmas { namespace model {
 				api::scheduler::JobList jobs() const override {
 					return {algo_job};
 				}
+
+				~DistributedMoveAlgorithm() {
+				}
 		};
 
 	template<typename CellType>
@@ -210,6 +200,7 @@ namespace fpmas { namespace model {
 			FPMAS_LOGD(this->dist_move_algo.model.getMpiCommunicator().getRank(),
 					"DMA", "Running DistributedMoveAlgorithm...", "");
 			using api::model::SpatialAgent;
+
 
 			std::vector<SpatialAgent<CellType>*> agents;
 			for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
@@ -243,17 +234,26 @@ namespace fpmas { namespace model {
 				// Initializes all cells
 				cells.back()->init();
 			}
+			
+			for(auto cell : cells)
+				cell->init();
 
 			// Initializes the generic end condition
-			dist_move_algo.end.init(dist_move_algo.model.getMpiCommunicator(), agents, cells);
+			dist_move_algo.end.init(
+					dist_move_algo.model.getMpiCommunicator(),
+					agents, cells
+					);
 
 			// Assumed to loop until the mobility and
 			// perception fields of all agents are up to
 			// date
 			while(!dist_move_algo.end.end()) {
-				for(auto cell : cells)
+				for(auto cell : cells) {
 					// Grows mobility and perception fields
-					cell_behaviors.execute(cell);
+					cell->handleNewLocation();
+					cell->handleMove();
+					cell->handlePerceive();
+				}
 
 				// Synchronizes new links
 				dist_move_algo.model.graph()
@@ -265,10 +265,12 @@ namespace fpmas { namespace model {
 							dist_move_algo.model.graph().getUnsyncNodes()
 							);
 
-				for(auto agent : agents)
+				for(auto agent : agents) {
 					// Crops and build mobility and
 					// perception fields
-					spatial_agent_behaviors.execute(agent);
+					agent->handleNewMove();
+					agent->handleNewPerceive();
+				}
 				// No new nodes can be imported in the previous step (since
 				// edges are only replaced / removed), so a link
 				// synchronization is enough
@@ -277,16 +279,17 @@ namespace fpmas { namespace model {
 
 				dist_move_algo.end.step();
 			}
-			for(auto cell : cells)
+			for(auto cell : cells) {
 				// Update agent perceptions (creates
 				// PERCEPTION links)
-				update_perceptions_behavior.execute(cell);
+				cell->updatePerceptions(dist_move_algo.move_agent_group);
+			}
 			// Synchronizes perception links
 			dist_move_algo.model.graph()
 				.synchronizationMode().getSyncLinker().synchronize();
+
 			// Synchronizes data of DISTANT agents that might have been created
 			// when updating perceptions
-
 			dist_move_algo.model.graph()
 				.synchronizationMode().getDataSync().synchronize(
 					dist_move_algo.model.graph().getUnsyncNodes()

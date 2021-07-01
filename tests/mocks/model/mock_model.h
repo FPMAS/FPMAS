@@ -153,6 +153,16 @@ class MockAgentGroup : public virtual fpmas::api::model::AgentGroup {
 		MOCK_METHOD(const fpmas::api::scheduler::Job&, agentExecutionJob, (), (const, override));
 		MOCK_METHOD(fpmas::api::scheduler::Job&, agentExecutionJob, (), (override));
 		MOCK_METHOD(fpmas::api::scheduler::JobList, jobs, (), (const, override));
+		MOCK_METHOD(
+				void, addEventHandler,
+				(Event, fpmas::api::utils::Callback<fpmas::api::model::Agent*>*),
+				(override)
+				);
+		MOCK_METHOD(
+				void, removeEventHandler,
+				(Event, fpmas::api::utils::Callback<fpmas::api::model::Agent*>*),
+				(override)
+				);
 };
 
 /*

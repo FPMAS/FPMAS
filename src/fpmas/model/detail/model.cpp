@@ -20,11 +20,13 @@ namespace fpmas {
 			void EraseAgentNodeCallback::call(AgentNode *node) {
 				api::model::AgentPtr& agent = node->data();
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
-						"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.", FPMAS_C_STR(node->getId()));
+						"ERASE_AGENT_CALLBACK", "Erasing agent %s from graph.",
+						FPMAS_C_STR(node->getId())
+						);
 				for(auto group : agent->groups()) {
 					if(agent->node()->state() == graph::LocationState::LOCAL) {
-						// Unschedule agent task. If the node is DISTANT, task was already
-						// unscheduled.
+						// Unschedule agent task. If the node is DISTANT, task
+						// was already unscheduled.
 						// This must be performed before erase(), since it will
 						// clear and delete the associated agent's task.
 						group->agentExecutionJob().remove(*agent->task(group->groupId()));
@@ -84,7 +86,9 @@ namespace fpmas {
 				return *group;
 			}
 
-			api::model::AgentGroup& Model::buildGroup(api::model::GroupId id, const api::model::Behavior& behavior) {
+			api::model::AgentGroup& Model::buildGroup(
+					api::model::GroupId id, const api::model::Behavior& behavior
+					) {
 				api::model::AgentGroup* group = new AgentGroup(id, _graph, behavior);
 				this->insert(id, group); 
 				return *group;
@@ -96,7 +100,9 @@ namespace fpmas {
 				delete &group;
 			}
 
-			AgentEdge* Model::link(api::model::Agent *src_agent, api::model::Agent *tgt_agent, api::graph::LayerId layer) {
+			AgentEdge* Model::link(
+					api::model::Agent *src_agent, api::model::Agent *tgt_agent,
+					api::graph::LayerId layer) {
 				return _graph.link(src_agent->node(), tgt_agent->node(), layer);
 			}
 
@@ -108,7 +114,13 @@ namespace fpmas {
 				agent_graph.balance(load_balancing);
 			}
 
-			AgentGroupBase::AgentGroupBase(GroupId group_id, api::model::AgentGraph& agent_graph)
+			void AgentGroupBase::emit(Event event, api::model::Agent* agent) {
+				for(auto callback : event_handlers[event])
+					callback->call(agent);
+			}
+
+			AgentGroupBase::AgentGroupBase(
+					GroupId group_id, api::model::AgentGraph& agent_graph)
 				: AgentGroupBase(group_id, agent_graph, default_behavior) {
 				}
 
@@ -116,7 +128,8 @@ namespace fpmas {
 					GroupId group_id,
 					api::model::AgentGraph& agent_graph,
 					const api::model::Behavior& behavior)
-				: id(group_id), agent_graph(agent_graph), job_base(), sync_graph_task(agent_graph), _behavior(behavior) {
+				: id(group_id), agent_graph(agent_graph), job_base(),
+				sync_graph_task(agent_graph), _behavior(behavior) {
 					job_base.setEndTask(sync_graph_task);
 				}
 
@@ -132,15 +145,11 @@ namespace fpmas {
 					// InsertAgentNodeCallback is called.
 					agent_graph.buildNode(api::model::AgentPtr {agent});
 				} else {
-					// The agent as already been added to a group, so it is
+					// The agent has already been added to a group, so it is
 					// already contained in the graph
-					//
-					// This is necessarily performed on a LOCAL agent: adding a
-					// DISTANT agent to a group is not allowed.
-					//assert(agent->node()->state() == graph::LocationState::LOCAL);
 
 					// The node is already built and inserted in the graph, so
-					// we just need to insert is in this new group. A new task
+					// we just need to insert it in this new group. A new task
 					// corresponding to this group is bound to the agent in
 					// this process
 					this->insert(&agent->node()->data());
@@ -153,6 +162,7 @@ namespace fpmas {
 						// case.
 						this->agentExecutionJob().add(*agent->task(this->groupId()));
 				}
+				this->emit(ADD, agent);
 			}
 
 			void AgentGroupBase::remove(api::model::Agent* agent) {
@@ -160,6 +170,8 @@ namespace fpmas {
 						"AGENT_GROUP", "Removing agent %s from group %i",
 						FPMAS_C_STR(agent->node()->getId()),
 						this->groupId());
+
+				this->emit(REMOVE, agent);
 				if(agent->node()->state() == graph::LocationState::LOCAL) {
 					// Unschedule agent task. If the node is DISTANT, task was already
 					// unscheduled.
@@ -198,9 +210,13 @@ namespace fpmas {
 				AgentBehaviorTask* task
 					= new AgentBehaviorTask(this->behavior(), *agent);
 				agent->get()->setTask(this->groupId(), task);
+
+				this->emit(INSERT, agent->get());
 			}
 
 			void AgentGroupBase::erase(api::model::AgentPtr* agent) {
+				this->emit(ERASE, agent->get());
+
 				// Erases agent from the local agents() list
 				_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
 	
@@ -235,6 +251,31 @@ namespace fpmas {
 					if(agent->get()->node()->state() == graph::LocationState::LOCAL)
 						local_agents.push_back(*agent);
 				return local_agents;
+			}
+
+			void AgentGroupBase::addEventHandler(
+						Event event,
+						api::utils::Callback<api::model::Agent*>* callback) {
+					event_handlers[event].push_back(callback);
+				}
+
+			void AgentGroupBase::removeEventHandler(
+					Event event,
+					api::utils::Callback<api::model::Agent*>* callback) {
+				event_handlers[event].erase(
+						std::remove(
+							event_handlers[event].begin(),
+							event_handlers[event].end(),
+							callback
+							)
+						);
+				delete callback;
+			}
+
+			AgentGroupBase::~AgentGroupBase() {
+				for(auto event : event_handlers)
+					for(auto callback : event.second)
+						delete callback;
 			}
 
 		}

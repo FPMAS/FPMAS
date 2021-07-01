@@ -354,6 +354,13 @@ namespace fpmas {
 				static const DefaultBehavior default_behavior;
 				const api::model::Behavior& _behavior;
 
+				std::unordered_map<
+					Event,
+					std::vector<api::utils::Callback<api::model::Agent*>*>
+						> event_handlers;
+
+				void emit(Event event, api::model::Agent* agent);
+
 				public:
 				/**
 				 * AgentGroupBase constructor.
@@ -401,6 +408,16 @@ namespace fpmas {
 
 				std::vector<api::model::Agent*> agents() const override;
 				std::vector<api::model::Agent*> localAgents() const override;
+
+				void addEventHandler(
+						Event event,
+						api::utils::Callback<api::model::Agent*>* callback) override;
+
+				void removeEventHandler(
+						Event event,
+						api::utils::Callback<api::model::Agent*>* callback) override;
+
+				~AgentGroupBase();
 			};
 
 			/**

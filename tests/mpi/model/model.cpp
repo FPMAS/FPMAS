@@ -626,17 +626,27 @@ class ModelDynamicGroupIntegration : public Test {
 };
 
 TEST_F(ModelDynamicGroupIntegration, migration_edge_case) {
+	// Adds the agent to other_group, so that it still belong to at least one
+	// group
 	other_group.add(*init_group.localAgents().begin());
+	// Removes the agent from the group on process i
 	init_group.remove(*init_group.localAgents().begin());
 
+	// Migrates the agent to process i+1, where a DISTANT representation of the
+	// agent was already contained in the graph, but the agent was only
+	// contained in init_group
 	fpmas::graph::PartitionMap partition;
 	partition[(*other_group.localAgents().begin())->node()->getId()]
 		= (model.getMpiCommunicator().getRank()+1) % model.getMpiCommunicator().getSize();
 
 	model.graph().distribute(partition);
 
+	ASSERT_THAT(init_group.localAgents(), SizeIs(0));
 	ASSERT_THAT(other_group.localAgents(), SizeIs(1));
-	ASSERT_THAT((*other_group.localAgents().begin())->groups(), ElementsAre(&other_group));
+	ASSERT_THAT(
+			(*other_group.localAgents().begin())->groups(),
+			ElementsAre(&other_group)
+			);
 }
 
 TEST(DistributedAgentNodeBuilder, test) {
