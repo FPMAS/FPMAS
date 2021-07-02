@@ -51,13 +51,36 @@ namespace fpmas { namespace model {
 	const std::vector<api::model::Cell*>& CellBase::bufferedSuccessors() {
 		if(!init_successors) {
 			this->successors_buffer = this->successors();
+			this->raw_successors_buffer
+				= this->node()->outNeighbors(SpatialModelLayers::CELL_SUCCESSOR);
 			init_successors = true;
 		}
 		return this->successors_buffer;
 	}
 
 	void CellBase::init() {
-		init_successors = false;
+		// This has no performance impact
+		auto current_successors
+			= this->node()->outNeighbors(SpatialModelLayers::CELL_SUCCESSOR);
+		// Checks if the currently buffered successors are stricly equal to the
+		// current_successors. In this case, there is no need to update the
+		// successors() list
+		if(current_successors.size() == 0 ||
+				current_successors.size() != raw_successors_buffer.size()) {
+			init_successors = false;
+		} else {
+			auto it = current_successors.begin();
+			auto raw_it = raw_successors_buffer.begin();
+			while(it != current_successors.end() && *it == *raw_it) {
+				it++;
+				raw_it++;
+			}
+			if(it == current_successors.end()) {
+				init_successors = true;
+			} else {
+				init_successors = false;
+			}
+		}
 	}
 
 	void CellBase::handleNewLocation() {

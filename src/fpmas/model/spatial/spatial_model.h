@@ -129,9 +129,14 @@ namespace fpmas {
 			 * when required.
 			 * This is safe, since the Cell network can't be modified during
 			 * the DistributedMoveAlgorithm execution.
+			 * The buffer is safely used by init(), handleNewLocation(),
+			 * handleMove() and handlePerceive(), but is not safe for a generic
+			 * use since new CELL_SUCCESSOR edges might be deleted or created
+			 * at any time, out of the DistributedMoveAlgorithm context.
 			 */
 			bool init_successors = false;
 			std::vector<api::model::Cell*> successors_buffer;
+			std::vector<api::model::AgentNode*> raw_successors_buffer;
 			const std::vector<api::model::Cell*>& bufferedSuccessors();
 
 		public:
@@ -467,12 +472,13 @@ namespace fpmas {
 
 			CurrentOutLayer move_layer(this, SpatialModelLayers::MOVE);
 
-			fpmas::model::ReadGuard read_location(this->locationCell());
+			auto location =  this->locationCell();
+			fpmas::model::ReadGuard read_location(location);
 			for(auto cell : this->template outNeighbors<CellType>(
 						SpatialModelLayers::NEW_MOVE)) {
 				fpmas::model::ReadGuard read_cell(cell);
 				if(!move_layer.contains(cell)
-						&& this->mobility_range->contains(this->locationCell(), cell))
+						&& this->mobility_range->contains(location, cell))
 					move_layer.link(cell);
 				this->model()->unlink(cell.edge());
 			}
@@ -482,12 +488,13 @@ namespace fpmas {
 		void SpatialAgentBase<AgentType, CellType, Derived>::handleNewPerceive() {
 			CurrentOutLayer perceive_layer(this, SpatialModelLayers::PERCEIVE);
 
-			fpmas::model::ReadGuard read_location(this->locationCell());
+			auto location =  this->locationCell();
+			fpmas::model::ReadGuard read_location(location);
 			for(auto cell : this->template outNeighbors<CellType>(
 						SpatialModelLayers::NEW_PERCEIVE)) {
 				fpmas::model::ReadGuard read_cell(cell);
 				if(!perceive_layer.contains(cell)
-						&& this->perception_range->contains(this->locationCell(), cell))
+						&& this->perception_range->contains(location, cell))
 					perceive_layer.link(cell);
 				this->model()->unlink(cell.edge());
 			}
