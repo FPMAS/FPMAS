@@ -4,11 +4,13 @@
 #include "fpmas/model/spatial/spatial_model.h"
 #include "fpmas/model/spatial/grid.h"
 #include "fpmas/model/spatial/graph.h"
+#include "fpmas/model/spatial/von_neumann.h"
 #include "model/mock_model.h"
 
 #define TEST_AGENTS BasicAgent, ReaderAgent, WriterAgent, LinkerAgent,\
 		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\
 		TestCell, TestSpatialAgent::JsonBase, fpmas::model::GridCell::JsonBase,\
+		TestGridAgent::JsonBase,\
 		fpmas::model::GraphCell::JsonBase
 
 using testing::Ge;
@@ -249,22 +251,17 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 					);
 		}
 };
-/*
- *
- *struct LayeredCell : public fpmas::model::Cell<LayeredCell> {
- *    int layer;
- *
- *    static void to_json(nlohmann::json& j, const LayeredCell* cell) {
- *        j = cell->layer;
- *    }
- *    static LayeredCell* from_json(const nlohmann::json& j) {
- *        auto cell = new LayeredCell;
- *        cell->layer = j.get<int>();
- *        return cell;
- *    }
- *};
- */
 
-FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>)
-FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>)
+class TestGridAgent : public fpmas::model::GridAgent<TestGridAgent> {
+	static fpmas::model::VonNeumannRange<fpmas::model::VonNeumannGrid<>> range;
+
+	public:
+	TestGridAgent()
+		: fpmas::model::GridAgent<TestGridAgent>(range, range) {
+		}
+};
+
+FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>);
+FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>);
+FPMAS_DEFAULT_JSON(TestGridAgent);
 #endif

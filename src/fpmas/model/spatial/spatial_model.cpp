@@ -61,7 +61,7 @@ namespace fpmas { namespace model {
 	void CellBase::init() {
 		// This has no performance impact
 		auto current_successors
-			= this->node()->outNeighbors(SpatialModelLayers::CELL_SUCCESSOR);
+			= this->node()->getOutgoingEdges(SpatialModelLayers::CELL_SUCCESSOR);
 		// Checks if the currently buffered successors are stricly equal to the
 		// current_successors. In this case, there is no need to update the
 		// successors() list
@@ -71,7 +71,7 @@ namespace fpmas { namespace model {
 		} else {
 			auto it = current_successors.begin();
 			auto raw_it = raw_successors_buffer.begin();
-			while(it != current_successors.end() && *it == *raw_it) {
+			while(it != current_successors.end() && (*it)->getTargetNode() == *raw_it) {
 				it++;
 				raw_it++;
 			}

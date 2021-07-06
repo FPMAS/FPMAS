@@ -181,13 +181,32 @@ namespace fpmas {
 		private:
 			AgentGroup* cell_group;
 			EndCondition dist_move_algo_end_condition;
+			void buildCellGroup() {
+				cell_group = &this->buildGroup(CELL_GROUP_ID);
+			}
 
 		public:
 			/**
-			 * SpatialModel constructor.
+			 * Default SpatialModel constructor.
+			 *
+			 * The Model base is constructed using its default construtor.
 			 */
 			SpatialModel() {
-				cell_group = &this->buildGroup(CELL_GROUP_ID);
+				buildCellGroup();
+			}
+
+			/**
+			 * SpatialModel constructor.
+			 *
+			 * The specified `load_balancing` algorithm is passed to the Model
+			 * base construtor.
+			 *
+			 * @param load_balancing user defined load balancing algorithm
+			 */
+			SpatialModel(
+					api::graph::LoadBalancing<api::model::AgentPtr>& load_balancing
+					) : Model<SyncMode>(load_balancing) {
+				buildCellGroup();
 			}
 
 			/**

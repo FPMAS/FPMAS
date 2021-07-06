@@ -61,22 +61,15 @@ namespace fpmas { namespace api { namespace model {
 	};
 
 	/**
-	 * SpatialAgent API extension to represent agents moving on a Grid.
+	 * A non-templated GridAgent base class.
 	 *
-	 * The GridAgent notably provides methods to move or locate the agent using
-	 * DiscretePoint coordinates.
-	 *
-	 * The specified `GridCellType` is required to extend GridCell.
+	 * This notably allows the usage of moveTo(DiscretePoint) and
+	 * locationPoint() methods from a `dynamic_cast` from the api::model::Agent
+	 * base, without the need for the `CellType` template parameter.
 	 */
-	template<typename GridCellType>
-	class GridAgent : public virtual SpatialAgent<GridCellType> {
-		protected:
-			static_assert(
-					std::is_base_of<api::model::GridCell, GridCellType>::value,
-					"fpmas::api::model::GridCell must be a base of the specified GridCell"
-					);
-			using SpatialAgent<GridCellType>::moveTo;
+	class GridAgentBase {
 
+		protected:
 			/**
 			 * Moves to the Cell at the specified point.
 			 *
@@ -107,6 +100,24 @@ namespace fpmas { namespace api { namespace model {
 			 * @return location of the GridAgent
 			 */
 			virtual DiscretePoint locationPoint() const = 0;
+
+	};
+	/**
+	 * SpatialAgent API extension to represent agents moving on a Grid.
+	 *
+	 * The GridAgent notably provides methods to move or locate the agent using
+	 * DiscretePoint coordinates.
+	 *
+	 * The specified `GridCellType` is required to extend GridCell.
+	 */
+	template<typename GridCellType>
+	class GridAgent : public virtual SpatialAgent<GridCellType>, public GridAgentBase {
+		protected:
+			static_assert(
+					std::is_base_of<api::model::GridCell, GridCellType>::value,
+					"fpmas::api::model::GridCell must be a base of the specified GridCell"
+					);
+			using SpatialAgent<GridCellType>::moveTo;
 	};
 
 	/**

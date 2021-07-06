@@ -631,11 +631,39 @@ namespace fpmas {
 			template<template<typename> class SyncMode>
 				class DefaultModel : private DefaultModelConfig<SyncMode>, public Model {
 					public:
+						/**
+						 * DefaultModel default constructor.
+						 *
+						 * Default graph, load balancing algorithm, runtime and
+						 * scheduler defined in DefaultModelConfig are used to
+						 * initialized the Model.
+						 */
 						DefaultModel() :
 							DefaultModelConfig<SyncMode>(),
 							Model(
 									this->__graph, this->__scheduler, this->__runtime,
 									this->__load_balancing
+									) {}
+						/**
+						 * DefaultModel constructor.
+						 *
+						 * Default graph, runtime and
+						 * scheduler defined in DefaultModelConfig are used to
+						 * initialized the Model, but the specified load
+						 * balancing algorithm is used.
+						 *
+						 * The `load_balancing` algorithm lifetime must exceed
+						 * this DefaultModel lifetime.
+						 *
+						 * @param load_balancing user defined load balancing
+						 * algorithm
+						 */
+						DefaultModel(
+								api::graph::LoadBalancing<AgentPtr>& load_balancing) :
+							DefaultModelConfig<SyncMode>(),
+							Model(
+									this->__graph, this->__scheduler, this->__runtime,
+									load_balancing
 									) {}
 				};
 

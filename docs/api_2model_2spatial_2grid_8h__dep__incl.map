@@ -1,8 +1,9 @@
 <map id="src/fpmas/api/model/spatial/grid.h" name="src/fpmas/api/model/spatial/grid.h">
-<area shape="rect" id="node1" title=" " alt="" coords="201,5,341,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="227,5,367,47"/>
 <area shape="rect" id="node2" href="$exceptions_8h.html" title=" " alt="" coords="88,95,228,136"/>
 <area shape="rect" id="node5" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="191,273,352,315"/>
 <area shape="rect" id="node9" href="$grid__agent__mapping_8h.html" title=" " alt="" coords="309,184,471,225"/>
+<area shape="rect" id="node10" href="$grid__load__balancing_8h_source.html" title=" " alt="" coords="360,95,521,136"/>
 <area shape="rect" id="node3" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="72,184,233,225"/>
 <area shape="rect" id="node4" href="$model_2spatial_2graph_8h_source.html" title=" " alt="" coords="5,273,167,315"/>
 <area shape="rect" id="node6" href="$von__neumann_8h.html" title=" " alt="" coords="191,363,352,404"/>
