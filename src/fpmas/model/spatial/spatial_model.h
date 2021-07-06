@@ -493,13 +493,13 @@ namespace fpmas {
 
 			auto location =  this->locationCell();
 			fpmas::model::ReadGuard read_location(location);
-			for(auto cell : this->template outNeighbors<CellType>(
-						SpatialModelLayers::NEW_MOVE)) {
-				fpmas::model::ReadGuard read_cell(cell);
-				if(!move_layer.contains(cell)
-						&& this->mobility_range->contains(location, cell))
-					move_layer.link(cell);
-				this->model()->unlink(cell.edge());
+			for(auto cell_edge : this->node()->getOutgoingEdges(SpatialModelLayers::NEW_MOVE)) {
+				auto* agent = cell_edge->getTargetNode()->data().get();
+				fpmas::model::ReadGuard read_cell(agent);
+				if(!move_layer.contains(agent)
+						&& this->mobility_range->contains(location, dynamic_cast<CellType*>(agent)))
+					move_layer.link(agent);
+				this->model()->unlink(cell_edge);
 			}
 		}
 
@@ -509,13 +509,13 @@ namespace fpmas {
 
 			auto location =  this->locationCell();
 			fpmas::model::ReadGuard read_location(location);
-			for(auto cell : this->template outNeighbors<CellType>(
-						SpatialModelLayers::NEW_PERCEIVE)) {
-				fpmas::model::ReadGuard read_cell(cell);
-				if(!perceive_layer.contains(cell)
-						&& this->perception_range->contains(location, cell))
-					perceive_layer.link(cell);
-				this->model()->unlink(cell.edge());
+			for(auto cell_edge : this->node()->getOutgoingEdges(SpatialModelLayers::NEW_PERCEIVE)) {
+				auto* agent = cell_edge->getTargetNode()->data().get();
+				fpmas::model::ReadGuard read_cell(agent);
+				if(!perceive_layer.contains(agent)
+						&& this->perception_range->contains(location, dynamic_cast<CellType*>(agent)))
+					perceive_layer.link(agent);
+				this->model()->unlink(cell_edge);
 			}
 		}
 	
