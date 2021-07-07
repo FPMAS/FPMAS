@@ -1,5 +1,7 @@
 <map id="src/fpmas/model/spatial/von_neumann.h" name="src/fpmas/model/spatial/von_neumann.h">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,167,47"/>
-<area shape="rect" id="node2" href="$moore_8h.html" title=" " alt="" coords="5,95,167,136"/>
-<area shape="rect" id="node3" href="$fpmas_8h.html" title=" " alt="" coords="41,184,131,211"/>
+<area shape="rect" id="node1" title=" " alt="" coords="136,5,297,47"/>
+<area shape="rect" id="node2" href="$moore__range_8h_source.html" title=" " alt="" coords="5,95,167,136"/>
+<area shape="rect" id="node4" href="$von__neumann__range_8h_source.html" title=" " alt="" coords="136,273,297,315"/>
+<area shape="rect" id="node3" href="$moore_8h.html" title=" " alt="" coords="5,184,167,225"/>
+<area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="21,281,111,307"/>
 </map>

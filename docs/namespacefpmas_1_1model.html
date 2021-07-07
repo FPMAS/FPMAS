@@ -162,9 +162,13 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1ChebyshevDistance.html">ChebyshevDistance</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1MooreGridBuilder.html">MooreGridBuilder</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1MooreRangePerimeter.html">MooreRangePerimeter</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1MooreRangePerimeter_3_01VonNeumannGrid_3_01CellType_01_4_01_4.html">MooreRangePerimeter&lt; VonNeumannGrid&lt; CellType &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1MooreRangePerimeter_3_01MooreGrid_3_01CellType_01_4_01_4.html">MooreRangePerimeter&lt; MooreGrid&lt; CellType &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1MoveAgentGroup.html">MoveAgentGroup</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,6 +196,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01VonNeumannGrid_3_01CellType_01_4_01_4.html">VonNeumannRangePerimeter&lt; VonNeumannGrid&lt; CellType &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01MooreGrid_3_01CellType_01_4_01_4.html">VonNeumannRangePerimeter&lt; MooreGrid&lt; CellType &gt; &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -215,6 +221,9 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a9fa31f2c0500caaa3dfbf0bfad07899d"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename &gt; class SyncMode, typename CellType  = api::model::GridCell, typename EndCondition  = DynamicEndCondition&lt;CellType&gt;&gt; </td></tr>
 <tr class="memitem:a9fa31f2c0500caaa3dfbf0bfad07899d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a9fa31f2c0500caaa3dfbf0bfad07899d">GridModel</a> = <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html">SpatialModel</a>&lt; SyncMode, CellType, EndCondition &gt;</td></tr>
 <tr class="separator:a9fa31f2c0500caaa3dfbf0bfad07899d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a179aeb135d0724e6980c541fb9ba97c2"><td class="memTemplParams" colspan="2">template&lt;typename CellType  = api::model::GridCell&gt; </td></tr>
+<tr class="memitem:a179aeb135d0724e6980c541fb9ba97c2"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a179aeb135d0724e6980c541fb9ba97c2">MooreGrid</a> = <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a>&lt; <a class="el" href="classfpmas_1_1model_1_1MooreGridBuilder.html">MooreGridBuilder</a>&lt; CellType &gt;, <a class="el" href="classfpmas_1_1model_1_1ChebyshevDistance.html">ChebyshevDistance</a>, CellType &gt;</td></tr>
+<tr class="separator:a179aeb135d0724e6980c541fb9ba97c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a056124bbaa4a1770166a52badc65086d"><td class="memTemplParams" colspan="2">template&lt;typename GridConfig &gt; </td></tr>
 <tr class="memitem:a056124bbaa4a1770166a52badc65086d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a056124bbaa4a1770166a52badc65086d">MooreRangeConfig</a> = <a class="el" href="structfpmas_1_1model_1_1GridRangeConfig.html">GridRangeConfig</a>&lt; <a class="el" href="classfpmas_1_1model_1_1ChebyshevDistance.html">ChebyshevDistance</a>, <a class="el" href="structfpmas_1_1model_1_1MooreRangePerimeter.html">MooreRangePerimeter</a>&lt; <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> &gt; &gt;</td></tr>
 <tr class="separator:a056124bbaa4a1770166a52badc65086d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -368,6 +377,23 @@ template&lt;template&lt; typename &gt; class SyncMode, typename CellType  = api:
       </table>
 </div><div class="memdoc">
 <p>Grid specialization of the <a class="el" href="classfpmas_1_1model_1_1SpatialModel.html">SpatialModel</a>. </p>
+
+</div>
+</div>
+<a id="a179aeb135d0724e6980c541fb9ba97c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a179aeb135d0724e6980c541fb9ba97c2">&#9670;&nbsp;</a></span>MooreGrid</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename CellType  = api::model::GridCell&gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacefpmas_1_1model.html#a179aeb135d0724e6980c541fb9ba97c2">fpmas::model::MooreGrid</a> = typedef <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a>&lt;<a class="el" href="classfpmas_1_1model_1_1MooreGridBuilder.html">MooreGridBuilder</a>&lt;CellType&gt;, <a class="el" href="classfpmas_1_1model_1_1ChebyshevDistance.html">ChebyshevDistance</a>, CellType&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Moore <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> specialization, that might be used where a <code><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a></code> template parameter is required. </p>
 
 </div>
 </div>

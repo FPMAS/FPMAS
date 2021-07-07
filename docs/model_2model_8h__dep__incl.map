@@ -1,10 +1,15 @@
 <map id="src/fpmas/model/model.h" name="src/fpmas/model/model.h">
-<area shape="rect" id="node1" title=" " alt="" coords="93,5,263,32"/>
-<area shape="rect" id="node2" href="$dist__move__algo_8h.html" title=" " alt="" coords="97,80,259,121"/>
-<area shape="rect" id="node3" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="97,169,259,211"/>
-<area shape="rect" id="node4" href="$model_2spatial_2graph_8h_source.html" title=" " alt="" coords="5,259,167,300"/>
-<area shape="rect" id="node5" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="191,259,352,300"/>
-<area shape="rect" id="node6" href="$von__neumann_8h.html" title=" " alt="" coords="191,348,352,389"/>
-<area shape="rect" id="node7" href="$moore_8h.html" title=" " alt="" coords="191,437,352,479"/>
-<area shape="rect" id="node8" href="$fpmas_8h.html" title=" " alt="" coords="226,527,317,553"/>
+<area shape="rect" id="node1" title=" " alt="" coords="131,5,300,32"/>
+<area shape="rect" id="node2" href="$dist__move__algo_8h.html" title=" " alt="" coords="135,80,296,121"/>
+<area shape="rect" id="node3" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="135,169,296,211"/>
+<area shape="rect" id="node4" href="$model_2spatial_2graph_8h_source.html" title=" " alt="" coords="43,259,204,300"/>
+<area shape="rect" id="node5" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="228,259,389,300"/>
+<area shape="rect" id="node6" href="$grid__builder_8h_source.html" title=" " alt="" coords="228,348,389,389"/>
+<area shape="rect" id="node7" href="$moore__grid_8h_source.html" title=" " alt="" coords="169,437,331,479"/>
+<area shape="rect" id="node13" href="$von__neumann__grid_8h_source.html" title=" " alt="" coords="345,527,507,568"/>
+<area shape="rect" id="node8" href="$moore_8h.html" title=" " alt="" coords="136,527,297,568"/>
+<area shape="rect" id="node9" href="$moore__range_8h_source.html" title=" " alt="" coords="5,795,167,836"/>
+<area shape="rect" id="node10" href="$von__neumann__range_8h_source.html" title=" " alt="" coords="136,616,297,657"/>
+<area shape="rect" id="node12" href="$fpmas_8h.html" title=" " alt="" coords="322,623,413,650"/>
+<area shape="rect" id="node11" href="$von__neumann_8h.html" title=" " alt="" coords="136,705,297,747"/>
 </map>

@@ -284,17 +284,6 @@ TEST_F(SpatialModelTest_DynamicAgentInsertion, test) {
 	model.runtime().execute(new_agent_group.jobs());
 
 	checkDynamicModelState(1);
-	/*
-	 *for(auto agent : agent_group.localAgents())
-	 *    if(model.getMpiCommunicator().getSize() == 1) {
-	 *        ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::PERCEPTION), SizeIs(1));
-	 *        ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::PERCEPTION), Contains(new_agent->node()));
-	 *    }
-	 *    else if (model.getMpiCommunicator().getSize() == 2)
-	 *        ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::PERCEPTION), SizeIs(3));
-	 *    else
-	 *        ASSERT_THAT(agent->node()->outNeighbors(fpmas::api::model::PERCEPTION), SizeIs(5));
-	 */
 }
 
 class SpatialAgentBuilderTest : public Test {
