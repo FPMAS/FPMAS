@@ -68,7 +68,6 @@ namespace fpmas { namespace api { namespace model {
 	 * base, without the need for the `CellType` template parameter.
 	 */
 	class GridAgentBase {
-
 		protected:
 			/**
 			 * Moves to the Cell at the specified point.
@@ -101,6 +100,7 @@ namespace fpmas { namespace api { namespace model {
 			 */
 			virtual DiscretePoint locationPoint() const = 0;
 
+			virtual ~GridAgentBase() {}
 	};
 	/**
 	 * SpatialAgent API extension to represent agents moving on a Grid.
@@ -117,7 +117,6 @@ namespace fpmas { namespace api { namespace model {
 					std::is_base_of<api::model::GridCell, GridCellType>::value,
 					"fpmas::api::model::GridCell must be a base of the specified GridCell"
 					);
-			using SpatialAgent<GridCellType>::moveTo;
 	};
 
 	/**

@@ -24,6 +24,9 @@ namespace fpmas { namespace model {
 				break;
 			case HORIZONTAL:
 				process = (--process_bounds.upper_bound(point.x))->second;
+				break;
+			default:
+				process=-1;
 		}
 		return process;
 	}
