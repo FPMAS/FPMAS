@@ -117,6 +117,8 @@ namespace fpmas { namespace api { namespace model {
 					std::is_base_of<api::model::GridCell, GridCellType>::value,
 					"fpmas::api::model::GridCell must be a base of the specified GridCell"
 					);
+			using SpatialAgent<GridCellType>::moveTo;
+			using GridAgentBase::moveTo;
 	};
 
 	/**
