@@ -102,6 +102,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac9f88e59417d658e595ccec5a730109c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7462835d9fb1afeefa83991ab0a3d393"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Edge.html#a7462835d9fb1afeefa83991ab0a3d393">getLayer</a> () const override</td></tr>
 <tr class="separator:a7462835d9fb1afeefa83991ab0a3d393"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88c382642a036affac6b3697c62239ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Edge.html#a88c382642a036affac6b3697c62239ff">setLayer</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a> layer) override</td></tr>
+<tr class="separator:a88c382642a036affac6b3697c62239ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af101a1615307035e6972e4bbc5d3c552"><td class="memItemLeft" align="right" valign="top">float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Edge.html#af101a1615307035e6972e4bbc5d3c552">getWeight</a> () const override</td></tr>
 <tr class="separator:af101a1615307035e6972e4bbc5d3c552"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a45822d116615b27fe5df4017283e8c7d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1Edge.html#a45822d116615b27fe5df4017283e8c7d">setWeight</a> (float weight) override</td></tr>
@@ -242,6 +244,44 @@ template&lt;typename _IdType , typename _NodeType &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>edge's layer </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a034367372164e34d04cc56fb65836925">fpmas::api::graph::Edge&lt; _IdType, _NodeType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a88c382642a036affac6b3697c62239ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a88c382642a036affac6b3697c62239ff">&#9670;&nbsp;</a></span>setLayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename _IdType , typename _NodeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1Edge.html">fpmas::graph::Edge</a>&lt; _IdType, _NodeType &gt;::setLayer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a>&#160;</td>
+          <td class="paramname"><em>layer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the layer of this edge.</p>
+<p>This method does <b>not</b> re-bind the source and target nodes on the proper layer. This can be handle automatically by the <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a67e7497953754aa6e6dcaf26b56f667d">DistributedGraph::switchLayer()</a> method.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">layer</td><td>new layer </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a1c7380d37154dbc5680962b34151847f">fpmas::api::graph::Edge&lt; _IdType, _NodeType &gt;</a>.</p>
 
 </div>
 </div>

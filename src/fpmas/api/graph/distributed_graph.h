@@ -368,6 +368,19 @@ namespace fpmas {namespace api {namespace graph {
 					LayerId layer_id) = 0;
 
 			/**
+			 * Switches the edge to the specified layer.
+			 *
+			 * Currently, this operation is only available for \LOCAL edges.
+			 *
+			 * The edge is properly re-linked to its source and target node,
+			 * while the Edge::setLayer() method does not.
+			 *
+			 * @param edge edge to switch
+			 * @param layer_id new layer
+			 */
+			virtual void switchLayer(DistributedEdge<T>* edge, LayerId layer_id) = 0;
+
+			/**
 			 * Adds a set \LOCAL node callback.
 			 *
 			 * A DistributedNode is set \LOCAL in the following situations :

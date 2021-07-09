@@ -255,11 +255,8 @@ namespace fpmas { namespace graph {
 				void distribute(api::graph::PartitionMap partition) override;
 
 				void synchronize() override;
-				/**
-				 * \copydoc fpmas::api::graph::DistributedGraph::synchronize(std::unordered_set<DistributedNode<T>*>, bool)
-				 */
 				void synchronize(
-					std::unordered_set<api::graph::DistributedNode<T>*> nodes,
+					std::unordered_set<NodeType*> nodes,
 					bool synchronize_links = true
 					) override;
 
@@ -278,6 +275,8 @@ namespace fpmas { namespace graph {
 				void unlink(DistributedId id) override {
 					this->unlink(this->getEdge(id));
 				}
+
+				void switchLayer(EdgeType* edge, api::graph::LayerId layer_id) override;
 
 				void addCallOnSetLocal(NodeCallback* callback) override {
 					set_local_callbacks.push_back(callback);
@@ -371,6 +370,18 @@ namespace fpmas { namespace graph {
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::unlink(EdgeType* edge) {
 				sync_mode.getSyncLinker().unlink(edge);
 				this->erase(edge);
+			}
+
+		template<DIST_GRAPH_PARAMS>
+			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::switchLayer(
+					EdgeType* edge, api::graph::LayerId layer_id) {
+				assert(edge->state() == api::graph::DISTANT);
+
+				edge->getSourceNode()->unlinkOut(edge);
+				edge->getTargetNode()->unlinkIn(edge);
+				edge->setLayer(layer_id);
+				edge->getSourceNode()->linkOut(edge);
+				edge->getTargetNode()->linkIn(edge);
 			}
 
 		template<DIST_GRAPH_PARAMS>
@@ -708,7 +719,7 @@ namespace fpmas { namespace graph {
 
 		template<DIST_GRAPH_PARAMS>
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
-			::synchronize(std::unordered_set<api::graph::DistributedNode<T>*> nodes, bool synchronize_links) {
+			::synchronize(std::unordered_set<NodeType*> nodes, bool synchronize_links) {
 				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 						"Partially synchronizing graph...", "");
 

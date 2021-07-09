@@ -156,6 +156,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac480db15a103f51edfadb75cbc63f91a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef8d1101909c65ef27ce861ff9dd1907"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aef8d1101909c65ef27ce861ff9dd1907">link</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *source, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; *target, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a> layer_id)=0</td></tr>
 <tr class="separator:aef8d1101909c65ef27ce861ff9dd1907"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9bbbe3a1283aaa7af1c2e68d34a6b44"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac9bbbe3a1283aaa7af1c2e68d34a6b44">switchLayer</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *edge, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a> layer_id)=0</td></tr>
+<tr class="separator:ac9bbbe3a1283aaa7af1c2e68d34a6b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a24255b155585d63e1bddacb9980e7937"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a24255b155585d63e1bddacb9980e7937">addCallOnSetLocal</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> *callback)=0</td></tr>
 <tr class="separator:a24255b155585d63e1bddacb9980e7937"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af3edf2b3e4368c13c14fa991f6daa74f"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#af3edf2b3e4368c13c14fa991f6daa74f">onSetLocalCallbacks</a> () const =0</td></tr>
@@ -1004,6 +1006,56 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="ac9bbbe3a1283aaa7af1c2e68d34a6b44"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9bbbe3a1283aaa7af1c2e68d34a6b44">&#9670;&nbsp;</a></span>switchLayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::switchLayer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *&#160;</td>
+          <td class="paramname"><em>edge</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a>&#160;</td>
+          <td class="paramname"><em>layer_id</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Switches the edge to the specified layer.</p>
+<p>Currently, this operation is only available for <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> edges.</p>
+<p>The edge is properly re-linked to its source and target node, while the <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a1c7380d37154dbc5680962b34151847f">Edge::setLayer()</a> method does not.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge</td><td>edge to switch </td></tr>
+    <tr><td class="paramname">layer_id</td><td>new layer </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a67e7497953754aa6e6dcaf26b56f667d">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a67e7497953754aa6e6dcaf26b56f667d">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a67e7497953754aa6e6dcaf26b56f667d">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>.</p>
+
+</div>
+</div>
 <a id="a24255b155585d63e1bddacb9980e7937"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a24255b155585d63e1bddacb9980e7937">&#9670;&nbsp;</a></span>addCallOnSetLocal()</h2>
 
@@ -1363,6 +1415,8 @@ template&lt;typename T &gt; </div>
   </table>
   </dd>
 </dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#af63978df63a62a865c4c90def664d5b1">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#af63978df63a62a865c4c90def664d5b1">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#af63978df63a62a865c4c90def664d5b1">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>.</p>
 
 </div>
 </div>

@@ -5,6 +5,7 @@
  * # local_build_node
  * # link_tests
  * # unlink_tests
+ * # switch_layer_tests
  * # remove_node_tests
  * # import_node_tests
  * # import_edge_tests
@@ -340,6 +341,62 @@ TEST_F(DistributedGraphUnlinkTest, distant_src_local_tgt) {
 	ASSERT_EQ(graph.getEdges().size(), 0);
 	delete src_mock;
 	delete tgt_mock;
+}
+/**********************/
+/* switch_layer_tests */
+/**********************/
+class DistributedGraphSwitchLayerTest : public Test {
+	protected:
+		static const int CURRENT_RANK = 7;
+		MockMpiCommunicator<CURRENT_RANK, 10> comm;
+		template<typename T>
+			using MockSyncMode = NiceMock<MockSyncMode<T>>;
+		template<typename T>
+			using MockLocationManager = NiceMock<MockLocationManager<T>>;
+		DistributedGraph<
+			int,
+			MockSyncMode,
+			fpmas::graph::DistributedNode,
+			fpmas::graph::DistributedEdge,
+			MockMpi,
+			MockLocationManager
+			> graph {comm};
+
+		fpmas::api::graph::DistributedNode<int>* src;
+		fpmas::api::graph::DistributedNode<int>* tgt;
+		fpmas::api::graph::DistributedEdge<int>* edge;
+
+		MockSyncLinker<int> mock_sync_linker;
+		MockDataSync<int> mock_data_sync;
+
+	public:
+		void SetUp() override {
+			ON_CALL(graph.getSyncMode(), getSyncLinker)
+				.WillByDefault(ReturnRef(mock_sync_linker));
+			ON_CALL(graph.getSyncMode(), getDataSync)
+				.WillByDefault(ReturnRef(mock_data_sync));
+
+			src = graph.buildNode(0);
+			tgt = graph.buildNode(1);
+			edge = graph.link(src, tgt, 0);
+		}
+};
+
+TEST_F(DistributedGraphSwitchLayerTest, switch_layer) {
+	graph.switchLayer(edge, 12);
+
+	ASSERT_EQ(edge->getLayer(), 12);
+	ASSERT_EQ(edge->getSourceNode(), src);
+	ASSERT_EQ(edge->getTargetNode(), tgt);
+
+	ASSERT_THAT(src->getOutgoingEdges(), SizeIs(1));
+	ASSERT_THAT(tgt->getIncomingEdges(), SizeIs(1));
+
+	ASSERT_THAT(src->getOutgoingEdges(0), IsEmpty());
+	ASSERT_THAT(tgt->getIncomingEdges(0), IsEmpty());
+
+	ASSERT_THAT(src->getOutgoingEdges(12), ElementsAre(edge));
+	ASSERT_THAT(tgt->getIncomingEdges(12), ElementsAre(edge));
 }
 
 /*********************/

@@ -20,8 +20,14 @@ namespace fpmas { namespace model {
 				"%s Setting this Cell as %s location.",
 				FPMAS_C_STR(this->node()->getId()),
 				FPMAS_C_STR(agent->node()->getId()));
-		this->model()->link(agent, this, SpatialModelLayers::LOCATION);
-		this->model()->unlink(new_location_edge);
+		if(new_location_edge->state() == api::graph::LOCAL) {
+			agent->model()->graph().switchLayer(
+					new_location_edge, SpatialModelLayers::LOCATION
+					);
+		} else {
+			this->model()->link(agent, this, SpatialModelLayers::LOCATION);
+			this->model()->unlink(new_location_edge);
+		}
 	}
 
 	bool CellBase::isAgentInGroup(api::model::Agent* agent, api::model::AgentGroup& group) {
@@ -29,19 +35,7 @@ namespace fpmas { namespace model {
 		auto result = std::find(group_ids.begin(), group_ids.end(), group.groupId());
 		return result != group_ids.end();
 	}
-	 /*
-	  *    const std::vector<api::model::AgentEdge*>& CellBase::bufferedSuccessors() {
-	  *    return this->raw_successors_buffer;
-	  *}
-	  */
-	/*
-	 *    void CellBase::init() {
-	 *    // This has no performance impact
-	 *    raw_successors_buffer
-	 *        = this->node()->getOutgoingEdges(SpatialModelLayers::CELL_SUCCESSOR);
-	 *}
-	 */
-
+	 
 	void CellBase::handleNewLocation() {
 		FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
 				"%s Updating ranges...",

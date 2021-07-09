@@ -38,17 +38,18 @@ namespace fpmas { namespace graph {
 				Edge(IdType id, api::graph::LayerId layer) :
 					id(id), layer(layer), weight(1.f) {};
 
-				IdType getId() const override {return id;};
-				api::graph::LayerId getLayer() const override {return layer;};
+				IdType getId() const override {return id;}
+				api::graph::LayerId getLayer() const override {return layer;}
+				void setLayer(api::graph::LayerId layer) override {this->layer=layer;}
 
-				float getWeight() const override {return weight;};
-				void setWeight(float weight) override {this->weight=weight;};
+				float getWeight() const override {return weight;}
+				void setWeight(float weight) override {this->weight=weight;}
 
-				void setSourceNode(NodeType* const src) override {this->source = src;};
-				NodeType* getSourceNode() const override {return source;};
+				void setSourceNode(NodeType* const src) override {this->source = src;}
+				NodeType* getSourceNode() const override {return source;}
 
-				void setTargetNode(NodeType* const tgt) override {this->target = tgt;};
-				NodeType* getTargetNode() const override {return target;};
+				void setTargetNode(NodeType* const tgt) override {this->target = tgt;}
+				NodeType* getTargetNode() const override {return target;}
 		};
 }}
 #endif

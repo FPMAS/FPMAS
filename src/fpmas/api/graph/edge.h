@@ -51,6 +51,17 @@ namespace fpmas { namespace api { namespace graph {
 			virtual LayerId getLayer() const = 0;
 
 			/**
+			 * Sets the layer of this edge.
+			 *
+			 * This method does **not** re-bind the source and target nodes on
+			 * the proper layer. This can be handled automatically by the
+			 * DistributedGraph::switchLayer() method.
+			 *
+			 * @param layer new layer
+			 */
+			virtual void setLayer(LayerId layer) = 0;
+
+			/**
 			 * Weight of the Edge.
 			 *
 			 * The edge's weight might be used to perform LoadBalancing.

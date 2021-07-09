@@ -53,6 +53,7 @@ class AbstractMockDistributedGraph :
 		MOCK_METHOD(void, removeNode, (DistributedId), (override));
 		MOCK_METHOD(void, unlink, (EdgeType*), (override));
 		MOCK_METHOD(void, unlink, (DistributedId), (override));
+		MOCK_METHOD(void, switchLayer, (EdgeType*, LayerId), (override));
 
 		MOCK_METHOD(NodeType*, importNode, (NodeType*), (override));
 		MOCK_METHOD(EdgeType*, importEdge, (EdgeType*), (override));

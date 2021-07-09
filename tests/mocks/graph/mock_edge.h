@@ -54,6 +54,7 @@ class AbstractMockEdge : public virtual fpmas::api::graph::Edge<
 
 		MOCK_METHOD(IdType, getId, (), (const, override));
 		MOCK_METHOD(LayerId, getLayer, (), (const, override));
+		MOCK_METHOD(void, setLayer, (LayerId), (override));
 
 		MOCK_METHOD(float, getWeight, (), (const));
 		MOCK_METHOD(void, setWeight, (float), (override));

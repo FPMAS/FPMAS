@@ -101,6 +101,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a01b45b55bdc925c460eb4533eca33deb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a034367372164e34d04cc56fb65836925"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a034367372164e34d04cc56fb65836925">getLayer</a> () const =0</td></tr>
 <tr class="separator:a034367372164e34d04cc56fb65836925"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c7380d37154dbc5680962b34151847f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a1c7380d37154dbc5680962b34151847f">setLayer</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a> layer)=0</td></tr>
+<tr class="separator:a1c7380d37154dbc5680962b34151847f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff73770c43ab756722d88fcc46d0de65"><td class="memItemLeft" align="right" valign="top">virtual float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#aff73770c43ab756722d88fcc46d0de65">getWeight</a> () const =0</td></tr>
 <tr class="separator:aff73770c43ab756722d88fcc46d0de65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab67d88ab59fa041c8bd8e1320b57e124"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#ab67d88ab59fa041c8bd8e1320b57e124">setWeight</a> (float weight)=0</td></tr>
@@ -221,6 +223,44 @@ template&lt;typename _IdType , typename _NodeType &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>edge's layer </dd></dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1Edge.html#a7462835d9fb1afeefa83991ab0a3d393">fpmas::graph::Edge&lt; _IdType, _NodeType &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1Edge.html#a7462835d9fb1afeefa83991ab0a3d393">fpmas::graph::Edge&lt; DistributedId, api::graph::DistributedNode&lt; T &gt; &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a1c7380d37154dbc5680962b34151847f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c7380d37154dbc5680962b34151847f">&#9670;&nbsp;</a></span>setLayer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename _IdType , typename _NodeType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html">fpmas::api::graph::Edge</a>&lt; _IdType, _NodeType &gt;::setLayer </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a>&#160;</td>
+          <td class="paramname"><em>layer</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Sets the layer of this edge.</p>
+<p>This method does <b>not</b> re-bind the source and target nodes on the proper layer. This can be handle automatically by the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac9bbbe3a1283aaa7af1c2e68d34a6b44">DistributedGraph::switchLayer()</a> method.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">layer</td><td>new layer </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1Edge.html#a88c382642a036affac6b3697c62239ff">fpmas::graph::Edge&lt; _IdType, _NodeType &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1Edge.html#a88c382642a036affac6b3697c62239ff">fpmas::graph::Edge&lt; DistributedId, api::graph::DistributedNode&lt; T &gt; &gt;</a>.</p>
 
 </div>
 </div>

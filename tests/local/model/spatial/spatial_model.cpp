@@ -73,38 +73,18 @@ class CellBaseTest : public Test {
 /**
  * IMPORTANT NOTE
  *
- * The growMobilityField and growPerceptionField methods are not tested here,
- * but their integration are directly tested in
+ * The handleNewLocation, growMobilityField and growPerceptionField methods are
+ * not tested here, but their integration are directly tested in
  * tests/mpi/model/spatial/spatial_model.cpp
  *
  * Optimization of those methods actually revealed that local unit tests were
  * too constrained: it is more efficient to directly test the
  * DistributedMoveAlgorithm integration.
  *
- * The same consideration might soon be applied to handleNewLocation,
- * handleMove and handlePerceive, since those tests are not really relevant,
- * for the same reasons.
+ * The same consideration might soon be applied to handleMove and
+ * handlePerceive, since those tests are not really relevant, for the same
+ * reasons.
  */
-TEST_F(CellBaseTest, handle_new_location) {
-	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::NEW_LOCATION))
-		.WillByDefault(Return(
-					std::vector<AgentEdge*>({&agent_edge})
-					));
-	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::NEW_LOCATION))
-		.WillByDefault(Return(
-					std::vector<AgentNode*>({&agent_node})
-					));
-
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, &mock_cell, SpatialModelLayers::LOCATION));
-	EXPECT_CALL(mock_model, unlink(&agent_edge));
-
-	EXPECT_CALL(mock_cell, growMobilityField);
-	EXPECT_CALL(mock_cell, growPerceptionField);
-
-	mock_cell.handleNewLocation();
-}
-
 TEST_F(CellBaseTest, handle_move) {
 	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::MOVE))
 		.WillByDefault(Return(std::vector<AgentEdge*>({&agent_edge})));
