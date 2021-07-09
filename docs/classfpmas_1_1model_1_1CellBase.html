@@ -68,9 +68,10 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classfpmas_1_1model_1_1CellBase-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">fpmas::model::CellBase Class Reference</div>  </div>
+<div class="title">fpmas::model::CellBase Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -113,8 +114,6 @@ Collaboration diagram for fpmas::model::CellBase:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a16ed9973dcf9da54710b43ed495d4ea3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">api::model::Cell</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a16ed9973dcf9da54710b43ed495d4ea3">successors</a> () override</td></tr>
 <tr class="separator:a16ed9973dcf9da54710b43ed495d4ea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2580822e26a7fcbf57b2aeaf39406c3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a2580822e26a7fcbf57b2aeaf39406c3b">init</a> () override</td></tr>
-<tr class="separator:a2580822e26a7fcbf57b2aeaf39406c3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf7649d1322244915e241d3291d4fe0a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#aaf7649d1322244915e241d3291d4fe0a">handleNewLocation</a> () override</td></tr>
 <tr class="separator:aaf7649d1322244915e241d3291d4fe0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e245107ceb975dfa5c2d3864d2f9fdf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a8e245107ceb975dfa5c2d3864d2f9fdf">handleMove</a> () override</td></tr>
@@ -184,6 +183,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abdd1c49e6ec9696bf0d8a42aa3b15768 inherit pub_methods_classfpmas_1_1api_1_1model_1_1Agent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a038600989efe7ceb1fc5afce1c87de45 inherit pub_methods_classfpmas_1_1api_1_1model_1_1Agent"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a038600989efe7ceb1fc5afce1c87de45">act</a> ()=0</td></tr>
 <tr class="separator:a038600989efe7ceb1fc5afce1c87de45 inherit pub_methods_classfpmas_1_1api_1_1model_1_1Agent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classfpmas_1_1api_1_1model_1_1CellBehavior"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1api_1_1model_1_1CellBehavior')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1api_1_1model_1_1CellBehavior.html">fpmas::api::model::CellBehavior</a></td></tr>
+<tr class="memitem:a4e5e9b2aaf1eb024a0226e2d475b59d3 inherit pub_methods_classfpmas_1_1api_1_1model_1_1CellBehavior"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a4e5e9b2aaf1eb024a0226e2d475b59d3">init</a> ()=0</td></tr>
+<tr class="separator:a4e5e9b2aaf1eb024a0226e2d475b59d3 inherit pub_methods_classfpmas_1_1api_1_1model_1_1CellBehavior"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classfpmas_1_1model_1_1NeighborsAccess"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1model_1_1NeighborsAccess')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1model_1_1NeighborsAccess.html">fpmas::model::NeighborsAccess</a></td></tr>
 <tr class="memitem:a5ee662fa0bce76b54fb44cf3877b0e04 inherit pub_methods_classfpmas_1_1model_1_1NeighborsAccess"><td class="memTemplParams" colspan="2">template&lt;typename NeighborAgentType &gt; </td></tr>
 <tr class="memitem:a5ee662fa0bce76b54fb44cf3877b0e04 inherit pub_methods_classfpmas_1_1model_1_1NeighborsAccess"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a>&lt; NeighborAgentType &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1NeighborsAccess.html#a5ee662fa0bce76b54fb44cf3877b0e04">outNeighbors</a> () const</td></tr>
@@ -197,12 +199,73 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa0f21ad5e74c69d624f4382562c3e818 inherit pub_methods_classfpmas_1_1model_1_1NeighborsAccess"><td class="memTemplParams" colspan="2">template&lt;typename NeighborAgentType &gt; </td></tr>
 <tr class="memitem:aa0f21ad5e74c69d624f4382562c3e818 inherit pub_methods_classfpmas_1_1model_1_1NeighborsAccess"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a>&lt; NeighborAgentType &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1NeighborsAccess.html#aa0f21ad5e74c69d624f4382562c3e818">inNeighbors</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a> layer) const</td></tr>
 <tr class="separator:aa0f21ad5e74c69d624f4382562c3e818 inherit pub_methods_classfpmas_1_1model_1_1NeighborsAccess"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a3da4de025d1b9634118e7a7e9e53d9ef"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a3da4de025d1b9634118e7a7e9e53d9ef">growMobilityField</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *agent)=0</td></tr>
+<tr class="separator:a3da4de025d1b9634118e7a7e9e53d9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a0107505113a1ca05d33d2a0222b6b6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a7a0107505113a1ca05d33d2a0222b6b6">growPerceptionField</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *agent)=0</td></tr>
+<tr class="separator:a7a0107505113a1ca05d33d2a0222b6b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">api::model::Cell</a> implementation.</p>
 <p>The <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> part of <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">api::model::Cell</a> is <b>not</b> implemented by this class.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1model_1_1Cell.html">Cell</a> </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a3da4de025d1b9634118e7a7e9e53d9ef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3da4de025d1b9634118e7a7e9e53d9ef">&#9670;&nbsp;</a></span>growMobilityField()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::model::CellBase::growMobilityField </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Grows the current <code>agent</code>s mobility field, connecting it to <a class="el" href="classfpmas_1_1model_1_1CellBase.html#a16ed9973dcf9da54710b43ed495d4ea3">successors()</a> on the NEW_MOVE layer if the agent is DISTANT, or directly on the MOVE layer otherwise if the cell is not already in the move layer and is contained in the agent mobility range. </p>
+
+</div>
+</div>
+<a id="a7a0107505113a1ca05d33d2a0222b6b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a0107505113a1ca05d33d2a0222b6b6">&#9670;&nbsp;</a></span>growPerceptionField()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::model::CellBase::growPerceptionField </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Grows the current <code>agent</code>s perception field, connecting it to <a class="el" href="classfpmas_1_1model_1_1CellBase.html#a16ed9973dcf9da54710b43ed495d4ea3">successors()</a> on the NEW_PERCEIVE layer if the agent is DISTANT, or directly on the PERCEIVE layer otherwise if the cell is not already in the PERCEIVE layer and is contained in the agent perception range. </p>
+
+</div>
+</div>
 <a id="a16ed9973dcf9da54710b43ed495d4ea3"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a16ed9973dcf9da54710b43ed495d4ea3">&#9670;&nbsp;</a></span>successors()</h2>
 
@@ -231,34 +294,6 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>successors of this <a class="el" href="classfpmas_1_1model_1_1Cell.html">Cell</a> </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html#a8fb19e195c393d83e289da838b8f3391">fpmas::api::model::Cell</a>.</p>
-
-</div>
-</div>
-<a id="a2580822e26a7fcbf57b2aeaf39406c3b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2580822e26a7fcbf57b2aeaf39406c3b">&#9670;&nbsp;</a></span>init()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void fpmas::model::CellBase::init </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Implementation free initialization method, called on each <a class="el" href="classfpmas_1_1model_1_1Cell.html">Cell</a> when the <a class="el" href="classfpmas_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> is run, before any other behavior is executed. </p>
-
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a4e5e9b2aaf1eb024a0226e2d475b59d3">fpmas::api::model::CellBehavior</a>.</p>
 
 </div>
 </div>

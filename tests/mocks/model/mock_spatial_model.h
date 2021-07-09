@@ -37,6 +37,9 @@ class MockSpatialAgent :
 class MockCellBase : public fpmas::model::CellBase, public testing::NiceMock<detail::MockAgentBase<MockCellBase>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
+		MOCK_METHOD(void, init, (), (override));
+		MOCK_METHOD(void, growMobilityField, (fpmas::api::model::Agent*), (override));
+		MOCK_METHOD(void, growPerceptionField, (fpmas::api::model::Agent*), (override));
 
 		virtual ~MockCellBase() {}
 };

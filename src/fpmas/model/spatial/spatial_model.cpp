@@ -24,64 +24,23 @@ namespace fpmas { namespace model {
 		this->model()->unlink(new_location_edge);
 	}
 
-	/**
-	 * Grows the current `agent`s mobility field, connecting it to
-	 * successors() on the NEW_MOVE layer.
-	 */
-	void CellBase::growMobilityField(api::model::Agent* agent) {
-		for(auto cell : this->bufferedSuccessors())
-			this->model()->link(agent, cell, SpatialModelLayers::NEW_MOVE);
-	}
-
-	/**
-	 * Grows the current `agent`s perception field, connecting it to
-	 * successors() on the NEW_PERCEIVE layer.
-	 */
-	void CellBase::growPerceptionField(api::model::Agent* agent) {
-		for(auto cell : this->bufferedSuccessors())
-			this->model()->link(agent, cell, SpatialModelLayers::NEW_PERCEIVE);
-	}
-
 	bool CellBase::isAgentInGroup(api::model::Agent* agent, api::model::AgentGroup& group) {
 		std::vector<fpmas::api::model::GroupId> group_ids = agent->groupIds();
 		auto result = std::find(group_ids.begin(), group_ids.end(), group.groupId());
 		return result != group_ids.end();
 	}
-
-	const std::vector<api::model::Cell*>& CellBase::bufferedSuccessors() {
-		if(!init_successors) {
-			this->successors_buffer = this->successors();
-			this->raw_successors_buffer
-				= this->node()->outNeighbors(SpatialModelLayers::CELL_SUCCESSOR);
-			init_successors = true;
-		}
-		return this->successors_buffer;
-	}
-
-	void CellBase::init() {
-		// This has no performance impact
-		auto current_successors
-			= this->node()->getOutgoingEdges(SpatialModelLayers::CELL_SUCCESSOR);
-		// Checks if the currently buffered successors are stricly equal to the
-		// current_successors. In this case, there is no need to update the
-		// successors() list
-		if(current_successors.size() == 0 ||
-				current_successors.size() != raw_successors_buffer.size()) {
-			init_successors = false;
-		} else {
-			auto it = current_successors.begin();
-			auto raw_it = raw_successors_buffer.begin();
-			while(it != current_successors.end() && (*it)->getTargetNode() == *raw_it) {
-				it++;
-				raw_it++;
-			}
-			if(it == current_successors.end()) {
-				init_successors = true;
-			} else {
-				init_successors = false;
-			}
-		}
-	}
+	 /*
+	  *    const std::vector<api::model::AgentEdge*>& CellBase::bufferedSuccessors() {
+	  *    return this->raw_successors_buffer;
+	  *}
+	  */
+	/*
+	 *    void CellBase::init() {
+	 *    // This has no performance impact
+	 *    raw_successors_buffer
+	 *        = this->node()->getOutgoingEdges(SpatialModelLayers::CELL_SUCCESSOR);
+	 *}
+	 */
 
 	void CellBase::handleNewLocation() {
 		FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",

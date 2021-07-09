@@ -95,6 +95,58 @@ namespace fpmas {
 			return job_list;
 		}
 
+	namespace detail {
+		/**
+		 * Utility class used to describe agents currently contained in the current
+		 * outgoing neighbors of an agent, on a given layer.
+		 */
+		class CurrentOutLayer {
+			private:
+				api::model::Agent* _agent;
+				fpmas::graph::LayerId layer_id;
+				std::set<DistributedId> current_layer_ids;
+
+			public:
+				/**
+				 * CurrentOutLayer constructor.
+				 *
+				 * @param agent root agent
+				 * @param layer_id id of the layer on which outgoing neighbors
+				 * of the agent are considered
+				 */
+				CurrentOutLayer(api::model::Agent* agent, fpmas::graph::LayerId layer_id)
+					: _agent(agent), layer_id(layer_id) {
+						for(auto edge : agent->node()->getOutgoingEdges(layer_id))
+							current_layer_ids.insert(edge->getTargetNode()->getId());
+					}
+
+				/**
+				 * Checks if the input agent is contained in the current
+				 * outgoing neighbors of the root agent on the current layer.
+				 *
+				 * @param agent agent to check
+				 * @return true iff the `agent` is contained in the outgoing
+				 * neighbors on the layer
+				 */
+				bool contains(fpmas::api::model::Agent* agent) {
+					return current_layer_ids.count(agent->node()->getId()) > 0;
+				}
+
+				/**
+				 * Builds a link from the root agent to the provided other
+				 * agent on the current layer.
+				 * This method allows to automatically update the
+				 * CurrentOutLayer, while directly calling the `link` operation
+				 * does not.
+				 *
+				 * @param other_agent agent to link
+				 */
+				void link(fpmas::api::model::Agent* other_agent) {
+					current_layer_ids.insert(other_agent->node()->getId());
+					_agent->model()->link(_agent, other_agent, layer_id);
+				}
+		};
+	}
 
 	/**
 	 * api::model::Cell implementation.
@@ -112,37 +164,35 @@ namespace fpmas {
 			void updateLocation(
 					api::model::Agent* agent, api::model::AgentEdge* new_location_edge
 					);
-			void growMobilityField(api::model::Agent* agent);
-			void growPerceptionField(api::model::Agent* agent);
 
 			/**
 			 * Checks if `agent` is currently in `group`.
 			 */
 			bool isAgentInGroup(api::model::Agent* agent, api::model::AgentGroup& group);
 
-			/*
-			 * Some profiling analysis show that the successors() method calls,
-			 * and more particularly the dynamic_casts that are involved, have
-			 * a significant performance cost.
-			 * The purpose of the following structures is to drastically reduce
-			 * the call to the successors() method, buffering the result only
-			 * when required.
-			 * This is safe, since the Cell network can't be modified during
-			 * the DistributedMoveAlgorithm execution.
-			 * The buffer is safely used by init(), handleNewLocation(),
-			 * handleMove() and handlePerceive(), but is not safe for a generic
-			 * use since new CELL_SUCCESSOR edges might be deleted or created
-			 * at any time, out of the DistributedMoveAlgorithm context.
-			 */
-			bool init_successors = false;
-			std::vector<api::model::Cell*> successors_buffer;
-			std::vector<api::model::AgentNode*> raw_successors_buffer;
-			const std::vector<api::model::Cell*>& bufferedSuccessors();
+		protected:
+			// The two following methods are virtual since their implementation
+			// require the CellType template parameter, not defined in this
+			// class. They are implemented in the Cell class below.
 
+			/**
+			 * Grows the current `agent`s mobility field, connecting it to
+			 * successors() on the NEW_MOVE layer if the agent is DISTANT, or
+			 * directly on the MOVE layer otherwise if the cell is not already in
+			 * the move layer and is contained in the agent mobility range.
+			 */
+			virtual void growMobilityField(api::model::Agent* agent) = 0;
+			/**
+			 * Grows the current `agent`s perception field, connecting it to
+			 * successors() on the NEW_PERCEIVE layer if the agent is DISTANT, or
+			 * directly on the PERCEIVE layer otherwise if the cell is not already in
+			 * the PERCEIVE layer and is contained in the agent perception range.
+			 */
+			virtual void growPerceptionField(api::model::Agent* agent) = 0;
+			
 		public:
 			std::vector<api::model::Cell*> successors() override;
 
-			void init() override;
 			void handleNewLocation() override;
 			void handleMove() override;
 			void handlePerceive() override;
@@ -159,9 +209,161 @@ namespace fpmas {
 	 * Cell implementation.
 	 */
 	template<typename CellType, typename TypeIdBase = CellType>
-	class Cell : public CellBase, public AgentBase<CellType, TypeIdBase> {
-	};
+		class Cell : public CellBase, public AgentBase<CellType, TypeIdBase> {
+			private:
+				/*
+				 * Some profiling analysis show that the successors() method calls,
+				 * and more particularly the dynamic_casts that are involved, have
+				 * a significant performance cost.
+				 * The purpose of the following structures is to drastically reduce
+				 * the call to the successors() method, buffering the result only
+				 * when required.
+				 * This is safe, since the Cell network can't be modified during
+				 * the DistributedMoveAlgorithm execution.
+				 * The buffer is safely used by init(), handleNewLocation(),
+				 * handleMove() and handlePerceive(), but is not safe for a generic
+				 * use since new CELL_SUCCESSOR edges might be deleted or created
+				 * at any time, out of the DistributedMoveAlgorithm context.
+				 */
+				std::vector<CellType*> successors_buffer;
+				std::vector<api::model::AgentEdge*> raw_successors_buffer;
+				const std::vector<CellType*>& bufferedSuccessors();
 
+
+			public:
+				/**
+				 * \copydoc fpmas::api::model::CellBehavior::init()
+				 */
+				void init() override;
+
+			private:
+				void growMobilityField(api::model::Agent* agent) override;
+				void growPerceptionField(api::model::Agent* agent) override;
+		};
+
+	template<typename CellType, typename TypeIdBase>
+		const std::vector<CellType*>& Cell<CellType, TypeIdBase>::bufferedSuccessors() {
+			return this->successors_buffer;
+		}
+
+	template<typename CellType, typename TypeIdBase>
+		void Cell<CellType, TypeIdBase>::init() {
+			bool init_successors;
+
+			// This has no performance impact
+			auto current_successors
+				= this->node()->getOutgoingEdges(SpatialModelLayers::CELL_SUCCESSOR);
+			// Checks if the currently buffered successors are stricly equal to the
+			// current_successors. In this case, there is no need to update the
+			// successors() list
+			if(current_successors.size() == 0 ||
+					current_successors.size() != raw_successors_buffer.size()) {
+				init_successors = false;
+			} else {
+				auto it = current_successors.begin();
+				auto raw_it = raw_successors_buffer.begin();
+				while(it != current_successors.end() && (*it) == *raw_it) {
+					it++;
+					raw_it++;
+				}
+				if(it == current_successors.end()) {
+					init_successors = true;
+				} else {
+					init_successors = false;
+				}
+			}
+
+			if(!init_successors) {
+				raw_successors_buffer = current_successors;
+				successors_buffer.resize(raw_successors_buffer.size());
+				for(std::size_t i = 0; i < raw_successors_buffer.size(); i++)
+					successors_buffer[i] = dynamic_cast<CellType*>(
+							raw_successors_buffer[i]->getTargetNode()->data().get()
+							);
+			}
+		}
+
+	template<typename CellType, typename TypeIdBase>
+		void Cell<CellType, TypeIdBase>::growMobilityField(api::model::Agent* agent) {
+			if(agent->node()->state() == api::graph::LOCAL) {
+				// There is no need to create a temporary NEW_MOVE
+				// link, since the mobilityRange() of the agent is
+				// directly available on the current process.
+				auto* spatial_agent
+					= dynamic_cast<api::model::SpatialAgent<CellType>*>(agent);
+
+				// Valid, since the agent is LOCAL
+				auto location = spatial_agent->locationCell();
+
+				fpmas::model::ReadGuard read_location(location);
+
+				// Cells currently in the move_layer
+				detail::CurrentOutLayer move_layer(agent, SpatialModelLayers::MOVE);
+				for(auto cell : this->bufferedSuccessors()) {
+					if(!move_layer.contains(cell)) {
+						// The cell as not already been linked in the
+						// MOVE layer
+						fpmas::model::ReadGuard read_cell(cell);
+						if(spatial_agent->mobilityRange().contains(
+									location,
+									cell
+									)) {
+							// The cell is contained in the agent
+							// mobility range: add it to its mobility
+							// field
+							move_layer.link(cell);
+							//this->model()->link(agent, cell, SpatialModelLayers::MOVE);
+						}
+					}
+				}
+			} else {
+				// In this case, the mobility range of the agent is not
+				// available on the current process, so a temporary
+				// NEW_MOVE edge must be created and handled later by
+				// the agent in the SpatialAgent::handleNewMove()
+				// method
+				for(auto cell : this->bufferedSuccessors())
+					this->model()->link(
+							agent,
+							cell,
+							SpatialModelLayers::NEW_MOVE
+							);
+			}
+		}
+
+	template<typename CellType, typename TypeIdBase>
+		void Cell<CellType, TypeIdBase>::growPerceptionField(api::model::Agent* agent) {
+			// Exactly the same process as growMobilityField().
+			if(agent->node()->state() == api::graph::LOCAL) {
+				auto* spatial_agent
+					= dynamic_cast<api::model::SpatialAgent<CellType>*>(agent);
+
+				auto location =  spatial_agent->locationCell();
+				fpmas::model::ReadGuard read_location(location);
+
+				detail::CurrentOutLayer perceive_layer(agent, SpatialModelLayers::PERCEIVE);
+				for(auto cell : this->bufferedSuccessors()) {
+					//api::model::Agent* cell = cell_edge->getTargetNode()->data();
+					if(!perceive_layer.contains(cell)) {
+						fpmas::model::ReadGuard read_cell(cell);
+						if(spatial_agent->perceptionRange().contains(
+									location,
+									cell
+									)) {
+							perceive_layer.link(cell);
+							//this->model()->link(agent, cell, SpatialModelLayers::PERCEIVE);
+						}
+					}
+				}
+			} else {
+				for(auto cell : this->bufferedSuccessors())
+					this->model()->link(
+							agent,
+							cell,
+							SpatialModelLayers::NEW_PERCEIVE
+							);
+			}
+		}
 	/**
 	 * api::model::SpatialModel implementation.
 	 *
@@ -246,7 +448,6 @@ namespace fpmas {
 			this->insert(id, group);
 			return *group;
 		}
-	
 	/**
 	 * api::model::SpatialAgent API implementation.
 	 *
@@ -302,29 +503,7 @@ namespace fpmas {
 			typedef SpatialAgentBase<AgentType, CellType, Derived> JsonBase;
 
 			private:
-				class CurrentOutLayer {
-					private:
-						SpatialAgentBase* _agent;
-						fpmas::graph::LayerId layer_id;
-						std::set<DistributedId> current_layer_ids;
-
-					public:
-						CurrentOutLayer(SpatialAgentBase* agent, fpmas::graph::LayerId layer_id)
-							: _agent(agent), layer_id(layer_id) {
-								auto layer = agent->node()->outNeighbors(layer_id);
-								for(auto node : layer)
-									current_layer_ids.insert(node->getId());
-							}
-
-						bool contains(fpmas::api::model::Agent* agent) {
-							return current_layer_ids.count(agent->node()->getId()) > 0;
-						}
-
-						void link(fpmas::api::model::Agent* cell) {
-							current_layer_ids.insert(cell->node()->getId());
-							_agent->model()->link(_agent, cell, layer_id);
-						}
-				};
+				
 			private:
 				DistributedId location_id;
 
@@ -489,7 +668,7 @@ namespace fpmas {
 	template<typename AgentType, typename CellType, typename Derived>
 		void SpatialAgentBase<AgentType, CellType, Derived>::handleNewMove() {
 
-			CurrentOutLayer move_layer(this, SpatialModelLayers::MOVE);
+			detail::CurrentOutLayer move_layer(this, SpatialModelLayers::MOVE);
 
 			auto location =  this->locationCell();
 			fpmas::model::ReadGuard read_location(location);
@@ -505,7 +684,7 @@ namespace fpmas {
 
 	template<typename AgentType, typename CellType, typename Derived>
 		void SpatialAgentBase<AgentType, CellType, Derived>::handleNewPerceive() {
-			CurrentOutLayer perceive_layer(this, SpatialModelLayers::PERCEIVE);
+			detail::CurrentOutLayer perceive_layer(this, SpatialModelLayers::PERCEIVE);
 
 			auto location =  this->locationCell();
 			fpmas::model::ReadGuard read_location(location);

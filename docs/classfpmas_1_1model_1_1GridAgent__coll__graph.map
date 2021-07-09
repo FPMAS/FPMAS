@@ -1,11 +1,11 @@
 <map id="fpmas::model::GridAgent&lt; AgentType, GridCellType, Derived &gt;" name="fpmas::model::GridAgent&lt; AgentType, GridCellType, Derived &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="1004,79,1187,135"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1GridAgent.html" title=" " alt="" coords="763,35,915,91"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1SpatialAgent.html" title=" " alt="" coords="477,71,645,127"/>
-<area shape="rect" id="node7" href="$classfpmas_1_1model_1_1SpatialAgentBase.html" title=" " alt="" coords="721,116,956,187"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="5,155,140,196"/>
-<area shape="rect" id="node8" href="$classfpmas_1_1model_1_1AgentBase.html" title=" " alt="" coords="448,151,673,237"/>
-<area shape="rect" id="node9" href="$classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="188,213,400,239"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1model_1_1SpatialAgentBehavior.html" title=" " alt="" coords="221,96,367,137"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1model_1_1GridAgentBase.html" title=" " alt="" coords="493,5,628,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="961,63,1144,119"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1GridAgent.html" title=" " alt="" coords="720,19,872,75"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1SpatialAgent.html" title=" " alt="" coords="454,71,625,112"/>
+<area shape="rect" id="node7" href="$classfpmas_1_1model_1_1SpatialAgentBase.html" title=" " alt="" coords="679,100,913,171"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="5,132,140,173"/>
+<area shape="rect" id="node8" href="$classfpmas_1_1model_1_1AgentBase.html" title=" " alt="" coords="448,136,631,177"/>
+<area shape="rect" id="node9" href="$classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="188,190,400,217"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1model_1_1SpatialAgentBehavior.html" title=" " alt="" coords="221,73,367,115"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1model_1_1GridAgentBase.html" title=" " alt="" coords="472,5,607,47"/>
 </map>

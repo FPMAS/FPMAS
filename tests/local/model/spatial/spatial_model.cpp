@@ -70,6 +70,21 @@ class CellBaseTest : public Test {
 		}
 };
 
+/**
+ * IMPORTANT NOTE
+ *
+ * The growMobilityField and growPerceptionField methods are not tested here,
+ * but their integration are directly tested in
+ * tests/mpi/model/spatial/spatial_model.cpp
+ *
+ * Optimization of those methods actually revealed that local unit tests were
+ * too constrained: it is more efficient to directly test the
+ * DistributedMoveAlgorithm integration.
+ *
+ * The same consideration might soon be applied to handleNewLocation,
+ * handleMove and handlePerceive, since those tests are not really relevant,
+ * for the same reasons.
+ */
 TEST_F(CellBaseTest, handle_new_location) {
 	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::NEW_LOCATION))
 		.WillByDefault(Return(
@@ -84,19 +99,9 @@ TEST_F(CellBaseTest, handle_new_location) {
 				mock_spatial_agent, &mock_cell, SpatialModelLayers::LOCATION));
 	EXPECT_CALL(mock_model, unlink(&agent_edge));
 
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_MOVE));
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_MOVE));
+	EXPECT_CALL(mock_cell, growMobilityField);
+	EXPECT_CALL(mock_cell, growPerceptionField);
 
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_PERCEIVE)
-			);
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
-			);
-
-	mock_cell.init();
 	mock_cell.handleNewLocation();
 }
 
@@ -106,18 +111,13 @@ TEST_F(CellBaseTest, handle_move) {
 	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::MOVE))
 		.WillByDefault(Return(std::vector<AgentNode*>({&agent_node})));
 
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_MOVE));
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_MOVE));
-	mock_cell.init();
+	EXPECT_CALL(mock_cell, growMobilityField);
 	mock_cell.handleMove();
 
 	// Should do nothing when called again, since the node is already
 	// explored
 	EXPECT_CALL(mock_model, link).Times(0);
 
-	mock_cell.init();
 	mock_cell.handleMove();
 }
 
@@ -127,20 +127,13 @@ TEST_F(CellBaseTest, handle_perceive) {
 	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::PERCEIVE))
 		.WillByDefault(Return(std::vector<AgentNode*>({&agent_node})));
 
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_1, SpatialModelLayers::NEW_PERCEIVE)
-			);
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, cell_neighbor_2, SpatialModelLayers::NEW_PERCEIVE)
-			);
-	mock_cell.init();
+	EXPECT_CALL(mock_cell, growPerceptionField);
 	mock_cell.handlePerceive();
 
 	// Should do nothing when called again, since the node is already
 	// explored
 	EXPECT_CALL(mock_model, link).Times(0);
 
-	mock_cell.init();
 	mock_cell.handlePerceive();
 }
 
