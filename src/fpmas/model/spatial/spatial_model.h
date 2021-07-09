@@ -104,7 +104,7 @@ namespace fpmas {
 			private:
 				api::model::Agent* _agent;
 				fpmas::graph::LayerId layer_id;
-				std::set<DistributedId> current_layer_ids;
+				std::vector<DistributedId> current_layer_ids;
 
 			public:
 				/**
@@ -116,8 +116,11 @@ namespace fpmas {
 				 */
 				CurrentOutLayer(api::model::Agent* agent, fpmas::graph::LayerId layer_id)
 					: _agent(agent), layer_id(layer_id) {
-						for(auto edge : agent->node()->getOutgoingEdges(layer_id))
-							current_layer_ids.insert(edge->getTargetNode()->getId());
+						auto edges = agent->node()->getOutgoingEdges(layer_id);
+						current_layer_ids.resize(edges.size());
+
+						for(std::size_t i = 0; i < edges.size(); i++)
+							current_layer_ids[i] = edges[i]->getTargetNode()->getId();
 					}
 
 				/**
@@ -129,7 +132,12 @@ namespace fpmas {
 				 * neighbors on the layer
 				 */
 				bool contains(fpmas::api::model::Agent* agent) {
-					return current_layer_ids.count(agent->node()->getId()) > 0;
+					return std::find(
+							current_layer_ids.begin(),
+							current_layer_ids.end(),
+							agent->node()->getId()
+							) != current_layer_ids.end();
+					//return current_layer_ids.count(agent->node()->getId()) > 0;
 				}
 
 				/**
@@ -142,7 +150,7 @@ namespace fpmas {
 				 * @param other_agent agent to link
 				 */
 				void link(fpmas::api::model::Agent* other_agent) {
-					current_layer_ids.insert(other_agent->node()->getId());
+					current_layer_ids.push_back(other_agent->node()->getId());
 					_agent->model()->link(_agent, other_agent, layer_id);
 				}
 		};
@@ -312,7 +320,6 @@ namespace fpmas {
 							// mobility range: add it to its mobility
 							// field
 							move_layer.link(cell);
-							//this->model()->link(agent, cell, SpatialModelLayers::MOVE);
 						}
 					}
 				}
@@ -343,7 +350,6 @@ namespace fpmas {
 
 				detail::CurrentOutLayer perceive_layer(agent, SpatialModelLayers::PERCEIVE);
 				for(auto cell : this->bufferedSuccessors()) {
-					//api::model::Agent* cell = cell_edge->getTargetNode()->data();
 					if(!perceive_layer.contains(cell)) {
 						fpmas::model::ReadGuard read_cell(cell);
 						if(spatial_agent->perceptionRange().contains(
@@ -351,7 +357,6 @@ namespace fpmas {
 									cell
 									)) {
 							perceive_layer.link(cell);
-							//this->model()->link(agent, cell, SpatialModelLayers::PERCEIVE);
 						}
 					}
 				}
@@ -503,8 +508,7 @@ namespace fpmas {
 			typedef SpatialAgentBase<AgentType, CellType, Derived> JsonBase;
 
 			private:
-				
-			private:
+				mutable CellType* location_cell_buffer = nullptr;
 				DistributedId location_id;
 
 				// Use pointers, since each instance (probably) belongs to the
@@ -629,21 +633,20 @@ namespace fpmas {
 			this->model()->link(this, cell, SpatialModelLayers::NEW_LOCATION);
 
 			// Unlinks obsolete location
-			auto location = this->template outNeighbors<api::model::Cell>(
-					SpatialModelLayers::LOCATION);
-			if(location.count() > 0)
-				this->model()->unlink(location.at(0).edge());
+			auto location = this->node()->getOutgoingEdges(SpatialModelLayers::LOCATION);
+			if(location.size() > 0)
+				this->model()->unlink(location[0]);
 
 			// Unlinks obsolete mobility field
-			for(auto _cell : this->template outNeighbors<api::model::Cell>(
-						SpatialModelLayers::MOVE)) {
-				this->model()->unlink(_cell.edge());
+			for(auto cell_edge :
+					this->node()->getOutgoingEdges(SpatialModelLayers::MOVE)) {
+				this->model()->unlink(cell_edge);
 			}
 
 			// Unlinks obsolete perception field
-			for(auto agent : this->template outNeighbors<api::model::Cell>(
-						SpatialModelLayers::PERCEIVE))
-				this->model()->unlink(agent.edge());
+			for(auto cell_edge
+					: this->node()->getOutgoingEdges(SpatialModelLayers::PERCEIVE))
+				this->model()->unlink(cell_edge);
 
 
 			// Adds the NEW_LOCATION to the mobility/perceptions fields
@@ -654,15 +657,30 @@ namespace fpmas {
 				this->model()->link(this, cell, SpatialModelLayers::PERCEIVE);
 
 			this->location_id = cell->node()->getId();
+			this->location_cell_buffer = cell;
 		}
 
 	template<typename AgentType, typename CellType, typename Derived>
 		CellType* SpatialAgentBase<AgentType, CellType, Derived>::locationCell() const {
-			auto location = this->template outNeighbors<CellType>(
-					SpatialModelLayers::LOCATION);
-			if(location.count() > 0)
-				return location.at(0);
-			return nullptr;
+			if(location_cell_buffer != nullptr) {
+				return location_cell_buffer;
+			} else {
+				auto edges = this->node()->getOutgoingEdges(SpatialModelLayers::LOCATION);
+				if(!edges.empty())
+					location_cell_buffer = dynamic_cast<CellType*>(
+							edges[0]->getTargetNode()->data().get()
+							);
+				else
+					location_cell_buffer = nullptr;
+			}
+			/*
+			 *auto location = this->template outNeighbors<CellType>(
+			 *        SpatialModelLayers::LOCATION);
+			 *if(location.count() > 0)
+			 *    return location.at(0);
+			 *return nullptr;
+			 */
+			return location_cell_buffer;
 		}
 
 	template<typename AgentType, typename CellType, typename Derived>
