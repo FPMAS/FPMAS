@@ -15,6 +15,11 @@ namespace fpmas {
 	using api::model::DistributedId;
 
 	/**
+	 * Checks if `agent` is currently in `group`.
+	 */
+	bool is_agent_in_group(api::model::Agent* agent, api::model::AgentGroup& group);
+
+	/**
 	 * FPMAS reserved api::model::GroupId used by Cell groups.
 	 */
 	static const api::model::GroupId CELL_GROUP_ID = -1;
@@ -173,10 +178,6 @@ namespace fpmas {
 					api::model::Agent* agent, api::model::AgentEdge* new_location_edge
 					);
 
-			/**
-			 * Checks if `agent` is currently in `group`.
-			 */
-			bool isAgentInGroup(api::model::Agent* agent, api::model::AgentGroup& group);
 
 		protected:
 			// The two following methods are virtual since their implementation
@@ -647,6 +648,11 @@ namespace fpmas {
 			for(auto cell_edge
 					: this->node()->getOutgoingEdges(SpatialModelLayers::PERCEIVE))
 				this->model()->unlink(cell_edge);
+
+			// Unlinks obsolete perceptions
+			for(auto perception
+					: this->node()->getOutgoingEdges(fpmas::api::model::PERCEPTION))
+				this->model()->unlink(perception);
 
 
 			// Adds the NEW_LOCATION to the mobility/perceptions fields

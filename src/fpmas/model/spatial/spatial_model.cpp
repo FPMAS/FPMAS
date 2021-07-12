@@ -3,6 +3,13 @@
 
 
 namespace fpmas { namespace model {
+
+	bool is_agent_in_group(api::model::Agent* agent, api::model::AgentGroup& group) {
+		std::vector<fpmas::api::model::GroupId> group_ids = agent->groupIds();
+		auto result = std::find(group_ids.begin(), group_ids.end(), group.groupId());
+		return result != group_ids.end();
+	}
+
 	std::vector<api::model::Cell*> CellBase::successors() {
 		auto neighbors = this->outNeighbors<api::model::Cell>(SpatialModelLayers::CELL_SUCCESSOR);
 		return {neighbors.begin(), neighbors.end()};
@@ -28,12 +35,6 @@ namespace fpmas { namespace model {
 			this->model()->link(agent, this, SpatialModelLayers::LOCATION);
 			this->model()->unlink(new_location_edge);
 		}
-	}
-
-	bool CellBase::isAgentInGroup(api::model::Agent* agent, api::model::AgentGroup& group) {
-		std::vector<fpmas::api::model::GroupId> group_ids = agent->groupIds();
-		auto result = std::find(group_ids.begin(), group_ids.end(), group.groupId());
-		return result != group_ids.end();
 	}
 	 
 	void CellBase::handleNewLocation() {
@@ -87,8 +88,8 @@ namespace fpmas { namespace model {
 		for(auto agent : this->node()->inNeighbors(SpatialModelLayers::PERCEIVE)) {
 			for(auto perceived_agent : perceived_agents)
 				if(
-						isAgentInGroup(agent->data(), group) ||
-						isAgentInGroup(perceived_agent->data(), group)
+						is_agent_in_group(agent->data(), group) ||
+						is_agent_in_group(perceived_agent->data(), group)
 						)
 					if(perceived_agent->getId() != agent->getId())
 						this->model()->link(

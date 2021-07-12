@@ -136,7 +136,8 @@ namespace fpmas { namespace api { namespace model {
 				 */
 				virtual bool contains(CellType* root, CellType* cell) const = 0;
 
-				/** Returns the radius of this range, i.e. a value greater or
+				/**
+				 * Returns the radius of this range, i.e. a value greater or
 				 * equal to the maximum shortest path length between `origin`
 				 * and any cell contained in this range, considering `origin`
 				 * as the location of the object to which this range is

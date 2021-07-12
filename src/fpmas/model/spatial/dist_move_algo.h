@@ -204,17 +204,9 @@ namespace fpmas { namespace model {
 
 			std::vector<SpatialAgent<CellType>*> agents;
 			for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
-				// First, unlinks obsolete perceptions of agents to which the
-				// algorithm is applied
-				for(auto perception : agent->node()->getOutgoingEdges(fpmas::api::model::PERCEPTION))
-					dist_move_algo.model.graph().unlink(perception);
-
-				agents.push_back(
+								agents.push_back(
 						dynamic_cast<SpatialAgent<CellType>*>(agent));
 			}
-			// Commits previously unlinked edges
-			dist_move_algo.model.graph()
-				.synchronizationMode().getSyncLinker().synchronize();
 
 			// Agents to which the algorithm is NOT applied might still
 			// perceive moving agent: those perceptions are also obsolete, but
