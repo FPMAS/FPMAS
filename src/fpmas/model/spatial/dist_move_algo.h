@@ -204,14 +204,19 @@ namespace fpmas { namespace model {
 
 			std::vector<SpatialAgent<CellType>*> agents;
 			for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
-								agents.push_back(
-						dynamic_cast<SpatialAgent<CellType>*>(agent));
+				// The algorithm is only applied to agents that updated their
+				// location since the last DistributedMoveAlgorithm execution
+				if(agent->node()->getOutgoingEdges(
+							api::model::SpatialModelLayers::NEW_LOCATION).size() > 0)
+					agents.push_back(
+							dynamic_cast<SpatialAgent<CellType>*>(agent));
 			}
 
 			// Agents to which the algorithm is NOT applied might still
-			// perceive moving agent: those perceptions are also obsolete, but
-			// might not have been removed in the perception above.
-			for(auto agent : dist_move_algo.move_agent_group.localAgents()) {
+			// perceive moving agent: those perceptions are obsolete, but
+			// might not have been removed in the
+			// SpatialAgent::updateLocation() method.
+			for(auto agent : agents) {
 				for(auto perceiver : agent->node()->getIncomingEdges(fpmas::api::model::PERCEPTION)) {
 					dist_move_algo.model.graph().unlink(perceiver);
 				}
@@ -226,9 +231,6 @@ namespace fpmas { namespace model {
 				// Initializes all cells
 				cells.back()->init();
 			}
-			
-			for(auto cell : cells)
-				cell->init();
 
 			// Initializes the generic end condition
 			dist_move_algo.end.init(

@@ -171,15 +171,16 @@ namespace fpmas {
 	 */
 	class CellBase : public virtual api::model::Cell, public NeighborsAccess {
 		private:
-			std::set<DistributedId> move_flags;
-			std::set<DistributedId> perception_flags;
-
 			void updateLocation(
 					api::model::Agent* agent, api::model::AgentEdge* new_location_edge
 					);
 
 
 		protected:
+			std::set<DistributedId> no_move_flags;
+			std::set<DistributedId> move_flags;
+			std::set<DistributedId> perception_flags;
+
 			// The two following methods are virtual since their implementation
 			// require the CellType template parameter, not defined in this
 			// class. They are implemented in the Cell class below.
@@ -289,6 +290,32 @@ namespace fpmas {
 					successors_buffer[i] = dynamic_cast<CellType*>(
 							raw_successors_buffer[i]->getTargetNode()->data().get()
 							);
+			}
+
+			std::set<DistributedId> new_location_layer;
+			for(auto agent_edge
+					: this->node()->getIncomingEdges(SpatialModelLayers::NEW_LOCATION))
+				new_location_layer.insert(agent_edge->getSourceNode()->getId());
+
+			// The location of agents that are still linked on the MOVE /
+			// PERCEIVE layer has not been updated, since those layers are
+			// unlinked by SpatialAgent::updateLocation(), unless the current
+			// cell is actually their NEW_LOCATION.
+			for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::MOVE)) {
+				//this->move_flags.insert(agent_edge->getSourceNode()->getId());
+				if(new_location_layer.count(agent_edge->getSourceNode()->getId())==0)
+					this->no_move_flags.insert(agent_edge->getSourceNode()->getId());
+			}
+			for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::PERCEIVE)) {
+				if(new_location_layer.count(agent_edge->getSourceNode()->getId())==0)
+					this->no_move_flags.insert(agent_edge->getSourceNode()->getId());
+				//this->perception_flags.insert(agent_edge->getSourceNode()->getId());
+			}
+			// All agents already linked on the LOCATION layer didn't update
+			// their location, since LOCATION links are unlinked by
+			// SpatialAgent::updateLocation().
+			for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::LOCATION)) {
+				this->no_move_flags.insert(agent_edge->getSourceNode()->getId());
 			}
 		}
 

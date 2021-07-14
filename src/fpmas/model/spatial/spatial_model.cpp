@@ -58,8 +58,14 @@ namespace fpmas { namespace model {
 	}
 
 	void CellBase::handleMove() {
-		for(auto agent : this->node()->inNeighbors(SpatialModelLayers::MOVE)) {
-			if(move_flags.count(agent->getId()) == 0) {
+		for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::MOVE)) {
+			auto agent = agent_edge->getSourceNode();
+			if(
+					// The agent updated its location since the last
+					// DistributedMoveAlgorithm execution
+					no_move_flags.count(agent->getId()) == 0 &&
+					// The current cell was not explored yet
+					move_flags.count(agent->getId()) == 0) {
 				growMobilityField(agent->data());
 				move_flags.insert(agent->getId());
 			}
@@ -67,8 +73,14 @@ namespace fpmas { namespace model {
 	}
 
 	void CellBase::handlePerceive() {
-		for(auto agent : this->node()->inNeighbors(SpatialModelLayers::PERCEIVE)) {
-			if(perception_flags.count(agent->getId()) == 0) {
+		for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::PERCEIVE)) {
+			auto agent = agent_edge->getSourceNode();
+			if(
+					// The agent updated its location since the last
+					// DistributedMoveAlgorithm execution
+					no_move_flags.count(agent->getId()) == 0 &&
+					// The current cell was not explored yet
+					perception_flags.count(agent->getId()) == 0) {
 				growPerceptionField(agent->data());
 				perception_flags.insert(agent->getId());
 			}
@@ -84,19 +96,22 @@ namespace fpmas { namespace model {
 		perception_flags.clear();
 		std::vector<api::model::AgentNode*> perceived_agents =
 			this->node()->inNeighbors(SpatialModelLayers::LOCATION);
-
 		for(auto agent : this->node()->inNeighbors(SpatialModelLayers::PERCEIVE)) {
 			for(auto perceived_agent : perceived_agents)
+				// Perceptions need to be updated only if either the perceivee
+				// or the perceiver location has been updated since the last
+				// DistributedMoveAlgorithm execution
 				if(
-						is_agent_in_group(agent->data(), group) ||
-						is_agent_in_group(perceived_agent->data(), group)
+						this->no_move_flags.count(agent->getId()) == 0 ||
+						this->no_move_flags.count(perceived_agent->getId()) == 0
 						)
 					if(perceived_agent->getId() != agent->getId())
-						this->model()->link(
-								agent->data(), perceived_agent->data(),
+						this->model()->graph().link(
+								agent, perceived_agent,
 								SpatialModelLayers::PERCEPTION
 								);
 		}
+		no_move_flags.clear();
 	}
 
 	UniformAgentMapping::UniformAgentMapping(
