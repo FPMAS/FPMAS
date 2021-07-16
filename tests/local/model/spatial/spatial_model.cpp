@@ -118,6 +118,12 @@ TEST_F(CellBaseTest, handle_perceive) {
 }
 
 TEST_F(CellBaseTest, update_perceptions) {
+	MockAgentGraph<> mock_graph;
+	ON_CALL(mock_model, graph())
+		.WillByDefault(ReturnRef(mock_graph));
+	EXPECT_CALL(mock_model, graph())
+		.Times(AnyNumber());
+
 	DistributedId perceived_id {5, 2};
 	MockSpatialAgent<DefaultCell, NiceMock>* perceived_agent
 		= new MockSpatialAgent<DefaultCell, NiceMock>;
@@ -154,8 +160,8 @@ TEST_F(CellBaseTest, update_perceptions) {
 						)));
 
 
-	EXPECT_CALL(mock_model, link(
-				mock_spatial_agent, perceived_agent, SpatialModelLayers::PERCEPTION));
+	EXPECT_CALL(mock_graph, link(
+				&agent_node, &perceived_agent_node, SpatialModelLayers::PERCEPTION));
 
 	mock_cell.updatePerceptions(mock_group);
 }
