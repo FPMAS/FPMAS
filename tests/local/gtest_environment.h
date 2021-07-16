@@ -7,19 +7,22 @@
 
 namespace model { namespace test {
 	template<typename AgentType>
-	class SpatialAgentBase : public fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell> {
-		public:
-			testing::NiceMock<MockRange<fpmas::api::model::Cell>> mobility_range;
-			testing::NiceMock<MockRange<fpmas::api::model::Cell>> perception_range;
+		class SpatialAgentBase : public fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell> {
+			public:
+				testing::NiceMock<MockRange<fpmas::api::model::Cell>> mobility_range;
+				testing::NiceMock<MockRange<fpmas::api::model::Cell>> perception_range;
 
-			SpatialAgentBase() : fpmas::model::SpatialAgent<AgentType, fpmas::api::model::Cell>(mobility_range, perception_range) {}
-			SpatialAgentBase(const SpatialAgentBase&)
-				: SpatialAgentBase() {}
-			SpatialAgentBase(SpatialAgentBase&&)
-				: SpatialAgentBase() {}
-			SpatialAgentBase& operator=(const SpatialAgentBase&) {return *this;}
-			SpatialAgentBase& operator=(SpatialAgentBase&&) {return *this;}
-	};
+				SpatialAgentBase() {}
+				SpatialAgentBase(const SpatialAgentBase&)
+					: SpatialAgentBase() {}
+				SpatialAgentBase(SpatialAgentBase&&)
+					: SpatialAgentBase() {}
+				SpatialAgentBase& operator=(const SpatialAgentBase&) {return *this;}
+				SpatialAgentBase& operator=(SpatialAgentBase&&) {return *this;}
+
+				FPMAS_MOBILITY_RANGE(mobility_range);
+				FPMAS_PERCEPTION_RANGE(perception_range);
+		};
 
 	class SpatialAgent : public SpatialAgentBase<SpatialAgent> {};
 
@@ -44,8 +47,8 @@ namespace model { namespace test {
 				static MockRange<fpmas::api::model::GridCell>* mobility_range;
 				static MockRange<fpmas::api::model::GridCell>* perception_range;
 
-				GridAgentBase() : fpmas::model::GridAgent<GridAgentType>(
-						*mobility_range, *perception_range) {}
+				FPMAS_MOBILITY_RANGE(*mobility_range);
+				FPMAS_PERCEPTION_RANGE(*perception_range);
 		};
 
 	template<typename GridAgentType>

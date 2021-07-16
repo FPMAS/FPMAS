@@ -375,7 +375,7 @@ namespace fpmas { namespace graph {
 		template<DIST_GRAPH_PARAMS>
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::switchLayer(
 					EdgeType* edge, api::graph::LayerId layer_id) {
-				assert(edge->state() == api::graph::DISTANT);
+				assert(edge->state() == api::graph::LOCAL);
 
 				edge->getSourceNode()->unlinkOut(edge);
 				edge->getTargetNode()->unlinkIn(edge);

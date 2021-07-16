@@ -481,16 +481,16 @@ class FakeSpatialAgent : public fpmas::model::SpatialAgent<FakeSpatialAgent, fpm
 		NiceMock<MockRange<fpmas::model::GraphCell>> range;
 
 	public:
-		FakeSpatialAgent()
-			: fpmas::model::SpatialAgent<FakeSpatialAgent, fpmas::model::GraphCell>(
-					range, range
-					) {}
+		FakeSpatialAgent() {}
 		FakeSpatialAgent(const FakeSpatialAgent&)
 			: FakeSpatialAgent() {}
 		FakeSpatialAgent(FakeSpatialAgent&&)
 			: FakeSpatialAgent() {}
 		FakeSpatialAgent& operator=(const FakeSpatialAgent&) {return *this;}
 		FakeSpatialAgent& operator=(FakeSpatialAgent&&) {return *this;}
+
+		FPMAS_MOBILITY_RANGE(range);
+		FPMAS_PERCEPTION_RANGE(range);
 };
 
 TEST(UniformAgentMappingTest, build) {

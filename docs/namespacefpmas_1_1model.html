@@ -69,7 +69,8 @@ $(function() {
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">fpmas::model Namespace Reference</div>  </div>
 </div><!--header-->
@@ -239,6 +240,11 @@ Typedefs</h2></td></tr>
 <tr class="memitem:abd91eeccf31a7fd158f4e4bca7ce9d0d"><td class="memTemplParams" colspan="2">template&lt;typename GridConfig &gt; </td></tr>
 <tr class="memitem:abd91eeccf31a7fd158f4e4bca7ce9d0d"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#abd91eeccf31a7fd158f4e4bca7ce9d0d">VonNeumannRange</a> = <a class="el" href="classfpmas_1_1model_1_1GridRange.html">GridRange</a>&lt; <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a>, <a class="el" href="namespacefpmas_1_1model.html#af36960684bc9aa760d6c845f4320d451">VonNeumannRangeConfig</a>&lt; <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> &gt; &gt;</td></tr>
 <tr class="separator:abd91eeccf31a7fd158f4e4bca7ce9d0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a3e3a5b8ed49aaacfb850b4de5d0074ac"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a3e3a5b8ed49aaacfb850b4de5d0074ac">is_agent_in_group</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *agent, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> &amp;group)</td></tr>
+<tr class="separator:a3e3a5b8ed49aaacfb850b4de5d0074ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="namespacefpmas_1_1api_1_1model.html">fpmas::api::model</a> implementations. </p>
@@ -495,6 +501,36 @@ template&lt;typename GridConfig &gt; </div>
 <a class="el" href="namespacefpmas_1_1model.html#a17376db8bc0f38123bd38394b9603714">MooreRange</a> </dd>
 <dd>
 <a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a3e3a5b8ed49aaacfb850b4de5d0074ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e3a5b8ed49aaacfb850b4de5d0074ac">&#9670;&nbsp;</a></span>is_agent_in_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool fpmas::model::is_agent_in_group </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *&#160;</td>
+          <td class="paramname"><em>agent</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> &amp;&#160;</td>
+          <td class="paramname"><em>group</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Checks if <code>agent</code> is currently in <code>group</code>. </p>
 
 </div>
 </div>

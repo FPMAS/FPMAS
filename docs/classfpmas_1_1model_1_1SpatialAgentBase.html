@@ -123,10 +123,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4210fa6392f62bcdb327fba980095070"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58aac637cb24e6722024bd5208efa998"><td class="memItemLeft" align="right" valign="top">CellType *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">locationCell</a> () const override</td></tr>
 <tr class="separator:a58aac637cb24e6722024bd5208efa998"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abfd681d02357c416b4eda2be4101377e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">api::model::Range</a>&lt; CellType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#abfd681d02357c416b4eda2be4101377e">mobilityRange</a> () const override</td></tr>
-<tr class="separator:abfd681d02357c416b4eda2be4101377e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa114a59eacb17ca4f24bf465acd58a27"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">api::model::Range</a>&lt; CellType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#aa114a59eacb17ca4f24bf465acd58a27">perceptionRange</a> () const override</td></tr>
-<tr class="separator:aa114a59eacb17ca4f24bf465acd58a27"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">fpmas::api::model::SpatialAgent&lt; CellType &gt;</a></td></tr>
+<tr class="memitem:af0b5c8d4f351c9d1ca22247db4ba7911 inherit pub_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a>&lt; CellType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#af0b5c8d4f351c9d1ca22247db4ba7911">mobilityRange</a> () const =0</td></tr>
+<tr class="separator:af0b5c8d4f351c9d1ca22247db4ba7911 inherit pub_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1544209c531ed943b5e2cba0eb87736d inherit pub_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memItemLeft" align="right" valign="top">virtual const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a>&lt; CellType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1544209c531ed943b5e2cba0eb87736d">perceptionRange</a> () const =0</td></tr>
+<tr class="separator:a1544209c531ed943b5e2cba0eb87736d inherit pub_methods_classfpmas_1_1api_1_1model_1_1SpatialAgent"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classfpmas_1_1model_1_1AgentBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1model_1_1AgentBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1model_1_1AgentBase.html">fpmas::model::AgentBase&lt; AgentType, SpatialAgentBase&lt; AgentType, CellType, AgentType &gt; &gt;</a></td></tr>
 <tr class="memitem:a5b2b0173ee2d5283f1fd52a2bb75cbec inherit pub_methods_classfpmas_1_1model_1_1AgentBase"><td class="memItemLeft" align="right" valign="top">GroupId&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1AgentBase.html#a5b2b0173ee2d5283f1fd52a2bb75cbec">groupId</a> () const override</td></tr>
 <tr class="separator:a5b2b0173ee2d5283f1fd52a2bb75cbec inherit pub_methods_classfpmas_1_1model_1_1AgentBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -204,8 +205,6 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a64471d5cb6df79793703597081ad85ea"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a64471d5cb6df79793703597081ad85ea">SpatialAgentBase</a> (const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">api::model::Range</a>&lt; CellType &gt; &amp;mobility_range, const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">api::model::Range</a>&lt; CellType &gt; &amp;perception_range)</td></tr>
-<tr class="separator:a64471d5cb6df79793703597081ad85ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15eb737af355d5be560b078207fb0d09"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a15eb737af355d5be560b078207fb0d09">updateLocation</a> (CellType *cell)</td></tr>
 <tr class="separator:a15eb737af355d5be560b078207fb0d09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a374d952610f6e20d06fad158f7779412"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a374d952610f6e20d06fad158f7779412">handleNewMove</a> () override</td></tr>
@@ -284,58 +283,6 @@ template&lt;typename AgentType , typename CellType , typename Derived  = AgentTy
 
 </div>
 </div>
-<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a64471d5cb6df79793703597081ad85ea"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64471d5cb6df79793703597081ad85ea">&#9670;&nbsp;</a></span>SpatialAgentBase()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename AgentType , typename CellType , typename Derived  = AgentType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">fpmas::model::SpatialAgentBase</a>&lt; AgentType, CellType, Derived &gt;::<a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">SpatialAgentBase</a> </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">api::model::Range</a>&lt; CellType &gt; &amp;&#160;</td>
-          <td class="paramname"><em>mobility_range</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">api::model::Range</a>&lt; CellType &gt; &amp;&#160;</td>
-          <td class="paramname"><em>perception_range</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">SpatialAgentBase</a> constructor.</p>
-<p>Typically, the specified member might initialized:</p><ul>
-<li>as static variables</li>
-<li>as members of the derived <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">SpatialAgentBase</a></li>
-</ul>
-<p>In any case, their storage durations must exceed the one this <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">SpatialAgentBase</a>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">mobility_range</td><td>mobility range </td></tr>
-    <tr><td class="paramname">perception_range</td><td>perception range </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a15eb737af355d5be560b078207fb0d09"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a15eb737af355d5be560b078207fb0d09">&#9670;&nbsp;</a></span>updateLocation()</h2>
@@ -404,7 +351,7 @@ template&lt;typename AgentType , typename CellType , typename Derived &gt; </div
 <p>Handles links on the NEW_MOVE layer.</p>
 <p>Crops the current mobility field according to the current mobility range of the agent.</p>
 <p>For each outgoing edge on the NEW_MOVE layer:</p><ul>
-<li>if <code>agent-&gt;<a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#abfd681d02357c416b4eda2be4101377e">mobilityRange()</a>.contains(agent-&gt;<a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">locationCell()</a>, edge-&gt;getTargetNode())</code>, edge is replaced by an edge on the MOVE layer.</li>
+<li>if <code>agent-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#af0b5c8d4f351c9d1ca22247db4ba7911">mobilityRange()</a>.contains(agent-&gt;<a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">locationCell()</a>, edge-&gt;getTargetNode())</code>, edge is replaced by an edge on the MOVE layer.</li>
 <li>else, the edge is just unlinked. </li>
 </ul>
 
@@ -438,7 +385,7 @@ template&lt;typename AgentType , typename CellType , typename Derived &gt; </div
 <p>Handles links on the NEW_PERCEIVE layer.</p>
 <p>Crops the current perception field according to the current perception range of the agent.</p>
 <p>For each outgoing edge on the NEW_PERCEIVE layer:</p><ul>
-<li>if <code>agent-&gt;<a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#aa114a59eacb17ca4f24bf465acd58a27">perceptionRange()</a>.contains(agent-&gt;<a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">locationCell()</a>, edge-&gt;getTargetNode())</code>, edge is replaced by an edge on the PERCEIVE layer.</li>
+<li>if <code>agent-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1544209c531ed943b5e2cba0eb87736d">perceptionRange()</a>.contains(agent-&gt;<a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a58aac637cb24e6722024bd5208efa998">locationCell()</a>, edge-&gt;getTargetNode())</code>, edge is replaced by an edge on the PERCEIVE layer.</li>
 <li>else, the edge is just unlinked. </li>
 </ul>
 
@@ -666,72 +613,6 @@ template&lt;typename AgentType , typename CellType , typename Derived &gt; </div
 <dl class="section return"><dt>Returns</dt><dd>current location </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a710835cc3b3e28dfebaa834003b4363d">fpmas::api::model::SpatialAgent&lt; CellType &gt;</a>.</p>
-
-</div>
-</div>
-<a id="abfd681d02357c416b4eda2be4101377e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abfd681d02357c416b4eda2be4101377e">&#9670;&nbsp;</a></span>mobilityRange()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename AgentType , typename CellType , typename Derived  = AgentType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">api::model::Range</a>&lt;CellType&gt;&amp; <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">fpmas::model::SpatialAgentBase</a>&lt; AgentType, CellType, Derived &gt;::mobilityRange </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p></p>
-<p>Returns the current mobility range of this <a class="el" href="classfpmas_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</p>
-<dl class="section return"><dt>Returns</dt><dd>mobility range </dd></dl>
-
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#af0b5c8d4f351c9d1ca22247db4ba7911">fpmas::api::model::SpatialAgent&lt; CellType &gt;</a>.</p>
-
-</div>
-</div>
-<a id="aa114a59eacb17ca4f24bf465acd58a27"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa114a59eacb17ca4f24bf465acd58a27">&#9670;&nbsp;</a></span>perceptionRange()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename AgentType , typename CellType , typename Derived  = AgentType&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">api::model::Range</a>&lt;CellType&gt;&amp; <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">fpmas::model::SpatialAgentBase</a>&lt; AgentType, CellType, Derived &gt;::perceptionRange </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p></p>
-<p>Returns the current perception range of this <a class="el" href="classfpmas_1_1model_1_1SpatialAgent.html">SpatialAgent</a>.</p>
-<dl class="section return"><dt>Returns</dt><dd>perception range </dd></dl>
-
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1544209c531ed943b5e2cba0eb87736d">fpmas::api::model::SpatialAgent&lt; CellType &gt;</a>.</p>
 
 </div>
 </div>

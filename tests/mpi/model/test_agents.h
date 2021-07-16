@@ -210,10 +210,12 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 		static const fpmas::model::Behavior<TestSpatialAgent> behavior;
 
 		TestSpatialAgent(unsigned int range_size, unsigned int num_cells_in_ring) : 
-				fpmas::model::SpatialAgent<TestSpatialAgent, TestCell>(mobility_range, perception_range),
 				range_size(range_size), num_cells_in_ring(num_cells_in_ring),
 			mobility_range(range_size, num_cells_in_ring),
 			perception_range(range_size, num_cells_in_ring) {}
+
+		FPMAS_MOBILITY_RANGE(mobility_range);
+		FPMAS_PERCEPTION_RANGE(perception_range);
 
 		/**
 		 * Normally not publicly accessible, but made public for test purpose.
@@ -256,9 +258,11 @@ class TestGridAgent : public fpmas::model::GridAgent<TestGridAgent> {
 	static fpmas::model::VonNeumannRange<fpmas::model::VonNeumannGrid<>> range;
 
 	public:
-	TestGridAgent()
-		: fpmas::model::GridAgent<TestGridAgent>(range, range) {
+	TestGridAgent() {
 		}
+
+	FPMAS_MOBILITY_RANGE(range);
+	FPMAS_PERCEPTION_RANGE(range);
 };
 
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>);

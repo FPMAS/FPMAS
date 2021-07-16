@@ -68,7 +68,9 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">spatial_model.h File Reference</div>  </div>
 </div><!--header-->
@@ -195,10 +197,77 @@ Namespaces</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacefpmas_1_1io_1_1json"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1json.html">fpmas::io::json</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ab19a96be832ebd9b451e7e2b292b9f69"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model_2spatial_2spatial__model_8h.html#ab19a96be832ebd9b451e7e2b292b9f69">FPMAS_MOBILITY_RANGE</a>(RANGE)&#160;&#160;&#160;	const decltype(RANGE)&amp; mobilityRange() const override {return RANGE;}</td></tr>
+<tr class="separator:ab19a96be832ebd9b451e7e2b292b9f69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aafc2587f58f69f5e51245c7b7e0ec68c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model_2spatial_2spatial__model_8h.html#aafc2587f58f69f5e51245c7b7e0ec68c">FPMAS_PERCEPTION_RANGE</a>(RANGE)&#160;&#160;&#160;	const decltype(RANGE)&amp; perceptionRange() const override {return RANGE;}</td></tr>
+<tr class="separator:aafc2587f58f69f5e51245c7b7e0ec68c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a3e3a5b8ed49aaacfb850b4de5d0074ac"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a3e3a5b8ed49aaacfb850b4de5d0074ac">fpmas::model::is_agent_in_group</a> (api::model::Agent *agent, api::model::AgentGroup &amp;group)</td></tr>
+<tr class="separator:a3e3a5b8ed49aaacfb850b4de5d0074ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Spatial models implementation. </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="ab19a96be832ebd9b451e7e2b292b9f69"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab19a96be832ebd9b451e7e2b292b9f69">&#9670;&nbsp;</a></span>FPMAS_MOBILITY_RANGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_MOBILITY_RANGE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">RANGE</td><td>)</td>
+          <td>&#160;&#160;&#160;	const decltype(RANGE)&amp; mobilityRange() const override {return RANGE;}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Utility macro to define the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#af0b5c8d4f351c9d1ca22247db4ba7911">fpmas::api::model::SpatialAgent::mobilityRange()</a> method for the current agent so that it returns the specified RANGE.</p>
+<p>This macro must be called within the class definition of a SpatialAgent.</p>
+<p>Using this macro is not required: the mobilityRange() method can be manually defined.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">RANGE</td><td>reference to the agent mobility range. The specified range might be a class member, a static variable, or any other variable which lifetime exceeds the one of the current agent. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aafc2587f58f69f5e51245c7b7e0ec68c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aafc2587f58f69f5e51245c7b7e0ec68c">&#9670;&nbsp;</a></span>FPMAS_PERCEPTION_RANGE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_PERCEPTION_RANGE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">RANGE</td><td>)</td>
+          <td>&#160;&#160;&#160;	const decltype(RANGE)&amp; perceptionRange() const override {return RANGE;}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Utility macro to define the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a1544209c531ed943b5e2cba0eb87736d">fpmas::api::model::SpatialAgent::perceptionRange()</a> method for the current agent so that it returns the specified RANGE.</p>
+<p>This macro must be called within the class definition of a SpatialAgent.</p>
+<p>Using this macro is not required: the perceptionRange() method can be manually defined.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">RANGE</td><td>reference to the agent perception range. The specified range might be a class member, a static variable, or any other variable which lifetime exceeds the one of the current agent. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1

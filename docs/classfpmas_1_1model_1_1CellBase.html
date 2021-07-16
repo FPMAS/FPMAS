@@ -69,6 +69,7 @@ $(function() {
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classfpmas_1_1model_1_1CellBase-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">fpmas::model::CellBase Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
@@ -206,6 +207,15 @@ Protected Member Functions</h2></td></tr>
 <tr class="separator:a3da4de025d1b9634118e7a7e9e53d9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a0107505113a1ca05d33d2a0222b6b6"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a7a0107505113a1ca05d33d2a0222b6b6">growPerceptionField</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *agent)=0</td></tr>
 <tr class="separator:a7a0107505113a1ca05d33d2a0222b6b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a8c4b8fc357c348356c714d1bd268faec"><td class="memItemLeft" align="right" valign="top">std::set&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a8c4b8fc357c348356c714d1bd268faec">no_move_flags</a></td></tr>
+<tr class="separator:a8c4b8fc357c348356c714d1bd268faec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aee5c3f694d2631c799d860027719ebc1"><td class="memItemLeft" align="right" valign="top">std::set&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#aee5c3f694d2631c799d860027719ebc1">move_flags</a></td></tr>
+<tr class="separator:aee5c3f694d2631c799d860027719ebc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d8576868ed6e4f9350022a37b04cf85"><td class="memItemLeft" align="right" valign="top">std::set&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CellBase.html#a8d8576868ed6e4f9350022a37b04cf85">perception_flags</a></td></tr>
+<tr class="separator:a8d8576868ed6e4f9350022a37b04cf85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">api::model::Cell</a> implementation.</p>
@@ -411,6 +421,79 @@ Protected Member Functions</h2></td></tr>
 <p>More precisely, each agent connected to this <a class="el" href="classfpmas_1_1model_1_1Cell.html">Cell</a> on the PERCEIVE layer is linked to all agents located in this <a class="el" href="classfpmas_1_1model_1_1Cell.html">Cell</a>, (i.e. connected on the LOCATION layer) on the PERCEPTION layer. </p>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1CellBehavior.html#a04e4be9bdf95203ad2811e2a70359139">fpmas::api::model::CellBehavior</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a id="a8c4b8fc357c348356c714d1bd268faec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c4b8fc357c348356c714d1bd268faec">&#9670;&nbsp;</a></span>no_move_flags</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::set&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&gt; fpmas::model::CellBase::no_move_flags</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>A local set of ids of agents that have <b>not</b> moved since the last <a class="el" href="classfpmas_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> execution.</p>
+<p><b>internal use only</b> </p>
+
+</div>
+</div>
+<a id="aee5c3f694d2631c799d860027719ebc1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aee5c3f694d2631c799d860027719ebc1">&#9670;&nbsp;</a></span>move_flags</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::set&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&gt; fpmas::model::CellBase::move_flags</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>A local set of ids of agents that have explored the current cell on the MOVE layer during the current <a class="el" href="classfpmas_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> execution.</p>
+<p><b>internal use only</b> </p>
+
+</div>
+</div>
+<a id="a8d8576868ed6e4f9350022a37b04cf85"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d8576868ed6e4f9350022a37b04cf85">&#9670;&nbsp;</a></span>perception_flags</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::set&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&gt; fpmas::model::CellBase::perception_flags</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>A local set of ids of agents that have explored the current cell on the PERCEIVE layer during the current <a class="el" href="classfpmas_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> execution.</p>
+<p><b>internal use only</b> </p>
 
 </div>
 </div>

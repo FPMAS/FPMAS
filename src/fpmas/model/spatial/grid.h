@@ -124,24 +124,6 @@ namespace fpmas { namespace model {
 			DiscretePoint location_point {0, 0};
 
 			protected:
-			/**
-			 * GridAgent constructor.
-			 *
-			 * The storage duration of specified ranges must at least exceed
-			 * this GridAgent's storage duration.
-			 *
-			 * Declaring those ranges as static or as derived class member
-			 * fields might be good options.
-			 *
-			 * @param mobility_range mobility range
-			 * @param perception_range perception range
-			 */
-			GridAgent(
-					const fpmas::api::model::Range<GridCellType>& mobility_range,
-					const fpmas::api::model::Range<GridCellType>& perception_range)
-				: model::SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>>(
-						mobility_range, perception_range) {}
-
 			using model::SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>>::moveTo;
 			/**
 			 * \copydoc fpmas::api::model::GridAgent::moveTo(GridCellType*)

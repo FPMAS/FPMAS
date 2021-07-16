@@ -9,6 +9,40 @@
 #include "fpmas/api/model/exceptions.h"
 #include "../serializer.h"
 
+
+/**
+ * Utility macro to define the fpmas::api::model::SpatialAgent::mobilityRange()
+ * method for the current agent so that it returns the specified RANGE.
+ *
+ * This macro must be called within the class definition of a SpatialAgent.
+ *
+ * Using this macro is not required: the mobilityRange() method can be manually
+ * defined.
+ *
+ * @param RANGE reference to the agent mobility range. The specified range
+ * might be a class member, a static variable, or any other variable which
+ * lifetime exceeds the one of the current agent.
+ */
+#define FPMAS_MOBILITY_RANGE(RANGE)\
+	const decltype(RANGE)& mobilityRange() const override {return RANGE;}
+
+/**
+ * Utility macro to define the
+ * fpmas::api::model::SpatialAgent::perceptionRange() method for the current
+ * agent so that it returns the specified RANGE.
+ *
+ * This macro must be called within the class definition of a SpatialAgent.
+ *
+ * Using this macro is not required: the perceptionRange() method can be
+ * manually defined.
+ *
+ * @param RANGE reference to the agent perception range. The specified range
+ * might be a class member, a static variable, or any other variable which
+ * lifetime exceeds the one of the current agent.
+ */
+#define FPMAS_PERCEPTION_RANGE(RANGE)\
+	const decltype(RANGE)& perceptionRange() const override {return RANGE;}
+
 namespace fpmas {
 	namespace model {
 	using api::model::SpatialModelLayers;
@@ -142,7 +176,6 @@ namespace fpmas {
 							current_layer_ids.end(),
 							agent->node()->getId()
 							) != current_layer_ids.end();
-					//return current_layer_ids.count(agent->node()->getId()) > 0;
 				}
 
 				/**
@@ -177,8 +210,28 @@ namespace fpmas {
 
 
 		protected:
+			/**
+			 * A local set of ids of agents that have **not** moved since the
+			 * last DistributedMoveAlgorithm execution.
+			 *
+			 * **internal use only**
+			 */
 			std::set<DistributedId> no_move_flags;
+			/**
+			 * A local set of ids of agents that have explored the current cell
+			 * on the MOVE layer during the current DistributedMoveAlgorithm
+			 * execution.
+			 *
+			 * **internal use only**
+			 */
 			std::set<DistributedId> move_flags;
+			/**
+			 * A local set of ids of agents that have explored the current cell
+			 * on the PERCEIVE layer during the current DistributedMoveAlgorithm
+			 * execution.
+			 *
+			 * **internal use only**
+			 */
 			std::set<DistributedId> perception_flags;
 
 			// The two following methods are virtual since their implementation
@@ -302,14 +355,12 @@ namespace fpmas {
 			// unlinked by SpatialAgent::updateLocation(), unless the current
 			// cell is actually their NEW_LOCATION.
 			for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::MOVE)) {
-				//this->move_flags.insert(agent_edge->getSourceNode()->getId());
 				if(new_location_layer.count(agent_edge->getSourceNode()->getId())==0)
 					this->no_move_flags.insert(agent_edge->getSourceNode()->getId());
 			}
 			for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::PERCEIVE)) {
 				if(new_location_layer.count(agent_edge->getSourceNode()->getId())==0)
 					this->no_move_flags.insert(agent_edge->getSourceNode()->getId());
-				//this->perception_flags.insert(agent_edge->getSourceNode()->getId());
 			}
 			// All agents already linked on the LOCATION layer didn't update
 			// their location, since LOCATION links are unlinked by
@@ -539,33 +590,7 @@ namespace fpmas {
 				mutable CellType* location_cell_buffer = nullptr;
 				DistributedId location_id;
 
-				// Use pointers, since each instance (probably) belongs to the
-				// implementing child class, or is static. In any case, it is
-				// not the purpose of this base to perform copy assignment of
-				// this fields, so a reference can't be used.
-				const api::model::Range<CellType>* mobility_range;
-				const api::model::Range<CellType>* perception_range;
-
 			protected:
-				/**
-				 * SpatialAgentBase constructor.
-				 *
-				 * Typically, the specified member might initialized:
-				 * - as static variables
-				 * - as members of the derived SpatialAgentBase
-				 *
-				 * In any case, their storage durations must exceed the one
-				 * this SpatialAgentBase.
-				 *
-				 * @param mobility_range mobility range
-				 * @param perception_range perception range
-				 */
-				SpatialAgentBase(
-						const api::model::Range<CellType>& mobility_range,
-						const api::model::Range<CellType>& perception_range) :
-					mobility_range(&mobility_range),
-					perception_range(&perception_range) {}
-
 				/**
 				 * Updates this SpatialAgent location.
 				 *
@@ -639,20 +664,6 @@ namespace fpmas {
 				 * \copydoc fpmas::api::model::SpatialAgent::locationCell
 				 */
 				CellType* locationCell() const override;
-
-				/**
-				 * \copydoc fpmas::api::model::SpatialAgent::mobilityRange
-				 */
-				const api::model::Range<CellType>& mobilityRange() const override {
-					return *mobility_range;
-				}
-
-				/**
-				 * \copydoc fpmas::api::model::SpatialAgent::perceptionRange
-				 */
-				const api::model::Range<CellType>& perceptionRange() const override {
-					return *perception_range;
-				}
 		};
 
 	template<typename AgentType, typename CellType, typename Derived>
@@ -684,9 +695,9 @@ namespace fpmas {
 
 			// Adds the NEW_LOCATION to the mobility/perceptions fields
 			// depending on the current ranges
-			if(this->mobility_range->contains(cell, cell))
+			if(this->mobilityRange().contains(cell, cell))
 				this->model()->link(this, cell, SpatialModelLayers::MOVE);
-			if(this->perception_range->contains(cell, cell))
+			if(this->perceptionRange().contains(cell, cell))
 				this->model()->link(this, cell, SpatialModelLayers::PERCEIVE);
 
 			this->location_id = cell->node()->getId();
@@ -727,7 +738,7 @@ namespace fpmas {
 				auto* agent = cell_edge->getTargetNode()->data().get();
 				fpmas::model::ReadGuard read_cell(agent);
 				if(!move_layer.contains(agent)
-						&& this->mobility_range->contains(location, dynamic_cast<CellType*>(agent)))
+						&& this->mobilityRange().contains(location, dynamic_cast<CellType*>(agent)))
 					move_layer.link(agent);
 				this->model()->unlink(cell_edge);
 			}
@@ -743,7 +754,7 @@ namespace fpmas {
 				auto* agent = cell_edge->getTargetNode()->data().get();
 				fpmas::model::ReadGuard read_cell(agent);
 				if(!perceive_layer.contains(agent)
-						&& this->perception_range->contains(location, dynamic_cast<CellType*>(agent)))
+						&& this->perceptionRange().contains(location, dynamic_cast<CellType*>(agent)))
 					perceive_layer.link(agent);
 				this->model()->unlink(cell_edge);
 			}

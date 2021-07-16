@@ -87,7 +87,7 @@ namespace fpmas { namespace model {
 		}
 	}
 
-	void CellBase::updatePerceptions(api::model::AgentGroup& group) {
+	void CellBase::updatePerceptions(api::model::AgentGroup&) {
 		FPMAS_LOGD(this->model()->graph().getMpiCommunicator().getRank(), "[CELL]",
 				"%s Updating perceptions...",
 				FPMAS_C_STR(this->node()->getId()));
