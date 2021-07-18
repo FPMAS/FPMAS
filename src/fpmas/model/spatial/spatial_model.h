@@ -462,7 +462,7 @@ namespace fpmas {
 		typename CellType = api::model::Cell,
 		typename EndCondition = DynamicEndCondition<CellType>>
 	class SpatialModel :
-		public api::model::SpatialModel<CellType>,
+		public virtual api::model::SpatialModel<CellType>,
 		public Model<SyncMode> {
 		private:
 			AgentGroup* cell_group;
