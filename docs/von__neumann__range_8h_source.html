@@ -87,7 +87,7 @@ $(function() {
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> CellType&gt;</div>
 <div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01VonNeumannGrid_3_01CellType_01_4_01_4.html">   37</a></span>&#160;        <span class="keyword">struct </span><a class="code" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter.html">VonNeumannRangePerimeter</a>&lt;<a class="code" href="structfpmas_1_1model_1_1GridConfig.html">VonNeumannGrid</a>&lt;CellType&gt;&gt; {</div>
 <div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01VonNeumannGrid_3_01CellType_01_4_01_4.html#a9de7f58983b1893e751bed26964a4b2d">   49</a></span>&#160;            <a class="code" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> <a class="code" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01VonNeumannGrid_3_01CellType_01_4_01_4.html#a9de7f58983b1893e751bed26964a4b2d">operator()</a>(<span class="keyword">const</span> <a class="code" href="classfpmas_1_1model_1_1GridRange.html">GridRange</a>&lt;<a class="code" href="structfpmas_1_1model_1_1GridConfig.html">VonNeumannGrid&lt;CellType&gt;</a>, <a class="code" href="structfpmas_1_1model_1_1GridRangeConfig.html">VonNeumannRangeConfig</a>&lt;<a class="code" href="structfpmas_1_1model_1_1GridConfig.html">VonNeumannGrid&lt;CellType&gt;</a>&gt;&gt;&amp; range)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordflow">return</span> {0, range.getSize()};</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                <span class="keywordflow">return</span> {0, std::max(range.getSize(), 0l)};</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;            }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        };</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
@@ -96,18 +96,18 @@ $(function() {
 <div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01MooreGrid_3_01CellType_01_4_01_4.html#a7a7efba00765a76e4a4e943d1256ca07">   71</a></span>&#160;            <a class="code" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> <a class="code" href="structfpmas_1_1model_1_1VonNeumannRangePerimeter_3_01MooreGrid_3_01CellType_01_4_01_4.html#a7a7efba00765a76e4a4e943d1256ca07">operator()</a>(</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                    <span class="keyword">const</span> <a class="code" href="classfpmas_1_1model_1_1GridRange.html">GridRange</a>&lt;<a class="code" href="structfpmas_1_1model_1_1GridConfig.html">MooreGrid&lt;CellType&gt;</a>,</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                    <a class="code" href="structfpmas_1_1model_1_1GridRangeConfig.html">VonNeumannRangeConfig</a>&lt;<a class="code" href="structfpmas_1_1model_1_1GridConfig.html">MooreGrid&lt;CellType&gt;</a>&gt;&gt;&amp; range)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                <span class="keywordflow">return</span> {0, range.getSize()};</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;                <span class="keywordflow">return</span> {0, std::max(range.getSize(), 0l)};</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            }</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        };</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    </div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Gr<span class="keywordtype">id</span>Config&gt;</div>
-<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="namespacefpmas_1_1model.html#abd91eeccf31a7fd158f4e4bca7ce9d0d">   94</a></span>&#160;        <span class="keyword">using</span> <a class="code" href="classfpmas_1_1model_1_1GridRange.html">VonNeumannRange</a> = <a class="code" href="classfpmas_1_1model_1_1GridRange.html">GridRange&lt;GridConfig, VonNeumannRangeConfig&lt;GridConfig&gt;</a>&gt;;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;}}</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1GridRange_html"><div class="ttname"><a href="classfpmas_1_1model_1_1GridRange.html">fpmas::model::GridRange</a></div><div class="ttdef"><b>Definition:</b> grid.h:305</div></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Gr<span class="keywordtype">id</span>Config&gt;</div>
+<div class="line"><a name="l00104"></a><span class="lineno"><a class="line" href="namespacefpmas_1_1model.html#abd91eeccf31a7fd158f4e4bca7ce9d0d">  104</a></span>&#160;        <span class="keyword">using</span> <a class="code" href="classfpmas_1_1model_1_1GridRange.html">VonNeumannRange</a> = <a class="code" href="classfpmas_1_1model_1_1GridRange.html">GridRange&lt;GridConfig, VonNeumannRangeConfig&lt;GridConfig&gt;</a>&gt;;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;}}</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1GridRange_html"><div class="ttname"><a href="classfpmas_1_1model_1_1GridRange.html">fpmas::model::GridRange</a></div><div class="ttdef"><b>Definition:</b> grid.h:324</div></div>
 <div class="ttc" id="amoore_8h_html"><div class="ttname"><a href="moore_8h.html">moore.h</a></div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> communication.cpp:3</div></div>
 <div class="ttc" id="astructfpmas_1_1api_1_1model_1_1DiscretePoint_html"><div class="ttname"><a href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">fpmas::api::model::DiscretePoint</a></div><div class="ttdef"><b>Definition:</b> grid.h:21</div></div>

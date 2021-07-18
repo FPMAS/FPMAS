@@ -435,13 +435,27 @@ template&lt;typename GridConfig &gt; </div>
       </table>
 </div><div class="memdoc">
 <p><a class="el" href="classfpmas_1_1model_1_1GridRange.html">GridRange</a> specialization defining variable size ranges with a Moore shape.</p>
-<p>Formally, considering a VonNeumannRange <code>range</code> centered on <code>p1</code>, the range is constituted by any point of the Grid <code>p</code> such that <code>ChebyshevDistance()(p1, p) &lt;= range.getSize()</code>.</p>
-<p>Notice that this is completely independent from the underlying shape of the grid, defined by <code><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a></code>.</p>
+<p>Formally a MooreRange <code>range</code> centered on <code>p1</code> is constituted by any point of the Grid <code>p</code> such that <code>ChebyshevDistance()(p1, p) &lt;= range.getSize()</code>.</p>
+<p>Notice the two following cases:</p><ul>
+<li>if <code>size==0</code>, only the current location is included in the range.</li>
+<li>if <code>size&lt;0</code>, the range is empty.</li>
+</ul>
+<dl class="section note"><dt>Note</dt><dd>The shape of the range is completely independent from the underlying shape of the grid, defined by <code><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a></code>.</dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname"><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a></td><td>a type defining the current grid configuration (e.g.: MooreGrid, VonNeumannGrid)</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1model_1_1ChebyshevDistance.html">ChebyshevDistance</a> </dd>
 <dd>
 <a class="el" href="namespacefpmas_1_1model.html#abd91eeccf31a7fd158f4e4bca7ce9d0d">VonNeumannRange</a> </dd>
 <dd>
-<a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> </dd></dl>
+<a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> </dd>
+<dd>
+<a class="el" href="namespacefpmas_1_1model.html#a89fbfcfbe02c5c6bd0c2dc8ecdb57a0e">VonNeumannGrid</a> </dd>
+<dd>
+<a class="el" href="namespacefpmas_1_1model.html#a179aeb135d0724e6980c541fb9ba97c2">MooreGrid</a> </dd></dl>
 
 </div>
 </div>
@@ -494,13 +508,27 @@ template&lt;typename GridConfig &gt; </div>
       </table>
 </div><div class="memdoc">
 <p><a class="el" href="classfpmas_1_1model_1_1GridRange.html">GridRange</a> specialization defining variable size ranges with a VonNeumann shape.</p>
-<p>Formally, considering a VonNeumannRange <code>range</code> centered on <code>p1</code>, the range is constituted by any point of the Grid <code>p</code> such that <code>ManhattanDistance()(p1, p) &lt;= range.getSize()</code>.</p>
-<p>Notice that this is completely independent from the underlying shape of the grid, defined by <code><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a></code>.</p>
+<p>Formally a VonNeumannRange <code>range</code> centered on <code>p1</code> is constituted by any point of the Grid <code>p</code> such that <code>ManhattanDistance()(p1, p) &lt;= range.getSize()</code>.</p>
+<p>Notice the two following cases:</p><ul>
+<li>if <code>size==0</code>, only the current location is included in the range.</li>
+<li>if <code>size&lt;0</code>, the range is empty.</li>
+</ul>
+<dl class="section note"><dt>Note</dt><dd>The shape of the range is completely independent from the underlying shape of the grid, defined by <code><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a></code>.</dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname"><a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a></td><td>a type defining the current grid configuration (e.g.: MooreGrid, VonNeumannGrid)</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1model_1_1ManhattanDistance.html">ManhattanDistance</a> </dd>
 <dd>
 <a class="el" href="namespacefpmas_1_1model.html#a17376db8bc0f38123bd38394b9603714">MooreRange</a> </dd>
 <dd>
-<a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> </dd></dl>
+<a class="el" href="structfpmas_1_1model_1_1GridConfig.html">GridConfig</a> </dd>
+<dd>
+<a class="el" href="namespacefpmas_1_1model.html#a89fbfcfbe02c5c6bd0c2dc8ecdb57a0e">VonNeumannGrid</a> </dd>
+<dd>
+<a class="el" href="namespacefpmas_1_1model.html#a179aeb135d0724e6980c541fb9ba97c2">MooreGrid</a> </dd></dl>
 
 </div>
 </div>

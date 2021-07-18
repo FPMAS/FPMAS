@@ -52,7 +52,7 @@ namespace fpmas { namespace model {
 			DiscretePoint operator()(
 					const GridRange<VonNeumannGrid<CellType>,
 					MooreRangeConfig<VonNeumannGrid<CellType>>>& range) const {
-				return {range.getSize(), range.getSize()};
+				return {std::max(range.getSize(), 0l), std::max(range.getSize(), 0l)};
 			}
 		};
 
@@ -79,7 +79,7 @@ namespace fpmas { namespace model {
 			DiscretePoint operator()(
 					const GridRange<MooreGrid<CellType>,
 					MooreRangeConfig<MooreGrid<CellType>>>& range) const {
-				return {0, range.getSize()};
+				return {0, std::max(range.getSize(), 0l)};
 			}
 		};
 
@@ -87,16 +87,26 @@ namespace fpmas { namespace model {
 	 * GridRange specialization defining variable size ranges with a Moore
 	 * shape.
 	 *
-	 * Formally, considering a VonNeumannRange `range` centered on `p1`, the range is
-	 * constituted by any point of the Grid `p` such that `ChebyshevDistance()(p1, p) <=
+	 * Formally a MooreRange `range` centered on `p1` is constituted by any
+	 * point of the Grid `p` such that `ChebyshevDistance()(p1, p) <=
 	 * range.getSize()`.
 	 *
-	 * Notice that this is completely independent from the underlying shape of
-	 * the grid, defined by `GridConfig`.
+	 * Notice the two following cases:
+	 * - if `size==0`, only the current location is included in the range.
+	 * - if `size<0`, the range is empty.
+	 *
+	 * @note
+	 * The shape of the range is completely independent from the underlying
+	 * shape of the grid, defined by `GridConfig`.
+	 *
+	 * @tparam GridConfig a type defining the current grid configuration (e.g.:
+	 * MooreGrid, VonNeumannGrid)
 	 *
 	 * @see ChebyshevDistance
 	 * @see VonNeumannRange
 	 * @see GridConfig
+	 * @see VonNeumannGrid
+	 * @see MooreGrid
 	 */
 	template<typename GridConfig>
 		using MooreRange = GridRange<GridConfig, MooreRangeConfig<GridConfig>>;

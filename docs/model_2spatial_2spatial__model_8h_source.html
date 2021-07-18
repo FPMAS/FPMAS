@@ -371,7 +371,7 @@ $(function() {
 <div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;        <span class="keyword">typename</span> CellType = api::model::Cell,</div>
 <div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;        <span class="keyword">typename</span> EndCondition = DynamicEndCondition&lt;CellType&gt;&gt;</div>
 <div class="line"><a name="l00464"></a><span class="lineno"><a class="line" href="classfpmas_1_1model_1_1SpatialModel.html">  464</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classfpmas_1_1model_1_1SpatialModel.html">SpatialModel</a> :</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        <span class="keyword">public</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt;CellType&gt;,</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;        <span class="keyword">public</span> <span class="keyword">virtual</span> <a class="code" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt;CellType&gt;,</div>
 <div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;        <span class="keyword">public</span> <a class="code" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html">Model</a>&lt;SyncMode&gt; {</div>
 <div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;        <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;            <a class="code" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a>* cell_group;</div>

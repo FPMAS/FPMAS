@@ -299,7 +299,26 @@ namespace fpmas { namespace model {
 	 * A generic api::model::Range implementation for Grid environments.
 	 *
 	 * The corresponding ranges are uniform ranges constructed using a `size`
-	 * threshold and the `RangeConfig::Distance` function object.
+	 * threshold and the `GridRangeConfig::Distance` function object.
+	 *
+	 * Formally a GridRange `range` centered on `p1` is constituted by any
+	 * point of the Grid `p` such that `GridRangeConfig::Distance()(p1, p) <=
+	 * range.getSize()`.
+	 *
+	 * Notice the two following cases:
+	 * - if `size==0`, only the current location is included in the range.
+	 * - if `size<0`, the range is empty.
+	 *
+	 * @tparam GridConfig grid configuration, that notably defines how a
+	 * distance between two cells of the grid can be computed, using the
+	 * GridConfig::Distance function object. The type GridConfig::CellType
+	 * also defines which type of cells are used to define the Grid.
+	 *
+	 * @tparam GridRangeConfig grid range configuration. The
+	 * GridRangeConfig::Distance member type is used to define the shape of the
+	 * range, independently of the current GridConfig. The
+	 * GridRangeConfig::Perimeter member type is used to define the perimeter
+	 * of the range.
 	 */
 	template<typename GridConfig, typename GridRangeConfig>
 		class GridRange : public api::model::Range<typename GridConfig::CellType> {
@@ -350,8 +369,13 @@ namespace fpmas { namespace model {
 				 * @param cell cell to check
 				 * @return true iff `cell` is in this range
 				 */
-				bool contains(typename GridConfig::CellType* location_cell, typename GridConfig::CellType* cell) const override {
-					return range_distance(location_cell->location(), cell->location()) <= size;
+				bool contains(
+						typename GridConfig::CellType* location_cell,
+						typename GridConfig::CellType* cell) const override {
+					if(this->getSize() < 0)
+						return false;
+					else
+						return range_distance(location_cell->location(), cell->location()) <= size;
 				}
 
 				/**
