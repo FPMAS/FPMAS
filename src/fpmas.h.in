@@ -70,6 +70,39 @@ namespace fpmas {
 	 * ```
 	 */
 	void finalize();
+
+	/**
+	 * Seeds internal random generators.
+	 *
+	 * Currently calls:
+	 * - fpmas::runtime::Runtime::seed()
+	 * - fpmas::model::RandomNeighbors::seed()
+	 *
+	 * Those are currently the only static random generators used internally in
+	 * an FPMAS simulation, so seeding them ensures reproducibility.
+	 *
+	 * @warning
+	 * Even if this ensures that random number sequences are the same for each
+	 * execution with a given seed, the execution of some simulations can't be
+	 * considered deterministic due to message exchanges across processors in
+	 * fpmas::synchro::hard::HardSyncMode for example. Indeed, the relative
+	 * speed of each process cannot be guaranteed, and the receiving order of
+	 * some message sequences might alter some agent behavior. However,
+	 * simulations executed using the fpmas::synchro::ghost::GhostMode will be
+	 * deterministic.
+	 *
+	 *
+	 * The provided `seed` is not passed directly to the generators: distinct
+	 * seeds are generated using a deterministic method for each generator (if
+	 * the same seed was provided to both generators, they would produce
+	 * exactly the same sequence. Even if their use case is completely
+	 * different, this might introduce some bias).
+	 *
+	 * This method does not affect user defined random generators.
+	 *
+	 * @param seed random seed
+	 */
+	void seed(unsigned long seed);
 }
 
 /** \mainpage FPMAS API reference

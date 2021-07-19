@@ -1,4 +1,4 @@
-#include "fpmas/model/model.h"
+#include "fpmas.h"
 
 #include "graph/mock_distributed_edge.h"
 #include "graph/mock_distributed_node.h"
@@ -10,7 +10,6 @@
 #include "io/mock_breakpoint.h"
 #include "scheduler/mock_scheduler.h"
 #include "runtime/mock_runtime.h"
-#include "fpmas/model/guards.h"
 
 using namespace testing;
 
@@ -1027,6 +1026,66 @@ TEST_F(AgentBaseTest, filter_neighbors) {
 	ASSERT_THAT(out_8_v, ElementsAre(n_2.data().get()));
 }
 
+class NeighborsTest : public Test {
+	protected:
+		std::array<fpmas::model::AgentPtr, 6> agents {{
+			{new MockAgent<>}, {new MockAgent<>}, {new MockAgent<>},
+				{new MockAgent<>}, {new MockAgent<>}, {new MockAgent<>}
+		}};
+		std::array<MockDistributedEdge<fpmas::api::model::AgentPtr, NiceMock>, 6> edges ;
+		std::vector<fpmas::model::Neighbor<fpmas::api::model::Agent>> neighbors_list {
+			{&agents[0], &edges[0]},
+				{&agents[1], &edges[1]},
+				{&agents[2], &edges[2]},
+				{&agents[3], &edges[3]},
+				{&agents[4], &edges[4]},
+				{&agents[5], &edges[5]}
+		};
+
+		fpmas::model::Neighbors<fpmas::api::model::Agent> init_neighbors() {
+			return {neighbors_list};
+		}
+};
+
+TEST_F(NeighborsTest, seed) {
+
+	// Base seed
+	std::vector<std::pair<fpmas::api::model::Agent*, fpmas::model::AgentEdge*>> items1;
+	{
+		auto neighbors = init_neighbors();
+		fpmas::seed(0);
+		neighbors.shuffle();
+		for(auto neighbor : neighbors)
+			items1.push_back({neighbor.agent(), neighbor.edge()});
+	}
+
+	// New seed
+	std::vector<std::pair<fpmas::api::model::Agent*, fpmas::model::AgentEdge*>> items2;
+	{
+		auto neighbors = init_neighbors();
+		fpmas::seed(1);
+		neighbors.shuffle();
+		for(auto neighbor : neighbors)
+			items2.push_back({neighbor.agent(), neighbor.edge()});
+	}
+
+	// Shuffling must be different
+	ASSERT_THAT(items1, Not(ElementsAreArray(items2)));
+
+	// Get back to new seed
+	std::vector<std::pair<fpmas::api::model::Agent*, fpmas::model::AgentEdge*>> items3;
+	{
+		auto neighbors = init_neighbors();
+		fpmas::seed(0);
+		neighbors.shuffle();
+		for(auto neighbor : neighbors)
+			items3.push_back({neighbor.agent(), neighbor.edge()});
+	}
+
+	// Test reproductibility
+	ASSERT_THAT(items3, ElementsAreArray(items1));
+}
+
 class FakeAgent : public MockAgentBase<FakeAgent> {
 	public:
 		int field = 0;
@@ -1034,7 +1093,7 @@ class FakeAgent : public MockAgentBase<FakeAgent> {
 		}
 };
 
-class AgentGuardTest : public ::testing::Test {
+class AgentGuardTest : public Test {
 	protected:
 		FakeAgent* agent = new FakeAgent(0);
 		AgentPtr ptr {agent};

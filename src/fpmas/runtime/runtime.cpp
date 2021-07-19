@@ -2,6 +2,9 @@
 
 namespace fpmas { namespace runtime {
 
+	// Initializes DistributedGenerator with a default seed
+	random::DistributedGenerator<> Runtime::rd;
+
 	void Runtime::run(Date start, Date end) {
 		for(Date time = start; time < end; time++) {
 			date = time;
@@ -29,5 +32,9 @@ namespace fpmas { namespace runtime {
 	void Runtime::execute(const api::scheduler::JobList &job_list) {
 		for(auto& job : job_list)
 			execute(job);
+	}
+
+	void Runtime::seed(random::DistributedGenerator<>::result_type seed) {
+		Runtime::rd = random::DistributedGenerator<>(seed);
 	}
 }}

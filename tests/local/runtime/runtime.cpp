@@ -1,16 +1,7 @@
 #include "scheduler/mock_scheduler.h"
-#include "fpmas/runtime/runtime.h"
+#include "fpmas.h"
 
-using ::testing::_;
-using ::testing::AnyNumber;
-using ::testing::ByRef;
-using ::testing::Invoke;
-using ::testing::Return;
-using ::testing::ReturnRef;
-using ::testing::SetArgReferee;
-using ::testing::Sequence;
-using ::testing::Expectation;
-using ::testing::ExpectationSet;
+using namespace testing;
 
 using fpmas::runtime::Runtime;
 using fpmas::runtime::Date;
@@ -65,20 +56,35 @@ class RuntimeTest : public ::testing::Test {
 			epoch_2_jobs.push_back(&mock_jobs[0]);
 			epoch_2_jobs.push_back(&mock_jobs[2]);
 		}
-		void expectTasks(Sequence& sequence, std::vector<fpmas::api::scheduler::Task*> job_tasks) {
+		void expectTasks(
+				Sequence& sequence,
+				std::vector<fpmas::api::scheduler::Task*> job_tasks,
+				std::vector<fpmas::api::scheduler::Task*>& call_order
+				) {
 			Expectation _job_begin = EXPECT_CALL(
 					mock_tasks[0], run)
 				.InSequence(sequence);
 			ExpectationSet _job_tasks;
-			for(auto* task : job_tasks)
+			for(fpmas::api::scheduler::Task* task : job_tasks)
 				_job_tasks += EXPECT_CALL(
 						*static_cast<MockTask*>(task), run)
-					.After(_job_begin);
+					.After(_job_begin)
+					.WillOnce(Invoke([&call_order, task]() {
+								call_order.push_back(task);
+								}));
 
 			EXPECT_CALL(
 					mock_tasks[3], run)
 				.InSequence(sequence)
 				.After(_job_tasks);
+		}
+		void expectTasks(
+				Sequence& sequence,
+				std::vector<fpmas::api::scheduler::Task*> job_tasks
+				) {
+			static std::vector<fpmas::api::scheduler::Task*> call_order;
+			expectTasks(sequence, job_tasks, call_order);
+			call_order.clear();
 		}
 
 	private:
@@ -155,4 +161,48 @@ TEST_F(RuntimeTest, execute_job_list) {
 	expectTasks(seq, job_2_tasks);
 
 	runtime.execute(job_list);
+}
+
+TEST_F(RuntimeTest, seed) {
+	fpmas::api::scheduler::JobList job_list;
+	job_list.push_back(mock_jobs[0]);
+	job_list.push_back(mock_jobs[1]);
+	job_list.push_back(mock_jobs[2]);
+
+
+	// Base seed
+	fpmas::seed(0);
+
+	Sequence seq1;
+	std::vector<fpmas::api::scheduler::Task*> call_order_1;
+	expectTasks(seq1, job_0_tasks, call_order_1);
+	expectTasks(seq1, job_1_tasks, call_order_1);
+	expectTasks(seq1, job_2_tasks, call_order_1);
+
+	runtime.execute(job_list);
+
+	// Seed update: should produce a different execution order
+	fpmas::seed(1);
+	Sequence seq2;
+	std::vector<fpmas::api::scheduler::Task*> call_order_2;
+	expectTasks(seq2, job_0_tasks, call_order_2);
+	expectTasks(seq2, job_1_tasks, call_order_2);
+	expectTasks(seq2, job_2_tasks, call_order_2);
+
+	runtime.execute(job_list);
+
+	ASSERT_THAT(call_order_1, Not(ElementsAreArray(call_order_2)));
+
+
+	// Get back to base seed: should ensure reproducibility
+	fpmas::seed(0);
+	Sequence seq3;
+	std::vector<fpmas::api::scheduler::Task*> call_order_3;
+	expectTasks(seq3, job_0_tasks, call_order_3);
+	expectTasks(seq3, job_1_tasks, call_order_3);
+	expectTasks(seq3, job_2_tasks, call_order_3);
+
+	runtime.execute(job_list);
+
+	ASSERT_THAT(call_order_3, ElementsAreArray(call_order_1));
 }

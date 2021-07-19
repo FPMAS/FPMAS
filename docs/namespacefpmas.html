@@ -113,6 +113,8 @@ Functions</h2></td></tr>
 <tr class="separator:ad687ae462a5b1dd2d5d1df39c41aa920"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a025034ef544117c0d20c51eb567ab474"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">finalize</a> ()</td></tr>
 <tr class="separator:a025034ef544117c0d20c51eb567ab474"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ef0a8b9bd8de597a399b5c0d35ac1ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">seed</a> (unsigned long seed)</td></tr>
+<tr class="separator:a3ef0a8b9bd8de597a399b5c0d35ac1ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Main <code>fpmas</code> namespace. </p>
@@ -283,6 +285,39 @@ template&lt;typename _T , typename... T&gt; </div>
 <div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:12</div></div>
 <div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:4</div></div>
 </div><!-- fragment --> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fpmas_2output_2csv_output_8cpp-example.html#a3">fpmas/output/csv_output.cpp</a>, and <a class="el" href="fpmas_2output_2distributed_csv_output_8cpp-example.html#a3">fpmas/output/distributed_csv_output.cpp</a>.</dd>
+</dl>
+
+</div>
+</div>
+<a id="a3ef0a8b9bd8de597a399b5c0d35ac1ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ef0a8b9bd8de597a399b5c0d35ac1ec">&#9670;&nbsp;</a></span>seed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::seed </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long&#160;</td>
+          <td class="paramname"><em>seed</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Seeds internal random generators.</p>
+<p>Currently calls:</p><ul>
+<li><a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#ac88d849f5f24ae52343b08477bf4e924">fpmas::runtime::Runtime::seed()</a></li>
+<li><a class="el" href="structfpmas_1_1model_1_1RandomNeighbors.html#a6a6d99902e9a5467e454df9cb30d282d">fpmas::model::RandomNeighbors::seed()</a></li>
+</ul>
+<p>Those are currently the only static random generators used internally in an FPMAS simulation, so seeding them ensures reproducibility.</p>
+<dl class="section warning"><dt>Warning</dt><dd>Even if this ensures that random number sequences are the same for each execution with a given seed, the execution of some simulations can't be considered deterministic due to message exchanges across processors in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">fpmas::synchro::hard::HardSyncMode</a> for example. Indeed, the relative speed of each process cannot be guaranteed, and the receiving order of some message sequences might alter some agent behavior. However, simulations executed using the <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html">fpmas::synchro::ghost::GhostMode</a> will be deterministic.</dd></dl>
+<p>The provided <code>seed</code> is not passed directly to the generators: distinct seeds are generated using a deterministic method for each generator (if the same seed was provided to both generators, they would produce exactly the same sequence. Even if their use case is completely different, this might introduce some bias).</p>
+<p>This method does not affect user defined random generators.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seed</td><td>random seed </td></tr>
+  </table>
+  </dd>
 </dl>
 
 </div>
