@@ -255,8 +255,8 @@ namespace fpmas { namespace model {
 
 				// Synchronizes only newly imported cells
 				dist_move_algo.model.graph()
-					.synchronizationMode().getDataSync().synchronize(
-							dist_move_algo.model.graph().getUnsyncNodes()
+					.synchronize(
+							dist_move_algo.model.graph().getUnsyncNodes(), false
 							);
 
 				for(auto agent : agents) {
@@ -285,9 +285,9 @@ namespace fpmas { namespace model {
 			// Synchronizes data of DISTANT agents that might have been created
 			// when updating perceptions
 			dist_move_algo.model.graph()
-				.synchronizationMode().getDataSync().synchronize(
-					dist_move_algo.model.graph().getUnsyncNodes()
-					);
+				.synchronize(
+						dist_move_algo.model.graph().getUnsyncNodes(), false
+						);
 
 			FPMAS_LOGD(this->dist_move_algo.model.getMpiCommunicator().getRank(),
 					"DMA", "Done.", "");

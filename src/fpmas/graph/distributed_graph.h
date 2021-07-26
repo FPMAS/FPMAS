@@ -723,10 +723,10 @@ namespace fpmas { namespace graph {
 				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 						"Partially synchronizing graph...", "");
 
-				if(synchronize_links)
+				if(synchronize_links) {
 					sync_mode.getSyncLinker().synchronize();
-
-				clearDistantNodes();
+					clearDistantNodes();
+				}
 
 				sync_mode.getDataSync().synchronize(nodes);
 
