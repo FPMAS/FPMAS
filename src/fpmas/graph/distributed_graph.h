@@ -235,8 +235,6 @@ namespace fpmas { namespace graph {
 								this->location_manager.getLocalNodes(),
 								partition_mode
 								));
-					sync_mode.getDataSync().synchronize();
-					unsynchronized_nodes.clear();
 
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
@@ -267,8 +265,6 @@ namespace fpmas { namespace graph {
 								this->location_manager.getLocalNodes(),
 								fixed_vertices,
 								partition_mode));
-					sync_mode.getDataSync().synchronize();
-					unsynchronized_nodes.clear();
 
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
