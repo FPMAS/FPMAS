@@ -123,6 +123,10 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:a97accfb690a253ad0fd7a741cb41891c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">PartitionMode</a> { <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891cac1da064f9884c7f59c51accca7d88d94">PARTITION</a>
+, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891ca1c9ffd38f7452da1d49dbbdd5a189f43">REPARTITION</a>
+ }</td></tr>
+<tr class="separator:a97accfb690a253ad0fd7a741cb41891c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3436e2c1520417414ff6059c45d9e02f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LocationState</a> { <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa70a499dd022fa8f84306734e1240d1f9">LOCAL</a>
 , <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa5f6df4aaed961263dac8b13311f22c73">DISTANT</a>
  }</td></tr>
@@ -187,6 +191,27 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a97accfb690a253ad0fd7a741cb41891c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97accfb690a253ad0fd7a741cb41891c">&#9670;&nbsp;</a></span>PartitionMode</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">fpmas::api::graph::PartitionMode</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Defines the partition strategy used when distributing a graph. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a97accfb690a253ad0fd7a741cb41891cac1da064f9884c7f59c51accca7d88d94"></a>PARTITION&#160;</td><td class="fielddoc"><p>Indicates that a complete partitioning must be computed, independently of the current partitioning of the graph. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a97accfb690a253ad0fd7a741cb41891ca1c9ffd38f7452da1d49dbbdd5a189f43"></a>REPARTITION&#160;</td><td class="fielddoc"><p>Indicates that the load balancing algorithm can optimize the new partitioning according to the current partitioning. </p>
+</td></tr>
+</table>
+
+</div>
+</div>
 <a id="a3436e2c1520417414ff6059c45d9e02f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3436e2c1520417414ff6059c45d9e02f">&#9670;&nbsp;</a></span>LocationState</h2>
 

@@ -90,6 +90,8 @@ Inheritance diagram for fpmas::api::graph::FixedVerticesLoadBalancing&lt; T &gt;
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1f32907993058e2631a94ffc2e9b0136"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html#a1f32907993058e2631a94ffc2e9b0136">balance</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a>&lt; T &gt; nodes, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> fixed_vertices)=0</td></tr>
 <tr class="separator:a1f32907993058e2631a94ffc2e9b0136"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8594f0ee040bb6c39e0a20e107fe6ba5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html#a8594f0ee040bb6c39e0a20e107fe6ba5">balance</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a>&lt; T &gt; nodes, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> fixed_vertices, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">PartitionMode</a> partition_mode)</td></tr>
+<tr class="separator:a8594f0ee040bb6c39e0a20e107fe6ba5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -98,7 +100,7 @@ class fpmas::api::graph::FixedVerticesLoadBalancing&lt; T &gt;</h3>
 <p>Load balancing API with fixed vertices handling. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1f32907993058e2631a94ffc2e9b0136"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f32907993058e2631a94ffc2e9b0136">&#9670;&nbsp;</a></span>balance()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1f32907993058e2631a94ffc2e9b0136">&#9670;&nbsp;</a></span>balance() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -132,6 +134,53 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000003">Deprecated:</a></b></dt><dd>Deprecated in favor of <a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html#a8594f0ee040bb6c39e0a20e107fe6ba5">balance(NodeMap&lt;T&gt;, PartitionMap, PartitionMode)</a> </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">fpmas::graph::ZoltanLoadBalancing&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1RandomLoadBalancing.html#ad7e8a41980dc72a50e92da53be5af8e5">fpmas::graph::RandomLoadBalancing&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a8594f0ee040bb6c39e0a20e107fe6ba5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8594f0ee040bb6c39e0a20e107fe6ba5">&#9670;&nbsp;</a></span>balance() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> <a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">fpmas::api::graph::FixedVerticesLoadBalancing</a>&lt; T &gt;::balance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a>&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>nodes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a>&#160;</td>
+          <td class="paramname"><em>fixed_vertices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">PartitionMode</a>&#160;</td>
+          <td class="paramname"><em>partition_mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 <p>Computes a node partition from the input nodes, assigning a fixed rank to nodes specified in the fixed vertices map.</p>
 <p>This functions is synchronous and blocks until all processes call it.</p>
 <p>Each process calls the functions with its own node map, so that the global set of nodes to balance correspond to the union of all the local node maps specified as arguments.</p>
@@ -140,10 +189,13 @@ template&lt;typename T &gt; </div>
   <table class="params">
     <tr><td class="paramname">nodes</td><td>local nodes to balance </td></tr>
     <tr><td class="paramname">fixed_vertices</td><td>fixed vertices map </td></tr>
+    <tr><td class="paramname">partition_mode</td><td>partitioning strategy </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>balanced partition map </dd></dl>
+
+<p>Reimplemented in <a class="el" href="classfpmas_1_1graph_1_1RandomLoadBalancing.html#aec2c15d8977050c1182e77136cf4ca37">fpmas::graph::RandomLoadBalancing&lt; T &gt;</a>.</p>
 
 </div>
 </div>

@@ -67,26 +67,34 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
+<dt>Member <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac0b0cfdab2d75e42a1364218fa98c949">fpmas::api::graph::DistributedGraph&lt; T &gt;::balance</a>  (LoadBalancing&lt; T &gt; &amp;lb)=0</dt>
+<dd><a class="anchor" id="_deprecated000001"></a> Deprecated in favor of <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ab70f587553df3372f63b641c4c21944a">balance(LoadBalancing&lt;T&gt;&amp;, PartitionMode)</a>  </dd>
+<dt>Member <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#afa7aad6eaf0bd863cb5c26d9ec234588">fpmas::api::graph::DistributedGraph&lt; T &gt;::balance</a>  (FixedVerticesLoadBalancing&lt; T &gt; &amp;lb, PartitionMap fixed_vertices)=0</dt>
+<dd><a class="anchor" id="_deprecated000002"></a> Deprecated in favor of <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a3c4612502e1acdc01790fb230b4a92a0">balance(FixedVerticesLoadBalancing&lt;T&gt;&amp;, PartitionMap, PartitionMode)</a>  </dd>
+<dt>Member <a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html#a1f32907993058e2631a94ffc2e9b0136">fpmas::api::graph::FixedVerticesLoadBalancing&lt; T &gt;::balance</a>  (NodeMap&lt; T &gt; nodes, PartitionMap fixed_vertices)=0</dt>
+<dd><a class="anchor" id="_deprecated000003"></a> Deprecated in favor of <a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html#a8594f0ee040bb6c39e0a20e107fe6ba5">balance(NodeMap&lt;T&gt;, PartitionMap, PartitionMode)</a>  </dd>
+<dt>Member <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html#a1629c45867e061d72cefe1cc4b08aaa5">fpmas::api::graph::LoadBalancing&lt; T &gt;::balance</a>  (NodeMap&lt; T &gt; nodes)=0</dt>
+<dd><a class="anchor" id="_deprecated000004"></a> Deprecated in favor of <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html#a425455321a57e9b6097caf29745dbc53">balance(NodeMap&lt;T&gt;, PartitionMode)</a>  </dd>
 <dt>Member <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a2d7cf8872ef4d923b8f70e3c0c21776d">fpmas::api::graph::LocationManager&lt; T &gt;::addManagedNode</a>  (DistributedNode&lt; T &gt; *node, int initial_location)=0</dt>
-<dd><a class="anchor" id="_deprecated000001"></a> Use <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#aeae2b4438b0fba4c019b487c566a6807">addManagedNode(DistributedId, int)</a> instead. </dd>
+<dd><a class="anchor" id="_deprecated000005"></a> Use <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#aeae2b4438b0fba4c019b487c566a6807">addManagedNode(DistributedId, int)</a> instead. </dd>
 <dt>Member <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a83a6b1b24c9d1c5fbc7a33f80f27486c">fpmas::api::graph::LocationManager&lt; T &gt;::removeManagedNode</a>  (DistributedNode&lt; T &gt; *node)=0</dt>
-<dd><a class="anchor" id="_deprecated000002"></a> Use <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a191b8045b2592aa84ba0f66dbd9ad758">removeManagedNode(DistributedId)</a> instead. </dd>
+<dd><a class="anchor" id="_deprecated000006"></a> Use <a class="el" href="classfpmas_1_1api_1_1graph_1_1LocationManager.html#a191b8045b2592aa84ba0f66dbd9ad758">removeManagedNode(DistributedId)</a> instead. </dd>
 <dt>Member <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a46ea84f58fb1b430f05312ba61b06639">fpmas::api::model::Agent::group</a>  ()=0</dt>
-<dd><a class="anchor" id="_deprecated000005"></a> Returns a pointer to the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> belong. </dd>
+<dd><a class="anchor" id="_deprecated000009"></a> Returns a pointer to the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> belong. </dd>
 <dt>Member <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#af7df85262a65329202070747bd152c83">fpmas::api::model::Agent::groupId</a>  () const =0</dt>
-<dd><a class="anchor" id="_deprecated000003"></a> Returns the ID of the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> belong. </dd>
+<dd><a class="anchor" id="_deprecated000007"></a> Returns the ID of the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> belong. </dd>
 <dt>Member <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#ae99d995f47d7ace0c267d1a6233b4886">fpmas::api::model::Agent::setGroup</a>  (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> *group)=0</dt>
-<dd><a class="anchor" id="_deprecated000006"></a> Sets the internal pointer of the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> belong. </dd>
+<dd><a class="anchor" id="_deprecated000010"></a> Sets the internal pointer of the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> to which this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> belong. </dd>
 <dt>Member <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a803e97bb1657a3db3110d7f499c3c878">fpmas::api::model::Agent::setGroupId</a>  (GroupId id)=0</dt>
-<dd><a class="anchor" id="_deprecated000004"></a> Sets this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> group ID. </dd>
+<dd><a class="anchor" id="_deprecated000008"></a> Sets this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> group ID. </dd>
 <dt>Member <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a16503aedfd56b6e2a4cd9e2af38533b6">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;::getSyncMode</a>  () const</dt>
-<dd><a class="anchor" id="_deprecated000007"></a> Use <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ad561fe9e8021d1d6506f14a038521fb2">synchronizationMode()</a> instead. </dd>
+<dd><a class="anchor" id="_deprecated000011"></a> Use <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ad561fe9e8021d1d6506f14a038521fb2">synchronizationMode()</a> instead. </dd>
 <dt>Class <a class="el" href="classfpmas_1_1model_1_1DefaultBehavior.html">fpmas::model::DefaultBehavior</a>  </dt>
-<dd><a class="anchor" id="_deprecated000008"></a> </dd>
+<dd><a class="anchor" id="_deprecated000012"></a> </dd>
 <dt>Class <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentTask.html">fpmas::model::detail::AgentTask</a>  </dt>
-<dd><a class="anchor" id="_deprecated000009"></a> </dd>
+<dd><a class="anchor" id="_deprecated000013"></a> </dd>
 <dt>Member <a class="el" href="classfpmas_1_1model_1_1Neighbor.html#a31cf6f5a16eb9391dba73c196a62419b">fpmas::model::Neighbor&lt; AgentType &gt;::Neighbor</a>  (AgentPtr *agent)</dt>
-<dd><a class="anchor" id="_deprecated000010"></a></dd>
+<dd><a class="anchor" id="_deprecated000014"></a></dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

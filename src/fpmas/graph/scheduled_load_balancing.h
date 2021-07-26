@@ -45,12 +45,23 @@ namespace fpmas { namespace graph {
 						api::runtime::Runtime& runtime
 						) : fixed_vertices_lb(fixed_vertices_lb), scheduler(scheduler), runtime(runtime) {}
 
+				[[deprecated]]
 				PartitionMap balance(NodeMap<T> nodes) override;
+
+				PartitionMap balance(
+						NodeMap<T> nodes,
+						api::graph::PartitionMode partition_mode) override;
 
 		};
 
 	template<typename T>
 		PartitionMap ScheduledLoadBalancing<T>::balance(NodeMap<T> nodes) {
+			return balance(nodes, api::graph::PARTITION);
+		}
+
+	template<typename T>
+		PartitionMap ScheduledLoadBalancing<T>::balance(
+				NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
 			scheduler::Epoch epoch;
 			scheduler.build(runtime.currentDate() + 1, epoch);
 			// Global node map
@@ -74,13 +85,13 @@ namespace fpmas { namespace graph {
 				// fixing nodes that will be executed in previous jobs (that
 				// are already partitionned). Notice that fixed_nodes is
 				// included in node_map.
-				partition = fixed_vertices_lb.balance(node_map, fixed_nodes);
+				partition = fixed_vertices_lb.balance(node_map, fixed_nodes, partition_mode);
 				// Fixes nodes currently partitionned
 				fixed_nodes = partition;
 			};
 			// Finally, partition all other nodes, that are not executed within
 			// this epoch, or that are not bound to any Task.
-			partition = fixed_vertices_lb.balance(nodes, fixed_nodes);
+			partition = fixed_vertices_lb.balance(nodes, fixed_nodes, partition_mode);
 			return partition;
 		}
 }}

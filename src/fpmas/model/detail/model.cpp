@@ -111,7 +111,9 @@ namespace fpmas {
 			}
 
 			void LoadBalancingTask::run() {
-				agent_graph.balance(load_balancing);
+				agent_graph.balance(load_balancing, partition_mode);
+				if(partition_mode == api::graph::PARTITION)
+					partition_mode = api::graph::REPARTITION;
 			}
 
 			void AgentGroupBase::emit(Event event, api::model::Agent* agent) {

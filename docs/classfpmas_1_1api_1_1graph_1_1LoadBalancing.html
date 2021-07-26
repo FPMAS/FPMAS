@@ -91,6 +91,8 @@ Inheritance diagram for fpmas::api::graph::LoadBalancing&lt; T &gt;:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a1629c45867e061d72cefe1cc4b08aaa5"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html#a1629c45867e061d72cefe1cc4b08aaa5">balance</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a>&lt; T &gt; nodes)=0</td></tr>
 <tr class="separator:a1629c45867e061d72cefe1cc4b08aaa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a425455321a57e9b6097caf29745dbc53"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html#a425455321a57e9b6097caf29745dbc53">balance</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a>&lt; T &gt; nodes, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">PartitionMode</a> partition_mode)=0</td></tr>
+<tr class="separator:a425455321a57e9b6097caf29745dbc53"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><h3>template&lt;typename T&gt;<br />
@@ -99,7 +101,7 @@ class fpmas::api::graph::LoadBalancing&lt; T &gt;</h3>
 <p>Load balancing API. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1629c45867e061d72cefe1cc4b08aaa5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1629c45867e061d72cefe1cc4b08aaa5">&#9670;&nbsp;</a></span>balance()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1629c45867e061d72cefe1cc4b08aaa5">&#9670;&nbsp;</a></span>balance() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -123,18 +125,60 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated:</a></b></dt><dd>Deprecated in favor of <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html#a425455321a57e9b6097caf29745dbc53">balance(NodeMap&lt;T&gt;, PartitionMode)</a> </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">fpmas::graph::ZoltanLoadBalancing&lt; T &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html#af42206d6d8beee9cdd1f64b3f2edc407">fpmas::graph::ScheduledLoadBalancing&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1RandomLoadBalancing.html#aa08a3348235b625f964bb05436f55c9e">fpmas::graph::RandomLoadBalancing&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a425455321a57e9b6097caf29745dbc53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a425455321a57e9b6097caf29745dbc53">&#9670;&nbsp;</a></span>balance() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">fpmas::api::graph::LoadBalancing</a>&lt; T &gt;::balance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">NodeMap</a>&lt; T &gt;&#160;</td>
+          <td class="paramname"><em>nodes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">PartitionMode</a>&#160;</td>
+          <td class="paramname"><em>partition_mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
 <p>Computes a node partition from the input nodes.</p>
 <p>This functions is synchronous and blocks until all processes call it.</p>
 <p>Each process calls the functions with its own node map, so that the global set of nodes to balance correspond to the union of all the local node maps specified as arguments.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">nodes</td><td>local nodes to balance </td></tr>
+    <tr><td class="paramname">partition_mode</td><td>partitioning strategy </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>balanced partition map </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">fpmas::graph::ZoltanLoadBalancing&lt; T &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html#af42206d6d8beee9cdd1f64b3f2edc407">fpmas::graph::ScheduledLoadBalancing&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1RandomLoadBalancing.html#aa08a3348235b625f964bb05436f55c9e">fpmas::graph::RandomLoadBalancing&lt; T &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1RandomLoadBalancing.html#ad9a36eeb31cca4b4b547d44614a087ca">fpmas::graph::RandomLoadBalancing&lt; T &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a9e6e70331010dc66f11e40288da506ab">fpmas::graph::ZoltanLoadBalancing&lt; T &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html#a8b47c43eb1d0057816c4b79f5f4f47e2">fpmas::graph::ScheduledLoadBalancing&lt; T &gt;</a>.</p>
 
 </div>
 </div>

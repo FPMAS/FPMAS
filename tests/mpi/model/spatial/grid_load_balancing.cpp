@@ -29,7 +29,10 @@ TEST_F(GridLoadBalancingTest, width_sup_height) {
 		= random_lb.balance(model.graph().getLocationManager().getLocalNodes());
 	model.graph().distribute(partition);
 
-	partition = grid_lb.balance(model.graph().getLocationManager().getLocalNodes());
+	partition = grid_lb.balance(
+			model.graph().getLocationManager().getLocalNodes(),
+			fpmas::api::graph::PARTITION
+			);
 	model.graph().distribute(partition);
 
 	// Clears useless DISTANT nodes
@@ -71,7 +74,10 @@ TEST_F(GridLoadBalancingTest, height_sup_width) {
 		= random_lb.balance(model.graph().getLocationManager().getLocalNodes());
 	model.graph().distribute(partition);
 
-	partition = grid_lb.balance(model.graph().getLocationManager().getLocalNodes());
+	partition = grid_lb.balance(
+			model.graph().getLocationManager().getLocalNodes(),
+			fpmas::api::graph::PARTITION
+			);
 	model.graph().distribute(partition);
 
 	// Clears useless DISTANT nodes
@@ -110,7 +116,10 @@ TEST_F(GridLoadBalancingTest, grid_agents) {
 			);
 
 	fpmas::api::graph::PartitionMap partition
-		= grid_lb.balance(model.graph().getLocationManager().getLocalNodes());
+		= grid_lb.balance(
+				model.graph().getLocationManager().getLocalNodes(),
+				fpmas::api::graph::PARTITION
+				);
 	model.graph().distribute(partition);
 
 	// Clears useless DISTANT nodes
@@ -129,7 +138,10 @@ TEST_F(GridLoadBalancingTest, grid_agents) {
 	}
 	model.runtime().execute(move_group.jobs());
 
-	partition = grid_lb.balance(model.graph().getLocationManager().getLocalNodes());
+	partition = grid_lb.balance(
+			model.graph().getLocationManager().getLocalNodes(),
+			fpmas::api::graph::REPARTITION
+			);
 	model.graph().distribute(partition);
 
 	for(auto agent : move_group.localAgents())

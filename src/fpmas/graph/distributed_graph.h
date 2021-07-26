@@ -218,24 +218,12 @@ namespace fpmas { namespace graph {
 					getLocationManager() override {return location_manager;}
 
 				void balance(api::graph::LoadBalancing<T>& load_balancing) override {
-					FPMAS_LOGI(
-							getMpiCommunicator().getRank(), "LB",
-							"Balancing graph (%lu nodes, %lu edges)",
-							this->getNodes().size(), this->getEdges().size());
-
-					sync_mode.getSyncLinker().synchronize();
-					this->_distribute(load_balancing.balance(this->location_manager.getLocalNodes()));
-					sync_mode.getDataSync().synchronize();
-
-					FPMAS_LOGI(
-							getMpiCommunicator().getRank(), "LB",
-							"Graph balanced : %lu nodes, %lu edges",
-							this->getNodes().size(), this->getEdges().size());
+					balance(load_balancing, api::graph::PARTITION);
 				};
 
 				void balance(
-						api::graph::FixedVerticesLoadBalancing<T>& load_balancing,
-						api::graph::PartitionMap fixed_vertices
+						api::graph::LoadBalancing<T>& load_balancing,
+						api::graph::PartitionMode partition_mode
 						) override {
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
@@ -243,14 +231,50 @@ namespace fpmas { namespace graph {
 							this->getNodes().size(), this->getEdges().size());
 
 					sync_mode.getSyncLinker().synchronize();
-					this->_distribute(load_balancing.balance(this->location_manager.getLocalNodes(), fixed_vertices));
+					this->_distribute(load_balancing.balance(
+								this->location_manager.getLocalNodes(),
+								partition_mode
+								));
 					sync_mode.getDataSync().synchronize();
+					unsynchronized_nodes.clear();
 
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
 							"Graph balanced : %lu nodes, %lu edges",
 							this->getNodes().size(), this->getEdges().size());
+				}
+
+				void balance(
+						api::graph::FixedVerticesLoadBalancing<T>& load_balancing,
+						api::graph::PartitionMap fixed_vertices
+						) override {
+					balance(load_balancing, fixed_vertices, api::graph::PARTITION);
 				};
+
+				void balance(
+						api::graph::FixedVerticesLoadBalancing<T>& load_balancing,
+						api::graph::PartitionMap fixed_vertices,
+						api::graph::PartitionMode partition_mode
+						) override {
+
+					FPMAS_LOGI(
+							getMpiCommunicator().getRank(), "LB",
+							"Balancing graph (%lu nodes, %lu edges)",
+							this->getNodes().size(), this->getEdges().size());
+
+					sync_mode.getSyncLinker().synchronize();
+					this->_distribute(load_balancing.balance(
+								this->location_manager.getLocalNodes(),
+								fixed_vertices,
+								partition_mode));
+					sync_mode.getDataSync().synchronize();
+					unsynchronized_nodes.clear();
+
+					FPMAS_LOGI(
+							getMpiCommunicator().getRank(), "LB",
+							"Graph balanced : %lu nodes, %lu edges",
+							this->getNodes().size(), this->getEdges().size());
+				}
 
 				void distribute(api::graph::PartitionMap partition) override;
 

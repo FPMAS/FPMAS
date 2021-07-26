@@ -101,6 +101,9 @@ namespace fpmas { namespace model {
 		private:
 			GridProcessMapping grid_process_mapping;
 
+			void assignAgentToPartition(
+					api::model::AgentNode* node, api::graph::PartitionMap& partition);
+
 		public:
 			/**
 			 * GridLoadBalancing constructor.
@@ -114,6 +117,15 @@ namespace fpmas { namespace model {
 				api::communication::MpiCommunicator& comm
 				);
 
+			
+			/**
+			 * \copydoc api::graph::LoadBalancing::balance(NodeMap<T>)
+			 */
+			[[deprecated]]
+			api::graph::PartitionMap balance(
+					api::graph::NodeMap<api::model::AgentPtr> nodes
+					) override;
+
 			/**
 			 * Builds a partition according to the grid based load balancing
 			 * algorithm from the input nodes.
@@ -124,10 +136,12 @@ namespace fpmas { namespace model {
 			 * partition is given back to the \DistributedGraph.
 			 *
 			 * @param nodes nodes on which the algorithm is applied
+			 * @param partition_mode partitioning strategy
 			 * @return grid based partition
 			 */
 			api::graph::PartitionMap balance(
-					api::graph::NodeMap<api::model::AgentPtr> nodes
+					api::graph::NodeMap<api::model::AgentPtr> nodes,
+					api::graph::PartitionMode partition_mode
 					) override;
 	};
 

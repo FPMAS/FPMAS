@@ -63,9 +63,17 @@ class AbstractMockDistributedGraph :
 				);
 
 		MOCK_METHOD(void, balance, (fpmas::api::graph::LoadBalancing<T>&), (override));
+		MOCK_METHOD(void, balance,
+				(fpmas::api::graph::LoadBalancing<T>&, fpmas::api::graph::PartitionMode),
+				(override));
 		MOCK_METHOD(void, balance, (
 					fpmas::api::graph::FixedVerticesLoadBalancing<T>&,
 					fpmas::api::graph::PartitionMap),
+				(override));
+		MOCK_METHOD(void, balance, (
+					fpmas::api::graph::FixedVerticesLoadBalancing<T>&,
+					fpmas::api::graph::PartitionMap,
+					fpmas::api::graph::PartitionMode),
 				(override));
 		MOCK_METHOD(void, distribute, (fpmas::api::graph::PartitionMap), (override));
 		MOCK_METHOD(void, synchronize, (), (override));

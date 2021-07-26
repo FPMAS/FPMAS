@@ -5,16 +5,12 @@
 #include <random>
 #include "gmock/gmock.h"
 
-using ::testing::SizeIs;
-using ::testing::Ge;
-using ::testing::Contains;
-using ::testing::Pair;
-using ::testing::_;
+using namespace testing;
 
 using fpmas::graph::DistributedGraph;
 using fpmas::graph::ZoltanLoadBalancing;
 
-class ZoltanLoadBalancingIntegrationTest : public ::testing::Test {
+class ZoltanLoadBalancingIntegrationTest : public Test {
 	protected:
 		fpmas::communication::MpiCommunicator comm;
 		DistributedGraph<int, fpmas::synchro::GhostMode> graph {comm};
@@ -49,14 +45,14 @@ TEST_F(ZoltanLoadBalancingIntegrationTest, balance) {
 	for(auto node : graph.getNodes()) {
 		map.insert(node);
 	}
-	auto partition = load_balancing.balance(map, fixed_nodes);
+	auto partition = load_balancing.balance(map, fixed_nodes, fpmas::api::graph::PARTITION);
 	for(auto fixed_node : fixed_nodes) {
 		ASSERT_EQ(partition[fixed_node.first], fixed_node.second);
 	}
 }
 
 TEST_F(ZoltanLoadBalancingIntegrationTest, graph_balance) {
-	graph.balance(load_balancing, fixed_nodes);
+	graph.balance(load_balancing, fixed_nodes, fpmas::api::graph::PARTITION);
 
 	ASSERT_THAT(graph.getNodes(), SizeIs(Ge(1)));
 	for(auto fixed_node : fixed_nodes) {

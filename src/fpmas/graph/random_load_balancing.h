@@ -36,28 +36,43 @@ namespace fpmas { namespace graph {
 					: random_rank(0, comm.getSize()-1) {
 					}
 
-				/**
-				 * \copydoc fpmas::api::graph::LoadBalancing::balance()
-				 */
 				PartitionMap balance(NodeMap<T> nodes) override;
-				/**
-				 * \copydoc fpmas::api::graph::FixedVerticesLoadBalancing::balance()
-				 */
+				PartitionMap balance(NodeMap<T> nodes, api::graph::PartitionMode) override;
+
 				PartitionMap balance(
 						NodeMap<T> nodes,
-						PartitionMap fixed_vertices) override;
+						api::graph::PartitionMap fixed_vertices) override;
+
+				PartitionMap balance(
+						NodeMap<T> nodes,
+						api::graph::PartitionMap fixed_vertices,
+						api::graph::PartitionMode) override;
 
 		};
 
 	template<typename T>
 		PartitionMap RandomLoadBalancing<T>::balance(NodeMap<T> nodes) {
-			return balance(nodes, {});
+			return balance(nodes, api::graph::PARTITION);
+		}
+
+	template<typename T>
+		PartitionMap RandomLoadBalancing<T>::balance(
+				NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
+			return balance(nodes, {}, partition_mode);
 		}
 
 	template<typename T>
 		PartitionMap RandomLoadBalancing<T>::balance(
 				NodeMap<T> nodes,
-				PartitionMap fixed_vertices) {
+				api::graph::PartitionMap fixed_vertices) {
+			return balance(nodes, fixed_vertices, api::graph::PARTITION);
+		}
+
+	template<typename T>
+		PartitionMap RandomLoadBalancing<T>::balance(
+				NodeMap<T> nodes,
+				api::graph::PartitionMap fixed_vertices,
+				api::graph::PartitionMode) {
 			PartitionMap partition = fixed_vertices;
 			for(auto node : nodes) {
 				partition.insert({node.first, random_rank(generator)});

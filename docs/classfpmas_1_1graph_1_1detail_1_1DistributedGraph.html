@@ -184,8 +184,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae4e9f7a3d70b39d8610088be71caa5c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02960142da8c4dc27095a13d1036e64e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a02960142da8c4dc27095a13d1036e64e">balance</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">api::graph::LoadBalancing</a>&lt; T &gt; &amp;load_balancing) override</td></tr>
 <tr class="separator:a02960142da8c4dc27095a13d1036e64e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe4ef6d623c110faf6f27291ffd7f999"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#afe4ef6d623c110faf6f27291ffd7f999">balance</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">api::graph::LoadBalancing</a>&lt; T &gt; &amp;load_balancing, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a> partition_mode) override</td></tr>
+<tr class="separator:afe4ef6d623c110faf6f27291ffd7f999"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2b37285e80423e400ec15a65b7f31af7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a2b37285e80423e400ec15a65b7f31af7">balance</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">api::graph::FixedVerticesLoadBalancing</a>&lt; T &gt; &amp;load_balancing, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a> fixed_vertices) override</td></tr>
 <tr class="separator:a2b37285e80423e400ec15a65b7f31af7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ed2bea8cc09cfc02b7d612affa41beb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a6ed2bea8cc09cfc02b7d612affa41beb">balance</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">api::graph::FixedVerticesLoadBalancing</a>&lt; T &gt; &amp;load_balancing, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a> fixed_vertices, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a> partition_mode) override</td></tr>
+<tr class="separator:a6ed2bea8cc09cfc02b7d612affa41beb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1474c6efdd1cee5345bedea3dfa93d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ae1474c6efdd1cee5345bedea3dfa93d6">distribute</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a> partition) override</td></tr>
 <tr class="separator:ae1474c6efdd1cee5345bedea3dfa93d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8feb8a3a21c40a734e2d3b3593114e37"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8feb8a3a21c40a734e2d3b3593114e37">synchronize</a> () override</td></tr>
@@ -803,7 +807,7 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000007">Deprecated:</a></b></dt><dd>Use <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ad561fe9e8021d1d6506f14a038521fb2">synchronizationMode()</a> instead.</dd></dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000011">Deprecated:</a></b></dt><dd>Use <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ad561fe9e8021d1d6506f14a038521fb2">synchronizationMode()</a> instead.</dd></dl>
 <p>Returns the internal SyncMode instance.</p>
 <dl class="section return"><dt>Returns</dt><dd>sync mode </dd></dl>
 
@@ -907,7 +911,7 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
 </div>
 </div>
 <a id="a02960142da8c4dc27095a13d1036e64e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02960142da8c4dc27095a13d1036e64e">&#9670;&nbsp;</a></span>balance() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a02960142da8c4dc27095a13d1036e64e">&#9670;&nbsp;</a></span>balance() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -931,21 +935,63 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Balances the graph across processors using the specified lb algorithm.</p>
-<p>This function act as a synchronization barrier, so <b>all</b> the process must enter this function to ensure progress.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">lb</td><td>load balancing algorithm </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000001">Deprecated:</a></b></dt><dd>Deprecated in favor of balance(LoadBalancing&lt;T&gt;&amp;, PartitionMode) </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac0b0cfdab2d75e42a1364218fa98c949">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>.</p>
 
 </div>
 </div>
+<a id="afe4ef6d623c110faf6f27291ffd7f999"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afe4ef6d623c110faf6f27291ffd7f999">&#9670;&nbsp;</a></span>balance() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;DIST_GRAPH_PARAMS &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">fpmas::graph::detail::DistributedGraph</a>&lt; DIST_GRAPH_PARAMS &gt;::balance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">api::graph::LoadBalancing</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>lb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a>&#160;</td>
+          <td class="paramname"><em>partition_mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Balances the graph across processors using the specified load balancing algorithm and partitioning strategy.</p>
+<p>This function act as a synchronization barrier, so <b>all</b> the process must enter this function to ensure progress.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lb</td><td>load balancing algorithm </td></tr>
+    <tr><td class="paramname">partition_mode</td><td>partitioning strategy </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ab70f587553df3372f63b641c4c21944a">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>.</p>
+
+</div>
+</div>
 <a id="a2b37285e80423e400ec15a65b7f31af7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2b37285e80423e400ec15a65b7f31af7">&#9670;&nbsp;</a></span>balance() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b37285e80423e400ec15a65b7f31af7">&#9670;&nbsp;</a></span>balance() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -979,17 +1025,65 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Balances the graph using the specified LoadBalancing algorithm with fixed vertices support.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000002">Deprecated:</a></b></dt><dd>Deprecated in favor of balance(FixedVerticesLoadBalancing&lt;T&gt;&amp;, PartitionMap, PartitionMode) </dd></dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#afa7aad6eaf0bd863cb5c26d9ec234588">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a6ed2bea8cc09cfc02b7d612affa41beb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ed2bea8cc09cfc02b7d612affa41beb">&#9670;&nbsp;</a></span>balance() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;DIST_GRAPH_PARAMS &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">fpmas::graph::detail::DistributedGraph</a>&lt; DIST_GRAPH_PARAMS &gt;::balance </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">api::graph::FixedVerticesLoadBalancing</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>lb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a>&#160;</td>
+          <td class="paramname"><em>fixed_vertices</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a>&#160;</td>
+          <td class="paramname"><em>partition_mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Balances the graph using the specified load balancing algorithm with fixed vertices support.</p>
 <p>This function act as a synchronization barrier, so <b>all</b> the process must enter this function to ensure progress.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">lb</td><td>load balancing algorithm </td></tr>
     <tr><td class="paramname">fixed_vertices</td><td>fixed vertices map </td></tr>
+    <tr><td class="paramname">partition_mode</td><td>partitioning strategy </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#afa7aad6eaf0bd863cb5c26d9ec234588">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a3c4612502e1acdc01790fb230b4a92a0">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>.</p>
 
 </div>
 </div>
@@ -1378,7 +1472,7 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
 <p>Globally removes the node with the specified id from the graph.</p>
 <p>Equivalent to </p><div class="fragment"><div class="line"><a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">removeNode</a>(<a class="code" href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">getNode</a>(<span class="keywordtype">id</span>));</div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1Graph_html_a9a4539ff472500757bb0a5a674b7d821"><div class="ttname"><a href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">fpmas::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;::getNode</a></div><div class="ttdeci">api::graph::DistributedNode&lt; T &gt; * getNode(NodeIdType) override</div><div class="ttdef"><b>Definition:</b> graph.h:228</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a8b79d869a2fb4aa169c12a58b6183cf4"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">fpmas::graph::detail::DistributedGraph::removeNode</a></div><div class="ttdeci">void removeNode(api::graph::DistributedNode&lt; T &gt; *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:572</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a8b79d869a2fb4aa169c12a58b6183cf4"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">fpmas::graph::detail::DistributedGraph::removeNode</a></div><div class="ttdeci">void removeNode(api::graph::DistributedNode&lt; T &gt; *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:595</div></div>
 </div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">removeNode(NodeType*)</a> </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1460,7 +1554,7 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
 <p>Globally unlinks the edge with the specified id.</p>
 <p>Equivalent to </p><div class="fragment"><div class="line"><a class="code" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab5590e41ba5066e0fc30961486963c5d">unlink</a>(<a class="code" href="classfpmas_1_1graph_1_1Graph.html#a8b5eefaff964502d98640e1b1b3752b1">getEdge</a>(<span class="keywordtype">id</span>));</div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1Graph_html_a8b5eefaff964502d98640e1b1b3752b1"><div class="ttname"><a href="classfpmas_1_1graph_1_1Graph.html#a8b5eefaff964502d98640e1b1b3752b1">fpmas::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;::getEdge</a></div><div class="ttdeci">api::graph::DistributedEdge&lt; T &gt; * getEdge(EdgeIdType) override</div><div class="ttdef"><b>Definition:</b> graph.h:246</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_ab5590e41ba5066e0fc30961486963c5d"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab5590e41ba5066e0fc30961486963c5d">fpmas::graph::detail::DistributedGraph::unlink</a></div><div class="ttdeci">void unlink(EdgeType *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:370</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_ab5590e41ba5066e0fc30961486963c5d"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab5590e41ba5066e0fc30961486963c5d">fpmas::graph::detail::DistributedGraph::unlink</a></div><div class="ttdeci">void unlink(EdgeType *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:393</div></div>
 </div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab5590e41ba5066e0fc30961486963c5d">unlink(EdgeType*)</a> </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

@@ -419,19 +419,38 @@ namespace fpmas {namespace api {namespace graph {
 			 */
 			virtual std::vector<NodeCallback*> onSetDistantCallbacks() const = 0;
 
+			
 			/**
-			 * Balances the graph across processors using the specified lb
-			 * algorithm.
+			 * @deprecated
+			 * Deprecated in favor of balance(LoadBalancing<T>&, PartitionMode)
+			 */
+			[[deprecated]]
+			virtual void balance(LoadBalancing<T>& lb) = 0;
+
+			/**
+			 * Balances the graph across processors using the specified load
+			 * balancing algorithm and partitioning strategy.
 			 *
 			 * This function act as a synchronization barrier, so **all** the
 			 * process must enter this function to ensure progress.
 			 *
 			 * @param lb load balancing algorithm
+			 * @param partition_mode partitioning strategy
 			 */
-			virtual void balance(LoadBalancing<T>& lb) = 0;
+			virtual void balance(LoadBalancing<T>& lb, PartitionMode partition_mode) = 0;
+
+			
+			/**
+			 * @deprecated
+			 * Deprecated in favor of balance(FixedVerticesLoadBalancing<T>&, PartitionMap, PartitionMode)
+			 */
+			[[deprecated]]
+			virtual void balance(
+					FixedVerticesLoadBalancing<T>& lb,
+					PartitionMap fixed_vertices) = 0;
 
 			/**
-			 * Balances the graph using the specified LoadBalancing algorithm
+			 * Balances the graph using the specified load balancing algorithm
 			 * with fixed vertices support.
 			 *
 			 * This function act as a synchronization barrier, so **all** the
@@ -439,10 +458,12 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * @param lb load balancing algorithm
 			 * @param fixed_vertices fixed vertices map
+			 * @param partition_mode partitioning strategy
 			 */
 			virtual void balance(
 					FixedVerticesLoadBalancing<T>& lb,
-					PartitionMap fixed_vertices) = 0;
+					PartitionMap fixed_vertices,
+					PartitionMode partition_mode) = 0;
 
 			/**
 			 * Distributes the Graph across processors according to the

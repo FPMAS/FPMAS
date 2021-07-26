@@ -15,6 +15,12 @@ class MockFixedVerticesLoadBalancing : public fpmas::api::graph::FixedVerticesLo
 			(override)
 			);
 
+		MOCK_METHOD(
+			fpmas::api::graph::PartitionMap,
+			balance,
+			(fpmas::api::graph::NodeMap<T>, fpmas::api::graph::PartitionMap, fpmas::api::graph::PartitionMode),
+			(override)
+			);
 };
 
 template<typename T>
@@ -27,6 +33,12 @@ class MockLoadBalancing : public fpmas::api::graph::LoadBalancing<T> {
 			(override)
 			);
 
+		MOCK_METHOD(
+			fpmas::api::graph::PartitionMap,
+			balance,
+			(fpmas::api::graph::NodeMap<T>, fpmas::api::graph::PartitionMode),
+			(override)
+			);
 };
 
 

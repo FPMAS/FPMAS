@@ -321,6 +321,8 @@ namespace fpmas {
 				private:
 					api::model::AgentGraph& agent_graph;
 					api::model::LoadBalancing& load_balancing;
+					// Initially PARTITION, and REPARTITION after the first run
+					api::graph::PartitionMode partition_mode;
 
 				public:
 					/**
@@ -334,7 +336,10 @@ namespace fpmas {
 					LoadBalancingTask(
 							api::model::AgentGraph& agent_graph,
 							api::model::LoadBalancing& load_balancing
-							) : agent_graph(agent_graph), load_balancing(load_balancing) {}
+							)
+						: agent_graph(agent_graph), load_balancing(load_balancing),
+						partition_mode(api::graph::PARTITION) {
+						}
 
 					void run() override;
 			};

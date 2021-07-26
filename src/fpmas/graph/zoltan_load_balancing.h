@@ -361,8 +361,13 @@ namespace fpmas { namespace graph {
 						setUpZoltan();
 					}
 
+				PartitionMap balance(
+						NodeMap<T> nodes,
+						api::graph::PartitionMap fixed_vertices
+						) override;
+
 				/**
-				 * \copydoc fpmas::api::graph::FixedVerticesLoadBalancing::balance()
+				 * \copydoc fpmas::api::graph::FixedVerticesLoadBalancing::balance(NodeMap<T>, api::graph::PartitionMap, api::graph::PartitionMode)
 				 *
 				 * \implem
 				 * Computes a balanced partition from the default
@@ -370,22 +375,47 @@ namespace fpmas { namespace graph {
 				 */
 				PartitionMap balance(
 						NodeMap<T> nodes,
-						PartitionMap fixed_vertices
+						PartitionMap fixed_vertices,
+						api::graph::PartitionMode partition_mode
 						) override;
-				/**
-				 * \copydoc fpmas::api::graph::LoadBalancing::balance()
-				 *
-				 * Equivalent to balance(NodeMap<T>, PartitionMap), with an
-				 * empty set of fixed vertices.
-				 */
+				
 				PartitionMap balance(NodeMap<T> nodes) override;
+
+				/**
+				 * \copydoc fpmas::api::graph::LoadBalancing::balance(NodeMap<T>, api::graph::PartitionMode)
+				 *
+				 * \implem
+				 * Equivalent to balance(NodeMap<T>, PartitionMap, PartitionMode),
+				 * with an empty set of fixed vertices.
+				 */
+				PartitionMap balance(
+						NodeMap<T> nodes,
+						api::graph::PartitionMode partition_mode) override;
 		};
 
 	template<typename T> PartitionMap
 		ZoltanLoadBalancing<T>::balance(
 				NodeMap<T> nodes,
-				PartitionMap fixed_vertices
+				api::graph::PartitionMap fixed_vertices
 				) {
+			return balance(nodes, fixed_vertices, api::graph::PARTITION);
+		}
+
+	template<typename T> PartitionMap
+		ZoltanLoadBalancing<T>::balance(
+				NodeMap<T> nodes,
+				PartitionMap fixed_vertices,
+				api::graph::PartitionMode partition_mode
+				) {
+			switch(partition_mode) {
+				case api::graph::PARTITION:
+					this->zoltan.Set_Param("LB_APPROACH", "PARTITION");
+					break;
+				case api::graph::REPARTITION:
+					this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
+					break;
+			}
+
 			for(auto local_node : nodes)
 				zoltan_data.distributed_node_ids.insert(local_node.first);
 
@@ -459,13 +489,18 @@ namespace fpmas { namespace graph {
 			zoltan_data.nodes.clear();
 			zoltan_data.edges.clear();
 
-			//this->zoltan.Set_Param("LB_APPROACH", "REPARTITION");
 			return partition;
 		}
 
 	template<typename T> PartitionMap
 		ZoltanLoadBalancing<T>::balance(NodeMap<T> nodes) {
-			return this->balance(nodes, {});
+			return this->balance(nodes, api::graph::PARTITION);
+		}
+
+	template<typename T> PartitionMap
+		ZoltanLoadBalancing<T>::balance(
+				NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
+			return this->balance(nodes, {}, partition_mode);
 		}
 
 	/*

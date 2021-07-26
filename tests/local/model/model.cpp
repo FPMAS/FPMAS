@@ -186,7 +186,7 @@ TEST_F(ModelTest, remove_group) {
 }
 
 TEST_F(ModelTest, load_balancing_job) {
-	scheduler.schedule(0, model->loadBalancingJob());
+	scheduler.schedule(0, 1, model->loadBalancingJob());
 	
 	MockMpiCommunicator<4, 10> mock_comm;
 	EXPECT_CALL(graph, getMpiCommunicator()).Times(AnyNumber())
@@ -194,8 +194,13 @@ TEST_F(ModelTest, load_balancing_job) {
 	EXPECT_CALL(graph, getNodes).Times(AnyNumber());
 	EXPECT_CALL(graph, getEdges).Times(AnyNumber());
 
-	EXPECT_CALL(graph, balance(Ref(load_balancing)));
-	runtime.run(1);
+	{
+		InSequence s;
+		EXPECT_CALL(graph, balance(Ref(load_balancing), fpmas::api::graph::PARTITION));
+		EXPECT_CALL(graph, balance(Ref(load_balancing), fpmas::api::graph::REPARTITION));
+		EXPECT_CALL(graph, balance(Ref(load_balancing), fpmas::api::graph::REPARTITION));
+	}
+	runtime.run(3);
 }
 
 TEST_F(ModelTest, link) {

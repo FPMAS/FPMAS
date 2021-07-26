@@ -268,130 +268,169 @@ $(function() {
 <div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                        setUpZoltan();</div>
 <div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;                    }</div>
 <div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
-<div class="line"><a name="l00371"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8ab28c34273f2d9c0da6443249ef5e7d">  371</a></span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8ab28c34273f2d9c0da6443249ef5e7d">balance</a>(</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;                        NodeMap&lt;T&gt; nodes,</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;                        <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> fixed_vertices</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;                        ) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00381"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">  381</a></span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">balance</a>(NodeMap&lt;T&gt; nodes) <span class="keyword">override</span>;</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;        };</div>
+<div class="line"><a name="l00364"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">  364</a></span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">balance</a>(</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                        NodeMap&lt;T&gt; nodes,</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;                        <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a> fixed_vertices</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;                        ) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160; </div>
+<div class="line"><a name="l00376"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a806a9f54d8d34567328c32f0686e60e0">  376</a></span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a806a9f54d8d34567328c32f0686e60e0">balance</a>(</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;                        NodeMap&lt;T&gt; nodes,</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;                        <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> fixed_vertices,</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;                        <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a> partition_mode</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;                        ) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;                </div>
+<div class="line"><a name="l00382"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">  382</a></span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">balance</a>(NodeMap&lt;T&gt; nodes) <span class="keyword">override</span>;</div>
 <div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a></div>
-<div class="line"><a name="l00385"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8ab28c34273f2d9c0da6443249ef5e7d">  385</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8ab28c34273f2d9c0da6443249ef5e7d">ZoltanLoadBalancing&lt;T&gt;::balance</a>(</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;                NodeMap&lt;T&gt; nodes,</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> fixed_vertices</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;                ) {</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> local_node : nodes)</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;                zoltan_data.distributed_node_ids.insert(local_node.first);</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160; </div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;            <span class="comment">// Fetches ids of **all** the nodes that are currently partitionned</span></div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;            zoltan_data.distributed_node_ids = <a class="code" href="namespacefpmas_1_1communication.html#a995d226e4db6370704028965091c62ec">communication::all_reduce</a>(</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;                    id_mpi, zoltan_data.distributed_node_ids, ConcatSet()</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;                    );</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160; </div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160; </div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;            <span class="comment">// Moves the temporary node map into `zoltan_data`. This is safe,</span></div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;            <span class="comment">// since `nodes` is not reused in this scope.</span></div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;            zoltan_data.node_map = std::move(nodes);</div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160; </div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;            this-&gt;fixed_vertices = fixed_vertices;</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;            <span class="keywordtype">int</span> changes;</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;            <span class="keywordtype">int</span> num_lid_entries;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;            <span class="keywordtype">int</span> num_gid_entries;</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160; </div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160; </div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;            <span class="keywordtype">int</span> num_import; </div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;            ZOLTAN_ID_PTR import_global_ids;</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;            ZOLTAN_ID_PTR import_local_ids;</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;            <span class="keywordtype">int</span> * import_procs;</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;            <span class="keywordtype">int</span> * import_to_part;</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160; </div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;            <span class="keywordtype">int</span> export_node_num;</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;            ZOLTAN_ID_PTR export_node_global_ids;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;            ZOLTAN_ID_PTR export_local_ids;</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;            <span class="keywordtype">int</span>* export_node_procs;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;            <span class="keywordtype">int</span>* export_to_part;</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160; </div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;            <span class="comment">// Computes Zoltan partitioning</span></div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;            this-&gt;zoltan.LB_Partition(</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;                    changes,</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;                    num_gid_entries,</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                    num_lid_entries,</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                    num_import,</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;                    import_global_ids,</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;                    import_local_ids,</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;                    import_procs,</div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;                    import_to_part,</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;                    export_node_num,</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;                    export_node_global_ids,</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;                    export_local_ids,</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;                    export_node_procs,</div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;                    export_to_part</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;                    );</div>
+<div class="line"><a name="l00391"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a9e6e70331010dc66f11e40288da506ab">  391</a></span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a9e6e70331010dc66f11e40288da506ab">balance</a>(</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;                        NodeMap&lt;T&gt; nodes,</div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;                        <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a> partition_mode) <span class="keyword">override</span>;</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;        };</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160; </div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a></div>
+<div class="line"><a name="l00397"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">  397</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">ZoltanLoadBalancing&lt;T&gt;::balance</a>(</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;                NodeMap&lt;T&gt; nodes,</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a> fixed_vertices</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;                ) {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;            <span class="keywordflow">return</span> balance(nodes, fixed_vertices, <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891cac1da064f9884c7f59c51accca7d88d94">api::graph::PARTITION</a>);</div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;        }</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160; </div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a></div>
+<div class="line"><a name="l00405"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a806a9f54d8d34567328c32f0686e60e0">  405</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">ZoltanLoadBalancing&lt;T&gt;::balance</a>(</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;                NodeMap&lt;T&gt; nodes,</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> fixed_vertices,</div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;                <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a> partition_mode</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;                ) {</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;            <span class="keywordflow">switch</span>(partition_mode) {</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;                <span class="keywordflow">case</span> <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891cac1da064f9884c7f59c51accca7d88d94">api::graph::PARTITION</a>:</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;                    this-&gt;zoltan.Set_Param(<span class="stringliteral">&quot;LB_APPROACH&quot;</span>, <span class="stringliteral">&quot;PARTITION&quot;</span>);</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;                <span class="keywordflow">case</span> <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891ca1c9ffd38f7452da1d49dbbdd5a189f43">api::graph::REPARTITION</a>:</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;                    this-&gt;zoltan.Set_Param(<span class="stringliteral">&quot;LB_APPROACH&quot;</span>, <span class="stringliteral">&quot;REPARTITION&quot;</span>);</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;                    <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;            }</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160; </div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;            <span class="keywordflow">for</span>(<span class="keyword">auto</span> local_node : nodes)</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;                zoltan_data.distributed_node_ids.insert(local_node.first);</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160; </div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;            <span class="comment">// Fetches ids of **all** the nodes that are currently partitionned</span></div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;            zoltan_data.distributed_node_ids = <a class="code" href="namespacefpmas_1_1communication.html#a995d226e4db6370704028965091c62ec">communication::all_reduce</a>(</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;                    id_mpi, zoltan_data.distributed_node_ids, ConcatSet()</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;                    );</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160; </div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160; </div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;            <span class="comment">// Moves the temporary node map into `zoltan_data`. This is safe,</span></div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;            <span class="comment">// since `nodes` is not reused in this scope.</span></div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;            zoltan_data.node_map = std::move(nodes);</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160; </div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;            this-&gt;fixed_vertices = fixed_vertices;</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;            <span class="keywordtype">int</span> changes;</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;            <span class="keywordtype">int</span> num_lid_entries;</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;            <span class="keywordtype">int</span> num_gid_entries;</div>
 <div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160; </div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;            <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> partition;</div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; export_node_num; i++) {</div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;                partition[<a class="code" href="namespacefpmas_1_1graph_1_1zoltan.html#a1f1f85ebf5a206d380910c9becb6613b">zoltan::read_zoltan_id</a>(&amp;export_node_global_ids[i * num_gid_entries])]</div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;                    = export_node_procs[i];</div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;            }</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            this-&gt;zoltan.LB_Free_Part(</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;                    &amp;import_global_ids,</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;                    &amp;import_local_ids,</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;                    &amp;import_procs,</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;                    &amp;import_to_part</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;                    );</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160; </div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;            this-&gt;zoltan.LB_Free_Part(</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;                    &amp;export_node_global_ids,</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;                    &amp;export_local_ids,</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;                    &amp;export_node_procs,</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                    &amp;export_to_part</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                    );</div>
-<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160; </div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;            <span class="comment">// Clears `zoltan_data`</span></div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;            zoltan_data.node_map.clear();</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;            zoltan_data.distributed_node_ids.clear();</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;            zoltan_data.nodes.clear();</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;            zoltan_data.edges.clear();</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160; </div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;            <span class="comment">//this-&gt;zoltan.Set_Param(&quot;LB_APPROACH&quot;, &quot;REPARTITION&quot;);</span></div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;            <span class="keywordflow">return</span> partition;</div>
-<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;        }</div>
-<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160; </div>
-<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a></div>
-<div class="line"><a name="l00467"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">  467</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8ab28c34273f2d9c0da6443249ef5e7d">ZoltanLoadBalancing&lt;T&gt;::balance</a>(NodeMap&lt;T&gt; nodes) {</div>
-<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;            <span class="keywordflow">return</span> this-&gt;balance(nodes, {});</div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;        }</div>
-<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160; </div>
-<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;    <span class="comment">/*</span></div>
-<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;<span class="comment">     * Initializes zoltan parameters and zoltan lb query functions.</span></div>
-<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;<span class="comment">     */</span></div>
-<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing&lt;T&gt;::setUpZoltan</a>() {</div>
-<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;        <a class="code" href="namespacefpmas_1_1graph_1_1zoltan.html#a5dba3e09b1c68378547b22a77e78431f">zoltan::zoltan_config</a>(&amp;this-&gt;zoltan);</div>
-<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160; </div>
-<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;        <span class="comment">// Initializes Zoltan Node Load Balancing functions</span></div>
-<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160;        this-&gt;zoltan.Set_Num_Fixed_Obj_Fn(zoltan::num_fixed_obj_fn&lt;T&gt;, &amp;this-&gt;fixed_vertices);</div>
-<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;        this-&gt;zoltan.Set_Fixed_Obj_List_Fn(zoltan::fixed_obj_list_fn&lt;T&gt;, &amp;this-&gt;fixed_vertices);</div>
-<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;        this-&gt;zoltan.Set_Num_Obj_Fn(zoltan::num_obj&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>
-<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;        this-&gt;zoltan.Set_Obj_List_Fn(zoltan::obj_list&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>
-<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;        this-&gt;zoltan.Set_Num_Edges_Multi_Fn(zoltan::num_edges_multi_fn&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>
-<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;        this-&gt;zoltan.Set_Edge_List_Multi_Fn(zoltan::edge_list_multi_fn&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>
-<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;    }</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160; </div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;            <span class="keywordtype">int</span> num_import; </div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;            ZOLTAN_ID_PTR import_global_ids;</div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;            ZOLTAN_ID_PTR import_local_ids;</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;            <span class="keywordtype">int</span> * import_procs;</div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;            <span class="keywordtype">int</span> * import_to_part;</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160; </div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;            <span class="keywordtype">int</span> export_node_num;</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;            ZOLTAN_ID_PTR export_node_global_ids;</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;            ZOLTAN_ID_PTR export_local_ids;</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;            <span class="keywordtype">int</span>* export_node_procs;</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;            <span class="keywordtype">int</span>* export_to_part;</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160; </div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;            <span class="comment">// Computes Zoltan partitioning</span></div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;            this-&gt;zoltan.LB_Partition(</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;                    changes,</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;                    num_gid_entries,</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;                    num_lid_entries,</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160;                    num_import,</div>
+<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;                    import_global_ids,</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;                    import_local_ids,</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;                    import_procs,</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;                    import_to_part,</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;                    export_node_num,</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;                    export_node_global_ids,</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;                    export_local_ids,</div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;                    export_node_procs,</div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;                    export_to_part</div>
+<div class="line"><a name="l00465"></a><span class="lineno">  465</span>&#160;                    );</div>
+<div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160; </div>
+<div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;            <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a> partition;</div>
+<div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160;            <span class="keywordflow">for</span>(<span class="keywordtype">int</span> i = 0; i &lt; export_node_num; i++) {</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;                partition[<a class="code" href="namespacefpmas_1_1graph_1_1zoltan.html#a1f1f85ebf5a206d380910c9becb6613b">zoltan::read_zoltan_id</a>(&amp;export_node_global_ids[i * num_gid_entries])]</div>
+<div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;                    = export_node_procs[i];</div>
+<div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;            }</div>
+<div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;            this-&gt;zoltan.LB_Free_Part(</div>
+<div class="line"><a name="l00473"></a><span class="lineno">  473</span>&#160;                    &amp;import_global_ids,</div>
+<div class="line"><a name="l00474"></a><span class="lineno">  474</span>&#160;                    &amp;import_local_ids,</div>
+<div class="line"><a name="l00475"></a><span class="lineno">  475</span>&#160;                    &amp;import_procs,</div>
+<div class="line"><a name="l00476"></a><span class="lineno">  476</span>&#160;                    &amp;import_to_part</div>
+<div class="line"><a name="l00477"></a><span class="lineno">  477</span>&#160;                    );</div>
+<div class="line"><a name="l00478"></a><span class="lineno">  478</span>&#160; </div>
+<div class="line"><a name="l00479"></a><span class="lineno">  479</span>&#160;            this-&gt;zoltan.LB_Free_Part(</div>
+<div class="line"><a name="l00480"></a><span class="lineno">  480</span>&#160;                    &amp;export_node_global_ids,</div>
+<div class="line"><a name="l00481"></a><span class="lineno">  481</span>&#160;                    &amp;export_local_ids,</div>
+<div class="line"><a name="l00482"></a><span class="lineno">  482</span>&#160;                    &amp;export_node_procs,</div>
+<div class="line"><a name="l00483"></a><span class="lineno">  483</span>&#160;                    &amp;export_to_part</div>
+<div class="line"><a name="l00484"></a><span class="lineno">  484</span>&#160;                    );</div>
 <div class="line"><a name="l00485"></a><span class="lineno">  485</span>&#160; </div>
-<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;}}</div>
-<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00486"></a><span class="lineno">  486</span>&#160;            <span class="comment">// Clears `zoltan_data`</span></div>
+<div class="line"><a name="l00487"></a><span class="lineno">  487</span>&#160;            zoltan_data.node_map.clear();</div>
+<div class="line"><a name="l00488"></a><span class="lineno">  488</span>&#160;            zoltan_data.distributed_node_ids.clear();</div>
+<div class="line"><a name="l00489"></a><span class="lineno">  489</span>&#160;            zoltan_data.nodes.clear();</div>
+<div class="line"><a name="l00490"></a><span class="lineno">  490</span>&#160;            zoltan_data.edges.clear();</div>
+<div class="line"><a name="l00491"></a><span class="lineno">  491</span>&#160; </div>
+<div class="line"><a name="l00492"></a><span class="lineno">  492</span>&#160;            <span class="keywordflow">return</span> partition;</div>
+<div class="line"><a name="l00493"></a><span class="lineno">  493</span>&#160;        }</div>
+<div class="line"><a name="l00494"></a><span class="lineno">  494</span>&#160; </div>
+<div class="line"><a name="l00495"></a><span class="lineno">  495</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a></div>
+<div class="line"><a name="l00496"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">  496</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">ZoltanLoadBalancing&lt;T&gt;::balance</a>(NodeMap&lt;T&gt; nodes) {</div>
+<div class="line"><a name="l00497"></a><span class="lineno">  497</span>&#160;            <span class="keywordflow">return</span> this-&gt;balance(nodes, <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891cac1da064f9884c7f59c51accca7d88d94">api::graph::PARTITION</a>);</div>
+<div class="line"><a name="l00498"></a><span class="lineno">  498</span>&#160;        }</div>
+<div class="line"><a name="l00499"></a><span class="lineno">  499</span>&#160; </div>
+<div class="line"><a name="l00500"></a><span class="lineno">  500</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">PartitionMap</a></div>
+<div class="line"><a name="l00501"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a9e6e70331010dc66f11e40288da506ab">  501</a></span>&#160;        <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">ZoltanLoadBalancing&lt;T&gt;::balance</a>(</div>
+<div class="line"><a name="l00502"></a><span class="lineno">  502</span>&#160;                NodeMap&lt;T&gt; nodes, <a class="code" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a> partition_mode) {</div>
+<div class="line"><a name="l00503"></a><span class="lineno">  503</span>&#160;            <span class="keywordflow">return</span> this-&gt;balance(nodes, {}, partition_mode);</div>
+<div class="line"><a name="l00504"></a><span class="lineno">  504</span>&#160;        }</div>
+<div class="line"><a name="l00505"></a><span class="lineno">  505</span>&#160; </div>
+<div class="line"><a name="l00506"></a><span class="lineno">  506</span>&#160;    <span class="comment">/*</span></div>
+<div class="line"><a name="l00507"></a><span class="lineno">  507</span>&#160;<span class="comment">     * Initializes zoltan parameters and zoltan lb query functions.</span></div>
+<div class="line"><a name="l00508"></a><span class="lineno">  508</span>&#160;<span class="comment">     */</span></div>
+<div class="line"><a name="l00509"></a><span class="lineno">  509</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing&lt;T&gt;::setUpZoltan</a>() {</div>
+<div class="line"><a name="l00510"></a><span class="lineno">  510</span>&#160;        <a class="code" href="namespacefpmas_1_1graph_1_1zoltan.html#a5dba3e09b1c68378547b22a77e78431f">zoltan::zoltan_config</a>(&amp;this-&gt;zoltan);</div>
+<div class="line"><a name="l00511"></a><span class="lineno">  511</span>&#160; </div>
+<div class="line"><a name="l00512"></a><span class="lineno">  512</span>&#160;        <span class="comment">// Initializes Zoltan Node Load Balancing functions</span></div>
+<div class="line"><a name="l00513"></a><span class="lineno">  513</span>&#160;        this-&gt;zoltan.Set_Num_Fixed_Obj_Fn(zoltan::num_fixed_obj_fn&lt;T&gt;, &amp;this-&gt;fixed_vertices);</div>
+<div class="line"><a name="l00514"></a><span class="lineno">  514</span>&#160;        this-&gt;zoltan.Set_Fixed_Obj_List_Fn(zoltan::fixed_obj_list_fn&lt;T&gt;, &amp;this-&gt;fixed_vertices);</div>
+<div class="line"><a name="l00515"></a><span class="lineno">  515</span>&#160;        this-&gt;zoltan.Set_Num_Obj_Fn(zoltan::num_obj&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>
+<div class="line"><a name="l00516"></a><span class="lineno">  516</span>&#160;        this-&gt;zoltan.Set_Obj_List_Fn(zoltan::obj_list&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>
+<div class="line"><a name="l00517"></a><span class="lineno">  517</span>&#160;        this-&gt;zoltan.Set_Num_Edges_Multi_Fn(zoltan::num_edges_multi_fn&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>
+<div class="line"><a name="l00518"></a><span class="lineno">  518</span>&#160;        this-&gt;zoltan.Set_Edge_List_Multi_Fn(zoltan::edge_list_multi_fn&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>
+<div class="line"><a name="l00519"></a><span class="lineno">  519</span>&#160;    }</div>
+<div class="line"><a name="l00520"></a><span class="lineno">  520</span>&#160; </div>
+<div class="line"><a name="l00521"></a><span class="lineno">  521</span>&#160;}}</div>
+<div class="line"><a name="l00522"></a><span class="lineno">  522</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:211</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedId_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::api::graph::DistributedId</a></div><div class="ttdef"><b>Definition:</b> distributed_id.h:86</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">fpmas::api::graph::FixedVerticesLoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:31</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1LoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">fpmas::api::graph::LoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:63</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1FixedVerticesLoadBalancing.html">fpmas::api::graph::FixedVerticesLoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:47</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1LoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">fpmas::api::graph::LoadBalancing</a></div><div class="ttdef"><b>Definition:</b> load_balancing.h:92</div></div>
 <div class="ttc" id="aclassfpmas_1_1communication_1_1MpiCommunicatorBase_html"><div class="ttname"><a href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html">fpmas::communication::MpiCommunicatorBase</a></div><div class="ttdef"><b>Definition:</b> communication.h:29</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1ZoltanLoadBalancing_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">fpmas::graph::ZoltanLoadBalancing</a></div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.h:320</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1ZoltanLoadBalancing_html_a8ab28c34273f2d9c0da6443249ef5e7d"><div class="ttname"><a href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8ab28c34273f2d9c0da6443249ef5e7d">fpmas::graph::ZoltanLoadBalancing::balance</a></div><div class="ttdeci">PartitionMap balance(NodeMap&lt; T &gt; nodes, PartitionMap fixed_vertices) override</div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.h:385</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1ZoltanLoadBalancing_html_a806a9f54d8d34567328c32f0686e60e0"><div class="ttname"><a href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a806a9f54d8d34567328c32f0686e60e0">fpmas::graph::ZoltanLoadBalancing::balance</a></div><div class="ttdeci">PartitionMap balance(NodeMap&lt; T &gt; nodes, PartitionMap fixed_vertices, api::graph::PartitionMode partition_mode) override</div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.h:405</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1ZoltanLoadBalancing_html_a8190978ca67a72335bf3771fd3471403"><div class="ttname"><a href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8190978ca67a72335bf3771fd3471403">fpmas::graph::ZoltanLoadBalancing::balance</a></div><div class="ttdeci">PartitionMap balance(NodeMap&lt; T &gt; nodes, api::graph::PartitionMap fixed_vertices) override</div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.h:397</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1ZoltanLoadBalancing_html_a8baaa58631744d67268d6846e191232c"><div class="ttname"><a href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8baaa58631744d67268d6846e191232c">fpmas::graph::ZoltanLoadBalancing::ZoltanLoadBalancing</a></div><div class="ttdeci">ZoltanLoadBalancing(communication::MpiCommunicatorBase &amp;comm)</div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.h:359</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1ZoltanLoadBalancing_html_aef65a29932d06a728fbd45433e62b3e8"><div class="ttname"><a href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">fpmas::graph::ZoltanLoadBalancing::balance</a></div><div class="ttdeci">PartitionMap balance(NodeMap&lt; T &gt; nodes) override</div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.h:467</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1ZoltanLoadBalancing_html_a9e6e70331010dc66f11e40288da506ab"><div class="ttname"><a href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a9e6e70331010dc66f11e40288da506ab">fpmas::graph::ZoltanLoadBalancing::balance</a></div><div class="ttdeci">PartitionMap balance(NodeMap&lt; T &gt; nodes, api::graph::PartitionMode partition_mode) override</div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.h:501</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1ZoltanLoadBalancing_html_aef65a29932d06a728fbd45433e62b3e8"><div class="ttname"><a href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#aef65a29932d06a728fbd45433e62b3e8">fpmas::graph::ZoltanLoadBalancing::balance</a></div><div class="ttdeci">PartitionMap balance(NodeMap&lt; T &gt; nodes) override</div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.h:496</div></div>
 <div class="ttc" id="acommunication_2communication_8h_html"><div class="ttname"><a href="communication_2communication_8h.html">communication.h</a></div></div>
 <div class="ttc" id="adistributed__id_8h_html_af1f79f0ccd7aab198c60b5f7aa431322"><div class="ttname"><a href="distributed__id_8h.html#af1f79f0ccd7aab198c60b5f7aa431322">FPMAS_ID_TYPE</a></div><div class="ttdeci">#define FPMAS_ID_TYPE</div><div class="ttdef"><b>Definition:</b> distributed_id.h:29</div></div>
 <div class="ttc" id="aload__balancing_8h_html"><div class="ttname"><a href="load__balancing_8h.html">load_balancing.h</a></div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a3b8d45dcdede19e41beff03c30a0671d"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">fpmas::api::graph::PartitionMap</a></div><div class="ttdeci">std::unordered_map&lt; DistributedId, int, api::graph::IdHash&lt; DistributedId &gt; &gt; PartitionMap</div><div class="ttdef"><b>Definition:</b> load_balancing.h:19</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a97accfb690a253ad0fd7a741cb41891c"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">fpmas::api::graph::PartitionMode</a></div><div class="ttdeci">PartitionMode</div><div class="ttdef"><b>Definition:</b> load_balancing.h:30</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a97accfb690a253ad0fd7a741cb41891ca1c9ffd38f7452da1d49dbbdd5a189f43"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891ca1c9ffd38f7452da1d49dbbdd5a189f43">fpmas::api::graph::REPARTITION</a></div><div class="ttdeci">@ REPARTITION</div><div class="ttdef"><b>Definition:</b> load_balancing.h:40</div></div>
+<div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a97accfb690a253ad0fd7a741cb41891cac1da064f9884c7f59c51accca7d88d94"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891cac1da064f9884c7f59c51accca7d88d94">fpmas::api::graph::PARTITION</a></div><div class="ttdeci">@ PARTITION</div><div class="ttdef"><b>Definition:</b> load_balancing.h:35</div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_acc7eb1311839a21b24362b472d3ea887"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">fpmas::api::graph::NodeMap</a></div><div class="ttdeci">typename graph::Graph&lt; graph::DistributedNode&lt; T &gt;, graph::DistributedEdge&lt; T &gt; &gt;::NodeMap NodeMap</div><div class="ttdef"><b>Definition:</b> load_balancing.h:25</div></div>
 <div class="ttc" id="anamespacefpmas_1_1communication_html_a995d226e4db6370704028965091c62ec"><div class="ttname"><a href="namespacefpmas_1_1communication.html#a995d226e4db6370704028965091c62ec">fpmas::communication::all_reduce</a></div><div class="ttdeci">T all_reduce(api::communication::TypedMpi&lt; T &gt; &amp;mpi, const T &amp;data, BinaryOp binary_op=BinaryOp())</div><div class="ttdef"><b>Definition:</b> communication.h:616</div></div>
 <div class="ttc" id="anamespacefpmas_1_1graph_1_1zoltan_html_a05b68727c104f62f3c2f516b949a3e54"><div class="ttname"><a href="namespacefpmas_1_1graph_1_1zoltan.html#a05b68727c104f62f3c2f516b949a3e54">fpmas::graph::zoltan::write_zoltan_id</a></div><div class="ttdeci">void write_zoltan_id(DistributedId id, ZOLTAN_ID_PTR global_ids)</div><div class="ttdef"><b>Definition:</b> zoltan_load_balancing.cpp:34</div></div>

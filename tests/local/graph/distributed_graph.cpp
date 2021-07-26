@@ -1078,7 +1078,7 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 		EXPECT_CALL(mock_sync_linker, synchronize);
 		EXPECT_CALL(
 				load_balancing,
-				balance(node_map))
+				balance(node_map, fpmas::api::graph::PARTITION))
 			.WillOnce(Return(fake_partition));
 		EXPECT_CALL(mock_data_sync, synchronize());
 	}
@@ -1092,7 +1092,7 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 	EXPECT_CALL(location_manager, updateLocations());
 
 	// Actual call
-	graph.balance(load_balancing);
+	graph.balance(load_balancing, fpmas::api::graph::PARTITION);
 }
 
 /*

@@ -25,11 +25,38 @@ namespace fpmas { namespace api { namespace graph {
 	using NodeMap = typename graph::Graph<graph::DistributedNode<T>, graph::DistributedEdge<T>>::NodeMap;
 
 	/**
+	 * Defines the partition strategy used when distributing a graph.
+	 */
+	enum PartitionMode {
+		/**
+		 * Indicates that a complete partitioning must be computed,
+		 * independently of the current partitioning of the graph.
+		 */
+		PARTITION,
+		/**
+		 * Indicates that the load balancing algorithm can optimize the new
+		 * partitioning according to the current partitioning.
+		 */
+		REPARTITION
+	};
+
+	/**
 	 * Load balancing API with fixed vertices handling.
 	 */
 	template<typename T>
 		class FixedVerticesLoadBalancing {
 			public:
+				
+				/**
+				 * @deprecated
+				 * Deprecated in favor of balance(NodeMap<T>, PartitionMap, PartitionMode)
+				 */
+				[[deprecated]]
+				virtual PartitionMap balance(
+						NodeMap<T> nodes,
+						PartitionMap fixed_vertices
+						) = 0;
+
 				/**
 				 * Computes a node partition from the input nodes, assigning a
 				 * fixed rank to nodes specified in the fixed vertices map.
@@ -46,12 +73,14 @@ namespace fpmas { namespace api { namespace graph {
 				 *
 				 * @param nodes local nodes to balance
 				 * @param fixed_vertices fixed vertices map
+				 * @param partition_mode partitioning strategy
 				 * @return balanced partition map
 				 */
 				virtual PartitionMap balance(
 						NodeMap<T> nodes,
-						PartitionMap fixed_vertices
-						) = 0;
+						PartitionMap fixed_vertices,
+						PartitionMode partition_mode
+						);
 
 				virtual ~FixedVerticesLoadBalancing() {}
 		};
@@ -62,6 +91,14 @@ namespace fpmas { namespace api { namespace graph {
 	template<typename T>
 		class LoadBalancing {
 			public:
+				
+				/**
+				 * @deprecated
+				 * Deprecated in favor of balance(NodeMap<T>, PartitionMode)
+				 */
+				[[deprecated]]
+				virtual PartitionMap balance(NodeMap<T> nodes) = 0;
+
 				/**
 				 * Computes a node partition from the input nodes.
 				 *
@@ -73,9 +110,12 @@ namespace fpmas { namespace api { namespace graph {
 				 * union of all the local node maps specified as arguments.
 				 *
 				 * @param nodes local nodes to balance
+				 * @param partition_mode partitioning strategy
 				 * @return balanced partition map
 				 */
-				virtual PartitionMap balance(NodeMap<T> nodes) = 0;
+				virtual PartitionMap balance(
+						NodeMap<T> nodes, PartitionMode partition_mode
+						) = 0;
 
 				virtual ~LoadBalancing() {}
 		};

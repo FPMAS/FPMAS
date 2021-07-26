@@ -27,7 +27,7 @@ class RandomLoadBalancing : public Test {
 const std::size_t RandomLoadBalancing::NUM_NODES = 100;
 
 TEST_F(RandomLoadBalancing, test) {
-	auto partition = random_lb.balance(nodes);
+	auto partition = random_lb.balance(nodes, fpmas::api::graph::PARTITION);
 
 	ASSERT_THAT(partition, SizeIs(NUM_NODES));
 
@@ -40,8 +40,8 @@ TEST_F(RandomLoadBalancing, test) {
 }
 
 TEST_F(RandomLoadBalancing, dynamic) {
-	auto partition1 = random_lb.balance(nodes);
-	auto partition2 = random_lb.balance(nodes);
+	auto partition1 = random_lb.balance(nodes, fpmas::api::graph::PARTITION);
+	auto partition2 = random_lb.balance(nodes, fpmas::api::graph::REPARTITION);
 
 	ASSERT_THAT(partition1, Not(UnorderedElementsAreArray(partition2)));
 }
@@ -64,7 +64,7 @@ class FixedVerticesRandomLoadBalancing : public RandomLoadBalancing {
 };
 
 TEST_F(FixedVerticesRandomLoadBalancing, test_fixed) {
-	auto partition = random_lb.balance(nodes, fixed_vertices);
+	auto partition = random_lb.balance(nodes, fixed_vertices, fpmas::api::graph::PARTITION);
 
 	for(auto item : fixed_vertices)
 		ASSERT_EQ(partition[item.first], item.second);
@@ -80,8 +80,8 @@ TEST_F(FixedVerticesRandomLoadBalancing, test_fixed) {
 }
 
 TEST_F(FixedVerticesRandomLoadBalancing, fixed_dynamic) {
-	auto partition1 = random_lb.balance(nodes, fixed_vertices);
-	auto partition2 = random_lb.balance(nodes, fixed_vertices);
+	auto partition1 = random_lb.balance(nodes, fixed_vertices, fpmas::api::graph::PARTITION);
+	auto partition2 = random_lb.balance(nodes, fixed_vertices, fpmas::api::graph::REPARTITION);
 
 	ASSERT_THAT(partition1, Not(UnorderedElementsAreArray(partition2)));
 }

@@ -245,8 +245,8 @@ $(function() {
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;                <span class="comment">// Synchronizes only newly imported cells</span></div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;                dist_move_algo.model.graph()</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                    .synchronizationMode().getDataSync().synchronize(</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                            dist_move_algo.model.graph().getUnsyncNodes()</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;                    .synchronize(</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;                            dist_move_algo.model.graph().getUnsyncNodes(), <span class="keyword">false</span></div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                            );</div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;                <span class="keywordflow">for</span>(<span class="keyword">auto</span> agent : agents) {</div>
@@ -275,9 +275,9 @@ $(function() {
 <div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;            <span class="comment">// Synchronizes data of DISTANT agents that might have been created</span></div>
 <div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;            <span class="comment">// when updating perceptions</span></div>
 <div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;            dist_move_algo.model.graph()</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;                .synchronizationMode().getDataSync().synchronize(</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;                    dist_move_algo.model.graph().getUnsyncNodes()</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                    );</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;                .synchronize(</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;                        dist_move_algo.model.graph().getUnsyncNodes(), <span class="keyword">false</span></div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;                        );</div>
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
 <div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            FPMAS_LOGD(this-&gt;dist_move_algo.model.getMpiCommunicator().getRank(),</div>
 <div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;                    <span class="stringliteral">&quot;DMA&quot;</span>, <span class="stringliteral">&quot;Done.&quot;</span>, <span class="stringliteral">&quot;&quot;</span>);</div>
