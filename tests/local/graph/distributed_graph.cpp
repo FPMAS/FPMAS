@@ -1080,7 +1080,6 @@ TEST_F(DistributedGraphDistributeTest, balance) {
 				load_balancing,
 				balance(node_map, fpmas::api::graph::PARTITION))
 			.WillOnce(Return(fake_partition));
-		EXPECT_CALL(mock_data_sync, synchronize());
 	}
 	// Migration of nodes + edges
 	EXPECT_CALL(graph.getNodeMpi(), migrate);
