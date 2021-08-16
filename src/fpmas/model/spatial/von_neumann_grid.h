@@ -45,7 +45,7 @@ namespace fpmas { namespace model {
 	 * @see VonNeumannRange
 	 * @see MooreRange
 	 */
-	template<typename CellType = api::model::GridCell>
+	template<typename CellType = model::GridCell>
 	class VonNeumannGridBuilder : public detail::GridBuilder<CellType> {
 		private:
 
@@ -157,7 +157,7 @@ namespace fpmas { namespace model {
 	 * VonNeumann GridConfig specialization, that might be used where a
 	 * `GridConfig` template parameter is required.
 	 */
-	template<typename CellType = api::model::GridCell>
+	template<typename CellType = model::GridCell>
 	using VonNeumannGrid = GridConfig<VonNeumannGridBuilder<CellType>, ManhattanDistance, CellType>;
 }}
 #endif

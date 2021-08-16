@@ -34,4 +34,8 @@ namespace fpmas { namespace utils { namespace perf {
 	Duration Monitor::totalDuration(std::string probe_label) const {
 		return data[probe_label].second;
 	}
+
+	void Monitor::clear() {
+		data.clear();
+	}
 }}}

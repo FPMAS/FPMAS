@@ -36,19 +36,6 @@ namespace fpmas { namespace model {
 		std::size_t operator()(const DiscretePoint& p) const;
 	};
 		
-
-	/**
-	 * Grid specialization of the SpatialAgentBuilder class.
-	 *
-	 * The fpmas::model::GridAgentBuilder uses api::model::GridCell as the `MappingCellType`
-	 * parameter, meaning an
-	 * SpatialAgentMapping<api::model::GridCell> must be provided
-	 * to the fpmas::model::GridAgentBuilder::build() method. As an example,
-	 * RandomGridAgentMapping might be used. 
-	 */
-	template<typename CellType = api::model::GridCell>
-	using GridAgentBuilder = SpatialAgentBuilder<CellType, api::model::GridCell>;
-
 	/**
 	 * api::model::GridCell implementation.
 	 *
@@ -112,7 +99,7 @@ namespace fpmas { namespace model {
 	 * @tparam Derived direct derived class, or at least the next class in the
 	 * serialization chain
 	 */
-	template<typename AgentType, typename GridCellType = api::model::GridCell, typename Derived = AgentType>
+	template<typename AgentType, typename GridCellType = model::GridCell, typename Derived = AgentType>
 	class GridAgent :
 		public virtual api::model::GridAgent<GridCellType>,
 		public SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>> {
@@ -202,9 +189,22 @@ namespace fpmas { namespace model {
 		};
 
 	/**
+	 * Grid specialization of the SpatialAgentBuilder class.
+	 *
+	 * The fpmas::model::GridAgentBuilder uses api::model::GridCell as the `MappingCellType`
+	 * parameter, meaning an
+	 * SpatialAgentMapping<api::model::GridCell> must be provided
+	 * to the fpmas::model::GridAgentBuilder::build() method. As an example,
+	 * RandomGridAgentMapping might be used. 
+	 */
+	template<typename CellType = GridCell>
+	using GridAgentBuilder = SpatialAgentBuilder<CellType, api::model::GridCell>;
+
+
+	/**
 	 * Generic static Grid configuration interface.
 	 */
-	template<typename BuilderType, typename DistanceType, typename _CellType = api::model::GridCell>
+	template<typename BuilderType, typename DistanceType, typename _CellType = model::GridCell>
 		struct GridConfig {
 			/**
 			 * fpmas::api::model::CellNetworkBuilder implementation that can
@@ -412,7 +412,7 @@ namespace fpmas { namespace model {
 	 */
 	template<
 		template<typename> class SyncMode,
-		typename CellType = api::model::GridCell,
+		typename CellType = model::GridCell,
 		typename EndCondition = DynamicEndCondition<CellType>>
 			using GridModel = SpatialModel<SyncMode, CellType, EndCondition>;
 }}

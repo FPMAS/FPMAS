@@ -1028,6 +1028,17 @@ namespace fpmas { namespace model {
 		= graph::DistributedClusteredGraphBuilder<AgentPtr>;
 
 	/**
+	 * graph::ZoltanLoadBalancing AgentPtr specialization.
+	 */
+	using ZoltanLoadBalancing
+		= graph::ZoltanLoadBalancing<AgentPtr>;
+	/**
+	 * graph::ScheduledLoadBalancing AgentPtr specialization.
+	 */
+	using ScheduledLoadBalancing
+		= graph::ScheduledLoadBalancing<AgentPtr>;
+
+	/**
 	 * \Model fpmas::io::Breakpoint specialization.
 	 */
 	typedef io::Breakpoint<api::model::Model> Breakpoint;

@@ -95,6 +95,7 @@ namespace fpmas { namespace utils { namespace perf {
 			void commit(api::utils::perf::Probe& probe) override;
 			std::size_t callCount(std::string probe_label) const override;
 			Duration totalDuration(std::string probe_label) const override;
+			void clear() override;
 	};
 }}}
 

@@ -133,7 +133,7 @@ TEST_F(GridLoadBalancingTest, grid_agents) {
 		auto agent = new TestGridAgent;
 		move_group.add(agent);
 		agent->initLocation(
-				dynamic_cast<fpmas::api::model::GridCell*>(cell.second->data().get())
+				dynamic_cast<fpmas::model::GridCell*>(cell.second->data().get())
 				);
 	}
 	model.runtime().execute(move_group.jobs());
@@ -146,7 +146,7 @@ TEST_F(GridLoadBalancingTest, grid_agents) {
 
 	for(auto agent : move_group.localAgents())
 		ASSERT_THAT(
-				dynamic_cast<fpmas::api::model::GridAgent<fpmas::api::model::GridCell>*>(
+				dynamic_cast<fpmas::api::model::GridAgent<fpmas::model::GridCell>*>(
 					agent
 					)->locationCell()->node()->state(),
 				fpmas::api::graph::LOCAL

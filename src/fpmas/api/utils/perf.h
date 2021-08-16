@@ -166,6 +166,11 @@ namespace fpmas { namespace api { namespace utils { namespace perf {
 			 */
 			virtual Duration totalDuration(std::string probe_label) const = 0;
 
+			/**
+			 * Clears the monitor content.
+			 */
+			virtual void clear() = 0;
+
 			virtual ~Monitor() {}
 	};
 }}}}

@@ -15,7 +15,7 @@ using namespace fpmas::model;
 class GridBuilderTest : public Test {
 	protected:
 		void checkGridCells(
-				fpmas::api::model::GridModel& grid_model,
+				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
 				int X, int Y
 				) {
 			fpmas::communication::TypedMpi<std::vector<fpmas::model::DiscretePoint>> mpi(
@@ -51,8 +51,8 @@ class GridBuilderTest : public Test {
 class VonNeumannGridBuilderTest : public GridBuilderTest {
 	protected:
 		void checkGridStructure(
-				fpmas::api::model::GridModel& grid_model,
-				std::vector<fpmas::api::model::GridCell*> cells, int X, int Y) {
+				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
+				std::vector<fpmas::model::GridCell*> cells, int X, int Y) {
 			checkGridCells(grid_model, X, Y);
 
 			for(auto grid_cell : cells) {
@@ -135,8 +135,8 @@ class VonNeumannGridBuilderTest : public GridBuilderTest {
 };
 
 TEST_F(VonNeumannGridBuilderTest, trivial) {
-	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	VonNeumannGridBuilder<> null(0, 0);
@@ -148,8 +148,8 @@ TEST_F(VonNeumannGridBuilderTest, trivial) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_height_sup_width) {
-	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	int X = fpmas::communication::WORLD.getSize() * 10;
@@ -165,8 +165,8 @@ TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_height_sup_width) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_width_sup_height) {
-	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	int Y = fpmas::communication::WORLD.getSize() * 10;
@@ -179,8 +179,8 @@ TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_width_sup_height) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_height_sup_width) {
-	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	int X = fpmas::communication::WORLD.getSize() * 10;
@@ -193,8 +193,8 @@ TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_height_sup_width) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_width_sup_height) {
-	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	int Y = fpmas::communication::WORLD.getSize() * 10;
@@ -207,8 +207,8 @@ TEST_F(VonNeumannGridBuilderTest, hard_sync_mode_build_width_sup_height) {
 }
 
 TEST_F(VonNeumannGridBuilderTest, build_with_groups) {
-	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	IdleBehavior behavior;
@@ -237,8 +237,8 @@ TEST_F(VonNeumannGridBuilderTest, build_with_groups) {
 class MooreGridBuilderTest : public GridBuilderTest {
 	protected:
 		void checkGridStructure(
-				fpmas::api::model::GridModel& grid_model,
-				std::vector<fpmas::api::model::GridCell*> cells, int X, int Y) {
+				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
+				std::vector<fpmas::model::GridCell*> cells, int X, int Y) {
 			checkGridCells(grid_model, X, Y);
 
 			for(auto grid_cell : cells) {
@@ -347,8 +347,8 @@ class MooreGridBuilderTest : public GridBuilderTest {
 };
 
 TEST_F(MooreGridBuilderTest, trivial) {
-	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	MooreGridBuilder<> null(0, 0);
@@ -360,8 +360,8 @@ TEST_F(MooreGridBuilderTest, trivial) {
 }
 
 TEST_F(MooreGridBuilderTest, ghost_mode_build_height_sup_width) {
-	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	int X = fpmas::communication::WORLD.getSize() * 10;
@@ -377,8 +377,8 @@ TEST_F(MooreGridBuilderTest, ghost_mode_build_height_sup_width) {
 }
 
 TEST_F(MooreGridBuilderTest, ghost_mode_build_width_sup_height) {
-	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	int Y = fpmas::communication::WORLD.getSize() * 10;
@@ -391,8 +391,8 @@ TEST_F(MooreGridBuilderTest, ghost_mode_build_width_sup_height) {
 }
 
 TEST_F(MooreGridBuilderTest, hard_sync_mode_build_height_sup_width) {
-	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	int X = fpmas::communication::WORLD.getSize() * 10;
@@ -405,8 +405,8 @@ TEST_F(MooreGridBuilderTest, hard_sync_mode_build_height_sup_width) {
 }
 
 TEST_F(MooreGridBuilderTest, hard_sync_mode_build_width_sup_height) {
-	GridModel<fpmas::synchro::HardSyncMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::HardSyncMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	int Y = fpmas::communication::WORLD.getSize() * 10;
@@ -419,8 +419,8 @@ TEST_F(MooreGridBuilderTest, hard_sync_mode_build_width_sup_height) {
 }
 
 TEST_F(MooreGridBuilderTest, build_with_groups) {
-	GridModel<fpmas::synchro::GhostMode, fpmas::api::model::GridCell,
-		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::api::model::GridCell>
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
 	IdleBehavior behavior;

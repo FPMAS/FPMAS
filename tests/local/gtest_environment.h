@@ -4,6 +4,7 @@
 #include "model/mock_model.h"
 #include "model/mock_spatial_model.h"
 #include "fpmas/model/spatial/grid.h"
+#include "../mocks/model/mock_grid.h"
 
 namespace model { namespace test {
 	template<typename AgentType>
@@ -42,19 +43,19 @@ namespace model { namespace test {
 	};
 
 	template<typename GridAgentType>
-		class GridAgentBase : public fpmas::model::GridAgent<GridAgentType> {
+		class GridAgentBase : public fpmas::model::GridAgent<GridAgentType, MockGridCell<testing::NiceMock>> {
 			public:
-				static MockRange<fpmas::api::model::GridCell>* mobility_range;
-				static MockRange<fpmas::api::model::GridCell>* perception_range;
+				static MockRange<MockGridCell<testing::NiceMock>>* mobility_range;
+				static MockRange<MockGridCell<testing::NiceMock>>* perception_range;
 
 				FPMAS_MOBILITY_RANGE(*mobility_range);
 				FPMAS_PERCEPTION_RANGE(*perception_range);
 		};
 
 	template<typename GridAgentType>
-	MockRange<fpmas::api::model::GridCell>* GridAgentBase<GridAgentType>::mobility_range;
+	MockRange<MockGridCell<testing::NiceMock>>* GridAgentBase<GridAgentType>::mobility_range;
 	template<typename GridAgentType>
-	MockRange<fpmas::api::model::GridCell>* GridAgentBase<GridAgentType>::perception_range;
+	MockRange<MockGridCell<testing::NiceMock>>* GridAgentBase<GridAgentType>::perception_range;
 
 	class GridAgent : public GridAgentBase<GridAgent> {};
 

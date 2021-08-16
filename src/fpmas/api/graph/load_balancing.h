@@ -80,7 +80,7 @@ namespace fpmas { namespace api { namespace graph {
 						NodeMap<T> nodes,
 						PartitionMap fixed_vertices,
 						PartitionMode partition_mode
-						);
+						) = 0;
 
 				virtual ~FixedVerticesLoadBalancing() {}
 		};

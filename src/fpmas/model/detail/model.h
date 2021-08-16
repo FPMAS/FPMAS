@@ -641,7 +641,7 @@ namespace fpmas {
 						 *
 						 * Default graph, load balancing algorithm, runtime and
 						 * scheduler defined in DefaultModelConfig are used to
-						 * initialized the Model.
+						 * initialize the Model.
 						 */
 						DefaultModel() :
 							DefaultModelConfig<SyncMode>(),
@@ -654,8 +654,8 @@ namespace fpmas {
 						 *
 						 * Default graph, runtime and
 						 * scheduler defined in DefaultModelConfig are used to
-						 * initialized the Model, but the specified load
-						 * balancing algorithm is used.
+						 * initialize the Model, with the specified load
+						 * balancing algorithm.
 						 *
 						 * The `load_balancing` algorithm lifetime must exceed
 						 * this DefaultModel lifetime.
@@ -668,6 +668,31 @@ namespace fpmas {
 							DefaultModelConfig<SyncMode>(),
 							Model(
 									this->__graph, this->__scheduler, this->__runtime,
+									load_balancing
+									) {}
+
+						/**
+						 * DefaultModel constructor.
+						 *
+						 * The default graph is used to initialize the Model,
+						 * with the specified scheduler, runtime and load
+						 * balancing algorithm.
+						 *
+						 * The `load_balancing` algorithm lifetime must exceed
+						 * this DefaultModel lifetime.
+						 *
+						 * @param scheduler scheduler
+						 * @param runtime runtime
+						 * @param load_balancing user defined load balancing
+						 * algorithm
+						 */
+						DefaultModel(
+								api::scheduler::Scheduler& scheduler,
+								api::runtime::Runtime& runtime,
+								api::graph::LoadBalancing<AgentPtr>& load_balancing) :
+							DefaultModelConfig<SyncMode>(),
+							Model(
+									this->__graph, scheduler, runtime,
 									load_balancing
 									) {}
 				};

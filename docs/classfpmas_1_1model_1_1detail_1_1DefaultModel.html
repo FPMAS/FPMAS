@@ -121,6 +121,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a11ec3aaffe6e87532bff477d1d098fff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaea0a065e703c6eeeb633205c087921e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html#aaea0a065e703c6eeeb633205c087921e">DefaultModel</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">api::graph::LoadBalancing</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt; &amp;load_balancing)</td></tr>
 <tr class="separator:aaea0a065e703c6eeeb633205c087921e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0bc1cdd8304fbf1f6b103c7863b8223e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html#a0bc1cdd8304fbf1f6b103c7863b8223e">DefaultModel</a> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;<a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a204b904321d90859829cba8ef1474ba2">scheduler</a>, <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;<a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a4f8c28c690c4d5003abb7733a421fa28">runtime</a>, <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">api::graph::LoadBalancing</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt; &amp;load_balancing)</td></tr>
+<tr class="separator:a0bc1cdd8304fbf1f6b103c7863b8223e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classfpmas_1_1model_1_1detail_1_1Model"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1model_1_1detail_1_1Model')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html">fpmas::model::detail::Model</a></td></tr>
 <tr class="memitem:a7bf0a51e12adef065c5417b339bc6272 inherit pub_methods_classfpmas_1_1model_1_1detail_1_1Model"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a7bf0a51e12adef065c5417b339bc6272">Model</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">api::model::AgentGraph</a> &amp;<a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a1d91d4bfb887a41b058fa72ddbaa0163">graph</a>, <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;<a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a204b904321d90859829cba8ef1474ba2">scheduler</a>, <a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;<a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html#a4f8c28c690c4d5003abb7733a421fa28">runtime</a>, <a class="el" href="namespacefpmas_1_1api_1_1model.html#a5e62bc99add0c29c87aba29ba151e45b">api::model::LoadBalancing</a> &amp;load_balancing)</td></tr>
 <tr class="separator:a7bf0a51e12adef065c5417b339bc6272 inherit pub_methods_classfpmas_1_1model_1_1detail_1_1Model"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -241,7 +243,7 @@ class fpmas::model::detail::DefaultModel&lt; SyncMode &gt;</h3>
 </div><!-- fragment --> </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a11ec3aaffe6e87532bff477d1d098fff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a11ec3aaffe6e87532bff477d1d098fff">&#9670;&nbsp;</a></span>DefaultModel() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a11ec3aaffe6e87532bff477d1d098fff">&#9670;&nbsp;</a></span>DefaultModel() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -265,12 +267,12 @@ template&lt;template&lt; typename &gt; class SyncMode&gt; </div>
 </table>
 </div><div class="memdoc">
 <p><a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html">DefaultModel</a> default constructor.</p>
-<p>Default graph, load balancing algorithm, runtime and scheduler defined in <a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModelConfig.html">DefaultModelConfig</a> are used to initialized the <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html">Model</a>. </p>
+<p>Default graph, load balancing algorithm, runtime and scheduler defined in <a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModelConfig.html">DefaultModelConfig</a> are used to initialize the <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html">Model</a>. </p>
 
 </div>
 </div>
 <a id="aaea0a065e703c6eeeb633205c087921e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaea0a065e703c6eeeb633205c087921e">&#9670;&nbsp;</a></span>DefaultModel() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aaea0a065e703c6eeeb633205c087921e">&#9670;&nbsp;</a></span>DefaultModel() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -295,10 +297,65 @@ template&lt;template&lt; typename &gt; class SyncMode&gt; </div>
 </table>
 </div><div class="memdoc">
 <p><a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html">DefaultModel</a> constructor.</p>
-<p>Default graph, runtime and scheduler defined in <a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModelConfig.html">DefaultModelConfig</a> are used to initialized the <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html">Model</a>, but the specified load balancing algorithm is used.</p>
+<p>Default graph, runtime and scheduler defined in <a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModelConfig.html">DefaultModelConfig</a> are used to initialize the <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html">Model</a>, with the specified load balancing algorithm.</p>
 <p>The <code><a class="el" href="namespacefpmas_1_1load__balancing.html">load_balancing</a></code> algorithm lifetime must exceed this <a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html">DefaultModel</a> lifetime.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname"><a class="el" href="namespacefpmas_1_1load__balancing.html">load_balancing</a></td><td>user defined load balancing algorithm </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0bc1cdd8304fbf1f6b103c7863b8223e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0bc1cdd8304fbf1f6b103c7863b8223e">&#9670;&nbsp;</a></span>DefaultModel() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename &gt; class SyncMode&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html">fpmas::model::detail::DefaultModel</a>&lt; SyncMode &gt;::<a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html">DefaultModel</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Scheduler.html">api::scheduler::Scheduler</a> &amp;&#160;</td>
+          <td class="paramname"><em>scheduler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1runtime_1_1Runtime.html">api::runtime::Runtime</a> &amp;&#160;</td>
+          <td class="paramname"><em>runtime</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">api::graph::LoadBalancing</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>load_balancing</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html">DefaultModel</a> constructor.</p>
+<p>The default graph is used to initialize the <a class="el" href="classfpmas_1_1model_1_1detail_1_1Model.html">Model</a>, with the specified scheduler, runtime and load balancing algorithm.</p>
+<p>The <code><a class="el" href="namespacefpmas_1_1load__balancing.html">load_balancing</a></code> algorithm lifetime must exceed this <a class="el" href="classfpmas_1_1model_1_1detail_1_1DefaultModel.html">DefaultModel</a> lifetime.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">scheduler</td><td>scheduler </td></tr>
+    <tr><td class="paramname">runtime</td><td>runtime </td></tr>
     <tr><td class="paramname"><a class="el" href="namespacefpmas_1_1load__balancing.html">load_balancing</a></td><td>user defined load balancing algorithm </td></tr>
   </table>
   </dd>

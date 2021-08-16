@@ -122,11 +122,6 @@ namespace fpmas { namespace api { namespace model {
 	};
 
 	/**
-	 * SpatialModel specialization for grid based Models.
-	 */
-	typedef SpatialModel<GridCell> GridModel;
-
-	/**
 	 * GridCellFactory API.
 	 */
 	template<typename CellType>

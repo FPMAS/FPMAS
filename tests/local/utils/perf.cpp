@@ -5,7 +5,8 @@
 #include <thread>
 
 using namespace testing;
-using namespace fpmas::utils::perf;
+using fpmas::utils::perf::Duration;
+using fpmas::utils::perf::Probe;
 
 struct MockProbe : public fpmas::api::utils::perf::Probe {
 	MOCK_METHOD(std::string, label, (), (const, override));
@@ -60,38 +61,55 @@ TEST(Probe, conditional) {
 	ASSERT_THAT(probe.durations(), SizeIs(1));
 }
 
-TEST(Monitor, default_counts_and_durations) {
-	Monitor monitor;
+class Monitor : public Test {
+	protected:
+		fpmas::utils::perf::Monitor monitor;
 
+		void fake_measures() {
+			std::vector<Duration> probe_1_durations {Duration(10)};
+			NiceMock<MockProbe> probe_1;
+			ON_CALL(probe_1, label)
+				.WillByDefault(Return(std::string("probe_1")));
+			ON_CALL(probe_1, durations())
+				.WillByDefault(ReturnRef(probe_1_durations));
+
+			std::vector<Duration> probe_2_durations {Duration(12), Duration(32), Duration(24)};
+			NiceMock<MockProbe> probe_2;
+			ON_CALL(probe_2, label)
+				.WillByDefault(Return(std::string("probe_2")));
+			ON_CALL(probe_2, durations())
+				.WillByDefault(ReturnRef(probe_2_durations));
+
+			monitor.commit(probe_1);
+			ASSERT_THAT(probe_1_durations, IsEmpty());
+
+			monitor.commit(probe_2);
+			ASSERT_THAT(probe_2_durations, IsEmpty());
+		}
+
+};
+
+TEST_F(Monitor, default_counts_and_durations) {
 	ASSERT_EQ(monitor.callCount("foo"), 0);
 	ASSERT_EQ(monitor.totalDuration("foo").count(), 0);
 }
 
-TEST(Monitor, monitor) {
-	Monitor monitor;
-
-	std::vector<Duration> probe_1_durations {Duration(10)};
-	NiceMock<MockProbe> probe_1;
-	ON_CALL(probe_1, label)
-		.WillByDefault(Return(std::string("probe_1")));
-	ON_CALL(probe_1, durations())
-		.WillByDefault(ReturnRef(probe_1_durations));
-
-	std::vector<Duration> probe_2_durations {Duration(12), Duration(32), Duration(24)};
-	NiceMock<MockProbe> probe_2;
-	ON_CALL(probe_2, label)
-		.WillByDefault(Return(std::string("probe_2")));
-	ON_CALL(probe_2, durations())
-		.WillByDefault(ReturnRef(probe_2_durations));
-
-	monitor.commit(probe_1);
-	ASSERT_THAT(probe_1_durations, IsEmpty());
-
-	monitor.commit(probe_2);
-	ASSERT_THAT(probe_2_durations, IsEmpty());
+TEST_F(Monitor, monitor) {
+	fake_measures();
 
 	ASSERT_EQ(monitor.callCount("probe_1"), 1);
 	ASSERT_EQ(monitor.totalDuration("probe_1"), Duration(10));
 	ASSERT_EQ(monitor.callCount("probe_2"), 3);
 	ASSERT_EQ(monitor.totalDuration("probe_2"), Duration(12+32+24));
+}
+
+TEST_F(Monitor, clear) {
+	fake_measures();
+
+	monitor.clear();
+
+	ASSERT_EQ(monitor.callCount("probe_1"), 0);
+	ASSERT_EQ(monitor.totalDuration("probe_1"), Duration(0));
+	ASSERT_EQ(monitor.callCount("probe_2"), 0);
+	ASSERT_EQ(monitor.totalDuration("probe_2"), Duration(0));
 }

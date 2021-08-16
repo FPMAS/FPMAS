@@ -465,35 +465,11 @@ namespace fpmas {
 		public virtual api::model::SpatialModel<CellType>,
 		public Model<SyncMode> {
 		private:
-			AgentGroup* cell_group;
+			AgentGroup& cell_group {this->buildGroup(CELL_GROUP_ID)};
 			EndCondition dist_move_algo_end_condition;
-			void buildCellGroup() {
-				cell_group = &this->buildGroup(CELL_GROUP_ID);
-			}
 
 		public:
-			/**
-			 * Default SpatialModel constructor.
-			 *
-			 * The Model base is constructed using its default construtor.
-			 */
-			SpatialModel() {
-				buildCellGroup();
-			}
-
-			/**
-			 * SpatialModel constructor.
-			 *
-			 * The specified `load_balancing` algorithm is passed to the Model
-			 * base construtor.
-			 *
-			 * @param load_balancing user defined load balancing algorithm
-			 */
-			SpatialModel(
-					api::graph::LoadBalancing<api::model::AgentPtr>& load_balancing
-					) : Model<SyncMode>(load_balancing) {
-				buildCellGroup();
-			}
+			using Model<SyncMode>::Model;
 
 			/**
 			 * \copydoc fpmas::api::model::SpatialModel::add(CellType*)
@@ -508,20 +484,20 @@ namespace fpmas {
 
 	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
 		void SpatialModel<SyncMode, CellType, EndCondition>::add(CellType* cell) {
-			cell_group->add(cell);
+			cell_group.add(cell);
 		}
 
 	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
 		std::vector<CellType*> SpatialModel<SyncMode, CellType, EndCondition>::cells() {
 			std::vector<CellType*> cells;
-			for(auto agent : cell_group->localAgents())
+			for(auto agent : cell_group.localAgents())
 				cells.push_back(dynamic_cast<CellType*>(agent));
 			return cells;
 		}
 
 	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
 		fpmas::api::model::AgentGroup& SpatialModel<SyncMode, CellType, EndCondition>::cellGroup() {
-			return *cell_group;
+			return cell_group;
 		}
 
 	template<template<typename> class SyncMode, typename CellType, typename EndCondition>

@@ -49,9 +49,9 @@ class GridAgentTest : public testing::Test, protected model::test::GridAgent {
 
 		static void SetUpTestSuite() {
 			model::test::GridAgent::mobility_range
-				= new NiceMock<MockRange<fpmas::api::model::GridCell>>;
+				= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
 			model::test::GridAgent::perception_range
-				= new NiceMock<MockRange<fpmas::api::model::GridCell>>;
+				= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
 		}
 		static void TearDownTestSuite() {
 			delete model::test::GridAgent::mobility_range;
@@ -97,9 +97,9 @@ TEST_F(GridAgentTest, to_json_with_data) {
 
 	/* Set Up */
 	model::test::GridAgentWithData::mobility_range
-		= new NiceMock<MockRange<fpmas::api::model::GridCell>>;
+		= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
 	model::test::GridAgentWithData::perception_range
-		= new NiceMock<MockRange<fpmas::api::model::GridCell>>;
+		= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
 
 	model::test::GridAgentWithData agent(8);
 	agent.setModel(&mock_model);
@@ -249,7 +249,7 @@ TEST(VonNeumannRange, range) {
 	ON_CALL(*current_location, location)
 		.WillByDefault(Return(DiscretePoint(3, 4)));
 
-	std::vector<fpmas::api::model::GridCell*> cells;
+	std::vector<MockGridCell<NiceMock>*> cells;
 	std::vector<DiscretePoint> grid_points;
 	for(DiscreteCoordinate x = 0; x <= 6; x++) {
 		for(DiscreteCoordinate y = 1; y <= 7; y++) {
@@ -267,7 +267,7 @@ TEST(VonNeumannRange, range) {
 						{3, 6}
 	};
 	
-	VonNeumannRange<VonNeumannGrid<>> range(2);
+	VonNeumannRange<VonNeumannGrid<MockGridCell<NiceMock>>> range(2);
 
 	for(auto cell : cells)
 		ASSERT_EQ(range.contains(current_location, cell), points_in_range.count(cell->location())>0);
@@ -289,7 +289,7 @@ TEST(MooreRange, range) {
 	ON_CALL(*current_location, location)
 		.WillByDefault(Return(DiscretePoint(3, 4)));
 
-	std::vector<fpmas::api::model::GridCell*> cells;
+	std::vector<MockGridCell<NiceMock>*> cells;
 	std::vector<DiscretePoint> grid_points;
 	for(DiscreteCoordinate x = 0; x <= 6; x++) {
 		for(DiscreteCoordinate y = 1; y <= 7; y++) {
@@ -304,7 +304,7 @@ TEST(MooreRange, range) {
 		for(DiscreteCoordinate y = 2; y <= 6; y++)
 			points_in_range.insert({x, y});
 	
-	MooreRange<VonNeumannGrid<>> range(2);
+	MooreRange<VonNeumannGrid<MockGridCell<NiceMock>>> range(2);
 
 	for(auto cell : cells)
 		ASSERT_EQ(range.contains(current_location, cell), points_in_range.count(cell->location())>0);

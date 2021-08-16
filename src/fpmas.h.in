@@ -9,6 +9,7 @@
 #include "fpmas/random/random.h"
 #include "fpmas/model/spatial/moore.h"
 #include "fpmas/model/spatial/grid_agent_mapping.h"
+#include "fpmas/model/spatial/grid_load_balancing.h"
 #include "fpmas/io/output.h"
 #include "fpmas/io/csv_output.h"
 #include "fpmas/io/json_output.h"
