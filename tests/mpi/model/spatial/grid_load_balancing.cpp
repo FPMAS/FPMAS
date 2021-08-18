@@ -114,18 +114,18 @@ TEST_F(GridLoadBalancingTest, grid_agents) {
 	fpmas::model::GridLoadBalancing grid_lb(
 			grid_builder.width(), grid_builder.height(), model.getMpiCommunicator()
 			);
-
-	fpmas::api::graph::PartitionMap partition
-		= grid_lb.balance(
-				model.graph().getLocationManager().getLocalNodes(),
-				fpmas::api::graph::PARTITION
-				);
+	fpmas::graph::RandomLoadBalancing<fpmas::api::model::AgentPtr> random_lb(
+			model.getMpiCommunicator()
+			);
+	// Initial random partitioning
+	fpmas::api::graph::PartitionMap partition 
+		= random_lb.balance(model.graph().getLocationManager().getLocalNodes());
 	model.graph().distribute(partition);
 
 	// Clears useless DISTANT nodes
 	model.graph().synchronize();
 
-	fpmas::model::IdleBehavior behavior;
+	fpmas::model::Behavior<TestGridAgent> behavior(&TestGridAgent::move);
 	auto& move_group = model.buildMoveGroup(0, behavior);
 
 	std::vector<TestGridAgent*> agents;
@@ -136,8 +136,30 @@ TEST_F(GridLoadBalancingTest, grid_agents) {
 				dynamic_cast<fpmas::model::GridCell*>(cell.second->data().get())
 				);
 	}
+	model.runtime().execute(move_group.distributedMoveAlgorithm().jobs());
+	// Initial random partitioning (with agents)
+	partition = random_lb.balance(model.graph().getLocationManager().getLocalNodes());
+	model.graph().distribute(partition);
+
+	// Grid partitioning
+	partition = grid_lb.balance(
+			model.graph().getLocationManager().getLocalNodes(),
+			fpmas::api::graph::PARTITION
+			);
+	model.graph().distribute(partition);
+
+	for(auto agent : move_group.localAgents())
+		ASSERT_THAT(
+				dynamic_cast<fpmas::api::model::GridAgent<fpmas::model::GridCell>*>(
+					agent
+					)->locationCell()->node()->state(),
+				fpmas::api::graph::LOCAL
+				);
+
+	// Agents move to adjacent cells
 	model.runtime().execute(move_group.jobs());
 
+	// Grid repartitioning
 	partition = grid_lb.balance(
 			model.graph().getLocationManager().getLocalNodes(),
 			fpmas::api::graph::REPARTITION
@@ -151,4 +173,5 @@ TEST_F(GridLoadBalancingTest, grid_agents) {
 					)->locationCell()->node()->state(),
 				fpmas::api::graph::LOCAL
 				);
+
 }

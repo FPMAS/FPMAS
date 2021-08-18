@@ -258,11 +258,12 @@ class TestGridAgent : public fpmas::model::GridAgent<TestGridAgent> {
 	static fpmas::model::VonNeumannRange<fpmas::model::VonNeumannGrid<>> range;
 
 	public:
-	TestGridAgent() {
-		}
-
 	FPMAS_MOBILITY_RANGE(range);
 	FPMAS_PERCEPTION_RANGE(range);
+
+	void move() {
+		this->moveTo(this->mobilityField().random());
+	}
 };
 
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>);

@@ -101,9 +101,6 @@ namespace fpmas { namespace model {
 		private:
 			GridProcessMapping grid_process_mapping;
 
-			void assignAgentToPartition(
-					api::model::AgentNode* node, api::graph::PartitionMap& partition);
-
 		public:
 			/**
 			 * GridLoadBalancing constructor.
