@@ -45,6 +45,11 @@ namespace fpmas { namespace api { namespace model {
 	};
 
 	/**
+	 * Computes the euclidian distance between `p1` and `p2`.
+	 */
+	float euclidian_distance(const DiscretePoint& p1, const DiscretePoint& p2);
+
+	/**
 	 * Cell API extension to represent a Cell in a Grid.
 	 *
 	 * Contrary to base \Cells that do not need to be explicitly situated,
