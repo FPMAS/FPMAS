@@ -30,6 +30,7 @@ set(SOURCES
 	fpmas/model/spatial/grid_agent_mapping.cpp
 	fpmas/model/spatial/graph.cpp
 	fpmas/model/spatial/grid_load_balancing.cpp
+	fpmas/model/spatial/cell_load_balancing.cpp
 	# Synchro
 	fpmas/synchro/hard/termination.cpp
 	# Output

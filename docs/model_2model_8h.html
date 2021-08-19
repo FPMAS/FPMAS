@@ -81,62 +81,63 @@ $(function() {
 <code>#include &quot;<a class="el" href="io_2breakpoint_8h_source.html">fpmas/io/breakpoint.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="format_8h_source.html">fpmas/utils/format.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="graph_2graph__builder_8h_source.html">fpmas/graph/graph_builder.h</a>&quot;</code><br />
+<code>#include &quot;fpmas/graph/random_load_balancing.h&quot;</code><br />
 <code>#include &lt;fstream&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for model.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="model_2model_8h__incl.png" border="0" usemap="#asrc_2fpmas_2model_2model_8h" alt=""/></div>
 <map name="asrc_2fpmas_2model_2model_8h" id="asrc_2fpmas_2model_2model_8h">
-<area shape="rect" title=" " alt="" coords="1475,5,1645,32"/>
-<area shape="rect" href="api_2graph_2graph__builder_8h.html" title=" " alt="" coords="1546,155,1697,196"/>
-<area shape="rect" href="model_2guards_8h.html" title=" " alt="" coords="411,80,483,107"/>
-<area shape="rect" href="model_2detail_2model_8h.html" title=" " alt="" coords="879,80,982,107"/>
-<area shape="rect" href="random_8h_source.html" title=" " alt="" coords="2260,162,2423,189"/>
-<area shape="rect" href="io_2breakpoint_8h.html" title=" " alt="" coords="1419,80,1565,107"/>
-<area shape="rect" href="format_8h.html" title=" " alt="" coords="93,80,232,107"/>
-<area shape="rect" href="graph_2graph__builder_8h.html" title=" " alt="" coords="1949,80,2136,107"/>
-<area shape="rect" title=" " alt="" coords="2211,80,2277,107"/>
-<area shape="rect" href="api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="1163,251,1295,278"/>
-<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="1532,423,1703,464"/>
-<area shape="rect" href="api_2graph_2location__manager_8h.html" title=" " alt="" coords="1234,333,1398,375"/>
-<area shape="rect" href="load__balancing_8h.html" title=" " alt="" coords="830,333,973,375"/>
-<area shape="rect" href="sync__mode_8h.html" title=" " alt="" coords="1049,333,1210,375"/>
-<area shape="rect" href="api_2graph_2graph_8h.html" title=" " alt="" coords="1124,430,1287,457"/>
-<area shape="rect" href="api_2graph_2distributed__node_8h.html" title=" " alt="" coords="812,423,991,464"/>
-<area shape="rect" title=" " alt="" coords="1150,512,1261,539"/>
-<area shape="rect" href="api_2model_2model_8h.html" title=" " alt="" coords="363,162,531,189"/>
-<area shape="rect" href="synchro_2guards_8h.html" title=" " alt="" coords="31,341,193,367"/>
-<area shape="rect" title=" " alt="" coords="201,251,279,278"/>
-<area shape="rect" href="api_2runtime_2runtime_8h.html" title=" " alt="" coords="355,251,539,278"/>
-<area shape="rect" href="ptr__wrapper_8h.html" title=" " alt="" coords="1326,423,1453,464"/>
-<area shape="rect" href="api_2scheduler_2scheduler_8h.html" title=" " alt="" coords="217,333,356,375"/>
-<area shape="rect" href="graph_2distributed__graph_8h.html" title=" " alt="" coords="1111,155,1270,196"/>
-<area shape="rect" href="zoltan__load__balancing_8h.html" title=" " alt="" coords="953,155,1087,196"/>
-<area shape="rect" href="scheduled__load__balancing_8h.html" title=" " alt="" coords="763,155,920,196"/>
-<area shape="rect" href="runtime_2runtime_8h.html" title=" " alt="" coords="576,162,739,189"/>
-<area shape="rect" title=" " alt="" coords="928,251,968,278"/>
-<area shape="rect" href="graph_2distributed__edge_8h.html" title=" " alt="" coords="1590,244,1749,285"/>
-<area shape="rect" href="graph_2location__manager_8h.html" title=" " alt="" coords="1371,244,1514,285"/>
-<area shape="rect" href="graph_2graph_8h.html" title=" " alt="" coords="1423,341,1564,367"/>
-<area shape="rect" href="graph_2distributed__node_8h.html" title=" " alt="" coords="1589,333,1747,375"/>
-<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="1771,333,1922,375"/>
-<area shape="rect" title=" " alt="" coords="2091,512,2152,539"/>
-<area shape="rect" title=" " alt="" coords="1819,430,1874,457"/>
-<area shape="rect" title=" " alt="" coords="992,251,1088,278"/>
-<area shape="rect" href="scheduler_2scheduler_8h.html" title=" " alt="" coords="563,251,752,278"/>
-<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="2127,251,2302,278"/>
-<area shape="rect" title=" " alt="" coords="2253,341,2318,367"/>
-<area shape="rect" href="api_2random_2generator_8h.html" title=" " alt="" coords="2159,430,2353,457"/>
-<area shape="rect" href="random_2distribution_8h.html" title=" " alt="" coords="2327,251,2423,278"/>
-<area shape="rect" href="api_2random_2distribution_8h.html" title=" " alt="" coords="2342,341,2546,367"/>
-<area shape="rect" title=" " alt="" coords="1449,162,1521,189"/>
-<area shape="rect" href="api_2io_2breakpoint_8h.html" title=" " alt="" coords="1721,162,1889,189"/>
-<area shape="rect" title=" " alt="" coords="1295,162,1425,189"/>
-<area shape="rect" title=" " alt="" coords="1773,251,1838,278"/>
-<area shape="rect" title=" " alt="" coords="1863,251,1932,278"/>
-<area shape="rect" title=" " alt="" coords="5,162,75,189"/>
-<area shape="rect" href="functional_8h_source.html" title=" " alt="" coords="1964,162,2121,189"/>
-<area shape="rect" title=" " alt="" coords="2197,162,2235,189"/>
+<area shape="rect" title=" " alt="" coords="1665,5,1834,32"/>
+<area shape="rect" href="api_2graph_2graph__builder_8h.html" title=" " alt="" coords="1674,169,1825,211"/>
+<area shape="rect" href="model_2guards_8h.html" title=" " alt="" coords="360,87,432,114"/>
+<area shape="rect" href="model_2detail_2model_8h.html" title=" " alt="" coords="819,87,922,114"/>
+<area shape="rect" href="random_8h_source.html" title=" " alt="" coords="2297,177,2460,203"/>
+<area shape="rect" href="io_2breakpoint_8h.html" title=" " alt="" coords="1405,87,1552,114"/>
+<area shape="rect" href="format_8h.html" title=" " alt="" coords="43,87,181,114"/>
+<area shape="rect" href="graph_2graph__builder_8h.html" title=" " alt="" coords="1849,87,2036,114"/>
+<area shape="rect" href="random__load__balancing_8h_source.html" title=" " alt="" coords="2189,80,2331,121"/>
+<area shape="rect" title=" " alt="" coords="2355,87,2421,114"/>
+<area shape="rect" href="api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="1163,266,1295,293"/>
+<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="1681,437,1852,479"/>
+<area shape="rect" href="api_2graph_2location__manager_8h.html" title=" " alt="" coords="1334,348,1498,389"/>
+<area shape="rect" href="load__balancing_8h.html" title=" " alt="" coords="815,348,958,389"/>
+<area shape="rect" href="sync__mode_8h.html" title=" " alt="" coords="1149,348,1310,389"/>
+<area shape="rect" href="api_2graph_2graph_8h.html" title=" " alt="" coords="972,445,1135,471"/>
+<area shape="rect" href="api_2graph_2distributed__node_8h.html" title=" " alt="" coords="769,437,948,479"/>
+<area shape="rect" href="api_2model_2model_8h.html" title=" " alt="" coords="312,177,480,203"/>
+<area shape="rect" href="synchro_2guards_8h.html" title=" " alt="" coords="73,355,236,382"/>
+<area shape="rect" title=" " alt="" coords="150,266,229,293"/>
+<area shape="rect" href="api_2runtime_2runtime_8h.html" title=" " alt="" coords="304,266,488,293"/>
+<area shape="rect" href="ptr__wrapper_8h.html" title=" " alt="" coords="1359,437,1486,479"/>
+<area shape="rect" href="api_2scheduler_2scheduler_8h.html" title=" " alt="" coords="445,348,584,389"/>
+<area shape="rect" href="graph_2distributed__graph_8h.html" title=" " alt="" coords="1047,169,1206,211"/>
+<area shape="rect" href="zoltan__load__balancing_8h.html" title=" " alt="" coords="889,169,1023,211"/>
+<area shape="rect" href="scheduled__load__balancing_8h.html" title=" " alt="" coords="708,169,865,211"/>
+<area shape="rect" href="runtime_2runtime_8h.html" title=" " alt="" coords="521,177,684,203"/>
+<area shape="rect" title=" " alt="" coords="997,266,1037,293"/>
+<area shape="rect" href="graph_2distributed__edge_8h.html" title=" " alt="" coords="1538,259,1697,300"/>
+<area shape="rect" href="graph_2location__manager_8h.html" title=" " alt="" coords="1319,259,1462,300"/>
+<area shape="rect" href="graph_2graph_8h.html" title=" " alt="" coords="983,355,1124,382"/>
+<area shape="rect" href="graph_2distributed__node_8h.html" title=" " alt="" coords="1522,348,1681,389"/>
+<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="1757,348,1907,389"/>
+<area shape="rect" title=" " alt="" coords="2004,527,2065,553"/>
+<area shape="rect" title=" " alt="" coords="1877,445,1931,471"/>
+<area shape="rect" title=" " alt="" coords="877,266,973,293"/>
+<area shape="rect" href="scheduler_2scheduler_8h.html" title=" " alt="" coords="512,266,701,293"/>
+<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="2062,266,2237,293"/>
+<area shape="rect" title=" " alt="" coords="2166,355,2231,382"/>
+<area shape="rect" href="api_2random_2generator_8h.html" title=" " alt="" coords="2072,445,2267,471"/>
+<area shape="rect" href="random_2distribution_8h.html" title=" " alt="" coords="2312,266,2408,293"/>
+<area shape="rect" href="api_2random_2distribution_8h.html" title=" " alt="" coords="2255,355,2459,382"/>
+<area shape="rect" title=" " alt="" coords="1231,177,1303,203"/>
+<area shape="rect" href="api_2io_2breakpoint_8h.html" title=" " alt="" coords="1481,177,1649,203"/>
+<area shape="rect" title=" " alt="" coords="1327,177,1457,203"/>
+<area shape="rect" title=" " alt="" coords="1721,266,1786,293"/>
+<area shape="rect" title=" " alt="" coords="1811,266,1880,293"/>
+<area shape="rect" title=" " alt="" coords="5,177,75,203"/>
+<area shape="rect" href="functional_8h_source.html" title=" " alt="" coords="2065,177,2223,203"/>
+<area shape="rect" title=" " alt="" coords="1951,177,1990,203"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -221,6 +222,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:ab7f05d5a55bf0db4ecf57449977afec5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71b1f5df88253fcadef291d818a23c78"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a71b1f5df88253fcadef291d818a23c78">fpmas::model::ScheduledLoadBalancing</a> = graph::ScheduledLoadBalancing&lt; AgentPtr &gt;</td></tr>
 <tr class="separator:a71b1f5df88253fcadef291d818a23c78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a09064c48271ed471c3f3c3c8d7678503"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a09064c48271ed471c3f3c3c8d7678503">fpmas::model::RandomLoadBalancing</a> = graph::RandomLoadBalancing&lt; AgentPtr &gt;</td></tr>
+<tr class="separator:a09064c48271ed471c3f3c3c8d7678503"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27645259f09d2f3d29223e8a410e5712"><td class="memItemLeft" align="right" valign="top">typedef io::Breakpoint&lt; api::model::Model &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a27645259f09d2f3d29223e8a410e5712">fpmas::model::Breakpoint</a></td></tr>
 <tr class="separator:a27645259f09d2f3d29223e8a410e5712"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>

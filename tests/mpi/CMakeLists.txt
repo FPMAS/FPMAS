@@ -14,6 +14,7 @@ set(SOURCES
 	model/spatial/grid.cpp
 	model/spatial/graph_range.cpp
 	model/spatial/grid_load_balancing.cpp
+	model/spatial/cell_load_balancing.cpp
 	random/generator.cpp
 	io/csv_output.cpp
 	io/breakpoint.cpp

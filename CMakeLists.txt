@@ -87,6 +87,7 @@ if(DOXYGEN_FOUND)
 		[[DistributedNodes="\ref fpmas::api::graph::DistributedNode \"DistributedNodes\""]]
 		[[DistributedEdge="\ref fpmas::api::graph::DistributedEdge \"DistributedEdge\""]]
 		[[DistributedEdges="\ref fpmas::api::graph::DistributedEdge \"DistributedEdges\""]]
+		[[LoadBalancing="\ref fpmas::api::graph::LoadBalancing \"LoadBalancing\""]]
 		[[SyncMode="\ref fpmas::api::synchro::SyncMode \"SyncMode\""]]
 		[[Agent="\ref fpmas::api::model::Agent \"Agent\""]]
 		[[Agents="\ref fpmas::api::model::Agent \"Agents\""]]

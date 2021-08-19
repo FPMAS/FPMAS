@@ -12,6 +12,7 @@
 #include "fpmas/io/breakpoint.h"
 #include "fpmas/utils/format.h"
 #include "fpmas/graph/graph_builder.h"
+#include "fpmas/graph/random_load_balancing.h"
 #include <fstream>
 
 
@@ -1037,6 +1038,12 @@ namespace fpmas { namespace model {
 	 */
 	using ScheduledLoadBalancing
 		= graph::ScheduledLoadBalancing<AgentPtr>;
+
+	/**
+	 * graph::RandomLoadBalancing AgentPtr specialization.
+	 */
+	using RandomLoadBalancing
+		= graph::RandomLoadBalancing<AgentPtr>;
 
 	/**
 	 * \Model fpmas::io::Breakpoint specialization.

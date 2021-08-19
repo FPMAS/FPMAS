@@ -122,9 +122,6 @@ TEST_F(GridLoadBalancingTest, grid_agents) {
 		= random_lb.balance(model.graph().getLocationManager().getLocalNodes());
 	model.graph().distribute(partition);
 
-	// Clears useless DISTANT nodes
-	model.graph().synchronize();
-
 	fpmas::model::Behavior<TestGridAgent> behavior(&TestGridAgent::move);
 	auto& move_group = model.buildMoveGroup(0, behavior);
 
