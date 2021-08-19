@@ -40,3 +40,22 @@ TEST(TreeProcessMapping, 4_processes) {
 	};
 	ASSERT_THAT(processes, UnorderedElementsAre(0, 1, 2, 3));
 }
+
+TEST(TreeProcessMapping, 16_processes) {
+	MockMpiCommunicator<2, 16> comm;
+
+	fpmas::model::TreeProcessMapping mapping(8, 8, comm);
+	mapping.process({0, 0});
+
+	std::vector<int> processes;
+	std::vector<int> expected;
+	for(int i = 0; i < 8; i++) {
+		for(int j = 0; j < 8; j++) {
+			processes.push_back(mapping.process({i, j}));
+		}
+	}
+	for(int i = 0; i < 16; i++)
+		for(int k = 0; k < 4; k++)
+			expected.push_back(i);
+	ASSERT_THAT(processes, UnorderedElementsAreArray(expected));
+}

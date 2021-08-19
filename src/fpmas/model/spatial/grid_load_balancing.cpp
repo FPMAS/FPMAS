@@ -52,19 +52,19 @@ namespace fpmas { namespace model {
 			node->node_type = HORIZONTAL_FRONTIER;
 			node->value = node->origin.y + node->height / 2;
 
-			Node* top = new Node;
-			top->origin = node->origin;
-			top->height = node->height / 2;
-			top->width = node->width;
-			node->childs.push_back(top);
-			leafs.push_back(top);
-
 			Node* bottom = new Node;
-			bottom->origin = {node->origin.x, node->value};
-			bottom->height = node->height - top->height;
+			bottom->origin = node->origin;
+			bottom->height = node->height / 2;
 			bottom->width = node->width;
 			node->childs.push_back(bottom);
 			leafs.push_back(bottom);
+
+			Node* top = new Node;
+			top->origin = {node->origin.x, node->value};
+			top->height = node->height - bottom->height;
+			top->width = node->width;
+			node->childs.push_back(top);
+			leafs.push_back(top);
 		}
 		leafs.pop_front();
 	}
@@ -84,15 +84,17 @@ namespace fpmas { namespace model {
 			case LEAF:
 				return node->process;
 			case HORIZONTAL_FRONTIER:
-				if(point.y >= node->value)
+				if(point.y < node->value) {
 					return process(point, node->childs[0]);
-				else
+				} else {
 					return process(point, node->childs[1]);
+				}
 			case VERTICAL_FRONTIER:
-				if(point.x < node->value)
+				if(point.x < node->value) {
 					return process(point, node->childs[0]);
-				else
+				} else {
 					return process(point, node->childs[1]);
+				}
 		}
 		return -1;
 	}
