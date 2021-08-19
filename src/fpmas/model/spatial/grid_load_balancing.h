@@ -4,23 +4,154 @@
 #include "fpmas/api/graph/load_balancing.h"
 #include "fpmas/api/model/spatial/grid.h"
 
+#include <list>
+
 namespace fpmas { namespace model {
 	using api::model::DiscretePoint;
 	using api::model::DiscreteCoordinate;
 
 	/**
-	 * Maps a DiscretePoint to a specific process.
-	 *
 	 * When a graph is distributed using a grid-based load-balancing algorithm,
-	 * a contiguous portion of the 2D discrete space is associated to each
-	 * process. This class associates a process to each 2D coordinate,
-	 * according to the grid dimensions, in order to minimize the size of the
-	 * frontiers (i.e. the DISTANT node counts) between processes.
+	 * a portion of the 2D discrete space is associated to each process.
+	 *
+	 * This generic interface is used to map each DiscretePoint of a grid to a
+	 * process, in order to perform GridLoadBalancing.
+	 */
+	class GridProcessMapping {
+		public:
+			/**
+			 * Returns the rank of the process that owns the specified point,
+			 * according to the current GridProcessMapping implementation.
+			 *
+			 * In other terms, this is the rank of the process where the
+			 * \GridCell located at `point` and all \SpatialAgents located in it
+			 * will be \LOCAL.
+			 */
+			virtual int process(DiscretePoint point) const = 0;
+	};
+
+	/**
+	 * Fast and simple algorithm to partition a 2D grid.
+	 *
+	 * The grid is recursively split in both directions of the space in order
+	 * to minimize sizes of frontiers between processes. When the count of
+	 * processes in a power of 2, the algorithm produces a "classical" grid
+	 * decomposition as performed by RepastHPC.
+	 *
+	 * The algorithm can also handle any process count, including those that
+	 * are not a power of 2.
+	 *
+	 * The grid can also be of any size, without any restriction on width or
+	 * height.
+	 */
+	class TreeProcessMapping : public GridProcessMapping {
+		private:
+			enum NodeType {
+				HORIZONTAL_FRONTIER,
+				VERTICAL_FRONTIER,
+				LEAF
+			};
+			struct Node {
+				// Coordinates of the bottom left corner of the zone
+				// represented by this node
+				DiscretePoint origin;
+				// Width of the node represented by this node
+				DiscreteCoordinate width;
+				// Height of the node represented by this node
+				DiscreteCoordinate height;
+
+				NodeType node_type;
+				// When the node is a frontier, the value between the first and
+				// second child. Depending on the orientation of the frontier,
+				// this is an x or y coordinate.
+				DiscreteCoordinate value;
+
+				// Children of the node (empty if the node is a LEAF, exactly two
+				// children otherwise)
+				std::vector<Node*> childs;
+
+				// When the node is a LEAF, process that owns the zone
+				// represented by this node
+				int process = -1;
+			};
+			Node* root;
+
+			/*
+			 * Splits the first node of the list in two nodes, that become the
+			 * children of the node.
+			 *
+			 * The zone is split vertically if node->height > node->width,
+			 * horizontally otherwise, in order to minimize the size of
+			 * frontiers.
+			 *
+			 * By construction, the leafs are ordered so that largest zones are
+			 * at the beginning of the list, so its consistent to split those
+			 * nodes first. Indeed, split nodes are always pushed back in the
+			 * list, while the first element of leafs is popped. Moreover, at
+			 * the beginning of the algorithm, the only element in `leafs` is
+			 * `root`, that represents the whole grid.
+			 *
+			 * Also note that this procedure increases the leafs size by 1: 2
+			 * children are added at the end of the list, while the split node
+			 * is removed from the beginning of the list.
+			 */
+			void split_node(std::list<Node*>& leafs);
+
+			/*
+			 * Recursively deletes all nodes of the tree.
+			 */
+			void delete_node(Node* node);
+
+			/*
+			 * Recursively finds the LEAF node that contains `point`, and
+			 * returns the rank of the process associated to this node.
+			 */
+			int process(DiscretePoint point, Node* node) const;
+
+		public:
+			/**
+			 * Default TreeProcessMapping constructor, **for internal use
+			 * only**.
+			 *
+			 * To prevent unexpected crashes, process() always returns 0.
+			 */
+			TreeProcessMapping();
+
+			/**
+			 * TreeProcessMapping constructor.
+			 *
+			 * @param width width of the grid
+			 * @param height height of the grid
+			 * @param comm MPI communicator
+			 */
+			TreeProcessMapping(
+				DiscreteCoordinate width, DiscreteCoordinate height,
+				api::communication::MpiCommunicator& comm
+				);
+
+			TreeProcessMapping(const TreeProcessMapping&) = delete;
+			TreeProcessMapping& operator=(const TreeProcessMapping&) = delete;
+
+			int process(DiscretePoint point) const override;
+
+			~TreeProcessMapping();
+	};
+
+	/**
+	 * 1D GridProcessMapping implementation, that produces horizontal or
+	 * vertical strip shaped partitions.
+	 *
+	 * The grid is divided in a single direction, in order to minimize the size
+	 * of frontiers.
 	 *
 	 * So, if the width of the grid is greater than its height, the grid is
 	 * divided using vertical borders, otherwise horizontal borders are used.
+	 *
+	 * This algorithm produces well balanced partitions, but sizes of the
+	 * frontiers are generally much bigger that ones produced by the
+	 * TreeProcessMapping, so this last method is preferred.
 	 */
-	class GridProcessMapping {
+	class StripProcessMapping : public GridProcessMapping {
 		private:
 			/**
 			 * Described how the grid is divided.
@@ -46,7 +177,7 @@ namespace fpmas { namespace model {
 			 * @param height global grid height
 			 * @param comm MPI communicator
 			 */
-			GridProcessMapping(
+			StripProcessMapping(
 				DiscreteCoordinate width, DiscreteCoordinate height,
 				api::communication::MpiCommunicator& comm
 				);
@@ -55,17 +186,14 @@ namespace fpmas { namespace model {
 			 * Returns the rank of the process to which the `point` is
 			 * associated.
 			 *
-			 * In other terms, this is the process that owns the `GridCell`
-			 * located at point, i.e. where this `GridCell` is \LOCAL.
-			 *
-			 * The result is undefined if the specified point is not contain in
-			 * the grid of size `width x height`, so `point.x` must be in `[0,
-			 * width-1]` and `point.y` must be in `[0, height-1]`.
+			 * The result is undefined if the specified point is not contained
+			 * in the grid of size `width x height`, so `point.x` must be in
+			 * `[0, width-1]` and `point.y` must be in `[0, height-1]`.
 			 *
 			 * @param point discrete point of the grid
 			 * @return process associated to `point`
 			 */
-			int process(DiscretePoint point);
+			int process(DiscretePoint point) const override;
 
 	};
 	/**
@@ -99,11 +227,15 @@ namespace fpmas { namespace model {
 	 */
 	class GridLoadBalancing : public api::graph::LoadBalancing<api::model::AgentPtr> {
 		private:
-			GridProcessMapping grid_process_mapping;
+			TreeProcessMapping default_process_mapping;
+			const GridProcessMapping& grid_process_mapping;
 
 		public:
 			/**
 			 * GridLoadBalancing constructor.
+			 *
+			 * By default, a TreeProcessMapping instance is used to map
+			 * GridCells to processes.
 			 *
 			 * @param width global grid width
 			 * @param height global grid height
@@ -113,6 +245,14 @@ namespace fpmas { namespace model {
 				DiscreteCoordinate width, DiscreteCoordinate height,
 				api::communication::MpiCommunicator& comm
 				);
+
+			/**
+			 * GridLoadBalancing constructor.
+			 *
+			 * The specified GridProcessMapping is used instead of the default
+			 * TreeProcessMapping.
+			 */
+			GridLoadBalancing(const GridProcessMapping& grid_process_mapping);
 
 			
 			/**

@@ -1,7 +1,107 @@
 #include "grid_load_balancing.h"
 
 namespace fpmas { namespace model {
-	GridProcessMapping::GridProcessMapping(
+	TreeProcessMapping::TreeProcessMapping() {
+		root = new Node;
+		root->node_type = LEAF;
+		root->process = 0;
+	}
+
+	TreeProcessMapping::TreeProcessMapping(
+			DiscreteCoordinate width, DiscreteCoordinate height,
+			api::communication::MpiCommunicator& comm
+			) {
+		root = new Node;
+		root->origin = {0, 0};
+		root->width = width;
+		root->height = height;
+
+		std::list<Node*> leafs;
+		leafs.push_back(root);
+		while(leafs.size() != comm.getSize()) {
+			split_node(leafs);
+		}
+		int process = 0;
+		for(auto leaf : leafs) {
+			leaf->node_type = LEAF;
+			leaf->process = process;
+			process++;
+		}
+	}
+
+	void TreeProcessMapping::split_node(std::list<Node*>& leafs) {
+		Node* node = leafs.front();
+		if(node->width > node->height) {
+			node->node_type = VERTICAL_FRONTIER;
+			node->value = node->origin.x + node->width / 2;
+
+			Node* left = new Node;
+			left->origin = node->origin;
+			left->height = node->height;
+			left->width = node->width / 2;
+			node->childs.push_back(left);
+			leafs.push_back(left);
+
+			Node* right = new Node;
+			right->origin = {node->value, node->origin.y};
+			right->height = node->height;
+			right->width = node->width - left->width;
+			node->childs.push_back(right);
+			leafs.push_back(right);
+		} else {
+			node->node_type = HORIZONTAL_FRONTIER;
+			node->value = node->origin.y + node->height / 2;
+
+			Node* top = new Node;
+			top->origin = node->origin;
+			top->height = node->height / 2;
+			top->width = node->width;
+			node->childs.push_back(top);
+			leafs.push_back(top);
+
+			Node* bottom = new Node;
+			bottom->origin = {node->origin.x, node->value};
+			bottom->height = node->height - top->height;
+			bottom->width = node->width;
+			node->childs.push_back(bottom);
+			leafs.push_back(bottom);
+		}
+		leafs.pop_front();
+	}
+
+	void TreeProcessMapping::delete_node(Node* node) {
+		for(auto child : node->childs)
+			delete_node(child);
+		delete node;
+	}
+
+	TreeProcessMapping::~TreeProcessMapping() {
+		delete_node(root);
+	}
+
+	int TreeProcessMapping::process(DiscretePoint point, Node* node) const {
+		switch(node->node_type) {
+			case LEAF:
+				return node->process;
+			case HORIZONTAL_FRONTIER:
+				if(point.y >= node->value)
+					return process(point, node->childs[0]);
+				else
+					return process(point, node->childs[1]);
+			case VERTICAL_FRONTIER:
+				if(point.x < node->value)
+					return process(point, node->childs[0]);
+				else
+					return process(point, node->childs[1]);
+		}
+		return -1;
+	}
+
+	int TreeProcessMapping::process(DiscretePoint point) const {
+		return process(point, root);
+	}
+
+	StripProcessMapping::StripProcessMapping(
 			DiscreteCoordinate width, DiscreteCoordinate height,
 			api::communication::MpiCommunicator& comm
 			) : mode(width < height ? Mode::VERTICAL : Mode::HORIZONTAL) {
@@ -16,7 +116,7 @@ namespace fpmas { namespace model {
 		}
 	}
 
-	int GridProcessMapping::process(DiscretePoint point) {
+	int StripProcessMapping::process(DiscretePoint point) const {
 		int process;
 		switch(mode) {
 			case VERTICAL:
@@ -33,7 +133,15 @@ namespace fpmas { namespace model {
 	GridLoadBalancing::GridLoadBalancing(
 			DiscreteCoordinate width, DiscreteCoordinate height,
 			api::communication::MpiCommunicator& comm
-			) : grid_process_mapping(width, height, comm) {};
+			) :
+		default_process_mapping(width, height, comm),
+		grid_process_mapping(default_process_mapping) {
+		};
+
+	GridLoadBalancing::GridLoadBalancing(
+			const GridProcessMapping& grid_process_mapping)
+		: grid_process_mapping(grid_process_mapping) {
+		}
 
 	
 	api::graph::PartitionMap GridLoadBalancing::balance(

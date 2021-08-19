@@ -70,99 +70,63 @@ $(function() {
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classfpmas_1_1model_1_1GridProcessMapping-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">fpmas::model::GridProcessMapping Class Reference</div>  </div>
+<div class="title">fpmas::model::GridProcessMapping Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div>  </div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="grid__load__balancing_8h_source.html">grid_load_balancing.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for fpmas::model::GridProcessMapping:</div>
+<div class="dyncontent">
+<div class="center"><img src="classfpmas_1_1model_1_1GridProcessMapping__inherit__graph.png" border="0" usemap="#afpmas_1_1model_1_1GridProcessMapping_inherit__map" alt="Inheritance graph"/></div>
+<map name="afpmas_1_1model_1_1GridProcessMapping_inherit__map" id="afpmas_1_1model_1_1GridProcessMapping_inherit__map">
+<area shape="rect" title=" " alt="" coords="111,5,292,47"/>
+<area shape="rect" href="classfpmas_1_1model_1_1StripProcessMapping.html" title=" " alt="" coords="5,95,189,136"/>
+<area shape="rect" href="classfpmas_1_1model_1_1TreeProcessMapping.html" title=" " alt="" coords="214,95,397,136"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a8897e0e615c8128895f11cf0ac6f2a40"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#a8897e0e615c8128895f11cf0ac6f2a40">GridProcessMapping</a> (DiscreteCoordinate width, DiscreteCoordinate height, <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm)</td></tr>
-<tr class="separator:a8897e0e615c8128895f11cf0ac6f2a40"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4341869c7b98fa16c40a1bd2bf6d0918"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#a4341869c7b98fa16c40a1bd2bf6d0918">process</a> (<a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> point)</td></tr>
-<tr class="separator:a4341869c7b98fa16c40a1bd2bf6d0918"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4e704e6d168a92f82176a4d01df8c45"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#af4e704e6d168a92f82176a4d01df8c45">process</a> (<a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> point) const =0</td></tr>
+<tr class="separator:af4e704e6d168a92f82176a4d01df8c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Maps a DiscretePoint to a specific process.</p>
-<p>When a graph is distributed using a grid-based load-balancing algorithm, a contiguous portion of the 2D discrete space is associated to each process. This class associates a process to each 2D coordinate, according to the grid dimensions, in order to minimize the size of the frontiers (i.e. the DISTANT node counts) between processes.</p>
-<p>So, if the width of the grid is greater than its height, the grid is divided using vertical borders, otherwise horizontal borders are used. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a8897e0e615c8128895f11cf0ac6f2a40"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8897e0e615c8128895f11cf0ac6f2a40">&#9670;&nbsp;</a></span>GridProcessMapping()</h2>
+<div class="textblock"><p>When a graph is distributed using a grid-based load-balancing algorithm, a portion of the 2D discrete space is associated to each process.</p>
+<p>This generic interface is used to map each DiscretePoint of a grid to a process, in order to perform <a class="el" href="classfpmas_1_1model_1_1GridLoadBalancing.html">GridLoadBalancing</a>. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="af4e704e6d168a92f82176a4d01df8c45"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4e704e6d168a92f82176a4d01df8c45">&#9670;&nbsp;</a></span>process()</h2>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">fpmas::model::GridProcessMapping::GridProcessMapping </td>
-          <td>(</td>
-          <td class="paramtype">DiscreteCoordinate&#160;</td>
-          <td class="paramname"><em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">DiscreteCoordinate&#160;</td>
-          <td class="paramname"><em>height</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td>
-          <td class="paramname"><em>comm</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p><a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html">GridProcessMapping</a> constructor.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">width</td><td>global grid width </td></tr>
-    <tr><td class="paramname">height</td><td>global grid height </td></tr>
-    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a4341869c7b98fa16c40a1bd2bf6d0918"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4341869c7b98fa16c40a1bd2bf6d0918">&#9670;&nbsp;</a></span>process()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int fpmas::model::GridProcessMapping::process </td>
+          <td class="memname">virtual int fpmas::model::GridProcessMapping::process </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a>&#160;</td>
           <td class="paramname"><em>point</em></td><td>)</td>
-          <td></td>
+          <td> const</td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
-<p>Returns the rank of the process to which the <code>point</code> is associated.</p>
-<p>In other terms, this is the process that owns the <code><a class="el" href="classfpmas_1_1model_1_1GridCell.html">GridCell</a></code> located at point, i.e. where this <code><a class="el" href="classfpmas_1_1model_1_1GridCell.html">GridCell</a></code> is <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>.</p>
-<p>The result is undefined if the specified point is not contain in the grid of size <code>width x height</code>, so <code>point.x</code> must be in <code>[0, width-1]</code> and <code>point.y</code> must be in <code>[0, height-1]</code>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">point</td><td>discrete point of the grid </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>process associated to <code>point</code> </dd></dl>
+<p>Returns the rank of the process that owns the specified point, according to the current <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html">GridProcessMapping</a> implementation.</p>
+<p>In other terms, this is the rank of the process where the <a class="el" href="classfpmas_1_1api_1_1model_1_1GridCell.html">GridCell</a> located at <code>point</code> and all <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> located in it will be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>. </p>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1StripProcessMapping.html#afc9923b288013d5c1bfbcd0c3884b624">fpmas::model::StripProcessMapping</a>, and <a class="el" href="classfpmas_1_1model_1_1TreeProcessMapping.html#a5a55438dd53a4f7df4d22bf921876110">fpmas::model::TreeProcessMapping</a>.</p>
 
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following files:<ul>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/fpmas/model/spatial/<a class="el" href="grid__load__balancing_8h_source.html">grid_load_balancing.h</a></li>
-<li>src/fpmas/model/spatial/grid_load_balancing.cpp</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

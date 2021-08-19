@@ -98,6 +98,8 @@ Collaboration diagram for fpmas::model::GridLoadBalancing:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ac1243c4dec127a22b6accd2a1561eb16"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridLoadBalancing.html#ac1243c4dec127a22b6accd2a1561eb16">GridLoadBalancing</a> (DiscreteCoordinate width, DiscreteCoordinate height, <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm)</td></tr>
 <tr class="separator:ac1243c4dec127a22b6accd2a1561eb16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a68b0895e881ec9ff355958e9c0d83e70"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridLoadBalancing.html#a68b0895e881ec9ff355958e9c0d83e70">GridLoadBalancing</a> (const <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html">GridProcessMapping</a> &amp;grid_process_mapping)</td></tr>
+<tr class="separator:a68b0895e881ec9ff355958e9c0d83e70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb5417f3699e11d2f71a72a139450960"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridLoadBalancing.html#afb5417f3699e11d2f71a72a139450960">balance</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">api::graph::NodeMap</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> &gt; nodes) override</td></tr>
 <tr class="separator:afb5417f3699e11d2f71a72a139450960"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38b67e5e49d5c3bfaf80763417df1e56"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridLoadBalancing.html#a38b67e5e49d5c3bfaf80763417df1e56">balance</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">api::graph::NodeMap</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a> &gt; nodes, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a> partition_mode) override</td></tr>
@@ -117,7 +119,7 @@ Public Member Functions</h2></td></tr>
 <p>The frequency at which the algorithm is executed is relatively important. Indeed, the <a class="el" href="classfpmas_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> still allows agents to move past the "borders" associated to each process. This means that when an agent moves, is can be temporarily associated to a <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> location, until the <a class="el" href="classfpmas_1_1model_1_1GridLoadBalancing.html">GridLoadBalancing</a> is applied again. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ac1243c4dec127a22b6accd2a1561eb16"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac1243c4dec127a22b6accd2a1561eb16">&#9670;&nbsp;</a></span>GridLoadBalancing()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac1243c4dec127a22b6accd2a1561eb16">&#9670;&nbsp;</a></span>GridLoadBalancing() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -148,6 +150,7 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p><a class="el" href="classfpmas_1_1model_1_1GridLoadBalancing.html">GridLoadBalancing</a> constructor.</p>
+<p>By default, a <a class="el" href="classfpmas_1_1model_1_1TreeProcessMapping.html">TreeProcessMapping</a> instance is used to map GridCells to processes.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">width</td><td>global grid width </td></tr>
@@ -156,6 +159,26 @@ Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="a68b0895e881ec9ff355958e9c0d83e70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a68b0895e881ec9ff355958e9c0d83e70">&#9670;&nbsp;</a></span>GridLoadBalancing() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">fpmas::model::GridLoadBalancing::GridLoadBalancing </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html">GridProcessMapping</a> &amp;&#160;</td>
+          <td class="paramname"><em>grid_process_mapping</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p><a class="el" href="classfpmas_1_1model_1_1GridLoadBalancing.html">GridLoadBalancing</a> constructor.</p>
+<p>The specified <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html">GridProcessMapping</a> is used instead of the default <a class="el" href="classfpmas_1_1model_1_1TreeProcessMapping.html">TreeProcessMapping</a>. </p>
 
 </div>
 </div>
