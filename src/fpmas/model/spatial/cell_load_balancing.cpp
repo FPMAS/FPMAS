@@ -12,19 +12,22 @@ namespace fpmas { namespace model {
 	api::graph::PartitionMap CellLoadBalancing::balance(
 			api::graph::NodeMap<api::model::AgentPtr> nodes,
 			api::graph::PartitionMode partition_mode) {
+		// Original cell weights backup
 		std::vector<std::pair<api::graph::DistributedNode<api::model::AgentPtr>*, float>> cell_weights;
+		// Local cells
 		api::graph::NodeMap<api::model::AgentPtr> cells;
-		api::graph::NodeMap<api::model::AgentPtr> agents;
+
 		for(auto node : nodes) {
 			if(auto cell = dynamic_cast<api::model::Cell*>(node.second->data().get())) {
 				cell_weights.push_back({node.second, node.second->getWeight()});
-				cell->node()->setWeight(
-						cell->node()->getWeight() +
-						cell->node()->getIncomingEdges(api::model::LOCATION).size()
-						);
+				// New weight = cell weight + weights of all agents located in
+				// the cell
+				float new_weight = cell->node()->getWeight();
+				for(auto agent : cell->node()->getIncomingEdges(api::model::LOCATION))
+					new_weight += cell->node()->getWeight();
+				cell->node()->setWeight(new_weight);
+
 				cells.insert(node);
-			} else {
-				agents.insert(node);
 			}
 		}
 
@@ -32,17 +35,31 @@ namespace fpmas { namespace model {
 		api::graph::PartitionMap partition
 			= cell_lb.balance(cells, partition_mode);
 
+		// Even if the partitionned cells are LOCAL, agents located in each
+		// cell might be DISTANT. In consequence, it is necessary to send the
+		// new location of DISTANT agents to the owner process, where the agent
+		// is LOCAL.
 		std::unordered_map<int, std::vector<std::pair<DistributedId, int>>> distant_agents_location;
+
 		for(auto cell : cells) {
 			for(auto agent_edge : cell.second->getIncomingEdges(api::model::LOCATION)) {
 				auto agent = agent_edge->getSourceNode();
 				int agent_location = partition.count(cell.first) > 0 ?
+					// If a new location has been assigned to the cell, agent
+					// location is this new location
 					partition[cell.first] :
+					// Else, the agent location is the current cell location
 					cell.second->location();
+				// Nothing to do if the agent location has not changed
 				if(agent_location != agent->location()) {
 					if(agent->state() == api::graph::LOCAL) {
+						// The agent is LOCAL, so its new location can directly
+						// be added to the local partition
 						partition[agent->getId()] = agent_location;
 					} else {
+						// Else, store the new location in
+						// distant_agents_location to send it to the owner
+						// process
 						distant_agents_location[agent->location()].push_back(
 								{agent->getId(), agent_location}
 								);
