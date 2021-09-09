@@ -24,7 +24,7 @@ namespace fpmas { namespace model {
 				// the cell
 				float new_weight = cell->node()->getWeight();
 				for(auto agent : cell->node()->getIncomingEdges(api::model::LOCATION))
-					new_weight += cell->node()->getWeight();
+					new_weight += agent->getWeight();
 				cell->node()->setWeight(new_weight);
 
 				cells.insert(node);
