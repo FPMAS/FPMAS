@@ -46,22 +46,22 @@ namespace fpmas { namespace graph {
 						) : fixed_vertices_lb(fixed_vertices_lb), scheduler(scheduler), runtime(runtime) {}
 
 				[[deprecated]]
-				PartitionMap balance(NodeMap<T> nodes) override;
+				PartitionMap balance(api::graph::NodeMap<T> nodes) override;
 
 				PartitionMap balance(
-						NodeMap<T> nodes,
+						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMode partition_mode) override;
 
 		};
 
 	template<typename T>
-		PartitionMap ScheduledLoadBalancing<T>::balance(NodeMap<T> nodes) {
+		PartitionMap ScheduledLoadBalancing<T>::balance(api::graph::NodeMap<T> nodes) {
 			return balance(nodes, api::graph::PARTITION);
 		}
 
 	template<typename T>
 		PartitionMap ScheduledLoadBalancing<T>::balance(
-				NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
+				api::graph::NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
 			scheduler::Epoch epoch;
 			scheduler.build(runtime.currentDate() + 1, epoch);
 			// Global node map

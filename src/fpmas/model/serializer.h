@@ -426,8 +426,6 @@ namespace fpmas { namespace io { namespace json {
 			&& !std::is_default_constructible<AgentType>::value
 			&& std::is_same<AgentType, typename AgentType::FinalAgentType>::value>::type
 			>{
-				private:
-					static bool warn_print;
 				public:
 					/**
 					 * \anchor not_default_constructible_Agent_light_serializer_to_json
@@ -439,6 +437,7 @@ namespace fpmas { namespace io { namespace json {
 					 * @param agent agent to serialize
 					 */
 					static void to_json(light_json& j, const fpmas::api::utils::PtrWrapper<AgentType>& agent) {
+						static bool warn_print = false;
 						if(!warn_print) {
 							warn_print = true;
 							FPMAS_LOGW(0, "light_serializer",
@@ -466,15 +465,6 @@ namespace fpmas { namespace io { namespace json {
 						return _j.get<fpmas::api::utils::PtrWrapper<AgentType>>();
 					}
 			};
-
-	template<typename AgentType>
-		bool light_serializer<
-		fpmas::api::utils::PtrWrapper<AgentType>,
-		typename std::enable_if<
-			std::is_base_of<fpmas::api::model::Agent, AgentType>::value
-			&& !std::is_default_constructible<AgentType>::value
-			&& std::is_same<AgentType, typename AgentType::FinalAgentType>::value>::type
-			>::warn_print = false;
 
 	
 	/**

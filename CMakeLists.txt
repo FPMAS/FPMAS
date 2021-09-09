@@ -127,6 +127,7 @@ if(DOXYGEN_FOUND)
 		[[Node< DistributedId, api::graph::DistributedEdge< T > >]]
 		[[Edge< DistributedId, api::graph::DistributedNode< T > >]]
 		[[Graph< api::graph::DistributedNode< T >, api::graph::DistributedEdge< T > >]]
+		[[bool fpmas::io::json::light_serializer< AgentType >::warn_print]]
 
 		# Hacky specialization to remove in a next release
 		[[nlohmann::adl_serializer< std::unordered_map< DistributedId, Value, Hash, Equal, Alloc > >]]

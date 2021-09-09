@@ -36,41 +36,43 @@ namespace fpmas { namespace graph {
 					: random_rank(0, comm.getSize()-1) {
 					}
 
-				PartitionMap balance(NodeMap<T> nodes) override;
-				PartitionMap balance(NodeMap<T> nodes, api::graph::PartitionMode) override;
+				PartitionMap balance(api::graph::NodeMap<T> nodes) override;
+				PartitionMap balance(
+						api::graph::NodeMap<T> nodes,
+						api::graph::PartitionMode) override;
 
 				PartitionMap balance(
-						NodeMap<T> nodes,
+						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMap fixed_vertices) override;
 
 				PartitionMap balance(
-						NodeMap<T> nodes,
+						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMap fixed_vertices,
 						api::graph::PartitionMode) override;
 
 		};
 
 	template<typename T>
-		PartitionMap RandomLoadBalancing<T>::balance(NodeMap<T> nodes) {
+		PartitionMap RandomLoadBalancing<T>::balance(api::graph::NodeMap<T> nodes) {
 			return balance(nodes, api::graph::PARTITION);
 		}
 
 	template<typename T>
 		PartitionMap RandomLoadBalancing<T>::balance(
-				NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
+				api::graph::NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
 			return balance(nodes, {}, partition_mode);
 		}
 
 	template<typename T>
 		PartitionMap RandomLoadBalancing<T>::balance(
-				NodeMap<T> nodes,
+				api::graph::NodeMap<T> nodes,
 				api::graph::PartitionMap fixed_vertices) {
 			return balance(nodes, fixed_vertices, api::graph::PARTITION);
 		}
 
 	template<typename T>
 		PartitionMap RandomLoadBalancing<T>::balance(
-				NodeMap<T> nodes,
+				api::graph::NodeMap<T> nodes,
 				api::graph::PartitionMap fixed_vertices,
 				api::graph::PartitionMode) {
 			PartitionMap partition = fixed_vertices;

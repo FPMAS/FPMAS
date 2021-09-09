@@ -362,7 +362,7 @@ namespace fpmas { namespace graph {
 					}
 
 				PartitionMap balance(
-						NodeMap<T> nodes,
+						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMap fixed_vertices
 						) override;
 
@@ -374,12 +374,12 @@ namespace fpmas { namespace graph {
 				 * [Zoltan PHG Hypergraph partitioning method](https://cs.sandia.gov/Zoltan/ug_html/ug_alg_phg.html)
 				 */
 				PartitionMap balance(
-						NodeMap<T> nodes,
-						PartitionMap fixed_vertices,
+						api::graph::NodeMap<T> nodes,
+						api::graph::PartitionMap fixed_vertices,
 						api::graph::PartitionMode partition_mode
 						) override;
 				
-				PartitionMap balance(NodeMap<T> nodes) override;
+				PartitionMap balance(api::graph::NodeMap<T> nodes) override;
 
 				/**
 				 * \copydoc fpmas::api::graph::LoadBalancing::balance(NodeMap<T>, api::graph::PartitionMode)
@@ -389,13 +389,13 @@ namespace fpmas { namespace graph {
 				 * with an empty set of fixed vertices.
 				 */
 				PartitionMap balance(
-						NodeMap<T> nodes,
+						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMode partition_mode) override;
 		};
 
 	template<typename T> PartitionMap
 		ZoltanLoadBalancing<T>::balance(
-				NodeMap<T> nodes,
+				api::graph::NodeMap<T> nodes,
 				api::graph::PartitionMap fixed_vertices
 				) {
 			return balance(nodes, fixed_vertices, api::graph::PARTITION);
@@ -403,8 +403,8 @@ namespace fpmas { namespace graph {
 
 	template<typename T> PartitionMap
 		ZoltanLoadBalancing<T>::balance(
-				NodeMap<T> nodes,
-				PartitionMap fixed_vertices,
+				api::graph::NodeMap<T> nodes,
+				api::graph::PartitionMap fixed_vertices,
 				api::graph::PartitionMode partition_mode
 				) {
 			switch(partition_mode) {
@@ -493,13 +493,13 @@ namespace fpmas { namespace graph {
 		}
 
 	template<typename T> PartitionMap
-		ZoltanLoadBalancing<T>::balance(NodeMap<T> nodes) {
+		ZoltanLoadBalancing<T>::balance(api::graph::NodeMap<T> nodes) {
 			return this->balance(nodes, api::graph::PARTITION);
 		}
 
 	template<typename T> PartitionMap
 		ZoltanLoadBalancing<T>::balance(
-				NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
+				api::graph::NodeMap<T> nodes, api::graph::PartitionMode partition_mode) {
 			return this->balance(nodes, {}, partition_mode);
 		}
 
