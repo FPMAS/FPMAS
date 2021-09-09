@@ -1,7 +1,6 @@
 #include "fpmas/model/spatial/grid.h"
 #include "fpmas/model/spatial/von_neumann.h"
 #include "fpmas/model/spatial/moore.h"
-#include "fpmas/model/spatial/grid_agent_mapping.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "gmock/gmock.h"
@@ -444,35 +443,4 @@ TEST_F(MooreGridBuilderTest, build_with_groups) {
 		ASSERT_THAT(g1.localAgents(), Contains(cell));
 		ASSERT_THAT(g2.localAgents(), Contains(cell));
 	}
-}
-
-class UniformGridAgentMappingTest : public Test {
-	protected:
-		fpmas::model::UniformGridAgentMapping mapping {10, 10, 30};
-		std::array<MockGridCell<NiceMock>, 100> cells;
-
-		void SetUp() override {
-			for(fpmas::model::DiscreteCoordinate x = 0; x < 10; x++)
-				for(fpmas::model::DiscreteCoordinate y = 0; y < 10; y++)
-					ON_CALL(cells[10*x+y], location)
-						.WillByDefault(Return(fpmas::model::DiscretePoint {x, y}));
-		}
-};
-
-TEST_F(UniformGridAgentMappingTest, consistency_across_processes) {
-	std::array<std::size_t, 100> counts;
-	for(std::size_t i = 0; i < 100; i++)
-		counts[i] = mapping.countAt(&cells[i]);
-	std::size_t total_count = std::accumulate(counts.begin(), counts.end(), 0);
-	// First, the mapping must generate exactly 30 agent on the 10x10 grid
-	ASSERT_EQ(total_count, 30);
-
-	fpmas::communication::TypedMpi<std::array<std::size_t, 100>> mpi
-		(fpmas::communication::WORLD);
-	std::array<std::size_t, 100> proc_0_counts = mpi.bcast(counts, 0);
-
-	// The mapping is generated intependently on each process.
-	// However, it spite of randomness, **all processes** are required to
-	// generate **exactly** the same mapping.
-	ASSERT_THAT(counts, ElementsAreArray(proc_0_counts));
 }

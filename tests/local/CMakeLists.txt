@@ -37,6 +37,7 @@ set(SOURCES
 	model/spatial/grid.cpp
 	model/spatial/graph.cpp
 	model/spatial/grid_load_balancing.cpp
+	model/spatial/grid_agent_mapping.cpp
 	# Output
 	io/output.cpp
 	io/csv_output.cpp

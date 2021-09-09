@@ -8,6 +8,7 @@
 #include "fpmas/api/model/spatial/grid.h"
 #include "fpmas/random/distribution.h"
 #include "fpmas/random/random.h"
+#include "spatial_agent_mapping.h"
 
 
 namespace fpmas { namespace model {
@@ -19,6 +20,9 @@ namespace fpmas { namespace model {
 	 *
 	 * Agents are distributed on the environment according to random
 	 * distributions.
+	 *
+	 * The RandomMapping::rd random generator is used, and can be seeded with
+	 * RandomMapping::seed() or fpmas::seed().
 	 */
 	class RandomGridAgentMapping : public api::model::SpatialAgentMapping<api::model::GridCell> {
 		private:
@@ -44,14 +48,12 @@ namespace fpmas { namespace model {
 			 * @param x x distribution
 			 * @param y y distribution
 			 * @param agent_count agent count
-			 * @param seed random seed
 			 */
 			template<typename DistributionX, typename DistributionY>
 			RandomGridAgentMapping(
 					DistributionX&& x,
 					DistributionY&& y,
-					std::size_t agent_count,
-					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
+					std::size_t agent_count
 					);
 
 			std::size_t countAt(api::model::GridCell* cell) override {
@@ -65,12 +67,10 @@ namespace fpmas { namespace model {
 		RandomGridAgentMapping::RandomGridAgentMapping(
 				DistributionX&& x,
 				DistributionY&& y,
-				std::size_t agent_count,
-				std::mt19937_64::result_type seed) {
-			random::mt19937_64 rd(seed);
+				std::size_t agent_count) {
 
 			for(std::size_t i = 0; i < agent_count; i++) {
-				DiscretePoint p {x(rd), y(rd)};
+				DiscretePoint p {x(RandomMapping::rd), y(RandomMapping::rd)};
 				count_map[p.x][p.y]++;
 			}
 		}
@@ -92,18 +92,16 @@ namespace fpmas { namespace model {
 			 * @param grid_width grid width
 			 * @param grid_height grid height
 			 * @param agent_count agent count
-			 * @param seed random seed
 			 */
 			UniformGridAgentMapping(
 					DiscreteCoordinate grid_width,
 					DiscreteCoordinate grid_height,
-					std::size_t agent_count,
-					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
+					std::size_t agent_count
 					) 
 				: RandomGridAgentMapping(
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_width-1),
 						random::UniformIntDistribution<DiscreteCoordinate>(0, grid_height-1),
-						agent_count, seed) {}
+						agent_count) {}
 	};
 
 	/**
@@ -111,6 +109,9 @@ namespace fpmas { namespace model {
 	 *
 	 * The ConstrainedGridAgentMapping allows to uniformly distribute agents
 	 * over a grid, while specifying a maximum count of agents by cell.
+	 *
+	 * The RandomMapping::rd random generator is used, and can be seeded with
+	 * RandomMapping::seed() or fpmas::seed().
 	 */
 	class ConstrainedGridAgentMapping : public api::model::SpatialAgentMapping<api::model::GridCell> {
 		private:
@@ -130,14 +131,12 @@ namespace fpmas { namespace model {
 			 * @param agent_count total count of agents to map
 			 * @param max_agent_by_cell maximum count of agents allowed on each
 			 * cell
-			 * @param seed random seed
 			 */
 			ConstrainedGridAgentMapping(
 					DiscreteCoordinate grid_width,
 					DiscreteCoordinate grid_height,
 					std::size_t agent_count,
-					std::size_t max_agent_by_cell,
-					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
+					std::size_t max_agent_by_cell
 					);
 
 		std::size_t countAt(api::model::GridCell* cell) override;

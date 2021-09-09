@@ -27,6 +27,7 @@ set(SOURCES
 	fpmas/model/serializer.cpp
 	fpmas/model/spatial/spatial_model.cpp
 	fpmas/model/spatial/grid.cpp
+	fpmas/model/spatial/spatial_agent_mapping.cpp
 	fpmas/model/spatial/grid_agent_mapping.cpp
 	fpmas/model/spatial/graph.cpp
 	fpmas/model/spatial/grid_load_balancing.cpp

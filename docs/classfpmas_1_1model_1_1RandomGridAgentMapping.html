@@ -96,18 +96,19 @@ Collaboration diagram for fpmas::model::RandomGridAgentMapping:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a4b73f99360660092ad9be7311b098941"><td class="memTemplParams" colspan="2">template&lt;typename DistributionX , typename DistributionY &gt; </td></tr>
-<tr class="memitem:a4b73f99360660092ad9be7311b098941"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1RandomGridAgentMapping.html#a4b73f99360660092ad9be7311b098941">RandomGridAgentMapping</a> (DistributionX &amp;&amp;x, DistributionY &amp;&amp;y, std::size_t agent_count, std::mt19937_64::result_type <a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">seed</a>=std::mt19937_64::default_seed)</td></tr>
-<tr class="separator:a4b73f99360660092ad9be7311b098941"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8254fd99190f581575c26a8c4741ef16"><td class="memTemplParams" colspan="2">template&lt;typename DistributionX , typename DistributionY &gt; </td></tr>
+<tr class="memitem:a8254fd99190f581575c26a8c4741ef16"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1RandomGridAgentMapping.html#a8254fd99190f581575c26a8c4741ef16">RandomGridAgentMapping</a> (DistributionX &amp;&amp;x, DistributionY &amp;&amp;y, std::size_t agent_count)</td></tr>
+<tr class="separator:a8254fd99190f581575c26a8c4741ef16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9feca01c4145acf812d3a56745e5e07a"><td class="memItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1RandomGridAgentMapping.html#a9feca01c4145acf812d3a56745e5e07a">countAt</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1GridCell.html">api::model::GridCell</a> *cell) override</td></tr>
 <tr class="separator:a9feca01c4145acf812d3a56745e5e07a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgentMapping.html">api::model::SpatialAgentMapping</a> implementation for grid environments.</p>
-<p >Agents are distributed on the environment according to random distributions. </p>
+<p >Agents are distributed on the environment according to random distributions.</p>
+<p >The <a class="el" href="structfpmas_1_1model_1_1RandomMapping.html#a137da1271e41fae0c22630b21fae5049">RandomMapping::rd</a> random generator is used, and can be seeded with <a class="el" href="structfpmas_1_1model_1_1RandomMapping.html#a1043d7af676f794e5c083d9c541282f0">RandomMapping::seed()</a> or <a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">fpmas::seed()</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a4b73f99360660092ad9be7311b098941" name="a4b73f99360660092ad9be7311b098941"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4b73f99360660092ad9be7311b098941">&#9670;&nbsp;</a></span>RandomGridAgentMapping()</h2>
+<a id="a8254fd99190f581575c26a8c4741ef16" name="a8254fd99190f581575c26a8c4741ef16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8254fd99190f581575c26a8c4741ef16">&#9670;&nbsp;</a></span>RandomGridAgentMapping()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -130,13 +131,7 @@ template&lt;typename DistributionX , typename DistributionY &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">std::size_t&#160;</td>
-          <td class="paramname"><em>agent_count</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::mt19937_64::result_type&#160;</td>
-          <td class="paramname"><em>seed</em> = <code>std::mt19937_64::default_seed</code>&#160;</td>
+          <td class="paramname"><em>agent_count</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -160,7 +155,6 @@ template&lt;typename DistributionX , typename DistributionY &gt; </div>
     <tr><td class="paramname">x</td><td>x distribution </td></tr>
     <tr><td class="paramname">y</td><td>y distribution </td></tr>
     <tr><td class="paramname">agent_count</td><td>agent count </td></tr>
-    <tr><td class="paramname">seed</td><td>random seed </td></tr>
   </table>
   </dd>
 </dl>

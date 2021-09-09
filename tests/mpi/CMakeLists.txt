@@ -11,6 +11,8 @@ set(SOURCES
 	model/model.cpp
 	model/test_agents.cpp
 	model/spatial/spatial_model.cpp
+	model/spatial/spatial_agent_mapping.cpp
+	model/spatial/grid_agent_mapping.cpp
 	model/spatial/grid.cpp
 	model/spatial/graph_range.cpp
 	model/spatial/grid_load_balancing.cpp

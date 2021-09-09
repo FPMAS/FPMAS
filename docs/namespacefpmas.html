@@ -64,7 +64,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">fpmas Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -114,6 +115,11 @@ Functions</h2></td></tr>
 <tr class="memitem:ad687ae462a5b1dd2d5d1df39c41aa920"><td class="memTemplParams" colspan="2">template&lt;typename _T , typename... T&gt; </td></tr>
 <tr class="memitem:ad687ae462a5b1dd2d5d1df39c41aa920"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a> ()</td></tr>
 <tr class="separator:ad687ae462a5b1dd2d5d1df39c41aa920"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a873166859baa564f35ffc384d9f1fac0"><td class="memItemLeft" align="right" valign="top">const std::mt19937::result_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas.html#a873166859baa564f35ffc384d9f1fac0">default_seed</a> {std::mt19937::default_seed}</td></tr>
+<tr class="separator:a873166859baa564f35ffc384d9f1fac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Main <code>fpmas</code> namespace. </p>
@@ -143,7 +149,8 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Initializes FPMAS. </p>
+<p >Initializes FPMAS.</p>
+<p >This must be call before any MPI communication or <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a> initialization is performed. </p>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fpmas_2output_2csv_output_8cpp-example.html#a0">fpmas/output/csv_output.cpp</a>, and <a class="el" href="fpmas_2output_2distributed_csv_output_8cpp-example.html#a0">fpmas/output/distributed_csv_output.cpp</a>.</dd>
 </dl>
 
@@ -185,7 +192,7 @@ Functions</h2></td></tr>
 <div class="line">    <a class="code hl_function" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a>();</div>
 <div class="line">}</div>
 <div class="ttc" id="afpmas_8h_html"><div class="ttname"><a href="fpmas_8h.html">fpmas.h</a></div></div>
-<div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:12</div></div>
+<div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:13</div></div>
 <div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:4</div></div>
 </div><!-- fragment --> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fpmas_2output_2csv_output_8cpp-example.html#a3">fpmas/output/csv_output.cpp</a>, and <a class="el" href="fpmas_2output_2distributed_csv_output_8cpp-example.html#a3">fpmas/output/distributed_csv_output.cpp</a>.</dd>
 </dl>
@@ -211,6 +218,7 @@ Functions</h2></td></tr>
 <p >Currently calls:</p><ul>
 <li><a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#ac88d849f5f24ae52343b08477bf4e924">fpmas::runtime::Runtime::seed()</a></li>
 <li><a class="el" href="structfpmas_1_1model_1_1RandomNeighbors.html#a6a6d99902e9a5467e454df9cb30d282d">fpmas::model::RandomNeighbors::seed()</a></li>
+<li><a class="el" href="structfpmas_1_1model_1_1RandomMapping.html#a1043d7af676f794e5c083d9c541282f0">fpmas::model::RandomMapping::seed()</a></li>
 </ul>
 <p >Those are currently the only static random generators used internally in an FPMAS simulation, so seeding them ensures reproducibility.</p>
 <dl class="section warning"><dt>Warning</dt><dd>Even if this ensures that random number sequences are the same for each execution with a given seed, the execution of some simulations can't be considered deterministic due to message exchanges across processors in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">fpmas::synchro::hard::HardSyncMode</a> for example. Indeed, the relative speed of each process cannot be guaranteed, and the receiving order of some message sequences might alter some agent behavior. However, simulations executed using the <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html">fpmas::synchro::ghost::GhostMode</a> will be deterministic.</dd></dl>
@@ -318,6 +326,22 @@ template&lt;typename _T , typename... T&gt; </div>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line">nlohmann::fpmas::register_types&lt;Type1, Type2, void&gt;();</div>
 </div><!-- fragment --></dd></dl>
 <p>The <a class="el" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES(...)</a> macro can be used instead as a more expressive and user-friendly way to register types. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a873166859baa564f35ffc384d9f1fac0" name="a873166859baa564f35ffc384d9f1fac0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a873166859baa564f35ffc384d9f1fac0">&#9670;&nbsp;</a></span>default_seed</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::mt19937::result_type fpmas::default_seed {std::mt19937::default_seed}</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >The default seed passed to <a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">fpmas::seed()</a> when <a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init()</a> is called. </p>
 
 </div>
 </div>

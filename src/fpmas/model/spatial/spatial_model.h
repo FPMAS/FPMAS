@@ -796,45 +796,6 @@ namespace fpmas {
 				}
 		};
 
-	/**
-	 * An api::model::SpatialAgentMapping implementation that randomly assign
-	 * \SpatialAgents to available \Cells.
-	 */
-	class UniformAgentMapping : public api::model::SpatialAgentMapping<api::model::Cell> {
-		private:
-			std::unordered_map<DistributedId, std::size_t> mapping;
-
-		public:
-			/**
-			 * UniformAgentMapping constructor.
-			 *
-			 * `agent_count` agents are distributed on the distributed set of
-			 * \Cells contained in the specified `cell_group`.
-			 *
-			 * A custom `seed` might be specified. However, since the generated
-			 * mapping is required to be the same on **all processes**, the
-			 * same `seed` must be specified on all processes.
-			 *
-			 * For the same reasons, the same `agent_count` must be specified
-			 * on all processes, since this corresponds to the **global** count
-			 * of \SpatialAgents to initialize.
-			 *
-			 * @param comm MPI communicator
-			 * @param cell_group AgentGroup containing \Cells to which a
-			 * \SpatialAgent count will be assigned.
-			 * @param agent_count total number of \SpatialAgents to distribute
-			 * on a set of \Cells. 
-			 * @param seed random seed
-			 */
-			UniformAgentMapping(
-					api::communication::MpiCommunicator& comm,
-					api::model::AgentGroup& cell_group,
-					std::size_t agent_count,
-					std::mt19937_64::result_type seed = std::mt19937_64::default_seed
-					);
-
-			std::size_t countAt(api::model::Cell* cell) override;
-	};
 
 	/**
 	 * api::model::SpatialAgentBuilder implementation.
