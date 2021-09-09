@@ -1,6 +1,6 @@
 #include "fpmas/utils/perf.h"
 
-#include "gmock/gmock.h"
+#include "../../mocks/model/mock_model.h"
 
 #include <thread>
 
@@ -112,4 +112,21 @@ TEST_F(Monitor, clear) {
 	ASSERT_EQ(monitor.totalDuration("probe_1"), Duration(0));
 	ASSERT_EQ(monitor.callCount("probe_2"), 0);
 	ASSERT_EQ(monitor.totalDuration("probe_2"), Duration(0));
+}
+
+struct MockBehavior : public fpmas::api::model::Behavior {
+	MOCK_METHOD(void, execute, (fpmas::api::model::Agent*), (const, override));
+};
+
+TEST(ProbeBehavior, test) {
+	MockBehavior mock_behavior;
+	fpmas::utils::perf::Monitor monitor;
+	fpmas::utils::perf::ProbeBehavior probe_behavior(monitor, mock_behavior, "TEST_BEHAVIOR");
+	MockAgent<> mock_agent;
+
+	EXPECT_CALL(mock_behavior, execute(&mock_agent));
+
+	probe_behavior.execute(&mock_agent);
+	ASSERT_EQ(monitor.callCount("TEST_BEHAVIOR"), 1);
+	ASSERT_GT(monitor.totalDuration("TEST_BEHAVIOR").count(), 0);
 }

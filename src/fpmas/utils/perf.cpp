@@ -38,4 +38,20 @@ namespace fpmas { namespace utils { namespace perf {
 	void Monitor::clear() {
 		data.clear();
 	}
+
+	ProbeBehavior::ProbeBehavior(
+					api::utils::perf::Monitor& monitor,
+					api::model::Behavior& behavior,
+					std::string probe_name
+					)
+		: monitor(monitor), behavior(behavior), probe(probe_name) {
+		}
+
+	void ProbeBehavior::execute(api::model::Agent *agent) const {
+		probe.start();
+		behavior.execute(agent);
+		probe.stop();
+
+		monitor.commit(probe);
+	}
 }}}

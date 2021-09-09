@@ -10,6 +10,7 @@
 #include "fpmas/api/utils/perf.h"
 #include "nlohmann/json.hpp"
 #include "fpmas/io/csv_output.h"
+#include "fpmas/api/model/model.h"
 
 namespace fpmas { namespace utils { namespace perf {
 	using api::utils::perf::Clock;
@@ -96,6 +97,46 @@ namespace fpmas { namespace utils { namespace perf {
 			std::size_t callCount(std::string probe_label) const override;
 			Duration totalDuration(std::string probe_label) const override;
 			void clear() override;
+	};
+
+	/**
+	 * An api::model::Behavior implementation that wraps an other
+	 * api::model::Behavior in order to estimate its execution time.
+	 *
+	 * The ProbeBehavior can be safely used instead of the probed behavior
+	 * (assigning the ProbeBehavior to an \AgentGroup instead of the original
+	 * behavior for example) without altering the \Model execution.
+	 */
+	class ProbeBehavior : public api::model::Behavior {
+		private:
+			api::utils::perf::Monitor& monitor;
+			api::model::Behavior& behavior;
+			mutable Probe probe;
+
+		public:
+			/**
+			 * ProbeBehavior constructor.
+			 *
+			 * @param monitor monitor to which execution times will be
+			 * committed
+			 * @param behavior probed behavior
+			 * @param probe_name name of the probe that is used to commit
+			 * measures to the `monitor`. This name is also used to retrieve
+			 * values using Monitor.callCount() and Monitor.totalDuration().
+			 */
+			ProbeBehavior(
+					api::utils::perf::Monitor& monitor,
+					api::model::Behavior& behavior,
+					std::string probe_name
+					);
+
+			/**
+			 * Executes the probed behavior on `agent`, probing and committing
+			 * its execution time to the `monitor`.
+			 *
+			 * @param agent agent on which the probed behavior is executed
+			 */
+			void execute(api::model::Agent* agent) const override;
 	};
 }}}
 
