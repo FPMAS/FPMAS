@@ -72,6 +72,9 @@ namespace fpmas { namespace graph {
 	 * A base class that can be used for graph builders based on a random
 	 * number of outgoing edges for each node, according to the specified
 	 * random distribution.
+	 *
+	 * Static random generators are also available, so that the graph
+	 * generation process can be controlled with fpmas::seed().
 	 */
 	class RandomGraphBuilder {
 		protected:
@@ -102,6 +105,25 @@ namespace fpmas { namespace graph {
 					num_edge([&generator, &edge_distribution] () {
 							return edge_distribution(generator);
 							}) {}
+		public:
+			/**
+			 * Static and distributed random generator.
+			 */
+			static random::DistributedGenerator<> distributed_rd;
+			/**
+			 * Static random generator, that should produce the same random
+			 * number generation sequences on all processes, provided that the
+			 * seed() method is properly called with the same argument on all
+			 * processes (or not called at all, to use the default seed).
+			 */
+			static random::mt19937_64 rd;
+
+			/**
+			 * Seeds the `distributed_rd` and `rd` random generators.
+			 *
+			 * @param seed random seed
+			 */
+			static void seed(random::mt19937_64::result_type seed);
 	};
 
 
@@ -110,6 +132,7 @@ namespace fpmas { namespace graph {
 	 * random uniform graphs. When links are built, nodes are selected
 	 * uniformly among all the available built nodes.
 	 */
+	// TODO 2.0: remove or rename this, use Distributed instead
 	template<typename T>
 		class UniformGraphBuilder :
 			public api::graph::GraphBuilder<T>,
@@ -130,12 +153,12 @@ namespace fpmas { namespace graph {
 					 * @tparam EdgeDist edge count distribution (must satisfy
 					 * _RandomNumberDistribution_)
 					 *
-					 * _RandomNumberDistribution_)
 					 * @param generator random number generator provided to the
 					 * distribution
 					 * @param distribution random distribution that manages edges
 					 * generation. See build()
 					 */
+					// TODO 2.0: Remove this constructor
 					template<typename Generator_t, typename EdgeDist>
 						UniformGraphBuilder(
 								Generator_t& generator,
@@ -150,6 +173,24 @@ namespace fpmas { namespace graph {
 									return index(generator);
 									}) {
 							}
+
+					/**
+					 * UniformGraphBuilder constructor.
+					 *
+					 * The RandomGraphBuilder::rd random generator is used. It
+					 * can be seeded with RandomGraphBuilder::seed() or
+					 * fpmas::seed().
+					 *
+					 * @tparam EdgeDist edge count distribution (must satisfy
+					 * _RandomNumberDistribution_)
+					 *
+					 * @param distribution random distribution that manages edges
+					 * generation. See build()
+					 */
+					template<typename EdgeDist>
+						UniformGraphBuilder(EdgeDist& distribution)
+						: UniformGraphBuilder(RandomGraphBuilder::rd, distribution) {
+						}
 
 					/**
 					 * Builds a graph according to the following algorithm.
@@ -257,6 +298,25 @@ namespace fpmas { namespace graph {
 									return index(generator);
 									}) {
 						}
+
+					/**
+					 * DistributedUniformGraphBuilder constructor.
+					 *
+					 * The RandomGraphBuilder::distributed_rd random generator
+					 * is used. It can be seeded with
+					 * RandomGraphBuilder::seed() or fpmas::seed().
+					 *
+					 * @tparam EdgeDist edge count distribution (must satisfy
+					 * _RandomNumberDistribution_)
+					 *
+					 * @param distribution random distribution that manages edges
+					 * generation. See build()
+					 */
+					template<typename EdgeDist>
+						DistributedUniformGraphBuilder(
+								EdgeDist& distribution) :
+							DistributedUniformGraphBuilder(RandomGraphBuilder::distributed_rd, distribution) {
+							}
 
 					/**
 					 * Same as UniformGraphBuilder::build(), but distributed and
@@ -522,6 +582,36 @@ namespace fpmas { namespace graph {
 				/**
 				 * ClusteredGraphBuilder constructor.
 				 *
+				 * The RandomGraphBuilder::rd random generator is used. It can
+				 * be seeded with RandomGraphBuilder::seed() or fpmas::seed().
+				 *
+				 * @tparam EdgeDist edge count distribution (must satisfy
+				 * _RandomNumberDistribution_)
+				 * @tparam X_Dist x coordinates distribution (must satisfy
+				 * RandomNumberDistribution)
+				 * @tparam Y_Dist y coordinates distribution (must satisfy
+				 * RandomNumberDistribution)
+				 *
+				 * @param edge_distribution random distribution that manages edges
+				 * generation. See build()
+				 * @param x_distribution random distribution used to assign an
+				 * x coordinate to each node
+				 * @param y_distribution random distribution used to assign an
+				 * y coordinate to each node
+				 */
+				template<typename EdgeDist, typename X_Dist, typename Y_Dist>
+					ClusteredGraphBuilder(
+							EdgeDist& edge_distribution,
+							X_Dist& x_distribution,
+							Y_Dist& y_distribution
+							) : ClusteredGraphBuilder(
+								RandomGraphBuilder::rd, edge_distribution,
+								x_distribution, y_distribution) {
+						}
+
+				/**
+				 * ClusteredGraphBuilder constructor.
+				 *
 				 * Built nodes are implicitly and uniformly distributed in a 2D
 				 * space.
 				 *
@@ -651,6 +741,10 @@ namespace fpmas { namespace graph {
 				/**
 				 * DistributedClusteredGraphBuilder constructor.
 				 *
+				 * The RandomGraphBuilder::distributed_rd random generator is
+				 * used. It can be seeded with RandomGraphBuilder::seed() or
+				 * fpmas::seed().
+				 *
 				 * @tparam EdgeDist edge count distribution (must satisfy
 				 * _RandomNumberDistribution_)
 				 * @tparam X_Dist x coordinates distribution (must satisfy
@@ -668,16 +762,44 @@ namespace fpmas { namespace graph {
 				 * y coordinate to each node
 				 */
 				template<typename EdgeDist, typename X_Dist, typename Y_Dist>
-				DistributedClusteredGraphBuilder(
-						random::DistributedGenerator<>& generator,
-						EdgeDist& edge_distribution,
-						X_Dist& x_distribution,
-						Y_Dist& y_distribution
-						) :
-					RandomGraphBuilder(generator, edge_distribution),
-					x([&generator, &x_distribution] () {return x_distribution(generator);}),
-					y([&generator, &y_distribution] () {return y_distribution(generator);}) {
-					}
+					DistributedClusteredGraphBuilder(
+							random::DistributedGenerator<>& generator,
+							EdgeDist& edge_distribution,
+							X_Dist& x_distribution,
+							Y_Dist& y_distribution
+							) :
+						RandomGraphBuilder(generator, edge_distribution),
+						x([&generator, &x_distribution] () {return x_distribution(generator);}),
+						y([&generator, &y_distribution] () {return y_distribution(generator);}) {
+						}
+
+				/**
+				 * DistributedClusteredGraphBuilder constructor.
+				 *
+				 * @tparam EdgeDist edge count distribution (must satisfy
+				 * _RandomNumberDistribution_)
+				 * @tparam X_Dist x coordinates distribution (must satisfy
+				 * RandomNumberDistribution)
+				 * @tparam Y_Dist y coordinates distribution (must satisfy
+				 * RandomNumberDistribution)
+				 *
+				 * @param edge_distribution random distribution that manages edges
+				 * generation. See build()
+				 * @param x_distribution random distribution used to assign an
+				 * x coordinate to each node
+				 * @param y_distribution random distribution used to assign an
+				 * y coordinate to each node
+				 */
+				template<typename EdgeDist, typename X_Dist, typename Y_Dist>
+					DistributedClusteredGraphBuilder(
+							EdgeDist& edge_distribution,
+							X_Dist& x_distribution,
+							Y_Dist& y_distribution
+							) :
+						DistributedClusteredGraphBuilder(
+								RandomGraphBuilder::distributed_rd, edge_distribution,
+								x_distribution, y_distribution) {
+						}
 
 				
 				/**

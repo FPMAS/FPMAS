@@ -7,7 +7,6 @@ namespace fpmas {
 		Zoltan_Initialize(argc, argv, &v);
 		fpmas::api::communication::createMpiTypes();
 		fpmas::communication::WORLD.init();
-		fpmas::seed(fpmas::default_seed);
 	}
 
 	void finalize() {

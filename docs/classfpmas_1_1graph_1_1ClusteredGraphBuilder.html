@@ -89,9 +89,12 @@ Collaboration diagram for fpmas::graph::ClusteredGraphBuilder&lt; T &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1graph_1_1ClusteredGraphBuilder__coll__graph.png" border="0" usemap="#afpmas_1_1graph_1_1ClusteredGraphBuilder_3_01T_01_4_coll__map" alt="Collaboration graph"/></div>
 <map name="afpmas_1_1graph_1_1ClusteredGraphBuilder_3_01T_01_4_coll__map" id="afpmas_1_1graph_1_1ClusteredGraphBuilder_3_01T_01_4_coll__map">
-<area shape="rect" title=" " alt="" coords="64,95,261,136"/>
-<area shape="rect" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html" title=" " alt="" coords="5,5,136,47"/>
-<area shape="rect" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html" title=" " alt="" coords="161,5,351,47"/>
+<area shape="rect" title=" " alt="" coords="761,39,959,80"/>
+<area shape="rect" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html" title=" " alt="" coords="551,5,682,47"/>
+<area shape="rect" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html" title=" " alt="" coords="521,71,712,112"/>
+<area shape="rect" href="classfpmas_1_1random_1_1DistributedGenerator.html" title=" " alt="" coords="211,40,391,81"/>
+<area shape="rect" href="classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="5,66,161,122"/>
+<area shape="rect" href="classfpmas_1_1random_1_1Generator.html" title=" " alt="" coords="213,105,388,147"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -100,6 +103,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa7a94f7ee42cd49ebe9b1801d423bc2c"><td class="memTemplParams" colspan="2">template&lt;typename Generator_t , typename EdgeDist , typename X_Dist , typename Y_Dist &gt; </td></tr>
 <tr class="memitem:aa7a94f7ee42cd49ebe9b1801d423bc2c"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#aa7a94f7ee42cd49ebe9b1801d423bc2c">ClusteredGraphBuilder</a> (Generator_t &amp;generator, EdgeDist &amp;edge_distribution, X_Dist &amp;x_distribution, Y_Dist &amp;y_distribution)</td></tr>
 <tr class="separator:aa7a94f7ee42cd49ebe9b1801d423bc2c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d8f867be86a23274e0f17e38afaa07f"><td class="memTemplParams" colspan="2">template&lt;typename EdgeDist , typename X_Dist , typename Y_Dist &gt; </td></tr>
+<tr class="memitem:a4d8f867be86a23274e0f17e38afaa07f"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#a4d8f867be86a23274e0f17e38afaa07f">ClusteredGraphBuilder</a> (EdgeDist &amp;edge_distribution, X_Dist &amp;x_distribution, Y_Dist &amp;y_distribution)</td></tr>
+<tr class="separator:a4d8f867be86a23274e0f17e38afaa07f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07b21f07b11c904ee889eda7fbc0e456"><td class="memTemplParams" colspan="2">template&lt;typename Generator_t , typename Distribution_t &gt; </td></tr>
 <tr class="memitem:a07b21f07b11c904ee889eda7fbc0e456"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#a07b21f07b11c904ee889eda7fbc0e456">ClusteredGraphBuilder</a> (Generator_t &amp;generator, Distribution_t &amp;edge_distribution)</td></tr>
 <tr class="separator:a07b21f07b11c904ee889eda7fbc0e456"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,7 +117,7 @@ Public Member Functions</h2></td></tr>
 class fpmas::graph::ClusteredGraphBuilder&lt; T &gt;</div><p ><a class="el" href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">api::graph::GraphBuilder</a> implementation that can be used to generate random clustered graphs. A random 2D coordinate is implicitly associated to each node : each node is then connected to its nearest neighbors. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa7a94f7ee42cd49ebe9b1801d423bc2c" name="aa7a94f7ee42cd49ebe9b1801d423bc2c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa7a94f7ee42cd49ebe9b1801d423bc2c">&#9670;&nbsp;</a></span>ClusteredGraphBuilder() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa7a94f7ee42cd49ebe9b1801d423bc2c">&#9670;&nbsp;</a></span>ClusteredGraphBuilder() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -181,8 +187,72 @@ template&lt;typename Generator_t , typename EdgeDist , typename X_Dist , typenam
 
 </div>
 </div>
+<a id="a4d8f867be86a23274e0f17e38afaa07f" name="a4d8f867be86a23274e0f17e38afaa07f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d8f867be86a23274e0f17e38afaa07f">&#9670;&nbsp;</a></span>ClusteredGraphBuilder() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename EdgeDist , typename X_Dist , typename Y_Dist &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html">fpmas::graph::ClusteredGraphBuilder</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html">ClusteredGraphBuilder</a> </td>
+          <td>(</td>
+          <td class="paramtype">EdgeDist &amp;&#160;</td>
+          <td class="paramname"><em>edge_distribution</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">X_Dist &amp;&#160;</td>
+          <td class="paramname"><em>x_distribution</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Y_Dist &amp;&#160;</td>
+          <td class="paramname"><em>y_distribution</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p ><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html">ClusteredGraphBuilder</a> constructor.</p>
+<p >The <a class="el" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html#a85d9b244bf2ab4b1325c2d1c1693f3b4">RandomGraphBuilder::rd</a> random generator is used. It can be seeded with <a class="el" href="classfpmas_1_1graph_1_1RandomGraphBuilder.html#a4563c87d992fa9082f306eeff919a633">RandomGraphBuilder::seed()</a> or <a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">fpmas::seed()</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">EdgeDist</td><td>edge count distribution (must satisfy <em>RandomNumberDistribution</em>) </td></tr>
+    <tr><td class="paramname">X_Dist</td><td>x coordinates distribution (must satisfy RandomNumberDistribution) </td></tr>
+    <tr><td class="paramname">Y_Dist</td><td>y coordinates distribution (must satisfy RandomNumberDistribution)</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">edge_distribution</td><td>random distribution that manages edges generation. See <a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html#ac55b80abb4cbbf5ccb65ebd302fdf462">build()</a> </td></tr>
+    <tr><td class="paramname">x_distribution</td><td>random distribution used to assign an x coordinate to each node </td></tr>
+    <tr><td class="paramname">y_distribution</td><td>random distribution used to assign an y coordinate to each node </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a07b21f07b11c904ee889eda7fbc0e456" name="a07b21f07b11c904ee889eda7fbc0e456"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a07b21f07b11c904ee889eda7fbc0e456">&#9670;&nbsp;</a></span>ClusteredGraphBuilder() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a07b21f07b11c904ee889eda7fbc0e456">&#9670;&nbsp;</a></span>ClusteredGraphBuilder() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">

@@ -106,7 +106,10 @@ namespace fpmas {
 			/**
 			 * Returns a \JobList containing:
 			 * 1. The execution of `behavior` on agents of the group, where
-			 * SpatialAgent::moveTo() operations are potentially performed.
+			 * SpatialAgent::moveTo() operations are potentially performed,
+			 * including any necessary synchronization at the end of all
+			 * behavior executions. Corresponds to the agentExecutionJob() in
+			 * practice.
 			 * 2. The execution of a \DistributedMoveAlgorithm, according to
 			 * the specified `model`, to commit the previous `moveTo`
 			 * operations and update agents location, mobility fields and

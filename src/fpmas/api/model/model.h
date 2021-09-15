@@ -649,6 +649,9 @@ namespace fpmas { namespace api {namespace model {
 			 * Returns a reference to the internal \Job specifically used to
 			 * execute behavior() on the agents() of the group.
 			 *
+			 * Any necessary graph synchronization is included at the end of
+			 * the \Job, after all agents execution.
+			 *
 			 * However this job is not intended to be scheduled directly: use
 			 * jobs() instead.
 			 *
