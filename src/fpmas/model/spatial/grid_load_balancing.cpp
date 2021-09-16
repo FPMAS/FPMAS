@@ -18,7 +18,7 @@ namespace fpmas { namespace model {
 
 		std::list<Node*> leafs;
 		leafs.push_back(root);
-		while(leafs.size() != comm.getSize()) {
+		while(leafs.size() != (std::size_t) comm.getSize()) {
 			split_node(leafs);
 		}
 		int process = 0;
