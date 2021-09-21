@@ -14,6 +14,7 @@ namespace fpmas { namespace io {
 	class JsonOutput : public OutputBase {
 		private:
 			Watcher<T> watcher;
+			int indent_level;
 
 		public:
 			/**
@@ -22,9 +23,11 @@ namespace fpmas { namespace io {
 			 * @param output_stream OutputStream to which JSON data will be
 			 * dumped.
 			 * @param watcher Watcher instance used to gather data to dump().
+			 * @param indent If true, the json output is _pretty-printed_.
+			 * Otherwise, a compact representation is used.
 			 */
-			JsonOutput(api::io::OutputStream& output_stream, Watcher<T> watcher)
-				: OutputBase(output_stream), watcher(watcher) {
+			JsonOutput(api::io::OutputStream& output_stream, Watcher<T> watcher, bool indent = false)
+				: OutputBase(output_stream), watcher(watcher), indent_level(indent ? 4 : -1) {
 				}
 
 			/**
@@ -35,7 +38,7 @@ namespace fpmas { namespace io {
 			 */
 			void dump() override {
 				nlohmann::json j = watcher();
-				output_stream.get() << j.dump(1);
+				output_stream.get() << j.dump(indent_level);
 			}
 	};
 }}

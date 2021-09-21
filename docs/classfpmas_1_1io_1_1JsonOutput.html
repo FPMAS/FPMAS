@@ -98,8 +98,8 @@ Collaboration diagram for fpmas::io::JsonOutput&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a820e323b76e94dceba52678e5e3a8836"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1JsonOutput.html#a820e323b76e94dceba52678e5e3a8836">JsonOutput</a> (<a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">api::io::OutputStream</a> &amp;<a class="el" href="classfpmas_1_1io_1_1OutputBase.html#ae3868c6b642e1f79cc196269f9174275">output_stream</a>, Watcher&lt; T &gt; watcher)</td></tr>
-<tr class="separator:a820e323b76e94dceba52678e5e3a8836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11e5b8ac4c317af30cfe40bc7a9a8755"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1JsonOutput.html#a11e5b8ac4c317af30cfe40bc7a9a8755">JsonOutput</a> (<a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">api::io::OutputStream</a> &amp;<a class="el" href="classfpmas_1_1io_1_1OutputBase.html#ae3868c6b642e1f79cc196269f9174275">output_stream</a>, Watcher&lt; T &gt; watcher, bool indent=false)</td></tr>
+<tr class="separator:a11e5b8ac4c317af30cfe40bc7a9a8755"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a42f437357f992c41b50483b31107a7c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1JsonOutput.html#a42f437357f992c41b50483b31107a7c3">dump</a> () override</td></tr>
 <tr class="separator:a42f437357f992c41b50483b31107a7c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classfpmas_1_1io_1_1OutputBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1io_1_1OutputBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1io_1_1OutputBase.html">fpmas::io::OutputBase</a></td></tr>
@@ -124,8 +124,8 @@ class fpmas::io::JsonOutput&lt; T &gt;</div><p >An <a class="el" href="classfpma
   </dd>
 </dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a820e323b76e94dceba52678e5e3a8836" name="a820e323b76e94dceba52678e5e3a8836"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a820e323b76e94dceba52678e5e3a8836">&#9670;&nbsp;</a></span>JsonOutput()</h2>
+<a id="a11e5b8ac4c317af30cfe40bc7a9a8755" name="a11e5b8ac4c317af30cfe40bc7a9a8755"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11e5b8ac4c317af30cfe40bc7a9a8755">&#9670;&nbsp;</a></span>JsonOutput()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -145,7 +145,13 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Watcher&lt; T &gt;&#160;</td>
-          <td class="paramname"><em>watcher</em>&#160;</td>
+          <td class="paramname"><em>watcher</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>indent</em> = <code>false</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -164,6 +170,7 @@ template&lt;typename T &gt; </div>
   <table class="params">
     <tr><td class="paramname">output_stream</td><td>OutputStream to which JSON data will be dumped. </td></tr>
     <tr><td class="paramname">watcher</td><td>Watcher instance used to gather data to <a class="el" href="classfpmas_1_1io_1_1JsonOutput.html#a42f437357f992c41b50483b31107a7c3">dump()</a>. </td></tr>
+    <tr><td class="paramname">indent</td><td>If true, the json output is <em>pretty-printed</em>. Otherwise, a compact representation is used. </td></tr>
   </table>
   </dd>
 </dl>
