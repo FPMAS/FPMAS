@@ -86,6 +86,19 @@ namespace fpmas { namespace random {
 
 	/**
 	 * Predefined
+	 * [BernoulliDistribution](https://en.cppreference.com/w/cpp/numeric/random/bernoulli_distribution).
+	 */
+	typedef Distribution<std::bernoulli_distribution> BernoulliDistribution;
+
+	/**
+	 * Predefined
+	 * [BinomialDistribution](https://en.cppreference.com/w/cpp/numeric/random/binomial_distribution).
+	 */
+	template<typename IntType = unsigned int>
+		using BinomialDistribution = Distribution<std::binomial_distribution<IntType>>;
+
+	/**
+	 * Predefined
 	 * [NormalDistribution](https://en.cppreference.com/w/cpp/numeric/random/normal_distribution).
 	 */
 	template<typename FloatType = double>
