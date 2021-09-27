@@ -79,10 +79,11 @@ Inheritance diagram for fpmas::api::io::OutputStream:</div>
 <div class="dyncontent">
 <div class="center"><img src="structfpmas_1_1api_1_1io_1_1OutputStream__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1io_1_1OutputStream_inherit__map" alt="Inheritance graph"/></div>
 <map name="afpmas_1_1api_1_1io_1_1OutputStream_inherit__map" id="afpmas_1_1api_1_1io_1_1OutputStream_inherit__map">
-<area shape="rect" title=" " alt="" coords="203,5,393,32"/>
-<area shape="rect" href="classfpmas_1_1io_1_1DynamicFileOutput.html" title=" " alt="" coords="5,80,201,107"/>
-<area shape="rect" href="classfpmas_1_1io_1_1FileOutput.html" title=" " alt="" coords="226,80,370,107"/>
-<area shape="rect" href="classfpmas_1_1io_1_1StringOutput.html" title=" " alt="" coords="394,80,551,107"/>
+<area shape="rect" title=" " alt="" coords="5,81,196,108"/>
+<area shape="rect" href="classfpmas_1_1io_1_1Cout.html" title=" " alt="" coords="286,5,398,32"/>
+<area shape="rect" href="classfpmas_1_1io_1_1DynamicFileOutput.html" title=" " alt="" coords="244,56,440,83"/>
+<area shape="rect" href="classfpmas_1_1io_1_1FileOutput.html" title=" " alt="" coords="270,107,414,133"/>
+<area shape="rect" href="classfpmas_1_1io_1_1StringOutput.html" title=" " alt="" coords="263,157,421,184"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -90,6 +91,8 @@ Inheritance diagram for fpmas::api::io::OutputStream:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a22256dcd2beac81c1e7d39c95b9516a9"><td class="memItemLeft" align="right" valign="top">virtual std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html#a22256dcd2beac81c1e7d39c95b9516a9">get</a> ()=0</td></tr>
 <tr class="separator:a22256dcd2beac81c1e7d39c95b9516a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32c46fe538b5feb22dab84f4b229ad9b"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html#a32c46fe538b5feb22dab84f4b229ad9b">operator&lt;&lt;</a> (std::ostream &amp;(*func)(std::ostream &amp;))</td></tr>
+<tr class="separator:a32c46fe538b5feb22dab84f4b229ad9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >A generic <code>std::ostream</code> wrapper.</p>
@@ -118,10 +121,37 @@ Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Returns a reference to an abstract std::ostream.</p>
+<p >Returns a reference to an std::ostream.</p>
 <dl class="section return"><dt>Returns</dt><dd>output stream </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1io_1_1StringOutput.html#a37c8b442d17bf656c3ecbb1ab741a437">fpmas::io::StringOutput</a>, <a class="el" href="classfpmas_1_1io_1_1FileOutput.html#aaca28fca0cb7c038d4e98fdbb7247f68">fpmas::io::FileOutput</a>, and <a class="el" href="classfpmas_1_1io_1_1DynamicFileOutput.html#acd8488c21dd8602aa4cb5db0c30a78a0">fpmas::io::DynamicFileOutput</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1io_1_1Cout.html#a2a4c1c03b39538f8ea823f44447e2b4f">fpmas::io::Cout</a>, <a class="el" href="classfpmas_1_1io_1_1StringOutput.html#a37c8b442d17bf656c3ecbb1ab741a437">fpmas::io::StringOutput</a>, <a class="el" href="classfpmas_1_1io_1_1FileOutput.html#aaca28fca0cb7c038d4e98fdbb7247f68">fpmas::io::FileOutput</a>, and <a class="el" href="classfpmas_1_1io_1_1DynamicFileOutput.html#acd8488c21dd8602aa4cb5db0c30a78a0">fpmas::io::DynamicFileOutput</a>.</p>
+
+</div>
+</div>
+<a id="a32c46fe538b5feb22dab84f4b229ad9b" name="a32c46fe538b5feb22dab84f4b229ad9b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32c46fe538b5feb22dab84f4b229ad9b">&#9670;&nbsp;</a></span>operator&lt;&lt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream &amp; fpmas::api::io::OutputStream::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;(*)(std::ostream &amp;)&#160;</td>
+          <td class="paramname"><em>func</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Allows C++ standard output I/O manipulators (such as std::endl) to work with OutputStreams. </p>
 
 </div>
 </div>

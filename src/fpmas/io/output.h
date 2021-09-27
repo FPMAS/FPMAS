@@ -283,6 +283,16 @@ namespace fpmas { namespace io {
 
 
 	/**
+	 * An std::cout based implementation of fpmas::api::io::OutputStream.
+	 */
+	class Cout : public api::io::OutputStream {
+		public:
+			std::ostream& get() override {
+				return std::cout;
+			}
+	};
+
+	/**
 	 * A string based implementation of fpmas::api::io::OutputStream.
 	 *
 	 * Outputs are performed on an underlying string.

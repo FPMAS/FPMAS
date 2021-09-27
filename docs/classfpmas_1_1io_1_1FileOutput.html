@@ -107,6 +107,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac777160dbebb043ce931fa67d4456da4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaca28fca0cb7c038d4e98fdbb7247f68"><td class="memItemLeft" align="right" valign="top">std::ofstream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1FileOutput.html#aaca28fca0cb7c038d4e98fdbb7247f68">get</a> () override</td></tr>
 <tr class="separator:aaca28fca0cb7c038d4e98fdbb7247f68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_structfpmas_1_1api_1_1io_1_1OutputStream"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structfpmas_1_1api_1_1io_1_1OutputStream')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">fpmas::api::io::OutputStream</a></td></tr>
+<tr class="memitem:a32c46fe538b5feb22dab84f4b229ad9b inherit pub_methods_structfpmas_1_1api_1_1io_1_1OutputStream"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html#a32c46fe538b5feb22dab84f4b229ad9b">operator&lt;&lt;</a> (std::ostream &amp;(*func)(std::ostream &amp;))</td></tr>
+<tr class="separator:a32c46fe538b5feb22dab84f4b229ad9b inherit pub_methods_structfpmas_1_1api_1_1io_1_1OutputStream"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >An helper class that can be used to initialize a file output stream.</p>
@@ -123,7 +126,7 @@ Public Member Functions</h2></td></tr>
 <div class="line">                ) {}</div>
 <div class="line">};</div>
 <div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html">fpmas::io::CsvOutput</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:153</div></div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1FileOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1FileOutput.html">fpmas::io::FileOutput</a></div><div class="ttdef"><b>Definition:</b> output.h:356</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1FileOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1FileOutput.html">fpmas::io::FileOutput</a></div><div class="ttdef"><b>Definition:</b> output.h:366</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> fpmas.cpp:3</div></div>
 </div><!-- fragment --><p> Indeed, the <a class="el" href="classfpmas_1_1io_1_1CsvOutput.html">CsvOutput</a> constructor uses the specified output stream (to automatically write CSV headers), BUT <a class="el" href="classfpmas_1_1io_1_1CsvOutput.html">CsvOutput</a>, as a base class of <code>MyOutput</code>, is initialized <b>before</b> <code>MyOutput</code>, so before <code>file</code>, what produces a segmentation fault.</p>
 <p >This <a class="el" href="classfpmas_1_1io_1_1FileOutput.html">FileOutput</a> class can be used to easily solve the issue: </p><div class="fragment"><div class="line"><span class="comment">// FileOutput must be specified BEFORE CsvOutput</span></div>
@@ -136,7 +139,7 @@ Public Member Functions</h2></td></tr>
 <div class="line">                {<span class="stringliteral">&quot;my_field&quot;</span>, [] () {<span class="keywordflow">return</span> ...}}</div>
 <div class="line">                ) {}</div>
 <div class="line">};</div>
-<div class="ttc" id="aclassfpmas_1_1io_1_1FileOutput_html_a71c510229609a3d2cc6e95f32a19f143"><div class="ttname"><a href="classfpmas_1_1io_1_1FileOutput.html#a71c510229609a3d2cc6e95f32a19f143">fpmas::io::FileOutput::FileOutput</a></div><div class="ttdeci">FileOutput()</div><div class="ttdef"><b>Definition:</b> output.h:371</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1FileOutput_html_a71c510229609a3d2cc6e95f32a19f143"><div class="ttname"><a href="classfpmas_1_1io_1_1FileOutput.html#a71c510229609a3d2cc6e95f32a19f143">fpmas::io::FileOutput::FileOutput</a></div><div class="ttdeci">FileOutput()</div><div class="ttdef"><b>Definition:</b> output.h:381</div></div>
 </div><!-- fragment --><p> In this case, <a class="el" href="classfpmas_1_1io_1_1FileOutput.html">FileOutput</a> is properly initialized before <a class="el" href="classfpmas_1_1io_1_1CsvOutput.html">CsvOutput</a> so no error occurs. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a71c510229609a3d2cc6e95f32a19f143" name="a71c510229609a3d2cc6e95f32a19f143"></a>

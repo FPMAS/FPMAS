@@ -20,7 +20,7 @@ namespace fpmas { namespace api { namespace io {
 			 */
 			virtual void dump() = 0;
 			/**
-			 * Returns an executable \Job that might be sheduled with a
+			 * Returns an executable \Job that might be scheduled with a
 			 * scheduler::Scheduler.
 			 *
 			 * The execution of the \Job calls dump() exactly once.
@@ -42,16 +42,56 @@ namespace fpmas { namespace api { namespace io {
 	 * different output file depending on the current simulation step, while
 	 * outputs are always performed to OutputStream::get().
 	 */
+	/*
+	 * Note: operator<< wrappers return std::ostream& instead of OutputStream&.
+	 * This does not make much difference in terms of user experience, but is
+	 * useful in the case of the DynamicFileOutput, where get() systematically
+	 * reopens the file, what discard content if openmode is out.
+	 * So for example, if OutputStream& is returned:
+	 * ```
+	 * dynamic_file_output << "hello" << "world";
+	 * ```
+	 * would print "world" to the file, since the second << operator call
+	 * destroys the file.
+	 * But, if std::ostream& is returned, only the first operator destroys the
+	 * file so "helloworld" is printed.
+	 *
+	 * However, in the following example:
+	 * ```
+	 * dynamic_file_output << "hello";
+	 * dynamic_file_output << "world";
+	 * ```
+	 * The file contains "world" since it is destroyed at the second call, what
+	 * is however a relatively consistent behavior.
+	 */
 	struct OutputStream {
 		/**
-		 * Returns a reference to an abstract std::ostream.
+		 * Returns a reference to an std::ostream.
 		 *
 		 * @return output stream
 		 */
 		virtual std::ostream& get() = 0;
 
+		/**
+		 * Allows C++ standard output I/O manipulators (such as std::endl) to
+		 * work with OutputStreams.
+		 */
+		std::ostream& operator<<(std::ostream& (*func)(std::ostream&)) {
+			return this->get() << func;
+		}
+
 		virtual ~OutputStream() {}
 	};
+
+	/**
+	 * Wrapper around `std::ostream& operator<<(std::ostream&, T data)`.
+	 *
+	 * Equivalent to `output.get() << data`.
+	 */
+	template<typename T>
+		std::ostream& operator<<(OutputStream& output, T data) {
+			return output.get() << data;
+		}
 
 	/**
 	 * Generic Watcher interface.

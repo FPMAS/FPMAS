@@ -68,7 +68,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">fpmas::api::io Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -87,6 +88,12 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a6a28e70ce859db06fc25482a97bee9f0"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6a28e70ce859db06fc25482a97bee9f0"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1io.html#a6a28e70ce859db06fc25482a97bee9f0">Watcher</a> = std::function&lt; T()&gt;</td></tr>
 <tr class="separator:a6a28e70ce859db06fc25482a97bee9f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a7fa0de4131049e32ba8ea42c231f69de"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a7fa0de4131049e32ba8ea42c231f69de"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1io.html#a7fa0de4131049e32ba8ea42c231f69de">operator&lt;&lt;</a> (<a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">OutputStream</a> &amp;output, T data)</td></tr>
+<tr class="separator:a7fa0de4131049e32ba8ea42c231f69de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Program input / output related APIs. </p>
@@ -106,6 +113,39 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Generic Watcher interface.</p>
 <p >A Watcher is a callable object that dynamically returns some underlying data. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="a7fa0de4131049e32ba8ea42c231f69de" name="a7fa0de4131049e32ba8ea42c231f69de"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7fa0de4131049e32ba8ea42c231f69de">&#9670;&nbsp;</a></span>operator&lt;&lt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream &amp; fpmas::api::io::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1io_1_1OutputStream.html">OutputStream</a> &amp;&#160;</td>
+          <td class="paramname"><em>output</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Wrapper around <code>std::ostream&amp; operator&lt;&lt;(std::ostream&amp;, T data)</code>.</p>
+<p >Equivalent to <code>output.get() &lt;&lt; data</code>. </p>
 
 </div>
 </div>
