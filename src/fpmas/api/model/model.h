@@ -110,6 +110,14 @@ namespace fpmas { namespace api {namespace model {
 			~AgentPtr();
 	};
 
+	/**
+	 * A pointer wrapper around a polymorphic \Agent type.
+	 *
+	 * Contrary to AgentPtr, this pointer does not include any automatic memory
+	 * management.
+	 */
+	typedef api::utils::PtrWrapper<api::model::Agent> WeakAgentPtr;
+
 	class Model;
 	class AgentGroup;
 

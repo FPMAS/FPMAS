@@ -122,18 +122,17 @@ Static Public Member Functions</h2></td></tr>
 <p >Serializes the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> represented by <code>pointer</code> to the specified <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> <code>j</code>.</p>
 <p >Notice that since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the actual <code>to_json</code> call that corresponds to the most derived type of the specified <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is resolved at runtime.</p>
 <p >The <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> version of the <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1model_1_1AgentPtr_01_4.html#a9cb8d08cf539e6e25a75adc4633ad5dd">to_json()</a> method attempts to serialize the agent with the less data possible, i.e. possibly nothing if the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is default constructible, and no user defined <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> serialization rules have been provided.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent897a43c8e174bcaded636be4611a9868.html#default_constructible_Agent_light_serializer_to_json">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::to_json() (default</a>constructible AgentType)"
-
-If \ref fpmas::api::model::Agent "Agent" is not default constructible, the classic
-&lt;tt&gt;nlohmann::adl_serializer\&lt;PtrWrapper\&lt;AgentType\&gt;\&gt;&lt;/tt&gt; is used, what
-might be inefficient.
-
-@see \ref
-not_default_constructible_Agent_light_serializer_to_json
-"<a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer.html#a6d92f744dabdfb57ddd3f68f6bab3dd8">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::to_json()</a> (not default constructible AgentType)"
-
-@param j json output@param pointer pointer to polymorphic
-\ref fpmas::api::model::Agent "Agent" </dd></dl>
+<p >If <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is not default constructible, the classic <code>nlohmann::adl_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;</code> is used, what might be inefficient.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent897a43c8e174bcaded636be4611a9868.html#default_constructible_Agent_light_serializer_to_json">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::to_json() (default constructible AgentType)</a> </dd>
+<dd>
+<a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent1166da05b8eb25f2bd231c13fb984d35.html#not_default_constructible_Agent_light_serializer_to_json">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::to_json() (not default constructible AgentType)</a></dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">j</td><td>json output</td></tr>
+    <tr><td class="paramname">pointer</td><td>pointer to polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -164,9 +163,10 @@ not_default_constructible_Agent_light_serializer_to_json
 <p >The built <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is dynamically allocated, but is automatically managed by the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> wrapper.</p>
 <p >Since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the concrete type that should be instantiated from the input <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> <code>j</code> is determined at runtime.</p>
 <p >The <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> version of the <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1model_1_1AgentPtr_01_4.html#aeb49c4169f534079018c4b4440384693">from_json()</a> method attempts to build the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> using a default constructor, to bypass the classical <code>json</code> serialization process.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent897a43c8e174bcaded636be4611a9868.html#default_constructible_Agent_light_serializer_from_json">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::from_json() (default constructible AgentType)</a></dd></dl>
-<p>If <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is not default constructible, the classic <code>nlohmann::adl_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;</code> is used, what might be inefficient.</p>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent1166da05b8eb25f2bd231c13fb984d35.html#not_default_constructible_Agent_light_serializer_from_json">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::from_json() (not default constructible AgentType)</a></dd></dl>
+<p >If <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is not default constructible, the classic <code>nlohmann::adl_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;</code> is used, what might be inefficient.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent897a43c8e174bcaded636be4611a9868.html#default_constructible_Agent_light_serializer_from_json">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::from_json() (default constructible AgentType)</a> </dd>
+<dd>
+<a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent1166da05b8eb25f2bd231c13fb984d35.html#not_default_constructible_Agent_light_serializer_from_json">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::from_json() (not default constructible AgentType)</a></dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">j</td><td>input json </td></tr>

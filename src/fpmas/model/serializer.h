@@ -75,11 +75,22 @@
  */
 #define FPMAS_JSON_SET_UP(...)\
 	namespace nlohmann {\
-		void adl_serializer<fpmas::api::model::AgentPtr>::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
+		void adl_serializer<fpmas::api::model::AgentPtr>\
+			::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
 			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::to_json(j, data);\
 		}\
-		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>::from_json(const json& j) {\
-			return std::move(fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j));\
+		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>\
+			::from_json(const json& j) {\
+			return {fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j)};\
+		}\
+\
+		void adl_serializer<fpmas::api::model::WeakAgentPtr>\
+			::to_json(json& j, const fpmas::api::model::WeakAgentPtr& data) {\
+			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::to_json(j, data);\
+		}\
+		fpmas::api::model::WeakAgentPtr adl_serializer<fpmas::api::model::WeakAgentPtr>\
+			::from_json(const json& j) {\
+			return fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j);\
 		}\
 	}\
 	namespace fpmas { namespace io { namespace json {\
@@ -87,7 +98,16 @@
 			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::to_json(j, data);\
 		}\
 		fpmas::api::model::AgentPtr light_serializer<fpmas::api::model::AgentPtr>::from_json(const light_json& j) {\
-			return std::move(fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j));\
+			return {fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j)};\
+		}\
+		\
+		void light_serializer<fpmas::api::model::WeakAgentPtr>\
+			::to_json(light_json& j, const fpmas::api::model::WeakAgentPtr& data) {\
+			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::to_json(j, data);\
+		}\
+		fpmas::api::model::WeakAgentPtr light_serializer<fpmas::api::model::WeakAgentPtr>\
+			::from_json(const light_json& j) {\
+			return fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j);\
 		}\
 	}}}\
 
@@ -553,6 +573,7 @@ namespace fpmas {
 
 	namespace model {
 		using api::model::AgentPtr;
+		using api::model::WeakAgentPtr;
 
 		/**
 		 * Typed \Agent pointer.
@@ -585,7 +606,7 @@ namespace fpmas {
 				 *
 				 * @throw exceptions::BadTypeException
 				 */
-				static void to_json(JsonType&, const AgentPtr& ptr); 
+				static void to_json(JsonType&, const WeakAgentPtr& ptr); 
 
 				/**
 				 * from_json recursion base case.
@@ -594,11 +615,12 @@ namespace fpmas {
 				 *
 				 * @throw exceptions::BadIdException
 				 */
-				static AgentPtr from_json(const JsonType& j);
+				static WeakAgentPtr from_json(const JsonType& j);
 			};
 
 		template<typename JsonType>
-			void AgentPtrSerializer<JsonType, void>::to_json(JsonType &, const AgentPtr &ptr) {
+			void AgentPtrSerializer<JsonType, void>::to_json(
+					JsonType &, const WeakAgentPtr& ptr) {
 				FPMAS_LOGE(-1, "AGENT_SERIALIZER",
 						"Invalid agent type : %s. Make sure to properly register "
 						"the Agent type with FPMAS_JSON_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",
@@ -607,7 +629,7 @@ namespace fpmas {
 			}
 
 		template<typename JsonType>
-			AgentPtr AgentPtrSerializer<JsonType, void>::from_json(const JsonType &j) {
+			WeakAgentPtr AgentPtrSerializer<JsonType, void>::from_json(const JsonType &j) {
 				std::size_t id = j.at("type").template get<std::size_t>();
 				FPMAS_LOGE(-1, "AGENT_SERIALIZER",
 						"Invalid agent type id : %lu. Make sure to properly register "
@@ -648,11 +670,14 @@ namespace fpmas {
 				 * @see nlohmann::adl_serializer<std::type_index>::to_json (used to
 				 * serialize the agent type id)
 				 */
-				static void to_json(JsonType& j, const AgentPtr& ptr) {
+				static void to_json(
+						JsonType& j, const WeakAgentPtr& ptr) {
 					if(ptr->typeId() == Type::TYPE_ID) {
 						j["type"] = Type::TYPE_ID;
 						j["gids"] = ptr->groupIds();
-						j["agent"] = TypedAgentPtr<Type>(const_cast<Type*>(dynamic_cast<const Type*>(ptr.get())));
+						j["agent"] = TypedAgentPtr<Type>(
+								const_cast<Type*>(dynamic_cast<const Type*>(ptr.get()))
+								);
 					} else {
 						AgentPtrSerializer<JsonType, AgentTypes...>::to_json(j, ptr);
 					}
@@ -679,7 +704,7 @@ namespace fpmas {
 				 * @see nlohmann::adl_serializer<std::type_index>::from_json (used to
 				 * unserialize the agent type id)
 				 */
-				static AgentPtr from_json(const JsonType& j) {
+				static WeakAgentPtr from_json(const JsonType& j) {
 					fpmas::api::model::TypeId id = j.at("type").template get<fpmas::api::model::TypeId>();
 					if(id == Type::TYPE_ID) {
 						auto agent = j.at("agent").template get<TypedAgentPtr<Type>>();
@@ -688,7 +713,7 @@ namespace fpmas {
 							agent->addGroupId(gid);
 						return {agent};
 					} else {
-						return std::move(AgentPtrSerializer<JsonType, AgentTypes...>::from_json(j));
+						return AgentPtrSerializer<JsonType, AgentTypes...>::from_json(j);
 					}
 				}
 

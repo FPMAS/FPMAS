@@ -77,17 +77,17 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a3931559f7449c70806cab05d6e773b97"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer_3_01JsonType_00_01void_01_4.html#a3931559f7449c70806cab05d6e773b97">to_json</a> (JsonType &amp;, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;ptr)</td></tr>
-<tr class="separator:a3931559f7449c70806cab05d6e773b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa5a444e296711d9d3825f5f0dab325d0"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer_3_01JsonType_00_01void_01_4.html#aa5a444e296711d9d3825f5f0dab325d0">from_json</a> (const JsonType &amp;j)</td></tr>
-<tr class="separator:aa5a444e296711d9d3825f5f0dab325d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24a088c737b053e7daa9b10cdf298a6d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer_3_01JsonType_00_01void_01_4.html#a24a088c737b053e7daa9b10cdf298a6d">to_json</a> (JsonType &amp;, const WeakAgentPtr &amp;ptr)</td></tr>
+<tr class="separator:a24a088c737b053e7daa9b10cdf298a6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47281e030676c3c6fd84c0cb392658c6"><td class="memItemLeft" align="right" valign="top">static WeakAgentPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer_3_01JsonType_00_01void_01_4.html#a47281e030676c3c6fd84c0cb392658c6">from_json</a> (const JsonType &amp;j)</td></tr>
+<tr class="separator:a47281e030676c3c6fd84c0cb392658c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename JsonType&gt;<br />
 struct fpmas::model::AgentPtrSerializer&lt; JsonType, void &gt;</div><p ><a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer.html">AgentPtrSerializer</a> recursion base case. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a3931559f7449c70806cab05d6e773b97" name="a3931559f7449c70806cab05d6e773b97"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3931559f7449c70806cab05d6e773b97">&#9670;&nbsp;</a></span>to_json()</h2>
+<a id="a24a088c737b053e7daa9b10cdf298a6d" name="a24a088c737b053e7daa9b10cdf298a6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24a088c737b053e7daa9b10cdf298a6d">&#9670;&nbsp;</a></span>to_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -106,7 +106,7 @@ template&lt;typename JsonType &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;&#160;</td>
+          <td class="paramtype">const WeakAgentPtr &amp;&#160;</td>
           <td class="paramname"><em>ptr</em>&#160;</td>
         </tr>
         <tr>
@@ -132,8 +132,8 @@ template&lt;typename JsonType &gt; </div>
 
 </div>
 </div>
-<a id="aa5a444e296711d9d3825f5f0dab325d0" name="aa5a444e296711d9d3825f5f0dab325d0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5a444e296711d9d3825f5f0dab325d0">&#9670;&nbsp;</a></span>from_json()</h2>
+<a id="a47281e030676c3c6fd84c0cb392658c6" name="a47281e030676c3c6fd84c0cb392658c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a47281e030676c3c6fd84c0cb392658c6">&#9670;&nbsp;</a></span>from_json()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -144,7 +144,7 @@ template&lt;typename JsonType &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> <a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer.html">fpmas::model::AgentPtrSerializer</a>&lt; JsonType, void &gt;::from_json </td>
+          <td class="memname">WeakAgentPtr <a class="el" href="structfpmas_1_1model_1_1AgentPtrSerializer.html">fpmas::model::AgentPtrSerializer</a>&lt; JsonType, void &gt;::from_json </td>
           <td>(</td>
           <td class="paramtype">const JsonType &amp;&#160;</td>
           <td class="paramname"><em>j</em></td><td>)</td>

@@ -142,6 +142,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a21595fa9ac22b3afe6da9f2b1c46e13b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7da0ccdbfe2ecfca12aec5d1bfbb156c"><td class="memItemLeft" align="right" valign="top">typedef std::type_index&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">TypeId</a></td></tr>
 <tr class="separator:a7da0ccdbfe2ecfca12aec5d1bfbb156c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2768be94a44ce8a833c65ba67b95864c"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a2768be94a44ce8a833c65ba67b95864c">WeakAgentPtr</a></td></tr>
+<tr class="separator:a2768be94a44ce8a833c65ba67b95864c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aed5895780a486f536653be0248d0a56a"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::reference_wrapper&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#aed5895780a486f536653be0248d0a56a">GroupList</a></td></tr>
 <tr class="separator:aed5895780a486f536653be0248d0a56a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5e62bc99add0c29c87aba29ba151e45b"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a5e62bc99add0c29c87aba29ba151e45b">LoadBalancing</a> = <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">fpmas::api::graph::LoadBalancing</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;</td></tr>
@@ -251,6 +253,22 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p ><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type ID type. </p>
+
+</div>
+</div>
+<a id="a2768be94a44ce8a833c65ba67b95864c" name="a2768be94a44ce8a833c65ba67b95864c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2768be94a44ce8a833c65ba67b95864c">&#9670;&nbsp;</a></span>WeakAgentPtr</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>&gt; <a class="el" href="namespacefpmas_1_1api_1_1model.html#a2768be94a44ce8a833c65ba67b95864c">fpmas::api::model::WeakAgentPtr</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >A pointer wrapper around a polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type.</p>
+<p >Contrary to <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>, this pointer does not include any automatic memory management. </p>
 
 </div>
 </div>

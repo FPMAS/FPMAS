@@ -1112,7 +1112,8 @@ namespace fpmas { namespace model {
 
 namespace fpmas { namespace io { namespace json {
 
-	/** fpmas::api::model::AgentPtr fpmas::io::json::light_json serialization
+	/**
+	 * fpmas::api::model::AgentPtr fpmas::io::json::light_json serialization
 	 * rules **declaration**.
 	 *
 	 * `to_json` and `from_json` methods must be _defined_ by the user at
@@ -1122,7 +1123,77 @@ namespace fpmas { namespace io { namespace json {
 	 */
 	template<>
 		struct light_serializer<fpmas::api::model::AgentPtr> {
-			/** Serializes the \Agent represented by `pointer` to the specified
+			/**
+			 * Serializes the \Agent represented by `pointer` to the specified
+			 * \light_json `j`.
+			 *
+			 * Notice that since \Agent is polymorphic, the actual `to_json`
+			 * call that corresponds to the most derived type of the specified
+			 * \Agent is resolved at runtime.
+			 *
+			 * The \light_json version of the to_json() method attempts to
+			 * serialize the agent with the less data possible, i.e. possibly
+			 * nothing if the \Agent is default constructible, and no user
+			 * defined \light_json serialization rules have been provided.
+			 *
+			 * If \Agent is not default constructible, the classic
+			 * `nlohmann::adl_serializer<PtrWrapper<AgentType>>` is used, what
+			 * might be inefficient.
+			 *
+			 * @see \ref default_constructible_Agent_light_serializer_to_json
+			 * "light_serializer<PtrWrapper<AgentType>>::to_json() (default constructible AgentType)"
+			 * @see \ref
+			 * not_default_constructible_Agent_light_serializer_to_json
+			 * "light_serializer<PtrWrapper<AgentType>>::to_json() (not default constructible AgentType)"
+			 *
+			 * @param j json output @param pointer pointer to polymorphic
+			 * \Agent
+			 */
+			static void to_json(light_json& j, const
+					fpmas::api::model::AgentPtr& pointer);
+
+			/**
+			 * Unserializes an \Agent from the specified \light_json `j`.
+			 *
+			 * The built \Agent is dynamically allocated, but is automatically
+			 * managed by the fpmas::api::model::AgentPtr wrapper.
+			 *
+			 * Since \Agent is polymorphic, the concrete type that should be
+			 * instantiated from the input \light_json `j` is determined at runtime.
+			 *
+			 * The \light_json version of the from_json() method attempts to
+			 * build the \Agent using a default constructor, to bypass the
+			 * classical `json` serialization process.
+			 *
+			 * If \Agent is not default constructible, the classic
+			 * `nlohmann::adl_serializer<PtrWrapper<AgentType>>` is used, what
+			 * might be inefficient.
+			 *
+			 * @see \ref default_constructible_Agent_light_serializer_from_json
+			 * "light_serializer<PtrWrapper<AgentType>>::from_json() (default constructible AgentType)"
+			 * @see \ref not_default_constructible_Agent_light_serializer_from_json
+			 * "light_serializer<PtrWrapper<AgentType>>::from_json() (not default constructible AgentType)"
+			 *
+			 * @param j input json
+			 * @return dynamically allocated \Agent, unserialized from `j`,
+			 * wrapped in an fpmas::api::model::AgentPtr instance
+			 */
+			static fpmas::api::model::AgentPtr from_json(const light_json& j);
+		};
+
+	/**
+	 * fpmas::api::model::WeakAgentPtr fpmas::io::json::light_json serialization
+	 * rules **declaration**.
+	 *
+	 * `to_json` and `from_json` methods must be _defined_ by the user at
+	 * compile time, depending on its own Agent types, using the
+	 * FPMAS_JSON_SET_UP() macro, that must be called from a **source** file.
+	 * Otherwise, linker errors will be thrown.
+	 */
+	template<>
+		struct light_serializer<fpmas::api::model::WeakAgentPtr> {
+			/**
+			 * Serializes the \Agent represented by `pointer` to the specified
 			 * \light_json `j`.
 			 *
 			 * Notice that since \Agent is polymorphic, the actual `to_json`
@@ -1151,13 +1222,12 @@ namespace fpmas { namespace io { namespace json {
 			 * \Agent
 			 */
 			static void to_json(light_json& j, const
-					fpmas::api::model::AgentPtr& pointer);
+					fpmas::api::model::WeakAgentPtr& pointer);
 
 			/**
 			 * Unserializes an \Agent from the specified \light_json `j`.
 			 *
-			 * The built \Agent is dynamically allocated, but is automatically
-			 * managed by the fpmas::api::model::AgentPtr wrapper.
+			 * The built \Agent is wrapped in a WeakAgentPtr instance.
 			 *
 			 * Since \Agent is polymorphic, the concrete type that should be
 			 * instantiated from the input \light_json `j` is determined at runtime.
@@ -1180,7 +1250,7 @@ namespace fpmas { namespace io { namespace json {
 			 * @return dynamically allocated \Agent, unserialized from `j`,
 			 * wrapped in an fpmas::api::model::AgentPtr instance
 			 */
-			static fpmas::api::model::AgentPtr from_json(const light_json& j);
+			static fpmas::api::model::WeakAgentPtr from_json(const light_json& j);
 		};
 }}}
 namespace nlohmann {
@@ -1221,6 +1291,45 @@ namespace nlohmann {
 			 * wrapped in an fpmas::api::model::AgentPtr instance
 			 */
 			static fpmas::api::model::AgentPtr from_json(const json& j);
+		};
+
+	/**
+	 * fpmas::api::model::WeakAgentPtr `nlohmann::json`
+	 * serialization rules **declaration**.
+	 *
+	 * `to_json` and `from_json` methods must be _defined_ by the user at compile time,
+	 * depending on its own Agent types, using the FPMAS_JSON_SET_UP() macro,
+	 * that must be called from a **source** file. Otherwise, linker errors
+	 * will be thrown.
+	 */
+	template<>
+		struct adl_serializer<fpmas::api::model::WeakAgentPtr> {
+			/**
+			 * Serializes the \Agent represented by `pointer` to the specified
+			 * json `j`.
+			 *
+			 * Notice that since \Agent is polymorphic, the actual `to_json`
+			 * call that corresponds to the most derived type of the specified
+			 * \Agent is resolved at runtime.
+			 *
+			 * @param j json output
+			 * @param pointer pointer to polymorphic \Agent
+			 */
+			static void to_json(json& j, const fpmas::api::model::WeakAgentPtr& pointer);
+
+			/**
+			 * Unserializes an \Agent from the specified JSON `j`.
+			 *
+			 * The built \Agent is wrapped in a WeakAgentPtr instance.
+			 *
+			 * Since \Agent is polymorphic, the concrete type that should be
+			 * instantiated from the input json `j` is determined at runtime.
+			 *
+			 * @param j input json
+			 * @return dynamically allocated \Agent, unserialized from `j`,
+			 * wrapped in an fpmas::api::model::WeakAgentPtr instance
+			 */
+			static fpmas::api::model::WeakAgentPtr from_json(const json& j);
 		};
 
 	/**
