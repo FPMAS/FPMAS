@@ -44,6 +44,7 @@ set(SOURCES
 	io/json_output.cpp
 	io/breakpoint.cpp
 	io/json.cpp
+	io/formatted_output.cpp
 	# Utils
 	utils/format.cpp
 	utils/perf.cpp

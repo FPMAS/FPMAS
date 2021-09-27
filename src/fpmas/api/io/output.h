@@ -89,7 +89,7 @@ namespace fpmas { namespace api { namespace io {
 	 * Equivalent to `output.get() << data`.
 	 */
 	template<typename T>
-		std::ostream& operator<<(OutputStream& output, T data) {
+		std::ostream& operator<<(OutputStream& output, const T& data) {
 			return output.get() << data;
 		}
 
