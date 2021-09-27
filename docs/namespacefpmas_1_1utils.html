@@ -88,6 +88,12 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ac4d6c361573c9944b9457dbf1b7f14e4"><td class="memTemplParams" colspan="2">template&lt;typename T1 , typename T2 &gt; </td></tr>
+<tr class="memitem:ac4d6c361573c9944b9457dbf1b7f14e4"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; T1 &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1utils.html#ac4d6c361573c9944b9457dbf1b7f14e4">ptr_wrapper_cast</a> (T2 *ptr)</td></tr>
+<tr class="separator:ac4d6c361573c9944b9457dbf1b7f14e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaf997a3c16f8499c998a404c9a48077"><td class="memTemplParams" colspan="2">template&lt;typename T1 , typename T2 &gt; </td></tr>
+<tr class="memitem:aeaf997a3c16f8499c998a404c9a48077"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; T1 &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1utils.html#aeaf997a3c16f8499c998a404c9a48077">ptr_wrapper_cast</a> (std::vector&lt; T2 * &gt; vec)</td></tr>
+<tr class="separator:aeaf997a3c16f8499c998a404c9a48077"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aba0e8aca26eb8d19f110653e192f5764"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1utils.html#aba0e8aca26eb8d19f110653e192f5764">format</a> (std::string input, int rank)</td></tr>
 <tr class="separator:aba0e8aca26eb8d19f110653e192f5764"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace94ed60e981b54a1d1ec21fa0e4b38d"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1utils.html#ace94ed60e981b54a1d1ec21fa0e4b38d">format</a> (std::string input, <a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ad5a155cbf800b483b5555af9d45c92fa">api::scheduler::TimeStep</a> time)</td></tr>
@@ -101,6 +107,77 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Utility classes. </p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="ac4d6c361573c9944b9457dbf1b7f14e4" name="ac4d6c361573c9944b9457dbf1b7f14e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4d6c361573c9944b9457dbf1b7f14e4">&#9670;&nbsp;</a></span>ptr_wrapper_cast() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T1 , typename T2 &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; T1 &gt; fpmas::utils::ptr_wrapper_cast </td>
+          <td>(</td>
+          <td class="paramtype">T2 *&#160;</td>
+          <td class="paramname"><em>ptr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p ><code>ptr</code> is converted to <code>T1</code> using a <code>dynamic_cast</code> operation, and the result is wrapped and returned in an <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a> instance.</p>
+<p >If <code>T1==T2</code>, no <code>dynamic_cast</code> is performed and the result is just wrapped in an <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a> instance.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ptr</td><td>pointer to cast </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>cast result wrapped in a PtrWrapper</dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T1</td><td>target type </td></tr>
+    <tr><td class="paramname">T2</td><td>source type </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aeaf997a3c16f8499c998a404c9a48077" name="aeaf997a3c16f8499c998a404c9a48077"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeaf997a3c16f8499c998a404c9a48077">&#9670;&nbsp;</a></span>ptr_wrapper_cast() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T1 , typename T2 &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; T1 &gt; &gt; fpmas::utils::ptr_wrapper_cast </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; T2 * &gt;&#160;</td>
+          <td class="paramname"><em>vec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Applies ptr_wrapper_cast to all items of the input vector and returns a new <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a> vector.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vec</td><td>vector containing pointers to cast and wrap </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>cast and wrapped items</dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T1</td><td>items target type </td></tr>
+    <tr><td class="paramname">T2</td><td>items source type </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aba0e8aca26eb8d19f110653e192f5764" name="aba0e8aca26eb8d19f110653e192f5764"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aba0e8aca26eb8d19f110653e192f5764">&#9670;&nbsp;</a></span>format() <span class="overload">[1/4]</span></h2>
 

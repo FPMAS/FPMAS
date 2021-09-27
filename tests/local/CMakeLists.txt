@@ -48,6 +48,7 @@ set(SOURCES
 	utils/format.cpp
 	utils/perf.cpp
 	utils/functional.cpp
+	utils/cast.cpp
 	)
 
 add_executable(fpmas_local_test "local_main.cpp" ${SOURCES})

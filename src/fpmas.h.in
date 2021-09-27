@@ -14,6 +14,7 @@
 #include "fpmas/io/csv_output.h"
 #include "fpmas/io/json_output.h"
 #include "fpmas/io/breakpoint.h"
+#include "fpmas/utils/cast.h"
 
 /**
  * FPMAS version literal.
