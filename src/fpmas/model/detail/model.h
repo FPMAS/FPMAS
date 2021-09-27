@@ -413,6 +413,7 @@ namespace fpmas {
 
 				std::vector<api::model::Agent*> agents() const override;
 				std::vector<api::model::Agent*> localAgents() const override;
+				std::vector<api::model::Agent*> distantAgents() const override;
 
 				void addEventHandler(
 						Event event,

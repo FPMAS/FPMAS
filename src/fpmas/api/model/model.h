@@ -615,6 +615,24 @@ namespace fpmas { namespace api {namespace model {
 			virtual std::vector<Agent*> localAgents() const = 0;
 
 			/**
+			 * Returns the list of \DISTANT Agents currently in this AgentGroup,
+			 * represented to preserve \LOCAL agents neighbors but not executed
+			 * on this process.
+			 *
+			 * The process on which a \DISTANT `agent` is executed can be
+			 * retrieved with `agent->node()->location()`.
+			 *
+			 * The returned list is **invalidated** by the following operations:
+			 * - fpmas::api::graph::DistributedGraph::synchronize()
+			 * - fpmas::api::synchro::Mutex::read() or
+			 *   fpmas::api::synchro::Mutex::acquire() on any Agent of the
+			 *   list.
+			 *
+			 * @return \DISTANT \Agents in this group
+			 */
+			virtual std::vector<Agent*> distantAgents() const = 0;
+
+			/**
 			 * Returns a reference to the \Job associated to this AgentGroup.
 			 *
 			 * This \Job contains all the \AgentTasks associated to all \Agents

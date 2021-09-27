@@ -255,6 +255,14 @@ namespace fpmas {
 				return local_agents;
 			}
 
+			std::vector<api::model::Agent*> AgentGroupBase::distantAgents() const {
+				std::vector<api::model::Agent*> local_agents;
+				for(auto agent : _agents)
+					if(agent->get()->node()->state() == graph::LocationState::DISTANT)
+						local_agents.push_back(*agent);
+				return local_agents;
+			}
+
 			void AgentGroupBase::addEventHandler(
 						Event event,
 						api::utils::Callback<api::model::Agent*>* callback) {

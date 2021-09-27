@@ -628,6 +628,40 @@ TEST_F(AgentGroupTest, local_agents) {
 	EraseNode(agent2);
 }
 
+TEST_F(AgentGroupTest, distant_agents) {
+	// Agent 1 set up
+	agent1.setNode(&node1);
+	insert_agent_callback.call(&node1);
+	agent1.addGroupId(id);
+	agent_group.insert(&agent1_ptr);
+
+	// Agent 2 set up
+	agent2.setNode(&node2);
+	insert_agent_callback.call(&node2);
+	agent2.addGroupId(id);
+	agent_group.insert(&agent2_ptr);
+
+	ON_CALL(node1, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+	ON_CALL(node2, state)
+		.WillByDefault(Return(LocationState::DISTANT));
+
+	ASSERT_THAT(agent_group.distantAgents(), UnorderedElementsAre(&agent1, &agent2));
+
+	ON_CALL(node1, state)
+		.WillByDefault(Return(LocationState::LOCAL));
+
+	ASSERT_THAT(agent_group.distantAgents(), ElementsAre(&agent2));
+
+	ON_CALL(node2, state)
+		.WillByDefault(Return(LocationState::LOCAL));
+
+	ASSERT_THAT(agent_group.distantAgents(), IsEmpty());
+
+	EraseNode(agent1);
+	EraseNode(agent2);
+}
+
 class AgentBaseTest : public ::testing::Test {
 	protected:
 		DefaultMockAgentBase<10> agent_base;
