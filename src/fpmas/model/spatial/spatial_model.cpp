@@ -4,12 +4,6 @@
 
 namespace fpmas { namespace model {
 
-	bool is_agent_in_group(api::model::Agent* agent, api::model::AgentGroup& group) {
-		std::vector<fpmas::api::model::GroupId> group_ids = agent->groupIds();
-		auto result = std::find(group_ids.begin(), group_ids.end(), group.groupId());
-		return result != group_ids.end();
-	}
-
 	std::vector<api::model::Cell*> CellBase::successors() {
 		auto neighbors = this->outNeighbors<api::model::Cell>(SpatialModelLayers::CELL_SUCCESSOR);
 		return {neighbors.begin(), neighbors.end()};

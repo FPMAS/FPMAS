@@ -2,6 +2,16 @@
 
 namespace fpmas { namespace model {
 	
+	bool is_agent_in_group(api::model::Agent* agent, api::model::GroupId group_id) {
+		std::vector<fpmas::api::model::GroupId> group_ids = agent->groupIds();
+		auto result = std::find(group_ids.begin(), group_ids.end(), group_id);
+		return result != group_ids.end();
+	}
+
+	bool is_agent_in_group(api::model::Agent* agent, api::model::AgentGroup& group) {
+		return is_agent_in_group(agent, group.groupId());
+	}
+
 	random::DistributedGenerator<> RandomNeighbors::rd;
 
 	void RandomNeighbors::seed(random::DistributedGenerator<>::result_type seed) {

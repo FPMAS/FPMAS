@@ -19,6 +19,17 @@
 namespace fpmas { namespace model {
 
 	/**
+	 * Checks if `agent` is currently in the AgentGroup represented by
+	 * `group_id`.
+	 */
+	bool is_agent_in_group(api::model::Agent* agent, api::model::GroupId group_id);
+
+	/**
+	 * Checks if `agent` is currently in `group`.
+	 */
+	bool is_agent_in_group(api::model::Agent* agent, api::model::AgentGroup& group);
+
+	/**
 	 * Helper class to represent an Agent as the neighbor of an other.
 	 *
 	 * A Neighbor can be used through pointer like accesses, and the input

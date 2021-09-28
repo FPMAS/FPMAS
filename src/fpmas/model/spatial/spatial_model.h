@@ -49,11 +49,6 @@ namespace fpmas {
 	using api::model::DistributedId;
 
 	/**
-	 * Checks if `agent` is currently in `group`.
-	 */
-	bool is_agent_in_group(api::model::Agent* agent, api::model::AgentGroup& group);
-
-	/**
 	 * FPMAS reserved api::model::GroupId used by Cell groups.
 	 */
 	static const api::model::GroupId CELL_GROUP_ID = -1;
