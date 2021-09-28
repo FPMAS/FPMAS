@@ -2,6 +2,7 @@
 #define FPMAS_FUNCTIONAL_H
 
 #include <utility>
+#include <functional>
 
 namespace fpmas { namespace utils {
 	/**
@@ -30,5 +31,33 @@ namespace fpmas { namespace utils {
 			}
 	};
 
+	/**
+	 * A function object that can be used to compute the maximum between two
+	 * values.
+	 */
+	template<typename T, typename Compare = std::less<T>>
+		struct Max {
+			/**
+			 * Calls [std::max(a, b,
+			 * Compare())](https://en.cppreference.com/w/cpp/algorithm/max).
+			 */
+			T operator()(const T& a, const T& b) {
+				return std::max(a, b, Compare());
+			}
+		};
+	/**
+	 * A function object that can be used to compute the minimum between two
+	 * values.
+	 */
+	template<typename T, typename Compare = std::less<T>>
+		struct Min {
+			/**
+			 * Calls [std::min(a, b,
+			 * Compare())](https://en.cppreference.com/w/cpp/algorithm/min).
+			 */
+			T operator()(const T& a, const T& b) {
+				return std::min(a, b, Compare());
+			}
+		};
 }}
 #endif
