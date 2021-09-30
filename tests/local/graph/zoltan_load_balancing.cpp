@@ -61,8 +61,8 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		// Fake Zoltan buffers
 		
 		// Node lists
-		unsigned int global_ids[3*NUM_GID_ENTRIES];
-		unsigned int* local_ids;
+		ZOLTAN_ID_TYPE global_ids[3*NUM_GID_ENTRIES];
+		ZOLTAN_ID_TYPE* local_ids;
 		float weights[3];
 
 		std::unordered_map<
@@ -203,7 +203,7 @@ TEST_F(ZoltanFunctionsTest, edge_list_multi_test) {
 	write_zoltan_global_ids();
 	write_zoltan_num_edges();
 
-	unsigned int nbor_global_id[3*NUM_GID_ENTRIES];
+	ZOLTAN_ID_TYPE nbor_global_id[3*NUM_GID_ENTRIES];
 	int nbor_procs[3];
 	float ewgts[3];
 
@@ -259,7 +259,7 @@ TEST_F(ZoltanFunctionsTest, fixed_obj_list) {
 		node_index[node.first] = index++;
 	}
 
-	unsigned int fixed_ids[3*NUM_GID_ENTRIES];
+	ZOLTAN_ID_TYPE fixed_ids[3*NUM_GID_ENTRIES];
 	int fixed_parts[3];
 	fixed_obj_list_fn<int>(
 			&map,
