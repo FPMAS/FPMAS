@@ -34,7 +34,7 @@ install them :
 - [CMake](https://cmake.org/) 3.10 or higher
 - [Open MPI](https://www.open-mpi.org/) 3 or 4
 - [nlohmann/json C++ library](https://github.com/nlohmann/json) 3.7 or higher
-- [zoltan C/C++ library](https://cs.sandia.gov/Zoltan/) 3.81 or higher
+- [zoltan C/C++ library](https://github.com/sandialabs/Zoltan) 3.81 or higher
 
 #### Ubuntu
 
@@ -74,6 +74,9 @@ $ ../configure --with-id-type=ulong --prefix=$HOME
 
 The custom installation directory must then be specified as explained below.
 
+The `--with-id-type` option is optional but recommended. By default, Zoltan
+uses `unsigned int`, what is not very efficient in the case of FPMAS.
+
 See the [Zoltan
 documentation](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_usage.html)
 for more detailed installation instructions.
@@ -85,14 +88,23 @@ To use the latest FPMAS version, you can directly clone this repository :
 $ git clone https://https://github.com/FPMAS/FPMAS
 ```
 
-FPMAS can then be built and installed using CMake :
+FPMAS can be built and installed using CMake :
 ```
 $ mkdir FPMAS/build
 $ cd FPMAS/build
-$ cmake --DCMAKE_BUILD_TYPE=Release ..
+$ cmake --DCMAKE_BUILD_TYPE=Release -DINSTALL_GTEST=NO ..
 $ cmake --build . -t fpmas
 $ sudo cmake --install .
 ```
+
+## FPMAS Configuration
+
+FPMAS can be configured at compile time using the `cmake -D<option>=<value> ..`
+syntax.
+
+- `FPMAS_ID_TYPE` (default: unsigned long): defines the unsigned integer type used to
+  represent node ids. Values such as
+  [`std::uint64_t`](https://en.cppreference.com/w/cpp/types/integer)
 
 ## Custom Installation Paths
 

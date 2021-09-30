@@ -1,6 +1,6 @@
 add_subdirectory(googletest)
 
-set(INSTALL_MOCKS NO CACHE BOOL "Enables mocks install")
+option(FPMAS_INSTALL_MOCKS "Enables mocks installation." OFF)
 
 add_subdirectory(mocks)
 add_subdirectory(local)
