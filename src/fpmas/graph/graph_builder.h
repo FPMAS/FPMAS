@@ -803,7 +803,7 @@ namespace fpmas { namespace graph {
 
 				
 				/**
-				 * ClusteredGraphBuilder constructor.
+				 * DistributedClusteredGraphBuilder constructor.
 				 *
 				 * Built nodes are implicitly and uniformly distributed in a 2D
 				 * space.
@@ -823,6 +823,27 @@ namespace fpmas { namespace graph {
 						) :
 					DistributedClusteredGraphBuilder(
 							generator, edge_distribution,
+							default_xy_dist, default_xy_dist){
+					}
+
+				/**
+				 * DistributedClusteredGraphBuilder constructor.
+				 *
+				 * Built nodes are implicitly and uniformly distributed in a 2D
+				 * space.
+				 *
+				 * @tparam EdgeDist edge count distribution (must satisfy
+				 * _RandomNumberDistribution_)
+				 *
+				 * @param edge_distribution random distribution that manages edges
+				 * generation. See build()
+				 */
+				template<typename EdgeDist>
+				DistributedClusteredGraphBuilder(
+						EdgeDist& edge_distribution
+						) :
+					DistributedClusteredGraphBuilder(
+							RandomGraphBuilder::distributed_rd, edge_distribution,
 							default_xy_dist, default_xy_dist){
 					}
 
