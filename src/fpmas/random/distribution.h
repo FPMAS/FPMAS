@@ -110,6 +110,59 @@ namespace fpmas { namespace random {
 	 */
 	template<typename IntType = int>
 		using PoissonDistribution = Distribution<std::poisson_distribution<IntType>>;
+
+	/**
+	 * A constant "random" distribution that always return the given value, with
+	 * a probability `P(value)=1`.
+	 *
+	 * This is notably useful for graph builders such as
+	 * fpmas::graph::DistributedClusteredGraphBuilder, when the outgoing edges
+	 * count of each node must be constant and not random.
+	 */
+	template<typename T>
+	class ConstantDistribution : public api::random::Distribution<T> {
+		private:
+			T value;
+
+		public:
+			/**
+			 * Type of generated values.
+			 */
+			typedef T result_type;
+
+			/**
+			 * Generic ConstantDistribution constructor.
+			 *
+			 * @param value constant value of the distribution
+			 */
+			ConstantDistribution(const T& value) : value(value) {}
+
+			/**
+			 * Always returns the same value.
+			 *
+			 * @tparam Generator_t Random number generator
+			 *
+			 * @return constant value
+			 */
+			template<typename Generator_t>
+				result_type operator()(Generator_t&) {
+					return value;
+				}
+
+			/**
+			 * \copydoc fpmas::api::random::Distribution::min()
+			 */
+			result_type min() const override {
+				return value;
+			}
+
+			/**
+			 * \copydoc fpmas::api::random::Distribution::max()
+			 */
+			result_type max() const override {
+				return value;
+			}
+	};
 }}
 
 #endif
