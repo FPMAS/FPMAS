@@ -69,7 +69,8 @@ $(function() {
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#enum-members">Enumerations</a>  </div>
   <div class="headertitle"><div class="title">fpmas::graph Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -109,6 +110,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1RandomLoadBalancing.html">RandomLoadBalancing</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1RingGraphBuilder.html">RingGraphBuilder</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1UniformGraphBuilder.html">UniformGraphBuilder</a></td></tr>
@@ -127,6 +130,13 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a6c74a4ed290e011f46afa3674cea808e"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6c74a4ed290e011f46afa3674cea808e"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#a6c74a4ed290e011f46afa3674cea808e">NodePtrWrapper</a> = <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; &gt;</td></tr>
 <tr class="separator:a6c74a4ed290e011f46afa3674cea808e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="enum-members" name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a40fbd0af030c98f1dd5b0023a40f0a3d"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#a40fbd0af030c98f1dd5b0023a40f0a3d">RingType</a> { <a class="el" href="namespacefpmas_1_1graph.html#a40fbd0af030c98f1dd5b0023a40f0a3da063fbb32b2017599149483603b6fb44c">LOOP</a>
+, <a class="el" href="namespacefpmas_1_1graph.html#a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4">CYCLE</a>
+ }</td></tr>
+<tr class="separator:a40fbd0af030c98f1dd5b0023a40f0a3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="namespacefpmas_1_1api_1_1graph.html">fpmas::api::graph</a> implementations. </p>
@@ -180,6 +190,28 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 <p >Alias for a <a class="el" href="classfpmas_1_1graph_1_1DistributedNode.html">DistributedNode</a> PtrWrapper. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a40fbd0af030c98f1dd5b0023a40f0a3d" name="a40fbd0af030c98f1dd5b0023a40f0a3d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40fbd0af030c98f1dd5b0023a40f0a3d">&#9670;&nbsp;</a></span>RingType</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacefpmas_1_1graph.html#a40fbd0af030c98f1dd5b0023a40f0a3d">fpmas::graph::RingType</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Ring graph types. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a40fbd0af030c98f1dd5b0023a40f0a3da063fbb32b2017599149483603b6fb44c" name="a40fbd0af030c98f1dd5b0023a40f0a3da063fbb32b2017599149483603b6fb44c"></a>LOOP&#160;</td><td class="fielddoc"><p >A ring graph linked only in one direction, forming a directed loop. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4" name="a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4"></a>CYCLE&#160;</td><td class="fielddoc"><p >A ring graph linked in both directions. </p>
+</td></tr>
+</table>
 
 </div>
 </div>

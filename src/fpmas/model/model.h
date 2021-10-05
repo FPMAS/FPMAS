@@ -1040,6 +1040,12 @@ namespace fpmas { namespace model {
 		= graph::DistributedClusteredGraphBuilder<AgentPtr>;
 
 	/**
+	 * graph::RingGraphBuilder AgentPtr specialization.
+	 */
+	using RingGraphBuilder
+		= graph::RingGraphBuilder<AgentPtr>;
+
+	/**
 	 * graph::ZoltanLoadBalancing AgentPtr specialization.
 	 */
 	using ZoltanLoadBalancing

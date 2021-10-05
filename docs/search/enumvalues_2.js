@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['erase_0',['ERASE',['../classfpmas_1_1api_1_1model_1_1AgentGroup.html#ad1794356e7a6728244970881daecb814acd8d783ce6f2e78c701e9cdad3e5153b',1,'fpmas::api::model::AgentGroup']]]
+  ['distant_0',['DISTANT',['../namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa5f6df4aaed961263dac8b13311f22c73',1,'fpmas::api::graph']]]
 ];

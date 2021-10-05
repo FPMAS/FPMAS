@@ -428,6 +428,9 @@ namespace fpmas { namespace communication {
 				std::unordered_map<int, DataPack> export_data_pack;
 				for(auto item : export_map) {
 					std::string str = JsonType(item.second).dump();
+					FPMAS_LOGV(comm.getRank(), "TYPED_MPI",
+							"ALL_TO_ALL: Export JSON to %i : %s", item.first, str.c_str()
+							);
 					DataPack data_pack (str.size(), sizeof(char));
 					std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
 
@@ -441,6 +444,10 @@ namespace fpmas { namespace communication {
 				for(auto item : import_data_pack) {
 					DataPack& pack = import_data_pack[item.first];
 					std::string import = std::string((char*) pack.buffer, pack.count);
+
+					FPMAS_LOGV(comm.getRank(), "TYPED_MPI",
+							"ALL_TO_ALL: Import JSON from %i : %s", item.first, import.c_str()
+							);
 					import_map.insert(std::pair<int, T>(item.first, JsonType::parse(
 									import
 									)

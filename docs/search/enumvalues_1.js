@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['distant_0',['DISTANT',['../namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02fa5f6df4aaed961263dac8b13311f22c73',1,'fpmas::api::graph']]]
+  ['cycle_0',['CYCLE',['../namespacefpmas_1_1graph.html#a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4',1,'fpmas::graph']]]
 ];
