@@ -110,6 +110,34 @@ namespace fpmas { namespace random {
 	 */
 	template<typename IntType = int>
 		using PoissonDistribution = Distribution<std::poisson_distribution<IntType>>;
+
+	/**
+	 * Predefined
+	 * [DiscreteDistribution](https://en.cppreference.com/w/cpp/numeric/random/discrete_distribution).
+	 *
+	 * The purpose of the discrete distribution is to select an integer `i` in
+	 * the range `[0, n)` such as `P(i) = w_i / N`, with `w_i` the weight
+	 * associated to `i` and `N` the total wheights sum.
+	 *
+	 * The weight list can be provided to the constructor as a container
+	 * (std::vector, std::list...) of as a pair of `begin(), end()` iterators.
+	 */
+	template<typename IntType = std::size_t>
+		class DiscreteDistribution : public Distribution<std::discrete_distribution<IntType>> {
+			public:
+				using Distribution<std::discrete_distribution<IntType>>::Distribution;
+
+				/**
+				 * Constructs a DiscreteDistribution from weights contained in
+				 * the specified container.
+				 *
+				 * @param c weights list
+				 */
+				template<typename Container>
+					DiscreteDistribution(const Container& c)
+					: DiscreteDistribution(c.begin(), c.end()) {
+					}
+		};
 }}
 
 #endif

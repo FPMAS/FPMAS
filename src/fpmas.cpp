@@ -19,5 +19,6 @@ namespace fpmas {
 		runtime::Runtime::seed(random_seed());
 		model::RandomNeighbors::seed(random_seed());
 		model::RandomMapping::seed(random_seed());
+		random::rd_choices = {random_seed()};
 	}
 }

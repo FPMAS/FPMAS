@@ -68,13 +68,17 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#typedef-members">Typedefs</a>  </div>
+<a href="#typedef-members">Typedefs</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">fpmas::random Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DiscreteDistribution.html">DiscreteDistribution</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator_3_01random__device_01_4.html">DistributedGenerator&lt; random_device &gt;</a></td></tr>
@@ -111,6 +115,23 @@ Typedefs</h2></td></tr>
 <tr class="separator:a46291533711a7df58040fa051ad62fa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff2c18877094fcaaa04f4e857eabe64a"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a>&lt; std::random_device &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#aff2c18877094fcaaa04f4e857eabe64a">random_device</a></td></tr>
 <tr class="separator:aff2c18877094fcaaa04f4e857eabe64a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:abe3415bc11668ca94dc340b211f3d019"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Generator_t &gt; </td></tr>
+<tr class="memitem:abe3415bc11668ca94dc340b211f3d019"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#abe3415bc11668ca94dc340b211f3d019">local_choices</a> (const std::vector&lt; T &gt; &amp;local_items, std::size_t n, Generator_t gen)</td></tr>
+<tr class="separator:abe3415bc11668ca94dc340b211f3d019"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30167e51f69724a4d33524a48da79aa9"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a30167e51f69724a4d33524a48da79aa9"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a30167e51f69724a4d33524a48da79aa9">local_choices</a> (const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</td></tr>
+<tr class="separator:a30167e51f69724a4d33524a48da79aa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2257aea7e87798cf42e22efa2720bd3"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:af2257aea7e87798cf42e22efa2720bd3"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#af2257aea7e87798cf42e22efa2720bd3">distributed_choices</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</td></tr>
+<tr class="separator:af2257aea7e87798cf42e22efa2720bd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a2b4ec27febc4e5d2a1fd379d6b4181ea"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a2b4ec27febc4e5d2a1fd379d6b4181ea">rd_choices</a></td></tr>
+<tr class="separator:a2b4ec27febc4e5d2a1fd379d6b4181ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="namespacefpmas_1_1api_1_1random.html">fpmas::api::random</a> implementations </p>
@@ -272,6 +293,154 @@ template&lt;typename IntType  = int&gt; </div>
       </table>
 </div><div class="memdoc">
 <p >Predefined <a href="https://en.cppreference.com/w/cpp/numeric/random/random_device">random_device</a> engine. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="abe3415bc11668ca94dc340b211f3d019" name="abe3415bc11668ca94dc340b211f3d019"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe3415bc11668ca94dc340b211f3d019">&#9670;&nbsp;</a></span>local_choices() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Generator_t &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; T &gt; fpmas::random::local_choices </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>local_items</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Generator_t&#160;</td>
+          <td class="paramname"><em>gen</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Randomly selects <code>n</code> elements from the <code>local_items</code>, with replacement. In consequence, <code>n</code> can be greater than the number of elements of <code>local_items</code>.</p>
+<p >A case of interest occurs when the <code>local_items</code> are the same on all processes. If the provided random number generator is sequential, the same choices are performed on all processes. If the generator is distributed, different choices are performed on each process.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">local_items</td><td>local items from which random choices should be made </td></tr>
+    <tr><td class="paramname">n</td><td>number of items to chose </td></tr>
+    <tr><td class="paramname">gen</td><td>random number generator </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>random choices </dd></dl>
+
+</div>
+</div>
+<a id="a30167e51f69724a4d33524a48da79aa9" name="a30167e51f69724a4d33524a48da79aa9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30167e51f69724a4d33524a48da79aa9">&#9670;&nbsp;</a></span>local_choices() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; T &gt; fpmas::random::local_choices </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>local_items</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Same as <a class="el" href="namespacefpmas_1_1random.html#abe3415bc11668ca94dc340b211f3d019">local_choices(const std::vector&lt;T&gt;&amp;, std::size_t, Generator_t)</a>, but uses the predefined <a class="el" href="namespacefpmas_1_1random.html#a2b4ec27febc4e5d2a1fd379d6b4181ea">rd_choices</a> distributed generator instead.</p>
+<p >Different choices are performed on all processes, even if the local_items are the same.</p>
+<p >The <a class="el" href="namespacefpmas_1_1random.html#a2b4ec27febc4e5d2a1fd379d6b4181ea">rd_choices</a> instance can be seeded with the <a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">fpmas::seed()</a> method. </p>
+
+</div>
+</div>
+<a id="af2257aea7e87798cf42e22efa2720bd3" name="af2257aea7e87798cf42e22efa2720bd3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2257aea7e87798cf42e22efa2720bd3">&#9670;&nbsp;</a></span>distributed_choices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; std::vector&lt; T &gt; &gt; fpmas::random::distributed_choices </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>local_items</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>n</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Randomly selects <code>n</code> items from <b>all</b> <code>local_items</code> specified on each processes.</p>
+<p >This method performs collective communications within the specified MPI communicator. In consequence, the method must be called from all processes.</p>
+<p >Distinct <code>local_items</code> lists of any size can be specified on each process. <code>n</code> items are returned <b>on each process</b>. Different values of <code>n</code> can be specified on each process.</p>
+<p >The elements are selected as if choices where performed locally on a list representing the concatenation of all <code>local_items</code> specified on all processes.</p>
+<p >The interest of this distributed implementation is that the complete item list is never centralized, in order to limit communications and memory usage.</p>
+<p >Results are returned in an std::vector <code>v</code> of size <code>comm.getSize()</code>, such that <code>v[i]</code> contains items selected from process <code>i</code>.</p>
+<dl class="section user"><dt>Tip</dt><dd>A one dimensional vector can be generated from the result with <code>std::accumulate(v.begin(), v.end(), <a class="el" href="structfpmas_1_1utils_1_1Concat.html">fpmas::utils::Concat()</a>)</code>.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
+    <tr><td class="paramname">local_items</td><td>local items provided by the current process </td></tr>
+    <tr><td class="paramname">n</td><td>local number of items to select from all items </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Variable Documentation</h2>
+<a id="a2b4ec27febc4e5d2a1fd379d6b4181ea" name="a2b4ec27febc4e5d2a1fd379d6b4181ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b4ec27febc4e5d2a1fd379d6b4181ea">&#9670;&nbsp;</a></span>rd_choices</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> fpmas::random::rd_choices</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >A predefined distributed random number generator used by choice and sampling algorithms. </p>
 
 </div>
 </div>

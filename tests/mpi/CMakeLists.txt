@@ -19,6 +19,7 @@ set(SOURCES
 	model/spatial/grid_load_balancing.cpp
 	model/spatial/cell_load_balancing.cpp
 	random/generator.cpp
+	random/random.cpp
 	io/csv_output.cpp
 	io/breakpoint.cpp
 	io/output.cpp
