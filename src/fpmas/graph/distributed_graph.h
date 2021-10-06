@@ -591,21 +591,13 @@ namespace fpmas { namespace graph {
 		template<DIST_GRAPH_PARAMS>
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::removeNode(
 					api::graph::DistributedNode<T> * node) {
-				node->mutex()->lockShared();
-
 				sync_mode.getSyncLinker().removeNode(node);
-
-				node->mutex()->unlockShared();
 			}
 
 		template<DIST_GRAPH_PARAMS>
 			typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::EdgeType*
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::link(
 					NodeType* const src, NodeType* const tgt, api::graph::LayerId layer) {
-				// Locks source and target
-				src->mutex()->lockShared();
-				tgt->mutex()->lockShared();
-
 				// Builds the new edge
 				auto edge = new DistEdgeImpl<T>(
 						this->edge_id++, layer
@@ -624,10 +616,6 @@ namespace fpmas { namespace graph {
 
 				// Inserts the edge in the Graph
 				this->insert(edge);
-
-				// Unlocks source and target
-				src->mutex()->unlockShared();
-				tgt->mutex()->unlockShared();
 
 				return edge;
 			}

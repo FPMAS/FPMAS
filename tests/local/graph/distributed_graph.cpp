@@ -153,10 +153,6 @@ class DistributedGraphLinkTest : public DistributedGraphTest {
 			ON_CALL(Const(*tgt_mock), mutex())
 				.WillByDefault(Return(&tgt_mutex));
 
-			EXPECT_CALL(src_mutex, lockShared);
-			EXPECT_CALL(src_mutex, unlockShared);
-			EXPECT_CALL(tgt_mutex, lockShared);
-			EXPECT_CALL(tgt_mutex, unlockShared);
 			EXPECT_CALL(mock_sync_linker, unlink).Times(0);
 
 			EXPECT_CALL(*src_mock, linkOut)
@@ -464,8 +460,6 @@ TEST_F(DistributedGraphRemoveNodeTest, remove_node) {
 
 	EXPECT_CALL(mock_sync_linker, removeNode(node_to_remove));
 	EXPECT_CALL(location_manager, remove(node_to_remove));
-	Expectation lock = EXPECT_CALL(*mock_mutex, lockShared);
-	EXPECT_CALL(*mock_mutex, unlockShared).After(lock);
 
 	graph.removeNode(node_to_remove);
 
