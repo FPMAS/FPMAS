@@ -31,7 +31,7 @@ namespace fpmas { namespace random {
 				const std::vector<T>& local_items, std::size_t n,
 				Generator_t gen) {
 			random::UniformIntDistribution<std::size_t> local_random_item(
-					0, local_items.size());
+					0, local_items.size()-1);
 			std::vector<T> random_items(n);
 			for(std::size_t i = 0; i < n; i++)
 				random_items[i] = local_items[local_random_item(gen)];
@@ -105,8 +105,6 @@ namespace fpmas { namespace random {
 			}
 			requests = int_mpi.allToAll(requests);
 
-			random::UniformIntDistribution<std::size_t> local_random_item(
-					0, local_items.size());
 			std::unordered_map<int, std::vector<T>> random_items;
 			for(auto item : requests)
 				random_items[item.first]
