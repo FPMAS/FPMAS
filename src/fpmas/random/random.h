@@ -96,13 +96,8 @@ namespace fpmas { namespace random {
 			std::unordered_map<int, std::size_t> requests;
 
 			random::DiscreteDistribution<std::size_t> rd_process(item_counts);
-			for(std::size_t i = 0; i < n; i++) {
-				std::size_t rd_process_select = rd_process(gen);
-
+			for(std::size_t i = 0; i < n; i++)
 				requests[rd_process(gen)]++;
-
-				assert(cumulative_counts[process] > 0);
-			}
 			requests = int_mpi.allToAll(requests);
 
 			std::unordered_map<int, std::vector<T>> random_items;

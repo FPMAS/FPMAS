@@ -100,7 +100,7 @@ TEST(Random, distributed_choices) {
 		ASSERT_NEAR((float) item / N_CHOICES, 1.f / fpmas::communication::WORLD.getSize(), 0.1);
 
 	// Ensures that values are uniformly selected on each process
-	for(std::size_t rank = 0; rank < fpmas::communication::WORLD.getSize(); rank++) {
+	for(int rank = 0; rank < fpmas::communication::WORLD.getSize(); rank++) {
 		for(auto item : value_histograms[rank])
 			ASSERT_NEAR((float) item / gather_choices[rank].size(), 1.f/100, 0.1f);
 	}
