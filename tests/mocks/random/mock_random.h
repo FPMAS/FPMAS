@@ -26,10 +26,13 @@ class MockGenerator : public fpmas::api::random::Generator<std::uint_fast64_t> {
 template<typename T>
 class MockDistribution : public fpmas::api::random::Distribution<T> {
 	public:
-		MOCK_METHOD(T, call, (fpmas::api::random::Generator<std::uint_fast64_t>&), ());
+		MOCK_METHOD(T, call, (), ());
 
-		T operator()(fpmas::api::random::Generator<std::uint_fast64_t>& gen) {
-			return call(gen);
+		T operator()(fpmas::api::random::Generator<std::uint64_t>& gen) {
+			return call();
+		}
+		T operator()(fpmas::api::random::Generator<std::uint32_t>& gen) {
+			return call();
 		}
 
 		MOCK_METHOD(T, min, (), (const));
