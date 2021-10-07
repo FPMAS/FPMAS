@@ -1,4 +1,5 @@
 <map id="fpmas::random::Generator&lt; Generator_t &gt;" name="fpmas::random::Generator&lt; Generator_t &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,109,180,151"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="15,5,171,61"/>
+<area shape="rect" id="node1" title=" " alt="" coords="24,199,199,240"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1random_1_1UniformRandomBitGenerator.html" title=" " alt="" coords="5,109,217,151"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="33,5,189,61"/>
 </map>

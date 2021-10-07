@@ -45,6 +45,9 @@ namespace fpmas {
 	 *
 	 * This must be call before any MPI communication or \Model initialization
 	 * is performed.
+	 *
+	 * `fpmas::seed(fpmas::default_seed)` is called unless an other
+	 * `fpmas::seed()` was performed before `fpmas::init()`
 	 */
 	void init(int argc, char** argv);
 
@@ -88,6 +91,7 @@ namespace fpmas {
 	 * - fpmas::runtime::Runtime::seed()
 	 * - fpmas::model::RandomNeighbors::seed()
 	 * - fpmas::model::RandomMapping::seed()
+	 * - fpmas::random::rd_choices.seed()
 	 *
 	 * Those are currently the only static random generators used internally in
 	 * an FPMAS simulation, so seeding them ensures reproducibility.

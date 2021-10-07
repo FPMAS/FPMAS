@@ -10,7 +10,7 @@ using namespace testing;
 TEST(Random, local_choices_sequential_gen) {
 	std::vector<int> local_items;
 	fpmas::random::mt19937_64 gen;
-	fpmas::random::UniformIntDistribution<int> int_dist(0, 100);
+	fpmas::random::UniformIntDistribution<int> int_dist(0, 99);
 
 	for(std::size_t i = 0; i < 50; i++)
 		local_items.push_back(int_dist(gen));
@@ -18,7 +18,7 @@ TEST(Random, local_choices_sequential_gen) {
 	std::vector<int> local_choices
 		= fpmas::random::local_choices(local_items, 10000, gen);
 	std::vector<int> histogram(100);
-	for(auto item : local_choices)
+	for(std::size_t item : local_choices)
 		histogram[item]++;
 	for(auto item : histogram)
 		ASSERT_NEAR((float) item / 10000, 1.f/100, 0.1);
@@ -36,7 +36,7 @@ TEST(Random, local_choices_sequential_gen) {
 TEST(Random, local_choices_distributed_gen) {
 	std::vector<int> local_items;
 	fpmas::random::mt19937_64 gen;
-	fpmas::random::UniformIntDistribution<int> int_dist(0, 100);
+	fpmas::random::UniformIntDistribution<int> int_dist(0, 99);
 
 	for(std::size_t i = 0; i < 50; i++)
 		local_items.push_back(int_dist(gen));
@@ -66,7 +66,7 @@ TEST(Random, distributed_choices) {
 	static const std::size_t N_CHOICES = 5*N_LOCAL_ITEMS;
 
 	fpmas::random::DistributedGenerator<> gen;
-	fpmas::random::UniformIntDistribution<int> int_dist(0, 100);
+	fpmas::random::UniformIntDistribution<int> int_dist(0, 99);
 
 	// Local items are pair of values such as `first=current rank` and
 	// `second=uniformly selected integer in [0, 100]`

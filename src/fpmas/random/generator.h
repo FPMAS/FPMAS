@@ -18,38 +18,25 @@ namespace fpmas { namespace random {
 #endif
 
 	/**
-	 * api::random::Generator implementation.
+	 * A partial api::random::Generator implementation that meets the
+	 * requirements of the
+	 * [_UniformRandomBitGenerator_](https://en.cppreference.com/w/cpp/named_req/UniformRandomBitGenerator).
 	 *
-	 * Any specialization of this class meets the requirements of
-	 * _UniformRandomBitGenerator_.
-	 * 
-	 * @tparam Generator_t cpp standard random number generator
+	 * @tparam Generator_t a predefined standard _UniformRandomBitGenerator_
 	 */
 	template<typename Generator_t>
-		class Generator : public api::random::Generator<typename Generator_t::result_type> {
-			friend DistributedGenerator<Generator<Generator_t>>;
+		class UniformRandomBitGenerator: public api::random::Generator<typename Generator_t::result_type> {
 			protected:
 			/**
 			 * Internal `Generator_t` instance.
 			 */
 			Generator_t gen;
-
+			
 			public:
 			/**
 			 * Integer type used by the generator.
 			 */
 			typedef typename Generator_t::result_type result_type;
-
-			/**
-			 * Default constructor.
-			 */
-			Generator() {}
-			/**
-			 * Initializes the Generator with the provided seed.
-			 *
-			 * @param seed random seed
-			 */
-			Generator(result_type seed) : gen(seed) {}
 
 			/**
 			 * Minimum value that can be generated.
@@ -69,9 +56,77 @@ namespace fpmas { namespace random {
 				return Generator_t::max();
 			}
 
+			/**
+			 * Returns a randomly generated value in [min(), max()].
+			 *
+			 * @return random integer
+			 */
 			result_type operator()() override {
 				return gen();
 			}
+		};
+	/**
+	 * api::random::Generator implementation.
+	 *
+	 * Any specialization of this class meets the requirements of
+	 * _UniformRandomBitGenerator_.
+	 * 
+	 * @tparam Generator_t cpp standard random number generator
+	 */
+	template<typename Generator_t>
+		class Generator : public UniformRandomBitGenerator<Generator_t> {
+			public:
+				/**
+				 * Integer type used by the generator.
+				 */
+				typedef typename UniformRandomBitGenerator<Generator_t>::result_type
+					result_type;
+
+				/**
+				 * Default constructor.
+				 */
+				Generator() {}
+				/**
+				 * Initializes the Generator with the provided seed.
+				 *
+				 * @param seed random seed
+				 */
+				Generator(result_type seed) {
+					this->seed(seed);
+				}
+
+
+				void seed(result_type seed) override {
+					this->gen.seed(seed);
+				}
+		};
+
+	/**
+	 * std::random_device Generator specialization.
+	 *
+	 * Seeding this genererator has **no effect** but methods are still define
+	 * to preserve API compatibility (Generator<std::random_device> is a
+	 * concrete api::random::Generator implementation).
+	 */
+	template<>
+		class Generator<std::random_device> : public UniformRandomBitGenerator<std::random_device> {
+			public:
+				/**
+				 * Generator default constructor.
+				 */
+				Generator() {
+				}
+				/**
+				 * Defines a constructor that accept a seed, but has no effect.
+				 */
+				Generator(std::random_device::result_type) {
+				}
+
+				/**
+				 * Seed method: no effect in this case.
+				 */
+				void seed(std::random_device::result_type) override {
+				}
 		};
 
 	/**
@@ -134,7 +189,7 @@ namespace fpmas { namespace random {
 					// Generates a different seed on each process
 					result_type local_seed = seeder() + rank;
 					// Seeds the local generator with the generated seed
-					local_generator.gen.seed(local_seed);
+					local_generator.seed(local_seed);
 					_init = true;
 				}
 
@@ -170,6 +225,11 @@ namespace fpmas { namespace random {
 					if(!_init)
 						init();
 					return local_generator();
+				}
+
+				void seed(result_type seed) override {
+					seeder.seed(seed);
+					init();
 				}
 
 				/**

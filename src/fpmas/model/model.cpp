@@ -15,7 +15,7 @@ namespace fpmas { namespace model {
 	random::DistributedGenerator<> RandomNeighbors::rd;
 
 	void RandomNeighbors::seed(random::DistributedGenerator<>::result_type seed) {
-		RandomNeighbors::rd = random::DistributedGenerator<>(seed);
+		RandomNeighbors::rd.seed(seed);
 	}
 
 	api::model::AgentNode*

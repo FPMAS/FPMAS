@@ -9,10 +9,10 @@
 
 namespace fpmas { namespace api { namespace random {
 	/**
-	 * A virtual wrapper for random generators. It is a relaxed definition of
-	 * the [C++ UniformRandomBitGenerator named
-	 * requirement](https://en.cppreference.com/w/cpp/named_req/UniformRandomBitGenerator),
-	 * that can still be used in predefined random definitions.
+	 * A virtual wrapper for random generators.
+	 *
+	 * Any implementation of this interface must meet the requirements of
+	 * [_UniformRandomBitGenerator_](https://en.cppreference.com/w/cpp/named_req/UniformRandomBitGenerator).
 	 *
 	 * @tparam T generated integer type
 	 */
@@ -26,6 +26,13 @@ namespace fpmas { namespace api { namespace random {
 				 * @return random integer
 				 */
 				virtual T operator()() = 0;
+
+				/**
+				 * Seeds the random generator.
+				 *
+				 * @param seed seed value
+				 */
+				virtual void seed(T seed) = 0;
 
 				virtual ~Generator() {}
 		};

@@ -5,7 +5,7 @@ namespace fpmas { namespace model {
 	random::mt19937_64 RandomMapping::rd;
 
 	void RandomMapping::seed(random::mt19937_64::result_type seed) {
-		RandomMapping::rd = random::mt19937_64(seed);
+		RandomMapping::rd.seed(seed);
 	}
 
 	UniformAgentMapping::UniformAgentMapping(

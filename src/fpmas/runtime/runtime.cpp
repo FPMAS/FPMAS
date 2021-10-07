@@ -35,6 +35,6 @@ namespace fpmas { namespace runtime {
 	}
 
 	void Runtime::seed(random::DistributedGenerator<>::result_type seed) {
-		Runtime::rd = random::DistributedGenerator<>(seed);
+		Runtime::rd.seed(seed);
 	}
 }}

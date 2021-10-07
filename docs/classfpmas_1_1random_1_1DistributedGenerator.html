@@ -104,10 +104,12 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a285207a7b74869a40576423d4c323fd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a285207a7b74869a40576423d4c323fd2">DistributedGenerator</a> ()</td></tr>
 <tr class="separator:a285207a7b74869a40576423d4c323fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0c14b8645eb1570dcf9b98afa343abd9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a0c14b8645eb1570dcf9b98afa343abd9">DistributedGenerator</a> (<a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a> <a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">seed</a>)</td></tr>
+<tr class="memitem:a0c14b8645eb1570dcf9b98afa343abd9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a0c14b8645eb1570dcf9b98afa343abd9">DistributedGenerator</a> (<a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a> <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a2ece1165a00a337b910dd482c17642a1">seed</a>)</td></tr>
 <tr class="separator:a0c14b8645eb1570dcf9b98afa343abd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace59c13f208ae1806962d9911375c956"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ace59c13f208ae1806962d9911375c956">operator()</a> () override</td></tr>
 <tr class="separator:ace59c13f208ae1806962d9911375c956"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ece1165a00a337b910dd482c17642a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a2ece1165a00a337b910dd482c17642a1">seed</a> (<a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a> seed) override</td></tr>
+<tr class="separator:a2ece1165a00a337b910dd482c17642a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -120,8 +122,8 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename Generator_t = mt19937_64&gt;<br />
 class fpmas::random::DistributedGenerator&lt; Generator_t &gt;</div><p >Distributed <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">api::random::Generator</a> implementation.</p>
 <p >The generator is assumed to produce pseudo-random and deterministic, that are still different on each process.</p>
-<p >More particularly, the generator internally uses a <code>Generator_t</code> instance, that must satisfy <em>UniformRandomBitGenerator</em>, seeded differently according to the rank of the process on which the generator is used. Since MPI communications are required to do so, <a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init()</a> <b>must</b> be called before the first use of the generator. However, it is safe to instantiate the generator before <a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init()</a> is called. This allows to declare a <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> as a static variable.</p>
-<p >This class meets the requirements of <em>UniformRandomBitGenerator</em>.</p>
+<p >More particularly, the generator internally uses a <code>Generator_t</code> instance, that must satisfy <em><a class="el" href="classfpmas_1_1random_1_1UniformRandomBitGenerator.html">UniformRandomBitGenerator</a></em>, seeded differently according to the rank of the process on which the generator is used. Since MPI communications are required to do so, <a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init()</a> <b>must</b> be called before the first use of the generator. However, it is safe to instantiate the generator before <a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init()</a> is called. This allows to declare a <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> as a static variable.</p>
+<p >This class meets the requirements of <em><a class="el" href="classfpmas_1_1random_1_1UniformRandomBitGenerator.html">UniformRandomBitGenerator</a></em>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">Generator_t</td><td>type of the local random number generator used on each process </td></tr>
@@ -241,6 +243,43 @@ template&lt;typename Generator_t  = mt19937_64&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>random integer </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a6ee526b5d7080fd554ab3a1b289e2a6b">fpmas::api::random::Generator&lt; Generator_t::result_type &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a2ece1165a00a337b910dd482c17642a1" name="a2ece1165a00a337b910dd482c17642a1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ece1165a00a337b910dd482c17642a1">&#9670;&nbsp;</a></span>seed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Generator_t  = mt19937_64&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">fpmas::random::DistributedGenerator</a>&lt; Generator_t &gt;::seed </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a>&#160;</td>
+          <td class="paramname"><em>seed</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Seeds the random generator.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seed</td><td>seed value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a85b9885cb10ed059d6c40bca79905f22">fpmas::api::random::Generator&lt; Generator_t::result_type &gt;</a>.</p>
 
 </div>
 </div>

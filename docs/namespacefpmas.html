@@ -150,7 +150,8 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >Initializes FPMAS.</p>
-<p >This must be call before any MPI communication or <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a> initialization is performed. </p>
+<p >This must be call before any MPI communication or <a class="el" href="classfpmas_1_1api_1_1model_1_1Model.html">Model</a> initialization is performed.</p>
+<p ><code>fpmas::seed(fpmas::default_seed)</code> is called unless an other <code><a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">fpmas::seed()</a></code> was performed before <code><a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init()</a></code> </p>
 <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fpmas_2output_2csv_output_8cpp-example.html#a0">fpmas/output/csv_output.cpp</a>, and <a class="el" href="fpmas_2output_2distributed_csv_output_8cpp-example.html#a0">fpmas/output/distributed_csv_output.cpp</a>.</dd>
 </dl>
 
@@ -192,8 +193,8 @@ Variables</h2></td></tr>
 <div class="line">    <a class="code hl_function" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a>();</div>
 <div class="line">}</div>
 <div class="ttc" id="afpmas_8h_html"><div class="ttname"><a href="fpmas_8h.html">fpmas.h</a></div></div>
-<div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:12</div></div>
-<div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:4</div></div>
+<div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:18</div></div>
+<div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:6</div></div>
 </div><!-- fragment --> <dl class="section examples"><dt>Examples</dt><dd><a class="el" href="fpmas_2output_2csv_output_8cpp-example.html#a3">fpmas/output/csv_output.cpp</a>, and <a class="el" href="fpmas_2output_2distributed_csv_output_8cpp-example.html#a3">fpmas/output/distributed_csv_output.cpp</a>.</dd>
 </dl>
 
@@ -219,6 +220,7 @@ Variables</h2></td></tr>
 <li><a class="el" href="classfpmas_1_1runtime_1_1Runtime.html#ac88d849f5f24ae52343b08477bf4e924">fpmas::runtime::Runtime::seed()</a></li>
 <li><a class="el" href="structfpmas_1_1model_1_1RandomNeighbors.html#a6a6d99902e9a5467e454df9cb30d282d">fpmas::model::RandomNeighbors::seed()</a></li>
 <li><a class="el" href="structfpmas_1_1model_1_1RandomMapping.html#a1043d7af676f794e5c083d9c541282f0">fpmas::model::RandomMapping::seed()</a></li>
+<li>fpmas::random::rd_choices.seed()</li>
 </ul>
 <p >Those are currently the only static random generators used internally in an FPMAS simulation, so seeding them ensures reproducibility.</p>
 <dl class="section warning"><dt>Warning</dt><dd>Even if this ensures that random number sequences are the same for each execution with a given seed, the execution of some simulations can't be considered deterministic due to message exchanges across processors in <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">fpmas::synchro::hard::HardSyncMode</a> for example. Indeed, the relative speed of each process cannot be guaranteed, and the receiving order of some message sequences might alter some agent behavior. However, simulations executed using the <a class="el" href="classfpmas_1_1synchro_1_1ghost_1_1GhostMode.html">fpmas::synchro::ghost::GhostMode</a> will be deterministic.</dd></dl>

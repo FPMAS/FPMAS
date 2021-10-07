@@ -1,5 +1,6 @@
 <map id="fpmas::random::DistributedGenerator&lt; random_device &gt;" name="fpmas::random::DistributedGenerator&lt; random_device &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,184,196,225"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1random_1_1Generator.html" title=" " alt="" coords="45,109,156,136"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="23,5,179,61"/>
+<area shape="rect" id="node1" title=" " alt="" coords="16,288,207,329"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1random_1_1Generator_3_01std_1_1random__device_01_4.html" title=" " alt="" coords="56,213,167,240"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1random_1_1UniformRandomBitGenerator.html" title=" " alt="" coords="5,109,217,165"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="33,5,189,61"/>
 </map>

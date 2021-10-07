@@ -79,10 +79,13 @@ $(function() {
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a6ee526b5d7080fd554ab3a1b289e2a6b"><td class="memItemLeft" align="right" valign="top">virtual T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a6ee526b5d7080fd554ab3a1b289e2a6b">operator()</a> ()=0</td></tr>
 <tr class="separator:a6ee526b5d7080fd554ab3a1b289e2a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a85b9885cb10ed059d6c40bca79905f22"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a85b9885cb10ed059d6c40bca79905f22">seed</a> (T seed)=0</td></tr>
+<tr class="separator:a85b9885cb10ed059d6c40bca79905f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
-class fpmas::api::random::Generator&lt; T &gt;</div><p >A virtual wrapper for random generators. It is a relaxed definition of the <a href="https://en.cppreference.com/w/cpp/named_req/UniformRandomBitGenerator">C++ UniformRandomBitGenerator named requirement</a>, that can still be used in predefined random definitions.</p>
+class fpmas::api::random::Generator&lt; T &gt;</div><p >A virtual wrapper for random generators.</p>
+<p >Any implementation of this interface must meet the requirements of <a href="https://en.cppreference.com/w/cpp/named_req/UniformRandomBitGenerator"><em>UniformRandomBitGenerator</em></a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>generated integer type </td></tr>
@@ -117,7 +120,44 @@ template&lt;typename T &gt; </div>
 <p >Returns a randomly generated value in [min(), max()].</p>
 <dl class="section return"><dt>Returns</dt><dd>random integer </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1random_1_1Generator.html#aee2767771d5c027c103bc5d80401e5a0">fpmas::random::Generator&lt; Generator_t &gt;</a>, and <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ace59c13f208ae1806962d9911375c956">fpmas::random::DistributedGenerator&lt; Generator_t &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1random_1_1UniformRandomBitGenerator.html#aab1c8020f6a2219351ab62f7d28265ee">fpmas::random::UniformRandomBitGenerator&lt; Generator_t &gt;</a>, <a class="el" href="classfpmas_1_1random_1_1UniformRandomBitGenerator.html#aab1c8020f6a2219351ab62f7d28265ee">fpmas::random::UniformRandomBitGenerator&lt; std::random_device &gt;</a>, and <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ace59c13f208ae1806962d9911375c956">fpmas::random::DistributedGenerator&lt; Generator_t &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a85b9885cb10ed059d6c40bca79905f22" name="a85b9885cb10ed059d6c40bca79905f22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a85b9885cb10ed059d6c40bca79905f22">&#9670;&nbsp;</a></span>seed()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">fpmas::api::random::Generator</a>&lt; T &gt;::seed </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>seed</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Seeds the random generator.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seed</td><td>seed value </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1random_1_1Generator.html#a871c6e546b64e09e6693959b0b90f078">fpmas::random::Generator&lt; Generator_t &gt;</a>, and <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a2ece1165a00a337b910dd482c17642a1">fpmas::random::DistributedGenerator&lt; Generator_t &gt;</a>.</p>
 
 </div>
 </div>

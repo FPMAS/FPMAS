@@ -83,7 +83,7 @@ $(function() {
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>                <span class="keyword">const</span> std::vector&lt;T&gt;&amp; local_items, std::size_t n,</div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>                Generator_t gen) {</div>
 <div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>            <a class="code hl_class" href="classfpmas_1_1random_1_1Distribution.html">random::UniformIntDistribution&lt;std::size_t&gt;</a> local_random_item(</div>
-<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>                    0, local_items.size());</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>                    0, local_items.size()-1);</div>
 <div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>            std::vector&lt;T&gt; random_items(n);</div>
 <div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>            <span class="keywordflow">for</span>(std::size_t i = 0; i &lt; n; i++)</div>
 <div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>                random_items[i] = local_items[local_random_item(gen)];</div>
@@ -117,30 +117,28 @@ $(function() {
 <div class="line"><a id="l00105" name="l00105"></a><span class="lineno">  105</span>            }</div>
 <div class="line"><a id="l00106" name="l00106"></a><span class="lineno">  106</span>            requests = int_mpi.<a class="code hl_function" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#ac9d4043ee728fa56fbd62a9c8d6b9c9a">allToAll</a>(requests);</div>
 <div class="line"><a id="l00107" name="l00107"></a><span class="lineno">  107</span> </div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            <a class="code hl_class" href="classfpmas_1_1random_1_1Distribution.html">random::UniformIntDistribution&lt;std::size_t&gt;</a> local_random_item(</div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>                    0, local_items.size());</div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>            std::unordered_map&lt;int, std::vector&lt;T&gt;&gt; random_items;</div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>            <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : requests)</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>                random_items[item.first]</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>                    = <a class="code hl_function" href="namespacefpmas_1_1random.html#abe3415bc11668ca94dc340b211f3d019">local_choices</a>(local_items, item.second, <a class="code hl_variable" href="namespacefpmas_1_1random.html#a2b4ec27febc4e5d2a1fd379d6b4181ea">rd_choices</a>);</div>
+<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span>            std::unordered_map&lt;int, std::vector&lt;T&gt;&gt; random_items;</div>
+<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span>            <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : requests)</div>
+<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span>                random_items[item.first]</div>
+<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>                    = <a class="code hl_function" href="namespacefpmas_1_1random.html#abe3415bc11668ca94dc340b211f3d019">local_choices</a>(local_items, item.second, <a class="code hl_variable" href="namespacefpmas_1_1random.html#a2b4ec27febc4e5d2a1fd379d6b4181ea">rd_choices</a>);</div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span> </div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span>            <a class="code hl_struct" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;std::vector&lt;T&gt;</a>&gt; item_mpi(comm);</div>
 <div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span> </div>
-<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>            <a class="code hl_struct" href="structfpmas_1_1communication_1_1TypedMpi.html">communication::TypedMpi&lt;std::vector&lt;T&gt;</a>&gt; item_mpi(comm);</div>
-<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span> </div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>            std::vector&lt;std::vector&lt;T&gt;&gt; results(comm.<a class="code hl_function" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adaa99abca527281fe2b7993a524c31c4">getSize</a>());</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span>            <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : item_mpi.<a class="code hl_function" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#ac9d4043ee728fa56fbd62a9c8d6b9c9a">allToAll</a>(random_items))</div>
-<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>                results[item.first] = item.second;</div>
-<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span> </div>
-<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span>            <span class="keywordflow">return</span> results;</div>
-<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>        }</div>
-<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
-<div class="line"><a id="l00124" name="l00124"></a><span class="lineno">  124</span>}}</div>
-<div class="line"><a id="l00125" name="l00125"></a><span class="lineno">  125</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span>            std::vector&lt;std::vector&lt;T&gt;&gt; results(comm.<a class="code hl_function" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adaa99abca527281fe2b7993a524c31c4">getSize</a>());</div>
+<div class="line"><a id="l00116" name="l00116"></a><span class="lineno">  116</span>            <span class="keywordflow">for</span>(<span class="keyword">auto</span> item : item_mpi.<a class="code hl_function" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#ac9d4043ee728fa56fbd62a9c8d6b9c9a">allToAll</a>(random_items))</div>
+<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>                results[item.first] = item.second;</div>
+<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
+<div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span>            <span class="keywordflow">return</span> results;</div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno">  120</span>        }</div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span> </div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span>}}</div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:211</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html_adaa99abca527281fe2b7993a524c31c4"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adaa99abca527281fe2b7993a524c31c4">fpmas::api::communication::MpiCommunicator::getSize</a></div><div class="ttdeci">virtual int getSize() const =0</div></div>
 <div class="ttc" id="aclassfpmas_1_1communication_1_1detail_1_1TypedMpi_html_ac9d4043ee728fa56fbd62a9c8d6b9c9a"><div class="ttname"><a href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#ac9d4043ee728fa56fbd62a9c8d6b9c9a">fpmas::communication::detail::TypedMpi::allToAll</a></div><div class="ttdeci">std::unordered_map&lt; int, T &gt; allToAll(std::unordered_map&lt; int, T &gt; export_map) override</div><div class="ttdef"><b>Definition:</b> communication.h:426</div></div>
 <div class="ttc" id="aclassfpmas_1_1communication_1_1detail_1_1TypedMpi_html_acc214ca22edfe3f99740465abfe6cdc5"><div class="ttname"><a href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#acc214ca22edfe3f99740465abfe6cdc5">fpmas::communication::detail::TypedMpi::allGather</a></div><div class="ttdeci">std::vector&lt; T &gt; allGather(const T &amp;) override</div><div class="ttdef"><b>Definition:</b> communication.h:480</div></div>
 <div class="ttc" id="aclassfpmas_1_1random_1_1DiscreteDistribution_html"><div class="ttname"><a href="classfpmas_1_1random_1_1DiscreteDistribution.html">fpmas::random::DiscreteDistribution</a></div><div class="ttdef"><b>Definition:</b> distribution.h:126</div></div>
-<div class="ttc" id="aclassfpmas_1_1random_1_1DistributedGenerator_html"><div class="ttname"><a href="classfpmas_1_1random_1_1DistributedGenerator.html">fpmas::random::DistributedGenerator</a></div><div class="ttdef"><b>Definition:</b> generator.h:122</div></div>
+<div class="ttc" id="aclassfpmas_1_1random_1_1DistributedGenerator_html"><div class="ttname"><a href="classfpmas_1_1random_1_1DistributedGenerator.html">fpmas::random::DistributedGenerator</a></div><div class="ttdef"><b>Definition:</b> generator.h:177</div></div>
 <div class="ttc" id="aclassfpmas_1_1random_1_1Distribution_html"><div class="ttname"><a href="classfpmas_1_1random_1_1Distribution.html">fpmas::random::Distribution</a></div><div class="ttdef"><b>Definition:</b> distribution.h:24</div></div>
 <div class="ttc" id="anamespacefpmas_1_1random_html_a2b4ec27febc4e5d2a1fd379d6b4181ea"><div class="ttname"><a href="namespacefpmas_1_1random.html#a2b4ec27febc4e5d2a1fd379d6b4181ea">fpmas::random::rd_choices</a></div><div class="ttdeci">DistributedGenerator rd_choices</div><div class="ttdef"><b>Definition:</b> random.cpp:4</div></div>
 <div class="ttc" id="anamespacefpmas_1_1random_html_abe3415bc11668ca94dc340b211f3d019"><div class="ttname"><a href="namespacefpmas_1_1random.html#abe3415bc11668ca94dc340b211f3d019">fpmas::random::local_choices</a></div><div class="ttdeci">std::vector&lt; T &gt; local_choices(const std::vector&lt; T &gt; &amp;local_items, std::size_t n, Generator_t gen)</div><div class="ttdef"><b>Definition:</b> random.h:30</div></div>
