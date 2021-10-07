@@ -21,8 +21,6 @@
  * This macro must be called **at runtime**, as soon as possible, before
  * any \Agent serialization occurs.
  *
- * The macro can eventually be called without arguments, but this as no effect.
- *
  * @par Example
  * ```cpp
  * ...
@@ -39,7 +37,7 @@
  * ```
  */
 #define FPMAS_REGISTER_AGENT_TYPES(...)\
-	fpmas::register_types<__VA_ARGS__ __VA_OPT__(,) void>();
+	fpmas::register_types<__VA_ARGS__ , void>();
 
 /**
  * Defines the nlohmann specializations required to handle the JSON
@@ -49,9 +47,10 @@
  * methods, that are declared (but not defined) in src/fpmas/model/model.h.
  *
  * In consequence, this macro must be invoked exaclty once from a **source**
- * file, **at the global definition level**, in any C++ target using FPMAS. No
- * argument can eventually be provided for test purpose, but the macro must be
- * called anyway, in order to prevent linking errors.
+ * file, **at the global definition level**, in any C++ target using FPMAS.
+ *
+ * It is possible to call the FPMAS_DEFAULT_JSON_SET_UP() macro to set up the
+ * JSON serialization without specifying any Agent.
  *
  * The same set of \Agent types must be registered at runtime using the
  * FPMAS_REGISTER_AGENT_TYPES(...) macro at runtime.
@@ -77,37 +76,79 @@
 	namespace nlohmann {\
 		void adl_serializer<fpmas::api::model::AgentPtr>\
 			::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::to_json(j, data);\
+			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ , void>::to_json(j, data);\
 		}\
 		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>\
 			::from_json(const json& j) {\
-			return {fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j)};\
+			return {fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ , void>::from_json(j)};\
 		}\
 \
 		void adl_serializer<fpmas::api::model::WeakAgentPtr>\
 			::to_json(json& j, const fpmas::api::model::WeakAgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::to_json(j, data);\
+			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ , void>::to_json(j, data);\
 		}\
 		fpmas::api::model::WeakAgentPtr adl_serializer<fpmas::api::model::WeakAgentPtr>\
 			::from_json(const json& j) {\
-			return fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j);\
+			return fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ , void>::from_json(j);\
 		}\
 	}\
 	namespace fpmas { namespace io { namespace json {\
 		void light_serializer<fpmas::api::model::AgentPtr>::to_json(light_json& j, const fpmas::api::model::AgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::to_json(j, data);\
+			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ , void>::to_json(j, data);\
 		}\
 		fpmas::api::model::AgentPtr light_serializer<fpmas::api::model::AgentPtr>::from_json(const light_json& j) {\
-			return {fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j)};\
+			return {fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ , void>::from_json(j)};\
 		}\
 		\
 		void light_serializer<fpmas::api::model::WeakAgentPtr>\
 			::to_json(light_json& j, const fpmas::api::model::WeakAgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::to_json(j, data);\
+			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ , void>::to_json(j, data);\
 		}\
 		fpmas::api::model::WeakAgentPtr light_serializer<fpmas::api::model::WeakAgentPtr>\
 			::from_json(const light_json& j) {\
-			return fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ __VA_OPT__(,) void>::from_json(j);\
+			return fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ , void>::from_json(j);\
+		}\
+	}}}\
+
+/**
+ * Can be used instead of FPMAS_JSON_SET_UP() to set up json serialization
+ * without specifying any agent type.
+ */
+#define FPMAS_DEFAULT_JSON_SET_UP()\
+	namespace nlohmann {\
+		void adl_serializer<fpmas::api::model::AgentPtr>\
+			::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
+			fpmas::model::AgentPtrSerializer<json, void>::to_json(j, data);\
+		}\
+		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>\
+			::from_json(const json& j) {\
+			return {fpmas::model::AgentPtrSerializer<json, void>::from_json(j)};\
+		}\
+\
+		void adl_serializer<fpmas::api::model::WeakAgentPtr>\
+			::to_json(json& j, const fpmas::api::model::WeakAgentPtr& data) {\
+			fpmas::model::AgentPtrSerializer<json, void>::to_json(j, data);\
+		}\
+		fpmas::api::model::WeakAgentPtr adl_serializer<fpmas::api::model::WeakAgentPtr>\
+			::from_json(const json& j) {\
+			return fpmas::model::AgentPtrSerializer<json, void>::from_json(j);\
+		}\
+	}\
+	namespace fpmas { namespace io { namespace json {\
+		void light_serializer<fpmas::api::model::AgentPtr>::to_json(light_json& j, const fpmas::api::model::AgentPtr& data) {\
+			fpmas::model::AgentPtrSerializer<light_json, void>::to_json(j, data);\
+		}\
+		fpmas::api::model::AgentPtr light_serializer<fpmas::api::model::AgentPtr>::from_json(const light_json& j) {\
+			return {fpmas::model::AgentPtrSerializer<light_json, void>::from_json(j)};\
+		}\
+		\
+		void light_serializer<fpmas::api::model::WeakAgentPtr>\
+			::to_json(light_json& j, const fpmas::api::model::WeakAgentPtr& data) {\
+			fpmas::model::AgentPtrSerializer<light_json, void>::to_json(j, data);\
+		}\
+		fpmas::api::model::WeakAgentPtr light_serializer<fpmas::api::model::WeakAgentPtr>\
+			::from_json(const light_json& j) {\
+			return fpmas::model::AgentPtrSerializer<light_json, void>::from_json(j);\
 		}\
 	}}}\
 
