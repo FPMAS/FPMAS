@@ -227,7 +227,7 @@ namespace fpmas { namespace graph {
 					api::graph::LayerId layer,
 					api::graph::DistributedGraph<T>& graph) {
 				std::vector<api::graph::DistributedNode<T>*> built_nodes;
-				while(!node_builder.nodeCount() == 0)
+				while(node_builder.nodeCount() != 0)
 					built_nodes.push_back(node_builder.buildNode(graph));
 
 				std::vector<api::graph::DistributedNode<T>*> node_buffer = built_nodes;
@@ -343,7 +343,7 @@ namespace fpmas { namespace graph {
 					api::graph::LayerId layer,
 					api::graph::DistributedGraph<T>& graph) {
 				std::vector<api::graph::DistributedNode<T>*> built_nodes;
-				while(!node_builder.localNodeCount() == 0)
+				while(node_builder.localNodeCount() != 0)
 					built_nodes.push_back(node_builder.buildNode(graph));
 
 				typedef std::pair<api::graph::DistributedId, int> LocId;
@@ -668,7 +668,7 @@ namespace fpmas { namespace graph {
 			::build(api::graph::NodeBuilder<T>& node_builder, api::graph::LayerId layer, api::graph::DistributedGraph<T>& graph) {
 				std::vector<api::graph::DistributedNode<T>*> raw_built_nodes;
 				std::vector<detail::LocalizedNode<T>> built_nodes;
-				while(!node_builder.nodeCount() == 0) {
+				while(node_builder.nodeCount() != 0) {
 					auto* node = node_builder.buildNode(graph);
 					built_nodes.push_back({
 							{this->x(), this->y()},
@@ -876,7 +876,7 @@ namespace fpmas { namespace graph {
 					api::graph::DistributedGraph<T>& graph) {
 				std::vector<api::graph::DistributedNode<T>*> raw_built_nodes;
 				std::vector<detail::LocalizedNode<T>> built_nodes;
-				while(!node_builder.localNodeCount() == 0) {
+				while(node_builder.localNodeCount() != 0) {
 					auto* node = node_builder.buildNode(graph);
 					built_nodes.push_back({
 							{this->x(), this->y()},
