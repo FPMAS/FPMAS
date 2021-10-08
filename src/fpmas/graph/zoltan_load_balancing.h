@@ -42,12 +42,21 @@ namespace fpmas { namespace graph {
 			 * @see obj_list()
 			 */
 			std::vector<fpmas::api::graph::DistributedNode<T>*> nodes;
+
 			/**
 			 * Edges buffer. (built by Zoltan query functions)
 			 *
 			 * @see edge_list_multi_fn()
 			 */
-			std::vector<std::vector<fpmas::api::graph::DistributedEdge<T>*>> edges;
+			std::vector<std::vector<fpmas::api::graph::DistributedNode<T>*>> target_nodes;
+			/**
+			 * Edge weights buffer. (built by Zoltan query functions)
+			 *
+			 * This buffer as exactly the same shape as edges.
+			 *
+			 * @see edge_list_multi_fn()
+			 */
+			std::vector<std::vector<float>> edge_weights;
 		};
 
 		/**
@@ -196,27 +205,78 @@ namespace fpmas { namespace graph {
 				int *num_edges,
 				int * // ierr (unused)
 				) {
-			ZoltanData<T>* z_data = (ZoltanData<T>*) data;
-			// Initializes `num_obj` empty vectors
-			z_data->edges.resize(num_obj);
-			for(int i = 0; i < num_obj; i++) {
-				auto node = z_data->nodes.at(i);
-				int count = 0;
-				for(auto edge : node->getOutgoingEdges()) {
-					// Considers the neighbor only if the load balancing
-					// algorithm is also applied to it, potentially from an
-					// other process.
-					// The distributed_node_ids list contains the ids of ALL
-					// the nodes that are currently balanced.
-					// It is the responsability of
-					// ZoltanLoadBalancing::balance() to perform communications
-					// required to build this list, before the Zoltan algorithm
-					// is effectively applied.
-					if(z_data->distributed_node_ids.count(edge->getTargetNode()->getId()) > 0) {
-						count++;
-						z_data->edges.at(i).push_back(edge);
+			struct NodeHandler {
+				static void handle(
+						ZoltanData<T>* z_data, int& count, int i, DistributedId node_id,
+						api::graph::DistributedNode<T>* target_node, float edge_weight) {
+					auto tgt_id = target_node->getId();
+					// Incoming and outgoing edges are considered from all the
+					// nodes, but should be treated once by all processes. (Notice
+					// that the two nodes might be located on distinct processes)
+					//
+					// Considering the relation `rel` below, an edge is considered
+					// only if `rel(node_id, tgt_id)` is true. Moreover, `rel` is
+					// such as `rel(A, B) == true` XOR `rel(B, A) == true`: this
+					// ensures that each edge is treated exactly once from A or B.
+					// The first comparison on id() should ensure that no
+					// preference is given on A or B for each edge. Moreover,
+					// `rel(A, A) == false` so self edges are ignored.
+					if(node_id.id() > tgt_id.id()
+							|| (node_id.id() == tgt_id.id() && node_id.rank() > tgt_id.rank())
+					  ) {
+						// Considers the neighbor only if the load balancing
+						// algorithm is also applied to it, potentially from an
+						// other process.
+						// The distributed_node_ids list contains the ids of ALL
+						// the nodes that are currently balanced.
+						// It is the responsability of
+						// ZoltanLoadBalancing::balance() to perform communications
+						// required to build this list, before the Zoltan algorithm
+						// is effectively applied.
+						if(z_data->distributed_node_ids.count(tgt_id) > 0) {
+							auto& target_nodes = z_data->target_nodes[i];
+							auto& edge_weights = z_data->edge_weights[i];
+							auto it = std::find(
+									target_nodes.begin(), target_nodes.end(),
+									target_node
+									);
+							if(it == target_nodes.end()) {
+								// No edges between node_id and tgt_id exists:
+								// create a new one
+								count++;
+								target_nodes.push_back(target_node);
+								edge_weights.push_back(edge_weight);
+							} else {
+								// An edge (outgoing or incoming) from node_id to
+								// tgt_id already exists, so the weight of the
+								// current edge is added to the existing one.
+								edge_weights[std::distance(target_nodes.begin(), it)]
+									+=edge_weight;
+							}
+						}
 					}
 				}
+			};
+			
+			ZoltanData<T>* z_data = (ZoltanData<T>*) data;
+			// Initializes `num_obj` empty vectors
+			z_data->target_nodes.resize(num_obj);
+			z_data->edge_weights.resize(num_obj);
+			for(int i = 0; i < num_obj; i++) {
+				auto node = z_data->nodes[i];
+				auto node_id = node->getId();
+				int count = 0;
+				for(auto edge : node->getOutgoingEdges())
+					NodeHandler::handle(
+							z_data, count, i, node_id,
+							edge->getTargetNode(), edge->getWeight()
+							);
+				for(auto edge : node->getIncomingEdges())
+					NodeHandler::handle(
+							z_data, count, i, node_id,
+							edge->getSourceNode(), edge->getWeight()
+							);
+
 				num_edges[i] = count;
 			}
 		}
@@ -255,15 +315,17 @@ namespace fpmas { namespace graph {
 
 			int neighbor_index = 0;
 			for (int i = 0; i < num_obj; ++i) {
-				for(auto edge : z_data->edges.at(i)) {
-					auto target = edge->getTargetNode();
-					DistributedId targetId = target->getId(); 
-					zoltan::write_zoltan_id(targetId, &nbor_global_id[neighbor_index * num_gid_entries]);
+				for(std::size_t j = 0; j < z_data->target_nodes[i].size(); j++) {
+					auto target = z_data->target_nodes[i][j];
+					zoltan::write_zoltan_id(
+							target->getId(),
+							&nbor_global_id[neighbor_index * num_gid_entries]
+							);
 
 					nbor_procs[neighbor_index]
 						= target->location();
 
-					ewgts[neighbor_index] = edge->getWeight();
+					ewgts[neighbor_index] = z_data->edge_weights[i][j];
 					neighbor_index++;
 				}
 			}
@@ -487,7 +549,8 @@ namespace fpmas { namespace graph {
 			zoltan_data.node_map.clear();
 			zoltan_data.distributed_node_ids.clear();
 			zoltan_data.nodes.clear();
-			zoltan_data.edges.clear();
+			zoltan_data.target_nodes.clear();
+			zoltan_data.edge_weights.clear();
 
 			return partition;
 		}

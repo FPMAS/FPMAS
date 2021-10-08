@@ -1,5 +1,5 @@
-#include "graph/mock_distributed_edge.h"
-#include "graph/mock_distributed_node.h"
+#include "../../mocks/graph/mock_distributed_edge.h"
+#include "../../mocks/graph/mock_distributed_node.h"
 
 #include "fpmas/graph/zoltan_load_balancing.h"
 
@@ -46,14 +46,18 @@ class ZoltanFunctionsTest : public ::testing::Test {
 	protected:
 		DistributedId id1 {0, 1};
 		std::vector<fpmas::api::graph::DistributedEdge<int>*> out_edges_1;
+		std::vector<fpmas::api::graph::DistributedEdge<int>*> in_edges_1;
 		MockDistributedEdge<int, NiceMock>* mock_edge_1;
 		MockDistributedEdge<int, NiceMock>* mock_edge_2;
+		MockDistributedEdge<int, NiceMock>* mock_edge_4;
 
 		DistributedId id2 {0, 2};
 		std::vector<fpmas::api::graph::DistributedEdge<int>*> out_edges_2;
+		std::vector<fpmas::api::graph::DistributedEdge<int>*> in_edges_2;
 
 		DistributedId id3 {2, 3};
 		std::vector<fpmas::api::graph::DistributedEdge<int>*> out_edges_3;
+		std::vector<fpmas::api::graph::DistributedEdge<int>*> in_edges_3;
 		MockDistributedEdge<int, NiceMock>* mock_edge_3;
 
 		fpmas::graph::zoltan::ZoltanData<int> data;
@@ -68,6 +72,7 @@ class ZoltanFunctionsTest : public ::testing::Test {
 		std::unordered_map<
 			DistributedId, int, fpmas::api::graph::IdHash<DistributedId>
 			> node_index;
+		std::unordered_map<int, DistributedId> index_node;
 
 		// Edge lists
 		int num_edges[3];
@@ -91,17 +96,20 @@ class ZoltanFunctionsTest : public ::testing::Test {
 			ON_CALL(*mock_edge_1, getTargetNode)
 				.WillByDefault(Return(node_2));
 			out_edges_1.push_back(mock_edge_1);
+			in_edges_2.push_back(mock_edge_1);
 
 			// Mock edge id1 -> id3
 			mock_edge_2 = new MockDistributedEdge<int, NiceMock>(
 					DistributedId(0, 1), 1, 3.f
 					);
 			ON_CALL(*mock_edge_2, getSourceNode)
-				.WillByDefault(Return(node_3));
+				.WillByDefault(Return(node_1));
 			ON_CALL(*mock_edge_2, getTargetNode)
 				.WillByDefault(Return(node_3));
 			out_edges_1.push_back(mock_edge_2);
+			in_edges_3.push_back(mock_edge_2);
 
+			// Mock edge id2 -> id1
 			mock_edge_3 = new MockDistributedEdge<int, NiceMock>(
 					DistributedId(0, 2),
 					0,
@@ -112,13 +120,32 @@ class ZoltanFunctionsTest : public ::testing::Test {
 			ON_CALL(*mock_edge_3, getTargetNode)
 				.WillByDefault(Return(node_1));
 			out_edges_2.push_back(mock_edge_3);
+			in_edges_1.push_back(mock_edge_3);
 
+			// Mock edge id1 -> id2 (second edge)
+			mock_edge_4 = new MockDistributedEdge<int, NiceMock>(
+					DistributedId(0, 0), 0, 5.f
+					);
+			ON_CALL(*mock_edge_4, getSourceNode)
+				.WillByDefault(Return(node_1));
+			ON_CALL(*mock_edge_4, getTargetNode)
+				.WillByDefault(Return(node_2));
+			out_edges_1.push_back(mock_edge_4);
+			in_edges_2.push_back(mock_edge_4);
+
+			// Node set up
 			ON_CALL(*node_1, getOutgoingEdges())
 				.WillByDefault(Return(out_edges_1));
+			ON_CALL(*node_1, getIncomingEdges())
+				.WillByDefault(Return(in_edges_1));
 			ON_CALL(*node_2, getOutgoingEdges())
 				.WillByDefault(Return(out_edges_2));
+			ON_CALL(*node_2, getIncomingEdges())
+				.WillByDefault(Return(in_edges_2));
 			ON_CALL(*node_3, getOutgoingEdges())
 				.WillByDefault(Return(out_edges_3));
+			ON_CALL(*node_3, getIncomingEdges())
+				.WillByDefault(Return(in_edges_3));
 
 			ON_CALL(*node_1, location())
 				.WillByDefault(Return(0));
@@ -131,7 +158,9 @@ class ZoltanFunctionsTest : public ::testing::Test {
 			// obj_list implementation
 			int index = 0;
 			for(auto node : data.node_map) {
-				node_index[node.first] = index++;
+				node_index[node.first] = index;
+				index_node[index] = node.first;
+				index++;
 			}
 		}
 
@@ -189,12 +218,19 @@ TEST_F(ZoltanFunctionsTest, obj_num_egdes_multi_test) {
 	write_zoltan_global_ids();
 	write_zoltan_num_edges();
 
-	// Node 0 has 2 outgoing edges
-	ASSERT_EQ(num_edges[node_index[id1]], 2);
-	// Node 1 has 1 outgoing edges
-	ASSERT_EQ(num_edges[node_index[id2]], 1);
-	// Node 2 has 0 outgoing edges
-	ASSERT_EQ(num_edges[node_index[id3]], 0);
+	ASSERT_EQ(
+			num_edges[node_index[id1]] +
+			num_edges[node_index[id2]] +
+			num_edges[node_index[id3]],
+			2);
+	
+	// Node 1 has 2 outgoing edges
+	//ASSERT_EQ(num_edges[node_index[id1]], 2);
+	// Node 2 has 1 outgoing edges
+	//ASSERT_EQ(num_edges[node_index[id2]], 1);
+	// Node 3 has 0 outgoing edges
+	//ASSERT_EQ(num_edges[node_index[id3]], 0);
+
 }
 
 
@@ -222,20 +258,34 @@ TEST_F(ZoltanFunctionsTest, edge_list_multi_test) {
 			&err
 			);
 
-	int node1_offset = node_index[id1] < node_index[id2] ? 0 : 1;
-	int node2_offset = node_index[id1] < node_index[id2] ? 2 : 0;
+	std::array<std::pair<std::array<DistributedId, 2>, float>, 2> edges;
+	std::size_t edge_index = 0;
+	for(int i = 0; i < 3; i++) {
+		for(int j = 0; j < num_edges[i]; j++) {
+			DistributedId tgt_id
+				= read_zoltan_id(&nbor_global_id[(edge_index+j) * NUM_GID_ENTRIES]);
+			edges[edge_index] = {
+					{index_node[i], tgt_id},
+					ewgts[edge_index+j]
+				};
+			edge_index++;
+		}
+	}
 
-	ASSERT_EQ(read_zoltan_id(&nbor_global_id[(node1_offset) * NUM_GID_ENTRIES]), id2);
-	ASSERT_EQ(ewgts[node1_offset], 1.5f);
-	ASSERT_EQ(nbor_procs[node1_offset], 3);
-
-	ASSERT_EQ(read_zoltan_id(&nbor_global_id[(node1_offset + 1) * NUM_GID_ENTRIES]), id3);
-	ASSERT_EQ(ewgts[node1_offset+1], 3.f);
-	ASSERT_EQ(nbor_procs[node1_offset+1], 5);
-
-	ASSERT_EQ(read_zoltan_id(&nbor_global_id[node2_offset * NUM_GID_ENTRIES]), id1);
-	ASSERT_EQ(ewgts[node2_offset], 2.f);
-	ASSERT_EQ(nbor_procs[node2_offset], 0);
+	ASSERT_THAT(edges, UnorderedElementsAre(
+				// Result of the merge of mock_edge_1/3/4
+				Pair(
+					// Undirected edge
+					UnorderedElementsAre(DistributedId(0, 2), DistributedId(0, 1)),
+					// Weights sum
+					FloatEq(1.5f+5.f+2.f)
+					),
+				// Simple edge mock_edge_2
+				Pair(
+					UnorderedElementsAre(DistributedId(2, 3), DistributedId(0, 1)),
+					FloatEq(3.f)
+					)
+				));
 }
 
 TEST_F(ZoltanFunctionsTest, num_fixed_obj) {
