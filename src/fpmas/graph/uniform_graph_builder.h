@@ -110,7 +110,7 @@ namespace fpmas { namespace graph {
 					api::graph::LayerId layer,
 					api::graph::DistributedGraph<T>& graph) {
 				std::vector<api::graph::DistributedNode<T>*> built_nodes;
-				while(!node_builder.nodeCount() == 0)
+				while(node_builder.nodeCount() != 0)
 					built_nodes.push_back(node_builder.buildNode(graph));
 
 				std::vector<api::graph::DistributedNode<T>*> node_buffer = built_nodes;
@@ -226,7 +226,7 @@ namespace fpmas { namespace graph {
 					api::graph::LayerId layer,
 					api::graph::DistributedGraph<T>& graph) {
 				std::vector<api::graph::DistributedNode<T>*> built_nodes;
-				while(!node_builder.localNodeCount() == 0)
+				while(node_builder.localNodeCount() != 0)
 					built_nodes.push_back(node_builder.buildNode(graph));
 
 				typedef std::pair<api::graph::DistributedId, int> LocId;

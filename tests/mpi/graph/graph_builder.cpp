@@ -23,8 +23,7 @@ class DistributedNodeBuilder : public fpmas::graph::DistributedNodeBuilder<int> 
 				fpmas::api::graph::DistributedGraph<int>& graph) override {
 			auto node = new fpmas::graph::DistributedNode<int>(id, 0);
 			node->setLocation(location);
-			graph.insertDistant(node);
-			return node;
+			return graph.insertDistant(node);
 		}
 };
 

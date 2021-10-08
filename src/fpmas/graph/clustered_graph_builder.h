@@ -290,7 +290,7 @@ namespace fpmas { namespace graph {
 		::build(api::graph::NodeBuilder<T>& node_builder, api::graph::LayerId layer, api::graph::DistributedGraph<T>& graph) {
 			std::vector<api::graph::DistributedNode<T>*> raw_built_nodes;
 			std::vector<detail::LocalizedNode<T>> built_nodes;
-			while(!node_builder.nodeCount() == 0) {
+			while(node_builder.nodeCount() != 0) {
 				auto* node = node_builder.buildNode(graph);
 				built_nodes.push_back({
 						{this->x(), this->y()},
@@ -498,7 +498,7 @@ namespace fpmas { namespace graph {
 				api::graph::DistributedGraph<T>& graph) {
 			std::vector<api::graph::DistributedNode<T>*> raw_built_nodes;
 			std::vector<detail::LocalizedNode<T>> built_nodes;
-			while(!node_builder.localNodeCount() == 0) {
+			while(node_builder.localNodeCount() != 0) {
 				auto* node = node_builder.buildNode(graph);
 				built_nodes.push_back({
 						{this->x(), this->y()},

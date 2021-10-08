@@ -116,6 +116,16 @@ namespace fpmas { namespace api { namespace graph {
 				 * 3. Inserts it into the graph using
 				 * DistributedGraph::insertDistant()
 				 *
+				 * \note
+				 * The node returned must be the node effectively contained in
+				 * the graph at the end of the operation. Indeed, it is allowed
+				 * to try to insert a \DISTANT node already contained in the
+				 * graph, and implementations might decide to ignore the new
+				 * node or to replace the existing one, but the node finally
+				 * contained in the graph must be returned. In any case, it is
+				 * safe to return the result of
+				 * DistributedGraph::insertDistant().
+				 *
 				 * Notice that the count of nodes built using this method is
 				 * not limited and is not correlated to localNodeCount() or
 				 * nodeCount(), contrary to the buildNode() method.
