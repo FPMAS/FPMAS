@@ -178,10 +178,12 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:aa1f4073e73128e2a9af8cc819f677b89"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES</a>(...)&#160;&#160;&#160;	<a class="el" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a>&lt;__VA_ARGS__ __VA_OPT__(,) void&gt;();</td></tr>
+<tr class="memitem:aa1f4073e73128e2a9af8cc819f677b89"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES</a>(...)&#160;&#160;&#160;	<a class="el" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a>&lt;__VA_ARGS__ , void&gt;();</td></tr>
 <tr class="separator:aa1f4073e73128e2a9af8cc819f677b89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4722b5fd6cdf04855fb40935583a8dcf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP</a>(...)</td></tr>
 <tr class="separator:a4722b5fd6cdf04855fb40935583a8dcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd3637c72c35ab965e0e0deed0cb7229"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#acd3637c72c35ab965e0e0deed0cb7229">FPMAS_DEFAULT_JSON_SET_UP</a>()</td></tr>
+<tr class="separator:acd3637c72c35ab965e0e0deed0cb7229"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2540dd16aee93cd7779411153980ffb9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a2540dd16aee93cd7779411153980ffb9">FPMAS_DEFAULT_JSON</a>(AGENT)</td></tr>
 <tr class="separator:a2540dd16aee93cd7779411153980ffb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -214,14 +216,13 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname"><em>...</em></td><td>)</td>
-          <td>&#160;&#160;&#160;	<a class="el" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a>&lt;__VA_ARGS__ __VA_OPT__(,) void&gt;();</td>
+          <td>&#160;&#160;&#160;	<a class="el" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a>&lt;__VA_ARGS__ , void&gt;();</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p >Registers the specified <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types so that they can be serialized as JSON using the <code>nlohmann</code> library.</p>
 <p >More particularly, registers <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> types so that their TypeId (i.e. their corresponding std::type_index) can be serialized. Serialization rules (to_json and from_json methods) for each type must still be specified.</p>
 <p >This macro must be called <b>at runtime</b>, as soon as possible, before any <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> serialization occurs.</p>
-<p >The macro can eventually be called without arguments, but this as no effect.</p>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line">...</div>
 <div class="line"> </div>
 <div class="line">int main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
@@ -235,7 +236,7 @@ Functions</h2></td></tr>
 <div class="line">}</div>
 <div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:18</div></div>
 <div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:6</div></div>
-<div class="ttc" id="aserializer_8h_html_aa1f4073e73128e2a9af8cc819f677b89"><div class="ttname"><a href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES</a></div><div class="ttdeci">#define FPMAS_REGISTER_AGENT_TYPES(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:41</div></div>
+<div class="ttc" id="aserializer_8h_html_aa1f4073e73128e2a9af8cc819f677b89"><div class="ttname"><a href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES</a></div><div class="ttdeci">#define FPMAS_REGISTER_AGENT_TYPES(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:39</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>
@@ -257,7 +258,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p >Defines the nlohmann specializations required to handle the JSON serialization of the specified set of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types.</p>
 <p >Notice that this is only the <em>definitions</em> of the <code>to_json</code> and <code>from_json</code> methods, that are declared (but not defined) in <a class="el" href="model_2model_8h.html">src/fpmas/model/model.h</a>.</p>
-<p >In consequence, this macro must be invoked exaclty once from a <b>source</b> file, <b>at the global definition level</b>, in any C++ target using FPMAS. No argument can eventually be provided for test purpose, but the macro must be called anyway, in order to prevent linking errors.</p>
+<p >In consequence, this macro must be invoked exaclty once from a <b>source</b> file, <b>at the global definition level</b>, in any C++ target using FPMAS.</p>
+<p >It is possible to call the <a class="el" href="serializer_8h.html#acd3637c72c35ab965e0e0deed0cb7229">FPMAS_DEFAULT_JSON_SET_UP()</a> macro to set up the JSON serialization without specifying any Agent.</p>
 <p >The same set of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types must be registered at runtime using the <a class="el" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES(...)</a> macro at runtime.</p>
 <dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="preprocessor">#define AGENT_TYPES Agent1, Agent2, OtherAgent</span></div>
 <div class="line"> </div>
@@ -272,8 +274,26 @@ Functions</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <a class="code hl_function" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a>();</div>
 <div class="line">}</div>
-<div class="ttc" id="aserializer_8h_html_a4722b5fd6cdf04855fb40935583a8dcf"><div class="ttname"><a href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP</a></div><div class="ttdeci">#define FPMAS_JSON_SET_UP(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:76</div></div>
+<div class="ttc" id="aserializer_8h_html_a4722b5fd6cdf04855fb40935583a8dcf"><div class="ttname"><a href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP</a></div><div class="ttdeci">#define FPMAS_JSON_SET_UP(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:75</div></div>
 </div><!-- fragment --> </dd></dl>
+
+</div>
+</div>
+<a id="acd3637c72c35ab965e0e0deed0cb7229" name="acd3637c72c35ab965e0e0deed0cb7229"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd3637c72c35ab965e0e0deed0cb7229">&#9670;&nbsp;</a></span>FPMAS_DEFAULT_JSON_SET_UP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_DEFAULT_JSON_SET_UP</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Can be used instead of <a class="el" href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP()</a> to set up json serialization without specifying any agent type. </p>
 
 </div>
 </div>

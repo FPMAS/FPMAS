@@ -28,10 +28,10 @@ class MockDistribution : public fpmas::api::random::Distribution<T> {
 	public:
 		MOCK_METHOD(T, call, (), ());
 
-		T operator()(fpmas::api::random::Generator<std::uint64_t>& gen) {
+		T operator()(fpmas::api::random::Generator<std::uint64_t>&) {
 			return call();
 		}
-		T operator()(fpmas::api::random::Generator<std::uint32_t>& gen) {
+		T operator()(fpmas::api::random::Generator<std::uint32_t>&) {
 			return call();
 		}
 

@@ -28,6 +28,8 @@ namespace fpmas { namespace model {
 			 * will be \LOCAL.
 			 */
 			virtual int process(DiscretePoint point) const = 0;
+
+			virtual ~GridProcessMapping() {}
 	};
 
 	/**

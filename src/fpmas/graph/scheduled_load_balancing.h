@@ -39,7 +39,7 @@ namespace fpmas { namespace graph {
 				 * @param runtime current runtime (used to access the current
 				 * api::runtime::Runtime::currentDate())
 				 */
-				ScheduledLoadBalancing<T>(
+				ScheduledLoadBalancing(
 						api::graph::FixedVerticesLoadBalancing<T>& fixed_vertices_lb,
 						api::scheduler::Scheduler& scheduler,
 						api::runtime::Runtime& runtime
