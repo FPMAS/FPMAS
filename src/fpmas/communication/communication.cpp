@@ -130,6 +130,8 @@ namespace fpmas { namespace communication {
 			void* send_buffer = std::malloc(current_sdispls * type_size);
 			for(int i = 0; i < getSize(); i++) {
 				std::memcpy(&((char*) send_buffer)[sdispls[i]], data_pack[i].buffer, data_pack[i].size);
+				// Frees the temporary data pack, that is not required any more
+				data_pack[i].free();
 			}
 
 			int* recvcounts = (int*) std::malloc(getSize()*sizeof(int));
@@ -140,7 +142,10 @@ namespace fpmas { namespace communication {
 				rdispls[i] = current_rdispls;
 				current_rdispls += recvcounts[i];
 			}
+			// Frees useless buffer
+			std::free(size_buffer);
 
+			// Allocates buffer where MPI data are received
 			void* recv_buffer = std::malloc(current_rdispls * type_size);
 
 			MPI_Alltoallv(
@@ -148,24 +153,28 @@ namespace fpmas { namespace communication {
 					recv_buffer, recvcounts, rdispls, datatype,
 					getMpiComm()
 					);
+			// Frees useless send data buffers
+			std::free(sendcounts);
+			std::free(sdispls);
+			std::free(send_buffer);
 
+			// Convert received MPI data to DataPacks
 			std::unordered_map<int, DataPack> imported_data_pack;
 			for (int i = 0; i < getSize(); i++) {
 				if(recvcounts[i] > 0) {
-					imported_data_pack[i] = DataPack(recvcounts[i], type_size);
+					imported_data_pack.emplace(i, DataPack(recvcounts[i], type_size));
 					DataPack& dataPack = imported_data_pack[i];
 
 					std::memcpy(dataPack.buffer, &((char*) recv_buffer)[rdispls[i]], dataPack.size);
 				}
 			}
 
-			std::free(sendcounts);
-			std::free(sdispls);
-			std::free(size_buffer);
+			// Frees receive data buffers
 			std::free(recvcounts);
 			std::free(rdispls);
-			std::free(send_buffer);
 			std::free(recv_buffer);
+
+			// Should perform "copy elision" to prevent useless buffer copies
 			return imported_data_pack;
 		}
 

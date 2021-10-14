@@ -86,6 +86,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af9409fb3a8afc3f497431e1367a6e64a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a27c701df159c117021cf8e65f779bc97"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a27c701df159c117021cf8e65f779bc97">DataPack</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &amp;&amp;other)</td></tr>
 <tr class="separator:a27c701df159c117021cf8e65f779bc97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03a28106830e30ca1a65fe4248c12d79"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a03a28106830e30ca1a65fe4248c12d79">free</a> ()</td></tr>
+<tr class="separator:a03a28106830e30ca1a65fe4248c12d79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6b8e8b63b23494a0de2f4c15425b9d37"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a6b8e8b63b23494a0de2f4c15425b9d37">operator=</a> (const <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &amp;other)</td></tr>
 <tr class="separator:a6b8e8b63b23494a0de2f4c15425b9d37"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04869cfca7c050c47f59a4e1d8219ac4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html#a04869cfca7c050c47f59a4e1d8219ac4">operator=</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &amp;&amp;other)</td></tr>
@@ -263,6 +265,32 @@ Public Attributes</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a03a28106830e30ca1a65fe4248c12d79" name="a03a28106830e30ca1a65fe4248c12d79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03a28106830e30ca1a65fe4248c12d79">&#9670;&nbsp;</a></span>free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::api::communication::DataPack::free </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Frees the internal buffer. </p>
+
+</div>
+</div>
 <a id="a6b8e8b63b23494a0de2f4c15425b9d37" name="a6b8e8b63b23494a0de2f4c15425b9d37"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6b8e8b63b23494a0de2f4c15425b9d37">&#9670;&nbsp;</a></span>operator=() <span class="overload">[1/2]</span></h2>
 
@@ -287,7 +315,7 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Copy assignment.</p>
-<p >Frees <code>this</code> buffer, and moves <code>other</code>'s buffer into <code>this</code> buffer.</p>
+<p >Frees <code>this</code> buffer, and copies <code>other</code>'s buffer into <code>this</code> buffer.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> to copy from </td></tr>

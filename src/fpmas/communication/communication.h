@@ -399,26 +399,36 @@ namespace fpmas { namespace communication {
 			TypedMpi<T, JsonType>::migrate(std::unordered_map<int, std::vector<T>> export_map) {
 				// Pack
 				std::unordered_map<int, DataPack> export_data_pack;
-				for(auto item : export_map) {
+				for(auto& item : export_map) {
 					std::string str = JsonType(item.second).dump();
 					DataPack data_pack (str.size(), sizeof(char));
 					std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
 
-					export_data_pack[item.first] = data_pack;
+					// Emplace + Move prevents useless copies
+					export_data_pack.emplace(item.first, std::move(data_pack));
 				}
 
+				// export_data_pack buffers are moved to the temporary allToAll
+				// argument, and automatically freed by the allToAll
+				// implementation
 				std::unordered_map<int, DataPack> import_data_pack
-					= comm.allToAll(export_data_pack, MPI_CHAR);
+					= comm.allToAll(std::move(export_data_pack), MPI_CHAR);
 
 				std::unordered_map<int, std::vector<T>> import_map;
-				for(auto item : import_data_pack) {
+				for(auto& item : import_data_pack) {
 					DataPack& pack = import_data_pack[item.first];
-					std::string import = std::string((char*) pack.buffer, pack.count);
-					import_map[item.first] = JsonType::parse(
-							import
+					std::string import_str = std::string((char*) pack.buffer, pack.count);
+					// Frees useless data pack after content is copied to
+					// std::string
+					pack.free();
+
+					import_map.emplace(item.first, JsonType::parse(
+							import_str
 							)
-						.template get<std::vector<T>>();
+						.template get<std::vector<T>>());
 				}
+
+				// Should perform "copy elision"
 				return import_map;
 			}
 
@@ -426,7 +436,7 @@ namespace fpmas { namespace communication {
 			TypedMpi<T, JsonType>::allToAll(std::unordered_map<int, T> export_map) {
 				// Pack
 				std::unordered_map<int, DataPack> export_data_pack;
-				for(auto item : export_map) {
+				for(auto& item : export_map) {
 					std::string str = JsonType(item.second).dump();
 					FPMAS_LOGV(comm.getRank(), "TYPED_MPI",
 							"ALL_TO_ALL: Export JSON to %i : %s", item.first, str.c_str()
@@ -434,25 +444,32 @@ namespace fpmas { namespace communication {
 					DataPack data_pack (str.size(), sizeof(char));
 					std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
 
-					export_data_pack[item.first] = data_pack;
+					// Emplace + Move prevents useless copies
+					export_data_pack.emplace(item.first, std::move(data_pack));
 				}
 
+				// export_data_pack buffers are moved to the temporary allToAll
+				// argument, and automatically freed by the allToAll
+				// implementation
 				std::unordered_map<int, DataPack> import_data_pack
-					= comm.allToAll(export_data_pack, MPI_CHAR);
+					= comm.allToAll(std::move(export_data_pack), MPI_CHAR);
 
 				std::unordered_map<int, T> import_map;
-				for(auto item : import_data_pack) {
+				for(auto& item : import_data_pack) {
 					DataPack& pack = import_data_pack[item.first];
-					std::string import = std::string((char*) pack.buffer, pack.count);
+					std::string import_str = std::string((char*) pack.buffer, pack.count);
+					pack.free();
 
 					FPMAS_LOGV(comm.getRank(), "TYPED_MPI",
-							"ALL_TO_ALL: Import JSON from %i : %s", item.first, import.c_str()
+							"ALL_TO_ALL: Import JSON from %i : %s", item.first, import_str.c_str()
 							);
-					import_map.insert(std::pair<int, T>(item.first, JsonType::parse(
-									import
+					import_map.emplace(item.first, JsonType::parse(
+									import_str
 									)
-								.template get<T>()));
+								.template get<T>());
 				}
+
+				// Should perform "copy elision"
 				return import_map;
 			}
 

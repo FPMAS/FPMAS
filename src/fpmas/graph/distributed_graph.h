@@ -676,34 +676,41 @@ namespace fpmas { namespace graph {
 					}
 				}
 
-				// Serialize and export / import nodes
-				auto node_import = node_mpi.migrate(node_export_map);
-
-				// Serialize and export / import edges
-				auto edge_import = edge_mpi.migrate(edge_export_map);
-
-				for(auto& import_node_list_from_proc : node_import) {
-					for(auto& imported_node : import_node_list_from_proc.second) {
-						this->importNode(imported_node);
+				{
+					// Serialize and export / import nodes
+					auto node_import = node_mpi.migrate(node_export_map);
+					for(auto& import_node_list_from_proc : node_import) {
+						for(auto& imported_node : import_node_list_from_proc.second) {
+							this->importNode(imported_node);
+						}
 					}
+					// node_import is deleted at the end of this scope
 				}
-				for(auto& import_edge_list_from_proc : edge_import) {
-					for(auto& imported_edge : import_edge_list_from_proc.second) {
-						this->importEdge(imported_edge);
+
+				{
+					// Serialize and export / import edges
+					auto edge_import = edge_mpi.migrate(edge_export_map);
+					for(auto& import_edge_list_from_proc : edge_import) {
+						for(auto& imported_edge : import_edge_list_from_proc.second) {
+							this->importEdge(imported_edge);
+						}
 					}
+					// edge_import is deleted at the end of this scope
 				}
 
 				for(auto node : exported_nodes) {
 					setDistant(node);
 				}
 
-				location_manager.updateLocations();
-
 				FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...", "");
 				for(auto node : exported_nodes) {
 					clearNode(node);
 				}
+
 				FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.", "");
+
+
+				location_manager.updateLocations();
 
 				FPMAS_LOGI(getMpiCommunicator().getRank(), "DIST_GRAPH",
 						"End of distribution.", "");

@@ -72,9 +72,19 @@ namespace fpmas { namespace api { namespace communication {
 				}
 
 			/**
+			 * Frees the internal buffer.
+			 */
+			void free() {
+				std::free(buffer);
+				// A buffer of size 0 is assigned to prevent issues when
+				// std::free() is called again in the DataPack destructor.
+				buffer = std::malloc(0);
+			}
+
+			/**
 			 * Copy assignment.
 			 *
-			 * Frees `this` buffer, and moves `other`'s buffer into
+			 * Frees `this` buffer, and copies `other`'s buffer into
 			 * `this` buffer.
 			 *
 			 * @param other DataPack to copy from

@@ -83,8 +83,10 @@ Public Attributes</h2></td></tr>
 <tr class="separator:a0b510f71d6b149c21b1378051585e25e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a413ae9094bc5b3d38bd52aa5e0290673"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html#a413ae9094bc5b3d38bd52aa5e0290673">nodes</a></td></tr>
 <tr class="separator:a413ae9094bc5b3d38bd52aa5e0290673"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb3a1521e70ba0e92cf3762bac46fdfb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt; * &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html#acb3a1521e70ba0e92cf3762bac46fdfb">edges</a></td></tr>
-<tr class="separator:acb3a1521e70ba0e92cf3762bac46fdfb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a070f30f68f6176d4f179377ce5e95892"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt; * &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html#a070f30f68f6176d4f179377ce5e95892">target_nodes</a></td></tr>
+<tr class="separator:a070f30f68f6176d4f179377ce5e95892"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a028fbd66e642f6ee9f69b80a10f007ee"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; float &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html#a028fbd66e642f6ee9f69b80a10f007ee">edge_weights</a></td></tr>
+<tr class="separator:a028fbd66e642f6ee9f69b80a10f007ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
@@ -142,8 +144,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="acb3a1521e70ba0e92cf3762bac46fdfb" name="acb3a1521e70ba0e92cf3762bac46fdfb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acb3a1521e70ba0e92cf3762bac46fdfb">&#9670;&nbsp;</a></span>edges</h2>
+<a id="a070f30f68f6176d4f179377ce5e95892" name="a070f30f68f6176d4f179377ce5e95892"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a070f30f68f6176d4f179377ce5e95892">&#9670;&nbsp;</a></span>target_nodes</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -151,11 +153,30 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt;std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt;T&gt;*&gt; &gt; <a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html">fpmas::graph::zoltan::ZoltanData</a>&lt; T &gt;::edges</td>
+          <td class="memname">std::vector&lt;std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt;T&gt;*&gt; &gt; <a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html">fpmas::graph::zoltan::ZoltanData</a>&lt; T &gt;::target_nodes</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p >Edges buffer. (built by Zoltan query functions)</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacefpmas_1_1graph_1_1zoltan.html#a86a5f07e18ce5f952fffd692edb0fe9c">edge_list_multi_fn()</a> </dd></dl>
+
+</div>
+</div>
+<a id="a028fbd66e642f6ee9f69b80a10f007ee" name="a028fbd66e642f6ee9f69b80a10f007ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a028fbd66e642f6ee9f69b80a10f007ee">&#9670;&nbsp;</a></span>edge_weights</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::vector&lt;float&gt; &gt; <a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html">fpmas::graph::zoltan::ZoltanData</a>&lt; T &gt;::edge_weights</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p ><a class="el" href="classfpmas_1_1graph_1_1Edge.html">Edge</a> weights buffer. (built by Zoltan query functions)</p>
+<p >This buffer as exactly the same shape as edges.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacefpmas_1_1graph_1_1zoltan.html#a86a5f07e18ce5f952fffd692edb0fe9c">edge_list_multi_fn()</a> </dd></dl>
 
 </div>
