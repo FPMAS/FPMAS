@@ -103,13 +103,7 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * The \DistributedEdge must comply with the following requirements:
 			 * - dynamically allocated
-			 * - dynamically allocated source and target nodes. Those nodes
-			 *   must not be nodes of the graph: they will eventually be reused
-			 *   and inserted in the graph, or deleted.
-			 * - source and target nodes `getId()` and `location()` fields
-			 *   **must** be up to date. Any other field (including `data()`
-			 *   and `getWeight()`) are ignored, since they are managed by the
-			 *   \SyncMode.
+			 * - defined getTempSourceNode() and getTempTargetNode()
 			 *
 			 * Moreover, at least the source or the target node of the imported
 			 * edge must represent a \LOCAL node (since edges between two
@@ -123,21 +117,22 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * When source or target is \DISTANT, the corresponding node might
 			 * already be represented in the local graph instance. In that
-			 * case, the imported edge is linked to the existing representation. 
+			 * case, the imported edge is linked to the existing
+			 * representation, and the corresponding TemporaryNode is discarded
+			 * (without a call to the TemporaryNode::build() method).
 			 *
 			 * Else, if no \DISTANT representation of the node is available, a
 			 * \DISTANT representation is created into the local graph instance
-			 * and the edge is linked to this new \DISTANT node.
+			 * and the edge is linked to this new \DISTANT node, built using
+			 * the TemporaryNode::build() method.
 			 *
 			 * Notice that a \DISTANT representation of the imported edge might
 			 * already exist, notably if the two nodes are \LOCAL and at least
 			 * one of them was imported in the current distribute() operation.
-			 * In that case, the representation must be replaced by the
-			 * imported edge (in the Graph, and in the corresponding source and
-			 * target edge lists), to avoid edge duplication.
-			 * 
-			 * In any case, the edge is *inserted* into the graph, triggering
-			 * insert edge callbacks, as specified in Graph::insert(EdgeType*).
+			 * In that case, the imported edge can be discarded and the edge
+			 * already contained in the graph goes \LOCAL, without calling
+			 * insert edge callbacks. Source and target TemporaryNodes are also
+			 * be discarded.
 			 *
 			 * @param edge to import
 			 * @return inserted edge

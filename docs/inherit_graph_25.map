@@ -1,7 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html" title=" " alt="" coords="5,67,148,123"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1detail_1_1GridBuilder.html" title=" " alt="" coords="210,30,351,86"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1detail_1_1GridBuilder.html" title=" " alt="" coords="196,111,365,152"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1MooreGridBuilder.html" title=" " alt="" coords="413,5,623,47"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1VonNeumannGridBuilder.html" title=" " alt="" coords="425,71,611,112"/>
+<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1model_1_1Behavior.html" title=" " alt="" coords="5,129,140,171"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1Behavior.html" title=" " alt="" coords="209,5,369,47"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1BehaviorWithArgs.html" title=" " alt="" coords="196,71,383,112"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1DefaultBehavior.html" title=" " alt="" coords="188,137,391,163"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1IdleBehavior.html" title=" " alt="" coords="199,187,380,214"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1utils_1_1perf_1_1ProbeBehavior.html" title=" " alt="" coords="229,239,349,280"/>
 </map>

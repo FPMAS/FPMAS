@@ -8,6 +8,7 @@
 #include "mock_distributed_node.h"
 
 using fpmas::api::graph::LocationState;
+using ::testing::Invoke;
 
 template<typename T, template<typename> class Strictness>
 class MockDistributedEdge;
@@ -18,13 +19,36 @@ template<typename, template<typename> class>
 class MockDistributedNode;
 
 template<typename T>
+class MockTemporaryNode : public fpmas::api::graph::TemporaryNode<T> {
+	public:
+		MOCK_METHOD(fpmas::api::graph::DistributedId, getId, (), (const, override));
+		MOCK_METHOD(int, getLocation, (), (const, override));
+		MOCK_METHOD(fpmas::api::graph::DistributedNode<T>*, build, (), (override));
+		MOCK_METHOD(void, destructor, (), ());
+
+		~MockTemporaryNode() {
+			destructor();
+		}
+};
+
+template<typename T>
 class AbstractMockDistributedEdge : public fpmas::api::graph::DistributedEdge<T> {
 	public:
 	// Saved LocationState
 	LocationState _state = LocationState::LOCAL;
+	std::unique_ptr<fpmas::api::graph::TemporaryNode<T>> temp_src;
+	std::unique_ptr<fpmas::api::graph::TemporaryNode<T>> temp_tgt;
 
 	MOCK_METHOD(void, setState, (LocationState), (override));
 	MOCK_METHOD(LocationState, state, (), (const, override));
+	MOCK_METHOD(void, setTempSourceNode,
+			(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>), (override));
+	MOCK_METHOD(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>,
+			getTempSourceNode, (), (override));
+	MOCK_METHOD(void, setTempTargetNode,
+			(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>), (override));
+	MOCK_METHOD(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>,
+			getTempTargetNode, (), (override));
 
 	bool operator==(const AbstractMockDistributedEdge& other) const {
 		return this->id == other.id;
@@ -40,6 +64,28 @@ class AbstractMockDistributedEdge : public fpmas::api::graph::DistributedEdge<T>
 			.WillByDefault(SaveArg<0>(&_state));
 		ON_CALL(*this, state)
 			.WillByDefault(ReturnPointee(&_state));
+
+		ON_CALL(*this, setTempSourceNode)
+			.WillByDefault(Invoke([this] (
+							std::unique_ptr<fpmas::api::graph::TemporaryNode<T>> temp_node) {
+						this->temp_src = std::move(temp_node);
+						}
+						));
+		ON_CALL(*this, getTempSourceNode)
+			.WillByDefault(Invoke([this] ()  {
+						return std::move(temp_src);
+						}));
+
+		ON_CALL(*this, setTempTargetNode)
+			.WillByDefault(Invoke([this] (
+							std::unique_ptr<fpmas::api::graph::TemporaryNode<T>> temp_node) {
+						this->temp_tgt = std::move(temp_node);
+						}
+						));
+		ON_CALL(*this, getTempTargetNode)
+			.WillByDefault(Invoke([this] ()  {
+						return std::move(temp_tgt);
+						}));
 	}
 };
 

@@ -442,10 +442,15 @@ namespace fpmas { namespace graph {
 		template<DIST_GRAPH_PARAMS>
 			typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::EdgeType*
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::importEdge(EdgeType* edge) {
+				std::unique_ptr<api::graph::TemporaryNode<T>> temp_src
+					= edge->getTempSourceNode();
+				std::unique_ptr<api::graph::TemporaryNode<T>> temp_tgt
+					= edge->getTempTargetNode();
+
 				FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Importing edge %s (from %s to %s)...",
 						FPMAS_C_STR(edge->getId()),
-						FPMAS_C_STR(edge->getSourceNode()->getId()),
-						FPMAS_C_STR(edge->getTargetNode()->getId())
+						FPMAS_C_STR(temp_src->getId()),
+						FPMAS_C_STR(temp_tgt->getId())
 						);
 				// The input edge must be a dynamically allocated object, with temporary
 				// dynamically allocated nodes as source and target.
@@ -456,9 +461,9 @@ namespace fpmas { namespace graph {
 				if(this->getEdges().count(edge->getId())==0) {
 					// The edge does not belong to the graph : a new one must be built.
 
-					DistributedId src_id = edge->getSourceNode()->getId();
+					DistributedId src_id = temp_src->getId();
 					NodeType* src;
-					DistributedId tgt_id =  edge->getTargetNode()->getId();
+					DistributedId tgt_id =  temp_tgt->getId();
 					NodeType* tgt;
 
 					LocationState edgeLocationState = LocationState::LOCAL;
@@ -473,7 +478,7 @@ namespace fpmas { namespace graph {
 							edgeLocationState = LocationState::DISTANT;
 						}
 						// Deletes the temporary source node
-						delete edge->getSourceNode();
+						temp_src.reset();
 
 						// Links the temporary edge with the src contained in the graph
 						edge->setSourceNode(src);
@@ -486,7 +491,11 @@ namespace fpmas { namespace graph {
 
 						// Instead of building a new node, we re-use the temporary
 						// source node.
-						src = edge->getSourceNode();
+						src = temp_src->build();
+						temp_src.reset();
+
+						edge->setSourceNode(src);
+						src->linkOut(edge);
 						this->insert(src);
 						setDistant(src);
 						src->setMutex(sync_mode.buildMutex(src));
@@ -502,7 +511,7 @@ namespace fpmas { namespace graph {
 							edgeLocationState = LocationState::DISTANT;
 						}
 						// Deletes the temporary target node
-						delete edge->getTargetNode();
+						temp_tgt.reset();
 
 						// Links the temporary edge with the tgt contained in the graph
 						edge->setTargetNode(tgt);
@@ -515,7 +524,11 @@ namespace fpmas { namespace graph {
 
 						// Instead of building a new node, we re-use the temporary
 						// target node.
-						tgt = edge->getTargetNode();
+						tgt = temp_tgt->build();
+						temp_tgt.reset();
+
+						edge->setTargetNode(tgt);
+						tgt->linkIn(edge);
 						this->insert(tgt);
 						setDistant(tgt);
 						tgt->setMutex(sync_mode.buildMutex(tgt));
@@ -537,8 +550,7 @@ namespace fpmas { namespace graph {
 				}
 
 				// Completely deletes temporary items, nothing is re-used
-				delete edge->getSourceNode();
-				delete edge->getTargetNode();
+				// Temporary nodes are automatically deleted
 				delete edge;
 
 				return local_edge;
@@ -849,84 +861,120 @@ namespace nlohmann {
 	 *
 	 */
 	template<typename T>
-		struct adl_serializer<fpmas::api::graph::DistributedGraph<T>> {
+		class adl_serializer<fpmas::api::graph::DistributedGraph<T>> {
+			private:
+				typedef fpmas::api::graph::DistributedId DistributedId;
 
-			/**
-			 * \anchor nlohmann_adl_serializer_DistributedGraph_to_json
-			 *
-			 * Serializes `graph` to the json `j`.
-			 *
-			 * @param j json output
-			 * @param graph graph to serialize
-			 */
-			static void to_json(json& j, const fpmas::api::graph::DistributedGraph<T>& graph) {
-				for(auto node : graph.getNodes())
-					j["graph"]["nodes"].push_back({
-							NodePtrWrapper<T>(node.second),
-							node.second->location()
-							});
-				for(auto edge : graph.getEdges()) {
-					j["graph"]["edges"].push_back({
-							{"id", edge.first},
-							{"layer", edge.second->getLayer()},
-							{"weight", edge.second->getWeight()},
-							{"src", edge.second->getSourceNode()->getId()},
-							{"tgt", edge.second->getTargetNode()->getId()}
-							});
+				class NullTemporaryNode : public fpmas::api::graph::TemporaryNode<T> {
+					private:
+						DistributedId id;
+					public:
+						NullTemporaryNode(DistributedId id) : id(id) {
+						}
+
+						DistributedId getId() const override {
+							return id;
+						}
+
+						int getLocation() const override {
+							assert(false);
+							return -1;
+						}
+
+						fpmas::api::graph::DistributedNode<T>* build() override {
+							assert(false);
+							return nullptr;
+						}
+				};
+
+			public:
+
+				/**
+				 * \anchor nlohmann_adl_serializer_DistributedGraph_to_json
+				 *
+				 * Serializes `graph` to the json `j`.
+				 *
+				 * @param j json output
+				 * @param graph graph to serialize
+				 */
+				static void to_json(json& j, const fpmas::api::graph::DistributedGraph<T>& graph) {
+					for(auto node : graph.getNodes())
+						j["graph"]["nodes"].push_back({
+								NodePtrWrapper<T>(node.second),
+								node.second->location()
+								});
+					for(auto edge : graph.getEdges()) {
+						j["graph"]["edges"].push_back({
+								{"id", edge.first},
+								{"layer", edge.second->getLayer()},
+								{"weight", edge.second->getWeight()},
+								{"src", edge.second->getSourceNode()->getId()},
+								{"tgt", edge.second->getTargetNode()->getId()}
+								});
+					}
+					j["edge_id"] = graph.currentEdgeId();
+					j["node_id"] = graph.currentNodeId();
+					nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
+						::to_json(j["loc_manager"], graph.getLocationManager());
 				}
-				j["edge_id"] = graph.currentEdgeId();
-				j["node_id"] = graph.currentNodeId();
-				nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
-					::to_json(j["loc_manager"], graph.getLocationManager());
-			}
 
-			/**
-			 * \anchor nlohmann_adl_serializer_DistributedGraph_from_json
-			 *
-			 * Unserializes the json `j` into the specified `graph`.
-			 *
-			 * Nodes and edges read from the Json file are imported into the
-			 * `graph`, without altering the previous state of the input
-			 * `graph`. So, depending on the desired behavior, calling
-			 * `graph.clear()` might be required before loading data into it.
-			 *
-			 * @param j json input
-			 * @param graph output graph
-			 */
-			static void from_json(const json& j, fpmas::api::graph::DistributedGraph<T>& graph) {
-				auto j_graph = j["graph"];
-				for(auto j_node : j_graph["nodes"]) {
-					auto location = j_node[1].get<int>();
-					fpmas::api::graph::DistributedNode<T>* node = j_node[0].get<NodePtrWrapper<T>>();
-					if(location == graph.getMpiCommunicator().getRank())
-						node = graph.importNode(node);
-					else
-						node = graph.insertDistant(node);
+				/**
+				 * \anchor nlohmann_adl_serializer_DistributedGraph_from_json
+				 *
+				 * Unserializes the json `j` into the specified `graph`.
+				 *
+				 * Nodes and edges read from the Json file are imported into the
+				 * `graph`, without altering the previous state of the input
+				 * `graph`. So, depending on the desired behavior, calling
+				 * `graph.clear()` might be required before loading data into it.
+				 *
+				 * @param j json input
+				 * @param graph output graph
+				 */
+				static void from_json(const json& j, fpmas::api::graph::DistributedGraph<T>& graph) {
+					auto j_graph = j["graph"];
+					for(auto j_node : j_graph["nodes"]) {
+						auto location = j_node[1].get<int>();
+						fpmas::api::graph::DistributedNode<T>* node
+							= j_node[0].get<NodePtrWrapper<T>>();
+						if(location == graph.getMpiCommunicator().getRank())
+							node = graph.importNode(node);
+						else
+							node = graph.insertDistant(node);
 
-					node->setLocation(location);
+						node->setLocation(location);
+					}
+					for(auto j_edge : j_graph["edges"]) {
+						auto edge = new fpmas::graph::DistributedEdge<T>(
+								j_edge["id"].get<fpmas::graph::DistributedId>(),
+								j_edge["layer"].get<fpmas::graph::LayerId>()
+								);
+						edge->setWeight(j_edge["weight"].get<float>());
+						// Temp source and target are never used (expect for
+						// their ids) since source and target are necessarily
+						// contained in the graph (see previous step)
+						auto src_id = j_edge["src"].get<DistributedId>();
+						edge->setTempSourceNode(
+								std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
+									new NullTemporaryNode(src_id)
+									)
+								);
+						auto tgt_id = j_edge["tgt"].get<DistributedId>();
+						edge->setTempTargetNode(
+								std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
+									new NullTemporaryNode(tgt_id)
+									)
+								);
+						assert(graph.getNodes().count(src_id) > 0);
+						assert(graph.getNodes().count(tgt_id) > 0);
+						graph.importEdge(edge);
+					}
+					graph.setCurrentNodeId(j.at("node_id").get<DistributedId>());
+					graph.setCurrentEdgeId(j.at("edge_id").get<DistributedId>());
+
+					nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
+						::from_json(j["loc_manager"], graph.getLocationManager());
 				}
-				for(auto j_edge : j_graph["edges"]) {
-					auto edge = new fpmas::graph::DistributedEdge<T>(
-							j_edge["id"].get<fpmas::graph::DistributedId>(),
-							j_edge["layer"].get<fpmas::graph::LayerId>()
-							);
-					edge->setWeight(j_edge["weight"].get<float>());
-					auto src = new fpmas::graph::DistributedNode<T>(j_edge["src"].get<fpmas::graph::DistributedId>(), {});
-					edge->setSourceNode(src);
-					src->linkOut(edge);
-					auto tgt = new fpmas::graph::DistributedNode<T>(j_edge["tgt"].get<fpmas::graph::DistributedId>(), {});
-					edge->setTargetNode(tgt);
-					tgt->linkIn(edge);
-					assert(graph.getNodes().count(src->getId()) > 0);
-					assert(graph.getNodes().count(tgt->getId()) > 0);
-					graph.importEdge(edge);
-				}
-				graph.setCurrentNodeId(j.at("node_id").get<fpmas::graph::DistributedId>());
-				graph.setCurrentEdgeId(j.at("edge_id").get<fpmas::graph::DistributedId>());
-
-				nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
-					::from_json(j["loc_manager"], graph.getLocationManager());
-			}
 		};
 }
 #endif

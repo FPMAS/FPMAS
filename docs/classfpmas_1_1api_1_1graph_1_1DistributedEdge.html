@@ -100,6 +100,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a82477d497010f9398f2527234b745695"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28d4e5d75fe9352509fb8a7c978a9b9c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#a28d4e5d75fe9352509fb8a7c978a9b9c">setState</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LocationState</a> <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#a82477d497010f9398f2527234b745695">state</a>)=0</td></tr>
 <tr class="separator:a28d4e5d75fe9352509fb8a7c978a9b9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad0c4ff6227513a8511d6f140bfe3c350"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#ad0c4ff6227513a8511d6f140bfe3c350">setTempSourceNode</a> (std::unique_ptr&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1TemporaryNode.html">TemporaryNode</a>&lt; T &gt; &gt; temp_src)=0</td></tr>
+<tr class="separator:ad0c4ff6227513a8511d6f140bfe3c350"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4381deb44f1ac494bc9b7417f7f23ab0"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1TemporaryNode.html">TemporaryNode</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#a4381deb44f1ac494bc9b7417f7f23ab0">getTempSourceNode</a> ()=0</td></tr>
+<tr class="separator:a4381deb44f1ac494bc9b7417f7f23ab0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fb9a271a805d5c800ea92adb4191ec0"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#a9fb9a271a805d5c800ea92adb4191ec0">setTempTargetNode</a> (std::unique_ptr&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1TemporaryNode.html">TemporaryNode</a>&lt; T &gt; &gt; temp_tgt)=0</td></tr>
+<tr class="separator:a9fb9a271a805d5c800ea92adb4191ec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc70ddf2f03fa56cc0db3ce6238c61e1"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1TemporaryNode.html">TemporaryNode</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#afc70ddf2f03fa56cc0db3ce6238c61e1">getTempTargetNode</a> ()=0</td></tr>
+<tr class="separator:afc70ddf2f03fa56cc0db3ce6238c61e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classfpmas_1_1api_1_1graph_1_1Edge"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1api_1_1graph_1_1Edge')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html">fpmas::api::graph::Edge&lt; DistributedId, DistributedNode&lt; T &gt; &gt;</a></td></tr>
 <tr class="memitem:a01b45b55bdc925c460eb4533eca33deb inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Edge"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#ae249f585c331da506ef69af0a6407283">IdType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Edge.html#a01b45b55bdc925c460eb4533eca33deb">getId</a> () const=0</td></tr>
 <tr class="separator:a01b45b55bdc925c460eb4533eca33deb inherit pub_methods_classfpmas_1_1api_1_1graph_1_1Edge"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -206,6 +214,159 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html#a5d6b6f1a4e789666e2f4417fbc7830d2">fpmas::graph::DistributedEdge&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ad0c4ff6227513a8511d6f140bfe3c350" name="ad0c4ff6227513a8511d6f140bfe3c350"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad0c4ff6227513a8511d6f140bfe3c350">&#9670;&nbsp;</a></span>setTempSourceNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt;::setTempSourceNode </td>
+          <td>(</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1TemporaryNode.html">TemporaryNode</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramname"><em>temp_src</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sets the temporary source node of this <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>.</p>
+<p >The <code>temp_src</code> unique_ptr is <em>moved</em> internally so that the current <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> instance takes ownership of it.</p>
+<p >This unique_ptr instance can be retrieve from <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#a4381deb44f1ac494bc9b7417f7f23ab0">getTempSourceNode()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">temp_src</td><td>pointer to temporary source node </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html#a96927b79dc451abe2a02ba293920c2f4">fpmas::graph::DistributedEdge&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a4381deb44f1ac494bc9b7417f7f23ab0" name="a4381deb44f1ac494bc9b7417f7f23ab0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4381deb44f1ac494bc9b7417f7f23ab0">&#9670;&nbsp;</a></span>getTempSourceNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::unique_ptr&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1TemporaryNode.html">TemporaryNode</a>&lt; T &gt; &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt;::getTempSourceNode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Gets the current temporary source node attached to this <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>.</p>
+<p >The caller takes ownership of the unique_ptr, leaving the current temporary source node in a null state.</p>
+<dl class="section warning"><dt>Warning</dt><dd>Ownership of temporary nodes should be manages carefully. Indeed, the following example would produce a segmentation fault, since the unique_ptr would be deleted at the first <code><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#a4381deb44f1ac494bc9b7417f7f23ab0">getTempSourceNode()</a></code> call: <div class="fragment"><div class="line"><span class="keyword">auto</span> <span class="keywordtype">id</span> = edge-&gt;getTempSourceNode()-&gt;getId();</div>
+<div class="line"><span class="keyword">auto</span> edge = edge-&gt;getTempSourceNode()-&gt;build();</div>
+</div><!-- fragment --></dd></dl>
+<p>However, the following is valid: </p><div class="fragment"><div class="line"><span class="comment">// Takes ownership of the temporary node</span></div>
+<div class="line">{</div>
+<div class="line">    <span class="keyword">auto</span> temp_node = edge-&gt;getTempSourceNode();</div>
+<div class="line">    <span class="keyword">auto</span> <span class="keywordtype">id</span> = temp_node-&gt;getId();</div>
+<div class="line">    <span class="keyword">auto</span> node = temp_node-&gt;build();</div>
+<div class="line">    <span class="comment">// temp_node automatically deleted at the end of the scope</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><dl class="section return"><dt>Returns</dt><dd>current temporary source node. Might be null. </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html#a760674290641574edbb3bd48370ca0bc">fpmas::graph::DistributedEdge&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a9fb9a271a805d5c800ea92adb4191ec0" name="a9fb9a271a805d5c800ea92adb4191ec0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fb9a271a805d5c800ea92adb4191ec0">&#9670;&nbsp;</a></span>setTempTargetNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt;::setTempTargetNode </td>
+          <td>(</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1TemporaryNode.html">TemporaryNode</a>&lt; T &gt; &gt;&#160;</td>
+          <td class="paramname"><em>temp_tgt</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sets the temporary target node of this <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>.</p>
+<p >The <code>temp_tgt</code> unique_ptr is <em>moved</em> internally so that the current <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> instance takes ownership of it.</p>
+<p >This unique_ptr instance can be retrieve from <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#afc70ddf2f03fa56cc0db3ce6238c61e1">getTempTargetNode()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">temp_tgt</td><td>pointer to temporary target node </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html#a1b1501b6e5523cfb94ee78343e6af5ab">fpmas::graph::DistributedEdge&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="afc70ddf2f03fa56cc0db3ce6238c61e1" name="afc70ddf2f03fa56cc0db3ce6238c61e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc70ddf2f03fa56cc0db3ce6238c61e1">&#9670;&nbsp;</a></span>getTempTargetNode()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::unique_ptr&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1TemporaryNode.html">TemporaryNode</a>&lt; T &gt; &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">fpmas::api::graph::DistributedEdge</a>&lt; T &gt;::getTempTargetNode </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Gets the current temporary target node attached to this <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>.</p>
+<p >The caller takes ownership of the unique_ptr, leaving the current temporary target node in a null state.</p>
+<dl class="section warning"><dt>Warning</dt><dd>See <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html#a4381deb44f1ac494bc9b7417f7f23ab0">getTempSourceNode()</a>.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>current temporary target node. Might be null. </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1DistributedEdge.html#a1fbc9bbffbc44b4d94b4571d89fcef43">fpmas::graph::DistributedEdge&lt; T &gt;</a>.</p>
 
 </div>
 </div>

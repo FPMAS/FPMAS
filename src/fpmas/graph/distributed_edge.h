@@ -25,6 +25,8 @@ namespace fpmas { namespace graph {
 
 				private:
 					LocationState _state = LocationState::LOCAL;
+					std::unique_ptr<api::graph::TemporaryNode<T>> temp_src;
+					std::unique_ptr<api::graph::TemporaryNode<T>> temp_tgt;
 
 				public:
 					using typename graph::Edge<DistributedId, api::graph::DistributedNode<T>>::IdType;
@@ -40,8 +42,74 @@ namespace fpmas { namespace graph {
 
 					api::graph::LocationState state() const override {return _state;}
 					void setState(api::graph::LocationState state) override {this->_state = state;}
+
+					void setTempSourceNode(
+							std::unique_ptr<fpmas::api::graph::TemporaryNode<T>> temp_src
+							) override {
+						this->temp_src = std::move(temp_src);
+					}
+					std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>
+						getTempSourceNode() override {
+						return std::move(temp_src);
+					};
+					void setTempTargetNode(
+							std::unique_ptr<fpmas::api::graph::TemporaryNode<T>> temp_tgt
+							) override {
+						this->temp_tgt = std::move(temp_tgt);
+					}
+					std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>
+						getTempTargetNode() override {
+						return std::move(temp_tgt);
+					}
+
 			};
 
+	/**
+	 * nlohmann::json based TemporaryNode implementation.
+	 *
+	 * The json representing the node is stored within the class.
+	 * If build() is called, a new node is allocated from the deserialized
+	 * json.
+	 *
+	 * @tparam T node data type
+	 * @tparam JsonType json type, that defines deserialization rules (e.g.: `nlohmann::json` or `fpmas::io::json::light_json`)
+	 */
+	template<typename T, typename JsonType>
+		class JsonTemporaryNode : public api::graph::TemporaryNode<T> {
+			private:
+				JsonType j;
+				DistributedId id;
+				int location;
+
+			public:
+				/**
+				 * JsonTemporaryNode constructor.
+				 * 
+				 * The provided json instance is
+				 * [forwarded](https://en.cppreference.com/w/cpp/utility/forward)
+				 * to the internal json instance.
+				 */
+				template<typename _JsonType>
+					JsonTemporaryNode(_JsonType&& j) :
+						j(std::forward<_JsonType>(j)),
+						id(this->j[0].at("id").template get<DistributedId>()),
+						location(this->j[1].template get<int>()) {
+						}
+
+				DistributedId getId() const override {
+					return id;
+				}
+
+				int getLocation() const override {
+					return location;
+				}
+
+				api::graph::DistributedNode<T>* build() override {
+					NodePtrWrapper<T> node = j[0].template get<NodePtrWrapper<T>>();
+					node->setLocation(location);
+					return node;
+				}
+		};
 
 	/**
 	 * Alias for a DistributedEdge PtrWrapper
@@ -112,16 +180,29 @@ namespace nlohmann {
 				};
 				edge->setWeight(j.at("weight").template get<float>());
 
-				NodePtrWrapper<T> src = j.at("src")[0].template get<NodePtrWrapper<T>>();
-				src->setLocation(j.at("src")[1].template get<int>());
-				edge->setSourceNode(src);
-				src->linkOut(edge);
+				edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
+						new fpmas::graph::JsonTemporaryNode<T, JsonType>(
+							std::move(j.at("src"))
+							)
+						));
+				//NodePtrWrapper<T> src = j.at("src")[0].template get<NodePtrWrapper<T>>();
+				//src->setLocation(j.at("src")[1].template get<int>());
+				//edge->setSourceNode(src);
+				//src->linkOut(edge);
 
-				NodePtrWrapper<T> tgt = j.at("tgt")[0].template get<NodePtrWrapper<T>>();
-				tgt->setLocation(j.at("tgt")[1].template get<int>());
+				edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
+						new fpmas::graph::JsonTemporaryNode<T, JsonType>(
+							std::move(j.at("tgt"))
+							)
+						));
 
-				edge->setTargetNode(tgt);
-				tgt->linkIn(edge);
+/*
+ *                NodePtrWrapper<T> tgt = j.at("tgt")[0].template get<NodePtrWrapper<T>>();
+ *                tgt->setLocation(j.at("tgt")[1].template get<int>());
+ *
+ *                edge->setTargetNode(tgt);
+ *                tgt->linkIn(edge);
+ */
 				edge_ptr = {edge};
 			}
 		};

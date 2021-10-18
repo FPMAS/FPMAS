@@ -617,13 +617,15 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
  */
 class DistributedGraphImportEdgeTest : public DistributedGraphImportNodeTest {
 	protected:
+		MockTemporaryNode<int>* mock_temp_src;
 		NodeType* src;
+
+		MockTemporaryNode<int>* mock_temp_tgt;
 		NodeType* tgt;
-		MockNode* mock_src;
-		MockNode* mock_tgt;
+
+		MockEdge* mock_edge;
 
 		EdgeType* imported_edge;
-		MockEdge* mock_edge;
 
 	void SetUp() override {
 		DistributedGraphImportNodeTest::SetUp();
@@ -634,23 +636,35 @@ class DistributedGraphImportEdgeTest : public DistributedGraphImportNodeTest {
 		src = graph.buildNode();
 		tgt = graph.buildNode();
 
-		mock_src = new MockNode(src->getId());
-		mock_tgt = new MockNode(tgt->getId());
 		mock_edge = new MockEdge(
 					DistributedId(3, 12),
 					2, // layer
 					2.6 // weight
 					);
-		mock_edge->src = mock_src;
-		mock_edge->tgt = mock_tgt;
+		mock_temp_src = new NiceMock<MockTemporaryNode<int>>;
+		ON_CALL(*mock_temp_src, getId)
+			.WillByDefault(Return(src->getId()));
+		mock_edge->temp_src
+			= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_src);
+
+		mock_temp_tgt = new NiceMock<MockTemporaryNode<int>>;
+		ON_CALL(*mock_temp_tgt, getId)
+			.WillByDefault(Return(tgt->getId()));
+		mock_edge->temp_tgt
+			= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_tgt);
 
 		// Mock to serialize and import from proc 1 (not yet in the graph)
 		imported_edge_mocks[1].push_back(mock_edge);
 
-		EXPECT_CALL(*static_cast<MockNode*>(src), linkOut(_));
-		EXPECT_CALL(*static_cast<MockNode*>(src), unlinkOut(_));
-		EXPECT_CALL(*static_cast<MockNode*>(tgt), linkIn(_));
-		EXPECT_CALL(*static_cast<MockNode*>(tgt), unlinkIn(_));
+		// In this test suite, the two nodes are not used by the importEdge
+		// operation
+		EXPECT_CALL(*mock_temp_src, build)
+			.Times(0);
+		EXPECT_CALL(*mock_temp_src, destructor);
+
+		EXPECT_CALL(*mock_temp_tgt, build)
+			.Times(0);
+		EXPECT_CALL(*mock_temp_tgt, destructor);
 	}
 
 	void checkEdgeStructure(DistributedId id = DistributedId(3, 12)) {
@@ -708,7 +722,8 @@ TEST_F(DistributedGraphImportEdgeTest, import_local_edge) {
  * Import with DISTANT src
  */
 TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_src) {
-	EXPECT_CALL(*static_cast<MockNode*>(src), state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(*static_cast<MockNode*>(src), state)
+		.WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(location_manager, updateLocations());
 
 	distributeTest();
@@ -720,7 +735,8 @@ TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_src) {
  * Import with DISTANT tgt
  */
 TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_tgt) {
-	EXPECT_CALL(*static_cast<MockNode*>(tgt), state).WillRepeatedly(Return(LocationState::DISTANT));
+	EXPECT_CALL(*static_cast<MockNode*>(tgt), state)
+		.WillRepeatedly(Return(LocationState::DISTANT));
 	EXPECT_CALL(location_manager, updateLocations());
 
 	distributeTest();
@@ -746,8 +762,26 @@ TEST_F(DistributedGraphImportEdgeTest, import_edge_with_existing_distant_tgt) {
 TEST_F(DistributedGraphImportEdgeTest, double_import_edge_case) {
 	auto mock = new MockEdge(DistributedId(3, 12), 2, 2.6);
 
-	mock->src = new MockNode(src->getId());
-	mock->tgt = new MockNode(tgt->getId());
+	MockTemporaryNode<int>* mock_temp_src = new NiceMock<MockTemporaryNode<int>>;
+	ON_CALL(*mock_temp_src, getId)
+		.WillByDefault(Return(src->getId()));
+	EXPECT_CALL(*mock_temp_src, destructor);
+
+	MockTemporaryNode<int>* mock_temp_tgt = new NiceMock<MockTemporaryNode<int>>;
+	ON_CALL(*mock_temp_tgt, getId)
+		.WillByDefault(Return(tgt->getId()));
+	EXPECT_CALL(*mock_temp_tgt, destructor);
+
+	// The second edge's nodes is not used
+	EXPECT_CALL(*mock_temp_src, build)
+		.Times(0);
+	EXPECT_CALL(*mock_temp_tgt, build)
+		.Times(0);
+
+	mock->temp_src
+		= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_src);
+	mock->temp_tgt
+		= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_tgt);
 
 	// The same edge is imported from proc 2
 	imported_edge_mocks[2].push_back(mock);
@@ -771,7 +805,9 @@ TEST_F(DistributedGraphImportEdgeTest, double_import_edge_case) {
 class DistributedGraphImportEdgeWithGhostTest : public DistributedGraphImportNodeTest {
 	protected:
 		NodeType* local_node;
+		MockTemporaryNode<int>* mock_temp_one;
 		MockNode* mock_one;
+		MockTemporaryNode<int>* mock_temp_two;
 		MockNode* mock_two;
 
 		EdgeType* importedEdge;
@@ -784,11 +820,34 @@ class DistributedGraphImportEdgeWithGhostTest : public DistributedGraphImportNod
 			EXPECT_CALL(location_manager, setLocal);
 			local_node = graph.buildNode();
 
+			mock_temp_one = new NiceMock<MockTemporaryNode<int>>;
 			mock_one = new MockNode(local_node->getId());
+			ON_CALL(*mock_temp_one, getId)
+				.WillByDefault(Return(local_node->getId()));
+			// Arbitrary location, different from current rank
+			ON_CALL(*mock_temp_one, getLocation)
+				.WillByDefault(Return(CURRENT_RANK-1));
+
+			mock_temp_two = new NiceMock<MockTemporaryNode<int>>;
 			mock_two = new MockNode(DistributedId(8, 16));
+			ON_CALL(*mock_temp_two, getId)
+				.WillByDefault(Return(DistributedId(8, 16)));
+			// Arbitrary location, different from current rank
+			ON_CALL(*mock_temp_two, getLocation)
+				.WillByDefault(Return(CURRENT_RANK+1));
 
 			// This node is not contained is the graph, but will be linked.
 			ASSERT_EQ(graph.getNodes().count(mock_two->getId()), 0);
+
+			// This node is unused in the importEdge operation
+			EXPECT_CALL(*mock_temp_one, build)
+				.Times(0);
+			EXPECT_CALL(*mock_temp_one, destructor)
+				.WillOnce([this] () {delete mock_one;});
+			// This node is inserted in the graph, that takes ownership
+			EXPECT_CALL(*mock_temp_two, build)
+				.WillOnce(Return(mock_two));
+			EXPECT_CALL(*mock_temp_two, destructor);
 
 			// SetUp should be call once for the created tgt or src
 			EXPECT_CALL(graph.getSyncMode(), buildMutex);
@@ -818,8 +877,10 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_tgt) {
 					2.6 // weight
 					);
 
-	mock->src = mock_one;
-	mock->tgt = mock_two; // This node is not yet contained in the graph
+	mock->temp_src
+		= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_one);
+	mock->temp_tgt // This node is not yet contained in the graph
+		= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_two);
 
 	// Mock to serialize and import from proc 1 (not yet in the graph)
 	imported_edge_mocks[1].push_back(mock);
@@ -871,8 +932,10 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_src) {
 					2.6 // weight
 					);
 
-	mock->src = mock_two; // This node is not yet contained in the graph
-	mock->tgt = mock_one;
+	mock->temp_src // This node is not yet contained in the graph
+		= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_two);
+	mock->temp_tgt
+		= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_one);
 
 	// Mock to serialize and import from proc 1 (not yet in the graph)
 	imported_edge_mocks[1].push_back(mock);
@@ -1151,7 +1214,7 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 /****************************/
 /* distribute_test_with_edge */
 /****************************/
-class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistributeTest {
+class DistributedGraphDistributeWithEdgeTest : public DistributedGraphDistributeTest {
 	protected:
 		typedef std::vector<fpmas::api::graph::DistributedEdge<int>*> EdgeList;
 
@@ -1167,7 +1230,7 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 		void SetUp() override {
 			DistributedGraphDistributeTest::SetUp();
 
-			// No lock to manage, all links are local
+			// No lock to manage, all edges are local
 			MockMutex<int> mock_mutex;
 			EXPECT_CALL(mock_mutex, lockShared).Times(AnyNumber());
 			EXPECT_CALL(mock_mutex, unlockShared).Times(AnyNumber());
@@ -1232,7 +1295,7 @@ class DistributedGraphDistributeWithLinkTest : public DistributedGraphDistribute
 /*
  * Distribute nodes + edges
  */
-TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
+TEST_F(DistributedGraphDistributeWithEdgeTest, distribute_with_edge_test) {
 	auto export_node_map_matcher = UnorderedElementsAre(
 			Pair(0, UnorderedElementsAre(
 					graph.getNode(node_ids[3]),
@@ -1257,9 +1320,23 @@ TEST_F(DistributedGraphDistributeWithLinkTest, distribute_with_link_test) {
 		{3, {edge}}
 	};
 	auto mock_src = new MockNode(DistributedId(4, 8));
+	auto mock_temp_src = new NiceMock<MockTemporaryNode<int>>;
+	ON_CALL(*mock_temp_src, getId)
+		.WillByDefault(Return(DistributedId(4, 8)));
+	EXPECT_CALL(*mock_temp_src, build)
+		.WillOnce(Return(mock_src));
+
 	auto mock_tgt = new MockNode(DistributedId(3, 2));
-	edge->src = mock_src;
-	edge->tgt = mock_tgt;
+	auto mock_temp_tgt = new NiceMock<MockTemporaryNode<int>>;
+	ON_CALL(*mock_temp_tgt, getId)
+		.WillByDefault(Return(DistributedId(3, 2)));
+	EXPECT_CALL(*mock_temp_tgt, build)
+		.WillOnce(Return(mock_tgt));
+
+	edge->temp_src
+		= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_src);
+	edge->temp_tgt
+		= std::unique_ptr<fpmas::api::graph::TemporaryNode<int>>(mock_temp_tgt);
 	EXPECT_CALL(*mock_src, unlinkOut);
 	EXPECT_CALL(*mock_tgt, unlinkIn);
 

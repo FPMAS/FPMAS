@@ -85,13 +85,23 @@ TEST(light_json, distributed_edge) {
 	edge_ptr = light_json.get<decltype(edge_ptr)>();
 	ASSERT_EQ(edge_ptr->getId(), edge.getId());
 	ASSERT_FLOAT_EQ(edge_ptr->getWeight(), edge.getWeight());
-	ASSERT_EQ(edge_ptr->getSourceNode()->getId(), src.getId());
-	ASSERT_EQ(edge_ptr->getSourceNode()->location(), 3);
-	ASSERT_EQ(edge_ptr->getTargetNode()->getId(), tgt.getId());
-	ASSERT_EQ(edge_ptr->getTargetNode()->location(), 22);
 
-	delete edge_ptr->getSourceNode();
-	delete edge_ptr->getTargetNode();
+	auto temp_src = edge_ptr->getTempSourceNode();
+	ASSERT_EQ(temp_src->getId(), src.getId());
+	ASSERT_EQ(temp_src->getLocation(), 3);
+	auto built_src = temp_src->build();
+	ASSERT_EQ(built_src->getId(), src.getId());
+	ASSERT_EQ(built_src->location(), 3);
+
+	auto temp_tgt = edge_ptr->getTempTargetNode();
+	ASSERT_EQ(temp_tgt->getId(), tgt.getId());
+	ASSERT_EQ(temp_tgt->getLocation(), 22);
+	auto built_tgt = temp_tgt->build();
+	ASSERT_EQ(built_tgt->getId(), tgt.getId());
+	ASSERT_EQ(built_tgt->location(), 22);
+
+	delete built_src;
+	delete built_tgt;
 	delete edge_ptr.get();
 }
 

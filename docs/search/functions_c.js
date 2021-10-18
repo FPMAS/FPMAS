@@ -15,6 +15,6 @@ var searchData=
   ['mutex_12',['mutex',['../classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a635a02473f0ae0a1b1351dabbc61e624',1,'fpmas::api::graph::DistributedNode::mutex()=0'],['../classfpmas_1_1api_1_1graph_1_1DistributedNode.html#a1f8212c4c68591f0c130a3dc9f593431',1,'fpmas::api::graph::DistributedNode::mutex() const =0'],['../classfpmas_1_1graph_1_1DistributedNode.html#ac3b25c0d4d4fad765057b13e8a6cc719',1,'fpmas::graph::DistributedNode::mutex() override'],['../classfpmas_1_1graph_1_1DistributedNode.html#aa49688350868688a334d24177afae83d',1,'fpmas::graph::DistributedNode::mutex() const override']]],
   ['mutexclient_13',['MutexClient',['../classfpmas_1_1synchro_1_1hard_1_1MutexClient.html#a7aaf2df0eb269e18cc227c1212780dd7',1,'fpmas::synchro::hard::MutexClient']]],
   ['mutexrequest_14',['MutexRequest',['../structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html#aeb6be710b3dd255c41603e1c761560d7',1,'fpmas::synchro::hard::api::MutexRequest']]],
-  ['mutexserver_15',['mutexServer',['../classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a7dabc9a1ec880afe3cb72cde1be08b16',1,'fpmas::synchro::hard::ServerPack']]],
-  ['mutexserver_16',['MutexServer',['../classfpmas_1_1synchro_1_1hard_1_1MutexServer.html#a6d4e91b0ef7d55e6867a24e1685e8b98',1,'fpmas::synchro::hard::MutexServer']]]
+  ['mutexserver_15',['MutexServer',['../classfpmas_1_1synchro_1_1hard_1_1MutexServer.html#a6d4e91b0ef7d55e6867a24e1685e8b98',1,'fpmas::synchro::hard::MutexServer']]],
+  ['mutexserver_16',['mutexServer',['../classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a7dabc9a1ec880afe3cb72cde1be08b16',1,'fpmas::synchro::hard::ServerPack']]]
 ];
