@@ -87,6 +87,9 @@ Functions</h2></td></tr>
 <tr class="separator:a1f1f85ebf5a206d380910c9becb6613b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a05b68727c104f62f3c2f516b949a3e54"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph_1_1zoltan.html#a05b68727c104f62f3c2f516b949a3e54">write_zoltan_id</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id, ZOLTAN_ID_PTR global_ids)</td></tr>
 <tr class="separator:a05b68727c104f62f3c2f516b949a3e54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a199c4d9156256bb36f01f4a697f73ce2"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a199c4d9156256bb36f01f4a697f73ce2"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph_1_1zoltan.html#a199c4d9156256bb36f01f4a697f73ce2">obj_size</a> (void *data, int num_gid_entries, int, int num_ids, ZOLTAN_ID_PTR global_ids, ZOLTAN_ID_PTR, int *sizes, int *)</td></tr>
+<tr class="separator:a199c4d9156256bb36f01f4a697f73ce2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4622954269c2bc2645ac99eaaa54edbd"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a4622954269c2bc2645ac99eaaa54edbd"><td class="memTemplItemLeft" align="right" valign="top">int&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph_1_1zoltan.html#a4622954269c2bc2645ac99eaaa54edbd">num_obj</a> (void *data, int *)</td></tr>
 <tr class="separator:a4622954269c2bc2645ac99eaaa54edbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -202,6 +205,84 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a199c4d9156256bb36f01f4a697f73ce2" name="a199c4d9156256bb36f01f4a697f73ce2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a199c4d9156256bb36f01f4a697f73ce2">&#9670;&nbsp;</a></span>obj_size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void fpmas::graph::zoltan::obj_size </td>
+          <td>(</td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_gid_entries</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>num_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname"><em>global_ids</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">ZOLTAN_ID_PTR&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>sizes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Evaluates the migration cost of nodes represented by <code>global_ids</code>.</p>
+<p >Currently, the migration cost is computed as <code>1+n_edges</code>, where <code>n_edges</code> is the count of incoming and outgoing edges from the node. This cost thus represent the amount of items to migrate if the node is assigned to an other process.</p>
+<p >For more information about this function, see the <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_query_mig.html#ZOLTAN_OBJ_SIZE_MULTI_FN">Zoltan documentation</a>. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>user data (<a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html">ZoltanData</a>) </td></tr>
+    <tr><td class="paramname">num_gid_entries</td><td>number of entries used to describe global ids </td></tr>
+    <tr><td class="paramname">num_ids</td><td>number of objects IDs in global_ids </td></tr>
+    <tr><td class="paramname">global_ids</td><td>node ids </td></tr>
+    <tr><td class="paramname">sizes</td><td>migration costs of nodes in <code>global_ids</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a4622954269c2bc2645ac99eaaa54edbd" name="a4622954269c2bc2645ac99eaaa54edbd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4622954269c2bc2645ac99eaaa54edbd">&#9670;&nbsp;</a></span>num_obj()</h2>
 
@@ -233,7 +314,7 @@ template&lt;typename T &gt; </div>
 <p >For more information about this function, see the <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_OBJ_FN">Zoltan documentation</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>user data (current NodeMap) </td></tr>
+    <tr><td class="paramname">data</td><td>user data (<a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html">ZoltanData</a>) </td></tr>
   </table>
   </dd>
 </dl>
@@ -308,7 +389,7 @@ template&lt;typename T &gt; </div>
 <p >For more information about this function, see the <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_OBJ_LIST_FN">Zoltan documentation</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>user data (current NodeMap) </td></tr>
+    <tr><td class="paramname">data</td><td>user data (<a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html">ZoltanData</a>) </td></tr>
     <tr><td class="paramname">num_gid_entries</td><td>number of entries used to describe global ids </td></tr>
     <tr><td class="paramname">global_ids</td><td>output : global ids assigned to processor </td></tr>
     <tr><td class="paramname">obj_wgts</td><td>output : weights list </td></tr>
@@ -385,7 +466,7 @@ template&lt;typename T &gt; </div>
 <p >For more information about this function, see the <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN">Zoltan documentation</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>user data (current NodeMap) </td></tr>
+    <tr><td class="paramname">data</td><td>user data (<a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html">ZoltanData</a>) </td></tr>
     <tr><td class="paramname">num_obj</td><td>number of objects IDs in global_ids </td></tr>
     <tr><td class="paramname">num_edges</td><td>output : number of outgoing edge for each node </td></tr>
   </table>
@@ -485,7 +566,7 @@ template&lt;typename T &gt; </div>
 <p >For more information about this function, see the <a href="https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN">Zoltan documentation</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">data</td><td>user data (current NodeMap) </td></tr>
+    <tr><td class="paramname">data</td><td>user data (<a class="el" href="structfpmas_1_1graph_1_1zoltan_1_1ZoltanData.html">ZoltanData</a>) </td></tr>
     <tr><td class="paramname">num_gid_entries</td><td>number of entries used to describe global ids </td></tr>
     <tr><td class="paramname">num_obj</td><td>number of objects IDs in global_ids </td></tr>
     <tr><td class="paramname">nbor_global_id</td><td>output : neighbor ids for each node </td></tr>

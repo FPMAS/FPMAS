@@ -140,6 +140,43 @@ namespace fpmas { namespace graph {
 		void write_zoltan_id(DistributedId id, ZOLTAN_ID_PTR global_ids);
 
 		/**
+		 * Evaluates the migration cost of nodes represented by `global_ids`.
+		 *
+		 * Currently, the migration cost is computed as `1+n_edges`, where
+		 * `n_edges` is the count of incoming and outgoing edges from the node.
+		 * This cost thus represent the amount of items to migrate if the node
+		 * is assigned to an other process.
+		 *
+		 * For more information about this function, see the [Zoltan
+		 * documentation](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_query_mig.html#ZOLTAN_OBJ_SIZE_MULTI_FN).
+		 * @param data user data (ZoltanData)
+		 * @param num_gid_entries number of entries used to describe global ids
+		 * @param num_ids number of objects IDs in global_ids
+		 * @param global_ids node ids
+		 * @param sizes migration costs of nodes in `global_ids`
+		 */
+		template<typename T> void obj_size(
+				void* data,
+				int num_gid_entries,
+				int, // num_lid_entries (unused)
+				int num_ids,
+				ZOLTAN_ID_PTR global_ids,
+				ZOLTAN_ID_PTR, // local_ids (unused)
+				int* sizes,
+				int* // ierr (unused)
+				) {
+			ZoltanData<T>* z_data = (ZoltanData<T>*) data;
+			for(int i = 0; i < num_ids; i++) {
+				int size = 1;
+				DistributedId id = zoltan::read_zoltan_id(&global_ids[i*num_gid_entries]);
+				api::graph::DistributedNode<T>* node = z_data->node_map[id];
+				size += node->getOutgoingEdges().size();
+				size += node->getIncomingEdges().size();
+				sizes[i] = size;
+			}
+		}
+
+		/**
 		 * Returns the number of nodes currently managed by the current processor
 		 * (i.e. the number of nodes contained in the local DistributedGraphBase
 		 * instance).
@@ -147,7 +184,7 @@ namespace fpmas { namespace graph {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_OBJ_FN).
 		 *
-		 * @param data user data (current NodeMap)
+		 * @param data user data (ZoltanData)
 		 * @return number of nodes managed by the current process
 		 */
 		template<typename T> int num_obj(void *data, int*) {
@@ -161,7 +198,7 @@ namespace fpmas { namespace graph {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_OBJ_LIST_FN).
 		 *
-		 * @param data user data (current NodeMap)
+		 * @param data user data (ZoltanData)
 		 * @param num_gid_entries number of entries used to describe global ids
 		 * @param global_ids output : global ids assigned to processor
 		 * @param obj_wgts output : weights list
@@ -191,7 +228,7 @@ namespace fpmas { namespace graph {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
 		 *
-		 * @param data user data (current NodeMap)
+		 * @param data user data (ZoltanData)
 		 * @param num_obj number of objects IDs in global_ids
 		 * @param num_edges output : number of outgoing edge for each node
 		 */
@@ -288,7 +325,7 @@ namespace fpmas { namespace graph {
 		 * For more information about this function, see the [Zoltan
 		 * documentation](https://cs.sandia.gov/Zoltan/ug_html/ug_query_lb.html#ZOLTAN_NUM_EDGES_MULTI_FN).
 		 *
-		 * @param data user data (current NodeMap)
+		 * @param data user data (ZoltanData)
 		 * @param num_gid_entries number of entries used to describe global ids
 		 * @param num_obj number of objects IDs in global_ids
 		 * @param nbor_global_id output : neighbor ids for each node
@@ -404,7 +441,7 @@ namespace fpmas { namespace graph {
 				// Edge export procs buffer.
 				int* export_edges_procs;
 
-				void setUpZoltan();
+				void setUpZoltan(int lb_period);
 
 				zoltan::ZoltanData<T> zoltan_data;
 				PartitionMap fixed_vertices;
@@ -416,11 +453,32 @@ namespace fpmas { namespace graph {
 				/**
 				 * ZoltanLoadBalancing constructor.
 				 *
+				 * A default lb_period of 100, what corresponds to the default
+				 * Zoltan
+				 * [PHG_REPART_MULTIPLIER](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html)
+				 * value.
+				 *
 				 * @param comm MpiCommunicator implementation
 				 */
 				ZoltanLoadBalancing(communication::MpiCommunicatorBase& comm)
+					: ZoltanLoadBalancing(comm, 100) {
+					}
+
+				/**
+				 * ZoltanLoadBalancing constructor.
+				 *
+				 * `lb_period` is used as the Zoltan
+				 * [PHG_REPART_MULTIPLIER](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html)
+				 * value.
+				 *
+				 * @param comm MpiCommunicator implementation
+				 * @param lb_period Number of iterations between each load
+				 * balancing (used as a Zoltan algorithm parameter, does not
+				 * need to correspond to the actual load balancing period)
+				 */
+				ZoltanLoadBalancing(communication::MpiCommunicatorBase& comm, int lb_period)
 					: zoltan(comm.getMpiComm()), comm(comm), id_mpi(comm) {
-						setUpZoltan();
+						setUpZoltan(lb_period);
 					}
 
 				PartitionMap balance(
@@ -569,10 +627,13 @@ namespace fpmas { namespace graph {
 	/*
 	 * Initializes zoltan parameters and zoltan lb query functions.
 	 */
-	template<typename T> void ZoltanLoadBalancing<T>::setUpZoltan() {
+	template<typename T> void ZoltanLoadBalancing<T>::setUpZoltan(int lb_period) {
 		zoltan::zoltan_config(&this->zoltan);
 
+		this->zoltan.Set_Param("PHG_REPART_MULTIPLIER", std::to_string(lb_period));
+
 		// Initializes Zoltan Node Load Balancing functions
+		this->zoltan.Set_Obj_Size_Multi_Fn(zoltan::obj_size<T>, &this->zoltan_data);
 		this->zoltan.Set_Num_Fixed_Obj_Fn(zoltan::num_fixed_obj_fn<T>, &this->fixed_vertices);
 		this->zoltan.Set_Fixed_Obj_List_Fn(zoltan::fixed_obj_list_fn<T>, &this->fixed_vertices);
 		this->zoltan.Set_Num_Obj_Fn(zoltan::num_obj<T>, &this->zoltan_data);
