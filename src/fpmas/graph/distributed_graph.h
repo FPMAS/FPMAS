@@ -736,7 +736,6 @@ namespace fpmas { namespace graph {
 						}
 					}
 
-					std::cout << "n_export:" << exported_nodes.size() << ", e_export:" << e_export;
 					serial_nodes = serialize<nlohmann::json>(node_export_map);
 					serial_edges = serialize<io::json::light_json>(edge_export_map);
 
@@ -749,12 +748,6 @@ namespace fpmas { namespace graph {
 					for(auto node : exported_nodes) {
 						clearNode(node);
 					}
-					//clearDistantNodes();
-
-					std::cout << ", c_node: " << clear_node;
-					//for(auto node : exported_nodes) {
-						//clearNode(node);
-					//}
 				}
 
 				{
@@ -770,7 +763,6 @@ namespace fpmas { namespace graph {
 							this->importNode(imported_node);
 						}
 					}
-					std::cout << ", n_import: " << n_import;
 					// node_import is deleted at the end of this scope
 				}
 
@@ -788,12 +780,8 @@ namespace fpmas { namespace graph {
 							this->importEdge(imported_edge);
 						}
 					}
-					std::cout << ", e_import: " << e_import;
-					std::cout << ", u_node: " << useless_node_alloc;
 					// edge_import is deleted at the end of this scope
 				}
-				std::cout << std::endl;
-
 				
 				FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.", "");
 
