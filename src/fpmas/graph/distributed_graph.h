@@ -57,9 +57,6 @@ namespace fpmas { namespace graph {
 						);
 
 			public:
-				static std::size_t useless_node_alloc;
-				static std::size_t clear_node;
-
 				/**
 				 * DistributedNode API.
 				 */
@@ -319,11 +316,6 @@ namespace fpmas { namespace graph {
 		};
 
 		template<DIST_GRAPH_PARAMS>
-			std::size_t DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::useless_node_alloc = 0;
-		template<DIST_GRAPH_PARAMS>
-			std::size_t DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::clear_node = 0;
-
-		template<DIST_GRAPH_PARAMS>
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::DistributedGraph(DistributedGraph<DIST_GRAPH_PARAMS_SPEC>&& graph) :
 				// Calls base Graph move constructor
 				Graph<api::graph::DistributedNode<T>, api::graph::DistributedEdge<T>>(std::move(graph)),
@@ -485,7 +477,6 @@ namespace fpmas { namespace graph {
 							// necessarily DISTANT.
 							edgeLocationState = LocationState::DISTANT;
 						}
-						useless_node_alloc++;
 						// Deletes the temporary source node
 						temp_src.reset();
 
@@ -519,7 +510,6 @@ namespace fpmas { namespace graph {
 							// necessarily DISTANT.
 							edgeLocationState = LocationState::DISTANT;
 						}
-						useless_node_alloc++;
 						// Deletes the temporary target node
 						temp_tgt.reset();
 
@@ -653,38 +643,6 @@ namespace fpmas { namespace graph {
 				sync_mode.getDataSync().synchronize();
 			}
 
-		template<typename JsonType, typename T>
-			std::unordered_map<int, communication::DataPack> serialize(std::unordered_map<int, T>& data) {
-				// Pack
-				std::unordered_map<int, communication::DataPack> export_data_pack;
-				for(auto& item : data) {
-					std::string str = JsonType(item.second).dump();
-					communication::DataPack data_pack (str.size(), sizeof(char));
-					std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
-
-					// Emplace + Move prevents useless copies
-					export_data_pack.emplace(item.first, std::move(data_pack));
-				}
-				return export_data_pack;
-			}
-
-		template<typename JsonType, typename T>
-			std::unordered_map<int, T> deserialize(std::unordered_map<int, communication::DataPack>&& data) {
-				std::unordered_map<int, T> import_map;
-				for(auto& item : data) {
-					communication::DataPack& pack = data[item.first];
-					std::string import_str = std::string((char*) pack.buffer, pack.count);
-					// Frees useless data pack after content is copied to
-					// std::string
-					pack.free();
-
-					import_map.emplace(item.first, JsonType::parse(
-								import_str
-								)
-							.template get<T>());
-				}
-				return import_map;
-			}
 
 		template<DIST_GRAPH_PARAMS>
 			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>
@@ -727,58 +685,61 @@ namespace fpmas { namespace graph {
 							}
 						}
 					}
-					std::size_t e_export = 0;
 					// Ensures that each edge is exported once to each process
 					for(auto list : edge_ids_to_export) {
 						for(auto id : list.second) {
-							e_export++;
 							edge_export_map[list.first].emplace_back(this->getEdge(id));
 						}
 					}
 
-					serial_nodes = serialize<nlohmann::json>(node_export_map);
-					serial_edges = serialize<io::json::light_json>(edge_export_map);
+					// Serializes nodes and edges
+					communication::serialize(serial_nodes, node_export_map);
+					communication::serialize(serial_edges, edge_export_map);
+
+					// Once serialized nodes and associated edges can
+					// eventually be cleared. This might save memory for the
+					// next import.
 
 					for(auto node : exported_nodes) {
 						setDistant(node);
 					}
 
-					clear_node = 0;
 					FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...", "");
 					for(auto node : exported_nodes) {
 						clearNode(node);
 					}
+
+					// Clears buffers required for serialization
 				}
 
 				{
-					auto node_import = deserialize<nlohmann::json, std::vector<NodePtrWrapper<T>>>(
-							getMpiCommunicator().allToAll(std::move(serial_nodes), MPI_CHAR)
+					// Node import
+					std::unordered_map<int, std::vector<NodePtrWrapper<T>>> node_import;
+					communication::deserialize(
+							getMpiCommunicator().allToAll(std::move(serial_nodes), MPI_CHAR),
+							node_import
 							);
-					std::size_t n_import = 0;
-					// Serialize and export / import nodes
-					//auto node_import = node_mpi.migrate(node_export_map);
 					for(auto& import_node_list_from_proc : node_import) {
 						for(auto& imported_node : import_node_list_from_proc.second) {
-							n_import++;
 							this->importNode(imported_node);
 						}
+						import_node_list_from_proc.second.clear();
 					}
 					// node_import is deleted at the end of this scope
 				}
 
 				{
-					std::size_t e_import = 0;
-					auto edge_import = deserialize<io::json::light_json, std::vector<EdgePtrWrapper<T>>>(
-							getMpiCommunicator().allToAll(std::move(serial_edges), MPI_CHAR)
+					// Edge import
+					std::unordered_map<int, std::vector<EdgePtrWrapper<T>>> edge_import;
+					communication::deserialize(
+							getMpiCommunicator().allToAll(std::move(serial_edges), MPI_CHAR),
+							edge_import
 							);
-					useless_node_alloc = 0;
-					// Serialize and export / import edges
-					//auto edge_import = edge_mpi.migrate(edge_export_map);
 					for(auto& import_edge_list_from_proc : edge_import) {
 						for(auto& imported_edge : import_edge_list_from_proc.second) {
-							e_import++;
 							this->importEdge(imported_edge);
 						}
+						import_edge_list_from_proc.second.clear();
 					}
 					// edge_import is deleted at the end of this scope
 				}
@@ -868,7 +829,6 @@ namespace fpmas { namespace graph {
 							"DIST_GRAPH", "Erasing obsolete node %s.",
 							FPMAS_C_STR(node->getId())
 							);
-					clear_node++;
 					this->erase(node);
 				} else {
 					for(auto edge : obsoleteEdges) {

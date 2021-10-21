@@ -33,8 +33,16 @@ namespace fpmas { namespace communication {
 		return this->size;
 	}
 
-	void MpiCommunicatorBase::send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) {
+	void MpiCommunicatorBase::send(
+			const void* data, int count, MPI_Datatype datatype,
+			int destination, int tag) {
 		MPI_Send(data, count, datatype, destination, tag, this->comm);
+	}
+
+	void MpiCommunicatorBase::send(
+			const DataPack& data, MPI_Datatype datatype,
+			int destination, int tag) {
+		MPI_Send(data.buffer, data.count, datatype, destination, tag, this->comm);
 	}
 
 	void MpiCommunicatorBase::send(int destination, int tag) {
@@ -42,13 +50,27 @@ namespace fpmas { namespace communication {
 	}
 
 	void MpiCommunicatorBase::Issend(
-			const void* data, int count, MPI_Datatype datatype, int destination, int tag, Request& req) {
+			const void* data, int count, MPI_Datatype datatype,
+			int destination, int tag, Request& req) {
 		int type_size;
 		MPI_Type_size(datatype, &type_size);
 		req.__data = new DataPack(count, type_size);
 		std::memcpy(req.__data->buffer, data, req.__data->size);
 
-		MPI_Issend(req.__data->buffer, count, datatype, destination, tag, this->comm, &req.__mpi_request);
+		MPI_Issend(
+				req.__data->buffer, count, datatype,
+				destination, tag, this->comm, &req.__mpi_request);
+	}
+	void MpiCommunicatorBase::Issend(
+			const DataPack& data, MPI_Datatype datatype,
+			int destination, int tag, Request& req) {
+		int type_size;
+		MPI_Type_size(datatype, &type_size);
+		req.__data = new DataPack(data);
+
+		MPI_Issend(
+				req.__data->buffer, req.__data->count, datatype,
+				destination, tag, this->comm, &req.__mpi_request);
 	}
 
 	void MpiCommunicatorBase::Issend(int destination, int tag, Request& req) {
@@ -68,6 +90,12 @@ namespace fpmas { namespace communication {
 			void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status) {
 		MPI_Status __status {};
 		MPI_Recv(buffer, count, datatype, source, tag, this->comm, &__status);
+		convertStatus(__status, status, datatype);
+	}
+	void MpiCommunicatorBase::recv(
+			DataPack& data, MPI_Datatype datatype, int source, int tag, Status& status) {
+		MPI_Status __status {};
+		MPI_Recv(data.buffer, data.count, datatype, source, tag, this->comm, &__status);
 		convertStatus(__status, status, datatype);
 	}
 

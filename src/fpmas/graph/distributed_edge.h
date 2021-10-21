@@ -210,6 +210,12 @@ namespace nlohmann {
 
 namespace fpmas { namespace communication {
 
+	template<typename T>
+		struct Serializer<fpmas::graph::EdgePtrWrapper<T>> : public JsonSerializer<
+			fpmas::graph::EdgePtrWrapper<T>,
+			fpmas::io::json::light_json> {
+		};
+
 	/**
 	 * \anchor TypedMpiDistributedEdge
 	 *
@@ -223,10 +229,12 @@ namespace fpmas { namespace communication {
 	 *
 	 * @tparam T type of data contained in associated \DistributedNodes
 	 */
-	template<typename T>
-		struct TypedMpi<fpmas::graph::EdgePtrWrapper<T>> : public detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, fpmas::io::json::light_json> {
-			using detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, fpmas::io::json::light_json>::TypedMpi;
-		};
+	/*
+	 *template<typename T>
+	 *    struct TypedMpi<fpmas::graph::EdgePtrWrapper<T>> : public detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, fpmas::io::json::light_json> {
+	 *        using detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, fpmas::io::json::light_json>::TypedMpi;
+	 *    };
+	 */
 
 }}
 #endif

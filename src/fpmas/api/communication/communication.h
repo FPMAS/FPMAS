@@ -251,6 +251,8 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			virtual void send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) = 0;
 
+			virtual void send(const DataPack& data, MPI_Datatype datatype, int destination, int tag) = 0;
+
 			/**
 			 * Sends a void message to `destination` (blocking, asynchronous).
 			 *
@@ -287,6 +289,9 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			virtual void Issend(
 					const void* data, int count, MPI_Datatype datatype, int destination, int tag, Request& request) = 0;
+
+			virtual void Issend(
+					const DataPack& data, MPI_Datatype datatype, int destination, int tag, Request& request) = 0;
 			/**
 			 * Sends a void message to `destination` (non-blocking, synchronous).
 			 *
@@ -366,6 +371,8 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param status output MPI status
 			 */
 			virtual void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status) = 0;
+
+			virtual void recv(DataPack& data, MPI_Datatype datatype, int source, int tag, Status& status) = 0;
 
 			/**
 			 * Tests if the input `request` is complete.

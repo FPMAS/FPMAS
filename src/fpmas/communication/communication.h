@@ -22,6 +22,50 @@ namespace fpmas { namespace communication {
 	using api::communication::Request;
 	using api::communication::Status;
 
+	template<typename T, typename JsonType>
+		struct JsonSerializer {
+			static void serialize(DataPack& pack, const T& data) {
+				std::string str = JsonType(data).dump();
+				pack = DataPack(str.size(), sizeof(char));
+				std::memcpy(pack.buffer, str.data(), str.size() * sizeof(char));
+			}
+
+			static T deserialize(const DataPack& pack) {
+				return JsonType::parse(
+						std::string((char*) pack.buffer, pack.count)
+						).template get<T>();
+			}
+		};
+
+	template<typename T>
+		struct Serializer : public JsonSerializer<T, nlohmann::json> {
+		};
+
+	template<typename T>
+			 void serialize(
+					 std::unordered_map<int, communication::DataPack>& data_pack,
+					 const std::unordered_map<int, T>& data) {
+				for(auto& item : data) {
+					communication::Serializer<T>::serialize(
+							data_pack[item.first],
+							item.second
+							);
+				}
+			}
+
+		template<typename T>
+			void deserialize(
+					std::unordered_map<int, communication::DataPack> data_pack,
+					std::unordered_map<int, T>& data
+					) {
+				for(auto& item : data_pack) {
+					data.emplace(item.first, communication::Serializer<T>::deserialize(
+							item.second
+							));
+					item.second.free();
+				}
+			}
+
 	/**
 	 * fpmas::api::communication::MpiCommunicator implementation, based on
 	 * the system MPI library (i.e. `#include <mpi.h>`).
@@ -88,7 +132,14 @@ namespace fpmas { namespace communication {
 			 * @param destination rank of the destination proc
 			 * @param tag message tag
 			 */
-			void send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) override;
+			void send(
+					const void* data, int count, MPI_Datatype datatype,
+					int destination, int tag) override;
+
+			void send(
+					const DataPack& data, MPI_Datatype datatype,
+					int destination, int tag) override;
+
 			/**
 			 * Performs an MPI_Send operation without data.
 			 *
@@ -108,8 +159,12 @@ namespace fpmas { namespace communication {
 			 * @param req output MPI request
 			 */
 			void Issend(
-					const void* data, int count, MPI_Datatype datatype, int destination, int tag, Request& req) override;
+					const void* data, int count, MPI_Datatype datatype,
+					int destination, int tag, Request& req) override;
 
+			void Issend(
+					const DataPack& data, MPI_Datatype datatype,
+					int destination, int tag, Request& req) override;
 			/**
 			 * Performs an MPI_Issend operation without data.
 			 *
@@ -138,7 +193,13 @@ namespace fpmas { namespace communication {
 			 * @param tag message tag
 			 * @param status output MPI status
 			 */
-			void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status = Status::IGNORE) override;
+			void recv(
+					void* buffer, int count, MPI_Datatype datatype,
+					int source, int tag, Status& status = Status::IGNORE) override;
+
+			void recv(
+					DataPack& data, MPI_Datatype datatype,
+					int source, int tag, Status& status = Status::IGNORE) override;
 
 			/**
 			 * Performs an MPI_Probe operation.
@@ -326,7 +387,7 @@ namespace fpmas { namespace communication {
 		 * @tparam T data transmit, serializable into a `JsonType`
 		 * @tparam nlohmann json type, based on `nlohmann::basic_json`
 		 */
-		template<typename T, typename JsonType>
+		template<typename T>
 			class TypedMpi : public api::communication::TypedMpi<T> {
 				private:
 					api::communication::MpiCommunicator& comm;
@@ -395,173 +456,134 @@ namespace fpmas { namespace communication {
 					T recv(int source, int tag, Status& status = Status::IGNORE) override;
 			};
 
-		template<typename T, typename JsonType> std::unordered_map<int, std::vector<T>>
-			TypedMpi<T, JsonType>::migrate(std::unordered_map<int, std::vector<T>> export_map) {
-				// Pack
-				std::unordered_map<int, DataPack> export_data_pack;
-				for(auto& item : export_map) {
-					std::string str = JsonType(item.second).dump();
-					DataPack data_pack (str.size(), sizeof(char));
-					std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
+		template<typename T> std::unordered_map<int, std::vector<T>>
+			TypedMpi<T>::migrate(std::unordered_map<int, std::vector<T>> export_map) {
+				std::unordered_map<int, DataPack> import_data_pack;
 
-					// Emplace + Move prevents useless copies
-					export_data_pack.emplace(item.first, std::move(data_pack));
+				{
+					// Pack
+					std::unordered_map<int, DataPack> export_data_pack;
+					serialize(export_data_pack, export_map);
+
+					// export_data_pack buffers are moved to the temporary allToAll
+					// argument, and automatically freed by the allToAll
+					// implementation
+					import_data_pack = comm.allToAll(
+							std::move(export_data_pack), MPI_CHAR
+							);
 				}
-
-				// export_data_pack buffers are moved to the temporary allToAll
-				// argument, and automatically freed by the allToAll
-				// implementation
-				std::unordered_map<int, DataPack> import_data_pack
-					= comm.allToAll(std::move(export_data_pack), MPI_CHAR);
 
 				std::unordered_map<int, std::vector<T>> import_map;
-				for(auto& item : import_data_pack) {
-					DataPack& pack = import_data_pack[item.first];
-					std::string import_str = std::string((char*) pack.buffer, pack.count);
-					// Frees useless data pack after content is copied to
-					// std::string
-					pack.free();
-
-					import_map.emplace(item.first, JsonType::parse(
-							import_str
-							)
-						.template get<std::vector<T>>());
-				}
-
+				deserialize(std::move(import_data_pack), import_map);
+				
 				// Should perform "copy elision"
 				return import_map;
 			}
 
-		template<typename T, typename JsonType> std::unordered_map<int, T>
-			TypedMpi<T, JsonType>::allToAll(std::unordered_map<int, T> export_map) {
+		template<typename T> std::unordered_map<int, T>
+			TypedMpi<T>::allToAll(std::unordered_map<int, T> export_map) {
 				// Pack
-				std::unordered_map<int, DataPack> export_data_pack;
-				for(auto& item : export_map) {
-					std::string str = JsonType(item.second).dump();
-					FPMAS_LOGV(comm.getRank(), "TYPED_MPI",
-							"ALL_TO_ALL: Export JSON to %i : %s", item.first, str.c_str()
+				std::unordered_map<int, DataPack> import_data_pack;
+
+				{
+					std::unordered_map<int, DataPack> export_data_pack;
+					serialize(export_data_pack, export_map);
+
+					// export_data_pack buffers are moved to the temporary allToAll
+					// argument, and automatically freed by the allToAll
+					// implementation
+					import_data_pack = comm.allToAll(
+							std::move(export_data_pack), MPI_CHAR
 							);
-					DataPack data_pack (str.size(), sizeof(char));
-					std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
-
-					// Emplace + Move prevents useless copies
-					export_data_pack.emplace(item.first, std::move(data_pack));
 				}
-
-				// export_data_pack buffers are moved to the temporary allToAll
-				// argument, and automatically freed by the allToAll
-				// implementation
-				std::unordered_map<int, DataPack> import_data_pack
-					= comm.allToAll(std::move(export_data_pack), MPI_CHAR);
 
 				std::unordered_map<int, T> import_map;
-				for(auto& item : import_data_pack) {
-					DataPack& pack = import_data_pack[item.first];
-					std::string import_str = std::string((char*) pack.buffer, pack.count);
-					pack.free();
-
-					FPMAS_LOGV(comm.getRank(), "TYPED_MPI",
-							"ALL_TO_ALL: Import JSON from %i : %s", item.first, import_str.c_str()
-							);
-					import_map.emplace(item.first, JsonType::parse(
-									import_str
-									)
-								.template get<T>());
-				}
+				deserialize(std::move(import_data_pack), import_map);
+				
 
 				// Should perform "copy elision"
 				return import_map;
 			}
 
-		template<typename T, typename JsonType> std::vector<T>
-			TypedMpi<T, JsonType>::gather(const T& data, int root) {
-				// Pack
-				std::string str = JsonType(data).dump();
-				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Gather JSON on root %i : %s", root, str.c_str());
-				DataPack data_pack (str.size(), sizeof(char));
-				std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
+		template<typename T> std::vector<T>
+			TypedMpi<T>::gather(const T& data, int root) {
+				DataPack data_pack;
+				Serializer<T>::serialize(data_pack, data);
 
-				std::vector<DataPack> import_data_pack = comm.gather(data_pack, MPI_CHAR, root);
+				std::vector<DataPack> import_data_pack
+					= comm.gather(data_pack, MPI_CHAR, root);
 
 				std::vector<T> import_data;
 				for(std::size_t i = 0; i < import_data_pack.size(); i++) {
-					auto item = import_data_pack[i];
-					std::string import = std::string((char*) item.buffer, item.count);
-					FPMAS_LOGV(comm.getRank(), "TYPED_MPI", "Gathered JSON from %i : %s", i, import.c_str());
-					import_data.push_back(JsonType::parse(import).template get<T>());
+					import_data.emplace_back(
+							Serializer<T>::deserialize(import_data_pack[i]));
+					import_data_pack[i].free();
 				}
 				return import_data;
 			}
 
-		template<typename T, typename JsonType> std::vector<T>
-			TypedMpi<T, JsonType>::allGather(const T& data) {
+		template<typename T> std::vector<T>
+			TypedMpi<T>::allGather(const T& data) {
 				// Pack
-				std::string str = JsonType(data).dump();
-				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "AllGather JSON : %s", str.c_str());
-				DataPack data_pack (str.size(), sizeof(char));
-				std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
+				DataPack data_pack;
+				Serializer<T>::serialize(data_pack, data);
 
-				std::vector<DataPack> import_data_pack = comm.allGather(data_pack, MPI_CHAR);
+				std::vector<DataPack> import_data_pack
+					= comm.allGather(data_pack, MPI_CHAR);
 
 				std::vector<T> import_data;
 				for(std::size_t i = 0; i < import_data_pack.size(); i++) {
-					auto item = import_data_pack[i];
-					std::string import = std::string((char*) item.buffer, item.count);
-					FPMAS_LOGV(comm.getRank(), "TYPED_MPI", "Gathered JSON from %i : %s", i, import.c_str());
-					import_data.push_back(JsonType::parse(import).template get<T>());
+					import_data.emplace_back(
+							Serializer<T>::deserialize(import_data_pack[i]));
+					import_data_pack[i].free();
 				}
 				return import_data;
 			}
 
-		template<typename T, typename JsonType> T
-			TypedMpi<T, JsonType>::bcast(const T& data, int root) {
-				std::string str = JsonType(data).dump();
-				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Bcast JSON to root %i : %s", root, str.c_str());
+		template<typename T>
+			T TypedMpi<T>::bcast(const T& data, int root) {
+				DataPack data_pack;
+				Serializer<T>::serialize(data_pack, data);
 
-				DataPack data_pack (str.size(), sizeof(char));
-				std::memcpy(data_pack.buffer, str.data(), str.size() * sizeof(char));
+				DataPack recv_data_pack = comm.bcast(data_pack, MPI_CHAR, root);
 
-				DataPack recv_data = comm.bcast(data_pack, MPI_CHAR, root);
-				std::string recv = std::string((char*) recv_data.buffer, recv_data.count);
-
-				return JsonType::parse(recv).template get<T>();
+				return Serializer<T>::deserialize(recv_data_pack);
 			}
 
-		template<typename T, typename JsonType>
-			void TypedMpi<T, JsonType>::send(const T& data, int destination, int tag) {
-				std::string str = JsonType(data).dump();
-				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Send JSON to process %i : %s", destination, str.c_str());
-				comm.send(str.c_str(), str.size()+1, MPI_CHAR, destination, tag);
+		template<typename T>
+			void TypedMpi<T>::send(const T& data, int destination, int tag) {
+				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Send JSON to process %i : %s", destination, str.c_str());
+				DataPack data_pack;
+				Serializer<T>::serialize(data_pack, data);
+				comm.send(data_pack, MPI_CHAR, destination, tag);
 			}
-		template<typename T, typename JsonType>
-			void TypedMpi<T, JsonType>::Issend(const T& data, int destination, int tag, Request& req) {
-				std::string str = JsonType(data).dump();
-				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
-				comm.Issend(str.c_str(), str.size(), MPI_CHAR, destination, tag, req);
+		template<typename T>
+			void TypedMpi<T>::Issend(const T& data, int destination, int tag, Request& req) {
+				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
+				DataPack data_pack;
+				Serializer<T>::serialize(data_pack, data);
+				comm.Issend(data_pack, MPI_CHAR, destination, tag, req);
 			}
 
-		template<typename T, typename JsonType>
-			void TypedMpi<T, JsonType>::probe(int source, int tag, Status &status) {
+		template<typename T>
+			void TypedMpi<T>::probe(int source, int tag, Status &status) {
 				return comm.probe(MPI_CHAR, source, tag, status);
 			}
-		template<typename T, typename JsonType>
-			bool TypedMpi<T, JsonType>::Iprobe(int source, int tag, Status &status) {
+		template<typename T>
+			bool TypedMpi<T>::Iprobe(int source, int tag, Status &status) {
 				return comm.Iprobe(MPI_CHAR, source, tag, status);
 			}
 
-		template<typename T, typename JsonType>
-			T TypedMpi<T, JsonType>::recv(int source, int tag, Status& status) {
+		template<typename T>
+			T TypedMpi<T>::recv(int source, int tag, Status& status) {
 				Status message_to_receive_status;
 				this->probe(source, tag, message_to_receive_status);
 				int count = message_to_receive_status.item_count;
-				//MPI_Get_count(&message_to_receive_status, MPI_CHAR, &count);
-				char* buffer = (char*) std::malloc(message_to_receive_status.size);
-				comm.recv(buffer, count, MPI_CHAR, source, tag, status);
+				DataPack data_pack(count, sizeof(char));
+				comm.recv(data_pack, MPI_CHAR, source, tag, status);
 
-				std::string data (buffer, count);
-				FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Receive JSON from process %i : %s", source, data.c_str());
-				std::free(buffer);
-				return JsonType::parse(data).template get<T>();
+				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Receive JSON from process %i : %s", source, data.c_str());
+				return Serializer<T>::deserialize(data_pack);
 			}
 	}
 
@@ -587,10 +609,13 @@ namespace fpmas { namespace communication {
 	 *
 	 * @tparam T type to transmit, serializable into an `nlohmann::json`
 	 */
+	//template<typename T>
+		//struct TypedMpi : public detail::TypedMpi<T, nlohmann::json> {
+			//using detail::TypedMpi<T, nlohmann::json>::TypedMpi;
+		//};
+
 	template<typename T>
-		struct TypedMpi : public detail::TypedMpi<T, nlohmann::json> {
-			using detail::TypedMpi<T, nlohmann::json>::TypedMpi;
-		};
+		using TypedMpi = detail::TypedMpi<T>;
 
 
 	/**
