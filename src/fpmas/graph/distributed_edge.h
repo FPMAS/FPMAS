@@ -185,10 +185,6 @@ namespace nlohmann {
 							std::move(j.at("src"))
 							)
 						));
-				//NodePtrWrapper<T> src = j.at("src")[0].template get<NodePtrWrapper<T>>();
-				//src->setLocation(j.at("src")[1].template get<int>());
-				//edge->setSourceNode(src);
-				//src->linkOut(edge);
 
 				edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 						new fpmas::graph::JsonTemporaryNode<T, JsonType>(
@@ -196,13 +192,6 @@ namespace nlohmann {
 							)
 						));
 
-/*
- *                NodePtrWrapper<T> tgt = j.at("tgt")[0].template get<NodePtrWrapper<T>>();
- *                tgt->setLocation(j.at("tgt")[1].template get<int>());
- *
- *                edge->setTargetNode(tgt);
- *                tgt->linkIn(edge);
- */
 				edge_ptr = {edge};
 			}
 		};

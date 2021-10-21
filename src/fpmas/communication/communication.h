@@ -24,10 +24,11 @@ namespace fpmas { namespace communication {
 
 	template<typename T, typename JsonType>
 		struct JsonSerializer {
-			static void serialize(DataPack& pack, const T& data) {
+			static DataPack serialize(const T& data) {
 				std::string str = JsonType(data).dump();
-				pack = DataPack(str.size(), sizeof(char));
+				DataPack pack(str.size(), sizeof(char));
 				std::memcpy(pack.buffer, str.data(), str.size() * sizeof(char));
+				return pack;
 			}
 
 			static T deserialize(const DataPack& pack) {
@@ -46,10 +47,10 @@ namespace fpmas { namespace communication {
 					 std::unordered_map<int, communication::DataPack>& data_pack,
 					 const std::unordered_map<int, T>& data) {
 				for(auto& item : data) {
-					communication::Serializer<T>::serialize(
-							data_pack[item.first],
+					data_pack.emplace(item.first,
+							communication::Serializer<T>::serialize(
 							item.second
-							);
+							));
 				}
 			}
 
@@ -507,8 +508,7 @@ namespace fpmas { namespace communication {
 
 		template<typename T> std::vector<T>
 			TypedMpi<T>::gather(const T& data, int root) {
-				DataPack data_pack;
-				Serializer<T>::serialize(data_pack, data);
+				DataPack data_pack = Serializer<T>::serialize(data);
 
 				std::vector<DataPack> import_data_pack
 					= comm.gather(data_pack, MPI_CHAR, root);
@@ -525,8 +525,7 @@ namespace fpmas { namespace communication {
 		template<typename T> std::vector<T>
 			TypedMpi<T>::allGather(const T& data) {
 				// Pack
-				DataPack data_pack;
-				Serializer<T>::serialize(data_pack, data);
+				DataPack data_pack = Serializer<T>::serialize(data);
 
 				std::vector<DataPack> import_data_pack
 					= comm.allGather(data_pack, MPI_CHAR);
@@ -542,8 +541,7 @@ namespace fpmas { namespace communication {
 
 		template<typename T>
 			T TypedMpi<T>::bcast(const T& data, int root) {
-				DataPack data_pack;
-				Serializer<T>::serialize(data_pack, data);
+				DataPack data_pack = Serializer<T>::serialize(data);
 
 				DataPack recv_data_pack = comm.bcast(data_pack, MPI_CHAR, root);
 
@@ -553,15 +551,13 @@ namespace fpmas { namespace communication {
 		template<typename T>
 			void TypedMpi<T>::send(const T& data, int destination, int tag) {
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Send JSON to process %i : %s", destination, str.c_str());
-				DataPack data_pack;
-				Serializer<T>::serialize(data_pack, data);
+				DataPack data_pack = Serializer<T>::serialize(data);
 				comm.send(data_pack, MPI_CHAR, destination, tag);
 			}
 		template<typename T>
 			void TypedMpi<T>::Issend(const T& data, int destination, int tag, Request& req) {
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
-				DataPack data_pack;
-				Serializer<T>::serialize(data_pack, data);
+				DataPack data_pack = Serializer<T>::serialize(data);
 				comm.Issend(data_pack, MPI_CHAR, destination, tag, req);
 			}
 
