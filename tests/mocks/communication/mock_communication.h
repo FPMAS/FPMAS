@@ -26,12 +26,15 @@ class MockMpiCommunicator : public fpmas::api::communication::MpiCommunicator {
 		MOCK_METHOD(int, getSize, (), (const, override));
 
 		MOCK_METHOD(void, send, (const void*, int, MPI_Datatype, int, int), (override));
+		MOCK_METHOD(void, send, (const fpmas::api::communication::DataPack&, MPI_Datatype, int, int), (override));
 		MOCK_METHOD(void, send, (int, int), (override));
 		MOCK_METHOD(void, Issend, (const void*, int, MPI_Datatype, int, int, fpmas::api::communication::Request&), (override));
+		MOCK_METHOD(void, Issend, (const fpmas::api::communication::DataPack&, MPI_Datatype, int, int, fpmas::api::communication::Request&), (override));
 		MOCK_METHOD(void, Issend, (int, int, fpmas::api::communication::Request&), (override));
 
 		MOCK_METHOD(void, recv, (int, int, fpmas::api::communication::Status&), (override));
 		MOCK_METHOD(void, recv, (void* buffer, int count, MPI_Datatype, int, int, fpmas::api::communication::Status&), (override));
+		MOCK_METHOD(void, recv, (fpmas::api::communication::DataPack&, MPI_Datatype, int, int, fpmas::api::communication::Status&), (override));
 
 		MOCK_METHOD(void, probe, (MPI_Datatype, int, int, fpmas::api::communication::Status&), (override));
 		MOCK_METHOD(bool, Iprobe, (MPI_Datatype, int, int, fpmas::api::communication::Status&), (override));

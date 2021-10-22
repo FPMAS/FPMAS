@@ -34,7 +34,7 @@ TEST_F(DistributedEdgeTest, state) {
 
 TEST(JsonTemporaryNode, test) {
 	nlohmann::json j = {{{"id", {2, 6}}, {"weight", 1.7f}, {"data", 12}}, 4};
-	fpmas::graph::JsonTemporaryNode<int, nlohmann::json> temp_node(j);
+	fpmas::graph::JsonTemporaryNode<int, nlohmann::json> temp_node({2, 6}, 4, j);
 
 	ASSERT_EQ(temp_node.getId(), fpmas::graph::DistributedId(2, 6));
 	ASSERT_EQ(temp_node.getLocation(), 4);

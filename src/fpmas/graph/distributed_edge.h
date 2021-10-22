@@ -77,6 +77,8 @@ namespace fpmas { namespace graph {
 	template<typename T, typename JsonType>
 		class JsonTemporaryNode : public api::graph::TemporaryNode<T> {
 			private:
+				bool parsed_json;
+				std::string json_str;
 				JsonType j;
 				DistributedId id;
 				int location;
@@ -90,11 +92,16 @@ namespace fpmas { namespace graph {
 				 * to the internal json instance.
 				 */
 				template<typename _JsonType>
-					JsonTemporaryNode(_JsonType&& j) :
-						j(std::forward<_JsonType>(j)),
-						id(this->j[0].at("id").template get<DistributedId>()),
-						location(this->j[1].template get<int>()) {
+					JsonTemporaryNode(DistributedId id, int location, _JsonType&& j) :
+						parsed_json(true),
+						j(std::forward<_JsonType>(j)), id(id), location(location) {
 						}
+
+				JsonTemporaryNode(
+						DistributedId id, int location, std::string json_str) :
+					parsed_json(false),
+					json_str(json_str), id(id), location(location) {
+					}
 
 				DistributedId getId() const override {
 					return id;
@@ -105,7 +112,9 @@ namespace fpmas { namespace graph {
 				}
 
 				api::graph::DistributedNode<T>* build() override {
-					NodePtrWrapper<T> node = j[0].template get<NodePtrWrapper<T>>();
+					if(!parsed_json)
+						j = JsonType::parse(json_str);
+					NodePtrWrapper<T> node = j.template get<NodePtrWrapper<T>>();
 					node->setLocation(location);
 					return node;
 				}
@@ -182,13 +191,17 @@ namespace nlohmann {
 
 				edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 						new fpmas::graph::JsonTemporaryNode<T, JsonType>(
-							std::move(j.at("src"))
+							j.at("src")[0].at("id").template get<DistributedId>(),
+							j.at("src")[1].template get<int>(),
+							std::move(j.at("src")[0])
 							)
 						));
 
 				edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 						new fpmas::graph::JsonTemporaryNode<T, JsonType>(
-							std::move(j.at("tgt"))
+							j.at("tgt")[0].at("id").template get<DistributedId>(),
+							j.at("tgt")[1].template get<int>(),
+							std::move(j.at("tgt")[0])
 							)
 						));
 
@@ -200,9 +213,86 @@ namespace nlohmann {
 namespace fpmas { namespace communication {
 
 	template<typename T>
-		struct Serializer<fpmas::graph::EdgePtrWrapper<T>> : public JsonSerializer<
-			fpmas::graph::EdgePtrWrapper<T>,
-			fpmas::io::json::light_json> {
+		struct Serializer<fpmas::graph::EdgePtrWrapper<T>> {
+			static DataPack serialize(const fpmas::graph::EdgePtrWrapper<T>& edge) {
+				constexpr std::size_t id_size = sizeof(int) + sizeof(FPMAS_ID_TYPE);
+				std::string src = fpmas::io::json::light_json(
+						fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode())
+						).dump();
+				std::string tgt = fpmas::io::json::light_json(
+						fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode())
+						).dump();
+
+				std::size_t size = 
+					id_size + // Edge id
+					sizeof(int) + // Layer
+					sizeof(float) + // weight
+					id_size + // src_id
+					sizeof(int) + // src location
+					sizeof(std::size_t) + src.size() * sizeof(char) + // src json
+					id_size + // tgt_id
+					sizeof(int) + // tgt location
+					sizeof(std::size_t) + tgt.size() * sizeof(char); // tgt json
+
+				std::size_t current_offset = 0;
+				DataPack pack(size, 1);
+				communication::serialize(pack, edge->getId(), current_offset);
+				communication::serialize(pack, edge->getLayer(), current_offset);
+				communication::serialize(pack, edge->getWeight(), current_offset);
+				communication::serialize(
+						pack, edge->getSourceNode()->getId(), current_offset);
+				communication::serialize(
+						pack, edge->getSourceNode()->location(), current_offset);
+				communication::serialize(pack, src, current_offset);
+				communication::serialize(
+						pack, edge->getTargetNode()->getId(), current_offset);
+				communication::serialize(
+						pack, edge->getTargetNode()->location(), current_offset);
+				communication::serialize(pack, tgt, current_offset);
+
+				return pack;
+			}
+
+			static fpmas::graph::EdgePtrWrapper<T> deserialize(const DataPack& pack) {
+				std::size_t current_offset = 0;
+				DistributedId edge_id;
+				int edge_layer;
+				float edge_weight;
+
+				communication::deserialize<DistributedId>(pack, edge_id, current_offset);
+				communication::deserialize<int>(pack, edge_layer, current_offset);
+				communication::deserialize<float>(pack, edge_weight, current_offset);
+
+				fpmas::api::graph::DistributedEdge<T>* edge
+					= new fpmas::graph::DistributedEdge<T>(edge_id, edge_layer);
+				edge->setWeight(edge_weight);
+
+				DistributedId id;
+				int loc;
+				std::string json;
+
+				communication::deserialize<DistributedId>(pack, id, current_offset);
+				communication::deserialize<int>(pack, loc, current_offset);
+				communication::deserialize<std::string>(pack, json, current_offset);
+
+				edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
+						new fpmas::graph::JsonTemporaryNode<T, fpmas::io::json::light_json>(
+							id, loc, json
+							)
+						));
+
+				communication::deserialize<DistributedId>(pack, id, current_offset);
+				communication::deserialize<int>(pack, loc, current_offset);
+				communication::deserialize<std::string>(pack, json, current_offset);
+
+				edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
+						new fpmas::graph::JsonTemporaryNode<T, fpmas::io::json::light_json>(
+							id, loc, json
+							)
+						));
+
+				return {edge};
+			}
 		};
 
 	/**

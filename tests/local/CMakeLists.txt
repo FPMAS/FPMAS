@@ -2,6 +2,7 @@ set(SOURCES
 	api/graph/basic_id.cpp
 	# Comm
 	communication/communication.cpp
+	communication/serializer.cpp
 	# Graph
 	## Base
 	graph/node.cpp
