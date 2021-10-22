@@ -28,20 +28,20 @@ namespace fpmas { namespace api { namespace communication {
 			/**
 			 * Pointer to the internal buffer.
 			 */
-			void* buffer;
+			char* buffer;
 
 			/**
 			 * Allocates a buffer of `count` items of size `data_size`.
 			 */
 			DataPack(int count, size_t data_size) : size(data_size*count), count(count) {
-				buffer = std::malloc(size);
+				buffer = (char*) std::malloc(size);
 			}
 
 			/**
 			 * Allocates a void buffer, of size 0.
 			 */
 			DataPack() : size(0), count(0) {
-				buffer = std::malloc(0);
+				buffer = (char*) std::malloc(0);
 			}
 
 			/**
@@ -54,7 +54,7 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			DataPack(const DataPack& other)
 				: size(other.size), count(other.count) {
-					buffer = std::malloc(size);
+					buffer = (char*) std::malloc(size);
 					std::memcpy(buffer, other.buffer, size);
 				}
 
@@ -68,7 +68,7 @@ namespace fpmas { namespace api { namespace communication {
 			DataPack(DataPack&& other)
 				: size(other.size), count(other.count) {
 					buffer = other.buffer;
-					other.buffer = std::malloc(0);
+					other.buffer = (char*) std::malloc(0);
 				}
 
 			/**
@@ -78,7 +78,7 @@ namespace fpmas { namespace api { namespace communication {
 				std::free(buffer);
 				// A buffer of size 0 is assigned to prevent issues when
 				// std::free() is called again in the DataPack destructor.
-				buffer = std::malloc(0);
+				buffer = (char*) std::malloc(0);
 			}
 
 			/**
@@ -93,7 +93,7 @@ namespace fpmas { namespace api { namespace communication {
 				std::free(buffer);
 				size = other.size;
 				count = other.count;
-				buffer = std::malloc(size);
+				buffer = (char*) std::malloc(size);
 				std::memcpy(buffer, other.buffer, size);
 				return *this;
 			}
@@ -111,7 +111,7 @@ namespace fpmas { namespace api { namespace communication {
 				size = other.size;
 				count = other.count;
 				buffer = other.buffer;
-				other.buffer = std::malloc(0);
+				other.buffer = (char*) std::malloc(0);
 				return *this;
 			}
 

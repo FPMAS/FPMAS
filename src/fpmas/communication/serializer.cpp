@@ -14,7 +14,7 @@ namespace fpmas { namespace communication {
 				DataPack& data_pack, const std::string& data, std::size_t& offset) {
 			serialize(data_pack, data.size(), offset);
 			std::memcpy(
-					&((char*) data_pack.buffer)[offset], data.data(),
+					&data_pack.buffer[offset], data.data(),
 					data.size() * sizeof(std::string::value_type)
 					);
 			offset += data.size() * sizeof(std::string::value_type);
@@ -45,7 +45,7 @@ namespace fpmas { namespace communication {
 			std::size_t size;
 			deserialize<std::size_t>(data_pack, size, offset);
 
-			str = std::string(&((char*) data_pack.buffer)[offset], size);
+			str = std::string(&data_pack.buffer[offset], size);
 			offset += size * sizeof(char);
 		}
 

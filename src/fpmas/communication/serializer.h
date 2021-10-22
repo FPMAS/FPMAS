@@ -8,13 +8,13 @@ namespace fpmas { namespace communication {
 
 	template<typename T>
 		void serialize(DataPack& data_pack, const T& data, std::size_t& offset) {
-			std::memcpy(&((char*) data_pack.buffer)[offset], &data, sizeof(T));
+			std::memcpy(&data_pack.buffer[offset], &data, sizeof(T));
 			offset += sizeof(T);
 		}
 
 	template<>
-	void serialize<DistributedId>(
-			DataPack& data_pack, const DistributedId& id, std::size_t& offset);
+		void serialize<DistributedId>(
+				DataPack& data_pack, const DistributedId& id, std::size_t& offset);
 
 	template<>
 		void serialize<std::string>(
@@ -25,7 +25,7 @@ namespace fpmas { namespace communication {
 
 	template<typename T>
 		void deserialize(const DataPack& data_pack, T& data, std::size_t& offset) {
-			std::memcpy(&data, &((char*) data_pack.buffer)[offset], sizeof(T));
+			std::memcpy(&data, &data_pack.buffer[offset], sizeof(T));
 			offset += sizeof(T);
 		}
 
@@ -52,7 +52,7 @@ namespace fpmas { namespace communication {
 
 			static T deserialize(const DataPack& pack) {
 				return JsonType::parse(
-						std::string((char*) pack.buffer, pack.count)
+						std::string(pack.buffer, pack.count)
 						).template get<T>();
 			}
 		};
@@ -81,7 +81,7 @@ namespace fpmas { namespace communication {
 				communication::serialize(total_data_pack, sizes, offset);
 				for(std::size_t i = 0; i < data_pack.size(); i++) {
 					std::memcpy(
-							&((char*) total_data_pack.buffer)[offset],
+							&total_data_pack.buffer[offset],
 							data_pack[i].buffer, data_pack[i].size
 							);
 					offset += sizes[i];
@@ -100,7 +100,7 @@ namespace fpmas { namespace communication {
 					data_packs[i] = {(int) sizes[i], 1};
 					std::memcpy(
 							data_packs[i].buffer, 
-							&((char*) pack.buffer)[offset],
+							&pack.buffer[offset],
 							sizes[i]
 							);
 					offset += sizes[i];
