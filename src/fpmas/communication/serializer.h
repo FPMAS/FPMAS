@@ -7,39 +7,126 @@ namespace fpmas { namespace communication {
 	using api::communication::DataPack;
 
 	template<typename T>
-		void serialize(DataPack& data_pack, const T& data, std::size_t& offset) {
-			std::memcpy(&data_pack.buffer[offset], &data, sizeof(T));
-			offset += sizeof(T);
+		struct BaseSerializer {
+			static std::size_t pack_size() {
+				return sizeof(T);
+			}
+
+			static std::size_t pack_size(const T& data) {
+				return sizeof(T);
+			}
+
+			static void serialize(DataPack& data_pack, const T& data, std::size_t& offset) {
+				std::memcpy(&data_pack.buffer[offset], &data, sizeof(T));
+				offset += sizeof(T);
+			}
+
+			static void deserialize(const DataPack& data_pack, T& data, std::size_t& offset) {
+				std::memcpy(&data, &data_pack.buffer[offset], sizeof(T));
+				offset += sizeof(T);
+			}
+		};
+
+	// Helper methods
+	template<typename T>
+		std::size_t pack_size() {
+			return BaseSerializer<T>::pack_size();
 		}
-
-	template<>
-		void serialize<DistributedId>(
-				DataPack& data_pack, const DistributedId& id, std::size_t& offset);
-
-	template<>
-		void serialize<std::string>(
-				DataPack& data_pack, const std::string& data, std::size_t& offset);
-	template<>
-		void serialize<std::vector<std::size_t>>(
-				DataPack& data_pack, const std::vector<std::size_t>& vec, std::size_t& offset);
+	template<typename T>
+		std::size_t pack_size(const T& data) {
+			return BaseSerializer<T>::pack_size(data);
+		}
+	template<typename T>
+		std::size_t pack_size(std::size_t n) {
+			return BaseSerializer<T>::pack_size(n);
+		}
 
 	template<typename T>
+		void serialize(DataPack& data_pack, const T& data, std::size_t& offset) {
+			BaseSerializer<T>::serialize(data_pack, data, offset);
+		}
+	template<typename T>
 		void deserialize(const DataPack& data_pack, T& data, std::size_t& offset) {
-			std::memcpy(&data, &data_pack.buffer[offset], sizeof(T));
-			offset += sizeof(T);
+			BaseSerializer<T>::deserialize(data_pack, data, offset);
 		}
 
 	template<>
-		void deserialize<DistributedId>(
-				const DataPack& data_pack, DistributedId& id, std::size_t& offset);
+		struct BaseSerializer<DistributedId> {
+			static std::size_t pack_size();
+			static std::size_t pack_size(const DistributedId&);
+
+			static void serialize(
+					DataPack& data_pack, const DistributedId& id, std::size_t& offset);
+			static void deserialize(
+					const DataPack& data_pack, DistributedId& id, std::size_t& offset);
+		};
 
 	template<>
-		 void deserialize<std::string>(
-				const DataPack& data_pack, std::string& str, std::size_t& offset);
-	template<>
-		 void deserialize<std::vector<std::size_t>>(
-				const DataPack& data_pack, std::vector<std::size_t>& vec, std::size_t& offset);
+		struct BaseSerializer<std::string> {
+			static std::size_t pack_size(const std::string& str);
 
+			static void serialize(
+					DataPack& data_pack, const std::string& data, std::size_t& offset);
+			static void deserialize(
+					const DataPack& data_pack, std::string& str, std::size_t& offset);
+		};
+
+	template<typename T>
+		struct BaseSerializer<std::vector<T>> {
+			static std::size_t pack_size(const std::vector<T>& vec);
+			static std::size_t pack_size(std::size_t n);
+
+			static void serialize(
+					DataPack& data_pack, const std::vector<T>& vec,
+					std::size_t& offset);
+			static void deserialize(
+					const DataPack& data_pack, std::vector<T>& vec,
+					std::size_t& offset);
+		};
+
+	template<typename T>
+		std::size_t BaseSerializer<std::vector<T>>::pack_size(const std::vector<T>& vec) {
+			std::size_t size = communication::pack_size<std::size_t>();
+			for(auto item : vec)
+				size += communication::pack_size(item);
+			return size;
+		};
+
+	template<typename T>
+		std::size_t BaseSerializer<std::vector<T>>::pack_size(std::size_t n) {
+			return communication::pack_size<std::size_t>()
+				+ n * communication::pack_size<T>();
+		}
+
+	template<typename T>
+		void BaseSerializer<std::vector<T>>::serialize(
+				DataPack& data_pack, const std::vector<T>& vec,
+				std::size_t& offset) {
+			BaseSerializer<std::size_t>::serialize(data_pack, vec.size(), offset);
+			for(auto item : vec)
+				BaseSerializer<T>::serialize(data_pack, item, offset);
+		}
+
+	template<typename T>
+		 void BaseSerializer<std::vector<T>>::deserialize(
+				const DataPack& data_pack, std::vector<T>& vec,
+				std::size_t& offset) {
+			 std::size_t size;
+			 BaseSerializer<std::size_t>::deserialize(data_pack, size, offset);
+			 vec.resize(size);
+			 for(std::size_t i = 0; i < size; i++)
+				 BaseSerializer<T>::deserialize(data_pack, vec[i], offset);
+		 }
+
+	template<>
+		struct BaseSerializer<std::vector<DataPack>> {
+			static std::size_t pack_size(const std::vector<DataPack>& vec);
+
+			static void serialize(
+					DataPack& data_pack, const std::vector<DataPack>& data, std::size_t& offset);
+			static void deserialize(
+					const DataPack& data_pack, std::vector<DataPack>& data, std::size_t& offset);
+		};
 
 	template<typename T, typename JsonType>
 		struct JsonSerializer {
@@ -65,49 +152,25 @@ namespace fpmas { namespace communication {
 		struct Serializer<std::vector<T>> {
 			static DataPack serialize(const std::vector<T>& data) {
 				std::vector<DataPack> data_pack(data.size());
-				std::size_t total_size = 0;
-				std::vector<std::size_t> sizes(data.size());
+
 				for(std::size_t i = 0; i < data.size(); i++) {
 					data_pack[i] = Serializer<T>::serialize(data[i]);
-					sizes[i] = data_pack[i].size;
-					total_size += sizes[i];
 				}
-				DataPack total_data_pack(
-						(data.size()+1) * sizeof(std::size_t) // sizes
-						+ total_size, // data
-						1
-						);
+
+				DataPack total_data_pack(pack_size(data_pack), 1);
 				std::size_t offset = 0;
-				communication::serialize(total_data_pack, sizes, offset);
-				for(std::size_t i = 0; i < data_pack.size(); i++) {
-					std::memcpy(
-							&total_data_pack.buffer[offset],
-							data_pack[i].buffer, data_pack[i].size
-							);
-					offset += sizes[i];
-					data_pack[i].free();
-				}
+				communication::serialize(total_data_pack, data_pack, offset);
+
 				return total_data_pack;
 			}
 
 			static std::vector<T> deserialize(const DataPack& pack) {
-				std::vector<std::size_t> sizes;
+				std::vector<DataPack> data_packs;
 				std::size_t offset = 0;
-				communication::deserialize(pack, sizes, offset);
-
-				std::vector<DataPack> data_packs(sizes.size());
-				for(std::size_t i = 0; i < data_packs.size(); i++) {
-					data_packs[i] = {(int) sizes[i], 1};
-					std::memcpy(
-							data_packs[i].buffer, 
-							&pack.buffer[offset],
-							sizes[i]
-							);
-					offset += sizes[i];
-				}
+				communication::deserialize(pack, data_packs, offset);
 
 				std::vector<T> data;
-				for(std::size_t i = 0; i < sizes.size(); i++) {
+				for(std::size_t i = 0; i < data_packs.size(); i++) {
 					data.emplace_back(Serializer<T>::deserialize(data_packs[i]));
 				}
 				return data;

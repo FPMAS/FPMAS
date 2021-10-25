@@ -223,19 +223,20 @@ namespace fpmas { namespace communication {
 						fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode())
 						).dump();
 
-				std::size_t size = 
-					id_size + // Edge id
-					sizeof(int) + // Layer
-					sizeof(float) + // weight
-					id_size + // src_id
-					sizeof(int) + // src location
-					sizeof(std::size_t) + src.size() * sizeof(char) + // src json
-					id_size + // tgt_id
-					sizeof(int) + // tgt location
-					sizeof(std::size_t) + tgt.size() * sizeof(char); // tgt json
+				std::size_t size =
+					pack_size<DistributedId>() + // edge id
+					pack_size<int>() + // layer
+					pack_size<float>() + // edge weight
+					pack_size<DistributedId>() + // src id
+					pack_size<int>() + // src location
+					pack_size(src) + // src json
+					pack_size<DistributedId>() + // tgt id
+					pack_size<int>() + // tgt location
+					pack_size(tgt); // tgt json
+
+				DataPack pack(size, 1);
 
 				std::size_t current_offset = 0;
-				DataPack pack(size, 1);
 				communication::serialize(pack, edge->getId(), current_offset);
 				communication::serialize(pack, edge->getLayer(), current_offset);
 				communication::serialize(pack, edge->getWeight(), current_offset);

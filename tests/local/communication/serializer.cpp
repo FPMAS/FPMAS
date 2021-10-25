@@ -33,7 +33,10 @@ TEST(Serializer, size_vector) {
 		{1, 2, 72, 42}
 	}};
 	std::size_t offset = 0;
-	fpmas::communication::DataPack pack((1+3+1+4)*sizeof(std::size_t), 1);
+	fpmas::communication::DataPack pack(
+			fpmas::communication::pack_size(data[0])
+			+ fpmas::communication::pack_size(data[1])
+			, 1);
 	fpmas::communication::serialize(pack, data[0], offset);
 	fpmas::communication::serialize(pack, data[1], offset);
 
