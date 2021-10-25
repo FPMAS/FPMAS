@@ -1,29 +1,33 @@
-#include "serializer.h"
+#include "datapack.h"
 
-namespace fpmas { namespace communication {
+namespace fpmas { namespace io { namespace datapack {
 
 	/*
 	 * DistributedId
 	 */
 
-	std::size_t BaseSerializer<DistributedId>::pack_size() {
+	std::size_t base_io<DistributedId>::pack_size() {
 		return
-			communication::pack_size<int>()
-			+ communication::pack_size<FPMAS_ID_TYPE>();
+			datapack::pack_size<int>()
+			+ datapack::pack_size<FPMAS_ID_TYPE>();
 	}
 
-	void BaseSerializer<DistributedId>::serialize(
+	std::size_t base_io<DistributedId>::pack_size(const DistributedId &) {
+		return pack_size();
+	}
+
+	void base_io<DistributedId>::write(
 			DataPack& data_pack, const DistributedId& id, std::size_t& offset) {
-		communication::serialize(data_pack, id.rank(), offset);
-		communication::serialize(data_pack, id.id(), offset);
+		datapack::write(data_pack, id.rank(), offset);
+		datapack::write(data_pack, id.id(), offset);
 	}
 
-	void BaseSerializer<DistributedId>::deserialize(
+	void base_io<DistributedId>::read(
 			const DataPack& data_pack, DistributedId& id, std::size_t& offset) {
 		int rank;
-		communication::deserialize(data_pack, rank, offset);
+		datapack::read(data_pack, rank, offset);
 		FPMAS_ID_TYPE _id;
-		communication::deserialize(data_pack, _id, offset);
+		datapack::read(data_pack, _id, offset);
 		id = {rank, _id};
 	}
 
@@ -31,14 +35,14 @@ namespace fpmas { namespace communication {
 	 * std::string
 	 */
 
-	std::size_t BaseSerializer<std::string>::pack_size(const std::string &str) {
-		return communication::pack_size<std::size_t>()
+	std::size_t base_io<std::string>::pack_size(const std::string &str) {
+		return datapack::pack_size<std::size_t>()
 			+ str.size() * sizeof(std::string::value_type);
 	};
 
-	void BaseSerializer<std::string>::serialize(
+	void base_io<std::string>::write(
 			DataPack& data_pack, const std::string& str, std::size_t& offset) {
-		communication::serialize(data_pack, str.size(), offset);
+		datapack::write(data_pack, str.size(), offset);
 		std::memcpy(
 				&data_pack.buffer[offset], str.data(),
 				str.size() * sizeof(std::string::value_type)
@@ -46,10 +50,10 @@ namespace fpmas { namespace communication {
 		offset += str.size() * sizeof(std::string::value_type);
 	}
 
-	void BaseSerializer<std::string>::deserialize(
+	void base_io<std::string>::read(
 			const DataPack& data_pack, std::string& str, std::size_t& offset) {
 		std::size_t size;
-		communication::deserialize(data_pack, size, offset);
+		datapack::read(data_pack, size, offset);
 
 		str = std::string(&data_pack.buffer[offset], size);
 		offset += size * sizeof(char);
@@ -59,22 +63,22 @@ namespace fpmas { namespace communication {
 	 * DataPack
 	 */
 
-	std::size_t BaseSerializer<std::vector<DataPack>>::pack_size(const std::vector<DataPack> &data) {
+	std::size_t base_io<std::vector<DataPack>>::pack_size(const std::vector<DataPack> &data) {
 		std::size_t size
-			= communication::pack_size<std::vector<std::size_t>>(data.size());
+			= datapack::pack_size<std::vector<std::size_t>>(data.size());
 		for(auto item : data)
 			size += item.size;
 		return size;
 	};
 
-	void BaseSerializer<std::vector<DataPack>>::serialize(
+	void base_io<std::vector<DataPack>>::write(
 			DataPack& data_pack, const std::vector<DataPack>& vec,
 			std::size_t& offset) {
 		std::vector<std::size_t> sizes(vec.size());
 		for(std::size_t i = 0; i < vec.size(); i++)
 			sizes[i] = vec[i].size;
 
-		communication::serialize(data_pack, sizes, offset);
+		datapack::write(data_pack, sizes, offset);
 		for(std::size_t i = 0; i < vec.size(); i++) {
 			std::memcpy(
 					&data_pack.buffer[offset],
@@ -84,11 +88,11 @@ namespace fpmas { namespace communication {
 		}
 	}
 
-	void BaseSerializer<std::vector<DataPack>>::deserialize(
+	void base_io<std::vector<DataPack>>::read(
 			const DataPack &data_pack, std::vector<DataPack> &data,
 			std::size_t &offset) {
 		std::vector<std::size_t> sizes;
-		communication::deserialize(data_pack, sizes, offset);
+		datapack::read(data_pack, sizes, offset);
 
 		data.resize(sizes.size());
 		for(std::size_t i = 0; i < data.size(); i++) {
@@ -101,4 +105,4 @@ namespace fpmas { namespace communication {
 			offset += sizes[i];
 		}
 	}
-}}
+}}}

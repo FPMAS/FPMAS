@@ -214,8 +214,7 @@ namespace fpmas { namespace communication {
 
 	template<typename T>
 		struct Serializer<fpmas::graph::EdgePtrWrapper<T>> {
-			static DataPack serialize(const fpmas::graph::EdgePtrWrapper<T>& edge) {
-				constexpr std::size_t id_size = sizeof(int) + sizeof(FPMAS_ID_TYPE);
+			static DataPack to_datapack(const fpmas::graph::EdgePtrWrapper<T>& edge) {
 				std::string src = fpmas::io::json::light_json(
 						fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode())
 						).dump();
@@ -224,45 +223,45 @@ namespace fpmas { namespace communication {
 						).dump();
 
 				std::size_t size =
-					pack_size<DistributedId>() + // edge id
-					pack_size<int>() + // layer
-					pack_size<float>() + // edge weight
-					pack_size<DistributedId>() + // src id
-					pack_size<int>() + // src location
-					pack_size(src) + // src json
-					pack_size<DistributedId>() + // tgt id
-					pack_size<int>() + // tgt location
-					pack_size(tgt); // tgt json
+					io::datapack::pack_size<DistributedId>() + // edge id
+					io::datapack::pack_size<int>() + // layer
+					io::datapack::pack_size<float>() + // edge weight
+					io::datapack::pack_size<DistributedId>() + // src id
+					io::datapack::pack_size<int>() + // src location
+					io::datapack::pack_size(src) + // src json
+					io::datapack::pack_size<DistributedId>() + // tgt id
+					io::datapack::pack_size<int>() + // tgt location
+					io::datapack::pack_size(tgt); // tgt json
 
 				DataPack pack(size, 1);
 
 				std::size_t current_offset = 0;
-				communication::serialize(pack, edge->getId(), current_offset);
-				communication::serialize(pack, edge->getLayer(), current_offset);
-				communication::serialize(pack, edge->getWeight(), current_offset);
-				communication::serialize(
+				io::datapack::write(pack, edge->getId(), current_offset);
+				io::datapack::write(pack, edge->getLayer(), current_offset);
+				io::datapack::write(pack, edge->getWeight(), current_offset);
+				io::datapack::write(
 						pack, edge->getSourceNode()->getId(), current_offset);
-				communication::serialize(
+				io::datapack::write(
 						pack, edge->getSourceNode()->location(), current_offset);
-				communication::serialize(pack, src, current_offset);
-				communication::serialize(
+				io::datapack::write(pack, src, current_offset);
+				io::datapack::write(
 						pack, edge->getTargetNode()->getId(), current_offset);
-				communication::serialize(
+				io::datapack::write(
 						pack, edge->getTargetNode()->location(), current_offset);
-				communication::serialize(pack, tgt, current_offset);
+				io::datapack::write(pack, tgt, current_offset);
 
 				return pack;
 			}
 
-			static fpmas::graph::EdgePtrWrapper<T> deserialize(const DataPack& pack) {
+			static fpmas::graph::EdgePtrWrapper<T> from_datapack(const DataPack& pack) {
 				std::size_t current_offset = 0;
 				DistributedId edge_id;
 				int edge_layer;
 				float edge_weight;
 
-				communication::deserialize<DistributedId>(pack, edge_id, current_offset);
-				communication::deserialize<int>(pack, edge_layer, current_offset);
-				communication::deserialize<float>(pack, edge_weight, current_offset);
+				io::datapack::read<DistributedId>(pack, edge_id, current_offset);
+				io::datapack::read<int>(pack, edge_layer, current_offset);
+				io::datapack::read<float>(pack, edge_weight, current_offset);
 
 				fpmas::api::graph::DistributedEdge<T>* edge
 					= new fpmas::graph::DistributedEdge<T>(edge_id, edge_layer);
@@ -272,9 +271,9 @@ namespace fpmas { namespace communication {
 				int loc;
 				std::string json;
 
-				communication::deserialize<DistributedId>(pack, id, current_offset);
-				communication::deserialize<int>(pack, loc, current_offset);
-				communication::deserialize<std::string>(pack, json, current_offset);
+				io::datapack::read<DistributedId>(pack, id, current_offset);
+				io::datapack::read<int>(pack, loc, current_offset);
+				io::datapack::read<std::string>(pack, json, current_offset);
 
 				edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 						new fpmas::graph::JsonTemporaryNode<T, fpmas::io::json::light_json>(
@@ -282,9 +281,9 @@ namespace fpmas { namespace communication {
 							)
 						));
 
-				communication::deserialize<DistributedId>(pack, id, current_offset);
-				communication::deserialize<int>(pack, loc, current_offset);
-				communication::deserialize<std::string>(pack, json, current_offset);
+				io::datapack::read<DistributedId>(pack, id, current_offset);
+				io::datapack::read<int>(pack, loc, current_offset);
+				io::datapack::read<std::string>(pack, json, current_offset);
 
 				edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 						new fpmas::graph::JsonTemporaryNode<T, fpmas::io::json::light_json>(

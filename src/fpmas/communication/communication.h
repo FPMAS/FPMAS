@@ -462,7 +462,7 @@ namespace fpmas { namespace communication {
 
 		template<typename T> std::vector<T>
 			TypedMpi<T>::gather(const T& data, int root) {
-				DataPack data_pack = Serializer<T>::serialize(data);
+				DataPack data_pack = Serializer<T>::to_datapack(data);
 
 				std::vector<DataPack> import_data_pack
 					= comm.gather(data_pack, MPI_CHAR, root);
@@ -470,7 +470,7 @@ namespace fpmas { namespace communication {
 				std::vector<T> import_data;
 				for(std::size_t i = 0; i < import_data_pack.size(); i++) {
 					import_data.emplace_back(
-							Serializer<T>::deserialize(import_data_pack[i]));
+							Serializer<T>::from_datapack(import_data_pack[i]));
 					import_data_pack[i].free();
 				}
 				return import_data;
@@ -479,7 +479,7 @@ namespace fpmas { namespace communication {
 		template<typename T> std::vector<T>
 			TypedMpi<T>::allGather(const T& data) {
 				// Pack
-				DataPack data_pack = Serializer<T>::serialize(data);
+				DataPack data_pack = Serializer<T>::to_datapack(data);
 
 				std::vector<DataPack> import_data_pack
 					= comm.allGather(data_pack, MPI_CHAR);
@@ -487,7 +487,7 @@ namespace fpmas { namespace communication {
 				std::vector<T> import_data;
 				for(std::size_t i = 0; i < import_data_pack.size(); i++) {
 					import_data.emplace_back(
-							Serializer<T>::deserialize(import_data_pack[i]));
+							Serializer<T>::from_datapack(import_data_pack[i]));
 					import_data_pack[i].free();
 				}
 				return import_data;
@@ -495,23 +495,23 @@ namespace fpmas { namespace communication {
 
 		template<typename T>
 			T TypedMpi<T>::bcast(const T& data, int root) {
-				DataPack data_pack = Serializer<T>::serialize(data);
+				DataPack data_pack = Serializer<T>::to_datapack(data);
 
 				DataPack recv_data_pack = comm.bcast(data_pack, MPI_CHAR, root);
 
-				return Serializer<T>::deserialize(recv_data_pack);
+				return Serializer<T>::from_datapack(recv_data_pack);
 			}
 
 		template<typename T>
 			void TypedMpi<T>::send(const T& data, int destination, int tag) {
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Send JSON to process %i : %s", destination, str.c_str());
-				DataPack data_pack = Serializer<T>::serialize(data);
+				DataPack data_pack = Serializer<T>::to_datapack(data);
 				comm.send(data_pack, MPI_CHAR, destination, tag);
 			}
 		template<typename T>
 			void TypedMpi<T>::Issend(const T& data, int destination, int tag, Request& req) {
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
-				DataPack data_pack = Serializer<T>::serialize(data);
+				DataPack data_pack = Serializer<T>::to_datapack(data);
 				comm.Issend(data_pack, MPI_CHAR, destination, tag, req);
 			}
 
@@ -533,7 +533,7 @@ namespace fpmas { namespace communication {
 				comm.recv(data_pack, MPI_CHAR, source, tag, status);
 
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Receive JSON from process %i : %s", source, data.c_str());
-				return Serializer<T>::deserialize(data_pack);
+				return Serializer<T>::from_datapack(data_pack);
 			}
 	}
 

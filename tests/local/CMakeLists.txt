@@ -2,7 +2,6 @@ set(SOURCES
 	api/graph/basic_id.cpp
 	# Comm
 	communication/communication.cpp
-	communication/serializer.cpp
 	# Graph
 	## Base
 	graph/node.cpp
@@ -46,6 +45,7 @@ set(SOURCES
 	io/breakpoint.cpp
 	io/json.cpp
 	io/formatted_output.cpp
+	io/datapack.cpp
 	# Utils
 	utils/format.cpp
 	utils/perf.cpp
