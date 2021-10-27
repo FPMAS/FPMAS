@@ -120,6 +120,46 @@ namespace fpmas { namespace graph {
 				}
 		};
 
+	template<typename T, typename PackType>
+		class TemporaryNode : public api::graph::TemporaryNode<T> {
+			private:
+				bool parsed_data_pack;
+				PackType pack;
+				communication::DataPack data_pack;
+				DistributedId id;
+				int location;
+
+			public:
+				template<typename _PackType>
+					TemporaryNode(DistributedId id, int location, _PackType&& p) :
+						parsed_data_pack(true),
+						pack(std::forward<_PackType>(p)), id(id), location(location) {
+						}
+
+				TemporaryNode(
+						DistributedId id, int location, communication::DataPack&& data_pack) :
+					parsed_data_pack(false),
+					data_pack(std::move(data_pack)), id(id), location(location) {
+					}
+
+				DistributedId getId() const override {
+					return id;
+				}
+
+				int getLocation() const override {
+					return location;
+				}
+
+				api::graph::DistributedNode<T>* build() override {
+					if(!parsed_data_pack)
+						pack = PackType::parse(data_pack);
+					NodePtrWrapper<T> node = pack.template get<NodePtrWrapper<T>>();
+					node->setLocation(location);
+					return node;
+				}
+
+		};
+
 	/**
 	 * Alias for a DistributedEdge PtrWrapper
 	 */
@@ -210,84 +250,65 @@ namespace nlohmann {
 		};
 }
 
-namespace fpmas { namespace communication {
+namespace fpmas { namespace io { namespace datapack {
 
 	template<typename T>
 		struct Serializer<fpmas::graph::EdgePtrWrapper<T>> {
-			static DataPack to_datapack(const fpmas::graph::EdgePtrWrapper<T>& edge) {
-				std::string src = fpmas::io::json::light_json(
-						fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode())
-						).dump();
-				std::string tgt = fpmas::io::json::light_json(
-						fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode())
-						).dump();
-
+			template<typename PackType>
+			static PackType to_datapack(const fpmas::graph::EdgePtrWrapper<T>& edge) {
 				std::size_t size =
 					io::datapack::pack_size<DistributedId>() + // edge id
 					io::datapack::pack_size<int>() + // layer
 					io::datapack::pack_size<float>() + // edge weight
 					io::datapack::pack_size<DistributedId>() + // src id
 					io::datapack::pack_size<int>() + // src location
-					io::datapack::pack_size(src) + // src json
 					io::datapack::pack_size<DistributedId>() + // tgt id
-					io::datapack::pack_size<int>() + // tgt location
-					io::datapack::pack_size(tgt); // tgt json
+					io::datapack::pack_size<int>(); // tgt location
 
-				DataPack pack(size, 1);
+				PackType pack;
 
-				std::size_t current_offset = 0;
-				io::datapack::write(pack, edge->getId(), current_offset);
-				io::datapack::write(pack, edge->getLayer(), current_offset);
-				io::datapack::write(pack, edge->getWeight(), current_offset);
-				io::datapack::write(
-						pack, edge->getSourceNode()->getId(), current_offset);
-				io::datapack::write(
-						pack, edge->getSourceNode()->location(), current_offset);
-				io::datapack::write(pack, src, current_offset);
-				io::datapack::write(
-						pack, edge->getTargetNode()->getId(), current_offset);
-				io::datapack::write(
-						pack, edge->getTargetNode()->location(), current_offset);
-				io::datapack::write(pack, tgt, current_offset);
+				pack.allocate(size);
+
+				pack.write(edge->getId());
+				pack.write(edge->getLayer());
+				pack.write(edge->getWeight());
+				pack.write(edge->getSourceNode()->getId());
+				pack.write(edge->getSourceNode()->location());
+				pack.write(edge->getTargetNode()->getId());
+				pack.write(edge->getTargetNode()->location());
+
+				pack.push(PackType(
+							fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode())
+							));
+				pack.push(PackType(
+							fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode())
+							));
 
 				return pack;
 			}
 
-			static fpmas::graph::EdgePtrWrapper<T> from_datapack(const DataPack& pack) {
-				std::size_t current_offset = 0;
-				DistributedId edge_id;
-				int edge_layer;
-				float edge_weight;
-
-				io::datapack::read<DistributedId>(pack, edge_id, current_offset);
-				io::datapack::read<int>(pack, edge_layer, current_offset);
-				io::datapack::read<float>(pack, edge_weight, current_offset);
-
+			template<typename PackType>
+			static fpmas::graph::EdgePtrWrapper<T> from_datapack(const PackType& pack) {
 				fpmas::api::graph::DistributedEdge<T>* edge
-					= new fpmas::graph::DistributedEdge<T>(edge_id, edge_layer);
-				edge->setWeight(edge_weight);
-
-				DistributedId id;
-				int loc;
-				std::string json;
-
-				io::datapack::read<DistributedId>(pack, id, current_offset);
-				io::datapack::read<int>(pack, loc, current_offset);
-				io::datapack::read<std::string>(pack, json, current_offset);
+					= new fpmas::graph::DistributedEdge<T>(
+							pack.template read<DistributedId>(),
+							pack.template read<int>()
+							);
+				edge->setWeight(pack.template read<float>());
 
 				edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
-						new fpmas::graph::JsonTemporaryNode<T, fpmas::io::json::light_json>(
-							id, loc, json
+						new fpmas::graph::TemporaryNode<T, PackType>(
+							pack.template read<DistributedId>(),
+							pack.template read<int>(),
+							pack[0]
 							)
 						));
 
-				io::datapack::read<DistributedId>(pack, id, current_offset);
-				io::datapack::read<int>(pack, loc, current_offset);
-				io::datapack::read<std::string>(pack, json, current_offset);
-
 				edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
-						new fpmas::graph::JsonTemporaryNode<T, fpmas::io::json::light_json>(
-							id, loc, json
+						new fpmas::graph::TemporaryNode<T, PackType>(
+							pack.template read<DistributedId>(),
+							pack.template read<int>(),
+							pack[1]
 							)
 						));
 
@@ -315,5 +336,5 @@ namespace fpmas { namespace communication {
 	 *    };
 	 */
 
-}}
+}}}
 #endif

@@ -119,58 +119,186 @@ namespace fpmas { namespace io { namespace datapack {
 		 }
 
 	template<>
-		struct base_io<std::vector<DataPack>> {
-			static std::size_t pack_size(const std::vector<DataPack>& vec);
+		struct base_io<DataPack> {
+			static std::size_t pack_size(const DataPack& data);
 
 			static void write(
-					DataPack& data_pack, const std::vector<DataPack>& data, std::size_t& offset);
+					DataPack& dest, const DataPack& source, std::size_t& offset);
 			static void read(
-					const DataPack& data_pack, std::vector<DataPack>& data, std::size_t& offset);
+					const DataPack& source, DataPack& dest, std::size_t& offset);
 		};
 
-	template<typename T>
-		struct Serializer {
-			static DataPack to_datapack(const T& item) {
-				DataPack pack (pack_size(item), 1);
+	template<template<typename> class S>
+		class ObjectPack {
+			friend base_io<ObjectPack<S>>;
+
+			private:
+			DataPack data;
+			std::vector<ObjectPack<S>> nodes;
+
+			std::size_t write_offset = 0;
+			mutable std::size_t read_offset = 0;
+
+			public:
+			ObjectPack() = default;
+
+			template<typename T>
+				ObjectPack(const T& item)
+				: ObjectPack(S<T>::template to_datapack<ObjectPack<S>>(item)) {
+				}
+
+			template<typename T>
+				ObjectPack<S>& operator=(const T& item) {
+					*this = S<T>::template to_datapack<ObjectPack<S>>(item);
+					return *this;
+				}
+
+			template<typename T>
+				T get() const {
+					return S<T>::from_datapack(*this);
+				}
+
+			void allocate(std::size_t size) {
+				data = {(int) size, 1};
+			}
+
+			template<typename T>
+				void write(const T& item) {
+					datapack::write(this->data, item, write_offset);
+				}
+
+			template<typename T>
+				T read() const {
+					T item;
+					read(item);
+					return item;
+				}
+
+			template<typename T>
+				void read(T& item) const {
+					datapack::read(this->data, item, read_offset);
+				}
+
+			void push(const ObjectPack<S>& node) {
+				nodes.emplace_back(node);
+			}
+
+			void push(ObjectPack<S>&& node) {
+				nodes.emplace_back(std::move(node));
+			}
+
+			typename std::vector<ObjectPack<S>>::const_iterator begin() const {
+				return nodes.begin();
+			}
+
+			typename std::vector<ObjectPack<S>>::const_iterator end() const {
+				return nodes.end();
+			}
+
+			const ObjectPack<S>& operator[](std::size_t i) const {
+				return nodes[i];
+			}
+			ObjectPack<S>& operator[](std::size_t i) {
+				return nodes[i];
+			}
+
+			DataPack dump() const {
+				DataPack pack(pack_size(*this), 1);
 				std::size_t offset = 0;
-				write(pack, item, offset);
+				datapack::write(pack, *this, offset);
 				return pack;
 			}
 
-			static T from_datapack(const DataPack& pack) {
-				T item;
+			static ObjectPack<S> parse(const DataPack& data_pack) {
+				ObjectPack<S> pack;
 				std::size_t offset = 0;
-				read(pack, item, offset);
-				return item;
+				datapack::read(data_pack, pack, offset);
+				return pack;
 			}
+		};
+
+	template<template<typename> class S>
+		struct base_io<ObjectPack<S>> {
+			static std::size_t pack_size(const ObjectPack<S>& pack) {
+				return datapack::pack_size(pack.data)
+					+ datapack::pack_size(pack.nodes);
+			}
+
+			static void write(
+					DataPack& data_pack, const ObjectPack<S>& pack, std::size_t& offset) {
+				datapack::write(data_pack, pack.data, offset);
+
+				datapack::write(data_pack, pack.nodes, offset);
+			}
+
+			static void read(
+					const DataPack& data_pack, ObjectPack<S>& pack, std::size_t& offset) {
+				datapack::read(data_pack, pack.data, offset);
+
+				datapack::read(data_pack, pack.nodes, offset);
+			}
+
+		};
+
+/*
+ *    template<typename T>
+ *        struct Serializer {
+ *            template<typename PackType>
+ *            static PackType to_datapack(const T& item) {
+ *                PackType pack;
+ *                pack.allocate(pack_size(item));
+ *                pack.write(item);
+ *                return pack;
+ *            }
+ *
+ *            template<typename PackType>
+ *            static T from_datapack(const PackType& pack) {
+ *                return pack.template read<T>();
+ *            }
+ *        };
+ */
+
+	template<typename T, typename JsonType>
+		struct JsonSerializer {
+			template<typename PackType>
+			static PackType to_datapack(const T& data) {
+				std::string str = JsonType(data).dump();
+				PackType pack;
+				pack.allocate(pack_size(str));
+				pack.write(str);
+				return pack;
+			}
+
+			template<typename PackType>
+			static T from_datapack(const PackType& pack) {
+				return JsonType::parse(
+						pack.template read<std::string>()
+						).template get<T>();
+			}
+		};
+
+	template<typename T>
+		struct Serializer : public JsonSerializer<T, nlohmann::json> {
 		};
 
 	template<typename T>
 		struct Serializer<std::vector<T>> {
-			static DataPack to_datapack(const std::vector<T>& data) {
-				std::vector<DataPack> data_pack(data.size());
+			template<typename PackType>
+			static PackType to_datapack(const std::vector<T>& data) {
+				PackType pack;
 
 				for(std::size_t i = 0; i < data.size(); i++) {
 					// Serialize
-					data_pack[i] = Serializer<T>::to_datapack(data[i]);
+					pack.push(PackType(data[i]));
 				}
-
-				DataPack total_data_pack(io::datapack::pack_size(data_pack), 1);
-				std::size_t offset = 0;
-				io::datapack::write(total_data_pack, data_pack, offset);
-
-				return {total_data_pack};
+				return pack;
 			}
 
-			static std::vector<T> from_datapack(const DataPack& pack) {
-				std::vector<DataPack> data_packs;
-				std::size_t offset = 0;
-				io::datapack::read(pack, data_packs, offset);
-
+			template<typename PackType>
+			static std::vector<T> from_datapack(const PackType& pack) {
 				std::vector<T> data;
-				for(std::size_t i = 0; i < data_packs.size(); i++) {
-					data.emplace_back(Serializer<T>::from_datapack(data_packs[i]));
-				}
+				for(auto& item : pack)
+					data.emplace_back(item.template get<T>());
 				return data;
 			}
 		};

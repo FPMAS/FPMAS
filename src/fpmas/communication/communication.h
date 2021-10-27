@@ -342,7 +342,7 @@ namespace fpmas { namespace communication {
 		 * @tparam T data transmit, serializable into a `JsonType`
 		 * @tparam nlohmann json type, based on `nlohmann::basic_json`
 		 */
-		template<typename T>
+		template<typename T, typename PackType>
 			class TypedMpi : public api::communication::TypedMpi<T> {
 				private:
 					api::communication::MpiCommunicator& comm;
@@ -411,14 +411,14 @@ namespace fpmas { namespace communication {
 					T recv(int source, int tag, Status& status = Status::IGNORE) override;
 			};
 
-		template<typename T> std::unordered_map<int, std::vector<T>>
-			TypedMpi<T>::migrate(std::unordered_map<int, std::vector<T>> export_map) {
+		template<typename T, typename PackType> std::unordered_map<int, std::vector<T>>
+			TypedMpi<T, PackType>::migrate(std::unordered_map<int, std::vector<T>> export_map) {
 				std::unordered_map<int, DataPack> import_data_pack;
 
 				{
 					// Pack
 					std::unordered_map<int, DataPack> export_data_pack;
-					serialize(export_data_pack, export_map);
+					serialize<PackType>(export_data_pack, export_map);
 
 					// export_data_pack buffers are moved to the temporary allToAll
 					// argument, and automatically freed by the allToAll
@@ -429,20 +429,20 @@ namespace fpmas { namespace communication {
 				}
 
 				std::unordered_map<int, std::vector<T>> import_map;
-				deserialize(std::move(import_data_pack), import_map);
+				deserialize<PackType>(std::move(import_data_pack), import_map);
 				
 				// Should perform "copy elision"
 				return import_map;
 			}
 
-		template<typename T> std::unordered_map<int, T>
-			TypedMpi<T>::allToAll(std::unordered_map<int, T> export_map) {
+		template<typename T, typename PackType> std::unordered_map<int, T>
+			TypedMpi<T, PackType>::allToAll(std::unordered_map<int, T> export_map) {
 				// Pack
 				std::unordered_map<int, DataPack> import_data_pack;
 
 				{
 					std::unordered_map<int, DataPack> export_data_pack;
-					serialize(export_data_pack, export_map);
+					serialize<PackType>(export_data_pack, export_map);
 
 					// export_data_pack buffers are moved to the temporary allToAll
 					// argument, and automatically freed by the allToAll
@@ -453,16 +453,16 @@ namespace fpmas { namespace communication {
 				}
 
 				std::unordered_map<int, T> import_map;
-				deserialize(std::move(import_data_pack), import_map);
+				deserialize<PackType>(std::move(import_data_pack), import_map);
 				
 
 				// Should perform "copy elision"
 				return import_map;
 			}
 
-		template<typename T> std::vector<T>
-			TypedMpi<T>::gather(const T& data, int root) {
-				DataPack data_pack = Serializer<T>::to_datapack(data);
+		template<typename T, typename PackType> std::vector<T>
+			TypedMpi<T, PackType>::gather(const T& data, int root) {
+				DataPack data_pack = PackType(data).dump();
 
 				std::vector<DataPack> import_data_pack
 					= comm.gather(data_pack, MPI_CHAR, root);
@@ -470,16 +470,18 @@ namespace fpmas { namespace communication {
 				std::vector<T> import_data;
 				for(std::size_t i = 0; i < import_data_pack.size(); i++) {
 					import_data.emplace_back(
-							Serializer<T>::from_datapack(import_data_pack[i]));
+							PackType::parse(
+								import_data_pack[i]).template get<T>()
+							);
 					import_data_pack[i].free();
 				}
 				return import_data;
 			}
 
-		template<typename T> std::vector<T>
-			TypedMpi<T>::allGather(const T& data) {
+		template<typename T, typename PackType> std::vector<T>
+			TypedMpi<T, PackType>::allGather(const T& data) {
 				// Pack
-				DataPack data_pack = Serializer<T>::to_datapack(data);
+				DataPack data_pack = PackType(data).dump();
 
 				std::vector<DataPack> import_data_pack
 					= comm.allGather(data_pack, MPI_CHAR);
@@ -487,45 +489,47 @@ namespace fpmas { namespace communication {
 				std::vector<T> import_data;
 				for(std::size_t i = 0; i < import_data_pack.size(); i++) {
 					import_data.emplace_back(
-							Serializer<T>::from_datapack(import_data_pack[i]));
+							PackType::parse(
+								import_data_pack[i]).template get<T>()
+							);
 					import_data_pack[i].free();
 				}
 				return import_data;
 			}
 
-		template<typename T>
-			T TypedMpi<T>::bcast(const T& data, int root) {
-				DataPack data_pack = Serializer<T>::to_datapack(data);
+		template<typename T, typename PackType>
+			T TypedMpi<T, PackType>::bcast(const T& data, int root) {
+				DataPack data_pack = PackType(data).dump();
 
 				DataPack recv_data_pack = comm.bcast(data_pack, MPI_CHAR, root);
 
-				return Serializer<T>::from_datapack(recv_data_pack);
+				return PackType::parse(recv_data_pack).template get<T>();
 			}
 
-		template<typename T>
-			void TypedMpi<T>::send(const T& data, int destination, int tag) {
+		template<typename T, typename PackType>
+			void TypedMpi<T, PackType>::send(const T& data, int destination, int tag) {
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Send JSON to process %i : %s", destination, str.c_str());
-				DataPack data_pack = Serializer<T>::to_datapack(data);
+				DataPack data_pack = PackType(data).dump();
 				comm.send(data_pack, MPI_CHAR, destination, tag);
 			}
-		template<typename T>
-			void TypedMpi<T>::Issend(const T& data, int destination, int tag, Request& req) {
+		template<typename T, typename PackType>
+			void TypedMpi<T, PackType>::Issend(const T& data, int destination, int tag, Request& req) {
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
-				DataPack data_pack = Serializer<T>::to_datapack(data);
+				DataPack data_pack = PackType(data).dump();
 				comm.Issend(data_pack, MPI_CHAR, destination, tag, req);
 			}
 
-		template<typename T>
-			void TypedMpi<T>::probe(int source, int tag, Status &status) {
+		template<typename T, typename PackType>
+			void TypedMpi<T, PackType>::probe(int source, int tag, Status &status) {
 				return comm.probe(MPI_CHAR, source, tag, status);
 			}
-		template<typename T>
-			bool TypedMpi<T>::Iprobe(int source, int tag, Status &status) {
+		template<typename T, typename PackType>
+			bool TypedMpi<T, PackType>::Iprobe(int source, int tag, Status &status) {
 				return comm.Iprobe(MPI_CHAR, source, tag, status);
 			}
 
-		template<typename T>
-			T TypedMpi<T>::recv(int source, int tag, Status& status) {
+		template<typename T, typename PackType>
+			T TypedMpi<T, PackType>::recv(int source, int tag, Status& status) {
 				Status message_to_receive_status;
 				this->probe(source, tag, message_to_receive_status);
 				int count = message_to_receive_status.item_count;
@@ -533,7 +537,7 @@ namespace fpmas { namespace communication {
 				comm.recv(data_pack, MPI_CHAR, source, tag, status);
 
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Receive JSON from process %i : %s", source, data.c_str());
-				return Serializer<T>::from_datapack(data_pack);
+				return PackType::parse(data_pack).template get<T>();
 			}
 	}
 
@@ -565,7 +569,7 @@ namespace fpmas { namespace communication {
 		//};
 
 	template<typename T>
-		using TypedMpi = detail::TypedMpi<T>;
+		using TypedMpi = detail::TypedMpi<T, io::datapack::ObjectPack<io::datapack::Serializer>>;
 
 
 	/**

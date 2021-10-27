@@ -693,8 +693,8 @@ namespace fpmas { namespace graph {
 					}
 
 					// Serializes nodes and edges
-					communication::serialize(serial_nodes, node_export_map);
-					communication::serialize(serial_edges, edge_export_map);
+					communication::serialize<io::datapack::ObjectPack<io::datapack::Serializer>>(serial_nodes, node_export_map);
+					communication::serialize<io::datapack::ObjectPack<io::datapack::Serializer>>(serial_edges, edge_export_map);
 
 					// Once serialized nodes and associated edges can
 					// eventually be cleared. This might save memory for the
@@ -715,7 +715,7 @@ namespace fpmas { namespace graph {
 				{
 					// Node import
 					std::unordered_map<int, std::vector<NodePtrWrapper<T>>> node_import;
-					communication::deserialize(
+					communication::deserialize<io::datapack::ObjectPack<io::datapack::Serializer>>(
 							getMpiCommunicator().allToAll(std::move(serial_nodes), MPI_CHAR),
 							node_import
 							);
@@ -731,7 +731,7 @@ namespace fpmas { namespace graph {
 				{
 					// Edge import
 					std::unordered_map<int, std::vector<EdgePtrWrapper<T>>> edge_import;
-					communication::deserialize(
+					communication::deserialize<io::datapack::ObjectPack<io::datapack::Serializer>>(
 							getMpiCommunicator().allToAll(std::move(serial_edges), MPI_CHAR),
 							edge_import
 							);
