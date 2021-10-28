@@ -471,9 +471,8 @@ namespace fpmas { namespace communication {
 				for(std::size_t i = 0; i < import_data_pack.size(); i++) {
 					import_data.emplace_back(
 							PackType::parse(
-								import_data_pack[i]).template get<T>()
+								std::move(import_data_pack[i])).template get<T>()
 							);
-					import_data_pack[i].free();
 				}
 				return import_data;
 			}
@@ -490,9 +489,8 @@ namespace fpmas { namespace communication {
 				for(std::size_t i = 0; i < import_data_pack.size(); i++) {
 					import_data.emplace_back(
 							PackType::parse(
-								import_data_pack[i]).template get<T>()
+								std::move(import_data_pack[i])).template get<T>()
 							);
-					import_data_pack[i].free();
 				}
 				return import_data;
 			}
@@ -503,7 +501,7 @@ namespace fpmas { namespace communication {
 
 				DataPack recv_data_pack = comm.bcast(data_pack, MPI_CHAR, root);
 
-				return PackType::parse(recv_data_pack).template get<T>();
+				return PackType::parse(std::move(recv_data_pack)).template get<T>();
 			}
 
 		template<typename T, typename PackType>
@@ -537,7 +535,7 @@ namespace fpmas { namespace communication {
 				comm.recv(data_pack, MPI_CHAR, source, tag, status);
 
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Receive JSON from process %i : %s", source, data.c_str());
-				return PackType::parse(data_pack).template get<T>();
+				return PackType::parse(std::move(data_pack)).template get<T>();
 			}
 	}
 

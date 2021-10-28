@@ -26,7 +26,7 @@ namespace fpmas { namespace communication {
 					) {
 				for(auto& item : data_pack) {
 					data.emplace(item.first, PackType::parse(
-							item.second
+							std::move(item.second)
 							).template get<T>());
 					item.second.free();
 				}

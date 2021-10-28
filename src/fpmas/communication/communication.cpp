@@ -157,9 +157,9 @@ namespace fpmas { namespace communication {
 
 			void* send_buffer = std::malloc(current_sdispls * type_size);
 			for(int i = 0; i < getSize(); i++) {
-				std::memcpy(&((char*) send_buffer)[sdispls[i]], data_pack[i].buffer, data_pack[i].size);
-				// Frees the temporary data pack, that is not required any more
-				data_pack[i].free();
+				DataPack pack = std::move(data_pack[i]);
+				std::memcpy(&((char*) send_buffer)[sdispls[i]], pack.buffer, data_pack[i].size);
+				// The temporary data pack is freed
 			}
 
 			int* recvcounts = (int*) std::malloc(getSize()*sizeof(int));
@@ -190,10 +190,10 @@ namespace fpmas { namespace communication {
 			std::unordered_map<int, DataPack> imported_data_pack;
 			for (int i = 0; i < getSize(); i++) {
 				if(recvcounts[i] > 0) {
-					imported_data_pack.emplace(i, DataPack(recvcounts[i], type_size));
-					DataPack& dataPack = imported_data_pack[i];
+					DataPack pack(recvcounts[i], type_size);
 
-					std::memcpy(dataPack.buffer, &((char*) recv_buffer)[rdispls[i]], dataPack.size);
+					std::memcpy(pack.buffer, &((char*) recv_buffer)[rdispls[i]], pack.size);
+					imported_data_pack.emplace(i, std::move(pack));
 				}
 			}
 

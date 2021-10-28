@@ -152,7 +152,7 @@ namespace fpmas { namespace graph {
 
 				api::graph::DistributedNode<T>* build() override {
 					if(!parsed_data_pack)
-						pack = PackType::parse(data_pack);
+						pack = PackType::parse(std::move(data_pack));
 					NodePtrWrapper<T> node = pack.template get<NodePtrWrapper<T>>();
 					node->setLocation(location);
 					return node;
@@ -256,14 +256,20 @@ namespace fpmas { namespace io { namespace datapack {
 		struct Serializer<fpmas::graph::EdgePtrWrapper<T>> {
 			template<typename PackType>
 			static PackType to_datapack(const fpmas::graph::EdgePtrWrapper<T>& edge) {
+				PackType src = 
+					fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode());
+				PackType tgt =
+					fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode());
 				std::size_t size =
 					io::datapack::pack_size<DistributedId>() + // edge id
 					io::datapack::pack_size<int>() + // layer
 					io::datapack::pack_size<float>() + // edge weight
 					io::datapack::pack_size<DistributedId>() + // src id
 					io::datapack::pack_size<int>() + // src location
+					io::datapack::pack_size(src) +
 					io::datapack::pack_size<DistributedId>() + // tgt id
-					io::datapack::pack_size<int>(); // tgt location
+					io::datapack::pack_size<int>() + // tgt location
+					io::datapack::pack_size(tgt);
 
 				PackType pack;
 
@@ -274,15 +280,10 @@ namespace fpmas { namespace io { namespace datapack {
 				pack.write(edge->getWeight());
 				pack.write(edge->getSourceNode()->getId());
 				pack.write(edge->getSourceNode()->location());
+				pack.write(src);
 				pack.write(edge->getTargetNode()->getId());
 				pack.write(edge->getTargetNode()->location());
-
-				pack.push(PackType(
-							fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode())
-							));
-				pack.push(PackType(
-							fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode())
-							));
+				pack.write(tgt);
 
 				return pack;
 			}
@@ -300,7 +301,7 @@ namespace fpmas { namespace io { namespace datapack {
 						new fpmas::graph::TemporaryNode<T, PackType>(
 							pack.template read<DistributedId>(),
 							pack.template read<int>(),
-							pack[0]
+							pack.template read<PackType>()
 							)
 						));
 
@@ -308,7 +309,7 @@ namespace fpmas { namespace io { namespace datapack {
 						new fpmas::graph::TemporaryNode<T, PackType>(
 							pack.template read<DistributedId>(),
 							pack.template read<int>(),
-							pack[1]
+							pack.template read<PackType>()
 							)
 						));
 

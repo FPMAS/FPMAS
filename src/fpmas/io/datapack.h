@@ -134,9 +134,8 @@ namespace fpmas { namespace io { namespace datapack {
 
 			private:
 			DataPack data;
-			std::vector<ObjectPack<S>> nodes;
 
-			std::size_t write_offset = 0;
+			mutable std::size_t write_offset = 0;
 			mutable std::size_t read_offset = 0;
 
 			public:
@@ -179,40 +178,14 @@ namespace fpmas { namespace io { namespace datapack {
 					datapack::read(this->data, item, read_offset);
 				}
 
-			void push(const ObjectPack<S>& node) {
-				nodes.emplace_back(node);
-			}
-
-			void push(ObjectPack<S>&& node) {
-				nodes.emplace_back(std::move(node));
-			}
-
-			typename std::vector<ObjectPack<S>>::const_iterator begin() const {
-				return nodes.begin();
-			}
-
-			typename std::vector<ObjectPack<S>>::const_iterator end() const {
-				return nodes.end();
-			}
-
-			const ObjectPack<S>& operator[](std::size_t i) const {
-				return nodes[i];
-			}
-			ObjectPack<S>& operator[](std::size_t i) {
-				return nodes[i];
-			}
-
 			DataPack dump() const {
-				DataPack pack(pack_size(*this), 1);
-				std::size_t offset = 0;
-				datapack::write(pack, *this, offset);
-				return pack;
+				write_offset = 0;
+				return std::move(data);
 			}
 
-			static ObjectPack<S> parse(const DataPack& data_pack) {
+			static ObjectPack<S> parse(DataPack&& data_pack) {
 				ObjectPack<S> pack;
-				std::size_t offset = 0;
-				datapack::read(data_pack, pack, offset);
+				pack.data = std::move(data_pack);
 				return pack;
 			}
 		};
@@ -220,22 +193,17 @@ namespace fpmas { namespace io { namespace datapack {
 	template<template<typename> class S>
 		struct base_io<ObjectPack<S>> {
 			static std::size_t pack_size(const ObjectPack<S>& pack) {
-				return datapack::pack_size(pack.data)
-					+ datapack::pack_size(pack.nodes);
+				return datapack::pack_size(pack.data);
 			}
 
 			static void write(
 					DataPack& data_pack, const ObjectPack<S>& pack, std::size_t& offset) {
 				datapack::write(data_pack, pack.data, offset);
-
-				datapack::write(data_pack, pack.nodes, offset);
 			}
 
 			static void read(
 					const DataPack& data_pack, ObjectPack<S>& pack, std::size_t& offset) {
 				datapack::read(data_pack, pack.data, offset);
-
-				datapack::read(data_pack, pack.nodes, offset);
 			}
 
 		};
@@ -285,20 +253,30 @@ namespace fpmas { namespace io { namespace datapack {
 		struct Serializer<std::vector<T>> {
 			template<typename PackType>
 			static PackType to_datapack(const std::vector<T>& data) {
-				PackType pack;
+				std::vector<PackType> packs(data.size());
 
 				for(std::size_t i = 0; i < data.size(); i++) {
 					// Serialize
-					pack.push(PackType(data[i]));
+					packs[i] = PackType(data[i]);
 				}
-				return pack;
+				PackType total_pack;
+				total_pack.allocate(datapack::pack_size(packs));
+				total_pack.write(packs);
+				return total_pack;
 			}
 
 			template<typename PackType>
 			static std::vector<T> from_datapack(const PackType& pack) {
+				std::vector<PackType> packs
+					= pack.template read<std::vector<PackType>>();
+				// Cannot preallocate data vector if T is not default
+				// constructible
 				std::vector<T> data;
-				for(auto& item : pack)
-					data.emplace_back(item.template get<T>());
+				for(auto& item : packs) {
+					PackType pack = std::move(item);
+					data.emplace_back(pack.template get<T>());
+					// Pack is freed
+				}
 				return data;
 			}
 		};
