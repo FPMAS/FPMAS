@@ -158,7 +158,7 @@ namespace fpmas { namespace communication {
 			void* send_buffer = std::malloc(current_sdispls * type_size);
 			for(int i = 0; i < getSize(); i++) {
 				DataPack pack = std::move(data_pack[i]);
-				std::memcpy(&((char*) send_buffer)[sdispls[i]], pack.buffer, data_pack[i].size);
+				std::memcpy(&((char*) send_buffer)[sdispls[i]], pack.buffer, pack.size);
 				// The temporary data pack is freed
 			}
 

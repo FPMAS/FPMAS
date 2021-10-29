@@ -69,6 +69,8 @@ namespace fpmas { namespace api { namespace communication {
 				: size(other.size), count(other.count) {
 					buffer = other.buffer;
 					other.buffer = (char*) std::malloc(0);
+					other.size = 0;
+					other.count = 0;
 				}
 
 			/**
@@ -79,6 +81,8 @@ namespace fpmas { namespace api { namespace communication {
 				// A buffer of size 0 is assigned to prevent issues when
 				// std::free() is called again in the DataPack destructor.
 				buffer = (char*) std::malloc(0);
+				size = 0;
+				count = 0;
 			}
 
 			/**
@@ -112,6 +116,8 @@ namespace fpmas { namespace api { namespace communication {
 				count = other.count;
 				buffer = other.buffer;
 				other.buffer = (char*) std::malloc(0);
+				other.size = 0;
+				other.count = 0;
 				return *this;
 			}
 
