@@ -64,7 +64,7 @@ namespace fpmas { namespace io { namespace datapack {
 	 */
 
 	std::size_t base_io<DataPack>::pack_size(const DataPack& data) {
-		return datapack::pack_size<decltype(data.size)>() + data.size;
+		return datapack::pack_size<std::size_t>() + data.size;
 	}
 
 	void base_io<DataPack>::write(DataPack& dest, const DataPack& source, std::size_t& offset) {
@@ -75,10 +75,10 @@ namespace fpmas { namespace io { namespace datapack {
 	}
 
 	void base_io<DataPack>::read(const DataPack& source, DataPack& dest, std::size_t& offset) {
-		int size;
+		std::size_t size;
 		datapack::read(source, size, offset);
 
-		dest = {(int) size, 1};
+		dest = {size, 1};
 		std::memcpy(dest.buffer, &source.buffer[offset], dest.size);
 		offset+=dest.size;
 	}

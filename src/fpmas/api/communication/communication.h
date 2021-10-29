@@ -20,11 +20,11 @@ namespace fpmas { namespace api { namespace communication {
 			 *
 			 * `size = count * data_size`
 			 */
-			int size;
+			std::size_t size;
 			/**
 			 * Items count in the buffer.
 			 */
-			int count;
+			std::size_t count;
 			/**
 			 * Pointer to the internal buffer.
 			 */
@@ -33,7 +33,8 @@ namespace fpmas { namespace api { namespace communication {
 			/**
 			 * Allocates a buffer of `count` items of size `data_size`.
 			 */
-			DataPack(int count, size_t data_size) : size(data_size*count), count(count) {
+			DataPack(std::size_t count, std::size_t data_size)
+				: size(data_size*count), count(count) {
 				buffer = (char*) std::malloc(size);
 			}
 

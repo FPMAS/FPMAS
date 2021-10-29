@@ -447,7 +447,7 @@ namespace fpmas { namespace io {
 					}
 
 				void allocate(std::size_t size) {
-					_data = {(int) size, 1};
+					_data = {size, 1};
 				}
 
 				template<typename T>
