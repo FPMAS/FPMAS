@@ -21,7 +21,7 @@ class MpiTest : public Test {
 		}
 
 		fpmas::api::communication::DataPack buildDataPack(std::string str) {
-			fpmas::api::communication::DataPack pack {(int) str.size(), sizeof(char)};
+			fpmas::api::communication::DataPack pack {str.size(), sizeof(char)};
 			std::memcpy(pack.buffer, str.data(), str.size());
 			return pack;
 		}
@@ -172,6 +172,29 @@ void from_json(const nlohmann::json& j, FakeType& o) {
 	j.at("f2").get_to(o.field2);
 	j.at("f3").get_to(o.field3);
 }
+
+namespace fpmas { namespace io { namespace datapack {
+	template<>
+	struct Serializer<FakeType> {
+		static void to_datapack(ObjectPack& pack, const FakeType& fake) {
+			std::size_t size =
+				pack_size<int>() + pack_size(fake.field2) + pack_size<double>();
+			pack.allocate(size);
+			pack.write(fake.field);
+			pack.write(fake.field2);
+			pack.write(fake.field3);
+		}
+
+		static FakeType from_datapack(const ObjectPack& pack) {
+			FakeType fake;
+			pack.read(fake.field);
+			pack.read(fake.field2);
+			pack.read(fake.field3);
+
+			return fake;
+		}
+	};
+}}}
 
 TEST_F(MpiTest, all_to_all_fake_test) {
 	TypedMpi<FakeType> mpi {comm};

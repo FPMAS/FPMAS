@@ -255,7 +255,7 @@ namespace fpmas { namespace io { namespace datapack {
 	template<typename T>
 		struct Serializer<fpmas::graph::EdgePtrWrapper<T>> {
 			template<typename PackType>
-			static PackType to_datapack(const fpmas::graph::EdgePtrWrapper<T>& edge) {
+			static void to_datapack(PackType& pack, const fpmas::graph::EdgePtrWrapper<T>& edge) {
 				PackType src = 
 					fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode());
 				PackType tgt =
@@ -271,8 +271,6 @@ namespace fpmas { namespace io { namespace datapack {
 					io::datapack::pack_size<int>() + // tgt location
 					io::datapack::pack_size(tgt);
 
-				PackType pack;
-
 				pack.allocate(size);
 
 				pack.write(edge->getId());
@@ -284,8 +282,6 @@ namespace fpmas { namespace io { namespace datapack {
 				pack.write(edge->getTargetNode()->getId());
 				pack.write(edge->getTargetNode()->location());
 				pack.write(tgt);
-
-				return pack;
 			}
 
 			template<typename PackType>

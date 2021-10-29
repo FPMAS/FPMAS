@@ -413,6 +413,29 @@ namespace fpmas { namespace io {
 					base_io<T>::read(data_pack, vec[i], offset);
 			}
 
+		template<typename T1, typename T2>
+			struct base_io<std::pair<T1, T2>> {
+				static std::size_t pack_size(const std::pair<T1, T2>& pair) {
+					return datapack::pack_size(pair.first)
+						+ datapack::pack_size(pair.second);
+				}
+
+				static void write(
+						DataPack& data_pack, const std::pair<T1, T2>& pair,
+						std::size_t& offset) {
+					datapack::write(data_pack, pair.first, offset);
+					datapack::write(data_pack, pair.second, offset);
+				}
+
+				static void read(
+						const DataPack& data_pack, std::pair<T1, T2>& pair,
+						std::size_t& offset) {
+					datapack::read(data_pack, pair.first, offset);
+					datapack::read(data_pack, pair.second, offset);
+				}
+
+			};
+
 		template<template<typename> class S>
 			class BasicObjectPack {
 				friend base_io<BasicObjectPack<S>>;
@@ -427,13 +450,13 @@ namespace fpmas { namespace io {
 				BasicObjectPack() = default;
 
 				template<typename T>
-					BasicObjectPack(const T& item)
-					: BasicObjectPack(S<T>::template to_datapack<BasicObjectPack<S>>(item)) {
+					BasicObjectPack(const T& item) {
+						S<T>::to_datapack(*this, item);
 					}
 
 				template<typename T>
 					BasicObjectPack<S>& operator=(const T& item) {
-						*this = S<T>::template to_datapack<BasicObjectPack<S>>(item);
+						S<T>::to_datapack(*this, item);
 						return *this;
 					}
 
@@ -538,8 +561,7 @@ namespace fpmas { namespace io {
 		 *    template<typename T>
 		 *        struct Serializer {
 		 *            template<typename PackType>
-		 *            static PackType to_datapack(const T& item) {
-		 *                PackType pack;
+		 *            static void to_datapack(PackType& pack, const T& item) {
 		 *                pack.allocate(pack_size(item));
 		 *                pack.write(item);
 		 *                return pack;
@@ -555,12 +577,10 @@ namespace fpmas { namespace io {
 		template<typename T, typename JsonType>
 			struct JsonSerializer {
 				template<typename PackType>
-					static PackType to_datapack(const T& data) {
+					static void to_datapack(PackType& pack, const T& data) {
 						std::string str = JsonType(data).dump();
-						PackType pack;
 						pack.allocate(pack_size(str));
 						pack.write(str);
-						return pack;
 					}
 
 				template<typename PackType>
@@ -578,17 +598,15 @@ namespace fpmas { namespace io {
 		template<typename T>
 			struct Serializer<std::vector<T>> {
 				template<typename PackType>
-					static PackType to_datapack(const std::vector<T>& data) {
+					static void to_datapack(PackType& pack, const std::vector<T>& data) {
 						std::vector<PackType> packs(data.size());
 
 						for(std::size_t i = 0; i < data.size(); i++) {
 							// Serialize
 							packs[i] = PackType(data[i]);
 						}
-						PackType total_pack;
-						total_pack.allocate(datapack::pack_size(packs));
-						total_pack.write(packs);
-						return total_pack;
+						pack.allocate(datapack::pack_size(packs));
+						pack.write(packs);
 					}
 
 				template<typename PackType>
@@ -609,16 +627,24 @@ namespace fpmas { namespace io {
 
 		typedef BasicObjectPack<Serializer> ObjectPack;
 
-		template<typename T>
-			struct LightSerializer : public JsonSerializer<T, fpmas::io::json::light_json> {
+		template<typename T> struct LightSerializer;
 
+		typedef BasicObjectPack<LightSerializer> LightObjectPack;
+
+		template<typename T>
+			struct LightSerializer {
+				static void to_datapack(LightObjectPack& pack, const T& data) {
+					return JsonSerializer<T, fpmas::io::json::light_json>::to_datapack(pack, data);
+				}
+
+				static T from_datapack(const LightObjectPack& pack) {
+					return JsonSerializer<T, fpmas::io::json::light_json>::from_datapack(pack);
+				}
 			};
 
 		template<typename T>
 			struct LightSerializer<std::vector<T>> : public Serializer<std::vector<T>> {
 			};
-
-		typedef BasicObjectPack<LightSerializer> LightObjectPack;
 	}}
 }
 #endif
