@@ -37,7 +37,7 @@ namespace fpmas { namespace io { namespace datapack {
 
 	std::size_t base_io<std::string>::pack_size(const std::string &str) {
 		return datapack::pack_size<std::size_t>()
-			+ str.size() * sizeof(std::string::value_type);
+			+ str.size() * datapack::pack_size<char>();
 	};
 
 	void base_io<std::string>::write(
@@ -45,9 +45,9 @@ namespace fpmas { namespace io { namespace datapack {
 		datapack::write(data_pack, str.size(), offset);
 		std::memcpy(
 				&data_pack.buffer[offset], str.data(),
-				str.size() * sizeof(std::string::value_type)
+				str.size() * datapack::pack_size<char>()
 				);
-		offset += str.size() * sizeof(std::string::value_type);
+		offset += str.size() * datapack::pack_size<char>();
 	}
 
 	void base_io<std::string>::read(
@@ -56,7 +56,7 @@ namespace fpmas { namespace io { namespace datapack {
 		datapack::read(data_pack, size, offset);
 
 		str = std::string(&data_pack.buffer[offset], size);
-		offset += size * sizeof(char);
+		offset += size * datapack::pack_size<char>();
 	}
 
 	/*

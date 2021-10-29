@@ -59,7 +59,7 @@ TEST(DistributedEdge, TemporaryNode) {
 	fpmas::graph::DistributedNode<int> node({2, 6}, 12);
 	node.setWeight(1.7f);
 	node.setLocation(4);
-	fpmas::io::datapack::ObjectPack<fpmas::io::datapack::Serializer> p
+	fpmas::io::datapack::ObjectPack p
 		= fpmas::graph::NodePtrWrapper<int>(&node);
 
 	fpmas::graph::TemporaryNode<int, decltype(p)> temp_node({2, 6}, 4, p);
@@ -95,9 +95,55 @@ TEST(DistributedEdge, ObjectPack) {
 	edge.setTargetNode(&tgt);
 
 	auto edge_ptr = fpmas::graph::EdgePtrWrapper<DefaultConstructibleData>(&edge);
-	ObjectPack<Serializer> classic_object_pack = edge_ptr;
+	ObjectPack classic_object_pack = edge_ptr;
 
 	edge_ptr = classic_object_pack.get<decltype(edge_ptr)>();
+	ASSERT_EQ(edge_ptr->getId(), edge.getId());
+	ASSERT_FLOAT_EQ(edge_ptr->getWeight(), edge.getWeight());
+
+	auto temp_src = edge_ptr->getTempSourceNode();
+	ASSERT_EQ(temp_src->getId(), src.getId());
+	ASSERT_EQ(temp_src->getLocation(), 3);
+	auto built_src = temp_src->build();
+	ASSERT_EQ(built_src->getId(), src.getId());
+	ASSERT_EQ(built_src->location(), 3);
+
+	auto temp_tgt = edge_ptr->getTempTargetNode();
+	ASSERT_EQ(temp_tgt->getId(), tgt.getId());
+	ASSERT_EQ(temp_tgt->getLocation(), 22);
+	auto built_tgt = temp_tgt->build();
+	ASSERT_EQ(built_tgt->getId(), tgt.getId());
+	ASSERT_EQ(built_tgt->location(), 22);
+
+	delete built_src;
+	delete built_tgt;
+	delete edge_ptr.get();
+}
+
+TEST(DistributedEdge, LightObjectPack) {
+	using namespace fpmas::io::datapack;
+
+	fpmas::graph::DistributedEdge<DefaultConstructibleData> edge {{2, 6}, 7};
+	MockDistributedNode<DefaultConstructibleData, NiceMock> src {{0, 1}, {}, 0.7};
+	src.data().i = 4;
+	MockDistributedNode<DefaultConstructibleData, NiceMock> tgt {{0, 2}, {}, 2.45};
+	tgt.data().i = 13;
+	ON_CALL(src, location)
+		.WillByDefault(Return(3));
+	ON_CALL(tgt, location)
+		.WillByDefault(Return(22));
+
+	edge.setWeight(2.4);
+	edge.setSourceNode(&src);
+	edge.setTargetNode(&tgt);
+
+	auto edge_ptr = fpmas::graph::EdgePtrWrapper<DefaultConstructibleData>(&edge);
+	ObjectPack classic_object_pack = edge_ptr;
+	LightObjectPack light_object_pack = edge_ptr;
+
+	ASSERT_LT(light_object_pack.data().size, classic_object_pack.data().size);
+
+	edge_ptr = light_object_pack.get<decltype(edge_ptr)>();
 	ASSERT_EQ(edge_ptr->getId(), edge.getId());
 	ASSERT_FLOAT_EQ(edge_ptr->getWeight(), edge.getWeight());
 

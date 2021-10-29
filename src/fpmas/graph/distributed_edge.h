@@ -317,6 +317,20 @@ namespace fpmas { namespace io { namespace datapack {
 			}
 		};
 
+	template<typename T>
+		struct LightSerializer<fpmas::graph::EdgePtrWrapper<T>> : public Serializer<fpmas::graph::EdgePtrWrapper<T>> {
+		};
+
+}}}
+
+namespace fpmas { namespace communication {
+
+	template<typename T>
+		struct TypedMpi<fpmas::graph::EdgePtrWrapper<T>> :
+		public detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, io::datapack::LightObjectPack> {
+			using detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, io::datapack::LightObjectPack>::TypedMpi;
+		};
+
 	/**
 	 * \anchor TypedMpiDistributedEdge
 	 *
@@ -337,5 +351,6 @@ namespace fpmas { namespace io { namespace datapack {
 	 *    };
 	 */
 
-}}}
+
+}}
 #endif

@@ -567,7 +567,9 @@ namespace fpmas { namespace communication {
 		//};
 
 	template<typename T>
-		using TypedMpi = detail::TypedMpi<T, io::datapack::ObjectPack<io::datapack::Serializer>>;
+		struct TypedMpi : public detail::TypedMpi<T, io::datapack::ObjectPack> {
+			using detail::TypedMpi<T, io::datapack::ObjectPack>::TypedMpi;
+		};
 
 
 	/**

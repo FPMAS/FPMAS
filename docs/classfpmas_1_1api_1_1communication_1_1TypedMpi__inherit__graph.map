@@ -1,8 +1,8 @@
 <map id="fpmas::api::communication::TypedMpi&lt; T &gt;" name="fpmas::api::communication::TypedMpi&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,101,184,142"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1communication_1_1detail_1_1TypedMpi.html" title=" " alt="" coords="266,5,421,61"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1communication_1_1detail_1_1TypedMpi.html" title=" " alt="" coords="232,86,455,157"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1communication_1_1detail_1_1TypedMpi.html" title=" " alt="" coords="266,181,421,237"/>
-<area shape="rect" id="node3" href="$structfpmas_1_1communication_1_1TypedMpi.html" title=" " alt="" coords="513,13,667,54"/>
-<area shape="rect" id="node5" href="$structfpmas_1_1communication_1_1TypedMpi_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4.html" title=" " alt="" coords="503,93,677,149"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,107,184,149"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1communication_1_1detail_1_1TypedMpi.html" title=" " alt="" coords="243,5,428,61"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1communication_1_1detail_1_1TypedMpi.html" title=" " alt="" coords="232,85,439,171"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1communication_1_1detail_1_1TypedMpi.html" title=" " alt="" coords="258,195,413,251"/>
+<area shape="rect" id="node3" href="$structfpmas_1_1communication_1_1TypedMpi.html" title=" " alt="" coords="497,13,651,54"/>
+<area shape="rect" id="node5" href="$structfpmas_1_1communication_1_1TypedMpi_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4.html" title=" " alt="" coords="487,100,661,156"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="fpmas::api::graph::TemporaryNode&lt; T &gt;" name="fpmas::api::graph::TemporaryNode&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="30,5,175,47"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1graph_1_1JsonTemporaryNode.html" title=" " alt="" coords="5,95,200,136"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,39,151,80"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1graph_1_1JsonTemporaryNode.html" title=" " alt="" coords="201,5,395,47"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1TemporaryNode.html" title=" " alt="" coords="199,71,397,112"/>
 </map>

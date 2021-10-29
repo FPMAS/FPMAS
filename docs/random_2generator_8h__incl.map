@@ -1,18 +1,20 @@
 <map id="src/fpmas/random/generator.h" name="src/fpmas/random/generator.h">
 <area shape="rect" id="node1" title=" " alt="" coords="37,5,233,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="117,177,178,203"/>
+<area shape="rect" id="node2" title=" " alt="" coords="117,169,178,196"/>
 <area shape="rect" id="node3" title=" " alt="" coords="25,87,91,114"/>
 <area shape="rect" id="node4" href="$api_2random_2generator_8h.html" title=" " alt="" coords="115,87,310,114"/>
 <area shape="rect" id="node5" href="$communication_2communication_8h.html" title=" " alt="" coords="335,80,485,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="203,177,257,203"/>
-<area shape="rect" id="node7" title=" " alt="" coords="281,177,392,203"/>
-<area shape="rect" id="node8" title=" " alt="" coords="416,177,535,203"/>
-<area shape="rect" id="node9" href="$api_2communication_2communication_8h.html" title=" " alt="" coords="645,169,815,211"/>
-<area shape="rect" id="node16" href="$json_8h.html" title=" " alt="" coords="500,259,611,285"/>
-<area shape="rect" id="node10" href="$distributed__id_8h.html" title=" " alt="" coords="644,259,851,285"/>
-<area shape="rect" id="node11" title=" " alt="" coords="627,333,705,360"/>
-<area shape="rect" id="node12" title=" " alt="" coords="471,333,602,360"/>
-<area shape="rect" id="node13" title=" " alt="" coords="729,333,784,360"/>
-<area shape="rect" id="node14" title=" " alt="" coords="808,333,868,360"/>
-<area shape="rect" id="node15" title=" " alt="" coords="893,333,975,360"/>
+<area shape="rect" id="node6" title=" " alt="" coords="203,169,257,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="281,169,392,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="416,169,535,196"/>
+<area shape="rect" id="node9" href="$json_8h.html" title=" " alt="" coords="517,326,628,353"/>
+<area shape="rect" id="node11" href="$communication_2serializer_8h_source.html" title=" " alt="" coords="638,169,723,196"/>
+<area shape="rect" id="node10" title=" " alt="" coords="505,483,635,509"/>
+<area shape="rect" id="node12" href="$api_2communication_2communication_8h.html" title=" " alt="" coords="703,319,874,360"/>
+<area shape="rect" id="node18" href="$datapack_8h.html" title=" " alt="" coords="611,244,751,271"/>
+<area shape="rect" id="node13" href="$distributed__id_8h.html" title=" " alt="" coords="685,408,892,435"/>
+<area shape="rect" id="node14" title=" " alt="" coords="660,483,739,509"/>
+<area shape="rect" id="node15" title=" " alt="" coords="763,483,817,509"/>
+<area shape="rect" id="node16" title=" " alt="" coords="841,483,901,509"/>
+<area shape="rect" id="node17" title=" " alt="" coords="926,483,1009,509"/>
 </map>
