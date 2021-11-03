@@ -77,37 +77,37 @@
 	namespace nlohmann {\
 		void adl_serializer<fpmas::api::model::AgentPtr>\
 			::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ , void>::to_json(j, data);\
+			fpmas::io::json::AgentPtrSerializer<json, __VA_ARGS__ , void>::to_json(j, data);\
 		}\
 		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>\
 			::from_json(const json& j) {\
-			return {fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ , void>::from_json(j)};\
+			return {fpmas::io::json::AgentPtrSerializer<json, __VA_ARGS__ , void>::from_json(j)};\
 		}\
 \
 		void adl_serializer<fpmas::api::model::WeakAgentPtr>\
 			::to_json(json& j, const fpmas::api::model::WeakAgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ , void>::to_json(j, data);\
+			fpmas::io::json::AgentPtrSerializer<json, __VA_ARGS__ , void>::to_json(j, data);\
 		}\
 		fpmas::api::model::WeakAgentPtr adl_serializer<fpmas::api::model::WeakAgentPtr>\
 			::from_json(const json& j) {\
-			return fpmas::model::AgentPtrSerializer<json, __VA_ARGS__ , void>::from_json(j);\
+			return fpmas::io::json::AgentPtrSerializer<json, __VA_ARGS__ , void>::from_json(j);\
 		}\
 	}\
 	namespace fpmas { namespace io { namespace json {\
 		void light_serializer<fpmas::api::model::AgentPtr>::to_json(light_json& j, const fpmas::api::model::AgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ , void>::to_json(j, data);\
+			AgentPtrSerializer<light_json, __VA_ARGS__ , void>::to_json(j, data);\
 		}\
 		fpmas::api::model::AgentPtr light_serializer<fpmas::api::model::AgentPtr>::from_json(const light_json& j) {\
-			return {fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ , void>::from_json(j)};\
+			return {AgentPtrSerializer<light_json, __VA_ARGS__ , void>::from_json(j)};\
 		}\
 		\
 		void light_serializer<fpmas::api::model::WeakAgentPtr>\
 			::to_json(light_json& j, const fpmas::api::model::WeakAgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ , void>::to_json(j, data);\
+			AgentPtrSerializer<light_json, __VA_ARGS__ , void>::to_json(j, data);\
 		}\
 		fpmas::api::model::WeakAgentPtr light_serializer<fpmas::api::model::WeakAgentPtr>\
 			::from_json(const light_json& j) {\
-			return fpmas::model::AgentPtrSerializer<light_json, __VA_ARGS__ , void>::from_json(j);\
+			return AgentPtrSerializer<light_json, __VA_ARGS__ , void>::from_json(j);\
 		}\
 	}}}\
 
@@ -626,7 +626,7 @@ namespace fpmas {
 			register_types<T...>();
 		}
 
-	namespace model {
+	namespace io { namespace json {
 		using api::model::AgentPtr;
 		using api::model::WeakAgentPtr;
 
@@ -773,6 +773,6 @@ namespace fpmas {
 				}
 
 			};
-	}
+	}}
 }
 #endif
