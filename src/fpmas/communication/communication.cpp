@@ -42,7 +42,7 @@ namespace fpmas { namespace communication {
 	void MpiCommunicatorBase::send(
 			const DataPack& data, MPI_Datatype datatype,
 			int destination, int tag) {
-		MPI_Send(data.buffer, data.count, datatype, destination, tag, this->comm);
+		send(data.buffer, data.count, datatype, destination, tag);
 	}
 
 	void MpiCommunicatorBase::send(int destination, int tag) {
@@ -64,13 +64,7 @@ namespace fpmas { namespace communication {
 	void MpiCommunicatorBase::Issend(
 			const DataPack& data, MPI_Datatype datatype,
 			int destination, int tag, Request& req) {
-		int type_size;
-		MPI_Type_size(datatype, &type_size);
-		req.__data = new DataPack(data);
-
-		MPI_Issend(
-				req.__data->buffer, req.__data->count, datatype,
-				destination, tag, this->comm, &req.__mpi_request);
+		Issend(data.buffer, data.count, datatype, destination, tag, req);
 	}
 
 	void MpiCommunicatorBase::Issend(int destination, int tag, Request& req) {
@@ -94,9 +88,7 @@ namespace fpmas { namespace communication {
 	}
 	void MpiCommunicatorBase::recv(
 			DataPack& data, MPI_Datatype datatype, int source, int tag, Status& status) {
-		MPI_Status __status {};
-		MPI_Recv(data.buffer, data.count, datatype, source, tag, this->comm, &__status);
-		convertStatus(__status, status, datatype);
+		recv(data.buffer, data.count, datatype, source, tag, status);
 	}
 
 	void MpiCommunicatorBase::probe(MPI_Datatype type, int source, int tag, Status& status) {

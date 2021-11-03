@@ -258,6 +258,14 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			virtual void send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) = 0;
 
+			/**
+			 * Equivalent to \ref send(const void*, int, MPI_Datatype, int, int) "send(data.buffer, data.count, datatype, destination, tag)"
+			 *
+			 * @param data input DataPack
+			 * @param datatype MPI type of the data to send
+			 * @param destination rank of the destination process
+			 * @param tag message tag
+			 */
 			virtual void send(const DataPack& data, MPI_Datatype datatype, int destination, int tag) = 0;
 
 			/**
@@ -297,8 +305,18 @@ namespace fpmas { namespace api { namespace communication {
 			virtual void Issend(
 					const void* data, int count, MPI_Datatype datatype, int destination, int tag, Request& request) = 0;
 
+			/**
+			 * Equivalent to \ref Issend(const void*, int, MPI_Datatype, int, int, Request&) "Issend(data.buffer, data.count, datatype, destination, tag, request)".
+			 *
+			 * @param data input DataPack
+			 * @param datatype MPI type of the data to send
+			 * @param destination rank of the destination process
+			 * @param tag message tag
+			 * @param request output Request
+			 */
 			virtual void Issend(
 					const DataPack& data, MPI_Datatype datatype, int destination, int tag, Request& request) = 0;
+
 			/**
 			 * Sends a void message to `destination` (non-blocking, synchronous).
 			 *
@@ -379,6 +397,15 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			virtual void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status) = 0;
 
+			/**
+			 * Equivalent to \ref recv(void*, int, MPI_Datatype, int, int, Status&) "recv(data.buffer, data.count, datatype, source, tag, status)"
+			 *
+			 * @param data output DataPack
+			 * @param datatype MPI type of the data to receive
+			 * @param source rank of the process to receive from
+			 * @param tag message tag
+			 * @param status output MPI status
+			 */
 			virtual void recv(DataPack& data, MPI_Datatype datatype, int source, int tag, Status& status) = 0;
 
 			/**

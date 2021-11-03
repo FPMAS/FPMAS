@@ -373,8 +373,18 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Equivalent to <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#a01b806ace945a7c44746ddb2ff53d046">send(data.buffer, data.count, datatype, destination, tag)</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>input DataPack </td></tr>
+    <tr><td class="paramname">datatype</td><td>MPI type of the data to send </td></tr>
+    <tr><td class="paramname">destination</td><td>rank of the destination process </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a03ad95028d6716d6bb5604c52f5185e6">fpmas::api::communication::MpiCommunicator</a>.</p>
 
 </div>
 </div>
@@ -535,7 +545,7 @@ Additional Inherited Members</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;&#160;</td>
-          <td class="paramname"><em>req</em>&#160;</td>
+          <td class="paramname"><em>request</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -549,8 +559,19 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Equivalent to <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#ad7992533967068813029be32e49046e7">Issend(data.buffer, data.count, datatype, destination, tag, request)</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>input DataPack </td></tr>
+    <tr><td class="paramname">datatype</td><td>MPI type of the data to send </td></tr>
+    <tr><td class="paramname">destination</td><td>rank of the destination process </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+    <tr><td class="paramname">request</td><td>output Request </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a8cecd1781d4c48255d8476a83a4d8883">fpmas::api::communication::MpiCommunicator</a>.</p>
 
 </div>
 </div>
@@ -785,8 +806,19 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Equivalent to <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#a74e52958fa42ffcf2c9daa4da8ea716f">recv(data.buffer, data.count, datatype, source, tag, status)</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>output DataPack </td></tr>
+    <tr><td class="paramname">datatype</td><td>MPI type of the data to receive </td></tr>
+    <tr><td class="paramname">source</td><td>rank of the process to receive from </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+    <tr><td class="paramname">status</td><td>output MPI status </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#ad51501ba76b34507e9bacd5e58a2230e">fpmas::api::communication::MpiCommunicator</a>.</p>
 
 </div>
 </div>
