@@ -706,6 +706,61 @@ namespace fpmas { namespace io { namespace json {
 
 }}}
 
+namespace fpmas { namespace io { namespace datapack {
+	/**
+	 * DiscretePoint base_io specialization.
+	 *
+	 * | Serialization scheme |||
+	 * | _scheme_ | point.x | point.y |
+	 * | _serializer_ | base_io<DiscreteCoordinate> ||
+	 */
+	template<>
+		struct base_io<api::model::DiscretePoint> {
+			/**
+			 * Returns the buffer size, in bytes, required to serialize a
+			 * DiscretePoint instance in a DataPack, i.e.
+			 * `2*datapack::pack_size<DiscreteCoordinate>()`.
+			 *
+			 * @return pack size in bytes
+			 */
+			static std::size_t pack_size();
+			/**
+			 * Equivalent to pack_size().
+			 *
+			 * @return pack size in bytes
+			 */
+			static std::size_t pack_size(const api::model::DiscretePoint&);
+
+			/**
+			 * Writes `id` to the `data_pack` buffer at the given `offset`.
+			 * pack_size() bytes are written, and `offset` is incremented
+			 * accordingly.
+			 *
+			 * @param data_pack destination DataPack
+			 * @param point source point
+			 * @param offset `data_pack.buffer` index at which the first
+			 * byte is written
+			 */
+			static void write(
+					DataPack& data_pack, const api::model::DiscretePoint& point,
+					std::size_t& offset);
+
+			/**
+			 * Reads a DiscretePoint from the `data_pack` buffer at the
+			 * given `offset`. pack_size() bytes are read, and `offset` is
+			 * incremented accordingly.
+			 *
+			 * @param data_pack source DataPack
+			 * @param point destination point
+			 * @param offset `data_pack.buffer` index at which the first
+			 * byte is read
+			 */
+			static void read(
+					const DataPack& data_pack, api::model::DiscretePoint& point,
+					std::size_t& offset);
+		};
+}}}
+
 namespace std {
 	/**
 	 * fpmas::model::DiscretePoint hash function object.

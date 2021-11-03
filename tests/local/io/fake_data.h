@@ -1,4 +1,5 @@
 #include "fpmas/io/json.h"
+#include "fpmas/io/datapack.h"
 
 struct DefaultConstructibleData {
 	int i = 0;
@@ -59,6 +60,20 @@ namespace fpmas { namespace io { namespace json {
 		struct light_serializer<NonDefaultConstructibleData> {
 			static void to_json(light_json&, const NonDefaultConstructibleData&);
 			static NonDefaultConstructibleData from_json(const light_json&);
+		};
+}}}
+
+namespace fpmas { namespace io { namespace datapack {
+	template<>
+		struct Serializer<DefaultConstructibleData> {
+			static void to_datapack(ObjectPack& pack, const DefaultConstructibleData& data);
+			static DefaultConstructibleData from_datapack(const ObjectPack& pack);
+		};
+
+	template<>
+		struct LightSerializer<DefaultConstructibleData> {
+			static void to_datapack(LightObjectPack& pack, const DefaultConstructibleData& data);
+			static DefaultConstructibleData from_datapack(const LightObjectPack& pack);
 		};
 }}}
 

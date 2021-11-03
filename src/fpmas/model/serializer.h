@@ -9,6 +9,7 @@
 #include "fpmas/api/model/model.h"
 #include "fpmas/utils/log.h"
 #include "fpmas/io/json.h"
+#include "fpmas/io/datapack.h"
 
 /**
  * Registers the specified \Agent types so that they can be serialized as JSON
@@ -578,6 +579,19 @@ namespace fpmas { namespace io { namespace json {
 			static fpmas::api::utils::PtrWrapper<AgentType> from_json(const light_json&) {
 				return new AgentType;
 			}
+		};
+
+}}}
+
+namespace fpmas { namespace io { namespace datapack {
+	template<>
+		struct Serializer<api::model::AgentPtr>
+		: public JsonSerializer<api::model::AgentPtr> {
+		};
+
+	template<>
+		struct LightSerializer<api::model::AgentPtr>
+		: public LightJsonSerializer<api::model::AgentPtr> {
 		};
 
 }}}

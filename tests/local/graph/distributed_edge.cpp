@@ -1,7 +1,7 @@
 #include "fpmas/graph/distributed_edge.h"
 
 #include "graph/mock_distributed_node.h"
-#include "../io/json.h"
+#include "../io/fake_data.h"
 
 using namespace testing;
 
@@ -39,8 +39,7 @@ TEST(DistributedEdge, JsonTemporaryNode) {
 	node.setLocation(4);
 	nlohmann::json j	
 		= fpmas::graph::NodePtrWrapper<int>(&node);
-	//nlohmann::json j = {{{"id", {2, 6}}, {"weight", 1.7f}, {"data", 12}}, 4};
-	fpmas::graph::JsonTemporaryNode<int, nlohmann::json> temp_node({2, 6}, 4, j);
+	fpmas::graph::TemporaryNode<int, nlohmann::json> temp_node({2, 6}, 4, j);
 
 	ASSERT_EQ(temp_node.getId(), fpmas::graph::DistributedId(2, 6));
 	ASSERT_EQ(temp_node.getLocation(), 4);

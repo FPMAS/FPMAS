@@ -98,8 +98,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a2a56aa4442510e3ec22223e2899584fa"><td class="memTemplParams" colspan="2">template&lt;typename _JsonType &gt; </td></tr>
 <tr class="memitem:a2a56aa4442510e3ec22223e2899584fa"><td class="memTemplItemLeft" align="right" valign="top">&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1JsonTemporaryNode.html#a2a56aa4442510e3ec22223e2899584fa">JsonTemporaryNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id, int location, _JsonType &amp;&amp;j)</td></tr>
 <tr class="separator:a2a56aa4442510e3ec22223e2899584fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab1b5f6f59d76b2632ae12c61227177d7"><td class="memItemLeft" align="right" valign="top"><a id="ab1b5f6f59d76b2632ae12c61227177d7" name="ab1b5f6f59d76b2632ae12c61227177d7"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>JsonTemporaryNode</b> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id, int location, std::string json_str)</td></tr>
+<tr class="memitem:ab1b5f6f59d76b2632ae12c61227177d7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1JsonTemporaryNode.html#ab1b5f6f59d76b2632ae12c61227177d7">JsonTemporaryNode</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id, int location, std::string json_str)</td></tr>
 <tr class="separator:ab1b5f6f59d76b2632ae12c61227177d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b2331795529af44e6b5683c83f31b25"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1JsonTemporaryNode.html#a1b2331795529af44e6b5683c83f31b25">getId</a> () const override</td></tr>
 <tr class="separator:a1b2331795529af44e6b5683c83f31b25"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -121,7 +120,7 @@ class fpmas::graph::JsonTemporaryNode&lt; T, JsonType &gt;</div><p >nlohmann::js
 </dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a2a56aa4442510e3ec22223e2899584fa" name="a2a56aa4442510e3ec22223e2899584fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a56aa4442510e3ec22223e2899584fa">&#9670;&nbsp;</a></span>JsonTemporaryNode()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a56aa4442510e3ec22223e2899584fa">&#9670;&nbsp;</a></span>JsonTemporaryNode() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -164,7 +163,69 @@ template&lt;typename _JsonType &gt; </div>
 </table>
 </div><div class="memdoc">
 <p ><a class="el" href="classfpmas_1_1graph_1_1JsonTemporaryNode.html">JsonTemporaryNode</a> constructor.</p>
-<p >The provided json instance is <a href="https://en.cppreference.com/w/cpp/utility/forward">forwarded</a> to the internal json instance. </p>
+<p >The provided json instance is <a href="https://en.cppreference.com/w/cpp/utility/forward">forwarded</a> to the internal json instance.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>node id </td></tr>
+    <tr><td class="paramname">location</td><td>node location rank </td></tr>
+    <tr><td class="paramname">j</td><td>json instance representing the node </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab1b5f6f59d76b2632ae12c61227177d7" name="ab1b5f6f59d76b2632ae12c61227177d7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1b5f6f59d76b2632ae12c61227177d7">&#9670;&nbsp;</a></span>JsonTemporaryNode() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename JsonType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1graph_1_1JsonTemporaryNode.html">fpmas::graph::JsonTemporaryNode</a>&lt; T, JsonType &gt;::<a class="el" href="classfpmas_1_1graph_1_1JsonTemporaryNode.html">JsonTemporaryNode</a> </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&#160;</td>
+          <td class="paramname"><em>id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>location</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>json_str</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p ><a class="el" href="classfpmas_1_1graph_1_1JsonTemporaryNode.html">JsonTemporaryNode</a> constructor.</p>
+<p >A raw json string is stored within the class, and parsing occurs only when <a class="el" href="classfpmas_1_1graph_1_1JsonTemporaryNode.html#a17beac4809571062854f370d3e79d70c">build()</a> is called.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">id</td><td>node id </td></tr>
+    <tr><td class="paramname">location</td><td>node location rank </td></tr>
+    <tr><td class="paramname">json_str</td><td>json string representing the node </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

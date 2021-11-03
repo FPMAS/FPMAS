@@ -5,7 +5,7 @@
  * Binary DataPack based serialization features.
  */
 
-#include "fpmas/api/communication/communication.h"
+#include "datapack_base_io.h"
 #include "fpmas/io/json.h"
 
 namespace fpmas { namespace io {
@@ -13,429 +13,68 @@ namespace fpmas { namespace io {
 	 * Namespace containing binary DataPack based serialization features.
 	 */
 	namespace datapack {
-		using fpmas::api::communication::DataPack;
 
 		/**
-		 * The purpose of the base_io interface is to provide static methods to
-		 * efficiently read and write data to pre-allocated DataPack buffers.
+		 * Base object used to implement the FPMAS binary serialization
+		 * technique.
 		 *
-		 * This void base_io structure **must** be specialized.
+		 * The purpose of the BasicObjectPack is to provide an high level API
+		 * to efficiently read/write data from/to a low level DataPack.
 		 *
-		 * Any specialization for a type `T` must eventually implement the
-		 * following methods:
-		 * <table>
-		 * <tr><th>method</th><th>description</th><th>note</th></tr>
-		 * <tr>
-		 * <td>`std::size_t pack_size()`</td>
-		 * <td>
-		 * Returns the buffer size, in bytes, required to serialize an instance of `T`
-		 * in a DataPack.
-		 * </td>
-		 * <td>
-		 * Can be implemented only if the same buffer size is required for **any**
-		 * instance of type `T`.
-		 * </td>
-		 * </tr>
-		 * <tr>
-		 * <td>`std::size_t pack_size(const T& data)`</td>
-		 * <td>
-		 * Returns the buffer size, in bytes, required to serialize the specified
-		 * instance of `T` in a DataPack.
-		 * </td>
-		 * <td>
-		 * Might be equivalent to pack_size() if the required size is not
-		 * dependent on the specified instance.
+		 * The BasicObjectPack is the _container_ that provides access to the
+		 * serialized data. Serialization / deserialization is ensured by the
+		 * provided serializer `S` and by `base_io` specializations.
 		 *
-		 * Examples of instance dependent pack sizes are `std::string` or
-		 * `std::vector<T>`.
-		 * </td>
-		 * </tr>
-		 * <tr>
-		 * <td>
-		 * `void write(DataPack& data_pack, const T& data, std::size_t& offset)`
-		 * </td>
-		 * <td>
-		 * Writes `data` to the `data_pack`, starting at the specified
-		 * `offset`. Upon return, `offset` must correspond to the byte
-		 * following the last byte written.
-		 * </td>
-		 * <td>
-		 * Given `size=pack_size()` or `size=pack_size(data)` bytes are written
-		 * from `&data_pack.buffer[offset]`.
-		 * </td>
-		 * </tr>
-		 * <tr>
-		 * <td>
-		 * `void read(const DataPack& data_pack, T& data, std::size_t& offset)`
-		 * </td>
-		 * <td>
-		 * Reads `data` from the `data_pack`, starting at the specified `offset`.
-		 * </td>
-		 * <td>
-		 * Given `size=pack_size()` or `size=pack_size(data)` bytes are read
-		 * from `&data_pack.buffer[offset]`. Upon return, `offset` must
-		 * correspond to the byte following the last byte read.
-		 * </td>
-		 * </tr>
-		 * </table>
+		 * The BasicObjectPack provides two serialization techniques.
+		 * 1. The Serializer technique is used by BasicObjectPack(const T&),
+		 * operator=(const T&) and get().
+		 * The S<T>::to_datapack() and S<T>::from_datapack() methods are used
+		 * to perform those serialization, so the corresponding specializations
+		 * must be available for T.
+		 * ```cpp
+		 * using namespace fpmas::io::datapack;
 		 *
-		 * Write operations assume that the specified DataPack has been already
-		 * allocated, and that enough space is available to perform the write()
-		 * operation at the given offset. The pack_size() methods can be used
-		 * to easily allocate a DataPack before writting into it.
+		 * std::string data = "Hello World";
+		 * ObjectPack pack = data;
 		 *
-		 * Available specializations can be found in the fpmas::io::datapack
-		 * namespace.
+		 * std::string unserial_data = pack.get<std::string>();
+		 * ```
 		 *
-		 * The following helper methods can be used directly:
-		 * - pack_size<T>()
+		 * 2. The base_io technique is used by read() and write(). A base_io
+		 * specialization must be available for the data to serialize in order
+		 * to use this technique.
+		 * First, the internal buffer must be allocated using the allocate()
+		 * method. The base_io<T>::pack_size() specializations can be used to
+		 * query the required size. write() operations can then be performed,
+		 * and data can be retrieved using read() methods. Write and read must
+		 * be performed in the **same order**.
+		 * ```cpp
+		 * using namespace fpmas::io::datapack;
 		 *
-		 * @tparam T type of data to read / write to the DataPack buffer
-		 * @tparam Enable SFINAE condition
+		 * std::uint64_t i = 23000;
+		 * std::string str = "hello";
+		 *
+		 * ObjectPack pack;
+		 * pack.allocate(pack_size<std::uint64_t>() + pack_size(str));
+		 *
+		 * pack.write(i);
+		 * pack.write(str);
+		 *
+		 * std::uint64_t unserial_i = pack.read<std::uint64_t>();
+		 * std::string unserial_str;
+		 * pack.read(unserial_str);
+		 * ```
+		 *
+		 * Both serialization techniques can be used on all ObjectPacks, but
+		 * only one serialization technique must be used on each ObjectPack.
+		 *
+		 * @note 
+		 * The BasicObjectPack design is widely insprired by the
+		 * `nlohmann::basic_json` class.
+		 *
+		 * @tparam S serializer implementation (e.g.: Serializer,
+		 * LightSerializer, JsonSerializer...)
 		 */
-		template<typename T, typename Enable = void>
-			struct base_io {
-			};
-
-		/**
-		 * base_io<T>::pack_size() helper method.
-		 *
-		 * @see base_io
-		 */
-		template<typename T>
-			std::size_t pack_size() {
-				return base_io<T>::pack_size();
-			}
-		/**
-		 * base_io<T>::pack_size(const T&) helper method.
-		 *
-		 * @see base_io
-		 */
-		template<typename T>
-			std::size_t pack_size(const T& data) {
-				return base_io<T>::pack_size(data);
-			}
-
-		/**
-		 * base_io<T>::write(DataPack&, const T&, std::size_t&) helper method.
-		 *
-		 * @see base_io
-		 */
-		template<typename T>
-			void write(DataPack& data_pack, const T& data, std::size_t& offset) {
-				base_io<T>::write(data_pack, data, offset);
-			}
-
-		/**
-		 * base_io<T>::read(const DataPack&, T&, std::size_t&) helper method.
-		 *
-		 * @see base_io
-		 */
-		template<typename T>
-			void read(const DataPack& data_pack, T& data, std::size_t& offset) {
-				base_io<T>::read(data_pack, data, offset);
-			}
-
-		/**
-		 * Default base_io implementation, only available for fundamental types.
-		 *
-		 * @tparam T fundamental type (std::size_t, std::int32_t, unsigned int...)
-		 */
-		template<typename T>
-			struct base_io<T, typename std::enable_if<std::is_fundamental<T>::value>::type> {
-				/**
-				 * Returns the buffer size, in bytes, required to serialize an
-				 * instance of T in a DataPack.
-				 *
-				 * This fundamental type implementation returns `sizeof(T)`.
-				 */
-				static std::size_t pack_size() {
-					return sizeof(T);
-				}
-
-				/**
-				 * Returns the buffer size, in bytes, required to serialize the
-				 * specified instance of T in a DataPack.
-				 *
-				 * This fundamental type implementation returns `sizeof(T)`.
-				 */
-				static std::size_t pack_size(const T&) {
-					return sizeof(T);
-				}
-
-
-				/**
-				 * Writes `data` to the `data_pack` buffer at the given `offset`
-				 * using an `std::memcpy` operation. pack_size() bytes are
-				 * written, and `offset` is incremented accordingly.
-				 *
-				 * @param data_pack destination DataPack
-				 * @param data source data
-				 * @param offset `data_pack.buffer` index at which the first
-				 * byte is written
-				 */
-				static void write(DataPack& data_pack, const T& data, std::size_t& offset) {
-					std::memcpy(&data_pack.buffer[offset], &data, pack_size());
-					offset += pack_size();
-				}
-
-				/**
-				 * Reads `data` from the `data_pack` buffer at the given `offset`
-				 * using an `std::memcpy` operation. pack_size() bytes are
-				 * read, and `offset` is incremented accordingly.
-				 *
-				 * @param data_pack source DataPack
-				 * @param data destination data
-				 * @param offset `data_pack.buffer` index at which the first
-				 * byte is read
-				 */
-				static void read(const DataPack& data_pack, T& data, std::size_t& offset) {
-					std::memcpy(&data, &data_pack.buffer[offset], pack_size());
-					offset += pack_size();
-				}
-			};
-
-		/**
-		 * api::graph::DistributedId base_io specialization.
-		 */
-		template<>
-			struct base_io<DistributedId> {
-				/**
-				 * Returns the buffer size, in bytes, required to serialize a
-				 * DistributedId instance, i.e.
-				 * `datapack::pack_size<int>()+datapack::pack_size<FPMAS_ID_TYPE>`.
-				 */
-				static std::size_t pack_size();
-				/**
-				 * Equivalent to pack_size().
-				 */
-				static std::size_t pack_size(const DistributedId&);
-
-				/**
-				 * Writes `id` to the `data_pack` buffer at the given `offset`.
-				 * pack_size() bytes are written, and `offset` is incremented
-				 * accordingly.
-				 *
-				 * @param data_pack destination DataPack
-				 * @param id source id
-				 * @param offset `data_pack.buffer` index at which the first
-				 * byte is written
-				 */
-				static void write(
-						DataPack& data_pack, const DistributedId& id, std::size_t& offset);
-				/**
-				 * Reads a DistributedId from the `data_pack` buffer at the
-				 * given `offset`. pack_size() bytes are read, and `offset` is
-				 * incremented accordingly.
-				 *
-				 * @param data_pack source DataPack
-				 * @param id destination id
-				 * @param offset `data_pack.buffer` index at which the first
-				 * byte is read
-				 */
-				static void read(
-						const DataPack& data_pack, DistributedId& id, std::size_t& offset);
-			};
-
-		/**
-		 * std::string base_io specialization.
-		 */
-		template<>
-			struct base_io<std::string> {
-				/**
-				 * Returns the buffer size, in bytes, required to serialize a
-				 * DistributedId instance, i.e.
-				 * `datapack::pack_size<std::size_t>()+str.size()*datapack::pack_size<char>`.
-				 *
-				 * @param str std::string instance to serialize
-				 */
-				static std::size_t pack_size(const std::string& str);
-
-				/**
-				 * Writes `str` to the `data_pack` buffer at the given
-				 * `offset`. pack_size(str) bytes are written, and `offset` is
-				 * incremented accordingly.
-				 *
-				 * First, the size of the string is written
-				 * (datapack::pack_size<std::size_t> bytes) and then the
-				 * `str.data()` char array is written contiguously.
-				 *
-				 * @param data_pack destination DataPack
-				 * @param str source string
-				 * @param offset `data_pack.buffer` index at which the first
-				 * byte is written
-				 */
-				static void write(
-						DataPack& data_pack, const std::string& str, std::size_t& offset);
-
-				/**
-				 * Reads an std::string from the `data_pack` buffer at the
-				 * given `offset`. The count of bytes read depends on the
-				 * corresponding write() operation. `offset` is incremented
-				 * accordingly.
-				 *
-				 * @param data_pack source DataPack
-				 * @param str destination string
-				 * @param offset `data_pack.buffer` index at which the first
-				 * byte is read
-				 */
-				static void read(
-						const DataPack& data_pack, std::string& str, std::size_t& offset);
-			};
-
-		/**
-		 * api::communication::DataPack base_io specialization.
-		 *
-		 * The purpose of this specialization is to read / write a DataPack
-		 * from / to a larger DataPack, efficiently copying raw binary data.
-		 */
-		template<>
-			struct base_io<DataPack> {
-				 /**
-				 * Returns the buffer size, in bytes, required to serialize the
-				 * specified DataPack instance, i.e.
-				 * `datapack::pack_size<std::size_t>()+data.size`.
-				 *
-				 * @param str std::string instance to serialize
-				 */
-				static std::size_t pack_size(const DataPack& data);
-
-				/**
-				 * Writes `source` to the `destination` DataPack buffer at the
-				 * given `offset`. pack_size() bytes are written, and `offset`
-				 * is incremented accordingly.
-				 *
-				 * First, `source.size` is written
-				 * (datapack::pack_size<std::size_t> bytes) and then the
-				 * `source.buffer()` char array is written contiguously.
-				 *
-				 * @param destination destination DataPack
-				 * @param source source DataPack
-				 * @param offset `destination.buffer` index at which the first
-				 * byte is written
-				 */
-				static void write(
-						DataPack& destination, const DataPack& source, std::size_t& offset);
-
-				/**
-				 * Reads a DataPack from the `source` buffer at the given
-				 * `offset` into the `destination` buffer. The count of bytes
-				 * read depends on the corresponding write() operation.
-				 * `offset` is incremented accordingly.
-				 *
-				 * @param source source DataPack
-				 * @param destination destination DataPack
-				 * @param offset `source.buffer` index at which the first
-				 * byte is read
-				 */
-				static void read(
-						const DataPack& source, DataPack& destination, std::size_t& offset);
-			};
-
-		/**
-		 * std::vector base_io specialization.
-		 *
-		 * @tparam T type of data contained into the vector. A base_io
-		 * specialization of T must be available.
-		 */
-		template<typename T>
-			struct base_io<std::vector<T>> {
-				/**
-				 * Returns the buffer size, in bytes, required to serialize the
-				 * specified vector, i.e.
-				 * `datapack::pack_size<std::size_t>()+N` where `N` is the sum
-				 * of `datapack::pack_size(item)` for each `item` in `vec`.
-				 *
-				 * @param vec std::vector instance to serialize
-				 */
-				static std::size_t pack_size(const std::vector<T>& vec);
-
-				/**
-				 * Writes `vec` to the `data_pack` buffer at the given
-				 * `offset`. pack_size(vec) bytes are written, and `offset` is
-				 * incremented accordingly.
-				 *
-				 * First, `vec.size` is written
-				 * (datapack::pack_size<std::size_t> bytes) and then each
-				 * `item` in `vec` are written contiguously using the
-				 * datapack::write() specialization for T.
-				 *
-				 * @param data_pack destination DataPack
-				 * @param vec source std::vector
-				 * @param offset `data_pack.buffer` index at which the first
-				 * byte is written
-				 */
-				static void write(
-						DataPack& data_pack, const std::vector<T>& vec,
-						std::size_t& offset);
-
-				/**
-				 * Reads an std::vector from the `data_pack` buffer at the
-				 * given `offset`. The count of bytes read depends on the
-				 * corresponding write() operation.  `offset` is incremented
-				 * accordingly.
-				 *
-				 * @param data_pack source DataPack
-				 * @param destination destination std::vector
-				 * @param offset `data_pack.buffer` index at which the first
-				 * byte is read
-				 */
-				static void read(
-						const DataPack& data_pack, std::vector<T>& vec,
-						std::size_t& offset);
-			};
-
-		template<typename T>
-			std::size_t base_io<std::vector<T>>::pack_size(const std::vector<T>& vec) {
-				std::size_t size = datapack::pack_size<std::size_t>();
-				for(auto item : vec)
-					size += datapack::pack_size(item);
-				return size;
-			};
-
-		template<typename T>
-			void base_io<std::vector<T>>::write(
-					DataPack& data_pack, const std::vector<T>& vec,
-					std::size_t& offset) {
-				base_io<std::size_t>::write(data_pack, vec.size(), offset);
-				for(auto item : vec)
-					base_io<T>::write(data_pack, item, offset);
-			}
-
-		template<typename T>
-			void base_io<std::vector<T>>::read(
-					const DataPack& data_pack, std::vector<T>& vec,
-					std::size_t& offset) {
-				std::size_t size;
-				base_io<std::size_t>::read(data_pack, size, offset);
-				vec.resize(size);
-				for(std::size_t i = 0; i < size; i++)
-					base_io<T>::read(data_pack, vec[i], offset);
-			}
-
-		template<typename T1, typename T2>
-			struct base_io<std::pair<T1, T2>> {
-				static std::size_t pack_size(const std::pair<T1, T2>& pair) {
-					return datapack::pack_size(pair.first)
-						+ datapack::pack_size(pair.second);
-				}
-
-				static void write(
-						DataPack& data_pack, const std::pair<T1, T2>& pair,
-						std::size_t& offset) {
-					datapack::write(data_pack, pair.first, offset);
-					datapack::write(data_pack, pair.second, offset);
-				}
-
-				static void read(
-						const DataPack& data_pack, std::pair<T1, T2>& pair,
-						std::size_t& offset) {
-					datapack::read(data_pack, pair.first, offset);
-					datapack::read(data_pack, pair.second, offset);
-				}
-
-			};
-
 		template<template<typename> class S>
 			class BasicObjectPack {
 				friend base_io<BasicObjectPack<S>>;
@@ -449,35 +88,85 @@ namespace fpmas { namespace io {
 				public:
 				BasicObjectPack() = default;
 
+				/**
+				 * Serializes item in a new BasicObjectPack, using the
+				 * S<T>::to_datapack(BasicObjectPack<S>&, const T&) specialization.
+				 *
+				 * @param item item to serialize
+				 */
 				template<typename T>
 					BasicObjectPack(const T& item) {
 						S<T>::to_datapack(*this, item);
 					}
 
+				/**
+				 * Serializes item in the current BasicObjectPack, using the
+				 * S<T>::to_datapack(BasicObjectPack<S>&, const T&) specialization.
+				 *
+				 * Existing data is discarded.
+				 *
+				 * @param item item to serialize
+				 * @return reference to this BasicObjectPack
+				 */
 				template<typename T>
 					BasicObjectPack<S>& operator=(const T& item) {
 						S<T>::to_datapack(*this, item);
 						return *this;
 					}
 
+				/**
+				 * Returns a reference to the internal DataPack, where
+				 * serialized data is stored.
+				 */
 				const DataPack& data() const {
 					return _data;
 				}
 
+				/**
+				 * Unserializes data from the current BasicObjectPack, using
+				 * the S<T>::from_datapack(const BasicObjectPack<S>&) specialization.
+				 *
+				 * For this call to be valid, data must have been serialized in
+				 * the BasicObjectPack using either the
+				 * BasicObjectPack(const T&) constructor or operator=(const T&).
+				 *
+				 * @tparam T type of data to unserialize
+				 * @return unserialized object
+				 */
 				template<typename T>
 					T get() const {
 						return S<T>::from_datapack(*this);
 					}
 
+				/**
+				 * Allocates `size` bytes in the internal DataPack buffer to
+				 * perform write() operations.
+				 *
+				 * @param size count of bytes to allocate
+				 */
 				void allocate(std::size_t size) {
 					_data = {size, 1};
 				}
 
+				/**
+				 * Writes the specified item to the internal DataPack buffer
+				 * using a low level datapack::write() operation.
+				 *
+				 * A base_io specialization must be available for T.
+				 *
+				 * @param item item to write to this BasicObjectPack
+				 */
 				template<typename T>
 					void write(const T& item) {
 						datapack::write(this->_data, item, write_offset);
 					}
 
+				/**
+				 * Constructs a new instance of T using the default constructor,
+				 * and reads data into the new instance with read(T&).
+				 *
+				 * @return read data
+				 */
 				template<typename T>
 					T read() const {
 						T item;
@@ -485,17 +174,44 @@ namespace fpmas { namespace io {
 						return item;
 					}
 
+				/**
+				 * Reads an object from the internal DataPack buffer using a
+				 * low level datapack::read() operation.
+				 *
+				 * A base_io specialization must be available for T.
+				 *
+				 * Data must have been serialize using a write(), and the
+				 * read/write call order must be respected.
+				 *
+				 * @param item item into which data is read
+				 */
 				template<typename T>
 					void read(T& item) const {
 						datapack::read(this->_data, item, read_offset);
 					}
 
+				/**
+				 * Returns by move the internal DataPack buffer for
+				 * memory efficiency.
+				 *
+				 * The current BasicObjectPack is left empty.
+				 *
+				 * @return internal DataPack buffer
+				 */
 				DataPack dump() {
 					write_offset = 0;
 					read_offset = 0;
 					return std::move(_data);
 				}
 
+				/**
+				 * Constructs a new BasicObjectPack from the input DataPack,
+				 * the is moved into the BasicObjectPack instance, for memory
+				 * efficiency.
+				 *
+				 * @param data_pack input datapack
+				 * @return BasicObjectPack containing the input datapack
+				 */
 				static BasicObjectPack<S> parse(DataPack&& data_pack) {
 					BasicObjectPack<S> pack;
 					pack._data = std::move(data_pack);
@@ -546,69 +262,155 @@ namespace fpmas { namespace io {
 				 * Data is read directly into pack.data().
 				 *
 				 * @param data_pack source DataPack
-				 * @param destination destination BasicObjectPack
+				 * @param object_pack destination BasicObjectPack
 				 * @param offset `data_pack.buffer` index at which the first
 				 * byte is read
 				 */
 				static void read(
-						const DataPack& data_pack, BasicObjectPack<S>& pack, std::size_t& offset) {
-					datapack::read(data_pack, pack._data, offset);
+						const DataPack& data_pack, BasicObjectPack<S>& object_pack, std::size_t& offset) {
+					datapack::read(data_pack, object_pack._data, offset);
 				}
 
 			};
 
-		/*
-		 *    template<typename T>
-		 *        struct Serializer {
-		 *            template<typename PackType>
-		 *            static void to_datapack(PackType& pack, const T& item) {
-		 *                pack.allocate(pack_size(item));
-		 *                pack.write(item);
-		 *                return pack;
-		 *            }
+		/**
+		 * Default serializer implementation, based on the base_io
+		 * specialization for the type T.
 		 *
-		 *            template<typename PackType>
-		 *            static T from_datapack(const PackType& pack) {
-		 *                return pack.template read<T>();
-		 *            }
-		 *        };
+		 * @tparam T data type
 		 */
-
-		template<typename T, typename JsonType>
-			struct JsonSerializer {
+		template<typename T>
+			struct Serializer {
+				/**
+				 * Serializes `item` to `pack` using the base_io serialization
+				 * technique of the BasicObjectPack.
+				 *
+				 * @param pack destination pack
+				 * @param item item to serialize
+				 */
 				template<typename PackType>
-					static void to_datapack(PackType& pack, const T& data) {
-						std::string str = JsonType(data).dump();
-						pack.allocate(pack_size(str));
-						pack.write(str);
+					static void to_datapack(PackType& pack, const T& item) {
+						pack.allocate(pack_size(item));
+						pack.write(item);
 					}
 
+				/**
+				 * Deserializes data from `pack` using the base_io
+				 * serialization technique of the BasicObjectPack.
+				 *
+				 * @param pack source pack
+				 * @return deserialized data
+				 */
+				template<typename PackType>
+					static T from_datapack(const PackType& pack) {
+						return pack.template read<T>();
+					}
+			};
+
+		/**
+		 * A serializer implementation based on json serialization.
+		 *
+		 * Objects of type T are serialized using the nlohmann::json
+		 * library. Json strings are then written and read directly to
+		 * DataPack buffers.
+		 *
+		 * @tparam T type to serialize
+		 * @tparam JsonType json type used for serialization
+		 * (nlohmann::json of fpmas::io::json::light_json).
+		 */
+		template<typename T, typename JsonType>
+			struct BasicJsonSerializer {
+				/**
+				 * Serializes `data` to `pack`.
+				 *
+				 * An std::string instance is produced using
+				 * `JsonType(data).dump()` and written to `pack`.
+				 *
+				 * @param pack destination pack
+				 * @param data data to serialize
+				 */
+				template<typename PackType>
+					static void to_datapack(PackType& pack, const T& data) {
+						pack = JsonType(data).dump();
+					}
+
+				/**
+				 * Unserializes data from `pack`.
+				 *
+				 * A json std::string is retrieved from the pack and parsed
+				 * using `JsonType::parse()`, and an instance of T is
+				 * unserialized using the `JsonType::get()` method.
+				 *
+				 * @param pack source pack
+				 * @return unserialized data
+				 */
 				template<typename PackType>
 					static T from_datapack(const PackType& pack) {
 						return JsonType::parse(
-								pack.template read<std::string>()
+								pack.template get<std::string>()
 								).template get<T>();
 					}
 			};
 
+		/**
+		 * An nlohmann::json based serializer.
+		 */
 		template<typename T>
-			struct Serializer : public JsonSerializer<T, nlohmann::json> {
-			};
+			using JsonSerializer = BasicJsonSerializer<T, nlohmann::json>;
+		/**
+		 * An nlohmann::json based BasicObjectPack.
+		 */
+		typedef BasicObjectPack<JsonSerializer> JsonPack;
 
+		/**
+		 * An fpmas::io::json::light_json based serialized. Can be
+		 * considered as the _light_ version of JsonSerializer.
+		 */
+		template<typename T>
+			using LightJsonSerializer = BasicJsonSerializer<T, fpmas::io::json::light_json>;
+		/**
+		 * An fpmas::io::json::light_json based BasicObjectPack. Can be
+		 * considered as the _light_ version of JsonPack.
+		 */
+		typedef BasicObjectPack<LightJsonSerializer> LightJsonPack;
+
+		/**
+		 * std::vector Serializer specialization.
+		 *
+		 * @tparam T vector items type
+		 */
 		template<typename T>
 			struct Serializer<std::vector<T>> {
+				/**
+				 * Serializes `vec` to `pack`. Each item in `vec` is serialized
+				 * using PackType(item), i.e. with the Serializer serialization
+				 * technique of the BasicObjectPack.
+				 *
+				 * @param pack destination pack
+				 * @param vec vector to serialize
+				 */
 				template<typename PackType>
-					static void to_datapack(PackType& pack, const std::vector<T>& data) {
-						std::vector<PackType> packs(data.size());
+					static void to_datapack(PackType& pack, const std::vector<T>& vec) {
+						std::vector<PackType> packs(vec.size());
 
-						for(std::size_t i = 0; i < data.size(); i++) {
+						for(std::size_t i = 0; i < vec.size(); i++) {
 							// Serialize
-							packs[i] = PackType(data[i]);
+							packs[i] = PackType(vec[i]);
 						}
 						pack.allocate(datapack::pack_size(packs));
 						pack.write(packs);
 					}
 
+				/**
+				 * Unserializes a vector from `pack`.
+				 *
+				 * Each item of the vector is unserialized using the
+				 * PackType::get() method, i.e. with the Serializer serialization
+				 * technique of the BasicObjectPack.
+				 *
+				 * @param pack source pack
+				 * @return unserialized vector
+				 */
 				template<typename PackType>
 					static std::vector<T> from_datapack(const PackType& pack) {
 						std::vector<PackType> packs
@@ -625,25 +427,55 @@ namespace fpmas { namespace io {
 					}
 			};
 
+		/**
+		 * BasicObjectPack specialization based on the regular binary
+		 * fpmas::io::datapack::Serializer.
+		 *
+		 * An ObjectPack can be seen as a `json` or `YAML` object that could
+		 * be defined in other libraries, using other serialization techniques.
+		 */
 		typedef BasicObjectPack<Serializer> ObjectPack;
 
 		template<typename T> struct LightSerializer;
 
+		/**
+		 * LightSerializer based BasicObjectPack specialization.
+		 *
+		 * Light version of the regular ObjectPack.
+		 */
 		typedef BasicObjectPack<LightSerializer> LightObjectPack;
 
+		/**
+		 * Light version of the fpmas::io::datapack::Serializer.
+		 *
+		 * By default, falls back to the Serializer<T> specialization, but
+		 * custom LightSerializer specializations can be defined.
+		 */
 		template<typename T>
 			struct LightSerializer {
+				/**
+				 * Serializes `data` into `pack` using the regular
+				 * Serializer<T>::to_datapack() specialization.
+				 *
+				 * @param pack destination pack
+				 * @param data data to serialize
+				 */
 				static void to_datapack(LightObjectPack& pack, const T& data) {
-					return JsonSerializer<T, fpmas::io::json::light_json>::to_datapack(pack, data);
+					Serializer<T>::to_datapack(pack, data);
 				}
 
+				/**
+				 * Unserializes data from `pack`.
+				 *
+				 * Data is unserialized using the regular
+				 * Serializer<T>::from_datapack() specialization.
+				 *
+				 * @param pack source pack
+				 * @return deserialized data
+				 */
 				static T from_datapack(const LightObjectPack& pack) {
-					return JsonSerializer<T, fpmas::io::json::light_json>::from_datapack(pack);
+					return Serializer<T>::from_datapack(pack);
 				}
-			};
-
-		template<typename T>
-			struct LightSerializer<std::vector<T>> : public Serializer<std::vector<T>> {
 			};
 	}}
 }

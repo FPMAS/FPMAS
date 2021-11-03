@@ -109,7 +109,7 @@ struct fpmas::io::json::light_serializer&lt; T, Enable &gt;</div><p >Default <co
 <li><a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01NodePtrWrapper_3_01T_01_4_01_4.html#light_serializer_DistributedNode">light_serializer&lt;NodePtrWrapper&lt;T&gt;&gt;</a> : partial json serialization, with minimalist node information.</li>
 </ul>
 <p >So even if the implementation of the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> is unique, the proper <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a> serialization rules are automatically selected at compile time according to the provided <code>JsonType</code>.</p>
-<p >Concretely, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdges</a> can be serialized more efficiently using a <code>light_json</code>: see <a class="el" href="/home/pbreugno/Development/c++/workspace/fpmas/FPMAS/src/fpmas/graph/distributed_edge.h#TypedMpiDistributedEdge">TypedMpi&lt;DistributedEdge&lt;T&gt;&gt;</a>.</p>
+<p >Concretely, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdges</a> can be serialized more efficiently using a <code>light_json</code>: see <a class="el" href="structfpmas_1_1communication_1_1TypedMpi_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4.html#TypedMpiDistributedEdge">TypedMpi&lt;DistributedEdge&lt;T&gt;&gt;</a>.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>type to serialize </td></tr>

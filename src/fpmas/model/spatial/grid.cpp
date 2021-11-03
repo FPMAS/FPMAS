@@ -10,6 +10,29 @@ namespace fpmas { namespace model {
 	}
 }}
 
+namespace fpmas { namespace io { namespace datapack {
+	std::size_t base_io<api::model::DiscretePoint>::pack_size() {
+		return 2*datapack::pack_size<api::model::DiscreteCoordinate>();
+	}
+	std::size_t base_io<api::model::DiscretePoint>::pack_size(const api::model::DiscretePoint&) {
+		return pack_size();
+	}
+
+	void base_io<api::model::DiscretePoint>::write(
+			DataPack& pack, const api::model::DiscretePoint& point,
+			std::size_t& offset) {
+		datapack::write(pack, point.x, offset);
+		datapack::write(pack, point.y, offset);
+	}
+
+	void base_io<api::model::DiscretePoint>::read(
+			const DataPack& pack, api::model::DiscretePoint& point,
+			std::size_t& offset) {
+		datapack::read(pack, point.x, offset);
+		datapack::read(pack, point.y, offset);
+	}
+}}}
+
 namespace std {
 	std::size_t hash<fpmas::model::DiscretePoint>::operator()(const fpmas::model::DiscretePoint& p) const {
 		return hasher(p);

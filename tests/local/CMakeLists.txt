@@ -41,12 +41,14 @@ set(SOURCES
 	model/spatial/grid_load_balancing.cpp
 	model/spatial/grid_agent_mapping.cpp
 	# Output
+	io/fake_data.cpp
 	io/output.cpp
 	io/csv_output.cpp
 	io/json_output.cpp
 	io/breakpoint.cpp
 	io/json.cpp
 	io/formatted_output.cpp
+	io/datapack_base_io.cpp
 	io/datapack.cpp
 	# Utils
 	utils/format.cpp

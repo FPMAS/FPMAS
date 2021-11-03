@@ -73,7 +73,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="datapack_8h_source.html">datapack.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="datapack__base__io_8h_source.html">datapack_base_io.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -87,6 +87,14 @@ Static Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
 struct fpmas::io::datapack::base_io&lt; std::vector&lt; T &gt; &gt;</div><p >std::vector <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> specialization.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" colspan="5">Serialization scheme    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><em>scheme</em>   </td><td class="markdownTableBodyNone">N   </td><td class="markdownTableBodyNone">item1   </td><td class="markdownTableBodyNone">item2   </td><td class="markdownTableBodyNone">...    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><em>serializer</em>   </td><td class="markdownTableBodyNone">base_io&lt;std::size_t&gt;   </td><td class="markdownTableBodyNone" colspan="3">base_io&lt;T&gt;   </td></tr>
+</table>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>type of data contained into the vector. A <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> specialization of T must be available. </td></tr>
@@ -122,10 +130,11 @@ template&lt;typename T &gt; </div>
 <p >Returns the buffer size, in bytes, required to serialize the specified vector, i.e. <code><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">datapack::pack_size</a>&lt;std::size_t&gt;()+N</code> where <code>N</code> is the sum of <code>datapack::pack_size(item)</code> for each <code>item</code> in <code>vec</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">vec</td><td>std::vector instance to serialize </td></tr>
+    <tr><td class="paramname">vec</td><td>std::vector instance to serialize</td></tr>
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd>pack size in bytes </dd></dl>
 
 </div>
 </div>
@@ -228,7 +237,7 @@ template&lt;typename T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data_pack</td><td>source DataPack </td></tr>
-    <tr><td class="paramname">destination</td><td>destination std::vector </td></tr>
+    <tr><td class="paramname">vec</td><td>destination std::vector </td></tr>
     <tr><td class="paramname">offset</td><td><code>data_pack.buffer</code> index at which the first byte is read </td></tr>
   </table>
   </dd>
@@ -237,7 +246,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/fpmas/io/<a class="el" href="datapack_8h_source.html">datapack.h</a></li>
+<li>src/fpmas/io/<a class="el" href="datapack__base__io_8h_source.html">datapack_base_io.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

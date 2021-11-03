@@ -1,35 +1,10 @@
-#include "json.h"
+#include "fake_data.h"
 #include "gmock/gmock.h"
 #include "fpmas/graph/distributed_edge.h"
 #include "graph/mock_distributed_node.h"
 #include "../gtest_environment.h"
 
 using namespace testing;
-
-namespace nlohmann {
-	void adl_serializer<DefaultConstructibleData>::to_json(
-			json& j, const DefaultConstructibleData& data) {
-		j = data.i;
-	}
-
-	void adl_serializer<DefaultConstructibleData>::from_json(
-			const json& j, DefaultConstructibleData& data) {
-		data.i = j.get<int>();
-	}
-}
-
-namespace fpmas { namespace io { namespace json {
-	void light_serializer<DefaultConstructibleData>::to_json(
-			light_json&, const DefaultConstructibleData&) {}
-	void light_serializer<DefaultConstructibleData>::from_json(
-			const light_json&, DefaultConstructibleData&) {}
-	void light_serializer<NonDefaultConstructibleData>::to_json(
-			light_json&, const NonDefaultConstructibleData&) {}
-	NonDefaultConstructibleData light_serializer<NonDefaultConstructibleData>::from_json(
-			const light_json&) {
-		return NonDefaultConstructibleData(0);
-	}
-}}}
 
 TEST(light_json, non_default_constructible) {
 	NonDefaultConstructibleData data(8);

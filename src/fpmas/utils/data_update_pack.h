@@ -6,6 +6,7 @@
  */
 
 #include "fpmas/api/graph/distributed_id.h"
+#include "fpmas/io/datapack.h"
 
 namespace fpmas { namespace synchro {
 	/**
@@ -110,4 +111,90 @@ namespace nlohmann {
         }
     };
 }
+
+namespace fpmas { namespace io { namespace datapack {
+	using fpmas::synchro::DataUpdatePack;
+	using fpmas::synchro::NodeUpdatePack;
+
+	/**
+	 * DataUpdatePack ObjectPack serialization.
+	 *
+	 * | Serialization scheme |||
+	 * |----------------------|||
+	 * | _scheme_ | DistributedId | T |
+	 * | _serializer_ | base_io<DistributedId> | Serializer<T> |
+	 */
+	template<typename T>
+		struct Serializer<DataUpdatePack<T>> {
+			/**
+			 * DataUpdatePack ObjectPack serialization.
+			 *
+			 * @param pack destination pack
+			 * @param data data update to serialize
+			 */
+			static void to_datapack(ObjectPack& pack, const DataUpdatePack<T>& data) {
+				ObjectPack updated_data = data.updated_data;
+				pack.allocate(
+						pack_size<DistributedId>() + pack_size(updated_data)
+						);
+				pack.write(data.id);
+				pack.write(updated_data);
+			}
+
+			/**
+			 * DataUpdatePack ObjectPack deserialization.
+			 *
+			 * @param pack source pack
+			 * @return deserialized data update
+			 */
+			static DataUpdatePack<T> from_datapack(const ObjectPack& pack) {
+				return {
+					pack.read<DistributedId>(),
+					pack.read<ObjectPack>().get<T>()
+				};
+			}
+		};
+
+	/**
+	 * NodeUpdatePack ObjectPack serialization.
+	 *
+	 * | Serialization scheme ||||
+	 * |----------------------||||
+	 * | _scheme_ | DistributedId | T | float (weight) |
+	 * | _serializer_ | base_io<DistributedId> | Serializer<T> | base_io<float> |
+	 */
+	template<typename T>
+		struct Serializer<NodeUpdatePack<T>> {
+			/**
+			 * NodeUpdatePack ObjectPack serialization.
+			 *
+			 * @param pack source pack
+			 * @param data node update to serialize
+			 */
+			static void to_datapack(ObjectPack& pack, const NodeUpdatePack<T>& data) {
+				ObjectPack updated_data = data.updated_data;
+				pack.allocate(
+						pack_size<DistributedId>() + pack_size(updated_data)
+						+ pack_size<float>()
+						);
+				pack.write(data.id);
+				pack.write(updated_data);
+				pack.write(data.updated_weight);
+			}
+
+			/**
+			 * NodeUpdatePack ObjectPack deserialization.
+			 *
+			 * @param pack source pack
+			 * @return deserialized node update
+			 */
+			static NodeUpdatePack<T> from_datapack(const ObjectPack& pack) {
+				return {
+					pack.read<DistributedId>(),
+					pack.read<ObjectPack>().get<T>(),
+					pack.read<float>()
+				};
+			}
+		};
+}}}
 #endif

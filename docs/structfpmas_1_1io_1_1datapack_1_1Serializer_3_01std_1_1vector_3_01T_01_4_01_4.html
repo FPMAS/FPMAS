@@ -72,27 +72,115 @@ $(function() {
   <div class="headertitle"><div class="title">fpmas::io::datapack::Serializer&lt; std::vector&lt; T &gt; &gt; Struct Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="dynheader">
-Inheritance diagram for fpmas::io::datapack::Serializer&lt; std::vector&lt; T &gt; &gt;:</div>
-<div class="dyncontent">
-<div class="center"><img src="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1vector_3_01T_01_4_01_4__inherit__graph.png" border="0" usemap="#afpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1vector_3_01T_01_4_01_4_inherit__map" alt="Inheritance graph"/></div>
-<map name="afpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1vector_3_01T_01_4_01_4_inherit__map" id="afpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1vector_3_01T_01_4_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,5,164,61"/>
-<area shape="rect" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01std_1_1vector_3_01T_01_4_01_4.html" title=" " alt="" coords="13,109,156,165"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
+
+<p><code>#include &lt;<a class="el" href="datapack_8h_source.html">datapack.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a8f30e996140560ff2231df5735283b4a"><td class="memTemplParams" colspan="2"><a id="a8f30e996140560ff2231df5735283b4a" name="a8f30e996140560ff2231df5735283b4a"></a>
-template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:a8f30e996140560ff2231df5735283b4a"><td class="memTemplItemLeft" align="right" valign="top">static PackType&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_datapack</b> (const std::vector&lt; T &gt; &amp;data)</td></tr>
-<tr class="separator:a8f30e996140560ff2231df5735283b4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a08e9bcb89b59b5833deb20f6532bf277"><td class="memTemplParams" colspan="2"><a id="a08e9bcb89b59b5833deb20f6532bf277" name="a08e9bcb89b59b5833deb20f6532bf277"></a>
-template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:a08e9bcb89b59b5833deb20f6532bf277"><td class="memTemplItemLeft" align="right" valign="top">static std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_datapack</b> (const PackType &amp;pack)</td></tr>
+<tr class="memitem:a9c2ce2dbd0194aeb6f99712b36c3b0f3"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:a9c2ce2dbd0194aeb6f99712b36c3b0f3"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1vector_3_01T_01_4_01_4.html#a9c2ce2dbd0194aeb6f99712b36c3b0f3">to_datapack</a> (PackType &amp;pack, const std::vector&lt; T &gt; &amp;vec)</td></tr>
+<tr class="separator:a9c2ce2dbd0194aeb6f99712b36c3b0f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a08e9bcb89b59b5833deb20f6532bf277"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:a08e9bcb89b59b5833deb20f6532bf277"><td class="memTemplItemLeft" align="right" valign="top">static std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1vector_3_01T_01_4_01_4.html#a08e9bcb89b59b5833deb20f6532bf277">from_datapack</a> (const PackType &amp;pack)</td></tr>
 <tr class="separator:a08e9bcb89b59b5833deb20f6532bf277"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+struct fpmas::io::datapack::Serializer&lt; std::vector&lt; T &gt; &gt;</div><p >std::vector <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> specialization.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>vector items type </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a9c2ce2dbd0194aeb6f99712b36c3b0f3" name="a9c2ce2dbd0194aeb6f99712b36c3b0f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c2ce2dbd0194aeb6f99712b36c3b0f3">&#9670;&nbsp;</a></span>to_datapack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename PackType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; std::vector&lt; T &gt; &gt;::to_datapack </td>
+          <td>(</td>
+          <td class="paramtype">PackType &amp;&#160;</td>
+          <td class="paramname"><em>pack</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>vec</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Serializes <code>vec</code> to <code>pack</code>. Each item in <code>vec</code> is serialized using PackType(item), i.e. with the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> serialization technique of the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pack</td><td>destination pack </td></tr>
+    <tr><td class="paramname">vec</td><td>vector to serialize </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a08e9bcb89b59b5833deb20f6532bf277" name="a08e9bcb89b59b5833deb20f6532bf277"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a08e9bcb89b59b5833deb20f6532bf277">&#9670;&nbsp;</a></span>from_datapack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename PackType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::vector&lt; T &gt; <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; std::vector&lt; T &gt; &gt;::from_datapack </td>
+          <td>(</td>
+          <td class="paramtype">const PackType &amp;&#160;</td>
+          <td class="paramname"><em>pack</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Unserializes a vector from <code>pack</code>.</p>
+<p >Each item of the vector is unserialized using the PackType::get() method, i.e. with the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> serialization technique of the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pack</td><td>source pack </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>unserialized vector </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/fpmas/io/<a class="el" href="datapack_8h_source.html">datapack.h</a></li>
 </ul>

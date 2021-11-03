@@ -69,27 +69,30 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
-<a href="#typedef-members">Typedefs</a> &#124;
-<a href="#func-members">Functions</a>  </div>
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle"><div class="title">datapack.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="api_2communication_2communication_8h_source.html">fpmas/api/communication/communication.h</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;datapack_base_io.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="json_8h_source.html">fpmas/io/json.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for datapack.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="datapack_8h__incl.png" border="0" usemap="#asrc_2fpmas_2io_2datapack_8h" alt=""/></div>
 <map name="asrc_2fpmas_2io_2datapack_8h" id="asrc_2fpmas_2io_2datapack_8h">
-<area shape="rect" title=" " alt="" coords="99,5,261,32"/>
-<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="171,80,341,121"/>
-<area shape="rect" href="json_8h.html" title=" " alt="" coords="34,169,145,196"/>
-<area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="178,169,385,196"/>
-<area shape="rect" title=" " alt="" coords="161,244,239,271"/>
-<area shape="rect" title=" " alt="" coords="5,244,136,271"/>
-<area shape="rect" title=" " alt="" coords="263,244,318,271"/>
-<area shape="rect" title=" " alt="" coords="342,244,402,271"/>
-<area shape="rect" title=" " alt="" coords="427,244,509,271"/>
+<area shape="rect" title=" " alt="" coords="203,5,365,32"/>
+<area shape="rect" href="datapack__base__io_8h_source.html" title=" " alt="" coords="87,80,225,107"/>
+<area shape="rect" href="json_8h.html" title=" " alt="" coords="410,244,521,271"/>
+<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="204,155,375,196"/>
+<area shape="rect" title=" " alt="" coords="5,162,45,189"/>
+<area shape="rect" title=" " alt="" coords="70,162,109,189"/>
+<area shape="rect" title=" " alt="" coords="133,162,179,189"/>
+<area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="169,244,375,271"/>
+<area shape="rect" title=" " alt="" coords="39,319,118,345"/>
+<area shape="rect" title=" " alt="" coords="412,319,543,345"/>
+<area shape="rect" title=" " alt="" coords="142,319,197,345"/>
+<area shape="rect" title=" " alt="" coords="221,319,281,345"/>
+<area shape="rect" title=" " alt="" coords="305,319,388,345"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -97,48 +100,56 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="datapack_8h__dep__incl.png" border="0" usemap="#asrc_2fpmas_2io_2datapack_8hdep" alt=""/></div>
 <map name="asrc_2fpmas_2io_2datapack_8hdep" id="asrc_2fpmas_2io_2datapack_8hdep">
-<area shape="rect" title=" " alt="" coords="812,5,975,32"/>
-<area shape="rect" href="communication_2serializer_8h_source.html" title=" " alt="" coords="807,80,979,121"/>
-<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="807,169,979,211"/>
-<area shape="rect" href="graph_2distributed__edge_8h.html" title=" " alt="" coords="867,259,1047,300"/>
-<area shape="rect" href="ghost__mode_8h.html" title=" " alt="" coords="1191,437,1358,479"/>
-<area shape="rect" href="graph_2location__manager_8h.html" title=" " alt="" coords="1072,259,1237,300"/>
-<area shape="rect" href="ring__graph__builder_8h.html" title=" " alt="" coords="708,348,849,389"/>
-<area shape="rect" href="scheduled__load__balancing_8h.html" title=" " alt="" coords="184,259,363,300"/>
-<area shape="rect" href="zoltan__load__balancing_8h.html" title=" " alt="" coords="5,259,160,300"/>
-<area shape="rect" href="csv__output_8h.html" title=" " alt="" coords="1505,1234,1679,1261"/>
-<area shape="rect" href="io_2output_8h.html" title=" " alt="" coords="1322,1145,1467,1171"/>
-<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="387,266,583,293"/>
-<area shape="rect" href="termination_8h.html" title=" " alt="" coords="874,348,1033,389"/>
-<area shape="rect" href="graph_2distributed__graph_8h.html" title=" " alt="" coords="1057,348,1237,389"/>
-<area shape="rect" href="model_2detail_2model_8h.html" title=" " alt="" coords="5,437,160,479"/>
-<area shape="rect" href="hard__sync__linker_8h.html" title=" " alt="" coords="1009,437,1167,479"/>
-<area shape="rect" href="model_2model_8h.html" title=" " alt="" coords="231,705,401,732"/>
-<area shape="rect" href="dist__move__algo_8h.html" title=" " alt="" coords="238,780,399,821"/>
-<area shape="rect" href="model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="246,869,407,911"/>
-<area shape="rect" href="model_2spatial_2graph_8h_source.html" title=" " alt="" coords="431,959,593,1000"/>
-<area shape="rect" href="model_2spatial_2grid_8h.html" title=" " alt="" coords="246,959,407,1000"/>
-<area shape="rect" href="grid__builder_8h_source.html" title=" " alt="" coords="250,1048,411,1089"/>
-<area shape="rect" href="moore__grid_8h_source.html" title=" " alt="" coords="435,1137,597,1179"/>
-<area shape="rect" href="von__neumann__grid_8h_source.html" title=" " alt="" coords="250,1137,411,1179"/>
-<area shape="rect" href="moore_8h.html" title=" " alt="" coords="435,1227,597,1268"/>
-<area shape="rect" href="fpmas_8h.html" title=" " alt="" coords="992,1323,1083,1350"/>
-<area shape="rect" href="moore__range_8h_source.html" title=" " alt="" coords="391,1495,553,1536"/>
-<area shape="rect" href="von__neumann__range_8h_source.html" title=" " alt="" coords="522,1316,683,1357"/>
-<area shape="rect" href="von__neumann_8h.html" title=" " alt="" coords="522,1405,683,1447"/>
-<area shape="rect" href="hard__sync__mode_8h.html" title=" " alt="" coords="958,527,1117,568"/>
-<area shape="rect" href="graph_2graph__builder_8h.html" title=" " alt="" coords="675,616,827,657"/>
-<area shape="rect" href="utils_2perf_8h.html" title=" " alt="" coords="1519,1323,1665,1350"/>
-<area shape="rect" href="formatted__output_8h_source.html" title=" " alt="" coords="1127,1227,1281,1268"/>
-<area shape="rect" href="json__output_8h_source.html" title=" " alt="" coords="1305,1234,1481,1261"/>
-<area shape="rect" href="random_8h_source.html" title=" " alt="" coords="390,355,575,382"/>
-<area shape="rect" href="runtime_2runtime_8h.html" title=" " alt="" coords="179,355,365,382"/>
-<area shape="rect" href="random__graph__builder_8h.html" title=" " alt="" coords="592,437,755,479"/>
-<area shape="rect" href="random__load__balancing_8h_source.html" title=" " alt="" coords="235,616,397,657"/>
-<area shape="rect" href="grid__agent__mapping_8h.html" title=" " alt="" coords="286,527,447,568"/>
-<area shape="rect" href="spatial__agent__mapping_8h_source.html" title=" " alt="" coords="397,437,568,479"/>
-<area shape="rect" href="clustered__graph__builder_8h.html" title=" " alt="" coords="472,527,645,568"/>
-<area shape="rect" href="uniform__graph__builder_8h.html" title=" " alt="" coords="669,527,832,568"/>
+<area shape="rect" title=" " alt="" coords="1527,5,1689,32"/>
+<area shape="rect" href="communication_2serializer_8h_source.html" title=" " alt="" coords="1091,80,1263,121"/>
+<area shape="rect" href="graph_2distributed__node_8h.html" title=" " alt="" coords="1390,169,1570,211"/>
+<area shape="rect" href="model_2serializer_8h.html" title=" " alt="" coords="1347,787,1533,814"/>
+<area shape="rect" href="enums_8h.html" title=" " alt="" coords="1737,80,1895,121"/>
+<area shape="rect" href="data__update__pack_8h.html" title=" " alt="" coords="2011,259,2149,300"/>
+<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="911,169,1083,211"/>
+<area shape="rect" href="graph_2distributed__edge_8h.html" title=" " alt="" coords="1390,259,1570,300"/>
+<area shape="rect" href="ghost__mode_8h.html" title=" " alt="" coords="1310,437,1477,479"/>
+<area shape="rect" href="graph_2location__manager_8h.html" title=" " alt="" coords="1200,259,1365,300"/>
+<area shape="rect" href="ring__graph__builder_8h.html" title=" " alt="" coords="1035,259,1176,300"/>
+<area shape="rect" href="scheduled__load__balancing_8h.html" title=" " alt="" coords="1027,348,1205,389"/>
+<area shape="rect" href="zoltan__load__balancing_8h.html" title=" " alt="" coords="848,348,1003,389"/>
+<area shape="rect" href="csv__output_8h.html" title=" " alt="" coords="5,1234,179,1261"/>
+<area shape="rect" href="io_2output_8h.html" title=" " alt="" coords="218,1145,363,1171"/>
+<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="633,266,829,293"/>
+<area shape="rect" href="termination_8h.html" title=" " alt="" coords="1646,259,1805,300"/>
+<area shape="rect" href="graph_2distributed__graph_8h.html" title=" " alt="" coords="1331,348,1511,389"/>
+<area shape="rect" href="model_2detail_2model_8h.html" title=" " alt="" coords="1051,437,1205,479"/>
+<area shape="rect" href="hard__sync__linker_8h.html" title=" " alt="" coords="1883,437,2042,479"/>
+<area shape="rect" href="model_2model_8h.html" title=" " alt="" coords="987,705,1157,732"/>
+<area shape="rect" href="dist__move__algo_8h.html" title=" " alt="" coords="1015,780,1177,821"/>
+<area shape="rect" href="model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="1063,869,1225,911"/>
+<area shape="rect" href="model_2spatial_2graph_8h_source.html" title=" " alt="" coords="1075,959,1237,1000"/>
+<area shape="rect" href="model_2spatial_2grid_8h.html" title=" " alt="" coords="890,959,1051,1000"/>
+<area shape="rect" href="grid__builder_8h_source.html" title=" " alt="" coords="890,1048,1051,1089"/>
+<area shape="rect" href="moore__grid_8h_source.html" title=" " alt="" coords="734,1137,895,1179"/>
+<area shape="rect" href="von__neumann__grid_8h_source.html" title=" " alt="" coords="919,1137,1081,1179"/>
+<area shape="rect" href="moore_8h.html" title=" " alt="" coords="734,1227,895,1268"/>
+<area shape="rect" href="fpmas_8h.html" title=" " alt="" coords="625,1316,716,1343"/>
+<area shape="rect" href="hard__sync__mode_8h.html" title=" " alt="" coords="1701,527,1859,568"/>
+<area shape="rect" href="graph_2graph__builder_8h.html" title=" " alt="" coords="696,616,848,657"/>
+<area shape="rect" href="utils_2perf_8h.html" title=" " alt="" coords="19,1316,165,1343"/>
+<area shape="rect" href="formatted__output_8h_source.html" title=" " alt="" coords="403,1227,557,1268"/>
+<area shape="rect" href="json__output_8h_source.html" title=" " alt="" coords="203,1234,379,1261"/>
+<area shape="rect" href="random_8h_source.html" title=" " alt="" coords="429,355,614,382"/>
+<area shape="rect" href="runtime_2runtime_8h.html" title=" " alt="" coords="638,355,823,382"/>
+<area shape="rect" href="random__graph__builder_8h.html" title=" " alt="" coords="629,437,792,479"/>
+<area shape="rect" href="random__load__balancing_8h_source.html" title=" " alt="" coords="872,616,1035,657"/>
+<area shape="rect" href="grid__agent__mapping_8h.html" title=" " alt="" coords="383,527,545,568"/>
+<area shape="rect" href="spatial__agent__mapping_8h_source.html" title=" " alt="" coords="379,437,549,479"/>
+<area shape="rect" href="clustered__graph__builder_8h.html" title=" " alt="" coords="624,527,797,568"/>
+<area shape="rect" href="uniform__graph__builder_8h.html" title=" " alt="" coords="821,527,984,568"/>
+<area shape="rect" href="client__server_8h.html" title=" " alt="" coords="1759,169,1918,211"/>
+<area shape="rect" href="api_2hard__sync__mode_8h.html" title=" " alt="" coords="2173,259,2331,300"/>
+<area shape="rect" href="server__pack_8h.html" title=" " alt="" coords="1829,259,1987,300"/>
+<area shape="rect" href="mutex__client_8h.html" title=" " alt="" coords="1946,348,2105,389"/>
+<area shape="rect" href="mutex__server_8h.html" title=" " alt="" coords="2181,348,2339,389"/>
+<area shape="rect" href="hard__sync__mutex_8h.html" title=" " alt="" coords="2066,437,2225,479"/>
+<area shape="rect" href="hard__data__sync_8h.html" title=" " alt="" coords="1701,437,1859,479"/>
 </map>
 </div>
 </div>
@@ -146,31 +157,17 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">fpmas::io::datapack::base_io&lt; T, Enable &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01T_00_01typename_01std_1_1enable__if_3_01std_1_1is_4f5f8b23e47ad4047ff6a8072596664f.html">fpmas::io::datapack::base_io&lt; T, typename std::enable_if&lt; std::is_fundamental&lt; T &gt;::value &gt;::type &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01DistributedId_01_4.html">fpmas::io::datapack::base_io&lt; DistributedId &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01std_1_1string_01_4.html">fpmas::io::datapack::base_io&lt; std::string &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01DataPack_01_4.html">fpmas::io::datapack::base_io&lt; DataPack &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01std_1_1vector_3_01T_01_4_01_4.html">fpmas::io::datapack::base_io&lt; std::vector&lt; T &gt; &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">fpmas::io::datapack::BasicObjectPack&lt; S &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01BasicObjectPack_3_01S_01_4_01_4.html">fpmas::io::datapack::base_io&lt; BasicObjectPack&lt; S &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1JsonSerializer.html">fpmas::io::datapack::JsonSerializer&lt; T, JsonType &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer&lt; T &gt;</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html">fpmas::io::datapack::BasicJsonSerializer&lt; T, JsonType &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1vector_3_01T_01_4_01_4.html">fpmas::io::datapack::Serializer&lt; std::vector&lt; T &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer&lt; T &gt;</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01std_1_1vector_3_01T_01_4_01_4.html">fpmas::io::datapack::LightSerializer&lt; std::vector&lt; T &gt; &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
@@ -184,27 +181,20 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:affeae790ebdf831b07e41a7e9ef37ccb"><td class="memItemLeft" align="right" valign="top"><a id="affeae790ebdf831b07e41a7e9ef37ccb" name="affeae790ebdf831b07e41a7e9ef37ccb"></a>
-typedef BasicObjectPack&lt; Serializer &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fpmas::io::datapack::ObjectPack</b></td></tr>
+<tr class="memitem:ace0e8ae2d6c2eb24b846400e88527cf1"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ace0e8ae2d6c2eb24b846400e88527cf1"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#ace0e8ae2d6c2eb24b846400e88527cf1">fpmas::io::datapack::JsonSerializer</a> = BasicJsonSerializer&lt; T, nlohmann::json &gt;</td></tr>
+<tr class="separator:ace0e8ae2d6c2eb24b846400e88527cf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04375778b5984251fb0ec51fe0a811e7"><td class="memItemLeft" align="right" valign="top">typedef BasicObjectPack&lt; JsonSerializer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a04375778b5984251fb0ec51fe0a811e7">fpmas::io::datapack::JsonPack</a></td></tr>
+<tr class="separator:a04375778b5984251fb0ec51fe0a811e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d5f9c0c4f07890abbb2c10c4809e694"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a1d5f9c0c4f07890abbb2c10c4809e694"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a1d5f9c0c4f07890abbb2c10c4809e694">fpmas::io::datapack::LightJsonSerializer</a> = BasicJsonSerializer&lt; T, <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">fpmas::io::json::light_json</a> &gt;</td></tr>
+<tr class="separator:a1d5f9c0c4f07890abbb2c10c4809e694"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56b2abf2f309f6d11086f89055136921"><td class="memItemLeft" align="right" valign="top">typedef BasicObjectPack&lt; LightJsonSerializer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a56b2abf2f309f6d11086f89055136921">fpmas::io::datapack::LightJsonPack</a></td></tr>
+<tr class="separator:a56b2abf2f309f6d11086f89055136921"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:affeae790ebdf831b07e41a7e9ef37ccb"><td class="memItemLeft" align="right" valign="top">typedef BasicObjectPack&lt; Serializer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a></td></tr>
 <tr class="separator:affeae790ebdf831b07e41a7e9ef37ccb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a73b4148148ab630bafded23ec50b6883"><td class="memItemLeft" align="right" valign="top"><a id="a73b4148148ab630bafded23ec50b6883" name="a73b4148148ab630bafded23ec50b6883"></a>
-typedef BasicObjectPack&lt; LightSerializer &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fpmas::io::datapack::LightObjectPack</b></td></tr>
+<tr class="memitem:a73b4148148ab630bafded23ec50b6883"><td class="memItemLeft" align="right" valign="top">typedef BasicObjectPack&lt; LightSerializer &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">fpmas::io::datapack::LightObjectPack</a></td></tr>
 <tr class="separator:a73b4148148ab630bafded23ec50b6883"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
-Functions</h2></td></tr>
-<tr class="memitem:a9f244fdbf49db0a3afeb3c945b9b90ce"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a9f244fdbf49db0a3afeb3c945b9b90ce"><td class="memTemplItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">fpmas::io::datapack::pack_size</a> ()</td></tr>
-<tr class="separator:a9f244fdbf49db0a3afeb3c945b9b90ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2192e226303afb7e5d30ec8bce1af6c0"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a2192e226303afb7e5d30ec8bce1af6c0"><td class="memTemplItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a2192e226303afb7e5d30ec8bce1af6c0">fpmas::io::datapack::pack_size</a> (const T &amp;data)</td></tr>
-<tr class="separator:a2192e226303afb7e5d30ec8bce1af6c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad7683336a39f7fea38065ca005a7093c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ad7683336a39f7fea38065ca005a7093c"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#ad7683336a39f7fea38065ca005a7093c">fpmas::io::datapack::write</a> (DataPack &amp;data_pack, const T &amp;data, std::size_t &amp;offset)</td></tr>
-<tr class="separator:ad7683336a39f7fea38065ca005a7093c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0a47e153d0cdfecde0d016f99aa28b13"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a0a47e153d0cdfecde0d016f99aa28b13"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a0a47e153d0cdfecde0d016f99aa28b13">fpmas::io::datapack::read</a> (const DataPack &amp;data_pack, T &amp;data, std::size_t &amp;offset)</td></tr>
-<tr class="separator:a0a47e153d0cdfecde0d016f99aa28b13"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Binary DataPack based serialization features. </p>

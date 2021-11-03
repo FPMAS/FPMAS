@@ -64,83 +64,37 @@ namespace fpmas { namespace graph {
 
 			};
 
+
 	/**
-	 * nlohmann::json based TemporaryNode implementation.
-	 *
-	 * The json representing the node is stored within the class.
-	 * If build() is called, a new node is allocated from the deserialized
-	 * json.
+	 * ObjectPack based api::graph::TemporaryNode implementation.
 	 *
 	 * @tparam T node data type
-	 * @tparam JsonType json type, that defines deserialization rules (e.g.: `nlohmann::json` or `fpmas::io::json::light_json`)
+	 * @tparam PackType ObjectPack specialization
 	 */
-	template<typename T, typename JsonType>
-		class JsonTemporaryNode : public api::graph::TemporaryNode<T> {
-			private:
-				bool parsed_json;
-				std::string json_str;
-				JsonType j;
-				DistributedId id;
-				int location;
-
-			public:
-				/**
-				 * JsonTemporaryNode constructor.
-				 * 
-				 * The provided json instance is
-				 * [forwarded](https://en.cppreference.com/w/cpp/utility/forward)
-				 * to the internal json instance.
-				 */
-				template<typename _JsonType>
-					JsonTemporaryNode(DistributedId id, int location, _JsonType&& j) :
-						parsed_json(true),
-						j(std::forward<_JsonType>(j)), id(id), location(location) {
-						}
-
-				JsonTemporaryNode(
-						DistributedId id, int location, std::string json_str) :
-					parsed_json(false),
-					json_str(json_str), id(id), location(location) {
-					}
-
-				DistributedId getId() const override {
-					return id;
-				}
-
-				int getLocation() const override {
-					return location;
-				}
-
-				api::graph::DistributedNode<T>* build() override {
-					if(!parsed_json)
-						j = JsonType::parse(json_str);
-					NodePtrWrapper<T> node = j.template get<NodePtrWrapper<T>>();
-					node->setLocation(location);
-					return node;
-				}
-		};
-
 	template<typename T, typename PackType>
 		class TemporaryNode : public api::graph::TemporaryNode<T> {
 			private:
-				bool parsed_data_pack;
 				PackType pack;
 				communication::DataPack data_pack;
 				DistributedId id;
 				int location;
 
 			public:
+				/**
+				 * TemporaryNode constructor.
+				 *
+				 * The specified PackType is
+				 * [forwarded](https://en.cppreference.com/w/cpp/utility/forward)
+				 * to the internal PackType to prevent useless copies.
+				 *
+				 * @param id node id
+				 * @param location node location rank
+				 * @param p PackType representing the node
+				 */
 				template<typename _PackType>
 					TemporaryNode(DistributedId id, int location, _PackType&& p) :
-						parsed_data_pack(true),
 						pack(std::forward<_PackType>(p)), id(id), location(location) {
 						}
-
-				TemporaryNode(
-						DistributedId id, int location, communication::DataPack&& data_pack) :
-					parsed_data_pack(false),
-					data_pack(std::move(data_pack)), id(id), location(location) {
-					}
 
 				DistributedId getId() const override {
 					return id;
@@ -151,13 +105,10 @@ namespace fpmas { namespace graph {
 				}
 
 				api::graph::DistributedNode<T>* build() override {
-					if(!parsed_data_pack)
-						pack = PackType::parse(std::move(data_pack));
 					NodePtrWrapper<T> node = pack.template get<NodePtrWrapper<T>>();
 					node->setLocation(location);
 					return node;
 				}
-
 		};
 
 	/**
@@ -230,7 +181,7 @@ namespace nlohmann {
 				edge->setWeight(j.at("weight").template get<float>());
 
 				edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
-						new fpmas::graph::JsonTemporaryNode<T, JsonType>(
+						new fpmas::graph::TemporaryNode<T, JsonType>(
 							j.at("src")[0].at("id").template get<DistributedId>(),
 							j.at("src")[1].template get<int>(),
 							std::move(j.at("src")[0])
@@ -238,7 +189,7 @@ namespace nlohmann {
 						));
 
 				edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
-						new fpmas::graph::JsonTemporaryNode<T, JsonType>(
+						new fpmas::graph::TemporaryNode<T, JsonType>(
 							j.at("tgt")[0].at("id").template get<DistributedId>(),
 							j.at("tgt")[1].template get<int>(),
 							std::move(j.at("tgt")[0])
@@ -251,102 +202,117 @@ namespace nlohmann {
 }
 
 namespace fpmas { namespace io { namespace datapack {
+	using fpmas::graph::EdgePtrWrapper;
 
+	/**
+	 * DistributedEdge ObjectPack serialization.
+	 *
+	 * | Serialization scheme ||||||||||
+	 * |----------------------||||||||||
+	 * | _scheme_ | edge->getId() | edge->getLayer() | edge->getWeight() | source_node->getId() | source_node->location() | source_node | target_node->getId() | target_node->location() | target_node |
+	 * | _serializer_ | base_io<DistributedId> | base_io<int> | base_io<float> | base_io<DistributedId> | base_io<int> | PackType | base_io<DistributedId> | base_io<int> | PackType |
+	 *
+	 * The source and target node serialization process depends on the current
+	 * `PackType`. For example, if the edge is serialized in a
+	 * `LightObjectPack`, the LightSerializer<NodePtrWrapper<T>> specialization
+	 * is used to serialize source and target nodes.
+	 *
+	 * @tparam T node data type
+	 */
 	template<typename T>
-		struct Serializer<fpmas::graph::EdgePtrWrapper<T>> {
+		struct Serializer<EdgePtrWrapper<T>> {
+			/**
+			 * DistributedEdge ObjectPack serialization.
+			 *
+			 * @param pack destination pack
+			 * @param edge edge to serialize
+			 */
 			template<typename PackType>
-			static void to_datapack(PackType& pack, const fpmas::graph::EdgePtrWrapper<T>& edge) {
-				PackType src = 
-					fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode());
-				PackType tgt =
-					fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode());
-				std::size_t size =
-					io::datapack::pack_size<DistributedId>() + // edge id
-					io::datapack::pack_size<int>() + // layer
-					io::datapack::pack_size<float>() + // edge weight
-					io::datapack::pack_size<DistributedId>() + // src id
-					io::datapack::pack_size<int>() + // src location
-					io::datapack::pack_size(src) +
-					io::datapack::pack_size<DistributedId>() + // tgt id
-					io::datapack::pack_size<int>() + // tgt location
-					io::datapack::pack_size(tgt);
+				static void to_datapack(PackType& pack, const EdgePtrWrapper<T>& edge) {
+					PackType src = 
+						fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode());
+					PackType tgt =
+						fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode());
+					std::size_t size =
+						io::datapack::pack_size<DistributedId>() + // edge id
+						io::datapack::pack_size<int>() + // layer
+						io::datapack::pack_size<float>() + // edge weight
+						io::datapack::pack_size<DistributedId>() + // src id
+						io::datapack::pack_size<int>() + // src location
+						io::datapack::pack_size(src) +
+						io::datapack::pack_size<DistributedId>() + // tgt id
+						io::datapack::pack_size<int>() + // tgt location
+						io::datapack::pack_size(tgt);
 
-				pack.allocate(size);
+					pack.allocate(size);
 
-				pack.write(edge->getId());
-				pack.write(edge->getLayer());
-				pack.write(edge->getWeight());
-				pack.write(edge->getSourceNode()->getId());
-				pack.write(edge->getSourceNode()->location());
-				pack.write(src);
-				pack.write(edge->getTargetNode()->getId());
-				pack.write(edge->getTargetNode()->location());
-				pack.write(tgt);
-			}
+					pack.write(edge->getId());
+					pack.write(edge->getLayer());
+					pack.write(edge->getWeight());
+					pack.write(edge->getSourceNode()->getId());
+					pack.write(edge->getSourceNode()->location());
+					pack.write(src);
+					pack.write(edge->getTargetNode()->getId());
+					pack.write(edge->getTargetNode()->location());
+					pack.write(tgt);
+				}
 
+			/**
+			 * DistributedEdge ObjectPack deserialization.
+			 *
+			 * @param pack source pack
+			 * @return deserialized and dynamically allocated edge
+			 */
 			template<typename PackType>
-			static fpmas::graph::EdgePtrWrapper<T> from_datapack(const PackType& pack) {
-				fpmas::api::graph::DistributedEdge<T>* edge
-					= new fpmas::graph::DistributedEdge<T>(
-							pack.template read<DistributedId>(),
-							pack.template read<int>()
-							);
-				edge->setWeight(pack.template read<float>());
+				static EdgePtrWrapper<T> from_datapack(const PackType& pack) {
+					fpmas::api::graph::DistributedEdge<T>* edge
+						= new fpmas::graph::DistributedEdge<T>(
+								pack.template read<DistributedId>(),
+								pack.template read<int>()
+								);
+					edge->setWeight(pack.template read<float>());
 
-				edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
-						new fpmas::graph::TemporaryNode<T, PackType>(
-							pack.template read<DistributedId>(),
-							pack.template read<int>(),
-							pack.template read<PackType>()
-							)
-						));
+					edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
+								new fpmas::graph::TemporaryNode<T, PackType>(
+									pack.template read<DistributedId>(),
+									pack.template read<int>(),
+									pack.template read<PackType>()
+									)
+								));
 
-				edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
-						new fpmas::graph::TemporaryNode<T, PackType>(
-							pack.template read<DistributedId>(),
-							pack.template read<int>(),
-							pack.template read<PackType>()
-							)
-						));
+					edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
+								new fpmas::graph::TemporaryNode<T, PackType>(
+									pack.template read<DistributedId>(),
+									pack.template read<int>(),
+									pack.template read<PackType>()
+									)
+								));
 
-				return {edge};
-			}
+					return {edge};
+				}
 		};
-
-	template<typename T>
-		struct LightSerializer<fpmas::graph::EdgePtrWrapper<T>> : public Serializer<fpmas::graph::EdgePtrWrapper<T>> {
-		};
-
 }}}
 
 namespace fpmas { namespace communication {
-
-	template<typename T>
-		struct TypedMpi<fpmas::graph::EdgePtrWrapper<T>> :
-		public detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, io::datapack::LightObjectPack> {
-			using detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, io::datapack::LightObjectPack>::TypedMpi;
-		};
 
 	/**
 	 * \anchor TypedMpiDistributedEdge
 	 *
 	 * \DistributedEdge TypedMpi specialization, used to bypass the default
-	 * fpmas::communication::TypedMpi specialization based on nlohmann::json.
+	 * fpmas::communication::TypedMpi specialization based on
+	 * fpmas::io::datapack::Serializer.
 	 *
-	 * Here, fpmas::io::json::light_json is used instead. This allows to use
-	 * "light" serialization rules of source and target \DistributedNodes,
-	 * since sending their data is not required when transmitting
-	 * \DistributedEdges.
+	 * Here, fpmas::io::datapack::LightObjectPack is used instead. This allows
+	 * to use "light" serialization rules of source and target
+	 * \DistributedNodes, since sending their data is not required when
+	 * transmitting \DistributedEdges.
 	 *
 	 * @tparam T type of data contained in associated \DistributedNodes
 	 */
-	/*
-	 *template<typename T>
-	 *    struct TypedMpi<fpmas::graph::EdgePtrWrapper<T>> : public detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, fpmas::io::json::light_json> {
-	 *        using detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, fpmas::io::json::light_json>::TypedMpi;
-	 *    };
-	 */
-
-
+	template<typename T>
+		struct TypedMpi<fpmas::graph::EdgePtrWrapper<T>> :
+		public detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, io::datapack::LightObjectPack> {
+			using detail::TypedMpi<fpmas::graph::EdgePtrWrapper<T>, io::datapack::LightObjectPack>::TypedMpi;
+		};
 }}
 #endif

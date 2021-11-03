@@ -1,4 +1,4 @@
-#include "datapack.h"
+#include "datapack_base_io.h"
 
 namespace fpmas { namespace io { namespace datapack {
 

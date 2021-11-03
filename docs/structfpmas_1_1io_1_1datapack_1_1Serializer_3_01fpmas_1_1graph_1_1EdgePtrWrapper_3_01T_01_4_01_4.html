@@ -72,27 +72,123 @@ $(function() {
   <div class="headertitle"><div class="title">fpmas::io::datapack::Serializer&lt; fpmas::graph::EdgePtrWrapper&lt; T &gt; &gt; Struct Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="dynheader">
-Inheritance diagram for fpmas::io::datapack::Serializer&lt; fpmas::graph::EdgePtrWrapper&lt; T &gt; &gt;:</div>
-<div class="dyncontent">
-<div class="center"><img src="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4__inherit__graph.png" border="0" usemap="#afpmas_1_1io_1_1datapack_1_1Serializer_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4_inherit__map" alt="Inheritance graph"/></div>
-<map name="afpmas_1_1io_1_1datapack_1_1Serializer_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4_inherit__map" id="afpmas_1_1io_1_1datapack_1_1Serializer_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="27,5,192,76"/>
-<area shape="rect" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4.html" title=" " alt="" coords="5,124,213,180"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
+
+<p><code>#include &lt;<a class="el" href="graph_2distributed__edge_8h_source.html">distributed_edge.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aed866596b89a4cdd4f8e6b0837fe5835"><td class="memTemplParams" colspan="2"><a id="aed866596b89a4cdd4f8e6b0837fe5835" name="aed866596b89a4cdd4f8e6b0837fe5835"></a>
-template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:aed866596b89a4cdd4f8e6b0837fe5835"><td class="memTemplItemLeft" align="right" valign="top">static PackType&#160;</td><td class="memTemplItemRight" valign="bottom"><b>to_datapack</b> (const <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt; &amp;edge)</td></tr>
-<tr class="separator:aed866596b89a4cdd4f8e6b0837fe5835"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9fadf67c1790a2b33eea3bc160fb195b"><td class="memTemplParams" colspan="2"><a id="a9fadf67c1790a2b33eea3bc160fb195b" name="a9fadf67c1790a2b33eea3bc160fb195b"></a>
-template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:a9fadf67c1790a2b33eea3bc160fb195b"><td class="memTemplItemLeft" align="right" valign="top">static <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_datapack</b> (const PackType &amp;pack)</td></tr>
+<tr class="memitem:afba6bd83a74450641b2649ac8a27fc09"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:afba6bd83a74450641b2649ac8a27fc09"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4.html#afba6bd83a74450641b2649ac8a27fc09">to_datapack</a> (PackType &amp;pack, const <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt; &amp;edge)</td></tr>
+<tr class="separator:afba6bd83a74450641b2649ac8a27fc09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fadf67c1790a2b33eea3bc160fb195b"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:a9fadf67c1790a2b33eea3bc160fb195b"><td class="memTemplItemLeft" align="right" valign="top">static <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01fpmas_1_1graph_1_1EdgePtrWrapper_3_01T_01_4_01_4.html#a9fadf67c1790a2b33eea3bc160fb195b">from_datapack</a> (const PackType &amp;pack)</td></tr>
 <tr class="separator:a9fadf67c1790a2b33eea3bc160fb195b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+struct fpmas::io::datapack::Serializer&lt; fpmas::graph::EdgePtrWrapper&lt; T &gt; &gt;</div><p >DistributedEdge ObjectPack serialization.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" colspan="10">Serialization scheme    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><em>scheme</em>   </td><td class="markdownTableBodyNone">edge-&gt;getId()   </td><td class="markdownTableBodyNone">edge-&gt;getLayer()   </td><td class="markdownTableBodyNone">edge-&gt;getWeight()   </td><td class="markdownTableBodyNone">target_node-&gt;getId()   </td><td class="markdownTableBodyNone">target_node-&gt;location()   </td><td class="markdownTableBodyNone">target_node   </td><td class="markdownTableBodyNone">target_node-&gt;getId()   </td><td class="markdownTableBodyNone">target_node-&gt;location()   </td><td class="markdownTableBodyNone">target_node    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><em>serializer</em>   </td><td class="markdownTableBodyNone"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01DistributedId_01_4.html">base_io&lt;DistributedId&gt;</a>   </td><td class="markdownTableBodyNone">base_io&lt;int&gt;   </td><td class="markdownTableBodyNone">base_io&lt;float&gt;   </td><td class="markdownTableBodyNone"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01DistributedId_01_4.html">base_io&lt;DistributedId&gt;</a>   </td><td class="markdownTableBodyNone">base_io&lt;int&gt;   </td><td class="markdownTableBodyNone">PackType   </td><td class="markdownTableBodyNone"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01DistributedId_01_4.html">base_io&lt;DistributedId&gt;</a>   </td><td class="markdownTableBodyNone">base_io&lt;int&gt;   </td><td class="markdownTableBodyNone">PackType   </td></tr>
+</table>
+<p >The source and target node serialization process depends on the current <code>PackType</code>. For example, if the edge is serialized in a <code>LightObjectPack</code>, the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01NodePtrWrapper_3_01T_01_4_01_4.html">LightSerializer&lt;NodePtrWrapper&lt;T&gt;&gt;</a> specialization is used to serialize source and target nodes.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>node data type </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="afba6bd83a74450641b2649ac8a27fc09" name="afba6bd83a74450641b2649ac8a27fc09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afba6bd83a74450641b2649ac8a27fc09">&#9670;&nbsp;</a></span>to_datapack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename PackType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt; &gt;::to_datapack </td>
+          <td>(</td>
+          <td class="paramtype">PackType &amp;&#160;</td>
+          <td class="paramname"><em>pack</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>edge</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >DistributedEdge ObjectPack serialization.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pack</td><td>destination pack </td></tr>
+    <tr><td class="paramname">edge</td><td>edge to serialize </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9fadf67c1790a2b33eea3bc160fb195b" name="a9fadf67c1790a2b33eea3bc160fb195b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9fadf67c1790a2b33eea3bc160fb195b">&#9670;&nbsp;</a></span>from_datapack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename PackType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt; <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt; &gt;::from_datapack </td>
+          <td>(</td>
+          <td class="paramtype">const PackType &amp;&#160;</td>
+          <td class="paramname"><em>pack</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >DistributedEdge ObjectPack deserialization.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pack</td><td>source pack </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>deserialized and dynamically allocated edge </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/fpmas/graph/<a class="el" href="graph_2distributed__edge_8h_source.html">distributed_edge.h</a></li>
 </ul>

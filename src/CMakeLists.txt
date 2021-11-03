@@ -16,7 +16,7 @@ set(SOURCES
 	# Communication
 	fpmas/communication/communication.cpp
 	# IO
-	fpmas/io/datapack.cpp
+	fpmas/io/datapack_base_io.cpp
 	# Graph 
 	fpmas/graph/zoltan_load_balancing.cpp
 	fpmas/graph/graph_builder.cpp

@@ -612,4 +612,47 @@ namespace nlohmann {
 				}
 		};
 }
+
+namespace fpmas { namespace io { namespace datapack {
+	/**
+	 * fpmas::graph::detail::LocalizedNodeView ObjectPack serializer
+	 */
+	template<typename T>
+		struct Serializer<graph::detail::LocalizedNodeView<T>> {
+			/**
+			 * ObjectPack serialization.
+			 *
+			 * @param pack destination pack
+			 * @param node node view to serialize
+			 */
+			static void to_datapack(
+					ObjectPack& pack,
+					const graph::detail::LocalizedNodeView<T>& node) {
+				pack.allocate(
+						2*pack_size<double>() + pack_size<DistributedId>()
+						+ pack_size<int>()
+						);
+				pack.write(node.p.x);
+				pack.write(node.p.y);
+				pack.write(node.node_id);
+				pack.write(node.location);
+			}
+
+			/**
+			 * ObjectPack deserialization.
+			 *
+			 * @param pack source pack
+			 * @return deserialized node view
+			 */
+			static graph::detail::LocalizedNodeView<T> from_datapack(const ObjectPack& pack) {
+				return {
+					{pack.read<double>(), pack.read<double>()},
+					pack.read<DistributedId>(),
+					pack.read<int>()
+				};
+
+			}
+
+		};
+}}}
 #endif

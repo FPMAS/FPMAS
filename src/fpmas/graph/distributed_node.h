@@ -9,6 +9,7 @@
 #include "fpmas/api/utils/ptr_wrapper.h"
 #include "fpmas/graph/node.h"
 #include "fpmas/io/json.h"
+#include "fpmas/io/datapack.h"
 
 namespace fpmas { namespace graph {
 
@@ -125,54 +126,149 @@ namespace nlohmann {
 		};
 }
 
-namespace fpmas { namespace io { namespace json {
-	using fpmas::graph::NodePtrWrapper;
+namespace fpmas { namespace io {
+	namespace json {
+		using fpmas::graph::NodePtrWrapper;
 
-	/**
-	 * \anchor light_serializer_DistributedNode
-	 *
-	 * light_serializer specialization for \DistributedNode.
-	 *
-	 * Only the `id` of the node is considered for serialization, and also the node
-	 * `data`, that is itself serialized using the light_serializer.
-	 *
-	 * @tparam T type of data contained in the \DistributedNode
-	 */
-	template<typename T>
-		struct light_serializer<NodePtrWrapper<T>> {
-			/**
-			 * \anchor light_serializer_DistributedNode_to_json
-			 *
-			 * Minimalist serialization rules for a \DistributedNode. The
-			 * `weight` is notably ignored, and `data` is serialized using the
-			 * `light_serializer<T>` specialization.
-			 *
-			 * @param j light json output
-			 * @param node distributed node to serialize
-			 */
-			static void to_json(light_json& j, const NodePtrWrapper<T>& node) {
-				j["id"] = node->getId();
-				j["data"] = node->data();
-			}
-			/**
-			 * \anchor light_serializer_DistributedNode_from_json
-			 *
-			 * Minimalist unserialization rules for a \DistributedNode. The
-			 * returned \DistributedNode is dynamically allocated and
-			 * initialized with an `id`, and its `data` is initialized with the
-			 * value produced by `light_serializer<T>::%from_json()`. Any other
-			 * field is default initialized (including the `weight` of the
-			 * node).
-			 *
-			 * @param j input json
-			 * @param node_ptr distributed node output
-			 */
-			static void from_json(const light_json& j, NodePtrWrapper<T>& node_ptr) {
-				node_ptr = {new fpmas::graph::DistributedNode<T>(
-						j["id"].get<fpmas::graph::DistributedId>(),
-						j["data"].get<T>()
-						)};
-			}
-		};
-}}}
+		/**
+		 * \anchor light_serializer_DistributedNode
+		 *
+		 * light_serializer specialization for \DistributedNode.
+		 *
+		 * Only the `id` of the node is considered for serialization, and also the node
+		 * `data`, that is itself serialized using the light_serializer.
+		 *
+		 * @tparam T type of data contained in the \DistributedNode
+		 */
+		template<typename T>
+			struct light_serializer<NodePtrWrapper<T>> {
+				/**
+				 * \anchor light_serializer_DistributedNode_to_json
+				 *
+				 * Minimalist serialization rules for a \DistributedNode. The
+				 * `weight` is notably ignored, and `data` is serialized using the
+				 * `light_serializer<T>` specialization.
+				 *
+				 * @param j light json output
+				 * @param node distributed node to serialize
+				 */
+				static void to_json(light_json& j, const NodePtrWrapper<T>& node) {
+					j["id"] = node->getId();
+					j["data"] = node->data();
+				}
+				/**
+				 * \anchor light_serializer_DistributedNode_from_json
+				 *
+				 * Minimalist unserialization rules for a \DistributedNode. The
+				 * returned \DistributedNode is dynamically allocated and
+				 * initialized with an `id`, and its `data` is initialized with the
+				 * value produced by `light_serializer<T>::%from_json()`. Any other
+				 * field is default initialized (including the `weight` of the
+				 * node).
+				 *
+				 * @param j input json
+				 * @param node_ptr distributed node output
+				 */
+				static void from_json(const light_json& j, NodePtrWrapper<T>& node_ptr) {
+					node_ptr = {new fpmas::graph::DistributedNode<T>(
+							j["id"].get<fpmas::graph::DistributedId>(),
+							j["data"].get<T>()
+							)};
+				}
+			};
+	}
+
+	namespace datapack {
+		using fpmas::graph::NodePtrWrapper;
+
+		/**
+		 * Regular DistributedNode Serializer specialization.
+		 *
+		 * | Serialization scheme ||||
+		 * |----------------------||||
+		 * | _scheme_ | node->getId() | node->data() | node->getWeight() |
+		 * | _serializer_ | base_io<DistributedId> | Serializer<T> | base_io<float> |
+		 */
+		template<typename T>
+			struct Serializer<NodePtrWrapper<T>> {
+				/**
+				 * DistributedNode ObjectPack serialization.
+				 *
+				 * @param pack destination pack
+				 * @param node node to serialize
+				 */
+				static void to_datapack(ObjectPack& pack, const NodePtrWrapper<T>& node) {
+					ObjectPack data = node->data();
+					pack.allocate(
+							pack_size<DistributedId>() + pack_size(data)
+							+ pack_size<float>()
+							);
+					pack.write(node->getId());
+					pack.write(data);
+					pack.write(node->getWeight());
+				}
+
+				/**
+				 * DistributedNode ObjectPack deserialization.
+				 *
+				 * @param pack source pack
+				 * @return deserialized and dynamically allocated node
+				 */
+				static NodePtrWrapper<T> from_datapack(const ObjectPack& pack) {
+					auto node = new fpmas::graph::DistributedNode<T>(
+							pack.read<DistributedId>(),
+							pack.read<ObjectPack>().get<T>()
+							);
+					node->setWeight(pack.read<float>());
+					return node;
+				}
+			};
+
+		/**
+		 * DistributedNode LightSerializer specialization, notably used to
+		 * efficiently transmit DistributedEdge instances, where source and
+		 * target node data are not required.
+		 *
+		 * Only the id of the node is serialized, and also the light version of
+		 * its data. The light serialization of the node data can eventually
+		 * produce an empty DataPack, so that only the node id is serialized.
+		 *
+		 * | Serialization scheme |||
+		 * |----------------------|||
+		 * | _scheme_ | node->getId() | node->data() |
+		 * | _serializer_ | base_io<DistributedId> | LightSerializer<T> |
+		 */
+		template<typename T>
+			struct LightSerializer<NodePtrWrapper<T>> {
+				/**
+				 * DistributedNode LightObjectPack serialization.
+				 *
+				 * @param pack destination pack
+				 * @param node node to serialize
+				 */
+				static void to_datapack(LightObjectPack& pack, const NodePtrWrapper<T>& node) {
+					LightObjectPack data = node->data();
+					pack.allocate(
+							pack_size<DistributedId>() + pack_size(data)
+							);
+					pack.write(node->getId());
+					pack.write(data);
+				}
+
+				/**
+				 * DistributedNode LightObjectPack deserialization.
+				 *
+				 * @param pack source pack
+				 * @return deserialized and dynamically allocated node
+				 */
+				static NodePtrWrapper<T> from_datapack(const LightObjectPack& pack) {
+					auto node = new fpmas::graph::DistributedNode<T>(
+							pack.read<DistributedId>(),
+							pack.read<LightObjectPack>().get<T>()
+							);
+					return node;
+				}
+			};
+	}
+}}
 #endif

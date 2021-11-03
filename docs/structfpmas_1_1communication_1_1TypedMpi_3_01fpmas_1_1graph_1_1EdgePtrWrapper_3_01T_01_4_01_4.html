@@ -71,6 +71,8 @@ $(function() {
   <div class="headertitle"><div class="title">fpmas::communication::TypedMpi&lt; fpmas::graph::EdgePtrWrapper&lt; T &gt; &gt; Struct Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p><code>#include &lt;<a class="el" href="graph_2distributed__edge_8h_source.html">distributed_edge.h</a>&gt;</code></p>
 <div class="dynheader">
 Inheritance diagram for fpmas::communication::TypedMpi&lt; fpmas::graph::EdgePtrWrapper&lt; T &gt; &gt;:</div>
 <div class="dyncontent">
@@ -118,7 +120,17 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a02b23c2a3edbdc683f613e9faa0754c3 inherit pub_methods_classfpmas_1_1communication_1_1detail_1_1TypedMpi"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">fpmas::graph::EdgePtrWrapper</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#a02b23c2a3edbdc683f613e9faa0754c3">recv</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status=Status::IGNORE) override</td></tr>
 <tr class="separator:a02b23c2a3edbdc683f613e9faa0754c3 inherit pub_methods_classfpmas_1_1communication_1_1detail_1_1TypedMpi"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
+struct fpmas::communication::TypedMpi&lt; fpmas::graph::EdgePtrWrapper&lt; T &gt; &gt;</div><p ><a class="anchor" id="TypedMpiDistributedEdge"></a> <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a> <a class="el" href="structfpmas_1_1communication_1_1TypedMpi.html">TypedMpi</a> specialization, used to bypass the default <a class="el" href="structfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a> specialization based on <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>.</p>
+<p >Here, <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">fpmas::io::datapack::LightObjectPack</a> is used instead. This allows to use "light" serialization rules of source and target <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNodes</a>, since sending their data is not required when transmitting <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdges</a>.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>type of data contained in associated <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNodes</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/fpmas/graph/<a class="el" href="graph_2distributed__edge_8h_source.html">distributed_edge.h</a></li>
 </ul>
 </div><!-- contents -->
