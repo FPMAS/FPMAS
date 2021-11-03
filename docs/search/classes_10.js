@@ -4,7 +4,7 @@ var searchData=
   ['scheduledloadbalancing_3c_20agentptr_20_3e_1',['ScheduledLoadBalancing&lt; AgentPtr &gt;',['../classfpmas_1_1graph_1_1ScheduledLoadBalancing.html',1,'fpmas::graph']]],
   ['scheduler_2',['Scheduler',['../classfpmas_1_1api_1_1scheduler_1_1Scheduler.html',1,'fpmas::api::scheduler::Scheduler'],['../classfpmas_1_1scheduler_1_1Scheduler.html',1,'fpmas::scheduler::Scheduler']]],
   ['serializer_3',['Serializer',['../structfpmas_1_1io_1_1datapack_1_1Serializer.html',1,'fpmas::io::datapack']]],
-  ['serializer_3c_20api_3a_3amodel_3a_3aagentptr_20_3e_4',['Serializer&lt; api::model::AgentPtr &gt;',['../structfpmas_1_1io_1_1datapack_1_1Serializer_3_01api_1_1model_1_1AgentPtr_01_4.html',1,'fpmas::io::datapack']]],
+  ['serializer_3c_20agentptr_20_3e_4',['Serializer&lt; AgentPtr &gt;',['../structfpmas_1_1io_1_1datapack_1_1Serializer_3_01AgentPtr_01_4.html',1,'fpmas::io::datapack']]],
   ['serializer_3c_20dataupdatepack_3c_20t_20_3e_20_3e_5',['Serializer&lt; DataUpdatePack&lt; T &gt; &gt;',['../structfpmas_1_1io_1_1datapack_1_1Serializer_3_01DataUpdatePack_3_01T_01_4_01_4.html',1,'fpmas::io::datapack']]],
   ['serializer_3c_20edgeptrwrapper_3c_20t_20_3e_20_3e_6',['Serializer&lt; EdgePtrWrapper&lt; T &gt; &gt;',['../structfpmas_1_1io_1_1datapack_1_1Serializer_3_01EdgePtrWrapper_3_01T_01_4_01_4.html',1,'fpmas::io::datapack']]],
   ['serializer_3c_20graph_3a_3adetail_3a_3alocalizednodeview_3c_20t_20_3e_20_3e_7',['Serializer&lt; graph::detail::LocalizedNodeView&lt; T &gt; &gt;',['../structfpmas_1_1io_1_1datapack_1_1Serializer_3_01graph_1_1detail_1_1LocalizedNodeView_3_01T_01_4_01_4.html',1,'fpmas::io::datapack']]],

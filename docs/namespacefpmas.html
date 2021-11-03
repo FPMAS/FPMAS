@@ -64,6 +64,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle"><div class="title">fpmas Namespace Reference</div></div>
@@ -97,6 +98,12 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacefpmas_1_1utils"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1utils.html">utils</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:aad36b96ed83ae031fa3912cb026ff544"><td class="memTemplParams" colspan="2">template&lt;typename Agent &gt; </td></tr>
+<tr class="memitem:aad36b96ed83ae031fa3912cb026ff544"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas.html#aad36b96ed83ae031fa3912cb026ff544">TypedAgentPtr</a> = <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; Agent &gt;</td></tr>
+<tr class="separator:aad36b96ed83ae031fa3912cb026ff544"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a685b5a9916d27bffb1d0d4a9bf9f08a2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">init</a> (int argc, char **argv)</td></tr>
@@ -123,7 +130,33 @@ Variables</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Main <code>fpmas</code> namespace. </p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Typedef Documentation</h2>
+<a id="aad36b96ed83ae031fa3912cb026ff544" name="aad36b96ed83ae031fa3912cb026ff544"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad36b96ed83ae031fa3912cb026ff544">&#9670;&nbsp;</a></span>TypedAgentPtr</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Agent &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacefpmas.html#aad36b96ed83ae031fa3912cb026ff544">fpmas::TypedAgentPtr</a> = typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt;Agent&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Typed <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointer.</p>
+<p >Contrary to <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">api::model::AgentPtr</a>, that represents a polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> (i.e. api::utils::PtrWrapper&lt;api::model::Agent&gt;), this pointer is used to wrap a concrete <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type (e.g. api::utils::PtrWrapper&lt;UserAgent1&gt;).</p>
+<p >This type is notably used to define json serialization rules for user defined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Agent</td><td>concrete agent type </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="a685b5a9916d27bffb1d0d4a9bf9f08a2" name="a685b5a9916d27bffb1d0d4a9bf9f08a2"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a685b5a9916d27bffb1d0d4a9bf9f08a2">&#9670;&nbsp;</a></span>init()</h2>
 

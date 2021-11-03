@@ -73,7 +73,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="model_2serializer_8h_source.html">serializer.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="json__serializer_8h_source.html">json_serializer.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -130,7 +130,7 @@ template&lt;typename JsonType , typename Type , typename... AgentTypes&gt; </div
 </table>
 </div><div class="memdoc">
 <p >Recursive to_json method used to serialize polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointers as JSON.</p>
-<p ><code>Type</code> corresponds to the currently examined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type. If this type id (i.e. Type::TYPE_ID) corresponds to the <code>ptr</code> <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type (i.e. <code>ptr-&gt;typedId()</code>), the underlying agent is serialized using the user provided nlohmann::adl_serializer&lt;TypedAgentPtr&lt;Type&gt;&gt;.</p>
+<p ><code>Type</code> corresponds to the currently examined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type. If this type id (i.e. Type::TYPE_ID) corresponds to the <code>ptr</code> <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type (i.e. <code>ptr-&gt;typedId()</code>), the underlying agent is serialized using the specified JsonType.</p>
 <p >Else, attempts to recursively serialize <code>ptr</code> with <code>to_json&lt;AgentTypes...&gt;(j, ptr)</code>. Notice that the last value of <code>AgentTypes</code> <b>must</b> be void to reach the recursion base case (see to_json&lt;void&gt;).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -169,7 +169,7 @@ template&lt;typename JsonType , typename Type , typename... AgentTypes&gt; </div
 </table>
 </div><div class="memdoc">
 <p >Recursive from_json method used to unserialize polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointers from JSON.</p>
-<p ><code>Type</code> corresponds to the currently examined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type. If this type id (i.e. Type::TYPE_ID) corresponds to the JSON type id value (i.e. j.at("type").get&lt;fpmas::api::model::TypeId&gt;()), the JSON value is unserialized using the user provided nlohmann::adl_serializer&lt;TypedAgentPtr&lt;Type&gt;&gt;.</p>
+<p ><code>Type</code> corresponds to the currently examined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type. If this type id (i.e. Type::TYPE_ID) corresponds to the JSON type id value (i.e. j.at("type").get&lt;fpmas::api::model::TypeId&gt;()), the JSON value is unserialized using the specified JsonType.</p>
 <p >Else, attempts to recursively unserialize the JSON value with <code>from_json&lt;AgentTypes...&gt;(j, ptr)</code>. Notice that the last value of <code>AgentTypes</code> <b>must</b> be void to reach the recursion base case (see from_json&lt;void&gt;).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -183,7 +183,7 @@ template&lt;typename JsonType , typename Type , typename... AgentTypes&gt; </div
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/fpmas/model/<a class="el" href="model_2serializer_8h_source.html">serializer.h</a></li>
+<li>src/fpmas/model/<a class="el" href="json__serializer_8h_source.html">json_serializer.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

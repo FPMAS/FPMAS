@@ -122,6 +122,14 @@ namespace fpmas { namespace io {
 					return _data;
 				}
 
+				std::size_t readPos() const {
+					return read_offset;
+				}
+
+				void seekRead(std::size_t position = 0) const {
+					read_offset = position;
+				}
+
 				/**
 				 * Unserializes data from the current BasicObjectPack, using
 				 * the S<T>::from_datapack(const BasicObjectPack<S>&) specialization.
@@ -188,6 +196,20 @@ namespace fpmas { namespace io {
 				template<typename T>
 					void read(T& item) const {
 						datapack::read(this->_data, item, read_offset);
+					}
+
+				template<typename T>
+					T check() const {
+						T item;
+						check(item);
+						return item;
+					}
+
+				template<typename T>
+					void check(T& item) const {
+						std::size_t offset = read_offset;
+						read(item);
+						read_offset = offset;
 					}
 
 				/**
