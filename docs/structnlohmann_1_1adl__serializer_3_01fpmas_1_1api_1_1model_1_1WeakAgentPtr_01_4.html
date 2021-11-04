@@ -84,7 +84,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="namespacefpmas_1_1api_1_1model.html#a2768be94a44ce8a833c65ba67b95864c">fpmas::api::model::WeakAgentPtr</a> <code>nlohmann::json</code> serialization rules <b>declaration</b>.</p>
-<p ><code>to_json</code> and <code>from_json</code> methods must be <em>defined</em> by the user at compile time, depending on its own Agent types, using the FPMAS_JSON_SET_UP() macro, that must be called from a <b>source</b> file. Otherwise, linker errors will be thrown. </p>
+<p ><code>to_json</code> and <code>from_json</code> methods must be <em>defined</em> by the user at compile time, depending on its own Agent types, using the <a class="el" href="model_2serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP()</a> macro, that must be called from a <b>source</b> file. Otherwise, linker errors will be thrown. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="addbc375648be868749669a7d19ea08d7" name="addbc375648be868749669a7d19ea08d7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#addbc375648be868749669a7d19ea08d7">&#9670;&nbsp;</a></span>to_json()</h2>
@@ -119,6 +119,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p></p>
 <p >Serializes the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> represented by <code>pointer</code> to the specified json <code>j</code>.</p>
 <p >Notice that since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the actual <code>to_json</code> call that corresponds to the most derived type of the specified <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is resolved at runtime.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -154,8 +156,10 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p></p>
 <p >Unserializes an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> from the specified JSON <code>j</code>.</p>
-<p >The built <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is wrapped in a WeakAgentPtr instance.</p>
+<p >The built <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is dynamically allocated, but is automatically managed by the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> wrapper.</p>
 <p >Since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the concrete type that should be instantiated from the input json <code>j</code> is determined at runtime.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -163,7 +167,7 @@ Static Public Member Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>dynamically allocated <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>, unserialized from <code>j</code>, wrapped in an <a class="el" href="namespacefpmas_1_1api_1_1model.html#a2768be94a44ce8a833c65ba67b95864c">fpmas::api::model::WeakAgentPtr</a> instance </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>dynamically allocated <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>, unserialized from <code>j</code>, wrapped in an <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> instance </dd></dl>
 
 </div>
 </div>

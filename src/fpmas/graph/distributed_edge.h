@@ -75,7 +75,6 @@ namespace fpmas { namespace graph {
 		class TemporaryNode : public api::graph::TemporaryNode<T> {
 			private:
 				PackType pack;
-				communication::DataPack data_pack;
 				DistributedId id;
 				int location;
 

@@ -153,6 +153,12 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a34f60520dd7532108de66b3454fe5ea1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model_2serializer_8h.html#a34f60520dd7532108de66b3454fe5ea1">FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK</a>()</td></tr>
+<tr class="separator:a34f60520dd7532108de66b3454fe5ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4722b5fd6cdf04855fb40935583a8dcf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model_2serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP</a>(...)</td></tr>
+<tr class="separator:a4722b5fd6cdf04855fb40935583a8dcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd3637c72c35ab965e0e0deed0cb7229"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model_2serializer_8h.html#acd3637c72c35ab965e0e0deed0cb7229">FPMAS_DEFAULT_JSON_SET_UP</a>()</td></tr>
+<tr class="separator:acd3637c72c35ab965e0e0deed0cb7229"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1f4073e73128e2a9af8cc819f677b89"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model_2serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES</a>(...)&#160;&#160;&#160;	<a class="el" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a>&lt;__VA_ARGS__ , void&gt;();</td></tr>
 <tr class="separator:aa1f4073e73128e2a9af8cc819f677b89"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -168,6 +174,109 @@ Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Agent serialization related objects. </p>
 </div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a34f60520dd7532108de66b3454fe5ea1" name="a34f60520dd7532108de66b3454fe5ea1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34f60520dd7532108de66b3454fe5ea1">&#9670;&nbsp;</a></span>FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    <span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefpmas.html">fpmas</a> { <span class="keyword">namespace </span>io { <span class="keyword">namespace </span>datapack {\</div>
+<div class="line">        void <a class="code hl_function" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html#a717c2f6923a18cf57ad0fa5afbfedf34">Serializer&lt;AgentPtr&gt;::to_datapack</a>(<a class="code hl_typedef" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a>&amp; p, <span class="keyword">const</span> AgentPtr&amp; ptr) {\</div>
+<div class="line">            JsonSerializer&lt;AgentPtr&gt;::to_datapack(p, ptr);\</div>
+<div class="line">        }\</div>
+<div class="line">        AgentPtr <a class="code hl_function" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html#a5a89b56e13230701d219648251fd7ff8">Serializer&lt;AgentPtr&gt;::from_datapack</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a>&amp; p) {\</div>
+<div class="line">            return <a class="code hl_function" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html#a07c30bbbf418a636a12c27737ab70bbc">JsonSerializer&lt;AgentPtr&gt;::from_datapack</a>(p);\</div>
+<div class="line">        }\</div>
+<div class="line">        void <a class="code hl_function" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#a4ed5cf8ad3b3c834d967b5b7e0b2a2c7">LightSerializer&lt;AgentPtr&gt;::to_datapack</a>(<a class="code hl_typedef" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a>&amp; p, <span class="keyword">const</span> AgentPtr&amp; ptr) {\</div>
+<div class="line">            LightJsonSerializer&lt;AgentPtr&gt;::to_datapack(p, ptr);\</div>
+<div class="line">        }\</div>
+<div class="line">        AgentPtr <a class="code hl_function" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#a9b6f1c0486f5e55e44815f24cf226ed5">LightSerializer&lt;AgentPtr&gt;::from_datapack</a>(<span class="keyword">const</span> <a class="code hl_typedef" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a>&amp; p) {\</div>
+<div class="line">            return <a class="code hl_function" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html#a07c30bbbf418a636a12c27737ab70bbc">LightJsonSerializer&lt;AgentPtr&gt;::from_datapack</a>(p);\</div>
+<div class="line">        }\</div>
+<div class="line">    }}}</div>
+<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_a73b4148148ab630bafded23ec50b6883"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">fpmas::io::datapack::LightObjectPack</a></div><div class="ttdeci">BasicObjectPack&lt; LightSerializer &gt; LightObjectPack</div><div class="ttdef"><b>Definition:</b> datapack.h:487</div></div>
+<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_affeae790ebdf831b07e41a7e9ef37ccb"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a></div><div class="ttdeci">BasicObjectPack&lt; Serializer &gt; ObjectPack</div><div class="ttdef"><b>Definition:</b> datapack.h:485</div></div>
+<div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> fpmas.cpp:3</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer_html_a07c30bbbf418a636a12c27737ab70bbc"><div class="ttname"><a href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html#a07c30bbbf418a636a12c27737ab70bbc">fpmas::io::datapack::BasicJsonSerializer::from_datapack</a></div><div class="ttdeci">static T from_datapack(const PackType &amp;pack)</div><div class="ttdef"><b>Definition:</b> datapack.h:396</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1datapack_1_1LightSerializer_html_a4ed5cf8ad3b3c834d967b5b7e0b2a2c7"><div class="ttname"><a href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#a4ed5cf8ad3b3c834d967b5b7e0b2a2c7">fpmas::io::datapack::LightSerializer::to_datapack</a></div><div class="ttdeci">static void to_datapack(LightObjectPack &amp;pack, const T &amp;data)</div><div class="ttdef"><b>Definition:</b> datapack.h:511</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1datapack_1_1LightSerializer_html_a9b6f1c0486f5e55e44815f24cf226ed5"><div class="ttname"><a href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#a9b6f1c0486f5e55e44815f24cf226ed5">fpmas::io::datapack::LightSerializer::from_datapack</a></div><div class="ttdeci">static T from_datapack(const LightObjectPack &amp;pack)</div><div class="ttdef"><b>Definition:</b> datapack.h:524</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1datapack_1_1Serializer_html_a5a89b56e13230701d219648251fd7ff8"><div class="ttname"><a href="structfpmas_1_1io_1_1datapack_1_1Serializer.html#a5a89b56e13230701d219648251fd7ff8">fpmas::io::datapack::Serializer::from_datapack</a></div><div class="ttdeci">static T from_datapack(const PackType &amp;pack)</div><div class="ttdef"><b>Definition:</b> datapack.h:353</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1datapack_1_1Serializer_html_a717c2f6923a18cf57ad0fa5afbfedf34"><div class="ttname"><a href="structfpmas_1_1io_1_1datapack_1_1Serializer.html#a717c2f6923a18cf57ad0fa5afbfedf34">fpmas::io::datapack::Serializer::to_datapack</a></div><div class="ttdeci">static void to_datapack(PackType &amp;pack, const T &amp;item)</div><div class="ttdef"><b>Definition:</b> datapack.h:340</div></div>
+</div><!-- fragment --><p >Defines a json based implementation of AgentPtr Serializer and LightSerializer implementation, that can be used instead of definitions provided by FPMAS_DATAPACK_SET_UP().</p>
+<p >This allows to use the Serializer to serialize DistributedNodes for example, using the json serialization only for AgentPtr. </p>
+
+</div>
+</div>
+<a id="a4722b5fd6cdf04855fb40935583a8dcf" name="a4722b5fd6cdf04855fb40935583a8dcf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4722b5fd6cdf04855fb40935583a8dcf">&#9670;&nbsp;</a></span>FPMAS_JSON_SET_UP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_JSON_SET_UP</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    FPMAS_BASE_JSON_SET_UP(__VA_ARGS__)\</div>
+<div class="line">    FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()</div>
+</div><!-- fragment --><p >Sets up json based Agent serialization rules.</p>
+<p >This macro must be invoked exactly once from a <b>source</b> file and should not be called with FPMAS_DATAPACK_SET_UP().</p>
+<p >It is possible to call the <a class="el" href="model_2serializer_8h.html#acd3637c72c35ab965e0e0deed0cb7229">FPMAS_DEFAULT_JSON_SET_UP()</a> macro to set up the JSON serialization without specifying any Agent.</p>
+<p >The same set of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types must be registered at runtime using the <a class="el" href="model_2serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES(...)</a> macro at runtime.</p>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><span class="preprocessor">#define AGENT_TYPES Agent1, Agent2, OtherAgent</span></div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_define" href="model_2serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP</a>(AGENT_TYPES)</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
+<div class="line">    <a class="code hl_define" href="model_2serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES</a>(AGENT_TYPES);</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_function" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a>(argc, argv);</div>
+<div class="line"> </div>
+<div class="line">    ...</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_function" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a>();</div>
+<div class="line">}</div>
+<div class="ttc" id="amodel_2serializer_8h_html_a4722b5fd6cdf04855fb40935583a8dcf"><div class="ttname"><a href="model_2serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP</a></div><div class="ttdeci">#define FPMAS_JSON_SET_UP(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:61</div></div>
+<div class="ttc" id="amodel_2serializer_8h_html_aa1f4073e73128e2a9af8cc819f677b89"><div class="ttname"><a href="model_2serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES</a></div><div class="ttdeci">#define FPMAS_REGISTER_AGENT_TYPES(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:99</div></div>
+<div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:18</div></div>
+<div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:6</div></div>
+</div><!-- fragment --> </dd></dl>
+
+</div>
+</div>
+<a id="acd3637c72c35ab965e0e0deed0cb7229" name="acd3637c72c35ab965e0e0deed0cb7229"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd3637c72c35ab965e0e0deed0cb7229">&#9670;&nbsp;</a></span>FPMAS_DEFAULT_JSON_SET_UP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_DEFAULT_JSON_SET_UP</td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">    FPMAS_BASE_DEFAULT_JSON_SET_UP()\</div>
+<div class="line">    FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()</div>
+</div><!-- fragment --><p >Can be used instead of <a class="el" href="model_2serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">FPMAS_JSON_SET_UP()</a> to set up json serialization without specifying any Agent type. </p>
+
+</div>
+</div>
 <a id="aa1f4073e73128e2a9af8cc819f677b89" name="aa1f4073e73128e2a9af8cc819f677b89"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa1f4073e73128e2a9af8cc819f677b89">&#9670;&nbsp;</a></span>FPMAS_REGISTER_AGENT_TYPES</h2>
 
@@ -197,9 +306,6 @@ Functions</h2></td></tr>
 <div class="line"> </div>
 <div class="line">    <a class="code hl_function" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a>();</div>
 <div class="line">}</div>
-<div class="ttc" id="amodel_2serializer_8h_html_aa1f4073e73128e2a9af8cc819f677b89"><div class="ttname"><a href="model_2serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES</a></div><div class="ttdeci">#define FPMAS_REGISTER_AGENT_TYPES(...)</div><div class="ttdef"><b>Definition:</b> serializer.h:33</div></div>
-<div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:18</div></div>
-<div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:6</div></div>
 </div><!-- fragment --> </dd></dl>
 
 </div>

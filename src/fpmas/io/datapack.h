@@ -122,10 +122,25 @@ namespace fpmas { namespace io {
 					return _data;
 				}
 
+				/**
+				 * Returns the current read cursor position, i.e. the index of
+				 * the internal DataPack at which the next read() operation
+				 * will start.
+				 *
+				 * @return read cursor position
+				 */
 				std::size_t readPos() const {
 					return read_offset;
 				}
 
+				/**
+				 * Places the current read cursor to the specified position.
+				 *
+				 * Can be used in conjonction with readPos() to perform several
+				 * read() operation at the same offset.
+				 *
+				 * @param position new read cursor position
+				 */
 				void seekRead(std::size_t position = 0) const {
 					read_offset = position;
 				}
@@ -197,7 +212,12 @@ namespace fpmas { namespace io {
 					void read(T& item) const {
 						datapack::read(this->_data, item, read_offset);
 					}
-
+				/**
+				 * Constructs a new instance of T using the default constructor,
+				 * and reads data into the new instance with check(T&).
+				 *
+				 * @return read data
+				 */
 				template<typename T>
 					T check() const {
 						T item;
@@ -205,11 +225,17 @@ namespace fpmas { namespace io {
 						return item;
 					}
 
+				/**
+				 * Calls read(T&) and replaces the internal read cursor at its
+				 * original position.
+				 *
+				 * @param item item into which data is read
+				 */
 				template<typename T>
 					void check(T& item) const {
-						std::size_t offset = read_offset;
+						std::size_t pos = readPos();
 						read(item);
-						read_offset = offset;
+						seekRead(pos);
 					}
 
 				/**

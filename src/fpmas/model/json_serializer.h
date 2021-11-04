@@ -19,30 +19,10 @@
  * In consequence, this macro must be invoked exaclty once from a **source**
  * file, **at the global definition level**, in any C++ target using FPMAS.
  *
- * It is possible to call the FPMAS_DEFAULT_JSON_SET_UP() macro to set up the
- * JSON serialization without specifying any Agent.
- *
- * The same set of \Agent types must be registered at runtime using the
- * FPMAS_REGISTER_AGENT_TYPES(...) macro at runtime.
- *
- * @par Example
- * ```cpp
- * #define AGENT_TYPES Agent1, Agent2, OtherAgent
- *
- * FPMAS_JSON_SET_UP(AGENT_TYPES)
- *
- * int main(int argc, char** argv) {
- * 	fpmas::init(argc, argv);
- *
- * 	FPMAS_REGISTER_AGENT_TYPES(AGENT_TYPES);
- *
- * 	...
- *
- * 	fpmas::finalize();
- * }
- * ```
+ * This macro is not sufficient to completely enable json serialization: see
+ * FPMAS_JSON_SET_UP().
  */
-#define FPMAS_JSON_SET_UP(...)\
+#define FPMAS_BASE_JSON_SET_UP(...)\
 	namespace nlohmann {\
 		void adl_serializer<fpmas::api::model::AgentPtr>\
 			::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
@@ -81,10 +61,10 @@
 	}}}\
 
 /**
- * Can be used instead of FPMAS_JSON_SET_UP() to set up json serialization
- * without specifying any agent type.
+ * Can be used instead of FPMAS_BASE_JSON_SET_UP() to set up json serialization
+ * without specifying any Agent type.
  */
-#define FPMAS_DEFAULT_JSON_SET_UP()\
+#define FPMAS_BASE_DEFAULT_JSON_SET_UP()\
 	namespace nlohmann {\
 		void adl_serializer<fpmas::api::model::AgentPtr>\
 			::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
