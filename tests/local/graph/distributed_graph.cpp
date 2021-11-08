@@ -1122,12 +1122,22 @@ template<typename T, typename PackType>
 std::unordered_map<int, std::vector<std::unique_ptr<typename T::element_type>>> deserialize(
 		std::unordered_map<int, DataPack> pack) {
 	std::unordered_map<int, std::vector<T>> data_export;
-	fpmas::communication::deserialize<PackType>(pack, data_export);
+	for(auto& item : pack)
+		data_export[item.first] = PackType::parse(item.second)
+			.template get<std::vector<T>>();
 	std::unordered_map<int, std::vector<std::unique_ptr<typename T::element_type>>> data;
 	for(auto item : data_export)
 		for(auto ptr : item.second)
 			data[item.first].push_back(std::unique_ptr<typename T::element_type>(ptr.get()));
 	return data;
+}
+
+template<typename PackType, typename T>
+std::unordered_map<int, DataPack> serialize(std::unordered_map<int, std::vector<T>> data) {
+	std::unordered_map<int, DataPack> pack;
+	for(auto& item : data)
+		pack[item.first] = PackType(item.second).dump();
+	return pack;
 }
 
 /*
@@ -1154,9 +1164,9 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 			);
 
 	// No edge import
-	std::unordered_map<int, DataPack> serial_edge_import;
-	fpmas::communication::serialize<fpmas::io::datapack::ObjectPack>(
-			serial_edge_import, std::unordered_map<int, EdgePtrWrapper<int>>());
+	std::unordered_map<int, DataPack> serial_edge_import
+		= serialize<fpmas::io::datapack::ObjectPack>(
+			std::unordered_map<int, std::vector<EdgePtrWrapper<int>>>());
 	std::unordered_map<int, DataPack> edge_arg;
 	EXPECT_CALL(comm, allToAll(_, MPI_CHAR))
 		.WillOnce(DoAll(
@@ -1173,9 +1183,8 @@ TEST_F(DistributedGraphDistributeTest, distribute_without_link) {
 		{2, {&mock_nodes[0], &mock_nodes[1]}}
 	};
 
-	std::unordered_map<int, DataPack> serial_node_import;
-	fpmas::communication::serialize<fpmas::io::datapack::ObjectPack>(
-			serial_node_import, node_import);
+	std::unordered_map<int, DataPack> serial_node_import
+		= serialize<fpmas::io::datapack::ObjectPack>(node_import);
 	std::unordered_map<int, DataPack> node_arg;
 	EXPECT_CALL(comm, allToAll(
 				ResultOf(
@@ -1357,15 +1366,14 @@ TEST_F(DistributedGraphDistributeWithEdgeTest, distribute_with_edge_test) {
 
 	// No node import
 	std::unordered_map<int, DataPack> node_arg;
-	std::unordered_map<int, DataPack> serial_node_import;
-	fpmas::communication::serialize<fpmas::io::datapack::ObjectPack>(
-			serial_node_import, std::unordered_map<int, NodePtrWrapper<int>>());
+	std::unordered_map<int, DataPack> serial_node_import
+		= serialize<fpmas::io::datapack::ObjectPack>(
+				std::unordered_map<int, std::vector<NodePtrWrapper<int>>>());
 
 	// Mock edge import
 	std::unordered_map<int, DataPack> edge_arg;
-	std::unordered_map<int, DataPack> serial_edge_import;
-	fpmas::communication::serialize<fpmas::io::datapack::LightObjectPack>(
-			serial_edge_import, edge_import);
+	std::unordered_map<int, DataPack> serial_edge_import
+		= serialize<fpmas::io::datapack::LightObjectPack>(edge_import);
 
 	EXPECT_CALL(comm, allToAll(_, MPI_CHAR))
 		// First allToAll call imports nodes

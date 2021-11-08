@@ -11,13 +11,15 @@
 
 #include "fpmas/utils/log.h"
 #include "fpmas/io/json.h"
-#include "serializer.h"
+#include "fpmas/api/communication/communication.h"
+#include "fpmas/io/datapack.h"
 
 namespace fpmas {
 	void init(int argc, char** argv);
 }
 
 namespace fpmas { namespace communication {
+	using api::communication::DataPack;
 	using api::communication::Request;
 	using api::communication::Status;
 
@@ -400,7 +402,8 @@ namespace fpmas { namespace communication {
 				{
 					// Pack
 					std::unordered_map<int, DataPack> export_data_pack;
-					serialize<PackType>(export_data_pack, export_map);
+					for(auto& item : export_map)
+						export_data_pack.emplace(item.first, PackType(item.second).dump());
 
 					// export_data_pack buffers are moved to the temporary allToAll
 					// argument, and automatically freed by the allToAll
@@ -411,7 +414,11 @@ namespace fpmas { namespace communication {
 				}
 
 				std::unordered_map<int, std::vector<T>> import_map;
-				deserialize<PackType>(std::move(import_data_pack), import_map);
+				for(auto& item : import_data_pack)
+					import_map.emplace(
+							item.first, PackType::parse(std::move(item.second))
+							.template get<std::vector<T>>()
+							);
 				
 				// Should perform "copy elision"
 				return import_map;
@@ -424,7 +431,8 @@ namespace fpmas { namespace communication {
 
 				{
 					std::unordered_map<int, DataPack> export_data_pack;
-					serialize<PackType>(export_data_pack, export_map);
+					for(auto& item : export_map)
+						export_data_pack.emplace(item.first, PackType(item.second).dump());
 
 					// export_data_pack buffers are moved to the temporary allToAll
 					// argument, and automatically freed by the allToAll
@@ -435,8 +443,11 @@ namespace fpmas { namespace communication {
 				}
 
 				std::unordered_map<int, T> import_map;
-				deserialize<PackType>(std::move(import_data_pack), import_map);
-				
+				for(auto& item : import_data_pack)
+					import_map.emplace(
+							item.first, PackType::parse(std::move(item.second))
+							.template get<T>()
+							);
 
 				// Should perform "copy elision"
 				return import_map;

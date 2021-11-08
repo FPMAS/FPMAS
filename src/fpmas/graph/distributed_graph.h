@@ -106,8 +106,6 @@ namespace fpmas { namespace graph {
 				api::communication::MpiCommunicator* mpi_communicator;
 				TypedMpi<DistributedId> id_mpi {*mpi_communicator};
 				TypedMpi<std::pair<DistributedId, int>> location_mpi {*mpi_communicator};
-				TypedMpi<NodePtrWrapper<T>> node_mpi {*mpi_communicator};
-				TypedMpi<EdgePtrWrapper<T>> edge_mpi {*mpi_communicator};
 
 				LocationManagerImpl<T> location_manager;
 				SyncMode<T> sync_mode;
@@ -172,21 +170,6 @@ namespace fpmas { namespace graph {
 				const api::communication::MpiCommunicator& getMpiCommunicator() const override {
 					return *mpi_communicator;
 				};
-
-				/**
-				 * Returns the internal TypedMpi used to transmit NodePtrWrapper
-				 * instances.
-				 *
-				 * @return NodePtrWrapper TypedMpi
-				 */
-				const TypedMpi<NodePtrWrapper<T>>& getNodeMpi() const {return node_mpi;}
-				/**
-				 * Returns the internal TypedMpi used to transmit EdgePtrWrapper
-				 * instances.
-				 *
-				 * @return EdgePtrWrapper TypedMpi
-				 */
-				const TypedMpi<EdgePtrWrapper<T>>& getEdgeMpi() const {return edge_mpi;}
 
 				DistributedId currentNodeId() const override {return node_id;}
 				void setCurrentNodeId(DistributedId id) override {this->node_id = id;}
@@ -349,8 +332,6 @@ namespace fpmas { namespace graph {
 				this->mpi_communicator = graph.mpi_communicator;
 				this->id_mpi = std::move(graph.id_mpi);
 				this->location_mpi = std::move(graph.location_mpi);
-				this->node_mpi = std::move(graph.node_mpi);
-				this->edge_mpi = std::move(graph.edge_mpi);
 
 				this->location_manager = std::move(graph.location_manager);
 				this->sync_mode = std::move(graph.sync_mode);
@@ -693,8 +674,16 @@ namespace fpmas { namespace graph {
 					}
 
 					// Serializes nodes and edges
-					communication::serialize<io::datapack::ObjectPack>(serial_nodes, node_export_map);
-					communication::serialize<io::datapack::LightObjectPack>(serial_edges, edge_export_map);
+					for(auto& item : node_export_map)
+						serial_nodes.emplace(
+								item.first,
+								io::datapack::ObjectPack(item.second).dump()
+								);
+					for(auto& item : edge_export_map)
+						serial_edges.emplace(
+								item.first,
+								io::datapack::LightObjectPack(item.second).dump()
+								);
 
 					// Once serialized nodes and associated edges can
 					// eventually be cleared. This might save memory for the
@@ -715,10 +704,13 @@ namespace fpmas { namespace graph {
 				{
 					// Node import
 					std::unordered_map<int, std::vector<NodePtrWrapper<T>>> node_import;
-					communication::deserialize<io::datapack::ObjectPack>(
-							getMpiCommunicator().allToAll(std::move(serial_nodes), MPI_CHAR),
-							node_import
-							);
+					for(auto& item : mpi_communicator->allToAll(std::move(serial_nodes), MPI_CHAR))
+						node_import.emplace(
+								item.first, io::datapack::ObjectPack::parse(
+									std::move(item.second)
+									).get<std::vector<NodePtrWrapper<T>>>()
+								);
+
 					for(auto& import_node_list_from_proc : node_import) {
 						for(auto& imported_node : import_node_list_from_proc.second) {
 							this->importNode(imported_node);
@@ -731,10 +723,14 @@ namespace fpmas { namespace graph {
 				{
 					// Edge import
 					std::unordered_map<int, std::vector<EdgePtrWrapper<T>>> edge_import;
-					communication::deserialize<io::datapack::LightObjectPack>(
-							getMpiCommunicator().allToAll(std::move(serial_edges), MPI_CHAR),
-							edge_import
-							);
+
+					for(auto& item : mpi_communicator->allToAll(std::move(serial_edges), MPI_CHAR))
+						edge_import.emplace(
+								item.first, io::datapack::LightObjectPack::parse(
+									std::move(item.second)
+									).get<std::vector<EdgePtrWrapper<T>>>()
+								);
+
 					for(auto& import_edge_list_from_proc : edge_import) {
 						for(auto& imported_edge : import_edge_list_from_proc.second) {
 							this->importEdge(imported_edge);

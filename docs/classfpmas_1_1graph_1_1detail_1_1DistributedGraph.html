@@ -155,10 +155,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a49e4675fd43eb154db062ce181f7317f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65b35cbfc95177f041ca4ca829a0f7d9"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a65b35cbfc95177f041ca4ca829a0f7d9">getMpiCommunicator</a> () const override</td></tr>
 <tr class="separator:a65b35cbfc95177f041ca4ca829a0f7d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7cd41dc6a7bce66bd5bbc5512de22a5e"><td class="memItemLeft" align="right" valign="top">const TypedMpi&lt; <a class="el" href="namespacefpmas_1_1graph.html#a6c74a4ed290e011f46afa3674cea808e">NodePtrWrapper</a>&lt; T &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a7cd41dc6a7bce66bd5bbc5512de22a5e">getNodeMpi</a> () const</td></tr>
-<tr class="separator:a7cd41dc6a7bce66bd5bbc5512de22a5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2464b929fd94f07437bf812d99e86d69"><td class="memItemLeft" align="right" valign="top">const TypedMpi&lt; <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">EdgePtrWrapper</a>&lt; T &gt; &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a2464b929fd94f07437bf812d99e86d69">getEdgeMpi</a> () const</td></tr>
-<tr class="separator:a2464b929fd94f07437bf812d99e86d69"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae038a51dca2e5f957e93c56e80b827cc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ae038a51dca2e5f957e93c56e80b827cc">currentNodeId</a> () const override</td></tr>
 <tr class="separator:ae038a51dca2e5f957e93c56e80b827cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a57c2b67f282cf459418da7d0b92664f6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a57c2b67f282cf459418da7d0b92664f6">setCurrentNodeId</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> id) override</td></tr>
@@ -448,64 +444,6 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>reference to the internal MpiCommunicator </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ad006c4c453b29841fba34b5ef305b435">fpmas::api::graph::DistributedGraph&lt; T &gt;</a>.</p>
-
-</div>
-</div>
-<a id="a7cd41dc6a7bce66bd5bbc5512de22a5e" name="a7cd41dc6a7bce66bd5bbc5512de22a5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7cd41dc6a7bce66bd5bbc5512de22a5e">&#9670;&nbsp;</a></span>getNodeMpi()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;DIST_GRAPH_PARAMS &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const TypedMpi&lt; <a class="el" href="namespacefpmas_1_1graph.html#a6c74a4ed290e011f46afa3674cea808e">NodePtrWrapper</a>&lt; T &gt; &gt; &amp; <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">fpmas::graph::detail::DistributedGraph</a>&lt; DIST_GRAPH_PARAMS &gt;::getNodeMpi </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Returns the internal TypedMpi used to transmit NodePtrWrapper instances.</p>
-<dl class="section return"><dt>Returns</dt><dd>NodePtrWrapper TypedMpi </dd></dl>
-
-</div>
-</div>
-<a id="a2464b929fd94f07437bf812d99e86d69" name="a2464b929fd94f07437bf812d99e86d69"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2464b929fd94f07437bf812d99e86d69">&#9670;&nbsp;</a></span>getEdgeMpi()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;DIST_GRAPH_PARAMS &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const TypedMpi&lt; <a class="el" href="namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a">EdgePtrWrapper</a>&lt; T &gt; &gt; &amp; <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html">fpmas::graph::detail::DistributedGraph</a>&lt; DIST_GRAPH_PARAMS &gt;::getEdgeMpi </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Returns the internal TypedMpi used to transmit EdgePtrWrapper instances.</p>
-<dl class="section return"><dt>Returns</dt><dd>EdgePtrWrapper TypedMpi </dd></dl>
 
 </div>
 </div>
@@ -1467,7 +1405,7 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
 <p >Globally removes the node with the specified id from the graph.</p>
 <p >Equivalent to </p><div class="fragment"><div class="line"><a class="code hl_function" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">removeNode</a>(<a class="code hl_function" href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">getNode</a>(<span class="keywordtype">id</span>));</div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1Graph_html_a9a4539ff472500757bb0a5a674b7d821"><div class="ttname"><a href="classfpmas_1_1graph_1_1Graph.html#a9a4539ff472500757bb0a5a674b7d821">fpmas::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;::getNode</a></div><div class="ttdeci">api::graph::DistributedNode&lt; T &gt; * getNode(NodeIdType) override</div><div class="ttdef"><b>Definition:</b> graph.h:228</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a8b79d869a2fb4aa169c12a58b6183cf4"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">fpmas::graph::detail::DistributedGraph::removeNode</a></div><div class="ttdeci">void removeNode(api::graph::DistributedNode&lt; T &gt; *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:604</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_a8b79d869a2fb4aa169c12a58b6183cf4"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">fpmas::graph::detail::DistributedGraph::removeNode</a></div><div class="ttdeci">void removeNode(api::graph::DistributedNode&lt; T &gt; *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:585</div></div>
 </div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a8b79d869a2fb4aa169c12a58b6183cf4">removeNode(NodeType*)</a> </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -1549,7 +1487,7 @@ template&lt;DIST_GRAPH_PARAMS &gt; </div>
 <p >Globally unlinks the edge with the specified id.</p>
 <p >Equivalent to </p><div class="fragment"><div class="line"><a class="code hl_function" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab5590e41ba5066e0fc30961486963c5d">unlink</a>(<a class="code hl_function" href="classfpmas_1_1graph_1_1Graph.html#a8b5eefaff964502d98640e1b1b3752b1">getEdge</a>(<span class="keywordtype">id</span>));</div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1Graph_html_a8b5eefaff964502d98640e1b1b3752b1"><div class="ttname"><a href="classfpmas_1_1graph_1_1Graph.html#a8b5eefaff964502d98640e1b1b3752b1">fpmas::graph::Graph&lt; api::graph::DistributedNode&lt; T &gt;, api::graph::DistributedEdge&lt; T &gt; &gt;::getEdge</a></div><div class="ttdeci">api::graph::DistributedEdge&lt; T &gt; * getEdge(EdgeIdType) override</div><div class="ttdef"><b>Definition:</b> graph.h:246</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_ab5590e41ba5066e0fc30961486963c5d"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab5590e41ba5066e0fc30961486963c5d">fpmas::graph::detail::DistributedGraph::unlink</a></div><div class="ttdeci">void unlink(EdgeType *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:390</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1detail_1_1DistributedGraph_html_ab5590e41ba5066e0fc30961486963c5d"><div class="ttname"><a href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab5590e41ba5066e0fc30961486963c5d">fpmas::graph::detail::DistributedGraph::unlink</a></div><div class="ttdeci">void unlink(EdgeType *) override</div><div class="ttdef"><b>Definition:</b> distributed_graph.h:371</div></div>
 </div><!-- fragment --><dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ab5590e41ba5066e0fc30961486963c5d">unlink(EdgeType*)</a> </dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
