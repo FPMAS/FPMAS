@@ -67,6 +67,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classfpmas_1_1api_1_1utils_1_1PtrWrapper-members.html">List of all members</a>  </div>
@@ -76,6 +77,13 @@ $(function() {
 
 <p><code>#include &lt;<a class="el" href="ptr__wrapper_8h_source.html">ptr_wrapper.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:aec2332c96b8115404a5d83dc0543e0e2"><td class="memItemLeft" align="right" valign="top">typedef T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#aec2332c96b8115404a5d83dc0543e0e2">element_type</a></td></tr>
+<tr class="separator:aec2332c96b8115404a5d83dc0543e0e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0e0e8158352d2cd602a2ab05f49f604"><td class="memItemLeft" align="right" valign="top">typedef T *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#af0e0e8158352d2cd602a2ab05f49f604">pointer</a></td></tr>
+<tr class="separator:af0e0e8158352d2cd602a2ab05f49f604"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ab73e879af5ad12ba5b5e6739cffaa866"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#ab73e879af5ad12ba5b5e6739cffaa866">PtrWrapper</a> ()</td></tr>
@@ -111,7 +119,42 @@ Protected Attributes</h2></td></tr>
 class fpmas::api::utils::PtrWrapper&lt; T &gt;</div><p >A trivial pointer wrapper helper class.</p>
 <p >Such wrappers are notably used to allow JSON serialization of pointers with the nlohmann library, since using directly a pointer as type raised some errors.</p>
 <p >It also maked pointer usage as data type in <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a> easier. </p>
-</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+</div><h2 class="groupheader">Member Typedef Documentation</h2>
+<a id="aec2332c96b8115404a5d83dc0543e0e2" name="aec2332c96b8115404a5d83dc0543e0e2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec2332c96b8115404a5d83dc0543e0e2">&#9670;&nbsp;</a></span>element_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef T <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#aec2332c96b8115404a5d83dc0543e0e2">element_type</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Type of object managed by this <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">PtrWrapper</a>. </p>
+
+</div>
+</div>
+<a id="af0e0e8158352d2cd602a2ab05f49f604" name="af0e0e8158352d2cd602a2ab05f49f604"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0e0e8158352d2cd602a2ab05f49f604">&#9670;&nbsp;</a></span>pointer</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef T* <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; T &gt;::<a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#af0e0e8158352d2cd602a2ab05f49f604">pointer</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Pointer type wrapped by this <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">PtrWrapper</a>. </p>
+
+</div>
+</div>
+<h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab73e879af5ad12ba5b5e6739cffaa866" name="ab73e879af5ad12ba5b5e6739cffaa866"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab73e879af5ad12ba5b5e6739cffaa866">&#9670;&nbsp;</a></span>PtrWrapper() <span class="overload">[1/2]</span></h2>
 

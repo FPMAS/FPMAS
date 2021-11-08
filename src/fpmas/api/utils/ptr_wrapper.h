@@ -19,6 +19,16 @@ namespace fpmas { namespace api { namespace utils {
 	 */
 	template<typename T>
 	class PtrWrapper {
+		public:
+			/**
+			 * Type of object managed by this PtrWrapper.
+			 */
+			typedef T element_type;
+			/**
+			 * Pointer type wrapped by this PtrWrapper.
+			 */
+			typedef T* pointer;
+
 		protected:
 			/**
 			 * Internal pointer.

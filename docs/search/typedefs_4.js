@@ -7,5 +7,6 @@ var searchData=
   ['edgempi_4',['EdgeMpi',['../classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#ab9cdf857e28c32691df1b3f8ccedf80f',1,'fpmas::synchro::ghost::GhostSyncLinker::EdgeMpi()'],['../classfpmas_1_1synchro_1_1hard_1_1LinkServer.html#ae257bd2db24e9f7364e73cc1ec67ac0d',1,'fpmas::synchro::hard::LinkServer::EdgeMpi()'],['../classfpmas_1_1synchro_1_1hard_1_1LinkClient.html#a4cc060168ed9f441e9f1a78602b31eb2',1,'fpmas::synchro::hard::LinkClient::EdgeMpi()']]],
   ['edgeptr_5',['EdgePtr',['../classfpmas_1_1synchro_1_1ghost_1_1GhostSyncLinker.html#a7431063e2ac3a7cfe145e0166006c01c',1,'fpmas::synchro::ghost::GhostSyncLinker']]],
   ['edgeptrwrapper_6',['EdgePtrWrapper',['../namespacefpmas_1_1graph.html#aa824a675374017e941f1f4f780c7e95a',1,'fpmas::graph']]],
-  ['edgetype_7',['EdgeType',['../classfpmas_1_1api_1_1graph_1_1Node.html#adf0b743e9cdb4f37b5292e2f7dc8c746',1,'fpmas::api::graph::Node::EdgeType()'],['../classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ad3d19ef6778e899d7ccd8549648232aa',1,'fpmas::graph::detail::DistributedGraph::EdgeType()']]]
+  ['edgetype_7',['EdgeType',['../classfpmas_1_1api_1_1graph_1_1Node.html#adf0b743e9cdb4f37b5292e2f7dc8c746',1,'fpmas::api::graph::Node::EdgeType()'],['../classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ad3d19ef6778e899d7ccd8549648232aa',1,'fpmas::graph::detail::DistributedGraph::EdgeType()']]],
+  ['element_5ftype_8',['element_type',['../classfpmas_1_1api_1_1utils_1_1PtrWrapper.html#aec2332c96b8115404a5d83dc0543e0e2',1,'fpmas::api::utils::PtrWrapper']]]
 ];

@@ -301,52 +301,34 @@ namespace fpmas { namespace communication {
 
 	namespace detail {
 		/**
-		 * An [nlohmann::json](https://github.com/nlohmann/json) based fpmas::api::communication::TypedMpi
-		 * implementation.
+		 * An fpmas::io::datapack::BasicObjectPack based
+		 * fpmas::api::communication::TypedMpi implementation.
 		 *
-		 * Each `T` instance is serialized as a JSON string using the
-		 * nlohmann::json library, and sent as MPI_CHAR using the provided
+		 * Each `T` instance is serialized as a DataPack using the specified
+		 * PackType, and sent as MPI_CHAR using the provided
 		 * api::communication::MpiCommunicator.
 		 *
 		 * This means that ANY TYPE that can be serialized / unserialized as
-		 * JSON thanks to the nlohmann::json library can be easily sent across
-		 * processors through MPI using this class, preventing users from
-		 * struggling with low-level MPI issues and custom MPI_Datatype
-		 * definitions.
+		 * PackType can be easily sent across processors through MPI using this
+		 * class, preventing users from struggling with low-level MPI issues
+		 * and custom MPI_Datatype definitions.
 		 *
-		 * Moreover, defining rules to serialize **any custom type** with the
-		 * nlohmann::json library is intuitive and straightforward (see
-		 * https://github.com/nlohmann/json#arbitrary-types-conversions).
 		 *
-		 * More particularly, the type T must be serializable into the provided
-		 * `JsonType`, that is itself base on `nlohmann::basic_json`. For
-		 * example, if `JsonType` is `nlohmann::json` (as defined by default in
-		 * fpmas::communication::TypedMpi), the classical nlohmann::json custom
-		 * serialization rules must be provided as explained at
-		 * https://github.com/nlohmann/json#arbitrary-types-conversions.
-		 *
-		 * An fpmas::io::json::light_serializer must be provided for T when
-		 * `JsonType` is fpmas::io::json::light_json. See fpmas::io::json for
-		 * more information.
-		 *
-		 * However, notice that systematically serializing data as JSON might
-		 * have an impact on performances, and is not even always necessary (to
-		 * send primary types supported by MPI, such as `float` or `int` for
-		 * example).
-		 *
-		 * The interest of using this templated code design is that for such
-		 * types, TypedMpi can be (and will be) specialized to circumvent the
-		 * default JSON serialization process and use low-level MPI calls
-		 * instead, potentially using custom MPI_Datatypes.
-		 *
-		 * @tparam T data transmit, serializable into a `JsonType`
-		 * @tparam nlohmann json type, based on `nlohmann::basic_json`
+		 * @tparam T data to transmit, serializable into a `PackType`
+		 * @tparam PackType BasicObjectPack implementation (e.g.:
+		 * fpmas::io::datapack::JsonPack, fpmas::io::datapack::ObjectPack,
+		 * fpmas::io::datapack::LightObjectPack...)
 		 */
 		template<typename T, typename PackType>
 			class TypedMpi : public api::communication::TypedMpi<T> {
 				private:
 					api::communication::MpiCommunicator& comm;
 				public:
+					/**
+					 * BasicObjectPack implementation used to serialize data.
+					 */
+					typedef PackType pack_type;
+
 					/**
 					 * TypedMpi constructor.
 					 *

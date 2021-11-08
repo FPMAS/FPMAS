@@ -90,7 +90,7 @@ TEST(datapack_base_io, datapack) {
 
 	fpmas::random::UniformIntDistribution<char> rd_char(0, 255);
 	fpmas::random::mt19937_64 rd;
-	for(auto item : data)
+	for(auto& item : data)
 		for(std::size_t i = 0; i < item.size; i++)
 			item.buffer[i] = rd_char(rd);
 
@@ -105,8 +105,8 @@ TEST(datapack_base_io, datapack_vector) {
 
 	fpmas::random::UniformIntDistribution<char> rd_char(0, 255);
 	fpmas::random::mt19937_64 rd;
-	for(auto vec : data)
-		for(auto item : vec)
+	for(auto& vec : data)
+		for(auto& item : vec)
 			for(std::size_t i = 0; i < item.size; i++)
 				item.buffer[i] = rd_char(rd);
 

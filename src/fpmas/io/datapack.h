@@ -265,6 +265,18 @@ namespace fpmas { namespace io {
 					pack._data = std::move(data_pack);
 					return pack;
 				}
+
+				/**
+				 * Constructs a new BasicObjectPack from the input DataPack.
+				 *
+				 * @param data_pack input datapack
+				 * @return BasicObjectPack containing the input datapack
+				 */
+				static BasicObjectPack<S> parse(const DataPack& data_pack) {
+					BasicObjectPack<S> pack;
+					pack._data = data_pack;
+					return pack;
+				}
 			};
 
 		/**
@@ -362,6 +374,18 @@ namespace fpmas { namespace io {
 		 * library. Json strings are then written and read directly to
 		 * DataPack buffers.
 		 *
+		 * More particularly, the type T must be serializable into the provided
+		 * `JsonType`, that is itself based on `nlohmann::basic_json`. For
+		 * example, if `JsonType` is `nlohmann::json` (as defined by default in
+		 * fpmas::communication::TypedMpi), the classical nlohmann::json custom
+		 * serialization rules must be provided as explained at
+		 * https://github.com/nlohmann/json#arbitrary-types-conversions.
+		 *
+		 * An fpmas::io::json::light_serializer must be provided for T when
+		 * `JsonType` is fpmas::io::json::light_json. See fpmas::io::json for
+		 * more information.
+		 *
+		 *
 		 * @tparam T type to serialize
 		 * @tparam JsonType json type used for serialization
 		 * (nlohmann::json of fpmas::io::json::light_json).
@@ -379,7 +403,9 @@ namespace fpmas { namespace io {
 				 */
 				template<typename PackType>
 					static void to_datapack(PackType& pack, const T& data) {
-						pack = JsonType(data).dump();
+						std::string json_str = JsonType(data).dump();
+						pack.allocate(pack_size(json_str));
+						pack.write(json_str);
 					}
 
 				/**
@@ -395,13 +421,19 @@ namespace fpmas { namespace io {
 				template<typename PackType>
 					static T from_datapack(const PackType& pack) {
 						return JsonType::parse(
-								pack.template get<std::string>()
+								pack.template read<std::string>()
 								).template get<T>();
 					}
 			};
 
 		/**
 		 * An nlohmann::json based serializer.
+		 *
+		 * See https://github.com/nlohmann/json#arbitrary-types-conversions to
+		 * learn how to define rules to serialize **any custom type** with the
+		 * nlohmann::json library.
+		 *
+		 * @tparam T type to serialize as an nlohmann::json instance
 		 */
 		template<typename T>
 			using JsonSerializer = BasicJsonSerializer<T, nlohmann::json>;
