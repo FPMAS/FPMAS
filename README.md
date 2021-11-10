@@ -39,13 +39,13 @@ install them :
 #### Ubuntu
 
 ```
-$ sudo apt-get install g++ cmake libopenmpi3 nlohmann-json3-dev
+sudo apt-get install g++ cmake libopenmpi3 nlohmann-json3-dev
 ```
 
 #### Archlinux
 
 ```
-$ sudo pacman -S gcc cmake openmpi nlohmann-json
+sudo pacman -S gcc cmake openmpi nlohmann-json
 ```
 
 #### Zoltan Installation
@@ -54,22 +54,22 @@ Zoltan is currently not distributed as a package in most common distributions,
 so it is required to install it manually.
 
 ```
-$ git clone https://github.com/sandialabs/Zoltan
+git clone https://github.com/sandialabs/Zoltan
 ```
 
 ```
-$ cd Zoltan
-$ mkdir build
-$ cd build
-$ ../configure --with-id-type=ulong
-$ make everything
-$ sudo make install
+cd Zoltan
+mkdir build
+cd build
+../configure --with-id-type=ulong
+make everything
+sudo make install
 ```
 
 By default, `Zoltan` is installed in `/usr/local`. Other directory might be
 specified. For example:
 ```
-$ ../configure --with-id-type=ulong --prefix=$HOME
+../configure --with-id-type=ulong --prefix=$HOME
 ```
 
 The custom installation directory must then be specified as explained below.
@@ -85,16 +85,16 @@ for more detailed installation instructions.
 
 To use the latest FPMAS version, you can directly clone this repository :
 ```
-$ git clone https://https://github.com/FPMAS/FPMAS
+git clone https://github.com/FPMAS/FPMAS
 ```
 
 FPMAS can be built and installed using CMake :
 ```
-$ mkdir FPMAS/build
-$ cd FPMAS/build
-$ cmake --DCMAKE_BUILD_TYPE=Release -DINSTALL_GTEST=NO ..
-$ cmake --build . -t fpmas
-$ sudo cmake --install .
+mkdir FPMAS/build
+cd FPMAS/build
+cmake --DCMAKE_BUILD_TYPE=Release -DINSTALL_GTEST=NO ..
+cmake --build . -t fpmas
+sudo cmake --install .
 ```
 
 ## FPMAS Configuration
@@ -115,7 +115,7 @@ To specify custom dependencies installation directories, the
 [`CMAKE_PREFIX_PATH`](https://cmake.org/cmake/help/v3.10/variable/CMAKE_PREFIX_PATH.html?highlight=cmake_prefix_path)
 variable can be passed to the previous `cmake` command:
 ```
-$ cmake -DCMAKE_PREFIX_PATH=$HOME/local ..
+cmake -DCMAKE_PREFIX_PATH=$HOME/local ..
 ```
 In this example, FPMAS will search dependencies in `$HOME/local/include` and
 `$HOME/local/lib`.
@@ -124,7 +124,7 @@ A custom FPMAS installation path can also be specified with the
 [`CMAKE_INSTALL_PREFIX`](https://cmake.org/cmake/help/v3.10/variable/CMAKE_INSTALL_PREFIX.html?highlight=cmake_install_prefix)
 variable (by default, `/usr/local` on Unix systems):
 ```
-$ cmake -DCMAKE_PREFIX_PATH=$HOME/local -DCMAKE_INSTALL_PREFIX=$HOME/local ..
+cmake -DCMAKE_PREFIX_PATH=$HOME/local -DCMAKE_INSTALL_PREFIX=$HOME/local ..
 ```
 In this example, FPMAS will be installed in `$HOME/local/include` and
 `$HOME/local/lib`.
@@ -153,19 +153,19 @@ categories :
 ## Local tests
 The local test suite can be built and run with the following commands :
 ```
-$ cd FPMAS/build
-$ cmake ..
-$ cmake --build . -t fpmas_local_test
-$ ./tests/local/fpmas_local_test
+cd FPMAS/build
+cmake ..
+cmake --build . -t fpmas_local_test
+./tests/local/fpmas_local_test
 ```
 
 ## MPI tests
 MPI tests can be built and run with the following commands :
 ```
-$ cd FPMAS/build
-$ cmake ..
-$ cmake --build . -t fpmas_mpi_test
-$ mpiexec -n 4 ./tests/mpi/fpmas_mpi_test
+cd FPMAS/build
+cmake ..
+cmake --build . -t fpmas_mpi_test
+mpiexec -n 4 ./tests/mpi/fpmas_mpi_test
 ```
 
 Notice that any number of cores can be passed to the `mpiexec` `-n` option so
