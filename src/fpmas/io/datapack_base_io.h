@@ -5,6 +5,7 @@
 #include <set>
 #include <list>
 #include <map>
+#include <deque>
 
 namespace fpmas { namespace io { namespace datapack {
 	using fpmas::api::communication::DataPack;
@@ -494,7 +495,7 @@ namespace fpmas { namespace io { namespace datapack {
 			 * Returns the buffer size, in bytes, required to serialize the
 			 * specified list, i.e.
 			 * `datapack::pack_size<std::size_t>()+N` where `N` is the sum
-			 * of `datapack::pack_size(item)` for each `item` in `set`.
+			 * of `datapack::pack_size(item)` for each `item` in `list`.
 			 *
 			 * @param list std::list instance to serialize
 			 *
@@ -568,6 +569,96 @@ namespace fpmas { namespace io { namespace datapack {
 			}
 		}
 
+	/**
+	 * std::deque base_io specialization.
+	 *
+	 * | Serialization scheme |||||
+	 * |----------------------|||||
+	 * | _scheme_ | N | item1 | item2 | ... |
+	 * | _serializer_ | base_io<std::size_t> | base_io<T> |||
+	 *
+	 * @tparam T type of data contained into the list. A base_io
+	 * specialization of T must be available.
+	 */
+	template<typename T>
+		struct base_io<std::deque<T>> {
+			/**
+			 * Returns the buffer size, in bytes, required to serialize the
+			 * specified deque, i.e.
+			 * `datapack::pack_size<std::size_t>()+N` where `N` is the sum
+			 * of `datapack::pack_size(item)` for each `item` in `deque`.
+			 *
+			 * @param deque std::deque instance to serialize
+			 *
+			 * @return pack size in bytes
+			 */
+			static std::size_t pack_size(const std::deque<T>& deque);
+
+			/**
+			 * Writes `deque` to the `data_pack` buffer at the given `offset`.
+			 * pack_size(deque) bytes are written, and `offset` is incremented
+			 * accordingly.
+			 *
+			 * First, `deque.size` is written
+			 * (datapack::pack_size<std::size_t> bytes) and then each
+			 * `item` in `deque` are written contiguously using the
+			 * datapack::write() specialization for T.
+			 *
+			 * @param data_pack destination DataPack
+			 * @param deque source std::deque
+			 * @param offset `data_pack.buffer` index at which the first
+			 * byte is written
+			 */
+			static void write(
+					DataPack& data_pack, const std::deque<T>& deque,
+					std::size_t& offset);
+
+			/**
+			 * Reads an std::deque from the `data_pack` buffer at the
+			 * given `offset`. The count of bytes read depends on the
+			 * corresponding write() operation. `offset` is incremented
+			 * accordingly.
+			 *
+			 * @param data_pack source DataPack
+			 * @param deque destination std::deque
+			 * @param offset `data_pack.buffer` index at which the first
+			 * byte is read
+			 */
+			static void read(
+					const DataPack& data_pack, std::deque<T>& deque,
+					std::size_t& offset);
+		};
+
+	template<typename T>
+		std::size_t base_io<std::deque<T>>::pack_size(const std::deque<T>& deque) {
+			std::size_t size = datapack::pack_size<std::size_t>();
+			for(auto item : deque)
+				size += datapack::pack_size(item);
+			return size;
+		};
+
+	template<typename T>
+		void base_io<std::deque<T>>::write(
+				DataPack& data_pack, const std::deque<T>& deque,
+				std::size_t& offset) {
+			datapack::write(data_pack, deque.size(), offset);
+			// Items are written in order
+			for(auto item : deque)
+				datapack::write(data_pack, item, offset);
+		}
+
+	template<typename T>
+		void base_io<std::deque<T>>::read(
+				const DataPack& data_pack, std::deque<T>& deque,
+				std::size_t& offset) {
+			std::size_t size;
+			datapack::read(data_pack, size, offset);
+			for(std::size_t i = 0; i < size; i++) {
+				T item;
+				datapack::read(data_pack, item, offset);
+				deque.emplace_back(std::move(item));
+			}
+		}
 	/**
 	 * std::pair base_io specialization.
 	 *

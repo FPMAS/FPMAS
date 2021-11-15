@@ -55,6 +55,14 @@ TEST(datapack_base_io, list) {
 			);
 };
 
+TEST(datapack_base_io, deque) {
+	TEST_DATAPACK_BASE_IO(
+			std::deque<std::int64_t>,
+			{1, 2, 3},
+			{-64, 15, -30000, 2}
+			);
+};
+
 TEST(datapack_base_io, pair) {
 	typedef std::pair<float, std::string> TestPair;
 	TEST_DATAPACK_BASE_IO(
