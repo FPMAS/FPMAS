@@ -1159,12 +1159,11 @@ namespace fpmas { namespace io { namespace json {
 			 *
 			 * @see \ref default_constructible_Agent_light_serializer_to_json
 			 * "light_serializer<PtrWrapper<AgentType>>::to_json() (default constructible AgentType)"
-			 * @see \ref
-			 * not_default_constructible_Agent_light_serializer_to_json
+			 * @see \ref not_default_constructible_Agent_light_serializer_to_json
 			 * "light_serializer<PtrWrapper<AgentType>>::to_json() (not default constructible AgentType)"
 			 *
-			 * @param j json output @param pointer pointer to polymorphic
-			 * \Agent
+			 * @param j json output
+			 * @param pointer pointer to polymorphic \Agent
 			 */
 			static void to_json(light_json& j, const
 					fpmas::api::model::AgentPtr& pointer);
@@ -1210,14 +1209,17 @@ namespace fpmas { namespace io { namespace json {
 	template<>
 		struct light_serializer<fpmas::api::model::WeakAgentPtr> {
 			/**
-			 * \copydoc fpmas::io::json::light_serializer<fpmas::api::model::AgentPtr>::to_json(light_json&, const fpmas::api::model::AgentPtr&)
+			 * Equivalent to fpmas::io::json::light_serializer<fpmas::api::model::AgentPtr>::to_json(light_json&, const fpmas::api::model::AgentPtr&).
 			 */
 			static void to_json(light_json& j, const
 					fpmas::api::model::WeakAgentPtr& pointer);
 
 			
-			/**
-			 * \copydoc fpmas::io::json::light_serializer<fpmas::api::model::AgentPtr>::from_json(const light_json&)
+			/** 
+			 * Equivalent to
+			 * fpmas::io::json::light_serializer<fpmas::api::model::AgentPtr>::from_json(const light_json&),
+			 * but the result is wrapped in an  fpmas::api::model::WeakAgentPtr
+			 * instance.
 			 */
 			static fpmas::api::model::WeakAgentPtr from_json(const light_json& j);
 		};
@@ -1238,8 +1240,34 @@ namespace fpmas { namespace io { namespace datapack {
 	 */
 	template<>
 		struct Serializer<AgentPtr> {
-			static void to_datapack(ObjectPack& p, const AgentPtr& ptr);
-			static AgentPtr from_datapack(const ObjectPack& p);
+			/**
+			 * Serializes the \Agent represented by `pointer` to the specified
+			 * json `j`.
+			 *
+			 * Notice that since \Agent is polymorphic, the actual `to_datapack`
+			 * call that corresponds to the most derived type of the specified
+			 * \Agent is resolved at runtime.
+			 *
+			 * @param o object pack output
+			 * @param pointer pointer to polymorphic \Agent
+			 */
+			static void to_datapack(ObjectPack& o, const AgentPtr& pointer);
+
+			/**
+			 * Unserializes an \Agent from the specified ObjectPack `o`.
+			 *
+			 * The built \Agent is dynamically allocated, but is automatically
+			 * managed by the fpmas::api::model::AgentPtr wrapper.
+			 *
+			 * Since \Agent is polymorphic, the concrete type that should be
+			 * instantiated from the input ObjectPack `o` is determined at
+			 * runtime.
+			 *
+			 * @param o input object pack
+			 * @return dynamically allocated \Agent, unserialized from `o`,
+			 * wrapped in an fpmas::api::model::AgentPtr instance
+			 */
+			static AgentPtr from_datapack(const ObjectPack& o);
 		};
 
 	/**
@@ -1253,8 +1281,17 @@ namespace fpmas { namespace io { namespace datapack {
 	 */
 	template<>
 		struct Serializer<WeakAgentPtr> {
-			static void to_datapack(ObjectPack& p, const WeakAgentPtr& ptr);
-			static WeakAgentPtr from_datapack(const ObjectPack& p);
+			/**
+			 * Equivalent to fpmas::io::datapack::Serializer<AgentPtr>::to_datapack(ObjectPack& o, const AgentPtr&).
+			 */
+			static void to_datapack(ObjectPack& o, const WeakAgentPtr& ptr);
+
+			/**
+			 * Equivalent to fpmas::io::datapack::Serializer<AgentPtr>::from_datapack(const ObjectPack& o),
+			 * but the result is wrapped in an fpmas::api::model::WeakAgentPtr
+			 * instance.
+			 */
+			static WeakAgentPtr from_datapack(const ObjectPack& o);
 		};
 
 	/**
@@ -1268,8 +1305,64 @@ namespace fpmas { namespace io { namespace datapack {
 	 */
 	template<>
 		struct LightSerializer<AgentPtr> {
-			static void to_datapack(LightObjectPack& p, const AgentPtr& ptr);
-			static AgentPtr from_datapack(const LightObjectPack& p);
+			/**
+			 * Serializes the \Agent represented by `pointer` to the specified
+			 * LightObjectPack `o`.
+			 *
+			 * Notice that since \Agent is polymorphic, the actual `to_datapack`
+			 * call that corresponds to the most derived type of the specified
+			 * \Agent is resolved at runtime.
+			 *
+			 * The LightObjectPack version of the to_datapack() method attempts to
+			 * serialize the agent with the less data possible, i.e. possibly
+			 * nothing if the \Agent is default constructible, and no user
+			 * defined LightObjectPack serialization rules have been provided.
+			 *
+			 * If \Agent is not default constructible, the classic
+			 * `io::datapack::Serializer<PtrWrapper<AgentType>>` is used, what
+			 * might be inefficient.
+			 *
+			 * @see \ref default_constructible_Agent_light_serializer_to_datapack
+			 * "LightSerializer<PtrWrapper<AgentType>>::to_datapack() (default constructible AgentType)"
+			 * @see \ref
+			 * not_default_constructible_Agent_light_serializer_to_datapack
+			 * "LightSerializer<PtrWrapper<AgentType>>::to_datapack() (not default constructible AgentType)"
+			 *
+			 * @param o LightObjectPack output
+			 * @param pointer pointer to polymorphic \Agent
+			 */
+			static void to_datapack(LightObjectPack& o, const AgentPtr& pointer);
+
+			/**
+			 * Unserializes an \Agent from the specified LightObjectPack `o`.
+			 *
+			 * The built \Agent is dynamically allocated, but is automatically
+			 * managed by the fpmas::api::model::AgentPtr wrapper.
+			 *
+			 * Since \Agent is polymorphic, the concrete type that should be
+			 * instantiated from the input LightObjectPack `o` is determined at
+			 * runtime.
+			 *
+			 * The LightObjectPack version of the from_datapack() method
+			 * attempts to build the \Agent using a default constructor, to
+			 * bypass the classical ObjectPack serialization process.
+			 *
+			 * If \Agent is not default constructible, the classic
+			 * `io::datapack::Serializer<PtrWrapper<AgentType>>` is used, what
+			 * might be inefficient.
+			 *
+			 * @see \ref
+			 * default_constructible_Agent_light_serializer_from_datapack
+			 * "light_serializer<PtrWrapper<AgentType>>::from_datapack() (default constructible AgentType)"
+			 * @see \ref
+			 * not_default_constructible_Agent_light_serializer_from_datapack
+			 * "light_serializer<PtrWrapper<AgentType>>::from_datapack() (not default constructible AgentType)"
+			 *
+			 * @param o input object pack
+			 * @return dynamically allocated \Agent, unserialized from `o`,
+			 * wrapped in an fpmas::api::model::AgentPtr instance
+			 */
+			static AgentPtr from_datapack(const LightObjectPack& o);
 		};
 
 	/**
@@ -1283,8 +1376,18 @@ namespace fpmas { namespace io { namespace datapack {
 	 */
 	template<>
 		struct LightSerializer<WeakAgentPtr> {
-			static void to_datapack(LightObjectPack& p, const WeakAgentPtr& ptr);
-			static WeakAgentPtr from_datapack(const LightObjectPack& p);
+			/**
+			 * Equivalent to fpmas::io::datapack::LightSerializer<AgentPtr>::to_datapack(LightObjectPack&, const AgentPtr&).
+			 */
+			static void to_datapack(LightObjectPack& o, const WeakAgentPtr& ptr);
+
+			/** 
+			 * Equivalent to
+			 * fpmas::io::datapack::LightSerializer<AgentPtr>::from_datapack(const LightObjectPack&),
+			 * but the result is wrapped in an  fpmas::api::model::WeakAgentPtr
+			 * instance.
+			 */
+			static WeakAgentPtr from_datapack(const LightObjectPack& o);
 		};
 }}}
 
@@ -1341,12 +1444,14 @@ namespace nlohmann {
 		struct adl_serializer<fpmas::api::model::WeakAgentPtr> {
 			
 			/**
-			 * \copydoc nlohmann::adl_serializer<fpmas::api::model::AgentPtr>::to_json(json& j, const fpmas::api::model::AgentPtr&)
+			 * Equivalent to nlohmann::adl_serializer<fpmas::api::model::AgentPtr>::to_json(json& j, const fpmas::api::model::AgentPtr&).
 			 */
 			static void to_json(json& j, const fpmas::api::model::WeakAgentPtr& pointer);
 
 			/**
-			 * \copydoc nlohmann::adl_serializer<fpmas::api::model::AgentPtr>::from_json(const json& j)
+			 * Equivalent to nlohmann::adl_serializer<fpmas::api::model::AgentPtr>::from_json(const json& j),
+			 * but the result is wrapped in an fpmas::api::model::WeakAgentPtr
+			 * instance.
 			 */
 			static fpmas::api::model::WeakAgentPtr from_json(const json& j);
 		};

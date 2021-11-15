@@ -28,6 +28,7 @@ set(SOURCES
 	fpmas/model/detail/model.cpp
 	fpmas/model/model.cpp
 	fpmas/model/serializer.cpp
+	fpmas/model/datapack_serializer.cpp
 	fpmas/model/json_serializer.cpp
 	fpmas/model/spatial/spatial_model.cpp
 	fpmas/model/spatial/grid.cpp

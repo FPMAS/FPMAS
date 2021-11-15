@@ -84,9 +84,9 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename AgentType&gt;<br />
-struct fpmas::io::json::light_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt;, typename std::enable_if&lt; std::is_base_of&lt; fpmas::api::model::Agent, AgentType &gt;::value &amp;&amp;std::is_default_constructible&lt; AgentType &gt;::value &amp;&amp;std::is_same&lt; AgentType, typename AgentType::FinalAgentType &gt;::value &gt;::type &gt;</div><p ><a class="anchor" id="default_constructible_Agent_light_serializer"></a> A default <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer.html">light_serializer</a> specialization for default constructible <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types.</p>
+struct fpmas::io::json::light_serializer&lt; fpmas::api::utils::PtrWrapper&lt; AgentType &gt;, typename std::enable_if&lt; std::is_base_of&lt; fpmas::api::model::Agent, AgentType &gt;::value &amp;&amp;std::is_default_constructible&lt; AgentType &gt;::value &amp;&amp;std::is_same&lt; AgentType, typename AgentType::FinalAgentType &gt;::value &gt;::type &gt;</div><p ><a class="anchor" id="default_constructible_Agent_json_light_serializer"></a> A default <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer.html">light_serializer</a> specialization for default constructible <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> types.</p>
 <p >When a default constructor is available for <code>AgentType</code>, this specialization is automatically selected.</p>
-<p >The usage of this specialization is recommended, since its optimal: <b>no</b> json data is required to serialize / unserialize a <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> representing such an <code>AgentType</code>.</p>
+<p >The usage of this specialization is recommended, since its optimal: <b>no</b> json data is required to serialize / unserialize a <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> representing such an <code>AgentType</code>. Moreover, its usage is perfectly safe since AgentType instanciated this way are never used directly within FPMAS (at least a complete ObjectPack import is realized before accessing AgentType data, using a ReadGuard for example).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">AgentType</td><td>concrete type of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> to serialize </td></tr>
@@ -129,7 +129,7 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p ><a class="anchor" id="default_constructible_Agent_light_serializer_to_json"></a> <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent897a43c8e174bcaded636be4611a9868.html#a572e62f598b316f09cd3d0f123f5851f">to_json()</a> implementation for the default constructible <code>AgentType</code>: nothing is serialized. Notice that the "type id", that is actually required to reach this method, is managed by the <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1model_1_1AgentPtr_01_4.html">nlohmann::adl_serializer&lt;fpmas::api::model::AgentPtr&gt;</a> structure. </p>
+<p ><a class="anchor" id="default_constructible_Agent_light_serializer_to_json"></a> <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">light_json</a> <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agent897a43c8e174bcaded636be4611a9868.html#a572e62f598b316f09cd3d0f123f5851f">to_json()</a> implementation for the default constructible <code>AgentType</code>: nothing is serialized. </p>
 
 </div>
 </div>

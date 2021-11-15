@@ -120,7 +120,8 @@ namespace fpmas {namespace api { namespace graph {
 			 *
 			 * @param temp_src pointer to temporary source node
 			 */
-			virtual void setTempSourceNode(std::unique_ptr<TemporaryNode<T>> temp_src) = 0;
+			virtual void setTempSourceNode(std::unique_ptr<api::graph::TemporaryNode<T>> temp_src) = 0;
+
 			/**
 			 * Gets the current temporary source node attached to this
 			 * DistributedEdge.
@@ -164,7 +165,7 @@ namespace fpmas {namespace api { namespace graph {
 			 *
 			 * @param temp_tgt pointer to temporary target node
 			 */
-			virtual void setTempTargetNode(std::unique_ptr<TemporaryNode<T>> temp_tgt) = 0;
+			virtual void setTempTargetNode(std::unique_ptr<api::graph::TemporaryNode<T>> temp_tgt) = 0;
 
 			/**
 			 * Gets the current temporary target node attached to this

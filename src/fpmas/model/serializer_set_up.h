@@ -6,6 +6,8 @@
 #include "fpmas/api/utils/ptr_wrapper.h"
 #include "fpmas/utils/log.h"
 
+#define AGENT_TYPE_STR(AgentType) typeid(AgentType).name()
+
 namespace fpmas {
 	/**
 	 * Typed \Agent pointer.

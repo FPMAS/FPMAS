@@ -121,7 +121,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a8832b5039dc9d1a4f59d4bc5c1155ec3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><div class="compoundTemplParams">template&lt;template&lt; typename &gt; class S&gt;<br />
+<div class="textblock"><div class="compoundTemplParams">template&lt;template&lt; typename, typename Enable=void &gt; class S&gt;<br />
 class fpmas::io::datapack::BasicObjectPack&lt; S &gt;</div><p >Base object used to implement the FPMAS binary serialization technique.</p>
 <p >The purpose of the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a> is to provide an high level API to efficiently read/write data from/to a low level DataPack.</p>
 <p >The <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a> is the <em>container</em> that provides access to the serialized data. Serialization / deserialization is ensured by the provided serializer <code>S</code> and by <code><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a></code> specializations.</p>
@@ -134,7 +134,7 @@ class fpmas::io::datapack::BasicObjectPack&lt; S &gt;</div><p >Base object used 
 <div class="line">std::string unserial_data = pack.get&lt;std::string&gt;();</div>
 <div class="ttc" id="aclassfpmas_1_1io_1_1datapack_1_1BasicObjectPack_html_afc5e39b1d9f03f592281fade2f55c814"><div class="ttname"><a href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#afc5e39b1d9f03f592281fade2f55c814">fpmas::io::datapack::BasicObjectPack::data</a></div><div class="ttdeci">const DataPack &amp; data() const</div><div class="ttdef"><b>Definition:</b> datapack.h:121</div></div>
 <div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html">fpmas::io::datapack</a></div><div class="ttdef"><b>Definition:</b> clustered_graph_builder.h:616</div></div>
-<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_affeae790ebdf831b07e41a7e9ef37ccb"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a></div><div class="ttdeci">BasicObjectPack&lt; Serializer &gt; ObjectPack</div><div class="ttdef"><b>Definition:</b> datapack.h:517</div></div>
+<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_affeae790ebdf831b07e41a7e9ef37ccb"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a></div><div class="ttdeci">BasicObjectPack&lt; Serializer &gt; ObjectPack</div><div class="ttdef"><b>Definition:</b> datapack.h:518</div></div>
 </div><!-- fragment --></li>
 <li>The <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> technique is used by <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a7025aa5a43e79fdd3528de310fb8a9ef">read()</a> and <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#affb3cf7c64aa3655f0e0ce541dbd05e1">write()</a>. A <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> specialization must be available for the data to serialize in order to use this technique. First, the internal buffer must be allocated using the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#acf6f495fb48d44d1809e5468fc2c9eef">allocate()</a> method. The base_io&lt;T&gt;::pack_size() specializations can be used to query the required size. <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#affb3cf7c64aa3655f0e0ce541dbd05e1">write()</a> operations can then be performed, and data can be retrieved using <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a7025aa5a43e79fdd3528de310fb8a9ef">read()</a> methods. Write and read must be performed in the <b>same order</b>. <div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacefpmas_1_1io_1_1datapack.html">fpmas::io::datapack</a>;</div>
 <div class="line"> </div>
@@ -150,7 +150,7 @@ class fpmas::io::datapack::BasicObjectPack&lt; S &gt;</div><p >Base object used 
 <div class="line">std::uint64_t unserial_i = pack.read&lt;std::uint64_t&gt;();</div>
 <div class="line">std::string unserial_str;</div>
 <div class="line">pack.read(unserial_str);</div>
-<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_a9f244fdbf49db0a3afeb3c945b9b90ce"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">fpmas::io::datapack::pack_size</a></div><div class="ttdeci">std::size_t pack_size()</div><div class="ttdef"><b>Definition:</b> datapack_base_io.h:102</div></div>
+<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_a9f244fdbf49db0a3afeb3c945b9b90ce"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">fpmas::io::datapack::pack_size</a></div><div class="ttdeci">std::size_t pack_size()</div><div class="ttdef"><b>Definition:</b> datapack_base_io.h:103</div></div>
 </div><!-- fragment --></li>
 </ol>
 <p >Both serialization techniques can be used on all ObjectPacks, but only one serialization technique must be used on each ObjectPack.</p>
@@ -168,7 +168,7 @@ class fpmas::io::datapack::BasicObjectPack&lt; S &gt;</div><p >Base object used 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -206,7 +206,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -245,7 +245,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -273,7 +273,7 @@ template&lt;template&lt; typename &gt; class S&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -302,7 +302,7 @@ template&lt;template&lt; typename &gt; class S&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -338,7 +338,7 @@ template&lt;template&lt; typename &gt; class S&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -376,7 +376,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -411,7 +411,7 @@ template&lt;template&lt; typename &gt; class S&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -449,7 +449,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -480,7 +480,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -519,7 +519,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -550,7 +550,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <div class="memtemplate">
 template&lt;typename T &gt; </div>
 <table class="mlabels">
@@ -587,7 +587,7 @@ template&lt;typename T &gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -617,7 +617,7 @@ template&lt;template&lt; typename &gt; class S&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">
@@ -653,7 +653,7 @@ template&lt;template&lt; typename &gt; class S&gt; </div>
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;template&lt; typename &gt; class S&gt; </div>
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <table class="mlabels">
   <tr>
   <td class="mlabels-left">

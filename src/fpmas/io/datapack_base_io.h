@@ -209,6 +209,7 @@ namespace fpmas { namespace io { namespace datapack {
 			 * @return pack size in bytes
 			 */
 			static std::size_t pack_size();
+
 			/**
 			 * Equivalent to pack_size().
 			 *

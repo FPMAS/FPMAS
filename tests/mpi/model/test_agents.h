@@ -18,7 +18,9 @@ using testing::Ge;
 class BasicAgent : public fpmas::model::AgentBase<BasicAgent> {
 };
 
-FPMAS_DEFAULT_JSON(BasicAgent)
+FPMAS_DEFAULT_JSON(BasicAgent);
+FPMAS_DEFAULT_DATAPACK(BasicAgent);
+
 
 class ReaderWriterBase {
 	protected:
@@ -68,6 +70,16 @@ class ReaderAgent : public ReaderWriterBase, public fpmas::model::AgentBase<Read
 			agent_ptr->setCounter(j.at("c").get<int>());
 			return agent_ptr;
 		}
+
+		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const ReaderAgent* agent) {
+			p = agent->getCounter();
+		}
+
+		static ReaderAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
+			ReaderAgent* agent_ptr = new ReaderAgent;
+			agent_ptr->setCounter(p.get<int>());
+			return agent_ptr;
+		}
 };
 
 class WriterAgent : public ReaderWriterBase, public fpmas::model::AgentBase<WriterAgent> {
@@ -97,6 +109,17 @@ class WriterAgent : public ReaderWriterBase, public fpmas::model::AgentBase<Writ
 			agent_ptr->setCounter(j.at("c").get<int>());
 			return agent_ptr;
 		}
+
+		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const WriterAgent* agent) {
+			p = agent->getCounter();
+		}
+
+		static WriterAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
+			WriterAgent* agent_ptr = new WriterAgent;
+			agent_ptr->setCounter(p.get<int>());
+			return agent_ptr;
+		}
+
 };
 
 class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
@@ -141,6 +164,22 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 		agent_ptr->unlinks = j.at("unlinks").get<std::set<DistributedId>>();
 		return agent_ptr;
 	}
+
+	static void to_datapack(fpmas::io::datapack::ObjectPack& p, const LinkerAgent* agent) {
+		p.allocate(
+				fpmas::io::datapack::pack_size(agent->links) +
+				fpmas::io::datapack::pack_size(agent->unlinks)
+				);
+		p.write(agent->links);
+		p.write(agent->unlinks);
+	}
+
+	static LinkerAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
+		LinkerAgent* agent_ptr = new LinkerAgent;
+		agent_ptr->links = p.read<std::set<DistributedId>>();
+		agent_ptr->unlinks = p.read<std::set<DistributedId>>();
+		return agent_ptr;
+	}
 };
 
 
@@ -156,6 +195,13 @@ class TestCell : public fpmas::model::Cell<TestCell> {
 		static TestCell* from_json(const nlohmann::json& j) {
 			return new TestCell(j.get<int>());
 		}
+
+		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const TestCell* cell) {
+			p = cell->index;
+		}
+		static TestCell* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
+			return new TestCell(p.get<int>());
+		}
 };
 
 namespace fpmas { namespace io { namespace json {
@@ -170,6 +216,18 @@ namespace fpmas { namespace io { namespace json {
 
 
 		};
+}}}
+
+namespace fpmas { namespace io { namespace datapack {
+	template<>
+		struct LightSerializer<fpmas::api::utils::PtrWrapper<TestCell>> {
+			static void to_datapack(LightObjectPack&, const fpmas::api::utils::PtrWrapper<TestCell>&) {
+			}
+			static fpmas::api::utils::PtrWrapper<TestCell> from_datapack(const LightObjectPack&) {
+				return {new TestCell(0)};
+			}
+		};
+
 }}}
 
 class FakeRange : public fpmas::api::model::Range<TestCell> {
@@ -252,6 +310,19 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 					j.at("n").get<unsigned int>()
 					);
 		}
+
+		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const TestSpatialAgent* agent) {
+			p.allocate(2*fpmas::io::datapack::pack_size<unsigned int>());
+			p.write(agent->range_size);
+			p.write(agent->num_cells_in_ring);
+		}
+
+		static TestSpatialAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
+			return new TestSpatialAgent(
+					p.read<unsigned int>(),
+					p.read<unsigned int>()
+					);
+		}
 };
 
 class TestGridAgent : public fpmas::model::GridAgent<TestGridAgent> {
@@ -269,4 +340,7 @@ class TestGridAgent : public fpmas::model::GridAgent<TestGridAgent> {
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<1>);
 FPMAS_DEFAULT_JSON(DefaultMockAgentBase<10>);
 FPMAS_DEFAULT_JSON(TestGridAgent);
+FPMAS_DEFAULT_DATAPACK(DefaultMockAgentBase<1>);
+FPMAS_DEFAULT_DATAPACK(DefaultMockAgentBase<10>);
+FPMAS_DEFAULT_DATAPACK(TestGridAgent);
 #endif

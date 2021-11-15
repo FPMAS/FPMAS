@@ -119,17 +119,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p></p>
-<p >Serializes the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> represented by <code>pointer</code> to the specified json <code>j</code>.</p>
-<p >Notice that since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the actual <code>to_json</code> call that corresponds to the most derived type of the specified <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is resolved at runtime.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">j</td><td>json output </td></tr>
-    <tr><td class="paramname">pointer</td><td>pointer to polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> </td></tr>
-  </table>
-  </dd>
-</dl>
+<p >Equivalent to <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1model_1_1AgentPtr_01_4.html#ade937b52afe3ee0b25f8ca0a816e5f9e">nlohmann::adl_serializer&lt;fpmas::api::model::AgentPtr&gt;::to_json(json&amp; j, const fpmas::api::model::AgentPtr&amp;)</a>. </p>
 
 </div>
 </div>
@@ -156,18 +146,7 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-
-<p></p>
-<p >Unserializes an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> from the specified JSON <code>j</code>.</p>
-<p >The built <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is dynamically allocated, but is automatically managed by the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> wrapper.</p>
-<p >Since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the concrete type that should be instantiated from the input json <code>j</code> is determined at runtime.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">j</td><td>input json </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>dynamically allocated <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>, unserialized from <code>j</code>, wrapped in an <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> instance </dd></dl>
+<p >Equivalent to <a class="el" href="structnlohmann_1_1adl__serializer_3_01fpmas_1_1api_1_1model_1_1AgentPtr_01_4.html#aa4b662d79cccb1be1af04ed39c2b732c">nlohmann::adl_serializer&lt;fpmas::api::model::AgentPtr&gt;::from_json(const json&amp; j)</a>, but the result is wrapped in an <a class="el" href="namespacefpmas_1_1api_1_1model.html#a2768be94a44ce8a833c65ba67b95864c">fpmas::api::model::WeakAgentPtr</a> instance. </p>
 
 </div>
 </div>

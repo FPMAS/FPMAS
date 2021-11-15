@@ -43,21 +43,30 @@ namespace fpmas { namespace graph {
 					api::graph::LocationState state() const override {return _state;}
 					void setState(api::graph::LocationState state) override {this->_state = state;}
 
+					/**
+					 * \copydoc fpmas::api::graph::DistributedEdge<T>::setTempSourceNode(std::unique_ptr<api::graph::TemporaryNode<T>>)
+					 */
 					void setTempSourceNode(
-							std::unique_ptr<fpmas::api::graph::TemporaryNode<T>> temp_src
+							std::unique_ptr<api::graph::TemporaryNode<T>> temp_src
 							) override {
 						this->temp_src = std::move(temp_src);
 					}
-					std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>
+
+					std::unique_ptr<api::graph::TemporaryNode<T>>
 						getTempSourceNode() override {
 						return std::move(temp_src);
-					};
+					}
+
+					/**
+					 * \copydoc fpmas::api::graph::DistributedEdge<T>::setTempTargetNode(std::unique_ptr<api::graph::TemporaryNode<T>>)
+					 */
 					void setTempTargetNode(
-							std::unique_ptr<fpmas::api::graph::TemporaryNode<T>> temp_tgt
+							std::unique_ptr<api::graph::TemporaryNode<T>> temp_tgt
 							) override {
 						this->temp_tgt = std::move(temp_tgt);
 					}
-					std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>
+
+					std::unique_ptr<api::graph::TemporaryNode<T>>
 						getTempTargetNode() override {
 						return std::move(temp_tgt);
 					}

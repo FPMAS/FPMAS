@@ -17,6 +17,7 @@ namespace fpmas { namespace model {
 	 */
 	class ReachableCell {
 		friend nlohmann::adl_serializer<ReachableCell>;
+		friend io::datapack::base_io<ReachableCell>;
 
 		protected:
 			/**
@@ -205,6 +206,7 @@ namespace fpmas { namespace model {
 }}
 
 FPMAS_DEFAULT_JSON(fpmas::model::GraphCell)
+FPMAS_DEFAULT_DATAPACK(fpmas::model::GraphCell)
 
 namespace nlohmann {
 	/**
@@ -351,4 +353,168 @@ namespace fpmas { namespace io { namespace json {
 
 }}}
 
+namespace fpmas { namespace io { namespace datapack {
+	/**
+	 * fpmas::model::ReachableCell ObjectPack serializer specialization.
+	 */
+	template<>
+		struct base_io<fpmas::model::ReachableCell> {
+			/**
+			 * Returns the buffer size, in bytes, required to serialize a
+			 * model::ReachableCell instance, i.e.
+			 * `datapack::pack_size(cell.reachable_cells)`.
+			 *
+			 * @return pack size in bytes
+			 */
+			static std::size_t pack_size(const fpmas::model::ReachableCell& cell);
+
+			/**
+			 * Writes `id` to the `data_pack` buffer at the given `offset`.
+			 * pack_size() bytes are written, and `offset` is incremented
+			 * accordingly.
+			 *
+			 * @param data_pack destination DataPack
+			 * @param cell source cell
+			 * @param offset `data_pack.buffer` index at which the first
+			 * byte is written
+			 */
+			static void write(
+					DataPack& data_pack, const fpmas::model::ReachableCell& cell,
+					std::size_t& offset);
+
+			/**
+			 * Reads a DistributedId from the `data_pack` buffer at the
+			 * given `offset`. pack_size() bytes are read, and `offset` is
+			 * incremented accordingly.
+			 *
+			 * @param data_pack source DataPack
+			 * @param cell destination cell
+			 * @param offset `data_pack.buffer` index at which the first
+			 * byte is read
+			 */
+			static void read(
+					const DataPack& data_pack, fpmas::model::ReachableCell& cell,
+					std::size_t& offset);
+		};
+
+	/**
+	 * Polymorphic GraphCellBase Serializer specialization.
+	 */
+	template<typename AgentType, typename Derived>
+		struct Serializer<fpmas::api::utils::PtrWrapper<fpmas::model::GraphCellBase<AgentType, Derived>>> {
+			/**
+			 * Pointer wrapper to a polymorphic SpatialAgentBase.
+			 */
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GraphCellBase<AgentType, Derived>> Ptr;
+			/**
+			 * Serializes the pointer to the polymorphic SpatialAgentBase using
+			 * the following ObjectPack schema:
+			 * ```json
+			 * |<Derived object pack serialization>|ptr->reachableNodes()|
+			 * ```
+			 *
+			 * The `<Derived object pack serialization>` is computed using the
+			 * `Serializer<fpmas::api::utils::PtrWrapper<Derived>>`
+			 * specialization, that can be defined externally without
+			 * additional constraint.
+			 *
+			 * @param o object pack output
+			 * @param ptr pointer to a polymorphic SpatialAgentBase to serialize
+			 */
+			static void to_datapack(ObjectPack& o, const Ptr& ptr) {
+				// Derived serialization
+				ObjectPack derived = fpmas::api::utils::PtrWrapper<Derived>(
+						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get())));
+				const fpmas::model::ReachableCell& reachable_cell
+					= static_cast<const fpmas::model::ReachableCell&>(*ptr);
+				o.allocate(pack_size(derived) + pack_size(reachable_cell));
+				o.write(derived);
+				o.write(reachable_cell);
+			}
+
+			/**
+			 * Unserializes a polymorphic GraphCellBase from the specified
+			 * ObjectPack.
+			 *
+			 * First, the `Derived` part, that extends `GraphCellBase` by
+			 * definition, is unserialized using the
+			 * `Serializer<fpmas::api::utils::PtrWrapper<Derived>`
+			 * specialization, that can be defined externally without any
+			 * constraint. During this operation, a `Derived` instance is
+			 * dynamically allocated, that might leave the `GraphCellBase`
+			 * members undefined. The specific `GraphCellBase` member
+			 * `reachable_nodes` is then unserialized, and the
+			 * unserialized `Derived` instance is returned in the form of a
+			 * polymorphic `GraphCellBase` pointer.
+			 *
+			 * @param o object pack input
+			 * @return unserialized pointer to a polymorphic `GraphCellBase`
+			 */
+			static Ptr from_datapack(const ObjectPack& o) {
+				// Derived unserialization.
+				// The current base is implicitly default initialized
+				fpmas::api::utils::PtrWrapper<Derived> derived_ptr = o
+					.read<ObjectPack>()
+					.get<fpmas::api::utils::PtrWrapper<Derived>>();
+
+				static_cast<fpmas::model::ReachableCell&>(*derived_ptr)
+					= o.read<fpmas::model::ReachableCell>();
+
+				return derived_ptr.get();
+			}
+		};
+
+
+	/**
+	 * Polymorphic GraphCellBase LightSerializer specialization.
+	 */
+	template<typename AgentType, typename Derived>
+		struct LightSerializer<fpmas::api::utils::PtrWrapper<fpmas::model::GraphCellBase<AgentType, Derived>>> {
+			/**
+			 * Pointer wrapper to a polymorphic SpatialAgentBase.
+			 */
+			typedef fpmas::api::utils::PtrWrapper<fpmas::model::GraphCellBase<AgentType, Derived>> Ptr;
+
+			/**
+			 * LightObjectPack to_datapack() implementation for an
+			 * fpmas::model::SpatialAgentBase.
+			 *
+			 * Effectively calls
+			 * `LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>::%to_datapack()`,
+			 * without adding any `GraphCellBase` specific data to the
+			 * LightObjectPack o.
+			 *
+			 * @param o object pack output
+			 * @param ptr agent pointer to serialize 
+			 */
+			static void to_datapack(LightObjectPack& o, const Ptr& ptr) {
+				// Derived serialization
+				LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>::to_datapack(
+						o,
+						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get()))
+						);
+			}
+
+			/**
+			 * LightObjectPack from_datapack() implementation for an
+			 * fpmas::model::GraphCellBase.
+			 *
+			 * Effectively calls
+			 * `LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>::%from_datapack()`,
+			 * without extracting any `GraphCellBase` specific data from the
+			 * LightObjectPack o.
+			 *
+			 * @param o object pack input
+			 * @return dynamically allocated `Derived` instance, unserialized from `j`
+			 */
+			static Ptr from_datapack(const LightObjectPack& o) {
+				// Derived unserialization.
+				// The current base is implicitly default initialized
+				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
+					= LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>
+					::from_datapack(o);
+				return derived_ptr.get();
+			}
+		};
+}}}
 #endif

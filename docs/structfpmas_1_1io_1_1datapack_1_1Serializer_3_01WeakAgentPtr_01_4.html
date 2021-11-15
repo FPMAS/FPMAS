@@ -77,17 +77,80 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aa7fc3cb0e769b5e743b6624d2895845a"><td class="memItemLeft" align="right" valign="top"><a id="aa7fc3cb0e769b5e743b6624d2895845a" name="aa7fc3cb0e769b5e743b6624d2895845a"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>to_datapack</b> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;p, const WeakAgentPtr &amp;ptr)</td></tr>
-<tr class="separator:aa7fc3cb0e769b5e743b6624d2895845a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9a86bb3617c4785db795520614c2910"><td class="memItemLeft" align="right" valign="top"><a id="af9a86bb3617c4785db795520614c2910" name="af9a86bb3617c4785db795520614c2910"></a>
-static WeakAgentPtr&#160;</td><td class="memItemRight" valign="bottom"><b>from_datapack</b> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;p)</td></tr>
-<tr class="separator:af9a86bb3617c4785db795520614c2910"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8465e65971a83af580ae0efee25958dc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01WeakAgentPtr_01_4.html#a8465e65971a83af580ae0efee25958dc">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;o, const WeakAgentPtr &amp;ptr)</td></tr>
+<tr class="separator:a8465e65971a83af580ae0efee25958dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae065a87932e668d9d92aba5182d84208"><td class="memItemLeft" align="right" valign="top">static WeakAgentPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01WeakAgentPtr_01_4.html#ae065a87932e668d9d92aba5182d84208">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;o)</td></tr>
+<tr class="separator:ae065a87932e668d9d92aba5182d84208"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="namespacefpmas_1_1api_1_1model.html#a2768be94a44ce8a833c65ba67b95864c">fpmas::api::model::WeakAgentPtr</a> <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a> serialization rules <b>declaration</b>.</p>
 <p ><code>to_datapack</code> and <code>from_datapack</code> methods must be <em>defined</em> by the user at compile time, depending on its own Agent types, using the FPMAS_DATAPACK_SET_UP() macro, that must be called from a <b>source</b> file. Otherwise, linker errors will be thrown. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a8465e65971a83af580ae0efee25958dc" name="a8465e65971a83af580ae0efee25958dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8465e65971a83af580ae0efee25958dc">&#9670;&nbsp;</a></span>to_datapack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; WeakAgentPtr &gt;::to_datapack </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>o</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const WeakAgentPtr &amp;&#160;</td>
+          <td class="paramname"><em>ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Equivalent to <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01AgentPtr_01_4.html#a41eb29b298cb9d023dd84dc95b84c60a">fpmas::io::datapack::Serializer&lt;AgentPtr&gt;::to_datapack(ObjectPack&amp; o, const AgentPtr&amp;)</a>. </p>
+
+</div>
+</div>
+<a id="ae065a87932e668d9d92aba5182d84208" name="ae065a87932e668d9d92aba5182d84208"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae065a87932e668d9d92aba5182d84208">&#9670;&nbsp;</a></span>from_datapack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static WeakAgentPtr <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; WeakAgentPtr &gt;::from_datapack </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>o</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Equivalent to <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01AgentPtr_01_4.html#a7a8ec039237f8dd4a42d739b90bcde9d">fpmas::io::datapack::Serializer&lt;AgentPtr&gt;::from_datapack(const ObjectPack&amp; o)</a>, but the result is wrapped in an <a class="el" href="namespacefpmas_1_1api_1_1model.html#a2768be94a44ce8a833c65ba67b95864c">fpmas::api::model::WeakAgentPtr</a> instance. </p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/fpmas/model/<a class="el" href="model_2model_8h_source.html">model.h</a></li>
 </ul>
 </div><!-- contents -->

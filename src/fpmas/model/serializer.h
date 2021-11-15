@@ -70,6 +70,14 @@
 	FPMAS_BASE_DEFAULT_JSON_SET_UP()\
 	FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()
 
+#define FPMAS_DATAPACK_SET_UP(...)\
+	FPMAS_BASE_DATAPACK_SET_UP(__VA_ARGS__)\
+	FPMAS_BASE_JSON_SET_UP(__VA_ARGS__)
+
+#define FPMAS_DEFAULT_DATAPACK_SET_UP()\
+	FPMAS_BASE_DEFAULT_DATAPACK_SET_UP()\
+	FPMAS_BASE_DEFAULT_JSON_SET_UP()
+
 /**
  * Registers the specified \Agent types so that they can be serialized as JSON
  * using the `nlohmann` library.
@@ -110,14 +118,15 @@ namespace fpmas {
 
 	/**
 	 * Recursive function template used to register a set of types into the
-	 * adl_serializer<std::type_index>, so that their corresponding
+	 * adl_serializer<std::type_index> and
+	 * io::datapack::base_io<std::type_index>, so that their corresponding
 	 * std::type_index can be serialized.
 	 *
 	 * The last type specified **MUST** be void for the recursion to be valid.
 	 *
 	 * @par Example
 	 * ```cpp
-	 * nlohmann::fpmas::register_types<Type1, Type2, void>();
+	 * fpmas::register_types<Type1, Type2, void>();
 	 * ```
 	 *
 	 * The FPMAS_REGISTER_AGENT_TYPES(...) macro can be used instead as a more expressive
@@ -126,6 +135,8 @@ namespace fpmas {
 	template<typename _T, typename... T>
 		void register_types() {
 			nlohmann::adl_serializer<std::type_index>::register_type(typeid(_T));
+			fpmas::io::datapack::Serializer<std::type_index>::register_type(typeid(_T));
+
 			register_types<T...>();
 		}
 }

@@ -25,14 +25,21 @@ set(SOURCES
 	io/output.cpp
 	)
 
-add_executable(fpmas_mpi_test "mpi_main.cpp" ${SOURCES})
-target_include_directories(fpmas_mpi_test PUBLIC
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_SOURCE_DIR}/../mocks
-	)
-target_link_libraries(fpmas_mpi_test fpmas)
-target_link_libraries(fpmas_mpi_test Zoltan::Zoltan)
-target_link_libraries(fpmas_mpi_test gtest_main)
-target_link_libraries(fpmas_mpi_test gmock_main)
 
-target_compile_definitions(fpmas_mpi_test PUBLIC LOG_LEVEL=${LOG_LEVEL})
+macro(set_up_mpi_test target serial_set_up)
+	add_executable(${target} "mpi_main.cpp" ${SOURCES} ${serial_set_up})
+	target_include_directories(${target} PUBLIC
+		${CMAKE_CURRENT_SOURCE_DIR}
+		${CMAKE_CURRENT_SOURCE_DIR}/../mocks
+		)
+	target_link_libraries(${target} fpmas)
+	target_link_libraries(${target} Zoltan::Zoltan)
+	target_link_libraries(${target} gtest_main)
+	target_link_libraries(${target} gmock_main)
+
+	target_compile_definitions(${target} PUBLIC LOG_LEVEL=${LOG_LEVEL})
+endmacro()
+
+set_up_mpi_test(fpmas_mpi_test model/json_setup.cpp)
+set_up_mpi_test(fpmas_mpi_test_datapack model/datapack_setup.cpp)
+set_property(TARGET fpmas_mpi_test_datapack PROPERTY EXCLUDE_FROM_ALL YES)

@@ -77,17 +77,107 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a6ae650d4cd47c35bd8922e4f4c87ceb8"><td class="memItemLeft" align="right" valign="top"><a id="a6ae650d4cd47c35bd8922e4f4c87ceb8" name="a6ae650d4cd47c35bd8922e4f4c87ceb8"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>to_datapack</b> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;p, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;ptr)</td></tr>
-<tr class="separator:a6ae650d4cd47c35bd8922e4f4c87ceb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af46160ac5b08198db1b6ec6698c6445d"><td class="memItemLeft" align="right" valign="top"><a id="af46160ac5b08198db1b6ec6698c6445d" name="af46160ac5b08198db1b6ec6698c6445d"></a>
-static <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><b>from_datapack</b> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;p)</td></tr>
-<tr class="separator:af46160ac5b08198db1b6ec6698c6445d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb906417f2b856303d2dcbbd6b035174"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01AgentPtr_01_4.html#abb906417f2b856303d2dcbbd6b035174">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;o, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;pointer)</td></tr>
+<tr class="separator:abb906417f2b856303d2dcbbd6b035174"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e105b31399b1fbaa3f47e331d3c8be8"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01AgentPtr_01_4.html#a6e105b31399b1fbaa3f47e331d3c8be8">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;o)</td></tr>
+<tr class="separator:a6e105b31399b1fbaa3f47e331d3c8be8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer</a> serialization rules <b>declaration</b>.</p>
 <p ><code>to_datapack</code> and <code>from_datapack</code> methods must be <em>defined</em> by the user at compile time, depending on its own Agent types, using the FPMAS_DATAPACK_SET_UP() macro, that must be called from a <b>source</b> file. Otherwise, linker errors will be thrown. </p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="abb906417f2b856303d2dcbbd6b035174" name="abb906417f2b856303d2dcbbd6b035174"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb906417f2b856303d2dcbbd6b035174">&#9670;&nbsp;</a></span>to_datapack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;::to_datapack </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>o</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;&#160;</td>
+          <td class="paramname"><em>pointer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Serializes the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> represented by <code>pointer</code> to the specified LightObjectPack <code>o</code>.</p>
+<p >Notice that since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the actual <code>to_datapack</code> call that corresponds to the most derived type of the specified <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is resolved at runtime.</p>
+<p >The LightObjectPack version of the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01AgentPtr_01_4.html#abb906417f2b856303d2dcbbd6b035174">to_datapack()</a> method attempts to serialize the agent with the less data possible, i.e. possibly nothing if the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is default constructible, and no user defined LightObjectPack serialization rules have been provided.</p>
+<p >If <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is not default constructible, the classic <code><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">io::datapack::Serializer</a>&lt;PtrWrapper&lt;AgentType&gt;&gt;</code> is used, what might be inefficient.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Age77c3646b262abf1589d5d5d4791c3080.html#default_constructible_Agent_light_serializer_to_datapack">LightSerializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::to_datapack() (default constructible AgentType)</a> </dd>
+<dd>
+<a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agee7a71cfedb2eeb40f31090f776e9c5e4.html#not_default_constructible_Agent_light_serializer_to_datapack">LightSerializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::to_datapack() (not default constructible AgentType)</a></dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">o</td><td>LightObjectPack output </td></tr>
+    <tr><td class="paramname">pointer</td><td>pointer to polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a6e105b31399b1fbaa3f47e331d3c8be8" name="a6e105b31399b1fbaa3f47e331d3c8be8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e105b31399b1fbaa3f47e331d3c8be8">&#9670;&nbsp;</a></span>from_datapack()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;::from_datapack </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>o</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Unserializes an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> from the specified LightObjectPack <code>o</code>.</p>
+<p >The built <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is dynamically allocated, but is automatically managed by the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> wrapper.</p>
+<p >Since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the concrete type that should be instantiated from the input LightObjectPack <code>o</code> is determined at runtime.</p>
+<p >The LightObjectPack version of the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01AgentPtr_01_4.html#a6e105b31399b1fbaa3f47e331d3c8be8">from_datapack()</a> method attempts to build the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> using a default constructor, to bypass the classical ObjectPack serialization process.</p>
+<p >If <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is not default constructible, the classic <code><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">io::datapack::Serializer</a>&lt;PtrWrapper&lt;AgentType&gt;&gt;</code> is used, what might be inefficient.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Age77c3646b262abf1589d5d5d4791c3080.html#default_constructible_Agent_light_serializer_from_datapack">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::from_datapack() (default constructible AgentType)</a> </dd>
+<dd>
+<a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Agee7a71cfedb2eeb40f31090f776e9c5e4.html#not_default_constructible_Agent_light_serializer_from_datapack">light_serializer&lt;PtrWrapper&lt;AgentType&gt;&gt;::from_datapack() (not default constructible AgentType)</a></dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">o</td><td>input object pack </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>dynamically allocated <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>, unserialized from <code>o</code>, wrapped in an <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> instance </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/fpmas/model/<a class="el" href="model_2model_8h_source.html">model.h</a></li>
 </ul>
 </div><!-- contents -->

@@ -136,7 +136,7 @@
 					ptr = fpmas::api::utils::PtrWrapper<AGENT>(new AGENT);\
 				}\
 			};\
-	}\
+	}
 
 namespace nlohmann {
 	
@@ -180,8 +180,8 @@ namespace nlohmann {
 			 * Unserializes an std::type_index instance from the specified JSON.
 			 *
 			 * @param j json to unserialize
-			 * @throw fpmas::exceptions::BadIdException if the id does not correspond to a type
-			 * registered using register_type()
+			 * @throw fpmas::exceptions::BadIdException if the id does not
+			 * correspond to a type registered using register_type()
 			 */
 			template<typename JsonType>
 			static std::type_index from_json(const JsonType& j) {
@@ -332,10 +332,8 @@ namespace nlohmann {
 
 namespace fpmas { namespace io { namespace json {
 
-#define AGENT_TYPE_STR(AgentType) typeid(AgentType).name()
-
 	/**
-	 * \anchor not_default_constructible_Agent_light_serializer
+	 * \anchor not_default_constructible_Agent_json_light_serializer
 	 *
 	 * A default light_serializer specialization for \Agent types, when no
 	 * default constructor is available. In this case, to_json() and
@@ -346,9 +344,9 @@ namespace fpmas { namespace io { namespace json {
 	 * To avoid this inefficient behaviors, two things can be performed:
 	 * - Defining a default constructor for `AgentType`. Notice that the
 	 *   default constructed `AgentType` will **never** be used by FPMAS (since
-	 *   `AgentType` transmitted in a \light_json are completely passive,
-	 *   a complete \DistributedNode transfer is always performed before
-	 *   when the \Agent data is required).
+	 *   `AgentType` transmitted in a \light_json are completely passive, a
+	 *   complete \DistributedNode transfer is always performed when the \Agent
+	 *   data is required).
 	 * - Specializing the light_serializer with `AgentType`:
 	 *   ```cpp
 	 *   namespace fpmas { namespace io { namespace json {
@@ -359,9 +357,11 @@ namespace fpmas { namespace io { namespace json {
 	 *   				...
 	 *   			}
 	 *
-	 *   			static fpmas::api::utils::PtrWrapper<CustomAgentType> to_json(light_json& j) {
+	 *   			static fpmas::api::utils::PtrWrapper<CustomAgentType> from_json(light_json& j) {
 	 *   				// light_json unserialization rules
 	 *   				...
+	 *
+	 *   				return new CustomAgentType(...);
 	 *   			}
 	 *   		};
 	 *   }}}
@@ -419,7 +419,7 @@ namespace fpmas { namespace io { namespace json {
 
 	
 	/**
-	 * \anchor default_constructible_Agent_light_serializer
+	 * \anchor default_constructible_Agent_json_light_serializer
 	 *
 	 * A default light_serializer specialization for default constructible
 	 * \Agent types.
@@ -429,7 +429,10 @@ namespace fpmas { namespace io { namespace json {
 	 *
 	 * The usage of this specialization is recommended, since its optimal:
 	 * **no** json data is required to serialize / unserialize a \light_json
-	 * representing such an `AgentType`.
+	 * representing such an `AgentType`. Moreover, its usage is perfectly safe
+	 * since AgentType instanciated this way are never used directly within
+	 * FPMAS (at least a complete ObjectPack import is realized before
+	 * accessing AgentType data, using a ReadGuard for example).
 	 *
 	 * @tparam AgentType concrete type of \Agent to serialize
 	 */
@@ -446,10 +449,7 @@ namespace fpmas { namespace io { namespace json {
 			 * \anchor default_constructible_Agent_light_serializer_to_json
 			 *
 			 * \light_json to_json() implementation for the default
-			 * constructible `AgentType`: nothing is serialized.  Notice that
-			 * the "type id", that is actually required to reach this method,
-			 * is managed by the
-			 * nlohmann::adl_serializer<fpmas::api::model::AgentPtr> structure.
+			 * constructible `AgentType`: nothing is serialized.
 			 */
 			static void to_json(light_json&, const fpmas::api::utils::PtrWrapper<AgentType>&) {
 			}

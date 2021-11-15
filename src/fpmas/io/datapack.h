@@ -75,7 +75,7 @@ namespace fpmas { namespace io {
 		 * @tparam S serializer implementation (e.g.: Serializer,
 		 * LightSerializer, JsonSerializer...)
 		 */
-		template<template<typename> class S>
+		template<template<typename, typename Enable = void> class S>
 			class BasicObjectPack {
 				friend base_io<BasicObjectPack<S>>;
 
@@ -282,7 +282,7 @@ namespace fpmas { namespace io {
 		/**
 		 * BasicObjectPack base_io specialization.
 		 */
-		template<template<typename> class S>
+		template<template<typename, typename> class S>
 			struct base_io<BasicObjectPack<S>> {
 				/**
 				 * Returns the buffer size, in bytes, required to serialize
@@ -338,8 +338,9 @@ namespace fpmas { namespace io {
 		 * specialization for the type T.
 		 *
 		 * @tparam T data type
+		 * @tparam Enable SFINAE condition
 		 */
-		template<typename T>
+		template<typename T, typename Enable = void>
 			struct Serializer {
 				/**
 				 * Serializes `item` to `pack` using the base_io serialization
@@ -435,7 +436,7 @@ namespace fpmas { namespace io {
 		 *
 		 * @tparam T type to serialize as an nlohmann::json instance
 		 */
-		template<typename T>
+		template<typename T, typename Enable = void>
 			using JsonSerializer = BasicJsonSerializer<T, nlohmann::json>;
 		/**
 		 * An nlohmann::json based BasicObjectPack.
@@ -446,7 +447,7 @@ namespace fpmas { namespace io {
 		 * An fpmas::io::json::light_json based serialized. Can be
 		 * considered as the _light_ version of JsonSerializer.
 		 */
-		template<typename T>
+		template<typename T, typename Enable = void>
 			using LightJsonSerializer = BasicJsonSerializer<T, fpmas::io::json::light_json>;
 		/**
 		 * An fpmas::io::json::light_json based BasicObjectPack. Can be
@@ -516,7 +517,7 @@ namespace fpmas { namespace io {
 		 */
 		typedef BasicObjectPack<Serializer> ObjectPack;
 
-		template<typename T> struct LightSerializer;
+		template<typename T, typename> struct LightSerializer;
 
 		/**
 		 * LightSerializer based BasicObjectPack specialization.
@@ -531,7 +532,7 @@ namespace fpmas { namespace io {
 		 * By default, falls back to the Serializer<T> specialization, but
 		 * custom LightSerializer specializations can be defined.
 		 */
-		template<typename T>
+		template<typename T, typename Enable = void>
 			struct LightSerializer {
 				/**
 				 * Serializes `data` into `pack` using the regular

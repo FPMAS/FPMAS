@@ -6,7 +6,7 @@
 using namespace ::testing;
 
 namespace fpmas { namespace io { namespace datapack {
-	template<template<typename> class S>
+	template<template<typename, typename> class S>
 	bool operator==(const BasicObjectPack<S>& o1, const BasicObjectPack<S>& o2) {
 		return o1.data() == o2.data();
 	}

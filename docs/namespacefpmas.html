@@ -356,9 +356,9 @@ template&lt;typename _T , typename... T&gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Recursive function template used to register a set of types into the adl_serializer&lt;std::type_index&gt;, so that their corresponding std::type_index can be serialized.</p>
+<p >Recursive function template used to register a set of types into the adl_serializer&lt;std::type_index&gt; and io::datapack::base_io&lt;std::type_index&gt;, so that their corresponding std::type_index can be serialized.</p>
 <p >The last type specified <b>MUST</b> be void for the recursion to be valid.</p>
-<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line">nlohmann::fpmas::register_types&lt;Type1, Type2, void&gt;();</div>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line">fpmas::register_types&lt;Type1, Type2, void&gt;();</div>
 </div><!-- fragment --></dd></dl>
 <p>The <a class="el" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">FPMAS_REGISTER_AGENT_TYPES(...)</a> macro can be used instead as a more expressive and user-friendly way to register types. </p>
 
