@@ -62,7 +62,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><b>datapack</b></li><li class="navelem"><a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html">datapack</a></li><li class="navelem"><a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -126,22 +126,23 @@ class fpmas::io::datapack::BasicObjectPack&lt; S &gt;</div><p >Base object used 
 <p >The purpose of the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a> is to provide an high level API to efficiently read/write data from/to a low level DataPack.</p>
 <p >The <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a> is the <em>container</em> that provides access to the serialized data. Serialization / deserialization is ensured by the provided serializer <code>S</code> and by <code><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a></code> specializations.</p>
 <p >The <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a> provides two serialization techniques.</p><ol type="1">
-<li>The <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> technique is used by <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#abfde938aeec430812503423e2dd93754">BasicObjectPack(const T&amp;)</a>, <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a4f5577f25efb9805b5ba7eca331e1914">operator=(const T&amp;)</a> and <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#aa4ac97481cea1f137802245b97f16853">get()</a>. The S&lt;T&gt;::to_datapack() and S&lt;T&gt;::from_datapack() methods are used to perform those serialization, so the corresponding specializations must be available for T. <div class="fragment"><div class="line"><span class="keyword">using namespace </span>fpmas::io::datapack;</div>
+<li>The <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> technique is used by <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#abfde938aeec430812503423e2dd93754">BasicObjectPack(const T&amp;)</a>, <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a4f5577f25efb9805b5ba7eca331e1914">operator=(const T&amp;)</a> and <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#aa4ac97481cea1f137802245b97f16853">get()</a>. The S&lt;T&gt;::to_datapack() and S&lt;T&gt;::from_datapack() methods are used to perform those serialization, so the corresponding specializations must be available for T. <div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacefpmas_1_1io_1_1datapack.html">fpmas::io::datapack</a>;</div>
 <div class="line"> </div>
 <div class="line">std::string <a class="code hl_function" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#afc5e39b1d9f03f592281fade2f55c814">data</a> = <span class="stringliteral">&quot;Hello World&quot;</span>;</div>
-<div class="line"><a class="code hl_typedef" href="datapack_8h.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> pack = <a class="code hl_function" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#afc5e39b1d9f03f592281fade2f55c814">data</a>;</div>
+<div class="line"><a class="code hl_typedef" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> pack = <a class="code hl_function" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#afc5e39b1d9f03f592281fade2f55c814">data</a>;</div>
 <div class="line"> </div>
 <div class="line">std::string unserial_data = pack.get&lt;std::string&gt;();</div>
 <div class="ttc" id="aclassfpmas_1_1io_1_1datapack_1_1BasicObjectPack_html_afc5e39b1d9f03f592281fade2f55c814"><div class="ttname"><a href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#afc5e39b1d9f03f592281fade2f55c814">fpmas::io::datapack::BasicObjectPack::data</a></div><div class="ttdeci">const DataPack &amp; data() const</div><div class="ttdef"><b>Definition:</b> datapack.h:118</div></div>
-<div class="ttc" id="adatapack_8h_html_affeae790ebdf831b07e41a7e9ef37ccb"><div class="ttname"><a href="datapack_8h.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a></div><div class="ttdeci">BasicObjectPack&lt; Serializer &gt; ObjectPack</div><div class="ttdef"><b>Definition:</b> datapack.h:428</div></div>
+<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html">fpmas::io::datapack</a></div></div>
+<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_affeae790ebdf831b07e41a7e9ef37ccb"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a></div><div class="ttdeci">BasicObjectPack&lt; Serializer &gt; ObjectPack</div><div class="ttdef"><b>Definition:</b> datapack.h:428</div></div>
 </div><!-- fragment --></li>
-<li>The <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> technique is used by <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a7025aa5a43e79fdd3528de310fb8a9ef">read()</a> and <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#affb3cf7c64aa3655f0e0ce541dbd05e1">write()</a>. A <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> specialization must be available for the data to serialize in order to use this technique. First, the internal buffer must be allocated using the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#acf6f495fb48d44d1809e5468fc2c9eef">allocate()</a> method. The base_io&lt;T&gt;::pack_size() specializations can be used to query the required size. <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#affb3cf7c64aa3655f0e0ce541dbd05e1">write()</a> operations can then be performed, and data can be retrieved using <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a7025aa5a43e79fdd3528de310fb8a9ef">read()</a> methods. Write and read must be performed in the <b>same order</b>. <div class="fragment"><div class="line"><span class="keyword">using namespace </span>fpmas::io::datapack;</div>
+<li>The <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> technique is used by <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a7025aa5a43e79fdd3528de310fb8a9ef">read()</a> and <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#affb3cf7c64aa3655f0e0ce541dbd05e1">write()</a>. A <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> specialization must be available for the data to serialize in order to use this technique. First, the internal buffer must be allocated using the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#acf6f495fb48d44d1809e5468fc2c9eef">allocate()</a> method. The base_io&lt;T&gt;::pack_size() specializations can be used to query the required size. <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#affb3cf7c64aa3655f0e0ce541dbd05e1">write()</a> operations can then be performed, and data can be retrieved using <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a7025aa5a43e79fdd3528de310fb8a9ef">read()</a> methods. Write and read must be performed in the <b>same order</b>. <div class="fragment"><div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespacefpmas_1_1io_1_1datapack.html">fpmas::io::datapack</a>;</div>
 <div class="line"> </div>
 <div class="line">std::uint64_t i = 23000;</div>
 <div class="line">std::string str = <span class="stringliteral">&quot;hello&quot;</span>;</div>
 <div class="line"> </div>
-<div class="line"><a class="code hl_typedef" href="datapack_8h.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> pack;</div>
-<div class="line">pack.allocate(pack_size&lt;std::uint64_t&gt;() + pack_size(str));</div>
+<div class="line"><a class="code hl_typedef" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> pack;</div>
+<div class="line">pack.allocate(pack_size&lt;std::uint64_t&gt;() + <a class="code hl_function" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">pack_size</a>(str));</div>
 <div class="line"> </div>
 <div class="line">pack.write(i);</div>
 <div class="line">pack.write(str);</div>
@@ -149,6 +150,7 @@ class fpmas::io::datapack::BasicObjectPack&lt; S &gt;</div><p >Base object used 
 <div class="line">std::uint64_t unserial_i = pack.read&lt;std::uint64_t&gt;();</div>
 <div class="line">std::string unserial_str;</div>
 <div class="line">pack.read(unserial_str);</div>
+<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_a9f244fdbf49db0a3afeb3c945b9b90ce"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">fpmas::io::datapack::pack_size</a></div><div class="ttdeci">std::size_t pack_size()</div><div class="ttdef"><b>Definition:</b> datapack_base_io.h:103</div></div>
 </div><!-- fragment --></li>
 </ol>
 <p >Both serialization techniques can be used on all ObjectPacks, but only one serialization technique must be used on each ObjectPack.</p>
@@ -430,7 +432,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Writes the specified item to the internal DataPack buffer using a low level datapack::write() operation.</p>
+<p >Writes the specified item to the internal DataPack buffer using a low level <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#ad7683336a39f7fea38065ca005a7093c">datapack::write()</a> operation.</p>
 <p >A <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> specialization must be available for T.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -499,7 +501,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Reads an object from the internal DataPack buffer using a low level datapack::read() operation.</p>
+<p >Reads an object from the internal DataPack buffer using a low level <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a0a47e153d0cdfecde0d016f99aa28b13">datapack::read()</a> operation.</p>
 <p >A <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> specialization must be available for T.</p>
 <p >Data must have been serialize using a <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#affb3cf7c64aa3655f0e0ce541dbd05e1">write()</a>, and the read/write call order must be respected.</p>
 <dl class="params"><dt>Parameters</dt><dd>

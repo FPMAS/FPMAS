@@ -62,7 +62,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><b>datapack</b></li><li class="navelem"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01std_1_1unordered__map_3_01K_00_01T_01_4_01_4.html">base_io&lt; std::unordered_map&lt; K, T &gt; &gt;</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html">datapack</a></li><li class="navelem"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01std_1_1unordered__map_3_01K_00_01T_01_4_01_4.html">base_io&lt; std::unordered_map&lt; K, T &gt; &gt;</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -128,7 +128,7 @@ template&lt;typename K , typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Returns the buffer size, in bytes, required to serialize the specified map, i.e. <code>datapack::pack_size&lt;std::size_t&gt;()+N</code> where <code>N</code> is the sum of <code>datapack::pack_size(item.first)+datapack::pack_size(item.second)</code> for each item in <code>map</code>.</p>
+<p >Returns the buffer size, in bytes, required to serialize the specified map, i.e. <code><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">datapack::pack_size</a>&lt;std::size_t&gt;()+N</code> where <code>N</code> is the sum of <code><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">datapack::pack_size</a>(item.first)+<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">datapack::pack_size</a>(item.second)</code> for each item in <code>map</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">map</td><td>std::map instance to serialize</td></tr>
@@ -181,7 +181,7 @@ template&lt;typename K , typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p >Writes <code>map</code> to the <code>data_pack</code> buffer at the given <code>offset</code>. <code>pack_size(map)</code> bytes are written, and <code>offset</code> is incremented accordingly.</p>
-<p >First, <code>list.size</code> is written (datapack::pack_size&lt;std::size_t&gt; bytes) and then <code>item.first</code> and <code>item.second</code> are written contiguously for each item in the map using the datapack::write() specializations for key and value types.</p>
+<p >First, <code>list.size</code> is written (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">datapack::pack_size&lt;std::size_t&gt;</a> bytes) and then <code>item.first</code> and <code>item.second</code> are written contiguously for each item in the map using the <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#ad7683336a39f7fea38065ca005a7093c">datapack::write()</a> specializations for key and value types.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data_pack</td><td>destination DataPack </td></tr>

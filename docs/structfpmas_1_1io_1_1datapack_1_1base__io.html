@@ -62,7 +62,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><b>datapack</b></li><li class="navelem"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html">datapack</a></li><li class="navelem"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -79,22 +79,22 @@ struct fpmas::io::datapack::base_io&lt; T, Enable &gt;</div><p >The purpose of t
 <tr>
 <th>method</th><th>description</th><th>note </th></tr>
 <tr>
-<td><code>std::size_t pack_size()</code> </td><td>Returns the buffer size, in bytes, required to serialize an instance of <code>T</code> in a DataPack.  </td><td>Can be implemented only if the same buffer size is required for <b>any</b> instance of type <code>T</code>.   </td></tr>
+<td><code>std::size_t <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">pack_size()</a></code> </td><td>Returns the buffer size, in bytes, required to serialize an instance of <code>T</code> in a DataPack.  </td><td>Can be implemented only if the same buffer size is required for <b>any</b> instance of type <code>T</code>.   </td></tr>
 <tr>
-<td><code>std::size_t pack_size(const T&amp; data)</code> </td><td>Returns the buffer size, in bytes, required to serialize the specified instance of <code>T</code> in a DataPack.  </td><td><p class="starttd">Might be equivalent to pack_size() if the required size is not dependent on the specified instance.</p>
+<td><code>std::size_t <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a2192e226303afb7e5d30ec8bce1af6c0">pack_size(const T&amp; data)</a></code> </td><td>Returns the buffer size, in bytes, required to serialize the specified instance of <code>T</code> in a DataPack.  </td><td><p class="starttd">Might be equivalent to <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">pack_size()</a> if the required size is not dependent on the specified instance.</p>
 <p class="endtd">Examples of instance dependent pack sizes are <code>std::string</code> or <code>std::vector&lt;T&gt;</code>.   </p>
 </td></tr>
 <tr>
-<td><code>void write(DataPack&amp; data_pack, const T&amp; data, std::size_t&amp; offset)</code>  </td><td>Writes <code>data</code> to the <code>data_pack</code>, starting at the specified <code>offset</code>. Upon return, <code>offset</code> must correspond to the byte following the last byte written.  </td><td>Given <code>size=pack_size()</code> or <code>size=pack_size(data)</code> bytes are written from <code>&amp;data_pack.buffer[offset]</code>.   </td></tr>
+<td><code>void <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#ad7683336a39f7fea38065ca005a7093c">write(DataPack&amp; data_pack, const T&amp; data, std::size_t&amp; offset)</a></code>  </td><td>Writes <code>data</code> to the <code>data_pack</code>, starting at the specified <code>offset</code>. Upon return, <code>offset</code> must correspond to the byte following the last byte written.  </td><td>Given <code>size=<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">pack_size()</a></code> or <code>size=pack_size(data)</code> bytes are written from <code>&amp;data_pack.buffer[offset]</code>.   </td></tr>
 <tr>
-<td><code>void read(const DataPack&amp; data_pack, T&amp; data, std::size_t&amp; offset)</code>  </td><td>Reads <code>data</code> from the <code>data_pack</code>, starting at the specified <code>offset</code>.  </td><td>Given <code>size=pack_size()</code> or <code>size=pack_size(data)</code> bytes are read from <code>&amp;data_pack.buffer[offset]</code>. Upon return, <code>offset</code> must correspond to the byte following the last byte read.   </td></tr>
+<td><code>void <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a0a47e153d0cdfecde0d016f99aa28b13">read(const DataPack&amp; data_pack, T&amp; data, std::size_t&amp; offset)</a></code>  </td><td>Reads <code>data</code> from the <code>data_pack</code>, starting at the specified <code>offset</code>.  </td><td>Given <code>size=<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">pack_size()</a></code> or <code>size=pack_size(data)</code> bytes are read from <code>&amp;data_pack.buffer[offset]</code>. Upon return, <code>offset</code> must correspond to the byte following the last byte read.   </td></tr>
 </table>
-<p >Write operations assume that the specified DataPack has been already allocated, and that enough space is available to perform the write() operation at the given offset. The pack_size() methods can be used to easily allocate a DataPack before writting into it.</p>
-<p >Available specializations can be found in the fpmas::io::datapack namespace. The following helper methods can be used directly:</p><ul>
-<li>pack_size&lt;T&gt;()</li>
-<li>pack_size(const T&amp;)</li>
-<li>write(DataPack&amp; data_pack, const T&amp; data, std::size_t&amp; offset)</li>
-<li>read(const DataPack&amp; dat_pack, T&amp; data, std::size_t&amp; offset)</li>
+<p >Write operations assume that the specified DataPack has been already allocated, and that enough space is available to perform the <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#ad7683336a39f7fea38065ca005a7093c">write()</a> operation at the given offset. The <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">pack_size()</a> methods can be used to easily allocate a DataPack before writting into it.</p>
+<p >Available specializations can be found in the <a class="el" href="namespacefpmas_1_1io_1_1datapack.html">fpmas::io::datapack</a> namespace. The following helper methods can be used directly:</p><ul>
+<li><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a9f244fdbf49db0a3afeb3c945b9b90ce">pack_size&lt;T&gt;()</a></li>
+<li><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a2192e226303afb7e5d30ec8bce1af6c0">pack_size(const T&amp;)</a></li>
+<li><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#ad7683336a39f7fea38065ca005a7093c">write(DataPack&amp; data_pack, const T&amp; data, std::size_t&amp; offset)</a></li>
+<li><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a0a47e153d0cdfecde0d016f99aa28b13">read(const DataPack&amp; dat_pack, T&amp; data, std::size_t&amp; offset)</a></li>
 </ul>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">

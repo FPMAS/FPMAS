@@ -267,6 +267,11 @@ namespace fpmas {
  *
  * Features related to FPMAS Json serialization rules.
  */
+/**
+ * \namespace fpmas::io::datapack
+ *
+ * ObjectPack serialization related features.
+ */
 
 /**
  * \namespace fpmas::api::utils
