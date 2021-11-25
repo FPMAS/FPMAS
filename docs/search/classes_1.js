@@ -18,10 +18,11 @@ var searchData=
   ['base_5fio_3c_20std_3a_3avector_3c_20t_20_3e_20_3e_15',['base_io&lt; std::vector&lt; T &gt; &gt;',['../structfpmas_1_1io_1_1datapack_1_1base__io_3_01std_1_1vector_3_01T_01_4_01_4.html',1,'fpmas::io::datapack']]],
   ['base_5fio_3c_20synchro_3a_3ahard_3a_3aapi_3a_3acolor_20_3e_16',['base_io&lt; synchro::hard::api::Color &gt;',['../structfpmas_1_1io_1_1datapack_1_1base__io_3_01synchro_1_1hard_1_1api_1_1Color_01_4.html',1,'fpmas::io::datapack']]],
   ['base_5fio_3c_20t_2c_20typename_20std_3a_3aenable_5fif_3c_20std_3a_3ais_5ffundamental_3c_20t_20_3e_3a_3avalue_20_3e_3a_3atype_20_3e_17',['base_io&lt; T, typename std::enable_if&lt; std::is_fundamental&lt; T &gt;::value &gt;::type &gt;',['../structfpmas_1_1io_1_1datapack_1_1base__io_3_01T_00_01typename_01std_1_1enable__if_3_01std_1_1is_4f5f8b23e47ad4047ff6a8072596664f.html',1,'fpmas::io::datapack']]],
-  ['basicjsonserializer_18',['BasicJsonSerializer',['../structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html',1,'fpmas::io::datapack']]],
-  ['basicobjectpack_19',['BasicObjectPack',['../classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html',1,'fpmas::io::datapack']]],
-  ['behavior_20',['Behavior',['../classfpmas_1_1api_1_1model_1_1Behavior.html',1,'fpmas::api::model::Behavior'],['../classfpmas_1_1model_1_1Behavior.html',1,'fpmas::model::Behavior&lt; AgentType &gt;']]],
-  ['behaviorwithargs_21',['BehaviorWithArgs',['../classfpmas_1_1model_1_1BehaviorWithArgs.html',1,'fpmas::model']]],
-  ['bipartitegraphbuilder_22',['BipartiteGraphBuilder',['../classfpmas_1_1graph_1_1BipartiteGraphBuilder.html',1,'fpmas::graph']]],
-  ['breakpoint_23',['Breakpoint',['../classfpmas_1_1api_1_1io_1_1Breakpoint.html',1,'fpmas::api::io::Breakpoint&lt; T &gt;'],['../classfpmas_1_1io_1_1Breakpoint.html',1,'fpmas::io::Breakpoint&lt; T &gt;']]]
+  ['basic_5fdatapack_5fserializer_18',['basic_datapack_serializer',['../structfpmas_1_1io_1_1json_1_1basic__datapack__serializer.html',1,'fpmas::io::json']]],
+  ['basicjsonserializer_19',['BasicJsonSerializer',['../structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html',1,'fpmas::io::datapack']]],
+  ['basicobjectpack_20',['BasicObjectPack',['../classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html',1,'fpmas::io::datapack']]],
+  ['behavior_21',['Behavior',['../classfpmas_1_1api_1_1model_1_1Behavior.html',1,'fpmas::api::model::Behavior'],['../classfpmas_1_1model_1_1Behavior.html',1,'fpmas::model::Behavior&lt; AgentType &gt;']]],
+  ['behaviorwithargs_22',['BehaviorWithArgs',['../classfpmas_1_1model_1_1BehaviorWithArgs.html',1,'fpmas::model']]],
+  ['bipartitegraphbuilder_23',['BipartiteGraphBuilder',['../classfpmas_1_1graph_1_1BipartiteGraphBuilder.html',1,'fpmas::graph']]],
+  ['breakpoint_24',['Breakpoint',['../classfpmas_1_1api_1_1io_1_1Breakpoint.html',1,'fpmas::api::io::Breakpoint&lt; T &gt;'],['../classfpmas_1_1io_1_1Breakpoint.html',1,'fpmas::io::Breakpoint&lt; T &gt;']]]
 ];

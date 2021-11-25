@@ -129,7 +129,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Serializes <code>data</code> into <code>j</code> using the regular <code>nlohmann::adl_serializer</code> implementation for <code>T</code>.</p>
 <p >Equivalent to: </p><div class="fragment"><div class="line"><a class="code hl_function" href="structfpmas_1_1io_1_1json_1_1light__serializer.html#a6d92f744dabdfb57ddd3f68f6bab3dd8">nlohmann::adl_serializer&lt;T&gt;::to_json</a>(j, data);</div>
-<div class="ttc" id="astructfpmas_1_1io_1_1json_1_1light__serializer_html_a6d92f744dabdfb57ddd3f68f6bab3dd8"><div class="ttname"><a href="structfpmas_1_1io_1_1json_1_1light__serializer.html#a6d92f744dabdfb57ddd3f68f6bab3dd8">fpmas::io::json::light_serializer::to_json</a></div><div class="ttdeci">static void to_json(light_json &amp;j, const T &amp;data)</div><div class="ttdef"><b>Definition:</b> json.h:104</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1json_1_1light__serializer_html_a6d92f744dabdfb57ddd3f68f6bab3dd8"><div class="ttname"><a href="structfpmas_1_1io_1_1json_1_1light__serializer.html#a6d92f744dabdfb57ddd3f68f6bab3dd8">fpmas::io::json::light_serializer::to_json</a></div><div class="ttdeci">static void to_json(light_json &amp;j, const T &amp;data)</div><div class="ttdef"><b>Definition:</b> json.h:107</div></div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">j</td><td>json output </td></tr>
@@ -167,7 +167,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Unserializes non default constructible <code>data</code> from <code>j</code> using the regular <code>nlohmann::adl_serializer</code> implementation for <code>T</code>.</p>
 <p >Equivalent to: </p><div class="fragment"><div class="line"><span class="keywordflow">return</span> <a class="code hl_function" href="structfpmas_1_1io_1_1json_1_1light__serializer.html#a395dcb3f599f344c6a32483b4a61cbc9">nlohmann::adl_serializer&lt;T&gt;::from_json</a>(j);</div>
-<div class="ttc" id="astructfpmas_1_1io_1_1json_1_1light__serializer_html_a395dcb3f599f344c6a32483b4a61cbc9"><div class="ttname"><a href="structfpmas_1_1io_1_1json_1_1light__serializer.html#a395dcb3f599f344c6a32483b4a61cbc9">fpmas::io::json::light_serializer::from_json</a></div><div class="ttdeci">static void from_json(const light_json &amp;j, T &amp;data)</div><div class="ttdef"><b>Definition:</b> json.h:120</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1json_1_1light__serializer_html_a395dcb3f599f344c6a32483b4a61cbc9"><div class="ttname"><a href="structfpmas_1_1io_1_1json_1_1light__serializer.html#a395dcb3f599f344c6a32483b4a61cbc9">fpmas::io::json::light_serializer::from_json</a></div><div class="ttdeci">static void from_json(const light_json &amp;j, T &amp;data)</div><div class="ttdef"><b>Definition:</b> json.h:123</div></div>
 </div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">j</td><td>json input </td></tr>

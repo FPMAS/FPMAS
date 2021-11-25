@@ -5,6 +5,35 @@
 #include "fpmas/api/model/model.h"
 #include "fpmas/io/datapack.h"
 
+/**
+ * Defines the fpmas::io::datapack::Serializer specializations required to
+ * handle the object pack serialization of the specified set of \Agent types.
+ *
+ * Notice that this is only the _definitions_ of the `to_datapack` and
+ * `from_datapack` methods, that are declared (but not defined) in
+ * src/fpmas/model/model.h.
+ *
+ * In consequence, this macro must be invoked exaclty once from a **source**
+ * file, **at the global definition level**, in any C++ target using FPMAS.
+ *
+ * This macro does not define any rule for AgentPtr json serialization,
+ * so using only this macro will produce compile time errors.
+ *
+ * Two solutions are available:
+ * - calling FPMAS_BASE_JSON_SET_UP() and FPMAS_BASE_DATAPACK_SET_UP(). This
+ *   enable both AgentPtr serialization techniques, but to_json() and
+ *   from_json() methods must be specified for all agents, in addition to
+ *   the to_datapack() and from_datapack() methods.
+ * - just calling FPMAS_DATAPACK_SET_UP(), instead of
+ *   FPMAS_BASE_DATAPACK_SET_UP().  This also enable both serialization
+ *   techniques, but json serialization falls back to object pack
+ *   serialization. This might be inefficient, but only requires to_datapack()
+ *   and from_datapack() definitions.
+ *
+ * @see FPMAS_BASE_JSON_SET_UP()
+ * @see FPMAS_DATAPACK_SET_UP()
+ * @see FPMAS_JSON_SET_UP()
+ */
 #define FPMAS_BASE_DATAPACK_SET_UP(...)\
 	namespace fpmas { namespace io { namespace datapack {\
 		void Serializer<api::model::AgentPtr>\
@@ -43,8 +72,12 @@
 		}\
 	}}}
 
+/**
+ * Can be used instead of FPMAS_BASE_DATAPACK_SET_UP() to set up json serialization
+ * without specifying any Agent type.
+ */
 #define FPMAS_BASE_DEFAULT_DATAPACK_SET_UP() \
-	namespace fpmas { namespace io { namespace json {\
+	namespace fpmas { namespace io { namespace datapack {\
 		void Serializer<fpmas::api::model::AgentPtr>::to_datapack(ObjectPack& o, const fpmas::api::model::AgentPtr& data) {\
 			AgentPtrSerializer<ObjectPack, void>::to_datapack(o, data);\
 		}\
@@ -77,6 +110,13 @@
 		}\
 	}}}\
 
+/**
+ * Helper macro to easily define object pack serialization rules for
+ * [DefaultConstructible](https://en.cppreference.com/w/cpp/named_req/DefaultConstructible)
+ * \Agents.
+ *
+ * @param AGENT DefaultConstructible \Agent type
+ */
 #define FPMAS_DEFAULT_DATAPACK(AGENT) \
 	namespace fpmas { namespace io { namespace datapack {\
 		template<>\
@@ -307,7 +347,7 @@ namespace fpmas { namespace io { namespace datapack {
 	/**
 	 * \anchor not_default_constructible_Agent_datapack_light_serializer
 	 *
-	 * A default light_serializer specialization for \Agent types, when no
+	 * A default LightSerializer specialization for \Agent types, when no
 	 * default constructor is available. In this case, to_datapack() and
 	 * from_datapack() methods falls back to the classic
 	 * `io::datapack::Serializer` serialization rules, what might be
@@ -366,7 +406,7 @@ namespace fpmas { namespace io { namespace datapack {
 							warn_print = true;
 							FPMAS_LOGW(0, "LightSerializer",
 									"Type %s does not define a default constructor or "
-									"a light_serializer specialization."
+									"a LightSerializer specialization."
 									"This might be uneficient.", AGENT_TYPE_STR(AgentType)
 									);
 						}

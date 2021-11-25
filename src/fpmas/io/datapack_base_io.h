@@ -251,7 +251,7 @@ namespace fpmas { namespace io { namespace datapack {
 			/**
 			 * Returns the buffer size, in bytes, required to serialize a
 			 * DistributedId instance, i.e.
-			 * `datapack::pack_size<std::size_t>()+str.size()*datapack::pack_size<char>`.
+			 * `%datapack::pack_size<std::size_t>()+str.size()*%datapack::pack_size<char>`.
 			 *
 			 * @param str std::string instance to serialize
 			 *

@@ -1,5 +1,8 @@
 #include "fpmas/io/datapack.h"
 #include "fpmas/random/random.h"
+#include "fpmas/graph/distributed_edge.h"
+#include "../mocks/graph/mock_distributed_node.h"
+#include "fake_data.h"
 
 #include "gmock/gmock.h"
 
@@ -52,7 +55,7 @@ TEST(datapack_base_io, objectpack) {
 	TEST_DATAPACK_BASE_IO(ObjectPack, objectpack, o3);
 }
 
-TEST(Serializer, str) {
+TEST(ObjectPack, str) {
 	std::string data = "hello world";
 	ObjectPack serial_data(data);
 	std::string deserial_data = serial_data.get<std::string>();
@@ -60,10 +63,32 @@ TEST(Serializer, str) {
 	ASSERT_EQ(data, deserial_data);
 }
 
-TEST(Serializer, str_vector) {
+TEST(ObjectPack, str_vector) {
 	std::vector<std::string> data = {"ab", "zzzzz", "678908DSDJSK"};
 	ObjectPack serial_data(data);
 	auto deserial_data = serial_data.get<std::vector<std::string>>();
 
 	ASSERT_THAT(deserial_data, ElementsAreArray(data));
+}
+
+TEST(LightObjectPack, custom_rules) {
+	NonDefaultConstructibleData data(8);
+
+	// A custom light_json serialization rule is specified, so that nothing is
+	// serialized...
+	LightObjectPack pack = data;
+
+	// ... and NonDefaultConstructibleData is initialized with 0
+	NonDefaultConstructibleData unserialized_data = pack.get<NonDefaultConstructibleData>();
+	ASSERT_EQ(unserialized_data.i, 0);
+}
+
+TEST(LightObjectPack, object_pack_fallback) {
+	NonDefaultConstructibleSerializerOnly data(12);
+
+	LightObjectPack pack = data;
+
+	NonDefaultConstructibleData unserialized_data = pack.get<decltype(data)>();
+
+	ASSERT_EQ(unserialized_data.i, 12);
 }

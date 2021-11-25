@@ -10,9 +10,9 @@ struct NonDefaultConstructibleData {
 	NonDefaultConstructibleData(int i) : i(i) {}
 };
 
-struct DefaultConstructibleAdlOnly : public DefaultConstructibleData{};
+struct DefaultConstructibleSerializerOnly : public DefaultConstructibleData{};
 
-struct NonDefaultConstructibleAdlOnly : public NonDefaultConstructibleData {
+struct NonDefaultConstructibleSerializerOnly : public NonDefaultConstructibleData {
 	using NonDefaultConstructibleData::NonDefaultConstructibleData;
 };
 
@@ -24,27 +24,27 @@ namespace nlohmann {
 		};
 
 	template<>
-		struct adl_serializer<DefaultConstructibleAdlOnly> {
+		struct adl_serializer<DefaultConstructibleSerializerOnly> {
 			template<typename JsonType>
-			static void to_json(JsonType& j, const DefaultConstructibleAdlOnly& data) {
+			static void to_json(JsonType& j, const DefaultConstructibleSerializerOnly& data) {
 				j = data.i;
 			}
 
 			template<typename JsonType>
-			static void from_json(const JsonType& j, DefaultConstructibleAdlOnly& data) {
+			static void from_json(const JsonType& j, DefaultConstructibleSerializerOnly& data) {
 				data.i = j.template get<int>();
 			}
 		};
 
 	template<>
-		struct adl_serializer<NonDefaultConstructibleAdlOnly> {
+		struct adl_serializer<NonDefaultConstructibleSerializerOnly> {
 			template<typename JsonType>
-			static void to_json(JsonType& j, const NonDefaultConstructibleAdlOnly& data) {
+			static void to_json(JsonType& j, const NonDefaultConstructibleSerializerOnly& data) {
 				j = data.i;
 			}
 
 			template<typename JsonType>
-			static NonDefaultConstructibleAdlOnly from_json(const JsonType& j) {
+			static NonDefaultConstructibleSerializerOnly from_json(const JsonType& j) {
 				return {j.template get<int>()};
 			}
 		};
@@ -65,6 +65,19 @@ namespace fpmas { namespace io { namespace json {
 
 namespace fpmas { namespace io { namespace datapack {
 	template<>
+		struct Serializer<NonDefaultConstructibleSerializerOnly> {
+			template<typename PackType>
+			static void to_datapack(PackType& p, const NonDefaultConstructibleSerializerOnly& data) {
+				p = data.i;
+			}
+
+			template<typename PackType>
+			static NonDefaultConstructibleSerializerOnly from_datapack(const PackType& p) {
+				return {p.template get<int>()};
+			}
+		};
+
+	template<>
 		struct Serializer<DefaultConstructibleData> {
 			static void to_datapack(ObjectPack& pack, const DefaultConstructibleData& data);
 			static DefaultConstructibleData from_datapack(const ObjectPack& pack);
@@ -74,6 +87,18 @@ namespace fpmas { namespace io { namespace datapack {
 		struct LightSerializer<DefaultConstructibleData> {
 			static void to_datapack(LightObjectPack& pack, const DefaultConstructibleData& data);
 			static DefaultConstructibleData from_datapack(const LightObjectPack& pack);
+		};
+
+	template<>
+		struct Serializer<NonDefaultConstructibleData> {
+			static void to_datapack(ObjectPack& pack, const NonDefaultConstructibleData& data);
+			static NonDefaultConstructibleData from_datapack(const ObjectPack& pack);
+		};
+
+	template<>
+		struct LightSerializer<NonDefaultConstructibleData> {
+			static void to_datapack(LightObjectPack& pack, const NonDefaultConstructibleData& data);
+			static NonDefaultConstructibleData from_datapack(const LightObjectPack& pack);
 		};
 }}}
 

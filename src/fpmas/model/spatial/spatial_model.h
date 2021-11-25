@@ -920,11 +920,11 @@ namespace fpmas { namespace io { namespace json {
 	 * chain
 	 */
 	template<typename AgentType, typename CellType, typename Derived>
-		struct light_serializer<fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
+		struct light_serializer<PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
 			/**
 			 * Pointer wrapper to a polymorphic SpatialAgentBase.
 			 */
-			typedef fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
+			typedef PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
 			
 			/**
 			 * \light_json to_json() implementation for an
@@ -940,7 +940,7 @@ namespace fpmas { namespace io { namespace json {
 			 */
 			static void to_json(light_json& j, const Ptr& agent) {
 				// Derived serialization
-				light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::to_json(
+				light_serializer<PtrWrapper<Derived>>::to_json(
 						j,
 						const_cast<Derived*>(dynamic_cast<const Derived*>(agent.get()))
 						);
@@ -961,8 +961,8 @@ namespace fpmas { namespace io { namespace json {
 			static Ptr from_json(const light_json& j) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
-				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
-					= light_serializer<fpmas::api::utils::PtrWrapper<Derived>>::from_json(j);
+				PtrWrapper<Derived> derived_ptr
+					= light_serializer<PtrWrapper<Derived>>::from_json(j);
 				return derived_ptr.get();
 			}
 		};
@@ -974,11 +974,11 @@ namespace fpmas { namespace io { namespace datapack {
 	 * Polymorphic SpatialAgentBase ObjectPack serializer specialization.
 	 */
 	template<typename AgentType, typename CellType, typename Derived>
-		struct Serializer<fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
+		struct Serializer<PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
 			/**
 			 * Pointer wrapper to a polymorphic SpatialAgentBase.
 			 */
-			typedef fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
+			typedef PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
 			/**
 			 * Serializes the pointer to the polymorphic SpatialAgentBase using
 			 * the following JSON schema:
@@ -996,7 +996,7 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			static void to_datapack(ObjectPack& o, const Ptr& ptr) {
 				// Derived serialization
-				ObjectPack derived = fpmas::api::utils::PtrWrapper<Derived>(
+				ObjectPack derived = PtrWrapper<Derived>(
 						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get())));
 				o.allocate(pack_size(derived) + pack_size<DistributedId>());
 				o.write(derived);
@@ -1024,9 +1024,9 @@ namespace fpmas { namespace io { namespace datapack {
 			static Ptr from_datapack(const ObjectPack& o) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
-				fpmas::api::utils::PtrWrapper<Derived> derived_ptr = o
+				PtrWrapper<Derived> derived_ptr = o
 					.read<ObjectPack>()
-					.get<fpmas::api::utils::PtrWrapper<Derived>>();
+					.get<PtrWrapper<Derived>>();
 
 				derived_ptr->location_id = o.read<fpmas::api::graph::DistributedId>();
 				return derived_ptr.get();
@@ -1045,11 +1045,11 @@ namespace fpmas { namespace io { namespace datapack {
 	 * chain
 	 */
 	template<typename AgentType, typename CellType, typename Derived>
-		struct LightSerializer<fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
+		struct LightSerializer<PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
 			/**
 			 * Pointer wrapper to a polymorphic SpatialAgentBase.
 			 */
-			typedef fpmas::api::utils::PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
+			typedef PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
 			
 			/**
 			 * LightObjectPack to_datapack() implementation for an
@@ -1065,7 +1065,7 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			static void to_datapack(LightObjectPack& o, const Ptr& agent) {
 				// Derived serialization
-				LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>::to_datapack(
+				LightSerializer<PtrWrapper<Derived>>::to_datapack(
 						o,
 						const_cast<Derived*>(dynamic_cast<const Derived*>(agent.get()))
 						);
@@ -1086,9 +1086,8 @@ namespace fpmas { namespace io { namespace datapack {
 			static Ptr from_datapack(const LightObjectPack& o) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
-				fpmas::api::utils::PtrWrapper<Derived> derived_ptr
-					= LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>
-					::from_datapack(o);
+				PtrWrapper<Derived> derived_ptr
+					= LightSerializer<PtrWrapper<Derived>>::from_datapack(o);
 				return derived_ptr.get();
 			}
 		};

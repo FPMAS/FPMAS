@@ -2,41 +2,123 @@
 #include "fpmas/model/spatial/von_neumann.h"
 #include "fpmas/model/spatial/moore.h"
 #include "model/mock_grid.h"
-#include "gtest_environment.h"
+#include "test_agents.h"
 
 #include <unordered_set>
 
 using namespace testing;
 using namespace fpmas::model;
 
-class GridCellTest : public testing::Test {
+template<typename GridCellType>
+class BaseGridCellTest : public testing::Test {
 	protected:
-		GridCell grid_cell {{12, -7}};
+		GridCellType grid_cell {{12, -7}};
 		fpmas::api::model::AgentPtr src_ptr {&grid_cell};
 
 		void TearDown() {
 			src_ptr.release();
 		}
+
+		template<typename PackType>
+			void Serialize(PackType& pack) {
+				pack = fpmas::api::utils::PtrWrapper<typename GridCellType::JsonBase>(&grid_cell);
+			}
+
+		template<typename PackType>
+			fpmas::api::utils::PtrWrapper<typename GridCellType::JsonBase> Unserialize(
+					const PackType& pack) {
+				return pack
+					.template get<fpmas::api::utils::PtrWrapper<typename GridCellType::JsonBase>>();
+			}
 };
+
+typedef BaseGridCellTest<model::test::GridCell> GridCellTest;
 
 TEST_F(GridCellTest, location) {
 	ASSERT_EQ(grid_cell.location(), DiscretePoint(12, -7));
 }
 
-TEST_F(GridCellTest, json) {
-	nlohmann::json j = src_ptr;
+#define GRID_CELL_SERIAL_TEST_SUITE(CELL_TYPE)\
+	TEST_F(CELL_TYPE##Test, json) {\
+		nlohmann::json j;\
+		Serialize(j);\
+		auto ptr = Unserialize(j);\
+		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<CELL_TYPE*>(NotNull()));\
+		ASSERT_EQ(\
+				dynamic_cast<CELL_TYPE*>(ptr.get())->location(),\
+				DiscretePoint(12, -7)\
+				);\
+		/* Checks optional cell data equality */\
+		ASSERT_EQ(*dynamic_cast<CELL_TYPE*>(ptr.get()), grid_cell);\
+		delete ptr.get();\
+	}\
+	\
+	TEST_F(CELL_TYPE##Test, light_json) {\
+		nlohmann::json j;\
+		Serialize(j);\
+		fpmas::io::json::light_json light_json;\
+		Serialize(light_json);\
+		auto ptr = Unserialize(light_json);\
+		\
+		ASSERT_LT(light_json.dump().size(), j.dump().size());\
+		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<CELL_TYPE*>(NotNull()));\
+		delete ptr.get();\
+	}\
+	\
+	TEST_F(CELL_TYPE##Test, object_pack) {\
+		fpmas::io::datapack::ObjectPack pack;\
+		Serialize(pack);\
+		auto ptr = Unserialize(pack);\
+		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<CELL_TYPE*>(NotNull()));\
+		ASSERT_EQ(\
+				dynamic_cast<CELL_TYPE*>(ptr.get())->location(),\
+				DiscretePoint(12, -7)\
+				);\
+		/* Checks optional cell data equality */\
+		ASSERT_EQ(*dynamic_cast<CELL_TYPE*>(ptr.get()), grid_cell);\
+		delete ptr.get();\
+	}\
+	\
+	TEST_F(CELL_TYPE##Test, light_object_pack) {\
+		fpmas::io::datapack::ObjectPack pack;\
+		Serialize(pack);\
+		fpmas::io::datapack::LightObjectPack light_pack;\
+		Serialize(light_pack);\
+		auto ptr = Unserialize(light_pack);\
+		\
+		ASSERT_LT(light_pack.data().size, pack.data().size);\
+		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<CELL_TYPE*>(NotNull()));\
+		delete ptr.get();\
+	}\
 
-	auto ptr = j.get<fpmas::api::model::AgentPtr>();
-	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<GridCell*>(NotNull()));
-	ASSERT_EQ(
-			dynamic_cast<GridCell*>(ptr.get())->location(),
-			DiscretePoint(12, -7));
+
+typedef BaseGridCellTest<model::test::CustomGridCell> CustomGridCellTest;
+
+namespace {
+	using model::test::GridCell;
+	/*
+	 * Serialization tests for the default fpmas::model::GridCell, serialized using
+	 * FPMAS_DEFAULT_JSON() and FPMAS_DEFAULT_DATAPACK().
+	 */
+	GRID_CELL_SERIAL_TEST_SUITE(GridCell);
+
+	using model::test::CustomGridCell;
+	/*
+	 * Serialization tests for an fpmas::model::GridCellBase extension with
+	 * custom serialization rules
+	 */
+	GRID_CELL_SERIAL_TEST_SUITE(CustomGridCell);
 }
 
 
-class GridAgentTest : public testing::Test, protected model::test::GridAgent {
+/*
+ * Inheriting from GridAgentType is an hacky trick to get access to protected
+ * GridAgentType members (such as moveTo())
+ */
+template<typename GridAgentType>
+class BaseGridAgentTest : public testing::Test, protected GridAgentType {
 	protected:
-		model::test::GridAgent& grid_agent {*this};
+		GridAgentType& grid_agent {*this};
 		MockAgentNode<NiceMock> mock_agent_node {{0, 0}};
 
 		MockGridCell<NiceMock> mock_cell;
@@ -46,14 +128,14 @@ class GridAgentTest : public testing::Test, protected model::test::GridAgent {
 		NiceMock<MockModel> mock_model;
 
 		static void SetUpTestSuite() {
-			model::test::GridAgent::mobility_range
+			GridAgentType::mobility_range
 				= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
-			model::test::GridAgent::perception_range
+			GridAgentType::perception_range
 				= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
 		}
 		static void TearDownTestSuite() {
-			delete model::test::GridAgent::mobility_range;
-			delete model::test::GridAgent::perception_range;
+			delete GridAgentType::mobility_range;
+			delete GridAgentType::perception_range;
 		}
 
 		void SetUp() {
@@ -69,58 +151,26 @@ class GridAgentTest : public testing::Test, protected model::test::GridAgent {
 		void TearDown() {
 			mock_cell_node.data().release();
 		}
+
+		template<typename PackType>
+			void Serialize(PackType& pack) {
+				pack = 
+					fpmas::api::utils::PtrWrapper<typename GridAgentType::JsonBase>(&grid_agent);
+			}
+
+		template<typename PackType>
+			fpmas::api::utils::PtrWrapper<typename GridAgentType::JsonBase> Unserialize(const PackType& pack) {
+				return pack
+					.template get<fpmas::api::utils::PtrWrapper<typename GridAgentType::JsonBase>>();
+			}
 };
+
+typedef BaseGridAgentTest<model::test::GridAgent> GridAgentTest;
 
 TEST_F(GridAgentTest, location) {
 	grid_agent.initLocation(&mock_cell);
 
 	ASSERT_EQ(grid_agent.locationPoint(), location_point);
-}
-
-TEST_F(GridAgentTest, json) {
-	grid_agent.initLocation(&mock_cell);
-	nlohmann::json j = fpmas::api::utils::PtrWrapper<model::test::GridAgent::JsonBase>(&grid_agent);
-
-	auto unserialized_agent = j.get<fpmas::api::utils::PtrWrapper<model::test::GridAgent::JsonBase>>();
-	ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<model::test::GridAgent*>(NotNull()));
-	ASSERT_EQ(static_cast<model::test::GridAgent*>(unserialized_agent.get())->locationId(), mock_cell_id);
-	ASSERT_EQ(static_cast<model::test::GridAgent*>(unserialized_agent.get())->locationPoint(), location_point);
-
-	delete unserialized_agent.get();
-}
-
-TEST_F(GridAgentTest, to_json_with_data) {
-	// GridAgentWithData is only used in this test, so set up and tear down is
-	// performed directly in this test
-
-	/* Set Up */
-	model::test::GridAgentWithData::mobility_range
-		= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
-	model::test::GridAgentWithData::perception_range
-		= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
-
-	model::test::GridAgentWithData agent(8);
-	agent.setModel(&mock_model);
-	agent.setNode(&mock_agent_node);
-	agent.initLocation(&mock_cell);
-
-	/* to_json */
-	nlohmann::json j = fpmas::api::utils::PtrWrapper<model::test::GridAgentWithData::JsonBase>(&agent);
-
-	/* from_json */
-	auto unserialized_agent = j.get<fpmas::api::utils::PtrWrapper<model::test::GridAgentWithData::JsonBase>>();
-
-	/* check */
-	ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<model::test::GridAgentWithData*>(NotNull()));
-	ASSERT_EQ(static_cast<model::test::GridAgentWithData*>(unserialized_agent.get())->locationId(), mock_cell_id);
-	ASSERT_EQ(static_cast<model::test::GridAgentWithData*>(unserialized_agent.get())->locationPoint(), location_point);
-	ASSERT_EQ(static_cast<model::test::GridAgentWithData*>(unserialized_agent.get())->data, 8);
-
-	delete unserialized_agent.get();
-
-	/* Tear Down */
-	delete model::test::GridAgentWithData::mobility_range;
-	delete model::test::GridAgentWithData::perception_range;
 }
 
 TEST_F(GridAgentTest, moveToPoint) {
@@ -144,6 +194,99 @@ TEST_F(GridAgentTest, moveToPoint) {
 
 TEST_F(GridAgentTest, moveToPointOutOfField) {
 	ASSERT_THROW(this->moveTo(location_point), fpmas::api::model::OutOfMobilityFieldException);
+}
+
+#define GRID_AGENT_SERIAL_TEST_SUITE(AGENT_TYPE)\
+	TEST_F(AGENT_TYPE##Test, json) {\
+		grid_agent.initLocation(&mock_cell);\
+		nlohmann::json j;\
+		Serialize(j);\
+		\
+		auto unserialized_agent = Unserialize(j);\
+		\
+		ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
+		ASSERT_EQ(\
+				static_cast<AGENT_TYPE*>(unserialized_agent.get())->locationId(),\
+				mock_cell_id);\
+		ASSERT_EQ(\
+				static_cast<AGENT_TYPE*>(unserialized_agent.get())->locationPoint(),\
+				location_point);\
+		/* Checks optional cell data equality */\
+		ASSERT_EQ(*static_cast<AGENT_TYPE*>(unserialized_agent.get()), grid_agent);\
+		\
+		delete unserialized_agent.get();\
+	}\
+	\
+	TEST_F(AGENT_TYPE##Test, light_json) {\
+		grid_agent.initLocation(&mock_cell);\
+		nlohmann::json j;\
+		Serialize(j);\
+		\
+		fpmas::io::json::light_json light_json;\
+		Serialize(light_json);\
+		\
+		ASSERT_LT(light_json.dump().size(), j.dump().size());\
+		\
+		auto unserialized_agent = Unserialize(light_json);\
+		\
+		ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
+		\
+		delete unserialized_agent.get();\
+	}\
+	\
+	TEST_F(AGENT_TYPE##Test, object_pack) {\
+		grid_agent.initLocation(&mock_cell);\
+		fpmas::io::datapack::ObjectPack pack;\
+		Serialize(pack);\
+		\
+		auto unserialized_agent = Unserialize(pack);\
+		\
+		ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
+		ASSERT_EQ(\
+				static_cast<AGENT_TYPE*>(unserialized_agent.get())->locationId(),\
+				mock_cell_id);\
+		ASSERT_EQ(\
+				static_cast<AGENT_TYPE*>(unserialized_agent.get())->locationPoint(),\
+				location_point);\
+		/* Checks optional cell data equality */\
+		ASSERT_EQ(*static_cast<AGENT_TYPE*>(unserialized_agent.get()), grid_agent);\
+		\
+		delete unserialized_agent.get();\
+	}\
+	\
+	TEST_F(AGENT_TYPE##Test, light_object_pack) {\
+		grid_agent.initLocation(&mock_cell);\
+		fpmas::io::datapack::ObjectPack pack;\
+		Serialize(pack);\
+		\
+		fpmas::io::datapack::LightObjectPack light_pack;\
+		Serialize(light_pack);\
+		\
+		ASSERT_LT(light_pack.data().size, pack.data().size);\
+		\
+		auto unserialized_agent = Unserialize(light_pack);\
+		\
+		ASSERT_THAT(unserialized_agent.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
+		\
+		delete unserialized_agent.get();\
+	}\
+
+namespace {
+	using model::test::GridAgent;
+	/*
+	 * Serialization tests for an fpmas::model::GridAgent extension, serialized
+	 * using FPMAS_DEFAULT_JSON() and FPMAS_DEFAULT_DATAPACK().
+	 */
+	GRID_AGENT_SERIAL_TEST_SUITE(GridAgent);
+
+	using model::test::GridAgentWithData;
+	typedef BaseGridAgentTest<GridAgentWithData> GridAgentWithDataTest;
+
+	/*
+	 * Serialization tests for an fpmas::model::GridAgent
+	 * extension with custom serialization rules.
+	 */
+	GRID_AGENT_SERIAL_TEST_SUITE(GridAgentWithData);
 }
 
 TEST(VonNeumannRange, radius_von_neumann_grid) {

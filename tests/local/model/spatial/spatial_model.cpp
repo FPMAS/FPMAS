@@ -2,7 +2,7 @@
 #include "communication/mock_communication.h"
 #include "synchro/mock_mutex.h"
 #include "fpmas/model/spatial/spatial_model.h"
-#include "gtest_environment.h"
+#include "test_agents.h"
 
 
 using fpmas::api::model::SpatialModelLayers;
@@ -166,13 +166,18 @@ TEST_F(CellBaseTest, update_perceptions) {
 	mock_cell.updatePerceptions(mock_group);
 }
 
-class SpatialAgentTest : public ::testing::Test, protected model::test::SpatialAgent {
+/*
+ * Inheriting from GridAgentType is an hacky trick to get access to protected
+ * GridAgentType members (such as moveTo())
+ */
+template<typename AgentType>
+class BaseSpatialAgentTest : public ::testing::Test, protected AgentType {
 	protected:
 		typedef fpmas::api::model::Cell DefaultCell;
 
 		MockMutex<AgentPtr> mock_location_mutex;
 		StrictMock<MockModel> mock_model;
-		fpmas::api::model::SpatialAgent<DefaultCell>& agent;
+		AgentType& agent;
 		MockAgentNode<NiceMock> agent_node {{2, 37}, this};
 
 		fpmas::graph::DistributedId location_id {12, 67};
@@ -180,7 +185,7 @@ class SpatialAgentTest : public ::testing::Test, protected model::test::SpatialA
 		MockAgentEdge<NiceMock> location_edge;
 		MockAgentNode<NiceMock> location_node {location_id, &location_cell};
 
-		SpatialAgentTest() : agent(*this) {}
+		BaseSpatialAgentTest() : agent(*this) {}
 
 
 		void SetUp() override {
@@ -267,7 +272,22 @@ class SpatialAgentTest : public ::testing::Test, protected model::test::SpatialA
 				.WillRepeatedly(Return(true));
 
 		}
+
+		template<typename PackType>
+			void Serialize(PackType& pack) {
+				pack = 
+					fpmas::api::utils::PtrWrapper<typename AgentType::JsonBase>(&agent);
+			}
+
+		template<typename PackType>
+			fpmas::api::utils::PtrWrapper<typename AgentType::JsonBase> Unserialize(const PackType& pack) {
+				return pack
+					.template get<fpmas::api::utils::PtrWrapper<typename AgentType::JsonBase>>();
+			}
+
 };
+
+typedef BaseSpatialAgentTest<model::test::SpatialAgent> SpatialAgentTest;
 
 TEST_F(SpatialAgentTest, location) {
 	ON_CALL(agent_node, getOutgoingEdges(SpatialModelLayers::LOCATION))
@@ -286,46 +306,6 @@ TEST_F(SpatialAgentTest, locationId) {
 	this->initLocation(&location_cell);
 
 	ASSERT_EQ(this->locationId(), location_id);
-}
-
-TEST_F(SpatialAgentTest, json) {
-	EXPECT_CALL(mock_model, link).Times(AnyNumber());
-	this->initLocation(&location_cell);
-
-	fpmas::api::model::AgentPtr src_ptr (this);
-	nlohmann::json j = src_ptr;
-
-	auto ptr = j.get<fpmas::api::model::AgentPtr>();
-
-	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<SpatialAgent*>(NotNull()));
-	ASSERT_EQ(dynamic_cast<SpatialAgent*>(ptr.get())->locationId(), location_id);
-
-	src_ptr.release();
-}
-
-TEST_F(SpatialAgentTest, json_with_data) {
-	EXPECT_CALL(mock_model, link).Times(AnyNumber());
-	// SetUp used only for this test
-	NiceMock<model::test::SpatialAgentWithData> agent(7);
-	AgentPtr src_ptr (&agent);
-	agent.setModel(&mock_model);
-	agent.setNode(&agent_node);
-
-	agent.initLocation(&location_cell);
-
-	// Serialization
-	nlohmann::json j = src_ptr;
-
-	// Unserialization
-	auto ptr = j.get<AgentPtr>();
-
-	ASSERT_THAT(ptr.get(), WhenDynamicCastTo<model::test::SpatialAgentWithData*>(NotNull()));
-	ASSERT_EQ(dynamic_cast<model::test::SpatialAgentWithData*>(ptr.get())->data, 7);
-	ASSERT_EQ(
-			dynamic_cast<model::test::SpatialAgentWithData*>(ptr.get())->locationId(),
-			location_id);
-
-	src_ptr.release();
 }
 
 TEST_F(SpatialAgentTest, moveToCell1) {
@@ -591,6 +571,97 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 	delete perceive_neighbors[0];
 	for(auto edge : perceive_neighbor_edges)
 		delete edge;
+}
+
+#define SPATIAL_AGENT_SERIAL_TEST_SUITE(AGENT_TYPE)\
+	TEST_F(AGENT_TYPE##Test, json) {\
+		EXPECT_CALL(mock_model, link)\
+		.Times(AnyNumber());\
+		this->initLocation(&location_cell);\
+		\
+		nlohmann::json j;\
+		Serialize(j);\
+		\
+		auto ptr = Unserialize(j);\
+		\
+		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
+		ASSERT_EQ(dynamic_cast<AGENT_TYPE*>(ptr.get())->locationId(), location_id);\
+		/* Checks optional cell data equality */\
+		ASSERT_EQ(*dynamic_cast<AGENT_TYPE*>(ptr.get()), agent);\
+		delete ptr.get();\
+	}\
+	\
+	TEST_F(AGENT_TYPE##Test, light_json) {\
+		EXPECT_CALL(mock_model, link)\
+		.Times(AnyNumber());\
+		this->initLocation(&location_cell);\
+		\
+		nlohmann::json j;\
+		Serialize(j);\
+		fpmas::io::json::light_json light_json;\
+		Serialize(light_json);\
+		\
+		ASSERT_LT(light_json.dump().size(), j.dump().size());\
+		\
+		auto ptr = Unserialize(j);\
+		\
+		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
+		delete ptr.get();\
+	}\
+	\
+	TEST_F(AGENT_TYPE##Test, object_pack) {\
+		EXPECT_CALL(mock_model, link)\
+		.Times(AnyNumber());\
+		this->initLocation(&location_cell);\
+		\
+		fpmas::io::datapack::ObjectPack pack;\
+		Serialize(pack);\
+		\
+		auto ptr = Unserialize(pack);\
+		\
+		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
+		ASSERT_EQ(dynamic_cast<AGENT_TYPE*>(ptr.get())->locationId(), location_id);\
+		/* Checks optional cell data equality */\
+		ASSERT_EQ(*dynamic_cast<AGENT_TYPE*>(ptr.get()), agent);\
+		delete ptr.get();\
+	}\
+	\
+	TEST_F(AGENT_TYPE##Test, light_object_pack) {\
+		EXPECT_CALL(mock_model, link)\
+		.Times(AnyNumber());\
+		this->initLocation(&location_cell);\
+		\
+		fpmas::io::datapack::ObjectPack pack;\
+		Serialize(pack);\
+		fpmas::io::datapack::LightObjectPack light_object_pack;\
+		Serialize(light_object_pack);\
+		\
+		ASSERT_LT(light_object_pack.data().size, pack.data().size);\
+		\
+		auto ptr = Unserialize(pack);\
+		\
+		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
+		delete ptr.get();\
+	}\
+
+typedef BaseSpatialAgentTest<model::test::SpatialAgentWithData> SpatialAgentWithDataTest;
+
+namespace {
+	using model::test::SpatialAgent;
+
+	/*
+	 * Serialization tests for an fpmas::model::SpatialAgent extension, serialized
+	 * using FPMAS_DEFAULT_JSON() and FPMAS_DEFAULT_DATAPACK().
+	 */
+	SPATIAL_AGENT_SERIAL_TEST_SUITE(SpatialAgent);
+
+	using model::test::SpatialAgentWithData;
+
+	/*
+	 * Serialization tests for an fpmas::model::SpatialAgent
+	 * extension with custom serialization rules.
+	 */
+	SPATIAL_AGENT_SERIAL_TEST_SUITE(SpatialAgentWithData);
 }
 
 class EndConditionTest : public Test {

@@ -646,7 +646,8 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 			DoAll(SaveArg<0>(&build_mutex_arg), Return(new MockMutex<int>)));
 
 	auto node = graph.buildNode(8);
-	ON_CALL(*static_cast<MockNode*>(node), state()).WillByDefault(Return(LocationState::DISTANT));
+	ON_CALL(*static_cast<MockNode*>(node), state())
+		.WillByDefault(Return(LocationState::DISTANT));
 
 	MockNode* mock_node = new MockNode(node->getId(), 2, 4.);
 

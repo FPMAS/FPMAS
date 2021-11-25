@@ -10,9 +10,8 @@
 #include <unordered_map>
 
 #include "fpmas/utils/log.h"
-#include "fpmas/io/json.h"
 #include "fpmas/api/communication/communication.h"
-#include "fpmas/io/datapack.h"
+#include "fpmas/io/json_datapack.h"
 
 namespace fpmas {
 	void init(int argc, char** argv);

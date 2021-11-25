@@ -74,64 +74,91 @@ $(function() {
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#include &quot;json_serializer.h&quot;</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span><span class="preprocessor">#include &quot;datapack_serializer.h&quot;</span></div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span> </div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno"><a class="line" href="serializer_8h.html#a34f60520dd7532108de66b3454fe5ea1">   15</a></span><span class="preprocessor">#define FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()\</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="preprocessor">    namespace fpmas { namespace io { namespace datapack {\</span></div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span><span class="preprocessor">        void Serializer&lt;AgentPtr&gt;::to_datapack(ObjectPack&amp; p, const AgentPtr&amp; ptr) {\</span></div>
-<div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span><span class="preprocessor">            JsonSerializer&lt;AgentPtr&gt;::to_datapack(p, ptr);\</span></div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">        }\</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">        AgentPtr Serializer&lt;AgentPtr&gt;::from_datapack(const ObjectPack&amp; p) {\</span></div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">            return JsonSerializer&lt;AgentPtr&gt;::from_datapack(p);\</span></div>
+<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;<a class="code" href="json__datapack_8h.html">fpmas/io/json_datapack.h</a>&quot;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span> </div>
+<div class="line"><a id="l00018" name="l00018"></a><span class="lineno"><a class="line" href="serializer_8h.html#a34f60520dd7532108de66b3454fe5ea1">   18</a></span><span class="preprocessor">#define FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()\</span></div>
+<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span><span class="preprocessor">    namespace fpmas { namespace io { namespace datapack {\</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span><span class="preprocessor">        void Serializer&lt;AgentPtr&gt;::to_datapack(ObjectPack&amp; p, const AgentPtr&amp; ptr) {\</span></div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span><span class="preprocessor">            JsonSerializer&lt;AgentPtr&gt;::to_datapack(p, ptr);\</span></div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span><span class="preprocessor">        }\</span></div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">        void LightSerializer&lt;AgentPtr&gt;::to_datapack(LightObjectPack&amp; p, const AgentPtr&amp; ptr) {\</span></div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">            LightJsonSerializer&lt;AgentPtr&gt;::to_datapack(p, ptr);\</span></div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span><span class="preprocessor">        AgentPtr Serializer&lt;AgentPtr&gt;::from_datapack(const ObjectPack&amp; p) {\</span></div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span><span class="preprocessor">            return JsonSerializer&lt;AgentPtr&gt;::from_datapack(p);\</span></div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span><span class="preprocessor">        }\</span></div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">        AgentPtr LightSerializer&lt;AgentPtr&gt;::from_datapack(const LightObjectPack&amp; p) {\</span></div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">            return LightJsonSerializer&lt;AgentPtr&gt;::from_datapack(p);\</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span><span class="preprocessor">        void LightSerializer&lt;AgentPtr&gt;::to_datapack(LightObjectPack&amp; p, const AgentPtr&amp; ptr) {\</span></div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">            LightJsonSerializer&lt;AgentPtr&gt;::to_datapack(p, ptr);\</span></div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span><span class="preprocessor">        }\</span></div>
-<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">    }}}</span></div>
-<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span> </div>
-<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span> </div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno"><a class="line" href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">   61</a></span><span class="preprocessor">#define FPMAS_JSON_SET_UP(...)\</span></div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="preprocessor">    FPMAS_BASE_JSON_SET_UP(__VA_ARGS__)\</span></div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="preprocessor">    FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()</span></div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno"><a class="line" href="serializer_8h.html#acd3637c72c35ab965e0e0deed0cb7229">   69</a></span><span class="preprocessor">#define FPMAS_DEFAULT_JSON_SET_UP()\</span></div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span><span class="preprocessor">    FPMAS_BASE_DEFAULT_JSON_SET_UP()\</span></div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span><span class="preprocessor">    FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()</span></div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span><span class="preprocessor">#define FPMAS_DATAPACK_SET_UP(...)\</span></div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span><span class="preprocessor">    FPMAS_BASE_DATAPACK_SET_UP(__VA_ARGS__)\</span></div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="preprocessor">    FPMAS_BASE_JSON_SET_UP(__VA_ARGS__)</span></div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span><span class="preprocessor">#define FPMAS_DEFAULT_DATAPACK_SET_UP()\</span></div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span><span class="preprocessor">    FPMAS_BASE_DEFAULT_DATAPACK_SET_UP()\</span></div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span><span class="preprocessor">    FPMAS_BASE_DEFAULT_JSON_SET_UP()</span></div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span> </div>
-<div class="line"><a id="l00107" name="l00107"></a><span class="lineno"><a class="line" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">  107</a></span><span class="preprocessor">#define FPMAS_REGISTER_AGENT_TYPES(...)\</span></div>
-<div class="line"><a id="l00108" name="l00108"></a><span class="lineno">  108</span><span class="preprocessor">    fpmas::register_types&lt;__VA_ARGS__ , void&gt;();</span></div>
-<div class="line"><a id="l00109" name="l00109"></a><span class="lineno">  109</span> </div>
-<div class="line"><a id="l00110" name="l00110"></a><span class="lineno">  110</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefpmas.html">fpmas</a> { </div>
-<div class="line"><a id="l00111" name="l00111"></a><span class="lineno">  111</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> _T, <span class="keyword">typename</span>... T&gt;</div>
-<div class="line"><a id="l00112" name="l00112"></a><span class="lineno">  112</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>();</div>
-<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span> </div>
-<div class="line"><a id="l00117" name="l00117"></a><span class="lineno">  117</span>    <span class="keyword">template</span>&lt;&gt; <span class="keywordtype">void</span> <a class="code hl_function" href="namespacefpmas.html#a4634331ddaec9c6fc199c12eab4c5094">register_types&lt;void&gt;</a>();</div>
-<div class="line"><a id="l00118" name="l00118"></a><span class="lineno">  118</span> </div>
-<div class="line"><a id="l00135" name="l00135"></a><span class="lineno">  135</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> _T, <span class="keyword">typename</span>... T&gt;</div>
-<div class="line"><a id="l00136" name="l00136"></a><span class="lineno"><a class="line" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">  136</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>() {</div>
-<div class="line"><a id="l00137" name="l00137"></a><span class="lineno">  137</span>            <a class="code hl_function" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">nlohmann::adl_serializer&lt;std::type_index&gt;::register_type</a>(<span class="keyword">typeid</span>(_T));</div>
-<div class="line"><a id="l00138" name="l00138"></a><span class="lineno">  138</span>            <a class="code hl_struct" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer&lt;std::type_index&gt;::register_type</a>(<span class="keyword">typeid</span>(_T));</div>
-<div class="line"><a id="l00139" name="l00139"></a><span class="lineno">  139</span> </div>
-<div class="line"><a id="l00140" name="l00140"></a><span class="lineno">  140</span>            <a class="code hl_function" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>&lt;T...&gt;();</div>
-<div class="line"><a id="l00141" name="l00141"></a><span class="lineno">  141</span>        }</div>
-<div class="line"><a id="l00142" name="l00142"></a><span class="lineno">  142</span>}</div>
-<div class="line"><a id="l00143" name="l00143"></a><span class="lineno">  143</span> </div>
-<div class="line"><a id="l00144" name="l00144"></a><span class="lineno">  144</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span><span class="preprocessor">        AgentPtr LightSerializer&lt;AgentPtr&gt;::from_datapack(const LightObjectPack&amp; p) {\</span></div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span><span class="preprocessor">            return LightJsonSerializer&lt;AgentPtr&gt;::from_datapack(p);\</span></div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span><span class="preprocessor">        }\</span></div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span><span class="preprocessor">    }}}</span></div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span> </div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno"><a class="line" href="serializer_8h.html#a084b40d60c134efae557a90d5f358920">   44</a></span><span class="preprocessor">#define FPMAS_AGENT_PTR_JSON_DATAPACK_FALLBACK()\</span></div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span><span class="preprocessor">    namespace nlohmann {\</span></div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span><span class="preprocessor">        void adl_serializer&lt;fpmas::api::model::AgentPtr&gt;\</span></div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span><span class="preprocessor">        ::to_json(json&amp; j, const fpmas::api::model::AgentPtr&amp; ptr) {\</span></div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span><span class="preprocessor">            fpmas::io::json::datapack_serializer&lt;fpmas::api::model::AgentPtr&gt;\</span></div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span><span class="preprocessor">            ::to_json(j, ptr);\</span></div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span><span class="preprocessor">        }\</span></div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="preprocessor">        fpmas::api::model::AgentPtr adl_serializer&lt;fpmas::api::model::AgentPtr&gt;\</span></div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">        ::from_json(const json&amp; j) {\</span></div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span><span class="preprocessor">            return fpmas::io::json::datapack_serializer&lt;fpmas::api::model::AgentPtr&gt;\</span></div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><span class="preprocessor">            ::from_json(j);\</span></div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="preprocessor">        }\</span></div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="preprocessor">    }\</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="preprocessor">    namespace fpmas { namespace io { namespace json {\</span></div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">        void light_serializer&lt;api::model::AgentPtr&gt;\</span></div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="preprocessor">        ::to_json(light_json&amp; j, const api::model::AgentPtr&amp; ptr) {\</span></div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span><span class="preprocessor">            fpmas::io::json::light_datapack_serializer&lt;api::model::AgentPtr&gt;\</span></div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span><span class="preprocessor">            ::to_json(j, ptr);\</span></div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="preprocessor">        }\</span></div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span><span class="preprocessor">        api::model::AgentPtr light_serializer&lt;api::model::AgentPtr&gt;\</span></div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span><span class="preprocessor">        ::from_json(const light_json&amp; j) {\</span></div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span><span class="preprocessor">            return fpmas::io::json::light_datapack_serializer&lt;api::model::AgentPtr&gt;\</span></div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="preprocessor">            ::from_json(j);\</span></div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="preprocessor">        }\</span></div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span><span class="preprocessor">    }}}</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span> </div>
+<div class="line"><a id="l00112" name="l00112"></a><span class="lineno"><a class="line" href="serializer_8h.html#a4722b5fd6cdf04855fb40935583a8dcf">  112</a></span><span class="preprocessor">#define FPMAS_JSON_SET_UP(...)\</span></div>
+<div class="line"><a id="l00113" name="l00113"></a><span class="lineno">  113</span><span class="preprocessor">    FPMAS_BASE_JSON_SET_UP(__VA_ARGS__)\</span></div>
+<div class="line"><a id="l00114" name="l00114"></a><span class="lineno">  114</span><span class="preprocessor">    FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()</span></div>
+<div class="line"><a id="l00115" name="l00115"></a><span class="lineno">  115</span> </div>
+<div class="line"><a id="l00120" name="l00120"></a><span class="lineno"><a class="line" href="serializer_8h.html#acd3637c72c35ab965e0e0deed0cb7229">  120</a></span><span class="preprocessor">#define FPMAS_DEFAULT_JSON_SET_UP()\</span></div>
+<div class="line"><a id="l00121" name="l00121"></a><span class="lineno">  121</span><span class="preprocessor">    FPMAS_BASE_DEFAULT_JSON_SET_UP()\</span></div>
+<div class="line"><a id="l00122" name="l00122"></a><span class="lineno">  122</span><span class="preprocessor">    FPMAS_BASE_DEFAULT_DATAPACK_SET_UP()</span></div>
+<div class="line"><a id="l00123" name="l00123"></a><span class="lineno">  123</span> </div>
+<div class="line"><a id="l00166" name="l00166"></a><span class="lineno"><a class="line" href="serializer_8h.html#a555b53d364c9e2bf45fcaa2271218315">  166</a></span><span class="preprocessor">#define FPMAS_DATAPACK_SET_UP(...)\</span></div>
+<div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span><span class="preprocessor">    FPMAS_BASE_DATAPACK_SET_UP(__VA_ARGS__)\</span></div>
+<div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span><span class="preprocessor">    FPMAS_AGENT_PTR_JSON_DATAPACK_FALLBACK()</span></div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span> </div>
+<div class="line"><a id="l00174" name="l00174"></a><span class="lineno"><a class="line" href="serializer_8h.html#a9d3038f74cbc1a7b7a523f8829aabd49">  174</a></span><span class="preprocessor">#define FPMAS_DEFAULT_DATAPACK_SET_UP()\</span></div>
+<div class="line"><a id="l00175" name="l00175"></a><span class="lineno">  175</span><span class="preprocessor">    FPMAS_BASE_DEFAULT_DATAPACK_SET_UP()\</span></div>
+<div class="line"><a id="l00176" name="l00176"></a><span class="lineno">  176</span><span class="preprocessor">    FPMAS_BASE_DEFAULT_JSON_SET_UP()</span></div>
+<div class="line"><a id="l00177" name="l00177"></a><span class="lineno">  177</span> </div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno"><a class="line" href="serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89">  204</a></span><span class="preprocessor">#define FPMAS_REGISTER_AGENT_TYPES(...)\</span></div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span><span class="preprocessor">    fpmas::register_types&lt;__VA_ARGS__ , void&gt;();</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span> </div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span><span class="keyword">namespace </span><a class="code hl_namespace" href="namespacefpmas.html">fpmas</a> { </div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> _T, <span class="keyword">typename</span>... T&gt;</div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>        <span class="keywordtype">void</span> <a class="code hl_function" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>();</div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span> </div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>    <span class="keyword">template</span>&lt;&gt; <span class="keywordtype">void</span> <a class="code hl_function" href="namespacefpmas.html#a4634331ddaec9c6fc199c12eab4c5094">register_types&lt;void&gt;</a>();</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span> </div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> _T, <span class="keyword">typename</span>... T&gt;</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno"><a class="line" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">  233</a></span>        <span class="keywordtype">void</span> <a class="code hl_function" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>() {</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            <a class="code hl_function" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">nlohmann::adl_serializer&lt;std::type_index&gt;::register_type</a>(<span class="keyword">typeid</span>(_T));</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            <a class="code hl_struct" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer&lt;std::type_index&gt;::register_type</a>(<span class="keyword">typeid</span>(_T));</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span> </div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>            <a class="code hl_function" href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">register_types</a>&lt;T...&gt;();</div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>        }</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>}</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span> </div>
+<div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span><span class="preprocessor">#endif</span></div>
+<div class="ttc" id="ajson__datapack_8h_html"><div class="ttname"><a href="json__datapack_8h.html">json_datapack.h</a></div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> fpmas.cpp:3</div></div>
 <div class="ttc" id="anamespacefpmas_html_a4634331ddaec9c6fc199c12eab4c5094"><div class="ttname"><a href="namespacefpmas.html#a4634331ddaec9c6fc199c12eab4c5094">fpmas::register_types&lt; void &gt;</a></div><div class="ttdeci">void register_types&lt; void &gt;()</div><div class="ttdef"><b>Definition:</b> serializer.cpp:5</div></div>
-<div class="ttc" id="anamespacefpmas_html_ad687ae462a5b1dd2d5d1df39c41aa920"><div class="ttname"><a href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a></div><div class="ttdeci">void register_types()</div><div class="ttdef"><b>Definition:</b> serializer.h:136</div></div>
-<div class="ttc" id="astructfpmas_1_1io_1_1datapack_1_1Serializer_html"><div class="ttname"><a href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a></div><div class="ttdef"><b>Definition:</b> datapack.h:344</div></div>
-<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4_html_a2ef35756346c86be964534f48e339bc9"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">nlohmann::adl_serializer&lt; std::type_index &gt;::register_type</a></div><div class="ttdeci">static std::size_t register_type(const std::type_index &amp;type)</div><div class="ttdef"><b>Definition:</b> json_serializer.h:162</div></div>
+<div class="ttc" id="anamespacefpmas_html_ad687ae462a5b1dd2d5d1df39c41aa920"><div class="ttname"><a href="namespacefpmas.html#ad687ae462a5b1dd2d5d1df39c41aa920">fpmas::register_types</a></div><div class="ttdeci">void register_types()</div><div class="ttdef"><b>Definition:</b> serializer.h:233</div></div>
+<div class="ttc" id="astructfpmas_1_1io_1_1datapack_1_1Serializer_html"><div class="ttname"><a href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a></div><div class="ttdef"><b>Definition:</b> datapack.h:341</div></div>
+<div class="ttc" id="astructnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4_html_a2ef35756346c86be964534f48e339bc9"><div class="ttname"><a href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">nlohmann::adl_serializer&lt; std::type_index &gt;::register_type</a></div><div class="ttdeci">static std::size_t register_type(const std::type_index &amp;type)</div><div class="ttdef"><b>Definition:</b> json_serializer.h:176</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

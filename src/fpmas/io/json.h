@@ -6,8 +6,11 @@
  */
 
 #include "nlohmann/json.hpp"
+#include "../api/utils/ptr_wrapper.h"
 
 namespace fpmas { namespace io { namespace json {
+	using api::utils::PtrWrapper;
+
 	template<typename T, typename> struct light_serializer;
 
 	/**
@@ -163,5 +166,5 @@ namespace fpmas { namespace io { namespace json {
 				return nlohmann::adl_serializer<T>::from_json(j);
 			}
 		};
-	}}}
+}}}
 #endif

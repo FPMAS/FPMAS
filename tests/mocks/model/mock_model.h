@@ -229,22 +229,4 @@ using MockAgentGraph = MockDistributedGraph<
 	DistEdge<fpmas::model::AgentPtr>,
 	Strictness>;
 
-namespace nlohmann {
-	template<int FOO>
-	using MockAgentPtr = fpmas::api::utils::PtrWrapper<MockAgent<FOO>>;
-
-	template<int FOO>
-		struct adl_serializer<MockAgentPtr<FOO>> {
-			template<typename JsonType>
-			static void to_json(JsonType& j, const MockAgentPtr<FOO>& data) {
-				j["mock"] = data->getField();
-			}
-
-			template<typename JsonType>
-			static void from_json(const JsonType& j, MockAgentPtr<FOO>& ptr) {
-				ptr = MockAgentPtr<FOO>(new MockAgent<FOO>(j.at("field").template get<int>()));
-			}
-		};
-}
-
 #endif

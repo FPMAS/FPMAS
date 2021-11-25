@@ -62,7 +62,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html">datapack</a></li><li class="navelem"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html">BasicJsonSerializer</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><b>datapack</b></li><li class="navelem"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html">BasicJsonSerializer</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -73,7 +73,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p><code>#include &lt;<a class="el" href="datapack_8h_source.html">datapack.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="json__datapack_8h_source.html">json_datapack.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -86,14 +86,14 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T, typename JsonType&gt;<br />
-struct fpmas::io::datapack::BasicJsonSerializer&lt; T, JsonType &gt;</div><p >A serializer implementation based on json serialization.</p>
+struct fpmas::io::datapack::BasicJsonSerializer&lt; T, JsonType &gt;</div><p >A <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> implementation based on json serialization.</p>
 <p >Objects of type T are serialized using the nlohmann::json library. Json strings are then written and read directly to DataPack buffers.</p>
-<p >More particularly, the type T must be serializable into the provided <code>JsonType</code>, that is itself based on <code>nlohmann::basic_json</code>. For example, if <code>JsonType</code> is <code>nlohmann::json</code> (as defined by default in <a class="el" href="structfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a>), the classical nlohmann::json custom serialization rules must be provided as explained at <a href="https://github.com/nlohmann/json#arbitrary-types-conversions">https://github.com/nlohmann/json#arbitrary-types-conversions</a>.</p>
+<p >More particularly, the type T must be serializable into the provided <code>JsonType</code>, that is itself based on <code>nlohmann::basic_json</code>. For example, if <code>JsonType</code> is <code>nlohmann::json</code>, the classical nlohmann::json custom serialization rules must be provided as explained at <a href="https://github.com/nlohmann/json#arbitrary-types-conversions">https://github.com/nlohmann/json#arbitrary-types-conversions</a>.</p>
 <p >An <a class="el" href="structfpmas_1_1io_1_1json_1_1light__serializer.html">fpmas::io::json::light_serializer</a> must be provided for T when <code>JsonType</code> is <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">fpmas::io::json::light_json</a>. See <a class="el" href="namespacefpmas_1_1io_1_1json.html">fpmas::io::json</a> for more information.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>type to serialize </td></tr>
-    <tr><td class="paramname">JsonType</td><td>json type used for serialization (nlohmann::json of <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">fpmas::io::json::light_json</a>). </td></tr>
+    <tr><td class="paramname">JsonType</td><td>json type used for serialization (nlohmann::json or <a class="el" href="namespacefpmas_1_1io_1_1json.html#ad3a1963c72c1df255da41c2427dc44d4">fpmas::io::json::light_json</a>). </td></tr>
   </table>
   </dd>
 </dl>
@@ -187,7 +187,7 @@ template&lt;typename PackType &gt; </div>
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>src/fpmas/io/<a class="el" href="datapack_8h_source.html">datapack.h</a></li>
+<li>src/fpmas/io/<a class="el" href="json__datapack_8h_source.html">json_datapack.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

@@ -15,8 +15,10 @@ namespace nlohmann {
 namespace fpmas { namespace io { namespace json {
 	void light_serializer<DefaultConstructibleData>::to_json(
 			light_json&, const DefaultConstructibleData&) {}
+
 	void light_serializer<DefaultConstructibleData>::from_json(
 			const light_json&, DefaultConstructibleData&) {}
+
 	void light_serializer<NonDefaultConstructibleData>::to_json(
 			light_json&, const NonDefaultConstructibleData&) {}
 	NonDefaultConstructibleData light_serializer<NonDefaultConstructibleData>::from_json(
@@ -43,5 +45,24 @@ namespace fpmas { namespace io { namespace datapack {
 	DefaultConstructibleData LightSerializer<DefaultConstructibleData>::from_datapack(const LightObjectPack &pack) {
 		return {};
 	}
+
+	void Serializer<NonDefaultConstructibleData>::to_datapack(ObjectPack &pack, const NonDefaultConstructibleData &data) {
+		pack.allocate(pack_size<int>());
+		pack.write(data.i);
+	}
+
+	NonDefaultConstructibleData Serializer<NonDefaultConstructibleData>::from_datapack(const ObjectPack &pack) {
+		int i;
+		pack.read(i);
+		return {i};
+	}
+
+	void LightSerializer<NonDefaultConstructibleData>::to_datapack(LightObjectPack &pack, const NonDefaultConstructibleData &data) {
+	}
+
+	NonDefaultConstructibleData LightSerializer<NonDefaultConstructibleData>::from_datapack(const LightObjectPack &pack) {
+		return {0};
+	}
+
 }}}
 

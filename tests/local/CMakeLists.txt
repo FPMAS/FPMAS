@@ -33,13 +33,13 @@ set(SOURCES
 	runtime/runtime.cpp
 	# Model
 	model/model.cpp
-	model/serializer.cpp
 	model/behavior.cpp
 	model/spatial/spatial_model.cpp
 	model/spatial/grid.cpp
 	model/spatial/graph.cpp
 	model/spatial/grid_load_balancing.cpp
 	model/spatial/grid_agent_mapping.cpp
+	model/spatial/test_agents.cpp
 	# Output
 	io/fake_data.cpp
 	io/output.cpp
@@ -47,9 +47,10 @@ set(SOURCES
 	io/json_output.cpp
 	io/breakpoint.cpp
 	io/json.cpp
-	io/formatted_output.cpp
 	io/datapack_base_io.cpp
 	io/datapack.cpp
+	io/json_datapack.cpp
+	io/formatted_output.cpp
 	# Utils
 	utils/format.cpp
 	utils/perf.cpp

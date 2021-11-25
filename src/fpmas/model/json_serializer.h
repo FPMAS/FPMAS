@@ -19,8 +19,22 @@
  * In consequence, this macro must be invoked exaclty once from a **source**
  * file, **at the global definition level**, in any C++ target using FPMAS.
  *
- * This macro is not sufficient to completely enable json serialization: see
- * FPMAS_JSON_SET_UP().
+ * This macro does not define any rule for AgentPtr ObjectPack serialization,
+ * so using only this macro will produce compile time errors.
+ *
+ * Two solutions are available:
+ * - calling FPMAS_BASE_JSON_SET_UP() and FPMAS_BASE_DATAPACK_SET_UP(). This
+ *   enable both AgentPtr serialization techniques, but to_datapack() and
+ *   from_datapack() methods must be specified for all agents, in addition to
+ *   the to_json() and from_json() methods.
+ * - just calling FPMAS_JSON_SET_UP(), instead of FPMAS_BASE_JSON_SET_UP().
+ *   This also enable both serialization techniques, but object pack
+ *   serialization falls back to json serialization. This might be inefficient,
+ *   but only requires to_json() and from_json() definitions.
+ *
+ * @see FPMAS_BASE_DATAPACK_SET_UP()
+ * @see FPMAS_JSON_SET_UP()
+ * @see FPMAS_DATAPACK_SET_UP()
  */
 #define FPMAS_BASE_JSON_SET_UP(...)\
 	namespace nlohmann {\
@@ -68,37 +82,37 @@
 	namespace nlohmann {\
 		void adl_serializer<fpmas::api::model::AgentPtr>\
 			::to_json(json& j, const fpmas::api::model::AgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<json, void>::to_json(j, data);\
+			fpmas::io::json::AgentPtrSerializer<json, void>::to_json(j, data);\
 		}\
 		fpmas::api::model::AgentPtr adl_serializer<fpmas::api::model::AgentPtr>\
 			::from_json(const json& j) {\
-			return {fpmas::model::AgentPtrSerializer<json, void>::from_json(j)};\
+			return {fpmas::io::json::AgentPtrSerializer<json, void>::from_json(j)};\
 		}\
 \
 		void adl_serializer<fpmas::api::model::WeakAgentPtr>\
 			::to_json(json& j, const fpmas::api::model::WeakAgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<json, void>::to_json(j, data);\
+			fpmas::io::json::AgentPtrSerializer<json, void>::to_json(j, data);\
 		}\
 		fpmas::api::model::WeakAgentPtr adl_serializer<fpmas::api::model::WeakAgentPtr>\
 			::from_json(const json& j) {\
-			return fpmas::model::AgentPtrSerializer<json, void>::from_json(j);\
+			return fpmas::io::json::AgentPtrSerializer<json, void>::from_json(j);\
 		}\
 	}\
 	namespace fpmas { namespace io { namespace json {\
 		void light_serializer<fpmas::api::model::AgentPtr>::to_json(light_json& j, const fpmas::api::model::AgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<light_json, void>::to_json(j, data);\
+			AgentPtrSerializer<light_json, void>::to_json(j, data);\
 		}\
 		fpmas::api::model::AgentPtr light_serializer<fpmas::api::model::AgentPtr>::from_json(const light_json& j) {\
-			return {fpmas::model::AgentPtrSerializer<light_json, void>::from_json(j)};\
+			return {AgentPtrSerializer<light_json, void>::from_json(j)};\
 		}\
 		\
 		void light_serializer<fpmas::api::model::WeakAgentPtr>\
 			::to_json(light_json& j, const fpmas::api::model::WeakAgentPtr& data) {\
-			fpmas::model::AgentPtrSerializer<light_json, void>::to_json(j, data);\
+			AgentPtrSerializer<light_json, void>::to_json(j, data);\
 		}\
 		fpmas::api::model::WeakAgentPtr light_serializer<fpmas::api::model::WeakAgentPtr>\
 			::from_json(const light_json& j) {\
-			return fpmas::model::AgentPtrSerializer<light_json, void>::from_json(j);\
+			return AgentPtrSerializer<light_json, void>::from_json(j);\
 		}\
 	}}}\
 
@@ -471,6 +485,7 @@ namespace fpmas { namespace io { namespace json {
 }}}
 
 namespace fpmas { namespace io { namespace json {
+	using api::utils::PtrWrapper;
 	using api::model::AgentPtr;
 	using api::model::WeakAgentPtr;
 
@@ -586,7 +601,8 @@ namespace fpmas { namespace io { namespace json {
 			 * unserialize the agent type id)
 			 */
 			static WeakAgentPtr from_json(const JsonType& j) {
-				fpmas::api::model::TypeId id = j.at("type").template get<fpmas::api::model::TypeId>();
+				fpmas::api::model::TypeId id = j.at("type")
+					.template get<fpmas::api::model::TypeId>();
 				if(id == Type::TYPE_ID) {
 					auto agent = j.at("agent").template get<TypedAgentPtr<Type>>();
 					for(auto gid : j.at("gids")

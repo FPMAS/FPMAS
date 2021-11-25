@@ -62,7 +62,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html">datapack</a></li><li class="navelem"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01WeakAgentPtr_01_4.html">Serializer&lt; WeakAgentPtr &gt;</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespacefpmas.html">fpmas</a></li><li class="navelem"><a class="el" href="namespacefpmas_1_1io.html">io</a></li><li class="navelem"><b>datapack</b></li><li class="navelem"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01WeakAgentPtr_01_4.html">Serializer&lt; WeakAgentPtr &gt;</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -77,14 +77,14 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a8465e65971a83af580ae0efee25958dc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01WeakAgentPtr_01_4.html#a8465e65971a83af580ae0efee25958dc">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;o, const WeakAgentPtr &amp;ptr)</td></tr>
+<tr class="memitem:a8465e65971a83af580ae0efee25958dc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01WeakAgentPtr_01_4.html#a8465e65971a83af580ae0efee25958dc">to_datapack</a> (<a class="el" href="datapack_8h.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;o, const WeakAgentPtr &amp;ptr)</td></tr>
 <tr class="separator:a8465e65971a83af580ae0efee25958dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae065a87932e668d9d92aba5182d84208"><td class="memItemLeft" align="right" valign="top">static WeakAgentPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01WeakAgentPtr_01_4.html#ae065a87932e668d9d92aba5182d84208">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;o)</td></tr>
+<tr class="memitem:ae065a87932e668d9d92aba5182d84208"><td class="memItemLeft" align="right" valign="top">static WeakAgentPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01WeakAgentPtr_01_4.html#ae065a87932e668d9d92aba5182d84208">from_datapack</a> (const <a class="el" href="datapack_8h.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;o)</td></tr>
 <tr class="separator:ae065a87932e668d9d92aba5182d84208"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="namespacefpmas_1_1api_1_1model.html#a2768be94a44ce8a833c65ba67b95864c">fpmas::api::model::WeakAgentPtr</a> <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a> serialization rules <b>declaration</b>.</p>
-<p ><code>to_datapack</code> and <code>from_datapack</code> methods must be <em>defined</em> by the user at compile time, depending on its own Agent types, using the FPMAS_DATAPACK_SET_UP() macro, that must be called from a <b>source</b> file. Otherwise, linker errors will be thrown. </p>
+<p ><code>to_datapack</code> and <code>from_datapack</code> methods must be <em>defined</em> by the user at compile time, depending on its own Agent types, using the <a class="el" href="serializer_8h.html#a555b53d364c9e2bf45fcaa2271218315">FPMAS_DATAPACK_SET_UP()</a> macro, that must be called from a <b>source</b> file. Otherwise, linker errors will be thrown. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a8465e65971a83af580ae0efee25958dc" name="a8465e65971a83af580ae0efee25958dc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8465e65971a83af580ae0efee25958dc">&#9670;&nbsp;</a></span>to_datapack()</h2>
@@ -98,7 +98,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">static void <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; WeakAgentPtr &gt;::to_datapack </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="datapack_8h.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
           <td class="paramname"><em>o</em>, </td>
         </tr>
         <tr>
@@ -135,7 +135,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">static WeakAgentPtr <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; WeakAgentPtr &gt;::from_datapack </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
+          <td class="paramtype">const <a class="el" href="datapack_8h.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
           <td class="paramname"><em>o</em></td><td>)</td>
           <td></td>
         </tr>
