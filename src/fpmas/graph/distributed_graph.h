@@ -919,6 +919,9 @@ namespace nlohmann {
 				 * @param graph graph to serialize
 				 */
 				static void to_json(json& j, const fpmas::api::graph::DistributedGraph<T>& graph) {
+					// Specifies the rank on which the local distributed graph
+					// was built
+					j["rank"] = graph.getMpiCommunicator().getRank();
 					for(auto node : graph.getNodes())
 						j["graph"]["nodes"].push_back({
 								NodePtrWrapper<T>(node.second),
@@ -935,6 +938,7 @@ namespace nlohmann {
 					}
 					j["edge_id"] = graph.currentEdgeId();
 					j["node_id"] = graph.currentNodeId();
+					j["loc_manager"] = graph.getLocationManager();
 					nlohmann::json::json_serializer<fpmas::api::graph::LocationManager<T>, void>
 						::to_json(j["loc_manager"], graph.getLocationManager());
 				}
