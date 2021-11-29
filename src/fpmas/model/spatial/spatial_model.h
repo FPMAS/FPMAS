@@ -807,12 +807,22 @@ namespace fpmas {
 			static const api::model::GroupId TEMP_GROUP_ID = -2;
 
 			/**
-			 * \copydoc api::model::SpatialAgentBuilder::build
+			 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, SpatialAgentFactory<CellType>&, SpatialAgentMapping<MappingCellType>&)
 			 */
 			void build(
 					api::model::SpatialModel<CellType>& model,
 					api::model::GroupList groups,
 					api::model::SpatialAgentFactory<CellType>& factory,
+					api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
+					) override;
+
+			/**
+			 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, std::function<SpatialAgent<CellType>*()>, SpatialAgentMapping<MappingCellType>&)
+			 */
+			void build(
+					api::model::SpatialModel<CellType>& model,
+					api::model::GroupList groups,
+					std::function<api::model::SpatialAgent<CellType>*()> factory,
 					api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
 					) override;
 	};
@@ -824,12 +834,23 @@ namespace fpmas {
 				api::model::SpatialAgentFactory<CellType>& factory,
 				api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
 				) {
+			build(model, groups, [&factory] () {return factory.build();}, agent_mapping);
+		}
+
+	template<typename CellType, typename MappingCellType>
+		void SpatialAgentBuilder<CellType, MappingCellType>::build(
+				api::model::SpatialModel<CellType>& model,
+				api::model::GroupList groups,
+				std::function<api::model::SpatialAgent<CellType>*()> factory,
+				api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
+				) {
 			model::DefaultBehavior _;
-			api::model::MoveAgentGroup<CellType>& temp_group = model.buildMoveGroup(TEMP_GROUP_ID, _);
+			api::model::MoveAgentGroup<CellType>& temp_group
+				= model.buildMoveGroup(TEMP_GROUP_ID, _);
 			std::vector<api::model::SpatialAgent<CellType>*> agents;
 			for(auto cell : model.cells()) {
 				for(std::size_t i = 0; i < agent_mapping.countAt(cell); i++) {
-					auto agent = factory.build();
+					auto agent = factory();
 					agents.push_back(agent);
 					temp_group.add(agent);
 					for(api::model::AgentGroup& group : groups)

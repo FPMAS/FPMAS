@@ -703,6 +703,38 @@ namespace fpmas { namespace api { namespace model {
 					SpatialAgentMapping<MappingCellType>& agent_mapping
 					) = 0;
 
+			/**
+			 * Same as build(SpatialModel<CellType>&, GroupList, SpatialAgentFactory<CellType>&, SpatialAgentMapping<MappingCellType>&)
+			 * but uses a call to `factory()` instead of the
+			 * SpatialAgentFactory::build() method to build Agents.
+			 *
+			 * It might be convenient to initialize the `factory` from a lambda
+			 * function:
+			 * ```cpp
+			 * int data;
+			 *
+			 * agent_builder.build(
+			 * 	model, {agent_group},
+			 * 	[&data] () {return new Agent(data);}, // Called only when required
+			 * 	agent_mapping
+			 * );
+			 * ```
+			 *
+			 * @param model model in which agent are initialized. More
+			 * precisely, agents are initialized within the Cell network
+			 * defined by `model.cells()`
+			 * @param groups groups to which each agent must be added
+			 * @param factory callable object used to allocate agents
+			 * @param agent_mapping agent mapping used to compute the number of
+			 * agents to initialize on each cell
+			 */
+			virtual void build(
+					SpatialModel<CellType>& model,
+					GroupList groups,
+					std::function<SpatialAgent<CellType>*()> factory,
+					SpatialAgentMapping<MappingCellType>& agent_mapping
+					) = 0;
+
 			virtual ~SpatialAgentBuilder() {}
 	};
 
