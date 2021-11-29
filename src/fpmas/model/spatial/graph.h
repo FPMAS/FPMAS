@@ -1,6 +1,12 @@
 #ifndef FPMAS_MODEL_SPATIAL_GRAPH_H
 #define FPMAS_MODEL_SPATIAL_GRAPH_H
 
+/**
+ * \file src/fpmas/model/spatial/graph.h
+ *
+ * Defines features that can be used to build spatial graph based models, i.e.
+ * models where agents are moving on an arbitrary graph.
+ */
 #include "spatial_model.h"
 
 namespace fpmas { namespace model {

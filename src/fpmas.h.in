@@ -10,6 +10,7 @@
 #include "fpmas/model/spatial/grid_agent_mapping.h"
 #include "fpmas/model/spatial/grid_load_balancing.h"
 #include "fpmas/model/spatial/cell_load_balancing.h"
+#include "fpmas/model/spatial/graph.h"
 #include "fpmas/io/formatted_output.h"
 #include "fpmas/io/csv_output.h"
 #include "fpmas/io/json_output.h"
