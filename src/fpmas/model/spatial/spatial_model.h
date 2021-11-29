@@ -43,8 +43,7 @@
 #define FPMAS_PERCEPTION_RANGE(RANGE)\
 	const decltype(RANGE)& perceptionRange() const override {return RANGE;}
 
-namespace fpmas {
-	namespace model {
+namespace fpmas { namespace model {
 	using api::model::SpatialModelLayers;
 	using api::model::DistributedId;
 
@@ -68,60 +67,61 @@ namespace fpmas {
 	 * api::model::MoveAgentGroup implementation.
 	 */
 	template<typename CellType>
-	class MoveAgentGroup :
-		public api::model::MoveAgentGroup<CellType>,
-		public model::detail::AgentGroupBase {
-		private:
-			api::model::SpatialModel<CellType>& model;
-			DistributedMoveAlgorithm<CellType> dist_move_algo;
-		public:
-			/**
-			 * MoveAgentGroup constructor.
-			 *
-			 * The specified `behavior` is assumed to contain some
-			 * SpatialAgent::moveTo() instructions. This is not required, but
-			 * if it's not the case, the \DistributedMoveAlgorithm will be
-			 * systematically executed while it's useless.
-			 *
-			 * @param group_id unique group id
-			 * @param behavior behavior to execute on agents of the group
-			 * @param model associated spatial model
-			 * @param end_condition distributed move algorithm end condition
-			 */
-			MoveAgentGroup(
-					api::model::GroupId group_id,
-					const api::model::Behavior& behavior,
-					api::model::SpatialModel<CellType>& model,
-					api::model::EndCondition<CellType>& end_condition) :
-			AgentGroupBase(group_id, model.graph(), behavior),
-			model(model),
-			dist_move_algo(model, *this, model.getGroup(CELL_GROUP_ID), end_condition) {
-			}
+		class MoveAgentGroup :
+			public api::model::MoveAgentGroup<CellType>,
+			public model::detail::AgentGroupBase {
+				private:
+					api::model::SpatialModel<CellType>& model;
+					DistributedMoveAlgorithm<CellType> dist_move_algo;
 
-			/**
-			 * Returns a \JobList containing:
-			 * 1. The execution of `behavior` on agents of the group, where
-			 * SpatialAgent::moveTo() operations are potentially performed,
-			 * including any necessary synchronization at the end of all
-			 * behavior executions. Corresponds to the agentExecutionJob() in
-			 * practice.
-			 * 2. The execution of a \DistributedMoveAlgorithm, according to
-			 * the specified `model`, to commit the previous `moveTo`
-			 * operations and update agents location, mobility fields and
-			 * perceptions. The algorithm is executed only on agents
-			 * contained in the group. However, notice that those agents'
-			 * perceptions are still updated with any other agents located on
-			 * `model`'s cells, even if they are not included in this group.
-			 *
-			 * @return list of \Jobs associated to this \AgentGroup
-			 */
-			api::scheduler::JobList jobs() const override;
+				public:
+					/**
+					 * MoveAgentGroup constructor.
+					 *
+					 * The specified `behavior` is assumed to contain some
+					 * SpatialAgent::moveTo() instructions. This is not required, but
+					 * if it's not the case, the \DistributedMoveAlgorithm will be
+					 * systematically executed while it's useless.
+					 *
+					 * @param group_id unique group id
+					 * @param behavior behavior to execute on agents of the group
+					 * @param model associated spatial model
+					 * @param end_condition distributed move algorithm end condition
+					 */
+					MoveAgentGroup(
+							api::model::GroupId group_id,
+							const api::model::Behavior& behavior,
+							api::model::SpatialModel<CellType>& model,
+							api::model::EndCondition<CellType>& end_condition) :
+						AgentGroupBase(group_id, model.graph(), behavior),
+						model(model),
+						dist_move_algo(model, *this, model.getGroup(CELL_GROUP_ID), end_condition) {
+						}
 
-			api::model::DistributedMoveAlgorithm<CellType>& distributedMoveAlgorithm()  override {
-				return dist_move_algo;
-			}
-	};
-		
+					/**
+					 * Returns a \JobList containing:
+					 * 1. The execution of `behavior` on agents of the group, where
+					 * SpatialAgent::moveTo() operations are potentially performed,
+					 * including any necessary synchronization at the end of all
+					 * behavior executions. Corresponds to the agentExecutionJob() in
+					 * practice.
+					 * 2. The execution of a \DistributedMoveAlgorithm, according to
+					 * the specified `model`, to commit the previous `moveTo`
+					 * operations and update agents location, mobility fields and
+					 * perceptions. The algorithm is executed only on agents
+					 * contained in the group. However, notice that those agents'
+					 * perceptions are still updated with any other agents located on
+					 * `model`'s cells, even if they are not included in this group.
+					 *
+					 * @return list of \Jobs associated to this \AgentGroup
+					 */
+					api::scheduler::JobList jobs() const override;
+
+					api::model::DistributedMoveAlgorithm<CellType>& distributedMoveAlgorithm()  override {
+						return dist_move_algo;
+					}
+			};
+
 	template<typename CellType>
 		api::scheduler::JobList MoveAgentGroup<CellType>::jobs() const {
 			api::scheduler::JobList job_list;
@@ -250,7 +250,7 @@ namespace fpmas {
 			 * the PERCEIVE layer and is contained in the agent perception range.
 			 */
 			virtual void growPerceptionField(api::model::Agent* agent) = 0;
-			
+
 		public:
 			std::vector<api::model::Cell*> successors() override;
 
@@ -459,26 +459,26 @@ namespace fpmas {
 		template<typename> class SyncMode,
 		typename CellType = api::model::Cell,
 		typename EndCondition = DynamicEndCondition<CellType>>
-	class SpatialModel :
-		public virtual api::model::SpatialModel<CellType>,
-		public Model<SyncMode> {
-		private:
-			AgentGroup& cell_group {this->buildGroup(CELL_GROUP_ID)};
-			EndCondition dist_move_algo_end_condition;
+			class SpatialModel :
+				public virtual api::model::SpatialModel<CellType>,
+				public Model<SyncMode> {
+					private:
+						AgentGroup& cell_group {this->buildGroup(CELL_GROUP_ID)};
+						EndCondition dist_move_algo_end_condition;
 
-		public:
-			using Model<SyncMode>::Model;
+					public:
+						using Model<SyncMode>::Model;
 
-			/**
-			 * \copydoc fpmas::api::model::SpatialModel::add(CellType*)
-			 */
-			void add(CellType* cell) override;
-			std::vector<CellType*> cells() override;
-			fpmas::api::model::AgentGroup& cellGroup() override;
-			MoveAgentGroup<CellType>& buildMoveGroup(
-					api::model::GroupId id,
-					const api::model::Behavior& behavior) override;
-	};
+						/**
+						 * \copydoc fpmas::api::model::SpatialModel::add(CellType*)
+						 */
+						void add(CellType* cell) override;
+						std::vector<CellType*> cells() override;
+						fpmas::api::model::AgentGroup& cellGroup() override;
+						MoveAgentGroup<CellType>& buildMoveGroup(
+								api::model::GroupId id,
+								const api::model::Behavior& behavior) override;
+				};
 
 	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
 		void SpatialModel<SyncMode, CellType, EndCondition>::add(CellType* cell) {
@@ -522,48 +522,48 @@ namespace fpmas {
 	 * @see GridAgent
 	 */
 	template<typename AgentType, typename CellType, typename Derived = AgentType>
-	class SpatialAgentBase :
-		public virtual api::model::SpatialAgent<CellType>,
-		public model::AgentBase<AgentType, SpatialAgentBase<AgentType, CellType, Derived>> {
-			friend nlohmann::adl_serializer<
-				api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
-			friend fpmas::io::datapack::Serializer<
-				api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
+		class SpatialAgentBase :
+			public virtual api::model::SpatialAgent<CellType>,
+			public model::AgentBase<AgentType, SpatialAgentBase<AgentType, CellType, Derived>> {
+				friend nlohmann::adl_serializer<
+					api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
+				friend fpmas::io::datapack::Serializer<
+					api::utils::PtrWrapper<SpatialAgentBase<AgentType, CellType, Derived>>>;
 
-			public:
-			/**
-			 * The type that must be used in FPMAS_REGISTER_AGENT_TYPES and
-			 * FPMAS_JSON_SET_UP to enable json serialization of `AgentType`,
-			 * which is the dynamic type of any SpatialAgentBase<AgentType,
-			 * CellType, Derived>.
-			 *
-			 * \par Example
-			 * ```cpp
-			 * class UserAgent : public fpmas::model::GridAgent<UserAgent> {
-			 *    ...
-			 * };
-			 * 
-			 * // alternatively, custom json serialization rules might be
-			 * // defined
-			 * FPMAS_DEFAULT_JSON(UserAgent)
-			 *
-			 * ...
-			 *
-			 * FPMAS_JSON_SET_UP(..., UserAgent::JsonBase, ...)
-			 *
-			 * int main(int argc, char** argv) {
-			 *     FPMAS_REGISTER_AGENT_TYPES(..., UserAgent::JsonBase, ...)
-			 *     ...
-			 * }
-			 * ```
-			 */
-			typedef SpatialAgentBase<AgentType, CellType, Derived> JsonBase;
+				public:
+				/**
+				 * The type that must be used in FPMAS_REGISTER_AGENT_TYPES and
+				 * FPMAS_JSON_SET_UP to enable json serialization of `AgentType`,
+				 * which is the dynamic type of any SpatialAgentBase<AgentType,
+				 * CellType, Derived>.
+				 *
+				 * \par Example
+				 * ```cpp
+				 * class UserAgent : public fpmas::model::GridAgent<UserAgent> {
+				 *    ...
+				 * };
+				 * 
+				 * // alternatively, custom json serialization rules might be
+				 * // defined
+				 * FPMAS_DEFAULT_JSON(UserAgent)
+				 *
+				 * ...
+				 *
+				 * FPMAS_JSON_SET_UP(..., UserAgent::JsonBase, ...)
+				 *
+				 * int main(int argc, char** argv) {
+				 *     FPMAS_REGISTER_AGENT_TYPES(..., UserAgent::JsonBase, ...)
+				 *     ...
+				 * }
+				 * ```
+				 */
+				typedef SpatialAgentBase<AgentType, CellType, Derived> JsonBase;
 
-			private:
+				private:
 				mutable CellType* location_cell_buffer = nullptr;
 				DistributedId location_id;
 
-			protected:
+				protected:
 				/**
 				 * Updates this SpatialAgent location.
 				 *
@@ -618,7 +618,7 @@ namespace fpmas {
 						return this->template outNeighbors<NeighborType>(SpatialModelLayers::PERCEPTION);
 					}
 
-			public:
+				public:
 				/**
 				 * \copydoc fpmas::api::model::SpatialAgent::initLocation
 				 */
@@ -637,7 +637,7 @@ namespace fpmas {
 				 * \copydoc fpmas::api::model::SpatialAgent::locationCell
 				 */
 				CellType* locationCell() const override;
-		};
+			};
 
 	template<typename AgentType, typename CellType, typename Derived>
 		void SpatialAgentBase<AgentType, CellType, Derived>::updateLocation(CellType* cell) {
@@ -732,7 +732,7 @@ namespace fpmas {
 				this->model()->unlink(cell_edge);
 			}
 		}
-	
+
 	template<typename AgentType, typename CellType, typename Derived>
 		void SpatialAgentBase<AgentType, CellType, Derived>::moveTo(DistributedId cell_id) {
 			bool found = false;
@@ -776,6 +776,51 @@ namespace fpmas {
 			};
 
 	/**
+	 * A range that does not contain any cell, not even the location cell.
+	 *
+	 * @tparam CellType type of cells on which the agent moves
+	 */
+	template<typename CellType>
+		struct VoidRange : public api::model::Range<CellType> {
+			/**
+			 * Always returns false: the range does not contain anything.
+			 */
+			bool contains(CellType*, CellType*) const override {
+				return false;
+			}
+
+			/**
+			 * Returns 0.
+			 */
+			std::size_t radius(CellType*) const override {
+				return 0;
+			}
+		};
+
+	/**
+	 * A range that only contains the current location of an agent, i.e. the
+	 * origin of the range.
+	 *
+	 * @tparam CellType type of cells on which the agent moves
+	 */
+	template<typename CellType>
+		struct LocationRange : public api::model::Range<CellType> {
+			/**
+			 * Returns true iff `cell` is `location`.
+			 */
+			bool contains(CellType* location, CellType* cell) const override {
+				return location->node()->getId() == cell->node()->getId();
+			}
+
+			/**
+			 * Returns 0.
+			 */
+			std::size_t radius(CellType*) const override {
+				return 0;
+			}
+		};
+
+	/**
 	 * api::model::SpatialAgentFactory implementation that uses `AgentType`s
 	 * default constructor.
 	 */
@@ -798,34 +843,34 @@ namespace fpmas {
 	 * api::model::SpatialAgentBuilder implementation.
 	 */
 	template<typename CellType, typename MappingCellType = api::model::Cell>
-	class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType, MappingCellType>{
-		public:
-			/**
-			 * FPMAS reserved group id used by the SpatialAgentBuilder
-			 * temporary group used to build() agents.
-			 */
-			static const api::model::GroupId TEMP_GROUP_ID = -2;
+		class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType, MappingCellType>{
+			public:
+				/**
+				 * FPMAS reserved group id used by the SpatialAgentBuilder
+				 * temporary group used to build() agents.
+				 */
+				static const api::model::GroupId TEMP_GROUP_ID = -2;
 
-			/**
-			 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, SpatialAgentFactory<CellType>&, SpatialAgentMapping<MappingCellType>&)
-			 */
-			void build(
-					api::model::SpatialModel<CellType>& model,
-					api::model::GroupList groups,
-					api::model::SpatialAgentFactory<CellType>& factory,
-					api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
-					) override;
+				/**
+				 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, SpatialAgentFactory<CellType>&, SpatialAgentMapping<MappingCellType>&)
+				 */
+				void build(
+						api::model::SpatialModel<CellType>& model,
+						api::model::GroupList groups,
+						api::model::SpatialAgentFactory<CellType>& factory,
+						api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
+						) override;
 
-			/**
-			 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, std::function<SpatialAgent<CellType>*()>, SpatialAgentMapping<MappingCellType>&)
-			 */
-			void build(
-					api::model::SpatialModel<CellType>& model,
-					api::model::GroupList groups,
-					std::function<api::model::SpatialAgent<CellType>*()> factory,
-					api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
-					) override;
-	};
+				/**
+				 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, std::function<SpatialAgent<CellType>*()>, SpatialAgentMapping<MappingCellType>&)
+				 */
+				void build(
+						api::model::SpatialModel<CellType>& model,
+						api::model::GroupList groups,
+						std::function<api::model::SpatialAgent<CellType>*()> factory,
+						api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
+						) override;
+		};
 
 	template<typename CellType, typename MappingCellType>
 		void SpatialAgentBuilder<CellType, MappingCellType>::build(

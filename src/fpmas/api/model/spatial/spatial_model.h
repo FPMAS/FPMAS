@@ -168,6 +168,10 @@ namespace fpmas { namespace api { namespace model {
 				 * at most two cells to its left or to its right, whatever its
 				 * current position is (so, in this case, there is no need to
 				 * use the `origin` parameter).
+				 *
+				 * @param origin origin cell of the range (typically, the
+				 * location of the agent associated to the range)
+				 * @return range radius
 				 */
 				virtual std::size_t radius(CellType* origin) const = 0;
 

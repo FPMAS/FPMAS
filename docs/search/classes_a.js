@@ -32,6 +32,7 @@ var searchData=
   ['localizednode_29',['LocalizedNode',['../structfpmas_1_1graph_1_1detail_1_1LocalizedNode.html',1,'fpmas::graph::detail']]],
   ['localizednodeview_30',['LocalizedNodeView',['../structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html',1,'fpmas::graph::detail']]],
   ['locationmanager_31',['LocationManager',['../classfpmas_1_1api_1_1graph_1_1LocationManager.html',1,'fpmas::api::graph::LocationManager&lt; T &gt;'],['../classfpmas_1_1graph_1_1LocationManager.html',1,'fpmas::graph::LocationManager&lt; T &gt;']]],
-  ['lockguard_32',['LockGuard',['../classfpmas_1_1model_1_1LockGuard.html',1,'fpmas::model::LockGuard'],['../classfpmas_1_1synchro_1_1LockGuard.html',1,'fpmas::synchro::LockGuard&lt; T &gt;']]],
-  ['lockguard_3c_20fpmas_3a_3aapi_3a_3amodel_3a_3aagentptr_20_3e_33',['LockGuard&lt; fpmas::api::model::AgentPtr &gt;',['../classfpmas_1_1synchro_1_1LockGuard.html',1,'fpmas::synchro']]]
+  ['locationrange_32',['LocationRange',['../structfpmas_1_1model_1_1LocationRange.html',1,'fpmas::model']]],
+  ['lockguard_33',['LockGuard',['../classfpmas_1_1model_1_1LockGuard.html',1,'fpmas::model::LockGuard'],['../classfpmas_1_1synchro_1_1LockGuard.html',1,'fpmas::synchro::LockGuard&lt; T &gt;']]],
+  ['lockguard_3c_20fpmas_3a_3aapi_3a_3amodel_3a_3aagentptr_20_3e_34',['LockGuard&lt; fpmas::api::model::AgentPtr &gt;',['../classfpmas_1_1synchro_1_1LockGuard.html',1,'fpmas::synchro']]]
 ];

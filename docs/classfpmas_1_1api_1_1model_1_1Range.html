@@ -74,6 +74,16 @@ $(function() {
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="api_2model_2spatial_2spatial__model_8h_source.html">spatial_model.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for fpmas::api::model::Range&lt; CellType &gt;:</div>
+<div class="dyncontent">
+<div class="center"><img src="classfpmas_1_1api_1_1model_1_1Range__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1model_1_1Range_3_01CellType_01_4_inherit__map" alt="Inheritance graph"/></div>
+<map name="afpmas_1_1api_1_1model_1_1Range_3_01CellType_01_4_inherit__map" id="afpmas_1_1api_1_1model_1_1Range_3_01CellType_01_4_inherit__map">
+<area shape="rect" title=" " alt="" coords="140,5,275,47"/>
+<area shape="rect" href="structfpmas_1_1model_1_1LocationRange.html" title=" " alt="" coords="5,95,201,136"/>
+<area shape="rect" href="structfpmas_1_1model_1_1VoidRange.html" title=" " alt="" coords="225,95,397,136"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -134,6 +144,8 @@ template&lt;typename CellType &gt; </div>
   </dd>
 </dl>
 
+<p>Implemented in <a class="el" href="structfpmas_1_1model_1_1VoidRange.html#a5513220e41d454661dbdf4f1453b41e8">fpmas::model::VoidRange&lt; CellType &gt;</a>, and <a class="el" href="structfpmas_1_1model_1_1LocationRange.html#ad939f814a8591ebb9a3ac0d48c884124">fpmas::model::LocationRange&lt; CellType &gt;</a>.</p>
+
 </div>
 </div>
 <a id="a6dc423fc1d7ea52bdd5c640c868d9b91" name="a6dc423fc1d7ea52bdd5c640c868d9b91"></a>
@@ -166,7 +178,16 @@ template&lt;typename CellType &gt; </div>
 distance", and not confused with any other type of distance that might be associated to <code>CellType</code>.</p>
 <p >It represents the maximum count of edges on a shortest path from <code>origin</code> to any point in the range in the current <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network. In consequence, implementations will probably depend on the underlying environment implementation on which this range is used (Grid, generic graph, geographic graph...).</p>
 <p >Here is a trivial example. Consider that the current environment (or "Cell network") is a simple chain of cells, with a distance of 1km between each cell. The underlying graph might be represented as follow: 1 &ndash; 2 &ndash; 3 &ndash; 4 &ndash; 5 &ndash; 6 &ndash; ...</p>
-<p >Now, let's implement a <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> that represents the fact that a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> can move 2km to its left or to its right. Considering the definition above, the radius returned by this method will be 2, since in the current environment a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> associated to this <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> will be able to move at most two cells to its left or to its right, whatever its current position is (so, in this case, there is no need to use the <code>origin</code> parameter). </p>
+<p >Now, let's implement a <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> that represents the fact that a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> can move 2km to its left or to its right. Considering the definition above, the radius returned by this method will be 2, since in the current environment a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> associated to this <a class="el" href="classfpmas_1_1api_1_1model_1_1Range.html">Range</a> will be able to move at most two cells to its left or to its right, whatever its current position is (so, in this case, there is no need to use the <code>origin</code> parameter).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">origin</td><td>origin cell of the range (typically, the location of the agent associated to the range) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>range radius </dd></dl>
+
+<p>Implemented in <a class="el" href="structfpmas_1_1model_1_1VoidRange.html#ab8a83913761dd5bf8e4ad799cc22328c">fpmas::model::VoidRange&lt; CellType &gt;</a>, and <a class="el" href="structfpmas_1_1model_1_1LocationRange.html#a1b1e511e1a0007969725317f3ea334c4">fpmas::model::LocationRange&lt; CellType &gt;</a>.</p>
 
 </div>
 </div>
