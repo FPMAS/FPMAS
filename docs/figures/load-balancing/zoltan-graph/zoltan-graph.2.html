@@ -1,0 +1,130 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+		#maincontainer {
+            width: 500;
+            height: 500;
+			text-align: center;
+		}
+
+        #mynetwork {
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+			margin: 10px;
+            /* float: left; */
+        }
+
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+	<div id = "maincontainer">
+		<div id = "mynetwork"></div>
+		
+		<button onclick="saveGraph()"> Save Graph </button>
+	</div>
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"borderWidth": 3, "color": {"background": "rgba(255,127,147,1.0)", "border": "rgba(255,0,40,1.0)", "highlight": {"background": "rgba(255,127,147,1.0)", "border": "rgba(255,0,40,1.0)"}}, "group": 0, "id": 0, "label": "[0, 2]", "shape": "circle", "shapeProperties": {"borderDashes": [12, 12]}}, {"borderWidth": 3, "color": {"background": "rgba(255,127,147,1.0)", "border": "rgba(255,0,40,1.0)", "highlight": {"background": "rgba(255,127,147,1.0)", "border": "rgba(255,0,40,1.0)"}}, "group": 0, "id": 1, "label": "[2, 2]", "shape": "circle", "shapeProperties": {"borderDashes": [12, 12]}}, {"borderWidth": 3, "color": {"background": "rgba(173,255,127,1.0)", "border": "rgba(91,255,0,1.0)", "highlight": {"background": "rgba(173,255,127,1.0)", "border": "rgba(91,255,0,1.0)"}}, "group": 1, "id": 2, "label": "[2, 1]", "shape": "circle", "shapeProperties": {"borderDashes": [12, 12]}}, {"borderWidth": 3, "color": {"background": "rgba(127,199,255,1.0)", "border": "rgba(0,143,255,1.0)", "highlight": {"background": "rgba(127,199,255,1.0)", "border": "rgba(0,143,255,1.0)"}}, "group": 2, "id": 3, "label": "[0, 1]", "shape": "circle", "shapeProperties": {}}, {"borderWidth": 3, "color": {"background": "rgba(255,127,223,1.0)", "border": "rgba(255,0,191,1.0)", "highlight": {"background": "rgba(255,127,223,1.0)", "border": "rgba(255,0,191,1.0)"}}, "group": 3, "id": 4, "label": "[1, 1]", "shape": "circle", "shapeProperties": {"borderDashes": [12, 12]}}, {"borderWidth": 3, "color": {"background": "rgba(127,199,255,1.0)", "border": "rgba(0,143,255,1.0)", "highlight": {"background": "rgba(127,199,255,1.0)", "border": "rgba(0,143,255,1.0)"}}, "group": 2, "id": 5, "label": "[1, 0]", "shape": "circle", "shapeProperties": {}}, {"borderWidth": 3, "color": {"background": "rgba(255,127,223,1.0)", "border": "rgba(255,0,191,1.0)", "highlight": {"background": "rgba(255,127,223,1.0)", "border": "rgba(255,0,191,1.0)"}}, "group": 3, "id": 6, "label": "[3, 0]", "shape": "circle", "shapeProperties": {"borderDashes": [12, 12]}}, {"borderWidth": 3, "color": {"background": "rgba(127,199,255,1.0)", "border": "rgba(0,143,255,1.0)", "highlight": {"background": "rgba(127,199,255,1.0)", "border": "rgba(0,143,255,1.0)"}}, "group": 2, "id": 7, "label": "[2, 0]", "shape": "circle", "shapeProperties": {}}]);
+        edges = new vis.DataSet([{"arrows": "to", "color": "rgba(255,0,191,1.0)", "from": 2, "title": "0", "to": 5}, {"arrows": "to", "color": "rgba(255,0,191,1.0)", "from": 0, "title": "0", "to": 5}, {"arrows": "to", "color": "rgba(255,0,191,1.0)", "from": 7, "title": "0", "to": 1}, {"arrows": "to", "color": "rgba(255,0,191,1.0)", "from": 7, "title": "0", "to": 3}, {"arrows": "to", "color": "rgba(255,0,191,1.0)", "from": 7, "title": "0", "to": 4}, {"arrows": "to", "color": "rgba(255,0,191,1.0)", "from": 6, "title": "0", "to": 5}, {"arrows": "to", "color": "rgba(255,0,191,1.0)", "from": 5, "title": "0", "to": 3}, {"arrows": "to", "color": "rgba(255,0,191,1.0)", "from": 7, "title": "0", "to": 6}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        
+
+        network = new vis.Network(container, data, options);
+	 
+        
+
+
+        
+
+        return network;
+
+    }
+
+	function saveGraph() {
+		var canvas = document.getElementsByTagName('canvas');
+		var data = canvas[0].toDataURL();
+		var link = document.createElement("a");
+		var graph_path = window.location.pathname;
+		var r = graph_path.match(/.*\/(.*).html/);
+		link.download = r[1] + ".png";
+		link.href = data;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		delete link;
+	}
+
+    drawGraph();
+
+</script>
+</body>
+</html>
