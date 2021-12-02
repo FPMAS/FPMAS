@@ -419,7 +419,7 @@ namespace fpmas {namespace api {namespace graph {
 			 * @deprecated
 			 * Deprecated in favor of balance(LoadBalancing<T>&, PartitionMode)
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.2, balance(LoadBalancing<T>&, PartitionMode))
 			virtual void balance(LoadBalancing<T>& lb) = 0;
 
 			/**
@@ -439,7 +439,7 @@ namespace fpmas {namespace api {namespace graph {
 			 * @deprecated
 			 * Deprecated in favor of balance(FixedVerticesLoadBalancing<T>&, PartitionMap, PartitionMode)
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.2, balance(FixedVerticesLoadBalancing<T>&, PartitionMap, PartitionMode))
 			virtual void balance(
 					FixedVerticesLoadBalancing<T>& lb,
 					PartitionMap fixed_vertices) = 0;

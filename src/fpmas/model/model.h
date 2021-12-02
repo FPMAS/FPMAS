@@ -66,7 +66,7 @@ namespace fpmas { namespace model {
 				 *
 				 * @param agent pointer to a generic AgentPtr
 				 */
-				[[deprecated]]
+				HEDLEY_DEPRECATED_FOR(1.1, Neighbor(AgentPtr*, AgentEdge*))
 				Neighbor(AgentPtr* agent)
 					: Neighbor(agent, nullptr) {}
 

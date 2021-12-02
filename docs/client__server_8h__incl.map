@@ -1,22 +1,23 @@
 <map id="src/fpmas/synchro/hard/api/client_server.h" name="src/fpmas/synchro/hard/api/client_server.h">
-<area shape="rect" id="node1" title=" " alt="" coords="369,5,527,47"/>
-<area shape="rect" id="node2" href="$enums_8h.html" title=" " alt="" coords="337,102,409,129"/>
-<area shape="rect" id="node17" href="$api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="463,95,641,136"/>
-<area shape="rect" id="node3" href="$datapack_8h.html" title=" " alt="" coords="247,184,387,211"/>
-<area shape="rect" id="node4" href="$ptr__wrapper_8h.html" title=" " alt="" coords="61,259,224,285"/>
-<area shape="rect" id="node5" href="$datapack__base__io_8h_source.html" title=" " alt="" coords="248,259,387,285"/>
-<area shape="rect" id="node6" href="$api_2communication_2communication_8h.html" title=" " alt="" coords="5,333,176,375"/>
-<area shape="rect" id="node13" title=" " alt="" coords="200,341,240,367"/>
-<area shape="rect" id="node14" title=" " alt="" coords="265,341,303,367"/>
-<area shape="rect" id="node15" title=" " alt="" coords="327,341,374,367"/>
-<area shape="rect" id="node16" title=" " alt="" coords="398,341,455,367"/>
-<area shape="rect" id="node7" href="$distributed__id_8h.html" title=" " alt="" coords="189,423,395,449"/>
-<area shape="rect" id="node8" title=" " alt="" coords="6,497,85,524"/>
-<area shape="rect" id="node9" title=" " alt="" coords="109,497,240,524"/>
-<area shape="rect" id="node10" title=" " alt="" coords="265,497,319,524"/>
-<area shape="rect" id="node11" title=" " alt="" coords="343,497,403,524"/>
-<area shape="rect" id="node12" title=" " alt="" coords="428,497,511,524"/>
-<area shape="rect" id="node18" href="$api_2graph_2edge_8h.html" title=" " alt="" coords="531,184,690,211"/>
-<area shape="rect" id="node19" href="$location__state_8h.html" title=" " alt="" coords="715,184,829,211"/>
-<area shape="rect" id="node20" title=" " alt="" coords="736,259,808,285"/>
+<area shape="rect" id="node1" title=" " alt="" coords="446,5,605,47"/>
+<area shape="rect" id="node2" href="$enums_8h.html" title=" " alt="" coords="415,102,487,129"/>
+<area shape="rect" id="node18" href="$api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="540,95,719,136"/>
+<area shape="rect" id="node3" href="$datapack_8h.html" title=" " alt="" coords="325,184,465,211"/>
+<area shape="rect" id="node4" href="$ptr__wrapper_8h.html" title=" " alt="" coords="139,259,301,285"/>
+<area shape="rect" id="node5" href="$datapack__base__io_8h_source.html" title=" " alt="" coords="325,259,464,285"/>
+<area shape="rect" id="node6" href="$api_2communication_2communication_8h.html" title=" " alt="" coords="83,333,253,375"/>
+<area shape="rect" id="node14" title=" " alt="" coords="277,341,317,367"/>
+<area shape="rect" id="node15" title=" " alt="" coords="342,341,381,367"/>
+<area shape="rect" id="node16" title=" " alt="" coords="405,341,451,367"/>
+<area shape="rect" id="node17" title=" " alt="" coords="475,341,533,367"/>
+<area shape="rect" id="node7" href="$distributed__id_8h.html" title=" " alt="" coords="266,423,473,449"/>
+<area shape="rect" id="node8" href="$hedley_8h_source.html" title=" " alt="" coords="5,497,117,524"/>
+<area shape="rect" id="node9" title=" " alt="" coords="142,497,221,524"/>
+<area shape="rect" id="node10" title=" " alt="" coords="245,497,376,524"/>
+<area shape="rect" id="node11" title=" " alt="" coords="401,497,455,524"/>
+<area shape="rect" id="node12" title=" " alt="" coords="479,497,539,524"/>
+<area shape="rect" id="node13" title=" " alt="" coords="564,497,647,524"/>
+<area shape="rect" id="node19" href="$api_2graph_2edge_8h.html" title=" " alt="" coords="609,184,767,211"/>
+<area shape="rect" id="node20" href="$location__state_8h.html" title=" " alt="" coords="792,184,907,211"/>
+<area shape="rect" id="node21" title=" " alt="" coords="813,259,885,285"/>
 </map>

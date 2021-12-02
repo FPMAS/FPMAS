@@ -1,6 +1,8 @@
 #ifndef FPMAS_DISTRIBUTED_ID_H
 #define FPMAS_DISTRIBUTED_ID_H
 
+#include "hedley/hedley.h"
+
 /** \file src/fpmas/api/graph/distributed_id.h
  * DistributedId implementation.
  */
@@ -214,10 +216,11 @@ namespace fpmas { namespace api { namespace graph {
 			}
 
 			/**
-			 * std::string conversion.
+			 * @deprecated
 			 *
+			 * std::string conversion.
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED(1.1)
 			//TODO: Removes this in 2.0 (conflicts with nlohmann::json, when
 			//declaring std::map<DistributedId, _>)
 			operator std::string() const {

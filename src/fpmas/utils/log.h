@@ -41,22 +41,22 @@ typedef enum {
 
 #define LOG_FORMAT(letter, format)  LOG_COLOR_ ## letter #letter " %li [%i] %s : " format LOG_RESET_COLOR "\n"
 
-#define FPMAS_LOGE( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_ERROR,   rank, tag, format, ##__VA_ARGS__)
-#define FPMAS_LOGW( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_WARN,    rank, tag, format, ##__VA_ARGS__)
-#define FPMAS_LOGI( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_INFO,    rank, tag, format, ##__VA_ARGS__)
-#define FPMAS_LOGD( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_DEBUG,   rank, tag, format, ##__VA_ARGS__)
-#define FPMAS_LOGV( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_VERBOSE, rank, tag, format, ##__VA_ARGS__)
+#define FPMAS_LOGE( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_ERROR,   rank, tag, format, __VA_ARGS__)
+#define FPMAS_LOGW( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_WARN,    rank, tag, format, __VA_ARGS__)
+#define FPMAS_LOGI( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_INFO,    rank, tag, format, __VA_ARGS__)
+#define FPMAS_LOGD( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_DEBUG,   rank, tag, format, __VA_ARGS__)
+#define FPMAS_LOGV( rank, tag, format, ... ) FPMAS_LOG_LEVEL(FPMAS_LOG_VERBOSE, rank, tag, format, __VA_ARGS__)
 
 #define FPMAS_LOG_LEVEL_IMPL(level, rank, tag, format, ...) do {                     \
-        if (level==FPMAS_LOG_ERROR )          { fpmas_log_write(LOG_FORMAT(E, format), current_time(), rank, tag, ##__VA_ARGS__); } \
-        else if (level==FPMAS_LOG_WARN )      { fpmas_log_write(LOG_FORMAT(W, format), current_time(), rank, tag, ##__VA_ARGS__); } \
-        else if (level==FPMAS_LOG_DEBUG )     { fpmas_log_write(LOG_FORMAT(D, format), current_time(), rank, tag, ##__VA_ARGS__); } \
-        else if (level==FPMAS_LOG_VERBOSE )   { fpmas_log_write(LOG_FORMAT(V, format), current_time(), rank, tag, ##__VA_ARGS__); } \
-        else                                { fpmas_log_write(LOG_FORMAT(I, format), current_time(), rank, tag, ##__VA_ARGS__); } \
+        if (level==FPMAS_LOG_ERROR )          { fpmas_log_write(LOG_FORMAT(E, format), current_time(), rank, tag, __VA_ARGS__); } \
+        else if (level==FPMAS_LOG_WARN )      { fpmas_log_write(LOG_FORMAT(W, format), current_time(), rank, tag, __VA_ARGS__); } \
+        else if (level==FPMAS_LOG_DEBUG )     { fpmas_log_write(LOG_FORMAT(D, format), current_time(), rank, tag, __VA_ARGS__); } \
+        else if (level==FPMAS_LOG_VERBOSE )   { fpmas_log_write(LOG_FORMAT(V, format), current_time(), rank, tag, __VA_ARGS__); } \
+        else                                { fpmas_log_write(LOG_FORMAT(I, format), current_time(), rank, tag, __VA_ARGS__); } \
     } while(0)
 
 #define FPMAS_LOG_LEVEL(level, rank, tag, format, ...) do {               \
-        if ( LOG_LEVEL >= level ) FPMAS_LOG_LEVEL_IMPL(level, rank, tag, format, ##__VA_ARGS__); \
+        if ( LOG_LEVEL >= level ) FPMAS_LOG_LEVEL_IMPL(level, rank, tag, format, __VA_ARGS__); \
     } while(0)
 
 static auto start = std::chrono::system_clock::now();

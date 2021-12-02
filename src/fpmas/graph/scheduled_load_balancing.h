@@ -45,7 +45,6 @@ namespace fpmas { namespace graph {
 						api::runtime::Runtime& runtime
 						) : fixed_vertices_lb(fixed_vertices_lb), scheduler(scheduler), runtime(runtime) {}
 
-				[[deprecated]]
 				PartitionMap balance(api::graph::NodeMap<T> nodes) override;
 
 				PartitionMap balance(

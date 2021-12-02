@@ -47,7 +47,7 @@ namespace fpmas {namespace api { namespace graph {
 			 * @param node node to manage
 			 * @param initial_location initial rank of the node
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, addManagedNode(DistributedId, int))
 			virtual void addManagedNode(DistributedNode<T>* node, int initial_location) = 0;
 
 			/**
@@ -67,7 +67,7 @@ namespace fpmas {namespace api { namespace graph {
 			 *
 			 * @param node node to remove from managed nodes
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, removeManagedNode(DistributedId))
 			virtual void removeManagedNode(DistributedNode<T>* node) = 0;
 			/**
 			 * Removes the node corresponding to the specified `id` from the

@@ -40,7 +40,6 @@ namespace fpmas { namespace model {
 			/**
 			 * \copydoc api::graph::LoadBalancing::balance(NodeMap<T>)
 			 */
-			[[deprecated]]
 			api::graph::PartitionMap balance(
 					api::graph::NodeMap<api::model::AgentPtr> nodes
 					) override;

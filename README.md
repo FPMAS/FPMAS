@@ -25,6 +25,19 @@ balancing or write operations across processes.
 
 ![Simple model automatic distribution example on 4 cores](docs/img/mior_dist.png)
 
+- [Installation](#installation)
+  - [Dependencies](#dependencies)
+  - [FPMAS Platform](#fpmas-platform)
+  - [FPMAS Configuration](#fpmas-configuration)
+  - [Custom Installation Path](#custom-installation-path)
+- [Get Started](#get-started)
+- [Tests](#tests)
+  - [Local Tests](#local-tests)
+  - [Serialization Tests](#serialization-tests)
+  - [MPI Tests](#mpi-tests)
+- [Licence](#licence)
+- [Contacts](#contacts)
+
 # Installation
 ## Dependencies
 
@@ -81,7 +94,7 @@ See the [Zoltan
 documentation](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_usage.html)
 for more detailed installation instructions.
 
-## FPMAS
+## FPMAS Platform
 
 To use the latest FPMAS version, you can directly clone this repository :
 ```
@@ -106,7 +119,7 @@ syntax.
   represent node ids. Values such as
   [`std::uint64_t`](https://en.cppreference.com/w/cpp/types/integer)
 
-## Custom Installation Paths
+## Custom Installation Path
 
 CMake can be used to easily handle custom installation paths, what might be
 required on some architectures.
@@ -180,6 +193,15 @@ mpiexec -n 4 ./tests/mpi/fpmas_mpi_test
 
 Notice that any number of cores can be passed to the `mpiexec` `-n` option so
 that you can test FPMAS on any architecture.
+
+# Licence
+
+FPMAS is distributed under the [GNU GPL v3.0
+licence](https://github.com/FPMAS/FPMAS/blob/master/LICENSE).
+
+This repository also contains the [Hedley header
+file](https://github.com/nemequ/hedley), distributed under the [CC0-1.0
+licence](https://github.com/nemequ/hedley/blob/master/COPYING).
 
 # Contacts
 

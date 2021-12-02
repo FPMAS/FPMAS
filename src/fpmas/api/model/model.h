@@ -141,7 +141,7 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @return group id
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, groupIds())
 			virtual GroupId groupId() const = 0;
 
 			/**
@@ -160,7 +160,7 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @param id agent group id 
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, addGroupId())
 			virtual void setGroupId(GroupId id) = 0;
 
 			/**
@@ -187,12 +187,12 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @return pointer to agent group
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, groups())
 			virtual AgentGroup* group() = 0;
 			/**
 			 * \copydoc group()
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, groups())
 			virtual const AgentGroup* group() const = 0;
 
 			/**
@@ -217,7 +217,7 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @param group agent group
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, addGroup())
 			virtual void setGroup(AgentGroup* group) = 0;
 
 			/**
@@ -338,19 +338,19 @@ namespace fpmas { namespace api {namespace model {
 			 *
 			 * @return agent task
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, task(GroupId))
 			virtual AgentTask* task() = 0; 
 			/**
 			 * \copydoc task()
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, task(GroupId))
 			virtual const AgentTask* task() const = 0; 
 			/**
 			 * Sets the AgentTask associated to this Agent.
 			 *
 			 * @param task agent task
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, setTask(GroupId, AgentTask*))
 			virtual void setTask(AgentTask* task) = 0;
 
 			/**
@@ -391,11 +391,12 @@ namespace fpmas { namespace api {namespace model {
 			virtual const std::unordered_map<GroupId, AgentTask*>& tasks() = 0;
 
 			/**
-			 * Executes the behavior of the Agent.
+			 * @deprecated
 			 *
-			 * Notice that the behavior of an Agent can involve graph and node
-			 * operations, such as linking or unlinking, thanks to the Agent
-			 * methods graph() and node().
+			 * Executes the default behavior of the Agent.
+			 *
+			 * This will be remove in a next release, use api::model::Behavior
+			 * instead to use arbitrary functions as behaviors.
 			 */
 			virtual void act() = 0;
 
@@ -663,12 +664,13 @@ namespace fpmas { namespace api {namespace model {
 			 * release. Use agentExecutionJob() or jobs() instead, depending on
 			 * use case.
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, jobs())
 			virtual api::scheduler::Job& job() = 0;
+
 			/**
 			 * \copydoc job()
 			 */
-			[[deprecated]]
+			HEDLEY_DEPRECATED_FOR(1.1, jobs())
 			virtual const api::scheduler::Job& job() const = 0;
 
 			/**

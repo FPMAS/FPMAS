@@ -1,9 +1,10 @@
 <map id="src/fpmas/api/communication/communication.h" name="src/fpmas/api/communication/communication.h">
-<area shape="rect" id="node1" title=" " alt="" coords="195,5,388,47"/>
-<area shape="rect" id="node2" href="$distributed__id_8h.html" title=" " alt="" coords="188,95,395,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,169,84,196"/>
-<area shape="rect" id="node4" title=" " alt="" coords="109,169,239,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="264,169,319,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="343,169,403,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="427,169,510,196"/>
+<area shape="rect" id="node1" title=" " alt="" coords="273,5,466,47"/>
+<area shape="rect" id="node2" href="$distributed__id_8h.html" title=" " alt="" coords="266,95,473,121"/>
+<area shape="rect" id="node3" href="$hedley_8h_source.html" title=" " alt="" coords="5,169,117,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="142,169,221,196"/>
+<area shape="rect" id="node5" title=" " alt="" coords="245,169,376,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="401,169,455,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="479,169,539,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="564,169,647,196"/>
 </map>

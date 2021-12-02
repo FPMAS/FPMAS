@@ -66,6 +66,7 @@ namespace fpmas { namespace graph {
 				void removeManagedNode(api::graph::DistributedNode<T>* node) override {
 					this->managed_nodes_locations.erase(node->getId());
 				}
+
 				void removeManagedNode(DistributedId id) override {
 					this->managed_nodes_locations.erase(id);
 				}

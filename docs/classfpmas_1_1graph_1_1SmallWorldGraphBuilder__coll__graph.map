@@ -1,8 +1,0 @@
-<map id="fpmas::graph::SmallWorldGraphBuilder&lt; T &gt;" name="fpmas::graph::SmallWorldGraphBuilder&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="761,39,933,80"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder.html" title=" " alt="" coords="521,5,712,47"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1RandomGraphBuilder.html" title=" " alt="" coords="521,71,712,112"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1random_1_1DistributedGenerator.html" title=" " alt="" coords="211,40,391,81"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="5,66,161,122"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1random_1_1Generator.html" title=" " alt="" coords="213,105,388,147"/>
-</map>

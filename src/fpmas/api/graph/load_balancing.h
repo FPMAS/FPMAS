@@ -51,7 +51,7 @@ namespace fpmas { namespace api { namespace graph {
 				 * @deprecated
 				 * Deprecated in favor of balance(NodeMap<T>, PartitionMap, PartitionMode)
 				 */
-				[[deprecated]]
+				HEDLEY_DEPRECATED_FOR(1.2, balance(NodeMap<T>, PartitionMap, PartitionMode))
 				virtual PartitionMap balance(
 						NodeMap<T> nodes,
 						PartitionMap fixed_vertices
@@ -96,7 +96,7 @@ namespace fpmas { namespace api { namespace graph {
 				 * @deprecated
 				 * Deprecated in favor of balance(NodeMap<T>, PartitionMode)
 				 */
-				[[deprecated]]
+				HEDLEY_DEPRECATED_FOR(1.2, balance(NodeMap<T>, PartitionMode))
 				virtual PartitionMap balance(NodeMap<T> nodes) = 0;
 
 				/**

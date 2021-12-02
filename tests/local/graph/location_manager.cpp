@@ -65,7 +65,7 @@ TEST_F(LocationManagerTest, removeDistant) {
 
 TEST_F(LocationManagerTest, addManagedNode) {
 	MockDistributedNode<int, NiceMock> mock_node {DistributedId(2, 0)};
-	location_manager.addManagedNode(&mock_node, 2);
+	location_manager.addManagedNode(mock_node.getId(), 2);
 	ASSERT_THAT(location_manager.getCurrentLocations(), ElementsAre(
 				Pair(DistributedId(2, 0), 2)
 				));
@@ -73,9 +73,9 @@ TEST_F(LocationManagerTest, addManagedNode) {
 
 TEST_F(LocationManagerTest, removeManagedNode) {
 	MockDistributedNode<int, NiceMock> mock_node {DistributedId(2, 0)};
-	location_manager.addManagedNode(&mock_node, 2);
+	location_manager.addManagedNode(mock_node.getId(), 2);
 
-	location_manager.removeManagedNode(&mock_node);
+	location_manager.removeManagedNode(mock_node.getId());
 	ASSERT_THAT(location_manager.getCurrentLocations(), IsEmpty());
 }
 
@@ -116,9 +116,9 @@ class LocationManagerUpdateTest : public LocationManagerTest {
 			for(auto item : mock_local) {
 				local[item.first] = item.second;
 			}
-			location_manager.addManagedNode(nodes[0], 1);
-			location_manager.addManagedNode(nodes[1], 4);
-			location_manager.addManagedNode(nodes[2], 7);
+			location_manager.addManagedNode(nodes[0]->getId(), 1);
+			location_manager.addManagedNode(nodes[1]->getId(), 4);
+			location_manager.addManagedNode(nodes[2]->getId(), 7);
 			delete nodes[0];
 			delete nodes[1];
 			delete nodes[2];
