@@ -9,7 +9,7 @@ namespace fpmas { namespace api { namespace communication {
 			return false;
 		if(d1.size != d2.size)
 			return false;
-		for(int i = 0; i < d1.size; i++) {
+		for(std::size_t i = 0; i < d1.size; i++) {
 			if(d1.buffer[i] != d2.buffer[i])
 				return false;
 		}

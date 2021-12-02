@@ -130,7 +130,7 @@
 				 * @param o output ObjectPack
 				 */\
 				template<typename PackType>\
-				static void to_datapack(PackType& o, const fpmas::api::utils::PtrWrapper<AGENT>&) {\
+				static void to_datapack(PackType&, const fpmas::api::utils::PtrWrapper<AGENT>&) {\
 				}\
 \
 				/**\

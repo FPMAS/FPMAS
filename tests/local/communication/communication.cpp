@@ -216,17 +216,15 @@ void test_all_to_all(
 		{6, serialize<FakeType, typename Mpi::pack_type>(import_fake_2)}
 	};
 
-/*
- *    EXPECT_CALL(comm, allToAll(export_map_matcher, MPI_CHAR))
- *        .WillOnce(Return(import_map));
- *
- *    auto result = mpi.allToAll(export_map);
- *
- *    ASSERT_THAT(result, UnorderedElementsAre(
- *        Pair(2, import_fake_1),
- *        Pair(6, import_fake_2)
- *        ));
- */
+	EXPECT_CALL(comm, allToAll(export_map_matcher, MPI_CHAR))
+		.WillOnce(Return(import_map));
+
+	auto result = mpi.allToAll(export_map);
+
+	ASSERT_THAT(result, UnorderedElementsAre(
+		Pair(2, import_fake_1),
+		Pair(6, import_fake_2)
+		));
 }
 
 TEST_F(MpiTest, all_to_all_fake_test_json) {

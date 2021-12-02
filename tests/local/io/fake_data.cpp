@@ -36,13 +36,15 @@ namespace fpmas { namespace io { namespace datapack {
 	DefaultConstructibleData Serializer<DefaultConstructibleData>::from_datapack(const ObjectPack &pack) {
 		int i;
 		pack.read(i);
-		return {i};
+		DefaultConstructibleData data;
+		data.i = i;
+		return data;
 	}
 
-	void LightSerializer<DefaultConstructibleData>::to_datapack(LightObjectPack &pack, const DefaultConstructibleData &data) {
+	void LightSerializer<DefaultConstructibleData>::to_datapack(LightObjectPack &, const DefaultConstructibleData &) {
 	}
 
-	DefaultConstructibleData LightSerializer<DefaultConstructibleData>::from_datapack(const LightObjectPack &pack) {
+	DefaultConstructibleData LightSerializer<DefaultConstructibleData>::from_datapack(const LightObjectPack &) {
 		return {};
 	}
 
@@ -57,10 +59,10 @@ namespace fpmas { namespace io { namespace datapack {
 		return {i};
 	}
 
-	void LightSerializer<NonDefaultConstructibleData>::to_datapack(LightObjectPack &pack, const NonDefaultConstructibleData &data) {
+	void LightSerializer<NonDefaultConstructibleData>::to_datapack(LightObjectPack &, const NonDefaultConstructibleData &) {
 	}
 
-	NonDefaultConstructibleData LightSerializer<NonDefaultConstructibleData>::from_datapack(const LightObjectPack &pack) {
+	NonDefaultConstructibleData LightSerializer<NonDefaultConstructibleData>::from_datapack(const LightObjectPack &) {
 		return {0};
 	}
 
