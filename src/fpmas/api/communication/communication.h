@@ -41,8 +41,7 @@ namespace fpmas { namespace api { namespace communication {
 			/**
 			 * Allocates a void buffer, of size 0.
 			 */
-			DataPack() : size(0), count(0) {
-				buffer = (char*) std::malloc(0);
+			DataPack() : DataPack(0, 0) {
 			}
 
 			/**
@@ -95,10 +94,9 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param other DataPack to copy from
 			 */
 			DataPack& operator=(const DataPack& other) {
-				std::free(buffer);
 				size = other.size;
 				count = other.count;
-				buffer = (char*) std::malloc(size);
+				buffer = (char*) std::realloc(buffer, size);
 				std::memcpy(buffer, other.buffer, size);
 				return *this;
 			}
