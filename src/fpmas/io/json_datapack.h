@@ -37,6 +37,16 @@ namespace fpmas { namespace io { namespace datapack {
 		 */
 		template<typename T, typename JsonType>
 			struct BasicJsonSerializer {
+
+				/**
+				 * Returns the buffer size required to store the `JsonType`
+				 * representation of `item` into `pack`.
+				 */
+				template<typename PackType>
+					static std::size_t size(const PackType& pack, const T& item) {
+						return pack.template size(JsonType(item).dump());
+					}
+
 				/**
 				 * Serializes `data` to `pack`.
 				 *
@@ -44,13 +54,12 @@ namespace fpmas { namespace io { namespace datapack {
 				 * `JsonType(data).dump()` and written to `pack`.
 				 *
 				 * @param pack destination pack
-				 * @param data data to serialize
+				 * @param item item to serialize
 				 */
 				template<typename PackType>
-					static void to_datapack(PackType& pack, const T& data) {
-						std::string json_str = JsonType(data).dump();
-						pack.allocate(pack_size(json_str));
-						pack.write(json_str);
+					static void to_datapack(PackType& pack, const T& item) {
+						std::string json_str = JsonType(item).dump();
+						pack.template put(json_str);
 					}
 
 				/**
@@ -66,8 +75,49 @@ namespace fpmas { namespace io { namespace datapack {
 				template<typename PackType>
 					static T from_datapack(const PackType& pack) {
 						return JsonType::parse(
-								pack.template read<std::string>()
+								pack.template get<std::string>()
 								).template get<T>();
+					}
+			};
+
+		/**
+		 * std::string BasicJsonSerializer specialization.
+		 *
+		 * This is implicitly used by the generic BasicJsonSerializer defined
+		 * above to write dumped json strings to a BasicObjectPack.
+		 */
+		template<typename JsonType>
+			struct BasicJsonSerializer<std::string, JsonType> {
+				/**
+				 * Returns the size required to serialize the json string
+				 * `item` to `pack`.
+				 */
+				template<typename PackType>
+					static std::size_t size(const PackType& pack, const std::string& item) {
+						return Serializer<std::string>::size(pack, item);
+					}
+				/**
+				 * Serializes `item` into `pack` using the default
+				 * Serializer<std::string> specialization.
+				 *
+				 * @param pack destination BasicObjectPack
+				 * @param item string to serialize
+				 */
+				template<typename PackType>
+					static void to_datapack(PackType& pack, const std::string& item) {
+						Serializer<std::string>::to_datapack(pack, item);
+					}
+
+				/**
+				 * Unserializes a json string from `pack` using the default
+				 * SeriSerializer<std::string> specialization.
+				 *
+				 * @param pack source BasicObjectPack
+				 * @return unserialized json string
+				 */
+				template<typename PackType>
+					static std::string from_datapack(const PackType& pack) {
+						return Serializer<std::string>::from_datapack(pack);
 					}
 			};
 

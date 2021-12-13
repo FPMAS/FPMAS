@@ -66,27 +66,32 @@ $(function() {
 </div>
 </div><!-- top -->
 <div class="header">
-  <div class="summary">
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="structfpmas_1_1io_1_1datapack_1_1Serializer-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">fpmas::io::datapack::Serializer&lt; T, Enable &gt; Struct Template Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="datapack_8h_source.html">datapack.h</a>&gt;</code></p>
-<table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a9fd75a59eea50667cde9f282e5f8e314"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:a9fd75a59eea50667cde9f282e5f8e314"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html#a9fd75a59eea50667cde9f282e5f8e314">to_datapack</a> (PackType &amp;pack, const T &amp;item)</td></tr>
-<tr class="separator:a9fd75a59eea50667cde9f282e5f8e314"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4f424340fe244fcf0861c60bcbe38fdb"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:a4f424340fe244fcf0861c60bcbe38fdb"><td class="memTemplItemLeft" align="right" valign="top">static T&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html#a4f424340fe244fcf0861c60bcbe38fdb">from_datapack</a> (const PackType &amp;pack)</td></tr>
-<tr class="separator:a4f424340fe244fcf0861c60bcbe38fdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T, typename Enable = void&gt;<br />
-struct fpmas::io::datapack::Serializer&lt; T, Enable &gt;</div><p >Default serializer implementation, based on the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> specialization for the type T.</p>
+struct fpmas::io::datapack::Serializer&lt; T, Enable &gt;</div><p ><a class="el" href="structfpmas_1_1io_1_1Void.html">Void</a> <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> definition. Specializations should implement the following methods:</p>
+<ul>
+<li><p class="startli"><code>static std::size_t size(const ObjectPack&amp; p, const T&amp; data)</code></p>
+<p class="startli">Specifies the buffer size required to serialize <code>data</code> into <code>p</code>.</p>
+</li>
+<li><p class="startli"><code>static void to_datapack(ObjectPack&amp; p, const T&amp; data)</code></p>
+<p class="startli">Serializes <code>data</code> into <code>p</code>, typically using the put() method.</p>
+</li>
+<li><p class="startli"><code>static T to_datapack(const ObjectPack&amp; p)</code></p>
+<p class="startli">Unserializes <code>data</code> from <code>p</code>, typically using the get() method.</p>
+</li>
+</ul>
+<p >The following method can be optionally implemented, if the buffer size required to serialize an instance of T does not depend on the instance of T itself (e.g. <code>sizeof(int) + sizeof(char)</code>):</p>
+<ul>
+<li><p class="startli"><code>static std::size_t size(const ObjectPack&amp; p)</code></p>
+<p class="startli">Specifies the buffer size required to serialize any instance of T into <code>p</code>. This enables the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a610f2457b1999dad617953c3f3dc5798">BasicObjectPack::size&lt;T&gt;()</a> method usage for the type T.</p>
+</li>
+</ul>
+<p >Custom serializers can also be implemented. In this case, <code>ObjectPack</code> arguments must be replaced by <code><a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>&lt;S&gt;</code> (or any equivalent typedef), where S is the currently implemented serializer (e.g. <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">LightSerializer</a>).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">T</td><td>data type </td></tr>
@@ -94,94 +99,7 @@ struct fpmas::io::datapack::Serializer&lt; T, Enable &gt;</div><p >Default seria
   </table>
   </dd>
 </dl>
-</div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a9fd75a59eea50667cde9f282e5f8e314" name="a9fd75a59eea50667cde9f282e5f8e314"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9fd75a59eea50667cde9f282e5f8e314">&#9670;&nbsp;</a></span>to_datapack()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename Enable  = void&gt; </div>
-<div class="memtemplate">
-template&lt;typename PackType &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; T, Enable &gt;::to_datapack </td>
-          <td>(</td>
-          <td class="paramtype">PackType &amp;&#160;</td>
-          <td class="paramname"><em>pack</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const T &amp;&#160;</td>
-          <td class="paramname"><em>item</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Serializes <code>item</code> to <code>pack</code> using the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> serialization technique of the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">pack</td><td>destination pack </td></tr>
-    <tr><td class="paramname">item</td><td>item to serialize </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a4f424340fe244fcf0861c60bcbe38fdb" name="a4f424340fe244fcf0861c60bcbe38fdb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4f424340fe244fcf0861c60bcbe38fdb">&#9670;&nbsp;</a></span>from_datapack()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T , typename Enable  = void&gt; </div>
-<div class="memtemplate">
-template&lt;typename PackType &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static T <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; T, Enable &gt;::from_datapack </td>
-          <td>(</td>
-          <td class="paramtype">const PackType &amp;&#160;</td>
-          <td class="paramname"><em>pack</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Deserializes data from <code>pack</code> using the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io.html">base_io</a> serialization technique of the <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">pack</td><td>source pack </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>deserialized data </dd></dl>
-
-</div>
-</div>
-<hr/>The documentation for this struct was generated from the following file:<ul>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li>src/fpmas/io/<a class="el" href="datapack_8h_source.html">datapack.h</a></li>
 </ul>
 </div><!-- contents -->

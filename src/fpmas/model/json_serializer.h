@@ -8,6 +8,7 @@
 #include "serializer_set_up.h"
 #include "fpmas/api/model/model.h"
 #include "fpmas/io/json.h"
+#include "fpmas/model/model.h"
 
 /**
  * Defines the nlohmann specializations required to handle the JSON

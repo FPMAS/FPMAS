@@ -11,25 +11,26 @@ namespace fpmas { namespace model {
 }}
 
 namespace fpmas { namespace io { namespace datapack {
-	std::size_t base_io<api::model::DiscretePoint>::pack_size() {
-		return 2*datapack::pack_size<api::model::DiscreteCoordinate>();
+	std::size_t Serializer<api::model::DiscretePoint>::size(const ObjectPack& p) {
+		return 2*p.size<api::model::DiscreteCoordinate>();
 	}
-	std::size_t base_io<api::model::DiscretePoint>::pack_size(const api::model::DiscretePoint&) {
-		return pack_size();
-	}
-
-	void base_io<api::model::DiscretePoint>::write(
-			DataPack& pack, const api::model::DiscretePoint& point,
-			std::size_t& offset) {
-		datapack::write(pack, point.x, offset);
-		datapack::write(pack, point.y, offset);
+	std::size_t Serializer<api::model::DiscretePoint>::size(
+			const ObjectPack& p, const api::model::DiscretePoint&) {
+		return size(p);
 	}
 
-	void base_io<api::model::DiscretePoint>::read(
-			const DataPack& pack, api::model::DiscretePoint& point,
-			std::size_t& offset) {
-		datapack::read(pack, point.x, offset);
-		datapack::read(pack, point.y, offset);
+	void Serializer<api::model::DiscretePoint>::to_datapack(
+			ObjectPack& pack, const api::model::DiscretePoint& point) {
+		pack.put(point.x);
+		pack.put(point.y);
+	}
+
+	api::model::DiscretePoint Serializer<api::model::DiscretePoint>::from_datapack(
+			const ObjectPack& pack) {
+		return {
+			pack.get<api::model::DiscreteCoordinate>(),
+			pack.get<api::model::DiscreteCoordinate>()
+		};
 	}
 }}}
 

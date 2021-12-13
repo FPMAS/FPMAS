@@ -15,3 +15,7 @@ target_link_libraries(csv-output fpmas)
 add_executable(distributed-csv-output
 	fpmas/output/distributed_csv_output.cpp)
 target_link_libraries(distributed-csv-output fpmas)
+
+add_executable(objectpack
+	fpmas/io/objectpack.cpp)
+target_link_libraries(objectpack fpmas)

@@ -170,20 +170,21 @@ void from_json(const nlohmann::json& j, FakeType& o) {
 namespace fpmas { namespace io { namespace datapack {
 	template<>
 	struct Serializer<FakeType> {
+		static std::size_t size(const ObjectPack& pack, const FakeType& fake) {
+			return pack.size<int>() + pack.size(fake.field2) + pack.size<double>();
+		}
+
 		static void to_datapack(ObjectPack& pack, const FakeType& fake) {
-			std::size_t size =
-				pack_size<int>() + pack_size(fake.field2) + pack_size<double>();
-			pack.allocate(size);
-			pack.write(fake.field);
-			pack.write(fake.field2);
-			pack.write(fake.field3);
+			pack.put(fake.field);
+			pack.put(fake.field2);
+			pack.put(fake.field3);
 		}
 
 		static FakeType from_datapack(const ObjectPack& pack) {
 			FakeType fake;
-			pack.read(fake.field);
-			pack.read(fake.field2);
-			pack.read(fake.field3);
+			fake.field = pack.get<int>();
+			fake.field2 = pack.get<std::string>();
+			fake.field3 = pack.get<double>();
 
 			return fake;
 		}

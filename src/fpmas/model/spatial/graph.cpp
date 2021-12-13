@@ -12,18 +12,20 @@ namespace nlohmann {
 }
 
 namespace fpmas { namespace io { namespace datapack {
-	std::size_t base_io<fpmas::model::ReachableCell>::pack_size(
-			const fpmas::model::ReachableCell& cell) {
-		return datapack::pack_size(cell.reachable_cells);
+	std::size_t Serializer<model::ReachableCell>::size(
+			const ObjectPack& p, const model::ReachableCell& cell) {
+		return p.size(cell.reachable_cells);
 	}
 
-	void base_io<fpmas::model::ReachableCell>::write(
-			DataPack& p, const fpmas::model::ReachableCell& cell, std::size_t& offset) {
-		datapack::write(p, cell.reachable_cells, offset);
+	void Serializer<model::ReachableCell>::to_datapack(
+			ObjectPack& p, const model::ReachableCell& cell) {
+		p.put(cell.reachable_cells);
 	}
 
-	void base_io<fpmas::model::ReachableCell>::read(
-			const DataPack& p, fpmas::model::ReachableCell& cell, std::size_t& offset) {
-		datapack::read(p, cell.reachable_cells, offset);
+	model::ReachableCell Serializer<model::ReachableCell>::from_datapack(
+			const ObjectPack& p) {
+		model::ReachableCell cell;
+		cell.reachable_cells = p.get<std::set<DistributedId>>();
+		return cell;
 	}
 }}}

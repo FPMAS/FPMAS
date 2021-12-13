@@ -77,6 +77,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:abec401094c432f77564b32b9d71cd670"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer_3_01PackType_00_01void_01_4.html#abec401094c432f77564b32b9d71cd670">size</a> (const PackType &amp;, const WeakAgentPtr &amp;)</td></tr>
+<tr class="separator:abec401094c432f77564b32b9d71cd670"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f4fff174460d573f0d8494a3906fb99"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer_3_01PackType_00_01void_01_4.html#a9f4fff174460d573f0d8494a3906fb99">to_datapack</a> (PackType &amp;, const WeakAgentPtr &amp;ptr)</td></tr>
 <tr class="separator:a9f4fff174460d573f0d8494a3906fb99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0f58b9ce34182e9ddbd341e2cf1de15f"><td class="memItemLeft" align="right" valign="top">static WeakAgentPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer_3_01PackType_00_01void_01_4.html#a0f58b9ce34182e9ddbd341e2cf1de15f">from_datapack</a> (const PackType &amp;p)</td></tr>
@@ -86,6 +88,52 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename PackType&gt;<br />
 struct fpmas::io::datapack::AgentPtrSerializer&lt; PackType, void &gt;</div><p ><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer.html">AgentPtrSerializer</a> recursion base case. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="abec401094c432f77564b32b9d71cd670" name="abec401094c432f77564b32b9d71cd670"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abec401094c432f77564b32b9d71cd670">&#9670;&nbsp;</a></span>size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PackType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer.html">fpmas::io::datapack::AgentPtrSerializer</a>&lt; PackType, void &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const PackType &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const WeakAgentPtr &amp;&#160;</td>
+          <td class="paramname"><em>ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >size recursion base case.</p>
+<p >Reaching this case is erroneous and throws an <a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">exceptions::BadTypeException</a> instance.</p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">exceptions::BadTypeException</a></td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a9f4fff174460d573f0d8494a3906fb99" name="a9f4fff174460d573f0d8494a3906fb99"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9f4fff174460d573f0d8494a3906fb99">&#9670;&nbsp;</a></span>to_datapack()</h2>
 
@@ -122,7 +170,7 @@ template&lt;typename PackType &gt; </div>
 </table>
 </div><div class="memdoc">
 <p >to_datapack recursion base case.</p>
-<p >Reaching this case is erroneous and throws a <a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">exceptions::BadTypeException</a>.</p>
+<p >Reaching this case is erroneous and throws an <a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">exceptions::BadTypeException</a> instance.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">exceptions::BadTypeException</a></td><td></td></tr>
@@ -158,7 +206,7 @@ template&lt;typename PackType &gt; </div>
 </table>
 </div><div class="memdoc">
 <p >from_datapack recursion base case.</p>
-<p >Reaching this case is erroneous and throws a <a class="el" href="classfpmas_1_1exceptions_1_1BadIdException.html">exceptions::BadIdException</a>.</p>
+<p >Reaching this case is erroneous and throws an <a class="el" href="classfpmas_1_1exceptions_1_1BadIdException.html">exceptions::BadIdException</a> instance.</p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadIdException.html">exceptions::BadIdException</a></td><td></td></tr>

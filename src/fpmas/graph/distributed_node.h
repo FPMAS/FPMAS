@@ -184,13 +184,20 @@ namespace fpmas { namespace io {
 		/**
 		 * Regular DistributedNode Serializer specialization.
 		 *
-		 * | Serialization scheme ||||
-		 * |----------------------||||
-		 * | _scheme_ | node->getId() | node->data() | node->getWeight() |
-		 * | _serializer_ | base_io<DistributedId> | Serializer<T> | base_io<float> |
+		 * | Serialization scheme |||
+		 * |----------------------|||
+		 * | node->getId() | node->data() | node->getWeight() |
 		 */
 		template<typename T>
 			struct Serializer<NodePtrWrapper<T>> {
+				/**
+				 * Returns the buffer size required to serialize `node` to `p`.
+				 */
+				static std::size_t size(
+						const ObjectPack& p, const NodePtrWrapper<T>& node) {
+					return p.size<DistributedId>() + p.size(node->data())
+						+ p.size<float>();
+				}
 				/**
 				 * DistributedNode ObjectPack serialization.
 				 *
@@ -198,14 +205,9 @@ namespace fpmas { namespace io {
 				 * @param node node to serialize
 				 */
 				static void to_datapack(ObjectPack& pack, const NodePtrWrapper<T>& node) {
-					ObjectPack data = node->data();
-					pack.allocate(
-							pack_size<DistributedId>() + pack_size(data)
-							+ pack_size<float>()
-							);
-					pack.write(node->getId());
-					pack.write(data);
-					pack.write(node->getWeight());
+					pack.put(node->getId());
+					pack.put(node->data());
+					pack.put(node->getWeight());
 				}
 
 				/**
@@ -216,10 +218,10 @@ namespace fpmas { namespace io {
 				 */
 				static NodePtrWrapper<T> from_datapack(const ObjectPack& pack) {
 					auto node = new fpmas::graph::DistributedNode<T>(
-							pack.read<DistributedId>(),
-							pack.read<ObjectPack>().get<T>()
+							pack.get<DistributedId>(),
+							pack.get<T>()
 							);
-					node->setWeight(pack.read<float>());
+					node->setWeight(pack.get<float>());
 					return node;
 				}
 			};
@@ -231,40 +233,48 @@ namespace fpmas { namespace io {
 		 *
 		 * Only the id of the node is serialized, and also the light version of
 		 * its data. The light serialization of the node data can eventually
-		 * produce an empty DataPack, so that only the node id is serialized.
+		 * produce an empty BasicObjectPack, so that only the node id is
+		 * serialized.
 		 *
-		 * | Serialization scheme |||
-		 * |----------------------|||
-		 * | _scheme_ | node->getId() | node->data() |
-		 * | _serializer_ | base_io<DistributedId> | LightSerializer<T> |
+		 * | Serialization scheme ||
+		 * |----------------------||
+		 * | node->getId() | node->data() |
 		 */
 		template<typename T>
 			struct LightSerializer<NodePtrWrapper<T>> {
 				/**
+				 * Returns the buffer size required to serialize `node` into
+				 * `p`, i.e. `p.size<DistributedId>() + p.size(node->data())`.
+				 *
+				 * Notice that in this light version, `p.size(node->data())`
+				 * might be null.
+				 */
+				static std::size_t size(
+						const LightObjectPack& p, const NodePtrWrapper<T>& node) {
+					return p.size<DistributedId>() + p.size(node->data());
+				}
+
+				/**
 				 * DistributedNode LightObjectPack serialization.
 				 *
-				 * @param pack destination pack
+				 * @param pack destination LightObjectPack
 				 * @param node node to serialize
 				 */
 				static void to_datapack(LightObjectPack& pack, const NodePtrWrapper<T>& node) {
-					LightObjectPack data = node->data();
-					pack.allocate(
-							pack_size<DistributedId>() + pack_size(data)
-							);
-					pack.write(node->getId());
-					pack.write(data);
+					pack.put(node->getId());
+					pack.put(node->data());
 				}
 
 				/**
 				 * DistributedNode LightObjectPack deserialization.
 				 *
-				 * @param pack source pack
+				 * @param pack source LightObjectPack
 				 * @return deserialized and dynamically allocated node
 				 */
 				static NodePtrWrapper<T> from_datapack(const LightObjectPack& pack) {
 					auto node = new fpmas::graph::DistributedNode<T>(
-							pack.read<DistributedId>(),
-							pack.read<LightObjectPack>().get<T>()
+							pack.get<DistributedId>(),
+							pack.get<T>()
 							);
 					return node;
 				}

@@ -17,11 +17,17 @@
  */
 #define FPMAS_AGENT_PTR_DATAPACK_JSON_FALLBACK()\
 	namespace fpmas { namespace io { namespace datapack {\
+		std::size_t Serializer<AgentPtr>::size(const ObjectPack& p, const AgentPtr& ptr) {\
+			return JsonSerializer<AgentPtr>::size(p, ptr);\
+		}\
 		void Serializer<AgentPtr>::to_datapack(ObjectPack& p, const AgentPtr& ptr) {\
 			JsonSerializer<AgentPtr>::to_datapack(p, ptr);\
 		}\
 		AgentPtr Serializer<AgentPtr>::from_datapack(const ObjectPack& p) {\
 			return JsonSerializer<AgentPtr>::from_datapack(p);\
+		}\
+		std::size_t LightSerializer<AgentPtr>::size(const LightObjectPack& p, const AgentPtr& ptr) {\
+			return LightJsonSerializer<AgentPtr>::size(p, ptr);\
 		}\
 		void LightSerializer<AgentPtr>::to_datapack(LightObjectPack& p, const AgentPtr& ptr) {\
 			LightJsonSerializer<AgentPtr>::to_datapack(p, ptr);\

@@ -7,7 +7,7 @@
 
 #include "fpmas/communication/communication.h"
 #include "fpmas/graph/distributed_graph.h"
-#include "fpmas/utils/data_update_pack.h"
+#include "../data_update_pack.h"
 
 namespace fpmas { namespace synchro {
 	namespace ghost {

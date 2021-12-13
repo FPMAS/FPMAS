@@ -1038,6 +1038,21 @@ namespace fpmas { namespace io { namespace json {
 namespace fpmas { namespace io { namespace datapack {
 	/**
 	 * Polymorphic SpatialAgentBase ObjectPack serializer specialization.
+	 *
+	 * | Serialization Scheme ||
+	 * |----------------------||
+	 * | `Derived` ObjectPack serialization | SpatialAgentBase::locationId() |
+	 *
+	 * The `Derived` part is serialized using the
+	 * Serializer<PtrWrapper<Derived>> serialization, that can be defined
+	 * externally without additional constraint. The input GridAgent pointer is
+	 * dynamically cast to `Derived` when required to call the proper
+	 * Serializer specialization.
+	 *
+	 * @tparam AgentType final fpmas::api::model::SpatialAgent type to serialize
+	 * @tparam CellType type of cells used by the spatial model
+	 * @tparam Derived next derived class in the polymorphic serialization
+	 * chain
 	 */
 	template<typename AgentType, typename CellType, typename Derived>
 		struct Serializer<PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>>> {
@@ -1045,28 +1060,30 @@ namespace fpmas { namespace io { namespace datapack {
 			 * Pointer wrapper to a polymorphic SpatialAgentBase.
 			 */
 			typedef PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
+
 			/**
-			 * Serializes the pointer to the polymorphic SpatialAgentBase using
-			 * the following JSON schema:
-			 * ```json
-			 * |<Derived json serialization>|ptr->locationId()|
-			 * ```
+			 * Returns the buffer size required to serialize the polymorphic
+			 * SpatialAgentBase pointed by `ptr` to `p`.
+			 */
+			static std::size_t size(const ObjectPack& p, const Ptr& ptr) {
+				PtrWrapper<Derived> derived = PtrWrapper<Derived>(
+						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get())));
+				return p.template size(derived) + p.template size<DistributedId>();
+			}
+
+			/**
+			 * Serializes the pointer to the polymorphic SpatialAgentBase into the
+			 * specified ObjectPack.
 			 *
-			 * The `<Derived json serialization>` is computed using the
-			 * `Serializer<fpmas::api::utils::PtrWrapper<Derived>>`
-			 * specialization, that can be defined externally without
-			 * additional constraint.
-			 *
-			 * @param o object pack output
+			 * @param pack destination ObjectPack
 			 * @param ptr pointer to a polymorphic SpatialAgentBase to serialize
 			 */
-			static void to_datapack(ObjectPack& o, const Ptr& ptr) {
+			static void to_datapack(ObjectPack& pack, const Ptr& ptr) {
 				// Derived serialization
-				ObjectPack derived = PtrWrapper<Derived>(
+				PtrWrapper<Derived> derived = PtrWrapper<Derived>(
 						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get())));
-				o.allocate(pack_size(derived) + pack_size<DistributedId>());
-				o.write(derived);
-				o.write(ptr->locationId());
+				pack.put(derived);
+				pack.put(ptr->locationId());
 			}
 
 			/**
@@ -1076,25 +1093,23 @@ namespace fpmas { namespace io { namespace datapack {
 			 * First, the `Derived` part, that extends `SpatialAgentBase` by
 			 * definition, is unserialized using the
 			 * `Serializer<fpmas::api::utils::PtrWrapper<Derived>`
-			 * specialization, that can be defined externally without any
-			 * constraint. During this operation, a `Derived` instance is
+			 * specialization. During this operation, a `Derived` instance is
 			 * dynamically allocated, that might leave the `SpatialAgentBase`
 			 * members undefined. The specific `SpatialAgentBase` member
 			 * `location_id` is then unserialized, and the unserialized
 			 * `Derived` instance is returned in the form of a polymorphic
 			 * `SpatialAgentBase` pointer.
 			 *
-			 * @param o object pack input
+			 * @param pack source ObjectPack
 			 * @return unserialized pointer to a polymorphic `SpatialAgentBase`
 			 */
-			static Ptr from_datapack(const ObjectPack& o) {
+			static Ptr from_datapack(const ObjectPack& pack) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
-				PtrWrapper<Derived> derived_ptr = o
-					.read<ObjectPack>()
+				PtrWrapper<Derived> derived_ptr = pack
 					.get<PtrWrapper<Derived>>();
 
-				derived_ptr->location_id = o.read<fpmas::api::graph::DistributedId>();
+				derived_ptr->location_id = pack.get<fpmas::api::graph::DistributedId>();
 				return derived_ptr.get();
 			}
 		};
@@ -1104,6 +1119,15 @@ namespace fpmas { namespace io { namespace datapack {
 	 *
 	 * The LightSerializer is directly call on the next `Derived` type: no
 	 * data is added to / extracted from the current LightObjectPack.
+	 *
+	 * | Serialization Scheme ||
+	 * |----------------------||
+	 * | `Derived` LightObjectPack serialization |
+	 *
+	 * The `Derived` part is serialized using the
+	 * LightSerializer<PtrWrapper<Derived>> serialization, that can be defined
+	 * externally without additional constraint (and potentially leaves the
+	 * LightObjectPack empty).
 	 *
 	 * @tparam AgentType final \Agent type to serialize
 	 * @tparam CellType type of cells used by the spatial model
@@ -1117,6 +1141,18 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			typedef PtrWrapper<fpmas::model::SpatialAgentBase<AgentType, CellType, Derived>> Ptr;
 			
+			/**
+			 * Returns the buffer size required to serialize the polymorphic
+			 * \Agent pointed to by `ptr` to `p`.
+			 */
+			static std::size_t size(const LightObjectPack& p, const Ptr& ptr) {
+				return p.size(PtrWrapper<Derived>(
+							const_cast<Derived*>(
+								dynamic_cast<const Derived*>(ptr.get())
+								)
+							));
+			}
+
 			/**
 			 * LightObjectPack to_datapack() implementation for an
 			 * fpmas::model::SpatialAgentBase.

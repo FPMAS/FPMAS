@@ -1241,33 +1241,34 @@ namespace fpmas { namespace io { namespace datapack {
 	template<>
 		struct Serializer<AgentPtr> {
 			/**
-			 * Serializes the \Agent represented by `pointer` to the specified
-			 * json `j`.
-			 *
-			 * Notice that since \Agent is polymorphic, the actual `to_datapack`
-			 * call that corresponds to the most derived type of the specified
-			 * \Agent is resolved at runtime.
-			 *
-			 * @param o object pack output
-			 * @param pointer pointer to polymorphic \Agent
+			 * Returns the buffer size required to serialize the polymorphic
+			 * \Agent pointed by `ptr` to `p`.
 			 */
-			static void to_datapack(ObjectPack& o, const AgentPtr& pointer);
+			static std::size_t size(const ObjectPack& p, const AgentPtr& ptr);
 
 			/**
-			 * Unserializes an \Agent from the specified ObjectPack `o`.
+			 * Serializes the polymorphic \Agent pointed by `pointer` to the
+			 * specified ObjectPack.
+			 *
+			 * @param pack destination ObjectPack
+			 * @param pointer pointer to polymorphic \Agent
+			 */
+			static void to_datapack(ObjectPack& pack, const AgentPtr& pointer);
+
+			/**
+			 * Unserializes an \Agent from the specified ObjectPack.
+			 *
+			 * Since \Agent is polymorphic, the concrete type that should be
+			 * instantiated from the input ObjectPack is determined at runtime.
 			 *
 			 * The built \Agent is dynamically allocated, but is automatically
 			 * managed by the fpmas::api::model::AgentPtr wrapper.
 			 *
-			 * Since \Agent is polymorphic, the concrete type that should be
-			 * instantiated from the input ObjectPack `o` is determined at
-			 * runtime.
-			 *
-			 * @param o input object pack
-			 * @return dynamically allocated \Agent, unserialized from `o`,
+			 * @param pack source ObjectPack
+			 * @return dynamically allocated \Agent, unserialized from `pack`,
 			 * wrapped in an fpmas::api::model::AgentPtr instance
 			 */
-			static AgentPtr from_datapack(const ObjectPack& o);
+			static AgentPtr from_datapack(const ObjectPack& pack);
 		};
 
 	/**
@@ -1278,20 +1279,31 @@ namespace fpmas { namespace io { namespace datapack {
 	 * at compile time, depending on its own Agent types, using the
 	 * FPMAS_DATAPACK_SET_UP() macro, that must be called from a **source** file.
 	 * Otherwise, linker errors will be thrown.
+	 *
+	 * The behavior of the specified methods are equivalent to the
+	 * corresponding fpmas::io::datapack::Serializer<AgentPtr> definitions, but
+	 * \Agents are wrapped in WeakAgentPtr instance, so that no automatic
+	 * memory management is performed.
 	 */
 	template<>
 		struct Serializer<WeakAgentPtr> {
 			/**
+			 * Equivalent to
+			 * fpmas::io::datapack::Serializer<AgentPtr>>:size(const ObjectPack&, const AgentPtr&).
+			 */
+			static std::size_t size(const ObjectPack& pack, const WeakAgentPtr& ptr);
+
+			/**
 			 * Equivalent to fpmas::io::datapack::Serializer<AgentPtr>::to_datapack(ObjectPack& o, const AgentPtr&).
 			 */
-			static void to_datapack(ObjectPack& o, const WeakAgentPtr& ptr);
+			static void to_datapack(ObjectPack& pack, const WeakAgentPtr& ptr);
 
 			/**
 			 * Equivalent to fpmas::io::datapack::Serializer<AgentPtr>::from_datapack(const ObjectPack& o),
 			 * but the result is wrapped in an fpmas::api::model::WeakAgentPtr
 			 * instance.
 			 */
-			static WeakAgentPtr from_datapack(const ObjectPack& o);
+			static WeakAgentPtr from_datapack(const ObjectPack& pack);
 		};
 
 	/**
@@ -1306,12 +1318,20 @@ namespace fpmas { namespace io { namespace datapack {
 	template<>
 		struct LightSerializer<AgentPtr> {
 			/**
-			 * Serializes the \Agent represented by `pointer` to the specified
-			 * LightObjectPack `o`.
+			 * Returns the buffer size required to serialize the polymorphic
+			 * \Agent pointed by `ptr` into `p`.
 			 *
-			 * Notice that since \Agent is polymorphic, the actual `to_datapack`
-			 * call that corresponds to the most derived type of the specified
-			 * \Agent is resolved at runtime.
+			 * @see \ref default_constructible_Agent_light_serializer_size
+			 * "LightSerializer<PtrWrapper<AgentType>>::size() (default constructible AgentType)"
+			 * @see \ref
+			 * not_default_constructible_Agent_light_serializer_size
+			 * "LightSerializer<PtrWrapper<AgentType>>::size() (not default constructible AgentType)"
+			 */
+			static std::size_t size(const LightObjectPack& pack, const AgentPtr& ptr);
+
+			/**
+			 * Serializes the \Agent represented by `pointer` to the specified
+			 * LightObjectPack.
 			 *
 			 * The LightObjectPack version of the to_datapack() method attempts to
 			 * serialize the agent with the less data possible, i.e. possibly
@@ -1328,19 +1348,19 @@ namespace fpmas { namespace io { namespace datapack {
 			 * not_default_constructible_Agent_light_serializer_to_datapack
 			 * "LightSerializer<PtrWrapper<AgentType>>::to_datapack() (not default constructible AgentType)"
 			 *
-			 * @param o LightObjectPack output
+			 * @param pack destination LightObjectPack
 			 * @param pointer pointer to polymorphic \Agent
 			 */
-			static void to_datapack(LightObjectPack& o, const AgentPtr& pointer);
+			static void to_datapack(LightObjectPack& pack, const AgentPtr& pointer);
 
 			/**
-			 * Unserializes an \Agent from the specified LightObjectPack `o`.
+			 * Unserializes an \Agent from the specified LightObjectPack.
 			 *
 			 * The built \Agent is dynamically allocated, but is automatically
 			 * managed by the fpmas::api::model::AgentPtr wrapper.
 			 *
 			 * Since \Agent is polymorphic, the concrete type that should be
-			 * instantiated from the input LightObjectPack `o` is determined at
+			 * instantiated from the input LightObjectPack is determined at
 			 * runtime.
 			 *
 			 * The LightObjectPack version of the from_datapack() method
@@ -1358,11 +1378,11 @@ namespace fpmas { namespace io { namespace datapack {
 			 * not_default_constructible_Agent_light_serializer_from_datapack
 			 * "light_serializer<PtrWrapper<AgentType>>::from_datapack() (not default constructible AgentType)"
 			 *
-			 * @param o input object pack
+			 * @param pack source LightObjectPack
 			 * @return dynamically allocated \Agent, unserialized from `o`,
 			 * wrapped in an fpmas::api::model::AgentPtr instance
 			 */
-			static AgentPtr from_datapack(const LightObjectPack& o);
+			static AgentPtr from_datapack(const LightObjectPack& pack);
 		};
 
 	/**
@@ -1373,13 +1393,24 @@ namespace fpmas { namespace io { namespace datapack {
 	 * at compile time, depending on its own Agent types, using the
 	 * FPMAS_DATAPACK_SET_UP() macro, that must be called from a **source** file.
 	 * Otherwise, linker errors will be thrown.
+	 *
+	 * The behavior of the specified methods are equivalent to the corresponding
+	 * fpmas::io::datapack::LightSerializer<AgentPtr> definitions, but \Agents
+	 * are wrapped in WeakAgentPtr instance, so that no automatic memory
+	 * management is performed.
 	 */
 	template<>
 		struct LightSerializer<WeakAgentPtr> {
 			/**
+			 * Equivalent to
+			 * fpmas::io::datapack::LightSerializer<AgentPtr>::size(const LightObjectPack&, const AgentPtr&).
+			 */
+			static std::size_t size(const LightObjectPack& pack, const WeakAgentPtr& ptr);
+
+			/**
 			 * Equivalent to fpmas::io::datapack::LightSerializer<AgentPtr>::to_datapack(LightObjectPack&, const AgentPtr&).
 			 */
-			static void to_datapack(LightObjectPack& o, const WeakAgentPtr& ptr);
+			static void to_datapack(LightObjectPack& pack, const WeakAgentPtr& ptr);
 
 			/** 
 			 * Equivalent to
@@ -1387,7 +1418,7 @@ namespace fpmas { namespace io { namespace datapack {
 			 * but the result is wrapped in an  fpmas::api::model::WeakAgentPtr
 			 * instance.
 			 */
-			static WeakAgentPtr from_datapack(const LightObjectPack& o);
+			static WeakAgentPtr from_datapack(const LightObjectPack& pack);
 		};
 }}}
 

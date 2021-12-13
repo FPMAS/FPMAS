@@ -139,6 +139,5 @@ if(DOXYGEN_FOUND)
 	set(DOXYGEN_EXAMPLE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 	doxygen_add_docs(doc
 		${CMAKE_CURRENT_SOURCE_DIR}/src
-		${CMAKE_CURRENT_SOURCE_DIR}/examples
 		)
 endif()

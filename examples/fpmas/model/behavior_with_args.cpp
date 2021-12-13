@@ -1,5 +1,7 @@
 #include "fpmas.h"
 
+FPMAS_DEFAULT_JSON_SET_UP();
+
 /**
  * @example fpmas/model/behavior_with_args.cpp
  *

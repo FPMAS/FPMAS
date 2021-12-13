@@ -8,7 +8,7 @@
 #include "fpmas/utils/macros.h"
 #include "fpmas/api/communication/communication.h"
 #include "fpmas/synchro/hard/api/hard_sync_mode.h"
-#include "fpmas/utils/data_update_pack.h"
+#include "../data_update_pack.h"
 #include "fpmas/utils/log.h"
 
 namespace fpmas { namespace synchro { namespace hard {

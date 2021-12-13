@@ -83,6 +83,8 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a901b611ba3052cbb3e0fb0225811cf49"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01PtrWrapper_3_01fpmas_1_1model_1_1SpatialAgefcb64e4ab22a3ad1180e67118612055b.html#a901b611ba3052cbb3e0fb0225811cf49">size</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;p, const <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01PtrWrapper_3_01fpmas_1_1model_1_1SpatialAgefcb64e4ab22a3ad1180e67118612055b.html#a5336926bf70e0341853d674be3bd121d">Ptr</a> &amp;ptr)</td></tr>
+<tr class="separator:a901b611ba3052cbb3e0fb0225811cf49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a55fe55d9a8961c689be8af15968329fe"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01PtrWrapper_3_01fpmas_1_1model_1_1SpatialAgefcb64e4ab22a3ad1180e67118612055b.html#a55fe55d9a8961c689be8af15968329fe">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;o, const <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01PtrWrapper_3_01fpmas_1_1model_1_1SpatialAgefcb64e4ab22a3ad1180e67118612055b.html#a5336926bf70e0341853d674be3bd121d">Ptr</a> &amp;agent)</td></tr>
 <tr class="separator:a55fe55d9a8961c689be8af15968329fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a465b34f4aeb6aa876406c65e7fc67b0b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01PtrWrapper_3_01fpmas_1_1model_1_1SpatialAgefcb64e4ab22a3ad1180e67118612055b.html#a5336926bf70e0341853d674be3bd121d">Ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01PtrWrapper_3_01fpmas_1_1model_1_1SpatialAgefcb64e4ab22a3ad1180e67118612055b.html#a465b34f4aeb6aa876406c65e7fc67b0b">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;o)</td></tr>
@@ -92,6 +94,8 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename AgentType, typename CellType, typename Derived&gt;<br />
 struct fpmas::io::datapack::LightSerializer&lt; PtrWrapper&lt; fpmas::model::SpatialAgentBase&lt; AgentType, CellType, Derived &gt; &gt; &gt;</div><p ><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">LightSerializer</a> specialization for an <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">fpmas::model::SpatialAgentBase</a></p>
 <p >The <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">LightSerializer</a> is directly call on the next <code>Derived</code> type: no data is added to / extracted from the current LightObjectPack.</p>
+<p >| Serialization Scheme || |-------------------&mdash;|| | <code>Derived</code> LightObjectPack serialization |</p>
+<p >The <code>Derived</code> part is serialized using the LightSerializer&lt;PtrWrapper&lt;Derived&gt;&gt; serialization, that can be defined externally without additional constraint (and potentially leaves the LightObjectPack empty).</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">AgentType</td><td>final <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type to serialize </td></tr>
@@ -119,6 +123,45 @@ template&lt;typename AgentType , typename CellType , typename Derived &gt; </div
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a901b611ba3052cbb3e0fb0225811cf49" name="a901b611ba3052cbb3e0fb0225811cf49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a901b611ba3052cbb3e0fb0225811cf49">&#9670;&nbsp;</a></span>size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType , typename CellType , typename Derived &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer</a>&lt; <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">PtrWrapper</a>&lt; <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">fpmas::model::SpatialAgentBase</a>&lt; AgentType, CellType, Derived &gt; &gt; &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01PtrWrapper_3_01fpmas_1_1model_1_1SpatialAgefcb64e4ab22a3ad1180e67118612055b.html#a5336926bf70e0341853d674be3bd121d">Ptr</a> &amp;&#160;</td>
+          <td class="paramname"><em>ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the buffer size required to serialize the polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointed to by <code>ptr</code> to <code>p</code>. </p>
+
+</div>
+</div>
 <a id="a55fe55d9a8961c689be8af15968329fe" name="a55fe55d9a8961c689be8af15968329fe"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a55fe55d9a8961c689be8af15968329fe">&#9670;&nbsp;</a></span>to_datapack()</h2>
 

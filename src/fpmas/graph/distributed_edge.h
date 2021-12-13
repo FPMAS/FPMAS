@@ -217,8 +217,7 @@ namespace fpmas { namespace io { namespace datapack {
 	 *
 	 * | Serialization scheme ||||||||||
 	 * |----------------------||||||||||
-	 * | _scheme_ | edge->getId() | edge->getLayer() | edge->getWeight() | source_node->getId() | source_node->location() | source_node | target_node->getId() | target_node->location() | target_node |
-	 * | _serializer_ | base_io<DistributedId> | base_io<int> | base_io<float> | base_io<DistributedId> | base_io<int> | PackType | base_io<DistributedId> | base_io<int> | PackType |
+	 * | edge->getId() | edge->getLayer() | edge->getWeight() | source_node->getId() | source_node->location() | source_node | target_node->getId() | target_node->location() | target_node |
 	 *
 	 * The source and target node serialization process depends on the current
 	 * `PackType`. For example, if the edge is serialized in a
@@ -230,6 +229,24 @@ namespace fpmas { namespace io { namespace datapack {
 	template<typename T>
 		struct Serializer<EdgePtrWrapper<T>> {
 			/**
+			 * Returns the buffer size required to serialize `edge` into `p`.
+			 */
+			template<typename PackType>
+				static std::size_t size(const PackType& p, const EdgePtrWrapper<T>& edge) {
+					return p.template size<DistributedId>() + // edge id
+						p.template size<int>() + // layer
+						p.template size<float>() + // edge weight
+						p.template size<DistributedId>() + // src id
+						p.template size<int>() + // src location
+						p.template size<std::size_t>() + // src pack size
+						p.template size(NodePtrWrapper<T>(edge->getSourceNode())) + // src pack
+						p.template size<DistributedId>() + // tgt id
+						p.template size<int>() + // tgt location
+						p.template size<std::size_t>() + // tgt pack size
+						p.template size(NodePtrWrapper<T>(edge->getTargetNode())); // tgt pack
+				}
+
+			/**
 			 * DistributedEdge ObjectPack serialization.
 			 *
 			 * @param pack destination pack
@@ -237,32 +254,21 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			template<typename PackType>
 				static void to_datapack(PackType& pack, const EdgePtrWrapper<T>& edge) {
-					PackType src = 
-						fpmas::graph::NodePtrWrapper<T>(edge->getSourceNode());
-					PackType tgt =
-						fpmas::graph::NodePtrWrapper<T>(edge->getTargetNode());
-					std::size_t size =
-						io::datapack::pack_size<DistributedId>() + // edge id
-						io::datapack::pack_size<int>() + // layer
-						io::datapack::pack_size<float>() + // edge weight
-						io::datapack::pack_size<DistributedId>() + // src id
-						io::datapack::pack_size<int>() + // src location
-						io::datapack::pack_size(src) +
-						io::datapack::pack_size<DistributedId>() + // tgt id
-						io::datapack::pack_size<int>() + // tgt location
-						io::datapack::pack_size(tgt);
-
-					pack.allocate(size);
-
-					pack.write(edge->getId());
-					pack.write(edge->getLayer());
-					pack.write(edge->getWeight());
-					pack.write(edge->getSourceNode()->getId());
-					pack.write(edge->getSourceNode()->location());
-					pack.write(src);
-					pack.write(edge->getTargetNode()->getId());
-					pack.write(edge->getTargetNode()->location());
-					pack.write(tgt);
+					pack.put(edge->getId());
+					pack.put(edge->getLayer());
+					pack.put(edge->getWeight());
+					pack.put(edge->getSourceNode()->getId());
+					pack.put(edge->getSourceNode()->location());
+					{
+						PackType src_pack(NodePtrWrapper<T>(edge->getSourceNode()));
+						pack.put(src_pack);
+					}
+					pack.put(edge->getTargetNode()->getId());
+					pack.put(edge->getTargetNode()->location());
+					{
+						PackType tgt_pack(NodePtrWrapper<T>(edge->getTargetNode()));
+						pack.put(tgt_pack);
+					}
 				}
 
 			/**
@@ -275,24 +281,24 @@ namespace fpmas { namespace io { namespace datapack {
 				static EdgePtrWrapper<T> from_datapack(const PackType& pack) {
 					fpmas::api::graph::DistributedEdge<T>* edge
 						= new fpmas::graph::DistributedEdge<T>(
-								pack.template read<DistributedId>(),
-								pack.template read<int>()
+								pack.template get<DistributedId>(),
+								pack.template get<int>()
 								);
-					edge->setWeight(pack.template read<float>());
+					edge->setWeight(pack.template get<float>());
 
 					edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 								new fpmas::graph::TemporaryNode<T, PackType>(
-									pack.template read<DistributedId>(),
-									pack.template read<int>(),
-									pack.template read<PackType>()
+									pack.template get<DistributedId>(),
+									pack.template get<int>(),
+									pack.extract(pack.template get<std::size_t>())
 									)
 								));
 
 					edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 								new fpmas::graph::TemporaryNode<T, PackType>(
-									pack.template read<DistributedId>(),
-									pack.template read<int>(),
-									pack.template read<PackType>()
+									pack.template get<DistributedId>(),
+									pack.template get<int>(),
+									pack.extract(pack.template get<std::size_t>())
 									)
 								));
 

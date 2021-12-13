@@ -42,7 +42,7 @@ namespace fpmas { namespace synchro {
 		/**
 		 * Process colors used by the termination algorithm.
 		 */
-		enum Color : int {
+		enum Color : std::uint8_t {
 			WHITE = 0,
 			BLACK = 1
 		};
@@ -62,57 +62,45 @@ namespace fpmas { namespace io { namespace datapack {
 	 * Color base_io specialization.
 	 */
 	template<>
-		struct base_io<synchro::hard::api::Color> {
+		struct Serializer<synchro::hard::api::Color> {
 			/**
-			 * Returns the buffer size, in bytes, required to serialize a
-			 * Color instance in a DataPack, i.e.
-			 * `datapack::pack_size<int>()`.
-			 *
-			 * @return pack size in bytes
+			 * Returns the buffer size, in bytes, required to serialize a Color
+			 * instance in `p`, i.e. `p.size<int>()`.
 			 */
-			static std::size_t pack_size() {
-				return datapack::pack_size<int>();
-			}
-			/**
-			 * Equivalent to pack_size().
-			 *
-			 * @return pack size in bytes
-			 */
-			static std::size_t pack_size(const synchro::hard::api::Color&) {
-				return pack_size();
-			}
+			template<typename PackType>
+				static std::size_t size(const PackType& p) {
+					return p.template size<std::uint8_t>();
+				}
 
 			/**
-			 * Writes `color` to the `data_pack` buffer at the given `offset`.
-			 * pack_size() bytes are written, and `offset` is incremented
-			 * accordingly.
-			 *
-			 * @param data_pack destination DataPack
-			 * @param color source color
-			 * @param offset `data_pack.buffer` index at which the first
-			 * byte is written
+			 * Equivalent to size().
 			 */
-			static void write(DataPack& data_pack, const synchro::hard::api::Color& color,
-					std::size_t& offset) {
-				int i = color;
-				datapack::write(data_pack, i, offset);
-			}
+			template<typename PackType>
+				static std::size_t size(const PackType& p, const synchro::hard::api::Color&) {
+					return p.template size<std::uint8_t>();
+				}
 
 			/**
-			 * Reads a Color from the `data_pack` buffer at the
-			 * given `offset`. pack_size() bytes are read, and `offset` is
-			 * incremented accordingly.
+			 * Writes `color` to the `pack` buffer.
 			 *
-			 * @param data_pack source DataPack
-			 * @param color destination color
-			 * @param offset `data_pack.buffer` index at which the first
-			 * byte is read
+			 * @param pack destination BasicObjectPack
+			 * @param color Color to serialize
 			 */
-			static void read(const DataPack& data_pack, synchro::hard::api::Color& color,
-					std::size_t offset) {
-				int i;
-				datapack::read(data_pack, i, offset);
-				color = (synchro::hard::api::Color) i;
+			template<typename PackType>
+				static void to_datapack(
+						PackType& pack, const synchro::hard::api::Color& color) {
+					pack.template put((std::uint8_t) color);
+				}
+
+			/**
+			 * Reads a Color from the `pack` buffer.
+			 *
+			 * @param pack source BasicObjectPack
+			 * @return unserialized Color
+			 */
+			template<typename PackType>
+			static synchro::hard::api::Color from_datapack(const PackType& pack) {
+				return (synchro::hard::api::Color) pack.template get<int>();
 			}
 		};
 }}}

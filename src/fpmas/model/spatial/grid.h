@@ -711,6 +711,20 @@ namespace fpmas { namespace io { namespace json {
 namespace fpmas { namespace io { namespace datapack {
 	/**
 	 * Polymorphic GridCellBase ObjectPack serializer specialization.
+	 *
+	 * | Serialization Scheme ||
+	 * |----------------------||
+	 * | `Derived` ObjectPack serialization | GridCellBase::location() |
+	 *
+	 * The `Derived` part is serialized using the
+	 * Serializer<PtrWrapper<Derived>> serialization, that can be defined
+	 * externally without additional constraint. The input GridCellBase pointer
+	 * is dynamically cast to `Derived` when required to call the proper
+	 * Serializer specialization.
+	 *
+	 * @tparam GridCellType final fpmas::api::model::GridCell type to serialize
+	 * @tparam Derived next derived class in the polymorphic serialization
+	 * chain
 	 */
 	template<typename GridCellType, typename Derived>
 		struct Serializer<PtrWrapper<fpmas::model::GridCellBase<GridCellType, Derived>>> {
@@ -720,30 +734,29 @@ namespace fpmas { namespace io { namespace datapack {
 			typedef PtrWrapper<fpmas::model::GridCellBase<GridCellType, Derived>> Ptr;
 
 			/**
-			 * Serializes the pointer to the polymorphic GridCellBase using
-			 * the following ObjectPack schema:
-			 * ```json
-			 * |<Derived ObjectPack serialization>|ptr->location()|
-			 * ```
+			 * Returns the buffer size required to serialize the GridCellBase
+			 * pointed by `ptr` in `p`.
+			 */
+			static std::size_t size(const ObjectPack& p, const Ptr& ptr) {
+				PtrWrapper<Derived> derived = PtrWrapper<Derived>(
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
+				return p.size(derived) + p.size<api::model::DiscretePoint>();
+			}
+
+			/**
+			 * Serializes the pointer to the polymorphic GridCellBase into the
+			 * specified ObjectPack.
 			 *
-			 * The `<Derived ObjectPack serialization>` is computed using the
-			 * `Serializer<fpmas::api::utils::PtrWrapper<Derived>>`
-			 * specialization, that can be user defined without additional
-			 * constraint.
-			 *
-			 * @param o object pack output
+			 * @param pack destination ObjectPack
 			 * @param ptr pointer to a polymorphic GridAgent to serialize
 			 */
-			static void to_datapack(ObjectPack& o, const Ptr& ptr) {
+			static void to_datapack(ObjectPack& pack, const Ptr& ptr) {
 				// Derived serialization
-				ObjectPack derived = PtrWrapper<Derived>(
+				PtrWrapper<Derived> derived = PtrWrapper<Derived>(
 						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
-				o.allocate(
-						pack_size(derived) +
-						pack_size<fpmas::api::model::DiscretePoint>());
-				o.write(derived);
+				pack.put(derived);
 				// Current base serialization (only location is needed)
-				o.write(ptr->_location);
+				pack.put(ptr->_location);
 			}
 
 			/**
@@ -753,32 +766,45 @@ namespace fpmas { namespace io { namespace datapack {
 			 * First, the `Derived` part, that extends `GridCellBase` by
 			 * definition, is unserialized from the ObjectPack using the
 			 * `Serializer<fpmas::api::utils::PtrWrapper<Derived>`
-			 * specialization, that can be defined externally without any
-			 * constraint. During this operation, a `Derived` instance is
+			 * specialization. During this operation, a `Derived` instance is
 			 * dynamically allocated, that might leave the `GridAgent` members
 			 * undefined. The specific `GridAgent` member `location_point` is
 			 * then initialized from the second ObjectPack field, and the
 			 * unserialized `Derived` instance is returned in the form of a
 			 * polymorphic `GridCellBase` pointer.
 			 *
-			 * @param o object pack input
+			 * @param pack source ObjectPack
 			 * @return unserialized pointer to a polymorphic `GridCellBase`
 			 */
-			static Ptr from_datapack(const ObjectPack& o) {
+			static Ptr from_datapack(const ObjectPack& pack) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
-				PtrWrapper<Derived> derived_ptr = o
-					.read<ObjectPack>()
+				PtrWrapper<Derived> derived_ptr = pack
 					.get<PtrWrapper<Derived>>();
 
 				// Initializes the current base
-				derived_ptr->_location = o.read<fpmas::api::model::DiscretePoint>();
+				derived_ptr->_location = pack.get<fpmas::api::model::DiscretePoint>();
 				return derived_ptr.get();
 			}
 		};
 
 	/**
 	 * Polymorphic GridAgent ObjectPack serializer specialization.
+	 *
+	 * | Serialization Scheme ||
+	 * |----------------------||
+	 * | `Derived` ObjectPack serialization | GridAgent::locationPoint() |
+	 *
+	 * The `Derived` part is serialized using the
+	 * Serializer<PtrWrapper<Derived>> serialization, that can be defined
+	 * externally without additional constraint. The input GridAgent pointer is
+	 * dynamically cast to `Derived` when required to call the proper
+	 * Serializer specialization.
+	 *
+	 * @tparam AgentType final fpmas::api::model::GridAgent type to serialize
+	 * @tparam CellType type of cells used by the spatial model
+	 * @tparam Derived next derived class in the polymorphic serialization
+	 * chain
 	 */
 	template<typename AgentType, typename CellType, typename Derived>
 		struct Serializer<PtrWrapper<fpmas::model::GridAgent<AgentType, CellType, Derived>>> {
@@ -788,57 +814,57 @@ namespace fpmas { namespace io { namespace datapack {
 			typedef PtrWrapper<fpmas::model::GridAgent<AgentType, CellType, Derived>> Ptr;
 
 			/**
-			 * Serializes the pointer to the polymorphic GridAgent using
-			 * the following ObjectPack schema:
-			 * ```json
-			 * |<Derived ObjectPack serialization>|ptr->locationPoint()|
-			 * ```
-			 *
-			 * The `<Derived ObjectPack serialization>` is computed using the
-			 * `Serializer<fpmas::api::utils::PtrWrapper<Derived>>`
-			 * specialization, that can be user defined without additional
-			 * constraint.
-			 *
-			 * @param o object pack output
-			 * @param ptr pointer to a polymorphic GridAgent to serialize
+			 * Returns the buffer size required to serialize the polymorphic
+			 * GridAgent pointed by `ptr` into `p`.
 			 */
-			static void to_datapack(ObjectPack& o, const Ptr& ptr) {
-				// Derived serialization
-				ObjectPack derived = PtrWrapper<Derived>(
-						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get())));
-
-				o.allocate(pack_size(derived) + pack_size<fpmas::api::model::DiscretePoint>());
-				o.write(derived);
-				// Current base serialization
-				o.write(ptr->location_point);
+			static std::size_t size(const ObjectPack& p, const Ptr& ptr) {
+				return p.size(PtrWrapper<Derived>(
+						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get()))))
+					+ p.size<fpmas::api::model::DiscretePoint>();
 			}
 
 			/**
-			 * Unserializes a polymorphic GridAgent from the specified Json.
+			 * Serializes the pointer to the polymorphic GridAgent into the
+			 * specified ObjectPack.
+			 *
+			 * @param pack destination ObjectPack
+			 * @param ptr pointer to a polymorphic GridAgent to serialize
+			 */
+			static void to_datapack(ObjectPack& pack, const Ptr& ptr) {
+				// Derived serialization
+				PtrWrapper<Derived> derived = PtrWrapper<Derived>(
+						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get())));
+				pack.put(derived);
+				// Current base serialization
+				pack.put(ptr->location_point);
+			}
+
+			/**
+			 * Unserializes a polymorphic GridAgent from the specified
+			 * ObjectPack.
 			 *
 			 * First, the `Derived` part, that extends `GridAgent` by
 			 * definition, is unserialized from the ObjectPack using the
 			 * `Serializer<fpmas::api::utils::PtrWrapper<Derived>`
-			 * specialization, that can be defined externally without any
-			 * constraint. During this operation, a `Derived` instance is
-			 * dynamically allocated, that might leave the `GridAgent`
-			 * members undefined. The specific `GridAgent` member
-			 * `location_point` is then initialized from ObjectPack, and the
+			 * specialization. During this operation, a `Derived` instance is
+			 * dynamically allocated, that might leave the `GridAgent` members
+			 * undefined. The specific `GridAgent` member `location_point` is
+			 * then initialized from the second ObjectPack field, and the
 			 * unserialized `Derived` instance is returned in the form of a
 			 * polymorphic `GridAgent` pointer.
 			 *
-			 * @param o object pack input
+			 * @param pack source ObjectPack
 			 * @return unserialized pointer to a polymorphic `GridAgent`
 			 */
-			static Ptr from_datapack(const ObjectPack& o) {
+			static Ptr from_datapack(const ObjectPack& pack) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
-				PtrWrapper<Derived> derived_ptr = o
-					.read<ObjectPack>()
+				PtrWrapper<Derived> derived_ptr = pack
 					.get<PtrWrapper<Derived>>();
 
 				// Initializes the current base
-				derived_ptr->location_point = o.read<fpmas::api::model::DiscretePoint>();
+				derived_ptr->location_point =
+					pack.get<fpmas::api::model::DiscretePoint>();
 				return derived_ptr.get();
 			}
 		};
@@ -848,6 +874,15 @@ namespace fpmas { namespace io { namespace datapack {
 	 *
 	 * The LightSerializer is directly call on the next `Derived` type: no
 	 * data is added to / extracted from the current LightObjectPack.
+	 *
+	 * | Serialization Scheme ||
+	 * |----------------------||
+	 * | `Derived` LightObjectPack serialization |
+	 *
+	 * The `Derived` part is serialized using the
+	 * LightSerializer<PtrWrapper<Derived>> serialization, that can be defined
+	 * externally without additional constraint (and potentially leaves the
+	 * LightObjectPack empty).
 	 *
 	 * @tparam GridCellType final fpmas::api::model::GridCell type to serialize
 	 * @tparam Derived next derived class in the polymorphic serialization
@@ -861,53 +896,73 @@ namespace fpmas { namespace io { namespace datapack {
 			typedef PtrWrapper<fpmas::model::GridCellBase<GridCellType, Derived>> Ptr;
 
 			/**
-			 * LightObjectPack to_datapack() implementation for an
-			 * fpmas::model::GridCellBase.
+			 * Returns the buffer size required to serialize the polymorphic
+			 * GridCellBase pointed by `ptr` into `p`, i.e. the buffer size
+			 * required to serialize the `Derived` part of `ptr`.
+			 */
+			static std::size_t size(const LightObjectPack& p, const Ptr& ptr) {
+				return p.size(PtrWrapper<Derived>(
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get()))
+						));
+			}
+
+			/**
+			 * Serializes the pointer to the polymorphic GridCellBase into the
+			 * specified LightObjectPack.
 			 *
 			 * Effectively calls
 			 * `LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>::%to_datapack()`,
 			 * without adding any `GridCellBase` specific data to the
-			 * LightObjectPack o.
+			 * LightObjectPack.
 			 *
-			 * @param o object pack output
+			 * @param pack destination LightObjectPack
 			 * @param cell grid cell to serialize 
 			 */
-			static void to_datapack(LightObjectPack& o, const Ptr& cell) {
+			static void to_datapack(LightObjectPack& pack, const Ptr& cell) {
 				// Derived serialization
 				LightSerializer<PtrWrapper<Derived>>::to_datapack(
-						o,
+						pack,
 						const_cast<Derived*>(static_cast<const Derived*>(cell.get()))
 						);
 			}
 
 			/**
-			 * LightObjectPack from_datapack() implementation for an
-			 * fpmas::model::SpatialAgentBase.
+			 * Unserializes a polymorphic GridCellBase from the specified
+			 * LightObjectPack.
 			 *
 			 * Effectively calls
 			 * `LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>::%from_datapack()`,
 			 * without extracting any `GridCellBase` specific data from the
-			 * LightObjectPack o.
+			 * LightObjectPack.
 			 *
-			 * @param o object pack input
-			 * @return dynamically allocated `Derived` instance, unserialized from `o`
+			 * @param pack LightObjectPack
+			 * @return dynamically allocated `Derived` instance, unserialized from `pack`
 			 */
-			static Ptr from_datapack(const LightObjectPack& o) {
+			static Ptr from_datapack(const LightObjectPack& pack) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
 				PtrWrapper<Derived> derived_ptr
-					= LightSerializer<PtrWrapper<Derived>>::from_datapack(o);
+					= LightSerializer<PtrWrapper<Derived>>::from_datapack(pack);
 				return derived_ptr.get();
 			}
 		};
 
 	/**
-	 * LightObjectPack specialization for an fpmas::model::GridAgent
+	 * LightSerializer specialization for an fpmas::model::GridAgent
 	 *
 	 * The LightSerializer is directly call on the next `Derived` type: no
 	 * data is added to / extracted from the current LightObjectPack.
 	 *
-	 * @tparam AgentType final \Agent type to serialize
+	 * | Serialization Scheme ||
+	 * |----------------------||
+	 * | `Derived` LightObjectPack serialization |
+	 *
+	 * The `Derived` part is serialized using the
+	 * LightSerializer<PtrWrapper<Derived>> serialization, that can be defined
+	 * externally without additional constraint (and potentially leaves the
+	 * LightObjectPack empty).
+	 *
+	 * @tparam AgentType final fpmas::api::model::GridAgent type to serialize
 	 * @tparam CellType type of cells used by the spatial model
 	 * @tparam Derived next derived class in the polymorphic serialization
 	 * chain
@@ -920,42 +975,53 @@ namespace fpmas { namespace io { namespace datapack {
 			typedef PtrWrapper<fpmas::model::GridAgent<AgentType, CellType, Derived>> Ptr;
 
 			/**
-			 * LightObjectPack to_datapack() implementation for an
-			 * fpmas::model::GridAgent.
+			 * Returns the buffer size required to serialize the polymorphic
+			 * GridAgent pointed by `ptr` into `p`, i.e. the buffer size
+			 * required to serialize the `Derived` part of `ptr`.
+			 */
+			static std::size_t size(const LightObjectPack& p, const Ptr& ptr) {
+				return p.size(PtrWrapper<Derived>(
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get()))
+						));
+			}
+
+			/**
+			 * Serializes the pointer to the polymorphic GridAgent into the
+			 * specified LightObjectPack.
 			 *
 			 * Effectively calls
 			 * `LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>::%to_datapack()`,
 			 * without adding any `GridAgent` specific data to the
-			 * LightObjectPack o.
+			 * LightObjectPack.
 			 *
-			 * @param o object pack output
+			 * @param pack destination LightObjectPack
 			 * @param agent grid agent to serialize 
 			 */
-			static void to_datapack(LightObjectPack& o, const Ptr& agent) {
+			static void to_datapack(LightObjectPack& pack, const Ptr& agent) {
 				// Derived serialization
 				LightSerializer<PtrWrapper<Derived>>::to_datapack(
-						o,
+						pack,
 						const_cast<Derived*>(static_cast<const Derived*>(agent.get()))
 						);
 			}
 
 			/**
-			 * LightObjectPack from_datapack() implementation for an
-			 * fpmas::model::GridAgent.
+			 * Unserializes a polymorphic GridAgent from the specified
+			 * LightObjectPack.
 			 *
 			 * Effectively calls
 			 * `LightSerializer<fpmas::api::utils::PtrWrapper<Derived>>::%from_datapack()`,
 			 * without extracting any `GridAgent` specific data from the
-			 * LightObjectPack o.
+			 * LightObjectPack.
 			 *
-			 * @param o object pack input
-			 * @return dynamically allocated `Derived` instance, unserialized from `o`
+			 * @param pack source LightObjectPack
+			 * @return dynamically allocated `Derived` instance, unserialized from `pack`
 			 */
-			static Ptr from_datapack(const LightObjectPack& o) {
+			static Ptr from_datapack(const LightObjectPack& pack) {
 				// Derived unserialization.
 				// The current base is implicitly default initialized
 				PtrWrapper<Derived> derived_ptr
-					= LightSerializer<PtrWrapper<Derived>>::from_datapack(o);
+					= LightSerializer<PtrWrapper<Derived>>::from_datapack(pack);
 				return derived_ptr.get();
 			}
 		};
@@ -963,54 +1029,39 @@ namespace fpmas { namespace io { namespace datapack {
 	/**
 	 * DiscretePoint base_io specialization.
 	 *
-	 * | Serialization scheme |||
-	 * | _scheme_ | point.x | point.y |
-	 * | _serializer_ | base_io<DiscreteCoordinate> ||
+	 * | Serialization scheme ||
+	 * | point.x | point.y |
 	 */
 	template<>
-		struct base_io<api::model::DiscretePoint> {
+		struct Serializer<api::model::DiscretePoint> {
 			/**
 			 * Returns the buffer size, in bytes, required to serialize a
 			 * DiscretePoint instance in a DataPack, i.e.
-			 * `2*%datapack::pack_size<DiscreteCoordinate>()`.
-			 *
-			 * @return pack size in bytes
+			 * `2*%p.size<DiscreteCoordinate>()`.
 			 */
-			static std::size_t pack_size();
-			/**
-			 * Equivalent to pack_size().
-			 *
-			 * @return pack size in bytes
-			 */
-			static std::size_t pack_size(const api::model::DiscretePoint&);
+			static std::size_t size(const ObjectPack& p);
 
 			/**
-			 * Writes `id` to the `data_pack` buffer at the given `offset`.
-			 * pack_size() bytes are written, and `offset` is incremented
-			 * accordingly.
+			 * Equivalent to size().
+			 */
+			static std::size_t size(const ObjectPack& p, const api::model::DiscretePoint&);
+
+			/**
+			 * Writes `id` to the `pack` buffer.
 			 *
-			 * @param data_pack destination DataPack
+			 * @param pack destination ObjectPack
 			 * @param point source point
-			 * @param offset `data_pack.buffer` index at which the first
-			 * byte is written
 			 */
-			static void write(
-					DataPack& data_pack, const api::model::DiscretePoint& point,
-					std::size_t& offset);
+			static void to_datapack(
+					ObjectPack& pack, const api::model::DiscretePoint& point);
 
 			/**
-			 * Reads a DiscretePoint from the `data_pack` buffer at the
-			 * given `offset`. pack_size() bytes are read, and `offset` is
-			 * incremented accordingly.
+			 * Reads a DiscretePoint from the `pack` buffer.
 			 *
-			 * @param data_pack source DataPack
-			 * @param point destination point
-			 * @param offset `data_pack.buffer` index at which the first
-			 * byte is read
+			 * @param pack source ObjectPack
+			 * @return read DiscretePoint
 			 */
-			static void read(
-					const DataPack& data_pack, api::model::DiscretePoint& point,
-					std::size_t& offset);
+			static api::model::DiscretePoint from_datapack(const ObjectPack& pack);
 		};
 }}}
 

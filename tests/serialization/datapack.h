@@ -10,20 +10,29 @@ namespace fpmas { namespace io { namespace datapack {
 	template<int FOO>
 		struct Serializer<MockAgentPtr<FOO>> {
 			template<typename PackType>
-			static void to_datapack(PackType& p, const MockAgentPtr<FOO>& data) {
-				p = data->getField();
-			}
+				static std::size_t size(const PackType& p, const MockAgentPtr<FOO>& data) {
+					return p.size(data->getField());
+				}
 
 			template<typename PackType>
-			static MockAgentPtr<FOO> from_datapack(const PackType& p) {
-				return new MockAgent<FOO>(p.template get<int>());
-			}
+				static void to_datapack(PackType& p, const MockAgentPtr<FOO>& data) {
+					p.put(data->getField());
+				}
+
+			template<typename PackType>
+				static MockAgentPtr<FOO> from_datapack(const PackType& p) {
+					return new MockAgent<FOO>(p.template get<int>());
+				}
 		};
 
 	template<>
 		struct Serializer<PtrWrapper<CustomAgent>> {
+			static std::size_t size(const ObjectPack& p, const PtrWrapper<CustomAgent>& agent) {
+				return p.size(agent->getData());
+			}
+
 			static void to_datapack(ObjectPack& p, const PtrWrapper<CustomAgent>& agent) {
-				p = agent->getData();
+				p.put(agent->getData());
 			}
 
 			static PtrWrapper<CustomAgent> from_datapack(const ObjectPack& p) {
@@ -34,8 +43,12 @@ namespace fpmas { namespace io { namespace datapack {
 
 	template<>
 		struct Serializer<PtrWrapper<DefaultConstructibleCustomAgent>> {
+			static std::size_t size(const ObjectPack& p, const PtrWrapper<DefaultConstructibleCustomAgent>& agent) {
+				return p.size(agent->getData());
+			}
+
 			static void to_datapack(ObjectPack& p, const PtrWrapper<DefaultConstructibleCustomAgent>& agent) {
-				p = agent->getData();
+				p.put(agent->getData());
 			}
 
 			static PtrWrapper<DefaultConstructibleCustomAgent> from_datapack(const ObjectPack& p) {
@@ -46,21 +59,27 @@ namespace fpmas { namespace io { namespace datapack {
 
 	template<>
 		struct Serializer<PtrWrapper<CustomAgentWithLightPack>> {
+			static std::size_t size(const ObjectPack& p, const PtrWrapper<CustomAgentWithLightPack>& agent) {
+				return p.size(agent->getData()) + p.size(agent->very_important_data);
+			}
 			static void to_datapack(ObjectPack& p, const PtrWrapper<CustomAgentWithLightPack>& agent) {
-				p.allocate(pack_size<float>() + pack_size<int>());
-				p.write(agent->getData());
-				p.write(agent->very_important_data);
+				p.put(agent->getData());
+				p.put(agent->very_important_data);
 			}
 
 			static PtrWrapper<CustomAgentWithLightPack> from_datapack(const ObjectPack& p) {
-				return new CustomAgentWithLightPack(p.read<float>(), p.read<int>());
+				return new CustomAgentWithLightPack(p.get<float>(), p.get<int>());
 			}
 		};
 
 	template<>
 		struct LightSerializer<PtrWrapper<CustomAgentWithLightPack>> {
+			static std::size_t size(const LightObjectPack& p, const PtrWrapper<CustomAgentWithLightPack>& agent) {
+				return p.size(agent->very_important_data);
+			}
+
 			static void to_datapack(LightObjectPack& p, const PtrWrapper<CustomAgentWithLightPack>& agent) {
-				p = agent->very_important_data;
+				p.put(agent->very_important_data);
 			}
 
 			static PtrWrapper<CustomAgentWithLightPack> from_datapack(const LightObjectPack& p) {
@@ -116,7 +135,7 @@ TEST(AgentSerializer, light_object_pack_default_constructible) {
 			);
 }
 
-// Light JSON with non default constructible agent (no explicit light_serializer
+// Light pack with non default constructible agent (no explicit light_serializer
 // specialization). Falls back to fpmas::io::datapack::ObjectPack.
 TEST(AgentSerializer, light_object_pack_not_default_constructible) {
 	fpmas::model::AgentPtr ptr(new CustomAgent(4.2f));

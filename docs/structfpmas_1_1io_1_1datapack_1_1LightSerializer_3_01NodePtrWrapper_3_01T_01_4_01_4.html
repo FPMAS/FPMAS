@@ -77,6 +77,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:abb6dbf78152e932fdaad8edc6c0c467b"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01NodePtrWrapper_3_01T_01_4_01_4.html#abb6dbf78152e932fdaad8edc6c0c467b">size</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;p, const NodePtrWrapper&lt; T &gt; &amp;node)</td></tr>
+<tr class="separator:abb6dbf78152e932fdaad8edc6c0c467b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aadbf5fc3e612ae1ab6437200af89da45"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01NodePtrWrapper_3_01T_01_4_01_4.html#aadbf5fc3e612ae1ab6437200af89da45">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;pack, const NodePtrWrapper&lt; T &gt; &amp;node)</td></tr>
 <tr class="separator:aadbf5fc3e612ae1ab6437200af89da45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2be3576a56e038e9f2754ded01592095"><td class="memItemLeft" align="right" valign="top">static NodePtrWrapper&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01NodePtrWrapper_3_01T_01_4_01_4.html#a2be3576a56e038e9f2754ded01592095">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;pack)</td></tr>
@@ -85,16 +87,54 @@ Static Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
 struct fpmas::io::datapack::LightSerializer&lt; NodePtrWrapper&lt; T &gt; &gt;</div><p >DistributedNode <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">LightSerializer</a> specialization, notably used to efficiently transmit DistributedEdge instances, where source and target node data are not required.</p>
-<p >Only the id of the node is serialized, and also the light version of its data. The light serialization of the node data can eventually produce an empty DataPack, so that only the node id is serialized.</p>
+<p >Only the id of the node is serialized, and also the light version of its data. The light serialization of the node data can eventually produce an empty <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>, so that only the node id is serialized.</p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
-<th class="markdownTableHeadNone" colspan="3">Serialization scheme    </th></tr>
+<th class="markdownTableHeadNone" colspan="2">Serialization scheme    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><em>scheme</em>   </td><td class="markdownTableBodyNone">node-&gt;getId()   </td><td class="markdownTableBodyNone">node-&gt;data()    </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><em>serializer</em>   </td><td class="markdownTableBodyNone"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1base__io_3_01DistributedId_01_4.html">base_io&lt;DistributedId&gt;</a>   </td><td class="markdownTableBodyNone">LightSerializer&lt;T&gt;   </td></tr>
+<td class="markdownTableBodyNone">node-&gt;getId()   </td><td class="markdownTableBodyNone">node-&gt;data()   </td></tr>
 </table>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="abb6dbf78152e932fdaad8edc6c0c467b" name="abb6dbf78152e932fdaad8edc6c0c467b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abb6dbf78152e932fdaad8edc6c0c467b">&#9670;&nbsp;</a></span>size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer</a>&lt; NodePtrWrapper&lt; T &gt; &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const NodePtrWrapper&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>node</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the buffer size required to serialize <code>node</code> into <code>p</code>, i.e. <code>p.size&lt;DistributedId&gt;() + p.size(node-&gt;data())</code>.</p>
+<p >Notice that in this light version, <code>p.size(node-&gt;data())</code> might be null. </p>
+
+</div>
+</div>
 <a id="aadbf5fc3e612ae1ab6437200af89da45" name="aadbf5fc3e612ae1ab6437200af89da45"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aadbf5fc3e612ae1ab6437200af89da45">&#9670;&nbsp;</a></span>to_datapack()</h2>
 
@@ -133,7 +173,7 @@ template&lt;typename T &gt; </div>
 <p >DistributedNode LightObjectPack serialization.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pack</td><td>destination pack </td></tr>
+    <tr><td class="paramname">pack</td><td>destination LightObjectPack </td></tr>
     <tr><td class="paramname">node</td><td>node to serialize </td></tr>
   </table>
   </dd>
@@ -169,7 +209,7 @@ template&lt;typename T &gt; </div>
 <p >DistributedNode LightObjectPack deserialization.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pack</td><td>source pack </td></tr>
+    <tr><td class="paramname">pack</td><td>source LightObjectPack </td></tr>
   </table>
   </dd>
 </dl>

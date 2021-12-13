@@ -77,17 +77,56 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a41eb29b298cb9d023dd84dc95b84c60a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01AgentPtr_01_4.html#a41eb29b298cb9d023dd84dc95b84c60a">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;o, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;pointer)</td></tr>
-<tr class="separator:a41eb29b298cb9d023dd84dc95b84c60a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7a8ec039237f8dd4a42d739b90bcde9d"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01AgentPtr_01_4.html#a7a8ec039237f8dd4a42d739b90bcde9d">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;o)</td></tr>
-<tr class="separator:a7a8ec039237f8dd4a42d739b90bcde9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade3c8641add3128159f9c42b10af0c0f"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01AgentPtr_01_4.html#ade3c8641add3128159f9c42b10af0c0f">size</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;p, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;ptr)</td></tr>
+<tr class="separator:ade3c8641add3128159f9c42b10af0c0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a351d096602e8b7c30032e7c8c42e283c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01AgentPtr_01_4.html#a351d096602e8b7c30032e7c8c42e283c">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;pack, const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;pointer)</td></tr>
+<tr class="separator:a351d096602e8b7c30032e7c8c42e283c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a615dcba5e04e6798c4046ff455420688"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01AgentPtr_01_4.html#a615dcba5e04e6798c4046ff455420688">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;pack)</td></tr>
+<tr class="separator:a615dcba5e04e6798c4046ff455420688"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a> serialization rules <b>declaration</b>.</p>
 <p ><code>to_datapack</code> and <code>from_datapack</code> methods must be <em>defined</em> by the user at compile time, depending on its own Agent types, using the <a class="el" href="serializer_8h.html#a555b53d364c9e2bf45fcaa2271218315">FPMAS_DATAPACK_SET_UP()</a> macro, that must be called from a <b>source</b> file. Otherwise, linker errors will be thrown. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a41eb29b298cb9d023dd84dc95b84c60a" name="a41eb29b298cb9d023dd84dc95b84c60a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a41eb29b298cb9d023dd84dc95b84c60a">&#9670;&nbsp;</a></span>to_datapack()</h2>
+<a id="ade3c8641add3128159f9c42b10af0c0f" name="ade3c8641add3128159f9c42b10af0c0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade3c8641add3128159f9c42b10af0c0f">&#9670;&nbsp;</a></span>size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &amp;&#160;</td>
+          <td class="paramname"><em>ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the buffer size required to serialize the polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointed by <code>ptr</code> to <code>p</code>. </p>
+
+</div>
+</div>
+<a id="a351d096602e8b7c30032e7c8c42e283c" name="a351d096602e8b7c30032e7c8c42e283c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a351d096602e8b7c30032e7c8c42e283c">&#9670;&nbsp;</a></span>to_datapack()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -99,7 +138,7 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">static void <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;::to_datapack </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
-          <td class="paramname"><em>o</em>, </td>
+          <td class="paramname"><em>pack</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -119,11 +158,10 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Serializes the <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> represented by <code>pointer</code> to the specified json <code>j</code>.</p>
-<p >Notice that since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the actual <code>to_datapack</code> call that corresponds to the most derived type of the specified <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is resolved at runtime.</p>
+<p >Serializes the polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointed by <code>pointer</code> to the specified ObjectPack.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">o</td><td>object pack output </td></tr>
+    <tr><td class="paramname">pack</td><td>destination ObjectPack </td></tr>
     <tr><td class="paramname">pointer</td><td>pointer to polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> </td></tr>
   </table>
   </dd>
@@ -131,8 +169,8 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a7a8ec039237f8dd4a42d739b90bcde9d" name="a7a8ec039237f8dd4a42d739b90bcde9d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7a8ec039237f8dd4a42d739b90bcde9d">&#9670;&nbsp;</a></span>from_datapack()</h2>
+<a id="a615dcba5e04e6798c4046ff455420688" name="a615dcba5e04e6798c4046ff455420688"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a615dcba5e04e6798c4046ff455420688">&#9670;&nbsp;</a></span>from_datapack()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -144,7 +182,7 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">static <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;::from_datapack </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
-          <td class="paramname"><em>o</em></td><td>)</td>
+          <td class="paramname"><em>pack</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -154,16 +192,16 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Unserializes an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> from the specified ObjectPack <code>o</code>.</p>
+<p >Unserializes an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> from the specified ObjectPack.</p>
+<p >Since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the concrete type that should be instantiated from the input ObjectPack is determined at runtime.</p>
 <p >The built <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is dynamically allocated, but is automatically managed by the <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> wrapper.</p>
-<p >Since <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is polymorphic, the concrete type that should be instantiated from the input ObjectPack <code>o</code> is determined at runtime.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">o</td><td>input object pack </td></tr>
+    <tr><td class="paramname">pack</td><td>source ObjectPack </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>dynamically allocated <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>, unserialized from <code>o</code>, wrapped in an <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> instance </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>dynamically allocated <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a>, unserialized from <code>pack</code>, wrapped in an <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">fpmas::api::model::AgentPtr</a> instance </dd></dl>
 
 </div>
 </div>

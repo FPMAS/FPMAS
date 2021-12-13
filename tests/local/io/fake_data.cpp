@@ -28,17 +28,22 @@ namespace fpmas { namespace io { namespace json {
 }}}
 
 namespace fpmas { namespace io { namespace datapack {
+	std::size_t Serializer<DefaultConstructibleData>::size(const ObjectPack& pack, const DefaultConstructibleData&) {
+		return pack.size<int>();
+	}
+
 	void Serializer<DefaultConstructibleData>::to_datapack(ObjectPack &pack, const DefaultConstructibleData &data) {
-		pack.allocate(pack_size<int>());
-		pack.write(data.i);
+		pack.put(data.i);
 	}
 
 	DefaultConstructibleData Serializer<DefaultConstructibleData>::from_datapack(const ObjectPack &pack) {
-		int i;
-		pack.read(i);
 		DefaultConstructibleData data;
-		data.i = i;
+		data.i = pack.get<int>();
 		return data;
+	}
+
+	std::size_t LightSerializer<DefaultConstructibleData>::size(const LightObjectPack&, const DefaultConstructibleData&) {
+		return 0;
 	}
 
 	void LightSerializer<DefaultConstructibleData>::to_datapack(LightObjectPack &, const DefaultConstructibleData &) {
@@ -48,15 +53,20 @@ namespace fpmas { namespace io { namespace datapack {
 		return {};
 	}
 
+	std::size_t Serializer<NonDefaultConstructibleData>::size(const ObjectPack& pack, const NonDefaultConstructibleData&) {
+		return pack.size<int>();
+	}
+
 	void Serializer<NonDefaultConstructibleData>::to_datapack(ObjectPack &pack, const NonDefaultConstructibleData &data) {
-		pack.allocate(pack_size<int>());
-		pack.write(data.i);
+		pack.put(data.i);
 	}
 
 	NonDefaultConstructibleData Serializer<NonDefaultConstructibleData>::from_datapack(const ObjectPack &pack) {
-		int i;
-		pack.read(i);
-		return {i};
+		return pack.get<int>();
+	}
+
+	std::size_t LightSerializer<NonDefaultConstructibleData>::size(const LightObjectPack&, const NonDefaultConstructibleData&) {
+		return 0;
 	}
 
 	void LightSerializer<NonDefaultConstructibleData>::to_datapack(LightObjectPack &, const NonDefaultConstructibleData &) {
@@ -65,6 +75,5 @@ namespace fpmas { namespace io { namespace datapack {
 	NonDefaultConstructibleData LightSerializer<NonDefaultConstructibleData>::from_datapack(const LightObjectPack &) {
 		return {0};
 	}
-
 }}}
 

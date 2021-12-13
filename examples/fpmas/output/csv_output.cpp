@@ -1,5 +1,7 @@
 #include "fpmas.h"
 
+FPMAS_DEFAULT_JSON_SET_UP();
+
 /**
  * @example fpmas/output/csv_output.cpp
  *
@@ -23,9 +25,9 @@ int main(int argc, char** argv) {
 		float f = 1.5;
 		std::string s = "hello";
 
-		std::ostringstream output_string;
+		fpmas::io::StringOutput output_string;
 		// Field types are specified as template parameters
-		fpmas::output::CsvOutput<int, int, float, std::string> local_output(
+		fpmas::io::CsvOutput<int, int, float, std::string> local_output(
 				// Output where data will be written
 				output_string,
 				// How each field is fetched at each dump() call can be

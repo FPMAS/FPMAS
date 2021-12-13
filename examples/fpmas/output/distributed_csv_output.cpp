@@ -1,5 +1,7 @@
 #include "fpmas.h"
 
+FPMAS_DEFAULT_JSON_SET_UP();
+
 /**
  * @example fpmas/output/distributed_csv_output.cpp
  *
@@ -16,7 +18,7 @@
  * output the same data
  */
 
-using namespace fpmas::output;
+using namespace fpmas::io;
 
 int main(int argc, char** argv) {
 	fpmas::init(argc, argv);
@@ -24,6 +26,9 @@ int main(int argc, char** argv) {
 		// The value of i is different on each process
 		int i = fpmas::communication::WORLD.getRank();
 		float f = 1.5;
+
+		// stdout wrapper
+		fpmas::io::Cout output;
 
 		// Field types are specified as template parameters.
 		// The Local field is only considered on the process where data is
@@ -43,7 +48,7 @@ int main(int argc, char** argv) {
 				// std::cout on all processes.
 				fpmas::communication::WORLD, 0,
 				// Output to stdout, but only on process 0
-				std::cout,
+				output,
 				// How each field is fetched at each dump() call can be
 				// specified using lambda functions. When value are captured
 				// by reference (using &), latest modifications are

@@ -71,24 +71,31 @@ class DatapackData : public BaseData {
 namespace fpmas { namespace io { namespace datapack {
 	template<>
 		struct Serializer<DatapackData> {
+			static std::size_t size(const ObjectPack& p, const DatapackData&) {
+				return 2*p.size<int>();
+			}
+
 			static void to_datapack(ObjectPack& p, const DatapackData& data) {
-				p.allocate(2*pack_size<int>());
-				p.write(data.data);
-				p.write(data.very_important_data);
+				p.put(data.data);
+				p.put(data.very_important_data);
 			}
 
 			static DatapackData from_datapack(const ObjectPack& p) {
 				DatapackData data;
-				data.data = p.read<int>();
-				data.very_important_data = p.read<int>();
+				data.data = p.get<int>();
+				data.very_important_data = p.get<int>();
 				return data;
 			}
 		};
 
 	template<>
 		struct LightSerializer<DatapackData> {
+			static std::size_t size(const LightObjectPack& p, const DatapackData&) {
+				return p.size<int>();
+			}
+
 			static void to_datapack(LightObjectPack& p, const DatapackData& data) {
-				p = data.very_important_data;
+				p.put(data.very_important_data);
 			}
 
 			static DatapackData from_datapack(const LightObjectPack& p) {
@@ -105,9 +112,9 @@ TEST(JsonDatapackConversion, datapack_to_json) {
 	data.very_important_data = 8;
 	fpmas::io::json::datapack_json json = data;
 
-	//data = json.get<DatapackData>();
-	//ASSERT_EQ(data.data, 67);
-	//ASSERT_EQ(data.very_important_data, 8);
+	data = json.get<DatapackData>();
+	ASSERT_EQ(data.data, 67);
+	ASSERT_EQ(data.very_important_data, 8);
 }
 
 TEST(JsonDatapackConversion, light_datapack_to_json) {

@@ -77,6 +77,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a89939368903892de9c49b99a97cd4b31"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01graph_1_1detail_1_1LocalizedNodeView_3_01T_01_4_01_4.html#a89939368903892de9c49b99a97cd4b31">size</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;p, const <a class="el" href="structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html">graph::detail::LocalizedNodeView</a>&lt; T &gt; &amp;)</td></tr>
+<tr class="separator:a89939368903892de9c49b99a97cd4b31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8dee732f8efa438be678b716fe31dbb9"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01graph_1_1detail_1_1LocalizedNodeView_3_01T_01_4_01_4.html#a8dee732f8efa438be678b716fe31dbb9">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;pack, const <a class="el" href="structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html">graph::detail::LocalizedNodeView</a>&lt; T &gt; &amp;node)</td></tr>
 <tr class="separator:a8dee732f8efa438be678b716fe31dbb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a33fd44a137605c49488dc3d6d6c445f9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html">graph::detail::LocalizedNodeView</a>&lt; T &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01graph_1_1detail_1_1LocalizedNodeView_3_01T_01_4_01_4.html#a33fd44a137605c49488dc3d6d6c445f9">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;pack)</td></tr>
@@ -84,8 +86,53 @@ Static Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
-struct fpmas::io::datapack::Serializer&lt; graph::detail::LocalizedNodeView&lt; T &gt; &gt;</div><p ><a class="el" href="structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html">fpmas::graph::detail::LocalizedNodeView</a> ObjectPack serializer </p>
+struct fpmas::io::datapack::Serializer&lt; graph::detail::LocalizedNodeView&lt; T &gt; &gt;</div><p ><a class="el" href="structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html">fpmas::graph::detail::LocalizedNodeView</a> ObjectPack serializer</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone" colspan="4">Serialization Scheme    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">Point::x   </td><td class="markdownTableBodyNone">Point::y   </td><td class="markdownTableBodyNone">DistributedId   </td><td class="markdownTableBodyNone">int (location rank)   </td></tr>
+</table>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a89939368903892de9c49b99a97cd4b31" name="a89939368903892de9c49b99a97cd4b31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a89939368903892de9c49b99a97cd4b31">&#9670;&nbsp;</a></span>size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; <a class="el" href="structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html">graph::detail::LocalizedNodeView</a>&lt; T &gt; &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="structfpmas_1_1graph_1_1detail_1_1LocalizedNodeView.html">graph::detail::LocalizedNodeView</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the buffer size required to serialize a LocalizedNodeView into <code>p</code>. </p>
+
+</div>
+</div>
 <a id="a8dee732f8efa438be678b716fe31dbb9" name="a8dee732f8efa438be678b716fe31dbb9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8dee732f8efa438be678b716fe31dbb9">&#9670;&nbsp;</a></span>to_datapack()</h2>
 
@@ -121,7 +168,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >ObjectPack serialization.</p>
+<p >Serializes <code>node</code> to <code>pack</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pack</td><td>destination pack </td></tr>
@@ -157,7 +204,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >ObjectPack deserialization.</p>
+<p >Unserializes a LocalizedNodeView from <code>pack</code>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pack</td><td>source pack </td></tr>

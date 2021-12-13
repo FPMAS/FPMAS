@@ -1,7 +1,7 @@
 #ifndef FPMAS_DATA_UPDATE_PACK_H
 #define FPMAS_DATA_UPDATE_PACK_H
 
-/** \file src/fpmas/utils/data_update_pack.h
+/** \file src/fpmas/synchro/data_update_pack.h
  * DataUpdatePack implementation.
  */
 
@@ -119,13 +119,20 @@ namespace fpmas { namespace io { namespace datapack {
 	/**
 	 * DataUpdatePack ObjectPack serialization.
 	 *
-	 * | Serialization scheme |||
-	 * |----------------------|||
-	 * | _scheme_ | DistributedId | T |
-	 * | _serializer_ | base_io<DistributedId> | Serializer<T> |
+	 * | Serialization scheme ||
+	 * |----------------------||
+	 * | DistributedId | T |
 	 */
 	template<typename T>
 		struct Serializer<DataUpdatePack<T>> {
+			/**
+			 * Returns the buffer size required to serialize `data` into
+			 * `pack`.
+			 */
+			static std::size_t size(const ObjectPack& pack, const DataUpdatePack<T>& data) {
+				return pack.size(data.id) + pack.size(data.updated_data);
+			}
+
 			/**
 			 * DataUpdatePack ObjectPack serialization.
 			 *
@@ -133,12 +140,8 @@ namespace fpmas { namespace io { namespace datapack {
 			 * @param data data update to serialize
 			 */
 			static void to_datapack(ObjectPack& pack, const DataUpdatePack<T>& data) {
-				ObjectPack updated_data = data.updated_data;
-				pack.allocate(
-						pack_size<DistributedId>() + pack_size(updated_data)
-						);
-				pack.write(data.id);
-				pack.write(updated_data);
+				pack.put(data.id);
+				pack.put(data.updated_data);
 			}
 
 			/**
@@ -149,8 +152,8 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			static DataUpdatePack<T> from_datapack(const ObjectPack& pack) {
 				return {
-					pack.read<DistributedId>(),
-					pack.read<ObjectPack>().get<T>()
+					pack.get<DistributedId>(),
+					pack.get<T>()
 				};
 			}
 		};
@@ -158,13 +161,21 @@ namespace fpmas { namespace io { namespace datapack {
 	/**
 	 * NodeUpdatePack ObjectPack serialization.
 	 *
-	 * | Serialization scheme ||||
-	 * |----------------------||||
-	 * | _scheme_ | DistributedId | T | float (weight) |
-	 * | _serializer_ | base_io<DistributedId> | Serializer<T> | base_io<float> |
+	 * | Serialization scheme |||
+	 * |----------------------|||
+	 * | DistributedId | T | float (weight) |
 	 */
 	template<typename T>
 		struct Serializer<NodeUpdatePack<T>> {
+			/**
+			 * Returns the buffer size required to serialize `data` into
+			 * `pack`.
+			 */
+			static std::size_t size(const ObjectPack& pack, const NodeUpdatePack<T>& data) {
+				return pack.size<DistributedId>() + pack.size(data.updated_data)
+					+ pack.size<float>();
+			}
+
 			/**
 			 * NodeUpdatePack ObjectPack serialization.
 			 *
@@ -172,14 +183,9 @@ namespace fpmas { namespace io { namespace datapack {
 			 * @param data node update to serialize
 			 */
 			static void to_datapack(ObjectPack& pack, const NodeUpdatePack<T>& data) {
-				ObjectPack updated_data = data.updated_data;
-				pack.allocate(
-						pack_size<DistributedId>() + pack_size(updated_data)
-						+ pack_size<float>()
-						);
-				pack.write(data.id);
-				pack.write(updated_data);
-				pack.write(data.updated_weight);
+				pack.put(data.id);
+				pack.put(data.updated_data);
+				pack.put(data.updated_weight);
 			}
 
 			/**
@@ -190,9 +196,9 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			static NodeUpdatePack<T> from_datapack(const ObjectPack& pack) {
 				return {
-					pack.read<DistributedId>(),
-					pack.read<ObjectPack>().get<T>(),
-					pack.read<float>()
+					pack.get<DistributedId>(),
+					pack.get<T>(),
+					pack.get<float>()
 				};
 			}
 		};

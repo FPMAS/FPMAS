@@ -616,11 +616,25 @@ namespace nlohmann {
 namespace fpmas { namespace io { namespace datapack {
 	/**
 	 * fpmas::graph::detail::LocalizedNodeView ObjectPack serializer
+	 *
+	 * | Serialization Scheme ||||
+	 * |----------------------||||
+	 * | Point::x | Point::y | DistributedId | int (location rank) |
 	 */
 	template<typename T>
 		struct Serializer<graph::detail::LocalizedNodeView<T>> {
+
 			/**
-			 * ObjectPack serialization.
+			 * Returns the buffer size required to serialize a
+			 * LocalizedNodeView into `p`.
+			 */
+			static std::size_t size(
+					const ObjectPack& p, const graph::detail::LocalizedNodeView<T>&) {
+				return 2*p.size<double>() + p.size<DistributedId>() + p.size<int>();
+			}
+
+			/**
+			 * Serializes `node` to `pack`.
 			 *
 			 * @param pack destination pack
 			 * @param node node view to serialize
@@ -628,27 +642,23 @@ namespace fpmas { namespace io { namespace datapack {
 			static void to_datapack(
 					ObjectPack& pack,
 					const graph::detail::LocalizedNodeView<T>& node) {
-				pack.allocate(
-						2*pack_size<double>() + pack_size<DistributedId>()
-						+ pack_size<int>()
-						);
-				pack.write(node.p.x);
-				pack.write(node.p.y);
-				pack.write(node.node_id);
-				pack.write(node.location);
+				pack.put(node.p.x);
+				pack.put(node.p.y);
+				pack.put(node.node_id);
+				pack.put(node.location);
 			}
 
 			/**
-			 * ObjectPack deserialization.
+			 * Unserializes a LocalizedNodeView from `pack`.
 			 *
 			 * @param pack source pack
 			 * @return deserialized node view
 			 */
 			static graph::detail::LocalizedNodeView<T> from_datapack(const ObjectPack& pack) {
 				return {
-					{pack.read<double>(), pack.read<double>()},
-					pack.read<DistributedId>(),
-					pack.read<int>()
+					{pack.get<double>(), pack.get<double>()},
+					pack.get<DistributedId>(),
+					pack.get<int>()
 				};
 
 			}

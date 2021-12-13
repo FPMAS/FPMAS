@@ -73,30 +73,32 @@ $(function() {
 <p>If the example is run on several processes, each process will independently output the same data</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="fpmas_8h.html">fpmas.h</a>&quot;</span></div>
 <div class="line"> </div>
+<div class="line"><a id="a0" name="a0"></a><a class="code hl_define" href="serializer_8h.html#acd3637c72c35ab965e0e0deed0cb7229">FPMAS_DEFAULT_JSON_SET_UP</a>();</div>
+<div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main(<span class="keywordtype">int</span> argc, <span class="keywordtype">char</span>** argv) {</div>
-<div class="line">    <a id="a0" name="a0"></a><a class="code hl_function" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a>(argc, argv);</div>
+<div class="line">    <a id="a1" name="a1"></a><a class="code hl_function" href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a>(argc, argv);</div>
 <div class="line">    {</div>
 <div class="line">        <span class="keywordtype">int</span> i = 1;</div>
 <div class="line">        <span class="keywordtype">float</span> f = 1.5;</div>
 <div class="line">        std::string s = <span class="stringliteral">&quot;hello&quot;</span>;</div>
 <div class="line"> </div>
-<div class="line">        std::ostringstream output_string;</div>
+<div class="line">        <a id="_a2" name="_a2"></a><a class="code hl_class" href="classfpmas_1_1io_1_1StringOutput.html">fpmas::io::StringOutput</a> output_string;</div>
 <div class="line">        <span class="comment">// Field types are specified as template parameters</span></div>
-<div class="line">        fpmas::output::CsvOutput&lt;int, int, float, std::string&gt; local_output(</div>
+<div class="line">        <a id="_a3" name="_a3"></a><a class="code hl_class" href="classfpmas_1_1io_1_1CsvOutput.html">fpmas::io::CsvOutput&lt;int, int, float, std::string&gt;</a> local_output(</div>
 <div class="line">                <span class="comment">// Output where data will be written</span></div>
 <div class="line">                output_string,</div>
 <div class="line">                <span class="comment">// How each field is fetched at each dump() call can be</span></div>
 <div class="line">                <span class="comment">// specified using lambda functions. When value are captured</span></div>
 <div class="line">                <span class="comment">// by reference (using &amp;), latest modifications are</span></div>
 <div class="line">                <span class="comment">// automatically fetched when dump() is called.</span></div>
-<div class="line">                {<span class="stringliteral">&quot;process&quot;</span>, [] () {<span class="keywordflow">return</span> <a id="a1" name="a1"></a><a class="code hl_variable" href="namespacefpmas_1_1communication.html#a0cd77ee61dd8f7c45cc7d1e98e36bae8">fpmas::communication::WORLD</a>.<a id="a2" name="a2"></a><a class="code hl_function" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#aae73f8131cc4bba64ad8aa47b051cec4">getRank</a>();}},</div>
+<div class="line">                {<span class="stringliteral">&quot;process&quot;</span>, [] () {<span class="keywordflow">return</span> <a id="a4" name="a4"></a><a class="code hl_variable" href="namespacefpmas_1_1communication.html#a0cd77ee61dd8f7c45cc7d1e98e36bae8">fpmas::communication::WORLD</a>.<a id="a5" name="a5"></a><a class="code hl_function" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#aae73f8131cc4bba64ad8aa47b051cec4">getRank</a>();}},</div>
 <div class="line">                {<span class="stringliteral">&quot;i&quot;</span>, [&amp;i] () {<span class="keywordflow">return</span> i;}},</div>
 <div class="line">                {<span class="stringliteral">&quot;f&quot;</span>, [&amp;f] () {<span class="keywordflow">return</span> f;}},</div>
 <div class="line">                {<span class="stringliteral">&quot;s&quot;</span>, [&amp;s] () {<span class="keywordflow">return</span> s;}}</div>
 <div class="line">                );</div>
 <div class="line">        <span class="comment">// Simply dumps data as CSV to output_string, independently on all</span></div>
 <div class="line">        <span class="comment">// processes</span></div>
-<div class="line">        local_output.dump();</div>
+<div class="line">        local_output.<a id="a6" name="a6"></a><a class="code hl_function" href="classfpmas_1_1io_1_1CsvOutput.html#a58b087420bc2301c0594eb6a7352cd1e">dump</a>();</div>
 <div class="line"> </div>
 <div class="line">        <span class="comment">// Updating local data</span></div>
 <div class="line">        i = 2;</div>
@@ -107,15 +109,20 @@ $(function() {
 <div class="line"> </div>
 <div class="line">        <span class="comment">// For demonstration purpose, std::cout might have been used directly</span></div>
 <div class="line">        <span class="comment">// in `local_output`</span></div>
-<div class="line">        std::cout &lt;&lt; output_string.str();</div>
+<div class="line">        std::cout &lt;&lt; output_string.<a id="a7" name="a7"></a><a class="code hl_function" href="classfpmas_1_1io_1_1StringOutput.html#a853b0fa1ebd77b4a65dcfd7413481b44">str</a>();</div>
 <div class="line">    }</div>
-<div class="line">    <a id="a3" name="a3"></a><a class="code hl_function" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a>();</div>
+<div class="line">    <a id="a8" name="a8"></a><a class="code hl_function" href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a>();</div>
 <div class="line">}</div>
 <div class="ttc" id="aclassfpmas_1_1communication_1_1MpiCommunicatorBase_html_aae73f8131cc4bba64ad8aa47b051cec4"><div class="ttname"><a href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#aae73f8131cc4bba64ad8aa47b051cec4">fpmas::communication::MpiCommunicatorBase::getRank</a></div><div class="ttdeci">int getRank() const override</div><div class="ttdef"><b>Definition:</b> communication.cpp:28</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html">fpmas::io::CsvOutput</a></div><div class="ttdef"><b>Definition:</b> csv_output.h:153</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1CsvOutput_html_a58b087420bc2301c0594eb6a7352cd1e"><div class="ttname"><a href="classfpmas_1_1io_1_1CsvOutput.html#a58b087420bc2301c0594eb6a7352cd1e">fpmas::io::CsvOutput::dump</a></div><div class="ttdeci">void dump() override</div><div class="ttdef"><b>Definition:</b> csv_output.h:179</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1StringOutput_html"><div class="ttname"><a href="classfpmas_1_1io_1_1StringOutput.html">fpmas::io::StringOutput</a></div><div class="ttdef"><b>Definition:</b> output.h:300</div></div>
+<div class="ttc" id="aclassfpmas_1_1io_1_1StringOutput_html_a853b0fa1ebd77b4a65dcfd7413481b44"><div class="ttname"><a href="classfpmas_1_1io_1_1StringOutput.html#a853b0fa1ebd77b4a65dcfd7413481b44">fpmas::io::StringOutput::str</a></div><div class="ttdeci">std::string str() const</div><div class="ttdef"><b>Definition:</b> output.h:319</div></div>
 <div class="ttc" id="afpmas_8h_html"><div class="ttname"><a href="fpmas_8h.html">fpmas.h</a></div></div>
 <div class="ttc" id="anamespacefpmas_1_1communication_html_a0cd77ee61dd8f7c45cc7d1e98e36bae8"><div class="ttname"><a href="namespacefpmas_1_1communication.html#a0cd77ee61dd8f7c45cc7d1e98e36bae8">fpmas::communication::WORLD</a></div><div class="ttdeci">MpiCommWorld WORLD</div><div class="ttdef"><b>Definition:</b> communication.cpp:9</div></div>
 <div class="ttc" id="anamespacefpmas_html_a025034ef544117c0d20c51eb567ab474"><div class="ttname"><a href="namespacefpmas.html#a025034ef544117c0d20c51eb567ab474">fpmas::finalize</a></div><div class="ttdeci">void finalize()</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:18</div></div>
 <div class="ttc" id="anamespacefpmas_html_a685b5a9916d27bffb1d0d4a9bf9f08a2"><div class="ttname"><a href="namespacefpmas.html#a685b5a9916d27bffb1d0d4a9bf9f08a2">fpmas::init</a></div><div class="ttdeci">void init(int argc, char **argv)</div><div class="ttdef"><b>Definition:</b> fpmas.cpp:6</div></div>
+<div class="ttc" id="aserializer_8h_html_acd3637c72c35ab965e0e0deed0cb7229"><div class="ttname"><a href="serializer_8h.html#acd3637c72c35ab965e0e0deed0cb7229">FPMAS_DEFAULT_JSON_SET_UP</a></div><div class="ttdeci">#define FPMAS_DEFAULT_JSON_SET_UP()</div><div class="ttdef"><b>Definition:</b> serializer.h:126</div></div>
 </div><!-- fragment --> </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

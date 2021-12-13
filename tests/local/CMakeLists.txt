@@ -16,6 +16,7 @@ set(SOURCES
 	graph/random_load_balancing.cpp
 	graph/graph_builder.cpp
 	# Synchro
+	synchro/data_update_pack.cpp
 	synchro/ghost/data_sync.cpp
 	synchro/ghost/sync_linker.cpp
 	synchro/hard/hard_sync_mutex.cpp

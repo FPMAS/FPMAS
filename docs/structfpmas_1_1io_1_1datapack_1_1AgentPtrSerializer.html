@@ -77,6 +77,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:aa1c1f0093924dc48196249c870fbf698"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer.html#aa1c1f0093924dc48196249c870fbf698">size</a> (const PackType &amp;p, const WeakAgentPtr &amp;ptr)</td></tr>
+<tr class="separator:aa1c1f0093924dc48196249c870fbf698"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a690af906f2bf7645e4c177d734105d9e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer.html#a690af906f2bf7645e4c177d734105d9e">to_datapack</a> (PackType &amp;p, const WeakAgentPtr &amp;ptr)</td></tr>
 <tr class="separator:a690af906f2bf7645e4c177d734105d9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5ec5b17e0816d5971cbf50875330cc78"><td class="memItemLeft" align="right" valign="top">static WeakAgentPtr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer.html#a5ec5b17e0816d5971cbf50875330cc78">from_datapack</a> (const PackType &amp;p)</td></tr>
@@ -94,6 +96,45 @@ struct fpmas::io::datapack::AgentPtrSerializer&lt; PackType, Type, AgentTypes &g
   </dd>
 </dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="aa1c1f0093924dc48196249c870fbf698" name="aa1c1f0093924dc48196249c870fbf698"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa1c1f0093924dc48196249c870fbf698">&#9670;&nbsp;</a></span>size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PackType , typename Type , typename... AgentTypes&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer.html">fpmas::io::datapack::AgentPtrSerializer</a>&lt; PackType, Type, AgentTypes &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const PackType &amp;&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const WeakAgentPtr &amp;&#160;</td>
+          <td class="paramname"><em>ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Recursive size method used to compute the buffer size required to serialize the polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointed by <code>ptr</code> into <code>p</code>. </p>
+
+</div>
+</div>
 <a id="a690af906f2bf7645e4c177d734105d9e" name="a690af906f2bf7645e4c177d734105d9e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a690af906f2bf7645e4c177d734105d9e">&#9670;&nbsp;</a></span>to_datapack()</h2>
 
@@ -129,9 +170,9 @@ template&lt;typename PackType , typename Type , typename... AgentTypes&gt; </div
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Recursive to_datapack method used to serialize polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointers as ObjectPacks.</p>
+<p >Recursive to_datapack method used to serialize the polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointed by <code>ptr</code> into <code>p</code>.</p>
 <p ><code>Type</code> corresponds to the currently examined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type. If this type id (i.e. Type::TYPE_ID) corresponds to the <code>ptr</code> <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type (i.e. <code>ptr-&gt;typedId()</code>), the underlying agent is serialized using the specified PackType.</p>
-<p >Else, attempts to recursively serialize <code>ptr</code> with <code>to_datapack&lt;AgentTypes...&gt;(p, ptr)</code>. Notice that the last value of <code>AgentTypes</code> <b>must</b> be void to reach the recursion base case (see to_datapack&lt;void&gt;).</p>
+<p >Else, attempts to recursively serialize <code>ptr</code> with <code><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer.html">AgentPtrSerializer</a>&lt;AgentTypes...&gt;::to_datapack(p, ptr)</code>. Notice that the last value of <code>AgentTypes</code> <b>must</b> be void to reach the recursion base case (see to_datapack&lt;void&gt;).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p</td><td>destination ObjectPack </td></tr>
@@ -169,7 +210,7 @@ template&lt;typename PackType , typename Type , typename... AgentTypes&gt; </div
 </div><div class="memdoc">
 <p >Recursive from_datapack method used to unserialize polymorphic <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> pointers from ObjectPacks.</p>
 <p ><code>Type</code> corresponds to the currently examined <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> type. If this type id (i.e. Type::TYPE_ID) corresponds to the ObjectPack type id value , the ObjectPack is unserialized using the specified PackType.</p>
-<p >Else, attempts to recursively unserialize the ObjectPack with <code>from_datapack&lt;AgentTypes...&gt;(p, ptr)</code>. Notice that the last value of <code>AgentTypes</code> <b>must</b> be void to reach the recursion base case (see from_datapack&lt;void&gt;).</p>
+<p >Else, attempts to recursively unserialize the ObjectPack with <code><a class="el" href="structfpmas_1_1io_1_1datapack_1_1AgentPtrSerializer.html">AgentPtrSerializer</a>&lt;AgentTypes...&gt;::from_datapack(p, ptr)</code>. Notice that the last value of <code>AgentTypes</code> <b>must</b> be void to reach the recursion base case (see from_datapack&lt;void&gt;).</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">p</td><td>source ObjectPack </td></tr>

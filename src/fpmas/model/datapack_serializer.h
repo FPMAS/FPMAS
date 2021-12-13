@@ -4,6 +4,7 @@
 #include "serializer_set_up.h"
 #include "fpmas/api/model/model.h"
 #include "fpmas/io/datapack.h"
+#include "fpmas/model/model.h"
 
 /**
  * Defines the fpmas::io::datapack::Serializer specializations required to
@@ -36,6 +37,10 @@
  */
 #define FPMAS_BASE_DATAPACK_SET_UP(...)\
 	namespace fpmas { namespace io { namespace datapack {\
+		std::size_t Serializer<api::model::AgentPtr>\
+			::size(const ObjectPack& p, const api::model::AgentPtr& data) {\
+			return AgentPtrSerializer<ObjectPack, __VA_ARGS__ , void>::size(p, data);\
+		}\
 		void Serializer<api::model::AgentPtr>\
 			::to_datapack(ObjectPack& p, const api::model::AgentPtr& data) {\
 			AgentPtrSerializer<ObjectPack, __VA_ARGS__ , void>::to_datapack(p, data);\
@@ -45,6 +50,10 @@
 			return {AgentPtrSerializer<ObjectPack, __VA_ARGS__ , void>::from_datapack(p)};\
 		}\
 		\
+		std::size_t Serializer<api::model::WeakAgentPtr>\
+			::size(const ObjectPack& p, const api::model::WeakAgentPtr& data) {\
+			return AgentPtrSerializer<ObjectPack, __VA_ARGS__ , void>::size(p, data);\
+		}\
 		void Serializer<api::model::WeakAgentPtr>\
 			::to_datapack(ObjectPack& p, const api::model::WeakAgentPtr& data) {\
 			AgentPtrSerializer<ObjectPack, __VA_ARGS__ , void>::to_datapack(p, data);\
@@ -54,6 +63,10 @@
 			return AgentPtrSerializer<ObjectPack, __VA_ARGS__ , void>::from_datapack(p);\
 		}\
 		\
+		std::size_t LightSerializer<api::model::AgentPtr>\
+			::size(const LightObjectPack& p, const api::model::AgentPtr& data) {\
+			return AgentPtrSerializer<LightObjectPack, __VA_ARGS__ , void>::size(p, data);\
+		}\
 		void LightSerializer<api::model::AgentPtr>\
 			::to_datapack(LightObjectPack& p, const api::model::AgentPtr& data) {\
 			AgentPtrSerializer<LightObjectPack, __VA_ARGS__ , void>::to_datapack(p, data);\
@@ -62,6 +75,10 @@
 			return {AgentPtrSerializer<LightObjectPack, __VA_ARGS__ , void>::from_datapack(p)};\
 		}\
 		\
+		std::size_t LightSerializer<api::model::WeakAgentPtr>\
+			::size(const LightObjectPack& p, const api::model::WeakAgentPtr& data) {\
+			return AgentPtrSerializer<LightObjectPack, __VA_ARGS__ , void>::size(p, data);\
+		}\
 		void LightSerializer<api::model::WeakAgentPtr>\
 			::to_datapack(LightObjectPack& p, const api::model::WeakAgentPtr& data) {\
 			AgentPtrSerializer<LightObjectPack, __VA_ARGS__ , void>::to_datapack(p, data);\
@@ -78,6 +95,9 @@
  */
 #define FPMAS_BASE_DEFAULT_DATAPACK_SET_UP() \
 	namespace fpmas { namespace io { namespace datapack {\
+		std::size_t Serializer<fpmas::api::model::AgentPtr>::size(const ObjectPack& o, const fpmas::api::model::AgentPtr& data) {\
+			return AgentPtrSerializer<ObjectPack, void>::size(o, data);\
+		}\
 		void Serializer<fpmas::api::model::AgentPtr>::to_datapack(ObjectPack& o, const fpmas::api::model::AgentPtr& data) {\
 			AgentPtrSerializer<ObjectPack, void>::to_datapack(o, data);\
 		}\
@@ -85,6 +105,9 @@
 			return {AgentPtrSerializer<ObjectPack, void>::from_datapack(o)};\
 		}\
 		\
+		std::size_t Serializer<fpmas::api::model::WeakAgentPtr>::size(const ObjectPack& o, const fpmas::api::model::WeakAgentPtr& data) {\
+			return AgentPtrSerializer<ObjectPack, void>::size(o, data);\
+		}\
 		void Serializer<fpmas::api::model::WeakAgentPtr>\
 			::to_datapack(ObjectPack& o, const fpmas::api::model::WeakAgentPtr& data) {\
 			AgentPtrSerializer<ObjectPack, void>::to_datapack(o, data);\
@@ -93,6 +116,10 @@
 			::from_datapack(const ObjectPack& o) {\
 			return AgentPtrSerializer<ObjectPack, void>::from_datapack(o);\
 		}\
+		\
+		std::size_t LightSerializer<fpmas::api::model::AgentPtr>::size(const LightObjectPack& o, const fpmas::api::model::AgentPtr& data) {\
+			return AgentPtrSerializer<LightObjectPack, void>::size(o, data);\
+		}\
 		void LightSerializer<fpmas::api::model::AgentPtr>::to_datapack(LightObjectPack& o, const fpmas::api::model::AgentPtr& data) {\
 			AgentPtrSerializer<LightObjectPack, void>::to_datapack(o, data);\
 		}\
@@ -100,6 +127,9 @@
 			return {AgentPtrSerializer<LightObjectPack, void>::from_datapack(o)};\
 		}\
 		\
+		std::size_t LightSerializer<fpmas::api::model::WeakAgentPtr>::size(const LightObjectPack& o, const fpmas::api::model::WeakAgentPtr& data) {\
+			return AgentPtrSerializer<LightObjectPack, void>::size(o, data);\
+		}\
 		void LightSerializer<fpmas::api::model::WeakAgentPtr>\
 			::to_datapack(LightObjectPack& o, const fpmas::api::model::WeakAgentPtr& data) {\
 			AgentPtrSerializer<LightObjectPack, void>::to_datapack(o, data);\
@@ -124,6 +154,11 @@
 			 * Default AGENT Serializer specialization.
 			 */\
 			struct Serializer<fpmas::api::utils::PtrWrapper<AGENT>> {\
+				template<typename PackType>\
+				static std::size_t size(const PackType&, const fpmas::api::utils::PtrWrapper<AGENT>&) {\
+					return 0;\
+				}\
+				\
 				/**\
 				 * No effect: o is left empty.
 				 *
@@ -132,7 +167,7 @@
 				template<typename PackType>\
 				static void to_datapack(PackType&, const fpmas::api::utils::PtrWrapper<AGENT>&) {\
 				}\
-\
+				\
 				/**\
 				 * Unserializes a default AGENT, dynamically allocated with `new AGENT`.
 				 *
@@ -187,19 +222,36 @@ namespace fpmas { namespace io { namespace datapack {
 				}
 
 				/**
+				 * Returns the buffer size required to serialize an
+				 * std::type_index instance, i.e. pack.size<std::size_t>();
+				 */
+				template<typename PackType>
+					static std::size_t size(const PackType& pack) {
+						return pack.template size<std::size_t>();
+					}
+
+				/**
+				 * Equivalent to size().
+				 */
+				template<typename PackType>
+					static std::size_t size(const PackType& o, const std::type_index&) {
+						return o.template size<std::size_t>();
+					}
+
+				/**
 				 * Serializes an std::type_index instance into the specified
 				 * ObjectPack.
 				 *
-				 * @param o object pack output
+				 * @param pack destination BasicObjectPack
 				 * @param index type index to serialize
 				 * @throw fpmas::exceptions::BadTypeException if the type was not
 				 * register using register_type()
 				 */
 				template<typename PackType>
-					static void to_datapack(PackType& o, const std::type_index& index) {
+					static void to_datapack(PackType& pack, const std::type_index& index) {
 						auto _id = type_to_id.find(index);
 						if(_id != type_to_id.end())
-							o = _id->second;
+							pack.put(_id->second);
 						else
 							throw fpmas::exceptions::BadTypeException(index);
 					}
@@ -208,13 +260,13 @@ namespace fpmas { namespace io { namespace datapack {
 				 * Unserializes an std::type_index instance from the specified
 				 * ObjectPack.
 				 *
-				 * @param o object pack input
+				 * @param pack source BasicObjectPack
 				 * @throw fpmas::exceptions::BadIdException if the id does not
 				 * correspond to a type registered using register_type()
 				 */
 				template<typename PackType>
-					static std::type_index from_datapack(const PackType& o) {
-						std::size_t type_id = o.template get<std::size_t>();
+					static std::type_index from_datapack(const PackType& pack) {
+						std::size_t type_id = pack.template get<std::size_t>();
 						auto _type = id_to_type.find(type_id);
 						if(_type != id_to_type.end())
 							return _type->second;
@@ -322,25 +374,36 @@ namespace fpmas { namespace io { namespace datapack {
 	 template<typename AgentType>
 	 struct Serializer<api::utils::PtrWrapper<AgentType>> {
 		 /**
-		  * Returns a PtrWrapper initialized with `AgentType::from_datapack(o)`.
-		  *
-		  * @param o object pack output
-		  * @return unserialized agent pointer
+		  * Returns the buffer size required to serialize the `AgentType`
+		  * pointed by `agent_ptr` to `p`, as specified by the
+		  * `AgentType::size(p)` method.
 		  */
 		 template<typename PackType>
-			 static api::utils::PtrWrapper<AgentType> from_datapack(const PackType& o) {
-				 return AgentType::from_datapack(o);
+			 static std::size_t size(const PackType& p, const api::utils::PtrWrapper<AgentType>& agent_ptr) {
+				 return AgentType::size(p, agent_ptr.get());
 			 }
 
 		 /**
-		  * Calls `AgentType::to_datapack(o, agent_ptr.get())`.
+		  * Calls `AgentType::to_datapack(pack, agent_ptr.get())`.
 		  *
-		  * @param o object pack input
+		  * @param pack destination BasicObjectPack
 		  * @param agent_ptr agent pointer to serialized
 		  */
 		 template<typename PackType>
-			 static void to_datapack(PackType& o, const api::utils::PtrWrapper<AgentType>& agent_ptr) {
-				 AgentType::to_datapack(o, agent_ptr.get());
+			 static void to_datapack(PackType& pack, const api::utils::PtrWrapper<AgentType>& agent_ptr) {
+				 AgentType::to_datapack(pack, agent_ptr.get());
+			 }
+
+		 /**
+		  * Returns a PtrWrapper initialized with
+		  * `AgentType::from_datapack(pack)`.
+		  *
+		  * @param pack source BasicObjectPack
+		  * @return unserialized agent pointer
+		  */
+		 template<typename PackType>
+			 static api::utils::PtrWrapper<AgentType> from_datapack(const PackType& pack) {
+				 return AgentType::from_datapack(pack);
 			 }
 	 };
 
@@ -392,15 +455,31 @@ namespace fpmas { namespace io { namespace datapack {
 			>{
 				public:
 					/**
+					 * \anchor not_default_constructible_Agent_light_serializer_size
+					 *
+					 * Returns the buffer size required to serialize `agent`
+					 * into `p` using the default Serializer.
+					 */
+					static std::size_t size(const LightObjectPack& p, const fpmas::api::utils::PtrWrapper<AgentType>& agent) {
+						// Size required to serialize a classic ObjectPack into
+						// a LightObjectPack (the ObjectPack size is required
+						// in addition to the ObjectPack buffer size)
+						// This should be equivalent to the more correct
+						// `p.size(ObjectPack(agent))`, but avoids useless
+						// ObjectPack serialization in this method.
+						return p.size<std::size_t>() + ObjectPack().size(agent);
+					}
+
+					/**
 					 * \anchor not_default_constructible_Agent_light_serializer_to_datapack
 					 *
-					 * Calls
-					 * `Serializer<fpmas::api::utils::PtrWrapper<AgentType>>::%to_datapack()`.
+					 * Serializes `agent` in a classical ObjectPack, and
+					 * write this pack to the destination LightObjectPack.
 					 *
-					 * @param o object pack output
+					 * @param pack destination LightObjectPack
 					 * @param agent agent to serialize
 					 */
-					static void to_datapack(LightObjectPack& o, const fpmas::api::utils::PtrWrapper<AgentType>& agent) {
+					static void to_datapack(LightObjectPack& pack, const fpmas::api::utils::PtrWrapper<AgentType>& agent) {
 						static bool warn_print = false;
 						if(!warn_print) {
 							warn_print = true;
@@ -411,22 +490,22 @@ namespace fpmas { namespace io { namespace datapack {
 									);
 						}
 
-						ObjectPack _p = agent;
-						o = LightObjectPack::parse(_p.dump());
+						pack.put(ObjectPack(agent));
 					}
 
 					/**
 					 * \anchor not_default_constructible_Agent_light_serializer_from_datapack
 					 *
-					 * Calls
-					 * `Serializer<fpmas::api::utils::PtrWrapper<AgentType>>::%from_datapack()`.
+					 * Read a classical ObjectPack from the source
+					 * LightObjectPack, and unserializes an \Agent from this
+					 * pack.
 					 *
-					 * @param o object pack input
+					 * @param pack source LightObjectPack
 					 * @return dynamically allocated `AgentType`
 					 */
-					static fpmas::api::utils::PtrWrapper<AgentType> from_datapack(const LightObjectPack& o) {
-						ObjectPack _p = ObjectPack::parse(o.data());
-						return _p.get<fpmas::api::utils::PtrWrapper<AgentType>>();
+					static fpmas::api::utils::PtrWrapper<AgentType> from_datapack(const LightObjectPack& pack) {
+						return pack.get<ObjectPack>()
+							.get<fpmas::api::utils::PtrWrapper<AgentType>>();
 					}
 			};
 
@@ -456,6 +535,19 @@ namespace fpmas { namespace io { namespace datapack {
 			&& std::is_default_constructible<AgentType>::value
 			&& std::is_same<AgentType, typename AgentType::FinalAgentType>::value>::type
 			> {
+
+
+				/**
+				 * \anchor default_constructible_Agent_light_serializer_size
+				 *
+				 * Returns the size required to serialize an \Agent into a
+				 * LightObjectPack, i.e. 0 since the AgentType is default
+				 * constructed in this case.
+				 */
+				static std::size_t size(
+						const LightObjectPack&, const api::utils::PtrWrapper<AgentType>&) {
+					return 0;
+				}
 
 				/**
 				 * \anchor default_constructible_Agent_light_serializer_to_datapack
@@ -491,9 +583,19 @@ namespace fpmas { namespace io { namespace datapack {
 	template<typename PackType> 
 		struct AgentPtrSerializer<PackType, void> {
 			/**
+			 * size recursion base case.
+			 *
+			 * Reaching this case is erroneous and throws an
+			 * exceptions::BadTypeException instance.
+			 *
+			 * @throw exceptions::BadTypeException
+			 */
+			static std::size_t size(const PackType&, const WeakAgentPtr&);
+			/**
 			 * to_datapack recursion base case.
 			 *
-			 * Reaching this case is erroneous and throws a exceptions::BadTypeException.
+			 * Reaching this case is erroneous and throws an
+			 * exceptions::BadTypeException instance.
 			 *
 			 * @throw exceptions::BadTypeException
 			 */
@@ -502,12 +604,23 @@ namespace fpmas { namespace io { namespace datapack {
 			/**
 			 * from_datapack recursion base case.
 			 *
-			 * Reaching this case is erroneous and throws a exceptions::BadIdException.
+			 * Reaching this case is erroneous and throws an
+			 * exceptions::BadIdException instance.
 			 *
 			 * @throw exceptions::BadIdException
 			 */
 			static WeakAgentPtr from_datapack(const PackType& p);
 		};
+
+	template<typename PackType>
+		std::size_t AgentPtrSerializer<PackType, void>::size(
+				const PackType &, const WeakAgentPtr& ptr) {
+			FPMAS_LOGE(-1, "AGENT_SERIALIZER",
+					"Invalid agent type : %s. Make sure to properly register "
+					"the Agent type with FPMAS_DATAPACK_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",
+					ptr->typeId().name());
+			throw exceptions::BadTypeException(ptr->typeId());
+		}
 
 	template<typename PackType>
 		void AgentPtrSerializer<PackType, void>::to_datapack(
@@ -521,7 +634,7 @@ namespace fpmas { namespace io { namespace datapack {
 
 	template<typename PackType>
 		WeakAgentPtr AgentPtrSerializer<PackType, void>::from_datapack(const PackType &p) {
-			std::size_t id = p.template read<std::size_t>();
+			std::size_t id = p.template get<std::size_t>();
 			FPMAS_LOGE(-1, "AGENT_SERIALIZER",
 					"Invalid agent type id : %lu. Make sure to properly register "
 					"the Agent type with FPMAS_DATAPACK_SET_UP and FPMAS_REGISTER_AGENT_TYPES.",
@@ -541,8 +654,23 @@ namespace fpmas { namespace io { namespace datapack {
 	template<typename PackType, typename Type, typename... AgentTypes> 
 		struct AgentPtrSerializer {
 			/**
-			 * Recursive to_datapack method used to serialize polymorphic \Agent
-			 * pointers as ObjectPacks.
+			 * Recursive size method used to compute the buffer size required
+			 * to serialize the polymorphic \Agent pointed by `ptr` into `p`.
+			 */
+			static std::size_t size(const PackType& p, const WeakAgentPtr& ptr) {
+				if(ptr->typeId() == Type::TYPE_ID) {
+					return p.template size<api::model::TypeId>()
+						+ p.template size(TypedAgentPtr<Type>(
+							const_cast<Type*>(dynamic_cast<const Type*>(ptr.get()))
+							))
+						+ p.template size(ptr->groupIds());
+				}
+				return AgentPtrSerializer<PackType, AgentTypes...>::size(p, ptr);
+			}
+
+			/**
+			 * Recursive to_datapack method used to serialize the polymorphic
+			 * \Agent pointed by `ptr` into `p`.
 			 *
 			 * `Type` corresponds to the currently examined \Agent type. If this
 			 * type id (i.e. Type::TYPE_ID) corresponds to the `ptr` \Agent type
@@ -550,9 +678,9 @@ namespace fpmas { namespace io { namespace datapack {
 			 * using the specified PackType.
 			 *
 			 * Else, attempts to recursively serialize `ptr` with
-			 * `to_datapack<AgentTypes...>(p, ptr)`. Notice that the last
-			 * value of `AgentTypes` **must** be void to reach the
-			 * recursion base case (see to_datapack<void>).
+			 * `AgentPtrSerializer<AgentTypes...>::%to_datapack(p, ptr)`. Notice
+			 * that the last value of `AgentTypes` **must** be void to reach
+			 * the recursion base case (see to_datapack<void>).
 			 *
 			 * @param p destination ObjectPack
 			 * @param ptr polymorphic agent pointer to serialize
@@ -560,18 +688,11 @@ namespace fpmas { namespace io { namespace datapack {
 			static void to_datapack(
 					PackType& p, const WeakAgentPtr& ptr) {
 				if(ptr->typeId() == Type::TYPE_ID) {
-					PackType type_id = Type::TYPE_ID;
-					PackType agent = TypedAgentPtr<Type>(
+					p.put(Type::TYPE_ID);
+					p.put(TypedAgentPtr<Type>(
 							const_cast<Type*>(dynamic_cast<const Type*>(ptr.get()))
-							);
-					p.allocate(
-							pack_size(type_id) +
-							pack_size(agent) +
-							pack_size(ptr->groupIds())
-							);
-					p.write(type_id);
-					p.write(agent);
-					p.write(ptr->groupIds());
+							));
+					p.put(ptr->groupIds());
 				} else {
 					AgentPtrSerializer<PackType, AgentTypes...>::to_datapack(p, ptr);
 				}
@@ -586,25 +707,23 @@ namespace fpmas { namespace io { namespace datapack {
 			 * ObjectPack type id value , the ObjectPack is unserialized
 			 * using the specified PackType.
 			 *
-			 * Else, attempts to recursively unserialize the ObjectPack
-			 * with `from_datapack<AgentTypes...>(p, ptr)`. Notice that the
-			 * last value of `AgentTypes` **must** be void to reach the
-			 * recursion base case (see from_datapack<void>).
+			 * Else, attempts to recursively unserialize the ObjectPack with
+			 * `AgentPtrSerializer<AgentTypes...>::%from_datapack(p, ptr)`.
+			 * Notice that the last value of `AgentTypes` **must** be void to
+			 * reach the recursion base case (see from_datapack<void>).
 			 *
 			 * @param p source ObjectPack
 			 * @return ptr unserialized polymorphic agent pointer
 			 */
 			static WeakAgentPtr from_datapack(const PackType& p) {
-				std::size_t pos = p.readPos();
+				std::size_t pos = p.readOffset();
 				fpmas::api::model::TypeId id = p
-					.template read<PackType>()
 					.template get<fpmas::api::model::TypeId>();
 				if(id == Type::TYPE_ID) {
 					auto agent = p
-						.template read<PackType>()
 						.template get<TypedAgentPtr<Type>>();
 					for(auto gid : 
-							p.template read<std::vector<api::model::GroupId>>())
+							p.template get<std::vector<api::model::GroupId>>())
 						agent->addGroupId(gid);
 					return {agent};
 				} else {

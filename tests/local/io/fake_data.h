@@ -67,6 +67,11 @@ namespace fpmas { namespace io { namespace datapack {
 	template<>
 		struct Serializer<NonDefaultConstructibleSerializerOnly> {
 			template<typename PackType>
+				static std::size_t size(const PackType& p, const NonDefaultConstructibleSerializerOnly&) {
+					return p.template size<int>();
+				}
+
+			template<typename PackType>
 			static void to_datapack(PackType& p, const NonDefaultConstructibleSerializerOnly& data) {
 				p = data.i;
 			}
@@ -79,24 +84,28 @@ namespace fpmas { namespace io { namespace datapack {
 
 	template<>
 		struct Serializer<DefaultConstructibleData> {
+			static std::size_t size(const ObjectPack&, const DefaultConstructibleData& data);
 			static void to_datapack(ObjectPack& pack, const DefaultConstructibleData& data);
 			static DefaultConstructibleData from_datapack(const ObjectPack& pack);
 		};
 
 	template<>
 		struct LightSerializer<DefaultConstructibleData> {
+			static std::size_t size(const LightObjectPack&, const DefaultConstructibleData& data);
 			static void to_datapack(LightObjectPack& pack, const DefaultConstructibleData& data);
 			static DefaultConstructibleData from_datapack(const LightObjectPack& pack);
 		};
 
 	template<>
 		struct Serializer<NonDefaultConstructibleData> {
+			static std::size_t size(const ObjectPack&, const NonDefaultConstructibleData& data);
 			static void to_datapack(ObjectPack& pack, const NonDefaultConstructibleData& data);
 			static NonDefaultConstructibleData from_datapack(const ObjectPack& pack);
 		};
 
 	template<>
 		struct LightSerializer<NonDefaultConstructibleData> {
+			static std::size_t size(const LightObjectPack& pack, const NonDefaultConstructibleData& data);
 			static void to_datapack(LightObjectPack& pack, const NonDefaultConstructibleData& data);
 			static NonDefaultConstructibleData from_datapack(const LightObjectPack& pack);
 		};

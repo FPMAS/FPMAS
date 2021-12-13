@@ -38,10 +38,16 @@ namespace model { namespace test {
 				return new CellType(j.get<int>());
 			}
 
+			static std::size_t size(
+					const fpmas::io::datapack::ObjectPack& pack,
+					const CellType*) {
+				return pack.size<int>();
+			}
+
 			static void to_datapack(
 					fpmas::io::datapack::ObjectPack& pack,
 					const CellType* cell) {
-				pack = cell->data;
+				pack.put(cell->data);
 			}
 			static CellType* from_datapack(
 					const fpmas::io::datapack::ObjectPack& pack) {
@@ -108,10 +114,16 @@ namespace model { namespace test {
 				return agent;
 			}
 
+			static std::size_t size(
+					const fpmas::io::datapack::ObjectPack& pack,
+					const SpatialAgentWithData*) {
+				return pack.size<int>();
+			}
+
 			static void to_datapack(
 					fpmas::io::datapack::ObjectPack& pack,
 					const SpatialAgentWithData* agent) {
-				pack = agent->data;
+				pack.put(agent->data);
 			}
 			static SpatialAgentWithData* from_datapack(
 					const fpmas::io::datapack::ObjectPack& pack) {
@@ -158,14 +170,21 @@ namespace model { namespace test {
 				j = agent->data;
 			}
 
-			static GridAgentWithData* from_datapack(
-					const fpmas::io::datapack::ObjectPack& pack) {
-				return new GridAgentWithData(pack.get<int>());
+			static std::size_t size(
+					const fpmas::io::datapack::ObjectPack& pack,
+					const GridAgentWithData*) {
+				return pack.size<int>();
 			}
+
 			static void to_datapack(
 					fpmas::io::datapack::ObjectPack& pack,
 					const GridAgentWithData* agent) {
-				pack = agent->data;
+				pack.put(agent->data);
+			}
+
+			static GridAgentWithData* from_datapack(
+					const fpmas::io::datapack::ObjectPack& pack) {
+				return new GridAgentWithData(pack.get<int>());
 			}
 
 			bool operator==(const GridAgentWithData& agent) const {

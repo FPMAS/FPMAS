@@ -77,8 +77,12 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a651fef90f741a0e607950f1463468eaf"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#a651fef90f741a0e607950f1463468eaf">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;pack, const T &amp;data)</td></tr>
-<tr class="separator:a651fef90f741a0e607950f1463468eaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:accaf3e6cf75e4d58a3db29929ce306d8"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#accaf3e6cf75e4d58a3db29929ce306d8">size</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;p)</td></tr>
+<tr class="separator:accaf3e6cf75e4d58a3db29929ce306d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa32cee4ea3a1cea7e405f3d26b1ab048"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#aa32cee4ea3a1cea7e405f3d26b1ab048">size</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;p, const T &amp;item)</td></tr>
+<tr class="separator:aa32cee4ea3a1cea7e405f3d26b1ab048"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9eb76a3f7ee1928cc46e2a5e06cd9221"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#a9eb76a3f7ee1928cc46e2a5e06cd9221">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;pack, const T &amp;item)</td></tr>
+<tr class="separator:a9eb76a3f7ee1928cc46e2a5e06cd9221"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4d0a51cd5782e5289bebc756f5fef97"><td class="memItemLeft" align="right" valign="top">static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html#af4d0a51cd5782e5289bebc756f5fef97">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;pack)</td></tr>
 <tr class="separator:af4d0a51cd5782e5289bebc756f5fef97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -87,8 +91,76 @@ Static Public Member Functions</h2></td></tr>
 struct fpmas::io::datapack::LightSerializer&lt; T, Enable &gt;</div><p >Light version of the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>.</p>
 <p >By default, falls back to the Serializer&lt;T&gt; specialization, but custom <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">LightSerializer</a> specializations can be defined. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a651fef90f741a0e607950f1463468eaf" name="a651fef90f741a0e607950f1463468eaf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a651fef90f741a0e607950f1463468eaf">&#9670;&nbsp;</a></span>to_datapack()</h2>
+<a id="accaf3e6cf75e4d58a3db29929ce306d8" name="accaf3e6cf75e4d58a3db29929ce306d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#accaf3e6cf75e4d58a3db29929ce306d8">&#9670;&nbsp;</a></span>size() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Enable  = void&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer</a>&lt; T, Enable &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>p</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the buffer size required to serialize any instance of T into <code>p</code> using the regular Serializer&lt;T&gt;::size(const LightObjectPack&amp;) method if it is available. </p>
+
+</div>
+</div>
+<a id="aa32cee4ea3a1cea7e405f3d26b1ab048" name="aa32cee4ea3a1cea7e405f3d26b1ab048"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa32cee4ea3a1cea7e405f3d26b1ab048">&#9670;&nbsp;</a></span>size() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T , typename Enable  = void&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer</a>&lt; T, Enable &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>p</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the buffer size required to serialize <code>item</code> into <code>p</code> using the regular Serializer&lt;T&gt;::size(const LightObjectPack&amp;, const T&amp;) method. </p>
+
+</div>
+</div>
+<a id="a9eb76a3f7ee1928cc46e2a5e06cd9221" name="a9eb76a3f7ee1928cc46e2a5e06cd9221"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9eb76a3f7ee1928cc46e2a5e06cd9221">&#9670;&nbsp;</a></span>to_datapack()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -108,7 +180,7 @@ template&lt;typename T , typename Enable  = void&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const T &amp;&#160;</td>
-          <td class="paramname"><em>data</em>&#160;</td>
+          <td class="paramname"><em>item</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -122,11 +194,11 @@ template&lt;typename T , typename Enable  = void&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Serializes <code>data</code> into <code>pack</code> using the regular <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html#a9fd75a59eea50667cde9f282e5f8e314">Serializer&lt;T&gt;::to_datapack()</a> specialization.</p>
+<p >Serializes <code>item</code> into <code>pack</code> using the regular Serializer&lt;T&gt;::to_datapack() specialization.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pack</td><td>destination pack </td></tr>
-    <tr><td class="paramname">data</td><td>data to serialize </td></tr>
+    <tr><td class="paramname">item</td><td>item to serialize </td></tr>
   </table>
   </dd>
 </dl>
@@ -159,7 +231,7 @@ template&lt;typename T , typename Enable  = void&gt; </div>
 </table>
 </div><div class="memdoc">
 <p >Unserializes data from <code>pack</code>.</p>
-<p >Data is unserialized using the regular <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html#a4f424340fe244fcf0861c60bcbe38fdb">Serializer&lt;T&gt;::from_datapack()</a> specialization.</p>
+<p >Data is unserialized using the regular Serializer&lt;T&gt;::from_datapack() specialization.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pack</td><td>source pack </td></tr>

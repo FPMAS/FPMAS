@@ -77,6 +77,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ad00dcea4fee0276d481a85fb88703723"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Age77c3646b262abf1589d5d5d4791c3080.html#ad00dcea4fee0276d481a85fb88703723">size</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;, const <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; AgentType &gt; &amp;)</td></tr>
+<tr class="separator:ad00dcea4fee0276d481a85fb88703723"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3afa6e2dae6159a1c3173c910f8a3c70"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Age77c3646b262abf1589d5d5d4791c3080.html#a3afa6e2dae6159a1c3173c910f8a3c70">to_datapack</a> (<a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;, const <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; AgentType &gt; &amp;)</td></tr>
 <tr class="separator:a3afa6e2dae6159a1c3173c910f8a3c70"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa009217460e9cb2a419dede58fa07df5"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; AgentType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer_3_01fpmas_1_1api_1_1utils_1_1PtrWrapper_3_01Age77c3646b262abf1589d5d5d4791c3080.html#aa009217460e9cb2a419dede58fa07df5">from_datapack</a> (const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;)</td></tr>
@@ -94,6 +96,45 @@ struct fpmas::io::datapack::LightSerializer&lt; fpmas::api::utils::PtrWrapper&lt
   </dd>
 </dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ad00dcea4fee0276d481a85fb88703723" name="ad00dcea4fee0276d481a85fb88703723"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad00dcea4fee0276d481a85fb88703723">&#9670;&nbsp;</a></span>size()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1LightSerializer.html">fpmas::io::datapack::LightSerializer</a>&lt; <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt; AgentType &gt;, typename std::enable_if&lt; std::is_base_of&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a>, AgentType &gt;::value &amp;&amp;std::is_default_constructible&lt; AgentType &gt;::value &amp;&amp;std::is_same&lt; AgentType, typename AgentType::FinalAgentType &gt;::value &gt;::type &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#a73b4148148ab630bafded23ec50b6883">LightObjectPack</a> &amp;&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">api::utils::PtrWrapper</a>&lt; AgentType &gt; &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p ><a class="anchor" id="default_constructible_Agent_light_serializer_size"></a> Returns the size required to serialize an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> into a LightObjectPack, i.e. 0 since the AgentType is default constructed in this case. </p>
+
+</div>
+</div>
 <a id="a3afa6e2dae6159a1c3173c910f8a3c70" name="a3afa6e2dae6159a1c3173c910f8a3c70"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3afa6e2dae6159a1c3173c910f8a3c70">&#9670;&nbsp;</a></span>to_datapack()</h2>
 

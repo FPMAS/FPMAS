@@ -79,12 +79,18 @@ $(function() {
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a31e0935c823c9d5a99e99ea5f08faefa"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1type__index_01_4.html#a31e0935c823c9d5a99e99ea5f08faefa">register_type</a> (const std::type_index &amp;type)</td></tr>
 <tr class="separator:a31e0935c823c9d5a99e99ea5f08faefa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a9aeee3b607faafd00482658d385243"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:a8a9aeee3b607faafd00482658d385243"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1type__index_01_4.html#a8a9aeee3b607faafd00482658d385243">to_datapack</a> (PackType &amp;o, const std::type_index &amp;index)</td></tr>
-<tr class="separator:a8a9aeee3b607faafd00482658d385243"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1f1fe9308930114a4efcf7fb212a38d3"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:a1f1fe9308930114a4efcf7fb212a38d3"><td class="memTemplItemLeft" align="right" valign="top">static std::type_index&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1type__index_01_4.html#a1f1fe9308930114a4efcf7fb212a38d3">from_datapack</a> (const PackType &amp;o)</td></tr>
-<tr class="separator:a1f1fe9308930114a4efcf7fb212a38d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa967471bd5d031d85be471aea80e29dc"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:aa967471bd5d031d85be471aea80e29dc"><td class="memTemplItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1type__index_01_4.html#aa967471bd5d031d85be471aea80e29dc">size</a> (const PackType &amp;pack)</td></tr>
+<tr class="separator:aa967471bd5d031d85be471aea80e29dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd789e91c7e253c17d580a011a7dd071"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:abd789e91c7e253c17d580a011a7dd071"><td class="memTemplItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1type__index_01_4.html#abd789e91c7e253c17d580a011a7dd071">size</a> (const PackType &amp;o, const std::type_index &amp;)</td></tr>
+<tr class="separator:abd789e91c7e253c17d580a011a7dd071"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7af6995d3478e779fe672bfbadc41e98"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:a7af6995d3478e779fe672bfbadc41e98"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1type__index_01_4.html#a7af6995d3478e779fe672bfbadc41e98">to_datapack</a> (PackType &amp;pack, const std::type_index &amp;index)</td></tr>
+<tr class="separator:a7af6995d3478e779fe672bfbadc41e98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af449de3fa9d9f93285b4021fb191b98a"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:af449de3fa9d9f93285b4021fb191b98a"><td class="memTemplItemLeft" align="right" valign="top">static std::type_index&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1type__index_01_4.html#af449de3fa9d9f93285b4021fb191b98a">from_datapack</a> (const PackType &amp;pack)</td></tr>
+<tr class="separator:af449de3fa9d9f93285b4021fb191b98a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >A <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> specialization to allow ObjectPack serialization of <a href="https://en.cppreference.com/w/cpp/types/type_index">std:type_index</a>, that is used as <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> TypeId.</p>
@@ -125,8 +131,76 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a8a9aeee3b607faafd00482658d385243" name="a8a9aeee3b607faafd00482658d385243"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a9aeee3b607faafd00482658d385243">&#9670;&nbsp;</a></span>to_datapack()</h2>
+<a id="aa967471bd5d031d85be471aea80e29dc" name="aa967471bd5d031d85be471aea80e29dc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa967471bd5d031d85be471aea80e29dc">&#9670;&nbsp;</a></span>size() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PackType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; std::type_index &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const PackType &amp;&#160;</td>
+          <td class="paramname"><em>pack</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the buffer size required to serialize an std::type_index instance, i.e. pack.size&lt;std::size_t&gt;(); </p>
+
+</div>
+</div>
+<a id="abd789e91c7e253c17d580a011a7dd071" name="abd789e91c7e253c17d580a011a7dd071"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd789e91c7e253c17d580a011a7dd071">&#9670;&nbsp;</a></span>size() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename PackType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; std::type_index &gt;::size </td>
+          <td>(</td>
+          <td class="paramtype">const PackType &amp;&#160;</td>
+          <td class="paramname"><em>o</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::type_index &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Equivalent to <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01std_1_1type__index_01_4.html#aa967471bd5d031d85be471aea80e29dc">size()</a>. </p>
+
+</div>
+</div>
+<a id="a7af6995d3478e779fe672bfbadc41e98" name="a7af6995d3478e779fe672bfbadc41e98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7af6995d3478e779fe672bfbadc41e98">&#9670;&nbsp;</a></span>to_datapack()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -140,7 +214,7 @@ template&lt;typename PackType &gt; </div>
           <td class="memname">static void <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; std::type_index &gt;::to_datapack </td>
           <td>(</td>
           <td class="paramtype">PackType &amp;&#160;</td>
-          <td class="paramname"><em>o</em>, </td>
+          <td class="paramname"><em>pack</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -163,7 +237,7 @@ template&lt;typename PackType &gt; </div>
 <p >Serializes an std::type_index instance into the specified ObjectPack.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">o</td><td>object pack output </td></tr>
+    <tr><td class="paramname">pack</td><td>destination <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a> </td></tr>
     <tr><td class="paramname">index</td><td>type index to serialize </td></tr>
   </table>
   </dd>
@@ -177,8 +251,8 @@ template&lt;typename PackType &gt; </div>
 
 </div>
 </div>
-<a id="a1f1fe9308930114a4efcf7fb212a38d3" name="a1f1fe9308930114a4efcf7fb212a38d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1f1fe9308930114a4efcf7fb212a38d3">&#9670;&nbsp;</a></span>from_datapack()</h2>
+<a id="af449de3fa9d9f93285b4021fb191b98a" name="af449de3fa9d9f93285b4021fb191b98a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af449de3fa9d9f93285b4021fb191b98a">&#9670;&nbsp;</a></span>from_datapack()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -192,7 +266,7 @@ template&lt;typename PackType &gt; </div>
           <td class="memname">static std::type_index <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">fpmas::io::datapack::Serializer</a>&lt; std::type_index &gt;::from_datapack </td>
           <td>(</td>
           <td class="paramtype">const PackType &amp;&#160;</td>
-          <td class="paramname"><em>o</em></td><td>)</td>
+          <td class="paramname"><em>pack</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -205,7 +279,7 @@ template&lt;typename PackType &gt; </div>
 <p >Unserializes an std::type_index instance from the specified ObjectPack.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">o</td><td>object pack input </td></tr>
+    <tr><td class="paramname">pack</td><td>source <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a> </td></tr>
   </table>
   </dd>
 </dl>

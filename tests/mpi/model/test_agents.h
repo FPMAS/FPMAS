@@ -165,19 +165,18 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 		return agent_ptr;
 	}
 
+	static std::size_t size(const fpmas::io::datapack::ObjectPack& p, const LinkerAgent* agent) {
+		return p.size(agent->links) + p.size(agent->unlinks);
+	}
 	static void to_datapack(fpmas::io::datapack::ObjectPack& p, const LinkerAgent* agent) {
-		p.allocate(
-				fpmas::io::datapack::pack_size(agent->links) +
-				fpmas::io::datapack::pack_size(agent->unlinks)
-				);
-		p.write(agent->links);
-		p.write(agent->unlinks);
+		p.put(agent->links);
+		p.put(agent->unlinks);
 	}
 
 	static LinkerAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
 		LinkerAgent* agent_ptr = new LinkerAgent;
-		agent_ptr->links = p.read<std::set<DistributedId>>();
-		agent_ptr->unlinks = p.read<std::set<DistributedId>>();
+		agent_ptr->links = p.get<std::set<DistributedId>>();
+		agent_ptr->unlinks = p.get<std::set<DistributedId>>();
 		return agent_ptr;
 	}
 };
@@ -196,8 +195,12 @@ class TestCell : public fpmas::model::Cell<TestCell> {
 			return new TestCell(j.get<int>());
 		}
 
+		static std::size_t size(const fpmas::io::datapack::ObjectPack& p, const TestCell* cell) {
+			return p.size(cell->index);
+		}
+
 		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const TestCell* cell) {
-			p = cell->index;
+			p.put(cell->index);
 		}
 		static TestCell* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
 			return new TestCell(p.get<int>());
@@ -311,16 +314,19 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 					);
 		}
 
+		static std::size_t size(const fpmas::io::datapack::ObjectPack& p, const TestSpatialAgent*) {
+			return 2*p.size<unsigned int>();
+		}
+
 		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const TestSpatialAgent* agent) {
-			p.allocate(2*fpmas::io::datapack::pack_size<unsigned int>());
-			p.write(agent->range_size);
-			p.write(agent->num_cells_in_ring);
+			p.put(agent->range_size);
+			p.put(agent->num_cells_in_ring);
 		}
 
 		static TestSpatialAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
 			return new TestSpatialAgent(
-					p.read<unsigned int>(),
-					p.read<unsigned int>()
+					p.get<unsigned int>(),
+					p.get<unsigned int>()
 					);
 		}
 };
