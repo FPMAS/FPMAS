@@ -25,12 +25,12 @@ namespace model { namespace test {
 		protected:
 			int data;
 
+		public:
 			CustomCell() : data(72) {};
 
 			CustomCell(int data) : data(data) {
 			}
 
-		public:
 			static void to_json(nlohmann::json& j, const CellType* cell) {
 				j = cell->data;
 			}

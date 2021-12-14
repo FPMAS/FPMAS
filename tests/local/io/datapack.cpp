@@ -194,7 +194,7 @@ TEST_F(BasicObjectPackTest, copy_parse) {
 	MockObjectPack p = MockObjectPack::parse(pack.data());
 
 	// Source data pack is left unchanged
-	for(int i = 0; i < datapack.size; i++)
+	for(std::size_t i = 0; i < datapack.size; i++)
 		ASSERT_EQ(pack.data().buffer[i], datapack.buffer[i]);
 
 	char a;
