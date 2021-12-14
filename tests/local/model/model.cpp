@@ -691,7 +691,7 @@ TEST_F(AgentBaseTest, group_ids) {
 	ASSERT_THAT(agent_base.groupIds(), UnorderedElementsAre(12, 4, 45));
 }
 
-TEST_F(AgentBaseTest, removeGroupId) {
+TEST_F(AgentBaseTest, remove_group_id) {
 	agent_base.addGroupId(12);
 	agent_base.addGroupId(4);
 	agent_base.addGroupId(45);

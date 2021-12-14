@@ -108,6 +108,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aa4ac97481cea1f137802245b97f16853"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf6f495fb48d44d1809e5468fc2c9eef"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#acf6f495fb48d44d1809e5468fc2c9eef">allocate</a> (std::size_t <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a610f2457b1999dad617953c3f3dc5798">size</a>)</td></tr>
 <tr class="separator:acf6f495fb48d44d1809e5468fc2c9eef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a989fb22c96981431e33b7ba499d8f71e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a989fb22c96981431e33b7ba499d8f71e">expand</a> (std::size_t <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#a610f2457b1999dad617953c3f3dc5798">size</a>)</td></tr>
+<tr class="separator:a989fb22c96981431e33b7ba499d8f71e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affb3cf7c64aa3655f0e0ce541dbd05e1"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:affb3cf7c64aa3655f0e0ce541dbd05e1"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html#affb3cf7c64aa3655f0e0ce541dbd05e1">write</a> (const T &amp;item)</td></tr>
 <tr class="separator:affb3cf7c64aa3655f0e0ce541dbd05e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -172,7 +174,7 @@ allocate(), put() and get()</h1>
 <div class="line">}</div>
 <div class="ttc" id="adatapack_8h_html"><div class="ttname"><a href="datapack_8h.html">datapack.h</a></div></div>
 <div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html">fpmas::io::datapack</a></div></div>
-<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_affeae790ebdf831b07e41a7e9ef37ccb"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a></div><div class="ttdeci">BasicObjectPack&lt; Serializer &gt; ObjectPack</div><div class="ttdef"><b>Definition:</b> datapack.h:1252</div></div>
+<div class="ttc" id="anamespacefpmas_1_1io_1_1datapack_html_affeae790ebdf831b07e41a7e9ef37ccb"><div class="ttname"><a href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a></div><div class="ttdeci">BasicObjectPack&lt; Serializer &gt; ObjectPack</div><div class="ttdef"><b>Definition:</b> datapack.h:1293</div></div>
 </div><!-- fragment --><p> Expected output: </p><div class="fragment"><div class="line">pack: 0x3 0 0 0 0 0 0 0 0x4 0 0 0 0xfff4 0xffff 0xffff 0xffff 0x11 0 0 0 0x5 0 0 0 0 0 0 0 0x48 0x65 0x6c 0x6c 0x6f</div>
 <div class="line">vec: 4 -12 17</div>
 <div class="line">str: Hello</div>
@@ -700,6 +702,58 @@ template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">size</td><td>count of bytes to allocate </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a989fb22c96981431e33b7ba499d8f71e" name="a989fb22c96981431e33b7ba499d8f71e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a989fb22c96981431e33b7ba499d8f71e">&#9670;&nbsp;</a></span>expand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;template&lt; typename, typename Enable=void &gt; class S&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">fpmas::io::datapack::BasicObjectPack</a>&lt; S &gt;::expand </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>size</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Expands the internal DataPack buffer by <code>size</code> bytes.</p>
+<p >The existing memory area is left unchanged, so that this method can safely be called from the serialization process (i.e. within to_datapack() methods).</p>
+<p >Example workflow: </p><div class="fragment"><div class="line"><a class="code hl_typedef" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">ObjectPack</a> pack;</div>
+<div class="line">pack.allocate(16);</div>
+<div class="line">std::uint8_t i0 = 0x12;</div>
+<div class="line">pack.put(i0);</div>
+<div class="line"> </div>
+<div class="line">pack.expand(<span class="keyword">sizeof</span>(std::uint32_t));</div>
+<div class="line"><span class="comment">// The buffer size is now 16+32, and only the 8 first bytes are</span></div>
+<div class="line"><span class="comment">// already written (pack.writeOffset() == 8)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Writes data to the 32 next bytes</span></div>
+<div class="line">std::int32_t i1 = 0x12345678;</div>
+<div class="line">pack.put(i1);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Writes data to the last 8 bytes</span></div>
+<div class="line">i0 = 0x34;</div>
+<div class="line">pack.put(i0);</div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">size</td><td>size to allocate in addition to the current buffer size </td></tr>
   </table>
   </dd>
 </dl>

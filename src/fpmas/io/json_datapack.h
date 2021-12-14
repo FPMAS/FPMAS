@@ -39,12 +39,12 @@ namespace fpmas { namespace io { namespace datapack {
 			struct BasicJsonSerializer {
 
 				/**
-				 * Returns the buffer size required to store the `JsonType`
-				 * representation of `item` into `pack`.
+				 * Returns 0: the pack will be expanded by to_datapack() to
+				 * avoid JsonType serialization to be performed twice.
 				 */
 				template<typename PackType>
-					static std::size_t size(const PackType& pack, const T& item) {
-						return pack.template size(JsonType(item).dump());
+					static std::size_t size(const PackType&, const T&) {
+						return 0;
 					}
 
 				/**
@@ -59,6 +59,7 @@ namespace fpmas { namespace io { namespace datapack {
 				template<typename PackType>
 					static void to_datapack(PackType& pack, const T& item) {
 						std::string json_str = JsonType(item).dump();
+						pack.expand(pack.template size(json_str));
 						pack.template put(json_str);
 					}
 

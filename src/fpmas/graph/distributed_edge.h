@@ -257,17 +257,47 @@ namespace fpmas { namespace io { namespace datapack {
 					pack.put(edge->getId());
 					pack.put(edge->getLayer());
 					pack.put(edge->getWeight());
+
 					pack.put(edge->getSourceNode()->getId());
 					pack.put(edge->getSourceNode()->location());
 					{
-						PackType src_pack(NodePtrWrapper<T>(edge->getSourceNode()));
-						pack.put(src_pack);
+						// Skip src pack size
+						std::size_t src_size_offset = pack.writeOffset();
+						pack.seekWrite(src_size_offset + pack.template size<std::size_t>());
+
+						// Serializes src into pack
+						std::size_t w_cursor = pack.writeOffset();
+						pack.put(NodePtrWrapper<T>(edge->getSourceNode()));
+
+						// Computes src pack size
+						std::size_t src_size = pack.writeOffset() - w_cursor;
+						pack.seekWrite(src_size_offset);
+						// Writes src pack size
+						pack.put(src_size);
+
+						// Go back at the end of src pack
+						pack.seekWrite(w_cursor+src_size);
 					}
+
 					pack.put(edge->getTargetNode()->getId());
 					pack.put(edge->getTargetNode()->location());
 					{
-						PackType tgt_pack(NodePtrWrapper<T>(edge->getTargetNode()));
-						pack.put(tgt_pack);
+						// Skip tgt pack size
+						std::size_t tgt_size_offset = pack.writeOffset();
+						pack.seekWrite(tgt_size_offset + pack.template size<std::size_t>());
+
+						// Serializes tgt into pack
+						std::size_t w_cursor = pack.writeOffset();
+						pack.put(NodePtrWrapper<T>(edge->getTargetNode()));
+
+						// Computes tgt pack size
+						std::size_t tgt_size = pack.writeOffset() - w_cursor;
+						pack.seekWrite(tgt_size_offset);
+						// Writes tgt pack size
+						pack.put(tgt_size);
+
+						// Go back at the end of tgt pack
+						pack.seekWrite(w_cursor+tgt_size);
 					}
 				}
 

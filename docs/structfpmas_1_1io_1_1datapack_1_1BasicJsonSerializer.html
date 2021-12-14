@@ -77,9 +77,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ad97dbe664a46f258291c6c98146199f7"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:ad97dbe664a46f258291c6c98146199f7"><td class="memTemplItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html#ad97dbe664a46f258291c6c98146199f7">size</a> (const PackType &amp;pack, const T &amp;item)</td></tr>
-<tr class="separator:ad97dbe664a46f258291c6c98146199f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adafd53e7bdef39c8b527a22c57df717c"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:adafd53e7bdef39c8b527a22c57df717c"><td class="memTemplItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html#adafd53e7bdef39c8b527a22c57df717c">size</a> (const PackType &amp;, const T &amp;)</td></tr>
+<tr class="separator:adafd53e7bdef39c8b527a22c57df717c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf4bf9f623ac146ea868be71aece921a"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
 <tr class="memitem:adf4bf9f623ac146ea868be71aece921a"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html#adf4bf9f623ac146ea868be71aece921a">to_datapack</a> (PackType &amp;pack, const T &amp;item)</td></tr>
 <tr class="separator:adf4bf9f623ac146ea868be71aece921a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -101,8 +101,8 @@ struct fpmas::io::datapack::BasicJsonSerializer&lt; T, JsonType &gt;</div><p >A 
   </dd>
 </dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="ad97dbe664a46f258291c6c98146199f7" name="ad97dbe664a46f258291c6c98146199f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad97dbe664a46f258291c6c98146199f7">&#9670;&nbsp;</a></span>size()</h2>
+<a id="adafd53e7bdef39c8b527a22c57df717c" name="adafd53e7bdef39c8b527a22c57df717c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adafd53e7bdef39c8b527a22c57df717c">&#9670;&nbsp;</a></span>size()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -118,13 +118,13 @@ template&lt;typename PackType &gt; </div>
           <td class="memname">static std::size_t <a class="el" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html">fpmas::io::datapack::BasicJsonSerializer</a>&lt; T, JsonType &gt;::size </td>
           <td>(</td>
           <td class="paramtype">const PackType &amp;&#160;</td>
-          <td class="paramname"><em>pack</em>, </td>
+          <td class="paramname">, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const T &amp;&#160;</td>
-          <td class="paramname"><em>item</em>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -138,7 +138,7 @@ template&lt;typename PackType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Returns the buffer size required to store the <code>JsonType</code> representation of <code>item</code> into <code>pack</code>. </p>
+<p >Returns 0: the pack will be expanded by <a class="el" href="structfpmas_1_1io_1_1datapack_1_1BasicJsonSerializer.html#adf4bf9f623ac146ea868be71aece921a">to_datapack()</a> to avoid JsonType serialization to be performed twice. </p>
 
 </div>
 </div>

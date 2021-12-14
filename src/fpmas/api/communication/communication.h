@@ -26,6 +26,11 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			std::size_t count;
 			/**
+			 * Size of each item, so that size = cound * data_size.
+			 */
+			std::size_t data_size;
+
+			/**
 			 * Pointer to the internal buffer.
 			 */
 			char* buffer;
@@ -34,7 +39,7 @@ namespace fpmas { namespace api { namespace communication {
 			 * Allocates a buffer of `count` items of size `data_size`.
 			 */
 			DataPack(std::size_t count, std::size_t data_size)
-				: size(data_size*count), count(count) {
+				: size(data_size*count), count(count), data_size(data_size) {
 				buffer = (char*) std::malloc(size);
 			}
 
@@ -52,9 +57,9 @@ namespace fpmas { namespace api { namespace communication {
 			 *
 			 * @param other DataPack to copy from
 			 */
-			DataPack(const DataPack& other)
-				: size(other.size), count(other.count) {
-					buffer = (char*) std::malloc(size);
+			DataPack(const DataPack& other) :
+				size(other.size), count(other.count), data_size(other.data_size),
+				buffer((char*) std::malloc(size)) {
 					std::memcpy(buffer, other.buffer, size);
 				}
 
@@ -66,24 +71,12 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param other DataPack to move from
 			 */
 			DataPack(DataPack&& other)
-				: size(other.size), count(other.count) {
+				: size(other.size), count(other.count), data_size(other.data_size) {
 					buffer = other.buffer;
 					other.buffer = (char*) std::malloc(0);
 					other.size = 0;
 					other.count = 0;
 				}
-
-			/**
-			 * Frees the internal buffer.
-			 */
-			void free() {
-				std::free(buffer);
-				// A buffer of size 0 is assigned to prevent issues when
-				// std::free() is called again in the DataPack destructor.
-				buffer = (char*) std::malloc(0);
-				size = 0;
-				count = 0;
-			}
 
 			/**
 			 * Copy assignment.
@@ -96,6 +89,7 @@ namespace fpmas { namespace api { namespace communication {
 			DataPack& operator=(const DataPack& other) {
 				size = other.size;
 				count = other.count;
+				data_size = other.data_size;
 				buffer = (char*) std::realloc(buffer, size);
 				std::memcpy(buffer, other.buffer, size);
 				return *this;
@@ -113,11 +107,42 @@ namespace fpmas { namespace api { namespace communication {
 				std::free(buffer);
 				size = other.size;
 				count = other.count;
+				data_size = other.data_size;
 				buffer = other.buffer;
 				other.buffer = (char*) std::malloc(0);
 				other.size = 0;
 				other.count = 0;
 				return *this;
+			}
+
+			/**
+			 * Resizes the internal buffer so that it can contain `count` item.
+			 *
+			 * The new buffer size is `count * data_size`.
+			 *
+			 * Bytes in range [0, min(this->count, count)) are left unchanged,
+			 * as specified by the
+			 * [std::realloc()](https://en.cppreference.com/w/cpp/memory/c/realloc)
+			 * standard method.
+			 *
+			 * @param count new item count
+			 */
+			void resize(std::size_t count) {
+				this->count = count;
+				this->size = count * data_size;
+				buffer = (char*) std::realloc(buffer, this->size);
+			}
+
+			/**
+			 * Frees the internal buffer.
+			 */
+			void free() {
+				std::free(buffer);
+				// A buffer of size 0 is assigned to prevent issues when
+				// std::free() is called again in the DataPack destructor.
+				buffer = (char*) std::malloc(0);
+				size = 0;
+				count = 0;
 			}
 
 			/**

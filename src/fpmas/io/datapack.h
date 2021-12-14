@@ -277,7 +277,7 @@ namespace fpmas { namespace io { namespace datapack {
 			friend Serializer<BasicObjectPack<S>>;
 
 			private:
-			DataPack _data;
+			DataPack _data {0, 1};
 			std::size_t write_offset = 0;
 			mutable std::size_t read_offset = 0;
 
@@ -443,6 +443,40 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			void allocate(std::size_t size) {
 				_data = {size, 1};
+			}
+
+			/**
+			 * Expands the internal DataPack buffer by `size` bytes.
+			 *
+			 * The existing memory area is left unchanged, so that this method
+			 * can safely be called from the serialization process (i.e. within
+			 * to_datapack() methods).
+			 *
+			 * Example workflow:
+			 * ```cpp
+			 * ObjectPack pack;
+			 * pack.allocate(16);
+			 * std::uint8_t i0 = 0x12;
+			 * pack.put(i0);
+			 *
+			 * pack.expand(sizeof(std::uint32_t));
+			 * // The buffer size is now 16+32, and only the 8 first bytes are
+			 * // already written (pack.writeOffset() == 8)
+			 *
+			 * // Writes data to the 32 next bytes
+			 * std::int32_t i1 = 0x12345678;
+			 * pack.put(i1);
+			 *
+			 * // Writes data to the last 8 bytes
+			 * i0 = 0x34;
+			 * pack.put(i0);
+			 * ```
+			 *
+			 * @param size size to allocate in addition to the current buffer
+			 * size
+			 */
+			void expand(std::size_t size) {
+				_data.resize(_data.size + size);
 			}
 
 			/**
@@ -624,15 +658,22 @@ namespace fpmas { namespace io { namespace datapack {
 		struct Serializer<BasicObjectPack<S>> {
 
 			/**
-			 * Returns the buffer size required to serialize the `child` data
-			 * pack into any PackType.
+			 * Returns the buffer size required to serialize a _child_ data
+			 * pack into any `PackType`.
 			 *
-			 * @return `sizeof(std::size_t) + child.data().size`
+			 * Only `sizeof(std::size_t)` bytes are first allocated, since
+			 * _child_ might be expanded (with `child.expand(N)`) during the
+			 * serialization process between this size() call and the
+			 * to_datapack() call.
+			 *
+			 * In consequence, the actual _child_ size is considered at the
+			 * actual to_datapack() call and the _parent_ pack is expanded
+			 * accordingly.
 			 */
 			template<typename PackType>
 				static std::size_t size(
-						const PackType&, const BasicObjectPack<S>& child) {
-					return sizeof(std::size_t) + child._data.size;
+						const PackType&, const BasicObjectPack<S>&) {
+					return sizeof(std::size_t);
 				}
 
 			/**
@@ -645,6 +686,7 @@ namespace fpmas { namespace io { namespace datapack {
 				static void to_datapack(
 						PackType& parent, const BasicObjectPack<S>& child) {
 					parent.write(child._data.size);
+					parent.expand(child._data.size);
 					parent.write(child._data.buffer, child._data.size);
 				}
 
@@ -769,9 +811,8 @@ namespace fpmas { namespace io { namespace datapack {
 					std::size_t size;
 					pack.read(size);
 
-					std::string str;
-					str.resize(size);
-					pack.read(str.data(), size);
+					std::string str(&pack.data().buffer[pack.readOffset()], size);
+					pack.seekRead(pack.readOffset() + size);
 					return str;
 				}
 		};

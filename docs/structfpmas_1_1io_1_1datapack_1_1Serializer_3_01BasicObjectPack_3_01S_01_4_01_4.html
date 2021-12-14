@@ -77,9 +77,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:aa28432fce7188d1bdf704bc6261dc896"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
-<tr class="memitem:aa28432fce7188d1bdf704bc6261dc896"><td class="memTemplItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01BasicObjectPack_3_01S_01_4_01_4.html#aa28432fce7188d1bdf704bc6261dc896">size</a> (const PackType &amp;, const <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>&lt; S &gt; &amp;child)</td></tr>
-<tr class="separator:aa28432fce7188d1bdf704bc6261dc896"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a81b33f2e0b58fcf25a1aec438f228b"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
+<tr class="memitem:a5a81b33f2e0b58fcf25a1aec438f228b"><td class="memTemplItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01BasicObjectPack_3_01S_01_4_01_4.html#a5a81b33f2e0b58fcf25a1aec438f228b">size</a> (const PackType &amp;, const <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>&lt; S &gt; &amp;)</td></tr>
+<tr class="separator:a5a81b33f2e0b58fcf25a1aec438f228b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b96e37c0635329ddf6ecff723e321ec"><td class="memTemplParams" colspan="2">template&lt;typename PackType &gt; </td></tr>
 <tr class="memitem:a1b96e37c0635329ddf6ecff723e321ec"><td class="memTemplItemLeft" align="right" valign="top">static void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01BasicObjectPack_3_01S_01_4_01_4.html#a1b96e37c0635329ddf6ecff723e321ec">to_datapack</a> (PackType &amp;parent, const <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>&lt; S &gt; &amp;child)</td></tr>
 <tr class="separator:a1b96e37c0635329ddf6ecff723e321ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -97,8 +97,8 @@ struct fpmas::io::datapack::Serializer&lt; BasicObjectPack&lt; S &gt; &gt;</div>
 <td class="markdownTableBodyNone">pack.data().size   </td><td class="markdownTableBodyNone">pack.data().buffer   </td></tr>
 </table>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa28432fce7188d1bdf704bc6261dc896" name="aa28432fce7188d1bdf704bc6261dc896"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa28432fce7188d1bdf704bc6261dc896">&#9670;&nbsp;</a></span>size()</h2>
+<a id="a5a81b33f2e0b58fcf25a1aec438f228b" name="a5a81b33f2e0b58fcf25a1aec438f228b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a81b33f2e0b58fcf25a1aec438f228b">&#9670;&nbsp;</a></span>size()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -120,7 +120,7 @@ template&lt;typename PackType &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html">BasicObjectPack</a>&lt; S &gt; &amp;&#160;</td>
-          <td class="paramname"><em>child</em>&#160;</td>
+          <td class="paramname">&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -134,8 +134,9 @@ template&lt;typename PackType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Returns the buffer size required to serialize the <code>child</code> data pack into any PackType.</p>
-<dl class="section return"><dt>Returns</dt><dd><code>sizeof(std::size_t) + child.data().size</code> </dd></dl>
+<p >Returns the buffer size required to serialize a <em>child</em> data pack into any <code>PackType</code>.</p>
+<p >Only <code>sizeof(std::size_t)</code> bytes are first allocated, since <em>child</em> might be expanded (with <code>child.expand(N)</code>) during the serialization process between this <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01BasicObjectPack_3_01S_01_4_01_4.html#a5a81b33f2e0b58fcf25a1aec438f228b">size()</a> call and the <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01BasicObjectPack_3_01S_01_4_01_4.html#a1b96e37c0635329ddf6ecff723e321ec">to_datapack()</a> call.</p>
+<p >In consequence, the actual <em>child</em> size is considered at the actual <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer_3_01BasicObjectPack_3_01S_01_4_01_4.html#a1b96e37c0635329ddf6ecff723e321ec">to_datapack()</a> call and the <em>parent</em> pack is expanded accordingly. </p>
 
 </div>
 </div>

@@ -60,6 +60,19 @@ TEST_F(BasicObjectPackTest, allocate) {
 	ASSERT_EQ(pack.data().size, 24);
 }
 
+TEST_F(BasicObjectPackTest, expand) {
+	MockObjectPack pack;
+	pack.allocate(8);
+	std::uint8_t i = 0x12;
+	std::memcpy(pack.data().buffer, &i, sizeof(std::uint8_t));
+
+	pack.expand(12);
+	ASSERT_EQ(pack.data().size, 8+12);
+
+	// Ensures already written data is unchanged
+	std::memcpy(&i, pack.data().buffer, sizeof(std::uint8_t));
+}
+
 TEST_F(BasicObjectPackTest, read_write_scalar) {
 	MockObjectPack pack;
 	pack.allocate(sizeof(std::uint32_t));
@@ -419,6 +432,23 @@ TEST(ObjectPack, objectpack) {
 	objectpack.put(o2);
 
 	TEST_DATAPACK_IO(ObjectPack, objectpack, o3);
+}
+
+TEST(ObjectPack, expanded_objectpack) {
+	ObjectPack o1;
+	o1.allocate(8);
+	o1.write((std::uint64_t) 0x0123456789ABCDEF);
+
+	ObjectPack objectpack;
+	objectpack.allocate(objectpack.size(o1));
+
+	o1.expand(8);
+	o1.write((std::uint64_t) 0xFEDCBA9876543210);
+	objectpack.put(o1);
+
+	o1 = objectpack.get<ObjectPack>();
+	ASSERT_EQ(o1.get<std::uint64_t>(), (std::uint64_t) 0x0123456789ABCDEF);
+	ASSERT_EQ(o1.get<std::uint64_t>(), (std::uint64_t) 0xFEDCBA9876543210);
 }
 
 TEST(ObjectPack, str) {
