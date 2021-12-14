@@ -177,13 +177,13 @@ $(function() {
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span>    <span class="keyword">template</span>&lt;&gt;</div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span>        <span class="keyword">struct </span>adl_serializer&lt;std::type_index&gt; {</div>
 <div class="line"><a id="l00168" name="l00168"></a><span class="lineno">  168</span>            <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            <span class="keyword">static</span> std::size_t id;</div>
-<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            <span class="keyword">static</span> std::unordered_map&lt;std::size_t, std::type_index&gt; id_to_type;</div>
-<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            <span class="keyword">static</span> std::unordered_map&lt;std::type_index, std::size_t&gt; type_to_id;</div>
+<div class="line"><a id="l00169" name="l00169"></a><span class="lineno">  169</span>            <span class="keyword">static</span> FPMAS_TYPE_INDEX id;</div>
+<div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span>            <span class="keyword">static</span> std::unordered_map&lt;FPMAS_TYPE_INDEX, std::type_index&gt; id_to_type;</div>
+<div class="line"><a id="l00171" name="l00171"></a><span class="lineno">  171</span>            <span class="keyword">static</span> std::unordered_map&lt;std::type_index, FPMAS_TYPE_INDEX&gt; type_to_id;</div>
 <div class="line"><a id="l00172" name="l00172"></a><span class="lineno">  172</span> </div>
 <div class="line"><a id="l00173" name="l00173"></a><span class="lineno">  173</span>            <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>            <span class="keyword">static</span> std::size_t register_type(<span class="keyword">const</span> std::type_index&amp; type) {</div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                std::size_t new_id = <span class="keywordtype">id</span>++;</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>            <span class="keyword">static</span> FPMAS_TYPE_INDEX register_type(<span class="keyword">const</span> std::type_index&amp; type) {</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>                FPMAS_TYPE_INDEX new_id = <span class="keywordtype">id</span>++;</div>
 <div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>                type_to_id.insert({type, new_id});</div>
 <div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>                id_to_type.insert({new_id, type});</div>
 <div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                <span class="keywordflow">return</span> new_id;</div>
@@ -191,7 +191,7 @@ $(function() {
 <div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span> </div>
 <div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>            <span class="keyword">template</span>&lt;<span class="keyword">typename</span> JsonType&gt;</div>
 <div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>            <span class="keyword">static</span> std::type_index from_json(<span class="keyword">const</span> JsonType&amp; j) {</div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                std::size_t <span class="keywordtype">id</span> = j.template get&lt;std::size_t&gt;();</div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>                FPMAS_TYPE_INDEX <span class="keywordtype">id</span> = j.template get&lt;FPMAS_TYPE_INDEX&gt;();</div>
 <div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>                <span class="keyword">auto</span> _type = id_to_type.find(<span class="keywordtype">id</span>);</div>
 <div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>                <span class="keywordflow">if</span>(_type != id_to_type.end())</div>
 <div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>                    <span class="keywordflow">return</span> _type-&gt;second;</div>

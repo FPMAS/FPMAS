@@ -77,8 +77,8 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a2ef35756346c86be964534f48e339bc9"><td class="memItemLeft" align="right" valign="top">static std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">register_type</a> (const std::type_index &amp;type)</td></tr>
-<tr class="separator:a2ef35756346c86be964534f48e339bc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac3030dcd061c00f6a1ebb076b256912d"><td class="memItemLeft" align="right" valign="top">static FPMAS_TYPE_INDEX&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#ac3030dcd061c00f6a1ebb076b256912d">register_type</a> (const std::type_index &amp;type)</td></tr>
+<tr class="separator:ac3030dcd061c00f6a1ebb076b256912d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18ceee305ca2c17b6f54e42097c16146"><td class="memTemplParams" colspan="2">template&lt;typename JsonType &gt; </td></tr>
 <tr class="memitem:a18ceee305ca2c17b6f54e42097c16146"><td class="memTemplItemLeft" align="right" valign="top">static std::type_index&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a18ceee305ca2c17b6f54e42097c16146">from_json</a> (const JsonType &amp;j)</td></tr>
 <tr class="separator:a18ceee305ca2c17b6f54e42097c16146"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -90,8 +90,8 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><p >An nlohmann::adl_serializer specialization to allow JSON serialization of <a href="https://en.cppreference.com/w/cpp/types/type_index">std:type_index</a>, that is used as <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> TypeId.</p>
 <p >Each registered std::type_index is automatically mapped to a unique std::size_t integer to allow serialization. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="a2ef35756346c86be964534f48e339bc9" name="a2ef35756346c86be964534f48e339bc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ef35756346c86be964534f48e339bc9">&#9670;&nbsp;</a></span>register_type()</h2>
+<a id="ac3030dcd061c00f6a1ebb076b256912d" name="ac3030dcd061c00f6a1ebb076b256912d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3030dcd061c00f6a1ebb076b256912d">&#9670;&nbsp;</a></span>register_type()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -100,7 +100,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static std::size_t nlohmann::adl_serializer&lt; std::type_index &gt;::register_type </td>
+          <td class="memname">static FPMAS_TYPE_INDEX nlohmann::adl_serializer&lt; std::type_index &gt;::register_type </td>
           <td>(</td>
           <td class="paramtype">const std::type_index &amp;&#160;</td>
           <td class="paramname"><em>type</em></td><td>)</td>
@@ -159,7 +159,7 @@ template&lt;typename JsonType &gt; </div>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadIdException.html">fpmas::exceptions::BadIdException</a></td><td>if the id does not correspond to a type registered using <a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">register_type()</a> </td></tr>
+    <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadIdException.html">fpmas::exceptions::BadIdException</a></td><td>if the id does not correspond to a type registered using <a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#ac3030dcd061c00f6a1ebb076b256912d">register_type()</a> </td></tr>
   </table>
   </dd>
 </dl>
@@ -211,7 +211,7 @@ template&lt;typename JsonType &gt; </div>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">fpmas::exceptions::BadTypeException</a></td><td>if the type was not register using <a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#a2ef35756346c86be964534f48e339bc9">register_type()</a> </td></tr>
+    <tr><td class="paramname"><a class="el" href="classfpmas_1_1exceptions_1_1BadTypeException.html">fpmas::exceptions::BadTypeException</a></td><td>if the type was not register using <a class="el" href="structnlohmann_1_1adl__serializer_3_01std_1_1type__index_01_4.html#ac3030dcd061c00f6a1ebb076b256912d">register_type()</a> </td></tr>
   </table>
   </dd>
 </dl>

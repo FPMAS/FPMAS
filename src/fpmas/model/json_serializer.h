@@ -166,9 +166,9 @@ namespace nlohmann {
 	template<>
 		struct adl_serializer<std::type_index> {
 			private:
-			static std::size_t id;
-			static std::unordered_map<std::size_t, std::type_index> id_to_type;
-			static std::unordered_map<std::type_index, std::size_t> type_to_id;
+			static FPMAS_TYPE_INDEX id;
+			static std::unordered_map<FPMAS_TYPE_INDEX, std::type_index> id_to_type;
+			static std::unordered_map<std::type_index, FPMAS_TYPE_INDEX> type_to_id;
 
 			public:
 			/**
@@ -184,8 +184,8 @@ namespace nlohmann {
 			 *
 			 * @param type type to register
 			 */
-			static std::size_t register_type(const std::type_index& type) {
-				std::size_t new_id = id++;
+			static FPMAS_TYPE_INDEX register_type(const std::type_index& type) {
+				FPMAS_TYPE_INDEX new_id = id++;
 				type_to_id.insert({type, new_id});
 				id_to_type.insert({new_id, type});
 				return new_id;
@@ -200,7 +200,7 @@ namespace nlohmann {
 			 */
 			template<typename JsonType>
 			static std::type_index from_json(const JsonType& j) {
-				std::size_t id = j.template get<std::size_t>();
+				FPMAS_TYPE_INDEX id = j.template get<FPMAS_TYPE_INDEX>();
 				auto _type = id_to_type.find(id);
 				if(_type != id_to_type.end())
 					return _type->second;
