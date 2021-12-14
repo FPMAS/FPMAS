@@ -36,8 +36,12 @@ endif()
 
 set(LOG_LEVEL FPMAS_LOG_WARN CACHE STRING "Log level")
 set(FPMAS_ID_TYPE "unsigned long" CACHE STRING "FPMAS ID type (unsigned)")
+set(FPMAS_TYPE_INDEX "std::uint_fast8_t" CACHE STRING
+	"FPMAS type used to serialize std::type_index instances (unsigned)"
+	)
 message("-- LOG_LEVEL : ${LOG_LEVEL}")
 message("-- FPMAS_ID_TYPE : ${FPMAS_ID_TYPE}")
+message("-- FPMAS_TYPE_INDEX : ${FPMAS_TYPE_INDEX}")
 
 add_subdirectory(src)
 add_subdirectory(tests)

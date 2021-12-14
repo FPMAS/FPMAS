@@ -8,6 +8,29 @@
 
 #define AGENT_TYPE_STR(AgentType) typeid(AgentType).name()
 
+#ifndef FPMAS_TYPE_INDEX
+	/**
+	 * Type used to serialize
+	 * [std::type_index](https://en.cppreference.com/w/cpp/types/type_index)
+	 * instances, that is notably used by the polymorphic \Agent serialization
+	 * process.
+	 *
+	 * More precisely, the specified unsigned integer type must be able to
+	 * represent the count of \Agent passed to the FPMAS_REGISTER_AGENT_TYPES()
+	 * macro.
+	 *
+	 * In consequence, the default
+	 * [std::uint_fast8_t](https://en.cppreference.com/w/cpp/types/integer)
+	 * type should be able to represent 256 agent types while maximizing
+	 * performances.
+	 *
+	 * But an other unsigned integer types can be specified at compile time
+	 * using
+	 * `cmake -DFPMAS_TYPE_INDEX=<unsigned integer type> ..`
+	 */
+	#define FPMAS_TYPE_INDEX std::uint_fast8_t
+#endif
+
 namespace fpmas {
 	/**
 	 * Typed \Agent pointer.

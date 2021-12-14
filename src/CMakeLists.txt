@@ -49,6 +49,7 @@ add_library(fpmas ${SOURCES})
 
 target_compile_definitions(fpmas PUBLIC LOG_LEVEL=${LOG_LEVEL})
 target_compile_definitions(fpmas PUBLIC FPMAS_ID_TYPE=${FPMAS_ID_TYPE})
+target_compile_definitions(fpmas PUBLIC FPMAS_TYPE_INDEX=${FPMAS_TYPE_INDEX})
 target_link_libraries(fpmas PUBLIC MPI::MPI_CXX Zoltan::Zoltan
 	nlohmann_json::nlohmann_json)
 
