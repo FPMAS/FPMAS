@@ -10,6 +10,7 @@ set(SOURCES
 	graph/graph.cpp
 	## Parallel
 	graph/distributed_graph.cpp
+	graph/distributed_node.cpp
 	graph/distributed_edge.cpp
 	graph/location_manager.cpp
 	graph/zoltan_load_balancing.cpp

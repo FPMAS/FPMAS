@@ -690,13 +690,7 @@ namespace fpmas { namespace model {
 				else
 					location_cell_buffer = nullptr;
 			}
-			/*
-			 *auto location = this->template outNeighbors<CellType>(
-			 *        SpatialModelLayers::LOCATION);
-			 *if(location.count() > 0)
-			 *    return location.at(0);
-			 *return nullptr;
-			 */
+			
 			return location_cell_buffer;
 		}
 

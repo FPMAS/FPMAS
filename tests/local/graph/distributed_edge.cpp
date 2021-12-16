@@ -5,12 +5,7 @@
 
 using namespace testing;
 
-TEST(DistributedEdgeConstructorTest, default_weight) {
-	fpmas::graph::DistributedEdge<int> edge {{2, 6}, 7};
-	ASSERT_FLOAT_EQ(edge.getWeight(), 1.f);
-	ASSERT_EQ(edge.getId(), DistributedId(2, 6));
-	ASSERT_EQ(edge.getLayer(), 7);
-}
+
 
 class DistributedEdgeTest : public Test {
 	protected:
@@ -24,6 +19,14 @@ class DistributedEdgeTest : public Test {
 			edge.setTargetNode(&tgt);
 		}
 };
+
+TEST_F(DistributedEdgeTest, constructor) {
+	fpmas::graph::DistributedEdge<int> edge {{2, 6}, 7};
+	ASSERT_EQ(edge.getId(), DistributedId(2, 6));
+	ASSERT_EQ(edge.getLayer(), 7);
+	// Default weight
+	ASSERT_FLOAT_EQ(edge.getWeight(), 1.f);
+}
 
 TEST_F(DistributedEdgeTest, state) {
 	edge.setState(LocationState::DISTANT);
@@ -82,7 +85,7 @@ class DistributedEdgeSerializationTest : public Test {
 		MockDistributedNode<DefaultConstructibleData, NiceMock> src {{0, 1}, {}, 0.7};
 		MockDistributedNode<DefaultConstructibleData, NiceMock> tgt {{0, 2}, {}, 2.45};
 
-		fpmas::graph::EdgePtrWrapper<DefaultConstructibleData> edge_ptr;
+		fpmas::graph::EdgePtrWrapper<DefaultConstructibleData> edge_ptr {&edge};
 
 		void SetUp() override {
 			src.data().i = 4;
@@ -95,8 +98,6 @@ class DistributedEdgeSerializationTest : public Test {
 			edge.setWeight(2.4);
 			edge.setSourceNode(&src);
 			edge.setTargetNode(&tgt);
-
-			edge_ptr = fpmas::graph::EdgePtrWrapper<DefaultConstructibleData>(&edge);
 		}
 
 		template<typename PackType>
