@@ -1,6 +1,10 @@
 #ifndef FPMAS_RANDOM_LB_H
 #define FPMAS_RANDOM_LB_H
 
+/** \file src/fpmas/graph/random_load_balancing.h
+ * RandomLoadBalancing implementation.
+ */
+
 #include "fpmas/api/communication/communication.h"
 #include "fpmas/api/graph/load_balancing.h"
 #include "fpmas/random/random.h"

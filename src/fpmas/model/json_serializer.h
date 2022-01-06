@@ -1,8 +1,8 @@
 #ifndef FPMAS_MODEL_JSON_SERIALIZER_H
 #define FPMAS_MODEL_JSON_SERIALIZER_H
 
-/** \file src/fpmas/model/serializer.h
- * Agent serialization related objects.
+/** \file src/fpmas/model/json_serializer.h
+ * Agent JSON serialization related objects.
  */
 
 #include "serializer_set_up.h"
@@ -409,7 +409,7 @@ namespace fpmas { namespace io { namespace json {
 							FPMAS_LOGW(0, "light_serializer",
 									"Type %s does not define a default constructor or "
 									"a light_serializer specialization."
-									"This might be uneficient.", AGENT_TYPE_STR(AgentType)
+									"This might be uneficient.", FPMAS_TYPE_STR(AgentType)
 									);
 						}
 

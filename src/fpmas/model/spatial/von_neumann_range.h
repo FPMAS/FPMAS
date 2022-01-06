@@ -1,6 +1,10 @@
 #ifndef FPMAS_VON_NEUMANN_RANGE_H
 #define FPMAS_VON_NEUMANN_RANGE_H
 
+/** \file src/fpmas/model/spatial/von_neumann_range.h
+ * VonNeumann range related objects, including adaptions to Moore grids.
+ */
+
 #include "moore.h"
 #include "von_neumann.h"
 

@@ -1,8 +1,8 @@
 #ifndef FPMAS_MOORE_GRID_H
 #define FPMAS_MOORE_GRID_H
 
-/** \file src/fpmas/model/spatial/moore.h
- * Moore neighborhood related objects.
+/** \file src/fpmas/model/spatial/moore_grid.h
+ * Moore grid related objects.
  */
 
 #include "grid_builder.h"

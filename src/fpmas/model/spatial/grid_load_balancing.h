@@ -1,6 +1,10 @@
 #ifndef FPMAS_GRID_LB_H
 #define FPMAS_GRID_LB_H
 
+/** \file src/fpmas/model/spatial/grid_load_balancing.h
+ * GridLoadBalancing implementation.
+ */
+
 #include "fpmas/api/graph/load_balancing.h"
 #include "fpmas/api/model/spatial/grid.h"
 

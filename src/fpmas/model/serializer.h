@@ -1,6 +1,10 @@
 #ifndef FPMAS_MODEL_SERIALIZER_H
 #define FPMAS_MODEL_SERIALIZER_H
 
+/** \file src/fpmas/model/serializer.h
+ * Agent serialization related objects.
+ */
+
 #include "json_serializer.h"
 #include "datapack_serializer.h"
 #include "fpmas/io/json_datapack.h"

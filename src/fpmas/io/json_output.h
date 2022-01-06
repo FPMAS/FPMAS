@@ -2,6 +2,11 @@
 #define FPMAS_JSON_OUTPUT_H
 
 #include "output.h"
+
+/** \file src/fpmas/io/json_output.h
+ * JSON based output implementation.
+ */
+
 namespace fpmas { namespace io {
 
 	/**

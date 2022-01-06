@@ -1,6 +1,10 @@
 #ifndef FPMAS_GRID_BUILDER_H
 #define FPMAS_GRID_BUILDER_H
 
+/** \file src/fpmas/model/spatial/grid_builder.h
+ * Generic grid builder features.
+ */
+
 #include "grid.h"
 
 namespace fpmas { namespace model { namespace detail {

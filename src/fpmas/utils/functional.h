@@ -1,6 +1,10 @@
 #ifndef FPMAS_FUNCTIONAL_H
 #define FPMAS_FUNCTIONAL_H
 
+/** \file src/fpmas/utils/functional.h
+ * Utility function objects.
+ */
+
 #include <utility>
 #include <functional>
 

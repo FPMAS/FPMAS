@@ -1,6 +1,10 @@
 #include "fpmas/api/utils/ptr_wrapper.h"
 #include "fpmas/api/model/model.h"
 
+/** \file src/fpmas/utils/cast.h
+ * FPMAS smart pointers cast utilities
+ */
+
 namespace fpmas { namespace utils {
 
 	namespace detail {

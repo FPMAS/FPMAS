@@ -1,6 +1,14 @@
+#ifndef FPMAS_FORMATTED_OUTPUT_H
+#define FPMAS_FORMATTED_OUTPUT_H
+
 #include "output.h"
 
+/** \file src/fpmas/io/formatted_output.h
+ * Output implementation based on the output stream operator `<<`.
+ */
+
 namespace fpmas { namespace io {
+
 	/**
 	 * A
 	 * [`FormattedOutputFunction`](https://en.cppreference.com/w/cpp/named_req/FormattedOutputFunction)
@@ -51,3 +59,4 @@ namespace fpmas { namespace io {
 				}
 		};
 }}
+#endif

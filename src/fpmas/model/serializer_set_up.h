@@ -1,12 +1,19 @@
 #ifndef FPMAS_MODEL_SERIALIZER_SET_UP_H
 #define FPMAS_MODEL_SERIALIZER_SET_UP_H
 
+/** \file src/fpmas/model/serializer_set_up.h
+ * Contains features useful for both JSON and ObjectPack Agent serialization.
+ */
+
 #include <stdexcept>
 #include <typeindex>
 #include "fpmas/api/utils/ptr_wrapper.h"
 #include "fpmas/utils/log.h"
 
-#define AGENT_TYPE_STR(AgentType) typeid(AgentType).name()
+/**
+ * Utility macro used to retrieve the name of the typeid of T
+ */
+#define FPMAS_TYPE_STR(T) typeid(T).name()
 
 #ifndef FPMAS_TYPE_INDEX
 	/**

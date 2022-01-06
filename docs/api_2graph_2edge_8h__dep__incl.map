@@ -10,11 +10,11 @@
 <area shape="rect" id="node36" href="$graph_2distributed__node_8h.html" title=" " alt="" coords="1277,273,1457,315"/>
 <area shape="rect" id="node38" href="$synchro_2guards_8h.html" title=" " alt="" coords="905,281,1089,307"/>
 <area shape="rect" id="node5" href="$api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="1035,363,1173,404"/>
-<area shape="rect" id="node15" href="$cell__load__balancing_8h_source.html" title=" " alt="" coords="1127,631,1289,672"/>
-<area shape="rect" id="node23" href="$random__load__balancing_8h_source.html" title=" " alt="" coords="5,631,168,672"/>
+<area shape="rect" id="node15" href="$cell__load__balancing_8h.html" title=" " alt="" coords="1127,631,1289,672"/>
+<area shape="rect" id="node23" href="$random__load__balancing_8h.html" title=" " alt="" coords="5,631,168,672"/>
 <area shape="rect" id="node24" href="$scheduled__load__balancing_8h.html" title=" " alt="" coords="104,452,283,493"/>
 <area shape="rect" id="node25" href="$zoltan__load__balancing_8h.html" title=" " alt="" coords="73,363,228,404"/>
-<area shape="rect" id="node26" href="$grid__load__balancing_8h_source.html" title=" " alt="" coords="1313,631,1474,672"/>
+<area shape="rect" id="node26" href="$grid__load__balancing_8h.html" title=" " alt="" coords="1313,631,1474,672"/>
 <area shape="rect" id="node6" href="$api_2graph_2graph__builder_8h.html" title=" " alt="" coords="1035,452,1173,493"/>
 <area shape="rect" id="node13" href="$api_2model_2model_8h.html" title=" " alt="" coords="686,452,826,493"/>
 <area shape="rect" id="node18" href="$graph_2distributed__graph_8h.html" title=" " alt="" coords="1374,452,1554,493"/>

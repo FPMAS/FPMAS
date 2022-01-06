@@ -1,6 +1,10 @@
 #ifndef FPMAS_CELL_LB_H
 #define FPMAS_CELL_LB_H
 
+/** \file src/fpmas/model/spatial/cell_load_balancing.h
+ * CellLoadBalancing implementation.
+ */
+
 #include "fpmas/api/graph/load_balancing.h"
 #include "fpmas/api/model/spatial/spatial_model.h"
 

@@ -1,6 +1,10 @@
 #ifndef FPMAS_MODEL_DATAPACK_SERIALIZER_H
 #define FPMAS_MODEL_DATAPACK_SERIALIZER_H
 
+/** \file src/fpmas/model/datapack_serializer.h
+ * Agent ObjectPack serialization related objects.
+ */
+
 #include "serializer_set_up.h"
 #include "fpmas/api/model/model.h"
 #include "fpmas/io/datapack.h"
@@ -486,7 +490,7 @@ namespace fpmas { namespace io { namespace datapack {
 							FPMAS_LOGW(0, "LightSerializer",
 									"Type %s does not define a default constructor or "
 									"a LightSerializer specialization."
-									"This might be uneficient.", AGENT_TYPE_STR(AgentType)
+									"This might be uneficient.", FPMAS_TYPE_STR(AgentType)
 									);
 						}
 

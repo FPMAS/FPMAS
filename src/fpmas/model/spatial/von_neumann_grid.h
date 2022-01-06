@@ -1,8 +1,8 @@
 #ifndef FPMAS_VON_NEUMANN_GRID_H
 #define FPMAS_VON_NEUMANN_GRID_H
 
-/** \file src/fpmas/model/spatial/von_neumann.h
- * VonNeumann neighborhood related objects.
+/** \file src/fpmas/model/spatial/von_neumann_grid.h
+ * VonNeumann grid related objects.
  */
 
 #include "grid_builder.h"

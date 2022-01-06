@@ -1,6 +1,10 @@
 #ifndef FPMAS_RANDOM_H
 #define FPMAS_RANDOM_H
 
+/** \file src/fpmas/random/random.h
+ * Random number generation related features.
+ */
+
 #include "generator.h"
 #include "distribution.h"
 

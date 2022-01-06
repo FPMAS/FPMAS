@@ -1,11 +1,11 @@
 <map id="src/fpmas/model/spatial/grid.h" name="src/fpmas/model/spatial/grid.h">
 <area shape="rect" id="node1" title=" " alt="" coords="157,5,318,47"/>
-<area shape="rect" id="node2" href="$grid__builder_8h_source.html" title=" " alt="" coords="157,95,318,136"/>
-<area shape="rect" id="node3" href="$moore__grid_8h_source.html" title=" " alt="" coords="98,184,259,225"/>
-<area shape="rect" id="node9" href="$von__neumann__grid_8h_source.html" title=" " alt="" coords="282,273,443,315"/>
+<area shape="rect" id="node2" href="$grid__builder_8h.html" title=" " alt="" coords="157,95,318,136"/>
+<area shape="rect" id="node3" href="$moore__grid_8h.html" title=" " alt="" coords="98,184,259,225"/>
+<area shape="rect" id="node9" href="$von__neumann__grid_8h.html" title=" " alt="" coords="282,273,443,315"/>
 <area shape="rect" id="node4" href="$moore_8h.html" title=" " alt="" coords="65,273,226,315"/>
 <area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="5,370,96,397"/>
-<area shape="rect" id="node6" href="$moore__range_8h_source.html" title=" " alt="" coords="65,541,226,583"/>
-<area shape="rect" id="node7" href="$von__neumann__range_8h_source.html" title=" " alt="" coords="195,363,357,404"/>
+<area shape="rect" id="node6" href="$moore__range_8h.html" title=" " alt="" coords="65,541,226,583"/>
+<area shape="rect" id="node7" href="$von__neumann__range_8h.html" title=" " alt="" coords="195,363,357,404"/>
 <area shape="rect" id="node8" href="$von__neumann_8h.html" title=" " alt="" coords="195,452,357,493"/>
 </map>

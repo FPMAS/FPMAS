@@ -1,6 +1,10 @@
 #ifndef FPMAS_SPATIAL_AGENT_MAPPING_H
 #define FPMAS_SPATIAL_AGENT_MAPPING_H
 
+/** \file src/fpmas/model/spatial/spatial_agent_mapping.h
+ * Features used to map agents on generic spatial graphs.
+ */
+
 #include "fpmas/api/model/spatial/spatial_model.h"
 #include "fpmas/random/random.h"
 
