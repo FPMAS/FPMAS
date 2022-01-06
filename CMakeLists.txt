@@ -33,6 +33,8 @@ elseif(CMAKE_BUILD_TYPE STREQUAL RelWithDebInfo)
 	message("-- Build type: RelWithDebInfo (${CMAKE_CXX_FLAGS_RELWITHDEBINFO})")
 endif()
 
+include_directories(third_party)
+install(DIRECTORY third_party/hedley DESTINATION include)
 
 set(LOG_LEVEL FPMAS_LOG_WARN CACHE STRING "Log level")
 set(FPMAS_ID_TYPE "unsigned long" CACHE STRING "FPMAS ID type (unsigned)")

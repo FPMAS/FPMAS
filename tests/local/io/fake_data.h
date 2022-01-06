@@ -3,6 +3,10 @@
 
 struct DefaultConstructibleData {
 	int i = 0;
+
+	DefaultConstructibleData() = default;
+	DefaultConstructibleData(int i) : i(i) {
+	}
 };
 
 struct NonDefaultConstructibleData {

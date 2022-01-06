@@ -49,7 +49,6 @@ set(SOURCES
 	io/json_output.cpp
 	io/breakpoint.cpp
 	io/json.cpp
-	io/datapack_base_io.cpp
 	io/datapack.cpp
 	io/json_datapack.cpp
 	io/formatted_output.cpp
