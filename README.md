@@ -23,7 +23,26 @@ Multi-Agent models might also be used in applications that are not related
 to Multi-Agent Systems to take advantage of other features such as load
 balancing or write operations across processes.
 
-![Simple model automatic distribution example on 4 cores](docs/img/mior_dist.png)
+<table>
+<tr><td>
+<a href="https://fpmas.github.io/FPMAS/figures/load-balancing/zoltan-cell-spatial-graph/zoltan-cell-spatial-graph.0.html">
+<img src="https://github.com/FPMAS/FPMAS/wiki/load-balancing/figures/zoltan-cell-spatial-graph/zoltan-cell-spatial-graph.0.png" alt="Zoltan Cell Example, rank 0"> 
+</a>
+</td><td>
+<a href="https://fpmas.github.io/FPMAS/figures/load-balancing/zoltan-cell-spatial-graph/zoltan-cell-spatial-graph.1.html">
+<img src="https://github.com/FPMAS/FPMAS/wiki/load-balancing/figures/zoltan-cell-spatial-graph/zoltan-cell-spatial-graph.1.png" alt="Zoltan Cell Example, rank 1"> 
+</a>
+</td></tr>
+<tr><td>
+<a href="https://fpmas.github.io/FPMAS/figures/load-balancing/zoltan-cell-spatial-graph/zoltan-cell-spatial-graph.2.html">
+<img src="https://github.com/FPMAS/FPMAS/wiki/load-balancing/figures/zoltan-cell-spatial-graph/zoltan-cell-spatial-graph.2.png" alt="Zoltan Cell Example, rank 2"> 
+</a>
+</td><td>
+<a href="https://fpmas.github.io/FPMAS/figures/load-balancing/zoltan-cell-spatial-graph/zoltan-cell-spatial-graph.3.html">
+<img src="https://github.com/FPMAS/FPMAS/wiki/load-balancing/figures/zoltan-cell-spatial-graph/zoltan-cell-spatial-graph.3.png" alt="Zoltan Cell Example, rank 3"> 
+</a>
+</td></tr>
+</table>
 
 - [Installation](#installation)
   - [Dependencies](#dependencies)
@@ -137,7 +156,7 @@ A custom FPMAS installation path can also be specified with the
 [`CMAKE_INSTALL_PREFIX`](https://cmake.org/cmake/help/v3.10/variable/CMAKE_INSTALL_PREFIX.html?highlight=cmake_install_prefix)
 variable (by default, `/usr/local` on Unix systems):
 ```
-$ cmake -DCMAKE_PREFIX_PATH=$HOME/local -DCMAKE_INSTALL_PREFIX=$HOME/local ..
+cmake -DCMAKE_PREFIX_PATH=$HOME/local -DCMAKE_INSTALL_PREFIX=$HOME/local ..
 ```
 In this example, FPMAS will be installed in `$HOME/local/include` and
 `$HOME/local/lib`.
