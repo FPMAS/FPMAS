@@ -100,7 +100,7 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			template<typename PackType>
 			static synchro::hard::api::Color from_datapack(const PackType& pack) {
-				return (synchro::hard::api::Color) pack.template get<int>();
+				return (synchro::hard::api::Color) pack.template get<std::uint8_t>();
 			}
 		};
 }}}
