@@ -666,12 +666,18 @@ namespace fpmas { namespace model {
 				this->model()->unlink(perception);
 
 
-			// Adds the NEW_LOCATION to the mobility/perceptions fields
-			// depending on the current ranges
-			if(this->mobilityRange().contains(cell, cell))
-				this->model()->link(this, cell, SpatialModelLayers::MOVE);
-			if(this->perceptionRange().contains(cell, cell))
-				this->model()->link(this, cell, SpatialModelLayers::PERCEIVE);
+			{
+				// The cell must be read before checking mobility ranges, to
+				// ensure cell data are available (e.g. cell->location())
+				fpmas::model::ReadGuard read(cell);
+
+				// Adds the NEW_LOCATION to the mobility/perceptions fields
+				// depending on the current ranges
+				if(this->mobilityRange().contains(cell, cell))
+					this->model()->link(this, cell, SpatialModelLayers::MOVE);
+				if(this->perceptionRange().contains(cell, cell))
+					this->model()->link(this, cell, SpatialModelLayers::PERCEIVE);
+			}
 
 			this->location_id = cell->node()->getId();
 			this->location_cell_buffer = cell;

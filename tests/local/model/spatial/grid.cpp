@@ -1,7 +1,8 @@
 #include "fpmas/model/spatial/grid.h"
 #include "fpmas/model/spatial/von_neumann.h"
 #include "fpmas/model/spatial/moore.h"
-#include "model/mock_grid.h"
+#include "../../../mocks/synchro/mock_mutex.h"
+#include "../../../mocks/model/mock_grid.h"
 #include "test_agents.h"
 
 #include <unordered_set>
@@ -124,6 +125,7 @@ class BaseGridAgentTest : public testing::Test, protected GridAgentType {
 		MockGridCell<NiceMock> mock_cell;
 		fpmas::graph::DistributedId mock_cell_id {37, 2};
 		MockAgentNode<NiceMock> mock_cell_node {mock_cell_id, &mock_cell};
+		NiceMock<MockMutex<AgentPtr>> mock_cell_mutex;
 		DiscretePoint location_point {3, -18};
 		NiceMock<MockModel> mock_model;
 
@@ -146,6 +148,14 @@ class BaseGridAgentTest : public testing::Test, protected GridAgentType {
 				.WillByDefault(Return(location_point));
 			ON_CALL(mock_cell, node())
 				.WillByDefault(Return(&mock_cell_node));
+			ON_CALL(Const(mock_cell), node())
+				.WillByDefault(Return(&mock_cell_node));
+			ON_CALL(mock_cell_node, mutex())
+				.WillByDefault(Return(&mock_cell_mutex));
+			ON_CALL(Const(mock_cell_node), mutex())
+				.WillByDefault(Return(&mock_cell_mutex));
+			ON_CALL(mock_cell_mutex, read)
+				.WillByDefault(ReturnRef(mock_cell_node.data()));
 		}
 
 		void TearDown() {
