@@ -190,6 +190,11 @@ class SpatialAgentTest : public ::testing::Test, protected model::test::SpatialA
 				.WillByDefault(Return(&mock_location_mutex));
 			ON_CALL(mock_location_mutex, read)
 				.WillByDefault(ReturnRef(location_node.data()));
+			// By default, no expectation.
+			// Can be overriden with explicit EXPECT_CALLS
+			EXPECT_CALL(mock_location_mutex, read).Times(AnyNumber());
+			EXPECT_CALL(mock_location_mutex, releaseRead).Times(AnyNumber());
+
 			this->setNode(&agent_node);
 			this->setModel(&mock_model);
 
