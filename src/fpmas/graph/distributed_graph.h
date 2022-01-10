@@ -236,6 +236,12 @@ namespace fpmas { namespace graph {
 								partition_mode
 								));
 
+					// Data synchronization of newly imported DISTANT nodes.
+					// In GhostMode, this import DISTANT nodes data, so that it can
+					// be used directly following the _distribute() operation
+					// without any additional and complete synchronize().
+					this->synchronize(this->unsynchronized_nodes, false);
+
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
 							"Graph balanced : %lu nodes, %lu edges",
@@ -265,6 +271,9 @@ namespace fpmas { namespace graph {
 								this->location_manager.getLocalNodes(),
 								fixed_vertices,
 								partition_mode));
+
+					// Same as above
+					this->synchronize(this->unsynchronized_nodes, false);
 
 					FPMAS_LOGI(
 							getMpiCommunicator().getRank(), "LB",
