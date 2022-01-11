@@ -210,6 +210,13 @@ MPI tests can be run with the following commands :
 mpiexec -n 4 ./tests/mpi/fpmas_mpi_test
 ```
 
+The `fpmas_mpi_test` uses the legacy agent JSON serialization scheme. Since
+version 1.3, FPMAS introduced the more efficient [`ObjectPack`](ttps://fpmas.github.io/FPMAS/classfpmas_1_1io_1_1datapack_1_1BasicObjectPack.html) serialization technique. In order to build and run the MPI test suite that uses `ObjectPack` instead of JSON, run:
+```
+cmake --build . --target fpmas_mpi_test_datapack
+mpiexec -n 4 ./tests/mpi/fpmas_mpi_test_datapack
+```
+
 Notice that any number of cores can be passed to the `mpiexec` `-n` option so
 that you can test FPMAS on any architecture.
 

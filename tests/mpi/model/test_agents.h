@@ -5,7 +5,7 @@
 #include "fpmas/model/spatial/grid.h"
 #include "fpmas/model/spatial/graph.h"
 #include "fpmas/model/spatial/von_neumann.h"
-#include "model/mock_model.h"
+#include "../../mocks/model/mock_model.h"
 
 #define TEST_AGENTS BasicAgent, ReaderAgent, WriterAgent, LinkerAgent,\
 		DefaultMockAgentBase<1>, DefaultMockAgentBase<10>,\
@@ -71,8 +71,12 @@ class ReaderAgent : public ReaderWriterBase, public fpmas::model::AgentBase<Read
 			return agent_ptr;
 		}
 
+		static std::size_t size(const fpmas::io::datapack::ObjectPack& p, const ReaderAgent*) {
+			return p.size<int>();
+		}
+
 		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const ReaderAgent* agent) {
-			p = agent->getCounter();
+			p.put(agent->getCounter());
 		}
 
 		static ReaderAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
@@ -110,8 +114,12 @@ class WriterAgent : public ReaderWriterBase, public fpmas::model::AgentBase<Writ
 			return agent_ptr;
 		}
 
+		static std::size_t size(const fpmas::io::datapack::ObjectPack& p, const WriterAgent*) {
+			return p.size<int>();
+		}
+
 		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const WriterAgent* agent) {
-			p = agent->getCounter();
+			p.put(agent->getCounter());
 		}
 
 		static WriterAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
@@ -224,6 +232,10 @@ namespace fpmas { namespace io { namespace json {
 namespace fpmas { namespace io { namespace datapack {
 	template<>
 		struct LightSerializer<fpmas::api::utils::PtrWrapper<TestCell>> {
+			static std::size_t size(const LightObjectPack&, const fpmas::api::utils::PtrWrapper<TestCell>&) {
+				return 0;
+			}
+
 			static void to_datapack(LightObjectPack&, const fpmas::api::utils::PtrWrapper<TestCell>&) {
 			}
 			static fpmas::api::utils::PtrWrapper<TestCell> from_datapack(const LightObjectPack&) {
