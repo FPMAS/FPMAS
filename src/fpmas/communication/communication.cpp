@@ -101,7 +101,8 @@ namespace fpmas { namespace communication {
 		int flag;
 		MPI_Status __status {};
 		MPI_Iprobe(source, tag, this->comm, &flag, &__status);
-		convertStatus(__status, status, type);
+		if(flag > 0)
+			convertStatus(__status, status, type);
 		return flag > 0;
 	}
 
@@ -204,10 +205,6 @@ namespace fpmas { namespace communication {
 		MPI_Type_size(type, &type_size);
 
 
-		void* send_buffer = std::malloc(data.count * type_size);
-		std::memcpy(&((char*) send_buffer)[0], data.buffer, data.size);
-
-
 		int* size_buffer;
 		if(getRank() == root) {
 			size_buffer = (int*) std::malloc(getSize() * sizeof(int));
@@ -234,7 +231,7 @@ namespace fpmas { namespace communication {
 		}
 		void* recv_buffer = std::malloc(current_rdispls * type_size);
 
-		MPI_Gatherv(send_buffer, data.count, type, recv_buffer, recvcounts, rdispls, type, root, comm);
+		MPI_Gatherv(data.buffer, data.count, type, recv_buffer, recvcounts, rdispls, type, root, comm);
 
 		std::vector<DataPack> imported_data_pack;
 		if(getRank() == root) {
@@ -245,7 +242,6 @@ namespace fpmas { namespace communication {
 				std::memcpy(data_pack.buffer, &((char*) recv_buffer)[rdispls[i]], data_pack.size);
 			}
 		}
-		std::free(send_buffer);
 		std::free(size_buffer);
 		std::free(recvcounts);
 		std::free(rdispls);
@@ -256,10 +252,6 @@ namespace fpmas { namespace communication {
 	std::vector<DataPack> MpiCommunicatorBase::allGather(DataPack data, MPI_Datatype type) {
 		int type_size;
 		MPI_Type_size(type, &type_size);
-
-
-		void* send_buffer = std::malloc(data.count * type_size);
-		std::memcpy((char*) send_buffer, data.buffer, data.size);
 
 
 		int* count_buffer = (int*) std::malloc(getSize() * sizeof(int));
@@ -275,19 +267,18 @@ namespace fpmas { namespace communication {
 			current_rdispls += count_buffer[i]*type_size;
 		}
 		
-		void* recv_buffer = std::malloc(current_rdispls);
+		char* recv_buffer = (char*) std::malloc(current_rdispls);
 
-		MPI_Allgatherv(send_buffer, local_count, type, recv_buffer, count_buffer, rdispls, type, comm);
+		MPI_Allgatherv(data.buffer, local_count, type, recv_buffer, count_buffer, rdispls, type, comm);
 
 		std::vector<DataPack> imported_data_pack(getSize());
 		for (int i = 0; i < getSize(); i++) {
 			imported_data_pack[i] = DataPack(count_buffer[i], type_size);
 			DataPack& data_pack = imported_data_pack[i];
 
-			std::memcpy(data_pack.buffer, &((char*) recv_buffer)[rdispls[i]], data_pack.size);
+			std::memcpy(data_pack.buffer, recv_buffer+rdispls[i], data_pack.size);
 		}
 
-		std::free(send_buffer);
 		std::free(count_buffer);
 		std::free(rdispls);
 		std::free(recv_buffer);
@@ -304,14 +295,12 @@ namespace fpmas { namespace communication {
 		// Allocates the in/out buffer used by MPI_Bcast
 		int type_size;
 		MPI_Type_size(datatype, &type_size);
-		DataPack in_out_data(count, type_size);
-		// At root, we need to copy data to in/out buffer. On other procs, this
-		// operation is useless
-		if(this->getRank() == root)
-			std::memcpy(in_out_data.buffer, data.buffer, data.size);
-
-		MPI_Bcast(in_out_data.buffer, count, datatype, root, this->comm);
-		return in_out_data;
+		if(this->getRank() != root)
+			// If not root, reallocate the temporary data buffer so that it can
+			// receive data from root
+			data = DataPack(count, type_size);
+		MPI_Bcast(data.buffer, count, datatype, root, this->comm);
+		return data;
 	}
 
 	void MpiCommunicatorBase::barrier() {
