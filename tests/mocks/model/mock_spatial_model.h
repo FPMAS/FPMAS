@@ -14,9 +14,9 @@ class MockRange : public fpmas::api::model::Range<CellType> {
 		virtual ~MockRange() {}
 };
 
-template<typename CellType, template<typename> class Strictness = testing::NaggyMock>
+template<typename CellType>
 class MockSpatialAgent :
-	public Strictness<detail::MockAgentBase<fpmas::api::model::SpatialAgent<CellType>, MockSpatialAgent<CellType, Strictness>>> {
+	public detail::MockAgentBase<fpmas::api::model::SpatialAgent<CellType>, MockSpatialAgent<CellType>> {
 		public:
 			MOCK_METHOD(void, act, (), (override));
 			MOCK_METHOD(void, moveTo, (CellType*), (override));
@@ -32,8 +32,10 @@ class MockSpatialAgent :
 	};
 
 
-template<template<typename> class Strictness = testing::NaggyMock>
-class MockCell : public Strictness<detail::MockAgentBase<fpmas::api::model::Cell, MockCell<Strictness>>> {
+template<
+	typename CellInterface = fpmas::api::model::Cell
+	>
+class MockCell : public detail::MockAgentBase<CellInterface, MockCell<CellInterface>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 

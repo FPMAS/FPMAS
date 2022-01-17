@@ -308,7 +308,7 @@ namespace fpmas { namespace model {
 				raw_successors_buffer = current_successors;
 				successors_buffer.resize(raw_successors_buffer.size());
 				for(std::size_t i = 0; i < raw_successors_buffer.size(); i++)
-					successors_buffer[i] = dynamic_cast<CellType*>(
+					successors_buffer[i] = static_cast<CellType*>(
 							raw_successors_buffer[i]->getTargetNode()->data().get()
 							);
 			}
@@ -345,7 +345,7 @@ namespace fpmas { namespace model {
 				// link, since the mobilityRange() of the agent is
 				// directly available on the current process.
 				auto* spatial_agent
-					= dynamic_cast<api::model::SpatialAgent<CellType>*>(agent);
+					= static_cast<api::model::SpatialAgent<CellType>*>(agent);
 
 				// Valid, since the agent is LOCAL
 				auto location = spatial_agent->locationCell();
@@ -506,7 +506,7 @@ namespace fpmas { namespace model {
 			// Exactly the same process as growMobilityField().
 			if(agent->node()->state() == api::graph::LOCAL) {
 				auto* spatial_agent
-					= dynamic_cast<api::model::SpatialAgent<CellType>*>(agent);
+					= static_cast<api::model::SpatialAgent<CellType>*>(agent);
 
 				auto location =  spatial_agent->locationCell();
 				fpmas::model::ReadGuard read_location(location);

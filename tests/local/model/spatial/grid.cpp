@@ -122,7 +122,7 @@ class BaseGridAgentTest : public testing::Test, protected GridAgentType {
 		GridAgentType& grid_agent {*this};
 		MockAgentNode<NiceMock> mock_agent_node {{0, 0}};
 
-		MockGridCell<NiceMock> mock_cell;
+		NiceMock<MockGridCell> mock_cell;
 		fpmas::graph::DistributedId mock_cell_id {37, 2};
 		MockAgentNode<NiceMock> mock_cell_node {mock_cell_id, &mock_cell};
 		NiceMock<MockMutex<AgentPtr>> mock_cell_mutex;
@@ -131,9 +131,9 @@ class BaseGridAgentTest : public testing::Test, protected GridAgentType {
 
 		static void SetUpTestSuite() {
 			GridAgentType::mobility_range
-				= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
+				= new NiceMock<MockRange<MockGridCell>>;
 			GridAgentType::perception_range
-				= new NiceMock<MockRange<MockGridCell<NiceMock>>>;
+				= new NiceMock<MockRange<MockGridCell>>;
 		}
 		static void TearDownTestSuite() {
 			delete GridAgentType::mobility_range;
@@ -307,15 +307,15 @@ TEST(VonNeumannRange, radius_von_neumann_grid) {
 
 
 TEST(VonNeumannRange, range) {
-	MockGridCell<NiceMock>* current_location = new MockGridCell<NiceMock>;
+	MockGridCell* current_location = new NiceMock<MockGridCell>;
 	ON_CALL(*current_location, location)
 		.WillByDefault(Return(DiscretePoint(3, 4)));
 
-	std::vector<MockGridCell<NiceMock>*> cells;
+	std::vector<MockGridCell*> cells;
 	std::vector<DiscretePoint> grid_points;
 	for(DiscreteCoordinate x = 0; x <= 6; x++) {
 		for(DiscreteCoordinate y = 1; y <= 7; y++) {
-			auto cell = new MockGridCell<NiceMock>;
+			auto cell = new NiceMock<MockGridCell>;
 			ON_CALL(*cell, location)
 				.WillByDefault(Return(DiscretePoint(x, y)));
 			cells.push_back(cell);
@@ -329,7 +329,7 @@ TEST(VonNeumannRange, range) {
 						{3, 6}
 	};
 	
-	VonNeumannRange<VonNeumannGrid<MockGridCell<NiceMock>>> range(2);
+	VonNeumannRange<VonNeumannGrid<MockGridCell>> range(2);
 
 	for(auto cell : cells)
 		ASSERT_EQ(range.contains(current_location, cell), points_in_range.count(cell->location())>0);
@@ -347,15 +347,15 @@ TEST(MooreRange, radius_von_neumann_grid) {
 
 
 TEST(MooreRange, range) {
-	MockGridCell<NiceMock>* current_location = new MockGridCell<NiceMock>;
+	MockGridCell* current_location = new NiceMock<MockGridCell>;
 	ON_CALL(*current_location, location)
 		.WillByDefault(Return(DiscretePoint(3, 4)));
 
-	std::vector<MockGridCell<NiceMock>*> cells;
+	std::vector<MockGridCell*> cells;
 	std::vector<DiscretePoint> grid_points;
 	for(DiscreteCoordinate x = 0; x <= 6; x++) {
 		for(DiscreteCoordinate y = 1; y <= 7; y++) {
-			auto cell = new MockGridCell<NiceMock>;
+			auto cell = new NiceMock<MockGridCell>;
 			ON_CALL(*cell, location)
 				.WillByDefault(Return(DiscretePoint(x, y)));
 			cells.push_back(cell);
@@ -366,7 +366,7 @@ TEST(MooreRange, range) {
 		for(DiscreteCoordinate y = 2; y <= 6; y++)
 			points_in_range.insert({x, y});
 	
-	MooreRange<VonNeumannGrid<MockGridCell<NiceMock>>> range(2);
+	MooreRange<VonNeumannGrid<MockGridCell>> range(2);
 
 	for(auto cell : cells)
 		ASSERT_EQ(range.contains(current_location, cell), points_in_range.count(cell->location())>0);

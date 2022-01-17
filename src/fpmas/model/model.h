@@ -739,7 +739,7 @@ namespace fpmas { namespace model {
 				std::vector<Neighbor<NeighborAgentType>> out;
 				for(api::model::AgentEdge* _edge : node()->getOutgoingEdges()) {
 					api::model::AgentNode* _node = _edge->getTargetNode();
-					if(NeighborAgentType* neighbor = static_cast<NeighborAgentType*>(_node->data().get())) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
 						out.push_back({&_node->data(), _edge});
 					}
 				}
@@ -763,7 +763,7 @@ namespace fpmas { namespace model {
 				std::vector<Neighbor<NeighborAgentType>> out;
 				for(api::model::AgentEdge* _edge : node()->getOutgoingEdges(layer)) {
 					api::model::AgentNode* _node = _edge->getTargetNode();
-					if(NeighborAgentType* neighbor = static_cast<NeighborAgentType*>(_node->data().get())) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
 						out.push_back({&_node->data(), _edge});
 					}
 				}
@@ -788,7 +788,7 @@ namespace fpmas { namespace model {
 				std::vector<Neighbor<NeighborAgentType>> in;
 				for(api::model::AgentEdge* _edge : node()->getIncomingEdges()) {
 					api::model::AgentNode* _node = _edge->getSourceNode();
-					if(NeighborAgentType* neighbor = static_cast<NeighborAgentType*>(_node->data().get())) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
 						in.push_back({&_node->data(), _edge});
 					}
 				}
@@ -812,7 +812,7 @@ namespace fpmas { namespace model {
 				std::vector<Neighbor<NeighborAgentType>> in;
 				for(api::model::AgentEdge* _edge : node()->getIncomingEdges(layer)) {
 					api::model::AgentNode* _node = _edge->getSourceNode();
-					if(NeighborAgentType* neighbor = static_cast<NeighborAgentType*>(_node->data().get())) {
+					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
 						in.push_back({&_node->data(), _edge});
 					}
 				}

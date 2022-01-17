@@ -1,6 +1,6 @@
-#include "model/mock_spatial_model.h"
-#include "communication/mock_communication.h"
-#include "synchro/mock_mutex.h"
+#include "../../../mocks/model/mock_spatial_model.h"
+#include "../../../mocks/communication/mock_communication.h"
+#include "../../../mocks/synchro/mock_mutex.h"
 #include "fpmas/model/spatial/spatial_model.h"
 #include "test_agents.h"
 
@@ -9,6 +9,9 @@ using fpmas::api::model::SpatialModelLayers;
 
 using namespace testing;
 using namespace fpmas::model;
+
+class BaseCell : public Cell<BaseCell> {
+};
 
 /*
  * MockCellBase inherits from fpmas::model::CellBase, so that methods defined
@@ -20,12 +23,13 @@ using namespace fpmas::model;
 class CellBaseTest : public Test {
 	protected:
 		typedef fpmas::api::model::Cell DefaultCell;
-		MockCellBase mock_cell;
+		BaseCell cell;
 
 		DistributedId agent_id {7, 4};
-		MockSpatialAgent<DefaultCell, NiceMock>* mock_spatial_agent
-			= new NiceMock<MockSpatialAgent<DefaultCell, NiceMock>>;
-		MockCell<NiceMock> current_location;
+		// NiceMock is only applied to MockAgentBase (googletest limitation)
+		MockSpatialAgent<DefaultCell>* mock_spatial_agent
+			= new NiceMock<MockSpatialAgent<DefaultCell>>;
+		NiceMock<MockCell<>> current_location;
 		MockAgentNode<NiceMock> agent_node {
 			agent_id, AgentPtr(mock_spatial_agent)
 		};
@@ -33,12 +37,12 @@ class CellBaseTest : public Test {
 
 		MockAgentNode<NiceMock> cell_node;
 
-		MockCellBase* cell_neighbor_1 = new MockCellBase;
+		BaseCell* cell_neighbor_1 = new BaseCell;
 		MockAgentNode<NiceMock> cell_neighbor_1_node {
 			agent_id, AgentPtr(cell_neighbor_1)};
 		MockAgentEdge<NiceMock> cell_neighbor_1_edge;
 
-		MockCellBase* cell_neighbor_2 = new MockCellBase;
+		BaseCell* cell_neighbor_2 = new BaseCell;
 		MockAgentNode<NiceMock> cell_neighbor_2_node {
 			agent_id, AgentPtr(cell_neighbor_2)};
 		MockAgentEdge<NiceMock> cell_neighbor_2_edge;
@@ -51,11 +55,9 @@ class CellBaseTest : public Test {
 							std::vector<AgentEdge*>
 							{&cell_neighbor_1_edge, &cell_neighbor_2_edge}
 							));
-			ON_CALL(mock_cell, model())
-				.WillByDefault(Return(&mock_model));
 
-			ON_CALL(mock_cell, node()).WillByDefault(Return(&cell_node));
-			ON_CALL(Const(mock_cell), node()).WillByDefault(Return(&cell_node));
+			cell.setModel(&mock_model);
+			cell.setNode(&cell_node);
 
 			agent_edge.setSourceNode(&agent_node);
 			agent_edge.setTargetNode(&cell_node);
@@ -73,7 +75,7 @@ class CellBaseTest : public Test {
 /**
  * IMPORTANT NOTE
  *
- * The handleNewLocation, growMobilityField and growPerceptionField methods are
+ * The handleNewLocation, handleMove and handlePerceive methods are
  * not tested here, but their integration are directly tested in
  * tests/mpi/model/spatial/spatial_model.cpp
  *
@@ -85,37 +87,16 @@ class CellBaseTest : public Test {
  * handlePerceive, since those tests are not really relevant, for the same
  * reasons.
  */
-TEST_F(CellBaseTest, handle_move) {
-	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::MOVE))
-		.WillByDefault(Return(std::vector<AgentEdge*>({&agent_edge})));
-	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::MOVE))
-		.WillByDefault(Return(std::vector<AgentNode*>({&agent_node})));
 
-	EXPECT_CALL(mock_cell, growMobilityField);
-	mock_cell.handleMove();
+/*
+ *TEST_F(CellBaseTest, handle_move) {
+ *}
+ */
 
-	// Should do nothing when called again, since the node is already
-	// explored
-	EXPECT_CALL(mock_model, link).Times(0);
-
-	mock_cell.handleMove();
-}
-
-TEST_F(CellBaseTest, handle_perceive) {
-	ON_CALL(cell_node, getIncomingEdges(SpatialModelLayers::PERCEIVE))
-		.WillByDefault(Return(std::vector<AgentEdge*>({&agent_edge})));
-	ON_CALL(cell_node, inNeighbors(SpatialModelLayers::PERCEIVE))
-		.WillByDefault(Return(std::vector<AgentNode*>({&agent_node})));
-
-	EXPECT_CALL(mock_cell, growPerceptionField);
-	mock_cell.handlePerceive();
-
-	// Should do nothing when called again, since the node is already
-	// explored
-	EXPECT_CALL(mock_model, link).Times(0);
-
-	mock_cell.handlePerceive();
-}
+/*
+ *TEST_F(CellBaseTest, handle_perceive) {
+ *}
+ */
 
 TEST_F(CellBaseTest, update_perceptions) {
 	MockAgentGraph<> mock_graph;
@@ -125,8 +106,8 @@ TEST_F(CellBaseTest, update_perceptions) {
 		.Times(AnyNumber());
 
 	DistributedId perceived_id {5, 2};
-	MockSpatialAgent<DefaultCell, NiceMock>* perceived_agent
-		= new MockSpatialAgent<DefaultCell, NiceMock>;
+	MockSpatialAgent<DefaultCell>* perceived_agent
+		= new NiceMock<MockSpatialAgent<DefaultCell>>;
 
 	// TODO: this set up might easily broke if updatePerceptions implementation
 	// changes
@@ -163,7 +144,7 @@ TEST_F(CellBaseTest, update_perceptions) {
 	EXPECT_CALL(mock_graph, link(
 				&agent_node, &perceived_agent_node, SpatialModelLayers::PERCEPTION));
 
-	mock_cell.updatePerceptions(mock_group);
+	cell.updatePerceptions(mock_group);
 }
 
 /*
@@ -181,7 +162,7 @@ class BaseSpatialAgentTest : public ::testing::Test, protected AgentType {
 		MockAgentNode<NiceMock> agent_node {{2, 37}, this};
 
 		fpmas::graph::DistributedId location_id {12, 67};
-		MockCell<NiceMock> location_cell;
+		NiceMock<MockCell<>> location_cell;
 		MockAgentEdge<NiceMock> location_edge;
 		MockAgentNode<NiceMock> location_node {location_id, &location_cell};
 
@@ -239,9 +220,8 @@ class BaseSpatialAgentTest : public ::testing::Test, protected AgentType {
 			}
 		}
 
-		template<template<typename> class Strictness>
 		void setUpDuplicates(
-				MockCell<Strictness>* cell,
+				MockCell<>* cell,
 				std::vector<AgentNode*>& nodes,
 				std::vector<AgentEdge*>& edges,
 				fpmas::graph::LayerId layer,
@@ -408,7 +388,7 @@ TEST_F(SpatialAgentTest, agentBehavior) {
 	std::vector<AgentEdge*> move_neighbor_edges;
 	std::vector<MockMutex<AgentPtr>*> move_mutexes;
 	for(FPMAS_ID_TYPE i = 0; i < 10; i++) {
-		auto cell = new MockCell<NiceMock>;
+		auto cell = new NiceMock<MockCell<>>;
 		auto node = new MockAgentNode<NiceMock>({0, i}, cell);
 		ON_CALL(*cell, node())
 			.WillByDefault(Return(node));
@@ -433,7 +413,7 @@ TEST_F(SpatialAgentTest, agentBehavior) {
 	std::vector<AgentEdge*> perceive_neighbor_edges;
 	std::vector<MockMutex<AgentPtr>*> perceive_mutexes;
 	for(FPMAS_ID_TYPE i = 0; i < 10; i++) {
-		auto cell = new MockCell<NiceMock>;
+		auto cell = new NiceMock<MockCell<>>;
 		auto node = new MockAgentNode<NiceMock>({0, i}, cell);
 		ON_CALL(*cell, node())
 			.WillByDefault(Return(node));
@@ -541,7 +521,7 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 					&location_node}));
 
 	// Set up move layer with a duplicate node
-	auto move_cell = new MockCell<NiceMock>;
+	auto move_cell = new NiceMock<MockCell<>>;
 	std::vector<AgentNode*> move_neighbors;
 	std::vector<AgentEdge*> move_neighbor_edges;
 	setUpDuplicates(
@@ -549,7 +529,7 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 			SpatialModelLayers::NEW_MOVE, this->mobility_range);
 
 	// Set up perceive layer with a duplicate node
-	auto perceive_cell = new MockCell<NiceMock>;
+	auto perceive_cell = new NiceMock<MockCell<>>;
 	std::vector<AgentNode*> perceive_neighbors;
 	std::vector<AgentEdge*> perceive_neighbor_edges;
 	setUpDuplicates(

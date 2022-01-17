@@ -1,9 +1,9 @@
 #include "fpmas/model/serializer.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
-#include "model/mock_spatial_model.h"
-#include "runtime/mock_runtime.h"
-#include "scheduler/mock_scheduler.h"
+#include "../../../mocks/model/mock_spatial_model.h"
+#include "../../../mocks/runtime/mock_runtime.h"
+#include "../../../mocks/scheduler/mock_scheduler.h"
 #include "../test_agents.h"
 #include "fpmas/api/graph/distributed_id.h"
 #include "fpmas/random/random.h"
@@ -413,7 +413,7 @@ class EndConditionTest : public Test {
 		void SetUp() {
 			int local_agent_count = agent_count(rd);
 			for(int i = 0; i < local_agent_count; i++) {
-				auto agent = new MockSpatialAgent<MockCell<>, NiceMock>;
+				auto agent = new NiceMock<MockSpatialAgent<MockCell<>>>;
 				auto mobility_range = new Range(4);
 				auto perception_range = new Range(4);
 
