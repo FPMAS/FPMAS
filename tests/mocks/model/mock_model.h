@@ -14,8 +14,8 @@ using ::testing::AnyNumber;
 using ::testing::SaveArg;
 
 namespace detail {
-	template<typename Implem>
-		class MockAgentBase : public virtual fpmas::api::model::Agent {
+	template<typename AgentInterface, typename Implem>
+		class MockAgentBase : public AgentInterface {
 			public:
 				static const fpmas::api::model::TypeId TYPE_ID;
 
@@ -76,19 +76,19 @@ namespace detail {
 					EXPECT_CALL(*this, groupIds).Times(AnyNumber());
 					ON_CALL(*this, addGroupId)
 						.WillByDefault(Invoke(this,
-									&MockAgentBase<Implem>::_addGroupId));
+									&MockAgentBase<AgentInterface, Implem>::_addGroupId));
 					EXPECT_CALL(*this, addGroupId).Times(AnyNumber());
 				}
 		};
-	template<typename Implem>
-		const fpmas::api::model::TypeId MockAgentBase<Implem>::TYPE_ID = typeid(Implem);
+	template<typename AgentInterface, typename Implem>
+		const fpmas::api::model::TypeId MockAgentBase<AgentInterface, Implem>::TYPE_ID = typeid(Implem);
 }
 
 /*
  * FOO parameter is just used to easily generate multiple agent types.
  */
 template<int FOO = 0>
-class MockAgent : public virtual fpmas::api::model::Agent, public testing::NiceMock<detail::MockAgentBase<MockAgent<FOO>>> {
+class MockAgent : public testing::NiceMock<detail::MockAgentBase<fpmas::api::model::Agent, MockAgent<FOO>>> {
 	public:
 		MOCK_METHOD(void, act, (), (override));
 
@@ -96,7 +96,7 @@ class MockAgent : public virtual fpmas::api::model::Agent, public testing::NiceM
 		MOCK_METHOD(void, setField, (int), ());
 		MOCK_METHOD(int, getField, (), (const));
 
-		MockAgent() : testing::NiceMock<detail::MockAgentBase<MockAgent<FOO>>>() {}
+		MockAgent() : testing::NiceMock<detail::MockAgentBase<fpmas::api::model::Agent, MockAgent<FOO>>>() {}
 
 		MockAgent(int field) : MockAgent() {
 			EXPECT_CALL(*this, getField).Times(AnyNumber())

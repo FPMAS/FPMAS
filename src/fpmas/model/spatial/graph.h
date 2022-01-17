@@ -81,7 +81,7 @@ namespace fpmas { namespace model {
 	 */
 	template<typename GraphCellType, typename Derived = GraphCellType>
 		class GraphCellBase :
-			public Cell<GraphCellType, GraphCellBase<GraphCellType, Derived>>,
+			public CellBase<api::model::Cell, GraphCellType, GraphCellBase<GraphCellType, Derived>>,
 			public ReachableCell {
 				public:
 				/**

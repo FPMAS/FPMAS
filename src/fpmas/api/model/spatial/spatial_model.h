@@ -87,7 +87,7 @@ namespace fpmas { namespace api { namespace model {
 	 * Such operation occur in the "Cell Network", i.e. the subgraph that can
 	 * be described using the Cell::successors() methods.
 	 */
-	class Cell : public virtual Agent, public CellBehavior {
+	class Cell : public Agent, public CellBehavior {
 		public:
 			/**
 			 * Returns successors of this Cell.
@@ -231,7 +231,7 @@ namespace fpmas { namespace api { namespace model {
 	 * The specified `CellType` must extend Cell.
 	 */
 	template<typename CellType>
-	class SpatialAgent : public virtual Agent, public SpatialAgentBehavior {
+	class SpatialAgent : public Agent, public SpatialAgentBehavior {
 		public:
 			static_assert(std::is_base_of<api::model::Cell, CellType>::value,
 					"CellType must extend api::model::Cell");

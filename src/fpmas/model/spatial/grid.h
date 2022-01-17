@@ -46,8 +46,7 @@ namespace fpmas { namespace model {
 	 */
 	template<typename GridCellType, typename Derived = GridCellType>
 	class GridCellBase :
-		public virtual api::model::GridCell,
-		public Cell<GridCellType, GridCellBase<GridCellType, Derived>> {
+		public CellBase<api::model::GridCell, GridCellType, GridCellBase<GridCellType, Derived>> {
 		friend nlohmann::adl_serializer<fpmas::api::utils::PtrWrapper<GridCellBase<GridCellType, Derived>>>;
 		friend io::datapack::Serializer<fpmas::api::utils::PtrWrapper<GridCellBase<GridCellType, Derived>>>;
 
@@ -101,8 +100,7 @@ namespace fpmas { namespace model {
 	 */
 	template<typename AgentType, typename GridCellType = model::GridCell, typename Derived = AgentType>
 	class GridAgent :
-		public virtual api::model::GridAgent<GridCellType>,
-		public SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>> {
+		public SpatialAgentBase<api::model::GridAgent<GridCellType>, AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>> {
 			friend nlohmann::adl_serializer<api::utils::PtrWrapper<GridAgent<AgentType, GridCellType, Derived>>>;
 			friend io::datapack::Serializer<api::utils::PtrWrapper<GridAgent<AgentType, GridCellType, Derived>>>;
 			static_assert(std::is_base_of<api::model::GridCell, GridCellType>::value,
@@ -112,7 +110,7 @@ namespace fpmas { namespace model {
 			DiscretePoint location_point {0, 0};
 
 			protected:
-			using model::SpatialAgentBase<AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>>::moveTo;
+			using model::SpatialAgentBase<api::model::GridAgent<GridCellType>, AgentType, GridCellType, GridAgent<AgentType, GridCellType, Derived>>::moveTo;
 			/**
 			 * \copydoc fpmas::api::model::GridAgent::moveTo(GridCellType*)
 			 */

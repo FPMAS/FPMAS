@@ -55,7 +55,7 @@ namespace fpmas { namespace api { namespace model {
 	 * Contrary to base \Cells that do not need to be explicitly situated,
 	 * \GridCells are situated using a DiscretePoint.
 	 */
-	class GridCell : public virtual Cell {
+	class GridCell : public Cell {
 		public:
 			/**
 			 * Returns the GridCell location.
@@ -116,7 +116,7 @@ namespace fpmas { namespace api { namespace model {
 	 * The specified `GridCellType` is required to extend GridCell.
 	 */
 	template<typename GridCellType>
-	class GridAgent : public virtual SpatialAgent<GridCellType>, public GridAgentBase {
+	class GridAgent : public SpatialAgent<GridCellType>, public GridAgentBase {
 		protected:
 			static_assert(
 					std::is_base_of<api::model::GridCell, GridCellType>::value,
