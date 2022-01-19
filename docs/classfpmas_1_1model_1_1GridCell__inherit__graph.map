@@ -1,12 +1,10 @@
 <map id="fpmas::model::GridCell" name="fpmas::model::GridCell">
-<area shape="rect" id="node1" title=" " alt="" coords="1125,47,1281,74"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1GridCellBase.html" title=" " alt="" coords="891,40,1077,81"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1GridCell.html" title=" " alt="" coords="689,7,823,48"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1Cell.html" title=" " alt="" coords="215,18,373,45"/>
-<area shape="rect" id="node8" href="$classfpmas_1_1model_1_1CellBase.html" title=" " alt="" coords="453,65,616,91"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="5,71,140,112"/>
-<area shape="rect" id="node9" href="$classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="188,73,400,99"/>
-<area shape="rect" id="node10" href="$classfpmas_1_1model_1_1AgentBase.html" title=" " alt="" coords="448,116,621,157"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1model_1_1CellBehavior.html" title=" " alt="" coords="5,5,140,47"/>
-<area shape="rect" id="node7" href="$classfpmas_1_1model_1_1Cell.html" title=" " alt="" coords="669,72,843,113"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1260,46,1416,73"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1GridCellBase.html" title=" " alt="" coords="1025,39,1212,80"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1CellBase.html" title=" " alt="" coords="815,24,977,95"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1detail_1_1AgentBase.html" title=" " alt="" coords="576,24,767,95"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1model_1_1GridCell.html" title=" " alt="" coords="393,39,528,80"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1model_1_1Cell.html" title=" " alt="" coords="188,46,345,73"/>
+<area shape="rect" id="node7" href="$classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="5,5,140,47"/>
+<area shape="rect" id="node8" href="$classfpmas_1_1api_1_1model_1_1CellBehavior.html" title=" " alt="" coords="5,71,140,112"/>
 </map>

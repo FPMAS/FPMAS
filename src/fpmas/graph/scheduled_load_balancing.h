@@ -45,8 +45,18 @@ namespace fpmas { namespace graph {
 						api::runtime::Runtime& runtime
 						) : fixed_vertices_lb(fixed_vertices_lb), scheduler(scheduler), runtime(runtime) {}
 
+				/**
+				 * \copydoc fpmas::api::graph::LoadBalancing::balance(NodeMap<T>)
+				 *
+				 * Implements fpmas::api::graph::LoadBalancing
+				 */
 				PartitionMap balance(api::graph::NodeMap<T> nodes) override;
 
+				/**
+				 * \copydoc fpmas::api::graph::FixedVerticesLoadBalancing::balance(NodeMap<T>, PartitionMap)
+				 *
+				 * Implements fpmas::api::graph::LoadBalancing
+				 */
 				PartitionMap balance(
 						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMode partition_mode) override;

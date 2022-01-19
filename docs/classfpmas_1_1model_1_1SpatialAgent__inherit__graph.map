@@ -1,9 +1,8 @@
 <map id="fpmas::model::SpatialAgent&lt; AgentType, CellType, Derived &gt;" name="fpmas::model::SpatialAgent&lt; AgentType, CellType, Derived &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="932,37,1151,79"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1SpatialAgentBase.html" title=" " alt="" coords="691,30,884,86"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1SpatialAgent.html" title=" " alt="" coords="221,8,391,49"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="11,71,146,112"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1model_1_1AgentBase.html" title=" " alt="" coords="460,67,643,108"/>
-<area shape="rect" id="node7" href="$classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="200,125,412,151"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1model_1_1SpatialAgentBehavior.html" title=" " alt="" coords="5,5,152,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="969,42,1188,83"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1SpatialAgentBase.html" title=" " alt="" coords="711,27,921,98"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1detail_1_1AgentBase.html" title=" " alt="" coords="416,5,663,120"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1SpatialAgent.html" title=" " alt="" coords="200,35,368,91"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="11,9,146,50"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1model_1_1SpatialAgentBehavior.html" title=" " alt="" coords="5,74,152,115"/>
 </map>

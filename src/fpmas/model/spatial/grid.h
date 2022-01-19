@@ -91,8 +91,8 @@ namespace fpmas { namespace model {
 	/**
 	 * api::model::GridAgent implementation.
 	 *
-	 * @tparam AgentType dynamic GridAgent type (i.e. the most derived
-	 * type from this GridAgent)
+	 * @tparam AgentType final GridAgent type (i.e. the most derived type from
+	 * this GridAgent)
 	 * @tparam GridCellType Type of cells constituting the Grid on which the
 	 * agent is moving. Must extend api::model::GridCell.
 	 * @tparam Derived direct derived class, or at least the next class in the

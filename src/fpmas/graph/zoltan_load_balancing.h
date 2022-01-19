@@ -481,6 +481,11 @@ namespace fpmas { namespace graph {
 						setUpZoltan(lb_period);
 					}
 
+				/**
+				 * \copydoc fpmas::api::graph::LoadBalancing::balance(NodeMap<T>)
+				 *
+				 * Implements fpmas::api::graph::LoadBalancing
+				 */
 				PartitionMap balance(
 						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMap fixed_vertices
@@ -492,6 +497,8 @@ namespace fpmas { namespace graph {
 				 * \implem
 				 * Computes a balanced partition from the default
 				 * [Zoltan PHG Hypergraph partitioning method](https://cs.sandia.gov/Zoltan/ug_html/ug_alg_phg.html)
+				 *
+				 * Implements fpmas::api::graph::FixedVerticesLoadBalancing
 				 */
 				PartitionMap balance(
 						api::graph::NodeMap<T> nodes,
@@ -499,6 +506,11 @@ namespace fpmas { namespace graph {
 						api::graph::PartitionMode partition_mode
 						) override;
 				
+				/**
+				 * \copydoc fpmas::api::graph::FixedVerticesLoadBalancing::balance(NodeMap<T>, PartitionMap)
+				 *
+				 * Implements fpmas::api::graph::LoadBalancing
+				 */
 				PartitionMap balance(api::graph::NodeMap<T> nodes) override;
 
 				/**
@@ -507,6 +519,8 @@ namespace fpmas { namespace graph {
 				 * \implem
 				 * Equivalent to balance(NodeMap<T>, PartitionMap, PartitionMode),
 				 * with an empty set of fixed vertices.
+				 *
+				 * Implements fpmas::api::graph::FixedVerticesLoadBalancing
 				 */
 				PartitionMap balance(
 						api::graph::NodeMap<T> nodes,

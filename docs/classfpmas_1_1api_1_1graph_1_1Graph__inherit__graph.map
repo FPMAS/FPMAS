@@ -1,6 +1,8 @@
 <map id="fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;" name="fpmas::api::graph::Graph&lt; NodeType, EdgeType &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,50,212,91"/>
-<area shape="rect" id="node2" title=" " alt="" coords="260,5,523,61"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1graph_1_1Graph.html" title=" " alt="" coords="306,86,477,127"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html" title=" " alt="" coords="571,5,741,61"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,123,212,165"/>
+<area shape="rect" id="node2" title=" " alt="" coords="260,79,523,135"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1graph_1_1Graph.html" title=" " alt="" coords="306,159,477,201"/>
+<area shape="rect" id="node3" title=" " alt="" coords="580,5,776,61"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html" title=" " alt="" coords="571,86,785,127"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html" title=" " alt="" coords="593,152,763,208"/>
 </map>

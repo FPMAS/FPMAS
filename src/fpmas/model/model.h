@@ -462,6 +462,90 @@ namespace fpmas { namespace model {
 	 * Users can use this class to easily define their own \Agents with custom
 	 * behaviors.
 	 *
+	 * The `AgentInterface` template parameter specifies the API actually
+	 * implemented by this AgentBase. It can be api::model::Agent, or any other
+	 * api that extends the api::model::Agent interface.
+	 *
+	 * ```
+	 *                               +--------------------------+
+	 *                    ---------->| fpmas::api::model::Agent |<--------
+	 *                   |           +--------------------------+         |
+	 *                   |                                                |
+	 *                   |                                                |
+	 * +---------------------------------+                   +-------------------------+
+	 * | fpmas::api::model::SpatialAgent |                   | fpmas::api::model::Cell |
+	 * +---------------------------------+                   +-------------------------+
+	 *           ^                                                        ^
+	 *           |                                                        |
+	 *  +------------------------------+                   +-----------------------------+
+	 *  | fpmas::api::model::GridAgent |                   | fpmas::api::model::GridCell |
+	 *  +------------------------------+                   +-----------------------------+
+	 * ```
+	 *
+	 * - Implementing a regular Agent `UserAgent` will produce the following
+	 *   hierarchy. In this case, `AgentInterface=api::model::Agent`.
+	 *   ```
+	 *               +--------------------------+
+	 *               | fpmas::api::model::Agent |
+	 *               +--------------------------+
+	 *                             ^
+	 *                             |
+	 *   +---------------------------------------------------------+
+	 *   | model::detail::AgentBase<fpmas::api::model::Agent, ...> | (alias: model::AgentBase<...>)
+	 *   +---------------------------------------------------------+
+	 *                             ^
+	 *                             |
+	 *                      +-----------+
+	 *                      | UserAgent |
+	 *                      +-----------+
+	 *   ```
+	 * - Implementing a GridAgent UserAgent produces the following
+	 *   hierarchy. In this case, `AgentInterface=api::model::GridAgent`.
+	 *   ```
+	 *               +--------------------------+
+	 *               | fpmas::api::model::Agent |
+	 *               +--------------------------+
+	 *                             ^
+	 *                             |
+	 *             +---------------------------------+
+	 *             | fpmas::api::model::SpatialAgent |
+	 *             +---------------------------------+
+	 *                             ^
+	 *                             |
+	 *              +------------------------------+
+	 *              | fpmas::api::model::GridAgent |
+	 *              +------------------------------+
+	 *                             ^
+	 *                             |
+	 *   +-------------------------------------------------------------+
+	 *   | model::detail::AgentBase<fpmas::api::model::GridAgent, ...> |
+	 *   +-------------------------------------------------------------+
+	 *                             ^
+	 *                             |
+	 *   +-------------------------------------------------------------------+
+	 *   | fpmas::model::SpatialAgentBase<fpmas::api::model::GridAgent, ...> |
+	 *   +-------------------------------------------------------------------+
+	 *                             ^
+	 *                             |
+	 *              +------------------------------+
+	 *              | fpmas::model::GridAgent<...> |
+	 *              +------------------------------+
+	 *                             ^
+	 *                             |
+	 *                       +-----------+
+	 *                       | UserAgent |
+	 *                       +-----------+
+	 *   ```
+	 *
+	 * In previous FPMAS versions, various Agent implementations was based on
+	 * diamond inheritance and virtual base classes. However, such design
+	 * revealed extremely costly in terms of `dynamic_cast` (downcasts using
+	 * `static_cast` is not allowed with virtual bases). The new templated
+	 * `AgentInterface` design produces vertical hierarchies that are much more
+	 * efficient in case of `dynamic_cast`, and allow `static_cast`.
+	 *
+	 *
+	 * @tparam AgentInterface api implemented by this AgentBase
 	 * @tparam AgentType final Agent type, that must inherit from the current
 	 * AgentBase.
 	 * @tparam TypeIdBase type used to define the type id of the current
@@ -830,6 +914,14 @@ namespace fpmas { namespace model {
 		const api::model::TypeId AgentBase<AgentInterface, AgentType, TypeIdBase>::TYPE_ID = typeid(TypeIdBase);
 	}
 
+	/**
+	 * Basic AgentBase that can be extended by the user to define an Agent.
+	 *
+	 * @tparam AgentType final Agent type, that must inherit from the current
+	 * AgentBase.
+	 * @tparam TypeIdBase type used to define the type id of the current
+	 * AgentBase implementation.
+	 */
 	template<typename AgentType, typename TypeIdBase = AgentType>
 		using AgentBase = detail::AgentBase<api::model::Agent, AgentType, TypeIdBase>;
 

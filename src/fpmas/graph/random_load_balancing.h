@@ -23,8 +23,8 @@ namespace fpmas { namespace graph {
 	 */
 	template<typename T>
 		class RandomLoadBalancing :
-			public fpmas::api::graph::LoadBalancing<T>,
-			public fpmas::api::graph::FixedVerticesLoadBalancing<T> {
+			public api::graph::LoadBalancing<T>,
+			public api::graph::FixedVerticesLoadBalancing<T> {
 			private:
 				fpmas::random::DistributedGenerator<> generator;
 				fpmas::random::UniformIntDistribution<int> random_rank;
@@ -40,15 +40,37 @@ namespace fpmas { namespace graph {
 					: random_rank(0, comm.getSize()-1) {
 					}
 
+				/**
+				 * \copydoc fpmas::api::graph::LoadBalancing::balance(NodeMap<T>)
+				 *
+				 * Implements fpmas::api::graph::LoadBalancing
+				 */
 				PartitionMap balance(api::graph::NodeMap<T> nodes) override;
+
+				/**
+				 * Randomly assigns each node to a process.
+				 *
+				 * Implements fpmas::api::graph::LoadBalancing
+				 */
 				PartitionMap balance(
 						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMode) override;
 
+				/**
+				 * \copydoc fpmas::api::graph::FixedVerticesLoadBalancing::balance(NodeMap<T>, PartitionMap)
+				 *
+				 * Implements fpmas::api::graph::FixedVerticesLoadBalancing
+				 */
 				PartitionMap balance(
 						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMap fixed_vertices) override;
 
+				/**
+				 * Randomly assigns each node to a process, preserving the
+				 * location of `fixed_vertices`.
+				 *
+				 * Implements fpmas::api::graph::FixedVerticesLoadBalancing
+				 */
 				PartitionMap balance(
 						api::graph::NodeMap<T> nodes,
 						api::graph::PartitionMap fixed_vertices,

@@ -195,10 +195,20 @@ namespace fpmas { namespace model {
 	/**
 	 * api::model::Cell implementation.
 	 *
-	 * The api::model::Agent part of api::model::Cell is **not** implemented by
-	 * this class.
+	 * The `CellInterface` template parameter specifies the API actually
+	 * implemented by this class. It can be api::model::Cell, or any other api
+	 * that extends the api::model::Cell interface (e.g. api::model::GridCell).
+	 *
+	 * See fpmas::model::detail::AgentBase for more details about the
+	 * implementation scheme.
 	 *
 	 * @see Cell
+	 *
+	 * @tparam CellInterface Cell interface implemented by this CellBase
+	 * @tparam CellType final CellBase type (i.e. most derived class from this
+	 * CellBase)
+	 * @tparam TypeIdBase type used to define the type id of the current
+	 * AgentBase implementation.
 	 */
 	template<typename CellInterface, typename CellType, typename TypeIdBase = CellType>
 	class CellBase : public detail::AgentBase<CellInterface, CellType, TypeIdBase> {
@@ -226,6 +236,8 @@ namespace fpmas { namespace model {
 					api::model::Agent* agent, api::model::AgentEdge* new_location_edge
 					);
 
+			void growMobilityField(api::model::Agent* agent);
+			void growPerceptionField(api::model::Agent* agent);
 
 		protected:
 			/**
@@ -252,20 +264,45 @@ namespace fpmas { namespace model {
 			 */
 			std::set<DistributedId> perception_flags;
 
-			void growMobilityField(api::model::Agent* agent);
-			void growPerceptionField(api::model::Agent* agent);
-
 		public:
+			/**
+			 * \copydoc fpmas::api::model::Cell::successors()
+			 *
+			 * Implements fpmas::api::model::Cell
+			 */
 			std::vector<api::model::Cell*> successors() override;
-
+			/**
+			 * \copydoc fpmas::api::model::Cell::handleNewLocation()
+			 *
+			 * Implements fpmas::api::model::Cell
+			 */
 			void handleNewLocation() override;
+
+			/**
+			 * \copydoc fpmas::api::model::Cell::handleMove()
+			 *
+			 * Implements fpmas::api::model::Cell
+			 */
 			void handleMove() override;
+
+			/**
+			 * \copydoc fpmas::api::model::Cell::handlePerceive()
+			 *
+			 * Implements fpmas::api::model::Cell
+			 */
 			void handlePerceive() override;
 
+			/**
+			 * \copydoc fpmas::api::model::Cell::updatePerceptions()
+			 *
+			 * Implements fpmas::api::model::Cell
+			 */
 			void updatePerceptions(api::model::AgentGroup& group) override;
 
 			/**
-			 * \copydoc fpmas::api::model::CellBehavior::init()
+			 * \copydoc fpmas::api::model::Cell::init()
+			 *
+			 * Implements fpmas::api::model::Cell
 			 */
 			void init() override;
 
@@ -533,6 +570,17 @@ namespace fpmas { namespace model {
 			}
 		}
 
+	/**
+	 * Basic api::model::Cell implementation that can be extended by the user.
+	 *
+	 * Such a Cell can be used to define a SpatialModel based on an arbitrary
+	 * graph.
+	 *
+	 * @tparam CellType final Cell type, that must inherit from the current
+	 * Cell.
+	 * @tparam TypeIdBase type used to define the type id of the current
+	 * AgentBase implementation.
+	 */
 	template<typename CellType, typename TypeIdBase = CellType>
 		using Cell = CellBase<api::model::Cell, CellType, TypeIdBase>;
 
@@ -600,9 +648,18 @@ namespace fpmas { namespace model {
 	/**
 	 * api::model::SpatialAgent API implementation.
 	 *
+	 * The `SpatialAgentInterface` template parameter specifies the API
+	 * actually implemented by this class. It can be api::model::SpatialAgent,
+	 * or any other api that extends the api::model::SpatialAgent interface.
+	 *
+	 * See fpmas::model::detail::AgentBase for more details about the
+	 * implementation scheme.
+	 *
 	 * This is a partial implementation, that does not implement
 	 * moveTo(CellType*).
 	 *
+	 * @tparam SpatialAgentInterface SpatialAgent interface implemented by this
+	 * SpatialAgentBase
 	 * @tparam AgentType final SpatialAgentBase type (i.e. most derived class
 	 * from this SpatialAgentBase)
 	 * @tparam CellType type of cells on which the agent moves

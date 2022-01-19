@@ -1,7 +1,5 @@
-<map id="fpmas::model::CellBase" name="fpmas::model::CellBase">
-<area shape="rect" id="node1" title=" " alt="" coords="107,169,269,196"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1Cell.html" title=" " alt="" coords="5,95,163,121"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="201,5,335,47"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1NeighborsAccess.html" title=" " alt="" coords="187,95,399,121"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1CellBehavior.html" title=" " alt="" coords="17,5,151,47"/>
+<map id="fpmas::model::CellBase&lt; CellInterface, CellType, TypeIdBase &gt;" name="fpmas::model::CellBase&lt; CellInterface, CellType, TypeIdBase &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="12,184,183,240"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1detail_1_1AgentBase.html" title=" " alt="" coords="5,80,189,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="49,5,145,32"/>
 </map>

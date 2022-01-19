@@ -1,6 +1,8 @@
 <map id="fpmas::api::model::GridAgentBase" name="fpmas::api::model::GridAgentBase">
-<area shape="rect" id="node1" title=" " alt="" coords="5,46,140,87"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1GridAgent.html" title=" " alt="" coords="188,13,383,54"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1GridAgent.html" title=" " alt="" coords="196,78,375,119"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1GridAgent.html" title=" " alt="" coords="431,5,613,61"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,83,140,124"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1GridAgent.html" title=" " alt="" coords="188,49,383,91"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1api_1_1model_1_1GridAgent.html" title=" " alt="" coords="196,115,375,156"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1detail_1_1AgentBase.html" title=" " alt="" coords="431,5,652,135"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1SpatialAgentBase.html" title=" " alt="" coords="700,27,979,113"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1GridAgent.html" title=" " alt="" coords="1027,42,1209,98"/>
 </map>
