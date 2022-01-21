@@ -550,7 +550,7 @@ namespace nlohmann {
 			static void to_json(nlohmann::json& j, const Ptr& ptr) {
 				// Derived serialization
 				j[0] = fpmas::api::utils::PtrWrapper<Derived>(
-						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get())));
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
 				// Current base serialization
 				j[1] = ptr->location_point;
 			}
@@ -717,8 +717,8 @@ namespace fpmas { namespace io { namespace datapack {
 	 * The `Derived` part is serialized using the
 	 * Serializer<PtrWrapper<Derived>> serialization, that can be defined
 	 * externally without additional constraint. The input GridCellBase pointer
-	 * is dynamically cast to `Derived` when required to call the proper
-	 * Serializer specialization.
+	 * is cast to `Derived` when required to call the proper Serializer
+	 * specialization.
 	 *
 	 * @tparam GridCellType final fpmas::api::model::GridCell type to serialize
 	 * @tparam Derived next derived class in the polymorphic serialization
@@ -796,8 +796,8 @@ namespace fpmas { namespace io { namespace datapack {
 	 * The `Derived` part is serialized using the
 	 * Serializer<PtrWrapper<Derived>> serialization, that can be defined
 	 * externally without additional constraint. The input GridAgent pointer is
-	 * dynamically cast to `Derived` when required to call the proper
-	 * Serializer specialization.
+	 * cast to `Derived` when required to call the proper Serializer
+	 * specialization.
 	 *
 	 * @tparam AgentType final fpmas::api::model::GridAgent type to serialize
 	 * @tparam CellType type of cells used by the spatial model
@@ -817,7 +817,7 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			static std::size_t size(const ObjectPack& p, const Ptr& ptr) {
 				return p.size(PtrWrapper<Derived>(
-						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get()))))
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get()))))
 					+ p.size<fpmas::api::model::DiscretePoint>();
 			}
 
@@ -831,7 +831,7 @@ namespace fpmas { namespace io { namespace datapack {
 			static void to_datapack(ObjectPack& pack, const Ptr& ptr) {
 				// Derived serialization
 				PtrWrapper<Derived> derived = PtrWrapper<Derived>(
-						const_cast<Derived*>(dynamic_cast<const Derived*>(ptr.get())));
+						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
 				pack.put(derived);
 				// Current base serialization
 				pack.put(ptr->location_point);

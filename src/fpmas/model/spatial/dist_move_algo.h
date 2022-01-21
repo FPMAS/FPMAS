@@ -209,7 +209,7 @@ namespace fpmas { namespace model {
 				if(agent->node()->getOutgoingEdges(
 							api::model::SpatialModelLayers::NEW_LOCATION).size() > 0)
 					agents.push_back(
-							dynamic_cast<SpatialAgent<CellType>*>(agent));
+							static_cast<SpatialAgent<CellType>*>(agent));
 			}
 
 			// Agents to which the algorithm is NOT applied might still
@@ -227,7 +227,7 @@ namespace fpmas { namespace model {
 
 			std::vector<CellType*> cells;
 			for(auto cell : dist_move_algo.cell_group.localAgents()) {
-				cells.push_back(dynamic_cast<CellType*>(cell));
+				cells.push_back(static_cast<CellType*>(cell));
 				// Initializes all cells
 				cells.back()->init();
 			}

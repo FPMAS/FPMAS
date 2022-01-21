@@ -215,8 +215,7 @@ namespace fpmas { namespace model {
 		private:
 			/*
 			 * Some profiling analysis show that the successors() method calls,
-			 * and more particularly the dynamic_casts that are involved, have
-			 * a significant performance cost.
+			 * have a significant performance cost.
 			 * The purpose of the following structures is to drastically reduce
 			 * the call to the successors() method, buffering the result only
 			 * when required.
@@ -426,10 +425,10 @@ namespace fpmas { namespace model {
 		std::vector<api::model::Cell*> CellBase<CellInterface, CellType, TypeIdBase>::successors() {
 		std::vector<api::model::Cell*> neighbors;
 		for(auto edge : this->node()->getOutgoingEdges(SpatialModelLayers::CELL_SUCCESSOR)) {
-			api::model::Cell* cell
-				= dynamic_cast<api::model::Cell*>(edge->getTargetNode()->data().get());
-			if(cell)
-				neighbors.push_back(cell);
+			// Assumes that agents on the CELL_SUCCESSOR layer are necessarily
+			// api::model::Cell, so there is no runtime check on the actuel
+			// Agent type (prevents a dynamic_cast)
+			neighbors.push_back(static_cast<api::model::Cell*>(edge->getTargetNode()->data().get()));
 		}
 		return neighbors;
 	}
@@ -627,7 +626,7 @@ namespace fpmas { namespace model {
 		std::vector<CellType*> SpatialModel<SyncMode, CellType, EndCondition>::cells() {
 			std::vector<CellType*> cells;
 			for(auto agent : cell_group.localAgents())
-				cells.push_back(dynamic_cast<CellType*>(agent));
+				cells.push_back(static_cast<CellType*>(agent));
 			return cells;
 		}
 
@@ -1199,8 +1198,8 @@ namespace fpmas { namespace io { namespace datapack {
 	 * The `Derived` part is serialized using the
 	 * Serializer<PtrWrapper<Derived>> serialization, that can be defined
 	 * externally without additional constraint. The input GridAgent pointer is
-	 * dynamically cast to `Derived` when required to call the proper
-	 * Serializer specialization.
+	 * cast to `Derived` when required to call the proper Serializer
+	 * specialization.
 	 *
 	 * @tparam AgentType final fpmas::api::model::SpatialAgent type to serialize
 	 * @tparam CellType type of cells used by the spatial model
