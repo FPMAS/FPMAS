@@ -574,7 +574,7 @@ namespace fpmas { namespace io { namespace json {
 					j["type"] = Type::TYPE_ID;
 					j["gids"] = ptr->groupIds();
 					j["agent"] = TypedAgentPtr<Type>(
-							const_cast<Type*>(dynamic_cast<const Type*>(ptr.get()))
+							const_cast<Type*>(static_cast<const Type*>(ptr.get()))
 							);
 				} else {
 					AgentPtrSerializer<JsonType, AgentTypes...>::to_json(j, ptr);

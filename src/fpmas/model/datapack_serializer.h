@@ -665,7 +665,7 @@ namespace fpmas { namespace io { namespace datapack {
 				if(ptr->typeId() == Type::TYPE_ID) {
 					return p.template size<api::model::TypeId>()
 						+ p.template size(TypedAgentPtr<Type>(
-							const_cast<Type*>(dynamic_cast<const Type*>(ptr.get()))
+							const_cast<Type*>(static_cast<const Type*>(ptr.get()))
 							))
 						+ p.template size(ptr->groupIds());
 				}
@@ -694,7 +694,7 @@ namespace fpmas { namespace io { namespace datapack {
 				if(ptr->typeId() == Type::TYPE_ID) {
 					p.put(Type::TYPE_ID);
 					p.put(TypedAgentPtr<Type>(
-							const_cast<Type*>(dynamic_cast<const Type*>(ptr.get()))
+							const_cast<Type*>(static_cast<const Type*>(ptr.get()))
 							));
 					p.put(ptr->groupIds());
 				} else {

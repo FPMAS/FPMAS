@@ -330,6 +330,22 @@ namespace fpmas { namespace model {
 			private:
 				std::vector<void(AgentType::*)()> _behaviors;
 
+				template<typename T, typename Enable=void>
+					struct AutoAgentCast {
+						static T* cast(api::model::Agent* agent) {
+							return dynamic_cast<T*>(agent);
+						}
+					};
+
+				template<typename T>
+					struct AutoAgentCast<T, typename std::enable_if<
+					std::is_base_of<api::model::Agent, T>::value
+					>::type> {
+						static T* cast(api::model::Agent* agent) {
+							return static_cast<T*>(agent);
+						}
+					};
+
 			public:
 				/**
 				 * Behavior constructor.
@@ -387,8 +403,8 @@ namespace fpmas { namespace model {
 					}
 
 				void execute(api::model::Agent* agent) const {
-					for(auto behavior : _behaviors)
-						(dynamic_cast<AgentType*>(agent)->*behavior)();
+					for(auto behavior : this->_behaviors)
+						(AutoAgentCast<AgentType>::cast(agent)->*behavior)();
 				}
 		};
 
