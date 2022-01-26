@@ -517,10 +517,12 @@ namespace fpmas { namespace model {
 
 		move_flags.clear();
 		perception_flags.clear();
-		std::vector<api::model::AgentNode*> perceived_agents =
-			this->node()->inNeighbors(SpatialModelLayers::LOCATION);
-		for(auto agent : this->node()->inNeighbors(SpatialModelLayers::PERCEIVE)) {
-			for(auto perceived_agent : perceived_agents)
+		std::vector<api::model::AgentEdge*> perceived_agent_edges =
+			this->node()->getIncomingEdges(SpatialModelLayers::LOCATION);
+		for(auto agent_edge : this->node()->getIncomingEdges(SpatialModelLayers::PERCEIVE)) {
+			auto agent = agent_edge->getSourceNode();
+			for(auto perceived_agent_edge : perceived_agent_edges) {
+				auto perceived_agent = perceived_agent_edge->getSourceNode();
 				// Perceptions need to be updated only if either the perceivee
 				// or the perceiver location has been updated since the last
 				// DistributedMoveAlgorithm execution
@@ -533,6 +535,7 @@ namespace fpmas { namespace model {
 								agent, perceived_agent,
 								SpatialModelLayers::PERCEPTION
 								);
+			}
 		}
 		no_move_flags.clear();
 	}
