@@ -199,7 +199,7 @@ $(function() {
 <div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>                <span class="keywordflow">if</span>(agent-&gt;node()-&gt;getOutgoingEdges(</div>
 <div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                            api::model::SpatialModelLayers::NEW_LOCATION).size() &gt; 0)</div>
 <div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>                    agents.push_back(</div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                            <span class="keyword">dynamic_cast&lt;</span>SpatialAgent&lt;CellType&gt;*<span class="keyword">&gt;</span>(agent));</div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                            <span class="keyword">static_cast&lt;</span>SpatialAgent&lt;CellType&gt;*<span class="keyword">&gt;</span>(agent));</div>
 <div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            }</div>
 <div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span> </div>
 <div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>            <span class="comment">// Agents to which the algorithm is NOT applied might still</span></div>
@@ -217,7 +217,7 @@ $(function() {
 <div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
 <div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>            std::vector&lt;CellType*&gt; cells;</div>
 <div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>            <span class="keywordflow">for</span>(<span class="keyword">auto</span> cell : dist_move_algo.cell_group.localAgents()) {</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                cells.push_back(<span class="keyword">dynamic_cast&lt;</span>CellType*<span class="keyword">&gt;</span>(cell));</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                cells.push_back(<span class="keyword">static_cast&lt;</span>CellType*<span class="keyword">&gt;</span>(cell));</div>
 <div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>                <span class="comment">// Initializes all cells</span></div>
 <div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>                cells.back()-&gt;init();</div>
 <div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>            }</div>
@@ -286,7 +286,7 @@ $(function() {
 <div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aapi_2model_2spatial_2spatial__model_8h_html"><div class="ttname"><a href="api_2model_2spatial_2spatial__model_8h.html">spatial_model.h</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a></div><div class="ttdef"><b>Definition:</b> communication.h:251</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:462</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1AgentGroup_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">fpmas::api::model::AgentGroup</a></div><div class="ttdef"><b>Definition:</b> model.h:492</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1CellBehavior_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1CellBehavior.html">fpmas::api::model::CellBehavior</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:32</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">fpmas::api::model::DistributedMoveAlgorithm</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:425</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1EndCondition_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1EndCondition.html">fpmas::api::model::EndCondition</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:376</div></div>

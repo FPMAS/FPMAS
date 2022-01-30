@@ -100,7 +100,7 @@ struct fpmas::io::datapack::Serializer&lt; PtrWrapper&lt; fpmas::model::SpatialA
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>Derived</code> ObjectPack serialization   </td><td class="markdownTableBodyNone">SpatialAgentBase::locationId()   </td></tr>
 </table>
-<p >The <code>Derived</code> part is serialized using the Serializer&lt;PtrWrapper&lt;Derived&gt;&gt; serialization, that can be defined externally without additional constraint. The input GridAgent pointer is dynamically cast to <code>Derived</code> when required to call the proper <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> specialization.</p>
+<p >The <code>Derived</code> part is serialized using the Serializer&lt;PtrWrapper&lt;Derived&gt;&gt; serialization, that can be defined externally without additional constraint. The input GridAgent pointer is cast to <code>Derived</code> when required to call the proper <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> specialization.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">AgentType</td><td>final <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">fpmas::api::model::SpatialAgent</a> type to serialize </td></tr>

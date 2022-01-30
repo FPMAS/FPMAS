@@ -194,7 +194,10 @@ namespace fpmas {
 
 			void AgentGroupBase::insert(api::model::AgentPtr* agent) {
 				// Inserts agent into the internal agents() list
-				_agents.push_back(agent);
+				agent->get()->setGroupPos(
+						this->groupId(),
+						_agents.insert(_agents.end(), agent->get())
+						);
 
 				// Inserts this group into Agent::groups()
 				agent->get()->addGroup(this);
@@ -220,7 +223,7 @@ namespace fpmas {
 				this->emit(ERASE, agent->get());
 
 				// Erases agent from the local agents() list
-				_agents.erase(std::remove(_agents.begin(), _agents.end(), agent));
+				_agents.erase(agent->get()->getGroupPos(this->groupId()));
 	
 				// The task is not removed from agentExecutionJob(), since this
 				// must be handled by SetAgentDistantCallback (or by the remove()
@@ -243,23 +246,23 @@ namespace fpmas {
 			std::vector<api::model::Agent*> AgentGroupBase::agents() const {
 				std::vector<api::model::Agent*> agents;
 				for(auto agent : _agents)
-					agents.push_back(*agent);
+					agents.push_back(agent);
 				return agents;
 			}
 
 			std::vector<api::model::Agent*> AgentGroupBase::localAgents() const {
 				std::vector<api::model::Agent*> local_agents;
 				for(auto agent : _agents)
-					if(agent->get()->node()->state() == graph::LocationState::LOCAL)
-						local_agents.push_back(*agent);
+					if(agent->node()->state() == graph::LocationState::LOCAL)
+						local_agents.push_back(agent);
 				return local_agents;
 			}
 
 			std::vector<api::model::Agent*> AgentGroupBase::distantAgents() const {
 				std::vector<api::model::Agent*> local_agents;
 				for(auto agent : _agents)
-					if(agent->get()->node()->state() == graph::LocationState::DISTANT)
-						local_agents.push_back(*agent);
+					if(agent->node()->state() == graph::LocationState::DISTANT)
+						local_agents.push_back(agent);
 				return local_agents;
 			}
 

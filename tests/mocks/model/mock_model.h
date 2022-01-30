@@ -35,6 +35,9 @@ namespace detail {
 				MOCK_METHOD(void, removeGroup, (fpmas::api::model::AgentGroup*), (override));
 				MOCK_METHOD(void, setGroup, (fpmas::api::model::AgentGroup*), (override));
 
+				MOCK_METHOD(void, setGroupPos, (fpmas::api::model::GroupId, std::list<fpmas::api::model::Agent*>::iterator), (override));
+				MOCK_METHOD(std::list<fpmas::api::model::Agent*>::iterator, getGroupPos, (fpmas::api::model::GroupId), (const, override));
+
 				MOCK_METHOD(fpmas::api::model::TypeId, typeId, (), (const, override));
 				MOCK_METHOD(fpmas::api::model::Agent*, copy, (), (const, override));
 				MOCK_METHOD(void, copyAssign, (fpmas::api::model::Agent*), (override));

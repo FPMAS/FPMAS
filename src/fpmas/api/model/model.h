@@ -6,6 +6,7 @@
  */
 
 #include <typeindex>
+#include <list>
 
 #include "fpmas/api/graph/distributed_graph.h"
 #include "fpmas/api/runtime/runtime.h"
@@ -238,6 +239,35 @@ namespace fpmas { namespace api {namespace model {
 			 * @param group agent group
 			 */
 			virtual void removeGroup(AgentGroup* group) = 0;
+
+			/**
+			 * Sets a list position associated to the group represented by
+			 * `gid`, that can be retrieved with getGroupPos().
+			 *
+			 * There is no specific requirement about those methods, that can
+			 * be used or not. However, AgentGroup implementations can take
+			 * advantage of this feature to optimize Agent insertion and
+			 * removal in constant time, using an std::list as an internal data
+			 * structure.
+			 *
+			 * @param gid group ID
+			 * @param pos list iterator that references the current Agent
+			 * within the group associated to `gid`
+			 */
+			virtual void setGroupPos(
+					api::model::GroupId gid,
+					std::list<Agent*>::iterator pos
+					) = 0;
+
+			/**
+			 * Retrieves a list position that was previously stored using
+			 * setGroupPos().
+			 *
+			 * @param gid group ID
+			 * @return list iterator that references the current Agent within
+			 * the group associated to `gid`
+			 */
+			virtual std::list<Agent*>::iterator getGroupPos(api::model::GroupId gid) const = 0;
 
 			/**
 			 * Returns the ID of the type of this Agent.

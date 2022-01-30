@@ -354,7 +354,7 @@ namespace fpmas {
 				api::model::AgentGraph& agent_graph;
 				scheduler::Job job_base;
 				detail::SynchronizeGraphTask sync_graph_task;
-				std::vector<api::model::AgentPtr*> _agents;
+				std::list<api::model::Agent*> _agents;
 
 				static const DefaultBehavior default_behavior;
 				const api::model::Behavior& _behavior;

@@ -164,9 +164,14 @@ TEST_F(ModelTest, remove_group) {
 
 	std::vector<fpmas::api::model::GroupId> group_ids {G_1};
 	std::vector<fpmas::api::model::AgentGroup*> groups {&group_1};
+	std::list<fpmas::api::model::Agent*>::iterator group_pos;
 	group_1.add(agent);
 	ON_CALL(*agent, groupIds)
 		.WillByDefault(ReturnPointee(&group_ids));
+	ON_CALL(*agent, setGroupPos(G_1, _))
+		.WillByDefault(SaveArg<1>(&group_pos));
+	ON_CALL(*agent, getGroupPos(G_1))
+		.WillByDefault(ReturnPointee(&group_pos));
 	ON_CALL(*agent, groups())
 		.WillByDefault(ReturnPointee(&groups));
 	insert_node_callback->call(&mock_build_node.mock_node);
@@ -249,6 +254,10 @@ class AgentGroupTest : public ::testing::Test {
 		fpmas::api::model::AgentNode* agent1_node;
 		std::vector<fpmas::api::model::AgentGroup*> agent1_groups;
 		std::vector<fpmas::api::model::GroupId> agent1_group_ids;
+		std::unordered_map<
+			fpmas::api::model::GroupId,
+			std::list<fpmas::api::model::Agent*>::iterator
+				> agent1_group_pos;
 		std::unordered_map<fpmas::model::GroupId, fpmas::api::model::AgentTask*> agent1_tasks;
 		AgentPtr agent1_ptr {&agent1};
 
@@ -256,6 +265,10 @@ class AgentGroupTest : public ::testing::Test {
 		fpmas::api::model::AgentNode* agent2_node;
 		std::vector<fpmas::api::model::AgentGroup*> agent2_groups;
 		std::vector<fpmas::api::model::GroupId> agent2_group_ids;
+		std::unordered_map<
+			fpmas::api::model::GroupId,
+			std::list<fpmas::api::model::Agent*>::iterator
+				> agent2_group_pos;
 		std::unordered_map<fpmas::model::GroupId, fpmas::api::model::AgentTask*> agent2_tasks;
 		AgentPtr agent2_ptr {&agent2};
 
@@ -309,6 +322,28 @@ class AgentGroupTest : public ::testing::Test {
 					[this] (fpmas::api::model::GroupId id) {
 						agent2_group_ids.erase(std::remove(agent2_group_ids.begin(), agent2_group_ids.end(), id));
 						});
+
+			// Group pos set up
+			ON_CALL(agent1, setGroupPos).WillByDefault(
+					[this] (
+						fpmas::api::model::GroupId id,
+						std::list<fpmas::api::model::Agent*>::iterator pos) {
+					agent1_group_pos[id] = pos;
+					});
+			ON_CALL(agent1, getGroupPos).WillByDefault(
+					[this] (fpmas::api::model::GroupId id) {
+					return agent1_group_pos.find(id)->second;
+					});
+			ON_CALL(agent2, setGroupPos).WillByDefault(
+					[this] (
+						fpmas::api::model::GroupId id,
+						std::list<fpmas::api::model::Agent*>::iterator pos) {
+					agent2_group_pos[id] = pos;
+					});
+			ON_CALL(agent2, getGroupPos).WillByDefault(
+					[this] (fpmas::api::model::GroupId id) {
+					return agent2_group_pos.find(id)->second;
+					});
 
 			// Task set up
 			ON_CALL(agent1, setTask(_, _)).WillByDefault(
@@ -381,6 +416,13 @@ class AgentGroupTest : public ::testing::Test {
 			EXPECT_CALL(agent1, setModel(&model));
 			EXPECT_CALL(agent1, addGroup(&agent_group));
 			EXPECT_CALL(agent1, addGroupId(id));
+			EXPECT_CALL(agent1, setGroupPos(
+						id,
+						ResultOf([] (
+								std::list<fpmas::api::model::Agent*>::iterator pos
+								) {return *pos;}, &agent1
+							))
+					).Times(AnyNumber());
 			EXPECT_CALL(agent1, setTask(id, _));
 			agent_group.add(&agent1);
 
@@ -394,7 +436,14 @@ class AgentGroupTest : public ::testing::Test {
 			EXPECT_CALL(agent2, setNode(&node2));
 			EXPECT_CALL(agent2, setModel(&model));
 			EXPECT_CALL(agent2, addGroup(&agent_group));
-			EXPECT_CALL(agent2, addGroupId(10));
+			EXPECT_CALL(agent2, addGroupId(id));
+			EXPECT_CALL(agent2, setGroupPos(
+						id,
+						ResultOf([] (
+								std::list<fpmas::api::model::Agent*>::iterator pos
+								) {return *pos;}, &agent2
+							))
+					).Times(AnyNumber());
 			EXPECT_CALL(agent2, setTask(id, _));
 			agent_group.add(&agent2);
 
@@ -449,6 +498,7 @@ TEST_F(AgentGroupTest, add_agent_to_an_other_group) {
 
 	EXPECT_CALL(agent2, addGroup(&other_agent_group));
 	EXPECT_CALL(agent2, addGroupId(11));
+	EXPECT_CALL(agent2, setGroupPos(11, _)).Times(AnyNumber());
 	EXPECT_CALL(agent2, setTask(11, _));
 	EXPECT_CALL(graph, buildNode_rv).Times(0);
 	other_agent_group.add(&agent2);
@@ -495,6 +545,7 @@ TEST_F(AgentGroupTest, remove_agent_not_last_group) {
 
 	EXPECT_CALL(agent1, addGroup(&other_agent_group));
 	EXPECT_CALL(agent1, addGroupId(11));
+	EXPECT_CALL(agent1, setGroupPos(11, _)).Times(AnyNumber());
 	EXPECT_CALL(agent1, setTask(11, _));
 	other_agent_group.add(&agent1);
 

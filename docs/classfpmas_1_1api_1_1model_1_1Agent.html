@@ -138,6 +138,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a4db07da12347b7f169a7dfc38c8e8e8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa327b8d0ab033b95a635cf0131d1fd35"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aa327b8d0ab033b95a635cf0131d1fd35">removeGroup</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> *<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#ae73586473929d6b98dc0452bdc274238">group</a>)=0</td></tr>
 <tr class="separator:aa327b8d0ab033b95a635cf0131d1fd35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78b9ad3be03f591bcdd22bbaaaa4b55f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a78b9ad3be03f591bcdd22bbaaaa4b55f">setGroupPos</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">api::model::GroupId</a> gid, std::list&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt;::iterator pos)=0</td></tr>
+<tr class="separator:a78b9ad3be03f591bcdd22bbaaaa4b55f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2cc8664d5165c13bf6c4fa0e52575704"><td class="memItemLeft" align="right" valign="top">virtual std::list&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a2cc8664d5165c13bf6c4fa0e52575704">getGroupPos</a> (<a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">api::model::GroupId</a> gid) const =0</td></tr>
+<tr class="separator:a2cc8664d5165c13bf6c4fa0e52575704"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a6b51d0a175f47b878f27af5937277f"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">TypeId</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a1a6b51d0a175f47b878f27af5937277f">typeId</a> () const =0</td></tr>
 <tr class="separator:a1a6b51d0a175f47b878f27af5937277f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2060a069d36f917a5055ae753a937832"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a2060a069d36f917a5055ae753a937832">copy</a> () const =0</td></tr>
@@ -570,6 +574,87 @@ Public Member Functions</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a971017255f0355e386e54099005bf5e0">fpmas::model::detail::AgentBase&lt; api::model::Cell, GraphCell, GraphCellBase&lt; GraphCell, GraphCell &gt; &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a971017255f0355e386e54099005bf5e0">fpmas::model::detail::AgentBase&lt; api::model::Cell, GraphCellType, GraphCellBase&lt; GraphCellType, GraphCellType &gt; &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a971017255f0355e386e54099005bf5e0">fpmas::model::detail::AgentBase&lt; api::model::GridAgent&lt; model::GridCell &gt;, AgentType, SpatialAgentBase&lt; api::model::GridAgent&lt; model::GridCell &gt;, AgentType, model::GridCell, GridAgent&lt; AgentType, model::GridCell, AgentType &gt; &gt; &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a971017255f0355e386e54099005bf5e0">fpmas::model::detail::AgentBase&lt; api::model::GridCell, GridCell, GridCellBase&lt; GridCell, GridCell &gt; &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a971017255f0355e386e54099005bf5e0">fpmas::model::detail::AgentBase&lt; api::model::GridCell, GridCellType, GridCellBase&lt; GridCellType, GridCellType &gt; &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a971017255f0355e386e54099005bf5e0">fpmas::model::detail::AgentBase&lt; api::model::SpatialAgent&lt; api::model::Cell &gt;, AgentType, SpatialAgentBase&lt; api::model::SpatialAgent&lt; api::model::Cell &gt;, AgentType, api::model::Cell, AgentType &gt; &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a78b9ad3be03f591bcdd22bbaaaa4b55f" name="a78b9ad3be03f591bcdd22bbaaaa4b55f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78b9ad3be03f591bcdd22bbaaaa4b55f">&#9670;&nbsp;</a></span>setGroupPos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::model::Agent::setGroupPos </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">api::model::GroupId</a>&#160;</td>
+          <td class="paramname"><em>gid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::list&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt;::iterator&#160;</td>
+          <td class="paramname"><em>pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sets a list position associated to the group represented by <code>gid</code>, that can be retrieved with <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a2cc8664d5165c13bf6c4fa0e52575704">getGroupPos()</a>.</p>
+<p >There is no specific requirement about those methods, that can be used or not. However, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">AgentGroup</a> implementations can take advantage of this feature to optimize <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> insertion and removal in constant time, using an std::list as an internal data structure.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gid</td><td>group ID </td></tr>
+    <tr><td class="paramname">pos</td><td>list iterator that references the current <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> within the group associated to <code>gid</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2cc8664d5165c13bf6c4fa0e52575704" name="a2cc8664d5165c13bf6c4fa0e52575704"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cc8664d5165c13bf6c4fa0e52575704">&#9670;&nbsp;</a></span>getGroupPos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::list&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> * &gt;::iterator fpmas::api::model::Agent::getGroupPos </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">api::model::GroupId</a>&#160;</td>
+          <td class="paramname"><em>gid</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Retrieves a list position that was previously stored using <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#a78b9ad3be03f591bcdd22bbaaaa4b55f">setGroupPos()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gid</td><td>group ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>list iterator that references the current <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> within the group associated to <code>gid</code> </dd></dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a9dd249ac116cf3ba6b2afbb3a49e2d9a">fpmas::model::detail::AgentBase&lt; api::model::Cell, GraphCell, GraphCellBase&lt; GraphCell, GraphCell &gt; &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a9dd249ac116cf3ba6b2afbb3a49e2d9a">fpmas::model::detail::AgentBase&lt; api::model::Cell, GraphCellType, GraphCellBase&lt; GraphCellType, GraphCellType &gt; &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a9dd249ac116cf3ba6b2afbb3a49e2d9a">fpmas::model::detail::AgentBase&lt; api::model::GridAgent&lt; model::GridCell &gt;, AgentType, SpatialAgentBase&lt; api::model::GridAgent&lt; model::GridCell &gt;, AgentType, model::GridCell, GridAgent&lt; AgentType, model::GridCell, AgentType &gt; &gt; &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a9dd249ac116cf3ba6b2afbb3a49e2d9a">fpmas::model::detail::AgentBase&lt; api::model::GridCell, GridCell, GridCellBase&lt; GridCell, GridCell &gt; &gt;</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a9dd249ac116cf3ba6b2afbb3a49e2d9a">fpmas::model::detail::AgentBase&lt; api::model::GridCell, GridCellType, GridCellBase&lt; GridCellType, GridCellType &gt; &gt;</a>, and <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a9dd249ac116cf3ba6b2afbb3a49e2d9a">fpmas::model::detail::AgentBase&lt; api::model::SpatialAgent&lt; api::model::Cell &gt;, AgentType, SpatialAgentBase&lt; api::model::SpatialAgent&lt; api::model::Cell &gt;, AgentType, api::model::Cell, AgentType &gt; &gt;</a>.</p>
 
 </div>
 </div>

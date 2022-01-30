@@ -583,11 +583,86 @@ namespace fpmas { namespace model {
 		private:
 			std::vector<api::model::GroupId> group_ids;
 			std::vector<api::model::AgentGroup*> _groups;
+			std::unordered_map<
+				api::model::GroupId, std::list<api::model::Agent*>::iterator
+				> group_pos;
 			std::unordered_map<api::model::GroupId, api::model::AgentTask*> _tasks;
 			api::model::AgentNode* _node;
 			api::model::Model* _model;
 
 		public:
+			/**
+			 * Auto generated default constructor.
+			 */
+			AgentBase() = default;
+
+			/**
+			 * Auto generated copy assignment operator.
+			 *
+			 * If `AgentType` does not define any custom copy assignment
+			 * operator, the `AgentType` copy assignment operator copies assign
+			 * all `AgentType` members and all base classes (including this
+			 * `AgentBase`) members.
+			 *
+			 * If a custom `AgentType` copy assignment operator is defined,
+			 * this `AgentBase` copy assignment operator must be called
+			 * explictly to ensure required members are properly copied.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/language/copy_assignment
+			 */
+			AgentBase(const AgentBase& agent) = default;
+
+			/**
+			 * Auto generated copy constructor.
+			 *
+			 * If `AgentType` does not define any custom copy constructor , the
+			 * `AgentType` copy constructor copies all `AgentType` members and
+			 * all base classes (including this `AgentBase`) members using
+			 * their copy constructors.
+			 *
+			 * If a custom `AgentType` copy constructor is defined, this
+			 * `AgentBase` copy constructor must be called explictly to ensure
+			 * required members are properly copied.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/language/copy_constructor
+			 */
+			AgentBase& operator=(const AgentBase& agent) = default;
+
+			// Move constructor and assignment preserve groupIds(), groups(),
+			// group_pos, tasks(), node() and model()
+
+			/**
+			 * Autor generated move constructor.
+			 *
+			 * If `AgentType` does not define any custom move constructor , the
+			 * `AgentType` move constructor moves all `AgentType` members and
+			 * all base classes (including this `AgentBase`) members using
+			 * their move constructors.
+			 *
+			 * If a custom `AgentType` move constructor is defined, this
+			 * `AgentBase` copy constructor must be called explictly to ensure
+			 * required members are properly copied.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/language/move_constructor
+			 */
+			AgentBase(AgentBase&&) = default;
+
+			/**
+			 * Move assignment operator.
+			 *
+			 * groupIds(), groups(), getGroupPos() results, tasks(), node() and
+			 * model() fields are preserved, as specified in the moveAssign()
+			 * requirements, i.e. those fields are **not** moved from `other`
+			 * to `this`.
+			 *
+			 * Since the current implementation does not do anything, there is
+			 * no requirement to explicitly call this move constructor if a
+			 * custom `AgentBase` move constructor is defined.
+			 */
+			AgentBase& operator=(AgentBase&&) {
+				return *this;
+			}
+
 			/**
 			 * \copydoc fpmas::api::model::Agent::groupId
 			 */
@@ -665,6 +740,23 @@ namespace fpmas { namespace model {
 			}
 
 			/**
+			 * \copydoc fpmas::api::model::Agent::setGroupPos
+			 */
+			void setGroupPos(
+					api::model::GroupId gid,
+					std::list<api::model::Agent*>::iterator pos
+					) override {
+				group_pos[gid] = pos;
+			}
+
+			/**
+			 * \copydoc fpmas::api::model::Agent::getGroupPos
+			 */
+			std::list<api::model::Agent*>::iterator getGroupPos(api::model::GroupId gid) const override {
+				return group_pos.find(gid)->second;
+			}
+
+			/**
 			 * \copydoc fpmas::api::model::Agent::typeId
 			 */
 			api::model::TypeId typeId() const override {return TYPE_ID;}
@@ -710,27 +802,16 @@ namespace fpmas { namespace model {
 					if(updated_ids.count(id) == 0)
 						obsolete_groups.push_back(id);
 
-				// Preserve the local agent set up
-				for(auto group : this->groups())
-					agent->addGroup(group);
-				// Ok because the updated list of ids is saved in updated_ids
-				for(auto id : agent->groupIds())
-					agent->removeGroupId(id);
-				for(auto id : this->groupIds())
-					agent->addGroupId(id);
-
-				for(auto task : this->tasks())
-					agent->setTask(task.first, task.second);
-				agent->setNode(this->node());
-				agent->setModel(this->model());
-
 				// Uses AgentType move assignment operator
 				//
 				// groupIds(), groups(), tasks(), node() and model() are
 				// notably moved from agent to this, but this as no effect
-				// since agent's fields was overriden above. In consequence,
-				// those fields are properly preserved, as required by the
-				// method.
+				// considering the move assignment operator defined above. In
+				// consequence, those fields are properly preserved, as
+				// required by the method.
+				// If AgentType only explicitly defines a copy assignment
+				// operator, it should not call the AgentBase copy assignment
+				// so there should not be any problem.
 				*static_cast<AgentType*>(this) = std::move(*static_cast<AgentType*>(agent));
 
 				// Dynamically updates groups lists
