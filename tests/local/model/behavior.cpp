@@ -122,26 +122,28 @@ class AgentGroupBehaviorTest : public testing::Test {
 				.WillByDefault(ReturnRef(group_2));
 			ON_CALL(model, getMpiCommunicator())
 				.WillByDefault(ReturnRef(mock_comm));
+			using fpmas::api::graph::SetLocalNodeEvent;
+			using fpmas::api::model::AgentPtr;
 
 			ON_CALL(graph, buildNode_rv(Property(&fpmas::model::AgentPtr::get, &agent_1)))
 				.WillByDefault([this] (fpmas::model::AgentPtr& ptr) {
 						ptr.release();
 						insert_callback.call(&node_1);
-						set_local_callback.call(&node_1);
+						set_local_callback.call(SetLocalNodeEvent<AgentPtr>(&node_1, SetLocalNodeEvent<AgentPtr>::BUILD_LOCAL));
 						return &node_1;
 						});
 			ON_CALL(graph, buildNode_rv(Property(&fpmas::model::AgentPtr::get, &agent_2)))
 					.WillByDefault([this] (fpmas::model::AgentPtr& ptr) {
 						ptr.release();
 						insert_callback.call(&node_2);
-						set_local_callback.call(&node_2);
+						set_local_callback.call(SetLocalNodeEvent<AgentPtr>(&node_2, SetLocalNodeEvent<AgentPtr>::BUILD_LOCAL));
 						return &node_2;
 						});
 			ON_CALL(graph, buildNode_rv(Property(&fpmas::model::AgentPtr::get, &agent_1_2)))
 						.WillByDefault([this] (fpmas::model::AgentPtr& ptr) {
 						ptr.release();
 						insert_callback.call(&node_3);
-						set_local_callback.call(&node_3);
+						set_local_callback.call(SetLocalNodeEvent<AgentPtr>(&node_3, SetLocalNodeEvent<AgentPtr>::BUILD_LOCAL));
 						return &node_3;
 						});
 
@@ -204,9 +206,16 @@ TEST_F(AgentGroupBehaviorTest, insert_callbacks_multi_group) {
 	agent_1_2.addGroupId(0);
 	agent_1_2.addGroupId(1);
 
+	using fpmas::api::graph::SetLocalNodeEvent;
+	using fpmas::api::model::AgentPtr;
+
 	// Imitates the graph.insert() behavior
 	insert_callback.call(&node_3);
-	set_local_callback.call(&node_3);
+	set_local_callback.call(SetLocalNodeEvent<AgentPtr>(
+				&node_3,
+				// The actual insertion context does not matter for this test
+				SetLocalNodeEvent<AgentPtr>::UNSPECIFIED 
+				));
 	
 	EXPECT_CALL(agent_1_2, action_1);
 	for(auto task : group_1.job().tasks())

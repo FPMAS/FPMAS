@@ -35,18 +35,20 @@ namespace fpmas {
 				}
 			}
 
-			void SetAgentLocalCallback::call(AgentNode *node) {
-				api::model::AgentPtr& agent = node->data();
+			void SetAgentLocalCallback::call(const EventType& event) {
+				api::model::AgentPtr& agent = event.node->data();
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
-						"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.", FPMAS_C_STR(node->getId()));
+						"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.",
+						FPMAS_C_STR(event.node->getId()));
 				for(auto group : agent->groups())
 					group->agentExecutionJob().add(*agent->task(group->groupId()));
 			}
 
-			void SetAgentDistantCallback::call(AgentNode *node) {
-				api::model::AgentPtr& agent = node->data();
+			void SetAgentDistantCallback::call(const EventType& event) {
+				api::model::AgentPtr& agent = event.node->data();
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
-						"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.", FPMAS_C_STR(node->getId()));
+						"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.",
+						FPMAS_C_STR(event.node->getId()));
 				// Unschedule agent task 
 				for(auto group : agent->groups())
 					group->agentExecutionJob().remove(*agent->task(group->groupId()));

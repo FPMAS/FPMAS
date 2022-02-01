@@ -23,5 +23,10 @@ namespace fpmas { namespace api { namespace utils {
 			virtual void call(Args... args) = 0;
 			virtual ~Callback() {}
 	};
+
+	template<typename Event>
+		struct EventCallback : public Callback<const Event&> {
+			typedef Event EventType;
+		};
 }}}
 #endif

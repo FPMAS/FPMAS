@@ -51,21 +51,21 @@ class IncreaseCount {
 		}
 };
 
-class IncreaseCountAct : public fpmas::model::AgentNodeCallback {
+class IncreaseCountAct : public fpmas::api::model::SetAgentLocalCallback {
 	private:
 		std::unordered_map<DistributedId, unsigned long>& act_counts;
 	public:
 		IncreaseCountAct(std::unordered_map<DistributedId, unsigned long>& act_counts) : act_counts(act_counts) {}
 
-		void call(fpmas::model::AgentNode* node) override {
-			if(node->data().get()->typeId() == DefaultMockAgentBase<1>::TYPE_ID) {
-				EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<1>*>(node->data().get()), act)
+		void call(const fpmas::api::model::SetAgentLocalEvent& event) override {
+			if(event.node->data().get()->typeId() == DefaultMockAgentBase<1>::TYPE_ID) {
+				EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<1>*>(event.node->data().get()), act)
 					.Times(AnyNumber())
-					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
-			} else if(node->data().get()->typeId() == DefaultMockAgentBase<10>::TYPE_ID) {
-				EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
+					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, event.node->getId())));
+			} else if(event.node->data().get()->typeId() == DefaultMockAgentBase<10>::TYPE_ID) {
+				EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<10>*>(event.node->data().get()), act)
 					.Times(AnyNumber())
-					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, node->getId())));
+					.WillRepeatedly(InvokeWithoutArgs(IncreaseCount(act_counts, event.node->getId())));
 			}
 		}
 };
@@ -154,14 +154,14 @@ TEST_F(ModelGhostModeIntegrationExecutionTest, ghost_mode_with_link) {
 	checkExecutionCounts();
 }
 
-class UpdateWeightAct : public fpmas::model::AgentNodeCallback {
+class UpdateWeightAct : public fpmas::api::model::SetAgentLocalCallback {
 	private:
 		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight {0, 1};
 	public:
-		void call(fpmas::model::AgentNode* node) override {
-			node->setWeight(random_weight(engine) * 10);
-			EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<10>*>(node->data().get()), act)
+		void call(const fpmas::api::model::SetAgentLocalEvent& event) override {
+			event.node->setWeight(random_weight(engine) * 10);
+			EXPECT_CALL(*dynamic_cast<DefaultMockAgentBase<10>*>(event.node->data().get()), act)
 				.Times(AnyNumber());
 		}
 };

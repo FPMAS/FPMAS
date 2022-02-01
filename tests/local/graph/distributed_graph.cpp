@@ -30,13 +30,55 @@
 #include "graph/mock_load_balancing.h"
 #include "utils/mock_callback.h"
 
-
 using namespace testing;
 
 using fpmas::graph::detail::DistributedGraph;
 using fpmas::graph::NodePtrWrapper;
 using fpmas::graph::EdgePtrWrapper;
 using fpmas::api::communication::DataPack;
+using fpmas::api::graph::SetLocalNodeEvent;
+using fpmas::api::graph::SetDistantNodeEvent;
+
+
+namespace fpmas { namespace api { namespace graph {
+	template<typename T>
+		bool operator==(
+				const SetLocalNodeEvent<T>& event_a,
+				const SetLocalNodeEvent<T>& event_b
+				) {
+			return
+				event_a.node == event_b.node &&
+				event_a.context == event_b.context;
+		}
+
+	template<typename T>
+		bool operator==(
+				const SetDistantNodeEvent<T>& event_a,
+				const SetDistantNodeEvent<T>& event_b
+				) {
+			return
+				event_a.node == event_b.node &&
+				event_a.context == event_b.context;
+		}
+}}}
+
+MATCHER_P(SetLocalNodeEventContextIs, context, "") {
+	return ExplainMatchResult(Field(
+				&SetLocalNodeEvent<int>::context,
+				context
+				), arg, result_listener
+			);
+}
+
+MATCHER_P(SetDistantNodeEventContextIs, context, "") {
+	return ExplainMatchResult(Field(
+				&SetDistantNodeEvent<int>::context,
+				context
+				), arg, result_listener
+			);
+}
+
+ACTION_P(SaveNode, node_pointer) {*node_pointer = arg0.node;}
 
 class DistributedGraphTest : public Test {
 	protected:
@@ -86,7 +128,8 @@ class DistributedGraphTest : public Test {
 /* local_build_node */
 /********************/
 TEST_F(DistributedGraphTest, build_node) {
-	auto local_callback = new MockCallback<NodeType*>;
+	auto local_callback
+		= new MockEventCallback<SetLocalNodeEvent<int>>;
 	graph.addCallOnSetLocal(local_callback);
 
 	DistributedId add_managed_node_arg;
@@ -96,8 +139,10 @@ TEST_F(DistributedGraphTest, build_node) {
 	EXPECT_CALL(location_manager, setLocal(_))
 		.WillOnce(SaveArg<0>(&set_local_arg));
 	NodeType* local_callback_arg;
-	EXPECT_CALL(*local_callback, call)
-		.WillOnce(SaveArg<0>(&local_callback_arg));
+	EXPECT_CALL(*local_callback, call(
+				SetLocalNodeEventContextIs(SetLocalNodeEvent<int>::BUILD_LOCAL)
+				))
+		.WillOnce(SaveNode(&local_callback_arg));
 
 	auto currentId = graph.currentNodeId();
 	ASSERT_EQ(currentId.rank(), 7);
@@ -615,11 +660,14 @@ TEST_F(DistributedGraphImportNodeTest, import_node) {
 		.WillOnce(DoAll(SaveArg<0>(&build_mutex_arg), Return(new MockMutex<int>)));
 
 	// Callback call test
-	auto local_callback = new MockCallback<NodeType*>;
+	auto local_callback
+		= new MockEventCallback<SetLocalNodeEvent<int>>;
 	graph.addCallOnSetLocal(local_callback);
 	NodeType* local_callback_arg;
-	EXPECT_CALL(*local_callback, call)
-		.WillOnce(SaveArg<0>(&local_callback_arg));
+	EXPECT_CALL(*local_callback, call(
+				SetLocalNodeEventContextIs(SetLocalNodeEvent<int>::IMPORT_NEW_LOCAL)
+				))
+		.WillOnce(SaveNode(&local_callback_arg));
 
 	graph.importNode(mock_node);
 
@@ -636,7 +684,7 @@ TEST_F(DistributedGraphImportNodeTest, import_node) {
 /*
  * Import node with existing ghost test
  */
-TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
+TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_distant) {
 	EXPECT_CALL(location_manager, addManagedNode(An<fpmas::graph::DistributedId>(), _));
 	EXPECT_CALL(location_manager, setLocal);
 
@@ -656,11 +704,14 @@ TEST_F(DistributedGraphImportNodeTest, import_node_with_existing_ghost) {
 		.WillOnce(SaveArg<0>(&set_local_arg));
 
 	// Callback call test
-	auto local_callback = new MockCallback<NodeType*>;
+	auto local_callback
+		= new MockEventCallback<SetLocalNodeEvent<int>>;
 	graph.addCallOnSetLocal(local_callback);
 	NodeType* local_callback_arg;
-	EXPECT_CALL(*local_callback, call)
-		.WillOnce(SaveArg<0>(&local_callback_arg));
+	EXPECT_CALL(*local_callback, call(
+				SetLocalNodeEventContextIs(SetLocalNodeEvent<int>::IMPORT_EXISTING_LOCAL)
+				))
+		.WillOnce(SaveNode(&local_callback_arg));
 
 	graph.importNode(mock_node);
 
@@ -947,11 +998,14 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_tgt) {
 		.WillOnce(SaveArg<0>(&set_distant_arg));
 
 	// Distant call back test
-	auto* distant_callback = new MockCallback<NodeType*>;
+	auto* distant_callback
+		= new MockEventCallback<SetDistantNodeEvent<int>>;
 	graph.addCallOnSetDistant(distant_callback);
 	NodeType* distant_callback_arg;
-	EXPECT_CALL(*distant_callback, call)
-		.WillOnce(SaveArg<0>(&distant_callback_arg));
+	EXPECT_CALL(*distant_callback, call(
+				SetDistantNodeEventContextIs(SetDistantNodeEvent<int>::IMPORT_NEW_DISTANT)
+				))
+		.WillOnce(SaveNode(&distant_callback_arg));
 
 	graph.importEdge(mock);
 	checkEdgeAndDistantNodesStructure();
@@ -990,11 +1044,14 @@ TEST_F(DistributedGraphImportEdgeWithGhostTest, import_with_missing_src) {
 	EXPECT_CALL(location_manager, setDistant(_))
 		.WillOnce(SaveArg<0>(&set_distant_arg));
 	// Distant call back test
-	auto* distant_callback = new MockCallback<NodeType*>;
+	auto* distant_callback
+		= new MockEventCallback<SetDistantNodeEvent<int>>;
 	graph.addCallOnSetDistant(distant_callback);
 	NodeType* distant_callback_arg;
-	EXPECT_CALL(*distant_callback, call)
-		.WillOnce(SaveArg<0>(&distant_callback_arg));
+	EXPECT_CALL(*distant_callback, call(
+				SetDistantNodeEventContextIs(SetDistantNodeEvent<int>::IMPORT_NEW_DISTANT)
+				))
+		.WillOnce(SaveNode(&distant_callback_arg));
 
 	graph.importEdge(mock);
 	checkEdgeAndDistantNodesStructure();
@@ -1027,6 +1084,15 @@ TEST_F(DistributedGraphInsertDistantTest, insert_distant) {
 	EXPECT_CALL(const_cast<MockSyncMode<int>&>(graph.getSyncMode()), buildMutex)
 		.WillOnce(Return(built_mutex));
 	EXPECT_CALL(*node, setMutex(built_mutex));
+
+	// Distant call back test
+	auto* distant_callback
+		= new MockEventCallback<SetDistantNodeEvent<int>>;
+	graph.addCallOnSetDistant(distant_callback);
+	EXPECT_CALL(*distant_callback, call(SetDistantNodeEvent<int>(
+					node,
+					SetDistantNodeEvent<int>::IMPORT_NEW_DISTANT
+					)));
 
 	ASSERT_EQ(graph.insertDistant(node), node);
 
@@ -1247,7 +1313,8 @@ class DistributedGraphDistributeWithEdgeTest : public DistributedGraphDistribute
 		EdgeList node2_in;
 		EdgeList node3_out;
 
-		MockCallback<NodeType*>* distant_callback = new MockCallback<NodeType*>;
+		MockEventCallback<SetDistantNodeEvent<int>>* distant_callback
+			= new MockEventCallback<SetDistantNodeEvent<int>>;
 		std::array<NodeType*, 2> imported_edge_distant_callback_args;
 
 		void SetUp() override {
@@ -1293,15 +1360,29 @@ class DistributedGraphDistributeWithEdgeTest : public DistributedGraphDistribute
 
 			// Those two expectation are matched only when the next 4
 			// expectations are not matched.
-			EXPECT_CALL(*distant_callback, call)
-				.WillOnce(SaveArg<0>(&imported_edge_distant_callback_args[0]))
-				.WillOnce(SaveArg<0>(&imported_edge_distant_callback_args[1]));
+			EXPECT_CALL(*distant_callback, call(SetDistantNodeEventContextIs(
+						SetDistantNodeEvent<int>::IMPORT_NEW_DISTANT
+						)))
+				.WillOnce(SaveNode(&imported_edge_distant_callback_args[0]))
+				.WillOnce(SaveNode(&imported_edge_distant_callback_args[1]));
 
 			// Exported node callback matchers
-			EXPECT_CALL(*distant_callback, call(graph.getNode(node_ids[2])));
-			EXPECT_CALL(*distant_callback, call(graph.getNode(node_ids[3])));
-			EXPECT_CALL(*distant_callback, call(graph.getNode(node_ids[1])));
-			EXPECT_CALL(*distant_callback, call(graph.getNode(node_ids[4])));
+			EXPECT_CALL(*distant_callback, call(SetDistantNodeEvent<int>(
+							graph.getNode(node_ids[2]),
+							SetDistantNodeEvent<int>::EXPORT_DISTANT
+							)));
+			EXPECT_CALL(*distant_callback, call(SetDistantNodeEvent<int>(
+							graph.getNode(node_ids[3]),
+							SetDistantNodeEvent<int>::EXPORT_DISTANT
+							)));
+			EXPECT_CALL(*distant_callback, call(SetDistantNodeEvent<int>(
+							graph.getNode(node_ids[1]),
+							SetDistantNodeEvent<int>::EXPORT_DISTANT
+							)));
+			EXPECT_CALL(*distant_callback, call(SetDistantNodeEvent<int>(
+							graph.getNode(node_ids[4]),
+							SetDistantNodeEvent<int>::EXPORT_DISTANT
+							)));
 
 			// Set linked nodes as distant nodes
 			EXPECT_CALL(location_manager, setDistant(graph.getNode(node_ids[2])));
@@ -1453,11 +1534,11 @@ class DistributedGraphMoveTest : public Test {
 				graph.addCallOnEraseNode(new NiceMock<MockCallback<
 						fpmas::api::graph::DistributedNode<int>*>
 						>);
-				graph.addCallOnSetLocal(new NiceMock<MockCallback<
-						fpmas::api::graph::DistributedNode<int>*>
+				graph.addCallOnSetLocal(new NiceMock<MockEventCallback<
+						SetLocalNodeEvent<int>>
 						>);
-				graph.addCallOnSetDistant(new NiceMock<MockCallback<
-						fpmas::api::graph::DistributedNode<int>*>
+				graph.addCallOnSetDistant(new NiceMock<MockEventCallback<
+						SetDistantNodeEvent<int>>
 						>);
 				graph.addCallOnInsertEdge(new NiceMock<MockCallback<
 						fpmas::api::graph::DistributedEdge<int>*>

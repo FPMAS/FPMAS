@@ -18,7 +18,8 @@ class AbstractMockDistributedGraph :
 		typedef fpmas::api::graph::DistributedEdge<T> EdgeType;
 		using typename GraphBase::NodeMap;
 		using typename GraphBase::EdgeMap;
-		using typename GraphBase::NodeCallback;
+		using typename GraphBase::SetLocalNodeCallback;
+		using typename GraphBase::SetDistantNodeCallback;
 
 		MOCK_METHOD(const fpmas::api::communication::MpiCommunicator&,
 				getMpiCommunicator, (), (const, override));
@@ -39,10 +40,10 @@ class AbstractMockDistributedGraph :
 		MOCK_METHOD(fpmas::api::graph::DistributedNode<T>*, insertDistant, (fpmas::api::graph::DistributedNode<T>*), (override));
 		MOCK_METHOD(EdgeType*, link, (NodeType*, NodeType*, fpmas::api::graph::LayerId), (override));
 
-		MOCK_METHOD(void, addCallOnSetLocal, (NodeCallback*), (override));
-		MOCK_METHOD(std::vector<NodeCallback*>, onSetLocalCallbacks, (), (const, override));
-		MOCK_METHOD(void, addCallOnSetDistant, (NodeCallback*), (override));
-		MOCK_METHOD(std::vector<NodeCallback*>, onSetDistantCallbacks, (), (const, override));
+		MOCK_METHOD(void, addCallOnSetLocal, (SetLocalNodeCallback*), (override));
+		MOCK_METHOD(std::vector<SetLocalNodeCallback*>, onSetLocalCallbacks, (), (const, override));
+		MOCK_METHOD(void, addCallOnSetDistant, (SetDistantNodeCallback*), (override));
+		MOCK_METHOD(std::vector<SetDistantNodeCallback*>, onSetDistantCallbacks, (), (const, override));
 
 		MOCK_METHOD(DistributedId, currentNodeId, (), (const, override));
 		MOCK_METHOD(void, setCurrentNodeId, (fpmas::api::graph::DistributedId), (override));

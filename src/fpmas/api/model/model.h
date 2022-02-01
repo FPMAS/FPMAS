@@ -32,6 +32,14 @@ namespace fpmas { namespace api {namespace model {
 	 * AgentGraph type.
 	 */
 	typedef api::graph::DistributedGraph<AgentPtr> AgentGraph;
+
+	typedef api::graph::SetLocalNodeEvent<AgentPtr> SetAgentLocalEvent;
+	typedef api::graph::DistributedGraph<AgentPtr>::SetLocalNodeCallback
+		SetAgentLocalCallback;
+	typedef api::graph::SetDistantNodeEvent<AgentPtr> SetAgentDistantEvent;
+	typedef api::graph::DistributedGraph<AgentPtr>::SetDistantNodeCallback
+		SetAgentDistantCallback;
+
 	/**
 	 * Group ID type.
 	 */

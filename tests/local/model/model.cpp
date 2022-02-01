@@ -69,8 +69,8 @@ class ModelTest : public ::testing::Test {
 			NodeCallback;
 		NodeCallback* insert_node_callback;
 		NodeCallback* erase_node_callback;
-		NodeCallback* set_local_callback;
-		NodeCallback* set_distant_callback;
+		fpmas::api::utils::EventCallback<fpmas::api::graph::SetLocalNodeEvent<AgentPtr>>* set_local_callback;
+		fpmas::api::utils::EventCallback<fpmas::api::graph::SetDistantNodeEvent<AgentPtr>>* set_distant_callback;
 
 		Model* model;
 		void SetUp() override {
@@ -393,7 +393,10 @@ class AgentGroupTest : public ::testing::Test {
 			ON_CALL(graph, insert(A<Node*>()))
 				.WillByDefault(DoAll(
 							Invoke(&insert_agent_callback, &fpmas::model::detail::InsertAgentNodeCallback::call),
-							Invoke(&set_local_callback, &fpmas::model::detail::SetAgentLocalCallback::call)
+							Invoke([this] (Node* node) {
+								set_local_callback.call(fpmas::api::graph::SetLocalNodeEvent<AgentPtr>(
+											node, fpmas::api::graph::SetLocalNodeEvent<AgentPtr>::BUILD_LOCAL));
+								})
 							));
 			ON_CALL(graph, erase(A<Node*>()))
 				.WillByDefault(DoAll(

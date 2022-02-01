@@ -66,7 +66,8 @@ namespace fpmas { namespace graph {
 				 */
 				typedef api::graph::DistributedEdge<T> EdgeType;
 				using typename api::graph::DistributedGraph<T>::NodeMap;
-				using typename api::graph::DistributedGraph<T>::NodeCallback;
+				using typename api::graph::DistributedGraph<T>::SetLocalNodeCallback;
+				using typename api::graph::DistributedGraph<T>::SetDistantNodeCallback;
 
 				DistributedGraph(const DistributedGraph<DIST_GRAPH_PARAMS_SPEC>&)
 					= delete;
@@ -110,24 +111,32 @@ namespace fpmas { namespace graph {
 				LocationManagerImpl<T> location_manager;
 				SyncMode<T> sync_mode;
 
-				std::vector<NodeCallback*> set_local_callbacks;
-				std::vector<NodeCallback*> set_distant_callbacks;
+				std::vector<SetLocalNodeCallback*> set_local_callbacks;
+				std::vector<SetDistantNodeCallback*> set_distant_callbacks;
 
 				EraseNodeCallback* erase_node_callback;
 
 				NodeType* _buildNode(NodeType*);
 
-				void setLocal(api::graph::DistributedNode<T>* node);
-				void setDistant(api::graph::DistributedNode<T>* node);
+				void setLocal(
+						api::graph::DistributedNode<T>* node,
+						typename api::graph::SetLocalNodeEvent<T>::Context context
+						);
+				void setDistant(
+						api::graph::DistributedNode<T>* node,
+						typename api::graph::SetDistantNodeEvent<T>::Context context
+						);
 
-				void triggerSetLocalCallbacks(api::graph::DistributedNode<T>* node) {
+				void triggerSetLocalCallbacks(
+						const api::graph::SetLocalNodeEvent<T>& event) {
 					for(auto callback : set_local_callbacks)
-						callback->call(node);
+						callback->call(event);
 				}
 
-				void triggerSetDistantCallbacks(api::graph::DistributedNode<T>* node) {
+				void triggerSetDistantCallbacks(
+						const api::graph::SetDistantNodeEvent<T>& event) {
 					for(auto callback : set_distant_callbacks)
-						callback->call(node);
+						callback->call(event);
 				}
 
 				void clearDistantNodes();
@@ -290,17 +299,17 @@ namespace fpmas { namespace graph {
 
 				void switchLayer(EdgeType* edge, api::graph::LayerId layer_id) override;
 
-				void addCallOnSetLocal(NodeCallback* callback) override {
+				void addCallOnSetLocal(SetLocalNodeCallback* callback) override {
 					set_local_callbacks.push_back(callback);
 				};
-				std::vector<NodeCallback*> onSetLocalCallbacks() const override {
+				std::vector<SetLocalNodeCallback*> onSetLocalCallbacks() const override {
 					return set_local_callbacks;
 				}
 
-				void addCallOnSetDistant(NodeCallback* callback) override {
+				void addCallOnSetDistant(SetDistantNodeCallback* callback) override {
 					set_distant_callbacks.push_back(callback);
 				};
-				std::vector<NodeCallback*> onSetDistantCallbacks() const override {
+				std::vector<SetDistantNodeCallback*> onSetDistantCallbacks() const override {
 					return set_distant_callbacks;
 				}
 
@@ -365,15 +374,19 @@ namespace fpmas { namespace graph {
 			}
 
 		template<DIST_GRAPH_PARAMS>
-			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setLocal(api::graph::DistributedNode<T>* node) {
+			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setLocal(
+					api::graph::DistributedNode<T>* node,
+					typename api::graph::SetLocalNodeEvent<T>::Context context) {
 				location_manager.setLocal(node);
-				triggerSetLocalCallbacks(node);
+				triggerSetLocalCallbacks({node, context});
 			}
 
 		template<DIST_GRAPH_PARAMS>
-			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setDistant(api::graph::DistributedNode<T>* node) {
+			void DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::setDistant(
+					api::graph::DistributedNode<T>* node,
+					typename api::graph::SetDistantNodeEvent<T>::Context context) {
 				location_manager.setDistant(node);
-				triggerSetDistantCallbacks(node);
+				triggerSetDistantCallbacks({node, context});
 			}
 
 		template<DIST_GRAPH_PARAMS>
@@ -409,7 +422,7 @@ namespace fpmas { namespace graph {
 					// But instead of completely building a new node, we can re-use the
 					// temporary input node.
 					this->insert(node);
-					setLocal(node);
+					setLocal(node, api::graph::SetLocalNodeEvent<T>::IMPORT_NEW_LOCAL);
 					node->setMutex(sync_mode.buildMutex(node));
 					return node;
 				}
@@ -421,7 +434,7 @@ namespace fpmas { namespace graph {
 				auto local_node = this->getNode(node->getId());
 				local_node->data() = std::move(node->data());
 				local_node->setWeight(node->getWeight());
-				setLocal(local_node);
+				setLocal(local_node, api::graph::SetLocalNodeEvent<T>::IMPORT_EXISTING_LOCAL);
 
 				// Deletes unused temporary input node
 				delete node;
@@ -487,7 +500,7 @@ namespace fpmas { namespace graph {
 						edge->setSourceNode(src);
 						src->linkOut(edge);
 						this->insert(src);
-						setDistant(src);
+						setDistant(src, api::graph::SetDistantNodeEvent<T>::IMPORT_NEW_DISTANT);
 						src->setMutex(sync_mode.buildMutex(src));
 						unsynchronized_nodes.insert(src);
 					}
@@ -520,7 +533,7 @@ namespace fpmas { namespace graph {
 						edge->setTargetNode(tgt);
 						tgt->linkIn(edge);
 						this->insert(tgt);
-						setDistant(tgt);
+						setDistant(tgt, api::graph::SetDistantNodeEvent<T>::IMPORT_NEW_DISTANT);
 						tgt->setMutex(sync_mode.buildMutex(tgt));
 						unsynchronized_nodes.insert(tgt);
 					}
@@ -550,7 +563,7 @@ namespace fpmas { namespace graph {
 			typename DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::NodeType*
 			DistributedGraph<DIST_GRAPH_PARAMS_SPEC>::_buildNode(NodeType* node) {
 				this->insert(node);
-				setLocal(node);
+				setLocal(node, api::graph::SetLocalNodeEvent<T>::BUILD_LOCAL);
 				location_manager.addManagedNode(node->getId(), mpi_communicator->getRank());
 				node->setMutex(sync_mode.buildMutex(node));
 				return node;
@@ -579,7 +592,7 @@ namespace fpmas { namespace graph {
 						FPMAS_C_STR(node->getId()));
 				if(this->getNodes().count(node->getId()) == 0) {
 					this->insert(node);
-					setDistant(node);
+					setDistant(node, api::graph::SetDistantNodeEvent<T>::IMPORT_NEW_DISTANT);
 					node->setMutex(sync_mode.buildMutex(node));
 					unsynchronized_nodes.insert(node);
 					return node;
@@ -699,7 +712,7 @@ namespace fpmas { namespace graph {
 					// next import.
 
 					for(auto node : exported_nodes) {
-						setDistant(node);
+						setDistant(node, api::graph::SetDistantNodeEvent<T>::EXPORT_DISTANT);
 					}
 
 					FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...", "");

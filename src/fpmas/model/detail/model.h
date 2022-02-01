@@ -223,7 +223,7 @@ namespace fpmas {
 			 * graph (the node is implicitly set \LOCAL in this case).
 			 */
 			class SetAgentLocalCallback
-				: public api::utils::Callback<AgentNode*> {
+				: public api::utils::EventCallback<api::graph::SetLocalNodeEvent<AgentPtr>> {
 					private:
 						api::model::Model& model;
 					public:
@@ -244,7 +244,7 @@ namespace fpmas {
 						 * @see fpmas::api::model::Agent::task()
 						 * @see fpmas::api::model::AgentGroup::job()
 						 */
-						void call(api::model::AgentNode* node) override;
+						void call(const EventType& event) override;
 				};
 
 			/**
@@ -255,7 +255,7 @@ namespace fpmas {
 			 * import.
 			 */
 			class SetAgentDistantCallback
-				: public api::utils::Callback<AgentNode*> {
+				: public api::utils::EventCallback<api::graph::SetDistantNodeEvent<AgentPtr>> {
 					private:
 						api::model::Model& model;
 					public:
@@ -280,7 +280,7 @@ namespace fpmas {
 						 * @see fpmas::api::model::Agent::task()
 						 * @see fpmas::api::model::AgentGroup::job()
 						 */
-						void call(api::model::AgentNode* node) override;
+						void call(const EventType& event) override;
 				};
 
 			/**

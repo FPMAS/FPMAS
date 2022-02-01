@@ -12,6 +12,82 @@
 
 namespace fpmas {namespace api {namespace graph {
 
+	template<typename T>
+		struct NodeEvent {
+			DistributedNode<T>* node;
+
+			NodeEvent(DistributedNode<T>* node) : node(node) {
+			}
+		};
+
+	template<typename T>
+		struct SetLocalNodeEvent : public NodeEvent<T> {
+			enum Context {
+				/**
+				 * Triggered when a node is set \LOCAL due to a
+				 * DistributedGraph::buildNode() operation.
+				 */
+				BUILD_LOCAL,
+				/**
+				 * Triggered when a new \LOCAL node is imported in the graph, in the
+				 * context of a DistributedGraph::distribute() operation.
+				 */
+				IMPORT_NEW_LOCAL,
+				/**
+				 * Triggered when a \LOCAL node is imported in the graph while the
+				 * corresponding \DISTANT node was already contained in the graph.
+				 * In this case, the \DISTANT node is set to \LOCAL.
+				 */
+				IMPORT_EXISTING_LOCAL,
+				/**
+				 * Can be used when the event context is unspecified or does
+				 * not falls in the other explicit contexts. Can also be useful
+				 * for tests that does not depend on the context.
+				 */
+				UNSPECIFIED
+			};
+
+			Context context;
+
+			SetLocalNodeEvent<T>(
+					DistributedNode<T>* node,
+					Context context
+					) : NodeEvent<T>(node), context(context) {
+			}
+		};
+
+	template<typename T>
+		struct SetDistantNodeEvent : public NodeEvent<T> {
+			enum Context {
+				/**
+				 * Triggered when a \DISTANT node is inserted in the graph as a source
+				 * or target node of a \DISTANT edge.
+				 */
+				IMPORT_NEW_DISTANT,
+				/**
+				 * Triggered when a \LOCAL node is exported because of a
+				 * DistributedGraph::distribute() operation, so that the \LOCAL node
+				 * becomes \DISTANT.
+				 */
+				EXPORT_DISTANT,
+				/**
+				 * Can be used when the event context is unspecified or does
+				 * not falls in the other explicit contexts. Can also be useful
+				 * for tests that does not depend on the context.
+				 */
+				UNSPECIFIED
+
+			};
+
+			Context context;
+
+			SetDistantNodeEvent<T>(
+					DistributedNode<T>* node,
+					Context context
+					) : NodeEvent<T>(node), context(context) {
+			}
+		};
+
 	/**
 	 * DistributedGraph API.
 	 *
@@ -48,9 +124,13 @@ namespace fpmas {namespace api {namespace graph {
 			using typename fpmas::api::graph::Graph<DistributedNode<T>, DistributedEdge<T>>::EdgeMap;
 
 			/**
-			 * Node callback API.
+			 * Callback API to handle SetLocalNodeEvent.
 			 */
-			typedef api::utils::Callback<DistributedNode<T>*> NodeCallback;
+			typedef api::utils::EventCallback<SetLocalNodeEvent<T>> SetLocalNodeCallback;
+			/**
+			 * Callback API to handle SetDistantNodeEvent.
+			 */
+			typedef api::utils::EventCallback<SetDistantNodeEvent<T>> SetDistantNodeCallback;
 
 		public:
 			/**
@@ -384,14 +464,14 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * @param callback set local node callback
 			 */
-			virtual void addCallOnSetLocal(NodeCallback* callback) = 0;
+			virtual void addCallOnSetLocal(SetLocalNodeCallback* callback) = 0;
 
 			/**
 			 * Current set local callbacks list.
 			 *
 			 * @return set local callbacks
 			 */
-			virtual std::vector<NodeCallback*> onSetLocalCallbacks() const = 0;
+			virtual std::vector<SetLocalNodeCallback*> onSetLocalCallbacks() const = 0;
 
 			/**
 			 * Adds a set \DISTANT callback.
@@ -405,14 +485,14 @@ namespace fpmas {namespace api {namespace graph {
 			 *
 			 * @param callback set distant node callback
 			 */
-			virtual void addCallOnSetDistant(NodeCallback* callback) = 0;
+			virtual void addCallOnSetDistant(SetDistantNodeCallback* callback) = 0;
 
 			/**
 			 * Current set distant callbacks list.
 			 *
 			 * @return set distant callbacks
 			 */
-			virtual std::vector<NodeCallback*> onSetDistantCallbacks() const = 0;
+			virtual std::vector<SetDistantNodeCallback*> onSetDistantCallbacks() const = 0;
 
 			
 			/**
