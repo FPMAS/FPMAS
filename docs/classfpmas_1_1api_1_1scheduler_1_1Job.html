@@ -88,8 +88,8 @@ Inheritance diagram for fpmas::api::scheduler::Job:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a0d2eff9ada080dc6be37ca4da2f99ed0"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">TaskIterator</a></td></tr>
-<tr class="separator:a0d2eff9ada080dc6be37ca4da2f99ed0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac80764d87f9c46a04af25e5e471f0d1c"><td class="memItemLeft" align="right" valign="top">typedef std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::const_iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#ac80764d87f9c46a04af25e5e471f0d1c">TaskIterator</a></td></tr>
+<tr class="separator:ac80764d87f9c46a04af25e5e471f0d1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -99,11 +99,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3a1175ed0ece04cc7f0ed78e6d0e521d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1700a72e63f3488cc2ddd33c423fd990"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a1700a72e63f3488cc2ddd33c423fd990">remove</a> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> &amp;task)=0</td></tr>
 <tr class="separator:a1700a72e63f3488cc2ddd33c423fd990"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd25b80fdaee362712d0c68373ba3dbb"><td class="memItemLeft" align="right" valign="top">virtual const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#abd25b80fdaee362712d0c68373ba3dbb">tasks</a> () const =0</td></tr>
-<tr class="separator:abd25b80fdaee362712d0c68373ba3dbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af97bd2f0a0fcecd53f0d80870722dcd3"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">TaskIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#af97bd2f0a0fcecd53f0d80870722dcd3">begin</a> () const =0</td></tr>
+<tr class="memitem:affd0da44f20a4ec22b0e2872b550d04d"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#affd0da44f20a4ec22b0e2872b550d04d">tasks</a> () const =0</td></tr>
+<tr class="separator:affd0da44f20a4ec22b0e2872b550d04d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af97bd2f0a0fcecd53f0d80870722dcd3"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#ac80764d87f9c46a04af25e5e471f0d1c">TaskIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#af97bd2f0a0fcecd53f0d80870722dcd3">begin</a> () const =0</td></tr>
 <tr class="separator:af97bd2f0a0fcecd53f0d80870722dcd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27b5adc38325a9f84b8e2782a8413259"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">TaskIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a27b5adc38325a9f84b8e2782a8413259">end</a> () const =0</td></tr>
+<tr class="memitem:a27b5adc38325a9f84b8e2782a8413259"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#ac80764d87f9c46a04af25e5e471f0d1c">TaskIterator</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a27b5adc38325a9f84b8e2782a8413259">end</a> () const =0</td></tr>
 <tr class="separator:a27b5adc38325a9f84b8e2782a8413259"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39a362553c50e8a25c874d9b411410a8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a39a362553c50e8a25c874d9b411410a8">setBeginTask</a> (<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> &amp;task)=0</td></tr>
 <tr class="separator:a39a362553c50e8a25c874d9b411410a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -119,14 +119,14 @@ Public Member Functions</h2></td></tr>
 <p >A <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> is a set of task that needs to be executed in any order.</p>
 <p >A begin and end task are also added for convenience. </p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a0d2eff9ada080dc6be37ca4da2f99ed0" name="a0d2eff9ada080dc6be37ca4da2f99ed0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d2eff9ada080dc6be37ca4da2f99ed0">&#9670;&nbsp;</a></span>TaskIterator</h2>
+<a id="ac80764d87f9c46a04af25e5e471f0d1c" name="ac80764d87f9c46a04af25e5e471f0d1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac80764d87f9c46a04af25e5e471f0d1c">&#9670;&nbsp;</a></span>TaskIterator</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef std::vector&lt;<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a>*&gt;::const_iterator <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">fpmas::api::scheduler::Job::TaskIterator</a></td>
+          <td class="memname">typedef std::list&lt;<a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a>*&gt;::const_iterator <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#ac80764d87f9c46a04af25e5e471f0d1c">fpmas::api::scheduler::Job::TaskIterator</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -233,8 +233,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="abd25b80fdaee362712d0c68373ba3dbb" name="abd25b80fdaee362712d0c68373ba3dbb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abd25b80fdaee362712d0c68373ba3dbb">&#9670;&nbsp;</a></span>tasks()</h2>
+<a id="affd0da44f20a4ec22b0e2872b550d04d" name="affd0da44f20a4ec22b0e2872b550d04d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#affd0da44f20a4ec22b0e2872b550d04d">&#9670;&nbsp;</a></span>tasks()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -243,7 +243,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt; &amp; fpmas::api::scheduler::Job::tasks </td>
+          <td class="memname">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt; fpmas::api::scheduler::Job::tasks </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -258,7 +258,7 @@ Public Member Functions</h2></td></tr>
 <p >Returns a reference to the internal Tasks list.</p>
 <dl class="section return"><dt>Returns</dt><dd>current tasks list </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a64457ed4997c9c4d7cb57ce0d8c7ae0d">fpmas::scheduler::Job</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1scheduler_1_1Job.html#a2c92995d12befbee0d6160535ca57bf8">fpmas::scheduler::Job</a>.</p>
 
 </div>
 </div>
@@ -272,7 +272,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">TaskIterator</a> fpmas::api::scheduler::Job::begin </td>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#ac80764d87f9c46a04af25e5e471f0d1c">TaskIterator</a> fpmas::api::scheduler::Job::begin </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -301,7 +301,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#a0d2eff9ada080dc6be37ca4da2f99ed0">TaskIterator</a> fpmas::api::scheduler::Job::end </td>
+          <td class="memname">virtual <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html#ac80764d87f9c46a04af25e5e471f0d1c">TaskIterator</a> fpmas::api::scheduler::Job::end </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>

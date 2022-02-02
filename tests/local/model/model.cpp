@@ -136,6 +136,8 @@ TEST_F(ModelTest, remove_group) {
 		}
 		MockBuildNode(MockAgent<>* agent)
 			: mock_node({0, 0}, agent), task_list({{G_1, task}}) {
+				ON_CALL(mock_node, state())
+					.WillByDefault(Return(fpmas::api::graph::LOCAL));
 				ON_CALL(*agent, node())
 					.WillByDefault(Return(&mock_node));
 				ON_CALL(mock_node, state)
@@ -175,6 +177,10 @@ TEST_F(ModelTest, remove_group) {
 	ON_CALL(*agent, groups())
 		.WillByDefault(ReturnPointee(&groups));
 	insert_node_callback->call(&mock_build_node.mock_node);
+	set_local_callback->call({
+			&mock_build_node.mock_node,
+			fpmas::api::model::SetAgentLocalEvent::BUILD_LOCAL
+			});
 
 	// Expect group_1.remove(agent)
 	// It would be more efficient to mock group_1 and group_2 but this is
@@ -238,6 +244,7 @@ class AgentGroupTest : public ::testing::Test {
 		fpmas::model::detail::InsertAgentNodeCallback insert_agent_callback {model};
 		fpmas::model::detail::EraseAgentNodeCallback erase_agent_callback {model};
 		fpmas::model::detail::SetAgentLocalCallback set_local_callback {model};
+		fpmas::model::detail::SetAgentDistantCallback set_distant_callback {model};
 
 		fpmas::api::model::GroupId id = 10;
 
@@ -663,18 +670,34 @@ TEST_F(AgentGroupTest, local_agents) {
 
 	ON_CALL(node1, state)
 		.WillByDefault(Return(LocationState::LOCAL));
+	set_local_callback.call({
+			&node1, 
+			fpmas::api::model::SetAgentLocalEvent::IMPORT_NEW_LOCAL
+			});
 	ON_CALL(node2, state)
 		.WillByDefault(Return(LocationState::LOCAL));
+	set_local_callback.call({
+			&node2, 
+			fpmas::api::model::SetAgentLocalEvent::IMPORT_NEW_LOCAL
+			});
 
 	ASSERT_THAT(agent_group.localAgents(), UnorderedElementsAre(&agent1, &agent2));
 
 	ON_CALL(node1, state)
 		.WillByDefault(Return(LocationState::DISTANT));
+	set_distant_callback.call({
+			&node1,
+			fpmas::api::model::SetAgentDistantEvent::EXPORT_DISTANT
+			});
 
 	ASSERT_THAT(agent_group.localAgents(), ElementsAre(&agent2));
 
 	ON_CALL(node2, state)
 		.WillByDefault(Return(LocationState::DISTANT));
+	set_distant_callback.call({
+			&node2,
+			fpmas::api::model::SetAgentDistantEvent::EXPORT_DISTANT
+			});
 
 	ASSERT_THAT(agent_group.localAgents(), IsEmpty());
 
@@ -697,18 +720,34 @@ TEST_F(AgentGroupTest, distant_agents) {
 
 	ON_CALL(node1, state)
 		.WillByDefault(Return(LocationState::DISTANT));
+	set_distant_callback.call({
+			&node1,
+			fpmas::api::model::SetAgentDistantEvent::IMPORT_NEW_DISTANT
+			});
 	ON_CALL(node2, state)
 		.WillByDefault(Return(LocationState::DISTANT));
+	set_distant_callback.call({
+			&node2,
+			fpmas::api::model::SetAgentDistantEvent::IMPORT_NEW_DISTANT
+			});
 
 	ASSERT_THAT(agent_group.distantAgents(), UnorderedElementsAre(&agent1, &agent2));
 
 	ON_CALL(node1, state)
 		.WillByDefault(Return(LocationState::LOCAL));
+	set_local_callback.call({
+			&node1, 
+			fpmas::api::model::SetAgentLocalEvent::IMPORT_NEW_LOCAL
+			});
 
 	ASSERT_THAT(agent_group.distantAgents(), ElementsAre(&agent2));
 
 	ON_CALL(node2, state)
 		.WillByDefault(Return(LocationState::LOCAL));
+	set_local_callback.call({
+			&node2, 
+			fpmas::api::model::SetAgentLocalEvent::IMPORT_NEW_LOCAL
+			});
 
 	ASSERT_THAT(agent_group.distantAgents(), IsEmpty());
 

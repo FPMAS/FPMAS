@@ -21,7 +21,7 @@ namespace fpmas { namespace runtime {
 
 	void Runtime::execute(const api::scheduler::Job &job) {
 		job.getBeginTask().run();
-		std::vector<api::scheduler::Task*> tasks = job.tasks();
+		std::vector<api::scheduler::Task*> tasks = {job.begin(), job.end()};
 		std::shuffle(tasks.begin(), tasks.end(), rd);
 		for(api::scheduler::Task* task : tasks) {
 			task->run();

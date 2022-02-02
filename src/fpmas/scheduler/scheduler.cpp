@@ -36,17 +36,15 @@ namespace fpmas { namespace scheduler {
 	JID Job::id() const {return _id;}
 
 	void Job::add(api::scheduler::Task& task) {
-		_tasks.push_back(&task);
+		task.setJobPos(_id, _tasks.insert(_tasks.end(), &task));
 	}
 
 	void Job::remove(api::scheduler::Task& task) {
-		auto removed = std::remove(_tasks.begin(), _tasks.end(), &task);
-		if(removed != _tasks.end())
-			_tasks.erase(removed);
+		_tasks.erase(task.getJobPos(_id));
 	}
 
-	const std::vector<api::scheduler::Task*>& Job::tasks() const {
-		return _tasks;
+	std::vector<api::scheduler::Task*> Job::tasks() const {
+		return {_tasks.begin(), _tasks.end()};
 	}
 
 	void Job::setBeginTask(api::scheduler::Task& task) {

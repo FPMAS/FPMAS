@@ -92,14 +92,13 @@ class LocationManagerIntegrationTest : public ::testing::Test {
 TEST_F(LocationManagerIntegrationTest, location_updates) {
 	for(int i = 0; i < SEQUENCE_COUNT; i++) {
 		{ ::testing::InSequence s;
-		EXPECT_CALL(sync_linker, synchronize());
-		EXPECT_CALL(data_sync, synchronize());
+			EXPECT_CALL(sync_linker, synchronize());
+			EXPECT_CALL(data_sync, synchronize());
 		}
 		generatePartition(i);
 
-		FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "Dist %i", i);
 		graph.distribute(partition);
-		FPMAS_LOGD(graph.getMpiCommunicator().getRank(), "TEST", "Dist %i done", i);
+
 		checkPartition(i);
 	}
 }

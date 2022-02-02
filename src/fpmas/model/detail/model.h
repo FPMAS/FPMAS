@@ -41,7 +41,7 @@ namespace fpmas {
 			/**
 			 * api::model::AgentTask implementation.
 			 */
-			class AgentTaskBase : public api::model::AgentTask {
+			class AgentTaskBase : public scheduler::TaskBase<api::model::AgentTask> {
 				protected:
 					/**
 					 * Internal agent pointer.
@@ -124,7 +124,7 @@ namespace fpmas {
 			 * Concretely, this means that the simulation Graph is synchronized at the
 			 * end of each \AgentGroup execution.
 			 */
-			class SynchronizeGraphTask : public api::scheduler::Task {
+			class SynchronizeGraphTask : public scheduler::TaskBase<api::scheduler::Task> {
 				private:
 					api::model::AgentGraph& agent_graph;
 				public:
@@ -238,13 +238,13 @@ namespace fpmas {
 						 * Schedules the associated agent's task to be executed within
 						 * its \AgentGroup's job.
 						 *
-						 * @param node \AgentNode to set \LOCAL
+						 * @param event event to handle
 						 *
 						 * @see \AgentTask
 						 * @see fpmas::api::model::Agent::task()
 						 * @see fpmas::api::model::AgentGroup::job()
 						 */
-						void call(const EventType& event) override;
+						void call(const api::graph::SetLocalNodeEvent<AgentPtr>& event) override;
 				};
 
 			/**
@@ -274,13 +274,13 @@ namespace fpmas {
 						 * **must not** be executed, since only \LOCAL agents are
 						 * assumed to be executed by the local process.
 						 *
-						 * @param node \AgentNode to set \DISTANT
+						 * @param event event to handle 
 						 *
 						 * @see \AgentTask
 						 * @see fpmas::api::model::Agent::task()
 						 * @see fpmas::api::model::AgentGroup::job()
 						 */
-						void call(const EventType& event) override;
+						void call(const api::graph::SetDistantNodeEvent<AgentPtr>& event) override;
 				};
 
 			/**
@@ -307,7 +307,7 @@ namespace fpmas {
 			 *
 			 * @see api::model::AgentGraph::balance()
 			 */
-			class LoadBalancingTask : public api::scheduler::Task {
+			class LoadBalancingTask : public scheduler::TaskBase<api::scheduler::Task> {
 				public:
 					/**
 					 * Agent node map.

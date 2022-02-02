@@ -139,6 +139,14 @@ Typedefs</h2></td></tr>
 <tr class="separator:ad5477de8442103a77a5d09703fbe1366"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf7ec99f5c6cefadbfe4942abff58a5f"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#acf7ec99f5c6cefadbfe4942abff58a5f">AgentGraph</a></td></tr>
 <tr class="separator:acf7ec99f5c6cefadbfe4942abff58a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a04d5a3474ddc7cca0c6ec92a6fe7ad2d"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1SetLocalNodeEvent.html">api::graph::SetLocalNodeEvent</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a04d5a3474ddc7cca0c6ec92a6fe7ad2d">SetAgentLocalEvent</a></td></tr>
+<tr class="separator:a04d5a3474ddc7cca0c6ec92a6fe7ad2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed6d02d568768acb38f68c286b610cce"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;::SetLocalNodeCallback&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#aed6d02d568768acb38f68c286b610cce">SetAgentLocalCallback</a></td></tr>
+<tr class="separator:aed6d02d568768acb38f68c286b610cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6c36e4db273f207e9e8b16c94a74e4c"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1SetDistantNodeEvent.html">api::graph::SetDistantNodeEvent</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#ae6c36e4db273f207e9e8b16c94a74e4c">SetAgentDistantEvent</a></td></tr>
+<tr class="separator:ae6c36e4db273f207e9e8b16c94a74e4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa67f829b9fc86741b1e1561e0be908cc"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a> &gt;::SetDistantNodeCallback&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#aa67f829b9fc86741b1e1561e0be908cc">SetAgentDistantCallback</a></td></tr>
+<tr class="separator:aa67f829b9fc86741b1e1561e0be908cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a21595fa9ac22b3afe6da9f2b1c46e13b"><td class="memItemLeft" align="right" valign="top">typedef int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a21595fa9ac22b3afe6da9f2b1c46e13b">GroupId</a></td></tr>
 <tr class="separator:a21595fa9ac22b3afe6da9f2b1c46e13b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7da0ccdbfe2ecfca12aec5d1bfbb156c"><td class="memItemLeft" align="right" valign="top">typedef std::type_index&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a7da0ccdbfe2ecfca12aec5d1bfbb156c">TypeId</a></td></tr>
@@ -224,6 +232,66 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p >AgentGraph type. </p>
+
+</div>
+</div>
+<a id="a04d5a3474ddc7cca0c6ec92a6fe7ad2d" name="a04d5a3474ddc7cca0c6ec92a6fe7ad2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04d5a3474ddc7cca0c6ec92a6fe7ad2d">&#9670;&nbsp;</a></span>SetAgentLocalEvent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1SetLocalNodeEvent.html">api::graph::SetLocalNodeEvent</a>&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&gt; <a class="el" href="namespacefpmas_1_1api_1_1model.html#a04d5a3474ddc7cca0c6ec92a6fe7ad2d">fpmas::api::model::SetAgentLocalEvent</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Event triggered when an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>. </p>
+
+</div>
+</div>
+<a id="aed6d02d568768acb38f68c286b610cce" name="aed6d02d568768acb38f68c286b610cce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed6d02d568768acb38f68c286b610cce">&#9670;&nbsp;</a></span>SetAgentLocalCallback</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&gt;::SetLocalNodeCallback <a class="el" href="namespacefpmas_1_1api_1_1model.html#aed6d02d568768acb38f68c286b610cce">fpmas::api::model::SetAgentLocalCallback</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Callback API used to handle SetAgentLocalEvent instances. </p>
+
+</div>
+</div>
+<a id="ae6c36e4db273f207e9e8b16c94a74e4c" name="ae6c36e4db273f207e9e8b16c94a74e4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6c36e4db273f207e9e8b16c94a74e4c">&#9670;&nbsp;</a></span>SetAgentDistantEvent</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="structfpmas_1_1api_1_1graph_1_1SetDistantNodeEvent.html">api::graph::SetDistantNodeEvent</a>&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&gt; <a class="el" href="namespacefpmas_1_1api_1_1model.html#ae6c36e4db273f207e9e8b16c94a74e4c">fpmas::api::model::SetAgentDistantEvent</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Event triggered when an <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> is set <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a>. </p>
+
+</div>
+</div>
+<a id="aa67f829b9fc86741b1e1561e0be908cc" name="aa67f829b9fc86741b1e1561e0be908cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa67f829b9fc86741b1e1561e0be908cc">&#9670;&nbsp;</a></span>SetAgentDistantCallback</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt;<a class="el" href="classfpmas_1_1api_1_1model_1_1AgentPtr.html">AgentPtr</a>&gt;::SetDistantNodeCallback <a class="el" href="namespacefpmas_1_1api_1_1model.html#aa67f829b9fc86741b1e1561e0be908cc">fpmas::api::model::SetAgentDistantCallback</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Callback API used to handle SetAgentDistantEvent instances. </p>
 
 </div>
 </div>

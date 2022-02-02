@@ -12,31 +12,55 @@
 
 namespace fpmas {namespace api {namespace graph {
 
+	/**
+	 * Node related event.
+	 */
 	template<typename T>
 		struct NodeEvent {
+			/**
+			 * Node concerned by the event.
+			 */
 			DistributedNode<T>* node;
 
+			/**
+			 * NodeEvent constructor.
+			 */
 			NodeEvent(DistributedNode<T>* node) : node(node) {
 			}
 		};
 
+	/**
+	 * Event triggered when a node is set \LOCAL within a DistributedGraph.
+	 *
+	 * Such event can be handled with callbacks provided to
+	 * DistributedGraph::addCallOnSetLocal().
+	 *
+	 * In addition to the node instance, information about the context of the
+	 * event are provided.
+	 */
 	template<typename T>
 		struct SetLocalNodeEvent : public NodeEvent<T> {
+			/**
+			 * Specifies the cause of the set \LOCAL operation.
+			 */
 			enum Context {
 				/**
-				 * Triggered when a node is set \LOCAL due to a
+				 * Used when a node is set \LOCAL due to a
 				 * DistributedGraph::buildNode() operation.
 				 */
 				BUILD_LOCAL,
 				/**
-				 * Triggered when a new \LOCAL node is imported in the graph, in the
+				 * Used when a new \LOCAL node is imported in the graph, in the
 				 * context of a DistributedGraph::distribute() operation.
 				 */
 				IMPORT_NEW_LOCAL,
 				/**
-				 * Triggered when a \LOCAL node is imported in the graph while the
-				 * corresponding \DISTANT node was already contained in the graph.
-				 * In this case, the \DISTANT node is set to \LOCAL.
+				 * Used when a \LOCAL node is imported in the graph while the
+				 * corresponding \DISTANT node was already contained in the
+				 * graph. In this case, the existing \DISTANT node is set to
+				 * \LOCAL. The node pointer contained in the SetLocalNodeEvent
+				 * references the existing node, after its weight and data as
+				 * been updated from the imported node.
 				 */
 				IMPORT_EXISTING_LOCAL,
 				/**
@@ -47,8 +71,14 @@ namespace fpmas {namespace api {namespace graph {
 				UNSPECIFIED
 			};
 
+			/**
+			 * Event context.
+			 */
 			Context context;
 
+			/**
+			 * SetLocalNodeEvent constructor.
+			 */
 			SetLocalNodeEvent<T>(
 					DistributedNode<T>* node,
 					Context context
@@ -56,16 +86,28 @@ namespace fpmas {namespace api {namespace graph {
 			}
 		};
 
+	/**
+	 * Event triggered when a node is set \DISTANT within a DistributedGraph.
+	 *
+	 * Such event can be handled with callbacks provided to
+	 * DistributedGraph::addCallOnSetDistant().
+	 *
+	 * In addition to the node instance, information about the context of the
+	 * event are provided.
+	 */
 	template<typename T>
 		struct SetDistantNodeEvent : public NodeEvent<T> {
+			/**
+			 * Specifies the cause of the set \DISTANT operation.
+			 */
 			enum Context {
 				/**
-				 * Triggered when a \DISTANT node is inserted in the graph as a source
-				 * or target node of a \DISTANT edge.
+				 * Used when a \DISTANT node is inserted in the graph as a
+				 * source or target node of a \DISTANT edge.
 				 */
 				IMPORT_NEW_DISTANT,
 				/**
-				 * Triggered when a \LOCAL node is exported because of a
+				 * Used when a \LOCAL node is exported because of a
 				 * DistributedGraph::distribute() operation, so that the \LOCAL node
 				 * becomes \DISTANT.
 				 */
@@ -79,8 +121,14 @@ namespace fpmas {namespace api {namespace graph {
 
 			};
 
+			/**
+			 * Event context.
+			 */
 			Context context;
 
+			/**
+			 * SetDistantNodeEvent constructor.
+			 */
 			SetDistantNodeEvent<T>(
 					DistributedNode<T>* node,
 					Context context

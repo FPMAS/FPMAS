@@ -1,4 +1,5 @@
 <map id="fpmas::scheduler::detail::LambdaTask" name="fpmas::scheduler::detail::LambdaTask">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,167,136"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="13,5,159,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="19,184,180,225"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1scheduler_1_1TaskBase.html" title=" " alt="" coords="5,95,193,136"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="26,5,173,47"/>
 </map>

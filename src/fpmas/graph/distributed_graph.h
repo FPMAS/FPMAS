@@ -65,6 +65,7 @@ namespace fpmas { namespace graph {
 				 * DistributedEdge API.
 				 */
 				typedef api::graph::DistributedEdge<T> EdgeType;
+
 				using typename api::graph::DistributedGraph<T>::NodeMap;
 				using typename api::graph::DistributedGraph<T>::SetLocalNodeCallback;
 				using typename api::graph::DistributedGraph<T>::SetDistantNodeCallback;
@@ -670,11 +671,13 @@ namespace fpmas { namespace graph {
 					std::unordered_map<int, std::set<DistributedId>> edge_ids_to_export;
 					std::unordered_map<int, std::vector<EdgePtrWrapper<T>>> edge_export_map;
 					for(auto item : partition) {
-						if(this->getNodes().count(item.first) > 0) {
-							if(item.second != mpi_communicator->getRank()) {
+						if(item.second != mpi_communicator->getRank()) {
+							auto node = this->getNodes().find(item.first);
+							if(node != this->getNodes().end()
+									&& node->second->state() == api::graph::LOCAL) {
 								FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH",
 										"Exporting node %s to %i", FPMAS_C_STR(item.first), item.second);
-								auto node_to_export = this->getNode(item.first);
+								auto node_to_export = node->second;
 								exported_nodes.push_back(node_to_export);
 								node_export_map[item.second].emplace_back(node_to_export);
 								for(auto edge :  node_to_export->getIncomingEdges()) {

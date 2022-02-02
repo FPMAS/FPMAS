@@ -81,18 +81,21 @@ Inheritance diagram for fpmas::api::scheduler::Task:</div>
 <div class="center"><img src="classfpmas_1_1api_1_1scheduler_1_1Task__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1scheduler_1_1Task_inherit__map" alt="Inheritance graph"/></div>
 <map name="afpmas_1_1api_1_1scheduler_1_1Task_inherit__map" id="afpmas_1_1api_1_1scheduler_1_1Task_inherit__map">
 <area shape="rect" title=" " alt="" coords="5,221,152,263"/>
-<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="210,39,373,80"/>
-<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="218,104,365,145"/>
-<area shape="rect" href="classfpmas_1_1io_1_1OutputTask.html" title=" " alt="" coords="216,170,367,197"/>
-<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1LoadBalancingTask.html" title=" " alt="" coords="220,221,363,263"/>
-<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1SynchronizeGraphTask.html" title=" " alt="" coords="209,287,374,328"/>
-<area shape="rect" href="classfpmas_1_1scheduler_1_1VoidTask.html" title=" " alt="" coords="200,353,383,379"/>
-<area shape="rect" href="classfpmas_1_1scheduler_1_1detail_1_1LambdaTask.html" title=" " alt="" coords="211,404,372,445"/>
-<area shape="rect" href="classfpmas_1_1api_1_1model_1_1AgentTask.html" title=" " alt="" coords="451,39,586,80"/>
-<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1AgentTaskBase.html" title=" " alt="" coords="655,39,795,80"/>
-<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1AgentBehaviorTask.html" title=" " alt="" coords="843,5,985,47"/>
-<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1AgentTask.html" title=" " alt="" coords="844,71,984,112"/>
-<area shape="rect" href="classfpmas_1_1scheduler_1_1LambdaTask.html" title=" " alt="" coords="431,104,607,145"/>
+<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="213,97,375,139"/>
+<area shape="rect" href="classfpmas_1_1scheduler_1_1TaskBase.html" title=" " alt="" coords="200,221,388,263"/>
+<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="221,345,367,387"/>
+<area shape="rect" href="classfpmas_1_1api_1_1model_1_1AgentTask.html" title=" " alt="" coords="482,39,617,80"/>
+<area shape="rect" href="classfpmas_1_1scheduler_1_1TaskBase.html" title=" " alt="" coords="711,39,899,80"/>
+<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1AgentTaskBase.html" title=" " alt="" coords="947,39,1087,80"/>
+<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1AgentBehaviorTask.html" title=" " alt="" coords="1135,5,1277,47"/>
+<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1AgentTask.html" title=" " alt="" coords="1136,71,1276,112"/>
+<area shape="rect" href="classfpmas_1_1io_1_1OutputTask.html" title=" " alt="" coords="474,105,625,131"/>
+<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1LoadBalancingTask.html" title=" " alt="" coords="478,156,621,197"/>
+<area shape="rect" href="classfpmas_1_1model_1_1detail_1_1SynchronizeGraphTask.html" title=" " alt="" coords="467,221,632,263"/>
+<area shape="rect" href="classfpmas_1_1scheduler_1_1VoidTask.html" title=" " alt="" coords="457,287,641,314"/>
+<area shape="rect" href="classfpmas_1_1scheduler_1_1detail_1_1LambdaTask.html" title=" " alt="" coords="469,339,630,380"/>
+<area shape="rect" href="classfpmas_1_1scheduler_1_1TaskBase.html" title=" " alt="" coords="436,404,663,445"/>
+<area shape="rect" href="classfpmas_1_1scheduler_1_1LambdaTask.html" title=" " alt="" coords="717,404,893,445"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -100,6 +103,10 @@ Inheritance diagram for fpmas::api::scheduler::Task:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acf925d631a63900965ea96688ea93061"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#acf925d631a63900965ea96688ea93061">run</a> ()=0</td></tr>
 <tr class="separator:acf925d631a63900965ea96688ea93061"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c8bf80b8d7504a7fa0b4401986aaf2b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#a6c8bf80b8d7504a7fa0b4401986aaf2b">setJobPos</a> (<a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ac26320b5421570e51865ab054ac369ed">JID</a> job_id, std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::iterator pos)=0</td></tr>
+<tr class="separator:a6c8bf80b8d7504a7fa0b4401986aaf2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a136fbe9fc5e20eb0b0b4879c5643b4cd"><td class="memItemLeft" align="right" valign="top">virtual std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#a136fbe9fc5e20eb0b0b4879c5643b4cd">getJobPos</a> (<a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ac26320b5421570e51865ab054ac369ed">JID</a> job_id) const =0</td></tr>
+<tr class="separator:a136fbe9fc5e20eb0b0b4879c5643b4cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> API. </p>
@@ -129,6 +136,85 @@ Public Member Functions</h2></td></tr>
 <p >Runs the task. </p>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1io_1_1OutputTask.html#a83449a38add080b0c684ee65c836910a">fpmas::io::OutputTask</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentTask.html#a18b55e14265602f552f63da78111011b">fpmas::model::detail::AgentTask</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBehaviorTask.html#aede4f22957f83a18d7042a9a006370d4">fpmas::model::detail::AgentBehaviorTask</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1SynchronizeGraphTask.html#a83d7efc6f34afbada6121f5b44d213b1">fpmas::model::detail::SynchronizeGraphTask</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1LoadBalancingTask.html#a569312a0cd3f4a00e989d9dc96cde143">fpmas::model::detail::LoadBalancingTask</a>, <a class="el" href="classfpmas_1_1scheduler_1_1VoidTask.html#a983475529c0dea92428d054ff395da73">fpmas::scheduler::VoidTask</a>, <a class="el" href="classfpmas_1_1scheduler_1_1detail_1_1LambdaTask.html#ae39fb347b182eba21f0ec3291b4ff700">fpmas::scheduler::detail::LambdaTask</a>, and <a class="el" href="classfpmas_1_1scheduler_1_1LambdaTask.html#ac692db5e4260b38ad07a4cdad1286101">fpmas::scheduler::LambdaTask&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a6c8bf80b8d7504a7fa0b4401986aaf2b" name="a6c8bf80b8d7504a7fa0b4401986aaf2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c8bf80b8d7504a7fa0b4401986aaf2b">&#9670;&nbsp;</a></span>setJobPos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::scheduler::Task::setJobPos </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ac26320b5421570e51865ab054ac369ed">JID</a>&#160;</td>
+          <td class="paramname"><em>job_id</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::iterator&#160;</td>
+          <td class="paramname"><em>pos</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sets a list position associated to the <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> represented by <code>job_id</code>, that can be retrieved with <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#a136fbe9fc5e20eb0b0b4879c5643b4cd">getJobPos()</a>.</p>
+<p >There is no specific requirement about those methods, that can be used or not. However, <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> implementations can take advantage of this feature to optimize <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> insertion and removal in constant time, using an std::list as an internal data structure.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">job_id</td><td><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> ID </td></tr>
+    <tr><td class="paramname">pos</td><td>list iterator that references the current <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> within the job associated to <code>job_id</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a136fbe9fc5e20eb0b0b4879c5643b4cd" name="a136fbe9fc5e20eb0b0b4879c5643b4cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a136fbe9fc5e20eb0b0b4879c5643b4cd">&#9670;&nbsp;</a></span>getJobPos()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::iterator fpmas::api::scheduler::Task::getJobPos </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ac26320b5421570e51865ab054ac369ed">JID</a>&#160;</td>
+          <td class="paramname"><em>job_id</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Retrieves a list position that was previously stored using <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#a6c8bf80b8d7504a7fa0b4401986aaf2b">setJobPos()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">job_id</td><td><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Job.html">Job</a> ID </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>list iterator that references the current <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> within the job associated to <code>job_id</code> </dd></dl>
 
 </div>
 </div>

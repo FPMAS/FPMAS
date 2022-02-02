@@ -144,7 +144,7 @@ namespace fpmas { namespace model {
 	template<typename CellType>
 		class DistributedMoveAlgorithm : public api::model::DistributedMoveAlgorithm<CellType> {
 			private:
-				class AlgoTask : public api::scheduler::Task {
+				class AlgoTask : public scheduler::TaskBase<api::scheduler::Task> {
 					private:
 						typedef api::model::CellBehavior CellBehavior;
 						typedef api::model::SpatialAgentBehavior AgentBehavior;

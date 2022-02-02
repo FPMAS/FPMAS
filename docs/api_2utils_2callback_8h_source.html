@@ -81,11 +81,18 @@ $(function() {
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno"><a class="line" href="classfpmas_1_1api_1_1utils_1_1Callback.html#a88976cea6d42ec35565aa077cbc84ecc">   23</a></span>            <span class="keyword">virtual</span> <span class="keywordtype">void</span> <a class="code hl_function" href="classfpmas_1_1api_1_1utils_1_1Callback.html#a88976cea6d42ec35565aa077cbc84ecc">call</a>(Args... args) = 0;</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>            <span class="keyword">virtual</span> <a class="code hl_class" href="classfpmas_1_1api_1_1utils_1_1Callback.html">~Callback</a>() {}</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>    };</div>
-<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>}}}</div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> Event&gt;</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno"><a class="line" href="structfpmas_1_1api_1_1utils_1_1EventCallback.html">   33</a></span>        <span class="keyword">struct </span><a class="code hl_struct" href="structfpmas_1_1api_1_1utils_1_1EventCallback.html">EventCallback</a> : <span class="keyword">public</span> <a class="code hl_class" href="classfpmas_1_1api_1_1utils_1_1Callback.html">Callback</a>&lt;const Event&amp;&gt; {</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno"><a class="line" href="structfpmas_1_1api_1_1utils_1_1EventCallback.html#a5e8df94504685f9e9ea9b75d98b51750">   37</a></span>            <span class="keyword">typedef</span> Event <a class="code hl_typedef" href="structfpmas_1_1api_1_1utils_1_1EventCallback.html#a5e8df94504685f9e9ea9b75d98b51750">EventType</a>;</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>        };</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>}}}</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1utils_1_1Callback_html"><div class="ttname"><a href="classfpmas_1_1api_1_1utils_1_1Callback.html">fpmas::api::utils::Callback</a></div><div class="ttdef"><b>Definition:</b> callback.h:16</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1utils_1_1Callback_html_a88976cea6d42ec35565aa077cbc84ecc"><div class="ttname"><a href="classfpmas_1_1api_1_1utils_1_1Callback.html#a88976cea6d42ec35565aa077cbc84ecc">fpmas::api::utils::Callback::call</a></div><div class="ttdeci">virtual void call(Args... args)=0</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> fpmas.cpp:3</div></div>
+<div class="ttc" id="astructfpmas_1_1api_1_1utils_1_1EventCallback_html"><div class="ttname"><a href="structfpmas_1_1api_1_1utils_1_1EventCallback.html">fpmas::api::utils::EventCallback</a></div><div class="ttdef"><b>Definition:</b> callback.h:33</div></div>
+<div class="ttc" id="astructfpmas_1_1api_1_1utils_1_1EventCallback_html_a5e8df94504685f9e9ea9b75d98b51750"><div class="ttname"><a href="structfpmas_1_1api_1_1utils_1_1EventCallback.html#a5e8df94504685f9e9ea9b75d98b51750">fpmas::api::utils::EventCallback::EventType</a></div><div class="ttdeci">Event EventType</div><div class="ttdef"><b>Definition:</b> callback.h:37</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -80,9 +80,10 @@ Inheritance diagram for fpmas::scheduler::LambdaTask&lt; T &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1scheduler_1_1LambdaTask__inherit__graph.png" border="0" usemap="#afpmas_1_1scheduler_1_1LambdaTask_3_01T_01_4_inherit__map" alt="Inheritance graph"/></div>
 <map name="afpmas_1_1scheduler_1_1LambdaTask_3_01T_01_4_inherit__map" id="afpmas_1_1scheduler_1_1LambdaTask_3_01T_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,184,181,225"/>
-<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="20,95,167,136"/>
-<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="20,5,167,47"/>
+<area shape="rect" title=" " alt="" coords="31,273,207,315"/>
+<area shape="rect" href="classfpmas_1_1scheduler_1_1TaskBase.html" title=" " alt="" coords="5,184,232,225"/>
+<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="45,95,192,136"/>
+<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="45,5,192,47"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -90,9 +91,10 @@ Collaboration diagram for fpmas::scheduler::LambdaTask&lt; T &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1scheduler_1_1LambdaTask__coll__graph.png" border="0" usemap="#afpmas_1_1scheduler_1_1LambdaTask_3_01T_01_4_coll__map" alt="Collaboration graph"/></div>
 <map name="afpmas_1_1scheduler_1_1LambdaTask_3_01T_01_4_coll__map" id="afpmas_1_1scheduler_1_1LambdaTask_3_01T_01_4_coll__map">
-<area shape="rect" title=" " alt="" coords="5,184,181,225"/>
-<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="20,95,167,136"/>
-<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="20,5,167,47"/>
+<area shape="rect" title=" " alt="" coords="31,273,207,315"/>
+<area shape="rect" href="classfpmas_1_1scheduler_1_1TaskBase.html" title=" " alt="" coords="5,184,232,225"/>
+<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="45,95,192,136"/>
+<area shape="rect" href="classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="45,5,192,47"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -105,10 +107,20 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5b7c634113e71b9286ca167c322aabca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac692db5e4260b38ad07a4cdad1286101"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1LambdaTask.html#ac692db5e4260b38ad07a4cdad1286101">run</a> () override</td></tr>
 <tr class="separator:ac692db5e4260b38ad07a4cdad1286101"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classfpmas_1_1scheduler_1_1TaskBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1scheduler_1_1TaskBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1scheduler_1_1TaskBase.html">fpmas::scheduler::TaskBase&lt; api::scheduler::NodeTask&lt; T &gt; &gt;</a></td></tr>
+<tr class="memitem:aa77bc96aee36ebd9ba42243fc30bc466 inherit pub_methods_classfpmas_1_1scheduler_1_1TaskBase"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1TaskBase.html#aa77bc96aee36ebd9ba42243fc30bc466">setJobPos</a> (JID job_id, std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">fpmas::api::scheduler::Task</a> * &gt;::iterator pos) override</td></tr>
+<tr class="separator:aa77bc96aee36ebd9ba42243fc30bc466 inherit pub_methods_classfpmas_1_1scheduler_1_1TaskBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f0c55e9942a0219a87a21f3af991845 inherit pub_methods_classfpmas_1_1scheduler_1_1TaskBase"><td class="memItemLeft" align="right" valign="top">std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">api::scheduler::Task</a> * &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1scheduler_1_1TaskBase.html#a7f0c55e9942a0219a87a21f3af991845">getJobPos</a> (JID job_id) const override</td></tr>
+<tr class="separator:a7f0c55e9942a0219a87a21f3af991845 inherit pub_methods_classfpmas_1_1scheduler_1_1TaskBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a597995d7cc377250ccee873b173d7683"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">api::graph::DistributedNode</a>&lt; T &gt; *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1NodeTask.html#a597995d7cc377250ccee873b173d7683">node</a> ()=0</td></tr>
 <tr class="separator:a597995d7cc377250ccee873b173d7683"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acf925d631a63900965ea96688ea93061"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#acf925d631a63900965ea96688ea93061">run</a> ()=0</td></tr>
-<tr class="separator:acf925d631a63900965ea96688ea93061"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="inherit_header pub_methods_classfpmas_1_1api_1_1scheduler_1_1Task"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1api_1_1scheduler_1_1Task')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">fpmas::api::scheduler::Task</a></td></tr>
+<tr class="memitem:acf925d631a63900965ea96688ea93061 inherit pub_methods_classfpmas_1_1api_1_1scheduler_1_1Task"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#acf925d631a63900965ea96688ea93061">run</a> ()=0</td></tr>
+<tr class="separator:acf925d631a63900965ea96688ea93061 inherit pub_methods_classfpmas_1_1api_1_1scheduler_1_1Task"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c8bf80b8d7504a7fa0b4401986aaf2b inherit pub_methods_classfpmas_1_1api_1_1scheduler_1_1Task"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#a6c8bf80b8d7504a7fa0b4401986aaf2b">setJobPos</a> (<a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ac26320b5421570e51865ab054ac369ed">JID</a> job_id, std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::iterator pos)=0</td></tr>
+<tr class="separator:a6c8bf80b8d7504a7fa0b4401986aaf2b inherit pub_methods_classfpmas_1_1api_1_1scheduler_1_1Task"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a136fbe9fc5e20eb0b0b4879c5643b4cd inherit pub_methods_classfpmas_1_1api_1_1scheduler_1_1Task"><td class="memItemLeft" align="right" valign="top">virtual std::list&lt; <a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html">Task</a> * &gt;::iterator&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1scheduler_1_1Task.html#a136fbe9fc5e20eb0b0b4879c5643b4cd">getJobPos</a> (<a class="el" href="namespacefpmas_1_1api_1_1scheduler.html#ac26320b5421570e51865ab054ac369ed">JID</a> job_id) const =0</td></tr>
+<tr class="separator:a136fbe9fc5e20eb0b0b4879c5643b4cd inherit pub_methods_classfpmas_1_1api_1_1scheduler_1_1Task"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />

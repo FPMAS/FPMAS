@@ -541,7 +541,7 @@ namespace fpmas { namespace io {
 	/**
 	 * Tasks implementation used to output some data.
 	 */
-	class OutputTask : public api::scheduler::Task {
+	class OutputTask : public scheduler::TaskBase<api::scheduler::Task> {
 		private:
 			api::io::Output& output;
 		public:

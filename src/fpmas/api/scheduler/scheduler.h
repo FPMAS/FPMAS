@@ -5,6 +5,8 @@
  * Scheduler API
  */
 
+#include <list>
+
 #include "fpmas/api/graph/distributed_node.h"
 
 namespace fpmas { namespace api { namespace scheduler {
@@ -77,6 +79,32 @@ namespace fpmas { namespace api { namespace scheduler {
 			 * Runs the task.
 			 */
 			virtual void run() = 0;
+
+			/**
+			 * Sets a list position associated to the Job represented by
+			 * `job_id`, that can be retrieved with getJobPos().
+			 *
+			 * There is no specific requirement about those methods, that can
+			 * be used or not. However, Job implementations can take advantage
+			 * of this feature to optimize Task insertion and removal in
+			 * constant time, using an std::list as an internal data structure.
+			 *
+			 * @param job_id Job ID
+			 * @param pos list iterator that references the current Task within
+			 * the job associated to `job_id`
+			 */
+			virtual void setJobPos(JID job_id, std::list<Task*>::iterator pos) = 0;
+
+			/**
+			 * Retrieves a list position that was previously stored using
+			 * setJobPos().
+			 *
+			 * @param job_id Job ID
+			 * @return list iterator that references the current Task within
+			 * the job associated to `job_id`
+			 */
+			virtual std::list<Task*>::iterator getJobPos(JID job_id) const = 0;
+
 			virtual ~Task() {}
 	};
 
@@ -109,7 +137,7 @@ namespace fpmas { namespace api { namespace scheduler {
 			/**
 			 * Type used to iterate on a Job, yielding job's tasks.
 			 */
-			typedef std::vector<Task*>::const_iterator TaskIterator;
+			typedef std::list<Task*>::const_iterator TaskIterator;
 
 			/**
 			 * Job id.
@@ -132,7 +160,7 @@ namespace fpmas { namespace api { namespace scheduler {
 			 *
 			 * @return current tasks list
 			 */
-			virtual const std::vector<Task*>& tasks() const = 0;
+			virtual std::vector<Task*> tasks() const = 0;
 			/**
 			 * Returns a begin iterator to the job's tasks.
 			 *

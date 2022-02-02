@@ -1,3 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="5,5,140,47"/>
+<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1random_1_1Generator.html" title=" " alt="" coords="5,79,161,135"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1random_1_1UniformRandomBitGenerator.html" title=" " alt="" coords="209,5,421,61"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1random_1_1DistributedGenerator.html" title=" " alt="" coords="225,86,405,127"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1random_1_1UniformRandomBitGenerator.html" title=" " alt="" coords="209,151,421,193"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1random_1_1Generator_3_01std_1_1random__device_01_4.html" title=" " alt="" coords="469,13,644,54"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1random_1_1DistributedGenerator_3_01random__device_01_4.html" title=" " alt="" coords="692,13,883,54"/>
+<area shape="rect" id="node7" href="$classfpmas_1_1random_1_1Generator.html" title=" " alt="" coords="469,151,644,193"/>
 </map>

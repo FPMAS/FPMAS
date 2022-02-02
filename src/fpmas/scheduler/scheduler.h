@@ -21,13 +21,47 @@ namespace fpmas { namespace scheduler {
 	using api::scheduler::sub_time_step;
 	using api::scheduler::sub_step_end;
 
+	/**
+	 * Base task implementation.
+	 *
+	 * Only the setJobPos() and getJobPos() methods are implemented.
+	 *
+	 * @tparam TaskInterface implemented task interface (e.g.
+	 * fpmas::api::scheduler::Task or fpmas::api::scheduler::NodeTask)
+	 */
+	template<typename TaskInterface>
+		class TaskBase : public TaskInterface {
+			private:
+				std::unordered_map<
+					JID,
+					std::list<fpmas::api::scheduler::Task*>::iterator
+						> job_pos;
+
+			public:
+				/**
+				 * \copydoc fpmas::api::scheduler::Task::setJobPos()
+				 */
+				void setJobPos(
+						JID job_id,
+						std::list<fpmas::api::scheduler::Task*>::iterator pos
+						) override {
+					job_pos[job_id] = pos;
+				}
+
+				/**
+				 * \copydoc fpmas::api::scheduler::Task::getJobPos()
+				 */
+				std::list<api::scheduler::Task*>::iterator getJobPos(JID job_id) const override {
+					return job_pos.find(job_id)->second;
+				}
+		};
 
 	/**
 	 * A Task that does not perform any operation.
 	 *
 	 * Might be used as a default Task.
 	 */
-	class VoidTask : public api::scheduler::Task {
+	class VoidTask : public TaskBase<api::scheduler::Task> {
 		public:
 			/**
 			 * Immediatly returns.
@@ -41,7 +75,7 @@ namespace fpmas { namespace scheduler {
 		/**
 		 * api::scheduler::Task implementation based on a lambda function.
 		 */
-		class LambdaTask : public api::scheduler::Task {
+		class LambdaTask : public TaskBase<api::scheduler::Task> {
 			private:
 				std::function<void()> fct;
 
@@ -71,7 +105,7 @@ namespace fpmas { namespace scheduler {
 	 * Used by the FPMAS_NODE_TASK() macro.
 	 */
 	template<typename T>
-	class LambdaTask : public api::scheduler::NodeTask<T> {
+	class LambdaTask : public TaskBase<api::scheduler::NodeTask<T>> {
 		private:
 			std::function<void()> fct;
 			api::graph::DistributedNode<T>* _node;
@@ -110,7 +144,7 @@ namespace fpmas { namespace scheduler {
 			static JID job_id;
 			VoidTask voidTask;
 			JID _id;
-			std::vector<api::scheduler::Task*> _tasks;
+			std::list<api::scheduler::Task*> _tasks;
 			api::scheduler::Task* _begin = &voidTask;
 			api::scheduler::Task* _end = &voidTask;
 
@@ -160,7 +194,7 @@ namespace fpmas { namespace scheduler {
 			JID id() const override;
 			void add(api::scheduler::Task&) override;
 			void remove(api::scheduler::Task&) override;
-			const std::vector<api::scheduler::Task*>& tasks() const override;
+			std::vector<api::scheduler::Task*> tasks() const override;
 			TaskIterator begin() const override;
 			TaskIterator end() const override;
 

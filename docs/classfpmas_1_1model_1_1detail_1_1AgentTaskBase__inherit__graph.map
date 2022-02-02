@@ -1,8 +1,9 @@
 <map id="fpmas::model::detail::AgentTaskBase" name="fpmas::model::detail::AgentTaskBase">
-<area shape="rect" id="node1" title=" " alt="" coords="89,273,229,315"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1detail_1_1AgentBehaviorTask.html" title=" " alt="" coords="5,363,148,404"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1model_1_1detail_1_1AgentTask.html" title=" " alt="" coords="172,363,312,404"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1AgentTask.html" title=" " alt="" coords="92,184,227,225"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="78,95,241,136"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="86,5,233,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="89,363,229,404"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1model_1_1detail_1_1AgentBehaviorTask.html" title=" " alt="" coords="5,452,148,493"/>
+<area shape="rect" id="node7" href="$classfpmas_1_1model_1_1detail_1_1AgentTask.html" title=" " alt="" coords="172,452,312,493"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1scheduler_1_1TaskBase.html" title=" " alt="" coords="65,273,253,315"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1AgentTask.html" title=" " alt="" coords="92,184,227,225"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1scheduler_1_1NodeTask.html" title=" " alt="" coords="78,95,241,136"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1scheduler_1_1Task.html" title=" " alt="" coords="86,5,233,47"/>
 </map>

@@ -100,8 +100,10 @@ Collaboration diagram for fpmas::api::graph::DistributedGraph&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a30b9d94b6dc1ee6715f322ffed3eb3a7"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt; T &gt; * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a></td></tr>
-<tr class="separator:a30b9d94b6dc1ee6715f322ffed3eb3a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed786edc6522005381176cd77667fb98"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structfpmas_1_1api_1_1utils_1_1EventCallback.html">api::utils::EventCallback</a>&lt; <a class="el" href="structfpmas_1_1api_1_1graph_1_1SetLocalNodeEvent.html">SetLocalNodeEvent</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aed786edc6522005381176cd77667fb98">SetLocalNodeCallback</a></td></tr>
+<tr class="separator:aed786edc6522005381176cd77667fb98"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a612d62a4dc12cd6080250a21a57c95ee"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="structfpmas_1_1api_1_1utils_1_1EventCallback.html">api::utils::EventCallback</a>&lt; <a class="el" href="structfpmas_1_1api_1_1graph_1_1SetDistantNodeEvent.html">SetDistantNodeEvent</a>&lt; T &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a612d62a4dc12cd6080250a21a57c95ee">SetDistantNodeCallback</a></td></tr>
+<tr class="separator:a612d62a4dc12cd6080250a21a57c95ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td colspan="2" onclick="javascript:toggleInherit('pub_types_classfpmas_1_1api_1_1graph_1_1Graph')"><img src="closed.png" alt="-"/>&#160;Public Types inherited from <a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html">fpmas::api::graph::Graph&lt; DistributedNode&lt; T &gt;, DistributedEdge&lt; T &gt; &gt;</a></td></tr>
 <tr class="memitem:afe364671e442294515e14bbffdd6dfba inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memItemLeft" align="right" valign="top">typedef NodeType::IdType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1Graph.html#afe364671e442294515e14bbffdd6dfba">NodeIdType</a></td></tr>
 <tr class="separator:afe364671e442294515e14bbffdd6dfba inherit pub_types_classfpmas_1_1api_1_1graph_1_1Graph"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -158,14 +160,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac259411d9fb08c977aa596c0879a4cef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac9bbbe3a1283aaa7af1c2e68d34a6b44"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac9bbbe3a1283aaa7af1c2e68d34a6b44">switchLayer</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedEdge.html">DistributedEdge</a>&lt; T &gt; *edge, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">LayerId</a> layer_id)=0</td></tr>
 <tr class="separator:ac9bbbe3a1283aaa7af1c2e68d34a6b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24255b155585d63e1bddacb9980e7937"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a24255b155585d63e1bddacb9980e7937">addCallOnSetLocal</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> *callback)=0</td></tr>
-<tr class="separator:a24255b155585d63e1bddacb9980e7937"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa725cefd32c0c7a0b2a6e81d2baa798f"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aa725cefd32c0c7a0b2a6e81d2baa798f">onSetLocalCallbacks</a> () const =0</td></tr>
-<tr class="separator:aa725cefd32c0c7a0b2a6e81d2baa798f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2dd0a1dd7932f5dfd49f40f41eda3603"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a2dd0a1dd7932f5dfd49f40f41eda3603">addCallOnSetDistant</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> *callback)=0</td></tr>
-<tr class="separator:a2dd0a1dd7932f5dfd49f40f41eda3603"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19da9935c6a9473bdaf0f16f4c29d07e"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a19da9935c6a9473bdaf0f16f4c29d07e">onSetDistantCallbacks</a> () const =0</td></tr>
-<tr class="separator:a19da9935c6a9473bdaf0f16f4c29d07e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8051e9fb447df1b2672bb00258f3e237"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a8051e9fb447df1b2672bb00258f3e237">addCallOnSetLocal</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aed786edc6522005381176cd77667fb98">SetLocalNodeCallback</a> *callback)=0</td></tr>
+<tr class="separator:a8051e9fb447df1b2672bb00258f3e237"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aff682686d9e87cea9388b3bb5b890e20"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aed786edc6522005381176cd77667fb98">SetLocalNodeCallback</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aff682686d9e87cea9388b3bb5b890e20">onSetLocalCallbacks</a> () const =0</td></tr>
+<tr class="separator:aff682686d9e87cea9388b3bb5b890e20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ec4c79d7c268e6163954008fb8cb14f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a6ec4c79d7c268e6163954008fb8cb14f">addCallOnSetDistant</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a612d62a4dc12cd6080250a21a57c95ee">SetDistantNodeCallback</a> *callback)=0</td></tr>
+<tr class="separator:a6ec4c79d7c268e6163954008fb8cb14f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac9203711c246b7b8683095f07d3bcace"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a612d62a4dc12cd6080250a21a57c95ee">SetDistantNodeCallback</a> * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac9203711c246b7b8683095f07d3bcace">onSetDistantCallbacks</a> () const =0</td></tr>
+<tr class="separator:ac9203711c246b7b8683095f07d3bcace"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0b0cfdab2d75e42a1364218fa98c949"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac0b0cfdab2d75e42a1364218fa98c949">balance</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">LoadBalancing</a>&lt; T &gt; &amp;lb)=0</td></tr>
 <tr class="separator:ac0b0cfdab2d75e42a1364218fa98c949"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab70f587553df3372f63b641c4c21944a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ab70f587553df3372f63b641c4c21944a">balance</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">LoadBalancing</a>&lt; T &gt; &amp;lb, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">PartitionMode</a> partition_mode)=0</td></tr>
@@ -242,8 +244,8 @@ class fpmas::api::graph::DistributedGraph&lt; T &gt;</div><p ><a class="el" href
   </dd>
 </dl>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
-<a id="a30b9d94b6dc1ee6715f322ffed3eb3a7" name="a30b9d94b6dc1ee6715f322ffed3eb3a7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a30b9d94b6dc1ee6715f322ffed3eb3a7">&#9670;&nbsp;</a></span>NodeCallback</h2>
+<a id="aed786edc6522005381176cd77667fb98" name="aed786edc6522005381176cd77667fb98"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed786edc6522005381176cd77667fb98">&#9670;&nbsp;</a></span>SetLocalNodeCallback</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -251,11 +253,28 @@ class fpmas::api::graph::DistributedGraph&lt; T &gt;</div><p ><a class="el" href
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">typedef <a class="el" href="classfpmas_1_1api_1_1utils_1_1Callback.html">api::utils::Callback</a>&lt;<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">DistributedNode</a>&lt;T&gt;*&gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::NodeCallback</td>
+          <td class="memname">typedef <a class="el" href="structfpmas_1_1api_1_1utils_1_1EventCallback.html">api::utils::EventCallback</a>&lt;<a class="el" href="structfpmas_1_1api_1_1graph_1_1SetLocalNodeEvent.html">SetLocalNodeEvent</a>&lt;T&gt; &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::SetLocalNodeCallback</td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p ><a class="el" href="classfpmas_1_1api_1_1graph_1_1Node.html">Node</a> callback API. </p>
+<p >Callback API to handle <a class="el" href="structfpmas_1_1api_1_1graph_1_1SetLocalNodeEvent.html">SetLocalNodeEvent</a>. </p>
+
+</div>
+</div>
+<a id="a612d62a4dc12cd6080250a21a57c95ee" name="a612d62a4dc12cd6080250a21a57c95ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a612d62a4dc12cd6080250a21a57c95ee">&#9670;&nbsp;</a></span>SetDistantNodeCallback</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="structfpmas_1_1api_1_1utils_1_1EventCallback.html">api::utils::EventCallback</a>&lt;<a class="el" href="structfpmas_1_1api_1_1graph_1_1SetDistantNodeEvent.html">SetDistantNodeEvent</a>&lt;T&gt; &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::SetDistantNodeCallback</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Callback API to handle <a class="el" href="structfpmas_1_1api_1_1graph_1_1SetDistantNodeEvent.html">SetDistantNodeEvent</a>. </p>
 
 </div>
 </div>
@@ -1056,8 +1075,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a24255b155585d63e1bddacb9980e7937" name="a24255b155585d63e1bddacb9980e7937"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a24255b155585d63e1bddacb9980e7937">&#9670;&nbsp;</a></span>addCallOnSetLocal()</h2>
+<a id="a8051e9fb447df1b2672bb00258f3e237" name="a8051e9fb447df1b2672bb00258f3e237"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8051e9fb447df1b2672bb00258f3e237">&#9670;&nbsp;</a></span>addCallOnSetLocal()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1070,7 +1089,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::addCallOnSetLocal </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aed786edc6522005381176cd77667fb98">SetLocalNodeCallback</a> *&#160;</td>
           <td class="paramname"><em>callback</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1093,12 +1112,12 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a9c92d38fc28bd565c90fbd06fd8cd59e">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a9c92d38fc28bd565c90fbd06fd8cd59e">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a9c92d38fc28bd565c90fbd06fd8cd59e">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#aa605408bc3195c52284e5dcd92ff8eaa">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#aa605408bc3195c52284e5dcd92ff8eaa">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#aa605408bc3195c52284e5dcd92ff8eaa">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>.</p>
 
 </div>
 </div>
-<a id="aa725cefd32c0c7a0b2a6e81d2baa798f" name="aa725cefd32c0c7a0b2a6e81d2baa798f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa725cefd32c0c7a0b2a6e81d2baa798f">&#9670;&nbsp;</a></span>onSetLocalCallbacks()</h2>
+<a id="aff682686d9e87cea9388b3bb5b890e20" name="aff682686d9e87cea9388b3bb5b890e20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff682686d9e87cea9388b3bb5b890e20">&#9670;&nbsp;</a></span>onSetLocalCallbacks()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1109,7 +1128,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> * &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::onSetLocalCallbacks </td>
+          <td class="memname">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aed786edc6522005381176cd77667fb98">SetLocalNodeCallback</a> * &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::onSetLocalCallbacks </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1124,12 +1143,12 @@ template&lt;typename T &gt; </div>
 <p >Current set local callbacks list.</p>
 <dl class="section return"><dt>Returns</dt><dd>set local callbacks </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a848bd157778f7fd3c1617cd88efdb657">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a848bd157778f7fd3c1617cd88efdb657">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a848bd157778f7fd3c1617cd88efdb657">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#aae71ce302b261fda3c921f57ee2791b5">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#aae71ce302b261fda3c921f57ee2791b5">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#aae71ce302b261fda3c921f57ee2791b5">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>.</p>
 
 </div>
 </div>
-<a id="a2dd0a1dd7932f5dfd49f40f41eda3603" name="a2dd0a1dd7932f5dfd49f40f41eda3603"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2dd0a1dd7932f5dfd49f40f41eda3603">&#9670;&nbsp;</a></span>addCallOnSetDistant()</h2>
+<a id="a6ec4c79d7c268e6163954008fb8cb14f" name="a6ec4c79d7c268e6163954008fb8cb14f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ec4c79d7c268e6163954008fb8cb14f">&#9670;&nbsp;</a></span>addCallOnSetDistant()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1142,7 +1161,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::addCallOnSetDistant </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a612d62a4dc12cd6080250a21a57c95ee">SetDistantNodeCallback</a> *&#160;</td>
           <td class="paramname"><em>callback</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1165,12 +1184,12 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a5dbb4ac59c423ca44f3830f14f3b82cb">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a5dbb4ac59c423ca44f3830f14f3b82cb">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a5dbb4ac59c423ca44f3830f14f3b82cb">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a493cef102399a97b3be96d39c7516f06">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a493cef102399a97b3be96d39c7516f06">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a493cef102399a97b3be96d39c7516f06">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>.</p>
 
 </div>
 </div>
-<a id="a19da9935c6a9473bdaf0f16f4c29d07e" name="a19da9935c6a9473bdaf0f16f4c29d07e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19da9935c6a9473bdaf0f16f4c29d07e">&#9670;&nbsp;</a></span>onSetDistantCallbacks()</h2>
+<a id="ac9203711c246b7b8683095f07d3bcace" name="ac9203711c246b7b8683095f07d3bcace"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac9203711c246b7b8683095f07d3bcace">&#9670;&nbsp;</a></span>onSetDistantCallbacks()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1181,7 +1200,7 @@ template&lt;typename T &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a30b9d94b6dc1ee6715f322ffed3eb3a7">NodeCallback</a> * &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::onSetDistantCallbacks </td>
+          <td class="memname">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a612d62a4dc12cd6080250a21a57c95ee">SetDistantNodeCallback</a> * &gt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt;::onSetDistantCallbacks </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -1196,7 +1215,7 @@ template&lt;typename T &gt; </div>
 <p >Current set distant callbacks list.</p>
 <dl class="section return"><dt>Returns</dt><dd>set distant callbacks </dd></dl>
 
-<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a328e1477a990b971f63c65b08d4d2cd8">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a328e1477a990b971f63c65b08d4d2cd8">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#a328e1477a990b971f63c65b08d4d2cd8">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ac31d3c107f95e9e30317361beadc0c16">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS &gt;</a>, <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ac31d3c107f95e9e30317361beadc0c16">fpmas::graph::detail::DistributedGraph&lt; DIST_GRAPH_PARAMS_SPEC &gt;</a>, and <a class="el" href="classfpmas_1_1graph_1_1detail_1_1DistributedGraph.html#ac31d3c107f95e9e30317361beadc0c16">fpmas::graph::detail::DistributedGraph&lt; SyncMode &gt;</a>.</p>
 
 </div>
 </div>

@@ -1,4 +1,5 @@
 <map id="fpmas::model::detail::SetAgentDistantCallback" name="fpmas::model::detail::SetAgentDistantCallback">
-<area shape="rect" id="node1" title=" " alt="" coords="5,95,183,136"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1utils_1_1Callback.html" title=" " alt="" coords="9,5,179,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="488,20,665,61"/>
+<area shape="rect" id="node2" href="$structfpmas_1_1api_1_1utils_1_1EventCallback.html" title=" " alt="" coords="251,5,440,76"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1api_1_1utils_1_1Callback.html" title=" " alt="" coords="5,5,203,76"/>
 </map>

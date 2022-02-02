@@ -12,9 +12,9 @@ class RuntimeTest : public ::testing::Test {
 		Runtime runtime {scheduler};
 		std::array<MockTask, 4> mock_tasks;
 		std::array<MockJob, 3> mock_jobs;
-		std::vector<fpmas::api::scheduler::Task*> job_0_tasks;
-		std::vector<fpmas::api::scheduler::Task*> job_1_tasks;
-		std::vector<fpmas::api::scheduler::Task*> job_2_tasks;
+		std::list<fpmas::api::scheduler::Task*> job_0_tasks;
+		std::list<fpmas::api::scheduler::Task*> job_1_tasks;
+		std::list<fpmas::api::scheduler::Task*> job_2_tasks;
 
 		std::vector<MockJob*> epoch_0_jobs;
 		std::vector<MockJob*> epoch_1_jobs;
@@ -58,7 +58,7 @@ class RuntimeTest : public ::testing::Test {
 		}
 		void expectTasks(
 				Sequence& sequence,
-				std::vector<fpmas::api::scheduler::Task*> job_tasks,
+				std::list<fpmas::api::scheduler::Task*> job_tasks,
 				std::vector<fpmas::api::scheduler::Task*>& call_order
 				) {
 			Expectation _job_begin = EXPECT_CALL(
@@ -80,7 +80,7 @@ class RuntimeTest : public ::testing::Test {
 		}
 		void expectTasks(
 				Sequence& sequence,
-				std::vector<fpmas::api::scheduler::Task*> job_tasks
+				std::list<fpmas::api::scheduler::Task*> job_tasks
 				) {
 			static std::vector<fpmas::api::scheduler::Task*> call_order;
 			expectTasks(sequence, job_tasks, call_order);
@@ -88,10 +88,12 @@ class RuntimeTest : public ::testing::Test {
 		}
 
 	private:
-		void setUpJob(MockJob& job, std::vector<fpmas::api::scheduler::Task*>& tasks) {
+		void setUpJob(MockJob& job, std::list<fpmas::api::scheduler::Task*>& tasks) {
 				EXPECT_CALL(job, tasks)
 					.Times(AnyNumber())
-					.WillRepeatedly(ReturnRef(tasks));
+					.WillRepeatedly(Return(std::vector<fpmas::api::scheduler::Task*>(
+									tasks.begin(), tasks.end()
+									)));
 				EXPECT_CALL(job, begin)
 					.Times(AnyNumber())
 					.WillRepeatedly(Return(tasks.begin()));

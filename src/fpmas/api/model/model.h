@@ -33,10 +33,22 @@ namespace fpmas { namespace api {namespace model {
 	 */
 	typedef api::graph::DistributedGraph<AgentPtr> AgentGraph;
 
+	/**
+	 * Event triggered when an \Agent is set \LOCAL.
+	 */
 	typedef api::graph::SetLocalNodeEvent<AgentPtr> SetAgentLocalEvent;
+	/**
+	 * Callback API used to handle SetAgentLocalEvent instances.
+ 	 */
 	typedef api::graph::DistributedGraph<AgentPtr>::SetLocalNodeCallback
 		SetAgentLocalCallback;
+	/**
+	 * Event triggered when an \Agent is set \DISTANT.
+	 */
 	typedef api::graph::SetDistantNodeEvent<AgentPtr> SetAgentDistantEvent;
+	/**
+	 * Callback API used to handle SetAgentDistantEvent instances.
+	 */
 	typedef api::graph::DistributedGraph<AgentPtr>::SetDistantNodeCallback
 		SetAgentDistantCallback;
 

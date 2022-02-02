@@ -29,6 +29,10 @@ namespace fpmas {
 						// was already unscheduled.
 						// This must be performed before erase(), since it will
 						// clear and delete the associated agent's task.
+						FPMAS_LOGV(model.getMpiCommunicator().getRank(),
+								"ERASE_AGENT_CALLBACK", "Removing Agent %s task from group %i's job.",
+								FPMAS_C_STR(agent->node()->getId()), group->groupId()
+								);
 						group->agentExecutionJob().remove(*agent->task(group->groupId()));
 					}
 					group->erase(&agent);
@@ -40,18 +44,30 @@ namespace fpmas {
 				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
 						"SET_AGENT_LOCAL_CALLBACK", "Setting agent %s LOCAL.",
 						FPMAS_C_STR(event.node->getId()));
-				for(auto group : agent->groups())
+				for(auto group : agent->groups()) {
+					FPMAS_LOGV(model.getMpiCommunicator().getRank(),
+							"SET_AGENT_LOCAL_CALLBACK", "Adding Agent %s task to group %i's job.",
+							FPMAS_C_STR(agent->node()->getId()), group->groupId()
+							);
 					group->agentExecutionJob().add(*agent->task(group->groupId()));
+				}
 			}
 
 			void SetAgentDistantCallback::call(const EventType& event) {
-				api::model::AgentPtr& agent = event.node->data();
-				FPMAS_LOGD(model.getMpiCommunicator().getRank(),
-						"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.",
-						FPMAS_C_STR(event.node->getId()));
-				// Unschedule agent task 
-				for(auto group : agent->groups())
-					group->agentExecutionJob().remove(*agent->task(group->groupId()));
+				if(event.context == event.EXPORT_DISTANT) {
+					api::model::AgentPtr& agent = event.node->data();
+					FPMAS_LOGD(model.getMpiCommunicator().getRank(),
+							"SET_AGENT_DISTANT_CALLBACK", "Setting agent %s DISTANT.",
+							FPMAS_C_STR(event.node->getId()));
+					// Unschedule agent task 
+					for(auto group : agent->groups()) {
+						FPMAS_LOGV(model.getMpiCommunicator().getRank(),
+								"SET_AGENT_DISTANT_CALLBACK", "Removing Agent %s task from group %i's job.",
+								FPMAS_C_STR(agent->node()->getId()), group->groupId()
+								);
+						group->agentExecutionJob().remove(*agent->task(group->groupId()));
+					}
+				}
 			}
 
 			Model::Model(

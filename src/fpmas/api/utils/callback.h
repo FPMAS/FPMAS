@@ -24,8 +24,16 @@ namespace fpmas { namespace api { namespace utils {
 			virtual ~Callback() {}
 	};
 
+	/**
+	 * Event handling related Callback specialization.
+	 *
+	 * @tparam Event type of event handled by this callback
+	 */
 	template<typename Event>
 		struct EventCallback : public Callback<const Event&> {
+			/**
+			 * Type of event handled by this callback.
+			 */
 			typedef Event EventType;
 		};
 }}}
