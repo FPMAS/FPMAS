@@ -8,7 +8,7 @@ var searchData=
   ['nodebuilder_5',['NodeBuilder',['../classfpmas_1_1api_1_1graph_1_1NodeBuilder.html',1,'fpmas::api::graph']]],
   ['nodebuilder_3c_20agentptr_20_3e_6',['NodeBuilder&lt; AgentPtr &gt;',['../classfpmas_1_1api_1_1graph_1_1NodeBuilder.html',1,'fpmas::api::graph']]],
   ['nodeevent_7',['NodeEvent',['../structfpmas_1_1api_1_1graph_1_1NodeEvent.html',1,'fpmas::api::graph']]],
-  ['nodetask_8',['NodeTask',['../classfpmas_1_1api_1_1scheduler_1_1NodeTask.html',1,'fpmas::api::scheduler']]],
+  ['nodetask_8',['NodeTask',['../classfpmas_1_1api_1_1scheduler_1_1NodeTask.html',1,'fpmas::api::scheduler::NodeTask&lt; T &gt;'],['../classfpmas_1_1scheduler_1_1NodeTask.html',1,'fpmas::scheduler::NodeTask&lt; T &gt;']]],
   ['nodetask_3c_20agentptr_20_3e_9',['NodeTask&lt; AgentPtr &gt;',['../classfpmas_1_1api_1_1scheduler_1_1NodeTask.html',1,'fpmas::api::scheduler']]],
   ['nodeupdatepack_10',['NodeUpdatePack',['../structfpmas_1_1synchro_1_1NodeUpdatePack.html',1,'fpmas::synchro']]]
 ];

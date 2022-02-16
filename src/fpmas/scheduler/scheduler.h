@@ -100,41 +100,68 @@ namespace fpmas { namespace scheduler {
 	}
 
 	/**
+	 * api::scheduler::Task partial implementation.
+	 *
+	 * Users can extend this class to implement their custom run() method.
+	 */
+	typedef TaskBase<api::scheduler::Task> Task;
+
+	/**
+	 * api::scheduler::NodeTask partial implementation.
+	 *
+	 * Users can extend this class to implement their custom run() method.
+	 */
+	template<typename T>
+		class NodeTask : public TaskBase<api::scheduler::NodeTask<T>> {
+			private:
+				api::graph::DistributedNode<T>* _node;
+
+			public:
+				/**
+				 * NodeTask constructor.
+				 *
+				 * @param node node bound to the task
+				 */
+				NodeTask(api::graph::DistributedNode<T>* node)
+					: _node(node) {
+					}
+
+				api::graph::DistributedNode<T>* node() override {
+					return _node;
+				}
+		};
+
+	/**
 	 * A NodeTask that can be initialized from a lambda function.
 	 *
 	 * Used by the FPMAS_NODE_TASK() macro.
 	 */
 	template<typename T>
-	class LambdaTask : public TaskBase<api::scheduler::NodeTask<T>> {
-		private:
-			std::function<void()> fct;
-			api::graph::DistributedNode<T>* _node;
+		class LambdaTask : public NodeTask<T> {
+			private:
+				std::function<void()> fct;
 
-		public:
-			/**
-			 * LambdaTask constructor.
-			 *
-			 * The specified lambda function must have a `void ()` signature.
-			 *
-			 * @tparam automatically deduced lambda function type
-			 * @param node node bound to the task
-			 * @param lambda_fct void() lambda function, that will be run by
-			 * the task 
-			 */
-			template<typename Lambda_t>
-				LambdaTask(
-						api::graph::DistributedNode<T>* node,
-						Lambda_t&& lambda_fct)
-				: _node(node), fct(lambda_fct) {}
+			public:
+				/**
+				 * LambdaTask constructor.
+				 *
+				 * The specified lambda function must have a `void ()` signature.
+				 *
+				 * @tparam automatically deduced lambda function type
+				 * @param node node bound to the task
+				 * @param lambda_fct void() lambda function, that will be run by
+				 * the task 
+				 */
+				template<typename Lambda_t>
+					LambdaTask(
+							api::graph::DistributedNode<T>* node,
+							Lambda_t&& lambda_fct)
+					: NodeTask<T>(node), fct(lambda_fct) {}
 
-			api::graph::DistributedNode<T>* node() override {
-				return _node;
-			}
-
-			void run() override {
-				fct();
-			}
-	};
+				void run() override {
+					fct();
+				}
+		};
 
 	/**
 	 * api::scheduler::Job implementation.
