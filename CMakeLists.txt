@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(fpmas VERSION 1.3)
+project(fpmas VERSION 1.4)
 
 # Custom modules directory
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
